@@ -2808,27 +2808,22 @@ Class Artwork_model extends MY_Model
                 $repeat_text='';
                 $imagesourceclass=$imagesourceview='';
                 $newart_id=($idxloc*(-1));
-                // if ($art_type=='Logo') {
-                    // if ($art_type == 'Logo') {
-                        $redraw = 1;
-                    // } else {
-                    //    $redraw = 0;
-                    // }
-                    $logopath = $data['uploadlogo'];
-                    /* Make Filename */
-                    $file_name = str_replace([$preload_path_fl, $preload_path_sh], '', $logopath);
-                    $file_det = extract_filename($file_name);
-                    if (in_array($file_det['ext'], $this->logo_imageext)) {
-                        $imagesourceclass = 'viewsource';
-                        $imagesourceview = '/artproofrequest/viewartsource?id=' . $newart_id . '&artsession=' . $artsession;
-                    }
-                    $logosrc_path = $preload_path_sh . $file_name;
-                    if ($artdata['order_id']) {
-                        $logo_src = $artdata['order_num'] . '_' . $numpp . '.' . $file_det['ext'];
-                    } else {
-                        $logo_src = $artdata['proof_num'] . '_' . $numpp . '.' . $file_det['ext'];
-                    }
-                // }
+                $redraw = 1;
+                $logopath = $data['uploadlogo'];
+                /* Make Filename */
+                $file_name = str_replace([$preload_path_fl, $preload_path_sh], '', $logopath);
+                $file_det = extract_filename($file_name);
+                if (in_array($file_det['ext'], $this->logo_imageext)) {
+                    $imagesourceclass = 'viewsource';
+                    $imagesourceview = '/artproofrequest/viewartsource?id=' . $newart_id . '&artsession=' . $artsession;
+                }
+                $logosrc_path = $preload_path_sh . $file_name;
+                if ($artdata['order_id']) {
+                    $logo_src = $artdata['order_num'] . '_' . $numpp . '.' . $file_det['ext'];
+                } else {
+                    $logo_src = $artdata['proof_num'] . '_' . $numpp . '.' . $file_det['ext'];
+                }
+
                 $rush=$artdata['rush'];
                 $location=array(
                     'artwork_art_id'=>$newart_id,
