@@ -25,6 +25,7 @@ class Leadquote_model extends MY_Model
             $quote_items = [];
             if (!empty($lead_data['lead_item_id'])) {
                 $quote_items = $this->add_leadquote_items($lead_data['lead_item_id']);
+                $quote_items['quote_item_id'] = -1;
             }
             $outdat = [
                 'brand' => $lead_data['brand'],
@@ -105,16 +106,26 @@ class Leadquote_model extends MY_Model
                 'base_price' => 0.000,
             ];
         } else {
-            $this->load->model('items_model');
-            $itemdat = $this->items_model->get_item($item_id);
-            $item = [];
-            if ($itemdat['result']==$this->success_result) {
+            $this->load->model('leadorder_model');
+            $itemdat = $this->leadorder_model->_get_itemdata($item_id);
+            $item = [
+                'item_id' => $item_id,
+                'item_qty' => 0,
+                'item_price' => 0.000,
+                'imprint_price' => 0.00,
+                'setup_price' => 0.00,
+                'item_weigth' => $this->box_empty_weight / $this->config->item('default_inpack'),
+                'cartoon_qty' => $this->config->item('default_inpack'),
+                'cartoon_width' => $this->config->item('default_pack_width'),
+                'cartoon_heigh' => $this->config->item('default_pack_heigth'),
+                'cartoon_depth' => $this->config->item('default_pack_depth'),
+                'template' => 'Stressball',
+                'base_price' => 0.000,
+            ];
 
-                $item = [
 
-                ];
-            }
         }
+        return $item;
     }
 
 }
