@@ -2794,6 +2794,7 @@ Class Leadorder_model extends My_Model {
             'cardtype'=>($cardtype=='American Express' ? 'Amex' : $cardtype),
             'exp_month'=>str_pad($charge['exp_month'],2,'0', STR_PAD_LEFT),
             'exp_year'=>str_pad($charge['exp_year'],2,'0', STR_PAD_LEFT),
+            'brand' =>  $order_data['brand'],
         );
         $transres=$this->order_payment($pay_options);
         if ($transres['result']==$this->error_result) {
@@ -6168,6 +6169,7 @@ Class Leadorder_model extends My_Model {
             'cardcode'=>'',
             'exp_month'=>'',
             'exp_year'=>'',
+            'brand' => $order_data['brand'],
         );
 
         foreach ($res as $row) {
@@ -6302,26 +6304,51 @@ Class Leadorder_model extends My_Model {
             // Load PayPal library
             if ($realconfig==0) {
                 $this->config->load('paypal_test');
-                $config = array(
-                    'Sandbox' => TRUE, 			// Sandbox / testing mode option.
-                    'APIUsername' => $this->config->item('APIUsername'), 	// PayPal API username of the API caller
-                    'APIPassword' => $this->config->item('APIPassword'), 	// PayPal API password of the API caller
-                    'APISignature' => $this->config->item('APISignature'), 	// PayPal API signature of the API caller
-                    'APISubject' => '', 						// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
-                    'APIVersion' => $this->config->item('APIVersion')		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
-                );
+                if ($options['brand']=='SR') {
+                    $config = array(
+                        'Sandbox' => TRUE, 			// Sandbox / testing mode option.
+                        'APIUsername' => $this->config->item('APIUsernameSR'), 	// PayPal API username of the API caller
+                        'APIPassword' => $this->config->item('APIPasswordSR'), 	// PayPal API password of the API caller
+                        'APISignature' => $this->config->item('APISignatureSR'), 	// PayPal API signature of the API caller
+                        'APISubject' => '', 						// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
+                        'APIVersion' => $this->config->item('APIVersionSR')		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
+                    );
+                } else {
+                    $config = array(
+                        'Sandbox' => TRUE, 			// Sandbox / testing mode option.
+                        'APIUsername' => $this->config->item('APIUsername'), 	// PayPal API username of the API caller
+                        'APIPassword' => $this->config->item('APIPassword'), 	// PayPal API password of the API caller
+                        'APISignature' => $this->config->item('APISignature'), 	// PayPal API signature of the API caller
+                        'APISubject' => '', 						// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
+                        'APIVersion' => $this->config->item('APIVersion')		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
+                    );
+                }
             } else {
                 $this->config->load('paypal_live');
-                $config = array(
-                    'APIUsername' => $this->config->item('APIUsername'), 	// PayPal API username of the API caller
-                    'APIPassword' => $this->config->item('APIPassword'), 	// PayPal API password of the API caller
-                    'APISignature' => $this->config->item('APISignature'), 	// PayPal API signature of the API caller
-                    'APISubject' => '', 									// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
-                    'APIVersion' => $this->config->item('APIVersion'),		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
-                    'Sandbox' => $this->config->item('Sandbox'), 			// Sandbox / testing mode option.
-                );
+                if ($options['brand']=='SR') {
+                    $config = array(
+                        'Sandbox' => $this->config->item('Sandbox'), 			// Sandbox / testing mode option.
+                        'APIUsername' => $this->config->item('APIUsernameSR'), 	// PayPal API username of the API caller
+                        'APIPassword' => $this->config->item('APIPasswordSR'), 	// PayPal API password of the API caller
+                        'APISignature' => $this->config->item('APISignatureSR'), 	// PayPal API signature of the API caller
+                        'APISubject' => '', 									// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
+                        'APIVersion' => $this->config->item('APIVersionSR'),		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
+                    );
+                } else {
+                    $config = array(
+                        'APIUsername' => $this->config->item('APIUsername'), 	// PayPal API username of the API caller
+                        'APIPassword' => $this->config->item('APIPassword'), 	// PayPal API password of the API caller
+                        'APISignature' => $this->config->item('APISignature'), 	// PayPal API signature of the API caller
+                        'APISubject' => '', 									// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
+                        'APIVersion' => $this->config->item('APIVersion'),		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
+                        'Sandbox' => $this->config->item('Sandbox'), 			// Sandbox / testing mode option.
+                    );
+                }
             }
             // Show Errors
+            if (empty($config['APIUsername']) || empty($config['APIPassword']) || empty($config['APISignature'])) {
+                return array('result' => $this->error_result, 'error_msg' => 'Empty Credentials for Payment');
+            }
             $this->load->library('paypal/Paypal_pro', $config);
             // Prepare Objects
             $DPFields = array(
