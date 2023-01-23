@@ -8836,9 +8836,9 @@ Class Leadorder_model extends My_Model {
             $logoHeight = 12.855;
             $logoYPos = 10;
         }
-
         $logoXPos = 5;
         $logoType = 'JPG';
+
         if ($brand=='SR') {
             $invnumImg = FCPATH.'/img/invoicesr/sr-invoice_num.eps';
         } else {
@@ -8851,22 +8851,24 @@ Class Leadorder_model extends My_Model {
 
         if ($brand=='SR') {
             $dateImage = FCPATH.'/img/invoicesr/sr-date_bg-3.eps';
+            $dateYPos = 33.7;
         } else {
             $dateImage = FCPATH.'/img/invoice/date_bg-3.eps';
+            $dateYPos = 28.7;
         }
 
         $dateXPos = 158;
-        $dateYPos = 28.7;
         $dateWidth = 0;
         $dateHeight = 9;
 
         if ($brand=='SR') {
             $ponumImage = FCPATH.'/img/invoicesr/sr-customer_code_bg.eps';
+            $ponumYPos = 33.7;
         } else {
             $ponumImage = FCPATH.'/img/invoice/customer_code_bg.eps';
+            $ponumYPos = 28.7;
         }
         $ponumXPos = 90;
-        $ponumYPos = 28.7;
         $ponumWidth = 0;
         $ponumHeight = 9;
 
@@ -8926,11 +8928,12 @@ Class Leadorder_model extends My_Model {
 
         if ($brand=='SR') {
             $pdf->SetFont('','',12.046857);
-            $pdf->Text(5, 32.88, '855 Bloomfield Ave');
-            $pdf->Text(5, 38.88, 'Clifton, NJ 07012');
-            $pdf->Text(5,44.88, 'Call Us at');
+            $pdf->Text(5, 30.88, 'ASI # 40694');
+            $pdf->Text(5, 36.88, '855 Bloomfield Ave');
+            $pdf->Text(5, 42.88, 'Clifton, NJ 07012');
+            $pdf->Text(5,48.88, 'Call Us at');
             $pdf->SetTextColor(0,0,75);
-            $pdf->Text(23,44.88, '1-800-370-3020');
+            $pdf->Text(23,48.88, '1-800-370-3020');
             // $pdf->Text(5,45.88,'www.stressrelievers.com'); // , 'http://www.bluetrack.com');
         } else {
             $pdf->SetFont('','',12.046857);
@@ -8945,12 +8948,20 @@ Class Leadorder_model extends My_Model {
         $pdf->ImageEps($dateImage, $dateXPos, $dateYPos, $dateWidth, $dateHeight);
         $pdf->SetTextColor(0,0,0);
         $pdf->SetFont('', '', 13.552714);
-        $pdf->SetXY(177, 29);
+        if ($brand=='SR') {
+            $pdf->SetXY(177, 34);
+        } else {
+            $pdf->SetXY(177, 29);
+        }
         $pdf->Cell(27, 8, $options['order_date'],0,0, 'C');
         // $pdf->Text(179.8, 35.88, $options['order_date']);
         if (!empty($options['customer_code'])) {
             $pdf->ImageEps($ponumImage, $ponumXPos, $ponumYPos, $ponumWidth, $ponumHeight);
-            $pdf->SetXY(127,29);
+            if ($brand=='SR') {
+                $pdf->SetXY(127,34);
+            } else {
+                $pdf->SetXY(127,29);
+            }
             $pdf->SetFont('','B');
             $pdf->Cell(27,8,$options['customer_code'],0,0,'C');
         }
