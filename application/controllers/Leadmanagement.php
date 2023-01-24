@@ -828,7 +828,8 @@ class Leadmanagement extends MY_Controller
                     );
                     $countries = $this->shipping_model->get_countries_list($cnt_options);
                     // Prepare content
-                    $quotedata = $qres['data'];
+                    $quotedata = $qres['quote'];
+
                     $options = [
                         'data' => $quotedata,
                         'templlists' => $templlists,
