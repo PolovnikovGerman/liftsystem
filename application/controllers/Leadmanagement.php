@@ -827,10 +827,12 @@ class Leadmanagement extends MY_Controller
                         'orderby'=>'sort, country_name',
                     );
                     $countries = $this->shipping_model->get_countries_list($cnt_options);
+                    $states = $this->shipping_model->get_country_states($this->config->item('default_country'));
                     // Prepare content
                     $quotedata = $qres['quote'];
                     $quote_items = $qres['quote_items'];
                     $item_content='';
+                    $item_subtotal = 0;
                     foreach ($quote_items as $quote_item) {
                         $imprints=$quote_item['imprints'];
                         $imprint_options=[
@@ -846,20 +848,59 @@ class Leadmanagement extends MY_Controller
                             'item_id'=>$quote_item['item_id'],
                         ];
                         $item_content.=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
+                        $item_subtotal+=$quote_item['item_subtotal'];
                     }
-
+                    $quotedata['item_subtotal'] = $item_subtotal;
+                    $quotedata['total'] = $item_subtotal;
+                    $quote_session = 'quote'.uniq_link(15);
+                    $sessiondata = [
+                        'quote' => $quotedata,
+                        'items' => $quote_items,
+                        'shipping' => [],
+                        'deleted' => [],
+                    ];
+                    usersession($quote_session, $sessiondata);
                     $options = [
+                        'quote_session' => $quote_session,
+                        'lead_id' => $lead_id,
                         'data' => $quotedata,
                         'itemsview' => $item_content,
                         'templlists' => $templlists,
                         'countries' => $countries,
                         'edit_mode' => 1,
+                        'states' => $states,
                     ];
                     $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata,$error);
         }
+    }
+
+    public function quoteitemchange() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $error = $this->restore_orderdata_error;
+            $session_id = ifset($postdata,'session','unknw');
+            $quotesession = usersession($session_id);
+            $mdata = [];
+            if (!empty($quotesession)) {
+                $this->load->model('leadquote_model');
+                $res = $this->leadquote_model->quoteitemchange($postdata, $quotesession, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    if ($res['shipcalc']==1) {
+                        $this->leadquote_model->calc_quote_shipping($session_id);
+                    }
+                    if ($res['totalcalc']==1) {
+                        $this->leadquote_model->calc_quote_totals($session_id);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 
 }

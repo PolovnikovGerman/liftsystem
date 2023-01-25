@@ -512,26 +512,3 @@ function init_lead_cloneemail() {
     });
 
 }
-
-function addnewcustomquote() {
-    var lead_num=$("div.lead_popup_number").text();
-    var msg="You will now save the updates of the "+lead_num+" by creating the quote.  Ok?";
-    if (confirm(msg)==true) {
-        var url=mainurl+"/lead_addquote";
-        var dat=$("form#leadeditform").serializeArray();
-        // var dat = new Array();
-        dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
-        dat.push({name:'session_id', value: $("#session").val()});
-        dat.push({name: 'session_attach', value: $("#session_attach").val()});
-        dat.push({name: 'lead_type', value: $("#lead_type").val()});
-        $.post(url, dat, function (response) {
-            if (response.errors=='') {
-                $("#quotepopupdetails").empty().html(response.data.quotecontent);
-                $("#quotepopupdetails").show();
-                $(".quotepopupclose").show();
-            } else {
-                show_error(response);
-            }
-        },'json');
-    }
-}

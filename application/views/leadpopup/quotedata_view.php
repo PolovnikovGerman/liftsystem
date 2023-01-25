@@ -1,4 +1,6 @@
 <div class="quotecontentarea">
+    <input type="hidden" id="quotesessionid" value="<?=$quote_session?>"/>
+    <input type="hidden" id="quoteleadconnect" value="<?=$lead_id?>"/>
     <div class="datarow">
         <div class="quotetemplatetitle">Template:</div>
         <div class="quotetemplateinpt">
@@ -9,10 +11,10 @@
             </select>
         </div>
         <div class="quoteactionsarea">
-            <div class="quoteactionaddorder">start order</div>
-            <div class="quoteactionduplicate">duplicate</div>
-            <div class="quoteactionsend">send</div>
-            <div class="quoteactionpdfdoc">pdf</div>
+            <div class="quoteactionaddorder <?=$edit_mode==1 ? '' : 'active'?>">start order</div>
+            <div class="quoteactionduplicate <?=$edit_mode==1 ? '' : 'active'?>">duplicate</div>
+            <div class="quoteactionsend <?=$edit_mode==1 ? '' : 'active'?>">send</div>
+            <div class="quoteactionpdfdoc <?=$edit_mode==1 ? '' : 'active'?>">pdf</div>
         </div>
         <?php if ($edit_mode==1) { ?>
             <div class="leadquotesavebtn">save</div>
@@ -47,27 +49,27 @@
         <div class="leadquotediscountarea">
             <div class="datarow">
                 <div class="quotemisschargetitle">
-                    <input class="quotediscountinpt" placeholder="Misc Charge"/>
+                    <input class="quotediscountinpt quotecommondatainpt" placeholder="Misc Charge"/>
                 </div>
                 <div class="quotemisschargevalue">
-                    <input class="quotediscountinpt" placeholder="$0.00"/>
+                    <input class="quotediscountinpt quotecommondatainpt" placeholder="$0.00"/>
                 </div>
             </div>
             <div class="datarow">
                 <div class="quotemisschargetitle">
-                    <input class="quotediscountinpt" placeholder="Misc Charge"/>
+                    <input class="quotediscountinpt quotecommondatainpt" placeholder="Misc Charge"/>
                 </div>
                 <div class="quotemisschargevalue">
-                    <input class="quotediscountinpt" placeholder="$0.00"/>
+                    <input class="quotediscountinpt quotecommondatainpt" placeholder="$0.00"/>
                 </div>
             </div>
             <div class="datarow">
                 <div class="quotediscountlabel">Discount:</div>
                 <div class="quotediscounttitle">
-                    <input class="quotediscountinpt" placeholder="Courtesy Discount"/>
+                    <input class="quotediscountinpt quotecommondatainpt" placeholder="Courtesy Discount"/>
                 </div>
                 <div class="quotediscountvalue">
-                    <input class="quotediscountinpt" placeholder="$0.00"/>
+                    <input class="quotediscountinpt quotecommondatainpt" placeholder="$0.00"/>
                 </div>
             </div>
         </div>
@@ -75,7 +77,7 @@
     <div class="datarow">
         <div class="quoteitemsubtotal">
             <div class="quoteitemsubtotaltitle">Item Sub-total:</div>
-            <div class="quoteitemsubtotalvalue">$111.50</div>
+            <div class="quoteitemsubtotalvalue"><?=empty($data['item_subtotal']) ? '&nbsp;' : MoneyOutput($data['item_subtotal'])?></div>
         </div>
     </div>
     <div class="datarow">
@@ -113,9 +115,14 @@
                         <input class="quoteaddressinpt quotetown" placeholder="City"/>
                     </div>
                     <div class="quoteshipaddresdistrict">
-                        <select class="quoteaddressinpt quotestate">
-                            <option value="CA">CA</option>
-                        </select>
+                        <?php if (is_array($states)) { ?>
+                            <select class="quoteaddressinpt quotestate">
+                                <option value=""></option>
+                                <?php foreach ($states as $state) { ?>
+                                    <option value="<?=$state['state_code']?>" <?=$state['state_code']==$data['shipping_state'] ? 'selected="selected"' : ''?>><?=$state['state_code']?></option>
+                                <?php } ?>
+                            </select>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
@@ -131,13 +138,13 @@
                     </select>
                 </div>
                 <div class="quoteleadrush">
-                    <input class="quoteleadshipcostinpt quoteleadrushcost"/>
+                    <input class="quoteleadshipcostinpt quoteleadrushcost quotecommondatainpt"/>
                 </div>
             </div>
             <div class="datarow">
                 <div class="quoteshippingcostarea">&nbsp;</div>
                 <div class="quoteshipcost">
-                    <input class="quoteleadshipcostinpt quoteshipcostvalue"/>
+                    <input class="quoteleadshipcostinpt quoteshipcostvalue quotecommondatainpt"/>
                 </div>
             </div>
             <div class="datarow">
@@ -150,7 +157,7 @@
                 <div class="quotetaxinput">
                     <div class="quotetaxlabel">Sales Tax</div>
                     <div class="quotetaxvalue">
-                        <input class="quoteleadshipcostinpt quotesalestaxvalue" value="0.00">
+                        <input class="quoteleadshipcostinpt quotesalestaxvalue quotecommondatainpt" value="0.00">
                     </div>
                 </div>
             </div>
@@ -189,9 +196,14 @@
                         <input class="quoteaddressinpt quotetown" placeholder="City"/>
                     </div>
                     <div class="quotebilladdresdistrict">
-                        <select class="quoteaddressinpt quotestate">
-                            <option value="CA">CA</option>
-                        </select>
+                        <?php if (is_array($states)) { ?>
+                            <select class="quoteaddressinpt quotestate">
+                                <option value=""></option>
+                                <?php foreach ($states as $state) { ?>
+                                    <option value="<?=$state['state_code']?>" <?=$state['state_code']==$data['billing_state'] ? 'selected="selected"' : ''?>><?=$state['state_code']?></option>
+                                <?php } ?>
+                            </select>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
@@ -213,7 +225,7 @@
         <div class="quotetotalarea">
             <div class="quotetotals">
                 <div class="quotetotallabel">Total:</div>
-                <div class="quotetotalvalue">$111,111.52</div>
+                <div class="quotetotalvalue"><?=empty($data['total']) ? '&nbsp;' : MoneyOutput($data['total'])?></div>
             </div>
         </div>
     </div>

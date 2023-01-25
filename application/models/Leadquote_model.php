@@ -265,4 +265,45 @@ class Leadquote_model extends MY_Model
         return $out;
     }
 
+    public function quoteitemchange($data, $quotesession, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Empty Need Parameters','shipcalc' => 0, 'totalcalc' => 0];
+        $fldname = ifset($data,'fld','');
+        $itemid = ifset($data, 'item','');
+        $itemcolor = ifset($data,'itemcolor','');
+        if (!empty($fldname) && !empty($item) && !empty($itemcolor)) {
+            $items = $quotesession['items'];
+            if ($fldname=='qty' || $fldname=='price') {
+                $out['totalcalc'] = 1;
+            }
+            if ($fldname=='qty') {
+                $out['shipcalc'] = 1;
+            }
+            $find = 0;
+            $itemidx = $itemcoloridx = 0;
+            foreach ($items as $item) {
+                if ($item['item_id']==$itemid) {
+                    $colors = $item[$itemidx]['item'];
+                    foreach ($colors as $color) {
+
+                    }
+                }
+                if ($find==1) {
+                    break;
+                }
+                $itemidx++;
+            }
+            if ($find==1) {
+                $items[$itemidx]['item'][$itemcoloridx][$fldname] = $data['newval'];
+                $quotesession['items'] = $items;
+                usersession($session_id, $quotesession);
+                $out['result'] = $this->success_result;
+            }
+        }
+        return $out;
+    }
+
+    public function calc_quote_shipping($session_id) {
+
+    }
+
 }

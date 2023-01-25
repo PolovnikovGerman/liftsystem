@@ -13,14 +13,14 @@
                 <?=$row['out_colors']?>
             </div>
             <div class="itemqty">
-                <input type="text" class="quoteitem_qty input_text_right quouteitem_input input_border_gray" data-field="item_qty" data-item="<?=$row['item_id']?>" data-quoteitem="<?= $quote_item_id ?>" value="<?=$row['item_qty']?>" />
+                <input type="text" class="quoteitem_qty quouteitem_input input_border_gray" data-field="item_qty" data-item="<?=$row['item_id']?>" data-quoteitem="<?= $quote_item_id ?>" value="<?=$row['item_qty']?>" />
             </div>
-            <div class="items_content_each2 bord_l">
-                <input type="text" class="orderitem_price input_text_right quouteitem_input input_border_gray <?=$row['qtyinput_class']?>" title="<?=$row['qtyinput_title']?>"
+            <div class="itemprice">
+                <input type="text" class="quoteitem_price  quouteitem_input input_border_gray <?=$row['qtyinput_class']?>" title="<?=$row['qtyinput_title']?>"
                        data-field="item_price" data-item="<?=$row['item_id']?>" data-quoteitem="<?= $quote_item_id ?>" value="<?=PriceOutput($row['item_price'])?>" />
             </div>
-            <div class="items_content_sub_total2 bord_l" data-item="<?=$row['item_id']?>" data-quoteitem="<?= $quote_item_id ?>"><?=$row['item_subtotal']?></div>
-            <div class="items_content_trash2 bord_l">
+            <div class="quoteitemrowsubtotal" data-item="<?=$row['item_id']?>" data-quoteitem="<?= $quote_item_id ?>"><?=$row['item_subtotal']?></div>
+            <div class="quoteitemremove">
                 <?php if ($row['item_row']==1) { ?>
                     <i class="fa fa-trash" data-quoteitem="<?= $quote_item_id ?>" data-item="<?=$row['item_description']?>"></i>
                 <?php } else { ?>
@@ -31,4 +31,7 @@
         <?php $nrow++;?>
     <?php } ?>
     <?=$imprintview?>
+</div>
+<div class="datarow">
+    <div class="addquoteitem">+ add item</div>
 </div>
