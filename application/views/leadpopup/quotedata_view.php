@@ -39,7 +39,9 @@
         </div>
     </div>
     <div class="datarow">
-        <div class="quoteitemtabledata">&nbsp;</div>
+        <div class="quoteitemtabledata">
+            <?=$itemsview?>
+        </div>
     </div>
     <div class="datarow">
         <div class="leadquotediscountarea">

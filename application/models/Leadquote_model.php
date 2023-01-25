@@ -11,6 +11,7 @@ class Leadquote_model extends MY_Model
     private $box_empty_weight = 25;
     private $normal_template='Stressball';
     private $default_zip='07012';
+    private $error_message='Unknown error. Try later';
     function __construct() {
         parent::__construct();
     }

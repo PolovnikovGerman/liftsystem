@@ -1,0 +1,513 @@
+/* Lead quote content */
+.quotepopupdetails {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    width: 620px;
+    right: -4px;
+    top: 81px;
+}
+.quotepopupclose {
+    cursor: pointer;
+    float: right!important;
+    position: relative;
+    z-index: 7;
+    right: -15px;
+}
+.quotecontentarea {
+    float: left;
+    width: 612px;
+    height: 689px;
+    background: #696969;
+    border-radius: 7px;
+    padding: 9px;
+}
+.quotecontentarea div {
+    float: left;
+    color: #000000;
+}
+.quotecontentarea input, .quotecontentarea select  {
+    color: #000000;
+}
+.quotetemplatetitle {
+    height: 22px;
+    line-height: 22px;
+    margin-right: 5px;
+    font-size: 13px;
+}
+.quotetemplateinpt select {
+    width: 122px;
+    padding-left: 9px;
+    font-size: 13px;
+    height: 22px;
+    background: #e5e5e5;
+}
+.quoteactionsarea {
+    margin-left: 108px;
+    background: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 7px;
+    padding-left: 10px;
+    margin-right: 9px;
+}
+.quoteactionsarea > div {
+    text-align: center;
+    color: #010192;
+    font-size: 13px;
+    height: 25px;
+    line-height: 22px;
+    opacity: 0.5;
+    /* padding: 1.5px 0; */
+}
+.quoteactionsarea > div.active {
+    opacity: 1;
+    cursor: pointer;
+}
+.quoteactionaddorder {
+    padding: 1.5px 6px;
+    border-right: 1px solid #b6b6b6;
+}
+.quoteactionduplicate {
+    padding: 1.5px 6px;
+    border-right: 1px solid #b6b6b6;
+}
+.quoteactionsend {
+    padding: 1.5px 4px;
+    border-right: 1px solid #b6b6b6;
+}
+.quoteactionpdfdoc {
+    padding: 1.5px 10px;
+}
+.leadquotesavebtn {
+    float: left;
+    background-image: url(/img/leadorder/button_save.png);
+    background-repeat: no-repeat;
+    width: 52px;
+    height: 34px;
+    line-height: 27px;
+    font-weight: 600;
+    color: #fff!important;
+    padding-left: 8px;
+}
+.leadquoteeditbtn {
+    background: transparent url(/img/leadorder/button_edit.png) no-repeat scroll 0 0;
+    cursor: pointer;
+    float: left;
+    height: 32px;
+    width: 53px;
+    text-align: center;
+    line-height: 27px;
+    font-weight: 600;
+    color: #fff!important;
+    padding-left: 8px;
+}
+.quotenumbertitle {
+    color: #525252!important;
+    font-size: 20px;
+    font-weight: 600;
+    height: 38px;
+    line-height: 38px;
+    margin-right: 5px;
+}
+.quotenumbervalue {
+    font-size: 20px;
+    font-weight: 600;
+    height: 38px;
+    line-height: 38px;
+}
+.quotedatearea {
+    float: right!important;
+    margin-right: 23px;
+}
+.quotedatetitle {
+    color: #525252!important;
+    font-size: 14px;
+    font-weight: 600;
+    height: 31px;
+    line-height: 31px;
+    margin-right: 5px;
+}
+.quotedatevalue {
+    font-size: 14px;
+    font-weight: 600;
+    height: 31px;
+    line-height: 31px;
+}
+.quoteitemtablehead {
+    border-left: 2px solid #000000;
+    border-top: 2px solid #000000;
+    border-right: 2px solid #000000;
+}
+.quoteitemtablehead.stresballstab div {
+    background: #3e46dd;
+    color: #FFFFFF!important;
+    height: 21px;
+    line-height: 21px;
+    text-align: center;
+}
+.quoteitemtablehead .itemnumber {
+    width: 72px;
+}
+.quoteitemtablehead .itemdescription {
+    width: 180px;
+}
+.quoteitemtablehead .itemcolor {
+    /* width: 92px; */
+    width: 153px;
+}
+.quoteitemtablehead .itemqty {
+    width: 52px;
+}
+.quoteitemtablehead .itemprice {
+    width: 41px;
+}
+.quoteitemtablehead .quoteitemsubtotal {
+    width: 92px;
+}
+.quoteitemtabledata {
+    border-left: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    border-right: 2px solid #000000;
+    background: #FFFFFF;
+    height: 190px;
+    width: 100%;
+}
+/* Item Table data */
+.quoteitemsarea {
+    width: 100%;
+}
+.quoteitemtabledatarow {
+    width: 583px;
+    border-bottom: 1px solid #b5b5b5;
+}
+.quoteitemtabledatarow > div {
+    height: 20px;
+    line-height: 20px;
+}
+input.quouteitem_input, select.quouteitem_input {
+    height: 16px;
+    line-height: 16px;
+    font-size: 11px;
+    width: 100%;
+}
+.quoteitemtabledatarow .itemnumber {
+    width: 72px;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: right;
+    padding-right: 3px;
+}
+.quoteitemtabledatarow .itemdescription {
+    border-left: 1px solid #B5B5B5;
+    width: 180px;
+}
+input.quoteitem_description_long {
+    padding-left: 2px;
+    width: 178px!important;
+}
+.quoteitemtabledatarow .itemdescription > .itemcoloradd {
+    color: #026f11;
+    font-size: 11px;
+    cursor: pointer;
+    float: left;
+}
+.quoteitemtabledatarow .itemcolor {
+    width: 153px;
+}
+.quoteitemtabledatarow .itemcolor.bord_l {
+    border-left: 1px solid #B5B5B5;
+}
+.quoteitemtabledatarow .itemqty {
+    width: 52px;
+}
+input.quoteitem_qty {
+    width: 50px;
+}
+/* Item Table data END */
+.leadquotediscountarea {
+    float: right!important;
+    width: 329px;
+    background: #FFFFFF;
+    border-left: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    border-right: 2px solid #000000;
+    /* margin-right: 4px; */
+}
+/* Discounts */
+.quotemisschargetitle {
+    width: 216px;
+    margin-right: 36px;
+    padding-left: 1%;
+}
+input.quotediscountinpt {
+    height: 16px;
+    width: 99%;
+    text-align: right;
+    padding-right: 5px;
+    font-size: 11px;
+}
+.quotemisschargevalue {
+    width: 70px;
+}
+.quotediscountlabel {
+    width: 57px;
+    margin-right: 5px;
+    text-align: right;
+    font-size: 11px;
+}
+.quotediscounttitle {
+    width: 155px;
+    margin-right: 36px;
+}
+.quotediscountvalue {
+    width: 70px;
+}
+.quoteitemsubtotal {
+    float: right !important;
+    width: 188px;
+}
+.quoteitemsubtotaltitle {
+    font-size: 14px;
+    color: #4a4a4a!important;
+    margin-right: 7px;
+    height: 20px;
+    line-height: 20px;
+}
+.quoteitemsubtotalvalue {
+    background: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: right;
+    padding-right: 5px;
+    padding-left: 5px;
+    width: 85px;
+    height: 20px;
+    line-height: 20px;
+}
+.quotesectionlabel {
+    font-size: 12px;
+    font-weight: bold;
+    color: #161616;
+    height: 21px;
+    line-height: 21px;
+}
+.quoteshipaddressarea {
+    width: 285px;
+    margin-bottom: 8px;
+}
+.quoteshipcountryarea {
+    border-left: 2px solid #000000;
+    border-top: 2px solid #000000;
+    border-right: 2px solid #000000;
+    height: 26px;
+    background: #dadada;
+    width: 118px;
+    position: relative;
+    z-index: 5;
+    padding-left: 4px;
+    padding-top: 4px;
+}
+select.quoteaddressinpt, input.quoteaddressinpt {
+    height: 16px;
+    width: 102px;
+    font-size: 11px;
+    padding-left: 3px;
+}
+select.quotecountry {
+    width: 102px;
+}
+.quoteshipaddressother {
+    border-left: 2px solid #000000;
+    border-top: 2px solid #000000;
+    border-right: 2px solid #000000;
+    width: 285px;
+    background: #dadada;
+    margin-top: -2px;
+    padding-left: 4px;
+}
+input.quoteshipadrother {
+    width: 170px;
+}
+.quoteshipaddresszip {
+    background: #dadada;
+    border-left: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    width: 285px;
+    padding-bottom: 2px;
+    padding-left: 4px;
+}
+.quoteshipaddreszipcode {
+    width: 41px;
+}
+input.quotepostal {
+    width: 37px;
+}
+.quoteshipaddrescity {
+    width: 80px;
+}
+input.quotetown {
+    width: 76px;
+}
+.quoteshipaddresdistrict {
+    width: 49px;
+}
+select.quotestate {
+    width: 40px;
+}
+.quoterushdataarea {
+    width: 302px;
+}
+.quoteleadtimelabel {
+    width: 95px;
+    padding-right: 7px;
+    font-size: 12px;
+    height: 20px;
+    line-height: 20px;
+    text-align: right;
+}
+.quoteleadtime {
+    width: 152px;
+    height: 20px;
+    line-height: 20px;
+}
+select.quoteleadtimeselect {
+    height: 19px;
+    font-size: 12px;
+    padding-left: 5px;
+    width: 144px;
+}
+.quoteleadrush {
+    width: 52px;
+}
+input.quoteleadshipcostinpt {
+    height: 19px;
+    font-size: 12px;
+    text-align: right;
+    padding-right: 3px;
+}
+input.quoteleadrushcost {
+    width: 49px;
+}
+.quoteshippingcostarea {
+    width: 237px;
+    height: 66px;
+    background: #f5f5f5;
+    border: 2px solid #000000;
+    margin: 4px;
+}
+.quoteshipcost {
+    width: 52px;
+    margin-top: 23px;
+    margin-left: 3px;
+}
+input.quoteshipcostvalue {
+    width: 49px;
+}
+.quotetaxarea {
+    border-right: 2px solid #000000;
+    border-top: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    background: #dadada;
+    margin-top: 9px;
+    width: 244px;
+}
+.quotetaxlabelveiw {
+    height: 22px;
+    line-height: 22px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 3px;
+}
+.quotetaxemptyview {
+    height: 22px;
+    line-height: 22px;
+    font-size: 12px;
+    font-style: italic;
+}
+.quotetaxinput {
+    width: 58px;
+    padding-left: 5px;
+}
+.quotetaxlabel {
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: -8px;
+    width: 100%;
+}
+.quotetaxvalue {
+    width: 100%;
+}
+input.quotesalestaxvalue {
+    width: 49px;
+}
+.quotebillingaddressarea {
+    width: 195px;
+}
+.quotebillcountryarea {
+    border-left: 2px solid #000000;
+    border-top: 2px solid #000000;
+    border-right: 2px solid #000000;
+    height: 26px;
+    background: #dadada;
+    width: 118px;
+    position: relative;
+    z-index: 5;
+    padding-left: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+.quotebilladdressother {
+    border-left: 2px solid #000000;
+    border-top: 2px solid #000000;
+    border-right: 2px solid #000000;
+    width: 182px;
+    background: #dadada;
+    margin-top: -2px;
+    padding-left: 4px;
+}
+input.quotebilladdrother {
+    width: 170px;
+}
+.quotebilladdreszipcode {
+    width: 41px;
+}
+.quotebilladdrescity {
+    width: 80px;
+}
+.quotebilladdresdistrict {
+    width: 49px;
+}
+.quotenotesarea {
+    width: 236px;
+}
+textarea.quotenote {
+    width: 227px;
+    height: 52px;
+    resize: none;
+    overflow-y: auto;
+    font-size: 11px;
+    padding: 5px;
+}
+.quotetotalarea {}
+.quotetotals {
+    width: 150px;
+    background: #2b2b2b;
+    border-radius: 7px;
+    font-size: 13px;
+}
+.quotetotallabel {
+    height: 23px;
+    line-height: 23px;
+    text-align: left;
+    margin-left: 6px;
+    color: #ffffff!important;
+}
+.quotetotalvalue {
+    height: 23px;
+    line-height: 23px;
+    float: right!important;
+    margin-right: 6px;
+    font-weight: 600;
+    color: #ffffff!important;
+}

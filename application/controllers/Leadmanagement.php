@@ -829,9 +829,28 @@ class Leadmanagement extends MY_Controller
                     $countries = $this->shipping_model->get_countries_list($cnt_options);
                     // Prepare content
                     $quotedata = $qres['quote'];
+                    $quote_items = $qres['quote_items'];
+                    $item_content='';
+                    foreach ($quote_items as $quote_item) {
+                        $imprints=$quote_item['imprints'];
+                        $imprint_options=[
+                            'quote_item_id'=>$quote_item['quote_item_id'],
+                            'imprints'=>$imprints,
+                        ];
+                        $imprintview=$this->load->view('leadpopup/imprint_data_edit', $imprint_options, TRUE);
+                        $item_options=[
+                            'quote_item_id'=>$quote_item['quote_item_id'],
+                            'items'=>$quote_item['items'],
+                            'imprintview'=>$imprintview,
+                            'edit'=>1,
+                            'item_id'=>$quote_item['item_id'],
+                        ];
+                        $item_content.=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
+                    }
 
                     $options = [
                         'data' => $quotedata,
+                        'itemsview' => $item_content,
                         'templlists' => $templlists,
                         'countries' => $countries,
                         'edit_mode' => 1,
