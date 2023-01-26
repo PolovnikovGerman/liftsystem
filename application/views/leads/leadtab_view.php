@@ -12,9 +12,17 @@
             <div class="leads_add">&nbsp;</div>
             <div class="leads_selectreplarea">
                 <select class="leads_sortselect leads_replica"  id="leads_replica">
-                    <option value="">All Sales Reps</option>
-                    <?php foreach ($replicas as $row) {?>
-                        <option value="<?=$row['user_id']?>" <?=($row['user_id']==$user_id ? 'selected="selected"' : '')?> ><?=$row['user_name']?></option>
+                    <?php if ($user_role=='masteradmin') { ?>
+                        <option value="">All Sales Reps</option>
+                        <?php foreach ($replicas as $row) {?>
+                            <option value="<?=$row['user_id']?>" <?=($row['user_id']==$user_id ? 'selected="selected"' : '')?> ><?=$row['user_name']?></option>
+                        <?php } ?>
+                    <?php } else { ?>
+                        <?php foreach ($replicas as $row) {?>
+                            <?php if ($row['user_id']==$user_id) { ?>
+                                <option value="<?=$row['user_id']?>" <?=($row['user_id']==$user_id ? 'selected="selected"' : '')?> ><?=$row['user_name']?></option>
+                            <?php } ?>
+                        <?php } ?>
                     <?php } ?>
                 </select>
             </div>

@@ -1229,6 +1229,7 @@ class Leads extends My_Controller {
         $active = 0;
         $ldat['replicas']=$this->user_model->get_user_leadreplicas($active);
         $ldat['user_id']=$this->USR_ID;
+        $ldat['user_role'] = $this->USR_ROLE;
         $user_dat=$this->user_model->get_user_data($this->USR_ID);
         $ldat['user_name']=($user_dat['user_leadname']=='' ? $this->USR_NAME : $user_dat['user_leadname']);
 
