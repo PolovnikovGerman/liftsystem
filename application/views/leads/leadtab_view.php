@@ -65,7 +65,9 @@
             <div class="lead_datasearch">
                 <img src="/img/icons/magnifier.png"/>
                 <input type="text" class="lead_searchinput" value="" placeholder="Enter Lead #, customer, item ..."/>
-                <div class="leadsearchall">&nbsp;</div>
+                <?php if ($user_role=='masteradmin') { ?>
+                    <div class="leadsearchall">&nbsp;</div>
+                <?php } ?>
                 <div class="leadsearchusr"><?=$user_name?>&apos;s</div>
                 <div class="leadsearchclear">&nbsp;</div>
             </div>
