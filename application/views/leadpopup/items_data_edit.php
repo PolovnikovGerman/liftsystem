@@ -32,6 +32,3 @@
     <?php } ?>
     <?=$imprintview?>
 </div>
-<div class="datarow">
-    <div class="addquoteitem">+ add item</div>
-</div>

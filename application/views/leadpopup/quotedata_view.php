@@ -43,6 +43,9 @@
     <div class="datarow">
         <div class="quoteitemtabledata">
             <?=$itemsview?>
+            <?php if ($edit_mode==1) { ?>
+                <div class="datarow"><div class="addquoteitem">+ add item</div></div>
+            <?php } ?>
         </div>
     </div>
     <div class="datarow">
