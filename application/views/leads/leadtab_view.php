@@ -12,9 +12,17 @@
             <div class="leads_add">&nbsp;</div>
             <div class="leads_selectreplarea">
                 <select class="leads_sortselect leads_replica"  id="leads_replica">
-                    <option value="">All Sales Reps</option>
-                    <?php foreach ($replicas as $row) {?>
-                        <option value="<?=$row['user_id']?>" <?=($row['user_id']==$user_id ? 'selected="selected"' : '')?> ><?=$row['user_name']?></option>
+                    <?php if ($user_role=='masteradmin') { ?>
+                        <option value="">All Sales Reps</option>
+                        <?php foreach ($replicas as $row) {?>
+                            <option value="<?=$row['user_id']?>" <?=($row['user_id']==$user_id ? 'selected="selected"' : '')?> ><?=$row['user_name']?></option>
+                        <?php } ?>
+                    <?php } else { ?>
+                        <?php foreach ($replicas as $row) {?>
+                            <?php if ($row['user_id']==$user_id) { ?>
+                                <option value="<?=$row['user_id']?>" <?=($row['user_id']==$user_id ? 'selected="selected"' : '')?> ><?=$row['user_name']?></option>
+                            <?php } ?>
+                        <?php } ?>
                     <?php } ?>
                 </select>
             </div>
@@ -57,7 +65,9 @@
             <div class="lead_datasearch">
                 <img src="/img/icons/magnifier.png"/>
                 <input type="text" class="lead_searchinput" value="" placeholder="Enter Lead #, customer, item ..."/>
-                <div class="leadsearchall">&nbsp;</div>
+                <?php if ($user_role=='masteradmin') { ?>
+                    <div class="leadsearchall">&nbsp;</div>
+                <?php } ?>
                 <div class="leadsearchusr"><?=$user_name?>&apos;s</div>
                 <div class="leadsearchclear">&nbsp;</div>
             </div>
