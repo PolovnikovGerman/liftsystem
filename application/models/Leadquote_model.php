@@ -210,7 +210,7 @@ class Leadquote_model extends MY_Model
         $quoteitem['items']=$items;
         // Prepare Imprint, Imprint Details
         $imprint[]=array(
-            'order_imprint_id'=>-1,
+            'quote_imprint_id'=>-1,
             'imprint_description'=>'&nbsp;',
             'imprint_qty'=>0,
             'imprint_price'=>0,
@@ -441,6 +441,61 @@ class Leadquote_model extends MY_Model
         $out['msg'] = 'Error during add new quote';
         if ($quote_id > 0) {
             // Save items, colors, imprints, etc
+            foreach ($items as $item) {
+                $this->db->set('item_id', $item['item_id']);
+                $this->db->set('item_qty', intval($item['item_qty']));
+                $this->db->set('item_price', floatval($item['item_price']));
+                $this->db->set('imprint_price', floatval($item['print_price']));
+                $this->db->set('setup_price', floatval($item['setup_price']));
+                $this->db->set('item_weigth', floatval($item['item_weigth']));
+                $this->db->set('cartoon_qty', intval($item['cartoon_qty']));
+                $this->db->set('cartoon_width', intval($item['cartoon_width']));
+                $this->db->set('cartoon_heigh', intval($item['cartoon_heigh']));
+                $this->db->set('cartoon_depth', intval($item['cartoon_depth']));
+                $this->db->set('template', $item['item_template']);
+                $this->db->set('base_price', floatval($item['base_price']));
+                if ($item['quote_item_id'] > 0) {
+                    $this->db->where('quote_item_id', $item['quote_item_id']);
+                    $this->db->update('ts_quote_items');
+                    $quote_item_id = $item['quote_item_id'];
+                } else {
+                    $this->db->set('quote_id', $quote_id);
+                    $this->db->insert('ts_quote_items');
+                    $quote_item_id = $this->db->insert_id();
+                }
+                $colors = $item['items'];
+                foreach ($colors as $color) {
+                    $this->db->set('item_description', $color['item_description']);
+                    $this->db->set('item_color', $color['item_color']);
+                    $this->db->set('item_qty', intval($color['item_qty']));
+                    $this->db->set('item_price', floatval($color['item_price']));
+                    if ($color['item_id'] > 0) {
+                        $this->db->where('quote_itemcolor_id', $color['item_id']);
+                        $this->db->update('ts_quote_itemcolors');
+                    } else {
+                        $this->db->set('quote_item_id', $quote_item_id);
+                        $this->db->insert('ts_quote_itemcolors');
+                    }
+                }
+                $imprints = $item['imprints'];
+                foreach ($imprints as $imprint) {
+                    if ($imprint['imprint_description']!=='&nbsp;') {
+                        $this->db->set('imprint_description', $imprint['imprint_description']);
+                        $this->db->set('imprint_item', $imprint['imprint_item']);
+                        $this->db->set('imprint_qty', intval($imprint['imprint_qty']));
+                        $this->db->set('imprint_price', floatval($imprint['imprint_price']));
+                        if ($imprint['quote_imprint_id'] > 0) {
+                            $this->db->where('quote_imprint_id', $imprint['quote_imprint_id']);
+                            $this->db->update('ts_quote_imprints');
+                        } else {
+                            $this->db->set('quote_item_id', $quote_item_id);
+                            $this->db->insert('ts_quote_imprints');
+                        }
+                    }
+                }
+                $imprintdetails = $item['imprint_details'];
+            }
+            $out['result'] = $this->success_result;
         }
         return $out;
     }
