@@ -850,7 +850,7 @@ class Leadmanagement extends MY_Controller
                         $item_content.=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
                         $item_subtotal+=$quote_item['item_subtotal'];
                     }
-                    $quotedata['item_subtotal'] = $item_subtotal;
+                    $quotedata['items_subtotal'] = $item_subtotal;
                     $quotedata['total'] = $item_subtotal;
                     $quote_session = 'quote'.uniq_link(15);
                     $sessiondata = [

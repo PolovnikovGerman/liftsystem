@@ -61,6 +61,9 @@ class Leadquote_model extends MY_Model
                 'billing_state' => '',
                 'quote_note' => '',
                 'quote_repcontact' => $usrdat['email_signature'],
+                'items_subtotal' => 0,
+                'imprint_subtotal' => 0,
+                'quote_total' => 0,
             ];
             // Items
             $quote_items = [];
@@ -70,10 +73,6 @@ class Leadquote_model extends MY_Model
                     $quote_items[] = $itemdat['quote_items'];
                 }
             }
-//            $outdat = [
-//                'quote_itemcount' => count($quote_items),
-//                'quote_items' => $quote_items,
-//            ];
             $response['quote'] = $quotedat;
             $response['quote_items'] = $quote_items;
         }
@@ -137,6 +136,7 @@ class Leadquote_model extends MY_Model
             'cartoon_heigh'=>0,
             'cartoon_depth'=>0,
             'boxqty'=>'',
+            'item_price' => 0,
             'setup_price'=>0,
             'print_price'=>0,
             'base_price' => 0,
@@ -162,6 +162,7 @@ class Leadquote_model extends MY_Model
             $quoteitem['setup_price']=$setupprice;
             $quoteitem['print_price']=$printprice;
             $quoteitem['base_price']=$newprice;
+            $quoteitem['item_price']=$newprice;
             $quoteitem['imprint_locations']=$itemdata['imprints'];
             $quoteitem['vendor_zipcode']=$itemdata['vendor_zipcode'];
             $quoteitem['charge_perorder']=$itemdata['charge_perorder'];
@@ -201,7 +202,7 @@ class Leadquote_model extends MY_Model
 
         $newitem['item_qty']=$defqty;
         $newitem['item_price']=$newprice;
-        $newitem['item_subtotal']=MoneyOutput($defqty*$newprice);
+        $newitem['item_subtotal']=$defqty*$newprice;
         $newitem['printshop_item_id']=(isset($itemdata['printshop_item_id']) ? $itemdata['printshop_item_id']  : '');
         $newitem['qtyinput_class']='normal';
         $newitem['qtyinput_title']='';
@@ -418,7 +419,7 @@ class Leadquote_model extends MY_Model
         $this->db->set('quote_repcontact', $quote['quote_repcontact']);
         $this->db->set('items_subtotal', floatval($quote['items_subtotal']));
         $this->db->set('imprint_subtotal', floatval($quote['imprint_subtotal']));
-        $this->db->set('quote_total', floatval($quote['quote_total']));
+        $this->db->set('quote_total', floatval($quote['total']));
         if ($quote['quote_id'] > 0 ) {
             // Update
             $this->db->where('quote_id', $quote['quote_id']);
