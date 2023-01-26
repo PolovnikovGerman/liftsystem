@@ -173,7 +173,7 @@ class Template
         return $dat;
     }
 
-    public function _prepare_leadorder_view($res,$user_id, $edit=0) {
+    public function _prepare_leadorder_view($res,$user_id, $user_role='manager', $edit=0) {
         $this->CI->load->model('shipping_model');
         $this->CI->load->model('orders_model');
         $this->CI->load->model('leadorder_model');
@@ -402,8 +402,14 @@ class Template
             $dateoptions=array(
                 'edit'=>$edit,
                 'shipping'=>$shipping,
+                'user_role' => $user_role,
             );
-            $orddata['shipdatesview']=$this->CI->load->view('leadorderdetails/shipping_dates_view', $dateoptions, TRUE);
+            if ($edit==1) {
+                $orddata['shipdatesview']=$this->CI->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
+            } else {
+                $orddata['shipdatesview']=$this->CI->load->view('leadorderdetails/shipping_dates_view', $dateoptions, TRUE);
+            }
+
             // Shipping data
             $orddata['shiptax']='&nbsp;';
             $billing=$res['order_billing'];
