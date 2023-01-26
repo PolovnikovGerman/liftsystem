@@ -129,36 +129,7 @@ $(document).ready(function () {
     })
     // Create timer
     timerId = setTimeout('ordertotalsparse()', timeLapse);
-    $("div.allbrandstotalweek").hover(
-        function(){
-            var e=$(this);
-            $.get(e.data('viewsrc'),function(d) {
-                e.popover({
-                    content: d,
-                    placement: 'bottom',
-                    html: true
-                }).popover('show');
-            });
-        }
-        , function(){
-            $(this).popover('hide');
-        }
-    );
-    $('.period_analitic_info').find('div.period_name').hover(
-        function(){
-            var e=$(this);
-            $.get(e.data('viewsrc'),function(d) {
-                e.popover({
-                    content: d,
-                    placement: 'bottom',
-                    html: true
-                }).popover('show');
-            });
-        }
-        , function(){
-            $(this).popover('hide');
-        }
-    );
+    jQuery.balloon.init();
 });
 
 $(window).resize(function() {
@@ -289,7 +260,6 @@ function ordertotalsparse() {
 
 function leftmenu_alignment() {
     var mainheight = $("div.maincontentmenuarea").css('height');
-    console.log('Main Height '+mainheight);
     $(".leftmenuarea").find('div.content_tab.active').css('height', mainheight);
 
 }

@@ -1,6 +1,6 @@
 <?php
-$config['js_version']='2.01995';
-$config['css_version']='2.01995';
+$config['js_version'] = '2.02021';
+$config['css_version']= '2.02021';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -134,7 +134,7 @@ $config['max_lock_time']=180;
 $config['loctimeout']=130;
 $config['loctimeout_local']=6000; //1200;
 // Default Inventory Vendor && Payment Method
-$config['inventory_vendor']=151;
+$config['inventory_vendor']=getenv('INVENTORY_VENDOR');
 $config['inventory_paymethod']=5;
 // Minimal # of weeks
 $config['min_stockperc']=33;
@@ -202,7 +202,7 @@ $config['normal_price_base']=array(
     25, 75, 150, 250, 500, 1000, 2500, 5000, 10000, 20000,        
 );
 
-$config['perpage_orders'] = ['100','150','200','250'];
+$config['perpage_orders'] = ['250','500','1000'];
 $config['leads_perpage'] = 250;
 $config['quotes_perpage'] = 250;
 $config['item_specialchars'] = [

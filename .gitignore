@@ -20,5 +20,5 @@ composer.lock
 /tests/results/
 .htaccess
 /uploads/
-/wsdl/
+/wsdl
 .env

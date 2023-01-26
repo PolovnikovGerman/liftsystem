@@ -104,8 +104,7 @@ Class Orders_model extends MY_Model
             }
             if (isset($filtr['search']) && $filtr['search']) {
                 $this->db->join('('.$itemdatesql.') itemdata','itemdata.order_id=o.order_id','left');
-                // $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(itemdata.itemdescr),ucase(o.order_itemnumber), o.revenue ) ",strtoupper($filtr['search']));
-                $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',o.order_confirmation,' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.revenue,'')))",strtoupper($filtr['search']));
+                $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',coalesce(o.order_confirmation,''),' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.order_items,''),' ',coalesce(o.revenue,'')))",strtoupper($filtr['search']));
             }
             if (isset($filtr['filter']) && $filtr['filter']==1) {
                 $this->db->where('o.order_cog is null');
@@ -1009,6 +1008,12 @@ Class Orders_model extends MY_Model
     function get_last_ordernum() {
         $this->db->set('order_date', time());
         $this->db->insert('ts_ordernum');
+        return $this->db->insert_id();
+    }
+
+    public function get_srorder_number() {
+        $this->db->set('order_date', time());
+        $this->db->insert('sr_ordernum');
         return $this->db->insert_id();
     }
 
@@ -2614,7 +2619,7 @@ Class Orders_model extends MY_Model
             if (isset($filtr['search']) && $filtr['search']) {
                 $this->db->join('('.$itemdatesql.') itemdata','itemdata.order_id=o.order_id','left');
                 // $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(itemdata.itemdescr),ucase(o.order_itemnumber), o.revenue ) ",strtoupper($filtr['search']));
-                $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',o.order_confirmation,' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.revenue,'')))",strtoupper($filtr['search']));
+                $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',coalesce(o.order_confirmation,''),' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.order_items,''),' ',coalesce(o.revenue,'')))",strtoupper($filtr['search']));
             }
             if (isset($filtr['filter']) && $filtr['filter']==1) {
                 $this->db->where('order_cog is null');
@@ -2808,10 +2813,11 @@ Class Orders_model extends MY_Model
     public function get_profitexport_fields() {
         $fields=['field_order_date', 'field_order_num', 'field_is_canceled', 'field_customer_name', 'field_order_qty', 'field_colors', 'field_order_itemnumber',
             'field_order_items', 'field_revenue', 'field_balance', 'field_shipping', 'field_tax', 'field_shipping_state', 'field_order_cog','field_profit', 'field_profit_perc',
-            'field_vendor_dates', 'field_vendor_name', 'field_vendor_cog', 'field_rush_days', 'field_order_usr_repic','field_order_new','field_payment_system'];
+            'field_vendor_dates', 'field_vendor_name', 'field_vendor_cog', 'field_rush_days', 'field_order_usr_repic','field_order_new','field_payment_system',
+            'field_credit_card','field_payment_type'];
         $labels=['Date', 'Order#', 'Canceled', 'Customer', 'QTY', 'Colors', 'Item #',
             'Item Name', 'Revenue', 'Balance', 'Shipping','Sales Tax','Shipping States', 'COG','Profit','Profit %',
-            'PO Dates', 'PO Vendor', 'COG/PO Vendors','Rush Days','Sales Replica','Order New/Repeat','Payment System'];
+            'PO Dates', 'PO Vendor', 'COG/PO Vendors','Rush Days','Sales Replica','Order New/Repeat','Payment System','Credit Card','Payment Type'];
         $data=[];
         $idx=0;
         foreach ($fields as $row) {
@@ -2881,7 +2887,7 @@ Class Orders_model extends MY_Model
             }
             $this->db->select('o.order_id, o.is_canceled, o.order_blank, o.arttype, o.revenue');
             foreach ($select_flds as $select_fld) {
-                if ($select_fld!=='payment_system') {
+                if ($select_fld!=='payment_system' && $select_fld!=='credit_card' && $select_fld!=='payment_type') {
                     $this->db->select("o.{$select_fld}");
                 }
             }
@@ -2950,6 +2956,11 @@ Class Orders_model extends MY_Model
                 } else {
                     $this->db->where('o.brand', $postdata['brand']);
                 }
+            }
+            if (in_array('credit_card', $fields)) {
+                $this->db->select('p.paycardnum');
+                $cartsql = "select order_id, group_concat(cardnum) as paycardnum from ts_order_payments group by order_id ";
+                $this->db->join("({$cartsql}) as p",'p.order_id=o.order_id','left');
             }
             $this->db->order_by('o.order_id');
             $res=$this->db->get()->result_array();
@@ -3086,6 +3097,23 @@ Class Orders_model extends MY_Model
                         $row['payment_system'] = $stype;
                     }
                 }
+                if (in_array('credit_card', $fields)) {
+                    $row['credit_card'] = trim(str_replace(',','', $row['paycardnum']));
+                    if (in_array('payment_type', $fields)) {
+                        $dat = ifset($row,'credit_card','');
+                        $paysystem = '';
+                        if (substr($dat,0,1)=='4') {
+                            $paysystem = 'Visa';
+                        } elseif (substr($dat,0,1)=='5') {
+                            $paysystem = 'Mastercard';
+                        } elseif (substr($dat, 0,1)=='3') {
+                            $paysystem = 'AmEx';
+                        } elseif (substr($dat,0,1)=='6') {
+                            $paysystem = 'Discover';
+                        }
+                        $row['payment_type']=$paysystem;
+                    }
+                }
                 $datarow=[];
                 foreach ($fields as $frow) {
                     $datarow[$frow]=$row[$frow];
@@ -3161,6 +3189,10 @@ Class Orders_model extends MY_Model
                 array_push($labels, 'Order Type');
             } elseif ($frow=='payment_system') {
                 array_push($labels, 'Payment System');
+            } elseif ($frow=='credit_card') {
+                array_push($labels,'Credit Card #');
+            } elseif ($frow=='payment_type') {
+                array_push($labels,'Payment Type');
             }
         }
         return $labels;
@@ -3181,10 +3213,16 @@ Class Orders_model extends MY_Model
         if (isset($res['max_date'])) {
             $res['max_month']=date('m',$res['max_date']);
             $res['max_year']=date('Y',$res['max_date']);
+        } else {
+            $res['max_month']=date('m');
+            $res['max_year']=date('Y');
         }
         if (isset($res['min_date'])) {
             $res['min_month']=date('m',$res['min_date']);
             $res['min_year']=date('Y',$res['min_date']);
+        } else {
+            $res['min_month']=date('m');
+            $res['min_year']=date('Y');
         }
         return $res;
     }
@@ -3775,12 +3813,12 @@ Class Orders_model extends MY_Model
             }
         }
         $out['total_orders']=($total_orders==0 ? '&nbsp;' : QTYOutput($total_orders));
-        $out['avg_revenue']=($avg_revenue==0 ? '&nbsp;' : MoneyOutput($avg_revenue));
-        $out['avg_profit']=($avg_profit==0 ? '&nbsp;' : MoneyOutput($avg_profit));
+        $out['avg_revenue']=($avg_revenue==0 ? '&nbsp;' : MoneyOutput($avg_revenue,0));
+        $out['avg_profit']=($avg_profit==0 ? '&nbsp;' : MoneyOutput($avg_profit,0));
         $out['avg_profit_perc']=($avg_profit_perc==0 ? '&nbsp;' : number_format($avg_profit_perc,1,'.',',').'%');
         $out['profit_class']=orderProfitClass(round($avg_profit_perc),0);
-        $out['profit']=($profit==0 ? '&nbsp;' : MoneyOutput($profit));
-        $out['revenue']=($revenue==0 ? '&nbsp;' : MoneyOutput($revenue));
+        $out['profit']=($profit==0 ? '&nbsp;' : MoneyOutput($profit,0));
+        $out['revenue']=($revenue==0 ? '&nbsp;' : MoneyOutput($revenue,0));
         // Out number
         $out['num_orders']=$total_orders;
         $out['num_avgrevenue']=$avg_revenue;
@@ -3944,16 +3982,16 @@ Class Orders_model extends MY_Model
         $revenue=round($totals['revenue']*$kf,2);
         $profit=round($totals['profit']*$kf,2);
 
-        $out['total_orders']=($total_orders==0 ? '&nbsp;' : number_format($total_orders,0,'.',','));
-        $out['profit']=($profit==0 ? '&nbsp;' : '$'.number_format($profit,0,'.',','));
-        $out['revenue']=($revenue==0 ? '&nbsp;' : '$'.number_format($revenue,0,'.',','));
+        $out['total_orders']=($total_orders==0 ? '&nbsp;' : QTYOutput($total_orders));
+        $out['profit']=($profit==0 ? '&nbsp;' : MoneyOutput($profit,0));
+        $out['revenue']=($revenue==0 ? '&nbsp;' : MoneyOutput($revenue,0));
         $avg_revenue=$avg_profit=0;
         if ($total_orders>0) {
             $avg_revenue=($revenue/$total_orders);
             $avg_profit=($profit/$total_orders);
         }
-        $out['avg_revenue']=($avg_revenue==0 ? '&nbsp;' : '$'.number_format($avg_revenue,2,'.',','));
-        $out['avg_profit']=($avg_profit==0 ? '&nbsp;' : '$'.number_format($avg_profit,2,'.',','));
+        $out['avg_revenue']=($avg_revenue==0 ? '&nbsp;' : MoneyOutput($avg_revenue,0));
+        $out['avg_profit']=($avg_profit==0 ? '&nbsp;' : MoneyOutput($avg_profit,0));
         // Profit %
         $avg_profit_perc=0;
         if ($revenue>0) {
@@ -4001,17 +4039,17 @@ Class Orders_model extends MY_Model
                 'goal_profit'=>$profit,
             );
         }
-        $out['goal_orders']=($goalres['goal_orders']==0 ? '&nbsp;' : number_format($goalres['goal_orders'],0,'.',','));
-        $out['goal_revenue']=($goalres['goal_revenue']==0 ? '&nbsp;' : '$'.number_format($goalres['goal_revenue'],0,'.',','));
-        $out['goal_profit']=($goalres['goal_profit']==0 ? '&nbsp;' : '$'.number_format($goalres['goal_profit'],0,'.',','));
+        $out['goal_orders']=($goalres['goal_orders']==0 ? '&nbsp;' : QTYOutput($goalres['goal_orders'],0));
+        $out['goal_revenue']=($goalres['goal_revenue']==0 ? '&nbsp;' : MoneyOutput($goalres['goal_revenue'],0));
+        $out['goal_profit']=($goalres['goal_profit']==0 ? '&nbsp;' : MoneyOutput($goalres['goal_profit'],0));
         // Calc other params
         $goal_avgrevenue=$goal_avgprofit=0;
         if ($goalres['goal_orders']>0) {
             $goal_avgrevenue=($goalres['goal_revenue']/$goalres['goal_orders']);
             $goal_avgprofit=($goalres['goal_profit']/$goalres['goal_orders']);
         }
-        $out['goal_avgrevenue']=($goal_avgrevenue==0 ? '&nbsp;' : '$'.number_format($goal_avgrevenue,2,'.',','));
-        $out['goal_avgprofit']=($goal_avgprofit==0 ? '&nbsp;' : '$'.number_format($goal_avgprofit,2,'.',','));
+        $out['goal_avgrevenue']=($goal_avgrevenue==0 ? '&nbsp;' : MoneyOutput($goal_avgrevenue,0));
+        $out['goal_avgprofit']=($goal_avgprofit==0 ? '&nbsp;' : MoneyOutput($goal_avgprofit,0));
         // Profit %
         $goal_avgprofit_perc=0;
         if ($goalres['goal_revenue']>0) {
@@ -4026,15 +4064,15 @@ Class Orders_model extends MY_Model
             $remprofit=round(($goalres['goal_profit']-$totals['profit'])/$bankdays,0);
 
             if ($remprofit<0) {
-                $rem_profit='&ndash;$'.number_format(abs($remprofit),0,'.',',');
+                $rem_profit='&ndash;'.MoneyOutput(abs($remprofit),0);
             } else {
-                $rem_profit='$'.number_format($remprofit,0,'.',',');
+                $rem_profit=MoneyOutput($remprofit,0);
             }
             $remrevenue=round(($goalres['goal_revenue']-$totals['revenue'])/$bankdays,0);
             if ($remrevenue<0) {
-                $rem_revenue='&ndash;$'.number_format(abs($remrevenue),0,'.',',');
+                $rem_revenue='&ndash;'.MoneyOutput(abs($remrevenue),0);
             } else {
-                $rem_revenue='$'.number_format($remrevenue,0,'.',',');
+                $rem_revenue=MoneyOutput($remrevenue,0);
             }
         }
         $out['reminder_orders']=$rem_orders;
@@ -5664,7 +5702,11 @@ Class Orders_model extends MY_Model
                     $this->db->where('email_type','Leads');
                     $this->db->where('email_subtype','Quote');
                     $this->db->where('email_status != ',4);
-                    $this->db->where('brand', $options['brand']);
+                    if ($options['brand']=='SB') {
+                        $this->db->where_in('brand', ['SB','BT']);
+                    } else {
+                        $this->db->where('brand', $options['brand']);
+                    }
                     $quotes=$this->db->get()->row_array();
                     // count proof requests
                     $this->db->select('count(email_id) as cnt');
@@ -5673,14 +5715,22 @@ Class Orders_model extends MY_Model
                     $this->db->where('unix_timestamp(email_date) < ', $newdate);
                     $this->db->where('email_type','Art_Submit');
                     $this->db->where('email_status != ',4);
-                    $this->db->where('brand', $options['brand']);
+                    if ($options['brand']=='SB') {
+                        $this->db->where_in('brand', ['SB','BT']);
+                    } else {
+                        $this->db->where('brand', $options['brand']);
+                    }
                     $proofreq=$this->db->get()->row_array();
                     // count orders
                     $this->db->select('count(order_id) as cnt');
                     $this->db->from('ts_orders');
                     $this->db->where('order_date >= ', $date);
                     $this->db->where('order_date < ', $newdate);
-                    $this->db->where('brand', $options['brand']);
+                    if ($options['brand']=='SB') {
+                        $this->db->where_in('brand', ['SB','BT']);
+                    } else {
+                        $this->db->where('brand', $options['brand']);
+                    }
                     $this->db->where('is_canceled',0);
                     $orders=$this->db->get()->row_array();
                     if ($orders['cnt']!=0 || $quotes['cnt']!=0 || $proofreq['cnt']!=0) {
@@ -5733,7 +5783,11 @@ Class Orders_model extends MY_Model
             $this->db->where('order_date >= ', $wrow['datebgn']);
             $this->db->where('order_date < ', $wrow['dateend']);
             $this->db->where('is_canceled',0);
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['SB','BT']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
             $this->db->where('order_usr_repic', $user_id);
             $res=$this->db->get()->result_array();
             $ord_500=$ord_1000=$ord_1200=0;
@@ -5752,7 +5806,11 @@ Class Orders_model extends MY_Model
             $this->db->where('order_date >= ', $wrow['datebgn']);
             $this->db->where('order_date < ', $wrow['dateend']);
             $this->db->where('is_canceled',1);
-            $this->db->where('brand', $brand);
+            if ($brand=='SB') {
+                $this->db->where_in('brand', ['SB','BT']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
             $this->db->where('order_usr_repic', $user_id);
             $cancres=$this->db->get()->result_array();
             $canc_500=$canc_1000=$canc_1200=0;
@@ -5830,7 +5888,11 @@ Class Orders_model extends MY_Model
         $this->db->where('h.created_time >= ', $start_time);
         $this->db->where('h.created_time < ', $end_time);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.brand', $brand);
+        if ($brand=='SB') {
+            $this->db->where('o.brand', ['SB','BT']);
+        } else {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->order_by('o.order_num, h.created_time');
         $res = $this->db->get()->result_array();
         $out=[];
@@ -6396,22 +6458,22 @@ Class Orders_model extends MY_Model
                         if (count($colorsarray) > 1) {
                             $numcolors = 2;
                         }
-                        if ($item['imprint_type']==2) {
-                            $this->db->set('order_item_id', $item_id);
-                            $this->db->set('imprint_description', 'Loc 1  1st Color Imprinting');
-                            $this->db->set('imprint_price', 0.00);
-                            $this->db->set('imprint_item', 1);
-                            $this->db->set('imprint_qty', $item['item_qty']);
-                            $this->db->insert('ts_order_imprints');
-                            // Setup
-                        } elseif ($item['imprint_type']==3) {
-                            $this->db->set('order_item_id', $item_id);
-                            $this->db->set('imprint_description', 'Loc 1  1st Color Imprinting');
-                            $this->db->set('imprint_price', 0.00);
-                            $this->db->set('imprint_item', 1);
-                            $this->db->set('imprint_qty', $item['item_qty']);
-                            $this->db->insert('ts_order_imprints');
-                        } else {
+//                        if ($item['imprint_type']==2) {
+//                            $this->db->set('order_item_id', $item_id);
+//                            $this->db->set('imprint_description', 'Loc 1  1st Color Imprinting');
+//                            $this->db->set('imprint_price', 0.00);
+//                            $this->db->set('imprint_item', 1);
+//                            $this->db->set('imprint_qty', $item['item_qty']);
+//                            $this->db->insert('ts_order_imprints');
+//                            // Setup
+//                        } elseif ($item['imprint_type']==3) {
+//                            $this->db->set('order_item_id', $item_id);
+//                            $this->db->set('imprint_description', 'Loc 1  1st Color Imprinting');
+//                            $this->db->set('imprint_price', 0.00);
+//                            $this->db->set('imprint_item', 1);
+//                            $this->db->set('imprint_qty', $item['item_qty']);
+//                            $this->db->insert('ts_order_imprints');
+//                        } else {
                             $this->db->set('order_item_id', $item_id);
                             $this->db->set('imprint_item', 1);
                             $this->db->set('imprint_qty', $item['item_qty']);
@@ -6427,16 +6489,16 @@ Class Orders_model extends MY_Model
                                 if ($numpp == 0) {
                                     $this->db->set('imprint_price', 0.00);
                                 } else {
-                                    if ($item['imprint_type']==3) {
-                                        $this->db->set('imprint_price', 0.00);
-                                    } else {
+                                    // if ($item['imprint_type']==3) {
+                                    //    $this->db->set('imprint_price', 0.00);
+                                    // } else {
                                         $this->db->set('imprint_price', $item['imprint_price']);
-                                    }
+                                    // }
                                 }
                             }
                             $this->db->set('order_item_id', $item_id);
                             $this->db->insert('ts_order_imprints');
-                        }
+                        // }
                         $numpp++;
                         if ($numcolors == 2) {
                             $this->db->set('order_item_id', $item_id);
@@ -7654,8 +7716,13 @@ Class Orders_model extends MY_Model
         $this->db->select('o.order_id, o.order_num, o.order_date, o.order_confirmation, o.customer_name, o.revenue, b.cnt, b.paysum');
         $this->db->from('ts_orders o');
         $this->db->join('('.$batchsql.') b','b.order_id=o.order_id','left');
-        $this->db->where('order_date >= ', $datebgn);
-        $this->db->where('is_canceled', 0);
+        $this->db->where('o.order_date >= ', $datebgn);
+        $this->db->where('o.is_canceled', 0);
+        if ($brand=='SB') {
+            $this->db->where_in('o.brand', ['SB','BT']);
+        } else {
+            $this->db->where('o.brand', $brand);
+        }
         $res = $this->db->get()->result_array();
 
         $out = [];
@@ -7700,6 +7767,11 @@ Class Orders_model extends MY_Model
         $this->db->join('('.$batchsql.') as b','b.order_id=o.order_id','left');
         $this->db->where('o.order_date >= ', $start_date);
         $this->db->where('o.is_canceled', 0);
+        if ($brand=='SB') {
+            $this->db->where_in('o.brand', ['SB','BT']);
+        } else {
+            $this->db->where('o.brand', $brand);
+        }
         $this->db->group_by('date_format(from_unixtime(o.order_date),\'%Y\')');
         $res = $this->db->get()->result_array();
         return $res;
@@ -7913,7 +7985,7 @@ Class Orders_model extends MY_Model
         // Get Not placed
         $this->db->select('a.order_proj_status as status, count(o.order_id) as totalqty, sum(o.revenue-o.profit) as totalsum');
         $this->db->from('ts_orders o');
-        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        $this->db->join('v_poorders_artstage a','a.order_id=o.order_id');
         $this->db->where('o.profit_perc is null');
         $this->db->where('a.order_approved_view',0);
         $this->db->where_in('a.order_proj_status', array($this->JUST_APPROVED, $this->NEED_APPROVAL, $this->TO_PROOF, $this->NO_ART));
@@ -7963,7 +8035,7 @@ Class Orders_model extends MY_Model
     public function purchase_fulltotals($brand) {
         $this->db->select('count(o.order_id) as totalqty, sum(o.revenue-o.profit) as totalsum');
         $this->db->from('ts_orders o');
-        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        $this->db->join('v_poorders_artstage a','a.order_id=o.order_id');
         $this->db->where('o.profit_perc is null');
         $this->db->where('a.order_approved_view',0);
         $this->db->where_in('a.order_proj_status', array($this->JUST_APPROVED, $this->NEED_APPROVAL, $this->TO_PROOF, $this->NO_ART));
@@ -7978,7 +8050,7 @@ Class Orders_model extends MY_Model
 
         $this->db->select('count(o.order_id) as totalqty, sum(o.revenue-o.profit) as totalsum');
         $this->db->from('ts_orders o');
-        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        $this->db->join('v_poorders_artstage a','a.order_id=o.order_id');
         if ($brand!=='ALL') {
             if ($brand=='SB') {
                 $this->db->where_in('o.brand', ['BT','SB']);
@@ -8010,7 +8082,7 @@ Class Orders_model extends MY_Model
         $this->db->select('a.order_rush, a.specialdiff, o.order_id, o.order_num, o.order_itemnumber, o.item_id, o.order_items, vi.vendor_name, (o.revenue - o.profit) as estpo');
         $this->db->select('o.customer_name as customer');
         $this->db->from('ts_orders o');
-        $this->db->join('v_order_statuses a','a.order_id=o.order_id');
+        $this->db->join('v_poorders_artstage a','a.order_id=o.order_id'); 
         $this->db->join('v_itemsearch vi','vi.item_id=o.item_id');
         $this->db->where_in('a.order_proj_status',$stagesrc);
         $this->db->where('o.profit_perc is null');
@@ -8038,4 +8110,121 @@ Class Orders_model extends MY_Model
         return $out;
     }
 
+    public function orderonline_details($order_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Unknown order'];
+        $this->db->select("o.*,concat(coalesce(o.shipping_street1,''),' ',coalesce(o.shipping_street2,'')) as ship_street,sc.country_name as ship_cnt, sc.country_iso_code_2 as ship_cntcode");
+        $this->db->select("concat(coalesce(o.billing_street1,''),' ',coalesce(o.billing_street2,'')) as bil_street, bc.country_name as bil_cnt,pp.payment_card_name");
+        // $this->db->select('i.item_name as item_name, i.item_number as item_number');
+        $this->db->select('ss.shipping_method_name, ss.ups_code as shipping_method_code, disc.coupon_description as coupon_name');
+        $this->db->from('sb_orders o');
+        $this->db->join('sb_countries sc', 'sc.country_id=o.shipping_country_id', 'left');
+        $this->db->join('sb_countries bc', 'bc.country_id=o.billing_country_id', 'left');
+        $this->db->join('sb_payment_cards pp', 'pp.payment_card_id=o.payment_card_type', 'left');
+        // $this->db->join('sb_items i', 'i.item_id=o.order_item_id', 'left');
+        $this->db->join('sb_shipping_methods ss', 'ss.shipping_method_id=o.shipping_method', 'left');
+        $this->db->join('sb_coupons disc', 'disc.coupon_id=o.coupon_id', 'left');
+        $this->db->where('o.order_id', $order_id);
+        $res = $this->db->get()->row_array();
+
+        if (isset($res['order_id'])) {
+            // Get items data
+            $this->db->select('si.*');
+            $this->db->select('i.item_name as item_name, i.item_number as item_number');
+            $this->db->from('sb_order_items si');
+            $this->db->join('sb_items i', 'i.item_id=si.item_id');
+            $this->db->where('order_id', $order_id);
+            $itemdat = $this->db->get()->row_array();
+            if (isset($itemdat['order_item_id'])) {
+                $res['item_name'] = $itemdat['item_name'];
+                $res['item_number'] = $itemdat['item_number'];
+                $res['item_qty'] = $itemdat['item_qty'];
+                $res['item_price'] = $itemdat['item_price'];
+                if ($itemdat['imprint_type']==1 || $itemdat['imprint_type']==2) {
+                    $res['inprinting_price'] = ($itemdat['imprint_price']*$itemdat['item_qty']*($itemdat['imprint']-1))+($itemdat['setup_price']*$itemdat['imprint']);
+                } elseif ($itemdat['imprint_type']==3) {
+                    $res['inprinting_price'] = ($itemdat['imprint_price']*$itemdat['item_qty']*($itemdat['imprint']-1));
+                }
+                $res['shipping_price'] = $itemdat['shipping_cost'];
+                $res['rush_price'] = $itemdat['rush_cost'];
+                $res['shipping_date'] = $itemdat['shipping_date'];
+                $res['arrive_date'] = $itemdat['arrive_date'];
+            }
+            /* Handle results */
+            $this->db->select('*');
+            $this->db->from('sb_order_colors');
+            $this->db->where('order_color_orderid', $res['order_id']);
+            $colors = $this->db->get()->result_array();
+            $res['order_colors'] = '';
+            $order_itmcolors = array();
+            foreach ($colors as $crow) {
+                $res['order_colors'] .= ' ' . $crow['order_color_qty'] . ' ' . $crow['order_color_itemcolor'] . ',';
+                $order_itmcolors[] = $crow;
+            }
+            if (strlen($res['order_colors']) > 0) {
+                $res['order_colors'] = substr($res['order_colors'], 0, -1);
+            }
+            $res['order_itmcolors'] = $order_itmcolors;
+            /* Shipping Address */
+            $ship_adr = '';
+            $ship_adrhtml = '';
+            // $ship_adr.=' '.$res['contact_first_name'].' '.$res['contact_last_name'].PHP_EOL;
+            $ship_adr .= ' ' . $res['shipping_firstname'] . ' ' . $res['shipping_lastname'] . PHP_EOL;
+            // $ship_adrhtml.='<p>'.$res['contact_first_name'].' '.$res['contact_last_name'].'</p>';
+            $ship_adrhtml .= '<p>' . $res['shipping_firstname'] . ' ' . $res['shipping_lastname'] . '</p>';
+            if ($res['shipping_company'] != '' && $res['shipping_company'] != 'Company (optional)') {
+                $ship_adr .= ' ' . $res['shipping_company'] . PHP_EOL;
+                $ship_adrhtml .= '<p>' . $res['shipping_company'] . '</p>';
+            }
+            $ship_adr .= ' ' . $res['shipping_street1'] . PHP_EOL;
+            $ship_adrhtml .= '<p>' . $res['shipping_street1'] . '</p>';
+            if ($res['shipping_street2'] != '') {
+                $ship_adr .= ' ' . $res['shipping_street2'] . PHP_EOL;
+                $ship_adrhtml .= '<p>' . $res['shipping_street2'] . '</p>';
+            }
+            $ship_adr .= ' ' . $res['shipping_city'] . ', ' . $res['shipping_state'] . ' ' . $res['shipping_zipcode'] . PHP_EOL;
+            $ship_adrhtml .= '<p>' . $res['shipping_city'] . ', ' . $res['shipping_state'] . ' ' . $res['shipping_zipcode'] . '</p>';
+            if (!empty($res['ship_cnt']) && $res['ship_cnt'] != 'United States') {
+                $ship_adr .= ' ' . $res['ship_cnt'] . PHP_EOL;
+                $ship_adrhtml .= '<p>' . $res['ship_cnt'] . '</p>';
+            }
+            $res['shipping_address'] = $ship_adr;
+            $res['shipping_address_html'] = $ship_adrhtml;
+            /* Billing Address */
+            $bil_adr = '';
+            $bil_adrhtml = '';
+            $bil_adr .= ' ' . $res['contact_first_name'] . ' ' . $res['contact_last_name'] . PHP_EOL;
+            $bil_adrhtml .= '<p>' . $res['contact_first_name'] . ' ' . $res['contact_last_name'] . '</p>';
+            if ($res['customer_company'] != '') {
+                $bil_adr .= ' ' . $res['customer_company'] . PHP_EOL;
+                $bil_adrhtml .= '<p>' . $res['customer_company'] . '</p>';
+            }
+            $bil_adr .= ' ' . $res['billing_street1'] . PHP_EOL;
+            $bil_adrhtml .= '<p>' . $res['billing_street1'] . '</p>';
+            if ($res['billing_street2']) {
+                $bil_adr .= ' ' . $res['billing_street2'] . PHP_EOL;
+                $bil_adrhtml .= '<p>' . $res['billing_street2'] . '</p>';
+            }
+            $bil_adr .= ' ' . $res['billing_city'] . ', ' . $res['billing_state'] . ' ' . $res['billing_zipcode'] . PHP_EOL;
+            $bil_adrhtml .= '<p>' . $res['billing_city'] . ', ' . $res['billing_state'] . ' ' . $res['billing_zipcode'] . '</p>';
+            if (!empty($res['bil_cnt']) && $res['bil_cnt'] != 'United States') {
+                $bil_adr .= ' ' . $res['bil_cnt'] . PHP_EOL;
+                $bil_adrhtml .= '<p>' . $res['bil_cnt'] . '</p>';
+            }
+            $res['billing_address'] = $bil_adr;
+            $res['billing_address_html'] = $bil_adrhtml;
+            if ($res['is_virtual']) {
+                $res['item_name'] = $res['virtual_item'];
+                $res['item_number'] = '';
+            }
+            $res['payment_exp'] = $res['payment_card_month'] . '/' . $res['payment_card_year'];
+            $pure_price = round($res['item_qty'] * $res['item_price'], 2);
+            $res['pure_price'] = number_format($pure_price, 2);
+            $res['total'] = number_format($res['order_total'], 2);
+            /* Get Order num */
+            $out['result'] = $this->success_result;
+            $out['data'] = $res;
+        }
+        return $out;
+    }
 }

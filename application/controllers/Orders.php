@@ -40,44 +40,14 @@ class Orders extends MY_Controller
                 // Orders
                 $head['styles'][]=array('style'=>'/css/orders/ordersview.css');
                 $head['scripts'][]=array('src'=>'/js/orders/ordersview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['ordersview'] = $this->_prepare_orders_view($brand, $search);
             } elseif ($row['item_link']=='#orderlistsview') {
                 $head['styles'][]=array('style'=>'/css/orders/orderslistview.css');
                 $head['scripts'][]=array('src'=>'/js/orders/orderslistview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['orderlistsview'] = $this->_prepare_orderlist_view($brand);
             } elseif ($row['item_link']=='#onlineordersview') {
                 $head['styles'][]=array('style'=>'/css/orders/onlineorders.css');
                 $head['scripts'][]=array('src'=>'/js/orders/onlineorders.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['onlineordersview'] = $this->_prepare_onlineorders($brand);
             }
         }
@@ -366,11 +336,11 @@ class Orders extends MY_Controller
             $order_id=$this->input->post('order_id');
             $mdata=array();
             /* Get Data about order */
-            $options=array(
+            /*$options=array(
                 'order_id'=>$order_id,
-            );
+            );*/
             $this->load->model('orders_model');
-            $data=$this->orders_model->order_details($options);
+            $data=$this->orders_model->orderonline_details($order_id);
             $error = $data['msg'];
             if ($data['result']==$this->success_result) {
                 $error = '';
@@ -447,6 +417,7 @@ class Orders extends MY_Controller
             'brand' => $brand,
             'perpage' => $this->config->item('perpage_orders'),
             'activesearch' => '',
+            'default_perpage' => 500,
         ];
         $this->load->model('orders_model');
         $users=$this->user_model->get_user_leadreplicas();

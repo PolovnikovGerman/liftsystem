@@ -33,6 +33,10 @@
                     <?=$shippingview?>
                 </div>
             <?php } ?>
+            <div class="dbcontentarea" id="itemdetailsview" style="display: none;">
+                <div class="left_maincontent"></div>
+                <div class="right_maincontent"></div>
+            </div>
         </div>
     </div>
 </div>
