@@ -10,6 +10,13 @@
             </div>
             <div class="ship_tax_tabs2 active">&nbsp;</div>
             <div class="shipotherparamsarea">
+<!--                --><?php //if ($user_role=='masteradmin') { ?>
+<!--                    <div class="rushadmindate">-->
+<!--                        <label>Ship in past:</label>-->
+<!--                        <input type="text" readonly="readonly" class="shiprushpast input_border_black" id="rushpast" value=""/>-->
+<!--                    </div>-->
+<!--                --><?php //} ?>
+<!--                <div class="rushselectarea --><?//=$user_role=='masteradmin' ? 'admin' : ''?><!--">-->
                 <div class="rushselectarea">
                     <div class="label">Ships on:</div>
                     <div class="rushdataselect" id="rushdatalistarea"><?=$rushview?></div>

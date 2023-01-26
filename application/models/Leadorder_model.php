@@ -760,6 +760,11 @@ Class Leadorder_model extends My_Model {
         $shipping['rush_list']='';
         $shipping['out_rushlist']=array();
         $shipping['rush_price']=0;
+        $shipping['shipdate_orig'] = '';
+        $shipping['arrive_date_orig'] = '';
+        $shipping['shipdate_class'] = '';
+        $shipping['arrivedate_class'] = '';
+
         $out['shipping_address']=$shipaddres;
         $out['shipping']=$shipping;
         $billfld=$this->db->list_fields('ts_order_billings');
@@ -856,7 +861,7 @@ Class Leadorder_model extends My_Model {
                 }
             }
             if ($entity=='shipping' && $fldname=='event_date') {
-                $data['out_eventdate']=date('m/d/y',$newval);
+                $data['out_eventdate']=empty($newval) ? '' : date('m/d/y',$newval);
             }
             $newshipcalc = 0;
             if ($entity=='order' && $fldname=='order_date') {
@@ -875,6 +880,8 @@ Class Leadorder_model extends My_Model {
                 $rushallow=1;
                 if (isset($params[0])) {
                     $shipping['shipdate']=$params[0];
+                    $shipping['shipdate_orig']=$params[0];
+                    $shipping['shipdate_class']='';
                     $shipping['out_shipdate']=date('m/d/y', $params[0]);
                     // Analyze
                     $chklist=$shipping['out_rushlist']['rush'];
@@ -1315,6 +1322,8 @@ Class Leadorder_model extends My_Model {
         foreach ($rush['rush'] as $row) {
             if ($row['current']==1) {
                 $shipping['shipdate']=$row['date'];
+                $shipping['shipdate_orig']=$row['date'];
+                $shipping['shipdate_class'] = '';
                 $shipping['rush_price']=$row['price'];
                 $shipping['rush_idx']=$row['id'];
                 $order['shipdate']=$row['date'];
@@ -1548,6 +1557,8 @@ Class Leadorder_model extends My_Model {
             $shipping['rush_list']='';
             $shipping['rush_price']=0.00;
             $shipping['shipdate']='';
+            $shipping['shipdate_orig']='';
+            $shipping['shipdate_class'] = '';
             $shipping['out_rushlist'] =array(
                 'rush'=>array(),
                 'current_rush' =>0,
@@ -1570,6 +1581,8 @@ Class Leadorder_model extends My_Model {
             foreach ($rush['rush'] as $row) {
                 if ($row['current']==1) {
                     $shipping['shipdate']=$row['date'];
+                    $shipping['shipdate_orig'] = $row['date'];
+                    $shipping['shipdate_class'] = '';
                     $shipping['rush_price']=$row['price'];
                     $shipping['rush_idx']=$row['id'];
                     $order['shipdate']=$row['date'];
@@ -2102,6 +2115,8 @@ Class Leadorder_model extends My_Model {
             foreach ($rush['rush'] as $row) {
                 if ($row['current']==1) {
                     $shipping['shipdate']=$row['date'];
+                    $shipping['shipdate_orig']=$row['date'];
+                    $shipping['shipdate_class']='';
                     $shipping['rush_price']=$row['price'];
                     $shipping['rush_idx']=$row['id'];
                 }
@@ -2896,7 +2911,7 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 
-    private function _leadorder_totals($leadorder, $ordersession) {
+    private function _leadorder_totals($leadorder, $ordersession, $past=0) {
         // Restore Order and parts
         if (isset($leadorder['shipping'])) {
             $shipping=$leadorder['shipping'];
@@ -2921,7 +2936,7 @@ Class Leadorder_model extends My_Model {
             $shipping_address=$leadorder['shipping_address'];
             $order['shipping']=$this->_leadorder_shipcost($shipping_address);
             // Rebuild Shipping Data
-            $newshipping=$this->_leadorder_shipping($shipping_address, $shipping);
+            $newshipping=$this->_leadorder_shipping($shipping_address, $shipping, $past);
             $total_item=0;
             $total_qty=0;
             $total_imprint=0;
@@ -3597,6 +3612,8 @@ Class Leadorder_model extends My_Model {
                 $shipping=$shipdata['shipping'];
                 if (isset($params[0])) {
                     $shipping['shipdate']=$params[0];
+                    $shipping['shipdate_orig']=$params[0];
+                    $shipping['shipdate_class']='';
                 }
                 if (isset($params[1])) {
                     $shipping['rush_price']=$params[1];
@@ -5195,7 +5212,7 @@ Class Leadorder_model extends My_Model {
         return $profit;
     }
 
-    private function _leadorder_shipping($shipping_address, $shipping) {
+    private function _leadorder_shipping($shipping_address, $shipping, $past) {
         // Rebuild Arrive Date
         $arrivedate=0;
         foreach ($shipping_address as $srow) {
@@ -5207,6 +5224,15 @@ Class Leadorder_model extends My_Model {
         }
         $shipping['arrive_date']=$arrivedate;
         $shipping['arriveclass']='';
+        if ($past==0) {
+            $shipping['arrive_date_orig'] = $arrivedate;
+            $shipping['arrivedate_class'] = '';
+        } else {
+            // if ($shipping['arrive_date']<$shipping['arrive_date_orig']) {
+            $shipping['arrivedate_class']='pastmodify';
+            $shipping['shipdate_class'] = 'pastmodify';
+            // }
+        }
         if ($arrivedate!=0 && intval($shipping['event_date'])>0) {
             $eventdate=$shipping['event_date']+$this->config->item('event_time');
             if ($eventdate<$arrivedate) {
@@ -5761,6 +5787,10 @@ Class Leadorder_model extends My_Model {
             $shipping['order_shipping_id']=-1;
             $shipping['rush_list']='';
             $shipping['out_rushlist']=array();
+            $shipping['shipdate_orig'] = '';
+            $shipping['arrive_date_orig'] = '';
+            $shipping['shipdate_class'] = '';
+            $shipping['arrivedate_class'] = '';
             $res=$shipping;
         }
         $res['out_eventdate']=(intval($res['event_date'])==0 ? $this->empty_htmlcontent : date('m/d/y', $res['event_date']));
@@ -5781,6 +5811,10 @@ Class Leadorder_model extends My_Model {
             $outrush=unserialize($rush_list);
         }
         $res['out_rushlist']=$outrush;
+        $res['shipdate_orig'] = $res['shipdate'];
+        $res['arrive_date_orig'] = $res['arrive_date'];
+        $res['shipdate_class'] = '';
+        $res['arrivedate_class'] = '';
         return $res;
     }
 //
@@ -7065,6 +7099,8 @@ Class Leadorder_model extends My_Model {
             'rush_list'=>  serialize($rush),
             'rush_price'=>$rush_price,
             'shipdate'=>$shipdate,
+            'shipdate_orig' =>$shipdate,
+            'shipdate_class' => '',
             'out_rushlist'=>$rush,
             'out_eventdate' =>'&nbsp;',
             'out_shipdate'=>date('m/d/y', $shipdate),
@@ -9197,6 +9233,147 @@ Class Leadorder_model extends My_Model {
                 usersession($ordersession, $leadorder);
             }
         }
+        return $out;
+    }
+    public function change_order_rushpast($leadorder, $newval, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message, 'fin'=>0);
+        $this->load->model('shipping_model');
+        // Calc proof date
+        $order = $leadorder['order'];
+        $shipping = $leadorder['shipping'];
+        $item_id = $order['item_id'];
+        if ($order['order_blank']==1) {
+            $proofdate = $newval;
+        } else {
+            $proofdate = $this->shipping_model->calc_proofdate($item_id, $newval);
+        }
+        // Get new rush
+        if ($order['order_blank']==0) {
+            $rush=$this->shipping_model->get_rushlist($item_id, $proofdate);
+        } else {
+            $rush=$this->shipping_model->get_rushlist_blank($item_id, $proofdate);
+        }
+        $out['rushlist']=$rush;
+        $shipping['rush_list']=serialize($rush);
+        $shipping['out_rushlist']=$rush;
+        foreach ($rush['rush'] as $row) {
+            if ($row['current']==1) {
+                $shipping['shipdate']=$row['date'];
+                if ($shipping['shipdate']<$shipping['shipdate_orig']) {
+                    $shipping['shipdate_class']='pastmodify';
+                } else {
+                    $shipping['shipdate_class']='';
+                }
+                $shipping['rush_price']=$row['price'];
+                $shipping['rush_idx']=$row['id'];
+                $order['shipdate']=$row['date'];
+                $out['current']=$row['id'];
+            }
+        }
+        $leadorder['shipping']=$shipping;
+        $leadorder['order']=$order;
+        $out['shipdate']=$shipping['shipdate'];
+        $out['rush_price']=$shipping['rush_price'];
+        // Calculate shipping
+        $shiprate=0;
+        $items=$leadorder['order_items'];
+        $shipaddr=$leadorder['shipping_address'];
+        if (count($shipaddr)==1) {
+            $shipaddr[0]['item_qty']=$order['order_qty'];
+        }
+        $shipping=$leadorder['shipping'];
+        $shipidx=0;
+        $cnt=0;
+        foreach ($shipaddr as $shprow) {
+            if (!empty($shprow['zip'])) {
+                // Get Old Shipping Method
+                $default_ship_method='';
+                if (isset($shprow['shipping_cost'])) {
+                    $oldcosts=$shprow['shipping_costs'];
+                    foreach ($oldcosts as $costrow) {
+                        if ($costrow['delflag']==0 && $costrow['current']==1) {
+                            $default_ship_method=$costrow['shipping_method'];
+                        }
+                    }
+                }
+                $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
+                if ($cntres['result']==$this->error_result) {
+                    $out['msg']=$cntres['msg'];
+                    usersession($ordersession, $leadorder);
+                    return $out;
+                } else {
+                    $rates=$cntres['ships'];
+                    $shipcost=$shipaddr[$shipidx]['shipping_costs'];
+                    $cidx=0;
+                    foreach ($shipcost as $row) {
+                        $shipcost[$cidx]['delflag']=1;
+                        $cidx++;
+                    }
+                    $newidx=count($shipcost)+1;
+                    foreach ($rates as $row) {
+                        $shipcost[]=array(
+                            'order_shipcost_id'=>$newidx*(-1),
+                            'shipping_method'=>$row['ServiceName'],
+                            'shipping_cost'=>$row['Rate'],
+                            'arrive_date'=>$row['DeliveryDate'],
+                            'current'=>$row['current'],
+                            'delflag'=>0,
+                        );
+                        if ($row['current']==1) {
+                            $shipaddr[$shipidx]['shipping']=$row['Rate'];
+                            $shipaddr[$shipidx]['arrive_date']=$row['DeliveryDate'];
+                            $shiprate+=$row['Rate'];
+                        }
+                        $newidx++;
+                    }
+                    $shipaddr[$shipidx]['shipping_costs']=$shipcost;
+                }
+            }
+            $shipidx++;
+            $cnt++;
+        }
+        $out['shipping']=$shiprate;
+        $order['shipping']=$shiprate;
+        $out['cntshipadrr']=$cnt;
+        if ($cnt==1) {
+            $out['shipaddr']=$shipaddr[0];
+        } else {
+            $out['shipaddress']=$shipaddr;
+        }
+        // Save data into Session
+        $leadorder['order']=$order;
+        $leadorder['shipping']=$shipping;
+        $leadorder['shipping_address']=$shipaddr;
+        $out['result']=$this->success_result;
+        usersession($ordersession, $leadorder);
+        // Rebuild Totals of order
+        $this->_leadorder_totals($leadorder, $ordersession, 1);
+        return $out;
+    }
+
+    public function change_order_arrivepast($leadorder, $newval, $ordersession)
+    {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message, 'fin'=>0);
+        $shipping = $leadorder['shipping'];
+        $shipping['arrive_date'] = $newval;
+        $shipping['out_arrivedate'] = date('m/d/y', $newval);
+        if (!empty($shipping['event_date'])) {
+            if ($shipping['arrive_date']>$shipping['event_date']) {
+                $shipping['arriveclass']='arrivelate';
+            } else {
+                $shipping['arriveclass']='';
+            }
+        } else {
+            $shipping['arriveclass']='';
+        }
+        $shipping['arrivedate_class']='pastmodify';
+//        if ($shipping['arrive_date']<$shipping['arrive_date_orig']) {
+//        } else {
+//            $shipping['arrivedate_class']='';
+//        }
+        $leadorder['shipping'] = $shipping;
+        usersession($ordersession, $leadorder);
+        $out['result'] = $this->success_result;
         return $out;
     }
 }
