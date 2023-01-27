@@ -1309,4 +1309,28 @@ Class Itemdetails_model extends My_Model
         $out=['result'=>$this->success_result, 'msg'=> ''];
         return $out;
     }
+
+    public function save_imagesorder($data, $session_data, $session_id) {
+        $out=['result'=>$this->error_result,'msg'=>'Unknown parameter'];
+        $images=array();
+        $i=1;
+        foreach ($data as $key=>$value) {
+            if ($key!=='session_id') {
+                $imgdata=explode('|', $value);
+                $images[]=array(
+                    'item_img_id'=>str_replace('it', '',$key),
+                    'item_img_item_id' => $imgdata[0],
+                    'src'=>($imgdata[1]=='/img/dbitems/thamb-bg.png' ? '' :$imgdata[1]),
+                    'name'=>($i==1 ? 'Main Pic' : 'Pic '.$i),
+                    'item_img_order'=>$i,
+                );
+                $i++;
+            }
+        }
+        $session_data['item_images'] = $images;
+        usersession($session_id, $session_data);
+        $out['result'] = $this->success_result;
+        $out['images'] = $images;
+        return $out;
+    }
 }
