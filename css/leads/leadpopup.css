@@ -328,6 +328,45 @@ select.lead_item_select {
     height: 394px;
     border-radius: 7px;
     background: #9a9a9a;
+    padding: 6px;
+    color: #000000;
+    font-size: 11px;
+}
+.quotesdataarea .datarow  > div {
+    height: 22px;
+    line-height: 22px;
+}
+.leadquotedatelist {
+    width: 37px;
+}
+.leadquotenumberlist {
+    /* height: 16px!important;
+    line-height: 16px!important; */
+    border: 1.5px solid #616161;
+    width: 68px;
+    text-align: center;
+    background: #ffffff;
+    color: #0000ff;
+    font-size: 13px!important;
+    font-weight: 600;
+    margin-right: 6px;
+    cursor: pointer;
+}
+.leadquotenumberlist:hover, .leadquotenumberlist.active {
+    background: #ff73ed!important;
+}
+.leadquotedetailslist {
+    width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.leadquotetotalslist {
+    text-align: right;
+    width: 58px;
+}
+.leadquotedatelist.active, .leadquotedetailslist.active, .leadquotetotalslist.active {
+    font-weight: 600;
 }
 .specificnotearea {
     width: 390px;

@@ -28,6 +28,8 @@ class Leadmanagement extends MY_Controller
             $this->load->model('questions_model');
             $this->load->model('quotes_model');
             $this->load->model('artproof_model');
+            $this->load->model('leadquote_model');
+
             if ($lead_id==0) {
                 $brand = ifset($postdata,'brand');
                 if (empty($brand)) {
@@ -128,6 +130,12 @@ class Leadmanagement extends MY_Controller
                 $quotes=$this->load->view('leadpopup/quotes_view',array('quotes'=>$qdat),TRUE);
             }
 
+            $qdat = $this->leadquote_model->get_leadquotes($lead_id);
+            $lead_quotes = '';
+            if (count($qdat) > 0) {
+                $lead_quotes = $this->load->view('leadpopup/leadquotes_list_view',array('quotes'=>$qdat),TRUE);
+            }
+
             $qdat=$this->artproof_model->get_lead_proofs($lead_id);
             if (count($qdat)==0) {
                 $onlineproofs='';
@@ -164,6 +172,7 @@ class Leadmanagement extends MY_Controller
                 'enable' => $save_av==1 ? '' : 'disabled="disabled"',
                 'read' => $save_av==1 ? '' : 'readonly="readonly"',
                 'display' => $save_av==1 ? '' :'hide',
+                'lead_quotes' => $lead_quotes,
             );
             $mdata['title'] = $this->load->view('leadpopup/head_view', $options, TRUE);
             $mdata['content']=$this->load->view('leadpopup/content_view',$options,TRUE);
@@ -875,6 +884,15 @@ class Leadmanagement extends MY_Controller
             }
             $this->ajaxResponse($mdata,$error);
         }
+        show_404();
+    }
+
+    public function quoteedit() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+
+        }
+
     }
 
     public function quoteitemchange() {

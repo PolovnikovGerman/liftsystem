@@ -12,8 +12,21 @@ class Leadquote_model extends MY_Model
     private $normal_template='Stressball';
     private $default_zip='07012';
     private $error_message='Unknown error. Try later';
+
     function __construct() {
         parent::__construct();
+    }
+
+    // Get list of quotes, related with lead
+    public function get_leadquotes($lead_id) {
+        $this->db->select('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, sum(i.item_qty) as item_qty, group_concat(qc.item_description) as item_name');
+        $this->db->from('ts_quotes q');
+        $this->db->join('ts_quote_items i','i.quote_id=q.quote_id','left ');
+        $this->db->join('ts_quote_itemcolors qc','qc.quote_item_id=i.quote_item_id','left');
+        $this->db->where('q.lead_id', $lead_id);
+        $this->db->group_by('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total');
+        return $this->db->get()->result_array();
+
     }
 
     public function add_leadquote($lead_data, $usr_id, $user_name) {

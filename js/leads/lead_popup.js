@@ -265,10 +265,13 @@ function init_leadpopupedit() {
             }
         },'json');
     });
-    // Add new Custom Quote
-    $(".quotesaddnew").unbind('click').click(function () {
-        addnewcustomquote();
-    });
+    // Edit quotes
+    $(".leadquotenumberlist").unbind('click').click(function(){
+        var quote_id = $(this).data('leadquote');
+        leadquote_edit(quote_id);
+        $(".datarow[data-leadquote='"+quote_id+"']").children('div').addClass('active');
+    })
+
 }
 
 function delete_lead_attachment(attachid) {
@@ -512,3 +515,4 @@ function init_lead_cloneemail() {
     });
 
 }
+

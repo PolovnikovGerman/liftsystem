@@ -78,7 +78,7 @@
                     <div class="quotesaddnew">New Quote</div>
                 </div>
                 <div class="datarow">
-                    <div class="quotesdataarea"></div>
+                    <div class="quotesdataarea"><?=$lead_quotes?></div>
                 </div>
             </div>
             <div id="quotepopupdetails" class="quotepopupdetails">

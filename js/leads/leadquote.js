@@ -3,7 +3,6 @@ $(document).ready(function (){
     $(".quotesaddnew").unbind('click').click(function () {
         addnewcustomquote();
     });
-
 });
 
 
@@ -11,7 +10,7 @@ function addnewcustomquote() {
     var lead_num=$("div.lead_popup_number").text();
     var msg="You will now save the updates of the "+lead_num+" by creating the quote.  Ok?";
     if (confirm(msg)==true) {
-        var url=mainurl+"/lead_addquote";
+        var url="/leadmanagement/lead_addquote";
         var dat=$("form#leadeditform").serializeArray();
         // var dat = new Array();
         dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
@@ -115,4 +114,25 @@ function init_leadquotes_content() {
             }
         },'json');
     });
+}
+
+function leadquote_edit(quote_id) {
+    var params = new Array();
+    params.push({name: 'quote_id', value: quote_id});
+    params.push({name: 'edit_mode', value: 0});
+    var url = '/leadmanagement/quoteedit';
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#quotepopupdetails").empty().html(response.data.quotecontent);
+            $("#quotepopupdetails").show();
+            $(".quotepopupclose").show();
+            init_leadquotes_view();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function init_leadquotes_view() {
+
 }
