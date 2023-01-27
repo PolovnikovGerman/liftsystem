@@ -12,7 +12,7 @@
         </form>
     </div>
     <div class="saveoder">
-        <div class="activate_btn saveediting" style="color:#FFF; text-align: center; font-size: 16px; font-weight: bold;height: 34px; padding-top: 11px; ">
+        <div class="activate_btn saveediting" style="color:#FFF; text-align: center; font-size: 16px; font-weight: bold; padding-top: 11px; ">
             Save Order
         </div>
     </div>
