@@ -570,6 +570,30 @@ class Leadquote_model extends MY_Model
         return $out;
     }
 
+    public function prepare_print_details($session, $postdata, $session_id) {
+        $out = ['result' => $this->error_message, 'msg' => $this->error_message];
+        $quote_item_id = ifset($postdata, 'quote_item_id', 0);
+        if ($quote_item_id !== 0) {
+            $out['msg'] = 'Quote Item Not found';
+            $quote = $session['quote'];
+            $items = $session['items'];
+            foreach ($items as $item) {
+                if ($item['quote_item_id']==$quote_item_id) {
+                    // Find
+                    $out['result']=$this->success_result;
+                    $out['imprint_details']=$item['imprint_details'];
+                    $out['item_id']=$item['item_id'];
+                    $out['item_number']=$item['item_number'];
+                    // $out['order_blank']=$artwork['artwork_blank'];
+                    $out['imprints']=$item['imprint_locations'];
+                    $out['item_name']=$item['item_name'];
+                    usersession($session_id, $session);
+                }
+            }
+        }
+        return $out;
+    }
+
     public function calc_quote_shipping($session_id) {
 
     }

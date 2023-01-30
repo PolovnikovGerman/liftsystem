@@ -134,8 +134,32 @@ function init_leadquotes_content() {
                 show_error(response);
             }
         },'json');
-
     });
+    // Print details
+    $(".addprintdetails").unbind('click').click(function () {
+        var item = $(this).data('quoteitem');
+        var params = new Array();
+        params.push({name: 'session', value: $("#quotesessionid").val()});
+        params.push({name: 'item', value: item });
+        var url = '/leadmanagement/quoteitemprintdetails';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#artNextModal").find('div.modal-dialog').css('width','1077px');
+                $("#artNextModal").find('.modal-title').empty().html('Quote Item Print Details');
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#artNextModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
+                // Init Save functions
+                // init_quote_printdetails();
+
+            } else {
+                show_error(response);
+            }
+        },'json');
+
+    })
 }
 
 function leadquote_edit(quote_id) {
@@ -150,6 +174,7 @@ function leadquote_edit(quote_id) {
             $(".quotepopupclose").show();
             $(".leadquotenumberlist").unbind('click');
             $(".quotesaddnew").unbind('click');
+            $(".datarow[data-leadquote='"+quote_id+"']").children('div').addClass('active');
             init_leadquotes_view();
         } else {
             show_error(response);
@@ -159,9 +184,11 @@ function leadquote_edit(quote_id) {
 
 function init_leadquotes_view() {
     $(".quotepopupclose").unbind('click').click(function (){
+        var quote_id = $("#quoteleadnumber").val();
         $("#quotepopupdetails").empty();
         $("#quotepopupdetails").hide();
         $(".quotepopupclose").hide();
+        $(".datarow[data-leadquote='"+quote_id+"']").children('div').removeClass('active');
         $(".leadquotenumberlist").unbind('click').click(function(){
             var quote_id = $(this).data('leadquote');
             leadquote_edit(quote_id);

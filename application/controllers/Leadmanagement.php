@@ -1092,6 +1092,62 @@ class Leadmanagement extends MY_Controller
         show_404();
     }
 
+    public function quoteitemprintdetails() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'session_id', 'unkn');
+            $session = usersession($session_id);
+            if (!empty($session)) {
+                $this->load->model('leadquote_model');
+                $res = $this->leadquote_model->prepare_print_details($session, $postdata, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $details=$res['imprint_details'];
+                    // $order_blank=$res['order_blank'];
+                    $item_id=$res['item_id'];
+                    /*if ($order_blank==0) {
+                        $chkactiv=0;
+                        foreach ($details as $row) {
+                            if ($row['active']==1) {
+                                $chkactiv=1;
+                                break;
+                            }
+                        }
+                        if ($chkactiv==0) {
+                            $details[0]['active']=1;
+                        }
+                    } */
+                    // Prepare View
+                    $imptintid='imprintdetails'.uniq_link(15);
+                    $options=array(
+                        'details' => $details,
+                        'item_number' => $res['item_number'],
+                        'quote_blank' => 0, // $order_blank,
+                        'imprints' => $res['imprints'],
+                        'numlocs' => count($res['imprints']),
+                        'item_name' => $res['item_name'],
+                        'imprintsession'=>$imptintid,
+                    );
+                    $mdata['content']=  $this->load->view('leadpopup/imprint_details_edit', $options, TRUE);
+
+                    $imprintdetails=array(
+                        'imprint_details' => $details,
+                        'quote_blank' => 0, // $order_blank,
+                        'quote_item_id' => $details['quote_item_id'],
+                        'item_id' => $item_id,
+                    );
+                    usersession($imptintid, $imprintdetails);
+
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     public function quotesave() {
         if ($this->isAjax()) {
