@@ -29,6 +29,8 @@ function init_leadquotes_content() {
         $("#quotepopupdetails").empty();
         $("#quotepopupdetails").hide();
         $(".quotepopupclose").hide();
+        var quote_id = $("#quoteleadnumber").val();
+        $(".datarow[data-leadquote='"+quote_id+"']").children('div').removeClass('active');
         $(".leadquotenumberlist").unbind('click').click(function(){
             var quote_id = $(this).data('leadquote');
             leadquote_edit(quote_id);
@@ -151,15 +153,242 @@ function init_leadquotes_content() {
                 $("#artNextModal").on('hidden.bs.modal', function (e) {
                     $(document.body).addClass('modal-open');
                 })
-                // Init Save functions
-                // init_quote_printdetails();
-
+                // Init Print details manage
+                init_quote_printdetails();
             } else {
                 show_error(response);
             }
         },'json');
-
     })
+}
+
+function init_quote_printdetails() {
+    $("input.locationactive").unbind('click').click(function(){
+        var params=new Array();
+        var newval=0;
+        if ($(this).prop('checked')==true) {
+            newval=1;
+        }
+        var details=$(this).data('details');
+        params.push({name:'newval', value: newval});
+        params.push({name:'fldname', value: 'active'});
+        params.push({name:'details', value: details});
+        params.push({name:'imprintsession', value: $("input#imprintsession").val()});
+        params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+        // Save Params
+        change_quote_printdetails(params);
+    });
+    $("select.locationtype").unbind('change').change(function(){
+        var params=new Array();
+        var details=$(this).data('details');
+        params.push({name:'newval', value: $(this).val()});
+        params.push({name:'fldname', value: 'imprint_type'});
+        params.push({name:'details', value: details});
+        params.push({name:'imprintsession', value: $("input#imprintsession").val()});
+        params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+        // Save Params
+        change_quote_printdetails(params);
+    });
+    $("input.imprintrepeatnote").unbind('change').change(function(){
+        var params=new Array();
+        var details=$(this).data('details');
+        params.push({name:'newval', value: $(this).val()});
+        params.push({name:'fldname', value: 'repeat_note'});
+        params.push({name:'details', value: details});
+        params.push({name:'imprintsession', value: $("input#imprintsession").val()});
+        params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+        // Save Params
+        change_quote_printdetails(params);
+    });
+    $("select.imprintcolorschoice").unbind('change').change(function(){
+        var params=new Array();
+        var details=$(this).data('details');
+        params.push({name:'newval', value: $(this).val()});
+        params.push({name:'fldname', value: 'num_colors'});
+        params.push({name:'details', value: details});
+        params.push({name:'imprintsession', value: $("input#imprintsession").val()});
+        params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+        // Save Params
+        change_quote_printdetails(params);
+    });
+    $("input.imprintprice").unbind('change').change(function(){
+        var params=new Array();
+        var details=$(this).data('details');
+        params.push({name:'newval', value: $(this).val()});
+        params.push({name:'fldname', value: $(this).data('fldname')});
+        params.push({name:'details', value: details});
+        params.push({name:'imprintsession', value: $("input#imprintsession").val()});
+        params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+        // Save Params
+        change_quote_printdetails(params);
+    });
+    // Repeat Note
+    $("div.repeatdetail.active").unbind('click').click(function(){
+        var detail=$(this).data('details');
+        edit_quoteprintnote(detail);
+    });
+    // Save Print Details
+    $("div.saveimprintdetailsdata").unbind('click').click(function(){
+        save_quoteprint_details();
+    });
+}
+
+function edit_quoteprintnote(detail) {
+    var params=new Array();
+    params.push({name:'imprintsession', value: $("input#imprintsession").val()});
+    params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+    params.push({name:'details', value: detail});
+    $.colorbox({
+        opacity: .7,
+        transition: 'fade',
+        ajax: true,
+        width:440,
+        href: '/leadmanagement/edit_repeatnote',
+        data: params,
+        onComplete: function() {
+            $.colorbox.resize();
+            init_edit_quoterepeatnote(detail);
+        }
+    });
+}
+
+function init_edit_quoterepeatnote(detail) {
+    $("div.order_itemedit_save").unbind('click').click(function(){
+        var note=$("input#repeatnotevalue").val();
+        if (note=='') {
+            alert('Enter Repeat Note');
+        } else {
+            var params=new Array();
+            params.push({name:'detail_id', value: detail});
+            params.push({name:'repeat_note',  value: note});
+            params.push({name:'imprintsession', value: $("input#imprintsession").val()});
+            params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+            var url="/leadmanager/repeatnote_save";
+            $.post(url,params, function(response){
+                if (response.errors=='') {
+                    $.colorbox.close();
+                    $("div.repeatdetail[data-details='"+detail+"']").addClass('full');
+                    init_quote_printdetails();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+}
+// Save Imprint Details
+function save_quoteprint_details() {
+    var url='/leadorder/save_imprintdetails';
+    var params=new Array();
+    params.push({name:'imprintsession', value: $("input#imprintsession").val()});
+    params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+    $.post(url, params , function(response){
+        if (response.errors=='') {
+            $("#artNextModal").modal('hide');
+            $("#ordertotaloutput").empty().html(response.data.order_revenue);
+            $("div.imprintdataarea[data-orderitem='"+response.data.order_item_id+"']").empty().html(response.data.imprint_content);
+            $("div.bl_items_sub-total2").empty().html(response.data.item_subtotal);
+            $(".totalduedataviewarea").empty().html(response.data.total_due);
+            if (parseInt(response.data.order_blank)===1) {
+                $("input.chkboxleadorddata[data-field='artwork_blank']").prop('checked',true);
+                $("div#newartbuttonareaview").hide();
+                $("div.blankorderlogos").show();
+            } else {
+                $("input.chkboxleadorddata[data-field='artwork_blank']").prop('checked',false);
+                $("div#newartbuttonareaview").show();
+                $("div.blankorderlogos").hide();
+            }
+            $("div#leadorderprofitarea").empty().html(response.data.profit_content);
+            // Rush view
+            if (response.data.shiprebuild==1) {
+                $("#rushdatalistarea").empty().html(response.data.rushview);
+                $("input.shiprushcost").val(response.data.rush_price);
+            }
+            // Art Location
+            if (response.data.artlocchange==1) {
+                $("#artlocationsarea").empty().html(response.data.locat_view);
+            }
+            $("input#loctimeout").val(response.data.loctime);
+            init_onlineleadorder_edit();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function change_quote_printdetails(params) {
+    var url="/leadmanagement/quoteprintdetails_change";
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            if (response.data.fldname=='active') {
+                var details=response.data.details;
+                var newval=response.data.newval;
+                activate_quoteprint_details(details, newval);
+            } else if (response.data.fldname=='num_colors') {
+                var details=response.data.details;
+                var newval=response.data.newval;
+                $("input.imprintprice[data-details='"+details+"']").prop('disabled',true);
+                $("input.imprintprice[data-details='"+details+"'][data-fldname='extra_cost']").prop('disabled',false);
+                // Lock print prices
+                for (i=1; i<=newval; i++) {
+                    $("input.imprintprice[data-details='"+details+"'][data-fldname='print_"+i+"']").prop('disabled',false);
+                    $("input.imprintprice[data-details='"+details+"'][data-fldname='setup_"+i+"']").prop('disabled',false);
+                }
+            } else if (response.data.fldname=='imprint_type') {
+                if (response.data.newval=='REPEAT') {
+                    // $("div.repeatdetail[data-details='"+response.data.details+"']").addClass('active').removeClass('full').addClass(response.data.class);
+                    for (i=1; i<=4; i++) {
+                        $("input.imprintprice[data-details='"+response.data.details+"'][data-fldname='setup_"+i+"']").val('0.00');
+                    }
+                    $("input.imprintrepeatnote[data-details='"+response.data.details+"']").prop('disabled',false);
+                    $("input.imprintrepeatnote[data-details='"+response.data.details+"']").focus();
+                } else {
+                    // $("div.repeatdetail[data-details='"+response.data.details+"']").removeClass('active').removeClass('full');
+                    for (i=1; i<=4; i++) {
+                        $("input.imprintprice[data-details='"+response.data.details+"'][data-fldname='setup_"+i+"']").val(response.data.setup);
+                    }
+                    $("input.imprintrepeatnote[data-details='"+response.data.details+"']").prop('disabled',true);
+                }
+            }
+            init_quote_printdetails();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function activate_quoteprint_details(details, newval) {
+    if (newval==1) {
+        $("input.orderblankchk").prop('checked',false);
+        $("div.imprintlocdata[data-details='"+details+"']").addClass('active');
+        $("select.locationtype[data-details='"+details+"']").prop('disabled',false);
+        if ($("select.locationtype[data-details='"+details+"']").val()=='REPEAT') {
+            // $("div.repeatdetail[data-details='"+details+"']").addClass('active');
+            $("input.imprintrepeatnote[data-details='"+details+"']").prop('disabled',false);
+        } else {
+            // $("div.repeatdetail[data-details='"+details+"']").removeClass('active');
+            $("input.imprintrepeatnote[data-details='"+details+"']").prop('disabled',true);
+        }
+        $("select.imprintcolorschoice[data-details='"+details+"']").prop('disabled',false);
+        $("input.imprintprice[data-details='"+details+"']").prop('disabled',true);
+        // Lock print prices
+        var colors=$("select.imprintcolorschoice[data-details='"+details+"']").val();
+        for (i=1; i<=colors; i++) {
+            $("input.imprintprice[data-details='"+details+"'][data-fldname='print_"+i+"']").prop('disabled',false);
+            $("input.imprintprice[data-details='"+details+"'][data-fldname='setup_"+i+"']").prop('disabled',false);
+        }
+        $("select.imprintlocationchoice[data-details='"+details+"']").prop('disabled',false);
+        $("input.imprintprice[data-details='"+details+"'][data-fldname='extra_cost']").prop('disabled',false);
+    } else {
+        $("div.imprintlocdata[data-details='"+details+"']").removeClass('active');
+        // $("div.repeatdetail[data-details='"+details+"']").removeClass('active');
+        $("input.imprintrepeatnote[data-details='"+details+"']").prop('disabled',true);
+        $("select.locationtype[data-details='"+details+"']").prop('disabled',true);
+        $("select.imprintcolorschoice[data-details='"+details+"']").prop('disabled',true);
+        $("input.imprintprice[data-details='"+details+"']").prop('disabled',true);
+        $("select.imprintlocationchoice[data-details='"+details+"']").prop('disabled',true);
+        $("input.imprintprice[data-details='"+details+"'][data-fldname='extra_cost']").prop('disabled',true);
+    }
 }
 
 function leadquote_edit(quote_id) {
@@ -184,10 +413,10 @@ function leadquote_edit(quote_id) {
 
 function init_leadquotes_view() {
     $(".quotepopupclose").unbind('click').click(function (){
-        var quote_id = $("#quoteleadnumber").val();
         $("#quotepopupdetails").empty();
         $("#quotepopupdetails").hide();
         $(".quotepopupclose").hide();
+        var quote_id = $("#quoteleadnumber").val();
         $(".datarow[data-leadquote='"+quote_id+"']").children('div').removeClass('active');
         $(".leadquotenumberlist").unbind('click').click(function(){
             var quote_id = $(this).data('leadquote');

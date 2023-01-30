@@ -1097,7 +1097,7 @@ class Leadmanagement extends MY_Controller
             $mdata = [];
             $error = $this->restore_orderdata_error;
             $postdata = $this->input->post();
-            $session_id = ifset($postdata,'session_id', 'unkn');
+            $session_id = ifset($postdata,'session', 'unkn');
             $session = usersession($session_id);
             if (!empty($session)) {
                 $this->load->model('leadquote_model');
@@ -1136,7 +1136,7 @@ class Leadmanagement extends MY_Controller
                     $imprintdetails=array(
                         'imprint_details' => $details,
                         'quote_blank' => 0, // $order_blank,
-                        'quote_item_id' => $details['quote_item_id'],
+                        'quote_item_id' => $postdata['item'],
                         'item_id' => $item_id,
                     );
                     usersession($imptintid, $imprintdetails);
@@ -1148,6 +1148,95 @@ class Leadmanagement extends MY_Controller
         show_404();
     }
 
+    public function quoteprintdetails_change() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $quotesession_id = ifset($postdata, 'quotesession', 'unkn');
+            $quotesession = usersession($quotesession_id);
+            if (!empty($quotesession)) {
+                usersession($quotesession_id, $quotesession);
+                $imprintsession_id = ifset($postdata, 'imprintsession','unkn');
+                $imprint_details = usersession($imprintsession_id);
+                if (!empty($imprint_details)) {
+                    $this->load->model('leadquote_model');
+                    $res = $this->leadquote_model->change_imprint_details($imprint_details, $postdata, $imprintsession_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $mdata['fldname']=$res['fldname'];
+                        $mdata['details']=$res['details'];
+                        $mdata['newval']=$res['newval'];
+                        if ($mdata['fldname']=='imprint_type') {
+                            if ($mdata['newval']=='NEW') {
+                                $mdata['setup'] =  number_format($res['setup'],2,'.','');
+                            } else {
+                                $mdata['class']=$res['class'];
+                            }
+                        }
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function edit_repeatnote() {
+        $postdata=$this->input->post();
+        $quotesession_id = ifset($postdata, 'quotesession', 'unkn');
+        $quotesession = usersession($quotesession_id);
+
+        if (empty($quotesession)) {
+            echo $this->restore_orderdata_error;
+            die();
+        }
+        // Details
+        $detail_id=ifset($postdata, 'details', 0);
+        $imprintdetails=$postdata['imprintsession'];
+        $imprint_details=usersession($imprintdetails);
+
+        if (empty($imprint_details)) {
+            echo $this->restore_orderdata_error;
+            die();
+        }
+        $this->load->model('leadquote_model');
+        $res=$this->leadquote_model->get_repeat_note($imprint_details, $detail_id, $imprintdetails);
+        if ($res['result']==$this->error_result) {
+            echo $res['msg'];
+        } else {
+            $note=$res['repeat_note'];
+            $content=$this->load->view('leadpopup/repeat_note_edit', array('repeat_note'=>$note),TRUE);
+            echo $content;
+        }
+        return TRUE;
+    }
+
+    public function repeatnote_save() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $quotesession_id = ifset($postdata, 'quotesession','unkn');
+            $quotesession = usersession($quotesession_id);
+            if (!empty($quotesession)) {
+                usersession($quotesession_id, $quotesession);
+                $imprintsession_id = ifset($postdata, 'imprintsession','unkn');
+                $imprint_details=usersession($imprintsession_id);
+                if (!empty($imprint_details)) {
+                    $this->load->model('leadquote_model');
+                    $res=$this->leadquote_model->save_repeat_note($imprint_details, $postdata, $imprintsession_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 
     public function quotesave() {
         if ($this->isAjax()) {

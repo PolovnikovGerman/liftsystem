@@ -197,7 +197,7 @@ class Leadquote_model extends MY_Model
                 $this->db->from('ts_quote_imprindetails');
                 $this->db->where('quote_item_id', $item['quote_item_id']);
                 $imprintdetails = $this->db->get()->result_array();
-                if (empty($imprintdetails) && $edit_mode==1) {
+                if (count($imprintdetails)==0 && $edit_mode==1) {
                     $imprintdetails = [];
                     $detailfld=$this->db->list_fields('ts_quote_imprindetails');
                     for ($i=1; $i<13; $i++) {
@@ -235,7 +235,7 @@ class Leadquote_model extends MY_Model
                         $newloc['setup_2']=$item['setup_price'];
                         $newloc['setup_3']=$item['setup_price'];
                         $newloc['setup_4']=$item['setup_price'];
-                        $imprdetails[]=$newloc;
+                        $imprintdetails[]=$newloc;
                     }
                 }
                 $items[$idx]['imprint_details'] = $imprintdetails;
@@ -571,8 +571,8 @@ class Leadquote_model extends MY_Model
     }
 
     public function prepare_print_details($session, $postdata, $session_id) {
-        $out = ['result' => $this->error_message, 'msg' => $this->error_message];
-        $quote_item_id = ifset($postdata, 'quote_item_id', 0);
+        $out = ['result' => $this->error_result, 'msg' => $this->error_message];
+        $quote_item_id = ifset($postdata, 'item', 0);
         if ($quote_item_id !== 0) {
             $out['msg'] = 'Quote Item Not found';
             $quote = $session['quote'];
@@ -589,6 +589,107 @@ class Leadquote_model extends MY_Model
                     $out['item_name']=$item['item_name'];
                     usersession($session_id, $session);
                 }
+            }
+        }
+        return $out;
+    }
+
+    public function change_imprint_details($imprintdetails, $postdata, $imprintsession_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Enter all Parameters for change'];
+        $fldname=ifset($postdata, 'fldname','');
+        $quote_imprindetail_id=ifset($postdata, 'details',0);
+        if (!empty($fldname) && !empty($quote_imprindetail_id)) {
+            $newval=$postdata['newval'];
+            $details=$imprintdetails['imprint_details'];
+            $found=0;
+            $detidx=0;
+            foreach ($details as $detail) {
+                if ($detail['quote_imprindetail_id']==$quote_imprindetail_id) {
+                    $found = 1;
+                    break;
+                } else {
+                    $detidx++;
+                }
+            }
+            if ($found==1) {
+                // Detail found
+                $details[$detidx][$fldname]=$newval;
+                if ($fldname=='active' && $newval==1) {
+                    $imprintdetails['quote_blank']=0;
+                }
+                if ($fldname=='imprint_type') {
+                    if ($newval=='REPEAT') {
+                        $details[$detidx]['setup_1']=0;
+                        $details[$detidx]['setup_2']=0;
+                        $details[$detidx]['setup_3']=0;
+                        $details[$detidx]['setup_4']=0;
+                        $out['class']='';
+                        if (!empty($details[$detidx]['repeat_note'])) {
+                            $out['class']='full';
+                        }
+                    } else {
+                        $this->load->model('leadorder_model');
+                        $setupprice=$this->leadorder_model->_get_item_priceimprint($imprintdetails['item_id'], 'setup');
+                        $out['setup']=$setupprice;
+                        $details[$detidx]['setup_1']=$setupprice;
+                        $details[$detidx]['setup_2']=$setupprice;
+                        $details[$detidx]['setup_3']=$setupprice;
+                        $details[$detidx]['setup_4']=$setupprice;
+                    }
+                }
+                $imprintdetails['imprint_details']=$details;
+                usersession($imprintsession_id, $imprintdetails);
+                $out['fldname'] = $fldname;
+                $out['details'] = $quote_imprindetail_id;
+                $out['newval'] = $newval;
+                $out['result']=$this->success_result;
+            }
+        }
+        return $out;
+    }
+
+    public function get_repeat_note($imprintdetails, $detail_id, $imprintsession_id) {
+        $out=['result'=>$this->error_result, 'msg'=> 'Imprint Location Not Found'];
+        $details=$imprintdetails['imprint_details'];
+        $found=0;
+        $detidx=0;
+        foreach ($details as $row) {
+            if ($row['quote_imprindetail_id']==$detail_id) {
+                $found=1;
+                break;
+            } else {
+                $detidx++;
+            }
+        }
+        if ($found==1) {
+            $out['repeat_note']=$details[$detidx]['repeat_note'];
+            usersession($imprintsession_id, $imprintdetails);
+            $out['result']=$this->success_result;
+        }
+        return $out;
+    }
+
+    public function save_repeat_note($imprintdetails, $postdata, $imprintsession_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>'Imprint Location Not Found');
+        $detail_id = ifset($postdata,'detail_id',0);
+        $repeat_note = ifset($postdata,'repeat_note','');
+        if (!empty($detail_id) && !empty($repeat_note)) {
+            $details=$imprintdetails['imprint_details'];
+            $found=0;
+            $detidx=0;
+            foreach ($details as $row) {
+                if ($row['quote_imprindetail_id']==$detail_id) {
+                    $found=1;
+                    break;
+                } else {
+                    $detidx++;
+                }
+            }
+            if ($found==1) {
+                $details[$detidx]['repeat_note']=$repeat_note;
+                $imprintdetails['imprint_details']=$details;
+                usersession($imprintsession_id, $imprintdetails);
+                $out['result']=$this->success_result;
             }
         }
         return $out;
