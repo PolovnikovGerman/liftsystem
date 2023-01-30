@@ -119,6 +119,23 @@ function init_leadquotes_content() {
             }
         },'json');
     });
+    // Add color
+    $(".itemcoloradd").unbind('click').click(function () {
+        var item = $(this).data('quoteitem');
+        var params = new Array();
+        params.push({name: 'session', value: $("#quotesessionid").val()});
+        params.push({name: 'item', value: item });
+        var url = '/leadmanagement/quoteitemaddcolor';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".quoteitemsarea[data-quoteitem='"+item+"']").empty().html(response.data.itemcontent);
+                init_leadquotes_content();
+            } else {
+                show_error(response);
+            }
+        },'json');
+
+    });
 }
 
 function leadquote_edit(quote_id) {

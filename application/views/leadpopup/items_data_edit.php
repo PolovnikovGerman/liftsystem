@@ -1,9 +1,9 @@
 <?php $nrow=0;?>
 <div class="quoteitemsarea" data-quoteitem="<?= $quote_item_id ?>">
     <?php foreach ($items as $row) { ?>
-        <div class="quoteitemtabledatarow <?=($nrow%2==0 ? 'whitedatarow' : 'graydatarow')?>">
+        <div class="quoteitemtabledatarow <?=($nrow%2==0 ? 'whitedatarow' : 'greydatarow')?>">
             <div class="itemnumber"><?=$row['item_number']?></div>
-            <div class="itemdescription long bord_l">
+            <div class="itemdescription long <?=($row['item_color_add']==1 ? 'addquoteitemcolor' : 'bord_l') ?>">
                 <input type="text" class="quoteitem_description_long quouteitem_input input_border_gray" data-field="item_description" data-item="<?=$row['item_id']?>" data-quoteitem="<?= $quote_item_id ?>" value="<?=htmlspecialchars($row['item_description'])?>" />
                 <?php if ($row['item_color_add']==1) { ?>
                     <div class="itemcoloradd text_green" data-item="<?=$row['item_id']?>" data-quoteitem="<?= $quote_item_id ?>">+color</div>

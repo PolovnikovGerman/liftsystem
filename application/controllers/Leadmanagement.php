@@ -1030,6 +1030,7 @@ class Leadmanagement extends MY_Controller
                                 $imprint_options=[
                                     'quote_item_id'=>$quote_item['quote_item_id'],
                                     'imprints'=>$imprints,
+                                    'edit_mode' => 1,
                                 ];
                                 $imprintview=$this->load->view('leadpopup/imprint_data_edit', $imprint_options, TRUE);
                                 $item_options=[
@@ -1053,6 +1054,44 @@ class Leadmanagement extends MY_Controller
         show_404();
     }
 
+    public function quoteitemaddcolor() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session', 'unkn');
+            $quotesession = usersession($session_id);
+            if (!empty($quotesession)) {
+                $this->load->model('leadquote_model');
+                $res = $this->leadquote_model->additemcolor($quotesession, $postdata,  $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $item_content='';
+                    $quote_item = $res['item'];
+                    $imprints=$quote_item['imprints'];
+                    $imprint_options=[
+                        'quote_item_id'=>$quote_item['quote_item_id'],
+                        'imprints'=>$imprints,
+                        'edit_mode' => 1,
+                    ];
+                    $imprintview=$this->load->view('leadpopup/imprint_data_edit', $imprint_options, TRUE);
+                    $item_options=[
+                        'quote_item_id'=>$quote_item['quote_item_id'],
+                        'items'=>$quote_item['items'],
+                        'imprintview'=>$imprintview,
+                        'edit' => 1,
+                        'item_id' => $quote_item['item_id'],
+                    ];
+                    $item_content.=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
+                    $mdata['itemcontent'] = $item_content;
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     public function quotesave() {
         if ($this->isAjax()) {
@@ -1069,6 +1108,13 @@ class Leadmanagement extends MY_Controller
                     $error = $res['msg'];
                     if ($res['result']==$this->success_result) {
                         $error = '';
+                        // Get leads list
+                        $qdat = $this->leadquote_model->get_leadquotes($lead_id);
+                        $lead_quotes = '';
+                        if (count($qdat) > 0) {
+                            $lead_quotes = $this->load->view('leadpopup/leadquotes_list_view',array('quotes'=>$qdat),TRUE);
+                        }
+                        $mdata['quotescontent'] = $lead_quotes;
                     }
                 }
             }

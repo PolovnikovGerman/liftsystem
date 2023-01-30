@@ -509,6 +509,67 @@ class Leadquote_model extends MY_Model
         return $out;
     }
 
+    public function additemcolor($session, $postdata,  $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => $this->error_message];
+        $quote_item_id = ifset($postdata,'item',0);
+        if ($quote_item_id!==0) {
+            $itemidx = 0;
+            $items = $session['items'];
+            foreach ($items as $item) {
+                if ($item['quote_item_id']==$quote_item_id) {
+                    $itemcolors = $item['items'];
+                    $coloridx = 0;
+                    // Made Add color = 0;
+                    foreach ($itemcolors as $itemcolor) {
+                        $itemcolors[$coloridx]['item_color_add'] = 0;
+                        $coloridx++;
+                    }
+                    unset($itemcolor);
+                    // Add new row
+                    $newid=count($itemcolors)+1;
+                    $colors=$item['colors'];
+                    $itemcolor = '';
+                    if (count($colors) > 0) {
+                        $itemcolor=$colors[0];
+                    }
+                    $newitemcolor=[
+                        'quote_item_id' => $quote_item_id,
+                        'item_id' => $newid*(-1),
+                        'item_row' => $newid,
+                        'item_number' => $item['item_number'],
+                        'item_color' => $itemcolor,
+                        'colors' => $item['colors'],
+                        'num_colors' => count($colors),
+                        'item_description' => $item['item_name'],
+                        'item_color_add' => 1,
+                        'item_qty' => 0,
+                        'item_price' => $itemcolors[0]['item_price'],
+                        'item_subtotal' => '',
+                        'printshop_item_id' => '',
+                        'qtyinput_class' => 'normal',
+                        'qtyinput_title' => '',
+                    ];
+                    $options=array(
+                        'quote_item_id'=>$newitemcolor['quote_item_id'],
+                        'item_id'=>$newitemcolor['item_id'],
+                        'colors'=>$newitemcolor['colors'],
+                        'item_color'=>$newitemcolor['item_color'],
+                    );
+                    $newitemcolor['out_colors']=$this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
+                    $itemcolors[] = $newitemcolor;
+                    $items[$itemidx]['items'] = $itemcolors;
+                    $session['items'] = $items;
+                    usersession($session_id, $session);
+                    $out['result'] = $this->success_result;
+                    $out['item'] = $items[$itemidx];
+                    break;
+                }
+                $itemidx++;
+            }
+        }
+        return $out;
+    }
+
     public function calc_quote_shipping($session_id) {
 
     }
@@ -590,7 +651,7 @@ class Leadquote_model extends MY_Model
         $this->db->set('quote_repcontact', $quote['quote_repcontact']);
         $this->db->set('items_subtotal', floatval($quote['items_subtotal']));
         $this->db->set('imprint_subtotal', floatval($quote['imprint_subtotal']));
-        $this->db->set('quote_total', floatval($quote['total']));
+        $this->db->set('quote_total', floatval($quote['quote_total']));
         if ($quote['quote_id'] > 0 ) {
             // Update
             $this->db->where('quote_id', $quote['quote_id']);

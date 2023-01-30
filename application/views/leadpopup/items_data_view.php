@@ -1,7 +1,7 @@
 <?php $nrow=0;?>
 <div class="quoteitemsarea" data-quoteitem="<?= $quote_item_id ?>">
     <?php foreach ($items as $row) { ?>
-        <div class="quoteitemtabledatarow <?=($nrow%2==0 ? 'whitedatarow' : 'graydatarow')?>">
+        <div class="quoteitemtabledatarow <?=($nrow%2==0 ? 'whitedatarow' : 'greydatarow')?>">
             <div class="itemnumber"><?=$row['item_number']?></div>
             <div class="itemdescription long bord_l">
                 <?=htmlspecialchars($row['item_description'])?>
