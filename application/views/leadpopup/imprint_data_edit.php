@@ -3,7 +3,7 @@
     <?php foreach ($imprints as $row) { ?>
         <?php if ($row['delflag']==0) { ?>
             <div class="quoteitemtabledatarow <?= $numpp % 2 == 0 ? 'whitedatarow' : 'graydatarow' ?>">
-                <div class="impritdetails <?= $numpp == 0 ? 'addprintdetails' : '' ?>" data-quoteitem="<?= $quote_item_id ?>">
+                <div class="impritdetails <?= ($numpp == 0 && $edit_mode==1) ? 'addprintdetails' : 'printdetailslabel' ?>" data-quoteitem="<?= $quote_item_id ?>">
                     <?= $numpp == 0 ? 'Print Details:' : '&nbsp;' ?>
                 </div>
                 <div class="imprint_description">

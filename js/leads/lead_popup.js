@@ -269,9 +269,10 @@ function init_leadpopupedit() {
     $(".leadquotenumberlist").unbind('click').click(function(){
         var quote_id = $(this).data('leadquote');
         leadquote_edit(quote_id);
-        $(".datarow[data-leadquote='"+quote_id+"']").children('div').addClass('active');
     })
-
+    $(".quotesaddnew").unbind('click').click(function () {
+        addnewcustomquote();
+    });
 }
 
 function delete_lead_attachment(attachid) {
@@ -282,6 +283,7 @@ function delete_lead_attachment(attachid) {
     $.post(url,params, function (response) {
         if (response.errors=='') {
             $(".lead_popup_attachs").empty().html(response.data.content);
+            $(".datarow[data-leadquote='"+quote_id+"']").children('div').addClass('active');
             init_leadpopupedit();
         } else {
             show_error(response);

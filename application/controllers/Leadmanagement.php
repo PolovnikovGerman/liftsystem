@@ -836,7 +836,15 @@ class Leadmanagement extends MY_Controller
                         'orderby'=>'sort, country_name',
                     );
                     $countries = $this->shipping_model->get_countries_list($cnt_options);
-                    $states = $this->shipping_model->get_country_states($this->config->item('default_country'));
+                    $billstates = $shipstates = [];
+                    if (!empty($quote['shipping_country'])) {
+                        $shipstates = $this->shipping_model->get_country_states($quote['shipping_country']);
+                    };
+                    if (!empty($quote['billing_country'])) {
+                        $billstates = $this->shipping_model->get_country_states($quote['billing_country']);
+                    };
+
+                    // $states = $this->shipping_model->get_country_states($this->config->item('default_country'));
                     // Prepare content
                     $quotedata = $qres['quote'];
                     $quote_items = $qres['quote_items'];
@@ -847,6 +855,7 @@ class Leadmanagement extends MY_Controller
                         $imprint_options=[
                             'quote_item_id'=>$quote_item['quote_item_id'],
                             'imprints'=>$imprints,
+                            'edit_mode' => 1,
                         ];
                         $imprintview=$this->load->view('leadpopup/imprint_data_edit', $imprint_options, TRUE);
                         $item_options=[
@@ -860,7 +869,7 @@ class Leadmanagement extends MY_Controller
                         $item_subtotal+=$quote_item['item_subtotal'];
                     }
                     $quotedata['items_subtotal'] = $item_subtotal;
-                    $quotedata['total'] = $item_subtotal;
+                    $quotedata['quote_total'] = $item_subtotal;
                     $quote_session = 'quote'.uniq_link(15);
                     $sessiondata = [
                         'quote' => $quotedata,
@@ -871,13 +880,15 @@ class Leadmanagement extends MY_Controller
                     usersession($quote_session, $sessiondata);
                     $options = [
                         'quote_session' => $quote_session,
+                        'quote_id' => $quotedata['quote_id'],
                         'lead_id' => $lead_id,
                         'data' => $quotedata,
                         'itemsview' => $item_content,
                         'templlists' => $templlists,
                         'countries' => $countries,
                         'edit_mode' => 1,
-                        'states' => $states,
+                        'shipstates' => $shipstates,
+                        'billstates' => $billstates,
                     ];
                     $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
                 }
@@ -889,10 +900,95 @@ class Leadmanagement extends MY_Controller
 
     public function quoteedit() {
         if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Unknown Quote #';
             $postdata = $this->input->post();
+            $quote_id = ifset($postdata, 'quote_id', 0);
+            $edit_mode = ifset($postdata, 'edit_mode', 0);
+            if (!empty($quote_id)) {
+                $this->load->model('leadquote_model');
+                $qres=$this->leadquote_model->get_leadquote($quote_id, $edit_mode);
+                $error = $qres['msg'];
+                if ($qres['result']==$this->success_result) {
+                    $error = '';
+                    // Prepare content
+                    $quotedata = $qres['quote'];
+                    if ($quotedata['brand']=='SR') {
+                        $templlists = [
+                            'Supplier',
+                            'Proforma Invoice',
+                        ];
+                    } else {
+                        $templlists = [
+                            'Stressballs.com',
+                            'Bluetrack Health',
+                            'Proforma Invoice',
+                        ];
+                    }
+                    $this->load->model('shipping_model');
+                    $cnt_options=array(
+                        'orderby'=>'sort, country_name',
+                    );
+                    $countries = $this->shipping_model->get_countries_list($cnt_options);
+                    $billstates = $shipstates = [];
+                    if (!empty($quotedata['shipping_country'])) {
+                        $shipstates = $this->shipping_model->get_country_states($quotedata['shipping_country']);
+                    };
+                    if (!empty($quotedata['billing_country'])) {
+                        $billstates = $this->shipping_model->get_country_states($quotedata['billing_country']);
+                    };
+                    $quote_items = $qres['items'];
+                    $shippings = $qres['shippings'];
+                    $item_content='';
+                    $item_subtotal = 0;
+                    foreach ($quote_items as $quote_item) {
+                        $imprints=$quote_item['imprints'];
+                        $imprint_options=[
+                            'quote_item_id'=>$quote_item['quote_item_id'],
+                            'imprints'=>$imprints,
+                            'edit_mode' => $edit_mode,
+                        ];
+                        $imprintview=$this->load->view('leadpopup/imprint_data_edit', $imprint_options, TRUE);
+                        $item_options=[
+                            'quote_item_id'=>$quote_item['quote_item_id'],
+                            'items'=>$quote_item['items'],
+                            'imprintview'=>$imprintview,
+                            'edit'=> $edit_mode,
+                            'item_id'=>$quote_item['item_id'],
+                        ];
+                        if ($edit_mode==0) {
+                            $item_content.=$this->load->view('leadpopup/items_data_view', $item_options, TRUE);
+                        } else {
+                            $item_content.=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
+                        }
 
+                    }
+                    $quote_session = 'quote'.uniq_link(15);
+                    $sessiondata = [
+                        'quote' => $quotedata,
+                        'items' => $quote_items,
+                        'shipping' => $shippings,
+                        'deleted' => [],
+                    ];
+                    usersession($quote_session, $sessiondata);
+                    $options = [
+                        'quote_session' => $quote_session,
+                        'quote_id' => $quote_id,
+                        'lead_id' => $quotedata['lead_id'],
+                        'data' => $quotedata,
+                        'itemsview' => $item_content,
+                        'templlists' => $templlists,
+                        'countries' => $countries,
+                        'edit_mode' => $edit_mode,
+                        'shipstates' => $shipstates,
+                        'billstates' => $billstates,
+                    ];
+                    $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
         }
-
+        show_404();
     }
 
     public function quoteitemchange() {
@@ -920,7 +1016,7 @@ class Leadmanagement extends MY_Controller
                         $this->leadquote_model->calc_quote_totals($session_id);
                         $quotesession = usersession($session_id);
                         $mdata['items_subtotal'] = MoneyOutput($quotesession['quote']['items_subtotal']);
-                        $mdata['total'] = MoneyOutput($quotesession['quote']['total']);
+                        $mdata['total'] = MoneyOutput($quotesession['quote']['quote_total']);
                         $mdata['totals'] = 1;
                     }
                     if ($res['item_refresh']==1) {

@@ -1,11 +1,3 @@
-$(document).ready(function (){
-    // Add new Custom Quote
-    $(".quotesaddnew").unbind('click').click(function () {
-        addnewcustomquote();
-    });
-});
-
-
 function addnewcustomquote() {
     var lead_num=$("div.lead_popup_number").text();
     var msg="You will now save the updates of the "+lead_num+" by creating the quote.  Ok?";
@@ -22,6 +14,8 @@ function addnewcustomquote() {
                 $("#quotepopupdetails").empty().html(response.data.quotecontent);
                 $("#quotepopupdetails").show();
                 $(".quotepopupclose").show();
+                $(".leadquotenumberlist").unbind('click');
+                $(".quotesaddnew").unbind('click');
                 init_leadquotes_content();
             } else {
                 show_error(response);
@@ -35,6 +29,13 @@ function init_leadquotes_content() {
         $("#quotepopupdetails").empty();
         $("#quotepopupdetails").hide();
         $(".quotepopupclose").hide();
+        $(".leadquotenumberlist").unbind('click').click(function(){
+            var quote_id = $(this).data('leadquote');
+            leadquote_edit(quote_id);
+        })
+        $(".quotesaddnew").unbind('click').click(function () {
+            addnewcustomquote();
+        });
     });
     $(".leadquotesavebtn").unbind('click').click(function (){
        // Save quote
@@ -48,13 +49,17 @@ function init_leadquotes_content() {
                 $("#quotepopupdetails").hide();
                 $(".quotepopupclose").hide();
                 $(".quotesdataarea").empty().html(response.data.quotescontent);
+                $(".leadquotenumberlist").unbind('click').click(function(){
+                    var quote_id = $(this).data('leadquote');
+                    leadquote_edit(quote_id);
+                })
+                $(".quotesaddnew").unbind('click').click(function () {
+                    addnewcustomquote();
+                });
             } else {
                 show_error(response);
             }
         },'json');
-    });
-    $(".leadquoteeditbtn").unbind('click').click(function (){
-        // Edit current quote
     });
     $("input.quouteitem_input").unbind('change').change(function(){
         var itemcolor = $(this).data('item');
@@ -126,6 +131,8 @@ function leadquote_edit(quote_id) {
             $("#quotepopupdetails").empty().html(response.data.quotecontent);
             $("#quotepopupdetails").show();
             $(".quotepopupclose").show();
+            $(".leadquotenumberlist").unbind('click');
+            $(".quotesaddnew").unbind('click');
             init_leadquotes_view();
         } else {
             show_error(response);
@@ -134,5 +141,34 @@ function leadquote_edit(quote_id) {
 }
 
 function init_leadquotes_view() {
-
+    $(".quotepopupclose").unbind('click').click(function (){
+        $("#quotepopupdetails").empty();
+        $("#quotepopupdetails").hide();
+        $(".quotepopupclose").hide();
+        $(".leadquotenumberlist").unbind('click').click(function(){
+            var quote_id = $(this).data('leadquote');
+            leadquote_edit(quote_id);
+        })
+        $(".quotesaddnew").unbind('click').click(function () {
+            addnewcustomquote();
+        });
+    });
+    $(".leadquoteeditbtn").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'quote_id', value: $("#quoteleadnumber").val()});
+        params.push({name: 'edit_mode', value: 1});
+        var url = '/leadmanagement/quoteedit';
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("#quotepopupdetails").empty().html(response.data.quotecontent);
+                $("#quotepopupdetails").show();
+                $(".quotepopupclose").show();
+                $(".leadquotenumberlist").unbind('click');
+                $(".quotesaddnew").unbind('click');
+                init_leadquotes_content();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }

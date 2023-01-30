@@ -5,7 +5,7 @@
             <div class="itemnumber"><?=$row['item_number']?></div>
             <div class="itemdescription long bord_l">
                 <input type="text" class="quoteitem_description_long quouteitem_input input_border_gray" data-field="item_description" data-item="<?=$row['item_id']?>" data-quoteitem="<?= $quote_item_id ?>" value="<?=htmlspecialchars($row['item_description'])?>" />
-                <?php if ($row['item_color_add']) { ?>
+                <?php if ($row['item_color_add']==1) { ?>
                     <div class="itemcoloradd text_green" data-item="<?=$row['item_id']?>" data-quoteitem="<?= $quote_item_id ?>">+color</div>
                 <?php } ?>
             </div>
