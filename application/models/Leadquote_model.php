@@ -174,6 +174,8 @@ class Leadquote_model extends MY_Model
                 $items[$idx]['items'] = $colors;
                 // Inprints
                 $this->db->select('quote_imprint_id, quote_item_id, imprint_description, imprint_item, imprint_qty, imprint_price');
+                $this->db->select('\'nornal\' as imprint_price_class, \'\' as imprint_price_title, 0 as delflag');
+                $this->db->select('(imprint_qty * imprint_price) as imprint_subtotal');
                 $this->db->from('ts_quote_imprints');
                 $this->db->where('quote_item_id', $item['quote_item_id']);
                 $imprints = $this->db->get()->result_array();
@@ -869,6 +871,7 @@ class Leadquote_model extends MY_Model
             $out['quote_blank']=$quote_blank;
             $quotedat['items']=$items;
             $quotedat['quote']=$quote;
+            $quotedat['deleted'] = $deleted;
             usersession($quotesession_id, $quotedat);
             usersession($imprintsession_id, NULL);
             $out['result']=$this->success_result;
@@ -1034,6 +1037,41 @@ class Leadquote_model extends MY_Model
                     }
                 }
                 $imprintdetails = $item['imprint_details'];
+                foreach ($imprintdetails as $imprintdetail) {
+                    $this->db->set('imprint_active', $imprintdetail['active']);
+                    $this->db->set('imprint_type', $imprintdetail['imprint_type']);
+                    $this->db->set('repeat_note', $imprintdetail['repeat_note']);
+                    $this->db->set('location_id', empty($imprintdetail['location_id']) ? NULL : $imprintdetail['location_id']);
+                    $this->db->set('num_colors', $imprintdetail['num_colors']);
+                    $this->db->set('print_1', $imprintdetail['print_1']);
+                    $this->db->set('print_2', $imprintdetail['print_2']);
+                    $this->db->set('print_3', $imprintdetail['print_3']);
+                    $this->db->set('print_4', $imprintdetail['print_4']);
+                    $this->db->set('setup_1', $imprintdetail['setup_1']);
+                    $this->db->set('setup_2', $imprintdetail['setup_2']);
+                    $this->db->set('setup_3', $imprintdetail['setup_3']);
+                    $this->db->set('setup_4', $imprintdetail['setup_4']);
+                    $this->db->set('extra_cost', $imprintdetail['extra_cost']);
+                    if ($imprintdetail['quote_imprindetail_id'] > 0) {
+                        $this->db->where('quote_imprindetail_id', $imprintdetail['quote_imprindetail_id']);
+                        $this->db->update('ts_quote_imprindetails');
+                    } else {
+                        $this->db->set('quote_item_id', $quote_item_id);
+                        $this->db->insert('ts_quote_imprindetails');
+                    }
+                }
+            }
+            $deleted = $quotesession['deleted'];
+            foreach ($deleted as $row) {
+                // 'entity' => 'imprints'
+                // 'entity' => 'imprint_details'
+                if ($row['entity']=='imprints') {
+                    $this->db->where('quote_imprint_id', $row['id']);
+                    $this->db->delete('ts_quote_imprints');
+                } elseif ($row['entity']=='imprint_details') {
+                    $this->db->where('quote_imprindetail_id', $row['id']);
+                    $this->db->delete('ts_quote_imprindetails');
+                }
             }
             $out['result'] = $this->success_result;
         }
