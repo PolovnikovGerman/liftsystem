@@ -1238,6 +1238,112 @@ class Leadmanagement extends MY_Controller
         show_404();
     }
 
+    public function save_imprintdetails() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $quotesession_id = ifset($postdata, 'quotesession','unkn');
+            $quotesession = usersession($quotesession_id);
+            if (!empty($quotesession)) {
+                usersession($quotesession_id, $quotesession);
+                $imprintsession_id = ifset($postdata, 'imprintsession', 'unkn');
+                $imprint_details = usersession($imprintsession_id);
+                if (!empty($imprint_details)) {
+                    $this->load->model('leadquote_model');
+                    $res = $this->leadquote_model->save_imprint_details($imprint_details, $imprintsession_id, $quotesession, $quotesession_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        // Start
+//                        $leadorder=usersession($ordersession);
+//                        $order=$leadorder['order'];
+//                        $mdata['order_revenue']=MoneyOutput($order['revenue']);
+//                        $shipping=$leadorder['shipping'];
+//                        $shipping_address=$leadorder['shipping_address'];
+//                        $mdata['shipdate']=$shipping['shipdate'];
+//                        $mdata['rush_price']=$shipping['rush_price'];
+//                        $mdata['is_shipping']=$order['is_shipping'];
+//                        $mdata['shipping']=$order['shipping'];
+//                        $mdata['cntshipadrr']=count($shipping_address);
+//                        $subtotal=$order['item_cost']+$order['item_imprint']+floatval($order['mischrg_val1'])+floatval($order['mischrg_val2'])-floatval($order['discount_val']);
+//                        $mdata['item_subtotal']=MoneyOutput($subtotal);
+//                        $total_due=$order['revenue']-$order['payment_total'];
+//                        $dueoptions=array(
+//                            'totaldue'=>$total_due,
+//                        );
+//                        if ($total_due==0 && $order['payment_total']>0) {
+//                            $dueoptions['class']='closed';
+//                        } else {
+//                            $dueoptions['class']='open';
+//                            if ($total_due<0) {
+//                                $dueoptions['class']='overflow';
+//                            }
+//                        }
+//                        $mdata['total_due']=$this->load->view('leadorderdetails/totaldue_data_view', $dueoptions, TRUE);
+//                        $mdata['tax']=MoneyOutput($order['tax']);
+//                        $mdata['profit_content']=$this->_profit_data_view($order);
+//
+//                        $order_items=$res['item'];
+//                        $imprint_options=array(
+//                            'order_item_id'=>$order_items['order_item_id'],
+//                            'imprints'=>$order_items['imprints'],
+//                        );
+//                        $mdata['imprint_content']=$this->load->view('leadorderdetails/imprint_data_edit', $imprint_options, TRUE);
+//                        $mdata['order_item_id']=$order_items['order_item_id'];
+//                        $mdata['order_blank']=$res['order_blank'];
+//                        $mdata['shiprebuild']=$res['shiprebuild'];
+//                        if ($res['shiprebuild']==1) {
+//                            // Rebuild Ship Date
+//                            $mdata['rush_price']=number_format($shipping['rush_price'],2);
+//                            $rush=unserialize($shipping['rush_list']);
+//                            $outrush=$rush['rush'];
+//                            $rushopt=array(
+//                                'edit'=>1,
+//                                'rush'=>$outrush,
+//                                'current'=>$shipping['rush_idx'],
+//                                'shipdate'=>$shipping['shipdate'],
+//                            );
+//                            $mdata['rushview']=$this->load->view('leadorderdetails/rushlist_view', $rushopt, TRUE);
+//                        }
+//                        // Art Locations
+//                        $mdata['artlocchange']=$res['artlocchange'];
+//                        if ($res['artlocchange']==1) {
+//                            $locat=$leadorder['artlocations'];
+//                            $locat_view='';
+//                            $blankopt=array(
+//                                'view'=>'none',
+//                            );
+//                            $locat_view.=$this->load->view('leadorderdetails/artlocs/blank_view', $blankopt, TRUE);
+//                            foreach ($locat as $row) {
+//                                if ($row['deleted']=='') {
+//                                    switch ($row['art_type']) {
+//                                        case 'Logo':
+//                                            $locat_view.=$this->load->view('leadorderdetails/artlocs/artlocation_logo_edit', $row, TRUE);
+//                                            break;
+//                                        case 'Text':
+//                                            $locat_view.=$this->load->view('leadorderdetails/artlocs/artlocation_text_edit', $row, TRUE);
+//                                            break;
+//                                        case 'Reference':
+//                                            $locat_view.=$this->load->view('leadorderdetails/artlocs/artlocation_reference_edit', $row, TRUE);
+//                                            break;
+//                                        case 'Repeat':
+//                                            $locat_view.=$this->load->view('leadorderdetails/artlocs/artlocation_repeat_edit', $row, TRUE);
+//                                            break;
+//                                    }
+//                                }
+//                            }
+//                            $mdata['locat_view']=$locat_view;
+//                        }
+                        // End
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function quotesave() {
         if ($this->isAjax()) {
             $postdata = $this->input->post();

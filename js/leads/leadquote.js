@@ -263,7 +263,7 @@ function init_edit_quoterepeatnote(detail) {
             params.push({name:'repeat_note',  value: note});
             params.push({name:'imprintsession', value: $("input#imprintsession").val()});
             params.push({name: 'quotesession', value: $("#quotesessionid").val()});
-            var url="/leadmanager/repeatnote_save";
+            var url="/leadmanagement/repeatnote_save";
             $.post(url,params, function(response){
                 if (response.errors=='') {
                     $.colorbox.close();
@@ -278,7 +278,7 @@ function init_edit_quoterepeatnote(detail) {
 }
 // Save Imprint Details
 function save_quoteprint_details() {
-    var url='/leadorder/save_imprintdetails';
+    var url='/leadmanagement/save_imprintdetails';
     var params=new Array();
     params.push({name:'imprintsession', value: $("input#imprintsession").val()});
     params.push({name: 'quotesession', value: $("#quotesessionid").val()});
