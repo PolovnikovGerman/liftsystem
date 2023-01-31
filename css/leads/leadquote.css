@@ -174,6 +174,8 @@
     background: #FFFFFF;
     height: 190px;
     width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 /* Item Table data */
 .quoteitemsarea {

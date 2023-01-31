@@ -285,31 +285,10 @@ function save_quoteprint_details() {
     $.post(url, params , function(response){
         if (response.errors=='') {
             $("#artNextModal").modal('hide');
-            $("#ordertotaloutput").empty().html(response.data.order_revenue);
-            $("div.imprintdataarea[data-orderitem='"+response.data.order_item_id+"']").empty().html(response.data.imprint_content);
-            $("div.bl_items_sub-total2").empty().html(response.data.item_subtotal);
-            $(".totalduedataviewarea").empty().html(response.data.total_due);
-            if (parseInt(response.data.order_blank)===1) {
-                $("input.chkboxleadorddata[data-field='artwork_blank']").prop('checked',true);
-                $("div#newartbuttonareaview").hide();
-                $("div.blankorderlogos").show();
-            } else {
-                $("input.chkboxleadorddata[data-field='artwork_blank']").prop('checked',false);
-                $("div#newartbuttonareaview").show();
-                $("div.blankorderlogos").hide();
-            }
-            $("div#leadorderprofitarea").empty().html(response.data.profit_content);
-            // Rush view
-            if (response.data.shiprebuild==1) {
-                $("#rushdatalistarea").empty().html(response.data.rushview);
-                $("input.shiprushcost").val(response.data.rush_price);
-            }
-            // Art Location
-            if (response.data.artlocchange==1) {
-                $("#artlocationsarea").empty().html(response.data.locat_view);
-            }
-            $("input#loctimeout").val(response.data.loctime);
-            init_onlineleadorder_edit();
+            $(".quoteitemsarea[data-quoteitem='"+response.data.item_id+"']").empty().html(response.data.itemcontent);
+            $(".quoteitemsubtotalvalue").empty().html(response.data.item_subtotal);
+            $("input[data-item='sales_tax']").val(response.data.tax);
+            $(".quotetotalvalue").empty().html(response.data.total);
         } else {
             show_error(response);
         }

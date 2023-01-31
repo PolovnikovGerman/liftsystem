@@ -180,7 +180,7 @@ class Leadquote_model extends MY_Model
                 if (count($imprints)==0 && $edit_mode==1) {
                     $imprints = [];
                     $imprints[] = [
-                        'order_imprint_id' => -1,
+                        'quote_imprint_id' => -1,
                         'imprint_description' => $this->empty_htmlcontent,
                         'imprint_qty' => 0,
                         'imprint_price' => 0,
@@ -768,10 +768,10 @@ class Leadquote_model extends MY_Model
                             $subtotal = $items[$idx]['item_qty'] * floatval($row[$priceindx]);
                             if ($row['imprint_type'] !== 'REPEAT' && $numpp > 1) {
                                 if ($items[$idx]['item_id'] > 0) {
-                                    $newiprint_price = $items[$idx]['print_price'];
+                                    $newiprint_price = $items[$idx]['imprint_price'];
                                     if (round(floatval($newiprint_price), 2) != round(floatval($row[$priceindx]), 2)) {
                                         $imprint_price_class = 'warningprice';
-                                        $imprint_price_title = 'Print price ' . MoneyOutput($items[$idx]['print_price']);
+                                        $imprint_price_title = 'Print price ' . MoneyOutput($items[$idx]['imprint_price']);
                                     }
                                 }
                             }
@@ -819,39 +819,40 @@ class Leadquote_model extends MY_Model
                             $newidx++;
                         }
                     }
-                    if (count($extra)>0) {
-                        foreach ($extra as $erow) {
-                            $imprints[]=$erow;
+                }
+                if (count($extra)>0) {
+                    foreach ($extra as $erow) {
+                        $imprints[]=$erow;
+                    }
+                }
+                if ($setup_total>=0 && $setup_qty>0) {
+                    $setup_price=0;
+                    if ($setup_qty>0) {
+                        $setup_price=round($setup_total/$setup_qty,2);
+                    }
+                    $imprint_price_class='normal';
+                    $imprint_price_title='';
+                    if ($items[$idx]['item_id']>0) {
+                        $newsetup_price = $items[$idx]['setup_price'];
+                        if (round(floatval($newsetup_price),2)!=round(floatval($setup_price),2)) {
+                            $imprint_price_class='warningprice';
+                            $imprint_price_title='Setup price '.MoneyOutput($items[$idx]['setup_price']);
                         }
                     }
-                    if ($setup_total>=0 && $setup_qty>0) {
-                        $setup_price=0;
-                        if ($setup_qty>0) {
-                            $setup_price=round($setup_total/$setup_qty,2);
-                        }
-                        $imprint_price_class='normal';
-                        $imprint_price_title='';
-                        if ($items[$idx]['item_id']>0) {
-                            $newsetup_price = $items[$idx]['setup_price'];
-                            if (round(floatval($newsetup_price),2)!=round(floatval($setup_price),2)) {
-                                $imprint_price_class='warningprice';
-                                $imprint_price_title='Setup price '.MoneyOutput($items[$idx]['setup_price']);
-                            }
-                        }
-                        $imprints[]=array(
-                            'quote_imprint_id'=>(-1)*$newidx,
-                            'imprint_description'=>'One Time Art Setup Charge',
-                            'imprint_item'=>0,
-                            'imprint_qty'=>$setup_qty,
-                            'imprint_price'=>floatval($setup_price),
-                            'outqty'=>$setup_qty,
-                            'outprice'=>MoneyOutput($setup_price),
-                            'imprint_subtotal'=>  MoneyOutput($setup_total),
-                            'imprint_price_class' => $imprint_price_class,
-                            'imprint_price_title' => $imprint_price_title,
-                            'delflag'=>0,
-                        );
-                    }
+                    $imprints[]=array(
+                        'quote_imprint_id'=>(-1)*$newidx,
+                        'imprint_description'=>'One Time Art Setup Charge',
+                        'imprint_item'=>0,
+                        'imprint_qty'=>$setup_qty,
+                        'imprint_price'=>floatval($setup_price),
+                        'outqty'=>$setup_qty,
+                        'outprice'=>MoneyOutput($setup_price),
+                        'imprint_subtotal'=>  MoneyOutput($setup_total),
+                        'imprint_price_class' => $imprint_price_class,
+                        'imprint_price_title' => $imprint_price_title,
+                        'delflag'=>0,
+                    );
+                    $newidx++;
                 }
             }
             // Delete old Imprints
