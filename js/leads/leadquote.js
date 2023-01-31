@@ -26,11 +26,11 @@ function addnewcustomquote() {
 
 function init_leadquotes_content() {
     $(".quotepopupclose").unbind('click').click(function (){
+        var quoteactive = $("#quoteleadnumber").val();
         $("#quotepopupdetails").empty();
         $("#quotepopupdetails").hide();
         $(".quotepopupclose").hide();
-        var quote_id = $("#quoteleadnumber").val();
-        $(".datarow[data-leadquote='"+quote_id+"']").children('div').removeClass('active');
+        $(".datarow[data-leadquote='"+quoteactive+"']").children('div').removeClass('active');
         $(".leadquotenumberlist").unbind('click').click(function(){
             var quote_id = $(this).data('leadquote');
             leadquote_edit(quote_id);
@@ -63,6 +63,69 @@ function init_leadquotes_content() {
             }
         },'json');
     });
+    // Template
+    $(".quotetemplateinpt").find('select').unbind('change').change(function (){
+        var params = new Array();
+        params.push({name: 'session', value: $("#quotesessionid").val()});
+        params.push({name: 'fld', value: $(this).data('item')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/leadmanagement/quoteparamchange';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Common Input
+    $(".quotecommondatainpt").unbind('change').change(function (){
+        var params = new Array();
+        params.push({name: 'session', value: $("#quotesessionid").val()});
+        params.push({name: 'fld', value: $(this).data('item')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/leadmanagement/quoteparamchange';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (parseInt(response.data.totalcalc)==1) {
+                    $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
+                    $(".quotetotalvalue").empty().html(response.data.total);
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Address Input
+    $(".quoteaddressinpt").unbind('change').change(function(){
+        var params = new Array();
+        params.push({name: 'session', value: $("#quotesessionid").val()});
+        params.push({name: 'fld', value: $(this).data('item')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/leadmanagement/quoteaddresschange';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (parseInt(response.data.shiprebuild)==1) {
+                    // Update zip, city state
+                    $(".quoteaddressinpt[data-item='shipping_zip']").val(response.data.shipping_zip);
+                    $(".quoteaddressinpt[data-item='shipping_city']").val(response.data.shipping_city);
+                    $(".quoteaddressinpt[data-item='shipping_state']").val(response.data.shipping_state);
+                }
+                if (parseInt(response.data.calcship)==1) {
+                    // Update shipping cost
+                }
+                if (parseInt(response.data.totalcalc)==1) {
+                    $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
+                    $(".quotetotalvalue").empty().html(response.data.total);
+                }
+                $("#loader").hide();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
+
     $("input.quouteitem_input").unbind('change').change(function(){
         var itemcolor = $(this).data('item');
         var item = $(this).data('quoteitem');
@@ -83,7 +146,7 @@ function init_leadquotes_content() {
                     $(".quoteitemrowsubtotal[data-item='"+itemcolor+"'][data-quoteitem='"+item+"']").empty().html(response.data.itemcolor_subtotal);
                 }
                 if (parseInt(response.data.totals)==1) {
-                    $(".quoteitemsubtotalvalue").empty().html(response.data.item_subtotal);
+                    $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
                     $(".quotetotalvalue").empty().html(response.data.total);
                 }
             } else {
@@ -286,9 +349,10 @@ function save_quoteprint_details() {
         if (response.errors=='') {
             $("#artNextModal").modal('hide');
             $(".quoteitemsarea[data-quoteitem='"+response.data.item_id+"']").empty().html(response.data.itemcontent);
-            $(".quoteitemsubtotalvalue").empty().html(response.data.item_subtotal);
+            $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
             $("input[data-item='sales_tax']").val(response.data.tax);
             $(".quotetotalvalue").empty().html(response.data.total);
+            init_leadquotes_content();
         } else {
             show_error(response);
         }
@@ -392,11 +456,11 @@ function leadquote_edit(quote_id) {
 
 function init_leadquotes_view() {
     $(".quotepopupclose").unbind('click').click(function (){
+        var quoteactive = $("#quoteleadnumber").val();
         $("#quotepopupdetails").empty();
         $("#quotepopupdetails").hide();
         $(".quotepopupclose").hide();
-        var quote_id = $("#quoteleadnumber").val();
-        $(".datarow[data-leadquote='"+quote_id+"']").children('div').removeClass('active');
+        $(".datarow[data-leadquote='"+quoteactive+"']").children('div').removeClass('active');
         $(".leadquotenumberlist").unbind('click').click(function(){
             var quote_id = $(this).data('leadquote');
             leadquote_edit(quote_id);

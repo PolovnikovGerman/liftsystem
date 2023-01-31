@@ -1041,4 +1041,29 @@ Class Shipping_model extends MY_Model
         return $res;
     }
 
+    public function get_zip_address($country_id, $zipcode) {
+        $out=['result' => $this->error_result, 'msg' => 'Address not found'];
+        $cntdat = $this->get_country($country_id);
+        if ($cntdat['country_iso_code_2']=='CA') {
+            $seachzip = substr($zipcode,0, 3);
+        } else {
+            $seachzip = $zipcode;
+        }
+        $this->db->select('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code as state, t.state_id, count(c.geoip_city_id) as cntcity');
+        $this->db->from('ts_geoipdata gdata');
+        $this->db->join('ts_geoip_city c','c.geoname_id=gdata.geoname_id');
+        $this->db->join('ts_countries cntr','cntr.country_iso_code_2=c.country_iso_code');
+        $this->db->join('ts_states t','t.state_code=c.subdivision_1_iso_code','left');
+        $this->db->where('gdata.postal_code', $seachzip);
+        $this->db->where('cntr.country_id', $country_id);
+        $this->db->group_by('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code, t.state_id');
+        $this->db->order_by('cntcity','desc');
+        $validdata = $this->db->get()->result_array();
+        if (count($validdata) > 0) {
+            $out['result'] = $this->success_result;
+            $out['city'] = $validdata[0]['city_name'];
+            $out['state'] = $validdata[0]['state'];
+        }
+        return $out;
+    }
 }

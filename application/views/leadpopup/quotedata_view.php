@@ -53,51 +53,33 @@
         <div class="leadquotediscountarea">
             <div class="datarow">
                 <div class="quotemisschargetitle">
-                    <?php if ($edit_mode==0) { ?>
-                        <?=$data['mischrg_label1']?>
-                    <?php } else { ?>
-                        <input class="quotediscountinpt quotecommondatainpt" data-item="mischrg_label1" placeholder="Misc Charge" value="<?=$data['mischrg_label1']?>"/>
-                    <?php } ?>
+                    <input class="quotediscountinpt quotecommondatainpt" data-item="mischrg_label1" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?>
+                           placeholder="Misc Charge" value="<?=$data['mischrg_label1']?>"/>
                 </div>
                 <div class="quotemisschargevalue">
-                    <?php if ($edit_mode==0) { ?>
-                        <?=abs($data['mischrg_value1'])==0 ? '' : MoneyOutput($data['mischrg_value1'])?>
-                    <?php } else { ?>
-                        <input class="quotediscountinpt quotecommondatainpt"  data-item="mischrg_value1" placeholder="$0.00" value="<?=$data['mischrg_value1']?>"/>
-                    <?php } ?>
+                    <input class="quotediscountinpt quotecommondatainpt"  data-item="mischrg_value1" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?>
+                           placeholder="$0.00" value="<?=$edit_mode==0 ? MoneyOutput($data['mischrg_value1']) : $data['mischrg_value1']?>"/>
                 </div>
             </div>
             <div class="datarow">
                 <div class="quotemisschargetitle">
-                    <?php if ($edit_mode==0) { ?>
-                        <?=$data['mischrg_label2']?>
-                    <?php } else { ?>
-                        <input class="quotediscountinpt quotecommondatainpt" data-item="mischrg_label2" placeholder="Misc Charge" value="<?=$data['mischrg_label2']?>"/>
-                    <?php } ?>
+                    <input class="quotediscountinpt quotecommondatainpt" data-item="mischrg_label2" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?>
+                           placeholder="Misc Charge" value="<?=$data['mischrg_label2']?>"/>
                 </div>
                 <div class="quotemisschargevalue">
-                    <?php if ($edit_mode==0) { ?>
-                        <?=abs($data['mischrg_value2'])==0 ? '' : MoneyOutput($data['mischrg_value2'])?>
-                    <?php } else { ?>
-                        <input class="quotediscountinpt quotecommondatainpt" data-item="mischrg_value2" placeholder="$0.00" value="<?=$data['mischrg_value2']?>"/>
-                    <?php } ?>
+                    <input class="quotediscountinpt quotecommondatainpt" data-item="mischrg_value2" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?>
+                           placeholder="$0.00" value="<?=$edit_mode==0 ? MoneyOutput($data['mischrg_value2']) : $data['mischrg_value2']?>"/>
                 </div>
             </div>
             <div class="datarow">
                 <div class="quotediscountlabel">Discount:</div>
                 <div class="quotediscounttitle">
-                    <?php if ($edit_mode==0) { ?>
-                        <?=$data['discount_label']?>
-                    <?php } else { ?>
-                        <input class="quotediscountinpt quotecommondatainpt" data-item="discount_label" placeholder="Courtesy Discount" value="<?=$data['discount_label']?>"/>
-                    <?php } ?>
+                    <input class="quotediscountinpt quotecommondatainpt" data-item="discount_label" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?>
+                           placeholder="Courtesy Discount" value="<?=$data['discount_label']?>"/>
                 </div>
                 <div class="quotediscountvalue">
-                    <?php if ($edit_mode==0) { ?>
-                        <?=abs($data['discount_value'])==0 ? '' : MoneyOutput($data['discount_value'])?>
-                    <?php } else { ?>
-                        <input class="quotediscountinpt quotecommondatainpt" data-item="discount_value" placeholder="$0.00" value="<?=$data['discount_value']?>"/>
-                    <?php } ?>
+                    <input class="quotediscountinpt quotecommondatainpt" data-item="discount_value" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?>
+                           placeholder="$0.00" value="<?=$edit_mode==0 ? MoneyOutput($data['discount_value']) : $data['discount_value']?>"/>
                 </div>
             </div>
         </div>

@@ -198,8 +198,8 @@ class Leadquote_model extends MY_Model
                 $this->db->select('*');
                 $this->db->from('ts_quote_imprindetails');
                 $this->db->where('quote_item_id', $item['quote_item_id']);
-                $imprintdetails = $this->db->get()->result_array();
-                if (count($imprintdetails)==0 && $edit_mode==1) {
+                $imprintdetdats = $this->db->get()->result_array();
+                if (count($imprintdetdats)==0) {
                     $imprintdetails = [];
                     $detailfld=$this->db->list_fields('ts_quote_imprindetails');
                     for ($i=1; $i<13; $i++) {
@@ -239,12 +239,37 @@ class Leadquote_model extends MY_Model
                         $newloc['setup_4']=$item['setup_price'];
                         $imprintdetails[]=$newloc;
                     }
+                } else {
+                    $imprintdetails = [];
+                    $numpp = 1;
+                    foreach ($imprintdetdats as $row) {
+                        $imprintdetails[] = [
+                            'title' => 'Loc '.$numpp,
+                            'quote_imprindetail_id' => $row['quote_imprindetail_id'],
+                            'quote_item_id' => $row['quote_item_id'],
+                            'active' => $row['imprint_active'],
+                            'imprint_active' => $row['imprint_active'],
+                            'imprint_type' => $row['imprint_type'],
+                            'repeat_note' => $row['repeat_note'],
+                            'location_id' => $row['location_id'],
+                            'num_colors' => $row['num_colors'],
+                            'print_1' => $row['print_1'],
+                            'print_2' => $row['print_2'],
+                            'print_3' => $row['print_3'],
+                            'print_4' => $row['print_4'],
+                            'setup_1' => $row['setup_1'],
+                            'setup_2' => $row['setup_2'],
+                            'setup_3' => $row['setup_3'],
+                            'setup_4' => $row['setup_4'],
+                            'extra_cost' => $row['extra_cost'],
+                        ];
+                        $numpp++;
+                    }
                 }
                 $items[$idx]['imprint_details'] = $imprintdetails;
                 $idx++;
             }
             $shippings = [];
-
             $response['quote'] = $quote;
             $response['items'] = $items;
             $response['shippings'] = $shippings;
@@ -436,6 +461,59 @@ class Leadquote_model extends MY_Model
         // Add new element to Order Items
         $out['result']=$this->success_result;
         $out['quote_items']=$quoteitem;
+        return $out;
+    }
+
+    public function quoteparamchange($data, $quotesession, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Empty Need Parameters', 'totalcalc' => 0];
+        $fldname = ifset($data, 'fld','');
+        if (!empty($fldname)) {
+            $quote = $quotesession['quote'];
+            $quote[$fldname] = $data['newval'];
+            $quotesession['quote'] = $quote;
+            $out['result'] = $this->success_result;
+            usersession($session_id, $quotesession);
+            if ($fldname=='mischrg_value1' || $fldname=='mischrg_value2' || $fldname=='discount_value') {
+                $out['totalcalc'] = 1;
+            }
+        }
+        return $out;
+    }
+
+    public function quoteaddresschange($data, $quotesession, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Empty Need Parameters', 'totalcalc' => 0, 'shiprebuild' => 0, 'calcship' => 0];
+        $fldname = ifset($data, 'fld','');
+        if (!empty($fldname)) {
+            $quote = $quotesession['quote'];
+            $quote[$fldname] = $data['newval'];
+            if ($fldname=='shipping_country') {
+                $out['shiprebuild'] = 1;
+                $quote['shipping_zip'] = '';
+                $quote['shipping_city'] = '';
+                $quote['shipping_state'] = '';
+                $out['totalcalc'] = 1;
+            } elseif ($fldname=='shipping_zip') {
+                $out['shiprebuild'] = 1;
+                $out['totalcalc'] = 1;
+                $out['calcship'] = 1;
+                // Find city and zip
+                if (!empty($data['newval'])) {
+                    $this->load->model('shipping_model');
+                    $zipdat = $this->shipping_model->get_zip_address($quote['shipping_country'], $data['newval']);
+                    if ($zipdat['result']==$this->success_result) {
+                        $quote['shipping_city'] = $zipdat['city'];
+                        $quote['shipping_state'] = $zipdat['state'];
+                    }
+                } else {
+                    $quote['shipping_city'] = '';
+                    $quote['shipping_state'] = '';
+                }
+
+            }
+            $quotesession['quote'] = $quote;
+            $out['result'] = $this->success_result;
+            usersession($session_id, $quotesession);
+        }
         return $out;
     }
 
@@ -723,13 +801,6 @@ class Leadquote_model extends MY_Model
                     return $out;
                 }
             }
-            // Delete old imprints
-            $olddetails = $items[$idx]['imprint_details'];
-            foreach ($olddetails as $imprint_detail) {
-                if ($imprint_detail['quote_imprindetail_id'] > 0 ) {
-                    $deleted[] = ['id' => $imprint_detail['quote_imprindetail_id'], 'entity' => 'imprint_details'];
-                }
-            }
             // New imprint details
             $items[$idx]['imprint_details'] = $imprint_details;
             // Create imprints
@@ -881,7 +952,7 @@ class Leadquote_model extends MY_Model
     }
 
     public function calc_quote_shipping($session_id) {
-
+        
     }
 
     public function calc_quote_totals($session_id) {
