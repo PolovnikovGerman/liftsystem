@@ -941,7 +941,6 @@ class Leadmanagement extends MY_Controller
                     $quote_items = $qres['items'];
                     $shippings = $qres['shippings'];
                     $item_content='';
-                    $item_subtotal = 0;
                     foreach ($quote_items as $quote_item) {
                         $imprints=$quote_item['imprints'];
                         $imprint_options=[
