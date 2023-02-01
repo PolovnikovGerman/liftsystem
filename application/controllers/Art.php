@@ -896,6 +896,7 @@ class Art extends MY_Controller {
             } elseif ($artwork['item_name']=='Multiple') {
                 $artwork['other_item_label']='Multiple';
             }
+            $artwork['brand'] = $data['brand'];
             $orderview=$this->load->view('artpage/artwork_itemdat_view',$artwork, TRUE);
             // $artwork['bypass']=0;
             $commondat=$this->load->view('artpage/artwork_common_view',$artwork,TRUE);

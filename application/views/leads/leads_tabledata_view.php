@@ -4,7 +4,7 @@
         <div class="leadpriority">
             <?=$row['lead_priority_icon']?>
         </div>
-        <div class="leadnumber">L<?=$row['lead_number']?></div>
+        <div class="leadnumber"><?=$brand=='SR' ? 'D' : 'L'?><?=str_pad($row['lead_number'],5,'0',STR_PAD_LEFT)?></div>
         <div class="leaddate"><?=$row['out_date']?></div>
         <div class="leadvalue"><?=$row['out_value']?></div>
         <div class="leadcustomer"><?=$row['contact']?></div>

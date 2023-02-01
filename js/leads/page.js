@@ -14,6 +14,7 @@ $(document).ready(function(){
 });
 
 function init_page(objid) {
+    console.log('Object '+objid);
     $(".leadscontentarea").hide();
     $(".maincontentmenu_item").removeClass('active');
     $(".maincontentmenu_item[data-link='"+objid+"']").addClass('active');
@@ -45,6 +46,10 @@ function init_page(objid) {
         case 'customsbform':
             $("#customsbformview").show();
             init_customforms();
+            break;
+        case 'leadquotes':
+            $("#leadquotesview").show();
+            init_leadquotes();
             break;
     }
 }

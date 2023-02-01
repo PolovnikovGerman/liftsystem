@@ -607,6 +607,54 @@ function init_itemdetails_edit() {
         }, 'json');
     });
     init_outstock_content();
+    $(".change_picture_order").unbind('click').click(function (){
+        change_imgorder();
+    });
+}
+
+function change_imgorder() {
+    var params = new Array();
+    params.push({name: 'session_id', value: $("#session_id").val()});
+    $("#loader").show();
+    var url="/itemdetails/changeimageorder_prepare";
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#loader").hide();
+            $("#editModalLabel").empty().html('Change Images Order');
+            $("#editModal").find('.modal-dialog').css('width','660px');
+            $("#editModal").find('div.modal-body').empty().html(response.data.content);
+            $("#editModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#sortable").sortable();
+            // $("#sortable").disableSelection();
+            $(".saveoder").click(function(){
+                save_imgorder();
+            });
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    }, 'json');
+}
+
+function save_imgorder() {
+    if (confirm('You realy want to change images order? ')) {
+        var dat=$("#sortimg").serializeArray();
+        dat.push({name: 'session_id', value: $("#session_id").val()});
+        var url="/itemdetails/imageorder_save";
+        $("#loader").show();
+        $.post(url, dat, function(response){
+            if (response.errors=='') {
+                $("#editModal").modal('hide');
+                $("#loader").hide();
+                $("#pictures_slade").empty().html(response.data.content);
+                init_itemdetails_edit();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        }, 'json');
+    }
+
 }
 
 function init_outstock_content() {

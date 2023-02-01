@@ -336,11 +336,11 @@ class Orders extends MY_Controller
             $order_id=$this->input->post('order_id');
             $mdata=array();
             /* Get Data about order */
-            $options=array(
+            /*$options=array(
                 'order_id'=>$order_id,
-            );
+            );*/
             $this->load->model('orders_model');
-            $data=$this->orders_model->order_details($options);
+            $data=$this->orders_model->orderonline_details($order_id);
             $error = $data['msg'];
             if ($data['result']==$this->success_result) {
                 $error = '';

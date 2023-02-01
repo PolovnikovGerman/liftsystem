@@ -10,6 +10,10 @@ $config['DeviceID'] = '';
 $config['ApplicationID'] = 'APP-80W284485P519543T';
 $config['DeveloperEmailAccount'] = 'polovnikov.g@gmail.com';
 $config['test_server']='bluetrack.sys';
+$config['APIUsernameSR'] = '';
+$config['APIPasswordSR'] = '';
+$config['APISignatureSR'] = '';
+$config['APIVersionSR'] = '';
 /*
 $config['PayFlowUsername'] = $config['Sandbox'] ? 'tester' : 'PRODUCTION_USERNAME_GOGES_HERE';
 $config['PayFlowPassword'] = $config['Sandbox'] ? 'Passw0rd~' : 'PRODUCTION_PASSWORD_GOES_HERE';

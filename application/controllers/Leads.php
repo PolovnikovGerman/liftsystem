@@ -64,110 +64,49 @@ class Leads extends My_Controller {
                 $head['styles'][]=array('style'=>'/css/leads/leadsview.css');
                 $head['scripts'][]=array('src'=>'/js/leads/leadsview.js');
                 $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
-                // $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-                // if (count($brands)==0) {
-                //    redirect('/');
-                //}
-                // $brand = $brands[0]['brand'];
-                // $top_options = [
-                //    'brands' => $brands,
-                //    'active' => $brand,
-                // ];
-                // $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['leadsview'] = $this->_prepare_leadsview($brand); // $brand, $top_menu
             } elseif ($row['item_link']=='#itemslistview') {
                 $head['styles'][]=array('style'=>'/css/leads/itemslistview.css');
                 $head['scripts'][]=array('src'=>'/js/leads/itemslistview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['itemslistview'] = $this->_prepare_itemslistview($brand); // $brand, $top_menu
             } elseif ($row['item_link']=='#onlinequotesview') {
                 $head['styles'][]=array('style'=>'/css/leads/onlinequotes.css');
                 $head['scripts'][]=array('src'=>'/js/leads/onlinequotes.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['onlinequotesview'] = $this->_prepare_onlinequotesview($brand); // $brand, $top_menu
             } elseif ($row['item_link']=='#proofrequestsview') {
                 $head['styles'][] = array('style' => '/css/art/requestlist.css');
                 $head['scripts'][] = array('src' => '/js/art/requestlist.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['proofrequestsview'] = $this->_prepare_requestlist_view($brand); // $brand, $top_menu
             } elseif ($row['item_link']=='#questionsview') {
                 $head['styles'][] = array('style' => '/css/leads/questionsview.css');
                 $head['scripts'][] = array('src' => '/js/leads/questionsview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands) == 0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['questionsview'] = $this->_prepare_questionslist_view($brand); // $brand, $top_menu
                 // Custom shaped
             } elseif ($row['item_link']=='#customsbform') {
                 $head['styles'][] = array('style' => '/css/leads/customsbform.css');
                 $head['scripts'][] = array('src' => '/js/leads/customsbform.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands) == 0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['customsbformview'] = $this->_prepare_customsbform_view($brand); // $brand, $top_menu
             } elseif ($row['item_link']=='#checkoutattemptsview') {
                 $head['styles'][]=array('style'=>'/css/leads/orderattempts.css');
                 $head['scripts'][]=array('src'=>'/js/leads/orderattempts.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['checkoutattemptsview'] = $this->_prepare_attempts_view($brand); // $brand, $top_menu
+            } elseif ($row['item_link']=='#leadquotes') {
+                $head['styles'][]=array('style'=>'/css/leads/leadquotes.css');
+                $head['scripts'][]=array('src'=>'/js/leads/leadquotes.js');
+                $content_options['leadquotesview'] = $this->_prepare_leadquotes_view($brand); // $brand, $top_menu
             }
         }
         // Add main page management
         $head['scripts'][] = array('src' => '/js/leads/page.js');
         $head['styles'][] = array('style' => '/css/leads/leadspage.css');
         // Lead popup
-        $head['styles'][] = array('style' => '/css/leads/lead_popup.css');
+        // $head['styles'][] = array('style' => '/css/leads/lead_popup.css');
+        $head['styles'][] = array('style' => '/css/leads/leadpopup.css');
         $head['scripts'][] = array('src' => '/js/leads/lead_popup.js');
+        // Lead Quote
+        $head['styles'][] = array('style' => '/css/leads/leadquote.css');
+        $head['scripts'][] = array('src' => '/js/leads/leadquote.js');
+
         // Utils
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
@@ -185,6 +124,8 @@ class Leads extends My_Controller {
         // Searchable
         $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
         $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
+        // Scroll panel
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery-scrollpanel.js');
 
         $options = [
             'title' => $head['title'],
@@ -240,6 +181,7 @@ class Leads extends My_Controller {
                 } else {
                     $options=array(
                         'data'=>$leaddat,
+                        'brand' => $brand,
                     );
                     $mdata['leadcontent']=$this->load->view('leads/leads_tabledata_view',$options, TRUE);
                 }
@@ -292,6 +234,12 @@ class Leads extends My_Controller {
                 $this->load->model('leads_model');
                 $minlead=$this->leads_model->get_lead_mindate($brand);
                 $minorder=$this->orders_model->get_order_mindate($brand);
+                if (empty($minlead)) {
+                    $minlead = time();
+                }
+                if (empty($minorder)) {
+                    $minorder = time();
+                }
                 $out_options=[];
                 $user_id = ifset($postdata,'user_id');
                 $show_feature=ifset($postdata, 'showfeature',0);
@@ -1223,6 +1171,7 @@ class Leads extends My_Controller {
         $active = 0;
         $ldat['replicas']=$this->user_model->get_user_leadreplicas($active);
         $ldat['user_id']=$this->USR_ID;
+        $ldat['user_role'] = $this->USR_ROLE;
         $user_dat=$this->user_model->get_user_data($this->USR_ID);
         $ldat['user_name']=($user_dat['user_leadname']=='' ? $this->USR_NAME : $user_dat['user_leadname']);
 
@@ -1342,6 +1291,25 @@ class Leads extends My_Controller {
         $datqs['total_rec']=$this->customform_model->get_count_forms($search);
 
         $content=$this->load->view('customsbforms/customform_view.php',$datqs,TRUE);
+        return $content;
+
+    }
+
+    private function _prepare_leadquotes_view($brand) {
+        $datqs=[
+            'perpage' => $this->config->item('quotes_perpage'),
+            'order_by' => 'date_add',
+            'direction' => 'desc',
+            'cur_page' => 0,
+            'brand' => $brand,
+            'replica'=>'',
+        ];
+
+        $search=array('replica'=>'','brand'=>$brand);
+        // $this->load->model('customform_model');
+        // $datqs['total_rec']=$this->customform_model->get_count_forms($search);
+
+        $content=$this->load->view('leadquotes/page_view',$datqs,TRUE);
         return $content;
 
     }

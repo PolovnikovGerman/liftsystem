@@ -2809,6 +2809,7 @@ Class Leadorder_model extends My_Model {
             'cardtype'=>($cardtype=='American Express' ? 'Amex' : $cardtype),
             'exp_month'=>str_pad($charge['exp_month'],2,'0', STR_PAD_LEFT),
             'exp_year'=>str_pad($charge['exp_year'],2,'0', STR_PAD_LEFT),
+            'brand' =>  $order_data['brand'],
         );
         $transres=$this->order_payment($pay_options);
         if ($transres['result']==$this->error_result) {
@@ -4628,7 +4629,11 @@ Class Leadorder_model extends My_Model {
         $this->db->set('discount_val', floatval($data['discount_val']));
         $this->db->set('discount_descript', $data['discount_descript']);
         if ($order_id==0) {
-            $confirm=strtoupper(uniq_link(2,'chars')).'-'.uniq_link(5,'digits');
+            if ($data['brand']=='SR') {
+                $confirm=uniq_link(5,'digits').'-'.strtoupper(uniq_link(2,'chars'));
+            } else {
+                $confirm=strtoupper(uniq_link(2,'chars')).'-'.uniq_link(5,'digits');
+            }
             $this->db->set('order_confirmation', $confirm);
             $this->db->set('create_usr',$user_id);
             $this->db->set('create_date',time());
@@ -4640,7 +4645,12 @@ Class Leadorder_model extends My_Model {
             } else {
                 $res['result']=$order_id=$this->db->insert_id();
                 $this->load->model('orders_model');
-                $neworder_num=$this->orders_model->get_last_ordernum();
+                if ($data['brand']=='SR') {
+                    $neworder_num=$this->orders_model->get_srorder_number();
+                } else {
+                    $neworder_num=$this->orders_model->get_last_ordernum();
+                }
+
                 // $this->db->set('order_num',$neworder_num+1);
                 $this->db->set('order_num',$neworder_num);
                 $this->db->where('order_id', $order_id);
@@ -6220,6 +6230,7 @@ Class Leadorder_model extends My_Model {
             'cardcode'=>'',
             'exp_month'=>'',
             'exp_year'=>'',
+            'brand' => $order_data['brand'],
         );
         $total_payment = 0;
         foreach ($res as $row) {
@@ -6357,26 +6368,51 @@ Class Leadorder_model extends My_Model {
             // Load PayPal library
             if ($realconfig==0) {
                 $this->config->load('paypal_test');
-                $config = array(
-                    'Sandbox' => TRUE, 			// Sandbox / testing mode option.
-                    'APIUsername' => $this->config->item('APIUsername'), 	// PayPal API username of the API caller
-                    'APIPassword' => $this->config->item('APIPassword'), 	// PayPal API password of the API caller
-                    'APISignature' => $this->config->item('APISignature'), 	// PayPal API signature of the API caller
-                    'APISubject' => '', 						// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
-                    'APIVersion' => $this->config->item('APIVersion')		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
-                );
+                if ($options['brand']=='SR') {
+                    $config = array(
+                        'Sandbox' => TRUE, 			// Sandbox / testing mode option.
+                        'APIUsername' => $this->config->item('APIUsernameSR'), 	// PayPal API username of the API caller
+                        'APIPassword' => $this->config->item('APIPasswordSR'), 	// PayPal API password of the API caller
+                        'APISignature' => $this->config->item('APISignatureSR'), 	// PayPal API signature of the API caller
+                        'APISubject' => '', 						// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
+                        'APIVersion' => $this->config->item('APIVersionSR')		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
+                    );
+                } else {
+                    $config = array(
+                        'Sandbox' => TRUE, 			// Sandbox / testing mode option.
+                        'APIUsername' => $this->config->item('APIUsername'), 	// PayPal API username of the API caller
+                        'APIPassword' => $this->config->item('APIPassword'), 	// PayPal API password of the API caller
+                        'APISignature' => $this->config->item('APISignature'), 	// PayPal API signature of the API caller
+                        'APISubject' => '', 						// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
+                        'APIVersion' => $this->config->item('APIVersion')		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
+                    );
+                }
             } else {
                 $this->config->load('paypal_live');
-                $config = array(
-                    'APIUsername' => $this->config->item('APIUsername'), 	// PayPal API username of the API caller
-                    'APIPassword' => $this->config->item('APIPassword'), 	// PayPal API password of the API caller
-                    'APISignature' => $this->config->item('APISignature'), 	// PayPal API signature of the API caller
-                    'APISubject' => '', 									// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
-                    'APIVersion' => $this->config->item('APIVersion'),		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
-                    'Sandbox' => $this->config->item('Sandbox'), 			// Sandbox / testing mode option.
-                );
+                if ($options['brand']=='SR') {
+                    $config = array(
+                        'Sandbox' => $this->config->item('Sandbox'), 			// Sandbox / testing mode option.
+                        'APIUsername' => $this->config->item('APIUsernameSR'), 	// PayPal API username of the API caller
+                        'APIPassword' => $this->config->item('APIPasswordSR'), 	// PayPal API password of the API caller
+                        'APISignature' => $this->config->item('APISignatureSR'), 	// PayPal API signature of the API caller
+                        'APISubject' => '', 									// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
+                        'APIVersion' => $this->config->item('APIVersionSR'),		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
+                    );
+                } else {
+                    $config = array(
+                        'APIUsername' => $this->config->item('APIUsername'), 	// PayPal API username of the API caller
+                        'APIPassword' => $this->config->item('APIPassword'), 	// PayPal API password of the API caller
+                        'APISignature' => $this->config->item('APISignature'), 	// PayPal API signature of the API caller
+                        'APISubject' => '', 									// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
+                        'APIVersion' => $this->config->item('APIVersion'),		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
+                        'Sandbox' => $this->config->item('Sandbox'), 			// Sandbox / testing mode option.
+                    );
+                }
             }
             // Show Errors
+            if (empty($config['APIUsername']) || empty($config['APIPassword']) || empty($config['APISignature'])) {
+                return array('result' => $this->error_result, 'error_msg' => 'Empty Credentials for Payment');
+            }
             $this->load->library('paypal/Paypal_pro', $config);
             // Prepare Objects
             $DPFields = array(
@@ -8153,6 +8189,7 @@ Class Leadorder_model extends My_Model {
             'payments_detail' => $payments_details,
             'balance'=>  MoneyOutput($balance),
             'tax_term'=>($order['order_date']<=$this->config->item('datenewtax') ? $this->config->item('salestax') : $this->config->item('salesnewtax')),
+            'brand' => $order['brand'],
         );
 
         // $html=$this->load->view('leadorderdetails/docs/invoice_view', $options, TRUE);
@@ -8852,29 +8889,53 @@ Class Leadorder_model extends My_Model {
     private function _invoice_pdfdoc_create($options, $file_out) {
         define('FPDF_FONTPATH', FCPATH.'font');
         $this->load->library('fpdf/fpdfeps');
+        $brand = ifset($options,'brand', 'SB');
         // Prepare
-        $logoFile = FCPATH."/img/invoice/logos-2.eps";
+        if ($brand=='SR') {
+            $logoFile = FCPATH."/img/invoicesr/sr-logos-2.eps";
+            $logoWidth = 187.844;
+            $logoHeight = 22.855;
+            $logoYPos = 5;
+        } else {
+            $logoFile = FCPATH."/img/invoice/logos-2.eps";
+            $logoWidth = 105.655;
+            $logoHeight = 12.855;
+            $logoYPos = 10;
+        }
         $logoXPos = 5;
-        $logoYPos = 10;
-        $logoWidth = 105.655;
-        $logoHeight = 12.855;
         $logoType = 'JPG';
 
-        $invnumImg = FCPATH.'/img/invoice/invoice_num.eps';
+        if ($brand=='SR') {
+            $invnumImg = FCPATH.'/img/invoicesr/sr-invoice_num.eps';
+        } else {
+            $invnumImg = FCPATH.'/img/invoice/invoice_num.eps';
+        }
         $invnumXPos = 120;
         $invnumYPos = 10;
         $invnumWidth = 0;
         $invnumHeigth = 16.5;
 
-        $dateImage = FCPATH.'/img/invoice/date_bg-3.eps';
+        if ($brand=='SR') {
+            $dateImage = FCPATH.'/img/invoicesr/sr-date_bg-3.eps';
+            $dateYPos = 33.7;
+        } else {
+            $dateImage = FCPATH.'/img/invoice/date_bg-3.eps';
+            $dateYPos = 28.7;
+        }
+
         $dateXPos = 158;
-        $dateYPos = 28.7;
         $dateWidth = 0;
         $dateHeight = 9;
 
-        $ponumImage = FCPATH.'/img/invoice/customer_code_bg.eps';
-        $ponumXPos = 90;
-        $ponumYPos = 28.7;
+        if ($brand=='SR') {
+            $ponumImage = FCPATH.'/img/invoicesr/sr-customer_code_bg-2.eps';
+            $ponumYPos = 33.7;
+            $ponumXPos = 70;
+        } else {
+            $ponumImage = FCPATH.'/img/invoice/customer_code_bg.eps';
+            $ponumYPos = 28.7;
+            $ponumXPos = 90;
+        }
         $ponumWidth = 0;
         $ponumHeight = 9;
 
@@ -8923,27 +8984,51 @@ Class Leadorder_model extends My_Model {
         $pdf->ImageEps($invnumImg, $invnumXPos, $invnumYPos, $invnumWidth, $invnumHeigth);
         $pdf->SetXY(167, 10.8);
         $pdf->SetFont('','B',16.564429);
-        $pdf->SetTextColor(0, 0, 255);
+        if ($brand=='SR') {
+            $pdf->SetTextColor(0,0,75);
+        } else {
+            $pdf->SetTextColor(0, 0, 255);
+        }
         $pdf->Cell(35.8,16,$options['order_num'],0,0,'C');
 
         $pdf->SetTextColor(0,0,0);
-        $pdf->SetFont('','',12.046857);
-        $pdf->Text(5, 27.88, '855 Bloomfield Ave');
-        $pdf->Text(5, 33.88, 'Clifton, NJ 07012');
-        $pdf->Text(5,39.88, 'Call Us at');
-        $pdf->SetTextColor(0,0,255);
-        $pdf->Text(23,39.88, '1-800-790-6090');
-        $pdf->Text(5,45.88,'www.bluetrack.com'); // , 'http://www.bluetrack.com');
+
+        if ($brand=='SR') {
+            $pdf->SetFont('','',12.046857);
+            $pdf->Text(5, 30.88, 'ASI # 40694');
+            $pdf->Text(5, 36.88, '855 Bloomfield Ave');
+            $pdf->Text(5, 42.88, 'Clifton, NJ 07012');
+            $pdf->Text(5,48.88, 'Call Us at');
+            $pdf->SetTextColor(0,0,75);
+            $pdf->Text(23,48.88, '1-800-370-3020');
+            // $pdf->Text(5,45.88,'www.stressrelievers.com'); // , 'http://www.bluetrack.com');
+        } else {
+            $pdf->SetFont('','',12.046857);
+            $pdf->Text(5, 27.88, '855 Bloomfield Ave');
+            $pdf->Text(5, 33.88, 'Clifton, NJ 07012');
+            $pdf->Text(5,39.88, 'Call Us at');
+            $pdf->SetTextColor(0,0,255);
+            $pdf->Text(23,39.88, '1-800-790-6090');
+            $pdf->Text(5,45.88,'www.bluetrack.com'); // , 'http://www.bluetrack.com');
+        }
         $pdf->SetTextColor(65, 65, 65);
         $pdf->ImageEps($dateImage, $dateXPos, $dateYPos, $dateWidth, $dateHeight);
         $pdf->SetTextColor(0,0,0);
         $pdf->SetFont('', '', 13.552714);
-        $pdf->SetXY(177, 29);
+        if ($brand=='SR') {
+            $pdf->SetXY(177, 34);
+        } else {
+            $pdf->SetXY(177, 29);
+        }
         $pdf->Cell(27, 8, $options['order_date'],0,0, 'C');
         // $pdf->Text(179.8, 35.88, $options['order_date']);
         if (!empty($options['customer_code'])) {
             $pdf->ImageEps($ponumImage, $ponumXPos, $ponumYPos, $ponumWidth, $ponumHeight);
-            $pdf->SetXY(127,29);
+            if ($brand=='SR') {
+                $pdf->SetXY(117,34);
+            } else {
+                $pdf->SetXY(127,29);
+            }
             $pdf->SetFont('','B');
             $pdf->Cell(27,8,$options['customer_code'],0,0,'C');
         }
@@ -9101,6 +9186,85 @@ Class Leadorder_model extends My_Model {
 
     }
 
+    public function remove_amount($amount, $user_id, $editmode, $leadorder, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>'');
+        if ($editmode==0) {
+            $brand = $leadorder['order']['brand'];
+            $this->load->model('payments_model');
+            $res=$this->payments_model->delete_amount($amount, $user_id, $brand);
+            if ($res==0) {
+                $out['msg']='Amount was not deleted';
+            } else {
+                $out['result']=$this->success_result;
+                // Get new total,
+                $order=$leadorder['order'];
+                $this->db->select('order_cog, profit, profit_perc');
+                $this->db->from('ts_orders');
+                $this->db->where('order_id', $order['order_id']);
+                $newdat = $this->db->get()->row_array();
+                if (empty($newdat['order_cog'])) {
+                    $order['profit_class']=$this->project_class;
+                } else {
+                    $order['profit_class']=orderProfitClass($newdat['profit_perc']);
+                }
+                $order['order_cog']=$newdat['order_cog'];
+                $order['profit']=$newdat['profit'];
+                $order['profit_perc']=$newdat['profit_perc'];
+                $leadorder['order']=$order;
+                usersession($ordersession, $leadorder);
+            }
+        }
+        return $out;
+    }
+
+    public function edit_amount($amount, $user_id, $editmode, $leadorder, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>'');
+        if ($editmode==0) {
+            $order=$leadorder['order'];
+            $this->load->model('payments_model');
+            $res = $this->payments_model->get_purchase_order($amount);
+            $out['msg'] = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $out['result'] = $this->success_result;
+                $out['amount'] = $res['data'];
+                $this->load->model('orders_model');
+                $out['order'] = $this->orders_model->get_order_detail($order['order_id']);
+            }
+            usersession($ordersession, $leadorder);
+        }
+        return $out;
+    }
+
+    public function amount_save($amntdata, $user_id, $editmode, $leadorder, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=>'');
+        if ($editmode==0) {
+            $brand = $leadorder['order']['brand'];
+            $this->load->model('payments_model');
+            $amntdata['user_id']=$user_id;
+            $amntdata['brand'] = $brand;
+            $res=$this->payments_model->save_poamount($amntdata);
+            $out['msg']=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $out['result'] = $this->success_result;
+                $order=$leadorder['order'];
+                $this->db->select('order_cog, profit, profit_perc');
+                $this->db->from('ts_orders');
+                $this->db->where('order_id', $order['order_id']);
+                $newdat = $this->db->get()->row_array();
+                if (empty($newdat['order_cog'])) {
+                    $order['profit_class']=$this->project_class;
+                } else {
+                    $order['profit_class']=orderProfitClass($newdat['profit_perc']);
+                }
+                $order['order_cog']=$newdat['order_cog'];
+                $order['profit']=$newdat['profit'];
+                $order['profit_perc']=$newdat['profit_perc'];
+                $leadorder['order']=$order;
+                usersession($ordersession, $leadorder);
+            }
+        }
+        return $out;
+    }
     public function change_order_rushpast($leadorder, $newval, $ordersession) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message, 'fin'=>0);
         $this->load->model('shipping_model');

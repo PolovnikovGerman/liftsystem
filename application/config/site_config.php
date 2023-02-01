@@ -1,6 +1,6 @@
 <?php
-$config['js_version'] = '2.02026';
-$config['css_version']= '2.02026';
+$config['js_version'] = '2.02030';
+$config['css_version']= '2.02030';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -288,3 +288,4 @@ if ($config['test_server']==1) {
 $config['prooflnk']='https://www.bluetrack.com/proofs/';
 $config['newprooflnk']='https://www.bluetrack.com/proofview/?doc=';
 $config['debug_mode'] = (getenv('TEST_SERVER')==1 ? '1' : 0);
+$config['default_country'] = 223;
