@@ -952,7 +952,34 @@ class Leadquote_model extends MY_Model
     }
 
     public function calc_quote_shipping($session_id) {
-        
+        $quotesession = usersession($session_id);
+        $quote = $quotesession['quote'];
+        $items = $quotesession['items'];
+        $shippings = $quotesession['shipping'];
+        $deleted = $quotesession['deleted'];
+        if (empty($quote['shipping_zip'])) {
+            // Delete old shipping
+            foreach ($shippings as $shipping) {
+                if ($shipping['quote_shipping_id'] > 0) {
+                    $deleted[] = ['entity' => 'shipping', 'id' => $shipping['quote_shipping_id']];
+                }
+            }
+            $quotesession['deleted'] = $deleted;
+            $quotesession['shipping'] = [];
+        } else {
+            $this->load->model('shipping_model');
+            $res = $this->shipping_model->count_quoteshiprates($items, $quote, time(), $quote['brand']);
+            if ($res['result']==$this->success_result) {
+                // Delete old shippings
+                foreach ($shippings as $shipping) {
+                    if ($shipping['quote_shipping_id'] > 0) {
+                        $deleted[] = ['entity' => 'shipping', 'id' => $shipping['quote_shipping_id']];
+                    }
+                }
+                $quotesession['deleted'] = $deleted;
+            }
+        }
+        usersession($session_id, $quotesession);
     }
 
     public function calc_quote_totals($session_id) {
@@ -1136,13 +1163,18 @@ class Leadquote_model extends MY_Model
             foreach ($deleted as $row) {
                 // 'entity' => 'imprints'
                 // 'entity' => 'imprint_details'
+                // 'entity' => 'shipping', 'id' => $shipping['quote_shipping_id']];
                 if ($row['entity']=='imprints') {
                     $this->db->where('quote_imprint_id', $row['id']);
                     $this->db->delete('ts_quote_imprints');
                 } elseif ($row['entity']=='imprint_details') {
                     $this->db->where('quote_imprindetail_id', $row['id']);
                     $this->db->delete('ts_quote_imprindetails');
+                } elseif ($row['entity']=='shipping') {
+                    $this->db->where('quote_shipping_id', $row['id']);
+                    $this->db->delete('ts_quote_shippings');
                 }
+
             }
             $out['result'] = $this->success_result;
         }
