@@ -198,7 +198,10 @@ function init_leadpopupedit() {
         var mail_id=$(this).data('leadid');
         var lead_id=$("input#lead_id").val();
         var dat=$("form#leadeditform").serializeArray();
+        dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
         dat.push({name:'session_id', value: $("#session").val()});
+        dat.push({name: 'session_attach', value: $("#session_attach").val()});
+        dat.push({name: 'lead_type', value: $("#lead_type").val()});
         var url=mainurl+"/lead_proofrequest";
         $.post(url, dat, function(response){
             if (response.errors=='') {
@@ -332,6 +335,7 @@ function add_proofrequest() {
         dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
         dat.push({name:'session_id', value: $("#session").val()});
         dat.push({name: 'session_attach', value: $("#session_attach").val()});
+        dat.push({name: 'lead_type', value: $("#lead_type").val()});
         $("#loader").show();
         $.ajax({
             url: url,
@@ -453,8 +457,10 @@ function lead_itemchange(item_id) {
 function duplicatelead() {
    // var lead_id=$("input#lead_id").val();
    var dat=$("form#leadeditform").serializeArray();
-   dat.push({name:'session_id', value: $("#session").val()});
-   dat.push({name: 'session_attach', value: $("#session_attach").val()});
+    dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
+    dat.push({name:'session_id', value: $("#session").val()});
+    dat.push({name: 'session_attach', value: $("#session_attach").val()});
+    dat.push({name: 'lead_type', value: $("#lead_type").val()});
    var lead_number=$("div.lead_popup_number").text();
    if (confirm("Are you sure you want to duplicate "+lead_number+" ?")==true) {
        var url=mainurl+"/dublicatelead";
@@ -478,9 +484,10 @@ function save_lead() {
    var option=$("input[type=checkbox]").filter(":first").prop('disabled');
    $("input[type=checkbox]").attr('disabled',false);
    var dat=$("form#leadeditform").serializeArray();
-   dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
-   dat.push({name: 'session_id', value: $("#session").val()});
-   dat.push({name: 'session_attach', value: $("#session_attach").val()});
+    dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
+    dat.push({name:'session_id', value: $("#session").val()});
+    dat.push({name: 'session_attach', value: $("#session_attach").val()});
+    dat.push({name: 'lead_type', value: $("#lead_type").val()});
    var url=mainurl+"/save_lead";
    $.post(url, dat, function(response){
        if (response.errors=='') {
