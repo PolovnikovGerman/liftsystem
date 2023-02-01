@@ -1209,7 +1209,7 @@ class Leadquote_model extends MY_Model
                         $this->db->where('quote_imprindetail_id', $imprintdetail['quote_imprindetail_id']);
                         $this->db->update('ts_quote_imprindetails');
                     } else {
-                        $this->db->set('quote_id', $quote_id);
+                        $this->db->set('quote_item_id', $quote_item_id);
                         $this->db->insert('ts_quote_imprindetails');
                     }
                 }
