@@ -889,6 +889,7 @@ class Leadmanagement extends MY_Controller
                         'edit_mode' => 1,
                         'shipstates' => $shipstates,
                         'billstates' => $billstates,
+                        'shiprates' => '',
                     ];
                     $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
                 }
