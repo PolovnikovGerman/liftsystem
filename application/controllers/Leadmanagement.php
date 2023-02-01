@@ -961,7 +961,15 @@ class Leadmanagement extends MY_Controller
                         } else {
                             $item_content.=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
                         }
-
+                    }
+                    // Shipping view
+                    $shiprates = '';
+                    if (count($shippings) > 0) {
+                        $shipoptions = [
+                            'edit_mode' => $edit_mode,
+                            'shippings' => $shippings,
+                        ];
+                        $shiprates = $this->load->view('leadpopup/quote_shiprates_view', $shipoptions, TRUE);
                     }
                     $quote_session = 'quote'.uniq_link(15);
                     $sessiondata = [
@@ -982,6 +990,7 @@ class Leadmanagement extends MY_Controller
                         'edit_mode' => $edit_mode,
                         'shipstates' => $shipstates,
                         'billstates' => $billstates,
+                        'shiprates' => $shiprates,
                     ];
                     $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
                 }
@@ -1044,6 +1053,15 @@ class Leadmanagement extends MY_Controller
                     if ($res['calcship']==1) {
                         $this->leadquote_model->calc_quote_shipping($session_id);
                         // Show shipping costs
+                        $quotesession = usersession($session_id);
+                        $quote = $quotesession['quote'];
+                        $mdata['shipping_cost'] = $quote['shipping_cost'];
+                        $shipping = $quotesession['shipping'];
+                        $options = [
+                            'shippings' => $shipping,
+                            'edit_mode' => 1,
+                        ];
+                        $mdata['shippingview'] = $this->load->view('leadpopup/quote_shiprates_view', $options, TRUE);
 
                     }
                     $mdata['totalcalc'] = $res['totalcalc'];
@@ -1060,6 +1078,38 @@ class Leadmanagement extends MY_Controller
         }
         show_404();
     }
+
+    public function quoteratechange() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'session','unknw');
+            $quotesession = usersession($session_id);
+            if (!empty($quotesession)) {
+                $this->load->model('leadquote_model');
+                $res = $this->leadquote_model->quoteratechange($postdata, $quotesession, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $this->leadquote_model->calc_quote_totals($session_id);
+                    $quotesession = usersession($session_id);
+                    $quote = $quotesession['quote'];
+                    $shipping = $quotesession['shipping'];
+                    $options = [
+                        'shippings' => $shipping,
+                        'edit_mode' => 1,
+                    ];
+                    $mdata['shippingview'] = $this->load->view('leadpopup/quote_shiprates_view', $options, TRUE);
+                    $mdata['shipping_cost'] = $quote['shipping_cost'];
+                    $mdata['total'] = MoneyOutput($quote['quote_total']);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function quoteitemchange() {
         if ($this->isAjax()) {
             $postdata = $this->input->post();

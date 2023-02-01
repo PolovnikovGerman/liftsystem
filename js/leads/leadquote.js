@@ -113,19 +113,42 @@ function init_leadquotes_content() {
                 }
                 if (parseInt(response.data.calcship)==1) {
                     // Update shipping cost
+                    $(".quoteleadshipcostinpt[data-item='shipping_cost']").val(response.data.shipping_cost);
+                    $(".quoteshippingcostarea").empty().html(response.data.shippingview);
                 }
                 if (parseInt(response.data.totalcalc)==1) {
                     $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
                     $(".quotetotalvalue").empty().html(response.data.total);
                 }
                 $("#loader").hide();
+                init_leadquotes_content();
             } else {
                 $("#loader").hide();
                 show_error(response);
             }
         },'json');
     });
+    // Change rate
+    $(".quoteratecheck.choice").unbind('click').click(function(){
+        params.push({name: 'session', value: $("#quotesessionid").val()});
+        params.push({name: 'newval', value: $(this).data('shiprate')});
+        var url = '/leadmanagement/quoteratechange';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                // Update shipping cost
+                $(".quoteleadshipcostinpt[data-item='shipping_cost']").val(response.data.shipping_cost);
+                $(".quoteshippingcostarea").empty().html(response.data.shippingview);
+                $(".quotetotalvalue").empty().html(response.data.total);
+                $("#loader").hide();
+                init_leadquotes_content();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
 
+    });
     $("input.quouteitem_input").unbind('change').change(function(){
         var itemcolor = $(this).data('item');
         var item = $(this).data('quoteitem');

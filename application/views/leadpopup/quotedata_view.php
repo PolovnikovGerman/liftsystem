@@ -159,7 +159,7 @@
                 </div>
             </div>
             <div class="datarow">
-                <div class="quoteshippingcostarea">&nbsp;</div>
+                <div class="quoteshippingcostarea"><?=$shiprates?></div>
                 <div class="quoteshipcost">
                     <input class="quoteleadshipcostinpt quoteshipcostvalue quotecommondatainpt" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?>
                     data-item="shipping_cost" value="<?=$data['shipping_cost']?>"/>

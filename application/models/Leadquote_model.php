@@ -269,7 +269,12 @@ class Leadquote_model extends MY_Model
                 $items[$idx]['imprint_details'] = $imprintdetails;
                 $idx++;
             }
-            $shippings = [];
+            // Ship rates
+            $this->db->select('*');
+            $this->db->from('ts_quote_shippings');
+            $this->db->where('quote_id', $quote_id);
+            $shippings = $this->db->get()->result_array();
+
             $response['quote'] = $quote;
             $response['items'] = $items;
             $response['shippings'] = $shippings;
@@ -512,6 +517,37 @@ class Leadquote_model extends MY_Model
             }
             $quotesession['quote'] = $quote;
             $out['result'] = $this->success_result;
+            usersession($session_id, $quotesession);
+        }
+        return $out;
+    }
+
+    public function quoteratechange($postdata, $quotesession, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Shipping Method not found' ];
+        $shipmeth = ifset($postdata, 'newval','unkn');
+        $shippings = $quotesession['shipping'];
+        $found = 0;
+        $shipidx = 0;
+        foreach ($shippings as $shipping) {
+            if ($shipping['shipping_code']==$shipmeth) {
+                $found = 1;
+                break;
+            } else {
+                $shipidx++;
+            }
+        }
+        if ($found==1) {
+            $out['result'] = $this->success_result;
+            $i=0;
+            foreach ($shippings as $shipping) {
+                $shippings[$i]['active'] = 0;
+                $i++;
+            }
+            $shippings[$shipidx]['active'] = 1;
+            $quote = $quotesession['quote'];
+            $quote['shipping_cost'] = $shippings[$shipidx]['shipping_rate'];
+            $quotesession['quote'] = $quote;
+            $quotesession['shipping'] = $shippings;
             usersession($session_id, $quotesession);
         }
         return $out;
@@ -957,6 +993,7 @@ class Leadquote_model extends MY_Model
         $items = $quotesession['items'];
         $shippings = $quotesession['shipping'];
         $deleted = $quotesession['deleted'];
+        $newshipcost = 0;
         if (empty($quote['shipping_zip'])) {
             // Delete old shipping
             foreach ($shippings as $shipping) {
@@ -976,9 +1013,27 @@ class Leadquote_model extends MY_Model
                         $deleted[] = ['entity' => 'shipping', 'id' => $shipping['quote_shipping_id']];
                     }
                 }
+                $newrates = [];
+                $numpp = 1;
+                foreach ($res['ships'] as $rate) {
+                    $newrates[] = [
+                        'quote_shipping_id' => (-1)*$numpp,
+                        'active' => $rate['current'],
+                        'shipping_code' => $rate['code'],
+                        'shipping_name' => $rate['ServiceName'],
+                        'shipping_rate' => $rate['Rate'],
+                        'shipping_date' => $rate['DeliveryDate'],
+                    ];
+                    if ($rate['current']==1) {
+                        $newshipcost = $rate['Rate'];
+                    }
+                }
+                $quotesession['shipping'] = $newrates;
                 $quotesession['deleted'] = $deleted;
             }
         }
+        $quote['shipping_cost'] = $newshipcost;
+        $quotesession['quote'] = $quote;
         usersession($session_id, $quotesession);
     }
 
@@ -1154,12 +1209,27 @@ class Leadquote_model extends MY_Model
                         $this->db->where('quote_imprindetail_id', $imprintdetail['quote_imprindetail_id']);
                         $this->db->update('ts_quote_imprindetails');
                     } else {
-                        $this->db->set('quote_item_id', $quote_item_id);
+                        $this->db->set('quote_id', $quote_id);
                         $this->db->insert('ts_quote_imprindetails');
                     }
                 }
             }
-            $deleted = $quotesession['deleted'];
+            // Ship Rates
+            foreach ($shipping as $rate) {
+                $this->db->set('active', $rate['active']);
+                $this->db->set('shipping_code', $rate['shipping_code']);
+                $this->db->set('shipping_name', $rate['shipping_name']);
+                $this->db->set('shipping_rate', $rate['shipping_rate']);
+                $this->db->set('shipping_date', $rate['shipping_date']);
+                if ($rate['quote_shipping_id'] > 0) {
+                    $this->db->where('quote_shipping_id', $rate['quote_shipping_id']);
+                    $this->db->update('ts_quote_shippings');
+                } else {
+                    $this->db->set('quote_id', $quote_id);
+                    $this->db->insert('ts_quote_shippings');
+                }
+            }
+
             foreach ($deleted as $row) {
                 // 'entity' => 'imprints'
                 // 'entity' => 'imprint_details'

@@ -468,8 +468,38 @@ input.quoteleadrushcost {
     height: 66px;
     background: #f5f5f5;
     border: 2px solid #000000;
-    margin: 4px;
+    margin: 5px 4px 4px 4px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
+/* Ship Rates */
+.quoteshippingcostarea .datarow div {
+    height: 20px;
+    line-height: 20px;
+    font-size: 11px;
+}
+.quoteshippingcostarea .datarow div.active {
+    font-weight: 600;
+}
+.quoteratecheck {
+    font-size: 13px!important;
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
+}
+.quoteratecheck.choice i {
+    cursor: pointer;
+}
+.quoteratemethod {
+    margin-right: 5px;
+}
+.quoteratecost {
+    margin-right: 5px;
+}
+.quoteratearrive {
+    color: #2b2bd8!important;
+}
+/*  Ship Rates End */
 .quoteshipcost {
     width: 52px;
     margin-top: 23px;
