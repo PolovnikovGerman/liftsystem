@@ -848,7 +848,7 @@ class Leadmanagement extends MY_Controller
                     // Prepare content
                     $quotedata = $qres['quote'];
                     $quote_items = $qres['quote_items'];
-                    $item_content='';
+                    $items_views = [];
                     $item_subtotal = 0;
                     foreach ($quote_items as $quote_item) {
                         $imprints=$quote_item['imprints'];
@@ -865,9 +865,14 @@ class Leadmanagement extends MY_Controller
                             'edit'=>1,
                             'item_id'=>$quote_item['item_id'],
                         ];
-                        $item_content.=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
+                        $item_view=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
                         $item_subtotal+=$quote_item['item_subtotal'];
+                        $items_views[] = [
+                            'quote_item_id'=>$quote_item['quote_item_id'],
+                            'view' => $item_view,
+                        ];
                     }
+                    $item_content = $this->load->view('leadpopup/items_content_view', ['data' => $items_views], TRUE);
                     $quotedata['items_subtotal'] = $item_subtotal;
                     $quotedata['quote_total'] = $item_subtotal;
                     $quote_session = 'quote'.uniq_link(15);
@@ -940,7 +945,7 @@ class Leadmanagement extends MY_Controller
                     };
                     $quote_items = $qres['items'];
                     $shippings = $qres['shippings'];
-                    $item_content='';
+                    $items_views = [];
                     foreach ($quote_items as $quote_item) {
                         $imprints=$quote_item['imprints'];
                         $imprint_options=[
@@ -957,11 +962,16 @@ class Leadmanagement extends MY_Controller
                             'item_id'=>$quote_item['item_id'],
                         ];
                         if ($edit_mode==0) {
-                            $item_content.=$this->load->view('leadpopup/items_data_view', $item_options, TRUE);
+                            $view=$this->load->view('leadpopup/items_data_view', $item_options, TRUE);
                         } else {
-                            $item_content.=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
+                            $view=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
                         }
+                        $items_views[] = [
+                            'quote_item_id'=>$quote_item['quote_item_id'],
+                            'view' => $view,
+                        ];
                     }
+                    $item_content = $this->load->view('leadpopup/items_content_view', ['data' => $items_views], TRUE);
                     // Shipping view
                     $shiprates = '';
                     if (count($shippings) > 0) {
@@ -1129,8 +1139,17 @@ class Leadmanagement extends MY_Controller
                     $mdata['shipping'] = 0;
                     if ($res['shipcalc']==1) {
                         $this->leadquote_model->calc_quote_shipping($session_id);
+                        $mdata['shipping'] = 1;
+                        $quotesession = usersession($session_id);
+                        $quote = $quotesession['quote'];
+                        $mdata['shipping_cost'] = $quote['shipping_cost'];
+                        $shipping = $quotesession['shipping'];
+                        $options = [
+                            'shippings' => $shipping,
+                            'edit_mode' => 1,
+                        ];
+                        $mdata['shippingview'] = $this->load->view('leadpopup/quote_shiprates_view', $options, TRUE);
                     }
-
                     if ($res['totalcalc']==1) {
                         $this->leadquote_model->calc_quote_totals($session_id);
                         $quotesession = usersession($session_id);
@@ -1164,7 +1183,6 @@ class Leadmanagement extends MY_Controller
                         }
                         $mdata['itemcontent'] = $item_content;
                         $mdata['refresh'] = 1;
-
                     }
                 }
             }
