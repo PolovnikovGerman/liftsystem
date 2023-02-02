@@ -160,6 +160,7 @@ function init_leadquotes_content() {
         params.push({name: 'itemcolor', value: itemcolor});
         params.push({name: 'newval', value: $(this).val()});
         var url = '/leadmanagement/quoteitemchange';
+        $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
                 if (parseInt(response.data.refresh)==1) {
@@ -172,7 +173,14 @@ function init_leadquotes_content() {
                     $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
                     $(".quotetotalvalue").empty().html(response.data.total);
                 }
+                if (parseInt(response.data.shipping)==1) {
+                    $(".quoteleadshipcostinpt[data-item='shipping_cost']").val(response.data.shipping_cost);
+                    $(".quoteshippingcostarea").empty().html(response.data.shippingview);
+                }
+                $("#loader").hide();
+                init_leadquotes_content();
             } else {
+                $("#loader").hide();
                 show_error(response);
             }
         },'json');

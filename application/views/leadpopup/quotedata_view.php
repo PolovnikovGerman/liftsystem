@@ -7,7 +7,7 @@
         <div class="quotetemplateinpt">
             <select data-entity="quotedat" data-item="quote_template" <?=$edit_mode==0 ? 'disabled="true"' : ''?>>
                 <?php foreach ($templlists as $templlist) { ?>
-                    <option value="<?=$templlist?>" <?=$templlists==$data['quote_template'] ? 'selected="selected"' : ''?>><?=$templlist?></option>
+                    <option value="<?=$templlist?>" <?=$templlist==$data['quote_template'] ? 'selected="selected"' : ''?>><?=$templlist?></option>
                 <?php } ?>
             </select>
         </div>
@@ -87,7 +87,7 @@
     <div class="datarow">
         <div class="quoteitemsubtotal">
             <div class="quoteitemsubtotaltitle">Item Sub-total:</div>
-            <div class="quoteitemsubtotalvalue"><?=empty($data['item_subtotal']) ? '&nbsp;' : MoneyOutput($data['item_subtotal'])?></div>
+            <div class="quoteitemsubtotalvalue"><?=empty($data['items_subtotal']) ? '&nbsp;' : MoneyOutput($data['items_subtotal'])?></div>
         </div>
     </div>
     <div class="datarow">

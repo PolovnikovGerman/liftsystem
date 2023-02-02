@@ -610,6 +610,17 @@ class Leadquote_model extends MY_Model
                         $items[$itemidx]['items'][$ridx]['item_subtotal']=MoneyOutput($rowtotal);
                         $ridx++;
                     }
+                    // Change imprints
+                    $imprints = $items[$itemidx]['imprints'];
+                    $impridx = 0;
+                    foreach ($imprints as $imprint) {
+                        if ($imprint['imprint_item']==1) {
+                            $imprints[$impridx]['imprint_qty'] = $itemsqty;
+                            $imprints[$impridx]['imprint_subtotal'] = $itemsqty * $imprint['imprint_price'];
+                        }
+                        $impridx++;
+                    }
+                    $items[$itemidx]['imprints'] = $imprints;
                     $out['item_refresh'] = 1;
                 } else {
                     $items[$itemidx]['items'][$itemcoloridx][$fldname] = $data['newval'];
