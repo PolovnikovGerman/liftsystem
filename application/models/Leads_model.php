@@ -54,10 +54,10 @@ Class Leads_model extends MY_Model
             $this->db->where("{$searchdata}");
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('brand', ['SB','BT']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('brand', $options['brand']);
+            } else {
+                $this->db->where_in('brand', ['SB','BT']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -106,10 +106,10 @@ Class Leads_model extends MY_Model
             $this->db->where("{$searchdata}");
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('l.brand', ['SB','BT']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('l.brand', $options['brand']);
+            } else {
+                $this->db->where_in('l.brand', ['SB','BT']);
             }
         }
         if ($sort) {
@@ -1252,10 +1252,10 @@ Class Leads_model extends MY_Model
     public function items_list($brand) {
         $this->db->select('item_id, item_name, item_number');
         $this->db->from('v_itemsearch');
-        if ($brand=='SB') {
-            $this->db->where_in('brand',['BT','SB','']);
-        } else {
+        if ($brand=='SR') {
             $this->db->where_in('brand',[$brand,'']);
+        } else {
+            $this->db->where_in('brand',['BT','SB','']);
         }
         $this->db->order_by('item_name');
         $result=$this->db->get()->result_array();
@@ -1330,10 +1330,10 @@ Class Leads_model extends MY_Model
         $this->db->where('unix_timestamp(l.create_date) >= ', $datestart);
         $this->db->where('unix_timestamp(l.create_date) < ', $dateend);
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('l.brand', ['SB', 'BT']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('l.brand', $options['brand']);
+            } else {
+                $this->db->where_in('l.brand', ['SB', 'BT']);
             }
         }
         $this->db->group_by('month');
@@ -1411,10 +1411,10 @@ Class Leads_model extends MY_Model
         $this->db->select('min(unix_timestamp(create_date)) as mindate');
         $this->db->from('ts_leads');
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
 
         }
@@ -1520,10 +1520,10 @@ Class Leads_model extends MY_Model
             $this->db->where('lu.user_id',$options['user_id']);
         }
         if ($options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('l.brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('l.brand', $options['brand']);
+            } else {
+                $this->db->where_in('l.brand', ['BT','SB']);
             }
         }
         $this->db->group_by('week');
@@ -1544,10 +1544,10 @@ Class Leads_model extends MY_Model
             $this->db->where('lu.user_id',$options['user_id']);
         }
         if ($options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('l.brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('l.brand', $options['brand']);
+            } else {
+                $this->db->where_in('l.brand', ['BT','SB']);
             }
         }
         $this->db->group_by('week');
@@ -1819,10 +1819,10 @@ Class Leads_model extends MY_Model
         $this->db->where('unix_timestamp(l.create_date) >= ', $options['start']);
         $this->db->where('unix_timestamp(l.create_date) <= ', $options['end']);
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('l.brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('l.brand', $options['brand']);
+            } else {
+                $this->db->where_in('l.brand', ['BT','SB']);
             }
         }
         $this->db->group_by('day');
@@ -1847,10 +1847,10 @@ Class Leads_model extends MY_Model
         $this->db->where('unix_timestamp(l.update_date) >= ', $options['start']);
         $this->db->where('unix_timestamp(l.update_date) <= ', $options['end']);
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('l.brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('l.brand', $options['brand']);
+            } else {
+                $this->db->where_in('l.brand', ['BT','SB']);
             }
         }
         $this->db->group_by('day');
@@ -2087,10 +2087,10 @@ Class Leads_model extends MY_Model
         $this->db->where('unix_timestamp(create_date) >=', $startdate);
         $this->db->where('unix_timestamp(create_date) < ', $enddate);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['SB','BT']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB','BT']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -2104,10 +2104,10 @@ Class Leads_model extends MY_Model
         $this->db->where('unix_timestamp(update_date) >=', $startdate);
         $this->db->where('unix_timestamp(update_date) < ', $enddate);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['SB','BT']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB','BT']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -2121,10 +2121,10 @@ Class Leads_model extends MY_Model
         $this->db->where('order_date < ', $enddate);
         $this->db->where('is_canceled',0);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['SB','BT']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB','BT']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -2152,10 +2152,10 @@ Class Leads_model extends MY_Model
         $this->db->where('item_id',$this->config->item('custom_id'));
         $this->db->where('is_canceled',0);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['SB','BT']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB','BT']);
             }
         }
         $res=$this->db->get()->row_array();
