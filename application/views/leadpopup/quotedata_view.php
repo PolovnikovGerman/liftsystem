@@ -192,27 +192,33 @@
             </div>
             <div class="quotebilladdressother">
                 <div class="datarow">
-                    <input class="quoteaddressinpt quotebilladdrother" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> placeholder="Contact Name">
+                    <input class="quoteaddressinpt quotebilladdrother" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="billing_contact"
+                           placeholder="Contact Name" value="<?=$data['billing_contact']?>">
                 </div>
                 <div class="datarow">
-                    <input class="quoteaddressinpt quotebilladdrother" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> placeholder="Company">
+                    <input class="quoteaddressinpt quotebilladdrother" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="billing_company"
+                           placeholder="Company" value="<?=$data['billing_company']?>">
                 </div>
                 <div class="datarow">
-                    <input class="quoteaddressinpt quotebilladdrother" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> placeholder="Address Line 1">
+                    <input class="quoteaddressinpt quotebilladdrother" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="billing_address1"
+                           placeholder="Address Line 1" value="<?=$data['billing_address1']?>">
                 </div>
                 <div class="datarow">
-                    <input class="quoteaddressinpt quotebilladdrother" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> placeholder="Address Line 2">
+                    <input class="quoteaddressinpt quotebilladdrother" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="billing_address2"
+                           placeholder="Address Line 2" value="<?=$data['billing_address2']?>">
                 </div>
                 <div class="datarow">
                     <div class="quotebilladdreszipcode">
-                        <input class="quoteaddressinpt quotepostal" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> placeholder="Zip"/>
+                        <input class="quoteaddressinpt quotepostal" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="billing_zip"
+                               placeholder="Zip" value="<?=$data['billing_zip']?>"/>
                     </div>
                     <div class="quotebilladdrescity">
-                        <input class="quoteaddressinpt quotetown" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> placeholder="City"/>
+                        <input class="quoteaddressinpt quotetown" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="billing_city"
+                               placeholder="City" value="<?=$data['billing_city']?>"/>
                     </div>
                     <div class="quotebilladdresdistrict">
                         <?php if (is_array($billstates)) { ?>
-                            <select class="quoteaddressinpt quotestate" <?=$edit_mode==0 ? 'disabled="true"' : ''?>>
+                            <select class="quoteaddressinpt quotestate" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="billing_state">
                                 <option value=""></option>
                                 <?php foreach ($billstates as $state) { ?>
                                     <option value="<?=$state['state_code']?>" <?=$state['state_code']==$data['billing_state'] ? 'selected="selected"' : ''?>><?=$state['state_code']?></option>
@@ -228,13 +234,13 @@
                 <div class="quotesectionlabel">NOTE TO INCLUDE ON QUOTE:</div>
             </div>
             <div class="datarow">
-                <textarea class="quotenote" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?>></textarea>
+                <textarea class="quotenote" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="quote_note"><?=$data['quote_note']?></textarea>
             </div>
             <div class="datarow">
                 <div class="quotesectionlabel">REP CONTACT INFO:</div>
             </div>
             <div class="datarow">
-                <textarea class="quotenote" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?>><?=$data['quote_repcontact']?></textarea>
+                <textarea class="quotenote" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="quote_repcontact"><?=$data['quote_repcontact']?></textarea>
             </div>
         </div>
         <div class="quotetotalarea">
