@@ -27,10 +27,10 @@ Class Payments_model extends MY_Model {
             $this->db->where('o.order_num', $options['searchpo']);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('o.brand', $options['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -61,10 +61,10 @@ Class Payments_model extends MY_Model {
             $this->db->where('o.order_num', $options['searchpo']);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('o.brand', $options['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         if ($order_by=='oa.amount_date') {
@@ -927,10 +927,10 @@ Class Payments_model extends MY_Model {
             $this->db->where('o.is_canceled',0);
             $this->db->where('v.payinclude',1);
             if ($brand!=='ALL') {
-                if ($brand=='SB') {
-                    $this->db->where_in('o.brand', ['BT','SB']);
-                } else {
+                if ($brand=='SR') {
                     $this->db->where('o.brand', $brand);
+                } else {
+                    $this->db->where_in('o.brand', ['BT','SB']);
                 }
             }
             $this->db->group_by('oa.vendor_id');
@@ -969,10 +969,10 @@ Class Payments_model extends MY_Model {
         $this->db->from('ts_order_amounts oa');
         if ($brand!=='ALL') {
             $this->db->join('ts_orders o','o.order_id=oa.order_id');
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $this->db->group_by('pay_year');
@@ -1141,10 +1141,10 @@ Class Payments_model extends MY_Model {
         $this->db->from('ts_order_amounts');
         if ($brand!=='ALL') {
             $this->db->join('ts_orders o','o.order_id=ts_order_amounts.order_id');
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -1169,10 +1169,10 @@ Class Payments_model extends MY_Model {
         $this->db->group_by('oa.vendor_id');
         if ($brand!=='ALL') {
             $this->db->join('ts_orders o','o.order_id=oa.order_id');
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $res = $this->db->get()->result_array();
@@ -1185,10 +1185,10 @@ Class Payments_model extends MY_Model {
         $this->db->join('ts_orders o','o.order_id=oa.order_id');
         $this->db->where('date_format(from_unixtime(amount_date),\'%Y\')', $year1);
         if ($brand!='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $this->db->group_by('oa.vendor_id');
@@ -1198,10 +1198,10 @@ Class Payments_model extends MY_Model {
         $this->db->join('ts_orders o','o.order_id=oa.order_id');
         $this->db->where('date_format(from_unixtime(amount_date),\'%Y\')', $year2);
         if ($brand!='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $this->db->group_by('oa.vendor_id');
@@ -1211,10 +1211,10 @@ Class Payments_model extends MY_Model {
         $this->db->join('ts_orders o','o.order_id=oa.order_id');
         $this->db->where('date_format(from_unixtime(amount_date),\'%Y\')', $year3);
         if ($brand!='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $this->db->group_by('oa.vendor_id');
@@ -1227,10 +1227,10 @@ Class Payments_model extends MY_Model {
         $this->db->group_by('oa.vendor_id');
         if ($brand!=='ALL') {
             $this->db->join('ts_orders o','o.order_id=oa.order_id');
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $vendorsel = $this->db->get_compiled_select();
@@ -1377,10 +1377,10 @@ Class Payments_model extends MY_Model {
         $this->db->join('ts_orders o','o.order_id=oa.order_id');
         $this->db->where('date_format(from_unixtime(amount_date),\'%Y\')', $year);
         if ($brand!='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $totalres = $this->db->get()->row_array();
@@ -1389,10 +1389,10 @@ Class Payments_model extends MY_Model {
         $this->db->join('ts_orders o','o.order_id=oa.order_id');
         $this->db->where('date_format(from_unixtime(amount_date),\'%Y\')', $year);
         if ($brand!='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $this->db->where('oa.vendor_id', $vendor_id);

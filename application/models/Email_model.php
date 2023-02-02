@@ -161,10 +161,10 @@ class Email_model extends My_Model
         $this->db->from('ts_emails');
         $this->db->where("email_type", $type);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand',['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand',$brand);
+            } else {
+                $this->db->where_in('brand',['BT','SB']);
             }
         }
         // $this->db->where('email_websys', $this->websys);
@@ -192,10 +192,10 @@ class Email_model extends My_Model
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
             $this->db->where('brand', $options['brand']);
-            if ($options=='SB') {
-                $this->db->where_in('brand',['BT','SB']);
-            } else {
+            if ($options=='SR') {
                 $this->db->where('brand',$options['brand']);
+            } else {
+                $this->db->where_in('brand',['BT','SB']);
             }
         }
         $res = $this->db->get()->row_array();
@@ -219,10 +219,10 @@ class Email_model extends My_Model
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
             $this->db->where('brand', $options['brand']);
-            if ($options['brand']=='SB') {
-                $this->db->where_in('brand',['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('brand',$options['brand']);
+            } else {
+                $this->db->where_in('brand',['BT','SB']);
             }
 
         }
@@ -242,10 +242,10 @@ class Email_model extends My_Model
         $this->db->select('email_type, email_status, count(*) as cnt_rec', FALSE);
         $this->db->from('ts_emails');
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand',['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand',$brand);
+            } else {
+                $this->db->where_in('brand',['BT','SB']);
             }
         }
         // $this->db->where('email_websys', $this->websys);
@@ -283,10 +283,10 @@ class Email_model extends My_Model
             }
         }
         if ($options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('brand',['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('brand',$options['brand']);
+            } else {
+                $this->db->where_in('brand',['BT','SB']);
             }
         }
         $this->db->order_by($order_by, $direct);

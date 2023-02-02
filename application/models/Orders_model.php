@@ -78,10 +78,10 @@ Class Orders_model extends MY_Model
             $this->db->where('o.weborder', $filtr['weborder']);
         }
         if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
-            if ($filtr['brand']=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($filtr['brand']=='SR') {
                 $this->db->where('o.brand', $filtr['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         if (isset($filtr['filter']) && $filtr['filter']==7) {

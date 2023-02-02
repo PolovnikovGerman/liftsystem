@@ -18,10 +18,10 @@ Class Items_model extends My_Model
             $this->db->where('v.vendor_item_vendor',$vendor_id);
         }
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('i.brand', ['SB','BT']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('i.brand', $brand);
+            } else {
+                $this->db->where_in('i.brand', ['SB','BT']);
             }
         }
         if (!empty($search)) {
@@ -108,10 +108,10 @@ Class Items_model extends My_Model
             $this->db->like('upper(concat(i.item_number, i.item_name))', strtoupper($options['search']));
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('i.brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('i.brand', $options['brand']);
+            } else {
+                $this->db->where_in('i.brand', ['BT','SB']);
             }
         }
         $res = $this->db->get()->row_array();
@@ -131,10 +131,10 @@ Class Items_model extends My_Model
             $this->db->like('upper(concat(i.item_number, i.item_name))', strtoupper($options['search']));
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('i.brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('i.brand', $options['brand']);
+            } else {
+                $this->db->where_in('i.brand', ['BT','SB']);
             }
 
         }
@@ -238,10 +238,10 @@ Class Items_model extends My_Model
         foreach ($options as $key=>$value) {
             if ($key=='brand') {
                 if ($value!=='ALL') {
-                    if ($value=='SB') {
-                        $this->db->where_in('i.brand', ['SB','BT']);
-                    } else {
+                    if ($value=='SR') {
                         $this->db->where('i.brand', $value);
+                    } else {
+                        $this->db->where_in('i.brand', ['SB','BT']);
                     }
                 }
             } else {
@@ -333,10 +333,10 @@ Class Items_model extends My_Model
         foreach ($options as $key=>$val) {
             if ($key=='brand') {
                 if ($val!=='ALL') {
-                    if ($val=='SB') {
-                        $this->db->where_in('i.brand', ['SB','BT']);
-                    } else {
+                    if ($val=='SR') {
                         $this->db->where('i.brand', $val);
+                    } else {
+                        $this->db->where_in('i.brand', ['SB','BT']);
                     }
                 }
             } else {
@@ -445,10 +445,10 @@ Class Items_model extends My_Model
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
             $this->db->join('sb_items itm','itm.item_id=i.item_id');
-            if ($options['brand']=='SB') {
-                $this->db->where_in('itm.brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('itm.brand', $options['brand']);
+            } else {
+                $this->db->where_in('itm.brand', ['BT','SB']);
             }
         }
         if (isset($options['limit'])) {
@@ -512,10 +512,10 @@ Class Items_model extends My_Model
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
             $this->db->join('sb_items i','i.item_id=v_stressprofits.item_id');
-            if ($options['brand']=='SB') {
-                $this->db->where_in('i.brand',['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('i.brand',$options['brand']);
+            } else {
+                $this->db->where_in('i.brand',['BT','SB']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -626,10 +626,10 @@ Class Items_model extends My_Model
         $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor');
         $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
         if (ifset($options,'brand', 'ALL')!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('i.brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('i.brand', $options['brand']);
+            } else {
+                $this->db->where_in('i.brand', ['BT','SB']);
             }
         }
         if (ifset($options, 'search', '')!=='') {
