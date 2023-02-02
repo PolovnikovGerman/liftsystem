@@ -221,6 +221,15 @@ class Leadquote extends MY_Controller
                         'deleted' => [],
                     ];
                     usersession($quote_session, $sessiondata);
+                    $lead_time = '';
+                    if (!empty($quotedata['lead_time'])) {
+                        $lead_times = json_decode($quotedata['lead_time'], true);
+                        $timeoptions = [
+                            'lead_times' => $lead_times,
+                            'edit_mode' => $edit_mode,
+                        ];
+                        $lead_time = $this->load->view('leadpopup/quote_leadtime_edit', $timeoptions, TRUE);
+                    }
                     $options = [
                         'quote_session' => $quote_session,
                         'quote_id' => $quote_id,
@@ -233,6 +242,7 @@ class Leadquote extends MY_Controller
                         'shipstates' => $shipstates,
                         'billstates' => $billstates,
                         'shiprates' => $shiprates,
+                        'lead_time' => $lead_time,
                     ];
                     $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
                 }
@@ -352,6 +362,41 @@ class Leadquote extends MY_Controller
         show_404();
     }
 
+    // Change Lead time
+    public function quoteleadtimechange() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $error = $this->restore_orderdata_error;
+            $session_id = ifset($postdata,'session','unknw');
+            $quotesession = usersession($session_id);
+            $mdata = [];
+            if (!empty($quotesession)) {
+                $res = $this->leadquote_model->quoteleadtimechange($postdata, $quotesession, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    // Recalc shipping
+                    $this->leadquote_model->calc_quote_shipping($session_id);
+                    $this->leadquote_model->calc_quote_totals($session_id);
+                    // Get data
+                    $quotesession = usersession($session_id);
+                    $quote = $quotesession['quote'];
+                    $shipping = $quotesession['shipping'];
+                    $options = [
+                        'shippings' => $shipping,
+                        'edit_mode' => 1,
+                    ];
+                    $mdata['shippingview'] = $this->load->view('leadpopup/quote_shiprates_view', $options, TRUE);
+                    $mdata['shipping_cost'] = $quote['shipping_cost'];
+                    $mdata['rush_cost'] = $quote['rush_cost'];
+                    $mdata['total'] = MoneyOutput($quote['quote_total']);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Change Item Data parameter
     public function quoteitemchange() {
         if ($this->isAjax()) {
@@ -365,7 +410,6 @@ class Leadquote extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
-                    $mdata['itemcolor_subtotal'] = MoneyOutput($res['item_subtotal']);
                     $mdata['totals'] = 0;
                     $mdata['refresh'] = 0;
                     $mdata['shipping'] = 0;
@@ -415,6 +459,8 @@ class Leadquote extends MY_Controller
                         }
                         $mdata['itemcontent'] = $item_content;
                         $mdata['refresh'] = 1;
+                    } else {
+                        $mdata['itemcolor_subtotal'] = MoneyOutput($res['item_subtotal']);
                     }
                 }
             }

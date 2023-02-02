@@ -130,6 +130,7 @@ function init_leadquotes_content() {
     });
     // Change rate
     $(".quoteratecheck.choice").unbind('click').click(function(){
+        var params = new Array();
         params.push({name: 'session', value: $("#quotesessionid").val()});
         params.push({name: 'newval', value: $(this).data('shiprate')});
         var url = '/leadquote/quoteratechange';
@@ -147,8 +148,29 @@ function init_leadquotes_content() {
                 show_error(response);
             }
         },'json');
-
     });
+    // Change Lead Time
+    $("select.quoteleadtimeselect").unbind('change').change(function (){
+        var params = new Array();
+        params.push({name: 'session', value: $("#quotesessionid").val()});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/leadquote/quoteleadtimechange';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                // Update shipping cost
+                $(".quoteleadshipcostinpt[data-item='shipping_cost']").val(response.data.shipping_cost);
+                $(".quoteleadshipcostinpt[data-item='rush_cost']").val(response.data.rush_cost);
+                $(".quoteshippingcostarea").empty().html(response.data.shippingview);
+                $(".quotetotalvalue").empty().html(response.data.total);
+                $("#loader").hide();
+                init_leadquotes_content();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    })
     $("input.quouteitem_input").unbind('change').change(function(){
         var itemcolor = $(this).data('item');
         var item = $(this).data('quoteitem');
@@ -165,7 +187,6 @@ function init_leadquotes_content() {
             if (response.errors=='') {
                 if (parseInt(response.data.refresh)==1) {
                     $(".quoteitemsarea[data-quoteitem='"+item+"']").empty().html(response.data.itemcontent);
-                    init_leadquotes_content();
                 } else {
                     $(".quoteitemrowsubtotal[data-item='"+itemcolor+"'][data-quoteitem='"+item+"']").empty().html(response.data.itemcolor_subtotal);
                 }
@@ -506,7 +527,7 @@ function init_leadquotes_view() {
         var params = new Array();
         params.push({name: 'quote_id', value: $("#quoteleadnumber").val()});
         params.push({name: 'edit_mode', value: 1});
-        var url = '/leadmanagement/quoteedit';
+        var url = '/leadquote/quoteedit';
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("#quotepopupdetails").empty().html(response.data.quotecontent);

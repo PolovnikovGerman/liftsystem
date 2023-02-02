@@ -117,7 +117,7 @@
                 </div>
                 <div class="datarow">
                     <input class="quoteaddressinpt quoteshipadrother" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="shipping_address2"
-                           placeholder="Address Line 2" value="<?=$data['shipping_address1']?>"/>
+                           placeholder="Address Line 2" value="<?=$data['shipping_address2']?>"/>
                 </div>
             </div>
             <div class="quoteshipaddresszip">
@@ -151,7 +151,7 @@
                 </div>
                 <div class="quoteleadrush">
                     <input class="quoteleadshipcostinpt quoteleadrushcost quotecommondatainpt" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?>
-                    data-input="rush_cost" value="<?=$data['rush_cost']?>"/>
+                    data-item="rush_cost" value="<?=$data['rush_cost']?>"/>
                 </div>
             </div>
             <div class="datarow">
