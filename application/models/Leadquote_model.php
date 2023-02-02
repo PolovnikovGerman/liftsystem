@@ -61,6 +61,9 @@ class Leadquote_model extends MY_Model
                 'sales_tax' => 0,
                 'tax_exempt' => 0,
                 'tax_reason' => '',
+                'taxview' => 0,
+                'quote_blank' => 0,
+                'lead_time' => '',
                 'rush_terms' => '',
                 'rush_days' => 0,
                 'rush_cost' => 0,
@@ -85,6 +88,17 @@ class Leadquote_model extends MY_Model
                 $itemdat = $this->add_newleadquote_item($lead_data['lead_item_id'], $lead_data['other_item_name']);
                 if ($itemdat['result']==$this->success_result) {
                     $quote_items[] = $itemdat['quote_items'];
+                    // Get Delivery Terms
+                    $this->load->model('calendars_model');
+                    $termdat = $this->calendars_model->get_delivery_date($lead_data['lead_item_id']);
+                    $quotedat['lead_time'] = json_encode($termdat);
+                    foreach ($termdat as $row) {
+                        if ($row['current']==1) {
+                            $quotedat['rush_cost'] = $row['price'];
+                            $quotedat['rush_days'] = $row['date'];
+                            $quotedat['rush_terms'] = $row['name'];
+                        }
+                    }
                 }
             }
             $response['quote'] = $quotedat;
@@ -708,6 +722,7 @@ class Leadquote_model extends MY_Model
                 if ($item['quote_item_id']==$quote_item_id) {
                     // Find
                     $out['result']=$this->success_result;
+                    $out['quote'] = $quote;
                     $out['imprint_details']=$item['imprint_details'];
                     $out['item_id']=$item['item_id'];
                     $out['item_number']=$item['item_number'];
@@ -1098,6 +1113,7 @@ class Leadquote_model extends MY_Model
         $this->db->set('mischrg_value2', floatval($quote['mischrg_value2']));
         $this->db->set('discount_label', $quote['discount_label']);
         $this->db->set('discount_value', floatval($quote['discount_value']));
+        $this->db->set('lead_time', $quote['lead_time']);
         $this->db->set('shipping_country', $quote['shipping_country']);
         $this->db->set('shipping_contact', $quote['shipping_contact']);
         $this->db->set('shipping_company', empty($quote['shipping_company']) ? null : $quote['shipping_company']);
@@ -1108,6 +1124,7 @@ class Leadquote_model extends MY_Model
         $this->db->set('shipping_state', $quote['shipping_state']);
         $this->db->set('sales_tax', floatval($quote['sales_tax']));
         $this->db->set('tax_exempt', intval($quote['tax_exempt']));
+        $this->db->set('taxview', intval($quote['taxview']));
         $this->db->set('tax_reason', $quote['tax_reason']);
         $this->db->set('rush_terms', $quote['rush_terms']);
         $this->db->set('rush_days', $quote['rush_days']);
@@ -1121,6 +1138,7 @@ class Leadquote_model extends MY_Model
         $this->db->set('billing_zip', $quote['billing_zip']);
         $this->db->set('billing_city', $quote['billing_city']);
         $this->db->set('billing_state', $quote['billing_state']);
+        $this->db->set('quote_blank', intval($quote['quote_blank']));
         $this->db->set('quote_note', $quote['quote_note']);
         $this->db->set('quote_repcontact', $quote['quote_repcontact']);
         $this->db->set('items_subtotal', floatval($quote['items_subtotal']));
@@ -1242,9 +1260,6 @@ class Leadquote_model extends MY_Model
             }
 
             foreach ($deleted as $row) {
-                // 'entity' => 'imprints'
-                // 'entity' => 'imprint_details'
-                // 'entity' => 'shipping', 'id' => $shipping['quote_shipping_id']];
                 if ($row['entity']=='imprints') {
                     $this->db->where('quote_imprint_id', $row['id']);
                     $this->db->delete('ts_quote_imprints');
@@ -1254,6 +1269,9 @@ class Leadquote_model extends MY_Model
                 } elseif ($row['entity']=='shipping') {
                     $this->db->where('quote_shipping_id', $row['id']);
                     $this->db->delete('ts_quote_shippings');
+                } elseif ($row['entity']=='items') {
+                    $this->db->where('quote_item_id', $row['id']);
+                    $this->db->delete('ts_quote_items');
                 }
 
             }

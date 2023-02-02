@@ -147,11 +147,7 @@
             <div class="datarow">
                 <div class="quoteleadtimelabel">Lead Time:</div>
                 <div class="quoteleadtime">
-                    <select class="quoteleadtimeselect" <?=$edit_mode==0 ? 'disabled="true"' : ''?>>
-                        <option value="Standard">Standard 5 days</option>
-                        <option value="3 day Rush">3 day Rush</option>
-                        <option value="1 day Rush">1 day Rush</option>
-                    </select>
+                    <?=$lead_time?>
                 </div>
                 <div class="quoteleadrush">
                     <input class="quoteleadshipcostinpt quoteleadrushcost quotecommondatainpt" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?>

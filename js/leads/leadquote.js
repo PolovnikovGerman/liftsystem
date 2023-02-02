@@ -2,7 +2,7 @@ function addnewcustomquote() {
     var lead_num=$("div.lead_popup_number").text();
     var msg="You will now save the updates of the "+lead_num+" by creating the quote.  Ok?";
     if (confirm(msg)==true) {
-        var url="/leadmanagement/lead_addquote";
+        var url="/leadquote/lead_addquote";
         var dat=$("form#leadeditform").serializeArray();
         // var dat = new Array();
         dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
@@ -44,7 +44,7 @@ function init_leadquotes_content() {
         var params = new Array();
         params.push({name: 'session', value: $("#quotesessionid").val()});
         params.push({name: 'lead', value: $("#quoteleadconnect").val()});
-        var url = '/leadmanagement/quotesave';
+        var url = '/leadquote/quotesave';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#quotepopupdetails").empty();
@@ -69,7 +69,7 @@ function init_leadquotes_content() {
         params.push({name: 'session', value: $("#quotesessionid").val()});
         params.push({name: 'fld', value: $(this).data('item')});
         params.push({name: 'newval', value: $(this).val()});
-        var url = '/leadmanagement/quoteparamchange';
+        var url = '/leadquote/quoteparamchange';
         $.post(url, params, function (response){
             if (response.errors=='') {
             } else {
@@ -83,7 +83,7 @@ function init_leadquotes_content() {
         params.push({name: 'session', value: $("#quotesessionid").val()});
         params.push({name: 'fld', value: $(this).data('item')});
         params.push({name: 'newval', value: $(this).val()});
-        var url = '/leadmanagement/quoteparamchange';
+        var url = '/leadquote/quoteparamchange';
         $.post(url, params, function (response){
             if (response.errors=='') {
                 if (parseInt(response.data.totalcalc)==1) {
@@ -101,7 +101,7 @@ function init_leadquotes_content() {
         params.push({name: 'session', value: $("#quotesessionid").val()});
         params.push({name: 'fld', value: $(this).data('item')});
         params.push({name: 'newval', value: $(this).val()});
-        var url = '/leadmanagement/quoteaddresschange';
+        var url = '/leadquote/quoteaddresschange';
         $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
@@ -132,7 +132,7 @@ function init_leadquotes_content() {
     $(".quoteratecheck.choice").unbind('click').click(function(){
         params.push({name: 'session', value: $("#quotesessionid").val()});
         params.push({name: 'newval', value: $(this).data('shiprate')});
-        var url = '/leadmanagement/quoteratechange';
+        var url = '/leadquote/quoteratechange';
         $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
@@ -159,7 +159,7 @@ function init_leadquotes_content() {
         params.push({name: 'item', value: item });
         params.push({name: 'itemcolor', value: itemcolor});
         params.push({name: 'newval', value: $(this).val()});
-        var url = '/leadmanagement/quoteitemchange';
+        var url = '/leadquote/quoteitemchange';
         $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
@@ -195,7 +195,7 @@ function init_leadquotes_content() {
         params.push({name: 'item', value: item });
         params.push({name: 'itemcolor', value: itemcolor});
         params.push({name: 'newval', value: $(this).val()});
-        var url = '/leadmanagement/quoteitemchange';
+        var url = '/leadquote/quoteitemchange';
         $.post(url, params, function (response){
             if (response.errors=='') {
                 if (parseInt(response.data.refresh)==1) {
@@ -215,13 +215,14 @@ function init_leadquotes_content() {
             }
         },'json');
     });
+
     // Add color
     $(".itemcoloradd").unbind('click').click(function () {
         var item = $(this).data('quoteitem');
         var params = new Array();
         params.push({name: 'session', value: $("#quotesessionid").val()});
         params.push({name: 'item', value: item });
-        var url = '/leadmanagement/quoteitemaddcolor';
+        var url = '/leadquote/quoteitemaddcolor';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $(".quoteitemsarea[data-quoteitem='"+item+"']").empty().html(response.data.itemcontent);
@@ -231,13 +232,14 @@ function init_leadquotes_content() {
             }
         },'json');
     });
+
     // Print details
     $(".addprintdetails").unbind('click').click(function () {
         var item = $(this).data('quoteitem');
         var params = new Array();
         params.push({name: 'session', value: $("#quotesessionid").val()});
         params.push({name: 'item', value: item });
-        var url = '/leadmanagement/quoteitemprintdetails';
+        var url = '/leadquote/quoteitemprintdetails';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#artNextModal").find('div.modal-dialog').css('width','1077px');
@@ -337,7 +339,7 @@ function edit_quoteprintnote(detail) {
         transition: 'fade',
         ajax: true,
         width:440,
-        href: '/leadmanagement/edit_repeatnote',
+        href: '/leadquote/edit_repeatnote',
         data: params,
         onComplete: function() {
             $.colorbox.resize();
@@ -357,7 +359,7 @@ function init_edit_quoterepeatnote(detail) {
             params.push({name:'repeat_note',  value: note});
             params.push({name:'imprintsession', value: $("input#imprintsession").val()});
             params.push({name: 'quotesession', value: $("#quotesessionid").val()});
-            var url="/leadmanagement/repeatnote_save";
+            var url="/leadquote/repeatnote_save";
             $.post(url,params, function(response){
                 if (response.errors=='') {
                     $.colorbox.close();
@@ -372,7 +374,7 @@ function init_edit_quoterepeatnote(detail) {
 }
 // Save Imprint Details
 function save_quoteprint_details() {
-    var url='/leadmanagement/save_imprintdetails';
+    var url='/leadquote/save_imprintdetails';
     var params=new Array();
     params.push({name:'imprintsession', value: $("input#imprintsession").val()});
     params.push({name: 'quotesession', value: $("#quotesessionid").val()});
@@ -391,7 +393,7 @@ function save_quoteprint_details() {
 }
 
 function change_quote_printdetails(params) {
-    var url="/leadmanagement/quoteprintdetails_change";
+    var url="/leadquote/quoteprintdetails_change";
     $.post(url, params, function(response){
         if (response.errors=='') {
             if (response.data.fldname=='active') {
@@ -469,7 +471,7 @@ function leadquote_edit(quote_id) {
     var params = new Array();
     params.push({name: 'quote_id', value: quote_id});
     params.push({name: 'edit_mode', value: 0});
-    var url = '/leadmanagement/quoteedit';
+    var url = '/leadquote/quoteedit';
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("#quotepopupdetails").empty().html(response.data.quotecontent);
