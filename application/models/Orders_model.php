@@ -2274,10 +2274,10 @@ Class Orders_model extends MY_Model
         $this->db->from('ts_orders');
         $this->db->where("is_canceled",0);
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('brand', $options['brand']);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -2360,10 +2360,10 @@ Class Orders_model extends MY_Model
                 $this->db->where('o.arttype', $filtr['order_type']);
             }
             if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
-                if ($filtr['brand']=='SB') {
-                    $this->db->where_in('o.brand', ['BT','BT']);
-                } else {
+                if ($filtr['brand']=='SR') {
                     $this->db->where('o.brand', $filtr['brand']);
+                } else {
+                    $this->db->where_in('o.brand', ['BT','BT']);
                 }
             }
         }
@@ -2570,6 +2570,13 @@ Class Orders_model extends MY_Model
             }
             if (isset($filtr['shipping_country'])) {
                 $this->db->join("({$shipsql}) as s" ,'s.order_id=o.order_id');
+            }
+            if (ifset($filtr, 'brand','ALL')!=='ALL') {
+                if ($filtr['brand']=='SR') {
+                    $this->db->where('o.brand ', $filtr['brand']);
+                } else {
+                    $this->db->where_in('o.brand ', ['SB','BT']);
+                }
             }
             if ($addtype=='blank') {
                 $this->db->where('o.order_blank',1);
@@ -7267,6 +7274,13 @@ Class Orders_model extends MY_Model
             if (isset($filtr['order_type'])) {
                 $this->db->where('o.order_blank',0);
                 $this->db->where('o.arttype', $filtr['order_type']);
+            }
+            if (ifset($filtr,'brand','ALL')!=='ALL') {
+                if ($filtr['brand']=='SR') {
+                    $this->db->where('o.brand', $filtr['brand']);
+                } else {
+                    $this->db->where_in('o.brand', ['SB','BT']);
+                }
             }
         }
         if (!empty($addtype)) {
