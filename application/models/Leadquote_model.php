@@ -61,6 +61,9 @@ class Leadquote_model extends MY_Model
                 'sales_tax' => 0,
                 'tax_exempt' => 0,
                 'tax_reason' => '',
+                'taxview' => 0,
+                'quote_blank' => 0,
+                'lead_time' => '',
                 'rush_terms' => '',
                 'rush_days' => 0,
                 'rush_cost' => 0,
@@ -85,6 +88,17 @@ class Leadquote_model extends MY_Model
                 $itemdat = $this->add_newleadquote_item($lead_data['lead_item_id'], $lead_data['other_item_name']);
                 if ($itemdat['result']==$this->success_result) {
                     $quote_items[] = $itemdat['quote_items'];
+                    // Get Delivery Terms
+                    $this->load->model('calendars_model');
+                    $termdat = $this->calendars_model->get_delivery_date($lead_data['lead_item_id']);
+                    $quotedat['lead_time'] = json_encode($termdat);
+                    foreach ($termdat as $row) {
+                        if ($row['current']==1) {
+                            $quotedat['rush_cost'] = $row['price'];
+                            $quotedat['rush_days'] = $row['date'];
+                            $quotedat['rush_terms'] = $row['name'];
+                        }
+                    }
                 }
             }
             $response['quote'] = $quotedat;
@@ -478,7 +492,7 @@ class Leadquote_model extends MY_Model
             $quotesession['quote'] = $quote;
             $out['result'] = $this->success_result;
             usersession($session_id, $quotesession);
-            if ($fldname=='mischrg_value1' || $fldname=='mischrg_value2' || $fldname=='discount_value') {
+            if ($fldname=='mischrg_value1' || $fldname=='mischrg_value2' || $fldname=='discount_value' || $fldname=='shipping_cost' || $fldname=='rush_cost' || $fldname=='sales_tax') {
                 $out['totalcalc'] = 1;
             }
         }
@@ -486,17 +500,27 @@ class Leadquote_model extends MY_Model
     }
 
     public function quoteaddresschange($data, $quotesession, $session_id) {
-        $out = ['result' => $this->error_result, 'msg' => 'Empty Need Parameters', 'totalcalc' => 0, 'shiprebuild' => 0, 'calcship' => 0];
+        $out = ['result' => $this->error_result, 'msg' => 'Empty Need Parameters',
+            'shiprebuild' => 0, 'shipstate' => 0,
+            'billstate' => 0, 'billrebuild' => 0,
+            'totalcalc' => 0, 'calcship' => 0, 'taxview'=>0];
         $fldname = ifset($data, 'fld','');
         if (!empty($fldname)) {
             $quote = $quotesession['quote'];
             $quote[$fldname] = $data['newval'];
             if ($fldname=='shipping_country') {
                 $out['shiprebuild'] = 1;
+                $out['shipstate'] = 1;
                 $quote['shipping_zip'] = '';
                 $quote['shipping_city'] = '';
                 $quote['shipping_state'] = '';
                 $out['totalcalc'] = 1;
+            } elseif ($fldname=='billing_country') {
+                $out['billrebuild'] = 1;
+                $out['billstate'] = 1;
+                $quote['billing_zip'] = '';
+                $quote['billing_city'] = '';
+                $quote['billing_state'] = '';
             } elseif ($fldname=='shipping_zip') {
                 $out['shiprebuild'] = 1;
                 $out['totalcalc'] = 1;
@@ -508,12 +532,26 @@ class Leadquote_model extends MY_Model
                     if ($zipdat['result']==$this->success_result) {
                         $quote['shipping_city'] = $zipdat['city'];
                         $quote['shipping_state'] = $zipdat['state'];
+                        // if ($quote['shipping_state']==)
                     }
                 } else {
                     $quote['shipping_city'] = '';
                     $quote['shipping_state'] = '';
                 }
-
+            } elseif ($fldname=='billing_zip') {
+                // Find city and zip
+                $out['billrebuild'] = 1;
+                if (!empty($data['newval'])) {
+                    $this->load->model('shipping_model');
+                    $zipdat = $this->shipping_model->get_zip_address($quote['billing_country'], $data['newval']);
+                    if ($zipdat['result']==$this->success_result) {
+                        $quote['billing_city'] = $zipdat['city'];
+                        $quote['billing_state'] = $zipdat['state'];
+                    }
+                } else {
+                    $quote['billing_city'] = '';
+                    $quote['billing_state'] = '';
+                }
             }
             $quotesession['quote'] = $quote;
             $out['result'] = $this->success_result;
@@ -549,6 +587,45 @@ class Leadquote_model extends MY_Model
             $quotesession['quote'] = $quote;
             $quotesession['shipping'] = $shippings;
             usersession($session_id, $quotesession);
+        }
+        return $out;
+    }
+
+    public function quoteleadtimechange($data, $quotesession, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Empty Need Parameters'];
+        $newval = ifset($data, 'newval', '');
+        if (!empty($newval)) {
+            $out['msg'] = 'Lead time not found';
+            $quote = $quotesession['quote'];
+            $times = json_decode($quote['lead_time'], true);
+            $find = 0;
+            $timeidx = 0;
+            foreach ($times as $timed) {
+                if ($timed['id']==$newval) {
+                    $find=1;
+                    break;
+                } else {
+                    $timeidx++;
+                }
+            }
+            if ($find==1) {
+                $i=0;
+                $out['result'] = $this->success_result;
+                foreach ($times as $timed) {
+                    if ($timed['id']==$newval) {
+                        $times[$i]['current'] = 1;
+                    } else {
+                        $times[$i]['current'] = 0;
+                    }
+                    $i++;
+                }
+                $quote['rush_days'] = $times[$timeidx]['date'];
+                $quote['rush_cost'] = $times[$timeidx]['price'];
+                $quote['rush_terms'] = $times[$timeidx]['name'];
+                $quote['lead_time'] = json_encode($times);
+                $quotesession['quote'] = $quote;
+                usersession($session_id, $quotesession);
+            }
         }
         return $out;
     }
@@ -606,7 +683,7 @@ class Leadquote_model extends MY_Model
                     foreach ($items[$itemidx]['items'] as $row) {
                         $items[$itemidx]['items'][$ridx]['item_price']=$newprice;
                         $items[$itemidx]['items'][$ridx]['qtyinput_class']='normal';
-                        $rowtotal = $row['item_qty']*$row['item_price'];
+                        $rowtotal = $items[$itemidx]['items'][$ridx]['item_qty']*$items[$itemidx]['items'][$ridx]['item_price'];
                         $items[$itemidx]['items'][$ridx]['item_subtotal']=MoneyOutput($rowtotal);
                         $ridx++;
                     }
@@ -708,6 +785,7 @@ class Leadquote_model extends MY_Model
                 if ($item['quote_item_id']==$quote_item_id) {
                     // Find
                     $out['result']=$this->success_result;
+                    $out['quote'] = $quote;
                     $out['imprint_details']=$item['imprint_details'];
                     $out['item_id']=$item['item_id'];
                     $out['item_number']=$item['item_number'];
@@ -911,7 +989,8 @@ class Leadquote_model extends MY_Model
                                 'imprint_price' => floatval($row[$priceindx]),
                                 'outqty' => ($items[$idx]['item_qty'] == 0 ? '---' : $items[$idx]['item_qty']),
                                 'outprice' => MoneyOutput(floatval($row[$priceindx])),
-                                'imprint_subtotal' => MoneyOutput($subtotal),
+                                // 'imprint_subtotal' => MoneyOutput($subtotal),
+                                'imprint_subtotal' => $subtotal,
                                 'imprint_price_class' => $imprint_price_class,
                                 'imprint_price_title' => $imprint_price_title,
                                 'delflag' => 0,
@@ -931,7 +1010,8 @@ class Leadquote_model extends MY_Model
                                 'imprint_price'=>floatval($row['extra_cost']),
                                 'outqty'=>1,
                                 'outprice'=>MoneyOutput($extracost),
-                                'imprint_subtotal'=>MoneyOutput($extracost),
+                                // 'imprint_subtotal'=>MoneyOutput($extracost),
+                                'imprint_subtotal'=> $extracost,
                                 'imprint_price_class' => 'normal',
                                 'imprint_price_title' => '',
                                 'delflag'=>0,
@@ -967,7 +1047,8 @@ class Leadquote_model extends MY_Model
                         'imprint_price'=>floatval($setup_price),
                         'outqty'=>$setup_qty,
                         'outprice'=>MoneyOutput($setup_price),
-                        'imprint_subtotal'=>  MoneyOutput($setup_total),
+                        // 'imprint_subtotal'=>  MoneyOutput($setup_total),
+                        'imprint_subtotal'=>  $setup_total,
                         'imprint_price_class' => $imprint_price_class,
                         'imprint_price_title' => $imprint_price_title,
                         'delflag'=>0,
@@ -1016,7 +1097,7 @@ class Leadquote_model extends MY_Model
             $quotesession['shipping'] = [];
         } else {
             $this->load->model('shipping_model');
-            $res = $this->shipping_model->count_quoteshiprates($items, $quote, time(), $quote['brand']);
+            $res = $this->shipping_model->count_quoteshiprates($items, $quote, $quote['rush_days'], $quote['brand']);
             if ($res['result']==$this->success_result) {
                 // Delete old shippings
                 foreach ($shippings as $shipping) {
@@ -1098,6 +1179,7 @@ class Leadquote_model extends MY_Model
         $this->db->set('mischrg_value2', floatval($quote['mischrg_value2']));
         $this->db->set('discount_label', $quote['discount_label']);
         $this->db->set('discount_value', floatval($quote['discount_value']));
+        $this->db->set('lead_time', $quote['lead_time']);
         $this->db->set('shipping_country', $quote['shipping_country']);
         $this->db->set('shipping_contact', $quote['shipping_contact']);
         $this->db->set('shipping_company', empty($quote['shipping_company']) ? null : $quote['shipping_company']);
@@ -1108,6 +1190,7 @@ class Leadquote_model extends MY_Model
         $this->db->set('shipping_state', $quote['shipping_state']);
         $this->db->set('sales_tax', floatval($quote['sales_tax']));
         $this->db->set('tax_exempt', intval($quote['tax_exempt']));
+        $this->db->set('taxview', intval($quote['taxview']));
         $this->db->set('tax_reason', $quote['tax_reason']);
         $this->db->set('rush_terms', $quote['rush_terms']);
         $this->db->set('rush_days', $quote['rush_days']);
@@ -1121,6 +1204,7 @@ class Leadquote_model extends MY_Model
         $this->db->set('billing_zip', $quote['billing_zip']);
         $this->db->set('billing_city', $quote['billing_city']);
         $this->db->set('billing_state', $quote['billing_state']);
+        $this->db->set('quote_blank', intval($quote['quote_blank']));
         $this->db->set('quote_note', $quote['quote_note']);
         $this->db->set('quote_repcontact', $quote['quote_repcontact']);
         $this->db->set('items_subtotal', floatval($quote['items_subtotal']));
@@ -1242,9 +1326,6 @@ class Leadquote_model extends MY_Model
             }
 
             foreach ($deleted as $row) {
-                // 'entity' => 'imprints'
-                // 'entity' => 'imprint_details'
-                // 'entity' => 'shipping', 'id' => $shipping['quote_shipping_id']];
                 if ($row['entity']=='imprints') {
                     $this->db->where('quote_imprint_id', $row['id']);
                     $this->db->delete('ts_quote_imprints');
@@ -1254,6 +1335,9 @@ class Leadquote_model extends MY_Model
                 } elseif ($row['entity']=='shipping') {
                     $this->db->where('quote_shipping_id', $row['id']);
                     $this->db->delete('ts_quote_shippings');
+                } elseif ($row['entity']=='items') {
+                    $this->db->where('quote_item_id', $row['id']);
+                    $this->db->delete('ts_quote_items');
                 }
 
             }
