@@ -89,6 +89,7 @@ function init_leadquotes_content() {
                 if (parseInt(response.data.totalcalc)==1) {
                     $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
                     $(".quotetotalvalue").empty().html(response.data.total);
+                    $(".quotecommondatainpt[data-item='sales_tax']").val(response.data.tax);
                 }
             } else {
                 show_error(response);
@@ -135,6 +136,9 @@ function init_leadquotes_content() {
                     $(".quoteaddressinpt[data-item='shipping_city']").val(response.data.shipping_city);
                     $(".quoteaddressinpt[data-item='shipping_state']").val(response.data.shipping_state);
                 }
+                if (parseInt(response.data.taxview)==1) {
+                    $(".quotetaxarea").empty().html(response.data.taxcontent);
+                }
                 if (parseInt(response.data.billrebuild)==1) {
                     $(".quoteaddressinpt[data-item='billing_zip']").val(response.data.billing_zip);
                     $(".quoteaddressinpt[data-item='billing_city']").val(response.data.billing_city);
@@ -148,6 +152,7 @@ function init_leadquotes_content() {
                 if (parseInt(response.data.totalcalc)==1) {
                     $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
                     $(".quotetotalvalue").empty().html(response.data.total);
+                    $(".quotecommondatainpt[data-item='sales_tax']").val(response.data.tax);
                 }
                 $("#loader").hide();
                 init_leadquotes_content();
@@ -170,6 +175,7 @@ function init_leadquotes_content() {
                 $(".quoteleadshipcostinpt[data-item='shipping_cost']").val(response.data.shipping_cost);
                 $(".quoteshippingcostarea").empty().html(response.data.shippingview);
                 $(".quotetotalvalue").empty().html(response.data.total);
+                $(".quotecommondatainpt[data-item='sales_tax']").val(response.data.tax);
                 $("#loader").hide();
                 init_leadquotes_content();
             } else {
@@ -213,6 +219,7 @@ function init_leadquotes_content() {
                 $(".quoteleadshipcostinpt[data-item='rush_cost']").val(response.data.rush_cost);
                 $(".quoteshippingcostarea").empty().html(response.data.shippingview);
                 $(".quotetotalvalue").empty().html(response.data.total);
+                $(".quotecommondatainpt[data-item='sales_tax']").val(response.data.tax);
                 $("#loader").hide();
                 init_leadquotes_content();
             } else {
@@ -243,6 +250,7 @@ function init_leadquotes_content() {
                 if (parseInt(response.data.totals)==1) {
                     $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
                     $(".quotetotalvalue").empty().html(response.data.total);
+                    $(".quotecommondatainpt[data-item='sales_tax']").val(response.data.tax);
                 }
                 if (parseInt(response.data.shipping)==1) {
                     $(".quoteleadshipcostinpt[data-item='shipping_cost']").val(response.data.shipping_cost);
@@ -277,6 +285,7 @@ function init_leadquotes_content() {
                 if (parseInt(response.data.totals)==1) {
                     $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
                     $(".quotetotalvalue").empty().html(response.data.total);
+                    $(".quotecommondatainpt[data-item='sales_tax']").val(response.data.tax);
                 }
                 if (parseInt(response.data.refresh)==1) {
                     init_leadquotes_content();

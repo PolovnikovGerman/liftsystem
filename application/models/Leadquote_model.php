@@ -13,7 +13,7 @@ class Leadquote_model extends MY_Model
     private $default_zip='07012';
     private $error_message='Unknown error. Try later';
     private $empty_htmlcontent='&nbsp;';
-
+    private $tax_state = 'NJ';
     function __construct() {
         parent::__construct();
     }
@@ -532,7 +532,19 @@ class Leadquote_model extends MY_Model
                     if ($zipdat['result']==$this->success_result) {
                         $quote['shipping_city'] = $zipdat['city'];
                         $quote['shipping_state'] = $zipdat['state'];
-                        // if ($quote['shipping_state']==)
+                        if ($zipdat['state']==$this->tax_state && $quote['shipping_country']==$this->config->item('default_country')) {
+                            if ($quote['taxview']==0) {
+                                $quote['taxview'] = 1;
+                                $out['taxview'] = 1;
+                            }
+                        } else {
+                            if ($quote['taxview']==1) {
+                                $quote['taxview'] = 0;
+                                $quote['tax_exempt'] = 0;
+                                $quote['tax_reason'] = '';
+                                $out['taxview'] = 1;
+                            }
+                        }
                     }
                 } else {
                     $quote['shipping_city'] = '';
@@ -551,6 +563,20 @@ class Leadquote_model extends MY_Model
                 } else {
                     $quote['billing_city'] = '';
                     $quote['billing_state'] = '';
+                }
+            } elseif ($fldname=='shipping_state') {
+                if ($data['newval']==$this->tax_state && $quote['shipping_country']==$this->config->item('default_country')) {
+                    if ($quote['taxview']==0) {
+                        $quote['taxview'] = 1;
+                        $out['taxview'] = 1;
+                    }
+                } else {
+                    if ($quote['taxview']==1) {
+                        $quote['taxview'] = 0;
+                        $quote['tax_exempt'] = 0;
+                        $quote['tax_reason'] = '';
+                        $out['taxview'] = 1;
+                    }
                 }
             }
             $quotesession['quote'] = $quote;

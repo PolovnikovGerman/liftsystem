@@ -326,6 +326,7 @@ class Leadquote extends MY_Controller
                         $quote = $quotesession['quote'];
                         $mdata['items_subtotal'] = MoneyOutput($quote['items_subtotal']);
                         $mdata['total'] = MoneyOutput($quote['quote_total']);
+                        $mdata['tax'] = $quote['sales_tax'];
                     }
                 }
             }
@@ -384,10 +385,24 @@ class Leadquote extends MY_Controller
                         $mdata['shipping_state'] = $quote['shipping_state'];
                     }
                     $mdata['billrebuild'] = $res['billrebuild'];
-                    if ($res['billrebuild']) {
+                    if ($res['billrebuild']==1) {
                         $mdata['billing_zip'] = $quote['billing_zip'];
                         $mdata['billing_city'] = $quote['billing_city'];
                         $mdata['billing_state'] = $quote['billing_state'];
+                    }
+                    $mdata['taxview'] = $res['taxview'];
+                    if ($res['taxview']==1) {
+                        if ($quote['taxview']==0) {
+                            // Empty Tax view
+                            $taxview = $this->load->view('leadpopup/quote_taxempty_view',[],TRUE);
+                        } else {
+                            $taxoptions = [
+                                'edit_mode' => 1,
+                                'data' => $quote,
+                            ];
+                            $taxview = $this->load->view('leadpopup/quote_tax_edit', $taxoptions,TRUE);
+                        }
+                        $mdata['taxcontent'] = $taxview;
                     }
                     $mdata['calcship'] = $res['calcship'];
                     if ($res['calcship']==1) {
@@ -411,6 +426,7 @@ class Leadquote extends MY_Controller
                         $quote = $quotesession['quote'];
                         $mdata['items_subtotal'] = MoneyOutput($quote['items_subtotal']);
                         $mdata['total'] = MoneyOutput($quote['quote_total']);
+                        $mdata['tax'] = $quote['sales_tax'];
                     }
                 }
             }
@@ -443,6 +459,7 @@ class Leadquote extends MY_Controller
                     $mdata['shippingview'] = $this->load->view('leadpopup/quote_shiprates_view', $options, TRUE);
                     $mdata['shipping_cost'] = $quote['shipping_cost'];
                     $mdata['total'] = MoneyOutput($quote['quote_total']);
+                    $mdata['tax'] = $quote['sales_tax'];
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -508,6 +525,7 @@ class Leadquote extends MY_Controller
                     $mdata['shipping_cost'] = $quote['shipping_cost'];
                     $mdata['rush_cost'] = $quote['rush_cost'];
                     $mdata['total'] = MoneyOutput($quote['quote_total']);
+                    $mdata['tax'] = $quote['sales_tax'];
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -549,6 +567,7 @@ class Leadquote extends MY_Controller
                         $quotesession = usersession($session_id);
                         $mdata['items_subtotal'] = MoneyOutput($quotesession['quote']['items_subtotal']);
                         $mdata['total'] = MoneyOutput($quotesession['quote']['quote_total']);
+                        $mdata['tax'] = $quote['sales_tax'];
                         $mdata['totals'] = 1;
                     }
                     if ($res['item_refresh']==1) {
