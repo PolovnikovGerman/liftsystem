@@ -313,7 +313,7 @@ class Leadquote_model extends MY_Model
         return $newnumber;
     }
 
-    public function add_newleadquote_item($item_id, $custom_name) {
+    public function add_newleadquote_item($item_id, $custom_name, $startid=1) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $this->load->model('orders_model');
         $this->load->model('leadorder_model');
@@ -327,7 +327,7 @@ class Leadquote_model extends MY_Model
         if ($itemdata['num_colors']>0) {
             $itmcolor=$colors[0];
         }
-        $newid = -1;
+        $newid = (-1)*$startid;
         if ($item_id<0) {
             $item_description=$custom_name;
         } else {
@@ -1249,6 +1249,40 @@ class Leadquote_model extends MY_Model
         return $out;
     }
 
+    public function addquoteitem($postdata, $quotesession, $session_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Not all parameters send'];
+        $item_id = ifset($postdata,'item_id',0);
+        $custom_item = ifset($postdata, 'quote_item', '');
+        if (!empty($item_id)) {
+            $items = $quotesession['items'];
+            $startid = count($items)+1;
+            $itemdat = $this->add_newleadquote_item($item_id, $custom_item, $startid);
+            $out['msg'] = $itemdat['msg'];
+            if ($itemdat['result']==$this->success_result) {
+                $out['result'] = $this->success_result;
+                $quote = $quotesession['quote'];
+                $newitem = $itemdat['quote_items'];
+                $items[] = $newitem;
+                if (empty($quote['lead_time'])) {
+                    // Get Delivery Terms
+                    $this->load->model('calendars_model');
+                    $termdat = $this->calendars_model->get_delivery_date($item_id);
+                    $quote['lead_time'] = json_encode($termdat);
+                    foreach ($termdat as $row) {
+                        if ($row['current']==1) {
+                            $quote['rush_cost'] = $row['price'];
+                            $quote['rush_days'] = $row['date'];
+                            $quote['rush_terms'] = $row['name'];
+                        }
+                    }
+                }
+                $quotesession['quote'] = $quote;
+                $quotesession['items'] = $items;
+                usersession($session_id, $quotesession);
+            }
+        }
+        return $out;
+    }
     public function savequote($quotesession, $lead_id, $user_id, $session_id) {
         $out = ['result' => $this->error_result, 'msg' => $this->error_message];
         $quote = $quotesession['quote'];

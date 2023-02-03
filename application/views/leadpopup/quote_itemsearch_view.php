@@ -1,4 +1,4 @@
-<div class="order_itemedit_area">
+<div class="quote_itemedit_area">
     <div class="quote_itemedit_title">Item</div>
     <div class="quote_itemedit">
         <select class="selectquoteitem" id="quoteitem_id">

@@ -367,7 +367,7 @@ function init_leadquotes_content() {
         }
     });
     $(".addquoteitem").unbind('click').click(function (){
-        // show_leadquoteitemsearch();
+        show_leadquoteitemsearch();
     });
 }
 
@@ -430,18 +430,22 @@ function save_leadquoteitem() {
     params.push({name: 'item_id', value:$("select#quoteitem_id").val()});
     params.push({name: 'quote_item', value:$("textarea.quoteitemsvalue").val()});
     var url="/leadquote/addquoteitem";
+    $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("#artNextModal").modal('hide');
-            $("div#orderitemdataarea").empty().html(response.data.content);
-            $("div#rushdatalistarea").empty().html(response.data.rushview);
-            $(".totalduedataviewarea").empty().html(response.data.total_due);
-            $("#ordertotaloutput").empty().html(response.data.order_revenue);
-            $("input.salestaxcost").val(response.data.tax);
-            $("div.bl_items_sub-total2").empty().html(response.data.item_subtotal);
-            $("div#leadorderprofitarea").empty().html(response.data.profit_content);
+            $("#quoteitemtabledata").empty().html(response.data.item_content);
+            $(".quoteleadtime").empty().html(response.data.leadtime);
+            $(".quoteshippingcostarea").empty().html(response.data.shippingview);
+            $("input[data-item='sales_tax']").val(response.data.tax);
+            $("input[data-item='rush_cost']").val(response.data.rush_cost);
+            $("input[data-item='shipping_cost']").val(response.data.shipping_cost);
+            $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
+            $(".quotetotalvalue").empty().html(response.data.total);
+            $("#loader").hide();
             init_leadquotes_content();
         } else {
+            $("#loader").hide();
             show_error(response);
         }
     },'json');
