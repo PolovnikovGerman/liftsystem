@@ -642,10 +642,10 @@ class Balances_model extends My_Model
 //        $this->db->where('nd.dateend <= ',$dateend);
 //        $this->db->where('nd.profit_week is NULL');
 //        if ($brand!=='ALL') {
-//            if ($brand=='SB') {
-//                $this->db->where_in('np.brand', ['BT','SB']);
-//            } else {
+//            if ($brand=='SR') {
 //                $this->db->where('np.brand', $brand);
+//            } else {
+//                $this->db->where_in('np.brand', ['BT','SB']);
 //            }
 //        }
 //        $this->db->group_by('nd.datebgn, nd.dateend, nd.profit_id');
@@ -4663,10 +4663,10 @@ class Balances_model extends My_Model
             }
             $this->db->where('d.details_type', $type);
             if ($brand!=='ALL') {
-                if ($brand=='SB') {
-                    $this->db->where_in('d.brand', ['BT','SB']);
-                } else {
+                if ($brand=='SR') {
                     $this->db->where('d.brand', $brand);
+                } else {
+                    $this->db->where_in('d.brand', ['BT','SB']);
                 }
             }
             $this->db->group_by('n.datebgn, n.dateend, d.vendor, d.description');
@@ -4770,10 +4770,10 @@ class Balances_model extends My_Model
         $this->db->where('o.order_date >= ', $start_date);
         $this->db->where('o.order_date < ', $now);
         if (isset($brand) && $brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $ordersres=$this->db->get()->row_array();
@@ -4789,10 +4789,10 @@ class Balances_model extends My_Model
                 $this->db->where('o.order_date >= ', $start_date);
                 $this->db->where('o.order_date < ', $now);
                 if (isset($brand) && $brand!=='ALL') {
-                    if ($brand=='SB') {
-                        $this->db->where_in('o.brand', ['BT','SB']);
-                    } else {
+                    if ($brand=='SR') {
                         $this->db->where('o.brand', $brand);
+                    } else {
+                        $this->db->where_in('o.brand', ['BT','SB']);
                     }
                 }
                 $revenueres=$this->db->get()->row_array();
