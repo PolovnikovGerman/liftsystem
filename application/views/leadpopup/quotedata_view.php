@@ -43,7 +43,7 @@
     </div>
     <div class="datarow">
         <div class="quoteitemtabledata">
-            <?=$itemsview?>
+            <div id="quoteitemtabledata"><?=$itemsview?></div>
             <?php if ($edit_mode==1) { ?>
                 <div class="datarow"><div class="addquoteitem">+ add item</div></div>
             <?php } ?>

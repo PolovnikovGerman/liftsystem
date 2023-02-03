@@ -984,4 +984,62 @@ select.imprintlocationchoice {
     text-align: center;
     width: 87px;
 }
+/* Popup - Item search */
+.quote_itemedit_area {
+    background: none repeat scroll 0 0 #fff;
+    clear: both;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    min-height: 150px;
+    padding: 15px;
+    width: 391px;
+}
+.quote_itemedit_title {
+    clear: both;
+    float: left;
+    text-align: center;
+    width: 100%;
+}
+.quote_itemedit {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    width: 100%;
+    text-align: left;
+}
+.selectquoteitem {
+    font-size: 12px;
+    width: 393px;
+}
+.quote_itemedit_text {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    height: 58px;
+    width: 100%;
+    text-align: left;
+}
+.quote_itemedit_text label {
+    clear: both;
+    float: left;
+    font-size: 13px;
+    font-weight: normal;
+    width: 80%;
+}
+textarea.quoteitemsvalue {
+    float: left;
+    height: 47px;
+    overflow-y: auto;
+    resize: none;
+    width: 96%;
+}
+.quote_itemedit_save {
+    clear: both;
+    float: left;
+    margin-left: 291px;
+    margin-top: 15px;
+    width: 90px;
+    cursor: pointer;
+}
 /* End Print Details Popup */
