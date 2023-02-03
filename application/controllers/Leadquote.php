@@ -84,8 +84,8 @@ class Leadquote extends MY_Controller
                             $billstate = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
                         }
                     };
-
-                    // $states = $this->shipping_model->get_country_states($this->config->item('default_country'));
+                    // Empty Tax view
+                    $taxview = $this->load->view('leadpopup/quote_taxempty_view',[],TRUE);
                     // Prepare content
                     $quotedata = $qres['quote'];
                     $quote_items = $qres['quote_items'];
@@ -148,6 +148,7 @@ class Leadquote extends MY_Controller
                         'lead_time' => $lead_time,
                         'shipstate' => $shipstate,
                         'billstate' => $billstate,
+                        'taxview' => $taxview,
                     ];
                     $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
                 }
@@ -215,8 +216,18 @@ class Leadquote extends MY_Controller
                             ];
                             $billstate = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
                         }
-
                     };
+                    // Tax view
+                    if ($quotedata['taxview']==0) {
+                        // Empty Tax view
+                        $taxview = $this->load->view('leadpopup/quote_taxempty_view',[],TRUE);
+                    } else {
+                        $taxoptions = [
+                            'edit_mode' => $edit_mode,
+                            'data' => $quotedata,
+                        ];
+                        $taxview = $this->load->view('leadpopup/quote_tax_edit', $taxoptions,TRUE);
+                    }
                     $quote_items = $qres['items'];
                     $shippings = $qres['shippings'];
                     $items_views = [];
@@ -285,6 +296,7 @@ class Leadquote extends MY_Controller
                         'billstate' => $billstate,
                         'shiprates' => $shiprates,
                         'lead_time' => $lead_time,
+                        'taxview' => $taxview,
                     ];
                     $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
                 }
@@ -431,6 +443,36 @@ class Leadquote extends MY_Controller
                     $mdata['shippingview'] = $this->load->view('leadpopup/quote_shiprates_view', $options, TRUE);
                     $mdata['shipping_cost'] = $quote['shipping_cost'];
                     $mdata['total'] = MoneyOutput($quote['quote_total']);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function quotetaxextemp() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $error = $this->restore_orderdata_error;
+            $session_id = ifset($postdata,'session','unknw');
+            $quotesession = usersession($session_id);
+            $mdata = [];
+            if (!empty($quotesession)) {
+                $res = $this->leadquote_model->quotetaxextemp($quotesession, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $this->leadquote_model->calc_quote_totals($session_id);
+                    $quotesession = usersession($session_id);
+                    $quote = $quotesession['quote'];
+                    if ($quote['tax_exempt']==1) {
+                        $mdata['content'] = '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+                    } else {
+                        $mdata['content'] = '<i class="fa fa-square-o" aria-hidden="true"></i>';
+                    }
+                    $mdata['tax_reason'] = $quote['tax_reason'];
+                    $mdata['total'] = MoneyOutput($quote['quote_total']);
+                    $mdata['tax'] = $quote['sales_tax'];
                 }
             }
             $this->ajaxResponse($mdata, $error);

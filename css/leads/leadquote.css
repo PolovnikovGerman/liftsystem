@@ -523,11 +523,41 @@ input.quoteshipcostvalue {
     font-weight: bold;
     margin-right: 3px;
 }
+.quotetaxlabeldata {
+    color: #000d6e!important;
+    height: 22px;
+    line-height: 22px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 7px;
+}
 .quotetaxemptyview {
     height: 22px;
     line-height: 22px;
     font-size: 12px;
     font-style: italic;
+}
+.quotetaxexceptcheck {
+    font-size: 13px!important;
+    width: 20px;
+    text-align: center;
+    margin-right: 2px;
+    margin-top: 2px;
+}
+.quotetaxexceptcheck.choice i {
+    cursor: pointer;
+}
+.quotetaxexcept span {
+    font-size: 11px;
+}
+.quotetaxexceptreason {
+    margin-left: 7px;
+}
+.taxexceptreasoninpt {
+    height: 16px;
+    width: 85px;
+    font-size: 11px;
+    padding-left: 3px;
 }
 .quotetaxinput {
     width: 58px;

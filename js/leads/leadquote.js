@@ -178,6 +178,27 @@ function init_leadquotes_content() {
             }
         },'json');
     });
+    // Tax except
+    $(".quotetaxexceptcheck.choice").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'session', value: $("#quotesessionid").val()});
+        var url = '/leadquote/quotetaxextemp';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                // Update shipping cost
+                $(".quotetaxexceptcheck").empty().html(response.data.content);
+                $(".taxexceptreasoninpt").val(response.data.tax_reason);
+                $(".quotecommondatainpt[data-item='sales_tax']").val(response.data.tax);
+                $(".quotetotalvalue").empty().html(response.data.total);
+                $("#loader").hide();
+                init_leadquotes_content();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
     // Change Lead Time
     $("select.quoteleadtimeselect").unbind('change').change(function (){
         var params = new Array();

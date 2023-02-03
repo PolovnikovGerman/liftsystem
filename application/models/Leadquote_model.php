@@ -591,6 +591,21 @@ class Leadquote_model extends MY_Model
         return $out;
     }
 
+    public function quotetaxextemp($quotesession, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Field not found' ];
+        $quote = $quotesession['quote'];
+        if ($quote['tax_exempt']==1) {
+            $quote['tax_exempt'] = 0;
+            $quote['tax_reason'] = '';
+        } else {
+            $quote['tax_exempt'] = 1;
+        }
+        $quotesession['quote'] = $quote;
+        usersession($session_id, $quotesession);
+        $out['result'] = $this->success_result;
+        return $out;
+    }
+
     public function quoteleadtimechange($data, $quotesession, $session_id) {
         $out = ['result' => $this->error_result, 'msg' => 'Empty Need Parameters'];
         $newval = ifset($data, 'newval', '');
@@ -1156,6 +1171,13 @@ class Leadquote_model extends MY_Model
         }
         $items_subtotal+=($quote['mischrg_value1']+$quote['mischrg_value2']-$quote['discount_value']);
         $total+=($quote['mischrg_value1']+$quote['mischrg_value2']-$quote['discount_value']);
+        $quote['sales_tax'] = 0;
+        if ($quote['taxview']==1 && $quote['tax_exempt']==0) {
+            // Calc tax
+            $basecost = $total + $quote['rush_cost'];
+            $tax = round($basecost * ($this->config->item('salesnewtax')/100),2);
+            $quote['sales_tax'] = $tax;
+        }
         $total+=$quote['sales_tax'] + $quote['rush_cost'] + $quote['shipping_cost'];
         $quote['quote_total'] = $total;
         $quote['items_subtotal'] = $items_subtotal;
