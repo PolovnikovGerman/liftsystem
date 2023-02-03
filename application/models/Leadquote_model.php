@@ -13,7 +13,7 @@ class Leadquote_model extends MY_Model
     private $default_zip='07012';
     private $error_message='Unknown error. Try later';
     private $empty_htmlcontent='&nbsp;';
-
+    private $tax_state = 'NJ';
     function __construct() {
         parent::__construct();
     }
@@ -532,7 +532,19 @@ class Leadquote_model extends MY_Model
                     if ($zipdat['result']==$this->success_result) {
                         $quote['shipping_city'] = $zipdat['city'];
                         $quote['shipping_state'] = $zipdat['state'];
-                        // if ($quote['shipping_state']==)
+                        if ($zipdat['state']==$this->tax_state && $quote['shipping_country']==$this->config->item('default_country')) {
+                            if ($quote['taxview']==0) {
+                                $quote['taxview'] = 1;
+                                $out['taxview'] = 1;
+                            }
+                        } else {
+                            if ($quote['taxview']==1) {
+                                $quote['taxview'] = 0;
+                                $quote['tax_exempt'] = 0;
+                                $quote['tax_reason'] = '';
+                                $out['taxview'] = 1;
+                            }
+                        }
                     }
                 } else {
                     $quote['shipping_city'] = '';
@@ -551,6 +563,20 @@ class Leadquote_model extends MY_Model
                 } else {
                     $quote['billing_city'] = '';
                     $quote['billing_state'] = '';
+                }
+            } elseif ($fldname=='shipping_state') {
+                if ($data['newval']==$this->tax_state && $quote['shipping_country']==$this->config->item('default_country')) {
+                    if ($quote['taxview']==0) {
+                        $quote['taxview'] = 1;
+                        $out['taxview'] = 1;
+                    }
+                } else {
+                    if ($quote['taxview']==1) {
+                        $quote['taxview'] = 0;
+                        $quote['tax_exempt'] = 0;
+                        $quote['tax_reason'] = '';
+                        $out['taxview'] = 1;
+                    }
                 }
             }
             $quotesession['quote'] = $quote;
@@ -588,6 +614,21 @@ class Leadquote_model extends MY_Model
             $quotesession['shipping'] = $shippings;
             usersession($session_id, $quotesession);
         }
+        return $out;
+    }
+
+    public function quotetaxextemp($quotesession, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Field not found' ];
+        $quote = $quotesession['quote'];
+        if ($quote['tax_exempt']==1) {
+            $quote['tax_exempt'] = 0;
+            $quote['tax_reason'] = '';
+        } else {
+            $quote['tax_exempt'] = 1;
+        }
+        $quotesession['quote'] = $quote;
+        usersession($session_id, $quotesession);
+        $out['result'] = $this->success_result;
         return $out;
     }
 
@@ -1156,6 +1197,13 @@ class Leadquote_model extends MY_Model
         }
         $items_subtotal+=($quote['mischrg_value1']+$quote['mischrg_value2']-$quote['discount_value']);
         $total+=($quote['mischrg_value1']+$quote['mischrg_value2']-$quote['discount_value']);
+        $quote['sales_tax'] = 0;
+        if ($quote['taxview']==1 && $quote['tax_exempt']==0) {
+            // Calc tax
+            $basecost = $total + $quote['rush_cost'];
+            $tax = round($basecost * ($this->config->item('salesnewtax')/100),2);
+            $quote['sales_tax'] = $tax;
+        }
         $total+=$quote['sales_tax'] + $quote['rush_cost'] + $quote['shipping_cost'];
         $quote['quote_total'] = $total;
         $quote['items_subtotal'] = $items_subtotal;

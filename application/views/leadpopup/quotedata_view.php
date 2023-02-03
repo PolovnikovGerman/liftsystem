@@ -153,12 +153,7 @@
                 </div>
             </div>
             <div class="datarow">
-                <div class="quotetaxarea">
-                    <div class="datarow">
-                        <div class="quotetaxlabelveiw">Out of State</div>
-                        <div class="quotetaxemptyview">- No sales tax collected</div>
-                    </div>
-                </div>
+                <div class="quotetaxarea"><?=$taxview?></div>
                 <div class="quotetaxinput">
                     <div class="quotetaxlabel">Sales Tax</div>
                     <div class="quotetaxvalue">
