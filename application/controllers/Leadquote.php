@@ -57,9 +57,19 @@ class Leadquote extends MY_Controller
                         'orderby'=>'sort, country_name',
                     );
                     $countries = $this->shipping_model->get_countries_list($cnt_options);
-                    $billstates = $shipstates = [];
+                    $billstates = [];
+                    $shipstate = '';
                     if (!empty($quote['shipping_country'])) {
                         $shipstates = $this->shipping_model->get_country_states($quote['shipping_country']);
+                        if (is_array($shipstates)) {
+                            $stateoptions = [
+                                'item' => 'shipping_state',
+                                'states' => $shipstates,
+                                'edit_mode' => 1,
+                                'data' => $quote,
+                            ];
+                            $shipstate = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
+                        }
                     };
                     if (!empty($quote['billing_country'])) {
                         $billstates = $this->shipping_model->get_country_states($quote['billing_country']);
@@ -122,10 +132,11 @@ class Leadquote extends MY_Controller
                         'templlists' => $templlists,
                         'countries' => $countries,
                         'edit_mode' => 1,
-                        'shipstates' => $shipstates,
+                        // 'shipstates' => $shipstates,
                         'billstates' => $billstates,
                         'shiprates' => '',
                         'lead_time' => $lead_time,
+                        'shipstate' => $shipstate,
                     ];
                     $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
                 }
@@ -168,9 +179,19 @@ class Leadquote extends MY_Controller
                         'orderby'=>'sort, country_name',
                     );
                     $countries = $this->shipping_model->get_countries_list($cnt_options);
-                    $billstates = $shipstates = [];
+                    $billstates = [];
+                    $shipstate = '';
                     if (!empty($quotedata['shipping_country'])) {
                         $shipstates = $this->shipping_model->get_country_states($quotedata['shipping_country']);
+                        if (is_array($shipstates)) {
+                            $stateoptions = [
+                                'item' => 'shipping_state',
+                                'states' => $shipstates,
+                                'edit_mode' => $edit_mode,
+                                'data' => $quotedata,
+                            ];
+                            $shipstate = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
+                        }
                     };
                     if (!empty($quotedata['billing_country'])) {
                         $billstates = $this->shipping_model->get_country_states($quotedata['billing_country']);
@@ -239,7 +260,7 @@ class Leadquote extends MY_Controller
                         'templlists' => $templlists,
                         'countries' => $countries,
                         'edit_mode' => $edit_mode,
-                        'shipstates' => $shipstates,
+                        'shipstate' => $shipstate,
                         'billstates' => $billstates,
                         'shiprates' => $shiprates,
                         'lead_time' => $lead_time,
@@ -295,6 +316,21 @@ class Leadquote extends MY_Controller
                     $error = '';
                     $quotesession = usersession($session_id);
                     $quote = $quotesession['quote'];
+                    $mdata['shipstate'] = $res['shipstate'];
+                    if ($res['shipstate']==1) {
+                        $this->load->model('shipping_model');
+                        $shipstates = $this->shipping_model->get_country_states($quote['shipping_country']);
+                        if (is_array($shipstates)) {
+                            $stateoptions = [
+                                'item' => 'shipping_state',
+                                'states' => $shipstates,
+                                'edit_mode' => 1,
+                                'data' => $quote,
+                            ];
+                            $mdata['stateview'] = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
+                        }
+
+                    }
                     $mdata['shiprebuild'] = $res['shiprebuild'];
                     if ($res['shiprebuild']==1) {
                         $mdata['shipping_zip'] = $quote['shipping_zip'];

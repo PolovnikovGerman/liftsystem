@@ -130,16 +130,7 @@
                         <input class="quoteaddressinpt quotetown" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="shipping_city"
                                placeholder="City" value="<?=$data['shipping_city']?>"/>
                     </div>
-                    <div class="quoteshipaddresdistrict">
-                        <?php if (is_array($shipstates)) { ?>
-                            <select class="quoteaddressinpt quotestate" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_state">
-                                <option value=""></option>
-                                <?php foreach ($shipstates as $state) { ?>
-                                    <option value="<?=$state['state_code']?>" <?=$state['state_code']==$data['shipping_state'] ? 'selected="selected"' : ''?>><?=$state['state_code']?></option>
-                                <?php } ?>
-                            </select>
-                        <?php } ?>
-                    </div>
+                    <div class="quoteshipaddresdistrict"><?=$shipstate?></div>
                 </div>
             </div>
         </div>

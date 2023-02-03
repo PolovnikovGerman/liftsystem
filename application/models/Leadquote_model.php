@@ -492,7 +492,7 @@ class Leadquote_model extends MY_Model
             $quotesession['quote'] = $quote;
             $out['result'] = $this->success_result;
             usersession($session_id, $quotesession);
-            if ($fldname=='mischrg_value1' || $fldname=='mischrg_value2' || $fldname=='discount_value') {
+            if ($fldname=='mischrg_value1' || $fldname=='mischrg_value2' || $fldname=='discount_value' || $fldname=='shipping_cost' || $fldname=='rush_cost' || $fldname=='sales_tax') {
                 $out['totalcalc'] = 1;
             }
         }
@@ -500,13 +500,14 @@ class Leadquote_model extends MY_Model
     }
 
     public function quoteaddresschange($data, $quotesession, $session_id) {
-        $out = ['result' => $this->error_result, 'msg' => 'Empty Need Parameters', 'totalcalc' => 0, 'shiprebuild' => 0, 'calcship' => 0];
+        $out = ['result' => $this->error_result, 'msg' => 'Empty Need Parameters', 'totalcalc' => 0, 'shiprebuild' => 0, 'calcship' => 0,'shipstate' => 0, 'taxview'=>0];
         $fldname = ifset($data, 'fld','');
         if (!empty($fldname)) {
             $quote = $quotesession['quote'];
             $quote[$fldname] = $data['newval'];
             if ($fldname=='shipping_country') {
                 $out['shiprebuild'] = 1;
+                $out['shipstate'] = 1;
                 $quote['shipping_zip'] = '';
                 $quote['shipping_city'] = '';
                 $quote['shipping_state'] = '';
@@ -522,6 +523,7 @@ class Leadquote_model extends MY_Model
                     if ($zipdat['result']==$this->success_result) {
                         $quote['shipping_city'] = $zipdat['city'];
                         $quote['shipping_state'] = $zipdat['state'];
+                        // if ($quote['shipping_state']==)
                     }
                 } else {
                     $quote['shipping_city'] = '';

@@ -95,6 +95,24 @@ function init_leadquotes_content() {
             }
         },'json');
     });
+    // Notes
+    $(".quotenote").unbind('change').change(function (response){
+        var params = new Array();
+        params.push({name: 'session', value: $("#quotesessionid").val()});
+        params.push({name: 'fld', value: $(this).data('item')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/leadquote/quoteparamchange';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (parseInt(response.data.totalcalc)==1) {
+                    $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
+                    $(".quotetotalvalue").empty().html(response.data.total);
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
     // Address Input
     $(".quoteaddressinpt").unbind('change').change(function(){
         var params = new Array();
@@ -105,6 +123,9 @@ function init_leadquotes_content() {
         $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
+                if (parseInt(response.data.shipstate)==1) {
+                    $(".quoteshipaddresdistrict").empty().html(response.data.stateview);
+                }
                 if (parseInt(response.data.shiprebuild)==1) {
                     // Update zip, city state
                     $(".quoteaddressinpt[data-item='shipping_zip']").val(response.data.shipping_zip);
