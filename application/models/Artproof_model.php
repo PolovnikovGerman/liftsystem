@@ -49,10 +49,10 @@ Class Artproof_model extends MY_Model
             $this->db->where('e.email_include_lead',1);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('e.brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('e.brand', $options['brand']);
+            } else {
+                $this->db->where_in('e.brand', ['BT','SB']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -401,10 +401,10 @@ Class Artproof_model extends MY_Model
             }
         }
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('v.brand', ['SB','BT']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('v.brand', $brand);
+            } else {
+                $this->db->where_in('v.brand', ['SB','BT']);
             }
         }
 
@@ -443,10 +443,10 @@ Class Artproof_model extends MY_Model
             $this->db->where('e.email_include_lead',1);
         }
         if (isset($search['brand']) && $search['brand']!=='ALL') {
-            if ($search['brand']=='SB') {
-                $this->db->where_in('e.brand', ['BT','SB']);
-            } else {
+            if ($search['brand']=='SR') {
                 $this->db->where('e.brand', $search['brand']);
+            } else {
+                $this->db->where_in('e.brand', ['BT','SB']);
             }
         }
         if (isset($search['show_deleted'])) {
@@ -912,10 +912,10 @@ Class Artproof_model extends MY_Model
                 $this->db->order_by('order_rush desc, status_type asc, order_num asc');
             }
         }
-        if ($brand=='SB') {
-            $this->db->where_in('brand', ['SB','BT']);
-        } else {
+        if ($brand=='SR') {
             $this->db->where('brand', $brand);
+        } else {
+            $this->db->where_in('brand', ['SB','BT']);
         }
         $res=$this->db->get()->result_array();
         $out=array();

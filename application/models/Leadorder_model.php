@@ -145,10 +145,10 @@ Class Leadorder_model extends My_Model {
             $this->db->where('o.is_canceled',0);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('o.brand', $options['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         if (isset($options['limit'])) {
@@ -5330,10 +5330,10 @@ Class Leadorder_model extends My_Model {
         $this->db->from('ts_orders');
         $this->db->where('order_id < ', $order_id);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT', 'SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT', 'SB']);
             }
         }
         // $this->db->where('is_canceled',0);
@@ -5352,10 +5352,10 @@ Class Leadorder_model extends My_Model {
         $this->db->from('ts_orders');
         $this->db->where('order_id > ', $order_id);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT', 'SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT', 'SB']);
             }
         }
         // $this->db->where('is_canceled',0);

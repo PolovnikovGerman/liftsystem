@@ -26,10 +26,10 @@ Class Questions_model extends My_Model {
             $this->db->where('e.email_include_lead',1);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('e.brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('e.brand', $options['brand']);
+            } else {
+                $this->db->where_in('e.brand', ['BT','SB']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -52,10 +52,10 @@ Class Questions_model extends My_Model {
             $this->db->where('lem.email_id is null');
         }
         if (isset($search['brand']) && $search['brand']!=='ALL') {
-            if ($search['brand']=='SB') {
-                $this->db->where_in('e.brand', ['BT','SB']);
-            } else {
+            if ($search['brand']=='SR') {
                 $this->db->where('e.brand', $search['brand']);
+            } else {
+                $this->db->where_in('e.brand', ['BT','SB']);
             }
         }
         $this->db->limit($limit,$offset);
