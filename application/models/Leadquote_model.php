@@ -1212,6 +1212,43 @@ class Leadquote_model extends MY_Model
         usersession($session_id, $quotesession);
     }
 
+    public function removeitem($data, $quotesession, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Item Not Found'];
+        $quote_item_id = ifset($data,'item', 0);
+        if (!empty($quote_item_id)) {
+            $quote = $quotesession['quote'];
+            $items = $quotesession['items'];
+            $deleted = $quotesession['deleted'];
+            $found = 0;
+            $idx = 0;
+            $newitems = [];
+            foreach ($items as $item) {
+                if ($item['quote_item_id']==$quote_item_id) {
+                    $found = 1;
+                } else {
+                    $newitems[] = $item;
+                }
+            }
+            if ($found = 1) {
+                $out['result'] = $this->success_result;
+                if ($quote_item_id > 0) {
+                    $deleted[] = ['entity' => 'items', 'id' => $quote_item_id];
+                    if (count($newitems)==0) {
+                        $quote['lead_time'] = '';
+                        $quote['rush_terms'] = '';
+                        $quote['rush_days'] = '';
+                        $quote['rush_cost'] = 0;
+                    }
+                    $quotesession['quote'] = $quote;
+                    $quotesession['items'] = $newitems;
+                    $quotesession['deleted'] = $deleted;
+                    usersession($session_id, $quotesession);
+                }
+            }
+        }
+        return $out;
+    }
+
     public function savequote($quotesession, $lead_id, $user_id, $session_id) {
         $out = ['result' => $this->error_result, 'msg' => $this->error_message];
         $quote = $quotesession['quote'];
