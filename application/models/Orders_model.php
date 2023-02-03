@@ -78,10 +78,10 @@ Class Orders_model extends MY_Model
             $this->db->where('o.weborder', $filtr['weborder']);
         }
         if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
-            if ($filtr['brand']=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($filtr['brand']=='SR') {
                 $this->db->where('o.brand', $filtr['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         if (isset($filtr['filter']) && $filtr['filter']==7) {
@@ -180,10 +180,10 @@ Class Orders_model extends MY_Model
             $this->db->where('o.arttype', $filtr['order_type']);
         }
         if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
-            if ($filtr['brand']=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($filtr['brand']=='SR') {
                 $this->db->where('o.brand', $filtr['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -387,10 +387,10 @@ Class Orders_model extends MY_Model
                 $this->db->where('o.order_rush',1);
             }
             if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
-                if ($filtr['brand']=='SB') {
-                    $this->db->where_in('o.brand', ['BT','SB']);
-                } else {
+                if ($filtr['brand']=='SR') {
                     $this->db->where('o.brand', $filtr['brand']);
+                } else {
+                    $this->db->where_in('o.brand', ['BT','SB']);
                 }
             }
         }
@@ -552,20 +552,20 @@ Class Orders_model extends MY_Model
         $this->db->select('count(o.order_id) as cnt');
         $this->db->from('ts_orders o');
         $this->db->like("concat(ucase(o.customer_name),' ',ucase(coalesce(o.customer_email,'')),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(o.order_items) ) ",strtoupper($ordernum));
-        if ($brand=='SB') {
-            $this->db->where_in('brand',['BT', 'SB']);
-        } else {
+        if ($brand=='SR') {
             $this->db->where('brand','SR');
+        } else {
+            $this->db->where_in('brand',['BT', 'SB']);
         }
         $res=$this->db->get()->row_array();
         if ($res['cnt']==1) {
             $this->db->select('order_id');
             $this->db->from('ts_orders o');
             $this->db->like("concat(ucase(o.customer_name),' ',ucase(coalesce(o.customer_email,'')),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(o.order_items) ) ",strtoupper($ordernum));
-            if ($brand=='SB') {
-                $this->db->where_in('brand',['BT', 'SB']);
+            if ($brand=='SR') {
+                $this->db->where('brand',$brand);
             } else {
-                $this->db->where('brand','SR');
+                $this->db->where_in('brand',['BT', 'SB']);
             }
             $detail=$this->db->get()->row_array();
             $out=array(
@@ -587,10 +587,10 @@ Class Orders_model extends MY_Model
         $this->db->where('is_canceled',0);
         $this->db->where('order_qty',0);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['SB','BT']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB','BT']);
             }
         }
         $this->db->group_by('year');
@@ -638,10 +638,10 @@ Class Orders_model extends MY_Model
             $this->db->like('ucase(customer_name) ', $options['customer']);
         }
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $res = $this->db->get()->row_array();
@@ -652,10 +652,10 @@ Class Orders_model extends MY_Model
         $this->db->select('max(order_id) as max_order, count(order_id) as cnt');
         $this->db->from('sb_orders');
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $res = $this->db->get()->row_array();
@@ -671,10 +671,10 @@ Class Orders_model extends MY_Model
         $this->db->select('max(cart_id) as max_order, count(cart_id) as cnt');
         $this->db->from('sb_cartdatas');
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $res = $this->db->get()->row_array();
@@ -703,10 +703,10 @@ Class Orders_model extends MY_Model
             $this->db->like('ucase(customer_name) ', strtoupper($search['customer']));
         }
         if (isset($search['brand']) && $search['brand']!=='ALL') {
-            if ($search['brand']=='SB') {
-                $this->db->where_in('sb_orders.brand', ['BT','SB']);
-            } else {
+            if ($search['brand']=='SR') {
                 $this->db->where('sb_orders.brand', $search['brand']);
+            } else {
+                $this->db->where_in('sb_orders.brand', ['BT','SB']);
             }
         }
         $this->db->order_by($order_by, $direct);
@@ -1011,6 +1011,12 @@ Class Orders_model extends MY_Model
         return $this->db->insert_id();
     }
 
+    public function get_srorder_number() {
+        $this->db->set('order_date', time());
+        $this->db->insert('sr_ordernum');
+        return $this->db->insert_id();
+    }
+
     public function change_goal_value($data, $field, $newval) {
         $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_ERRMSG);
         if (!isset($data[$field])) {
@@ -1066,10 +1072,10 @@ Class Orders_model extends MY_Model
         $this->db->from('sb_orders');
         $this->db->where('is_void',0);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $this->db->group_by('dayweek');
@@ -1131,10 +1137,10 @@ Class Orders_model extends MY_Model
             $this->db->from('sb_orders');
             $this->db->where('is_void', 0);
             if ($brand!=='ALL') {
-                if ($brand=='SB') {
-                    $this->db->where_in('brand', ['BT','SB']);
-                } else {
+                if ($brand=='SR') {
                     $this->db->where('brand', $brand);
+                } else {
+                    $this->db->where_in('brand', ['BT','SB']);
                 }
             }
             $res_ar = $this->db->get()->row_array();
@@ -1204,10 +1210,10 @@ Class Orders_model extends MY_Model
             $this->db->where('unix_timestamp(order_date) >= ', $week_bgn);
             $this->db->where('unix_timestamp(order_date) <= ', $week_end);
             if ($brand!=='ALL') {
-                if ($brand=='SB') {
-                    $this->db->where_in('brand', ['BT','SB']);
-                } else {
+                if ($brand=='SR') {
                     $this->db->where('brand', $brand);
+                } else {
+                    $this->db->where_in('brand', ['BT','SB']);
                 }
             }
             $this->db->group_by('weekday');
@@ -1359,10 +1365,10 @@ Class Orders_model extends MY_Model
         $this->db->from('ts_orders');
         $this->db->where('is_canceled',0);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand',['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand',['BT','SB']);
             }
 
         }
@@ -1381,10 +1387,10 @@ Class Orders_model extends MY_Model
         $this->db->where('o.order_date <= ', $options['end']);
         $this->db->where('o.is_canceled',0);
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('o.brand', $options['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $this->db->group_by('day');
@@ -1404,10 +1410,10 @@ Class Orders_model extends MY_Model
             $this->db->where('o.order_cog is null');
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('o.brand', $options['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $this->db->where('o.is_canceled',0);
@@ -1427,10 +1433,10 @@ Class Orders_model extends MY_Model
         $this->db->where('o.order_date <= ', $end);
         $this->db->where('o.is_canceled',0);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['SB','BT']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
             }
         }
         $totals=$this->db->get()->row_array();
@@ -1446,10 +1452,10 @@ Class Orders_model extends MY_Model
         $this->db->where('o.item_id = ', $this->config->item('custom_id'));
         $this->db->where('o.is_canceled',0);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['SB','BT']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
             }
         }
         $customs=$this->db->get()->row_array();
@@ -1466,10 +1472,10 @@ Class Orders_model extends MY_Model
         $this->db->where('o.item_id != ', $this->config->item('custom_id'));
         $this->db->where('o.is_canceled',0);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where('o.brand', ['SB','BT']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where('o.brand', ['SB','BT']);
             }
         }
         $regular=$this->db->get()->row_array();
@@ -1516,10 +1522,10 @@ Class Orders_model extends MY_Model
             $this->db->where('o.order_qty',$options['order_qty']);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('o.brand', $options['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         if (isset($options['limit'])) {
@@ -1632,10 +1638,10 @@ Class Orders_model extends MY_Model
             $this->db->from('sb_orders');
             $this->db->where('is_void', 0);
             if ($brand!=='ALL') {
-                if ($brand=='SB') {
-                    $this->db->where_in('brand', ['BT','SB']);
-                } else {
+                if ($brand=='SR') {
                     $this->db->where('brand', $brand);
+                } else {
+                    $this->db->where_in('brand', ['BT','SB']);
                 }
             }
             $res_ar = $this->db->get()->row_array();
@@ -1711,10 +1717,10 @@ Class Orders_model extends MY_Model
             $this->db->where('unix_timestamp(date) >= ', $week_bgn);
             $this->db->where('unix_timestamp(date) <= ', $week_end);
             if ($brand!=='ALL') {
-                if ($brand=='SB') {
-                    $this->db->where_in('brand', ['SB','BT']);
-                } else {
+                if ($brand=='SR') {
                     $this->db->where('brand', $brand);
+                } else {
+                    $this->db->where_in('brand', ['SB','BT']);
                 }
             }
             $this->db->group_by('date');
@@ -1804,10 +1810,10 @@ Class Orders_model extends MY_Model
         $this->db->where('unix_timestamp(order_date) >= ', $start);
         $this->db->where('unix_timestamp(order_date) <= ', $end);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $ordres = $this->db->get()->result_array();
@@ -1816,10 +1822,10 @@ Class Orders_model extends MY_Model
         $this->db->where('created_date >= ', $start);
         $this->db->where('created_date <= ', $end);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $attres = $this->db->get()->result_array();
@@ -2028,10 +2034,10 @@ Class Orders_model extends MY_Model
             $this->db->where('substr(order_proj_status,4)',$options['order_status']);
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('brand', $options['brand']);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -2056,10 +2062,10 @@ Class Orders_model extends MY_Model
         }
         $this->db->where('order_cog',NULL);
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('brand', $options['brand']);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $this->db->order_by($order_by, $direct);
@@ -2174,10 +2180,10 @@ Class Orders_model extends MY_Model
             $this->db->where('o.order_num', $search['searchpo']);
         }
         if (isset($search['brand']) && $search['brand']!=='ALL') {
-            if ($search['brand']=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($search['brand']=='SR') {
                 $this->db->where('o.brand', $search['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -2198,10 +2204,10 @@ Class Orders_model extends MY_Model
             $this->db->where('o.order_num', $search['searchpo']);
         }
         if (isset($search['brand']) && $search['brand']!=='ALL') {
-            if ($search['brand']=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($search['brand']=='SR') {
                 $this->db->where('o.brand', $search['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $res=$this->db->get()->result_array();
@@ -2268,10 +2274,10 @@ Class Orders_model extends MY_Model
         $this->db->from('ts_orders');
         $this->db->where("is_canceled",0);
         if (isset($options['brand']) && $options['brand']!=='ALL') {
-            if ($options['brand']=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($options['brand']=='SR') {
                 $this->db->where('brand', $options['brand']);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -2354,10 +2360,10 @@ Class Orders_model extends MY_Model
                 $this->db->where('o.arttype', $filtr['order_type']);
             }
             if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
-                if ($filtr['brand']=='SB') {
-                    $this->db->where_in('o.brand', ['BT','BT']);
-                } else {
+                if ($filtr['brand']=='SR') {
                     $this->db->where('o.brand', $filtr['brand']);
+                } else {
+                    $this->db->where_in('o.brand', ['BT','BT']);
                 }
             }
         }
@@ -2565,6 +2571,13 @@ Class Orders_model extends MY_Model
             if (isset($filtr['shipping_country'])) {
                 $this->db->join("({$shipsql}) as s" ,'s.order_id=o.order_id');
             }
+            if (ifset($filtr, 'brand','ALL')!=='ALL') {
+                if ($filtr['brand']=='SR') {
+                    $this->db->where('o.brand ', $filtr['brand']);
+                } else {
+                    $this->db->where_in('o.brand ', ['SB','BT']);
+                }
+            }
             if ($addtype=='blank') {
                 $this->db->where('o.order_blank',1);
             } else {
@@ -2668,10 +2681,10 @@ Class Orders_model extends MY_Model
                 $this->db->where('o.arttype', $filtr['order_type']);
             }
             if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
-                if ($filtr['brand']=='SB') {
-                    $this->db->where_in('o.brand', ['BT','SB']);
-                } else {
+                if ($filtr['brand']=='SR') {
                     $this->db->where('o.brand', $filtr['brand']);
+                } else {
+                    $this->db->where_in('o.brand', ['BT','SB']);
                 }
             }
         }
@@ -2945,10 +2958,10 @@ Class Orders_model extends MY_Model
                 }
             }
             if (isset($postdata['brand']) && $postdata['brand']!=='ALL') {
-                if ($postdata['brand']=='SB') {
-                    $this->db->where_in('o.brand', ['BT','SB']);
-                } else {
+                if ($postdata['brand']=='SR') {
                     $this->db->where('o.brand', $postdata['brand']);
+                } else {
+                    $this->db->where_in('o.brand', ['BT','SB']);
                 }
             }
             if (in_array('credit_card', $fields)) {
@@ -3197,10 +3210,10 @@ Class Orders_model extends MY_Model
         $this->db->from('ts_orders');
         $this->db->where('is_canceled',0);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -3235,10 +3248,10 @@ Class Orders_model extends MY_Model
                   "ONLY_FULL_GROUP_BY", "")');
         $field_list = 'select date_format(from_unixtime(order_date),\'%Y\') as ordyear, count(order_id) as cntord, sum(revenue) as sumrevenue, sum(profit) as sumprofit from ts_orders where is_canceled=0';
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $field_list.=' and brand in ( \'BT\',\'SB\')';
-            } else {
+            if ($brand=='SR') {
                 $field_list.=' and brand = \''.$brand.'\'';
+            } else {
+                $field_list.=' and brand in ( \'BT\',\'SB\')';
             }
         }
         $projSql = $field_list.' and profit_perc is null group by ordyear';
@@ -3270,10 +3283,10 @@ Class Orders_model extends MY_Model
         $this->db->join("({$blackSql}) black","black.ordyear=date_format(from_unixtime(ord.order_date),'%Y')","left");
         $this->db->where('ord.is_canceled',0);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('ord.brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('ord.brand', $brand);
+            } else {
+                $this->db->where_in('ord.brand', ['BT','SB']);
             }
         }
         $this->db->where("date_format(from_unixtime(order_date),'%Y')",$year);
@@ -3755,10 +3768,10 @@ Class Orders_model extends MY_Model
         $this->db->where('order_date >= ', $dbgn);
         $this->db->where('order_date <= ', $dend);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $this->db->group_by('month');
@@ -3786,10 +3799,10 @@ Class Orders_model extends MY_Model
         $this->db->where('is_canceled',0);
         $this->db->where('date_format(from_unixtime(order_date),\'%Y\')', $year);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -3942,10 +3955,10 @@ Class Orders_model extends MY_Model
         $this->db->where('is_canceled',0);
         $this->db->where('date_format(from_unixtime(order_date),\'%Y\')', $year);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -4004,10 +4017,10 @@ Class Orders_model extends MY_Model
             $this->db->select('*');
             $this->db->from('ts_goal_orders');
             $this->db->where('goal_year', $year);
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
             $this->db->where('goal_type', 'TOTAL');
         }
@@ -4370,10 +4383,10 @@ Class Orders_model extends MY_Model
         $this->db->where('order_date >= ',$dat_month_bgn);
         $this->db->where('order_date <= ',$dat_month_end);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
 
         }
@@ -4399,10 +4412,10 @@ Class Orders_model extends MY_Model
         $this->db->where('order_date <= ',$dat_month_end);
         $this->db->where('is_canceled',0);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $this->db->group_by('date_format(from_unixtime(order_date),\'%m/%d/%Y\')');
@@ -4533,10 +4546,10 @@ Class Orders_model extends MY_Model
         $this->db->where("order_date >= '".$sDate."'");
         $this->db->where("order_date < '".$eDate."'");
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -4690,10 +4703,10 @@ Class Orders_model extends MY_Model
         $this->db->where('order_date < ',$end);
         $this->db->where('is_canceled',0);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $this->db->order_by('order_num');
@@ -4808,10 +4821,10 @@ Class Orders_model extends MY_Model
             $this->db->like('concat(ucase(customer_name),order_num) ',strtoupper($filtr['search']));
         }
         if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
-            if ($filtr['brand']=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($filtr['brand']=='SR') {
                 $this->db->where('brand', $filtr['brand']);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $res=$this->db->get()->row_array();
@@ -4834,10 +4847,10 @@ Class Orders_model extends MY_Model
         $this->db->from('v_paymonitor');
         $this->db->where('is_invoiced',0);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $ordsum=$this->db->get()->row_array();
@@ -4850,10 +4863,10 @@ Class Orders_model extends MY_Model
         $this->db->where('(revenue-sum_amounts) > ',0);
         $this->db->where('sum_amounts > ',0);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $ordsum=$this->db->get()->row_array();
@@ -4888,10 +4901,10 @@ Class Orders_model extends MY_Model
             $this->db->like('concat(ucase(customer_name),order_num) ',strtoupper($filtr['search']));
         }
         if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
-            if ($filtr['brand']=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($filtr['brand']=='SR') {
                 $this->db->where('brand', $filtr['brand']);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $this->db->limit($limit, $offset);
@@ -5251,10 +5264,10 @@ Class Orders_model extends MY_Model
         $this->db->where('o.order_date < ',$dateend);
         $this->db->where('o.is_canceled',0);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $totalres=$this->db->get()->row_array();
@@ -5279,10 +5292,10 @@ Class Orders_model extends MY_Model
         $this->db->where('o.order_cog is NULL');
         $this->db->where('o.is_canceled',0);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $this->db->order_by('vo.order_proj_status desc, vo.specialdiff desc, o.order_date desc');
@@ -5696,10 +5709,10 @@ Class Orders_model extends MY_Model
                     $this->db->where('email_type','Leads');
                     $this->db->where('email_subtype','Quote');
                     $this->db->where('email_status != ',4);
-                    if ($options['brand']=='SB') {
-                        $this->db->where_in('brand', ['SB','BT']);
-                    } else {
+                    if ($options['brand']=='SR') {
                         $this->db->where('brand', $options['brand']);
+                    } else {
+                        $this->db->where_in('brand', ['SB','BT']);
                     }
                     $quotes=$this->db->get()->row_array();
                     // count proof requests
@@ -5709,10 +5722,10 @@ Class Orders_model extends MY_Model
                     $this->db->where('unix_timestamp(email_date) < ', $newdate);
                     $this->db->where('email_type','Art_Submit');
                     $this->db->where('email_status != ',4);
-                    if ($options['brand']=='SB') {
-                        $this->db->where_in('brand', ['SB','BT']);
-                    } else {
+                    if ($options['brand']=='SR') {
                         $this->db->where('brand', $options['brand']);
+                    } else {
+                        $this->db->where_in('brand', ['SB','BT']);
                     }
                     $proofreq=$this->db->get()->row_array();
                     // count orders
@@ -5720,10 +5733,10 @@ Class Orders_model extends MY_Model
                     $this->db->from('ts_orders');
                     $this->db->where('order_date >= ', $date);
                     $this->db->where('order_date < ', $newdate);
-                    if ($options['brand']=='SB') {
-                        $this->db->where_in('brand', ['SB','BT']);
-                    } else {
+                    if ($options['brand']=='SR') {
                         $this->db->where('brand', $options['brand']);
+                    } else {
+                        $this->db->where_in('brand', ['SB','BT']);
                     }
                     $this->db->where('is_canceled',0);
                     $orders=$this->db->get()->row_array();
@@ -5777,10 +5790,10 @@ Class Orders_model extends MY_Model
             $this->db->where('order_date >= ', $wrow['datebgn']);
             $this->db->where('order_date < ', $wrow['dateend']);
             $this->db->where('is_canceled',0);
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['SB','BT']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB','BT']);
             }
             $this->db->where('order_usr_repic', $user_id);
             $res=$this->db->get()->result_array();
@@ -5800,10 +5813,10 @@ Class Orders_model extends MY_Model
             $this->db->where('order_date >= ', $wrow['datebgn']);
             $this->db->where('order_date < ', $wrow['dateend']);
             $this->db->where('is_canceled',1);
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['SB','BT']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB','BT']);
             }
             $this->db->where('order_usr_repic', $user_id);
             $cancres=$this->db->get()->result_array();
@@ -5882,10 +5895,10 @@ Class Orders_model extends MY_Model
         $this->db->where('h.created_time >= ', $start_time);
         $this->db->where('h.created_time < ', $end_time);
         $this->db->where('o.is_canceled',0);
-        if ($brand=='SB') {
-            $this->db->where('o.brand', ['SB','BT']);
-        } else {
+        if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
+        } else {
+            $this->db->where('o.brand', ['SB','BT']);
         }
         $this->db->order_by('o.order_num, h.created_time');
         $res = $this->db->get()->result_array();
@@ -7262,6 +7275,13 @@ Class Orders_model extends MY_Model
                 $this->db->where('o.order_blank',0);
                 $this->db->where('o.arttype', $filtr['order_type']);
             }
+            if (ifset($filtr,'brand','ALL')!=='ALL') {
+                if ($filtr['brand']=='SR') {
+                    $this->db->where('o.brand', $filtr['brand']);
+                } else {
+                    $this->db->where_in('o.brand', ['SB','BT']);
+                }
+            }
         }
         if (!empty($addtype)) {
             if ($addtype=='blank') {
@@ -7712,10 +7732,10 @@ Class Orders_model extends MY_Model
         $this->db->join('('.$batchsql.') b','b.order_id=o.order_id','left');
         $this->db->where('o.order_date >= ', $datebgn);
         $this->db->where('o.is_canceled', 0);
-        if ($brand=='SB') {
-            $this->db->where_in('o.brand', ['SB','BT']);
-        } else {
+        if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
+        } else {
+            $this->db->where_in('o.brand', ['SB','BT']);
         }
         $res = $this->db->get()->result_array();
 
@@ -7761,10 +7781,10 @@ Class Orders_model extends MY_Model
         $this->db->join('('.$batchsql.') as b','b.order_id=o.order_id','left');
         $this->db->where('o.order_date >= ', $start_date);
         $this->db->where('o.is_canceled', 0);
-        if ($brand=='SB') {
-            $this->db->where_in('o.brand', ['SB','BT']);
-        } else {
+        if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
+        } else {
+            $this->db->where_in('o.brand', ['SB','BT']);
         }
         $this->db->group_by('date_format(from_unixtime(o.order_date),\'%Y\')');
         $res = $this->db->get()->result_array();
@@ -7786,10 +7806,10 @@ Class Orders_model extends MY_Model
             $this->db->where('yearorder >= ', $limit_year);
         }
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $this->db->group_by('yearorder');
@@ -7805,10 +7825,10 @@ Class Orders_model extends MY_Model
             $this->db->where('yearorder >= ', $limit_year);
         }
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $this->db->where('batch_due < ',$daystart);
@@ -7823,10 +7843,10 @@ Class Orders_model extends MY_Model
             $this->db->where('yearorder >= ', $limit_year);
         }
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $this->db->group_by('yearorder');
@@ -7898,10 +7918,10 @@ Class Orders_model extends MY_Model
             $this->db->where('yearorder >= ', $limit_year);
         }
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         if ($ownsort!='owntype') {
@@ -7956,10 +7976,10 @@ Class Orders_model extends MY_Model
             $this->db->where('yearorder >= ', $limit_year);
         }
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
             }
         }
         $this->db->order_by($refundsort, $refunddir);
@@ -7985,10 +8005,10 @@ Class Orders_model extends MY_Model
         $this->db->where_in('a.order_proj_status', array($this->JUST_APPROVED, $this->NEED_APPROVAL, $this->TO_PROOF, $this->NO_ART));
         $this->db->group_by('a.order_proj_status');
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         if ($inner==1) {
@@ -8034,10 +8054,10 @@ Class Orders_model extends MY_Model
         $this->db->where('a.order_approved_view',0);
         $this->db->where_in('a.order_proj_status', array($this->JUST_APPROVED, $this->NEED_APPROVAL, $this->TO_PROOF, $this->NO_ART));
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $resall = $this->db->get()->row_array();
@@ -8046,10 +8066,10 @@ Class Orders_model extends MY_Model
         $this->db->from('ts_orders o');
         $this->db->join('v_poorders_artstage a','a.order_id=o.order_id');
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $this->db->join('v_itemsearch vi', 'vi.item_id = o.item_id');
@@ -8082,10 +8102,10 @@ Class Orders_model extends MY_Model
         $this->db->where('o.profit_perc is null');
         $this->db->where('a.order_approved_view',0);
         if ($brand!=='ALL') {
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['BT','SB']);
-            } else {
+            if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         if ($inner==1) {

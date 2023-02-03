@@ -13,6 +13,7 @@ function order_artstage(order_id, callpage, brand) {
             $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             if (parseInt(order_id)==0) {
                 init_onlineleadorder_edit();
+                init_rushpast();
             } else {
                 navigation_init();
             }
@@ -704,12 +705,13 @@ function add_location(artwork,art_type) {
                 init_locations();
             } else if(art_type=='Reference') {
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
-                $("#artNextModal").find('.modal-title').empty().html('Select Reference Logo');
+                $("#artNextModal").find('.modal-title').empty().html('Select / Upload Reference Logo');
                 $("#artNextModal").find('.modal-dialog').css('width','365px');
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
                 $("#artNextModal").on('hidden.bs.modal', function (e) {
                     $(document.body).addClass('modal-open');
                 });
+                init_artlogoupload();
                 init_referenceslogo_manage();
             } else {
                 // Copy
@@ -742,7 +744,7 @@ function init_referenceslogo_manage() {
         window.open(link, 'attachwin', 'width=600, height=800,toolbar=1')
     });
     $(".reflogouploadsave_data").unbind('click').click(function(){
-        if ($("input.attachcurlogo:checked").length > 0) {
+        // if ($("input.attachcurlogo:checked").length > 0) {
             var logostr = '';
             $("input.attachcurlogo:checked").each(function(){
                 logostr=logostr+$(this).data('logoid')+'-';
@@ -752,6 +754,7 @@ function init_referenceslogo_manage() {
             params.push({name: 'artwork_id', value: $("input#newartid").val()});
             params.push({name:'logo', value: logostr });
             params.push({name:'art_type', value: 'Reference'});
+            params.push({name:'uploadlogo', value:$("input#filename").val()});
             var url="/artproofrequest/art_addlocation";
             $.post(url, params, function(response){
                 if (response.errors=='') {
@@ -762,10 +765,9 @@ function init_referenceslogo_manage() {
                     show_error(response);
                 }
             }, 'json');
-        } else {
-            alert('Select Logo');
-        }
-
+        // } else {
+        //    alert('Select Logo');
+        // }
     })
 }
 

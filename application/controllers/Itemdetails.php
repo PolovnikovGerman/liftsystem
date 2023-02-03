@@ -633,4 +633,61 @@ class Itemdetails extends MY_Controller
          }
     }
 
+    public function changeimageorder_prepare() {
+         if ($this->isAjax()) {
+             $postdata = $this->input->post();
+             $mdata = [];
+             $error=$this->session_error;
+             $session_id = ifset($postdata, 'session_id', 'defsess');
+             $session_data = usersession($session_id);
+             if (!empty($session_data)) {
+                 $images = $session_data['item_images'];
+                 $imgparam=[];
+                 $i=0;
+                 foreach ($images as $image) {
+                     $imgparam[]=array(
+                         'imgid'=>$image['item_img_id'],
+                         'item_id'=>$session_data['item']['item_id'],
+                         'img_name'=>($image['src']=='' ? '/img/dbitems/thamb-bg.png' : $image['src']),
+                     );
+                     $i++;
+                 }
+                 $mdata['content']=$this->load->view('itemdetails/editimgorder_view',array('images'=>$imgparam,'imgcnt'=>$i),TRUE);
+                 $error = '';
+             }
+             $this->ajaxResponse($mdata, $error);
+         }
+         show_404();
+    }
+
+    public function imageorder_save() {
+         if ($this->isAjax()) {
+             $postdata = $this->input->post();
+             $mdata = [];
+             $error=$this->session_error;
+             $session_id = ifset($postdata, 'session_id', 'defsess');
+             $session_data = usersession($session_id);
+             if (!empty($session_data)) {
+                 $this->load->model('itemdetails_model');
+                 $res = $this->itemdetails_model->save_imagesorder($postdata, $session_data, $session_id);
+                 $error = $res['msg'];
+                 if ($res['result']==$this->success_result) {
+                     $error='';
+                     $img_options=array(
+                         'images'=>$res['images'],
+                         'pos'=>0,
+                         'edit'=>0,
+                         'limit'=>$this->config->item('slider_images'),
+                         'video'=> '', // $video,
+                         'audio'=> '', // $audio,
+                         'faces'=> '', // $faces,
+                     );
+                     $mdata['content']=$this->load->view('itemdetails/pictures_slider_view',$img_options,TRUE);
+                 }
+             }
+             $this->ajaxResponse($mdata, $error);
+         }
+         show_404();
+    }
+
 }

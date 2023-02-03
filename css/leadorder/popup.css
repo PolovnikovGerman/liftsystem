@@ -754,21 +754,49 @@ span.text_bold {
     float: left;
     width: 70px;
 }
-input.eventdatevalue {
+input.eventdatevalue, input.rushpastvalue {
     height: 22px;
     font-size: 11px;
-    width: 59px;
+    width: 64px;
     line-height: 22px;
+}
+.pastmodify {
+    background: #535353!important;
+    color: #ffffff!important;
+}
+input.rushpastvalue.arrivelate {
+    color: #FFFFFF!important;
+    background-color: #FF0000!important;
+}
+.rushadmindate {
+    float: left;
+    width: 128px;
+    margin-left: -12px;
+}
+.rushadmindate > label {
+    float: left;
+    font-size: 12px;
+    width: 46px;
+    color:  #000000;
+}
+.rushadmindate > input {
+    float: left;
+    width: 69px;
+    background-color: #fff!important;
 }
 .rushselectarea {
     float: left;
-    width: 208px;
-    margin-left: 130px;    
+    width: 223px;
+    margin-left: 114px;
+}
+.rushselectarea.admin {
+    margin-left: 0;
 }
 .rushselectarea > .label {
     float: left;
     font-size: 12px;
-    width: 54px;
+    width: 65px;
+    color:  #000000;
 }
 .rushselectarea > .rushdataselect {
     float: left;
@@ -815,6 +843,8 @@ input.shiprushcost, input.shippingcost, input.salestaxcost {
     font-weight: bold;
     text-align: center;
     width: 100%;
+    color: #000;
+    padding-left: 0!important;
 }
 .shipdetailsarea > .labeltax {
     float: left;
