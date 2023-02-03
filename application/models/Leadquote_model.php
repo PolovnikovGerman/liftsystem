@@ -500,7 +500,10 @@ class Leadquote_model extends MY_Model
     }
 
     public function quoteaddresschange($data, $quotesession, $session_id) {
-        $out = ['result' => $this->error_result, 'msg' => 'Empty Need Parameters', 'totalcalc' => 0, 'shiprebuild' => 0, 'calcship' => 0,'shipstate' => 0, 'taxview'=>0];
+        $out = ['result' => $this->error_result, 'msg' => 'Empty Need Parameters',
+            'shiprebuild' => 0, 'shipstate' => 0,
+            'billstate' => 0, 'billrebuild' => 0,
+            'totalcalc' => 0, 'calcship' => 0, 'taxview'=>0];
         $fldname = ifset($data, 'fld','');
         if (!empty($fldname)) {
             $quote = $quotesession['quote'];
@@ -512,6 +515,12 @@ class Leadquote_model extends MY_Model
                 $quote['shipping_city'] = '';
                 $quote['shipping_state'] = '';
                 $out['totalcalc'] = 1;
+            } elseif ($fldname=='billing_country') {
+                $out['billrebuild'] = 1;
+                $out['billstate'] = 1;
+                $quote['billing_zip'] = '';
+                $quote['billing_city'] = '';
+                $quote['billing_state'] = '';
             } elseif ($fldname=='shipping_zip') {
                 $out['shiprebuild'] = 1;
                 $out['totalcalc'] = 1;
@@ -529,7 +538,20 @@ class Leadquote_model extends MY_Model
                     $quote['shipping_city'] = '';
                     $quote['shipping_state'] = '';
                 }
-
+            } elseif ($fldname=='billing_zip') {
+                // Find city and zip
+                $out['billrebuild'] = 1;
+                if (!empty($data['newval'])) {
+                    $this->load->model('shipping_model');
+                    $zipdat = $this->shipping_model->get_zip_address($quote['billing_country'], $data['newval']);
+                    if ($zipdat['result']==$this->success_result) {
+                        $quote['billing_city'] = $zipdat['city'];
+                        $quote['billing_state'] = $zipdat['state'];
+                    }
+                } else {
+                    $quote['billing_city'] = '';
+                    $quote['billing_state'] = '';
+                }
             }
             $quotesession['quote'] = $quote;
             $out['result'] = $this->success_result;

@@ -175,7 +175,7 @@
                 <div class="quotesectionlabel">BILLING ADDRESS:</div>
             </div>
             <div class="quotebillcountryarea">
-                <select class="quoteaddressinpt quotecountry" <?=$edit_mode==0 ? 'disabled="true"' : ''?>>
+                <select class="quoteaddressinpt quotecountry" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="billing_country">
                     <?php foreach ($countries as $country) { ?>
                         <option value="<?=$country['country_id']?>" <?=$country['country_id']==$data['billing_country'] ? 'seleted="selected"' : ''?>><?=$country['country_name']?></option>
                     <?php } ?>
@@ -207,16 +207,7 @@
                         <input class="quoteaddressinpt quotetown" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="billing_city"
                                placeholder="City" value="<?=$data['billing_city']?>"/>
                     </div>
-                    <div class="quotebilladdresdistrict">
-                        <?php if (is_array($billstates)) { ?>
-                            <select class="quoteaddressinpt quotestate" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="billing_state">
-                                <option value=""></option>
-                                <?php foreach ($billstates as $state) { ?>
-                                    <option value="<?=$state['state_code']?>" <?=$state['state_code']==$data['billing_state'] ? 'selected="selected"' : ''?>><?=$state['state_code']?></option>
-                                <?php } ?>
-                            </select>
-                        <?php } ?>
-                    </div>
+                    <div class="quotebilladdresdistrict"><?=$billstate?></div>
                 </div>
             </div>
         </div>

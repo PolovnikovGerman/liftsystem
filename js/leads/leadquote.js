@@ -126,11 +126,19 @@ function init_leadquotes_content() {
                 if (parseInt(response.data.shipstate)==1) {
                     $(".quoteshipaddresdistrict").empty().html(response.data.stateview);
                 }
+                if (parseInt(response.data.billstate)==1) {
+                    $(".quotebilladdresdistrict").empty().html(response.data.stateview);
+                }
                 if (parseInt(response.data.shiprebuild)==1) {
                     // Update zip, city state
                     $(".quoteaddressinpt[data-item='shipping_zip']").val(response.data.shipping_zip);
                     $(".quoteaddressinpt[data-item='shipping_city']").val(response.data.shipping_city);
                     $(".quoteaddressinpt[data-item='shipping_state']").val(response.data.shipping_state);
+                }
+                if (parseInt(response.data.billrebuild)==1) {
+                    $(".quoteaddressinpt[data-item='billing_zip']").val(response.data.billing_zip);
+                    $(".quoteaddressinpt[data-item='billing_city']").val(response.data.billing_city);
+                    $(".quoteaddressinpt[data-item='billing_state']").val(response.data.billing_state);
                 }
                 if (parseInt(response.data.calcship)==1) {
                     // Update shipping cost

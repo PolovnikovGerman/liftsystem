@@ -57,8 +57,9 @@ class Leadquote extends MY_Controller
                         'orderby'=>'sort, country_name',
                     );
                     $countries = $this->shipping_model->get_countries_list($cnt_options);
-                    $billstates = [];
+
                     $shipstate = '';
+                    $billstate = '';
                     if (!empty($quote['shipping_country'])) {
                         $shipstates = $this->shipping_model->get_country_states($quote['shipping_country']);
                         if (is_array($shipstates)) {
@@ -73,6 +74,15 @@ class Leadquote extends MY_Controller
                     };
                     if (!empty($quote['billing_country'])) {
                         $billstates = $this->shipping_model->get_country_states($quote['billing_country']);
+                        if (is_array($billstates)) {
+                            $stateoptions = [
+                                'item' => 'billing_state',
+                                'states' => $billstates,
+                                'edit_mode' => 1,
+                                'data' => $quote,
+                            ];
+                            $billstate = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
+                        }
                     };
 
                     // $states = $this->shipping_model->get_country_states($this->config->item('default_country'));
@@ -133,10 +143,11 @@ class Leadquote extends MY_Controller
                         'countries' => $countries,
                         'edit_mode' => 1,
                         // 'shipstates' => $shipstates,
-                        'billstates' => $billstates,
+                        // 'billstates' => $billstates,
                         'shiprates' => '',
                         'lead_time' => $lead_time,
                         'shipstate' => $shipstate,
+                        'billstate' => $billstate,
                     ];
                     $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
                 }
@@ -179,8 +190,8 @@ class Leadquote extends MY_Controller
                         'orderby'=>'sort, country_name',
                     );
                     $countries = $this->shipping_model->get_countries_list($cnt_options);
-                    $billstates = [];
                     $shipstate = '';
+                    $billstate = '';
                     if (!empty($quotedata['shipping_country'])) {
                         $shipstates = $this->shipping_model->get_country_states($quotedata['shipping_country']);
                         if (is_array($shipstates)) {
@@ -195,6 +206,16 @@ class Leadquote extends MY_Controller
                     };
                     if (!empty($quotedata['billing_country'])) {
                         $billstates = $this->shipping_model->get_country_states($quotedata['billing_country']);
+                        if (is_array($billstates)) {
+                            $stateoptions = [
+                                'item' => 'billing_state',
+                                'states' => $billstates,
+                                'edit_mode' => $edit_mode,
+                                'data' => $quotedata,
+                            ];
+                            $billstate = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
+                        }
+
                     };
                     $quote_items = $qres['items'];
                     $shippings = $qres['shippings'];
@@ -261,7 +282,7 @@ class Leadquote extends MY_Controller
                         'countries' => $countries,
                         'edit_mode' => $edit_mode,
                         'shipstate' => $shipstate,
-                        'billstates' => $billstates,
+                        'billstate' => $billstate,
                         'shiprates' => $shiprates,
                         'lead_time' => $lead_time,
                     ];
@@ -329,13 +350,32 @@ class Leadquote extends MY_Controller
                             ];
                             $mdata['stateview'] = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
                         }
-
+                    }
+                    $mdata['billstate'] = $res['billstate'];
+                    if ($res['billstate']==1) {
+                        $this->load->model('shipping_model');
+                        $billstates = $this->shipping_model->get_country_states($quote['shipping_country']);
+                        if (is_array($shipstates)) {
+                            $stateoptions = [
+                                'item' => 'billing_state',
+                                'states' => $billstates,
+                                'edit_mode' => 1,
+                                'data' => $quote,
+                            ];
+                            $mdata['stateview'] = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
+                        }
                     }
                     $mdata['shiprebuild'] = $res['shiprebuild'];
                     if ($res['shiprebuild']==1) {
                         $mdata['shipping_zip'] = $quote['shipping_zip'];
                         $mdata['shipping_city'] = $quote['shipping_city'];
                         $mdata['shipping_state'] = $quote['shipping_state'];
+                    }
+                    $mdata['billrebuild'] = $res['billrebuild'];
+                    if ($res['billrebuild']) {
+                        $mdata['billing_zip'] = $quote['billing_zip'];
+                        $mdata['billing_city'] = $quote['billing_city'];
+                        $mdata['billing_state'] = $quote['billing_state'];
                     }
                     $mdata['calcship'] = $res['calcship'];
                     if ($res['calcship']==1) {
