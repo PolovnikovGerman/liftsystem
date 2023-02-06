@@ -1029,5 +1029,8 @@ class Leadquote extends MY_Controller
         show_404();
     }
 
+    public function quoteduplicate() {
+
+    }
 
 }

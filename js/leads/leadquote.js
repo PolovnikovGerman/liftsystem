@@ -713,4 +713,13 @@ function init_leadquotes_view() {
             }
         },'json');
     });
+    $(".quoteactionduplicate.active").unbind('click').click(function () {
+        if (confirm('Duplicate Quote ?')==true) {
+            var quote_id = $(this).data('quote_id');
+            params.push({name: 'quote_id', value: quote_id});
+            params.push({name: 'edit_mode', value: 1});
+            var url = '/leadquote/quoteduplicate';
+
+        }
+    });
 }
