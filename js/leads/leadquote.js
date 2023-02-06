@@ -715,11 +715,24 @@ function init_leadquotes_view() {
     });
     $(".quoteactionduplicate.active").unbind('click').click(function () {
         if (confirm('Duplicate Quote ?')==true) {
-            var quote_id = $(this).data('quote_id');
+            var quote_id = $(this).data('quote');
             params.push({name: 'quote_id', value: quote_id});
-            params.push({name: 'edit_mode', value: 1});
             var url = '/leadquote/quoteduplicate';
-
+            $("#loader").show();
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $("#quotepopupdetails").empty().html(response.data.quotecontent);
+                    $("#quotepopupdetails").show();
+                    $(".quotepopupclose").show();
+                    $(".leadquotenumberlist").unbind('click');
+                    $(".quotesaddnew").unbind('click');
+                    $("#loader").hide();
+                    init_leadquotes_content();
+                } else {
+                    $("#loader").hide();
+                    show_error(response);
+                }
+            },'json');
         }
     });
 }
