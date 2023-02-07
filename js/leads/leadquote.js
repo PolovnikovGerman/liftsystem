@@ -713,4 +713,39 @@ function init_leadquotes_view() {
             }
         },'json');
     });
+    $(".quoteactionduplicate.active").unbind('click').click(function () {
+        if (confirm('Duplicate Quote ?')==true) {
+            var quote_id = $(this).data('quote');
+            var params = new Array();
+            params.push({name: 'quote_id', value: quote_id});
+            var url = '/leadquote/quoteduplicate';
+            $("#loader").show();
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $("#quotepopupdetails").empty().html(response.data.quotecontent);
+                    $("#quotepopupdetails").show();
+                    $(".quotepopupclose").show();
+                    $(".leadquotenumberlist").unbind('click');
+                    $(".quotesaddnew").unbind('click');
+                    $("#loader").hide();
+                    init_leadquotes_content();
+                } else {
+                    $("#loader").hide();
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    // $(".quoteactionpdfdoc.active").unbind('click').click(function (){
+    //     var params = new Array();
+    //     params.push({name: 'quote_id', value: $(this).data('quote')});
+    //     var url = '/leadquote/quotepdfdoc';
+    //     $.post(url, params, function (response){
+    //         if (response.errors=='') {
+    //             var newWin = window.open(response.data.docurl,"Quoute PDF","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+    //         } else {
+    //             show_error(response);
+    //         }
+    //     },'json')
+    // });
 }

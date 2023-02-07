@@ -760,8 +760,8 @@ Class Cronjob extends CI_Controller
 
         $dateend=strtotime(date('Y-m-d'));
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
-        // $brands = ['SB','SR'];
-        $brands = ['SB'];
+        $brands = ['SB','SR'];
+        // $brands = ['SB'];
         foreach ($brands as $brand) {
             $this->db->select('*');
             $this->db->from('ts_orders');

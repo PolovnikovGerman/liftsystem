@@ -167,7 +167,6 @@ class Leadquote extends MY_Controller
             $quote_id = ifset($postdata, 'quote_id', 0);
             $edit_mode = ifset($postdata, 'edit_mode', 0);
             if (!empty($quote_id)) {
-                $this->load->model('leadquote_model');
                 $qres=$this->leadquote_model->get_leadquote($quote_id, $edit_mode);
                 $error = $qres['msg'];
                 if ($qres['result']==$this->success_result) {
@@ -969,11 +968,11 @@ class Leadquote extends MY_Controller
                 }
                 $mdata['item_content'] = $this->load->view('leadpopup/items_content_view', ['data' => $items_views], TRUE);
                 $lead_time = '';
-                if (!empty($quotedata['lead_time'])) {
-                    $lead_times = json_decode($quotedata['lead_time'], true);
+                if (!empty($quote['lead_time'])) {
+                    $lead_times = json_decode($quote['lead_time'], true);
                     $timeoptions = [
                         'lead_times' => $lead_times,
-                        'edit_mode' => $edit_mode,
+                        'edit_mode' => 1,
                     ];
                     $lead_time = $this->load->view('leadpopup/quote_leadtime_edit', $timeoptions, TRUE);
                 }
@@ -1029,5 +1028,168 @@ class Leadquote extends MY_Controller
         show_404();
     }
 
+    public function quoteduplicate() {
+        if ($this->isAjax()) {
+            $mdata= [];
+            $error = 'Empty Quote';
+            $postdata = $this->input->post();
+            $quote_id = ifset($postdata,'quote_id',0);
+            if (!empty($quote_id)) {
+                $res = $this->leadquote_model->duplicatequote($quote_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $edit_mode = 1;
+                    $error = '';
+                    // Prepare content
+                    $quotedata = $res['quote'];
+                    if ($quotedata['brand']=='SR') {
+                        $templlists = [
+                            'Supplier',
+                            'Proforma Invoice',
+                        ];
+                    } else {
+                        $templlists = [
+                            'Stressballs.com',
+                            'Bluetrack Health',
+                            'Proforma Invoice',
+                        ];
+                    }
+                    $this->load->model('shipping_model');
+                    $cnt_options=array(
+                        'orderby'=>'sort, country_name',
+                    );
+                    $countries = $this->shipping_model->get_countries_list($cnt_options);
+                    $shipstate = '';
+                    $billstate = '';
+                    if (!empty($quotedata['shipping_country'])) {
+                        $shipstates = $this->shipping_model->get_country_states($quotedata['shipping_country']);
+                        if (is_array($shipstates)) {
+                            $stateoptions = [
+                                'item' => 'shipping_state',
+                                'states' => $shipstates,
+                                'edit_mode' => $edit_mode,
+                                'data' => $quotedata,
+                            ];
+                            $shipstate = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
+                        }
+                    };
+                    if (!empty($quotedata['billing_country'])) {
+                        $billstates = $this->shipping_model->get_country_states($quotedata['billing_country']);
+                        if (is_array($billstates)) {
+                            $stateoptions = [
+                                'item' => 'billing_state',
+                                'states' => $billstates,
+                                'edit_mode' => $edit_mode,
+                                'data' => $quotedata,
+                            ];
+                            $billstate = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
+                        }
+                    };
+                    // Tax view
+                    if ($quotedata['taxview']==0) {
+                        // Empty Tax view
+                        $taxview = $this->load->view('leadpopup/quote_taxempty_view',[],TRUE);
+                    } else {
+                        $taxoptions = [
+                            'edit_mode' => $edit_mode,
+                            'data' => $quotedata,
+                        ];
+                        $taxview = $this->load->view('leadpopup/quote_tax_edit', $taxoptions,TRUE);
+                    }
+                    $quote_items = $res['items'];
+                    $shippings = $res['shippings'];
+                    $items_views = [];
+                    foreach ($quote_items as $quote_item) {
+                        $imprints=$quote_item['imprints'];
+                        $imprint_options=[
+                            'quote_item_id'=>$quote_item['quote_item_id'],
+                            'imprints'=>$imprints,
+                            'edit_mode' => $edit_mode,
+                        ];
+                        $imprintview=$this->load->view('leadpopup/imprint_data_edit', $imprint_options, TRUE);
+                        $item_options=[
+                            'quote_item_id'=>$quote_item['quote_item_id'],
+                            'items'=>$quote_item['items'],
+                            'imprintview'=>$imprintview,
+                            'edit'=> $edit_mode,
+                            'item_id'=>$quote_item['item_id'],
+                        ];
+                        if ($edit_mode==0) {
+                            $view=$this->load->view('leadpopup/items_data_view', $item_options, TRUE);
+                        } else {
+                            $view=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
+                        }
+                        $items_views[] = [
+                            'quote_item_id'=>$quote_item['quote_item_id'],
+                            'view' => $view,
+                        ];
+                    }
+                    $item_content = $this->load->view('leadpopup/items_content_view', ['data' => $items_views], TRUE);
+                    // Shipping view
+                    $shiprates = '';
+                    if (count($shippings) > 0) {
+                        $shipoptions = [
+                            'edit_mode' => $edit_mode,
+                            'shippings' => $shippings,
+                        ];
+                        $shiprates = $this->load->view('leadpopup/quote_shiprates_view', $shipoptions, TRUE);
+                    }
+                    $quote_session = 'quote'.uniq_link(15);
+                    $sessiondata = [
+                        'quote' => $quotedata,
+                        'items' => $quote_items,
+                        'shipping' => $shippings,
+                        'deleted' => [],
+                    ];
+                    usersession($quote_session, $sessiondata);
+                    $lead_time = '';
+                    if (!empty($quotedata['lead_time'])) {
+                        $lead_times = json_decode($quotedata['lead_time'], true);
+                        $timeoptions = [
+                            'lead_times' => $lead_times,
+                            'edit_mode' => $edit_mode,
+                        ];
+                        $lead_time = $this->load->view('leadpopup/quote_leadtime_edit', $timeoptions, TRUE);
+                    }
+                    $options = [
+                        'quote_session' => $quote_session,
+                        'quote_id' => $quote_id,
+                        'lead_id' => $quotedata['lead_id'],
+                        'data' => $quotedata,
+                        'itemsview' => $item_content,
+                        'templlists' => $templlists,
+                        'countries' => $countries,
+                        'edit_mode' => $edit_mode,
+                        'shipstate' => $shipstate,
+                        'billstate' => $billstate,
+                        'shiprates' => $shiprates,
+                        'lead_time' => $lead_time,
+                        'taxview' => $taxview,
+                    ];
+                    $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 
+    public function quotepdfdoc() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $error = 'Empty Lend Request';
+            $mdata = [];
+            $quote_id = ifset($postdata, 'quote_id', 0);
+            if (!empty($quote_id)) {
+                $res = $this->leadquote_model->prepare_quotedoc($quote_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['docurl'] = $res['docurl'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }

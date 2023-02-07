@@ -179,7 +179,7 @@ class Leadquote_model extends MY_Model
                     $colors[$coloridx]['qtyinput_class'] = 'normal';
                     $colors[$coloridx]['qtyinput_title'] = '';
                     $colors[$coloridx]['item_color_add'] = 0;
-                    if ($colors[$coloridx]['num_colors'] > 0 && $colornum==$colorcnt) {
+                    if ($colors[$coloridx]['num_colors'] > 1 && $colornum==$colorcnt) {
                         $colors[$coloridx]['item_color_add'] = 1;
                     }
                     $coloridx++;
@@ -1239,11 +1239,11 @@ class Leadquote_model extends MY_Model
                         $quote['rush_days'] = '';
                         $quote['rush_cost'] = 0;
                     }
-                    $quotesession['quote'] = $quote;
-                    $quotesession['items'] = $newitems;
-                    $quotesession['deleted'] = $deleted;
-                    usersession($session_id, $quotesession);
                 }
+                $quotesession['quote'] = $quote;
+                $quotesession['items'] = $newitems;
+                $quotesession['deleted'] = $deleted;
+                usersession($session_id, $quotesession);
             }
         }
         return $out;
@@ -1465,4 +1465,308 @@ class Leadquote_model extends MY_Model
         return $out;
     }
 
+    public function duplicatequote($srcquote_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Quote Not Found'];
+        $this->db->select('*');
+        $this->db->from('ts_quotes');
+        $this->db->where('quote_id', $srcquote_id);
+        $quote = $this->db->get()->row_array();
+        if (ifset($quote, 'quote_id',0)==$srcquote_id) {
+            // Quote find
+            $quote_setup_fld = ['create_time','create_user','update_time','update_user'];
+            $out['result'] = $this->success_result;
+            $newnum = $this->get_newquote_number($quote['brand']);
+            $quotedat = [];
+            foreach ($quote as $key=>$val) {
+                if ($key=='quote_id') {
+                    $quotedat[$key]=0;
+                } elseif ($key=='quote_number') {
+                    $quotedat[$key] = $newnum;
+                } elseif ($key=='quote_date') {
+                    $quotedat[$key] = time();
+                } elseif (in_array($key, $quote_setup_fld)) {
+                } else {
+                    $quotedat[$key] = $val;
+                }
+            }
+            $this->load->model('orders_model');
+            $this->load->model('leadorder_model');
+            // Items
+            $this->db->select('*');
+            $this->db->from('ts_quote_items');
+            $this->db->where('quote_id', $srcquote_id);
+            $items = $this->db->get()->result_array();
+            $quoteitems = [];
+            $itemid = 1;
+            foreach ($items as $item) {
+                // Get additional data about item
+                if ($item['item_id'] < 0) {
+                    $itemdata=$this->orders_model->get_newitemdat($item['item_id']);
+                } else {
+                    $itemdata=$this->leadorder_model->_get_itemdata($item['item_id']);
+                }
+                $colors = $itemdata['colors'];
+                $curcolors = $curimprints = $curimprdetails = [];
+                // Item Colors
+                $this->db->select('*');
+                $this->db->from('ts_quote_itemcolors');
+                $this->db->where('quote_item_id', $item['quote_item_id']);
+                $itemcolors = $this->db->get()->result_array();
+                $colorid = 1;
+                $colorrow = 1;
+                $colorssubtotal = 0;
+                foreach ($itemcolors as $itemcolor) {
+                    foreach ($itemcolor as $ckey=>$cval) {
+                        if ($ckey=='quote_itemcolor_id') {
+                            $itemcolor['item_id'] = $colorid*(-1);
+                        } elseif ($ckey=='quote_item_id') {
+                            $itemcolor[$key] = $itemid * (-1);
+                        }
+                    }
+                    $itemcolor['item_subtotal'] = $itemcolor['item_qty'] * $itemcolor['item_price'];
+                    $colorssubtotal+=$itemcolor['item_qty'] * $itemcolor['item_price'];
+                    $itemcolor['item_number'] = $itemdata['item_number'];
+                    $itemcolor['item_row'] = $colorrow;
+                    $itemcolor['colors'] = $colors;
+                    $itemcolor['num_colors'] = count($colors);
+                    $itemcolor['printshop_item_id'] = (isset($itemdata['printshop_item_id']) ? $itemdata['printshop_item_id']  : '');
+                    $itemcolor['qtyinput_class']='normal';
+                    $itemcolor['qtyinput_title']='';
+                    if (count($colors)==0) {
+                        $out_colors = $this->empty_htmlcontent;
+                    } else {
+                        $options=array(
+                            'quote_item_id'=>$itemcolor['quote_item_id'],
+                            'item_id'=>$itemcolor['item_id'],
+                            'colors'=>$itemcolor['colors'],
+                            'item_color'=>$itemcolor['item_color'],
+                        );
+                        $out_colors = $this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
+                    }
+                    $itemcolor['out_colors'] = $out_colors;
+                    $itemcolor['item_color_add'] = 0;
+                    if ($colorrow==1 && count($colors) > 1) {
+                        $itemcolor['item_color_add'] = 1;
+                    }
+                    $curcolors[] = $itemcolor;
+                    $colorid++;
+                    $colorrow++;
+                }
+                // Item Imprints
+                $this->db->select('*');
+                $this->db->from('ts_quote_imprints');
+                $this->db->where('quote_item_id', $item['quote_item_id']);
+                $itemimprints = $this->db->get()->result_array();
+                if (count($itemimprints)==0) {
+                    $curimprints[] = [
+                        'quote_imprint_id'=>-1,
+                        'imprint_description'=>'&nbsp;',
+                        'imprint_qty'=>0,
+                        'imprint_price'=>0,
+                        'imprint_item'=>0,
+                        'imprint_subtotal'=>'&nbsp;',
+                        'imprint_price_class' => 'normal',
+                        'imprint_price_title' => '',
+                        'delflag'=>0,
+                    ];
+                } else {
+                    $imprintid = 1;
+                    foreach ($itemimprints as $itemimprint) {
+                        foreach ($itemimprint as $ikey => $ival) {
+                            if ($ikey=='quote_imprint_id') {
+                                $itemimprint[$ikey] = $imprintid * (-1);
+                            } elseif ($ikey=='quote_item_id') {
+                                $itemimprint[$ikey] = $itemid * (-1);
+                            }
+                        }
+                        $itemimprint['imprint_price_class'] = 'nornal';
+                        $itemimprint['imprint_price_title'] = '';
+                        $itemimprint['delflag'] = 0;
+                        $itemimprint['imprint_subtotal'] = $itemimprint['imprint_qty'] * $itemimprint['imprint_price'];
+                        $curimprints[] = $itemimprint;
+                        $imprintid++;
+                    }
+                }
+                // Item Imprint Details
+                $this->db->select('*');
+                $this->db->from('ts_quote_imprindetails');
+                $this->db->where('quote_item_id', $item['quote_item_id']);
+                $imprintdetails = $this->db->get()->result_array();
+                if (count($imprintdetails)==0) {
+
+                } else {
+                    $detailid = 1;
+                    foreach ($imprintdetails as $imprintdetail) {
+                        foreach ($imprintdetail as $dkey => $dval) {
+                            if ($dkey=='quote_imprindetail_id') {
+                                $imprintdetail[$dkey] = $detailid * (-1);
+                            } elseif ($dkey=='quote_item_id') {
+                                $imprintdetail[$dkey] = $itemid * (-1);
+                            } elseif ($dkey=='imprint_active') {
+                                $imprintdetail['active'] = $val;
+                            }
+                        }
+                        $imprintdetail['title'] = 'Loc '.$detailid;
+                        $curimprdetails[] = $imprintdetail;
+                        $detailid++;
+                    }
+                }
+                foreach ($item as $key => $val) {
+                    if ($key=='quote_item_id') {
+                        $item[$key] = $itemid * (-1);
+                    } elseif ($key=='quote_id') {
+                        $item[$key] = $quotedat[$key];
+                    }
+                    $item['item_number'] = $itemdata['item_number'];
+                    $item['item_name'] = $itemdata['item_name'];
+                    $item['colors'] = $colors;
+                    $item['num_colors'] = count($colors);
+                    $item['imprint_locations']=$itemdata['imprints'];
+                    $item['vendor_zipcode']=$itemdata['vendor_zipcode'];
+                    $item['charge_perorder']=$itemdata['charge_perorder'];
+                    $item['charge_pereach']=$itemdata['charge_pereach'];
+                    $item['item_subtotal']=$colorssubtotal;
+                    // Add Imprins, colors, details
+                    $item['items'] = $curcolors;
+                    $item['imprints'] = $curimprints;
+                    $item['imprint_details'] = $curimprdetails;
+                }
+                $quoteitems[] = $item;
+                $itemid++;
+            }
+            // Shipping
+            $this->db->select('*');
+            $this->db->from('ts_quote_shippings');
+            $this->db->where('quote_id', $srcquote_id);
+            $ships = $this->db->get()->result_array();
+            $curship = [];
+            $shipid = 1;
+            foreach ($ships as $ship) {
+                foreach ($ship as $skey => $sval) {
+                    if ($skey=='quote_shipping_id') {
+                        $ship[$skey] = $shipid * (-1);
+                    } elseif ($skey=='quote_id') {
+                        $ship[$skey] = $quotedat['quote_id'];
+                    }
+                }
+                $curship[] = $ship;
+                $shipid++;
+            }
+            $out['quote'] = $quotedat;
+            $out['items'] = $quoteitems;
+            $out['shippings'] = $curship;
+        }
+        return $out;
+    }
+
+    public function prepare_quotedoc($quote_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Lead Not Found'];
+        $this->db->select('*');
+        $this->db->from('ts_quotes');
+        $this->db->where('quote_id', $quote_id);
+        $quote = $this->db->get()->row_array();
+        if (ifset($quote,'quote_id',0)==$quote_id) {
+            $this->load->model('orders_model');
+            $this->load->model('leadorder_model');
+            $this->db->select('*');
+            $this->db->from('ts_quote_items');
+            $this->db->where('quote_id', $quote_id);
+            $items = $this->db->get()->result_array();
+            $itemidx = 0;
+            foreach ($items as $item) {
+                if ($item['item_id'] < 0) {
+                    $itemdata=$this->orders_model->get_newitemdat($item['item_id']);
+                } else {
+                    $itemdata=$this->leadorder_model->_get_itemdata($item['item_id']);
+                }
+                $items[$itemidx]['item_number'] = $itemdata['item_number'];
+                // Colors
+                $this->db->select('*');
+                $this->db->from('ts_quote_itemcolors');
+                $this->db->where('quote_item_id', $item['quote_item_id']);
+                $colors = $this->db->get()->result_array();
+                $items[$itemidx]['colors'] = $colors;
+                // Imprints
+                $this->db->select('*');
+                $this->db->from('ts_quote_imprints');
+                $this->db->where('quote_item_id', $item['quote_item_id']);
+                $imprints = $this->db->get()->result_array();
+                $items[$itemidx]['imprints'] = $imprints;
+                $itemidx++;
+            }
+            // Shippings
+            $this->db->select('*');
+            $this->db->from('ts_quote_shippings');
+            $this->db->where('quote_id', $quote_id);
+            $this->db->where('active', 1);
+            $shipping = $this->db->get()->result_array();
+            if ($quote['brand']=='SR') {
+                $res = $this->_prepare_quotesrdoc($quote, $items, $shipping);
+            } else {
+                $res = $this->_prepare_quotesbdoc($quote, $items, $shipping);
+            }
+            $out['msg'] = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $out['result'] = $this->success_result;
+                $out['docurl'] = $res['docurl'];
+            }
+        }
+        return $out;
+    }
+
+    private function _prepare_quotesrdoc($quote, $items, $shipping) {
+
+    }
+
+    private function _prepare_quotesbdoc($quote, $items, $shipping) {
+        $out = ['result' => $this->error_result, 'msg' => 'Error during create PDF doc'];
+        $filname = 'quote_QB-'.$quote['quote_number'].'.pdf';
+        define('FPDF_FONTPATH', FCPATH.'font');
+        $this->load->library('fpdf/fpdfeps');
+        // Logo
+        $logoFile = FCPATH."/img/invoice/logos-2.eps";
+        $logoWidth = 105.655;
+        $logoHeight = 12.855;
+        $logoYPos = 10;
+        $logoXPos = 5;
+        $pdf = new FPDFEPS('P','mm','A4');
+        $pdf->AddPage();
+        $pdf->SetFont('Times','',9.035143);
+        $pdf->SetTextColor(65, 65, 65);
+        // $pdf->SetMargins(14,14,14);
+        // Logo
+        $pdf->ImageEps( $logoFile, $logoXPos, $logoYPos, $logoWidth, $logoHeight );
+        // Inv #
+        $pdf->SetXY(167, 10.8);
+        $pdf->SetFont('','B',16.564429);
+        // $pdf->SetTextColor(0, 0, 255);
+        if ($quote['quote_template']=='Proforma Invoice') {
+            $pdf->Cell(35.8,16,'INVOICE',0,0,'R');
+        } else {
+            $pdf->Cell(35.8,16,'OFFICIAL QUOTE',0,0,'R');
+        }
+        $pdf->SetFont('','',12.046857);
+        $pdf->Text(5, 27.88, '855 Bloomfield Ave');
+        $pdf->Text(5, 33.88, 'Clifton, NJ 07012');
+        $pdf->Text(5,39.88, 'Call Us at');
+        $pdf->SetTextColor(0,0,255);
+        $pdf->Text(23,39.88, '1-800-790-6090');
+        $pdf->Text(5,45.88,'www.bluetrack.com'); // , 'http://www.bluetrack.com');
+
+        $pdf->SetXY(167, 31.8);
+        $pdf->SetFont('','',14.564429);
+        $pdf->setFillColor(0,0,255);
+        $pdf->SetTextColor(255,255,255);
+        $pdf->Cell(20,6,'Quote #',0,0,'C',true);
+        $pdf->setFillColor(255, 255,255);
+        $pdf->SetTextColor(65, 65, 65);
+        $pdf->Cell(23,6,'SB-'.$quote['quote_number'],0,0,'R');
+        // Save file
+        $file_out = $this->config->item('upload_path_preload').$filname;
+        $pdf->Output('F', $file_out);
+        $out['result'] = $this->success_result;
+        $out['docurl'] = $this->config->item('pathpreload').$filname;
+        return $out;
+
+    }
 }
