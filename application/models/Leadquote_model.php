@@ -1659,4 +1659,114 @@ class Leadquote_model extends MY_Model
         return $out;
     }
 
+    public function prepare_quotedoc($quote_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Lead Not Found'];
+        $this->db->select('*');
+        $this->db->from('ts_quotes');
+        $this->db->where('quote_id', $quote_id);
+        $quote = $this->db->get()->row_array();
+        if (ifset($quote,'quote_id',0)==$quote_id) {
+            $this->load->model('orders_model');
+            $this->load->model('leadorder_model');
+            $this->db->select('*');
+            $this->db->from('ts_quote_items');
+            $this->db->where('quote_id', $quote_id);
+            $items = $this->db->get()->result_array();
+            $itemidx = 0;
+            foreach ($items as $item) {
+                if ($item['item_id'] < 0) {
+                    $itemdata=$this->orders_model->get_newitemdat($item['item_id']);
+                } else {
+                    $itemdata=$this->leadorder_model->_get_itemdata($item['item_id']);
+                }
+                $items[$itemidx]['item_number'] = $itemdata['item_number'];
+                // Colors
+                $this->db->select('*');
+                $this->db->from('ts_quote_itemcolors');
+                $this->db->where('quote_item_id', $item['quote_item_id']);
+                $colors = $this->db->get()->result_array();
+                $items[$itemidx]['colors'] = $colors;
+                // Imprints
+                $this->db->select('*');
+                $this->db->from('ts_quote_imprints');
+                $this->db->where('quote_item_id', $item['quote_item_id']);
+                $imprints = $this->db->get()->result_array();
+                $items[$itemidx]['imprints'] = $imprints;
+                $itemidx++;
+            }
+            // Shippings
+            $this->db->select('*');
+            $this->db->from('ts_quote_shippings');
+            $this->db->where('quote_id', $quote_id);
+            $this->db->where('active', 1);
+            $shipping = $this->db->get()->result_array();
+            if ($quote['brand']=='SR') {
+                $res = $this->_prepare_quotesrdoc($quote, $items, $shipping);
+            } else {
+                $res = $this->_prepare_quotesbdoc($quote, $items, $shipping);
+            }
+            $out['msg'] = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $out['result'] = $this->success_result;
+                $out['docurl'] = $res['docurl'];
+            }
+        }
+        return $out;
+    }
+
+    private function _prepare_quotesrdoc($quote, $items, $shipping) {
+
+    }
+
+    private function _prepare_quotesbdoc($quote, $items, $shipping) {
+        $out = ['result' => $this->error_result, 'msg' => 'Error during create PDF doc'];
+        $filname = 'quote_QB-'.$quote['quote_number'].'.pdf';
+        define('FPDF_FONTPATH', FCPATH.'font');
+        $this->load->library('fpdf/fpdfeps');
+        // Logo
+        $logoFile = FCPATH."/img/invoice/logos-2.eps";
+        $logoWidth = 105.655;
+        $logoHeight = 12.855;
+        $logoYPos = 10;
+        $logoXPos = 5;
+        $pdf = new FPDFEPS('P','mm','A4');
+        $pdf->AddPage();
+        $pdf->SetFont('Times','',9.035143);
+        $pdf->SetTextColor(65, 65, 65);
+        // $pdf->SetMargins(14,14,14);
+        // Logo
+        $pdf->ImageEps( $logoFile, $logoXPos, $logoYPos, $logoWidth, $logoHeight );
+        // Inv #
+        $pdf->SetXY(167, 10.8);
+        $pdf->SetFont('','B',16.564429);
+        // $pdf->SetTextColor(0, 0, 255);
+        if ($quote['quote_template']=='Proforma Invoice') {
+            $pdf->Cell(35.8,16,'INVOICE',0,0,'R');
+        } else {
+            $pdf->Cell(35.8,16,'OFFICIAL QUOTE',0,0,'R');
+        }
+        $pdf->SetFont('','',12.046857);
+        $pdf->Text(5, 27.88, '855 Bloomfield Ave');
+        $pdf->Text(5, 33.88, 'Clifton, NJ 07012');
+        $pdf->Text(5,39.88, 'Call Us at');
+        $pdf->SetTextColor(0,0,255);
+        $pdf->Text(23,39.88, '1-800-790-6090');
+        $pdf->Text(5,45.88,'www.bluetrack.com'); // , 'http://www.bluetrack.com');
+
+        $pdf->SetXY(167, 31.8);
+        $pdf->SetFont('','',14.564429);
+        $pdf->setFillColor(0,0,255);
+        $pdf->SetTextColor(255,255,255);
+        $pdf->Cell(20,6,'Quote #',0,0,'C',true);
+        $pdf->setFillColor(255, 255,255);
+        $pdf->SetTextColor(65, 65, 65);
+        $pdf->Cell(23,6,'SB-'.$quote['quote_number'],0,0,'R');
+        // Save file
+        $file_out = $this->config->item('upload_path_preload').$filname;
+        $pdf->Output('F', $file_out);
+        $out['result'] = $this->success_result;
+        $out['docurl'] = $this->config->item('pathpreload').$filname;
+        return $out;
+
+    }
 }

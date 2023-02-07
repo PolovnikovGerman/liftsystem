@@ -1173,4 +1173,23 @@ class Leadquote extends MY_Controller
         }
         show_404();
     }
+
+    public function quotepdfdoc() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $error = 'Empty Lend Request';
+            $mdata = [];
+            $quote_id = ifset($postdata, 'quote_id', 0);
+            if (!empty($quote_id)) {
+                $res = $this->leadquote_model->prepare_quotedoc($quote_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['docurl'] = $res['docurl'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }
