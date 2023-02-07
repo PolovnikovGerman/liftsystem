@@ -736,16 +736,16 @@ function init_leadquotes_view() {
             },'json');
         }
     });
-    // $(".quoteactionpdfdoc.active").unbind('click').click(function (){
-    //     var params = new Array();
-    //     params.push({name: 'quote_id', value: $(this).data('quote')});
-    //     var url = '/leadquote/quotepdfdoc';
-    //     $.post(url, params, function (response){
-    //         if (response.errors=='') {
-    //             var newWin = window.open(response.data.docurl,"Quoute PDF","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
-    //         } else {
-    //             show_error(response);
-    //         }
-    //     },'json')
-    // });
+    $(".quoteactionpdfdoc.active").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'quote_id', value: $(this).data('quote')});
+        var url = '/leadquote/quotepdfdoc';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                var newWin = window.open(response.data.docurl,"Quoute PDF","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+            } else {
+                show_error(response);
+            }
+        },'json')
+    });
 }

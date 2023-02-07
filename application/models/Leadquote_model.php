@@ -1724,43 +1724,75 @@ class Leadquote_model extends MY_Model
         define('FPDF_FONTPATH', FCPATH.'font');
         $this->load->library('fpdf/fpdfeps');
         // Logo
-        $logoFile = FCPATH."/img/invoice/logos-2.eps";
-        $logoWidth = 105.655;
-        $logoHeight = 12.855;
+        $logoFile = FCPATH."/img/leadquote/quote_bt_logo.eps";
+        $logoWidth = 118.53;
+        $logoHeight = 14.48;
         $logoYPos = 10;
-        $logoXPos = 5;
+        $logoXPos = 13;
         $pdf = new FPDFEPS('P','mm','A4');
         $pdf->AddPage();
         $pdf->SetFont('Times','',9.035143);
-        $pdf->SetTextColor(65, 65, 65);
-        // $pdf->SetMargins(14,14,14);
+        $pdf->SetTextColor(0, 0, 0);
         // Logo
         $pdf->ImageEps( $logoFile, $logoXPos, $logoYPos, $logoWidth, $logoHeight );
         // Inv #
-        $pdf->SetXY(167, 10.8);
+        $pdf->SetXY(138, 15.2);
         $pdf->SetFont('','B',16.564429);
         // $pdf->SetTextColor(0, 0, 255);
         if ($quote['quote_template']=='Proforma Invoice') {
-            $pdf->Cell(35.8,16,'INVOICE',0,0,'R');
+            $pdf->Cell(57,16,'INVOICE',0,0,'R');
         } else {
-            $pdf->Cell(35.8,16,'OFFICIAL QUOTE',0,0,'R');
+            $pdf->Cell(57,16,'OFFICIAL QUOTE',0,0,'R');
         }
+        // Our Address
         $pdf->SetFont('','',12.046857);
-        $pdf->Text(5, 27.88, '855 Bloomfield Ave');
-        $pdf->Text(5, 33.88, 'Clifton, NJ 07012');
-        $pdf->Text(5,39.88, 'Call Us at');
+        $pdf->Text(13, 27.88, '855 Bloomfield Ave');
+        $pdf->Text(13, 33.88, 'Clifton, NJ 07012');
+        $pdf->Text(13,39.88, 'Call Us at');
         $pdf->SetTextColor(0,0,255);
-        $pdf->Text(23,39.88, '1-800-790-6090');
-        $pdf->Text(5,45.88,'www.bluetrack.com'); // , 'http://www.bluetrack.com');
-
-        $pdf->SetXY(167, 31.8);
-        $pdf->SetFont('','',14.564429);
-        $pdf->setFillColor(0,0,255);
+        $pdf->Text(31,39.88, '1-800-790-6090');
+        $pdf->Text(13,45.88,'www.stressballs.com'); // , 'www.bluetrack.com');
+        // Quote Title
+        $pdf->SetXY(153, 29);
+        $pdf->SetFont('','',12.5);
+        $pdf->setFillColor(17, 100, 238);
         $pdf->SetTextColor(255,255,255);
         $pdf->Cell(20,6,'Quote #',0,0,'C',true);
-        $pdf->setFillColor(255, 255,255);
-        $pdf->SetTextColor(65, 65, 65);
-        $pdf->Cell(23,6,'SB-'.$quote['quote_number'],0,0,'R');
+        $pdf->SetTextColor(0, 0, 0);
+        $pdf->Cell(22,6,'SB-'.$quote['quote_number'],0,0,'R');
+        $pdf->SetXY(162, 36);
+        $pdf->Cell(12, 6, 'Date:');
+        $pdf->SetXY(174, 36);
+        $pdf->Cell(20,6,date('m/d/Y', $quote['quote_date']),0,0,'R');
+        $pdf->SetXY(160, 44);
+        $pdf->setFillColor(128, 128, 128);
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->SetFont('','',12.046857);
+        $pdf->Cell(15, 6, 'Rep',1,0,'C',true);
+        $pdf->SetXY(178, 44);
+        $pdf->SetTextColor(0,0,0);
+        $pdf->Cell(15,6,'',1);
+        // Billing Address
+        $pdf->setXY(13, 55);
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->SetCellMargin(4);
+        $pdf->Cell(88, 8, 'Billing Address',1,0,'',true);
+        $pdf->setXY(13,63);
+        $pdf->Cell(88, 28, '',1);
+        $yStart = 63;
+        if (!empty($quote['billing_company'])) {
+            $pdf->setXY(13, $yStart);
+            $pdf->Cell(87, 6, $quote['billing_company']);
+            $yStart+=7;
+        }
+        $pdf->setXY(13, $yStart);
+        
+        // Shipping Address
+        $pdf->setXY(105, 55);
+        $pdf->Cell(88, 8, 'Shipping Address',1,0,'',true);
+        $pdf->setXY(105,63);
+        $pdf->Cell(88, 28, '',1);
+        $pdf->SetCellMargin(0);
         // Save file
         $file_out = $this->config->item('upload_path_preload').$filname;
         $pdf->Output('F', $file_out);

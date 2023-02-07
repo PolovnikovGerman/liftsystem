@@ -209,6 +209,8 @@ function ImageEps ($file, $x, $y, $w=0, $h=0, $link='', $useBoundingBox=true){
 	return true;
 }
 
+	function SetCellMargin($margin) { $this->cMargin = $margin; }
+
 }# END CLASS
 
 ?>
