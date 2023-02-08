@@ -211,6 +211,15 @@ function ImageEps ($file, $x, $y, $w=0, $h=0, $link='', $useBoundingBox=true){
 
 	function SetCellMargin($margin) { $this->cMargin = $margin; }
 
+	function SetDash($black=null, $white=null)
+	{
+		if($black!==null)
+			$s=sprintf('[%.3F %.3F] 0 d',$black*$this->k,$white*$this->k);
+		else
+			$s='[] 0 d';
+		$this->_out($s);
+	}
+
 }# END CLASS
 
 ?>
