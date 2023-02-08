@@ -1668,6 +1668,15 @@ class Leadquote_model extends MY_Model
         if (ifset($quote,'quote_id',0)==$quote_id) {
             $this->load->model('orders_model');
             $this->load->model('leadorder_model');
+            $usrrepl = '';
+            if (!empty($quote['create_user'])) {
+                $this->db->select('user_initials');
+                $this->db->from('users');
+                $this->db->where('user_id', $quote['create_user']);
+                $usrres = $this->db->get()->row_array();
+                $usrrepl = ifset($usrres,'user_initials','');
+            }
+            $quote['usrrepl'] = $usrrepl;
             // Billing and shipping array
             $bill = $ship = [];
             if (!empty($quote['billing_company'])) {
@@ -1833,7 +1842,7 @@ class Leadquote_model extends MY_Model
         $pdf->Cell(15, 6, 'Rep',1,0,'C',true);
         $pdf->SetXY(178, 44);
         $pdf->SetTextColor(0,0,0);
-        $pdf->Cell(15,6,'',1);
+        $pdf->Cell(15,6, $quote['usrrepl'],1,0,'C');
         // Billing Address
         $pdf->SetXY(13, 55);
         $pdf->SetTextColor(255, 255, 255);
@@ -2014,7 +2023,7 @@ class Leadquote_model extends MY_Model
         $pdf->SetXY(13, $bottomY);
         $pdf->MultiCell(195, 5, 'Stressballs.com - 855 Bloomfield Avenue - Clifton, NJ 07012 - USA'.PHP_EOL.'(Tel) 201-210-8700  -  (Fax) 201-604-2688',0,'C');
         // Quick Order
-        $quickOrdY = $yStart+2;
+        $quickOrdY = $yStart;
         $pdf->SetXY(13, $quickOrdY);
         $pdf->SetTextColor(0, 0, 128);
         $pdf->SetFont('', 'B', 12);
@@ -2022,20 +2031,20 @@ class Leadquote_model extends MY_Model
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('', '', 9.5);
         $pdf->Cell(120,6, 'Please correct any incorrect or missing billing or shipping information listed above.');
-        $quickOrdY += 10;
+        $quickOrdY += 9;
         $pdf->SetXY(13, $quickOrdY);
         $pdf->SetFont('', '', 10.5);
         $pdf->SetCellMargin(4);
         $pdf->Cell(35, 6, 'Contact:', 0, 0,'R');
         $pdf->Cell(48,6,'', 1);
         $pdf->Cell(38,6,'Payment Info:',0,0,'R');
-        $quickOrdY+=8;
+        $quickOrdY+=7.6;
         $pdf->SetXY(13, $quickOrdY);
         $pdf->Cell(35, 6, 'Telephone:', 0, 0,'R');
         $pdf->Cell(48,6,'', 1);
         $pdf->Cell(38,6,'Credit Card #:',0,0,'R');
         $pdf->Cell(48,6,'', 1);
-        $quickOrdY+=8;
+        $quickOrdY+=7.6;
         $pdf->SetXY(13, $quickOrdY);
         $pdf->Cell(35, 6, 'Email:', 0, 0,'R');
         $pdf->Cell(48,6,'', 1);
@@ -2043,7 +2052,7 @@ class Leadquote_model extends MY_Model
         $pdf->Cell(18,6,'', 1);
         $pdf->Cell(21,6,'CVV Code:',0,0,'R');
         $pdf->Cell(18,6,'', 1);
-        $quickOrdY+=8;
+        $quickOrdY+=7.6;
         $pdf->SetXY(13, $quickOrdY);
         $pdf->SetFont('','',9.5);
         $pdf->SetTextColor(0, 0, 128);
@@ -2052,7 +2061,7 @@ class Leadquote_model extends MY_Model
         $pdf->SetFont('', '', 10.5);
         $pdf->Cell(38,6,'Signature:',0,0,'R');
         $pdf->Cell(48,6,'', 'B');
-        $quickOrdY+=10;
+        $quickOrdY+=8.2;
         $pdf->SetXY(18,$quickOrdY);
         $pdf->SetFillColor(17, 100, 238);
         $pdf->Cell(173,12,'', 1,0,'',1);
