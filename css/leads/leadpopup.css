@@ -340,8 +340,8 @@ select.lead_item_select {
     width: 37px;
 }
 .leadquotenumberlist {
-    /* height: 16px!important;
-    line-height: 16px!important; */
+    height: 20px!important;
+    line-height: 20px!important;
     border: 1.5px solid #616161;
     width: 68px;
     text-align: center;

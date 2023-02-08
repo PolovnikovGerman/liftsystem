@@ -1668,6 +1668,60 @@ class Leadquote_model extends MY_Model
         if (ifset($quote,'quote_id',0)==$quote_id) {
             $this->load->model('orders_model');
             $this->load->model('leadorder_model');
+            // Billing and shipping array
+            $bill = $ship = [];
+            if (!empty($quote['billing_company'])) {
+                array_push($bill, $quote['billing_company']);
+            }
+            if (!empty($quote['billing_contact'])) {
+                array_push($bill, $quote['billing_contact']);
+            }
+            if (!empty($quote['billing_address1'])) {
+                array_push($bill, $quote['billing_address1']);
+            }
+            if (!empty($quote['billing_address2'])) {
+                array_push($bill, $quote['billing_address2']);
+            }
+            $billcity = '';
+            if (!empty($quote['billing_city'])) {
+                $billcity.=$quote['billing_city'].' ';
+            }
+            if (!empty($quote['billing_state'])) {
+                $billcity.=$quote['billing_state'].' ';
+            }
+            if (!empty($quote['billing_zip'])) {
+                $billcity.=$quote['billing_zip'];
+            }
+            if (!empty($billcity)) {
+                array_push($bill, $billcity);
+            }
+            $quote['billing'] = $bill;
+            if (!empty($quote['shipping_company'])) {
+                array_push($ship, $quote['shipping_company']);
+            }
+            if (!empty($quote['shipping_contact'])) {
+                array_push($ship, $quote['shipping_contact']);
+            }
+            if (!empty($quote['shipping_address1'])) {
+                array_push($ship, $quote['shipping_address1']);
+            }
+            if (!empty($quote['shipping_address2'])) {
+                array_push($ship, $quote['shipping_address2']);
+            }
+            $shipcity = '';
+            if (!empty($quote['shipping_city'])) {
+                $shipcity.=$quote['shipping_city'].' ';
+            }
+            if (!empty($quote['shipping_state'])) {
+                $shipcity.=$quote['shipping_state'].' ';
+            }
+            if (!empty($quote['shipping_zip'])) {
+                $shipcity.=$quote['shipping_zip'];
+            }
+            if (!empty($shipcity)) {
+                array_push($ship, $shipcity);
+            }
+            $quote['shipping'] = $ship;
             $this->db->select('*');
             $this->db->from('ts_quote_items');
             $this->db->where('quote_id', $quote_id);
@@ -1724,44 +1778,244 @@ class Leadquote_model extends MY_Model
         define('FPDF_FONTPATH', FCPATH.'font');
         $this->load->library('fpdf/fpdfeps');
         // Logo
+        // $logoFile = FCPATH."/img/leadquote/quote_bt_logo.eps";
         $logoFile = FCPATH."/img/invoice/logos-2.eps";
-        $logoWidth = 105.655;
-        $logoHeight = 12.855;
+        $logoWidth = 118.53;
+        $logoHeight = 14.48;
         $logoYPos = 10;
-        $logoXPos = 5;
+        $logoXPos = 13;
+        // Table Columns X
+        $headWidth = [
+            25, 81, 24, 24, 28,
+        ];
+        $colWidth = [
+            25, 81, 23, 24, 28.3,
+        ];
         $pdf = new FPDFEPS('P','mm','A4');
         $pdf->AddPage();
         $pdf->SetFont('Times','',9.035143);
-        $pdf->SetTextColor(65, 65, 65);
-        // $pdf->SetMargins(14,14,14);
+        $pdf->SetTextColor(0, 0, 0);
         // Logo
         $pdf->ImageEps( $logoFile, $logoXPos, $logoYPos, $logoWidth, $logoHeight );
         // Inv #
-        $pdf->SetXY(167, 10.8);
+        $pdf->SetXY(138, 15.2);
         $pdf->SetFont('','B',16.564429);
         // $pdf->SetTextColor(0, 0, 255);
         if ($quote['quote_template']=='Proforma Invoice') {
-            $pdf->Cell(35.8,16,'INVOICE',0,0,'R');
+            $pdf->Cell(57,16,'INVOICE',0,0,'R');
         } else {
-            $pdf->Cell(35.8,16,'OFFICIAL QUOTE',0,0,'R');
+            $pdf->Cell(57,16,'OFFICIAL QUOTE',0,0,'R');
         }
+        // Our Address
         $pdf->SetFont('','',12.046857);
-        $pdf->Text(5, 27.88, '855 Bloomfield Ave');
-        $pdf->Text(5, 33.88, 'Clifton, NJ 07012');
-        $pdf->Text(5,39.88, 'Call Us at');
+        $pdf->Text(13, 27.88, '855 Bloomfield Ave');
+        $pdf->Text(13, 33.88, 'Clifton, NJ 07012');
+        $pdf->Text(13,39.88, 'Call Us at');
         $pdf->SetTextColor(0,0,255);
-        $pdf->Text(23,39.88, '1-800-790-6090');
-        $pdf->Text(5,45.88,'www.bluetrack.com'); // , 'http://www.bluetrack.com');
-
-        $pdf->SetXY(167, 31.8);
-        $pdf->SetFont('','',14.564429);
-        $pdf->setFillColor(0,0,255);
+        $pdf->Text(31,39.88, '1-800-790-6090');
+        $pdf->Text(13,45.88,'www.stressballs.com'); // , 'www.bluetrack.com');
+        // Quote Title
+        $pdf->SetXY(153, 29);
+        $pdf->SetFont('','',12.5);
+        $pdf->setFillColor(17, 100, 238);
         $pdf->SetTextColor(255,255,255);
         $pdf->Cell(20,6,'Quote #',0,0,'C',true);
-        $pdf->setFillColor(255, 255,255);
-        $pdf->SetTextColor(65, 65, 65);
-        $pdf->Cell(23,6,'SB-'.$quote['quote_number'],0,0,'R');
+        $pdf->SetTextColor(0, 0, 0);
+        $pdf->Cell(22,6,'SB-'.$quote['quote_number'],0,0,'R');
+        $pdf->SetXY(162, 36);
+        $pdf->Cell(12, 6, 'Date:');
+        $pdf->SetXY(174, 36);
+        $pdf->Cell(20,6,date('m/d/Y', $quote['quote_date']),0,0,'R');
+        $pdf->SetXY(160, 44);
+        $pdf->setFillColor(128, 128, 128);
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->SetFont('','',12.046857);
+        $pdf->Cell(15, 6, 'Rep',1,0,'C',true);
+        $pdf->SetXY(178, 44);
+        $pdf->SetTextColor(0,0,0);
+        $pdf->Cell(15,6,'',1);
+        // Billing Address
+        $pdf->SetXY(13, 55);
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->SetCellMargin(4);
+        $pdf->Cell(88, 8, 'Billing Address',1,0,'',true);
+        $pdf->SetXY(13,63);
+        $pdf->Cell(88, 36, '',1);
+        $pdf->SetTextColor(0,0,0);
+        $yStart = 63;
+        foreach ($quote['billing'] as $billrow) {
+            $pdf->SetXY(13, $yStart);
+            $pdf->Cell(87, 6, $billrow);
+            $yStart+=7;
+        }
+        // Shipping Address
+        $pdf->SetXY(105, 55);
+        $pdf->Cell(88, 8, 'Shipping Address',1,0,'',true);
+        $pdf->SetXY(105,63);
+        $pdf->Cell(88, 36, '',1);
+        $pdf->SetTextColor(0,0,0);
+        $yStart = 63;
+        foreach ($quote['shipping'] as $shiprow) {
+            $pdf->SetXY(105, $yStart);
+            $pdf->Cell(87, 6, $shiprow);
+            $yStart+=7;
+        }
+        $pdf->SetCellMargin(3);
+        // $yStart = $pdf->getY() + 3;
+        $yStart = 102;
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->SetXY(13, $yStart);
+        $pdf->Cell($colWidth[0], 6, 'Item',1,0,'C', true);
+        $pdf->Cell($colWidth[1], 6, 'Description',1, 0,'C', true);
+        $pdf->Cell($colWidth[2], 6, 'Qty', 1, 0,'C', true);
+        $pdf->Cell($colWidth[3], 6, 'Price (ea)', 1, 0, 'C', true);
+        $pdf->Cell($colWidth[4], 6, 'Total:', 1, 0,'C', true);
+        $yStart+=6;
+        $numpp=1;
+        $pdf->setFillcolor(230, 230, 230);
+        $pdf->SetTextColor(0,0,0);
+        foreach ($items as $item) {
+            $colors = $item['colors'];
+            foreach ($colors as $color) {
+                $fillrow = ($numpp % 2) == 0 ? 1 : 0;
+                $total = $color['item_qty'] * $color['item_price'];
+                $pdf->SetXY(13, $yStart);
+                $pdf->Cell($colWidth[0], 5, $item['item_number'], 'LR', 0, 'L', $fillrow);
+                $pdf->Cell($colWidth[1], 5, $color['item_description'] . ' ' . $color['item_color'], 'LR', 0, 'L', $fillrow);
+                $pdf->Cell($colWidth[2], 5, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[3], 5, number_format($color['item_price'], 2), 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[4], 5, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
+                $numpp++;
+                $yStart += 5;
+            }
+            $imprints = $item['imprints'];
+            foreach ($imprints as $imprint) {
+                $fillrow = ($numpp % 2) == 0 ? 1 : 0;
+                $total = $imprint['imprint_qty'] * $imprint['imprint_price'];
+                $rowcode = 'SB-impr1';
+                if ($imprint['imprint_item'] == 0) {
+                    $rowcode = 'SB-setu1';
+                }
+                $pdf->SetXY(13, $yStart);
+                $pdf->Cell($colWidth[0], 5, $rowcode, 'LR', 0, 'L', $fillrow);
+                $pdf->Cell($colWidth[1], 5, $imprint['imprint_description'], 'LR', 0, 'L', $fillrow);
+                $pdf->Cell($colWidth[2], 5, QTYOutput($imprint['imprint_qty']), 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[3], 5, number_format($imprint['imprint_price'], 2), 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[4], 5, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
+                $numpp++;
+                $yStart += 5;
+            }
+        }
+        if (!empty($quote['mischrg_label1']) && !empty($quote['mischrg_value1'])) {
+            $pdf->SetXY(13, $yStart);
+            $fillrow=($numpp%2)==0 ? 1 : 0;
+            $pdf->Cell($colWidth[0], 5, 'SB-misc1','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], 5, $quote['mischrg_label1'],'LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
+            $pdf->Cell($colWidth[3], 5, number_format($quote['mischrg_value1'],2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], 5, MoneyOutput($quote['mischrg_value1']).'T', 'LR', 0,'R', $fillrow);
+            $numpp++;
+            $yStart+=5;
+        }
+        if (!empty($quote['mischrg_label2']) && !empty($quote['mischrg_value2'])) {
+            $pdf->SetXY(13, $yStart);
+            $fillrow=($numpp%2)==0 ? 1 : 0;
+            $pdf->Cell($colWidth[0], 5, 'SB-misc2','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], 5, $quote['mischrg_label2'],'LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
+            $pdf->Cell($colWidth[3], 5, number_format($quote['mischrg_value2'],2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], 5, MoneyOutput($quote['mischrg_value2']).'T', 'LR', 0,'R', $fillrow);
+            $numpp++;
+            $yStart+=5;
+        }
+        if (!empty($shipping)) {
+            $pdf->SetXY(13, $yStart);
+            $fillrow=($numpp%2)==0 ? 1 : 0;
+            $pdf->Cell($colWidth[0], 5, 'SB-ship1','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], 5, $shipping[0]['shipping_name'].' Shippin Charge','LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
+            $pdf->Cell($colWidth[3], 5, number_format($shipping[0]['shipping_rate'],2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], 5, MoneyOutput($shipping[0]['shipping_rate']).'T', 'LR', 0,'R', $fillrow);
+            $numpp++;
+            $yStart+=5;
+        }
+        if (!empty($quote['discount_label']) && !empty($quote['discount_value'])) {
+            $pdf->SetXY(13, $yStart);
+            $pdf->Cell($colWidth[0], 5, 'SB-misc2','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], 5, $quote['mischrg_label2'],'LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
+            $pdf->Cell($colWidth[3], 5, number_format($quote['mischrg_value2'],2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], 5, MoneyOutput($quote['mischrg_value2']).'T', 'LR', 0,'R', $fillrow);
+            $numpp++;
+            $yStart+=5;
+        }
+        // Empty Row
+        $pdf->SetXY(13, $yStart);
+        $fillrow=($numpp%2)==0 ? 1 : 0;
+        $pdf->Cell($colWidth[0], 7, '','LR',0,'L', $fillrow);
+        $pdf->Cell($colWidth[1], 7, '','LR', 0,'L', $fillrow);
+        $pdf->Cell($colWidth[2], 7, '', 'LR', 0,'C', $fillrow);
+        $pdf->Cell($colWidth[3], 7, '', 'LR', 0, 'C', $fillrow);
+        $pdf->Cell($colWidth[4], 7, '', 'LR', 0,'R', $fillrow);
+        $numpp++;
+        $yStart+=7;
+        if (!empty($quote['quote_repcontact'])) {
+            $fillrow=($numpp%2)==0 ? 1 : 0;
+            $startMulti = 13 + $colWidth[0];
+            $pdf->SetXY(13 + $colWidth[0], $yStart);
+            $pdf->MultiCell($colWidth[1], 5, $quote['quote_repcontact'],'LR', 0,'L', $fillrow);
+            $multY = $pdf->getY();
+            $rowHeight = $multY-$yStart;
+            $pdf->SetXY(13, $yStart);
+            $pdf->Cell($colWidth[0], $rowHeight, '','LR',0,'L', $fillrow);
+            $pdf->SetXY((13+$colWidth[0]+$colWidth[1]), $yStart);
+            $pdf->Cell($colWidth[2], $rowHeight, '', 'LR', 0,'C', $fillrow);
+            $pdf->Cell($colWidth[3], $rowHeight, '', 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], $rowHeight, '', 'LR', 0,'R', $fillrow);
+            $numpp++;
+            $yStart = $multY;
+        }
+        $rowHeight = 7;
+        if ($yStart < 178) {
+            $rowHeight = 178 - $yStart;
+        }
+        $pdf->SetXY(13, $yStart);
+        $fillrow=($numpp%2)==0 ? 1 : 0;
+        $pdf->Cell($colWidth[0], $rowHeight, '','LRB',0,'L', $fillrow);
+        $pdf->Cell($colWidth[1], $rowHeight, '','LRB', 0,'L', $fillrow);
+        $pdf->Cell($colWidth[2], $rowHeight, '', 'LRB', 0,'C', $fillrow);
+        $pdf->Cell($colWidth[3], $rowHeight, '', 'LRB', 0, 'C', $fillrow);
+        $pdf->Cell($colWidth[4], $rowHeight, '', 'LRB', 0,'R', $fillrow);
+        $yStart += $rowHeight;
+        // Total
+        $pdf->SetXY(13, $yStart);
+        $pdf->SetTextColor(0, 0, 128);
+        $pdf->SetFont('','B',14);
+        $pdf->Cell(111.5, 14, 'Best Prices Guaranteed.  No hidden fees.', 0, 0,'C');
+        $pdf->SetTextColor(0, 0, 0);
+        $pdf->SetFont('','',12.5);
+        $pdf->Cell(40,7,'NJ Sales Tax (0.0%)', 'LB',0,'C');
+        $pdf->Cell(30,7, MoneyOutput($quote['sales_tax']),'BR',0,'R');
+        $pdf->SetXY(124.5, $yStart+7);
+        $pdf->SetFont('','B',14);
+        $pdf->Cell(20,12,'Total:', 'LB',0,'C');
+        $pdf->SetFont('','',14);
+        $pdf->Cell(50,12, MoneyOutput($quote['quote_total']),'BR',0,'R');
+        $yStart += 23;
+        $pdf->SetDash(1,1);
+        $pdf->Line(13,$yStart,195, $yStart);
+        $pdf->Line(13, $yStart, 13, $yStart+55);
+        $pdf->Line(195,$yStart,195, $yStart+55);
+        $pdf->Line(13, $yStart+55, 195, $yStart+55);
+        $pdf->SetDash();
+        // Bottom title
+        $bottomY = $yStart + 57;
+        $pdf->SetFont('','',12.05);
+        $pdf->SetXY(13, $bottomY);
+        $pdf->MultiCell(195, 5, 'Stressballs.com - 855 Bloomfield Avenue - Clifton, NJ 07012 - USA'.PHP_EOL.'(Tel) 201-210-8700  -  (Fax) 201-604-2688',0,'C');
+        // Quick Order
         // Save file
+
         $file_out = $this->config->item('upload_path_preload').$filname;
         $pdf->Output('F', $file_out);
         $out['result'] = $this->success_result;
