@@ -564,8 +564,9 @@ class Leadquote extends MY_Controller
                     if ($res['totalcalc']==1) {
                         $this->leadquote_model->calc_quote_totals($session_id);
                         $quotesession = usersession($session_id);
-                        $mdata['items_subtotal'] = MoneyOutput($quotesession['quote']['items_subtotal']);
-                        $mdata['total'] = MoneyOutput($quotesession['quote']['quote_total']);
+                        $quote = $quotesession['quote'];
+                        $mdata['items_subtotal'] = MoneyOutput($quote['items_subtotal']);
+                        $mdata['total'] = MoneyOutput($quote['quote_total']);
                         $mdata['tax'] = $quote['sales_tax'];
                         $mdata['totals'] = 1;
                     }

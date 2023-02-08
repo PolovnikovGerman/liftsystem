@@ -653,6 +653,8 @@ Class Calendars_model extends MY_Model
                 'id' => $delivdate.'-0',
                 'name' => 'Standard 1 day',
                 'current' => 1,
+                'price' => 0,
+                'date' => $delivdate,
             ];
         } else {
             if ($blank==1) {

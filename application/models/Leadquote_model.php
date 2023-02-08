@@ -146,10 +146,10 @@ class Leadquote_model extends MY_Model
                     $items[$idx]['item_name'] = $itemdata[ 'item_name'];
                     $items[$idx]['colors'] = $itemdata['colors'];
                     $items[$idx]['num_colors'] = count($itemdata['colors']);
-                    $items[$idx]['imprint_locations']=$itemdata['imprints'];
-                    $items[$idx]['vendor_zipcode']=$itemdata['vendor_zipcode'];
-                    $items[$idx]['charge_perorder']=$itemdata['charge_perorder'];
-                    $items[$idx]['charge_pereach']=$itemdata['charge_pereach'];
+                    $items[$idx]['imprint_locations']=ifset($itemdata, 'imprints',[]);
+                    $items[$idx]['vendor_zipcode']=ifset($itemdata, 'vendor_zipcode', $this->config->item('zip'));
+                    $items[$idx]['charge_perorder']=ifset($itemdata, 'charge_perorder',0);
+                    $items[$idx]['charge_pereach']=ifset($itemdata, 'charge_pereach', 0);
                 }
                 // Get colors
                 $this->db->select('quote_itemcolor_id as item_id, quote_item_id, item_description, item_color, item_qty, item_price');
@@ -175,7 +175,7 @@ class Leadquote_model extends MY_Model
                         );
                         $colors[$coloridx]['out_colors']=$this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
                     }
-                    $colors[$coloridx]['printshop_item_id'] = $itemdata['printshop_item_id'];
+                    $colors[$coloridx]['printshop_item_id'] = ifset($itemdata, 'printshop_item_id', 0);
                     $colors[$coloridx]['qtyinput_class'] = 'normal';
                     $colors[$coloridx]['qtyinput_title'] = '';
                     $colors[$coloridx]['item_color_add'] = 0;
@@ -2014,7 +2014,56 @@ class Leadquote_model extends MY_Model
         $pdf->SetXY(13, $bottomY);
         $pdf->MultiCell(195, 5, 'Stressballs.com - 855 Bloomfield Avenue - Clifton, NJ 07012 - USA'.PHP_EOL.'(Tel) 201-210-8700  -  (Fax) 201-604-2688',0,'C');
         // Quick Order
+        $quickOrdY = $yStart+2;
+        $pdf->SetXY(13, $quickOrdY);
+        $pdf->SetTextColor(0, 0, 128);
+        $pdf->SetFont('', 'B', 12);
+        $pdf->Cell(55, 10, 'Quick Order Form:', 0, 0, 'C');
+        $pdf->SetTextColor(0, 0, 0);
+        $pdf->SetFont('', '', 9.5);
+        $pdf->Cell(120,6, 'Please correct any incorrect or missing billing or shipping information listed above.');
+        $quickOrdY += 10;
+        $pdf->SetXY(13, $quickOrdY);
+        $pdf->SetFont('', '', 10.5);
+        $pdf->SetCellMargin(4);
+        $pdf->Cell(35, 6, 'Contact:', 0, 0,'R');
+        $pdf->Cell(48,6,'', 1);
+        $pdf->Cell(38,6,'Payment Info:',0,0,'R');
+        $quickOrdY+=8;
+        $pdf->SetXY(13, $quickOrdY);
+        $pdf->Cell(35, 6, 'Telephone:', 0, 0,'R');
+        $pdf->Cell(48,6,'', 1);
+        $pdf->Cell(38,6,'Credit Card #:',0,0,'R');
+        $pdf->Cell(48,6,'', 1);
+        $quickOrdY+=8;
+        $pdf->SetXY(13, $quickOrdY);
+        $pdf->Cell(35, 6, 'Email:', 0, 0,'R');
+        $pdf->Cell(48,6,'', 1);
+        $pdf->Cell(38,6,'Exp Date:',0,0,'R');
+        $pdf->Cell(18,6,'', 1);
+        $pdf->Cell(21,6,'CVV Code:',0,0,'R');
+        $pdf->Cell(18,6,'', 1);
+        $quickOrdY+=8;
+        $pdf->SetXY(13, $quickOrdY);
+        $pdf->SetFont('','',9.5);
+        $pdf->SetTextColor(0, 0, 128);
+        $pdf->Cell(83,6,'All printed orders will receive an art proof to approve.',0,0,'R');
+        $pdf->SetTextColor(0, 64, 0);
+        $pdf->SetFont('', '', 10.5);
+        $pdf->Cell(38,6,'Signature:',0,0,'R');
+        $pdf->Cell(48,6,'', 'B');
+        $quickOrdY+=10;
+        $pdf->SetXY(18,$quickOrdY);
+        $pdf->SetFillColor(17, 100, 238);
+        $pdf->Cell(173,12,'', 1,0,'',1);
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->SetFont('', '', 10.5);
+        $pdf->SetXY(18,$quickOrdY);
+        $pdf->Cell(173,6,'To order call 1-800-790-6090 or order securely online',0,0,'C');
+        $pdf->SetXY(18,$quickOrdY+6);
+        $pdf->Cell(173,6,'or fill out this form and send back by email (sales@stressballs.com) or fax (201-604-2688)',0,0,'C');
         // Save file
+
 
         $file_out = $this->config->item('upload_path_preload').$filname;
         $pdf->Output('F', $file_out);
