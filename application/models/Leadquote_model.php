@@ -1787,10 +1787,10 @@ class Leadquote_model extends MY_Model
         define('FPDF_FONTPATH', FCPATH.'font');
         $this->load->library('fpdf/fpdfeps');
         // Logo
-        // $logoFile = FCPATH."/img/leadquote/quote_bt_logo.eps";
-        $logoFile = FCPATH."/img/invoice/logos-2.eps";
-        $logoWidth = 118.53;
-        $logoHeight = 14.48;
+        $logoFile = FCPATH."/img/leadquote/logo-bluetrack-stressballs-2.eps";
+        // $logoFile = FCPATH."/img/invoice/logos-2.eps";
+        $logoWidth = 119;
+        $logoHeight = 15;
         $logoYPos = 10;
         $logoXPos = 13;
         // Table Columns X
