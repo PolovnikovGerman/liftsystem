@@ -82,18 +82,19 @@
     width: 112px;
     font-size: 14px;
     font-weight: bold;
-    padding-top: 7px;
+    /* padding-top: 7px; */
 }
 .lead_popup_statustitle {
     float: left;
     width: 55px;
     font-size: 14px;
     font-weight: bold;
-    padding-top: 6px;
+    /* padding-top: 6px; */
 }
 .lead_popup_statusvalue {
     float: left;
-    padding-top: 3px;
+    /* padding-top: 3px; */
+    margin-top: -3px;
     width: 195px;
 }
 select.leadpopstatus {
@@ -109,29 +110,34 @@ select.leadpopstatus {
 .lead_popup_replicatiltle {
     float: left;
     width: 46px;
-    padding-top: 6px;
+    /* padding-top: 6px; */
     font-size: 14px;
     font-weight: bold;
 }
-.lead_popup_replicausrbgn {
-    float: left;
-    background: url('/img/leads/lead_replbgn.png') no-repeat transparent;
-    width: 5px;
-    height: 30px;
-}
+/*.lead_popup_replicausrbgn {*/
+/*    float: left;*/
+/*    background: url('/img/leads/lead_replbgn.png') no-repeat transparent;*/
+/*    width: 5px;*/
+/*    height: 30px;*/
+/*}*/
 .lead_popup_replicausrarea {
-    background: url('/img/leads/lead_replbg.png') repeat-x transparent;
+    /* background: url('/img/leads/lead_replbg.png') repeat-x transparent; */
+    background: #ccc4c4;
     float: left;
     /* width: 70px; */
     font-size: 15px;
     font-weight: bold;
     color: #232323;
-    height: 30px;
+    /* height: 30px; */
+    border: 1px solid #808080;
+    border-radius: 3px;
+    height: 25px;
+    margin-top: -3px;
 }
 .lead_popup_replicausrchk {
     cursor: pointer;
     float: left;
-    padding-top: 5px;
+    /* padding-top: 5px; */
     text-align: center;
     width: 20px;
 }
@@ -142,6 +148,7 @@ select.leadpopstatus {
     float: left;
     width: 64px;
     cursor: pointer;
+    margin-top: -4px;
 }
 input.usrrepliccheck {
     float: left;
@@ -153,15 +160,16 @@ input.usrrepliccheck {
 .lead_popup_replicausrname {
     float: left;
     min-width: 50px;
-    padding-top: 5px;
+    /* padding-top: 5px; */
     margin-right: 3px;
+    text-align: center;
 }
-.lead_popup_replicausrend {
-    float: left;
-    background: url('/img/leads/lead_replend.png') no-repeat transparent;
-    width: 5px;
-    height: 30px;
-}
+/*.lead_popup_replicausrend {*/
+/*    float: left;*/
+/*    background: url('/img/leads/lead_replend.png') no-repeat transparent;*/
+/*    width: 5px;*/
+/*    height: 30px;*/
+/*}*/
 .lead_popup_usrdatas {
     float: left;
     width: 279px;
