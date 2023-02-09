@@ -2085,6 +2085,29 @@ class Leadquote_model extends MY_Model
         $out['result'] = $this->success_result;
         $out['docurl'] = $this->config->item('pathpreload').$filname;
         return $out;
+    }
 
+    // List of quotes
+    public function leadquotes_count($options) {
+        $this->db->select('count(quote_id) as cnt');
+        $this->db->from('ts_quotes');
+        if (ifset($options,'brand', 'ALL')!=='ALL') {
+            if ($options['brand']=='SR') {
+                $this->db->where('brand', $options['brand']);
+            } else {
+                $this->db->where_in('brand', ['SB', 'BT']);
+            }
+        }
+        $res = $this->db->get()->row_array();
+        return $res['cnt'];
+    }
+
+    public function leadquotes_lists($options) {
+        $this->db->select('q.*, u.user_name, u.user_initials');
+        $this->db->from('ts_quotes q');
+        $this->db->join('users u','u.user_id=q.create_user');
+        $lists = $this->db->get()->result_array();
+        $out = [];
+        return $out;
     }
 }
