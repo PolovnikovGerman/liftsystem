@@ -2,10 +2,10 @@
 
 class Leadquote_model extends MY_Model
 {
-    private $stresstemplate = 'Stressballs.com';
-    private $bluehealthtemplate = 'Bluetrack Health';
-    private $proformatemplate = 'Proforma Invoice';
-    private $suppliertemplate = 'Supplier';
+    private $quotetemplates = [
+        'Quote',
+        'Proforma',
+    ];
     private $sbnumber = 11000;
     private $srnumber = 7500;
     private $box_empty_weight = 25;
@@ -43,7 +43,7 @@ class Leadquote_model extends MY_Model
                 'brand' => $lead_data['brand'],
                 'quote_number' => $newnum,
                 'quote_date' => time(),
-                'quote_template' => $this->stresstemplate,
+                'quote_template' => $this->quotetemplates[0],
                 'mischrg_label1' => '',
                 'mischrg_value1' => 0,
                 'mischrg_label2' => '',
@@ -1787,12 +1787,12 @@ class Leadquote_model extends MY_Model
         define('FPDF_FONTPATH', FCPATH.'font');
         $this->load->library('fpdf/fpdfeps');
         // Logo
-        $logoFile = FCPATH."/img/leadquote/logo-bluetrack-stressballs-2.eps";
-        // $logoFile = FCPATH."/img/invoice/logos-2.eps";
+        // $logoFile = FCPATH."/img/leadquote/logo-bluetrack-stressballs-2.eps";
+        $logoFile = FCPATH."/img/invoice/logos-2.eps";
         $logoWidth = 119;
         $logoHeight = 15;
-        $logoYPos = 10;
-        $logoXPos = 13;
+        $logoYPos = 15;
+        $logoXPos = 16;
         // Table Columns X
         $headWidth = [
             25, 81, 24, 24, 28,
@@ -1800,6 +1800,7 @@ class Leadquote_model extends MY_Model
         $colWidth = [
             25, 81, 23, 24, 28.3,
         ];
+        $startPageX = 16;
         $pdf = new FPDFEPS('P','mm','A4');
         $pdf->AddPage();
         $pdf->SetFont('Times','',9.035143);
@@ -1817,12 +1818,16 @@ class Leadquote_model extends MY_Model
         }
         // Our Address
         $pdf->SetFont('','',12.046857);
-        $pdf->Text(13, 27.88, '855 Bloomfield Ave');
-        $pdf->Text(13, 33.88, 'Clifton, NJ 07012');
-        $pdf->Text(13,39.88, 'Call Us at');
+        $ourAddressY = 33.68;
+        $pdf->Text($startPageX, $ourAddressY, '855 Bloomfield Ave');
+        $ourAddressY += 5.8;
+        $pdf->Text($startPageX, $ourAddressY, 'Clifton, NJ 07012');
+        $ourAddressY += 5.8;
+        $pdf->Text($startPageX,$ourAddressY, 'Call Us at');
         $pdf->SetTextColor(0,0,255);
-        $pdf->Text(31,39.88, '1-800-790-6090');
-        $pdf->Text(13,45.88,'www.stressballs.com'); // , 'www.bluetrack.com');
+        $pdf->Text(31,$ourAddressY, '1-800-790-6090');
+        $ourAddressY += 5.8;
+        $pdf->Text($startPageX,$ourAddressY,'www.stressballs.com'); // , 'www.bluetrack.com');
         // Quote Title
         $pdf->SetXY(153, 29);
         $pdf->SetFont('','',12.5);
@@ -1844,22 +1849,24 @@ class Leadquote_model extends MY_Model
         $pdf->SetTextColor(0,0,0);
         $pdf->Cell(15,6, $quote['usrrepl'],1,0,'C');
         // Billing Address
-        $pdf->SetXY(13, 55);
+        $pdf->SetXY($startPageX, 55);
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetCellMargin(4);
         $pdf->Cell(88, 8, 'Billing Address',1,0,'',true);
-        $pdf->SetXY(13,63);
+        $pdf->SetXY($startPageX,63);
         $pdf->Cell(88, 36, '',1);
         $pdf->SetTextColor(0,0,0);
         $yStart = 63;
         foreach ($quote['billing'] as $billrow) {
-            $pdf->SetXY(13, $yStart);
+            $pdf->SetXY($startPageX, $yStart);
             $pdf->Cell(87, 6, $billrow);
             $yStart+=7;
         }
         // Shipping Address
+        $pdf->SetTextColor(255,255,255);
         $pdf->SetXY(105, 55);
         $pdf->Cell(88, 8, 'Shipping Address',1,0,'',true);
+        $pdf->SetTextColor(0,0,0);
         $pdf->SetXY(105,63);
         $pdf->Cell(88, 36, '',1);
         $pdf->SetTextColor(0,0,0);
@@ -1873,7 +1880,7 @@ class Leadquote_model extends MY_Model
         // $yStart = $pdf->getY() + 3;
         $yStart = 102;
         $pdf->SetTextColor(255, 255, 255);
-        $pdf->SetXY(13, $yStart);
+        $pdf->SetXY($startPageX, $yStart);
         $pdf->Cell($colWidth[0], 6, 'Item',1,0,'C', true);
         $pdf->Cell($colWidth[1], 6, 'Description',1, 0,'C', true);
         $pdf->Cell($colWidth[2], 6, 'Qty', 1, 0,'C', true);
@@ -1888,7 +1895,7 @@ class Leadquote_model extends MY_Model
             foreach ($colors as $color) {
                 $fillrow = ($numpp % 2) == 0 ? 1 : 0;
                 $total = $color['item_qty'] * $color['item_price'];
-                $pdf->SetXY(13, $yStart);
+                $pdf->SetXY($startPageX, $yStart);
                 $pdf->Cell($colWidth[0], 5, $item['item_number'], 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[1], 5, $color['item_description'] . ' ' . $color['item_color'], 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[2], 5, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
@@ -1905,7 +1912,7 @@ class Leadquote_model extends MY_Model
                 if ($imprint['imprint_item'] == 0) {
                     $rowcode = 'SB-setu1';
                 }
-                $pdf->SetXY(13, $yStart);
+                $pdf->SetXY($startPageX, $yStart);
                 $pdf->Cell($colWidth[0], 5, $rowcode, 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[1], 5, $imprint['imprint_description'], 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[2], 5, QTYOutput($imprint['imprint_qty']), 'LR', 0, 'C', $fillrow);
@@ -1916,7 +1923,7 @@ class Leadquote_model extends MY_Model
             }
         }
         if (!empty($quote['mischrg_label1']) && !empty($quote['mischrg_value1'])) {
-            $pdf->SetXY(13, $yStart);
+            $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->Cell($colWidth[0], 5, 'SB-misc1','LR',0,'L', $fillrow);
             $pdf->Cell($colWidth[1], 5, $quote['mischrg_label1'],'LR', 0,'L', $fillrow);
@@ -1927,7 +1934,7 @@ class Leadquote_model extends MY_Model
             $yStart+=5;
         }
         if (!empty($quote['mischrg_label2']) && !empty($quote['mischrg_value2'])) {
-            $pdf->SetXY(13, $yStart);
+            $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->Cell($colWidth[0], 5, 'SB-misc2','LR',0,'L', $fillrow);
             $pdf->Cell($colWidth[1], 5, $quote['mischrg_label2'],'LR', 0,'L', $fillrow);
@@ -1938,7 +1945,7 @@ class Leadquote_model extends MY_Model
             $yStart+=5;
         }
         if (!empty($shipping)) {
-            $pdf->SetXY(13, $yStart);
+            $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->Cell($colWidth[0], 5, 'SB-ship1','LR',0,'L', $fillrow);
             $pdf->Cell($colWidth[1], 5, $shipping[0]['shipping_name'].' Shippin Charge','LR', 0,'L', $fillrow);
@@ -1949,7 +1956,7 @@ class Leadquote_model extends MY_Model
             $yStart+=5;
         }
         if (!empty($quote['discount_label']) && !empty($quote['discount_value'])) {
-            $pdf->SetXY(13, $yStart);
+            $pdf->SetXY($startPageX, $yStart);
             $pdf->Cell($colWidth[0], 5, 'SB-misc2','LR',0,'L', $fillrow);
             $pdf->Cell($colWidth[1], 5, $quote['mischrg_label2'],'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
@@ -1959,7 +1966,7 @@ class Leadquote_model extends MY_Model
             $yStart+=5;
         }
         // Empty Row
-        $pdf->SetXY(13, $yStart);
+        $pdf->SetXY($startPageX, $yStart);
         $fillrow=($numpp%2)==0 ? 1 : 0;
         $pdf->Cell($colWidth[0], 7, '','LR',0,'L', $fillrow);
         $pdf->Cell($colWidth[1], 7, '','LR', 0,'L', $fillrow);
@@ -1970,14 +1977,13 @@ class Leadquote_model extends MY_Model
         $yStart+=7;
         if (!empty($quote['quote_repcontact'])) {
             $fillrow=($numpp%2)==0 ? 1 : 0;
-            $startMulti = 13 + $colWidth[0];
-            $pdf->SetXY(13 + $colWidth[0], $yStart);
-            $pdf->MultiCell($colWidth[1], 5, $quote['quote_repcontact'],'LR', 0,'L', $fillrow);
+            $pdf->SetXY($startPageX + $colWidth[0], $yStart);
+            $pdf->MultiCell($colWidth[1], 5, $quote['quote_repcontact'],'LR', 'L', $fillrow);
             $multY = $pdf->getY();
             $rowHeight = $multY-$yStart;
-            $pdf->SetXY(13, $yStart);
+            $pdf->SetXY($startPageX, $yStart);
             $pdf->Cell($colWidth[0], $rowHeight, '','LR',0,'L', $fillrow);
-            $pdf->SetXY((13+$colWidth[0]+$colWidth[1]), $yStart);
+            $pdf->SetXY(($startPageX+$colWidth[0]+$colWidth[1]), $yStart);
             $pdf->Cell($colWidth[2], $rowHeight, '', 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], $rowHeight, '', 'LR', 0, 'C', $fillrow);
             $pdf->Cell($colWidth[4], $rowHeight, '', 'LR', 0,'R', $fillrow);
@@ -1988,7 +1994,7 @@ class Leadquote_model extends MY_Model
         if ($yStart < 178) {
             $rowHeight = 178 - $yStart;
         }
-        $pdf->SetXY(13, $yStart);
+        $pdf->SetXY($startPageX, $yStart);
         $fillrow=($numpp%2)==0 ? 1 : 0;
         $pdf->Cell($colWidth[0], $rowHeight, '','LRB',0,'L', $fillrow);
         $pdf->Cell($colWidth[1], $rowHeight, '','LRB', 0,'L', $fillrow);
@@ -1997,7 +2003,7 @@ class Leadquote_model extends MY_Model
         $pdf->Cell($colWidth[4], $rowHeight, '', 'LRB', 0,'R', $fillrow);
         $yStart += $rowHeight;
         // Total
-        $pdf->SetXY(13, $yStart);
+        $pdf->SetXY($startPageX, $yStart);
         $pdf->SetTextColor(0, 0, 128);
         $pdf->SetFont('','B',14);
         $pdf->Cell(111.5, 14, 'Best Prices Guaranteed.  No hidden fees.', 0, 0,'C');
@@ -2005,26 +2011,26 @@ class Leadquote_model extends MY_Model
         $pdf->SetFont('','',12.5);
         $pdf->Cell(40,7,'NJ Sales Tax (0.0%)', 'LB',0,'C');
         $pdf->Cell(30,7, MoneyOutput($quote['sales_tax']),'BR',0,'R');
-        $pdf->SetXY(124.5, $yStart+7);
+        $pdf->SetXY(127.5, $yStart+7);
         $pdf->SetFont('','B',14);
         $pdf->Cell(20,12,'Total:', 'LB',0,'C');
         $pdf->SetFont('','',14);
         $pdf->Cell(50,12, MoneyOutput($quote['quote_total']),'BR',0,'R');
         $yStart += 23;
         $pdf->SetDash(1,1);
-        $pdf->Line(13,$yStart,195, $yStart);
-        $pdf->Line(13, $yStart, 13, $yStart+55);
+        $pdf->Line($startPageX,$yStart,195, $yStart);
+        $pdf->Line($startPageX, $yStart, $startPageX, $yStart+55);
         $pdf->Line(195,$yStart,195, $yStart+55);
-        $pdf->Line(13, $yStart+55, 195, $yStart+55);
+        $pdf->Line($startPageX, $yStart+55, 195, $yStart+55);
         $pdf->SetDash();
         // Bottom title
         $bottomY = $yStart + 57;
         $pdf->SetFont('','',12.05);
-        $pdf->SetXY(13, $bottomY);
+        $pdf->SetXY($startPageX, $bottomY);
         $pdf->MultiCell(195, 5, 'Stressballs.com - 855 Bloomfield Avenue - Clifton, NJ 07012 - USA'.PHP_EOL.'(Tel) 201-210-8700  -  (Fax) 201-604-2688',0,'C');
         // Quick Order
         $quickOrdY = $yStart;
-        $pdf->SetXY(13, $quickOrdY);
+        $pdf->SetXY($startPageX, $quickOrdY);
         $pdf->SetTextColor(0, 0, 128);
         $pdf->SetFont('', 'B', 12);
         $pdf->Cell(55, 10, 'Quick Order Form:', 0, 0, 'C');
@@ -2032,20 +2038,20 @@ class Leadquote_model extends MY_Model
         $pdf->SetFont('', '', 9.5);
         $pdf->Cell(120,6, 'Please correct any incorrect or missing billing or shipping information listed above.');
         $quickOrdY += 9;
-        $pdf->SetXY(13, $quickOrdY);
+        $pdf->SetXY($startPageX, $quickOrdY);
         $pdf->SetFont('', '', 10.5);
         $pdf->SetCellMargin(4);
         $pdf->Cell(35, 6, 'Contact:', 0, 0,'R');
         $pdf->Cell(48,6,'', 1);
         $pdf->Cell(38,6,'Payment Info:',0,0,'R');
         $quickOrdY+=7.6;
-        $pdf->SetXY(13, $quickOrdY);
+        $pdf->SetXY($startPageX, $quickOrdY);
         $pdf->Cell(35, 6, 'Telephone:', 0, 0,'R');
         $pdf->Cell(48,6,'', 1);
         $pdf->Cell(38,6,'Credit Card #:',0,0,'R');
         $pdf->Cell(48,6,'', 1);
         $quickOrdY+=7.6;
-        $pdf->SetXY(13, $quickOrdY);
+        $pdf->SetXY($startPageX, $quickOrdY);
         $pdf->Cell(35, 6, 'Email:', 0, 0,'R');
         $pdf->Cell(48,6,'', 1);
         $pdf->Cell(38,6,'Exp Date:',0,0,'R');
@@ -2053,7 +2059,7 @@ class Leadquote_model extends MY_Model
         $pdf->Cell(21,6,'CVV Code:',0,0,'R');
         $pdf->Cell(18,6,'', 1);
         $quickOrdY+=7.6;
-        $pdf->SetXY(13, $quickOrdY);
+        $pdf->SetXY($startPageX, $quickOrdY);
         $pdf->SetFont('','',9.5);
         $pdf->SetTextColor(0, 0, 128);
         $pdf->Cell(83,6,'All printed orders will receive an art proof to approve.',0,0,'R');

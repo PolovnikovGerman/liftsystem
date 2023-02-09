@@ -2,7 +2,7 @@
     <input type="hidden" id="quotesessionid" value="<?=$quote_session?>"/>
     <input type="hidden" id="quoteleadconnect" value="<?=$lead_id?>"/>
     <input type="hidden" id="quoteleadnumber" value="<?=$quote_id?>"/>
-    <div class="datarow">
+    <div class="datarow quotetemplaterow">
         <div class="quotetemplatetitle">Template:</div>
         <div class="quotetemplateinpt">
             <select data-entity="quotedat" data-item="quote_template" <?=$edit_mode==0 ? 'disabled="true"' : ''?>>

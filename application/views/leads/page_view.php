@@ -64,7 +64,7 @@
                 <h4 class="modal-title" id="leadformModalLabel">New message</h4>
             </div>
             <div class="modal-body <?=$brand=='SB' ? 'stresballstab' : 'relieverstab'?>" style="float: left;"></div>
-            <div class="modal-footer"></div>
+            <div class="modal-footer <?=$brand=='SB' ? 'stresballstab' : 'relieverstab'?>"></div>
         </div>
     </div>
 </div>

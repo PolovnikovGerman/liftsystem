@@ -7,6 +7,11 @@ class Leadquote extends MY_Controller
 
     private $restore_orderdata_error = 'Connection Lost. Please, recall form';
 
+    private $quotetemplates = [
+        'Quote',
+        'Proforma',
+    ];
+
     public function __construct()
     {
         parent::__construct();
@@ -40,18 +45,19 @@ class Leadquote extends MY_Controller
                 $error=$qres['msg'];
                 if ($qres['result']==$this->success_result) {
                     $error = '';
-                    if ($lead_data['brand']=='SR') {
-                        $templlists = [
-                            'Supplier',
-                            'Proforma Invoice',
-                        ];
-                    } else {
-                        $templlists = [
-                            'Stressballs.com',
-                            'Bluetrack Health',
-                            'Proforma Invoice',
-                        ];
-                    }
+//                    if ($lead_data['brand']=='SR') {
+//                        $templlists = [
+//                            'Supplier',
+//                            'Proforma Invoice',
+//                        ];
+//                    } else {
+//                        $templlists = [
+//                            'Stressballs.com',
+//                            'Bluetrack Health',
+//                            'Proforma Invoice',
+//                        ];
+//                    }
+                    $templlists = $this->quotetemplates;
                     $this->load->model('shipping_model');
                     $cnt_options=array(
                         'orderby'=>'sort, country_name',

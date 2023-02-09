@@ -10,12 +10,19 @@
     border-top-right-radius: 7px;
     padding: 7px 15px 0 15px;
 }
+#leadformModal .modal-header.relieverstab {
+    background: #fffc00;
+    color: #000000;
+}
 #leadformModal .modal-content {
     padding: 9px 16px;
 }
 #leadformModal .modal-header .close {
     color: #ffffff!important;
     opacity: 1!important;
+}
+#leadformModal .modal-header.relieverstab .close {
+    color: #000000!important;
 }
 #leadformModal .modal-title {
     font-weight: 600;
@@ -28,10 +35,19 @@
     margin-top: -1px;
     padding: 0 15px 0px 15px;
 }
+#leadformModal .modal-body.relieverstab {
+    background: #fffc00;
+    color: #000000;
+}
 #leadformModal .modal-footer {
     background: #4444ef;
     color: #ffffff;
-    padding: 10px 15px;
+    /* padding: 10px 15px; */
+    padding: 10px 15px 0 15px;
+}
+#leadformModal .modal-footer.relieverstab {
+    background: #fffc00;
+    color: #000000;
 }
 .lead_popup_content {
     background: url('/img/leads/lead_popupbg.png?r=233') no-repeat transparent;
@@ -297,6 +313,10 @@ select.lead_item_select {
     margin-top: 10px;
     padding-bottom: 15px;
 }
+.leadformdataarea.relieverstab {
+    /* background: #fffc00; */
+    color: #FFFFFF;
+}
 .leadformdataarea div {
     float: left;
 }
@@ -310,17 +330,13 @@ select.lead_item_select {
     font-size: 15px;
     font-weight: 600;
     margin-right: 7px;
+    margin-left: 15px;
 }
 .quotesaddnew {
-    background: #ff67f0;
-    color: #000000;
-    font-size: 14px;
-    height: 21px;
-    line-height: 21px;
-    border-radius: 7px;
-    width: 101px;
-    text-align: center;
-    margin-top: 8px;
+    background: url(/img/leadquote/new_quote_btn.png) no-repeat;
+    width: 111px;
+    height: 31px;
+    margin-top: 6px;
     cursor: pointer;
 }
 .quotesdataarea {
@@ -331,6 +347,7 @@ select.lead_item_select {
     padding: 6px;
     color: #000000;
     font-size: 11px;
+    margin-left: 8px;
 }
 .quotesdataarea .datarow  > div {
     height: 22px;
@@ -657,12 +674,17 @@ textarea.lead_othertask {
     width: 126px;
     color: #c1bbbb;
     font-size: 14px;
-    height: 26px;
-    line-height: 26px;
+    height: 32px;
+    line-height: 32px;
     cursor: pointer;
+    margin-left: -27px;
 }
 .savelead {
     float: right;
+    background: url(/img/leads/save_lead_button.png) no-repeat;
+    height: 36px;
+    width: 114px;
+    cursor: pointer;
 }
 table.historytable {
     border: none;
@@ -769,12 +791,12 @@ img.leadcalendbtn:hover {
 .btn-addfile {
     float: right!important;
     color: #fff;
-    font-size: 15px;
-    line-height: 28px;
-    height: 28px!important;
+    font-size: 12px;
+    line-height: 20px;
+    height: 20px!important;
     background: #5b5b5b!important;
     border-radius: 7px;
-    padding: 0 12px;
+    padding: 0 7px 0 9px;
     cursor: pointer;
     width: auto!important;
     margin-top: 5px;
@@ -782,4 +804,5 @@ img.leadcalendbtn:hover {
 .leadquotequestions {
     max-width: 700px;
     margin-top: -162px;
+    margin-left: 12px;
 }
