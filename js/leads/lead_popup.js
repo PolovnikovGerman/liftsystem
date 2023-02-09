@@ -14,8 +14,8 @@ function show_new_lead(lead_id,type, brand) {
             init_lead_cloneemail();
             init_leadpopupedit();
             // Save Button
-            $("a.saveleaddat").unbind('dblclick');
-            $("a.saveleaddat").unbind('click').click(function(){
+            $(".saveleaddat").unbind('dblclick');
+            $(".saveleaddat").unbind('click').click(function(){
                 $("#loader").show();
                 save_lead();
                 $("#loader").hide();
@@ -188,7 +188,7 @@ function init_leadpopupedit() {
         duplicatelead();
     })
     /* Save Button */
-    $("a.saveleaddat").unbind('click').click(function(){
+    $(".saveleaddat").unbind('click').click(function(){
         save_lead();
     })
     $("div.lead_popup_addrequest img").unbind('click').click(function(){

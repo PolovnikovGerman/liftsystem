@@ -12,13 +12,14 @@
     float: right!important;
     position: relative;
     z-index: 7;
-    right: -15px;
+    right: -18px;
+    top: -6px;
 }
 .quotecontentarea {
     float: left;
     width: 612px;
     height: 689px;
-    background: #696969;
+    background: #9a9a9a;
     border-radius: 7px;
     padding: 9px;
 }
@@ -28,6 +29,9 @@
 }
 .quotecontentarea input, .quotecontentarea select  {
     color: #000000;
+}
+.datarow.quotetemplaterow {
+    margin-bottom: -8px;
 }
 .quotetemplatetitle {
     height: 22px;
@@ -48,7 +52,7 @@
     background: #e5e5e5;
 }
 .quoteactionsarea {
-    margin-left: 108px;
+    margin-left: 124px;
     background: #ffffff;
     border: 1px solid #000000;
     border-radius: 7px;
@@ -120,7 +124,7 @@
 }
 .quotedatearea {
     float: right!important;
-    margin-right: 23px;
+    margin-right: 5px;
 }
 .quotedatetitle {
     color: #525252!important;
@@ -147,7 +151,18 @@
     height: 21px;
     line-height: 21px;
     text-align: center;
+    font-size: 11px;
 }
+.quoteitemtablehead.relieverstab div {
+    background: #fffc00;
+    color: #000000!important;
+    height: 21px;
+    line-height: 21px;
+    text-align: center;
+    font-size: 11px;
+    border-bottom: 1px solid #000000;
+}
+
 .quoteitemtablehead .itemnumber {
     width: 72px;
 }
@@ -408,7 +423,7 @@ input.quoteshipadrother {
     border-left: 2px solid #000000;
     border-bottom: 2px solid #000000;
     width: 285px;
-    padding-bottom: 2px;
+    padding-bottom: 4px;
     padding-left: 4px;
 }
 .quoteshipaddreszipcode {
@@ -468,7 +483,7 @@ input.quoteleadrushcost {
     height: 66px;
     background: #f5f5f5;
     border: 2px solid #000000;
-    margin: 5px 4px 4px 4px;
+    margin: 5px 4px 3px 4px;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -514,6 +529,7 @@ input.quoteshipcostvalue {
     border-bottom: 2px solid #000000;
     background: #dadada;
     margin-top: 9px;
+    padding-top: 2px;
     width: 244px;
 }
 .quotetaxlabelveiw {
@@ -643,6 +659,7 @@ textarea.quotenote {
     line-height: 23px;
     float: right!important;
     margin-right: 6px;
+    font-size: 17px;
     font-weight: 600;
     color: #ffffff!important;
 }

@@ -70,12 +70,12 @@
             </div>
         </div>
     </div>
-    <div class="leadformdataarea">
+    <div class="leadformdataarea <?=$data['brand']=='SR' ? 'relieverstab' : ''?>">
         <div class="datarow">
             <div class="quotesarea">
                 <div class="datarow">
                     <div class="quotesarea_title">Quotes:</div>
-                    <div class="quotesaddnew">New Quote</div>
+                    <div class="quotesaddnew">&nbsp;</div>
                 </div>
                 <div class="datarow">
                     <div class="quotesdataarea"><?=$lead_quotes?></div>
@@ -84,7 +84,7 @@
             <div id="quotepopupdetails" class="quotepopupdetails">
 
             </div>
-            <div class="quotepopupclose" style="display: none;"><img src="/img/vendors/close_popup.png"/></div>
+            <div class="quotepopupclose" style="display: none;"><img src="/img/leadquote/close_quote_btn.png"/></div>
             <div class="specificnotearea">
                 <div class="lead_popup_notetitle">Notes: <span>(specific concerns, dates, things to remember)</span></div>
                 <div class="lead_popup_noteinpt">
