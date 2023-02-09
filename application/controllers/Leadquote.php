@@ -179,18 +179,19 @@ class Leadquote extends MY_Controller
                     $error = '';
                     // Prepare content
                     $quotedata = $qres['quote'];
-                    if ($quotedata['brand']=='SR') {
-                        $templlists = [
-                            'Supplier',
-                            'Proforma Invoice',
-                        ];
-                    } else {
-                        $templlists = [
-                            'Stressballs.com',
-                            'Bluetrack Health',
-                            'Proforma Invoice',
-                        ];
-                    }
+//                    if ($quotedata['brand']=='SR') {
+//                        $templlists = [
+//                            'Supplier',
+//                            'Proforma Invoice',
+//                        ];
+//                    } else {
+//                        $templlists = [
+//                            'Stressballs.com',
+//                            'Bluetrack Health',
+//                            'Proforma Invoice',
+//                        ];
+//                    }
+                    $templlists = $this->quotetemplates;
                     $this->load->model('shipping_model');
                     $cnt_options=array(
                         'orderby'=>'sort, country_name',
@@ -1049,18 +1050,19 @@ class Leadquote extends MY_Controller
                     $error = '';
                     // Prepare content
                     $quotedata = $res['quote'];
-                    if ($quotedata['brand']=='SR') {
-                        $templlists = [
-                            'Supplier',
-                            'Proforma Invoice',
-                        ];
-                    } else {
-                        $templlists = [
-                            'Stressballs.com',
-                            'Bluetrack Health',
-                            'Proforma Invoice',
-                        ];
-                    }
+//                    if ($quotedata['brand']=='SR') {
+//                        $templlists = [
+//                            'Supplier',
+//                            'Proforma Invoice',
+//                        ];
+//                    } else {
+//                        $templlists = [
+//                            'Stressballs.com',
+//                            'Bluetrack Health',
+//                            'Proforma Invoice',
+//                        ];
+//                    }
+                    $templlists = $this->quotetemplates;
                     $this->load->model('shipping_model');
                     $cnt_options=array(
                         'orderby'=>'sort, country_name',
