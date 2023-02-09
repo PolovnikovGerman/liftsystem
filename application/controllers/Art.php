@@ -888,7 +888,7 @@ class Art extends MY_Controller {
             } else {
                 $artwork['ordernum_data']=$this->load->view('artpage/artwork_ordernum_view',$artwork,TRUE);
             }
-            $artwork['items_list']=$this->artwork_model->get_items_list();
+            $artwork['items_list']=$this->artwork_model->get_items_list($data['brand']);
             $artwork['other_item_label']='';
             $artwork['callpage']=$callpage;
             if ($artwork['item_name']=='Other') {

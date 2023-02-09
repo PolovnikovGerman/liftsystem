@@ -672,9 +672,16 @@ Class Artwork_model extends MY_Model
     }
 
     /* List of Items */
-    public function get_items_list() {
+    public function get_items_list($brand='ALL') {
         $this->db->select('*');
         $this->db->from('v_itemsearch');
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where_in('brand', [$brand,'']);
+            } else {
+                $this->db->where_in('brand', ['SB','BT','']);
+            }
+        }
         $this->db->order_by('item_number');
         $res=$this->db->get()->result_array();
         $out=array();

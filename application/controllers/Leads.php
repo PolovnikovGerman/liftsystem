@@ -1146,6 +1146,27 @@ class Leads extends My_Controller {
         show_404();
     }
 
+    // Lead Quotes
+    public function leadquotesdata() {
+        if ($this->isAjax()) {
+            $error = '';
+            $mdata = '';
+            $postdata = $this->input->post();
+            $options = [];
+            if (isset($postdata['brand'])) {
+                $options['brand'] = $postdata['brand'];
+            }
+            $page = ifset($postdata,'offset',0);
+            $limit = ifset($postdata, 'limit', 100);
+            $options['limit'] = $limit;
+            $options['offset'] = $page * $limit;
+            $this->load->model('leadquote_model');
+            $lists = $this->leadquote_model->leadquotes_lists($options);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     private function _prepare_leadsview($brand) {
         $ldat=array();
@@ -1296,6 +1317,8 @@ class Leads extends My_Controller {
     }
 
     private function _prepare_leadquotes_view($brand) {
+        $this->load->model('leadquote_model');
+        $totals = $this->leadquote_model->leadquotes_count(['brand' => $brand]);
         $datqs=[
             'perpage' => $this->config->item('quotes_perpage'),
             'order_by' => 'date_add',
@@ -1303,9 +1326,10 @@ class Leads extends My_Controller {
             'cur_page' => 0,
             'brand' => $brand,
             'replica'=>'',
+            'total' => $totals,
         ];
 
-        $search=array('replica'=>'','brand'=>$brand);
+        // $search=array('replica'=>'','brand'=>$brand);
         // $this->load->model('customform_model');
         // $datqs['total_rec']=$this->customform_model->get_count_forms($search);
 
