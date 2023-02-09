@@ -299,7 +299,11 @@ class Leadquote_model extends MY_Model
     public function get_newquote_number($brand) {
         $this->db->select('count(quote_id) as cnt, max(quote_number) as numb');
         $this->db->from('ts_quotes');
-        $this->db->where('brand', $brand);
+        if ($brand=='SR') {
+            $this->db->where('brand', $brand);
+        } else {
+            $this->db->where_in('brand', ['SB','BT']);
+        }
         $res = $this->db->get()->row_array();
         if ($res['cnt']==0) {
             if ($brand=='SR') {
@@ -2106,8 +2110,24 @@ class Leadquote_model extends MY_Model
         $this->db->select('q.*, u.user_name, u.user_initials');
         $this->db->from('ts_quotes q');
         $this->db->join('users u','u.user_id=q.create_user');
+        if (ifset($options,'brand', 'ALL')!=='ALL') {
+            if ($options['brand']=='SR') {
+                $this->db->where('q.brand', $options['brand']);
+            } else {
+                $this->db->where_in('q.brand', ['SB', 'BT']);
+            }
+        }
+        $limit = ifset($options, 'limit', 0);
+        if ($limit > 0) {
+            $offset = ifset($options,'offset',0);
+            $this->db->limit($limit, $offset);
+        }
         $lists = $this->db->get()->result_array();
-        $out = [];
-        return $out;
+//        $out = [];
+//        foreach ($lists as $list) {
+//
+//        }
+//        return $out;
+        return $lists;
     }
 }

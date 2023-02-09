@@ -1150,7 +1150,7 @@ class Leads extends My_Controller {
     public function leadquotesdata() {
         if ($this->isAjax()) {
             $error = '';
-            $mdata = '';
+            $mdata = [];
             $postdata = $this->input->post();
             $options = [];
             if (isset($postdata['brand'])) {
@@ -1162,6 +1162,7 @@ class Leads extends My_Controller {
             $options['offset'] = $page * $limit;
             $this->load->model('leadquote_model');
             $lists = $this->leadquote_model->leadquotes_lists($options);
+            $mdata['content'] = $this->load->view('leadquotes/list_view', ['lists' => $lists,], TRUE);
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
