@@ -181,10 +181,12 @@
     text-overflow: ellipsis;
 }
 .leadquote_tabledat .datarow .leadquote_pdf {
-    /* width: 41px; */
     width: 33px;
     padding-top: 2px;
     border-right: 1px solid #000000;
+}
+.leadquote_tabledat .datarow .leadquote_pdf.extended {
+    width: 42px;
 }
 .leadquote_tabledat .datarow .leadquote_pdf > .leadquote_pdflnk {
     float: unset;

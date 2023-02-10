@@ -1,9 +1,5 @@
 function init_leadquotes() {
     initLeadQuotesPagination();
-    // $(".leadquote_tabledat").scrollpanel({
-    //     'prefix' : 'sp-'
-    // });
-    // leftmenu_alignment();
 }
 
 function initLeadQuotesPagination() {
@@ -41,13 +37,15 @@ function pageLeadQuotesCallback(page_index) {
     $("#loader").show();
     $.post(url,params,function(response){
         if (response.errors=='') {
-            $("div.leadquote_tabledat").empty().html(response.data.content);
+            $("#leadquote_tabledat").empty().html(response.data.content);
             $("#curpageleadquote").val(page_index);
             // init_leadpage_manage();
-            $(".leadquote_tabledat").scrollpanel({
-                 'prefix' : 'sp-'
-            });
-            leftmenu_alignment();
+            if (parseInt($('#leadquotestotal').val()) > 25) {
+                $(".leadquote_tabledat").scrollpanel({
+                    'prefix' : 'sp-'
+                });
+                leftmenu_alignment();
+            }
             $("#loader").hide();
         } else {
             $("#loader").hide();

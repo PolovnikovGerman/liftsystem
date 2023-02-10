@@ -1,3 +1,4 @@
+<div class="leadquote_tabledat">
 <?php $numpp = 0;?>
 <?php foreach ($lists as $list) { ?>
     <div class="datarow <?=$numpp%2==0 ? 'whitedatarow' : 'greydatarow'?>">
@@ -10,9 +11,10 @@
         <div class="leadquote_item"><?=$list['item_name']?></div>
         <div class="leadquote_revenue"><?=empty($list['quote_total']) ? '' : MoneyOutput($list['quote_total'])?></div>
         <div class="leadquote_replica"><?=$list['replica']?></div>
-        <div class="leadquote_pdf" data-quote="<?=$list['quote_id']?>">
+        <div class="leadquote_pdf <?=$cnt < 25 ? 'extended' : ''?>" data-quote="<?=$list['quote_id']?>">
             <div class="leadquote_pdflnk">pdf</div>
         </div>
     </div>
     <?php $numpp++; ?>
 <?php } ?>
+</div>
