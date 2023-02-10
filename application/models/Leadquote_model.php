@@ -2093,29 +2093,41 @@ class Leadquote_model extends MY_Model
 
     // List of quotes
     public function leadquotes_count($options) {
-        $this->db->select('count(quote_id) as cnt');
-        $this->db->from('ts_quotes');
-        if (ifset($options,'brand', 'ALL')!=='ALL') {
-            if ($options['brand']=='SR') {
-                $this->db->where('brand', $options['brand']);
-            } else {
-                $this->db->where_in('brand', ['SB', 'BT']);
-            }
-        }
-        $res = $this->db->get()->row_array();
-        return $res['cnt'];
-    }
-
-    public function leadquotes_lists($options) {
-        $this->db->select('q.quote_id, q.lead_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.shipping_company, q.shipping_contact, q.billing_company, q.billing_contact, u.user_name, u.user_initials');
+        $this->db->select('count(q.quote_id) as cnt');
         $this->db->from('ts_quotes q');
-        $this->db->join('users u','u.user_id=q.create_user');
+        $this->db->join('ts_leads l','l.lead_id=q.lead_id');
         if (ifset($options,'brand', 'ALL')!=='ALL') {
             if ($options['brand']=='SR') {
                 $this->db->where('q.brand', $options['brand']);
             } else {
                 $this->db->where_in('q.brand', ['SB', 'BT']);
             }
+        }
+        if (ifset($options,'search','')!=='') {
+            $this->db->like('concat(coalesce(l.lead_company,\'\'),coalesce(l.lead_customer,\'\'),coalesce(l.lead_phone,\'\'),q.quote_number)', $options['search']);
+        } if (!empty(ifset($options,'replica',''))) {
+            $this->db->where('q.create_user', $options['replica']);
+        }
+        $res = $this->db->get()->row_array();
+        return $res['cnt'];
+    }
+
+    public function leadquotes_lists($options) {
+        $this->db->select('q.quote_id, q.lead_id, q.quote_date, q.brand, q.quote_number, q.quote_total, l.lead_company, l.lead_customer, u.user_name, u.user_initials');
+        $this->db->from('ts_quotes q');
+        $this->db->join('users u','u.user_id=q.create_user');
+        $this->db->join('ts_leads l','l.lead_id=q.lead_id');
+        if (ifset($options,'brand', 'ALL')!=='ALL') {
+            if ($options['brand']=='SR') {
+                $this->db->where('q.brand', $options['brand']);
+            } else {
+                $this->db->where_in('q.brand', ['SB', 'BT']);
+            }
+        }
+        if (ifset($options,'search','')!=='') {
+            $this->db->like('concat(coalesce(l.lead_company,\'\'),coalesce(l.lead_customer,\'\'),coalesce(l.lead_phone,\'\'),q.quote_number)', $options['search']);
+        } if (!empty(ifset($options,'replica',''))) {
+            $this->db->where('q.create_user', $options['replica']);
         }
         $limit = ifset($options, 'limit', 0);
         if ($limit > 0) {
@@ -2144,15 +2156,12 @@ class Leadquote_model extends MY_Model
             }
             $list['customer'] = '';
             // q.shipping_company, q.shipping_contact, q.billing_company, q.billing_contact
-            if (!empty($list['shipping_company'])) {
-                $list['customer'] = $list['shipping_company'];
-            } elseif (!empty($list['shipping_contact'])) {
-                $list['customer'] = $list['shipping_contact'];
-            } elseif (!empty($list['billing_company'])) {
-                $list['customer'] = $list['billing_company'];
-            } elseif (!empty($list['billing_contact'])) {
-                $list['customer'] = $list['billing_contact'];
+            if (!empty($list['lead_company'])) {
+                $list['customer'] = $list['lead_company'];
+            } elseif (!empty($list['lead_customer'])) {
+                $list['customer'] = $list['lead_customer'];
             }
+
             $replic = '';
             if (!empty($list['user_initials'])) {
                 $replic = $list['user_initials'];
@@ -2162,11 +2171,6 @@ class Leadquote_model extends MY_Model
             $list['replica'] = $replic;
             $out[] = $list;
         }
-//        $testdata = $out[0];
-//        for($i=1; $i<60; $i++) {
-//            $testdata['customer'] = 'Customer '.$i;
-//            $out[] = $testdata;
-//        }
         return $out;
     }
 }

@@ -1159,10 +1159,28 @@ class Leads extends My_Controller {
             $limit = ifset($postdata, 'limit', 100);
             $options['limit'] = $limit;
             $options['offset'] = $page * $limit;
+            $options['search'] = ifset($postdata, 'search', '');
+            $options['replica'] = ifset($postdata, 'replica','');
             $this->load->model('leadquote_model');
             $lists = $this->leadquote_model->leadquotes_lists($options);
             $cntlist = count($lists);
             $mdata['content'] = $this->load->view('leadquotes/list_view', ['lists' => $lists, 'cnt' => $cntlist], TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function leadquotessearch() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = '';
+            $postdata = $this->input->post();
+            $options = [];
+            $options['brand']  = ifset($postdata, 'brand','ALL');
+            $options['search'] = ifset($postdata, 'search', '');
+            $options['replica'] = ifset($postdata, 'replica','');
+            $this->load->model('leadquote_model');
+            $mdata['total'] = $this->leadquote_model->leadquotes_count($options);
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -1329,11 +1347,16 @@ class Leads extends My_Controller {
             'replica'=>'',
             'total' => $totals,
         ];
-
-        // $search=array('replica'=>'','brand'=>$brand);
-        // $this->load->model('customform_model');
-        // $datqs['total_rec']=$this->customform_model->get_count_forms($search);
-
+        $active=1;
+        $usrrepl=$this->user_model->get_user_leadreplicas($active);
+        $replicas = [];
+        foreach ($usrrepl as $row) {
+            $replicas[] = [
+                'id' => $row['user_id'],
+                'value' => 'Only '.$row['user_name'],
+            ];
+        }
+        $datqs['replicas'] = $replicas;
         $content=$this->load->view('leadquotes/page_view',$datqs,TRUE);
         return $content;
 
