@@ -92,9 +92,22 @@
     border-bottom: 1px solid #000000;
     border-left: 1px solid #000000;
     width: 660px;
-    overflow: hidden;
+/*    overflow: hidden; */
     margin-bottom: 12px;
 }
+.leadquote_tabledat .sp-scrollbar {
+    width: 10px;
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+.leadquote_tabledat .sp-scrollbar .sp-thumb {
+    background-color: #aaa;
+    transition: height 0.2s ease-in-out;
+}
+.leadquote_tabledat .sp-scrollbar.active .sp-thumb {
+    background-color: #c1c1c1;
+}
+
 .leadquote_tabledat .datarow div {
     height: 21px;
     line-height: 21px;

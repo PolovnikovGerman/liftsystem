@@ -44,6 +44,10 @@ function pageLeadQuotesCallback(page_index) {
             $("div.leadquote_tabledat").empty().html(response.data.content);
             $("#curpageleadquote").val(page_index);
             // init_leadpage_manage();
+            $(".leadquote_tabledat").scrollpanel({
+                 'prefix' : 'sp-'
+            });
+            leftmenu_alignment();
             $("#loader").hide();
         } else {
             $("#loader").hide();

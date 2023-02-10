@@ -1839,7 +1839,7 @@ class Leadquote_model extends MY_Model
         $pdf->SetTextColor(255,255,255);
         $pdf->Cell(20,6,'Quote #',0,0,'C',true);
         $pdf->SetTextColor(0, 0, 0);
-        $pdf->Cell(22,6,'SB-'.$quote['quote_number'],0,0,'R');
+        $pdf->Cell(22,6,'QB-'.str_pad($quote['quote_number'],5,'0', STR_PAD_LEFT),0,0,'R');
         $pdf->SetXY(162, 36);
         $pdf->Cell(12, 6, 'Date:');
         $pdf->SetXY(174, 36);
@@ -2107,7 +2107,7 @@ class Leadquote_model extends MY_Model
     }
 
     public function leadquotes_lists($options) {
-        $this->db->select('q.*, u.user_name, u.user_initials');
+        $this->db->select('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.shipping_company, q.shipping_contact, q.billing_company, q.billing_contact, u.user_name, u.user_initials');
         $this->db->from('ts_quotes q');
         $this->db->join('users u','u.user_id=q.create_user');
         if (ifset($options,'brand', 'ALL')!=='ALL') {
@@ -2123,11 +2123,45 @@ class Leadquote_model extends MY_Model
             $this->db->limit($limit, $offset);
         }
         $lists = $this->db->get()->result_array();
-//        $out = [];
-//        foreach ($lists as $list) {
-//
-//        }
-//        return $out;
-        return $lists;
+
+        $out=[];
+        foreach ($lists as $list) {
+            if ($list['brand']=='SR') {
+                $qnumber = 'QB-'.str_pad($list['quote_number'],5,'0',STR_PAD_LEFT);
+            } else {
+                $qnumber = str_pad($list['quote_number'],5,'0',STR_PAD_LEFT).'-QS';
+            }
+            $list['qnumber'] = $qnumber;
+            $this->db->select('sum(qc.item_qty) as item_qty, group_concat(qc.item_description) as item_name, count(qc.quote_itemcolor_id) as cnt');
+            $this->db->from('ts_quote_items qi');
+            $this->db->join('ts_quote_itemcolors qc','qc.quote_item_id=qi.quote_item_id');
+            $this->db->where('qi.quote_id', $list['quote_id']);
+            $itemres = $this->db->get()->row_array();
+            $list['item_name'] = $list['item_qty'] = '';
+            if ($itemres['cnt'] > 0) {
+                $list['item_name'] = $itemres['item_name'];
+                $list['item_qty'] = $itemres['item_qty'];
+            }
+            $list['customer'] = '';
+            // q.shipping_company, q.shipping_contact, q.billing_company, q.billing_contact
+            if (!empty($list['shipping_company'])) {
+                $list['customer'] = $list['shipping_company'];
+            } elseif (!empty($list['shipping_contact'])) {
+                $list['customer'] = $list['shipping_contact'];
+            } elseif (!empty($list['billing_company'])) {
+                $list['customer'] = $list['billing_company'];
+            } elseif (!empty($list['billing_contact'])) {
+                $list['customer'] = $list['billing_contact'];
+            }
+            $replic = '';
+            if (!empty($list['user_initials'])) {
+                $replic = $list['user_initials'];
+            } else {
+                $replic = $list['user_name'];
+            }
+            $list['replica'] = $replic;
+            $out[] = $list;
+        }
+        return $out;
     }
 }
