@@ -2107,7 +2107,7 @@ class Leadquote_model extends MY_Model
     }
 
     public function leadquotes_lists($options) {
-        $this->db->select('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.shipping_company, q.shipping_contact, q.billing_company, q.billing_contact, u.user_name, u.user_initials');
+        $this->db->select('q.quote_id, q.lead_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.shipping_company, q.shipping_contact, q.billing_company, q.billing_contact, u.user_name, u.user_initials');
         $this->db->from('ts_quotes q');
         $this->db->join('users u','u.user_id=q.create_user');
         if (ifset($options,'brand', 'ALL')!=='ALL') {
@@ -2127,9 +2127,9 @@ class Leadquote_model extends MY_Model
         $out=[];
         foreach ($lists as $list) {
             if ($list['brand']=='SR') {
-                $qnumber = 'QB-'.str_pad($list['quote_number'],5,'0',STR_PAD_LEFT);
-            } else {
                 $qnumber = str_pad($list['quote_number'],5,'0',STR_PAD_LEFT).'-QS';
+            } else {
+                $qnumber = 'QB-'.str_pad($list['quote_number'],5,'0',STR_PAD_LEFT);
             }
             $list['qnumber'] = $qnumber;
             $this->db->select('sum(qc.item_qty) as item_qty, group_concat(qc.item_description) as item_name, count(qc.quote_itemcolor_id) as cnt');

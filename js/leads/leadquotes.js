@@ -56,5 +56,34 @@ function pageLeadQuotesCallback(page_index) {
 }
 
 function init_leadquotes_list() {
-    
+    $(".leadquote_pdf").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'quote_id', value: $(this).data('quote')});
+        var url = '/leadquote/quotepdfdoc';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                var newWin = window.open(response.data.docurl,"Quoute PDF","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+            } else {
+                show_error(response);
+            }
+        },'json')
+    });
+    $(".leadquote_number").unbind('click').click(function(){
+        var lead = $(this).data('lead');
+        var quote = $(this).data('quote');
+        var url="/leadmanagement/edit_lead";
+        $.post(url, {'lead_id':lead}, function(response){
+            if (response.errors=='') {
+                $("#leadformModalLabel").empty().html(response.data.title);
+                $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+                $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+                $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
+                init_lead_cloneemail();
+                init_leadpopupedit();
+                leadquote_edit(quote);
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
 }
