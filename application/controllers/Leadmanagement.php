@@ -87,7 +87,7 @@ class Leadmanagement extends MY_Controller
                 $replic=$this->load->view('leadpopup/replicalock_view',array('repl'=>$lead_replic),TRUE);
             } else {
                 if ($this->USR_ROLE=='admin' || $this->USR_ROLE=='masteradmin' || $this->USR_ID==$lead_data['create_user']) {
-                    $replic=$this->load->view('leadpopup/replicaselect_view',array('repl'=>$lead_replic),TRUE);
+                    $replic=$this->load->view('leadpopup/replicaselect_view',array('repl'=>$lead_replic, 'brand' => $lead_data['brand']),TRUE);
                 } else {
                     $replic=$this->load->view('leadpopup/replicareadonly_view',array('repl'=>$lead_replic),TRUE);
                 }
@@ -348,7 +348,7 @@ class Leadmanagement extends MY_Controller
                     $replic=$this->load->view('leadpopup/replicalock_view',array('repl'=>$lead_replic),TRUE);
                 } else {
                     if ($this->USR_ROLE=='admin' || $this->USR_ROLE=='masteradmin') {
-                        $replic=$this->load->view('leadpopup/replicaselect_view',array('repl'=>$lead_replic),TRUE);
+                        $replic=$this->load->view('leadpopup/replicaselect_view',array('repl'=>$lead_replic,'brand' => $lead_data['brand']),TRUE);
                     } else {
                         $replic=$this->load->view('leadpopup/replicareadonly_view',array('repl'=>$lead_replic),TRUE);
                     }
@@ -520,7 +520,7 @@ class Leadmanagement extends MY_Controller
                     usersession($session_id, $lead_replic);
                     $save_av=1;
                     /* Get Replicas */
-                    $replic=$this->load->view('leadpopup/replicaselect_view',array('repl'=>$lead_replic,'edit'=>$save_av),TRUE);
+                    $replic=$this->load->view('leadpopup/replicaselect_view',array('repl'=>$lead_replic,'edit'=>$save_av,'brand' => $lead['brand']),TRUE);
                     /* History */
                     $lead_history=array();
                     $history=$this->load->view('leadpopup/history_view',array('data'=>$lead_history,'cnt'=>count($lead_history)),TRUE);
@@ -676,6 +676,7 @@ class Leadmanagement extends MY_Controller
             $mdata=array();
             $postdata=$this->input->post();
             $session_id=$postdata['session_id'];
+            $brand = $postdata['brand'];
             // Restore data from session
             $lead_usr=usersession($session_id);
             $error='Connect lost. Reload Form';
@@ -694,7 +695,7 @@ class Leadmanagement extends MY_Controller
                     $lead_replic=$new_lead;
                     usersession($session_id, $lead_replic);
                     // Build New content
-                    $mdata['content']=$this->load->view('leadpopup/replicaselect_view',array('repl'=>$lead_replic),TRUE);
+                    $mdata['content']=$this->load->view('leadpopup/replicaselect_view',array('repl'=>$lead_replic, 'brand' => $brand),TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -745,6 +746,7 @@ class Leadmanagement extends MY_Controller
             $error='Connect lost. Reload Form';
             $postdata=$this->input->post();
             $session_id=$postdata['session_id'];
+            $brand = $postdata['brand'];
             unset($postdata['session_id']);
             $lead_usr=usersession($session_id);
             if (!empty($lead_usr)) {
@@ -760,7 +762,7 @@ class Leadmanagement extends MY_Controller
                 }
                 usersession($session_id, $lead_usr);
                 // Build New content
-                $mdata['content']=$this->load->view('leadpopup/replicaselect_view',array('repl'=>$lead_usr),TRUE);
+                $mdata['content']=$this->load->view('leadpopup/replicaselect_view',array('repl'=>$lead_usr, 'brand' => $brand),TRUE);
 
             }
             $this->ajaxResponse($mdata, $error);

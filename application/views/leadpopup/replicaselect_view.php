@@ -9,6 +9,11 @@
 <?php } ?>
 </div>
 <!--<div class="lead_popup_replicausrend">&nbsp;</div>-->
-<div class="lead_popup_addreplica">
-    <img alt="Add" src="/img/leads/addnew_btn.png">
+<div class="lead_popup_addreplica <?=$brand=='SR' ? 'relieverstab' : ''?>">
+    <?php if ($brand=='SR') {?>
+        <img alt="Add" src="/img/leads/add_replica_relivers.png"/>
+    <?php } else { ?>
+        <img alt="Add" src="/img/leads/addnew_btn.png">
+    <?php } ?>
+
 </div>

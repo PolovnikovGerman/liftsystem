@@ -237,6 +237,7 @@ function init_leadpopupedit() {
             var data=new Array();
             data.push({name: 'user', value: user});
             data.push({name: 'session_id', value: $("#session").val()});
+            data.push({name: 'brand', value: $("#brand").val()})
             var url=mainurl+"/lead_remove_rep";
             $.post(url,data, function(response){
                 if (response.errors=='') {
@@ -307,6 +308,7 @@ function addnewleaderpl() {
         $("#artNextModal").modal('hide');
     } else {
         params.push({name:'session_id', value: $("#session").val()});
+        params.push({name: 'brand', value: $("#brand").val()});
         var url=mainurl+"/lead_addrep_save";
         $.post(url, params, function(response){
             if (response.errors=='') {
