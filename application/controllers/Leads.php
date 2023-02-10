@@ -1162,7 +1162,8 @@ class Leads extends My_Controller {
             $options['offset'] = $page * $limit;
             $this->load->model('leadquote_model');
             $lists = $this->leadquote_model->leadquotes_lists($options);
-            $mdata['content'] = $this->load->view('leadquotes/list_view', ['lists' => $lists,], TRUE);
+            $cntlist = count($lists);
+            $mdata['content'] = $this->load->view('leadquotes/list_view', ['lists' => $lists, 'cnt' => $cntlist], TRUE);
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
