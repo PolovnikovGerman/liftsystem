@@ -11,7 +11,7 @@
     padding: 7px 15px 0 15px;
 }
 #leadformModal .modal-header.relieverstab {
-    background: #fffc00;
+    background: #ffeb00;
     color: #000000;
 }
 #leadformModal .modal-content {
@@ -36,7 +36,7 @@
     padding: 0 15px 0px 15px;
 }
 #leadformModal .modal-body.relieverstab {
-    background: #fffc00;
+    background: #ffeb00;
     color: #000000;
 }
 #leadformModal .modal-footer {
@@ -46,7 +46,7 @@
     padding: 10px 15px 0 15px;
 }
 #leadformModal .modal-footer.relieverstab {
-    background: #fffc00;
+    background: #ffeb00;
     color: #000000;
 }
 .lead_popup_content {
@@ -149,6 +149,9 @@ select.leadpopstatus {
     width: 64px;
     cursor: pointer;
     margin-top: -4px;
+}
+.lead_popup_addreplica.relieverstab {
+    margin-left: 5px;
 }
 input.usrrepliccheck {
     float: left;
@@ -322,8 +325,9 @@ select.lead_item_select {
     padding-bottom: 15px;
 }
 .leadformdataarea.relieverstab {
-    /* background: #fffc00; */
-    color: #FFFFFF;
+    background: #dbdcdf;
+    color: #000000;
+    border: 1px solid #808080;
 }
 .leadformdataarea div {
     float: left;
@@ -356,6 +360,10 @@ select.lead_item_select {
     color: #000000;
     font-size: 11px;
     margin-left: 8px;
+}
+.quotesdataarea.relieverstab {
+    background: #f1f1f1;
+    border: 1px solid #808080;
 }
 .quotesdataarea .datarow  > div {
     height: 22px;
@@ -554,6 +562,10 @@ textarea.lead_othertask {
     padding-top: 5px;
     margin-top: 5px;
 }
+.lead_popup_quescontent.relieverstab {
+    background: #f1f1f1;
+    border: 1px solid #808080;
+}
 .lead_popup_questrow {
     clear: both;
     float: left;
@@ -664,6 +676,10 @@ textarea.lead_othertask {
     padding-left: 5px;
     padding-top: 5px;
     width: 421px;
+}
+.lead-onlineprofcontent.relieverstab {
+    background: #f1f1f1;
+    border: 1px solid #808080;
 }
 .lead_onlineproofrow {
     font-size: 12px;

@@ -78,7 +78,7 @@
                     <div class="quotesaddnew">&nbsp;</div>
                 </div>
                 <div class="datarow">
-                    <div class="quotesdataarea"><?=$lead_quotes?></div>
+                    <div class="quotesdataarea <?=$data['brand']=='SR' ? 'relieverstab' : ''?>"><?=$lead_quotes?></div>
                 </div>
             </div>
             <div id="quotepopupdetails" class="quotepopupdetails">
@@ -113,7 +113,11 @@
                 </div>
                 <div class="datarow">
                     <div class="lead_popup_addrequest">
-                        <img src="/img/leads/add_proofrequest_btn.png" alt="Add Proof Request"/>
+                        <?php if ($data['brand']=='SR') { ?>
+                            <img src="/img/leads/new_reliversproof_btn.png" alt="Add Proof Request"/>
+                        <?php } else { ?>
+                            <img src="/img/leads/add_proofrequest_btn.png" alt="Add Proof Request"/>
+                        <?php } ?>
                     </div>
                     <div class="lead_popup_arttitle">Art</div>
                     <div class="lead_popup_arttitle">Redr</div>
@@ -121,7 +125,7 @@
                     <div class="lead_popup_arttitle">Pro</div>
                     <div class="lead_popup_arttitle">Apr</div>
                 </div>
-                <div class="lead-onlineprofcontent"><?=$onlineproofs?></div>
+                <div class="lead-onlineprofcontent <?=$data['brand']=='SR' ? 'relieverstab' : ''?>"><?=$onlineproofs?></div>
             </div>
             <div class="lead_attachsarea">
                 <div class="datarow">
@@ -138,7 +142,7 @@
 
             <div class="lead_popup_questarea">
                 <div class="lead_popup_questitle">Questions:</div>
-                <div class="lead_popup_quescontent"><?=$questions?></div>
+                <div class="lead_popup_quescontent <?=$data['brand']=='SR' ? 'relieverstab' : ''?>"><?=$questions?></div>
             </div>
 
         </div>
