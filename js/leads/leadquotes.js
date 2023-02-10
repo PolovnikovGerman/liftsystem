@@ -46,10 +46,15 @@ function pageLeadQuotesCallback(page_index) {
                 });
                 leftmenu_alignment();
             }
+            init_leadquotes_list();
             $("#loader").hide();
         } else {
             $("#loader").hide();
             show_error(response);
         }
     },'json');
+}
+
+function init_leadquotes_list() {
+    
 }
