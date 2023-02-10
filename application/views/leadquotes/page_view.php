@@ -16,9 +16,9 @@
         <div class="quotereplicas">
             <select id="quotareplica">
                 <option value="" <?=$replica=='' ? 'selected="selected"' : ''?>>View All</option>
-                <option value="sean">Only Sean</option>
-                <option value="sage">Only Sage</option>
-                <option value="shanequa">Only Shanequa</option>
+                <?php foreach ($replicas as $replica) { ?>
+                    <option value="<?=$replica['id']?>"><?=$replica['value']?></option>
+                <?php } ?>
             </select>
         </div>
         <div class="leadqutespaginator"></div>

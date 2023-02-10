@@ -33,6 +33,8 @@ function pageLeadQuotesCallback(page_index) {
     params.push({name:'maxval', value: $('#leadquotestotal').val()});
     params.push({name:'offset', value: page_index});
     params.push({name: 'brand', value: $("#leadquotesbrand").val()});
+    params.push({name: 'search', value: $("#leadquotessearch").val()});
+    params.push({name: 'replica', value: $("#quotareplica").val()});
     var url='/leads/leadquotesdata';
     $("#loader").show();
     $.post(url,params,function(response){
@@ -56,6 +58,22 @@ function pageLeadQuotesCallback(page_index) {
 }
 
 function init_leadquotes_list() {
+    // Search
+    $("#leadquotessearch").keypress(function(event){
+        if (event.which == 13) {
+            search_leadquotes();
+        }
+    });
+    $(".leadquotessearchall").unbind('click').click(function (){
+        search_leadquotes();
+    });
+    $(".leadquotessearchclear").unbind('click').click(function (){
+        $("#leadquotessearch").val('');
+        search_leadquotes();
+    });
+    $("#quotareplica").unbind('change').change(function (){
+        search_leadquotes();
+    });
     $(".leadquote_pdf").unbind('click').click(function (){
         var params = new Array();
         params.push({name: 'quote_id', value: $(this).data('quote')});
@@ -86,4 +104,20 @@ function init_leadquotes_list() {
             }
         }, 'json');
     });
+}
+
+function search_leadquotes() {
+    var params = new Array();
+    params.push({name: 'brand', value: $("#leadquotesbrand").val()});
+    params.push({name: 'search', value: $("#leadquotessearch").val()});
+    params.push({name: 'replica', value: $("#quotareplica").val()});
+    var url='/leads/leadquotessearch';
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $('#leadquotestotal').val(response.data.total);
+            initLeadQuotesPagination();
+        } else {
+            show_error(response);
+        }
+    },'json');
 }
