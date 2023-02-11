@@ -2033,6 +2033,7 @@ class Leadquote_model extends MY_Model
         $pdf->SetXY($startPageX, $bottomY);
         $pdf->MultiCell(195, 5, 'Stressballs.com - 855 Bloomfield Avenue - Clifton, NJ 07012 - USA'.PHP_EOL.'(Tel) 201-210-8700  -  (Fax) 201-604-2688',0,'C');
         // Quick Order
+        $pdf->SetCellMargin(3);
         $quickOrdY = $yStart;
         $pdf->SetXY($startPageX, $quickOrdY);
         $pdf->SetTextColor(0, 0, 128);
@@ -2059,9 +2060,10 @@ class Leadquote_model extends MY_Model
         $pdf->Cell(35, 6, 'Email:', 0, 0,'R');
         $pdf->Cell(48,6,'', 1);
         $pdf->Cell(38,6,'Exp Date:',0,0,'R');
-        $pdf->Cell(18,6,'', 1);
+        $pdf->Cell(15,6,'', 1);
+        $pdf->SetCellMargin(2);
         $pdf->Cell(21,6,'CVV Code:',0,0,'R');
-        $pdf->Cell(18,6,'', 1);
+        $pdf->Cell(12,6,'', 1);
         $quickOrdY+=7.6;
         $pdf->SetXY($startPageX, $quickOrdY);
         $pdf->SetFont('','',9.5);
