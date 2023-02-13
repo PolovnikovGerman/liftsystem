@@ -61,14 +61,14 @@ Class Shipping_model extends MY_Model
     }
 
     // Get Rush list
-    public function get_rushlist($item_id, $startdate=0) {
+    public function get_rushlist($item_id, $startdate=0, $defstart = '') {
         if ($startdate==0) {
             $start=date("Y-m-d");// current date
             $start_time=strtotime($start);
         } else {
             $start_time=$startdate;
         }
-        $start_time=$startdate;
+        // $start_time=$startdate;
         $proof_date = $start_time;
         if ($this->_chk_business_day($start_time, $item_id)==0) {
             $proof_date=$this->_get_business_date($start_time, 1, $item_id);
@@ -164,10 +164,23 @@ Class Shipping_model extends MY_Model
                     }
                 }
                 if ($prefix>=0) {
-                    if ($i==$leads['item_lead_a']) {
-                        $current=1;
-                        $current_rush=$prefix;
+                    if ($current==0) {
+                        if (empty($defstart)) {
+                            if ($i==$leads['item_lead_a']) {
+                                $current = 1;
+                                $current_rush = $prefix;
+                            }
+                        } else {
+                            if ($rushterm==$defstart) {
+                                $current = 1;
+                                $current_rush = $prefix;
+                            }
+                        }
                     }
+                    // if ($i==$leads['item_lead_a']) {
+                    //    $current=1;
+                    //    $current_rush=$prefix;
+                    // }
                     $rush[]=array(
                         'id'=>$dat.'-'.$prefix,
                         'list'=>date('D M d',$dat).' ('.($prefix==0 ? '' : '$'.$prefix.' - ').''.$rushterm.')',
@@ -179,6 +192,10 @@ Class Shipping_model extends MY_Model
                 }
             }
             $cnt++;
+        }
+        if ($current==0) {
+            $rush[0]['current'] = 1;
+
         }
         return array('rush'=>$rush,'current_rush'=>$current_rush);
     }
@@ -1177,6 +1194,22 @@ Class Shipping_model extends MY_Model
         $res['result']=$this->success_result;
         $res['ships']=$outrate;
         return $res;
+    }
+
+    public function get_statebycode($state_code, $country_id=0) {
+        $out=['result' => $this->error_result, 'msg' => 'State Not Found'];
+        $this->db->select('*');
+        $this->db->from('sb_states');
+        $this->db->where('state_code', $state_code);
+        if (!empty($country_id)) {
+            $this->db->where('country_id', $country_id);
+        }
+        $state = $this->db->get()->row_array();
+        if (ifset($state, 'state_id', 0) > 0) {
+            $out['result'] = $this->success_result;
+            $out['data'] = $state;
+        }
+        return $out;
     }
 
 }

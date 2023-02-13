@@ -2223,8 +2223,8 @@ class Leadquote_model extends MY_Model
                     $out['contacts'] = $orderres['contacts'];
                     $out['order_items'] = $orderres['order_items'];
                     $out['shipping'] = $orderres['shipping'];
-                    $out['shipping_address'] = [];
-                    $out['order_billing'] = [];
+                    $out['shipping_address'] = $orderres['shipping_address'];
+                    $out['order_billing'] = $orderres['order_billing'];
                     $out['charges'] = [];
 
                     $out['payments'] = [];
@@ -2309,6 +2309,7 @@ class Leadquote_model extends MY_Model
         $data['is_shipping']=0;
         $data['showbilladdress']=1;
         $data['brand'] = $quote['brand'];
+        $data['quote_id'] = $quote['quote_id'];
         $order_customer = '';
         if (!empty($lead['lead_company'])) {
             $order_customer = $lead['lead_company'];
@@ -2361,6 +2362,7 @@ class Leadquote_model extends MY_Model
         $quoteitems = $this->db->get()->result_array();
         $itemid = 1;
         $item_id = 0;
+        $totalitemqty = 0;
         foreach ($quoteitems as $quoteitem) {
             if ($quoteitem['item_id'] < 0) {
                 $itemdata = $this->orders_model->get_newitemdat($quoteitem['item_id']);
@@ -2419,6 +2421,7 @@ class Leadquote_model extends MY_Model
                     'qtyinput_title' => '',
                 ];
                 $colorid++;
+                $totalitemqty += $quotecolor['item_qty'];
             }
             // Imprints
             $this->db->select('*');
@@ -2504,6 +2507,15 @@ class Leadquote_model extends MY_Model
             $itemid++;
         }
         // Shipping
+        $curmeth = '';
+        if (!empty($quote['lead_time'])) {
+            $lead_time = json_decode($quote['lead_time'], true);
+            foreach ($lead_time as $timerow) {
+                if ($timerow['current']==1) {
+                    $curmeth = $timerow['name'];
+                }
+            }
+        }
         $this->load->model('shipping_model');
         $rush = [];
         if (!empty($item_id)) {
@@ -2513,6 +2525,9 @@ class Leadquote_model extends MY_Model
                 $rush=$this->shipping_model->get_rushlist_blank($item_id);
             }
         }
+        $shipping = [];
+        $shipping['order_shipping_id'] = -1;
+        $shipping['event_date'] = '';
         $shipping['rush_list']=serialize($rush);
         $shipping['out_rushlist']=$rush;
 
@@ -2529,7 +2544,108 @@ class Leadquote_model extends MY_Model
             }
         }
         $out['shipping']=$shipping;
+        // Shipping address
+        // Get shipping costs
+        $this->db->select('*');
+        $this->db->from('ts_quote_shippings');
+        $this->db->where('quote_id', $quote['quote_id']);
+        $this->db->order_by('active', 'desc');
+        $rates = $this->db->get()->result_array();
+        $shipcosts=[];
+        $rateid = 1;
+        $arrivedate = 0;
+        $shiprate = 0;
+        foreach ($rates as $rate) {
+            $shipcosts[] = [
+                'order_shipcost_id' => $rateid*(-1),
+                'shipping_method' => $rate['shipping_name'],
+                'shipping_cost' => $rate['shipping_rate'],
+                'arrive_date' => $rate['shipping_date'],
+                'current' => $rate['active'],
+                'delflag' => 0,
+            ];
+            $rateid++;
+            if ($rate['active']==1) {
+                $arrivedate = $rate['shipping_date'];
+                $shiprate = $rate['shipping_rate'];
+            }
+        }
+        $packages = [];
+        $packages[] = [
+            'order_shippack_id' => -1,
+            'order_shipaddr_id' => -1,
+            'deliver_service' => 'UPS',
+            'track_code' => '',
+            'track_date' => 0,
+            'send_date' => 0,
+            'delivered' => 0,
+            'delivery_address' => '',
+            'delflag' => 0,
+            'senddata' => 0,
+        ];
+        $shipping_address=[];
+        $shipstate = NULL;
+        if (!empty($quote['shipping_state'])) {
+            $stateres = $this->shipping_model->get_statebycode($quote['shipping_state'], $quote['shipping_country']);
+            if ($stateres['result']==$this->success_result) {
+                $shipstate = $stateres['data']['state_id'];
+            }
+        }
+        $shipping_address[] = [
+            'order_shipaddr_id' => -1,
+            'country_id' => $quote['shipping_country'],
+            'address' => '',
+            'ship_contact' => $quote['shipping_contact'],
+            'ship_company' => $quote['shipping_company'],
+            'ship_address1' => $quote['shipping_address1'],
+            'ship_address2' => $quote['shipping_address2'],
+            'city' => $quote['shipping_city'],
+            'state_id' => $shipstate,
+            'zip' => $quote['shipping_zip'],
+            'item_qty' => $totalitemqty,
+            'ship_date' => $quote['rush_days'],
+            'arrive_date' => $arrivedate,
+            'shipping' => $shiprate,
+            'sales_tax' => $quote['sales_tax'],
+            'resident' => 0,
+            'ship_blind' => 0,
+            'taxview' => $quote['taxview'],
+            'taxcalc' => $quote['taxview'],
+            'tax' => $quote['sales_tax'],
+            'tax_exempt' => $quote['tax_exempt'],
+            'tax_reason' => $quote['tax_reason'],
+            'tax_exemptdoc' => '',
+            'tax_exemptdocsrc' => '',
+            'tax_exemptdocid' => 1,
+            'shipping_costs' => $shipcosts,
+            'out_shipping_method' => '',
+            'out_zip' => '',
+            'out_country' => '',
+            'packages' => $packages,
+        ];
+        $out['shipping_address'] = $shipping_address;
+        $billstate = NULL;
+        if (!empty($quote['billing_state'])) {
+            $stateres = $this->shipping_model->get_statebycode($quote['billing_state'], $quote['billing_country']);
+            if ($stateres['result']==$this->success_result) {
+                $billstate = $stateres['data']['state_id'];
+            }
+        }
 
+        $billing = [
+            'order_billing_id' => -1,
+            'order_id' => -1,
+            'customer_name' => $quote['billing_contact'],
+            'company' => $quote['billing_company'],
+            'customer_ponum' => '',
+            'address_1' => $quote['billing_address1'],
+            'address_2' => $quote['billing_address2'],
+            'city' => $quote['billing_city'],
+            'state_id' => $billstate,
+            'zip' => $quote['billing_zip'],
+            'country_id' => $quote['billing_country'],
+        ];
+        $out['order_billing'] = $billing;
         // Artwork
         $artfld=$this->db->list_fields('ts_artworks');
         $art=array();
