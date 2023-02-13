@@ -871,8 +871,8 @@ class Leadquote extends MY_Controller
                     $quote = $quotesession['quote'];
                     $shippings = $quotesession['shipping'];
                     $lead_time = '';
-                    if (!empty($quotedata['lead_time'])) {
-                        $lead_times = json_decode($quotedata['lead_time'], true);
+                    if (!empty($quote['lead_time'])) {
+                        $lead_times = json_decode($quote['lead_time'], true);
                         $timeoptions = [
                             'lead_times' => $lead_times,
                             'edit_mode' => 1,
@@ -1195,6 +1195,82 @@ class Leadquote extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $mdata['docurl'] = $res['docurl'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function quoteaddorder() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $error = 'Empty Quote';
+            $quote_id = ifset($postdata, 'quote_id', 0);
+            if (!empty($quote_id)) {
+                $res = $this->leadquote_model->addneworder($quote_id, $this->USR_ID);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    // Prepare content
+                    $leadsession='leadorder'.uniq_link(15);
+                    // Generate new session
+                    $options=array();
+                    $options['current_page']=ifset($postdata,'page', 'art_tasks');
+                    $options['leadsession']=$leadsession;
+                    $orddata=$res['order'];
+
+                    $options['order_id'] = 0;
+                    $options['order_head'] = $this->load->view('leadorderdetails/head_order_view', $orddata, TRUE);
+                    $data = $this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, 1);
+                    $order_data = $this->load->view('leadorderdetails/order_content_view', $data, TRUE);
+                    $options['order_data'] = $order_data;
+                    $options['leadsession'] = $leadsession;
+                    $content = $this->load->view('leadorderdetails/placeorder_menu_edit', $options, TRUE);
+                    // $mdata['content']=$content;
+                    $head_options = [
+                        'order_head' => $this->load->view('leadorderdetails/head_placeorder_edit', $orddata, TRUE),
+                        'prvorder' => 0,
+                        'nxtorder' => 0,
+                        'order_id' => 0,
+                    ];
+                    $header = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
+                    $locking = '';
+                    if ($res['order_system_type']=='old') {
+                        $leadorder=array(
+                            'order'=>$orddata,
+                            'payments'=>$res['payments'],
+                            'artwork'=>$res['artwork'],
+                            'artlocations'=>$res['artlocations'],
+                            'artproofs'=>$res['proofdocs'],
+                            'message'=>$res['message'],
+                            'order_system'=>$res['order_system_type'],
+                            'locrecid'=>$locking,
+                        );
+                    } else {
+                        $leadorder=array(
+                            'order'=>$orddata,
+                            'payments'=>$res['payments'],
+                            'artwork'=>$res['artwork'],
+                            'artlocations'=>$res['artlocations'],
+                            'artproofs'=>$res['proofdocs'],
+                            'message'=>$res['message'],
+                            'contacts'=>$res['contacts'],
+                            'order_items'=>$res['order_items'],
+                            'order_system'=>$res['order_system_type'],
+                            'shipping'=>$res['shipping'],
+                            'shipping_address'=>$res['shipping_address'],
+                            'billing'=>$res['order_billing'],
+                            'charges'=>$res['charges'],
+                            'delrecords'=>array(),
+                            'locrecid'=>$locking,
+                        );
+                    }
+                    usersession($leadsession, $leadorder);
+                    $mdata['content']=$content;
+                    $mdata['header']=$header;
+
                 }
             }
             $this->ajaxResponse($mdata, $error);
