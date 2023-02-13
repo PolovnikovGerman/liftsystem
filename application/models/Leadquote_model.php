@@ -2506,13 +2506,14 @@ class Leadquote_model extends MY_Model
             ];
             $itemid++;
         }
+        $data['order_qty'] = $totalitemqty;
         // Shipping
-        $curmeth = '';
+        $quoterush = 0;
         if (!empty($quote['lead_time'])) {
             $lead_time = json_decode($quote['lead_time'], true);
             foreach ($lead_time as $timerow) {
                 if ($timerow['current']==1) {
-                    $curmeth = $timerow['name'];
+                    $quoterush = $timerow['price'];
                 }
             }
         }
@@ -2525,32 +2526,48 @@ class Leadquote_model extends MY_Model
                 $rush=$this->shipping_model->get_rushlist_blank($item_id);
             }
         }
+        if ($quoterush!=0 && count($rush) > 0) {
+            $rushidx = 0;
+            foreach ($rush as $rushrow) {
+                if ($rushrow['current']==1) {
+                    $rush[$rushidx]['current'] = 0;
+                }
+                $rushidx++;
+            }
+            $rushidx = 0;
+            foreach ($rush as $rushrow) {
+                if ($rushrow['price']==$quoterush) {
+                    $rush[$rushidx]['current'] = 1;
+                    break;
+                }
+                $rushidx++;
+            }
+        }
+        // Recalc dates
+
         $shipping = [];
         $shipping['order_shipping_id'] = -1;
         $shipping['event_date'] = '';
+        $shipping['out_eventdate'] = $this->empty_htmlcontent;
         $shipping['rush_list']=serialize($rush);
         $shipping['out_rushlist']=$rush;
-
         foreach ($rush['rush'] as $row) {
             if ($row['current']==1) {
                 $shipping['shipdate']=$row['date'];
                 $shipping['shipdate_orig']=$row['date'];
+                $shipping['out_shipdate'] = date('m/d/y', $row['date']);
                 $shipping['shipdate_class'] = '';
                 $shipping['rush_price']=$row['price'];
                 $shipping['rush_idx']=$row['id'];
                 $data['shipdate']=$row['date'];
-                // $out['current']=$row['id'];
+                $data['order_rush'] = $row['price'];
                 $shipping['arriveclass'] = '';
             }
         }
-        $out['shipping']=$shipping;
-        // Shipping address
         // Get shipping costs
-        $this->db->select('*');
-        $this->db->from('ts_quote_shippings');
-        $this->db->where('quote_id', $quote['quote_id']);
-        $this->db->order_by('active', 'desc');
-        $rates = $this->db->get()->result_array();
+        $rates = $this->_shiptimesrecalc($quote, $quoteitems, $data['shipdate']);
+
+        // Shipping address
         $shipcosts=[];
         $rateid = 1;
         $arrivedate = 0;
@@ -2566,7 +2583,10 @@ class Leadquote_model extends MY_Model
             ];
             $rateid++;
             if ($rate['active']==1) {
-                $arrivedate = $rate['shipping_date'];
+                $shipping['arrive_date'] = $rate['shipping_date'];
+                $shipping['arrive_date_orig'] = $rate['shipping_date'];
+                $shipping['out_arrivedate'] = date('m/d/y', $rate['shipping_date']);
+                $data['shipping'] = $rate['shipping_rate'];
                 $shiprate = $rate['shipping_rate'];
             }
         }
@@ -2583,6 +2603,7 @@ class Leadquote_model extends MY_Model
             'delflag' => 0,
             'senddata' => 0,
         ];
+        $out['shipping']=$shipping;
         $shipping_address=[];
         $shipstate = NULL;
         if (!empty($quote['shipping_state'])) {
@@ -2668,4 +2689,41 @@ class Leadquote_model extends MY_Model
         $out['result'] = $this->success_result;
         return $out;
     }
+
+    private function _shiptimesrecalc($quote, $items,  $shipdate) {
+        $this->load->model('orders_model');
+        $this->load->model('leadorder_model');
+        $itemid = 0;
+        foreach ($items as $item) {
+            if ($item['item_id'] < 0) {
+                $itemdata = $this->orders_model->get_newitemdat($item['item_id']);
+            } else {
+                $itemdata = $this->leadorder_model->_get_itemdata($item['item_id']);
+            }
+            $items[$itemid]['vendor_zipcode'] = ifset($itemdata, 'vendor_zipcode', $this->config->item('zip'));
+            $itemid++;
+        }
+        $this->db->select('*');
+        $this->db->from('ts_quote_shippings');
+        $this->db->where('quote_id', $quote['quote_id']);
+        $this->db->order_by('active', 'desc');
+        $rates = $this->db->get()->result_array();
+
+        $this->load->model('shipping_model');
+        $res = $this->shipping_model->count_quoteshiprates($items, $quote, $shipdate, $quote['brand']);
+        if ($res['result']==$this->success_result) {
+            $ships = $res['ships'];
+            foreach ($ships as $ship) {
+                $rateid = 0;
+                foreach ($rates as $rate) {
+                    if ($rate['shipping_code']==$ship['code']) {
+                        $rates[$rateid]['shipping_date'] = $ship['DeliveryDate'];
+                    }
+                    $rateid++;
+                }
+            }
+        }
+        return $rates;
+    }
+
 }
