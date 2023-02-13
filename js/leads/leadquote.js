@@ -349,7 +349,7 @@ function init_leadquotes_content() {
             $("#loader").show();
             $.post(url, params, function(response){
                 if (response.errors=='') {
-                    $(".quoteitemsarea[data-quoteitem]").empty();
+                    $(".quoteitemsarea[data-quoteitem='"+item+"']").empty();
                     $(".quoteleadtime").empty().html(response.data.leadtime);
                     $(".quoteshippingcostarea").empty().html(response.data.shippingview);
                     $(".quotecommondatainpt[data-item='sales_tax']").val(response.data.tax);
@@ -747,5 +747,26 @@ function init_leadquotes_view() {
                 show_error(response);
             }
         },'json')
+    });
+    $(".quoteactionaddorder.active").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'quote_id', value: $(this).data('quote')});
+        var url = '/leadquote/quoteaddorder';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#leadformModal").modal('hide');
+
+                $("#artModalLabel").empty().html(response.data.header);
+                $("#artModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artModal").find('div.modal-dialog').css('width','1004px');
+                $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
+                $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
+                init_onlineleadorder_edit();
+                init_rushpast();
+
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
 }

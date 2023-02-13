@@ -317,7 +317,7 @@ class Template
             $shipping_address=$res['shipping_address'];
 
             $rushallow=$edit;
-            $rushlist=$shipping['out_rushlist'];
+            $rushlist=ifset($shipping, 'out_rushlist', []);
             $rushoptions=array(
                 'edit'=>$edit,
             );
@@ -414,7 +414,7 @@ class Template
             $orddata['shiptax']='&nbsp;';
             $billing=$res['order_billing'];
 
-            $country_id=$billing['country_id'];
+            $country_id=ifset($billing, 'country_id', '');
             $states=$this->CI->shipping_model->get_country_states($country_id);
             $billoptions=array(
                 'billing'=>$billing,
