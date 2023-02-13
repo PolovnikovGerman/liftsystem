@@ -385,6 +385,10 @@ select.lead_item_select {
     margin-right: 6px;
     cursor: pointer;
 }
+.leadquotenumberlist.orderattach {
+    background: #1e1efc;
+    color: #FFFFFF;
+}
 .leadquotenumberlist:hover, .leadquotenumberlist.active {
     background: #ff73ed!important;
 }

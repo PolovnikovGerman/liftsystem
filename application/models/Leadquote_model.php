@@ -24,10 +24,12 @@ class Leadquote_model extends MY_Model
 
     // Get list of quotes, related with lead
     public function get_leadquotes($lead_id) {
-        $this->db->select('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, sum(i.item_qty) as item_qty, group_concat(qc.item_description) as item_name');
+        $this->db->select('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, sum(qc.item_qty) as item_qty');
+        $this->db->select('group_concat(distinct(qc.item_description)) as item_name, count(o.order_id) as orders');
         $this->db->from('ts_quotes q');
         $this->db->join('ts_quote_items i','i.quote_id=q.quote_id','left ');
         $this->db->join('ts_quote_itemcolors qc','qc.quote_item_id=i.quote_item_id','left');
+        $this->db->join('ts_leadquote_orders o','q.quote_id = o.quote_id','left');
         $this->db->where('q.lead_id', $lead_id);
         $this->db->group_by('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total');
         return $this->db->get()->result_array();
@@ -2160,15 +2162,19 @@ class Leadquote_model extends MY_Model
                 $qnumber = 'QB-'.str_pad($list['quote_number'],5,'0',STR_PAD_LEFT);
             }
             $list['qnumber'] = $qnumber;
-            $this->db->select('sum(qc.item_qty) as item_qty, group_concat(qc.item_description) as item_name, count(qc.quote_itemcolor_id) as cnt');
+            $this->db->select('sum(qc.item_qty) as item_qty, group_concat(distinct(qc.item_description)) as item_name, count(qc.quote_itemcolor_id) as cnt');
+            $this->db->select('count(o.order_id) as orders');
             $this->db->from('ts_quote_items qi');
             $this->db->join('ts_quote_itemcolors qc','qc.quote_item_id=qi.quote_item_id');
+            $this->db->join('ts_leadquote_orders o','qi.quote_id = o.quote_id','left');
             $this->db->where('qi.quote_id', $list['quote_id']);
             $itemres = $this->db->get()->row_array();
             $list['item_name'] = $list['item_qty'] = '';
+            $list['orders'] = 0;
             if ($itemres['cnt'] > 0) {
                 $list['item_name'] = $itemres['item_name'];
                 $list['item_qty'] = $itemres['item_qty'];
+                $list['orders'] = $itemres['orders'];
             }
             $list['customer'] = '';
             // q.shipping_company, q.shipping_contact, q.billing_company, q.billing_contact
