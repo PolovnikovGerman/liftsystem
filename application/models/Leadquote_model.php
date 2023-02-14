@@ -1803,7 +1803,7 @@ class Leadquote_model extends MY_Model
 
     private function _prepare_quotesbdoc($quote, $items, $shipping) {
         $out = ['result' => $this->error_result, 'msg' => 'Error during create PDF doc'];
-        $filname = 'quote_QB-'.$quote['quote_number'].'.pdf';
+        $filname = 'quote_QB-'.$quote['quote_number'].'_t'.time().'.pdf';
         define('FPDF_FONTPATH', FCPATH.'font');
         $this->load->library('fpdf/fpdfeps');
         // Logo
