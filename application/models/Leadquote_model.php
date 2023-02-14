@@ -83,7 +83,7 @@ class Leadquote_model extends MY_Model
                 'billing_city' => '',
                 'billing_state' => '',
                 'quote_note' => '',
-                'quote_repcontact' => $usrdat['email_signature'],
+                'quote_repcontact' => $lead_data['brand']=='SR' ? $usrdat['contactnote_relievers'] : $usrdat['contactnote_bluetrack'],
                 'items_subtotal' => 0,
                 'imprint_subtotal' => 0,
                 'quote_total' => 0,

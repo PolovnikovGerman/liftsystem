@@ -94,6 +94,18 @@
                     </div>
                 </div>
                 <div class="input_row">
+                    <div class="labeltxt">Lead Contact Info (Bluetrack):</div>
+                    <div class="inputval">
+                        <textarea class="emailsignature userpersdata" data-name="contactnote_bluetrack" id="contactnote_bluetrack"><?=$user['contactnote_bluetrack']?></textarea>
+                    </div>
+                </div>
+                <div class="input_row">
+                    <div class="labeltxt">Lead Contact Info (StressRelievers):</div>
+                    <div class="inputval">
+                        <textarea class="emailsignature userpersdata" data-name="contactnote_relievers" id="contactnote_relievers"><?=$user['contactnote_relievers']?></textarea>
+                    </div>
+                </div>
+                <div class="input_row">
                     <div class="labeltxt">Profit View:</div>
                     <div class="inputval">
                         <select id="profit_view" data-name="profit_view" class="timerestict userpersdata">
