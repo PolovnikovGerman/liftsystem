@@ -782,7 +782,30 @@ function init_leadquotes_view() {
             $("#artNextModal").on('hidden.bs.modal', function (e) {
                 $(document.body).addClass('modal-open');
             })
-
+            $(".quoteemail_send").unbind('click').click(function(){
+                var quote = $(this).data('quote');
+                send_leadquote(quote);
+            });
         },'json');
     });
+}
+
+function send_leadquote(quote) {
+    var params = new Array();
+    params.push({name: 'quote_id', value: quote});
+    params.push({name: 'quoteemail_from', value: $("#quoteemail_from").val()});
+    params.push({name: 'quoteemail_to', value: $("#quoteemail_to").val()});
+    params.push({name: 'quoteemail_subject', value: $("#quoteemail_subject").val()});
+    params.push({name: 'quoteemail_message', value: $("#quoteemail_message").val()});
+    var url = '/leadquote/quotesend';
+    $("#loader").show();
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $("#loader").hide();
+            $("#artNextModal").modal('hide')
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
 }

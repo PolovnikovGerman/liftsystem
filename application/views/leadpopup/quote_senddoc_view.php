@@ -21,7 +21,7 @@
         <div class="quoteemail_label">Message:</div>
     </div>
     <div class="datarow">
-        <textarea class="quoteemail_message"><?=$message?></textarea>
+        <textarea class="quoteemail_message" id="quoteemail_message"><?=$message?></textarea>
     </div>
     <div class="datarow">
         <div class="quoteemail_send" data-quote="<?=$quote_id?>">
