@@ -1841,21 +1841,27 @@ class Leadquote_model extends MY_Model
         // Quote Title
         $pdf->SetXY(153, 29);
         $pdf->SetFont('','',12.5);
-        $pdf->setFillColor(17, 100, 238);
+        $pdf->setFillColor(0, 0, 75);
         $pdf->SetTextColor(255,255,255);
         $pdf->Cell(20,6,'Quote #',0,0,'C',true);
         $pdf->SetTextColor(0, 0, 0);
+        $pdf->SetFont('','B',12.5);
         $pdf->Cell(22,6,str_pad($quote['quote_number'],5,'0', STR_PAD_LEFT).'-QS',0,0,'R');
+        $pdf->SetFont('','',12.5);
         $pdf->SetXY(162, 36);
         $pdf->Cell(12, 6, 'Date:');
         $pdf->SetXY(174, 36);
-        $pdf->Cell(20,6,date('m/d/Y', $quote['quote_date']),0,0,'R');
-        $pdf->SetXY(160, 44);
+        $pdf->SetFont('','I',10);
+        $pdf->Cell(20,6,date('n/j/Y', $quote['quote_date']),0,0,'R');
+        $pdf->SetXY(160, 40);
+        $pdf->SetFont('','I',9);
+        $pdf->Cell(34,5,'Quote is only valid for 30 days',0,0,'R');
+        $pdf->SetXY(160, 46);
         $pdf->setFillColor(128, 128, 128);
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetFont('','',12.046857);
         $pdf->Cell(15, 6, 'Rep',1,0,'C',true);
-        $pdf->SetXY(178, 44);
+        $pdf->SetXY(178, 46);
         $pdf->SetTextColor(0,0,0);
         $pdf->Cell(15,6, $quote['usrrepl'],1,0,'C');
         // Billing Address
