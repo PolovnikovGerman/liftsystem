@@ -834,3 +834,42 @@ img.leadcalendbtn:hover {
     margin-top: -162px;
     margin-left: 12px;
 }
+/* Send email popup */
+.quoteemail_content {
+    clear: both;
+    float: left;
+    margin-top: 9px;
+    width: 421px;
+    border: 1.5px solid #000;
+    padding: 12px;
+    border-radius: 7px;
+}
+.quoteemail_content div {
+    float: left;
+}
+.quoteemail_content .datarow {
+    margin-bottom: 7px;
+}
+.quoteemail_label {
+    height: 26px;
+    line-height: 26px;
+    width: 70px;
+}
+.quoteemail_data {
+
+}
+input.quoteemail_input {
+    height: 26px;
+    line-height: 26px;
+    padding-left: 4px;
+    width: 323px;
+}
+textarea.quoteemail_message {
+    width: 394px;
+    height: 116px;
+    resize: none;
+}
+.quoteemail_send {
+    float: right!important;
+    cursor: pointer;
+}

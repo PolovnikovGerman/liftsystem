@@ -1277,4 +1277,43 @@ class Leadquote extends MY_Controller
         }
         show_404();
     }
+
+    public function quotepreparesend() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $error = 'Empty Lead #';
+            if (ifset($postdata,'quote_id',0) > 0) {
+                $res = $this->leadquote_model->prepare_emailmessage($postdata['quote_id']);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $options = [
+                        'from' => $res['brand']=='SR' ? $this->config->item('customer_notification_sender') : $this->config->item('customer_notification_relievers'),
+                        'to' => $res['email'],
+                        'subject' => 'Quote '.$res['quote_number'],
+                        'message' => $res['signature'],
+                        'quote_id' => $postdata['quote_id'],
+                    ];
+                    $mdata['content'] = $this->load->view('leadpopup/quote_senddoc_view', $options,TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function quotesend() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $res = $this->leadquote_model->send_emailmessage($postdata);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }

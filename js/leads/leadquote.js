@@ -752,10 +752,11 @@ function init_leadquotes_view() {
         var params = new Array();
         params.push({name: 'quote_id', value: $(this).data('quote')});
         var url = '/leadquote/quoteaddorder';
+        $("#loader").show();
         $.post(url, params, function (response) {
             if (response.errors=='') {
+                $("#loader").hide();
                 $("#leadformModal").modal('hide');
-
                 $("#artModalLabel").empty().html(response.data.header);
                 $("#artModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artModal").find('div.modal-dialog').css('width','1004px');
@@ -763,10 +764,25 @@ function init_leadquotes_view() {
                 $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
                 init_onlineleadorder_edit();
                 init_rushpast();
-
             } else {
+                $("#loader").hide();
                 show_error(response);
             }
+        },'json');
+    });
+    $(".quoteactionsend.active").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'quote_id', value: $(this).data('quote')});
+        var url = '/leadquote/quotepreparesend';
+        $.post(url, params, function (response){
+            $("#artNextModal").find('div.modal-dialog').css('width','455px');
+            $("#artNextModal").find('.modal-title').empty().html('Send PDF');
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            })
+
         },'json');
     });
 }
