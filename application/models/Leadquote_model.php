@@ -2054,10 +2054,10 @@ class Leadquote_model extends MY_Model
         $pdf->SetXY($startPageX, $quickOrdY);
         $pdf->SetTextColor(0, 0, 128);
         $pdf->SetFont('', 'B', 12);
-        $pdf->Cell(55, 10, 'Quick Order Form:', 0, 0, 'C');
+        $pdf->Cell(55, 10, 'Quick Order Form: Y-'.$quickOrdY, 0, 0, 'C');
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('', '', 9.5);
-        $pdf->Cell(120,6, 'Please correct any incorrect or missing billing or shipping information listed above. Y - '.$quickOrdY);
+        $pdf->Cell(120,6, 'Please correct any incorrect or missing billing or shipping information listed above.');
         $quickOrdY += 9;
         $pdf->SetXY($startPageX, $quickOrdY);
         $pdf->SetFont('', '', 10.5);
