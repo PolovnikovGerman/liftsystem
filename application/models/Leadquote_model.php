@@ -2732,4 +2732,66 @@ class Leadquote_model extends MY_Model
         return $rates;
     }
 
+    public function prepare_emailmessage($quote_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Quote Not Found'];
+        $this->db->select('q.quote_id, q.quote_number, q.brand, l.lead_company, l.lead_customer, l.lead_mail, u.email_signature');
+        $this->db->from('ts_quotes q');
+        $this->db->join('ts_leads l','l.lead_id = q.lead_id');
+        $this->db->join('users u','u.user_id=q.create_user');
+        $this->db->where('q.quote_id', $quote_id);
+        $res = $this->db->get()->row_array();
+        if (ifset($res,'quote_id',0)==$quote_id) {
+            $out['result'] = $this->success_result;
+            $out['email'] = $res['lead_mail'];
+            if ($res['brand']=='SR') {
+                $out['quote_number'] = $res['quote_number'].'-QS';
+            } else {
+                $out['quote_number'] = 'QB-'.$res['quote_number'];
+            }
+            $out['signature'] = $res['email_signature'];
+            $out['brand'] = $res['brand'];
+        }
+        return $out;
+    }
+
+    public function send_emailmessage($data) {
+        $out=['result' => $this->error_result, 'msg' => 'Empty Quote #'];
+        $quote_id = ifset($data, 'quote_id',0);
+        $email_from = ifset($data,'quoteemail_from','');
+        $email_to = ifset($data,'quoteemail_to','');
+        $subject = ifset($data,'quoteemail_subject','');
+        $message = ifset($data, 'quoteemail_message', '');
+        if (!empty($quote_id)) {
+            $out['msg'] = 'Empty From Email';
+            if (!empty($email_from) && valid_email_address($email_from)) {
+                $out['msg'] = 'Empty / incorrect To Email';
+                if (!empty($email_to) && valid_email_address($email_to)) {
+                    $out['msg'] = 'Empty Subject';
+                    if (!empty($subject)) {
+                        // Create attachment
+                        $docres = $this->prepare_quotedoc($quote_id);
+                        $out['msg'] = $docres['msg'];
+                        if ($docres['result']==$this->success_result) {
+                            $out['result'] = $this->success_result;
+                            $docurl = $this->config->item('upload_path_preload').str_replace($this->config->item('pathpreload'),'',$docres['docurl']);
+                            // Send message
+                            $this->load->library('email');
+                            $config = $this->config->item('email_setup');
+                            $config['mailtype'] = 'text';
+                            $this->email->initialize($config);
+                            $this->email->from($email_from);
+                            $this->email->to($email_to);
+                            $this->email->subject($subject);
+                            $this->email->message($message);
+                            $this->email->attach($docurl);
+                            $this->email->send();
+                            $this->email->clear(TRUE);
+                        }
+                    }
+                }
+            }
+        }
+        return $out;
+    }
+
 }

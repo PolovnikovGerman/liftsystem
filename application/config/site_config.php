@@ -1,6 +1,6 @@
 <?php
-$config['js_version'] = '2.02042';
-$config['css_version']= '2.02042';
+$config['js_version'] = '2.02043';
+$config['css_version']= '2.02043';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -44,6 +44,7 @@ switch($_SERVER['SERVER_NAME']){
         $config['art_dept_email']="art@golden-team.org";
         $config['taisenkatakura_email']='taisen@test.ru';
         $config['customer_notification_sender']='sales@bluetrack.com';
+        $config['customer_notification_relievers'] = 'sales@stressrelievers.com';
         $config['developer_email']='polovnikov.g@gmail.com';
         $config['newprooflnk']='http://test.bluetrack.com/proofview/?doc=';
         break;
@@ -55,6 +56,7 @@ switch($_SERVER['SERVER_NAME']){
         $config['redraw_email']='redraw@bluetrack.com';
         $config['art_dept_email']="art@bluetrack.com";
         $config['customer_notification_sender']='sales@bluetrack.com';
+        $config['customer_notification_relievers'] = 'sales@stressrelievers.com';
         $config['taisenkatakura_email']='taisenkatakura321@yahoo.com';
         // $config['developer_email']='polovnikov.g@gmail.com';
         $config['developer_email']='german.polovnikov@bluetrack.com';
