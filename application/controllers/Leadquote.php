@@ -374,7 +374,7 @@ class Leadquote extends MY_Controller
                     if ($res['billstate']==1) {
                         $this->load->model('shipping_model');
                         $billstates = $this->shipping_model->get_country_states($quote['shipping_country']);
-                        if (is_array($shipstates)) {
+                        if (is_array($billstates)) {
                             $stateoptions = [
                                 'item' => 'billing_state',
                                 'states' => $billstates,
