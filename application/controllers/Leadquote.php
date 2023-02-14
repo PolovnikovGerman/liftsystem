@@ -1289,7 +1289,7 @@ class Leadquote extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $options = [
-                        'from' => $res['brand']=='SR' ? $this->config->item('customer_notification_sender') : $this->config->item('customer_notification_relievers'),
+                        'from' => $res['brand']=='SR' ? $this->config->item('customer_notification_relievers') : $this->config->item('customer_notification_sender') ,
                         'to' => $res['email'],
                         'subject' => 'Quote '.$res['quote_number'],
                         'message' => $res['signature'],
