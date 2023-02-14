@@ -271,7 +271,7 @@ if ($config['test_server']==1) {
     );
     $config['mail_research_from']='research@golden-team.org';
     // $config['email_notification_sender']='grey@golden-team.org';
-    $config['customer_notification_sender']='sales@golden-team.org';
+    // $config['customer_notification_sender']='sales@golden-team.org';
     $config['proofrequest_notification']='proof-req@golden-team.org';
 } else {
     $config['mail_research']='sean@bluetrack.com';
@@ -284,7 +284,7 @@ if ($config['test_server']==1) {
     );
     $config['mail_research_from']='research@bluetrack.com';
     // $config['email_notification_sender']='grey@bluetrack.com';
-    $config['customer_notification_sender']='sales@bluetrack.com';
+    // $config['customer_notification_sender']='sales@bluetrack.com';
     $config['proofrequest_notification']='proof-req@bluetrack.com';
 }
 $config['prooflnk']='https://www.bluetrack.com/proofs/';
