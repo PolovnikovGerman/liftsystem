@@ -63,6 +63,137 @@ function init_leadquotes_content() {
             }
         },'json');
     });
+    // Buttons
+    $(".quoteactionpdfdoc.active").unbind('click').click(function (){
+        // Save
+        var params = new Array();
+        params.push({name: 'session', value: $("#quotesessionid").val()});
+        params.push({name: 'lead', value: $("#quoteleadconnect").val()});
+        var url = '/leadquote/quotesave';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".quotesdataarea").empty().html(response.data.quotescontent);
+                var quote = response.data.quote_id;
+                var docparams = new Array();
+                docparams.push({name: 'quote_id', value: quote});
+                var url = '/leadquote/quotepdfdoc';
+                $.post(url, docparams, function (response){
+                    if (response.errors=='') {
+                        var newWin = window.open(response.data.docurl,"Quoute PDF","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+                    } else {
+                        show_error(response);
+                    }
+                },'json')
+            } else {
+                show_error();
+            }
+        },'json');
+    });
+    $(".quoteactionsend.active").unbind('click').click(function (){
+        // Save
+        var params = new Array();
+        params.push({name: 'session', value: $("#quotesessionid").val()});
+        params.push({name: 'lead', value: $("#quoteleadconnect").val()});
+        var url = '/leadquote/quotesave';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".quotesdataarea").empty().html(response.data.quotescontent);
+                var quote = response.data.quote_id;
+                var docparams = new Array();
+                docparams.push({ name: 'quote_id', value: quote });
+                var url = '/leadquote/quotepreparesend';
+                $.post(url, docparams, function (response){
+                    $("#artNextModal").find('div.modal-dialog').css('width','455px');
+                    $("#artNextModal").find('.modal-title').empty().html('Send PDF');
+                    $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                    $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                    $("#artNextModal").on('hidden.bs.modal', function (e) {
+                        $(document.body).addClass('modal-open');
+                    })
+                    $(".quoteemail_send").unbind('click').click(function(){
+                        var quote = $(this).data('quote');
+                        send_leadquote(quote);
+                    });
+                },'json');
+
+            } else {
+                show_error();
+            }
+        },'json');
+    });
+    $(".quoteactionaddorder.active").unbind('click').click(function () {
+        // Save
+        var params = new Array();
+        params.push({name: 'session', value: $("#quotesessionid").val()});
+        params.push({name: 'lead', value: $("#quoteleadconnect").val()});
+        var url = '/leadquote/quotesave';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".quotesdataarea").empty().html(response.data.quotescontent);
+                var quote = response.data.quote_id;
+                var docparams = new Array();
+                docparams.push({ name: 'quote_id', value: quote });
+                var url = '/leadquote/quoteaddorder';
+                $("#loader").show();
+                $.post(url, docparams, function (response) {
+                    if (response.errors=='') {
+                        var callpage = 'leads'
+                        $("#loader").hide();
+                        $("#leadformModal").modal('hide');
+                        $("#artModalLabel").empty().html(response.data.header);
+                        $("#artModal").find('div.modal-body').empty().html(response.data.content);
+                        $("#artModal").find('div.modal-dialog').css('width','1004px');
+                        $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
+                        $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
+                        init_onlineleadorder_edit();
+                        init_rushpast();
+                    } else {
+                        $("#loader").hide();
+                        show_error(response);
+                    }
+                },'json');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".quoteactionduplicate.active").unbind('click').click(function () {
+        if (confirm('Duplicate Quote ?')==true) {
+            // Save
+            var params = new Array();
+            params.push({name: 'session', value: $("#quotesessionid").val()});
+            params.push({name: 'lead', value: $("#quoteleadconnect").val()});
+            var url = '/leadquote/quotesave';
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $(".quotesdataarea").empty().html(response.data.quotescontent);
+                    var quote_id = response.data.quote_id;
+                    var docparams = new Array();
+                    params.push({name: 'quote_id', value: quote_id});
+                    var url = '/leadquote/quoteduplicate';
+                    $("#loader").show();
+                    $.post(url, params, function (response){
+                        if (response.errors=='') {
+                            $("#quotepopupdetails").empty().html(response.data.quotecontent);
+                            $("#quotepopupdetails").show();
+                            $(".quotepopupclose").show();
+                            $(".leadquotenumberlist").unbind('click');
+                            $(".quotesaddnew").unbind('click');
+                            $("#loader").hide();
+                            init_leadquotes_content();
+                        } else {
+                            $("#loader").hide();
+                            show_error(response);
+                        }
+                    },'json');
+
+                } else {
+                    show_error(response);
+                }
+            },'json');
+
+        }
+    });
     // Template
     $(".quotetemplateinpt").find('select').unbind('change').change(function (){
         var params = new Array();
@@ -756,6 +887,7 @@ function init_leadquotes_view() {
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#loader").hide();
+                var callpage = 'leads';
                 $("#leadformModal").modal('hide');
                 $("#artModalLabel").empty().html(response.data.header);
                 $("#artModal").find('div.modal-body').empty().html(response.data.content);

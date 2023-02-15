@@ -1020,6 +1020,7 @@ class Leadquote extends MY_Controller
                     $res = $this->leadquote_model->savequote($quotesession, $lead_id, $this->USR_ID,  $session_id);
                     $error = $res['msg'];
                     if ($res['result']==$this->success_result) {
+                        $mdata['quote_id'] = $res['quote_id'];
                         $error = '';
                         // Get leads list
                         $qdat = $this->leadquote_model->get_leadquotes($lead_id);

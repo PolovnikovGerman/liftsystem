@@ -373,14 +373,14 @@ select.lead_item_select {
     width: 37px;
 }
 .leadquotenumberlist {
-    height: 20px!important;
-    line-height: 20px!important;
+    height: 18px!important;
+    line-height: 18px!important;
     border: 1.5px solid #616161;
     width: 68px;
     text-align: center;
     background: #ffffff;
     color: #0000ff;
-    font-size: 13px!important;
+    font-size: 12.3px!important;
     font-weight: 600;
     margin-right: 6px;
     cursor: pointer;
