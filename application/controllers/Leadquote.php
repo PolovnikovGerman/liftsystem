@@ -1292,8 +1292,8 @@ class Leadquote extends MY_Controller
                     $options = [
                         'from' => $res['brand']=='SR' ? $this->config->item('customer_notification_relievers') : $this->config->item('customer_notification_sender') ,
                         'to' => $res['email'],
-                        'subject' => 'Quote '.$res['quote_number'],
-                        'message' => $res['signature'],
+                        'subject' => $res['subject'],
+                        'message' => $res['message'],
                         'quote_id' => $postdata['quote_id'],
                     ];
                     $mdata['content'] = $this->load->view('leadpopup/quote_senddoc_view', $options,TRUE);
