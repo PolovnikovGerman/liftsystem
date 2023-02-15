@@ -17,7 +17,7 @@ class Leadquote_model extends MY_Model
     protected $project_class='projprof';
     private $NO_ART = '06_noart';
     private $NO_ART_TXT='Need Art';
-
+    private $template = 'Lead Quote';
     function __construct() {
         parent::__construct();
     }
@@ -3040,21 +3040,33 @@ class Leadquote_model extends MY_Model
 
     public function prepare_emailmessage($quote_id) {
         $out=['result' => $this->error_result, 'msg' => 'Quote Not Found'];
-        $this->db->select('q.quote_id, q.quote_number, q.brand, l.lead_company, l.lead_customer, l.lead_mail, u.email_signature');
+        // $this->db->select('q.quote_id, q.quote_number, q.brand, l.lead_company, l.lead_customer, l.lead_mail, q.quote_repcontact');
+        // $this->db->from('ts_quotes q');
+        // $this->db->join('ts_leads l','l.lead_id = q.lead_id');
+        // $this->db->join('users u','u.user_id=q.create_user');
+        $this->db->select('q.quote_id, q.brand, q.quote_number, q.quote_repcontact, q.quote_repcontact, l.lead_company, l.lead_customer, l.lead_mail');
+        $this->db->select('sum(qc.item_qty) as item_qty, group_concat(distinct(qc.item_description)) as item_name');
         $this->db->from('ts_quotes q');
-        $this->db->join('ts_leads l','l.lead_id = q.lead_id');
-        $this->db->join('users u','u.user_id=q.create_user');
+        $this->db->join('ts_quote_items i','i.quote_id=q.quote_id','left ');
+        $this->db->join('ts_quote_itemcolors qc','qc.quote_item_id=i.quote_item_id','left');
+        $this->db->join('ts_leads l','l.lead_id=q.lead_id');
         $this->db->where('q.quote_id', $quote_id);
+        $this->db->group_by('q.quote_id, q.brand, q.quote_number, q.quote_repcontact, q.quote_repcontact, l.lead_company, l.lead_customer, l.lead_mail');
         $res = $this->db->get()->row_array();
         if (ifset($res,'quote_id',0)==$quote_id) {
             $out['result'] = $this->success_result;
             $out['email'] = $res['lead_mail'];
             if ($res['brand']=='SR') {
-                $out['quote_number'] = $res['quote_number'].'-QS';
+                $quote_number = $res['quote_number'].'-QS';
             } else {
-                $out['quote_number'] = 'QB-'.$res['quote_number'];
+                $quote_number = 'QB-'.$res['quote_number'];
             }
-            $out['signature'] = $res['email_signature'];
+            $out['quote_number'] = $quote_number;
+            $out['email'] = $res['lead_mail'];
+            $this->load->model('email_model');
+            $template = $this->email_model->get_emailtemplate_byname($this->template);
+            $out['subject'] = str_replace(['<<quote_number>>','<<item_name>>','<<item_qty>>'],[$quote_number, $res['item_name'], $res['item_qty']], $template['email_template_subject']);
+            $out['message'] = str_replace(['<<contact_name>>','<<item_qty>>','<<item_name>>','<<user_email_signature>>'],[$res['lead_customer'],$res['item_qty'],$res['item_name'],$res['quote_repcontact']], $template['email_template_body']);
             $out['brand'] = $res['brand'];
         }
         return $out;
