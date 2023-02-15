@@ -1186,7 +1186,7 @@ class Leadquote extends MY_Controller
     public function quotepdfdoc() {
         if ($this->isAjax()) {
             $postdata = $this->input->post();
-            $error = 'Empty Lend Request';
+            $error = 'Empty Quote #';
             $mdata = [];
             $quote_id = ifset($postdata, 'quote_id', 0);
             if (!empty($quote_id)) {
