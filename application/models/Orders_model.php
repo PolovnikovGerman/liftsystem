@@ -1724,7 +1724,7 @@ Class Orders_model extends MY_Model
             ];
 
             $outidx = count($out_array) - 1;
-            $this->db->select("date, sum(day_orders) as cnt_orders, sum(day_attempt) as cnt_attempt ", FALSE);
+            $this->db->select("date, sum(day_orders) as cnt_orders, sum(day_attempt+baskets) as cnt_attempt");
             $this->db->from('v_orderattempts');
             $this->db->where('unix_timestamp(date) >= ', $week_bgn);
             $this->db->where('unix_timestamp(date) <= ', $week_end);
@@ -1817,7 +1817,7 @@ Class Orders_model extends MY_Model
     public function get_attemts_duedate($date, $brand) {
         $start = strtotime(date('Y-m-d', $date));
         $end = strtotime(date('Y-m-d', $date) . ' 23:59:59');
-        $this->db->select('order_id, unix_timestamp(order_date) as attdate, 1 as orderdat, 0 as attempt');
+        $this->db->select('order_id, unix_timestamp(order_date) as attdate, 1 as orderdat, 0 as attempt, 0 as basket');
         $this->db->from('sb_orders');
         $this->db->where('unix_timestamp(order_date) >= ', $start);
         $this->db->where('unix_timestamp(order_date) <= ', $end);
@@ -1829,7 +1829,7 @@ Class Orders_model extends MY_Model
             }
         }
         $ordres = $this->db->get()->result_array();
-        $this->db->select('cart_id as order_id, created_date as attdate, 0 as orderdat, 1 as attempt');
+        $this->db->select('cart_id as order_id, created_date as attdate, 0 as orderdat, 1 as attempt, 0 as basket');
         $this->db->from('sb_cartdatas');
         $this->db->where('created_date >= ', $start);
         $this->db->where('created_date <= ', $end);
@@ -1841,23 +1841,24 @@ Class Orders_model extends MY_Model
             }
         }
         $attres = $this->db->get()->result_array();
-        $res = array_merge($ordres, $attres);
+        $this->db->select('basket_id as order_id, unix_timestamp(created_time) as attdate, 0 as orderdat, 0 as attempt, 1 as basket');
+        $this->db->from('sb_baskets');
+        $this->db->where('unix_timestamp(created_time) >= ', $start);
+        $this->db->where('unix_timestamp(created_time) <= ', $end);
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
+            }
+        }
+        $basketres = $this->db->get()->result_array();
+
+        $res = array_merge($ordres, $attres, $basketres);
         usort($res, function ($a, $b){
             return $a['attdate'] - $b['attdate'];
         });
 
-        /* Union select */
-        /* $sql = "select order_id, unix_timestamp(order_date) as attdate, 1 as orderdat, 0 as attempt
-              from sb_orders
-              where unix_timestamp(order_date) between " . $start . " and " . $end . " and is_void=0
-              union
-              select cart_id as order_id, created_date as attdate, 0 as orderdat, 1 as attempt
-              from sb_cartdatas
-              where created_date between " . $start . " and " . $end . "
-              order by attdate";
-        $query = $this->db->query($sql);
-        $res = $query->result_array();
-        */
         $outarr = array();
         foreach ($res as $row) {
             if ($row['orderdat'] == 1) {
@@ -1873,14 +1874,14 @@ Class Orders_model extends MY_Model
                     'amount' => '$' . number_format($orddat['order_total'], 2, '.', ''),
                     'email' => $orddat['contact_email'],
                     'phone' => $orddat['contact_phone'],
-                    'item_color' => '&nbsp;',
+                    'item_color' => ifset($orddat, 'item_color',''),
                     'customer_location' => '&nbsp;',
                     'cc_details' => $cc_card,
                     'last_field' => '&nbsp;',
                     'row_class' => 'orderdat',
                     'artsubm' => '&nbsp;',
                 );
-            } else {
+            } elseif ($row['attempt']==1) {
                 $attdat = $this->attempt_data($row['order_id']);
                 $datrow = array(
                     'attempt_id' => $row['order_id'],
@@ -1898,6 +1899,25 @@ Class Orders_model extends MY_Model
                     'row_class' => '',
                     'artsubm' => $attdat['artsubm'],
                 );
+            } else {
+                // Basket
+                $basket = $this->basket_data($row['order_id']);
+                $datrow = array(
+                    'attempt_id' => $row['order_id'],
+                    'confirm' => '&nbsp;',
+                    'customer' => $basket['customer'],
+                    'item' => $basket['item'],
+                    'qty' => $basket['item_qty'],
+                    'amount' => $basket['order_total'],
+                    'email' => $basket['email'],
+                    'phone' => $basket['phone'],
+                    'item_color' => $basket['item_color'],
+                    'customer_location' => $basket['customer_location'],
+                    'cc_details' => $basket['cc_details'],
+                    'last_field' => $basket['last_field'],
+                    'row_class' => '',
+                    'artsubm' => $basket['artsubm'],
+                );
             }
             $outarr[] = $datrow;
         }
@@ -1910,6 +1930,17 @@ Class Orders_model extends MY_Model
         $this->db->join('sb_items i', 'i.item_id=ord.order_item_id', 'left');
         $this->db->where('ord.order_id', $order_id);
         $res = $this->db->get()->row_array();
+        if ($res['order_type']=='NEW') {
+            $this->db->select('group_concat(i.item_number,\' \', i.item_name) as item, sum(oi.item_qty) as item_qty, group_concat(oc.order_color_itemcolor) as item_color');
+            $this->db->from('sb_order_items oi');
+            $this->db->join('sb_order_colors oc','oc.order_item_id=oi.order_item_id');
+            $this->db->join('sb_items i','oi.item_id = i.item_id');
+            $this->db->where('oi.order_id', $order_id);
+            $newitem = $this->db->get()->row_array();
+            $res['item'] = $newitem['item'];
+            $res['item_qty'] = $newitem['item_qty'];
+            $res['item_color'] = $newitem['item_color'];
+        }
         return $res;
     }
 
@@ -2013,6 +2044,69 @@ Class Orders_model extends MY_Model
             }
         }
 
+        return $out;
+    }
+
+    private function basket_data($basket_id) {
+        $this->load->model('shipping_model');
+        $out = [
+            'customer' => '&nbsp;',
+            'item' => '&nbsp;',
+            'item_qty' => '&nbsp;',
+            'order_total' => '&nbsp;',
+            'email' => '&nbsp;',
+            'phone' => '&nbsp;',
+            'item_color' => '&nbsp;',
+            'customer_location' => '&nbsp;',
+            'cc_details' => '&nbsp;',
+            'last_field' => '&nbsp;',
+            'artsubm' => '&nbsp;',
+        ];
+        $this->db->select('basket_id, contact_name, contact_phone, contact_person, contact_company, contact_email, order_total, user_ip');
+        $this->db->select('credit_card_system, credit_card_number, credit_card_month, credit_card_year');
+        $this->db->from('sb_baskets');
+        $this->db->where('basket_id', $basket_id);
+        $dat = $this->db->get()->row_array();
+        if (ifset($dat,'basket_id', 0)==$basket_id) {
+            $out['phone'] = $dat['contact_phone'];
+            $out['email'] = $dat['contact_email'];
+            if (!empty($dat['contact_name'])) {
+                $out['customer'] = $dat['contact_name'];
+            } elseif (!empty($dat['contact_company'])) {
+                $out['customer'] = $dat['contact_company'];
+            } else {
+                $out['customer'] = $dat['contact_person'];
+            }
+            $geodat = $this->shipping_model->ipdata_exist($dat['user_ip']);
+            if ($geodat['result']==TRUE) {
+                $locat = $geodat['city_name'];
+                if (!empty($geodat['region_code'])) {
+                    $locat.=' '.$geodat['region_code'];
+                }
+                $locat.=' '.$geodat['country_code'];
+                $out['customer_location'] = $locat;
+            }
+            $out['order_total'] = $dat['order_total'];
+            $cc_dat = '';
+            if (!empty($dat['credit_card_system'])) {
+                $cc_dat = $dat['credit_card_system'].' '.$dat['credit_card_number'];
+                if (!empty($dat['credit_card_month']) && !empty($dat['credit_card_year'])) {
+                    $cc_dat.=' Exp '.$dat['credit_card_month'].'/'.$dat['credit_card_year'];
+                }
+            }
+            $out['cc_details'] = $cc_dat;
+            // Item
+            $this->db->select('basket_id, group_concat(s.item_number,\' \', s.item_name) as item, sum(bi.item_qty) item_qty');
+            $this->db->select('group_concat(coalesce(bi.color1,\'\'), coalesce(bi.color2,\'\'), coalesce(bi.color3,\'\'), coalesce(bi.color4,\'\')) as item_color');
+            $this->db->from('sb_basket_items bi');
+            $this->db->join('sb_items s','bi.item_id = s.item_id');
+            $this->db->group_by('basket_id');
+            $this->db->where('basket_id', $basket_id);
+            $itemdat = $this->db->get()->row_array();
+            $out['item'] = $itemdat['item'];
+            $out['item_qty'] = $itemdat['item_qty'];
+            $out['item_color'] = $itemdat['item_color'];
+        }
         return $out;
     }
 
