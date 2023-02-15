@@ -28,7 +28,7 @@
         <div class="quotenumbervalue"><?=$data['brand']=='SR' ? '' : 'QB-' ?><?=$data['quote_number']?><?=$data['brand']=='SR' ? '-QS' : '' ?></div>
         <div class="quotedatearea">
             <div class="quotedatetitle">Date: </div>
-            <div class="quotedatevalue"><?=date('d/m/Y',$data['quote_date'])?></div>
+            <div class="quotedatevalue"><?=date('M j, Y',$data['quote_date'])?></div>
         </div>
     </div>
     <div class="datarow">

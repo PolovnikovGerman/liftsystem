@@ -612,10 +612,12 @@ input.quotesalestaxvalue {
     border-left: 2px solid #000000;
     border-top: 2px solid #000000;
     border-right: 2px solid #000000;
+    border-bottom: 2px solid #000000;
     width: 182px;
     background: #dadada;
     margin-top: -2px;
     padding-left: 4px;
+    padding-bottom: 4px;
 }
 input.quotebilladdrother {
     width: 170px;
