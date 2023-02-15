@@ -1924,9 +1924,9 @@ class Leadquote_model extends MY_Model
             foreach ($imprints as $imprint) {
                 $fillrow = ($numpp % 2) == 0 ? 1 : 0;
                 $total = $imprint['imprint_qty'] * $imprint['imprint_price'];
-                $rowcode = 'SB-impr1';
+                $rowcode = 'SR-impr1';
                 if ($imprint['imprint_item'] == 0) {
-                    $rowcode = 'SB-setu1';
+                    $rowcode = 'SR-setu1';
                 }
                 $pdf->SetXY($startPageX, $yStart);
                 $pdf->Cell($colWidth[0], 5, $rowcode, 'LR', 0, 'L', $fillrow);
@@ -1941,7 +1941,7 @@ class Leadquote_model extends MY_Model
         if (!empty($quote['mischrg_label1']) && !empty($quote['mischrg_value1'])) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
-            $pdf->Cell($colWidth[0], 5, 'SB-misc1','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[0], 5, 'SR-misc1','LR',0,'L', $fillrow);
             $pdf->Cell($colWidth[1], 5, $quote['mischrg_label1'],'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], 5, number_format($quote['mischrg_value1'],2), 'LR', 0, 'C', $fillrow);
@@ -1952,7 +1952,7 @@ class Leadquote_model extends MY_Model
         if (!empty($quote['mischrg_label2']) && !empty($quote['mischrg_value2'])) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
-            $pdf->Cell($colWidth[0], 5, 'SB-misc2','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[0], 5, 'SR-misc2','LR',0,'L', $fillrow);
             $pdf->Cell($colWidth[1], 5, $quote['mischrg_label2'],'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], 5, number_format($quote['mischrg_value2'],2), 'LR', 0, 'C', $fillrow);
@@ -1963,7 +1963,7 @@ class Leadquote_model extends MY_Model
         if (!empty($shipping)) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
-            $pdf->Cell($colWidth[0], 5, 'SB-ship1','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[0], 5, 'SR-ship1','LR',0,'L', $fillrow);
             $pdf->Cell($colWidth[1], 5, $shipping[0]['shipping_name'].' Shippin Charge','LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], 5, number_format($shipping[0]['shipping_rate'],2), 'LR', 0, 'C', $fillrow);
@@ -1973,11 +1973,11 @@ class Leadquote_model extends MY_Model
         }
         if (!empty($quote['discount_label']) && !empty($quote['discount_value'])) {
             $pdf->SetXY($startPageX, $yStart);
-            $pdf->Cell($colWidth[0], 5, 'SB-misc2','LR',0,'L', $fillrow);
-            $pdf->Cell($colWidth[1], 5, $quote['mischrg_label2'],'LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[0], 5, 'SR-disc1','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], 5, $quote['discount_label'],'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
-            $pdf->Cell($colWidth[3], 5, number_format($quote['mischrg_value2'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], 5, MoneyOutput($quote['mischrg_value2']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[3], 5, '-'.number_format($quote['discount_value'],2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], 5, '-'.MoneyOutput($quote['discount_value']).' ', 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=5;
         }
@@ -2044,7 +2044,7 @@ class Leadquote_model extends MY_Model
         $bottomY = $yStart + 57;
         $pdf->SetFont('','',12.05);
         $pdf->SetXY($startPageX, $bottomY);
-        $pdf->MultiCell(195, 5, 'Stressballs.com - 855 Bloomfield Avenue - Clifton, NJ 07012 - USA'.PHP_EOL.'(Tel) 201-210-8700  -  (Fax) 201-604-2688',0,'C');
+        $pdf->MultiCell(195, 5, 'StressRelievers.com - 855 Bloomfield Avenue - Clifton, NJ 07012 - USA'.PHP_EOL.'973-920-2040 - http://www.stressrelievers.com',0,'C');
         // Quick Order
         $pdf->SetCellMargin(3);
         $pdf->SetXY($startPageX, $quickOrdY);
@@ -2092,9 +2092,9 @@ class Leadquote_model extends MY_Model
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetFont('', '', 10.5);
         $pdf->SetXY(18,$quickOrdY);
-        $pdf->Cell(173,6,'To order call 1-800-790-6090 or order securely online',0,0,'C');
+        $pdf->Cell(173,6,'To order call 1-800-370-3020 or order securely online',0,0,'C');
         $pdf->SetXY(18,$quickOrdY+6);
-        $pdf->Cell(173,6,'or fill out this form and send back by email (sales@stressballs.com) or fax (201-604-2688)',0,0,'C');
+        $pdf->Cell(173,6,'or fill out this form and send back by email (sales@stressrelievers.com)',0,0,'C');
         // Save file
 
 
@@ -2282,11 +2282,11 @@ class Leadquote_model extends MY_Model
         }
         if (!empty($quote['discount_label']) && !empty($quote['discount_value'])) {
             $pdf->SetXY($startPageX, $yStart);
-            $pdf->Cell($colWidth[0], 5, 'SB-misc2','LR',0,'L', $fillrow);
-            $pdf->Cell($colWidth[1], 5, $quote['mischrg_label2'],'LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[0], 5, 'SB-disc1','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], 5, $quote['discount_label'],'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
-            $pdf->Cell($colWidth[3], 5, number_format($quote['mischrg_value2'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], 5, MoneyOutput($quote['mischrg_value2']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[3], 5, '-'.number_format($quote['discount_value'],2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], 5, '-'.MoneyOutput($quote['discount_value']).' ', 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=5;
         }
