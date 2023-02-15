@@ -1370,6 +1370,7 @@ class Leadquote_model extends MY_Model
         // NEW
         $out['msg'] = 'Error during add new quote';
         if ($quote_id > 0) {
+            $out['quote_id'] = $quote_id;
             // Save items, colors, imprints, etc
             foreach ($items as $item) {
                 $this->db->set('item_id', $item['item_id']);
@@ -1828,9 +1829,9 @@ class Leadquote_model extends MY_Model
         $pdf->SetFont('','B',16.564429);
         // $pdf->SetTextColor(0, 0, 255);
         if ($quote['quote_template']=='Proforma Invoice') {
-            $pdf->Cell(57,16,'INVOICE',0,0,'R');
+            $pdf->Cell(61,16,'INVOICE',0,0,'R');
         } else {
-            $pdf->Cell(57,16,'OFFICIAL QUOTE',0,0,'R');
+            $pdf->Cell(61,16,'OFFICIAL QUOTE',0,0,'R');
         }
         // Our Address
         $pdf->SetFont('','B',14);
@@ -1839,7 +1840,7 @@ class Leadquote_model extends MY_Model
         $ourAddressY+=7;
         $pdf->Text($startPageX,$ourAddressY, 'Call Us 1-800-370-3020');
         // Quote Title
-        $pdf->SetXY(153, 29);
+        $pdf->SetXY(156, 29);
         $pdf->SetFont('','',12.5);
         $pdf->setFillColor(0, 0, 75);
         $pdf->SetTextColor(255,255,255);
@@ -1848,20 +1849,20 @@ class Leadquote_model extends MY_Model
         $pdf->SetFont('','B',12.5);
         $pdf->Cell(22,6,str_pad($quote['quote_number'],5,'0', STR_PAD_LEFT).'-QS',0,0,'R');
         $pdf->SetFont('','',12.5);
-        $pdf->SetXY(162, 36);
+        $pdf->SetXY(168, 36);
         $pdf->Cell(12, 6, 'Date:');
-        $pdf->SetXY(174, 36);
+        $pdf->SetXY(178, 36);
         $pdf->SetFont('','I',10);
         $pdf->Cell(20,6,date('n/j/Y', $quote['quote_date']),0,0,'R');
         $pdf->SetXY(160, 40);
         $pdf->SetFont('','I',9);
-        $pdf->Cell(34,5,'Quote is only valid for 30 days',0,0,'R');
-        $pdf->SetXY(160, 46);
+        $pdf->Cell(38,5,'Quote is only valid for 30 days',0,0,'R');
+        $pdf->SetXY(164, 46);
         $pdf->setFillColor(128, 128, 128);
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetFont('','',12.046857);
         $pdf->Cell(15, 6, 'Rep',1,0,'C',true);
-        $pdf->SetXY(178, 46);
+        $pdf->SetXY(182, 46);
         $pdf->SetTextColor(0,0,0);
         $pdf->Cell(15,6, $quote['usrrepl'],1,0,'C');
         // Billing Address
@@ -1881,10 +1882,10 @@ class Leadquote_model extends MY_Model
         // Shipping Address
         $pdf->SetTextColor(255,255,255);
         $pdf->SetXY(105, 55);
-        $pdf->Cell(88, 8, 'Shipping Address',1,0,'',true);
+        $pdf->Cell(92, 8, 'Shipping Address',1,0,'',true);
         $pdf->SetTextColor(0,0,0);
         $pdf->SetXY(105,63);
-        $pdf->Cell(88, 36, '',1);
+        $pdf->Cell(92, 36, '',1);
         $pdf->SetTextColor(0,0,0);
         $yStart = 63;
         foreach ($quote['shipping'] as $shiprow) {
@@ -2137,9 +2138,9 @@ class Leadquote_model extends MY_Model
         $pdf->SetFont('','B',16.564429);
         // $pdf->SetTextColor(0, 0, 255);
         if ($quote['quote_template']=='Proforma Invoice') {
-            $pdf->Cell(57,16,'INVOICE',0,0,'R');
+            $pdf->Cell(60,16,'INVOICE',0,0,'R');
         } else {
-            $pdf->Cell(57,16,'OFFICIAL QUOTE',0,0,'R');
+            $pdf->Cell(60,16,'OFFICIAL QUOTE',0,0,'R');
         }
         // Our Address
         $pdf->SetFont('','',12.046857);
@@ -2150,27 +2151,27 @@ class Leadquote_model extends MY_Model
         $ourAddressY += 5.8;
         $pdf->Text($startPageX,$ourAddressY, 'Call Us at');
         $pdf->SetTextColor(0,0,255);
-        $pdf->Text(31,$ourAddressY, '1-800-790-6090');
+        $pdf->Text(34,$ourAddressY, '1-800-790-6090');
         $ourAddressY += 5.8;
         $pdf->Text($startPageX,$ourAddressY,'www.stressballs.com'); // , 'www.bluetrack.com');
         // Quote Title
-        $pdf->SetXY(153, 29);
+        $pdf->SetXY(156, 29);
         $pdf->SetFont('','',12.5);
         $pdf->setFillColor(17, 100, 238);
         $pdf->SetTextColor(255,255,255);
         $pdf->Cell(20,6,'Quote #',0,0,'C',true);
         $pdf->SetTextColor(0, 0, 0);
         $pdf->Cell(22,6,'QB-'.str_pad($quote['quote_number'],5,'0', STR_PAD_LEFT),0,0,'R');
-        $pdf->SetXY(162, 36);
+        $pdf->SetXY(164, 36);
         $pdf->Cell(12, 6, 'Date:');
-        $pdf->SetXY(174, 36);
+        $pdf->SetXY(178, 36);
         $pdf->Cell(20,6,date('m/d/Y', $quote['quote_date']),0,0,'R');
-        $pdf->SetXY(160, 44);
+        $pdf->SetXY(164, 44);
         $pdf->setFillColor(128, 128, 128);
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetFont('','',12.046857);
         $pdf->Cell(15, 6, 'Rep',1,0,'C',true);
-        $pdf->SetXY(178, 44);
+        $pdf->SetXY(182, 44);
         $pdf->SetTextColor(0,0,0);
         $pdf->Cell(15,6, $quote['usrrepl'],1,0,'C');
         // Billing Address
@@ -2190,10 +2191,10 @@ class Leadquote_model extends MY_Model
         // Shipping Address
         $pdf->SetTextColor(255,255,255);
         $pdf->SetXY(105, 55);
-        $pdf->Cell(88, 8, 'Shipping Address',1,0,'',true);
+        $pdf->Cell(92, 8, 'Shipping Address',1,0,'',true);
         $pdf->SetTextColor(0,0,0);
         $pdf->SetXY(105,63);
-        $pdf->Cell(88, 36, '',1);
+        $pdf->Cell(92, 36, '',1);
         $pdf->SetTextColor(0,0,0);
         $yStart = 63;
         foreach ($quote['shipping'] as $shiprow) {

@@ -651,7 +651,7 @@ Class Calendars_model extends MY_Model
             $delivdate = $this->get_business_date(time(), 1 , $item_id);
             $lead_times[] = [
                 'id' => $delivdate.'-0',
-                'name' => 'Standard 1 day',
+                'name' => 'Standard',
                 'current' => 1,
                 'price' => 0,
                 'date' => $delivdate,

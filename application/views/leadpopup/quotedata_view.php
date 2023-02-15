@@ -12,10 +12,10 @@
             </select>
         </div>
         <div class="quoteactionsarea">
-            <div class="quoteactionaddorder <?=$edit_mode==1 ? '' : 'active'?>" data-quote="<?=$quote_id?>">start order</div>
-            <div class="quoteactionduplicate <?=$edit_mode==1 ? '' : 'active'?>" data-quote="<?=$quote_id?>">duplicate</div>
-            <div class="quoteactionsend <?=$edit_mode==1 ? '' : 'active'?>" data-quote="<?=$quote_id?>">send</div>
-            <div class="quoteactionpdfdoc <?=$edit_mode==1 ? '' : 'active'?>" data-quote="<?=$quote_id?>">pdf</div>
+            <div class="quoteactionaddorder active" data-quote="<?=$quote_id?>">start order</div>
+            <div class="quoteactionduplicate active" data-quote="<?=$quote_id?>">duplicate</div>
+            <div class="quoteactionsend active" data-quote="<?=$quote_id?>">send</div>
+            <div class="quoteactionpdfdoc active" data-quote="<?=$quote_id?>">pdf</div>
         </div>
         <?php if ($edit_mode==1) { ?>
             <div class="leadquotesavebtn">save</div>
