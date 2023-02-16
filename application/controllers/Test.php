@@ -1167,4 +1167,19 @@ class Test extends CI_Controller
             // die();
         }
     }
+
+    public function fix_netprofit() {
+        $this->db->select('order_date');
+        $this->db->from('ts_orders');
+        $this->db->where('brand','SR');
+        $this->db->order_by('order_id');
+        $order = $this->db->get()->row_array();
+        $start_date = $order['order_date'];
+        $this->db->select('profit_id, profit_week, profit_year');
+        $this->db->from('netprofit');
+        $this->db->where('datebgn >=', $start_date);
+        $this->db->where('dateend < ', $start_date);
+        $profdat = $this->db->get()->row_array();
+        var_dump($profdat);
+    }
 }
