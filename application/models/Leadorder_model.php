@@ -2848,7 +2848,11 @@ Class Leadorder_model extends My_Model {
                 'batch_num'=>$pay_options['cardnum'],
                 'batch_transaction'=>$transres['transaction_id'],
             );
-            $batch_id=$this->batches_model->save_batch($batch_data, $order, $usr_id);
+            $batchres = $this->batches_model->save_batch($batch_data, $order, $usr_id);
+            if ($batchres['result']==$this->error_result) {
+                $batch_data['msg'] = $batchres['msg'];
+                $this->batches_model->error_batch($batch_data, $order, $usr_id);
+            }
             // Get New list of Payments
             $payments=$this->get_leadorder_payments($order_id);
             $total=0;
