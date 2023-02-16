@@ -2088,7 +2088,7 @@ class Leadquote_model extends MY_Model
         $pdf->Cell(48,6,'', 'B');
         $quickOrdY+=8.2;
         $pdf->SetXY(18,$quickOrdY);
-        $pdf->SetFillColor(17, 100, 238);
+        $pdf->SetFillColor(0, 0, 75);
         $pdf->Cell(173,12,'', 1,0,'',1);
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetFont('', '', 10.5);
