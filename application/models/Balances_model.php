@@ -4836,6 +4836,9 @@ class Balances_model extends My_Model
             'revenue' => $revenuepace,
             'percent' => '100%',
         ];
+        foreach ($details as $detail) {
+            log_message('ERROR','Details - Month - '.$detail['month'].' Revenue '.$detail['revenue'].' Perc '.$detail['percent']);
+        }
         return $details;
     }
 
