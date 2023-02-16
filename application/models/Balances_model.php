@@ -2914,6 +2914,9 @@ class Balances_model extends My_Model
             $this->db->set('profit_id', $newprofit);
             $this->db->set('brand','BT');
             $this->db->insert('netprofit_dat');
+            $this->db->set('profit_id', $newprofit);
+            $this->db->set('brand','SR');
+            $this->db->insert('netprofit_dat');
         }
     }
 

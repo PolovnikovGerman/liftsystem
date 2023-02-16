@@ -1182,7 +1182,18 @@ class Test extends CI_Controller
         $this->db->where('datebgn < ', $start_date);
         $this->db->where('dateend >= ', $start_date);
         $profdat = $this->db->get()->row_array();
-        echo $this->db->last_query().PHP_EOL;
-        var_dump($profdat);
+        $this->db->select('*');
+        $this->db->from('netprofit');
+        $this->db->where('profit_week is not null');
+        $this->db->where('profit_week >= ', $profdat['profit_week']);
+        $this->db->where('profit_year', $profdat['profit_year']);
+        $neprofs = $this->db->get()->result_array();
+        foreach ($neprofs as $neprof) {
+            $this->db->set('profit_id', $neprof['profit_id']);
+            $this->db->set('brand','SR');
+            $this->db->insert('netprofit_dat');
+            echo 'Week '.$neprof['profit_week'].'-'.$neprof['profit_year'].PHP_EOL;
+        }
+
     }
 }
