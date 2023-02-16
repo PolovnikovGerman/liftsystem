@@ -4755,6 +4755,7 @@ class Balances_model extends My_Model
 
     public function onpace_data($brand) {
         $now=getDayOfWeek(date('W'), date('Y'),1);
+        log_message('error','ON PACE - Now '.$now);
         // Get current week number
         $this->db->select('profit_week');
         $this->db->from('netprofit');
@@ -4766,6 +4767,7 @@ class Balances_model extends My_Model
             $weekres['profit_week']=52;
         }
         $paceweekkf=52/$weekres['profit_week'];
+        log_message('error','ON PACE - Kf '.$paceweekkf);
         $start_date = strtotime(date('Y').'-01-01');
         $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue');
         $this->db->from('ts_orders o');
@@ -4781,6 +4783,7 @@ class Balances_model extends My_Model
         }
         $ordersres=$this->db->get()->row_array();
         $salespace = round($ordersres['cnt'] * $paceweekkf,0);
+        log_message('error','ON PACE - Sales Pace '.$salespace);
         $revenuepace = 0;
         if (date('m')=='01') {
             $revenuepace = round($ordersres['revenue'] * $paceweekkf,2);
@@ -4800,6 +4803,7 @@ class Balances_model extends My_Model
                 }
                 $revenueres=$this->db->get()->row_array();
                 $revenuepace = round($revenueres['revenue'] / ($revenueres['cnt'] / $salespace),2);
+                log_message('error','ON PACE - Revenue Pace '.$revenuepace);
             }
         }
         $details = [];
@@ -4822,7 +4826,10 @@ class Balances_model extends My_Model
                 $this->db->where('order_date < ', strtotime($d_end));
                 $monthdat = $this->db->get()->row_array();
             }
+            log_message('error','ON PACE - Month Dates '.date('Y-m-d', $d_bgn).' - '.date('Y-m-d'));
+            log_message('error','ON PACE - Month Revenue '.$monthdat['revenue']);
             $totalrevenue += floatval($monthdat['revenue']);
+            log_message('error','ON PACE - Total Revenue '.$totalrevenue);
             $perc = round($totalrevenue/$revenuepace*100,1).'%';
             $monthdate = strtotime('2013-'.$i.'-01');
             $details[] = [
@@ -4837,7 +4844,7 @@ class Balances_model extends My_Model
             'percent' => '100%',
         ];
         foreach ($details as $detail) {
-            log_message('error','Details - Month - '.$detail['month'].' Revenue '.$detail['revenue'].' Perc '.$detail['percent']);
+            log_message('error','PACDetails - Month - '.$detail['month'].' Revenue '.$detail['revenue'].' Perc '.$detail['percent']);
         }
         return $details;
     }
