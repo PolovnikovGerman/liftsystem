@@ -47,17 +47,26 @@ function init_leadquotes_content() {
         var url = '/leadquote/quotesave';
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                $("#quotepopupdetails").empty();
-                $("#quotepopupdetails").hide();
-                $(".quotepopupclose").hide();
+                // Receive quote id
                 $(".quotesdataarea").empty().html(response.data.quotescontent);
-                $(".leadquotenumberlist").unbind('click').click(function(){
-                    var quote_id = $(this).data('leadquote');
-                    leadquote_edit(quote_id);
-                })
-                $(".quotesaddnew").unbind('click').click(function () {
-                    addnewcustomquote();
-                });
+                var quote_id = response.data.quote_id;
+                var docparams = new Array();
+                docparams.push({name: 'quote_id', value: quote_id});
+                params.push({name: 'edit_mode', value: 0});
+                var url = '/leadquote/quoteedit';
+                $.post(url, docparams, function(response){
+                    if (response.errors=='') {
+                        $("#quotepopupdetails").empty().html(response.data.quotecontent);
+                        $("#quotepopupdetails").show();
+                        $(".quotepopupclose").show();
+                        $(".leadquotenumberlist").unbind('click');
+                        $(".quotesaddnew").unbind('click');
+                        $(".datarow[data-leadquote='"+quote_id+"']").children('div').addClass('active');
+                        init_leadquotes_view();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
             } else {
                 show_error(response);
             }
