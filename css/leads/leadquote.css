@@ -56,7 +56,7 @@
     background: #ffffff;
     border: 1px solid #000000;
     border-radius: 7px;
-    padding-left: 10px;
+    /* padding-left: 10px; */
     margin-right: 9px;
 }
 .quoteactionsarea > div {
@@ -215,11 +215,14 @@ input.quouteitem_input, select.quouteitem_input {
     width: 72px;
     font-weight: 600;
     text-align: right;
-    padding-right: 3px;
+    padding-right: 5px;
 }
 .quoteitemtabledatarow .itemdescription {
     border-left: 1px solid #B5B5B5;
     width: 180px;
+}
+.quoteitemtabledatarow .itemdescription.viewmode {
+    padding-left: 5px;
 }
 .quoteitemtabledatarow .itemdescription.addquoteitemcolor {
     height: 40px!important;
@@ -236,6 +239,9 @@ input.quoteitem_description_long {
 .quoteitemtabledatarow .itemcolor {
     width: 153px;
 }
+.quoteitemtabledatarow .itemcolor.viewmode {
+    padding-left: 5px;
+}
 select.quoteitemcolors {
     width: 150px;
 }
@@ -246,6 +252,10 @@ select.quoteitemcolors {
     border-left: 1px solid #b5b5b5;
     width: 52px;
 }
+.quoteitemtabledatarow .itemqty.viewmode {
+    padding-right: 5px;
+    text-align: right;
+}
 input.quoteitem_qty {
     width: 50px;
     text-align: right;
@@ -253,6 +263,10 @@ input.quoteitem_qty {
 .quoteitemtabledatarow .itemprice {
     width: 41px;
     border-left: 1px solid #b5b5b5;
+}
+.quoteitemtabledatarow .itemprice.viewmode {
+    padding-right: 5px;
+    text-align: right;
 }
 input.quoteitem_price {
     width: 39px;
@@ -285,10 +299,11 @@ input.quoteitem_price {
 .quoteitemtabledatarow .imprint_description {
     border-left: 1px solid #b5b5b5;
     width: 331px;
+    padding-left: 5px;
 }
 .quoteitemtabledatarow .imprint_qty {
     border-left: 1px solid #b5b5b5;
-    padding-right: 2px;
+    padding-right: 3px;
     text-align: right;
     width: 53px;
 }
@@ -296,7 +311,7 @@ input.quoteitem_price {
     border-left: 1px solid #b5b5b5;
     width: 41px;
     text-align: right;
-    padding-right: 2px;
+    padding-right: 3px;
 }
 .quoteitemtabledatarow .imprint_subtotal {
     border-left: 1px solid #b5b5b5;

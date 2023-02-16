@@ -3063,10 +3063,11 @@ class Leadquote_model extends MY_Model
             }
             $out['quote_number'] = $quote_number;
             $out['email'] = $res['lead_mail'];
+            $signature = 'Sincerely,'.PHP_EOL.str_replace('Contact Info:','',$res['quote_repcontact']);
             $this->load->model('email_model');
             $template = $this->email_model->get_emailtemplate_byname($this->template);
             $out['subject'] = str_replace(['<<quote_number>>','<<item_name>>','<<item_qty>>'],[$quote_number, $res['item_name'], $res['item_qty']], $template['email_template_subject']);
-            $out['message'] = str_replace(['<<contact_name>>','<<item_qty>>','<<item_name>>','<<user_email_signature>>'],[$res['lead_customer'],$res['item_qty'],$res['item_name'],$res['quote_repcontact']], $template['email_template_body']);
+            $out['message'] = str_replace(['<<contact_name>>','<<item_qty>>','<<item_name>>','<<user_email_signature>>'],[$res['lead_customer'],$res['item_qty'],$res['item_name'], $signature], $template['email_template_body']);
             $out['brand'] = $res['brand'];
         }
         return $out;
