@@ -4826,7 +4826,7 @@ class Balances_model extends My_Model
                 $this->db->where('order_date < ', strtotime($d_end));
                 $monthdat = $this->db->get()->row_array();
             }
-            log_message('error','ON PACE - Month Dates '.date('Y-m-d', $d_bgn).' - '.date('Y-m-d'));
+            log_message('error','ON PACE - Month Dates '.date('Y-m-d', $d_bgn).' - '.date('Y-m-d',$d_end));
             log_message('error','ON PACE - Month Revenue '.$monthdat['revenue']);
             $totalrevenue += floatval($monthdat['revenue']);
             log_message('error','ON PACE - Total Revenue '.$totalrevenue);
