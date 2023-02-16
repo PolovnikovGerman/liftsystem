@@ -1167,4 +1167,33 @@ class Test extends CI_Controller
             // die();
         }
     }
+
+    public function fix_netprofit() {
+        $this->db->select('order_date');
+        $this->db->from('ts_orders');
+        $this->db->where('brand','SR');
+        $this->db->order_by('order_id');
+        $order = $this->db->get()->row_array();
+        $start_date = $order['order_date'];
+        echo date('d.m.Y',$start_date).PHP_EOL;
+        $this->db->select('profit_id, profit_week, profit_year');
+        $this->db->from('netprofit');
+        $this->db->where('profit_week is not null');
+        $this->db->where('datebgn < ', $start_date);
+        $this->db->where('dateend >= ', $start_date);
+        $profdat = $this->db->get()->row_array();
+        $this->db->select('*');
+        $this->db->from('netprofit');
+        $this->db->where('profit_week is not null');
+        $this->db->where('profit_week >= ', $profdat['profit_week']);
+        $this->db->where('profit_year', $profdat['profit_year']);
+        $neprofs = $this->db->get()->result_array();
+        foreach ($neprofs as $neprof) {
+            $this->db->set('profit_id', $neprof['profit_id']);
+            $this->db->set('brand','SR');
+            $this->db->insert('netprofit_dat');
+            echo 'Week '.$neprof['profit_week'].'-'.$neprof['profit_year'].PHP_EOL;
+        }
+
+    }
 }
