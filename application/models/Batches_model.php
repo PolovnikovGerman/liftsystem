@@ -700,7 +700,7 @@ class Batches_model extends My_Model
         } elseif (!isset($order_data['order_id'])) {
             $out['msg']='Order not found';
         } elseif ($batch_data['amount']>floatval($order_data['revenue'])) {
-            $out['msg']='Amout great then order revenue';
+            $out['msg']='Amount great then order revenue';
         } else {
             $paypal_apply=strtotime($this->paypal_apply);
             if ($batch_data['batch_date']<$paypal_apply) {
@@ -1243,4 +1243,44 @@ class Batches_model extends My_Model
         return $duedate;
     }
 
+    public function error_batch($batch_data, $order, $usr_id) {
+        $this->db->set('user', $usr_id);
+        $this->db->set('batch_date', $batch_data['batch_date']);
+        $this->db->set('paymethod', $batch_data['paymethod']);
+        $this->db->set('amount', $batch_data['amount']);
+        $this->db->set('order_revenue', $order['revenue']);
+        $this->db->set('order_id', $order['order_id']);
+        $this->db->set('batch_type', $batch_data['batch_type']);
+        $this->db->set('batch_num', $batch_data['batch_num']);
+        $this->db->set('batch_transaction', $batch_data['batch_transaction']);
+        $this->db->set('error_message', $batch_data['msg']);
+        $this->db->insert('ts_batch_errorlog');
+        // Send notification
+        if ($this->config->item('test_server')!=1) {
+            $email_body = '';
+            $email_body.='Batch Date '.date('d.m.Y H:i:s', $batch_data['batch_date']).PHP_EOL;
+            $email_body.='Order '.$order['order_id'].PHP_EOL;
+            $email_body.='Pay method '.$batch_data['paymethod'].PHP_EOL;
+            $email_body.='Amount '.MoneyOutput($batch_data['amount']).PHP_EOL;
+            $email_body.='Order Revenue '.MoneyOutput($order['revenue']).PHP_EOL;
+            $email_body.='Batch Type '.$batch_data['batch_type'].PHP_EOL;
+            $email_body.='Batch Number '.$batch_data['batch_num'].PHP_EOL;
+            $email_body.='Transaction # '.$batch_data['batch_transaction'].PHP_EOL;
+            $email_body.='Error Message '.$batch_data['msg'].PHP_EOL;
+            $this->load->library('email');
+            $config = $this->config->item('email_setup');
+            $config['mailtype'] = 'text';
+            $this->email->initialize($config);
+            $this->email->set_newline("\r\n");
+            $this->email->to($this->config->item('developer_email'));
+            $this->email->bcc('to_german@yahoo.com'); //
+            $this->email->from($this->config->item('customer_notification_sender'));
+
+            $this->email->subject('Error during add batch '.date('d.m.Y H:i:s'));
+            $this->email->message($email_body);
+            $this->email->send();
+            $this->email->clear(TRUE);
+        }
+
+    }
 }
