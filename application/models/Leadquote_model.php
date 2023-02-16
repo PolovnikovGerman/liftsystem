@@ -95,14 +95,16 @@ class Leadquote_model extends MY_Model
                 if ($itemdat['result']==$this->success_result) {
                     $quote_items[] = $itemdat['quote_items'];
                     // Get Delivery Terms
-                    $this->load->model('calendars_model');
-                    $termdat = $this->calendars_model->get_delivery_date($lead_data['lead_item_id']);
-                    $quotedat['lead_time'] = json_encode($termdat);
-                    foreach ($termdat as $row) {
-                        if ($row['current']==1) {
-                            $quotedat['rush_cost'] = $row['price'];
-                            $quotedat['rush_days'] = $row['date'];
-                            $quotedat['rush_terms'] = $row['name'];
+                    if ($lead_data['lead_item_id'] > 0) {
+                        $this->load->model('calendars_model');
+                        $termdat = $this->calendars_model->get_delivery_date($lead_data['lead_item_id']);
+                        $quotedat['lead_time'] = json_encode($termdat);
+                        foreach ($termdat as $row) {
+                            if ($row['current']==1) {
+                                $quotedat['rush_cost'] = $row['price'];
+                                $quotedat['rush_days'] = $row['date'];
+                                $quotedat['rush_terms'] = $row['name'];
+                            }
                         }
                     }
                 }
@@ -762,7 +764,7 @@ class Leadquote_model extends MY_Model
                         );
                         $items[$itemidx]['items'][$itemcoloridx]['out_colors']=$this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
                     }
-                    $subtotal = $items[$itemidx]['items'][$itemcoloridx]['item_qty'] * $items[$itemidx]['items'][$itemcoloridx]['item_price'];
+                    $subtotal = intval($items[$itemidx]['items'][$itemcoloridx]['item_qty']) * floatval($items[$itemidx]['items'][$itemcoloridx]['item_price']);
                     $items[$itemidx]['items'][$itemcoloridx]['item_subtotal'] = MoneyOutput($subtotal);
                     $out['item_subtotal'] = $subtotal;
                 }
@@ -1157,6 +1159,12 @@ class Leadquote_model extends MY_Model
             $quotesession['deleted'] = $deleted;
             $quotesession['shipping'] = [];
         } else {
+            if (empty($quote['rush_days'])) {
+                $this->load->model('calendars_model');
+                $Date = date('Y-m-d');
+                $start = strtotime($Date. ' + 1 days');
+                $quote['rush_days'] = $this->calendars_model->get_business_date($start, 1, $this->config->item('custom_id'));
+            }
             $this->load->model('shipping_model');
             $res = $this->shipping_model->count_quoteshiprates($items, $quote, $quote['rush_days'], $quote['brand']);
             if ($res['result']==$this->success_result) {
@@ -1203,7 +1211,7 @@ class Leadquote_model extends MY_Model
             $imprint_subtotal = 0;
             $colors = $item['items'];
             foreach ($colors as $color) {
-                $item_subtotal+=$color['item_qty']*$color['item_price'];
+                $item_subtotal+=intval($color['item_qty'])*floatval($color['item_price']);
             }
             $items[$itmidx]['item_subtotal'] = $item_subtotal;
             $imprints = $item['imprints'];
@@ -1285,14 +1293,16 @@ class Leadquote_model extends MY_Model
                 $items[] = $newitem;
                 if (empty($quote['lead_time'])) {
                     // Get Delivery Terms
-                    $this->load->model('calendars_model');
-                    $termdat = $this->calendars_model->get_delivery_date($item_id);
-                    $quote['lead_time'] = json_encode($termdat);
-                    foreach ($termdat as $row) {
-                        if ($row['current']==1) {
-                            $quote['rush_cost'] = $row['price'];
-                            $quote['rush_days'] = $row['date'];
-                            $quote['rush_terms'] = $row['name'];
+                    if ($item_id > 0) {
+                        $this->load->model('calendars_model');
+                        $termdat = $this->calendars_model->get_delivery_date($item_id);
+                        $quote['lead_time'] = json_encode($termdat);
+                        foreach ($termdat as $row) {
+                            if ($row['current']==1) {
+                                $quote['rush_cost'] = $row['price'];
+                                $quote['rush_days'] = $row['date'];
+                                $quote['rush_terms'] = $row['name'];
+                            }
                         }
                     }
                 }
