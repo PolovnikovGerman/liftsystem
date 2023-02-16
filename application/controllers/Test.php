@@ -1175,11 +1175,13 @@ class Test extends CI_Controller
         $this->db->order_by('order_id');
         $order = $this->db->get()->row_array();
         $start_date = $order['order_date'];
+        echo date('d.m.Y',$start_date).PHP_EOL;
         $this->db->select('profit_id, profit_week, profit_year');
         $this->db->from('netprofit');
         $this->db->where('datebgn >=', $start_date);
         $this->db->where('dateend < ', $start_date);
         $profdat = $this->db->get()->row_array();
+        echo $this->db->last_query().PHP_EOL;
         var_dump($profdat);
     }
 }
