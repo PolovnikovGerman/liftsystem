@@ -136,8 +136,6 @@ class Leadquote extends MY_Controller
                         'templlists' => $templlists,
                         'countries' => $countries,
                         'edit_mode' => 1,
-                        // 'shipstates' => $shipstates,
-                        // 'billstates' => $billstates,
                         'shiprates' => '',
                         'lead_time' => $lead_time,
                         'shipstate' => $shipstate,
