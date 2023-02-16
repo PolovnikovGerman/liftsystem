@@ -1828,7 +1828,7 @@ class Leadquote_model extends MY_Model
         $pdf->SetXY(138, 15.2);
         $pdf->SetFont('','B',16.564429);
         // $pdf->SetTextColor(0, 0, 255);
-        if ($quote['quote_template']=='Proforma Invoice') {
+        if ($quote['quote_template']=='Proforma') {
             $pdf->Cell(61,16,'INVOICE',0,0,'R');
         } else {
             $pdf->Cell(61,16,'OFFICIAL QUOTE',0,0,'R');
@@ -2137,7 +2137,7 @@ class Leadquote_model extends MY_Model
         $pdf->SetXY(138, 15.2);
         $pdf->SetFont('','B',16.564429);
         // $pdf->SetTextColor(0, 0, 255);
-        if ($quote['quote_template']=='Proforma Invoice') {
+        if ($quote['quote_template']=='Proforma') {
             $pdf->Cell(60,16,'INVOICE',0,0,'R');
         } else {
             $pdf->Cell(60,16,'OFFICIAL QUOTE',0,0,'R');
