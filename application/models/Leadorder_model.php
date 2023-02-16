@@ -2850,7 +2850,8 @@ Class Leadorder_model extends My_Model {
             );
             $batchres = $this->batches_model->save_batch($batch_data, $order, $usr_id);
             if ($batchres['result']==$this->error_result) {
-
+                $batch_data['msg'] = $batchres['msg'];
+                $this->batches_model->error_batch($batch_data, $order, $usr_id);
             }
             // Get New list of Payments
             $payments=$this->get_leadorder_payments($order_id);
