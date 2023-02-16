@@ -55,9 +55,10 @@
     margin-left: 124px;
     background: #ffffff;
     border: 1px solid #000000;
-    border-radius: 7px;
+    border-radius: 5px;
     /* padding-left: 10px; */
     margin-right: 9px;
+    box-shadow: 0.3em 0.3em 3px rgb(0 0 0 / 50%);
 }
 .quoteactionsarea > div {
     text-align: center;
@@ -90,23 +91,23 @@
 .leadquotesavebtn {
     background-image: url(/img/leadorder/button_save.png);
     background-repeat: no-repeat;
-    width: 52px;
-    height: 34px;
-    line-height: 27px;
-    font-weight: 600;
-    color: #fff!important;
-    padding-left: 8px;
+    width: 53px;
+    height: 32px;
     cursor: pointer;
 }
 .leadquoteeditbtn {
-    background: transparent url(/img/leadorder/button_edit.png) no-repeat scroll 0 0;
+    background-image: url(/img/leadorder/button_edit.png);
+    background-repeat: no-repeat;
     cursor: pointer;
     height: 34px;
-    width: 53px;
-    line-height: 27px;
-    font-weight: 600;
-    color: #fff!important;
-    padding-left: 11px;
+    width: 52px;
+}
+.leadquotebtnlabel {
+    color: #FFFFFF!important;
+    width: 46px;
+    line-height: 28px;
+    text-align: center;
+    cursor: pointer;
 }
 .quotenumbertitle {
     color: #525252!important;

@@ -18,9 +18,13 @@
             <div class="quoteactionpdfdoc active" data-quote="<?=$quote_id?>">pdf</div>
         </div>
         <?php if ($edit_mode==1) { ?>
-            <div class="leadquotesavebtn">save</div>
+            <div class="leadquotesavebtn">
+                <div class="leadquotebtnlabel">save</div>
+            </div>
         <?php } else { ?>
-            <div class="leadquoteeditbtn">edit</div>
+            <div class="leadquoteeditbtn">
+                <div class="leadquotebtnlabel">edit</div>
+            </div>
         <?php } ?>
     </div>
     <div class="datarow">
