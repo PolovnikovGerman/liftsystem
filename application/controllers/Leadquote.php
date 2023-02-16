@@ -45,18 +45,8 @@ class Leadquote extends MY_Controller
                 $error=$qres['msg'];
                 if ($qres['result']==$this->success_result) {
                     $error = '';
-//                    if ($lead_data['brand']=='SR') {
-//                        $templlists = [
-//                            'Supplier',
-//                            'Proforma Invoice',
-//                        ];
-//                    } else {
-//                        $templlists = [
-//                            'Stressballs.com',
-//                            'Bluetrack Health',
-//                            'Proforma Invoice',
-//                        ];
-//                    }
+                    $quotedata = $qres['quote'];
+                    $quote_items = $qres['quote_items'];
                     $templlists = $this->quotetemplates;
                     $this->load->model('shipping_model');
                     $cnt_options=array(
@@ -66,26 +56,26 @@ class Leadquote extends MY_Controller
 
                     $shipstate = '';
                     $billstate = '';
-                    if (!empty($quote['shipping_country'])) {
-                        $shipstates = $this->shipping_model->get_country_states($quote['shipping_country']);
+                    if (!empty($quotedata['shipping_country'])) {
+                        $shipstates = $this->shipping_model->get_country_states($quotedata['shipping_country']);
                         if (is_array($shipstates)) {
                             $stateoptions = [
                                 'item' => 'shipping_state',
                                 'states' => $shipstates,
                                 'edit_mode' => 1,
-                                'data' => $quote,
+                                'data' => $quotedata,
                             ];
                             $shipstate = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
                         }
                     };
-                    if (!empty($quote['billing_country'])) {
-                        $billstates = $this->shipping_model->get_country_states($quote['billing_country']);
+                    if (!empty($quotedata['billing_country'])) {
+                        $billstates = $this->shipping_model->get_country_states($quotedata['billing_country']);
                         if (is_array($billstates)) {
                             $stateoptions = [
                                 'item' => 'billing_state',
                                 'states' => $billstates,
                                 'edit_mode' => 1,
-                                'data' => $quote,
+                                'data' => $quotedata,
                             ];
                             $billstate = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
                         }
@@ -93,8 +83,6 @@ class Leadquote extends MY_Controller
                     // Empty Tax view
                     $taxview = $this->load->view('leadpopup/quote_taxempty_view',[],TRUE);
                     // Prepare content
-                    $quotedata = $qres['quote'];
-                    $quote_items = $qres['quote_items'];
                     $items_views = [];
                     $item_subtotal = 0;
                     foreach ($quote_items as $quote_item) {

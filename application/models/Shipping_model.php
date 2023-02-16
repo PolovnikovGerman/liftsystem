@@ -86,7 +86,13 @@ Class Shipping_model extends MY_Model
         }
         /* Rebuild as array */
         if (!isset($leads['item_lead_a'])) {
-            $leads['item_lead_a']=0;
+            if ($item_id==$this->config->item('custom_id')) {
+                $leads['item_lead_a'] = 45;
+            } elseif ($item_id==$this->config->item('other_id')) {
+                $leads['item_lead_a'] = 7;
+            } else {
+                $leads['item_lead_a']=0;
+            }
         }
         if (!isset($leads['item_lead_b'])) {
             $leads['item_lead_b']=0;
@@ -95,7 +101,12 @@ Class Shipping_model extends MY_Model
             $leads['item_lead_c']=0;
         }
 
-        $min=($leads['item_lead_a']==0 ? 1 : $leads['item_lead_a']); $ship_array=array();
+        if ($item_id==$this->config->item('custom_id') || $item_id==$this->config->item('other_id')) {
+            $min = 1;
+        } else {
+            $min=($leads['item_lead_a']==0 ? 1 : $leads['item_lead_a']); $ship_array=array();
+        }
+
         $leads['item_lead_a']=($leads['item_lead_a']==0 ? 1 : $leads['item_lead_a']);
 
         if ($leads['item_lead_b']>0) {
