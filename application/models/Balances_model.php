@@ -2485,9 +2485,11 @@ class Balances_model extends My_Model
                 foreach ($ordersres as $row) {
                     if ($row['orddat'] == $end_year) {
                         $salespace = round($row['cnt'] * $paceweekkf, 0);
+                        log_message('error','Netprofitweek - Sales '.$salespace.' '.$row['cnt'].' * '.$paceweekkf);
                         $revenuepace = 0;
                         if (date('m')=='01') {
                             $revenuepace = round($row['revenue'] * $paceweekkf, 2);
+                            log_message('error','Netprofitweek - Revenue Jan '.$revenuepace.' '.$row['revenue'].'*'.$paceweekkf);
                         } else {
                             if ($salespace != 0) {
                                 $revendate = strtotime(date('Y-m').'-01');
@@ -2506,6 +2508,7 @@ class Balances_model extends My_Model
                                 }
                                 $revenueres = $this->db->get()->row_array();
                                 $revenuepace = $revenueres['revenue'] / ($revenueres['cnt']/$salespace);
+                                log_message('error','Netprofitweek - Revenue '.$revenuepace.' '.$revenueres['revenue'].' / ('.$revenueres['cnt'].' / '.$salespace.')');
                             }
                         }
                         // Get dat
@@ -2513,6 +2516,7 @@ class Balances_model extends My_Model
                         $pcssoldpace=round($row['pcssold'] * $paceweekkf,0);
                     }
                 }
+
             } else {
                 // Income by prev year
                 $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue, sum(o.profit) as gross_profit, sum(o.order_qty) as pcssold');
@@ -2533,6 +2537,7 @@ class Balances_model extends My_Model
                 $grosprofitpace=floatval($curordat['gross_profit']);
                 $pcssoldpace=intval($curordat['pcssold']);
             }
+            log_message('error','Netprofitweek - Paceexpense '.$paceexpense);
             if ($paceexpense==1) {
                 foreach ($debtres as $drow) {
                     if ($drow['profit_year'] == date('Y')) {
