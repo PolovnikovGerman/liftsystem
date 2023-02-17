@@ -2513,7 +2513,9 @@ class Balances_model extends My_Model
                         }
                         // Get dat
                         $grosprofitpace = round($row['gross_profit'] * $paceweekkf, 2);
+                        log_message('error','Netprofitweek - Grosprofit '.$grosprofitpace.' '.$row['gross_profit'].' * '.$paceweekkf);
                         $pcssoldpace=round($row['pcssold'] * $paceweekkf,0);
+                        log_message('error','Netprofitweek - PCS sold '.$pcssoldpace.' '.$row['pcssold'].' * '.$paceweekkf);
                     }
                 }
 
@@ -2542,11 +2544,17 @@ class Balances_model extends My_Model
                 foreach ($debtres as $drow) {
                     if ($drow['profit_year'] == date('Y')) {
                         $operatingpace = round(floatval($drow['operating'] * $paceweekkf), 2);
+                        log_message('error','Netprofitweek - Operating '.$operatingpace.' '.$drow['operating'].' * '.$paceweekkf);
                         $advertisingpace = round(floatval($drow['advertising']) * $paceweekkf, 2);
+                        log_message('error','Netprofitweek - Advertis '.$advertisingpace.' '.$drow['advertising'].' * '.$paceweekkf);
                         $payrollpace = round(floatval($drow['payroll']) * $paceweekkf, 2);
+                        log_message('error','Netprofitweek - Payroll '.$payrollpace.' '.$drow['payroll'].' * '.$paceweekkf);
                         $odeskpace = round(floatval($drow['projects']) * $paceweekkf, 2);
+                        log_message('error','Netprofitweek - '.$odeskpace.' '.$drow['projects'].' * '.$paceweekkf);
                         $profw9pace = round(floatval($drow['profw9'])*$paceweekkf,2);
+                        log_message('error','Netprofitweek - ProfW9 '.$profw9pace.' '.$drow['profw9'].' * '.$paceweekkf);
                         $purchasespace = round(floatval($drow['purchases']) * $paceweekkf, 2);
+                        log_message('error','Netprofitweek - Purchase '.$purchasespace.' '.$drow['purchases'].' * '.$paceweekkf);
                     }
                 }
             } else {
