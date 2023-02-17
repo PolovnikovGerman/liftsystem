@@ -57,8 +57,8 @@ function rebuild_charttable() {
         params.push({name: 'weekbgn', value: $("select#strweek").val()});
         params.push({name: 'weekend', value: $("select#endweek").val()});
     }
-    params.push({name: 'paceincome', value: $("input#projincome").val()});
-    params.push({name: 'paceexpense', value: $("input#projexpence").val()});
+    // params.push({name: 'paceincome', value: $("input#projincome").val()});
+    // params.push({name: 'paceexpense', value: $("input#projexpence").val()});
     params.push({name: 'brand', value: $("#netprofitchartdatabrand").val()});
     var url="/netprofit/netprofit_charttabledata";
     $.post(url,params,function(response){
