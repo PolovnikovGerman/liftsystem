@@ -2491,7 +2491,7 @@ class Balances_model extends My_Model
                         } else {
                             if ($salespace != 0) {
                                 $revendate = strtotime(date('Y-m').'-01');
-                                $year_start = strtorime(date('Y').'-01-01');
+                                $year_start = strtotime(date('Y').'-01-01');
                                 $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue');
                                 $this->db->from('ts_orders o');
                                 $this->db->where('o.is_canceled',0);
