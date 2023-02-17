@@ -2469,7 +2469,7 @@ class Balances_model extends My_Model
                         $salespace = round($row['cnt'] / $paceperc, 0);
                         $revenuepace = 0;
                         // if (date('m')=='01') {
-                            $revenuepace = round($row['revenue'] / $paceweekkf, 2);
+                            $revenuepace = round($row['revenue'] / $paceperc, 2);
 //                        } else {
 //                            if ($salespace != 0) {
 //                                $revendate = strtotime(date('Y-m').'-01');
