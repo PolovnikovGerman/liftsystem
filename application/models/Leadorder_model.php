@@ -5292,7 +5292,7 @@ Class Leadorder_model extends My_Model {
         } else {
             $outnewrundebt='$'.number_format($newtotalrun,0,'.',',');
         }
-        $this->db->select('np.*, netprofit_profit(datebgn, dateend) as gross_profit',FALSE);
+        $this->db->select('np.*, netprofit_profit(datebgn, dateend,\'ALL\') as gross_profit',FALSE);
         $this->db->from('netprofit np');
         $this->db->where('np.profit_id',$netdat['netdat_id']);
         $netdata=$this->db->get()->row_array();
