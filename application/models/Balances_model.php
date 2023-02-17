@@ -2207,10 +2207,13 @@ class Balances_model extends My_Model
         $this->db->where('dateend < ',$now);
         $this->db->order_by('datebgn','desc');
         $weekres=$this->db->get()->row_array();
+
         if ($weekres['profit_week']>52) {
             $weekres['profit_week']=52;
         }
+
         $paceweekkf=52/$weekres['profit_week'];
+
         $current_weeknum=$weekres['profit_week'];
         $this->db->select('max(profit_year) end_year, min(profit_year) as start_year, min(datebgn) as start_date');
         $this->db->from('netprofit');
@@ -2221,6 +2224,7 @@ class Balances_model extends My_Model
         $start_year=$yres['start_year'];
         $end_year=$yres['end_year'];
         $start_date=$yres['start_date'];
+
         // Period begin in case of paceincome=2 - prev year as pace
         // if ($paceincome==2) {
         $prev_year=$end_year-1;
@@ -2230,6 +2234,7 @@ class Balances_model extends My_Model
         } else {
             $prev_weeknum=$current_weeknum+1;
         }
+
         // Select date
         $this->db->select('profit_id,datebgn');
         $this->db->from('netprofit');
@@ -2242,6 +2247,7 @@ class Balances_model extends My_Model
             // Exclude
             $pacedatstart=strtotime(date("Y-m-d", $now) . " -1year -7days");
         }
+
         // }
 
 
@@ -2481,7 +2487,7 @@ class Balances_model extends My_Model
                         } else {
                             if ($salespace != 0) {
                                 $revendate = strtotime(date('Y-m').'-01');
-                                $year_start = strtorime(date('Y').'-01-01');
+                                $year_start = strtotime(date('Y').'-01-01');
                                 $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue');
                                 $this->db->from('ts_orders o');
                                 $this->db->where('o.is_canceled',0);
@@ -2503,6 +2509,7 @@ class Balances_model extends My_Model
                         $pcssoldpace=round($row['pcssold'] * $paceweekkf,0);
                     }
                 }
+
             } else {
                 // Income by prev year
                 $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue, sum(o.profit) as gross_profit, sum(o.order_qty) as pcssold');
@@ -2523,6 +2530,7 @@ class Balances_model extends My_Model
                 $grosprofitpace=floatval($curordat['gross_profit']);
                 $pcssoldpace=intval($curordat['pcssold']);
             }
+
             if ($paceexpense==1) {
                 foreach ($debtres as $drow) {
                     if ($drow['profit_year'] == date('Y')) {
