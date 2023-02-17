@@ -5621,16 +5621,16 @@ Class Orders_model extends MY_Model
                 $error = curl_error($curl).'('.curl_errno($curl).')';
                 echo $error;
             } else {
-                $array = json_decode($res);
+                $array = json_decode($res, true);
 
-                if ($array->result==1) {
+                if (ifset($array,'result','0')=='1') {
                     // echo 'Export '.$row['order_num'].' Success '.PHP_EOL;
                     $this->db->set('sended',1);
                     $this->db->set('sendtime', time());
                     $this->db->where('artdata_sync_id', $row['artdata_sync_id']);
                     $this->db->update('ts_artdata_sync');
                 } else {
-                    echo 'Error '.$array->error.PHP_EOL;
+                    echo 'Error '.$array['error'].PHP_EOL;
                 }
             }
             curl_close($curl);
@@ -5992,7 +5992,7 @@ Class Orders_model extends MY_Model
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
-            $this->db->where('o.brand', ['SB','BT']);
+            $this->db->where_in('o.brand', ['SB','BT']);
         }
         $this->db->order_by('o.order_num, h.created_time');
         $res = $this->db->get()->result_array();
