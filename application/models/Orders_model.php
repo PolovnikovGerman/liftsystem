@@ -5996,7 +5996,7 @@ Class Orders_model extends MY_Model
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
-            $this->db->where('o.brand', ['SB','BT']);
+            $this->db->where_in('o.brand', ['SB','BT']);
         }
         $this->db->order_by('o.order_num, h.created_time');
         $res = $this->db->get()->result_array();
