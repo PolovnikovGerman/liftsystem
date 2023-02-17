@@ -2187,9 +2187,6 @@ class Balances_model extends My_Model
 
     public function get_netprofit_totalsbyweekdata($options) {
         // Select max and min Year
-        foreach ($options as $key=>$val) {
-            log_message('error','Netprofitweek - Option '.$key.' = '.$val);
-        }
         $compareweek=ifset($options, 'compareweek',0);
         $paceincome=ifset($options,'paceincome',1);
         $paceexpense=ifset($options, 'paceexpense',1);
@@ -2203,7 +2200,6 @@ class Balances_model extends My_Model
         // Changed 12/02/2022
         // $now=getDayOfWeek(date('W'), date('Y'),1);
         $now = strtotime(date('Y-m-d').' 23:59:59'); // or your date as well
-        log_message('error','Netprofitweek - Now '.$now.' ('.date('Y-m-d H:i:s', $now).')');
         // Get current week number
         $this->db->select('profit_week');
         $this->db->from('netprofit');
@@ -2211,12 +2207,13 @@ class Balances_model extends My_Model
         $this->db->where('dateend < ',$now);
         $this->db->order_by('datebgn','desc');
         $weekres=$this->db->get()->row_array();
-        log_message('error','Netprofitweek - Week # '.$weekres['profit_week']);
+
         if ($weekres['profit_week']>52) {
             $weekres['profit_week']=52;
         }
+
         $paceweekkf=52/$weekres['profit_week'];
-        log_message('error','Netprofitweek - PaceKF '.$paceweekkf.' 52/'.$weekres['profit_week']);
+
         $current_weeknum=$weekres['profit_week'];
         $this->db->select('max(profit_year) end_year, min(profit_year) as start_year, min(datebgn) as start_date');
         $this->db->from('netprofit');
@@ -2227,7 +2224,7 @@ class Balances_model extends My_Model
         $start_year=$yres['start_year'];
         $end_year=$yres['end_year'];
         $start_date=$yres['start_date'];
-        log_message('error','Netprofitweek - Start Year '.$start_year.' End Year '.$end_year.' Start Date '.date('Y-m-d H:i:s', $start_date));
+
         // Period begin in case of paceincome=2 - prev year as pace
         // if ($paceincome==2) {
         $prev_year=$end_year-1;
@@ -2237,7 +2234,7 @@ class Balances_model extends My_Model
         } else {
             $prev_weeknum=$current_weeknum+1;
         }
-        log_message('error','Netprofitweek - Prev Year '.$prev_year.' Week '.$prev_weeknum);
+
         // Select date
         $this->db->select('profit_id,datebgn');
         $this->db->from('netprofit');
@@ -2250,7 +2247,7 @@ class Balances_model extends My_Model
             // Exclude
             $pacedatstart=strtotime(date("Y-m-d", $now) . " -1year -7days");
         }
-        log_message('error','Netprofitweek - Pace Dat Start '.date('Y-m-d H:i:s', $pacedatstart));
+
         // }
 
 
@@ -2479,17 +2476,14 @@ class Balances_model extends My_Model
             $pcssoldpace=0;
             $operating_helpstr = $advertising_helpstr = $payroll_helpstr = $odesk_helpstr = $profitw9_helpstr= $purchases_helpstr = '';
             // Build Pace
-            log_message('error','Netprofitweek - Pace Income '.$paceincome);
             if ($paceincome==1) {
                 // Income by current year
                 foreach ($ordersres as $row) {
                     if ($row['orddat'] == $end_year) {
                         $salespace = round($row['cnt'] * $paceweekkf, 0);
-                        log_message('error','Netprofitweek - Sales '.$salespace.' '.$row['cnt'].' * '.$paceweekkf);
                         $revenuepace = 0;
                         if (date('m')=='01') {
                             $revenuepace = round($row['revenue'] * $paceweekkf, 2);
-                            log_message('error','Netprofitweek - Revenue Jan '.$revenuepace.' '.$row['revenue'].'*'.$paceweekkf);
                         } else {
                             if ($salespace != 0) {
                                 $revendate = strtotime(date('Y-m').'-01');
@@ -2508,14 +2502,11 @@ class Balances_model extends My_Model
                                 }
                                 $revenueres = $this->db->get()->row_array();
                                 $revenuepace = $revenueres['revenue'] / ($revenueres['cnt']/$salespace);
-                                log_message('error','Netprofitweek - Revenue '.$revenuepace.' '.$revenueres['revenue'].' / ('.$revenueres['cnt'].' / '.$salespace.')');
                             }
                         }
                         // Get dat
                         $grosprofitpace = round($row['gross_profit'] * $paceweekkf, 2);
-                        log_message('error','Netprofitweek - Grosprofit '.$grosprofitpace.' '.$row['gross_profit'].' * '.$paceweekkf);
                         $pcssoldpace=round($row['pcssold'] * $paceweekkf,0);
-                        log_message('error','Netprofitweek - PCS sold '.$pcssoldpace.' '.$row['pcssold'].' * '.$paceweekkf);
                     }
                 }
 
@@ -2539,22 +2530,16 @@ class Balances_model extends My_Model
                 $grosprofitpace=floatval($curordat['gross_profit']);
                 $pcssoldpace=intval($curordat['pcssold']);
             }
-            log_message('error','Netprofitweek - Paceexpense '.$paceexpense);
+
             if ($paceexpense==1) {
                 foreach ($debtres as $drow) {
                     if ($drow['profit_year'] == date('Y')) {
                         $operatingpace = round(floatval($drow['operating'] * $paceweekkf), 2);
-                        log_message('error','Netprofitweek - Operating '.$operatingpace.' '.$drow['operating'].' * '.$paceweekkf);
                         $advertisingpace = round(floatval($drow['advertising']) * $paceweekkf, 2);
-                        log_message('error','Netprofitweek - Advertis '.$advertisingpace.' '.$drow['advertising'].' * '.$paceweekkf);
                         $payrollpace = round(floatval($drow['payroll']) * $paceweekkf, 2);
-                        log_message('error','Netprofitweek - Payroll '.$payrollpace.' '.$drow['payroll'].' * '.$paceweekkf);
                         $odeskpace = round(floatval($drow['projects']) * $paceweekkf, 2);
-                        log_message('error','Netprofitweek - '.$odeskpace.' '.$drow['projects'].' * '.$paceweekkf);
                         $profw9pace = round(floatval($drow['profw9'])*$paceweekkf,2);
-                        log_message('error','Netprofitweek - ProfW9 '.$profw9pace.' '.$drow['profw9'].' * '.$paceweekkf);
                         $purchasespace = round(floatval($drow['purchases']) * $paceweekkf, 2);
-                        log_message('error','Netprofitweek - Purchase '.$purchasespace.' '.$drow['purchases'].' * '.$paceweekkf);
                     }
                 }
             } else {
