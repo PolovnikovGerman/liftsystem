@@ -2468,28 +2468,28 @@ class Balances_model extends My_Model
                     if ($row['orddat'] == $end_year) {
                         $salespace = round($row['cnt'] / $paceperc, 0);
                         $revenuepace = 0;
-                        if (date('m')=='01') {
+                        // if (date('m')=='01') {
                             $revenuepace = round($row['revenue'] / $paceweekkf, 2);
-                        } else {
-                            if ($salespace != 0) {
-                                $revendate = strtotime(date('Y-m').'-01');
-                                $year_start = strtotime(date('Y').'-01-01');
-                                $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue');
-                                $this->db->from('ts_orders o');
-                                $this->db->where('o.is_canceled',0);
-                                $this->db->where('o.order_date >= ', $year_start);
-                                $this->db->where('o.order_date < ', $revendate);
-                                if (isset($options['brand']) && $options['brand']!=='ALL') {
-                                    if ($options['brand']=='SR') {
-                                        $this->db->where('o.brand', $options['brand']);
-                                    } else {
-                                        $this->db->where_in('o.brand', ['BT','SB']);
-                                    }
-                                }
-                                $revenueres = $this->db->get()->row_array();
-                                $revenuepace = $revenueres['revenue'] / ($revenueres['cnt']/$salespace);
-                            }
-                        }
+//                        } else {
+//                            if ($salespace != 0) {
+//                                $revendate = strtotime(date('Y-m').'-01');
+//                                $year_start = strtotime(date('Y').'-01-01');
+//                                $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue');
+//                                $this->db->from('ts_orders o');
+//                                $this->db->where('o.is_canceled',0);
+//                                $this->db->where('o.order_date >= ', $year_start);
+//                                $this->db->where('o.order_date < ', $revendate);
+//                                if (isset($options['brand']) && $options['brand']!=='ALL') {
+//                                    if ($options['brand']=='SR') {
+//                                        $this->db->where('o.brand', $options['brand']);
+//                                    } else {
+//                                        $this->db->where_in('o.brand', ['BT','SB']);
+//                                    }
+//                                }
+//                                $revenueres = $this->db->get()->row_array();
+//                                $revenuepace = $revenueres['revenue'] / ($revenueres['cnt']/$salespace);
+//                            }
+//                        }
                         // Get dat
                         $grosprofitpace = round($row['gross_profit'] / $paceperc, 2);
                         $pcssoldpace=round($row['pcssold'] / $paceperc,0);
