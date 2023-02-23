@@ -936,11 +936,13 @@ input.ship_tax_textareainpt {
     font-size: 11px;
     text-align: left;
     width: 34px;
+    color: #2E2E2E;
+    font-weight: normal;
 }
 .ship_tax_cont_bl2 > .line > .label.shipblind {
-    line-height: 13px;
-    height: 28px;
-    opacity: 0.5;
+    /* line-height: 13px; */
+    /* height: 28px; */
+    /* opacity: 0.5; */
 }
 .ship_tax_cont_bl3 {    
     float: left;

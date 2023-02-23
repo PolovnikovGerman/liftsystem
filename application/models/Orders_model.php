@@ -3751,7 +3751,7 @@ Class Orders_model extends MY_Model
         } else {
             if ($flag) {
                 $orderdat=$this->get_order_detail($order_id);
-                $this->db->select('np.*, netprofit_profit(datebgn, dateend) as gross_profit',FALSE);
+                $this->db->select('np.*, netprofit_profit(datebgn, dateend,\'ALL\') as gross_profit',FALSE);
                 $this->db->from('netprofit np');
                 $this->db->where('np.profit_month',NULL);
                 $this->db->where('np.datebgn <= ',$orderdat['order_date']);
