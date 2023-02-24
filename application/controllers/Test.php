@@ -1196,4 +1196,43 @@ class Test extends CI_Controller
         }
 
     }
+
+    public function payments_rep() {
+        $this->db->select('*');
+        $this->db->from('ts_order_batches');
+        $this->where('batch_date', strtotime('2019-01-01'));
+        $batchs = $this->db->get()->result_array();
+        $out = [];
+        foreach ($batchs as $batch) {
+            $cc_paym = 0; $other_paym = 0;
+            if ($batch['batch_amex'] != 0 || $batch['batch_vmd']) {
+                $cc_paym = $batch['batch_amount'];
+            } else {
+                $other_paym = $batch['batch_amount'];
+            }
+            $out[] = [
+                'date' => date('m/d/Y', $batch['batch_date']),
+                'amount' => $batch['batch_amount'],
+                'cc_payment' => $cc_paym,
+                'other_paym' => $other_paym,
+                'payment_type' => ($batch['batch_amount'] < 0 ? 'Refund' : 'Payment'),
+                'cc_type' => ($cc_paym != 0 ? $batch['batch_type'] : ''),
+            ];
+        }
+        $this->load->config('uploader');
+        $file_name = $this->config->item('upload_path_preload').'payment_report.csv';
+        unlink($file_name);
+        $fh = fopen($file_name, FOPEN_WRITE_CREATE);
+        if ($fh) {
+            $msg = 'Date;Total Payment;By Credit Card;Other Payment;CC System;Payment Type;';
+            fwrite($fh, $msg);
+            foreach ($out as $row) {
+                $msg = $row['date'].';'.$row['amount'].';'.$row['cc_payment'].';'.$row['other_paym'].';'.$row['cc_type'].';'.$row['payment_type'].';'.PHP_EOL;
+                fwrite($fh, $msg);
+            }
+            fclose($fh);
+        } else {
+            echo 'Create file Error'.PHP_EOL;
+        }
+    }
 }
