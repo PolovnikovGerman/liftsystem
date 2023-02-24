@@ -6351,7 +6351,7 @@ Class Leadorder_model extends My_Model {
                 );
             } else {
                 $config = array(
-                    'Sandbox' => $this->config->item('Sandbox'), 			// Sandbox / testing mode option.
+                    'Sandbox' => FALSE, // $this->config->item('Sandbox'), 			// Sandbox / testing mode option.
                     'APIUsername' => $this->config->item('APIUsername'), 	// PayPal API username of the API caller
                     'APIPassword' => $this->config->item('APIPassword'), 	// PayPal API password of the API caller
                     'APISignature' => $this->config->item('APISignature'), 	// PayPal API signature of the API caller
