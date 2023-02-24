@@ -1219,6 +1219,7 @@ class Test extends CI_Controller
                 'cc_type' => ($cc_paym != 0 ? $batch['batch_type'] : ''),
             ];
         }
+        echo count($out).' Batches '.PHP_EOL;
         $this->load->config('uploader');
         $file_name = $this->config->item('upload_path_preload').'payment_report.csv';
         @unlink($file_name);
@@ -1231,6 +1232,7 @@ class Test extends CI_Controller
                 fwrite($fh, $msg);
             }
             fclose($fh);
+            echo 'File '.$file_name.' Ready '.PHP_EOL;
         } else {
             echo 'Create file Error'.PHP_EOL;
         }
