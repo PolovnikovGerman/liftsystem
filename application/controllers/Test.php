@@ -1205,10 +1205,22 @@ class Test extends CI_Controller
         $out = [];
         foreach ($batchs as $batch) {
             $cc_paym = 0; $other_paym = 0;
+            $other_type = '';
             if ($batch['batch_amex'] != 0 || $batch['batch_vmd'] != 0 ) {
                 $cc_paym = $batch['batch_amount'];
             } else {
                 $other_paym = $batch['batch_amount'];
+                if ($batch['batch_writeoff']!=0) {
+                    $other_type = 'Write OFF';
+                } elseif ($batch['batch_term']!=0) {
+                    $other_type = 'Term';
+                } else {
+                    if (!empty($batch['batch_type'])) {
+                        $other_type = $batch['batch_type'];
+                    } else {
+                        $other_type = 'Other';
+                    }
+                }
             }
             $out[] = [
                 'date' => date('m/d/Y', $batch['batch_date']),
@@ -1221,11 +1233,11 @@ class Test extends CI_Controller
         }
         echo count($out).' Batches '.PHP_EOL;
         $this->load->config('uploader');
-        $file_name = $this->config->item('upload_path_preload').'payment_report.csv';
+        $file_name = $this->config->item('upload_path_preload').'payment_report_adv.csv';
         @unlink($file_name);
         $fh = fopen($file_name, FOPEN_WRITE_CREATE);
         if ($fh) {
-            $msg = 'Date;Total Payment;By Credit Card;Other Payment;CC System;Payment Type;'.PHP_EOL;
+            $msg = 'Date;Total Payment;By Credit Card;Other Payment;CC System;Other Type;Payment Type;'.PHP_EOL;
             fwrite($fh, $msg);
             foreach ($out as $row) {
                 $msg = $row['date'].';'.$row['amount'].';'.$row['cc_payment'].';'.$row['other_paym'].';'.$row['cc_type'].';'.$row['payment_type'].';'.PHP_EOL;
