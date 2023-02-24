@@ -6342,7 +6342,7 @@ Class Leadorder_model extends My_Model {
             $this->config->load('paypal');
             if ($options['brand']=='SR') {
                 $config = array(
-                    'Sandbox' => TRUE, 			// Sandbox / testing mode option.
+                    'Sandbox' => $this->config->item('Sandbox'), 			// Sandbox / testing mode option.
                     'APIUsername' => $this->config->item('APIUsernameSR'), 	// PayPal API username of the API caller
                     'APIPassword' => $this->config->item('APIPasswordSR'), 	// PayPal API password of the API caller
                     'APISignature' => $this->config->item('APISignatureSR'), 	// PayPal API signature of the API caller
@@ -6351,7 +6351,7 @@ Class Leadorder_model extends My_Model {
                 );
             } else {
                 $config = array(
-                    'Sandbox' => TRUE, 			// Sandbox / testing mode option.
+                    'Sandbox' => $this->config->item('Sandbox'), 			// Sandbox / testing mode option.
                     'APIUsername' => $this->config->item('APIUsername'), 	// PayPal API username of the API caller
                     'APIPassword' => $this->config->item('APIPassword'), 	// PayPal API password of the API caller
                     'APISignature' => $this->config->item('APISignature'), 	// PayPal API signature of the API caller
