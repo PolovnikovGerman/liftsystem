@@ -1652,10 +1652,10 @@ class Leadquote_model extends MY_Model
                     $item['item_name'] = $itemdata['item_name'];
                     $item['colors'] = $colors;
                     $item['num_colors'] = count($colors);
-                    $item['imprint_locations']=$itemdata['imprints'];
-                    $item['vendor_zipcode']=$itemdata['vendor_zipcode'];
-                    $item['charge_perorder']=$itemdata['charge_perorder'];
-                    $item['charge_pereach']=$itemdata['charge_pereach'];
+                    $item['imprint_locations']=ifset($itemdata, 'imprints',0);
+                    $item['vendor_zipcode']=ifset($itemdata, 'vendor_zipcode','');
+                    $item['charge_perorder']=ifset($itemdata, 'charge_perorder',0);
+                    $item['charge_pereach']=ifset($itemdata,'charge_pereach',0);
                     $item['item_subtotal']=$colorssubtotal;
                     // Add Imprins, colors, details
                     $item['items'] = $curcolors;
