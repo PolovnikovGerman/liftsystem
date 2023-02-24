@@ -6363,6 +6363,10 @@ Class Leadorder_model extends My_Model {
                     'APIVersion' => $this->config->item('APIVersion')		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
                 );
             }
+            log_message('ERROR', 'Server Config '.$realconfig);
+            foreach ($config as $key=> $val) {
+                log_message('ERROR', $key . ' - '.$val);
+            }
             // Show Errors
             if (empty($config['APIUsername']) || empty($config['APIPassword']) || empty($config['APISignature'])) {
                 return array('result' => $this->error_result, 'error_msg' => 'Empty Credentials for Payment');
