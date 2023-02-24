@@ -1228,6 +1228,7 @@ class Test extends CI_Controller
                 'cc_payment' => $cc_paym,
                 'other_paym' => $other_paym,
                 'payment_type' => ($batch['batch_amount'] < 0 ? 'Refund' : 'Payment'),
+                'other_type' => $other_type,
                 'cc_type' => ($cc_paym != 0 ? $batch['batch_type'] : ''),
             ];
         }
@@ -1240,7 +1241,7 @@ class Test extends CI_Controller
             $msg = 'Date;Total Payment;By Credit Card;Other Payment;CC System;Other Type;Payment Type;'.PHP_EOL;
             fwrite($fh, $msg);
             foreach ($out as $row) {
-                $msg = $row['date'].';'.$row['amount'].';'.$row['cc_payment'].';'.$row['other_paym'].';'.$row['cc_type'].';'.$row['payment_type'].';'.PHP_EOL;
+                $msg = $row['date'].';'.$row['amount'].';'.$row['cc_payment'].';'.$row['other_paym'].';'.$row['cc_type'].';'.$row['other_type'].';'.$row['payment_type'].';'.PHP_EOL;
                 fwrite($fh, $msg);
             }
             fclose($fh);
