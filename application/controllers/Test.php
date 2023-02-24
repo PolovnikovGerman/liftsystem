@@ -1200,7 +1200,7 @@ class Test extends CI_Controller
     public function payments_rep() {
         $this->db->select('*');
         $this->db->from('ts_order_batches');
-        $this->db->where('batch_date', strtotime('2019-01-01'));
+        $this->db->where('batch_date >= ', strtotime('2019-01-01'));
         $batchs = $this->db->get()->result_array();
         $out = [];
         foreach ($batchs as $batch) {
