@@ -1221,7 +1221,7 @@ class Test extends CI_Controller
         }
         $this->load->config('uploader');
         $file_name = $this->config->item('upload_path_preload').'payment_report.csv';
-        unlink($file_name);
+        @unlink($file_name);
         $fh = fopen($file_name, FOPEN_WRITE_CREATE);
         if ($fh) {
             $msg = 'Date;Total Payment;By Credit Card;Other Payment;CC System;Payment Type;';
