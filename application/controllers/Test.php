@@ -1225,7 +1225,7 @@ class Test extends CI_Controller
         @unlink($file_name);
         $fh = fopen($file_name, FOPEN_WRITE_CREATE);
         if ($fh) {
-            $msg = 'Date;Total Payment;By Credit Card;Other Payment;CC System;Payment Type;';
+            $msg = 'Date;Total Payment;By Credit Card;Other Payment;CC System;Payment Type;'.PHP_EOL;
             fwrite($fh, $msg);
             foreach ($out as $row) {
                 $msg = $row['date'].';'.$row['amount'].';'.$row['cc_payment'].';'.$row['other_paym'].';'.$row['cc_type'].';'.$row['payment_type'].';'.PHP_EOL;
