@@ -1205,7 +1205,7 @@ class Test extends CI_Controller
         $out = [];
         foreach ($batchs as $batch) {
             $cc_paym = 0; $other_paym = 0;
-            if ($batch['batch_amex'] != 0 || $batch['batch_vmd']) {
+            if ($batch['batch_amex'] != 0 || $batch['batch_vmd'] != 0 ) {
                 $cc_paym = $batch['batch_amount'];
             } else {
                 $other_paym = $batch['batch_amount'];
