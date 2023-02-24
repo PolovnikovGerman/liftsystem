@@ -6,18 +6,16 @@ function show_new_lead(lead_id,type, brand) {
     params.push({name: 'brand', value: brand});
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("#pageModalLabel").empty().html(response.data.title);
-            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").find('div.modal-dialog').css('width','970px');
-            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
-            // $("select#lead_item").select2({
-            //     dropdownParent: $('#pageModal'),
-            //     matcher: matchStart
-            // });
+            $("#leadformModalLabel").empty().html(response.data.title);
+            $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+            $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+            $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
+            // Init clone email
+            init_lead_cloneemail();
             init_leadpopupedit();
             // Save Button
-            $("a.saveleaddat").unbind('dblclick');
-            $("a.saveleaddat").unbind('click').click(function(){
+            $(".saveleaddat").unbind('dblclick');
+            $(".saveleaddat").unbind('click').click(function(){
                 $("#loader").show();
                 save_lead();
                 $("#loader").hide();
@@ -42,14 +40,16 @@ function add_lead(brand) {
     var url=mainurl+"/edit_lead";
     $.post(url, {'lead_id':lead_id, brand: brand}, function(response){
         if (response.errors=='') {
-            $("#pageModalLabel").empty().html(response.data.title);
-            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").find('div.modal-dialog').css('width','970px');
-            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
-            // $("select#lead_item").select2({
-            //     dropdownParent: $('#pageModal'),
-            //     matcher: matchStart
-            // });
+            // $("#pageModalLabel").empty().html(response.data.title);
+            // $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+            // $("#pageModal").find('div.modal-dialog').css('width','970px');
+            // $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+            // init_leadpopupedit();
+            $("#leadformModalLabel").empty().html(response.data.title);
+            $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+            $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+            $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
+            init_lead_cloneemail();
             init_leadpopupedit();
         } else {
             show_error(response);
@@ -62,31 +62,11 @@ function edit_lead(lead_id) {
     var url=mainurl+"/edit_lead";
     $.post(url, {'lead_id':lead_id}, function(response){
         if (response.errors=='') {
-            $("#pageModalLabel").empty().html(response.data.title);
-            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").find('div.modal-dialog').css('width','970px');
-            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
-            // $("select#lead_item").select2({
-            //     dropdownParent: $('#pageModal'),
-            //     matcher: matchStart
-            // }).on("change", function(e){
-            //     var newid = $(this).val();
-            //     var url=mainurl+"/lead_itemchange"
-            //     $.post(url, {'item_id': newid}, function(response){
-            //         if (response.errors=='') {
-            //             // $("input#lead_item").val(response.data.item_name);
-            //             if (response.data.other==1) {
-            //                 $("div.item_otheritemarea").show();
-            //                 $("div.item_otheritem_label").empty().html(response.data.other_label);
-            //             } else {
-            //                 $("div.item_otheritemarea").hide();
-            //                 $("textarea#other_item_name").val('');
-            //             }
-            //         } else {
-            //             show_error(response);
-            //         }
-            //     }, 'json');
-            // });
+            $("#leadformModalLabel").empty().html(response.data.title);
+            $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+            $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+            $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
+            init_lead_cloneemail();
             init_leadpopupedit();
         } else {
             show_error(response);
@@ -119,8 +99,10 @@ function init_leadpopupedit() {
     if (itemid!='') {
         if (parseInt(itemid)<1) {
             $("div.item_otheritemarea").show();
+            $("div.lead_history").removeClass('expandhistory');
         } else {
             $("div.item_otheritemarea").hide();
+            $("div.lead_history").addClass('expandhistory');
         }
     }
     $("select#lead_item").searchable();
@@ -206,7 +188,7 @@ function init_leadpopupedit() {
         duplicatelead();
     })
     /* Save Button */
-    $("a.saveleaddat").unbind('click').click(function(){
+    $(".saveleaddat").unbind('click').click(function(){
         save_lead();
     })
     $("div.lead_popup_addrequest img").unbind('click').click(function(){
@@ -216,7 +198,10 @@ function init_leadpopupedit() {
         var mail_id=$(this).data('leadid');
         var lead_id=$("input#lead_id").val();
         var dat=$("form#leadeditform").serializeArray();
+        dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
         dat.push({name:'session_id', value: $("#session").val()});
+        dat.push({name: 'session_attach', value: $("#session_attach").val()});
+        dat.push({name: 'lead_type', value: $("#lead_type").val()});
         var url=mainurl+"/lead_proofrequest";
         $.post(url, dat, function(response){
             if (response.errors=='') {
@@ -252,6 +237,7 @@ function init_leadpopupedit() {
             var data=new Array();
             data.push({name: 'user', value: user});
             data.push({name: 'session_id', value: $("#session").val()});
+            data.push({name: 'brand', value: $("#brand").val()})
             var url=mainurl+"/lead_remove_rep";
             $.post(url,data, function(response){
                 if (response.errors=='') {
@@ -283,6 +269,14 @@ function init_leadpopupedit() {
             }
         },'json');
     });
+    // Edit quotes
+    $(".leadquotenumberlist").unbind('click').click(function(){
+        var quote_id = $(this).data('leadquote');
+        leadquote_edit(quote_id);
+    })
+    $(".quotesaddnew").unbind('click').click(function () {
+        addnewcustomquote();
+    });
 }
 
 function delete_lead_attachment(attachid) {
@@ -293,6 +287,7 @@ function delete_lead_attachment(attachid) {
     $.post(url,params, function (response) {
         if (response.errors=='') {
             $(".lead_popup_attachs").empty().html(response.data.content);
+            $(".datarow[data-leadquote='"+quote_id+"']").children('div').addClass('active');
             init_leadpopupedit();
         } else {
             show_error(response);
@@ -313,6 +308,7 @@ function addnewleaderpl() {
         $("#artNextModal").modal('hide');
     } else {
         params.push({name:'session_id', value: $("#session").val()});
+        params.push({name: 'brand', value: $("#brand").val()});
         var url=mainurl+"/lead_addrep_save";
         $.post(url, params, function(response){
             if (response.errors=='') {
@@ -341,6 +337,7 @@ function add_proofrequest() {
         dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
         dat.push({name:'session_id', value: $("#session").val()});
         dat.push({name: 'session_attach', value: $("#session_attach").val()});
+        dat.push({name: 'lead_type', value: $("#lead_type").val()});
         $("#loader").show();
         $.ajax({
             url: url,
@@ -427,17 +424,10 @@ function restore_leadform() {
     var url=mainurl+"/restore_ledform";
     $.post(url, {}, function(response){
         if (response.errors=='') {
-            $("#pageModalLabel").empty().html(response.data.title);
-            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").find('div.modal-dialog').css('width','970px');
-            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
-            $("#pageModal").find('button.close').unbind('click').click(function(){
-                $("#pageModal").modal('hide');
-            });
-            // $("select#lead_item").select2({
-            //     dropdownParent: $('#pageModal'),
-            //     matcher: matchStart
-            // });
+            $("#leadformModalLabel").empty().html(response.data.title);
+            $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+            $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+            init_lead_cloneemail();
             init_leadpopupedit();
         } else {
             show_error(response);
@@ -453,9 +443,11 @@ function lead_itemchange(item_id) {
             if (response.data.other==1) {
                 $("div.item_otheritemarea").show();
                 $("div.item_otheritem_label").empty().html(response.data.other_label);
+                $("div.lead_history").removeClass('expandhistory');
             } else {
                 $("div.item_otheritemarea").hide();
                 $("textarea#other_item_name").val('');
+                $("div.lead_history").addClass('expandhistory');
             }
         } else {
             show_error(response);
@@ -467,8 +459,10 @@ function lead_itemchange(item_id) {
 function duplicatelead() {
    // var lead_id=$("input#lead_id").val();
    var dat=$("form#leadeditform").serializeArray();
-   dat.push({name:'session_id', value: $("#session").val()});
-   dat.push({name: 'session_attach', value: $("#session_attach").val()});
+    dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
+    dat.push({name:'session_id', value: $("#session").val()});
+    dat.push({name: 'session_attach', value: $("#session_attach").val()});
+    dat.push({name: 'lead_type', value: $("#lead_type").val()});
    var lead_number=$("div.lead_popup_number").text();
    if (confirm("Are you sure you want to duplicate "+lead_number+" ?")==true) {
        var url=mainurl+"/dublicatelead";
@@ -476,10 +470,10 @@ function duplicatelead() {
             if (response.errors=='') {
                 // $("#pageModal").modal('hide');
                 initLeaddataPagination();
-                $("#pageModalLabel").empty().html(response.data.title);
-                $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-                // $("#pageModal").find('div.modal-dialog').css('width','970px');
-                // $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#leadformModalLabel").empty().html(response.data.title);
+                $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+                $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+                init_lead_cloneemail();
                 init_leadpopupedit();
             } else {
                 show_error(response);
@@ -492,30 +486,17 @@ function save_lead() {
    var option=$("input[type=checkbox]").filter(":first").prop('disabled');
    $("input[type=checkbox]").attr('disabled',false);
    var dat=$("form#leadeditform").serializeArray();
-   dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
-   dat.push({name: 'session_id', value: $("#session").val()});
-   dat.push({name: 'session_attach', value: $("#session_attach").val()});
+    dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
+    dat.push({name:'session_id', value: $("#session").val()});
+    dat.push({name: 'session_attach', value: $("#session_attach").val()});
+    dat.push({name: 'lead_type', value: $("#lead_type").val()});
    var url=mainurl+"/save_lead";
    $.post(url, dat, function(response){
        if (response.errors=='') {
            initLeaddataPagination();
            initProofPagination();
            $("#loader").hide();
-           $("#pageModal").modal('hide');
-           /* Read currrent tab */
-            // var curtab;
-            // if ($("ul.tabNavigation a.selected").length!=0) {
-            //     curtab=$("ul.tabNavigation a.selected").prop('id');
-            // } else {
-            //     curtab=$("ul.tabNavigation a.selectedleft").prop('id');
-            // }
-            // if (curtab=='requestlistlnk') {
-            //     initProofPagination();
-            // } else if (curtab=='leadslnk') {
-            //     initLeaddataPagination();
-            // } else if (curtab=='onlineprooflnk') {
-            //     initProofPagination();
-            // }
+           $("#leadformModal").modal('hide');
        } else {
            if (option==true) {
                 $("input[type=checkbox]").attr('disabled',true);
@@ -525,3 +506,24 @@ function save_lead() {
        }
    }, 'json');
 }
+
+function init_lead_cloneemail() {
+
+    var copyTextareaBtn = document.querySelector('.lead_popup_mailclone');
+
+    copyTextareaBtn.addEventListener('click', function(event) {
+        var copyTextarea = document.querySelector('.js-copytextarea');
+        copyTextarea.focus();
+        copyTextarea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            alert('Email address copied to clipboard');
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+    });
+
+}
+

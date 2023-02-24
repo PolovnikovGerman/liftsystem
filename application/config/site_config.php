@@ -1,6 +1,6 @@
 <?php
-$config['js_version'] = '2.02028';
-$config['css_version']= '2.02028';
+$config['js_version'] = '2.02052';
+$config['css_version']= '2.02052';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -44,6 +44,7 @@ switch($_SERVER['SERVER_NAME']){
         $config['art_dept_email']="art@golden-team.org";
         $config['taisenkatakura_email']='taisen@test.ru';
         $config['customer_notification_sender']='sales@bluetrack.com';
+        $config['customer_notification_relievers'] = 'sales@stressrelievers.com';
         $config['developer_email']='polovnikov.g@gmail.com';
         $config['newprooflnk']='http://test.bluetrack.com/proofview/?doc=';
         break;
@@ -55,6 +56,7 @@ switch($_SERVER['SERVER_NAME']){
         $config['redraw_email']='redraw@bluetrack.com';
         $config['art_dept_email']="art@bluetrack.com";
         $config['customer_notification_sender']='sales@bluetrack.com';
+        $config['customer_notification_relievers'] = 'sales@stressrelievers.com';
         $config['taisenkatakura_email']='taisenkatakura321@yahoo.com';
         // $config['developer_email']='polovnikov.g@gmail.com';
         $config['developer_email']='german.polovnikov@bluetrack.com';
@@ -269,7 +271,7 @@ if ($config['test_server']==1) {
     );
     $config['mail_research_from']='research@golden-team.org';
     // $config['email_notification_sender']='grey@golden-team.org';
-    $config['customer_notification_sender']='sales@golden-team.org';
+    // $config['customer_notification_sender']='sales@golden-team.org';
     $config['proofrequest_notification']='proof-req@golden-team.org';
 } else {
     $config['mail_research']='sean@bluetrack.com';
@@ -282,9 +284,10 @@ if ($config['test_server']==1) {
     );
     $config['mail_research_from']='research@bluetrack.com';
     // $config['email_notification_sender']='grey@bluetrack.com';
-    $config['customer_notification_sender']='sales@bluetrack.com';
+    // $config['customer_notification_sender']='sales@bluetrack.com';
     $config['proofrequest_notification']='proof-req@bluetrack.com';
 }
 $config['prooflnk']='https://www.bluetrack.com/proofs/';
 $config['newprooflnk']='https://www.bluetrack.com/proofview/?doc=';
 $config['debug_mode'] = (getenv('TEST_SERVER')==1 ? '1' : 0);
+$config['default_country'] = 223;

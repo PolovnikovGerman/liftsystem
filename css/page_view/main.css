@@ -655,13 +655,17 @@ ul.mainmenu #collapsed.dropdown-menu li {
     color: #f7f4f4;
     position: relative;
 }
+.relieverstab .maincontentmenu_item {
+    background: #ededed!important;
+    color: #2E2E2E;
+}
 .maincontentmenu_item.oldver {
     padding: 0 13px 0 1px;
 }
 .maincontentmenu_item.active {
     color: #000;
     font-weight: bold;
-    background: #ffffff;
+    background: #ffffff!important;
     cursor: default;
     line-height: 26px!important;
     height: 26px;

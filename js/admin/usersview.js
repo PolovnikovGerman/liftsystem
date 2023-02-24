@@ -335,6 +335,20 @@ function user_edit_manage() {
             }
         },'json');
     });
+    $("textarea.userpersdata").unbind('change').change(function () {
+        var url = '/admin/userdata_change';
+        var params = new Array();
+        var itemname = $(this).data('name');
+        params.push({name: 'session', value: $("#session").val()});
+        params.push({name: 'item', value: itemname});
+        params.push({name: 'newval', value: $(this).val()});
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
     $("#userstartpageselect").unbind('change').change(function () {
         var url = '/admin/userdata_change';
         var params = new Array();

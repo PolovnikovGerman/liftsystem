@@ -4634,6 +4634,12 @@ Class Leadorder_model extends My_Model {
                 // $res['neworder']=$neworder_num+1;
                 $res['neworder']=$neworder_num;
                 /* Get New total */
+                /* Relation with Quotes */
+                if (ifset($data, 'quote_id',0)!=0) {
+                    $this->db->set('quote_id', $data['quote_id']);
+                    $this->db->set('order_id', $order_id);
+                    $this->db->insert('ts_leadquote_orders');
+                }
             }
         } else {
             $this->db->where('order_id',$order_id);

@@ -61,14 +61,14 @@ Class Shipping_model extends MY_Model
     }
 
     // Get Rush list
-    public function get_rushlist($item_id, $startdate=0) {
+    public function get_rushlist($item_id, $startdate=0, $defstart = '') {
         if ($startdate==0) {
             $start=date("Y-m-d");// current date
             $start_time=strtotime($start);
         } else {
             $start_time=$startdate;
         }
-        $start_time=$startdate;
+        // $start_time=$startdate;
         $proof_date = $start_time;
         if ($this->_chk_business_day($start_time, $item_id)==0) {
             $proof_date=$this->_get_business_date($start_time, 1, $item_id);
@@ -86,7 +86,13 @@ Class Shipping_model extends MY_Model
         }
         /* Rebuild as array */
         if (!isset($leads['item_lead_a'])) {
-            $leads['item_lead_a']=0;
+            if ($item_id==$this->config->item('custom_id')) {
+                $leads['item_lead_a'] = 45;
+            } elseif ($item_id==$this->config->item('other_id')) {
+                $leads['item_lead_a'] = 7;
+            } else {
+                $leads['item_lead_a']=0;
+            }
         }
         if (!isset($leads['item_lead_b'])) {
             $leads['item_lead_b']=0;
@@ -95,7 +101,12 @@ Class Shipping_model extends MY_Model
             $leads['item_lead_c']=0;
         }
 
-        $min=($leads['item_lead_a']==0 ? 1 : $leads['item_lead_a']); $ship_array=array();
+        if ($item_id==$this->config->item('custom_id') || $item_id==$this->config->item('other_id')) {
+            $min = 1;
+        } else {
+            $min=($leads['item_lead_a']==0 ? 1 : $leads['item_lead_a']); $ship_array=array();
+        }
+
         $leads['item_lead_a']=($leads['item_lead_a']==0 ? 1 : $leads['item_lead_a']);
 
         if ($leads['item_lead_b']>0) {
@@ -164,10 +175,23 @@ Class Shipping_model extends MY_Model
                     }
                 }
                 if ($prefix>=0) {
-                    if ($i==$leads['item_lead_a']) {
-                        $current=1;
-                        $current_rush=$prefix;
+                    if ($current==0) {
+                        if (empty($defstart)) {
+                            if ($i==$leads['item_lead_a']) {
+                                $current = 1;
+                                $current_rush = $prefix;
+                            }
+                        } else {
+                            if ($rushterm==$defstart) {
+                                $current = 1;
+                                $current_rush = $prefix;
+                            }
+                        }
                     }
+                    // if ($i==$leads['item_lead_a']) {
+                    //    $current=1;
+                    //    $current_rush=$prefix;
+                    // }
                     $rush[]=array(
                         'id'=>$dat.'-'.$prefix,
                         'list'=>date('D M d',$dat).' ('.($prefix==0 ? '' : '$'.$prefix.' - ').''.$rushterm.')',
@@ -179,6 +203,10 @@ Class Shipping_model extends MY_Model
                 }
             }
             $cnt++;
+        }
+        if ($current==0) {
+            $rush[0]['current'] = 1;
+
         }
         return array('rush'=>$rush,'current_rush'=>$current_rush);
     }
@@ -1039,6 +1067,160 @@ Class Shipping_model extends MY_Model
         $this->db->where('brand', $brand);
         $res = $this->db->get()->result_array();
         return $res;
+    }
+
+    public function get_zip_address($country_id, $zipcode) {
+        $out=['result' => $this->error_result, 'msg' => 'Address not found'];
+        $cntdat = $this->get_country($country_id);
+        if ($cntdat['country_iso_code_2']=='CA') {
+            $seachzip = substr($zipcode,0, 3);
+        } else {
+            $seachzip = $zipcode;
+        }
+        $this->db->select('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code as state, t.state_id, count(c.geoip_city_id) as cntcity');
+        $this->db->from('ts_geoipdata gdata');
+        $this->db->join('ts_geoip_city c','c.geoname_id=gdata.geoname_id');
+        $this->db->join('ts_countries cntr','cntr.country_iso_code_2=c.country_iso_code');
+        $this->db->join('ts_states t','t.state_code=c.subdivision_1_iso_code','left');
+        $this->db->where('gdata.postal_code', $seachzip);
+        $this->db->where('cntr.country_id', $country_id);
+        $this->db->group_by('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code, t.state_id');
+        $this->db->order_by('cntcity','desc');
+        $validdata = $this->db->get()->result_array();
+        if (count($validdata) > 0) {
+            $out['result'] = $this->success_result;
+            $out['city'] = $validdata[0]['city_name'];
+            $out['state'] = $validdata[0]['state'];
+        }
+        return $out;
+    }
+
+    public function count_quoteshiprates($items, $quote, $deliv_date, $brand, $default_ship_method='') {
+        $res=['result'=>$this->error_result,  'msg'=>$this->error_message];
+        $outrate = [];
+        $ratekey = [];
+        $kf=1;
+        $this->load->config('shipping');
+        $cntdat=$this->get_country($quote['shipping_country']);
+        foreach ($items as $item) {
+            $carton_qty = intval(ifset($item, 'cartoon_qty', 0)) > 0 ? intval($item['cartoon_qty']) : $this->config->item('default_inpack');
+            $cartoon_depth = intval(ifset($item, 'cartoon_depth', 0)) > 0 ? intval($item['cartoon_depth']) : $this->config->item('default_pack_depth');
+            $cartoon_width = intval(ifset($item, 'cartoon_width' , 0)) > 0 ? intval($item['cartoon_width']) : $this->config->item('default_pack_width');
+            $cartoon_heigh = intval(ifset($item, 'cartoon_heigh',0)) > 0 ? intval($item['cartoon_heigh']) : $this->config->item('default_pack_heigth');
+            $itemweight = ifset($item, 'item_weigth', 0) > 0 ? $item['item_weigth'] : $this->box_empty_weight / $carton_qty;
+            $options=array(
+                'zip' => $quote['shipping_zip'],
+                'numinpack'=>$carton_qty,
+                'itemqty'=>ceil($item['item_qty']*$kf),
+                'startdeliv' => $deliv_date,
+                'vendor_zip' => $item['vendor_zipcode'],
+                'item_length'=>$cartoon_depth,
+                'item_width'=>$cartoon_width,
+                'item_height'=>$cartoon_heigh,
+                'ship'=> array(),
+                'weight' =>$itemweight,
+                'cnt_code'=>$cntdat['country_iso_code_2'],
+                'brand' => $brand,
+            );
+
+            $out=calculate_shipcost($options);
+
+            if (!$out['result']) {
+                $res['msg']=$out['error'].' - '.$out['error_code'];
+                return $res;
+            }
+            $ship=$out['ship'];
+            $codearray= array_keys($ship);
+
+            if ($default_ship_method=='') {
+                if (isset($ship['GND'])) {
+                    $ship['deliv']=$ship['GND']['DeliveryDate'];
+                    $ship['GND']['current']=1;
+                } elseif (isset($ship['UPSStandard'])) {
+                    $ship['deliv']=$ship['UPSStandard']['DeliveryDate'];
+                    $ship['UPSStandard']['current']=1;
+                } elseif (isset ($ship['UPSExpedited'])) {
+                    $ship['deliv']=$ship['UPSExpedited']['DeliveryDate'];
+                    $ship['UPSExpedited']['current']=1;
+                } elseif (isset($ship['UPSSaver'])) {
+                    $ship['deliv']=$ship['UPSSaver']['DeliveryDate'];
+                    $ship['UPSSaver']['current']=1;
+                }
+            } else {
+                $shiddeliv=0;
+                foreach ($codearray as $coderow) {
+                    if ($ship[$coderow]['ServiceName']==$default_ship_method) {
+                        $ship[$coderow]['current']=1;
+                        $shiddeliv=$ship[$coderow]['DeliveryDate'];
+                    }
+                }
+                if ($shiddeliv!==0) {
+                    $ship['deliv']=$shiddeliv;
+                } else {
+                    if (isset($ship['GND'])) {
+                        $ship['deliv']=$ship['GND']['DeliveryDate'];
+                        $ship['GND']['current']=1;
+                    } elseif (isset($ship['UPSStandard'])) {
+                        $ship['deliv']=$ship['UPSStandard']['DeliveryDate'];
+                        $ship['UPSStandard']['current']=1;
+                    } elseif (isset ($ship['UPSExpedited'])) {
+                        $ship['deliv']=$ship['UPSExpedited']['DeliveryDate'];
+                        $ship['UPSExpedited']['current']=1;
+                    } elseif (isset($ship['UPSSaver'])) {
+                        $ship['deliv']=$ship['UPSSaver']['DeliveryDate'];
+                        $ship['UPSSaver']['current']=1;
+                    }
+                }
+            }
+
+            $itemdat=array(
+                'charge_perorder'=> intval(ifset($item, 'charge_perorder',0)),
+                'charge_pereach'=> intval(ifset($item, 'charge_pereach',0)),
+            );
+            /* Recalc Rates */
+            $shiplast = recalc_rates($ship,$itemdat, $item['item_qty'],$brand, $cntdat['country_iso_code_2'], $quote['shipping_country']);
+
+            foreach ($shiplast as $key=>$row) {
+                if ($key!='deliv') {
+                    if (!in_array($key , $ratekey)) {
+                        array_push($ratekey, $key);
+                        $outrate[]=array(
+                            'ServiceName'=>$row['ServiceName'],
+                            'Rate'=>0,
+                            'DeliveryDate'=>0,
+                            'current'=>$row['current'],
+                            'code' => $key,
+                        );
+                        $srchkey=count($outrate)-1;
+                    } else {
+                        $srchkey=array_search($key, $ratekey);
+                    }
+                    if ($outrate[$srchkey]['DeliveryDate']<$row['DeliveryDate']) {
+                        $outrate[$srchkey]['DeliveryDate']=$row['DeliveryDate'];
+                    }
+                    $outrate[$srchkey]['Rate']+=$row['Rate'];
+                }
+            }
+        }
+        $res['result']=$this->success_result;
+        $res['ships']=$outrate;
+        return $res;
+    }
+
+    public function get_statebycode($state_code, $country_id=0) {
+        $out=['result' => $this->error_result, 'msg' => 'State Not Found'];
+        $this->db->select('*');
+        $this->db->from('sb_states');
+        $this->db->where('state_code', $state_code);
+        if (!empty($country_id)) {
+            $this->db->where('country_id', $country_id);
+        }
+        $state = $this->db->get()->row_array();
+        if (ifset($state, 'state_id', 0) > 0) {
+            $out['result'] = $this->success_result;
+            $out['data'] = $state;
+        }
+        return $out;
     }
 
 }
