@@ -1975,10 +1975,10 @@ class Leadquote_model extends MY_Model
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->Cell($colWidth[0], 5, 'SR-ship1','LR',0,'L', $fillrow);
-            $pdf->Cell($colWidth[1], 5, $shipping[0]['shipping_name'].' Shippin Charge','LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], 5, $shipping[0]['shipping_name'].' Shipping Charge','LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
-            $pdf->Cell($colWidth[3], 5, number_format($shipping[0]['shipping_rate'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], 5, MoneyOutput($shipping[0]['shipping_rate']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[3], 5, number_format($quote['shipping_cost'],2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], 5, MoneyOutput($quote['shipping_cost']).'T', 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=5;
         }
@@ -2284,10 +2284,10 @@ class Leadquote_model extends MY_Model
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->Cell($colWidth[0], 5, 'SB-ship1','LR',0,'L', $fillrow);
-            $pdf->Cell($colWidth[1], 5, $shipping[0]['shipping_name'].' Shippin Charge','LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], 5, $shipping[0]['shipping_name'].' Shipping Charge','LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
-            $pdf->Cell($colWidth[3], 5, number_format($shipping[0]['shipping_rate'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], 5, MoneyOutput($shipping[0]['shipping_rate']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[3], 5, number_format($quote['shipping_cost'],2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], 5, MoneyOutput($quote['shipping_cost']).'T', 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=5;
         }
@@ -3083,7 +3083,7 @@ class Leadquote_model extends MY_Model
         return $out;
     }
 
-    public function send_emailmessage($data) {
+    public function send_emailmessage($data, $usr_id) {
         $out=['result' => $this->error_result, 'msg' => 'Empty Quote #'];
         $quote_id = ifset($data, 'quote_id',0);
         $email_from = ifset($data,'quoteemail_from','');
@@ -3102,6 +3102,11 @@ class Leadquote_model extends MY_Model
                         $out['msg'] = $docres['msg'];
                         if ($docres['result']==$this->success_result) {
                             $out['result'] = $this->success_result;
+                            $this->db->select('lead_id, quote_number, brand');
+                            $this->db->from('ts_quotes');
+                            $this->db->where('quote_id', $quote_id);
+                            $quotedat = $this->db->get()->row_array();
+                            $out['lead_id'] = $quotedat['lead_id'];
                             $docurl = $this->config->item('upload_path_preload').str_replace($this->config->item('pathpreload'),'',$docres['docurl']);
                             // Send message
                             $this->load->library('email');
@@ -3115,6 +3120,19 @@ class Leadquote_model extends MY_Model
                             $this->email->attach($docurl);
                             $this->email->send();
                             $this->email->clear(TRUE);
+                            // History
+                            $newhistory = 'Quote ';
+                            if ($quotedat['brand']=='SR') {
+                                $newhistory.=str_pad($quotedat['quote_number'],5,'0',STR_PAD_LEFT).'-QS';
+                            } else {
+                                $newhistory.='QB-'.str_pad($quotedat['quote_number'],5,'0',STR_PAD_LEFT);
+                            }
+                            $newhistory.=' was emailed to '.$email_to;
+                            $this->db->set('lead_id',$quotedat['lead_id']);
+                            $this->db->set('user_id',$usr_id);
+                            $this->db->set('created_date',time());
+                            $this->db->set('history_message',$newhistory);
+                            $this->db->insert('ts_lead_logs');
                         }
                     }
                 }

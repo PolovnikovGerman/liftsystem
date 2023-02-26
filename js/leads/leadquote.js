@@ -943,7 +943,8 @@ function send_leadquote(quote) {
     $.post(url, params, function (response){
         if (response.errors=='') {
             $("#loader").hide();
-            $("#artNextModal").modal('hide')
+            $("#artNextModal").modal('hide');
+            $(".lead_history").empty().html(response.data.history);
         } else {
             $("#loader").hide();
             show_error(response);
