@@ -1,9 +1,11 @@
 <div class="billing_content1">
     <div class="billing_content1_line">
-        <input type="text" class="billing_input1 input_border_gray billinginput leftalign" data-field="customer_name" placeholder="First and Last Name" value="<?=$billing['customer_name']?>"/>
-        <input type="text" class="billing_input2 input_border_gray billinginput leftalign" data-field="company" placeholder="Company" value="<?=$billing['company']?>"/>            
         <div class="billing_customerpotitle">PO#</div>
         <input type="text" class="billing_input3 input_border_gray billinginput leftalign" data-field="customer_ponum" placeholder="CuPo" value="<?=$billing['customer_ponum']?>">
+        <input type="text" class="billing_input1 input_border_gray billinginput leftalign" data-field="customer_name" placeholder="First and Last Name" value="<?=$billing['customer_name']?>"/>
+    </div>
+    <div class="billing_content1_line">
+        <input type="text" class="billing_input2 input_border_gray billinginput leftalign" data-field="company" placeholder="Company" value="<?=$billing['company']?>"/>
     </div>
     <div class="billing_content1_line">
         <input type="text" class="billing_input4 input_border_gray billinginput leftalign" data-field="address_1" placeholder="Address 1" value="<?=$billing['address_1']?>"/>
