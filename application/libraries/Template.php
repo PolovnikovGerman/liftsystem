@@ -249,7 +249,47 @@ class Template
                 $orddata['taxalign']='style="text-align: right;"';
             }
         }
-        $orddata['order_bottom']=$this->CI->load->view('leadorderdetails/order_bottom_view', $bottom_options, TRUE);
+        $profoptions=array(
+            'profit_perc'=>$orddata['profit_perc'],
+            'profit'=>$orddata['profit'],
+            'profit_view'=>'',
+            'order_id'=>$ord_data['order_id'],
+            'bgcolor' => '#FFFFFF',
+            'hitcolor' => '#000000',
+            'edit_mode' => $edit,
+        );
+        if (!empty($orddata['profit_perc'])) {
+            $classprof = orderProfitClass($orddata['profit_perc']);
+            if ($classprof=='green') {
+                $profoptions['bgcolor']='#00e947';
+            } elseif ($classprof=='red') {
+                $profoptions['bgcolor']='#ff0000';
+                $profoptions['hitcolor']='#ffffff';
+            } elseif ($classprof=='black') {
+                $profoptions['bgcolor']='#000000';
+                $profoptions['hitcolor']='#ffffff';
+            } elseif ($classprof=='orange') {
+                $profoptions['bgcolor']='#ea8a0e';
+            } elseif ($classprof=='moroon') {
+                $profoptions['bgcolor']='#6d0303';
+                $profoptions['hitcolor']='#ffffff';
+            }
+        }
+        if ($usrdat['profit_view']=='Points') {
+            $profoptions['profit']=round($orddata['profit']*$this->CI->config->item('profitpts'),0).' pts';
+            $profoptions['profit_view']='points';
+        }
+        if (empty($orddata['profit_perc'])) {
+            $bottom_options['profit_view']=$this->CI->load->view('leadorderdetails/profitproject_view', $profoptions, TRUE);
+        } else {
+            if ($profoptions['profit_view']=='points') {
+                $bottom_options['profit_view']=$this->CI->load->view('leadorderdetails/profit_points_view', $profoptions, TRUE);
+            } else {
+                $bottom_options['profit_view']=$this->CI->load->view('leadorderdetails/profit_view', $profoptions, TRUE);
+            }
+        }
+
+        $data['order_bottom']=$this->CI->load->view('leadorderdetails/order_bottom_view', $bottom_options, TRUE);
         if ($res['order_system_type']=='old') {
             $rushallow=$edit;
             $ord_data['customer_contact']=$art_data['customer_contact'];
@@ -523,50 +563,7 @@ class Template
         $message['edit']=$edit;
         $data['messages_view']=$this->CI->load->view('leadorderdetails/message_view', $message, TRUE);
 
-        $profclass=orderProfitClass($orddata['profit_perc']);
-        $hlpcolor = orderProfitBg($orddata['profit_perc']);
-        $profoptions=array(
-            'profit_perc'=>$orddata['profit_perc'],
-            'profit'=>$orddata['profit'],
-            'profit_view'=>'',
-            'order_id'=>$ord_data['order_id'],
-            'profit_class' => $profclass,
-            'helpborder' => $hlpcolor['border'],
-            'helpbg' => $hlpcolor['bgcolor'],
-            'bgcolor' => '#FFFFFF',
-            'hitcolor' => '#000000',
-            'edit_mode' => $edit,
-        );
-        if (!empty($orddata['profit_perc'])) {
-            $classprof = orderProfitClass($orddata['profit_perc']);
-            if ($classprof=='green') {
-                $profoptions['bgcolor']='#00e947';
-            } elseif ($classprof=='red') {
-                $profoptions['bgcolor']='#ff0000';
-                $profoptions['hitcolor']='#ffffff';
-            } elseif ($classprof=='black') {
-                $profoptions['bgcolor']='#000000';
-                $profoptions['hitcolor']='#ffffff';
-            } elseif ($classprof=='orange') {
-                $profoptions['bgcolor']='#ea8a0e';
-            } elseif ($classprof=='moroon') {
-                $profoptions['bgcolor']='#6d0303';
-                $profoptions['hitcolor']='#ffffff';
-            }
-        }
-        if ($usrdat['profit_view']=='Points') {
-            $profoptions['profit']=round($orddata['profit']*$this->CI->config->item('profitpts'),0).' pts';
-            $profoptions['profit_view']='points';
-        }
-        if (empty($orddata['profit_perc'])) {
-            $data['profit_view']=$this->CI->load->view('leadorderdetails/profitproject_view', $profoptions, TRUE);
-        } else {
-            if ($profoptions['profit_view']=='points') {
-                $data['profit_view']=$this->CI->load->view('leadorderdetails/profit_points_view', $profoptions, TRUE);
-            } else {
-                $data['profit_view']=$this->CI->load->view('leadorderdetails/profit_view', $profoptions, TRUE);
-            }
-        }
+
 
         $artdata=$art_data;
         $artdata['rushallow']=$rushallow;

@@ -1294,10 +1294,13 @@ class Leadquote extends MY_Controller
         if ($this->isAjax()) {
             $postdata = $this->input->post();
             $mdata = [];
-            $res = $this->leadquote_model->send_emailmessage($postdata);
+            $res = $this->leadquote_model->send_emailmessage($postdata, $this->USR_ID);
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';
+                $this->load->model('leads_model');
+                $lead_history=$this->leads_model->get_lead_history($res['lead_id']);
+                $mdata['history']=$this->load->view('leadpopup/history_view',array('data'=>$lead_history,'cnt'=>count($lead_history)),TRUE);
             }
             $this->ajaxResponse($mdata, $error);
         }

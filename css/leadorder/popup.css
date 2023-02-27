@@ -4,15 +4,20 @@
     Popup Window for Order Details
 */
 .leadorderdetailspopup {    
-    background: url(/img/leadorder/backgr_content.png) no-repeat transparent;
+    /* background: url(/img/leadorder/backgr_content.png) no-repeat transparent; */
+    background: #c59e51;
+    border: 1px solid #000;
+    border-radius: 5px;
+    box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
     clear: both;
     float: left;
     width: 1002px;
-    height: 810px;
+    /* height: 810px; */
     margin-top: -15px;
     margin-left: -15px;
     font-size: 13px;
     margin-bottom: -30px;
+    padding-bottom: 10px;
 }
 .leadorderdetailspopupheader {
     float: left;
@@ -112,6 +117,10 @@ input.input_checkbox {
 .line_2 {
     float: left;
     margin: 13px 0px 0px 8px;
+}
+.line_3_4 {
+    float: left;
+    width: 735px;
 }
 .line_3 {
     float: left;
@@ -258,11 +267,16 @@ input.calendarinpt[readonly="readonly"] {
 }
 .block_5 {
     float: left;
-    background-image: url(/img/leadorder/bacgr_8.png);
-    background-repeat: no-repeat;
-    width: 572px;
-    height: 735px;
+    /*background-image: url(/img/leadorder/bacgr_8.png);*/
+    /*background-repeat: no-repeat;*/
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    width: 568px;/* 572px; */
+    /* height: 735px; */
+    min-height: 726px;
     margin-left: -2px;
+    box-shadow: 0.3em 0.3em 6px rgb(0 0 0 / 50%);
 }
 .bl_contact {
     float: left;
@@ -1068,8 +1082,7 @@ span.taxemptyview {
     border: 2px solid #000;
     clear: both;
     float: left;
-    height: 70px;
-    /* margin-top: 9px; */
+    /* height: 70px; */
     margin-top: 3px;
     width: 318px;
 }
@@ -1130,19 +1143,19 @@ span.taxemptyview {
 }
 .billing_input1 {
     float: left;
-    width: 113px;
+    width: 165px;
     height: 19px;
     margin: 0 0 0 3px;
 }
 .billing_input2 {
     height: 19px;
     margin: 0 0 0 3px;
-    width: 111px;
+    width: 305px;
 }
 .billing_input3 {
     height: 19px;
     margin: 0 0 0 3px;
-    width: 47px;
+    width: 113px;
 }
 .billing_customerpotitle {
     float: left; 
@@ -1152,7 +1165,7 @@ span.taxemptyview {
 }
 .billing_input4 {
     float: left;
-    width: 148px;
+    width: 151px;
     height: 19px;
     margin: 0 0 0 3px;
 }
@@ -1160,7 +1173,7 @@ span.taxemptyview {
     float: left;
     width: 108px;
     height: 19px;
-    margin: 0 0 0 3px;
+    margin: 0 0 5px 3px;
 }
 .billingstateselectarea {
     float: left;
@@ -1168,7 +1181,7 @@ span.taxemptyview {
 }
 .billing_input6 {
     float: left;
-    width: 41px;
+    width: 47px;
     height: 19px;
     margin: 0 0 0 3px;
 }
@@ -1405,11 +1418,15 @@ span.taxemptyview {
 }
 .block_6 {
     float: left;
-    background-image: url(/img/leadorder/bacgr_5.png);
-    background-repeat: no-repeat;
-    width: 163px;
-    height: 736px;
-    margin-left: -2px;
+    /* background-image: url(/img/leadorder/bacgr_5.png);
+    background-repeat: no-repeat; */
+    border: 1px solid #000000;
+    border-radius: 5px;
+    background-color: #ffffff;
+    width: 154px;
+    height: 726px;
+    /* margin-left: -2px; */
+    box-shadow: 0.3em 0.3em 6px rgb(0 0 0 / 50%);
 }
 .block_6_generalnotes, .block_6_update, .block_6_history {
     float: left;
@@ -1468,10 +1485,15 @@ span.taxemptyview {
 }
 .block_7 {
     float: left;
-    background-image: url(/img/leadorder/bacgr_7.png);
+    /* background-image: url(/img/leadorder/bacgr_7.png);
     background-repeat: no-repeat;
-    width: 260px;
-    height: 772px;
+     */
+    background-color: #ffffff;
+    border: 1px solid #0e7600;
+    border-radius: 5px;
+    width: 253px;
+    box-shadow: 0.3em 0.3em 6px rgb(0 0 0 / 50%);
+    height: 761px;
     margin-left: -2px;
 }
 .block_7_artwork {
@@ -1843,7 +1865,8 @@ input.artrepeat {
     float: left;
     height: 23px;
     line-height: 22px;
-    margin: 0 15px;
+    /* margin: 0 15px; */
+    margin: 0 15px 0 37px;
     width: 126px;
 }
 .block_10.profitdetailsviewarea {
@@ -2110,7 +2133,9 @@ input.artrepeat {
     cursor: pointer;
 }
 .marglef {
+    float: left;
     margin-left: 7px;
+    margin-top: 10px;
 }
 .ticketdataviewarea {
     cursor: pointer;

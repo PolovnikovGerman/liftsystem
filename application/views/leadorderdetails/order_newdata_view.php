@@ -96,4 +96,4 @@
         <?=$chargeattemptview?>
     </div>
 </div>    
-<?=$order_bottom?>
+<?php // echo $order_bottom?>
