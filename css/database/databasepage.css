@@ -8,6 +8,9 @@
     height: 14px;
     line-height: 14px!important;
 }
+.relieverstab .maincontentmenu > .subtitle {
+    color: #000000;
+}
 .maincontentmenuarea {
 /*    width: calc(100% - 25px)!important;
     margin-left: 25px!important; */
