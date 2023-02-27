@@ -67,13 +67,7 @@ $config['netexportsecure']=0;
 switch($_SERVER['SERVER_NAME']){
     case 'lift.local':
         $config['email_setup']=array(
-//            'protocol'=>'sendmail',
-            'protocol' => 'smtp',
-            'smtp_host' => 'smtp.gmail.com',
-            'smtp_user' => 'polovnikov.g@gmail.com',
-            'smtp_pass' => 'dtblzrsbyjnpmsdx',
-            'smtp_port' => '587',
-            'smtp_crypto' => 'tls',
+            'protocol'=>'sendmail',
             'charset'=>'utf8',
             'wordwrap'=> TRUE,
         );
