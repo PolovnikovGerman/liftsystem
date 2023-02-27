@@ -9,6 +9,8 @@
     <div class="billing_content1_line">
         <div class="billing_customerpotitle">PO#</div>
         <input type="text" class="billing_input3 input_border_gray billinginput leftalign" data-field="customer_ponum" placeholder="CuPo" value="<?= $billing['customer_ponum'] ?>">
+    </div>
+    <div class="billing_content1_line">
         <input type="text" class="billing_input1 input_border_gray billinginput leftalign" data-field="customer_name" placeholder="First and Last Name" value="<?= $billing['customer_name'] ?>"/>
     </div>
     <div class="billing_content1_line">

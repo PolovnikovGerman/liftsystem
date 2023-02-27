@@ -2,6 +2,8 @@
     <div class="billing_content1_line">
         <div class="billing_customerpotitle">PO#</div>
         <input type="text" readonly="readonly" class="billing_input3 input_border_gray leftalign" placeholder="CuPo #" value="<?=$billing['customer_ponum']?>">
+    </div>
+    <div class="billing_content1_line">
         <input type="text" readonly="readonly" class="billing_input1 input_border_gray leftalign" placeholder="First and Last Name" value="<?=$billing['customer_name']?>"/>
     </div>
     <div class="billing_content1_line">
