@@ -4,15 +4,20 @@
     Popup Window for Order Details
 */
 .leadorderdetailspopup {    
-    background: url(/img/leadorder/backgr_content.png) no-repeat transparent;
+    /* background: url(/img/leadorder/backgr_content.png) no-repeat transparent; */
+    background: #c59e51;
+    border: 1px solid #000;
+    border-radius: 5px;
+    box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
     clear: both;
     float: left;
     width: 1002px;
-    height: 810px;
+    /* height: 810px; */
     margin-top: -15px;
     margin-left: -15px;
     font-size: 13px;
     margin-bottom: -30px;
+    padding-bottom: 10px;
 }
 .leadorderdetailspopupheader {
     float: left;
