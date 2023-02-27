@@ -976,7 +976,11 @@ Class Orders_model extends MY_Model
             $this->db->where_not_in('v.item_id', $options['exclude']);
         }
         if (isset($options['brand'])) {
-            $this->db->where('(v.brand = \''.$options['brand'].'\' or v.brand=\'\' )');
+            if ($options['brand']=='SR') {
+                $this->db->where('(v.brand = \''.$options['brand'].'\' or v.brand=\'\' )');
+            } else {
+                $this->db->where('(v.brand = \'SB\' or v.brand = \'BT\' or v.brand=\'\' )');
+            }
         }
         $this->db->order_by('v.item_number');
         $res=$this->db->get()->result_array();

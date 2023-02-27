@@ -311,6 +311,8 @@ Class User_model extends MY_Model
             'redmine_executor'=>'NO',
             'personal_email'=>'',
             'email_signature'=>'',
+            'contactnote_bluetrack' => '',
+            'contactnote_relievers' => '',
             'finuser'=>0,
             'user_passwd_txt1' => '',
             'user_passwd_txt2' => '',
@@ -457,6 +459,8 @@ Class User_model extends MY_Model
             $this->db->set('time_restrict', $user['time_restrict']);
             $this->db->set('personal_email', $user['personal_email']);
             $this->db->set('email_signature', $user['email_signature']);
+            $this->db->set('contactnote_bluetrack', $user['contactnote_bluetrack']);
+            $this->db->set('contactnote_relievers', $user['contactnote_relievers']);
             $this->db->set('profit_view', $user['profit_view']);
             $this->db->set('user_page', ifset($user,'user_page',NULL));
             if ($user['user_id']==0) {

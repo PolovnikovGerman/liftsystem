@@ -36,6 +36,9 @@
             <?php if (isset($checkoutattemptsview)) { ?>
                 <div class="leadscontentarea" id="checkoutattemptsview" style="display: none;"><?=$checkoutattemptsview?></div>
             <?php } ?>
+            <?php if (isset($leadquotesview)) { ?>
+                <div class="leadscontentarea" id="leadquotesview" style="display: none;"><?=$leadquotesview?></div>
+            <?php } ?>
         </div>
     </div>
 </div>
@@ -49,6 +52,19 @@
             </div>
             <div class="modal-body" style="float: left;"></div>
             <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+<!-- Leads edit Popup -->
+<div class="modal fade" id="leadformModal" tabindex="-1" role="dialog" aria-labelledby="leadformModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header <?=$brand=='SB' ? 'stresballstab' : 'relieverstab'?>">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="leadformModalLabel">New message</h4>
+            </div>
+            <div class="modal-body <?=$brand=='SB' ? 'stresballstab' : 'relieverstab'?>" style="float: left;"></div>
+            <div class="modal-footer <?=$brand=='SB' ? 'stresballstab' : 'relieverstab'?>"></div>
         </div>
     </div>
 </div>
