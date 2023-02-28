@@ -1984,6 +1984,7 @@ class Leadquote_model extends MY_Model
         }
         if (!empty($quote['discount_label']) && !empty($quote['discount_value'])) {
             $pdf->SetXY($startPageX, $yStart);
+            $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->Cell($colWidth[0], 5, 'SR-disc1','LR',0,'L', $fillrow);
             $pdf->Cell($colWidth[1], 5, $quote['discount_label'],'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
@@ -2293,6 +2294,7 @@ class Leadquote_model extends MY_Model
         }
         if (!empty($quote['discount_label']) && !empty($quote['discount_value'])) {
             $pdf->SetXY($startPageX, $yStart);
+            $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->Cell($colWidth[0], 5, 'SB-disc1','LR',0,'L', $fillrow);
             $pdf->Cell($colWidth[1], 5, $quote['discount_label'],'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);

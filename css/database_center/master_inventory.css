@@ -55,7 +55,8 @@
 }
 .inventfilterarea {
     width: 271px;
-    margin-top: -12px;
+    /* margin-top: -12px; */
+    margin-top: -40px;
     /* margin-left: 17px; */
     float: right!important;
 }
@@ -175,8 +176,12 @@
     margin-bottom: 10px;
 }
 .masterinventlegend {
-    padding-top: 5px;
+    clear: both;
+/*    padding-top: 5px;
     padding-left: 10px;
+ */
+    margin-top: 11px;
+    margin-left: 204px;
 }
 .masterinventlegend > div {
     height: 16px;
@@ -193,7 +198,7 @@
     margin-right: 5px;
 }
 .legendmaplabel {
-    color: #ffffff;
+    color: #000000;
     font-size: 12px;
     margin-right: 10px;
 }
@@ -298,7 +303,8 @@
     width: 30px;
 }
 .masterinventtablehead .masterinventonorder {
-    width: 85px;
+    /* width: 85px; */
+    width: 183px;
 }
 .masterinventtablehead .masterinventonmax {
     width: 14px;
@@ -502,7 +508,8 @@
 }
 .inventorydatarow .masterinventonorder {
     /* width: 8.26%; */
-    width: 87px;
+    /* width: 87px; */
+    width: 183px;
     color: #5d51ff;
     background: #252525;
     text-align: left;

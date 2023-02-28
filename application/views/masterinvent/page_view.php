@@ -19,6 +19,16 @@
             <span>Assembly</span>
             <div class="oldvesionlabel">&nbsp;</div>
         </div>
+        <div class="masterinventlegend">
+            <div class="legendmapicon severeval">
+                <i class="fa fa-square"></i>
+            </div>
+            <div class="legendmaplabel">Severe (25% & Under)</div>
+            <div class="legendmapicon lowval">
+                <i class="fa fa-square"></i>
+            </div>
+            <div class="legendmaplabel">Low (26% - 50%)</div>
+        </div>
         <div class="inventfilterarea">
             <div class="datarow">
                 <div class="inventfilterlabel">
@@ -57,16 +67,6 @@
         <div class="mastinvent_databody">
             <!-- Table header -->
             <div class="datarow">
-                <div class="masterinventlegend">
-                    <div class="legendmapicon severeval">
-                        <i class="fa fa-square"></i>
-                    </div>
-                    <div class="legendmaplabel">Severe (25% & Under)</div>
-                    <div class="legendmapicon lowval">
-                        <i class="fa fa-square"></i>
-                    </div>
-                    <div class="legendmaplabel">Low (26% - 50%)</div>
-                </div>
                 <div class="masterinventexport">
                     <i class="fa fa-share-square-o" aria-hidden="true"></i>
                     Export <?=$export_type?> Inventory
