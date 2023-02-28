@@ -1573,29 +1573,30 @@ class Test extends CI_Controller
         }
     }
 
-    public function init_masterinventory() {
+    public function init_masterinventory()
+    {
         $this->db->select('*');
         $this->db->from('ts_printshop_items');
         $this->db->order_by('item_num');
         $items = $this->db->get()->result_array();
-        $itemnum=1;
+        $itemnum = 1;
         $type_sh = 'i'; // id=4
         $type_id = 1;
         foreach ($items as $item) {
-            echo 'Item '.$item['item_name'].' insert '.PHP_EOL;
-            $unit='pc';
+            echo 'Item ' . $item['item_name'] . ' insert ' . PHP_EOL;
+            $unit = 'pc';
             // if (in_array($item['printshop_item_id'], $lbsitem)) {
             //    $unit='lbs';
             // } elseif (in_array($item['printshop_item_id'],$yrditem)) {
             //    $unit='yd';
             // }
             $this->db->set('inventory_type_id', $type_id);
-            $this->db->set('item_num',$type_sh.'-'.str_pad($itemnum,3,'0',STR_PAD_LEFT));
-            $this->db->set('item_name',$item['item_name']);
+            $this->db->set('item_num', $type_sh . '-' . str_pad($itemnum, 3, '0', STR_PAD_LEFT));
+            $this->db->set('item_name', $item['item_name']);
             $this->db->set('item_order', $itemnum);
             $this->db->set('item_unit', $unit);
             $this->db->set('proof_template', $item['proof_temp']);
-            $this->db->set('proof_template_source',$item['proof_temp_source']);
+            $this->db->set('proof_template_source', $item['proof_temp_source']);
             $this->db->set('plate_template', $item['plate_temp']);
             $this->db->set('plate_template_source', $item['plate_temp_source']);
             $this->db->set('box_template', $item['item_label']);
@@ -1622,13 +1623,13 @@ class Test extends CI_Controller
                 $this->db->set('onroutestock', $color['onroutestock']);
                 $this->db->set('notreorder', $color['notreorder']);
                 $this->db->set('pantones', empty($color['specfile']) ? $color['color_descript'] : $color['specfile']);
-                $this->db->set('color_image','');
-                $this->db->set('color_image_source','');
+                $this->db->set('color_image', '');
+                $this->db->set('color_image_source', '');
                 $this->db->set('inserted_at', date('Y-m-d H:i:s'));
                 $this->db->insert('ts_inventory_colors');
                 $newcolorid = $this->db->insert_id();
                 // Insert 5 empty rows
-                for ($i=0; $i<5; $i++) {
+                for ($i = 0; $i < 5; $i++) {
                     $this->db->set('inventory_color_id', $newcolorid);
                     $this->db->insert('ts_invcolor_vendors');
                 }
@@ -1641,11 +1642,11 @@ class Test extends CI_Controller
                 foreach ($incomes as $income) {
                     // $diff = random_int(0,15);
                     $calcprice = $newprice; // round($newprice*(100+$diff)/100,3);
-                    if (substr($income['instock_descrip'],0,9)=='Container') {
-                        $recnum = 'CON-'.substr($income['instock_descrip'],10);
-                        $descr = 'Purchased - '.$income['instock_descrip'];
+                    if (substr($income['instock_descrip'], 0, 9) == 'Container') {
+                        $recnum = 'CON-' . substr($income['instock_descrip'], 10);
+                        $descr = 'Purchased - ' . $income['instock_descrip'];
                     } else {
-                        $recnum = strtoupper(uniq_link(2,'chars')).uniq_link(4,'digits');
+                        $recnum = strtoupper(uniq_link(2, 'chars')) . uniq_link(4, 'digits');
                         $descr = $income['instock_descrip'];
                     }
                     $this->db->set('inventory_color_id', $newcolorid);
@@ -1681,8 +1682,8 @@ class Test extends CI_Controller
                         $this->db->where('inventory_income_id', $candidat['inventory_income_id']);
                         $this->db->set('income_expense', $newexp);
                         $this->db->update('ts_inventory_incomes');
-                        $qtyout= $qtyout - $candidat['leftqty'];
-                        if ($qtyout <= 0 ) {
+                        $qtyout = $qtyout - $candidat['leftqty'];
+                        if ($qtyout <= 0) {
                             break;
                         }
                     }
@@ -1691,14 +1692,14 @@ class Test extends CI_Controller
                     $this->db->from('ts_inventory_outcomes');
                     $this->db->where('outcome_type', $outcome_type);
                     $outdat = $this->db->get()->row_array();
-                    if ($outdat['cnt']==1) {
+                    if ($outdat['cnt'] == 1) {
                         $recnum = -1;
                     } else {
                         $recnum = $outdat['outnumb'];
                     }
                     $newrecnum = $recnum + 1;
-                    $recnummask = str_pad($newrecnum, 5,'0', STR_PAD_LEFT);
-                    $recnum = $outcome_type.substr($recnummask,0,1).'-'.substr($recnummask,1);
+                    $recnummask = str_pad($newrecnum, 5, '0', STR_PAD_LEFT);
+                    $recnum = $outcome_type . substr($recnummask, 0, 1) . '-' . substr($recnummask, 1);
                     // $recnum = strtoupper(uniq_link(2,'chars')).uniq_link(4,'digits');
                     $this->db->set('inventory_color_id', $newcolorid);
                     $this->db->set('outcome_date', $corect['instock_date']);
@@ -1713,30 +1714,30 @@ class Test extends CI_Controller
                 // Get outcome
                 $this->db->select('oa.shipped, oa.kepted, oa.misprint, o.order_num, oa.amount_date, o.order_id');
                 $this->db->from('ts_order_amounts oa');
-                $this->db->join('ts_orders o','o.order_id=oa.order_id');
-                $this->db->where('printshop',1);
+                $this->db->join('ts_orders o', 'o.order_id=oa.order_id');
+                $this->db->where('printshop', 1);
                 $this->db->where('printshop_color_id', $color['printshop_color_id']);
                 $outcomes = $this->db->get()->result_array();
                 foreach ($outcomes as $outcome) {
-                    $qtyout = intval($outcome['shipped'])+intval($outcome['misprint'])+intval($outcome['kepted']);
+                    $qtyout = intval($outcome['shipped']) + intval($outcome['misprint']) + intval($outcome['kepted']);
                     $outcome_type = 'P';
                     $this->db->select('count(inventory_outcome_id) as cnt, max(outcome_number) as outnumb');
                     $this->db->from('ts_inventory_outcomes');
                     $this->db->where('outcome_type', $outcome_type);
                     $outdat = $this->db->get()->row_array();
-                    if ($outdat['cnt']==1) {
+                    if ($outdat['cnt'] == 1) {
                         $recnum = -1;
                     } else {
                         $recnum = $outdat['outnumb'];
                     }
                     $newrecnum = $recnum + 1;
-                    $recnummask = str_pad($newrecnum, 5,'0', STR_PAD_LEFT);
-                    $recnum = $outcome_type.substr($recnummask,0,1).'-'.substr($recnummask,1);
+                    $recnummask = str_pad($newrecnum, 5, '0', STR_PAD_LEFT);
+                    $recnum = $outcome_type . substr($recnummask, 0, 1) . '-' . substr($recnummask, 1);
                     // $recnum = 'A0-'.$outcome['order_num'];
                     $this->db->set('inventory_color_id', $newcolorid);
                     $this->db->set('outcome_date', $outcome['amount_date']);
                     $this->db->set('outcome_qty', $qtyout);
-                    $this->db->set('outcome_description','Order # '.$outcome['order_num']);
+                    $this->db->set('outcome_description', 'Order # ' . $outcome['order_num']);
                     $this->db->set('outcome_record', $recnum);
                     $this->db->set('order_id', $outcome['order_id']);
                     $this->db->set('outcome_number', $newrecnum);
@@ -1765,19 +1766,20 @@ class Test extends CI_Controller
                         // Insert to order inventory
                         $this->db->set('order_id', $outcome['order_id']);
                         $this->db->set('inventory_income_id', $candidat['inventory_income_id']);
-                        $this->db->set('qty',$ordinv);
+                        $this->db->set('qty', $ordinv);
                         $this->db->insert('ts_order_inventory');
-                        $qtyout= $qtyout - $candidat['leftqty'];
-                        if ($qtyout <= 0 ) {
+                        $qtyout = $qtyout - $candidat['leftqty'];
+                        if ($qtyout <= 0) {
                             break;
                         }
                     }
                 }
-                echo 'Color '.$color['color'].' added successfully '.PHP_EOL;
+                echo 'Color ' . $color['color'] . ' added successfully ' . PHP_EOL;
             }
             $itemnum++;
         }
         $this->updcolor_price();
+    }
 
     public function fix_leadnumbers() {
         $this->load->model('leads_model');
@@ -1890,7 +1892,6 @@ class Test extends CI_Controller
         } else {
             echo 'Create file Error'.PHP_EOL;
         }
-    }
     }
 
 }
