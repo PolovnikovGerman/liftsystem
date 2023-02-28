@@ -689,9 +689,6 @@ Class Menuitems_model extends MY_Model
         // SR
         foreach ($srpages as $row) {
             $this->_savemenupermission($row, $user_id);
-            if ($row['id']==52) {
-                $tt=1;
-            }
             $res = $this->_chkuserpermission($row['id'], $user_id);
             $this->db->select('count(up.user_permission_id) as cnt');
             $this->db->from('user_permissions up');
@@ -727,9 +724,6 @@ Class Menuitems_model extends MY_Model
             $this->db->where('user_permission_id', $res);
             $this->db->update('user_permissions');
         }
-
-
-
     }
 
     private function _savemenupermission($item, $user_id) {

@@ -85,9 +85,9 @@
                     <div class="addnewmasterinvent">
                         <img src="/img/masterinvent/addinvitem_bg.png" alt="Add"/>
                     </div>
-                    <div class="masterinventseq">Seq</div>
-                    <div class="masterinventnumber">Master #</div>
-                    <div class="masterinventdescrip">Description</div>
+<!--                    <div class="masterinventseq">Seq</div>-->
+<!--                    <div class="masterinventnumber">Master #</div>-->
+                    <div class="masterinventdescrip">Item</div>
                     <div class="masterinventpercent">%</div>
                     <div class="masterinventorymaximum">Maximum</div>
                     <div class="masterinventinstock">In Stock</div>

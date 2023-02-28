@@ -51,7 +51,7 @@ class Inventory_model extends MY_Model
                 $out[]=[
                     'id' => $item['inventory_item_id'],
                     'item_flag' =>1,
-                    'status' => ($item['item_status']==1 ? 'Active' : 'Inactive'),
+                    'status' => '', // ($item['item_status']==1 ? 'Active' : 'Inactive'),
                     'item_seq' => '',
                     'item_code' => $item['item_num'],
                     'description' => $item['item_name'],
@@ -127,7 +127,7 @@ class Inventory_model extends MY_Model
                         'id' => $color['inventory_color_id'],
                         'item_id' => $item['inventory_item_id'],
                         'item_flag' =>0,
-                        'status' => ($color['notreorder']==1 ? $this->donotreorder : ($color['color_status']==1 ? 'Active' : 'Inactive')),
+                        'status' => ($color['notreorder']==1 ? $this->donotreorder : ''), // ($color['color_status']==1 ? 'Active' : 'Inactive')),
                         'item_seq' => $color['color_order'], // $color_seq,
                         'item_code' => '',
                         'description' => $color['color'],

@@ -1,8 +1,10 @@
 .maincontentmenu > .subtitle {
     width: calc(100% - 34px);
     font-size: 12px;
-    margin-top: 0;
+    /* margin-top: 0; */
+    margin-top: -7px;
     margin-left: 0px;
+    margin-bottom: -7px;
     color: #fff;
     text-align: right;
     height: 14px;

@@ -1891,6 +1891,6 @@ class Test extends CI_Controller
             echo 'Create file Error'.PHP_EOL;
         }
     }
-}
+    }
 
 }
