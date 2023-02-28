@@ -456,7 +456,8 @@ textarea.lead_note {
 textarea.lead_statuses {
     color: #000000;
     font-size: 11px;
-    height: 73px;
+    /* height: 73px; */
+    height: 37px;
     overflow-y: auto;
     resize: none;
     width: 208px;
@@ -471,7 +472,8 @@ textarea.lead_statuses {
 }
 .lead_history {
     background-color: #ffffff;
-    height: 318px;
+    /* height: 318px; */
+    height: 357px;
     overflow-y: auto;
     width: 208px;
 }
@@ -504,7 +506,8 @@ textarea.lead_statuses {
     font-weight: 600;
 }
 textarea.other_item_name {
-    height: 103px;
+    /* height: 103px; */
+    height: 80px;
     width: 208px;
     resize: none;
     font-size: 13px;
