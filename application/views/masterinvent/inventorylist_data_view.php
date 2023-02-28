@@ -3,11 +3,9 @@
 <?php  foreach ($lists as $list) {?>
     <?php if ($list['item_flag']==1) { ?>
         <div class="inventorydatarow masteritem <?=$expand==1 ? 'expand' : ''?>">
-            <div class="masterinventstatus"><?=$list['status']?></div>
     <?php } else { ?>
         <div class="inventorydatarow itemcolor <?=$coloridx%2==0 ? 'whitedatarow' : 'greydatarow'?>">
         <?php $coloridx++;?>
-            <div class="masterinventstatus <?=$list['noreorder'] ? 'donotreorder' : ''?>"><?=$list['status']?></div>
     <?php } ?>
         <?php if ($list['item_flag']==1) { ?>
             <div class="masterinventseq itemedit" data-item="<?=$list['id']?>">
@@ -21,7 +19,10 @@
         <?php } else { ?>
             <div class="masterinventseq"><?=$list['item_seq']?></div>
             <div class="masterinventnumber colordata" data-color="<?=$list['id']?>"><i class="fa fa-pencil"></i></div>
-            <div class="masterinventdescrip"><?=$list['description']?></div>
+            <div class="masterinventdescrip">
+                <div class="masterinventstatus <?=$list['noreorder'] ? 'donotreorder' : ''?>"><?=$list['status']?></div>
+                <?=$list['description']?>
+            </div>
         <?php } ?>
         <div class="masterinventpercent <?=$list['stockclass']?>" style="border-right: <?=$showmax==1 ? 'none' : '1px solid #000000'?>">
             <?=$list['percent'].'%'?>
