@@ -1806,6 +1806,89 @@ class Test extends CI_Controller
             // die();
         }
     }
+
+    public function fix_netprofit() {
+        $this->db->select('order_date');
+        $this->db->from('ts_orders');
+        $this->db->where('brand','SR');
+        $this->db->order_by('order_id');
+        $order = $this->db->get()->row_array();
+        $start_date = $order['order_date'];
+        echo date('d.m.Y',$start_date).PHP_EOL;
+        $this->db->select('profit_id, profit_week, profit_year');
+        $this->db->from('netprofit');
+        $this->db->where('profit_week is not null');
+        $this->db->where('datebgn < ', $start_date);
+        $this->db->where('dateend >= ', $start_date);
+        $profdat = $this->db->get()->row_array();
+        $this->db->select('*');
+        $this->db->from('netprofit');
+        $this->db->where('profit_week is not null');
+        $this->db->where('profit_week >= ', $profdat['profit_week']);
+        $this->db->where('profit_year', $profdat['profit_year']);
+        $neprofs = $this->db->get()->result_array();
+        foreach ($neprofs as $neprof) {
+            $this->db->set('profit_id', $neprof['profit_id']);
+            $this->db->set('brand','SR');
+            $this->db->insert('netprofit_dat');
+            echo 'Week '.$neprof['profit_week'].'-'.$neprof['profit_year'].PHP_EOL;
+        }
+
+    }
+
+    public function payments_rep() {
+        $this->db->select('*');
+        $this->db->from('ts_order_batches');
+        $this->db->where('batch_date >= ', strtotime('2019-01-01'));
+        $batchs = $this->db->get()->result_array();
+        $out = [];
+        foreach ($batchs as $batch) {
+            $cc_paym = 0; $other_paym = 0;
+            $other_type = '';
+            if ($batch['batch_amex'] != 0 || $batch['batch_vmd'] != 0 ) {
+                $cc_paym = $batch['batch_amount'];
+            } else {
+                $other_paym = $batch['batch_amount'];
+                if ($batch['batch_writeoff']!=0) {
+                    $other_type = 'Write OFF';
+                } elseif ($batch['batch_term']!=0) {
+                    $other_type = 'Term';
+                } else {
+                    if (!empty($batch['batch_type'])) {
+                        $other_type = $batch['batch_type'];
+                    } else {
+                        $other_type = 'Other';
+                    }
+                }
+            }
+            $out[] = [
+                'date' => date('m/d/Y', $batch['batch_date']),
+                'amount' => $batch['batch_amount'],
+                'cc_payment' => $cc_paym,
+                'other_paym' => $other_paym,
+                'payment_type' => ($batch['batch_amount'] < 0 ? 'Refund' : 'Payment'),
+                'other_type' => $other_type,
+                'cc_type' => ($cc_paym != 0 ? $batch['batch_type'] : ''),
+            ];
+        }
+        echo count($out).' Batches '.PHP_EOL;
+        $this->load->config('uploader');
+        $file_name = $this->config->item('upload_path_preload').'payment_report_adv.csv';
+        @unlink($file_name);
+        $fh = fopen($file_name, FOPEN_WRITE_CREATE);
+        if ($fh) {
+            $msg = 'Date;Total Payment;By Credit Card;Other Payment;CC System;Other Type;Payment Type;'.PHP_EOL;
+            fwrite($fh, $msg);
+            foreach ($out as $row) {
+                $msg = $row['date'].';'.$row['amount'].';'.$row['cc_payment'].';'.$row['other_paym'].';'.$row['cc_type'].';'.$row['other_type'].';'.$row['payment_type'].';'.PHP_EOL;
+                fwrite($fh, $msg);
+            }
+            fclose($fh);
+            echo 'File '.$file_name.' Ready '.PHP_EOL;
+        } else {
+            echo 'Create file Error'.PHP_EOL;
+        }
+    }
     }
 
 }

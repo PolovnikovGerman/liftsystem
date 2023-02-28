@@ -644,4 +644,49 @@ Class Calendars_model extends MY_Model
         return $out_val;
     }
 
+    public function get_delivery_date($item_id, $blank=0) {
+        if ($item_id < 0) {
+            // Custom item
+            $lead_times = [];
+            $delivdate = $this->get_business_date(time(), 1 , $item_id);
+            $lead_times[] = [
+                'id' => $delivdate.'-0',
+                'name' => 'Standard',
+                'current' => 1,
+                'price' => 0,
+                'date' => $delivdate,
+            ];
+        } else {
+            if ($blank==1) {
+                $rushdat = $this->parse_rushblankcalend($item_id);
+            } else {
+                $rushdat = $this->parse_rushcalend($item_id);
+            }
+            $caleendlines = $rushdat['rush'];
+            $start = $caleendlines[0];
+            $lead_times = [];
+            $lead_times[] = [
+                'id' => $start['id'],
+                'name' => $start['rushterm'],
+                'current' => $start['current'],
+                'price' => $start['price'],
+                'date' => $start['date'],
+            ];
+            $currentterm = $start['rushterm'];
+            foreach ($caleendlines as $caleendline) {
+                if ($caleendline['rushterm']!==$currentterm) {
+                    $lead_times[] = [
+                        'id' => $caleendline['id'],
+                        'name' => $caleendline['rushterm'],
+                        'current' => $caleendline['current'],
+                        'price' => $caleendline['price'],
+                        'date' => $caleendline['date'],
+                    ];
+                    $currentterm = $caleendline['rushterm'];
+                }
+            }
+        }
+        return $lead_times;
+    }
+
 }

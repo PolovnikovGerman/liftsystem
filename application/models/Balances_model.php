@@ -2186,7 +2186,6 @@ class Balances_model extends My_Model
 //    }
 
     public function get_netprofit_totalsbyweekdata($options) {
-        // Select max and min Year
         $compareweek=ifset($options, 'compareweek',0);
         $paceincome=ifset($options,'paceincome',1);
         $paceexpense=ifset($options, 'paceexpense',1);
@@ -2194,11 +2193,6 @@ class Balances_model extends My_Model
             $weekbgn=intval($options['weekbgn']);
             $weekend=intval($options['weekend']);
         }
-        
-        // Get an end of full week
-        // $now=strtotime('monday this week');
-        // Changed 12/02/2022
-        // $now=getDayOfWeek(date('W'), date('Y'),1);
         $now = strtotime(date('Y-m-d').' 23:59:59'); // or your date as well
         // Get current week number
         $this->db->select('profit_week');
@@ -2207,10 +2201,13 @@ class Balances_model extends My_Model
         $this->db->where('dateend < ',$now);
         $this->db->order_by('datebgn','desc');
         $weekres=$this->db->get()->row_array();
+
         if ($weekres['profit_week']>52) {
             $weekres['profit_week']=52;
         }
+
         $paceweekkf=52/$weekres['profit_week'];
+
         $current_weeknum=$weekres['profit_week'];
         $this->db->select('max(profit_year) end_year, min(profit_year) as start_year, min(datebgn) as start_date');
         $this->db->from('netprofit');
@@ -2221,8 +2218,7 @@ class Balances_model extends My_Model
         $start_year=$yres['start_year'];
         $end_year=$yres['end_year'];
         $start_date=$yres['start_date'];
-        // Period begin in case of paceincome=2 - prev year as pace
-        // if ($paceincome==2) {
+
         $prev_year=$end_year-1;
         if ($current_weeknum==52) {
             $prev_weeknum=1;
@@ -2230,6 +2226,7 @@ class Balances_model extends My_Model
         } else {
             $prev_weeknum=$current_weeknum+1;
         }
+
         // Select date
         $this->db->select('profit_id,datebgn');
         $this->db->from('netprofit');
@@ -2242,13 +2239,6 @@ class Balances_model extends My_Model
             // Exclude
             $pacedatstart=strtotime(date("Y-m-d", $now) . " -1year -7days");
         }
-        // }
-
-
-        // Get Elapsed Days
-        // $this->load->model('reports_model');
-        // $days=$this->reports_model->get_bisness_dates();
-
         // Build empty array
         $this->db->select('date_format(from_unixtime(o.order_date),\'%x\') as orddat, count(o.order_id) as cnt');
         $this->db->select('sum(o.revenue) as revenue, sum(o.profit) as gross_profit, sum(order_qty) as pcssold');
@@ -2433,6 +2423,8 @@ class Balances_model extends My_Model
                 }
             }
         }
+        // Calc onpace percent
+        $paceperc = $this->calc_onpace_percent();
         if ($compareweek==0) {
             $sales[]=$this->empty_html_content;
             $revenue[]= $this->empty_html_content;
@@ -2474,33 +2466,33 @@ class Balances_model extends My_Model
                 // Income by current year
                 foreach ($ordersres as $row) {
                     if ($row['orddat'] == $end_year) {
-                        $salespace = round($row['cnt'] * $paceweekkf, 0);
+                        $salespace = round($row['cnt'] / $paceperc, 0);
                         $revenuepace = 0;
-                        if (date('m')=='01') {
-                            $revenuepace = round($row['revenue'] * $paceweekkf, 2);
-                        } else {
-                            if ($salespace != 0) {
-                                $revendate = strtotime(date('Y-m').'-01');
-                                $year_start = strtorime(date('Y').'-01-01');
-                                $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue');
-                                $this->db->from('ts_orders o');
-                                $this->db->where('o.is_canceled',0);
-                                $this->db->where('o.order_date >= ', $year_start);
-                                $this->db->where('o.order_date < ', $revendate);
-                                if (isset($options['brand']) && $options['brand']!=='ALL') {
-                                    if ($options['brand']=='SR') {
-                                        $this->db->where('o.brand', $options['brand']);
-                                    } else {
-                                        $this->db->where_in('o.brand', ['BT','SB']);
-                                    }
-                                }
-                                $revenueres = $this->db->get()->row_array();
-                                $revenuepace = $revenueres['revenue'] / ($revenueres['cnt']/$salespace);
-                            }
-                        }
+                        // if (date('m')=='01') {
+                            $revenuepace = round($row['revenue'] / $paceperc, 2);
+//                        } else {
+//                            if ($salespace != 0) {
+//                                $revendate = strtotime(date('Y-m').'-01');
+//                                $year_start = strtotime(date('Y').'-01-01');
+//                                $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue');
+//                                $this->db->from('ts_orders o');
+//                                $this->db->where('o.is_canceled',0);
+//                                $this->db->where('o.order_date >= ', $year_start);
+//                                $this->db->where('o.order_date < ', $revendate);
+//                                if (isset($options['brand']) && $options['brand']!=='ALL') {
+//                                    if ($options['brand']=='SR') {
+//                                        $this->db->where('o.brand', $options['brand']);
+//                                    } else {
+//                                        $this->db->where_in('o.brand', ['BT','SB']);
+//                                    }
+//                                }
+//                                $revenueres = $this->db->get()->row_array();
+//                                $revenuepace = $revenueres['revenue'] / ($revenueres['cnt']/$salespace);
+//                            }
+//                        }
                         // Get dat
-                        $grosprofitpace = round($row['gross_profit'] * $paceweekkf, 2);
-                        $pcssoldpace=round($row['pcssold'] * $paceweekkf,0);
+                        $grosprofitpace = round($row['gross_profit'] / $paceperc, 2);
+                        $pcssoldpace=round($row['pcssold'] / $paceperc,0);
                     }
                 }
             } else {
@@ -2523,15 +2515,16 @@ class Balances_model extends My_Model
                 $grosprofitpace=floatval($curordat['gross_profit']);
                 $pcssoldpace=intval($curordat['pcssold']);
             }
+
             if ($paceexpense==1) {
                 foreach ($debtres as $drow) {
                     if ($drow['profit_year'] == date('Y')) {
-                        $operatingpace = round(floatval($drow['operating'] * $paceweekkf), 2);
-                        $advertisingpace = round(floatval($drow['advertising']) * $paceweekkf, 2);
-                        $payrollpace = round(floatval($drow['payroll']) * $paceweekkf, 2);
-                        $odeskpace = round(floatval($drow['projects']) * $paceweekkf, 2);
-                        $profw9pace = round(floatval($drow['profw9'])*$paceweekkf,2);
-                        $purchasespace = round(floatval($drow['purchases']) * $paceweekkf, 2);
+                        $operatingpace = round(floatval($drow['operating'] / $paceperc), 2);
+                        $advertisingpace = round(floatval($drow['advertising']) / $paceperc, 2);
+                        $payrollpace = round(floatval($drow['payroll']) / $paceperc, 2);
+                        $odeskpace = round(floatval($drow['projects']) / $paceperc, 2);
+                        $profw9pace = round(floatval($drow['profw9']) / $paceperc,2);
+                        $purchasespace = round(floatval($drow['purchases']) / $paceperc, 2);
                     }
                 }
             } else {
@@ -2648,8 +2641,100 @@ class Balances_model extends My_Model
             'profitw9_help' => $profitw9_help,
             'purchases_help' => $purchases_help,
         );
-
         return $out;
+    }
+
+    private function calc_onpace_percent() {
+        $now=getDayOfWeek(date('W'), date('Y'),1);
+        // Get current week number
+        $this->db->select('profit_week');
+        $this->db->from('netprofit');
+        $this->db->where('profit_week is not NULL');
+        $this->db->where('dateend < ',$now);
+        $this->db->order_by('datebgn','desc');
+        $weekres=$this->db->get()->row_array();
+        if ($weekres['profit_week']>52) {
+            $weekres['profit_week']=52;
+        }
+        $paceweekkf=52/$weekres['profit_week'];
+        $start_date = strtotime(date('Y').'-01-01');
+        $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.order_date >= ', $start_date);
+        $this->db->where('o.order_date < ', $now);
+        if (isset($brand) && $brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            }
+        }
+        $ordersres=$this->db->get()->row_array();
+        $salespace = round($ordersres['cnt'] * $paceweekkf,0);
+        $revenuepace = 0;
+        if (date('m')=='01') {
+            $revenuepace = round($ordersres['revenue'] * $paceweekkf,2);
+        } else {
+            if ($salespace != 0) {
+                $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue');
+                $this->db->from('ts_orders o');
+                $this->db->where('o.is_canceled',0);
+                $this->db->where('o.order_date >= ', $start_date);
+                $this->db->where('o.order_date < ', $now);
+                if (isset($brand) && $brand!=='ALL') {
+                    if ($brand=='SR') {
+                        $this->db->where('o.brand', $brand);
+                    } else {
+                        $this->db->where_in('o.brand', ['BT','SB']);
+                    }
+                }
+                $revenueres=$this->db->get()->row_array();
+                $revenuepace = round($revenueres['revenue'] / ($revenueres['cnt'] / $salespace),2);
+            }
+        }
+        $details = [];
+        $totalrevenue = 0;
+        for ($i=1; $i<12; $i++) {
+            if ($i >= date('n')) {
+                $d_bgn = (date('Y') - 1).'-'.str_pad($i,2,'0',STR_PAD_LEFT).'-01';
+                $d_end = (date('Y') - 1).'-'.str_pad($i+1,2,'0',STR_PAD_LEFT).'-01';
+                $this->db->select('sum(revenue) as revenue');
+                $this->db->from('ts_orders');
+                $this->db->where('order_date >= ', strtotime($d_bgn));
+                $this->db->where('order_date < ', strtotime($d_end));
+                $monthdat = $this->db->get()->row_array();
+            } else {
+                $d_bgn = date('Y').'-'.str_pad($i,2,'0',STR_PAD_LEFT).'-01';
+                $d_end = date('Y').'-'.str_pad($i+1,2,'0',STR_PAD_LEFT).'-01';
+                $this->db->select('sum(revenue) as revenue');
+                $this->db->from('ts_orders');
+                $this->db->where('order_date >= ', strtotime($d_bgn));
+                $this->db->where('order_date < ', strtotime($d_end));
+                $monthdat = $this->db->get()->row_array();
+            }
+            $totalrevenue += floatval($monthdat['revenue']);
+            $perc = round($totalrevenue/$revenuepace,5);
+            $monthdate = strtotime('2013-'.$i.'-01');
+            $details[] = [
+                'month' => $i,
+                'revenue' => $totalrevenue,
+                'percent' => $perc,
+            ];
+        }
+        $details[] = [
+            'month' => 'Dec',
+            'revenue' => $revenuepace,
+            'percent' => 1,
+        ];
+        $paceperc = 0;
+        foreach ($details as $detail) {
+            if ($detail['month']==date('n')) {
+                $paceperc = $detail['percent'];
+            }
+        }
+        // return $details;
+        return $paceperc;
     }
 
     public function get_netprofit_chartbyweekdata($options) {
@@ -2913,6 +2998,9 @@ class Balances_model extends My_Model
             $this->db->insert('netprofit_dat');
             $this->db->set('profit_id', $newprofit);
             $this->db->set('brand','BT');
+            $this->db->insert('netprofit_dat');
+            $this->db->set('profit_id', $newprofit);
+            $this->db->set('brand','SR');
             $this->db->insert('netprofit_dat');
         }
     }
@@ -4834,6 +4922,481 @@ class Balances_model extends My_Model
             'percent' => '100%',
         ];
         return $details;
+    }
+
+    public function _get_netprofit_totalsbyweekdata($options) {
+        // Select max and min Year
+        $compareweek=ifset($options, 'compareweek',0);
+        $paceincome=ifset($options,'paceincome',1);
+        $paceexpense=ifset($options, 'paceexpense',1);
+        if ($compareweek==1) {
+            $weekbgn=intval($options['weekbgn']);
+            $weekend=intval($options['weekend']);
+        }
+
+        // Get an end of full week
+        // $now=strtotime('monday this week');
+        // Changed 12/02/2022
+        // $now=getDayOfWeek(date('W'), date('Y'),1);
+        $now = strtotime(date('Y-m-d').' 23:59:59'); // or your date as well
+        // Get current week number
+        $this->db->select('profit_week');
+        $this->db->from('netprofit');
+        $this->db->where('profit_week is not NULL');
+        $this->db->where('dateend < ',$now);
+        $this->db->order_by('datebgn','desc');
+        $weekres=$this->db->get()->row_array();
+
+        if ($weekres['profit_week']>52) {
+            $weekres['profit_week']=52;
+        }
+
+        $paceweekkf=52/$weekres['profit_week'];
+
+        $current_weeknum=$weekres['profit_week'];
+        $this->db->select('max(profit_year) end_year, min(profit_year) as start_year, min(datebgn) as start_date');
+        $this->db->from('netprofit');
+        $this->db->where('profit_week is not null');
+        $this->db->where('profit_year >=', $this->start_netprofitdatashow);
+        $this->db->where('dateend < ',$now);
+        $yres=$this->db->get()->row_array();
+        $start_year=$yres['start_year'];
+        $end_year=$yres['end_year'];
+        $start_date=$yres['start_date'];
+
+        // Period begin in case of paceincome=2 - prev year as pace
+        // if ($paceincome==2) {
+        $prev_year=$end_year-1;
+        if ($current_weeknum==52) {
+            $prev_weeknum=1;
+            $prev_year=$prev_year+1;
+        } else {
+            $prev_weeknum=$current_weeknum+1;
+        }
+
+        // Select date
+        $this->db->select('profit_id,datebgn');
+        $this->db->from('netprofit');
+        $this->db->where('profit_week', $prev_weeknum);
+        $this->db->where('profit_year', $prev_year);
+        $paceres=$this->db->get()->row_array();
+        if (isset($paceres['profit_id'])) {
+            $pacedatstart=$paceres['datebgn'];
+        } else {
+            // Exclude
+            $pacedatstart=strtotime(date("Y-m-d", $now) . " -1year -7days");
+        }
+
+        // }
+
+
+        // Get Elapsed Days
+        // $this->load->model('reports_model');
+        // $days=$this->reports_model->get_bisness_dates();
+
+        // Build empty array
+        $this->db->select('date_format(from_unixtime(o.order_date),\'%x\') as orddat, count(o.order_id) as cnt');
+        $this->db->select('sum(o.revenue) as revenue, sum(o.profit) as gross_profit, sum(order_qty) as pcssold');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.order_date >= ', $start_date);
+        $this->db->where('o.order_date < ', $now);
+        if ($compareweek==1) {
+            $this->db->where("date_format(from_unixtime(o.order_date),'%v') >= ", $weekbgn);
+            $this->db->where("date_format(from_unixtime(o.order_date),'%v') <= ", $weekend);
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            if ($options['brand']=='SR') {
+                $this->db->where('o.brand', $options['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            }
+        }
+        $this->db->group_by('orddat');
+        $this->db->order_by('orddat');
+        $ordersres=$this->db->get()->result_array();
+        // Get Projects
+        $this->db->select('date_format(from_unixtime(o.order_date),\'%x\') as orddat, count(o.order_id) as cnt');
+        // $this->db->select('sum(o.revenue) as revenue, sum(o.profit) as gross_profit, sum(order_qty) as pcssold');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.order_date >= ', $start_date);
+        $this->db->where('o.order_date < ', $now);
+        $this->db->where('o.order_cog', NULL);
+        if ($compareweek==1) {
+            $this->db->where("date_format(from_unixtime(o.order_date),'%v') >= ", $weekbgn);
+            $this->db->where("date_format(from_unixtime(o.order_date),'%v') <= ", $weekend);
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            if ($options['brand']=='SR') {
+                $this->db->where('o.brand', $options['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            }
+        }
+        $this->db->group_by('orddat');
+        $this->db->order_by('orddat');
+        $projres=$this->db->get()->result_array();
+        // Get Other params
+        $this->db->select('nd.profit_year, sum(np.profit_operating) as operating');
+        $this->db->select('sum(np.profit_payroll) as payroll, sum(np.profit_advertising) as advertising');
+        $this->db->select('sum(np.profit_projects) as projects, sum(np.profit_purchases) as purchases');
+        $this->db->select('sum(np.profit_w9) as profw9');
+        $this->db->from('netprofit_dat np');
+        $this->db->join('netprofit nd','nd.profit_id=np.profit_id');
+        $this->db->where('nd.profit_week is not NULL');
+        $this->db->where('nd.dateend < ',$now);
+        if ($compareweek==1) {
+            $this->db->where("nd.profit_week >= ", $weekbgn);
+            $this->db->where("nd.profit_week <= ", $weekend);
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            if ($options['brand']=='SR') {
+                $this->db->where('np.brand', $options['brand']);
+            } else {
+                $this->db->where_in('np.brand', ['BT','SB']);
+            }
+        }
+        $this->db->group_by('nd.profit_year');
+        $debtres=$this->db->get()->result_array();
+
+        $sales=array();
+        $revenue=array();
+        $projects = array();
+        $grossprofit=array();
+        $pcssold=array();
+        $expensive=array();
+        $expensiveclass=array();
+        $operating=array();
+        $advertising=array();
+        $payroll=array();
+        $odesk=array();
+        $profitw9=array();
+        $purchases=array();
+        $netprofit=array();
+        $revenue_perc=array();
+        $grossprofit_perc=array();
+        $grossrevenue_perc = [];
+        // Fill Data
+        for($i=$start_year; $i<=$end_year; $i++) {
+            $sales[]=$this->empty_html_content;
+            $revenue[]= $this->empty_html_content;
+            $projects[] = 0;
+            $grossprofit[]=$this->empty_html_content;
+            $pcssold[]=$this->empty_html_content;
+            $expensive[]=$this->empty_html_content;
+            $expensiveclass[]='';
+            $operating[]=$this->empty_html_content;
+            $advertising[]=$this->empty_html_content;
+            $payroll[]=$this->empty_html_content;
+            $odesk[]=$this->empty_html_content;
+            $profitw9[]=$this->empty_html_content;
+            $purchases[]=$this->empty_html_content;
+            $netprofit[]=$this->empty_html_content;
+            $revenue_perc[]=$this->empty_html_content;
+            $grossprofit_perc[]=$this->empty_html_content;
+            $grossrevenue_perc[] = $this->empty_html_content;
+            $operating_help[]=$this->empty_html_content;
+            $advertising_help[]=$this->empty_html_content;
+            $payroll_help[]=$this->empty_html_content;
+            $odesk_help[]=$this->empty_html_content;
+            $profitw9_help[]=$this->empty_html_content;
+            $purchases_help[]=$this->empty_html_content;
+            $expensiveval=$netprofitval=$revenuepercval=$grossprofitpercval=0;
+            $tablekey=count($sales)-1;
+            foreach ($ordersres as $row) {
+                if ($row['orddat']==$i) {
+                    $sales[$tablekey]=QTYOutput($row['cnt']);
+                    $revenue[$tablekey]=  MoneyOutput($row['revenue'],0);
+                    $grossprofit[$tablekey]=  MoneyOutput($row['gross_profit'],0);
+                    $pcssold[$tablekey]=  QTYOutput($row['pcssold']);
+                    // Projects
+                    foreach ($projres as $projitem) {
+                        if ($projitem['orddat']==$i) {
+                            $projects[$tablekey] = $projitem['cnt'];
+                        }
+                    }
+                    // Select Data about Other Expensives
+                    foreach ($debtres as $drow) {
+                        if ($drow['profit_year']==$i) {
+                            $operating[$tablekey]=MoneyOutput($drow['operating'],0);
+                            $advertising[$tablekey]=MoneyOutput($drow['advertising'],0);
+                            $payroll[$tablekey]=  MoneyOutput($drow['payroll'],0);
+                            $odesk[$tablekey]=  MoneyOutput($drow['projects'],0);
+                            $profitw9[$tablekey]=  MoneyOutput($drow['profw9'],0);
+                            $purchases[$tablekey]=  MoneyOutput($drow['purchases']);
+                            $expensiveval=floatval($drow['operating'])+floatval($drow['advertising'])+floatval($drow['payroll']);
+                            $expensiveval+=floatval($drow['projects'])+floatval($drow['purchases'])+floatval($drow['profw9']);
+                            if ($expensiveval > 0) {
+                                $expensive[$tablekey]='('.MoneyOutput($expensiveval,0).')';
+                                $expensiveclass[$tablekey]='color_red';
+                            } else {
+                                $expensive[$tablekey]=MoneyOutput(abs($expensiveval),0);
+                                $expensiveclass[$tablekey]='color_blue';
+                            }
+                            $operating_helpstr = $advertising_helpstr = $payroll_helpstr = $odesk_helpstr = $profitw9_helpstr= $purchases_helpstr = '';
+                            if (abs($row['revenue'])>0) {
+                                $operating_helpstr.=round($drow['operating']/$row['revenue']*100,1).'% Rev<br>';
+                                $advertising_helpstr.=round($drow['advertising']/$row['revenue']*100,1).'% Rev<br>';
+                                $payroll_helpstr.=round($drow['payroll']/$row['revenue']*100,1).'% Rev <br>';
+                                $odesk_helpstr.=round($drow['projects']/$row['revenue']*100,1).'% Rev<br>';
+                                $profitw9_helpstr.=round($drow['profw9']/$row['revenue']*100,1).'% Rev<br>';
+                                $purchases_helpstr.=round($drow['purchases']/$row['revenue']*100,1).'% Rev<br>';
+                            }
+                            if (abs($row['gross_profit'])>0) {
+                                $operating_helpstr.=round($drow['operating']/$row['gross_profit']*100,1).'% GP<br>';
+                                $advertising_helpstr.=round($drow['advertising']/$row['gross_profit']*100,1).'% GP<br>';
+                                $payroll_helpstr.=round($drow['payroll']/$row['gross_profit']*100,1).'% GP<br>';
+                                $odesk_helpstr.=round($drow['projects']/$row['gross_profit']*100,1).'% GP<br>';
+                                $profitw9_helpstr.=round($drow['profw9']/$row['gross_profit']*100,1).'% GP<br>';
+                                $purchases_helpstr.=round($drow['purchases']/$row['gross_profit']*100,1).'% GP<br>';
+                            }
+                            $operating_help[$tablekey] = $operating_helpstr;
+                            $advertising_help[$tablekey] = $advertising_helpstr;
+                            $payroll_help[$tablekey] = $payroll_helpstr;
+                            $odesk_help[$tablekey] = $odesk_helpstr;
+                            $profitw9_help[$tablekey] = $profitw9_helpstr;
+                            $purchases_help[$tablekey] = $purchases_helpstr;
+                        }
+                    }
+                    $netprofitval=floatval($row['gross_profit'])-$expensiveval;
+                    $netprofit[$tablekey]=MoneyOutput($netprofitval,0);
+                    $revenue_perc[$tablekey]=$this->empty_html_content;
+                    $grossprofit_perc[$tablekey]=$this->empty_html_content;
+                    $grossrevenue_perc[$tablekey] = $this->empty_html_content;
+                    if (floatval($row['revenue'])>0) {
+                        $revenuepercval=round($netprofitval/$row['revenue']*100,1).'%';
+                        $revenue_perc[$tablekey]=$revenuepercval;
+                    }
+                    if (abs(floatval($row['revenue']))>0) {
+                        $grossrevenue_perc[$tablekey] = round($row['gross_profit']/$row['revenue']*100,1).'%';
+                    }
+                    if (floatval($row['gross_profit'])>0) {
+                        $grossprofitpercval=round($netprofitval/$row['gross_profit']*100,1).'%';
+                        $grossprofit_perc[$tablekey]=$grossprofitpercval;
+                    }
+                }
+            }
+        }
+        if ($compareweek==0) {
+            $sales[]=$this->empty_html_content;
+            $revenue[]= $this->empty_html_content;
+            $grossprofit[]=$this->empty_html_content;
+            $revenuepercval=$grossprofitpercval=$grossrevenuepercval=0;
+            $operating[]=$this->empty_html_content;
+            $advertising[]=$this->empty_html_content;
+            $payroll[]=$this->empty_html_content;
+            $odesk[]=$this->empty_html_content;
+            $profitw9[]=$this->empty_html_content;
+            $purchases[]=$this->empty_html_content;
+            $pcssold[]=$this->empty_html_content;
+            $operating_help[]=$this->empty_html_content;
+            $advertising_help[]=$this->empty_html_content;
+            $payroll_help[]=$this->empty_html_content;
+            $odesk_help[]=$this->empty_html_content;
+            $profitw9_help[]=$this->empty_html_content;
+            $purchases_help[]=$this->empty_html_content;
+            $expensiveclass[] = '';
+            $expensive[] = $this->empty_html_content;
+            $netprofit[]=$this->empty_html_content;
+            $revenue_perc[]=$this->empty_html_content;
+            $grossprofit_perc[]=$this->empty_html_content;
+            $grossrevenue_perc[] = $this->empty_html_content;
+            $tablekey=count($sales)-1;
+            $operatingpace = 0;
+            $advertisingpace = 0;
+            $payrollpace = 0;
+            $odeskpace = 0;
+            $profw9pace=0;
+            $purchasespace = 0;
+            $grosprofitpace=0;
+            $salespace=0;
+            $revenuepace=0;
+            $pcssoldpace=0;
+            $operating_helpstr = $advertising_helpstr = $payroll_helpstr = $odesk_helpstr = $profitw9_helpstr= $purchases_helpstr = '';
+            // Build Pace
+            if ($paceincome==1) {
+                // Income by current year
+                foreach ($ordersres as $row) {
+                    if ($row['orddat'] == $end_year) {
+                        $salespace = round($row['cnt'] * $paceweekkf, 0);
+                        $revenuepace = 0;
+                        if (date('m')=='01') {
+                            $revenuepace = round($row['revenue'] * $paceweekkf, 2);
+                        } else {
+                            if ($salespace != 0) {
+                                $revendate = strtotime(date('Y-m').'-01');
+                                $year_start = strtotime(date('Y').'-01-01');
+                                $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue');
+                                $this->db->from('ts_orders o');
+                                $this->db->where('o.is_canceled',0);
+                                $this->db->where('o.order_date >= ', $year_start);
+                                $this->db->where('o.order_date < ', $revendate);
+                                if (isset($options['brand']) && $options['brand']!=='ALL') {
+                                    if ($options['brand']=='SR') {
+                                        $this->db->where('o.brand', $options['brand']);
+                                    } else {
+                                        $this->db->where_in('o.brand', ['BT','SB']);
+                                    }
+                                }
+                                $revenueres = $this->db->get()->row_array();
+                                $revenuepace = $revenueres['revenue'] / ($revenueres['cnt']/$salespace);
+                            }
+                        }
+                        // Get dat
+                        $grosprofitpace = round($row['gross_profit'] * $paceweekkf, 2);
+                        $pcssoldpace=round($row['pcssold'] * $paceweekkf,0);
+                    }
+                }
+
+            } else {
+                // Income by prev year
+                $this->db->select('count(o.order_id) as cnt, sum(o.revenue) as revenue, sum(o.profit) as gross_profit, sum(o.order_qty) as pcssold');
+                $this->db->from('ts_orders o');
+                $this->db->where('o.is_canceled',0);
+                $this->db->where('o.order_date >= ', $pacedatstart);
+                $this->db->where('o.order_date < ', $now);
+                if (isset($options['brand']) && $options['brand']!=='ALL') {
+                    if ($options['brand']=='SR') {
+                        $this->db->where('o.brand', $options['brand']);
+                    } else {
+                        $this->db->where_in('o.brand', ['BT','SB']);
+                    }
+                }
+                $curordat=$this->db->get()->row_array();
+                $salespace=intval($curordat['cnt']);
+                $revenuepace=floatval($curordat['revenue']);
+                $grosprofitpace=floatval($curordat['gross_profit']);
+                $pcssoldpace=intval($curordat['pcssold']);
+            }
+
+            if ($paceexpense==1) {
+                foreach ($debtres as $drow) {
+                    if ($drow['profit_year'] == date('Y')) {
+                        $operatingpace = round(floatval($drow['operating'] * $paceweekkf), 2);
+                        $advertisingpace = round(floatval($drow['advertising']) * $paceweekkf, 2);
+                        $payrollpace = round(floatval($drow['payroll']) * $paceweekkf, 2);
+                        $odeskpace = round(floatval($drow['projects']) * $paceweekkf, 2);
+                        $profw9pace = round(floatval($drow['profw9'])*$paceweekkf,2);
+                        $purchasespace = round(floatval($drow['purchases']) * $paceweekkf, 2);
+                    }
+                }
+            } else {
+                // Curren Year Espenses
+                $this->db->select('sum(np.profit_operating) as operating');
+                $this->db->select('sum(np.profit_payroll) as payroll, sum(np.profit_advertising) as advertising');
+                $this->db->select('sum(np.profit_projects) as projects, sum(np.profit_purchases) as purchases');
+                $this->db->select('sum(np.profit_w9) as profw9');
+                $this->db->from('netprofit_dat np');
+                $this->db->join('netprofit nd','nd.profit_id=np.profit_id');
+                $this->db->where('nd.datebgn >= ', $pacedatstart);
+                $this->db->where('nd.dateend < ', $now);
+                if (isset($options['brand']) && $options['brand']!=='ALL') {
+                    if ($options['brand']=='SR') {
+                        $this->db->where('np.brand', $options['brand']);
+                    } else {
+                        $this->db->where_in('np.brand', ['BT','SB']);
+                    }
+                }
+                $curdebtres=$this->db->get()->row_array();
+                // Prev Year
+                $operatingpace=floatval($curdebtres['operating']);
+                $advertisingpace=floatval($curdebtres['advertising']);
+                $payrollpace=floatval($curdebtres['payroll']);
+                $odeskpace=floatval($curdebtres['projects']);
+                $profw9pace=  floatval($curdebtres['profw9']);
+                $purchasespace=floatval($curdebtres['purchases']);
+            }
+            if (abs($revenuepace)>0) {
+                $operating_helpstr.=round($operatingpace/$revenuepace*100,1).'% Rev<br>';
+                $advertising_helpstr.=round($advertisingpace/$revenuepace*100,1).'% Rev<br>';
+                $payroll_helpstr.=round($payrollpace/$revenuepace*100,1).'% Rev <br>';
+                $odesk_helpstr.=round($odeskpace/$revenuepace*100,1).'% Rev<br>';
+                $profitw9_helpstr.=round($profw9pace/$revenuepace*100,1).'% Rev<br>';
+                $purchases_helpstr.=round($purchasespace/$revenuepace*100,1).'% Rev<br>';
+            }
+            if (abs($grosprofitpace)>0) {
+                $operating_helpstr.=round($operatingpace/$grosprofitpace*100,1).'% GP<br>';
+                $advertising_helpstr.=round($advertisingpace/$grosprofitpace*100,1).'% GP<br>';
+                $payroll_helpstr.=round($payrollpace/$grosprofitpace*100,1).'% GP <br>';
+                $odesk_helpstr.=round($odeskpace/$grosprofitpace*100,1).'% GP<br>';
+                $profitw9_helpstr.=round($profw9pace/$grosprofitpace*100,1).'% GP<br>';
+                $purchases_helpstr.=round($purchasespace/$grosprofitpace*100,1).'% GP<br>';
+            }
+            $operating_help[$tablekey]=$operating_helpstr;
+            $advertising_help[$tablekey]=$advertising_helpstr;
+            $payroll_help[$tablekey]=$payroll_helpstr;
+            $odesk_help[$tablekey]=$odesk_helpstr;
+            $profitw9_help[$tablekey]=$profitw9_helpstr;
+            $purchases_help[$tablekey]=$purchases_helpstr;
+
+            $expensiveval = $operatingpace + $advertisingpace + $payrollpace + $odeskpace + $purchasespace+$profw9pace;
+            $netprofitval = $grosprofitpace - $expensiveval;
+
+            $sales[$tablekey] = QTYOutput($salespace);
+            $revenue[$tablekey] = MoneyOutput($revenuepace, 0);
+            $grossprofit[$tablekey] = MoneyOutput($grosprofitpace, 0);
+            $pcssold[$tablekey]=  QTYOutput($pcssoldpace);
+            $netprofit[$tablekey] = MoneyOutput($netprofitval, 0);
+            $operating[$tablekey] = MoneyOutput($operatingpace, 0);
+            $advertising[$tablekey] = MoneyOutput($advertisingpace, 0);
+            $payroll[$tablekey] = MoneyOutput($payrollpace, 0);
+            $odesk[$tablekey] = MoneyOutput($odeskpace, 0);
+            $profitw9[$tablekey]=  MoneyOutput($profw9pace,0);
+            $purchases[$tablekey] = MoneyOutput($purchasespace);
+            if ($expensiveval > 0) {
+                $expensive[$tablekey] = '('.MoneyOutput($expensiveval, 0).')';
+                $expensiveclass[$tablekey] = 'color_red';
+            } else {
+                $expensive[$tablekey] = MoneyOutput(abs($expensiveval), 0);
+                $expensiveclass[$tablekey] = 'color_blue';
+            }
+
+
+            $revenue_perc[$tablekey] = $this->empty_html_content;
+            $grossprofit_perc[$tablekey] = $this->empty_html_content;
+            if (floatval($revenuepace) > 0) {
+                $revenuepercval = round($netprofitval / $revenuepace * 100, 1) . '%';
+                $revenue_perc[$tablekey] = $revenuepercval;
+            }
+            if (abs(floatval($revenuepace))>0) {
+                $grossrevenue_perc[$tablekey] = round($grosprofitpace/$revenuepace*100,1).'%';
+            }
+            if (floatval($grosprofitpace) > 0) {
+                $grossprofitpercval = round($netprofitval / $grosprofitpace * 100, 1) . '%';
+                $grossprofit_perc[$tablekey] = $grossprofitpercval;
+            }
+        }
+
+        $out=array(
+            'start_year'=>$start_year,
+            'end_year'=>$end_year,
+            'sales'=>$sales,
+            'revenue'=>$revenue,
+            'projects' => $projects,
+            'grossprofit'=>$grossprofit,
+            'pcssold'=>$pcssold,
+            'expenses'=>$expensive,
+            'expensiveclass'=>$expensiveclass,
+            'operating'=>$operating,
+            'advertising'=>$advertising,
+            'payroll'=>$payroll,
+            'odesk'=>$odesk,
+            'profitw9'=>$profitw9,
+            'purchases'=>$purchases,
+            'netprofit'=>$netprofit,
+            'revenue_perc'=>$revenue_perc,
+            'grossprofit_perc'=>$grossprofit_perc,
+            'grossrevenue_perc' => $grossrevenue_perc,
+            'operating_help' => $operating_help,
+            'advertising_help' => $advertising_help,
+            'payroll_help' => $payroll_help,
+            'odesk_help' => $odesk_help,
+            'profitw9_help' => $profitw9_help,
+            'purchases_help' => $purchases_help,
+        );
+
+        return $out;
     }
 
 }

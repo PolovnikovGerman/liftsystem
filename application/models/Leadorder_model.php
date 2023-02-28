@@ -2742,7 +2742,6 @@ Class Leadorder_model extends My_Model {
             $out['msg'] = 'Expire Year Incorrect';
         } elseif (round(floatval($charge['amount']),2)>round(floatval($order_data['revenue']),2)) {
             $out['msg'] = 'Charge Value Great than Order Total';
-            log_message('ERROR', 'Charge '.round(floatval($charge['amount']),2).' REVENUE '.round(floatval($order_data['revenue']),2));
         } else {
             $cardtype=$this->getCCardType($cardnum);
             if (empty($cardtype)) {
@@ -2848,7 +2847,11 @@ Class Leadorder_model extends My_Model {
                 'batch_num'=>$pay_options['cardnum'],
                 'batch_transaction'=>$transres['transaction_id'],
             );
-            $batch_id=$this->batches_model->save_batch($batch_data, $order, $usr_id);
+            $batchres = $this->batches_model->save_batch($batch_data, $order, $usr_id);
+            if ($batchres['result']==$this->error_result) {
+                $batch_data['msg'] = $batchres['msg'];
+                $this->batches_model->error_batch($batch_data, $order, $usr_id);
+            }
             // Get New list of Payments
             $payments=$this->get_leadorder_payments($order_id);
             $total=0;
@@ -4631,6 +4634,12 @@ Class Leadorder_model extends My_Model {
                 // $res['neworder']=$neworder_num+1;
                 $res['neworder']=$neworder_num;
                 /* Get New total */
+                /* Relation with Quotes */
+                if (ifset($data, 'quote_id',0)!=0) {
+                    $this->db->set('quote_id', $data['quote_id']);
+                    $this->db->set('order_id', $order_id);
+                    $this->db->insert('ts_leadquote_orders');
+                }
             }
         } else {
             $this->db->where('order_id',$order_id);
@@ -5289,7 +5298,7 @@ Class Leadorder_model extends My_Model {
         } else {
             $outnewrundebt='$'.number_format($newtotalrun,0,'.',',');
         }
-        $this->db->select('np.*, netprofit_profit(datebgn, dateend) as gross_profit',FALSE);
+        $this->db->select('np.*, netprofit_profit(datebgn, dateend,\'ALL\') as gross_profit',FALSE);
         $this->db->from('netprofit np');
         $this->db->where('np.profit_id',$netdat['netdat_id']);
         $netdata=$this->db->get()->row_array();
@@ -6330,54 +6339,39 @@ Class Leadorder_model extends My_Model {
             $options['cardnum']=str_replace('-', '',$options['cardnum']);
         }
         if ($this->config->item('default_paysystem')=='paypal') {
-            $realconfig=1;
-            $servername=str_replace('www.','',$_SERVER['SERVER_NAME']);
-            if (empty($servername) || in_array($servername, $this->config->item('localserver'))) {
-                $realconfig=0;
+            // $realconfig=1;
+            // $servername=str_replace('www.','',$_SERVER['SERVER_NAME']);
+            // if (empty($servername) || in_array($servername, $this->config->item('localserver'))) {
+            //     $realconfig=0;
+            // }
+            $realconfig = 1;
+            if (intval($this->config->item('test_server'))==1) {
+                $realconfig = 0;
             }
             // Load PayPal library
-            if ($realconfig==0) {
-                $this->config->load('paypal_test');
-                if ($options['brand']=='SR') {
-                    $config = array(
-                        'Sandbox' => TRUE, 			// Sandbox / testing mode option.
-                        'APIUsername' => $this->config->item('APIUsernameSR'), 	// PayPal API username of the API caller
-                        'APIPassword' => $this->config->item('APIPasswordSR'), 	// PayPal API password of the API caller
-                        'APISignature' => $this->config->item('APISignatureSR'), 	// PayPal API signature of the API caller
-                        'APISubject' => '', 						// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
-                        'APIVersion' => $this->config->item('APIVersionSR')		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
-                    );
-                } else {
-                    $config = array(
-                        'Sandbox' => TRUE, 			// Sandbox / testing mode option.
-                        'APIUsername' => $this->config->item('APIUsername'), 	// PayPal API username of the API caller
-                        'APIPassword' => $this->config->item('APIPassword'), 	// PayPal API password of the API caller
-                        'APISignature' => $this->config->item('APISignature'), 	// PayPal API signature of the API caller
-                        'APISubject' => '', 						// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
-                        'APIVersion' => $this->config->item('APIVersion')		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
-                    );
-                }
+            $this->config->load('paypal');
+            if ($options['brand']=='SR') {
+                $config = array(
+                    'Sandbox' => $realconfig==0 ? TRUE : FALSE, // $this->config->item('Sandbox'), 			// Sandbox / testing mode option.
+                    'APIUsername' => $this->config->item('APIUsernameSR'), 	// PayPal API username of the API caller
+                    'APIPassword' => $this->config->item('APIPasswordSR'), 	// PayPal API password of the API caller
+                    'APISignature' => $this->config->item('APISignatureSR'), 	// PayPal API signature of the API caller
+                    'APISubject' => '', 						// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
+                    'APIVersion' => $this->config->item('APIVersionSR')		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
+                );
             } else {
-                $this->config->load('paypal_live');
-                if ($options['brand']=='SR') {
-                    $config = array(
-                        'Sandbox' => $this->config->item('Sandbox'), 			// Sandbox / testing mode option.
-                        'APIUsername' => $this->config->item('APIUsernameSR'), 	// PayPal API username of the API caller
-                        'APIPassword' => $this->config->item('APIPasswordSR'), 	// PayPal API password of the API caller
-                        'APISignature' => $this->config->item('APISignatureSR'), 	// PayPal API signature of the API caller
-                        'APISubject' => '', 									// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
-                        'APIVersion' => $this->config->item('APIVersionSR'),		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
-                    );
-                } else {
-                    $config = array(
-                        'APIUsername' => $this->config->item('APIUsername'), 	// PayPal API username of the API caller
-                        'APIPassword' => $this->config->item('APIPassword'), 	// PayPal API password of the API caller
-                        'APISignature' => $this->config->item('APISignature'), 	// PayPal API signature of the API caller
-                        'APISubject' => '', 									// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
-                        'APIVersion' => $this->config->item('APIVersion'),		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
-                        'Sandbox' => $this->config->item('Sandbox'), 			// Sandbox / testing mode option.
-                    );
-                }
+                $config = array(
+                    'Sandbox' => $realconfig==0 ? TRUE : FALSE, // $this->config->item('Sandbox'), 			// Sandbox / testing mode option.
+                    'APIUsername' => $this->config->item('APIUsername'), 	// PayPal API username of the API caller
+                    'APIPassword' => $this->config->item('APIPassword'), 	// PayPal API password of the API caller
+                    'APISignature' => $this->config->item('APISignature'), 	// PayPal API signature of the API caller
+                    'APISubject' => '', 						// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
+                    'APIVersion' => $this->config->item('APIVersion')		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
+                );
+            }
+            log_message('ERROR', 'Server Config '.$realconfig);
+            foreach ($config as $key=> $val) {
+                log_message('ERROR', $key . ' - '.$val);
             }
             // Show Errors
             if (empty($config['APIUsername']) || empty($config['APIPassword']) || empty($config['APISignature'])) {
@@ -6482,12 +6476,6 @@ Class Leadorder_model extends My_Model {
                 'OrderItems' => $OrderItems,
                 'Secure3D' => $Secure3D
             );
-            foreach ($Item as $key => $val) {
-                log_message('ERROR','Item Param '.$key.' Val '.$val.' !');
-            }
-            foreach ($PaymentDetails as $key=>$val) {
-                log_message('ERROR','Payment Param '.$key.' Val '.$val.' !');
-            }
             $PayPalResult = $this->paypal_pro->DoDirectPayment($PayPalRequestData);
 
             if (!$this->paypal_pro->APICallSuccessful($PayPalResult['ACK'])) {
@@ -8027,9 +8015,6 @@ Class Leadorder_model extends My_Model {
         $biladr=array();
         if (isset($leadorder['billing'])) {
             $billing=$leadorder['billing'];
-            foreach ($billing as $key=>$val) {
-                log_message('error',$key.' - '.$val);
-            }
             if (!empty($billing['customer_name'])) {
                 if (!empty($billing['company'])) {
                     array_push($biladr, $billing['company']);

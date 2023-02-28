@@ -8,5 +8,8 @@
     <div class="icon_file " style="margin: 5px 5px 0 0;">&nbsp;</div>
     <div class="totalduedataviewarea">
         <?=$totaldueview?>
-    </div>    
+    </div>
+    <div id="leadorderprofitarea" style="float: left;">
+        <?=$profit_view?>
+    </div>
 </div>
