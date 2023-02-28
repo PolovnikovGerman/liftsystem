@@ -705,42 +705,6 @@ Class Menuitems_model extends MY_Model
             $this->db->where('user_permission_id', $res);
             $this->db->update('user_permissions');
         }
-        foreach ($srpages as $row) {
-            $this->_savemenupermission($row, $user_id);
-            $res = $this->_chkuserpermission($row['id'], $user_id);
-            $this->db->select('count(up.user_permission_id) as cnt');
-            $this->db->from('user_permissions up');
-            $this->db->join('menu_items mi','up.menu_item_id = mi.menu_item_id');
-            $this->db->where('mi.parent_id', $row['id']);
-            $this->db->where('up.user_id',$user_id);
-            $this->db->where('up.permission_type',1);
-            $resparent = $this->db->get()->row_array();
-            if ($resparent['cnt']>0) {
-                $this->db->set('permission_type', 1);
-            } else {
-                $this->db->set('permission_type', 0);
-            }
-            $this->db->where('user_permission_id', $res);
-            $this->db->update('user_permissions');
-        }
-        foreach ($commpages as $row) {
-            $this->_savemenupermission($row, $user_id);
-            $res = $this->_chkuserpermission($row['id'], $user_id);
-            $this->db->select('count(up.user_permission_id) as cnt');
-            $this->db->from('user_permissions up');
-            $this->db->join('menu_items mi','up.menu_item_id = mi.menu_item_id');
-            $this->db->where('mi.parent_id', $row['id']);
-            $this->db->where('up.user_id',$user_id);
-            $this->db->where('up.permission_type',1);
-            $resparent = $this->db->get()->row_array();
-            if ($resparent['cnt']>0) {
-                $this->db->set('permission_type', 1);
-            } else {
-                $this->db->set('permission_type', 0);
-            }
-            $this->db->where('user_permission_id', $res);
-            $this->db->update('user_permissions');
-        }
         // Common
         foreach ($commpages as $row) {
             $this->_savemenupermission($row, $user_id);
@@ -760,9 +724,6 @@ Class Menuitems_model extends MY_Model
             $this->db->where('user_permission_id', $res);
             $this->db->update('user_permissions');
         }
-
-
-
     }
 
     private function _savemenupermission($item, $user_id) {
