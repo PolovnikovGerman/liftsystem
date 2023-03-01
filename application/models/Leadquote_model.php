@@ -2292,8 +2292,11 @@ class Leadquote_model extends MY_Model
             $numpp++;
             $yStart+=5;
         }
-        if (!empty($quote['discount_label']) && !empty($quote['discount_value'])) {
+        if (!empty($quote['discount_value'])) {
             $pdf->SetXY($startPageX, $yStart);
+            if (empty($quote['discount_label'])) {
+
+            }
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->Cell($colWidth[0], 5, 'SB-disc1','LR',0,'L', $fillrow);
             $pdf->Cell($colWidth[1], 5, $quote['discount_label'],'LR', 0,'L', $fillrow);
@@ -2354,7 +2357,14 @@ class Leadquote_model extends MY_Model
         $pdf->Cell(20,12,'Total:', 'LB',0,'C');
         $pdf->SetFont('','',14);
         $pdf->Cell(50,12, MoneyOutput($quote['quote_total']),'BR',0,'R');
-        $yStart += 23;
+//        if (!empty($quote['quote_note'])) {
+//            $pdf->SetXY($startPageX, $yStart+12);
+//            $pdf->MultiCell(110, 7, 'Note: '.$quote['quote_note'],1, 'L', $fillrow);
+//            $noteY = $pdf->GetY();
+//            $yStart = $noteY + 4;
+//        } else {
+            $yStart += 23;
+//        }
         $pdf->SetDash(1,1);
         $pdf->Line($startPageX,$yStart,195, $yStart);
         $pdf->Line($startPageX, $yStart, $startPageX, $yStart+55);
