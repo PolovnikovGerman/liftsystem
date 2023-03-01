@@ -2,7 +2,23 @@
 <input type="hidden" id="invshowmax" value="0"/>
 <div class="inventorydataview">
     <div class="datarow">
-        <div class="pagetitle">Master Inventory</div>
+        <div class="pagetitle">
+            <div class="datarow">
+                <div class="pagetitlelabel">Master Inventory</div>
+            </div>
+            <div class="datarow">
+                <div class="masterinventlegend">
+                    <div class="legendmapicon severeval">
+                        <i class="fa fa-square"></i>
+                    </div>
+                    <div class="legendmaplabel">Severe (25% & Under)</div>
+                    <div class="legendmapicon lowval">
+                        <i class="fa fa-square"></i>
+                    </div>
+                    <div class="legendmaplabel">Low (26% - 50%)</div>
+                </div>
+            </div>
+        </div>
         <div class="invtypebutton <?=$eventtype=='purchasing' ? 'active' : ''?> oldver" data-itemtype="purchasing">
             <span>Purchasing</span>
             <div class="oldvesionlabel">&nbsp;</div>
@@ -18,16 +34,6 @@
         <div class="invtypebutton <?=$eventtype=='assembly' ? 'active' : ''?> oldver" data-itemtype="assembly">
             <span>Assembly</span>
             <div class="oldvesionlabel">&nbsp;</div>
-        </div>
-        <div class="masterinventlegend">
-            <div class="legendmapicon severeval">
-                <i class="fa fa-square"></i>
-            </div>
-            <div class="legendmaplabel">Severe (25% & Under)</div>
-            <div class="legendmapicon lowval">
-                <i class="fa fa-square"></i>
-            </div>
-            <div class="legendmaplabel">Low (26% - 50%)</div>
         </div>
         <div class="inventfilterarea">
             <div class="datarow">
@@ -64,6 +70,8 @@
                 </div>
             <?php } ?>
         </div>
+    </div>
+    <div class="datarow">
         <div class="mastinvent_databody">
             <!-- Table header -->
             <div class="datarow">

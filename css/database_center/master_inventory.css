@@ -11,31 +11,30 @@
     float: left;
 }
 .inventorydataview .pagetitle {
+    width: 413px;
+}
+.inventorydataview .pagetitle .pagetitlelabel {
     margin-left: 4px;
     font-size: 24px;
     font-weight: bold;
-    /* width: 426px; */
-    /* width: 315px; */
-    width: 218px;
 }
 .invtypebutton {
-    background: url('/img/masterinvent/typebutton_bg.png') no-repeat;
+    /* background: url('/img/masterinvent/typebutton_bg.png') no-repeat; */
+    background-color: #08aeb0;
+    border: 1px solid #00817e;
+    border-radius: 5px;
     color: #ffffff;
-    /*font-size: 15px;
-    font-weight: 600;
-    height: 35px;
-    line-height: 32px!important;
-     */
+    height: 26px;
     margin-right: 14px;
     text-align: center;
-    width: 142px;
+    width: 120px;
 }
 .invtypebutton span {
     color: #ffffff;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
-    height: 35px;
-    line-height: 32px!important;
+    /* height: 35px;*/
+    line-height: 26px!important;
 }
 .invtypebutton.oldver span {
     margin-left: -6px;
@@ -43,21 +42,22 @@
 .invtypebutton .oldvesionlabel {
     opacity: 0.6;
     position: relative;
-    left: 65px;
+    left: 54px;
     background-color: #b53535;
     width: 12px;
-    margin-top: 1px;
-    height: 31px;
+    /* margin-top: 1px; */
+    height: 25px;
     z-index: 100;
 }
 .invtypebutton.active {
-    background: url('/img/masterinvent/typebutton_active_bg.png') no-repeat;
+    /* background: url('/img/masterinvent/typebutton_active_bg.png') no-repeat; */
+    background-color: #0b7677;
+    border: 1px solid #005a56;
 }
 .inventfilterarea {
     width: 271px;
     /* margin-top: -12px; */
-    margin-top: -40px;
-    /* margin-left: 17px; */
+    margin-top: -8px;
     float: right!important;
 }
 .inventfilterlabel {
@@ -100,39 +100,40 @@
 }
 .mastinvent_left_menu {
     /* width: 227px; */
-    width: 183px;
-}
-.mastinvent_left_section {
     width: 100%;
 }
-.mastinvent_left_section.active {
+.mastinvent_left_section {
+    margin-right: 7px;
+}
+/*.mastinvent_left_section.active {
     background: #252525;
     margin-bottom: 15px;
-}
+}*/
 .mastinvent_left_sectiondata {
     background: #ebebeb;
     border: 1px solid #000000;
-    width: 175px;
-    padding: 6px 10px;
+    padding: 0 6px;
     cursor: pointer;
-    margin-bottom: 15px;
+    width: 160px;
+    height: 58px;
+    margin-bottom: 7px;
 }
 .mastinvent_left_sectiondata.rawsbtype {
     background: #252525;
 }
 .inventsectionhead {
     color: #000000;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
-    height: 20px;
-    line-height: 20px!important;
-    margin-bottom: 4px;
-    text-align: center;
+    height: 27px;
+    line-height: 27px!important;
+    /* margin-bottom: 4px; */
+    /* text-align: center; */
 }
 .inventsectionvalue {
     border: 1px solid #000000;
     background: #6e6e6e;
-    width: 152px;
+    width: 146px;
 }
 .inventsectionvalue > div {
     height: 22px;
@@ -153,12 +154,13 @@
 .mastinvent_left_sectiondata.active {
     background: #252525;
     border: none;
+    height: 65px;
     margin-bottom: 0!important;
 }
 .mastinvent_left_sectiondata.active > .inventsectionhead,
 .mastinvent_left_sectiondata.rawsbtype > .inventsectionhead {
     color: #ffffff;
-    font-size: 16px;
+    font-size: 14px;
 }
 .mastinvent_left_sectiondata.active > .inventsectionvalue,
 .mastinvent_left_sectiondata.rawsbtype > .inventsectionvalue {
@@ -170,19 +172,14 @@
     /* width: 1050px; */
     /* width: 1028px; */
     /* width: 934px; */
-    width: 1146px;
+    width: 1355px;
     padding-left: 12px;
     padding-bottom: 12px;
     padding-right: 6px;
     margin-bottom: 10px;
 }
 .masterinventlegend {
-    clear: both;
-/*    padding-top: 5px;
-    padding-left: 10px;
- */
-    margin-top: 11px;
-    margin-left: 204px;
+    margin-top: 6px;
 }
 .masterinventlegend > div {
     height: 16px;
@@ -309,7 +306,7 @@
 .masterinventtablehead .masterinventonorder {
     /* width: 85px; */
     /* width: 183px; */
-    width: 420px;
+    width: 658px;
 }
 .masterinventtablehead .masterinventonmax {
     width: 14px;
@@ -331,7 +328,7 @@
     color: #000000;
     /* width: 1014px;*/
     /* width: 922px; */
-    width: 1132px;
+    width: 1336px;
     max-height: 977px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -524,7 +521,7 @@
     /* width: 8.26%; */
     /* width: 87px; */
     /* width: 183px; */
-    width: 420px;
+    width: 658px;
     color: #5d51ff;
     background: #252525;
     text-align: left;
