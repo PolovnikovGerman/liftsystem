@@ -223,30 +223,32 @@
 }
 .masterinventtotals .inventtotalmaxshow {
     /* margin-left: 435px; */
-    margin-left: 246px;
+    margin-left: 239px;
     margin-top: -17px;
     color: #8989ff;
-    width: 35px;
+    width: 42px;
     text-align: center;
     cursor: pointer;
     font-size: 11px;
 
 }
 .masterinventtotals .inventtotalmaximum {
-    width: 75px;
+    /* width: 75px; */
+    width: 58px;
     text-align: center;
     display: none;
     color: #8989ff;
     margin-top: -8px;
 }
 .masterinventtotals .inventtotalinstock {
-    width: 69px;
+    /* width: 69px; */
+    width: 58px;
     text-align: center;
     margin-top: -8px;
 }
 .masterinventtotals .inventtotalavailable {
-    margin-left: 71px;
-    width: 69px;
+    margin-left: 56px;
+    width: 58px;
     text-align: center;
     margin-top: -8px;
 }
@@ -286,23 +288,23 @@
 }
 .masterinventtablehead .masterinventorymaximum {
     display: none;
-    width: 72px;
+    width: 58px;
     color: #8989ff;
 }
 .masterinventtablehead .masterinventinstock {
-    width: 69px;
+    width: 58px;
 }
 .masterinventtablehead .masterinventreserv {
-    width: 71px;
+    width: 58px;
 }
 .masterinventtablehead .masterinventavailab {
-    width: 69px;
+    width: 58px;
 }
 .masterinventtablehead .masterinventhistory {
     width: 20px;
 }
 .masterinventtablehead .masterinventunit {
-    width: 30px;
+    width: 29px;
 }
 .masterinventtablehead .masterinventonorder {
     /* width: 85px; */
@@ -421,6 +423,9 @@
     padding-right: 4px;
     cursor: pointer;
 }
+.addmasterinventory i {
+    font-size: 9.75px;
+}
 .inventorydatarow.itemcolor.activeinvent {
     background: #FFFF00;
 }
@@ -442,7 +447,8 @@
 }
 .inventorydatarow .masterinventmaximum {
     color: #0000FF;
-    width: 70px;
+    /* width: 70px; */
+    width: 58px;
     border-left: 2px solid #0000FF;
     border-right: 2px solid #0000FF;
     display: none;
@@ -452,18 +458,19 @@
 }
 .inventorydatarow .masterinventinstock {
     /* width: 6.8%; */
-    width: 69px;
+    /* width: 69px; */
+    width: 58px;
     border-right: 1px solid #000000;
     font-size: 11px;
 }
 .inventorydatarow .masterinventreserv {
     /* width: 6.8%; */
-    width: 71px;
+    width: 58px;
     border-right: 1px solid #000000;
 }
 .inventorydatarow .masterinventavailab {
     /* width: 6.8%; */
-    width: 69px;
+    width: 58px;
     border-right: 1px solid #000000;
     font-weight: 600;
     font-size: 11px;
