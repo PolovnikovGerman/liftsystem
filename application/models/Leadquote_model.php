@@ -2357,14 +2357,14 @@ class Leadquote_model extends MY_Model
         $pdf->Cell(20,12,'Total:', 'LB',0,'C');
         $pdf->SetFont('','',14);
         $pdf->Cell(50,12, MoneyOutput($quote['quote_total']),'BR',0,'R');
-        if (!empty($quote['quote_note'])) {
-            $pdf->SetXY($startPageX, $yStart+12);
-            $pdf->MultiCell(110, 7, 'Note: '.$quote['quote_note'],1, 'L', $fillrow);
-            $noteY = $pdf->GetY();
-            $yStart = $noteY + 4;
-        } else {
+//        if (!empty($quote['quote_note'])) {
+//            $pdf->SetXY($startPageX, $yStart+12);
+//            $pdf->MultiCell(110, 7, 'Note: '.$quote['quote_note'],1, 'L', $fillrow);
+//            $noteY = $pdf->GetY();
+//            $yStart = $noteY + 4;
+//        } else {
             $yStart += 23;
-        }
+//        }
         $pdf->SetDash(1,1);
         $pdf->Line($startPageX,$yStart,195, $yStart);
         $pdf->Line($startPageX, $yStart, $startPageX, $yStart+55);
