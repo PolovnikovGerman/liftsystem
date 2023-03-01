@@ -210,8 +210,8 @@ class Analytics extends MY_Controller
             if (empty($goaldata)) {
                 $error='Connection Lost. Please, recall function';
             } else {
-                $this->load->model('order_model');
-                $res=$this->order_model->save_profitdate_goal($goaldata);
+                $this->load->model('orders_model');
+                $res=$this->orders_model->save_profitdate_goal($goaldata);
                 if ($res['result']==$this->error_result) {
                     $error=$res['msg'];
                 } else {

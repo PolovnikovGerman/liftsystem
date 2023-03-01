@@ -1727,6 +1727,7 @@ Class Reports_model extends My_Model
             'goal_revenue'=>$goalres['goal_revenue'],
             'goal_profit'=>$goalres['goal_profit'],
             'goal_type'=>$goalres['goal_type'],
+            'brand' => $goalres['brand'],
         );
         // Calc other params
         $goal_avgrevenue=$goal_avgprofit=0;
