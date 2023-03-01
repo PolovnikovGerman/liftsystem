@@ -3,10 +3,10 @@
 class Inventory_model extends MY_Model
 {
 
-    private $outstockclass='severevalstock';
-    private $outstoklabel='Out of Stock';
+    private $outstockclass = 'severevalstock';
+    private $outstoklabel = 'No Stock'; // 'Out of Stock';
     private $emptystockclass = 'emptyvalstock';
-    private $lowstockclass='lowinstock';
+    private $lowstockclass = 'lowinstock';
     private $donotreorder = 'Do Not Reorder';
     private $bt_label = 'Bluetrack Legacy';
     private $sb_label = 'StressBalls.com';
