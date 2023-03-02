@@ -1230,7 +1230,7 @@ class Leadquote_model extends MY_Model
         $quote['sales_tax'] = 0;
         if ($quote['taxview']==1 && $quote['tax_exempt']==0) {
             // Calc tax
-            $basecost = $total + $quote['rush_cost'];
+            $basecost = $total + $quote['rush_cost']+$quote['shipping_cost'];
             $tax = round($basecost * ($this->config->item('salesnewtax')/100),2);
             $quote['sales_tax'] = $tax;
         }
