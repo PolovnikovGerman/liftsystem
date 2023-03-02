@@ -581,6 +581,7 @@ class Leadquote_model extends MY_Model
                     if ($quote['taxview']==0) {
                         $quote['taxview'] = 1;
                         $out['taxview'] = 1;
+                        $out['totalcalc'] = 1;
                     }
                 } else {
                     if ($quote['taxview']==1) {
@@ -588,6 +589,7 @@ class Leadquote_model extends MY_Model
                         $quote['tax_exempt'] = 0;
                         $quote['tax_reason'] = '';
                         $out['taxview'] = 1;
+                        $out['totalcalc'] = 1;
                     }
                 }
             }
