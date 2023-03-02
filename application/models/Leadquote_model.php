@@ -1492,6 +1492,8 @@ class Leadquote_model extends MY_Model
 
             }
             $out['result'] = $this->success_result;
+            // Delete session
+            usersession($session_id, NULL);
         }
         return $out;
     }
