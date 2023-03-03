@@ -165,18 +165,6 @@ class Leadquote extends MY_Controller
                     $error = '';
                     // Prepare content
                     $quotedata = $qres['quote'];
-//                    if ($quotedata['brand']=='SR') {
-//                        $templlists = [
-//                            'Supplier',
-//                            'Proforma Invoice',
-//                        ];
-//                    } else {
-//                        $templlists = [
-//                            'Stressballs.com',
-//                            'Bluetrack Health',
-//                            'Proforma Invoice',
-//                        ];
-//                    }
                     $templlists = $this->quotetemplates;
                     $this->load->model('shipping_model');
                     $cnt_options=array(
@@ -1007,14 +995,31 @@ class Leadquote extends MY_Controller
                     $error = $res['msg'];
                     if ($res['result']==$this->success_result) {
                         $mdata['quote_id'] = $res['quote_id'];
-                        $error = '';
-                        // Get leads list
-                        $qdat = $this->leadquote_model->get_leadquotes($lead_id);
-                        $lead_quotes = '';
-                        if (count($qdat) > 0) {
-                            $lead_quotes = $this->load->view('leadpopup/leadquotes_list_view',array('quotes'=>$qdat),TRUE);
+                        // Get data, save to new session
+                        $qres=$this->leadquote_model->get_leadquote($res['quote_id'], 1);
+                        $error = $qres['msg'];
+                        if ($qres['result']==$this->success_result) {
+                            $quote_session = 'quote' . uniq_link(15);
+                            $quotedata = $qres['quote'];
+                            $quote_items = $qres['items'];
+                            $shippings = $qres['shippings'];
+                            $sessiondata = [
+                                'quote' => $quotedata,
+                                'items' => $quote_items,
+                                'shipping' => $shippings,
+                                'deleted' => [],
+                            ];
+                            usersession($quote_session, $sessiondata);
+                            $mdata['session_id'] = $quote_session;
+                            $error = '';
+                            // Get leads list
+                            $qdat = $this->leadquote_model->get_leadquotes($lead_id);
+                            $lead_quotes = '';
+                            if (count($qdat) > 0) {
+                                $lead_quotes = $this->load->view('leadpopup/leadquotes_list_view', array('quotes' => $qdat), TRUE);
+                            }
+                            $mdata['quotescontent'] = $lead_quotes;
                         }
-                        $mdata['quotescontent'] = $lead_quotes;
                     }
                 }
             }
@@ -1037,18 +1042,6 @@ class Leadquote extends MY_Controller
                     $error = '';
                     // Prepare content
                     $quotedata = $res['quote'];
-//                    if ($quotedata['brand']=='SR') {
-//                        $templlists = [
-//                            'Supplier',
-//                            'Proforma Invoice',
-//                        ];
-//                    } else {
-//                        $templlists = [
-//                            'Stressballs.com',
-//                            'Bluetrack Health',
-//                            'Proforma Invoice',
-//                        ];
-//                    }
                     $templlists = $this->quotetemplates;
                     $this->load->model('shipping_model');
                     $cnt_options=array(

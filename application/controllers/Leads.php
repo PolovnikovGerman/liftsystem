@@ -665,6 +665,7 @@ class Leads extends My_Controller {
                             $leadoptions=array(
                                 'orderby'=>'lead_number',
                                 'direction'=>'desc',
+                                'brand' => $quotadata['brand'],
                             );
                             $leaddat=$this->leads_model->get_lead_list($leadoptions);
                             $options=array('leads'=>$leaddat,'current'=>$quotadata['lead_id'],'title' => 'Custom SB Form');
@@ -688,6 +689,7 @@ class Leads extends My_Controller {
                             $options=array(
                                 'orderby'=>'lead_number',
                                 'direction'=>'desc',
+                                'brand' => $quest['brand'],
                             );
                             $leaddat=$this->leads_model->get_lead_list($options);
                             $options=array('leads'=>$leaddat,'current'=>$quest['lead_id']);
