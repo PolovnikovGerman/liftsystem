@@ -1776,6 +1776,7 @@ class Test extends CI_Controller
             $itemnum++;
         }
         $this->updcolor_price();
+    }
 
     public function fix_leadnumbers() {
         $this->load->model('leads_model');
@@ -1904,6 +1905,4 @@ class Test extends CI_Controller
             $this->db->update('ts_quotes');
         }
     }
-    }
-
 }
