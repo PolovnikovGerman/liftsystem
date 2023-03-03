@@ -87,6 +87,7 @@ class Leadquote_model extends MY_Model
                 'items_subtotal' => 0,
                 'imprint_subtotal' => 0,
                 'quote_total' => 0,
+                'billingsame' => 1,
             ];
             // Items
             $quote_items = [];
@@ -125,6 +126,7 @@ class Leadquote_model extends MY_Model
             $response['result'] = $this->success_result;
             // Quote find
             // $response['result'] = $this->success_result;
+            $quote['billingsame'] = 0;
             // Get items
             $this->db->select('*');
             $this->db->from('ts_quote_items');

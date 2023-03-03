@@ -624,6 +624,17 @@ input.quotesalestaxvalue {
     padding-top: 4px;
     padding-bottom: 4px;
 }
+.quotesamebilligaddress {
+    margin-left: 5px;
+}
+.quotesamebilligaddress .billingsameinpt {
+    cursor: pointer;
+    margin-right: 3px;
+}
+.quotesamebilligaddress span {
+    font-size: 12px;
+    font-weight: normal;
+}
 .quotebilladdressother {
     border-left: 2px solid #000000;
     border-top: 2px solid #000000;

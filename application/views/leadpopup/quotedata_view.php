@@ -174,36 +174,44 @@
                 <div class="quotesectionlabel">BILLING ADDRESS:</div>
             </div>
             <div class="quotebillcountryarea">
-                <select class="quoteaddressinpt quotecountry" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="billing_country">
+                <select class="quoteaddressinpt quotecountry" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_country">
                     <?php foreach ($countries as $country) { ?>
                         <option value="<?=$country['country_id']?>" <?=$country['country_id']==$data['billing_country'] ? 'seleted="selected"' : ''?>><?=$country['country_name']?></option>
                     <?php } ?>
                 </select>
             </div>
+            <?php if ($data['quote_id']==0) { ?>
+                <div class="quotesamebilligaddress">
+                    <div class="billingsameinpt">
+                        <i class="fa fa-check-square-o" aria-hidden="true"></i>
+                    </div>
+                    <span>same</span>
+                </div>
+            <?php  } ?>
             <div class="quotebilladdressother">
                 <div class="datarow">
-                    <input class="quoteaddressinpt quotebilladdrother" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="billing_contact"
+                    <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'readonly="readonly"' : ''?> data-item="billing_contact"
                            placeholder="Contact Name" value="<?=$data['billing_contact']?>">
                 </div>
                 <div class="datarow">
-                    <input class="quoteaddressinpt quotebilladdrother" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="billing_company"
+                    <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'readonly="readonly"' : ''?> data-item="billing_company"
                            placeholder="Company" value="<?=$data['billing_company']?>">
                 </div>
                 <div class="datarow">
-                    <input class="quoteaddressinpt quotebilladdrother" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="billing_address1"
+                    <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'readonly="readonly"' : ''?> data-item="billing_address1"
                            placeholder="Address Line 1" value="<?=$data['billing_address1']?>">
                 </div>
                 <div class="datarow">
-                    <input class="quoteaddressinpt quotebilladdrother" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="billing_address2"
+                    <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'readonly="readonly"' : ''?> data-item="billing_address2"
                            placeholder="Address Line 2" value="<?=$data['billing_address2']?>">
                 </div>
                 <div class="datarow">
                     <div class="quotebilladdreszipcode">
-                        <input class="quoteaddressinpt quotepostal" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="billing_zip"
+                        <input class="quoteaddressinpt quotepostal" <?=($edit_mode==0 || $data['billingsame']==1) ? 'readonly="readonly"' : ''?> data-item="billing_zip"
                                placeholder="Zip" value="<?=$data['billing_zip']?>"/>
                     </div>
                     <div class="quotebilladdrescity">
-                        <input class="quoteaddressinpt quotetown" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="billing_city"
+                        <input class="quoteaddressinpt quotetown" <?=($edit_mode==0 || $data['billingsame']==1) ? 'readonly="readonly"' : ''?> data-item="billing_city"
                                placeholder="City" value="<?=$data['billing_city']?>"/>
                     </div>
                     <div class="quotebilladdresdistrict"><?=$billstate?></div>
