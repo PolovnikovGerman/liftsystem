@@ -652,7 +652,8 @@ input.quotebilladdrother {
 }
 textarea.quotenote {
     width: 227px;
-    height: 52px;
+    /* height: 52px; */
+    height: 131px;
     resize: none;
     overflow-y: auto;
     font-size: 11px;
