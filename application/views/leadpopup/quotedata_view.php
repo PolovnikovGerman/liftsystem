@@ -215,14 +215,15 @@
                 <div class="quotesectionlabel">NOTE TO INCLUDE ON QUOTE:</div>
             </div>
             <div class="datarow">
-                <textarea class="quotenote" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="quote_note"><?=$data['quote_note']?></textarea>
-            </div>
-            <div class="datarow">
-                <div class="quotesectionlabel">REP CONTACT INFO:</div>
-            </div>
-            <div class="datarow">
+<!--                <textarea class="quotenote" --><?php //=$edit_mode==0 ? 'readonly="readonly"' : ''?><!-- data-item="quote_note">--><?php //=$data['quote_note']?><!--</textarea>-->
                 <textarea class="quotenote" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="quote_repcontact"><?=$data['quote_repcontact']?></textarea>
             </div>
+<!--            <div class="datarow">-->
+<!--                <div class="quotesectionlabel">REP CONTACT INFO:</div>-->
+<!--            </div>-->
+<!--            <div class="datarow">-->
+<!--                <textarea class="quotenote" --><?php //=$edit_mode==0 ? 'readonly="readonly"' : ''?><!-- data-item="quote_repcontact">--><?php //=$data['quote_repcontact']?><!--</textarea>-->
+<!--            </div>-->
         </div>
         <div class="quotetotalarea">
             <div class="quotetotals">

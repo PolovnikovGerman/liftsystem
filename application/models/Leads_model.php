@@ -791,6 +791,15 @@ Class Leads_model extends MY_Model
         } else {
             $this->db->order_by('lead_number');
         }
+        if (isset($options['brand'])) {
+            if ($options['brand']!='ALL') {
+                if ($options['brand']=='SR') {
+                    $this->db->where('brand', $options['brand']);
+                } else {
+                    $this->db->where_in('brand', ['BT','SB']);
+                }
+            }
+        }
         $res=$this->db->get()->result_array();
         return $res;
     }

@@ -151,6 +151,7 @@ class Proofrequests extends MY_Controller
                 $options=array(
                     'orderby'=>'lead_number',
                     'direction'=>'desc',
+                    'brand' => $quest['brand'],
                 );
                 $leaddat=$this->leads_model->get_lead_list($options);
                 $options=array('leads'=>$leaddat,'current'=>$quest['lead_id']);
