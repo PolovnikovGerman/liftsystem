@@ -379,6 +379,7 @@ function show_artdata(mail_id, lead_id,relation_type) {
             $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             /* SAVE, EMAIL, etc buttons */
             init_artpopupcontent(lead_id, mail_id,relation_type);
+            $(document.body).addClass('modal-open');
         } else {
             show_error(response);
         }
@@ -427,6 +428,7 @@ function restore_leadform() {
             $("#leadformModalLabel").empty().html(response.data.title);
             $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
             $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+            $(document.body).addClass('modal-open');
             init_lead_cloneemail();
             init_leadpopupedit();
         } else {

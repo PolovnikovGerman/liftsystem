@@ -260,6 +260,7 @@ class Template
         );
         if (!empty($orddata['profit_perc'])) {
             $classprof = orderProfitClass($orddata['profit_perc']);
+            $profoptions['profit_class'] = $classprof;
             if ($classprof=='green') {
                 $profoptions['bgcolor']='#00e947';
             } elseif ($classprof=='red') {

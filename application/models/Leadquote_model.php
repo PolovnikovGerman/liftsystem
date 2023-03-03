@@ -581,6 +581,7 @@ class Leadquote_model extends MY_Model
                     if ($quote['taxview']==0) {
                         $quote['taxview'] = 1;
                         $out['taxview'] = 1;
+                        $out['totalcalc'] = 1;
                     }
                 } else {
                     if ($quote['taxview']==1) {
@@ -588,6 +589,7 @@ class Leadquote_model extends MY_Model
                         $quote['tax_exempt'] = 0;
                         $quote['tax_reason'] = '';
                         $out['taxview'] = 1;
+                        $out['totalcalc'] = 1;
                     }
                 }
             }
@@ -1228,7 +1230,7 @@ class Leadquote_model extends MY_Model
         $quote['sales_tax'] = 0;
         if ($quote['taxview']==1 && $quote['tax_exempt']==0) {
             // Calc tax
-            $basecost = $total + $quote['rush_cost'];
+            $basecost = $total + $quote['rush_cost']+$quote['shipping_cost'];
             $tax = round($basecost * ($this->config->item('salesnewtax')/100),2);
             $quote['sales_tax'] = $tax;
         }
@@ -1636,7 +1638,7 @@ class Leadquote_model extends MY_Model
                             } elseif ($dkey=='quote_item_id') {
                                 $imprintdetail[$dkey] = $itemid * (-1);
                             } elseif ($dkey=='imprint_active') {
-                                $imprintdetail['active'] = $val;
+                                $imprintdetail['active'] = $dval;
                             }
                         }
                         $imprintdetail['title'] = 'Loc '.$detailid;
@@ -1654,7 +1656,7 @@ class Leadquote_model extends MY_Model
                     $item['item_name'] = $itemdata['item_name'];
                     $item['colors'] = $colors;
                     $item['num_colors'] = count($colors);
-                    $item['imprint_locations']=ifset($itemdata, 'imprints',0);
+                    $item['imprint_locations']=ifset($itemdata, 'imprints',[]);
                     $item['vendor_zipcode']=ifset($itemdata, 'vendor_zipcode','');
                     $item['charge_perorder']=ifset($itemdata, 'charge_perorder',0);
                     $item['charge_pereach']=ifset($itemdata,'charge_pereach',0);

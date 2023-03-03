@@ -78,7 +78,10 @@
                     <div class="quotesaddnew">&nbsp;</div>
                 </div>
                 <div class="datarow">
-                    <div class="quotesdataarea <?=$data['brand']=='SR' ? 'relieverstab' : ''?>"><?=$lead_quotes?></div>
+                    <div class="quotesdataarea <?=$data['brand']=='SR' ? 'relieverstab' : ''?>">
+                        <div class="leadquotesarea"><?=$lead_quotes?></div>
+                        <div class="onlinequotesdataarea <?=$data['brand']=='SR' ? 'relieverstab' : ''?>"><?=$quotes?></div>
+                    </div>
                 </div>
             </div>
             <div id="quotepopupdetails" class="quotepopupdetails">

@@ -365,7 +365,13 @@ select.lead_item_select {
     background: #f1f1f1;
     border: 1px solid #808080;
 }
-.quotesdataarea .datarow  > div {
+.leadquotesarea {
+    width: 100%;
+    height: 305px;
+    margin-bottom: 7px;
+    overflow-y: auto;
+}
+.leadquotesarea .datarow  > div {
     height: 22px;
     line-height: 22px;
 }
@@ -592,11 +598,12 @@ textarea.lead_othertask {
     cursor: pointer;
 }
 .lead_popup_quotechck {
-    float: left;
+    text-align: center;
     width: 20px;
+    cursor: pointer;
+    font-size: 12px!important;
 }
 .lead_popup_quotechck:hover {
-    cursor: pointer;
 }
 .lead_onlinequotesarea {
     float: left;
@@ -611,39 +618,36 @@ textarea.lead_othertask {
     padding-top: 5px;
     padding-left: 9px;
 }
+.onlinequotesdataarea {
+    width: 100%;
+}
 .lead_onlinequotrow {
-    clear: both;
-    float: left;
-    width: 323px;
-    font-size: 13px;
+    /* clear: both; */
+}
+.lead_onlinequotrow div {
+    height: 22px;
+    line-height: 22px!important;
+    font-size: 11px;
     color: #262626;
 }
 .lead_quotedate {
-    float: left;
-    margin-top: 5px;
-    width: 46px;
+    width: 43px;
 }
 .lead_quoteqty {
-    float: left;
-    margin-top: 5px;
     text-align: center;
     width: 24px;
 }
 .lead_quoteitem {
-    float: left;
     width: 125px;
-    overflow: hidden;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .lead_quoteseparat {
-    float: left;
-    margin-top: 5px;
     text-align: center;
     width: 13px;
 }
 .lead_quoteprofnum {
-    float: left;
-    margin-top: 5px;
     width: 56px;
     color: #0000FF;
     cursor: pointer;
@@ -666,8 +670,9 @@ textarea.lead_othertask {
     width: 100%;
 }
 .lead_quoteprice {
-    float: left;
-    width: 56px;
+    padding-right: 5px;
+    text-align: right!important;
+    width: 53px;
 }
 .lead_onlineproofsarea {
     /* margin-top: -176px; */
