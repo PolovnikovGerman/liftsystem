@@ -1696,9 +1696,12 @@ class Leadquote_model extends MY_Model
 
     public function prepare_quotedoc($quote_id) {
         $out=['result' => $this->error_result, 'msg' => 'Lead Not Found'];
-        $this->db->select('*');
-        $this->db->from('ts_quotes');
-        $this->db->where('quote_id', $quote_id);
+        $this->db->select('q.*, , shipcnt.country_name shipcntname, shipcnt.country_iso_code_2 as shipcntcode');
+        $this->db->select('billcnt.country_name billcntname, billcnt.country_iso_code_2 as billcntcode');
+        $this->db->from('ts_quotes q');
+        $this->db->join('ts_countries shipcnt', 'q.shipping_country = shipcnt.country_id', 'left');
+        $this->db->join('ts_countries billcnt', 'q.billing_country = billcnt.country_id','left');
+        $this->db->where('q.quote_id', $quote_id);
         $quote = $this->db->get()->row_array();
         if (ifset($quote,'quote_id',0)==$quote_id) {
             $this->load->model('orders_model');
@@ -1739,6 +1742,10 @@ class Leadquote_model extends MY_Model
             if (!empty($billcity)) {
                 array_push($bill, $billcity);
             }
+            // Country
+            if (!empty($quote['billcntname'])) {
+                array_push($bill, $quote['billcntname']);
+            }
             $quote['billing'] = $bill;
             if (!empty($quote['shipping_company'])) {
                 array_push($ship, $quote['shipping_company']);
@@ -1764,6 +1771,10 @@ class Leadquote_model extends MY_Model
             }
             if (!empty($shipcity)) {
                 array_push($ship, $shipcity);
+            }
+            // Country
+            if (!empty($quote['shipcntname'])) {
+                array_push($ship, $quote['shipcntname']);
             }
             $quote['shipping'] = $ship;
             $this->db->select('*');
@@ -1885,13 +1896,13 @@ class Leadquote_model extends MY_Model
         $pdf->SetCellMargin(4);
         $pdf->Cell(88, 8, 'Billing Address',1,0,'',true);
         $pdf->SetXY($startPageX,63);
-        $pdf->Cell(88, 36, '',1);
+        $pdf->Cell(88, 30, '',1);
         $pdf->SetTextColor(0,0,0);
         $yStart = 63;
         foreach ($quote['billing'] as $billrow) {
             $pdf->SetXY($startPageX, $yStart);
-            $pdf->Cell(87, 6, $billrow);
-            $yStart+=7;
+            $pdf->Cell(87, 5, $billrow);
+            $yStart+=4.8;
         }
         // Shipping Address
         $pdf->SetTextColor(255,255,255);
@@ -1899,17 +1910,17 @@ class Leadquote_model extends MY_Model
         $pdf->Cell(92, 8, 'Shipping Address',1,0,'',true);
         $pdf->SetTextColor(0,0,0);
         $pdf->SetXY(105,63);
-        $pdf->Cell(92, 36, '',1);
+        $pdf->Cell(92, 30, '',1);
         $pdf->SetTextColor(0,0,0);
         $yStart = 63;
         foreach ($quote['shipping'] as $shiprow) {
             $pdf->SetXY(105, $yStart);
-            $pdf->Cell(87, 6, $shiprow);
-            $yStart+=7;
+            $pdf->Cell(87, 5, $shiprow);
+            $yStart+=4.8;
         }
         $pdf->SetCellMargin(3);
         // $yStart = $pdf->getY() + 3;
-        $yStart = 102;
+        $yStart = 96; //102;
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetXY($startPageX, $yStart);
         $pdf->Cell($colWidth[0], 6, 'Item',1,0,'C', true);
@@ -1921,19 +1932,25 @@ class Leadquote_model extends MY_Model
         $numpp=1;
         $pdf->setFillcolor(230, 230, 230);
         $pdf->SetTextColor(0,0,0);
+        $cellheight = 4.8;
         foreach ($items as $item) {
             $colors = $item['colors'];
             foreach ($colors as $color) {
                 $fillrow = ($numpp % 2) == 0 ? 1 : 0;
                 $total = $color['item_qty'] * $color['item_price'];
                 $pdf->SetXY($startPageX, $yStart);
-                $pdf->Cell($colWidth[0], 5, $item['item_number'], 'LR', 0, 'L', $fillrow);
-                $pdf->Cell($colWidth[1], 5, $color['item_description'] . ' ' . $color['item_color'], 'LR', 0, 'L', $fillrow);
-                $pdf->Cell($colWidth[2], 5, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[3], 5, number_format($color['item_price'], 2), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[4], 5, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
+                if ($numpp==1) {
+                    $cellheight = 6;
+                } else {
+                    $cellheight = 4.8;
+                }
+                $pdf->Cell($colWidth[0], $cellheight, $item['item_number'], 'LR', 0, 'L', $fillrow);
+                $pdf->Cell($colWidth[1], $cellheight, $color['item_description'] . ' ' . $color['item_color'], 'LR', 0, 'L', $fillrow);
+                $pdf->Cell($colWidth[2], $cellheight, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[3], $cellheight, number_format($color['item_price'], 2), 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
                 $numpp++;
-                $yStart += 5;
+                $yStart += $cellheight;
             }
             $imprints = $item['imprints'];
             foreach ($imprints as $imprint) {
@@ -1944,58 +1961,58 @@ class Leadquote_model extends MY_Model
                     $rowcode = 'SR-setu1';
                 }
                 $pdf->SetXY($startPageX, $yStart);
-                $pdf->Cell($colWidth[0], 5, $rowcode, 'LR', 0, 'L', $fillrow);
-                $pdf->Cell($colWidth[1], 5, $imprint['imprint_description'], 'LR', 0, 'L', $fillrow);
-                $pdf->Cell($colWidth[2], 5, QTYOutput($imprint['imprint_qty']), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[3], 5, number_format($imprint['imprint_price'], 2), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[4], 5, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
+                $pdf->Cell($colWidth[0], $cellheight, $rowcode, 'LR', 0, 'L', $fillrow);
+                $pdf->Cell($colWidth[1], $cellheight, $imprint['imprint_description'], 'LR', 0, 'L', $fillrow);
+                $pdf->Cell($colWidth[2], $cellheight, QTYOutput($imprint['imprint_qty']), 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[3], $cellheight, number_format($imprint['imprint_price'], 2), 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
                 $numpp++;
-                $yStart += 5;
+                $yStart += $cellheight;
             }
         }
         if (!empty($quote['mischrg_label1']) && !empty($quote['mischrg_value1'])) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
-            $pdf->Cell($colWidth[0], 5, 'SR-misc1','LR',0,'L', $fillrow);
-            $pdf->Cell($colWidth[1], 5, $quote['mischrg_label1'],'LR', 0,'L', $fillrow);
-            $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
-            $pdf->Cell($colWidth[3], 5, number_format($quote['mischrg_value1'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], 5, MoneyOutput($quote['mischrg_value1']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[0], $cellheight, 'SR-misc1','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], $cellheight, $quote['mischrg_label1'],'LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
+            $pdf->Cell($colWidth[3], $cellheight, number_format($quote['mischrg_value1'],2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value1']).'T', 'LR', 0,'R', $fillrow);
             $numpp++;
-            $yStart+=5;
+            $yStart+=$cellheight;
         }
         if (!empty($quote['mischrg_label2']) && !empty($quote['mischrg_value2'])) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
-            $pdf->Cell($colWidth[0], 5, 'SR-misc2','LR',0,'L', $fillrow);
-            $pdf->Cell($colWidth[1], 5, $quote['mischrg_label2'],'LR', 0,'L', $fillrow);
-            $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
-            $pdf->Cell($colWidth[3], 5, number_format($quote['mischrg_value2'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], 5, MoneyOutput($quote['mischrg_value2']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[0], $cellheight, 'SR-misc2','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], $cellheight, $quote['mischrg_label2'],'LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
+            $pdf->Cell($colWidth[3], $cellheight, number_format($quote['mischrg_value2'],2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value2']).'T', 'LR', 0,'R', $fillrow);
             $numpp++;
-            $yStart+=5;
+            $yStart+=$cellheight;
         }
         if (!empty($shipping)) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
-            $pdf->Cell($colWidth[0], 5, 'SR-ship1','LR',0,'L', $fillrow);
-            $pdf->Cell($colWidth[1], 5, $shipping[0]['shipping_name'].' Shipping Charge','LR', 0,'L', $fillrow);
-            $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
-            $pdf->Cell($colWidth[3], 5, number_format($quote['shipping_cost'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], 5, MoneyOutput($quote['shipping_cost']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[0], $cellheight, 'SR-ship1','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], $cellheight, $shipping[0]['shipping_name'].' Shipping Charge','LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
+            $pdf->Cell($colWidth[3], $cellheight, number_format($quote['shipping_cost'],2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['shipping_cost']).'T', 'LR', 0,'R', $fillrow);
             $numpp++;
-            $yStart+=5;
+            $yStart+=$cellheight;
         }
         if (!empty($quote['discount_label']) && !empty($quote['discount_value'])) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
-            $pdf->Cell($colWidth[0], 5, 'SR-disc1','LR',0,'L', $fillrow);
-            $pdf->Cell($colWidth[1], 5, $quote['discount_label'],'LR', 0,'L', $fillrow);
-            $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
-            $pdf->Cell($colWidth[3], 5, '-'.number_format($quote['discount_value'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], 5, '-'.MoneyOutput($quote['discount_value']).' ', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[0], $cellheight, 'SR-disc1','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], $cellheight, $quote['discount_label'],'LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
+            $pdf->Cell($colWidth[3], $cellheight, '-'.number_format($quote['discount_value'],2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, '-'.MoneyOutput($quote['discount_value']).' ', 'LR', 0,'R', $fillrow);
             $numpp++;
-            $yStart+=5;
+            $yStart+=$cellheight;
         }
         // Empty Row
         $pdf->SetXY($startPageX, $yStart);
@@ -2010,7 +2027,7 @@ class Leadquote_model extends MY_Model
         if (!empty($quote['quote_repcontact'])) {
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->SetXY($startPageX + $colWidth[0], $yStart);
-            $pdf->MultiCell($colWidth[1], 5, $quote['quote_repcontact'],'LR', 'L', $fillrow);
+            $pdf->MultiCell($colWidth[1], $cellheight, $quote['quote_repcontact'],'LR', 'L', $fillrow);
             $multY = $pdf->getY();
             $rowHeight = $multY-$yStart;
             $pdf->SetXY($startPageX, $yStart);
@@ -2022,7 +2039,7 @@ class Leadquote_model extends MY_Model
             $numpp++;
             $yStart = $multY;
         }
-        $rowHeight = 7;
+        $rowHeight = 2;
         if ($yStart < 178) {
             $rowHeight = 178 - $yStart;
         }
@@ -2112,14 +2129,11 @@ class Leadquote_model extends MY_Model
         $pdf->SetXY(18,$quickOrdY+6);
         $pdf->Cell(173,6,'or fill out this form and send back by email (sales@stressrelievers.com)',0,0,'C');
         // Save file
-
-
         $file_out = $this->config->item('upload_path_preload').$filname;
         $pdf->Output('F', $file_out);
         $out['result'] = $this->success_result;
         $out['docurl'] = $this->config->item('pathpreload').$filname;
         return $out;
-
     }
 
     private function _prepare_quotesbdoc($quote, $items, $shipping) {
@@ -2195,13 +2209,13 @@ class Leadquote_model extends MY_Model
         $pdf->SetCellMargin(4);
         $pdf->Cell(88, 8, 'Billing Address',1,0,'',true);
         $pdf->SetXY($startPageX,63);
-        $pdf->Cell(88, 36, '',1);
+        $pdf->Cell(88, 30, '',1);
         $pdf->SetTextColor(0,0,0);
-        $yStart = 63;
+        $yStart = 64;
         foreach ($quote['billing'] as $billrow) {
             $pdf->SetXY($startPageX, $yStart);
-            $pdf->Cell(87, 6, $billrow);
-            $yStart+=7;
+            $pdf->Cell(87, 5, $billrow);
+            $yStart+=4.8;
         }
         // Shipping Address
         $pdf->SetTextColor(255,255,255);
@@ -2209,17 +2223,17 @@ class Leadquote_model extends MY_Model
         $pdf->Cell(92, 8, 'Shipping Address',1,0,'',true);
         $pdf->SetTextColor(0,0,0);
         $pdf->SetXY(105,63);
-        $pdf->Cell(92, 36, '',1);
+        $pdf->Cell(92, 30, '',1);
         $pdf->SetTextColor(0,0,0);
-        $yStart = 63;
+        $yStart = 64;
         foreach ($quote['shipping'] as $shiprow) {
             $pdf->SetXY(105, $yStart);
-            $pdf->Cell(87, 6, $shiprow);
-            $yStart+=7;
+            $pdf->Cell(87, 5, $shiprow);
+            $yStart+=4.8;
         }
         $pdf->SetCellMargin(3);
         // $yStart = $pdf->getY() + 3;
-        $yStart = 102;
+        $yStart = 96; //102;
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetXY($startPageX, $yStart);
         $pdf->Cell($colWidth[0], 6, 'Item',1,0,'C', true);
@@ -2231,19 +2245,25 @@ class Leadquote_model extends MY_Model
         $numpp=1;
         $pdf->setFillcolor(230, 230, 230);
         $pdf->SetTextColor(0,0,0);
+        $cellheight = 4.8;
         foreach ($items as $item) {
             $colors = $item['colors'];
             foreach ($colors as $color) {
                 $fillrow = ($numpp % 2) == 0 ? 1 : 0;
                 $total = $color['item_qty'] * $color['item_price'];
                 $pdf->SetXY($startPageX, $yStart);
-                $pdf->Cell($colWidth[0], 5, $item['item_number'], 'LR', 0, 'L', $fillrow);
-                $pdf->Cell($colWidth[1], 5, $color['item_description'] . ' ' . $color['item_color'], 'LR', 0, 'L', $fillrow);
-                $pdf->Cell($colWidth[2], 5, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[3], 5, number_format($color['item_price'], 2), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[4], 5, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
+                if ($numpp==1) {
+                    $cellheight = 6;
+                } else {
+                    $cellheight = 4.8;
+                }
+                $pdf->Cell($colWidth[0], $cellheight, $item['item_number'], 'LR', 0, 'L', $fillrow);
+                $pdf->Cell($colWidth[1], $cellheight, $color['item_description'] . ' ' . $color['item_color'], 'LR', 0, 'L', $fillrow);
+                $pdf->Cell($colWidth[2], $cellheight, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[3], $cellheight, number_format($color['item_price'], 2), 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
                 $numpp++;
-                $yStart += 5;
+                $yStart += $cellheight;
             }
             $imprints = $item['imprints'];
             foreach ($imprints as $imprint) {
@@ -2254,58 +2274,58 @@ class Leadquote_model extends MY_Model
                     $rowcode = 'SB-setu1';
                 }
                 $pdf->SetXY($startPageX, $yStart);
-                $pdf->Cell($colWidth[0], 5, $rowcode, 'LR', 0, 'L', $fillrow);
-                $pdf->Cell($colWidth[1], 5, $imprint['imprint_description'], 'LR', 0, 'L', $fillrow);
-                $pdf->Cell($colWidth[2], 5, QTYOutput($imprint['imprint_qty']), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[3], 5, number_format($imprint['imprint_price'], 2), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[4], 5, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
+                $pdf->Cell($colWidth[0], $cellheight, $rowcode, 'LR', 0, 'L', $fillrow);
+                $pdf->Cell($colWidth[1], $cellheight, $imprint['imprint_description'], 'LR', 0, 'L', $fillrow);
+                $pdf->Cell($colWidth[2], $cellheight, QTYOutput($imprint['imprint_qty']), 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[3], $cellheight, number_format($imprint['imprint_price'], 2), 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
                 $numpp++;
-                $yStart += 5;
+                $yStart += $cellheight;
             }
         }
         if (!empty($quote['mischrg_label1']) && !empty($quote['mischrg_value1'])) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
-            $pdf->Cell($colWidth[0], 5, 'SB-misc1','LR',0,'L', $fillrow);
-            $pdf->Cell($colWidth[1], 5, $quote['mischrg_label1'],'LR', 0,'L', $fillrow);
-            $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
-            $pdf->Cell($colWidth[3], 5, number_format($quote['mischrg_value1'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], 5, MoneyOutput($quote['mischrg_value1']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[0], $cellheight, 'SB-misc1','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], $cellheight, $quote['mischrg_label1'],'LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
+            $pdf->Cell($colWidth[3], $cellheight, number_format($quote['mischrg_value1'],2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value1']).'T', 'LR', 0,'R', $fillrow);
             $numpp++;
-            $yStart+=5;
+            $yStart+=$cellheight;
         }
         if (!empty($quote['mischrg_label2']) && !empty($quote['mischrg_value2'])) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
-            $pdf->Cell($colWidth[0], 5, 'SB-misc2','LR',0,'L', $fillrow);
-            $pdf->Cell($colWidth[1], 5, $quote['mischrg_label2'],'LR', 0,'L', $fillrow);
-            $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
-            $pdf->Cell($colWidth[3], 5, number_format($quote['mischrg_value2'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], 5, MoneyOutput($quote['mischrg_value2']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[0], $cellheight, 'SB-misc2','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], $cellheight, $quote['mischrg_label2'],'LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
+            $pdf->Cell($colWidth[3], $cellheight, number_format($quote['mischrg_value2'],2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value2']).'T', 'LR', 0,'R', $fillrow);
             $numpp++;
-            $yStart+=5;
+            $yStart+=$cellheight;
         }
         if (!empty($shipping)) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
-            $pdf->Cell($colWidth[0], 5, 'SB-ship1','LR',0,'L', $fillrow);
-            $pdf->Cell($colWidth[1], 5, $shipping[0]['shipping_name'].' Shipping Charge','LR', 0,'L', $fillrow);
-            $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
-            $pdf->Cell($colWidth[3], 5, number_format($quote['shipping_cost'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], 5, MoneyOutput($quote['shipping_cost']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[0], $cellheight, 'SB-ship1','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], $cellheight, $shipping[0]['shipping_name'].' Shipping Charge','LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
+            $pdf->Cell($colWidth[3], $cellheight, number_format($quote['shipping_cost'],2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['shipping_cost']).'T', 'LR', 0,'R', $fillrow);
             $numpp++;
-            $yStart+=5;
+            $yStart+=$cellheight;
         }
         if (!empty($quote['discount_label']) && !empty($quote['discount_value'])) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
-            $pdf->Cell($colWidth[0], 5, 'SB-disc1','LR',0,'L', $fillrow);
-            $pdf->Cell($colWidth[1], 5, $quote['discount_label'],'LR', 0,'L', $fillrow);
-            $pdf->Cell($colWidth[2], 5, 1, 'LR', 0,'C', $fillrow);
-            $pdf->Cell($colWidth[3], 5, '-'.number_format($quote['discount_value'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], 5, '-'.MoneyOutput($quote['discount_value']).' ', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[0], $cellheight, 'SB-disc1','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], $cellheight, $quote['discount_label'],'LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
+            $pdf->Cell($colWidth[3], $cellheight, '-'.number_format($quote['discount_value'],2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, '-'.MoneyOutput($quote['discount_value']).' ', 'LR', 0,'R', $fillrow);
             $numpp++;
-            $yStart+=5;
+            $yStart+=$cellheight;
         }
         // Empty Row
         $pdf->SetXY($startPageX, $yStart);
@@ -2320,7 +2340,7 @@ class Leadquote_model extends MY_Model
         if (!empty($quote['quote_repcontact'])) {
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->SetXY($startPageX + $colWidth[0], $yStart);
-            $pdf->MultiCell($colWidth[1], 5, $quote['quote_repcontact'],'LR', 'L', $fillrow);
+            $pdf->MultiCell($colWidth[1], $cellheight, $quote['quote_repcontact'],'LR', 'L', $fillrow);
             $multY = $pdf->getY();
             $rowHeight = $multY-$yStart;
             $pdf->SetXY($startPageX, $yStart);
@@ -2332,9 +2352,10 @@ class Leadquote_model extends MY_Model
             $numpp++;
             $yStart = $multY;
         }
-        $rowHeight = 7;
-        if ($yStart < 178) {
-            $rowHeight = 178 - $yStart;
+        $rowHeight = 2;
+        if ($yStart < 172 ) {
+            // && empty($quote['quote_note'])
+            $rowHeight = 172 - $yStart;
         }
         $pdf->SetXY($startPageX, $yStart);
         $fillrow=($numpp%2)==0 ? 1 : 0;
@@ -2358,14 +2379,7 @@ class Leadquote_model extends MY_Model
         $pdf->Cell(20,12,'Total:', 'LB',0,'C');
         $pdf->SetFont('','',14);
         $pdf->Cell(50,12, MoneyOutput($quote['quote_total']),'BR',0,'R');
-//        if (!empty($quote['quote_note'])) {
-//            $pdf->SetXY($startPageX, $yStart+12);
-//            $pdf->MultiCell(110, 7, 'Note: '.$quote['quote_note'],1, 'L', $fillrow);
-//            $noteY = $pdf->GetY();
-//            $yStart = $noteY + 4;
-//        } else {
-            $yStart += 23;
-//        }
+        $yStart += 23;
         $pdf->SetDash(1,1);
         $pdf->Line($startPageX,$yStart,195, $yStart);
         $pdf->Line($startPageX, $yStart, $startPageX, $yStart+55);
@@ -2429,8 +2443,6 @@ class Leadquote_model extends MY_Model
         $pdf->SetXY(18,$quickOrdY+6);
         $pdf->Cell(173,6,'or fill out this form and send back by email (sales@stressballs.com) or fax (201-604-2688)',0,0,'C');
         // Save file
-
-
         $file_out = $this->config->item('upload_path_preload').$filname;
         $pdf->Output('F', $file_out);
         $out['result'] = $this->success_result;

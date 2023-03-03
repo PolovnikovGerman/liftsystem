@@ -1250,4 +1250,19 @@ class Test extends CI_Controller
             echo 'Create file Error'.PHP_EOL;
         }
     }
+
+    public function merge_quotenotes() {
+        $this->db->select('*');
+        $this->db->from('ts_quotes');
+        $this->db->where('quote_note !=','');
+        $rows = $this->db->get()->result_array();
+        foreach ($rows as $row) {
+            echo 'Quote '.$row['quote_number'].PHP_EOL;
+            $newnote = $row['quote_repcontact'].PHP_EOL.''.PHP_EOL.$row['quote_note'];
+            $this->db->where('quote_id', $row['quote_id']);
+            $this->db->set('quote_repcontact', $newnote);
+            $this->db->set('quote_note','');
+            $this->db->update('ts_quotes');
+        }
+    }
 }
