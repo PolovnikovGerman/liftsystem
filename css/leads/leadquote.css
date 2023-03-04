@@ -629,7 +629,12 @@ input.quotesalestaxvalue {
 }
 .quotesamebilligaddress .billingsameinpt {
     cursor: pointer;
-    margin-right: 3px;
+    margin-right: 5px;
+    width: 21px;
+    height: 21px;
+    line-height: 21px!important;
+    background-color: #dadada;
+    text-align: center;
 }
 .quotesamebilligaddress span {
     font-size: 12px;

@@ -74,7 +74,7 @@ class Leadquote extends MY_Controller
                             $stateoptions = [
                                 'item' => 'billing_state',
                                 'states' => $billstates,
-                                'edit_mode' => 1,
+                                'edit_mode' => 0,
                                 'data' => $quotedata,
                             ];
                             $billstate = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
@@ -978,6 +978,28 @@ class Leadquote extends MY_Controller
             }
         }
         $this->ajaxResponse($mdata, $error);
+    }
+
+    // Same billing address
+    public function billingsame() {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $error = $this->restore_orderdata_error;
+            $session_id = ifset($postdata,'session','unknw');
+            $quotesession = usersession($session_id);
+            $mdata = [];
+            if (!empty($quotesession)) {
+                $res = $this->leadquote_model->billingsame($quotesession, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['billingsame'] = $res['billingsame'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+
+        }
+        show_404();
     }
 
     // Save Quote
