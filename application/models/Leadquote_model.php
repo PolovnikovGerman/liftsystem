@@ -87,6 +87,7 @@ class Leadquote_model extends MY_Model
                 'items_subtotal' => 0,
                 'imprint_subtotal' => 0,
                 'quote_total' => 0,
+                'billingsame' => 1,
             ];
             // Items
             $quote_items = [];
@@ -125,6 +126,7 @@ class Leadquote_model extends MY_Model
             $response['result'] = $this->success_result;
             // Quote find
             // $response['result'] = $this->success_result;
+            $quote['billingsame'] = 0;
             // Get items
             $this->db->select('*');
             $this->db->from('ts_quote_items');
@@ -1323,6 +1325,17 @@ class Leadquote_model extends MY_Model
         $deleted = $quotesession['deleted'];
         // Check filling data
         // All Ok, start save
+        // Same address
+        if ($quote['quote_id']==0 && ifset($quote, 'billingsame',0)==1) {
+            $quote['billing_country'] = $quote['shipping_country'];
+            $quote['billing_contact'] = $quote['shipping_contact'];
+            $quote['billing_company'] = $quote['shipping_company'];
+            $quote['billing_address1'] = $quote['shipping_address1'];
+            $quote['billing_address2'] = $quote['shipping_address2'];
+            $quote['billing_zip'] = $quote['shipping_zip'];
+            $quote['billing_city'] = $quote['shipping_city'];
+            $quote['billing_state'] = $quote['shipping_state'];
+        }
         $this->db->set('quote_template', $quote['quote_template']);
         $this->db->set('mischrg_label1', $quote['mischrg_label1']);
         $this->db->set('mischrg_value1', floatval($quote['mischrg_value1']));
@@ -3163,6 +3176,23 @@ class Leadquote_model extends MY_Model
                 }
             }
         }
+        return $out;
+    }
+
+    public function billingsame($quotesession, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Parameter Not Found'];
+        $quote = $quotesession['quote'];
+        $sameadr = ifset($quote,'billingsame',0);
+        if ($sameadr==0) {
+            $sameadr = 1;
+        } else {
+            $sameadr = 0;
+        }
+        $quote['billingsame'] = $sameadr;
+        $quotesession['quote'] = $quote;
+        usersession($session_id, $quotesession);
+        $out['result'] = $this->success_result;
+        $out['billingsame'] = $sameadr;
         return $out;
     }
 
