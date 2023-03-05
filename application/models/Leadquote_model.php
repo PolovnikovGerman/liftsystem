@@ -109,6 +109,9 @@ class Leadquote_model extends MY_Model
                     $quotedat['shipping_state'] = $customquote['ship_state'];
                     $quotedat['shipping_contact'] = $customquote['customer_name'];
                     $quotedat['shipping_company'] = $customquote['customer_company'];
+                    if ($quotedat['shipping_state'] == $this->tax_state) {
+                        $quotedat['taxview'] = 1;
+                    }
                 }
             }
             // Items
