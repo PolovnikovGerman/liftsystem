@@ -89,6 +89,28 @@ class Leadquote_model extends MY_Model
                 'quote_total' => 0,
                 'billingsame' => 1,
             ];
+            // Check relation with ts_custom_quotes
+            $this->db->select('count(*) as cnt, max(custom_quote_id) custom_quote');
+            $this->db->from('ts_lead_emails');
+            $this->db->where('lead_id', $lead_data['lead_id']);
+            $this->db->where('custom_quote_id is not NULL');
+            $customchk = $this->db->get()->row_array();
+            if ($customchk['cnt'] > 0) {
+                $this->db->select('*');
+                $this->db->from('ts_custom_quotes');
+                $this->db->where('custom_quote_id', $customchk['custom_quote']);
+                $customquote = $this->db->get()->row_array();
+                if (ifset($customquote, 'custom_quote_id',0) > 0) {
+                    $quotedat['shipping_country'] = $customquote['ship_country'];
+                    $quotedat['shipping_zip'] = $customquote['ship_zipcode'];
+                    $quotedat['shipping_city'] = $customquote['ship_city'];
+                    $quotedat['shipping_address1'] = $customquote['ship_address1'];
+                    $quotedat['shipping_address2'] = $customquote['ship_address2'];
+                    $quotedat['shipping_state'] = $customquote['ship_state'];
+                    $quotedat['shipping_contact'] = $customquote['customer_name'];
+                    $quotedat['shipping_company'] = $customquote['customer_company'];
+                }
+            }
             // Items
             $quote_items = [];
             if (!empty($lead_data['lead_item_id'])) {
