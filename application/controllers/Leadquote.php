@@ -118,6 +118,30 @@ class Leadquote extends MY_Controller
                         'deleted' => [],
                     ];
                     usersession($quote_session, $sessiondata);
+                    $shipratesview = '';
+                    if (!empty($quotedata['shipping_zip'])) {
+                        $this->leadquote_model->calc_quote_shipping($quote_session);
+                        $this->leadquote_model->calc_quote_totals($quote_session);
+                        $sessiondata = usersession($quote_session);
+                        $quotedata = $sessiondata['quote'];
+                        $quote_items = $sessiondata['items'];
+                        $shippings = $sessiondata['shipping'];
+                        if (count($shippings) > 0) {
+                            $shipoptions = [
+                                'edit_mode' => 1,
+                                'shippings' => $shippings,
+                            ];
+                            $shipratesview = $this->load->view('leadpopup/quote_shiprates_view', $shipoptions, TRUE);
+                        }
+                        if (!empty($quotedata['shipping_state']) && $quotedata['taxview']==1) {
+                            $taxoptions = [
+                                'edit_mode' => 1,
+                                'data' => $quotedata,
+                            ];
+                            $taxview = $this->load->view('leadpopup/quote_tax_edit', $taxoptions,TRUE);
+                        }
+                    }
+
                     $lead_time = '';
                     if (!empty($quotedata['lead_time'])) {
                         $lead_times = json_decode($quotedata['lead_time'], true);
@@ -136,7 +160,7 @@ class Leadquote extends MY_Controller
                         'templlists' => $templlists,
                         'countries' => $countries,
                         'edit_mode' => 1,
-                        'shiprates' => '',
+                        'shiprates' => $shipratesview,
                         'lead_time' => $lead_time,
                         'shipstate' => $shipstate,
                         'billstate' => $billstate,
