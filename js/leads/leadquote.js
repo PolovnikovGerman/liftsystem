@@ -513,6 +513,36 @@ function init_leadquotes_content() {
     $(".addquoteitem").unbind('click').click(function (){
         show_leadquoteitemsearch();
     });
+    $(".billingsameinpt").find('i').unbind('click').click(function (){
+        var params=new Array();
+        params.push({name: 'session', value: $("#quotesessionid").val()});
+        var url = "/leadquote/billingsame";
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (parseInt(response.data.billingsame)==1) {
+                    $(".billingsameinpt").empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>');
+                    $("select[data-item='billing_country']").prop('disabled', true);
+                    $("input.quotebilladdrother").prop('disabled', true);
+                    $("input[data-item='billing_zip']").prop('disabled', true);
+                    $("input[data-item='billing_city']").prop('disabled', true);
+                    $("select[data-item='billing_state']").prop('disabled', true);
+                } else {
+                    $(".billingsameinpt").empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>');
+                    $("select[data-item='billing_country']").prop('disabled', false);
+                    $("input.quotebilladdrother").prop('disabled', false);
+                    $("input[data-item='billing_zip']").prop('disabled', false);
+                    $("input[data-item='billing_city']").prop('disabled', false);
+                    $("select[data-item='billing_state']").prop('disabled', false);
+                }
+                $("#loader").hide();
+                init_leadquotes_content();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 function show_leadquoteitemsearch() {
