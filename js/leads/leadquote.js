@@ -9,6 +9,7 @@ function addnewcustomquote() {
         dat.push({name:'session_id', value: $("#session").val()});
         dat.push({name: 'session_attach', value: $("#session_attach").val()});
         dat.push({name: 'lead_type', value: $("#lead_type").val()});
+        $("#loader").show();
         $.post(url, dat, function (response) {
             if (response.errors=='') {
                 $("#quotepopupdetails").empty().html(response.data.quotecontent);
@@ -18,7 +19,9 @@ function addnewcustomquote() {
                 $(".quotesaddnew").unbind('click');
                 $("#lead_id").val(response.data.lead_id);
                 init_leadquotes_content();
+                $("#loader").hide();
             } else {
+                $("#loader").hide();
                 show_error(response);
             }
         },'json');
