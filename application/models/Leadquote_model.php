@@ -89,6 +89,12 @@ class Leadquote_model extends MY_Model
                 'quote_total' => 0,
                 'billingsame' => 1,
             ];
+            if (!empty($lead_data['lead_company'])) {
+                $quotedat['shipping_company'] = $lead_data['lead_company'];
+            }
+            if (!empty($lead_data['lead_customer'])) {
+                $quotedat['shipping_contact'] = $lead_data['lead_customer'];
+            }
             // Check relation with ts_custom_quotes
             $this->db->select('count(*) as cnt, max(custom_quote_id) custom_quote');
             $this->db->from('ts_lead_emails');
@@ -117,7 +123,8 @@ class Leadquote_model extends MY_Model
             // Items
             $quote_items = [];
             if (!empty($lead_data['lead_item_id'])) {
-                $itemdat = $this->add_newleadquote_item($lead_data['lead_item_id'], $lead_data['other_item_name']);
+                $leadqty = intval($lead_data['lead_itemqty']);
+                $itemdat = $this->add_newleadquote_item($lead_data['lead_item_id'], $lead_data['other_item_name'], $leadqty);
                 if ($itemdat['result']==$this->success_result) {
                     $quote_items[] = $itemdat['quote_items'];
                     // Get Delivery Terms
@@ -352,7 +359,7 @@ class Leadquote_model extends MY_Model
         return $newnumber;
     }
 
-    public function add_newleadquote_item($item_id, $custom_name, $startid=1) {
+    public function add_newleadquote_item($item_id, $custom_name, $itemqty, $startid=1) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $this->load->model('orders_model');
         $this->load->model('leadorder_model');
@@ -372,9 +379,13 @@ class Leadquote_model extends MY_Model
         } else {
             $item_description=$itemdata['item_name'];
         }
-        $defqty=$this->config->item('defqty_common');
-        if ($item_id==$this->config->item('custom_id')) {
-            $defqty=$this->config->item('defqty_custom');
+        if ($itemqty==0) {
+            $defqty=$this->config->item('defqty_common');
+            if ($item_id==$this->config->item('custom_id')) {
+                $defqty=$this->config->item('defqty_custom');
+            }
+        } else {
+            $defqty = $itemqty;
         }
         // Prepare Parts of Quote Items
         $quoteitem=[
@@ -1313,7 +1324,7 @@ class Leadquote_model extends MY_Model
         if (!empty($item_id)) {
             $items = $quotesession['items'];
             $startid = count($items)+1;
-            $itemdat = $this->add_newleadquote_item($item_id, $custom_item, $startid);
+            $itemdat = $this->add_newleadquote_item($item_id, $custom_item, 0, $startid);
             $out['msg'] = $itemdat['msg'];
             if ($itemdat['result']==$this->success_result) {
                 $out['result'] = $this->success_result;
