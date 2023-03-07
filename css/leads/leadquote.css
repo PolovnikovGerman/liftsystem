@@ -633,7 +633,7 @@ input.quotesalestaxvalue {
     width: 21px;
     height: 21px;
     line-height: 21px!important;
-    background-color: #dadada;
+/*    background-color: #dadada; */
     text-align: center;
 }
 .quotesamebilligaddress span {
