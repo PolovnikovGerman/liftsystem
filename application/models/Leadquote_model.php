@@ -1562,6 +1562,7 @@ class Leadquote_model extends MY_Model
                     $quotedat[$key] = $val;
                 }
             }
+            $quotedat['billingsame'] = 0;
             $this->load->model('orders_model');
             $this->load->model('leadorder_model');
             // Items
@@ -1819,6 +1820,7 @@ class Leadquote_model extends MY_Model
             $this->db->from('ts_quote_items');
             $this->db->where('quote_id', $quote_id);
             $items = $this->db->get()->result_array();
+            $itemqty = 0;
             $itemidx = 0;
             foreach ($items as $item) {
                 if ($item['item_id'] < 0) {
@@ -1833,6 +1835,9 @@ class Leadquote_model extends MY_Model
                 $this->db->where('quote_item_id', $item['quote_item_id']);
                 $colors = $this->db->get()->result_array();
                 $items[$itemidx]['colors'] = $colors;
+                foreach ($colors as $color) {
+                    $itemqty+=$color['item_qty'];
+                }
                 // Imprints
                 $this->db->select('*');
                 $this->db->from('ts_quote_imprints');
@@ -1847,10 +1852,23 @@ class Leadquote_model extends MY_Model
             $this->db->where('quote_id', $quote_id);
             $this->db->where('active', 1);
             $shipping = $this->db->get()->result_array();
+            // File name
             if ($quote['brand']=='SR') {
-                $res = $this->_prepare_quotesrdoc($quote, $items, $shipping);
+                $filename = 'quote_'.$quote['quote_number'].'-QS_';
             } else {
-                $res = $this->_prepare_quotesbdoc($quote, $items, $shipping);
+                $filename = 'quote_QB-'.$quote['quote_number'].'_';
+            }
+            if (!empty($quote['shipping_company'])) {
+                $filename.= str_replace(array(' ', '/',',','\n','%','#'),'',strtolower($quote['shipping_company'])).'_';
+            } elseif (!empty($quote['shipping_contact'])) {
+                $filename.= str_replace(array(' ', '/',',','\n','%','#'),'',strtolower($quote['shipping_contact'])).'_';
+            }
+            $filename.= $itemqty.'.pdf';
+
+            if ($quote['brand']=='SR') {
+                $res = $this->_prepare_quotesrdoc($quote, $items, $shipping, $filename);
+            } else {
+                $res = $this->_prepare_quotesbdoc($quote, $items, $shipping, $filename);
             }
             $out['msg'] = $res['msg'];
             if ($res['result']==$this->success_result) {
@@ -1861,9 +1879,8 @@ class Leadquote_model extends MY_Model
         return $out;
     }
 
-    private function _prepare_quotesrdoc($quote, $items, $shipping) {
+    private function _prepare_quotesrdoc($quote, $items, $shipping, $filname) {
         $out = ['result' => $this->error_result, 'msg' => 'Error during create PDF doc'];
-        $filname = 'quote_'.$quote['quote_number'].'-QS_t'.time().'.pdf';
         define('FPDF_FONTPATH', FCPATH.'font');
         $this->load->library('fpdf/fpdfeps');
         // Logo
@@ -2170,13 +2187,12 @@ class Leadquote_model extends MY_Model
         $file_out = $this->config->item('upload_path_preload').$filname;
         $pdf->Output('F', $file_out);
         $out['result'] = $this->success_result;
-        $out['docurl'] = $this->config->item('pathpreload').$filname;
+        $out['docurl'] = $this->config->item('pathpreload').$filname.'?t='.time();
         return $out;
     }
 
-    private function _prepare_quotesbdoc($quote, $items, $shipping) {
+    private function _prepare_quotesbdoc($quote, $items, $shipping, $filname) {
         $out = ['result' => $this->error_result, 'msg' => 'Error during create PDF doc'];
-        $filname = 'quote_QB-'.$quote['quote_number'].'_t'.time().'.pdf';
         define('FPDF_FONTPATH', FCPATH.'font');
         $this->load->library('fpdf/fpdfeps');
         // Logo
@@ -2484,7 +2500,7 @@ class Leadquote_model extends MY_Model
         $file_out = $this->config->item('upload_path_preload').$filname;
         $pdf->Output('F', $file_out);
         $out['result'] = $this->success_result;
-        $out['docurl'] = $this->config->item('pathpreload').$filname;
+        $out['docurl'] = $this->config->item('pathpreload').$filname.'?t='.time();
         return $out;
     }
 
