@@ -1057,6 +1057,7 @@ Class Orders_model extends MY_Model
         $this->db->set('brand', $data['brand']);
         $this->db->update('ts_goal_orders');
         $out['result']=$this->success_result;
+        $out['brand'] = $data['brand'];
         usersession('goaldata', NULL);
         return $out;
     }
@@ -4133,6 +4134,7 @@ Class Orders_model extends MY_Model
                 $this->db->set('goal_orders', $total_orders);
                 $this->db->set('goal_revenue', $revenue);
                 $this->db->set('goal_profit', $profit);
+                $this->db->set('brand', $brand);
                 $this->db->insert('ts_goal_orders');
                 $id=$this->db->insert_id();
             }

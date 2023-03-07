@@ -163,13 +163,22 @@ class Analytics extends MY_Controller
     public function salesgoal_editform() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
+            $error='Empty Goal';
             $goal_order_id=$this->input->post('goal');
             // Get Goal Content
             $goaldata=$this->reports_model->get_sales_goaldata($goal_order_id);
-            // Save to Session
-            usersession('goaldata', $goaldata);
-            $mdata['content']=$this->load->view('finance/goal_edit_view',$goaldata,TRUE);
+            if ($goaldata['result']==$this->success_result) {
+                $error = '';
+                // Save to Session
+                $sessiondata = [];
+                foreach ($goaldata as $key=>$val) {
+                    if ($key!=='result' || $key!=='msg') {
+                        $sessiondata[$key] = $val;
+                    }
+                }
+                usersession('goaldata', $sessiondata);
+                $mdata['content']=$this->load->view('finance/goal_edit_view',$goaldata,TRUE);
+            }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -210,17 +219,44 @@ class Analytics extends MY_Controller
             if (empty($goaldata)) {
                 $error='Connection Lost. Please, recall function';
             } else {
-                $this->load->model('order_model');
-                $res=$this->order_model->save_profitdate_goal($goaldata);
+                $this->load->model('orders_model');
+                $res=$this->orders_model->save_profitdate_goal($goaldata);
                 if ($res['result']==$this->error_result) {
                     $error=$res['msg'];
                 } else {
+                    $this->load->model('permissions_model');
+                    $usrdat=$this->user_model->get_user_data($this->USR_ID);
+                    $reppermis=$this->permissions_model->get_subitems($this->USR_ID, 'salestypebtn');
+                    $profitview=$this->permissions_model->get_pageprofit_view($this->USR_ID, 'salestypebtn');
+                    $usr_profitview = $usrdat['profit_view'];
+                    $olddata=$this->reports_model->get_old_salestypes($reppermis, $profitview, $usr_profitview, $res['brand']);
                     $dates=$this->reports_model->get_bisness_dates();
                     switch ($goaldata['goal_type']) {
                         case 'CUSTOMS':
-                            $data=$this->reports_model->get_newcustoms_salestypes($dates);
+                            $profit_type=$usr_profitview;
+                            foreach ($profitview as $prow) {
+                                if ($prow['websys_page_link']=='itemsalescustoms') {
+                                    $profit_type=$prow['profit_view'];
+                                }
+                            }
+                            $dates['profit_type']=$profit_type;
+                            $data=$this->reports_model->get_newcustoms_salestypes($dates, $olddata['customs'],$res['brand']);
+                            $data['type'] = 'custom';
                             $mdata['area']='salestype_customs';
                             $profitdat=$this->permissions_model->get_pageprofit_view($this->USR_ID,'itemsalescustoms');
+//                            $custom_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'customs', $brand);
+//                            $diffoptions = [
+//                                'months' => $custom_diffs['months'],
+//                                'quarters' => $custom_diffs['quarters'],
+//                                'years_from' => $yearDifffrom,
+//                                'years_to' => $yearDiffTo,
+//                                'type' => 'customs',
+//                                'year_from' => $diffYearBgn,
+//                                'year_to' => $diffYearEnd,
+//                                'profit_type' =>$profit_type,
+//                            ];
+//                            $custom_diffview = $this->load->view('reports/differences_view', $diffoptions, TRUE);
+
                             break;
                         case 'STOCK':
                             $data=$this->reports_model->get_newstock_salestypes($dates);
@@ -259,10 +295,14 @@ class Analytics extends MY_Controller
                             $profitdat=$this->permissions_model->get_pageprofit_view($this->USR_ID,'itemsalesother');
                             break;
                     }
-                    $data['profit_type']='';
-                    if (count($profitdat)==1) {
-                        $data['profit_type']=$profitdat[0]['profit_view'];
-                    }
+//                    $data['profit_type']='';
+//                    if (count($profitdat)==1) {
+//                        $data['profit_type']=$profitdat[0]['profit_view'];
+//                    }
+                    $data['brand'] = $res['brand'];
+                    $data['profit_type'] = $dates['profit_type'];
+                    $data['type'] = 'customs';
+
                     $data['elapsed']=$dates['elaps'];
                     $mdata['content']=$this->load->view('reports/current_data_view', $data, TRUE);
                 }
