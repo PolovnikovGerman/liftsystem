@@ -422,6 +422,11 @@ select.quoteaddressinpt, input.quoteaddressinpt {
 select.quotecountry {
     width: 102px;
 }
+select.quotecountry:disabled {
+    background: #acacac;
+    border: #a1a1a3;
+    color: #737373;
+}
 .quoteshipaddressother {
     border-left: 2px solid #000000;
     border-top: 2px solid #000000;
@@ -624,6 +629,12 @@ input.quotesalestaxvalue {
     padding-top: 4px;
     padding-bottom: 4px;
 }
+.quotebillcountryarea.billingsame {
+    border-left: 2px solid #737373;
+    border-top: 2px solid #737373;
+    border-right: 2px solid #737373;
+    background: #aaaaaa;
+}
 .quotesamebilligaddress {
     margin-left: 5px;
 }
@@ -651,8 +662,25 @@ input.quotesalestaxvalue {
     padding-left: 4px;
     padding-bottom: 4px;
 }
+.quotebilladdressother.billingsame {
+    border-bottom: 2px solid #737373;
+    border-left: 2px solid #737373;
+    border-top: 2px solid #737373;
+    border-right: 2px solid #737373;
+    background: #aaaaaa;
+}
 input.quotebilladdrother {
     width: 170px;
+}
+input.quotebilladdrother:disabled {
+    background: #b3b3b3;
+    border : #97979b;
+}
+input[data-item='billing_zip']:disabled,
+input[data-item='billing_city']:disabled,
+select[data-item='billing_state']:disabled {
+    background: #b3b3b3;
+    border : #97979b;
 }
 .quotebilladdreszipcode {
     width: 41px;
