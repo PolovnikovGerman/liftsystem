@@ -62,6 +62,37 @@ Class Reports_model extends My_Model
         return $out;
     }
 
+    public function get_old_salestype($profitview, $usr_profitview, $salestype, $brand) {
+        $start_date=strtotime($this->salestype_start.'-01-01');
+        $end_report=strtotime(date('Y').'-01-01');
+        // Custom Shaped SB
+        if ($salestype == 'itemsalescustoms') {
+            $data=$this->_get_itemreport_customs_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
+        // Stock shape
+        } elseif ($salestype=='itemsalesstock') {
+            $data = $this->_get_itemreport_stock_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
+        // Ariel Items
+        } elseif ($salestype == 'itemsalesariel') {
+            $data = $this->_get_itemreport_ariel_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
+        // Alpi Items
+        } elseif ($salestype == 'itemsalesalpi') {
+            $data = $this->_get_itemreport_alpi_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
+        // Mailine Items
+        } elseif ($salestype == 'itemsalesmailine') {
+            $data = $this->_get_itemreport_mailine_old($usr_profitview, $profitview, $start_date, $end_report,$brand);
+        // Hits Items
+        } elseif ($salestype == 'itemsaleshit') {
+            $data = $this->_get_itemreport_hits_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
+        // Other Items
+        } elseif ($salestype == 'itemsalesother') {
+            $data = $this->_get_itemreport_other_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
+        // ESP/Other Items
+        } elseif ($salestype == 'itemsalesesp') {
+            $data = $this->_get_itemreport_esp_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
+        }
+        return $data;
+    }
+
     private function _prepare_olddata($scryears, $custom=0) {
         $out=array();
         $yearidx=0;

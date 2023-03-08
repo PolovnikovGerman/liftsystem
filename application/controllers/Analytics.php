@@ -229,10 +229,17 @@ class Analytics extends MY_Controller
                     $reppermis=$this->permissions_model->get_subitems($this->USR_ID, 'salestypebtn');
                     $profitview=$this->permissions_model->get_pageprofit_view($this->USR_ID, 'salestypebtn');
                     $usr_profitview = $usrdat['profit_view'];
-                    $olddata=$this->reports_model->get_old_salestypes($reppermis, $profitview, $usr_profitview, $res['brand']);
                     $dates=$this->reports_model->get_bisness_dates();
+
+                    $sales_years = $this->reports_model->get_report_years();
+                    $yearDifffrom = $this->_prepare_comparefrom_select($sales_years['start'], $sales_years['finish']);
+                    $yearDiffTo = $this->_prepare_compareto_select($sales_years['start'], $sales_years['finish']);
+                    $diffYearEnd=intval(date('Y'));
+                    $diffYearBgn=$diffYearEnd-1;
+
                     switch ($goaldata['goal_type']) {
                         case 'CUSTOMS':
+                            $olddata=$this->reports_model->get_old_salestype($profitview, $usr_profitview, 'itemsalescustoms', $res['brand']);
                             $profit_type=$usr_profitview;
                             foreach ($profitview as $prow) {
                                 if ($prow['websys_page_link']=='itemsalescustoms') {
@@ -240,28 +247,48 @@ class Analytics extends MY_Controller
                                 }
                             }
                             $dates['profit_type']=$profit_type;
-                            $data=$this->reports_model->get_newcustoms_salestypes($dates, $olddata['customs'],$res['brand']);
+                            $data=$this->reports_model->get_newcustoms_salestypes($dates, $olddata, $res['brand']);
                             $data['type'] = 'custom';
-                            $mdata['area']='salestype_customs';
-                            $profitdat=$this->permissions_model->get_pageprofit_view($this->USR_ID,'itemsalescustoms');
-//                            $custom_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'customs', $brand);
-//                            $diffoptions = [
-//                                'months' => $custom_diffs['months'],
-//                                'quarters' => $custom_diffs['quarters'],
-//                                'years_from' => $yearDifffrom,
-//                                'years_to' => $yearDiffTo,
-//                                'type' => 'customs',
-//                                'year_from' => $diffYearBgn,
-//                                'year_to' => $diffYearEnd,
-//                                'profit_type' =>$profit_type,
-//                            ];
-//                            $custom_diffview = $this->load->view('reports/differences_view', $diffoptions, TRUE);
-
+                            $mdata['area'] = 'salestype_customs';
+                            // $profitdat=$this->permissions_model->get_pageprofit_view($this->USR_ID,'itemsalescustoms');
+                            $custom_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'customs', $res['brand']);
+                            $diffoptions = [
+                                'months' => $custom_diffs['months'],
+                                'quarters' => $custom_diffs['quarters'],
+                                'years_from' => $yearDifffrom,
+                                'years_to' => $yearDiffTo,
+                                'type' => 'customs',
+                                'year_from' => $diffYearBgn,
+                                'year_to' => $diffYearEnd,
+                                'profit_type' =>$profit_type,
+                            ];
+                            $data['differences'] = $this->load->view('reports/differences_view', $diffoptions, TRUE);
                             break;
                         case 'STOCK':
-                            $data=$this->reports_model->get_newstock_salestypes($dates);
-                            $mdata['area']='salestype_stock';
-                            $profitdat=$this->permissions_model->get_pageprofit_view($this->USR_ID,'itemsalesstock');
+                            $olddata=$this->reports_model->get_old_salestype($profitview, $usr_profitview, 'itemsalesstock', $res['brand']);
+                            $profit_type=$usr_profitview;
+                            foreach ($profitview as $prow) {
+                                if ($prow['websys_page_link']=='itemsalescustoms') {
+                                    $profit_type=$prow['profit_view'];
+                                }
+                            }
+                            $dates['profit_type']=$profit_type;
+                            $data=$this->reports_model->get_newstock_salestypes($dates, $olddata, $res['brand']);
+                            $data['type'] = 'custom';
+                            $mdata['area'] = 'salestype_customs';
+                            // $profitdat=$this->permissions_model->get_pageprofit_view($this->USR_ID,'itemsalescustoms');
+                            $custom_diffs = $this->reports_model->get_difference($diffYearBgn, $diffYearEnd, $profit_type, 'customs', $res['brand']);
+                            $diffoptions = [
+                                'months' => $custom_diffs['months'],
+                                'quarters' => $custom_diffs['quarters'],
+                                'years_from' => $yearDifffrom,
+                                'years_to' => $yearDiffTo,
+                                'type' => 'customs',
+                                'year_from' => $diffYearBgn,
+                                'year_to' => $diffYearEnd,
+                                'profit_type' =>$profit_type,
+                            ];
+                            $data['differences'] = $this->load->view('reports/differences_view', $diffoptions, TRUE);
                             break;
                         case 'ARIEL':
                             $data=$this->reports_model->get_newariel_salestypes($dates);
