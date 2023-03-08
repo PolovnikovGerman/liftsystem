@@ -2010,10 +2010,15 @@ class Leadquote_model extends MY_Model
                 } else {
                     $cellheight = 4.8;
                 }
+                $precesion = 2;
+                $colorcell = $color['item_price']*1000;
+                if (substr($colorcell,-1,1)!='0') {
+                    $precesion = 3;
+                }
                 $pdf->Cell($colWidth[0], $cellheight, $item['item_number'], 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[1], $cellheight, $color['item_description'] . ' ' . $color['item_color'], 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[2], $cellheight, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[3], $cellheight, number_format($color['item_price'], 2), 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[3], $cellheight, number_format($color['item_price'], $precesion), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
                 $numpp++;
                 $yStart += $cellheight;
@@ -2322,10 +2327,15 @@ class Leadquote_model extends MY_Model
                 } else {
                     $cellheight = 4.8;
                 }
+                $precesion = 2;
+                $colorcell = $color['item_price']*1000;
+                if (substr($colorcell,-1,1)!='0') {
+                    $precesion = 3;
+                }
                 $pdf->Cell($colWidth[0], $cellheight, $item['item_number'], 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[1], $cellheight, $color['item_description'] . ' ' . $color['item_color'], 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[2], $cellheight, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[3], $cellheight, number_format($color['item_price'], 2), 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[3], $cellheight, number_format($color['item_price'], $precesion), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
                 $numpp++;
                 $yStart += $cellheight;

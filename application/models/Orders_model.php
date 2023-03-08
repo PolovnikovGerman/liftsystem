@@ -6705,11 +6705,17 @@ Class Orders_model extends MY_Model
             if ($orddata['payment_card_type'] == 'American Express') {
                 // batch_amex
                 $ccfee = $this->config->item('paypal_amexfee');
+                if ($batchdate >= $this->config->item('datenewfee')) {
+                    $ccfee = $this->config->item('paypal_amexfeenew');
+                }
                 $pureval = round($orddata['order_total'] * ((100 - $ccfee) / 100), 2);
                 $duedate = getAmexDueDate($batchdate, $paymethod);
                 $this->db->set('batch_amex', $pureval);
             } else {
                 $ccfee = $this->config->item('paypal_vmdfee');
+                if ($batchdate >= $this->config->item('datenewfee')) {
+                    $ccfee = $this->config->item('paypal_vmdfeenew');
+                }
                 $pureval = round($orddata['order_total'] * ((100 - $ccfee) / 100), 2);
                 $duedate = getVMDDueDate($batchdate, $paymethod);
                 $this->db->set('batch_vmd', $pureval);
@@ -7110,11 +7116,17 @@ Class Orders_model extends MY_Model
                 if ($orddata['payment_card_type'] == 'American Express') {
                     // batch_amex
                     $ccfee = $this->config->item('paypal_amexfee');
+                    if ($batchdate >= $this->config->item('datenewfee')) {
+                        $ccfee = $this->config->item('paypal_amexfeenew');
+                    }
                     $pureval = round($orddata['order_total'] * ((100 - $ccfee) / 100), 2);
                     $duedate = getAmexDueDate($batchdate, $paymethod);
                     $this->db->set('batch_amex', $pureval);
                 } else {
                     $ccfee = $this->config->item('paypal_vmdfee');
+                    if ($batchdate >= $this->config->item('datenewfee')) {
+                        $ccfee = $this->config->item('paypal_vmdfeenew');
+                    }
                     $pureval = round($orddata['order_total'] * ((100 - $ccfee) / 100), 2);
                     $duedate = getVMDDueDate($batchdate, $paymethod);
                     $this->db->set('batch_vmd', $pureval);

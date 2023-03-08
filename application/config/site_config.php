@@ -24,6 +24,9 @@ $config['auth_vmdfee']=0;
 /* Paypal Fee */
 $config['paypal_amexfee']=3.25;
 $config['paypal_vmdfee']=2.2;
+$config['datenewfee']= strtotime('2023-03-09');
+$config['paypal_amexfeenew'] = 2.11;
+$config['paypal_vmdfeenew']=2.11;
 // $config['art_dept_email']="logosbt@gmail.com";
 /* CONSTANTS */
 /* VIRTUAL ITEMS */
