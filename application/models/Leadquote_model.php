@@ -768,13 +768,17 @@ class Leadquote_model extends MY_Model
                     }
                     $items[$itemidx]['item_qty']=$itemsqty;
                     // Get New price
-                    $this->load->model('leadorder_model');
-                    $newprice=$this->leadorder_model->_get_item_priceqty($items[$itemidx]['item_id'], $items[$itemidx]['template'] , $items[$itemidx]['item_qty']);
-                    $items[$itemidx]['base_price']=$newprice;
+                    if ($items[$itemidx]['item_id'] > 0) {
+                        $this->load->model('leadorder_model');
+                        $newprice=$this->leadorder_model->_get_item_priceqty($items[$itemidx]['item_id'], $items[$itemidx]['template'] , $items[$itemidx]['item_qty']);
+                        $items[$itemidx]['base_price']=$newprice;
+                    }
                     $out['price_class']='normal';
                     $ridx=0;
                     foreach ($items[$itemidx]['items'] as $row) {
-                        $items[$itemidx]['items'][$ridx]['item_price']=$newprice;
+                        if ($items[$itemidx]['item_id'] > 0) {
+                            $items[$itemidx]['items'][$ridx]['item_price']=$newprice;
+                        }
                         $items[$itemidx]['items'][$ridx]['qtyinput_class']='normal';
                         $rowtotal = $items[$itemidx]['items'][$ridx]['item_qty']*$items[$itemidx]['items'][$ridx]['item_price'];
                         $items[$itemidx]['items'][$ridx]['item_subtotal']=MoneyOutput($rowtotal);
@@ -1229,6 +1233,15 @@ class Leadquote_model extends MY_Model
                         $newshipcost = $rate['Rate'];
                     }
                 }
+                $quotesession['shipping'] = $newrates;
+                $quotesession['deleted'] = $deleted;
+            } else {
+                foreach ($shippings as $shipping) {
+                    if ($shipping['quote_shipping_id'] > 0) {
+                        $deleted[] = ['entity' => 'shipping', 'id' => $shipping['quote_shipping_id']];
+                    }
+                }
+                $newrates = [];
                 $quotesession['shipping'] = $newrates;
                 $quotesession['deleted'] = $deleted;
             }
