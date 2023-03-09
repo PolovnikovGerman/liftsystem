@@ -32,6 +32,7 @@ function init_reportdata() {
         if (response.errors=='') {
             $("#reportsinfo").empty().html(response.data.content);
             $("#loader").hide();
+            leftmenu_alignment();
         } else {
             show_error(response);
         }
