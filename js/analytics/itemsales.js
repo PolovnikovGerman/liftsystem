@@ -188,6 +188,7 @@ function pageItemSalereport(page_index) {
             $("div.itemsalesreportdata").empty().html(response.data.content);
             $("input.addlcostinpt").val(response.data.addcost);
             init_itemsales_content();
+            leftmenu_alignment();
             $("input#curpageitemsale").val(page_index);
         } else {
             $("#loader").css('display','none');
