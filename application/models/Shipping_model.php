@@ -1120,7 +1120,7 @@ Class Shipping_model extends MY_Model
                 'numinpack'=>$carton_qty,
                 'itemqty'=>ceil($item['item_qty']*$kf),
                 'startdeliv' => $deliv_date,
-                'vendor_zip' => $item['vendor_zipcode'],
+                'vendor_zip' => empty($item['vendor_zipcode']) ? $this->config->item('zip') : $item['vendor_zipcode'],
                 'item_length'=>$cartoon_depth,
                 'item_width'=>$cartoon_width,
                 'item_height'=>$cartoon_heigh,
