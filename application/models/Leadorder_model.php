@@ -8576,13 +8576,53 @@ Class Leadorder_model extends My_Model {
     }
 
     public function get_leadorder_amounts($order_id) {
+        $this->db->select('revenue, shipping, tax, order_cog, profit, profit_perc, cc_fee');
+        $this->db->from('ts_orders');
+        $this->db->where('order_id', $order_id);
+        $orddata = $this->db->get()->row_array();
+        $out=[];
+        $out['revenue'] = $orddata['revenue'];
+        $expens = [];
+        if (!empty(floatval($orddata['shipping']))) {
+            $expens[] = [
+                'label' => 'Shipping',
+                'value' => $orddata['shipping'],
+                'proc' => round($orddata['shipping']/$orddata['revenue']*100,2),
+            ];
+        }
+        if (!empty(floatval($orddata['tax']))) {
+            $expens[] = [
+                'label' => '7% Tax',
+                'value' => $orddata['tax'],
+                'proc' => round($orddata['tax']/$orddata['revenue']*100,2),
+            ];
+        }
+        if (!empty(floatval($orddata['cc_fee']))) {
+            $expens[] = [
+                'label' => '2.11% CC Fee',
+                'value' => $orddata['cc_fee'],
+                'proc' => round($orddata['cc_fee']/$orddata['revenue']*100,2),
+            ];
+        }
+        $out['costs'] = $expens;
+        $out['cog_value'] = $orddata['order_cog'];
+        $out['cog_proc'] = round($orddata['order_cog'] / $orddata['revenue'] * 100,2);
+        $out['profit_value'] = $orddata['profit'];
+        $out['profit_proc'] = $orddata['profit_perc'];
         $this->db->select('oa.amount_id, oa.amount_date, oa.printshop, v.vendor_name, oa.amount_sum');
         $this->db->from('ts_order_amounts oa');
         $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
         $this->db->where('oa.order_id', $order_id);
         $this->db->order_by('oa.amount_date');
-        $res=$this->db->get()->result_array();
-        return $res;
+        $amnts=$this->db->get()->result_array();
+        $list = [];
+        foreach ($amnts as $amnt) {
+            $amnt['proc'] = round($amnt['amount_sum'] / $orddata['revenue'] * 100,2);
+            $list[] = $amnt;
+        }
+        $out['list'] = $list;
+        // return $res;
+        return $out;
     }
 
     private function _emptyzip_notification($leadorder, $user_id) {
