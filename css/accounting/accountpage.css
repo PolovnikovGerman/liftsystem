@@ -82,11 +82,11 @@ input.search_input {
 }
 .moroon, .moroonprofit {
     background-color: #6d0303!important;
-    color: #ffffff;
+    color: #ffffff!important;
 }
 .white, .whiteprofit {
     background-color: #ffffff!important;
-    color: #000000;
+    color: #000000!important;
 }
 .green_tooltip {
     background-color: #86FF80!important;
