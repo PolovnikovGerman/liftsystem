@@ -58,7 +58,7 @@ input.search_input {
 }
 .projprof {
     background-color: #001072;
-    color: #ffffff;
+    color: #ffffff!important;
 }
 .green, .greenprofit {
     background-color: #00e947!important;
@@ -66,11 +66,11 @@ input.search_input {
 }
 .red, .redprofit {
     background-color: #ff0000!important;
-    color: #ffffff;
+    color: #ffffff!important;
 }
 .black, .blackprofit {
     background-color: #000000!important;
-    color: #ffffff;
+    color: #ffffff!important;
 }
 .orange, .orangeprofit {
     background-color: #ea8a0e!important;
