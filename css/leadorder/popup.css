@@ -3912,11 +3912,13 @@ a.historydetailsview {
 .ordercogdetailsviewarea > .profitarea > .profitlabel {
     font-size: 14px;
     width: 50px;
+    color: #000000;
 }
 .ordercogdetailsviewarea > .profitarea > .profitvalue {
     font-size: 15px;
     width: 83px;
     padding-right: 4px;
+    color: #000000;
 }
 .ordercogdetailsviewarea > .profitperc {
     height: 20px;
