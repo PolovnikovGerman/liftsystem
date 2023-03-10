@@ -5221,7 +5221,7 @@ Class Leadorder_model extends My_Model {
         return $profit;
     }
 
-    private function _leadorder_shipping($shipping_address, $shipping, $past) {
+    private function _leadorder_shipping($shipping_address, $shipping, $past=0) {
         // Rebuild Arrive Date
         $arrivedate=0;
         foreach ($shipping_address as $srow) {
