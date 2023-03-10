@@ -666,9 +666,9 @@ class Leadorder extends MY_Controller
                 // Lock Edit Record
                 $locres=$this->_lockorder($leadorder);
                 if ($locres['result']==$this->error_result) {
-                    $leadorder=$this->func->session($ordersession, NULL);
+                    $leadorder=usersession($ordersession, NULL);
                     $error=$locres['msg'];
-                    $this->func->ajaxResponse($mdata, $error);
+                    $this->ajaxResponse($mdata, $error);
                 }
                 $error='Changes parameter is not full';
                 if (isset($postdata['entity']) && isset($postdata['fldname']) && isset($postdata['newval'])) {
@@ -2877,7 +2877,7 @@ class Leadorder extends MY_Controller
                     'docs'=>array(),
                 );
                 $artwork_id=-1;
-                $sessid='proofupload'.$this->func->uniq_link(15);
+                $sessid='proofupload'.uniq_link(15);
                 usersession($sessid, $data);
                 $mdata['content']=$this->load->view('artpage/proofs_upload_view',array('artwork_id'=>$artwork_id,'uplsess'=>$sessid),TRUE);
             }
