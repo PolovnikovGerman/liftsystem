@@ -1341,7 +1341,7 @@ class Test extends CI_Controller
         for ($year=2018; $year < 2023; $year++) {
             $start = strtotime($year . '-01-01');
             $finish = strtotime(($year + 1) . '-01-01');
-            $this->db->select('search_text, count(search_results_id) as cnt');
+            $this->db->select('search_text, count(search_result_id) as cnt');
             $this->db->from('sb_search_results');
             $this->db->where('search_result', 1);
             $this->db->where('unix_timestamp(search_time) >= ', $start);
