@@ -1336,4 +1336,51 @@ class Test extends CI_Controller
             }
         }
     }
+
+    public function search_report() {
+        for ($year=2018; $year < 2023; $year++) {
+            $start = strtotime($year . '-01-01');
+            $finish = strtotime(($year + 1) . '-01-01');
+            $this->db->select('search_text, count(search_results_id) as cnt');
+            $this->db->from('sb_search_results');
+            $this->db->where('search_result', 1);
+            $this->db->where('unix_timestamp(search_time) >= ', $start);
+            $this->db->where('unix_timestamp(search_time) < ', $finish);
+            $this->db->group_by('search_text');
+            $results = $this->db->get()->row_array();
+            $filename = $this->config->item('upload_path_preload').'findresults'.$year.'.csv';
+            @unlink($filename);
+            $fh = fopen($filename, FOPEN_WRITE_CREATE);
+            if ($fh) {
+                $msg = 'Search Text;Quantity searched in '.$year.PHP_EOL;
+                fwrite($fh, $msg);
+                foreach ($results as $result) {
+                    $msg = '"'.$result['search_text'].'";'.$result['cnt'].PHP_EOL;
+                    fwrite($fh, $msg);
+                }
+                fclose($fh);
+                echo 'Report '.$filename.' Ready'.PHP_EOL;
+            }
+            $this->db->select('search_text, count(search_results_id) as cnt');
+            $this->db->from('sb_search_results');
+            $this->db->where('search_result', 0);
+            $this->db->where('unix_timestamp(search_time) >= ', $start);
+            $this->db->where('unix_timestamp(search_time) < ', $finish);
+            $this->db->group_by('search_text');
+            $results = $this->db->get()->row_array();
+            $filename = $this->config->item('upload_path_preload').'nofindresults'.$year.'.csv';
+            @unlink($filename);
+            $fh = fopen($filename, FOPEN_WRITE_CREATE);
+            if ($fh) {
+                $msg = 'Search Text;Quantity searched in '.$year.PHP_EOL;
+                fwrite($fh, $msg);
+                foreach ($results as $result) {
+                    $msg = '"'.$result['search_text'].'";'.$result['cnt'].PHP_EOL;
+                    fwrite($fh, $msg);
+                }
+                fclose($fh);
+                echo 'Report '.$filename.' Ready'.PHP_EOL;
+            }
+        }
+    }
 }
