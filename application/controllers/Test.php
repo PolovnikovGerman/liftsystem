@@ -1347,7 +1347,7 @@ class Test extends CI_Controller
             $this->db->where('unix_timestamp(search_time) >= ', $start);
             $this->db->where('unix_timestamp(search_time) < ', $finish);
             $this->db->group_by('search_text');
-            $results = $this->db->get()->results_array();
+            $results = $this->db->get()->result_array();
             $filename = $this->config->item('upload_path_preload').'findresults'.$year.'.csv';
             @unlink($filename);
             $fh = fopen($filename, FOPEN_WRITE_CREATE);
@@ -1367,7 +1367,7 @@ class Test extends CI_Controller
             $this->db->where('unix_timestamp(search_time) >= ', $start);
             $this->db->where('unix_timestamp(search_time) < ', $finish);
             $this->db->group_by('search_text');
-            $results = $this->db->get()->results_array();
+            $results = $this->db->get()->result_array();
             $filename = $this->config->item('upload_path_preload').'nofindresults'.$year.'.csv';
             @unlink($filename);
             $fh = fopen($filename, FOPEN_WRITE_CREATE);
