@@ -1361,7 +1361,7 @@ class Test extends CI_Controller
                 fclose($fh);
                 echo 'Report '.$filename.' Ready'.PHP_EOL;
             }
-            $this->db->select('search_text, count(search_results_id) as cnt');
+            $this->db->select('search_text, count(search_result_id) as cnt');
             $this->db->from('sb_search_results');
             $this->db->where('search_result', 0);
             $this->db->where('unix_timestamp(search_time) >= ', $start);
