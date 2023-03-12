@@ -1303,7 +1303,22 @@ class Test extends CI_Controller
                         'vendor' => $res['vendor_name'],
                     ];
                 } else {
-                    echo 'Year '.$year.' Item ID '.$itemsrow['item_id'].' Not Found'.PHP_EOL;
+                    $this->db->select('item_id, item_number, item_name, \'\' as vendor_name');
+                    $this->db->from('sb_items');
+                    $this->db->where('item_id', $itemsrow['item_id']);
+                    $res = $this->db->get()->row_array();
+                    if (ifset($res, 'item_id',0) !==0) {
+                        $items[] = [
+                            'item_number' => $res['item_number'],
+                            'item_name' => $res['item_name'],
+                            'orders' => $itemsrow['cnt_order'],
+                            'items' => $itemsrow['sold_item'],
+                            'vendor' => $res['vendor_name'],
+                        ];
+                    } else {
+                        echo 'Year '.$year.' Item ID '.$itemsrow['item_id'].' Not Found'.PHP_EOL;
+                    }
+
                 }
             }
             $filename = $this->config->item('upload_path_preload').'solditems'.$year.'.csv';
