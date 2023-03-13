@@ -1385,8 +1385,8 @@ class Test extends CI_Controller
     }
 
     public function check_fee() {
-        $start = strtotime('2022-01-01');
-        $finish = strtotime('2023-01-01');
+        $start = strtotime('2021-01-01');
+        $finish = strtotime('2022-01-01');
         $this->db->select('order_id, order_num, cc_fee,weborder');
         $this->db->from('ts_orders');
         $this->db->where('cc_fee != 0');
