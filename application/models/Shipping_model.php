@@ -1030,7 +1030,14 @@ Class Shipping_model extends MY_Model
             $leads['calendar_id']=$this->shipping_model->_get_default_calend();
         }
         if (!isset($leads['item_lead_a'])) {
-            $leads['item_lead_a']=0;
+            // $leads['item_lead_a']=0;
+            if ($item_id==$this->config->item('custom_id')) {
+                $leads['item_lead_a'] = 45;
+            } elseif ($item_id==$this->config->item('other_id')) {
+                $leads['item_lead_a'] = 7;
+            } else {
+                $leads['item_lead_a']=0;
+            }
         }
         if (!isset($leads['item_lead_b'])) {
             $leads['item_lead_b']=0;
@@ -1113,7 +1120,7 @@ Class Shipping_model extends MY_Model
                 'numinpack'=>$carton_qty,
                 'itemqty'=>ceil($item['item_qty']*$kf),
                 'startdeliv' => $deliv_date,
-                'vendor_zip' => $item['vendor_zipcode'],
+                'vendor_zip' => empty($item['vendor_zipcode']) ? $this->config->item('zip') : $item['vendor_zipcode'],
                 'item_length'=>$cartoon_depth,
                 'item_width'=>$cartoon_width,
                 'item_height'=>$cartoon_heigh,

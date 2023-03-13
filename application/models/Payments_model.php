@@ -303,7 +303,7 @@ Class Payments_model extends MY_Model {
                     $filename=str_replace($this->config->item('pathpreload'), '', $row['doc_link']);
                     $dest=$this->config->item('amountattach');
                     $src=$this->config->item('upload_path_preload');
-                    $res=$this->func->move_docfile($filename, $src, $dest);
+                    $res=$this->func->move_docfile($filename, $src, $dest); // ???
                     if ($res) {
                         $fl_avail=1;
                         $row['doc_link']=$this->config->item('amountattach_path').$filename;

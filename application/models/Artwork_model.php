@@ -3224,7 +3224,7 @@ Class Artwork_model extends MY_Model
                         $out['artwork_class']='source';
                         $logodat=$lrow['logo_src'];
                         if ($logodat) {
-                            $logodetails=$this->func->extract_filename($logodat);
+                            $logodetails=extract_filename($logodat);
                             if (in_array($logodetails['ext'], $this->nonredrawn)) {
                                 $out['artwork_class']='source_alert';
                             }

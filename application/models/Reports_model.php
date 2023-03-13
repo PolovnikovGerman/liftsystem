@@ -62,6 +62,37 @@ Class Reports_model extends My_Model
         return $out;
     }
 
+    public function get_old_salestype($profitview, $usr_profitview, $salestype, $brand) {
+        $start_date=strtotime($this->salestype_start.'-01-01');
+        $end_report=strtotime(date('Y').'-01-01');
+        // Custom Shaped SB
+        if ($salestype == 'itemsalescustoms') {
+            $data=$this->_get_itemreport_customs_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
+        // Stock shape
+        } elseif ($salestype=='itemsalesstock') {
+            $data = $this->_get_itemreport_stock_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
+        // Ariel Items
+        } elseif ($salestype == 'itemsalesariel') {
+            $data = $this->_get_itemreport_ariel_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
+        // Alpi Items
+        } elseif ($salestype == 'itemsalesalpi') {
+            $data = $this->_get_itemreport_alpi_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
+        // Mailine Items
+        } elseif ($salestype == 'itemsalesmailine') {
+            $data = $this->_get_itemreport_mailine_old($usr_profitview, $profitview, $start_date, $end_report,$brand);
+        // Hits Items
+        } elseif ($salestype == 'itemsaleshit') {
+            $data = $this->_get_itemreport_hits_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
+        // Other Items
+        } elseif ($salestype == 'itemsalesother') {
+            $data = $this->_get_itemreport_other_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
+        // ESP/Other Items
+        } elseif ($salestype == 'itemsalesesp') {
+            $data = $this->_get_itemreport_esp_old($usr_profitview, $profitview, $start_date, $end_report, $brand);
+        }
+        return $data;
+    }
+
     private function _prepare_olddata($scryears, $custom=0) {
         $out=array();
         $yearidx=0;
@@ -1713,36 +1744,37 @@ Class Reports_model extends My_Model
     }
 
     public function get_sales_goaldata($goal_order_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Goal Not found'];
         $this->db->select('*');
         $this->db->from('ts_goal_orders');
         $this->db->where('goal_order_id', $goal_order_id);
         $goalres=$this->db->get()->row_array();
-        if (!isset($goalres['goal_order_id'])) {
+        if (isset($goalres['goal_order_id'])) {
+            $out['result'] = $this->success_result;
+            $out['goal_order_id'] = $goalres['goal_order_id'];
+            $out['goal_year'] = $goalres['goal_year'];
+            $out['goal_orders'] = $goalres['goal_orders'];
+            $out['goal_revenue'] = $goalres['goal_revenue'];
+            $out['goal_profit'] = $goalres['goal_profit'];
+            $out['goal_type'] = $goalres['goal_type'];
+            $out['brand'] = $goalres['brand'];
+            // Calc other params
+            $goal_avgrevenue=$goal_avgprofit=0;
+            if ($goalres['goal_orders']>0) {
+                $goal_avgrevenue=($goalres['goal_revenue']/$goalres['goal_orders']);
+                $goal_avgprofit=($goalres['goal_profit']/$goalres['goal_orders']);
+            }
+            $out['goal_avgrevenue']=($goal_avgrevenue==0 ? '&nbsp;' : '$'.number_format($goal_avgrevenue,2,'.',','));
+            $out['goal_avgprofit']=($goal_avgprofit==0 ? '&nbsp;' : '$'.number_format($goal_avgprofit,2,'.',','));
+            // Profit %
+            $goal_avgprofit_perc=0;
+            if ($goalres['goal_revenue']>0) {
+                $goal_avgprofit_perc=($goalres['goal_profit']/$goalres['goal_revenue']*100);
+            }
+            $out['goal_avgprofit_perc']=($goal_avgprofit_perc==0 ? '&nbsp;' : number_format($goal_avgprofit_perc,1,'.',',').'%');
+            $out['goal_profit_class']=orderProfitClass(round($goal_avgprofit_perc),0);
 
         }
-        $out=array(
-            'goal_order_id'=>$goalres['goal_order_id'],
-            'goal_year'=>$goalres['goal_year'],
-            'goal_orders'=>$goalres['goal_orders'],
-            'goal_revenue'=>$goalres['goal_revenue'],
-            'goal_profit'=>$goalres['goal_profit'],
-            'goal_type'=>$goalres['goal_type'],
-        );
-        // Calc other params
-        $goal_avgrevenue=$goal_avgprofit=0;
-        if ($goalres['goal_orders']>0) {
-            $goal_avgrevenue=($goalres['goal_revenue']/$goalres['goal_orders']);
-            $goal_avgprofit=($goalres['goal_profit']/$goalres['goal_orders']);
-        }
-        $out['goal_avgrevenue']=($goal_avgrevenue==0 ? '&nbsp;' : '$'.number_format($goal_avgrevenue,2,'.',','));
-        $out['goal_avgprofit']=($goal_avgprofit==0 ? '&nbsp;' : '$'.number_format($goal_avgprofit,2,'.',','));
-        // Profit %
-        $goal_avgprofit_perc=0;
-        if ($goalres['goal_revenue']>0) {
-            $goal_avgprofit_perc=($goalres['goal_profit']/$goalres['goal_revenue']*100);
-        }
-        $out['goal_avgprofit_perc']=($goal_avgprofit_perc==0 ? '&nbsp;' : number_format($goal_avgprofit_perc,1,'.',',').'%');
-        $out['goal_profit_class']=orderProfitClass(round($goal_avgprofit_perc),0);
         return $out;
     }
 

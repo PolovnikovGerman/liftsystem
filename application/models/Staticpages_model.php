@@ -428,7 +428,7 @@ Class Staticpages_model extends MY_Model
                     mkdir($full_path, 0777, true);
                 }
                 $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['custom_mainimage']);
-                $imagedetails = $this->func->extract_filename($data['custom_mainimage']);
+                $imagedetails = extract_filename($data['custom_mainimage']);
                 $filename = 'custom_mainimage_'.time().'.'.$imagedetails['ext'];
                 $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
                 $data['custom_mainimage']='';
@@ -445,7 +445,7 @@ Class Staticpages_model extends MY_Model
                     mkdir($full_path, 0777, true);
                 }
                 $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['custom_homepageimage']);
-                $imagedetails = $this->func->extract_filename($data['custom_homepageimage']);
+                $imagedetails = extract_filename($data['custom_homepageimage']);
                 $filename = 'custom_homepageimage_'.time().'.'.$imagedetails['ext'];
                 $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
                 $data['custom_homepageimage']='';
@@ -1022,7 +1022,7 @@ Class Staticpages_model extends MY_Model
             if ($data['about_affilationsrc2'] && stripos($data['about_affilationsrc2'],$path_preload_short)!==FALSE) {
                 // Save image
                 $imagesrc = str_replace($path_preload_short, $path_preload_full, $data['about_affilationsrc2']);
-                $imagedetails = $this->func->extract_filename($data['about_affilationsrc2']);
+                $imagedetails = extract_filename($data['about_affilationsrc2']);
                 $filename = 'about_affilationsrc_2_'.time().'.'.$imagedetails['ext'];
                 $res = @copy($imagesrc, $this->config->item('contents_images_relative').$filename);
                 $data['about_affilationsrc2']='';

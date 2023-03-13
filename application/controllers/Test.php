@@ -1905,4 +1905,122 @@ class Test extends CI_Controller
             $this->db->update('ts_quotes');
         }
     }
+
+    public function itemsalesreport() {
+//        $this->db->select('i.item_id, i.item_number, i.item_name, vi.vendor_item_number, v.vendor_name');
+//        $this->db->from('sb_items i');
+//        $this->db->join('sb_vendor_items vi','vi.vendor_item_id=i.vendor_item_id','left');
+//        $this->db->join('vendors v','v.vendor_id=vi.vendor_item_vendor','left');
+//        $this->db->order_by('i.item_number');
+//        $items = $this->db->get()->result_array();
+        for ($year=2018; $year < 2023; $year++) {
+            $start = strtotime($year.'-01-01');
+            $finish = strtotime(($year+1).'-01-01');
+            $this->db->select('oi.item_id, count(distinct(oi.order_id)) as cnt_order, sum(oi.item_qty) as sold_item');
+            $this->db->from('ts_order_items oi');
+            $this->db->join('ts_orders o','o.order_id=oi.order_id');
+            $this->db->where('o.order_date >= ', $start);
+            $this->db->where('o.order_date < ', $finish);
+            $this->db->where('o.is_canceled',0);
+            $this->db->group_by('oi.item_id');
+            $this->db->order_by('oi.item_id');
+            $itemsrows  = $this->db->get()->result_array();
+            $items  = [];
+            foreach ($itemsrows as $itemsrow) {
+                $this->db->select('item_id, item_number, item_name, vendor_name');
+                $this->db->from('v_itemsearch');
+                $this->db->where('item_id', $itemsrow['item_id']);
+                if ($itemsrow['item_id'] > 0) {
+                    $this->db->where('brand', 'BT');
+                }
+                $res = $this->db->get()->row_array();
+                if (ifset($res,'item_id', 0) !== 0) {
+                    $items[] = [
+                        'item_number' => $res['item_number'],
+                        'item_name' => $res['item_name'],
+                        'orders' => $itemsrow['cnt_order'],
+                        'items' => $itemsrow['sold_item'],
+                        'vendor' => $res['vendor_name'],
+                    ];
+                } else {
+                    $this->db->select('item_id, item_number, item_name, \'\' as vendor_name');
+                    $this->db->from('sb_items');
+                    $this->db->where('item_id', $itemsrow['item_id']);
+                    $res = $this->db->get()->row_array();
+                    if (ifset($res, 'item_id',0) !==0) {
+                        $items[] = [
+                            'item_number' => $res['item_number'],
+                            'item_name' => $res['item_name'],
+                            'orders' => $itemsrow['cnt_order'],
+                            'items' => $itemsrow['sold_item'],
+                            'vendor' => $res['vendor_name'],
+                        ];
+                    } else {
+                        echo 'Year '.$year.' Item ID '.$itemsrow['item_id'].' Not Found'.PHP_EOL;
+                    }
+
+                }
+            }
+            $filename = $this->config->item('upload_path_preload').'solditems'.$year.'.csv';
+            @unlink($filename);
+            $fh = fopen($filename, FOPEN_WRITE_CREATE);
+            if ($fh) {
+                $msg = 'Item Number; Item Name; # orders with this item sold; # of quantity of this item sold; Vendor in database'.PHP_EOL;
+                fwrite($fh, $msg);
+                foreach ($items as $item) {
+                    $msg = $item['item_number'].';"'.$item['item_name'].'";'.$item['orders'].';'.$item['items'].';'.$item['vendor'].';'.PHP_EOL;
+                    fwrite($fh, $msg);
+                }
+                fclose($fh);
+                echo 'Report '.$filename.' Ready'.PHP_EOL;
+            }
+        }
+    }
+
+    public function search_report() {
+        for ($year=2018; $year < 2023; $year++) {
+            $start = strtotime($year . '-01-01');
+            $finish = strtotime(($year + 1) . '-01-01');
+            $this->db->select('search_text, count(search_result_id) as cnt');
+            $this->db->from('sb_search_results');
+            $this->db->where('search_result', 1);
+            $this->db->where('unix_timestamp(search_time) >= ', $start);
+            $this->db->where('unix_timestamp(search_time) < ', $finish);
+            $this->db->group_by('search_text');
+            $results = $this->db->get()->result_array();
+            $filename = $this->config->item('upload_path_preload').'findresults'.$year.'.csv';
+            @unlink($filename);
+            $fh = fopen($filename, FOPEN_WRITE_CREATE);
+            if ($fh) {
+                $msg = 'Search Text;Quantity searched in '.$year.PHP_EOL;
+                fwrite($fh, $msg);
+                foreach ($results as $result) {
+                    $msg = '"'.$result['search_text'].'";'.$result['cnt'].PHP_EOL;
+                    fwrite($fh, $msg);
+                }
+                fclose($fh);
+                echo 'Report '.$filename.' Ready'.PHP_EOL;
+            }
+            $this->db->select('search_text, count(search_result_id) as cnt');
+            $this->db->from('sb_search_results');
+            $this->db->where('search_result', 0);
+            $this->db->where('unix_timestamp(search_time) >= ', $start);
+            $this->db->where('unix_timestamp(search_time) < ', $finish);
+            $this->db->group_by('search_text');
+            $results = $this->db->get()->result_array();
+            $filename = $this->config->item('upload_path_preload').'nofindresults'.$year.'.csv';
+            @unlink($filename);
+            $fh = fopen($filename, FOPEN_WRITE_CREATE);
+            if ($fh) {
+                $msg = 'Search Text;Quantity searched in '.$year.PHP_EOL;
+                fwrite($fh, $msg);
+                foreach ($results as $result) {
+                    $msg = '"'.$result['search_text'].'";'.$result['cnt'].PHP_EOL;
+                    fwrite($fh, $msg);
+                }
+                fclose($fh);
+                echo 'Report '.$filename.' Ready'.PHP_EOL;
+            }
+        }
+    }
 }

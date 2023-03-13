@@ -1,4 +1,5 @@
 function salestype_report_init() {
+    leftmenu_alignment();
     $(".brandchoseval").unbind('click').click(function(){
         var brand = $(this).data('brand');
         var params = new Array();

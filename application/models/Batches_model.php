@@ -713,6 +713,10 @@ class Batches_model extends My_Model
                 $paymethod='PAYPAL';
                 $amex_fee=$this->config->item('paypal_amexfee');
                 $vmd_fee=$this->config->item('paypal_vmdfee');
+                if ($batch_data['batch_date'] >= $this->config->item('datenewfee')) {
+                    $amex_fee=$this->config->item('paypal_amexfeenew');
+                    $vmd_fee=$this->config->item('paypal_vmdfeenew');
+                }
             }
             $inv_vmd=0;
             $inv_amex=0;
@@ -963,6 +967,10 @@ class Batches_model extends My_Model
                 $paymethod='PAYPAL';
                 $amex_fee=$this->config->item('paypal_amexfee');
                 $vmd_fee=$this->config->item('paypal_vmdfee');
+                if ($options['batch_date'] >= $this->config->item('datenewfee')) {
+                    $amex_fee=$this->config->item('paypal_amexfeenew');
+                    $vmd_fee=$this->config->item('paypal_vmdfeenew');
+                }
             }
             if ($batch_vmd!=0) {
                 $batch_amount=$batch_vmd;
@@ -1055,6 +1063,10 @@ class Batches_model extends My_Model
                 $paymethod='PAYPAL';
                 $amex_fee=$this->config->item('paypal_amexfee');
                 $vmd_fee=$this->config->item('paypal_vmdfee');
+                if ($options['batch_date'] >= $this->config->item('datenewfee')) {
+                    $amex_fee=$this->config->item('paypal_amexfeenew');
+                    $vmd_fee=$this->config->item('paypal_vmdfeenew');
+                }
             }
             if ($batch_vmd!=0) {
                 $batch_amount=$batch_vmd;
