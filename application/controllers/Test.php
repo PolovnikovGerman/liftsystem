@@ -1391,7 +1391,7 @@ class Test extends CI_Controller
         $this->db->from('ts_orders');
         $this->db->where('cc_fee != 0');
         $this->db->where('order_date >= ', $start);
-        $this->db->where('order_date < ', $start);
+        $this->db->where('order_date < ', $finish);
         $this->db->order_by('order_id','desc');
         $orders = $this->db->get()->result_array();
         foreach ($orders as $order) {
