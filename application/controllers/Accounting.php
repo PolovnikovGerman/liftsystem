@@ -2408,7 +2408,7 @@ class Accounting extends MY_Controller
             if (!$res['result']) {
                 $error=$res['msg'];
             }
-            $this->func->ajaxResponse($mdata,$error);
+            $this->ajaxResponse($mdata,$error);
         }
     }
 

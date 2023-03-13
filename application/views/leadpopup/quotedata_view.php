@@ -173,7 +173,7 @@
             <div class="datarow">
                 <div class="quotesectionlabel">BILLING ADDRESS:</div>
             </div>
-            <div class="quotebillcountryarea">
+            <div class="quotebillcountryarea <?=$data['billingsame']==1 ? 'billingsame' : ''?>">
                 <select class="quoteaddressinpt quotecountry" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_country">
                     <?php foreach ($countries as $country) { ?>
                         <option value="<?=$country['country_id']?>" <?=$country['country_id']==$data['billing_country'] ? 'seleted="selected"' : ''?>><?=$country['country_name']?></option>
@@ -188,7 +188,7 @@
                     <span>same</span>
                 </div>
             <?php  } ?>
-            <div class="quotebilladdressother">
+            <div class="quotebilladdressother <?=$data['billingsame']==1 ? 'billingsame' : ''?>">
                 <div class="datarow">
                     <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_contact"
                            placeholder="Contact Name" value="<?=$data['billing_contact']?>">

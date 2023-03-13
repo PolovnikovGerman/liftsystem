@@ -58,7 +58,7 @@ input.search_input {
 }
 .projprof {
     background-color: #001072;
-    color: #ffffff;
+    color: #ffffff!important;
 }
 .green, .greenprofit {
     background-color: #00e947!important;

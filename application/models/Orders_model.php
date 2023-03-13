@@ -1065,6 +1065,7 @@ Class Orders_model extends MY_Model
         $this->db->set('brand', $data['brand']);
         $this->db->update('ts_goal_orders');
         $out['result']=$this->success_result;
+        $out['brand'] = $data['brand'];
         usersession('goaldata', NULL);
         return $out;
     }
@@ -4151,6 +4152,7 @@ Class Orders_model extends MY_Model
                 $this->db->set('goal_orders', $total_orders);
                 $this->db->set('goal_revenue', $revenue);
                 $this->db->set('goal_profit', $profit);
+                $this->db->set('brand', $brand);
                 $this->db->insert('ts_goal_orders');
                 $id=$this->db->insert_id();
             }
@@ -6037,15 +6039,15 @@ Class Orders_model extends MY_Model
                     } elseif ($row['parameter_name']=='Discount Value') {
                         $descr = $row['discount_descript'];
                     }
+                    $out[]=[
+                        'user' => $row['first_name'].' '.$row['last_name'],
+                        'order' => $row['order_num'],
+                        'parameter' => $row['parameter_name'],
+                        'old_value' => $row['parameter_oldvalue'],
+                        'new_value' => $row['parameter_newvalue'],
+                        'description' => $descr,
+                    ];
                 }
-                $out[]=[
-                    'user' => $row['first_name'].' '.$row['last_name'],
-                    'order' => $row['order_num'],
-                    'parameter' => $row['parameter_name'],
-                    'old_value' => $row['parameter_oldvalue'],
-                    'new_value' => $row['parameter_newvalue'],
-                    'description' => $descr,
-                ];
             }
         }
         return $out;
@@ -6721,11 +6723,17 @@ Class Orders_model extends MY_Model
             if ($orddata['payment_card_type'] == 'American Express') {
                 // batch_amex
                 $ccfee = $this->config->item('paypal_amexfee');
+                if ($batchdate >= $this->config->item('datenewfee')) {
+                    $ccfee = $this->config->item('paypal_amexfeenew');
+                }
                 $pureval = round($orddata['order_total'] * ((100 - $ccfee) / 100), 2);
                 $duedate = getAmexDueDate($batchdate, $paymethod);
                 $this->db->set('batch_amex', $pureval);
             } else {
                 $ccfee = $this->config->item('paypal_vmdfee');
+                if ($batchdate >= $this->config->item('datenewfee')) {
+                    $ccfee = $this->config->item('paypal_vmdfeenew');
+                }
                 $pureval = round($orddata['order_total'] * ((100 - $ccfee) / 100), 2);
                 $duedate = getVMDDueDate($batchdate, $paymethod);
                 $this->db->set('batch_vmd', $pureval);
@@ -7126,11 +7134,17 @@ Class Orders_model extends MY_Model
                 if ($orddata['payment_card_type'] == 'American Express') {
                     // batch_amex
                     $ccfee = $this->config->item('paypal_amexfee');
+                    if ($batchdate >= $this->config->item('datenewfee')) {
+                        $ccfee = $this->config->item('paypal_amexfeenew');
+                    }
                     $pureval = round($orddata['order_total'] * ((100 - $ccfee) / 100), 2);
                     $duedate = getAmexDueDate($batchdate, $paymethod);
                     $this->db->set('batch_amex', $pureval);
                 } else {
                     $ccfee = $this->config->item('paypal_vmdfee');
+                    if ($batchdate >= $this->config->item('datenewfee')) {
+                        $ccfee = $this->config->item('paypal_vmdfeenew');
+                    }
                     $pureval = round($orddata['order_total'] * ((100 - $ccfee) / 100), 2);
                     $duedate = getVMDDueDate($batchdate, $paymethod);
                     $this->db->set('batch_vmd', $pureval);

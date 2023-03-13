@@ -1,6 +1,6 @@
 <?php
-$config['js_version'] = '2.02065';
-$config['css_version']= '2.02065';
+$config['js_version'] = '2.02070';
+$config['css_version']= '2.02070';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -24,6 +24,9 @@ $config['auth_vmdfee']=0;
 /* Paypal Fee */
 $config['paypal_amexfee']=3.25;
 $config['paypal_vmdfee']=2.2;
+$config['datenewfee']= strtotime('2023-03-09');
+$config['paypal_amexfeenew'] = 2.11;
+$config['paypal_vmdfeenew']=2.11;
 // $config['art_dept_email']="logosbt@gmail.com";
 /* CONSTANTS */
 /* VIRTUAL ITEMS */

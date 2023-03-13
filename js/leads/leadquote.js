@@ -530,6 +530,8 @@ function init_leadquotes_content() {
                     $("input[data-item='billing_zip']").prop('disabled', true);
                     $("input[data-item='billing_city']").prop('disabled', true);
                     $("select[data-item='billing_state']").prop('disabled', true);
+                    $(".quotebillcountryarea").addClass('billingsame');
+                    $(".quotebilladdressother").addClass('billingsame');
                 } else {
                     $(".billingsameinpt").empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>');
                     $("select[data-item='billing_country']").prop('disabled', false);
@@ -537,6 +539,8 @@ function init_leadquotes_content() {
                     $("input[data-item='billing_zip']").prop('disabled', false);
                     $("input[data-item='billing_city']").prop('disabled', false);
                     $("select[data-item='billing_state']").prop('disabled', false);
+                    $(".quotebillcountryarea").removeClass('billingsame');
+                    $(".quotebilladdressother").removeClass('billingsame');
                 }
                 $("#loader").hide();
                 init_leadquotes_content();

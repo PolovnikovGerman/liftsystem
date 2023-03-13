@@ -64,7 +64,7 @@ class Email_model extends My_Model
             $out['msg'] = 'Enter Email Body';
             // }elseif (empty($email_template_address)) {
             //    $out['msg']='Enter Sender Email';
-        } elseif (!empty($email_template_address) && !$this->func->valid_email_address($email_template_address)) {
+        } elseif (!empty($email_template_address) && !valid_email_address($email_template_address)) {
             $out['msg'] = 'Enter Correct Sender Email';
         } else {
             $this->db->set('email_template_body', $email_template_body);
@@ -429,8 +429,8 @@ class Email_model extends My_Model
     {
         /* INS NEW proof num */
         $ci =& get_instance();
-        $usrlogo = $this->func->get_json_param($data['email_other_info'], 'userlogo');
-        $usrtext = $this->func->get_json_param($data['email_other_info'], 'usertext');
+        $usrlogo = get_json_param($data['email_other_info'], 'userlogo');
+        $usrtext = get_json_param($data['email_other_info'], 'usertext');
         $newproofnum = $this->new_proof_num();
         $this->db->set('proof_num', $newproofnum);
         $this->db->set('proof_updated', time());
@@ -445,7 +445,7 @@ class Email_model extends My_Model
             $full_place = $ci->config->item('artwork_logo');
             $logofilename = str_replace($short_place, '', $usrlogo);
 
-            $filedetails = $this->func->extract_filename($logofilename);
+            $filedetails = extract_filename($logofilename);
             $newlogoname = 'pr' . $newproofnum . '-1.' . $filedetails['ext'];
 
 
@@ -465,32 +465,32 @@ class Email_model extends My_Model
         if ($usrtext) {
             $new_otherinfo['usrtext'] = $usrtext;
         }
-        $numcolors = $this->func->get_json_param($data['email_other_info'], 'numcolors');
+        $numcolors = get_json_param($data['email_other_info'], 'numcolors');
         if ($numcolors) {
             $new_otherinfo['numcolors'] = $numcolors;
         } else {
             $new_otherinfo['numcolors'] = '';
         }
-        $user_color1 = $this->func->get_json_param($data['email_other_info'], 'user_color1');
+        $user_color1 = get_json_param($data['email_other_info'], 'user_color1');
         if ($user_color1) {
             $new_otherinfo['user_color1'] = $user_color1;
             $color_1 = $user_color1;
         }
-        $user_color2 = $this->func->get_json_param($data['email_other_info'], 'user_color2');
+        $user_color2 = get_json_param($data['email_other_info'], 'user_color2');
         if ($user_color2) {
             $new_otherinfo['user_color2'] = $user_color2;
             $color_2 = $user_color2;
         }
-        $user_font = $this->func->get_json_param($data['email_other_info'], 'user_font');
+        $user_font = get_json_param($data['email_other_info'], 'user_font');
         if ($user_font) {
             $new_otherinfo['user_font'] = $user_font;
             $font = $user_font;
         }
-        $itemcolors = $this->func->get_json_param($data['email_other_info'], 'itemcolors');
+        $itemcolors = get_json_param($data['email_other_info'], 'itemcolors');
         if ($itemcolors) {
             $new_otherinfo['itemcolors'] = $itemcolors;
         }
-        $item_id = $this->func->get_json_param($data['email_other_info'], 'item_id');
+        $item_id = get_json_param($data['email_other_info'], 'item_id');
         if ($item_id) {
             // $new_otherinfo['itemcolors']=$item_id;
             $data['item_id'] = $item_id;
@@ -597,8 +597,8 @@ class Email_model extends My_Model
         $max_attempts = 1000;
         $new_num = '';
         for ($i = 0; $i <= $max_attempts; $i++) {
-            $part1 = $this->func->uniq_link(3, 'digits');
-            $part2 = $this->func->uniq_link(3, 'digits');
+            $part1 = uniq_link(3, 'digits');
+            $part2 = uniq_link(3, 'digits');
             /* Check combinations */
             $num_proof = $part1 . '-' . $part2;
             if (!$this->isProofExist($num_proof)) {
@@ -946,7 +946,7 @@ class Email_model extends My_Model
             $out['msg'] = 'Enter Email Confirm';
         } elseif ($data['email'] != $data['reemail']) {
             $out['msg'] = 'Confirmation of email address incorrect';
-        } elseif (!$this->func->valid_email_address($data['email'])) {
+        } elseif (!valid_email_address($data['email'])) {
             $out['msg'] = 'Invalid email address';
         } else {
             $out['result'] = 1;
@@ -988,11 +988,11 @@ class Email_model extends My_Model
             /* Standart date */
             $ship = array();
             $options = array('zip' => $data['postcode'], 'numinpack' => $numpack, 'itemqty' => $qty, 'weight' => $weight, 'startdeliv' => $startdeliv, 'vendor_zip' => $vendorzip, 'item_length' => $item['cartoon_depth'], 'item_width' => $item['cartoon_width'], 'item_height' => $item['cartoon_heigh'], 'ship' => $ship, 'cnt_code' => $data['country'],);
-            $rates = $this->func->calculate_shipcost($options);
+            $rates = $this->func->calculate_shipcost($options); // ???
 
             if (isset($rates['ship']) && count($rates['ship']) != 0) {
                 $srcrates = $rates['ship'];
-                $outrate = $this->func->recalc_rates($srcrates, $item, $qty, $data['country']);
+                $outrate = $this->func->recalc_rates($srcrates, $item, $qty, $data['country']); // ???
 
                 if (isset($outrate['GND']['ServiceCode'])) {
                     $ship_rate = $outrate['GND']['Rate'];
@@ -1164,7 +1164,7 @@ class Email_model extends My_Model
         if (!isset($data['email']) || ltrim(rtrim($data['email'])) == '') {
             $error .= "Email is mandatory field" . PHP_EOL;
         } else {
-            if (!$this->func->valid_email_address($data['email'])) {
+            if (!valid_email_address($data['email'])) {
                 $error .= "Email address is not valid" . PHP_EOL;
             }
         }
@@ -1192,7 +1192,7 @@ class Email_model extends My_Model
         if (!isset($data['senderemail']) || ltrim(rtrim($data['senderemail'])) == '') {
             $error .= "Email is mandatory field" . PHP_EOL;
         } else {
-            if (!$this->func->valid_email_address($data['senderemail'])) {
+            if (!valid_email_address($data['senderemail'])) {
                 $error .= "Email address is not valid" . PHP_EOL;
             }
         }
@@ -1235,7 +1235,7 @@ class Email_model extends My_Model
         if (!isset($data['senderemail']) || ltrim(rtrim($data['senderemail'])) == '') {
             $error .= "Email is mandatory field" . PHP_EOL;
         } else {
-            if (!$this->func->valid_email_address($data['senderemail'])) {
+            if (!valid_email_address($data['senderemail'])) {
                 $error .= "Email address is not valid" . PHP_EOL;
             }
         }
@@ -1264,7 +1264,7 @@ class Email_model extends My_Model
             $out['msg'] = 'Unknown page';
         } elseif (!isset($data['email']) || empty($data['email'])) {
             $out['msg'] = 'Email is mandatory field';
-        } elseif (!$this->func->valid_email_address($data['email'])) {
+        } elseif (!valid_email_address($data['email'])) {
             $out['msg'] = 'Email address is not valid';
         } elseif (!isset($data['msgtxt']) || empty($data['msgtxt'])) {
             $out['msg'] = 'Message text is mandatory field';

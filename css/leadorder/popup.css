@@ -1915,8 +1915,10 @@ input.artrepeat {
     width: 35px;
 }
 .profitdetails_tooltip {
-    width: 465px;/* 398px; */
-    max-width: 465px!important; /* 398px!important; */
+    /* width: 465px;/* 398px; */
+    /* max-width: 465px!important; /* 398px!important; */
+    width: 462px;
+    max-width: 462px!important;
 }
 .button_save {
     float: left;
@@ -3730,7 +3732,7 @@ a.historydetailsview {
     /*border-radius: 10px; !* future proofing *!*/
     /*border: 1px solid;*/
     float: left;
-    padding: 10px;
+    padding: 10px 3px 10px 10px;
     width: 460px;
     margin-left: -8px;
     margin-top: -4px;
@@ -3760,13 +3762,57 @@ a.historydetailsview {
     background-color: #86FF80;
     color: #000000;    
 }
+.ordercogdetailsviewarea div {
+    float: left;
+}
+.ordercogdetailsviewarea > .revenuearea {
+    margin-left: 241px;
+    font-weight: 600;
+    font-size: 13px;
+}
+.ordercogdetailsviewarea > .revenuearea > .revenuetitle {
+    width: 97px;
+    height: 18px;
+    line-height: 18px;
+}
+.ordercogdetailsviewarea > .revenuearea > .revenueval {
+    text-align: right;
+    width: 62px;
+    height: 18px;
+    line-height: 18px;
+}
+.ordercogdetailsviewarea > .costsarea {
+    border: 1px solid #000000;
+    background: #FFFFFF;
+    margin-left: 241px;
+}
+.ordercogdetailsviewarea > .costsarea > .datarow > div {
+    height: 18px;
+    line-height: 18px;
+    color: #f90505;
+    text-align: right;
+}
+.ordercogdetailsviewarea > .costsarea > .datarow > .costlabel {
+    width: 94px;
+    font-size: 12px;
+}
+.ordercogdetailsviewarea > .costsarea > .datarow > .costvalue {
+    width: 62px;
+    font-size: 13px;
+    padding-right: 4px;
+}
+.ordercogdetailsviewarea > .costspercarea > div {
+    height: 18px;
+    line-height: 18px;
+    width: 42px;
+    text-align: right;
+    font-size: 11px;
+}
 .ordercogdetailsviewarea > .title {
     clear: both;
-    float: left;
-    margin: 0 5px;
+    margin: 6px 5px 0 5px;
 }
 .ordercogdetailsviewarea > .title > div {
-    float: left;
     text-align: center;
     font-size: 12px;
     font-weight: bold;
@@ -3781,7 +3827,7 @@ a.historydetailsview {
     width: 61px;
 }
 .ordercogdetailsviewarea > .title > .vendor {
-    width: 190px;
+    width: 159px;
 }
 .ordercogdetailsviewarea > .title > .amountsum {
     width: 63px;
@@ -3791,15 +3837,12 @@ a.historydetailsview {
     border: 1px solid #000000;
     clear: both;
     color: #000;
-    float: left;
     margin: 4px;
 }
 .ordercogdetailsviewarea > .dataarea > .datarow {
     clear: both;
-    float: left;    
 }
 .ordercogdetailsviewarea > .dataarea > .datarow > div {
-    float: left;    
     height: 20px;
     line-height: 20px;
     text-align: center;
@@ -3828,12 +3871,74 @@ a.historydetailsview {
 }
 .ordercogdetailsviewarea > .dataarea > .datarow > .vendor {
     border-right: 1px solid #000000;
-    width: 189px;
+    width: 159px;
 }
 .ordercogdetailsviewarea > .dataarea > .datarow > .amountsum {
     text-align: right;
     padding-right: 3px;
     width: 76px;
+}
+.ordercogdetailsviewarea > .procentsarea {
+    width: 42px;
+    margin: 4px 0;
+    text-align: right;
+}
+.ordercogdetailsviewarea > .procentsarea > div {
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    font-size: 11px;
+}
+.ordercogdetailsviewarea > .totalcogarea {
+    margin-left: 245px;
+}
+.ordercogdetailsviewarea > .totalcogarea > div {
+    height: 29px;
+    line-height: 29px;
+    font-size: 15px;
+    font-weight: 600;
+}
+.ordercogdetailsviewarea > .totalcogarea > .totalcoglabel {
+    width: 80px;
+}
+.ordercogdetailsviewarea > .totalcogarea > .totalcogvalue {
+    width: 76px;
+    text-align: right;
+}
+.ordercogdetailsviewarea > .totalcogarea > .totalcogperc {
+    width: 42px;
+    text-align: right;
+    font-size: 11px;
+    font-weight: normal;
+}
+.ordercogdetailsviewarea > .profitarea {
+    margin-left: 265px;
+    border: 1px solid #000000;
+    background: #FFFFFF;
+}
+.ordercogdetailsviewarea > .profitarea > div {
+    height: 20px;
+    line-height: 20px;
+    font-weight: 600;
+    text-align: right;
+}
+.ordercogdetailsviewarea > .profitarea > .profitlabel {
+    font-size: 14px;
+    width: 50px;
+    color: #000000;
+}
+.ordercogdetailsviewarea > .profitarea > .profitvalue {
+    font-size: 15px;
+    width: 83px;
+    padding-right: 4px;
+    color: #000000;
+}
+.ordercogdetailsviewarea > .profitperc {
+    height: 20px;
+    line-height: 20px;
+    width: 42px;
+    font-size: 11px;
+    text-align: right;
 }
 /* Confirm new shipcost */
 .confirmshipcost_container {

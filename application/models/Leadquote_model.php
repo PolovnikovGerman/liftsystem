@@ -89,6 +89,12 @@ class Leadquote_model extends MY_Model
                 'quote_total' => 0,
                 'billingsame' => 1,
             ];
+            if (!empty($lead_data['lead_company'])) {
+                $quotedat['shipping_company'] = $lead_data['lead_company'];
+            }
+            if (!empty($lead_data['lead_customer'])) {
+                $quotedat['shipping_contact'] = $lead_data['lead_customer'];
+            }
             // Check relation with ts_custom_quotes
             $this->db->select('count(*) as cnt, max(custom_quote_id) custom_quote');
             $this->db->from('ts_lead_emails');
@@ -117,7 +123,8 @@ class Leadquote_model extends MY_Model
             // Items
             $quote_items = [];
             if (!empty($lead_data['lead_item_id'])) {
-                $itemdat = $this->add_newleadquote_item($lead_data['lead_item_id'], $lead_data['other_item_name']);
+                $leadqty = intval($lead_data['lead_itemqty']);
+                $itemdat = $this->add_newleadquote_item($lead_data['lead_item_id'], $lead_data['other_item_name'], $leadqty);
                 if ($itemdat['result']==$this->success_result) {
                     $quote_items[] = $itemdat['quote_items'];
                     // Get Delivery Terms
@@ -352,7 +359,7 @@ class Leadquote_model extends MY_Model
         return $newnumber;
     }
 
-    public function add_newleadquote_item($item_id, $custom_name, $startid=1) {
+    public function add_newleadquote_item($item_id, $custom_name, $itemqty, $startid=1) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $this->load->model('orders_model');
         $this->load->model('leadorder_model');
@@ -372,9 +379,13 @@ class Leadquote_model extends MY_Model
         } else {
             $item_description=$itemdata['item_name'];
         }
-        $defqty=$this->config->item('defqty_common');
-        if ($item_id==$this->config->item('custom_id')) {
-            $defqty=$this->config->item('defqty_custom');
+        if ($itemqty==0) {
+            $defqty=$this->config->item('defqty_common');
+            if ($item_id==$this->config->item('custom_id')) {
+                $defqty=$this->config->item('defqty_custom');
+            }
+        } else {
+            $defqty = $itemqty;
         }
         // Prepare Parts of Quote Items
         $quoteitem=[
@@ -757,13 +768,17 @@ class Leadquote_model extends MY_Model
                     }
                     $items[$itemidx]['item_qty']=$itemsqty;
                     // Get New price
-                    $this->load->model('leadorder_model');
-                    $newprice=$this->leadorder_model->_get_item_priceqty($items[$itemidx]['item_id'], $items[$itemidx]['template'] , $items[$itemidx]['item_qty']);
-                    $items[$itemidx]['base_price']=$newprice;
+                    if ($items[$itemidx]['item_id'] > 0) {
+                        $this->load->model('leadorder_model');
+                        $newprice=$this->leadorder_model->_get_item_priceqty($items[$itemidx]['item_id'], $items[$itemidx]['template'] , $items[$itemidx]['item_qty']);
+                        $items[$itemidx]['base_price']=$newprice;
+                    }
                     $out['price_class']='normal';
                     $ridx=0;
                     foreach ($items[$itemidx]['items'] as $row) {
-                        $items[$itemidx]['items'][$ridx]['item_price']=$newprice;
+                        if ($items[$itemidx]['item_id'] > 0) {
+                            $items[$itemidx]['items'][$ridx]['item_price']=$newprice;
+                        }
                         $items[$itemidx]['items'][$ridx]['qtyinput_class']='normal';
                         $rowtotal = $items[$itemidx]['items'][$ridx]['item_qty']*$items[$itemidx]['items'][$ridx]['item_price'];
                         $items[$itemidx]['items'][$ridx]['item_subtotal']=MoneyOutput($rowtotal);
@@ -1220,6 +1235,15 @@ class Leadquote_model extends MY_Model
                 }
                 $quotesession['shipping'] = $newrates;
                 $quotesession['deleted'] = $deleted;
+            } else {
+                foreach ($shippings as $shipping) {
+                    if ($shipping['quote_shipping_id'] > 0) {
+                        $deleted[] = ['entity' => 'shipping', 'id' => $shipping['quote_shipping_id']];
+                    }
+                }
+                $newrates = [];
+                $quotesession['shipping'] = $newrates;
+                $quotesession['deleted'] = $deleted;
             }
         }
         $quote['shipping_cost'] = $newshipcost;
@@ -1313,7 +1337,7 @@ class Leadquote_model extends MY_Model
         if (!empty($item_id)) {
             $items = $quotesession['items'];
             $startid = count($items)+1;
-            $itemdat = $this->add_newleadquote_item($item_id, $custom_item, $startid);
+            $itemdat = $this->add_newleadquote_item($item_id, $custom_item, 0, $startid);
             $out['msg'] = $itemdat['msg'];
             if ($itemdat['result']==$this->success_result) {
                 $out['result'] = $this->success_result;
@@ -1562,6 +1586,7 @@ class Leadquote_model extends MY_Model
                     $quotedat[$key] = $val;
                 }
             }
+            $quotedat['billingsame'] = 0;
             $this->load->model('orders_model');
             $this->load->model('leadorder_model');
             // Items
@@ -1819,6 +1844,7 @@ class Leadquote_model extends MY_Model
             $this->db->from('ts_quote_items');
             $this->db->where('quote_id', $quote_id);
             $items = $this->db->get()->result_array();
+            $itemqty = 0;
             $itemidx = 0;
             foreach ($items as $item) {
                 if ($item['item_id'] < 0) {
@@ -1833,6 +1859,9 @@ class Leadquote_model extends MY_Model
                 $this->db->where('quote_item_id', $item['quote_item_id']);
                 $colors = $this->db->get()->result_array();
                 $items[$itemidx]['colors'] = $colors;
+                foreach ($colors as $color) {
+                    $itemqty+=$color['item_qty'];
+                }
                 // Imprints
                 $this->db->select('*');
                 $this->db->from('ts_quote_imprints');
@@ -1847,10 +1876,23 @@ class Leadquote_model extends MY_Model
             $this->db->where('quote_id', $quote_id);
             $this->db->where('active', 1);
             $shipping = $this->db->get()->result_array();
+            // File name
             if ($quote['brand']=='SR') {
-                $res = $this->_prepare_quotesrdoc($quote, $items, $shipping);
+                $filename = 'quote_'.$quote['quote_number'].'-QS_';
             } else {
-                $res = $this->_prepare_quotesbdoc($quote, $items, $shipping);
+                $filename = 'quote_QB-'.$quote['quote_number'].'_';
+            }
+            if (!empty($quote['shipping_company'])) {
+                $filename.= str_replace(array(' ', '/',',','\n','%','#'),'',strtolower($quote['shipping_company'])).'_';
+            } elseif (!empty($quote['shipping_contact'])) {
+                $filename.= str_replace(array(' ', '/',',','\n','%','#'),'',strtolower($quote['shipping_contact'])).'_';
+            }
+            $filename.= $itemqty.'.pdf';
+
+            if ($quote['brand']=='SR') {
+                $res = $this->_prepare_quotesrdoc($quote, $items, $shipping, $filename);
+            } else {
+                $res = $this->_prepare_quotesbdoc($quote, $items, $shipping, $filename);
             }
             $out['msg'] = $res['msg'];
             if ($res['result']==$this->success_result) {
@@ -1861,9 +1903,8 @@ class Leadquote_model extends MY_Model
         return $out;
     }
 
-    private function _prepare_quotesrdoc($quote, $items, $shipping) {
+    private function _prepare_quotesrdoc($quote, $items, $shipping, $filname) {
         $out = ['result' => $this->error_result, 'msg' => 'Error during create PDF doc'];
-        $filname = 'quote_'.$quote['quote_number'].'-QS_t'.time().'.pdf';
         define('FPDF_FONTPATH', FCPATH.'font');
         $this->load->library('fpdf/fpdfeps');
         // Logo
@@ -1982,10 +2023,15 @@ class Leadquote_model extends MY_Model
                 } else {
                     $cellheight = 4.8;
                 }
+                $precesion = 2;
+                $colorcell = $color['item_price']*1000;
+                if (substr($colorcell,-1,1)!='0') {
+                    $precesion = 3;
+                }
                 $pdf->Cell($colWidth[0], $cellheight, $item['item_number'], 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[1], $cellheight, $color['item_description'] . ' ' . $color['item_color'], 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[2], $cellheight, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[3], $cellheight, number_format($color['item_price'], 2), 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[3], $cellheight, number_format($color['item_price'], $precesion), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
                 $numpp++;
                 $yStart += $cellheight;
@@ -2170,13 +2216,12 @@ class Leadquote_model extends MY_Model
         $file_out = $this->config->item('upload_path_preload').$filname;
         $pdf->Output('F', $file_out);
         $out['result'] = $this->success_result;
-        $out['docurl'] = $this->config->item('pathpreload').$filname;
+        $out['docurl'] = $this->config->item('pathpreload').$filname.'?t='.time();
         return $out;
     }
 
-    private function _prepare_quotesbdoc($quote, $items, $shipping) {
+    private function _prepare_quotesbdoc($quote, $items, $shipping, $filname) {
         $out = ['result' => $this->error_result, 'msg' => 'Error during create PDF doc'];
-        $filname = 'quote_QB-'.$quote['quote_number'].'_t'.time().'.pdf';
         define('FPDF_FONTPATH', FCPATH.'font');
         $this->load->library('fpdf/fpdfeps');
         // Logo
@@ -2295,10 +2340,15 @@ class Leadquote_model extends MY_Model
                 } else {
                     $cellheight = 4.8;
                 }
+                $precesion = 2;
+                $colorcell = $color['item_price']*1000;
+                if (substr($colorcell,-1,1)!='0') {
+                    $precesion = 3;
+                }
                 $pdf->Cell($colWidth[0], $cellheight, $item['item_number'], 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[1], $cellheight, $color['item_description'] . ' ' . $color['item_color'], 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[2], $cellheight, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[3], $cellheight, number_format($color['item_price'], 2), 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[3], $cellheight, number_format($color['item_price'], $precesion), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
                 $numpp++;
                 $yStart += $cellheight;
@@ -2484,7 +2534,7 @@ class Leadquote_model extends MY_Model
         $file_out = $this->config->item('upload_path_preload').$filname;
         $pdf->Output('F', $file_out);
         $out['result'] = $this->success_result;
-        $out['docurl'] = $this->config->item('pathpreload').$filname;
+        $out['docurl'] = $this->config->item('pathpreload').$filname.'?t='.time();
         return $out;
     }
 

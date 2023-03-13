@@ -87,6 +87,7 @@ function pageItemMonthreport(page_index) {
             $("#loader").hide();
             $("div.itemmonth_data").empty().html(response.data.content);
             itemmonth_content_init();
+            leftmenu_alignment();
             $("input#curpageitemmonth").val(page_index);
         } else {
             $("#loader").css('display','none');

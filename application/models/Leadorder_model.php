@@ -5247,7 +5247,7 @@ Class Leadorder_model extends My_Model {
         return $profit;
     }
 
-    private function _leadorder_shipping($shipping_address, $shipping, $past) {
+    private function _leadorder_shipping($shipping_address, $shipping, $past=0) {
         // Rebuild Arrive Date
         $arrivedate=0;
         foreach ($shipping_address as $srow) {
@@ -5411,7 +5411,7 @@ Class Leadorder_model extends My_Model {
         $this->db->select('v.vendor_zipcode, vi.vendor_item_zipcode');
         $this->db->from("{$item_table} i");
         $this->db->join("{$venditem_table} vi",'vi.vendor_item_id=i.vendor_item_id');
-        $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
+        $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor",'left');
         $this->db->where('i.item_id', $item_id);
         $itmres=$this->db->get()->row_array();
         if ($item_id>0 && !empty($itmres)) {
@@ -8178,7 +8178,7 @@ Class Leadorder_model extends My_Model {
 
         // $html=$this->load->view('leadorderdetails/docs/invoice_view', $options, TRUE);
 
-        $file_name='invoice_'.$order['order_confirmation'].'_'.str_replace(array(' ', '/',',','\n','%','#'),'_',$order['order_items']).'.pdf';
+        $file_name='invoice_'.$order['order_confirmation'].'_'.str_replace(array(' ', '/',',','\n','%','#'),'',strtolower($order['order_items'])).'.pdf';
         $file_out = $this->config->item('upload_path_preload') . $file_name;
 
         $this->_invoice_pdfdoc_create($options, $file_out);
@@ -8605,13 +8605,53 @@ Class Leadorder_model extends My_Model {
     }
 
     public function get_leadorder_amounts($order_id) {
+        $this->db->select('revenue, shipping, tax, order_cog, profit, profit_perc, cc_fee');
+        $this->db->from('ts_orders');
+        $this->db->where('order_id', $order_id);
+        $orddata = $this->db->get()->row_array();
+        $out=[];
+        $out['revenue'] = $orddata['revenue'];
+        $expens = [];
+        if (!empty(floatval($orddata['shipping']))) {
+            $expens[] = [
+                'label' => 'Shipping',
+                'value' => $orddata['shipping'],
+                'proc' => round($orddata['shipping']/$orddata['revenue']*100,2),
+            ];
+        }
+        if (!empty(floatval($orddata['tax']))) {
+            $expens[] = [
+                'label' => '7% Tax',
+                'value' => $orddata['tax'],
+                'proc' => round($orddata['tax']/$orddata['revenue']*100,2),
+            ];
+        }
+        if (!empty(floatval($orddata['cc_fee']))) {
+            $expens[] = [
+                'label' => '2.11% CC Fee',
+                'value' => $orddata['cc_fee'],
+                'proc' => round($orddata['cc_fee']/$orddata['revenue']*100,2),
+            ];
+        }
+        $out['costs'] = $expens;
+        $out['cog_value'] = $orddata['order_cog'];
+        $out['cog_proc'] = round($orddata['order_cog'] / $orddata['revenue'] * 100,2);
+        $out['profit_value'] = $orddata['profit'];
+        $out['profit_proc'] = $orddata['profit_perc'];
         $this->db->select('oa.amount_id, oa.amount_date, oa.printshop, v.vendor_name, oa.amount_sum');
         $this->db->from('ts_order_amounts oa');
         $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
         $this->db->where('oa.order_id', $order_id);
         $this->db->order_by('oa.amount_date');
-        $res=$this->db->get()->result_array();
-        return $res;
+        $amnts=$this->db->get()->result_array();
+        $list = [];
+        foreach ($amnts as $amnt) {
+            $amnt['proc'] = round($amnt['amount_sum'] / $orddata['revenue'] * 100,2);
+            $list[] = $amnt;
+        }
+        $out['list'] = $list;
+        // return $res;
+        return $out;
     }
 
     private function _emptyzip_notification($leadorder, $user_id) {
