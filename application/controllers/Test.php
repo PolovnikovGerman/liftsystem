@@ -1405,7 +1405,14 @@ class Test extends CI_Controller
                         $this->db->where('order_id', $order['order_id']);
                         $this->db->set('cc_fee', $fee);
                         $this->db->update('ts_orders');
+                    } else {
+                        if (intval($fee)==$order['cc_fee']) {
+                            $this->db->where('order_id', $order['order_id']);
+                            $this->db->set('cc_fee', $fee);
+                            $this->db->update('ts_orders');
+                        }
                     }
+
                 }
             }
         }
