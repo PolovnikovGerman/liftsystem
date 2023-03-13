@@ -1900,7 +1900,7 @@ Class Printshop_model extends MY_Model
             $path_sh_plate=$this->config->item('invplatetemp_relative');
             $path_full_proof=$this->config->item('invprooftemp');
             $path_sh_proof=$this->config->item('invprooftemp_relative');
-            $filename=$this->func->extract_filename($data['filesource']);
+            $filename=extract_filename($data['filesource']);
             if (file_exists($data["filesource"])) {
                 /*$purefilesrc=$this->func->uniq_link(12).'.'.$filename['ext'];*/
                 $text = substr(strrchr($filename['name'], '/'), 1 );

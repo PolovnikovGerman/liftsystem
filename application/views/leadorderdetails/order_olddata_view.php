@@ -132,4 +132,6 @@
         </div>
     </div>			
 </div>
-<?=$order_bottom?>
+<?php if (isset($order_bottom)) { ?>
+    <?=$order_bottom?>
+<?php } ?>

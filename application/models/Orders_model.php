@@ -6021,15 +6021,15 @@ Class Orders_model extends MY_Model
                     } elseif ($row['parameter_name']=='Discount Value') {
                         $descr = $row['discount_descript'];
                     }
+                    $out[]=[
+                        'user' => $row['first_name'].' '.$row['last_name'],
+                        'order' => $row['order_num'],
+                        'parameter' => $row['parameter_name'],
+                        'old_value' => $row['parameter_oldvalue'],
+                        'new_value' => $row['parameter_newvalue'],
+                        'description' => $descr,
+                    ];
                 }
-                $out[]=[
-                    'user' => $row['first_name'].' '.$row['last_name'],
-                    'order' => $row['order_num'],
-                    'parameter' => $row['parameter_name'],
-                    'old_value' => $row['parameter_oldvalue'],
-                    'new_value' => $row['parameter_newvalue'],
-                    'description' => $descr,
-                ];
             }
         }
         return $out;

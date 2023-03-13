@@ -5221,7 +5221,7 @@ Class Leadorder_model extends My_Model {
         return $profit;
     }
 
-    private function _leadorder_shipping($shipping_address, $shipping, $past) {
+    private function _leadorder_shipping($shipping_address, $shipping, $past=0) {
         // Rebuild Arrive Date
         $arrivedate=0;
         foreach ($shipping_address as $srow) {
@@ -5385,7 +5385,7 @@ Class Leadorder_model extends My_Model {
         $this->db->select('v.vendor_zipcode, vi.vendor_item_zipcode');
         $this->db->from("{$item_table} i");
         $this->db->join("{$venditem_table} vi",'vi.vendor_item_id=i.vendor_item_id');
-        $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
+        $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor",'left');
         $this->db->where('i.item_id', $item_id);
         $itmres=$this->db->get()->row_array();
         if ($item_id>0 && !empty($itmres)) {

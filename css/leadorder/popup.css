@@ -1915,8 +1915,10 @@ input.artrepeat {
     width: 35px;
 }
 .profitdetails_tooltip {
-    width: 465px;/* 398px; */
-    max-width: 465px!important; /* 398px!important; */
+    /* width: 465px;/* 398px; */
+    /* max-width: 465px!important; /* 398px!important; */
+    width: 462px;
+    max-width: 462px!important;
 }
 .button_save {
     float: left;
@@ -3912,11 +3914,13 @@ a.historydetailsview {
 .ordercogdetailsviewarea > .profitarea > .profitlabel {
     font-size: 14px;
     width: 50px;
+    color: #000000;
 }
 .ordercogdetailsviewarea > .profitarea > .profitvalue {
     font-size: 15px;
     width: 83px;
     padding-right: 4px;
+    color: #000000;
 }
 .ordercogdetailsviewarea > .profitperc {
     height: 20px;
