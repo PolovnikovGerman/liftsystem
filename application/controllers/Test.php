@@ -1388,6 +1388,7 @@ class Test extends CI_Controller
         $this->db->select('order_id, order_num, cc_fee');
         $this->db->from('ts_orders');
         $this->db->where('cc_fee != 0');
+        $this->db->order_by('order_id','desc');
         $orders = $this->db->get()->result_array();
         foreach ($orders as $order) {
             $this->db->select('sum(batch_amont) as amount, sum(batch_vmd) as batch_vmd, sum(batch_amex) as batch_amex, count(batch_id) as cnt');
