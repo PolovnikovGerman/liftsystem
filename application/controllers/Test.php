@@ -1386,7 +1386,7 @@ class Test extends CI_Controller
 
     public function check_fee() {
         $start = strtotime('2023-01-01');
-        $this->db->select('order_id, order_num, cc_fee');
+        $this->db->select('order_id, order_num, cc_fee,weborder');
         $this->db->from('ts_orders');
         $this->db->where('cc_fee != 0');
         $this->db->where('order_date >= ', $start);
@@ -1399,8 +1399,13 @@ class Test extends CI_Controller
             $batch = $this->db->get()->row_array();
             if ($batch['cnt'] > 0 && ($batch['batch_vmd'])!==0 || $batch['batch_amex']!==0) {
                 $fee = $batch['batch_amount'] - ($batch['batch_vmd'] + $batch['batch_amex']);
-                if ($fee !== $order['cc_fee']) {
+                if (round($fee,2) !== round($order['cc_fee'],2)) {
                     echo 'Order '.$order['order_num'].' Fee - '.$order['cc_fee'].' Calc '.$fee.PHP_EOL;
+                    if ($order['weborder']==1) {
+                        $this->db->where('order_id', $order['order_id']);
+                        $this->db->set('cc_fee', $fee);
+                        $this->db->update('ts_orders');
+                    }
                 }
             }
         }
