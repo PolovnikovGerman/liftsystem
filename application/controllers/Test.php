@@ -1396,6 +1396,7 @@ class Test extends CI_Controller
             $this->db->select('sum(batch_amount) as batch_amount, sum(batch_vmd) as batch_vmd, sum(batch_amex) as batch_amex, count(batch_id) as cnt');
             $this->db->from('ts_order_batches');
             $this->db->where('order_id', $order['order_id']);
+            $this->db->where('(batch_vmd != 0 or batch_amex != 0)');
             $batch = $this->db->get()->row_array();
             if ($batch['cnt'] > 0 && ($batch['batch_vmd'])!==0 || $batch['batch_amex']!==0) {
                 $fee = $batch['batch_amount'] - ($batch['batch_vmd'] + $batch['batch_amex']);
