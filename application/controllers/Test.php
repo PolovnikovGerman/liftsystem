@@ -1391,7 +1391,7 @@ class Test extends CI_Controller
         $this->db->order_by('order_id','desc');
         $orders = $this->db->get()->result_array();
         foreach ($orders as $order) {
-            $this->db->select('sum(batch_amont) as amount, sum(batch_vmd) as batch_vmd, sum(batch_amex) as batch_amex, count(batch_id) as cnt');
+            $this->db->select('sum(batch_amount) as batch_amount, sum(batch_vmd) as batch_vmd, sum(batch_amex) as batch_amex, count(batch_id) as cnt');
             $this->db->from('ts_order_batches');
             $this->db->where('order_id', $order['order_id']);
             $batch = $this->db->get()->row_array();
