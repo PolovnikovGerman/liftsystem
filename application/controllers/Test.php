@@ -2026,4 +2026,41 @@ class Test extends CI_Controller
             }
         }
     }
+
+    public function check_fee() {
+        $start = strtotime('2021-01-01');
+        $finish = strtotime('2022-01-01');
+        $this->db->select('order_id, order_num, cc_fee,weborder');
+        $this->db->from('ts_orders');
+        $this->db->where('cc_fee != 0');
+        $this->db->where('order_date >= ', $start);
+        $this->db->where('order_date < ', $finish);
+        $this->db->order_by('order_id','desc');
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            $this->db->select('sum(batch_amount) as batch_amount, sum(batch_vmd) as batch_vmd, sum(batch_amex) as batch_amex, count(batch_id) as cnt');
+            $this->db->from('ts_order_batches');
+            $this->db->where('order_id', $order['order_id']);
+            $this->db->where('(batch_vmd != 0 or batch_amex != 0)');
+            $batch = $this->db->get()->row_array();
+            if ($batch['cnt'] > 0 && ($batch['batch_vmd'])!==0 || $batch['batch_amex']!==0) {
+                $fee = $batch['batch_amount'] - ($batch['batch_vmd'] + $batch['batch_amex']);
+                if (round($fee,2) !== round($order['cc_fee'],2)) {
+                    echo 'Order '.$order['order_num'].' Fee - '.$order['cc_fee'].' Calc '.$fee.PHP_EOL;
+                    if ($order['weborder']==1) {
+                        $this->db->where('order_id', $order['order_id']);
+                        $this->db->set('cc_fee', $fee);
+                        $this->db->update('ts_orders');
+                    } else {
+                        if (intval($fee)==$order['cc_fee']) {
+                            $this->db->where('order_id', $order['order_id']);
+                            $this->db->set('cc_fee', $fee);
+                            $this->db->update('ts_orders');
+                        }
+                    }
+
+                }
+            }
+        }
+    }
 }

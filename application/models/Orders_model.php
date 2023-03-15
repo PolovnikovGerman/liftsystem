@@ -6744,6 +6744,10 @@ Class Orders_model extends MY_Model
             $this->db->set('batch_num', substr($orddata['payment_card_number'], -4));
             $this->db->set('batch_transaction', $orddata['transaction_id']);
             $this->db->insert('ts_order_batches');
+            // Change Order CC fee
+            $this->db->where('order_id', $neword);
+            $this->db->set('cc_fee', ($item['total'] - $pureval));
+            $this->db->update('ts_orders');
             // Charge value
             $this->db->set('order_id', $neword);
             $this->db->set('cardnum', $orddata['payment_card_number']);

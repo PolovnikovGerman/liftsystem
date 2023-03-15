@@ -4601,7 +4601,7 @@ Class Leadorder_model extends My_Model {
         $this->db->set('is_shipping',intval($data['is_shipping']));
 
         $this->db->set('tax',floatval($data['tax']));
-        $this->db->set('cc_fee', intval($data['cc_fee']));
+        $this->db->set('cc_fee', floatval($data['cc_fee']));
         $this->db->set('order_cog',$order_cog);
         $this->db->set('update_date',time());
         $this->db->set('update_usr',$user_id);
