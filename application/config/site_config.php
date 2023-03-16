@@ -1,6 +1,6 @@
 <?php
-$config['js_version'] = '2.02070';
-$config['css_version']= '2.02070';
+$config['js_version'] = '2.02071';
+$config['css_version']= '2.02071';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -33,6 +33,8 @@ $config['paypal_vmdfeenew']=2.11;
 $config['other_id']=-1;
 $config['multy_id']=-2;
 $config['custom_id']=-3;
+$config['custom_proof_time'] = 30;
+$config['other_proof_time'] = 7;
 $config['custom_itemnum']='00-ZZ000';
 $config['minimal_profitperc']=20;
 switch($_SERVER['SERVER_NAME']){
