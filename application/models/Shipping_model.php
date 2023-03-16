@@ -87,9 +87,9 @@ Class Shipping_model extends MY_Model
         /* Rebuild as array */
         if (!isset($leads['item_lead_a'])) {
             if ($item_id==$this->config->item('custom_id')) {
-                $leads['item_lead_a'] = 45;
+                $leads['item_lead_a'] = $this->config->item('custom_proof_time');
             } elseif ($item_id==$this->config->item('other_id')) {
-                $leads['item_lead_a'] = 7;
+                $leads['item_lead_a'] = $this->config->item('other_proof_time');
             } else {
                 $leads['item_lead_a']=0;
             }
