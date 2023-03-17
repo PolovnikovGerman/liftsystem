@@ -1268,7 +1268,8 @@ class Fulfillment extends MY_Controller
             $mdata=array();
             $error='';
             $printshop_color_id=$this->input->post('printshop_color_id');
-            $brand = $this->input->post('brand');
+            // $brand = $this->input->post('brand');
+            $brand = 'ALL';
             $this->load->model('printshop_model');
             $res=$this->printshop_model->invitem_color_stocklog($printshop_color_id, $brand);
             $content=$this->load->view('printshop/instock_data_view', array('data'=>$res,'brand'=>$brand),TRUE);
