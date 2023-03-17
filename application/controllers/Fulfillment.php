@@ -426,7 +426,6 @@ class Fulfillment extends MY_Controller
             // $brand = ifset($postdata,'brand');
             $brand = 'ALL';
 
-
             $options=array(
                 'orderby'=>'item_num',
                 'direct'=>'asc',
@@ -749,7 +748,8 @@ class Fulfillment extends MY_Controller
                             $options=array(
                                 'orderby'=>'item_num',
                                 'direct'=>'asc',
-                                'brand' => $brand,
+                                // 'brand' => $brand,
+                                'brand' => 'ALL',
                             );
 
                             $data=$this->printshop_model->get_printshopitems($options);
@@ -1008,7 +1008,8 @@ class Fulfillment extends MY_Controller
                         $options=array(
                             'orderby'=>'item_num',
                             'direct'=>'asc',
-                            'brand' => $brand,
+                            // 'brand' => $brand,
+                            'brand' => 'ALL',
                         );
 
                         $data=$this->printshop_model->get_printshopitems($options);
@@ -1330,7 +1331,8 @@ class Fulfillment extends MY_Controller
                 $error=$res['msg'];
             } else {
                 $printshop_color_id=$res['printshop_color_id'];
-                $res=$this->printshop_model->invitem_color_stocklog($printshop_color_id, $brand);
+                // $res=$this->printshop_model->invitem_color_stocklog($printshop_color_id, $brand);
+                $res=$this->printshop_model->invitem_color_stocklog($printshop_color_id, 'ALL');
                 $mdata['content']=$this->load->view('printshop/instock_data_view', array('data'=>$res, 'brand' => $brand),TRUE);
             }
             $this->ajaxResponse($mdata, $error);
@@ -1345,7 +1347,8 @@ class Fulfillment extends MY_Controller
             $this->load->model('printshop_model');
             $printshop_color_id=$this->input->post('printshop_color_id');
             $brand = $this->input->post('brand');
-            $res=$this->printshop_model->invitem_color_stocklog($printshop_color_id, $brand);
+            // $res=$this->printshop_model->invitem_color_stocklog($printshop_color_id, $brand);
+            $res=$this->printshop_model->invitem_color_stocklog($printshop_color_id, 'ALL');
             $mdata['content']=$this->load->view('printshop/instock_data_view', array('data'=>$res, 'brand' => $brand),TRUE);
             usersession('stockdata', NULL);
             $this->ajaxResponse($mdata, $error);
@@ -1936,9 +1939,11 @@ class Fulfillment extends MY_Controller
         $this->load->model('printshop_model');
         $addcost=$this->printshop_model->invaddcost();
         $totals=$this->printshop_model->count_prinshop_items();
-        $totalinv=$this->printshop_model->get_inventory_totals($brand);
+        // $totalinv=$this->printshop_model->get_inventory_totals($brand);
+        $totalinv=$this->printshop_model->get_inventory_totals('ALL');
         $totalinvview=$this->load->view('printshopinventory/total_inventory_view',$totalinv,TRUE);
-        $data = $this->printshop_model->get_data_onboat($brand);
+        // $data = $this->printshop_model->get_data_onboat($brand);
+        $data = $this->printshop_model->get_data_onboat('ALL');
         $boathead_view='';
         foreach ($data as $drow) {
             $boathead_view.=$this->load->view('printshopinventory/onboat_containerhead_view', $drow, TRUE);
