@@ -425,6 +425,7 @@ class Fulfillment extends MY_Controller
             $postdata=$this->input->post();
             // $brand = ifset($postdata,'brand');
             $brand = 'ALL';
+
             $options=array(
                 'orderby'=>'item_num',
                 'direct'=>'asc',
