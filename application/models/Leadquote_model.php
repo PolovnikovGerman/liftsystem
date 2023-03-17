@@ -3064,7 +3064,7 @@ class Leadquote_model extends MY_Model
             'shipping' => $shiprate,
             'sales_tax' => $quote['sales_tax'],
             'resident' => 0,
-            'ship_blind' => 0,
+            'ship_blind' => $quote['brand']=='SR' ? 1 : 0,
             'taxview' => $quote['taxview'],
             'taxcalc' => $quote['taxview'],
             'tax' => $quote['sales_tax'],
