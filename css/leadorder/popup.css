@@ -952,6 +952,7 @@ input.ship_tax_textareainpt {
     width: 34px;
     color: #2E2E2E;
     font-weight: normal;
+    white-space: unset!important;
 }
 .ship_tax_cont_bl2 > .line > .label.shipblind {
     /* line-height: 13px; */
