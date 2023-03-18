@@ -139,17 +139,19 @@ select.profitorder-filtrer {
 }
 .orders-table {
     margin: 0px 0 0 10px;
-    width: 1006px;
+    /* width: 1006px; */
 }
 .orders-table div {
-    float: left;
+    /* float: left; */
 }
 .profitorder_addaction {
-    width: 64px;
+    /* width: 64px; */
+    width: 75px;
 }
 .totalallrow-title {
-    float: right!important;
-    width: 836px;
+    /* float: right!important; */
+    /* width: 836px; */
+    margin-left: 85px;
 }
 .totalallrow-title div {
     height: 18px;
@@ -158,35 +160,40 @@ select.profitorder-filtrer {
     text-align: center;
 }
 .totalallrow-title .orders {
-    width: 77px;
+    width: 50px;
 }
 .totalallrow-title .orders_new {
-    width: 82px;
+    width: 65px;
 }
 .totalallrow-title .orders_repeat {
-    width: 82px;
+    width: 65px;
 }
 .totalallrow-title .orders_blank {
-    width: 82px;
+    width: 62px;
 }
 .totalallrow-title .qty {
-    width: 77px;
+    /* width: 77px; */
     /* margin-right: 28px; */
+    width: 53px;
 }
 .totalallrow-title .itemcolors {
-    width: 209px;
+    /* width: 209px; */
+    width: 196px;
 }
 .totalallrow-title .revenue {
-    width: 68px;
+    width: 70px;
 }
 .totalallrow-title .balance {
-    width: 70px;
+    width: 60px;
 }
 .totalallrow-title .shipping {
     width: 61px;
 }
+.totalallrow-title .shipdate {
+    width: 38px;
+}
 .totalallrow-title .tax {
-    width: 50px;
+    width: 37px;
 }
 .totalallrow-title .cog {
     width: 65px;
@@ -199,7 +206,7 @@ select.profitorder-filtrer {
 }
 /* All Totals */
 .orders-profitalltotal-row {
-    width: 941px; /* 913px; */
+    /* width: 941px; */ /* 913px; */
 }
 .orders-profitalltotal-row .profitorder_total {
     margin-left: 0;
@@ -217,7 +224,7 @@ select.profitorder-filtrer {
     font-size: 13px;
     height: 24px;
     border: 1px solid #a4a4a4;
-    width: 832px;
+    /* width: 832px; */
     float: right;
 }
 .orders-profitalltotal-row .profitorder_totaldata div {
@@ -225,24 +232,32 @@ select.profitorder-filtrer {
     text-align: center;
 }
 .orders-profitalltotal-row .profitorder_totaldata .orders {
-    width: 77px;
+    /* width: 77px; */
+    width: 50px;
     /* text-align: left;
     padding-left: 5px; */
     cursor: pointer;
 }
 .orders-profitalltotal-row .profitorder_totaldata .orders-new {
-    width: 82px;
+    /* width: 82px; */
+    width: 65px;
 }
 .orders-profitalltotal-row .profitorder_totaldata .orders-repeat {
-    width: 82px;
+    /* width: 82px; */
+    width: 65px;
 }
 .orders-profitalltotal-row .profitorder_totaldata .orders-blank {
-    width: 82px;
+    /* width: 82px; */
+    width: 62px;
 }
 .orders-profitalltotal-row .profitorder_totaldata .qty {
-    width: 77px;
+    /* width: 77px; */
+    width: 53px;
     /* margin-right: 28px; */
     cursor: pointer;
+}
+.orders-profitalltotal-row .profitorder_totaldata .totals-emptyspace {
+    width: 195px;
 }
 .orders-profitalltotal-row .profitorder_totaldata .itemcolors {
     width: 195px;
@@ -252,7 +267,8 @@ select.profitorder-filtrer {
     cursor: pointer;
 }
 .orders-profitalltotal-row .profitorder_totaldata .balance {
-    width: 70px;
+    /* width: 70px; */
+    width: 60px;
     cursor: pointer;
 }
 .orders-profitalltotal-row .profitorder_totaldata .shipping {
@@ -263,7 +279,8 @@ select.profitorder-filtrer {
     width: 38px;
 }
 .orders-profitalltotal-row .profitorder_totaldata .tax {
-    width: 50px;
+    /* width: 50px; */
+    width: 37px;
     cursor: pointer;
 }
 .orders-profitalltotal-row .profitorder_totaldata .cog {
@@ -354,6 +371,20 @@ select.profitorder-filtrer {
     overflow-y: scroll;
     width: 1027px;
 }
+/* Scrollbar */
+/*.orderprofitcontent-table .sp-scrollbar {*/
+/*    width: 10px;*/
+/*    background-color: #f1f1f1;*/
+/*    cursor: pointer;*/
+/*}*/
+/*.orderprofitcontent-table .sp-scrollbar .sp-thumb {*/
+/*    background-color: #aaa;*/
+/*    transition: height 0.2s ease-in-out;*/
+/*}*/
+/*.orderprofitcontent-table .sp-scrollbar.active .sp-thumb {*/
+/*    background-color: #c1c1c1;*/
+/*}*/
+/* End Scrollbar */
 .orderprofitcontent-table > .tr {
     border-left: 1px solid #919191;
     border-right: 1px solid #919191;

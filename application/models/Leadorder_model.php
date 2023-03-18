@@ -746,6 +746,9 @@ Class Leadorder_model extends My_Model {
         $defstate=NULL;
 
         $newaddr=$this->_create_empty_shipaddress();
+        if ($brand=='SR') {
+            $newaddr['ship_blind'] = 1;
+        }
         $newaddr['order_shipaddr_id']=-1;
         $shipaddres[]=$newaddr;
 
