@@ -4,7 +4,8 @@
         <div class="numrec showformdetails"><?=$dat['numpp']?></div>
         <div class="websys <?=$dat['active']==1 ? 'active' : 'removed'?>" data-form="<?=$dat['custom_quote_id']?>">
             <?php if ($dat['active']==1) { ?>
-                <i class="fa fa-trash" aria-hidden="true"></i>
+                <!-- <i class="fa fa-trash" aria-hidden="true"></i> -->
+                <i class="fa fa-eye-slash" aria-hidden="true"></i>
             <?php } else { ?>
                 <i class="fa fa-undo" aria-hidden="true"></i>
             <?php } ?>
