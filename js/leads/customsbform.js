@@ -98,10 +98,16 @@ function pageCustomFormsCallback(pageidx) {
     $("#loader").show();
     $.post(url,params,function(response){
         if (response.errors=='') {
-            $(".customform_tabledat").empty().html(response.data.content);
+            $("#customform_tabledat").empty().html(response.data.content);
             $("#curpagecustomform").val(pageidx);
             /* change size */
             jQuery.balloon.init();
+            if (parseInt(response.data.totals) > 25) {
+                $(".customform_tabledat").scrollpanel({
+                    'prefix' : 'sp-'
+                });
+                leftmenu_alignment();
+            }
             init_customform_content();
             $("#loader").hide();
         } else {
