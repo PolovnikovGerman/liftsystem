@@ -1,4 +1,5 @@
 <?php $numpp=0;?>
+<div class="customform_tabledat">
 <?php foreach ($data as $dat) { ?>
     <div class="content-row <?=$numpp%2==0 ? 'greydatarow' : 'whitedatarow'?>" data-form="<?=$dat['custom_quote_id']?>">
         <div class="numrec showformdetails"><?=$dat['numpp']?></div>
@@ -25,7 +26,8 @@
             <?=$dat['shape_desription']?>
         </div>
         <div class="itemqty showformdetails"><?=empty($dat['quota_qty']) ? '' : QTYOutput($dat['quota_qty'])?></div>
-        <div class="eventdate showformdetails"><?=$dat['event_date']?></div>
+        <div class="eventdate showformdetails <?=$expand==1 ? 'expand' : ''?>"><?=$dat['event_date']?></div>
     </div>
     <?php $numpp++?>
 <?php } ?>
+</div>

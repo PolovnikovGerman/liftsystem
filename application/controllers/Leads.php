@@ -1097,11 +1097,16 @@ class Leads extends My_Controller {
             $postdata = $this->input->post();
             $this->load->model('customform_model');
             $data = $this->customform_model->get_customform_data($postdata);
+            $mdata['totals'] = count($data);
             $event = 'hover'; // click
+            $expand = 0;
+            if (count($data) <= 25) {
+                $expand = 1;
+            }
             if (count($data)==0) {
                 $mdata['content'] = $this->load->view('customsbforms/content_empty_view',[],TRUE);
             } else {
-                $mdata['content'] = $this->load->view('customsbforms/content_data_view',['data' => $data, 'event' => $event], TRUE);
+                $mdata['content'] = $this->load->view('customsbforms/content_data_view',['data' => $data, 'event' => $event, 'expand' => $expand], TRUE);
             }
             $this->ajaxResponse($mdata, $error);
         }
