@@ -2471,7 +2471,7 @@ Class Orders_model extends MY_Model
                 if ($filtr['brand']=='SR') {
                     $this->db->where('o.brand', $filtr['brand']);
                 } else {
-                    $this->db->where_in('o.brand', ['BT','BT']);
+                    $this->db->where_in('o.brand', ['SB','BT']);
                 }
             }
         }
