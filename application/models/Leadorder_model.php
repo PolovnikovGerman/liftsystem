@@ -8583,6 +8583,7 @@ Class Leadorder_model extends My_Model {
         $this->db->from('ts_orders');
         $this->db->where('order_id', $order_id);
         $orddata = $this->db->get()->row_array();
+
         $out=[];
         $out['revenue'] = $orddata['revenue'];
         $expens = [];
@@ -8595,14 +8596,36 @@ Class Leadorder_model extends My_Model {
         }
         if (!empty(floatval($orddata['tax']))) {
             $expens[] = [
-                'label' => '7% Tax',
+                'label' => $this->config->item('salesnewtax').'% Tax',
                 'value' => $orddata['tax'],
                 'proc' => round($orddata['tax']/$orddata['revenue']*100,2),
             ];
         }
         if (!empty(floatval($orddata['cc_fee']))) {
+            $this->db->select('sum(batch_amount) as b_amnt, sum(batch_vmd) b_vmd, sum(batch_amex) as b_amex, count(batch_id) cnt');
+            $this->db->from('ts_order_batches');
+            $this->db->where('order_id', $order_id);
+            $this->db->where('(batch_vmd > 0 or batch_amex > 0)');
+            $batchres = $this->db->get()->row_array();
+            $label = '2.11% CC Fee';
+            if ($batchres['cnt'] > 0 && $batchres['b_amnt'] != 0) {
+                $percent = round(($batchres['b_amnt'] - $batchres['b_vmd'] - $batchres['b_amex'])/$batchres['b_amnt']*100,2);
+                if ($percent > 2.12 && $percent < 3.25) {
+                    $label = '2.2% CC Fee';
+                } else {
+                    $label = '3.25% CC Fee';
+                }
+            } else {
+                $percent = round($orddata['cc_fee']/$orddata['revenue']*100,2);
+                if ($percent > 2.12 && $percent < 3.25) {
+                    $label = '2.2% CC Fee';
+                } else {
+                    $label = '3.25% CC Fee';
+                }
+            }
+
             $expens[] = [
-                'label' => '2.11% CC Fee',
+                'label' => $label,
                 'value' => $orddata['cc_fee'],
                 'proc' => round($orddata['cc_fee']/$orddata['revenue']*100,2),
             ];

@@ -77,7 +77,8 @@ class Customform_model extends MY_Model
         $this->load->model('leads_model');
         foreach ($dats as $dat) {
             $numpp++;
-            $dat['numpp'] = $numpp;
+            // $dat['numpp'] = $numpp;
+            $dat['numpp'] = $dat['quote_number'];
             if (!empty($dat['lead_id'])) {
                 $ldat = $this->leads_model->get_lead($dat['lead_id']);
                 $dat['lead_number']=ifset($ldat,'lead_number','');

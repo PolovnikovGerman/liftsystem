@@ -1,10 +1,12 @@
 <?php $numpp=0;?>
+<div class="customform_tabledat">
 <?php foreach ($data as $dat) { ?>
     <div class="content-row <?=$numpp%2==0 ? 'greydatarow' : 'whitedatarow'?>" data-form="<?=$dat['custom_quote_id']?>">
         <div class="numrec showformdetails"><?=$dat['numpp']?></div>
         <div class="websys <?=$dat['active']==1 ? 'active' : 'removed'?>" data-form="<?=$dat['custom_quote_id']?>">
             <?php if ($dat['active']==1) { ?>
-                <i class="fa fa-trash" aria-hidden="true"></i>
+                <!-- <i class="fa fa-trash" aria-hidden="true"></i> -->
+                <i class="fa fa-eye-slash" aria-hidden="true"></i>
             <?php } else { ?>
                 <i class="fa fa-undo" aria-hidden="true"></i>
             <?php } ?>
@@ -24,7 +26,8 @@
             <?=$dat['shape_desription']?>
         </div>
         <div class="itemqty showformdetails"><?=empty($dat['quota_qty']) ? '' : QTYOutput($dat['quota_qty'])?></div>
-        <div class="eventdate showformdetails"><?=$dat['event_date']?></div>
+        <div class="eventdate showformdetails <?=$expand==1 ? 'expand' : ''?>"><?=$dat['event_date']?></div>
     </div>
     <?php $numpp++?>
 <?php } ?>
+</div>

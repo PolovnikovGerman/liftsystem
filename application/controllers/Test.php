@@ -2060,4 +2060,28 @@ class Test extends CI_Controller
             }
         }
     }
+
+    public function customquote_number() {
+        $brands = ['SR','SB'];
+        foreach ($brands as $brand) {
+            $this->db->select('*');
+            $this->db->from('ts_custom_quotes');
+            // $this->db->where('active',1);
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB','BT']);
+            }
+            $this->db->order_by('date_add');
+            $quotes = $this->db->get()->result_array();
+            $numpp = 1;
+            foreach ($quotes as $quote) {
+                $this->db->where('custom_quote_id', $quote['custom_quote_id']);
+                $this->db->set('quote_number', $numpp);
+                $this->db->update('ts_custom_quotes');
+                $numpp++;
+            }
+        }
+        echo 'Quote # updated '.PHP_EOL;
+    }
 }
