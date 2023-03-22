@@ -8632,14 +8632,14 @@ Class Leadorder_model extends My_Model {
                 $percent = round(($batchres['b_amnt'] - $batchres['b_vmd'] - $batchres['b_amex'])/$batchres['b_amnt']*100,2);
                 if ($percent > 2.12 && $percent < 3.25) {
                     $label = '2.2% CC Fee';
-                } else {
+                } elseif($percent >=3.25) {
                     $label = '3.25% CC Fee';
                 }
             } else {
                 $percent = round($orddata['cc_fee']/$orddata['revenue']*100,2);
                 if ($percent > 2.12 && $percent < 3.25) {
                     $label = '2.2% CC Fee';
-                } else {
+                } elseif ($percent >= 3.25) {
                     $label = '3.25% CC Fee';
                 }
             }
