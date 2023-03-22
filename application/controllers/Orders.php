@@ -145,15 +145,15 @@ class Orders extends MY_Controller
             $limit=ifset($postdata, 'limit',  100);
 
             $offset=$pagenum*$limit;
-            $search='';
+            // $search='';
             $order_by = 'order_num';
             $direct = 'desc';
 
             $options=array(
                 'offset' => $offset,
                 'limit' => $limit,
-                'order_by' => 'order_num',
-                'direct' => 'desc',
+                'order_by' => $order_by,
+                'direct' => $direct,
             );
 
             if (isset($postdata['user_replic'])) {

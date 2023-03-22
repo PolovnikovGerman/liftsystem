@@ -22,6 +22,14 @@ Class Leadorder_model extends My_Model {
         array('key'=>'02_notapprov', 'value'=>'Art -Need Apprvl', 'class'=>'art'),
         /* array('key'=>'01_notplaced', 'value'=>'FF - To Place', 'class'=>'art'), */
     );
+    protected $art_statuses=array(
+        array('key'=>'06_noart', 'value'=>'Need Art', 'class'=>'art'),
+        array('key'=>'05_notredr', 'value'=>'Redrawing', 'class'=>'art'),
+        array('key'=>'04_notvector', 'value'=>'Redrawing', 'class'=>'art'),
+        array('key'=>'03_notprof', 'value'=>'To Proof', 'class'=>'art'),
+        array('key'=>'02_notapprov', 'value'=>'Need Apprvl', 'class'=>'art'),
+        array('key'=>'01_notplaced', 'value'=>'To Place', 'class'=>'art'),
+    );
 
     private $NO_ART = '06_noart';
     private $NO_ART_TXT='Need Art';
@@ -114,12 +122,14 @@ Class Leadorder_model extends My_Model {
         // $this->db->select("coalesce(oa.cnt_amnt,0)  as cnt_amnt",FALSE);
         $this->db->select('u.user_leadname, u.user_name');
         $this->db->select('itm.item_number, coalesce(st.item_id, 0) as stok_item', FALSE);
+        $this->db->select('vo.order_proj_status as artstage');
         $this->db->from('ts_orders o');
         $this->db->join("{$item_dbtable} as itm",'itm.item_id=o.item_id ','left');
         $this->db->join('users u','u.user_id=o.order_usr_repic','left');
         $this->db->join('ts_stock_items st','st.item_id=o.item_id','left');
         // $this->db->join("({$amountcnt}) oa",'oa.order_id=o.order_id','left');
         // $this->db->where('o.is_canceled',0);
+        $this->db->join('v_order_artstage vo','vo.order_id=o.order_id','left');
         if (isset($options['unassigned'])) {
             $this->db->where('o.order_usr_repic is null');
         }
@@ -286,6 +296,16 @@ Class Leadorder_model extends My_Model {
             } elseif ($row['stok_item']>0) {
                 $row['order_class']=$this->common_class;
             }
+            $artstage = '';
+            if (!empty($row['artstage'])) {
+                foreach ($this->art_statuses as $stagerow) {
+                    if ($stagerow['key']==$row['artstage']) {
+                        $artstage=$stagerow['value'];
+                        break;
+                    }
+                }
+            }
+            $row['artstage'] = $artstage;
             $row['order_status']='&nbsp;';
             $row['order_status_class']='';
             $order_proj_status='';
@@ -7335,10 +7355,10 @@ Class Leadorder_model extends My_Model {
                     break;
                 }
             }
-            if (!empty($term) && $term!='Standard' && $shipdata['rush_price']>0) {
+            if (!empty($term) && $shipdata['rush_price'] > 0 ) { // $term!='Standard' &&
                 $item_details[]=array(
                     'item_num'=>'',
-                    'item_description'=>$term,
+                    'item_description'=>($term=='Standard' ? $term.' Rush' : $term),
                     'item_qty'=>'',
                     'item_price'=>$shipdata['rush_price'],
                     'item_subtotal'=>MoneyOutput($shipdata['rush_price'],2),
