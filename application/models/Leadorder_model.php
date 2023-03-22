@@ -7322,6 +7322,26 @@ Class Leadorder_model extends My_Model {
             );
         }
 
+        // Check Rush
+        $shipdata=$leadorder['shipping'];
+        $rushlist=$shipdata['out_rushlist']['rush'];
+        $term='';
+        foreach ($rushlist as $rrow) {
+            if ($rrow['date']==$shipdata['shipdate']) {
+                $term=$rrow['rushterm'];
+                break;
+            }
+        }
+        if (!empty($term) && $shipdata['rush_price'] > 0 ) { // $term!='Standard' &&
+            $item_details[]=array(
+                'item_num'=>'',
+                'item_description'=>($term=='Standard' ? 'Rush Production' : $term),
+                'item_qty'=>'',
+                'item_price'=>$shipdata['rush_price'],
+                'item_subtotal'=>MoneyOutput($shipdata['rush_price'],2),
+                'item_color'=>'#000000',
+            );
+        }
 
         if (!empty($leadorder['order']['shipping'])) {
             $shipping_address=$leadorder['shipping_address'];
@@ -7345,26 +7365,6 @@ Class Leadorder_model extends My_Model {
                 'item_subtotal'=>  MoneyOutput($leadorder['order']['shipping'],2),
                 'item_color'=>'#000000',
             );
-            // Check Rush
-            $shipdata=$leadorder['shipping'];
-            $rushlist=$shipdata['out_rushlist']['rush'];
-            $term='';
-            foreach ($rushlist as $rrow) {
-                if ($rrow['date']==$shipdata['shipdate']) {
-                    $term=$rrow['rushterm'];
-                    break;
-                }
-            }
-            if (!empty($term) && $shipdata['rush_price'] > 0 ) { // $term!='Standard' &&
-                $item_details[]=array(
-                    'item_num'=>'',
-                    'item_description'=>($term=='Standard' ? $term.' Rush' : $term),
-                    'item_qty'=>'',
-                    'item_price'=>$shipdata['rush_price'],
-                    'item_subtotal'=>MoneyOutput($shipdata['rush_price'],2),
-                    'item_color'=>'#000000',
-                );
-            }
         }
         $detcnt=count($item_details)+$adrcnt;
         if ($detcnt<15) {
