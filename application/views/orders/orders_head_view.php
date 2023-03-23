@@ -75,6 +75,7 @@
         <div class="revenue">Revenue</div>
         <div class="usrrepl">Sales Rep</div>
         <div class="ordclass">Class</div>
+        <div class="artstage">Art Status</div>
         <div class="points">Points</div>
         <div class="ordstatus">Status</div>
     </div>
