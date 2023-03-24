@@ -75,41 +75,68 @@
         <div class="mastinvent_databody">
             <!-- Table header -->
             <div class="datarow">
-                <div class="masterinventexport">
-                    <i class="fa fa-share-square-o" aria-hidden="true"></i>
-                    Export <?=$export_type?> Inventory
-                </div>
-            </div>
-            <div class="datarow">
-                <div class="masterinventtotals">
-                    <div class="inventtotalmaxshow">Show Max</div>
-                    <div class="inventtotalmaximum"></div>
-                    <div class="inventtotalinstock"></div>
-                    <div class="inventtotalavailable"></div>
-                </div>
-            </div>
-            <div class="datarow">
-                <div class="masterinventtablehead">
-                    <div class="addnewmasterinvent">
-                        <img src="/img/masterinvent/addinvitem_bg.png" alt="Add"/>
+                <!-- Left menu -->
+                <div class="mastinvent_header_left">
+                    <div class="datarow">
+                        <div class="labeltxt">Max Value:</div>
+                        <div class="valuedata" id="maximuminvent">$346,004.50</div> <!-- <?// echo MoneyOutput($maxsum)?> -->
                     </div>
-<!--                    <div class="masterinventseq">Seq</div>-->
-<!--                    <div class="masterinventnumber">Master #</div>-->
-                    <div class="masterinventdescrip">Item</div>
-                    <div class="masterinventpercent">%</div>
-                    <div class="masterinventorymaximum">Maximum</div>
-                    <div class="masterinventinstock">In Stock</div>
-                    <div class="masterinventreserv">Reserved</div>
-                    <div class="masterinventavailab">Available</div>
-                    <div class="masterinventhistory">&nbsp;</div>
-                    <div class="masterinventunit">Unit</div>
-                    <div class="masterinventonorder">On Order</div>
-                    <div class="masterinventonmax">&nbsp;</div>
-                    <div class="masterinventavgprice">Avg Price</div>
-                    <div class="masterinventhistory">&nbsp;</div>
-                    <div class="masterinventtotalval">Total Value</div>
-<!--                    <div class="masterinventdetails">Details</div>-->
+                    <div class="datarow">
+                        <div class="addlabeltxt">Add’l Amnt:</div>
+                        <div class="">
+                            <input class="inventadd" value="">
+                        </div>
+                        <div class="addlabeltxt">ea  ($53,339)</div>
+                    </div>
+                    <div class="datarow">
+                        <div class="masterinventtotals">
+                            <div class="inventtotalmaxshow">[Show Max]</div>
+                            <div class="masterinventpercent">%</div>
+                            <div class="masterinventorymaximum">Maximum</div>
+                            <div class="masterinventinstock">In Stock</div>
+                            <div class="masterinventreserv">Reserved</div>
+                            <div class="masterinventavailab">Available</div>
+                        </div>
+                    </div>
+                    <div class="datarow">
+                        <div class="masterinventtablehead">
+                            <div class="addnewmasterinvent">
+                                <img src="/img/masterinvent/addinvitem_bg.png" alt="Add"/>
+                            </div>
+                            <div class="masterinventdescrip">Item</div>
+                            <div class="masterinventpercent"></div>
+                            <div class="masterinventorymaximum">Maximum</div>
+                            <div class="masterinventinstock"></div>
+                            <div class="masterinventreserv"></div>
+                            <div class="masterinventavailab"></div>
+                            <div class="masterinventhistory">&nbsp;</div>
+                            <div class="masterinventunit">Unit</div>
+                        </div>
+                    </div>
                 </div>
+                <!-- End Left menu -->
+                <!-- Express -->
+                <div class="mastinvent_header_express"></div>
+                <!-- Express -->
+                <!-- Container -->
+                <div class="mastinvent_header_container"></div>
+                <!-- Container -->
+                <!-- Right part -->
+                <div class="mastinvent_header_right">
+                    <div class="masterinventexport">
+                        <i class="fa fa-share-square-o" aria-hidden="true"></i>
+                        Export <?=$export_type?> Inventory
+                    </div>
+                    <div class="datarow">
+                        <div class="masterinventtablehead">
+                            <div class="masterinventavgprice">Contract</div>
+                            <div class="masterinventavgprice">Avg Price</div>
+                            <div class="masterinventhistory">&nbsp;</div>
+                            <div class="masterinventtotalval">Total Value</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right part -->
             </div>
             <div class="datarow">
                 <div id="masterinventtablebody"></div>

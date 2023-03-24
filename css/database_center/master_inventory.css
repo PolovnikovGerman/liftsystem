@@ -176,9 +176,6 @@
 }
 .mastinvent_databody {
     background: #252525;
-    /* width: 1050px; */
-    /* width: 1028px; */
-    /* width: 934px; */
     width: 1355px;
     padding-left: 12px;
     padding-bottom: 12px;
@@ -207,6 +204,34 @@
     font-size: 12px;
     margin-right: 10px;
 }
+.mastinvent_header_left {
+    width: 500px;
+}
+.mastinvent_header_left .labeltxt, .mastinvent_header_left .valuedata {
+    height: 16px;
+    line-height: 16px;
+    color: #989898;
+}
+.mastinvent_header_left .valuedata {
+    font-size: 13px;
+}
+.mastinvent_header_left .labeltxt {
+    font-size: 12px;
+    width: 69px;
+}
+.mastinvent_header_left .addlabeltxt {
+    height: 16px;
+    line-height: 16px;
+    color: #ffffff;
+    font-size: 12px;
+    width: 69px;
+}
+input.inventadd {
+    height: 16px;
+    width: 46px;
+    text-align: center;
+    margin-right: 6px;
+}
 .masterinventexport {
     padding-top: 5px;
     float: right!important;
@@ -224,17 +249,16 @@
     color: #ffffff;
     /* font-size: 14px; */
     font-size: 12px;
+    margin-top: 34px;
 }
 .masterinventtotals .inventtotalmaxshow {
     /* margin-left: 435px; */
-    margin-left: 239px;
-    margin-top: -17px;
+    margin-left: 169px;
     color: #8989ff;
-    width: 42px;
+    width: 67px;
     text-align: center;
     cursor: pointer;
-    font-size: 11px;
-
+    font-size: 12px;
 }
 .masterinventtotals .inventtotalmaximum {
     /* width: 75px; */
@@ -285,7 +309,7 @@
 }
 .masterinventtablehead .masterinventdescrip {
     /* width: 268px; */
-    width: 176px;
+    width: 174px;
 }
 .masterinventtablehead .masterinventpercent {
     width: 42px;
@@ -417,7 +441,7 @@
 }
 .inventorydatarow .masterinventdescrip {
     /* width: 268px; */
-    width: 176px;
+    width: 174px;
     text-align: left;
     border-right: 1px solid #000000;
     padding-left: 8px;
