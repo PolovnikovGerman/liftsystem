@@ -2284,7 +2284,8 @@ class Database extends MY_Controller
             'active_type' => $invtypes[0]['inventory_type_id'],
             'export_type' => $invtypes[0]['type_short'],
             'total' => $totalval,
-            'eventtype' => 'purchasing',
+            // 'eventtype' => 'purchasing',
+            'eventtype' => 'manufacturing',
         ];
         $content = $this->load->view('masterinvent/page_view', $options, TRUE);
         return $content;

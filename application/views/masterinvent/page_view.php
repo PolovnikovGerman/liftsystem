@@ -19,10 +19,10 @@
                 </div>
             </div>
         </div>
-        <div class="invtypebutton <?=$eventtype=='purchasing' ? 'active' : ''?> oldver" data-itemtype="purchasing">
-            <span>Purchasing</span>
-            <div class="oldvesionlabel">&nbsp;</div>
-        </div>
+<!--        <div class="invtypebutton --><?php //=$eventtype=='purchasing' ? 'active' : ''?><!-- oldver" data-itemtype="purchasing">-->
+<!--            <span>Purchasing</span>-->
+<!--            <div class="oldvesionlabel">&nbsp;</div>-->
+<!--        </div>-->
         <div class="invtypebutton <?=$eventtype=='manufacturing' ? 'active' : ''?> oldver" data-itemtype="manufacturing">
             <span>Manufacturing</span>
             <div class="oldvesionlabel">&nbsp;</div>
