@@ -2052,7 +2052,7 @@ class Leadquote_model extends MY_Model
                 }
                 $pdf->SetXY($startPageX, $yStart);
                 $pdf->Cell($colWidth[0], $cellheight, $rowcode, 'LR', 0, 'L', $fillrow);
-                $pdf->Cell($colWidth[1], $cellheight, $imprint['imprint_description'], 'LR', 0, 'L', $fillrow);
+                $pdf->Cell($colWidth[1], $cellheight, '  '.$imprint['imprint_description'], 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[2], $cellheight, QTYOutput($imprint['imprint_qty']), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[3], $cellheight, number_format($imprint['imprint_price'], 2), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
@@ -2083,10 +2083,14 @@ class Leadquote_model extends MY_Model
             $yStart+=$cellheight;
         }
         if (!empty($shipping)) {
+            $shippref = ' Shipping Charge';
+            if (empty($shipping[0]['shipping_name'])) {
+                $shippref = 'Shipping Charge';
+            }
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
-            $pdf->Cell($colWidth[0], $cellheight, 'SR-ship1','LR',0,'L', $fillrow);
-            $pdf->Cell($colWidth[1], $cellheight, $shipping[0]['shipping_name'].' Shipping Charge','LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[0], $cellheight, 'SB-ship1','LR',0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], $cellheight, $shipping[0]['shipping_name'].$shippref,'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], $cellheight, number_format($quote['shipping_cost'],2), 'LR', 0, 'C', $fillrow);
             $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['shipping_cost']).'T', 'LR', 0,'R', $fillrow);
@@ -2156,6 +2160,10 @@ class Leadquote_model extends MY_Model
         $pdf->SetFont('','',14);
         $pdf->Cell(50,12, MoneyOutput($quote['quote_total']),'BR',0,'R');
         $yStart += 23;
+        if ($yStart > 220) {
+            $pdf->AddPage();
+            $yStart = 15;
+        }
         $pdf->SetDash(1,1);
         $pdf->Line($startPageX,$yStart,195, $yStart);
         $pdf->Line($startPageX, $yStart, $startPageX, $yStart+55);
@@ -2369,7 +2377,7 @@ class Leadquote_model extends MY_Model
                 }
                 $pdf->SetXY($startPageX, $yStart);
                 $pdf->Cell($colWidth[0], $cellheight, $rowcode, 'LR', 0, 'L', $fillrow);
-                $pdf->Cell($colWidth[1], $cellheight, $imprint['imprint_description'], 'LR', 0, 'L', $fillrow);
+                $pdf->Cell($colWidth[1], $cellheight, '  '.$imprint['imprint_description'], 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[2], $cellheight, QTYOutput($imprint['imprint_qty']), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[3], $cellheight, number_format($imprint['imprint_price'], 2), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
@@ -2400,10 +2408,14 @@ class Leadquote_model extends MY_Model
             $yStart+=$cellheight;
         }
         if (!empty($shipping)) {
+            $shippref = ' Shipping Charge';
+            if (empty($shipping[0]['shipping_name'])) {
+                $shippref = 'Shipping Charge';
+            }
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->Cell($colWidth[0], $cellheight, 'SB-ship1','LR',0,'L', $fillrow);
-            $pdf->Cell($colWidth[1], $cellheight, $shipping[0]['shipping_name'].' Shipping Charge','LR', 0,'L', $fillrow);
+            $pdf->Cell($colWidth[1], $cellheight, $shipping[0]['shipping_name'].$shippref,'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], $cellheight, number_format($quote['shipping_cost'],2), 'LR', 0, 'C', $fillrow);
             $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['shipping_cost']).'T', 'LR', 0,'R', $fillrow);
@@ -2591,6 +2603,7 @@ class Leadquote_model extends MY_Model
             $offset = ifset($options,'offset',0);
             $this->db->limit($limit, $offset);
         }
+        $this->db->order_by('quote_number','desc');
         $lists = $this->db->get()->result_array();
 
         $out=[];
