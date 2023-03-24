@@ -1876,6 +1876,12 @@ class Leadquote_model extends MY_Model
             $this->db->where('quote_id', $quote_id);
             $this->db->where('active', 1);
             $shipping = $this->db->get()->result_array();
+            if (count($shipping)==0 && floatval($quote['shipping_cost'])!==0) {
+                $shipping = [];
+                $shipping[] = [
+                    'shipping_name' => '',
+                ];
+            }
             // File name
             if ($quote['brand']=='SR') {
                 $filename = 'quote_'.$quote['quote_number'].'-QS_';
@@ -2468,6 +2474,10 @@ class Leadquote_model extends MY_Model
         $pdf->SetFont('','',14);
         $pdf->Cell(50,12, MoneyOutput($quote['quote_total']),'BR',0,'R');
         $yStart += 23;
+        if ($yStart > 220) {
+            $pdf->AddPage();
+            $yStart = 15;
+        }
         $pdf->SetDash(1,1);
         $pdf->Line($startPageX,$yStart,195, $yStart);
         $pdf->Line($startPageX, $yStart, $startPageX, $yStart+55);
