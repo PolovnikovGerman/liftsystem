@@ -50,12 +50,13 @@ input.proofsearch {
     color: #000000;
     font-size: 13px;
     text-align: center;
-    width: 969px;
+    width: 1028px;
     margin-top: 10px;
 }
 .proof_title div {
     height: 26px;
     line-height: 26px;
+    float: left;
 }
 .proof_tabledat {
     clear: both;
@@ -264,7 +265,6 @@ select.proofhideproof {
     width: 28px;
 }
 .proof_note {
-    float: left;
     width: 40px;
 }
 .proof_note_dat {
