@@ -36,9 +36,9 @@ Class Artproof_model extends MY_Model
         $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
         $this->db->where('e.email_type', $this->EMAIL_TYPE);
         if (ifset($options, 'prooforder', 0)==1) {
-            $this->db->join('ts_artworks a','a.mail_id=e.email_id');
-            $this->db->where('a.order_id is not null');
+            $this->db->join('v_order_statuses vo','vo.order_id=e.email_id and vo.status_type="R"','left');
             $this->db->where('e.email_status != ',$this->void_status);
+            $this->db->where('vo.order_approved',1);
         } else {
             if (isset($options['show_deleted']) && $options['show_deleted']==1) {
                 $this->db->where('e.email_status != ',$this->order_status);
@@ -459,8 +459,8 @@ Class Artproof_model extends MY_Model
             }
         }
         if (ifset($search,'prooforder',0)==1) {
-            $this->db->where('a.order_id is not null');
             $this->db->where('e.email_status != ',$this->void_status);
+            $this->db->where('vo.order_approved',1);
         } else {
             if (isset($search['show_deleted'])) {
                 $this->db->where('e.email_status != ',3);
