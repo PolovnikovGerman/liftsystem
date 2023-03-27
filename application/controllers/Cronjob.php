@@ -194,8 +194,7 @@ Class Cronjob extends CI_Controller
         $email_cc = $this->config->item('artorderdaily_cc');
         $email_from = 'fulfillment@bluetrack.com';
         /* step 1 count # of project orders */
-        // $brands = ['SB', 'SR'];
-        $brands = ['SB'];
+        $brands = ['SB', 'SR'];
         foreach ($brands as $brand) {
             $this->db->select('count(order_id) as cnt');
             $this->db->from('v_order_statuses');
@@ -302,8 +301,7 @@ Class Cronjob extends CI_Controller
     public function pochange_notification() {
         $dateend=strtotime(date('m/d/Y'));
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
-        // $brands = ['SB','SR'];
-        $brands = ['SB'];
+        $brands = ['SB','SR'];
         foreach ($brands as $brand) {
             // Get users list
             $this->db->select('oa.create_user, u.user_name, count(oa.amount_id) as cnt');
@@ -516,8 +514,8 @@ Class Cronjob extends CI_Controller
     public function tickets_report() {
         $this->load->model('tickets_model');
         // Prepare Overview
-        // $brands = ['SB','SR'];
-        $brands = ['SB'];
+        $brands = ['SB','SR'];
+
         foreach ($brands as $brand) {
             $overview=$this->tickets_model->get_ticketreport_overview($brand);
             $msgdata='';
@@ -579,8 +577,8 @@ Class Cronjob extends CI_Controller
         $dateend=strtotime(date('Y-m-d'));
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
         // Select total
-        // $brands = ['SB','SR'];
-        $brands = ['SB'];
+        $brands = ['SB','SR'];
+        // $brands = ['SB'];
         $this->load->model('reports_model');
         foreach ($brands as $brand) {
             $data = $this->reports_model->artproof_daily_report($datestart, $dateend, $brand);
@@ -643,8 +641,8 @@ Class Cronjob extends CI_Controller
         ];
 
         $this->load->model('orders_model');
-        // $brands = ['SB','SR'];
-        $brands = ['SB'];
+        $brands = ['SB','SR'];
+        // $brands = ['SB'];
         foreach ($brands as $brand) {
             $options['brand']=$brand;
             $res=$this->orders_model->get_week_quotes($options);
@@ -687,8 +685,8 @@ Class Cronjob extends CI_Controller
     public function bonus_report() {
         $user_id=23; // Shanequa Hall
         $this->load->model('orders_model');
-        // $brands = ['SB','SR'];
-        $brands = ['SB'];
+        $brands = ['SB','SR'];
+        // $brands = ['SB'];
         foreach ($brands as $brand) {
             $results=$this->orders_model->user_weekproof_reportdata($user_id, $brand);
             $out=$results['out'];
@@ -844,8 +842,8 @@ Class Cronjob extends CI_Controller
         $end_time = strtotime(date('Y-m-d'));
         $start_time = strtotime(date('Y-m-d', strtotime(date('Y-m-d',$end_time). ' - 1 day')));
         $this->load->model('orders_model');
-        // $brands = ['SB','SR'];
-        $brands = ['SB'];
+        $brands = ['SB','SR'];
+        // $brands = ['SB'];
         foreach ($brands as $brand) {
             $out = $this->orders_model->orderdiscount_msg($start_time, $end_time, $brand);
 
@@ -933,8 +931,8 @@ Class Cronjob extends CI_Controller
     }
 
     public function searchresults_weekreport() {
-        // $brands = ['SB','SR'];
-        $brands = ['SB'];
+        $brands = ['SB','SR'];
+        // $brands = ['SB'];
         $dat_mon = strtotime('last week Monday');
         $dat_sun = strtotime(date('Y-m-d', strtotime('last week Sunday')).' 23:59:59');
         foreach ($brands as $brand) {
@@ -980,8 +978,8 @@ Class Cronjob extends CI_Controller
     }
 
     public function unpaid_orders() {
-        // $brands = ['SB', 'SR'];
-        $brands = ['SB'];
+        $brands = ['SB', 'SR'];
+        // $brands = ['SB'];
         $yearbgn = intval(date('Y'))-1;
         $datebgn = strtotime($yearbgn.'-01-01');
         $this->load->model('orders_model');
