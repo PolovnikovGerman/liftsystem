@@ -8038,7 +8038,7 @@ Class Leadorder_model extends My_Model {
         $biladr=array();
         if (isset($leadorder['billing'])) {
             $billing=$leadorder['billing'];
-            if (!empty($billing['customer_name'])) {
+            // if (!empty($billing['customer_name'])) {
                 if (!empty($billing['company'])) {
                     array_push($biladr, $billing['company']);
                 }
@@ -8071,7 +8071,7 @@ Class Leadorder_model extends My_Model {
                 if (!empty($billing['customer_ponum'])) {
                     $customer_po=$billing['customer_ponum'];
                 }
-            }
+            // }
         }
 
         $shipping_address=$leadorder['shipping_address'];
