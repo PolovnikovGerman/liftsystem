@@ -62,7 +62,6 @@ Class Artproof_model extends MY_Model
             }
         }
         $res=$this->db->get()->row_array();
-        log_message('ERROR','SQL '.$this->db->last_query());
         return $res['cnt'];
     }
 
