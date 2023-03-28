@@ -339,6 +339,56 @@ class Proofrequests extends MY_Controller
         }
     }
 
+    public function proof_order_edit() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Proof Request not found';
+            $email_id=$this->input->post('email_id');
+            $this->load->model('artproof_model');
+            $data=$this->artproof_model->get_proof_data($email_id);
+            if (ifset($data,'email_id',0)==$email_id) {
+                $error='';
+                $mdata['content']=$this->load->view('artrequest/prooforder_edit_view',['proof_order' => $data['proof_order'],'email_id' => $data['email_id']], TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+
+        }
+        show_404();
+    }
+
+    public function proof_order_save() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $email_id=$this->input->post('email_id');
+            $proof_order  = $this->input->post('proof_order');
+            $this->load->model('artproof_model');
+            $data=$this->artproof_model->update_proof_order($email_id, $proof_order);
+            $error = $data['msg'];
+            if ($data['result']==$this->success_result) {
+                $error='';
+                $mdata['content'] = $data['proof_order'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function proof_order_restore() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Proof Request not found';
+            $email_id=$this->input->post('email_id');
+            $this->load->model('artproof_model');
+            $data=$this->artproof_model->get_proof_data($email_id);
+            if (ifset($data,'email_id',0)==$email_id) {
+                $error='';
+                $mdata['content']=$data['proof_order'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function show_question_detail() {
         if ($this->isAjax()) {
             $mdata=array();

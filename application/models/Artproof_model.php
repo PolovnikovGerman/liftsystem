@@ -1016,5 +1016,21 @@ Class Artproof_model extends MY_Model
         return $out;
     }
 
+    public function update_proof_order($email_id, $proof_order) {
+        $out=['result' => $this->error_result, 'msg' => 'Proof Request not Found'];
+        $this->db->select('count(*) as cnt');
+        $this->db->from('ts_emails');
+        $this->db->where('email_id', $email_id);
+        $res = $this->db->get()->row_array();
+        if ($res['cnt']==1) {
+            $out['result'] = $this->success_result;
+            $this->db->where('email_id', $email_id);
+            $this->db->set('proof_order', $proof_order);
+            $this->db->update('ts_emails');
+            $out['proof_order'] = $proof_order;
+        }
+        return $out;
+    }
+
 
 }
