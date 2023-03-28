@@ -1,9 +1,9 @@
-<span><input type="text" class="proof_order_edit" value="<?=$proof_order?>"/></span>
+<span><input type="text" data-proof="<?=$email_id?>" class="proof_order_edit" value="<?=$proof_order?>"/></span>
 <div class="prooforder-deeds">
-    <div class="prooforder-savedata">
-        <i class="fa fa-check-circle" data-proof="<?=$email_id?>"></i>
+    <div class="prooforder-savedata" data-proof="<?=$email_id?>">
+        <i class="fa fa-check-circle"></i>
     </div>
-    <div class="prooforder-cancel">
-        <i class="fa fa-times-circle" data-proof="<?=$email_id?>"></i>
+    <div class="prooforder-cancel" data-proof="<?=$email_id?>">
+        <i class="fa fa-times-circle"></i>
     </div>
 </div>
