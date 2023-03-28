@@ -493,7 +493,8 @@ Class Artproof_model extends MY_Model
             $artlastupdat="prooflastmessageview";
             // $row['lastmsg']='/artproofs/proof_lastmessage?d='.$row['email_id'];
             $row['ordnum']=$ordnum;
-            $row['email']=($row['email_sendermail']=='' ? '' : '<img src="/img/icons/email.png" alt="Email" title="'.$row['email_sendermail'].'" style="margin-right:3px;"/>');
+            // <img src="/img/icons/email.png" alt="Email" title="'.$row['email_sendermail'].'" style="margin-right:3px;"/>
+            $row['email']=($row['email_sendermail']=='' ? '' : '<i class="fa fa-envelope" aria-hidden="true" title="'.$row['email_sendermail'].'"></i>');
             $row['emailparsed']=($row['email_webpage']=='EMAILPARSER' ? $parsericon : '&nbsp;');
             $row['emailparsed_title']=($row['email_webpage']=='EMAILPARSER' ? 'data-content="'.$row['email_sendermail'].' - '.date('m/d/y H:i:s',  strtotime($row['email_date'])).'"' : '');
             $row['email_date']=date('m/d/y',strtotime($row['email_date']));
