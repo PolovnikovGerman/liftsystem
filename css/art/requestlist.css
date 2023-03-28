@@ -50,7 +50,7 @@ input.proofsearch {
     color: #000000;
     font-size: 13px;
     text-align: center;
-    width: 1028px;
+    width: 1042px;
     margin-top: 10px;
 }
 .proof_title div {
@@ -65,7 +65,7 @@ input.proofsearch {
     max-height: 502px;
     overflow-y: auto;
     /* width: 971px; */
-    width: 1029px;
+    width: 1044px;
 }
 .proof_tabrow {
     border-left: 1px solid #000000;
@@ -75,7 +75,7 @@ input.proofsearch {
     float: left;
     font-size: 12px;
     /* width: 954px; */
-    width: 1015px;
+    width: 1030px;
     text-align: center;
     height: 24px;
     line-height: 24px!important;
@@ -289,8 +289,37 @@ select.proofhideproof {
 .proof_ordernum_dat {
     height: 24px;
     line-height: 24px!important;
-    width: 60px;
+    width: 76px;
 }
+.proof_ordernum_dat.edit {
+    cursor: pointer;
+}
+input.proof_order_edit {
+    width: 44px;
+    height: 19px;
+    font-size: 12px;
+}
+.prooforder-deeds {
+    text-align: center;
+    width: 32px;
+    float: right!important;
+    padding-top: 4px;
+}
+.prooforder-deeds i {
+    font-size: 13px;
+    cursor: pointer;
+}
+.prooforder-savedata, .prooforder-cancel {
+    text-align: center;
+    width: 15.5px;
+}
+.prooforder-savedata i {
+    color: #3b9806;
+}
+.prooforder-cancel i {
+    color: #d30a0a;
+}
+
 .artdata {
     height: 24px;
     padding-top: 4px;
@@ -377,7 +406,7 @@ select.proofhideproof {
     float: left;
     height: 7px;
     /* width: 795px; */
-    width: 840px;
+    width: 856px;
 }
 .quest_tablefoot_right {
     background: url("/img/art/tableend-messages-right.png") no-repeat scroll 0 0 transparent;

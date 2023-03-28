@@ -245,8 +245,7 @@ function init_prooflistmanage() {
     })
     $(".proof_ordernum_dat.edit").unbind('click').click(function (){
         var mailid=$(this).data('proofid');
-        proof_include(mailid);
-
+        init_prooforder_edit(mailid);
     });
 }
 
@@ -433,3 +432,47 @@ function proof_include(mailid) {
         }
     }, 'json');
 }
+
+function init_prooforder_edit(mailid) {
+    var url = main_proofurl+"/proof_order_edit";
+    $.post(url, {'email_id': mailid}, function (response){
+        if (response.errors=='') {
+            $("div.proof_ordernum_dat[data-proofid="+mailid+"]").empty().html(response.data.content);
+            $(".proof_ordernum_dat").unbind('click');
+            $(".prooforder-savedata").unbind('click').click(function(){
+                var ordernum = $(".proof_order_edit").val();
+                save_prooforder(mailid, ordernum);
+            });
+            $(".prooforder-cancel").unbind('click').click(function (){
+                cancel_prooforder(mailid);
+            });
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function save_prooforder(mailid, ordernum) {
+    var url = main_proofurl+"/proof_order_save";
+    $.post(url, {'email_id': mailid, 'proof_order': ordernum}, function (response){
+        if (response.errors=='') {
+            $("div.proof_ordernum_dat[data-proofid="+mailid+"]").empty().html(response.data.content);
+            init_prooflistmanage();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function cancel_prooforder(mailid) {
+    var url = main_proofurl+"/proof_order_restore";
+    $.post(url, {'email_id': mailid}, function (response){
+        if (response.errors=='') {
+            $("div.proof_ordernum_dat[data-proofid="+mailid+"]").empty().html(response.data.content);
+            init_prooflistmanage();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+//
