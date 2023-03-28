@@ -212,6 +212,7 @@ class Art extends MY_Controller {
             if (!$task_id) {
                 $error='Unknown Task';
             } else {
+                $brand = '';
                 $this->load->model('artwork_model');
                 $this->load->model('email_model');
                 if (substr($task_id,0,2)=='pr') {
@@ -220,6 +221,7 @@ class Art extends MY_Controller {
                     $artdata=$this->artwork_model->get_artwork_proof($email_id, $this->USR_ID);
 
                     $data=$this->artproof_model->get_proof_data($email_id);
+                    $brand = $data['brand'];
                     if (!isset($artdata['artwork_id'])) {
                         $error='Undefined Proof Request';
                         $this->ajaxResponse($mdata, $error);
@@ -243,6 +245,7 @@ class Art extends MY_Controller {
                     $order_id=substr($task_id, 3);
                     $artdata=$this->artwork_model->get_artwork_order($order_id, $this->USR_ID);
                     $data=$this->orders_model->get_order_detail($order_id);
+                    $brand = $data['brand'];
                     if ($data['order_system']=='new') {
                         // Get Order Contact with ART
                         $this->load->model('leadorder_model');
@@ -291,7 +294,11 @@ class Art extends MY_Controller {
                     $msgdat=str_replace('<<item_name>>', $artdata['item_name'], $msgdat);
                     $msgdat=str_replace('<<document_type>>',$artdata['document_type'],$msgdat);
                 }
-                $artemail=$this->config->item('art_dept_email');
+                if ($brand=='SR') {
+                    $artemail=$this->config->item('art_srdept_email');
+                } else {
+                    $artemail=$this->config->item('art_dept_email');
+                }
                 $options=array(
                     'artwork_id'=>$artdata['artwork_id'],
                     'from'=>$artemail,
@@ -973,6 +980,7 @@ class Art extends MY_Controller {
             'locations'=>array(),
             'proofs'=>array(),
             'art_history'=>$artwork['art_history'],
+            'brand' => $artwork['brand'],
             'callpage' => $artwork['callpage'],
         );
         foreach ($locations as $lrow) {
