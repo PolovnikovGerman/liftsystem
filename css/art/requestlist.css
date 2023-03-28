@@ -50,12 +50,13 @@ input.proofsearch {
     color: #000000;
     font-size: 13px;
     text-align: center;
-    width: 969px;
+    width: 1042px;
     margin-top: 10px;
 }
 .proof_title div {
     height: 26px;
     line-height: 26px;
+    float: left;
 }
 .proof_tabledat {
     clear: both;
@@ -63,7 +64,8 @@ input.proofsearch {
     /* max-height: 564px; */
     max-height: 502px;
     overflow-y: auto;
-    width: 971px;
+    /* width: 971px; */
+    width: 1044px;
 }
 .proof_tabrow {
     border-left: 1px solid #000000;
@@ -72,10 +74,14 @@ input.proofsearch {
     color: #000000;
     float: left;
     font-size: 12px;
-    width: 954px;
+    /* width: 954px; */
+    width: 1030px;
     text-align: center;
     height: 24px;
     line-height: 24px!important;
+}
+.proof_tabrow.orderassign > div {
+    color: #999999;
 }
 .proof_ordnum {
     float: left;
@@ -102,7 +108,7 @@ input.proofsearch {
     margin-top: 5px;
     width: 60px;
     height: 20px;
-    color: #0000FF;
+    color: #0000FF!important;
 }
 .proof_brand_dat:hover {
     cursor: pointer;
@@ -264,7 +270,6 @@ select.proofhideproof {
     width: 28px;
 }
 .proof_note {
-    float: left;
     width: 40px;
 }
 .proof_note_dat {
@@ -278,6 +283,43 @@ select.proofhideproof {
 .proof_note_dat:hover {
     cursor: pointer;
 }
+.ordernun {
+    width: 50px;
+}
+.proof_ordernum_dat {
+    height: 24px;
+    line-height: 24px!important;
+    width: 76px;
+}
+.proof_ordernum_dat.edit {
+    cursor: pointer;
+}
+input.proof_order_edit {
+    width: 44px;
+    height: 19px;
+    font-size: 12px;
+}
+.prooforder-deeds {
+    text-align: center;
+    width: 32px;
+    float: right!important;
+    padding-top: 4px;
+}
+.prooforder-deeds i {
+    font-size: 13px;
+    cursor: pointer;
+}
+.prooforder-savedata, .prooforder-cancel {
+    text-align: center;
+    width: 15.5px;
+}
+.prooforder-savedata i {
+    color: #3b9806;
+}
+.prooforder-cancel i {
+    color: #d30a0a;
+}
+
 .artdata {
     height: 24px;
     padding-top: 4px;
@@ -349,7 +391,8 @@ select.proofhideproof {
 .quest_tablefoot {
     clear: both;
     float: left;
-    width: 980px;
+    /* width: 980px; */
+    width: 1031px;
     margin-bottom: 15px;
 }
 .quest_tablefoot_left {
@@ -362,7 +405,8 @@ select.proofhideproof {
     background: url("/img/art/tableend-messages-center.png") repeat-x scroll 0 0 transparent;
     float: left;
     height: 7px;
-    width: 795px;
+    /* width: 795px; */
+    width: 856px;
 }
 .quest_tablefoot_right {
     background: url("/img/art/tableend-messages-right.png") no-repeat scroll 0 0 transparent;

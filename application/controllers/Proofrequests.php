@@ -21,10 +21,13 @@ class Proofrequests extends MY_Controller
         if ($this->isAjax()) {
             $mdata=array();
             $error='';
-            $brand=$this->input->post('brand');
-            $search_val=$this->input->post('search');
-            $assign=$this->input->post('assign');
-            $show_deleted=$this->input->post('show_deleted',0);
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand','ALL');
+            $search_val = ifset($postdata,'search','');
+            $assign = ifset($postdata,'assign', 0);
+            $show_deleted = ifset($postdata,'show_deleted',0);
+            $prooforder = ifset($postdata,'prooforder', 0);
+
             $search=array();
             if ($assign) {
                 $search['assign']=$assign;
@@ -37,6 +40,9 @@ class Proofrequests extends MY_Controller
             }
             if ($show_deleted==1) {
                 $search['show_deleted']=1;
+            }
+            if ($prooforder==1) {
+                $search['prooforder'] = 1;
             }
             $this->load->model('artproof_model');
             $mdata['total_rec']=$this->artproof_model->get_count_proofs($search);
@@ -48,15 +54,18 @@ class Proofrequests extends MY_Controller
         if ($this->isAjax()) {
             $mdata=array();
             $error='';
-            $show_deleted=$this->input->post('show_deleted');
-            $offset=$this->input->post('offset',0);
-            $limit=$this->input->post('limit',10);
-            $order_by=$this->input->post('order_by');
-            $direct = $this->input->post('direction','desc');
-            $maxval=$this->input->post('maxval');
-            $brand=$this->input->post('brand');
-            $search_val=$this->input->post('search');
-            $assign=$this->input->post('assign');
+            $postdata = $this->input->post();
+
+            $show_deleted=ifset($postdata, 'show_deleted',0);
+            $offset = ifset($postdata, 'offset',0);
+            $limit = ifset($postdata, 'limit',10);
+            $order_by = ifset($postdata, 'order_by','');
+            $direct = ifset($postdata, 'direction','desc');
+            $maxval = ifset($postdata, 'maxval',0);
+            $brand = ifset($postdata, 'brand', 'ALL');
+            $search_val = ifset($postdata, 'search','');
+            $assign = ifset($postdata, 'assign', 1);
+            $prooforder = ifset($postdata, 'prooforder', 0);
             $search=array();
             if ($assign) {
                 $search['assign']=$assign;
@@ -69,6 +78,9 @@ class Proofrequests extends MY_Controller
             }
             if ($show_deleted==1) {
                 $search['show_deleted']=1;
+            }
+            if ($prooforder == 1) {
+                $search['prooforder'] = 1;
             }
 
             $ordoffset=$offset*$limit;
@@ -325,6 +337,56 @@ class Proofrequests extends MY_Controller
             }
             $this->ajaxResponse($mdata, $error);
         }
+    }
+
+    public function proof_order_edit() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Proof Request not found';
+            $email_id=$this->input->post('email_id');
+            $this->load->model('artproof_model');
+            $data=$this->artproof_model->get_proof_data($email_id);
+            if (ifset($data,'email_id',0)==$email_id) {
+                $error='';
+                $mdata['content']=$this->load->view('artrequest/prooforder_edit_view',['proof_order' => $data['proof_order'],'email_id' => $data['email_id']], TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+
+        }
+        show_404();
+    }
+
+    public function proof_order_save() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $email_id=$this->input->post('email_id');
+            $proof_order  = $this->input->post('proof_order');
+            $this->load->model('artproof_model');
+            $data=$this->artproof_model->update_proof_order($email_id, $proof_order);
+            $error = $data['msg'];
+            if ($data['result']==$this->success_result) {
+                $error='';
+                $mdata['content'] = $data['proof_order'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function proof_order_restore() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Proof Request not found';
+            $email_id=$this->input->post('email_id');
+            $this->load->model('artproof_model');
+            $data=$this->artproof_model->get_proof_data($email_id);
+            if (ifset($data,'email_id',0)==$email_id) {
+                $error='';
+                $mdata['content']=$data['proof_order'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 
     public function show_question_detail() {
