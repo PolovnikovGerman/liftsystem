@@ -92,8 +92,35 @@ class Database extends MY_Controller
                     $content_options['sbpagesview'] = $this->load->view('content/page_content_view', $bt_options, TRUE);
                     $head['styles'][] = array('style' => '/css/content/contentpage.css');
                     $head['scripts'][] = array('src' => '/js/content/sitecontent.js');
+                    // Content
+                    $head['styles'][]=array('style'=>'/css/content/customshape_page.css');
+                    $head['scripts'][]=array('src'=>'/js/content/custom_shaped.js');
+                    $head['styles'][]=array('style'=>'/css/content/extraservices.css');
+                    $head['scripts'][]=array('src'=>'/js/content/extraservices.js');
+                    $head['styles'][]=array('style'=>'/css/content/aboutus.css');
+                    $head['scripts'][]=array('src'=>'/js/content/aboutus.js');
+                    $head['styles'][]=array('style'=>'/css/content/faqpage.css');
+                    $head['scripts'][]=array('src'=>'/js/content/faqpage.js');
+                    $head['styles'][]=array('style'=>'/css/content/contactus.css');
+                    $head['scripts'][]=array('src'=>'/js/content/contactus.js');
+                    $head['styles'][]=array('style'=>'/css/content/terms.css');
+                    $head['scripts'][]=array('src'=>'/js/content/terms.js');
+                    $head['scripts'][]=array('src'=>'/js/adminpage/uEditor.js');
+                    $head['styles'][]=array('style'=>'/css/page_view/uEditor.css');
                 } elseif ($row['item_link']=='#btpages') {
                     if ($pagescontent==0) {
+                        $head['styles'][]=array('style'=>'/css/content/customshape_page.css');
+                        $head['scripts'][]=array('src'=>'/js/content/custom_shaped.js');
+                        $head['styles'][]=array('style'=>'/css/content/extraservices.css');
+                        $head['scripts'][]=array('src'=>'/js/content/extraservices.js');
+                        $head['styles'][]=array('style'=>'/css/content/aboutus.css');
+                        $head['scripts'][]=array('src'=>'/js/content/aboutus.js');
+                        $head['styles'][]=array('style'=>'/css/content/faqpage.css');
+                        $head['scripts'][]=array('src'=>'/js/content/faqpage.js');
+                        $head['styles'][]=array('style'=>'/css/content/contactus.css');
+                        $head['scripts'][]=array('src'=>'/js/content/contactus.js');
+                        $head['styles'][]=array('style'=>'/css/content/terms.css');
+                        $head['scripts'][]=array('src'=>'/js/content/terms.js');
                         $head['scripts'][]=array('src'=>'/js/adminpage/uEditor.js');
                         $head['styles'][]=array('style'=>'/css/page_view/uEditor.css');
                     }
