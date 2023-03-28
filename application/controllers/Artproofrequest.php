@@ -681,7 +681,11 @@ class Artproofrequest extends MY_Controller
                     $subj='BLUETRACK Art proof ';
                     $message='';
                 }
-                $artemail=$this->config->item('art_dept_email');
+                if ($artdata['brand']=='SR') {
+                    $artemail=$this->config->item('art_srdept_email');
+                } else {
+                    $artemail=$this->config->item('art_dept_email');
+                }
 
                 $options=array(
                     'artwork_id'=>$artdata['artwork_id'],

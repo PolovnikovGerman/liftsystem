@@ -2993,7 +2993,12 @@ class Leadorder extends MY_Controller
                 if ($res['result']==$this->error_result) {
                     $error=$res['msg'];
                 } else {
-                    $artemail = $this->config->item('art_dept_email');
+                    $order = $leadorder['order'];
+                    if ($order['brand']=='SR') {
+                        $artemail = $this->config->item('art_srdept_email');
+                    } else {
+                        $artemail = $this->config->item('art_dept_email');
+                    }
                     $options = array(
                         'artwork_id' => $res['artwork_id'],
                         'from' => $artemail,
