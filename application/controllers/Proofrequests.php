@@ -348,7 +348,7 @@ class Proofrequests extends MY_Controller
             $data=$this->artproof_model->get_proof_data($email_id);
             if (ifset($data,'email_id',0)==$email_id) {
                 $error='';
-                $mdata['content']=$this->load->view('artrequest/prooforder_edit_view',['proof_order' => $data['proof_order'],'email_id' => $data['email_id']], TRUE);
+                $mdata['content']=$this->load->view('artrequest/edit_orderdeeds_view',['email_id' => $data['email_id']], TRUE);
             }
             $this->ajaxResponse($mdata, $error);
 
@@ -366,7 +366,11 @@ class Proofrequests extends MY_Controller
             $error = $data['msg'];
             if ($data['result']==$this->success_result) {
                 $error='';
-                $mdata['content'] = $data['proof_order'];
+                $mdata['content'] = $this->load->view('artrequest/edit_ordernum_view',['email_id' => $email_id], TRUE);
+                $mdata['orderrow'] = 0;
+                if (!empty($proof_order)) {
+                    $mdata['orderrow'] = 1;
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -382,7 +386,12 @@ class Proofrequests extends MY_Controller
             $data=$this->artproof_model->get_proof_data($email_id);
             if (ifset($data,'email_id',0)==$email_id) {
                 $error='';
-                $mdata['content']=$data['proof_order'];
+                $mdata['prooforder']=$data['proof_order'];
+                $mdata['content'] = $this->load->view('artrequest/edit_ordernum_view',['email_id' => $email_id], TRUE);
+                $mdata['orderrow'] = 0;
+                if (!empty($data['proof_order'])) {
+                    $mdata['orderrow'] = 1;
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }

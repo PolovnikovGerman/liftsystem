@@ -319,7 +319,10 @@ input.proof_order_edit {
 .prooforder-cancel i {
     color: #d30a0a;
 }
-
+.prooforder-editdata {
+    width: 31px;
+    text-align: center;
+}
 .artdata {
     height: 24px;
     padding-top: 4px;
