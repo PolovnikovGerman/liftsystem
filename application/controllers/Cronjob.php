@@ -613,6 +613,7 @@ Class Cronjob extends CI_Controller
                 $email_cc=array(
                     $this->config->item('sage_email'),
                     $this->config->item('taisenkatakura_email'),
+                    $brand=='SR' ? $this->config->item('art_srdept_email') : $this->config->item('art_dept_email'),
                     $this->config->item('art_dept_email'),
                     $this->config->item('developer_email'),
                 );
