@@ -243,6 +243,11 @@ function init_prooflistmanage() {
         var mailid=$(this).data('proofid');
         proof_include(mailid);
     })
+    $(".proof_ordernum_dat.edit").unbind('click').click(function (){
+        var mailid=$(this).data('proofid');
+        proof_include(mailid);
+
+    });
 }
 
 function delete_proof(proof_id, proofnum) {

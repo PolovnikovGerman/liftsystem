@@ -35,7 +35,7 @@
             </div>
         </div>
         <div class="proof_note_dat" data-proofid="<?=$row['email_id']?>" <?=($row['note_title']=='' ? '' : 'data-content="'.$row['note_title'].'"')?>><?=$row['proof_note']?></div>
-        <div class="proof_ordernum_dat"><?=$row['order_num']?></div>
+        <div class="proof_ordernum_dat <?=$row['orderedit']?>" data-proofid="<?=$row['email_id']?>"><?=$row['proof_order']?></div>
     </div>
     <?php $nrow++;?>
 <?php } ?>
