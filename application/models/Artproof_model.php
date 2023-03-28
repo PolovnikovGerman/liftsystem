@@ -35,10 +35,16 @@ Class Artproof_model extends MY_Model
         $this->db->from('ts_emails e');
         $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
         $this->db->where('e.email_type', $this->EMAIL_TYPE);
-        if (isset($options['show_deleted']) && $options['show_deleted']==1) {
-            $this->db->where('e.email_status != ',$this->order_status);
+        if (ifset($options, 'prooforder', 0)==1) {
+            $this->db->join('v_order_statuses vo','vo.order_id=e.email_id and vo.status_type="R"','left');
+            $this->db->where('e.email_status != ',$this->void_status);
+            $this->db->where('vo.order_approved',1);
         } else {
-            $this->db->where('e.email_status < ',$this->order_status);
+            if (isset($options['show_deleted']) && $options['show_deleted']==1) {
+                $this->db->where('e.email_status != ',$this->order_status);
+            } else {
+                $this->db->where('e.email_status < ',$this->order_status);
+            }
         }
 
         if (isset($options['search'])) {
@@ -430,10 +436,13 @@ Class Artproof_model extends MY_Model
     public function get_artproofs($search,$order_by,$direct,$limit,$offset,$maxval) {
         $this->db->select('e.*,l.lead_number, l.lead_id,vo.order_proj_status,artwork_alert(e.email_id, "email") as vect_alert,
             artwok_bypassredraw(e.email_id,"R") as redraw_bypass',FALSE);
+        // $this->db->select('o.order_num');
         $this->db->from('ts_emails e');
         $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
         $this->db->join('ts_leads l','l.lead_id=lem.lead_id','left');
         $this->db->join('v_order_statuses vo','vo.order_id=e.email_id and vo.status_type="R"','left');
+        // $this->db->join('ts_artworks a','a.mail_id=e.email_id');
+        // $this->db->join('ts_orders o','o.order_id=a.order_id','left');
         $this->db->where('e.email_type', $this->EMAIL_TYPE);
         if (isset($search['search'])) {
             $this->db->like('upper(concat(coalesce(e.email_sender,""), coalesce(e.email_sendermail,""), coalesce(e.email_sendercompany,""),e.proof_num)) ',  strtoupper($search['search']));
@@ -449,10 +458,15 @@ Class Artproof_model extends MY_Model
                 $this->db->where_in('e.brand', ['BT','SB']);
             }
         }
-        if (isset($search['show_deleted'])) {
-            $this->db->where('e.email_status != ',3);
+        if (ifset($search,'prooforder',0)==1) {
+            $this->db->where('e.email_status != ',$this->void_status);
+            $this->db->where('vo.order_approved',1);
         } else {
-            $this->db->where('e.email_status < ',3);
+            if (isset($search['show_deleted'])) {
+                $this->db->where('e.email_status != ',3);
+            } else {
+                $this->db->where('e.email_status < ',3);
+            }
         }
         $this->db->limit($limit,$offset);
         $this->db->order_by($order_by,$direct);
@@ -563,7 +577,7 @@ Class Artproof_model extends MY_Model
             }
             $row['assigned']=($row['lead_id']=='' ? 'leadassign' : '');
             $row['email_sender']=($row['email_sender']=='' ? '&nbsp;' : $row['email_sender']);
-            $row['rowclass']=($row['lead_id']=='' ? '' : 'leadentered');
+            $row['rowclass'] = ($row['lead_id']=='' ? '' : 'leadentered');
             $row['lead_number']=($row['lead_number']=='' ? '' : 'L'.$row['lead_number']);
             $row['leadid']=($row['lead_id']=='' ? 0 : $row['lead_id']);
 
@@ -584,7 +598,10 @@ Class Artproof_model extends MY_Model
             } else {
                 $row['inclicon']=$nonincl_icon;
             }
-
+            $row['orderedit'] = '';
+            if ($row['order_proj_status']=='01_notplaced') {
+                $row['orderedit'] = $this->load->view('artrequest/prooforder_edit_view',['proof_order' => $row['proof_order'], 'email_id' => $row['email_id']], TRUE);
+            }
             $out[]=$row;
             $ordnum--;
         }
@@ -995,6 +1012,22 @@ Class Artproof_model extends MY_Model
                 $row['itemname_class']="font-weight:bold;";
             }
             $out[]=$row;
+        }
+        return $out;
+    }
+
+    public function update_proof_order($email_id, $proof_order) {
+        $out=['result' => $this->error_result, 'msg' => 'Proof Request not Found'];
+        $this->db->select('count(*) as cnt');
+        $this->db->from('ts_emails');
+        $this->db->where('email_id', $email_id);
+        $res = $this->db->get()->row_array();
+        if ($res['cnt']==1) {
+            $out['result'] = $this->success_result;
+            $this->db->where('email_id', $email_id);
+            $this->db->set('proof_order', $proof_order);
+            $this->db->update('ts_emails');
+            $out['proof_order'] = $proof_order;
         }
         return $out;
     }
