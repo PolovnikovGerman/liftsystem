@@ -577,7 +577,7 @@ Class Artproof_model extends MY_Model
             }
             $row['assigned']=($row['lead_id']=='' ? 'leadassign' : '');
             $row['email_sender']=($row['email_sender']=='' ? '&nbsp;' : $row['email_sender']);
-            $row['rowclass'] = ($row['lead_id']=='' ? '' : 'leadentered');
+            $row['rowclass'] = !empty($row['proof_order']) ? 'orderassign' : ($row['lead_id']=='' ? '' : 'leadentered');
             $row['lead_number']=($row['lead_number']=='' ? '' : 'L'.$row['lead_number']);
             $row['leadid']=($row['lead_id']=='' ? 0 : $row['lead_id']);
 
