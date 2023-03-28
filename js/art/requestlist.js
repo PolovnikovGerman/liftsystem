@@ -11,6 +11,9 @@ function init_proofdata() {
     $("select#hidedelproofs").unbind('change').change(function(){
         search_proofs();
     })
+    $("#orderproof_status").unbind('change').change(function (){
+        search_proofs();
+    });
     /* Enter as start search */
     $("input#proofsearch").keypress(function(event){
         if (event.which == 13) {
@@ -50,12 +53,17 @@ function search_proofs() {
     if (search==empty_proofsearch) {
         search='';
     }
-    var assign=$("select#proof_status").val();
-    var brand=$("input#proofrequestsbrand").val();
-    // var showdel=$("input#hidedelproofs").prop('checked');
-    var deleted=$("select#hidedelproofs").val();
+    var params = new Array();
+    params.push({name: 'search', value: search});
+    params.push({name: 'assign', value: $("select#proof_status").val()});
+    params.push({name: 'brand', value: $("input#proofrequestsbrand").val()});
+    params.push({name: 'show_deleted', value: $("select#hidedelproofs").val()});
+    params.push({name: 'prooforder', value: $("#orderproof_status").val()});
+    // var assign=$("select#proof_status").val();
+    // var brand=$("input#proofrequestsbrand").val();
+    // var deleted=$("select#hidedelproofs").val();
     var url=main_proofurl+"/proof_count";
-    $.post(url, {'assign':assign,'search':search, 'brand':brand,'show_deleted':deleted}, function(response){
+    $.post(url, params, function(response){
         if (response.errors=='') {
             $("input#totalproof").val(response.data.total_rec);
             initProofPagination();
@@ -104,6 +112,7 @@ function pageProofsCallback(page_index) {
     params.push({name:'order_by',value:$("#orderproof").val()});
     params.push({name:'direction',value:$("#direcproof").val()});
     params.push({name:'hideart',value:$("#hideartproof").val()});
+    params.push({name: 'prooforder', value: $("#orderproof_status").val()});
 
     var showdel=$("input#hidedelproofs").prop('checked');
     var deleted=$("select#hidedelproofs").val();
@@ -197,6 +206,10 @@ function init_prooflistmanage() {
         var mailid=$(this).data('proofid');
         proof_include(mailid);
     })
+    $(".proof_ordernum_dat.edit").unbind('click').click(function (){
+        var mailid=$(this).data('proofid');
+        init_prooforder_edit(mailid);
+    });
 }
 
 function delete_proof(proof_id, proofnum) {
@@ -382,3 +395,47 @@ function proof_include(mailid) {
         }
     }, 'json');
 }
+
+function init_prooforder_edit(mailid) {
+    var url = main_proofurl+"/proof_order_edit";
+    $.post(url, {'email_id': mailid}, function (response){
+        if (response.errors=='') {
+            $("div.proof_ordernum_dat[data-proofid="+mailid+"]").empty().html(response.data.content);
+            $(".proof_ordernum_dat").unbind('click');
+            $(".prooforder-savedata").unbind('click').click(function(){
+                var ordernum = $(".proof_order_edit").val();
+                save_prooforder(mailid, ordernum);
+            });
+            $(".prooforder-cancel").unbind('click').click(function (){
+                cancel_prooforder(mailid);
+            });
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function save_prooforder(mailid, ordernum) {
+    var url = main_proofurl+"/proof_order_save";
+    $.post(url, {'email_id': mailid, 'proof_order': ordernum}, function (response){
+        if (response.errors=='') {
+            $("div.proof_ordernum_dat[data-proofid="+mailid+"]").empty().html(response.data.content);
+            init_prooflistmanage();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function cancel_prooforder(mailid) {
+    var url = main_proofurl+"/proof_order_restore";
+    $.post(url, {'email_id': mailid}, function (response){
+        if (response.errors=='') {
+            $("div.proof_ordernum_dat[data-proofid="+mailid+"]").empty().html(response.data.content);
+            init_prooflistmanage();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+//

@@ -50,40 +50,10 @@ class Art extends MY_Controller {
         foreach ($menu as $row) {
             if ($row['item_link']=='#taskview') {
                 // Taks View
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['taskview'] = $this->_prepare_task_view($brand);
             } elseif ($row['item_link']=='#orderlist') {
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['orderlist'] = $this->_prepare_orderlist_view($brand);
             } elseif ($row['item_link']=='#requestlist') {
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['requestlist'] = $this->_prepare_requestlist_view($brand);
             }
         }
