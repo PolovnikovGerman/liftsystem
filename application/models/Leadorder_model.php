@@ -8078,12 +8078,16 @@ Class Leadorder_model extends My_Model {
         $shipadr=array();
         $idx=0;
         $shipdate=$arivedate=0;
+        $shipblind = 0;
         if (count($shipping_address)>1) {
             array_push($shipadr, 'Shipping/shipped to '.count($shipping_address).' addresses');
         } else {
             foreach ($shipping_address as $row) {
                 if ($idx==0) {
                     // array_push($shipadr, $order['customer_name']);
+                }
+                if (intval($row['ship_blind'])>0) {
+                    $shipblind = 1;
                 }
                 if (!empty($row['ship_contact'])) {
                     array_push($shipadr, $row['ship_contact']);
@@ -8168,6 +8172,7 @@ Class Leadorder_model extends My_Model {
             'balance'=>  MoneyOutput($balance),
             'tax_term'=>($order['order_date']<=$this->config->item('datenewtax') ? $this->config->item('salestax') : $this->config->item('salesnewtax')),
             'brand' => $order['brand'],
+            'shipblind' => $shipblind,
         );
 
         // $html=$this->load->view('leadorderdetails/docs/invoice_view', $options, TRUE);
@@ -9009,6 +9014,11 @@ Class Leadorder_model extends My_Model {
         $billadrYPos = 71;
         $billadrWidth = 0;
 
+        if (ifset($options,'shipblind',0)==1) {
+
+        } else {
+            
+        }
         $shipadrImage = FCPATH.'/img/invoice/shipto_head_bg.eps';
         $shipadrXPos = 112;
         $shipadrYPos = 71;
