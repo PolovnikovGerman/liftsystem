@@ -16,8 +16,8 @@
         <a class="find_it" id="find_proof" href="javascript:void(0);">Search It</a>
         <a class="find_it" id="clear_proof" href="javascript:void(0);">Clear</a>
         <select id="orderproof_status" class="proof_status_select">
-            <option value="0">Not Approved</option>
-            <option value="1">Approved</option>
+            <option value="0">Display All</option>
+            <option value="1">Display Approved</option>
         </select>
     </div>
     <div class="proof_pagination" id="proofpagination"></div>
