@@ -9015,11 +9015,11 @@ Class Leadorder_model extends My_Model {
         $billadrWidth = 0;
 
         if (ifset($options,'shipblind',0)==1) {
-
+            $shipadrImage = FCPATH.'/img/invoice/shipblindto_head_bg.eps';
         } else {
-            
+            $shipadrImage = FCPATH.'/img/invoice/shipto_head_bg.eps';
         }
-        $shipadrImage = FCPATH.'/img/invoice/shipto_head_bg.eps';
+
         $shipadrXPos = 112;
         $shipadrYPos = 71;
         $shipadrWidth = 0;
