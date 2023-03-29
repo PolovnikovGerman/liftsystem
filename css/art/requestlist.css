@@ -108,7 +108,7 @@ input.proofsearch {
     margin-top: 5px;
     width: 60px;
     height: 20px;
-    color: #0000FF!important;
+    color: #0000FF;
 }
 .proof_brand_dat:hover {
     cursor: pointer;
@@ -204,6 +204,10 @@ select.proofhideproof {
     float: left;
     width: 22px;
     text-align: center;
+}
+.prfart_customer-maildat i {
+    font-size: 15px;
+    color: #646464;
 }
 .prfart_customer-data {
     float: left;
