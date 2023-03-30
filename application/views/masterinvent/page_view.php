@@ -116,10 +116,44 @@
                 </div>
                 <!-- End Left menu -->
                 <!-- Express -->
-                <div class="mastinvent_header_express"></div>
-                <!-- Express -->
+                <div class="mastinvent_header_express">
+                    <div class="datarow">
+                        <div class="mastinvent_express_manage">Express [+]</div>
+                    </div>
+                    <div class="datarow">
+                        <div class="mastinvent_express_slide">
+                            <div class="mastinvent_express_slideleft">
+                                <img src="/img/masterinvent/container_nonactive_left.png"/>
+                            </div>
+                        </div>
+                        <div class="mastinvent_express_contentarea">&nbsp;</div>
+                        <div class="mastinvent_express_slide">
+                            <div class="mastinvent_express_slideright">
+                                <img src="/img/masterinvent/container_nonactive_right.png"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Express -->
                 <!-- Container -->
-                <div class="mastinvent_header_container"></div>
+                <div class="mastinvent_header_container">
+                    <div class="datarow">
+                        <div class="mastinvent_container_manage">Container [+]</div>
+                    </div>
+                    <div class="datarow">
+                        <div class="mastinvent_container_slide">
+                            <div class="mastinvent_container_slideleft">
+                                <img src="/img/masterinvent/container_nonactive_left.png"/>
+                            </div>
+                        </div>
+                        <div class="mastinvent_container_contentarea">&nbsp;</div>
+                        <div class="mastinvent_container_slide">
+                            <div class="mastinvent_container_slideright">
+                                <img src="/img/masterinvent/container_nonactive_right.png"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- Container -->
                 <!-- Right part -->
                 <div class="mastinvent_header_right">
@@ -129,6 +163,7 @@
                     </div>
                     <div class="datarow">
                         <div class="masterinventtablehead">
+                            <div class="masterinvemptyspace">&nbsp;</div>
                             <div class="masterinventavgprice">Contract</div>
                             <div class="masterinventavgprice">Avg Price</div>
                             <div class="masterinventhistory">&nbsp;</div>

@@ -149,12 +149,6 @@ class Database extends MY_Controller
                     $sr_options['srhomeview'] = $this->load->view('content/template_view',['link'=>'srhomeview'], TRUE);
                     $sr_options['sraboutusview'] = $this->load->view('content/template_view',['link'=>'sraboutusview'], TRUE);
                     $sr_options['srcontactusview'] = $this->load->view('content/template_view',['link'=>'srcontactusview'], TRUE);
-                    /*
-                    $sr_options['sbcustomshappedview'] = $this->load->view('content/template_view',['link'=>'sbcustomshappedview'], TRUE);
-                    $sr_options['sbserviceview'] = $this->load->view('content/template_view',['link'=>'sbserviceview'], TRUE);
-                    $sr_options['sbfaqview'] = $this->load->view('content/template_view',['link'=>'sbfaqview'], TRUE);
-                    $sr_options['sbtermsview'] = $this->load->view('content/template_view',['link'=>'sbtermsview'], TRUE);
-                    */
                     $submenu = [];
                     $submenu[] = ['item_link' => '#srhomeview', 'item_name' => 'Home Page'];
                     $submenu[] = ['item_link' => '#sraboutusview', 'item_name' => 'About Us'];

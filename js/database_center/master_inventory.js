@@ -1,5 +1,7 @@
 function init_master_inventory() {
     init_master_inventorydata();
+    init_master_containers();
+    init_master_express();
     init_master_inventorycontent();
 }
 
