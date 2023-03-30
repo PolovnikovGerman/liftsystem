@@ -2343,6 +2343,7 @@ class Leadquote_model extends MY_Model
         $pdf->setFillcolor(230, 230, 230);
         $pdf->SetTextColor(0,0,0);
         $cellheight = 4.8;
+        $tablebreak = 0;
         foreach ($items as $item) {
             $colors = $item['colors'];
             foreach ($colors as $color) {
@@ -2360,7 +2361,12 @@ class Leadquote_model extends MY_Model
                     $precesion = 3;
                 }
                 $pdf->Cell($colWidth[0], $cellheight, $item['item_number'], 'LR', 0, 'L', $fillrow);
-                $pdf->Cell($colWidth[1], $cellheight, $color['item_description'] . ' ' . $color['item_color'], 'LR', 0, 'L', $fillrow);
+                if (empty($color['item_color'])) {
+                    $pdf->Cell($colWidth[1], $cellheight, $color['item_description'] , 'LR', 0, 'L', $fillrow);
+                } else {
+                    $pdf->Cell($colWidth[1], $cellheight, $color['item_description'] . ' - ' . $color['item_color'], 'LR', 0, 'L', $fillrow);
+                }
+
                 $pdf->Cell($colWidth[2], $cellheight, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[3], $cellheight, number_format($color['item_price'], $precesion), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
@@ -2443,6 +2449,22 @@ class Leadquote_model extends MY_Model
         $pdf->Cell($colWidth[4], 7, '', 'LR', 0,'R', $fillrow);
         $numpp++;
         $yStart+=7;
+        if ($yStart > 220) {
+            $pdf->AddPage();
+            $yStart = 15;
+            $tablebreak = 1;
+            $pdf->setFillColor(128, 128, 128);
+            $pdf->SetTextColor(255, 255, 255);
+            $pdf->SetXY($startPageX, $yStart);
+            $pdf->Cell($colWidth[0], 6, 'Item',1,0,'C', true);
+            $pdf->Cell($colWidth[1], 6, 'Description',1, 0,'C', true);
+            $pdf->Cell($colWidth[2], 6, 'Qty', 1, 0,'C', true);
+            $pdf->Cell($colWidth[3], 6, 'Price (ea)', 1, 0, 'C', true);
+            $pdf->Cell($colWidth[4], 6, 'Total:', 1, 0,'C', true);
+            $yStart+=6;
+            $pdf->setFillcolor(230, 230, 230);
+            $pdf->SetTextColor(0,0,0);
+        }
         if (!empty($quote['quote_repcontact'])) {
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->SetXY($startPageX + $colWidth[0], $yStart);
@@ -2461,7 +2483,11 @@ class Leadquote_model extends MY_Model
         $rowHeight = 2;
         if ($yStart < 172 ) {
             // && empty($quote['quote_note'])
-            $rowHeight = 172 - $yStart;
+            if ($tablebreak = 0) {
+                $rowHeight = 172 - $yStart;
+            } else {
+                $rowHeight = 15;
+            }
         }
         $pdf->SetXY($startPageX, $yStart);
         $fillrow=($numpp%2)==0 ? 1 : 0;
