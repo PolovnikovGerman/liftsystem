@@ -1,9 +1,5 @@
 function init_btitemslist_view() {
     initItemsListPagination();
-    $(".itemlist-tablehead").find(".sortable").unbind('click').click(function () {
-        var fld=$(this).data('sortcell');
-        // sort_itemlist(fld, brand);
-    });
     $(".itemcategoryfilter").unbind('change').change(function () {
         var newcat = $(this).val();
         $(".btcategorybtn").removeClass('active');
@@ -41,6 +37,10 @@ function init_btitemslist_view() {
     });
     $(".itemmisinfofilter").unbind('change').change(function(){
         search_itemlists();
+    });
+    $(".tabledataheader").find('div.sortable').unbind('click').click(function (){
+        var fld = $(this).data('sortcell');
+        sort_btitems(fld);
     });
 }
 
@@ -149,4 +149,27 @@ function edit_btitem(item) {
             show_error(response);
         }
     },'json');
+}
+
+function sort_btitems(fld) {
+    var cursort = $('#btitemsorder').val();
+    var curdirec = $('#btitemsorderdirect').val();
+    $(".tabledataheader").find("div.ascsort").remove();
+    $(".tabledataheader").find("div.descsort").remove();
+    if (cursort==fld) {
+        // Change direction
+        if (curdirec=='asc') {
+            $(".tabledataheader").find('div[data-sortcell="'+fld+'"]').append('<div class="descsort">&nbsp;</div>');
+            $('#btitemsorderdirect').val('desc');
+        } else {
+            $(".tabledataheader").find('div[data-sortcell="'+fld+'"]').append('<div class="ascsort">&nbsp;</div>');
+            $('#btitemsorderdirect').val('asc');
+        }
+    } else {
+        $(".tabledataheader").find('div[data-sortcell="'+fld+'"]').append('<div class="ascsort">&nbsp;</div>');
+        $('#btitemsorderdirect').val('asc');
+        $('#btitemsorder').val(fld);
+    }
+    var pageindex = $('#btitemspagenum').val();
+    pageBTItemsListCallback(pageindex);
 }
