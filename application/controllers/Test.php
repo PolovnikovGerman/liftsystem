@@ -2084,4 +2084,21 @@ class Test extends CI_Controller
         }
         echo 'Quote # updated '.PHP_EOL;
     }
+
+    public function exponboat() {
+        $this->db->select('b.*');
+        $this->db->from('ts_printshop_onboats b');
+        $this->db->join('ts_inventory_colors c','c.inventory_color_id=b.printshop_color_id');
+        $onboats = $this->db->get()->result_array();
+
+        foreach ($onboats as $onboat) {
+            $this->db->set('inventory_color_id', $onboat['printshop_color_id']);
+            $this->db->set('onroutestock', $onboat['onroutestock']);
+            $this->db->set('onboat_date', $onboat['onboat_date']);
+            $this->db->set('onboat_container', $onboat['onboat_container']);
+            $this->db->set('onboat_status', $onboat['onboat_status']);
+            $this->db->insert('ts_inventory_onboats');
+        }
+        echo 'Ready '.PHP_EOL;
+    }
 }

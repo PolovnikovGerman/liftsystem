@@ -11,7 +11,7 @@ class Inventory_model extends MY_Model
     private $bt_label = 'Bluetrack Legacy';
     private $sb_label = 'StressBalls.com';
     private $sr_label = 'StressRelievers';
-
+    private $empty_html_content='&nbsp;';
     function __construct()
     {
         parent::__construct();
@@ -906,4 +906,87 @@ class Inventory_model extends MY_Model
         }
         return $out;
     }
+
+    public function get_inventory_totals($inventory_type_id) {
+        // Lets go
+        $this->db->select('sum(suggeststock) as suggeststock, sum(suggeststock*price) as maxtotal');
+        $this->db->from('ts_inventory_colors');
+        $res=$this->db->get()->row_array();
+        $maxval=intval($res['suggeststock']);
+        $maxtotal = floatval($res['maxtotal']);
+
+        $income=$this->inventory_income($inventory_type_id);
+        $outcome=$this->inventory_outcome($inventory_type_id);
+        $reserved=$this->inventory_reserved($inventory_type_id);
+
+        $instock=$income-$outcome;
+
+        $available=$instock-$reserved;
+
+        $stockperc=$this->empty_html_content;
+        if ($maxval!=0) {
+            $stockperc=round($instock/$maxval*100,0).'%';
+        }
+        // $availsum
+        $out=array(
+            'itempercent'=>$stockperc,
+            'instock'=> $instock,
+            'reserved'=> $reserved,
+            'available'=> $available,
+            //'total_max'=>'href="/fulfillment/max_total_percent/"',
+            'maxsum'=>$maxtotal,
+            'max'=> $maxval,
+
+        );
+        return $out;
+    }
+
+    public function inventory_income($inventory_type_id) {
+        $this->db->select('sum(i.income_qty) as qty_in');
+        $this->db->from('ts_inventory_incomes i');
+        $this->db->join('ts_inventory_colors c','i.inventory_color_id=c.inventory_color_id');
+        $this->db->join('ts_inventory_items itm','itm.inventory_item_id=c.inventory_item_id');
+        $this->db->where('itm.inventory_type_id', $inventory_type_id);
+        $res = $this->db->get()->row_array();
+        return intval($res['qty_in']);
+    }
+
+    public function inventory_outcome($inventory_type_id) {
+        $this->db->select('sum(o.outcome_qty) as qty_out');
+        $this->db->from('ts_inventory_outcomes o');
+        $this->db->join('ts_inventory_colors c','c.inventory_color_id=o.inventory_color_id');
+        $this->db->join('ts_inventory_items itm','itm.inventory_item_id=c.inventory_item_id');
+        $this->db->where('itm.inventory_type_id', $inventory_type_id);
+        $res = $this->db->get()->row_array();
+        return intval($res['qty_out']);
+    }
+
+    public function inventory_reserved($inventory_type_id) {
+        return 0;
+//        $this->db->select('sum(i.item_qty) as reserved, count(i.order_itemcolor_id) as cnt');
+//        $this->db->from('ts_order_itemcolors i');
+//        $this->db->join('ts_order_items im','im.order_item_id=i.order_item_id');
+//        $this->db->join('ts_orders o','o.order_id=im.order_id');
+//        $this->db->join('ts_printshop_colors c','c.printshop_item_id=i.printshop_item_id');
+//        $this->db->where('o.order_cog', null);
+//
+//        $reserv=$this->db->get()->row_array();
+//        $reserved = 0;
+//        if ($reserv['cnt']>0) {
+//            $reserved = intval($reserv['reserved']);
+//        }
+//        return $reserved;
+    }
+
+    public function get_data_onboat($inventory_type_id) {
+        $this->db->select('b.onboat_container, b.onboat_status, b.onboat_date, sum(b.onroutestock) as onboat_total');
+        $this->db->from('ts_inventory_onboats b');
+        $this->db->join('ts_inventory_colors c','b.inventory_color_id=c.inventory_color_id');
+        $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
+        $this->db->where('i.inventory_type_id', $inventory_type_id);
+        $this->db->group_by('b.onboat_container, b.onboat_status, b.onboat_date');
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
+
 }

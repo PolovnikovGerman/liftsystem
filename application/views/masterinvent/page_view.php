@@ -51,7 +51,7 @@
             <div class="datarow">
                 <div class="totalinvent">
                     <div class="totalinventlabel">Total Value:</div>
-                    <div class="totalinventvalue"><?=!empty($total) ? MoneyOutput($total) : '&nbsp;'?></div>
+                    <div class="totalinventvalue"><?=$total?></div>
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
                         <div class="inventsectionhead"><?=$invtype['type_short']?> - <?=$invtype['type_name']?></div>
                         <div class="inventsectionvalue">
                             <div class="inventsectionvalue_label">Value:</div>
-                            <div class="inventsectionvalue_data"><?=empty($invtype['value']) ? '&nbsp;' : MoneyOutput($invtype['value'])?></div>
+                            <div class="inventsectionvalue_data"><?=$invtype['value']?></div>
                         </div>
                     </div>
                 </div>
@@ -79,14 +79,14 @@
                 <div class="mastinvent_header_left">
                     <div class="datarow">
                         <div class="labeltxt">Max Value:</div>
-                        <div class="valuedata" id="maximuminvent">$346,004.50</div> <!-- <?// echo MoneyOutput($maxsum)?> -->
+                        <div class="valuedata" id="maximuminvent"><?=$maxtotal?></div> <!-- <?// echo MoneyOutput($maxsum)?> -->
                     </div>
                     <div class="datarow">
                         <div class="addlabeltxt">Add’l Amnt:</div>
                         <div class="">
-                            <input class="inventadd" value="">
+                            <input class="inventadd" value="<?=$addcost?>"/>
                         </div>
-                        <div class="addlabeltxt">ea  ($53,339)</div>
+                        <div class="addlabeltotal">ea  (<?=$addval?>)</div>
                     </div>
                     <div class="datarow">
                         <div class="masterinventtotals">
@@ -104,11 +104,11 @@
                                 <img src="/img/masterinvent/addinvitem_bg.png" alt="Add"/>
                             </div>
                             <div class="masterinventdescrip">Item</div>
-                            <div class="masterinventpercent"></div>
-                            <div class="masterinventorymaximum">Maximum</div>
-                            <div class="masterinventinstock"></div>
-                            <div class="masterinventreserv"></div>
-                            <div class="masterinventavailab"></div>
+                            <div class="masterinventpercent"><?=$itempercent?></div>
+                            <div class="masterinventorymaximum"><?=$maxval?></div>
+                            <div class="masterinventinstock"><?=$instock?></div>
+                            <div class="masterinventreserv"><?=$reserved?></div>
+                            <div class="masterinventavailab"><?=$available?></div>
                             <div class="masterinventhistory">&nbsp;</div>
                             <div class="masterinventunit">Unit</div>
                         </div>
@@ -146,7 +146,9 @@
                                 <img src="/img/masterinvent/container_nonactive_left.png"/>
                             </div>
                         </div>
-                        <div class="mastinvent_container_contentarea">&nbsp;</div>
+                        <div class="mastinvent_container_contentarea">
+                            <?=$container_head?>
+                        </div>
                         <div class="mastinvent_container_slide">
                             <div class="mastinvent_container_slideright">
                                 <img src="/img/masterinvent/container_nonactive_right.png"/>

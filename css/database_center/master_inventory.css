@@ -226,6 +226,13 @@
     font-size: 12px;
     width: 69px;
 }
+.mastinvent_header_left .addlabeltotal {
+    height: 16px;
+    line-height: 16px;
+    color: #ffffff;
+    font-size: 12px;
+    /* width: 69px; */
+}
 input.inventadd {
     height: 16px;
     width: 46px;
@@ -234,7 +241,7 @@ input.inventadd {
 }
 .masterinventexport {
     /* padding-top: 5px; */
-    margin-top: 72px;
+    margin-top: 83px;
     float: right!important;
     color: #ffffff;
     /* font-size: 14px; */
@@ -252,7 +259,7 @@ input.inventadd {
     color: #ffffff;
     /* font-size: 14px; */
     font-size: 12px;
-    margin-top: 45px;
+    margin-top: 56px;
 }
 .masterinventtotals > div {
     text-align: center;
@@ -1484,9 +1491,10 @@ input.colorvendorpriceinpt {
 }
 /* Container */
 .mastinvent_header_container {
-    width: 270px;
+    /* width: 270px; */
+    width: 283px;
     margin-left: 23px;
-    height: 101px;
+    /* height: 101px; */
 }
 .mastinvent_header_container .mastinvent_container_manage {
     width: 100%;
@@ -1497,7 +1505,7 @@ input.colorvendorpriceinpt {
     line-height: 20px;
 }
 .mastinvent_container_slide {
-    width: 50px;
+    width: 43px;
 }
 .mastinvent_container_slideleft {
     padding-top: 34px;
@@ -1511,5 +1519,54 @@ input.colorvendorpriceinpt {
     width: 100%;
 }
 .mastinvent_container_contentarea {
-    width: 169px;
+    width: 180px;
+    overflow-x: hidden;
+}
+.mastinvent_container_contentarea .onboacontainer {
+    margin-right: 2px;
+    font-size: 12px;
+    color: #000000;
+    width: 58px;
+}
+.mastinvent_container_contentarea .onboacontainer.arrived {
+    opacity: 0.3;
+}
+.mastinvent_container_contentarea .onboatmanage {
+    height: 22px;
+    line-height: 22px!important;
+    width: 58px;
+    color: #FFFFFF;
+}
+.mastinvent_container_contentarea .containerdate {
+    height: 22px;
+    line-height: 22px!important;
+    width: 100%;
+}
+.mastinvent_container_contentarea input.boatcontainerdate,
+.mastinvent_container_contentarea input.boatcontainerfreight {
+    width: 58px;
+    height: 18px;
+}
+.mastinvent_container_contentarea .containrermanage {
+    background: #d3d3d3;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    height: 18px;
+    line-height: 18px!important;
+    /* width: 55px; */
+    width: 58px;
+}
+.mastinvent_container_contentarea .containrermanage > div {
+    text-align: center;
+    width: 100%;
+}
+.mastinvent_container_contentarea .containertotal {
+    background-color: #000000;
+    color: #FFFFFF;
+    /* width: 55px; */
+    width: 61px;
+    text-align: center;
+    height: 27px;
+    line-height: 27px;
+    margin-top: 7px;
 }
