@@ -29,7 +29,7 @@
     margin-right: 6px;
 }
 .itemlistview select.itemcategoryfilter {
-    width: 141px;
+    width: 204px;
     padding-left: 4px;
     height: 25px;
 }
@@ -39,7 +39,8 @@
     width: 253px;
 }
 .itemlistview .itemsearchbtn {
-    background: #FF0000;
+    /* background: #FF0000; */
+    background: #a5a5a5;
     color: #ffffff;
     font-size: 14px;
     float: right!important;
@@ -53,7 +54,8 @@
     cursor: pointer;
 }
 .itemlistview .itemclearsearch {
-    background: #FF0000;
+    /* background: #FF0000; */
+    background: #a5a5a5;
     color: #ffffff;
     text-align: center;
     /* opacity: 0.5; */
@@ -181,6 +183,32 @@
     font-size: 13px;
     text-align: center;
 }
+.itemlistview .tabledataheader .sortable {
+    cursor: pointer;
+}
+.itemlistview .tabledataheader .ascsort {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 8px solid #FFFFFF;
+    float: right;
+    position: relative;
+    right: 8px;
+    top: 8px;
+}
+.itemlistview .tabledataheader .descsort {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 8px solid #FFFFFF;
+    float: right;
+    position: relative;
+    right: 8px;
+    top: 8px;
+}
+
 .itemlistview .tabledataheader .numberpp {
     width: 65px;
 }
@@ -267,8 +295,9 @@
     cursor: pointer;
 }
 .itemlistview .tabledataarea .tabrow .subcategory {
-    border-right: 1px solid #000000;
-    width: 156px;
+    border-right: 3px solid #000000;
+    font-size: 12px;
+    width: 154px;
 }
 .itemlistview .tabledataarea .tabrow .itemnumber {
     border-right: 1px solid #000000;

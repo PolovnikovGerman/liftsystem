@@ -415,6 +415,9 @@ class Dbitems extends MY_Controller
             $limit = ifset($postdata, 'limit', 50);
             $options['offset'] = $pagenum * $limit;
             $options['limit'] = $limit;
+            $options['order_by'] = ifset($postdata, 'order_by', 'item_number');
+            $options['direct'] = ifset($postdata,'direction', 'asc');
+
             $res = $this->sritems_model->get_relievers_itemslist($options);
             if (count($res)==0) {
                 $mdata['content'] = $this->load->view('relieveritems/emptydata_table_view', [], TRUE);

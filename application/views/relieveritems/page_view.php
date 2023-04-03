@@ -1,6 +1,8 @@
 <input type="hidden" id="relieverstotal" value="<?=$totals?>"/>
 <input type="hidden" id="reliveitemsperpage" value="25"/>
 <input type="hidden" id="relieveitemscurpage" value="0"/>
+<input type="hidden" id="sritemsorder" value="item_number"/>
+<input type="hidden" id="sritemsorderdirect" value="asc"/>
 <div class="reliversitemdataview">
     <div class="pageheader">
         <div class="pagetitle">Item Center</div>
@@ -9,7 +11,7 @@
                 <option value="0">All Categories</option>
                 <?php foreach ($categories as $category) { ?>
                     <option value="<?=$category['category_id']?>" <?=$category['category_id']==$category_id ? 'selected="selected"' : ''?>>
-                        <?=$category['category_name']?>
+                        <?=$category['category_code']?> - <?=$category['category_name']?>
                     </option>
                 <?php } ?>
             </select>
@@ -67,10 +69,10 @@
             <div class="numberpp" id="addnewrelievers">
                 <img src="/img/masterinvent/addinvitem_bg.png" alt="Add New"/>
             </div>
-            <div class="status">Active</div>
+            <div class="status sortable" data-sortcell="item_active">Active</div>
             <div class="edit">Edit</div>
-            <div class="itemnumber">Item #</div>
-            <div class="itemname">Item Name</div>
+            <div class="itemnumber sortable" data-sortcell="item_number">Item # <div class="ascsort">&nbsp;</div></div>
+            <div class="itemname sortable" data-sortcell="item_name">Item Name</div>
             <div class="missinfo">Complete or Missing Info</div>
         </div>
         <div id="relieversitemdata">
