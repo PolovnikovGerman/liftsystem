@@ -618,13 +618,22 @@ Class Items_model extends My_Model
     }
 
     public function get_itemlists($options) {
+        $this->db->select('ic.item_categories_itemid as item_id, min(c.category_leftnavig) as category_name');
+        $this->db->from('sb_item_categories ic');
+        $this->db->join('sb_categories c','c.category_id=ic.item_categories_categoryid');
+        $this->db->group_by('ic.item_categories_itemid');
+        $category_qty = $this->db->get_compiled_select();
+        $this->db->reset_query();
+
         $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
         $this->db->select('v.vendor_name as vendor, v.vendor_code, v.vendor_phone, v.vendor_email, v.vendor_website, svi.vendor_item_number');
         $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
+        $this->db->select('categ.category_name as category');
         $this->db->from('sb_items i');
         $this->db->join('sb_vendor_items svi','i.vendor_item_id = svi.vendor_item_id','left');
         $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor');
         $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
+        $this->db->join("({$category_qty}) categ",'categ.item_id=i.item_id', 'left');
         if (ifset($options,'brand', 'ALL')!=='ALL') {
             if ($options['brand']=='SR') {
                 $this->db->where('i.brand', $options['brand']);
@@ -673,16 +682,16 @@ Class Items_model extends My_Model
         $numpp = $offset + 1;
         foreach ($res as $item) {
             // $item['vendor_details'] = $this->load->view('dbitems/vendor_details_view', $item, TRUE);
-            $category = '';
-            $this->db->select('ic.item_categories_id, ic.item_categories_categoryid,c.category_leftnavig as category_name');
-            $this->db->from('sb_item_categories ic');
-            $this->db->join('sb_categories c','c.category_id=ic.item_categories_categoryid');
-            $this->db->where('ic.item_categories_itemid',$item['item_id']);
-            $categ=$this->db->get()->row_array();
-            if (ifset($categ,'item_categories_id',0) > 0) {
-                $category = $categ['category_name'];
-            }
-            $item['category'] = $category;
+//            $category = '';
+//            $this->db->select('ic.item_categories_id, ic.item_categories_categoryid,c.category_leftnavig as category_name');
+//            $this->db->from('sb_item_categories ic');
+//            $this->db->join('sb_categories c','c.category_id=ic.item_categories_categoryid');
+//            $this->db->where('ic.item_categories_itemid',$item['item_id']);
+//            $categ=$this->db->get()->row_array();
+//            if (ifset($categ,'item_categories_id',0) > 0) {
+//                $category = $categ['category_name'];
+//            }
+//            $item['category'] = $category;
             $item['misclas'] = ($item['missings']==0 ? '' : 'missing');
             $item['misinfo'] = ($item['missings']==0 ? 'Complete' : $item['missings'].' Missing');
             $item['misinfo_content'] = '';

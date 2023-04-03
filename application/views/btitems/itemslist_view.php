@@ -10,7 +10,7 @@
             <select class="itemcategoryfilter">
                 <?php foreach ($categories as $category) { ?>
                     <option <?=$category['category_active']==1 ? '' : 'disabled="true"'?> value="<?=$category['category_id']?>" <?=$category['category_id']==$category_id ? 'selected="selected"' : ''?>>
-                        <?=$category['category_name']?>
+                        <?=$category['category_code'].' - '.$category['category_name']?>
                     </option>
                 <?php } ?>
             </select>
@@ -85,12 +85,13 @@
             <div class="numberpp" id="addnewbtitems">
                 <img src="/img/masterinvent/addinvitem_bg.png" alt="Add New"/>
             </div>
-            <div class="status">Active</div>
+            <div class="status sortable" data-sortcell="item_active">Active</div>
             <div class="edit">Edit</div>
-            <div class="subcategory">Subcategory</div>
-            <div class="itemnumber">Item #</div>
-            <div class="itemname">Item Name</div>
-            <div class="suplier">Suplier</div>
+            <div class="subcategory sortable" data-sortcell="category">Subcategory</div>
+<!--            <div class="subcategory">Subcategory</div>-->
+            <div class="itemnumber sortable" data-sortcell="item_number">Item # <div class="ascsort">&nbsp;</div></div>
+            <div class="itemname sortable" data-sortcell="item_name">Item Name</div>
+            <div class="suplier sortable" data-sortcell="vendor">Supplier</div>
             <div class="missinfo">Complete or Missing Info</div>
         </div>
         <div class="" id="btitemdata">

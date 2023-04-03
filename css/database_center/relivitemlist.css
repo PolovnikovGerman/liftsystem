@@ -24,7 +24,7 @@
     margin-right: 6px;
 }
 .reliversitemdataview select.itemcategoryfilter {
-    width: 141px;
+    width: 165px;
     padding-left: 4px;
     height: 25px;
 }
@@ -34,7 +34,8 @@
     width: 253px;
 }
 .reliversitemdataview .itemsearchbtn {
-    background: #FF0000;
+    /* background: #FF0000; */
+    background: #a5a5a5;
     color: #ffffff;
     font-size: 14px;
     float: right!important;
@@ -48,7 +49,8 @@
     cursor: pointer;
 }
 .reliversitemdataview .itemclearsearch {
-    background: #FF0000;
+    /* background: #FF0000; */
+    background: #a5a5a5;
     color: #ffffff;
     text-align: center;
     opacity: 0.5;
@@ -152,6 +154,32 @@
     font-size: 13px;
     text-align: center;
 }
+.reliversitemdataview .tabledataheader .sortable {
+    cursor: pointer;
+}
+.reliversitemdataview .tabledataheader .ascsort {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 8px solid #FFFFFF;
+    float: right;
+    position: relative;
+    right: 8px;
+    top: 8px;
+}
+.reliversitemdataview .tabledataheader .descsort {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 8px solid #FFFFFF;
+    float: right;
+    position: relative;
+    right: 8px;
+    top: 8px;
+}
+
 .reliversitemdataview .tabledataheader .numberpp {
     width: 65px;
 }
@@ -159,19 +187,19 @@
     cursor: pointer;
 }
 .reliversitemdataview .tabledataheader .status {
-    width: 48px;
+    width: 64px;
 }
 .reliversitemdataview .tabledataheader .edit {
     width: 43px;
 }
 .reliversitemdataview .tabledataheader .itemnumber {
-    width: 48px;
+    width: 82px;
 }
 .reliversitemdataview .tabledataheader .itemname {
     width: 355px;
 }
 .reliversitemdataview .tabledataheader .missinfo {
-    width: 674px;
+    width: 640px;
 }
 .reliversitemdataview .tabledataarea {
     clear: both;
@@ -219,7 +247,7 @@
 .reliversitemdataview .tabledataarea .tabrow .status {
     border-right: 1px solid #000000;
     font-size: 12px;
-    width: 48px;
+    width: 64px;
 }
 .reliversitemdataview .tabledataarea .tabrow div.inactive {
     color: #cccccc;
@@ -233,7 +261,7 @@
 }
 .reliversitemdataview .tabledataarea .tabrow .itemnumber {
     border-right: 1px solid #000000;
-    width: 48px;
+    width: 82px;
 }
 .reliversitemdataview .tabledataarea .tabrow .itemname {
     border-right: 3px solid #000000;
@@ -242,7 +270,7 @@
     padding-left: 5px;
 }
 .reliversitemdataview .tabledataarea .tabrow .missinfo {
-    width: 670px;
+    width: 631px;
 }
 .reliversitemdataview .tabledataarea .tabrow .missinfo.missing {
     color: #FF0000;

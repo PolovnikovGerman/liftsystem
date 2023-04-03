@@ -1,5 +1,9 @@
 $(document).ready(function () {
     init_relievers_items();
+    $(".tabledataheader").find('div.sortable').unbind('click').click(function (){
+        var fld = $(this).data('sortcell');
+        sort_sritems(fld);
+    });
 })
 
 function init_relievers_items() {
@@ -30,6 +34,8 @@ function pageReliveItemsCallback(page_index) {
     var params = prepare_relieveritem_filters();
     params.push({name: 'offset', value: page_index});
     params.push({name: 'limit', value: $("#reliveitemsperpage").val()});
+    params.push({name: 'order_by', value: $('#sritemsorder').val()});
+    params.push({name: 'direction', value: $('#sritemsorderdirect').val()});
     var url = "/dbitems/relieve_itemslist";
     $("#loader").show();
     $.post(url, params, function(response){
@@ -156,4 +162,27 @@ function edit_reliever_item(item) {
             show_error(response);
         }
     },'json');
+}
+
+function sort_sritems(fld) {
+    var cursort = $('#sritemsorder').val();
+    var curdirec = $('#sritemsorderdirect').val();
+    $(".tabledataheader").find("div.ascsort").remove();
+    $(".tabledataheader").find("div.descsort").remove();
+    if (cursort==fld) {
+        // Change direction
+        if (curdirec=='asc') {
+            $(".tabledataheader").find('div[data-sortcell="'+fld+'"]').append('<div class="descsort">&nbsp;</div>');
+            $('#sritemsorderdirect').val('desc');
+        } else {
+            $(".tabledataheader").find('div[data-sortcell="'+fld+'"]').append('<div class="ascsort">&nbsp;</div>');
+            $('#sritemsorderdirect').val('asc');
+        }
+    } else {
+        $(".tabledataheader").find('div[data-sortcell="'+fld+'"]').append('<div class="ascsort">&nbsp;</div>');
+        $('#sritemsorderdirect').val('asc');
+        $('#sritemsorder').val(fld);
+    }
+    var pageindex = $('#relieveitemscurpage').val();
+    pageReliveItemsCallback(pageindex);
 }

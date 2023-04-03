@@ -493,7 +493,8 @@ Class Artproof_model extends MY_Model
             $artlastupdat="prooflastmessageview";
             // $row['lastmsg']='/artproofs/proof_lastmessage?d='.$row['email_id'];
             $row['ordnum']=$ordnum;
-            $row['email']=($row['email_sendermail']=='' ? '' : '<img src="/img/icons/email.png" alt="Email" title="'.$row['email_sendermail'].'" style="margin-right:3px;"/>');
+            // <img src="/img/icons/email.png" alt="Email" title="'.$row['email_sendermail'].'" style="margin-right:3px;"/>
+            $row['email']=($row['email_sendermail']=='' ? '' : '<i class="fa fa-envelope" aria-hidden="true" title="'.$row['email_sendermail'].'"></i>');
             $row['emailparsed']=($row['email_webpage']=='EMAILPARSER' ? $parsericon : '&nbsp;');
             $row['emailparsed_title']='';
             if ($row['email_webpage']=='EMAILPARSER') {
@@ -589,7 +590,7 @@ Class Artproof_model extends MY_Model
             }
             $row['assigned']=($row['lead_id']=='' ? 'leadassign' : '');
             $row['email_sender']=($row['email_sender']=='' ? '&nbsp;' : $row['email_sender']);
-            $row['rowclass'] = ($row['lead_id']=='' ? '' : 'leadentered');
+            $row['rowclass'] = !empty($row['proof_order']) ? 'orderassign' : ($row['lead_id']=='' ? '' : 'leadentered');
             $row['lead_number']=($row['lead_number']=='' ? '' : 'L'.$row['lead_number']);
             $row['leadid']=($row['lead_id']=='' ? 0 : $row['lead_id']);
             $row['note_title']='';

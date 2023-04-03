@@ -206,7 +206,10 @@ function init_prooflistmanage() {
         var mailid=$(this).data('proofid');
         proof_include(mailid);
     })
-
+    $(".prooforder-editdata").unbind('click').click(function(){
+        var mailid = $(this).data('proof');
+        init_prooforder_edit(mailid);
+    });
     $(".prooforder-savedata").unbind('click').click(function(){
         var mailid = $(this).data('proof');
         var ordernum = $(".proof_order_edit[data-proof="+mailid+"]").val();
@@ -402,10 +405,31 @@ function proof_include(mailid) {
     }, 'json');
 }
 
+function init_prooforder_edit(mailid) {
+    var url = main_proofurl+"/proof_order_edit";
+    $.post(url, {'email_id': mailid}, function (response){
+        if (response.errors=='') {
+            $("div.prooforder-deeds[data-proof="+mailid+"]").empty().html(response.data.content);
+            $(".proof_order_edit[data-proof="+mailid+"]").prop('readonly',false);
+            $(".proof_order_edit[data-proof="+mailid+"]").focus();
+            init_prooflistmanage();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
 function save_prooforder(mailid, ordernum) {
     var url = main_proofurl+"/proof_order_save";
     $.post(url, {'email_id': mailid, 'proof_order': ordernum}, function (response){
         if (response.errors=='') {
+            $("div.prooforder-deeds[data-proof="+mailid+"]").empty().html(response.data.content);
+            $(".proof_order_edit[data-proof="+mailid+"]").prop('readonly',true);
+            var rowid = '#profrow'+mailid;
+            if (parseInt(response.data.orderrow)==1) {
+                $(rowid).addClass('orderassign');
+            } else {
+                $(rowid).removeClass('orderassign');
+            }
             init_prooflistmanage();
         } else {
             show_error(response);
@@ -417,7 +441,15 @@ function cancel_prooforder(mailid) {
     var url = main_proofurl+"/proof_order_restore";
     $.post(url, {'email_id': mailid}, function (response){
         if (response.errors=='') {
-            $(".proof_order_edit[data-proof="+mailid+"]").val(response.data.content);
+            $("div.prooforder-deeds[data-proof="+mailid+"]").empty().html(response.data.content);
+            $(".proof_order_edit[data-proof="+mailid+"]").prop('readonly',true);
+            $(".proof_order_edit[data-proof="+mailid+"]").val(response.data.prooforder);
+            var rowid = '#profrow'+mailid;
+            if (parseInt(response.data.orderrow)==1) {
+                $(rowid).addClass('orderassign');
+            } else {
+                $(rowid).removeClass('orderassign');
+            }
             init_prooflistmanage();
         } else {
             show_error(response);
