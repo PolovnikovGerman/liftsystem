@@ -31,6 +31,7 @@ class Inventory_model extends MY_Model
         $this->db->where('inventory_type_id', $inventory_type);
         $this->db->order_by('item_order');
         $items=$this->db->get()->result_array();
+        $colorsdata = [];
         $out = [];
         foreach ($items as $item) {
             $additem = 1;
@@ -69,6 +70,10 @@ class Inventory_model extends MY_Model
                     'totalclass' => '',
                 ];
                 $itemidx = count($out) - 1;
+                $colorsdata[] = [
+                    'item_id' => $item['inventory_item_id'],
+                    'color_id' => 0,
+                ];
                 $sum_available = 0;
                 $sum_instock = 0;
                 $sum_reserved = 0;
@@ -146,6 +151,10 @@ class Inventory_model extends MY_Model
                         'color_image' => $color['color_image'],
                     ];
                     $color_seq++;
+                    $colorsdata[] = [
+                        'item_id' => $item['inventory_item_id'],
+                        'color_id' => $color['inventory_color_id'],
+                    ];
                     // Calc totals
                 }
                 $out[$itemidx]['max']=$sum_max;
@@ -180,6 +189,7 @@ class Inventory_model extends MY_Model
                 'type_available' => $type_available,
                 'type_maximum' => $type_maximum,
                 'list' => $out,
+                'colors' => $colorsdata,
             ];
     }
 
@@ -987,6 +997,10 @@ class Inventory_model extends MY_Model
         $this->db->group_by('b.onboat_container, b.onboat_status, b.onboat_date');
         $res = $this->db->get()->result_array();
         return $res;
+    }
+
+    public function get_onboatdetails($onboat_container, $colors) {
+        $this->db->select('');
     }
 
 }

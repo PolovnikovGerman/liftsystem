@@ -27,6 +27,17 @@ class Masterinventory extends MY_Controller
                     $expand = 1;
                 }
                 $mdata['content']=$this->load->view('masterinvent/inventorylist_data_view',['lists' => $data['list'],'showmax' => $showmax, 'expand' => $expand],TRUE);
+                // On boats
+                $colors = $data['colors'];
+                $onboats = $this->inventory_model->get_data_onboat($inventory_type);
+                $boats_view='';
+                foreach ($onboats as $onboat) {
+                    $details = $this->inventory_model->get_onboatdetails($onboat['onboat_container'], $colors);
+                    $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
+                }
+
+                $onboats = $this->inventory_model->get_onboats_details($colors);
+                $mdata['onboats'] = '';
             }
             $mdata['instock'] = empty($data['type_instock']) ? '' : QTYOutput($data['type_instock']);
             $mdata['available'] = empty($data['type_available']) ? '' : QTYOutput($data['type_available']);
