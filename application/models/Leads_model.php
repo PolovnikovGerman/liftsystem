@@ -781,7 +781,7 @@ Class Leads_model extends MY_Model
     public function get_lead_list($options=array()) {
         $this->db->select('lead_id, concat("L" , lead_number ) as lead_number, lead_customer, lead_item');
         $this->db->from('ts_leads');
-        $this->db->where_in('lead_type',array(1,2));
+        $this->db->where_in('lead_type',array(1,2,6));
         if (isset($options['orderby'])) {
             if (isset($options['direction'])) {
                 $this->db->order_by($options['orderby'],$options['direction']);
