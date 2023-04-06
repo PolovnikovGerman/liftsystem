@@ -239,6 +239,9 @@ class Database extends MY_Controller
         $head['scripts'][] = array('src' => '/js/cycle2/jquery.cycle2.min.js');
         // Scroll panel
         $head['scripts'][] = array('src' => '/js/adminpage/jquery-scrollpanel.js');
+        // Date Picker
+        $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
+        $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
 
         $options = [
             'title' => $head['title'],
@@ -2319,7 +2322,7 @@ class Database extends MY_Controller
         $slider_width=60*count($onboats);
         $margin = $this->maxlength-$slider_width;
         $margin=($margin>0 ? 0 : $margin);
-        $width_edit = 58;
+        // $width_edit = 58;
         $boatoptions=array(
             'data'=>$onboats,
             'container_view' => $boathead_view,
@@ -2344,6 +2347,7 @@ class Database extends MY_Controller
             'reserved' => empty($totals['reserved']) ? $this->empty_html_content : QTYOutput($totals['reserved']),
             'available' => empty($totals['available']) ? $this->empty_html_content : QTYOutput($totals['available']),
             'container_head' => $onboat_content,
+            'container_leftview' => ($margin < 0 ? '1' : 0),
         ];
         $content = $this->load->view('masterinvent/page_view', $options, TRUE);
         return $content;

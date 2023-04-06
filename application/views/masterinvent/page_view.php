@@ -138,12 +138,16 @@
                 <!-- Container -->
                 <div class="mastinvent_header_container">
                     <div class="datarow">
-                        <div class="mastinvent_container_manage">Container [+]</div>
+                        <div class="mastinvent_container_manage">Container <span>[+]</span></div>
                     </div>
                     <div class="datarow">
                         <div class="mastinvent_container_slide">
-                            <div class="mastinvent_container_slideleft">
-                                <img src="/img/masterinvent/container_nonactive_left.png"/>
+                            <div class="mastinvent_container_slideleft <?=$container_leftview==1 ? 'active' : ''?>">
+                                <?php if ($container_leftview==1) { ?>
+                                    <img src="/img/masterinvent/container_active_left.png"/>
+                                <?php } else { ?>
+                                    <img src="/img/masterinvent/container_nonactive_left.png"/>
+                                <?php } ?>
                             </div>
                         </div>
                         <div class="mastinvent_container_contentarea">

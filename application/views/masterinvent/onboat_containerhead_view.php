@@ -9,7 +9,7 @@
         <div class="<?= ($onboat_status == 1 ? 'arrived' : 'waitarrive') ?>" data-container="<?= $onboat_container ?>"><?=$onboat_status==1 ? 'Arrived' : 'Waiting'?></div>
     </div>
     <div class="containerdate">
-        <input class="boatcontainerfreight" data-container="<?= $onboat_container ?>" value="" placeholder="freight $" readonly="readonly"/>
+        <input class="boatcontainerfreight" data-container="<?= $onboat_container ?>" value="<?=empty($freight_price) ? '' : MoneyOutput($freight_price)?>" placeholder="freight $" readonly="readonly"/>
     </div>
 
     <div class="containertotal" data-container="<?= $onboat_container ?>">

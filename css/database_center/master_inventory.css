@@ -413,6 +413,20 @@ input.inventadd {
 .masterinventtablebody .sp-scrollbar.active .sp-thumb {
     background-color: #c1c1c1;
 }
+/* Scrollbar end */
+.masterinventtablebody .mastinvent_body_left {
+    width: 502px;
+}
+.masterinventtablebody .mastinvent_body_express {
+    width: 270px;
+}
+.masterinventtablebody .mastinvent_body_container {
+    width: 283px;
+    margin-left: 23px;
+}
+.masterinventtablebody .mastinvent_body_right {
+    width: 246px;
+}
 .inventorydatarow {
     width: 100%;
 }
@@ -579,7 +593,8 @@ input.inventadd {
 }
 .inventorydatarow .masterinventunit {
     /* width: 2.9%; */
-    width: 28px;
+    width: 29px;
+    border-right: 1px solid #000000;
 }
 .inventorydatarow .masterinventonorder {
     /* width: 8.26%; */
@@ -1504,6 +1519,9 @@ input.colorvendorpriceinpt {
     height: 20px;
     line-height: 20px;
 }
+.mastinvent_header_container .mastinvent_container_manage span {
+    cursor: pointer;
+}
 .mastinvent_container_slide {
     width: 43px;
 }
@@ -1512,6 +1530,9 @@ input.colorvendorpriceinpt {
     padding-right: 6px;
     text-align: right;
     width: 100%;
+}
+.mastinvent_container_slideleft.active img {
+    cursor: pointer;
 }
 .mastinvent_container_slideright {
     padding-top: 34px;
@@ -1569,4 +1590,56 @@ input.colorvendorpriceinpt {
     height: 27px;
     line-height: 27px;
     margin-top: 7px;
+}
+/* Body containers */
+.mastinvent_body_container .left_arrow_empty, .mastinvent_body_container .right_arrow_empty {
+    width: 43px;
+}
+.mastinvent_body_container .onboatdataareas {
+    width: 180px;
+    overflow-x: hidden;
+}
+.mastinvent_body_container .onboatdataareas.editdata {
+    width: 240px;
+}
+.mastinvent_body_container .onboacontainerdata.editdata {
+    width: 130px;
+}
+.mastinvent_body_container .onboacontainerarea {
+    width: 60px;
+}
+.mastinvent_body_container .conteinerqty {
+    width: 58px;
+}
+.mastinvent_body_container .conteinerqty input {
+    height: 18px;
+    width: 56px;
+    float: left;
+    padding-left: 3px;
+    margin-top: 3px;
+}
+.mastinvent_body_container .conteinerprice {
+    width: 54px;
+}
+.mastinvent_body_container .conteinerprice input {
+    width: 51px;
+    height: 18px;
+}
+.onboatmanagement {
+    font-size: 16px;
+    width: 26px;
+    height: 18px;
+    line-height: 18px!important;
+}
+i.saveboatcontainer {
+    color: #359045;
+    cursor: pointer;
+    margin-left: 2px;
+    /* margin-top: 1px; */
+}
+i.cancelboatcontainer {
+    color: #FF0000;
+    cursor: pointer;
+    margin-left: 2px;
+    /* margin-top: 1px; */
 }
