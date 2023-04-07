@@ -301,6 +301,7 @@ Class Cronjob extends CI_Controller
     public function pochange_notification() {
         $dateend=strtotime(date('m/d/Y'));
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
+        $this->_ckeckpototals($datestart, $dateend);
         $brands = ['SB','SR'];
         foreach ($brands as $brand) {
             // Get users list
@@ -1016,4 +1017,71 @@ Class Cronjob extends CI_Controller
             $this->email->clear(TRUE);
         }
     }
+
+    private function  _ckeckpototals($datestart, $dateend) {
+        // Get list of orders
+        $this->db->select('o.order_num, o.order_id');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_amounts oa','oa.order_id=o.order_id');
+        $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
+        $this->db->where("o.is_canceled",0);
+        $this->db->where('oa.create_date >=', $datestart);
+        $this->db->where('oa.create_date < ', $dateend);
+        $newordlist = $this->db->get()->result_array();
+
+        $this->db->select('o.order_num, o.order_id');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_amounts oa','oa.order_id=o.order_id');
+        $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
+        $this->db->where('oa.update_date >=', $datestart);
+        $this->db->where('oa.update_date < ', $dateend);
+        $this->db->where('oa.create_date <', $datestart);
+        $updordlist = $this->db->get()->result_array();
+
+        $orderlists = array_merge($newordlist, $updordlist);
+        $ordererror = [];
+        foreach ($orderlists as $orderlist) {
+            // Order Data
+            $this->db->select('o.profit as profit_sum, o.profit_perc, o.order_cog, o.brand');
+            $this->db->from('ts_orders o');
+            $this->db->where('o.order_id', $orderlist['order_id']);
+            $ordres = $this->db->get()->row_array();
+            $order_cog = round(floatval($ordres['order_cog']),2);
+            // Total amounts
+            $this->db->select('count(amount_id) as cnt, sum(amount_sum) as amount');
+            $this->db->from('ts_order_amounts');
+            $this->db->where('oa.order_id', $orderlist['order_id']);
+            $pores = $this->db->get()->row_array();
+            $amount_cog = round(floatval($pores['amount']),2);
+            if ($amount_cog!==$order_cog) {
+                $ordererror = [
+                    'order_id' => $orderlist['order_id'],
+                    'order_num' => $orderlist['order_num'],
+                    'order_cog' => $order_cog,
+                    'amount_cog' => $amount_cog,
+                    'diff' => $amount_cog - $order_cog,
+                ];
+            }
+        }
+        if (count($ordererror)==0) {
+            $mail_body = 'All PO orders '.count($orderlists).' math is OK';
+        } else {
+            $mail_body = $this->load->view('messages/orderamout_maths_view', ['data'=>$ordererror], TRUE);
+        }
+        $this->load->library('email');
+        $config['charset'] = 'utf-8';
+        $config['mailtype']='html';
+        $config['wordwrap'] = TRUE;
+        $this->email->initialize($config);
+        $email_from=$this->config->item('email_notification_sender');
+        $email_to='to_german@yahoo.com';
+        $this->email->from($email_from);
+        $this->email->to($email_to);
+        $title=date('D - M d, Y', $datestart).' - Check Order Amounts Maths ';
+        $this->email->subject($title);
+        $this->email->message($mail_body);
+        $this->email->send();
+        $this->email->clear(TRUE);
+    }
+
 }
