@@ -690,6 +690,8 @@ class Batches_model extends My_Model
 
     public function save_batch($batch_data, $order_data, $user_id) {
         $ci=&get_instance();
+        $amnt = round(floatval($batch_data['amount']),2);
+        $orderrev = round(floatval($order_data['revenue']),2);
         $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_ERRMSG);
         if ($batch_data['batch_date']==0) {
             $out['msg']='Empty batch date';
@@ -698,8 +700,9 @@ class Batches_model extends My_Model
         } elseif ($batch_data['amount']==0) {
             $out['msg']='Empty amount';
         } elseif (!isset($order_data['order_id'])) {
-            $out['msg']='Order not found';
-        } elseif ($batch_data['amount']>floatval($order_data['revenue'])) {
+            $out['msg'] = 'Order not found';
+            // } elseif ($batch_data['amount']>floatval($order_data['revenue'])) {
+        } elseif ($amnt > $orderrev) {
             $out['msg']='Amount great then order revenue';
         } else {
             $paypal_apply=strtotime($this->paypal_apply);
