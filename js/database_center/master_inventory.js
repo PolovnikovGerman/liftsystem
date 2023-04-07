@@ -14,8 +14,10 @@ function init_master_inventorydata() {
     params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
     params.push({name: 'showmax', value: $("#invshowmax").val()});
     var url="/masterinventory/get_inventory_list";
+    $("#loader").show();
     $.post(url, params, function (response) {
         if (response.errors=='') {
+            $("#loader").hide();
             $("#masterinventtablebody").empty().html(response.data.bodylist);
             $(".masterinventtablebody").find('div.mastinvent_body_left').html(response.data.left_content);
             $(".masterinventtablebody").find('div.mastinvent_body_express').html(response.data.express_content);
@@ -31,6 +33,7 @@ function init_master_inventorydata() {
             init_master_inventorytabledat();
             leftmenu_alignment();
         } else {
+            $("#loader").hide();
             show_error(response)
         }
     },'json')
@@ -106,10 +109,12 @@ function init_master_inventorycontent() {
         },'json');
     });
     $(".onboatmanage").find('i').unbind('click').click(function (){
+        // Edit container
         var container = $(this).parent('div.onboatmanage').data('container');
         var url="/masterinventory/changecontainer";
         var params = new Array();
         params.push({name: 'container', value: container});
+        params.push({name: 'onboat_type', value: 'C'});
         params.push({name: 'inventory_type', value: $("#active_invtype").val()});
         params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
         $.post(url, params, function (response){
@@ -129,7 +134,41 @@ function init_master_inventorycontent() {
                     'startDate': '0d'
                 });
                 $("input.boatcontainerfreight[data-container='"+container+"']").prop('readonly', false);
-                init_edit_inventcontainer(container);
+                init_edit_inventcontainer(container,'C');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".mastinvent_container_manage").find('span').unbind('click').click(function (){
+        // Add container
+        var container = 0;
+        var url="/masterinventory/changecontainer";
+        var params = new Array();
+        params.push({name: 'container', value: container});
+        params.push({name: 'inventory_type', value: $("#active_invtype").val()});
+        params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
+        params.push({name: 'onboat_type', value: 'C'})
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                // Lock add / edit elements
+                $(".onboatmanage").find('i').unbind('click');
+                $(".mastinvent_container_manage").find('span').unbind('click');
+                // Change view of container
+                $(".onboacontainerdata[data-container='"+container+"']").addClass('editdata');
+                $(".mastinvent_body_container").find('div.onboatdataareas').addClass('editdata');
+                $(".mastinvent_container_contentarea").find('div.after_head').css('margin-left',response.data.marginleft).css('width',response.data.width).append(response.data.containerhead);
+                $(".onboatdataareas").find('div.after_head').css('margin-left',response.data.marginleft).css('width',response.data.width).append(response.data.content);
+                // Edit
+                $(".waitarrive[data-container='"+container+"']").empty().html(response.data.managecontent);
+                $("input.boatcontainerdate[data-container='"+container+"']").datepicker({
+                    'format' : 'mm/dd/yy',
+                    'autoclose' : true,
+                    'startDate': '0d'
+                });
+                $("input.boatcontainerfreight[data-container='"+container+"']").prop('readonly', false);
+                init_edit_inventcontainer(container,'C');
+
             } else {
                 show_error(response);
             }
@@ -137,7 +176,7 @@ function init_master_inventorycontent() {
     })
 }
 
-function init_edit_inventcontainer(container) {
+function init_edit_inventcontainer(container, onboat_type) {
     // Edit onstock
     $(".onroutestockinpt").unbind('change').change(function (){
         var item = $(this).data('item');
@@ -181,6 +220,7 @@ function init_edit_inventcontainer(container) {
         var params = new Array();
         params.push({name: 'inventory_type', value: $("#active_invtype").val()});
         params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
+        params.push({name: 'onboat_type', value: onboat_type});
         $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
@@ -213,7 +253,7 @@ function init_edit_inventcontainer(container) {
                 show_error(response);
             }
         },'json');
-    },'json');
+    });
 }
 function init_inventcontainer_move() {
     $(".mastinvent_container_slideleft").unbind('click').click(function(){

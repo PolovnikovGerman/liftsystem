@@ -2298,7 +2298,7 @@ class Database extends MY_Controller
     private function _prepare_inventory_view() {
         $this->load->model('inventory_model');
         $this->load->model('printshop_model');
-        $addcost=$this->printshop_model->invaddcost();
+        // $addcost=$this->printshop_model->invaddcost();
         $invtypes = $this->inventory_model->get_inventory_types();
         $idx=0;
         $totalval = 0;
@@ -2311,6 +2311,7 @@ class Database extends MY_Controller
         // Get totals
         $type_id = $invtypes[0]['inventory_type_id'];
         $totals = $this->inventory_model->get_inventory_totals($type_id);
+        $addcost = $invtypes[0]['type_addcost'];
         $addval = $totals['available'] * $addcost;
         // Get OnBoats
         $onboats = $this->inventory_model->get_data_onboat($type_id);

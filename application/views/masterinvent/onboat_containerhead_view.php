@@ -1,6 +1,10 @@
 <div class="onboacontainer <?= ($onboat_status == 1 ? 'arrived' : '') ?>" data-container="<?= $onboat_container ?>">
     <div class="onboatmanage" data-container="<?= $onboat_container ?>">
-        <?= ($onboat_status == 0 ? '<i class="fa fa-pencil edit_onboat" aria-hidden="true"></i>' : '') ?>  Cont <?=$onboat_container ?>
+        <?php if ($onboat_container==0) { ?>
+            New Cont
+        <?php } else { ?>
+            <?= ($onboat_status == 0 ? '<i class="fa fa-pencil edit_onboat" aria-hidden="true"></i>' : '') ?>  Cont <?=$onboat_container ?>
+        <?php } ?>
     </div>
     <div class="containerdate">
         <input class="boatcontainerdate" data-container="<?= $onboat_container ?>" value="<?= date('m/d/y', $onboat_date) ?>" readonly="readonly"/>
