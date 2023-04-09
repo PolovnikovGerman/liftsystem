@@ -2,7 +2,7 @@
     clear: both;
     margin-left: 10px;
     margin-top: 10px;
-    width: 994px;
+    /* width: 994px; */
 }
 .proof_select_type {
     color: #353535;
@@ -50,7 +50,8 @@ input.proofsearch {
     color: #000000;
     font-size: 13px;
     text-align: center;
-    width: 1042px;
+    /* width: 1042px; */
+    width: 1102px;
     margin-top: 10px;
 }
 .proof_title div {
@@ -65,7 +66,7 @@ input.proofsearch {
     max-height: 502px;
     overflow-y: auto;
     /* width: 971px; */
-    width: 1044px;
+    width: 1104px;
 }
 .proof_tabrow {
     border-left: 1px solid #000000;
@@ -75,8 +76,11 @@ input.proofsearch {
     float: left;
     font-size: 12px;
     /* width: 954px; */
-    width: 1030px;
+    /* width: 1030px; */
+    width: 1090px;
     text-align: center;
+}
+.proof_tabrow div {
     height: 24px;
     line-height: 24px!important;
 }
@@ -90,10 +94,7 @@ input.proofsearch {
     width: 43px;
 }
 .proof_ordnum_dat {
-    float: left;
     width: 42px;
-    margin-top: 5px;
-    height: 20px;
 }
 .proof_titlecentr {
 /*    height: 24px;
@@ -104,10 +105,7 @@ input.proofsearch {
     width: 60px;
 }
 .proof_brand_dat {
-    float: left;
-    margin-top: 5px;
     width: 60px;
-    height: 20px;
     color: #0000FF;
 }
 .proof_brand_dat:hover {
@@ -124,12 +122,18 @@ select.proofhideproof {
     margin-right: 11px;
     width: 60px;
 }
+.lead_salesrep {
+    width: 60px;
+}
+.lead_salesrep_dat {
+    width: 60px;
+    white-space: nowrap;
+    overflow: hidden;
+}
 .proof_leadnum_dat {
-    float: left;
     width: 53px;
     font-size: 13px;
-    margin-top: 5px;
-    color: #999999;
+    color: #8800bb;
 }
 .proof_leadnum_dat.leadassign {
     color: #ffffff;
@@ -140,8 +144,6 @@ select.proofhideproof {
     cursor: pointer;
 }
 .proof_includ_dat {
-    float: left;
-    margin-top: 7px;
     width: 18px;
 }
 .proof_includ_dat img {
@@ -185,19 +187,13 @@ select.proofhideproof {
     width: 67px;
 }
 .proof_date_dat {
-    float: left;
-    margin-top: 5px;
     width: 67px;
-    height: 20px;
 }
 .proof_customer {
     float: left;
     width: 201px;
 }
 .proof_customer_dat {
-    float: left;
-    height: 20px;
-    margin-top: 5px;
     width: 206px;
 }
 .prfart_customer-maildat {
@@ -223,9 +219,6 @@ select.proofhideproof {
     width: 238px;
 }
 .proof_item_dat {
-    float: left;
-    height: 20px;
-    margin-top: 5px;
     overflow: hidden;
     padding-left: 5px;
     text-align: left;
@@ -233,13 +226,9 @@ select.proofhideproof {
     width: 233px;
 }
 .proof_emptydiv {
-    float: left;
-    padding-top: 6px;
-    height: 22px;
     width: 4px;
 }
 .artdataarea {
-    float: left;
     width: 144px;
     border-left: 2px solid #000000;
     border-right: 2px solid #000000;
@@ -251,20 +240,16 @@ select.proofhideproof {
     width: 61px;
 }
 .proof_deldata {
-    float: left;
     text-align: center;
     width: 20px;
 }
 .proof_deldata img {
-    margin-top: 6px;
     height: 14px;
 }
 .proof_deldata:hover {
     cursor: pointer;
 }
 .proof_parsedata {
-    float: left;
-    padding-top: 2px;
     text-align: center;
     width: 25px;
 }
@@ -277,13 +262,15 @@ select.proofhideproof {
     width: 40px;
 }
 .proof_note_dat {
-    float: left;
-    margin-top: 3px;
     width: 25px;
+    font-size: 17px;
 }
-.proof_note_dat img {
+.proof_note_dat.questiondat {
+    color: #9292FD!important;
+}
+/*.proof_note_dat img {
     width: 16px;
-}
+}*/
 .proof_note_dat:hover {
     cursor: pointer;
 }
@@ -291,8 +278,6 @@ select.proofhideproof {
     width: 50px;
 }
 .proof_ordernum_dat {
-    height: 24px;
-    line-height: 24px!important;
     width: 76px;
 }
 .proof_ordernum_dat.edit {
@@ -307,7 +292,6 @@ input.proof_order_edit {
     text-align: center;
     width: 32px;
     float: right!important;
-    padding-top: 4px;
 }
 .prooforder-deeds i {
     font-size: 13px;
@@ -328,8 +312,6 @@ input.proof_order_edit {
     text-align: center;
 }
 .artdata {
-    height: 24px;
-    padding-top: 4px;
 }
 .artdata:hover {
     cursor:pointer;
@@ -367,10 +349,7 @@ input.proof_order_edit {
     width: 54px;
 }
 .proof_qty_dat {
-    float: left;
-    padding-top: 4px;
     width: 54px;
-    height: 16px;
 }
 .proof_openview {
     float: left;
@@ -399,7 +378,7 @@ input.proof_order_edit {
     clear: both;
     float: left;
     /* width: 980px; */
-    width: 1031px;
+    /* width: 1031px; */
     margin-bottom: 15px;
 }
 .quest_tablefoot_left {
@@ -413,7 +392,7 @@ input.proof_order_edit {
     float: left;
     height: 7px;
     /* width: 795px; */
-    width: 856px;
+    width: 916px;
 }
 .quest_tablefoot_right {
     background: url("/img/art/tableend-messages-right.png") no-repeat scroll 0 0 transparent;
