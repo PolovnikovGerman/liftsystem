@@ -32,6 +32,7 @@
             <!--<input type="checkbox" id="hidedelproofs" value="1" /> -->
         </div>
         <div class="proof_titlecentr proof_leadnum">Lead #</div>
+        <div class="lead_salesrep">Sales Rep</div>
         <div class="proof_titlecentr proof_brand">Req #</div>
         <div class="proof_titlecentr proof_date">Date</div>
         <div class="proof_titlecentr proof_customer">Customer</div>
