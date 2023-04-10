@@ -10,7 +10,12 @@ class Database extends MY_Controller
     private $OTHER_TEMPLATE='Other Item';
     private $MAX_PROMOPRICES = 10;
     protected $PERPAGE=1000;
+    private $empty_html_content='&nbsp;';
+    private $container_with=60;
+    private $maxlength=183;
 
+    private $container_type = 'C';
+    private $express_type = 'E';
 
     public function __construct()
     {
@@ -149,12 +154,6 @@ class Database extends MY_Controller
                     $sr_options['srhomeview'] = $this->load->view('content/template_view',['link'=>'srhomeview'], TRUE);
                     $sr_options['sraboutusview'] = $this->load->view('content/template_view',['link'=>'sraboutusview'], TRUE);
                     $sr_options['srcontactusview'] = $this->load->view('content/template_view',['link'=>'srcontactusview'], TRUE);
-                    /*
-                    $sr_options['sbcustomshappedview'] = $this->load->view('content/template_view',['link'=>'sbcustomshappedview'], TRUE);
-                    $sr_options['sbserviceview'] = $this->load->view('content/template_view',['link'=>'sbserviceview'], TRUE);
-                    $sr_options['sbfaqview'] = $this->load->view('content/template_view',['link'=>'sbfaqview'], TRUE);
-                    $sr_options['sbtermsview'] = $this->load->view('content/template_view',['link'=>'sbtermsview'], TRUE);
-                    */
                     $submenu = [];
                     $submenu[] = ['item_link' => '#srhomeview', 'item_name' => 'Home Page'];
                     $submenu[] = ['item_link' => '#sraboutusview', 'item_name' => 'About Us'];
@@ -242,6 +241,9 @@ class Database extends MY_Controller
         $head['scripts'][] = array('src' => '/js/cycle2/jquery.cycle2.min.js');
         // Scroll panel
         $head['scripts'][] = array('src' => '/js/adminpage/jquery-scrollpanel.js');
+        // Date Picker
+        $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
+        $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
 
         $options = [
             'title' => $head['title'],
@@ -2297,21 +2299,58 @@ class Database extends MY_Controller
 
     private function _prepare_inventory_view() {
         $this->load->model('inventory_model');
+        $this->load->model('printshop_model');
+        // $addcost=$this->printshop_model->invaddcost();
         $invtypes = $this->inventory_model->get_inventory_types();
         $idx=0;
         $totalval = 0;
         foreach ($invtypes as $invtype) {
             $stock = $this->inventory_model->get_inventtype_stock($invtype['inventory_type_id']);
             $totalval+=$stock;
-            $invtypes[$idx]['value'] = $stock;
+            $invtypes[$idx]['value'] = empty($stock) ? $this->empty_html_content : MoneyOutput($stock);
             $idx++;
         }
+        // Get totals
+        $type_id = $invtypes[0]['inventory_type_id'];
+        $totals = $this->inventory_model->get_inventory_totals($type_id);
+        $addcost = $invtypes[0]['type_addcost'];
+        $addval = $totals['available'] * $addcost;
+        // Get OnBoats
+        $onboats = $this->inventory_model->get_data_onboat($type_id, $this->container_type);
+        $boathead_view='';
+        foreach ($onboats as $onboat) {
+            $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
+        }
+        // Build head content
+        $slider_width=60*count($onboats);
+        $margin = $this->maxlength-$slider_width;
+        $margin=($margin>0 ? 0 : $margin);
+        // $width_edit = 58;
+        $boatoptions=array(
+            'data'=>$onboats,
+            'container_view' => $boathead_view,
+            'width' => $slider_width,
+            'margin' => $margin,
+        );
+        $onboat_content=$this->load->view('masterinvent/onboathead_view', $boatoptions, TRUE);
+
         $options = [
             'invtypes' => $invtypes,
             'active_type' => $invtypes[0]['inventory_type_id'],
             'export_type' => $invtypes[0]['type_short'],
-            'total' => $totalval,
-            'eventtype' => 'purchasing',
+            'total' => empty($totalval) ? $this->empty_html_content : MoneyOutput($totalval),
+            // 'eventtype' => 'purchasing',
+            'eventtype' => 'manufacturing',
+            'addcost' => $addcost,
+            'addval' => empty($addval) ? '-' : MoneyOutput($addval,0),
+            'maxval' => empty($totals['max']) ? $this->empty_html_content : QTYOutput($totals['max']),
+            'maxtotal' => empty($totals['maxsum']) ? $this->empty_html_content : MoneyOutput($totals['maxsum']),
+            'itempercent' => $totals['itempercent'],
+            'instock' => empty($totals['instock']) ? $this->empty_html_content : QTYOutput($totals['instock']),
+            'reserved' => empty($totals['reserved']) ? $this->empty_html_content : QTYOutput($totals['reserved']),
+            'available' => empty($totals['available']) ? $this->empty_html_content : QTYOutput($totals['available']),
+            'container_head' => $onboat_content,
+            'container_leftview' => ($margin < 0 ? '1' : 0),
         ];
         $content = $this->load->view('masterinvent/page_view', $options, TRUE);
         return $content;

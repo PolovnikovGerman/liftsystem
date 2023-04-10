@@ -434,15 +434,20 @@ Class Artproof_model extends MY_Model
 
 
     public function get_artproofs($search,$order_by,$direct,$limit,$offset,$maxval) {
+        $this->db->select('l.lead_id, group_concat(u.user_initials) as salesrep');
+        $this->db->from('ts_lead_users l');
+        $this->db->join('users u','u.user_id = l.user_id');
+        $this->db->group_by('l.lead_id');
+        $salersrepsql = $this->db->get_compiled_select();
+
         $this->db->select('e.*,l.lead_number, l.lead_id,vo.order_proj_status,artwork_alert(e.email_id, "email") as vect_alert,
-            artwok_bypassredraw(e.email_id,"R") as redraw_bypass',FALSE);
+            artwok_bypassredraw(e.email_id,"R") as redraw_bypass, lu.salesrep as salesrep');
         // $this->db->select('o.order_num');
         $this->db->from('ts_emails e');
         $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
         $this->db->join('ts_leads l','l.lead_id=lem.lead_id','left');
         $this->db->join('v_order_statuses vo','vo.order_id=e.email_id and vo.status_type="R"','left');
-        // $this->db->join('ts_artworks a','a.mail_id=e.email_id');
-        // $this->db->join('ts_orders o','o.order_id=a.order_id','left');
+        $this->db->join("({$salersrepsql}) lu",'lu.lead_id=l.lead_id','left');
         $this->db->where('e.email_type', $this->EMAIL_TYPE);
         if (isset($search['search'])) {
             $this->db->like('upper(concat(coalesce(e.email_sender,""), coalesce(e.email_sendermail,""), coalesce(e.email_sendercompany,""),e.proof_num)) ',  strtoupper($search['search']));
@@ -593,12 +598,11 @@ Class Artproof_model extends MY_Model
             $row['rowclass'] = !empty($row['proof_order']) ? 'orderassign' : ($row['lead_id']=='' ? '' : 'leadentered');
             $row['lead_number']=($row['lead_number']=='' ? '' : 'L'.$row['lead_number']);
             $row['leadid']=($row['lead_id']=='' ? 0 : $row['lead_id']);
+            $row['proof_note']='';
             $row['note_title']='';
-            if ($row['email_questions']=='') {
-                $row['proof_note']=$emptynote;
-            } else {
-                $row['proof_note']=$fullnote;
-                $row['note_title']='data-event="hover" data-bgcolor="#f0f0f0" data-bordercolor="#000" data-textcolor="#000" data-balloon="'.$row['email_questions'].'"';
+            if (!empty($row['email_questions'])) {
+                $row['proof_note']='questiondat';
+                $row['note_title']=$row['email_questions'];
             }
             if ($row['email_status']==$this->void_status) {
                 $row['action_icon']=$revert_icon;

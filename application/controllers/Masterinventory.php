@@ -4,6 +4,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Masterinventory extends MY_Controller
 {
+    private $maxlength=183;
+    private $container_type = 'C';
+    private $express_type = 'E';
+    private $container_with=60;
+
     public function __construct()
     {
         parent::__construct();
@@ -19,18 +24,55 @@ class Masterinventory extends MY_Controller
             $mdata=[];
 
             $data = $this->inventory_model->get_masterinvent_list($inventory_type, $inventory_filter);
+            $mdata['bodylist'] = $this->load->view('masterinvent/inventory_body_view',[], TRUE);
             if (count($data['list'])==0) {
-                $mdata['content']=$this->load->view('masterinvent/inventorylist_emptydata_view',[],TRUE);
+                $mdata['left_content']=$this->load->view('masterinvent/inventorylist_emptydata_view',[],TRUE);
+                $mdata['express_content'] = '';
+                $mdata['container_content'] = '';
+                $mdata['right_content'] = '';
             } else {
                 $expand=0;
                 if (count($data['list'])<=39) {
                     $expand = 1;
                 }
-                $mdata['content']=$this->load->view('masterinvent/inventorylist_data_view',['lists' => $data['list'],'showmax' => $showmax, 'expand' => $expand],TRUE);
+                $content_options = [
+                    'lists' => $data['list'],
+                    'showmax' => $showmax,
+                    'expand' => $expand,
+                ];
+                $mdata['left_content']=$this->load->view('masterinvent/inventorydata_left_view', $content_options,TRUE);
+                $mdata['right_content'] = $this->load->view('masterinvent/inventorydata_right_view', $content_options,TRUE);
+                // On boats
+                $colors = $data['colors'];
+                $onboats = $this->inventory_model->get_data_onboat($inventory_type, $this->container_type);
+                $containers_view='';
+                foreach ($onboats as $onboat) {
+                    $details = $this->inventory_model->get_onboatdetails($onboat['onboat_container'], $colors, $this->container_type);
+                    $boptions=array(
+                        'data'=>$details,
+                        'onboat_container'=>$onboat['onboat_container'],
+                        'onboat_status'=>$onboat['onboat_status'],
+                        'type' => $this->container_type,
+                    );
+                    $containers_view.=$this->load->view('masterinvent/onboat_container_view', $boptions, TRUE);
+                }
+                $slider_width=60*(count($onboats));
+                $margin=$this->maxlength-$slider_width;
+                $boatoptions=array(
+                    'width'=>$slider_width,
+                    'margin'=>($margin>0 ? 0 : $margin),
+                    'boatcontent'=>$containers_view,
+                );
+                $mdata['container_content']=$this->load->view('masterinvent/onboatdata_view', $boatoptions, TRUE);
+
+                // $mdata['width'] = $slider_width-240;
+                $mdata['margin']=$margin;
+                $mdata['express_content'] = '&nbsp;';
+
             }
-            $mdata['instock'] = empty($data['type_instock']) ? '' : QTYOutput($data['type_instock']);
-            $mdata['available'] = empty($data['type_available']) ? '' : QTYOutput($data['type_available']);
-            $mdata['maximum'] = empty($data['type_maximum']) ? '' : QTYOutput($data['type_maximum']);
+            // $mdata['instock'] = empty($data['type_instock']) ? '' : QTYOutput($data['type_instock']);
+            // $mdata['available'] = empty($data['type_available']) ? '' : QTYOutput($data['type_available']);
+            // $mdata['maximum'] = empty($data['type_maximum']) ? '' : QTYOutput($data['type_maximum']);
             $this->ajaxResponse($mdata,'');
         }
         show_404();
@@ -441,4 +483,283 @@ class Masterinventory extends MY_Controller
         show_404();
     }
 
+    public function changecontainer() {
+        if ($this->isAjax()) {
+            $error = '';
+            $mdata = [];
+            $postdata = $this->input->post();
+            $inventory_type = ifset($postdata,'inventory_type',0);
+            $inventory_filter = ifset($postdata,'inventory_filter', 0);
+            $onboat_container = ifset($postdata,'container',0);
+            $onboat_type = ifset($postdata, 'onboat_type', $this->container_type);
+            // Get colors
+            $sessionid = uniq_link(14);
+            $colors = $this->inventory_model->get_inventory_colors($inventory_type, $inventory_filter);
+            if ($onboat_container==0) {
+                $total = 0;
+                $onboat_date = time();
+                $freight_price = 0;
+                // Old containers
+                $onboats = $this->inventory_model->get_data_onboat($inventory_type, $onboat_type);
+                $viewwidth=(count($onboats)+1)*$this->container_with;
+                $mdata['width']=$viewwidth;
+                $marginleft=($viewwidth>$this->maxlength ? ($this->maxlength-$viewwidth) : 0);
+                $mdata['marginleft']= $marginleft;
+                $head_options = [
+                    'onboat_status' => 0,
+                    'onboat_container' => 0,
+                    'onboat_date' => $onboat_date,
+                    'freight_price' => $freight_price,
+                ];
+                $mdata['containerhead'] = $this->load->view('masterinvent/onboat_containerhead_view', $head_options, TRUE);
+                $container = $this->inventory_model->new_onboatcontainer($colors, $onboat_type);
+                $rawcontent = $this->load->view('masterinvent/onboat_container_edit',['data' => $container,'session_id' => $sessionid], TRUE);
+                $mdata['content'] = '<div class="onboacontainerarea" data-container="0"><div class="onboacontainerdata editdata" data-container="0">'.$rawcontent.'</div></div>';
+            } else {
+                $chktotals = $this->inventory_model->get_onboattotals($onboat_container, $onboat_type);
+                $error = $chktotals['msg'];
+                if ($chktotals['result']==$this->success_result) {
+                    $error = '';
+                    $totals = $chktotals['data'];
+                    $container = $this->inventory_model->get_onboatdetails($onboat_container, $colors, $onboat_type,  1);
+                    $total = $totals['total'];
+                    $onboat_date = $totals['onboat_date'];
+                    $freight_price = $totals['freight_price'];
+                    $mdata['freight_price'] = $freight_price;
+                    $mdata['content'] = $this->load->view('masterinvent/onboat_container_edit',['data' => $container,'session_id' => $sessionid], TRUE);
+                }
+            }
+            if ($error=='') {
+                $mdata['managecontent']=$this->load->view('masterinvent/container_edit_view',[], TRUE); // onboat_editmanage
+                $sessiondata = [
+                    'total' => $total,
+                    'onboat_date' => $onboat_date,
+                    'freight_price' => $freight_price,
+                    'container' => $container,
+                    'onboat_container' => $onboat_container,
+                    'onboat_type' => $onboat_type,
+                ];
+                usersession($sessionid, $sessiondata);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function changecontainer_param() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Edit time expire - reload page';
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session_id);
+            if (!empty($sessiondata)) {
+                $error = 'Empty Inventory Color / Item';
+                $color_id = ifset($postdata, 'color',0);
+                $item_id = ifset($postdata, 'item', 0);
+                if ($item_id!==0 && $color_id!==0) {
+                    $entity = ifset($postdata,'entity', 'qty');
+                    $newval = ifset($postdata, 'newval', 0);
+                    $res = $this->inventory_model->changecontainer_param($sessiondata, $color_id, $item_id, $entity, $newval, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $mdata['container'] = $sessiondata['onboat_container'];
+                        if ($entity=='qty') {
+                            $mdata['itemtval'] = $res['itemtval']==0 ? '&nbsp;' : QTYOutput($res['itemtval']);
+                            $mdata['total'] = $res['total']==0 ? '&nbsp;' : QTYOutput($res['total']);
+                        }
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function changecontainer_header() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Edit time expire - reload page';
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session_id);
+            if (!empty($sessiondata)) {
+                $entity = ifset($postdata,'entity', 'qty');
+                $newval = ifset($postdata, 'newval', 0);
+                $res = $this->inventory_model->changecontainer_header($sessiondata, $entity, $newval, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function containerchange_cancel() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $inventory_type = ifset($postdata,'inventory_type',0);
+            $inventory_filter = ifset($postdata,'inventory_filter', 0);
+
+            // Prepare header view
+            $onboats = $this->inventory_model->get_data_onboat($inventory_type, $this->container_type);
+            $boathead_view='';
+            foreach ($onboats as $onboat) {
+                $onboat['type'] = 'C';
+                $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
+            }
+            // Build head content
+            $slider_width=60*count($onboats);
+            $margin = $this->maxlength-$slider_width;
+            $margin=($margin>0 ? 0 : $margin);
+            // $width_edit = 58;
+            $boatoptions=array(
+                'data'=>$onboats,
+                'container_view' => $boathead_view,
+                'width' => $slider_width,
+                'margin' => $margin,
+            );
+            $mdata['onboat_header']=$this->load->view('masterinvent/onboathead_view', $boatoptions, TRUE);
+            // Prepare body content
+            $colors = $this->inventory_model->get_inventory_colors($inventory_type, $inventory_filter);
+            $containers_view='';
+            foreach ($onboats as $onboat) {
+                $details = $this->inventory_model->get_onboatdetails($onboat['onboat_container'], $colors, $this->container_type);
+                $boptions=array(
+                    'data'=>$details,
+                    'onboat_container'=>$onboat['onboat_container'],
+                    'onboat_status'=>$onboat['onboat_status'],
+                );
+                $containers_view.=$this->load->view('masterinvent/onboat_container_view', $boptions, TRUE);
+            }
+            $slider_width=60*(count($onboats));
+            $margin=$this->maxlength-$slider_width;
+            $boatoptions=array(
+                'width'=>$slider_width,
+                'margin'=>($margin>0 ? 0 : $margin),
+                'boatcontent'=>$containers_view,
+            );
+            $mdata['onboat_content']=$this->load->view('masterinvent/onboatdata_view', $boatoptions, TRUE);
+            $this->ajaxResponse($mdata, $error);
+
+        }
+        show_404();
+    }
+
+    public function containerchange_save() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Edit time expire - reload page';
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'session','unkn');
+            $sessiondata = usersession($session_id);
+            if (!empty($sessiondata)) {
+                $onboat_container = $sessiondata['onboat_container'];
+                $container = $sessiondata['container'];
+                $freight_price = $sessiondata['freight_price'];
+                $onboat_date = $sessiondata['onboat_date'];
+                $onboat_type = $sessiondata['onboat_type'];
+                $res = $this->inventory_model->inventory_container_save($onboat_container, $onboat_type, $container, $onboat_date, $freight_price);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $inventory_type = ifset($postdata,'inventory_type',0);
+                    $inventory_filter = ifset($postdata,'inventory_filter', 0);
+                    // Prepare header view
+                    $onboats = $this->inventory_model->get_data_onboat($inventory_type, $this->container_type);
+                    $boathead_view='';
+                    foreach ($onboats as $onboat) {
+                        $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
+                    }
+                    // Build head content
+                    $slider_width=60*count($onboats);
+                    $margin = $this->maxlength-$slider_width;
+                    $margin=($margin>0 ? 0 : $margin);
+                    // $width_edit = 58;
+                    $boatoptions=array(
+                        'data'=>$onboats,
+                        'container_view' => $boathead_view,
+                        'width' => $slider_width,
+                        'margin' => $margin,
+                    );
+                    $mdata['onboat_header']=$this->load->view('masterinvent/onboathead_view', $boatoptions, TRUE);
+                    // Prepare body content
+                    $colors = $this->inventory_model->get_inventory_colors($inventory_type, $inventory_filter);
+                    $containers_view='';
+                    foreach ($onboats as $onboat) {
+                        $details = $this->inventory_model->get_onboatdetails($onboat['onboat_container'], $colors, $this->container_type);
+                        $boptions=array(
+                            'data'=>$details,
+                            'onboat_container'=>$onboat['onboat_container'],
+                            'onboat_status'=>$onboat['onboat_status'],
+                        );
+                        $containers_view.=$this->load->view('masterinvent/onboat_container_view', $boptions, TRUE);
+                    }
+                    $slider_width=60*(count($onboats));
+                    $margin=$this->maxlength-$slider_width;
+                    $boatoptions=array(
+                        'width'=>$slider_width,
+                        'margin'=>($margin>0 ? 0 : $margin),
+                        'boatcontent'=>$containers_view,
+                    );
+                    $mdata['onboat_content']=$this->load->view('masterinvent/onboatdata_view', $boatoptions, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function container_arrive() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Container Not Found';
+            $postdata = $this->input->post();
+            $onboat_container = ifset($postdata,'onboat_container',0);
+            $onboat_type = ifset($postdata, 'onboat_type','');
+            if ($onboat_container > 0 && !empty($onboat_type)) {
+                $chktotals = $this->inventory_model->get_onboattotals($onboat_container, $onboat_type);
+                $error = $chktotals['msg'];
+                if ($chktotals['result']==$this->success_result) {
+                    // Container exist
+                    $totals = $chktotals['data'];
+                    $res = $this->inventory_model->onboat_arrived($onboat_container, $onboat_type, $totals, $this->USR_ID);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        // Rebuild header
+                        $inventory_type = ifset($postdata,'inventory_type',0);
+                        $inventory_filter = ifset($postdata,'inventory_filter', 0);
+
+                        // Prepare header view
+                        $onboats = $this->inventory_model->get_data_onboat($inventory_type, $this->container_type);
+                        $boathead_view='';
+                        foreach ($onboats as $onboat) {
+                            $onboat['type'] = 'C';
+                            $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
+                        }
+                        // Build head content
+                        $slider_width=60*count($onboats);
+                        $margin = $this->maxlength-$slider_width;
+                        $margin=($margin>0 ? 0 : $margin);
+                        // $width_edit = 58;
+                        $boatoptions=array(
+                            'data'=>$onboats,
+                            'container_view' => $boathead_view,
+                            'width' => $slider_width,
+                            'margin' => $margin,
+                        );
+                        $mdata['onboat_header']=$this->load->view('masterinvent/onboathead_view', $boatoptions, TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }

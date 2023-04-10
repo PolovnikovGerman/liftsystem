@@ -1,5 +1,6 @@
 .chk-ordoption {
-    background-color: #48e763;
+    /* background-color: #48e763; */
+    background-color: #17da38;
 }
 .chk-ordoption-alert {
     background-color: #3c1699;
@@ -24,7 +25,8 @@ a.find_it {
     background-color: #BCBCBC !important;
 }
 .art_tooltip {
-    background-color: #1DCD19;
+    /* background-color: #1DCD19; */
+    background-color: #17da38;
     float: left;
     padding: 7px;
     font-size: 13px;

@@ -1,6 +1,11 @@
+var sliderwidth=183;
+
 function init_master_inventory() {
     init_master_inventorydata();
+    // init_master_containers();
+    // init_master_express();
     init_master_inventorycontent();
+    init_inventcontainer_move();
 }
 
 function init_master_inventorydata() {
@@ -9,19 +14,26 @@ function init_master_inventorydata() {
     params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
     params.push({name: 'showmax', value: $("#invshowmax").val()});
     var url="/masterinventory/get_inventory_list";
+    $("#loader").show();
     $.post(url, params, function (response) {
         if (response.errors=='') {
-            $("#masterinventtablebody").empty().html(response.data.content);
+            $("#loader").hide();
+            $("#masterinventtablebody").empty().html(response.data.bodylist);
+            $(".masterinventtablebody").find('div.mastinvent_body_left').html(response.data.left_content);
+            $(".masterinventtablebody").find('div.mastinvent_body_express').html(response.data.express_content);
+            $(".masterinventtablebody").find('div.mastinvent_body_container').html(response.data.container_content);
+            $(".masterinventtablebody").find('div.mastinvent_body_right').html(response.data.right_content);
             $(".masterinventtablebody").scrollpanel({
                 'prefix' : 'sp-'
             });
-            $(".inventtotalinstock").empty().html(response.data.instock);
-            $(".inventtotalavailable").empty().html(response.data.available);
-            $(".inventtotalmaximum").empty().html(response.data.maximum);
+            // $(".inventtotalinstock").empty().html(response.data.instock);
+            // $(".inventtotalavailable").empty().html(response.data.available);
+            // $(".inventtotalmaximum").empty().html(response.data.maximum);
             jQuery.balloon.init();
             init_master_inventorytabledat();
             leftmenu_alignment();
         } else {
+            $("#loader").hide();
             show_error(response)
         }
     },'json')
@@ -96,17 +108,264 @@ function init_master_inventorycontent() {
             }
         },'json');
     });
+    $(".onboatmanage").find('i').unbind('click').click(function (){
+        // Edit container
+        var container = $(this).parent('div.onboatmanage').data('container');
+        var url="/masterinventory/changecontainer";
+        var params = new Array();
+        params.push({name: 'container', value: container});
+        params.push({name: 'onboat_type', value: 'C'});
+        params.push({name: 'inventory_type', value: $("#active_invtype").val()});
+        params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                // Lock add / edit elements
+                $(".onboatmanage").find('i').unbind('click');
+                $(".mastinvent_container_manage").find('span').unbind('click');
+                $(".waitarrive").unbind('click');
+                // Change view of container
+                $(".onboacontainerdata[data-container='"+container+"']").addClass('editdata');
+                $(".mastinvent_body_container").find('div.onboatdataareas').addClass('editdata');
+                $(".onboacontainerdata[data-container='"+container+"']").empty().html(response.data.content);
+                // Edit
+                $(".waitarrive[data-container='"+container+"']").empty().html(response.data.managecontent);
+                $("input.boatcontainerdate[data-container='"+container+"']").datepicker({
+                    'format' : 'mm/dd/yy',
+                    'autoclose' : true,
+                    'startDate': '0d'
+                });
+                $("input.boatcontainerfreight[data-container='"+container+"']").val(response.data.freight_price).prop('readonly', false).prop('title','');
+                init_edit_inventcontainer(container,'C');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".mastinvent_container_manage").find('span').unbind('click').click(function (){
+        // Add container
+        var container = 0;
+        var url="/masterinventory/changecontainer";
+        var params = new Array();
+        params.push({name: 'container', value: container});
+        params.push({name: 'inventory_type', value: $("#active_invtype").val()});
+        params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
+        params.push({name: 'onboat_type', value: 'C'})
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                // Lock add / edit elements
+                $(".onboatmanage").find('i').unbind('click');
+                $(".mastinvent_container_manage").find('span').unbind('click');
+                $(".waitarrive").unbind('click');
+                // Change view of container
+                $(".onboacontainerdata[data-container='"+container+"']").addClass('editdata');
+                $(".mastinvent_body_container").find('div.onboatdataareas').addClass('editdata');
+                $(".mastinvent_container_contentarea").find('div.after_head').css('margin-left',response.data.marginleft).css('width',response.data.width).append(response.data.containerhead);
+                $(".onboatdataareas").find('div.after_head').css('margin-left',response.data.marginleft).css('width',response.data.width).append(response.data.content);
+                // Edit
+                $(".waitarrive[data-container='"+container+"']").empty().html(response.data.managecontent);
+                $("input.boatcontainerdate[data-container='"+container+"']").datepicker({
+                    'format' : 'mm/dd/yy',
+                    'autoclose' : true,
+                    'startDate': '0d'
+                });
+                $("input.boatcontainerfreight[data-container='"+container+"']").prop('readonly', false).prop('title','');
+                init_edit_inventcontainer(container,'C');
+
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".waitarrive").unbind('click').click(function (){
+        var conteinernum = $(this).data('container');
+        var onboattype = $(this).data('onboattype');
+        var msg = 'Are You Sure You Want to Mark This As Arrived?'
+        if (confirm(msg)==true) {
+            var params = new Array();
+            params.push({name: 'onboat_container', value: conteinernum});
+            params.push({name: 'onboat_type', value: onboattype});
+            params.push({name: 'inventory_type', value: $("#active_invtype").val()});
+            params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
+            var url = '/masterinventory/container_arrive';
+            $("#loader").show();
+            $.post(url, params, function (response){
+                if (response.errors==''){
+                    $(".mastinvent_container_contentarea").empty().html(response.data.onboat_header);
+                    $("#loader").hide();
+                    init_master_inventorydata();
+                } else {
+                    $("#loader").hide();
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+}
+
+function init_edit_inventcontainer(container, onboat_type) {
+    // Edit onstock
+    $(".onroutestockinpt").unbind('change').change(function (){
+        var item = $(this).data('item');
+        var color = $(this).data('color');
+        var params = new Array();
+        params.push({name: 'session', value: $("#container_session").val()});
+        params.push({name: 'entity', value: 'qty'});
+        params.push({name: 'color', value: $(this).data('color')});
+        params.push({name: 'item', value: $(this).data('item')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url='/masterinventory/changecontainer_param';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".conteinerqty[data-itemtotal='"+item+"']").empty().html(response.data.itemtval);
+                $(".containertotal[data-container='"+response.data.container+"']").empty().html(response.data.total);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".onroutepriceinpt").unbind('change').change(function (){
+        var item = $(this).data('item');
+        var color = $(this).data('color');
+        var params = new Array();
+        params.push({name: 'session', value: $("#container_session").val()});
+        params.push({name: 'entity', value: 'vendor_price'});
+        params.push({name: 'color', value: $(this).data('color')});
+        params.push({name: 'item', value: $(this).data('item')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url='/masterinventory/changecontainer_param';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("input.boatcontainerdate").unbind('change').change(function(){
+        var params = new Array();
+        params.push({name: 'session', value: $("#container_session").val()});
+        params.push({name: 'entity', value: 'onboat_date'});
+        params.push({name: 'newval', value: $(this).val()});
+        var url='/masterinventory/changecontainer_header';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("input.boatcontainerfreight").unbind('change').change(function (){
+        var params = new Array();
+        params.push({name: 'session', value: $("#container_session").val()});
+        params.push({name: 'entity', value: 'freight_price'});
+        params.push({name: 'newval', value: $(this).val()});
+        var url='/masterinventory/changecontainer_header';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Click on cancel button
+    $(".cancelboatcontainer").unbind('click').click(function (){
+        var url='/masterinventory/containerchange_cancel';
+        var params = new Array();
+        params.push({name: 'inventory_type', value: $("#active_invtype").val()});
+        params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
+        params.push({name: 'onboat_type', value: onboat_type});
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#loader").hide();
+                $(".mastinvent_container_contentarea").empty().html(response.data.onboat_header);
+                $(".mastinvent_body_container").empty().html(response.data.onboat_content);
+                init_master_inventorycontent();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
+    // Click save button
+    $(".saveboatcontainer").unbind('click').click(function (){
+        var url='/masterinventory/containerchange_save';
+        var params = new Array();
+        params.push({name: 'session', value: $("#container_session").val()});
+        params.push({name: 'inventory_type', value: $("#active_invtype").val()});
+        params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#loader").hide();
+                $(".mastinvent_container_contentarea").empty().html(response.data.onboat_header);
+                $(".mastinvent_body_container").empty().html(response.data.onboat_content);
+                init_master_inventorycontent();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
+}
+function init_inventcontainer_move() {
+    $(".mastinvent_container_slideleft").unbind('click').click(function(){
+        if ($(this).hasClass('active')) {
+            var offset = 60;
+            container_slider_move(offset);
+        }
+    });
+    $(".mastinvent_container_slideright").unbind('click').click(function (){
+        if ($(this).hasClass('active')) {
+            var offset = -60;
+            container_slider_move(offset);
+        }
+    });
+}
+
+function container_slider_move(offset) {
+    var margin=parseInt($(".mastinvent_container_contentarea").find("div.after_head").css('margin-left'));
+    var slwidth=parseInt($(".mastinvent_container_contentarea").find("div.after_head").css('width'));
+    var newmargin=(margin+offset);
+    if (newmargin>=0) {
+        newmargin=0;
+        $(".mastinvent_container_slideleft").removeClass('active');
+        $(".mastinvent_container_slideleft").empty().html('<img src="/img/masterinvent/container_nonactive_left.png"/>');
+    } else {
+        $(".mastinvent_container_slideleft").addClass('active');
+        $(".mastinvent_container_slideleft").empty().html('<img src="/img/masterinvent/container_active_left.png"/>');
+    }
+
+    if ((slwidth+newmargin)>sliderwidth) {
+        $(".mastinvent_container_slideright").addClass('active');
+        $(".mastinvent_container_slideright").empty().html('<img src="/img/masterinvent/container_active_right.png"/>');
+    } else {
+        $(".mastinvent_container_slideright").removeClass('active');
+        $(".mastinvent_container_slideright").empty().html('<img src="/img/masterinvent/container_nonactive_right.png"/>');
+    }
+    $("div.after_head").animate({marginLeft:newmargin+'px'},'slow',function(){
+        // var margin=parseInt($("div.after_head").css('margin-left'));
+        // var slwidth=parseInt($("div.after_head").css('width'));
+        // if ((slwidth+margin)>sliderwidth) {
+        //    $("div.right_arrow").addClass('active');
+        // } else {
+        //    $("div.right_arrow").removeClass('active');
+        //}
+    });
+
+    // $("div.after_head_boat").animate({marginLeft:newmargin+'px'},'slow');
+    // if ((slwidth+newmargin)>=slshow) {
+    init_inventcontainer_move();
 }
 
 function init_master_inventorytabledat() {
-    $(".inventorydatarow.itemcolor").hover(
-        function () {
-            $(this).addClass('activeinvent');
-        },
-        function () {
-            $(this).removeClass('activeinvent');
-        }
-    );
+    // $(".inventorydatarow.itemcolor").hover(
+    //     function () {
+    //         $(this).addClass('activeinvent');
+    //     },
+    //     function () {
+    //         $(this).removeClass('activeinvent');
+    //     }
+    // );
     $(".inventorydatarow.itemcolor").find("div.masterinventhistory").unbind('click').click(function () {
         var item=$(this).data('item');
         var params = new Array();

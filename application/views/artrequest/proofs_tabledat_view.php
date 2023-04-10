@@ -8,6 +8,7 @@
         <div class="proof_parsedata" <?=$row['emailparsed_title']?>><?=$row['emailparsed']?></div>
         <div class="proof_leadnum_dat <?=$row['assigned']?>" data-leadid="<?=$row['leadid']?>"  data-proofid="<?=$row['email_id']?>"><?=$row['lead_number']?></div>
         <div class="proof_includ_dat" data-proofid="<?=$row['email_id']?>"><?=$row['inclicon']?></div>
+        <div class="lead_salesrep_dat"><?=empty($row['salesrep']) ? '&nbsp;' : $row['salesrep']?></div>
         <div class="proof_brand_dat" data-proofid="<?=$row['email_id']?>"><?=$row['proof_num']?></div>
         <div class="proof_date_dat"><?=$row['email_date']?></div>
         <div class="proof_customer_dat">
@@ -35,6 +36,10 @@
             </div>
         </div>
         <div class="proof_note_dat" data-proofid="<?=$row['email_id']?>" <?=($row['note_title'])?>><?=$row['proof_note']?></div>
+        <div class="proof_note_dat <?=$row['proof_note']?>" data-proofid="<?=$row['email_id']?>" <?=($row['note_title']=='' ? '' : 'data-content="'.$row['note_title'].'"')?>>
+            <i class="fa fa-file-text-o" aria-hidden="true"></i>
+        </div>
+        <div class="proof_ordernum_dat"><?=$row['orderedit']?></div>
     </div>
     <?php $nrow++;?>
 <?php } ?>

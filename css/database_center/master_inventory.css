@@ -176,9 +176,6 @@
 }
 .mastinvent_databody {
     background: #252525;
-    /* width: 1050px; */
-    /* width: 1028px; */
-    /* width: 934px; */
     width: 1355px;
     padding-left: 12px;
     padding-bottom: 12px;
@@ -207,14 +204,52 @@
     font-size: 12px;
     margin-right: 10px;
 }
+.mastinvent_header_left {
+    width: 502px;
+}
+.mastinvent_header_left .labeltxt, .mastinvent_header_left .valuedata {
+    height: 16px;
+    line-height: 16px;
+    color: #989898;
+}
+.mastinvent_header_left .valuedata {
+    font-size: 13px;
+}
+.mastinvent_header_left .labeltxt {
+    font-size: 12px;
+    width: 69px;
+}
+.mastinvent_header_left .addlabeltxt {
+    height: 16px;
+    line-height: 16px;
+    color: #ffffff;
+    font-size: 12px;
+    width: 69px;
+}
+.mastinvent_header_left .addlabeltotal {
+    height: 16px;
+    line-height: 16px;
+    color: #ffffff;
+    font-size: 12px;
+    /* width: 69px; */
+}
+input.inventadd {
+    height: 16px;
+    width: 46px;
+    text-align: center;
+    margin-right: 6px;
+}
 .masterinventexport {
-    padding-top: 5px;
+    /* padding-top: 5px; */
+    margin-top: 83px;
     float: right!important;
     color: #ffffff;
     /* font-size: 14px; */
     font-size: 12px;
     padding-right: 6px;
     cursor: pointer;
+    height: 27px;
+    line-height: 27px;
 }
 .masterinventexport i {
     font-size: 14px;
@@ -224,30 +259,46 @@
     color: #ffffff;
     /* font-size: 14px; */
     font-size: 12px;
+    margin-top: 56px;
+}
+.masterinventtotals > div {
+    text-align: center;
+    height: 22px;
+    line-height: 22px;
 }
 .masterinventtotals .inventtotalmaxshow {
     /* margin-left: 435px; */
-    margin-left: 239px;
-    margin-top: -17px;
+    margin-left: 169px;
     color: #8989ff;
-    width: 42px;
-    text-align: center;
+    width: 67px;
+    /* text-align: center; */
     cursor: pointer;
-    font-size: 11px;
-
+    font-size: 12px;
 }
+.masterinventtotals .masterinventpercent {
+    width: 42px;
+}
+.masterinventtotals .masterinventorymaximum {
+    display: none;
+    width: 58px;
+    color: #8989ff;
+}
+.masterinventtotals .masterinventinstock {
+    width: 58px;
+}
+.masterinventtotals .masterinventreserv {
+    width: 58px;
+}
+.masterinventtotals .masterinventavailab {
+    width: 58px;
+}
+
 .masterinventtotals .inventtotalmaximum {
     /* width: 75px; */
     width: 58px;
     text-align: center;
     display: none;
     color: #8989ff;
-    margin-top: -8px;
-}
-.masterinventtotals .inventtotalinstock {
-    /* width: 69px; */
-    width: 58px;
-    text-align: center;
     margin-top: -8px;
 }
 .masterinventtotals .inventtotalavailable {
@@ -275,6 +326,9 @@
     padding-left: 2px;
 }
 .masterinventtablehead .addnewmasterinvent img {
+    margin-top: 4px;
+}
+.masterinventtablehead .addnewmasterinvent img {
     cursor: pointer;
 }
 .masterinventtablehead .masterinventseq {
@@ -285,7 +339,7 @@
 }
 .masterinventtablehead .masterinventdescrip {
     /* width: 268px; */
-    width: 176px;
+    width: 174px;
 }
 .masterinventtablehead .masterinventpercent {
     width: 42px;
@@ -319,7 +373,10 @@
     width: 14px;
     display: none;
 }
-.masterinventtablehead .masterinventavgprice {
+.masterinventtablehead .masterinvemptyspace {
+    width: 43px;
+}
+.masterinventtablehead .masterinventavgprice, .masterinventtablehead .masterinventcontactprice {
     /* width: 66px; */
     width: 55px;
 }
@@ -355,6 +412,20 @@
 }
 .masterinventtablebody .sp-scrollbar.active .sp-thumb {
     background-color: #c1c1c1;
+}
+/* Scrollbar end */
+.masterinventtablebody .mastinvent_body_left {
+    width: 502px;
+}
+.masterinventtablebody .mastinvent_body_express {
+    width: 270px;
+}
+.masterinventtablebody .mastinvent_body_container {
+    width: 283px;
+    margin-left: 23px;
+}
+.masterinventtablebody .mastinvent_body_right {
+    width: 246px;
 }
 .inventorydatarow {
     width: 100%;
@@ -417,7 +488,7 @@
 }
 .inventorydatarow .masterinventdescrip {
     /* width: 268px; */
-    width: 176px;
+    width: 174px;
     text-align: left;
     border-right: 1px solid #000000;
     padding-left: 8px;
@@ -522,7 +593,8 @@
 }
 .inventorydatarow .masterinventunit {
     /* width: 2.9%; */
-    width: 28px;
+    width: 29px;
+    border-right: 1px solid #000000;
 }
 .inventorydatarow .masterinventonorder {
     /* width: 8.26%; */
@@ -539,20 +611,21 @@
     background: #252525;
     display: none;
 }
+.inventorydatarow .masterinvemptyspace {
+    width: 43px;
+}
 .inventorydatarow .masterinventavgprice {
-    /* width: 6.4%; */
-    /* width: 66px; */
     width: 55px;
     padding-right: 6px;
     text-align: right;
     border-right: 1px solid #000000;
 }
+.inventorydatarow .masterinventavgprice.avgprice {
+    color: #1600bb;
+}
 .inventorydatarow .masterinventtotalval {
-    /* width: 11.2%; */
-    /* width: 101px; */
-    width: 86px;
+    width: 73px;
     text-align: right;
-    /* border-right: 2px solid #000000; */
     padding-right: 6px;
 }
 .inventorydatarow .masterinventavgprice.emptytotal,
@@ -1401,4 +1474,173 @@ input.colorvendorpriceinpt {
 #artModal .modal-dialog {
     width: 1004px;
     max-width: 1004px;
+}
+/* Express */
+.mastinvent_header_express {
+    width: 270px;
+    height: 101px;
+}
+.mastinvent_header_express .mastinvent_express_manage {
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: #02cdf5;
+    height: 20px;
+    line-height: 20px;
+}
+.mastinvent_express_slide {
+    width: 50px;
+}
+.mastinvent_express_slideleft {
+    padding-top: 34px;
+    padding-right: 6px;
+    text-align: right;
+    width: 100%;
+}
+.mastinvent_express_slideright {
+    padding-top: 34px;
+    padding-left: 6px;
+    width: 100%;
+}
+.mastinvent_express_contentarea {
+    width: 169px;
+}
+/* Container */
+.mastinvent_header_container {
+    /* width: 270px; */
+    width: 283px;
+    margin-left: 23px;
+    /* height: 101px; */
+}
+.mastinvent_header_container .mastinvent_container_manage {
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: #02cdf5;
+    height: 20px;
+    line-height: 20px;
+}
+.mastinvent_header_container .mastinvent_container_manage span {
+    cursor: pointer;
+}
+.mastinvent_container_slide {
+    width: 43px;
+}
+.mastinvent_container_slideleft {
+    padding-top: 34px;
+    padding-right: 6px;
+    text-align: right;
+    width: 100%;
+}
+.mastinvent_container_slideleft.active img {
+    cursor: pointer;
+}
+.mastinvent_container_slideright {
+    padding-top: 34px;
+    padding-left: 6px;
+    width: 100%;
+}
+.mastinvent_container_contentarea {
+    width: 180px;
+    overflow-x: hidden;
+}
+.mastinvent_container_contentarea .onboacontainer {
+    margin-right: 2px;
+    font-size: 12px;
+    color: #000000;
+    width: 58px;
+}
+.mastinvent_container_contentarea .onboacontainer.arrived {
+    opacity: 0.3;
+}
+.mastinvent_container_contentarea .onboatmanage {
+    height: 22px;
+    line-height: 22px!important;
+    width: 58px;
+    color: #FFFFFF;
+}
+.mastinvent_container_contentarea .containerdate {
+    height: 22px;
+    line-height: 22px!important;
+    width: 100%;
+}
+.mastinvent_container_contentarea input.boatcontainerdate,
+.mastinvent_container_contentarea input.boatcontainerfreight {
+    width: 58px;
+    height: 18px;
+}
+.mastinvent_container_contentarea .containrermanage {
+    background: #d3d3d3;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    height: 18px;
+    line-height: 18px!important;
+    /* width: 55px; */
+    width: 58px;
+}
+.mastinvent_container_contentarea .containrermanage > div {
+    text-align: center;
+    width: 100%;
+}
+.mastinvent_container_contentarea .containertotal {
+    background-color: #000000;
+    color: #FFFFFF;
+    /* width: 55px; */
+    width: 61px;
+    text-align: center;
+    height: 27px;
+    line-height: 27px;
+    margin-top: 7px;
+}
+/* Body containers */
+.mastinvent_body_container .left_arrow_empty, .mastinvent_body_container .right_arrow_empty {
+    width: 43px;
+}
+.mastinvent_body_container .onboatdataareas {
+    width: 180px;
+    overflow-x: hidden;
+}
+.mastinvent_body_container .onboatdataareas.editdata {
+    width: 240px;
+}
+.mastinvent_body_container .onboacontainerdata.editdata {
+    width: 130px;
+}
+.mastinvent_body_container .onboacontainerarea {
+    width: 60px;
+}
+.mastinvent_body_container .conteinerqty {
+    width: 58px;
+}
+.mastinvent_body_container .conteinerqty input {
+    height: 18px;
+    width: 56px;
+    float: left;
+    padding-left: 3px;
+    margin-top: 3px;
+}
+.mastinvent_body_container .conteinerprice {
+    width: 54px;
+}
+.mastinvent_body_container .conteinerprice input {
+    width: 51px;
+    height: 18px;
+}
+.onboatmanagement {
+    font-size: 16px;
+    width: 26px;
+    height: 18px;
+    line-height: 18px!important;
+}
+i.saveboatcontainer {
+    color: #359045;
+    cursor: pointer;
+    margin-left: 2px;
+    /* margin-top: 1px; */
+}
+i.cancelboatcontainer {
+    color: #FF0000;
+    cursor: pointer;
+    margin-left: 2px;
+    /* margin-top: 1px; */
 }
