@@ -2128,6 +2128,18 @@ class Test extends CI_Controller
             $this->db->set('avg_price', $color['price']);
             $this->db->update('ts_inventory_colors');
         }
+        $this->db->select('b.inventory_onboat_id, b.inventory_color_id, b.vendor_price, c.price');
+        $this->db->from('ts_inventory_onboats b');
+        $this->db->join('ts_inventory_colors c','c.inventory_color_id=b.inventory_color_id');
+        $boats = $this->db->get()->result_array();
+        foreach ($boats as $boat) {
+            if ($boat['vendor_price']==0) {
+                echo 'Inv Color '.$boat['inventory_color_id'].' Boat '.$boat['inventory_onboat_id'].PHP_EOL;
+                $this->db->where('inventory_onboat_id', $boat['inventory_onboat_id']);
+                $this->db->set('vendor_price', $boat['price']);
+                $this->db->update('ts_inventory_onboats');
+            }
+        }
         echo 'Updated successfully'.PHP_EOL;
     }
 }
