@@ -2101,4 +2101,30 @@ class Test extends CI_Controller
         }
         echo 'Ready '.PHP_EOL;
     }
+
+    public function update_avgprice() {
+        $this->db->select('inventory_color_id, sum(income_qty) as total_qty, sum(income_qty*income_price) as total');
+        $this->db->from('ts_inventory_incomes');
+        $this->db->group_by('inventory_color_id');
+        $incomes = $this->db->get()->result_array();
+        foreach ($incomes as $income) {
+            if ($income['total_qty'] !== 0) {
+                echo 'Inv Color '.$income['inventory_color_id'].' Total '.$income['total'].' QTY '.$income['total_qty'].PHP_EOL;
+                $avg_price = round($income['total']/$income['total_qty'],3);
+                $this->db->where('inventory_color_id', $income['inventory_color_id']);
+                $this->db->set('avg_price', $avg_price);
+                $this->db->update('ts_inventory_colors');
+            }
+        }
+        $this->db->select('inventory_color_id, price');
+        $this->db->from('ts_inventory_colors');
+        $this->db->where('avg_price',0);
+        $colors = $this->db->get()->result_array();
+        foreach ($colors as $color) {
+            $this->db->where('inventory_color_id', $color['inventory_color_id']);
+            $this->db->set('avg_price', $color['price']);
+            $this->db->update('ts_inventory_colors');
+        }
+        echo 'Updated successfully'.PHP_EOL;
+    }
 }

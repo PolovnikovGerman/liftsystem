@@ -611,20 +611,21 @@ input.inventadd {
     background: #252525;
     display: none;
 }
+.inventorydatarow .masterinvemptyspace {
+    width: 43px;
+}
 .inventorydatarow .masterinventavgprice {
-    /* width: 6.4%; */
-    /* width: 66px; */
     width: 55px;
     padding-right: 6px;
     text-align: right;
     border-right: 1px solid #000000;
 }
+.inventorydatarow .masterinventavgprice.avgprice {
+    color: #1600bb;
+}
 .inventorydatarow .masterinventtotalval {
-    /* width: 11.2%; */
-    /* width: 101px; */
-    width: 86px;
+    width: 73px;
     text-align: right;
-    /* border-right: 2px solid #000000; */
     padding-right: 6px;
 }
 .inventorydatarow .masterinventavgprice.emptytotal,

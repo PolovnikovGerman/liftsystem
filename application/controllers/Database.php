@@ -14,6 +14,8 @@ class Database extends MY_Controller
     private $container_with=60;
     private $maxlength=183;
 
+    private $container_type = 'C';
+    private $express_type = 'E';
 
     public function __construct()
     {
@@ -2314,7 +2316,7 @@ class Database extends MY_Controller
         $addcost = $invtypes[0]['type_addcost'];
         $addval = $totals['available'] * $addcost;
         // Get OnBoats
-        $onboats = $this->inventory_model->get_data_onboat($type_id);
+        $onboats = $this->inventory_model->get_data_onboat($type_id, $this->container_type);
         $boathead_view='';
         foreach ($onboats as $onboat) {
             $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);

@@ -122,6 +122,7 @@ function init_master_inventorycontent() {
                 // Lock add / edit elements
                 $(".onboatmanage").find('i').unbind('click');
                 $(".mastinvent_container_manage").find('span').unbind('click');
+                $(".waitarrive").unbind('click');
                 // Change view of container
                 $(".onboacontainerdata[data-container='"+container+"']").addClass('editdata');
                 $(".mastinvent_body_container").find('div.onboatdataareas').addClass('editdata');
@@ -133,7 +134,7 @@ function init_master_inventorycontent() {
                     'autoclose' : true,
                     'startDate': '0d'
                 });
-                $("input.boatcontainerfreight[data-container='"+container+"']").prop('readonly', false);
+                $("input.boatcontainerfreight[data-container='"+container+"']").val(response.data.freight_price).prop('readonly', false).prop('title','');
                 init_edit_inventcontainer(container,'C');
             } else {
                 show_error(response);
@@ -154,6 +155,7 @@ function init_master_inventorycontent() {
                 // Lock add / edit elements
                 $(".onboatmanage").find('i').unbind('click');
                 $(".mastinvent_container_manage").find('span').unbind('click');
+                $(".waitarrive").unbind('click');
                 // Change view of container
                 $(".onboacontainerdata[data-container='"+container+"']").addClass('editdata');
                 $(".mastinvent_body_container").find('div.onboatdataareas').addClass('editdata');
@@ -166,14 +168,38 @@ function init_master_inventorycontent() {
                     'autoclose' : true,
                     'startDate': '0d'
                 });
-                $("input.boatcontainerfreight[data-container='"+container+"']").prop('readonly', false);
+                $("input.boatcontainerfreight[data-container='"+container+"']").prop('readonly', false).prop('title','');
                 init_edit_inventcontainer(container,'C');
 
             } else {
                 show_error(response);
             }
         },'json');
-    })
+    });
+    $(".waitarrive").unbind('click').click(function (){
+        var conteinernum = $(this).data('container');
+        var onboattype = $(this).data('onboattype');
+        var msg = 'Are You Sure You Want to Mark This As Arrived?'
+        if (confirm(msg)==true) {
+            var params = new Array();
+            params.push({name: 'onboat_container', value: conteinernum});
+            params.push({name: 'onboat_type', value: onboattype});
+            params.push({name: 'inventory_type', value: $("#active_invtype").val()});
+            params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
+            var url = '/masterinventory/container_arrive';
+            $("#loader").show();
+            $.post(url, params, function (response){
+                if (response.errors==''){
+                    $(".mastinvent_container_contentarea").empty().html(response.data.onboat_header);
+                    $("#loader").hide();
+                    init_master_inventorydata();
+                } else {
+                    $("#loader").hide();
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
 }
 
 function init_edit_inventcontainer(container, onboat_type) {
@@ -207,6 +233,32 @@ function init_edit_inventcontainer(container, onboat_type) {
         params.push({name: 'item', value: $(this).data('item')});
         params.push({name: 'newval', value: $(this).val()});
         var url='/masterinventory/changecontainer_param';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("input.boatcontainerdate").unbind('change').change(function(){
+        var params = new Array();
+        params.push({name: 'session', value: $("#container_session").val()});
+        params.push({name: 'entity', value: 'onboat_date'});
+        params.push({name: 'newval', value: $(this).val()});
+        var url='/masterinventory/changecontainer_header';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("input.boatcontainerfreight").unbind('change').change(function (){
+        var params = new Array();
+        params.push({name: 'session', value: $("#container_session").val()});
+        params.push({name: 'entity', value: 'freight_price'});
+        params.push({name: 'newval', value: $(this).val()});
+        var url='/masterinventory/changecontainer_header';
         $.post(url, params, function (response){
             if (response.errors=='') {
             } else {

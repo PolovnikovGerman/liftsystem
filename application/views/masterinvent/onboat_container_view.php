@@ -10,7 +10,7 @@
                 </div>
             <?php } else { ?>
                 <div class="inventorydatarow itemcolor <?=$numpp%2==0 ? 'whitedatarow' : 'greydatarow'?>">
-                    <div class="conteinerqty">
+                    <div class="conteinerqty" <?=$item['onroutestock']==0 ? '' : 'title="'.MoneyOutput($item['vendor_price'],3).'"'?>>
                         <?=($item['onroutestock']==0 ? '&nbsp;' : QTYOutput($item['onroutestock'])) ?>
                     </div>
                 </div>
