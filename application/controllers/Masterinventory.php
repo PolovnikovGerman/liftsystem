@@ -508,6 +508,7 @@ class Masterinventory extends MY_Controller
                 $head_options = [
                     'onboat_status' => 0,
                     'onboat_container' => 0,
+                    'onboat_type' => $onboat_type,
                     'onboat_date' => $onboat_date,
                     'freight_price' => $freight_price,
                 ];
@@ -609,9 +610,11 @@ class Masterinventory extends MY_Controller
             // Prepare header view
             $onboats = $this->inventory_model->get_data_onboat($inventory_type, $this->container_type);
             $boathead_view='';
+            $boatlinks_view = '';
             foreach ($onboats as $onboat) {
                 $onboat['type'] = 'C';
                 $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
+                $boatlinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $onboat, TRUE);
             }
             // Build head content
             $slider_width=60*count($onboats);
@@ -625,6 +628,14 @@ class Masterinventory extends MY_Controller
                 'margin' => $margin,
             );
             $mdata['onboat_header']=$this->load->view('masterinvent/onboathead_view', $boatoptions, TRUE);
+            $linkoptions = [
+                'data'=>$onboats,
+                'container_view' => $boatlinks_view,
+                'width' => $slider_width,
+                'margin' => $margin,
+            ];
+            $mdata['onboat_links'] = $this->load->view('masterinvent/onboatlinks_view', $linkoptions, TRUE);
+
             // Prepare body content
             $colors = $this->inventory_model->get_inventory_colors($inventory_type, $inventory_filter);
             $containers_view='';
@@ -673,8 +684,10 @@ class Masterinventory extends MY_Controller
                     // Prepare header view
                     $onboats = $this->inventory_model->get_data_onboat($inventory_type, $this->container_type);
                     $boathead_view='';
+                    $boatlinks_view = '';
                     foreach ($onboats as $onboat) {
                         $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
+                        $boatlinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $onboat, TRUE);
                     }
                     // Build head content
                     $slider_width=60*count($onboats);
@@ -688,6 +701,13 @@ class Masterinventory extends MY_Controller
                         'margin' => $margin,
                     );
                     $mdata['onboat_header']=$this->load->view('masterinvent/onboathead_view', $boatoptions, TRUE);
+                    $linkoptions = [
+                        'data'=>$onboats,
+                        'container_view' => $boatlinks_view,
+                        'width' => $slider_width,
+                        'margin' => $margin,
+                    ];
+                    $mdata['onboat_links'] = $this->load->view('masterinvent/onboatlinks_view', $linkoptions, TRUE);
                     // Prepare body content
                     $colors = $this->inventory_model->get_inventory_colors($inventory_type, $inventory_filter);
                     $containers_view='';
