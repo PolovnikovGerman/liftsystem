@@ -111,10 +111,11 @@ function init_master_inventorycontent() {
     $(".onboatmanage").find('i').unbind('click').click(function (){
         // Edit container
         var container = $(this).parent('div.onboatmanage').data('container');
+        var onboattype = $(this).parent('div.onboatmanage').data('onboattype');
         var url="/masterinventory/changecontainer";
         var params = new Array();
         params.push({name: 'container', value: container});
-        params.push({name: 'onboat_type', value: 'C'});
+        params.push({name: 'onboat_type', value: onboattype});
         params.push({name: 'inventory_type', value: $("#active_invtype").val()});
         params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
         $.post(url, params, function (response){
@@ -343,13 +344,8 @@ function container_slider_move(offset) {
         $(".mastinvent_container_slideright").empty().html('<img src="/img/masterinvent/container_nonactive_right.png"/>');
     }
     $("div.after_head").animate({marginLeft:newmargin+'px'},'slow',function(){
-        // var margin=parseInt($("div.after_head").css('margin-left'));
-        // var slwidth=parseInt($("div.after_head").css('width'));
-        // if ((slwidth+margin)>sliderwidth) {
-        //    $("div.right_arrow").addClass('active');
-        // } else {
-        //    $("div.right_arrow").removeClass('active');
-        //}
+    });
+    $("div.linksconteiners").animate({marginLeft:newmargin+'px'},'slow',function(){
     });
 
     // $("div.after_head_boat").animate({marginLeft:newmargin+'px'},'slow');
@@ -471,7 +467,21 @@ function init_master_inventorytabledat() {
                 show_error(response);
             }
         },'json');
-    })
+    });
+    $(".linksconteiners").find('div.download_container').unbind('click').click(function(){
+        var container = $(this).parent('.onboacontainer').data('container');
+        var onboattype = $(this).parent('.onboacontainer').data('onboattype');
+        var params=new Array();
+        params.push({name: 'onboat_container', value: container});
+        params.push({name: 'onboat_type', value: onboattype});
+        var url="/masterinventory/inventory_boat_download";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                var link = response.data.url;
+                window.open(link, 'win', 'width=500,height=500,toolbar=0');
+            }
+        },'json');
+    });
 }
 
 function init_itemcolor_popup() {

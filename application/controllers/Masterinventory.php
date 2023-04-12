@@ -762,4 +762,27 @@ class Masterinventory extends MY_Controller
         }
         show_404();
     }
+
+    public function inventory_boat_download() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Container #';
+            $postdate=$this->input->post();
+            $onboat_container = ifset($postdate, 'onboat_container',0);
+            $onboat_type = ifset($postdate, 'onboat_type','');
+            if ($onboat_container!==0 && !empty($onboat_type)) {
+                // $this->load->model('printshop_model');
+                // $res=$this->printshop_model->inventory_download($onboat_container);
+                $res = $this->inventory_model->onboat_download($onboat_container, $onboat_type);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $mdata['url']=$res['url'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 }

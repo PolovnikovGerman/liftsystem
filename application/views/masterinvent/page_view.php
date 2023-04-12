@@ -182,6 +182,13 @@
             <div class="datarow">
                 <div id="masterinventtablebody"></div>
             </div>
+            <div class="datarow">
+                <div class="mastinvent_footlink_left">&nbsp;</div>
+                <div class="mastinvent_footlink_express">&nbsp;</div>
+                <div class="mastinvent_footlink_container">
+                    <?=$container_links?>
+                </div>
+            </div>
         </div>
     </div>
 </div>

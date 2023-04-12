@@ -1,5 +1,5 @@
 <div class="onboacontainer <?= ($onboat_status == 1 ? 'arrived' : '') ?>" data-container="<?= $onboat_container ?>">
-    <div class="onboatmanage" data-container="<?= $onboat_container ?>">
+    <div class="onboatmanage" data-container="<?= $onboat_container ?>" data-onboattype="<?=$onboat_type?>">
         <?php if ($onboat_container==0) { ?>
             New Cont
         <?php } else { ?>

@@ -41,10 +41,10 @@ class Exportexcell_model extends CI_Model
         $sheet->setCellValue('A2', 'Item #');
         $sheet->setCellValue('B2', 'Shape');
         $sheet->setCellValue('C2', 'Color');
-        $sheet->setCellValue('D2', 'Pantone');
-        $sheet->setCellValue('E2', 'Quantity');
-        $sheet->setCellValue('F2', 'Cost Ea');
-        $sheet->setCellValue('G2', 'Total Cost');
+        // $sheet->setCellValue('D2', 'Pantone');
+        $sheet->setCellValue('D2', 'Quantity');
+        $sheet->setCellValue('E2', 'Cost Ea');
+        $sheet->setCellValue('F2', 'Total Cost');
 
         $j=3;
         foreach ($options['res'] as $row) {
@@ -54,10 +54,10 @@ class Exportexcell_model extends CI_Model
             $sheet->setCellValue('A'.$j, $row['item_num']);
             $sheet->setCellValue('B'.$j, $row['item_name']);
             $sheet->setCellValue('C'.$j, $row['color']);
-            $sheet->setCellValue('D'.$j, $row['color_descript']);
-            $sheet->setCellValue('E'.$j, $row['qty']);
-            $sheet->setCellValue('F'.$j, $price);
-            $sheet->setCellValue('G'.$j, $total);
+            // $sheet->setCellValue('D'.$j, $row['color_descript']);
+            $sheet->setCellValue('D'.$j, $row['qty']);
+            $sheet->setCellValue('E'.$j, $price);
+            $sheet->setCellValue('F'.$j, $total);
             $j++;
         }
 
