@@ -1050,7 +1050,7 @@ Class Cronjob extends CI_Controller
             // Total amounts
             $this->db->select('count(amount_id) as cnt, sum(amount_sum) as amount');
             $this->db->from('ts_order_amounts');
-            $this->db->where('oa.order_id', $orderlist['order_id']);
+            $this->db->where('order_id', $orderlist['order_id']);
             $pores = $this->db->get()->row_array();
             $amount_cog = round(floatval($pores['amount']),2);
             if ($amount_cog!==$order_cog) {
