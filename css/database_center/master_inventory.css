@@ -388,7 +388,7 @@ input.inventadd {
     width: 70px;
 }
 .masterinventtablebody {
-    background: #ffffff;
+    background: #252525;
     color: #000000;
     /* width: 1014px;*/
     /* width: 922px; */
@@ -425,7 +425,8 @@ input.inventadd {
     margin-left: 23px;
 }
 .masterinventtablebody .mastinvent_body_right {
-    width: 246px;
+    width: 207px;
+    margin-left: 39px;
 }
 .inventorydatarow {
     width: 100%;
@@ -1545,10 +1546,10 @@ input.colorvendorpriceinpt {
     overflow-x: hidden;
 }
 .mastinvent_container_contentarea .onboacontainer {
-    margin-right: 2px;
+    margin-right: 4px;
     font-size: 12px;
     color: #000000;
-    width: 58px;
+    width: 56px;
 }
 .mastinvent_container_contentarea .onboacontainer.arrived {
     opacity: 0.3;
@@ -1556,7 +1557,7 @@ input.colorvendorpriceinpt {
 .mastinvent_container_contentarea .onboatmanage {
     height: 22px;
     line-height: 22px!important;
-    width: 58px;
+    width: 100%;
     color: #FFFFFF;
 }
 .mastinvent_container_contentarea .containerdate {
@@ -1576,7 +1577,7 @@ input.colorvendorpriceinpt {
     height: 18px;
     line-height: 18px!important;
     /* width: 55px; */
-    width: 58px;
+    width: 100%;
 }
 .mastinvent_container_contentarea .containrermanage > div {
     text-align: center;
@@ -1586,7 +1587,7 @@ input.colorvendorpriceinpt {
     background-color: #000000;
     color: #FFFFFF;
     /* width: 55px; */
-    width: 61px;
+    width: 100%;
     text-align: center;
     height: 27px;
     line-height: 27px;
@@ -1607,7 +1608,9 @@ input.colorvendorpriceinpt {
     width: 130px;
 }
 .mastinvent_body_container .onboacontainerarea {
-    width: 60px;
+    /* width: 60px; */
+    width: 56px;
+    margin-right: 4px;
 }
 .mastinvent_body_container .conteinerqty {
     width: 58px;
@@ -1643,4 +1646,37 @@ i.cancelboatcontainer {
     cursor: pointer;
     margin-left: 2px;
     /* margin-top: 1px; */
+}
+/* Footer links */
+.mastinvent_footlink_left {
+    width: 502px;
+}
+.mastinvent_footlink_express {
+    width: 270px;
+}
+.mastinvent_footlink_container {
+    width: 283px;
+    margin-left: 23px;
+}
+.mastinvent_footlink_container .left_arrow_empty, .mastinvent_footlink_container .right_arrow_empty {
+    width: 43px;
+}
+.mastinvent_footlink_container .onboatdataareas {
+    width: 180px;
+    overflow-x: hidden;
+}
+.mastinvent_footlink_container .onboatdataareas > div {
+}
+.linksconteiners .onboacontainer {
+    width: 56px;
+    margin-right: 4px;
+}
+.linksconteiners .onboacontainer .download_container {
+    cursor: pointer;
+    color: #7976ff;
+    font-size: 11px;
+    text-align: center;
+    width: 100%;
+    height: 23px;
+    line-height: 23px!important;
 }

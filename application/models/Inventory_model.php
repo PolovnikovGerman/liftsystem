@@ -1328,7 +1328,7 @@ class Inventory_model extends MY_Model
                 if ($balance+$detail['onroutestock']==0) {
                     $avg_price = $detail['vendor_price'];
                 } else {
-                    $avg_price = ($balance*$colordata['avg_price']+($detail['onroutestock']*$detail['vendor_price']))/($balance+$detail['onroutestock']);
+                    $avg_price = ($balance*$colordata['avg_price']+($detail['onroutestock']*($detail['vendor_price']+$addprice)))/($balance+$detail['onroutestock']);
                 }
                 $this->db->where('inventory_color_id', $detail['inventory_color_id']);
                 $this->db->set('avg_price', round($avg_price,3));
@@ -1345,6 +1345,42 @@ class Inventory_model extends MY_Model
                 $this->db->set('updated_by', $user_id);
                 $this->db->insert('ts_inventory_incomes');
             }
+        }
+        return $out;
+    }
+
+    public function onboat_download($onboat_container, $onboat_type) {
+        $out=array('result'=>$this->error_result,'msg'=>'No Data Exist');
+        $this->db->select('i.item_num, i.item_name, c.color, b.vendor_price as price, b.onroutestock as qty, b.onboat_date, b.freight_price');
+        $this->db->from('ts_inventory_onboats b');
+        $this->db->join('ts_inventory_colors c','c.inventory_color_id=b.inventory_color_id');
+        $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
+        $this->db->where('b.onboat_container', $onboat_container);
+        $this->db->where('b.onboat_type', $onboat_type);
+        // $this->db->group_by('i.item_num, i.item_name, c.color, c.price');
+        $this->db->order_by('i.item_num, c.color');
+        $res=$this->db->get()->result_array();
+        if (count($res)>0) {
+            $onboat_date=$res[0]['onboat_date'];
+            if ($onboat_type=='C') {
+                $title='Container '.$onboat_container.' - Arriving in USA '.date('m/d/y', $onboat_date);
+            } else {
+                $title='Express '.$onboat_container.' - Arriving in USA '.date('m/d/y', $onboat_date);
+            }
+            $addprice = $res[0]['freight_price'];
+            if ($addprice!=0) {
+                $title.=' Freight price '.MoneyOutput($addprice);
+            }
+
+            $options = [
+                'res' => $res,
+                'title' => $title,
+            ];
+            $this->load->model('exportexcell_model');
+            $filename = $this->exportexcell_model->export_onboatcontent($options);
+            $url=$this->config->item('pathpreload').$filename;
+            $out['url']=$url;
+            $out['result']=$this->success_result;
         }
         return $out;
     }

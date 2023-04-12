@@ -2318,8 +2318,10 @@ class Database extends MY_Controller
         // Get OnBoats
         $onboats = $this->inventory_model->get_data_onboat($type_id, $this->container_type);
         $boathead_view='';
+        $boatlinks_view = '';
         foreach ($onboats as $onboat) {
             $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
+            $boatlinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $onboat, TRUE);
         }
         // Build head content
         $slider_width=60*count($onboats);
@@ -2332,7 +2334,15 @@ class Database extends MY_Controller
             'width' => $slider_width,
             'margin' => $margin,
         );
-        $onboat_content=$this->load->view('masterinvent/onboathead_view', $boatoptions, TRUE);
+        $onboat_content = $this->load->view('masterinvent/onboathead_view', $boatoptions, TRUE);
+        $linkoptions = [
+            'data'=>$onboats,
+            'container_view' => $boatlinks_view,
+            'width' => $slider_width,
+            'margin' => $margin,
+        ];
+        $onboat_links = $this->load->view('masterinvent/onboatlinks_view', $linkoptions, TRUE);
+        // Prepare downloads
 
         $options = [
             'invtypes' => $invtypes,
@@ -2351,6 +2361,7 @@ class Database extends MY_Controller
             'available' => empty($totals['available']) ? $this->empty_html_content : QTYOutput($totals['available']),
             'container_head' => $onboat_content,
             'container_leftview' => ($margin < 0 ? '1' : 0),
+            'container_links' => $onboat_links,
         ];
         $content = $this->load->view('masterinvent/page_view', $options, TRUE);
         return $content;
