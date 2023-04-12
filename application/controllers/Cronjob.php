@@ -1066,7 +1066,7 @@ Class Cronjob extends CI_Controller
         if (count($ordererror)==0) {
             $mail_body = 'All PO orders '.count($orderlists).' math is OK';
         } else {
-            $mail_body = $this->load->view('messages/orderamout_maths_view', ['data'=>$ordererror], TRUE);
+            $mail_body = $this->load->view('messages/orderamout_maths_view', $ordererror, TRUE);
         }
         $this->load->library('email');
         $config['charset'] = 'utf-8';

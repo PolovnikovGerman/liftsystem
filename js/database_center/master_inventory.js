@@ -280,6 +280,7 @@ function init_edit_inventcontainer(container, onboat_type) {
                 $("#loader").hide();
                 $(".mastinvent_container_contentarea").empty().html(response.data.onboat_header);
                 $(".mastinvent_body_container").empty().html(response.data.onboat_content);
+                $(".mastinvent_footlink_container").empty().html(response.data.onboat_links);
                 init_master_inventorycontent();
             } else {
                 $("#loader").hide();
@@ -300,6 +301,7 @@ function init_edit_inventcontainer(container, onboat_type) {
                 $("#loader").hide();
                 $(".mastinvent_container_contentarea").empty().html(response.data.onboat_header);
                 $(".mastinvent_body_container").empty().html(response.data.onboat_content);
+                $(".mastinvent_footlink_container").empty().html(response.data.onboat_links);
                 init_master_inventorycontent();
             } else {
                 $("#loader").hide();
