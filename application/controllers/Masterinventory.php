@@ -791,14 +791,35 @@ class Masterinventory extends MY_Controller
             $onboat_container = ifset($postdate, 'onboat_container',0);
             $onboat_type = ifset($postdate, 'onboat_type','');
             if ($onboat_container!==0 && !empty($onboat_type)) {
-                // $this->load->model('printshop_model');
-                // $res=$this->printshop_model->inventory_download($onboat_container);
                 $res = $this->inventory_model->onboat_download($onboat_container, $onboat_type);
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error='';
                     $mdata['url']=$res['url'];
                 }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function changeaddcost() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            // $error='';
+            $postdate=$this->input->post();
+            $inventory_type = ifset($postdate, 'inventory_type',0);
+            $addcost = ifset($postdate, 'addcost',0);
+            $res = $this->inventory_model->inventorytype_addcost($inventory_type, $addcost);
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error='';
+                $addcost = $res['addcost'];
+                $totals = $this->inventory_model->get_inventory_totals($inventory_type);
+                $addval = $totals['available'] * $addcost;
+                $addstr = $addval == 0 ? '-' : MoneyOutput($addval);
+                // $str = 'ea  ('.$addval==0 ? '-' : MoneyOutput($addval).')';
+                $mdata['content'] = 'ea  ('.$addstr.')';
             }
             $this->ajaxResponse($mdata, $error);
         }

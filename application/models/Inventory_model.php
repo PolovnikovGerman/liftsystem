@@ -922,7 +922,7 @@ class Inventory_model extends MY_Model
 
     public function get_inventory_totals($inventory_type_id) {
         // Lets go
-        $this->db->select('sum(suggeststock) as suggeststock, sum(suggeststock*price) as maxtotal');
+        $this->db->select('sum(suggeststock) as suggeststock, sum(suggeststock*avg_price) as maxtotal');
         $this->db->from('ts_inventory_colors');
         $res=$this->db->get()->row_array();
         $maxval=intval($res['suggeststock']);
@@ -1381,6 +1381,24 @@ class Inventory_model extends MY_Model
             $url=$this->config->item('pathpreload').$filename;
             $out['url']=$url;
             $out['result']=$this->success_result;
+        }
+        return $out;
+    }
+
+    public function inventorytype_addcost($inventory_type, $addcost) {
+        $out=['result' => $this->error_result, 'msg' => 'Empty Inventory Type'];
+        if ($inventory_type > 0) {
+            $this->db->select('count(*) as cnt');
+            $this->db->from('ts_inventory_types');
+            $this->db->where('inventory_type_id', $inventory_type);
+            $chkres = $this->db->get()->row_array();
+            if ($chkres['cnt']==1) {
+                $this->db->where('inventory_type_id', $inventory_type);
+                $this->db->set('type_addcost', floatval($addcost));
+                $this->db->update('ts_inventory_types');
+                $out['result'] = $this->success_result;
+                $out['addcost'] = floatval($addcost);
+            }
         }
         return $out;
     }

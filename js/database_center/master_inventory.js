@@ -200,6 +200,20 @@ function init_master_inventorycontent() {
             },'json');
         }
     });
+    // Eddit add cost
+    $(".inventadd").unbind('change').change(function(){
+        var params = new Array();
+        params.push({name: 'inventory_type', value: $("#active_invtype").val()});
+        params.push({name: 'addcost', value: $(this).val()});
+        var url = '/masterinventory/changeaddcost';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".addlabeltotal").empty().html(response.data.content);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 function init_edit_inventcontainer(container, onboat_type) {
