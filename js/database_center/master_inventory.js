@@ -66,28 +66,27 @@ function init_master_inventorycontent() {
         if (curmax==0) {
             $("#invshowmax").val(1);
             $(".inventtotalmaxshow").empty().html('Hide Max');
-            $(".inventtotalmaximum").show();
+            $(".mastinvent_header_left").addClass('showmax');
+            $(".mastinvent_header_container").addClass('showmax');
+            $(".mastinvent_header_right").find(".masterinvemptyspace").hide();
+            $(".masterinventtablebody").find("div.mastinvent_body_left").addClass('showmax');
+            $(".masterinventtablebody").find("div.mastinvent_body_container").addClass('showmax');
+            $(".masterinventtablebody").find("div.mastinvent_body_right").addClass('showmax');
+            $(".masterinventtotals").find("div.masterinventorymaximum").show();
             $(".masterinventtablehead").find("div.masterinventorymaximum").show();
-            $(".masterinventtablehead").find("div.masterinventonorder").hide();
-            $(".masterinventtablehead").find("div.masterinventonorder").hide();
-            $(".masterinventtablehead").find("div.masterinventonmax").show();
-            // Change body
-            $(".inventorydatarow").find("div.masterinventpercent").css('border-right','none');
-            $(".inventorydatarow").find('div.masterinventmaximum').show();
-            $(".inventorydatarow").find('div.masterinventonorder').hide();
-            $(".inventorydatarow").find('div.masterinventonmax').show();
+            $(".inventorydatarow").find("div.masterinventmaximum").show();
         } else {
             $("#invshowmax").val(0);
             $(".inventtotalmaxshow").empty().html('Show Max');
-            $(".inventtotalmaximum").hide();
+            $(".mastinvent_header_left").removeClass('showmax');
+            $(".mastinvent_header_container").removeClass('showmax');
+            $(".mastinvent_header_right").find(".masterinvemptyspace").show();
+            $(".masterinventtablebody").find("div.mastinvent_body_left").removeClass('showmax');
+            $(".masterinventtablebody").find("div.mastinvent_body_container").removeClass('showmax');
+            $(".masterinventtablebody").find("div.mastinvent_body_right").removeClass('showmax');
+            $(".masterinventtotals").find("div.masterinventorymaximum").hide();
             $(".masterinventtablehead").find("div.masterinventorymaximum").hide();
-            $(".masterinventtablehead").find("div.masterinventonorder").show();
-            $(".masterinventtablehead").find("div.masterinventonmax").hide();
-            // Change body
-            $(".inventorydatarow").find("div.masterinventpercent").css('border-right','1px solid #000000');
-            $(".inventorydatarow").find('div.masterinventmaximum').hide();
-            $(".inventorydatarow").find('div.masterinventonorder').show();
-            $(".inventorydatarow").find('div.masterinventonmax').hide();
+            $(".inventorydatarow").find("div.masterinventmaximum").hide();
         }
     })
     $(".addnewmasterinvent").unbind('click').click(function () {
