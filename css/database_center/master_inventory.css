@@ -207,6 +207,9 @@
 .mastinvent_header_left {
     width: 502px;
 }
+.mastinvent_header_left.showmax {
+    width: 562px;
+}
 .mastinvent_header_left .labeltxt, .mastinvent_header_left .valuedata {
     height: 16px;
     line-height: 16px;
@@ -280,7 +283,7 @@ input.inventadd {
 }
 .masterinventtotals .masterinventorymaximum {
     display: none;
-    width: 58px;
+    width: 60px;
     color: #8989ff;
 }
 .masterinventtotals .masterinventinstock {
@@ -346,7 +349,7 @@ input.inventadd {
 }
 .masterinventtablehead .masterinventorymaximum {
     display: none;
-    width: 58px;
+    width: 60px;
     color: #8989ff;
 }
 .masterinventtablehead .masterinventinstock {
@@ -417,6 +420,9 @@ input.inventadd {
 .masterinventtablebody .mastinvent_body_left {
     width: 502px;
 }
+.masterinventtablebody .mastinvent_body_left.showmax {
+    width: 562px;
+}
 .masterinventtablebody .mastinvent_body_express {
     width: 270px;
 }
@@ -424,9 +430,15 @@ input.inventadd {
     width: 283px;
     margin-left: 23px;
 }
+.masterinventtablebody .mastinvent_body_container.showmax {
+    margin-left: 0px;
+}
 .masterinventtablebody .mastinvent_body_right {
     width: 207px;
     margin-left: 39px;
+}
+.masterinventtablebody .mastinvent_body_right.showmax {
+    margin-left: 0px;
 }
 .inventorydatarow {
     width: 100%;
@@ -524,7 +536,7 @@ input.inventadd {
 .inventorydatarow .masterinventmaximum {
     color: #0000FF;
     /* width: 70px; */
-    width: 58px;
+    width: 60px;
     border-left: 2px solid #0000FF;
     border-right: 2px solid #0000FF;
     display: none;
@@ -1508,10 +1520,11 @@ input.colorvendorpriceinpt {
 }
 /* Container */
 .mastinvent_header_container {
-    /* width: 270px; */
     width: 283px;
     margin-left: 23px;
-    /* height: 101px; */
+}
+.mastinvent_header_container.showmax {
+    margin-left: 0;
 }
 .mastinvent_header_container .mastinvent_container_manage {
     width: 100%;
