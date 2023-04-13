@@ -1,13 +1,39 @@
 var sliderwidth=183;
 
 function init_master_inventory() {
+    init_master_inventoryhead();
     init_master_inventorydata();
     // init_master_containers();
     // init_master_express();
-    init_master_inventorycontent();
+    // init_master_inventorycontent();
     init_inventcontainer_move();
 }
 
+function init_master_inventoryhead() {
+    var params = new Array();
+    params.push({name: 'inventory_type', value: $("#active_invtype").val()});
+    params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
+    params.push({name: 'showmax', value: $("#invshowmax").val()});
+    var url="/masterinventory/get_inventory_head";
+    $("#loader").show();
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".mastinvent_container_contentarea").empty().html(response.data.onboat_content);
+            if (parseInt(response.data.container_leftview)==1) {
+                $(".mastinvent_container_slideleft").addClass('active').empty().html('<img src="/img/masterinvent/container_active_left.png"/>');
+            }
+            $(".mastinvent_footlink_container").empty().html(response.data.onboat_links);
+            $(".mastinvent_express_contentarea").empty().html(response.data.express_content);
+            if (parseInt(response.data.express_leftview)==1) {
+                $(".mastinvent_express_slideleft").addClass('active').empty().html('<img src="/img/masterinvent/container_active_left.png"/>');
+            }
+            $(".mastinvent_footlink_express").empty().html(response.data.express_links);
+            init_master_inventorycontent();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
 function init_master_inventorydata() {
     var params = new Array();
     params.push({name: 'inventory_type', value: $("#active_invtype").val()});
@@ -124,18 +150,32 @@ function init_master_inventorycontent() {
                 $(".mastinvent_container_manage").find('span').unbind('click');
                 $(".waitarrive").unbind('click');
                 // Change view of container
-                $(".onboacontainerdata[data-container='"+container+"']").addClass('editdata');
-                $(".mastinvent_body_container").find('div.onboatdataareas').addClass('editdata');
-                $(".onboacontainerdata[data-container='"+container+"']").empty().html(response.data.content);
-                // Edit
-                $(".waitarrive[data-container='"+container+"']").empty().html(response.data.managecontent);
-                $("input.boatcontainerdate[data-container='"+container+"']").datepicker({
-                    'format' : 'mm/dd/yy',
-                    'autoclose' : true,
-                    'startDate': '0d'
-                });
-                $("input.boatcontainerfreight[data-container='"+container+"']").val(response.data.freight_price).prop('readonly', false).prop('title','');
-                init_edit_inventcontainer(container,'C');
+                if (onboattype=='C') {
+                    $("div.mastinvent_body_container").find("div.onboacontainerdata[data-container='"+container+"']").addClass('editdata');
+                    $("div.mastinvent_body_container").find('div.onboatdataareas').addClass('editdata');
+                    $("div.mastinvent_body_container").find("div.onboacontainerdata[data-container='"+container+"']").empty().html(response.data.content);
+                    // Edit
+                    $(".mastinvent_container_contentarea").find("div.waitarrive[data-container='"+container+"']").empty().html(response.data.managecontent);
+                    $(".mastinvent_container_contentarea").find("input.boatcontainerdate[data-container='"+container+"']").datepicker({
+                        'format' : 'mm/dd/yy',
+                        'autoclose' : true,
+                        'startDate': '0d'
+                    });
+                    $(".mastinvent_container_contentarea").find("input.boatcontainerfreight[data-container='"+container+"']").val(response.data.freight_price).prop('readonly', false).prop('title','');
+                } else {
+                    $("div.mastinvent_body_express").find("div.onboacontainerdata[data-container='"+container+"']").addClass('editdata');
+                    $("div.mastinvent_body_express").find('div.onboatdataareas').addClass('editdata');
+                    $("div.mastinvent_body_express").find("div.onboacontainerdata[data-container='"+container+"']").empty().html(response.data.content);
+                    // Edit
+                    $(".mastinvent_express_contentarea").find("div.waitarrive[data-container='"+container+"']").empty().html(response.data.managecontent);
+                    $(".mastinvent_express_contentarea").find("input.boatcontainerdate[data-container='"+container+"']").datepicker({
+                        'format' : 'mm/dd/yy',
+                        'autoclose' : true,
+                        'startDate': '0d'
+                    });
+                    $(".mastinvent_express_contentarea").find("input.boatcontainerfreight[data-container='"+container+"']").val(response.data.freight_price).prop('readonly', false).prop('title','');
+                }
+                init_edit_inventcontainer(container,onboattype);
             } else {
                 show_error(response);
             }
@@ -155,6 +195,7 @@ function init_master_inventorycontent() {
                 // Lock add / edit elements
                 $(".onboatmanage").find('i').unbind('click');
                 $(".mastinvent_container_manage").find('span').unbind('click');
+                $(".mastinvent_express_manage").find('span').unbind('click');
                 $(".waitarrive").unbind('click');
                 // Change view of container
                 $(".onboacontainerdata[data-container='"+container+"']").addClass('editdata');
@@ -171,6 +212,41 @@ function init_master_inventorycontent() {
                 $("input.boatcontainerfreight[data-container='"+container+"']").prop('readonly', false).prop('title','');
                 init_edit_inventcontainer(container,'C');
 
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".mastinvent_express_manage").find('span').unbind('click').click(function (){
+        // Add express
+        var container = 0;
+        var url="/masterinventory/changecontainer";
+        var params = new Array();
+        params.push({name: 'container', value: container});
+        params.push({name: 'inventory_type', value: $("#active_invtype").val()});
+        params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
+        params.push({name: 'onboat_type', value: 'E'})
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                // Lock add / edit elements
+                $(".onboatmanage").find('i').unbind('click');
+                $(".mastinvent_container_manage").find('span').unbind('click');
+                $(".mastinvent_express_manage").find('span').unbind('click');
+                $(".waitarrive").unbind('click');
+                // Change view of container
+                $(".mastinvent_body_express").find("div.onboacontainerdata[data-container='"+container+"']").addClass('editdata');
+                $(".mastinvent_body_express").find('div.onboatdataareas').addClass('editdata');
+                $(".mastinvent_express_contentarea").find('div.after_head').css('margin-left',response.data.marginleft).css('width',response.data.width).append(response.data.containerhead);
+                $(".mastinvent_body_express").find("div.onboatdataareas").find('div.after_head').css('margin-left',response.data.marginleft).css('width',response.data.width).append(response.data.content);
+                // Edit
+                $(".mastinvent_express_contentarea").find("div.waitarrive[data-container='"+container+"']").empty().html(response.data.managecontent);
+                $(".mastinvent_body_express").find("input.boatcontainerdate[data-container='"+container+"']").datepicker({
+                    'format' : 'mm/dd/yy',
+                    'autoclose' : true,
+                    'startDate': '0d'
+                });
+                $(".mastinvent_body_express").find("input.boatcontainerfreight[data-container='"+container+"']").prop('readonly', false).prop('title','');
+                init_edit_inventcontainer(container,'E');
             } else {
                 show_error(response);
             }
@@ -230,8 +306,13 @@ function init_edit_inventcontainer(container, onboat_type) {
         var url='/masterinventory/changecontainer_param';
         $.post(url, params, function (response){
             if (response.errors=='') {
-                $(".conteinerqty[data-itemtotal='"+item+"']").empty().html(response.data.itemtval);
-                $(".containertotal[data-container='"+response.data.container+"']").empty().html(response.data.total);
+                if (onboat_type=='C') {
+                    $(".mastinvent_body_container").find("div.conteinerqty[data-itemtotal='"+item+"']").empty().html(response.data.itemtval);
+                    $(".mastinvent_container_contentarea").find(".containertotal[data-container='"+response.data.container+"']").empty().html(response.data.total);
+                } else {
+                    $(".mastinvent_body_express").find("div.conteinerqty[data-itemtotal='"+item+"']").empty().html(response.data.itemtval);
+                    $(".mastinvent_express_contentarea").find("div.containertotal[data-container='"+response.data.container+"']").empty().html(response.data.total);
+                }
             } else {
                 show_error(response);
             }
@@ -291,9 +372,16 @@ function init_edit_inventcontainer(container, onboat_type) {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $("#loader").hide();
-                $(".mastinvent_container_contentarea").empty().html(response.data.onboat_header);
-                $(".mastinvent_body_container").empty().html(response.data.onboat_content);
-                $(".mastinvent_footlink_container").empty().html(response.data.onboat_links);
+                if (onboat_type=='C') {
+                    $(".mastinvent_container_contentarea").empty().html(response.data.onboat_header);
+                    $(".mastinvent_body_container").empty().html(response.data.onboat_content);
+                    $(".mastinvent_footlink_container").empty().html(response.data.onboat_links);
+                } else {
+                    // $(".mastinvent_body_express").css('width','270px');
+                    $(".mastinvent_express_contentarea").empty().html(response.data.onboat_header);
+                    $(".mastinvent_body_express").empty().html(response.data.onboat_content);
+                    $(".mastinvent_footlink_express").empty().html(response.data.onboat_links);
+                }
                 init_master_inventorycontent();
             } else {
                 $("#loader").hide();
@@ -312,9 +400,16 @@ function init_edit_inventcontainer(container, onboat_type) {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $("#loader").hide();
-                $(".mastinvent_container_contentarea").empty().html(response.data.onboat_header);
-                $(".mastinvent_body_container").empty().html(response.data.onboat_content);
-                $(".mastinvent_footlink_container").empty().html(response.data.onboat_links);
+                if (onboat_type=='C') {
+                    $(".mastinvent_container_contentarea").empty().html(response.data.onboat_header);
+                    $(".mastinvent_body_container").empty().html(response.data.onboat_content);
+                    $(".mastinvent_footlink_container").empty().html(response.data.onboat_links);
+                } else {
+                    // $(".mastinvent_body_express").css('width','270px');
+                    $(".mastinvent_express_contentarea").empty().html(response.data.onboat_header);
+                    $(".mastinvent_body_express").empty().html(response.data.onboat_content);
+                    $(".mastinvent_footlink_express").empty().html(response.data.onboat_links);
+                }
                 init_master_inventorycontent();
             } else {
                 $("#loader").hide();

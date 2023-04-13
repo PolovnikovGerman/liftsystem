@@ -1,9 +1,10 @@
 <div class="onboacontainer <?= ($onboat_status == 1 ? 'arrived' : '') ?>" data-container="<?= $onboat_container ?>">
     <div class="onboatmanage" data-container="<?= $onboat_container ?>" data-onboattype="<?=$onboat_type?>">
         <?php if ($onboat_container==0) { ?>
-            New Cont
+            New <?=$onboat_type=='C' ? 'Cont' : 'Expr'?>
         <?php } else { ?>
-            <?= ($onboat_status == 0 ? '<i class="fa fa-pencil edit_onboat" aria-hidden="true"></i>' : '') ?>  Cont <?=$onboat_container ?>
+            <?= ($onboat_status == 0 ? '<i class="fa fa-pencil edit_onboat" aria-hidden="true"></i>' : '') ?>
+            <?=$onboat_type=='C' ? 'Cont' : 'Expr'?> <?=$onboat_container ?>
         <?php } ?>
     </div>
     <div class="containerdate">
@@ -15,7 +16,6 @@
     <div class="containerdate">
         <input class="boatcontainerfreight" data-container="<?= $onboat_container ?>" value="<?=empty($freight_price) ? '' : MoneyOutput($freight_price)?>" placeholder="freight $" readonly="readonly" <?=empty($title) ? '' : 'title="'.$title.'"' ?>/>
     </div>
-
     <div class="containertotal" data-container="<?= $onboat_container ?>">
         <?= (empty($onboat_total) ? '&nbsp;' : QTYOutput($onboat_total)) ?>
     </div>

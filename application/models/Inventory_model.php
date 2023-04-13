@@ -1251,6 +1251,7 @@ class Inventory_model extends MY_Model
             if ($onboat_container<=0) {
                 $this->db->select('max(onboat_container) as ncontainer, count(*) cnt');
                 $this->db->from('ts_inventory_onboats');
+                $this->db->where('onboat_type', $onboat_type);
                 $chkres = $this->db->get()->row_array();
                 if ($chkres['cnt']==0) {
                     $onboat_container = 1;

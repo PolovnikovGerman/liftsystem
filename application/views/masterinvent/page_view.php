@@ -118,7 +118,7 @@
                 <!-- Express -->
                 <div class="mastinvent_header_express">
                     <div class="datarow">
-                        <div class="mastinvent_express_manage">Express [+]</div>
+                        <div class="mastinvent_express_manage">Express <span>[+]</span></div>
                     </div>
                     <div class="datarow">
                         <div class="mastinvent_express_slide">
@@ -142,17 +142,11 @@
                     </div>
                     <div class="datarow">
                         <div class="mastinvent_container_slide">
-                            <div class="mastinvent_container_slideleft <?=$container_leftview==1 ? 'active' : ''?>">
-                                <?php if ($container_leftview==1) { ?>
-                                    <img src="/img/masterinvent/container_active_left.png"/>
-                                <?php } else { ?>
-                                    <img src="/img/masterinvent/container_nonactive_left.png"/>
-                                <?php } ?>
+                            <div class="mastinvent_container_slideleft">
+                                <img src="/img/masterinvent/container_nonactive_left.png"/>
                             </div>
                         </div>
-                        <div class="mastinvent_container_contentarea">
-                            <?=$container_head?>
-                        </div>
+                        <div class="mastinvent_container_contentarea">&nbsp;</div>
                         <div class="mastinvent_container_slide">
                             <div class="mastinvent_container_slideright">
                                 <img src="/img/masterinvent/container_nonactive_right.png"/>
@@ -185,9 +179,7 @@
             <div class="datarow">
                 <div class="mastinvent_footlink_left">&nbsp;</div>
                 <div class="mastinvent_footlink_express">&nbsp;</div>
-                <div class="mastinvent_footlink_container">
-                    <?=$container_links?>
-                </div>
+                <div class="mastinvent_footlink_container">&nbsp;</div>
             </div>
         </div>
     </div>

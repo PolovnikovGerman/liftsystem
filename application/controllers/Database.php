@@ -2323,7 +2323,7 @@ class Database extends MY_Controller
             $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
             $boatlinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $onboat, TRUE);
         }
-        // Build head content
+        // Build head containers  content
         $slider_width=60*count($onboats);
         $margin = $this->maxlength-$slider_width;
         $margin=($margin>0 ? 0 : $margin);
@@ -2342,8 +2342,35 @@ class Database extends MY_Controller
             'margin' => $margin,
         ];
         $onboat_links = $this->load->view('masterinvent/onboatlinks_view', $linkoptions, TRUE);
-        // Prepare downloads
-
+        $container_leftview = ($margin < 0 ? 1 : 0);
+        // Prepare Expres
+        $expresses = $this->inventory_model->get_data_onboat($type_id, $this->express_type);
+        $expresshead_view = '';
+        $expresslinks_view = '';
+        foreach ($expresses as $express) {
+            $expresshead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $express, TRUE);
+            $expresslinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $express, TRUE);
+        }
+        // Build head containers  content
+        $slider_width=60*count($expresses);
+        $margin = $this->maxlength-$slider_width;
+        $margin=($margin>0 ? 0 : $margin);
+        // $width_edit = 58;
+        $expressoptions=array(
+            'data'=>$expresses,
+            'container_view' => $expresshead_view,
+            'width' => $slider_width,
+            'margin' => $margin,
+        );
+        $express_content = $this->load->view('masterinvent/onboathead_view', $expressoptions, TRUE);
+        $linkoptions = [
+            'data'=>$onboats,
+            'container_view' => $expresslinks_view,
+            'width' => $slider_width,
+            'margin' => $margin,
+        ];
+        $express_links = $this->load->view('masterinvent/onboatlinks_view', $linkoptions, TRUE);
+        $express_leftview = ($margin < 0 ? '1' : 0);
         $options = [
             'invtypes' => $invtypes,
             'active_type' => $invtypes[0]['inventory_type_id'],
@@ -2360,8 +2387,11 @@ class Database extends MY_Controller
             'reserved' => empty($totals['reserved']) ? $this->empty_html_content : QTYOutput($totals['reserved']),
             'available' => empty($totals['available']) ? $this->empty_html_content : QTYOutput($totals['available']),
             'container_head' => $onboat_content,
-            'container_leftview' => ($margin < 0 ? '1' : 0),
+            'container_leftview' => $container_leftview,
             'container_links' => $onboat_links,
+            'express_head' => $express_content,
+            'express_links' => $express_links,
+            'express_leftview' => $express_leftview,
         ];
         $content = $this->load->view('masterinvent/page_view', $options, TRUE);
         return $content;
