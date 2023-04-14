@@ -1981,6 +1981,7 @@ class Leadorder extends MY_Controller
                         'numlocs'=>count($res['imprints']),
                         'item_name'=>$res['item_name'],
                         'imprintsession'=>$imptintid,
+                        'custom' => ($res['item_id']==$this->config->item('custom_id') || $res['item_id']==$this->config->item('other_id')) ? 1 : 0,
                     );
                     $mdata['content']=  $this->load->view('leadorderdetails/imprint_details_edit', $options, TRUE);
 
@@ -1997,6 +1998,7 @@ class Leadorder extends MY_Controller
             $mdata['loctime'] = $this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
+        show_404();
     }
 
     // Save changes in Imprint Details
