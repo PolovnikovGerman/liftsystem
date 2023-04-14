@@ -104,7 +104,7 @@ Class Orders_model extends MY_Model
             }
             if (isset($filtr['search']) && $filtr['search']) {
                 $this->db->join('('.$itemdatesql.') itemdata','itemdata.order_id=o.order_id','left');
-                $this->db->join('ts_order_billings bil','bil.order_id', 'left');
+                $this->db->join('ts_order_billings bil','bil.order_id=o.order_id', 'left');
                 $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',coalesce(o.order_confirmation,''),' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.order_items,''),' ',coalesce(o.revenue,''),' ',coalesce(bil.customer_ponum,'')))",strtoupper($filtr['search']));
             }
             if (isset($filtr['filter']) && $filtr['filter']==1) {

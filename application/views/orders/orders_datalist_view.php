@@ -1,9 +1,12 @@
 <?php $nrow=0; ?>
 <?php foreach ($data as $row) { ?>
-    <div class="leadorder_datarow <?=($nrow%2==0 ? 'greydatarow' : 'whitedatarow')?> <?=$row['rowclass']?>" data-order="<?=$row['order_id']?>">
+    <div class="leadorder_datarow <?=($nrow%2==0 ? 'greydatarow' : 'whitedatarow')?> <?=$row['rowclass']?> <?=$brand=='SR' ? 'relievers' : ''?>" data-order="<?=$row['order_id']?>">
         <div class="date"><?=$row['order_date']?></div>
         <div class="ordernum <?=$row['ordernum_class']?>"><?=$row['order_num']?></div>
         <div class="confirmnum <?=$row['order_confirmclass']?>"><?=$row['out_confirm']?></div>
+        <?php if ($brand=='SR') { ?>
+            <div class="customerponumber" title="<?=$row['customer_ponum']?>"><?=(empty($row['customer_ponum']) ? '&nbsp;' : $row['customer_ponum'])?></div>
+        <?php } ?>
         <div class="customer"><?=(empty($row['customer_name']) ? '&nbsp;' : $row['customer_name'])?></div>
         <div class="qty" ><?=($row['order_qty']==0 ? '&nbsp;' : QTYOutput($row['order_qty']))?></div>
         <?php if (empty($row['itemcolor'])) { ?>
