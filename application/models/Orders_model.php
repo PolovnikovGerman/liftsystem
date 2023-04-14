@@ -2712,10 +2712,12 @@ Class Orders_model extends MY_Model
         $this->db->select('o.order_blank, o.arttype');
         $this->db->select('o.order_qty, o.shipdate, o.order_confirmation');
         $this->db->select('p.batchcnt, p.batchsum, coalesce(o.revenue,0) - coalesce(p.batchsum,0) as balance ');
+        $this->db->select('bil.customer_ponum');
         $this->db->from('ts_orders o');
         // $this->db->join('brands b','b.brand_id=o.brand_id','left');
         $this->db->join("{$item_dbtable} as  itm",'itm.item_id=o.item_id','left');
         $this->db->join('('.$balancesql.') p','p.order_id=o.order_id', 'left');
+        $this->db->join('ts_order_billings bil','bil.order_id=o.order_id', 'left');
         if ($admin_mode==0) {
             $this->db->where('o.is_canceled',0);
         }
@@ -2725,8 +2727,7 @@ Class Orders_model extends MY_Model
         if (count($filtr)>0) {
             if (isset($filtr['search']) && $filtr['search']) {
                 $this->db->join('('.$itemdatesql.') itemdata','itemdata.order_id=o.order_id','left');
-                // $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(itemdata.itemdescr),ucase(o.order_itemnumber), o.revenue ) ",strtoupper($filtr['search']));
-                $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',coalesce(o.order_confirmation,''),' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.order_items,''),' ',coalesce(o.revenue,'')))",strtoupper($filtr['search']));
+                $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',coalesce(o.order_confirmation,''),' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.order_items,''),' ',coalesce(o.revenue,''),' ',coalesce(bil.customer_ponum,'')))",strtoupper($filtr['search']));
             }
             if (isset($filtr['filter']) && $filtr['filter']==1) {
                 $this->db->where('order_cog is null');

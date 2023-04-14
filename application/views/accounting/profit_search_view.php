@@ -1,5 +1,5 @@
 <div class="srchparam_input">
-    <input id="profitsearch" name="profitsearch" class="search_input" value="Enter order #, amount, customer"/>
+    <input id="profitsearch" name="profitsearch" class="search_input" value="Enter order #, amount, customer, cust PO #"/>
 </div>
 <div class="search_action">
     <a class="find_it" id="find_profit" href="javascript:void(0);">Search It</a>

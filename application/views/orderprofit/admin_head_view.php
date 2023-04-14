@@ -1,4 +1,4 @@
-<div class="profitorder-content">
+<div class="profitorder-content <?=$brand=='SR' ? 'relievers' : ''?>">
     <input type="hidden" id="orderbytab1" value="<?=$order?>"/>
     <input type="hidden" id="directiontab1" value="<?=$direc?>"/>
     <input type="hidden" id="totaltab1" value="<?=$total?>"/>
@@ -102,11 +102,14 @@
             <div id="orders-total-row"></div>
         </div>
     </div>
-    <div class="orders-table-title">
+    <div class="orders-table-title <?=$brand=='SR' ? 'relievers' : ''?>">
         <div class="profitorder_date">Date</div>
         <div class="profitorder_action">&nbsp;</div>
         <div class="profitorder_numorder activesortdesc">Order #</div>
         <div class="profitorder_confirm">Conf #</div>
+        <?php if ($brand=='SR') { ?>
+            <div class="profitorder_customponum">Cust PO #</div>
+        <?php } ?>
         <div class="profitorder_customer">Customer</div>
         <div class="profitorder_qty">QTY</div>
         <div class="profitorder_item">Item</div>
@@ -120,7 +123,7 @@
         <div class="profitorder_profit">PROFIT</div>
         <div class="profitorder_profitperc">%</div>
     </div>
-    <div class="orderprofitcontent-table" id="tableinfotab1"></div>
+    <div class="orderprofitcontent-table <?=$brand=='SR' ? 'relievers' : ''?>" id="tableinfotab1"></div>
     <!-- FOOTER - Admin AREA -->
     <div id="ordertotalscntarea">
         <div class="orders_totals_table">
@@ -141,5 +144,4 @@
             <?= $bottom_view ?>
         </div>
     </div>
-
 </div>
