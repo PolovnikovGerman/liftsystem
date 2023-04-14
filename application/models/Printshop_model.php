@@ -1748,6 +1748,7 @@ Class Printshop_model extends MY_Model
             }
         } else {
             $cogflag = $this->success_result;
+            log_message('ERROR', 'Order '.$orderdata['order_id'].' exclude from update COG');
         }
         if ($cogflag==$this->success_result) {
             $out['result']=$this->success_result;
