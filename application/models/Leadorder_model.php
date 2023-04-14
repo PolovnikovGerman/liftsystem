@@ -2173,16 +2173,15 @@ Class Leadorder_model extends My_Model {
                 if ($row['active']==1) {
                     // Prepare New Imprints
                     $title=$row['title'];
-                    for ($i=1; $i<=$row['num_colors']; $i++) {
+                    if ($row['num_colors']==5) {
                         $imprint_price_class = 'normal';
                         $imprint_price_title = '';
-                        $imprtitle=$title.': '.date('jS',strtotime('2015-01-'.$i)).' Color Imprinting';
-                        $priceindx='print_'.$i;
-                        $setupindx='setup_'.$i;
+                        $imprtitle=$title.': Full Color Imprinting';
+                        $priceindx='print_1';
+                        $setupindx='setup_1';
                         $subtotal=$order_items[$idx]['item_qty']*floatval($row[$priceindx]);
                         if ($row['imprint_type']!=='REPEAT' && $numpp>1) {
                             if ($order_items[$idx]['item_id']>0) {
-                                // $newiprint_price = $this->_get_item_priceimprint($order_items[$idx]['item_id'],'imprint');
                                 $newiprint_price = $order_items[$idx]['print_price'];
                                 if (round(floatval($newiprint_price),2)!=round(floatval($row[$priceindx]),2)) {
                                     $imprint_price_class='warningprice';
@@ -2193,11 +2192,9 @@ Class Leadorder_model extends My_Model {
                         $numpp++;
                         $imprint_total+=$subtotal;
                         if ($row['imprint_type']!='REPEAT') {
-                            //if (floatval($row[$setupindx])>0) {
                             $setup_qty+=1;
                             $setup_total+=floatval($row[$setupindx]);
                             $imprint_total+=floatval($row[$setupindx]);
-                            //}
                         }
                         $imprints[]=array(
                             'order_imprint_id'=>(-1)*$newidx,
@@ -2213,6 +2210,48 @@ Class Leadorder_model extends My_Model {
                             'delflag'=>0,
                         );
                         $newidx++;
+                    } else {
+                        for ($i=1; $i<=$row['num_colors']; $i++) {
+                            $imprint_price_class = 'normal';
+                            $imprint_price_title = '';
+                            $imprtitle=$title.': '.date('jS',strtotime('2015-01-'.$i)).' Color Imprinting';
+                            $priceindx='print_'.$i;
+                            $setupindx='setup_'.$i;
+                            $subtotal=$order_items[$idx]['item_qty']*floatval($row[$priceindx]);
+                            if ($row['imprint_type']!=='REPEAT' && $numpp>1) {
+                                if ($order_items[$idx]['item_id']>0) {
+                                    // $newiprint_price = $this->_get_item_priceimprint($order_items[$idx]['item_id'],'imprint');
+                                    $newiprint_price = $order_items[$idx]['print_price'];
+                                    if (round(floatval($newiprint_price),2)!=round(floatval($row[$priceindx]),2)) {
+                                        $imprint_price_class='warningprice';
+                                        $imprint_price_title='Print price '.MoneyOutput($order_items[$idx]['print_price']);
+                                    }
+                                }
+                            }
+                            $numpp++;
+                            $imprint_total+=$subtotal;
+                            if ($row['imprint_type']!='REPEAT') {
+                                //if (floatval($row[$setupindx])>0) {
+                                $setup_qty+=1;
+                                $setup_total+=floatval($row[$setupindx]);
+                                $imprint_total+=floatval($row[$setupindx]);
+                                //}
+                            }
+                            $imprints[]=array(
+                                'order_imprint_id'=>(-1)*$newidx,
+                                'imprint_description'=>$imprtitle,
+                                'imprint_item'=>1,
+                                'imprint_qty'=>$order_items[$idx]['item_qty'],
+                                'imprint_price'=>floatval($row[$priceindx]),
+                                'outqty'=>($order_items[$idx]['item_qty']==0 ? '---' : $order_items[$idx]['item_qty']),
+                                'outprice'=>  MoneyOutput(floatval($row[$priceindx])),
+                                'imprint_subtotal'=>  MoneyOutput($subtotal),
+                                'imprint_price_class' => $imprint_price_class,
+                                'imprint_price_title' => $imprint_price_title,
+                                'delflag'=>0,
+                            );
+                            $newidx++;
+                        }
                     }
                     if ($row['imprint_type']=='REPEAT') {
                         $extracost=floatval($row['extra_cost']);

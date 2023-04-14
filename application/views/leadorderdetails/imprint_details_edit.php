@@ -33,6 +33,9 @@
                         <option value="2" <?=$row['num_colors']==2 ? 'selected="selected"' : ''?>>2</option>
                         <option value="3" <?=$row['num_colors']==3 ? 'selected="selected"' : ''?>>3</option>
                         <option value="4" <?=$row['num_colors']==4 ? 'selected="selected"' : ''?>>4</option>
+                        <?php if ($custom==1) { ?>
+                            <option value="5" <?=$row['num_colors']=='5' ? 'selected="selected"' : ''?>>F</option>
+                        <?php } ?>
                     </select>
                     <div class="labeltxt">prints</div>
                     <div class="imprintlocprices">
@@ -88,6 +91,9 @@
                         <option value="2" <?=$row['num_colors']==2 ? 'selected="selected"' : ''?>>2</option>
                         <option value="3" <?=$row['num_colors']==3 ? 'selected="selected"' : ''?>>3</option>
                         <option value="4" <?=$row['num_colors']==4 ? 'selected="selected"' : ''?>>4</option>
+                        <?php if ($custom==1) { ?>
+                            <option value="5" <?=$row['num_colors']=='5' ? 'selected="selected"' : ''?>>F</option>
+                        <?php } ?>
                     </select>
                     <div class="label">prints</div>
                     <div class="imprintlocprices">
