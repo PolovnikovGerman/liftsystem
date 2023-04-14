@@ -302,7 +302,7 @@ Class Cronjob extends CI_Controller
         $dateend=strtotime(date('m/d/Y'));
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
         $this->_ckeckpototals($datestart, $dateend);
-        die();
+        
         $brands = ['SB','SR'];
         foreach ($brands as $brand) {
             // Get users list
