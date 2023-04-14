@@ -1738,13 +1738,23 @@ Class Printshop_model extends MY_Model
             $this->db->update('ts_order_amounts');
         }
         // Update Orders by new COG
-        if ($orderdata['printshop_history']==0) {
-            $this->_update_ordercog($orderdata['order_id']);
+        $cogflag = $this->error_result;
+        if (intval($orderdata['printshop_history'])==0) {
+            $cogres = $this->_update_ordercog($orderdata['order_id']);
+            if ($cogres['result']==$this->success_result) {
+                $cogflag = $this->success_result;
+            } else {
+                $out['msg'] = $cogres['msg'];
+            }
+        } else {
+            $cogflag = $this->success_result;
         }
-        $out['result']=$this->success_result;
-        $out['order_id']=$orderdata['order_id'];
-        $out['printshop_income_id']=$orderdata['printshop_income_id'];
-        usersession($sessionid, NULL);
+        if ($cogflag==$this->success_result) {
+            $out['result']=$this->success_result;
+            $out['order_id']=$orderdata['order_id'];
+            $out['printshop_income_id']=$orderdata['printshop_income_id'];
+            usersession($sessionid, NULL);
+        }
         return $out;
     }
 
@@ -1807,36 +1817,56 @@ Class Printshop_model extends MY_Model
     }
 
     public function _update_ordercog($order_id) {
-        $this->db->select('revenue, shipping, is_shipping, tax, cc_fee');
+        $out = ['result' => $this->error_result, 'msg' => 'Order Not Found'];
+        $this->db->select('order_id, revenue, shipping, is_shipping, tax, cc_fee');
         $this->db->from('ts_orders');
         $this->db->where('order_id', $order_id);
         $orddat=$this->db->get()->row_array();
-        $revenue=  floatval($orddat['revenue']);
-        $shipping=floatval($orddat['shipping']);
-        $is_shipping=intval($orddat['is_shipping']);
-        $tax=floatval($orddat['tax']);
-        $cc_fee=floatval($orddat['cc_fee']);
-        // Get COG Value
-        $this->db->select('count(amount_id) cnt, sum(amount_sum) as cog');
-        $this->db->from('ts_order_amounts');
-        $this->db->where('order_id', $order_id);
-        $cogres=$this->db->get()->row_array();
-        if ($cogres['cnt']==0) {
-            // Default
-            $new_order_cog=NULL;
-            $new_profit_pc=NULL;
-            $new_profit=round((floatval($revenue))*$this->config->item('default_profit')/100,2);
+        if (ifset($orddat, 'order_id',0)==$order_id) {
+            $revenue=  floatval($orddat['revenue']);
+            $shipping=floatval($orddat['shipping']);
+            $is_shipping=intval($orddat['is_shipping']);
+            $tax=floatval($orddat['tax']);
+            $cc_fee=floatval($orddat['cc_fee']);
+            // Get COG Value
+            $this->db->select('count(amount_id) cnt, sum(amount_sum) as cog');
+            $this->db->from('ts_order_amounts');
+            $this->db->where('order_id', $order_id);
+            $cogres=$this->db->get()->row_array();
+            if ($cogres['cnt']==0) {
+                // Default
+                $new_order_cog=NULL;
+                $new_profit_pc=NULL;
+                $new_profit=round((floatval($revenue))*$this->config->item('default_profit')/100,2);
+                log_message('ERROR','Empty order COG, Order ID '.$order_id.'!');
+            } else {
+                $new_order_cog=floatval($cogres['cog']);
+                $new_profit=$revenue-($shipping*$is_shipping)-$tax-$cc_fee-$new_order_cog;
+                $new_profit_pc=($revenue==0 ? null : round(($new_profit/$revenue)*100,1));
+            }
+            $this->db->set('order_cog',$new_order_cog);
+            $this->db->set('profit',$new_profit);
+            $this->db->set('profit_perc',$new_profit_pc);
+            $this->db->where('order_id',$order_id);
+            $this->db->update('ts_orders');
+            if (!empty($new_order_cog)) {
+                $this->db->select('order_id, order_cog');
+                $this->db->from('ts_orders');
+                $this->db->where('order_id',$order_id);
+                $orderchk = $this->db->get()->row_array();
+                if (floatval($orderchk['order_cog'])==$new_order_cog) {
+                    $out['result'] = $this->success_result;
+                } else {
+                    log_message('ERROR','Order COG update unsuccess, Order ID '.$order_id.'!');
+                    $out['msg'] = 'Order COG update unsuccess';
+                }
+            } else {
+                $out['result'] = $this->success_result;
+            }
         } else {
-            $new_order_cog=floatval($cogres['cog']);
-            $new_profit=$revenue-($shipping*$is_shipping)-$tax-$cc_fee-$new_order_cog;
-            $new_profit_pc=($revenue==0 ? null : round(($new_profit/$revenue)*100,1));
+            log_message('ERROR','Attempt update order COG, Order ID '.$order_id.'!');
         }
-        $this->db->set('order_cog',$new_order_cog);
-        $this->db->set('profit',$new_profit);
-        $this->db->set('profit_perc',$new_profit_pc);
-        $this->db->where('order_id',$order_id);
-        $this->db->update('ts_orders');
-        return TRUE;
+        return $out;
     }
 
 //    public function save_printshopcolor_spec($printshop_color_id, $specfile) {
