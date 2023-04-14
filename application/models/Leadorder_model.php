@@ -6508,7 +6508,7 @@ Class Leadorder_model extends My_Model {
             $OrderItems = array();
             $Item = array(
                 'l_name' => 'Stressball', // Item Name.  127 char max.
-                'l_desc' => 'The best stressball on the planet!', // Item description.  127 char max.
+                'l_desc' => 'Custom printed stress balls', // Item description.  127 char max.
                 'l_amt' => $options['amount'], // Cost of individual item.
                 'l_number' => '1', // Item Number.  127 char max.
                 'l_qty' => '1', // Item quantity.  Must be any positive integer.
