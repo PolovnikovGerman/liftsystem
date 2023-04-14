@@ -6,7 +6,7 @@
     <div class="leadord_headrow">
         <div class="leadord_search">
             <img src="/img/icons/magnifier.png"/>
-            <input class="leadord_searchdata" value="<?=$search?>" placeholder="Enter order #, customer, email"/>
+            <input class="leadord_searchdata" value="<?=$search?>" placeholder="Enter order #, customer, email, Cust PO #"/>
             <div class="leadorder_findall">&nbsp;</div>
             <div class="leadorder_clear">&nbsp;</div>
         </div>
