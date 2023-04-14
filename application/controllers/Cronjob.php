@@ -302,6 +302,7 @@ Class Cronjob extends CI_Controller
         $dateend=strtotime(date('m/d/Y'));
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
         $this->_ckeckpototals($datestart, $dateend);
+        
         $brands = ['SB','SR'];
         foreach ($brands as $brand) {
             // Get users list
@@ -1054,7 +1055,7 @@ Class Cronjob extends CI_Controller
             $pores = $this->db->get()->row_array();
             $amount_cog = round(floatval($pores['amount']),2);
             if ($amount_cog!==$order_cog) {
-                $ordererror = [
+                $ordererror[] = [
                     'order_id' => $orderlist['order_id'],
                     'order_num' => $orderlist['order_num'],
                     'order_cog' => $order_cog,
@@ -1066,7 +1067,7 @@ Class Cronjob extends CI_Controller
         if (count($ordererror)==0) {
             $mail_body = 'All PO orders '.count($orderlists).' math is OK';
         } else {
-            $mail_body = $this->load->view('messages/orderamout_maths_view', $ordererror, TRUE);
+            $mail_body = $this->load->view('messages/orderamout_maths_view', ['data' => $ordererror], TRUE);
         }
         $this->load->library('email');
         $config['charset'] = 'utf-8';
