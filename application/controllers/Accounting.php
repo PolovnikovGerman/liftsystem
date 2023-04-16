@@ -288,9 +288,10 @@ class Accounting extends MY_Controller
                     'cog_tooltip' => $cog_tooltip,
                     'profit_tooltip' => $profi_tooltip,
                     'balance_tooltip' => $balance_tooltip,
+                    'brand' => ifset($postdata,'brand','SB'),
                 ];
                 $mdata['total_row']=$this->load->view('orderprofit/total_profitall_view',$total_options,TRUE);
-                $mdata['totals_head']=$this->load->view('orderprofit/total_allprofittitle_view',[],TRUE);
+                $mdata['totals_head']=$this->load->view('orderprofit/total_allprofittitle_view',['brand' => ifset($postdata,'brand','SB'),],TRUE);
                 // $mdata['total_row']=$this->load->view('orderprofit/total_profit_view',$totalord,TRUE);
             } else {
                 $mdata['totals_head']=$this->load->view('orderprofit/total_profittitle_view',[],TRUE);
@@ -408,6 +409,7 @@ class Accounting extends MY_Controller
             } else {
                 $data=array(
                     'orders'=>$ordersdat,
+                    'brand' => ifset($postdata,'brand','SB'),
                 );
                 $content = $this->load->view('orderprofit/table_data_view',$data, TRUE);
             }

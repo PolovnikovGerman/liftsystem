@@ -6,7 +6,7 @@
     <div class="leadord_headrow">
         <div class="leadord_search">
             <img src="/img/icons/magnifier.png"/>
-            <input class="leadord_searchdata" value="<?=$search?>" placeholder="Enter order #, customer, email"/>
+            <input class="leadord_searchdata" value="<?=$search?>" placeholder="Enter order #, customer, email, Cust PO #"/>
             <div class="leadorder_findall">&nbsp;</div>
             <div class="leadorder_clear">&nbsp;</div>
         </div>
@@ -64,10 +64,13 @@
         </div>
         <div class="leadorder_pagination"></div>
     </div>
-    <div class="leadorder_datahead">
+    <div class="leadorder_datahead <?=$brand=='SR' ? 'relievers' : ''?>">
         <div class="date">Date</div>
         <div class="ordernum">Order #</div>
         <div class="confirmnum">Conf #</div>
+        <?php if ($brand=='SR') { ?>
+            <div class="customerponumber">Cust PO #</div>
+        <?php } ?>
         <div class="customer">Customer</div>
         <div class="qty">Qty</div>
         <div class="itemcolor">Color</div>
@@ -79,5 +82,5 @@
         <div class="points">Points</div>
         <div class="ordstatus">Status</div>
     </div>
-    <div class="leadorder_dataarea">&nbsp;</div>
+    <div class="leadorder_dataarea <?=$brand=='SR' ? 'relievers' : ''?>">&nbsp;</div>
 </div>

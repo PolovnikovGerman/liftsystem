@@ -120,13 +120,14 @@ Class Leadorder_model extends My_Model {
         $this->db->select('o.order_art, o.order_redrawn, o.order_proofed, o.order_vectorized, o.order_approved, o.is_canceled');
         $this->db->select('itm.item_name');
         // $this->db->select("coalesce(oa.cnt_amnt,0)  as cnt_amnt",FALSE);
-        $this->db->select('u.user_leadname, u.user_name');
+        $this->db->select('u.user_leadname, u.user_name, bil.customer_ponum');
         $this->db->select('itm.item_number, coalesce(st.item_id, 0) as stok_item', FALSE);
         $this->db->select('vo.order_proj_status as artstage');
         $this->db->from('ts_orders o');
         $this->db->join("{$item_dbtable} as itm",'itm.item_id=o.item_id ','left');
         $this->db->join('users u','u.user_id=o.order_usr_repic','left');
         $this->db->join('ts_stock_items st','st.item_id=o.item_id','left');
+        $this->db->join('ts_order_billings bil','bil.order_id=o.order_id', 'left');
         // $this->db->join("({$amountcnt}) oa",'oa.order_id=o.order_id','left');
         // $this->db->where('o.is_canceled',0);
         $this->db->join('v_order_artstage vo','vo.order_id=o.order_id','left');
@@ -141,8 +142,7 @@ Class Leadorder_model extends My_Model {
         }
         if (isset($options['search'])) {
             $this->db->join('('.$itemdatesql.') itemdata','itemdata.order_id=o.order_id','left');
-            // $this->db->like("concat(ucase(o.customer_name),' ',ucase(o.customer_email),' ',o.order_num,' ', coalesce(o.order_confirmation,''), ' ', ucase(itemdata.itemdescr),ucase(o.order_itemnumber), o.revenue ) ",strtoupper($options['search']));
-            $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',coalesce(o.order_confirmation,''),' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.order_items,''),' ',coalesce(o.revenue,'')))",strtoupper($options['search']));
+            $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',coalesce(o.order_confirmation,''),' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.order_items,''),' ',coalesce(o.revenue,''),' ',coalesce(bil.customer_ponum,'')))",strtoupper($options['search']));
         }
         if (isset($options['begin'])) {
             $this->db->where('o.order_date >= ',$options['begin']);
