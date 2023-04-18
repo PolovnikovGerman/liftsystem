@@ -1069,32 +1069,37 @@ class Test extends CI_Controller
     }
 
     public function addinventory() {
-        $lbsitem=[5,10, 16, 23];
-        $yrditem=[4,11, 15, 21];
         $this->db->select('*');
         $this->db->from('ts_printshop_items');
-        $this->db->limit(15, 28); // id - 4
+        // $this->db->limit(15, 28); // id - 4
         // $this->db->limit(3, 25); // id - 3
         // $this->db->limit(5, 20); // id - 2
         // $this->db->limit(20); // id - 1
+        $this->db->order_by('item_num');
         $items = $this->db->get()->result_array();
         $itemnum=1;
-        $type_sh = 'SOT'; // id=4
+        $this->db->select('*');
+        $this->db->from('ts_inventory_types');
+        $this->db->where('inventory_type_id',1);
+        $typeres = $this->db->get()->row_array();
+        // $type_sh = 'SOT'; // id=4
         // $type_sh = 'SHS'; // id=3
         // $type_sh = 'SMA'; // id=2
         // $type_sh = 'SSB'; // id=1
-        $type_id = 4;
+        // $type_id = 4;
         // $type_id = 3;
         // $type_id = 2;
         // $type_id = 1;
+        $type_id = $typeres['inventory_type_id'];
+        $type_sh = $typeres['type_short'];
         foreach ($items as $item) {
             echo 'Item '.$item['item_name'].' insert '.PHP_EOL;
             $unit='pc';
-            if (in_array($item['printshop_item_id'], $lbsitem)) {
-                $unit='lbs';
-            } elseif (in_array($item['printshop_item_id'],$yrditem)) {
-                $unit='yd';
-            }
+            // if (in_array($item['printshop_item_id'], $lbsitem)) {
+            //     $unit='lbs';
+            // } elseif (in_array($item['printshop_item_id'],$yrditem)) {
+            //    $unit='yd';
+            // }
             $this->db->set('inventory_type_id', $type_id);
             $this->db->set('item_num',$type_sh.'-'.str_pad($itemnum,3,'0',STR_PAD_LEFT));
             $this->db->set('item_name',$item['item_name']);
@@ -1121,6 +1126,7 @@ class Test extends CI_Controller
                 $this->db->set('color', $color['color']);
                 $this->db->set('color_order', $color['color_order']);
                 $this->db->set('price', $newprice); // $color['price']
+                $this->db->set('avg_price', $newprice);
                 $this->db->set('color_unit', $unit);
                 $this->db->set('suggeststock', $color['suggeststock']);
                 $this->db->set('reserved', $color['reserved']);
@@ -1144,8 +1150,8 @@ class Test extends CI_Controller
                 $this->db->where('instock_amnt > 0');
                 $incomes = $this->db->get()->result_array();
                 foreach ($incomes as $income) {
-                    $diff = random_int(0,15);
-                    $calcprice = round($newprice*(100+$diff)/100,3);
+                    // $diff = 0; // random_int(0,15);
+                    // $calcprice = round($newprice*(100+$diff)/100,3);
                     if (substr($income['instock_descrip'],0,9)=='Container') {
                         $recnum = 'CON-'.substr($income['instock_descrip'],10);
                         $descr = 'Purchased - '.$income['instock_descrip'];
@@ -1156,7 +1162,8 @@ class Test extends CI_Controller
                     $this->db->set('inventory_color_id', $newcolorid);
                     $this->db->set('income_date', $income['instock_date']);
                     $this->db->set('income_qty', $income['instock_amnt']);
-                    $this->db->set('income_price', $calcprice); // $color['price']
+                    // $this->db->set('income_price', $calcprice); // $color['price']
+                    $this->db->set('income_price', $color['price']);
                     $this->db->set('income_description', $descr);
                     $this->db->set('income_record', $recnum);
                     $this->db->set('inserted_at', date('Y-m-d H:i:s'));
@@ -1216,7 +1223,7 @@ class Test extends CI_Controller
                     $this->db->insert('ts_inventory_outcomes');
                 }
                 // Get outcome
-                $this->db->select('oa.shipped, oa.kepted, oa.misprint, o.order_num, oa.amount_date, o.order_id');
+                $this->db->select('oa.amount_id, oa.shipped, oa.kepted, oa.misprint, o.order_num, oa.amount_date, o.order_id');
                 $this->db->from('ts_order_amounts oa');
                 $this->db->join('ts_orders o','o.order_id=oa.order_id');
                 $this->db->where('printshop',1);
@@ -1277,6 +1284,26 @@ class Test extends CI_Controller
                             break;
                         }
                     }
+                    // Update amouts
+                    $this->db->where('amount_id', $outcome['amount_id']);
+                    $this->db->set('inventory_color_id', $newcolorid);
+                    $this->db->update('ts_order_amounts');
+                }
+                // Onboats
+                $this->db->select('*');
+                $this->db->from('ts_printshop_onboats');
+                $this->db->where('printshop_color_id', $color['printshop_color_id']);
+                $onboats = $this->db->get()->result_array();
+                foreach ($onboats as $onboat) {
+                    $this->db->set('inventory_color_id',$newcolorid);
+                    $this->db->set('onroutestock', $onboat['onroutestock']);
+                    $this->db->set('onboat_date', $onboat['onboat_date']);
+                    $this->db->set('onboat_status', $onboat['onboat_status']);
+                    $this->db->set('onboat_container', $onboat['onboat_container']);
+                    $this->db->set('vendor_price', $color['price']);
+                    $this->db->set('onboat_type','C');
+                    $this->db->set('brand', $onboat['brand']);
+                    $this->db->insert('ts_inventory_onboats');
                 }
                 echo 'Color '.$color['color'].' added successfully '.PHP_EOL;
             }
@@ -1303,7 +1330,7 @@ class Test extends CI_Controller
             if ($restqty > 0) {
                 $newprice = round($resttotal / $restqty,3);
                 $this->db->where('inventory_color_id', $color['inventory_color_id']);
-                $this->db->set('price', $newprice);
+                $this->db->set('avg_price', $newprice);
                 $this->db->update('ts_inventory_colors');
             }
         }

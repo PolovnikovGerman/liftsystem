@@ -122,16 +122,6 @@ class Fulfillment extends MY_Controller
             } elseif ($row['item_link']=='#printshopreportview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/printshopreportview.css');
                 $head['scripts'][] = array('src'=>'/js/fulfillment/printshopreportview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['printshopreportview'] = $this->_prepare_printshop_report($brand);
             }
         }
@@ -1609,19 +1599,19 @@ class Fulfillment extends MY_Controller
     public function orderreport_edit() {
         if ($this->isAjax()) {
             $mdata=array();
-            $this->load->model('printshop_model');
+            $this->load->model('inventory_model');
             $postdata=$this->input->post();
             $printshop_income_id=(isset($postdata['printshop_income_id']) ? $postdata['printshop_income_id'] : 0);
             $showorange = (isset($postdata['showorange']) ? $postdata['showorange'] : 0);
-            $res=$this->printshop_model->get_printshop_order($printshop_income_id);
+            $res=$this->inventory_model->get_printshop_order($printshop_income_id);
             $error=$res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';
                 $data=$res['data'];
                 // Get Items for dropdown
-                $items=$this->printshop_model->get_printshopitem_list();
+                $items=$this->inventory_model->get_printshopitem_list();
                 // Get Colors of Item
-                $colors=$this->printshop_model->get_item_colors($data['printshop_item_id']);
+                $colors=$this->inventory_model->get_item_colors($data['inventory_item_id']);
                 $sessionid='order'.uniq_link(15);
                 $data['items']=$items;
                 $data['colors']=$colors;
@@ -1646,8 +1636,8 @@ class Fulfillment extends MY_Controller
             if (!empty($orderdata)) {
                 $fldname=$postdata['fldname'];
                 $newval=$postdata['newval'];
-                $this->load->model('printshop_model');
-                $res=$this->printshop_model->change_printshop_order($orderdata, $fldname, $newval,$sessionid);
+
+                $res=$this->inventory_model->change_printshop_order($orderdata, $fldname, $newval,$sessionid);
                 $error=$res['msg'];
                 if (isset($res['oldval'])) {
                     $mdata['oldval']=$res['oldval'];
@@ -1668,9 +1658,9 @@ class Fulfillment extends MY_Controller
                     $mdata['totalea']=number_format($orderdata['totalea']);
                     $mdata['customer']=$orderdata['customer'];
                     // totalea,3
-                    if ($fldname=='printshop_item_id') {
+                    if ($fldname=='inventory_item_id') {
                         $options=array(
-                            'printshop_color_id'=>$orderdata['printshop_color_id'],
+                            'printshop_color_id'=>$orderdata['inventory_color_id'],
                             'colors'=>$orderdata['colors'],
                         );
                         $mdata['colorlist']=$this->load->view('printshop/orderreport_colorselect_view', $options, TRUE);
@@ -1732,7 +1722,7 @@ class Fulfillment extends MY_Controller
         if ($this->isAjax()) {
             $mdata=array();
             $error='Empty Brand';
-            $this->load->model('printshop_model');
+            $this->load->model('inventory_model');
             $postdata=$this->input->post();
             $limit=(intval($postdata['limit'])==0 ? 30 : $postdata['limit']);
             $page=(intval($postdata['offset'])==0 ? 0 : $postdata['offset']);
@@ -1753,7 +1743,7 @@ class Fulfillment extends MY_Controller
             if (!empty($brand)) {
                 $error = '';
                 $options['brand']=$brand;
-                $res=$this->printshop_model->get_orderreport_data($options);
+                $res=$this->inventory_model->get_orderreport_data($options);
                 $options=array(
                     'orders'=>$res,
                 );
@@ -1768,7 +1758,7 @@ class Fulfillment extends MY_Controller
         if ($this->isAjax()) {
             $mdata=array();
 
-            $this->load->model('printshop_model');
+            $this->load->model('inventory_model');
             $postdata=$this->input->post();
             $options=array(
                 'export' => 1,
@@ -1782,7 +1772,7 @@ class Fulfillment extends MY_Controller
             if (isset($postdata['brand']) && !empty($postdata['brand'])) {
                 $options['brand'] = $postdata['brand'];
             }
-            $res=$this->printshop_model->get_orderreport_data($options);
+            $res=$this->inventory_model->get_orderreport_data($options);
             $error='Empty content for exxport';
             if (count($res)>0) {
                 $error = '';
@@ -2084,13 +2074,14 @@ class Fulfillment extends MY_Controller
     }
 
     private function _prepare_printshop_report($brand) {
-        $this->load->model('printshop_model');
+        // $this->load->model('printshop_model');
+        $this->load->model('inventory_model');
         $total_options = ['brand'=> $brand];
-        $totalrecs=$this->printshop_model->get_orderreport_counts($total_options);
-        $summary=$this->printshop_model->get_orderreport_totals($total_options);
+        $totalrecs=$this->inventory_model->get_orderreport_counts($total_options);
+        $summary=$this->inventory_model->get_orderreport_totals($total_options);
         $summary_view=$this->load->view('printshop/orderreport_summary_view', $summary, TRUE);
-        $addcosts=$this->printshop_model->_get_plates_costs();
-        $report_years=$this->printshop_model->get_report_years($total_options);
+        $addcosts=$this->inventory_model->_get_plates_costs();
+        $report_years=$this->inventory_model->get_report_years($total_options);
         $options=array(
             'totals'=>$totalrecs,
             'summary'=>$summary_view,
