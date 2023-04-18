@@ -192,12 +192,14 @@ class Orders extends MY_Controller
                 if (isset($postdata['listdata']) && $postdata['listdata']==1) {
                     $options=array(
                         'data'=>$ordersdat,
+                        'brand' => ifset($postdata,'brand','SB'),
                     );
                     $content = $this->load->view('orders/orderslist_datalist_view', $options, TRUE);
                 } else {
                     $data=array(
                         'data'=>$ordersdat,
                         'role'=>'user',
+                        'brand' => ifset($postdata,'brand','SB'),
                     );
                     $content = $this->load->view('orders/orders_datalist_view', $data, TRUE);
                 }

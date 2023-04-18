@@ -4,6 +4,9 @@
     margin-top: 10px;
     margin-left: 10px;
 }
+.profitorder-content.relievers {
+    width: 1089px;
+}
 .profitorder-content input,
 .profitorder-content select {
     float: left;
@@ -171,6 +174,9 @@ select.profitorder-filtrer {
 .totalallrow-title .orders_blank {
     width: 62px;
 }
+.totalallrow-title .orders_blank.relievers {
+    margin-right: 64px;
+}
 .totalallrow-title .qty {
     /* width: 77px; */
     /* margin-right: 28px; */
@@ -247,8 +253,10 @@ select.profitorder-filtrer {
     width: 65px;
 }
 .orders-profitalltotal-row .profitorder_totaldata .orders-blank {
-    /* width: 82px; */
     width: 62px;
+}
+.orders-profitalltotal-row .profitorder_totaldata .orders-blank.relievers {
+    margin-right: 64px;
 }
 .orders-profitalltotal-row .profitorder_totaldata .qty {
     /* width: 77px; */
@@ -305,6 +313,9 @@ select.profitorder-filtrer {
     color: #000000;
     width: 1026px;
 }
+.orders-table-title.relievers {
+    width: 1090px;
+}
 .orders-table-title > div {
     font-size: 13px;
     height: 30px;
@@ -323,6 +334,9 @@ select.profitorder-filtrer {
 }
 .orders-table-title > .profitorder_confirm {
     width: 60px;
+}
+.orders-table-title > .profitorder_customponum {
+    width: 64px;
 }
 .orders-table-title > .profitorder_customer {
     cursor:pointer;
@@ -371,6 +385,9 @@ select.profitorder-filtrer {
     overflow-y: scroll;
     width: 1027px;
 }
+.orderprofitcontent-table.relievers {
+    width: 1091px;
+}
 /* Scrollbar */
 /*.orderprofitcontent-table .sp-scrollbar {*/
 /*    width: 10px;*/
@@ -389,7 +406,10 @@ select.profitorder-filtrer {
     border-left: 1px solid #919191;
     border-right: 1px solid #919191;
     clear: both;
-    width: 1022px;  /* remove*/
+    width: 1086px;  /* remove*/
+}
+.orderprofitcontent-table > .tr.relievers {
+    width: 1150px;
 }
 .orderprofitcontent-table > .tr > div {
     color: #000000;
@@ -439,6 +459,16 @@ select.profitorder-filtrer {
     height: 24px;
     line-height: 24px;
     width: 60px;
+}
+.profitorder_customponum_data {
+    border-right: 1px solid #000000;
+    overflow: hidden;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: left!important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 64px;
 }
 .profitorder_customer_data {
     border-right: 1px solid #000000;
