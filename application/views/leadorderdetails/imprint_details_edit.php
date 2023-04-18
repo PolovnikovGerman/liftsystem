@@ -1,4 +1,5 @@
 <input type="hidden" id="imprintsession" value="<?=$imprintsession?>"/>
+<input type="hidden" id="imprinteitbrand" value="<?=$brand?>"/>
 <div class="imprintdetailsarea">
     <div class="imprintdetailsdata">
         <div class="imprintdetailstitle">
