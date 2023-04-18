@@ -1982,6 +1982,7 @@ class Leadorder extends MY_Controller
                         'item_name'=>$res['item_name'],
                         'imprintsession'=>$imptintid,
                         'custom' => ($res['item_id']==$this->config->item('custom_id') || $res['item_id']==$this->config->item('other_id')) ? 1 : 0,
+                        'brand' => $res['brand'],
                     );
                     $mdata['content']=  $this->load->view('leadorderdetails/imprint_details_edit', $options, TRUE);
 
@@ -1990,6 +1991,7 @@ class Leadorder extends MY_Controller
                         'order_blank'=>$order_blank,
                         'order_item_id'=>$order_item_id,
                         'item_id'=>$item_id,
+                        'brand' => $res['brand'],
                     );
                     usersession($imptintid, $imprintdetails);
                 }
