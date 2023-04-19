@@ -38,10 +38,6 @@ class Fulfillment extends MY_Controller
         $brand = $this->menuitems_model->get_current_brand();
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
 
-//        $brands = $this->menuitems_model->get_brand_permisions($this->USR_ID, $this->pagelink);
-//        if (count($brands)==0) {
-//            redirect('/');
-//        }
         $content_options = [];
         $content_options['start'] = $this->input->get('start', TRUE);
         foreach ($menu as $row) {
@@ -52,86 +48,26 @@ class Fulfillment extends MY_Controller
             } elseif ($row['item_link']=='#fullfilstatusview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/postatus.css');
                 $head['scripts'][]=array('src'=>'/js/fulfillment/postatus.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['fullfilstatusview'] = $this->_prepare_status_view($brand);
             } elseif ($row['item_link']=='#pototalsview') {
                 $head['styles'][]=array('style'=>'/css/accounting/pototals.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/pototals.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['pototalsview'] = $this->_prepare_purchaseorders_view($brand);
             } elseif ($row['item_link']=='#printshopinventview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/inventory.css');
                 $head['scripts'][]=array('src'=>'/js/fulfillment/inventory.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['printshopinventview'] = $this->_prepare_printshop_inventory($brand);
             } elseif ($row['item_link']=='#invneedlistview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/invneedlistview.css');
                 $head['scripts'][] = array('src'=>'/js/fulfillment/invneedlistview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['invneedlistview'] = $this->_prepare_needlist_view($brand);
             } elseif ($row['item_link']=='#salesrepinventview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/salesrepinventview.css');
                 $head['scripts'][] = array('src'=>'/js/fulfillment/salesrepinventview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['salesrepinventview'] = $this->_prepare_inventsalesrep_view($brand);
             } elseif ($row['item_link']=='#printshopreportview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/printshopreportview.css');
                 $head['scripts'][] = array('src'=>'/js/fulfillment/printshopreportview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['printshopreportview'] = $this->_prepare_printshop_report($brand);
             }
         }
