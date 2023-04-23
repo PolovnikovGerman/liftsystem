@@ -1277,6 +1277,7 @@ class Test extends CI_Controller
                         // Insert to order inventory
                         $this->db->set('order_id', $outcome['order_id']);
                         $this->db->set('inventory_income_id', $candidat['inventory_income_id']);
+                        $this->db->set('amount_id', $outcome['amount_id']);
                         $this->db->set('qty',$ordinv);
                         $this->db->insert('ts_order_inventory');
                         $qtyout= $qtyout - $candidat['leftqty'];

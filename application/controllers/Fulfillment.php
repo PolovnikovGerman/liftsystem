@@ -1630,8 +1630,8 @@ class Fulfillment extends MY_Controller
             $report_year = ifset($postdata,'report_year');
             $orderdata=usersession($sessionid);
             if (!empty($orderdata)) {
-                $this->load->model('printshop_model');
-                $res=$this->printshop_model->save_printshop_order($orderdata, $sessionid, $this->USR_ID);
+                $this->load->model('inventory_model');
+                $res=$this->inventory_model->save_printshop_order($orderdata, $sessionid, $this->USR_ID);
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
@@ -1737,8 +1737,8 @@ class Fulfillment extends MY_Controller
             $postdata=$this->input->post();
             // After
             $amount_id=$postdata['printshop_income_id'];
-            $this->load->model('printshop_model');
-            $res=$this->printshop_model->orderreport_remove($amount_id);
+            $this->load->model('inventory_model');
+            $res=$this->inventory_model->orderreport_remove($amount_id);
             $error=$res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';
@@ -1752,8 +1752,8 @@ class Fulfillment extends MY_Controller
                 if (isset($postdata['brand']) && !empty($postdata['brand'])) {
                     $options['brand']=$postdata['brand'];
                 }
-                $mdata['totals']=$this->printshop_model->get_orderreport_counts($options);
-                $summary=$this->printshop_model->get_orderreport_totals($options);
+                $mdata['totals']=$this->inventory_model->get_orderreport_counts($options);
+                $summary=$this->inventory_model->get_orderreport_totals($options);
                 $mdata['summary_view']=$this->load->view('printshop/orderreport_summary_view', $summary, TRUE);
             }
             $this->ajaxResponse($mdata, $error);

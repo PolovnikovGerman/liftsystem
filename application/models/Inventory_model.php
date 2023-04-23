@@ -1590,7 +1590,7 @@ class Inventory_model extends MY_Model
     }
 
     public function get_printshop_order($printshop_income_id) {
-        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $out=array('result'=>$this->error_result, 'msg'=>'PO Order not Found');
         if ($printshop_income_id==0) {
             $res=$this->_newprintshop_order();
         } else {
@@ -1655,8 +1655,8 @@ class Inventory_model extends MY_Model
             'printshop_date'=>$order['printshop_date'],
             'order_num'=>$order['order_num'],
             'customer'=>$order['customer'],
-            'printshop_item_id'=>$order['printshop_item_id'],
-            'printshop_color_id'=>$order['printshop_color_id'],
+            'inventory_item_id'=>$order['inventory_item_id'],
+            'inventory_color_id'=>$order['inventory_color_id'],
             'shipped'=>$order['shipped'],
             'kepted'=>$order['kepted'],
             'misprint'=>$order['misprint'],
@@ -1694,7 +1694,7 @@ class Inventory_model extends MY_Model
 
     public function get_item_colors($inventory_item_id) {
         $this->db->select('tspc.*');
-        $this->db->from('ts_printshop_colors tspc');
+        $this->db->from('ts_inventory_colors tspc');
         $this->db->where('tspc.inventory_item_id', $inventory_item_id);
         $this->db->order_by('tspc.color');
         $res=$this->db->get()->result_array();
@@ -1774,7 +1774,12 @@ class Inventory_model extends MY_Model
         // Get candidates
         $candidates = [];
         if ($orderdata['printshop_income_id'] > 0) {
-            // $this->db->select('')
+            $this->db->select('inventory_color_id, shipped, kepted, misprint');
+            $this->db->from('ts_order_amounts');
+            $this->db->where('amount_id', $orderdata['printshop_income_id']);
+            $olddat = $this->db->get()->row_array();
+        } else {
+            $oldat = [];
         }
         $this->db->set('printshop_date', $orderdata['printshop_date']);
         $this->db->set('inventory_color_id', $orderdata['inventory_color_id']);
@@ -1812,6 +1817,24 @@ class Inventory_model extends MY_Model
             $this->db->where('amount_id', $orderdata['printshop_income_id']);
             $this->db->update('ts_order_amounts');
         }
+        // Update Order Inventory
+        if (!empty($oldat)) {
+            if ($oldat['inventory_color_id']!==$orderdata['inventory_color_id']) {
+                // Delete old amount
+                $this->delete_inventory_amount($orderdata['printshop_income_id']);
+                $difqty = 0;
+            } else {
+                $difqty = intval($olddat['shipped'])+intval($olddat['kepted'])+intval($olddat['misprint'])-(intval($orderdata['shipped'])+intval($orderdata['kepted'])+$orderdata['misprint']);
+            }
+        } else {
+            $difqty = intval($orderdata['shipped'])+intval($orderdata['kepted'])+$orderdata['misprint'];
+        }
+        if ($difqty != 0) {
+            // Change entered Order Inven
+            $this->update_orderinventory($orderdata['printshop_income_id'], $orderdata['inventory_color_id'], $difqty);
+        }
+        // Calc new avg price
+
         // Update Orders by new COG
         $cogflag = $this->error_result;
         if (intval($orderdata['printshop_history'])==0) {
@@ -1843,11 +1866,189 @@ class Inventory_model extends MY_Model
             return $out;
         }
         $order_id=$chk['data']['order_id'];
+        $color_id = $chk['data']['inventory_color_id'];
+        // Get amount
+        $this->db->select('shipped, kepted, misprint');
+        $this->db->from('ts_order_amounts');
+        $this->db->where('amount_id', $amount_id);
+        $amnt = $this->db->get()->row_array();
+        $totalqty = intval($amnt['shipped'])+intval($amnt['kepted'])+intval($amnt['misprint']);
+        // change inventory outcome
+        $this->db->select('inventory_outcome_id, outcome_qty');
+        $this->db->from('ts_inventory_outcomes');
+        $this->db->where('order_id', $order_id);
+        $this->db->where('inventory_color_id', $color_id);
+        $outcomes = $this->db->get()->result_array();
+        foreach ($outcomes as $outcome) {
+            if ( $totalqty >= $outcome['outcome_qty']) {
+                $restqty = 0;
+                $restval = $totalqty - $outcome['outcome_qty'];
+            } else {
+                $restqty = $outcome['outcome_qty'] - $totalqty;
+                $restval = 0;
+            }
+            $this->db->where('inventory_outcome_id', $outcome['inventory_outcome_id']);
+            if ($restqty==0) {
+                $this->db->delete('ts_inventory_outcomes');
+            } else {
+                $this->db->set('outcome_qty', $restqty);
+                $this->db->update('ts_inventory_outcomes');
+            }
+            if ($restval <= 0) {
+                break;
+            }
+        }
+        // Remove order inventory
+        $this->delete_inventory_amount($amount_id);
         $this->db->where('amount_id', $amount_id);
         $this->db->delete('ts_order_amounts');
         // Recalc COG
         $this->_update_ordercog($order_id);
         $out['result']=$this->success_result;
+        return $out;
+    }
+
+    public function delete_inventory_amount($amount_id) {
+        $this->db->select('i.order_inventory_id, i.qty, i.inventory_income_id, t.income_expense, t.income_qty');
+        $this->db->from('ts_order_inventory i');
+        $this->db->join('ts_inventory_incomes t','i.inventory_income_id = t.inventory_income_id');
+        $this->db->where('i.amount_id', $amount_id);
+        $invents = $this->db->get()->row_array();
+        foreach ($invents as $invent) {
+            $resval = intval($invent['income_expense'])-intval($invent['qty']);
+            $this->db->where('inventory_income_id', $invent['inventory_income_id']);
+            $this->db->set('income_expense', $resval);
+            $this->db->update('ts_inventory_incomes');
+            $this->db->where('order_inventory_id', $invent['order_inventory_id']);
+            $this->db->delete('ts_order_inventory');
+        }
+        return true;
+    }
+
+    public function update_orderinventory($amount_id, $inventory_color_id, $difqty) {
+        if ($difqty < 0) {
+            $difval = abs($difqty);
+            $this->db->select('i.order_inventory_id, i.qty, i.inventory_income_id, t.income_expense, t.income_qty');
+            $this->db->from('ts_order_inventory i');
+            $this->db->join('ts_inventory_incomes t','i.inventory_income_id = t.inventory_income_id');
+            $this->db->where('i.amount_id', $amount_id);
+            $this->db->order_by('i.order_inventory_id','desc');
+            $invents = $this->db->get()->result_array();
+            foreach ($invents as $invent) {
+                if ($difval <= $invent['qty']) {
+                    $restval = $invent['income_expense'] - $difval;
+                    $restqty = $invent['qty'] - $difval;
+                    // update income
+                    $this->db->where('inventory_income_id', $invent['inventory_income_id']);
+                    $this->db->set('income_expense', $restval);
+                    $this->db->update('ts_inventory_incomes');
+                    $this->db->where('order_inventory_id', $invent['order_inventory_id']);
+                    if ($restqty==0) {
+                        $this->db->delete('ts_order_inventory');
+                    } else {
+                        $this->db->set('qty', $restqty);
+                        $this->db->update('ts_order_inventory');
+                    }
+                    $difval=0;
+                } else {
+                    $restval = $invent['income_expense'] - $invent['qty'];
+                    $this->db->where('inventory_income_id', $invent['inventory_income_id']);
+                    $this->db->set('income_expense', $restval);
+                    $this->db->update('ts_inventory_incomes');
+                    $this->db->where('order_inventory_id', $invent['order_inventory_id']);
+                    $this->db->delete('ts_order_inventory');
+                    $difval = $difval - $invent['qty'];
+                }
+                if ($difval==0) {
+                    break;
+                }
+            }
+        } elseif ($difqty > 0) {
+            $this->db->select('*');
+            $this->db->from('ts_order_amounts');
+            $this->db->where('amount_id', $amount_id);
+            $amntdat = $this->db->get()->row_array();
+            $this->db->select('inventory_income_id, (income_qty - income_expense) as leftqty, income_qty, income_expense');
+            $this->db->from('ts_inventory_incomes');
+            $this->db->where('inventory_color_id', $inventory_color_id);
+            $this->db->having('leftqty > 0');
+            $this->db->order_by('income_date');
+            $candidats = $this->db->get()->result_array();
+            foreach ($candidats as $candidat) {
+                if ($difqty > $candidat['leftqty']) {
+                    $newexp = $candidat['income_expense'] + $candidat['leftqty'];
+                    $ordinv = $candidat['leftqty'];
+                } else {
+                    $newexp = $candidat['income_expense'] + $difqty;
+                    $ordinv = $difqty;
+                }
+                $this->db->where('inventory_income_id', $candidat['inventory_income_id']);
+                $this->db->set('income_expense', $newexp);
+                $this->db->update('ts_inventory_incomes');
+                // Insert to order inventory
+                $this->db->set('order_id', $amntdat['order_id']);
+                $this->db->set('inventory_income_id', $candidat['inventory_income_id']);
+                $this->db->set('amount_id', $amount_id);
+                $this->db->set('qty',$ordinv);
+                $this->db->insert('ts_order_inventory');
+                $difqty= $difqty - $candidat['leftqty'];
+                if ($difqty <= 0 ) {
+                    break;
+                }
+            }
+        }
+    }
+
+    public function _update_ordercog($order_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Order Not Found'];
+        $this->db->select('order_id, revenue, shipping, is_shipping, tax, cc_fee');
+        $this->db->from('ts_orders');
+        $this->db->where('order_id', $order_id);
+        $orddat=$this->db->get()->row_array();
+        if (ifset($orddat, 'order_id',0)==$order_id) {
+            $revenue=  floatval($orddat['revenue']);
+            $shipping=floatval($orddat['shipping']);
+            $is_shipping=intval($orddat['is_shipping']);
+            $tax=floatval($orddat['tax']);
+            $cc_fee=floatval($orddat['cc_fee']);
+            // Get COG Value
+            $this->db->select('count(amount_id) cnt, sum(amount_sum) as cog');
+            $this->db->from('ts_order_amounts');
+            $this->db->where('order_id', $order_id);
+            $cogres=$this->db->get()->row_array();
+            if ($cogres['cnt']==0) {
+                // Default
+                $new_order_cog=NULL;
+                $new_profit_pc=NULL;
+                $new_profit=round((floatval($revenue))*$this->config->item('default_profit')/100,2);
+                log_message('ERROR','Empty order COG, Order ID '.$order_id.'!');
+            } else {
+                $new_order_cog=floatval($cogres['cog']);
+                $new_profit=$revenue-($shipping*$is_shipping)-$tax-$cc_fee-$new_order_cog;
+                $new_profit_pc=($revenue==0 ? null : round(($new_profit/$revenue)*100,1));
+            }
+            $this->db->set('order_cog',$new_order_cog);
+            $this->db->set('profit',$new_profit);
+            $this->db->set('profit_perc',$new_profit_pc);
+            $this->db->where('order_id',$order_id);
+            $this->db->update('ts_orders');
+            if (!empty($new_order_cog)) {
+                $this->db->select('order_id, order_cog');
+                $this->db->from('ts_orders');
+                $this->db->where('order_id',$order_id);
+                $orderchk = $this->db->get()->row_array();
+                if (floatval($orderchk['order_cog'])==$new_order_cog) {
+                    $out['result'] = $this->success_result;
+                } else {
+                    log_message('ERROR','Order COG update unsuccess, Order ID '.$order_id.'!');
+                    $out['msg'] = 'Order COG update unsuccess';
+                }
+            } else {
+                $out['result'] = $this->success_result;
+            }
+        } else {
+            log_message('ERROR','Attempt update order COG, Order ID '.$order_id.'!');
+        }
         return $out;
     }
 
