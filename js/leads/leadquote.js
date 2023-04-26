@@ -780,9 +780,14 @@ function change_quote_printdetails(params) {
                 $("input.imprintprice[data-details='"+details+"']").prop('disabled',true);
                 $("input.imprintprice[data-details='"+details+"'][data-fldname='extra_cost']").prop('disabled',false);
                 // Lock print prices
-                for (i=1; i<=newval; i++) {
-                    $("input.imprintprice[data-details='"+details+"'][data-fldname='print_"+i+"']").prop('disabled',false);
-                    $("input.imprintprice[data-details='"+details+"'][data-fldname='setup_"+i+"']").prop('disabled',false);
+                if (newval==5) {
+                    $("input.imprintprice[data-details='"+details+"'][data-fldname='print_1']").prop('disabled',false);
+                    $("input.imprintprice[data-details='"+details+"'][data-fldname='setup_1']").prop('disabled',false);
+                } else {
+                    for (i=1; i<=newval; i++) {
+                        $("input.imprintprice[data-details='"+details+"'][data-fldname='print_"+i+"']").prop('disabled',false);
+                        $("input.imprintprice[data-details='"+details+"'][data-fldname='setup_"+i+"']").prop('disabled',false);
+                    }
                 }
             } else if (response.data.fldname=='imprint_type') {
                 if (response.data.newval=='REPEAT') {

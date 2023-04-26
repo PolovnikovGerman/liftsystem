@@ -688,6 +688,7 @@ class Leadquote extends MY_Controller
                         'numlocs' => count($res['imprints']),
                         'item_name' => $res['item_name'],
                         'imprintsession'=>$imptintid,
+                        'custom' => ($item_id==$this->config->item('custom_id') || $item_id==$this->config->item('other_id')) ? 1 : 0,
                     );
                     $mdata['content']=  $this->load->view('leadpopup/imprint_details_edit', $options, TRUE);
 
