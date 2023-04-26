@@ -1589,7 +1589,7 @@ class Fulfillment extends MY_Controller
             if (!empty($orderdata)) {
                 $fldname=$postdata['fldname'];
                 $newval=$postdata['newval'];
-
+                $this->load->model('inventory_model');
                 $res=$this->inventory_model->change_printshop_order($orderdata, $fldname, $newval,$sessionid);
                 $error=$res['msg'];
                 if (isset($res['oldval'])) {
@@ -1641,28 +1641,33 @@ class Fulfillment extends MY_Controller
                 $res=$this->inventory_model->save_printshop_order($orderdata, $sessionid, $this->USR_ID);
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
-                    $error = '';
-                    $total_options = [];
-                    if (!empty($search)) {
-                        $total_options['search']=strtoupper($search);
+                    $orderdata['printshop_income_id'] = $res['printshop_income_id'];
+                    $invres = $this->inventory_model->save_inventory_outcome($orderdata, $sessionid, $this->USR_ID);
+                    $error = $invres['msg'];
+                    if ($invres['result']==$this->success_result) {
+                        $error = '';
+                        $total_options = [];
+                        if (!empty($search)) {
+                            $total_options['search']=strtoupper($search);
+                        }
+                        if (!empty($report_year)) {
+                            $total_options['report_year'] = $report_year;
+                        }
+                        if (!empty($brand)) {
+                            $total_options['brand'] = $brand;
+                        }
+                        $mdata['totals']=$this->printshop_model->get_orderreport_counts($total_options);
+                        $summary=$this->printshop_model->get_orderreport_totals($total_options);
+                        $mdata['summary_view']=$this->load->view('printshop/orderreport_summary_view', $summary, TRUE);
+                        $this->load->model('orders_model');
+                        $order=$this->orders_model->get_order_detail($res['order_id']);
+                        $inventlevel=$this->printshop_model->get_invenory_level($res['printshop_income_id']);
+                        $options=array(
+                            'order'=>$order,
+                            'invent'=>$inventlevel,
+                        );
+                        $mdata['newprofit_view']=$this->load->view('printshop/ordrereport_orderprofit_view', $options, TRUE);
                     }
-                    if (!empty($report_year)) {
-                        $total_options['report_year'] = $report_year;
-                    }
-                    if (!empty($brand)) {
-                        $total_options['brand'] = $brand;
-                    }
-                    $mdata['totals']=$this->printshop_model->get_orderreport_counts($total_options);
-                    $summary=$this->printshop_model->get_orderreport_totals($total_options);
-                    $mdata['summary_view']=$this->load->view('printshop/orderreport_summary_view', $summary, TRUE);
-                    $this->load->model('orders_model');
-                    $order=$this->orders_model->get_order_detail($res['order_id']);
-                    $inventlevel=$this->printshop_model->get_invenory_level($res['printshop_income_id']);
-                    $options=array(
-                        'order'=>$order,
-                        'invent'=>$inventlevel,
-                    );
-                    $mdata['newprofit_view']=$this->load->view('printshop/ordrereport_orderprofit_view', $options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);

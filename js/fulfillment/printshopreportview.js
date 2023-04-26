@@ -282,7 +282,7 @@ function init_printshiporder_edit(report) {
         params.push({name: 'newval', value: $(this).val()});
         $.post(url, params, function(response){
             if (response.errors=='') {
-                if (fldname=='printshop_item_id') {
+                if (fldname=='inventory_item_id') {
                     $("div.datarow[data-report='"+report+"']").find('div.itemcolor').empty().html(response.data.colorlist);
                     init_printshiporder_edit(report);
                 }
