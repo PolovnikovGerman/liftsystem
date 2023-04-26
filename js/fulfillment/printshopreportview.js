@@ -68,6 +68,7 @@ function pageOrderReportsCallback(page_index) {
             // Init new content manage
             init_orderreport_page();
             $("#loader").hide();
+            jQuery.balloon.init();
         } else {
             $("#loader").hide();
             show_error(response);

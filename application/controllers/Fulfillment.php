@@ -1541,6 +1541,13 @@ class Fulfillment extends MY_Controller
         echo $out_msg;
     }
 
+    public function inventoryoutdetails($amount_id) {
+        $this->load->model('inventory_model');
+        $res = $this->inventory_model->get_amount_details($amount_id);
+        $content = $this->load->view('printshop/ordrereport_outcomedetails_view',['details' => $res], TRUE);
+        echo $content;
+    }
+
     // Edit Data of report
     public function orderreport_edit() {
         if ($this->isAjax()) {

@@ -1505,7 +1505,15 @@ class Inventory_model extends MY_Model
 
     public function get_orderreport_data($options) {
         // Get Cost - Blue and Orange plates
-        $this->db->select('oa.*, c.color, i.item_name, i.item_num, o.customer_name, o.order_num, o.profit, o.profit_perc');
+        $this->db->select('amount_id, count(inventory_income_id) as cnt');
+        $this->db->from('ts_order_inventory');
+        $this->db->group_by('amount_id');
+        $incomesql = $this->db->get_compiled_select();
+
+        // $this->db->select('oa.*');
+        $this->db->select('oa.amount_id, oa.shipped, oa.kepted,oa.misprint, oa.price, oa.extracost, oa.printshop_date');
+        $this->db->select('oa.orangeplate, oa.beigeplate, oa.blueplate, , oa.printshop_type, oa.order_id');
+        $this->db->select('c.color, i.item_name, i.item_num, o.customer_name, o.order_num, o.profit, o.profit_perc');
         $this->db->select('(oa.price+oa.extracost) as priceea');
         $this->db->select('(oa.extracost)*(oa.shipped+oa.kepted+oa.misprint) as extraitem');
         $this->db->select('(oa.price+oa.extracost)*(oa.shipped+oa.kepted+oa.misprint) as costitem');
@@ -1515,10 +1523,12 @@ class Inventory_model extends MY_Model
         $this->db->select('oa.printshop_total as totalitemcost');
         $this->db->select('(oa.price+oa.extracost)*oa.misprint as misprintcost');
         $this->db->select('date_format(from_unixtime(oa.printshop_date),\'%Y%m%d\') as sortdatefld',FALSE);
+        $this->db->select('invincom.cnt as countincome');
         $this->db->from('ts_order_amounts oa');
         $this->db->join('ts_inventory_colors c', 'c.inventory_color_id=oa.inventory_color_id');
         $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
         $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->join('('.$incomesql.') invincom','invincom.amount_id=oa.amount_id','left');
         $this->db->where('oa.printshop',1);
         if (isset($options['search'])) {
             $this->db->like('upper(concat(o.order_num, o.customer_name, i.item_num, i.item_name))', $options['search']);
@@ -1556,6 +1566,11 @@ class Inventory_model extends MY_Model
         $data=array();
         foreach ($res as $row) {
             $misprint_proc=($row['shipped']==0 ? 0 : $row['misprint']/$row['shipped']*100);
+            $details = '';
+            if ($row['countincome'] > 1) {
+                $details = 'data-event="hover" data-css="inventincome" data-bgcolor="#FFFFFF" data-bordercolor="#adadad" data-textcolor="#000000"
+     data-position="right" data-balloon="{ajax} /fulfillment/inventoryoutdetails/'.$row['amount_id'].'"';
+            }
             $data[]=array(
                 'printshop_income_id'=>$row['amount_id'],
                 'numpp'=>$startidx,
@@ -1583,6 +1598,8 @@ class Inventory_model extends MY_Model
                 'misprintcost'=>$row['misprintcost'],
                 'orderclass'=>($row['printshop_type']=='M' ? 'manualinput' : 'systeminput'),
                 'order_id'=>$row['order_id'],
+                'countincome' => $row['countincome'],
+                'details' => $details,
             );
             $startidx--;
         }
@@ -2049,6 +2066,33 @@ class Inventory_model extends MY_Model
         } else {
             log_message('ERROR','Attempt update order COG, Order ID '.$order_id.'!');
         }
+        return $out;
+    }
+
+    public function get_amount_details($amount_id) {
+        $this->db->select('oi.qty, t.income_price as price');
+        $this->db->from('ts_order_inventory oi');
+        $this->db->join('ts_inventory_incomes t','oi.inventory_income_id = t.inventory_income_id');
+        $this->db->where('oi.amount_id', $amount_id);
+        $res = $this->db->get()->result_array();
+        $out = [];
+        $total_qty = $total_sum = 0;
+        foreach ($res as $row) {
+            $total_qty+=$row['qty'];
+            $total_sum+=$row['qty']*$row['price'];
+            $out[] = [
+                'qty' => $row['qty'],
+                'price' => $row['price'],
+                'total' => $row['qty']*$row['price'],
+                'totalrow' => 0,
+            ];
+        }
+        $out[] = [
+            'qty' => $total_qty,
+            'price' => round($total_sum/$total_qty,3),
+            'total' => $total_sum,
+            'totalrow' => 1,
+        ];
         return $out;
     }
 
