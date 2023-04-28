@@ -5,7 +5,7 @@
              data-balloon="{ajax} <?=$order_tooltip?>"><?= $data['numorders'] ?></div>
         <div class="orders-new"><?= $data['numorders_new'] ?> (<?=$data['numorders_detail_newperc']?>%)</div>
         <div class="orders-repeat"><?= $data['numorders_repeat'] ?> (<?=$data['numorders_detail_repeatperc']?>%)</div>
-        <div class="orders-blank"><?= $data['numorders_blank'] ?> (<?=$data['numorders_detail_blankperc']?>%)</div>
+        <div class="orders-blank <?=$brand=='SR' ? 'relievers' : ''?>"><?= $data['numorders_blank'] ?> (<?=$data['numorders_detail_blankperc']?>%)</div>
         <div class="qty profitotaltooltip"  data-viewsrc="<?=$qty_tooltip?>"><?= $data['qty'] ?></div>
         <div class="totals-emptyspace">&nbsp;</div>
         <div class="revenue profitotaltooltip"  data-viewsrc="<?=$revenue_tooltip?>" ><?= $data['show_revenue'] ?></div>

@@ -1,4 +1,5 @@
 <input type="hidden" id="imprintsession" value="<?=$imprintsession?>"/>
+<input type="hidden" id="imprinteitbrand" value="<?=$brand?>"/>
 <div class="imprintdetailsarea">
     <div class="imprintdetailsdata">
         <div class="imprintdetailstitle">
@@ -33,13 +34,16 @@
                         <option value="2" <?=$row['num_colors']==2 ? 'selected="selected"' : ''?>>2</option>
                         <option value="3" <?=$row['num_colors']==3 ? 'selected="selected"' : ''?>>3</option>
                         <option value="4" <?=$row['num_colors']==4 ? 'selected="selected"' : ''?>>4</option>
+                        <?php if ($custom==1) { ?>
+                            <option value="5" <?=$row['num_colors']=='5' ? 'selected="selected"' : ''?>>F</option>
+                        <?php } ?>
                     </select>
                     <div class="labeltxt">prints</div>
                     <div class="imprintlocprices">
                         <input type="text" class="imprintprice input_text_right" data-fldname="print_1" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : ''?> value="<?=number_format(floatval($row['print_1']),2)?>"/>
-                        <input type="text" class="imprintprice input_text_right" data-fldname="print_2" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : ($row['num_colors']<2 ? 'disabled="disabled"' : '')?> value="<?=number_format(floatval($row['print_2']),2)?>"/>
-                        <input type="text" class="imprintprice input_text_right" data-fldname="print_3" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : ($row['num_colors']<3 ? 'disabled="disabled"' : '')?> value="<?=number_format(floatval($row['print_3']),2)?>"/>
-                        <input type="text" class="imprintprice input_text_right" data-fldname="print_4" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : ($row['num_colors']<4 ? 'disabled="disabled"' : '')?> value="<?=number_format(floatval($row['print_4']),2)?>"/>
+                        <input type="text" class="imprintprice input_text_right" data-fldname="print_2" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : (($row['num_colors']<2 || $row['num_colors']==5) ? 'disabled="disabled"' : '')?> value="<?=number_format(floatval($row['print_2']),2)?>"/>
+                        <input type="text" class="imprintprice input_text_right" data-fldname="print_3" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : (($row['num_colors']<3 || $row['num_colors']==5)? 'disabled="disabled"' : '')?> value="<?=number_format(floatval($row['print_3']),2)?>"/>
+                        <input type="text" class="imprintprice input_text_right" data-fldname="print_4" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : (($row['num_colors']<4  || $row['num_colors']==5)? 'disabled="disabled"' : '')?> value="<?=number_format(floatval($row['print_4']),2)?>"/>
                     </div>
                 </div>
                 <div class="imprintlocrow">
@@ -54,9 +58,9 @@
                     <div class="labeltxt">setup</div>
                     <div class="imprintlocprices">
                         <input type="text" class="imprintprice input_text_right" data-fldname="setup_1" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : ''?> value="<?=number_format(floatval($row['setup_1']),2)?>"/>
-                        <input type="text" class="imprintprice input_text_right" data-fldname="setup_2" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : ($row['num_colors']<2 ? 'disabled="disabled"' : '')?> value="<?=number_format(floatval($row['setup_2']),2)?>"/>
-                        <input type="text" class="imprintprice input_text_right" data-fldname="setup_3" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : ($row['num_colors']<3 ? 'disabled="disabled"' : '')?> value="<?=number_format(floatval($row['setup_3']),2)?>"/>
-                        <input type="text" class="imprintprice input_text_right" data-fldname="setup_4" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : ($row['num_colors']<4 ? 'disabled="disabled"' : '')?> value="<?=number_format(floatval($row['setup_4']),2)?>"/>
+                        <input type="text" class="imprintprice input_text_right" data-fldname="setup_2" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : (($row['num_colors']<2  || $row['num_colors']==5) ? 'disabled="disabled"' : '')?> value="<?=number_format(floatval($row['setup_2']),2)?>"/>
+                        <input type="text" class="imprintprice input_text_right" data-fldname="setup_3" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : (($row['num_colors']<3  || $row['num_colors']==5) ? 'disabled="disabled"' : '')?> value="<?=number_format(floatval($row['setup_3']),2)?>"/>
+                        <input type="text" class="imprintprice input_text_right" data-fldname="setup_4" data-details="<?=$row['order_imprindetail_id']?>" <?=$row['active']==0 ? 'disabled="disabled"' : (($row['num_colors']<4  || $row['num_colors']==5) ? 'disabled="disabled"' : '')?> value="<?=number_format(floatval($row['setup_4']),2)?>"/>
                     </div>                    
                 </div>
             </div>
@@ -88,6 +92,9 @@
                         <option value="2" <?=$row['num_colors']==2 ? 'selected="selected"' : ''?>>2</option>
                         <option value="3" <?=$row['num_colors']==3 ? 'selected="selected"' : ''?>>3</option>
                         <option value="4" <?=$row['num_colors']==4 ? 'selected="selected"' : ''?>>4</option>
+                        <?php if ($custom==1) { ?>
+                            <option value="5" <?=$row['num_colors']=='5' ? 'selected="selected"' : ''?>>F</option>
+                        <?php } ?>
                     </select>
                     <div class="label">prints</div>
                     <div class="imprintlocprices">

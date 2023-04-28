@@ -15,18 +15,18 @@
 </div>
 <div class="customer editform"><?=(empty($customer) ? '&nbsp;' : $customer)?></div>
 <div class="itemname editform">
-    <select class="psprintitem psorderselect" data-fldname="printshop_item_id">
-        <option value="" <?=($printshop_item_id=='' ? 'selected="selected"' : '')?> >...</option>
+    <select class="psprintitem psorderselect" data-fldname="inventory_item_id">
+        <option value="" <?=($inventory_item_id=='' ? 'selected="selected"' : '')?> >...</option>
         <?php foreach ($items as $irow) { ?>
-        <option value="<?=$irow['printshop_item_id']?>" <?=($irow['printshop_item_id']==$printshop_item_id ? 'selected="selected"' : '')?>><?=$irow['item_name']?></option>
+        <option value="<?=$irow['inventory_item_id']?>" <?=($irow['inventory_item_id']==$inventory_item_id ? 'selected="selected"' : '')?>><?=$irow['item_name']?></option>
         <?php } ?>
     </select>
 </div>
 <div class="itemcolor editform">
-    <select class="psprintcolor psorderselect" data-fldname="printshop_color_id">
-        <option value="" <?=($printshop_color_id=='' ? 'selected="selected"' : '')?>>...</option>
+    <select class="psprintcolor psorderselect" data-fldname="inventory_color_id">
+        <option value="" <?=($inventory_color_id=='' ? 'selected="selected"' : '')?>>...</option>
         <?php foreach ($colors as $crow) { ?>
-        <option value="<?=$crow['printshop_color_id']?>" <?=($crow['printshop_color_id']==$printshop_color_id ? 'selected="selected"' : '')?>><?=$crow['color']?></option>
+        <option value="<?=$crow['inventory_color_id']?>" <?=($crow['inventory_color_id']==$inventory_color_id ? 'selected="selected"' : '')?>><?=$crow['color']?></option>
         <?php } ?>
     </select>
 </div>

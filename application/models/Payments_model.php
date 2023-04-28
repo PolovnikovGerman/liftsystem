@@ -278,7 +278,12 @@ Class Payments_model extends MY_Model {
             $this->db->from('ts_orders');
             $this->db->where('order_id',$order_id);
             $statres=$this->db->get()->row_array();
-            $new_order_cog=$order_cog-$old_amount_sum+$amount_sum;
+            // $new_order_cog=$order_cog-$old_amount_sum+$amount_sum;
+            $this->db->select('sum(amount_sum) as sumcog, count(amount_id)');
+            $this->db->from('ts_order_amounts');
+            $this->db->where('order_id', $order_id);
+            $cogcalc = $this->db->get()->row_array();
+            $new_order_cog = floatval($cogcalc['sumcog']);
             $new_profit=$revenue-($shipping*$is_shipping)-$tax-$cc_fee-$new_order_cog;
             $new_profit_pc=($revenue==0 ? null : round(($new_profit/$revenue)*100,1));
             $this->db->set('order_cog',$new_order_cog);

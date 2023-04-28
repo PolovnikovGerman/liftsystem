@@ -12,6 +12,7 @@ class Inventory_model extends MY_Model
     private $sb_label = 'StressBalls.com';
     private $sr_label = 'StressRelievers';
     private $empty_html_content='&nbsp;';
+    private $error_message='Unknown error. Try later';
     function __construct()
     {
         parent::__construct();
@@ -1403,4 +1404,856 @@ class Inventory_model extends MY_Model
         }
         return $out;
     }
+
+    public function get_orderreport_counts($options=array()) {
+        $this->db->select('count(oa.amount_id) as cnt');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->where('oa.printshop',1);
+        // Additional Options
+        if (isset($options['search'])) {
+            $this->db->join('ts_inventory_colors c','c.inventory_color_id=oa.inventory_color_id');
+            $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
+            $this->db->like('upper(concat(o.order_num, o.customer_name, i.item_num, i.item_name))', $options['search']);
+        }
+        if (isset($options['report_year'])) {
+            $start=strtotime($options['report_year'].'-01-01');
+            $year_finish=intval($options['report_year']+1);
+            $finish=strtotime($year_finish.'-01-01');
+            $this->db->where('oa.printshop_date >= ', $start);
+            $this->db->where('oa.printshop_date < ', $finish);
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            if ($options['brand']=='SR') {
+                $this->db->where('o.brand', $options['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            }
+        }
+        $res=$this->db->get()->row_array();
+        return $res['cnt'];
+    }
+
+    public function get_orderreport_totals($options=array()) {
+        $this->db->select('sum(oa.shipped) as shipped, sum(oa.kepted) as kepted, sum(oa.misprint) as misprint');
+        $this->db->select('sum(oa.shipped+oa.kepted+oa.misprint)as totalqty');
+        $this->db->select('sum(oa.orangeplate+oa.blueplate+oa.beigeplate) as totalplate');
+        $this->db->select('sum((oa.shipped+oa.kepted+oa.misprint)*oa.extracost) as total_extra');
+        $this->db->select('sum((oa.shipped+oa.kepted+oa.misprint)*(oa.price+oa.extracost)) as item_cost, sum(oa.orangeplate) as oranplate');
+        $this->db->select('sum(oa.blueplate) as blueplate, sum(oa.beigeplate) as beigeplate, sum(oa.misprint*(oa.price+oa.extracost)) as misprint_cost');
+        $this->db->select('sum(oa.orangeplate*oa.orangeplate_price) as orangeplatecost');
+        $this->db->select('sum(oa.blueplate*oa.blueplate_price) as blueplatecost');
+        $this->db->select('sum(oa.beigeplate*oa.beigeplate_price) as beigeplatecost');
+        $this->db->select('sum(oa.printshop_total) as total_cost');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->where('printshop',1);
+        // Options
+        if (isset($options['search'])) {
+            $this->db->join('ts_inventory_colors c','c.inventory_color_id=oa.inventory_color_id');
+            $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
+            $this->db->like('upper(concat(o.order_num, o.customer_name, i.item_num, i.item_name))', $options['search']);
+        }
+        if (isset($options['report_year'])) {
+            $start=strtotime($options['report_year'].'-01-01');
+            $year_finish=intval($options['report_year']+1);
+            $finish=strtotime($year_finish.'-01-01');
+            $this->db->where('oa.printshop_date >= ', $start);
+            $this->db->where('oa.printshop_date < ', $finish);
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            // $this->db->where('o.brand', $options['brand']);
+            if ($options['brand']=='SR') {
+                $this->db->where('o.brand', $options['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            }
+        }
+        $res=$this->db->get()->row_array();
+        $res['misprintperc']='0%';
+        if ($res['shipped']>0) {
+            $res['misprintperc']=round($res['misprint']/$res['shipped']*100,0).'%';
+        }
+        $res['platecost']=$res['orangeplatecost']+$res['blueplatecost'];
+        return $res;
+    }
+
+    public function _get_plates_costs() {
+        $this->db->select('orangeplate_price, blueplate_price, repaid_cost, inv_addcost, beigeplate_price');
+        $this->db->from('ts_configs');
+        $res=$this->db->get()->row_array();
+        return $res;
+    }
+
+    public function get_report_years($options=[]) {
+        $this->db->select("date_format(from_unixtime(oa.amount_date),'%Y') as year_amount, count(oa.amount_id) as cnt",FALSE);
+        $this->db->from('ts_order_amounts oa');
+        $this->db->where('oa.printshop',1);
+        $this->db->group_by('year_amount');
+        $this->db->order_by('year_amount','desc');
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->join('ts_orders o','o.order_id=oa.order_id');
+            if ($options['brand']=='SR') {
+                $this->db->where('o.brand', $options['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            }
+        }
+        $res=$this->db->get()->result_array();
+        // Additional Options
+        return $res;
+    }
+
+    public function get_orderreport_data($options) {
+        // Get Cost - Blue and Orange plates
+        $this->db->select('amount_id, count(inventory_income_id) as cnt');
+        $this->db->from('ts_order_inventory');
+        $this->db->group_by('amount_id');
+        $incomesql = $this->db->get_compiled_select();
+
+        // $this->db->select('oa.*');
+        $this->db->select('oa.amount_id, oa.shipped, oa.kepted,oa.misprint, oa.price, oa.extracost, oa.printshop_date');
+        $this->db->select('oa.orangeplate, oa.beigeplate, oa.blueplate, , oa.printshop_type, oa.order_id');
+        $this->db->select('c.color, i.item_name, i.item_num, o.customer_name, o.order_num, o.profit, o.profit_perc');
+        $this->db->select('(oa.price+oa.extracost) as priceea');
+        $this->db->select('(oa.extracost)*(oa.shipped+oa.kepted+oa.misprint) as extraitem');
+        $this->db->select('(oa.price+oa.extracost)*(oa.shipped+oa.kepted+oa.misprint) as costitem');
+        $this->db->select('(oa.shipped+oa.kepted+oa.misprint) as totalitem');
+        $this->db->select('(oa.orangeplate+oa.blueplate+oa.beigeplate) as totalplates');
+        $this->db->select('(oa.orangeplate*oa.orangeplate_price+oa.blueplate*oa.blueplate_price+oa.beigeplate*oa.beigeplate_price) as platescost');
+        $this->db->select('oa.printshop_total as totalitemcost');
+        $this->db->select('(oa.price+oa.extracost)*oa.misprint as misprintcost');
+        $this->db->select('date_format(from_unixtime(oa.printshop_date),\'%Y%m%d\') as sortdatefld',FALSE);
+        $this->db->select('invincom.cnt as countincome');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_inventory_colors c', 'c.inventory_color_id=oa.inventory_color_id');
+        $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
+        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->join('('.$incomesql.') invincom','invincom.amount_id=oa.amount_id','left');
+        $this->db->where('oa.printshop',1);
+        if (isset($options['search'])) {
+            $this->db->like('upper(concat(o.order_num, o.customer_name, i.item_num, i.item_name))', $options['search']);
+        }
+        if (isset($options['report_year'])) {
+            $start=strtotime($options['report_year'].'-01-01');
+            $year_finish=intval($options['report_year']+1);
+            $finish=strtotime($year_finish.'-01-01');
+            $this->db->where('oa.printshop_date >= ', $start);
+            $this->db->where('oa.printshop_date < ', $finish);
+        }
+        if (isset($options['limit'])) {
+            if (isset($options['offset'])) {
+                $this->db->limit($options['limit'], $options['offset']);
+            } else {
+                $this->db->limit($options['limit']);
+            }
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            if ($options['brand']=='SR') {
+                $this->db->where('o.brand', $options['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            }
+        }
+        $this->db->order_by("sortdatefld desc, oa.update_date desc");
+
+        $res=$this->db->get()->result_array();
+        if (isset($options['export']) && $options['export']==1) {
+            return $res;
+        }
+
+        // Calc start index
+        $startidx=$options['totals']-$options['offset'];
+        $data=array();
+        foreach ($res as $row) {
+            $misprint_proc=($row['shipped']==0 ? 0 : $row['misprint']/$row['shipped']*100);
+            $details = '';
+            if ($row['countincome'] > 1) {
+                $details = 'data-event="hover" data-css="inventincome" data-bgcolor="#FFFFFF" data-bordercolor="#adadad" data-textcolor="#000000"
+     data-position="right" data-balloon="{ajax} /fulfillment/inventoryoutdetails/'.$row['amount_id'].'"';
+            }
+            $data[]=array(
+                'printshop_income_id'=>$row['amount_id'],
+                'numpp'=>$startidx,
+                'order_date'=>date('j-M', $row['printshop_date']),
+                'order_num'=>$row['order_num'],
+                'customer'=>$row['customer_name'],
+                'item_name'=>$row['item_num'].' '.str_replace('Stress Balls', '', $row['item_name']),
+                'color'=>$row['color'],
+                'shipped'=>$row['shipped'],
+                'kepted'=>$row['kepted'],
+                'misprint'=>$row['misprint'],
+                'misprint_proc'=>round($misprint_proc,0).'%',
+                'total_qty'=>$row['totalitem'],
+                'price'=>$row['price'],
+                'extracost'=>$row['extracost'],
+                'totalea'=>round($row['priceea'],3),
+                'extraitem'=>round($row['extraitem'],2),
+                'costitem'=>round($row['costitem'],2),
+                'oranplate'=>$row['orangeplate'],
+                'blueplate'=>$row['blueplate'],
+                'beigeplate' => $row['beigeplate'],
+                'totalplates'=>$row['totalplates'],
+                'platescost'=>$row['platescost'],
+                'itemstotalcost'=>$row['totalitemcost'],
+                'misprintcost'=>$row['misprintcost'],
+                'orderclass'=>($row['printshop_type']=='M' ? 'manualinput' : 'systeminput'),
+                'order_id'=>$row['order_id'],
+                'countincome' => $row['countincome'],
+                'details' => $details,
+            );
+            $startidx--;
+        }
+        return $data;
+    }
+
+    public function get_printshop_order($printshop_income_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>'PO Order not Found');
+        if ($printshop_income_id==0) {
+            $res=$this->_newprintshop_order();
+        } else {
+            $this->db->select('oa.*, oa.amount_id as printshop_income_id, c.inventory_item_id, o.customer_name as customer, o.order_num');
+            $this->db->from('ts_order_amounts oa');
+            $this->db->join('ts_inventory_colors c', 'c.inventory_color_id=oa.inventory_color_id');
+            $this->db->join('ts_orders o','o.order_id=oa.order_id');
+            $this->db->where('oa.amount_id', $printshop_income_id);
+            $res=$this->db->get()->row_array();
+            if (!isset($res['amount_id'])) {
+                $out['msg']='Printshop Order Not Found';
+                return $out;
+            }
+            $res['printshop_oldqty'] = intval($res['shipped'])+intval($res['kepted'])+intval($res['misprint']);
+            $res['newprintshop'] = 0;
+            $res['color_old'] = $res['inventory_color_id'];
+        }
+        $data=$this->_prinshoporder_params($res);
+        $out['result']=$this->success_result;
+        $out['data']=$data;
+        return $out;
+    }
+
+    private function _newprintshop_order() {
+        $platesprice=$this->_get_plates_costs();
+        $blueplate_price=$platesprice['blueplate_price'];
+        $orangeplate_price=$platesprice['orangeplate_price'];
+        $beigeplate_price = $platesprice['beigeplate_price'];
+        $data=array(
+            'printshop_income_id'=>0,
+            'printshop_date'=>time(),
+            'inventory_color_id'=>'',
+            'inventory_item_id'=>'',
+            'shipped'=>0,
+            'kepted'=>0,
+            'misprint'=>0,
+            'price'=>0,
+            'extracost'=>0,
+            'orangeplate'=>0,
+            'blueplate'=>0,
+            'beigeplate' => 0,
+            'extraitem'=>0,
+            'orangeplate_price'=>$orangeplate_price,
+            'blueplate_price'=>$blueplate_price,
+            'beigeplate_price' => $beigeplate_price,
+            'printshop_type'=>'M',
+            'order_id'=>0,
+            'order_num'=>'',
+            'customer'=>'',
+            'printshop_history'=>0,
+            'printshop_oldqty' => 0,
+            'newprintshop' => 1,
+            'color_old' => 0,
+        );
+        return $data;
+    }
+
+    public function _prinshoporder_params($order) {
+        $totalea=round($order['price']+$order['extracost'],3);
+        $costitem=$totalea*($order['shipped']+$order['kepted']+$order['misprint']);
+        $misprint_proc=($order['shipped']==0 ? 0 : $order['misprint']/$order['shipped']*100);
+        $misprintcost=$order['misprint']*$totalea;
+        $totalplates=$order['orangeplate']+$order['blueplate']+$order['beigeplate'];;
+        $platescost=$order['orangeplate']*$order['orangeplate_price']+$order['blueplate']*$order['blueplate_price']+$order['beigeplate']*$order['beigeplate_price'];
+        $totalitemcost=$platescost+$costitem;
+        $data=array(
+            'printshop_income_id'=>$order['printshop_income_id'],
+            'printshop_date'=>$order['printshop_date'],
+            'order_num'=>$order['order_num'],
+            'customer'=>$order['customer'],
+            'inventory_item_id'=>$order['inventory_item_id'],
+            'inventory_color_id'=>$order['inventory_color_id'],
+            'shipped'=>$order['shipped'],
+            'kepted'=>$order['kepted'],
+            'misprint'=>$order['misprint'],
+            'misprint_proc'=>round($misprint_proc,0).'%',
+            'total_qty'=>(intval($order['shipped'])+intval($order['kepted'])+intval($order['misprint'])),
+            'price'=>$order['price'],
+            'extracost'=>$order['extracost'],
+            'extraitem'=>(intval($order['shipped'])+intval($order['kepted'])+intval($order['misprint']))*$order['extracost'],
+            'totalea'=>$totalea,
+            'costitem'=>round($costitem,2),
+            'orangeplate'=>$order['orangeplate'],
+            'orangeplate_price'=>$order['orangeplate_price'],
+            'blueplate'=>$order['blueplate'],
+            'blueplate_price'=>$order['blueplate_price'],
+            'beigeplate' => $order['beigeplate'],
+            'beigeplate_price' => $order['beigeplate_price'],
+            'totalplates'=>$totalplates,
+            'platescost'=>$platescost,
+            'itemstotalcost'=>$totalitemcost,
+            'misprintcost'=>$misprintcost,
+            'printshop_type'=>$order['printshop_type'],
+            'order_id'=>$order['order_id'],
+            'printshop_history'=>$order['printshop_history'],
+            'printshop_oldqty' => $order['printshop_oldqty'],
+            'newprintshop' => $order['newprintshop'],
+            'color_old' => $order['color_old'],
+        );
+        return $data;
+    }
+
+    public function get_printshopitem_list() {
+        $this->db->select("inventory_item_id, concat(replace(item_name, 'Stress Balls',''),' ',item_num ) as item_name", FALSE);
+        $this->db->from('ts_inventory_items');
+        $this->db->order_by('item_name');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
+    public function get_item_colors($inventory_item_id) {
+        $this->db->select('tspc.*');
+        $this->db->from('ts_inventory_colors tspc');
+        $this->db->where('tspc.inventory_item_id', $inventory_item_id);
+        $this->db->order_by('tspc.color');
+        $res=$this->db->get()->result_array();
+        return $res;
+    }
+
+    public function change_printshop_order($orderdata, $fldname, $newval,$sessionid) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        if (!array_key_exists($fldname, $orderdata)) {
+            $out['msg']='Field '.$fldname.' Not Found';
+            return $out;
+        }
+        if ($fldname=='order_num') {
+            $this->db->select('order_id, customer_name');
+            $this->db->from('ts_orders');
+            $this->db->where('order_num', $newval);
+            $res=$this->db->get()->row_array();
+            if (!isset($res['order_id'])) {
+                $out['msg']='Order Not Exist';
+                $out['oldval']=$orderdata['order_num'];
+                return $out;
+            }
+            $orderdata['order_id']=$res['order_id'];
+            $orderdata['customer']=$res['customer_name'];
+        }
+        if ($fldname=='printshop_date') {
+            $newval=strtotime($newval);
+        }
+        $orderdata[$fldname]=$newval;
+        if ($fldname=='inventory_item_id') {
+            // New Item
+            $colors=$this->get_item_colors($newval);
+            $colordef=$colors[0];
+            $orderdata['price']=0;
+            $orderdata['printshop_color_id']='';
+            $costs=$this->_get_plates_costs();
+            $orderdata['extracost']=0; //$costs['inv_addcost'];
+            $orderdata['colors']=$colors;
+        } elseif ($fldname=='inventory_color_id') {
+            $outcolor=$this->get_invitem_colordata($newval);
+            if ($outcolor['result']==$this->error_result) {
+                $out['msg']=$outcolor['msg'];
+                return $out;
+            }
+            $colordat=$outcolor['color'];
+            $orderdata['price']=$colordat['avg_price'];
+            $costs=$this->_get_plates_costs();
+            $orderdata['extracost']=$costs['inv_addcost'];
+        }
+        $data=$this->_prinshoporder_params($orderdata);
+        $data['items']=$orderdata['items'];
+        $data['colors']=$orderdata['colors'];
+        $data['session']=$orderdata['session'];
+        usersession($sessionid, $data);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
+    public function save_printshop_order($orderdata, $sessionid, $user_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        if (empty($orderdata['inventory_color_id'])) {
+            $out['msg']='Choose Item Color';
+            return $out;
+        }
+        if (empty($orderdata['inventory_item_id'])) {
+            $out['msg']='Choose Item';
+            return $out;
+        }
+        if (empty($orderdata['order_num'])) {
+            $out['msg']='Enter Order #';
+            return $out;
+        }
+        if (empty($orderdata['customer'])) {
+            $out['msg']='Enter Customer';
+            return $out;
+        }
+        if ($orderdata['color_old']==$orderdata['inventory_color_id']) {
+            // Calc diff, compare with balance
+            $diff = (intval($orderdata['shipped']) + intval($orderdata['kepted']) + intval($orderdata['misprint'])) - $orderdata['printshop_oldqty'];
+        } else {
+            $diff = intval($orderdata['shipped']) + intval($orderdata['kepted']) + intval($orderdata['misprint']);
+        }
+        $balance = $this->inventory_color_income($orderdata['inventory_color_id'])-$this->inventory_color_outcome($orderdata['inventory_color_id']);
+        $newbalance = $balance-$diff;
+        if ($newbalance<0) {
+            $out['msg']='Enter Other QTY or Increase Income, or Choose other Inventory item';
+            return $out;
+        }
+
+        $this->db->set('printshop_date', $orderdata['printshop_date']);
+        $this->db->set('inventory_color_id', $orderdata['inventory_color_id']);
+        $this->db->set('shipped', intval($orderdata['shipped']));
+        $this->db->set('kepted', intval($orderdata['kepted']));
+        $this->db->set('misprint', intval($orderdata['misprint']));
+        $this->db->set('orangeplate', floatval($orderdata['orangeplate']));
+        $this->db->set('blueplate', floatval($orderdata['blueplate']));
+        $this->db->set('beigeplate', floatval($orderdata['beigeplate']));
+        $this->db->set('price', floatval($orderdata['price']));
+        $this->db->set('extracost', floatval($orderdata['extracost']));
+        if ($orderdata['printshop_history']==0) {
+            $this->db->set('amount_sum', floatval($orderdata['itemstotalcost']));
+        }
+        $this->db->set('printshop_total', floatval($orderdata['itemstotalcost']));
+        if ($orderdata['printshop_income_id']<=0) {
+            $this->db->set('printshop_type', $orderdata['printshop_type']);
+            $this->db->set('printshop', 1);
+            $this->db->set('order_id', $orderdata['order_id']);
+            $this->db->set('orangeplate_price', $orderdata['orangeplate_price']);
+            $this->db->set('blueplate_price', $orderdata['blueplate_price']);
+            $this->db->set('beigeplate_price', floatval($orderdata['beigeplate_price']));
+            $this->db->set('vendor_id', $this->config->item('inventory_vendor'));
+            $this->db->set('method_id', $this->config->item('inventory_paymethod'));
+            $this->db->set('amount_date', time());
+            $this->db->set('create_date', time());
+            $this->db->set('create_user', $user_id);
+            $this->db->set('update_date', time());
+            $this->db->set('update_user', $user_id);
+            $this->db->insert('ts_order_amounts');
+            $orderdata['printshop_income_id']=$this->db->insert_id();
+        } else {
+            $this->db->set('update_date', time());
+            $this->db->set('update_user', $user_id);
+            $this->db->where('amount_id', $orderdata['printshop_income_id']);
+            $this->db->update('ts_order_amounts');
+        }
+        // Update Orders by new COG
+        $cogflag = $this->error_result;
+        if (intval($orderdata['printshop_history'])==0) {
+            $cogres = $this->_update_ordercog($orderdata['order_id']);
+            if ($cogres['result']==$this->success_result) {
+                $cogflag = $this->success_result;
+            } else {
+                $out['msg'] = $cogres['msg'];
+            }
+        } else {
+            $cogflag = $this->success_result;
+            log_message('ERROR', 'Order '.$orderdata['order_id'].' exclude from update COG');
+        }
+        if ($cogflag==$this->success_result) {
+            $out['result']=$this->success_result;
+            $out['order_id']=$orderdata['order_id'];
+            $out['printshop_income_id']=$orderdata['printshop_income_id'];
+            usersession($sessionid, $orderdata);
+        }
+        return $out;
+    }
+
+    public function save_inventory_outcome($orderdata, $sessionid, $user_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        if ($orderdata['newprintshop']==1) {
+            // Add new outcome
+            $res = $this->_add_inventory_outcome($orderdata, $user_id);
+            $out['msg'] = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $out['result'] = $this->success_result;
+            }
+        } else {
+            if ($orderdata['color_old']!==$orderdata['inventory_color_id']) {
+                // Delete old data
+                $this->delete_inventory_amount($orderdata['printshop_income_id']);
+                // change inventory outcome
+                $totalqty = $orderdata['total_qty'];
+                $this->db->select('inventory_outcome_id, outcome_qty');
+                $this->db->from('ts_inventory_outcomes');
+                $this->db->where('order_id', $orderdata['order_id']);
+                $this->db->where('inventory_color_id', $orderdata['color_old']);
+                $outcomes = $this->db->get()->result_array();
+                foreach ($outcomes as $outcome) {
+                    if ( $totalqty >= $outcome['outcome_qty']) {
+                        $restqty = 0;
+                        $restval = $totalqty - $outcome['outcome_qty'];
+                    } else {
+                        $restqty = $outcome['outcome_qty'] - $totalqty;
+                        $restval = 0;
+                    }
+                    $this->db->where('inventory_outcome_id', $outcome['inventory_outcome_id']);
+                    if ($restqty==0) {
+                        $this->db->delete('ts_inventory_outcomes');
+                    } else {
+                        $this->db->set('outcome_qty', $restqty);
+                        $this->db->update('ts_inventory_outcomes');
+                    }
+                    if ($restval <= 0) {
+                        break;
+                    }
+                }
+                $res = $this->_add_inventory_outcome($orderdata, $user_id);
+                $out['msg'] = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $out['result'] = $this->success_result;
+                }
+            } else {
+                $diff = $orderdata['total_qty'] - $orderdata['printshop_oldqty'];
+                if ($diff!==0) {
+                    // Change outcome inventory
+                    $this->update_orderinventory($orderdata['printshop_income_id'], $orderdata['inventory_color_id'], $diff);
+                    // Change outcome
+                    $this->db->select('inventory_outcome_id, outcome_qty');
+                    $this->db->from('ts_inventory_outcomes');
+                    $this->db->where('order_id', $orderdata['order_id']);
+                    $this->db->where('inventory_color_id', $orderdata['inventory_color_id']);
+                    $outcomes = $this->db->get()->result_array();
+                    foreach ($outcomes as $outcome) {
+                        $newval = $outcome['outcome_qty'] + $diff;
+                        if ($newval <= 0) {
+                            $this->db->where('inventory_outcome_id', $outcome['inventory_outcome_id']);
+                            $this->db->delete('ts_inventory_outcomes');
+                            $diff = $newval;
+                        } else {
+                            $this->db->where('inventory_outcome_id', $outcome['inventory_outcome_id']);
+                            $this->db->set('outcome_qty', $newval);
+                            $this->db->update('ts_inventory_outcomes');
+                            $diff=0;
+                        }
+                        if ($diff==0) {
+                            break;
+                        }
+                    }
+                }
+                $out['result'] = $this->success_result;
+            }
+        }
+        if ($out['result']==$this->success_result) {
+            // Count avg price, update amount
+            $this->_count_amount_avgprice($orderdata['printshop_income_id']);
+        }
+        return $out;
+    }
+    // Remove amounts
+    public function orderreport_remove($amount_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $chk=$this->get_printshop_order($amount_id);
+        if ($chk['result']==$this->error_result) {
+            $out['msg']=$chk['msg'];
+            return $out;
+        }
+        $order_id=$chk['data']['order_id'];
+        $color_id = $chk['data']['inventory_color_id'];
+        // Get amount
+        $this->db->select('shipped, kepted, misprint');
+        $this->db->from('ts_order_amounts');
+        $this->db->where('amount_id', $amount_id);
+        $amnt = $this->db->get()->row_array();
+        $totalqty = intval($amnt['shipped'])+intval($amnt['kepted'])+intval($amnt['misprint']);
+        // change inventory outcome
+        $this->db->select('inventory_outcome_id, outcome_qty');
+        $this->db->from('ts_inventory_outcomes');
+        $this->db->where('order_id', $order_id);
+        $this->db->where('inventory_color_id', $color_id);
+        $outcomes = $this->db->get()->result_array();
+        foreach ($outcomes as $outcome) {
+            if ( $totalqty >= $outcome['outcome_qty']) {
+                $restqty = 0;
+                $restval = $totalqty - $outcome['outcome_qty'];
+            } else {
+                $restqty = $outcome['outcome_qty'] - $totalqty;
+                $restval = 0;
+            }
+            $this->db->where('inventory_outcome_id', $outcome['inventory_outcome_id']);
+            if ($restqty==0) {
+                $this->db->delete('ts_inventory_outcomes');
+            } else {
+                $this->db->set('outcome_qty', $restqty);
+                $this->db->update('ts_inventory_outcomes');
+            }
+            if ($restval <= 0) {
+                break;
+            }
+        }
+        // Remove order inventory
+        $this->delete_inventory_amount($amount_id);
+        $this->db->where('amount_id', $amount_id);
+        $this->db->delete('ts_order_amounts');
+        // Recalc COG
+        $this->_update_ordercog($order_id);
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
+    public function delete_inventory_amount($amount_id) {
+        $this->db->select('i.order_inventory_id, i.qty, i.inventory_income_id, t.income_expense, t.income_qty');
+        $this->db->from('ts_order_inventory i');
+        $this->db->join('ts_inventory_incomes t','i.inventory_income_id = t.inventory_income_id');
+        $this->db->where('i.amount_id', $amount_id);
+        $invents = $this->db->get()->result_array();
+        foreach ($invents as $invent) {
+            $resval = intval($invent['income_expense'])-intval($invent['qty']);
+            $this->db->where('inventory_income_id', $invent['inventory_income_id']);
+            $this->db->set('income_expense', $resval);
+            $this->db->update('ts_inventory_incomes');
+            $this->db->where('order_inventory_id', $invent['order_inventory_id']);
+            $this->db->delete('ts_order_inventory');
+        }
+        return true;
+    }
+
+    public function update_orderinventory($amount_id, $inventory_color_id, $difqty) {
+        if ($difqty < 0) {
+            $difval = abs($difqty);
+            $this->db->select('i.order_inventory_id, i.qty, i.inventory_income_id, t.income_expense, t.income_qty');
+            $this->db->from('ts_order_inventory i');
+            $this->db->join('ts_inventory_incomes t','i.inventory_income_id = t.inventory_income_id');
+            $this->db->where('i.amount_id', $amount_id);
+            $this->db->order_by('i.order_inventory_id','desc');
+            $invents = $this->db->get()->result_array();
+            foreach ($invents as $invent) {
+                if ($difval <= $invent['qty']) {
+                    $restval = $invent['income_expense'] - $difval;
+                    $restqty = $invent['qty'] - $difval;
+                    // update income
+                    $this->db->where('inventory_income_id', $invent['inventory_income_id']);
+                    $this->db->set('income_expense', $restval);
+                    $this->db->update('ts_inventory_incomes');
+                    $this->db->where('order_inventory_id', $invent['order_inventory_id']);
+                    if ($restqty==0) {
+                        $this->db->delete('ts_order_inventory');
+                    } else {
+                        $this->db->set('qty', $restqty);
+                        $this->db->update('ts_order_inventory');
+                    }
+                    $difval=0;
+                } else {
+                    $restval = $invent['income_expense'] - $invent['qty'];
+                    $this->db->where('inventory_income_id', $invent['inventory_income_id']);
+                    $this->db->set('income_expense', $restval);
+                    $this->db->update('ts_inventory_incomes');
+                    $this->db->where('order_inventory_id', $invent['order_inventory_id']);
+                    $this->db->delete('ts_order_inventory');
+                    $difval = $difval - $invent['qty'];
+                }
+                if ($difval==0) {
+                    break;
+                }
+            }
+        } elseif ($difqty > 0) {
+            $this->db->select('*');
+            $this->db->from('ts_order_amounts');
+            $this->db->where('amount_id', $amount_id);
+            $amntdat = $this->db->get()->row_array();
+            $this->db->select('inventory_income_id, (income_qty - income_expense) as leftqty, income_qty, income_expense');
+            $this->db->from('ts_inventory_incomes');
+            $this->db->where('inventory_color_id', $inventory_color_id);
+            $this->db->having('leftqty > 0');
+            $this->db->order_by('income_date');
+            $candidats = $this->db->get()->result_array();
+            foreach ($candidats as $candidat) {
+                if ($difqty > $candidat['leftqty']) {
+                    $newexp = $candidat['income_expense'] + $candidat['leftqty'];
+                    $ordinv = $candidat['leftqty'];
+                } else {
+                    $newexp = $candidat['income_expense'] + $difqty;
+                    $ordinv = $difqty;
+                }
+                $this->db->where('inventory_income_id', $candidat['inventory_income_id']);
+                $this->db->set('income_expense', $newexp);
+                $this->db->update('ts_inventory_incomes');
+                // Insert to order inventory
+                $this->db->set('order_id', $amntdat['order_id']);
+                $this->db->set('inventory_income_id', $candidat['inventory_income_id']);
+                $this->db->set('amount_id', $amount_id);
+                $this->db->set('qty',$ordinv);
+                $this->db->insert('ts_order_inventory');
+                $difqty= $difqty - $candidat['leftqty'];
+                if ($difqty <= 0 ) {
+                    break;
+                }
+            }
+        }
+    }
+
+    public function _update_ordercog($order_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Order Not Found'];
+        $this->db->select('order_id, revenue, shipping, is_shipping, tax, cc_fee');
+        $this->db->from('ts_orders');
+        $this->db->where('order_id', $order_id);
+        $orddat=$this->db->get()->row_array();
+        if (ifset($orddat, 'order_id',0)==$order_id) {
+            $revenue=  floatval($orddat['revenue']);
+            $shipping=floatval($orddat['shipping']);
+            $is_shipping=intval($orddat['is_shipping']);
+            $tax=floatval($orddat['tax']);
+            $cc_fee=floatval($orddat['cc_fee']);
+            // Get COG Value
+            $this->db->select('count(amount_id) cnt, sum(amount_sum) as cog');
+            $this->db->from('ts_order_amounts');
+            $this->db->where('order_id', $order_id);
+            $cogres=$this->db->get()->row_array();
+            if ($cogres['cnt']==0) {
+                // Default
+                $new_order_cog=NULL;
+                $new_profit_pc=NULL;
+                $new_profit=round((floatval($revenue))*$this->config->item('default_profit')/100,2);
+                log_message('ERROR','Empty order COG, Order ID '.$order_id.'!');
+            } else {
+                $new_order_cog=floatval($cogres['cog']);
+                $new_profit=$revenue-($shipping*$is_shipping)-$tax-$cc_fee-$new_order_cog;
+                $new_profit_pc=($revenue==0 ? null : round(($new_profit/$revenue)*100,1));
+            }
+            $this->db->set('order_cog',$new_order_cog);
+            $this->db->set('profit',$new_profit);
+            $this->db->set('profit_perc',$new_profit_pc);
+            $this->db->where('order_id',$order_id);
+            $this->db->update('ts_orders');
+            if (!empty($new_order_cog)) {
+                $this->db->select('order_id, order_cog');
+                $this->db->from('ts_orders');
+                $this->db->where('order_id',$order_id);
+                $orderchk = $this->db->get()->row_array();
+                if (floatval($orderchk['order_cog'])==$new_order_cog) {
+                    $out['result'] = $this->success_result;
+                } else {
+                    log_message('ERROR','Order COG update unsuccess, Order ID '.$order_id.'!');
+                    $out['msg'] = 'Order COG update unsuccess';
+                }
+            } else {
+                $out['result'] = $this->success_result;
+            }
+        } else {
+            log_message('ERROR','Attempt update order COG, Order ID '.$order_id.'!');
+        }
+        return $out;
+    }
+
+    public function get_amount_details($amount_id) {
+        $this->db->select('oi.qty, t.income_price as price');
+        $this->db->from('ts_order_inventory oi');
+        $this->db->join('ts_inventory_incomes t','oi.inventory_income_id = t.inventory_income_id');
+        $this->db->where('oi.amount_id', $amount_id);
+        $res = $this->db->get()->result_array();
+        $out = [];
+        $total_qty = $total_sum = 0;
+        foreach ($res as $row) {
+            $total_qty+=$row['qty'];
+            $total_sum+=$row['qty']*$row['price'];
+            $out[] = [
+                'qty' => $row['qty'],
+                'price' => $row['price'],
+                'total' => $row['qty']*$row['price'],
+                'totalrow' => 0,
+            ];
+        }
+        $out[] = [
+            'qty' => $total_qty,
+            'price' => round($total_sum/$total_qty,3),
+            'total' => $total_sum,
+            'totalrow' => 1,
+        ];
+        return $out;
+    }
+
+    public function get_invitem_colordata($inventory_color_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $this->db->select('c.*, i.item_name, i.item_num');
+        $this->db->from('ts_inventory_colors c');
+        $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
+        $this->db->where('c.inventory_color_id', $inventory_color_id);
+        $res=$this->db->get()->row_array();
+        if (!isset($res['inventory_color_id'])) {
+            $out['msg']='Color Not Found';
+        } else {
+            $out['result']=$this->success_result;
+            $out['color']=$res;
+        }
+        return $out;
+
+    }
+
+    private function _add_inventory_outcome($orderdata, $user_id) {
+        $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $outcome_type = 'P';
+        $this->db->select('count(inventory_outcome_id) as cnt, max(outcome_number) as outnumb');
+        $this->db->from('ts_inventory_outcomes');
+        $this->db->where('outcome_type', $outcome_type);
+        $outdat = $this->db->get()->row_array();
+        $this->db->select('order_num');
+        $this->db->from('ts_orders');
+        $this->db->where('order_id', $orderdata['order_id']);
+        $outcome = $this->db->get()->row_array();
+        if ($outdat['cnt']==1) {
+            $recnum = -1;
+        } else {
+            $recnum = $outdat['outnumb'];
+        }
+        $newrecnum = $recnum + 1;
+        $recnummask = str_pad($newrecnum, 5,'0', STR_PAD_LEFT);
+        $recnum = $outcome_type.substr($recnummask,0,1).'-'.substr($recnummask,1);
+        // $recnum = 'A0-'.$outcome['order_num'];
+        $this->db->set('inventory_color_id', $orderdata['inventory_color_id']);
+        $this->db->set('outcome_date', $orderdata['printshop_date']);
+        $this->db->set('outcome_qty', $orderdata['total_qty']);
+        $this->db->set('outcome_description','Order # '.$outcome['order_num']);
+        $this->db->set('outcome_record', $recnum);
+        $this->db->set('order_id', $orderdata['order_id']);
+        $this->db->set('outcome_number', $newrecnum);
+        $this->db->set('outcome_type', $outcome_type);
+        $this->db->set('inserted_at', date('Y-m-d H:i:s'));
+        $this->db->set('inserted_by', $user_id);
+        $this->db->insert('ts_inventory_outcomes');
+        // Add Order Inventory
+        $this->update_orderinventory($orderdata['printshop_income_id'], $orderdata['inventory_color_id'], $orderdata['total_qty']);
+        $out['result'] = $this->success_result;
+        return $out;
+    }
+
+    private function _count_amount_avgprice($amount_id) {
+        $this->db->select('oi.qty, t.income_price as price');
+        $this->db->from('ts_order_inventory oi');
+        $this->db->join('ts_inventory_incomes t','oi.inventory_income_id = t.inventory_income_id');
+        $this->db->where('oi.amount_id', $amount_id);
+        $res = $this->db->get()->result_array();
+        $total_qty = 0; $total_sum = 0;
+        foreach ($res as $item) {
+            $total_qty+=$item['qty'];
+            $total_sum+=$item['qty']*$item['price'];
+        }
+        $this->db->select('*');
+        $this->db->from('ts_order_amounts');
+        $this->db->where('amount_id', $amount_id);
+        $amount_data = $this->db->get()->row_array();
+        if ($total_qty>0) {
+            $newprice = round($total_sum/$total_qty,3);
+            $newcost = ($newprice + $amount_data['extracost'])*($amount_data['shipped']+$amount_data['kepted']+$amount_data['misprint']);
+            $newcost+=$amount_data['orangeplate']*$amount_data['orangeplate_price']+$amount_data['blueplate']*$amount_data['blueplate_price'];
+            $newcost+=$amount_data['beigeplate']*$amount_data['beigeplate_price'];
+            $this->db->where('amount_id', $amount_id);
+            $this->db->set('price', $newprice);
+            $this->db->set('printshop_total', round($newcost,2));
+            $this->db->update('ts_order_amounts');
+            // Update order COG
+            $this->_update_ordercog($amount_data['order_id']);
+        }
+        return true;
+    }
+
 }

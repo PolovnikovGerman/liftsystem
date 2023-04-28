@@ -122,6 +122,9 @@ select.leadord_filterselect {
     /* width: 1013px; */
     width: 1084px;
 }
+.leadorder_datahead.relievers {
+    width: 1148px;
+}
 .leadorder_datahead > div {
     height: 21px;
     line-height: 21px!important;
@@ -139,6 +142,11 @@ select.leadord_filterselect {
     width: 49px;
 }
 .leadorder_datahead > .confirmnum {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 64px;
+}
+.leadorder_datahead > .customerponumber {
     border-right: 1px solid #000000;
     float: left;
     width: 64px;
@@ -210,12 +218,18 @@ select.leadord_filterselect {
     /* width: 1015px; */
     width: 1085px;
 }
+.leadorder_dataarea.relievers {
+    width: 1149px;
+}
 .leadorder_datarow {
     clear: both;
     float: left;
     overflow-x: hidden;
     /* width: 1004px; */
     width: 1075px;
+}
+.leadorder_datarow.relievers {
+    width: 1139px;
 }
 .leadorder_datarow.error {
     text-align: center;
@@ -253,12 +267,22 @@ select.leadord_filterselect {
 .leadorder_datarow > .confirmnum {
     text-align: center;
     border-right: 1px solid;
-    width: 22px;
     float: left;
     width: 64px;
 }
 .leadorder_datarow > .confirmnum.historical {
     color: #646464;
+}
+.leadorder_datarow > .customerponumber {
+    /* text-align: center; */
+    border-right: 1px solid;
+    float: left;
+    width: 64px;
+    overflow: hidden;
+    padding-left: 4px;
+    padding-right: 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .leadorder_datarow > .customer {
     border-right: 1px solid #000000;

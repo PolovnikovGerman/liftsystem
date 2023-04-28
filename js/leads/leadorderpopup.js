@@ -1874,19 +1874,27 @@ function change_imprint_details(params) {
                 activate_imprint_details(details, newval);
             } else if (response.data.fldname=='num_colors') {
                 var details=response.data.details;
-                var newval=response.data.newval;
+                var newval=parseInt(response.data.newval);
                 $("input.imprintprice[data-details='"+details+"']").prop('disabled',true);
                 $("input.imprintprice[data-details='"+details+"'][data-fldname='extra_cost']").prop('disabled',false);
-                // Lock print prices                
-                for (i=1; i<=newval; i++) {
-                    $("input.imprintprice[data-details='"+details+"'][data-fldname='print_"+i+"']").prop('disabled',false);
-                    $("input.imprintprice[data-details='"+details+"'][data-fldname='setup_"+i+"']").prop('disabled',false);
-                }                                
+                // Lock print prices
+                if (newval==5) {
+                    $("input.imprintprice[data-details='"+details+"'][data-fldname='print_1']").prop('disabled',false);
+                    $("input.imprintprice[data-details='"+details+"'][data-fldname='setup_1']").prop('disabled',false);
+                } else {
+                    for (i=1; i<=newval; i++) {
+                        $("input.imprintprice[data-details='"+details+"'][data-fldname='print_"+i+"']").prop('disabled',false);
+                        $("input.imprintprice[data-details='"+details+"'][data-fldname='setup_"+i+"']").prop('disabled',false);
+                    }
+                }
             } else if (response.data.fldname=='imprint_type') {
                 if (response.data.newval=='REPEAT') {
                     // $("div.repeatdetail[data-details='"+response.data.details+"']").addClass('active').removeClass('full').addClass(response.data.class);
-                    for (i=1; i<=4; i++) {
-                        $("input.imprintprice[data-details='"+response.data.details+"'][data-fldname='setup_"+i+"']").val('0.00');
+                    var brand = $("#imprinteitbrand").val();
+                    if (brand!=='SR') {
+                        for (i=1; i<=4; i++) {
+                            $("input.imprintprice[data-details='"+response.data.details+"'][data-fldname='setup_"+i+"']").val('0.00');
+                        }
                     }
                     $("input.imprintrepeatnote[data-details='"+response.data.details+"']").prop('disabled',false);
                     $("input.imprintrepeatnote[data-details='"+response.data.details+"']").focus();

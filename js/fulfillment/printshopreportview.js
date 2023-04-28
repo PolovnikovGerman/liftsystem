@@ -68,6 +68,7 @@ function pageOrderReportsCallback(page_index) {
             // Init new content manage
             init_orderreport_page();
             $("#loader").hide();
+            jQuery.balloon.init();
         } else {
             $("#loader").hide();
             show_error(response);
@@ -281,7 +282,7 @@ function init_printshiporder_edit(report) {
         params.push({name: 'newval', value: $(this).val()});
         $.post(url, params, function(response){
             if (response.errors=='') {
-                if (fldname=='printshop_item_id') {
+                if (fldname=='inventory_item_id') {
                     $("div.datarow[data-report='"+report+"']").find('div.itemcolor').empty().html(response.data.colorlist);
                     init_printshiporder_edit(report);
                 }
@@ -314,10 +315,11 @@ function init_printshiporder_edit(report) {
                 $('#orderreptotals').val(response.data.totals);
                 $("div#orderreportsummaryarea").empty().html(response.data.summary_view);
                 init_orderreport_data();
-                $("#neworderprofitview").empty().html(response.data.newprofit_view).show();
-                setTimeout(function(){
-                    $("#neworderprofitview").hide().empty();
-                }, 4000);
+                $("#neworderprofitview").hide().empty();
+                // $("#neworderprofitview").empty().html(response.data.newprofit_view).show();
+                // setTimeout(function(){
+                //     $("#neworderprofitview").hide().empty();
+                // }, 4000);
 
             } else {
                 show_error(response);
