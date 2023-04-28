@@ -1656,17 +1656,17 @@ class Fulfillment extends MY_Controller
                         if (!empty($brand)) {
                             $total_options['brand'] = $brand;
                         }
-                        $mdata['totals']=$this->printshop_model->get_orderreport_counts($total_options);
-                        $summary=$this->printshop_model->get_orderreport_totals($total_options);
+                        $mdata['totals']=$this->inventory_model->get_orderreport_counts($total_options);
+                        $summary=$this->inventory_model->get_orderreport_totals($total_options);
                         $mdata['summary_view']=$this->load->view('printshop/orderreport_summary_view', $summary, TRUE);
-                        $this->load->model('orders_model');
-                        $order=$this->orders_model->get_order_detail($res['order_id']);
-                        $inventlevel=$this->printshop_model->get_invenory_level($res['printshop_income_id']);
-                        $options=array(
-                            'order'=>$order,
-                            'invent'=>$inventlevel,
-                        );
-                        $mdata['newprofit_view']=$this->load->view('printshop/ordrereport_orderprofit_view', $options, TRUE);
+                        // $this->load->model('orders_model');
+                        // $order=$this->orders_model->get_order_detail($res['order_id']);
+                        // $inventlevel=$this->inventory_model->get_invenory_level($res['printshop_income_id']);
+                        // $options=array(
+                        //    'order'=>$order,
+                        //    'invent'=>$inventlevel,
+                        // );
+                        // $mdata['newprofit_view']=$this->load->view('printshop/ordrereport_orderprofit_view', $options, TRUE);
                     }
                 }
             }

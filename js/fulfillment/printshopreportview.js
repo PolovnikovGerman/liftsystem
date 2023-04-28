@@ -315,10 +315,11 @@ function init_printshiporder_edit(report) {
                 $('#orderreptotals').val(response.data.totals);
                 $("div#orderreportsummaryarea").empty().html(response.data.summary_view);
                 init_orderreport_data();
-                $("#neworderprofitview").empty().html(response.data.newprofit_view).show();
-                setTimeout(function(){
-                    $("#neworderprofitview").hide().empty();
-                }, 4000);
+                $("#neworderprofitview").hide().empty();
+                // $("#neworderprofitview").empty().html(response.data.newprofit_view).show();
+                // setTimeout(function(){
+                //     $("#neworderprofitview").hide().empty();
+                // }, 4000);
 
             } else {
                 show_error(response);
