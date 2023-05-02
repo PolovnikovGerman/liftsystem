@@ -1244,6 +1244,7 @@ select.itemdataunit {
     height: 32px;
     padding: 0 0.4rem!important;
     border-bottom: none!important;
+    position: relative;
 }
 #modalEditInventColor .modal-header h4 {
     line-height: 32px;
@@ -1263,7 +1264,10 @@ select.itemdataunit {
     color: #ffffff!important;
     opacity: 1!important;
     padding: 0!important;
-    margin: -28px 8px 8px 8px;
+    /* margin: -28px 8px 8px 8px; */
+    position: absolute;
+    right: 5px;
+    top: 5px;
 }
 #modalEditInventColor .modal-body {
     background: #2635ff;
