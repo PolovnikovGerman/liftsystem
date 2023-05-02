@@ -1019,6 +1019,9 @@ span.saveinventincome {
 .inventoryhistory_table_row .instock_balance {
     width: 77px;
 }
+.inventoryhistory_table_row .instock_balance.negative {
+    color: #FF0000;
+}
 .inventoryhistory_view_prices {
     float: right!important;
     margin-top: 5px;

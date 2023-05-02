@@ -1101,7 +1101,7 @@ class Test extends CI_Controller
             //    $unit='yd';
             // }
             $this->db->set('inventory_type_id', $type_id);
-            $this->db->set('item_num',$type_sh.'-'.str_pad($itemnum,3,'0',STR_PAD_LEFT));
+            $this->db->set('item_num',$type_sh.str_pad($itemnum,3,'0',STR_PAD_LEFT));
             $this->db->set('item_name',$item['item_name']);
             $this->db->set('item_order', $itemnum);
             $this->db->set('item_unit', $unit);
@@ -1157,6 +1157,8 @@ class Test extends CI_Controller
                         $descr = 'Purchased - '.$income['instock_descrip'];
                     } else {
                         $recnum = strtoupper(uniq_link(2,'chars')).uniq_link(4,'digits');
+                        $this->db->select('');
+                        // AJ00001
                         $descr = $income['instock_descrip'];
                     }
                     $this->db->set('inventory_color_id', $newcolorid);
@@ -1204,13 +1206,13 @@ class Test extends CI_Controller
                     $this->db->where('outcome_type', $outcome_type);
                     $outdat = $this->db->get()->row_array();
                     if ($outdat['cnt']==1) {
-                        $recnum = -1;
+                        $recnum = 0;
                     } else {
                         $recnum = $outdat['outnumb'];
                     }
                     $newrecnum = $recnum + 1;
                     $recnummask = str_pad($newrecnum, 5,'0', STR_PAD_LEFT);
-                    $recnum = $outcome_type.substr($recnummask,0,1).'-'.substr($recnummask,1);
+                    $recnum = 'AJ'.$recnummask; // $outcome_type.substr($recnummask,0,1).'-'.substr($recnummask,1);
                     // $recnum = strtoupper(uniq_link(2,'chars')).uniq_link(4,'digits');
                     $this->db->set('inventory_color_id', $newcolorid);
                     $this->db->set('outcome_date', $corect['instock_date']);
@@ -1223,7 +1225,7 @@ class Test extends CI_Controller
                     $this->db->insert('ts_inventory_outcomes');
                 }
                 // Get outcome
-                $this->db->select('oa.amount_id, oa.shipped, oa.kepted, oa.misprint, o.order_num, oa.amount_date, o.order_id');
+                $this->db->select('oa.amount_id, oa.shipped, oa.kepted, oa.misprint, o.order_num, oa.amount_date, o.order_id, o.order_num, o.brand');
                 $this->db->from('ts_order_amounts oa');
                 $this->db->join('ts_orders o','o.order_id=oa.order_id');
                 $this->db->where('printshop',1);
@@ -1232,26 +1234,27 @@ class Test extends CI_Controller
                 foreach ($outcomes as $outcome) {
                     $qtyout = intval($outcome['shipped'])+intval($outcome['misprint'])+intval($outcome['kepted']);
                     $outcome_type = 'P';
-                    $this->db->select('count(inventory_outcome_id) as cnt, max(outcome_number) as outnumb');
-                    $this->db->from('ts_inventory_outcomes');
-                    $this->db->where('outcome_type', $outcome_type);
-                    $outdat = $this->db->get()->row_array();
-                    if ($outdat['cnt']==1) {
-                        $recnum = -1;
-                    } else {
-                        $recnum = $outdat['outnumb'];
-                    }
-                    $newrecnum = $recnum + 1;
-                    $recnummask = str_pad($newrecnum, 5,'0', STR_PAD_LEFT);
-                    $recnum = $outcome_type.substr($recnummask,0,1).'-'.substr($recnummask,1);
+//                    $this->db->select('count(inventory_outcome_id) as cnt, max(outcome_number) as outnumb');
+//                    $this->db->from('ts_inventory_outcomes');
+//                    $this->db->where('outcome_type', $outcome_type);
+//                    $outdat = $this->db->get()->row_array();
+//                    if ($outdat['cnt']==1) {
+//                        $recnum = -1;
+//                    } else {
+//                        $recnum = $outdat['outnumb'];
+//                    }
+//                    $newrecnum = $recnum + 1;
+//                    $recnummask = str_pad($newrecnum, 5,'0', STR_PAD_LEFT);
+//                    $recnum = $outcome_type.substr($recnummask,0,1).'-'.substr($recnummask,1);
                     // $recnum = 'A0-'.$outcome['order_num'];
+                    $recnum = $outcome['brand']=='SR' ? 'SR' : 'BT'.$outcome['order_num'];
                     $this->db->set('inventory_color_id', $newcolorid);
                     $this->db->set('outcome_date', $outcome['amount_date']);
                     $this->db->set('outcome_qty', $qtyout);
                     $this->db->set('outcome_description','Order # '.$outcome['order_num']);
                     $this->db->set('outcome_record', $recnum);
                     $this->db->set('order_id', $outcome['order_id']);
-                    $this->db->set('outcome_number', $newrecnum);
+                    // $this->db->set('outcome_number', $newrecnum);
                     $this->db->set('outcome_type', $outcome_type);
                     $this->db->set('inserted_at', date('Y-m-d H:i:s'));
                     $this->db->insert('ts_inventory_outcomes');
@@ -2166,5 +2169,17 @@ class Test extends CI_Controller
             }
         }
         echo 'Updated successfully'.PHP_EOL;
+    }
+
+    public function updinvent() {
+        $this->db->select('inventory_item_id, item_num, item_order');
+        $this->db->from('ts_inventory_items');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $newnum = substr($item['item_num'],0,1).str_pad($item['item_order'],3,'0', STR_PAD_LEFT);
+            $this->db->where('inventory_item_id', $item['inventory_item_id']);
+            $this->db->set('item_num', $newnum);
+            $this->db->update('ts_inventory_items');
+        }
     }
 }
