@@ -19,6 +19,7 @@ function init_master_inventoryhead() {
     $.post(url, params, function (response){
         if (response.errors=='') {
             $(".mastinvent_container_contentarea").empty().html(response.data.onboat_content);
+            $(".containertotals").empty().html(response.data.onboat_totals);
             if (parseInt(response.data.container_leftview)==1) {
                 $(".mastinvent_container_slideleft").addClass('active').empty().html('<img src="/img/masterinvent/container_active_left.png"/>');
             }
@@ -27,6 +28,7 @@ function init_master_inventoryhead() {
             if (parseInt(response.data.express_leftview)==1) {
                 $(".mastinvent_express_slideleft").addClass('active').empty().html('<img src="/img/masterinvent/container_active_left.png"/>');
             }
+            $(".expresstotals").empty().html(response.data.express_totals);
             $(".mastinvent_footlink_express").empty().html(response.data.express_links);
             init_master_inventorycontent();
         } else {
@@ -152,8 +154,11 @@ function init_master_inventorycontent() {
                 // Change view of container
                 if (onboattype=='C') {
                     $("div.mastinvent_body_container").find("div.onboacontainerdata[data-container='"+container+"']").addClass('editdata');
+                    $("div.mastinvent_body_container").find("div.onboacontainerarea[data-container='"+container+"']").addClass('editdata');
                     $("div.mastinvent_body_container").find('div.onboatdataareas').addClass('editdata');
                     $("div.mastinvent_body_container").find("div.onboacontainerdata[data-container='"+container+"']").empty().html(response.data.content);
+                    var cwidth = parseInt($("div.mastinvent_body_container").find('div.after_head').css('width'))+55;
+                    $("div.mastinvent_body_container").find('div.after_head').css('width',cwidth);
                     // Edit
                     $(".mastinvent_container_contentarea").find("div.waitarrive[data-container='"+container+"']").empty().html(response.data.managecontent);
                     $(".mastinvent_container_contentarea").find("input.boatcontainerdate[data-container='"+container+"']").datepicker({
@@ -166,6 +171,9 @@ function init_master_inventorycontent() {
                     $("div.mastinvent_body_express").find("div.onboacontainerdata[data-container='"+container+"']").addClass('editdata');
                     $("div.mastinvent_body_express").find('div.onboatdataareas').addClass('editdata');
                     $("div.mastinvent_body_express").find("div.onboacontainerdata[data-container='"+container+"']").empty().html(response.data.content);
+                    $("div.mastinvent_body_express").find("div.onboacontainerarea[data-container='"+container+"']").addClass('editdata');
+                    var cwidth = parseInt($("div.mastinvent_body_express").find('div.after_head').css('width'))+55;
+                    $("div.mastinvent_body_express").find('div.after_head').css('width',cwidth);
                     // Edit
                     $(".mastinvent_express_contentarea").find("div.waitarrive[data-container='"+container+"']").empty().html(response.data.managecontent);
                     $(".mastinvent_express_contentarea").find("input.boatcontainerdate[data-container='"+container+"']").datepicker({
@@ -198,20 +206,23 @@ function init_master_inventorycontent() {
                 $(".mastinvent_express_manage").find('span').unbind('click');
                 $(".waitarrive").unbind('click');
                 // Change view of container
-                $(".onboacontainerdata[data-container='"+container+"']").addClass('editdata');
+                $(".mastinvent_body_container").find("div.onboacontainerdata[data-container='"+container+"']").addClass('editdata');
                 $(".mastinvent_body_container").find('div.onboatdataareas').addClass('editdata');
+                $(".mastinvent_body_container").find("div.onboacontainerarea[data-container='"+container+"']").addClass('editdata');
                 $(".mastinvent_container_contentarea").find('div.after_head').css('margin-left',response.data.marginleft).css('width',response.data.width).append(response.data.containerhead);
+                $(".containertotals").find('div.after_head').css('margin-left',response.data.marginleft).css('width',response.data.width).append(response.data.containertotal);
+                var cwidth = parseInt($("div.mastinvent_body_container").find('div.after_head').css('width'))+55;
+                $("div.mastinvent_body_container").find('div.after_head').css('width',cwidth);
                 $(".onboatdataareas").find('div.after_head').css('margin-left',response.data.marginleft).css('width',response.data.width).append(response.data.content);
                 // Edit
                 $(".waitarrive[data-container='"+container+"']").empty().html(response.data.managecontent);
-                $("input.boatcontainerdate[data-container='"+container+"']").datepicker({
+                $(".mastinvent_express_contentarea").find("input.boatcontainerdate[data-container='"+container+"']").datepicker({
                     'format' : 'mm/dd/yy',
                     'autoclose' : true,
                     'startDate': '0d'
                 });
-                $("input.boatcontainerfreight[data-container='"+container+"']").prop('readonly', false).prop('title','');
+                $(".mastinvent_express_contentarea").find("input.boatcontainerfreight[data-container='"+container+"']").prop('readonly', false).prop('title','');
                 init_edit_inventcontainer(container,'C');
-
             } else {
                 show_error(response);
             }
@@ -237,15 +248,16 @@ function init_master_inventorycontent() {
                 $(".mastinvent_body_express").find("div.onboacontainerdata[data-container='"+container+"']").addClass('editdata');
                 $(".mastinvent_body_express").find('div.onboatdataareas').addClass('editdata');
                 $(".mastinvent_express_contentarea").find('div.after_head').css('margin-left',response.data.marginleft).css('width',response.data.width).append(response.data.containerhead);
+                $(".expresstotals").find('div.after_head').css('margin-left',response.data.marginleft).css('width',response.data.width).append(response.data.containertotal);
                 $(".mastinvent_body_express").find("div.onboatdataareas").find('div.after_head').css('margin-left',response.data.marginleft).css('width',response.data.width).append(response.data.content);
                 // Edit
                 $(".mastinvent_express_contentarea").find("div.waitarrive[data-container='"+container+"']").empty().html(response.data.managecontent);
-                $(".mastinvent_body_express").find("input.boatcontainerdate[data-container='"+container+"']").datepicker({
+                $(".mastinvent_express_contentarea").find("input.boatcontainerdate[data-container='"+container+"']").datepicker({
                     'format' : 'mm/dd/yy',
                     'autoclose' : true,
                     'startDate': '0d'
                 });
-                $(".mastinvent_body_express").find("input.boatcontainerfreight[data-container='"+container+"']").prop('readonly', false).prop('title','');
+                $(".mastinvent_express_contentarea").find("input.boatcontainerfreight[data-container='"+container+"']").prop('readonly', false).prop('title','');
                 init_edit_inventcontainer(container,'E');
             } else {
                 show_error(response);
@@ -308,10 +320,10 @@ function init_edit_inventcontainer(container, onboat_type) {
             if (response.errors=='') {
                 if (onboat_type=='C') {
                     $(".mastinvent_body_container").find("div.conteinerqty[data-itemtotal='"+item+"']").empty().html(response.data.itemtval);
-                    $(".mastinvent_container_contentarea").find(".containertotal[data-container='"+response.data.container+"']").empty().html(response.data.total);
+                    $(".containertotals").find(".containertotal[data-container='"+response.data.container+"']").empty().html(response.data.total);
                 } else {
                     $(".mastinvent_body_express").find("div.conteinerqty[data-itemtotal='"+item+"']").empty().html(response.data.itemtval);
-                    $(".mastinvent_express_contentarea").find("div.containertotal[data-container='"+response.data.container+"']").empty().html(response.data.total);
+                    $(".expresstotals").find("div.containertotal[data-container='"+response.data.container+"']").empty().html(response.data.total);
                 }
             } else {
                 show_error(response);

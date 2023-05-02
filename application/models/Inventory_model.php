@@ -399,19 +399,19 @@ class Inventory_model extends MY_Model
         if (isset($invdata['inventory_type_id'])) {
             $out['result']=$this->success_result;
             // Get max Item Number
-            $this->db->select('max(item_num) as maxnum');
+            $this->db->select('max(item_order) as maxnum, count(inventory_item_id) as cnt');
             $this->db->from('ts_inventory_items');
             $this->db->where('inventory_type_id', $invtype);
             $dat = $this->db->get()->row_array();
-            if (isset($dat['maxnum'])) {
-                $newnum = intval(substr($dat['maxnum'],4))+1;
-            } else {
+            if ($dat['cnt']==0) {
                 $newnum = 1;
+            } else {
+                $newnum = intval($dat['maxnum'])+1;
             }
             $item_data = [
                 'inventory_item_id' => -1,
                 'inventory_type_id' => $invtype,
-                'item_num' => $invdata['type_short'].'-'.str_pad($newnum,3,'0',STR_PAD_LEFT),
+                'item_num' => $invdata['type_short'].str_pad($newnum,3,'0',STR_PAD_LEFT),
                 'item_name' => '',
                 'item_unit' => 'pc',
                 'proof_templte' => '',
@@ -438,19 +438,17 @@ class Inventory_model extends MY_Model
                     return $out;
                 }
                 // Get new Item # and order
-                $this->db->select('max(item_num) as maxnum, max(item_order) as maxord');
+                $this->db->select('count(inventory_item_id) as cnt, max(item_order) as maxord');
                 $this->db->from('ts_inventory_items');
                 $this->db->where('inventory_type_id', $itemdata['inventory_type_id']);
                 $dat = $this->db->get()->row_array();
-                if (isset($dat['maxnum'])) {
-                    $newnum = intval(substr($dat['maxnum'],4))+1;
-                    $neword = intval($dat['maxord'])+1;
-                } else {
-                    $newnum = 1;
+                if ($dat['cnt']==0) {
                     $neword = 1;
+                } else {
+                    $neword = intval($dat['maxord'])+1;
                 }
                 $this->db->set('inventory_type_id', $itemdata['inventory_type_id']);
-                $this->db->set('item_num', $invdata['type_short'].'-'.str_pad($newnum,3,'0',STR_PAD_LEFT));
+                $this->db->set('item_num', $invdata['type_short'].str_pad($neword,3,'0',STR_PAD_LEFT));
                 $this->db->set('item_order', $neword);
             }
             $this->db->set('item_name', $itemdata['item_name']);

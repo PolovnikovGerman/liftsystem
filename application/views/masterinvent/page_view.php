@@ -98,21 +98,6 @@
                             <div class="masterinventavailab">Available</div>
                         </div>
                     </div>
-                    <div class="datarow">
-                        <div class="masterinventtablehead">
-                            <div class="addnewmasterinvent">
-                                <img src="/img/masterinvent/addinvitem_bg.png" alt="Add"/>
-                            </div>
-                            <div class="masterinventdescrip">Item</div>
-                            <div class="masterinventpercent"><?=$itempercent?></div>
-                            <div class="masterinventorymaximum"><?=$maxval?></div>
-                            <div class="masterinventinstock"><?=$instock?></div>
-                            <div class="masterinventreserv"><?=$reserved?></div>
-                            <div class="masterinventavailab"><?=$available?></div>
-                            <div class="masterinventhistory">&nbsp;</div>
-                            <div class="masterinventunit">Unit</div>
-                        </div>
-                    </div>
                 </div>
                 <!-- End Left menu -->
                 <!-- Express -->
@@ -161,17 +146,34 @@
                         <i class="fa fa-share-square-o" aria-hidden="true"></i>
                         Export <?=$export_type?> Inventory
                     </div>
-                    <div class="datarow">
-                        <div class="masterinventtablehead">
-                            <div class="masterinvemptyspace">&nbsp;</div>
-                            <div class="masterinventavgprice">Contract</div>
-                            <div class="masterinventavgprice">Avg Price</div>
-                            <div class="masterinventhistory">&nbsp;</div>
-                            <div class="masterinventtotalval">Total Value</div>
-                        </div>
-                    </div>
                 </div>
                 <!-- Right part -->
+            </div>
+            <div class="datarow masterinventtablehead">
+                <div class="mastinvent_header_left">
+                    <div class="addnewmasterinvent">
+                        <img src="/img/masterinvent/addinvitem_bg.png" alt="Add"/>
+                    </div>
+                    <div class="masterinventdescrip">Item</div>
+                    <div class="masterinventpercent"><?=$itempercent?></div>
+                    <div class="masterinventorymaximum"><?=$maxval?></div>
+                    <div class="masterinventinstock"><?=$instock?></div>
+                    <div class="masterinventreserv"><?=$reserved?></div>
+                    <div class="masterinventavailab"><?=$available?></div>
+                    <div class="masterinventhistory">&nbsp;</div>
+                    <div class="masterinventunit">Unit</div>
+                </div>
+                <div class="expresstotals">&nbsp;</div>
+                <div class="containertotals">&nbsp;</div>
+                <div class="mastinvent_header_right">
+                    <div class="masterinventtablehead">
+                        <div class="masterinvemptyspace">&nbsp;</div>
+                        <div class="masterinventavgprice">Contract</div>
+                        <div class="masterinventavgprice">Avg Price</div>
+                        <div class="masterinventhistory">&nbsp;</div>
+                        <div class="masterinventtotalval">Total Value</div>
+                    </div>
+                </div>
             </div>
             <div class="datarow">
                 <div id="masterinventtablebody"></div>
