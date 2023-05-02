@@ -286,6 +286,11 @@ function init_printshiporder_edit(report) {
                     $("div.datarow[data-report='"+report+"']").find('div.itemcolor').empty().html(response.data.colorlist);
                     init_printshiporder_edit(report);
                 }
+                if (fldname=='inventory_color_id') {
+                    $("div.datarow[data-report='"+report+"']").find('input[data-fldname="shipped"]').prop('title',response.data.title);
+                    $("div.datarow[data-report='"+report+"']").find('input[data-fldname="kepted"]').prop('title',response.data.title);
+                    $("div.datarow[data-report='"+report+"']").find('input[data-fldname="misprint"]').prop('title',response.data.title);
+                }
                 $("div.datarow[data-report='"+report+"']").find('div.costea').empty().html(response.data.price);
                 $("div.datarow[data-report='"+report+"']").find('div.addlcost').empty().html(response.data.extracost);
                 $("div.datarow[data-report='"+report+"']").find('div.totalea').empty().html(response.data.totalea);

@@ -8,8 +8,9 @@ class Inventory_model extends MY_Model
     private $emptystockclass = 'emptyvalstock';
     private $lowstockclass = 'lowinstock';
     private $donotreorder = 'Do Not Reorder';
-    private $bt_label = 'Bluetrack Legacy';
-    private $sb_label = 'StressBalls.com';
+    // private $bt_label = 'Bluetrack Legacy';
+    private $bt_label = 'Bluetrack/Stressballs';
+    // private $sb_label = 'StressBalls.com';
     private $sr_label = 'StressRelievers';
     private $empty_html_content='&nbsp;';
     private $error_message='Unknown error. Try later';
@@ -327,13 +328,14 @@ class Inventory_model extends MY_Model
                 $descrip = $stock['instock_description'];
                 if ($stock['instock_type']=='O' && $stock['brand']!='M') {
                     $descrip='<span>Order - </span>';
-                    if ($stock['brand']=='BT') {
-                        $descrip.=$this->bt_label;
-                    } elseif ($stock['brand']=='SB') {
-                        $descrip.=$this->sb_label;
-                    } else {
+                    if ($stock['brand']=='SR') {
                         $descrip.=$this->sr_label;
+                    // } elseif ($stock['brand']=='SB') {
+                    //     $descrip.=$this->sb_label;
+                    } else {
+                        $descrip.=$this->bt_label;
                     }
+                    $stock['instock_record'] = $stock['brand']=='SR' ? 'SR' : 'BT'.$stock['instock_record'];
                 }
                 if ($stock['instock_type']=='S') {
                     $rectype = 'income';
@@ -1607,6 +1609,7 @@ class Inventory_model extends MY_Model
 
     public function get_printshop_order($printshop_income_id) {
         $out=array('result'=>$this->error_result, 'msg'=>'PO Order not Found');
+        $title = '';
         if ($printshop_income_id==0) {
             $res=$this->_newprintshop_order();
         } else {
@@ -1623,11 +1626,25 @@ class Inventory_model extends MY_Model
             $res['printshop_oldqty'] = intval($res['shipped'])+intval($res['kepted'])+intval($res['misprint']);
             $res['newprintshop'] = 0;
             $res['color_old'] = $res['inventory_color_id'];
+            // Get balance
+            $income = $this->inventory_color_income($res['inventory_color_id']);
+            $outcome = $this->inventory_color_outcome($res['inventory_color_id']);
+            // $reserved = $this->inventory_color_reserved($color['inventory_color_id']);
+            $instock=$income-$outcome;
+            $title = 'Available '.QTYOutput($instock);
         }
         $data=$this->_prinshoporder_params($res);
         $out['result']=$this->success_result;
         $out['data']=$data;
+        $out['title'] = $title;
         return $out;
+    }
+
+    public function inventory_balance($inventory_color_id) {
+        $income = $this->inventory_color_income($inventory_color_id);
+        $outcome = $this->inventory_color_outcome($inventory_color_id);
+        // $reserved = $this->inventory_color_reserved($color['inventory_color_id']);
+        return $income-$outcome;
     }
 
     private function _newprintshop_order() {
@@ -2190,30 +2207,32 @@ class Inventory_model extends MY_Model
     private function _add_inventory_outcome($orderdata, $user_id) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $outcome_type = 'P';
-        $this->db->select('count(inventory_outcome_id) as cnt, max(outcome_number) as outnumb');
-        $this->db->from('ts_inventory_outcomes');
-        $this->db->where('outcome_type', $outcome_type);
-        $outdat = $this->db->get()->row_array();
-        $this->db->select('order_num');
+        // $this->db->select('count(inventory_outcome_id) as cnt, max(outcome_number) as outnumb');
+        // $this->db->from('ts_inventory_outcomes');
+        // $this->db->where('outcome_type', $outcome_type);
+        // $outdat = $this->db->get()->row_array();
+        $this->db->select('order_num, brand');
         $this->db->from('ts_orders');
         $this->db->where('order_id', $orderdata['order_id']);
         $outcome = $this->db->get()->row_array();
-        if ($outdat['cnt']==1) {
-            $recnum = -1;
-        } else {
-            $recnum = $outdat['outnumb'];
-        }
-        $newrecnum = $recnum + 1;
-        $recnummask = str_pad($newrecnum, 5,'0', STR_PAD_LEFT);
-        $recnum = $outcome_type.substr($recnummask,0,1).'-'.substr($recnummask,1);
+        // if ($outdat['cnt']==1) {
+        //    $recnum = -1;
+        //} else {
+        //    $recnum = $outdat['outnumb'];
+        // }
+        // $newrecnum = $recnum + 1;
+        // $recnummask = str_pad($newrecnum, 5,'0', STR_PAD_LEFT);
+        // $recnum = $outcome_type.substr($recnummask,0,1).'-'.substr($recnummask,1);
         // $recnum = 'A0-'.$outcome['order_num'];
+        $recnum = ($outcome['brand']=='SR' ? 'SR' : 'BT').str_pad($outcome['order_num'],'0', STR_PAD_LEFT);
         $this->db->set('inventory_color_id', $orderdata['inventory_color_id']);
         $this->db->set('outcome_date', $orderdata['printshop_date']);
         $this->db->set('outcome_qty', $orderdata['total_qty']);
-        $this->db->set('outcome_description','Order # '.$outcome['order_num']);
+        // $this->db->set('outcome_description','Order - '.$outcome['order_num']);
+        $this->db->set('outcome_description', $outcome['brand']=='SR' ? 'StressRelievers' : 'Bluetrack/Stressballs');
         $this->db->set('outcome_record', $recnum);
         $this->db->set('order_id', $orderdata['order_id']);
-        $this->db->set('outcome_number', $newrecnum);
+        // $this->db->set('outcome_number', $newrecnum);
         $this->db->set('outcome_type', $outcome_type);
         $this->db->set('inserted_at', date('Y-m-d H:i:s'));
         $this->db->set('inserted_by', $user_id);

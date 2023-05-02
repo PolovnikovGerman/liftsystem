@@ -31,13 +31,13 @@
     </select>
 </div>
 <div class="shipped editform">
-    <input type="text" class="psshipped psorderinput" data-fldname="shipped" value="<?=$shipped?>"/>
+    <input type="text" class="psshipped psorderinput" data-fldname="shipped" value="<?=$shipped?>" title="<?=$title?>"/>
 </div>
 <div class="kepted editform">
-    <input type="text" class="pskepted psorderinput" data-fldname="kepted" value="<?=$kepted?>"/>
+    <input type="text" class="pskepted psorderinput" data-fldname="kepted" value="<?=$kepted?>" title="<?=$title?>"/>
 </div>
 <div class="misprints editform">
-    <input type="text" class="psmisprint psorderinput" data-fldname="misprint" value="<?=$misprint?>"/>
+    <input type="text" class="psmisprint psorderinput" data-fldname="misprint" value="<?=$misprint?>" title="<?=$title?>"/>
 </div>
 <div class="misprintproc editform"><?=$misprint_proc?></div>
 <div class="totalqty editform"><?=QTYOutput($total_qty)?></div>

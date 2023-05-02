@@ -21,7 +21,9 @@
                 <div class="instock_amount <?=$list['type']=='O' ? 'negative' : ''?>">
                     <?=$list['type']=='O' ? '(' : ''?><?=QTYOutput($list['amount'])?><?=$list['type']=='O' ? ')' : '' ?>
                 </div>
-                <div class="instock_balance"><?=QTYOutput($list['balance'])?></div>
+                <div class="instock_balance <?=$list['balance']<0 ? 'negative' : ''?>">
+                    <?=$list['balance']<0 ? '(' : ''?><?=QTYOutput(abs($list['balance']))?><?=$list['balance']<0 ? ')' : ''?>
+                </div>
             </div>
             <?php $numrow++; ?>
         <?php } ?>
