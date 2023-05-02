@@ -12,6 +12,10 @@ class Fulfillment extends MY_Controller
     private $salesreplength=300;
     protected $restore_invdata_error='Connection Lost. Please, recall function';
 
+    private $empty_html_content='&nbsp;';
+    private $container_type = 'C';
+    private $express_type = 'E';
+
     public function __construct()
     {
         parent::__construct();
@@ -54,9 +58,12 @@ class Fulfillment extends MY_Controller
                 $head['scripts'][]=array('src'=>'/js/accounting/pototals.js');
                 $content_options['pototalsview'] = $this->_prepare_purchaseorders_view($brand);
             } elseif ($row['item_link']=='#printshopinventview') {
-                $head['styles'][]=array('style'=>'/css/fulfillment/inventory.css');
-                $head['scripts'][]=array('src'=>'/js/fulfillment/inventory.js');
-                $content_options['printshopinventview'] = $this->_prepare_printshop_inventory($brand);
+                // $head['styles'][]=array('style'=>'/css/fulfillment/inventory.css');
+                // $head['scripts'][]=array('src'=>'/js/fulfillment/inventory.js');
+                // $content_options['printshopinventview'] = $this->_prepare_printshop_inventory($brand);
+                $head['styles'][]=array('style'=>'/css/database_center/master_inventory.css');
+                $head['scripts'][]=array('src'=>'/js/database_center/master_inventory.js');
+                $content_options['printshopinventview'] = $this->_prepare_inventory_view();
             } elseif ($row['item_link']=='#invneedlistview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/invneedlistview.css');
                 $head['scripts'][] = array('src'=>'/js/fulfillment/invneedlistview.js');
@@ -83,6 +90,8 @@ class Fulfillment extends MY_Controller
         // DatePicker
         $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
         $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+        // Scroll panel
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery-scrollpanel.js');
 
         $options = [
             'title' => $head['title'],
@@ -1888,58 +1897,58 @@ class Fulfillment extends MY_Controller
     }
 
 
-    private function _prepare_printshop_inventory($brand) {
-        $this->load->model('printshop_model');
-        $addcost=$this->printshop_model->invaddcost();
-        $totals=$this->printshop_model->count_prinshop_items();
-        // $totalinv=$this->printshop_model->get_inventory_totals($brand);
-        $totalinv=$this->printshop_model->get_inventory_totals('ALL');
-        $totalinvview=$this->load->view('printshopinventory/total_inventory_view',$totalinv,TRUE);
-        // $data = $this->printshop_model->get_data_onboat($brand);
-        $data = $this->printshop_model->get_data_onboat('ALL');
-        $boathead_view='';
-        foreach ($data as $drow) {
-            $boathead_view.=$this->load->view('printshopinventory/onboat_containerhead_view', $drow, TRUE);
-        }
-        // Build head content
-        // $slider_width=60*count($data);
-        $slider_width=60*count($data);
-        $margin = $this->maxlength-$slider_width;
-        $margin=($margin>0 ? 0 : $margin);
-        $width_edit = 58;
-        $boatoptions=array(
-            'data'=>$data,
-            'container_view'=>$boathead_view,
-            'width' => $slider_width,
-            'margin' => $margin,
-        );
-        $onboat_content=$this->load->view('printshopinventory/onboathead_view', $boatoptions, TRUE);
-
-        $permission=$this->user_model->get_user_data($this->USR_ID);
-        $download_view=$this->load->view('printshopinventory/onboat_download_view', array('data'=>$data,), TRUE);
-        $headoptions=array(
-            'permission' => $permission['profit_view'],
-            'addcost'=>$addcost,
-            'data' => $data,
-            'width' => $slider_width,
-            'margin' => $margin,
-            'onboathead'=>$onboat_content,
-            'invetorytotal'=>$totalinvview,
-            'download_view'=>$download_view,
-        );
-        $headview=$this->load->view('printshopinventory/fullview_head_view', $headoptions,TRUE);
-
-        /*$specs_disc = $this->printshop_model->get_color_disc();*/
-
-        $invoption=array(
-            'totals'=>$totals,
-            'fullview'=>$headview,
-            'maxsum'=>$totalinv['maxsum'],
-            'brand' => $brand,
-        );
-        $content=$this->load->view('printshopinventory/page_view', $invoption, TRUE);
-        return $content;
-    }
+//    private function _prepare_printshop_inventory($brand) {
+//        $this->load->model('printshop_model');
+//        $addcost=$this->printshop_model->invaddcost();
+//        $totals=$this->printshop_model->count_prinshop_items();
+//        // $totalinv=$this->printshop_model->get_inventory_totals($brand);
+//        $totalinv=$this->printshop_model->get_inventory_totals('ALL');
+//        $totalinvview=$this->load->view('printshopinventory/total_inventory_view',$totalinv,TRUE);
+//        // $data = $this->printshop_model->get_data_onboat($brand);
+//        $data = $this->printshop_model->get_data_onboat('ALL');
+//        $boathead_view='';
+//        foreach ($data as $drow) {
+//            $boathead_view.=$this->load->view('printshopinventory/onboat_containerhead_view', $drow, TRUE);
+//        }
+//        // Build head content
+//        // $slider_width=60*count($data);
+//        $slider_width=60*count($data);
+//        $margin = $this->maxlength-$slider_width;
+//        $margin=($margin>0 ? 0 : $margin);
+//        $width_edit = 58;
+//        $boatoptions=array(
+//            'data'=>$data,
+//            'container_view'=>$boathead_view,
+//            'width' => $slider_width,
+//            'margin' => $margin,
+//        );
+//        $onboat_content=$this->load->view('printshopinventory/onboathead_view', $boatoptions, TRUE);
+//
+//        $permission=$this->user_model->get_user_data($this->USR_ID);
+//        $download_view=$this->load->view('printshopinventory/onboat_download_view', array('data'=>$data,), TRUE);
+//        $headoptions=array(
+//            'permission' => $permission['profit_view'],
+//            'addcost'=>$addcost,
+//            'data' => $data,
+//            'width' => $slider_width,
+//            'margin' => $margin,
+//            'onboathead'=>$onboat_content,
+//            'invetorytotal'=>$totalinvview,
+//            'download_view'=>$download_view,
+//        );
+//        $headview=$this->load->view('printshopinventory/fullview_head_view', $headoptions,TRUE);
+//
+//        /*$specs_disc = $this->printshop_model->get_color_disc();*/
+//
+//        $invoption=array(
+//            'totals'=>$totals,
+//            'fullview'=>$headview,
+//            'maxsum'=>$totalinv['maxsum'],
+//            'brand' => $brand,
+//        );
+//        $content=$this->load->view('printshopinventory/page_view', $invoption, TRUE);
+//        return $content;
+//    }
 
     private function _prepare_needlist_view($brand) {
         $this->load->model('printshop_model');
@@ -2057,6 +2066,106 @@ class Fulfillment extends MY_Controller
         );
         // Get Summary
         $content=$this->load->view('printshop/pagereport_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_inventory_view() {
+        $this->load->model('inventory_model');
+        $this->load->model('printshop_model');
+        // $addcost=$this->printshop_model->invaddcost();
+        $invtypes = $this->inventory_model->get_inventory_types();
+        $idx=0;
+        $totalval = 0;
+        foreach ($invtypes as $invtype) {
+            $stock = $this->inventory_model->get_inventtype_stock($invtype['inventory_type_id']);
+            $totalval+=$stock;
+            $invtypes[$idx]['value'] = empty($stock) ? $this->empty_html_content : MoneyOutput($stock);
+            $idx++;
+        }
+        // Get totals
+        $type_id = $invtypes[0]['inventory_type_id'];
+        $totals = $this->inventory_model->get_inventory_totals($type_id);
+        $addcost = $invtypes[0]['type_addcost'];
+        $addval = $totals['available'] * $addcost;
+        // Get OnBoats
+        $onboats = $this->inventory_model->get_data_onboat($type_id, $this->container_type);
+        $boathead_view='';
+        $boatlinks_view = '';
+        foreach ($onboats as $onboat) {
+            $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
+            $boatlinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $onboat, TRUE);
+        }
+        // Build head containers  content
+        $slider_width=60*count($onboats);
+        $margin = $this->maxlength-$slider_width;
+        $margin=($margin>0 ? 0 : $margin);
+        // $width_edit = 58;
+        $boatoptions=array(
+            'data'=>$onboats,
+            'container_view' => $boathead_view,
+            'width' => $slider_width,
+            'margin' => $margin,
+        );
+        $onboat_content = $this->load->view('masterinvent/onboathead_view', $boatoptions, TRUE);
+        $linkoptions = [
+            'data'=>$onboats,
+            'container_view' => $boatlinks_view,
+            'width' => $slider_width,
+            'margin' => $margin,
+        ];
+        $onboat_links = $this->load->view('masterinvent/onboatlinks_view', $linkoptions, TRUE);
+        $container_leftview = ($margin < 0 ? 1 : 0);
+        // Prepare Expres
+        $expresses = $this->inventory_model->get_data_onboat($type_id, $this->express_type);
+        $expresshead_view = '';
+        $expresslinks_view = '';
+        foreach ($expresses as $express) {
+            $expresshead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $express, TRUE);
+            $expresslinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $express, TRUE);
+        }
+        // Build head containers  content
+        $slider_width=60*count($expresses);
+        $margin = $this->maxlength-$slider_width;
+        $margin=($margin>0 ? 0 : $margin);
+        // $width_edit = 58;
+        $expressoptions=array(
+            'data'=>$expresses,
+            'container_view' => $expresshead_view,
+            'width' => $slider_width,
+            'margin' => $margin,
+        );
+        $express_content = $this->load->view('masterinvent/onboathead_view', $expressoptions, TRUE);
+        $linkoptions = [
+            'data'=>$onboats,
+            'container_view' => $expresslinks_view,
+            'width' => $slider_width,
+            'margin' => $margin,
+        ];
+        $express_links = $this->load->view('masterinvent/onboatlinks_view', $linkoptions, TRUE);
+        $express_leftview = ($margin < 0 ? '1' : 0);
+        $options = [
+            'invtypes' => $invtypes,
+            'active_type' => $invtypes[0]['inventory_type_id'],
+            'export_type' => $invtypes[0]['type_short'],
+            'total' => empty($totalval) ? $this->empty_html_content : MoneyOutput($totalval),
+            // 'eventtype' => 'purchasing',
+            'eventtype' => 'manufacturing',
+            'addcost' => $addcost,
+            'addval' => empty($addval) ? '-' : MoneyOutput($addval,0),
+            'maxval' => empty($totals['max']) ? $this->empty_html_content : QTYOutput($totals['max']),
+            'maxtotal' => empty($totals['maxsum']) ? $this->empty_html_content : MoneyOutput($totals['maxsum']),
+            'itempercent' => $totals['itempercent'],
+            'instock' => empty($totals['instock']) ? $this->empty_html_content : QTYOutput($totals['instock']),
+            'reserved' => empty($totals['reserved']) ? $this->empty_html_content : QTYOutput($totals['reserved']),
+            'available' => empty($totals['available']) ? $this->empty_html_content : QTYOutput($totals['available']),
+            'container_head' => $onboat_content,
+            'container_leftview' => $container_leftview,
+            'container_links' => $onboat_links,
+            'express_head' => $express_content,
+            'express_links' => $express_links,
+            'express_leftview' => $express_leftview,
+        ];
+        $content = $this->load->view('masterinvent/page_view', $options, TRUE);
         return $content;
     }
 
