@@ -207,6 +207,11 @@
 .mastinvent_header_left {
     width: 502px;
 }
+.mastinvent_header_left > div {
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+}
 .mastinvent_header_left.showmax {
     width: 562px;
 }
@@ -262,7 +267,7 @@ input.inventadd {
     color: #ffffff;
     /* font-size: 14px; */
     font-size: 12px;
-    margin-top: 56px;
+    margin-top: 34px;
 }
 .masterinventtotals > div {
     text-align: center;
@@ -377,7 +382,7 @@ input.inventadd {
     display: none;
 }
 .masterinventtablehead .masterinvemptyspace {
-    width: 43px;
+    width: 53px;
 }
 .masterinventtablehead .masterinventavgprice, .masterinventtablehead .masterinventcontactprice {
     /* width: 66px; */
@@ -385,7 +390,7 @@ input.inventadd {
 }
 .masterinventtablehead .masterinventtotalval {
     /* width: 100px; */
-    width: 86px;
+    width: 75px;
 }
 .masterinventtablehead .masterinventdetails {
     width: 70px;
@@ -431,7 +436,7 @@ input.inventadd {
     margin-left: 10px;
 }
 .masterinventtablebody .mastinvent_body_container.showmax {
-    margin-left: 0px;
+    margin-left: -11px;
 }
 .masterinventtablebody .mastinvent_body_right {
     width: 207px;
@@ -1527,7 +1532,7 @@ input.colorvendorpriceinpt {
     margin-left: 10px;
 }
 .mastinvent_header_container.showmax {
-    margin-left: 0;
+    margin-left: -11px;
 }
 .mastinvent_header_container .mastinvent_container_manage {
     width: 100%;
@@ -1576,6 +1581,9 @@ input.colorvendorpriceinpt {
     width: 100%;
     color: #FFFFFF;
 }
+.mastinvent_container_contentarea .onboatmanage i, .mastinvent_express_contentarea .onboatmanage i {
+    font-size: 11px;
+}
 .mastinvent_container_contentarea .containerdate, .mastinvent_express_contentarea .containerdate {
     height: 22px;
     line-height: 22px!important;
@@ -1587,6 +1595,11 @@ input.colorvendorpriceinpt {
 .mastinvent_express_contentarea input.boatcontainerfreight {
     width: 56px;
     height: 18px;
+    text-align: center;
+}
+.mastinvent_container_contentarea input.boatcontainerfreight,
+.mastinvent_express_contentarea input.boatcontainerfreight {
+    font-size: 11px;
 }
 .mastinvent_container_contentarea .containrermanage, .mastinvent_express_contentarea .containrermanage {
     background: #d3d3d3;
@@ -1627,16 +1640,22 @@ input.colorvendorpriceinpt {
 .mastinvent_body_container .onboatdataareas.editdata, .mastinvent_body_express .onboatdataareas.editdata {
     width: 240px;
 }
+.mastinvent_body_container .onboacontainerdata.arrived {
+    opacity: 0.3;
+}
 .mastinvent_body_container .onboacontainerdata.editdata {
-    width: 130px;
+    /* width: 130px; */
+    width: 110px;
 }
 .mastinvent_body_express .onboacontainerdata.editdata {
     width: 113px;
 }
 .mastinvent_body_container .onboacontainerarea, .mastinvent_body_express .onboacontainerarea {
-    /* width: 60px; */
     width: 56px;
     margin-right: 4px;
+}
+.mastinvent_body_container .onboacontainerarea.editdata, .mastinvent_body_express .onboacontainerarea.editdata {
+    width: 110px;
 }
 .mastinvent_body_container .conteinerqty, .mastinvent_body_express .conteinerqty {
     width: 56px;
@@ -1645,15 +1664,17 @@ input.colorvendorpriceinpt {
     height: 18px;
     width: 56px;
     float: left;
-    padding-left: 3px;
+    /* padding-left: 3px; */
     margin-top: 3px;
+    text-align: center;
 }
 .mastinvent_body_container .conteinerprice, .mastinvent_body_express .conteinerprice {
     width: 54px;
 }
 .mastinvent_body_container .conteinerprice input, .mastinvent_body_express .conteinerprice input {
-    width: 51px;
+    width: 47px;
     height: 18px;
+    text-align: center;
 }
 .onboatmanagement {
     font-size: 16px;
@@ -1677,6 +1698,9 @@ i.cancelboatcontainer {
 .mastinvent_footlink_left {
     width: 502px;
 }
+.mastinvent_footlink_left.showmax {
+    width: 562px;
+}
 .mastinvent_footlink_express {
     width: 283px;
 }
@@ -1690,6 +1714,9 @@ i.cancelboatcontainer {
 .mastinvent_footlink_container {
     width: 283px;
     margin-left: 10px;
+}
+.mastinvent_footlink_container.showmax {
+    margin-left: -8px;
 }
 .mastinvent_footlink_container .left_arrow_empty, .mastinvent_footlink_container .right_arrow_empty {
     width: 43px;
@@ -1712,4 +1739,41 @@ i.cancelboatcontainer {
     width: 100%;
     height: 23px;
     line-height: 23px!important;
+}
+
+.expresstotals, .containertotals {
+    width: 180px;
+    margin-right: 43px;
+    overflow-x: hidden;
+}
+.expresstotals {
+    margin-left: 34px;
+}
+.containertotals {
+    /* margin-left: 73px; */
+    margin-left: 81px;
+}
+.containertotals.showmax {
+    margin-left: 60px;
+}
+.mastinvent_header_right {
+    width: 258px;
+}
+.mastinvent_header_right.showmax {
+    width: 205px;
+}
+.mastinvent_header_right.showmax > .masterinventtablehead {
+    margin-left: 15px;
+}
+.containertotals .containertotal,
+.expresstotals .containertotal {
+    background-color: #000000;
+    color: #FFFFFF;
+    width: 56px;
+    margin-right: 4px;
+    /* width: 100%; */
+    text-align: center;
+    height: 28px;
+    line-height: 28px;
+    /* margin-top: 7px; */
 }
