@@ -1570,6 +1570,7 @@ class Fulfillment extends MY_Controller
                 $data['colors']=$colors;
                 $data['session']=$sessionid;
                 $data['showorange'] = $showorange;
+                $data['title'] = $res['title'];
                 $mdata['content']=$this->load->view('printshop/orderreport_edit_view', $data, TRUE);
                 usersession($sessionid, $data);
             }
@@ -1617,6 +1618,10 @@ class Fulfillment extends MY_Controller
                             'colors'=>$orderdata['colors'],
                         );
                         $mdata['colorlist']=$this->load->view('printshop/orderreport_colorselect_view', $options, TRUE);
+                    }
+                    if ($fldname=='inventory_color_id') {
+                        $balance = $this->inventory_model->inventory_balance($newval);
+                        $mdata['title'] = 'Available '.QTYOutput($balance);
                     }
                 }
             }

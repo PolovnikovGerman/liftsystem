@@ -1609,6 +1609,7 @@ class Inventory_model extends MY_Model
 
     public function get_printshop_order($printshop_income_id) {
         $out=array('result'=>$this->error_result, 'msg'=>'PO Order not Found');
+        $title = '';
         if ($printshop_income_id==0) {
             $res=$this->_newprintshop_order();
         } else {
@@ -1625,11 +1626,25 @@ class Inventory_model extends MY_Model
             $res['printshop_oldqty'] = intval($res['shipped'])+intval($res['kepted'])+intval($res['misprint']);
             $res['newprintshop'] = 0;
             $res['color_old'] = $res['inventory_color_id'];
+            // Get balance
+            $income = $this->inventory_color_income($res['inventory_color_id']);
+            $outcome = $this->inventory_color_outcome($res['inventory_color_id']);
+            // $reserved = $this->inventory_color_reserved($color['inventory_color_id']);
+            $instock=$income-$outcome;
+            $title = 'Available '.QTYOutput($instock);
         }
         $data=$this->_prinshoporder_params($res);
         $out['result']=$this->success_result;
         $out['data']=$data;
+        $out['title'] = $title;
         return $out;
+    }
+
+    public function inventory_balance($inventory_color_id) {
+        $income = $this->inventory_color_income($inventory_color_id);
+        $outcome = $this->inventory_color_outcome($inventory_color_id);
+        // $reserved = $this->inventory_color_reserved($color['inventory_color_id']);
+        return $income-$outcome;
     }
 
     private function _newprintshop_order() {
