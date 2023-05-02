@@ -436,7 +436,7 @@ input.inventadd {
     margin-left: 10px;
 }
 .masterinventtablebody .mastinvent_body_container.showmax {
-    margin-left: 0px;
+    margin-left: -11px;
 }
 .masterinventtablebody .mastinvent_body_right {
     width: 207px;
@@ -1532,7 +1532,7 @@ input.colorvendorpriceinpt {
     margin-left: 10px;
 }
 .mastinvent_header_container.showmax {
-    margin-left: 0;
+    margin-left: -11px;
 }
 .mastinvent_header_container .mastinvent_container_manage {
     width: 100%;
@@ -1580,6 +1580,9 @@ input.colorvendorpriceinpt {
     line-height: 22px!important;
     width: 100%;
     color: #FFFFFF;
+}
+.mastinvent_container_contentarea .onboatmanage i, .mastinvent_express_contentarea .onboatmanage i {
+    font-size: 11px;
 }
 .mastinvent_container_contentarea .containerdate, .mastinvent_express_contentarea .containerdate {
     height: 22px;
@@ -1695,6 +1698,9 @@ i.cancelboatcontainer {
 .mastinvent_footlink_left {
     width: 502px;
 }
+.mastinvent_footlink_left.showmax {
+    width: 562px;
+}
 .mastinvent_footlink_express {
     width: 283px;
 }
@@ -1708,6 +1714,9 @@ i.cancelboatcontainer {
 .mastinvent_footlink_container {
     width: 283px;
     margin-left: 10px;
+}
+.mastinvent_footlink_container.showmax {
+    margin-left: -8px;
 }
 .mastinvent_footlink_container .left_arrow_empty, .mastinvent_footlink_container .right_arrow_empty {
     width: 43px;
@@ -1744,8 +1753,17 @@ i.cancelboatcontainer {
     /* margin-left: 73px; */
     margin-left: 81px;
 }
+.containertotals.showmax {
+    margin-left: 60px;
+}
 .mastinvent_header_right {
     width: 258px;
+}
+.mastinvent_header_right.showmax {
+    width: 205px;
+}
+.mastinvent_header_right.showmax > .masterinventtablehead {
+    margin-left: 15px;
 }
 .containertotals .containertotal,
 .expresstotals .containertotal {

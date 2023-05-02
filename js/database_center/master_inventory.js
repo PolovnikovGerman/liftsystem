@@ -97,24 +97,34 @@ function init_master_inventorycontent() {
             $(".mastinvent_header_left").addClass('showmax');
             $(".mastinvent_header_container").addClass('showmax');
             $(".mastinvent_header_right").find(".masterinvemptyspace").hide();
+            $(".mastinvent_header_right").addClass('showmax');
+            // Totals
+            $(".containertotals").addClass('showmax');
             $(".masterinventtablebody").find("div.mastinvent_body_left").addClass('showmax');
             $(".masterinventtablebody").find("div.mastinvent_body_container").addClass('showmax');
             $(".masterinventtablebody").find("div.mastinvent_body_right").addClass('showmax');
             $(".masterinventtotals").find("div.masterinventorymaximum").show();
             $(".masterinventtablehead").find("div.masterinventorymaximum").show();
             $(".inventorydatarow").find("div.masterinventmaximum").show();
+            $(".mastinvent_footlink_left").addClass('showmax');
+            $(".mastinvent_footlink_container").addClass('showmax');
         } else {
             $("#invshowmax").val(0);
             $(".inventtotalmaxshow").empty().html('Show Max');
             $(".mastinvent_header_left").removeClass('showmax');
             $(".mastinvent_header_container").removeClass('showmax');
             $(".mastinvent_header_right").find(".masterinvemptyspace").show();
+            $(".mastinvent_header_right").removeClass('showmax');
+            // Totals
+            $(".containertotals").removeClass('showmax');
             $(".masterinventtablebody").find("div.mastinvent_body_left").removeClass('showmax');
             $(".masterinventtablebody").find("div.mastinvent_body_container").removeClass('showmax');
             $(".masterinventtablebody").find("div.mastinvent_body_right").removeClass('showmax');
             $(".masterinventtotals").find("div.masterinventorymaximum").hide();
             $(".masterinventtablehead").find("div.masterinventorymaximum").hide();
             $(".inventorydatarow").find("div.masterinventmaximum").hide();
+            $(".mastinvent_footlink_left").removeClass('showmax');
+            $(".mastinvent_footlink_container").removeClass('showmax');
         }
     })
     $(".addnewmasterinvent").unbind('click').click(function () {
