@@ -290,6 +290,7 @@ function init_master_inventorycontent() {
                 if (response.errors==''){
                     $(".mastinvent_container_contentarea").empty().html(response.data.onboat_header);
                     $("#loader").hide();
+                    init_master_inventoryhead();
                     init_master_inventorydata();
                 } else {
                     $("#loader").hide();
