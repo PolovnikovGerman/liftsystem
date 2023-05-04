@@ -382,7 +382,7 @@ input.inventadd {
     display: none;
 }
 .masterinventtablehead .masterinvemptyspace {
-    width: 53px;
+    width: 54px;
 }
 .masterinventtablehead .masterinventavgprice, .masterinventtablehead .masterinventcontactprice {
     /* width: 66px; */
@@ -390,7 +390,7 @@ input.inventadd {
 }
 .masterinventtablehead .masterinventtotalval {
     /* width: 100px; */
-    width: 75px;
+    width: 74px;
 }
 .masterinventtablehead .masterinventdetails {
     width: 70px;
@@ -1587,6 +1587,7 @@ input.colorvendorpriceinpt {
     line-height: 22px!important;
     width: 100%;
     color: #FFFFFF;
+    text-align: center;
 }
 .mastinvent_container_contentarea .onboatmanage i, .mastinvent_express_contentarea .onboatmanage i {
     font-size: 11px;
@@ -1603,6 +1604,7 @@ input.colorvendorpriceinpt {
     width: 56px;
     height: 18px;
     text-align: center;
+    margin-left: 0px;
 }
 .mastinvent_container_contentarea input.boatcontainerfreight,
 .mastinvent_express_contentarea input.boatcontainerfreight {
@@ -1647,7 +1649,7 @@ input.colorvendorpriceinpt {
 .mastinvent_body_container .onboatdataareas.editdata, .mastinvent_body_express .onboatdataareas.editdata {
     width: 240px;
 }
-.mastinvent_body_container .onboacontainerdata.arrived {
+.mastinvent_body_container .onboacontainerdata.arrived, .mastinvent_body_express .onboacontainerdata.arrived {
     opacity: 0.3;
 }
 .mastinvent_body_container .onboacontainerdata.editdata {
