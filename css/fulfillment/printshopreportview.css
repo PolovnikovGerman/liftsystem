@@ -498,10 +498,19 @@ i.addnewprintshopincome {
     width: 54px;
 }
 .printshopcontent > .orderreporttablebody .datarow > .costea {
-    border-right: 1px solid #000000;
     width: 37px;
 }
+.printshopcontent > .orderreporttablebody .datarow > .costea > .multiprice {
+    width: 0;
+    height: 0;
+    border-top: 9px solid #00beae;
+    border-left: 9px solid transparent;
+    float: right;
+    margin-left: -9px;
+}
+/*  */
 .printshopcontent > .orderreporttablebody .datarow > .addlcost {
+    border-left: 1px solid #000000;
     border-right: 1px solid #000000;
     width: 29px;
 }
@@ -648,4 +657,60 @@ i.canceleditorderdata {
     line-height: 22px;
     position: absolute;
     top: 238px;
+}
+/* Outcome price details */
+.mbBalloon.inventincome {
+    padding: 5px!important;
+}
+.outcomedetails_area {
+    float: left;
+    width: 154px;
+    border: 1px solid #000000;
+}
+.outcomedetails_area div {
+    float: left;
+    height: 20px;
+    line-height: 20px;
+    color: #0000ff;
+    font-size: 11px;
+}
+.outcomedetails_area .detailstitle-qty {
+    width: 48px;
+    text-align: center;
+    color: #444444;
+    border-bottom: 1px solid #000000;
+}
+.outcomedetails_area .detailstitle-price {
+    width: 45px;
+    text-align: center;
+    color: #444444;
+    border-bottom: 1px solid #000000;
+}
+.outcomedetails_area .detailstitle-total {
+    width: 59px;
+    text-align: center;
+    color: #444444;
+    border-bottom: 1px solid #000000;
+}
+.outcomedetails_area .detailsdata-qty {
+    width: 48px;
+    font-weight: 600;
+    text-align: right;
+    padding-right: 5px;
+    border-right: 1px solid #000000;
+}
+.outcomedetails_area .detailsdata-price {
+    width: 45px;
+    font-weight: 600;
+    text-align: center;
+    border-right: 1px solid #000000;
+}
+.outcomedetails_area .detailsdata-total {
+    width: 59px;
+    font-weight: 600;
+    text-align: right;
+    padding-right: 5px;
+}
+.outcomedetails_area .detailstotalrow {
+    border-top: 1px solid #000000;
 }

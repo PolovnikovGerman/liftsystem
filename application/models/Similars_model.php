@@ -8,15 +8,21 @@ Class Similars_model extends My_Model
         parent::__construct();
     }
 
-    public function get_similar_items($item_id) {
-        $this->db->select('si.item_similar_id as item_similar_id,si.item_similar_similar as item_similar_similar, i.item_number as item_number, i.item_name as item_name, i.item_template as item_template');
+    public function get_similar_items($item_id, $brand='BT') {
+        $this->db->select('si.item_similar_id as item_similar_id,si.item_similar_similar as item_similar_similar');
+        $this->db->select('i.item_number as item_number, i.item_name as item_name, i.item_template as item_template');
         $this->db->from('sb_item_similars si');
         $this->db->join('sb_items i','i.item_id=si.item_similar_similar');
         $this->db->where('si.item_similar_item',$item_id);
-        $this->db->limit($this->config->item('similar_items'));
+        if ($brand=='SR') {
+            $this->db->limit($this->config->item('relievers_similar_items'));
+        } else {
+            $this->db->limit($this->config->item('similar_items'));
+        }
         $results=$this->db->get()->result_array();
         $out_array=array();
-        for ($i=0;$i < $this->config->item('similar_items') ;$i++) {
+        $maxitem = ($brand=='SR' ? $this->config->item('relievers_similar_items') : $this->config->item('similar_items'));
+        for ($i=0;$i < $maxitem; $i++) {
             if (isset($results[$i]['item_similar_id'])) {
                 $out_array[]=array(
                     'item_similar_id'=>$results[$i]['item_similar_id'],
@@ -27,7 +33,7 @@ Class Similars_model extends My_Model
                 );
             } else {
                 $out_array[]=array(
-                    'item_similar_id'=>'',
+                    'item_similar_id'=>($i+1)*(-1),
                     'item_similar_similar'=>'',
                     'item_number'=>'',
                     'item_name'=>'',

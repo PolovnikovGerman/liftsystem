@@ -100,10 +100,26 @@ function sort_vendorlist(fld) {
 }
 
 function initVendorPagination() {
-    if ($("#devicetype").val()=='mobile') {
-        initVendorPaginationMobile();
+    // count entries inside the hidden content
+    var num_entries = $('#totalvend').val();
+    // var perpage = itemsperpage;
+    var perpage = $("#perpagevend").val();
+    if (parseInt(num_entries) < parseInt(perpage)) {
+        $("#vendorPagination").empty();
+        pageVendorCallbackMobile(0);
     } else {
-        initVendorPaginationDesktop()
+        var curpage = $("#curpageart").val();
+        // Create content inside pagination element
+        $("#vendorPagination").mypagination(num_entries, {
+            current_page: curpage,
+            callback: pageVendorCallbackMobile,
+            items_per_page: perpage, // Show only one item per page
+            load_first_page: true,
+            num_edge_entries : 1,
+            num_display_entries : 5,
+            prev_text : '<<',
+            next_text : '>>'
+        });
     }
 }
 
@@ -168,13 +184,14 @@ function pageVendorCallbackMobile(page_index) {
         if (response.errors=='') {
             $("#loader").hide();
             $("div#vendorinfo").empty().html(response.data.content);
+            $("#vendorinfo").find("div.dataarea").scrollpanel({
+                'prefix' : 'sp-'
+            });
             init_vendor_content();
+            leftmenu_alignment();
         } else {
             $("#loader").hide();
-            alert(response.errors);
-            if(response.data.url !== undefined) {
-                window.location.href=response.data.url;
-            }
+            show_error(response);
         }
     },'json');
 }
@@ -193,12 +210,10 @@ function pageVendorCallbackDesktop(page_index) {
             $("#loader").hide();
             $("div#vendorinfo").empty().html(response.data.content);
             init_vendor_content();
+            leftmenu_alignment();
         } else {
             $("#loader").hide();
-            alert(response.errors);
-            if(response.data.url !== undefined) {
-                window.location.href=response.data.url;
-            }
+            show_error(response);
         }
     },'json');
 }
@@ -251,7 +266,7 @@ function edit_vendor(vendor_id) {
     $.post(url,{'vendor_id':vendor_id},function(response){
         if (response.errors=='') {
             $("#vendorDetailsModal").find('div.modal-header').removeClass('editmode');
-            $("#mobileheadercontent").empty().html(response.data.mobheader);
+            /* $("#mobileheadercontent").empty().html(response.data.mobheader); */
             $("#vendorDetailsModalLabel").empty().html(response.data.header);
             $("#vendorDetailsModal").find('div.modal-body').empty().html(response.data.content);
             // $("#vendorDetailsModal").find('div.modal-dialog').css('max-width','1333px');

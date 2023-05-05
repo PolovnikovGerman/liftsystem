@@ -1,0 +1,1788 @@
+.dbcontentarea#inventoryview {
+    /* height: 1152px; */
+}
+.inventorydataview {
+    margin-top: 17px;
+    margin-left: 10px;
+    float: left;
+    min-height: 640px;
+}
+.inventorydataview div {
+    float: left;
+}
+.inventorydataview .pagetitle {
+    width: 413px;
+}
+.inventorydataview .pagetitle .pagetitlelabel {
+    margin-left: 4px;
+    font-size: 24px;
+    font-weight: bold;
+}
+.invtypebutton {
+    /* background: url('/img/masterinvent/typebutton_bg.png') no-repeat; */
+    background-color: #08aeb0;
+    border: 1px solid #00817e;
+    border-radius: 5px;
+    color: #ffffff;
+    height: 26px;
+    margin-right: 14px;
+    text-align: center;
+    width: 120px;
+}
+.invtypebutton span {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    /* height: 35px;*/
+    line-height: 26px!important;
+}
+.invtypebutton.oldver span {
+    margin-left: -6px;
+}
+.invtypebutton .oldvesionlabel {
+    opacity: 0.6;
+    position: relative;
+    left: 54px;
+    background-color: #b53535;
+    width: 12px;
+    /* margin-top: 1px; */
+    height: 25px;
+    z-index: 100;
+}
+.invtypebutton.active {
+    /* background: url('/img/masterinvent/typebutton_active_bg.png') no-repeat; */
+    background-color: #0b7677;
+    border: 1px solid #005a56;
+}
+.inventfilterarea {
+    width: 271px;
+    /* margin-top: -12px; */
+    margin-top: -8px;
+    float: right!important;
+}
+.inventfilterlabel {
+    font-size: 14px;
+    text-align: right;
+    height: 28px;
+    line-height: 23px!important;
+    padding-right: 5px;
+    width: 140px;
+    margin-bottom: 6px;
+}
+.inventfilterdata {
+}
+.inventfilterselect {
+    font-size: 14px;
+    font-weight: normal;
+    height: 24px;
+    width: 128px;
+}
+.totalinvent {
+    border: 2px solid #000000;
+    width: 240px;
+    height: 31px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 7px;
+    margin-left: 29px;
+}
+.totalinvent > div {
+    line-height: 29px!important;
+}
+.totalinventlabel {
+    padding-left: 7px;
+    color: #727272;
+}
+.totalinventvalue {
+    color: #000000;
+    float: right!important;
+    padding-right: 7px;
+}
+.mastinvent_left_menu {
+    /* width: 227px; */
+    width: 100%;
+    margin-top: 7px;
+}
+.mastinvent_left_section {
+    margin-right: 7px;
+}
+.mastinvent_left_section:last-child {
+    margin-right: 0px!important;
+}
+
+/*.mastinvent_left_section.active {
+    background: #252525;
+    margin-bottom: 15px;
+}*/
+.mastinvent_left_sectiondata {
+    background: #ebebeb;
+    border: 1px solid #000000;
+    padding: 0 6px;
+    cursor: pointer;
+    width: 160px;
+    height: 58px;
+    margin-bottom: 7px;
+}
+.mastinvent_left_sectiondata.rawsbtype {
+    background: #252525;
+}
+.inventsectionhead {
+    color: #000000;
+    font-size: 14px;
+    font-weight: 600;
+    height: 27px;
+    line-height: 27px!important;
+    /* margin-bottom: 4px; */
+    /* text-align: center; */
+}
+.inventsectionvalue {
+    border: 1px solid #000000;
+    background: #6e6e6e;
+    width: 146px;
+}
+.inventsectionvalue > div {
+    height: 22px;
+    line-height: 22px;
+}
+.inventsectionvalue_label {
+    color: #ffffff;
+    font-style: italic;
+    font-size: 14px;
+    padding-left: 5px;
+}
+.inventsectionvalue_data {
+    color: #32faff;
+    font-size: 15px;
+    font-weight: 600;
+    padding-left: 8px;
+}
+.mastinvent_left_sectiondata.active {
+    background: #252525;
+    border: none;
+    height: 72px;
+    margin-bottom: 0!important;
+    width: 186px;
+    margin-top: -7px;
+}
+.mastinvent_left_sectiondata.active > .inventsectionhead,
+.mastinvent_left_sectiondata.rawsbtype > .inventsectionhead {
+    color: #ffffff;
+    font-size: 14px;
+}
+.mastinvent_left_sectiondata.active > .inventsectionvalue,
+.mastinvent_left_sectiondata.rawsbtype > .inventsectionvalue {
+    border: 1px solid #ffffff;
+    background: #252525;
+}
+.mastinvent_databody {
+    background: #252525;
+    width: 1355px;
+    padding-left: 12px;
+    padding-bottom: 12px;
+    padding-right: 6px;
+    margin-bottom: 10px;
+}
+.masterinventlegend {
+    margin-top: 6px;
+}
+.masterinventlegend > div {
+    height: 16px;
+    line-height: 16px;
+}
+.legendmapicon.severeval {
+    color: #FF0000;
+    font-size: 14px;
+    margin-right: 5px;
+}
+.legendmapicon.lowval {
+    color: #ff9900;
+    font-size: 14px;
+    margin-right: 5px;
+}
+.legendmaplabel {
+    color: #000000;
+    font-size: 12px;
+    margin-right: 10px;
+}
+.mastinvent_header_left {
+    width: 502px;
+}
+.mastinvent_header_left > div {
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+}
+.mastinvent_header_left.showmax {
+    width: 562px;
+}
+.mastinvent_header_left .labeltxt, .mastinvent_header_left .valuedata {
+    height: 16px;
+    line-height: 16px;
+    color: #989898;
+}
+.mastinvent_header_left .valuedata {
+    font-size: 13px;
+}
+.mastinvent_header_left .labeltxt {
+    font-size: 12px;
+    width: 69px;
+}
+.mastinvent_header_left .addlabeltxt {
+    height: 16px;
+    line-height: 16px;
+    color: #ffffff;
+    font-size: 12px;
+    width: 69px;
+}
+.mastinvent_header_left .addlabeltotal {
+    height: 16px;
+    line-height: 16px;
+    color: #ffffff;
+    font-size: 12px;
+    /* width: 69px; */
+}
+input.inventadd {
+    height: 16px;
+    width: 46px;
+    text-align: center;
+    margin-right: 6px;
+}
+.masterinventexport {
+    /* padding-top: 5px; */
+    margin-top: 83px;
+    float: right!important;
+    color: #ffffff;
+    /* font-size: 14px; */
+    font-size: 12px;
+    padding-right: 6px;
+    cursor: pointer;
+    height: 27px;
+    line-height: 27px;
+}
+.masterinventexport i {
+    font-size: 14px;
+}
+.masterinventtotals {
+    font-weight: 600;
+    color: #ffffff;
+    /* font-size: 14px; */
+    font-size: 12px;
+    margin-top: 34px;
+}
+.masterinventtotals > div {
+    text-align: center;
+    height: 22px;
+    line-height: 22px;
+}
+.masterinventtotals .inventtotalmaxshow {
+    /* margin-left: 435px; */
+    margin-left: 169px;
+    color: #8989ff;
+    width: 67px;
+    /* text-align: center; */
+    cursor: pointer;
+    font-size: 12px;
+}
+.masterinventtotals .masterinventpercent {
+    width: 42px;
+}
+.masterinventtotals .masterinventorymaximum {
+    display: none;
+    width: 60px;
+    color: #8989ff;
+}
+.masterinventtotals .masterinventinstock {
+    width: 58px;
+}
+.masterinventtotals .masterinventreserv {
+    width: 58px;
+}
+.masterinventtotals .masterinventavailab {
+    width: 58px;
+}
+
+.masterinventtotals .inventtotalmaximum {
+    /* width: 75px; */
+    width: 58px;
+    text-align: center;
+    display: none;
+    color: #8989ff;
+    margin-top: -8px;
+}
+.masterinventtotals .inventtotalavailable {
+    margin-left: 56px;
+    width: 58px;
+    text-align: center;
+    margin-top: -8px;
+}
+.masterinventtablehead {
+    background: #000000;
+    color: #ffffff;
+    /* font-weight: bold;
+    font-size: 13px; */
+    font-weight: normal;
+    font-size: 12px;
+    width: 100%;
+}
+.masterinventtablehead > div {
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+}
+.masterinventtablehead .addnewmasterinvent {
+    width: 63px;
+    padding-left: 2px;
+}
+.masterinventtablehead .addnewmasterinvent img {
+    margin-top: 4px;
+}
+.masterinventtablehead .addnewmasterinvent img {
+    cursor: pointer;
+}
+.masterinventtablehead .masterinventseq {
+    width: 26px;
+}
+.masterinventtablehead .masterinventnumber {
+    width: 80px;
+}
+.masterinventtablehead .masterinventdescrip {
+    /* width: 268px; */
+    width: 174px;
+}
+.masterinventtablehead .masterinventpercent {
+    width: 42px;
+}
+.masterinventtablehead .masterinventorymaximum {
+    display: none;
+    width: 60px;
+    color: #8989ff;
+}
+.masterinventtablehead .masterinventinstock {
+    width: 58px;
+}
+.masterinventtablehead .masterinventreserv {
+    width: 58px;
+}
+.masterinventtablehead .masterinventavailab {
+    width: 58px;
+}
+.masterinventtablehead .masterinventhistory {
+    width: 20px;
+}
+.masterinventtablehead .masterinventunit {
+    width: 29px;
+}
+.masterinventtablehead .masterinventonorder {
+    /* width: 85px; */
+    /* width: 183px; */
+    width: 658px;
+}
+.masterinventtablehead .masterinventonmax {
+    width: 14px;
+    display: none;
+}
+.masterinventtablehead .masterinvemptyspace {
+    width: 54px;
+}
+.masterinventtablehead .masterinventavgprice, .masterinventtablehead .masterinventcontactprice {
+    /* width: 66px; */
+    width: 55px;
+}
+.masterinventtablehead .masterinventtotalval {
+    /* width: 100px; */
+    width: 74px;
+}
+.masterinventtablehead .masterinventdetails {
+    width: 70px;
+}
+.masterinventtablebody {
+    background: #252525;
+    color: #000000;
+    /* width: 1014px;*/
+    /* width: 922px; */
+    width: 1336px;
+    max-height: 977px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+/* Scrollbar */
+.masterinventtablebody .sp-scrollbar {
+    width: 10px;
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+.masterinventtablebody .sp-scrollbar .sp-thumb {
+    background-color: #aaa;
+    transition: height 0.2s ease-in-out;
+}
+.masterinventtablebody .sp-scrollbar.active .sp-thumb {
+    background-color: #c1c1c1;
+}
+/* Scrollbar end */
+.masterinventtablebody .mastinvent_body_left {
+    width: 502px;
+}
+.masterinventtablebody .mastinvent_body_left.showmax {
+    width: 562px;
+}
+.masterinventtablebody .mastinvent_body_express {
+    width: 283px;
+}
+.masterinventtablebody .mastinvent_body_container {
+    width: 283px;
+    margin-left: 10px;
+}
+.masterinventtablebody .mastinvent_body_container.showmax {
+    margin-left: -11px;
+}
+.masterinventtablebody .mastinvent_body_right {
+    width: 207px;
+    margin-left: 39px;
+}
+.masterinventtablebody .mastinvent_body_right.showmax {
+    margin-left: 0px;
+}
+.inventorydatarow {
+    width: 100%;
+}
+.inventorydatarow.expand {
+    width: 1032px;
+}
+.inventorydatarow > div {
+    text-align: center;
+    height: 25px;
+    line-height: 25px;
+    font-size: 12px;
+}
+.inventorydatarow.masteritem {
+    background: #6e6e6e;
+    color: #ffffff;
+}
+.inventorydatarow.masteritem > div {
+    border-bottom: 1px solid #000000;
+}
+.inventorydatarow.masteritem .masterinventonorder {
+    border-bottom: none;
+}
+.inventorydatarow .masterinventstatus {
+    width: 50px;
+    /* border-right: 1px solid #000000; */
+    font-size: 12px;
+}
+.inventorydatarow .masterinventstatus.donotreorder {
+    background: #FF0000;
+    color: #ffffff;
+    font-size: 10px;
+    line-height: 12px;
+    text-align: center;
+}
+.inventorydatarow .masterinventseq {
+    width: 27px;
+    border-right: 1px solid #000000;
+}
+.inventorydatarow .masterinventseq.itemedit {
+    cursor: pointer;
+}
+.inventorydatarow .masterinventseq.itemedit:hover {
+    color: #0000FF;
+}
+.inventorydatarow .masterinventnumber {
+    width: 36px;
+    border-right: 1px solid #000000;
+}
+.inventorydatarow.masteritem  .masterinventnumber, .inventorydatarow.masteritem  .masterinventdescrip {
+    font-size: 13px;
+    font-weight: 600;
+}
+.inventorydatarow .masterinventnumber i {
+    /* font-size: 15px; */
+    cursor: pointer;
+}
+.inventorydatarow.itemcolor .masterinventnumber:hover {
+    color: #0000FF;
+}
+.inventorydatarow .masterinventdescrip {
+    /* width: 268px; */
+    width: 174px;
+    text-align: left;
+    border-right: 1px solid #000000;
+    padding-left: 8px;
+}
+.addmasterinventory {
+    float: right!important;
+    padding-right: 4px;
+    cursor: pointer;
+}
+.addmasterinventory i {
+    font-size: 9.75px;
+}
+.inventorydatarow.itemcolor.activeinvent {
+    background: #FFFF00;
+}
+.inventorydatarow.itemcolor .masterinventavgprice:hover {
+    color: #0000FF;
+    font-weight: 600;
+    cursor: pointer;
+}
+.inventorydatarow.itemcolor .masterinventdescrip {
+    text-align: right;
+    padding-left: 0;
+    padding-right: 6px;
+}
+.inventorydatarow .masterinventpercent {
+    /* width: 3.9%; */
+    /* font-size: 13px; */
+    width: 42px;
+    border-right: 1px solid #000000;
+}
+.inventorydatarow .masterinventmaximum {
+    color: #0000FF;
+    /* width: 70px; */
+    width: 60px;
+    border-left: 2px solid #0000FF;
+    border-right: 2px solid #0000FF;
+    display: none;
+}
+.inventorydatarow.masteritem .masterinventmaximum {
+    font-weight: 600;
+}
+.inventorydatarow .masterinventinstock {
+    /* width: 6.8%; */
+    /* width: 69px; */
+    width: 58px;
+    border-right: 1px solid #000000;
+    font-size: 11px;
+}
+.inventorydatarow .masterinventreserv {
+    /* width: 6.8%; */
+    width: 58px;
+    border-right: 1px solid #000000;
+}
+.inventorydatarow .masterinventavailab {
+    /* width: 6.8%; */
+    width: 58px;
+    border-right: 1px solid #000000;
+    font-weight: 600;
+    font-size: 11px;
+}
+.inventorydatarow .masterinventhistory, .inventorydatarow .masterinventhistorystock {
+    width: 20px;
+    text-align: center;
+    border-right: 1px solid #000000;
+}
+.inventorydatarow .masterinventhistory i, .inventorydatarow .masterinventhistorystock i{
+    color: #bebebe;
+    cursor: pointer;
+}
+.inventorydatarow .masterinventhistory i:hover, .inventorydatarow .masterinventhistorystock i:hover {
+    color: #1700c2;
+}
+.inventorydatarow .masterinventinstock.severevalstock,
+.inventorydatarow .masterinventavailab.severevalstock {
+    /* font-size: 10px!important;
+    font-weight: 600; */
+    background: #FF0000;
+    color: #ffffff;
+}
+.inventorydatarow .masterinventpercent.severevalstock {
+    background: #FF0000;
+    color: #ffffff;
+    font-size: 11px;
+}
+.inventorydatarow .masterinventinstock.emptyvalstock {
+    font-size: 10px!important;
+    font-weight: 600;
+    background: #FF0000;
+    color: #ffffff;
+}
+.inventorydatarow .masterinventpercent.emptyvalstock,
+.inventorydatarow .masterinventavailab.emptyvalstock {
+    background: #FF0000;
+    color: #ffffff;
+}
+.inventorydatarow .masterinventinstock.lowinstock,
+.inventorydatarow .masterinventavailab.lowinstock,
+.inventorydatarow .masterinventpercent.lowinstock {
+    background: #ff9900;
+    color: #000000;
+}
+.inventorydatarow .masterinventunit {
+    /* width: 2.9%; */
+    width: 29px;
+    border-right: 1px solid #000000;
+}
+.inventorydatarow .masterinventonorder {
+    /* width: 8.26%; */
+    /* width: 87px; */
+    /* width: 183px; */
+    width: 658px;
+    color: #5d51ff;
+    background: #252525;
+    text-align: left;
+    padding-left: 5px;
+}
+.inventorydatarow .masterinventonmax {
+    width: 14px;
+    background: #252525;
+    display: none;
+}
+.inventorydatarow .masterinvemptyspace {
+    width: 43px;
+}
+.inventorydatarow .masterinventavgprice {
+    width: 55px;
+    padding-right: 6px;
+    text-align: right;
+    border-right: 1px solid #000000;
+}
+.inventorydatarow .masterinventavgprice.avgprice {
+    color: #1600bb;
+}
+.inventorydatarow .masterinventtotalval {
+    width: 73px;
+    text-align: right;
+    padding-right: 6px;
+}
+.inventorydatarow .masterinventavgprice.emptytotal,
+.inventorydatarow .masterinventtotalval.emptytotal {
+    color: #c5c4c4;
+}
+.inventorydatarow .masterinventdetails {
+    /* width: 4.82%; */
+    width: 48px;
+    font-weight: 600;
+}
+.inventorydatarow .masterinventdetails.emptyimage {
+    color: #c5c4c4;
+}
+.inventoryemptydata {
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: #FF0000;
+    font-weight: 600;
+}
+/* POPUP Price View */
+#modalEditInventPrice .modal-dialog {
+    width: 680px;
+    max-width: 680px;
+}
+#modalEditInventPrice .modal-header {
+    color: #ffffff;
+    background: #2635ff;
+    height: 32px;
+    padding: 0 0.4rem!important;
+    border-bottom: none!important;
+}
+#modalEditInventPrice .modal-header h4 {
+    line-height: 32px;
+    color: #868eff;
+    font-size: 15px;
+    font-weight: 600;
+    float: left;
+    padding-left: 6px;
+    max-width: 92%;
+}
+#modalEditInventPrice .modal-header h4 span.priceheadhistorylnk {
+    color: #ffffff;
+    font-size: 12px;
+    font-style: italic;
+    line-height: 32px;
+    float: right!important;
+    cursor: pointer;
+}
+#modalEditInventPrice .modal-header h4 span.priceitemdata {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 32px;
+}
+#modalEditInventPrice .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+    padding: 0!important;
+    margin: 3px 8px 8px 8px;
+}
+#modalEditInventPrice .modal-body {
+    background: #2635ff;
+    padding: 0 12px 12px 12px;
+}
+#modalEditInventPrice .modal-body div {
+    float: left;
+}
+.inventoryprice_body_content {
+    background: #ffffff;
+    width: 100%;
+    height: 316px;
+}
+.inventoryprice_table_head {
+    width: 100%;
+    background: #c1c1c1;
+    border: 1px solid;
+}
+.inventoryprice_table_head > div {
+    height: 27px;
+    line-height: 27px;
+    font-size: 13px;
+    text-align: center;
+}
+.inventoryprice_table_head .inventoryincome_date {
+    width: 71px;
+    text-align: left;
+}
+.inventoryprice_table_head .inventoryincome_date span {
+    color: #797979;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.inventoryprice_table_head .inventoryincome_recnum {
+    width: 55px;
+}
+.inventoryprice_table_head .inventoryincome_descript {
+    width: 212px;
+}
+.inventoryprice_table_head .inventoryincome_price {
+    width: 53px;
+}
+.inventoryprice_table_head .inventoryincome_incomeqty {
+    width: 59px;
+}
+.inventoryprice_table_head .inventoryincome_divide {
+    width: 11px;
+}
+.inventoryprice_table_head .inventoryincome_leftqty {
+    width: 60px;
+}
+.inventoryprice_table_head .inventoryincome_lefttotal {
+    width: 82px;
+}
+.inventoryprice_table_body {
+    width: 100%;
+    /* max-height: 229px; */
+    max-height: 95px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-right: 1px solid #000000;
+    border-left: 1px solid #000000;
+    /* border-bottom: 1px solid #000000; */
+}
+.inventoryprice_table_body.showused {
+    max-height: 185px;
+    border-bottom: 1px solid #000000;
+}
+.inventoryprice_table_row {
+    width: 100%;
+}
+.inventoryprice_table_row.lastrow {
+    border-bottom: 2px solid #000000;
+}
+.inventoryprice_table_row.used {
+    color: #939394;
+}
+.inventoryprice_table_row > div {
+    height: 23px;
+    line-height: 23px;
+    font-size: 13px;
+    text-align: center;
+}
+.inventoryprice_table_row .inventoryincome_date {
+    width: 71px;
+    text-align: right;
+    padding-right: 5px;
+    border-right: 1px solid #000000;
+}
+.inventoryprice_table_row .inventoryincome_recnum {
+    width: 55px;
+    border-right: 1px solid #000000;
+    color: #0000FF;
+    cursor: pointer;
+}
+.inventoryprice_table_row .inventoryincome_descript {
+    width: 212px;
+    border-right: 1px solid #000000;
+}
+.inventoryprice_table_row .inventoryincome_price {
+    width: 53px;
+    border-right: 1px solid #000000;
+}
+.inventoryprice_table_row .inventoryincome_incomeqty {
+    width: 59px;
+    border-right: 1px solid #000000;
+}
+.inventoryprice_table_row .inventoryincome_divide {
+    width: 11px;
+    border-right: 1px solid #000000;
+}
+.inventoryprice_table_row .inventoryincome_leftqty {
+    width: 60px;
+    border-right: 1px solid #000000;
+}
+.inventoryprice_table_row.lastrow .inventoryincome_leftqty {
+    color: #0000FF;
+}
+.inventoryprice_table_row .inventoryincome_lefttotal {
+    width: 82px;
+}
+.inventoryprice_total_left {
+    width: 330px;
+    padding-left: 7px;
+    padding-top: 6px;
+}
+.viewbalancesused {
+    color: #0000ff;
+    font-size: 13px;
+    font-style: italic;
+    cursor: pointer;
+}
+.inventoryprice_total_right {
+    padding-top: 3px;
+}
+.inventoryprice_total_right .datarow > div {
+    height: 22px;
+    line-height: 22px;
+}
+.inventoryprice_total_right .inventoryprice_total_label {
+    width: 135px;
+    margin-right: 13px;
+    text-align: right;
+    font-size: 13px;
+}
+.inventoryprice_total_right .inventoryprice_total_value {
+    font-size: 13px;
+    font-weight: 600;
+}
+/* Manual input */
+.manualaddrecord input {
+    height: 19px;
+    line-height: 19px;
+    font-size: 12px;
+    border: 1px solid #dddddd;
+}
+input.inventoryincomedateinpt {
+    width: 68px;
+}
+input.inventincomerecnum {
+    width: 53px;
+}
+input.inventincomedescripinpt {
+    width: 205px;
+}
+input.inventincomepriceinpt {
+    width: 47px;
+}
+input.inventincomeqtyinpt {
+    width: 53px;
+}
+span.cancelsaveinventincome {
+    color: #FF0000;
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 5px;
+    margin-right: 10px;
+}
+span.saveinventincome {
+    color: #0b6100;
+    font-size: 18px;
+    cursor: pointer;
+}
+/* History view */
+#modalEditInventHistory .modal-dialog {
+    width: 520px;
+    max-width: 520px;
+}
+#modalEditInventHistory .modal-header {
+    color: #ffffff;
+    background: #2635ff;
+    height: 32px;
+    padding: 0 0.4rem!important;
+    border-bottom: none!important;
+}
+#modalEditInventHistory .modal-header h4 {
+    line-height: 32px;
+    color: #868eff;
+    font-size: 15px;
+    font-weight: 600;
+    float: left;
+    padding-left: 6px;
+    max-width: 93%;
+}
+#modalEditInventHistory .modal-header h4 span.priceitemdata {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 32px;
+}
+#modalEditInventHistory .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+    /* padding-top: 1.1rem; */
+    padding: 0!important;
+    margin: 3px 8px 8px 8px;
+}
+#modalEditInventHistory .modal-body {
+    background: #2635ff;
+    padding: 0 12px 12px 12px;
+}
+#modalEditInventHistory .modal-body div {
+    float: left;
+}
+.inventoryhistory_body_content {
+    background: #ffffff;
+    width: 100%;
+    height: 426px;
+}
+.inventoryhistory_table_head {
+    width: 100%;
+    background: #c1c1c1;
+    border: 1px solid;
+}
+.inventoryhistory_table_head > div {
+    height: 27px;
+    line-height: 27px;
+    font-size: 13px;
+    text-align: center;
+}
+.inventoryhistory_table_head .instock_date {
+    width: 71px;
+    text-align: left;
+}
+.inventoryhistory_table_head .instock_date span {
+    color: #797979;
+    font-size: 14px;
+    margin-left: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+.inventoryhistory_table_head .instock_recnum {
+    width: 62px;
+}
+.inventoryhistory_table_head .instock_descript {
+    width: 183px;
+}
+.inventoryhistory_table_head .instock_amount {
+    width: 72px;
+}
+.inventoryhistory_table_head .instock_balance {
+    width: 77px;
+}
+.inventoryhistory_table_body {
+    width: 100%;
+    /* max-height: 229px; */
+    max-height: 370px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-right: 1px solid #000000;
+    border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+.inventoryhistory_table_row {
+    width: 100%;
+}
+.inventoryhistory_table_row > div {
+    height: 23px;
+    line-height: 23px;
+    font-size: 13px;
+    text-align: center;
+}
+.inventoryhistory_table_row .instock_date {
+    width: 71px;
+    text-align: right;
+    padding-right: 5px;
+    border-right: 1px solid #000000;
+}
+.inventoryhistory_table_row .instock_recnum {
+    width: 62px;
+    border-right: 1px solid #000000;
+    color: #0000FF;
+    cursor: pointer;
+}
+.inventoryhistory_table_row .instock_descript {
+    width: 183px;
+    border-right: 1px solid #000000;
+}
+.inventoryhistory_table_row .instock_descript span {
+    color: #8e8e8e;
+}
+.inventoryhistory_table_row .instock_amount {
+    width: 72px;
+    border-right: 1px solid #000000;
+}
+.inventoryhistory_table_row .instock_amount.negative {
+    background: #FF0000;
+    color: #ffffff;
+}
+.inventoryhistory_table_row .instock_balance {
+    width: 77px;
+}
+.inventoryhistory_table_row .instock_balance.negative {
+    color: #FF0000;
+}
+.inventoryhistory_view_prices {
+    float: right!important;
+    margin-top: 5px;
+    margin-right: 8px;
+    font-size: 12px;
+    font-style: italic;
+    color: #FF0000;
+    cursor: pointer;
+}
+.manualoutcomerow input {
+    border: 1px solid #dddddd;
+    height: 19px;
+    line-height: 19px;
+    font-size: 12px;
+}
+input.inventoryoutcomedateinpt {
+    width: 68px;
+}
+input.inventoutcomerecnum {
+    width: 58px;
+}
+input.inventoutcomedescripinpt {
+    width: 179px;
+}
+input.inventoutcomeqtyinpt {
+    width: 68px;
+}
+span.cancelinventoutcome {
+    color: #FF0000;
+    font-size: 18px;
+    margin-right: 13px;
+    cursor: pointer;
+}
+span.saveinventoutcome {
+    color: #0b6100;
+    font-size: 18px;
+    cursor: pointer;
+}
+#modalEditInventItem .modal-dialog {
+}
+#modalEditInventItem .modal-content {
+    width: 466px;
+    max-width: 465px;
+    height: 280px;
+    border: 1px solid #000000;
+}
+#modalEditInventItem .modal-header {
+    color: #ffffff;
+    background: #2635ff;
+    height: 32px;
+    padding: 0 0.4rem!important;
+    border-bottom: none!important;
+}
+#modalEditInventItem .modal-header h4 {
+    line-height: 32px;
+    color: #868eff;
+    font-size: 15px;
+    font-weight: 600;
+    float: left;
+    padding-left: 6px;
+    max-width: 92%;
+}
+#modalEditInventItem .modal-header h4 span {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 32px;
+}
+#modalEditInventItem .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+    padding: 0!important;
+    margin: 3px 8px 8px 8px;
+}
+#modalEditInventItem .modal-body {
+    background: #2635ff;
+    padding: 0 9px 11px 9px;
+    border-bottom: none!important;
+}
+#modalEditInventItem .modal-body div {
+    float: left;
+}
+#modalEditInventItem .modal-footer {
+    background: #2635ff;
+    padding: 0 9px 12px 9px;
+    border-top: none!important;
+}
+.inventoryitem_body_content {
+    background: #ffffff;
+    border: 1px solid #000000;
+    padding: 10px;
+    width: 100%;
+}
+.itemdatalabel {
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    width: 83px;
+}
+.itemdatavalue {
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid #dddddd;
+    padding-left: 6px;
+}
+.itemdatavalue.itemname {
+    width: 340px;
+}
+.itemdatavalue.itemunit {
+    width: 40px;
+}
+.masteritemdevide {
+    height: 12px;
+}
+.itemtemplatelabel {
+    width: 104px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+.itemteplatevalue {
+    width: 90px;
+    margin-bottom: 10px;
+    height: 24px;
+    line-height: 24px;
+}
+.itemteplatevalue.empty {
+    color: #d7d7d7;
+    width: 83px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+}
+.itemteplatevalue.edittemplate {
+    width: 168px;
+}
+.itemteplatevalue.emptytemplate {
+    width: 95px;
+}
+.itemteplatevalue.edittemplate img {
+    cursor: pointer;
+}
+.itemtemplatedescript {
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px!important;
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.itemtemplatedescript.view {
+    width: 226px;
+}
+.masteritemfooter {
+    background: #ffffff;
+    border: 1px solid #000000;
+    padding: 10px;
+    width: 100%;
+    text-align: right!important;
+    float: left;
+}
+.edititembutton {
+    font-size: 14.55px;
+    font-weight: 600;
+    height: 23px;
+    line-height: 23px;
+    background: #9b00d4;
+    border-color: #9b00d4;
+    color: #ffffff;
+    padding: 0 14px;
+}
+.edititembutton:hover, .edititembutton:not(:disabled):not(.disabled):active {
+    color: #ffffff;
+    background-color: #d91dd9;
+    border-color: #d91dd9;
+}
+input.itemdataname {
+    border: 1px solid #dddddd;
+    padding-left: 6px;
+    width: 340px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+    font-weight: 600;
+}
+select.itemdataunit {
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    padding-left: 6px;
+    width: 51px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+    font-weight: 600;
+}
+.closeitemdata, .saveitemdata {
+    font-size: 14.55px;
+    font-weight: 600;
+    height: 23px;
+    line-height: 23px;
+    padding: 0 14px;
+}
+.closeitemdata {
+    padding: 0 10px;
+}
+#modalEditInventColor .modal-content {
+    width: 651px;
+    max-width: 650px;
+    height: 485px;
+    border: 1px solid #000000;
+}
+#modalEditInventColor .modal-header {
+    color: #ffffff;
+    background: #2635ff;
+    height: 32px;
+    padding: 0 0.4rem!important;
+    border-bottom: none!important;
+    position: relative;
+}
+#modalEditInventColor .modal-header h4 {
+    line-height: 32px;
+    color: #868eff;
+    font-size: 15px;
+    font-weight: 600;
+    float: left;
+    padding-left: 6px;
+}
+#modalEditInventColor .modal-header h4 span {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 32px;
+}
+#modalEditInventColor .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+    padding: 0!important;
+    /* margin: -28px 8px 8px 8px; */
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+#modalEditInventColor .modal-body {
+    background: #2635ff;
+    padding: 0 9px 11px 9px;
+    border-bottom: none!important;
+}
+#modalEditInventColor .modal-body div {
+    float: left;
+}
+#modalEditInventColor .modal-footer {
+    background: #2635ff;
+    padding: 0 9px 12px 9px;
+    border-top: none!important;
+}
+.inventorycolor_body_content {
+    background: #ffffff;
+    border: 1px solid #000000;
+    padding: 0 10px 10px 10px;
+    height: 383px;
+    width: 100%;
+}
+.statusradiobtn {
+    width: 16px;
+    font-size: 16px;
+    height: 26px;
+    line-height: 26px;
+}
+.statusradiobtn.edit {
+    cursor: pointer;
+}
+.statuslabel {
+    max-width: 258px;
+    margin-left: 5px;
+    font-size: 14px;
+    height: 26px;
+    line-height: 26px;
+    margin-right: 7px;
+}
+.statuslabel span {
+    font-style: italic;
+}
+.inventorycolor_body_left {
+    width: 435px;
+}
+.colorparamlabel {
+    font-size: 14px;
+    width: 85px;
+    height: 24px;
+    line-height: 24px;
+    margin-bottom: 10px;
+}
+.colorparamvalue {
+    border: 1px solid #dddddd;
+    font-size: 14px;
+    font-weight: 600;
+    height: 24px;
+    line-height: 24px;
+    margin-bottom: 10px;
+    padding-left: 6px;
+}
+.colorparamvalue.colorname {
+    width: 224px;
+}
+.colordatainput input {
+    border: 1px solid #dddddd;
+    font-size: 14px;
+    font-weight: 600;
+    padding-left: 6px;
+    height: 24px;
+    line-height: 24px;
+}
+input.colornameinpt {
+    width: 224px;
+}
+.colorparamvalue.pantones {
+    width: 319px;
+    height: 45px;
+    line-height: 22.5px;
+}
+textarea.colorpantonesinpt {
+    border: 1px solid #dddddd;
+    font-size: 14px;
+    font-weight: 600;
+    padding-left: 6px;
+    width: 319px;
+    height: 45px;
+    line-height: 22.5px;
+    resize: none;
+    margin-bottom: 10px;
+}
+.colorparamlabel.mfgprice {
+    width: 273px;
+}
+.colorparamvalue.colormaxvalue, .colorparamvalue.mfgprice {
+    width: 90px;
+}
+input.colormaxvalueinpt {
+    width: 90px;
+}
+.colordatadevide {
+    width: 100%;
+    height: 15px;
+}
+.inventorycolor_body_right {
+    width: 172px;
+}
+.colorvendorslabel {
+    width: 248px;
+    font-size: 14px;
+    height: 24px;
+    line-height: 24px;
+}
+.colorvendorspricelabel {
+    margin-left: 13px;
+    font-size: 14px;
+    height: 24px;
+    line-height: 24px;
+}
+.colorvendorsdata {
+    margin-left: 95px;
+    width: 352px;
+}
+.colorvendorsdata > .datarow {
+    margin-bottom: 8px;
+}
+.colorvendorname {
+    border: 1px solid #dddddd;
+    font-size: 14px;
+    font-weight: 600;
+    height: 24px;
+    line-height: 24px;
+    padding-left: 6px;
+    width: 153px;
+}
+.colorvendorinpt {
+    margin-right: 10px;
+}
+select.colorvendornameinpt {
+    border: 1px solid #dddddd;
+    background: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    height: 23px;
+    line-height: 23px;
+    padding-left: 6px;
+    width: 153px;
+}
+.colorvendorprice {
+    margin-left: 10px;
+    border: 1px solid #dddddd;
+    font-size: 14px;
+    font-weight: 600;
+    height: 24px;
+    line-height: 24px;
+    padding-left: 6px;
+    width: 64px;
+}
+input.colorvendorpriceinpt {
+    border: 1px solid #dddddd;
+    font-size: 14px;
+    font-weight: 600;
+    padding-left: 6px;
+    height: 23px;
+    line-height: 23px;
+    width: 64px;
+}
+.colorvendorunit {
+    margin-left: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    height: 24px;
+    line-height: 24px;
+    width: 45px;
+
+}
+.colorimagelabel {
+    margin-left: -52px;
+    font-size: 14px;
+}
+.colorimagevalue {
+    border: 1px solid #dddddd;
+    width: 168px;
+    min-height: 156px;
+}
+.colorimagevalue img {
+    width: 100%;
+}
+.colorimagevalue #pic-uploader {
+    margin-left: 49px;
+    margin-top: 66px;
+}
+.colorimagedata #picnew-uploader {
+    margin-left: 106px;
+}
+/* Upload button */
+.qq-upload-button {
+    background-image: none!important;
+    background-color: #e6e6e6!important;
+    color: #959595;
+    width: 73px!important;
+    height: 23px!important;
+    text-align: center;
+    font-size: 14px;
+    margin-left: 4px;
+}
+.qq-upload-button.replacebutton {
+    background-color: unset!important;
+    background-image: none!important;
+    color: #0000ff!important;
+    font-size: 12px!important;
+}
+.mastercolor_show_detailsmessage {
+    background-color: #ffffff!important;
+    float: left;
+    padding: 0;
+    color: #000!important;
+    text-align: justify!important;
+    border-color: #000000!important;
+}
+.mastercolor_show_details {
+    width: 280px;
+    height: 280px;
+    border: 1px solid #000;
+}
+.mastercolor_show_details img {
+    width: 100%;
+}
+/* Order Edit*/
+#artModal .modal-dialog {
+    width: 1004px;
+    max-width: 1004px;
+}
+/* Express */
+.mastinvent_header_express {
+    width: 283px;
+}
+.mastinvent_header_express .mastinvent_express_manage {
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: #02cdf5;
+    height: 20px;
+    line-height: 20px;
+}
+.mastinvent_header_express .mastinvent_express_manage span {
+    cursor: pointer;
+}
+.mastinvent_express_slide {
+    width: 34px;
+}
+.mastinvent_express_slideleft {
+    padding-top: 34px;
+    padding-right: 6px;
+    text-align: right;
+    width: 100%;
+}
+.mastinvent_express_slideright {
+    padding-top: 34px;
+    padding-left: 6px;
+    width: 100%;
+}
+.mastinvent_express_contentarea {
+    width: 180px;
+    overflow-x: hidden;
+}
+/* Container */
+.mastinvent_header_container {
+    width: 283px;
+    margin-left: 10px;
+}
+.mastinvent_header_container.showmax {
+    margin-left: -11px;
+}
+.mastinvent_header_container .mastinvent_container_manage {
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: #02cdf5;
+    height: 20px;
+    line-height: 20px;
+}
+.mastinvent_header_container .mastinvent_container_manage span {
+    cursor: pointer;
+}
+.mastinvent_container_slide {
+    width: 43px;
+}
+.mastinvent_container_slideleft {
+    padding-top: 34px;
+    padding-right: 6px;
+    text-align: right;
+    width: 100%;
+}
+.mastinvent_container_slideleft.active img {
+    cursor: pointer;
+}
+.mastinvent_container_slideright {
+    padding-top: 34px;
+    padding-left: 6px;
+    width: 100%;
+}
+.mastinvent_container_contentarea {
+    width: 180px;
+    overflow-x: hidden;
+}
+.mastinvent_container_contentarea .onboacontainer, .mastinvent_express_contentarea .onboacontainer {
+    margin-right: 4px;
+    font-size: 12px;
+    color: #000000;
+    width: 56px;
+}
+.mastinvent_container_contentarea .onboacontainer.arrived, .mastinvent_express_contentarea .onboacontainer.arrived {
+    opacity: 0.3;
+}
+.mastinvent_container_contentarea .onboatmanage, .mastinvent_express_contentarea .onboatmanage {
+    height: 22px;
+    line-height: 22px!important;
+    width: 100%;
+    color: #FFFFFF;
+    text-align: center;
+}
+.mastinvent_container_contentarea .onboatmanage i, .mastinvent_express_contentarea .onboatmanage i {
+    font-size: 11px;
+}
+.mastinvent_container_contentarea .containerdate, .mastinvent_express_contentarea .containerdate {
+    height: 22px;
+    line-height: 22px!important;
+    width: 100%;
+}
+.mastinvent_container_contentarea input.boatcontainerdate,
+.mastinvent_container_contentarea input.boatcontainerfreight,
+.mastinvent_express_contentarea input.boatcontainerdate,
+.mastinvent_express_contentarea input.boatcontainerfreight {
+    width: 56px;
+    height: 18px;
+    text-align: center;
+    margin-left: 0px;
+}
+.mastinvent_container_contentarea input.boatcontainerfreight,
+.mastinvent_express_contentarea input.boatcontainerfreight {
+    font-size: 11px;
+}
+.mastinvent_container_contentarea .containrermanage, .mastinvent_express_contentarea .containrermanage {
+    background: #d3d3d3;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    height: 18px;
+    line-height: 18px!important;
+    /* width: 55px; */
+    width: 100%;
+}
+.mastinvent_container_contentarea .containrermanage > div,
+.mastinvent_express_contentarea .containrermanage > div {
+    text-align: center;
+    width: 100%;
+}
+.mastinvent_container_contentarea .containertotal,
+.mastinvent_express_contentarea .containertotal {
+    background-color: #000000;
+    color: #FFFFFF;
+    /* width: 55px; */
+    width: 100%;
+    text-align: center;
+    height: 27px;
+    line-height: 27px;
+    margin-top: 7px;
+}
+/* Body containers */
+.mastinvent_body_container .left_arrow_empty, .mastinvent_body_container .right_arrow_empty {
+    width: 43px;
+}
+.mastinvent_body_express .left_arrow_empty, .mastinvent_body_express .right_arrow_empty {
+    width: 34px;
+}
+.mastinvent_body_container .onboatdataareas, .mastinvent_body_express .onboatdataareas {
+    width: 180px;
+    overflow-x: hidden;
+}
+.mastinvent_body_container .onboatdataareas.editdata, .mastinvent_body_express .onboatdataareas.editdata {
+    width: 240px;
+}
+.mastinvent_body_container .onboacontainerdata.arrived, .mastinvent_body_express .onboacontainerdata.arrived {
+    opacity: 0.3;
+}
+.mastinvent_body_container .onboacontainerdata.editdata {
+    /* width: 130px; */
+    width: 110px;
+}
+.mastinvent_body_express .onboacontainerdata.editdata {
+    width: 113px;
+}
+.mastinvent_body_container .onboacontainerarea, .mastinvent_body_express .onboacontainerarea {
+    width: 56px;
+    margin-right: 4px;
+}
+.mastinvent_body_container .onboacontainerarea.editdata, .mastinvent_body_express .onboacontainerarea.editdata {
+    width: 110px;
+}
+.mastinvent_body_container .conteinerqty, .mastinvent_body_express .conteinerqty {
+    width: 56px;
+}
+.mastinvent_body_container .conteinerqty input, .mastinvent_body_express .conteinerqty input {
+    height: 18px;
+    width: 56px;
+    float: left;
+    /* padding-left: 3px; */
+    margin-top: 3px;
+    text-align: center;
+}
+.mastinvent_body_container .conteinerprice, .mastinvent_body_express .conteinerprice {
+    width: 54px;
+}
+.mastinvent_body_container .conteinerprice input, .mastinvent_body_express .conteinerprice input {
+    width: 47px;
+    height: 18px;
+    text-align: center;
+}
+.onboatmanagement {
+    font-size: 16px;
+    width: 26px;
+    height: 18px;
+    line-height: 18px!important;
+}
+i.saveboatcontainer {
+    color: #359045;
+    cursor: pointer;
+    margin-left: 2px;
+    /* margin-top: 1px; */
+}
+i.cancelboatcontainer {
+    color: #FF0000;
+    cursor: pointer;
+    margin-left: 2px;
+    /* margin-top: 1px; */
+}
+/* Footer links */
+.mastinvent_footlink_left {
+    width: 502px;
+}
+.mastinvent_footlink_left.showmax {
+    width: 562px;
+}
+.mastinvent_footlink_express {
+    width: 283px;
+}
+.mastinvent_footlink_express .left_arrow_empty, .mastinvent_footlink_express .right_arrow_empty {
+    width: 34px;
+}
+.mastinvent_footlink_express .onboatdataareas {
+    width: 180px;
+    overflow-x: hidden;
+}
+.mastinvent_footlink_container {
+    width: 283px;
+    margin-left: 10px;
+}
+.mastinvent_footlink_container.showmax {
+    margin-left: -8px;
+}
+.mastinvent_footlink_container .left_arrow_empty, .mastinvent_footlink_container .right_arrow_empty {
+    width: 43px;
+}
+.mastinvent_footlink_container .onboatdataareas {
+    width: 180px;
+    overflow-x: hidden;
+}
+.mastinvent_footlink_container .onboatdataareas > div {
+}
+.linksconteiners .onboacontainer {
+    width: 56px;
+    margin-right: 4px;
+}
+.linksconteiners .onboacontainer .download_container {
+    cursor: pointer;
+    color: #7976ff;
+    font-size: 11px;
+    text-align: center;
+    width: 100%;
+    height: 23px;
+    line-height: 23px!important;
+}
+
+.expresstotals, .containertotals {
+    width: 180px;
+    margin-right: 43px;
+    overflow-x: hidden;
+}
+.expresstotals {
+    margin-left: 34px;
+}
+.containertotals {
+    /* margin-left: 73px; */
+    margin-left: 81px;
+}
+.containertotals.showmax {
+    margin-left: 60px;
+}
+.mastinvent_header_right {
+    width: 258px;
+}
+.mastinvent_header_right.showmax {
+    width: 205px;
+}
+.mastinvent_header_right.showmax > .masterinventtablehead {
+    margin-left: 15px;
+}
+.containertotals .containertotal,
+.expresstotals .containertotal {
+    background-color: #000000;
+    color: #FFFFFF;
+    width: 56px;
+    margin-right: 4px;
+    /* width: 100%; */
+    text-align: center;
+    height: 28px;
+    line-height: 28px;
+    /* margin-top: 7px; */
+}

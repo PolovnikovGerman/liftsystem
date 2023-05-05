@@ -180,4 +180,38 @@ Class Categories_model extends MY_Model
         return $out;
     }
 
+    public function get_reliver_categories($options=[]) {
+        $this->db->select('*');
+        $this->db->from('sr_categories');
+        if (isset($options['brand'])) {
+            $this->db->where('brand', $options['brand']);
+        }
+        if (isset($options['active'])) {
+            $this->db->where('category_active', $options['active']);
+        }
+        $this->db->order_by('category_order');
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
+
+    public function get_srcategory_data($category_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Category Not Found'];
+        $this->db->select('*');
+        $this->db->from('sr_categories');
+        $this->db->where('category_id', $category_id);
+        $data = $this->db->get()->row_array();
+        if (ifset($data,'category_id',0)==$category_id) {
+            $out['result'] = $this->success_result;
+            $out['data'] = $data;
+        }
+        return $out;
+    }
+
+    public function get_reliver_subcategories() {
+        $this->db->select('*');
+        $this->db->from('sr_subcategories');
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
+
 }

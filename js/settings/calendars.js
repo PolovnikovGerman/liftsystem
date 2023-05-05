@@ -63,6 +63,7 @@ function pageCalendCallback(page_index) {
             $("div#calendinfo").empty().html(response.data.content);
             /* Change view */
             init_calendlist_content();
+            leftmenu_alignment();
         } else {
             show_error(response);
         }

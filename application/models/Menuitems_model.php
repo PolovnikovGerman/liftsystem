@@ -686,6 +686,7 @@ Class Menuitems_model extends MY_Model
             $this->db->where('user_permission_id', $res);
             $this->db->update('user_permissions');
         }
+        // SR
         foreach ($srpages as $row) {
             $this->_savemenupermission($row, $user_id);
             $res = $this->_chkuserpermission($row['id'], $user_id);
@@ -704,6 +705,7 @@ Class Menuitems_model extends MY_Model
             $this->db->where('user_permission_id', $res);
             $this->db->update('user_permissions');
         }
+        // Common
         foreach ($commpages as $row) {
             $this->_savemenupermission($row, $user_id);
             $res = $this->_chkuserpermission($row['id'], $user_id);
@@ -722,8 +724,6 @@ Class Menuitems_model extends MY_Model
             $this->db->where('user_permission_id', $res);
             $this->db->update('user_permissions');
         }
-
-
     }
 
     private function _savemenupermission($item, $user_id) {
@@ -734,9 +734,6 @@ Class Menuitems_model extends MY_Model
         if (is_array($item['element'])) {
             $elements = $item['element'];
             foreach ($elements as $element) {
-                if ($element['id']==133) {
-                    $tt=1;
-                }
                 $this->_savemenupermission($element, $user_id);
                 if (is_array($element['element'])) {
                     $res = $this->_chkuserpermission($element['id'], $user_id);

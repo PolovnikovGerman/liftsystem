@@ -285,9 +285,6 @@ select.filterdata {
 
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
-    .maincontent_view {
-        min-height: 41.75rem;
-    }
     .vendordataview {
         max-width: 1080px;
     }
@@ -313,9 +310,6 @@ select.filterdata {
 
 /* Portrait tablets and medium desktops */
 @media (min-width: 992px) and (max-width: 1199px) {
-    .maincontent_view {
-        min-height: 35.75rem;
-    }
     .vendordataview .pagetitle {
 
     }
@@ -343,9 +337,6 @@ select.filterdata {
 }
 /* Portrait tablets and small desktops */
 @media (min-width: 768px) and (max-width: 991px) {
-    .maincontent_view {
-        min-height: 47rem;
-    }
     .vendordataview .pagetitle {
 
     }
@@ -374,9 +365,6 @@ select.filterdata {
 }
 /* Landscape phones and portrait tablets */
 @media (max-width: 767px) {
-    .maincontent_view {
-        min-height: 26.25rem;
-    }
     .vendordataview .pagetitle {
     }
     select.filterdata {
@@ -471,9 +459,6 @@ select.filterdata {
     }
 }
 @media (max-width: 480px) {
-    .maincontent_view {
-        min-height: 40rem;
-    }
     .vendordataview .pagetitle {
         font-size: 1.5rem;
     }

@@ -27,7 +27,8 @@ function get_country_data() {
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.countries_data").empty().html(response.data.content);
-            init_countrydat()
+            init_countrydat();
+            leftmenu_alignment();
         } else {
             show_error(response);
         }

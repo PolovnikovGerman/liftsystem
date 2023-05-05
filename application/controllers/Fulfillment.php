@@ -12,6 +12,10 @@ class Fulfillment extends MY_Controller
     private $salesreplength=300;
     protected $restore_invdata_error='Connection Lost. Please, recall function';
 
+    private $empty_html_content='&nbsp;';
+    private $container_type = 'C';
+    private $express_type = 'E';
+
     public function __construct()
     {
         parent::__construct();
@@ -54,9 +58,12 @@ class Fulfillment extends MY_Controller
                 $head['scripts'][]=array('src'=>'/js/accounting/pototals.js');
                 $content_options['pototalsview'] = $this->_prepare_purchaseorders_view($brand);
             } elseif ($row['item_link']=='#printshopinventview') {
-                $head['styles'][]=array('style'=>'/css/fulfillment/inventory.css');
-                $head['scripts'][]=array('src'=>'/js/fulfillment/inventory.js');
-                $content_options['printshopinventview'] = $this->_prepare_printshop_inventory($brand);
+                // $head['styles'][]=array('style'=>'/css/fulfillment/inventory.css');
+                // $head['scripts'][]=array('src'=>'/js/fulfillment/inventory.js');
+                // $content_options['printshopinventview'] = $this->_prepare_printshop_inventory($brand);
+                $head['styles'][]=array('style'=>'/css/database_center/master_inventory.css');
+                $head['scripts'][]=array('src'=>'/js/database_center/master_inventory.js');
+                $content_options['printshopinventview'] = $this->_prepare_inventory_view();
             } elseif ($row['item_link']=='#invneedlistview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/invneedlistview.css');
                 $head['scripts'][] = array('src'=>'/js/fulfillment/invneedlistview.js');
@@ -83,6 +90,8 @@ class Fulfillment extends MY_Controller
         // DatePicker
         $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
         $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+        // Scroll panel
+        $head['scripts'][] = array('src' => '/js/adminpage/jquery-scrollpanel.js');
 
         $options = [
             'title' => $head['title'],
@@ -1541,28 +1550,36 @@ class Fulfillment extends MY_Controller
         echo $out_msg;
     }
 
+    public function inventoryoutdetails($amount_id) {
+        $this->load->model('inventory_model');
+        $res = $this->inventory_model->get_amount_details($amount_id);
+        $content = $this->load->view('printshop/ordrereport_outcomedetails_view',['details' => $res], TRUE);
+        echo $content;
+    }
+
     // Edit Data of report
     public function orderreport_edit() {
         if ($this->isAjax()) {
             $mdata=array();
-            $this->load->model('printshop_model');
+            $this->load->model('inventory_model');
             $postdata=$this->input->post();
             $printshop_income_id=(isset($postdata['printshop_income_id']) ? $postdata['printshop_income_id'] : 0);
             $showorange = (isset($postdata['showorange']) ? $postdata['showorange'] : 0);
-            $res=$this->printshop_model->get_printshop_order($printshop_income_id);
+            $res=$this->inventory_model->get_printshop_order($printshop_income_id);
             $error=$res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';
                 $data=$res['data'];
                 // Get Items for dropdown
-                $items=$this->printshop_model->get_printshopitem_list();
+                $items=$this->inventory_model->get_printshopitem_list();
                 // Get Colors of Item
-                $colors=$this->printshop_model->get_item_colors($data['printshop_item_id']);
+                $colors=$this->inventory_model->get_item_colors($data['inventory_item_id']);
                 $sessionid='order'.uniq_link(15);
                 $data['items']=$items;
                 $data['colors']=$colors;
                 $data['session']=$sessionid;
                 $data['showorange'] = $showorange;
+                $data['title'] = $res['title'];
                 $mdata['content']=$this->load->view('printshop/orderreport_edit_view', $data, TRUE);
                 usersession($sessionid, $data);
             }
@@ -1582,8 +1599,8 @@ class Fulfillment extends MY_Controller
             if (!empty($orderdata)) {
                 $fldname=$postdata['fldname'];
                 $newval=$postdata['newval'];
-                $this->load->model('printshop_model');
-                $res=$this->printshop_model->change_printshop_order($orderdata, $fldname, $newval,$sessionid);
+                $this->load->model('inventory_model');
+                $res=$this->inventory_model->change_printshop_order($orderdata, $fldname, $newval,$sessionid);
                 $error=$res['msg'];
                 if (isset($res['oldval'])) {
                     $mdata['oldval']=$res['oldval'];
@@ -1604,12 +1621,16 @@ class Fulfillment extends MY_Controller
                     $mdata['totalea']=number_format($orderdata['totalea']);
                     $mdata['customer']=$orderdata['customer'];
                     // totalea,3
-                    if ($fldname=='printshop_item_id') {
+                    if ($fldname=='inventory_item_id') {
                         $options=array(
-                            'printshop_color_id'=>$orderdata['printshop_color_id'],
+                            'printshop_color_id'=>$orderdata['inventory_color_id'],
                             'colors'=>$orderdata['colors'],
                         );
                         $mdata['colorlist']=$this->load->view('printshop/orderreport_colorselect_view', $options, TRUE);
+                    }
+                    if ($fldname=='inventory_color_id') {
+                        $balance = $this->inventory_model->inventory_balance($newval);
+                        $mdata['title'] = 'Available '.QTYOutput($balance);
                     }
                 }
             }
@@ -1630,32 +1651,37 @@ class Fulfillment extends MY_Controller
             $report_year = ifset($postdata,'report_year');
             $orderdata=usersession($sessionid);
             if (!empty($orderdata)) {
-                $this->load->model('printshop_model');
-                $res=$this->printshop_model->save_printshop_order($orderdata, $sessionid, $this->USR_ID);
+                $this->load->model('inventory_model');
+                $res=$this->inventory_model->save_printshop_order($orderdata, $sessionid, $this->USR_ID);
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
-                    $error = '';
-                    $total_options = [];
-                    if (!empty($search)) {
-                        $total_options['search']=strtoupper($search);
+                    $orderdata['printshop_income_id'] = $res['printshop_income_id'];
+                    $invres = $this->inventory_model->save_inventory_outcome($orderdata, $sessionid, $this->USR_ID);
+                    $error = $invres['msg'];
+                    if ($invres['result']==$this->success_result) {
+                        $error = '';
+                        $total_options = [];
+                        if (!empty($search)) {
+                            $total_options['search']=strtoupper($search);
+                        }
+                        if (!empty($report_year)) {
+                            $total_options['report_year'] = $report_year;
+                        }
+                        if (!empty($brand)) {
+                            $total_options['brand'] = $brand;
+                        }
+                        $mdata['totals']=$this->inventory_model->get_orderreport_counts($total_options);
+                        $summary=$this->inventory_model->get_orderreport_totals($total_options);
+                        $mdata['summary_view']=$this->load->view('printshop/orderreport_summary_view', $summary, TRUE);
+                        // $this->load->model('orders_model');
+                        // $order=$this->orders_model->get_order_detail($res['order_id']);
+                        // $inventlevel=$this->inventory_model->get_invenory_level($res['printshop_income_id']);
+                        // $options=array(
+                        //    'order'=>$order,
+                        //    'invent'=>$inventlevel,
+                        // );
+                        // $mdata['newprofit_view']=$this->load->view('printshop/ordrereport_orderprofit_view', $options, TRUE);
                     }
-                    if (!empty($report_year)) {
-                        $total_options['report_year'] = $report_year;
-                    }
-                    if (!empty($brand)) {
-                        $total_options['brand'] = $brand;
-                    }
-                    $mdata['totals']=$this->printshop_model->get_orderreport_counts($total_options);
-                    $summary=$this->printshop_model->get_orderreport_totals($total_options);
-                    $mdata['summary_view']=$this->load->view('printshop/orderreport_summary_view', $summary, TRUE);
-                    $this->load->model('orders_model');
-                    $order=$this->orders_model->get_order_detail($res['order_id']);
-                    $inventlevel=$this->printshop_model->get_invenory_level($res['printshop_income_id']);
-                    $options=array(
-                        'order'=>$order,
-                        'invent'=>$inventlevel,
-                    );
-                    $mdata['newprofit_view']=$this->load->view('printshop/ordrereport_orderprofit_view', $options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -1668,7 +1694,7 @@ class Fulfillment extends MY_Controller
         if ($this->isAjax()) {
             $mdata=array();
             $error='Empty Brand';
-            $this->load->model('printshop_model');
+            $this->load->model('inventory_model');
             $postdata=$this->input->post();
             $limit=(intval($postdata['limit'])==0 ? 30 : $postdata['limit']);
             $page=(intval($postdata['offset'])==0 ? 0 : $postdata['offset']);
@@ -1689,7 +1715,7 @@ class Fulfillment extends MY_Controller
             if (!empty($brand)) {
                 $error = '';
                 $options['brand']=$brand;
-                $res=$this->printshop_model->get_orderreport_data($options);
+                $res=$this->inventory_model->get_orderreport_data($options);
                 $options=array(
                     'orders'=>$res,
                 );
@@ -1704,7 +1730,7 @@ class Fulfillment extends MY_Controller
         if ($this->isAjax()) {
             $mdata=array();
 
-            $this->load->model('printshop_model');
+            $this->load->model('inventory_model');
             $postdata=$this->input->post();
             $options=array(
                 'export' => 1,
@@ -1718,7 +1744,7 @@ class Fulfillment extends MY_Controller
             if (isset($postdata['brand']) && !empty($postdata['brand'])) {
                 $options['brand'] = $postdata['brand'];
             }
-            $res=$this->printshop_model->get_orderreport_data($options);
+            $res=$this->inventory_model->get_orderreport_data($options);
             $error='Empty content for exxport';
             if (count($res)>0) {
                 $error = '';
@@ -1737,8 +1763,8 @@ class Fulfillment extends MY_Controller
             $postdata=$this->input->post();
             // After
             $amount_id=$postdata['printshop_income_id'];
-            $this->load->model('printshop_model');
-            $res=$this->printshop_model->orderreport_remove($amount_id);
+            $this->load->model('inventory_model');
+            $res=$this->inventory_model->orderreport_remove($amount_id);
             $error=$res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';
@@ -1752,8 +1778,8 @@ class Fulfillment extends MY_Controller
                 if (isset($postdata['brand']) && !empty($postdata['brand'])) {
                     $options['brand']=$postdata['brand'];
                 }
-                $mdata['totals']=$this->printshop_model->get_orderreport_counts($options);
-                $summary=$this->printshop_model->get_orderreport_totals($options);
+                $mdata['totals']=$this->inventory_model->get_orderreport_counts($options);
+                $summary=$this->inventory_model->get_orderreport_totals($options);
                 $mdata['summary_view']=$this->load->view('printshop/orderreport_summary_view', $summary, TRUE);
             }
             $this->ajaxResponse($mdata, $error);
@@ -1871,58 +1897,58 @@ class Fulfillment extends MY_Controller
     }
 
 
-    private function _prepare_printshop_inventory($brand) {
-        $this->load->model('printshop_model');
-        $addcost=$this->printshop_model->invaddcost();
-        $totals=$this->printshop_model->count_prinshop_items();
-        // $totalinv=$this->printshop_model->get_inventory_totals($brand);
-        $totalinv=$this->printshop_model->get_inventory_totals('ALL');
-        $totalinvview=$this->load->view('printshopinventory/total_inventory_view',$totalinv,TRUE);
-        // $data = $this->printshop_model->get_data_onboat($brand);
-        $data = $this->printshop_model->get_data_onboat('ALL');
-        $boathead_view='';
-        foreach ($data as $drow) {
-            $boathead_view.=$this->load->view('printshopinventory/onboat_containerhead_view', $drow, TRUE);
-        }
-        // Build head content
-        // $slider_width=60*count($data);
-        $slider_width=60*count($data);
-        $margin = $this->maxlength-$slider_width;
-        $margin=($margin>0 ? 0 : $margin);
-        $width_edit = 58;
-        $boatoptions=array(
-            'data'=>$data,
-            'container_view'=>$boathead_view,
-            'width' => $slider_width,
-            'margin' => $margin,
-        );
-        $onboat_content=$this->load->view('printshopinventory/onboathead_view', $boatoptions, TRUE);
-
-        $permission=$this->user_model->get_user_data($this->USR_ID);
-        $download_view=$this->load->view('printshopinventory/onboat_download_view', array('data'=>$data,), TRUE);
-        $headoptions=array(
-            'permission' => $permission['profit_view'],
-            'addcost'=>$addcost,
-            'data' => $data,
-            'width' => $slider_width,
-            'margin' => $margin,
-            'onboathead'=>$onboat_content,
-            'invetorytotal'=>$totalinvview,
-            'download_view'=>$download_view,
-        );
-        $headview=$this->load->view('printshopinventory/fullview_head_view', $headoptions,TRUE);
-
-        /*$specs_disc = $this->printshop_model->get_color_disc();*/
-
-        $invoption=array(
-            'totals'=>$totals,
-            'fullview'=>$headview,
-            'maxsum'=>$totalinv['maxsum'],
-            'brand' => $brand,
-        );
-        $content=$this->load->view('printshopinventory/page_view', $invoption, TRUE);
-        return $content;
-    }
+//    private function _prepare_printshop_inventory($brand) {
+//        $this->load->model('printshop_model');
+//        $addcost=$this->printshop_model->invaddcost();
+//        $totals=$this->printshop_model->count_prinshop_items();
+//        // $totalinv=$this->printshop_model->get_inventory_totals($brand);
+//        $totalinv=$this->printshop_model->get_inventory_totals('ALL');
+//        $totalinvview=$this->load->view('printshopinventory/total_inventory_view',$totalinv,TRUE);
+//        // $data = $this->printshop_model->get_data_onboat($brand);
+//        $data = $this->printshop_model->get_data_onboat('ALL');
+//        $boathead_view='';
+//        foreach ($data as $drow) {
+//            $boathead_view.=$this->load->view('printshopinventory/onboat_containerhead_view', $drow, TRUE);
+//        }
+//        // Build head content
+//        // $slider_width=60*count($data);
+//        $slider_width=60*count($data);
+//        $margin = $this->maxlength-$slider_width;
+//        $margin=($margin>0 ? 0 : $margin);
+//        $width_edit = 58;
+//        $boatoptions=array(
+//            'data'=>$data,
+//            'container_view'=>$boathead_view,
+//            'width' => $slider_width,
+//            'margin' => $margin,
+//        );
+//        $onboat_content=$this->load->view('printshopinventory/onboathead_view', $boatoptions, TRUE);
+//
+//        $permission=$this->user_model->get_user_data($this->USR_ID);
+//        $download_view=$this->load->view('printshopinventory/onboat_download_view', array('data'=>$data,), TRUE);
+//        $headoptions=array(
+//            'permission' => $permission['profit_view'],
+//            'addcost'=>$addcost,
+//            'data' => $data,
+//            'width' => $slider_width,
+//            'margin' => $margin,
+//            'onboathead'=>$onboat_content,
+//            'invetorytotal'=>$totalinvview,
+//            'download_view'=>$download_view,
+//        );
+//        $headview=$this->load->view('printshopinventory/fullview_head_view', $headoptions,TRUE);
+//
+//        /*$specs_disc = $this->printshop_model->get_color_disc();*/
+//
+//        $invoption=array(
+//            'totals'=>$totals,
+//            'fullview'=>$headview,
+//            'maxsum'=>$totalinv['maxsum'],
+//            'brand' => $brand,
+//        );
+//        $content=$this->load->view('printshopinventory/page_view', $invoption, TRUE);
+//        return $content;
+//    }
 
     private function _prepare_needlist_view($brand) {
         $this->load->model('printshop_model');
@@ -2020,13 +2046,14 @@ class Fulfillment extends MY_Controller
     }
 
     private function _prepare_printshop_report($brand) {
-        $this->load->model('printshop_model');
+        // $this->load->model('printshop_model');
+        $this->load->model('inventory_model');
         $total_options = ['brand'=> $brand];
-        $totalrecs=$this->printshop_model->get_orderreport_counts($total_options);
-        $summary=$this->printshop_model->get_orderreport_totals($total_options);
+        $totalrecs=$this->inventory_model->get_orderreport_counts($total_options);
+        $summary=$this->inventory_model->get_orderreport_totals($total_options);
         $summary_view=$this->load->view('printshop/orderreport_summary_view', $summary, TRUE);
-        $addcosts=$this->printshop_model->_get_plates_costs();
-        $report_years=$this->printshop_model->get_report_years($total_options);
+        $addcosts=$this->inventory_model->_get_plates_costs();
+        $report_years=$this->inventory_model->get_report_years($total_options);
         $options=array(
             'totals'=>$totalrecs,
             'summary'=>$summary_view,
@@ -2039,6 +2066,106 @@ class Fulfillment extends MY_Controller
         );
         // Get Summary
         $content=$this->load->view('printshop/pagereport_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_inventory_view() {
+        $this->load->model('inventory_model');
+        $this->load->model('printshop_model');
+        // $addcost=$this->printshop_model->invaddcost();
+        $invtypes = $this->inventory_model->get_inventory_types();
+        $idx=0;
+        $totalval = 0;
+        foreach ($invtypes as $invtype) {
+            $stock = $this->inventory_model->get_inventtype_stock($invtype['inventory_type_id']);
+            $totalval+=$stock;
+            $invtypes[$idx]['value'] = empty($stock) ? $this->empty_html_content : MoneyOutput($stock);
+            $idx++;
+        }
+        // Get totals
+        $type_id = $invtypes[0]['inventory_type_id'];
+        $totals = $this->inventory_model->get_inventory_totals($type_id);
+        $addcost = $invtypes[0]['type_addcost'];
+        $addval = $totals['available'] * $addcost;
+        // Get OnBoats
+        $onboats = $this->inventory_model->get_data_onboat($type_id, $this->container_type);
+        $boathead_view='';
+        $boatlinks_view = '';
+        foreach ($onboats as $onboat) {
+            $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
+            $boatlinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $onboat, TRUE);
+        }
+        // Build head containers  content
+        $slider_width=60*count($onboats);
+        $margin = $this->maxlength-$slider_width;
+        $margin=($margin>0 ? 0 : $margin);
+        // $width_edit = 58;
+        $boatoptions=array(
+            'data'=>$onboats,
+            'container_view' => $boathead_view,
+            'width' => $slider_width,
+            'margin' => $margin,
+        );
+        $onboat_content = $this->load->view('masterinvent/onboathead_view', $boatoptions, TRUE);
+        $linkoptions = [
+            'data'=>$onboats,
+            'container_view' => $boatlinks_view,
+            'width' => $slider_width,
+            'margin' => $margin,
+        ];
+        $onboat_links = $this->load->view('masterinvent/onboatlinks_view', $linkoptions, TRUE);
+        $container_leftview = ($margin < 0 ? 1 : 0);
+        // Prepare Expres
+        $expresses = $this->inventory_model->get_data_onboat($type_id, $this->express_type);
+        $expresshead_view = '';
+        $expresslinks_view = '';
+        foreach ($expresses as $express) {
+            $expresshead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $express, TRUE);
+            $expresslinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $express, TRUE);
+        }
+        // Build head containers  content
+        $slider_width=60*count($expresses);
+        $margin = $this->maxlength-$slider_width;
+        $margin=($margin>0 ? 0 : $margin);
+        // $width_edit = 58;
+        $expressoptions=array(
+            'data'=>$expresses,
+            'container_view' => $expresshead_view,
+            'width' => $slider_width,
+            'margin' => $margin,
+        );
+        $express_content = $this->load->view('masterinvent/onboathead_view', $expressoptions, TRUE);
+        $linkoptions = [
+            'data'=>$onboats,
+            'container_view' => $expresslinks_view,
+            'width' => $slider_width,
+            'margin' => $margin,
+        ];
+        $express_links = $this->load->view('masterinvent/onboatlinks_view', $linkoptions, TRUE);
+        $express_leftview = ($margin < 0 ? '1' : 0);
+        $options = [
+            'invtypes' => $invtypes,
+            'active_type' => $invtypes[0]['inventory_type_id'],
+            'export_type' => $invtypes[0]['type_short'],
+            'total' => empty($totalval) ? $this->empty_html_content : MoneyOutput($totalval),
+            // 'eventtype' => 'purchasing',
+            'eventtype' => 'manufacturing',
+            'addcost' => $addcost,
+            'addval' => empty($addval) ? '-' : MoneyOutput($addval,0),
+            'maxval' => empty($totals['max']) ? $this->empty_html_content : QTYOutput($totals['max']),
+            'maxtotal' => empty($totals['maxsum']) ? $this->empty_html_content : MoneyOutput($totals['maxsum']),
+            'itempercent' => $totals['itempercent'],
+            'instock' => empty($totals['instock']) ? $this->empty_html_content : QTYOutput($totals['instock']),
+            'reserved' => empty($totals['reserved']) ? $this->empty_html_content : QTYOutput($totals['reserved']),
+            'available' => empty($totals['available']) ? $this->empty_html_content : QTYOutput($totals['available']),
+            'container_head' => $onboat_content,
+            'container_leftview' => $container_leftview,
+            'container_links' => $onboat_links,
+            'express_head' => $express_content,
+            'express_links' => $express_links,
+            'express_leftview' => $express_leftview,
+        ];
+        $content = $this->load->view('masterinvent/page_view', $options, TRUE);
         return $content;
     }
 

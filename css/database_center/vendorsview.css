@@ -8,18 +8,27 @@
 }
 .vendordataview .pagetitle {
     width: 410px;
-    height: 53px;
-    line-height: 53px;
+    height: 34px;
+    line-height: 34px;
     font-size: 24px;
     font-weight: bold;
 }
 .vendordataview .pageheader {
     /* width: 100%; */
-    width: 1380px;
+    /* width: 1380px; */
+    width: 1080px;
+}
+.vendordataview .pageheader-righ {
+    width: 667px;
+}
+.vendordataview .filterdata {
+    /* width: 308px; */
+    float: right;
 }
 .vendordataview .datasearch {
-    margin-top: 24px;
-    width: 545px;
+    margin-left: 125px;
+    margin-top: 8px;
+    width: 353px;
 }
 .vendordataview .datatemplate {
     margin-right: 3px;
@@ -27,7 +36,7 @@
 .vendordataview input.searchinpt {
     width: 219px;
     padding-left: 5px;
-    height: 23px;
+    height: 25px;
     font-size: 14px;
 }
 .vendordataview .datasearchbtn {
@@ -50,10 +59,11 @@
     text-align: center;
 }
 .vendordataview .datafilternavig {
-    width: 420px;
+    /* width: 420px; */
+    margin-top: 8px;
     float: right;
 }
-.vendordataview .filterdata, .vendordataview .datanavigation {
+.vendordataview .datanavigation {
     width: 100%;
 }
 .vendordataview .filterdata > label {
@@ -64,8 +74,8 @@
 }
 .vendordataview select.filterdata {
     float: right;
-    width: 137px;
-    height: 23px;
+    width: 203px;
+    height: 27px;
     border: 1px solid #000000;
     background: #ffffff;
     margin-right: 11px;
@@ -86,6 +96,7 @@
     margin-top: 5px;
     background: #545454;
     color: #ffffff;
+    width: 1066px;
 }
 .vendordataview .datatitle div {
     height: 29px;
@@ -127,7 +138,8 @@
     width: 64px;
 }
 .vendordataview .datatitle .status {
-    width: 94px;
+    /* width: 94px; */
+    width: 57px;
 }
 .vendordataview .datatitle .status .addnewvendor {
     background: url(/img/vendors/addnewbtn.png) no-repeat;
@@ -143,28 +155,28 @@
     cursor: pointer;
 }
 .vendordataview .datatitle .type {
-    width: 72px;
+    width: 56px;
 }
 .vendordataview .datatitle .slug {
-    width: 60px;
+    width: 50px;
     margin: 5px;
     height: 19px;
     line-height: 19px;
 }
 .vendordataview .datatitle .name, .vendordataview .datatitle .altname {
-    width: 287px;
+    width: 243px;
     margin: 5px;
     height: 19px;
     line-height: 19px;
 }
 .vendordataview .datatitle .asinumber {
-    width: 53px;
+    width: 48px;
 }
 .vendordataview .datatitle .country {
     width: 82px;
 }
 .vendordataview .datatitle .website {
-    width: 238px;
+    width: 141px;
 }
 .vendordataview .datatitle .ouraccount {
     width: 91px;
@@ -173,7 +185,7 @@
     width: 136px;
 }
 .vendordataview .datatitle .phone {
-    width: 160px;
+    width: 101px;
 }
 .vendordataview .datatitle .email {
     width: 199px;
@@ -182,24 +194,45 @@
     width: 92px;
 }
 .vendordataview .dataarea {
-    width: 1373px;
+    width: 1066px;
     /* width: 100%; */
-    max-height: 645px;
-    overflow-y: auto;
+    max-height: 624px;
+    /* overflow-y: auto; */
+    /* overflow-x: hidden; */
     border-left: 1px solid #000000;
     border-bottom: 1px solid #000000;
     border-right: 1px solid #000000;
     margin-bottom: 10px;
 }
-.vendordataview .dataarea .datarow {
-
+/* Scrollbar */
+.vendordataview .dataarea .sp-scrollbar {
+    width: 10px;
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+.vendordataview .dataarea .sp-scrollbar .sp-thumb {
+    background-color: #aaa;
+    transition: height 0.2s ease-in-out;
+}
+.vendordataview .dataarea .sp-scrollbar.active .sp-thumb {
+    background-color: #c1c1c1;
 }
 
+.vendordataview .dataarea .datarow.expand {
+    width: 1064px;
+}
+.vendordataview .dataarea .datarow.error {
+    text-align: center;
+    height: 25px;
+    line-height: 25px!important;
+    color: #FF0000;
+}
 .vendordataview .dataarea .datarow div {
     height: 25px;
     line-height: 25px!important;
     color: #252525;
     border-right: 1px solid #000000;
+    font-size: 12.8px;
 }
 .vendordataview .dataarea .datarow.nonactive div {
     color: #bcbcbc!important;
@@ -217,7 +250,7 @@
     cursor: pointer;
 }
 .vendordataview .dataarea .datarow .status {
-    width: 51px;
+    width: 57px;
     text-align: center;
 }
 .vendordataview .dataarea .datarow .numpp {
@@ -225,16 +258,16 @@
     text-align: center;
 }
 .vendordataview .dataarea .datarow .type {
-    width: 72px;
+    width: 56px;
     text-align: center;
 }
 .vendordataview .dataarea .datarow .slug {
-    width: 70px;
+    width: 60px;
     text-align: center;
     font-weight: 600;
 }
 .vendordataview .dataarea .datarow .name, .vendordataview .dataarea .datarow .altname {
-    width: 296px;
+    width: 252px;
     padding-left: 10px;
     font-weight: 600;
     white-space: nowrap;
@@ -245,7 +278,7 @@
     border-right: 3px solid #000000!important;
 }
 .vendordataview .dataarea .datarow .asinumber {
-    width: 54px;
+    width: 48px;
     text-align: center;
 }
 .vendordataview .dataarea .datarow .country {
@@ -253,7 +286,7 @@
     text-align: center;
 }
 .vendordataview .dataarea .datarow .website {
-    width: 240px;
+    width: 143px;
     color: #0000ff;
     padding-left: 10px;
     white-space: nowrap;
@@ -272,7 +305,7 @@
     text-overflow: ellipsis;
 }
 .vendordataview .dataarea .datarow .phone {
-    width: 160px;
+    width: 102px;
     padding-left: 10px;
     white-space: nowrap;
     overflow: hidden;
@@ -286,7 +319,10 @@
     text-overflow: ellipsis;
 }
 .vendordataview .dataarea .datarow .itemqty {
-    width: 75px;
+    width: 84px;
     border-right: none!important;
     text-align: center;
+}
+.vendordataview .dataarea .datarow .itemqty.expand {
+    width: 94px;
 }

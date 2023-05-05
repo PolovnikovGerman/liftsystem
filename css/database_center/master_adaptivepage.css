@@ -48,6 +48,9 @@
     .smallmobile {
         display: none;
     }
+    .maincontent_view {
+        min-height: 640px;
+    }
 }
 /* Portrait tablets and medium desktops */
 @media (min-width: 992px) and (max-width: 1199px) {

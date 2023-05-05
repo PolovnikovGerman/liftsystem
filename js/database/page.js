@@ -26,6 +26,7 @@ function init_page(objid) {
     $(".dbcontentarea").hide();
     $(".maincontentmenu_item").removeClass('active');
     $(".maincontentmenu_item[data-link='"+objid+"']").addClass('active');
+    console.log('Page '+objid);
     switch (objid) {
         case 'vendorsview':
             $("#vendorsview").show();
@@ -34,6 +35,14 @@ function init_page(objid) {
         case 'mastervendors':
             $("#mastervendors").show();
             init_vendorpage();
+            break;
+        case 'masterinventory':
+            $("#inventoryview").show();
+            init_master_inventory();
+            break;
+        case 'mastersettings':
+            $("#settingsview").show();
+            init_master_settings();
             break;
         case 'legacyview':
             $("#legacyview").show();
@@ -83,6 +92,36 @@ function init_page(objid) {
             $("#shippingview").show();
             init_shipping('BT');
             // Change Brand
+            break;
+        case 'btitems':
+            $("#btitemsview").show();
+            init_btitemslist_view();
+            break;
+        case 'btcustomers':
+            $("#btcustomers").show();
+            leftmenu_alignment();
+            break;
+        case 'sbpages':
+            $("#sbpages").show();
+            init_sitecontent('SB');
+            break;
+        case 'btpages':
+            $("#btpages").show();
+            init_sitecontent('BT');
+            break;
+        case 'sritems':
+            $("#sritemsview").show();
+            init_relievers_items();
+            break;
+        case 'srcustomers':
+            $("#customersview").show();
+            break;
+        case 'srpages':
+            $("#srpagesview").show();
+            init_sitecontent('SR');
+            break;
+        case 'srsettings':
+            $("#settingsview").show();
             break;
     }
 }

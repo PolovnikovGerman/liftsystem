@@ -13,6 +13,29 @@ if (!function_exists('MoneyOutput')) {
         return $output;
     }
 }
+
+if (!function_exists('ProfitOutput')) {
+    function ProfitOutput($total, $decimal = 2, $thousdelim = ',')
+    {
+        if ($total < 0) {
+            $output = '<span style="color: #FF0000">($';
+        } else {
+            $output = '$';
+        }
+        if (abs($total) >= 1000 && abs($total) < 1000000) {
+            $output .= number_format(abs($total)/1000, $decimal).'K';
+        } elseif (abs($total) >= 1000000) {
+            $output .= number_format(abs($total)/1000000, $decimal).'M';
+        } else {
+            $output .= number_format(abs($total), $decimal, '.', $thousdelim);
+        }
+        if ($total < 0) {
+            $output.=')</span>';
+        }
+        return $output;
+    }
+}
+
 if (!function_exists('TotalOutput')) {
     function TotalOutput($total) {
         $fraction = str_pad(round(($total-intval($total))*100,0),2,'0',STR_PAD_LEFT);

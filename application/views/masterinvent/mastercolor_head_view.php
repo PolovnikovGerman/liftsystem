@@ -1,0 +1,1 @@
+Item Details: <span><?=$item_num?> - <?=$item_name?><?=!empty($color) ?  ' - '.$color : ''?></span>
