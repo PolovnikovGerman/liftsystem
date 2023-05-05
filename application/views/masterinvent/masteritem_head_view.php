@@ -1,0 +1,1 @@
+Master Item Details: <span><?=$item_num?></span>

@@ -1230,4 +1230,27 @@ Class Shipping_model extends MY_Model
         return $out;
     }
 
+    public function get_itemshipbox($item_id, $editmode) {
+        $this->db->select('*');
+        $this->db->from('sb_item_shipping');
+        $this->db->where('item_id', $item_id);
+        $this->db->order_by('box_qty');
+        $res = $this->db->get()->result_array();
+        if ($editmode==1) {
+            if (count($res) < 3) {
+                $numbox = count($res)+1;
+                for ($i=$numbox; $i<4; $i++) {
+                    $res[] = [
+                        'item_shipping_id' => (-1)*$i,
+                        'box_qty' => '',
+                        'box_width' => '',
+                        'box_length' => '',
+                        'box_height' => '',
+                    ];
+                }
+            }
+        }
+        return $res;
+    }
+
 }

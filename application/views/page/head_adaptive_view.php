@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="/css/page_view/font-awesome.min.css">
 <link rel="stylesheet" href="/css/page_view/main_adaptive.css?v=<?=getsitecssversion()?>">
 <link rel="stylesheet" href="/css/jsflash/flash.css">
+<link rel="stylesheet" href="/css/mb_ballons/mb.balloon.css"/>
 <?php foreach ($styles as $row) { ?>
     <link rel="stylesheet" href="<?=$row['style']?>?v=<?=getsitecssversion()?>">
 <?php } ?>
@@ -15,6 +16,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <script src="/js/adminpage/page.js?v=<?=getsitejsversion()?>"></script>
 <script src="/js/jsflash/flash.js"></script>
+<script src="/js/mb_balloons/jquery.mb.balloon.js"></script>
 <?php foreach ($scripts as $row) { ?>
     <script src="<?=$row['src']?>?v=<?=getsitejsversion()?>"></script>
 <?php } ?>

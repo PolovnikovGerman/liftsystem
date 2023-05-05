@@ -1,6 +1,7 @@
 <?php $i = 0;?>
+<div class="dataarea">
 <?php foreach ($vendors as $vendor) { ?>
-    <div class="datarow <?=($i%2==0 ? 'whitedatarow' : 'greydatarow')?> <?=$vendor['vendor_status']==1 ? '' : 'nonactive'?>" data-vendor="<?=$vendor['vendor_id']?>" >
+    <div class="datarow <?=($i%2==0 ? 'whitedatarow' : 'greydatarow')?> <?=$vendor['vendor_status']==1 ? '' : 'nonactive'?> <?=$expand==1 ? 'expand' : ''?>" data-vendor="<?=$vendor['vendor_id']?>" >
         <div class="status">
             <?=$vendor['vendor_status']==1 ? 'Active' : 'Inactive'?>
         </div>
@@ -13,7 +14,8 @@
             <?=$vendor['vendor_website']?>
         </div>
         <div class="phone"><?=$vendor['vendor_phone']?></div>
-        <div class="itemqty"><?=intval($vendor['item_qty'])==0 ? '' : QTYOutput($vendor['item_qty'])?></div>
+        <div class="itemqty <?=$expand==1 ? 'expand' : ''?>"><?=intval($vendor['item_qty'])==0 ? '' : QTYOutput($vendor['item_qty'])?></div>
     </div>
     <?php $i++;?>
 <?php } ?>
+</div>

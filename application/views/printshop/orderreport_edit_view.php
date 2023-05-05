@@ -15,29 +15,29 @@
 </div>
 <div class="customer editform"><?=(empty($customer) ? '&nbsp;' : $customer)?></div>
 <div class="itemname editform">
-    <select class="psprintitem psorderselect" data-fldname="printshop_item_id">
-        <option value="" <?=($printshop_item_id=='' ? 'selected="selected"' : '')?> >...</option>
+    <select class="psprintitem psorderselect" data-fldname="inventory_item_id">
+        <option value="" <?=($inventory_item_id=='' ? 'selected="selected"' : '')?> >...</option>
         <?php foreach ($items as $irow) { ?>
-        <option value="<?=$irow['printshop_item_id']?>" <?=($irow['printshop_item_id']==$printshop_item_id ? 'selected="selected"' : '')?>><?=$irow['item_name']?></option>
+        <option value="<?=$irow['inventory_item_id']?>" <?=($irow['inventory_item_id']==$inventory_item_id ? 'selected="selected"' : '')?>><?=$irow['item_name']?></option>
         <?php } ?>
     </select>
 </div>
 <div class="itemcolor editform">
-    <select class="psprintcolor psorderselect" data-fldname="printshop_color_id">
-        <option value="" <?=($printshop_color_id=='' ? 'selected="selected"' : '')?>>...</option>
+    <select class="psprintcolor psorderselect" data-fldname="inventory_color_id">
+        <option value="" <?=($inventory_color_id=='' ? 'selected="selected"' : '')?>>...</option>
         <?php foreach ($colors as $crow) { ?>
-        <option value="<?=$crow['printshop_color_id']?>" <?=($crow['printshop_color_id']==$printshop_color_id ? 'selected="selected"' : '')?>><?=$crow['color']?></option>
+        <option value="<?=$crow['inventory_color_id']?>" <?=($crow['inventory_color_id']==$inventory_color_id ? 'selected="selected"' : '')?>><?=$crow['color']?></option>
         <?php } ?>
     </select>
 </div>
 <div class="shipped editform">
-    <input type="text" class="psshipped psorderinput" data-fldname="shipped" value="<?=$shipped?>"/>
+    <input type="text" class="psshipped psorderinput" data-fldname="shipped" value="<?=$shipped?>" title="<?=$title?>"/>
 </div>
 <div class="kepted editform">
-    <input type="text" class="pskepted psorderinput" data-fldname="kepted" value="<?=$kepted?>"/>
+    <input type="text" class="pskepted psorderinput" data-fldname="kepted" value="<?=$kepted?>" title="<?=$title?>"/>
 </div>
 <div class="misprints editform">
-    <input type="text" class="psmisprint psorderinput" data-fldname="misprint" value="<?=$misprint?>"/>
+    <input type="text" class="psmisprint psorderinput" data-fldname="misprint" value="<?=$misprint?>" title="<?=$title?>"/>
 </div>
 <div class="misprintproc editform"><?=$misprint_proc?></div>
 <div class="totalqty editform"><?=QTYOutput($total_qty)?></div>

@@ -35,7 +35,8 @@ function init_page(objid) {
             break;
         case 'printshopinventview':
             $("#printshopinventview").show();
-            init_inventory_content();
+            // init_inventory_content();
+            init_master_inventory();
             document.title = 'Lift: Inventory';
             break;
         case 'invneedlistview':

@@ -22,3 +22,6 @@
 <?php if (isset($sbtermsview)) { ?>
     <?=$sbtermsview?>
 <?php } ?>
+<?php if (isset($srhomeview)) { ?>
+    <?=$srhomeview?>
+<?php } ?>

@@ -1,0 +1,283 @@
+.reliversitemdataview {
+    padding-top: 15px;
+    padding-left: 15px;
+}
+.reliversitemdataview input, .reliversitemdataview select {
+    border: 1px solid #000000;
+    background: #ffffff;
+    color: #000000;
+}
+.reliversitemdataview .pageheader {
+    height: 23px;
+    margin-bottom: 17px;
+}
+.reliversitemdataview .pageheader > div {
+    height: 25px;
+    line-height: 25px;
+}
+.reliversitemdataview .pagetitle {
+    font-size: 18px;
+    font-weight: 600;
+    width: 337px;
+}
+.reliversitemdataview .pageheadfilter {
+    margin-right: 6px;
+}
+.reliversitemdataview select.itemcategoryfilter {
+    width: 165px;
+    padding-left: 4px;
+    height: 25px;
+}
+.reliversitemdataview input.itemnamesearch {
+    height: 25px;
+    padding-left: 8px;
+    width: 253px;
+}
+.reliversitemdataview .itemsearchbtn {
+    /* background: #FF0000; */
+    background: #a5a5a5;
+    color: #ffffff;
+    font-size: 14px;
+    float: right!important;
+    height: 25px;
+    width: 25px;
+    line-height: 25px;
+    text-align: center;
+    border-top: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    cursor: pointer;
+}
+.reliversitemdataview .itemclearsearch {
+    /* background: #FF0000; */
+    background: #a5a5a5;
+    color: #ffffff;
+    text-align: center;
+    opacity: 0.5;
+    width: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: auto;
+}
+.reliversitemdataview .itemclearsearch.active {
+    opacity: 1;
+    cursor: pointer;
+}
+.reliversitemdataview .pageheadcategories {
+    background: #b5b5b5;
+    border: 1px solid #767676;
+    border-radius: 5px;
+    clear: both;
+    height: 48px;
+    margin-bottom: 17px;
+    padding-left: 10px;
+    padding-top: 12px;
+}
+.reliversitemdataview .relivecategorybtn {
+    background: #ffffff;
+    border: 1px solid #858585;
+    color: #000000;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    height: 23px;
+    line-height: 23px;
+    margin-right: 12px;
+    text-align: center;
+    width: 152px;
+}
+.reliversitemdataview .relivecategorybtn.active {
+    background: #00009d;
+    color: #ffffff;
+}
+.reliversitemdataview .relivecategorybtn:hover {
+    background: #5f5fff;
+    color: #ffffff;
+}
+.reliversitemdataview .datatablearea {
+    background: #00009d;
+    padding: 10px;
+    width: 1273px;
+    margin-bottom: 9px;
+}
+.reliversitemdataview .tabledatatotals {
+    width: 587px;
+}
+.reliversitemdataview .tabledatatitle {
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 600;
+    height: 24px;
+    line-height: 24px;
+}
+.reliversitemdataview .tabledatataotalvalue {
+    clear: both;
+    color: #ffffff;
+    font-size: 13px;
+    font-style: italic;
+    height: 20px;
+    line-height: 20px;
+}
+.reliversitemdataview .tabledatafilter {
+    margin-right: 19px;
+}
+.reliversitemdataview .tabledatafilter select {
+    height: 21px;
+    padding-left: 4px;
+}
+.reliversitemdataview .itemstatusfilter, .reliversitemdataview .itemvendorfilter, .reliversitemdataview .itemmisinfofilter {
+    width: 130px;
+}
+.reliversitemdataview .tabledataexecute {
+    float: right!important;
+    margin-right: 4px;
+    width: 195px;
+}
+.reliversitemdataview .tabledataexport {
+    color: #ffffff;
+    cursor: pointer;
+    float: right;
+    font-size: 14px;
+}
+.reliversitemdataview .tabledataexport i {
+    margin-right: 7px;
+}
+.reliversitemdataview .tabledataheader {
+    background: #000040;
+    clear: both;
+    width: 1249px;
+}
+.reliversitemdataview .tabledataheader > div {
+    height: 29px;
+    line-height: 29px;
+    color: #ffffff;
+    font-size: 13px;
+    text-align: center;
+}
+.reliversitemdataview .tabledataheader .sortable {
+    cursor: pointer;
+}
+.reliversitemdataview .tabledataheader .ascsort {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 8px solid #FFFFFF;
+    float: right;
+    position: relative;
+    right: 8px;
+    top: 8px;
+}
+.reliversitemdataview .tabledataheader .descsort {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 8px solid #FFFFFF;
+    float: right;
+    position: relative;
+    right: 8px;
+    top: 8px;
+}
+
+.reliversitemdataview .tabledataheader .numberpp {
+    width: 65px;
+}
+.reliversitemdataview .tabledataheader .numberpp img {
+    cursor: pointer;
+}
+.reliversitemdataview .tabledataheader .status {
+    width: 64px;
+}
+.reliversitemdataview .tabledataheader .edit {
+    width: 43px;
+}
+.reliversitemdataview .tabledataheader .itemnumber {
+    width: 82px;
+}
+.reliversitemdataview .tabledataheader .itemname {
+    width: 355px;
+}
+.reliversitemdataview .tabledataheader .missinfo {
+    width: 640px;
+}
+.reliversitemdataview .tabledataarea {
+    clear: both;
+    width: 1249px;
+    /* overflow-y: auto; */
+    max-height: 427px;
+}
+/* Scrollbar */
+.reliversitemdataview .tabledataarea .sp-scrollbar {
+    width: 10px;
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+.reliversitemdataview .tabledataarea .sp-scrollbar .sp-thumb {
+    background-color: #aaa;
+    transition: height 0.2s ease-in-out;
+}
+.reliversitemdataview .tabledataarea .sp-scrollbar.active .sp-thumb {
+    background-color: #c1c1c1;
+}
+.reliversitemdataview .tabledataarea .tabrow {
+    width: 100%;
+}
+.reliversitemdataview .tabledataarea .tabrow.expand {
+    width: 1249px;
+}
+.reliversitemdataview .tabledataarea .tabrow div {
+    color: #000000;
+    height: 25px;
+    line-height: 25px;
+    font-size: 14px;
+    text-align: center;
+}
+.reliversitemdataview .tabledataarea .tabrow .dataview {
+    border-right: 1px solid #000000;
+    width: 30px;
+}
+.reliversitemdataview .tabledataarea .tabrow .dataview i {
+    cursor: pointer;
+}
+.reliversitemdataview .tabledataarea .tabrow .numberpp {
+    border-right: 1px solid #000000;
+    width: 35px;
+}
+.reliversitemdataview .tabledataarea .tabrow .status {
+    border-right: 1px solid #000000;
+    font-size: 12px;
+    width: 64px;
+}
+.reliversitemdataview .tabledataarea .tabrow div.inactive {
+    color: #cccccc;
+}
+.reliversitemdataview .tabledataarea .tabrow .relivitemedit {
+    border-right: 3px solid #000000;
+    width: 42px;
+}
+.reliversitemdataview .tabledataarea .tabrow .relivitemedit i {
+    cursor: pointer;
+}
+.reliversitemdataview .tabledataarea .tabrow .itemnumber {
+    border-right: 1px solid #000000;
+    width: 82px;
+}
+.reliversitemdataview .tabledataarea .tabrow .itemname {
+    border-right: 3px solid #000000;
+    text-align: left;
+    width: 354px;
+    padding-left: 5px;
+}
+.reliversitemdataview .tabledataarea .tabrow .missinfo {
+    width: 631px;
+}
+.reliversitemdataview .tabledataarea .tabrow .missinfo.missing {
+    color: #FF0000;
+}
+.reliversitemdataview .tabledataarea .tabrow .emptydataview {
+    color: #FF0000;
+    width: 100%;
+    text-align: center;
+}
+/*  */

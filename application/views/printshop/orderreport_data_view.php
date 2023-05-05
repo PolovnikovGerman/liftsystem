@@ -17,7 +17,12 @@
     <div class="misprints"><?=QTYOutput($row['misprint'])?></div>
     <div class="misprintproc"><?=$row['misprint_proc']?></div>
     <div class="totalqty"><?=QTYOutput($row['total_qty'])?></div>
-    <div class="costea"><?=number_format($row['price'],3)?></div>
+    <div class="costea" <?=$row['details']?>>
+        <?=number_format($row['price'],3)?>
+        <?php if ($row['countincome'] > 1) { ?>
+            <div class="multiprice">&nbsp;</div>
+        <?php } ?>
+    </div>
     <div class="addlcost"><?=number_format($row['extracost'],2)?></div>
     <div class="totalea"><?=number_format($row['totalea'],3)?></div>
     <div class="totaladdlcost"><?=MoneyOutput($row['extraitem'])?></div>

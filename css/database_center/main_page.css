@@ -1,6 +1,39 @@
-.maincontentmenuarea {
-    padding: 10px!important;
+.dbcenter_main_menu {
+    float: unset!important;
+    margin: 8px auto;
+    max-width: 579px;
 }
+.dbcenter-main-button {
+    background: url('/img/database_center/mainmenu_button.png');
+    color: #ffffff;
+    font-size: 16px;
+    margin-right: 8px;
+    width: 185px;
+    height: 30px;
+    line-height: 30px!important;
+    text-align: center;
+    cursor: pointer;
+}
+.dbcenter-main-button.active {
+    background: url('/img/database_center/mainmenu_button_active.png');
+    color: #000000;
+    /* font-size: 18px; */
+    font-weight: 600;
+}
+.maincontentmenuarea {
+    padding: 0px!important;
+    margin-top: -20px;
+}
+.menupage_head {
+    padding: 0 7px;
+    /* margin-bottom: 9px; */
+    width: 100%;
+}
+.dbcenter-content {
+    padding: 0 10px 10px 10px;
+    width: 100%;
+}
+/*
 .dbcenter_pagetitle {
     margin: 10px 0 15px 25px;
     height: 36px;
@@ -105,3 +138,20 @@
 .dbcenter_channel_item:hover {
     background: url('/img/database_center/channel_itemhover_btn.png');
 }
+*/
+.databasemenu.srchannel {
+    background: #000048;
+}
+.databasemenu.srchannel .dbcenter-main-button {
+    background: url('/img/database_center/mainmenu_relievers_button.png') no-repeat;
+}
+.databasemenu.srchannel .dbcenter-main-button.active {
+    background: url('/img/database_center/mainmenu_button_active.png') no-repeat;
+}
+.maincontentmenu_item.srelivers {
+    background: #000084;
+}
+.maincontentmenu_item.srelivers.active {
+    background: #ffffff;
+}
+/* .maincontentmenu_item.srelivers.active */
