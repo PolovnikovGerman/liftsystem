@@ -926,6 +926,7 @@ class Leadorder extends MY_Controller
                             $error=$res['msg'];
                         } else {
                             $leadorder=usersession($ordersession);
+                            $mdata['newitem'] = $res['newitem'];
                             $order=$leadorder['order'];
                             $mdata['order_revenue']=MoneyOutput($order['revenue']);
                             $shipping=$leadorder['shipping'];

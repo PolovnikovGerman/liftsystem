@@ -853,6 +853,7 @@ function save_leadorderitem() {
                 $("div#leadorderprofitarea").empty().html(response.data.profit_content);
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
+                $("div.imprintdetails[data-orderitem='"+response.data.newitem+"']").trigger('click');
             }
         } else {
             show_error(response);
@@ -1550,7 +1551,7 @@ function init_leadorder_contactmanage() {
                     if (parseInt(response.data.locstatus)===1) {
                         $("input.ordecontactchk[data-contact='"+contact+"']").prop('checked',false).prop('disabled',true);
                     } else {
-                        $("input.ordecontactchk[data-contact='"+contact+"']").prop('disabled',false);
+                        $("input.ordecontactchk[data-contact='"+contact+"']").prop('disabled',false).prop('checked',true);
                     }
                 }
                 if (fldname==='contact_phone') {
