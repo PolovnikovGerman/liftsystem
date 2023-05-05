@@ -1156,8 +1156,11 @@ class Test extends CI_Controller
                         $recnum = 'CON-'.substr($income['instock_descrip'],10);
                         $descr = 'Purchased - '.$income['instock_descrip'];
                     } else {
-                        $recnum = strtoupper(uniq_link(2,'chars')).uniq_link(4,'digits');
-                        $this->db->select('');
+                        $this->db->set('adjust_date', date('Y-m-d H:i:s', $income['instock_date']));
+                        $this->db->set('adjust_type', 'S');
+                        $this->db->insert('ts_inventory_adjusts');
+                        $newrec = $this->db->insert_id();
+                        $recnum = 'AJ'.str_pad($newrec,5,'0',STR_PAD_LEFT); // strtoupper(uniq_link(2,'chars')).uniq_link(4,'digits');
                         // AJ00001
                         $descr = $income['instock_descrip'];
                     }
@@ -1201,18 +1204,22 @@ class Test extends CI_Controller
                         }
                     }
                     $outcome_type = 'X';
-                    $this->db->select('count(inventory_outcome_id) as cnt, max(outcome_number) as outnumb');
-                    $this->db->from('ts_inventory_outcomes');
-                    $this->db->where('outcome_type', $outcome_type);
-                    $outdat = $this->db->get()->row_array();
-                    if ($outdat['cnt']==1) {
-                        $recnum = 0;
-                    } else {
-                        $recnum = $outdat['outnumb'];
-                    }
-                    $newrecnum = $recnum + 1;
-                    $recnummask = str_pad($newrecnum, 5,'0', STR_PAD_LEFT);
-                    $recnum = 'AJ'.$recnummask; // $outcome_type.substr($recnummask,0,1).'-'.substr($recnummask,1);
+//                    $this->db->select('count(inventory_outcome_id) as cnt, max(outcome_number) as outnumb');
+//                    $this->db->from('ts_inventory_outcomes');
+//                    $this->db->where('outcome_type', $outcome_type);
+//                    $outdat = $this->db->get()->row_array();
+//                    if ($outdat['cnt']==1) {
+//                        $recnum = 0;
+//                    } else {
+//                        $recnum = $outdat['outnumb'];
+//                    }
+//                    $newrecnum = $recnum + 1;
+//                    $recnummask = str_pad($newrecnum, 5,'0', STR_PAD_LEFT);
+                    $this->db->set('adjust_date', date('Y-m-d H:i:s', $income['instock_date']));
+                    $this->db->set('adjust_type', 'S');
+                    $this->db->insert('ts_inventory_adjusts');
+                    $newrec = $this->db->insert_id();
+                    $recnum = 'AJ'.str_pad($newrec,5,'0',STR_PAD_LEFT); // strtoupper(uniq_link(2,'chars')).uniq_link(4,'digits');
                     // $recnum = strtoupper(uniq_link(2,'chars')).uniq_link(4,'digits');
                     $this->db->set('inventory_color_id', $newcolorid);
                     $this->db->set('outcome_date', $corect['instock_date']);
@@ -1220,7 +1227,7 @@ class Test extends CI_Controller
                     $this->db->set('outcome_description', $corect['instock_descrip']);
                     $this->db->set('outcome_record', $recnum);
                     $this->db->set('outcome_type', $outcome_type);
-                    $this->db->set('outcome_number', $newrecnum);
+                    // $this->db->set('outcome_number', $newrecnum);
                     $this->db->set('inserted_at', date('Y-m-d H:i:s'));
                     $this->db->insert('ts_inventory_outcomes');
                 }
@@ -2169,17 +2176,5 @@ class Test extends CI_Controller
             }
         }
         echo 'Updated successfully'.PHP_EOL;
-    }
-
-    public function updinvent() {
-        $this->db->select('inventory_item_id, item_num, item_order');
-        $this->db->from('ts_inventory_items');
-        $items = $this->db->get()->result_array();
-        foreach ($items as $item) {
-            $newnum = substr($item['item_num'],0,1).str_pad($item['item_order'],3,'0', STR_PAD_LEFT);
-            $this->db->where('inventory_item_id', $item['inventory_item_id']);
-            $this->db->set('item_num', $newnum);
-            $this->db->update('ts_inventory_items');
-        }
     }
 }

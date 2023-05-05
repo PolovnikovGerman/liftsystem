@@ -335,7 +335,7 @@ class Inventory_model extends MY_Model
                     } else {
                         $descrip.=$this->bt_label;
                     }
-                    $stock['instock_record'] = $stock['brand']=='SR' ? 'SR' : 'BT'.$stock['instock_record'];
+                    $stock['instock_record'] = ($stock['brand']=='SR' ? 'SR' : 'BT').$stock['instock_record'];
                 }
                 if ($stock['instock_type']=='S') {
                     $rectype = 'income';
@@ -769,9 +769,6 @@ class Inventory_model extends MY_Model
         if (empty($options['income_date'])) {
             $chkflag=0;
             $out['msg']='Empty Income Date';
-//        } elseif (empty($options['income_recnum'])) {
-//            $chkflag=0;
-//            $out['msg']='Empty Record #';
         } elseif (empty($options['income_desript'])) {
             $chkflag=0;
             $out['msg']='Empty Income Description';
@@ -830,9 +827,6 @@ class Inventory_model extends MY_Model
         if (empty($options['outcome_date'])) {
             $chkflag=0;
             $out['msg']='Empty Outcome Date';
-//        } elseif (empty($options['outcome_recnum'])) {
-//            $chkflag=0;
-//            $out['msg']='Empty Record #';
         } elseif (empty($options['outcome_descript'])) {
             $chkflag=0;
             $out['msg']='Empty Outcome Description';
@@ -865,18 +859,6 @@ class Inventory_model extends MY_Model
             }
             // Calc new Rec NUM
             $outcome_type = 'X';
-//            $this->db->select('count(inventory_outcome_id) as cnt, max(outcome_number) as outnumb');
-//            $this->db->from('ts_inventory_outcomes');
-//            $this->db->where('outcome_type', $outcome_type);
-//            $outdat = $this->db->get()->row_array();
-//            if ($outdat['cnt']==1) {
-//                $recnum = -1;
-//            } else {
-//                $recnum = $outdat['outnumb'];
-//            }
-//            $newrecnum = $recnum + 1;
-//            $recnummask = str_pad($newrecnum, 5,'0', STR_PAD_LEFT);
-//            $recnum = $outcome_type.substr($recnummask,0,1).'-'.substr($recnummask,1);
 
             $this->db->select('max(inventory_adjust_id) as ordnum, count(inventory_adjust_id) as cnt');
             $this->db->from('ts_inventory_adjusts');
