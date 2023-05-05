@@ -21,6 +21,7 @@ class Masterinventory extends MY_Controller
             $inventory_type = ifset($postdata,'inventory_type',0);
             $inventory_filter = ifset($postdata,'inventory_filter',0);
             $showmax = ifset($postdata,'showmax', 0);
+            $totals = $this->inventory_model->get_inventory_totals($inventory_type, $inventory_filter);
             $mdata=[];
             $error = '';
             // Get OnBoats

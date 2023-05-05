@@ -182,7 +182,62 @@ class Database extends MY_Controller
                     $head['styles'][] = array('style' => '/css/page_view/fileuploader.css');
                 } elseif ($row['item_link']=='#srsettings') {
                     $content_options['settingsview'] = $this->load->view('relieversetting/page_view',[],TRUE);
+                } elseif ($row['item_link']=='#legacyview') {
+                    $legacylnk = '#legacyview';
+                    $head['scripts'][]=array('src'=>'/js/database/legacy.js');
+                    $head['styles'][] = array('style' => '/css/database/itemdetails.css');
+                    $legacymenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $legacylnk, $brand);
+                    $legacy_options = [];
+                    foreach ($legacymenu as $smenu) {
+                        if ($smenu['item_link']=='#itempriceview') {
+                            $head['styles'][] = array('style' => '/css/database/dbprice_view.css');
+                            $head['scripts'][] = array('src' => '/js/database/dbprice_view.js');
+                            $page_name = 'itemprice';
+                            $legacy_options['itempriceview'] = $this->_content_view($page_name);
+                        } elseif ($smenu['item_link']=='#itemcategoryview') {
+                            $head['styles'][] = array('style' => '/css/database/dbitemcategory_view.css');
+                            $head['scripts'][] = array('src' => '/js/database/dbitemcategory_view.js');
+                            $page_name = 'itemcategory';
+                            $legacy_options['itemcategoryview'] = $this->_content_view($page_name);
+                        } elseif ($smenu['item_link']=='#itemsequenceview') {
+                            $head['styles'][]=array('style'=>'/css/database/dbsequence_view.css');
+                            $head['scripts'][]=array('src'=>'/js/database/dbsequnece_view.js');
+                            $page_name = 'itemsequence';
+                            $legacy_options['itemsequenceview'] = $this->_content_view($page_name);
+                        } elseif ($smenu['item_link']=='#itemmisinfoview') {
+                            $head['styles'][]=array('style'=>'/css/database/dbmisinfo_view.css');
+                            $head['scripts'][]=array('src'=>'/js/database/dbmisinfo_view.js');
+                            $page_name = 'itemmisinfo';
+                            $legacy_options['itemmisinfoview'] = $this->_content_view($page_name);
+                        } elseif ($smenu['item_link']=='#itemprofitview') {
+                            $head['styles'][]=array('style'=>'/css/database/dbprofit_view.css');
+                            $head['scripts'][]=array('src'=>'/js/database/dbprofit_view.js');
+                            $page_name = 'itemprofit';
+                            $legacy_options['itemprofitview'] = $this->_content_view($page_name);
+                        } elseif ($smenu['item_link']=='#itemtemplateview') {
+                            $head['styles'][] = array('style' => '/css/database/dbtemplate_view.css');
+                            $head['scripts'][] = array('src' => '/js/database/dbtemplate_view.js');
+                            $page_name = 'itemtemplates';
+                            $legacy_options['itemtemplateview'] = $this->_content_view($page_name);
+                        } elseif ($smenu['item_link']=='#itemexportview') {
+                            $head['styles'][] = array('style' => '/css/database/dbexport_view.css');
+                            $head['scripts'][] = array('src' => '/js/database/dbexport_view.js');
+                            $page_name = 'itemexport';
+                            $legacy_options['itemexportview'] = $this->_content_view($page_name);
+                        } elseif ($smenu['item_link'] == '#categoryview') {
+                            $head['styles'][] = array('style' => '/css/database/categories.css');
+                            $head['scripts'][] = array('src' => '/js/database/categories.js');
+                            $page_name = 'categories';
+                            $legacy_options['categoryview'] = $this->_content_view($page_name);
+                        }
+                    }
+                    $submenu_options = [
+                        'menus' => $legacymenu,
+                    ];
+                    $legacy_options['submenu'] = $this->load->view('database/legacy_submenu_view', $submenu_options, TRUE);
+                    $content_options['legacyview'] = $this->load->view('database/legacy_page_view', $legacy_options, TRUE);
                 }
+
             }
         }
 
@@ -2299,7 +2354,7 @@ class Database extends MY_Controller
 
     private function _prepare_inventory_view() {
         $this->load->model('inventory_model');
-        $this->load->model('printshop_model');
+        // $this->load->model('printshop_model');
         // $addcost=$this->printshop_model->invaddcost();
         $invtypes = $this->inventory_model->get_inventory_types();
         $idx=0;

@@ -14,7 +14,8 @@ class Itemcolors_model extends My_Model
         $this->db->select('ci.*');
         $this->db->from('sb_item_colors ci');
         $this->db->where('ci.item_color_itemid',$item_id);
-        $this->db->order_by('item_color_order','asc');
+//        Temporary comment LEGACY
+//         $this->db->order_by('item_color_order','asc');
         $result = $this->db->get()->result_array();
         return $result;
 //        if ($edit==0) {
