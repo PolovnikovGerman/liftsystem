@@ -781,15 +781,18 @@ class Inventory_model extends MY_Model
         }
         if ($chkflag==1) {
             // Get new recnum
-            $this->db->select('max(inventory_adjust_id) as ordnum, count(inventory_adjust_id) as cnt');
-            $this->db->from('ts_inventory_adjusts');
-            $numdat=$this->db->get()->row_array();
-            if ($numdat['cnt']==0) {
-                $newrec = $numdat['cnt'];
-            } else {
-                $newrec = $numdat['ordnum'];
-            }
-            $recnum = 'D-'.str_pad($newrec,5,'0',STR_PAD_LEFT);
+            // $this->db->select('max(inventory_adjust_id) as ordnum, count(inventory_adjust_id) as cnt');
+            // $this->db->from('ts_inventory_adjusts');
+            $this->db->set('adjust_type', 'S');
+            $this->db->insert('ts_inventory_adjusts');
+            $newrec = $this->db->insert_id();
+//            $numdat=$this->db->get()->row_array();
+//            if ($numdat['cnt']==0) {
+//                $newrec = $numdat['cnt'];
+//            } else {
+//                $newrec = $numdat['ordnum'];
+//            }
+            $recnum = 'AJ'.str_pad($newrec,5,'0',STR_PAD_LEFT);
             $this->db->set('inventory_color_id', $inventory_color_id);
             $this->db->set('income_date', strtotime($options['income_date']));
             $this->db->set('income_record', $recnum); //$options['income_recnum']
@@ -802,8 +805,6 @@ class Inventory_model extends MY_Model
             $newrec = $this->db->insert_id();
             $out['msg'] = 'Error during add Manual Income';
             if ($newrec > 0) {
-                $this->db->set('adjust_type', 'S');
-                $this->db->insert('ts_inventory_adjusts');
                 // Get new data for content
                 $data = $this->get_masterinventory_color($inventory_color_id);
                 $out['msg'] = $data['msg'];
@@ -813,7 +814,7 @@ class Inventory_model extends MY_Model
                     $out['lists'] = $data['lists'];
                     $out['totals'] = $data['totals'];
                     $this->db->where('inventory_color_id', $inventory_color_id);
-                    $this->db->set('price', $data['totals']['avg_price']);
+                    $this->db->set('avg_price', $data['totals']['avg_price']);
                     $this->db->update('ts_inventory_colors');
                 }
             }
@@ -860,15 +861,19 @@ class Inventory_model extends MY_Model
             // Calc new Rec NUM
             $outcome_type = 'X';
 
-            $this->db->select('max(inventory_adjust_id) as ordnum, count(inventory_adjust_id) as cnt');
-            $this->db->from('ts_inventory_adjusts');
-            $numdat=$this->db->get()->row_array();
-            if ($numdat['cnt']==0) {
-                $newrec = $numdat['cnt'];
-            } else {
-                $newrec = $numdat['ordnum'];
-            }
-            $recnum = 'D-'.str_pad($newrec,5,'0',STR_PAD_LEFT);
+//            $this->db->select('max(inventory_adjust_id) as ordnum, count(inventory_adjust_id) as cnt');
+//            $this->db->from('ts_inventory_adjusts');
+//            $numdat=$this->db->get()->row_array();
+//            if ($numdat['cnt']==0) {
+//                $newrec = $numdat['cnt'];
+//            } else {
+//                $newrec = $numdat['ordnum'];
+//            }
+            // Add Adjusted
+            $this->db->set('adjust_type', 'O');
+            $this->db->insert('ts_inventory_adjusts');
+            $newrec = $this->db->insert_id();
+            $recnum = 'AJ'.str_pad($newrec,5,'0',STR_PAD_LEFT);
 
             $this->db->set('inventory_color_id', $coloritem);
             $this->db->set('outcome_date', strtotime($options['outcome_date']));
@@ -880,15 +885,12 @@ class Inventory_model extends MY_Model
             $this->db->set('inserted_by', $options['user_id']);
             $this->db->set('inserted_at', date('Y-m-d H:i:s'));
             $this->db->insert('ts_inventory_outcomes');
-            // Add Adjusted
-            $this->db->set('adjust_type', 'O');
-            $this->db->insert('ts_inventory_adjusts');
             // get new itemprice
             $invdata = $this->get_masterinventory_color($coloritem);
             if ($invdata['result']==$this->success_result) {
                 $totals = $invdata['totals'];
                 $this->db->where('inventory_color_id', $coloritem);
-                $this->db->set('price', $totals['avg_price']);
+                $this->db->set('avg_price', $totals['avg_price']);
                 $this->db->update('ts_inventory_colors');
                 // Get new history
                 $res = $this->get_masterinventory_colorhistory($coloritem);
