@@ -30,6 +30,12 @@ function init_master_inventoryhead() {
             }
             $(".expresstotals").empty().html(response.data.express_totals);
             $(".mastinvent_footlink_express").empty().html(response.data.express_links);
+            $("#masterinventpercent").empty().html(response.data.masterinventpercent);
+            $("#masterinventorymaximum").empty().html(response.data.masterinventorymaximum);
+            $("#masterinventinstock").empty().html(response.data.masterinventinstock);
+            $("#masterinventreserv").empty().html(response.data.masterinventreserv);
+            $("#masterinventavailab").empty().html(response.data.masterinventavailab);
+            $("#maximuminvent").empty().html(response.data.maxsum);
             init_master_inventorycontent();
         } else {
             show_error(response);
@@ -77,6 +83,7 @@ function init_master_inventorycontent() {
         $(".mastinvent_left_section[data-invrtype='"+invent_type+"']").addClass('active');
         $(".mastinvent_left_section[data-invrtype='"+invent_type+"']").find('div.mastinvent_left_sectiondata').addClass('active');
         $(".masterinventexport").empty().html('<i class="fa fa-share-square-o" aria-hidden="true"></i> Export '+invlabel+' Inventory');
+        init_master_inventoryhead();
         init_master_inventorydata();
     });
     $(".mastinvent_left_section").hover(
@@ -87,6 +94,7 @@ function init_master_inventorycontent() {
         }
     );
     $(".inventfilterselect").unbind('change').change(function () {
+        init_master_inventoryhead();
         init_master_inventorydata();
     });
     $(".inventtotalmaxshow").unbind('click').click(function () {

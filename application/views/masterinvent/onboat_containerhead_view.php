@@ -4,7 +4,7 @@
             New <?=$onboat_type=='C' ? 'Cont' : 'Expr'?>
         <?php } else { ?>
             <?= ($onboat_status == 0 ? '<i class="fa fa-pencil edit_onboat" aria-hidden="true"></i>' : '') ?>
-            <?=$onboat_type=='C' ? 'Cont' : 'Expr'?> <?=$onboat_container ?>
+            <?=$onboat_type=='C' ? 'Cont' : 'Expr'?> <?=$onboat_container ?><?=$type_short?>
         <?php } ?>
     </div>
     <div class="containerdate">
