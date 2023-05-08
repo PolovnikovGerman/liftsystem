@@ -1225,6 +1225,10 @@ Class Leadorder_model extends My_Model {
                 $contacts[$idx]['contact_art']=0;
                 $contacts[$idx]['contact_inv']=0;
                 $contacts[$idx]['contact_trk']=0;
+            } else {
+                $contacts[$idx]['contact_art']=1;
+                $contacts[$idx]['contact_inv']=1;
+                $contacts[$idx]['contact_trk']=1;
             }
             $out['currec']=$contacts;
         }
@@ -1448,6 +1452,7 @@ Class Leadorder_model extends My_Model {
         $orditem['imprint_details']=$imprdetails;
         // Add new element to Order Items
         $order_items[]=$orditem;
+        $out['newitem'] = $orditem['order_item_id'];
         $leadorder['order_items']=$order_items;
         // Calculate shipping
         $this->load->model('shipping_model');

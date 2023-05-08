@@ -905,17 +905,27 @@ class Inventory_model extends MY_Model
         return $out;
     }
 
-    public function get_inventory_totals($inventory_type_id) {
+    public function get_inventory_totals($inventory_type_id, $itemstatus = 0) {
         // Lets go
         $this->db->select('sum(suggeststock) as suggeststock, sum(suggeststock*avg_price) as maxtotal');
-        $this->db->from('ts_inventory_colors');
+        $this->db->from('ts_inventory_colors c');
+        $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
+        $this->db->where('i.inventory_type_id', $inventory_type_id);
+        if ($itemstatus!==0) {
+            if ($itemstatus==1) {
+                $this->db->where('i.item_status', 1);
+            } else {
+                $this->db->where('i.item_status', 0);
+            }
+        }
+
         $res=$this->db->get()->row_array();
         $maxval=intval($res['suggeststock']);
         $maxtotal = floatval($res['maxtotal']);
 
-        $income=$this->inventory_income($inventory_type_id);
-        $outcome=$this->inventory_outcome($inventory_type_id);
-        $reserved=$this->inventory_reserved($inventory_type_id);
+        $income=$this->inventory_income($inventory_type_id, $itemstatus);
+        $outcome=$this->inventory_outcome($inventory_type_id, $itemstatus);
+        $reserved=$this->inventory_reserved($inventory_type_id, $itemstatus);
 
         $instock=$income-$outcome;
 
@@ -939,22 +949,36 @@ class Inventory_model extends MY_Model
         return $out;
     }
 
-    public function inventory_income($inventory_type_id) {
+    public function inventory_income($inventory_type_id, $itemstatus=0) {
         $this->db->select('sum(i.income_qty) as qty_in');
         $this->db->from('ts_inventory_incomes i');
         $this->db->join('ts_inventory_colors c','i.inventory_color_id=c.inventory_color_id');
         $this->db->join('ts_inventory_items itm','itm.inventory_item_id=c.inventory_item_id');
         $this->db->where('itm.inventory_type_id', $inventory_type_id);
+        if ($itemstatus!==0) {
+            if ($itemstatus==1) {
+                $this->db->where('itm.item_status', 1);
+            } else {
+                $this->db->where('itm.item_status', 0);
+            }
+        }
         $res = $this->db->get()->row_array();
         return intval($res['qty_in']);
     }
 
-    public function inventory_outcome($inventory_type_id) {
+    public function inventory_outcome($inventory_type_id, $itemstatus=0) {
         $this->db->select('sum(o.outcome_qty) as qty_out');
         $this->db->from('ts_inventory_outcomes o');
         $this->db->join('ts_inventory_colors c','c.inventory_color_id=o.inventory_color_id');
         $this->db->join('ts_inventory_items itm','itm.inventory_item_id=c.inventory_item_id');
         $this->db->where('itm.inventory_type_id', $inventory_type_id);
+        if ($itemstatus!==0) {
+            if ($itemstatus==1) {
+                $this->db->where('itm.item_status', 1);
+            } else {
+                $this->db->where('itm.item_status', 0);
+            }
+        }
         $res = $this->db->get()->row_array();
         return intval($res['qty_out']);
     }
@@ -976,14 +1000,22 @@ class Inventory_model extends MY_Model
 //        return $reserved;
     }
 
-    public function get_data_onboat($inventory_type_id, $onboat_type = 'C') {
+    public function get_data_onboat($inventory_type_id, $onboat_type = 'C', $itemstatus = 0 ) {
         $this->db->select('b.onboat_container, b.onboat_status, b.onboat_type, max(b.onboat_date) as onboat_date, sum(b.onroutestock) as onboat_total');
-        $this->db->select('max(b.freight_price) as freight_price');
+        $this->db->select('max(b.freight_price) as freight_price, max(t.type_short) as type_short');
         $this->db->from('ts_inventory_onboats b');
         $this->db->join('ts_inventory_colors c','b.inventory_color_id=c.inventory_color_id');
         $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
+        $this->db->join('ts_inventory_types t', 't.inventory_type_id=i.inventory_type_id');
         $this->db->where('i.inventory_type_id', $inventory_type_id);
         $this->db->where('b.onboat_type', $onboat_type);
+        if ($itemstatus!=0) {
+            if ($itemstatus==1) {
+                $this->db->where('i.item_status', 1);
+            } else {
+                $this->db->where('i.item_status', 0);
+            }
+        }
         $this->db->group_by('b.onboat_container, b.onboat_status, b.onboat_type');
         $res = $this->db->get()->result_array();
         $out = [];
@@ -999,13 +1031,20 @@ class Inventory_model extends MY_Model
         return $out;
     }
 
-    public function get_onboatdetails($onboat_container, $colors, $onboat_type='C', $edit=0) {
+    public function get_onboatdetails($onboat_container, $colors, $onboat_type='C', $itemstatus=0, $edit=0) {
         $this->db->select('o.inventory_onboat_id, o.onroutestock, o.vendor_price, c.inventory_color_id, i.inventory_item_id');
         $this->db->from('ts_inventory_onboats o');
         $this->db->join('ts_inventory_colors c','o.inventory_color_id = c.inventory_color_id');
         $this->db->join('ts_inventory_items i','c.inventory_item_id = i.inventory_item_id');
         $this->db->where('o.onboat_container', $onboat_container);
         $this->db->where('o.onboat_type', $onboat_type);
+        if ($itemstatus!=0) {
+            if ($itemstatus==1) {
+                $this->db->where('i.item_status', 1);
+            } else {
+                $this->db->where('i.item_status', 0);
+            }
+        }
         $this->db->order_by('i.inventory_item_id');
         $details = $this->db->get()->result_array();
         $items = [];

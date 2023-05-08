@@ -2354,7 +2354,7 @@ class Database extends MY_Controller
 
     private function _prepare_inventory_view() {
         $this->load->model('inventory_model');
-        $this->load->model('printshop_model');
+        // $this->load->model('printshop_model');
         // $addcost=$this->printshop_model->invaddcost();
         $invtypes = $this->inventory_model->get_inventory_types();
         $idx=0;

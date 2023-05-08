@@ -1588,9 +1588,10 @@ input.colorvendorpriceinpt {
     width: 100%;
     color: #FFFFFF;
     text-align: center;
+    font-size: 10px;
 }
 .mastinvent_container_contentarea .onboatmanage i, .mastinvent_express_contentarea .onboatmanage i {
-    font-size: 11px;
+    /* font-size: 11px; */
 }
 .mastinvent_container_contentarea .containerdate, .mastinvent_express_contentarea .containerdate {
     height: 22px;
