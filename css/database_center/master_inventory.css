@@ -398,17 +398,17 @@ input.inventadd {
 .masterinventtablebody {
     background: #252525;
     color: #000000;
-    /* width: 1014px;*/
-    /* width: 922px; */
-    width: 1336px;
+    width: 1338px;
+    /* min-width: 1336px;*/
     max-height: 977px;
-    overflow-y: auto;
-    overflow-x: hidden;
     border-left: 1px solid #000000;
     border-right: 1px solid #000000;
     border-bottom: 1px solid #000000;
 }
 /* Scrollbar */
+.baron__scroller {
+    float: unset;
+}
 .masterinventtablebody .sp-scrollbar {
     width: 10px;
     background-color: #f1f1f1;

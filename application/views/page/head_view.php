@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="/css/page_view/main.css?v=<?=getsitecssversion()?>">
 <link rel="stylesheet" href="/css/jsflash/flash.css">
 <link rel="stylesheet" href="/css/mb_ballons/mb.balloon.css"/>
+<link rel="stylesheet" href="/css/page_view/baron.css"/>
+<link rel="stylesheet" href="/css/baronskins/styles.css"/>
 <?php foreach ($styles as $row) { ?>
     <link rel="stylesheet" href="<?=$row['style']?>?v=<?=getsitecssversion()?>">
 <?php } ?>
@@ -20,6 +22,7 @@
 <script src="/js/adminpage/page.js?v=<?=getsitejsversion()?>"></script>
 <script src="/js/jsflash/flash.js"></script>
 <script src="/js/mb_balloons/jquery.mb.balloon.js"></script>
+<script src="/js/adminpage/baron.js"></script>
 <?php foreach ($scripts as $row) { ?>
     <script src="<?=$row['src']?>?v=<?=getsitejsversion()?>"></script>
 <?php } ?>
