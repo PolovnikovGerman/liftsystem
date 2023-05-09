@@ -35,7 +35,8 @@
                         <option value="Paypal">Paypal</option>
                         <option value="Cash">Cash</option>
                         <option value="WriteOFF">WriteOFF</option>
-                    </select>                
+                        <option value="Internal">Internal</option>
+                    </select>
                 </div>
                 <div class="paynum">
                     <input class="input_border_black paydatadetails paynum" data-fldname="paynum" value="<?= $paynum ?>"/>

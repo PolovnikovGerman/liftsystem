@@ -14,6 +14,7 @@
             <option value="o">Others</option>
             <option value="t">Terms</option>
             <option value="w">Write off</option>
+            <option value="i">Internal</option>
         </select>
     </div>
     <div class="batchselectpay">

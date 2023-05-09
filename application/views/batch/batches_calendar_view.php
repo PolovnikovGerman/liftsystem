@@ -20,6 +20,7 @@
             <div class="batchcalendar_sums <?=$row['out_otherclass']?>"><?=$row['out_other']?></div>
             <div class="batchcalendar_sums <?=$row['out_termclass']?>"><?=$row['out_term']?></div>
             <div class="batchcalendar_sums <?=$row['out_writeofflass']?>"><?=$row['out_writeoff']?></div>
+            <div class="batchcalendar_sums <?=$row['out_internalclass']?>"><?=$row['out_internal']?></div>
         </div>
         <?php $numpp++;?>
         <?php $weekday++?>
