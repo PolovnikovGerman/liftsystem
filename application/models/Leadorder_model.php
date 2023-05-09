@@ -846,6 +846,8 @@ Class Leadorder_model extends My_Model {
                 }
             } elseif (abs($row['batch_writeoff']) >0 ) {
                 $row['out_name'] = 'WriteOFF';
+            } elseif (abs($row['batch_internal']) >0 ) {
+                $row['out_name'] = 'Internal';
             }
             if ($row['batch_amount'] < 0) {
                 $row['payclass'] = 'text_red';
@@ -5276,6 +5278,7 @@ Class Leadorder_model extends My_Model {
                 $this->db->set('batch_amount', $row['batch_amount']);
                 $this->db->set('batch_other', $row['batch_other']);
                 $this->db->set('batch_writeoff', $row['batch_writeoff']);
+                $this->db->set('batch_internal', $row['batch_internal']);
                 $this->db->set('batch_type', $row['batch_type']);
                 $this->db->set('batch_num', $row['batch_num']);
                 $this->db->set('batch_received', 1);
@@ -7643,15 +7646,19 @@ Class Leadorder_model extends My_Model {
             $paysum='('.MoneyOutput(abs($paymentamnt),2).')';
         }
         $idx=count($payments)+1;
-
+        $paymother = 0;
+        if ($payment['paytype']!=='WriteOFF' && $payment['type']!=='Internal') {
+            $paymother = $paymentamnt;
+        }
         $payments[]=array(
             'batch_id'=>$idx*(-1),
             'batch_date'=>$payment['date'],
             'batch_amount'=>$paymentamnt,
             'batch_vmd'=>0,
             'batch_amex'=>0,
-            'batch_other'=>($payment['paytype']=='WriteOFF' ? 0 : $paymentamnt),
+            'batch_other'=> $paymother,
             'batch_writeoff'=>($payment['paytype']=='WriteOFF' ? $paymentamnt : 0),
+            'batch_internal' => ($payment['paytype']=='Internal' ? $paymentamnt : 0),
             'batch_term'=>0,
             'batch_due'=>0,
             'batch_type'=>$payment['paytype'],
