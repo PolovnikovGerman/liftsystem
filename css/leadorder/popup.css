@@ -3421,7 +3421,8 @@ input.shipaddrqty {
     width: 60px;
 }
 input.paydatadetails {
-    height: 14px;
+    height: 19px;
+    line-height: 19px;
     font-size: 11px;
     color: #000000;
 }

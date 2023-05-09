@@ -155,11 +155,11 @@
                         <img src="/img/masterinvent/addinvitem_bg.png" alt="Add"/>
                     </div>
                     <div class="masterinventdescrip">Item</div>
-                    <div class="masterinventpercent"><?=$itempercent?></div>
-                    <div class="masterinventorymaximum"><?=$maxval?></div>
-                    <div class="masterinventinstock"><?=$instock?></div>
-                    <div class="masterinventreserv"><?=$reserved?></div>
-                    <div class="masterinventavailab"><?=$available?></div>
+                    <div class="masterinventpercent" id="masterinventpercent"><?=$itempercent?></div>
+                    <div class="masterinventorymaximum" id="masterinventorymaximum"><?=$maxval?></div>
+                    <div class="masterinventinstock" id="masterinventinstock"><?=$instock?></div>
+                    <div class="masterinventreserv" id="masterinventreserv"><?=$reserved?></div>
+                    <div class="masterinventavailab" id="masterinventavailab"><?=$available?></div>
                     <div class="masterinventhistory">&nbsp;</div>
                     <div class="masterinventunit">Unit</div>
                 </div>

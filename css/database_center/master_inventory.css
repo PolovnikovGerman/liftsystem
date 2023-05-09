@@ -398,8 +398,6 @@ input.inventadd {
 .masterinventtablebody {
     background: #252525;
     color: #000000;
-    /* width: 1014px;*/
-    /* width: 922px; */
     width: 1336px;
     max-height: 977px;
     overflow-y: auto;
@@ -409,17 +407,13 @@ input.inventadd {
     border-bottom: 1px solid #000000;
 }
 /* Scrollbar */
-.masterinventtablebody .sp-scrollbar {
+.masterinventtablebody::-webkit-scrollbar {
     width: 10px;
-    background-color: #f1f1f1;
-    cursor: pointer;
+    height: 5px;
+    background-color: #aaa; /* or add it to the track */
 }
-.masterinventtablebody .sp-scrollbar .sp-thumb {
-    background-color: #aaa;
-    transition: height 0.2s ease-in-out;
-}
-.masterinventtablebody .sp-scrollbar.active .sp-thumb {
-    background-color: #c1c1c1;
+.masterinventtablebody::-webkit-scrollbar-thumb {
+    background: #000;
 }
 /* Scrollbar end */
 .masterinventtablebody .mastinvent_body_left {
@@ -1588,9 +1582,10 @@ input.colorvendorpriceinpt {
     width: 100%;
     color: #FFFFFF;
     text-align: center;
+    font-size: 10px;
 }
 .mastinvent_container_contentarea .onboatmanage i, .mastinvent_express_contentarea .onboatmanage i {
-    font-size: 11px;
+    /* font-size: 11px; */
 }
 .mastinvent_container_contentarea .containerdate, .mastinvent_express_contentarea .containerdate {
     height: 22px;

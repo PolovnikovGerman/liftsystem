@@ -259,7 +259,7 @@ select.batchviewyearselect {
     font-size: 11px;
 }
 .savebatch {
-    background: url("/img/addnew.png") no-repeat scroll 0 0 transparent;
+    background: url("/img/accounting/addnew.png") no-repeat scroll 0 0 transparent;
     float: left;
     height: 24px;
     margin-left: 350px;
