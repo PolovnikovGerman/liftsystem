@@ -19,6 +19,19 @@ function show_new_lead(lead_id,type, brand) {
                 $("#loader").show();
                 save_lead();
                 $("#loader").hide();
+                $('.modal-backdrop').hide();
+                if (type=='quote') {
+                    initQuotesPagination();
+                } else if (type=='question') {
+                    initQuestionPagination();
+                } else if (type=='customquote') {
+                    initCustomFormPagination();
+                } else {
+                    initProofPagination();
+                }
+            });
+            $("#leadformModal").find('button.close').unbind('click').click(function (){
+                $('.modal-backdrop').hide();
                 if (type=='quote') {
                     initQuotesPagination();
                 } else if (type=='question') {
@@ -75,6 +88,11 @@ function edit_lead(lead_id) {
 }
 
 function init_leadpopupedit() {
+    $("#leadformModal").find('button.close').unbind('click').click(function (){
+        $('.modal-backdrop').hide();
+        initLeaddataPagination();
+        initProofPagination();
+    });
     var lead_id=$("input#lead_id").val();
     if (lead_id==0) {
         $("input#lead_company").focus();
@@ -499,6 +517,7 @@ function save_lead() {
            initProofPagination();
            $("#loader").hide();
            $("#leadformModal").modal('hide');
+           $('.modal-backdrop').hide();
        } else {
            if (option==true) {
                 $("input[type=checkbox]").attr('disabled',true);

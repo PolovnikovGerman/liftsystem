@@ -41,6 +41,7 @@ function navigation_init() {
                 init_accounts_receivable();
             }
         }
+        $('.modal-backdrop').hide();
     })
     $("input.artlocationinpt").prop('disabled', true);
     // Show Art Locat Images and AI
