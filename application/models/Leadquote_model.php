@@ -530,6 +530,7 @@ class Leadquote_model extends MY_Model
         // Add new element to Order Items
         $out['result']=$this->success_result;
         $out['quote_items']=$quoteitem;
+        $out['newitem'] = $newid;
         return $out;
     }
 
@@ -1382,6 +1383,7 @@ class Leadquote_model extends MY_Model
             $out['msg'] = $itemdat['msg'];
             if ($itemdat['result']==$this->success_result) {
                 $out['result'] = $this->success_result;
+                $out['newitem'] = $itemdat['newitem'];
                 $quote = $quotesession['quote'];
                 $newitem = $itemdat['quote_items'];
                 $items[] = $newitem;

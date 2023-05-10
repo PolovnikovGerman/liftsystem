@@ -625,6 +625,7 @@ function save_leadquoteitem() {
             $(".quotetotalvalue").empty().html(response.data.total);
             $("#loader").hide();
             init_leadquotes_content();
+            $(".addprintdetails[data-quoteitem='"+response.data.newitem+"']").trigger('click');
         } else {
             $("#loader").hide();
             show_error(response);
