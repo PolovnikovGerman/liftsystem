@@ -945,6 +945,7 @@ class Leadquote extends MY_Controller
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';
+                $mdata['newitem'] = $res['newitem'];
                 $this->leadquote_model->calc_quote_shipping($session_id);
                 $this->leadquote_model->calc_quote_totals($session_id);
                 $quotesession = usersession($session_id);
