@@ -217,7 +217,6 @@ function user_edit_manage() {
         params.push({name: 'menuitem', value: menuitem});
         params.push({name: 'brand', value: brand});
         params.push({name: 'session', value: $("#session").val()});
-        console.log(params);
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 if (parseInt(response.data.newacc)==0) {

@@ -122,11 +122,13 @@ class Leadquote_model extends MY_Model
             }
             // Items
             $quote_items = [];
+            $response['newitem'] = 0;
             if (!empty($lead_data['lead_item_id'])) {
                 $leadqty = intval($lead_data['lead_itemqty']);
                 $itemdat = $this->add_newleadquote_item($lead_data['lead_item_id'], $lead_data['other_item_name'], $leadqty);
                 if ($itemdat['result']==$this->success_result) {
                     $quote_items[] = $itemdat['quote_items'];
+                    $response['newitem'] = $itemdat['quote_items']['quote_item_id'];
                     // Get Delivery Terms
                     if ($lead_data['lead_item_id'] > 0) {
                         $this->load->model('calendars_model');

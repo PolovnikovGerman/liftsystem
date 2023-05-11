@@ -14,7 +14,6 @@ $(document).ready(function(){
 });
 
 function init_page(objid) {
-    console.log('Object '+objid);
     $(".leadscontentarea").hide();
     $(".maincontentmenu_item").removeClass('active');
     $(".maincontentmenu_item[data-link='"+objid+"']").addClass('active');
