@@ -20,6 +20,9 @@ function addnewcustomquote() {
                 $("#lead_id").val(response.data.lead_id);
                 init_leadquotes_content();
                 $("#loader").hide();
+                if (parseInt(response.data.newitem)!==0) {
+                    $(".addprintdetails[data-quoteitem='"+response.data.newitem+"']").trigger('click');
+                }
             } else {
                 $("#loader").hide();
                 show_error(response);

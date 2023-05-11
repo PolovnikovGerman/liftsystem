@@ -44,6 +44,7 @@ class Leadquote extends MY_Controller
                 $qres=$this->leadquote_model->add_leadquote($lead_data, $usr_id, $this->USER_NAME);
                 $error=$qres['msg'];
                 if ($qres['result']==$this->success_result) {
+                    $mdata['newitem'] = $qres['newitem'];
                     $error = '';
                     $quotedata = $qres['quote'];
                     $quote_items = $qres['quote_items'];

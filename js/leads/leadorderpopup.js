@@ -41,6 +41,7 @@ function navigation_init() {
                 init_accounts_receivable();
             }
         }
+        $('.modal-backdrop').hide();
     })
     jQuery.balloon.init();
     $("input.artlocationinpt").prop('disabled', true);
