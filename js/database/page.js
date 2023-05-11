@@ -26,7 +26,6 @@ function init_page(objid) {
     $(".dbcontentarea").hide();
     $(".maincontentmenu_item").removeClass('active');
     $(".maincontentmenu_item[data-link='"+objid+"']").addClass('active');
-    console.log('Page '+objid);
     switch (objid) {
         case 'vendorsview':
             $("#vendorsview").show();
