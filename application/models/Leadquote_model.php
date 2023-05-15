@@ -2423,7 +2423,7 @@ class Leadquote_model extends MY_Model
                 if ($numpp==1) {
                     $cellheight = 6;
                 } else {
-                    $cellheight = 4.8;
+                    $cellheight = 4.5;
                 }
                 $precesion = 2;
                 $colorcell = $color['item_price']*1000;
@@ -2512,13 +2512,13 @@ class Leadquote_model extends MY_Model
         // Empty Row
         $pdf->SetXY($startPageX, $yStart);
         $fillrow=($numpp%2)==0 ? 1 : 0;
-        $pdf->Cell($colWidth[0], 7, '','LR',0,'L', $fillrow);
-        $pdf->Cell($colWidth[1], 7, '','LR', 0,'L', $fillrow);
-        $pdf->Cell($colWidth[2], 7, '', 'LR', 0,'C', $fillrow);
-        $pdf->Cell($colWidth[3], 7, '', 'LR', 0, 'C', $fillrow);
-        $pdf->Cell($colWidth[4], 7, '', 'LR', 0,'R', $fillrow);
+        $pdf->Cell($colWidth[0], 5, '','LR',0,'L', $fillrow);
+        $pdf->Cell($colWidth[1], 5, '','LR', 0,'L', $fillrow);
+        $pdf->Cell($colWidth[2], 5, '', 'LR', 0,'C', $fillrow);
+        $pdf->Cell($colWidth[3], 5, '', 'LR', 0, 'C', $fillrow);
+        $pdf->Cell($colWidth[4], 5, '', 'LR', 0,'R', $fillrow);
         $numpp++;
-        $yStart+=7;
+        $yStart+=5;
         if ($yStart > 220) {
             $pdf->AddPage();
             $yStart = 15;
@@ -2556,7 +2556,7 @@ class Leadquote_model extends MY_Model
             if ($tablebreak = 0) {
                 $rowHeight = 172 - $yStart;
             } else {
-                $rowHeight = 15;
+                $rowHeight = 10;
             }
         }
         $pdf->SetXY($startPageX, $yStart);
@@ -2578,11 +2578,11 @@ class Leadquote_model extends MY_Model
         $pdf->Cell(30,7, MoneyOutput($quote['sales_tax']),'BR',0,'R');
         $pdf->SetXY(127.5, $yStart+7);
         $pdf->SetFont('','B',14);
-        $pdf->Cell(20,12,'Total:', 'LB',0,'C');
+        $pdf->Cell(20,10,'Total:', 'LB',0,'C');
         $pdf->SetFont('','',14);
-        $pdf->Cell(50,12, MoneyOutput($quote['quote_total']),'BR',0,'R');
-        $yStart += 23;
-        if ($yStart > 220) {
+        $pdf->Cell(50,10, MoneyOutput($quote['quote_total']),'BR',0,'R');
+        $yStart += 19;
+        if ($yStart > 215) {
             $pdf->AddPage();
             $yStart = 15;
         }
