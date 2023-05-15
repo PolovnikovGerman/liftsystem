@@ -96,6 +96,14 @@ $(document).ready(function () {
     $("#inventory").unbind('click').click(function () {
         window.location.href='/fulfillment?start=printshopinventview';
     })
+    // Autocomplete inventory
+    $("#publicsearch_inventory").autocomplete({
+        filterDelay: 300,
+        filterMinChars: 3,
+        onItemRendered(el, item) {
+            console.log('Rendered Options: ', item)
+        }
+    });
     // $("select.publicsearch_type").unbind('change').change(function(){
     //     var newval = $(this).val();
     //     if (newval=='Orders') {

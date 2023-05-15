@@ -2296,4 +2296,17 @@ class Inventory_model extends MY_Model
         return true;
     }
 
+    public function inventory_autocomplete($search) {
+        $this->db->select('*');
+        $this->db->from('v_inventory_search');
+        $this->db->like('txtval', $search);
+        $this->db->order_by('id');
+        $searchs = $this->db->get()->result_array();
+        $result = [];
+        foreach ($searchs as $search) {
+            array_push($result, $search['txtval']);
+        }
+        return $result;
+    }
+
 }

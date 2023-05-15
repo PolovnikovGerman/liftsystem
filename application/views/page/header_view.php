@@ -49,6 +49,12 @@
                         </div>
                         <div class="infotext">Inventory</div>
                     </div>
+                    <div class="publicsearch">
+                        <input type="text" class="publicsearch_template" id="publicsearch_inventory" placeholder="Check Stock" data-filter="/welcome/inventorysearch/?q=#QUERY#"/>
+                        <div class="publicsearch_btn">
+                            <img src="/img/page_view/search_icon_blue.png"/>
+                        </div>
+                    </div>
                 <?php } ?>
             </div>
             <?php if ($test_server==1) { ?>

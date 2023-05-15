@@ -152,4 +152,13 @@ class Welcome extends MY_Controller {
         echo $msg;
     }
 
+    public function inventorysearch() {
+        $search = $this->input->get('q');
+        $response = [];
+        if (strlen($search)>=3) {
+            $this->load->model('inventory_model');
+            $response = $this->inventory_model->inventory_autocomplete($search);
+        }
+        echo json_encode($response);
+    }
 }
