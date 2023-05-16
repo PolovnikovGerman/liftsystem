@@ -26,11 +26,14 @@ class Inventory_model extends MY_Model
         return $this->db->get()->result_array();
     }
 
-    public function get_masterinvent_list($inventory_type, $inventory_filter) {
+    public function get_masterinvent_list($inventory_type, $inventory_filter, $addsearch = []) {
         $type_instock = $type_available = $type_maximum = 0;
         $this->db->select('*');
         $this->db->from('ts_inventory_items');
         $this->db->where('inventory_type_id', $inventory_type);
+        if (isset($addsearch['inventory_item_id']) && $addsearch['inventory_item_id']!==0) {
+            $this->db->where('inventory_item_id', $addsearch['inventory_item_id']);
+        }
         $this->db->order_by('item_order');
         $items=$this->db->get()->result_array();
         $colorsdata = [];
@@ -45,6 +48,9 @@ class Inventory_model extends MY_Model
                     $this->db->where('color_status', 1);
                 } elseif ($inventory_filter==2) {
                     $this->db->where('color_status',0);
+                }
+                if (isset($addsearch['inventory_color_id']) && $addsearch['inventory_color_id']!==0) {
+                    $this->db->where('inventory_color_id', $addsearch['inventory_color_id']);
                 }
                 $cntdat = $this->db->get()->row_array();
                 $additem = $cntdat['cnt'] ==0 ? 0 : 1;
@@ -90,6 +96,9 @@ class Inventory_model extends MY_Model
                     $this->db->where('color_status', 1);
                 } elseif ($inventory_filter==2) {
                     $this->db->where('color_status',0);
+                }
+                if (isset($addsearch['inventory_color_id']) && $addsearch['inventory_color_id']!==0) {
+                    $this->db->where('inventory_color_id', $addsearch['inventory_color_id']);
                 }
                 $this->db->order_by('color_order');
                 $colors = $this->db->get()->result_array();
@@ -905,7 +914,7 @@ class Inventory_model extends MY_Model
         return $out;
     }
 
-    public function get_inventory_totals($inventory_type_id, $itemstatus = 0) {
+    public function get_inventory_totals($inventory_type_id, $itemstatus = 0, $addsearch = []) {
         // Lets go
         $this->db->select('sum(suggeststock) as suggeststock, sum(suggeststock*avg_price) as maxtotal');
         $this->db->from('ts_inventory_colors c');
@@ -918,14 +927,21 @@ class Inventory_model extends MY_Model
                 $this->db->where('i.item_status', 0);
             }
         }
+        if (isset($addsearch['inventory_color_id']) && intval($addsearch['inventory_color_id'])!==0) {
+            $this->db->where('c.inventory_color_id', $addsearch['inventory_color_id']);
+        } else {
+            if (isset($addsearch['inventory_item_id']) && intval($addsearch['inventory_item_id'])!==0) {
+                $this->db->where('i.inventory_item_id', $addsearch['inventory_item_id']);
+            }
+        }
 
         $res=$this->db->get()->row_array();
         $maxval=intval($res['suggeststock']);
         $maxtotal = floatval($res['maxtotal']);
 
-        $income=$this->inventory_income($inventory_type_id, $itemstatus);
-        $outcome=$this->inventory_outcome($inventory_type_id, $itemstatus);
-        $reserved=$this->inventory_reserved($inventory_type_id, $itemstatus);
+        $income=$this->inventory_income($inventory_type_id, $itemstatus, $addsearch);
+        $outcome=$this->inventory_outcome($inventory_type_id, $itemstatus, $addsearch);
+        $reserved=$this->inventory_reserved($inventory_type_id, $itemstatus, $addsearch);
 
         $instock=$income-$outcome;
 
@@ -949,7 +965,7 @@ class Inventory_model extends MY_Model
         return $out;
     }
 
-    public function inventory_income($inventory_type_id, $itemstatus=0) {
+    public function inventory_income($inventory_type_id, $itemstatus=0, $addsearch = []) {
         $this->db->select('sum(i.income_qty) as qty_in');
         $this->db->from('ts_inventory_incomes i');
         $this->db->join('ts_inventory_colors c','i.inventory_color_id=c.inventory_color_id');
@@ -962,11 +978,16 @@ class Inventory_model extends MY_Model
                 $this->db->where('itm.item_status', 0);
             }
         }
+        if (isset($addsearch['inventory_color_id']) && intval($addsearch['inventory_color_id'])!==0) {
+            $this->db->where('c.inventory_color_id', $addsearch['inventory_color_id']);
+        } elseif (isset($addsearch['inventory_item_id']) && intval($addsearch['inventory_item_id'])!==0) {
+            $this->db->where('itm.inventory_item_id', $addsearch['inventory_item_id']);
+        }
         $res = $this->db->get()->row_array();
         return intval($res['qty_in']);
     }
 
-    public function inventory_outcome($inventory_type_id, $itemstatus=0) {
+    public function inventory_outcome($inventory_type_id, $itemstatus=0, $addsearch = []) {
         $this->db->select('sum(o.outcome_qty) as qty_out');
         $this->db->from('ts_inventory_outcomes o');
         $this->db->join('ts_inventory_colors c','c.inventory_color_id=o.inventory_color_id');
@@ -979,11 +1000,16 @@ class Inventory_model extends MY_Model
                 $this->db->where('itm.item_status', 0);
             }
         }
+        if (isset($addsearch['inventory_color_id']) && intval($addsearch['inventory_color_id'])!==0) {
+            $this->db->where('c.inventory_color_id', $addsearch['inventory_color_id']);
+        } elseif (isset($addsearch['inventory_item_id']) && intval($addsearch['inventory_item_id'])!==0) {
+            $this->db->where('itm.inventory_item_id', $addsearch['inventory_item_id']);
+        }
         $res = $this->db->get()->row_array();
         return intval($res['qty_out']);
     }
 
-    public function inventory_reserved($inventory_type_id) {
+    public function inventory_reserved($inventory_type_id, $itemstatus = 0, $addsearch=[]) {
         return 0;
 //        $this->db->select('sum(i.item_qty) as reserved, count(i.order_itemcolor_id) as cnt');
 //        $this->db->from('ts_order_itemcolors i');
@@ -2300,13 +2326,27 @@ class Inventory_model extends MY_Model
         $this->db->select('*');
         $this->db->from('v_inventory_search');
         $this->db->like('txtval', $search);
-        $this->db->order_by('id');
+        $this->db->order_by('item_id, color_id');
         $searchs = $this->db->get()->result_array();
         $result = [];
         foreach ($searchs as $search) {
             array_push($result, $search['txtval']);
         }
         return $result;
+    }
+
+    public function inventorey_search($template) {
+        $out = ['result' => $this->error_result, 'msg' => 'Inventory not found'];
+        $this->db->select('*');
+        $this->db->from('v_inventory_search');
+        $this->db->where('txtval', $template);
+        $res = $this->db->get()->row_array();
+        if (isset($res['item_id'])) {
+            $out['result'] = $this->success_result;
+            $out['item_id'] = $res['item_id'];
+            $out['color_id'] = $res['color_id'];
+        }
+        return $out;
     }
 
 }

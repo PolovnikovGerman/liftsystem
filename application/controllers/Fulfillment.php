@@ -2071,20 +2071,47 @@ class Fulfillment extends MY_Controller
 
     private function _prepare_inventory_view() {
         $this->load->model('inventory_model');
-        $this->load->model('printshop_model');
-        // $addcost=$this->printshop_model->invaddcost();
+        $item_id = 0;
+        $color_id = 0;
+        $invtype = 0;
+        $invdata = usersession('liftsearch');
+        if (is_array($invdata)) {
+            // remove session
+            usersession('liftsearch', null);
+            $item_id = $invdata['item_id'];
+            $color_id = $invdata['color_id'];
+        }
+        $addsearch = [];
+        if ($item_id != 0) {
+            $itmres  = $this->inventory_model->get_masterinventory_item($item_id, 0);
+            if ($itmres['result']==$this->error_result) {
+                $item_id = 0;
+                $color_id = 0;
+            } else {
+                $itemdata = $itmres['itemdata'];
+                $invtype = $itemdata['inventory_type_id'];
+                $addsearch = [
+                    'inventory_color_id' => $color_id,
+                    'inventory_item_id' => $item_id,
+                ];
+            }
+        }
         $invtypes = $this->inventory_model->get_inventory_types();
         $idx=0;
         $totalval = 0;
-        foreach ($invtypes as $invtype) {
-            $stock = $this->inventory_model->get_inventtype_stock($invtype['inventory_type_id']);
+        foreach ($invtypes as $invtyperow) {
+            $stock = $this->inventory_model->get_inventtype_stock($invtyperow['inventory_type_id']);
             $totalval+=$stock;
             $invtypes[$idx]['value'] = empty($stock) ? $this->empty_html_content : MoneyOutput($stock);
             $idx++;
         }
         // Get totals
-        $type_id = $invtypes[0]['inventory_type_id'];
-        $totals = $this->inventory_model->get_inventory_totals($type_id);
+        if ($invtype!==0) {
+            $type_id = $invtype;
+        } else {
+            $type_id = $invtypes[0]['inventory_type_id'];
+        }
+        $totals = $this->inventory_model->get_inventory_totals($type_id, 0,  $addsearch);
         $addcost = $invtypes[0]['type_addcost'];
         $addval = $totals['available'] * $addcost;
         // Get OnBoats
@@ -2164,6 +2191,8 @@ class Fulfillment extends MY_Controller
             'express_head' => $express_content,
             'express_links' => $express_links,
             'express_leftview' => $express_leftview,
+            'item_id' => $item_id,
+            'color_id' => $color_id,
         ];
         $content = $this->load->view('masterinvent/page_view', $options, TRUE);
         return $content;

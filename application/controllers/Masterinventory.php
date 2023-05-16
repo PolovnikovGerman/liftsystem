@@ -22,7 +22,16 @@ class Masterinventory extends MY_Controller
             $inventory_type = ifset($postdata,'inventory_type',0);
             $inventory_filter = intval(ifset($postdata,'inventory_filter',0));
             $showmax = ifset($postdata,'showmax', 0);
-            $totals = $this->inventory_model->get_inventory_totals($inventory_type, $inventory_filter);
+            $inventory_item = ifset($postdata, 'inventory_item', 0);
+            $inventory_color = ifset($postdata, 'inventory_color', 0);
+            $addsearch = [];
+            if ($inventory_item!==0 || $inventory_color!==0) {
+                $addsearch = [
+                    'inventory_color_id' => $inventory_color,
+                    'inventory_item_id' => $inventory_item,
+                ];
+            }
+            $totals = $this->inventory_model->get_inventory_totals($inventory_type, $inventory_filter, $addsearch);
             $mdata=[];
             $error = '';
             // Get OnBoats
@@ -107,9 +116,19 @@ class Masterinventory extends MY_Controller
             $inventory_type = ifset($postdata,'inventory_type',0);
             $inventory_filter = ifset($postdata,'inventory_filter',0);
             $showmax = ifset($postdata,'showmax', 0);
+            $inventory_item = intval(ifset($postdata, 'inventory_item', 0));
+            $inventory_color = intval(ifset($postdata, 'inventory_color', 0));
+            $addsearch = [];
+            if ($inventory_item!==0 || $inventory_color!==0) {
+                $addsearch = [
+                    'inventory_color_id' => $inventory_color,
+                    'inventory_item_id' => $inventory_item,
+                ];
+            }
+
             $mdata=[];
 
-            $data = $this->inventory_model->get_masterinvent_list($inventory_type, $inventory_filter);
+            $data = $this->inventory_model->get_masterinvent_list($inventory_type, $inventory_filter, $addsearch);
             $mdata['bodylist'] = $this->load->view('masterinvent/inventory_body_view',[], TRUE);
             if (count($data['list'])==0) {
                 $mdata['left_content']=$this->load->view('masterinvent/inventorylist_emptydata_view',[],TRUE);

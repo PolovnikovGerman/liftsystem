@@ -97,11 +97,22 @@ $(document).ready(function () {
         window.location.href='/fulfillment?start=printshopinventview';
     })
     // Autocomplete inventory
-    $("#publicsearch_inventory").autocomplete({
-        filterDelay: 300,
-        filterMinChars: 3,
-        onItemRendered(el, item) {
-            console.log('Rendered Options: ', item)
+    $("#publicsearch_inventory").typeahead({
+        source: function(query, result) {
+            $.ajax({
+                url: "/welcome/inventorysearch/",
+                data: 'q=' + query,
+                dataType: "json",
+                type: "POST",
+                success: function(data) {
+                    result($.map(data, function(item) {
+                        return item;
+                    }));
+                },
+            });
+        },
+        afterSelect: function (item) {
+            liftsite_inventory(item);
         }
     });
     // $("select.publicsearch_type").unbind('change').change(function(){
@@ -241,6 +252,7 @@ function liftsite_search(searchtype) {
     } else {
         params.push({name: 'search_template', value: $("#publicdescsearch_template").val()});
     }
+    params.push({name: 'search_type', value: 'Orders'});
     var url="/welcome/liftsite_search";
     $.post(url, params, function(response) {
         if (response.errors=='') {
@@ -270,4 +282,18 @@ function leftmenu_alignment() {
     var mainheight = $("div.maincontentmenuarea").css('height');
     $(".leftmenuarea").find('div.content_tab.active').css('height', mainheight);
 
+}
+
+function liftsite_inventory(item) {
+    var params = new Array();
+    params.push({name: 'search_template', value: item});
+    params.push({name: 'search_type', value: 'Inventory'});
+    var url="/welcome/liftsite_search";
+    $.post(url, params, function(response) {
+        if (response.errors=='') {
+            window.location.href='/fulfillment?start=printshopinventview';
+        } else {
+            show_error(response);
+        }
+    },'json');
 }

@@ -171,6 +171,7 @@ body div {
     font-size: 14px;
     font-family: Arial;
     padding-left: 6px;
+    text-align: left;
     width: 111px;
 }
 .publicsearch > input.publicsearch_template::placeholder {

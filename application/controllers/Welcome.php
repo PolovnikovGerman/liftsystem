@@ -58,12 +58,24 @@ class Welcome extends MY_Controller {
             ];
             $error = '';
             $postdata = $this->input->post();
-            // $search_type = ifset($postdata,'search_type','unk');
-            $search_type = 'Orders';
+            $search_type = ifset($postdata,'search_type','unk');
+            // $search_type = 'Orders';
             $search_template = ifset($postdata,'search_template','');
             if ($search_type=='Orders') {
                 $mdata['url'] = '/orders';
                 usersession('liftsearch', $search_template);
+            } elseif ($search_type=='Inventory') {
+                $this->load->model('inventory_model');
+                $res = $this->inventory_model->inventorey_search($search_template);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $invdata = [
+                        'item_id' => $res['item_id'],
+                        'color_id' => $res['color_id'],
+                    ];
+                    usersession('liftsearch', $invdata);
+                }
             // } elseif ($search_type=='Items') {
             //    $mdata['url'] = '/database';
             //    usersession('liftsearch', $search_template);
@@ -153,7 +165,7 @@ class Welcome extends MY_Controller {
     }
 
     public function inventorysearch() {
-        $search = $this->input->get('q');
+        $search = $this->input->post('q');
         $response = [];
         if (strlen($search)>=3) {
             $this->load->model('inventory_model');
