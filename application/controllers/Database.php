@@ -2447,6 +2447,8 @@ class Database extends MY_Controller
             'express_head' => $express_content,
             'express_links' => $express_links,
             'express_leftview' => $express_leftview,
+            'item_id' => 0,
+            'color_id' => 0,
         ];
         $content = $this->load->view('masterinvent/page_view', $options, TRUE);
         return $content;
