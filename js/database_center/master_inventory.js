@@ -14,6 +14,8 @@ function init_master_inventoryhead() {
     params.push({name: 'inventory_type', value: $("#active_invtype").val()});
     params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
     params.push({name: 'showmax', value: $("#invshowmax").val()});
+    params.push({name: 'inventory_item', value: $("#inventory_item").val()});
+    params.push({name: 'inventory_color', value: $("#inventory_color").val()});
     var url="/masterinventory/get_inventory_head";
     $("#loader").show();
     $.post(url, params, function (response){
@@ -47,6 +49,8 @@ function init_master_inventorydata() {
     params.push({name: 'inventory_type', value: $("#active_invtype").val()});
     params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
     params.push({name: 'showmax', value: $("#invshowmax").val()});
+    params.push({name: 'inventory_item', value: $("#inventory_item").val()});
+    params.push({name: 'inventory_color', value: $("#inventory_color").val()});
     var url="/masterinventory/get_inventory_list";
     $("#loader").show();
     $.post(url, params, function (response) {
@@ -71,10 +75,12 @@ function init_master_inventorydata() {
 }
 
 function init_master_inventorycontent() {
-    $(".mastinvent_left_section ").unbind('click').click(function () {
+    $(".mastinvent_left_section").unbind('click').click(function () {
         var invent_type = $(this).data('invrtype');
         var invlabel = $(this).data('invlabel');
         $("#active_invtype").val(invent_type);
+        $("#inventory_color").val(0);
+        $("#inventory_item").val(0);
         $(".mastinvent_left_section").removeClass('active');
         $(".mastinvent_left_section").find('div.mastinvent_left_sectiondata').removeClass('active');
         $(".mastinvent_left_section[data-invrtype='"+invent_type+"']").addClass('active');

@@ -21,6 +21,7 @@
 <script src="/js/adminpage/page.js?v=<?=getsitejsversion()?>"></script>
 <script src="/js/jsflash/flash.js"></script>
 <script src="/js/mb_balloons/jquery.mb.balloon.js"></script>
+<script src="/js/adminpage/bootstrap3-typeahead.min.js"></script>
 <?php foreach ($scripts as $row) { ?>
     <script src="<?=$row['src']?>?v=<?=getsitejsversion()?>"></script>
 <?php } ?>

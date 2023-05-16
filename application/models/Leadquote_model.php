@@ -2861,6 +2861,7 @@ class Leadquote_model extends MY_Model
         $data['newappcreditlink']=0;
         $data['credit_applink']='';
         $data['is_shipping']=0;
+        $data['shipping'] = floatval($quote['shipping_cost']);
         $data['showbilladdress']=1;
         $data['brand'] = $quote['brand'];
         $data['quote_id'] = $quote['quote_id'];
@@ -3140,7 +3141,7 @@ class Leadquote_model extends MY_Model
                 $shipping['arrive_date'] = $rate['shipping_date'];
                 $shipping['arrive_date_orig'] = $rate['shipping_date'];
                 $shipping['out_arrivedate'] = date('m/d/y', $rate['shipping_date']);
-                $data['shipping'] = $rate['shipping_rate'];
+                // $data['shipping'] = $rate['shipping_rate'];
                 $shiprate = $rate['shipping_rate'];
             }
         }

@@ -1,5 +1,7 @@
 <input type="hidden" id="active_invtype" value="<?=$active_type?>"/>
 <input type="hidden" id="invshowmax" value="0"/>
+<input type="hidden" id="inventory_item" value="<?=$item_id?>"/>
+<input type="hidden" id="inventory_color" value="<?=$color_id?>"/>
 <div class="inventorydataview">
     <div class="datarow">
         <div class="pagetitle">
