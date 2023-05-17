@@ -322,6 +322,23 @@ function init_master_inventorycontent() {
 
 function init_edit_inventcontainer(container, onboat_type) {
     // Edit onstock
+    $(".onroutestockinpt").focus(function (){
+        var color = $(this).data('color');
+        $(".mastinvent_body_left").find("div.itemcolor[data-invcolor='"+color+"']").addClass('currenteditrow');
+    });
+    $(".onroutestockinpt").blur(function (){
+        var color = $(this).data('color');
+        $(".mastinvent_body_left").find("div.itemcolor[data-invcolor='"+color+"']").removeClass('currenteditrow');
+    });
+    $(".onroutepriceinpt").focus(function (){
+        var color = $(this).data('color');
+        $(".mastinvent_body_left").find("div.itemcolor[data-invcolor='"+color+"']").addClass('currenteditrow');
+    });
+    $(".onroutepriceinpt").blur(function (){
+        var color = $(this).data('color');
+        $(".mastinvent_body_left").find("div.itemcolor[data-invcolor='"+color+"']").removeClass('currenteditrow');
+    });
+
     $(".onroutestockinpt").unbind('change').change(function (){
         var item = $(this).data('item');
         var color = $(this).data('color');
