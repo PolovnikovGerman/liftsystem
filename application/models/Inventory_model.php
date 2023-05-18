@@ -1639,7 +1639,7 @@ class Inventory_model extends MY_Model
             $this->db->select('oa.*, oa.amount_id as printshop_income_id, c.inventory_item_id, o.customer_name as customer, o.order_num, i.inventory_type_id');
             $this->db->from('ts_order_amounts oa');
             $this->db->join('ts_inventory_colors c', 'c.inventory_color_id=oa.inventory_color_id');
-            $this->db->join('ts_inventory_item i','i.inventory_item_id=c.inventory_item_id');
+            $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
             $this->db->join('ts_orders o','o.order_id=oa.order_id');
             $this->db->where('oa.amount_id', $printshop_income_id);
             $res=$this->db->get()->row_array();
