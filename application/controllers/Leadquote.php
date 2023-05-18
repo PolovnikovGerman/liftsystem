@@ -945,63 +945,68 @@ class Leadquote extends MY_Controller
             $res = $this->leadquote_model->addquoteitem($postdata, $quotesession, $session_id);
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
-                $error = '';
-                $mdata['newitem'] = $res['newitem'];
-                $this->leadquote_model->calc_quote_shipping($session_id);
-                $this->leadquote_model->calc_quote_totals($session_id);
                 $quotesession = usersession($session_id);
-                $quote = $quotesession['quote'];
-                $items = $quotesession['items'];
-                $shippings = $quotesession['shipping'];
-                $items_views = [];
-                foreach ($items as $quote_item) {
-                    $imprints=$quote_item['imprints'];
-                    $imprint_options=[
-                        'quote_item_id'=>$quote_item['quote_item_id'],
-                        'imprints'=>$imprints,
-                        'edit_mode' => 1,
-                    ];
-                    $imprintview=$this->load->view('leadpopup/imprint_data_edit', $imprint_options, TRUE);
-                    $item_options=[
-                        'quote_item_id'=>$quote_item['quote_item_id'],
-                        'items'=>$quote_item['items'],
-                        'imprintview'=>$imprintview,
-                        'edit'=> 1,
-                        'item_id'=>$quote_item['item_id'],
-                    ];
-                    $view=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
-                    $items_views[] = [
-                        'quote_item_id'=>$quote_item['quote_item_id'],
-                        'view' => $view,
-                    ];
+                // Prepare imprint details view
+                $details['item'] = $res['newitem'];
+                $imprdata = $this->_prepare_imprint_details($quotesession, $details, $session_id);
+                $error = $imprdata['msg'];
+                if ($imprdata['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['impritview'] = $imprdata['content'];
+                    $this->leadquote_model->calc_quote_shipping($session_id);
+                    $this->leadquote_model->calc_quote_totals($session_id);
+                    $quote = $quotesession['quote'];
+                    $items = $quotesession['items'];
+                    $shippings = $quotesession['shipping'];
+                    $items_views = [];
+                    foreach ($items as $quote_item) {
+                        $imprints=$quote_item['imprints'];
+                        $imprint_options=[
+                            'quote_item_id'=>$quote_item['quote_item_id'],
+                            'imprints'=>$imprints,
+                            'edit_mode' => 1,
+                        ];
+                        $imprintview=$this->load->view('leadpopup/imprint_data_edit', $imprint_options, TRUE);
+                        $item_options=[
+                            'quote_item_id'=>$quote_item['quote_item_id'],
+                            'items'=>$quote_item['items'],
+                            'imprintview'=>$imprintview,
+                            'edit'=> 1,
+                            'item_id'=>$quote_item['item_id'],
+                        ];
+                        $view=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
+                        $items_views[] = [
+                            'quote_item_id'=>$quote_item['quote_item_id'],
+                            'view' => $view,
+                        ];
+                    }
+                    $mdata['item_content'] = $this->load->view('leadpopup/items_content_view', ['data' => $items_views], TRUE);
+                    $lead_time = '';
+                    if (!empty($quote['lead_time'])) {
+                        $lead_times = json_decode($quote['lead_time'], true);
+                        $timeoptions = [
+                            'lead_times' => $lead_times,
+                            'edit_mode' => 1,
+                        ];
+                        $lead_time = $this->load->view('leadpopup/quote_leadtime_edit', $timeoptions, TRUE);
+                    }
+                    $mdata['leadtime'] = $lead_time;
+                    // Shipping view
+                    $shiprates = '';
+                    if (count($shippings) > 0) {
+                        $shipoptions = [
+                            'edit_mode' => 1,
+                            'shippings' => $shippings,
+                        ];
+                        $shiprates = $this->load->view('leadpopup/quote_shiprates_view', $shipoptions, TRUE);
+                    }
+                    $mdata['shippingview'] = $shiprates;
+                    $mdata['tax'] = $quote['sales_tax'];
+                    $mdata['shipping_cost'] = $quote['shipping_cost'];
+                    $mdata['rush_cost'] = $quote['rush_cost'];
+                    $mdata['items_subtotal'] = MoneyOutput($quote['items_subtotal']);
+                    $mdata['total'] = MoneyOutput($quote['quote_total']);
                 }
-                $mdata['item_content'] = $this->load->view('leadpopup/items_content_view', ['data' => $items_views], TRUE);
-                $lead_time = '';
-                if (!empty($quote['lead_time'])) {
-                    $lead_times = json_decode($quote['lead_time'], true);
-                    $timeoptions = [
-                        'lead_times' => $lead_times,
-                        'edit_mode' => 1,
-                    ];
-                    $lead_time = $this->load->view('leadpopup/quote_leadtime_edit', $timeoptions, TRUE);
-                }
-                $mdata['leadtime'] = $lead_time;
-                // Shipping view
-                $shiprates = '';
-                if (count($shippings) > 0) {
-                    $shipoptions = [
-                        'edit_mode' => 1,
-                        'shippings' => $shippings,
-                    ];
-                    $shiprates = $this->load->view('leadpopup/quote_shiprates_view', $shipoptions, TRUE);
-                }
-                $mdata['shippingview'] = $shiprates;
-                $mdata['tax'] = $quote['sales_tax'];
-                $mdata['shipping_cost'] = $quote['shipping_cost'];
-                $mdata['rush_cost'] = $quote['rush_cost'];
-                $mdata['items_subtotal'] = MoneyOutput($quote['items_subtotal']);
-                $mdata['total'] = MoneyOutput($quote['quote_total']);
-
             }
         }
         $this->ajaxResponse($mdata, $error);
@@ -1347,5 +1352,39 @@ class Leadquote extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    private function _prepare_imprint_details($quotesession, $postdata, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Unknown Error'];
+        $res = $this->leadquote_model->prepare_print_details($quotesession, $postdata, $session_id);
+        $out['msg'] = $res['msg'];
+        if ($res['result']==$this->success_result) {
+            $out['result'] = $this->success_result;
+            $details = $res['imprint_details'];
+            $quote = $res['quote'];
+            $quote_blank = $quote['quote_blank'];
+            $item_id = $res['item_id'];
+            // Prepare View
+            $imptintid = 'imprintdetails' . uniq_link(15);
+            $options = array(
+                'details' => $details,
+                'item_number' => $res['item_number'],
+                'quote_blank' => $quote_blank,
+                'imprints' => $res['imprints'],
+                'numlocs' => count($res['imprints']),
+                'item_name' => $res['item_name'],
+                'imprintsession' => $imptintid,
+                'custom' => ($item_id == $this->config->item('custom_id') || $item_id == $this->config->item('other_id')) ? 1 : 0,
+            );
+            $out['content'] = $this->load->view('leadpopup/imprint_details_edit', $options, TRUE);
+            $imprintdetails = array(
+                'imprint_details' => $details,
+                'quote_blank' => $quote_blank,
+                'quote_item_id' => $postdata['item'],
+                'item_id' => $item_id,
+            );
+            usersession($imptintid, $imprintdetails);
+        }
+        return $out;
     }
 }

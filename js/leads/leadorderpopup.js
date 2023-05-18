@@ -790,7 +790,7 @@ function show_leadorditemsearch() {
             $("#artNextModal").find('div.modal-dialog').css('width','455px');
             $("#artNextModal").find('.modal-title').empty().html('Order Item');
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
-            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artNextModal").modal({keyboard: false, show: true}); // backdrop: 'static',
             $("#artNextModal").on('hidden.bs.modal', function (e) {
                 $(document.body).addClass('modal-open');
             })
@@ -842,8 +842,8 @@ function save_leadorderitem() {
     var url="/leadorder/save_orderitem";
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("#artNextModal").modal('hide');
             if (response.data.order_system=='old') {
+                $("#artNextModal").modal('hide');
                 $("input.order_itemnumber_input").val(response.data.item_num);
                 $("input.order_itemdescript_input").val(response.data.item_description);
             } else {
@@ -856,7 +856,11 @@ function save_leadorderitem() {
                 $("div#leadorderprofitarea").empty().html(response.data.profit_content);
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
-                $("div.imprintdetails[data-orderitem='"+response.data.newitem+"']").trigger('click');
+                // Print details
+                $("#artNextModal").find('div.modal-dialog').css('width','1077px');
+                $("#artNextModal").find('.modal-title').empty().html('Order Item Imprint');
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.imprintview);
+                init_imprint_details();
             }
         } else {
             show_error(response);

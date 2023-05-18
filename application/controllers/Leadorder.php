@@ -922,11 +922,11 @@ class Leadorder extends MY_Controller
                     } else {
                         // New Order
                         $res=$this->leadorder_model->save_order_items($leadorder, $item_id, $custom_item, $ordersession);
-                        if ($res['result']==$this->error_result) {
-                            $error=$res['msg'];
-                        } else {
+                        $error=$res['msg'];
+                        if ($res['result']==$this->success_result) {
+                            $error = '';
                             $leadorder=usersession($ordersession);
-                            $mdata['newitem'] = $res['newitem'];
+                            $newitem = $res['newitem'];
                             $order=$leadorder['order'];
                             $mdata['order_revenue']=MoneyOutput($order['revenue']);
                             $shipping=$leadorder['shipping'];
@@ -986,6 +986,13 @@ class Leadorder extends MY_Controller
                                 'shipdate'=>$shipping['shipdate'],
                             );
                             $mdata['rushview']=$this->load->view('leadorderdetails/rushlist_view', $rushopt, TRUE);
+                            // Prepare view of imprint details
+                            $imprdata = $this->_prepare_imprint_details($leadorder, $newitem, $ordersession);
+                            if ($imprdata['result']==$this->error_result) {
+                                $error = $imprdata['msg'];
+                            } else {
+                                $mdata['imprintview'] = $imprdata['content'];
+                            }
                         }
                     }
                 }
@@ -5103,6 +5110,55 @@ class Leadorder extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    private function _prepare_imprint_details($leadorder, $newitem, $ordersession) {
+        $out = ['result' => $this->error_result, 'msg' => 'Unknown Error'];
+        $res=$this->leadorder_model->prepare_imprint_details($leadorder, $newitem, $ordersession);
+        if ($res['result']==$this->error_result) {
+            $out['msg']=$res['msg'];
+        } else {
+            $out['result'] = $this->success_result;
+            $details = $res['imprint_details'];
+            $order_blank = $res['order_blank'];
+            $item_id = $res['item_id'];
+            if ($order_blank == 0) {
+                $chkactiv = 0;
+                foreach ($details as $row) {
+                    if ($row['active'] == 1) {
+                        $chkactiv = 1;
+                        break;
+                    }
+                }
+                if ($chkactiv == 0) {
+                    $details[0]['active'] = 1;
+                }
+            }
+            // Prepare View
+            $imptintid = 'imprintdetails' . uniq_link(15);
+            $options = array(
+                'details' => $details,
+                'item_number' => $res['item_number'],
+                'order_blank' => $order_blank,
+                'imprints' => $res['imprints'],
+                'numlocs' => count($res['imprints']),
+                'item_name' => $res['item_name'],
+                'imprintsession' => $imptintid,
+                'custom' => ($res['item_id'] == $this->config->item('custom_id') || $res['item_id'] == $this->config->item('other_id')) ? 1 : 0,
+                'brand' => $res['brand'],
+            );
+            $out['content'] = $this->load->view('leadorderdetails/imprint_details_edit', $options, TRUE);
+
+            $imprintdetails = array(
+                'imprint_details' => $details,
+                'order_blank' => $order_blank,
+                'order_item_id' => $newitem,
+                'item_id' => $item_id,
+                'brand' => $res['brand'],
+            );
+            usersession($imptintid, $imprintdetails);
+        }
+        return $out;
     }
 
 }

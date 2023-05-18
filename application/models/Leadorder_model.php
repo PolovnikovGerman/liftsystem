@@ -68,8 +68,11 @@ Class Leadorder_model extends My_Model {
     ,array('Name'=>'Diners Club Carte Blanche','cardLength'=>array(14),'cardPrefix'=>array('300','305'))
     ,array('Name'=>'Laser','cardLength'=>array(16, 17, 18, 19),'cardPrefix'=>array('6304', '6706', '6771', '6709'))
     );
-
-
+    private $custom_print_price = 0.12;
+    private $custom_setup_price = 30;
+    private $other_print_price = 0.20;
+    private $other_setupsb_price = 30;
+    private $other_setupsr_price = 28;
     function __construct() {
         parent::__construct();
     }
@@ -1440,15 +1443,43 @@ Class Leadorder_model extends My_Model {
             if ($i==1) {
                 $newloc['print_1']=0;
             } else {
-                $newloc['print_1']=$orditem['print_price'];
+                if ($orditem['item_id']==$this->config->item('custom_id')) {
+                    $newloc['print_1'] = $this->custom_print_price;
+                } elseif ($orditem['item_id']==$this->config->item('other_id')) {
+                    $newloc['print_1'] = $this->other_print_price;
+                } else {
+                    $newloc['print_1']=$orditem['print_price'];
+                }
             }
-            $newloc['print_2']=$orditem['print_price'];
-            $newloc['print_3']=$orditem['print_price'];
-            $newloc['print_4']=$orditem['print_price'];
-            $newloc['setup_1']=$orditem['setup_price'];
-            $newloc['setup_2']=$orditem['setup_price'];
-            $newloc['setup_3']=$orditem['setup_price'];
-            $newloc['setup_4']=$orditem['setup_price'];
+            if ($orditem['item_id']==$this->config->item('custom_id')) {
+                $newloc['print_2']=$this->custom_print_price;
+                $newloc['print_3']=$this->custom_print_price;
+                $newloc['print_4']=$this->custom_print_price;
+            } elseif ($orditem['item_id']==$this->config->item('other_id')) {
+                $newloc['print_2']=$this->other_print_price;
+                $newloc['print_3']=$this->other_print_price;
+                $newloc['print_4']=$this->other_print_price;
+            } else {
+                $newloc['print_2']=$orditem['print_price'];
+                $newloc['print_3']=$orditem['print_price'];
+                $newloc['print_4']=$orditem['print_price'];
+            }
+            if ($orditem['item_id']==$this->config->item('custom_id')) {
+                $print_setup = $this->custom_setup_price;
+            } elseif ($orditem['item_id']==$this->config->item('other_id')) {
+                if ($order['brand']=='SR') {
+                    $print_setup = $this->other_setupsr_price;
+                } else {
+                    $print_setup = $this->other_setupsb_price;
+                }
+            } else {
+                $print_setup = $orditem['setup_price'];
+            }
+            // Setup
+            $newloc['setup_1']=$print_setup;
+            $newloc['setup_2']=$print_setup;
+            $newloc['setup_3']=$print_setup;
+            $newloc['setup_4']=$print_setup;
             $imprdetails[]=$newloc;
         }
         $orditem['imprint_details']=$imprdetails;
