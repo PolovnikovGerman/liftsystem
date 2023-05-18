@@ -18,6 +18,12 @@ class Leadquote_model extends MY_Model
     private $NO_ART = '06_noart';
     private $NO_ART_TXT='Need Art';
     private $template = 'Lead Quote';
+    private $custom_print_price = 0.12;
+    private $custom_setup_price = 30;
+    private $other_print_price = 0.20;
+    private $other_setupsb_price = 30;
+    private $other_setupsr_price = 28;
+
     function __construct() {
         parent::__construct();
     }
@@ -125,7 +131,7 @@ class Leadquote_model extends MY_Model
             $response['newitem'] = 0;
             if (!empty($lead_data['lead_item_id'])) {
                 $leadqty = intval($lead_data['lead_itemqty']);
-                $itemdat = $this->add_newleadquote_item($lead_data['lead_item_id'], $lead_data['other_item_name'], $leadqty);
+                $itemdat = $this->add_newleadquote_item($lead_data['lead_item_id'], $lead_data['other_item_name'], $leadqty, $lead_data['brand']);
                 if ($itemdat['result']==$this->success_result) {
                     $quote_items[] = $itemdat['quote_items'];
                     $response['newitem'] = $itemdat['quote_items']['quote_item_id'];
@@ -361,7 +367,7 @@ class Leadquote_model extends MY_Model
         return $newnumber;
     }
 
-    public function add_newleadquote_item($item_id, $custom_name, $itemqty, $startid=1) {
+    public function add_newleadquote_item($item_id, $custom_name, $itemqty, $brand, $startid=1) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $this->load->model('orders_model');
         $this->load->model('leadorder_model');
@@ -437,8 +443,17 @@ class Leadquote_model extends MY_Model
             $quoteitem['charge_perorder']=$itemdata['charge_perorder'];
             $quoteitem['charge_pereach']=$itemdata['charge_pereach'];
             $quoteitem['item_subtotal']=$defqty*$newprice;
+        } elseif ($item_id==$this->config->item('custom_id')) {
+            $quoteitem['imprint_price'] = $this->custom_print_price;
+            $quoteitem['setup_price'] = $this->custom_setup_price;
+        } elseif ($item_id==$this->config->item('other_id')) {
+            $quoteitem['imprint_price'] = $this->other_print_price;
+            if ($brand=='SR') {
+                $quoteitem['setup_price'] = $this->other_setupsr_price;
+            } else {
+                $quoteitem['setup_price'] = $this->other_setupsb_price;
+            }
         }
-
        //
         // Prepare firt item (as itemcolors)
         $newitem=array(
@@ -1380,13 +1395,13 @@ class Leadquote_model extends MY_Model
         $custom_item = ifset($postdata, 'quote_item', '');
         if (!empty($item_id)) {
             $items = $quotesession['items'];
+            $quote = $quotesession['quote'];
             $startid = count($items)+1;
-            $itemdat = $this->add_newleadquote_item($item_id, $custom_item, 0, $startid);
+            $itemdat = $this->add_newleadquote_item($item_id, $custom_item, 0, $quote['brand'], $startid);
             $out['msg'] = $itemdat['msg'];
             if ($itemdat['result']==$this->success_result) {
                 $out['result'] = $this->success_result;
                 $out['newitem'] = $itemdat['newitem'];
-                $quote = $quotesession['quote'];
                 $newitem = $itemdat['quote_items'];
                 $items[] = $newitem;
                 if (empty($quote['lead_time'])) {

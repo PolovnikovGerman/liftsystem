@@ -617,7 +617,7 @@ function save_leadquoteitem() {
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("#artNextModal").modal('hide');
+            // $("#artNextModal").modal('hide');
             $("#quoteitemtabledata").empty().html(response.data.item_content);
             $(".quoteleadtime").empty().html(response.data.leadtime);
             $(".quoteshippingcostarea").empty().html(response.data.shippingview);
@@ -628,7 +628,12 @@ function save_leadquoteitem() {
             $(".quotetotalvalue").empty().html(response.data.total);
             $("#loader").hide();
             init_leadquotes_content();
-            $(".addprintdetails[data-quoteitem='"+response.data.newitem+"']").trigger('click');
+            // $(".addprintdetails[data-quoteitem='"+response.data.newitem+"']").trigger('click');
+            // Print details
+            $("#artNextModal").find('div.modal-dialog').css('width','1077px');
+            $("#artNextModal").find('.modal-title').empty().html('Order Item Imprint');
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.impritview);
+            init_quote_printdetails();
         } else {
             $("#loader").hide();
             show_error(response);
