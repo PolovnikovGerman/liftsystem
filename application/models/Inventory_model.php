@@ -1636,9 +1636,10 @@ class Inventory_model extends MY_Model
         if ($printshop_income_id==0) {
             $res=$this->_newprintshop_order();
         } else {
-            $this->db->select('oa.*, oa.amount_id as printshop_income_id, c.inventory_item_id, o.customer_name as customer, o.order_num');
+            $this->db->select('oa.*, oa.amount_id as printshop_income_id, c.inventory_item_id, o.customer_name as customer, o.order_num, i.inventory_type_id');
             $this->db->from('ts_order_amounts oa');
             $this->db->join('ts_inventory_colors c', 'c.inventory_color_id=oa.inventory_color_id');
+            $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
             $this->db->join('ts_orders o','o.order_id=oa.order_id');
             $this->db->where('oa.amount_id', $printshop_income_id);
             $res=$this->db->get()->row_array();
@@ -1649,6 +1650,7 @@ class Inventory_model extends MY_Model
             $res['printshop_oldqty'] = intval($res['shipped'])+intval($res['kepted'])+intval($res['misprint']);
             $res['newprintshop'] = 0;
             $res['color_old'] = $res['inventory_color_id'];
+            $res['type_old'] = $res['inventory_type_id'];
             // Get balance
             $income = $this->inventory_color_income($res['inventory_color_id']);
             $outcome = $this->inventory_color_outcome($res['inventory_color_id']);
@@ -1700,6 +1702,7 @@ class Inventory_model extends MY_Model
             'printshop_oldqty' => 0,
             'newprintshop' => 1,
             'color_old' => 0,
+            'type_old' => 0,
         );
         return $data;
     }
@@ -1745,6 +1748,7 @@ class Inventory_model extends MY_Model
             'printshop_oldqty' => $order['printshop_oldqty'],
             'newprintshop' => $order['newprintshop'],
             'color_old' => $order['color_old'],
+            'type_old' => $order['type_old'],
         );
         return $data;
     }
@@ -1795,8 +1799,7 @@ class Inventory_model extends MY_Model
             $colordef=$colors[0];
             $orderdata['price']=0;
             $orderdata['printshop_color_id']='';
-            $costs=$this->_get_plates_costs();
-            $orderdata['extracost']=0; //$costs['inv_addcost'];
+            $orderdata['extracost'] = $this->_get_extracost($newval, $orderdata);
             $orderdata['colors']=$colors;
         } elseif ($fldname=='inventory_color_id') {
             $outcolor=$this->get_invitem_colordata($newval);
@@ -1807,7 +1810,7 @@ class Inventory_model extends MY_Model
             $colordat=$outcolor['color'];
             $orderdata['price']=$colordat['avg_price'];
             $costs=$this->_get_plates_costs();
-            $orderdata['extracost']=$costs['inv_addcost'];
+            // $orderdata['extracost']=$costs['inv_addcost'];
         }
         $data=$this->_prinshoporder_params($orderdata);
         $data['items']=$orderdata['items'];
@@ -2294,6 +2297,19 @@ class Inventory_model extends MY_Model
             $this->_update_ordercog($amount_data['order_id']);
         }
         return true;
+    }
+
+    private function _get_extracost($newval, $orderdata) {
+        $extracost = $orderdata['extracost'];
+        $this->db->select('i.inventory_item_id, i.inventory_type_id, t.type_addcost');
+        $this->db->from('ts_inventory_items i');
+        $this->db->join('ts_inventory_types t', 't.inventory_type_id=i.inventory_type_id');
+        $this->db->where('i.inventory_item_id', $newval);
+        $itmdat = $this->db->get()->row_array();
+        if (intval($itmdat['inventory_type_id'])!==intval($orderdata['type_old'])) {
+            $extracost = floatval($itmdat['type_addcost']);
+        }
+        return $extracost;
     }
 
 }
