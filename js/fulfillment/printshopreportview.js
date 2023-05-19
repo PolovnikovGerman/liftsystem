@@ -261,6 +261,7 @@ function init_printshiporder_edit(report) {
                 $("div.datarow[data-report='"+report+"']").find('div.totalcost').empty().html(response.data.itemstotalcost);
                 $("div.datarow[data-report='"+report+"']").find('div.totaladdlcost').empty().html(response.data.extraitem);
                 $("div.datarow[data-report='"+report+"']").find('div.misprintcost').empty().html(response.data.misprintcost);
+                $("div.datarow[data-report='"+report+"']").find('div.totalea').empty().html(response.data.totalea)
                 if (fldname=='order_num') {
                     $("div.datarow[data-report='"+report+"']").find('div.customer').empty().html(response.data.customer);
                 }
