@@ -474,6 +474,18 @@ input.inventadd {
     line-height: 12px;
     text-align: center;
 }
+.itemcolor.currenteditrow > .masterinventseq,
+.itemcolor.currenteditrow > .masterinventnumber,
+.itemcolor.currenteditrow > .masterinventdescrip,
+.itemcolor.currenteditrow > .masterinventpercent,
+.itemcolor.currenteditrow > .masterinventmaximum,
+.itemcolor.currenteditrow > .masterinventinstock,
+.itemcolor.currenteditrow > .masterinventreserv,
+.itemcolor.currenteditrow > .masterinventavailab,
+.itemcolor.currenteditrow > .masterinventunit {
+    font-weight: 600;
+    background: #add8e6;
+}
 .inventorydatarow .masterinventseq {
     width: 27px;
     border-right: 1px solid #000000;
