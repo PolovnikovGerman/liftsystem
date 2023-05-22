@@ -3,9 +3,6 @@ var sliderwidth=183;
 function init_master_inventory() {
     init_master_inventoryhead();
     init_master_inventorydata();
-    // init_master_containers();
-    // init_master_express();
-    // init_master_inventorycontent();
     init_inventcontainer_move();
 }
 
@@ -14,8 +11,8 @@ function init_master_inventoryhead() {
     params.push({name: 'inventory_type', value: $("#active_invtype").val()});
     params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
     params.push({name: 'showmax', value: $("#invshowmax").val()});
-    params.push({name: 'inventory_item', value: $("#inventory_item").val()});
-    params.push({name: 'inventory_color', value: $("#inventory_color").val()});
+    // params.push({name: 'inventory_item', value: $("#inventory_item").val()});
+    // params.push({name: 'inventory_color', value: $("#inventory_color").val()});
     var url="/masterinventory/get_inventory_head";
     $("#loader").show();
     $.post(url, params, function (response){
@@ -49,8 +46,8 @@ function init_master_inventorydata() {
     params.push({name: 'inventory_type', value: $("#active_invtype").val()});
     params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
     params.push({name: 'showmax', value: $("#invshowmax").val()});
-    params.push({name: 'inventory_item', value: $("#inventory_item").val()});
-    params.push({name: 'inventory_color', value: $("#inventory_color").val()});
+    // params.push({name: 'inventory_item', value: $("#inventory_item").val()});
+    // params.push({name: 'inventory_color', value: $("#inventory_color").val()});
     var url="/masterinventory/get_inventory_list";
     $("#loader").show();
     $.post(url, params, function (response) {
@@ -61,12 +58,21 @@ function init_master_inventorydata() {
             $(".masterinventtablebody").find('div.mastinvent_body_express').html(response.data.express_content);
             $(".masterinventtablebody").find('div.mastinvent_body_container').html(response.data.container_content);
             $(".masterinventtablebody").find('div.mastinvent_body_right').html(response.data.right_content);
-            // $(".inventtotalinstock").empty().html(response.data.instock);
-            // $(".inventtotalavailable").empty().html(response.data.available);
-            // $(".inventtotalmaximum").empty().html(response.data.maximum);
             jQuery.balloon.init();
             init_master_inventorytabledat();
             leftmenu_alignment();
+            var inventory_color = $("#inventory_color").val();
+            var inventory_item = $("#inventory_item").val();
+            var scrollto = '';
+            if (parseInt(inventory_color)!==0) {
+                scrollto = 'masterinventorycolor'+inventory_color;
+                inventScrollTo(scrollto);
+            } else if (parseInt(inventory_item)!==0) {
+                scrollto = 'masterinventoryitem'+inventory_item;
+                inventScrollTo(scrollto);
+            }
+            $("#inventory_color").val(0);
+            $("#inventory_item").val(0);
         } else {
             $("#loader").hide();
             show_error(response)
@@ -1289,5 +1295,20 @@ function init_uploadfiles_mastercolor() {
             }
         });
     }
+}
 
+function inventScrollTo(hash) {
+    var destination = $("#"+hash).offset().top;
+    destination=parseInt(destination)-391;
+    console.log('Destin '+destination);
+    $("div.masterinventtablebody").animate({scrollTop: destination}, 1100 );
+
+    // location.hash = "#" + hash;
+    // var divElem = document.getElementById('masterinventtablebody');
+    // var chElem = document.getElementById(hash);
+    // var topPos = divElem.offsetTop;
+    // console.log('Top Pos '+topPos);
+    // console.log('Offset Top '+chElem.offsetTop);
+    // divElem.scrollTop = topPos - chElem.offsetTop;
+    console.log('Hash '+hash);
 }

@@ -111,6 +111,8 @@ $(document).ready(function () {
                 },
             });
         },
+        minLength: 3,
+        items: 'all',
         afterSelect: function (item) {
             liftsite_inventory(item);
         }
@@ -291,7 +293,30 @@ function liftsite_inventory(item) {
     var url="/welcome/liftsite_search";
     $.post(url, params, function(response) {
         if (response.errors=='') {
-            window.location.href='/fulfillment?start=printshopinventview';
+            var curpage = 0;
+            if ($("#printshopinventview").length==1 && $("#printshopinventview").css('display')=='block') {
+                curpage = 1;
+            } else if ($("#inventoryview").length==1 && $("#inventoryview").css('display')=='block') {
+                curpage = 1;
+            } else {
+                curpage = 0;
+            }
+            if (curpage==0) {
+                window.location.href='/fulfillment?start=printshopinventview';
+            } else {
+                $("#publicsearch_inventory").val('');
+                var inventory_color = parseInt(response.data.color);
+                var inventory_item = parseInt(response.data.item);
+                var scrollto = '';
+                if (parseInt(inventory_color)!==0) {
+                    scrollto = 'masterinventorycolor'+inventory_color;
+                    inventScrollTo(scrollto);
+                } else if (parseInt(inventory_item)!==0) {
+                    scrollto = 'masterinventoryitem'+inventory_item;
+                    inventScrollTo(scrollto);
+                }
+            }
+
         } else {
             show_error(response);
         }

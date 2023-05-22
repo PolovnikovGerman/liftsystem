@@ -75,6 +75,8 @@ class Welcome extends MY_Controller {
                         'color_id' => $res['color_id'],
                     ];
                     usersession('liftsearch', $invdata);
+                    $mdata['item'] = $res['item_id'];
+                    $mdata['color'] = $res['color_id'];
                 }
             // } elseif ($search_type=='Items') {
             //    $mdata['url'] = '/database';
@@ -167,10 +169,10 @@ class Welcome extends MY_Controller {
     public function inventorysearch() {
         $search = $this->input->post('q');
         $response = [];
-        if (strlen($search)>=3) {
+        // if (strlen($search)>=3) {
             $this->load->model('inventory_model');
             $response = $this->inventory_model->inventory_autocomplete($search);
-        }
+        // }
         echo json_encode($response);
     }
 }
