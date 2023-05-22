@@ -2103,6 +2103,9 @@ class Fulfillment extends MY_Controller
             $stock = $this->inventory_model->get_inventtype_stock($invtyperow['inventory_type_id']);
             $totalval+=$stock;
             $invtypes[$idx]['value'] = empty($stock) ? $this->empty_html_content : MoneyOutput($stock);
+            if ($invtyperow['inventory_type_id']==$invtype) {
+                $addcost = $invtyperow['type_addcost'];
+            }
             $idx++;
         }
         // Get totals
@@ -2110,9 +2113,9 @@ class Fulfillment extends MY_Controller
             $type_id = $invtype;
         } else {
             $type_id = $invtypes[0]['inventory_type_id'];
+            $addcost = $invtypes[0]['type_addcost'];
         }
-        $totals = $this->inventory_model->get_inventory_totals($type_id, 0,  $addsearch);
-        $addcost = $invtypes[0]['type_addcost'];
+        $totals = $this->inventory_model->get_inventory_totals($type_id, 0); // ,  $addsearch);
         $addval = $totals['available'] * $addcost;
         // Get OnBoats
         $onboats = $this->inventory_model->get_data_onboat($type_id, $this->container_type);
@@ -2175,7 +2178,6 @@ class Fulfillment extends MY_Controller
             'active_type' => $invtypes[0]['inventory_type_id'],
             'export_type' => $invtypes[0]['type_short'],
             'total' => empty($totalval) ? $this->empty_html_content : MoneyOutput($totalval),
-            // 'eventtype' => 'purchasing',
             'eventtype' => 'manufacturing',
             'addcost' => $addcost,
             'addval' => empty($addval) ? '-' : MoneyOutput($addval,0),
