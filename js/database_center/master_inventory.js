@@ -1298,17 +1298,8 @@ function init_uploadfiles_mastercolor() {
 }
 
 function inventScrollTo(hash) {
+    $("div.masterinventtablebody").scrollTop(0);
     var destination = $("#"+hash).offset().top;
     destination=parseInt(destination)-391;
-    console.log('Destin '+destination);
     $("div.masterinventtablebody").animate({scrollTop: destination}, 1100 );
-
-    // location.hash = "#" + hash;
-    // var divElem = document.getElementById('masterinventtablebody');
-    // var chElem = document.getElementById(hash);
-    // var topPos = divElem.offsetTop;
-    // console.log('Top Pos '+topPos);
-    // console.log('Offset Top '+chElem.offsetTop);
-    // divElem.scrollTop = topPos - chElem.offsetTop;
-    console.log('Hash '+hash);
 }
