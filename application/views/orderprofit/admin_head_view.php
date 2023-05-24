@@ -95,7 +95,7 @@
         <div id="profittotals_title"></div>
         <div class="orders-table">
             <div class="profitorder_addaction">
-                <a id="addnew" href="javascript:void(0);" class="searchbtn">
+                <a id="addnew" href="javascript:void(0);" class="searchbtn" data-brand="<?=$brand?>">
                     <img src="/img/leads/addnew_btn.png"/>
                 </a>
             </div>
