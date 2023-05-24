@@ -189,6 +189,7 @@ class Orders extends MY_Controller
             if (count($ordersdat)==0) {
                 $content=$this->load->view('orders/orders_emptylist_view',array(),TRUE);
             } else {
+                $brand = ifset($postdata,'brand','SB');
                 if (isset($postdata['listdata']) && $postdata['listdata']==1) {
                     $options=array(
                         'data'=>$ordersdat,
@@ -201,7 +202,12 @@ class Orders extends MY_Controller
                         'role'=>'user',
                         'brand' => ifset($postdata,'brand','SB'),
                     );
-                    $content = $this->load->view('orders/orders_datalist_view', $data, TRUE);
+                    if ($brand=='SR') {
+                        $content = $this->load->view('orders/srorders_datalist_view', $data, TRUE);
+                    } else {
+                        $content = $this->load->view('orders/orders_datalist_view', $data, TRUE);
+                    }
+
                 }
             }
             $mdata['content']=$content;
@@ -446,7 +452,12 @@ class Orders extends MY_Controller
         $datqs['order_by']='order_id';
         $datqs['direction']='desc';
         $datqs['cur_page']=0;
-        return  $this->load->view('orders/orders_head_view',$datqs,TRUE);
+        if ($brand=='SR') {
+            return  $this->load->view('orders/srorders_head_view',$datqs,TRUE);
+        } else {
+            return  $this->load->view('orders/orders_head_view',$datqs,TRUE);
+        }
+
     }
 
     private function _prepare_orderlist_view($brand) {
