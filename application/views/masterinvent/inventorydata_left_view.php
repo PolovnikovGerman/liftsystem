@@ -3,7 +3,7 @@
     <?php if ($list['item_flag']==1) { ?>
         <div class="inventorydatarow masteritem <?=$expand==1 ? 'expand' : ''?>">
     <?php } else { ?>
-        <div class="inventorydatarow itemcolor <?=$coloridx%2==0 ? 'whitedatarow' : 'greydatarow'?>">
+        <div class="inventorydatarow itemcolor <?=$coloridx%2==0 ? 'whitedatarow' : 'greydatarow'?>" data-invcolor="<?=$list['id']?>">
         <?php $coloridx++;?>
     <?php } ?>
     <?php if ($list['item_flag']==1) { ?>

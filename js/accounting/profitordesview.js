@@ -294,7 +294,9 @@ function init_profitorder_manage() {
         edit_order(order);
     });
     $("#addnew").unbind('click').click(function(){
-        add_neworder();
+        var brand = $(this).data('brand');
+        add_leadorder(brand);
+        // add_neworder();
     })
     $("a.editcoglnk").unbind('click').click(function(){
         edit_cogval(this);

@@ -1,11 +1,11 @@
 .profitorder-content {
     clear: both;
-    width: 1025px;
+    width: 1080px;
     margin-top: 10px;
     margin-left: 10px;
 }
 .profitorder-content.relievers {
-    width: 1089px;
+    width: 1159px; /* 1089px; */
 }
 .profitorder-content input,
 .profitorder-content select {
@@ -34,6 +34,7 @@ select.profitorder-filtrer {
 .profit_filterdate_area.adminview {
     /* width: 740px; */
     width: 1000px;
+    float: left!important;
 }
 .profit_filterdate_area div {
     float: left;
@@ -184,7 +185,7 @@ select.profitorder-filtrer {
 }
 .totalallrow-title .itemcolors {
     /* width: 209px; */
-    width: 196px;
+    width: 263px;
 }
 .totalallrow-title .revenue {
     width: 70px;
@@ -265,7 +266,7 @@ select.profitorder-filtrer {
     cursor: pointer;
 }
 .orders-profitalltotal-row .profitorder_totaldata .totals-emptyspace {
-    width: 195px;
+    width: 265px; /* 195px; */
 }
 .orders-profitalltotal-row .profitorder_totaldata .itemcolors {
     width: 195px;
@@ -311,10 +312,10 @@ select.profitorder-filtrer {
     background-color: #bcbcbc;
     border: 1px solid #919191;
     color: #000000;
-    width: 1026px;
+    width: 1094px;
 }
 .orders-table-title.relievers {
-    width: 1090px;
+    width: 1159px; /* 1090px; */
 }
 .orders-table-title > div {
     font-size: 13px;
@@ -346,7 +347,7 @@ select.profitorder-filtrer {
     width: 51px;
 }
 .orders-table-title > .profitorder_item {
-    width: 131px;
+    width: 198px; /* 131px; */
 }
 .orders-table-title > .profitorder_color {
     width: 66px;
@@ -383,10 +384,10 @@ select.profitorder-filtrer {
     margin-bottom: 9px;
     overflow-x: hidden;
     overflow-y: scroll;
-    width: 1027px;
+    width: 1095px;/* 1027px; */
 }
 .orderprofitcontent-table.relievers {
-    width: 1091px;
+    width: 1160px;/* 1091px; */
 }
 /* Scrollbar */
 /*.orderprofitcontent-table .sp-scrollbar {*/
@@ -492,7 +493,7 @@ select.profitorder-filtrer {
     text-align: left!important;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 132px;
+    width: 199px; /* 132px; */
 }
 .profitorder_item_data.customitem {
     font-weight: bold;

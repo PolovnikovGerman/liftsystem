@@ -172,6 +172,11 @@ select.leadord_filterselect {
     float: left;
     width: 163px;
 }
+.leadorder_datahead > .sritem {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 247px; /* 163px; */
+}
 .leadorder_datahead > .revenue {
     border-right: 1px solid #000000;
     float: left;
@@ -320,6 +325,16 @@ select.leadord_filterselect {
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 163px;
+}
+.leadorder_datarow > .sritem {
+    border-right: 1px solid #000000;
+    float: left;
+    overflow: hidden;
+    padding-right: 5px;
+    padding-left: 4px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 247px; /* 163px; */
 }
 .leadorder_datarow > .item.customorder {
     font-weight: bold;

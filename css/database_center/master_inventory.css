@@ -434,7 +434,8 @@ input.inventadd {
     margin-left: -11px;
 }
 .masterinventtablebody .mastinvent_body_right {
-    width: 207px;
+    /* width: 207px; */
+    width: 204px;
     margin-left: 39px;
 }
 .masterinventtablebody .mastinvent_body_right.showmax {
@@ -473,6 +474,18 @@ input.inventadd {
     font-size: 10px;
     line-height: 12px;
     text-align: center;
+}
+.itemcolor.currenteditrow > .masterinventseq,
+.itemcolor.currenteditrow > .masterinventnumber,
+.itemcolor.currenteditrow > .masterinventdescrip,
+.itemcolor.currenteditrow > .masterinventpercent,
+.itemcolor.currenteditrow > .masterinventmaximum,
+.itemcolor.currenteditrow > .masterinventinstock,
+.itemcolor.currenteditrow > .masterinventreserv,
+.itemcolor.currenteditrow > .masterinventavailab,
+.itemcolor.currenteditrow > .masterinventunit {
+    font-weight: 600;
+    background: #add8e6;
 }
 .inventorydatarow .masterinventseq {
     width: 27px;
@@ -637,7 +650,8 @@ input.inventadd {
     color: #1600bb;
 }
 .inventorydatarow .masterinventtotalval {
-    width: 73px;
+    /* width: 73px; */
+    width: 71px;
     text-align: right;
     padding-right: 6px;
 }

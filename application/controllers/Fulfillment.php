@@ -1618,7 +1618,7 @@ class Fulfillment extends MY_Controller
                     $mdata['extraitem']= MoneyOutput($orderdata['extraitem']);
                     $mdata['price']=number_format($orderdata['price'],3);
                     $mdata['extracost']=number_format($orderdata['extracost'],3);
-                    $mdata['totalea']=number_format($orderdata['totalea']);
+                    $mdata['totalea']=number_format($orderdata['totalea'],3);
                     $mdata['customer']=$orderdata['customer'];
                     // totalea,3
                     if ($fldname=='inventory_item_id') {
