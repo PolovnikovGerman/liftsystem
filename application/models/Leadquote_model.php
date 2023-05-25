@@ -2004,11 +2004,32 @@ class Leadquote_model extends MY_Model
             $pdf->Cell(61,16,'OFFICIAL QUOTE',0,0,'R');
         }
         // Our Address
-        $pdf->SetFont('','B',14);
-        $ourAddressY = 40.28;
-        $pdf->Text($startPageX, $ourAddressY, 'ASI # 40694');
-        $ourAddressY+=7;
-        $pdf->Text($startPageX,$ourAddressY, 'Call Us 1-800-370-3020');
+//        $pdf->SetFont('','B',14);
+//        $ourAddressY = 40.28;
+//        $pdf->Text($startPageX, $ourAddressY, 'ASI # 40694');
+//        $ourAddressY+=7;
+//        $pdf->Text($startPageX,$ourAddressY, 'Call Us 1-800-370-3020');
+        // Our Address
+        $pdf->SetFont('','',12.046857);
+        $ourAddressY = 42.28;
+        $pdf->SetXY($startPageX, $ourAddressY);
+        $pdf->Cell(88,6, '855 Bloomfield Ave Clifton, NJ 07012',0,0,'C');
+//        $pdf->Text($startPageX, $ourAddressY, '855 Bloomfield Ave');
+//        $pdf->Text($startPageX+52, $ourAddressY, 'Clifton, NJ 07012');
+        $ourAddressY += 6.4;
+        $pdf->SetXY($startPageX, $ourAddressY);
+        // $pdf->Text($startPageX, $ourAddressY, 'Clifton, NJ 07012');
+        // $ourAddressY += 5.8;
+        $pdf->Cell(42, 6, 'ASI # 40694',0,0,'R');
+        // $ourAddressY+=5.8;
+        // $pdf->Text($startPageX+52,$ourAddressY, 'Call Us at');
+        $pdf->SetTextColor(0,0,255);
+        $pdf->Cell(46, 6, '1-800-370-3020',0,0,'L');
+        // $pdf->Text($startPageX+70,$ourAddressY, '1-800-370-3020'); // 973-920-2040
+        // $ourAddressY += 5.8;
+        // $pdf->Text($startPageX,$ourAddressY,'http://www.stressrelievers.com');
+        $addressY = $ourAddressY+8;
+
         // Quote Title
         $pdf->SetXY(156, 29);
         $pdf->SetFont('','',12.5);
@@ -2035,15 +2056,16 @@ class Leadquote_model extends MY_Model
         $pdf->SetXY(182, 46);
         $pdf->SetTextColor(0,0,0);
         $pdf->Cell(15,6, $quote['usrrepl'],1,0,'C');
+
         // Billing Address
-        $pdf->SetXY($startPageX, 55);
+        $pdf->SetXY($startPageX, $addressY);
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetCellMargin(4);
         $pdf->Cell(88, 8, 'Billing Address',1,0,'',true);
-        $pdf->SetXY($startPageX,63);
+        $pdf->SetXY($startPageX,$addressY+8);
         $pdf->Cell(88, 30, '',1);
         $pdf->SetTextColor(0,0,0);
-        $yStart = 63;
+        $yStart = $addressY+8;
         foreach ($quote['billing'] as $billrow) {
             $pdf->SetXY($startPageX, $yStart);
             $pdf->Cell(87, 5, $billrow);
@@ -2051,13 +2073,13 @@ class Leadquote_model extends MY_Model
         }
         // Shipping Address
         $pdf->SetTextColor(255,255,255);
-        $pdf->SetXY(105, 55);
+        $pdf->SetXY(105, $addressY);
         $pdf->Cell(92, 8, 'Shipping Address',1,0,'',true);
         $pdf->SetTextColor(0,0,0);
-        $pdf->SetXY(105,63);
+        $pdf->SetXY(105,$addressY+8);
         $pdf->Cell(92, 30, '',1);
         $pdf->SetTextColor(0,0,0);
-        $yStart = 63;
+        $yStart = $addressY+8;
         foreach ($quote['shipping'] as $shiprow) {
             $pdf->SetXY(105, $yStart);
             $pdf->Cell(87, 5, $shiprow);
@@ -2065,7 +2087,7 @@ class Leadquote_model extends MY_Model
         }
         $pdf->SetCellMargin(3);
         // $yStart = $pdf->getY() + 3;
-        $yStart = 96; //102;
+        $yStart = 97; //102;
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetXY($startPageX, $yStart);
         $pdf->Cell($colWidth[0], 6, 'Item',1,0,'C', true);
@@ -2088,7 +2110,7 @@ class Leadquote_model extends MY_Model
                 if ($numpp==1) {
                     $cellheight = 6;
                 } else {
-                    $cellheight = 4.8;
+                    $cellheight = 4.5;
                 }
                 $precesion = 2;
                 $colorcell = $color['item_price']*1000;
@@ -2215,9 +2237,9 @@ class Leadquote_model extends MY_Model
             $yStart = $multY;
         }
         $rowHeight = 2;
-        if ($yStart < 178) {
+        if ($yStart < 172) {
             if ($tablebreak = 0) {
-                $rowHeight = 178 - $yStart;
+                $rowHeight = 172 - $yStart;
             } else {
                 $rowHeight = 15;
             }
@@ -2241,26 +2263,28 @@ class Leadquote_model extends MY_Model
         $pdf->Cell(30,7, MoneyOutput($quote['sales_tax']),'BR',0,'R');
         $pdf->SetXY(127.5, $yStart+7);
         $pdf->SetFont('','B',14);
-        $pdf->Cell(20,12,'Total:', 'LB',0,'C');
+        $pdf->Cell(20,10,'Total:', 'LB',0,'C');
         $pdf->SetFont('','',14);
-        $pdf->Cell(50,12, MoneyOutput($quote['quote_total']),'BR',0,'R');
-        $yStart += 23;
-        if ($yStart > 220) {
+        $pdf->Cell(50,10, MoneyOutput($quote['quote_total']),'BR',0,'R');
+        $yStart += 19;
+        if ($yStart > 225) {
             $pdf->AddPage();
             $yStart = 15;
+        } else {
+            $yStart = 225;
         }
         $pdf->SetDash(1,1);
-        $pdf->Line($startPageX,$yStart,195, $yStart);
+        $pdf->Line($startPageX,$yStart,197, $yStart);
         $pdf->Line($startPageX, $yStart, $startPageX, $yStart+55);
-        $pdf->Line(195,$yStart,195, $yStart+55);
-        $pdf->Line($startPageX, $yStart+55, 195, $yStart+55);
+        $pdf->Line(197,$yStart,197, $yStart+55);
+        $pdf->Line($startPageX, $yStart+55, 197, $yStart+55);
         $pdf->SetDash();
         // Bottom title
         $quickOrdY = $yStart;
-        $bottomY = $yStart + 57;
-        $pdf->SetFont('','',12.05);
-        $pdf->SetXY($startPageX, $bottomY);
-        $pdf->MultiCell(195, 5, 'StressRelievers.com - 855 Bloomfield Avenue - Clifton, NJ 07012 - USA'.PHP_EOL.'973-920-2040 - http://www.stressrelievers.com',0,'C');
+//        $bottomY = $yStart + 57;
+//        $pdf->SetFont('','',12.05);
+//        $pdf->SetXY($startPageX, $bottomY);
+//        $pdf->MultiCell(195, 5, 'StressRelievers.com - 855 Bloomfield Avenue - Clifton, NJ 07012 - USA'.PHP_EOL.'973-920-2040 - http://www.stressrelievers.com',0,'C');
         // Quick Order
         $pdf->SetCellMargin(3);
         $pdf->SetXY($startPageX, $quickOrdY);
@@ -2301,16 +2325,16 @@ class Leadquote_model extends MY_Model
         $pdf->SetFont('', '', 10.5);
         $pdf->Cell(38,6,'Signature:',0,0,'R');
         $pdf->Cell(48,6,'', 'B');
-        $quickOrdY+=8.2;
+        $quickOrdY = ($pdf->GetY())+7.8; // $quickOrdY+=8.2;
         $pdf->SetXY(18,$quickOrdY);
         $pdf->SetFillColor(0, 0, 75);
-        $pdf->Cell(173,12,'', 1,0,'',1);
+        $pdf->Cell(176,12,'', 1,0,'',1);
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetFont('', '', 10.5);
         $pdf->SetXY(18,$quickOrdY);
-        $pdf->Cell(173,6,'To order call 1-800-370-3020 or order securely online',0,0,'C');
+        $pdf->Cell(176,6,'To order call 1-800-370-3020 or order securely online',0,0,'C');
         $pdf->SetXY(18,$quickOrdY+6);
-        $pdf->Cell(173,6,'or fill out this form and send back by email (sales@stressrelievers.com)',0,0,'C');
+        $pdf->Cell(176,6,'or fill out this form and send back by email (sales@stressrelievers.com)',0,0,'C');
         // Save file
         $file_out = $this->config->item('upload_path_preload').$filname;
         $pdf->Output('F', $file_out);
@@ -2438,7 +2462,7 @@ class Leadquote_model extends MY_Model
                 if ($numpp==1) {
                     $cellheight = 6;
                 } else {
-                    $cellheight = 4.8;
+                    $cellheight = 4.5;
                 }
                 $precesion = 2;
                 $colorcell = $color['item_price']*1000;
@@ -2527,13 +2551,13 @@ class Leadquote_model extends MY_Model
         // Empty Row
         $pdf->SetXY($startPageX, $yStart);
         $fillrow=($numpp%2)==0 ? 1 : 0;
-        $pdf->Cell($colWidth[0], 7, '','LR',0,'L', $fillrow);
-        $pdf->Cell($colWidth[1], 7, '','LR', 0,'L', $fillrow);
-        $pdf->Cell($colWidth[2], 7, '', 'LR', 0,'C', $fillrow);
-        $pdf->Cell($colWidth[3], 7, '', 'LR', 0, 'C', $fillrow);
-        $pdf->Cell($colWidth[4], 7, '', 'LR', 0,'R', $fillrow);
+        $pdf->Cell($colWidth[0], 5, '','LR',0,'L', $fillrow);
+        $pdf->Cell($colWidth[1], 5, '','LR', 0,'L', $fillrow);
+        $pdf->Cell($colWidth[2], 5, '', 'LR', 0,'C', $fillrow);
+        $pdf->Cell($colWidth[3], 5, '', 'LR', 0, 'C', $fillrow);
+        $pdf->Cell($colWidth[4], 5, '', 'LR', 0,'R', $fillrow);
         $numpp++;
-        $yStart+=7;
+        $yStart+=5;
         if ($yStart > 220) {
             $pdf->AddPage();
             $yStart = 15;
@@ -2571,7 +2595,7 @@ class Leadquote_model extends MY_Model
             if ($tablebreak = 0) {
                 $rowHeight = 172 - $yStart;
             } else {
-                $rowHeight = 15;
+                $rowHeight = 10;
             }
         }
         $pdf->SetXY($startPageX, $yStart);
@@ -2593,26 +2617,24 @@ class Leadquote_model extends MY_Model
         $pdf->Cell(30,7, MoneyOutput($quote['sales_tax']),'BR',0,'R');
         $pdf->SetXY(127.5, $yStart+7);
         $pdf->SetFont('','B',14);
-        $pdf->Cell(20,12,'Total:', 'LB',0,'C');
+        $pdf->Cell(20,10,'Total:', 'LB',0,'C');
         $pdf->SetFont('','',14);
-        $pdf->Cell(50,12, MoneyOutput($quote['quote_total']),'BR',0,'R');
-        $yStart += 23;
-        if ($yStart > 220) {
+        $pdf->Cell(50,10, MoneyOutput($quote['quote_total']),'BR',0,'R');
+        $yStart += 19;
+        if ($yStart > 215) {
             $pdf->AddPage();
             $yStart = 15;
+        } else {
+            $yStart = 225;
         }
         $pdf->SetDash(1,1);
-        $pdf->Line($startPageX,$yStart,195, $yStart);
+        $pdf->Line($startPageX,$yStart,197, $yStart);
         $pdf->Line($startPageX, $yStart, $startPageX, $yStart+55);
-        $pdf->Line(195,$yStart,195, $yStart+55);
-        $pdf->Line($startPageX, $yStart+55, 195, $yStart+55);
+        $pdf->Line(197,$yStart,197, $yStart+55);
+        $pdf->Line($startPageX, $yStart+55, 197, $yStart+55);
         $pdf->SetDash();
         // Bottom title
         $quickOrdY = $yStart;
-        $bottomY = $yStart + 57;
-        $pdf->SetFont('','',12.05);
-        $pdf->SetXY($startPageX, $bottomY);
-        $pdf->MultiCell(195, 5, 'Stressballs.com - 855 Bloomfield Avenue - Clifton, NJ 07012 - USA'.PHP_EOL.'(Tel) 201-210-8700  -  (Fax) 201-604-2688',0,'C');
         // Quick Order
         $pdf->SetCellMargin(3);
         $pdf->SetXY($startPageX, $quickOrdY);
@@ -2653,16 +2675,17 @@ class Leadquote_model extends MY_Model
         $pdf->SetFont('', '', 10.5);
         $pdf->Cell(38,6,'Signature:',0,0,'R');
         $pdf->Cell(48,6,'', 'B');
-        $quickOrdY+=8.2;
+        $quickOrdY = ($pdf->GetY())+7.8; // $quickOrdY+=8.2;
         $pdf->SetXY(18,$quickOrdY);
         $pdf->SetFillColor(17, 100, 238);
-        $pdf->Cell(173,12,'', 1,0,'',1);
+        $pdf->Cell(176,12, '', 1,0,'',1);
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetFont('', '', 10.5);
         $pdf->SetXY(18,$quickOrdY);
-        $pdf->Cell(173,6,'To order call 1-800-790-6090 or order securely online',0,0,'C');
+        $pdf->Cell(176,6,'To order call 1-800-790-6090 or order securely online',0,0,'C');
         $pdf->SetXY(18,$quickOrdY+6);
-        $pdf->Cell(173,6,'or fill out this form and send back by email (sales@stressballs.com) or fax (201-604-2688)',0,0,'C');
+        $pdf->Cell(176,6,'or fill out this form and send back by email (sales@stressballs.com) or fax (201-604-2688)',0,0,'C');
+        // $pdf->Line($startPageX, 291, 197, 291);
         // Save file
         $file_out = $this->config->item('upload_path_preload').$filname;
         $pdf->Output('F', $file_out);

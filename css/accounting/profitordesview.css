@@ -1,6 +1,6 @@
 .profitorder-content {
     clear: both;
-    width: 1025px;
+    width: 1080px;
     margin-top: 10px;
     margin-left: 10px;
 }
@@ -312,7 +312,7 @@ select.profitorder-filtrer {
     background-color: #bcbcbc;
     border: 1px solid #919191;
     color: #000000;
-    width: 1026px;
+    width: 1094px;
 }
 .orders-table-title.relievers {
     width: 1159px; /* 1090px; */
@@ -384,7 +384,7 @@ select.profitorder-filtrer {
     margin-bottom: 9px;
     overflow-x: hidden;
     overflow-y: scroll;
-    width: 1027px;
+    width: 1095px;/* 1027px; */
 }
 .orderprofitcontent-table.relievers {
     width: 1160px;/* 1091px; */
