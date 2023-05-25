@@ -2267,15 +2267,17 @@ class Leadquote_model extends MY_Model
         $pdf->SetFont('','',14);
         $pdf->Cell(50,10, MoneyOutput($quote['quote_total']),'BR',0,'R');
         $yStart += 19;
-        if ($yStart > 215) {
+        if ($yStart > 225) {
             $pdf->AddPage();
             $yStart = 15;
+        } else {
+            $yStart = 225;
         }
         $pdf->SetDash(1,1);
-        $pdf->Line($startPageX,$yStart,195, $yStart);
+        $pdf->Line($startPageX,$yStart,197, $yStart);
         $pdf->Line($startPageX, $yStart, $startPageX, $yStart+55);
-        $pdf->Line(195,$yStart,195, $yStart+55);
-        $pdf->Line($startPageX, $yStart+55, 195, $yStart+55);
+        $pdf->Line(197,$yStart,197, $yStart+55);
+        $pdf->Line($startPageX, $yStart+55, 197, $yStart+55);
         $pdf->SetDash();
         // Bottom title
         $quickOrdY = $yStart;
@@ -2323,16 +2325,16 @@ class Leadquote_model extends MY_Model
         $pdf->SetFont('', '', 10.5);
         $pdf->Cell(38,6,'Signature:',0,0,'R');
         $pdf->Cell(48,6,'', 'B');
-        $quickOrdY+=8.2;
+        $quickOrdY = ($pdf->GetY())+7.8; // $quickOrdY+=8.2;
         $pdf->SetXY(18,$quickOrdY);
         $pdf->SetFillColor(0, 0, 75);
-        $pdf->Cell(173,12,'', 1,0,'',1);
+        $pdf->Cell(176,12,'', 1,0,'',1);
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetFont('', '', 10.5);
         $pdf->SetXY(18,$quickOrdY);
-        $pdf->Cell(173,6,'To order call 1-800-370-3020 or order securely online',0,0,'C');
+        $pdf->Cell(176,6,'To order call 1-800-370-3020 or order securely online',0,0,'C');
         $pdf->SetXY(18,$quickOrdY+6);
-        $pdf->Cell(173,6,'or fill out this form and send back by email (sales@stressrelievers.com)',0,0,'C');
+        $pdf->Cell(176,6,'or fill out this form and send back by email (sales@stressrelievers.com)',0,0,'C');
         // Save file
         $file_out = $this->config->item('upload_path_preload').$filname;
         $pdf->Output('F', $file_out);
@@ -2622,19 +2624,17 @@ class Leadquote_model extends MY_Model
         if ($yStart > 215) {
             $pdf->AddPage();
             $yStart = 15;
+        } else {
+            $yStart = 225;
         }
         $pdf->SetDash(1,1);
-        $pdf->Line($startPageX,$yStart,195, $yStart);
+        $pdf->Line($startPageX,$yStart,197, $yStart);
         $pdf->Line($startPageX, $yStart, $startPageX, $yStart+55);
-        $pdf->Line(195,$yStart,195, $yStart+55);
-        $pdf->Line($startPageX, $yStart+55, 195, $yStart+55);
+        $pdf->Line(197,$yStart,197, $yStart+55);
+        $pdf->Line($startPageX, $yStart+55, 197, $yStart+55);
         $pdf->SetDash();
         // Bottom title
         $quickOrdY = $yStart;
-//        $bottomY = $yStart + 57;
-//        $pdf->SetFont('','',12.05);
-//        $pdf->SetXY($startPageX, $bottomY);
-//        $pdf->MultiCell(195, 5, 'Stressballs.com - 855 Bloomfield Avenue - Clifton, NJ 07012 - USA'.PHP_EOL.'(Tel) 201-210-8700  -  (Fax) 201-604-2688',0,'C');
         // Quick Order
         $pdf->SetCellMargin(3);
         $pdf->SetXY($startPageX, $quickOrdY);
@@ -2675,16 +2675,17 @@ class Leadquote_model extends MY_Model
         $pdf->SetFont('', '', 10.5);
         $pdf->Cell(38,6,'Signature:',0,0,'R');
         $pdf->Cell(48,6,'', 'B');
-        $quickOrdY+=8.2;
+        $quickOrdY = ($pdf->GetY())+7.8; // $quickOrdY+=8.2;
         $pdf->SetXY(18,$quickOrdY);
         $pdf->SetFillColor(17, 100, 238);
-        $pdf->Cell(173,12,'', 1,0,'',1);
+        $pdf->Cell(176,12, '', 1,0,'',1);
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetFont('', '', 10.5);
         $pdf->SetXY(18,$quickOrdY);
-        $pdf->Cell(173,6,'To order call 1-800-790-6090 or order securely online',0,0,'C');
+        $pdf->Cell(176,6,'To order call 1-800-790-6090 or order securely online',0,0,'C');
         $pdf->SetXY(18,$quickOrdY+6);
-        $pdf->Cell(173,6,'or fill out this form and send back by email (sales@stressballs.com) or fax (201-604-2688)',0,0,'C');
+        $pdf->Cell(176,6,'or fill out this form and send back by email (sales@stressballs.com) or fax (201-604-2688)',0,0,'C');
+        // $pdf->Line($startPageX, 291, 197, 291);
         // Save file
         $file_out = $this->config->item('upload_path_preload').$filname;
         $pdf->Output('F', $file_out);
