@@ -24,6 +24,8 @@ class Leadquote_model extends MY_Model
     private $other_setupsb_price = 30;
     private $other_setupsr_price = 28;
 
+    private $page_heigh_limit = 270;
+
     function __construct() {
         parent::__construct();
     }
@@ -2159,6 +2161,11 @@ class Leadquote_model extends MY_Model
                 $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
                 $numpp++;
                 $yStart += $cellheight;
+                if ($yStart>=$this->page_heigh_limit) {
+                    $pdf->AddPage();
+                    $this->_newpagetablestart($pdf);
+                    $yStart = 21;
+                }
             }
             $imprints = $item['imprints'];
             foreach ($imprints as $imprint) {
@@ -2176,6 +2183,11 @@ class Leadquote_model extends MY_Model
                 $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
                 $numpp++;
                 $yStart += $cellheight;
+                if ($yStart>=$this->page_heigh_limit) {
+                    $pdf->AddPage();
+                    $this->_newpagetablestart($pdf);
+                    $yStart = 21;
+                }
             }
         }
         if (!empty($quote['mischrg_label1']) && !empty($quote['mischrg_value1'])) {
@@ -3458,6 +3470,26 @@ class Leadquote_model extends MY_Model
         $out['result'] = $this->success_result;
         $out['billingsame'] = $sameadr;
         return $out;
+    }
+
+    private function _newpagetablestart($pdf) {
+        $colWidth = [
+            25, 81, 23, 24, 28.3,
+        ];
+        $startPageX = 16;
+        $yStart = 15;
+        $pdf->setFillColor(128, 128, 128);
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->SetXY($startPageX, $yStart);
+        $pdf->Cell($colWidth[0], 6, 'Item',1,0,'C', true);
+        $pdf->Cell($colWidth[1], 6, 'Description',1, 0,'C', true);
+        $pdf->Cell($colWidth[2], 6, 'Qty', 1, 0,'C', true);
+        $pdf->Cell($colWidth[3], 6, 'Price (ea)', 1, 0, 'C', true);
+        $pdf->Cell($colWidth[4], 6, 'Total:', 1, 0,'C', true);
+
+        $pdf->setFillcolor(230, 230, 230);
+        $pdf->SetTextColor(0,0,0);
+
     }
 
 }
