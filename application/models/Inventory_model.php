@@ -118,9 +118,6 @@ class Inventory_model extends MY_Model
                         }
                     }
                     $outstock = QTYOutput($instock);
-                    if ($color['inventory_color_id']==65) {
-                        $tt=1;
-                    }
                     // if ($stockclass==$this->outstockclass && empty($stockperc)) {
                     if (intval($instock) <= 0) {
                         $outstock=$this->outstoklabel;
