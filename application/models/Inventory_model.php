@@ -118,17 +118,22 @@ class Inventory_model extends MY_Model
                         }
                     }
                     $outstock = QTYOutput($instock);
-                    if ($stockclass==$this->outstockclass && empty($stockperc)) {
+                    if ($color['inventory_color_id']==65) {
+                        $tt=1;
+                    }
+                    // if ($stockclass==$this->outstockclass && empty($stockperc)) {
+                    if (intval($instock) <= 0) {
                         $outstock=$this->outstoklabel;
                         $stockclass = $this->emptystockclass;
                     }
                     $outavail = QTYOutput($available);
-                    if ($stockclass==$this->outstockclass && empty($stockperc)) {
+                    // if ($stockclass==$this->outstockclass && empty($stockperc)) {
+                    if (intval($available) <= 0 ) {
                         $outavail=$this->outstoklabel;
                         $stockclass = $this->emptystockclass;
                     }
                     $totalclass='';
-                    if (empty($available)) {
+                    if (intval($available) <=0 ) {
                         $totalclass = 'emptytotal';
                     }
                     // $avgprice = $available==0 ? 0 :
