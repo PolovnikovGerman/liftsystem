@@ -2037,18 +2037,10 @@ class Leadquote_model extends MY_Model
             $pdf->Cell(61,16,'OFFICIAL QUOTE',0,0,'R');
         }
         // Our Address
-//        $pdf->SetFont('','B',14);
-//        $ourAddressY = 40.28;
-//        $pdf->Text($startPageX, $ourAddressY, 'ASI # 40694');
-//        $ourAddressY+=7;
-//        $pdf->Text($startPageX,$ourAddressY, 'Call Us 1-800-370-3020');
-        // Our Address
         $pdf->SetFont('','',12.046857);
         $ourAddressY = 42.28;
         $pdf->SetXY($startPageX, $ourAddressY);
         $pdf->Cell(88,6, '855 Bloomfield Ave Clifton, NJ 07012',0,0,'C');
-//        $pdf->Text($startPageX, $ourAddressY, '855 Bloomfield Ave');
-//        $pdf->Text($startPageX+52, $ourAddressY, 'Clifton, NJ 07012');
         $ourAddressY += 6.4;
         $pdf->SetXY($startPageX, $ourAddressY);
         // $pdf->Text($startPageX, $ourAddressY, 'Clifton, NJ 07012');
@@ -2058,9 +2050,6 @@ class Leadquote_model extends MY_Model
         // $pdf->Text($startPageX+52,$ourAddressY, 'Call Us at');
         $pdf->SetTextColor(0,0,255);
         $pdf->Cell(46, 6, '1-800-370-3020',0,0,'L');
-        // $pdf->Text($startPageX+70,$ourAddressY, '1-800-370-3020'); // 973-920-2040
-        // $ourAddressY += 5.8;
-        // $pdf->Text($startPageX,$ourAddressY,'http://www.stressrelievers.com');
         $addressY = $ourAddressY+8;
 
         // Quote Title
@@ -2162,6 +2151,7 @@ class Leadquote_model extends MY_Model
                 $numpp++;
                 $yStart += $cellheight;
                 if ($yStart>=$this->page_heigh_limit) {
+                    $pdf->Line($startPageX, $yStart, 197, $yStart);
                     $pdf->AddPage();
                     $this->_newpagetablestart($pdf);
                     $yStart = 21;
@@ -2184,6 +2174,7 @@ class Leadquote_model extends MY_Model
                 $numpp++;
                 $yStart += $cellheight;
                 if ($yStart>=$this->page_heigh_limit) {
+                    $pdf->Line($startPageX, $yStart, 197, $yStart);
                     $pdf->AddPage();
                     $this->_newpagetablestart($pdf);
                     $yStart = 21;
@@ -2200,6 +2191,12 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value1']).'T', 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
+            if ($yStart>=$this->page_heigh_limit) {
+                $pdf->Line($startPageX, $yStart, 197, $yStart);
+                $pdf->AddPage();
+                $this->_newpagetablestart($pdf);
+                $yStart = 21;
+            }
         }
         if (!empty($quote['mischrg_label2']) && !empty($quote['mischrg_value2'])) {
             $pdf->SetXY($startPageX, $yStart);
@@ -2211,6 +2208,12 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value2']).'T', 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
+            if ($yStart>=$this->page_heigh_limit) {
+                $pdf->Line($startPageX, $yStart, 197, $yStart);
+                $pdf->AddPage();
+                $this->_newpagetablestart($pdf);
+                $yStart = 21;
+            }
         }
         if (!empty($shipping)) {
             $shippref = ' Shipping Charge';
@@ -2226,6 +2229,12 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['shipping_cost']).'T', 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
+            if ($yStart>=$this->page_heigh_limit) {
+                $pdf->Line($startPageX, $yStart, 197, $yStart);
+                $pdf->AddPage();
+                $this->_newpagetablestart($pdf);
+                $yStart = 21;
+            }
         }
         if (!empty($quote['discount_label']) && !empty($quote['discount_value'])) {
             $pdf->SetXY($startPageX, $yStart);
@@ -2237,6 +2246,12 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[4], $cellheight, '-'.MoneyOutput($quote['discount_value']).' ', 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
+            if ($yStart>=$this->page_heigh_limit) {
+                $pdf->Line($startPageX, $yStart, 197, $yStart);
+                $pdf->AddPage();
+                $this->_newpagetablestart($pdf);
+                $yStart = 21;
+            }
         }
         // Empty Row
         $pdf->SetXY($startPageX, $yStart);
@@ -2248,23 +2263,19 @@ class Leadquote_model extends MY_Model
         $pdf->Cell($colWidth[4], 7, '', 'LR', 0,'R', $fillrow);
         $numpp++;
         $yStart+=7;
-        if ($yStart > 220) {
+        if ($yStart>=$this->page_heigh_limit) {
+            $pdf->Line($startPageX, $yStart, 197, $yStart);
             $pdf->AddPage();
-            $yStart = 15;
-            $tablebreak = 1;
-            $pdf->setFillColor(128, 128, 128);
-            $pdf->SetTextColor(255, 255, 255);
-            $pdf->SetXY($startPageX, $yStart);
-            $pdf->Cell($colWidth[0], 6, 'Item',1,0,'C', true);
-            $pdf->Cell($colWidth[1], 6, 'Description',1, 0,'C', true);
-            $pdf->Cell($colWidth[2], 6, 'Qty', 1, 0,'C', true);
-            $pdf->Cell($colWidth[3], 6, 'Price (ea)', 1, 0, 'C', true);
-            $pdf->Cell($colWidth[4], 6, 'Total:', 1, 0,'C', true);
-            $yStart+=6;
-            $pdf->setFillcolor(230, 230, 230);
-            $pdf->SetTextColor(0,0,0);
+            $this->_newpagetablestart($pdf);
+            $yStart = 21;
         }
         if (!empty($quote['quote_repcontact'])) {
+            if ($yStart >=200) {
+                $pdf->Line($startPageX, $yStart, 197, $yStart);
+                $pdf->AddPage();
+                $this->_newpagetablestart($pdf);
+                $yStart = 21;
+            }
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->SetXY($startPageX + $colWidth[0], $yStart);
             $pdf->MultiCell($colWidth[1], $cellheight, $quote['quote_repcontact'],'LR', 'L', $fillrow);
@@ -2278,6 +2289,12 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[4], $rowHeight, '', 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart = $multY;
+            if ($yStart>=$this->page_heigh_limit) {
+                $pdf->Line($startPageX, $yStart, 197, $yStart);
+                $pdf->AddPage();
+                $this->_newpagetablestart($pdf);
+                $yStart = 21;
+            }
         }
         $rowHeight = 2;
         if ($yStart < 172) {
@@ -2524,6 +2541,12 @@ class Leadquote_model extends MY_Model
                 $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
                 $numpp++;
                 $yStart += $cellheight;
+                if ($yStart>=$this->page_heigh_limit) {
+                    $pdf->Line($startPageX, $yStart, 197, $yStart);
+                    $pdf->AddPage();
+                    $this->_newpagetablestart($pdf);
+                    $yStart = 21;
+                }
             }
             $imprints = $item['imprints'];
             foreach ($imprints as $imprint) {
@@ -2541,6 +2564,12 @@ class Leadquote_model extends MY_Model
                 $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
                 $numpp++;
                 $yStart += $cellheight;
+                if ($yStart>=$this->page_heigh_limit) {
+                    $pdf->Line($startPageX, $yStart, 197, $yStart);
+                    $pdf->AddPage();
+                    $this->_newpagetablestart($pdf);
+                    $yStart = 21;
+                }
             }
         }
         if (!empty($quote['mischrg_label1']) && !empty($quote['mischrg_value1'])) {
@@ -2553,6 +2582,12 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value1']).'T', 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
+            if ($yStart>=$this->page_heigh_limit) {
+                $pdf->Line($startPageX, $yStart, 197, $yStart);
+                $pdf->AddPage();
+                $this->_newpagetablestart($pdf);
+                $yStart = 21;
+            }
         }
         if (!empty($quote['mischrg_label2']) && !empty($quote['mischrg_value2'])) {
             $pdf->SetXY($startPageX, $yStart);
@@ -2564,6 +2599,12 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value2']).'T', 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
+            if ($yStart>=$this->page_heigh_limit) {
+                $pdf->Line($startPageX, $yStart, 197, $yStart);
+                $pdf->AddPage();
+                $this->_newpagetablestart($pdf);
+                $yStart = 21;
+            }
         }
         if (!empty($shipping)) {
             $shippref = ' Shipping Charge';
@@ -2579,6 +2620,12 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['shipping_cost']).'T', 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
+            if ($yStart>=$this->page_heigh_limit) {
+                $pdf->Line($startPageX, $yStart, 197, $yStart);
+                $pdf->AddPage();
+                $this->_newpagetablestart($pdf);
+                $yStart = 21;
+            }
         }
         if (!empty($quote['discount_label']) && !empty($quote['discount_value'])) {
             $pdf->SetXY($startPageX, $yStart);
@@ -2590,6 +2637,12 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[4], $cellheight, '-'.MoneyOutput($quote['discount_value']).' ', 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
+            if ($yStart>=$this->page_heigh_limit) {
+                $pdf->Line($startPageX, $yStart, 197, $yStart);
+                $pdf->AddPage();
+                $this->_newpagetablestart($pdf);
+                $yStart = 21;
+            }
         }
         // Empty Row
         $pdf->SetXY($startPageX, $yStart);
@@ -2601,23 +2654,19 @@ class Leadquote_model extends MY_Model
         $pdf->Cell($colWidth[4], 5, '', 'LR', 0,'R', $fillrow);
         $numpp++;
         $yStart+=5;
-        if ($yStart > 220) {
+        if ($yStart>=$this->page_heigh_limit) {
+            $pdf->Line($startPageX, $yStart, 197, $yStart);
             $pdf->AddPage();
-            $yStart = 15;
-            $tablebreak = 1;
-            $pdf->setFillColor(128, 128, 128);
-            $pdf->SetTextColor(255, 255, 255);
-            $pdf->SetXY($startPageX, $yStart);
-            $pdf->Cell($colWidth[0], 6, 'Item',1,0,'C', true);
-            $pdf->Cell($colWidth[1], 6, 'Description',1, 0,'C', true);
-            $pdf->Cell($colWidth[2], 6, 'Qty', 1, 0,'C', true);
-            $pdf->Cell($colWidth[3], 6, 'Price (ea)', 1, 0, 'C', true);
-            $pdf->Cell($colWidth[4], 6, 'Total:', 1, 0,'C', true);
-            $yStart+=6;
-            $pdf->setFillcolor(230, 230, 230);
-            $pdf->SetTextColor(0,0,0);
+            $this->_newpagetablestart($pdf);
+            $yStart = 21;
         }
         if (!empty($quote['quote_repcontact'])) {
+            if ($yStart >=200) {
+                $pdf->Line($startPageX, $yStart, 197, $yStart);
+                $pdf->AddPage();
+                $this->_newpagetablestart($pdf);
+                $yStart = 21;
+            }
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->SetXY($startPageX + $colWidth[0], $yStart);
             $pdf->MultiCell($colWidth[1], $cellheight, $quote['quote_repcontact'],'LR', 'L', $fillrow);
@@ -2631,6 +2680,12 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[4], $rowHeight, '', 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart = $multY;
+            if ($yStart>=$this->page_heigh_limit) {
+                $pdf->Line($startPageX, $yStart, 197, $yStart);
+                $pdf->AddPage();
+                $this->_newpagetablestart($pdf);
+                $yStart = 21;
+            }
         }
         $rowHeight = 2;
         if ($yStart < 172 ) {
