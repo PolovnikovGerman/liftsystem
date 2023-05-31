@@ -540,7 +540,7 @@ function init_lead_cloneemail() {
         try {
             var successful = document.execCommand('copy');
             var msg = successful ? 'successful' : 'unsuccessful';
-            alert('Email address copied to clipboard');
+            // alert('Email address copied to clipboard');
         } catch (err) {
             console.log('Oops, unable to copy');
         }
