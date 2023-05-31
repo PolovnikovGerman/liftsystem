@@ -7443,6 +7443,7 @@ Class Leadorder_model extends My_Model {
                     'item_price'=>PriceOutput($irow['item_price']),
                     'item_subtotal'=>$irow['item_subtotal'],
                     'item_color'=>'#000000',
+                    'item' => 1,
                 );
             }
             $imprints=$row['imprints'];
@@ -7456,6 +7457,7 @@ Class Leadorder_model extends My_Model {
                             'item_price'=>$irow['imprint_price'],
                             'item_subtotal'=>$irow['imprint_subtotal'],
                             'item_color'=>'#000000',
+                            'item' => 0,
                         );
                     }
                 }
@@ -7470,6 +7472,7 @@ Class Leadorder_model extends My_Model {
                 'item_price'=>$order['mischrg_val1'],
                 'item_subtotal'=>$order['mischrg_val1'],
                 'item_color'=>'#000000',
+                'item' => 0,
             );
         }
 
@@ -7481,6 +7484,7 @@ Class Leadorder_model extends My_Model {
                 'item_price'=>$order['mischrg_val2'],
                 'item_subtotal'=>$order['mischrg_val2'],
                 'item_color'=>'#000000',
+                'item' => 0,
             );
         }
 
@@ -7492,6 +7496,7 @@ Class Leadorder_model extends My_Model {
                 'item_price'=>($order['discount_val'] > 0 ? '('.$order['discount_val'].')' : abs($order['discount_val'])),
                 'item_subtotal'=>($order['discount_val'] > 0 ? '('.MoneyOutput($order['discount_val'],2).')' : MoneyOutput(abs($order['discount_val']),2)),
                 'item_color'=>($order['discount_val'] > 0 ? '#ff0000' : '#000000'),
+                'item' => 0,
             );
         }
 
@@ -7513,6 +7518,7 @@ Class Leadorder_model extends My_Model {
                 'item_price'=>$shipdata['rush_price'],
                 'item_subtotal'=>MoneyOutput($shipdata['rush_price'],2),
                 'item_color'=>'#000000',
+                'item' => 0,
             );
         }
 
@@ -7537,6 +7543,7 @@ Class Leadorder_model extends My_Model {
                 'item_price'=>$leadorder['order']['shipping'],
                 'item_subtotal'=>  MoneyOutput($leadorder['order']['shipping'],2),
                 'item_color'=>'#000000',
+                'item' => 0,
             );
         }
         $detcnt=count($item_details)+$adrcnt;
@@ -7550,6 +7557,7 @@ Class Leadorder_model extends My_Model {
                     'item_price'=>'',
                     'item_subtotal'=>'',
                     'item_color'=>'#000000',
+                    'item' => 0,
                 );
             }
         }
@@ -9341,6 +9349,7 @@ Class Leadorder_model extends My_Model {
         $numpp = 1;
         $pdf->SetFillColor(225, 225, 225);
         $pdf->SetXY(0, 118.7);
+        $numrow = 0;
         foreach ($options['details'] as $detail) {
             $fillcell = ($numpp%2==1 ? true:  false);
             if ($detail['item_color']=='#ff0000') {
@@ -9353,14 +9362,39 @@ Class Leadorder_model extends My_Model {
 //            $pdf->MultiCell($tableWidths[0],9,$detail['item_num'],0,'C', $fillcell);
 //            $pdf->SetXY(5+$tableWidths[0], $rowY);
 //            $pdf->MultiCell($tableWidths[1],9, $detail['item_description'],0, 'L', $fillcell);
-            $pdf->Cell($tableWidths[0], 9, $detail['item_num'], 0, 0,'C', $fillcell);
-            $pdf->Cell($tableWidths[1], 9, substr($detail['item_description'],0,45),0,0,'L',$fillcell);
-            $pdf->Cell($tableWidths[2], 9, $detail['item_qty']==0 ? '' : QTYOutput($detail['item_qty']),0, 0, 'C', $fillcell);
-            $pdf->Cell($tableWidths[3], 9, $detail['item_price'],0,0,'C', $fillcell);
-            $pdf->Cell($tableWidths[4], 9, $detail['item_subtotal'],0, 1,'C', $fillcell);
+            $pdf->Cell($tableWidths[0], 7, $detail['item_num'], 0, 0,'C', $fillcell); //
+            if ($detail['item']==1) {
+                $pdf->Cell($tableWidths[1], 7, substr($detail['item_description'],0,45),0,0,'L',$fillcell);
+            } else {
+                $pdf->Cell($tableWidths[1], 7, '  '.substr($detail['item_description'],0,45),0,0,'L',$fillcell);
+            }
+
+            $pdf->Cell($tableWidths[2], 7, $detail['item_qty']==0 ? '' : QTYOutput($detail['item_qty']),0, 0, 'C', $fillcell);
+            $pdf->Cell($tableWidths[3], 7, $detail['item_price'],0,0,'C', $fillcell);
+            $pdf->Cell($tableWidths[4], 7, $detail['item_subtotal'],0, 1,'C', $fillcell);
             $numpp++;
+            $numrow = $pdf->GetY();
+            if ($numrow >= 260 && $numpp < count($options['details'])) {
+                $pdf->AddPage();
+                $pdf->SetXY(5, 15);
+                $numrow = 0;
+                $tableHeadYPos = 15;
+                $pdf->ImageEps($itemnumImage, $itemnumXPos, $tableHeadYPos, $itemnumWidth, $invoiceimgHeadHeight);
+                $pdf->ImageEps($descripImage, $descripXPos, $tableHeadYPos, $descripWidth, $invoiceimgHeadHeight);
+                $pdf->ImageEps($itemqtyImage, $itemqtyXPos, $tableHeadYPos, $itemqtyWidth, $invoiceimgHeadHeight);
+                $pdf->ImageEps($priceImage, $priceXPos, $tableHeadYPos, $priceWidth, $invoiceimgHeadHeight);
+                $pdf->ImageEps($totalImage, $totalXPos, $tableHeadYPos, $totalWidth, $invoiceimgHeadHeight);
+                // Table Data
+                $pdf->SetFillColor(225, 225, 225);
+                $pdf->SetXY(5, 24.7);
+            }
         }
         $totalbgn = $pdf->GetY();
+        if ($totalbgn >= 260) {
+            $pdf->AddPage();
+            $pdf->SetXY(5, 15);
+            $totalbgn = 15;
+        }
         if (!empty($options['invoice_message'])) {
             $pdf->SetXY(5,$totalbgn+5.5);
             $pdf->SetFont('','',13);
