@@ -97,6 +97,35 @@ $(document).ready(function () {
         window.location.href='/fulfillment?start=printshopinventview';
     })
     // Autocomplete inventory
+    // $("#publicsearch_inventory").typeahead({
+    //     source: function(query, result) {
+    //         $.ajax({
+    //             url: "/welcome/inventorysearch/",
+    //             data: 'q=' + query,
+    //             dataType: "json",
+    //             type: "POST",
+    //             success: function(data) {
+    //                 result($.map(data, function(item) {
+    //                     return item;
+    //                 }));
+    //             },
+    //         });
+    //     },
+    //     minLength: 3,
+    //     items: 'all',
+    //     afterSelect: function (item) {
+    //         liftsite_inventory(item);
+    //     }
+    // });
+    // $("select.publicsearch_type").unbind('change').change(function(){
+    //     var newval = $(this).val();
+    //     if (newval=='Orders') {
+    //         $("#publicsearch_template").attr('placeholder','Find Orders');
+    //     } else if (newval=='Items') {
+    //         $("#publicsearch_template").attr('placeholder','Find Items');
+    //     }
+    // });
+
     $("#publicsearch_inventory").typeahead({
         source: function(query, result) {
             $.ajax({
@@ -113,18 +142,14 @@ $(document).ready(function () {
         },
         minLength: 3,
         items: 'all',
+        displayText: function (item) {
+            return item.itemimg+' '+item.itemname;
+        },
         afterSelect: function (item) {
-            liftsite_inventory(item);
+            $("#publicsearch_inventory").val(item.itemname);
+            liftsite_inventory(item.id);
         }
     });
-    // $("select.publicsearch_type").unbind('change').change(function(){
-    //     var newval = $(this).val();
-    //     if (newval=='Orders') {
-    //         $("#publicsearch_template").attr('placeholder','Find Orders');
-    //     } else if (newval=='Items') {
-    //         $("#publicsearch_template").attr('placeholder','Find Items');
-    //     }
-    // });
     $('a.test').on("click", function(e){
         $("#collapsed").toggle();
         e.stopPropagation();

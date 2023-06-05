@@ -2348,7 +2348,12 @@ class Inventory_model extends MY_Model
         $searchs = $this->db->get()->result_array();
         $result = [];
         foreach ($searchs as $search) {
-            array_push($result, $search['txtval']);
+            // array_push($result, $search['txtval']);
+            $result[] = [
+                'id' => $search['item_id'].'-'.$search['color_id'],
+                'itemname' => $search['txtval'],
+                'itemimg' => empty($search['itemimg']) ? '' : '<img src="'.$search['itemimg'].'" />',
+            ];
         }
         return $result;
     }
@@ -2357,7 +2362,8 @@ class Inventory_model extends MY_Model
         $out = ['result' => $this->error_result, 'msg' => 'Inventory not found'];
         $this->db->select('*');
         $this->db->from('v_inventory_search');
-        $this->db->where('txtval', $template);
+        // $this->db->where('txtval', $template);
+        $this->db->where('inventory_id', $template);
         $res = $this->db->get()->row_array();
         if (isset($res['item_id'])) {
             $out['result'] = $this->success_result;

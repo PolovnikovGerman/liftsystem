@@ -1239,3 +1239,6 @@ div.oldvesionlabel {
     font-size: 17px;
     font-weight: 600;
 }
+.typeahead.dropdown-menu img {
+    max-height: 25px;
+}
