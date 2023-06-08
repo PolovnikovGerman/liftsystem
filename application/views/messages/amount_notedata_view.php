@@ -35,3 +35,4 @@
 </table>
 </div>
 <br/>
+<div style="clear: both; float: left; width: 100%; height: 15px;">&nbsp;</div>
