@@ -558,7 +558,11 @@ class Leadquote_model extends MY_Model
         $fldname = ifset($data, 'fld','');
         if (!empty($fldname)) {
             $quote = $quotesession['quote'];
-            $quote[$fldname] = $data['newval'];
+            if ($fldname=='mischrg_value1' || $fldname=='mischrg_value2' || $fldname=='discount_value' || $fldname=='shipping_cost' || $fldname=='rush_cost' || $fldname=='sales_tax') {
+                $quote[$fldname] = floatval(str_replace(['$',','], '', $data['newval']));
+            } else {
+                $quote[$fldname] = $data['newval'];
+            }
             $quotesession['quote'] = $quote;
             $out['result'] = $this->success_result;
             usersession($session_id, $quotesession);
@@ -779,7 +783,7 @@ class Leadquote_model extends MY_Model
             }
             if ($find==1) {
                 if ($fldname=='item_qty') {
-                    $items[$itemidx]['items'][$itemcoloridx][$fldname] = $data['newval'];
+                    $items[$itemidx]['items'][$itemcoloridx][$fldname] = intval(str_replace(',','',$data['newval']));
                     $subtotal = $items[$itemidx]['items'][$itemcoloridx]['item_qty'] * $items[$itemidx]['items'][$itemcoloridx]['item_price'];
                     $out['item_subtotal'] = $subtotal;
                     $itemsqty=0;
@@ -817,7 +821,11 @@ class Leadquote_model extends MY_Model
                     $items[$itemidx]['imprints'] = $imprints;
                     $out['item_refresh'] = 1;
                 } else {
-                    $items[$itemidx]['items'][$itemcoloridx][$fldname] = $data['newval'];
+                    if ($fldname=='item_price') {
+                        $items[$itemidx]['items'][$itemcoloridx][$fldname] = floatval(str_replace(['$',','],'',$data['newval']));
+                    } else {
+                        $items[$itemidx]['items'][$itemcoloridx][$fldname] = $data['newval'];
+                    }
                     if ($fldname=='item_color') {
                         // Rebuild out
                         $options=array(
