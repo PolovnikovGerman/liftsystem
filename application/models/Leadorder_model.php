@@ -3103,7 +3103,9 @@ Class Leadorder_model extends My_Model {
         } else {
             $order_items=$leadorder['order_items'];
             $shipping_address=$leadorder['shipping_address'];
-            $order['shipping']=$this->_leadorder_shipcost($shipping_address);
+            if ($past==0) {
+                $order['shipping']=$this->_leadorder_shipcost($shipping_address);
+            }
             // Rebuild Shipping Data
             $newshipping=$this->_leadorder_shipping($shipping_address, $shipping, $past);
             $total_item=0;
@@ -9596,7 +9598,7 @@ Class Leadorder_model extends My_Model {
             $cnt++;
         }
         $out['shipping']=$shiprate;
-        $order['shipping']=$shiprate;
+        // $order['shipping']=$shiprate;
         $out['cntshipadrr']=$cnt;
         if ($cnt==1) {
             $out['shipaddr']=$shipaddr[0];

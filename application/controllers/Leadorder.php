@@ -4918,6 +4918,7 @@ class Leadorder extends MY_Controller
                     $leadorder=usersession($ordersession);
                     $shipping=$leadorder['shipping'];
                     $shipping_address=$leadorder['shipping_address'];
+                    $mdata['shipping_cost'] = $leadorder['order']['shipping'];
                     $mdata['cntshipadrr']=count($shipping_address);
                     /* Rush */
                     $rushlist=$res['rushlist'];
