@@ -684,7 +684,11 @@ Class Leadorder_model extends My_Model {
         $data['credit_applink']='';
         $data['is_shipping']=1;
         $data['mischrg_val1']=$data['mischrg_val2']=$data['discount_val']=0;
-        $data['showbilladdress']=1;
+        if ($brand=='SR') {
+            $data['showbilladdress']=0;
+        } else {
+            $data['showbilladdress']=1;
+        }
         $data['brand'] = $brand;
         $out['order_system_type']=$defsystem;
         $out['order']=$data;
