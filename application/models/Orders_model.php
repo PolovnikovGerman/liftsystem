@@ -4448,7 +4448,7 @@ Class Orders_model extends MY_Model
                 $dat_month_end=strtotime(date('m/d/Y',$dat_month_end).' +6 days');
                 break;
         }
-
+        $dat_month_end = strtotime(date('Y-m-d', $dat_month_end).' 23:59:59');
         $i=$dat_month_bgn;
         $datsrch=array();
         $data_results=array();
