@@ -1176,11 +1176,19 @@ class Leadquote_model extends MY_Model
                             if ($quote['brand']=='SR') {
                                 $reptotal = 0;
                                 $repqty =0;
-                                for ($i=1; $i<=$row['num_colors']; $i++) {
-                                    $setupindx='setup_'.$i;
+                                if ($row['num_colors']==5) {
+                                    $setupindx='setup_1';
                                     if (floatval($row[$setupindx])) {
                                         $repqty+=1;
                                         $reptotal+=floatval($row[$setupindx]);
+                                    }
+                                } else {
+                                    for ($i=1; $i<=$row['num_colors']; $i++) {
+                                        $setupindx='setup_'.$i;
+                                        if (floatval($row[$setupindx])) {
+                                            $repqty+=1;
+                                            $reptotal+=floatval($row[$setupindx]);
+                                        }
                                     }
                                 }
                                 if ($reptotal > 0) {
@@ -1194,8 +1202,8 @@ class Leadquote_model extends MY_Model
                                         'imprint_qty'=>$repqty,
                                         'imprint_price'=>$repprice,
                                         'outqty'=>$repqty,
-                                        'outprice'=>MoneyOutput($reptotal),
-                                        'imprint_subtotal'=>MoneyOutput($reptotal),
+                                        'outprice'=>MoneyOutput($repprice),
+                                        'imprint_subtotal'=>$reptotal,
                                         'imprint_price_class' => 'normal',
                                         'imprint_price_title' => '',
                                         'delflag'=>0,
@@ -1219,16 +1227,17 @@ class Leadquote_model extends MY_Model
                                     }
                                 }
                                 $title='Repeat Setup Charge '.$row['repeat_note'];
+                                $repprice = $printqty==0 ? 0 : round($printcost/$printqty,2);
                                 $extra[]=array(
                                     'quote_imprint_id'=>(-1)*$newidx,
                                     'imprint_description'=>$title,
                                     'imprint_item'=>0,
                                     'imprint_qty'=>$printqty,
-                                    'imprint_price'=>$printcost, //floatval($row['extra_cost']),
+                                    'imprint_price'=>$repprice, //floatval($row['extra_cost']),
                                     'outqty'=>$printqty,
-                                    'outprice'=>MoneyOutput($printcost), // MoneyOutput($extracost),
+                                    'outprice'=>MoneyOutput($repprice), // MoneyOutput($extracost),
                                     // 'imprint_subtotal'=>MoneyOutput($extracost),
-                                    'imprint_subtotal'=>$printcost, // $extracost,
+                                    'imprint_subtotal'=> $printcost, // $extracost,
                                     'imprint_price_class' => 'normal',
                                     'imprint_price_title' => '',
                                     'delflag'=>0,
