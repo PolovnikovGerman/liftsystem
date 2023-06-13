@@ -1110,12 +1110,11 @@ class Leadquote_model extends MY_Model
                             // }
                             $numpp++;
                             $imprint_total += $subtotal;
-                            // if ($row['imprint_type'] != 'REPEAT') {
+                            if ($row['imprint_type'] != 'REPEAT') {
                                 $setup_qty += 1;
                                 $setup_total += floatval($row[$setupindx]);
                                 $imprint_total += floatval($row[$setupindx]);
-                            // }
-
+                            }
                             $imprints[] = array(
                                 'quote_imprint_id' => (-1) * $newidx,
                                 'imprint_description' => $imprtitle,
@@ -1189,7 +1188,7 @@ class Leadquote_model extends MY_Model
                                     $repprice = round($reptotal/$repqty,2);
                                     $imprint_total+=floatval($reptotal);
                                     $extra[]=array(
-                                        'order_imprint_id'=>(-1)*$newidx,
+                                        'quote_imprint_id'=>(-1)*$newidx,
                                         'imprint_description'=>$title,
                                         'imprint_item'=>0,
                                         'imprint_qty'=>$repqty,
@@ -1206,18 +1205,30 @@ class Leadquote_model extends MY_Model
                             } else {
                                 $extracost=floatval($row['extra_cost']);
                                 $imprint_total+=$extracost;
+                                $printqty = 0;
+                                $printcost = 0;
                                 // Add Imprint
+                                if ($row['num_colors']==5) {
+                                    $printqty+=1;
+                                    $printcost+=floatval($row['setup_1']);
+                                } else {
+                                    for ($i=1; $i<=$row['num_colors']; $i++) {
+                                        $setupindx='setup_'.$i;
+                                        $printqty+=1;
+                                        $printcost+=floatval($row[$setupindx]);
+                                    }
+                                }
                                 $title='Repeat Setup Charge '.$row['repeat_note'];
                                 $extra[]=array(
                                     'quote_imprint_id'=>(-1)*$newidx,
                                     'imprint_description'=>$title,
                                     'imprint_item'=>0,
-                                    'imprint_qty'=>1,
-                                    'imprint_price'=>floatval($row['extra_cost']),
-                                    'outqty'=>1,
-                                    'outprice'=>MoneyOutput($extracost),
+                                    'imprint_qty'=>$printqty,
+                                    'imprint_price'=>$printcost, //floatval($row['extra_cost']),
+                                    'outqty'=>$printqty,
+                                    'outprice'=>MoneyOutput($printcost), // MoneyOutput($extracost),
                                     // 'imprint_subtotal'=>MoneyOutput($extracost),
-                                    'imprint_subtotal'=> $extracost,
+                                    'imprint_subtotal'=>$printcost, // $extracost,
                                     'imprint_price_class' => 'normal',
                                     'imprint_price_title' => '',
                                     'delflag'=>0,
