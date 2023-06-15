@@ -43,7 +43,7 @@ Class Artlead_model extends MY_Model
             $row['artlabel']=$this->empty_out_content;
             switch ($row['art_type']) {
                 case 'Logo':
-                    $row['artlabel']='Open Jpg';
+                    $row['artlabel']='Open Orig'; // Open Jpg
                     break;
                 case 'Text':
                     $row['artlabel']='Text';
@@ -131,7 +131,7 @@ Class Artlead_model extends MY_Model
         $newlocation['artlabel']=$this->empty_out_content;
         $newlocation['redrawchk']=$newlocation['rushchk']=$newlocation['redochk']='&nbsp;';
         if ($loctype=='Logo' || $loctype=='Reference') {
-            $newlocation['artlabel']='Open Jpg';
+            $newlocation['artlabel']='Open Orig'; // Open Jpg
             // Change Logo path
             $preload_path_fl=$this->config->item('upload_path_preload');
             $preload_path_sh=$this->config->item('pathpreload');
