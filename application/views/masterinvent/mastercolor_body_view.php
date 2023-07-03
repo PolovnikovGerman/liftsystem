@@ -22,7 +22,7 @@
         </div>
         <div class="datarow">
             <div class="colorparamlabel  mfgprice">Mfg Cost  (Made in USA by BLUETRACK):</div>
-            <div class="colorparamvalue mfgprice"><?=empty($price) ? '&nbsp;' : MoneyOutput($price,3)?></div>
+            <div class="colorparamvalue mfgprice"><?=empty($color['price']) ? '&nbsp;' : MoneyOutput($color['price'],3)?></div>
         </div>
         <div class="colordatadevide">&nbsp;</div>
         <div class="datarow">

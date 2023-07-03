@@ -1376,6 +1376,9 @@ textarea.colorpantonesinpt {
 input.colormaxvalueinpt {
     width: 90px;
 }
+input.colorpriceinpt {
+    width: 90px;
+}
 .colordatadevide {
     width: 100%;
     height: 15px;

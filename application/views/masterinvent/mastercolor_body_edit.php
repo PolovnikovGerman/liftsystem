@@ -43,7 +43,9 @@
         </div>
         <div class="datarow">
             <div class="colorparamlabel mfgprice">Mfg Cost (Made in USA by BLUETRACK):</div>
-            <div class="colorparamvalue mfgprice"><?=empty($price) ? '&nbsp;' : MoneyOutput($price,3)?></div>
+            <div class="colordatainput mfgprice">
+                <input type="text" class="colorpriceinpt invcolor" data-item="price" value="<?=$color['price']?>" placeholder="Price"/>
+            </div>
         </div>
         <div class="colordatadevide">&nbsp;</div>
         <div class="datarow">
