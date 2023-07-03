@@ -712,6 +712,7 @@ class Inventory_model extends MY_Model
             $this->db->set('color_status', $colordat['color_status']);
             $this->db->set('suggeststock', $colordat['suggeststock']);
             $this->db->set('pantones', $colordat['pantones']);
+            $this->db->set('price', $colordat['price']);
             if ($colordat['inventory_color_id'] < 0 ) {
                 $this->db->insert('ts_inventory_colors');
                 $newid = $this->db->insert_id();
