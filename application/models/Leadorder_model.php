@@ -725,6 +725,9 @@ Class Leadorder_model extends My_Model {
         $art['artstage']=$this->NO_ART;
         $art['artstage_txt']=$this->NO_ART_TXT;
         $art['artstage_time']=$this->empty_htmlcontent;
+        // Clay & Preview
+        $art['art_clay'] = $art['art_preview'] = 0;
+        $art['claylist'] = $art['previewlist'] = [];
         $out['artwork']=$art;
         $out['payments']=array();
         $out['artlocations']=$out['proofdocs']=array();

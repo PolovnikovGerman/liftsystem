@@ -632,6 +632,7 @@ class Template
         $artdata['artcolors']=$artcolors;
         $artdata['artfont']=$artfonts;
         $artdata['proofdoc_view']=$proofview;
+        $artdata['edit'] = $edit;
         // Artwork View
         $data['artview']=$this->CI->load->view('leadorderdetails/artwork_view', $artdata, TRUE);
         return $data;

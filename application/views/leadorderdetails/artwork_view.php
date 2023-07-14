@@ -86,3 +86,26 @@
         <?php } ?>
     </div>
 </div>
+<div class="artclaypreviewarea">
+    <div class="datarow">
+        <div class="areatitle <?=$edit==0 ? 'view' : ''?>">Clay Models:</div>
+        <div class="areachek">
+            <input type="checkbox" class="input_checkbox chkboxleadorddata" <?=$art_clay==1 ? 'checked="checked"' : ''?> id="art_claychk"
+                <?=($edit==0 ? 'disabled="disabled"' : 'data-entity="order" data-field="art_clay"')?> />
+            require clay
+        </div>
+    </div>
+    <div class="datarow">
+        <div class="claypreviewtable">
+            <div class="claypreviewtableleft">&nbsp;</div>
+            <div class="claypreviewtableright">&nbsp;</div>
+        </div>
+    </div>
+    <div id="clayaddrow">
+        <?php if ($edit==1 && $art_clay==1) { ?>
+            <div class="addclaypreviewdoc" id="addclay">
+                <img src="/img/artpage/artpopup_add_btn.png" alt="Add Clay"/>
+            </div>
+        <?php } ?>
+    </div>
+</div>
