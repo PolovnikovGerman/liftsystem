@@ -3055,9 +3055,9 @@ class Leadquote_model extends MY_Model
                     'contact_name'=> $lead['lead_customer'],
                     'contact_phone'=> $lead['lead_phone'],
                     'contact_emal'=> $lead['lead_mail'],
-                    'contact_art'=>0,
-                    'contact_inv'=>0,
-                    'contact_trk'=>0,
+                    'contact_art'=>1,
+                    'contact_inv'=>1,
+                    'contact_trk'=>1,
                 ];
             } else {
                 $contacts[]=[
