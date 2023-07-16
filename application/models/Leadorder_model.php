@@ -2647,8 +2647,10 @@ Class Leadorder_model extends My_Model {
                 }
                 $shipaddr[$shipidx]['city']=$validres['city_name'];
                 if ($shipaddr[$shipidx]['out_country']=='US' || $shipaddr[$shipidx]['out_country']=='CA') {
+                    log_message('ERROR','STATE CODE - '.$validres['state'].'!');
                     if (!empty($validres['state'])) {
                         $shipaddr[$shipidx]['state_id']=$validres['state_id'];
+                        log_message('ERROR','STATE_id - '.$validres['state_id'].'!');
                         $shipaddr[$shipidx]['out_zip']=$validres['state'].' '.$newval;
                         if ($shipaddr[$shipidx]['state_id']==$this->tax_state) {
                             $shipaddr[$shipidx]['taxcalc']=0;
