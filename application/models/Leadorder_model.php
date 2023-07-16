@@ -2511,6 +2511,7 @@ Class Leadorder_model extends My_Model {
         $this->load->model('shipping_model');
         $shipaddr=$leadorder['shipping_address'];
         $shipping=$leadorder['shipping'];
+        $order=$leadorder['order'];
         $shipidx=0;
         $found=0;
         foreach ($shipaddr as $row) {
@@ -2574,7 +2575,6 @@ Class Leadorder_model extends My_Model {
                         }
                     }
                 }
-                $order=$leadorder['order'];
                 $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
                 if ($cntres['result']==$this->error_result) {
                     $out['msg']=$cntres['msg'];
@@ -2611,39 +2611,23 @@ Class Leadorder_model extends My_Model {
 
             }
             // Validate Address
-//            if ($shipaddr[$shipidx]['out_country']=='US') {
-//                $tracking=$upsserv->validaddress($newval, $shipaddr[$shipidx]['out_country']);
-//                if ($tracking['result']==$this->success_result) {
-//                    if (!empty($tracking['city'])) {
-//                        $shipaddr[$shipidx]['city']=$tracking['city'];
-//                    }
-//                    if (!empty($tracking['state'])) {
-//                        $shipaddr[$shipidx]['state_id']=$tracking['state_id'];
-//                        $shipaddr[$shipidx]['out_zip']=$tracking['state'].' '.$newval;
-//                        if ($shipaddr[$shipidx]['state_id']==$this->tax_state) {
-//                            $shipaddr[$shipidx]['taxcalc']=0;
-//                            $shipaddr[$shipidx]['taxview']=1;
-//                            if ($shipaddr[$shipidx]['tax_exempt']==0) {
-//                                $shipaddr[$shipidx]['taxcalc']=1;
-//                            }
-//                        } else {
-//                            $shipaddr[$shipidx]['taxcalc']=0;
-//                            $shipaddr[$shipidx]['taxview']=0;
-//                        }
-//                    }
-//                }
-//            }
-            // Build select
             if ($shipaddr[$shipidx]['out_country']=='CA') {
                 $seachzip = substr($newval,0, 3);
             } else {
                 $seachzip = $newval;
             }
+            $this->db->select('state_id, state_code');
+            $this->db->from('ts_states');
+            $this->db->where('country_id', $shipaddr[$shipidx]['country_id']);
+            $stateselect = $this->db->get_compiled_select();
+            $this->db->reset_query();
+            //
             $this->db->select('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code as state, t.state_id, count(c.geoip_city_id) as cntcity');
             $this->db->from('ts_geoipdata gdata');
             $this->db->join('ts_geoip_city c','c.geoname_id=gdata.geoname_id');
             $this->db->join('ts_countries cntr','cntr.country_iso_code_2=c.country_iso_code');
-            $this->db->join('ts_states t','t.state_code=c.subdivision_1_iso_code','left');
+            // $this->db->join('ts_states t','t.state_code=c.subdivision_1_iso_code','left');
+            $this->db->join("({$stateselect}) as t",'t.state_code=c.subdivision_1_iso_code','left');
             $this->db->where('gdata.postal_code',$seachzip);
             $this->db->where('cntr.country_id',$shipaddr[$shipidx]['country_id']);
             $this->db->group_by('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code, t.state_id');
