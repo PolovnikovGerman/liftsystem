@@ -2689,7 +2689,7 @@ Class Leadorder_model extends My_Model {
                 $shipaddr[$shipidx]['taxcalc']=0;
             }
         }
-
+        $leadorder['order'] = $order;
         $leadorder['shipping_address']=$shipaddr;
         usersession($ordersession, $leadorder);
         $out['result']=$this->success_result;
