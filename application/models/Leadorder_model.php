@@ -2633,8 +2633,6 @@ Class Leadorder_model extends My_Model {
             $this->db->group_by('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code, t.state_id');
             $this->db->order_by('cntcity','desc');
             $validdata = $this->db->get()->result_array();
-            log_message('ERROR','ZIP '.$seachzip);
-            log_message('ERROR', $this->db->last_query());
             if (count($validdata)>0) {
                 $validres = $validdata[0];
                 if (count($validdata)>1) {
@@ -2647,10 +2645,8 @@ Class Leadorder_model extends My_Model {
                 }
                 $shipaddr[$shipidx]['city']=$validres['city_name'];
                 if ($shipaddr[$shipidx]['out_country']=='US' || $shipaddr[$shipidx]['out_country']=='CA') {
-                    log_message('ERROR','STATE CODE - '.$validres['state'].'!');
                     if (!empty($validres['state'])) {
                         $shipaddr[$shipidx]['state_id']=$validres['state_id'];
-                        log_message('ERROR','STATE_id - '.$validres['state_id'].'!');
                         $shipaddr[$shipidx]['out_zip']=$validres['state'].' '.$newval;
                         if ($shipaddr[$shipidx]['state_id']==$this->tax_state) {
                             $shipaddr[$shipidx]['taxcalc']=0;
@@ -2682,13 +2678,6 @@ Class Leadorder_model extends My_Model {
         usersession($ordersession, $leadorder);
         $out['result']=$this->success_result;
         $out['shipadr']=$shipaddr[$shipidx];
-        if (is_array($shipaddr[$shipidx])) {
-            foreach ($shipaddr[$shipidx] as $key=>$val) {
-                if (!is_array($val)) {
-                    log_message('ERROR','Ship '.$key.' - '.$val);
-                }
-            }
-        }
         $this->_leadorder_totals($leadorder, $ordersession);
         return $out;
     }
