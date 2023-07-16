@@ -2633,6 +2633,8 @@ Class Leadorder_model extends My_Model {
             $this->db->group_by('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code, t.state_id');
             $this->db->order_by('cntcity','desc');
             $validdata = $this->db->get()->result_array();
+            log_message('ERROR','ZIP '.$seachzip);
+            log_message('ERROR', $this->db->last_query());
             if (count($validdata)>0) {
                 $validres = $validdata[0];
                 if (count($validdata)>1) {
