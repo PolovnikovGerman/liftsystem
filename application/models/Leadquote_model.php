@@ -3325,10 +3325,17 @@ class Leadquote_model extends MY_Model
         $out['shipping']=$shipping;
         $shipping_address=[];
         $shipstate = NULL;
+        $outzip = '';
+        $outcnt = '';
+        if (!empty($quote['shipping_country'])) {
+            $cntres = $this->shipping_model->get_country($quote['shipping_country']);
+            $outcnt = $cntres['country_iso_code_2'];
+        }
         if (!empty($quote['shipping_state'])) {
             $stateres = $this->shipping_model->get_statebycode($quote['shipping_state'], $quote['shipping_country']);
             if ($stateres['result']==$this->success_result) {
                 $shipstate = $stateres['data']['state_id'];
+                $outzip = $stateres['data']['state_code'].' '.$quote['shipping_zip'];
             }
         }
         $shipping_address[] = [
@@ -3359,8 +3366,8 @@ class Leadquote_model extends MY_Model
             'tax_exemptdocid' => 1,
             'shipping_costs' => $shipcosts,
             'out_shipping_method' => '',
-            'out_zip' => '',
-            'out_country' => '',
+            'out_zip' => $outzip,
+            'out_country' => $outcnt,
             'packages' => $packages,
         ];
         $out['shipping_address'] = $shipping_address;
