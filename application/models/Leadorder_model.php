@@ -2682,7 +2682,9 @@ Class Leadorder_model extends My_Model {
         $out['shipadr']=$shipaddr[$shipidx];
         if (is_array($shipaddr[$shipidx])) {
             foreach ($shipaddr[$shipidx] as $key=>$val) {
-                log_message('ERROR','Ship '.$key.' - '.$val);
+                if (!is_array($val)) {
+                    log_message('ERROR','Ship '.$key.' - '.$val);
+                }
             }
         }
         $this->_leadorder_totals($leadorder, $ordersession);
