@@ -2511,6 +2511,7 @@ Class Leadorder_model extends My_Model {
         $this->load->model('shipping_model');
         $shipaddr=$leadorder['shipping_address'];
         $shipping=$leadorder['shipping'];
+        $order=$leadorder['order'];
         $shipidx=0;
         $found=0;
         foreach ($shipaddr as $row) {
@@ -2574,7 +2575,6 @@ Class Leadorder_model extends My_Model {
                         }
                     }
                 }
-                $order=$leadorder['order'];
                 $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
                 if ($cntres['result']==$this->error_result) {
                     $out['msg']=$cntres['msg'];
