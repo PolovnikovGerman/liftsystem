@@ -2183,7 +2183,7 @@ class Test extends CI_Controller
         $this->db->from('ts_orders');
         $this->db->where('cc_fee',0);
         $this->db->where('is_canceled',0);
-        $this->db->where('order_date >=', strtotime('2023-01-01'));
+        $this->db->where('order_date >=', strtotime('2022-01-01'));
         $orders = $this->db->get()->result_array();
         foreach ($orders as $order) {
             $this->db->select('count(batch_id) as cnt, sum(batch_amount) as amount');
