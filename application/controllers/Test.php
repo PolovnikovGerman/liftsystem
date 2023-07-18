@@ -2203,6 +2203,15 @@ class Test extends CI_Controller
                 if ($amount['cnt'] > 0) {
                     echo 'Profit Perc '.$order['profit_perc'].'% New Val '.round(($order['profit']-$newfee)/$order['revenue']*100,2).'%'.PHP_EOL;
                 }
+                $newprofit = floatval($order['profit'])-floatval($newfee);
+                $this->db->where('order_id', $order['order_id']);
+                $this->db->set('cc_fee', $newfee);
+                $this->db->set('profit', $newprofit);
+                if ($amount['cnt'] > 0) {
+                    $newperc = round(($order['profit']-$newfee)/$order['revenue']*100,2);
+                    $this->db->set('profit_perc', $newperc);
+                }
+                $this->db->update('ts_orders');
             }
         }
     }
