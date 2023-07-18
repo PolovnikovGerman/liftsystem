@@ -2194,7 +2194,15 @@ class Test extends CI_Controller
             $batchres = $this->db->get()->row_array();
             if ($batchres['cnt'] > 0) {
                 $newfee = $batchres['amount']-$batchres['vmd']-$batchres['amex'];
-                echo 'Order '.$order['order_num'].' Fee '.$newfee.PHP_EOL;
+                $this->db->select('count(amount_id) as cnt, sum(amount_sum) amnt');
+                $this->db->from('ts_order_amounts');
+                $this->db->where('order_id', $order['order_id']);
+                $amount = $this->db->get()->row_array();
+                echo 'Order '.$order['order_num'].' '.date('Y-m-d', $order['order_date']).' Fee '.$newfee.PHP_EOL;
+                echo 'Profit '.$order['profit'].' New Profit '.(floatval($order['profit'])-floatval($newfee)).PHP_EOL;
+                if ($amount['cnt'] > 0) {
+                    echo 'Profit Perc '.$order['profit_perc'].'% New Val '.round(($order['profit']-$newfee)/$amount['amnt']*100,2).'%'.PHP_EOL;
+                }
             }
         }
     }
