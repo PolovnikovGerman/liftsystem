@@ -2188,6 +2188,7 @@ class Test extends CI_Controller
         $this->db->where('s.zip != ','');
         $address = $this->db->get()->result_array();
         foreach ($address as $addres) {
+            echo 'Country '.$addres['country_id'].' Zip '.$addres['zip'].PHP_EOL;
             $this->db->select('state_id, state_code');
             $this->db->from('ts_states');
             $this->db->where('country_id', $addres['country_id']);
@@ -2204,7 +2205,7 @@ class Test extends CI_Controller
             $this->db->group_by('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code, t.state_id');
             $this->db->order_by('cntcity','desc');
             $validdata = $this->db->get()->row_array();
-            echo 'State '.$validdata['subdivision_1_iso_code'].' ID '.$validdata['state_id'].PHP_EOL;
+            // echo 'State '.$validdata['subdivision_1_iso_code'].' ID '.$validdata['state_id'].PHP_EOL;
         }
     }
 }
