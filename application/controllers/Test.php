@@ -2205,8 +2205,11 @@ class Test extends CI_Controller
             $this->db->group_by('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code, t.state_id');
             $this->db->order_by('cntcity','desc');
             $validdata = $this->db->get()->row_array();
-            if (!empty($validdata['geoip_city_id'])) {
+            if (!empty($validdata['geoip_city_id']) && !empty($validdata['state_id'])) {
                 echo 'Valid Country '.$validdata['city_name'].' Zip '.$validdata['state'].' Id '.$validdata['state_id'].PHP_EOL;
+                $this->db->where('order_shipaddr_id', $addres['order_shipaddr_id']);
+                $this->db->set('state_id', $validdata['state_id']);
+                $this->db->update('ts_order_shipaddres');
             }
             // echo 'State '.$validdata['subdivision_1_iso_code'].' ID '.$validdata['state_id'].PHP_EOL;
         }
