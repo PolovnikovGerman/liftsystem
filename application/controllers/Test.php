@@ -2177,4 +2177,25 @@ class Test extends CI_Controller
         }
         echo 'Updated successfully'.PHP_EOL;
     }
+
+    public function checkfee() {
+        $this->db->select('*');
+        $this->db->from('ts_orders');
+        $this->db->where('cc_fee',0);
+        $this->db->where('is_canceled',0);
+        $this->db->where('order_date >=', strtotime('2023-01-01'));
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            $this->db->select('count(batch_id) as cnt, sum(batch_amount) as amount');
+            $this->db->select('sum(batch_vmd) as vmd, sum(batch_amex) as amex');
+            $this->db->from('ts_order_batches');
+            $this->db->where('order_id', $order['order_id']);
+            $this->db->where('(batch_vmd <> 0  or batch_amex <>0)');
+            $batchres = $this->db->get()->row_array();
+            if ($batchres['cnt'] > 0) {
+                $newfee = $batchres['amount']-$batchres['vmd']-$batchres['amex'];
+                echo 'Order '.$order['order_num'].' Fee '.$newfee.PHP_EOL;
+            }
+        }
+    }
 }
