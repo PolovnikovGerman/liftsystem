@@ -2201,7 +2201,7 @@ class Test extends CI_Controller
                 echo 'Order '.$order['order_num'].' '.date('Y-m-d', $order['order_date']).' Fee '.$newfee.PHP_EOL;
                 echo 'Profit '.$order['profit'].' New Profit '.(floatval($order['profit'])-floatval($newfee)).PHP_EOL;
                 if ($amount['cnt'] > 0) {
-                    echo 'Profit Perc '.$order['profit_perc'].'% New Val '.round(($order['profit']-$newfee)/$amount['amnt']*100,2).'%'.PHP_EOL;
+                    echo 'Profit Perc '.$order['profit_perc'].'% New Val '.round(($order['profit']-$newfee)/$order['revenue']*100,2).'%'.PHP_EOL;
                 }
             }
         }
