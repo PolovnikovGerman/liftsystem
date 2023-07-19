@@ -1482,7 +1482,154 @@ Class Artlead_model extends MY_Model
     }
 
     public function get_previews($artwork_id, $order_num) {
-        return [];
+        $this->db->select('*');
+        $this->db->from('ts_artwork_previews');
+        $this->db->where('artwork_id', $artwork_id);
+        $this->db->order_by('numpp');
+        $rows = $this->db->get()->result_array();
+        $previews = [];
+        foreach ($rows as $row) {
+            $newname = 'preview_'.$order_num.'_'.str_pad($row['numpp'], 2, '0', STR_PAD_LEFT);
+            $row['out_proofname'] = $newname;
+            $previews[] = $row;
+        }
+        return $previews;
+    }
+
+    public function save_artpreviewdocs($leadorder, $previewdoc, $sourcename , $sessionid) {
+        $out = ['result' => $this->error_result, 'msg' => $this->init_msg];
+        $order = $leadorder['order'];
+        $order_number = $order['order_num'];
+        $previewdocs = $leadorder['previewdocs'];
+        $newidx = count($previewdocs) + 1;
+        $newnum = 0;
+        foreach ($previewdocs as $item) {
+            if (empty($item['deleted'])) {
+                $newnum=$item['numpp'];
+            }
+        }
+        $newnum++;
+        $newname = 'preview_'.(empty($order_number) ? '' : $order_number.'_').str_pad($newnum, 2, '0', STR_PAD_LEFT);
+        $newdoc = [
+            'artwork_preview_id' => $newidx * (-1),
+            'add_time' => date('Y-m-d H:i:s'),
+            'numpp' => $newnum,
+            'preview_source' => $sourcename,
+            'preview_link' => $previewdoc,
+            'preview_send' => 0,
+            'preview_sendtime' => 0,
+            'preview_approved' => 0,
+            'preview_approvetime' => 0,
+            'out_proofname' => $newname,
+            'deleted' => '',
+        ];
+        $previewdocs[] = $newdoc;
+        $leadorder['previewdocs'] = $previewdocs;
+        usersession($sessionid, $leadorder);
+        $out['result'] = $this->success_result;
+        $out_docs = array();
+        foreach ($previewdocs as $item) {
+            if ($item['deleted'] == '') {
+                $out_docs[] = $item;
+            }
+        }
+        $out['outdocs'] = $out_docs;
+        return $out;
+    }
+
+    public function remove_artpreviewdocs($leadorder, $previewid, $ordersession) {
+        $out = ['result' => $this->error_result, 'msg' => 'Preview Picture Not Found'];
+        $order = $leadorder['order'];
+        $order_number = $order['order_num'];
+        $previewdocs = $leadorder['previewdocs'];
+        $find = 0;
+        foreach ($previewdocs as $previewdoc) {
+            if ($previewdoc['artwork_preview_id']==$previewid) {
+                $find = 1;
+                break;
+            }
+        }
+        if ($find==1) {
+            $out['result'] = $this->success_result;
+            $newidx = 1;
+            $newdocs = [];
+            $newpreviews = [];
+            foreach ($previewdocs as $previewdoc) {
+                if ($previewdoc['artwork_preview_id']==$previewid) {
+                    $previewdoc['deleted'] = '1';
+                } else {
+                    $newname = 'preview_'.(empty($order_number) ? '' : $order_number.'_').str_pad($newidx, 2, '0', STR_PAD_LEFT);
+                    $previewdoc['out_proofname'] = $newname;
+                    $previewdoc['numpp'] = $newidx;
+                    $newdocs[] = $previewdoc;
+                    $newidx++;
+                }
+                $newpreviews[] = $previewdoc;
+            }
+            $out['outdocs'] = $newdocs;
+            $leadorder['previewdocs'] = $newpreviews;
+            usersession($ordersession, $leadorder);
+        }
+        return $out;
+    }
+
+    public function save_previewpics($previewdocs, $artwork_id, $user_id) {
+        $out=['result' => $this->error_result, 'msg' => $this->init_msg];
+        // Paths
+        $fullpath=$this->config->item('preview_pics');
+        $shrtpath=$this->config->item('preview_pics_relative');
+        $shortpreload = $this->config->item('pathpreload');
+        $fullpreload=$this->config->item('upload_path_preload');
+        if (createPath($shrtpath)) {
+            $numpp=1;
+            foreach ($previewdocs as $previewdoc) {
+                if (!empty($previewdoc['deleted'])) {
+                    if ($previewdoc['artwork_preview_id'] > 0) {
+                        $this->db->where('artwork_preview_id', $previewdoc['artwork_preview_id']);
+                        $this->db->delete('ts_artwork_previews');
+                        // Delete link
+                        $previewfile = str_replace($shrtpath, $fullpath, $previewdoc['preview_link']);
+                        @unlink($previewfile);
+                    }
+                } else {
+                    $rowadd = 0;
+                    if ($previewdoc['artwork_preview_id'] < 0) {
+                        $previewdocname = str_replace($shortpreload, '', $previewdoc['preview_link']);
+                        $filesrc = $fullpreload.$previewdocname;
+                        $filetrg = $fullpath.$previewdocname;
+                        $cpres = @copy($filesrc, $filetrg);
+                        if ($cpres) {
+                            $rowadd=1;
+                            $previewdoc['preview_link'] = $shrtpath.$previewdocname;
+                        }
+                    } else {
+                        $rowadd = 1;
+                    }
+                    if ($rowadd==1) {
+                        $this->db->set('numpp', $numpp);
+                        $this->db->set('preview_link', $previewdoc['preview_link']);
+                        $this->db->set('preview_source', $previewdoc['preview_source']);
+                        $this->db->set('preview_send', $previewdoc['preview_send']);
+                        $this->db->set('preview_sendtime', $previewdoc['preview_sendtime']);
+                        $this->db->set('preview_approved', $previewdoc['preview_approved']);
+                        $this->db->set('preview_approvetime', $previewdoc['preview_approvetime']);
+                        if ($previewdoc['artwork_preview_id'] < 0) {
+                            $this->db->set('add_user', $user_id);
+                            $this->db->set('add_time', date('Y-m-d H:i:s'));
+                            $this->db->set('artwork_id', $artwork_id);
+                            $this->db->insert('ts_artwork_previews');
+                        } else {
+                            $this->db->where('artwork_preview_id', $previewdoc['artwork_preview_id']);
+                            $this->db->set('update_user', $user_id);
+                            $this->db->update('ts_artwork_previews');
+                        }
+                        $numpp++;
+                    }
+                }
+            }
+            $out['result'] = $this->success_result;
+        }
+        return $out;
     }
 
 }

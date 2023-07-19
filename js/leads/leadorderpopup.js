@@ -714,7 +714,63 @@ function init_onlineleadorder_edit() {
             }
         });
     }
-
+    $("#art_previewchk").unbind('change').change(function(){
+        var editval = 0;
+        if ($(this).prop('checked')==true) {
+            editval = 1;
+        }
+        var params=new Array();
+        params.push({name: 'entity', value: $(this).data('entity') });
+        params.push({name: 'fldname', value: $(this).data('field')});
+        params.push({name: 'newval', value: editval});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadorder/change_leadorder_item";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (editval==1) {
+                    $("#previewaddrow").empty().html('<div id="addpreview" style="margin-top: 3px;">&nbsp;</div>')
+                } else {
+                    $("#previewaddrow").empty();
+                }
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    if ($("#addpreview").length > 0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('addpreview'),
+            action: '/utils/save_itemimg',
+            uploadButtonText: '',
+            multiple: false,
+            debug: false,
+            template: upload_templ,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success==true) {
+                    $(".qq-upload-list").hide();
+                    var url='/leadorder/savepreviewdocupload';
+                    var params=new Array();
+                    params.push({name: 'ordersession', value: $("input#ordersession").val()});
+                    params.push({name: 'previewdoc', value: responseJSON.filename});
+                    params.push({name: 'sourcename', value: responseJSON.srcname});
+                    $.post(url, params, function (response) {
+                        if (response.errors=='') {
+                            $("div.previewpreviewtable").empty().html(response.data.content);
+                            init_leadorder_artmanage();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                } else {
+                    alert(responseJSON.error);
+                    $("div#loader").hide();
+                    $("div.qq-upload-button").css('visibility','visible');
+                }
+            }
+        });
+    }
     init_leadorder_artmanage();
     init_leadorder_contactmanage();
     init_leadorder_items();
@@ -1147,6 +1203,28 @@ function init_leadorder_artmanage() {
         var imgurl = $(this).data('link');
         var newWin = window.open(imgurl,"ClayModel","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
     });
+    // Previews
+    $(".previewremove").unbind('click').click(function(){
+        if (confirm('Remove Preview Pic?')==true) {
+            var previewid = $(this).data('preview');
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'previewid', value: previewid});
+            var url='/leadorder/artpreview_remove';
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $("div.previewpreviewtable").empty().html(response.data.content);
+                    init_leadorder_artmanage();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    $(".previewname").unbind('click').click(function (){
+        var imgurl = $(this).data('link');
+        var newWin = window.open(imgurl,"PreviewPic","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+    });
 }
 
 
@@ -1440,6 +1518,26 @@ function init_showartlocs() {
                 var clays = response.data.clays;
                 for (index = 0; index < clays.length; ++index) {
                     var open = window.open(clays[index]['clay_link'],'ClayModel'+clays[index]['artwork_clay_id'],'left=320,top=120,width=800,height=580,resizable=yes,scrollbars=yes,status=yes');
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+    // Previews
+    $(".previewname").unbind('click').click(function (){
+        var imgurl = $(this).data('link');
+        var newWin = window.open(imgurl,"PreviewPic","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+    });
+    $(".openpreviewsview").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url = '/leadorder/showpreviewpics';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                var previews = response.data.previews;
+                for (index = 0; index < previews.length; ++index) {
+                    var open = window.open(previews[index]['preview_link'],'PreviewPic'+previews[index]['artwork_preview_id'],'left=320,top=120,width=800,height=580,resizable=yes,scrollbars=yes,status=yes');
                 }
             } else {
                 show_error(response);

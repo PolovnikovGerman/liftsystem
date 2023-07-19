@@ -174,7 +174,7 @@ class Leadorder extends MY_Controller
                         'billing'=>$res['order_billing'],
                         'charges'=>$res['charges'],
                         'claydocs' => $res['claydocs'],
-                        // 'previews' => $res['']
+                        'previewdocs' => $res['previewdocs'],
                         'delrecords'=>array(),
                         'locrecid'=>$locking,
                     );
@@ -5229,6 +5229,83 @@ class Leadorder extends MY_Controller
                 if (count($claydocs) > 0) {
                     $error = '';
                     $mdata['clays'] = $claydocs;
+                }
+                usersession($ordersession, $leadorder);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function savepreviewdocupload() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $postdata=$this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $this->load->model('artlead_model');
+                $res=$this->artlead_model->save_artpreviewdocs($leadorder, $postdata['previewdoc'], $postdata['sourcename'] , $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $previewdocs=$res['outdocs'];
+                    $mdata['content']=leadPreviewdocOut($previewdocs, 1);
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function artpreview_remove() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                $this->load->model('artlead_model');
+                $res=$this->artlead_model->remove_artpreviewdocs($leadorder, $postdata['previewid'], $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $previewdocs=$res['outdocs'];
+                    $mdata['content']=leadPreviewdocOut($previewdocs, 1);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function showpreviewpics() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                $previewdocs = $leadorder['previewdocs'];
+                $error = 'Any Preview Pictures Found';
+                if (count($previewdocs) > 0) {
+                    $error = '';
+                    $mdata['previews'] = $previewdocs;
                 }
                 usersession($ordersession, $leadorder);
             }

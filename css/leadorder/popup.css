@@ -5032,7 +5032,7 @@ input.ticket_date {
     float: right!important;
 }
 .artclaypreviewarea .areachek input {
-    margin-top: 2px;
+    margin-top: 5px;
     margin-right: 5px;
 }
 .artclaypreviewarea .openclaymodelsview {
@@ -5076,6 +5076,84 @@ input.ticket_date {
     cursor: pointer;
 }
 .artclaypreviewarea .addclaypreviewdoc {
+    width: 43px;
+    border-left: 1px solid #dbdbdb;
+    border-bottom: 1px solid #dbdbdb;
+    border-right: 1px solid #dbdbdb;
+    float: right!important;
+}
+/* Previews */
+.artpreviewpreviewarea {
+    margin-left: 8px;
+    float: left;
+    width: 238px;
+    margin-top: 4px;
+}
+.artpreviewpreviewarea div {
+    float: left;
+}
+.artpreviewpreviewarea .areatitle {
+    color: #000000;
+    height: 22px;
+    line-height: 22px;
+    font-size: 13px;
+    font-weight: bold;
+}
+.artpreviewpreviewarea .areatitle.view {
+    color: #b3b3b3;
+}
+.artpreviewpreviewarea .areachek {
+    color: #575757;
+    font-size: 11px;
+    height: 22px;
+    line-height: 22px;
+    float: right!important;
+}
+.artpreviewpreviewarea .areachek input {
+    margin-top: 5px;
+    margin-right: 5px;
+}
+.artpreviewpreviewarea .openpreviewsview {
+    color: #0000FF;
+    font-size: 12px;
+    height: 22px;
+    line-height: 22px;
+    cursor: pointer;
+    margin-left: 7px;
+}
+.artpreviewpreviewarea .previewpreviewtable {
+    border: 1px solid #dbdbdb;
+    padding: 3px 0;
+    width: 236px;
+}
+.artpreviewpreviewarea .previewpreviewtable .previewpreviewtableleft, .artpreviewpreviewarea .previewpreviewtable .previewpreviewtableright {
+    padding-left: 5px;
+    min-height: 68px;
+    width: 115px;
+}
+.artpreviewpreviewarea .previewpreviewtable .previewpreviewtableleft {
+    border-right: 1px solid #dbdbdb;
+}
+.artpreviewpreviewarea .previewpreviewtable .previewdatarow {
+    height: 17px;
+    border-bottom: 1px dotted #000000;
+}
+.artpreviewpreviewarea .previewpreviewtable .previewdatarowlast {
+    height: 17px;
+}
+.artpreviewpreviewarea .previewpreviewtable .previewname {
+    width: 96px;
+    line-height: 17px;
+    color: #0000ff;
+    font-size: 11px;
+    cursor: pointer;
+}
+.artpreviewpreviewarea .previewpreviewtable .previewremove {
+    color: #000000;
+    font-size: 13px;
+    cursor: pointer;
+}
+.artpreviewpreviewarea .addpreviewpreviewdoc {
     width: 43px;
     border-left: 1px solid #dbdbdb;
     border-bottom: 1px solid #dbdbdb;

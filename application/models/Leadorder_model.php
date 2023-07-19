@@ -529,6 +529,7 @@ Class Leadorder_model extends My_Model {
         $previews = $this->artlead_model->get_previews($artwork_id, $res['order_num']);
         $out['claydocs'] = $claydocs;
         $out['previewdocs'] = $previews;
+        $out['previewdocs'] = $previews;
         $out['artlocations']=$locations;
         $out['proofdocs']=$proofdocs;
         if ($out['order_system_type']=='new') {
@@ -4407,6 +4408,11 @@ Class Leadorder_model extends My_Model {
         $claydocs = $leadorder['claydocs'];
         if (count($claydocs)) {
             $res=$this->artlead_model->save_claymodels($claydocs, $artwork_id, $user_id);
+        }
+        // Preview save
+        $previewdocs = $leadorder['previewdocs'];
+        if (count($previewdocs)) {
+            $res=$this->artlead_model->save_previewpics($previewdocs, $artwork_id, $user_id);
         }
         // Save history and message
         $history=$leadorder['message']['history'];
