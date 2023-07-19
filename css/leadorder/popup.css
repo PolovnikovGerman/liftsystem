@@ -5032,17 +5032,53 @@ input.ticket_date {
     float: right!important;
 }
 .artclaypreviewarea .areachek input {
+    margin-top: 2px;
     margin-right: 5px;
+}
+.artclaypreviewarea .openclaymodelsview {
+    color: #0000FF;
+    font-size: 12px;
+    height: 22px;
+    line-height: 22px;
+    cursor: pointer;
+    margin-left: 7px;
 }
 .artclaypreviewarea .claypreviewtable {
     border: 1px solid #dbdbdb;
-    min-height: 80px;
     padding: 3px 0;
     width: 236px;
 }
-.artclaypreviewarea .claypreviewtable .claypreviewtableleft {
+.artclaypreviewarea .claypreviewtable .claypreviewtableleft, .artclaypreviewarea .claypreviewtable .claypreviewtableright {
     padding-left: 5px;
-    min-height: 74px;
+    min-height: 68px;
+    width: 115px;
+}
+.artclaypreviewarea .claypreviewtable .claypreviewtableleft {
     border-right: 1px solid #dbdbdb;
-    width: 118px;
+}
+.artclaypreviewarea .claypreviewtable .claydatarow {
+    height: 17px;
+    border-bottom: 1px dotted #000000;
+}
+.artclaypreviewarea .claypreviewtable .claydatarowlast {
+    height: 17px;
+}
+.artclaypreviewarea .claypreviewtable .clayname {
+    width: 96px;
+    line-height: 17px;
+    color: #0000ff;
+    font-size: 11px;
+    cursor: pointer;
+}
+.artclaypreviewarea .claypreviewtable .clayremove {
+    color: #000000;
+    font-size: 13px;
+    cursor: pointer;
+}
+.artclaypreviewarea .addclaypreviewdoc {
+    width: 43px;
+    border-left: 1px solid #dbdbdb;
+    border-bottom: 1px solid #dbdbdb;
+    border-right: 1px solid #dbdbdb;
+    float: right!important;
 }

@@ -729,4 +729,40 @@ if (!function_exists('isTablet')) {
     }
 }
 
+if (!function_exists('leadClaydocOut')) {
+    function leadClaydocOut($claydocs, $edit=0) {
+        $ci=&get_instance();
+        $clayview='<div class="claypreviewtableleft">';
+        $numpor=0;
+        $numdocs=count($claydocs);
+        $numpp=0;
+        $opendiv=1;
+        foreach ($claydocs as $row) {
+            $row['edit']=$edit;
+            // if ($row['approved']==0) {
+            //     $proofview.=$ci->load->view('leadorderdetails/artwork_proofdocsrc_view', $row,TRUE);
+            // } else {
+            //    $proofview.=$ci->load->view('leadorderdetails/artwork_proofdocapprov_view', $row,TRUE);
+            // }
+            $numpor+=1;
+            $row['rownum']=$numpor;
+            $clayview.=$ci->load->view('leadorderdetails/artwork_claydoc_view', $row,TRUE);
+            $numpp++;
+            if ($numpor==4) {
+                $numpor=0;
+                $clayview.='</div>';
+                $opendiv=0;
+                if ($numpp < $numdocs) {
+                    $clayview.='<div class="claypreviewtableright">';
+                    $opendiv=1;
+                }
+            }
+        }
+        if ($opendiv==1) {
+            $clayview.='</div>';
+        }
+        return $clayview;
+    }
+}
+
 ?>

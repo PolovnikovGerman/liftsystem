@@ -633,6 +633,12 @@ class Template
         $artdata['artfont']=$artfonts;
         $artdata['proofdoc_view']=$proofview;
         $artdata['edit'] = $edit;
+        // Clay
+        $claydocs=$res['claydocs'];
+        $clayview=leadClaydocOut($claydocs, $edit);
+        $numoutclaydoc=ceil(count($claydocs)/5);
+        $artdata['claydoc_view']=$clayview;
+        $artdata['claycnt'] = count($claydocs);
         // Artwork View
         $data['artview']=$this->CI->load->view('leadorderdetails/artwork_view', $artdata, TRUE);
         return $data;

@@ -1336,4 +1336,153 @@ Class Artlead_model extends MY_Model
         return $arttype;
     }
 
+    public function get_claymodels($artwork_id, $order_num) {
+        $this->db->select('*');
+        $this->db->from('ts_artwork_clays');
+        $this->db->where('artwork_id', $artwork_id);
+        $this->db->order_by('numpp');
+        $rows = $this->db->get()->result_array();
+        $claydocs = [];
+        foreach ($rows as $row) {
+            $newname = 'clay_'.$order_num.'_'.str_pad($row['numpp'],2,'0',STR_PAD_LEFT);
+            $row['out_proofname'] = $newname;
+            $claydocs[] = $row;
+        }
+        return $claydocs;
+    }
+
+    public function save_artclaydocs($leadorder, $claydoc, $sourcename , $sessionid) {
+        $out = ['result' => $this->error_result, 'msg' => $this->init_msg];
+        $order = $leadorder['order'];
+        $order_number = $order['order_num'];
+        $claydocs = $leadorder['claydocs'];
+        $newidx = count($claydocs) + 1;
+        $newclayname = 'clay_'.(empty($order_number) ? '' : $order_number.'_').str_pad($newidx, 2, '0', STR_PAD_LEFT);
+        $newdoc = [
+            'artwork_clay_id' => $newidx * (-1),
+            'add_time' => date('Y-m-d H:i:s'),
+            'numpp' => $newidx,
+            'clay_source' => $sourcename,
+            'clay_link' => $claydoc,
+            'clay_send' => 0,
+            'clay_sendtime' => 0,
+            'clay_approved' => 0,
+            'clay_approvetime' => 0,
+            'out_proofname' => $newclayname,
+            'deleted' => '',
+        ];
+        $claydocs[] = $newdoc;
+        $leadorder['claydocs'] = $claydocs;
+        usersession($sessionid, $leadorder);
+        $out['result'] = $this->success_result;
+        $out_docs = array();
+        foreach ($claydocs as $claydoc) {
+            if ($claydoc['deleted'] == '') {
+                $out_docs[] = $claydoc;
+            }
+        }
+        $out['outdocs'] = $out_docs;
+        return $out;
+    }
+
+    public function remove_artclaydocs($leadorder, $clayid, $ordersession) {
+        $out = ['result' => $this->error_result, 'msg' => 'Clay Model Not Found'];
+        $order = $leadorder['order'];
+        $order_number = $order['order_num'];
+        $claydocs = $leadorder['claydocs'];
+        $find = 0;
+        foreach ($claydocs as $claydoc) {
+            if ($claydoc['artwork_clay_id']==$clayid) {
+                $find = 1;
+                break;
+            }
+        }
+        if ($find==1) {
+            $out['result'] = $this->success_result;
+            $newidx = 1;
+            $newdocs = [];
+            $newclays = [];
+            foreach ($claydocs as $claydoc) {
+                if ($claydoc['artwork_clay_id']==$clayid) {
+                    $claydoc['deleted'] = '1';
+                } else {
+                    $newclayname = 'clay_'.(empty($order_number) ? '' : $order_number.'_').str_pad($newidx, 2, '0', STR_PAD_LEFT);
+                    $claydoc['out_proofname'] = $newclayname;
+                    $claydoc['numpp'] = $newidx;
+                    $newdocs[] = $claydoc;
+                    $newidx++;
+                }
+                $newclays[] = $claydoc;
+            }
+            $out['outdocs'] = $newdocs;
+            $leadorder['claydocs'] = $newclays;
+            usersession($ordersession, $leadorder);
+        }
+        return $out;
+    }
+
+    public function save_claymodels($claydocs, $artwork_id, $user_id) {
+        $out=['result' => $this->error_result, 'msg' => $this->init_msg];
+        // Paths
+        $fullpath=$this->config->item('clay_models');
+        $shrtpath=$this->config->item('clay_models_relative');
+        $shortpreload = $this->config->item('pathpreload');
+        $fullpreload=$this->config->item('upload_path_preload');
+        if (createPath($shrtpath)) {
+            $numpp=1;
+            $deleted = [];
+            foreach ($claydocs as $claydoc) {
+                if (!empty($claydoc['deleted'])) {
+                    if ($claydoc['artwork_clay_id'] > 0) {
+                        $this->db->where('artwork_clay_id', $claydoc['artwork_clay_id']);
+                        $this->db->delete('ts_artwork_clays');
+                        // Delete link
+                        $clayfile = str_replace($shrtpath, $fullpath, $claydoc['clay_link']);
+                        @unlink($clayfile);
+                    }
+                } else {
+                    $rowadd = 0;
+                    if ($claydoc['artwork_clay_id'] < 0) {
+                        $claydocname = str_replace($shortpreload, '', $claydoc['clay_link']);
+                        $filesrc = $fullpreload.$claydocname;
+                        $filetrg = $fullpath.$claydocname;
+                        $cpres = @copy($filesrc, $filetrg);
+                        if ($cpres) {
+                            $rowadd=1;
+                            $claydoc['clay_link'] = $shrtpath.$claydocname;
+                        }
+                    } else {
+                        $rowadd = 1;
+                    }
+                    if ($rowadd==1) {
+                        $this->db->set('numpp', $numpp);
+                        $this->db->set('clay_link', $claydoc['clay_link']);
+                        $this->db->set('clay_source', $claydoc['clay_source']);
+                        $this->db->set('clay_send', $claydoc['clay_send']);
+                        $this->db->set('clay_sendtime', $claydoc['clay_sendtime']);
+                        $this->db->set('clay_approved', $claydoc['clay_approved']);
+                        $this->db->set('clay_approvetime', $claydoc['clay_approvetime']);
+                        if ($claydoc['artwork_clay_id'] < 0) {
+                            $this->db->set('add_user', $user_id);
+                            $this->db->set('add_time', date('Y-m-d H:i:s'));
+                            $this->db->set('artwork_id', $artwork_id);
+                            $this->db->insert('ts_artwork_clays');
+                        } else {
+                            $this->db->where('artwork_clay_id', $claydoc['artwork_clay_id']);
+                            $this->db->set('update_user', $user_id);
+                            $this->db->update('ts_artwork_clays');
+                        }
+                        $numpp++;
+                    }
+                }
+            }
+            $out['result'] = $this->success_result;
+        }
+        return $out;
+    }
+
+    public function get_previews($artwork_id, $order_num) {
+        return [];
+    }
+
 }

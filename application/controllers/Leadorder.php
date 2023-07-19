@@ -173,6 +173,8 @@ class Leadorder extends MY_Controller
                         'shipping_address'=>$res['shipping_address'],
                         'billing'=>$res['order_billing'],
                         'charges'=>$res['charges'],
+                        'claydocs' => $res['claydocs'],
+                        // 'previews' => $res['']
                         'delrecords'=>array(),
                         'locrecid'=>$locking,
                     );
@@ -5156,4 +5158,82 @@ class Leadorder extends MY_Controller
         return $out;
     }
 
+    public function saveclaydocupload() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $postdata=$this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $this->load->model('artlead_model');
+                $res=$this->artlead_model->save_artclaydocs($leadorder, $postdata['claydoc'], $postdata['sourcename'] , $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $claydocs=$res['outdocs'];
+                    $mdata['content']=leadClaydocOut($claydocs, 1);
+                    // $numoutprofdoc=ceil(count($proofs)/5);
+                    // $mdata['profdocwidth']=$numoutprofdoc*160;
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function artclay_remove() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                $this->load->model('artlead_model');
+                $res=$this->artlead_model->remove_artclaydocs($leadorder, $postdata['clayid'], $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $claydocs=$res['outdocs'];
+                    $mdata['content']=leadClaydocOut($claydocs, 1);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function showclaymodels() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                $claydocs = $leadorder['claydocs'];
+                $error = 'Any Clay Models Found';
+                if (count($claydocs) > 0) {
+                    $error = '';
+                    $mdata['clays'] = $claydocs;
+                }
+                usersession($ordersession, $leadorder);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }
