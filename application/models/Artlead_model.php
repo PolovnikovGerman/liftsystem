@@ -1639,7 +1639,7 @@ Class Artlead_model extends MY_Model
         $this->db->where('managed',0);
         // $this->db->order_by('id');
         $this->db->order_by('id desc');
-        $this->db->limit(1000);
+        $this->db->limit(10);
         $exports = $this->db->get()->result_array();
         $numpp=1;
         foreach ($exports as $export) {
@@ -1680,17 +1680,17 @@ Class Artlead_model extends MY_Model
         $password = "07031";
         if (createPath($shrtpath)) {
             $doc_link = str_replace(['../docs/','../../system/docs/'],'http://bluetrack.net/system/docs/', $export['doc_link']);
-            $opts = array(
-                'http'=>array(
-                    'method'=>"GET",
-                    'header' => "Authorization: Basic " . base64_encode("$username:$password")
-                )
-            );
-            $context = stream_context_create($opts);
-            $file = file_get_contents($doc_link, false, $context);
-            if ($file) {
-                $newfile = $fullpath.$export['doc_name'];
-                file_put_contents($newfile, $file);
+            $newfile = $fullpath.$export['doc_name'];
+//            $opts = array(
+//                'http'=>array(
+//                    'method'=>"GET",
+//                    'header' => "Authorization: Basic " . base64_encode("$username:$password")
+//                )
+//            );
+//            $context = stream_context_create($opts);
+//            $file = file_get_contents($doc_link, false, $context);
+
+            if ($this->_save_remotefile($doc_link, $newfile)) {
                 // Select max numpp
                 $this->db->select('count(artwork_clay_id) as cnt, max(numpp) as maxnum');
                 $this->db->from('ts_artwork_clays');
@@ -1724,17 +1724,8 @@ Class Artlead_model extends MY_Model
         $password = "07031";
         if (createPath($shrtpath)) {
             $doc_link = str_replace(['../docs/','../../system/docs/'],'http://bluetrack.net/system/docs/', $export['doc_link']);
-            $opts = array(
-                'http'=>array(
-                    'method'=>"GET",
-                    'header' => "Authorization: Basic " . base64_encode("$username:$password")
-                )
-            );
-            $context = stream_context_create($opts);
-            $file = file_get_contents($doc_link, false, $context);
-            if ($file) {
-                $newfile = $fullpath.$export['doc_name'];
-                file_put_contents($newfile, $file);
+            $newfile = $fullpath.$export['doc_name'];
+            if ($this->_save_remotefile($doc_link, $newfile)) {
                 // Select max numpp
                 $this->db->select('count(artwork_preview_id) as cnt, max(numpp) as maxnum');
                 $this->db->from('ts_artwork_previews');
@@ -1758,6 +1749,29 @@ Class Artlead_model extends MY_Model
             }
         }
         return true;
+    }
+
+    private function _save_remotefile($remote_url, $localfile) {
+        $username = "stressballs";
+        $password = "07031";
+        $authtoken = base64_encode($username.':'.$password);
+        $headers = array(
+            'Authorization: Basic '.$authtoken,
+        );
+        $fp = fopen($localfile, "w+");
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($curl, CURLOPT_FILE, $fp);
+        curl_setopt($curl, CURLOPT_URL, $remote_url);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_exec ($curl);
+        curl_close($curl);
+        fclose($fp);
+        if (file_exists($localfile)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
