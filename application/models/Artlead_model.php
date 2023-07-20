@@ -1639,7 +1639,7 @@ Class Artlead_model extends MY_Model
         $this->db->where('managed',0);
         // $this->db->order_by('id');
         $this->db->order_by('id desc');
-        $this->db->limit(10);
+        $this->db->limit(1000);
         $exports = $this->db->get()->result_array();
         $numpp=1;
         foreach ($exports as $export) {
