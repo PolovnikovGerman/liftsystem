@@ -1673,7 +1673,7 @@ Class Artlead_model extends MY_Model
     }
 
     private function _parse_claydoc($export, $artwork_id) {
-        ini_set("allow_url_fopen", true);
+        ini_set("allow_url_fopen", 1);
         $fullpath=$this->config->item('clay_models');
         $shrtpath=$this->config->item('clay_models_relative');
         $username = "stressballs";
@@ -1717,7 +1717,7 @@ Class Artlead_model extends MY_Model
     }
 
     private function _parse_previewpic($export, $artwork_id) {
-        ini_set("allow_url_fopen", true);
+        ini_set("allow_url_fopen", 1);
         $fullpath=$this->config->item('preview_pics');
         $shrtpath=$this->config->item('preview_pics_relative');
         $username = "stressballs";
