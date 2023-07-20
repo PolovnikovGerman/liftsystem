@@ -86,3 +86,55 @@
         <?php } ?>
     </div>
 </div>
+<div class="artclaypreviewarea">
+    <div class="datarow">
+        <div class="areatitle <?=$edit==0 ? 'view' : ''?>">Clay Models:</div>
+        <?php if ($edit==0) { ?>
+            <?php if ($claycnt > 0) { ?>
+                <div class="openclaymodelsview">[open all]</div>
+            <?php } ?>
+        <?php } else { ?>
+            <div class="areachek">
+                <input type="checkbox" class="input_checkbox chkboxleadorddata" <?=$art_clay==1 ? 'checked="checked"' : ''?> id="art_claychk"
+                    data-entity="order" data-field="art_clay"/>
+                require clay
+            </div>
+        <?php } ?>
+    </div>
+    <div class="datarow">
+        <div class="claypreviewtable">
+            <?=$claydoc_view?>
+        </div>
+    </div>
+    <div id="clayaddrow" class="addclaypreviewdoc">
+        <?php if ($edit==1 && $art_clay==1) { ?>
+            <div id="addclay">&nbsp;</div>
+        <?php } ?>
+    </div>
+</div>
+<div class="artpreviewpreviewarea">
+    <div class="datarow">
+        <div class="areatitle <?=$edit==0 ? 'view' : ''?>">Preview Pictures:</div>
+        <?php if ($edit==0) { ?>
+            <?php if ($previewcnt > 0) { ?>
+                <div class="openpreviewsview">[open all]</div>
+            <?php } ?>
+        <?php } else { ?>
+            <div class="areachek">
+                <input type="checkbox" class="input_checkbox chkboxleadorddata" <?=$art_preview==1 ? 'checked="checked"' : ''?> id="art_previewchk"
+                       data-entity="order" data-field="art_preview"/>
+                require preview
+            </div>
+        <?php } ?>
+    </div>
+    <div class="datarow">
+        <div class="previewpreviewtable">
+            <?=$previewdoc_view?>
+        </div>
+    </div>
+    <div id="previewaddrow" class="addpreviewpreviewdoc">
+        <?php if ($edit==1 && $art_preview==1) { ?>
+            <div id="addpreview">&nbsp;</div>
+        <?php } ?>
+    </div>
+</div>

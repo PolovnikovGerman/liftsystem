@@ -632,6 +632,17 @@ class Template
         $artdata['artcolors']=$artcolors;
         $artdata['artfont']=$artfonts;
         $artdata['proofdoc_view']=$proofview;
+        $artdata['edit'] = $edit;
+        // Clay
+        $claydocs=$res['claydocs'];
+        $clayview=leadClaydocOut($claydocs, $edit);
+        $artdata['claydoc_view']=$clayview;
+        $artdata['claycnt'] = count($claydocs);
+        // Previews
+        $previewdocs=$res['previewdocs'];
+        $previewview=leadPreviewdocOut($previewdocs, $edit);
+        $artdata['previewdoc_view']=$previewview;
+        $artdata['previewcnt'] = count($previewdocs);
         // Artwork View
         $data['artview']=$this->CI->load->view('leadorderdetails/artwork_view', $artdata, TRUE);
         return $data;

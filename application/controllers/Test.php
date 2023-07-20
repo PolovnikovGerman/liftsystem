@@ -2177,4 +2177,41 @@ class Test extends CI_Controller
         }
         echo 'Updated successfully'.PHP_EOL;
     }
+
+    public function checkfee() {
+        $this->db->select('o.order_num, o.order_date, s.order_shipaddr_id, s.zip, s.country_id');
+        $this->db->from('ts_order_shipaddres s');
+        $this->db->join('ts_orders o','o.order_id=s.order_id');
+        $this->db->where('o.order_date >= ', strtotime('2022-01-01'));
+        $this->db->where('s.state_id', NULL);
+        $this->db->where_in('s.country_id', ['39','223']);
+        $this->db->where('s.zip != ','');
+        $address = $this->db->get()->result_array();
+        foreach ($address as $addres) {
+            echo 'Country '.$addres['country_id'].' Zip '.$addres['zip'].PHP_EOL;
+            $this->db->select('state_id, state_code');
+            $this->db->from('ts_states');
+            $this->db->where('country_id', $addres['country_id']);
+            $stateselect = $this->db->get_compiled_select();
+            $this->db->reset_query();
+
+            $this->db->select('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code as state, t.state_id, count(c.geoip_city_id) as cntcity');
+            $this->db->from('ts_geoipdata gdata');
+            $this->db->join('ts_geoip_city c','c.geoname_id=gdata.geoname_id');
+            $this->db->join('ts_countries cntr','cntr.country_iso_code_2=c.country_iso_code');
+            $this->db->join("({$stateselect}) as t",'t.state_code=c.subdivision_1_iso_code','left');
+            $this->db->where('gdata.postal_code',$addres['zip']);
+            $this->db->where('cntr.country_id',$addres['country_id']);
+            $this->db->group_by('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code, t.state_id');
+            $this->db->order_by('cntcity','desc');
+            $validdata = $this->db->get()->row_array();
+            if (!empty($validdata['geoip_city_id']) && !empty($validdata['state_id'])) {
+                echo 'Valid Country '.$validdata['city_name'].' Zip '.$validdata['state'].' Id '.$validdata['state_id'].PHP_EOL;
+                $this->db->where('order_shipaddr_id', $addres['order_shipaddr_id']);
+                $this->db->set('state_id', $validdata['state_id']);
+                $this->db->update('ts_order_shipaddres');
+            }
+            // echo 'State '.$validdata['subdivision_1_iso_code'].' ID '.$validdata['state_id'].PHP_EOL;
+        }
+    }
 }

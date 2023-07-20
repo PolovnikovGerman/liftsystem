@@ -729,4 +729,66 @@ if (!function_exists('isTablet')) {
     }
 }
 
+if (!function_exists('leadClaydocOut')) {
+    function leadClaydocOut($claydocs, $edit=0) {
+        $ci=&get_instance();
+        $clayview='<div class="claypreviewtableleft">';
+        $numpor=0;
+        $numdocs=count($claydocs);
+        $numpp=0;
+        $opendiv=1;
+        foreach ($claydocs as $row) {
+            $row['edit']=$edit;
+            $numpor+=1;
+            $row['rownum']=$numpor;
+            $clayview.=$ci->load->view('leadorderdetails/artwork_claydoc_view', $row,TRUE);
+            $numpp++;
+            if ($numpor==4) {
+                $numpor=0;
+                $clayview.='</div>';
+                $opendiv=0;
+                if ($numpp < $numdocs) {
+                    $clayview.='<div class="claypreviewtableright">';
+                    $opendiv=1;
+                }
+            }
+        }
+        if ($opendiv==1) {
+            $clayview.='</div>';
+        }
+        return $clayview;
+    }
+}
+
+if (!function_exists('leadPreviewdocOut')) {
+    function leadPreviewdocOut($previewdocs, $edit=0) {
+        $ci=&get_instance();
+        $previewview='<div class="previewpreviewtableleft">';
+        $numpor=0;
+        $numdocs=count($previewdocs);
+        $numpp=0;
+        $opendiv=1;
+        foreach ($previewdocs as $row) {
+            $row['edit']=$edit;
+            $numpor+=1;
+            $row['rownum']=$numpor;
+            $previewview.=$ci->load->view('leadorderdetails/artwork_previewdoc_view', $row,TRUE);
+            $numpp++;
+            if ($numpor==4) {
+                $numpor=0;
+                $previewview.='</div>';
+                $opendiv=0;
+                if ($numpp < $numdocs) {
+                    $previewview.='<div class="previewpreviewtableright">';
+                    $opendiv=1;
+                }
+            }
+        }
+        if ($opendiv==1) {
+            $previewview.='</div>';
+        }
+        return $previewview;
+    }
+}
+
 ?>
