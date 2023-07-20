@@ -627,7 +627,7 @@ class Template
         $proofdocs=$res['proofdocs'];
         $proofview=leadProfdocOut($proofdocs, $edit);
         $numoutprofdoc=ceil(count($proofdocs)/5);
-        $artdata['profdocwidth']=$numoutprofdoc*160;
+        $artdata['profdocwidth']=$numoutprofdoc*145; // 160;
         $artdata['weborder']=$weborder;
         $artdata['artcolors']=$artcolors;
         $artdata['artfont']=$artfonts;

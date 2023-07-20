@@ -1638,8 +1638,8 @@ Class Artlead_model extends MY_Model
         $this->db->from('lift_exports');
         $this->db->where('managed',0);
         // $this->db->order_by('id');
-        $this->db->order_by('id desc');
-        $this->db->limit(1000);
+        $this->db->order_by('order_number desc, id asc');
+        $this->db->limit(100);
         $exports = $this->db->get()->result_array();
         $numpp=1;
         foreach ($exports as $export) {
@@ -1661,9 +1661,9 @@ Class Artlead_model extends MY_Model
                 }
             } else {
                 echo 'Order '.$export['order_number'].' Not Added'.PHP_EOL;
-                $this->db->where('id', $export['id']);
-                $this->db->set('managed',2);
-                $this->db->update('lift_exports');
+                // $this->db->where('id', $export['id']);
+                // $this->db->set('managed',2);
+                // $this->db->update('lift_exports');
             }
             $numpp++;
         }

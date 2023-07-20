@@ -1717,12 +1717,12 @@ input.artrepeat {
 .block_7_proofs1 {
     float: left;
     width: 239px;
-    height: 170px;
+    height: 155px;
     margin-left: 2px;
 }
 .block_7_proofs1_scrool {
     border-bottom: 1px solid rgb(62, 62, 62);
-    height: 149px;
+    height: 154px;
     overflow-x: auto;
 }
 .proofs_line1 {
@@ -1748,13 +1748,14 @@ input.artrepeat {
 .proofs_content_area {
     clear: both;
     float: left;
-    height: 106px;
+    /* height: 106px; */
     overflow-x: auto;
     /* width: 2000px; */
+    overflow-y: hidden;
 }
 .proofs_content {
     float: left;
-    height: 104px;
+    height: 112px;
     width: 142px;
     border-right: 1px solid rgb(62, 62, 62);
 }
