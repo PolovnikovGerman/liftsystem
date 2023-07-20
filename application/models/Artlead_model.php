@@ -1632,4 +1632,130 @@ Class Artlead_model extends MY_Model
         return $out;
     }
 
+    public function export_parse() {
+        $start = time();
+        $this->db->select('*');
+        $this->db->from('lift_exports');
+        $this->db->where('managed',0);
+        // $this->db->order_by('id');
+        $this->db->order_by('id desc');
+        $this->db->limit(1000);
+        $exports = $this->db->get()->result_array();
+        $numpp=1;
+        foreach ($exports as $export) {
+            // Check order
+            $this->db->select('o.order_id, a.artwork_id');
+            $this->db->from('ts_orders o');
+            $this->db->join('ts_artworks a','a.order_id=o.order_id');
+            $this->db->where('o.order_num', $export['order_number']);
+            $this->db->where_in('brand',['SB', 'BT']);
+            $ordres = $this->db->get()->row_array();
+            echo $numpp.PHP_EOL;
+            if (ifset($ordres,'order_id', 0)!==0) {
+                // order found
+                // echo 'Order '.$export['order_number'].' Found'.PHP_EOL;
+                if ($export['doc_type']=='clay') {
+                    $this->_parse_claydoc($export, $ordres['artwork_id']);
+                } else {
+                    $this->_parse_previewpic($export, $ordres['artwork_id']);
+                }
+            } else {
+                echo 'Order '.$export['order_number'].' Not Added'.PHP_EOL;
+                $this->db->where('id', $export['id']);
+                $this->db->set('managed',2);
+                $this->db->update('lift_exports');
+            }
+            $numpp++;
+        }
+        $finish = time();
+        $period = $finish - $start;
+        echo 'Parse occupy '.$period.' sec'.PHP_EOL;
+    }
+
+    private function _parse_claydoc($export, $artwork_id) {
+        $fullpath=$this->config->item('clay_models');
+        $shrtpath=$this->config->item('clay_models_relative');
+        $username = "stressballs";
+        $password = "07031";
+        if (createPath($shrtpath)) {
+            $doc_link = str_replace(['../docs/','../../system/docs/'],'http://bluetrack.net/system/docs/', $export['doc_link']);
+            $opts = array(
+                'http'=>array(
+                    'method'=>"GET",
+                    'header' => "Authorization: Basic " . base64_encode("$username:$password")
+                )
+            );
+            $context = stream_context_create($opts);
+            $file = file_get_contents($doc_link, false, $context);
+            if ($file) {
+                $newfile = $fullpath.$export['doc_name'];
+                file_put_contents($newfile, $file);
+                // Select max numpp
+                $this->db->select('count(artwork_clay_id) as cnt, max(numpp) as maxnum');
+                $this->db->from('ts_artwork_clays');
+                $this->db->where('artwork_id', $artwork_id);
+                $numres = $this->db->get()->row_array();
+                if ($numres['cnt']==0) {
+                    $numpp = 1;
+                } else {
+                    $numpp = $numres['maxnum'] + 1;
+                }
+                $this->db->set('add_user',1);
+                $this->db->set('add_time', date('Y-m-d H:i:s'));
+                $this->db->set('artwork_id', $artwork_id);
+                $this->db->set('numpp', $numpp);
+                $this->db->set('clay_link', $shrtpath.$export['doc_name']);
+                $this->db->set('clay_source', $export['doc_name']);
+                $this->db->insert('ts_artwork_clays');
+                $this->db->where('id', $export['id']);
+                $this->db->set('managed', 1);
+                $this->db->update('lift_exports');
+            }
+        }
+        return true;
+    }
+
+    private function _parse_previewpic($export, $artwork_id) {
+        $fullpath=$this->config->item('preview_pics');
+        $shrtpath=$this->config->item('preview_pics_relative');
+        $username = "stressballs";
+        $password = "07031";
+        if (createPath($shrtpath)) {
+            $doc_link = str_replace(['../docs/','../../system/docs/'],'http://bluetrack.net/system/docs/', $export['doc_link']);
+            $opts = array(
+                'http'=>array(
+                    'method'=>"GET",
+                    'header' => "Authorization: Basic " . base64_encode("$username:$password")
+                )
+            );
+            $context = stream_context_create($opts);
+            $file = file_get_contents($doc_link, false, $context);
+            if ($file) {
+                $newfile = $fullpath.$export['doc_name'];
+                file_put_contents($newfile, $file);
+                // Select max numpp
+                $this->db->select('count(artwork_preview_id) as cnt, max(numpp) as maxnum');
+                $this->db->from('ts_artwork_previews');
+                $this->db->where('artwork_id', $artwork_id);
+                $numres = $this->db->get()->row_array();
+                if ($numres['cnt']==0) {
+                    $numpp = 1;
+                } else {
+                    $numpp = $numres['maxnum'] + 1;
+                }
+                $this->db->set('add_user',1);
+                $this->db->set('add_time', date('Y-m-d H:i:s'));
+                $this->db->set('artwork_id', $artwork_id);
+                $this->db->set('numpp', $numpp);
+                $this->db->set('preview_link', $shrtpath.$export['doc_name']);
+                $this->db->set('preview_source', $export['doc_name']);
+                $this->db->insert('ts_artwork_previews');
+                $this->db->where('id', $export['id']);
+                $this->db->set('managed', 1);
+                $this->db->update('lift_exports');
+            }
+        }
+        return true;
+    }
+
 }
