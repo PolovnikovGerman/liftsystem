@@ -700,7 +700,7 @@ function init_onlineleadorder_edit() {
                     params.push({name: 'sourcename', value: responseJSON.srcname});
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
-                            $("div.claypreviewtable").empty().html(response.data.content);
+                            $("#claymodshowarea").empty().html(response.data.content).css('width',response.data.claywidth);
                             init_leadorder_artmanage();
                         } else {
                             show_error(response);
@@ -757,7 +757,7 @@ function init_onlineleadorder_edit() {
                     params.push({name: 'sourcename', value: responseJSON.srcname});
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
-                            $("div.previewpreviewtable").empty().html(response.data.content);
+                            $("#previewpicshowarea").empty().html(response.data.content).css('width',response.data.previewwidth);
                             init_leadorder_artmanage();
                         } else {
                             show_error(response);
@@ -1191,7 +1191,7 @@ function init_leadorder_artmanage() {
             var url='/leadorder/artclay_remove';
             $.post(url, params, function (response){
                 if (response.errors=='') {
-                    $("div.claypreviewtable").empty().html(response.data.content);
+                    $("#claymodshowarea").empty().html(response.data.content).css('width', response.data.claywidth);
                     init_leadorder_artmanage();
                 } else {
                     show_error(response);
@@ -1213,7 +1213,7 @@ function init_leadorder_artmanage() {
             var url='/leadorder/artpreview_remove';
             $.post(url, params, function (response){
                 if (response.errors=='') {
-                    $("div.previewpreviewtable").empty().html(response.data.content);
+                    $("#previewpicshowarea").empty().html(response.data.content).css('width', response.data.previewwidth);
                     init_leadorder_artmanage();
                 } else {
                     show_error(response);

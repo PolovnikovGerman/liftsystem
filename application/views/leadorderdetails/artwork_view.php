@@ -103,7 +103,9 @@
     </div>
     <div class="datarow">
         <div class="claypreviewtable">
-            <?=$claydoc_view?>
+            <div id="claymodshowarea" class="claymodshowarea" style="width: <?=$claydocswidth?>px;">
+                <?=$claydoc_view?>
+            </div>
         </div>
     </div>
     <div id="clayaddrow" class="addclaypreviewdoc">
@@ -129,7 +131,9 @@
     </div>
     <div class="datarow">
         <div class="previewpreviewtable">
-            <?=$previewdoc_view?>
+            <div id="previewpicshowarea" class="previewpicshowarea" style="width: <?=$previewswidth?>px;">
+                <?=$previewdoc_view?>
+            </div>
         </div>
     </div>
     <div id="previewaddrow" class="addpreviewpreviewdoc">

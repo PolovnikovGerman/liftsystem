@@ -1346,24 +1346,32 @@ Class Artlead_model extends MY_Model
         foreach ($rows as $row) {
             $newname = 'clay_'.$order_num.'_'.str_pad($row['numpp'],2,'0',STR_PAD_LEFT);
             $row['out_proofname'] = $newname;
+            $row['deleted'] = '';
             $claydocs[] = $row;
         }
         return $claydocs;
     }
 
-    public function save_artclaydocs($leadorder, $claydoc, $sourcename , $sessionid) {
+    public function save_artclaydocs($leadorder, $claydoclnk, $sourcename , $sessionid) {
         $out = ['result' => $this->error_result, 'msg' => $this->init_msg];
         $order = $leadorder['order'];
         $order_number = $order['order_num'];
         $claydocs = $leadorder['claydocs'];
         $newidx = count($claydocs) + 1;
-        $newclayname = 'clay_'.(empty($order_number) ? '' : $order_number.'_').str_pad($newidx, 2, '0', STR_PAD_LEFT);
+        $neworder = 0;
+        foreach ($claydocs as $claydoc) {
+            if (empty($claydoc['deleted'])) {
+                $neworder++;
+            }
+        }
+        $neworder++;
+        $newclayname = 'clay_'.(empty($order_number) ? '' : $order_number.'_').str_pad($neworder, 2, '0', STR_PAD_LEFT);
         $newdoc = [
             'artwork_clay_id' => $newidx * (-1),
             'add_time' => date('Y-m-d H:i:s'),
-            'numpp' => $newidx,
+            'numpp' => $neworder,
             'clay_source' => $sourcename,
-            'clay_link' => $claydoc,
+            'clay_link' => $claydoclnk,
             'clay_send' => 0,
             'clay_sendtime' => 0,
             'clay_approved' => 0,
@@ -1405,7 +1413,7 @@ Class Artlead_model extends MY_Model
             foreach ($claydocs as $claydoc) {
                 if ($claydoc['artwork_clay_id']==$clayid) {
                     $claydoc['deleted'] = '1';
-                } else {
+                } elseif (empty($claydoc['deleted'])) {
                     $newclayname = 'clay_'.(empty($order_number) ? '' : $order_number.'_').str_pad($newidx, 2, '0', STR_PAD_LEFT);
                     $claydoc['out_proofname'] = $newclayname;
                     $claydoc['numpp'] = $newidx;
@@ -1491,6 +1499,7 @@ Class Artlead_model extends MY_Model
         foreach ($rows as $row) {
             $newname = 'preview_'.$order_num.'_'.str_pad($row['numpp'], 2, '0', STR_PAD_LEFT);
             $row['out_proofname'] = $newname;
+            $row['deleted'] = '';
             $previews[] = $row;
         }
         return $previews;
@@ -1557,7 +1566,7 @@ Class Artlead_model extends MY_Model
             foreach ($previewdocs as $previewdoc) {
                 if ($previewdoc['artwork_preview_id']==$previewid) {
                     $previewdoc['deleted'] = '1';
-                } else {
+                } elseif (empty($previewdoc['deleted'])) {
                     $newname = 'preview_'.(empty($order_number) ? '' : $order_number.'_').str_pad($newidx, 2, '0', STR_PAD_LEFT);
                     $previewdoc['out_proofname'] = $newname;
                     $previewdoc['numpp'] = $newidx;

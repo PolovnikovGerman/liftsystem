@@ -5010,7 +5010,7 @@ input.ticket_date {
     margin-left: 8px;
     float: left;
     width: 238px;
-    margin-top: 4px;
+    margin-top: 20px;
 }
 .artclaypreviewarea div {
     float: left;
@@ -5048,6 +5048,8 @@ input.ticket_date {
     border: 1px solid #dbdbdb;
     padding: 3px 0;
     width: 236px;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 .artclaypreviewarea .claypreviewtable .claypreviewtableleft, .artclaypreviewarea .claypreviewtable .claypreviewtableright {
     padding-left: 5px;
@@ -5126,6 +5128,8 @@ input.ticket_date {
     border: 1px solid #dbdbdb;
     padding: 3px 0;
     width: 236px;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 .artpreviewpreviewarea .previewpreviewtable .previewpreviewtableleft, .artpreviewpreviewarea .previewpreviewtable .previewpreviewtableright {
     padding-left: 5px;

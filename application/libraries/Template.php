@@ -638,11 +638,13 @@ class Template
         $clayview=leadClaydocOut($claydocs, $edit);
         $artdata['claydoc_view']=$clayview;
         $artdata['claycnt'] = count($claydocs);
+        $artdata['claydocswidth'] = ceil(count($claydocs)/4)*115;
         // Previews
         $previewdocs=$res['previewdocs'];
         $previewview=leadPreviewdocOut($previewdocs, $edit);
         $artdata['previewdoc_view']=$previewview;
         $artdata['previewcnt'] = count($previewdocs);
+        $artdata['previewswidth'] = ceil(count($previewdocs)/4)*115;
         // Artwork View
         $data['artview']=$this->CI->load->view('leadorderdetails/artwork_view', $artdata, TRUE);
         return $data;

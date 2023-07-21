@@ -737,6 +737,8 @@ if (!function_exists('leadClaydocOut')) {
         $numdocs=count($claydocs);
         $numpp=0;
         $opendiv=1;
+        $maxcols = ceil($numdocs/4);
+        $numcolumn = 1;
         foreach ($claydocs as $row) {
             $row['edit']=$edit;
             $numpor+=1;
@@ -745,10 +747,15 @@ if (!function_exists('leadClaydocOut')) {
             $numpp++;
             if ($numpor==4) {
                 $numpor=0;
+                $numcolumn++;
                 $clayview.='</div>';
                 $opendiv=0;
                 if ($numpp < $numdocs) {
-                    $clayview.='<div class="claypreviewtableright">';
+                    if ($numcolumn < $maxcols) {
+                        $clayview.='<div class="claypreviewtableleft">';
+                    } else {
+                        $clayview.='<div class="claypreviewtableright">';
+                    }
                     $opendiv=1;
                 }
             }
@@ -768,6 +775,8 @@ if (!function_exists('leadPreviewdocOut')) {
         $numdocs=count($previewdocs);
         $numpp=0;
         $opendiv=1;
+        $maxcols = ceil($numdocs/4);
+        $numcol = 1;
         foreach ($previewdocs as $row) {
             $row['edit']=$edit;
             $numpor+=1;
@@ -778,8 +787,13 @@ if (!function_exists('leadPreviewdocOut')) {
                 $numpor=0;
                 $previewview.='</div>';
                 $opendiv=0;
+                $numcol++;
                 if ($numpp < $numdocs) {
-                    $previewview.='<div class="previewpreviewtableright">';
+                    if ($numcol < $maxcols) {
+                        $previewview.='<div class="previewpreviewtableleft">';
+                    } else {
+                        $previewview.='<div class="previewpreviewtableright">';
+                    }
                     $opendiv=1;
                 }
             }
