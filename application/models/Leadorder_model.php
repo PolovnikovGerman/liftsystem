@@ -524,6 +524,12 @@ Class Leadorder_model extends My_Model {
         // Get Artwork Locations
         $locations=$this->artlead_model->get_art_locations($artwork_id);
         $proofdocs=$this->artwork_model->get_artproofs($artwork_id);
+        // Clay && Preview
+        $claydocs = $this->artlead_model->get_claymodels($artwork_id, $res['order_num']);
+        $previews = $this->artlead_model->get_previews($artwork_id, $res['order_num']);
+        $out['claydocs'] = $claydocs;
+        $out['previewdocs'] = $previews;
+        $out['previewdocs'] = $previews;
         $out['artlocations']=$locations;
         $out['proofdocs']=$proofdocs;
         if ($out['order_system_type']=='new') {
@@ -725,6 +731,10 @@ Class Leadorder_model extends My_Model {
         $art['artstage']=$this->NO_ART;
         $art['artstage_txt']=$this->NO_ART_TXT;
         $art['artstage_time']=$this->empty_htmlcontent;
+        // Clay & Preview
+        $art['art_clay'] = $art['art_preview'] = 0;
+        $out['claydocs'] = $out['previewdocs'] = [];
+
         $out['artwork']=$art;
         $out['payments']=array();
         $out['artlocations']=$out['proofdocs']=array();
@@ -4394,6 +4404,16 @@ Class Leadorder_model extends My_Model {
         $proofs=$leadorder['artproofs'];
         $res=$this->artlead_model->save_artproof($proofs, $artwork_id, $user_id);
         $artsyncdoc=$res['artsyncdoc'];
+        // Clay save
+        $claydocs = $leadorder['claydocs'];
+        if (count($claydocs)) {
+            $res=$this->artlead_model->save_claymodels($claydocs, $artwork_id, $user_id);
+        }
+        // Preview save
+        $previewdocs = $leadorder['previewdocs'];
+        if (count($previewdocs)) {
+            $res=$this->artlead_model->save_previewpics($previewdocs, $artwork_id, $user_id);
+        }
         // Save history and message
         $history=$leadorder['message']['history'];
 
@@ -4760,6 +4780,9 @@ Class Leadorder_model extends My_Model {
         $this->db->set('discount_label', $data['discount_label']);
         $this->db->set('discount_val', floatval($data['discount_val']));
         $this->db->set('discount_descript', $data['discount_descript']);
+        // Clay preview
+        $this->db->set('art_clay', $data['art_clay']);
+        $this->db->set('art_preview', $data['art_preview']);
         if ($order_id==0) {
             if ($data['brand']=='SR') {
                 $confirm=uniq_link(5,'digits').'-'.strtoupper(uniq_link(2,'chars'));
