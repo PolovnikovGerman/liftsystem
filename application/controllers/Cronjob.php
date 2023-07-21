@@ -1097,4 +1097,8 @@ Class Cronjob extends CI_Controller
         $this->artlead_model->export_parse();
     }
 
+    public function artclay_export() {
+        $this->load->model('artlead_model');
+        $this->artlead_model->artclay_export();
+    }
 }

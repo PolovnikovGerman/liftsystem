@@ -1346,24 +1346,32 @@ Class Artlead_model extends MY_Model
         foreach ($rows as $row) {
             $newname = 'clay_'.$order_num.'_'.str_pad($row['numpp'],2,'0',STR_PAD_LEFT);
             $row['out_proofname'] = $newname;
+            $row['deleted'] = '';
             $claydocs[] = $row;
         }
         return $claydocs;
     }
 
-    public function save_artclaydocs($leadorder, $claydoc, $sourcename , $sessionid) {
+    public function save_artclaydocs($leadorder, $claydoclnk, $sourcename , $sessionid) {
         $out = ['result' => $this->error_result, 'msg' => $this->init_msg];
         $order = $leadorder['order'];
         $order_number = $order['order_num'];
         $claydocs = $leadorder['claydocs'];
         $newidx = count($claydocs) + 1;
-        $newclayname = 'clay_'.(empty($order_number) ? '' : $order_number.'_').str_pad($newidx, 2, '0', STR_PAD_LEFT);
+        $neworder = 0;
+        foreach ($claydocs as $claydoc) {
+            if (empty($claydoc['deleted'])) {
+                $neworder++;
+            }
+        }
+        $neworder++;
+        $newclayname = 'clay_'.(empty($order_number) ? '' : $order_number.'_').str_pad($neworder, 2, '0', STR_PAD_LEFT);
         $newdoc = [
             'artwork_clay_id' => $newidx * (-1),
             'add_time' => date('Y-m-d H:i:s'),
-            'numpp' => $newidx,
+            'numpp' => $neworder,
             'clay_source' => $sourcename,
-            'clay_link' => $claydoc,
+            'clay_link' => $claydoclnk,
             'clay_send' => 0,
             'clay_sendtime' => 0,
             'clay_approved' => 0,
@@ -1405,7 +1413,7 @@ Class Artlead_model extends MY_Model
             foreach ($claydocs as $claydoc) {
                 if ($claydoc['artwork_clay_id']==$clayid) {
                     $claydoc['deleted'] = '1';
-                } else {
+                } elseif (empty($claydoc['deleted'])) {
                     $newclayname = 'clay_'.(empty($order_number) ? '' : $order_number.'_').str_pad($newidx, 2, '0', STR_PAD_LEFT);
                     $claydoc['out_proofname'] = $newclayname;
                     $claydoc['numpp'] = $newidx;
@@ -1491,6 +1499,7 @@ Class Artlead_model extends MY_Model
         foreach ($rows as $row) {
             $newname = 'preview_'.$order_num.'_'.str_pad($row['numpp'], 2, '0', STR_PAD_LEFT);
             $row['out_proofname'] = $newname;
+            $row['deleted'] = '';
             $previews[] = $row;
         }
         return $previews;
@@ -1557,7 +1566,7 @@ Class Artlead_model extends MY_Model
             foreach ($previewdocs as $previewdoc) {
                 if ($previewdoc['artwork_preview_id']==$previewid) {
                     $previewdoc['deleted'] = '1';
-                } else {
+                } elseif (empty($previewdoc['deleted'])) {
                     $newname = 'preview_'.(empty($order_number) ? '' : $order_number.'_').str_pad($newidx, 2, '0', STR_PAD_LEFT);
                     $previewdoc['out_proofname'] = $newname;
                     $previewdoc['numpp'] = $newidx;
@@ -1638,7 +1647,7 @@ Class Artlead_model extends MY_Model
         $this->db->from('lift_exports');
         $this->db->where('managed',0);
         // $this->db->order_by('id');
-        $this->db->order_by('id desc');
+        $this->db->order_by('order_number desc, id asc');
         $this->db->limit(1000);
         $exports = $this->db->get()->result_array();
         $numpp=1;
@@ -1661,9 +1670,9 @@ Class Artlead_model extends MY_Model
                 }
             } else {
                 echo 'Order '.$export['order_number'].' Not Added'.PHP_EOL;
-                $this->db->where('id', $export['id']);
-                $this->db->set('managed',2);
-                $this->db->update('lift_exports');
+                // $this->db->where('id', $export['id']);
+                // $this->db->set('managed',2);
+                // $this->db->update('lift_exports');
             }
             $numpp++;
         }
@@ -1771,6 +1780,39 @@ Class Artlead_model extends MY_Model
             return true;
         } else {
             return false;
+        }
+    }
+
+    public function artclay_export() {
+        $curl = curl_init(); //Init
+        if ($this->config->item('netexportsecure')==1) {
+            curl_setopt($curl, CURLOPT_USERPWD, 'stressballs:07031');
+        }
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_URL, $this->config->item('clayexportdata')); //POST URL
+        curl_setopt($curl, CURLOPT_HEADER, 0); // Show Headers
+        curl_setopt($curl, CURLOPT_POST, 1); // Send data via POST
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1); //curl return response
+        // curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata); // data for send via POST
+        $res = curl_exec($curl);
+        if(!$res) {
+            $error = curl_error($curl).'('.curl_errno($curl).')';
+            echo $error;
+        } else {
+            $array = json_decode($res, true);
+            if (ifset($array,'result','0')=='1') {
+                $items = $array['data'];
+                foreach ($items as $item) {
+                    echo 'New ID '.$item['id'].' Order '.$item['order_number'].PHP_EOL;
+                    $this->db->set('order_number', $item['order_number']);
+                    $this->db->set('doc_type', $item['doc_type']);
+                    $this->db->set('doc_link', $item['doc_link']);
+                    $this->db->set('doc_name', $item['doc_name']);
+                    $this->db->insert('lift_exports');
+                }
+            } else {
+                echo $array['error'].PHP_EOL;
+            }
         }
     }
 

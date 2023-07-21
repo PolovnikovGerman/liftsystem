@@ -684,12 +684,12 @@ function init_onlineleadorder_edit() {
     if ($("#addclay").length > 0) {
         var uploader = new qq.FileUploader({
             element: document.getElementById('addclay'),
-            action: '/utils/save_itemimg',
+            action: '/utils/vendorcenterattach',
             uploadButtonText: '',
             multiple: false,
             debug: false,
             template: upload_templ,
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            // allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
             onComplete: function(id, fileName, responseJSON){
                 if (responseJSON.success==true) {
                     $(".qq-upload-list").hide();
@@ -700,7 +700,14 @@ function init_onlineleadorder_edit() {
                     params.push({name: 'sourcename', value: responseJSON.srcname});
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
-                            $("div.claypreviewtable").empty().html(response.data.content);
+                            if (parseInt(response.data.numdocs) > 0) {
+                                $(".artclaypreviewarea").find('div.areatitle').removeClass('view');
+                                $(".claypreviewtable").removeClass('view');
+                            } else {
+                                $(".artclaypreviewarea").find('div.areatitle').addClass('view');
+                                $(".claypreviewtable").addClass('view');
+                            }
+                            $("#claymodshowarea").empty().html(response.data.content).css('width',response.data.claywidth);
                             init_leadorder_artmanage();
                         } else {
                             show_error(response);
@@ -741,12 +748,12 @@ function init_onlineleadorder_edit() {
     if ($("#addpreview").length > 0) {
         var uploader = new qq.FileUploader({
             element: document.getElementById('addpreview'),
-            action: '/utils/save_itemimg',
+            action: '/utils/vendorcenterattach',
             uploadButtonText: '',
             multiple: false,
             debug: false,
             template: upload_templ,
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            // allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
             onComplete: function(id, fileName, responseJSON){
                 if (responseJSON.success==true) {
                     $(".qq-upload-list").hide();
@@ -757,7 +764,11 @@ function init_onlineleadorder_edit() {
                     params.push({name: 'sourcename', value: responseJSON.srcname});
                     $.post(url, params, function (response) {
                         if (response.errors=='') {
-                            $("div.previewpreviewtable").empty().html(response.data.content);
+                            if (parseInt(response.data.numdocs) > 0) {
+                                $(".artpreviewpreviewarea").find('div.areatitle').removeClass('view');
+                                $(".previewpreviewtable").removeClass('view');
+                            }
+                            $("#previewpicshowarea").empty().html(response.data.content).css('width',response.data.previewwidth);
                             init_leadorder_artmanage();
                         } else {
                             show_error(response);
@@ -1191,7 +1202,14 @@ function init_leadorder_artmanage() {
             var url='/leadorder/artclay_remove';
             $.post(url, params, function (response){
                 if (response.errors=='') {
-                    $("div.claypreviewtable").empty().html(response.data.content);
+                    if (parseInt(response.data.numdocs) > 0) {
+                        $(".artclaypreviewarea").find('div.areatitle').removeClass('view');
+                        $(".claypreviewtable").removeClass('view');
+                    } else {
+                        $(".artclaypreviewarea").find('div.areatitle').addClass('view');
+                        $(".claypreviewtable").addClass('view');
+                    }
+                    $("#claymodshowarea").empty().html(response.data.content).css('width', response.data.claywidth);
                     init_leadorder_artmanage();
                 } else {
                     show_error(response);
@@ -1213,7 +1231,14 @@ function init_leadorder_artmanage() {
             var url='/leadorder/artpreview_remove';
             $.post(url, params, function (response){
                 if (response.errors=='') {
-                    $("div.previewpreviewtable").empty().html(response.data.content);
+                    if (parseInt(response.data.numdocs) > 0) {
+                        $(".artpreviewpreviewarea").find('div.areatitle').removeClass('view');
+                        $(".previewpreviewtable").removeClass('view');
+                    } else {
+                        $(".artpreviewpreviewarea").find('div.areatitle').addClass('view');
+                        $(".previewpreviewtable").addClass('view');
+                    }
+                    $("#previewpicshowarea").empty().html(response.data.content).css('width', response.data.previewwidth);
                     init_leadorder_artmanage();
                 } else {
                     show_error(response);
