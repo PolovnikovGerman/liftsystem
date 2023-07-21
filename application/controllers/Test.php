@@ -2216,7 +2216,7 @@ class Test extends CI_Controller
     }
 
     public function claypreviewcheck() {
-        $this->db->select('c.artwork_id, o.order_id, cnt(c.artwork_clay_id) as cnt');
+        $this->db->select('c.artwork_id, o.order_id, count(c.artwork_clay_id) as cnt');
         $this->db->from('ts_artwork_clays c');
         $this->db->join('ts_artworks a','a.artwork_id=c.artwork_id');
         $this->db->join('ts_orders o', 'o.order_id=a.order_id');
