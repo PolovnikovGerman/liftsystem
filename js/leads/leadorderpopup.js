@@ -684,12 +684,12 @@ function init_onlineleadorder_edit() {
     if ($("#addclay").length > 0) {
         var uploader = new qq.FileUploader({
             element: document.getElementById('addclay'),
-            action: '/utils/save_itemimg',
+            action: '/utils/vendorcenterattach',
             uploadButtonText: '',
             multiple: false,
             debug: false,
             template: upload_templ,
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            // allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
             onComplete: function(id, fileName, responseJSON){
                 if (responseJSON.success==true) {
                     $(".qq-upload-list").hide();
@@ -741,12 +741,12 @@ function init_onlineleadorder_edit() {
     if ($("#addpreview").length > 0) {
         var uploader = new qq.FileUploader({
             element: document.getElementById('addpreview'),
-            action: '/utils/save_itemimg',
+            action: '/utils/vendorcenterattach',
             uploadButtonText: '',
             multiple: false,
             debug: false,
             template: upload_templ,
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            // allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
             onComplete: function(id, fileName, responseJSON){
                 if (responseJSON.success==true) {
                     $(".qq-upload-list").hide();
