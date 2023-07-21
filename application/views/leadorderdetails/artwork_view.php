@@ -88,7 +88,7 @@
 </div>
 <div class="artclaypreviewarea">
     <div class="datarow">
-        <div class="areatitle <?=$edit==0 ? 'view' : ''?>">Clay Models:</div>
+        <div class="areatitle <?=$claycnt==0 ? 'view' : ''?>">Clay Models:</div>
         <?php if ($edit==0) { ?>
             <?php if ($claycnt > 0) { ?>
                 <div class="openclaymodelsview">[open all]</div>
@@ -102,7 +102,7 @@
         <?php } ?>
     </div>
     <div class="datarow">
-        <div class="claypreviewtable">
+        <div class="claypreviewtable <?=$claycnt==0 ? 'view' : ''?>">
             <div id="claymodshowarea" class="claymodshowarea" style="width: <?=$claydocswidth?>px;">
                 <?=$claydoc_view?>
             </div>
@@ -116,7 +116,7 @@
 </div>
 <div class="artpreviewpreviewarea">
     <div class="datarow">
-        <div class="areatitle <?=$edit==0 ? 'view' : ''?>">Preview Pictures:</div>
+        <div class="areatitle <?=($previewcnt==0) ? 'view' : ''?>">Preview Pictures:</div>
         <?php if ($edit==0) { ?>
             <?php if ($previewcnt > 0) { ?>
                 <div class="openpreviewsview">[open all]</div>
@@ -130,7 +130,7 @@
         <?php } ?>
     </div>
     <div class="datarow">
-        <div class="previewpreviewtable">
+        <div class="previewpreviewtable <?=$previewcnt==0 ? 'view' : ''?>">
             <div id="previewpicshowarea" class="previewpicshowarea" style="width: <?=$previewswidth?>px;">
                 <?=$previewdoc_view?>
             </div>

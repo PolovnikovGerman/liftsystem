@@ -5186,6 +5186,7 @@ class Leadorder extends MY_Controller
                     $mdata['content']=leadClaydocOut($claydocs, 1);
                     $numdoc=ceil(count($claydocs)/4);
                     $mdata['claywidth']=$numdoc*115;
+                    $mdata['numdocs'] = count($claydocs);
                 }
             }
             // Calc new period for lock
@@ -5212,6 +5213,7 @@ class Leadorder extends MY_Controller
                     $claydocs=$res['outdocs'];
                     $mdata['content']=leadClaydocOut($claydocs, 1);
                     $mdata['claywidth'] = ceil(count($claydocs)/4)*115;
+                    $mdata['numdocs'] = count($claydocs);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -5265,6 +5267,7 @@ class Leadorder extends MY_Controller
                     $previewdocs=$res['outdocs'];
                     $mdata['content']=leadPreviewdocOut($previewdocs, 1);
                     $mdata['previewwidth'] = ceil(count($previewdocs)/4)*115;
+                    $mdata['numdocs'] = count($previewdocs);
                 }
             }
             // Calc new period for lock
@@ -5291,6 +5294,7 @@ class Leadorder extends MY_Controller
                     $previewdocs=$res['outdocs'];
                     $mdata['content']=leadPreviewdocOut($previewdocs, 1);
                     $mdata['previewwidth'] = ceil(count($previewdocs)/4)*115;
+                    $mdata['numdocs'] = count($previewdocs);
                 }
             }
             $this->ajaxResponse($mdata, $error);
