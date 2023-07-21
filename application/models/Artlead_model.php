@@ -1783,4 +1783,37 @@ Class Artlead_model extends MY_Model
         }
     }
 
+    public function artclay_export() {
+        $curl = curl_init(); //Init
+        if ($this->config->item('netexportsecure')==1) {
+            curl_setopt($curl, CURLOPT_USERPWD, 'stressballs:07031');
+        }
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_URL, $this->config->item('clayexportdata')); //POST URL
+        curl_setopt($curl, CURLOPT_HEADER, 0); // Show Headers
+        curl_setopt($curl, CURLOPT_POST, 1); // Send data via POST
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1); //curl return response
+        // curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata); // data for send via POST
+        $res = curl_exec($curl);
+        if(!$res) {
+            $error = curl_error($curl).'('.curl_errno($curl).')';
+            echo $error;
+        } else {
+            $array = json_decode($res, true);
+            if (ifset($array,'result','0')=='1') {
+                $items = $array['data'];
+                foreach ($items as $item) {
+                    echo 'New ID '.$item['id'].' Order '.$item['order_number'].PHP_EOL;
+                    $this->db->set('order_number', $item['order_number']);
+                    $this->db->set('doc_type', $item['doc_type']);
+                    $this->db->set('doc_link', $item['doc_link']);
+                    $this->db->set('doc_name', $item['doc_name']);
+                    $this->db->insert('lift_exports');
+                }
+            } else {
+                echo $array['error'].PHP_EOL;
+            }
+        }
+    }
+
 }
