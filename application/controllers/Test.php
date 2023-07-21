@@ -2214,4 +2214,29 @@ class Test extends CI_Controller
             // echo 'State '.$validdata['subdivision_1_iso_code'].' ID '.$validdata['state_id'].PHP_EOL;
         }
     }
+
+    public function claypreviewcheck() {
+        $this->db->select('c.artwork_id, o.order_id, cnt(c.artwork_clay_id) as cnt');
+        $this->db->from('ts_artwork_clays c');
+        $this->db->join('ts_artworks a','a.artwork_id=c.artwork_id');
+        $this->db->join('ts_orders o', 'o.order_id=a.order_id');
+        $this->db->group_by('c.artwork_id, o.order_id');
+        $clays = $this->db->get()->result_array();
+        foreach ($clays as $clay) {
+            $this->db->where('order_id', $clay['order_id']);
+            $this->db->set('art_clay',1);
+            $this->db->update('ts_orders');
+        }
+        $this->db->select('p.artwork_id, o.order_id, count(p.artwork_preview_id) as cnt');
+        $this->db->from('ts_artwork_previews p');
+        $this->db->join('ts_artworks a','a.artwork_id=p.artwork_id');
+        $this->db->join('ts_orders o', 'o.order_id=a.order_id');
+        $this->db->group_by('p.artwork_id, o.order_id');
+        $previews = $this->db->get()->result_array();
+        foreach ($previews as $preview) {
+            $this->db->where('order_id', $preview['order_id']);
+            $this->db->set('art_preview',1);
+            $this->db->update('ts_orders');
+        }
+    }
 }
