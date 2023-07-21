@@ -1,6 +1,6 @@
 <?php
-$config['js_version'] = '2.02118';
-$config['css_version']= '2.02118';
+$config['js_version'] = '2.02119';
+$config['css_version']= '2.02119';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -70,27 +70,23 @@ switch($_SERVER['SERVER_NAME']){
         $config['newprooflnk']='https://www.bluetrack.com/proofview/?doc=';
         break;
 }
-$config['netexportsecure']=0;
+$config['netexportsecure']=getenv('netexportsecure');
+$config['netexportdata']=getenv('netexportdata');
+$config['clayexportdata'] = getenv('clayexportdata');
+$config['email_setup']=array(
+    'protocol'=>'sendmail',
+    'charset'=>'utf8',
+    'wordwrap'=> TRUE,
+);
 switch($_SERVER['SERVER_NAME']){
     case 'lift.local':
-        $config['email_setup']=array(
-            'protocol'=>'sendmail',
-            'charset'=>'utf8',
-            'wordwrap'=> TRUE,
-        );
         $config['artorderdaily_to']='polovnikov.g@gmail.com';
         $config['artorderdaily_cc']=array(
             'polovnikov.german@gmail.com',
             'to_german@yahoo.com',
         );
-        $config['netexportdata']='http://fintool.test/controller/exportbrowndata.php';
         break;
     default :
-        $config['email_setup']=array(
-            'protocol'=>'sendmail',
-            'charset'=>'utf8',
-            'wordwrap'=> TRUE,
-        );
         $config['artorderdaily_to']='sean@bluetrack.com';
         $config['artorderdaily_cc']=array(
             'sage@bluetrack.com',
@@ -98,10 +94,7 @@ switch($_SERVER['SERVER_NAME']){
             'robert@bluetrack.com',
             /* 'darrell.martin@bluetrack.com', */
         );
-        $config['netexportsecure']=1;
-        $config['netexportdata']='http://bluetrack.net/system/controller/exportbrowndata.php';
         break;
-
 }
 $config['profitpts']=0.08;
 $config['goalestim']=1.20;

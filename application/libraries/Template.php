@@ -627,11 +627,24 @@ class Template
         $proofdocs=$res['proofdocs'];
         $proofview=leadProfdocOut($proofdocs, $edit);
         $numoutprofdoc=ceil(count($proofdocs)/5);
-        $artdata['profdocwidth']=$numoutprofdoc*160;
+        $artdata['profdocwidth']=$numoutprofdoc*145; // 160;
         $artdata['weborder']=$weborder;
         $artdata['artcolors']=$artcolors;
         $artdata['artfont']=$artfonts;
         $artdata['proofdoc_view']=$proofview;
+        $artdata['edit'] = $edit;
+        // Clay
+        $claydocs=$res['claydocs'];
+        $clayview=leadClaydocOut($claydocs, $edit);
+        $artdata['claydoc_view']=$clayview;
+        $artdata['claycnt'] = count($claydocs);
+        $artdata['claydocswidth'] = ceil(count($claydocs)/4)*115;
+        // Previews
+        $previewdocs=$res['previewdocs'];
+        $previewview=leadPreviewdocOut($previewdocs, $edit);
+        $artdata['previewdoc_view']=$previewview;
+        $artdata['previewcnt'] = count($previewdocs);
+        $artdata['previewswidth'] = ceil(count($previewdocs)/4)*115;
         // Artwork View
         $data['artview']=$this->CI->load->view('leadorderdetails/artwork_view', $artdata, TRUE);
         return $data;

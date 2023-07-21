@@ -1336,4 +1336,484 @@ Class Artlead_model extends MY_Model
         return $arttype;
     }
 
+    public function get_claymodels($artwork_id, $order_num) {
+        $this->db->select('*');
+        $this->db->from('ts_artwork_clays');
+        $this->db->where('artwork_id', $artwork_id);
+        $this->db->order_by('numpp');
+        $rows = $this->db->get()->result_array();
+        $claydocs = [];
+        foreach ($rows as $row) {
+            $newname = 'clay_'.$order_num.'_'.str_pad($row['numpp'],2,'0',STR_PAD_LEFT);
+            $row['out_proofname'] = $newname;
+            $row['deleted'] = '';
+            $claydocs[] = $row;
+        }
+        return $claydocs;
+    }
+
+    public function save_artclaydocs($leadorder, $claydoclnk, $sourcename , $sessionid) {
+        $out = ['result' => $this->error_result, 'msg' => $this->init_msg];
+        $order = $leadorder['order'];
+        $order_number = $order['order_num'];
+        $claydocs = $leadorder['claydocs'];
+        $newidx = count($claydocs) + 1;
+        $neworder = 0;
+        foreach ($claydocs as $claydoc) {
+            if (empty($claydoc['deleted'])) {
+                $neworder++;
+            }
+        }
+        $neworder++;
+        $newclayname = 'clay_'.(empty($order_number) ? '' : $order_number.'_').str_pad($neworder, 2, '0', STR_PAD_LEFT);
+        $newdoc = [
+            'artwork_clay_id' => $newidx * (-1),
+            'add_time' => date('Y-m-d H:i:s'),
+            'numpp' => $neworder,
+            'clay_source' => $sourcename,
+            'clay_link' => $claydoclnk,
+            'clay_send' => 0,
+            'clay_sendtime' => 0,
+            'clay_approved' => 0,
+            'clay_approvetime' => 0,
+            'out_proofname' => $newclayname,
+            'deleted' => '',
+        ];
+        $claydocs[] = $newdoc;
+        $leadorder['claydocs'] = $claydocs;
+        usersession($sessionid, $leadorder);
+        $out['result'] = $this->success_result;
+        $out_docs = array();
+        foreach ($claydocs as $claydoc) {
+            if ($claydoc['deleted'] == '') {
+                $out_docs[] = $claydoc;
+            }
+        }
+        $out['outdocs'] = $out_docs;
+        return $out;
+    }
+
+    public function remove_artclaydocs($leadorder, $clayid, $ordersession) {
+        $out = ['result' => $this->error_result, 'msg' => 'Clay Model Not Found'];
+        $order = $leadorder['order'];
+        $order_number = $order['order_num'];
+        $claydocs = $leadorder['claydocs'];
+        $find = 0;
+        foreach ($claydocs as $claydoc) {
+            if ($claydoc['artwork_clay_id']==$clayid) {
+                $find = 1;
+                break;
+            }
+        }
+        if ($find==1) {
+            $out['result'] = $this->success_result;
+            $newidx = 1;
+            $newdocs = [];
+            $newclays = [];
+            foreach ($claydocs as $claydoc) {
+                if ($claydoc['artwork_clay_id']==$clayid) {
+                    $claydoc['deleted'] = '1';
+                } elseif (empty($claydoc['deleted'])) {
+                    $newclayname = 'clay_'.(empty($order_number) ? '' : $order_number.'_').str_pad($newidx, 2, '0', STR_PAD_LEFT);
+                    $claydoc['out_proofname'] = $newclayname;
+                    $claydoc['numpp'] = $newidx;
+                    $newdocs[] = $claydoc;
+                    $newidx++;
+                }
+                $newclays[] = $claydoc;
+            }
+            $out['outdocs'] = $newdocs;
+            $leadorder['claydocs'] = $newclays;
+            usersession($ordersession, $leadorder);
+        }
+        return $out;
+    }
+
+    public function save_claymodels($claydocs, $artwork_id, $user_id) {
+        $out=['result' => $this->error_result, 'msg' => $this->init_msg];
+        // Paths
+        $fullpath=$this->config->item('clay_models');
+        $shrtpath=$this->config->item('clay_models_relative');
+        $shortpreload = $this->config->item('pathpreload');
+        $fullpreload=$this->config->item('upload_path_preload');
+        if (createPath($shrtpath)) {
+            $numpp=1;
+            $deleted = [];
+            foreach ($claydocs as $claydoc) {
+                if (!empty($claydoc['deleted'])) {
+                    if ($claydoc['artwork_clay_id'] > 0) {
+                        $this->db->where('artwork_clay_id', $claydoc['artwork_clay_id']);
+                        $this->db->delete('ts_artwork_clays');
+                        // Delete link
+                        $clayfile = str_replace($shrtpath, $fullpath, $claydoc['clay_link']);
+                        @unlink($clayfile);
+                    }
+                } else {
+                    $rowadd = 0;
+                    if ($claydoc['artwork_clay_id'] < 0) {
+                        $claydocname = str_replace($shortpreload, '', $claydoc['clay_link']);
+                        $filesrc = $fullpreload.$claydocname;
+                        $filetrg = $fullpath.$claydocname;
+                        $cpres = @copy($filesrc, $filetrg);
+                        if ($cpres) {
+                            $rowadd=1;
+                            $claydoc['clay_link'] = $shrtpath.$claydocname;
+                        }
+                    } else {
+                        $rowadd = 1;
+                    }
+                    if ($rowadd==1) {
+                        $this->db->set('numpp', $numpp);
+                        $this->db->set('clay_link', $claydoc['clay_link']);
+                        $this->db->set('clay_source', $claydoc['clay_source']);
+                        $this->db->set('clay_send', $claydoc['clay_send']);
+                        $this->db->set('clay_sendtime', $claydoc['clay_sendtime']);
+                        $this->db->set('clay_approved', $claydoc['clay_approved']);
+                        $this->db->set('clay_approvetime', $claydoc['clay_approvetime']);
+                        if ($claydoc['artwork_clay_id'] < 0) {
+                            $this->db->set('add_user', $user_id);
+                            $this->db->set('add_time', date('Y-m-d H:i:s'));
+                            $this->db->set('artwork_id', $artwork_id);
+                            $this->db->insert('ts_artwork_clays');
+                        } else {
+                            $this->db->where('artwork_clay_id', $claydoc['artwork_clay_id']);
+                            $this->db->set('update_user', $user_id);
+                            $this->db->update('ts_artwork_clays');
+                        }
+                        $numpp++;
+                    }
+                }
+            }
+            $out['result'] = $this->success_result;
+        }
+        return $out;
+    }
+
+    public function get_previews($artwork_id, $order_num) {
+        $this->db->select('*');
+        $this->db->from('ts_artwork_previews');
+        $this->db->where('artwork_id', $artwork_id);
+        $this->db->order_by('numpp');
+        $rows = $this->db->get()->result_array();
+        $previews = [];
+        foreach ($rows as $row) {
+            $newname = 'preview_'.$order_num.'_'.str_pad($row['numpp'], 2, '0', STR_PAD_LEFT);
+            $row['out_proofname'] = $newname;
+            $row['deleted'] = '';
+            $previews[] = $row;
+        }
+        return $previews;
+    }
+
+    public function save_artpreviewdocs($leadorder, $previewdoc, $sourcename , $sessionid) {
+        $out = ['result' => $this->error_result, 'msg' => $this->init_msg];
+        $order = $leadorder['order'];
+        $order_number = $order['order_num'];
+        $previewdocs = $leadorder['previewdocs'];
+        $newidx = count($previewdocs) + 1;
+        $newnum = 0;
+        foreach ($previewdocs as $item) {
+            if (empty($item['deleted'])) {
+                $newnum=$item['numpp'];
+            }
+        }
+        $newnum++;
+        $newname = 'preview_'.(empty($order_number) ? '' : $order_number.'_').str_pad($newnum, 2, '0', STR_PAD_LEFT);
+        $newdoc = [
+            'artwork_preview_id' => $newidx * (-1),
+            'add_time' => date('Y-m-d H:i:s'),
+            'numpp' => $newnum,
+            'preview_source' => $sourcename,
+            'preview_link' => $previewdoc,
+            'preview_send' => 0,
+            'preview_sendtime' => 0,
+            'preview_approved' => 0,
+            'preview_approvetime' => 0,
+            'out_proofname' => $newname,
+            'deleted' => '',
+        ];
+        $previewdocs[] = $newdoc;
+        $leadorder['previewdocs'] = $previewdocs;
+        usersession($sessionid, $leadorder);
+        $out['result'] = $this->success_result;
+        $out_docs = array();
+        foreach ($previewdocs as $item) {
+            if ($item['deleted'] == '') {
+                $out_docs[] = $item;
+            }
+        }
+        $out['outdocs'] = $out_docs;
+        return $out;
+    }
+
+    public function remove_artpreviewdocs($leadorder, $previewid, $ordersession) {
+        $out = ['result' => $this->error_result, 'msg' => 'Preview Picture Not Found'];
+        $order = $leadorder['order'];
+        $order_number = $order['order_num'];
+        $previewdocs = $leadorder['previewdocs'];
+        $find = 0;
+        foreach ($previewdocs as $previewdoc) {
+            if ($previewdoc['artwork_preview_id']==$previewid) {
+                $find = 1;
+                break;
+            }
+        }
+        if ($find==1) {
+            $out['result'] = $this->success_result;
+            $newidx = 1;
+            $newdocs = [];
+            $newpreviews = [];
+            foreach ($previewdocs as $previewdoc) {
+                if ($previewdoc['artwork_preview_id']==$previewid) {
+                    $previewdoc['deleted'] = '1';
+                } elseif (empty($previewdoc['deleted'])) {
+                    $newname = 'preview_'.(empty($order_number) ? '' : $order_number.'_').str_pad($newidx, 2, '0', STR_PAD_LEFT);
+                    $previewdoc['out_proofname'] = $newname;
+                    $previewdoc['numpp'] = $newidx;
+                    $newdocs[] = $previewdoc;
+                    $newidx++;
+                }
+                $newpreviews[] = $previewdoc;
+            }
+            $out['outdocs'] = $newdocs;
+            $leadorder['previewdocs'] = $newpreviews;
+            usersession($ordersession, $leadorder);
+        }
+        return $out;
+    }
+
+    public function save_previewpics($previewdocs, $artwork_id, $user_id) {
+        $out=['result' => $this->error_result, 'msg' => $this->init_msg];
+        // Paths
+        $fullpath=$this->config->item('preview_pics');
+        $shrtpath=$this->config->item('preview_pics_relative');
+        $shortpreload = $this->config->item('pathpreload');
+        $fullpreload=$this->config->item('upload_path_preload');
+        if (createPath($shrtpath)) {
+            $numpp=1;
+            foreach ($previewdocs as $previewdoc) {
+                if (!empty($previewdoc['deleted'])) {
+                    if ($previewdoc['artwork_preview_id'] > 0) {
+                        $this->db->where('artwork_preview_id', $previewdoc['artwork_preview_id']);
+                        $this->db->delete('ts_artwork_previews');
+                        // Delete link
+                        $previewfile = str_replace($shrtpath, $fullpath, $previewdoc['preview_link']);
+                        @unlink($previewfile);
+                    }
+                } else {
+                    $rowadd = 0;
+                    if ($previewdoc['artwork_preview_id'] < 0) {
+                        $previewdocname = str_replace($shortpreload, '', $previewdoc['preview_link']);
+                        $filesrc = $fullpreload.$previewdocname;
+                        $filetrg = $fullpath.$previewdocname;
+                        $cpres = @copy($filesrc, $filetrg);
+                        if ($cpres) {
+                            $rowadd=1;
+                            $previewdoc['preview_link'] = $shrtpath.$previewdocname;
+                        }
+                    } else {
+                        $rowadd = 1;
+                    }
+                    if ($rowadd==1) {
+                        $this->db->set('numpp', $numpp);
+                        $this->db->set('preview_link', $previewdoc['preview_link']);
+                        $this->db->set('preview_source', $previewdoc['preview_source']);
+                        $this->db->set('preview_send', $previewdoc['preview_send']);
+                        $this->db->set('preview_sendtime', $previewdoc['preview_sendtime']);
+                        $this->db->set('preview_approved', $previewdoc['preview_approved']);
+                        $this->db->set('preview_approvetime', $previewdoc['preview_approvetime']);
+                        if ($previewdoc['artwork_preview_id'] < 0) {
+                            $this->db->set('add_user', $user_id);
+                            $this->db->set('add_time', date('Y-m-d H:i:s'));
+                            $this->db->set('artwork_id', $artwork_id);
+                            $this->db->insert('ts_artwork_previews');
+                        } else {
+                            $this->db->where('artwork_preview_id', $previewdoc['artwork_preview_id']);
+                            $this->db->set('update_user', $user_id);
+                            $this->db->update('ts_artwork_previews');
+                        }
+                        $numpp++;
+                    }
+                }
+            }
+            $out['result'] = $this->success_result;
+        }
+        return $out;
+    }
+
+    public function export_parse() {
+        $start = time();
+        $this->db->select('*');
+        $this->db->from('lift_exports');
+        $this->db->where('managed',0);
+        // $this->db->order_by('id');
+        $this->db->order_by('order_number desc, id asc');
+        $this->db->limit(1000);
+        $exports = $this->db->get()->result_array();
+        $numpp=1;
+        foreach ($exports as $export) {
+            // Check order
+            $this->db->select('o.order_id, a.artwork_id');
+            $this->db->from('ts_orders o');
+            $this->db->join('ts_artworks a','a.order_id=o.order_id');
+            $this->db->where('o.order_num', $export['order_number']);
+            $this->db->where_in('brand',['SB', 'BT']);
+            $ordres = $this->db->get()->row_array();
+            echo $numpp.PHP_EOL;
+            if (ifset($ordres,'order_id', 0)!==0) {
+                // order found
+                // echo 'Order '.$export['order_number'].' Found'.PHP_EOL;
+                if ($export['doc_type']=='clay') {
+                    $this->_parse_claydoc($export, $ordres['artwork_id']);
+                } else {
+                    $this->_parse_previewpic($export, $ordres['artwork_id']);
+                }
+            } else {
+                echo 'Order '.$export['order_number'].' Not Added'.PHP_EOL;
+                // $this->db->where('id', $export['id']);
+                // $this->db->set('managed',2);
+                // $this->db->update('lift_exports');
+            }
+            $numpp++;
+        }
+        $finish = time();
+        $period = $finish - $start;
+        echo 'Parse occupy '.$period.' sec'.PHP_EOL;
+    }
+
+    private function _parse_claydoc($export, $artwork_id) {
+        ini_set("allow_url_fopen", 1);
+        $fullpath=$this->config->item('clay_models');
+        $shrtpath=$this->config->item('clay_models_relative');
+        $username = "stressballs";
+        $password = "07031";
+        if (createPath($shrtpath)) {
+            $doc_link = str_replace(['../docs/','../../system/docs/'],'http://bluetrack.net/system/docs/', $export['doc_link']);
+            $newfile = $fullpath.$export['doc_name'];
+//            $opts = array(
+//                'http'=>array(
+//                    'method'=>"GET",
+//                    'header' => "Authorization: Basic " . base64_encode("$username:$password")
+//                )
+//            );
+//            $context = stream_context_create($opts);
+//            $file = file_get_contents($doc_link, false, $context);
+
+            if ($this->_save_remotefile($doc_link, $newfile)) {
+                // Select max numpp
+                $this->db->select('count(artwork_clay_id) as cnt, max(numpp) as maxnum');
+                $this->db->from('ts_artwork_clays');
+                $this->db->where('artwork_id', $artwork_id);
+                $numres = $this->db->get()->row_array();
+                if ($numres['cnt']==0) {
+                    $numpp = 1;
+                } else {
+                    $numpp = $numres['maxnum'] + 1;
+                }
+                $this->db->set('add_user',1);
+                $this->db->set('add_time', date('Y-m-d H:i:s'));
+                $this->db->set('artwork_id', $artwork_id);
+                $this->db->set('numpp', $numpp);
+                $this->db->set('clay_link', $shrtpath.$export['doc_name']);
+                $this->db->set('clay_source', $export['doc_name']);
+                $this->db->insert('ts_artwork_clays');
+                $this->db->where('id', $export['id']);
+                $this->db->set('managed', 1);
+                $this->db->update('lift_exports');
+            }
+        }
+        return true;
+    }
+
+    private function _parse_previewpic($export, $artwork_id) {
+        ini_set("allow_url_fopen", 1);
+        $fullpath=$this->config->item('preview_pics');
+        $shrtpath=$this->config->item('preview_pics_relative');
+        $username = "stressballs";
+        $password = "07031";
+        if (createPath($shrtpath)) {
+            $doc_link = str_replace(['../docs/','../../system/docs/'],'http://bluetrack.net/system/docs/', $export['doc_link']);
+            $newfile = $fullpath.$export['doc_name'];
+            if ($this->_save_remotefile($doc_link, $newfile)) {
+                // Select max numpp
+                $this->db->select('count(artwork_preview_id) as cnt, max(numpp) as maxnum');
+                $this->db->from('ts_artwork_previews');
+                $this->db->where('artwork_id', $artwork_id);
+                $numres = $this->db->get()->row_array();
+                if ($numres['cnt']==0) {
+                    $numpp = 1;
+                } else {
+                    $numpp = $numres['maxnum'] + 1;
+                }
+                $this->db->set('add_user',1);
+                $this->db->set('add_time', date('Y-m-d H:i:s'));
+                $this->db->set('artwork_id', $artwork_id);
+                $this->db->set('numpp', $numpp);
+                $this->db->set('preview_link', $shrtpath.$export['doc_name']);
+                $this->db->set('preview_source', $export['doc_name']);
+                $this->db->insert('ts_artwork_previews');
+                $this->db->where('id', $export['id']);
+                $this->db->set('managed', 1);
+                $this->db->update('lift_exports');
+            }
+        }
+        return true;
+    }
+
+    private function _save_remotefile($remote_url, $localfile) {
+        $username = "stressballs";
+        $password = "07031";
+        $authtoken = base64_encode($username.':'.$password);
+        $headers = array(
+            'Authorization: Basic '.$authtoken,
+        );
+        $fp = fopen($localfile, "w+");
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($curl, CURLOPT_FILE, $fp);
+        curl_setopt($curl, CURLOPT_URL, $remote_url);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_exec ($curl);
+        curl_close($curl);
+        fclose($fp);
+        if (file_exists($localfile)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function artclay_export() {
+        $curl = curl_init(); //Init
+        if ($this->config->item('netexportsecure')==1) {
+            curl_setopt($curl, CURLOPT_USERPWD, 'stressballs:07031');
+        }
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_URL, $this->config->item('clayexportdata')); //POST URL
+        curl_setopt($curl, CURLOPT_HEADER, 0); // Show Headers
+        curl_setopt($curl, CURLOPT_POST, 1); // Send data via POST
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1); //curl return response
+        // curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata); // data for send via POST
+        $res = curl_exec($curl);
+        if(!$res) {
+            $error = curl_error($curl).'('.curl_errno($curl).')';
+            echo $error;
+        } else {
+            $array = json_decode($res, true);
+            if (ifset($array,'result','0')=='1') {
+                $items = $array['data'];
+                foreach ($items as $item) {
+                    echo 'New ID '.$item['id'].' Order '.$item['order_number'].PHP_EOL;
+                    $this->db->set('order_number', $item['order_number']);
+                    $this->db->set('doc_type', $item['doc_type']);
+                    $this->db->set('doc_link', $item['doc_link']);
+                    $this->db->set('doc_name', $item['doc_name']);
+                    $this->db->insert('lift_exports');
+                }
+            } else {
+                echo $array['error'].PHP_EOL;
+            }
+        }
+    }
+
 }
