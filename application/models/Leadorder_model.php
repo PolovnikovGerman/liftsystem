@@ -413,6 +413,8 @@ Class Leadorder_model extends My_Model {
         }
         $res['newappcreditlink']=0;
         $out['result']=$this->success_result;
+        // Brand
+        $brand=$res['brand'];
         $out['prvorder']=$this->_get_previous_order($order_id, $brand);
         $out['nxtorder']=$this->_get_next_order($order_id, $brand);
         $out['order_system_type']=($res['order_system']=='new' ? 'new' : 'old');
