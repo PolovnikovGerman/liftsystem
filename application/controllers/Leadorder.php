@@ -418,6 +418,8 @@ class Leadorder extends MY_Controller
                             'shipping_address'=>$res['shipping_address'],
                             'billing'=>$res['order_billing'],
                             'charges'=>$res['charges'],
+                            'claydocs' => [],
+                            'previewdocs' => [],
                             'delrecords'=>array(),
                             'locrecid'=>0,
                         );
