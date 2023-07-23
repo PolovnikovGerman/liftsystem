@@ -4405,11 +4405,19 @@ Class Leadorder_model extends My_Model {
         $res=$this->artlead_model->save_artproof($proofs, $artwork_id, $user_id);
         $artsyncdoc=$res['artsyncdoc'];
         // Clay save
+        if (!isset($leadorder['claydocs'])) {
+            log_message('ERROR', 'Order '.$order_id.' Artwork '.$artwork_id.' without clays');
+            $leadorder['claydocs'] = [];
+        }
         $claydocs = $leadorder['claydocs'];
         if (count($claydocs)) {
             $res=$this->artlead_model->save_claymodels($claydocs, $artwork_id, $user_id);
         }
         // Preview save
+        if (!isset($leadorder['previewdocs'])) {
+            log_message('ERROR', 'Order '.$order_id.' Artwork '.$artwork_id.' without previews');
+            $leadorder['previewdocs'] = [];
+        }
         $previewdocs = $leadorder['previewdocs'];
         if (count($previewdocs)) {
             $res=$this->artlead_model->save_previewpics($previewdocs, $artwork_id, $user_id);
@@ -6767,6 +6775,8 @@ Class Leadorder_model extends My_Model {
         $out['charges']=$new_data['charges'];
         $out['artlocations']=$new_data['artlocations'];
         $out['proofdocs']=array();
+        $out['claydocs'] = [];
+        $out['previewdocs'] = [];
         return $out;
     }
 
