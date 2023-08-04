@@ -992,50 +992,6 @@ Class Items_model extends My_Model
             $this->load->model('categories_model');
             // Discounts
             $def_discount = 0;
-//            $item['price_discount_val'] = $item['print_discount_val'] = $item['setup_discount_val'] = $def_discount;
-//            $item['repeat_discount_val'] = $item['rush1_discount_val'] = $item['rush2_discount_val'] = $item['pantone_discount_val'] = $def_discount;
-//            if (!empty($item['price_discount'])) {
-//                $disc = $this->prices_model->get_discount($item['price_discount']);
-//                if ($disc['result']==$this->success_result) {
-//                    $item['price_discount_val'] = $disc['discount']['discount_val'];
-//                }
-//            }
-//            if (!empty($item['print_discount'])) {
-//                $disc = $this->prices_model->get_discount($item['print_discount']);
-//                if ($disc['result']==$this->success_result) {
-//                    $item['print_discount_val'] = $disc['discount']['discount_val'];
-//                }
-//            }
-//            if (!empty($item['setup_discount'])) {
-//                $disc = $this->prices_model->get_discount($item['setup_discount']);
-//                if ($disc['result']==$this->success_result) {
-//                    $item['setup_discount_val'] = $disc['discount']['discount_val'];
-//                }
-//            }
-//            if (!empty($item['repeat_discount'])) {
-//                $disc = $this->prices_model->get_discount($item['repeat_discount']);
-//                if ($disc['result']==$this->success_result) {
-//                    $item['repeat_discount_val'] = $disc['discount']['discount_val'];
-//                }
-//            }
-//            if (!empty($item['rush1_discount'])) {
-//                $disc = $this->prices_model->get_discount($item['rush1_discount']);
-//                if ($disc['result']==$this->success_result) {
-//                    $item['rush1_discount_val'] = $disc['discount']['discount_val'];
-//                }
-//            }
-//            if (!empty($item['rush2_discount'])) {
-//                $disc = $this->prices_model->get_discount($item['rush2_discount']);
-//                if ($disc['result']==$this->success_result) {
-//                    $item['rush2_discount_val'] = $disc['discount']['discount_val'];
-//                }
-//            }
-//            if (!empty($item['pantone_discount'])) {
-//                $disc = $this->prices_model->get_discount($item['pantone_discount']);
-//                if ($disc['result']==$this->success_result) {
-//                    $item['pantone_discount_val'] = $disc['discount']['discount_val'];
-//                }
-//            }
             $this->db->select('ic.item_categories_id, ic.item_categories_categoryid as category_id, c.category_leftnavig as category_name');
             $this->db->from('sb_item_categories ic');
             $this->db->join('sb_categories c','ic.item_categories_categoryid = c.category_id');
@@ -1066,15 +1022,6 @@ Class Items_model extends My_Model
                 $numpp++;
             }
 
-//            if ($numpp < 9 ) {
-//                for ($i=$numpp; $i < 9 ; $i++) {
-//                    $colors[] = [
-//                        'item_color_id' => $i*(-1),
-//                        'item_color_itemid' => $item_id,
-//                        'item_color' => '',
-//                    ];
-//                }
-//            }
             // Vendor Info
             $pricesmax = $this->config->item('prices_val');
             $vitem = $this->vendors_model->get_item_vendor($item['vendor_item_id']);
@@ -1181,11 +1128,6 @@ Class Items_model extends My_Model
                 }
             }
             // Options images
-//            if ($item['option_images']==0) {
-//                $option_images = [];
-//            } else {
-//                $option_images = $this->itemimages_model->get_itemoption_images($item_id);
-//            }
             $imprints = $this->imprints_model->get_imprint_item($item_id);
             $priceres = $this->prices_model->get_itemlist_price($item_id);
             $prices = [];

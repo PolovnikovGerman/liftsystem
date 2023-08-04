@@ -1,6 +1,6 @@
 <div class="vendorqtypricesarea">
     <div class="content-row">
-        <div class="vendorpricetitle">Qty:</div>
+        <div class="vendorpricetitleqty">Qty:</div>
         <div class="vendorqtypricetitlearea">
             <div class="vendorqtypricetitle minprice">min</div>
             <?php foreach ($vendor_prices as $vendor_price) { ?>

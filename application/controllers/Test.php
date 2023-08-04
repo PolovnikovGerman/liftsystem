@@ -1489,7 +1489,7 @@ class Test extends CI_Controller
                 $this->db->set('item_similar_similar', $simres['sim_3']);
                 $this->db->insert('sb_item_similars');
             }
-            echo 'Similar OK';
+            echo ' Similar OK';
             // Images
             if (empty($item['main_image'])) {
                 $this->db->select('*');
@@ -1505,7 +1505,7 @@ class Test extends CI_Controller
                     // $this->db->delete('sb_item_images');
                 }
             }
-            echo 'Images OK';
+            echo ' Images OK';
             // Prices
             if ($item['item_template']=='Stressball') {
                 $this->db->select('*');
@@ -1525,7 +1525,7 @@ class Test extends CI_Controller
                     }
                 }
             }
-            echo 'Prices OK'.PHP_EOL;
+            echo ' Prices OK'.PHP_EOL;
             // Add box
             $this->db->where('item_id', $item['item_id']);
             $this->db->delete('sb_item_shipping');
