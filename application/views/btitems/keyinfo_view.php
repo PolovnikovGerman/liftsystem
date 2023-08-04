@@ -1,14 +1,12 @@
 <div class="relievers_keyinfo">
     <div class="sectionlabel">Key Info:</div>
     <div class="sectionbody">
-<!--        <div class="content-row">-->
-<!--            <div class="itemparamlabel itemactive">Active:</div>-->
-<!--            <div class="itemparamvalue itemactive">-->
-<!--                --><?//=($item['item_active']==1 ? 'Active' : 'Inactive')?>
-<!--            </div>-->
-<!--        </div>-->
         <div class="content-row">
-            <div class="itemparamlabel itemactive">Template:</div>
+            <div class="itemparamlabel itemname">Item Name:</div>
+            <div class="itemparamvalue itemname"><?=$item['item_name']?></div>
+        </div>
+        <div class="content-row">
+            <div class="itemparamlabel itemtemplate">Template:</div>
             <div class="itemparamvalue itemtemplate <?=empty($item['item_template']) ? 'missing_info' : ''?>"><?=$item['item_template']?></div>
         </div>
         <div class="content-row">
@@ -55,7 +53,6 @@
             <div class="itemparamlabel itemmaterial">Material:</div>
             <div class="itemparamvalue itemmaterial <?=empty($item['item_material']) ? 'missing_info' : ''?>"><?=$item['item_material']?></div>
         </div>
-        <div class="sectionseparator">&nbsp;</div>
         <div class="content-row">
             <div class="itemparamlabel itemdescrip">Description:</div>
             <div class="itemparamvalue itemdescrip <?=empty($item['item_description1']) ? 'missing_info' : ''?>"><?=$item['item_description1']?></div>

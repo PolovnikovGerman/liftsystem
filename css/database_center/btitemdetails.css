@@ -75,10 +75,7 @@
     width: 384px;
 }
 input.itemname {
-    border: none!important;
-    height: 30px!important;
-    line-height: 30px!important;
-    width: 374px;
+    width: 100%;
 }
 input.itemnumberone {
     border: none!important;
@@ -200,7 +197,7 @@ select.categoryitemselect {
 }
 .rightpartbody {
     max-height: 680px;
-    width: 770px;
+    width: 774px;
 }
 .sectionlabel {
     color: #000000;
@@ -228,9 +225,10 @@ select.categoryitemselect {
     margin-bottom: 4px;
 }
 .sectionbody {
-    padding: 8px 8px 0 8px;
     background: #eaeaea;
     border-radius: 5px;
+    border: 1px solid #000000;
+    padding: 8px 8px 0 8px;
     width: 100%;
 }
 /* Key Info */
@@ -273,15 +271,15 @@ select.categoryitemselect {
     width: 70px;
 }
 select.keyinfodata {
-    border: 1px solid #9f9f9f;
+    background-color: #fff;
+    border: 1px solid #000000;
     color: #000000;
-    height: 22px;
+    height: 21px; /* 22px*/
     line-height: 22px;
     margin-left: -5px;
     padding-left: 5px;
-    background: #fff;
-    -webkit-appearance: none;
-    appearance: none;
+    /* -webkit-appearance: none;
+    appearance: none; */
 }
 select.missing_info {
     background: #ffc0cb;
@@ -291,7 +289,8 @@ select.itemdetailsstatus {
     width: 67px;
 }
 input.itemkeyinfoinput {
-    border: 1px solid #9f9f9f;
+    background-color: #ffffff;
+    border: 1px solid #000000;
     line-height: 20px;
     height: 20px;
     margin-left: -5px;
@@ -308,11 +307,24 @@ input.iteminfoinput {
     background: #ffc0cb;
     border: 1px solid #FF0000;
 }
-.itemparamvalue.itemtemplate {
-    width: 156px;
+.itemparamlabel.itemname {
+    width: 69px;
+}
+.itemparamvalue.itemname {
+    width: 231px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.itemparamlabel.itemtemplate {
+    margin-right: 6px;
+    width: 54px;
+}
+.itemparamvalue.itemtemplate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 169px;
+    white-space: nowrap;
 }
 select.itemdetailstemplate {
     width: 153px;
@@ -369,6 +381,8 @@ input.itemsize, input.itemmaterial {
     line-height: 18px;
 }
 textarea.inputkeyinfotext {
+    background-color: #ffffff;
+    border: 1px solid #000000;
     padding-left: 3px;
     overflow-y: auto;
     resize: none;
@@ -385,7 +399,8 @@ textarea.itemdescription {
     border-top: 2.5px solid #000000;
     height: 8px;
     margin-left: -4px;
-    width: calc(100% - 9px);
+    margin-top: -6px;
+    width: calc(100% + 10px);
 }
 .itemparamlabel.bullets {
     width: 222px;
@@ -426,15 +441,17 @@ textarea.itemdescription {
     width: 17px;
 }
 .itemparamvalue.similarname {
-    width: 215px;
+    width: 213px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 select.similaritems {
-    height: 22px;
+    border: 1px solid #000;
+    background-color: #fff;
+    height: 21px;
     line-height: 22px;
-    width: 210px;
+    width: 208px;
 }
 /* Vendor main */
 .relievers_vendormain {
@@ -448,6 +465,7 @@ select.similaritems {
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+    border: 1px solid #000000;
     padding: 8px 0 8px 8px;
     width: 100%;
 }
@@ -468,6 +486,8 @@ select.similaritems {
     padding-left: 5px;
 }*/
 select.vendornameinp {
+    border: 1px solid #000000;
+    background-color: #ffffff;
     height: 22px;
     line-height: 22px;
     margin-left: -5px;
@@ -541,10 +561,15 @@ input.vendordatainpt.missing_info {
     border-bottom-right-radius: 5px;
     padding: 8px 0;
     margin-top: 26px;
+    margin-left: -1px;
+    border-top: 1px solid #000;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
 }
 .vendorqtypricesarea {
     border-right: 1px solid #9f9f9f;
     width: 460px;
+    margin-left: 2px;
 }
 .relievers_vendorprices .content-row {
     margin-bottom: 4px;
@@ -554,8 +579,17 @@ input.vendordatainpt.missing_info {
     padding-right: 4px;
     width: 49px;
 }
+.vendorpricetitleqty {
+    padding-bottom: 5px;
+    margin-top: -3px;
+    text-align: right;
+    padding-right: 4px;
+    width: 49px;
+}
 .vendorqtypricetitlearea {
     border-bottom: 1px solid #000000;
+    padding-bottom: 5px;
+    margin-top: -3px;
 }
 .vendorqtypricetitle {
     height: 20px;
@@ -579,16 +613,20 @@ input.vendordatainpt.missing_info {
     width: 36px;
 }
 .vendorqtypriceqty.editmode, .vendorqtypriceval.editmode {
-    border: none;
+    border: none!important;
 }
 input.vendordatainpt {
-    width: 100%;
+    border: 1px solid #000000;
+    background-color: #ffffff;
     height: 20px;
     line-height: 20px;
     font-size: 12px;
     font-weight: normal;
+    width: 100%;
 }
 input.vendordatapriceinpt {
+    border: 1px solid #000000;
+    background-color: #ffffff;
     width: 100%;
     height: 20px;
     line-height: 20px;
@@ -596,6 +634,8 @@ input.vendordatapriceinpt {
     font-weight: normal;
 }
 input.vendorpriceinpt {
+    border: 1px solid #000000;
+    background-color: #ffffff;
     width: 100%;
     height: 20px;
     line-height: 20px;
@@ -604,7 +644,7 @@ input.vendorpriceinpt {
 }
 .vendorextrapricearea {
     border-right: 1px solid #9f9f9f;
-    padding-top: 12px;
+    padding-top: 10px;
     padding-left: 4px;
 }
 .vendorextraprice {
@@ -633,8 +673,9 @@ input.vendorpriceinpt {
 }
 .vendorrusharea {
     border-right: 1px solid #9f9f9f;
-    padding-top: 5px;
+    /* padding-top: 5px; */
     padding-left: 4px;
+    margin-top: -2px;
 }
 .vendorstandrush {
     width: 41px;
@@ -684,7 +725,7 @@ input.vendorpriceinpt {
 }
 .vendorpantonetitle {
     font-size: 12px;
-    margin-top: 23px;
+    margin-top: 15px;
     margin-bottom: 4px;
     line-height: 14px;
     text-align: center;
@@ -740,6 +781,7 @@ input.vendorpriceinpt {
 }
 .itemprice_qtyarea {
     border-bottom: 1px solid #363636;
+    padding-bottom: 5px;
 }
 .itemprice_qty {
     font-size: 12px;
@@ -751,6 +793,8 @@ input.vendorpriceinpt {
     width: 35px;
 }
 input.itempriceinpt {
+    border: 1px solid #000000;
+    background-color: #ffffff;
     width: 100%;
     height: 20px;
     line-height: 20px;
@@ -769,6 +813,8 @@ input.itempriceinpt {
     border: none;
 }
 input.priceinpt {
+    border: 1px solid #000000;
+    background-color: #ffffff;
     width: 100%;
     height: 20px;
     line-height: 20px;
@@ -782,12 +828,13 @@ input.priceinpt {
     width: 43px;
 }
 select.discountselect {
+    border: 1px solid #000000;
+    background-color: #ffffff;
     width: 100%;
     height: 20px;
     line-height: 20px;
-    border: 1px solid #9f9f9f;
-    -webkit-appearance: none;
-    appearance: none;
+/*    -webkit-appearance: none;
+    appearance: none;*/
 }
 select.discountselect::-ms-expand {
     display: none;
@@ -811,6 +858,7 @@ select.discountselect::-ms-expand {
 .itemprice_extraarea {
     border-right: 1px solid #626262;
     padding-left: 3px;
+    padding-top: 5px;
     width: 130px;
 }
 .itemprice_extra {
@@ -844,7 +892,7 @@ select.discountselect::-ms-expand {
 }
 .itemprice_rusharea {
     border-right: 1px solid #626262;
-    padding: 6px 0 0 38px;
+    padding: 11px 0 0 38px;
     width: 127px;
 }
 .itemprice_rush {
@@ -870,6 +918,7 @@ select.discountselect::-ms-expand {
 }
 .itemprice_pantonearea {
     padding-left: 3px;
+    padding-top: 5px;
     width: 46px;
 }
 .itemprice_pantonetitle {
@@ -901,8 +950,8 @@ select.discountselect::-ms-expand {
     border-top: 3px solid #686868;
     height: 5px;
     margin-left: 47px;
-    margin-top: 5px;
-    width: 702px;
+    margin-top: 2px;
+    width: 711px;
 }
 .itemprice_profitqtyarea {
     width: 457px;
@@ -969,6 +1018,7 @@ select.discountselect::-ms-expand {
 }
 .relievers_itemimages .sectionbody {
     padding: 8px 0 8px 0;
+    height: 431px;
 }
 .itemmainimagearea {
     margin-left: 8px;
@@ -1095,7 +1145,7 @@ select.itemdetailsoptions.missing_info {
     margin-top: 2px;
 }
 .itemoptioncheck i {
-    color: #346af5;
+    /* color: #346af5; */
     font-size: 16px;
     cursor: pointer;
 }
@@ -1140,11 +1190,12 @@ select.itemdetailsoptions.missing_info {
 /* Imprint */
 .relievers_customisation {
     width: 324px;
-    margin-right: 8px;
-    margin-left: 8px;
+    margin-right: 14px;
+    margin-left: 6px;
 }
 .relievers_customisation .sectionbody {
     padding: 10px 0 0 0;
+    height: 381px;
 }
 .itemvendorfilebtn {
     background: url(/img/itemdetails/vector_file_btn.png) no-repeat;
@@ -1173,6 +1224,8 @@ select.itemdetailsoptions.missing_info {
     width: 87px;
 }
 select.custommethodselect {
+    border: 1px solid #000000;
+    background-color: #ffffff;
     width: 100%;
     height: 21px;
     line-height: 21px;
@@ -1190,6 +1243,8 @@ select.custommethodselect {
     width: 87px;
 }
 select.customprintcolors {
+    border: 1px solid #000000;
+    background-color: #ffffff;
     width: 100%;
     height: 21px;
     line-height: 21px;
@@ -1233,9 +1288,9 @@ input.locationsize {
     width: 42px;
 }
 .printlocationsdata {
-    padding-top: 3px;
+    /* padding-top: 3px; */
     margin-bottom: 8px;
-    height: 244px;
+    /* height: 244px; */
 }
 .locationsdatarow {
     width: 100%;
@@ -1255,6 +1310,7 @@ input.locationsize {
     cursor: pointer;
 }
 .locationname {
+    border-right: 1px solid #000000;
     padding-left: 8px;
     width: 160px;
 }
@@ -1264,7 +1320,9 @@ input.locationsize {
 }
 .locationplace {
     padding-left: 8px;
-    width: 140px;
+    /* width: 140px; */
+    width: 120px;
+    border-right: 1px solid #000000;
 }
 .locationplace.editmode {
     padding-left: 0;
@@ -1272,8 +1330,13 @@ input.locationsize {
 }
 .locationview {
     text-align: center;
-    font-size: 16px;
-    font-weight: normal;
+    width: 42px;
+    /* font-size: 16px;
+    font-weight: normal;*/
+}
+.printlocexample {
+    width: 100%;
+    text-align: center;
 }
 .printimageview, .printimagedel {
     width: 22px;
@@ -1292,12 +1355,18 @@ input.locationsize {
 .relievers_metasearch {
     width: 424px
 }
+.relievers_metasearch .sectionbody {
+    height: 381px;
+}
 .itemparamvalue.metatitle {
     margin-bottom: 8px;
     width: 404px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .itemparamvalue.metadescription {
-    height: 57px;
+    height: 73px;
     margin-bottom: 8px;
     overflow: hidden;
     width: 203px;
@@ -1308,11 +1377,14 @@ input.locationsize {
 }
 .itemparamvalue.itemurl {
     margin-left: 12px;
-    width: 192px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 190px;
 }
 .itemparamvalue.metakeywords {
     clear: both;
-    height: 63px;
+    height: 76px;
     margin-bottom: 8px;
     overflow: hidden;
     width: 203px;
@@ -1320,7 +1392,7 @@ input.locationsize {
 }
 .itemparamvalue.itemkeywords {
     clear: both;
-    height: 63px;
+    height: 79px;
     margin-bottom: 8px;
     overflow: hidden;
     width: 203px;
@@ -1341,7 +1413,7 @@ input.metaurl {
 .itemshippingarea {
     background: #346af5;
     position: relative;
-    top: -215px;
+    top: -238px;
     left: 215px;
     padding-left: 8px;
 }
@@ -1350,6 +1422,7 @@ input.metaurl {
 }
 .relievers_shipping .sectionbody {
     padding: 8px 6px 6px 6px;
+    height: 209px;
 }
 .itemparamlabel.itemweigth {
     margin-left: 36px;

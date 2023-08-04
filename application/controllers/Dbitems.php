@@ -150,7 +150,6 @@ class Dbitems extends MY_Controller
                 } else {
                     $mdata['header'] = $this->load->view('btitems/header_edit', $header_options, TRUE);
                 }
-                // Key info
 
                 $subcategories = $this->categories_model->get_categories(['show_dropdown'=>2]);
                 $this->load->model('prices_model');
@@ -158,13 +157,6 @@ class Dbitems extends MY_Controller
                 $this->load->model('vendors_model');
                 $vendors = $this->vendors_model->get_vendors_list(['status'=>1]);
                 if ($editmode==0) {
-//                    $category = '';
-//                    if (!empty($data['item']['category_id'])) {
-//                        $catdat = $this->categories_model->get_srcategory_data($data['item']['category_id']);
-//                        if ($catdat['result']==$this->success_result) {
-//                            $data['item']['category'] = $catdat['data']['category_name'];
-//                        }
-//                    }
                     $keyinfo = $this->load->view('btitems/keyinfo_view',['item' => $data['item'],'categories'=>$data['categories']], TRUE);
                     $similar = $this->load->view('btitems/similar_view',['items' => $data['similar']], TRUE);
                     $vendor_main = $this->load->view('btitems/vendormain_view',['vendor_item' => $data['vendor_item'],'vendor' => $data['vendor']],TRUE);

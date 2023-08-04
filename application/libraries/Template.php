@@ -58,8 +58,17 @@ class Template
         $dat = array();
         $this->CI->load->model('dashboard_model');
         $this->CI->load->model('menuitems_model');
-        $total_options = $this->CI->dashboard_model->get_totals('week');
-        $total_view = $this->CI->load->view('page/dashboard_total_view', $total_options, TRUE);
+        $this->CI->load->model('user_model');
+        $total_view = '';
+        $userchk = $this->CI->user_model->current_user();
+        if ($userchk['result']==1) {
+            $userdat = $userchk['data'];
+            if ($userdat['user_logged_in']=='masteradmin') {
+                $total_options = $this->CI->dashboard_model->get_totals('week');
+                $total_view = $this->CI->load->view('page/dashboard_total_view', $total_options, TRUE);
+            }
+        }
+
         $styles=[];
         if (isset($options['styles'])) {
             $styles=$options['styles'];

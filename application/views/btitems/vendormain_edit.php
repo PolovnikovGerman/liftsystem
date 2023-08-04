@@ -4,7 +4,7 @@
     <div class="vendormainbody">
         <div class="content-row">
             <div class="itemparamlabel vendorname">Supplier</div>
-            <div class="itemparamvalue vendorname">
+            <div class="itemparamvalue editmode vendorname">
                 <select class="vendornameinp <?=empty($vendor['vendor_name']) ? 'missing_info' : ''?>" data-item="vendor_item_vendor">
                     <option value=""></option>
                     <?php foreach ($vendors as $vrow) { ?>

@@ -1278,6 +1278,8 @@ class Leadquote extends MY_Controller
                             'artwork'=>$res['artwork'],
                             'artlocations'=>$res['artlocations'],
                             'artproofs'=>$res['proofdocs'],
+                            'claydocs' => $res['claydocs'],
+                            'previewdocs' => $res['previewdocs'],
                             'message'=>$res['message'],
                             'order_system'=>$res['order_system_type'],
                             'locrecid'=>$locking,
@@ -1297,6 +1299,8 @@ class Leadquote extends MY_Controller
                             'shipping_address'=>$res['shipping_address'],
                             'billing'=>$res['order_billing'],
                             'charges'=>$res['charges'],
+                            'claydocs' => $res['claydocs'],
+                            'previewdocs' => $res['previewdocs'],
                             'delrecords'=>array(),
                             'locrecid'=>$locking,
                         );
@@ -1304,7 +1308,6 @@ class Leadquote extends MY_Controller
                     usersession($leadsession, $leadorder);
                     $mdata['content']=$content;
                     $mdata['header']=$header;
-
                 }
             }
             $this->ajaxResponse($mdata, $error);
