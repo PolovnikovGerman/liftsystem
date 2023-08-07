@@ -586,6 +586,9 @@ class Btitemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $mdata = $this->_prepare_price_response($session);
+                    if ($res['address']==1) {
+                        $mdata['shipstate'] = $res['state'];
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);

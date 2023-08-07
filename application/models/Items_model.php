@@ -1039,6 +1039,10 @@ Class Items_model extends My_Model
                     'vendor_item_repeat' => 0,
                     'vendor_item_notes' => '',
                     'vendor_item_zipcode' => '',
+                    'item_shipstate' => '',
+                    'item_shipcountry' => '',
+                    'item_shipcountry_name' => '',
+                    'item_shipcity' => '',
                     'printshop_item_id' => '',
                     'stand_days' => '',
                     'rush1_days' => '',
@@ -1046,7 +1050,6 @@ Class Items_model extends My_Model
                     'rush1_price' => '',
                     'rush2_price' => '',
                     'pantone_match' => '',
-
                 ];
                 for ($i=1; $i<=$pricesmax-1; $i++) {
                     $vprices[] = [
@@ -1057,28 +1060,28 @@ Class Items_model extends My_Model
                         'vendorprice_color' => '',
                     ];
                 }
-                $vendor = [
+                /* $vendor = [
                     'vendor_id' => '',
                     'vendor_name' => '',
                     'vendor_zipcode' => '',
                     'shipaddr_state' => '',
                     'shipaddr_country' => '',
                     'po_note' => '',
-                ];
+                ];*/
             } else {
-                $vdat = $this->vendors_model->get_vendor($vitem['vendor_item_vendor']);
-                if ($vdat['result']==$this->error_result) {
-                    $vendor = [
-                        'vendor_id' => '',
-                        'vendor_name' => '',
-                        'vendor_zipcode' => '',
-                        'shipaddr_state' => '',
-                        'shipaddr_country' => '',
-                        'po_note' => '',
-                    ];
-                } else {
-                    $vendor = $vdat['data'];
-                }
+//                $vdat = $this->vendors_model->get_vendor($vitem['vendor_item_vendor']);
+//                if ($vdat['result']==$this->error_result) {
+//                    $vendor = [
+//                        'vendor_id' => '',
+//                        'vendor_name' => '',
+//                        'vendor_zipcode' => '',
+//                        'shipaddr_state' => '',
+//                        'shipaddr_country' => '',
+//                        'po_note' => '',
+//                    ];
+//                } else {
+//                    $vendor = $vdat['data'];
+//                }
                 $results = $this->vendors_model->get_item_vendorprice($item['vendor_item_id']);
                 $numpp = 1;
                 foreach ($results as $result) {
@@ -1188,7 +1191,7 @@ Class Items_model extends My_Model
                 'item' => $item,
                 'categories' => $categor,
                 'colors' => $colors,
-                'vendor' => $vendor,
+//                'vendor' => $vendor,
                 'vendor_item' => $vitem,
                 'vendor_price' => $vprices,
                 'images' => $images,

@@ -159,7 +159,7 @@ class Dbitems extends MY_Controller
                 if ($editmode==0) {
                     $keyinfo = $this->load->view('btitems/keyinfo_view',['item' => $data['item'],'categories'=>$data['categories']], TRUE);
                     $similar = $this->load->view('btitems/similar_view',['items' => $data['similar']], TRUE);
-                    $vendor_main = $this->load->view('btitems/vendormain_view',['vendor_item' => $data['vendor_item'],'vendor' => $data['vendor']],TRUE);
+                    $vendor_main = $this->load->view('btitems/vendormain_view',['vendor_item' => $data['vendor_item'], 'item' => $data['item'],/* 'vendor' => $data['vendor']*/],TRUE);
                     $vendor_prices = $this->load->view('btitems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
                     $profit_view = $this->load->view('btitems/itemprice_profit_view',['item' => $data['item'],'prices'=> $data['prices']],TRUE);
                     $price_options = [
@@ -182,14 +182,17 @@ class Dbitems extends MY_Controller
                     $metaview = $this->load->view('btitems/itemmeta_view',['item' => $data['item']], TRUE);
                     $shippingview = $this->load->view('btitems/itemship_view',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
                 } else {
+                    $this->load->model('shipping_model');
+                    $country_list = $this->shipping_model->get_countries_list(['orderby'=>'sort']);
                     $keyinfo = $this->load->view('btitems/keyinfo_edit',['item' => $data['item'],'categories'=>$data['categories'], 'subcategories' => $subcategories], TRUE);
                     $simitems = $this->items_model->get_items(['item_active' => 1],'item_number','asc');
                     $similar = $this->load->view('btitems/similar_edit',['items' => $data['similar'],'similars' => $simitems], TRUE);
                     $vendoptions = [
                         'vendor_item' => $data['vendor_item'],
-                        'vendor' => $data['vendor'],
+                        // 'vendor' => $data['vendor'],
                         'item' => $data['item'],
                         'vendors' => $vendors,
+                        'countries' => $country_list,
                     ];
                     $vendor_main = $this->load->view('btitems/vendormain_edit', $vendoptions,TRUE);
                     $vendor_prices = $this->load->view('btitems/vendorprices_edit',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);

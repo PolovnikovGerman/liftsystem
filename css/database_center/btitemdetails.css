@@ -494,6 +494,24 @@ select.vendornameinp {
     padding-left: 5px;
     width: 162px;
 }
+select.vendoritemcountyinp {
+    border: 1px solid #000000;
+    background-color: #ffffff;
+    height: 22px;
+    line-height: 22px;
+    margin-left: -5px;
+    padding-left: 5px;
+    width: 55px;
+}
+textarea.ponotedata {
+    margin-left: -5px;
+    padding-left: 5px;
+    width: 221px;
+    resize: none;
+    border: 1px solid #000;
+    background-color: #fff;
+    overflow-y: auto;
+}
 .itemparamlabel.vendosrship {
     padding-right: 4px;
     width: 70px;
@@ -1339,7 +1357,7 @@ input.locationsize {
     text-align: center;
 }
 .printimageview, .printimagedel {
-    width: 22px;
+    width: 21px;
     text-align: center;
     cursor: pointer;
 }

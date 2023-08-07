@@ -2239,4 +2239,106 @@ class Test extends CI_Controller
             $this->db->update('ts_orders');
         }
     }
+
+    public function duplicate_vendor_items() {
+        $this->db->select('vendor_item_id, count(*) as cnt');
+        $this->db->from('sb_items');
+        $this->db->group_by('vendor_item_id');
+        $this->db->having('cnt > 1');
+        $vresults = $this->db->get()->result_array();
+        foreach ($vresults as $vresult) {
+            $this->db->select('*');
+            $this->db->from('sb_vendor_items');
+            $this->db->where('vendor_item_id', $vresult['vendor_item_id']);
+            $vitem = $this->db->get()->row_array();
+            $this->db->select('*');
+            $this->db->from('sb_vendor_prices');
+            $this->db->where('vendor_item_id', $vresult['vendor_item_id']);
+            $vprices = $this->db->get()->result_array();
+            $this->db->select('item_id, item_number, item_name');
+            $this->db->from('sb_items i');
+            $this->db->where('vendor_item_id', $vresult['vendor_item_id']);
+            $this->db->order_by('item_id');
+            $items = $this->db->get()->result_array();
+            echo 'Vendor Item '.$vitem['vendor_item_number'].' Prices '.count($vprices).PHP_EOL;
+            $itemnum=1;
+            foreach ($items as $item) {
+                if ($itemnum > 1) {
+                    $this->db->set('vendor_item_vendor', $vitem['vendor_item_vendor']);
+                    $this->db->set('vendor_item_number', $vitem['vendor_item_number']);
+                    $this->db->set('vendor_item_name', $vitem['vendor_item_name']);
+                    $this->db->set('vendor_item_blankcost', $vitem['vendor_item_blankcost']);
+                    $this->db->set('vendor_item_cost', $vitem['vendor_item_cost']);
+                    $this->db->set('vendor_item_exprint', $vitem['vendor_item_exprint']);
+                    $this->db->set('vendor_item_setup', $vitem['vendor_item_setup']);
+                    $this->db->set('vendor_item_repeat', $vitem['vendor_item_repeat']);
+                    $this->db->set('vendor_item_notes', $vitem['vendor_item_notes']);
+                    $this->db->set('vendor_item_zipcode', $vitem['vendor_item_zipcode']);
+                    $this->db->set('printshop_item_id', $vitem['printshop_item_id']);
+                    $this->db->set('stand_days', $vitem['stand_days']);
+                    $this->db->set('rush1_days', $vitem['rush1_days']);
+                    $this->db->set('rush2_days', $vitem['rush2_days']);
+                    $this->db->set('rush1_price', $vitem['rush1_price']);
+                    $this->db->set('rush2_price', $vitem['rush2_price']);
+                    $this->db->set('pantone_match', $vitem['pantone_match']);
+                    $this->db->insert('sb_vendor_items');
+                    $newid = $this->db->insert_id();
+                    $this->db->where('item_id', $item['item_id']);
+                    $this->db->set('vendor_item_id', $newid);
+                    $this->db->update('sb_items');
+                    if (count($vprices) > 0) {
+                        foreach ($vprices as $vprice) {
+                            $this->db->set('vendorprice_qty', $vprice['vendorprice_qty']);
+                            $this->db->set('vendorprice_val', $vprice['vendorprice_val']);
+                            $this->db->set('vendorprice_color', $vprice['vendorprice_color']);
+                            $this->db->set('vendor_item_id', $newid);
+                            $this->db->insert('sb_vendor_prices');
+                        }
+                    }
+                }
+                echo 'Item # '.$item['item_number'].' - '.$item['item_name'].PHP_EOL;
+                $itemnum++;
+            }
+        }
+    }
+
+    public function update_vendoritem_ship() {
+        $this->db->select('vi.vendor_item_id, vi.vendor_item_zipcode, v.shipaddr_city, v.shipaddr_state, v.shipaddr_country, v.vendor_zipcode');
+        $this->db->from('sb_vendor_items vi');
+        $this->db->join('vendors v','v.vendor_id = vi.vendor_item_vendor');
+        $vaddrs = $this->db->get()->result_array();
+        foreach ($vaddrs as $vaddr) {
+            if (!empty($vaddr['vendor_item_zipcode'])) {
+                $this->db->where('vendor_item_id', $vaddr['vendor_item_id']);
+                $this->db->set('item_shipcountry', 223);
+                $this->db->update('sb_vendor_items');
+            } else {
+                $this->db->where('vendor_item_id', $vaddr['vendor_item_id']);
+                $this->db->set('vendor_item_zipcode', $vaddr['vendor_zipcode']);
+                if (!empty($vaddr['shipaddr_country'])) {
+                    $this->db->set('item_shipcountry', 223);
+                    $this->db->set('item_shipstate', $vaddr['shipaddr_state']);
+                    $this->db->set('item_shipcity', $vaddr['shipaddr_city']);
+                }
+                $this->db->update('sb_vendor_items');
+            }
+        }
+        $this->db->select('vi.vendor_item_zipcode, vi.item_shipcountry, count(vi.vendor_item_id) as cnt');
+        $this->db->from('sb_vendor_items vi');
+        $this->db->where('vi.item_shipcity',null);
+        $this->db->group_by('vi.vendor_item_zipcode, vi.item_shipcountry');
+        $vaddrs = $this->db->get()->result_array();
+        $this->load->model('shipping_model');
+        foreach ($vaddrs as $vaddr) {
+            // Get shipping data
+            $shipres = $this->shipping_model->get_zip_address($vaddr['item_shipcountry'], $vaddr['vendor_item_zipcode']);
+            if ($shipres['result']==1) {
+                $this->db->where('vendor_item_zipcode', $vaddr['vendor_item_zipcode']);
+                $this->db->where('item_shipcountry', $vaddr['item_shipcountry']);
+                $this->db->set('item_shipstate', $shipres['state']);
+                $this->db->set('item_shipcity', $shipres['city']);
+                $this->db->update('sb_vendor_items');
+            }
+        }
+    }
 }

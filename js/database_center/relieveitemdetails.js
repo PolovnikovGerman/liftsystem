@@ -220,52 +220,52 @@ function init_relievitemdetails_edit() {
         },'json');
     });
 
-    $("input.vendoritemnum").autocompleter({
-        source: '/itemdetails/search_vendor_item',
-        minLength: 3,
-        combine: function(params) {
-            var vendor_id = $('#vendor_item_vendor').val();
-            return {
-                q: params.query,
-                vendor_id: vendor_id
-            };
-        },
-        callback: function(value, index, object) {
-            if (object.id) {
-                $("#vendor_item_id").val(object.id);
-            }
-        }
-    });
-
-    $("input.vendoritemnum").blur(function(){
-        var newval=$(this).val();
-        var params = new Array();
-        params.push({name: 'session', value: $("#dbdetailsession").val()});
-        params.push({name: 'newval', value: newval});
-        var url = '/sritemdetails/relive_vendoritem_check';
-        $.post(url,params,function(response) {
-            if (response.errors=='') {
-                $("#netpricesarea").empty().html(response.data.netprices);
-                $("#profitdataarea").empty().html(response.data.profit);
-                $("select.vendornameinp").val(response.data.vendor_id);
-                $(".itemparamvalue.vendorcountry").empty().html(response.data.shipaddr_country);
-                $(".itemparamvalue.vendorzip").empty().html(response.data.vendor_zipcode);
-                $(".vendorshipstate").empty().html(response.data.shipaddr_state);
-                $(".itemparamvalue.vendorponote").empty().html(response.data.po_note);
-                $(".relievers_vendorprices").empty().html(response.data.vendor_prices);
-                if (newval=='') {
-                    $("input.vendoritemnum").val().addClass('missing_info');
-                    $("input.vendoritemname").val().addClass('missing_info');
-                } else {
-                    $("input.vendoritemnum").removeClass('missing_info');
-                    $("input.vendoritemname").val(response.data.vendor_item_name).removeClass('missing_info');
-                }
-                init_relievitemdetails_edit();
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
+    // $("input.vendoritemnum").autocompleter({
+    //     source: '/itemdetails/search_vendor_item',
+    //     minLength: 3,
+    //     combine: function(params) {
+    //         var vendor_id = $('#vendor_item_vendor').val();
+    //         return {
+    //             q: params.query,
+    //             vendor_id: vendor_id
+    //         };
+    //     },
+    //     callback: function(value, index, object) {
+    //         if (object.id) {
+    //             $("#vendor_item_id").val(object.id);
+    //         }
+    //     }
+    // });
+    //
+    // $("input.vendoritemnum").blur(function(){
+    //     var newval=$(this).val();
+    //     var params = new Array();
+    //     params.push({name: 'session', value: $("#dbdetailsession").val()});
+    //     params.push({name: 'newval', value: newval});
+    //     var url = '/sritemdetails/relive_vendoritem_check';
+    //     $.post(url,params,function(response) {
+    //         if (response.errors=='') {
+    //             $("#netpricesarea").empty().html(response.data.netprices);
+    //             $("#profitdataarea").empty().html(response.data.profit);
+    //             $("select.vendornameinp").val(response.data.vendor_id);
+    //             $(".itemparamvalue.vendorcountry").empty().html(response.data.shipaddr_country);
+    //             $(".itemparamvalue.vendorzip").empty().html(response.data.vendor_zipcode);
+    //             $(".vendorshipstate").empty().html(response.data.shipaddr_state);
+    //             $(".itemparamvalue.vendorponote").empty().html(response.data.po_note);
+    //             $(".relievers_vendorprices").empty().html(response.data.vendor_prices);
+    //             if (newval=='') {
+    //                 $("input.vendoritemnum").val().addClass('missing_info');
+    //                 $("input.vendoritemname").val().addClass('missing_info');
+    //             } else {
+    //                 $("input.vendoritemnum").removeClass('missing_info');
+    //                 $("input.vendoritemname").val(response.data.vendor_item_name).removeClass('missing_info');
+    //             }
+    //             init_relievitemdetails_edit();
+    //         } else {
+    //             show_error(response);
+    //         }
+    //     },'json');
+    // });
 
     $(".itemimagepreview").unbind('click').click(function () {
         var params = new Array();

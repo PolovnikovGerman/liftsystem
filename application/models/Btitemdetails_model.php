@@ -65,6 +65,7 @@ class Btitemdetails_model extends MY_Model
                 $item['item_number'] = $item['item_numberone'].$item['item_numbersec'];
             }
             $sessiondata['item'] = $item;
+            $out['item_active'] = $item['item_active'];
             usersession($sessionsid, $sessiondata);
         }
         return $out;
@@ -690,12 +691,26 @@ class Btitemdetails_model extends MY_Model
     }
     // update vendor item - price section
     public function itemdetails_vendoritem_price($sessiondata, $postdata, $session) {
-        $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];
+        $out=['result' => $this->error_result, 'msg' => 'Info Not Found', 'address' => 0];
         $vendoritem = $sessiondata['vendor_item'];
         $fldname = ifset($postdata, 'fld', '');
         if (!empty($fldname) && array_key_exists($fldname,$vendoritem)) {
             $vendoritem[$fldname] = ifset($postdata,'newval','');
             $out['result'] = $this->success_result;
+            if ($fldname=='vendor_item_zipcode' || $fldname=='item_shipcountry') {
+                $out['address'] = 1;
+                $this->load->model('shipping_model');
+                $chkres = $this->shipping_model->get_zip_address($vendoritem['item_shipcountry'], $vendoritem['vendor_item_zipcode']);
+                if ($chkres['result']==$this->error_result) {
+                    $vendoritem['item_shipstate'] = '';
+                    $vendoritem['item_shipcity'] = '';
+                    $out['state'] = '';
+                } else {
+                    $vendoritem['item_shipstate'] = $chkres['state'];
+                    $vendoritem['item_shipcity'] = $chkres['city'];
+                    $out['state'] = $chkres['state'];
+                }
+            }
             $sessiondata['vendor_item'] = $vendoritem;
             usersession($session, $sessiondata);
             // Add base price
@@ -1147,10 +1162,10 @@ class Btitemdetails_model extends MY_Model
                 }
             }
             // Vendor Item
-            $vendor = $sessiondata['vendor'];
+            // $vendor = $sessiondata['vendor'];
             $vendor_item = $sessiondata['vendor_item'];
             $vendor_prices = $sessiondata['vendor_price'];
-            if ($vendor['vendor_id'] > 0) {
+            // if ($vendor['vendor_id'] > 0) {
                 if (!empty($vendor_item['vendor_item_number'])) {
                     $this->db->set('vendor_item_number', $vendor_item['vendor_item_number']);
                     $this->db->set('vendor_item_name', $vendor_item['vendor_item_name']);
@@ -1166,12 +1181,16 @@ class Btitemdetails_model extends MY_Model
                     $this->db->set('rush1_price', $vendor_item['rush1_price']);
                     $this->db->set('rush2_price', $vendor_item['rush2_price']);
                     $this->db->set('pantone_match', $vendor_item['pantone_match']);
+                    $this->db->set('vendor_item_vendor', $vendor_item['vendor_item_vendor']);
+                    $this->db->set('item_shipcountry', $vendor_item['item_shipcountry']);
+                    $this->db->set('item_shipstate', $vendor_item['item_shipstate']);
+                    $this->db->set('item_shipcity', $vendor_item['item_shipcity']);
+                    $this->db->set('po_note', $vendor_item['po_note']);
                     if ($vendor_item['vendor_item_id'] > 0) {
                         $this->db->where('vendor_item_id', $vendor_item['vendor_item_id']);
                         $this->db->update('sb_vendor_items');
                         $vendor_item_id = $vendor_item['vendor_item_id'];
                     } else {
-                        $this->db->set('vendor_item_vendor', $vendor['vendor_id']);
                         $this->db->insert('sb_vendor_items');
                         $vendor_item_id = $this->db->insert_id();
                     }
@@ -1199,7 +1218,7 @@ class Btitemdetails_model extends MY_Model
                         }
                     }
                 }
-            }
+            // }
             // Prices
             $prices = $sessiondata['prices'];
             foreach ($prices as $price) {
