@@ -3,8 +3,8 @@
     <div class="sectionbody">
         <div class="itemparamlabel metatitle">Meta Title:</div>
         <div class="itemparamvalue metatitle <?=empty($item['item_meta_title']) ? 'missing_info' : ''?>"
-             data-event="hover" data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="right" data-textcolor="#000"
-             data-balloon="<?=$item['item_meta_title']?>">
+             data-event="hover" data-css="itemdetailsballonbox" data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="right" data-textcolor="#000"
+             data-balloon="<?=$item['item_meta_title']?>" data-timer="4000" data-delay="1000">
             <?=$item['item_meta_title']?>
         </div>
         <div class="content-row">
