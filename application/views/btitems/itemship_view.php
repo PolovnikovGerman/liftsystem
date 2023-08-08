@@ -41,9 +41,9 @@
         </div>
         <div class="content-row">
             <div class="itemparamlabel specialeach">Special Each:</div>
-            <div class="itemparamvalue specialeach"><?=$item['charge_pereach']?></div>
+            <div class="itemparamvalue specialeach"><?=number_format($item['charge_pereach'],2)?></div>
             <div class="itemparamlabel specialorder">Special Per Order:</div>
-            <div class="itemparamvalue specialorder"><?=$item['charge_perorder']?></div>
+            <div class="itemparamvalue specialorder"><?=number_format($item['charge_perorder'],2)?></div>
         </div>
     </div>
 </div>

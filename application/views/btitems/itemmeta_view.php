@@ -2,7 +2,11 @@
     <div class="sectionlabel">META &amp; SEARCH:</div>
     <div class="sectionbody">
         <div class="itemparamlabel metatitle">Meta Title:</div>
-        <div class="itemparamvalue metatitle <?=empty($item['item_meta_title']) ? 'missing_info' : ''?>"><?=$item['item_meta_title']?></div>
+        <div class="itemparamvalue metatitle <?=empty($item['item_meta_title']) ? 'missing_info' : ''?>"
+             data-event="hover" data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="right" data-textcolor="#000"
+             data-balloon="<?=$item['item_meta_title']?>">
+            <?=$item['item_meta_title']?>
+        </div>
         <div class="content-row">
             <div class="itemparamlabel metadescription">Meta Description:</div>
             <div class="itemparamlabel itemurl">Page URL:</div>
