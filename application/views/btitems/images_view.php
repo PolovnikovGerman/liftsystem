@@ -12,7 +12,7 @@
             </div>
             <div class="itemcategoryimagearea">
                 <div class="itemcategoryimagetitle">Category Page:</div>
-                <div class="itemcategoryimagesrc">
+                <div class="itemcategoryimagesrc <?=empty($item['category_image']) ? 'emptycatimage' : ''?>">
                     <?php if (!empty($item['category_image'])) {?>
                         <img class="img-responsive" src="<?=$item['category_image']?>" alt="Category Image"/>
                     <?php } ?>
