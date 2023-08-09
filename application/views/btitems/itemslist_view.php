@@ -94,6 +94,7 @@
             <div class="suplier sortable" data-sortcell="vendor">Supplier</div>
             <div class="missinfo">Complete or Missing Info</div>
         </div>
+        <div class="btitemnewaddarea"></div>
         <div class="" id="btitemdata">
         </div>
     </div>

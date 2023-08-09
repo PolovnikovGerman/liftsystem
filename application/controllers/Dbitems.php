@@ -561,5 +561,37 @@ class Dbitems extends MY_Controller
         show_404();
     }
 
+    public function addnewitemform() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'BT');
+            if ($brand=='BT') {
+                $this->load->model('categories_model');
+                $categories = $this->categories_model->get_reliver_categories(['brand'=>'BT']);
+                $subcategories = $this->categories_model->get_sbitem_categories();
+                $mdata['content'] = $this->load->view('btitems/newitemprepare',['categories' => $categories, 'subcategories' => $subcategories], TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 
+    public function addnewitem() {
+        $mdata = [];
+        $error = 'Empty Brand';
+        $postdata = $this->input->post();
+        $brand = ifset($postdata, 'brand', 'BT');
+        $this->load->model('items_model');
+        if ($brand=='BT') {
+            $res = $this->items_model->new_btitem($postdata, $this->USR_ID);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['newitem'] = $res['item_id'];
+            }
+        }
+        $this->ajaxResponse($mdata, $error);
+    }
 }

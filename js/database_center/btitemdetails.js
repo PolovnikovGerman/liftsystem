@@ -215,67 +215,14 @@ function init_btitemdetails_edit() {
             if (response.errors=='') {
                 if (newval=='') {
                     $("select.vendornameinp").addClass('missing_info');
-                    // $(".itemparamvalue.vendorcountry").empty().addClass('missing_info');
-                    // $(".itemparamvalue.vendorzip").empty().addClass('missing_info');
-                    // $(".vendorshipstate").empty().addClass('missing_info');
-                    // $(".itemparamvalue.vendorponote").empty().addClass('missing_info');
                 } else {
                     $("select.vendornameinp").removeClass('missing_info');
-                    // $(".itemparamvalue.vendorcountry").empty().html(response.data.shipaddr_country).removeClass('missing_info');
-                    // $(".itemparamvalue.vendorzip").empty().html(response.data.vendor_zipcode).removeClass('missing_info');
-                    // $(".vendorshipstate").empty().html(response.data.shipaddr_state).removeClass('missing_info');
-                    // $(".itemparamvalue.vendorponote").html(response.data.po_note).empty().removeClass('missing_info');
                 }
-                // $("#profitdataarea").empty().html(response.data.profit);
             } else {
                 show_error(response);
             }
         },'json');
     });
-    // $("input.vendoritemnum").autocompleter({
-    //     source: '/itemdetails/search_vendor_item',
-    //     minLength: 3,
-    //     combine: function(params) {
-    //         var vendor_id = $('#vendor_item_vendor').val();
-    //         return {
-    //             q: params.query,
-    //             vendor_id: vendor_id
-    //         };
-    //     },
-    //     callback: function(value, index, object) {
-    //         if (object.id) {
-    //             $("#vendor_item_id").val(object.id);
-    //         }
-    //     }
-    // });
-    // $("input.vendoritemnum").blur(function(){
-    //     var newval=$(this).val();
-    //     var params = new Array();
-    //     params.push({name: 'session', value: $("#dbdetailsession").val()});
-    //     params.push({name: 'newval', value: newval});
-    //     var url = '/btitemdetails/vendoritem_check';
-    //     $.post(url,params,function(response) {
-    //         if (response.errors=='') {
-    //             $("#profitdataarea").empty().html(response.data.profit);
-    //             $("select.vendornameinp").val(response.data.vendor_id);
-    //             $(".itemparamvalue.vendorcountry").empty().html(response.data.shipaddr_country);
-    //             $(".itemparamvalue.vendorzip").empty().html(response.data.vendor_zipcode);
-    //             $(".vendorshipstate").empty().html(response.data.shipaddr_state);
-    //             $(".itemparamvalue.vendorponote").empty().html(response.data.po_note);
-    //             $(".relievers_vendorprices").empty().html(response.data.vendor_prices);
-    //             if (newval=='') {
-    //                 $("input.vendoritemnum").val().addClass('missing_info');
-    //                 $("input.vendoritemname").val().addClass('missing_info');
-    //             } else {
-    //                 $("input.vendoritemnum").removeClass('missing_info');
-    //                 $("input.vendoritemname").val(response.data.vendor_item_name).removeClass('missing_info');
-    //             }
-    //             init_btitemdetails_edit();
-    //         } else {
-    //             show_error(response);
-    //         }
-    //     },'json');
-    // });
     $(".itemimagepreview").unbind('click').click(function () {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
@@ -342,6 +289,11 @@ function init_btitemdetails_edit() {
             if (response.errors=='') {
                 if (fld=='vendor_item_zipcode') {
                     $(".vendorshipstate").empty().html(response.data.shipstate);
+                }
+                if (newval=='') {
+                    $(".vendordatainpt[data-item='"+fld+"']").addClass('missing_info');
+                } else {
+                    $(".vendordatainpt[data-item='"+fld+"']").removeClass('missing_info');
                 }
             } else {
                 show_error(response);

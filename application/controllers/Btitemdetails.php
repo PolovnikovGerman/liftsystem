@@ -143,13 +143,6 @@ class Btitemdetails extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
-                    $data = $res['data'];
-                    $vendor = $data['vendor'];
-                    $mdata = $this->_prepare_price_response($session);
-                    $mdata['shipaddr_country'] = $vendor['shipaddr_country'];
-                    $mdata['vendor_zipcode'] = $vendor['vendor_zipcode'];
-                    $mdata['shipaddr_state'] = $vendor['shipaddr_state'];
-                    $mdata['po_note'] = $vendor['po_note'];
                 }
             }
             $this->ajaxResponse($mdata, $error);
