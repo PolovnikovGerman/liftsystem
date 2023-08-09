@@ -1050,6 +1050,7 @@ Class Items_model extends My_Model
                     'rush1_price' => '',
                     'rush2_price' => '',
                     'pantone_match' => '',
+                    'po_note' => '',
                 ];
                 for ($i=1; $i<=$pricesmax-1; $i++) {
                     $vprices[] = [
@@ -1298,5 +1299,69 @@ Class Items_model extends My_Model
         }
         $res = $this->db->get()->result_array();
         return count($res);
+    }
+
+    public function new_btitem($data, $user_id) {
+        $out=['result'=>$this->error_result, 'msg' => 'Item add fail'];
+        $errflag = 0;
+        $errmsg = '';
+        if (empty($data['category'])) {
+            $errmsg.='Empty Item Category'.PHP_EOL;
+            $errflag = 1;
+        }
+        if (empty($data['subcategory'])) {
+            $errmsg.='Empty Item SubCategory'.PHP_EOL;
+            $errflag = 1;
+        }
+        if (empty($data['itemname'])) {
+            $errmsg.='Empty Item Name'.PHP_EOL;
+            $errflag = 1;
+        }
+        if ($errflag==1) {
+            $out['msg'] = $errmsg;
+        } else {
+            // Construct item Number;
+            $this->db->select('category_code');
+            $this->db->from('sr_categories');
+            $this->db->where('category_id', $data['category']);
+            $catres = $this->db->get()->row_array();
+            $numtempl = $catres['category_code'].'-';
+            $this->db->select('category_code');
+            $this->db->from('sb_categories');
+            $this->db->where('category_id', $data['subcategory']);
+            $subres = $this->db->get()->row_array();
+            $numtempl.=$subres['category_code'];
+            $this->db->select('max(substr(item_number, 6)) as maxnum, count(item_id) as cnt');
+            $this->db->from('sb_items');
+            $this->db->like('item_number', $numtempl, 'after');
+            $itemres = $this->db->get()->row_array();
+            if ($itemres['cnt']==0) {
+                $newnumb = 1;
+            } else {
+                $newnumb = intval($itemres['maxnum']) + 1;
+            }
+            $item_number = $numtempl.str_pad($newnumb,3,'0',STR_PAD_LEFT);
+            $this->db->set('create_time', date('Y-m-d H:i:s'));
+            $this->db->set('create_user', $user_id);
+            $this->db->set('item_number', $item_number);
+            $this->db->set('item_name', $data['itemname']);
+            $this->db->set('item_active', 1);
+            $this->db->set('category_id', $data['category']);
+            // $this->db->set('subcategory_id', $data['subcategory']);
+            $this->db->set('item_template','Stressball');
+            $this->db->set('brand', 'BT');
+            $this->db->insert('sb_items');
+            $newid = $this->db->insert_id();
+            if ($newid > 0) {
+                // Add subcategory
+                $this->db->set('item_categories_itemid', $newid);
+                $this->db->set('item_categories_categoryid', $data['subcategory']);
+                $this->db->set('item_categories_order', 1);
+                $this->db->insert('sb_item_categories');
+                $out['result'] = $this->success_result;
+                $out['item_id'] = $newid;
+            }
+        }
+        return $out;
     }
 }

@@ -1,4 +1,5 @@
 function init_btitemslist_view() {
+    $(".btitemnewaddarea").hide();
     initItemsListPagination();
     $(".itemcategoryfilter").unbind('change').change(function () {
         var newcat = $(this).val();
@@ -121,8 +122,9 @@ function prepare_search_params() {
 
 function init_itemlist_content() {
     $("#addnewbtitems").unbind('click').click(function(){
-        var item=0;
-        edit_btitem(item);
+        // var item=0;
+        // edit_btitem(item);
+        prepare_newbtitem();
     });
     $(".btitemedit").unbind('click').click(function () {
         var item=$(this).data('item');
@@ -130,6 +132,57 @@ function init_itemlist_content() {
     })
 }
 
+function prepare_newbtitem() {
+    var params = new Array();
+    params.push({name: 'brand', value: 'BT'});
+    var url="/dbitems/addnewitemform";
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".btitemnewaddarea").empty().html(response.data.content).show();
+            init_addnewbtitem();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function init_addnewbtitem() {
+    $(".btitemnewaddarea").find('div.canceladd').click(function (){
+        $(".btitemnewaddarea").empty();
+        $(".btitemnewaddarea").hide();
+    });
+    $(".btitemnewaddarea").find('div.procedaddnewitem').click(function (){
+        var params = new Array();
+        params.push({name: 'category', value: $("#itemnewcategory").val()});
+        params.push({name: 'subcategory', value: $("#itemnewsubcategory").val()});
+        params.push({name: 'itemname', value: $("#itemnewname").val()});
+        params.push({name: 'brand', value: 'BT'});
+        var url="/dbitems/addnewitem";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".btitemnewaddarea").empty().hide();
+                var item = response.data.newitem;
+                var itmparams = new Array();
+                itmparams.push({name: 'item_id', value: item});
+                itmparams.push({name: 'editmode', value: 1});
+                itmparams.push({name: 'brand', value: 'BT'});
+                var url = '/dbitems/itemlistdetails';
+                $.post(url, itmparams, function (response) {
+                    if (response.errors=='') {
+                        $("#itemDetailsModalLabel").empty().html(response.data.header);
+                        $("#itemDetailsModal").find('div.modal-body').empty().html(response.data.content);
+                        $("#itemDetailsModal").modal({backdrop: 'static', keyboard: false, show: true});
+                        init_btitemdetails_edit();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+}
 function edit_btitem(item) {
     var params = new Array();
     params.push({name: 'item_id', value: item});

@@ -214,4 +214,11 @@ Class Categories_model extends MY_Model
         return $res;
     }
 
+    public function get_sbitem_categories() {
+        $this->db->select('*');
+        $this->db->from('sb_categories');
+        $this->db->where('category_code is not null');
+        return $this->db->get()->result_array();
+    }
+
 }
