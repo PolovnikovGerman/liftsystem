@@ -1020,22 +1020,39 @@ Class Items_model extends My_Model
             }
             $categories = $this->categories_model->get_categories_list();
             // Colors
-            $colorsrc = $this->itemcolors_model->get_colors_item($item_id, $editmode);
             $colors = [];
             $numpp=0;
-            foreach ($colorsrc as $itmcolor) {
-                $colors[] = [
-                    'item_color_id' => $itmcolor['item_color_id'],
-                    'item_color' => $itmcolor['item_color'],
-                    'item_color_image' => $itmcolor['item_color_image'],
-                    'item_color_order' => $numpp+1,
-                ];
-                $numpp++;
+            if (empty($item['printshop_inventory_id'])) {
+                $colorsrc = $this->itemcolors_model->get_colors_item($item_id, $editmode);
+                foreach ($colorsrc as $itmcolor) {
+                    $colors[] = [
+                        'item_color_id' => $itmcolor['item_color_id'],
+                        'item_color' => $itmcolor['item_color'],
+                        'item_color_image' => $itmcolor['item_color_image'],
+                        'item_color_order' => $numpp+1,
+                    ];
+                    $numpp++;
+                }
+            } else {
+                if ($editmode==0) {
+                    $colorsrc = $this->itemcolors_model->get_invent_itemcolors($item_id, $editmode);
+                } else {
+                    $colorsrc = $this->itemcolors_model->get_invent_itemcolors($item['printshop_inventory_id'], $editmode);
+                }
+                foreach ($colorsrc as $itmcolor) {
+                    $colors[] = [
+                        'item_color_id' => $itmcolor['item_color_id'],
+                        'item_color' => $itmcolor['item_color'],
+                        'item_color_image' => $itmcolor['color_image'],
+                        'item_color_order' => $itmcolor['color_order'],
+                        'printshop_color' => $itmcolor['printshop_color_id'],
+                        'item_color_source' => $itmcolor['color'],
+                    ];
+                }
             }
-
             // Vendor Info
             $pricesmax = $this->config->item('prices_val');
-            $vitem = $this->vendors_model->get_item_vendor($item['vendor_item_id']);
+            $vitem = $this->vendors_model->get_item_vendor($item['vendor_item_id'], $item['printshop_inventory_id']);
             $vprices = [];
             if (ifset($vitem,'vendor_item_id', 0 )==0) {
                 $vitem=[
@@ -1072,28 +1089,7 @@ Class Items_model extends My_Model
                         'vendorprice_color' => '',
                     ];
                 }
-                /* $vendor = [
-                    'vendor_id' => '',
-                    'vendor_name' => '',
-                    'vendor_zipcode' => '',
-                    'shipaddr_state' => '',
-                    'shipaddr_country' => '',
-                    'po_note' => '',
-                ];*/
             } else {
-//                $vdat = $this->vendors_model->get_vendor($vitem['vendor_item_vendor']);
-//                if ($vdat['result']==$this->error_result) {
-//                    $vendor = [
-//                        'vendor_id' => '',
-//                        'vendor_name' => '',
-//                        'vendor_zipcode' => '',
-//                        'shipaddr_state' => '',
-//                        'shipaddr_country' => '',
-//                        'po_note' => '',
-//                    ];
-//                } else {
-//                    $vendor = $vdat['data'];
-//                }
                 $results = $this->vendors_model->get_item_vendorprice($item['vendor_item_id']);
                 $numpp = 1;
                 foreach ($results as $result) {
@@ -1203,11 +1199,9 @@ Class Items_model extends My_Model
                 'item' => $item,
                 'categories' => $categor,
                 'colors' => $colors,
-//                'vendor' => $vendor,
                 'vendor_item' => $vitem,
                 'vendor_price' => $vprices,
                 'images' => $images,
-                // 'option_images' => $option_images,
                 'inprints' => $imprints,
                 'prices' => $prices,
                 'similar' => $similar,

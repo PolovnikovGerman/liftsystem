@@ -745,6 +745,32 @@ class Btitemdetails_model extends MY_Model
         return $out;
     }
 
+    // Update Inventory color
+    public function change_printshopcolor($postdata, $sessiondata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];
+        $color = ifset($postdata, 'color',0);
+        if (!empty($color)) {
+            $newval = ifset($postdata,'newval','');
+            $colors = $sessiondata['colors'];
+            $find = 0;
+            $idx = 0;
+            foreach ($colors as $item) {
+                if ($item['item_color_id']==$color) {
+                    $find=1;
+                    $colors[$idx]['item_color'] = $newval;
+                    break;
+                }
+                $idx++;
+            }
+            if ($find==1) {
+                $out['result'] = $this->success_result;
+                $sessiondata['colors'] = $colors;
+                usersession($session, $sessiondata);
+            }
+        }
+        return $out;
+    }
+
     // Update item prices
     public function itemdetails_item_price($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];

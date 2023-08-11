@@ -320,6 +320,23 @@ function init_btitemdetails_edit() {
             }
         },'json');
     });
+    // Printshop color
+    $(".printshopcolor").unbind('change').change(function (){
+        var newval=$(this).val();
+        var color = $(this).data('color');
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'newval', value: newval});
+        params.push({name: 'color', value: color});
+        var url='/btitemdetails/change_printshopcolor';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+
+    })
     $(".vendoritemcountyinp").unbind('change').change(function () {
         var newval = $(this).val();
         var fld = $(this).data('item');

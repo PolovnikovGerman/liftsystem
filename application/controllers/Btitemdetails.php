@@ -789,6 +789,25 @@ class Btitemdetails extends MY_Controller
         show_404();
     }
 
+    public function change_printshopcolor() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->session_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $res = $this->btitemdetails_model->change_printshopcolor($postdata, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Save item
     public function save_itemdetails() {
         if ($this->isAjax()) {
