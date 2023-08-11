@@ -143,6 +143,23 @@ class Btitemdetails extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                    $mdata = $this->_prepare_price_response($session);
+                    $sessiondata = usersession($session);
+                    $item = $sessiondata['item'];
+                    $vendor_item = $sessiondata['vendor_item'];
+                    $vendor_price = $sessiondata['vendor_price'];
+                    $colors = $sessiondata['colors'];
+                    if ($res['internal']==1) {
+                        $this->load->model('inventory_model');
+                        $itemlist = $this->inventory_model->get_inventory_itemslist();
+                        $mdata['vendoritemview'] = $this->load->view('btitems/vendoritem_inventory_edit', ['item' => $item, 'itemlists' => $itemlist], TRUE);
+                        $mdata['vendor_price'] = $this->load->view('btitems/vendorprices_view',['vendor_prices' => $vendor_price, 'venditem' => $vendor_item, 'item' => $item],TRUE);
+                        $mdata['colors'] = $this->load->view('btitems/printshopcolors_view',['colors' => $colors,'item' => $item],TRUE);
+                    } else {
+                        $mdata['vendoritemview'] = $this->load->view('btitems/vendoritem_data_edit',['vendor_item' => $vendor_item], TRUE);
+                        $mdata['vendor_price'] = $this->load->view('btitems/vendorprices_edit',['vendor_prices' => $vendor_price, 'venditem' => $vendor_item, 'item' => $item],TRUE);
+                        $mdata['colors'] = $this->load->view('btitems/optionimages_view',['colors' => $colors, 'item' => $item],TRUE);
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);

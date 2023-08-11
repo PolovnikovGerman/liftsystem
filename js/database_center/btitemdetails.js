@@ -218,6 +218,11 @@ function init_btitemdetails_edit() {
                 } else {
                     $("select.vendornameinp").removeClass('missing_info');
                 }
+                $("#profitdataarea").empty().html(response.data.profit);
+                $(".relievers_vendorprices").empty().html(response.data.vendor_price);
+                $(".itemoptionsarea").empty().html(response.data.colors);
+                $("#vendoritemdetailsarea").empty().html(response.data.vendoritemview);
+                init_btitemdetails_edit();
             } else {
                 show_error(response);
             }

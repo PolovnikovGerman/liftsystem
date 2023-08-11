@@ -1010,12 +1010,14 @@ Class Items_model extends My_Model
             $this->db->limit(3);
             $categor = $this->db->get()->result_array();
             if (count($categor)<3) {
+                $newid = count($categor) + 1;
                 for ($i=count($categor); $i<3; $i++) {
                     $categor[] = [
-                        'item_categories_id' => $i*(-1),
+                        'item_categories_id' => $newid*(-1),
                         'category_id' => '',
                         'category_name' => '',
                     ];
+                    $newid++;
                 }
             }
             $categories = $this->categories_model->get_categories_list();

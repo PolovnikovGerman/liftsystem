@@ -153,11 +153,35 @@ class Btitemdetails_model extends MY_Model
         }
         if ($out['result']==$this->success_result) {
             $sessiondata['vendor_item'] = $vendor_item;
+            $out['internal'] = 0;
+            if ($vendor_id==$this->config->item('inventory_vendor')) {
+                $out['internal'] = 1;
+                $prices = $sessiondata['vendor_price'];
+                $idx = 0;
+                foreach ($prices as $price) {
+                    $prices[$idx]['vendorprice_qty'] = 0;
+                    $prices[$idx]['vendorprice_val'] = 0;
+                    $prices[$idx]['vendorprice_color'] = 0;
+                    $idx++;
+                }
+                $sessiondata['vendor_price'] = $prices;
+                // Colors;
+                $colors = $sessiondata['colors'];
+                $deleted = $sessiondata['deleted'];
+                foreach ($colors as $color) {
+                    if ($color['item_color_id'] > 0) {
+                        $deleted[] = [
+                            'entity' => 'colors',
+                            'id' => $color['item_color_id'],
+                        ];
+                    }
+                }
+                $colors = [];
+                $sessiondata['colors'] = $colors;
+                $sessiondata['deleted'] = $deleted;
+            }
             usersession($sessionsid, $sessiondata);
             // Recalc prices and
-            $data=[
-                'vendor_item' => $vendor_item,
-            ];
             $out['data'] = $data;
         }
         return $out;
