@@ -2315,4 +2315,50 @@ class Inventory_model extends MY_Model
         return $extracost;
     }
 
+    public function get_inventory_itemslist($inventory_type = 0) {
+        $this->db->select('*');
+        $this->db->from('ts_inventory_items');
+        if ($inventory_type!==0) {
+            $this->db->where('inventory_type_id', $inventory_type);
+        }
+        $this->db->order_by('inventory_type_id, item_num');
+        return $this->db->get()->result_array();
+    }
+
+    public function get_inventory_item($inventory_item_id) {
+        $out=['result'=>$this->error_result, 'msg'=>'Item Not Exist'];
+        $this->db->select('*');
+        $this->db->from('ts_inventory_items');
+        $this->db->where('inventory_item_id', $inventory_item_id);
+        $itemres = $this->db->get()->row_array();
+        if (ifset($itemres,'inventory_item_id',0)==$inventory_item_id) {
+            $out['result'] = $this->success_result;
+            $this->db->select('*');
+            $this->db->from('ts_inventory_colors');
+            $this->db->where('inventory_item_id', $inventory_item_id);
+            $colors = $this->db->get()->result_array();
+            $out['colors'] = $colors;
+            $sum_instock = 0;
+            $total_invent = 0;
+            $sum_available = 0;
+            $avg_price = 0;
+            foreach ($colors as $color) {
+                $income = $this->inventory_color_income($color['inventory_color_id']);
+                $outcome = $this->inventory_color_outcome($color['inventory_color_id']);
+                $reserved = $this->inventory_color_reserved($color['inventory_color_id']);
+                $instock=$income-$outcome;
+                $sum_instock = $sum_instock + $instock;
+                $available=$instock-$reserved;
+                $sum_available = $sum_available + $available;
+                $total_invent+=($available*$color['avg_price']);
+            }
+            if ($sum_available!=0) {
+                $avg_price = round($total_invent / $sum_available,3);
+            }
+            $itemres['avg_price'] = $avg_price;
+            $out['data'] = $itemres;
+        }
+        return $out;
+    }
+
 }

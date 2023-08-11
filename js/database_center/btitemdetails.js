@@ -300,6 +300,26 @@ function init_btitemdetails_edit() {
             }
         },'json');
     });
+    // Printshop item
+    $("select.printshopitemselect").unbind('change').change(function (){
+        var newval=$(this).val();
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'newval', value: newval});
+        var url='/btitemdetails/change_printshopitem';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".printshop_item_name").empty().html(response.data.printshop_name);
+                $("#profitdataarea").empty().html(response.data.profit);
+                $(".relievers_vendorprices").empty().html(response.data.vendorprice);
+                $(".itemoptionsarea").empty().html(response.data.colorsview);
+                $(".itemoptioncheck").empty().html(response.data.imgoptions);
+                init_btitemdetails_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
     $(".vendoritemcountyinp").unbind('change').change(function () {
         var newval = $(this).val();
         var fld = $(this).data('item');

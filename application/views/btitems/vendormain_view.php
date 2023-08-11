@@ -5,14 +5,7 @@
             <div class="itemparamlabel vendorname">Supplier</div>
             <div class="itemparamvalue vendorname <?=empty($vendor_item['vendor_name']) ? 'missing_info' : ''?>"><?=$vendor_item['vendor_name']?></div>
         </div>
-        <div class="content-row">
-            <div class="itemparamlabel vendorname">Su. Item #:</div>
-            <div class="itemparamvalue vendorname <?=empty($vendor_item['vendor_item_number']) ? 'missing_info' : ''?>"><?=$vendor_item['vendor_item_number']?></div>
-        </div>
-        <div class="content-row">
-            <div class="itemparamlabel vendorname">Su. Item:</div>
-            <div class="itemparamvalue vendorname <?=empty($vendor_item['vendor_item_name']) ? 'missing_info' : ''?>"><?=$vendor_item['vendor_item_name']?></div>
-        </div>
+        <div id="vendoritemdetailsarea"><?=$vendoritem_view?></div>
         <div class="content-row">
             <div class="itemparamlabel vendosrship">Ships From:</div>
             <div class="itemparamvalue vendorcountry <?=empty($vendor_item['item_shipcountry']) ? 'missing_info' : ''?>"><?=$vendor_item['item_shipcountry_name']?></div>

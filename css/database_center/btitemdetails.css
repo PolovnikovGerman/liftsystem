@@ -489,6 +489,15 @@ select.similaritems {
     margin-left: -5px;
     padding-left: 5px;
 }*/
+select.printshopitemselect {
+    border: 1px solid #000000;
+    background-color: #ffffff;
+    height: 22px;
+    line-height: 22px;
+    margin-left: -5px;
+    padding-left: 5px;
+    width: 52px;
+}
 select.vendornameinp {
     border: 1px solid #000000;
     background-color: #ffffff;
@@ -1214,8 +1223,18 @@ select.itemdetailsoptions.missing_info {
     margin-right: 10px;
     margin-top: 3px;
 }
+.itemoptionimagelabel.editmode {
+    border: none!important;
+}
 .itemoptionimagelabel:last-child {
     margin-right: 0px;
+}
+select.printshopcolor {
+    border: 1px solid #000000;
+    background-color: #ffffff;
+    height: 20px;
+    line-height: 20px;
+    width: 57px;
 }
 /* Imprint */
 .relievers_customisation {

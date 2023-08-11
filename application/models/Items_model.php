@@ -982,6 +982,17 @@ Class Items_model extends My_Model
         $item = $this->db->get()->row_array();
         if (ifset($item, 'item_id',0)==$item_id) {
             $out['result'] = $this->success_result;
+            $item['printshop_item_num'] = $item['printshop_item_name'] = '';
+            if (!empty($item['printshop_inventory_id'])) {
+                $this->db->select('inventory_item_id, item_num, item_name');
+                $this->db->from('ts_inventory_items');
+                $this->db->where('inventory_item_id', $item['printshop_inventory_id']);
+                $invres = $this->db->get()->row_array();
+                if (ifset($invres,'inventory_item_id',0)==$item['printshop_inventory_id']) {
+                    $item['printshop_item_num'] = $invres['item_num'];
+                    $item['printshop_item_name'] = $invres['item_name'];
+                }
+            }
             $this->load->model('itemimages_model');
             $this->load->model('vendors_model');
             $this->load->model('imprints_model');

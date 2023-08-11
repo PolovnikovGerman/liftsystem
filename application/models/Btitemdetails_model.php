@@ -663,6 +663,88 @@ class Btitemdetails_model extends MY_Model
         }
         return $out;
     }
+    // Update printshop
+    public function change_printshopitem($data, $sessiondata, $session) {
+        $out = ['result' => $this->error_result, 'msg' => 'Error during update vendor Item'];
+        $item = $sessiondata['item'];
+        $vendor_item = $sessiondata['vendor_item'];
+        $inventory_item_id = ifset($data, 'newval','-1');
+        if (intval($inventory_item_id) >= 0) {
+            if (empty($inventory_item_id)) {
+                $item['printshop_inventory_id'] = NULL;
+                $item['option_images'] = 0;
+                $vendor_item['vendor_item_blankcost'] = 0;
+                $vendor_item['vendor_item_cost'] = 0;
+                $out['printshop_name'] = '';
+                $invcolors = [];
+                $out['result'] = $this->success_result;
+            } else {
+                $this->load->model('inventory_model');
+                $invres = $this->inventory_model->get_inventory_item($inventory_item_id);
+                $out['msg'] = $invres['msg'];
+                if ($invres['result']==$this->success_result) {
+                    $item['printshop_inventory_id'] = $inventory_item_id;
+                    $item['option_images'] = 1;
+                    $invitem = $invres['data'];
+                    $invcolors = $invres['colors'];
+                    $out['printshop_name'] = $invitem['item_name'];
+                    $vendor_item['vendor_item_blankcost'] = 0;
+                    $vendor_item['vendor_item_cost'] = $invitem['avg_price'];
+                    $out['result'] = $this->success_result;
+                }
+            }
+            if ($out['result']==$this->success_result) {
+                $vendor_prices = $sessiondata['vendor_price'];
+                // Delete all vendor prices
+                $idx = 0;
+                foreach ($vendor_prices as $vendor_price) {
+                    $vendor_prices[$idx]['vendorprice_qty'] = '';
+                    $vendor_prices[$idx]['vendorprice_val'] = '';
+                    $vendor_prices[$idx]['vendorprice_color'] = '';
+                    $idx++;
+                }
+                $colors = $sessiondata['colors'];
+                $deleted = $sessiondata['deleted'];
+                foreach ($colors as $color) {
+                    if ($color['item_color_id'] > 0) {
+                        $deleted[] = [
+                            'entity' => 'colors',
+                            'id' => $color['item_color_id'],
+                        ];
+                    }
+                }
+                $colors = [];
+                $newid = 1;
+                foreach ($invcolors as $invcolor) {
+                    $colors[] = [
+                        'item_color_id' => $newid*(-1),
+                        'item_color' => $invcolor['color'],
+                        'item_color_image' => $invcolor['color_image'],
+                        'item_color_order' => $invcolor['color_order'],
+                        'printshop_color' => $invcolor['inventory_color_id'],
+                        'item_color_source' => $invcolor['color'],
+                    ];
+                }
+                $out['colors'] = $colors;
+                $sessiondata['colors'] = $colors;
+                $sessiondata['vendor_item'] = $vendor_item;
+                $sessiondata['item'] = $item;
+                $sessiondata['vendor_price'] = $vendor_prices;
+                $sessiondata['deleted'] = $deleted;
+                usersession($session, $sessiondata);
+                $out['vendor_price'] = $vendor_prices;
+                $out['vendor_item'] = $vendor_item;
+                $out['item'] = $item;
+                $commonprice = $this->_prepare_common_prices($sessiondata);
+                $prices = $sessiondata['prices'];
+                $item = $sessiondata['item'];
+                $profits = $this->_recalc_promo_profit($prices, $vendor_prices, $commonprice);
+                $this->_update_profit($profits, $item, $prices, $sessiondata, $session);
+            }
+        }
+        return $out;
+    }
+
     // Update item prices
     public function itemdetails_item_price($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];
@@ -908,6 +990,7 @@ class Btitemdetails_model extends MY_Model
             $this->db->set('bullet2', empty($item['bullet2']) ? NULL : $item['bullet2']);
             $this->db->set('bullet3', empty($item['bullet3']) ? NULL : $item['bullet3']);
             $this->db->set('bullet4', empty($item['bullet4']) ? NULL : $item['bullet4']);
+            $this->db->set('printshop_inventory_id', empty($item['printshop_inventory_id'])? NULL : $item['printshop_inventory_id']);
             if ($item['item_id']>0) {
                 $this->db->set('update_user', $user_id);
                 $this->db->where('item_id', $item['item_id']);
@@ -949,7 +1032,6 @@ class Btitemdetails_model extends MY_Model
             $this->db->set('item_price_pantone', $item['item_price_pantone']);
             $this->db->set('item_sale_pantone', $item['item_sale_pantone']);
             $this->db->set('pantone_profit', $item['profit_pantone']);
-            // $this->db->set('')
             if ($item['item_price_id'] > 0) {
                 $this->db->where('item_price_id', $item['item_price_id']);
                 $this->db->update('sb_item_prices');
@@ -1036,25 +1118,39 @@ class Btitemdetails_model extends MY_Model
             }
             // Colors
             $colors = $sessiondata['colors'];
-            foreach ($colors as $color) {
-                if (empty($color['item_color'])) {
-                    if ($color['item_color_id'] > 0) {
-                        $this->db->where('item_color_id', $color['item_color_id']);
-                        $this->db->delete('sb_item_colors');
-                    }
-                } else {
-                    if (!empty($color['item_color_image']) && stripos($color['item_color_image'], $preload_sh)) {
-                        $img_src = str_replace($preload_sh, '', $color['item_color_image']);
-                        $cpres = @copy($preload_fl . $img_src, $itemimg_fl . $img_src);
-                        if ($cpres) {
-                            $color['item_color_image'] = $itemimg_sh . $img_src;
+            if (empty($item['printshop_inventory_id'])) {
+                foreach ($colors as $color) {
+                    if (empty($color['item_color'])) {
+                        if ($color['item_color_id'] > 0) {
+                            $this->db->where('item_color_id', $color['item_color_id']);
+                            $this->db->delete('sb_item_colors');
+                        }
+                    } else {
+                        if (!empty($color['item_color_image']) && stripos($color['item_color_image'], $preload_sh)) {
+                            $img_src = str_replace($preload_sh, '', $color['item_color_image']);
+                            $cpres = @copy($preload_fl . $img_src, $itemimg_fl . $img_src);
+                            if ($cpres) {
+                                $color['item_color_image'] = $itemimg_sh . $img_src;
+                            } else {
+                                $color['item_color_image'] = '';
+                            }
+                        }
+                        $this->db->set('item_color', $color['item_color']);
+                        $this->db->set('item_color_image', $color['item_color_image']);
+                        $this->db->set('item_color_order', $color['item_color_order']);
+                        if ($color['item_color_id'] > 0) {
+                            $this->db->where('item_color_id', $color['item_color_id']);
+                            $this->db->update('sb_item_colors');
                         } else {
-                            $color['item_color_image'] = '';
+                            $this->db->set('item_color_itemid', $item_id);
+                            $this->db->insert('sb_item_colors');
                         }
                     }
+                }
+            } else {
+                foreach ($colors as $color) {
                     $this->db->set('item_color', $color['item_color']);
-                    $this->db->set('item_color_image', $color['item_color_image']);
-                    $this->db->set('item_color_order', $color['item_color_order']);
+                    $this->db->set('printshop_color_id', $color['printshop_color']);
                     if ($color['item_color_id'] > 0) {
                         $this->db->where('item_color_id', $color['item_color_id']);
                         $this->db->update('sb_item_colors');
@@ -1102,64 +1198,59 @@ class Btitemdetails_model extends MY_Model
                 }
             }
             // Vendor Item
-            // $vendor = $sessiondata['vendor'];
             $vendor_item = $sessiondata['vendor_item'];
             $vendor_prices = $sessiondata['vendor_price'];
-            // if ($vendor['vendor_id'] > 0) {
-                if (!empty($vendor_item['vendor_item_number'])) {
-                    $this->db->set('vendor_item_number', $vendor_item['vendor_item_number']);
-                    $this->db->set('vendor_item_name', $vendor_item['vendor_item_name']);
-                    $this->db->set('vendor_item_blankcost', $vendor_item['vendor_item_blankcost']);
-                    $this->db->set('vendor_item_cost', $vendor_item['vendor_item_cost']);
-                    $this->db->set('vendor_item_exprint', $vendor_item['vendor_item_exprint']);
-                    $this->db->set('vendor_item_setup', $vendor_item['vendor_item_setup']);
-                    $this->db->set('vendor_item_repeat', $vendor_item['vendor_item_repeat']);
-                    // Other items
-                    $this->db->set('stand_days',$vendor_item['stand_days']);
-                    $this->db->set('rush1_days', $vendor_item['rush1_days']);
-                    $this->db->set('rush2_days', $vendor_item['rush2_days']);
-                    $this->db->set('rush1_price', $vendor_item['rush1_price']);
-                    $this->db->set('rush2_price', $vendor_item['rush2_price']);
-                    $this->db->set('pantone_match', $vendor_item['pantone_match']);
-                    $this->db->set('vendor_item_vendor', $vendor_item['vendor_item_vendor']);
-                    $this->db->set('vendor_item_zipcode', $vendor_item['vendor_item_zipcode']);
-                    $this->db->set('item_shipcountry', $vendor_item['item_shipcountry']);
-                    $this->db->set('item_shipstate', $vendor_item['item_shipstate']);
-                    $this->db->set('item_shipcity', $vendor_item['item_shipcity']);
-                    $this->db->set('po_note', $vendor_item['po_note']);
-                    if ($vendor_item['vendor_item_id'] > 0) {
-                        $this->db->where('vendor_item_id', $vendor_item['vendor_item_id']);
-                        $this->db->update('sb_vendor_items');
-                        $vendor_item_id = $vendor_item['vendor_item_id'];
+            $this->db->set('vendor_item_number', $vendor_item['vendor_item_number']);
+            $this->db->set('vendor_item_name', $vendor_item['vendor_item_name']);
+            $this->db->set('vendor_item_blankcost', $vendor_item['vendor_item_blankcost']);
+            $this->db->set('vendor_item_cost', $vendor_item['vendor_item_cost']);
+            $this->db->set('vendor_item_exprint', $vendor_item['vendor_item_exprint']);
+            $this->db->set('vendor_item_setup', $vendor_item['vendor_item_setup']);
+            $this->db->set('vendor_item_repeat', $vendor_item['vendor_item_repeat']);
+            // Other items
+            $this->db->set('stand_days',$vendor_item['stand_days']);
+            $this->db->set('rush1_days', $vendor_item['rush1_days']);
+            $this->db->set('rush2_days', $vendor_item['rush2_days']);
+            $this->db->set('rush1_price', $vendor_item['rush1_price']);
+            $this->db->set('rush2_price', $vendor_item['rush2_price']);
+            $this->db->set('pantone_match', $vendor_item['pantone_match']);
+            $this->db->set('vendor_item_vendor', $vendor_item['vendor_item_vendor']);
+            $this->db->set('vendor_item_zipcode', $vendor_item['vendor_item_zipcode']);
+            $this->db->set('item_shipcountry', $vendor_item['item_shipcountry']);
+            $this->db->set('item_shipstate', $vendor_item['item_shipstate']);
+            $this->db->set('item_shipcity', $vendor_item['item_shipcity']);
+            $this->db->set('po_note', $vendor_item['po_note']);
+            if ($vendor_item['vendor_item_id'] > 0) {
+                $this->db->where('vendor_item_id', $vendor_item['vendor_item_id']);
+                $this->db->update('sb_vendor_items');
+                $vendor_item_id = $vendor_item['vendor_item_id'];
+            } else {
+                $this->db->insert('sb_vendor_items');
+                $vendor_item_id = $this->db->insert_id();
+            }
+            $this->db->set('vendor_item_id', $vendor_item_id);
+            $this->db->where('item_id', $item_id);
+            $this->db->update('sb_items');
+            // Vendor Prices
+            foreach ($vendor_prices as $vendor_price) {
+                if (!empty($vendor_price['vendorprice_qty'])) {
+                    $this->db->set('vendorprice_qty', $vendor_price['vendorprice_qty']);
+                    $this->db->set('vendorprice_val', $vendor_price['vendorprice_val']);
+                    $this->db->set('vendorprice_color', $vendor_price['vendorprice_color']);
+                    if ($vendor_price['vendorprice_id'] > 0) {
+                        $this->db->where('vendorprice_id', $vendor_price['vendorprice_id']);
+                        $this->db->update('sb_vendor_prices');
                     } else {
-                        $this->db->insert('sb_vendor_items');
-                        $vendor_item_id = $this->db->insert_id();
+                        $this->db->set('vendor_item_id', $vendor_item_id);
+                        $this->db->insert('sb_vendor_prices');
                     }
-                    $this->db->set('vendor_item_id', $vendor_item_id);
-                    $this->db->where('item_id', $item_id);
-                    $this->db->update('sb_items');
-                    // Vendor Prices
-                    foreach ($vendor_prices as $vendor_price) {
-                        if (!empty($vendor_price['vendorprice_qty'])) {
-                            $this->db->set('vendorprice_qty', $vendor_price['vendorprice_qty']);
-                            $this->db->set('vendorprice_val', $vendor_price['vendorprice_val']);
-                            $this->db->set('vendorprice_color', $vendor_price['vendorprice_color']);
-                            if ($vendor_price['vendorprice_id'] > 0) {
-                                $this->db->where('vendorprice_id', $vendor_price['vendorprice_id']);
-                                $this->db->update('sb_vendor_prices');
-                            } else {
-                                $this->db->set('vendor_item_id', $vendor_item_id);
-                                $this->db->insert('sb_vendor_prices');
-                            }
-                        } else {
-                            if ($vendor_price['vendorprice_id'] > 0) {
-                                $this->db->where('vendorprice_id', $vendor_price['vendorprice_id']);
-                                $this->db->delete('sb_vendor_prices');
-                            }
-                        }
+                } else {
+                    if ($vendor_price['vendorprice_id'] > 0) {
+                        $this->db->where('vendorprice_id', $vendor_price['vendorprice_id']);
+                        $this->db->delete('sb_vendor_prices');
                     }
                 }
-            // }
+            }
             // Prices
             $prices = $sessiondata['prices'];
             foreach ($prices as $price) {
@@ -1512,10 +1603,12 @@ class Btitemdetails_model extends MY_Model
             array_push($errmsg, 'Item Number empty');
         }
         if ($item['option_images']==1) {
-            $colors = $sessiondata['colors'];
-            foreach ($colors as $color) {
-                if (!empty($color['item_color']) && empty($color['item_color_image'])) {
-                    array_push($errmsg, 'Option '.$color['item_color'].' - empty Image');
+            if (empty($item['printshop_inventory_id'])) {
+                $colors = $sessiondata['colors'];
+                foreach ($colors as $color) {
+                    if (!empty($color['item_color']) && empty($color['item_color_image'])) {
+                        array_push($errmsg, 'Option '.$color['item_color'].' - empty Image');
+                    }
                 }
             }
         }

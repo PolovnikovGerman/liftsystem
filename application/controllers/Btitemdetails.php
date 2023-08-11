@@ -203,18 +203,24 @@ class Btitemdetails extends MY_Controller
                 $cntimages = count($images);
                 $addslider = $this->load->view('btitems/popup_addimageslder_edit',['images' => $images,'cntimages' => $cntimages], TRUE);
                 $add_view = $this->load->view('btitems/popup_addimage_edit',['slider' => $addslider], TRUE);
-                $colors = $sessiondata['colors'];
-                if ($item['option_images']==1) {
-                    $colorslider = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors)], TRUE);
-                } else {
-                    $colorslider = $this->load->view('btitems/popup_optiontext_edit',['colors' => $colors], TRUE);
+                $colorview = 0;
+                $optionview = '';
+                if (empty($item['printshop_inventory_id'])) {
+                    $colors = $sessiondata['colors'];
+                    if ($item['option_images']==1) {
+                        $colorslider = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors)], TRUE);
+                    } else {
+                        $colorslider = $this->load->view('btitems/popup_optiontext_edit',['colors' => $colors], TRUE);
+                    }
+                    $optionview = $this->load->view('btitems/popup_options_edit',['item' => $item, 'slider' => $colorslider], TRUE);
+                    $colorview = 1;
                 }
-                $optionview = $this->load->view('btitems/popup_options_edit',['item' => $item, 'slider' => $colorslider], TRUE);
                 $mdata['header'] = 'IMAGES & OPTIONS:';
                 $options = [
                     'main_view' => $main_view,
                     'add_view' => $add_view,
                     'options_view' => $optionview,
+                    'colorview' => $colorview,
                 ];
                 $mdata['content'] = $this->load->view('btitems/popup_image_edit',$options, TRUE);
             }
@@ -751,6 +757,38 @@ class Btitemdetails extends MY_Controller
         }
         show_404();
     }
+
+    // Change printshop item
+    public function change_printshopitem() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->session_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $res = $this->btitemdetails_model->change_printshopitem($postdata, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    // prepare views
+                    $mdata = $this->_prepare_price_response($session_id);
+                    $mdata['printshop_name'] = $res['printshop_name'];
+                    $mdata['vendorprice'] = $this->load->view('btitems/vendorprices_view',['vendor_prices' => $res['vendor_price'], 'venditem' => $res['vendor_item'], 'item' => $res['item']],TRUE);
+                    // Colors
+                    $mdata['colorsview'] = $this->load->view('btitems/printshopcolors_view',['colors' => $res['colors'],'item' => $res['item']],TRUE);
+                    if ($res['item']['option_images']==1) {
+                        $mdata['imgoptions'] = '<i class="fa fa-check-square"></i>';
+                    } else {
+                        $mdata['imgoptions'] = '<i class="fa fa-square-o"></i>';
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Save item
     public function save_itemdetails() {
         if ($this->isAjax()) {
