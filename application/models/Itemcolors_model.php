@@ -14,82 +14,40 @@ class Itemcolors_model extends My_Model
         $this->db->select('ci.*');
         $this->db->from('sb_item_colors ci');
         $this->db->where('ci.item_color_itemid',$item_id);
-//        Temporary comment LEGACY
-//         $this->db->order_by('item_color_order','asc');
         $result = $this->db->get()->result_array();
         return $result;
-//        if ($edit==0) {
-//            return $result;
-//        } else {
-//            $out_colors=array();
-//            for ($i=0;$i<$this->config->item('item_colors');$i++) {
-//                if (isset ($result[$i]['item_color_id'])) {
-//                    $out_colors[$i]=array('item_color_id'=>$result[$i]['item_color_id'],'item_color'=>$result[$i]['item_color']);
-//                } else {
-//                    $out_colors[$i]=array('item_color_id'=>($i)*(-1),'item_color'=>'');
-//                }
-//            }
-//            return $out_colors;
-//        }
     }
 
-//    function get_editcolors_item($item_id,$limit) {
-//        $this->db->select('ci.*');
-//        $this->db->from('sb_item_colors ci');
-//        $this->db->where('ci.item_color_itemid',$item_id);
-//        $result = $this->db->get()->result_array();
-//        $out_colors=array();
-//        for ($i=0;$i<$limit;$i++) {
-//            if (isset ($result[$i]['item_color_id'])) {
-//                $out_colors[$i]=array('item_color_id'=>$result[$i]['item_color_id'],'item_color'=>$result[$i]['item_color']);
-//            } else {
-//                $out_colors[$i]=array('item_color_id'=>($i)*(-1),'item_color'=>'');
-//            }
-//        }
-//        return $out_colors;
-//    }
-//
-//    function update_itemoptions($item_colors, $item_id) {
-//        foreach ($item_colors as $row) {
-//            if ($row['id']>0 && $row['color']=='') {
-//                $this->db->where('item_color_id',$row['id']);
-//                $this->db->delete('sb_item_colors');
-//            } else{
-//                $this->db->set('item_color',$row['color']);
-//                if ($row['id']<=0 && $row['color']!='') {
-//                    $this->db->set('item_color_itemid',$item_id);
-//                    $this->db->insert('sb_item_colors');
-//                } else {
-//                    $this->db->where('item_color_id',$row['id']);
-//                    $this->db->update('sb_item_colors');
-//                }
-//            }
-//        }
-//        return TRUE;
-//    }
-//
-//    function update_inventoryoptions($item_id) {
-//        $this->db->where('item_color_itemid',$item_id);
-//        $this->db->delete('sb_item_colors');
-//        return TRUE;
-//    }
-//
-//    function update_colors($item_colors,$item_id) {
-//        foreach ($item_colors as $row) {
-//            if ($row['deed']=='delete') {
-//                $this->db->where('item_color_id',$row['id']);
-//                $this->db->delete('sb_item_colors');
-//            } elseif($row['deed']=='insert') {
-//                $this->db->set('item_color_itemid',$item_id);
-//                $this->db->set('item_color',$row['newval']);
-//                $this->db->insert('sb_item_colors');
-//            } else {
-//                $this->db->set('item_color',$row['newval']);
-//                $this->db->where('item_color_id',$row['id']);
-//                $this->db->update('sb_item_colors');
-//            }
-//        }
-//    }
+    public function get_invent_itemcolors($item_id, $edit=0) {
+        if ($edit==0) {
+            $this->db->select('ci.*, c.color, c.color_image, c.color_order');
+            $this->db->from('sb_item_colors ci');
+            $this->db->join('ts_inventory_colors c','c.inventory_color_id=ci.printshop_color_id');
+            $this->db->where('ci.item_color_itemid', $item_id);
+            $this->db->where('ci.item_color != ','');
+            $result = $this->db->get()->result_array();
+        } else {
+            $this->db->select('ci.*, c.color, c.color_image, c.color_order, c.inventory_color_id');
+            $this->db->from('ts_inventory_colors c');
+            $this->db->join('sb_item_colors ci','c.inventory_color_id=ci.printshop_color_id','left');
+            $this->db->where('c.inventory_item_id',$item_id);
+            $colors = $this->db->get()->result_array();
+            $result = [];
+            $numpp=1;
+            foreach ($colors as $color) {
+                $result[] = [
+                    'item_color_id' => (empty($color['item_color_id']) ? $numpp*(-1) : $color['item_color_id']),
+                    'item_color' => $color['item_color'],
+                    'color_image' => $color['color_image'],
+                    'color_order' => $color['color_order'],
+                    'printshop_color_id' => $color['inventory_color_id'],
+                    'color' => $color['color'],
+                ];
+                $numpp++;
+            }
+        }
+        return $result;
+    }
 
     function get_colorval_item($itemcolor_id) {
         $this->db->select('item_color_id, item_color');
@@ -104,49 +62,6 @@ class Itemcolors_model extends My_Model
         return $result;
     }
 
-//    public function get_colorval_inventory($printshop_color_id) {
-//        $this->_DB_BROWN = $this->load->database('brown', TRUE);
-//        $this->_DB_BROWN->db_select();
-//        $this->_DB_BROWN->select('*');
-//        $this->_DB_BROWN->from('ts_printshop_colors');
-//        $this->_DB_BROWN->where('printshop_color_id', $printshop_color_id);
-//        $res=$this->_DB_BROWN->get()->row_array();
-//        $color='';
-//        if (isset($res['printshop_color_id'])) {
-//            $color=$res['color'];
-//        }
-//        return $color;
-//    }
-//
-//    function get_color_pantone($color_code) {
-//        $pantone_name='';
-//        foreach ($this->imprint_colors as $row) {
-//            if (substr($row['code'],1)==$color_code) {
-//                $pantone_name=$row['name'];
-//                break;
-//            }
-//        }
-//        if ($pantone_name=='') {
-//            $pantone_name=$color_code;
-//        }
-//        return $pantone_name;
-//    }
-//
-//    /* Save import values for options */
-//    function import_option($options_arr,$options,$item_id) {
-//        $this->db->set('options',$options);
-//        $this->db->where('item_id',$item_id);
-//        $this->update('sb_items');
-//        $this->db->where('item_color_itemid',$item_id);
-//        $this->db->delete('sb_item_colors');
-//        foreach ($options_arr as $row) {
-//            $this->db->set('item_color_itemid',$item_id);
-//            $this->db->set('item_color',$row);
-//            $this->db->insert('sb_item_colors');
-//        }
-//        return TRUE;
-//    }
-//
     /* Get Colors from Inventory */
     public function get_inventcolors_item($printshop_inventory_id) {
         $this->db->select('*');

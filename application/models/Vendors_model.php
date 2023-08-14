@@ -1005,7 +1005,7 @@ Class Vendors_model extends My_Model
     }
 
     // Get Vendor for new edit
-    public function get_item_vendor($vendor_item_id) {
+    public function get_item_vendor($vendor_item_id, $inventory_item_id) {
         $this->db->select('vi.*');
         $this->db->select('v.vendor_name, cnt.country_iso_code_2 as item_shipcountry_name');
         $this->db->from('sb_vendor_items vi');
@@ -1013,6 +1013,14 @@ Class Vendors_model extends My_Model
         $this->db->join('ts_countries cnt','cnt.country_id=vi.item_shipcountry','left');
         $this->db->where('vendor_item_id', $vendor_item_id);
         $vitem = $this->db->get()->row_array();
+        if (!empty($inventory_item_id)) {
+            $this->load->model('inventory_model');
+            $res = $this->inventory_model->get_inventory_item($inventory_item_id);
+            if ($res['result']==$this->success_result) {
+                $invdata = $res['data'];
+                $vitem['vendor_item_cost'] = $invdata['avg_price'];
+            }
+        }
         return $vitem;
     }
 

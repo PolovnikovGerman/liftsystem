@@ -489,6 +489,15 @@ select.similaritems {
     margin-left: -5px;
     padding-left: 5px;
 }*/
+select.printshopitemselect {
+    border: 1px solid #000000;
+    background-color: #ffffff;
+    height: 22px;
+    line-height: 22px;
+    margin-left: -5px;
+    padding-left: 5px;
+    width: 52px;
+}
 select.vendornameinp {
     border: 1px solid #000000;
     background-color: #ffffff;
@@ -1156,11 +1165,12 @@ select.discountselect::-ms-expand {
     width: 69px;
 }
 select.itemdetailsoptions {
-    border: 1px solid #777777;
+    border: 1px solid #000000;
+    background-color: #ffffff;
     height: 20px;
     line-height: 20px;
-    -webkit-appearance: none;
-    appearance: none;
+    /* -webkit-appearance: none; */
+    /* appearance: none; */
     margin-left: -5px;
     padding-left: 5px;
     width: 100%;
@@ -1214,8 +1224,18 @@ select.itemdetailsoptions.missing_info {
     margin-right: 10px;
     margin-top: 3px;
 }
+.itemoptionimagelabel.editmode {
+    border: none!important;
+}
 .itemoptionimagelabel:last-child {
     margin-right: 0px;
+}
+select.printshopcolor {
+    border: 1px solid #000000;
+    background-color: #ffffff;
+    height: 20px;
+    line-height: 20px;
+    width: 57px;
 }
 /* Imprint */
 .relievers_customisation {
@@ -1549,8 +1569,12 @@ input.chargeperorder {
     width: 39px;
 }
 /* Item Images Modal*/
+#itemImagesModal {
+    z-index: 1052;
+}
 #itemImagesModal .modal-dialog {
     width: 1272px;
+    border: 1px solid #000000;
 }
 #itemImagesModal .content-row{
     width: 100%;
@@ -1657,6 +1681,14 @@ input.itemimagecaption {
     padding-left: 5px;
     width: 100%;
 }
+select.itemimagecaptionselect {
+    height: 20px;
+    line-height: 20px;
+    margin-top: 6px;
+    margin-bottom: 13px;
+    padding-left: 5px;
+    width: 100%;
+}
 .categoryimage_area {
     margin-left: 152px;
     width: 266px;
@@ -1715,6 +1747,18 @@ input.itemimagecaption {
     float: right!important;
     text-align: right!important;
     color: #0000FF;
+    height: 17px;
+}
+.replaseadditems .qq-upload-button,
+.replaseoptionitems .qq-upload-button {
+    background-image: none!important;
+    color: #0000FF;
+    height: 16px!important;
+    text-align: center;
+    font-size: 11px;
+    background-color: transparent!important;
+    margin-left: 0;
+    width: auto!important;
 }
 .slide-title {
     font: bold 16px monospace;
@@ -1738,6 +1782,15 @@ input.itemimagecaption {
     top: -123px;
     left: 108px;
 }
+.addimageslider .qq-upload-button,
+.addoptionimageslider .qq-upload-button {
+    background-color: transparent!important;
+    color: #9f9f9f;
+    font-size: 15px;
+    width: auto!important;
+    top: 51px;
+    left: 16px;
+}
 .cas-arrows.slideaddimg-next svg {
     fill: #4c4c4c;
     width: auto;
@@ -1755,7 +1808,7 @@ input.itemimagecaption {
     left: 7px;
 }
 .img-addimagebox {
-    border: 1px solid #dddddd;
+    border: 1px solid #4e4e4e;
     width: 125px;
     height: 125px;
 }
@@ -1768,6 +1821,7 @@ input.itemimagecaption {
     opacity: 0.4;
 }
 .imageorder {
+    margin-top: 11px;
     width: 30px;
 }
 select.imageorderinpt {
@@ -1780,6 +1834,7 @@ select.imageorderinpt {
     text-align: center;
 }
 .imagecaption {
+    margin-top: 11px;
     width: 95px;
 }
 .itemimagecaption.addimage {
@@ -1816,6 +1871,21 @@ select.imageorderinpt {
     height: 190px;
 }
 .removeimage.optimage {
+    top: 0;
+    left: 14px;
+}
+.removeimage.sideright.optimage {
+    left: 108px;
+}
+.removeimagefull {
+    background: #000000;
+    color: #ffffff;
+    font-size: 12px;
+    width: 16px;
+    height: 16px;
+    position: relative;
+    text-align: center;
+    cursor: pointer;
     top: -123px;
     left: 108px;
 }

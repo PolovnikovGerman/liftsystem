@@ -159,7 +159,17 @@ class Dbitems extends MY_Controller
                 if ($editmode==0) {
                     $keyinfo = $this->load->view('btitems/keyinfo_view',['item' => $data['item'],'categories'=>$data['categories']], TRUE);
                     $similar = $this->load->view('btitems/similar_view',['items' => $data['similar']], TRUE);
-                    $vendor_main = $this->load->view('btitems/vendormain_view',['vendor_item' => $data['vendor_item'], 'item' => $data['item'],/* 'vendor' => $data['vendor']*/],TRUE);
+                    if (empty($data['item']['printshop_inventory_id'])) {
+                        $vendoritemview = $this->load->view('btitems/vendoritem_data_view',['vendor_item' => $data['vendor_item']], TRUE);
+                    } else {
+                        $vendoritemview = $this->load->view('btitems/vendoritem_inventory_view', ['item' => $data['item']], TRUE);
+                    }
+                    $vendor_options = [
+                        'vendor_item' => $data['vendor_item'],
+                        'item' => $data['item'],
+                        'vendoritem_view' => $vendoritemview,
+                    ];
+                    $vendor_main = $this->load->view('btitems/vendormain_view', $vendor_options,TRUE);
                     $vendor_prices = $this->load->view('btitems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
                     $profit_view = $this->load->view('btitems/itemprice_profit_view',['item' => $data['item'],'prices'=> $data['prices']],TRUE);
                     $price_options = [
@@ -187,15 +197,23 @@ class Dbitems extends MY_Controller
                     $keyinfo = $this->load->view('btitems/keyinfo_edit',['item' => $data['item'],'categories'=>$data['categories'], 'subcategories' => $subcategories], TRUE);
                     $simitems = $this->items_model->get_items(['item_active' => 1],'item_number','asc');
                     $similar = $this->load->view('btitems/similar_edit',['items' => $data['similar'],'similars' => $simitems], TRUE);
+                    if (empty($data['item']['printshop_inventory_id'])) {
+                        $vendoritemview = $this->load->view('btitems/vendoritem_data_edit',['vendor_item' => $data['vendor_item']], TRUE);
+                        $vendor_prices = $this->load->view('btitems/vendorprices_edit',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
+                    } else {
+                        $this->load->model('inventory_model');
+                        $itemlist = $this->inventory_model->get_inventory_itemslist();
+                        $vendoritemview = $this->load->view('btitems/vendoritem_inventory_edit', ['item' => $data['item'],'itemlists' => $itemlist], TRUE);
+                        $vendor_prices = $this->load->view('btitems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
+                    }
                     $vendoptions = [
                         'vendor_item' => $data['vendor_item'],
-                        // 'vendor' => $data['vendor'],
                         'item' => $data['item'],
                         'vendors' => $vendors,
                         'countries' => $country_list,
+                        'vendoritem_view' => $vendoritemview,
                     ];
                     $vendor_main = $this->load->view('btitems/vendormain_edit', $vendoptions,TRUE);
-                    $vendor_prices = $this->load->view('btitems/vendorprices_edit',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
                     $profit_view = $this->load->view('btitems/itemprice_profit_view',['item' => $data['item'],'prices'=> $data['prices']],TRUE);
                     $price_options = [
                         'item' => $data['item'],
@@ -204,7 +222,11 @@ class Dbitems extends MY_Controller
                     ];
                     $itemprices = $this->load->view('btitems/itemprices_edit', $price_options,TRUE);
                     $otherimages = $this->load->view('btitems/otherimages_view',['images' => $data['images'], 'imgcnt' => count($data['images'])],TRUE);
-                    $optionsimg = $this->load->view('btitems/optionimages_view',['colors' => $data['colors'],'item' => $data['item']],TRUE);
+                    if (empty($data['item']['printshop_inventory_id'])) {
+                        $optionsimg = $this->load->view('btitems/optionimages_view',['colors' => $data['colors'],'item' => $data['item']],TRUE);
+                    } else {
+                        $optionsimg = $this->load->view('btitems/printshopcolors_view',['colors' => $data['colors'],'item' => $data['item']],TRUE);
+                    }
                     $imagesoptions = [
                         'otherimages' => $otherimages,
                         'optionsimg' => $optionsimg,
