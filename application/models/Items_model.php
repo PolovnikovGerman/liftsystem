@@ -681,20 +681,9 @@ Class Items_model extends My_Model
         $out=[];
         $numpp = $offset + 1;
         foreach ($res as $item) {
-            // $item['vendor_details'] = $this->load->view('dbitems/vendor_details_view', $item, TRUE);
-//            $category = '';
-//            $this->db->select('ic.item_categories_id, ic.item_categories_categoryid,c.category_leftnavig as category_name');
-//            $this->db->from('sb_item_categories ic');
-//            $this->db->join('sb_categories c','c.category_id=ic.item_categories_categoryid');
-//            $this->db->where('ic.item_categories_itemid',$item['item_id']);
-//            $categ=$this->db->get()->row_array();
-//            if (ifset($categ,'item_categories_id',0) > 0) {
-//                $category = $categ['category_name'];
-//            }
-//            $item['category'] = $category;
             $item['misclas'] = ($item['missings']==0 ? '' : 'missing');
             $item['misinfo'] = ($item['missings']==0 ? 'Complete' : $item['missings'].' Missing');
-            $item['misinfo_content'] = '';
+            $item['misinfo_content'] = 'Complete';
             if ($item['missings']>0) {
                 $this->db->select('*');
                 $this->db->from('v_item_missinginfo');

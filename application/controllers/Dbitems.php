@@ -65,13 +65,6 @@ class Dbitems extends MY_Controller
             $options['missinfo'] = ifset($postdata,'missinfo',0);
             $options['brand'] = 'BT';
             $res = $this->items_model->get_itemlists($options);
-            // $this->load->model('categories_model');
-            // $pageoptions = [
-            //    'datas' => $res,
-            //    'categories' => $this->categories_model->get_categories_list(),
-            //    'brand' => 'BT',
-            // ];
-            // $mdata['content'] = $this->load->view('dbitems/itemslist_data_view', $pageoptions, TRUE);
             $expand = 1;
             if (count($res) > 17) {
                 $expand = 0;

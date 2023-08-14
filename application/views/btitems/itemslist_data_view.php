@@ -15,7 +15,7 @@
         <div class="itemnumber <?=$item['rowclass']?>"><?=$item['item_number']?></div>
         <div class="itemname <?=$item['rowclass']?>"><?=$item['item_name']?></div>
         <div class="suplier <?=$item['rowclass']?> <?=$item['vendorclass']?>"><?=$item['vendor']?></div>
-        <div class="missinfo <?=$item['rowclass']?> <?=$item['misclas']?>"><?=$item['misinfo']?></div>
+        <div class="missinfo <?=$item['rowclass']?> <?=$item['misclas']?>"><?=$item['misinfo_content']?></div>
     </div>
     <?php $numpp++;?>
 <?php } ?>
