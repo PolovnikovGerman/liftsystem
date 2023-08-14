@@ -1237,9 +1237,9 @@ Class Shipping_model extends MY_Model
         $this->db->order_by('box_qty');
         $res = $this->db->get()->result_array();
         if ($editmode==1) {
-            if (count($res) < 3) {
+            if (count($res) < 4) {
                 $numbox = count($res)+1;
-                for ($i=$numbox; $i<4; $i++) {
+                for ($i=$numbox; $i<5; $i++) {
                     $res[] = [
                         'item_shipping_id' => (-1)*$i,
                         'box_qty' => '',
