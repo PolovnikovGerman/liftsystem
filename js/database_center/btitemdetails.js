@@ -8,8 +8,8 @@ var replacetemp= '<div class="qq-uploader"><div class="popupimageedit_upload qq-
     '<ul class="qq-upload-list"></ul>' +
     '<ul class="qq-upload-drop-area"></ul>'+
     '<div class="clear"></div></div>';
-var addtemp= '<div class="qq-uploader"><div class="popupimageedit_upload qq-upload-button"><span style="clear: both; float: left; width: 85px; text-align: center; margin-top: 4px; color: #0000ff;">'+
-    '<em>add image</em></span></div>' +
+var addtemp= '<div class="qq-uploader"><div class="popupimageedit_upload qq-upload-button"><span style="clear: both; float: left;">'+
+    '<em>upload image</em></span></div>' +
     '<ul class="qq-upload-list"></ul>' +
     '<ul class="qq-upload-drop-area"></ul>'+
     '<div class="clear"></div></div>';
@@ -234,9 +234,11 @@ function init_btitemdetails_edit() {
         var url = '/btitemdetails/btitem_images_edit';
         $.post(url, params, function (response) {
             if (response.errors=='') {
+                $("#imageoptionsbackground").show();
                 $("#itemImagesModalLabel").empty().html(response.data.header);
                 $("#itemImagesModal").find('div.modal-body').empty().html(response.data.content);
-                $("#itemImagesModal").modal({backdrop: 'static', keyboard: false, show: true});
+                // $("#itemImagesModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#itemImagesModal").modal({show: true});
                 $("#itemImagesModal").on('hidden.bs.modal', function (e) {
                     $(document.body).addClass('modal-open');
                     // show new images
@@ -597,6 +599,7 @@ function init_btitemimages_edit() {
         var url="/btitemdetails/item_images_rebuild";
         $.post(url, params, function(response) {
             if (response.errors=='') {
+                $("#imageoptionsbackground").hide();
                 $(".relievers_itemimages").empty().html(response.data.content);
                 init_btitemdetails_edit();
                 $(document.body).addClass('modal-open');
@@ -605,7 +608,7 @@ function init_btitemimages_edit() {
             }
         },'json');
     })
-
+    // Main Image
     if ($("#uploadmainimage").length > 0) {
         var uploader = new qq.FileUploader({
             element: document.getElementById('uploadmainimage'),
@@ -677,6 +680,7 @@ function init_btitemimages_edit() {
             }
         }, 'json');
     });
+    // Top Banner
     if ($("#uploadtopbannerimage").length > 0) {
         var uploader = new qq.FileUploader({
             element: document.getElementById('uploadtopbannerimage'),
@@ -748,61 +752,67 @@ function init_btitemimages_edit() {
             }
         }, 'json');
     });
-    if ($("#additimgadd").length > 0) {
-        var uploader = new qq.FileUploader({
-            element: document.getElementById('additimgadd'),
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
-            action: '/utils/save_itemimg',
-            template: addtemp,
-            multiple: false,
-            debug: false,
-            onComplete: function(id, fileName, responseJSON){
-                if (responseJSON.success) {
-                    $("ul.qq-upload-list").css('display','none');
-                    var params = new Array();
-                    params.push({name: 'session', value: $("#dbdetailsession").val()});
-                    params.push({name: 'newval', value: responseJSON.filename});
-                    var url="/btitemdetails/save_btaddimage";
-                    $.post(url, params, function(response){
-                        if (response.errors=='') {
-                            $(".addimages-slider").empty().html(response.data.content);
-                            init_btitemimages_edit();
-                        } else {
-                            show_error(response);
-                        }
-                    }, 'json');
-                }
-            }
-        });
-    }
     $(".replaseadditems").each(function () {
         var replid = $(this).prop('id');
-        var uploader = new qq.FileUploader({
-            element: document.getElementById(replid),
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
-            action: '/utils/save_itemimg',
-            template: replacetemp,
-            multiple: false,
-            debug: false,
-            onComplete: function(id, fileName, responseJSON){
-                if (responseJSON.success) {
-                    $("ul.qq-upload-list").css('display','none');
-                    var params = new Array();
-                    params.push({name: 'session', value: $("#dbdetailsession").val()});
-                    params.push({name: 'newval', value: responseJSON.filename});
-                    params.push({name: 'fldidx', value: replid});
-                    var url="/btitemdetails/save_btupdaddimage";
-                    $.post(url, params, function(response){
-                        if (response.errors=='') {
-                            $(".addimages-slider").empty().html(response.data.content);
-                            init_btitemimages_edit();
-                        } else {
-                            show_error(response);
-                        }
-                    }, 'json');
+        if (replid!=='') {
+            var uploader = new qq.FileUploader({
+                element: document.getElementById(replid),
+                allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+                action: '/utils/save_itemimg',
+                template: replacetemp,
+                multiple: false,
+                debug: false,
+                onComplete: function(id, fileName, responseJSON){
+                    if (responseJSON.success) {
+                        $("ul.qq-upload-list").css('display','none');
+                        var params = new Array();
+                        params.push({name: 'session', value: $("#dbdetailsession").val()});
+                        params.push({name: 'newval', value: responseJSON.filename});
+                        params.push({name: 'fldidx', value: replid});
+                        var url="/btitemdetails/save_btupdaddimage";
+                        $.post(url, params, function(response){
+                            if (response.errors=='') {
+                                $(".addimages-slider").empty().html(response.data.content);
+                                init_btitemimages_edit();
+                            } else {
+                                show_error(response);
+                            }
+                        }, 'json');
+                    }
                 }
-            }
-        });
+            });
+        }
+    });
+    $(".addimageslider").each(function (){
+        var replid = $(this).prop('id');
+        if (replid!=='') {
+            var uploader = new qq.FileUploader({
+                element: document.getElementById(replid),
+                allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+                action: '/utils/save_itemimg',
+                template: addtemp,
+                multiple: false,
+                debug: false,
+                onComplete: function(id, fileName, responseJSON){
+                    if (responseJSON.success) {
+                        $("ul.qq-upload-list").css('display','none');
+                        var params = new Array();
+                        params.push({name: 'session', value: $("#dbdetailsession").val()});
+                        params.push({name: 'newval', value: responseJSON.filename});
+                        params.push({name: 'fldidx', value: replid});
+                        var url="/btitemdetails/save_btupdaddimage";
+                        $.post(url, params, function(response){
+                            if (response.errors=='') {
+                                $(".addimages-slider").empty().html(response.data.content);
+                                init_btitemimages_edit();
+                            } else {
+                                show_error(response);
+                            }
+                        }, 'json');
+                    }
+                }
+            });
+        }
     });
     $(".removeimage.addimage").unbind('click').click(function () {
         var params = new Array();
@@ -938,32 +948,65 @@ function init_optionslider() {
     }
     $(".replaseoptionitems").each(function () {
         var replid = $(this).prop('id');
-        var uploader = new qq.FileUploader({
-            element: document.getElementById(replid),
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
-            action: '/utils/save_itemimg',
-            template: replacetemp,
-            multiple: false,
-            debug: false,
-            onComplete: function(id, fileName, responseJSON){
-                if (responseJSON.success) {
-                    $("ul.qq-upload-list").css('display','none');
-                    var params = new Array();
-                    params.push({name: 'session', value: $("#dbdetailsession").val()});
-                    params.push({name: 'newval', value: responseJSON.filename});
-                    params.push({name: 'fldidx', value: replid});
-                    var url="/btitemdetails/save_updoptimage";
-                    $.post(url, params, function(response){
-                        if (response.errors=='') {
-                            $(".colorimages-slider").empty().html(response.data.content);
-                            init_optionslider();
-                        } else {
-                            show_error(response);
-                        }
-                    }, 'json');
+        if (replid != '') {
+            var uploader = new qq.FileUploader({
+                element: document.getElementById(replid),
+                allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+                action: '/utils/save_itemimg',
+                template: replacetemp,
+                multiple: false,
+                debug: false,
+                onComplete: function(id, fileName, responseJSON){
+                    if (responseJSON.success) {
+                        $("ul.qq-upload-list").css('display','none');
+                        var params = new Array();
+                        params.push({name: 'session', value: $("#dbdetailsession").val()});
+                        params.push({name: 'newval', value: responseJSON.filename});
+                        params.push({name: 'fldidx', value: replid});
+                        var url="/btitemdetails/save_updoptimage";
+                        $.post(url, params, function(response){
+                            if (response.errors=='') {
+                                $(".colorimages-slider").empty().html(response.data.content);
+                                init_optionslider();
+                            } else {
+                                show_error(response);
+                            }
+                        }, 'json');
+                    }
                 }
-            }
-        });
+            });
+        }
+    });
+    $(".addoptionimageslider").each(function (){
+        var replid = $(this).prop('id');
+        if (replid != '') {
+            var uploader = new qq.FileUploader({
+                element: document.getElementById(replid),
+                allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+                action: '/utils/save_itemimg',
+                template: addtemp,
+                multiple: false,
+                debug: false,
+                onComplete: function(id, fileName, responseJSON){
+                    if (responseJSON.success) {
+                        $("ul.qq-upload-list").css('display','none');
+                        var params = new Array();
+                        params.push({name: 'session', value: $("#dbdetailsession").val()});
+                        params.push({name: 'newval', value: responseJSON.filename});
+                        params.push({name: 'fldidx', value: replid});
+                        var url="/btitemdetails/save_updoptimage";
+                        $.post(url, params, function(response){
+                            if (response.errors=='') {
+                                $(".colorimages-slider").empty().html(response.data.content);
+                                init_optionslider();
+                            } else {
+                                show_error(response);
+                            }
+                        }, 'json');
+                    }
+                }
+            });
+        }
     });
     $(".optimageorderinpt").unbind('change').change(function () {
         var params = new Array();
@@ -981,6 +1024,20 @@ function init_optionslider() {
         }, 'json');
     });
     $(".removeimage.optimage").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fldidx', value: $(this).data('image')});
+        var url="/btitemdetails/save_optiondel";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".colorimages-slider").empty().html(response.data.content);
+                init_optionslider();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    $(".removeimagefull").unbind('click').click(function () {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fldidx', value: $(this).data('image')});

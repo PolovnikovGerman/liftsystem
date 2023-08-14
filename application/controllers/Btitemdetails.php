@@ -216,22 +216,19 @@ class Btitemdetails extends MY_Controller
                 $error = '';
                 $item = $sessiondata['item'];
                 $main_view = $this->load->view('btitems/popup_mainimage_edit',['item' => $item], TRUE);
-                $images = $sessiondata['images'];
+                $res = $this->btitemdetails_model->prepare_options_edit($sessiondata);
+                // $images = $sessiondata['images'];
+                $images = $res['images'];
+                $colors = $res['colors'];
+                $sessiondata['popup_colors'] = $colors;
+                $sessiondata['popup_images'] = $images;
+                usersession($session, $sessiondata);
                 $cntimages = count($images);
                 $addslider = $this->load->view('btitems/popup_addimageslder_edit',['images' => $images,'cntimages' => $cntimages], TRUE);
                 $add_view = $this->load->view('btitems/popup_addimage_edit',['slider' => $addslider], TRUE);
-                $colorview = 0;
-                $optionview = '';
-                if (empty($item['printshop_inventory_id'])) {
-                    $colors = $sessiondata['colors'];
-                    if ($item['option_images']==1) {
-                        $colorslider = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors)], TRUE);
-                    } else {
-                        $colorslider = $this->load->view('btitems/popup_optiontext_edit',['colors' => $colors], TRUE);
-                    }
-                    $optionview = $this->load->view('btitems/popup_options_edit',['item' => $item, 'slider' => $colorslider], TRUE);
-                    $colorview = 1;
-                }
+                $colorslider = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors), 'image' => $item['option_images'], 'inventory' => $item['printshop_inventory_id']], TRUE);
+                $optionview = $this->load->view('btitems/popup_options_edit',['item' => $item, 'slider' => $colorslider], TRUE);
+                $colorview = 1;
                 $mdata['header'] = 'IMAGES & OPTIONS:';
                 $options = [
                     'main_view' => $main_view,
@@ -267,29 +264,6 @@ class Btitemdetails extends MY_Controller
         }
         show_404();
     }
-    // Save additional images
-    public function save_btaddimage() {
-        if ($this->isAjax()) {
-            $mdata = [];
-            $error = 'Session data empty';
-            $postdata = $this->input->post();
-            $session = ifset($postdata, 'session', 'unkn');
-            $sessiondata = usersession($session);
-            if (!empty($sessiondata)) {
-                $res = $this->btitemdetails_model->itemdetails_save_addimages($sessiondata, $postdata, $session);
-                $error = $res['msg'];
-                if ($res['result']==$this->success_result) {
-                    $error = '';
-                    $sessiondata = usersession($session);
-                    $images = $sessiondata['images'];
-                    $cntimages = count($images);
-                    $mdata['content'] = $this->load->view('btitems/popup_addimageslder_edit',['images' => $images,'cntimages'=>$cntimages], TRUE);
-                }
-            }
-            $this->ajaxResponse($mdata, $error);
-        }
-        show_404();
-    }
     // Update additional image
     public function save_btupdaddimage() {
         if ($this->isAjax()) {
@@ -304,7 +278,7 @@ class Btitemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $sessiondata = usersession($session);
-                    $images = $sessiondata['images'];
+                    $images = $sessiondata['popup_images'];
                     $numimgs = count($images);
                     $mdata['content'] = $this->load->view('btitems/popup_addimageslder_edit',['images' => $images, 'cntimages' => $numimgs], TRUE);
                 }
@@ -327,7 +301,7 @@ class Btitemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $sessiondata = usersession($session);
-                    $images = $sessiondata['images'];
+                    $images = $sessiondata['popup_images'];
                     $numimgs = count($images);
                     $mdata['content'] = $this->load->view('btitems/popup_addimageslder_edit',['images' => $images, 'cntimages' => $numimgs], TRUE);
                 }
@@ -350,7 +324,7 @@ class Btitemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $sessiondata = usersession($session);
-                    $images = $sessiondata['images'];
+                    $images = $sessiondata['popup_images'];
                     $numimgs = count($images);
                     $mdata['content'] = $this->load->view('btitems/popup_addimageslder_edit',['images' => $images, 'cntimages' => $numimgs], TRUE);
                 }
@@ -394,14 +368,9 @@ class Btitemdetails extends MY_Controller
                     $error = '';
                     $mdata['newval'] = $res['newval'];
                     $sessiondata = usersession($session);
-                    $colors = $sessiondata['colors'];
-                    if ($res['newval']==1) {
-                        // With Images
-                        $mdata['slideroptions'] = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors)], TRUE);
-                    } else {
-                        // Text only
-                        $mdata['slideroptions'] = $this->load->view('btitems/popup_optiontext_edit',['colors' => $colors], TRUE);
-                    }
+                    $colors = $sessiondata['popup_colors'];
+                    $item = $sessiondata['item'];
+                    $mdata['slideroptions'] = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors), 'image' => $item['option_images'], 'inventory' => $item['printshop_inventory_id']], TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -421,7 +390,7 @@ class Btitemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $sessiondata = usersession($session);
-                    $colors = $sessiondata['colors'];
+                    $colors = $sessiondata['popup_colors'];
                     $item = $sessiondata['item'];
                     if ($item['option_images']==1) {
                         // With Images
@@ -450,15 +419,9 @@ class Btitemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $sessiondata = usersession($session);
-                    $colors = $sessiondata['colors'];
+                    $colors = $sessiondata['popup_colors'];
                     $item = $sessiondata['item'];
-                    if ($item['option_images']==1) {
-                        // With Images
-                        $mdata['content'] = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors)], TRUE);
-                    } else {
-                        // Text only
-                        $mdata['content'] = $this->load->view('btitems/popup_optiontext_edit',['colors' => $colors], TRUE);
-                    }
+                    $mdata['content'] = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors), 'image' => $item['option_images'], 'inventory' => $item['printshop_inventory_id']], TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -479,15 +442,9 @@ class Btitemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $sessiondata = usersession($session);
-                    $colors = $sessiondata['colors'];
+                    $colors = $sessiondata['popup_colors'];
                     $item = $sessiondata['item'];
-                    if ($item['option_images']==1) {
-                        // With Images
-                        $mdata['content'] = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors)], TRUE);
-                    } else {
-                        // Text only
-                        $mdata['content'] = $this->load->view('btitems/popup_optiontext_edit',['colors' => $colors], TRUE);
-                    }
+                    $mdata['content'] = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors), 'image' => $item['option_images'], 'inventory' => $item['printshop_inventory_id']], TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -508,15 +465,9 @@ class Btitemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $sessiondata = usersession($session);
-                    $colors = $sessiondata['colors'];
+                    $colors = $sessiondata['popup_colors'];
                     $item = $sessiondata['item'];
-                    if ($item['option_images']==1) {
-                        // With Images
-                        $mdata['content'] = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors)], TRUE);
-                    } else {
-                        // Text only
-                        $mdata['content'] = $this->load->view('btitems/popup_optiontext_edit',['colors' => $colors], TRUE);
-                    }
+                    $mdata['content'] = $this->load->view('btitems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors), 'image' => $item['option_images'], 'inventory' => $item['printshop_inventory_id']], TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -551,18 +502,23 @@ class Btitemdetails extends MY_Controller
             $session = ifset($postdata, 'session', 'unkn');
             $sessiondata = usersession($session);
             if (!empty($sessiondata)) {
-                $item = $sessiondata['item'];
-                $images = $sessiondata['images'];
-                $colors = $sessiondata['colors'];
-                $otherimages = $this->load->view('btitems/otherimages_view',['images' => $images, 'imgcnt' => count($images)],TRUE);
-                $optionsimg = $this->load->view('btitems/optionimages_view',['colors' => $colors,'item' => $item],TRUE);
-                $imagesoptions = [
-                    'otherimages' => $otherimages,
-                    'optionsimg' => $optionsimg,
-                    'item' => $item,
-                ];
-                $mdata['content'] = $this->load->view('btitems/images_view',$imagesoptions, TRUE);
-                $error = '';
+                $res = $this->btitemdetails_model->item_images_rebuild($sessiondata, $session);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $sessiondata = usersession($session);
+                    $item = $sessiondata['item'];
+                    $images = $sessiondata['images'];
+                    $colors = $sessiondata['colors'];
+                    $otherimages = $this->load->view('btitems/otherimages_view',['images' => $images, 'imgcnt' => count($images)],TRUE);
+                    $optionsimg = $this->load->view('btitems/optionimages_view',['colors' => $colors,'item' => $item],TRUE);
+                    $imagesoptions = [
+                        'otherimages' => $otherimages,
+                        'optionsimg' => $optionsimg,
+                        'item' => $item,
+                    ];
+                    $mdata['content'] = $this->load->view('btitems/images_view',$imagesoptions, TRUE);
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }

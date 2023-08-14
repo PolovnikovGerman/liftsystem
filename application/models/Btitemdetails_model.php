@@ -4,6 +4,8 @@
 
 class Btitemdetails_model extends MY_Model
 {
+    protected $max_colors = 56;
+    protected $max_images = 40;
     function __construct()
     {
         parent::__construct();
@@ -51,6 +53,51 @@ class Btitemdetails_model extends MY_Model
         $sessiondata['item'] = $item;
         usersession($session, $sessiondata);
         return $out;
+    }
+    // Prepare colors and images for edit
+    public function prepare_options_edit($sessiondata) {
+        $colors = $sessiondata['colors'];
+        $item = $sessiondata['item'];
+        $images = $sessiondata['images'];
+        $numidx = 1;
+        $outcolors = [];
+        foreach ($colors as $color) {
+            $outcolors[] = $color;
+            $numidx++;
+        }
+        if (empty($item['printshop_inventory_id'])) {
+            if ($numidx < $this->max_colors) {
+                for ($i=$numidx; $i < $this->max_colors; $i++) {
+                    $outcolors[] = [
+                        'item_color_id' => ($i)*(-1),
+                        'item_color' => '',
+                        'item_color_image' => '',
+                        'item_color_order' => $i,
+                    ];
+                }
+            }
+        }
+        $outimages = [];
+        $numidx=1;
+        foreach ($images as $image) {
+            $outimages[] = $image;
+            $numidx++;
+        }
+        if ($numidx < $this->max_images) {
+            for ($i=$numidx; $i <= $this->max_images; $i++) {
+                $outimages[] = [
+                    'item_img_id' => $i*(-1),
+                    'item_img_name' => '',
+                    'item_img_order' => $i,
+                    'item_img_label' => '',
+                    'title' => '',
+                ];
+            }
+        }
+        return [
+            'colors' => $outcolors,
+            'images' => $outimages,
+        ];
     }
     // Change item parameter
     public function itemdetails_change_iteminfo($sessiondata, $options, $sessionsid) {
@@ -334,10 +381,10 @@ class Btitemdetails_model extends MY_Model
     // Update add image
     public function itemdetails_save_updimages($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Info not found'];
-        $images = $sessiondata['images'];
+        $images = $sessiondata['popup_images'];
         $imgidx = ifset($postdata,'fldidx','');
         if (!empty($imgidx)) {
-            $imgidx = str_replace('replimg', '',$imgidx);
+            $imgidx = str_replace(['replimg','addimageslider'], '',$imgidx);
             $find = 0;
             $idx = 0;
             foreach ($images as $image) {
@@ -350,7 +397,7 @@ class Btitemdetails_model extends MY_Model
             }
             if ($find==1) {
                 $out['result'] = $this->success_result;
-                $sessiondata['images'] = $images;
+                $sessiondata['popup_images'] = $images;
                 usersession($session, $sessiondata);
             }
         }
@@ -359,7 +406,7 @@ class Btitemdetails_model extends MY_Model
     // Change Add image sort
     public function itemdetails_save_imagessort($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Info not found'];
-        $images = $sessiondata['images'];
+        $images = $sessiondata['popup_images'];
         $imgidx = ifset($postdata,'fldidx','');
         if (!empty($imgidx)) {
             $imgidx = intval($imgidx);
@@ -396,7 +443,7 @@ class Btitemdetails_model extends MY_Model
                         }
                     }
                 }
-                $sessiondata['images'] = $newimg;
+                $sessiondata['popup_images'] = $newimg;
                 usersession($session, $sessiondata);
                 $out['result'] = $this->success_result;
             }
@@ -406,34 +453,24 @@ class Btitemdetails_model extends MY_Model
     // Remove additional image
     public function itemdetails_addimages_delete($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
-        $images = $sessiondata['images'];
-        $deleted = $sessiondata['deleted'];
+        $images = $sessiondata['popup_images'];
         $imgidx = ifset($postdata,'fldidx','');
         if (!empty($imgidx)) {
             $find = 0;
             $idx = 0;
-            $numrow = 1;
-            $newimg = [];
             foreach ($images as $image) {
                 if ($image['item_img_id']==$imgidx) {
                     $find = 1;
-                    if ($imgidx > 0) {
-                        $deleted[] = [
-                            'entity' => 'images',
-                            'id' => $imgidx,
-                        ];
-                    }
+                    $images[$idx]['item_img_name']='';
+                    $images[$idx]['item_img_label'] = '';
+                    break;
                 } else {
-                    $image['item_img_order'] = $numrow;
-                    $newimg[] = $image;
-                    $numrow++;
+                    $idx++;
                 }
-                $idx++;
             }
             if ($find==1) {
                 $out['result'] = $this->success_result;
-                $sessiondata['images'] = $newimg;
-                $sessiondata['deleted'] = $deleted;
+                $sessiondata['popup_images'] = $images;
                 usersession($session, $sessiondata);
             }
         }
@@ -442,7 +479,7 @@ class Btitemdetails_model extends MY_Model
     // Update Add image title
     public function itemdetails_addimages_title($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
-        $images = $sessiondata['images'];
+        $images = $sessiondata['popup_images'];
         $imgidx = ifset($postdata,'fldidx','');
         if (!empty($imgidx)) {
             $find = 0;
@@ -457,7 +494,7 @@ class Btitemdetails_model extends MY_Model
             }
             if ($find==1) {
                 $out['result'] = $this->success_result;
-                $sessiondata['images'] = $images;
+                $sessiondata['popup_images'] = $images;
                 usersession($session, $sessiondata);
             }
         }
@@ -466,7 +503,7 @@ class Btitemdetails_model extends MY_Model
     // Add Option
     public function itemdetails_optionis_add($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Info not found'];
-        $colors = $sessiondata['colors'];
+        $colors = $sessiondata['popup_colors'];
         $item = $sessiondata['item'];
         $newid = (count($colors)+1) * (-1);
         $neword = count($colors)+1;
@@ -485,7 +522,7 @@ class Btitemdetails_model extends MY_Model
                 'item_color_order' => $neword,
             ];
         }
-        $sessiondata['colors'] = $colors;
+        $sessiondata['popup_colors'] = $colors;
         usersession($session, $sessiondata);
         $out['result'] = $this->success_result;
         return $out;
@@ -493,10 +530,10 @@ class Btitemdetails_model extends MY_Model
     // Update option image
     public function itemdetails_optionimages_update($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Info not found'];
-        $colors = $sessiondata['colors'];
+        $colors = $sessiondata['popup_colors'];
         $imgidx = ifset($postdata,'fldidx','');
         if (!empty($imgidx)) {
-            $imgidx = str_replace('reploptimg', '',$imgidx);
+            $imgidx = str_replace(['reploptimg','addoptionimageslider'], '',$imgidx);
             $find = 0;
             $idx = 0;
             foreach ($colors as $color) {
@@ -509,7 +546,7 @@ class Btitemdetails_model extends MY_Model
             }
             if ($find==1) {
                 $out['result'] = $this->success_result;
-                $sessiondata['colors'] = $colors;
+                $sessiondata['popup_colors'] = $colors;
                 usersession($session, $sessiondata);
             }
         }
@@ -518,7 +555,7 @@ class Btitemdetails_model extends MY_Model
     // Update image sort
     public function itemdetails_save_optimagessort($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Info not found'];
-        $colors = $sessiondata['colors'];
+        $colors = $sessiondata['popup_colors'];
         $imgidx = ifset($postdata,'fldidx','');
         if (!empty($imgidx)) {
             $imgidx = intval($imgidx);
@@ -555,7 +592,7 @@ class Btitemdetails_model extends MY_Model
                         }
                     }
                 }
-                $sessiondata['colors'] = $newimg;
+                $sessiondata['popup_colors'] = $newimg;
                 usersession($session, $sessiondata);
                 $out['result'] = $this->success_result;
             }
@@ -565,34 +602,25 @@ class Btitemdetails_model extends MY_Model
     // Delete option
     public function itemdetails_optimages_delete($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
-        $colors = $sessiondata['colors'];
-        $deleted = $sessiondata['deleted'];
+        $colors = $sessiondata['popup_colors'];
         $imgidx = ifset($postdata,'fldidx','');
         if (!empty($imgidx)) {
             $find = 0;
             $idx = 0;
-            $numrow = 1;
-            $newimg = [];
+            // $numrow = 1;
+            // $newimg = [];
             foreach ($colors as $color) {
                 if ($color['item_color_id']==$imgidx) {
+                    $colors[$idx]['item_color'] = '';
+                    $colors[$idx]['item_color_image'] = '';
                     $find = 1;
-                    if ($imgidx > 0) {
-                        $deleted[] = [
-                            'entity' => 'colors',
-                            'id' => $imgidx,
-                        ];
-                    }
-                } else {
-                    $color['item_color_order'] = $numrow;
-                    $newimg[] = $color;
-                    $numrow++;
+                    break;
                 }
                 $idx++;
             }
             if ($find==1) {
                 $out['result'] = $this->success_result;
-                $sessiondata['colors'] = $newimg;
-                $sessiondata['deleted'] = $deleted;
+                $sessiondata['popup_colors'] = $colors;
                 usersession($session, $sessiondata);
             }
         }
@@ -601,7 +629,7 @@ class Btitemdetails_model extends MY_Model
     // Change option caption
     public function itemdetails_optimages_title($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
-        $colors = $sessiondata['colors'];
+        $colors = $sessiondata['popup_colors'];
         $imgidx = ifset($postdata,'fldidx','');
         if (!empty($imgidx)) {
             $find = 0;
@@ -616,10 +644,61 @@ class Btitemdetails_model extends MY_Model
             }
             if ($find==1) {
                 $out['result'] = $this->success_result;
-                $sessiondata['colors'] = $colors;
+                $sessiondata['popup_colors'] = $colors;
                 usersession($session, $sessiondata);
             }
         }
+        return $out;
+    }
+    // Rebuild images & colors
+    public function item_images_rebuild($sessiondata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];
+        $item = $sessiondata['item'];
+        $images = $sessiondata['popup_images'];
+        $deleted = $sessiondata['deleted'];
+        $newimg = [];
+        $numorder = 1;
+        foreach ($images as $image) {
+            if (empty($image['item_img_name'])) {
+                if ($image['item_img_id'] > 0) {
+                    $deleted[] = [
+                        'entity' => 'images',
+                        'id' => $image['item_img_id'],
+                    ];
+                }
+            } else {
+                $image['item_img_order'] = $numorder;
+                $newimg[] = $image;
+                $numorder++;
+            }
+        }
+        $newcolors = [];
+        $colors = $sessiondata['popup_colors'];
+        $numorder = 1;
+        foreach ($colors as $color) {
+            if (!empty($item[''])) {
+                $newcolors = $color;
+            } else {
+                if (empty($color['item_color'])) {
+                    if ($color['item_color_id'] > 0) {
+                        $deleted[] = [
+                            'entity' => 'colors',
+                            'id' => $color['item_color_id'],
+                        ];
+                    }
+                } else {
+                    $color['item_color_order'] = $numorder;
+                    $newcolors[] = $color;
+                    $numorder++;
+                }
+            }
+        }
+        $sessiondata['images'] = $newimg;
+        $sessiondata['colors'] = $newcolors;
+        unset($sessiondata['popup_images']);
+        unset($sessiondata['popup_colors']);
+        $out['result'] = $this->success_result;
+        usersession($session, $sessiondata);
         return $out;
     }
     // Update vendor item price
