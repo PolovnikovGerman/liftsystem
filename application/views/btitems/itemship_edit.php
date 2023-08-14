@@ -7,6 +7,10 @@
                 <input type="text" class="itemkeyinfoinput itemweigthinpt <?=empty($item['item_weigth']) ? 'missing_info' : ''?>" data-item="item_weigth" value="<?=$item['item_weigth']?>"/>
             </div>
             <div class="itemparamlabel weight-measure">lbs</div>
+            <div class="itemparamlabel specialeach">Extra $ Each:</div>
+            <div class="itemparamvalue specialeach editmode">
+                <input type="text" class="iteminfoinput chargepereach" data-item="charge_pereach" value="<?=$item['charge_pereach']?>"/>
+            </div>
         </div>
         <div class="itemboxarea">
             <div class="content-row">
@@ -47,16 +51,6 @@
                         <div class="itemparamlabel boxheight">H</div>
                     </div>
                 <?php } ?>
-            </div>
-        </div>
-        <div class="content-row">
-            <div class="itemparamlabel specialeach">Special Each:</div>
-            <div class="itemparamvalue specialeach editmode">
-                <input type="text" class="iteminfoinput chargepereach" data-item="charge_pereach" value="<?=$item['charge_pereach']?>"/>
-            </div>
-            <div class="itemparamlabel specialorder">Special Per Order:</div>
-            <div class="itemparamvalue specialorder editmode">
-                <input type="text" class="iteminfoinput chargeperorder" data-item="charge_perorder" value="<?=$item['charge_perorder']?>"/>
             </div>
         </div>
     </div>

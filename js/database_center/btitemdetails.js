@@ -237,8 +237,8 @@ function init_btitemdetails_edit() {
                 $("#imageoptionsbackground").show();
                 $("#itemImagesModalLabel").empty().html(response.data.header);
                 $("#itemImagesModal").find('div.modal-body').empty().html(response.data.content);
-                // $("#itemImagesModal").modal({backdrop: 'static', keyboard: false, show: true});
-                $("#itemImagesModal").modal({show: true});
+                $("#itemImagesModal").modal({backdrop: 'static', keyboard: false, show: true});
+                // $("#itemImagesModal").modal({show: true});
                 $("#itemImagesModal").on('hidden.bs.modal', function (e) {
                     $(document.body).addClass('modal-open');
                     // show new images

@@ -1475,8 +1475,9 @@ input.metaurl {
     height: 209px;
 }
 .itemparamlabel.itemweigth {
-    margin-left: 36px;
     margin-right: 3px;
+    width: 40px;
+    line-height: 12px!important;
 }
 .itemparamvalue.itemweigth {
     width: 40px;
@@ -1498,6 +1499,7 @@ input.box_width, input.box_length, input.box_height {
 .itemboxarea {
     width: 64px;
     margin-bottom: 9px;
+    margin-top: 7px;
 }
 .itemparamlabel.boxnametitle {
     width: 28px;
@@ -1523,6 +1525,7 @@ input.box_width, input.box_length, input.box_height {
 }
 .itemdimesionsarea {
     width: 123px;
+    margin-top: 7px;
 }
 .itemparamlabel.dimensiontitle {
     text-align: center;
@@ -1547,12 +1550,11 @@ input.box_width, input.box_length, input.box_height {
 }
 .itemparamlabel.specialeach {
     line-height: 12px;
-    margin-right: 3px;
+    margin-right: 5px;
     width: 42px;
 }
 .itemparamvalue.specialeach {
-    margin-right: 10px;
-    width: 36px;
+    width: 34px;
 }
 input.chargepereach {
     width: 36px;
