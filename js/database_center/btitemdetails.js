@@ -680,6 +680,79 @@ function init_btitemimages_edit() {
             }
         }, 'json');
     });
+    // Category Image
+    if ($("#uploadcategoryimage").length > 0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('uploadcategoryimage'),
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            action: '/utils/save_itemimg',
+            template: temp,
+            multiple: false,
+            debug: false,
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success) {
+                    $("ul.qq-upload-list").css('display','none');
+                    var params = new Array();
+                    params.push({name: 'session', value: $("#dbdetailsession").val()});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    params.push({name: 'fld', value: 'category_image'})
+                    var url="/btitemdetails/save_btimage";
+                    $.post(url, params, function(response){
+                        if (response.errors=='') {
+                            $(".popupimages_section.itemimagesection").empty().html(response.data.content);
+                            init_btitemimages_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    }, 'json');
+                }
+            }
+        });
+    }
+    if ($("#replaceimagecategory").length > 0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('replaceimagecategory'),
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            action: '/utils/save_itemimg',
+            template: replacetemp,
+            multiple: false,
+            debug: false,
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success) {
+                    $("ul.qq-upload-list").css('display','none');
+                    var params = new Array();
+                    params.push({name: 'session', value: $("#dbdetailsession").val()});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    params.push({name: 'fld', value: 'category_image'})
+                    var url="/btitemdetails/save_btimage";
+                    $.post(url, params, function(response){
+                        if (response.errors=='') {
+                            $(".popupimages_section.itemimagesection").empty().html(response.data.content);
+                            init_btitemimages_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    }, 'json');
+                }
+            }
+        });
+    }
+    $(".removeimage.categoryimage").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'newval', value: ''});
+        params.push({name: 'fld', value: 'category_image'})
+        var url="/btitemdetails/save_btimage";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".popupimages_section.itemimagesection").empty().html(response.data.content);
+                init_btitemimages_edit();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+
     // Top Banner
     if ($("#uploadtopbannerimage").length > 0) {
         var uploader = new qq.FileUploader({

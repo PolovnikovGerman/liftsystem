@@ -1750,7 +1750,8 @@ select.itemimagecaptionselect {
     height: 17px;
 }
 .replaseadditems .qq-upload-button,
-.replaseoptionitems .qq-upload-button {
+.replaseoptionitems .qq-upload-button,
+.replaceimage .qq-upload-button {
     background-image: none!important;
     color: #0000FF;
     height: 16px!important;
@@ -1783,13 +1784,28 @@ select.itemimagecaptionselect {
     left: 108px;
 }
 .addimageslider .qq-upload-button,
-.addoptionimageslider .qq-upload-button {
+.addoptionimageslider .qq-upload-button,
+#uploadmainimage .qq-upload-button,
+#uploadtopbannerimage .qq-upload-button,
+#uploadcategoryimage .qq-upload-button
+{
     background-color: transparent!important;
     color: #9f9f9f;
     font-size: 15px;
     width: auto!important;
     top: 51px;
     left: 16px;
+}
+#uploadmainimage .qq-upload-button {
+    top: 0px;
+}
+#uploadtopbannerimage .qq-upload-button {
+    top: 0px;
+    left: 151px;
+}
+#uploadcategoryimage .qq-upload-button {
+    top: 0;
+    left: 78px;
 }
 .cas-arrows.slideaddimg-next svg {
     fill: #4c4c4c;
