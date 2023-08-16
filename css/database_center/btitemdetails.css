@@ -169,13 +169,15 @@ select.categoryitemselect {
     margin-top: 5px;
     height: 25px;
     padding: 5px 13px 0 13px;
-    font-size: 15px;
-    color: #000000;
-    background: #ffffff;
+    font-size: 14px;
+    color: #ffffff;
+    background: #bbbbbb;
     border-radius : 9px 9px 0 0;
     margin-left: 10px;
+    cursor: pointer;
 }
 .itemdetails-tab.active {
+    font-size: 15px;
     font-weight: 600;
     color: #ffffff;
     background: #346af5;
@@ -1686,7 +1688,7 @@ input.itemimagecaption {
 select.itemimagecaptionselect {
     height: 20px;
     line-height: 20px;
-    margin-top: 6px;
+    /* margin-top: 6px; */
     margin-bottom: 13px;
     padding-left: 5px;
     width: 100%;
