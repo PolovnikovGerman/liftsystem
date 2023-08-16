@@ -484,6 +484,9 @@ select.similaritems {
 }
 .itemparamvalue.vendorname {
     width: 158px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 /*select.vendordatainpt {
     height: 22px;
