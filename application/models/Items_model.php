@@ -1361,6 +1361,39 @@ Class Items_model extends My_Model
         return $out;
     }
 
+    public function save_history($history, $item_id, $user_id) {
+        $needsave = 0;
+        foreach ($history as $key => $val) {
+            if (!empty($val)) {
+                $needsave = 1;
+            }
+        }
+        if ($needsave==1) {
+            // Generate Key
+            $history_key = uniq_link(15);
+            $dateadd = date('Y-m-d H:i:s');
+            foreach ($history as $key=>$val) {
+                if (count($val) > 0) {
+                    $item_key = '';
+                    if ($key=='keyinfo') {
+                        $item_key = 'KEY INFO';
+                    } else {
+                        $item_key = strtoupper($key);
+                    }
+                    foreach ($val as $row) {
+                        $this->db->set('item_id', $item_id);
+                        $this->db->set('user_id', $user_id);
+                        $this->db->set('added_at', $dateadd);
+                        $this->db->set('item_key', $item_key);
+                        $this->db->set('article', $history_key);
+                        $this->db->set('change_txt', $row);
+                        $this->db->insert('sb_item_history');
+                    }
+                }
+            }
+        }
+    }
+
     public function get_item_history($item_id) {
         $this->db->select('h.*, u.user_name');
         $this->db->from('sb_item_history h');
