@@ -1089,14 +1089,14 @@ class Btitemdetails_model extends MY_Model
             }
         } else {
             $history = [
-                'keyinfo' => '',
-                'similar' => '',
-                'supplier' => '',
-                'options' => '',
-                'pricing' => '',
-                'customization' => '',
-                'meta' => '',
-                'shipping' => '',
+                'keyinfo' => [],
+                'similar' => [],
+                'supplier' => [],
+                'options' => [],
+                'pricing' => [],
+                'customization' => [],
+                'meta' => [],
+                'shipping' => [],
             ];
             $item = $sessiondata['item'];
             $categories = $sessiondata['categories'];
@@ -1119,7 +1119,7 @@ class Btitemdetails_model extends MY_Model
                 $history['similar'] = $this->_similar_diff($olddata, $similars);
                 $history['supplier'] = $this->_supplier_diff($olddata, $item, $vendor_item, $vendor_prices);
                 $history['options'] = $this->_options_diff($olddata, $item, $images, $colors);
-                $history['pricing'] = $this->_prices_diff($olddata, $item, $prices);
+                // $history['pricing'] = $this->_prices_diff($olddata, $item, $prices);
             }
             // Lets go to save
             $this->db->set('item_name', $item['item_name']);
@@ -1488,7 +1488,8 @@ class Btitemdetails_model extends MY_Model
         }
         if ($out['result']==$this->success_result) {
             usersession($session, null);
-            $this->_save_history($history, $item_id, $user_id);
+            $this->load->model('items_model');
+            $this->items_model->save_history($history, $item_id, $user_id);
         }
         return $out;
     }
@@ -1779,39 +1780,39 @@ class Btitemdetails_model extends MY_Model
     private function _keyinfo_diff($olddata, $item, $categories) {
         $olditem = $olddata['item'];
         $oldcategs = $olddata['categories'];
-        $info = '';
+        $info = [];
         if ($olditem['item_active']!==$item['item_active']) {
             if ($item['item_active']==1) {
-                $info.=', Change Item Status on Active,';
+                $info[]='Change Item Status on Active,';
             } else {
-                $info.=', Change Item Status on Non-Active';
+                $info[]='Change Item Status on Non-Active';
             }
         }
         if ($olditem['item_name']!==$item['item_name']) {
-            $info.=', Change Item Name on "'.$item['item_name'].'"';
+            $info[]='Change Item Name from "'.$olditem['item_name'].'" to "'.$item['item_name'].'"';
         }
         if ($olditem['item_template']!==$item['item_template']) {
-            $info.=', Change Item Template on '.$item['item_template'];
+            $info[]='Change Item Template from '.$olditem['item_template'].' to '.$item['item_template'];
         }
         if ($olditem['item_new']!==$item['item_new']) {
             if ($item['item_new']==1) {
-                $info.=', Checked Tag New';
+                $info[]='Checked Tag New';
             } else {
-                $info.=', Unchecked Tag New';
+                $info[]='Unchecked Tag New';
             }
         }
         if ($olditem['item_sale']!==$item['item_sale']) {
             if ($item['item_sale']==1) {
-                $info.=', Checked Tag Sale';
+                $info[]='Checked Tag Sale';
             } else {
-                $info.=', Unchecked Tag Sale';
+                $info[]='Unchecked Tag Sale';
             }
         }
         if ($olditem['item_topsale']!==$item['item_topsale']) {
             if ($item['item_topsale']==1) {
-                $info.=', Checked Tag Top Seller';
+                $info[]='Checked Tag Top Seller';
             } else {
-                $info.=', Unchecked Tag Top Seller';
+                $info[]='Unchecked Tag Top Seller';
             }
         }
         // Categories
@@ -1820,15 +1821,15 @@ class Btitemdetails_model extends MY_Model
         foreach ($oldcategs as $oldcateg) {
             if ($oldcateg['category_id']!==$categories[$idx]['category_id']) {
                 if (empty($categories[$idx]['cateegory_id'])) {
-                    $info.=', Remove subcategory '.$oldcateg['category_name'];
+                    $info[]='Remove subcategory '.$oldcateg['category_name'];
                 } else {
                     $datcat = $this->categories_model->get_category_data($categories[$idx]['category_id']);
                     if ($datcat['result']==$this->success_result) {
                         $newcat = $datcat['data'];
                         if ($oldcateg['item_categories_id']<0) {
-                            $info.=', Add subcategory '.$newcat['category_name'];
+                            $info[]='Add subcategory '.$newcat['category_name'];
                         } else {
-                            $info.=', Change subcategory on '.$newcat['category_name'];
+                            $info[]='Change subcategory from '.$oldcateg['category_name'].' to '.$newcat['category_name'];
                         }
                     }
                 }
@@ -1836,60 +1837,58 @@ class Btitemdetails_model extends MY_Model
             $idx++;
         }
         if ($olditem['item_size']!==$item['item_size']) {
-            $info.=', Change SIZE on '.$item['item_size'];
+            $info[]='Change SIZE from '.$olditem['item_size'].' to '.$item['item_size'];
         }
         if ($olditem['item_material']!==$item['item_material']) {
-            $info.=', Change MATERIAL on '.$item['item_material'];
+            $info[]='Change MATERIAL from '.$olditem['item_material'].' on '.$item['item_material'];
         }
         if ($olditem['item_description1']!==$item['item_description1']) {
-            $info.=', Change ITEM DESCRIPTION';
+            $info[]='Change ITEM DESCRIPTION from "'.$olditem['item_description1'].'" to "'.$item['item_description1'].'"';
         }
         if ($olditem['bullet1']!==$item['bullet1']) {
-            $info.=', Change BULLET POINT 1 on '.$item['bullet1'];
+            $info[]='Change BULLET POINT 1 "'.$olditem['bullet1'].'" to "'.$item['bullet1'].'"';
         }
         if ($olditem['bullet2']!==$item['bullet2']) {
-            $info.=', Change BULLET POINT 2 on '.$item['bullet2'];
+            $info[]='Change BULLET POINT 2 "'.$olditem['bullet2'].'" to "'.$item['bullet2'].'"';
         }
         if ($olditem['bullet3']!==$item['bullet3']) {
-            $info.=', Change BULLET POINT 3 on '.$item['bullet3'];
+            $info[]='Change BULLET POINT 3 "'.$olditem['bullet3'].'" to "'.$item['bullet4'].'"';
         }
         if ($olditem['bullet4']!==$item['bullet4']) {
-            $info.=', Change BULLET POINT 4 on '.$item['bullet4'];
-        }
-        if (strlen($info) > 0) {
-            $info = substr($info, 2);
+            $info[]='Change BULLET POINT 4 "'.$olditem['bullet4'].'" to "'.$item['bullet4'].'"';
         }
         return $info;
     }
 
     private function _similar_diff($olddata, $similars) {
-        $info = '';
+        $info = [];
         $oldsimilars = $olddata['similar'];
         $idx = 0;
         $numpp = 1;
         foreach ($oldsimilars as $oldsimilar) {
             if ($oldsimilar['item_similar_similar']!==$similars[$idx]['item_similar_similar']) {
                 if (empty($similars[$idx]['item_similar_similar'])) {
-                    $info.=', Delete SIMILAR item # '.$numpp;
+                    $info[]='Delete SIMILAR item # '.$numpp;
                 } else {
+                    $this->db->select('item_number, item_name');
+                    $this->db->from('sb_items');
+                    $this->db->where('item_id', $similars[$idx]['item_similar_similar']);
+                    $simres = $this->db->get()->row_array();
                     if ($oldsimilar['item_similar_id']<0) {
-                        $info.=', Add SIMILAR ITEM # '.$numpp;
+                        $info[]='Add SIMILAR ITEM # '.$numpp.' '.$simres['item_number'].'-'.$simres['item_name'];
                     } else {
-                        $info.=', Change SIMILAR ITEM # '.$numpp;
+                        $info[]='Change SIMILAR ITEM # '.$numpp.' from '.$oldsimilar['item_number'].'-'.$oldsimilar['item_name'].' to '.$simres['item_number'].'-'.$simres['item_name'];
                     }
                 }
             }
             $numpp++;
             $idx++;
         }
-        if (strlen($info) > 0) {
-            $info = substr($info, 2);
-        }
         return $info;
     }
 
     private function _supplier_diff($olddata, $item, $vendor_item, $vendor_prices) {
-        $info = '';
+        $info = [];
         $oldvitem = $olddata['vendor_item'];
         $oldvprices = $olddata['vendor_price'];
         $olditem = $olddata['item'];
@@ -1898,7 +1897,7 @@ class Btitemdetails_model extends MY_Model
         if ($oldvitem['vendor_item_vendor']!==$vendor_item['vendor_item_vendor']) {
             $vendres  = $this->vendors_model->get_vendor($vendor_item['vendor_item_vendor']);
             if ($vendres['result']==$this->success_result) {
-                $info.=', Change VENDOR on '.$vendres['data']['vendor_name'];
+                $info[]='Change VENDOR from '.$oldvitem[''].' to '.$vendres['data']['vendor_name'];
             }
         }
         if (!empty($item['printshop_inventory_id'])) {
@@ -1908,22 +1907,19 @@ class Btitemdetails_model extends MY_Model
                 $this->db->where('inventory_item_id', $item['printshop_inventory_id']);
                 $invres = $this->db->get()->row_array();
                 if (ifset($invres,'inventory_item_id',0)==$item['printshop_inventory_id']) {
-                    $info.=', Change Inventory item on '.$invres['item_num'].' '.$invres['item_name'];
+                    $info[]='Change Inventory item on '.$invres['item_num'].' '.$invres['item_name'];
                 }
             }
         } else {
             if ($oldvitem['vendor_item_number']!==$vendor_item['vendor_item_number'] || $oldvitem['vendor_item_name']!==$vendor_item['vendor_item_name']) {
-                $info.=', Change Supplier item on '.$vendor_item['vendor_item_number'].' '.$vendor_item['vendor_item_name'];
+                $info[]='Change Supplier item from '.$oldvitem['vendor_item_number'].' to '.$vendor_item['vendor_item_number'].' '.$vendor_item['vendor_item_name'];
             }
         }
         if ($oldvitem['item_shipcountry']!==$vendor_item['item_shipcountry'] || $oldvitem['vendor_item_zipcode']!==$vendor_item['vendor_item_zipcode']) {
-            $info.=', Change Supplier Shipping Address';
+            $info[]='Change Supplier Shipping Address';
         }
         if ($oldvitem['vendor_item_cost']!==$vendor_item['vendor_item_cost']) {
-            $info.=', Change Supplier Min price on '.MoneyOutput($vendor_item['vendor_item_cost']);
-        }
-        if (strlen($info) > 0) {
-            $info = substr($info, 2);
+            $info[]='Change Supplier Min price from '.MoneyOutput($oldvitem['vendor_item_cost'].' on '.MoneyOutput($vendor_item['vendor_item_cost']);
         }
         return $info;
     }
@@ -2025,7 +2021,7 @@ class Btitemdetails_model extends MY_Model
     }
 
     private function _prices_diff($olddata, $item, $prices) {
-        $info = '';
+        $info = [];
         $olditem = $olddata['item'];
         $oldprices = $olddata['prices'];
         foreach ($oldprices as $oldprice) {
@@ -2167,34 +2163,4 @@ class Btitemdetails_model extends MY_Model
         return $info;
     }
 
-    private function _save_history($history, $item_id, $user_id) {
-        $needsave = 0;
-        foreach ($history as $key => $val) {
-            if (!empty($val)) {
-                $needsave = 1;
-            }
-        }
-        if ($needsave==1) {
-            // Generate Key
-            $history_key = uniq_link(15);
-            $dateadd = date('Y-m-d H:i:s');
-            foreach ($history as $key=>$val) {
-                if (!empty($val)) {
-                    $item_key = '';
-                    if ($key=='keyinfo') {
-                        $item_key = 'KEY INFO';
-                    } else {
-                        $item_key = strtoupper($key);
-                    }
-                    $this->db->set('item_id', $item_id);
-                    $this->db->set('user_id', $user_id);
-                    $this->db->set('added_at', $dateadd);
-                    $this->db->set('item_key', $item_key);
-                    $this->db->set('article', $history_key);
-                    $this->db->set('change_txt', $val);
-                    $this->db->insert('sb_item_history');
-                }
-            }
-        }
-    }
 }
