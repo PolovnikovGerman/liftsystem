@@ -2341,4 +2341,48 @@ class Test extends CI_Controller
             }
         }
     }
+
+    public function internal_item_transform() {
+        $this->db->select('i.item_id, i.item_number, i.item_name, i.printshop_inventory_id');
+        $this->db->select('v.vendor_item_number, v.vendor_item_id');
+        $this->db->from('sb_items i');
+        $this->db->join('sb_vendor_items v','v.vendor_item_id=i.vendor_item_id');
+        $this->db->where('v.vendor_item_vendor', $this->config->item('inventory_vendor'));
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            echo $item['item_number'].' '.$item['item_name'].' INV '.$item['printshop_inventory_id'].PHP_EOL;
+            if (empty($item['printshop_inventory_id'])) {
+                $this->db->select('*');
+                $this->db->from('ts_inventory_items');
+                $this->db->where('item_num', $item['vendor_item_number']);
+                $invres = $this->db->get()->row_array();
+                if (ifset($invres,'inventory_item_id',0)>0) {
+                    $this->db->where('item_id', $item['item_id']);
+                    $this->db->set('printshop_inventory_id', $invres['inventory_item_id']);
+                    $this->db->update('sb_items');
+                    $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                    $this->db->set('vendor_item_number', $invres['item_num']);
+                    $this->db->set('vendor_item_name', $invres['item_name']);
+                    $this->db->update('sb_vendor_items');
+                    // Delete vendor prices
+                    $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                    $this->db->delete('sb_vendor_prices');
+                    $this->db->where('item_color_itemid', $item['item_id']);
+                    $this->db->delete('sb_item_colors');
+                    $this->db->select('*');
+                    $this->db->from('ts_inventory_colors');
+                    $this->db->where('inventory_item_id', $invres['inventory_item_id']);
+                    $colors = $this->db->get()->result_array();
+                    foreach ($colors as $color) {
+                        $this->db->set('item_color_itemid', $item['item_id']);
+                        $this->db->set('item_color', $color['color']);
+                        $this->db->set('item_color_order', $color['color_order']);
+                        $this->db->set('printshop_color_id', $color['inventory_color_id']);
+                        $this->db->insert('sb_item_colors');
+                    }
+                    echo 'Transform '.$invres['item_num'].' '.$invres['item_name'].PHP_EOL;
+                }
+            }
+        }
+    }
 }

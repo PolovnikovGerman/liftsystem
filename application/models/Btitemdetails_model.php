@@ -1919,7 +1919,7 @@ class Btitemdetails_model extends MY_Model
             $info[]='Change Supplier Shipping Address';
         }
         if ($oldvitem['vendor_item_cost']!==$vendor_item['vendor_item_cost']) {
-            $info[]='Change Supplier Min price from '.MoneyOutput($oldvitem['vendor_item_cost'].' on '.MoneyOutput($vendor_item['vendor_item_cost']);
+            $info[]='Change Supplier Min price from '.MoneyOutput($oldvitem['vendor_item_cost']).' on '.MoneyOutput($vendor_item['vendor_item_cost']);
         }
         return $info;
     }
