@@ -1106,6 +1106,7 @@ class Btitemdetails_model extends MY_Model
             $images = $sessiondata['images'];
             $colors = $sessiondata['colors'];
             $prices = $sessiondata['prices'];
+            $inprints = $sessiondata['inprints'];
             // old dat
             $this->load->model('items_model');
             $oldres = $this->items_model->get_itemlist_details($item['item_id'], 0);
@@ -1119,7 +1120,9 @@ class Btitemdetails_model extends MY_Model
                 $history['similar'] = $this->_similar_diff($olddata, $similars);
                 $history['supplier'] = $this->_supplier_diff($olddata, $item, $vendor_item, $vendor_prices);
                 $history['options'] = $this->_options_diff($olddata, $item, $images, $colors);
-                // $history['pricing'] = $this->_prices_diff($olddata, $item, $prices);
+                $history['pricing'] = $this->_prices_diff($olddata, $item, $prices);
+                $history['customization'] = $this->_custom_diff($olddata, $item, $inprints);
+                $history['meta'] = $this->_meta_diff($olddata, $item);
             }
             // Lets go to save
             $this->db->set('item_name', $item['item_name']);
@@ -1425,7 +1428,6 @@ class Btitemdetails_model extends MY_Model
                 }
             }
             // Print Locations
-            $inprints = $sessiondata['inprints'];
             $imprint_fl = $this->config->item('imprintimages');
             $imprint_sh = $this->config->item('imprintimages_relative');
             foreach ($inprints as $inprint) {
@@ -1925,41 +1927,41 @@ class Btitemdetails_model extends MY_Model
     }
 
     private function _options_diff($olddata, $item, $images, $colors) {
-        $info = '';
+        $info = [];
         $olditem = $olddata['item'];
         $oldimgs = $olddata['images'];
         $oldcolors = $olddata['colors'];
         $preload_sh = $this->config->item('pathpreload');
         if ($olditem['main_image']!==$item['main_image']) {
             if (empty($item['main_image'])) {
-                $info.=', Remove Main Image';
+                $info[] = 'Remove Main Image';
             } else {
                 if (empty($olditem['main_image'])) {
-                    $info.=', Add Main Image';
+                    $info[] ='Add Main Image';
                 } else {
-                    $info.=', Replace Main Image';
+                    $info[] = 'Replace Main Image';
                 }
             }
         }
         if ($olditem['category_image']!==$item['category_image']) {
             if (empty($item['category_image'])) {
-                $info.=', Remove Category Image';
+                $info[]='Remove Category Image';
             } else {
                 if (empty($olditem['category_image'])) {
-                    $info.=', Add Category Image';
+                    $info[] = 'Add Category Image';
                 } else {
-                    $info.=', Replace Category Image';
+                    $info[] = 'Replace Category Image';
                 }
             }
         }
         if ($olditem['top_banner']!==$item['top_banner']) {
             if (empty($item['top_banner'])) {
-                $info.=', Remove Top Banner Image';
+                $info[] = 'Remove Top Banner Image';
             } else {
                 if (empty($olditem['top_banner'])) {
-                    $info.=', Add Top Banner Image';
+                    $info[] = 'Add Top Banner Image';
                 } else {
-                    $info.=', Replace Top Banner Image';
+                    $info[] = 'Replace Top Banner Image';
                 }
             }
         }
@@ -1969,29 +1971,29 @@ class Btitemdetails_model extends MY_Model
             foreach ($images as $image) {
                 if ($oldimg['item_img_id']==$image['item_img_id']) {
                     if ($oldimg['item_img_name']!==$image['item_img_name']) {
-                        $info.=', Replace Image # '.$oldimg['item_img_order'];
+                        $info[] = 'Replace Image # '.$oldimg['item_img_order'];
                     }
                     $find=1;
                     break;
                 }
             }
             if ($find==0) {
-                $info.=', Remove Image # '.$oldimg['item_img_order'];
+                $info[] = 'Remove Image # '.$oldimg['item_img_order'];
             }
         }
         foreach ($images as $image) {
             if ($image['item_img_id'] < 0) {
-                $info.=', Add Image # '.$image['item_img_order'];
+                $info[] ='Add Image # '.$image['item_img_order'];
             }
         }
         if ($olditem['options']!==$item['options']) {
-            $info.=', Change options on '.$item['options'];
+            $info[] = 'Change options on '.$item['options'];
         }
         if ($olditem['option_images']!==$item['option_images']) {
             if ($item['option_images']==0) {
-                $info.=', Uncheck Require Images';
+                $info[] = 'Uncheck Require Images';
             } else {
-                $info.=', Check Require Images';
+                $info[] = 'Check Require Images';
             }
         }
         foreach ($oldcolors as $oldcolor) {
@@ -1999,23 +2001,20 @@ class Btitemdetails_model extends MY_Model
             foreach ($colors as $color) {
                 if ($oldcolor['item_color_id']==$color['item_color_id']) {
                     if ($oldcolor['item_color']!==$color['item_color']) {
-                        $info.=', Change option # '.$oldcolor['item_color_order'];
+                        $info[] = 'Change option # '.$oldcolor['item_color_order'].' from '.$oldcolor['item_color'].' to '.$color['item_color'];
                     }
                     $find = 1;
                     break;
                 }
             }
             if ($find==0) {
-                $info.=', Delete option # '.$oldcolor['item_color_order'];
+                $info[] ='Delete option # '.$oldcolor['item_color_order'].' '.$oldcolor['item_color'];
             }
         }
         foreach ($colors as $color) {
             if ($color['item_color_id'] < 0 && !empty($color['item_color'])) {
-                $info.=', Add option # '.$oldcolor['item_color_order'];
+                $info[]='Add option # '.$oldcolor['item_color_order'].' '.$color['item_color'];
             }
-        }
-        if (strlen($info) > 0) {
-            $info = substr($info, 2);
         }
         return $info;
     }
@@ -2030,137 +2029,212 @@ class Btitemdetails_model extends MY_Model
                 if ($price['promo_price_id']==$oldprice['promo_price_id']) {
                     $find=1;
                     if ($oldprice['item_qty']!==$price['item_qty'] || $oldprice['price']!==$price['price'] || $oldprice['sale_price']!==$price['sale_price']) {
-                        $info.=', Changed Price for QTY '.$oldprice['item_qty'];
+                        $infstr = 'Changed Price for QTY '.$oldprice['item_qty'];
                         if ($oldprice['item_qty']!==$price['item_qty']) {
-                            $info.=' on qty '.$price['item_qty'];
+                            $infstr.=' on qty '.$price['item_qty'];
                         }
                         if ($oldprice['price']!==$price['price']) {
-                            $info.=' price on '.MoneyOutput($price['price']);
+                            $infstr.=' price on '.MoneyOutput($price['price']);
                         }
                         if ($oldprice['sale_price']!==$price['sale_price']) {
-                            $info.=' sale price on '.MoneyOutput($price['sale_price']);
+                            $infstr.=' sale price on '.MoneyOutput($price['sale_price']);
                         }
+                        $info[] = $infstr;
                     }
                     break;
                 }
             }
             if ($find==0) {
-                $info.=', Delete Price for QTY '.$oldprice['item_qty'];
+                $info[] = 'Delete Price for QTY '.$oldprice['item_qty'];
             }
         }
         foreach ($prices as $price) {
             if ($price['promo_price_id'] < 0 && !empty($price['item_qty'])) {
-                $info.=', Add Price on QTY '.$price['item_qty'];
+                $infstr = 'Add Price on QTY '.$price['item_qty'];
                 if (!empty($price['price'])) {
-                    $info.=' price '.$price['price'];
+                    $infstr.=' price '.$price['price'];
                 }
                 if (!empty($price['sale_price'])) {
-                    $info.=' sale price '.MoneyOutput($price['sale_price']);
+                    $infstr.=' sale price '.MoneyOutput($price['sale_price']);
                 }
+                $info[] = $infstr;
             }
         }
         if ($olditem['item_price_print']!==$item['item_price_print']) {
             if (empty($item['item_price_print'])) {
-                $info.=', Delete Add\'l Prints price';
+                $info[]='Delete Add\'l Prints price';
             } else {
-                $info.=', Change Add\'l Prints price on '.MoneyOutput($item['item_price_print']);
+                $info[] = 'Change Add\'l Prints price from '.MoneyOutput($olditem['item_price_print']).' to '.MoneyOutput($item['item_price_print']);
             }
         }
         if ($olditem['item_sale_print']!==$item['item_sale_print']) {
             if (empty($item['item_sale_print'])) {
-                $info.=', Delete Add\'l Prints sale price';
+                $info[] = 'Delete Add\'l Prints sale price';
             } else {
-                $info.=', Change Add\'l Prints sale price on '.MoneyOutput($item['item_sale_print']);
-            }
-        }
-        if ($olditem['item_price_print']!==$item['item_price_print']) {
-            if (empty($item['item_price_print'])) {
-                $info.=', Delete Add\'l Prints price';
-            } else {
-                $info.=', Change Add\'l Prints price on '.MoneyOutput($item['item_price_print']);
-            }
-        }
-        if ($olditem['item_sale_print']!==$item['item_sale_print']) {
-            if (empty($item['item_sale_print'])) {
-                $info.=', Delete Add\'l Prints sale price';
-            } else {
-                $info.=', Change  Add\'l Prints sale price on '.MoneyOutput($item['item_sale_print']);
+                $info[]= 'Change Add\'l Prints sale price from '.MoneyOutput($olditem['item_sale_print']).' on '.MoneyOutput($item['item_sale_print']);
             }
         }
         if ($olditem['item_price_setup']!==$item['item_price_setup']) {
             if (empty($item['item_price_setup'])) {
-                $info.=', Delete New Setup price';
+                $info[] = 'Delete New Setup price';
             } else {
-                $info.=', Change New Setup price on '.MoneyOutput($item['item_price_setup']);
+                $info[] = 'Change New Setup price from '.MoneyOutput($olditem['item_price_setup']).' to '.MoneyOutput($item['item_price_setup']);
             }
         }
         if ($olditem['item_sale_setup']!==$item['item_sale_setup']) {
             if (empty($item['item_sale_setup'])) {
-                $info.=', Delete New Setup sale price';
+                $info[] = 'Delete New Setup sale price';
             } else {
-                $info.=', Change New Setup sale price on '.MoneyOutput($item['item_sale_setup']);
+                $info[] = 'Change New Setup sale price from '.MoneyOutput($olditem['item_sale_setup']).' to '.MoneyOutput($item['item_sale_setup']);
             }
         }
         if ($olditem['item_price_repeat']!==$item['item_price_repeat']) {
             if (empty($item['item_price_repeat'])) {
-                $info.=', Delete Repeat Setup price';
+                $info[] = 'Delete Repeat Setup price';
             } else {
-                $info.=', Change Repeat Setup price on '.MoneyOutput($item['item_price_repeat']);
+                $info[] = 'Change Repeat Setup price from '.MoneyOutput($olditem['item_price_repeat']).' to '.MoneyOutput($item['item_price_repeat']);
             }
         }
         if ($olditem['item_sale_repeat']!==$item['item_sale_repeat']) {
             if (empty($item['item_sale_repeat'])) {
-                $info.=', Delete Repeat Setup sale price';
+                $info[] = 'Delete Repeat Setup sale price';
             } else {
-                $info.=', Change Repeat Setup sale price on '.MoneyOutput($item['item_sale_repeat']);
+                $info[] ='Change Repeat Setup sale price from '.MoneyOutput($olditem['item_sale_repeat']).' to '.MoneyOutput($item['item_sale_repeat']);
             }
         }
         if ($olditem['item_price_rush1']!==$item['item_price_rush1']) {
             if (empty($item['item_price_rush1'])) {
-                $info.=', Delete Rush 1 price';
+                $info[] = 'Delete Rush 1 price';
             } else {
-                $info.=', Change Rush 1 price on '.MoneyOutput($item['item_price_rush1']);
+                $info[] = 'Change Rush 1 price from '.MoneyOutput($olditem['item_price_rush1']).' to '.MoneyOutput($item['item_price_rush1']);
             }
         }
         if ($olditem['item_sale_rush1']!==$item['item_sale_rush1']) {
             if (empty($item['item_sale_rush1'])) {
-                $info.=', Delete Rush 1 sale price';
+                $info[] ='Delete Rush 1 sale price';
             } else {
-                $info.=', Change Rush 1 sale price on '.MoneyOutput($item['item_sale_rush1']);
+                $info[] ='Change Rush 1 sale price from '.MoneyOutput($olditem['item_sale_rush1']).' to '.MoneyOutput($item['item_sale_rush1']);
             }
         }
         if ($olditem['item_price_rush2']!==$item['item_price_rush2']) {
             if (empty($item['item_price_rush2'])) {
-                $info.=', Delete Rush 2 price';
+                $info[] ='Delete Rush 2 price';
             } else {
-                $info.=', Change Rush 2 price on '.MoneyOutput($item['item_price_rush2']);
+                $info[] = 'Change Rush 2 price from '.MoneyOutput($olditem['item_price_rush2']).' to '.MoneyOutput($item['item_price_rush2']);
             }
         }
         if ($olditem['item_sale_rush2']!==$item['item_sale_rush2']) {
             if (empty($item['item_sale_rush2'])) {
-                $info.=', Delete Rush 2 sale price';
+                $info[] = 'Delete Rush 2 sale price';
             } else {
-                $info.=', Change Rush 2 sale price on '.MoneyOutput($item['item_sale_rush2']);
+                $info[] ='Change Rush 2 sale price from '.MoneyOutput($olditem['item_sale_rush2']).' to '.MoneyOutput($item['item_sale_rush2']);
             }
         }
         if ($olditem['item_price_pantone']!==$item['item_price_pantone']) {
             if (empty($item['item_price_pantone'])) {
-                $info.=', Delete Pantone Match price';
+                $info[] = 'Delete Pantone Match price';
             } else {
-                $info.=', Change Pantone Match price on '.MoneyOutput($item['item_price_pantone']);
+                $info[] = 'Change Pantone Match price from '.MoneyOutput($olditem['item_price_pantone']).' to '.MoneyOutput($item['item_price_pantone']);
             }
         }
         if ($olditem['item_sale_pantone']!==$item['item_sale_pantone']) {
             if (empty($item['item_sale_pantone'])) {
-                $info.=', Delete Pantone Match sale price';
+                $info[] ='Delete Pantone Match sale price';
             } else {
-                $info.=', Change Pantone Match sale price on '.MoneyOutput($item['item_sale_pantone']);
+                $info[] = 'Change Pantone Match sale price from '.MoneyOutput($olditem['item_sale_pantone']).' to '.MoneyOutput($item['item_sale_pantone']);
             }
         }
-        if (strlen($info) > 0) {
-            $info = substr($info, 2);
+        return $info;
+    }
+
+    private function _custom_diff($olddata, $item, $inprints) {
+        $info = [];
+        $olditem = $olddata['item'];
+        $oldinprints = $olddata['inprints'];
+        if ($olditem['item_vector_img']!==$item['item_vector_img']) {
+            if (empty($item['item_vector_img'])) {
+                $info[] = 'Delete Vector AI file';
+            } else {
+                if (empty($olditem['item_vector_img'])) {
+                    $info[] = 'Add Vector AI file';
+                } else {
+                    $info[] = 'Change Vector AI file';
+                }
+            }
+        }
+        if ($olditem['imprint_method']!==$item['imprint_method']) {
+            if (empty($item['imprint_method'])) {
+                $info[] = 'Remove Customization Method';
+            } else {
+                if (empty($olditem['imprint_method'])) {
+                    $info[] = 'Add Customization Method '.$item['imprint_method'];
+                } else {
+                    $info[] = 'Change Customization Method from '.$olditem['imprint_method'].' to '.$item['imprint_method'];
+                }
+            }
+        }
+        if ($olditem['imprint_color']!==$item['imprint_color']) {
+            if (empty($item['imprint_color'])) {
+                $info[] = 'Remove Print Colors';
+            } else {
+                if (empty($olditem['imprint_color'])) {
+                    $info[] = 'Add Print colors '.$item['imprint_color'];
+                } else {
+                    $info[] = 'Change Print Colors from '.$olditem['imprint_color'].' to '.$item['imprint_color'];
+                }
+            }
+        }
+        foreach ($oldinprints as $oldinprint) {
+            foreach ($inprints as $inprint) {
+                $find = 0;
+                if ($inprint['item_inprint_id']==$oldinprint['item_inprint_id']) {
+                    $find=1;
+                    if ($oldinprint['item_inprint_location']!==$inprint['item_inprint_location'] || $oldinprint['item_inprint_size']!==$inprint['item_inprint_size'] || $oldinprint['item_inprint_view']!==$inprint['item_inprint_view']) {
+                        $infstr = 'Change Location ';
+                        if ($oldinprint['item_inprint_location']!==$inprint['item_inprint_location']) {
+                            $infstr.='name from '.$oldinprint['item_inprint_location'].' to '.$inprint['item_inprint_location'].' ';
+                        }
+                        if ($oldinprint['item_inprint_size']!==$inprint['item_inprint_size']) {
+                            $infstr.=' size from '.$oldinprint['item_inprint_size'].' to '.$inprint['item_inprint_size'];
+                        }
+                        if ($oldinprint['item_inprint_view']!==$inprint['item_inprint_view']) {
+                            $infstr.=' new locatio view';
+                        }
+                        $info[] = $infstr;
+                    }
+                    break;
+                }
+                if ($find==0) {
+                    $info[] = 'Remove Location '.$oldinprint['item_inprint_location'];
+                }
+            }
+        }
+        foreach ($inprints as $inprint) {
+            if ($inprint['item_inprint_id'] < 0) {
+                $info[] = 'Add Location '.$inprint['item_inprint_location'].' size '.$inprint['item_inprint_size'];
+            }
         }
         return $info;
+    }
+
+    private function _meta_diff($olddata, $item) {
+        $info = [];
+        $olditem = $olddata['item'];
+        if ($olditem['item_meta_title']!==$item['item_meta_title']) {
+            if (empty($item['item_meta_title'])) {
+                $info[] = 'Remove Meta Title "'.$olditem['item_meta_title'].'"';
+            } else {
+                if (empty($olditem['item_meta_title'])) {
+                    $info[] = 'Add Meta Title "'.$item['item_meta_title'].'"';
+                } else {
+                    $info[] = 'Change Meta Title from "'.$olditem['item_meta_title'].' to "'.$item['item_meta_title'].'"';
+                }
+            }
+        }
+        if ($olditem['item_metadescription']!==$item['item_metadescription']) {
+
+        }
+
     }
 
 }
