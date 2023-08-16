@@ -144,7 +144,7 @@ class Dbitems extends MY_Controller
                     $mdata['header'] = $this->load->view('btitems/header_edit', $header_options, TRUE);
                 }
 
-                $subcategories = $this->categories_model->get_categories(['show_dropdown'=>2]);
+                $subcategories = $this->categories_model->get_categories(['show_dropdown'=>[1,2]]);
                 $this->load->model('prices_model');
                 // $discounts = $this->prices_model->get_price_discounts();
                 $this->load->model('vendors_model');
@@ -231,6 +231,12 @@ class Dbitems extends MY_Controller
                     $metaview = $this->load->view('btitems/itemmeta_edit',['item' => $data['item']], TRUE);
                     $shippingview = $this->load->view('btitems/itemship_edit',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
                 }
+                $history_view = '';
+                if ($item_id!==0) {
+                    $history = $this->items_model->get_item_history($item_id);
+                    $history_list = $this->load->view('itemdetails/history_data_view', ['data' => $history], TRUE);
+                    $history_view = $this->load->view('itemdetails/history_view',['listview' => $history_list], TRUE);
+                }
                 $body_options = [
                     'keyinfo' => $keyinfo,
                     'similar' => $similar,
@@ -241,6 +247,7 @@ class Dbitems extends MY_Controller
                     'customview' => $customview,
                     'metaview' => $metaview,
                     'shipping' => $shippingview,
+                    'history' => $history_view,
                 ];
                 $mdata['content'] = $this->load->view('relieveritems/itemdetailsbody_view', $body_options, TRUE);;
                 $mdata['editmode'] = $editmode;

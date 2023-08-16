@@ -15,6 +15,18 @@ var addtemp= '<div class="qq-uploader"><div class="popupimageedit_upload qq-uplo
     '<div class="clear"></div></div>';
 
 function init_btitemdetails_view(item) {
+    $(".itemdetails-tab").unbind('click').click(function (){
+        var tabview=$(this).data('tabview');
+        $(".itemdetails-tab").removeClass('active');
+        $(this).addClass('active');
+        if (tabview=='infoarea') {
+            $(".itemdetails-history").hide();
+            $(".itemdetails-infoarea").show();
+        } else if (tabview=='history') {
+            $(".itemdetails-infoarea").hide();
+            $(".itemdetails-history").show();
+        }
+    })
     $(".itemimagepreview").unbind('click').click(function () {
         // Show popup with images and colors
     });
@@ -45,6 +57,18 @@ function init_btitemdetails_view(item) {
 }
 
 function init_btitemdetails_edit() {
+    $(".itemdetails-tab").unbind('click').click(function (){
+        var tabview=$(this).data('tabview');
+        $(".itemdetails-tab").removeClass('active');
+        $(this).addClass('active');
+        if (tabview=='infoarea') {
+            $(".itemdetails-history").hide();
+            $(".itemdetails-infoarea").show();
+        } else if (tabview=='history') {
+            $(".itemdetails-infoarea").hide();
+            $(".itemdetails-history").show();
+        }
+    })
     $(".save_itemdetails").unbind('click').click(function () {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
@@ -317,6 +341,11 @@ function init_btitemdetails_edit() {
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $(".printshop_item_name").empty().html(response.data.printshop_name);
+                if (response.data.printshop_name=='') {
+                    $(".printshop_item_name").addClass('missing_info');
+                } else {
+                    $(".printshop_item_name").removeClass('missing_info');
+                }
                 $("#profitdataarea").empty().html(response.data.profit);
                 $(".relievers_vendorprices").empty().html(response.data.vendorprice);
                 $(".itemoptionsarea").empty().html(response.data.colorsview);

@@ -1,4 +1,5 @@
-<div class="itemdetails-tab active">Main Info</div>
+<div class="itemdetails-tab active" data-tabview="infoarea">Main Info</div>
+<div class="itemdetails-tab" data-tabview="history">History</div>
 <div class="itemdetails-infoarea">
     <div class="leftpartitembody">
         <?=$keyinfo?>
@@ -23,4 +24,7 @@
             <div class="itemshippingarea"><?=$shipping?></div>
         </div>
     </div>
+</div>
+<div class="itemdetails-history">
+    <?=$history?>
 </div>

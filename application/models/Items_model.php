@@ -1360,4 +1360,13 @@ Class Items_model extends My_Model
         }
         return $out;
     }
+
+    public function get_item_history($item_id) {
+        $this->db->select('h.*, u.user_name');
+        $this->db->from('sb_item_history h');
+        $this->db->join('users u','h.user_id=u.user_id');
+        $this->db->where('h.item_id', $item_id);
+        $this->db->order_by('added_at, item_key','desc');
+        return $this->db->get()->result_array();
+    }
 }
