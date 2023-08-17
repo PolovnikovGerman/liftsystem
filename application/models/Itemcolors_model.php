@@ -38,7 +38,7 @@ class Itemcolors_model extends My_Model
                 $result[] = [
                     'item_color_id' => (empty($color['item_color_id']) ? $numpp*(-1) : $color['item_color_id']),
                     'item_color' => $color['item_color'],
-                    'color_image' => $color['color_image'],
+                    'color_image' => $color['item_color_image'],
                     'color_order' => $color['color_order'],
                     'printshop_color_id' => $color['inventory_color_id'],
                     'color' => $color['color'],
