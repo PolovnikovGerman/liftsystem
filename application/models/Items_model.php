@@ -1070,6 +1070,7 @@ Class Items_model extends My_Model
                     'rush2_price' => '',
                     'pantone_match' => '',
                     'po_note' => '',
+                    'vendor_name' => '',
                 ];
                 for ($i=1; $i<=$pricesmax-1; $i++) {
                     $vprices[] = [
@@ -1132,6 +1133,9 @@ Class Items_model extends My_Model
             // Options images
             $imprints = $this->imprints_model->get_imprint_item($item_id);
             $priceres = $this->prices_model->get_itemlist_price($item_id);
+            if (!empty($item['printshop_inventory_id'])) {
+                $priceres = $this->_recalc_inventory_profit($priceres, $vitem['vendor_item_cost']);
+            }
             $prices = [];
             $numpp = 1;
             foreach ($priceres as $price) {
@@ -1411,5 +1415,21 @@ Class Items_model extends My_Model
         $this->db->where('h.item_id', $item_id);
         $this->db->order_by('added_at, item_key','desc');
         return $this->db->get()->result_array();
+    }
+
+    private function _recalc_inventory_profit($prices, $vendor_item_cost) {
+        $idx = 0;
+        foreach ($prices as $price) {
+            if (!empty($vendor_item_cost) && !empty($price['item_qty'])) {
+                $base_price = $price['price'];
+                if (!empty($price['sale_price'])) {
+                    $base_price = $price['sale_price'];
+                }
+                $profit = round(($base_price - $vendor_item_cost) * $price['item_qty'],2);
+                $prices[$idx]['profit'] = $profit;
+            }
+            $idx++;
+        }
+        return $prices;
     }
 }

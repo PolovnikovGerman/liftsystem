@@ -532,7 +532,8 @@ textarea.ponotedata {
 }
 .itemparamlabel.vendosrship {
     padding-right: 4px;
-    width: 70px;
+    width: 75px;
+    margin-left: -6px;
 }
 .itemparamvalue.vendorcountry {
     width: 59px;
@@ -570,8 +571,9 @@ input.vendordatainpt.missing_info {
     font-weight: 600;
 }
 .itemparamlabel.vedorponote {
-    padding-right: 28px;
+    /* padding-right: 28px; */
     width: 100px;
+    text-align: left;
 }
 .itemparamlabel.vendorinterval {
     padding-right: 4px;
@@ -1363,6 +1365,16 @@ input.locationsize {
     width: 20px;
     text-align: center;
     cursor: pointer;
+}
+.locationnumber {
+    width: 20px;
+    text-align: right;
+}
+.locationnameview {
+    border-right: 1px solid #000000;
+    width: 140px;
+    padding-left: 4px;
+
 }
 .locationname {
     border-right: 1px solid #000000;

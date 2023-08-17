@@ -1019,6 +1019,7 @@ Class Vendors_model extends My_Model
             if ($res['result']==$this->success_result) {
                 $invdata = $res['data'];
                 $vitem['vendor_item_cost'] = $invdata['avg_price'];
+                $vitem['vendor_item_blankcost'] = $invdata['avg_price'];
             }
         }
         return $vitem;

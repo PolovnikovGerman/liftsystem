@@ -1,7 +1,8 @@
 <?php $numpp=1;?>
 <?php foreach ($locations as $location) { ?>
     <div class="locationsdatarow">
-        <div class="locationname"><?=$numpp?>. <?=$location['item_inprint_location']?></div>
+        <div class="locationnumber"><?=$numpp?>.</div>
+        <div class="locationnameview"><?=$location['item_inprint_location']?></div>
         <div class="locationplace"><?=$location['item_inprint_size']?></div>
         <div class="locationview">
             <?php if (!empty($location['item_inprint_view'])) { ?>
