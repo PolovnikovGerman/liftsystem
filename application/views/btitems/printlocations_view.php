@@ -17,7 +17,8 @@
 <?php if ($numpp < 12) { ?>
     <?php for ($i=$numpp; $i<13; $i++) { ?>
         <div class="locationsdatarow">
-            <div class="locationname"><?=$i?>. </div>
+            <div class="locationnumber"><?=$i?>.</div>
+            <div class="locationnameview">&nbsp;</div>
             <div class="locationplace">&nbsp;</div>
             <div class="locationview">&nbsp;</div>
         </div>

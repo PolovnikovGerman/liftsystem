@@ -413,14 +413,17 @@
     line-height: 28px;
     padding-left: 6px;
     width: 200px;
+    font-family: Helvetica!important;
 }
 .btitemnewaddarea input.addnewiteminput {
     height: 28px;
     line-height: 28px;
     padding-left: 6px;
     font-size: 14px;
-    font-weight: 600;
+    /* font-weight: 600; */
     width: 380px;
+    font-family: Helvetica-Bold!important;
+
 }
 .btitemnewaddarea .procedaddnewitem {
     background-color: #00009c;

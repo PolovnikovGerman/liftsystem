@@ -11,6 +11,41 @@ class Btitemdetails extends MY_Controller
         $this->load->model('btitemdetails_model');
     }
 
+    // Preview Images, colors
+    public function btitem_images_view() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Session data empty';
+            $postdata = $this->input->post();
+            $session = ifset($postdata, 'session', 'unkn');
+            $sessiondata = usersession($session);
+            if (!empty($sessiondata)) {
+                $error = '';
+                $item = $sessiondata['item'];
+                $main_view = $this->load->view('btitems/popup_mainimage_view',['item' => $item], TRUE);
+                $images = $sessiondata['images'];
+                $cntimages = count($images);
+                $addslider = $this->load->view('btitems/popup_addimageslder_view',['images' => $images,'cntimages' => $cntimages], TRUE);
+                $add_view = $this->load->view('btitems/popup_addimage_edit',['slider' => $addslider], TRUE);
+                $colors = $sessiondata['colors'];
+                $colorslider = $this->load->view('btitems/popup_optionimageslider_view',['colors' => $colors,'cntimages' => count($colors), 'image' => $item['option_images']], TRUE);
+                $optionview = $this->load->view('btitems/popup_options_view',['item' => $item, 'slider' => $colorslider], TRUE);
+                $colorview = 1;
+                $mdata['header'] = 'IMAGES & OPTIONS:';
+                $options = [
+                    'main_view' => $main_view,
+                    'add_view' => $add_view,
+                    'options_view' => $optionview,
+                    'colorview' => $colorview,
+                    'mode' => 'view',
+                ];
+                $mdata['content'] = $this->load->view('btitems/popup_image_edit',$options, TRUE);
+
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
     // Change item category
     public function change_item_category() {
         if ($this->isAjax()) {
@@ -235,6 +270,7 @@ class Btitemdetails extends MY_Controller
                     'add_view' => $add_view,
                     'options_view' => $optionview,
                     'colorview' => $colorview,
+                    'mode' => 'edit',
                 ];
                 $mdata['content'] = $this->load->view('btitems/popup_image_edit',$options, TRUE);
             }
