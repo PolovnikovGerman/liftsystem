@@ -194,6 +194,13 @@ Class Categories_model extends MY_Model
         return $res;
     }
 
+    public function activate_reliver_categories($category_id) {
+        $this->db->where('category_id', $category_id);
+        $this->db->set('category_active', 1);
+        $this->db->update('sr_categories');
+        return true;
+    }
+
     public function get_srcategory_data($category_id) {
         $out=['result' => $this->error_result, 'msg' => 'Category Not Found'];
         $this->db->select('*');

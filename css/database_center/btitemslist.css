@@ -320,12 +320,14 @@
     font-weight: 600;
 }
 .itemlistview .tabledataarea .tabrow .missinfo {
-    width: 362px;
+    /* width: 362px; */
+    width: 374px;
 }
 .itemlistview .tabledataarea .tabrow .missinfo.missing {
     padding-left: 5px;
-    white-space: nowrap;
+    /* white-space: nowrap; */
     overflow: hidden;
+    text-align: left;
     /* color: #FF0000; */
 }
 .missing_info_details {
@@ -338,6 +340,7 @@
     padding: 0 3px;
     margin-top: 3px;
     margin-right: 3px;
+    display: inline-block;
 }
 .itemlistview .tabledataarea .tabrow .emptydataview {
     color: #FF0000;

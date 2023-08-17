@@ -1107,6 +1107,7 @@ class Btitemdetails_model extends MY_Model
             $colors = $sessiondata['colors'];
             $prices = $sessiondata['prices'];
             $inprints = $sessiondata['inprints'];
+            $shipboxes = $sessiondata['shipboxes'];
             // old dat
             $this->load->model('items_model');
             $oldres = $this->items_model->get_itemlist_details($item['item_id'], 0);
@@ -1123,6 +1124,7 @@ class Btitemdetails_model extends MY_Model
                 $history['pricing'] = $this->_prices_diff($olddata, $item, $prices);
                 $history['customization'] = $this->_custom_diff($olddata, $item, $inprints);
                 $history['meta'] = $this->_meta_diff($olddata, $item);
+                $history['shipping'] = $this->_shipping_diff($olddata, $item, $shipboxes);
             }
             // Lets go to save
             $this->db->set('item_name', $item['item_name']);
@@ -1452,7 +1454,6 @@ class Btitemdetails_model extends MY_Model
                 }
             }
             // Shipboxes
-            $shipboxes = $sessiondata['shipboxes'];
             foreach ($shipboxes as $shipbox) {
                 if (intval($shipbox['box_qty'])>0) {
                     $this->db->set('box_qty', $shipbox['box_qty']);
@@ -1899,7 +1900,11 @@ class Btitemdetails_model extends MY_Model
         if ($oldvitem['vendor_item_vendor']!==$vendor_item['vendor_item_vendor']) {
             $vendres  = $this->vendors_model->get_vendor($vendor_item['vendor_item_vendor']);
             if ($vendres['result']==$this->success_result) {
-                $info[]='Change VENDOR from '.$oldvitem[''].' to '.$vendres['data']['vendor_name'];
+                if (empty($oldvitem['vendor_item_vendor'])) {
+                    $info[]='Add VENDOR '.$vendres['data']['vendor_name'];
+                } else {
+                    $info[]='Change VENDOR from '.$oldvitem['vendor_name'].' to '.$vendres['data']['vendor_name'];
+                }
             }
         }
         if (!empty($item['printshop_inventory_id'])) {
@@ -2232,9 +2237,114 @@ class Btitemdetails_model extends MY_Model
             }
         }
         if ($olditem['item_metadescription']!==$item['item_metadescription']) {
-
+            if (empty($item['item_metadescription'])) {
+                $info[] = 'Remove Meta Descriptiion "'.$olditem['item_metadescription'].'"';
+            } else {
+                if (empty($olditem['item_metadescription'])) {
+                    $info[] = 'Add Meta Description "'.$item['item_metadescription'].'"';
+                } else {
+                    $info[] = 'Change Meta Description from "'.$olditem['item_metadescription'].' to "'.$item['item_metadescription'].'"';
+                }
+            }
         }
+        if ($olditem['item_url']!==$item['item_url']) {
+            if (empty($item['item_url'])) {
+                $info[] = 'Remove Item URL '.$olditem['item_url'];
+            } else {
+                if (empty($olditem['item_url'])) {
+                    $info[] = 'Add Item URL '.$item['item_url'];
+                } else {
+                    $info[] = 'Change Item URL from '.$olditem['item_url'].' to '.$item['item_url'];
+                }
+            }
+        }
+        if ($olditem['item_metakeywords']!==$item['item_metakeywords']) {
+            if (empty($item['item_metakeywords'])) {
+                $info[] = 'Remove Meta Keywords "'.$olditem['item_metakeywords'].'"';
+            } else {
+                if (empty($olditem['item_metakeywords'])) {
+                    $info[] = 'Add Meta Keywords "'.$item['item_metakeywords'].'"';
+                } else {
+                    $info[] = 'Change Meta Keywords from "'.$olditem['item_metakeywords'].' to "'.$item['item_metakeywords'].'"';
+                }
+            }
+        }
+        if ($olditem['item_keywords']!==$item['item_keywords']) {
+            if (empty($item['item_keywords'])) {
+                $info[] = 'Remove Internal Search Keywords "'.$olditem['item_keywords'].'"';
+            } else {
+                if (empty($olditem['item_keywords'])) {
+                    $info[] = 'Add Internal Search Keywords "'.$item['item_keywords'].'"';
+                } else {
+                    $info[] = 'Change Internal Search Keywords from "'.$olditem['item_keywords'].' to "'.$item['item_keywords'].'"';
+                }
+            }
+        }
+        return $info;
+    }
 
+    private function _shipping_diff($olddata, $item, $shipboxes) {
+        $info = [];
+        $olditem = $olddata['item'];
+        $oldshipboxes = $olddata['shipboxes'];
+        if ($olditem['item_weigth']!==$item['item_weigth']) {
+            if (empty($item['item_weigth'])) {
+                $info[] = 'Remove Item Weight '.$olditem['item_weigth'];
+            } else {
+                if (empty($olditem['item_weigth'])) {
+                    $info[] = "Add Item Weight ".$item['item_weigth'];
+                } else {
+                    $info[] = 'Change Item Weight from '.$olditem['item_weigth'].' to '.$item['item_weigth'];
+                }
+            }
+        }
+        if ($olditem['charge_pereach']!==$item['charge_pereach']) {
+            if (empty($item['charge_pereach'])) {
+                $info[] = 'Remove Extra $ Each '.$olditem['charge_pereach'];
+            } else {
+                if (empty($olditem['charge_pereach'])) {
+                    $info[] = 'Add Extra $ Each '.$item['charge_pereach'];
+                } else {
+                    $info[] = 'Change Extra $ Each from '.$olditem['charge_pereach'].' to '.$item['charge_pereach'];
+                }
+            }
+        }
+        $numpp = 1;
+        foreach ($oldshipboxes as $oldshipbox) {
+            $find = 0;
+            foreach ($shipboxes as $shipbox) {
+                if ($oldshipbox['item_shipping_id']==$shipbox['item_shipping_id']) {
+                    $find=1;
+                    if ($oldshipbox['box_qty']!==$shipbox['box_qty'] || $oldshipbox['box_width']!==$shipbox['box_width'] || $oldshipbox['box_length']!==$shipbox['box_length'] || $oldshipbox['box_height']!==$shipbox['box_height']) {
+                        $infstr = 'Change Ship Box '.chr(64 + $numpp);
+                        if ($oldshipbox['box_qty']!==$shipbox['box_qty']) {
+                            $infstr.=' QTY from '.$oldshipbox['box_qty'].' to '.$shipbox['box_qty'];
+                        }
+                        if ($oldshipbox['box_width']!==$shipbox['box_width']) {
+                            $infstr.=' Width from '.$oldshipbox['box_width'].' to '.$shipbox['box_width'];
+                        }
+                        if ($oldshipbox['box_length']!==$shipbox['box_length']) {
+                            $infstr.=' Length from '.$oldshipbox['box_length'].' to '.$shipbox['box_length'];
+                        }
+                        if ($oldshipbox['box_height']!==$shipbox['box_height']) {
+                            $infstr.=' Height from '.$oldshipbox['box_height'].' to '.$shipbox['box_height'];
+                        }
+                        $info[] = $infstr;
+                    }
+                    break;
+                }
+            }
+            if ($find==0) {
+                $info[] = 'Remove Ship Box '.chr(64 + $numpp);
+            }
+            $numpp++;
+        }
+        foreach ($shipboxes as $shipbox) {
+            if ($shipbox['item_shipping_id'] < 0 && !empty($shipbox['box_qty'])) {
+                $info[] = 'Add Ship Box '.$shipbox['box_qty'].' Width '.$shipbox['box_width'].' Length '.$shipbox['box_length'].' Height '.$shipbox['box_height'];
+            }
+        }
+        return $info;
     }
 
 }

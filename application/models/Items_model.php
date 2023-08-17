@@ -631,7 +631,7 @@ Class Items_model extends My_Model
         $this->db->select('categ.category_name as category');
         $this->db->from('sb_items i');
         $this->db->join('sb_vendor_items svi','i.vendor_item_id = svi.vendor_item_id','left');
-        $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor');
+        $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor','left');
         $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
         $this->db->join("({$category_qty}) categ",'categ.item_id=i.item_id', 'left');
         if (ifset($options,'brand', 'ALL')!=='ALL') {
@@ -1321,6 +1321,7 @@ Class Items_model extends My_Model
             $this->db->from('sr_categories');
             $this->db->where('category_id', $data['category']);
             $catres = $this->db->get()->row_array();
+
             $numtempl = $catres['category_code'].'-';
             $this->db->select('category_code');
             $this->db->from('sb_categories');
@@ -1356,6 +1357,9 @@ Class Items_model extends My_Model
                 $this->db->insert('sb_item_categories');
                 $out['result'] = $this->success_result;
                 $out['item_id'] = $newid;
+                // Update Category
+                $this->load->model('categories_model');
+                $this->categories_model->activate_reliver_categories($data['category']);
             }
         }
         return $out;
@@ -1377,6 +1381,12 @@ Class Items_model extends My_Model
                     $item_key = '';
                     if ($key=='keyinfo') {
                         $item_key = 'KEY INFO';
+                    } elseif ($key=='meta') {
+                        $item_key = 'META & SEARCH';
+                    } elseif ($key=='similar') {
+                        $item_key = 'SIMILAR ITEMS';
+                    } elseif ($key=='options') {
+                        $item_key = 'IMAGES & OPTIONS';
                     } else {
                         $item_key = strtoupper($key);
                     }

@@ -9,7 +9,7 @@
         <div class="pageheadfilter">
             <select class="itemcategoryfilter">
                 <?php foreach ($categories as $category) { ?>
-                    <option <?=$category['category_active']==1 ? '' : 'disabled="true"'?> value="<?=$category['category_id']?>" <?=$category['category_id']==$category_id ? 'selected="selected"' : ''?>>
+                    <option data-categ="<?=$category['category_id']?>" <?=$category['category_active']==1 ? '' : 'disabled="true"'?> value="<?=$category['category_id']?>" <?=$category['category_id']==$category_id ? 'selected="selected"' : ''?>>
                         <?=$category['category_code'].' - '.$category['category_name']?>
                     </option>
                 <?php } ?>
