@@ -32,7 +32,8 @@ function init_btitemdetails_view(item) {
     });
     $(".itemvendorfilebtn.vectorfile").unbind('click').click(function(){
         var url = $(this).data('file');
-        window.openai(url, 'AI Template');
+        // window.openai(url, 'AI Template');
+        openai(url,'vector_file.ai');
     });
     $(".printlocexample").unbind('click').click(function () {
         var url = $(this).data('link');
