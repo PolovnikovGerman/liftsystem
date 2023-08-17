@@ -1377,6 +1377,12 @@ Class Items_model extends My_Model
                     $item_key = '';
                     if ($key=='keyinfo') {
                         $item_key = 'KEY INFO';
+                    } elseif ($key=='meta') {
+                        $item_key = 'META & SEARCH';
+                    } elseif ($key=='similar') {
+                        $item_key = 'SIMILAR ITEMS';
+                    } elseif ($key=='options') {
+                        $item_key = 'IMAGES & OPTIONS';
                     } else {
                         $item_key = strtoupper($key);
                     }
