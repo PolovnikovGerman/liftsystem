@@ -2299,6 +2299,18 @@ class Database extends MY_Controller
         $this->load->model('vendors_model');
         $this->load->model('categories_model');
         $categories = $this->categories_model->get_reliver_categories(['brand'=>'BT']);
+        // Check items
+        $idx=0;
+        foreach ($categories as $category) {
+            if ($category['category_active']==0) {
+                $cntitems = $this->items_model->get_items_count(['brand' => 'BT', 'category_id' => $category['category_id']]);
+                if ($cntitems > 0) {
+                    $categories[$idx]['category_active'] = 1;
+                    // Update categories
+                    $this->categories_model->activate_reliver_categories($category['category_id']);
+                }
+            }
+        }
         $activcategory = 0;
         foreach ($categories as $category) {
             if ($category['category_active']==1) {

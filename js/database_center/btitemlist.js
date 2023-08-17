@@ -153,7 +153,8 @@ function init_addnewbtitem() {
     });
     $(".btitemnewaddarea").find('div.procedaddnewitem').click(function (){
         var params = new Array();
-        params.push({name: 'category', value: $("#itemnewcategory").val()});
+        var category = $("#itemnewcategory").val();
+        params.push({name: 'category', value: category });
         params.push({name: 'subcategory', value: $("#itemnewsubcategory").val()});
         params.push({name: 'itemname', value: $("#itemnewname").val()});
         params.push({name: 'brand', value: 'BT'});
@@ -161,6 +162,10 @@ function init_addnewbtitem() {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $(".btitemnewaddarea").empty().hide();
+                $(".btcategorybtn").removeClass('active');
+                $(".btcategorybtn[data-category='"+category+"']").removeClass('locked').addClass('active');
+                $(".itemcategoryfilter option[data-categ='"+category+"']").prop('disabled',false);
+                $(".itemcategoryfilter").val(category);
                 var item = response.data.newitem;
                 var itmparams = new Array();
                 itmparams.push({name: 'item_id', value: item});

@@ -1900,7 +1900,11 @@ class Btitemdetails_model extends MY_Model
         if ($oldvitem['vendor_item_vendor']!==$vendor_item['vendor_item_vendor']) {
             $vendres  = $this->vendors_model->get_vendor($vendor_item['vendor_item_vendor']);
             if ($vendres['result']==$this->success_result) {
-                $info[]='Change VENDOR from '.$oldvitem[''].' to '.$vendres['data']['vendor_name'];
+                if (empty($oldvitem['vendor_item_vendor'])) {
+                    $info[]='Add VENDOR '.$vendres['data']['vendor_name'];
+                } else {
+                    $info[]='Change VENDOR from '.$oldvitem['vendor_name'].' to '.$vendres['data']['vendor_name'];
+                }
             }
         }
         if (!empty($item['printshop_inventory_id'])) {

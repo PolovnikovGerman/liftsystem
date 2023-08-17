@@ -10,7 +10,7 @@
                 <select class="addnewitemoption" id="itemnewcategory">
                     <option value="">...</option>
                     <?php foreach ($categories as $category) { ?>
-                        <option value="<?=$category['category_id']?>" <?=$category['category_active']==1 ? '' : 'disabled="disabled"'?>><?=$category['category_code']?> - <?=$category['category_name']?></option>
+                        <option value="<?=$category['category_id']?>"><?=$category['category_code']?> - <?=$category['category_name']?></option>
                     <?php } ?>
                 </select>
             </div>

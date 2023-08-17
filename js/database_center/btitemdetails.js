@@ -77,7 +77,8 @@ function init_btitemdetails_edit() {
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#itemDetailsModal").modal('hide');
-                init_btitemslist_view();
+                // init_btitemslist_view();
+                search_itemlists();
             } else {
                 $("#loader").hide();
                 show_error(response);
