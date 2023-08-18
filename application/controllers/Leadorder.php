@@ -648,6 +648,15 @@ class Leadorder extends MY_Controller
                                 $mdata['shipcost']=$cost_view;
                             }
                         }
+                        $mdata['freshship'] = $mdata['freshbill'] = 0;
+                        if (isset($res['shipcompany'])) {
+                            $mdata['freshship'] = 1;
+                            $mdata['shipcompany'] = $res['shipcompany'];
+                        }
+                        if (isset($res['billcompany'])) {
+                            $mdata['freshbill'] = 1;
+                            $mdata['billcompany'] = $res['billcompany'];
+                        }
                     }
                 }
             }
@@ -1754,6 +1763,15 @@ class Leadorder extends MY_Controller
                         }
                     }
                     $mdata['contact_phone']=$phone;
+                    $mdata['freshship'] = $mdata['freshbill'] = 0;
+                    if (isset($res['shipcontact'])) {
+                        $mdata['freshship'] = 1;
+                        $mdata['shipcontact'] = $res['shipcontact'];
+                    }
+                    if (isset($res['billcontact'])) {
+                        $mdata['freshbill'] = 1;
+                        $mdata['billcontact'] = $res['billcontact'];
+                    }
                 }
             }
             // Calc new period for lock
