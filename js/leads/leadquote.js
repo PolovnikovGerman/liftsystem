@@ -706,6 +706,36 @@ function init_quote_printdetails() {
         var detail=$(this).data('details');
         edit_quoteprintnote(detail);
     });
+    // Blank
+    $("input.quoteblankchk").unbind('change').change(function(){
+        var newval=0;
+        if ($(this).prop('checked')==true) {
+            newval=1;
+        }
+        var params=new Array();
+        params.push({name:'fldname', value: 'quote_blank'});
+        params.push({name:'newval', value:newval});
+        params.push({name:'imprintsession', value: $("input#imprintsession").val()});
+        params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+        var url = "/leadquote/quoteprintdetails_blankquote";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (newval==1) {
+                    $("input.locationactive").each(function(){
+                        $(this).prop('checked',false);
+                        $(this).parent('div').parent('div.imprintlocdata').removeClass('active');
+                    });
+                    $("select.locationtype").prop('disabled', true);
+                    $("div.repeatdetail").removeClass('active');
+                    $("select.imprintcolorschoice").prop('disabled',true);
+                    $("select.imprintlocationchoice").prop('disabled', true);
+                }
+                init_quote_printdetails();
+            } else {
+                show_error(response);
+            }
+        },'json')
+    });
     // Save Print Details
     $("div.saveimprintdetailsdata").unbind('click').click(function(){
         save_quoteprint_details();
@@ -823,7 +853,7 @@ function change_quote_printdetails(params) {
 
 function activate_quoteprint_details(details, newval) {
     if (newval==1) {
-        $("input.orderblankchk").prop('checked',false);
+        $("input.quoteblankchk").prop('checked',false);
         $("div.imprintlocdata[data-details='"+details+"']").addClass('active');
         $("select.locationtype[data-details='"+details+"']").prop('disabled',false);
         if ($("select.locationtype[data-details='"+details+"']").val()=='REPEAT') {
