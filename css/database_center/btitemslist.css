@@ -259,6 +259,9 @@
     width: 100%;
     height: 25px;
 }
+.itemlistview .tabledataarea .tabrow.selected {
+    background-color: #f0ff00!important;
+}
 .itemlistview .tabledataarea .tabrow.internal {
     font-weight: 600;
 }

@@ -129,7 +129,14 @@ function init_itemlist_content() {
     $(".btitemedit").unbind('click').click(function () {
         var item=$(this).data('item');
         edit_btitem(item);
-    })
+    });
+    $('#btitemdata').find('div.tabrow').hover(
+        function() {
+            $( this ).addClass('selected');
+        }, function() {
+            $( this ).removeClass('selected');
+        }
+    );
 }
 
 function prepare_newbtitem() {
