@@ -1,4 +1,4 @@
-<div class="sectionlabel">CUSTOMIZATION:</div>
+<div class="sectionlabel">PRINTING:</div>
 <div class="sectionbody">
     <div class="content-row">
         <div class="itemvendorfilebtn <?=empty($item['item_vector_img']) ? '' : 'vectorfile'?>" data-file="<?=$item['item_vector_img']?>">

@@ -52,7 +52,7 @@
 }
 .itemdetails-keydataarea {
     color: #ffffff;
-    border-bottom: 55px solid #000048;
+    border-bottom: 55px solid #c6ff00;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
     height: 0;
@@ -107,7 +107,7 @@ select.categoryitemselect {
 .itemdetails-keydataarea .namearea-label {
     margin-left: 6px;
     font-size: 11px;
-    color: #ffffff;
+    color: #000000;
     line-height: 17px;
 }
 .itemdetails-mode {
