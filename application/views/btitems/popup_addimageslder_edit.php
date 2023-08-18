@@ -5,6 +5,7 @@
     <div class="addimages-slide-wrap">
         <?php } ?>
         <div class="addimages-slide-item">
+            <div class="imgsrcsize">(800x800)</div>
             <?php if (empty($image['item_img_name'])) { ?>
                 <div class="replaseadditems">&nbsp;</div>
             <?php } else { ?>

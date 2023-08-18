@@ -629,6 +629,7 @@ Class Items_model extends My_Model
         $this->db->select('v.vendor_name as vendor, v.vendor_code, v.vendor_phone, v.vendor_email, v.vendor_website, svi.vendor_item_number');
         $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
         $this->db->select('categ.category_name as category');
+        $this->db->select('svi.vendor_item_vendor as vendor_id');
         $this->db->from('sb_items i');
         $this->db->join('sb_vendor_items svi','i.vendor_item_id = svi.vendor_item_id','left');
         $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor','left');
@@ -681,6 +682,10 @@ Class Items_model extends My_Model
         $out=[];
         $numpp = $offset + 1;
         foreach ($res as $item) {
+            $item['dataclass'] = '';
+            if ($item['vendor_id']==$this->config->item('inventory_vendor')) {
+                $item['dataclass'] = 'internal';
+            }
             $item['misclas'] = ($item['missings']==0 ? '' : 'missing');
             $item['misinfo'] = ($item['missings']==0 ? 'Complete' : $item['missings'].' Missing');
             $item['misinfo_content'] = 'Complete';

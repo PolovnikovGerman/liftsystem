@@ -259,6 +259,9 @@
     width: 100%;
     height: 25px;
 }
+.itemlistview .tabledataarea .tabrow.internal {
+    font-weight: 600;
+}
 .itemlistview .tabledataarea .tabrow.expand {
     width: 1271px;
 }

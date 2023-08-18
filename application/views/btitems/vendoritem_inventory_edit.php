@@ -4,7 +4,7 @@
         <select class="printshopitemselect" data-item="printshop_inventory_id">
             <option value=""></option>
             <?php foreach ($itemlists as $itemlist) { ?>
-                <option value="<?=$itemlist['inventory_item_id']?>" <?=$itemlist['inventory_item_id']==$item['printshop_inventory_id'] ? 'selected="selected"' : ''?>><?=$itemlist['item_num']?></option>
+                <option value="<?=$itemlist['inventory_item_id']?>" <?=$itemlist['inventory_item_id']==$item['printshop_inventory_id'] ? 'selected="selected"' : ''?>><?=$itemlist['item_num']?> - <?=$itemlist['item_name']?></option>
             <?php } ?>
         </select>
     </div>

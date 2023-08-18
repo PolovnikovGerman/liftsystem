@@ -1683,23 +1683,29 @@ input.chargeperorder {
     line-height: 24px;
     margin-bottom: 5px;
 }
+.content-row .imgsrcsize {
+    height: 24px;
+    line-height: 24px;
+    font-size: 10px;
+    margin-left: 6px;
+}
 .mainimage_area {
-    margin-left: 66px;
-    width: 124px;
+    margin-left: 55px;
+    width: 140px;
 }
 .mainimage_view {
-    height: 124px;
+    height: 140px;
 }
 .emptyimage.mainimage {
     padding-top: 48px;
     text-align: center;
 }
 .removeimage.mainimage {
-    top: -123px;
-    left: 107px;
+    top: -140px;
+    left: 123px;
 }
 input.itemimagecaption {
-    height: 20px;
+    height: 24px;
     line-height: 20px;
     margin-top: 6px;
     margin-bottom: 13px;
@@ -1707,7 +1713,7 @@ input.itemimagecaption {
     width: 100%;
 }
 select.itemimagecaptionselect {
-    height: 20px;
+    height: 24px;
     line-height: 20px;
     /* margin-top: 6px; */
     margin-bottom: 13px;
@@ -1726,7 +1732,7 @@ select.itemimagecaptionselect {
     height: 124px;
 }
 .removeimage.categoryimage {
-    top: -123px;
+    top: -124px;
     left: 249px;
 }
 .topbannerimage_area {
@@ -1741,6 +1747,10 @@ select.itemimagecaptionselect {
 .emptyimage.topbannerimage {
     padding-top: 27px;
     text-align: center;
+}
+.removeimage.topbannerimage {
+    top: -87px;
+    left: 374px;
 }
 .addlimagesection .imagetitle {
     height: 28px;
@@ -1760,6 +1770,12 @@ select.itemimagecaptionselect {
     margin: 0;
     padding: 0;
     width: 1148px;
+}
+.addimages-slide-item .imgsrcsize {
+    height: 20px;
+    line-height: 20px;
+    font-size: 10px;
+    margin-left: 6px;
 }
 .addimages-slide-wrap, .optimages-slide-wrap {
 }
@@ -1869,7 +1885,7 @@ select.imageorderinpt {
     width: 100%;
     -webkit-appearance: none;
     appearance: none;
-    height: 20px;
+    height: 24px;
     line-height: 20px;
     background: #fff;
     text-align: center;
@@ -1934,7 +1950,7 @@ select.optimageorderinpt {
     width: 100%;
     -webkit-appearance: none;
     appearance: none;
-    height: 20px;
+    height: 24px;
     line-height: 20px;
     background: #fff;
     text-align: center;
