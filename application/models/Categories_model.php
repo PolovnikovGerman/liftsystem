@@ -221,11 +221,53 @@ Class Categories_model extends MY_Model
         return $res;
     }
 
-    public function get_sbitem_categories() {
+    public function get_sbitem_categories($category_id) {
         $this->db->select('*');
-        $this->db->from('sb_categories');
-        $this->db->where('category_code is not null');
+        $this->db->from('sb_subcategories');
+        $this->db->where('category_id', $category_id);
         return $this->db->get()->result_array();
+    }
+
+    public function addsubcategory($data, $user_id) {
+        $out=['result' => $this->error_result, 'msg' => 'Category Not Found'];
+        $category_id = ifset($data, 'category_id',0);
+        $subcategory_code = ifset($data, 'subcateg_code', '');
+        $subcategory_name = ifset($data, 'subcateg_name', '');
+        if (!empty($category_id)) {
+            $out['msg'] = 'Empty Subcategory Code';
+            if (!empty($subcategory_code)) {
+                $this->db->select('count(subcategory_id) as cnt, max(subcategory_id) as subcategory_id');
+                $this->db->from('sb_subcategories');
+                $this->db->where('category_id', $category_id);
+                $this->db->where('code', strtoupper($subcategory_code));
+                $res = $this->db->get()->row_array();
+                if ($res['cnt']==0) {
+                    $out['msg'] = 'Empty Subcategory Name';
+                    if (!empty($subcategory_name)) {
+                        $out['msg'] = 'Error during add new Subcategory';
+                        $this->db->set('added_at', date('Y-m-d H:i:s'));
+                        $this->db->set('added_by', $user_id);
+                        $this->db->set('updated_by', $user_id);
+                        $this->db->set('category_id', $category_id);
+                        $this->db->set('name', $subcategory_name);
+                        $this->db->set('code', strtoupper($subcategory_code));
+                        $this->db->insert('sb_subcategories');
+                        $newid = $this->db->insert_id();
+                        if ($newid > 0) {
+                            $out['result'] = $this->success_result;
+                            $out['subcategory_id'] = $newid;
+                        }
+                    }
+                } else {
+                    $out['subcategory_id'] = $res['subcategory_id'];
+                    $out['result'] = $this->success_result;
+                }
+            }
+            if ($out['result']==$this->success_result) {
+                $out['subcategories'] = $this->get_sbitem_categories($category_id);
+            }
+        }
+        return $out;
     }
 
 }

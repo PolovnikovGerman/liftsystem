@@ -384,7 +384,7 @@
 }
 .btitemnewaddarea .canceladd span {
     font-size: 13px;
-    font-weight: bold;
+    /* font-weight: bold; */
 }
 .btitemnewaddarea .canceladd i {
     font-size: 14px;
@@ -413,7 +413,6 @@
     line-height: 28px;
     padding-left: 6px;
     width: 200px;
-    font-family: Helvetica!important;
 }
 .btitemnewaddarea input.addnewiteminput {
     height: 28px;
@@ -423,7 +422,6 @@
     /* font-weight: 600; */
     width: 380px;
     font-family: Helvetica-Bold!important;
-
 }
 .btitemnewaddarea .procedaddnewitem {
     background-color: #00009c;
@@ -432,11 +430,99 @@
     cursor: pointer;
     float: right!important;
     font-size: 14px;
-    font-weight: 600;
+    /* font-weight: 600; */
     height: 28px;
     line-height: 28px!important;
     padding: 0 11px;
     box-shadow: -0.4em 0.4em 5px rgba(122,122,122,0.5);
     margin-right: 9px;
     margin-top: 11px;
+    font-family: Helvetica-Bold!important;
+}
+.btitemnewsucategarea {
+    border: 2px solid #4a4a4a;
+    border-radius: 5px;
+    background: #d7d7d7;
+    display: none;
+    font-family: Helvetica;
+    height: 210px;
+    padding: 4px 7px 7px 13px;
+    position: absolute;
+    top: 244px;
+    left: 277px;
+    z-index: 125;
+    width: 514px;
+}
+.btitemnewsucategarea .pagetitleadd {
+    font-size: 18px;
+    height: 28px;
+    line-height: 28px;
+    font-weight: 600;
+}
+.btitemnewsucategarea .cancelsubcateg {
+    float: right!important;
+    color: #ff0000;
+    height: 20px;
+    line-height: 20px;
+    cursor: pointer;
+}
+.btitemnewsucategarea .cancelsubcateg span {
+    font-size: 13px;
+    /* font-weight: bold; */
+}
+.btitemnewsucategarea .cancelsubcateg i {
+    font-size: 14px;
+    margin-left: 7px;
+}
+.btitemnewsucategarea .subcategaddform {
+    margin-top: 12px;
+}
+.btitemnewsucategarea .subcategaddform-label {
+    height: 36px;
+    line-height: 36px!important;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000040;
+    text-align: right;
+    padding-right: 4px;
+    width: 136px;
+}
+.btitemnewsucategarea .subcategaddform-value {
+    height: 36px;
+    line-height: 36px!important;
+}
+.btitemnewsucategarea .subcategaddform-value span {
+    font-size: 16px;
+    margin-left: 4px;
+}
+.btitemnewsucategarea input.addnewsubcategoryinput {
+    height: 28px;
+    line-height: 28px;
+    padding-left: 6px;
+    font-size: 14px;
+    /* font-weight: 600; */
+    font-family: Helvetica-Bold!important;
+}
+.btitemnewsucategarea input.addnewsubcategoryinput.code {
+    width: 33px;
+    text-transform: uppercase;
+}
+.btitemnewsucategarea input.addnewsubcategoryinput.name {
+    width: 345px;
+}
+.btitemnewsucategarea .procedaddnewsubcateg {
+    background-color: #00009c;
+    border-radius: 7px;
+    color: #ffffff;
+    cursor: pointer;
+    float: right!important;
+    font-size: 14px;
+    /* font-weight: 600; */
+    height: 28px;
+    line-height: 28px!important;
+    padding: 0 11px;
+    box-shadow: -0.4em 0.4em 5px rgba(122,122,122,0.5);
+    margin-right: 9px;
+    margin-top: 11px;
+    font-family: Helvetica-Bold!important;
 }
