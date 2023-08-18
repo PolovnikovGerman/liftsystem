@@ -95,6 +95,7 @@
             <div class="missinfo">Complete or Missing Info</div>
         </div>
         <div class="btitemnewaddarea"></div>
+        <div class="btitemnewsucategarea"></div>
         <div class="" id="btitemdata">
         </div>
     </div>

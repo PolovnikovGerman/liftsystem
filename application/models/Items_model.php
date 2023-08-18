@@ -1327,9 +1327,9 @@ Class Items_model extends My_Model
             $catres = $this->db->get()->row_array();
 
             $numtempl = $catres['category_code'].'-';
-            $this->db->select('category_code');
-            $this->db->from('sb_categories');
-            $this->db->where('category_id', $data['subcategory']);
+            $this->db->select('code as category_code');
+            $this->db->from('sb_subcategories');
+            $this->db->where('subcategory_id', $data['subcategory']);
             $subres = $this->db->get()->row_array();
             $numtempl.=$subres['category_code'];
             $this->db->select('max(substr(item_number, 6)) as maxnum, count(item_id) as cnt');
@@ -1348,17 +1348,16 @@ Class Items_model extends My_Model
             $this->db->set('item_name', $data['itemname']);
             $this->db->set('item_active', 1);
             $this->db->set('category_id', $data['category']);
-            // $this->db->set('subcategory_id', $data['subcategory']);
             $this->db->set('item_template','Stressball');
             $this->db->set('brand', 'BT');
             $this->db->insert('sb_items');
             $newid = $this->db->insert_id();
             if ($newid > 0) {
                 // Add subcategory
-                $this->db->set('item_categories_itemid', $newid);
-                $this->db->set('item_categories_categoryid', $data['subcategory']);
-                $this->db->set('item_categories_order', 1);
-                $this->db->insert('sb_item_categories');
+                // $this->db->set('item_categories_itemid', $newid);
+                // $this->db->set('item_categories_categoryid', $data['subcategory']);
+                // $this->db->set('item_categories_order', 1);
+                // $this->db->insert('sb_item_categories');
                 $out['result'] = $this->success_result;
                 $out['item_id'] = $newid;
                 // Update Category

@@ -28,7 +28,42 @@ function init_btitemdetails_view(item) {
         }
     })
     $(".itemimagepreview").unbind('click').click(function () {
-        // Show popup with images and colors
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        var url = '/btitemdetails/btitem_images_view';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#imageoptionsbackground").show();
+                $("#itemImagesModalLabel").empty().html(response.data.header);
+                $("#itemImagesModal").find('div.modal-body').empty().html(response.data.content);
+                $("#itemImagesModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#itemImagesModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                    $("#imageoptionsbackground").hide();
+                    // show new images
+                })
+                $(".addimages-slide-list").cycle({
+                    fx: 'carousel',
+                    allowWrap: false,
+                    manualSpeed: 600,
+                    timeout : 0,
+                    slides: '> div',
+                    next : '#nextaddimageslider',
+                    prev : '#prevaddimageslider',
+                });
+                $(".optimages-slide-list").cycle({
+                    fx: 'carousel',
+                    allowWrap: false,
+                    manualSpeed: 600,
+                    timeout : 0,
+                    slides: '> div',
+                    next : '#nextcolorimageslider',
+                    prev : '#prevcolorimageslider',
+                });
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
     $(".itemvendorfilebtn.vectorfile").unbind('click').click(function(){
         var url = $(this).data('file');

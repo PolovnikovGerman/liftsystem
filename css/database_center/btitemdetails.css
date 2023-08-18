@@ -1495,6 +1495,7 @@ input.metaurl {
     margin-right: 3px;
     width: 40px;
     line-height: 12px!important;
+    font-size: 11px;
 }
 .itemparamvalue.itemweigth {
     width: 40px;
@@ -1569,6 +1570,7 @@ input.box_width, input.box_length, input.box_height {
     line-height: 12px;
     margin-right: 5px;
     width: 42px;
+    font-size: 11px;
 }
 .itemparamvalue.specialeach {
     width: 34px;
@@ -1638,6 +1640,10 @@ input.chargeperorder {
 .popupimages_section {
     border-bottom: 2px solid #4e4e4e;
     margin: 0 15px;
+}
+.popupimages_section.viewmode {
+    padding-bottom: 10px;
+    padding-top: 7px;
 }
 .replaceimage {
     float: right!important;

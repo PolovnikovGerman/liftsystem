@@ -592,8 +592,84 @@ class Dbitems extends MY_Controller
             if ($brand=='BT') {
                 $this->load->model('categories_model');
                 $categories = $this->categories_model->get_reliver_categories(['brand'=>'BT']);
-                $subcategories = $this->categories_model->get_sbitem_categories();
+                $subcategories = []; // $this->categories_model->get_sbitem_categories();
                 $mdata['content'] = $this->load->view('btitems/newitemprepare',['categories' => $categories, 'subcategories' => $subcategories], TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function subcategories_list() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Category';
+            $postdata = $this->input->post();
+            $category_id = ifset($postdata, 'category_id',0);
+            if (!empty($category_id)) {
+                $error = '';
+                $this->load->model('categories_model');
+                $res = $this->categories_model->get_sbitem_categories($category_id);
+                $categories = [];
+                $categories[] = [
+                    'id' => '-1',
+                    'name' => '-- Add Subcategory -- ',
+                ];
+                foreach ($res as $row) {
+                    $categories[] = [
+                        'id' => $row['subcategory_id'],
+                        'name' => $row['code'].' - '.$row['name'],
+                    ];
+                }
+                $mdata['subcategories'] = $categories;
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function prepare_newsubcateg() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Category';
+            $postdata = $this->input->post();
+            $category_id = ifset($postdata, 'category_id',0);
+            if (!empty($category_id)) {
+                $this->load->model('categories_model');
+                $res = $this->categories_model->get_srcategory_data($category_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['content'] = $this->load->view('btitems/newsubcategprepare_view',['category' => $res['data'], ], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function addsubcategory() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $postdata = $this->input->post();
+            $this->load->model('categories_model');
+            $res = $this->categories_model->addsubcategory($postdata, $this->USR_ID);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $subcategories = $res['subcategories'];
+                $categories = [];
+                $categories[] = [
+                    'id' => '-1',
+                    'name' => '-- Add Subcategory -- ',
+                ];
+                foreach ($subcategories as $row) {
+                    $categories[] = [
+                        'id' => $row['subcategory_id'],
+                        'name' => $row['code'].' - '.$row['name'],
+                    ];
+                }
+                $mdata['subcategories'] = $categories;
+                $mdata['subcategory'] = $res['subcategory_id'];
             }
             $this->ajaxResponse($mdata, $error);
         }

@@ -20,7 +20,7 @@ class Itemcolors_model extends My_Model
 
     public function get_invent_itemcolors($item_id, $edit=0) {
         if ($edit==0) {
-            $this->db->select('ci.*, c.color, c.color_image, c.color_order');
+            $this->db->select('ci.*, ci.item_color_image as color_image, c.color, c.color_order');
             $this->db->from('sb_item_colors ci');
             $this->db->join('ts_inventory_colors c','c.inventory_color_id=ci.printshop_color_id');
             $this->db->where('ci.item_color_itemid', $item_id);

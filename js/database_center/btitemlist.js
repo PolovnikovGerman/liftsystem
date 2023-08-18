@@ -151,7 +151,40 @@ function init_addnewbtitem() {
         $(".btitemnewaddarea").empty();
         $(".btitemnewaddarea").hide();
     });
-    $(".btitemnewaddarea").find('div.procedaddnewitem').click(function (){
+    $("#itemnewcategory").unbind('change').change(function (){
+        var params = new Array();
+        params.push({name: 'category_id', value: $("#itemnewcategory").val()});
+        var url = '/dbitems/subcategories_list';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#itemnewsubcategory").empty();
+                $("#itemnewsubcategory").append('<option value=""> </option>');
+                var list = response.data.subcategories;
+                for (i=0; i<list.length; i++) {
+                    $("#itemnewsubcategory").append('<option value="'+list[i]['id']+'">'+list[i]['name']+'</option>');
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("#itemnewsubcategory").unbind('change').change(function (){
+        if ($("#itemnewsubcategory").val()=='-1') {
+            var params = new Array();
+            params.push({name: 'category_id', value: $("#itemnewcategory").val()});
+            var url = '/dbitems/prepare_newsubcateg';
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $(".btitemnewaddarea").hide();
+                    $(".btitemnewsucategarea").empty().html(response.data.content).show();
+                    init_addnewsubcategory();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    })
+    $(".btitemnewaddarea").find('div.procedaddnewitem').unbind('click').click(function (){
         var params = new Array();
         var category = $("#itemnewcategory").val();
         params.push({name: 'category', value: category });
@@ -188,6 +221,40 @@ function init_addnewbtitem() {
         },'json');
     });
 }
+
+function init_addnewsubcategory() {
+    $(".btitemnewsucategarea").find('div.cancelsubcateg').click(function (){
+        $(".btitemnewsucategarea").empty()
+        $(".btitemnewsucategarea").hide();
+        $(".btitemnewaddarea").show();
+        $("#itemnewsubcategory").val('');
+        init_addnewbtitem();
+    });
+    $(".procedaddnewsubcateg").unbind('click').click(function(){
+        var params = new Array();
+        params.push({name: 'category_id', value: $("#itemnewcategory").val()});
+        params.push({name: 'subcateg_code', value: $("#newsubcategcode").val()});
+        params.push({name: 'subcateg_name', value: $("#newsubcategname").val()});
+        var url = '/dbitems/addsubcategory';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#itemnewsubcategory").empty();
+                $("#itemnewsubcategory").append('<option value=""> </option>');
+                var list = response.data.subcategories;
+                for (i=0; i<list.length; i++) {
+                    $("#itemnewsubcategory").append('<option value="'+list[i]['id']+'">'+list[i]['name']+'</option>');
+                }
+                $("#itemnewsubcategory").val(response.data.subcategory);
+                $(".btitemnewsucategarea").empty()
+                $(".btitemnewsucategarea").hide();
+                $(".btitemnewaddarea").show();
+                $("#itemnewname").focus();
+                init_addnewbtitem();
+            }
+        },'json');
+    });
+}
+
 function edit_btitem(item) {
     var params = new Array();
     params.push({name: 'item_id', value: item});
