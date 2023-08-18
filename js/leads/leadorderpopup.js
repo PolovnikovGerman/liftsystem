@@ -373,6 +373,12 @@ function init_onlineleadorder_edit() {
                 $("input.salestaxcost").val(response.data.tax);
                 $("div.bl_items_sub-total2").empty().html(response.data.item_subtotal);
                 $("div#leadorderprofitarea").empty().html(response.data.profit_content);
+                if (parseInt(response.data.freshship)==1) {
+                    $("input.ship_tax_textareainpt[data-fldname='ship_company']").val(response.data.shipcompany);
+                }
+                if (parseInt(response.data.freshbill)==1) {
+                    $("input.billing_input2[data-field='company']").val(response.data.billcompany);
+                }
                 $("input#loctimeout").val(response.data.loctime);
                 if (response.data.ordersystem=='new') {
                     openbalancemanage(response.data.balanceopen);
@@ -1718,6 +1724,12 @@ function init_leadorder_contactmanage() {
                 }
                 if (fldname==='contact_phone') {
                     $("input.contact_phone_input[data-contact='"+contact+"']").val(response.data.contact_phone);
+                }
+                if (parseInt(response.data.freshship)==1) {
+                    $(".ship_tax_textareainpt[data-fldname='ship_contact']").val(response.data.shipcontact);
+                }
+                if (parseInt(response.data.freshbill)==1) {
+                    $(".billing_input1[data-field='customer_name']").val(response.data.billcontact);
                 }
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();                
