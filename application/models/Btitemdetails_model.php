@@ -1094,7 +1094,7 @@ class Btitemdetails_model extends MY_Model
                 'supplier' => [],
                 'options' => [],
                 'pricing' => [],
-                'customization' => [],
+                'printing' => [],
                 'meta' => [],
                 'shipping' => [],
             ];
@@ -1122,7 +1122,7 @@ class Btitemdetails_model extends MY_Model
                 $history['supplier'] = $this->_supplier_diff($olddata, $item, $vendor_item, $vendor_prices);
                 $history['options'] = $this->_options_diff($olddata, $item, $images, $colors);
                 $history['pricing'] = $this->_prices_diff($olddata, $item, $prices);
-                $history['customization'] = $this->_custom_diff($olddata, $item, $inprints);
+                $history['printing'] = $this->_custom_diff($olddata, $item, $inprints);
                 $history['meta'] = $this->_meta_diff($olddata, $item);
                 $history['shipping'] = $this->_shipping_diff($olddata, $item, $shipboxes);
             }

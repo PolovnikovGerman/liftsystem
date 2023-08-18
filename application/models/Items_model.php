@@ -682,10 +682,6 @@ Class Items_model extends My_Model
         $out=[];
         $numpp = $offset + 1;
         foreach ($res as $item) {
-            $item['dataclass'] = '';
-            if ($item['vendor_id']==$this->config->item('inventory_vendor')) {
-                $item['dataclass'] = 'internal';
-            }
             $item['misclas'] = ($item['missings']==0 ? '' : 'missing');
             $item['misinfo'] = ($item['missings']==0 ? 'Complete' : $item['missings'].' Missing');
             $item['misinfo_content'] = 'Complete';
@@ -701,10 +697,12 @@ Class Items_model extends My_Model
             $item['numpp'] = $numpp;
             // Bluetrack
             $item['vendorclass'] = '';
-            if ($item['vendor_code']=='50000') {
+            if ($item['vendor_id']==$this->config->item('inventory_vendor')) {
                 $item['vendor']='INTERNAL';
                 $item['vendorclass']='internal';
             }
+            // if ($item['vendor_code']=='50000') {
+            //}
             $numpp++;
             $out[] = $item;
         }
