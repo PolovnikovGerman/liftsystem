@@ -1,7 +1,7 @@
 <div class="tabledataarea">
 <?php $numpp=0;?>
 <?php foreach ($items as $item) { ?>
-    <div class="tabrow <?=$numpp%2==0 ? 'whitedatarow' : 'greydatarow'?> <?=$expand==1 ? 'expand' : ''?> <?=$item['dataclass']?>">
+    <div class="tabrow <?=$numpp%2==0 ? 'whitedatarow' : 'greydatarow'?> <?=$expand==1 ? 'expand' : ''?>">
         <div class="dataview" data-event="hover" data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="right"
              data-balloon="{ajax} /dbitems/itemmainimage?v=<?=$item['item_id']?>" data-delay="1000" data-timer="4000">
             <i class="fa fa-search" aria-hidden="true"></i>
