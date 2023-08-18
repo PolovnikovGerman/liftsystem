@@ -800,6 +800,30 @@ class Leadquote extends MY_Controller
         show_404();
     }
 
+    public function quoteprintdetails_blankquote() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $quotesession_id = ifset($postdata, 'quotesession', 'unkn');
+            $quotesession = usersession($quotesession_id);
+            if (!empty($quotesession)) {
+                usersession($quotesession_id, $quotesession);
+                $imprintsession_id = ifset($postdata, 'imprintsession', 'unkn');
+                $imprint_details = usersession($imprintsession_id);
+                if (!empty($imprint_details)) {
+                    $res = $this->leadquote_model->change_imprint_details($imprint_details, $postdata, $imprintsession_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Save Imprint Details
     public function save_imprintdetails() {
         if ($this->isAjax()) {
