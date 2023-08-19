@@ -345,6 +345,9 @@
     margin-right: 3px;
     display: inline-block;
 }
+.missing_info_details.unvisible {
+    visibility: hidden;
+}
 .itemlistview .tabledataarea .tabrow .emptydataview {
     color: #FF0000;
     width: 100%;

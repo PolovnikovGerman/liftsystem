@@ -41,7 +41,6 @@
     <div class="vendorstandrush">
         <div class="vendorrushtitle">Stand:</div>
         <div class="vendorrushterm"><?=$item['item_lead_a']?></div>
-            <!-- = $venditem['stand_days'] -->
         <div class="vendorrushtermtitle">biz days</div>
     </div>
     <div class="vendorrush1rush">

@@ -230,101 +230,101 @@ Class Items_model extends My_Model
         }
     }
 
-    function get_missinginfo($options=array(),$order='item_name',$direc='asc',$limit=0,$offset=0,$search='', $vendor_id='') {
-        $this->db->select('v.*,(v.size+v.weigth+v.material+v.lead_a+v.lead_b+v.lead_c+v.colors+v.categories+v.images+v.prices) as missings',FALSE);
-        $this->db->select('unix_timestamp(i.update_time) as updtime');
-        $this->db->from('v_item_missinginfo v');
-        $this->db->join('sb_items i','i.item_id=v.item_id');
-        foreach ($options as $key=>$value) {
-            if ($key=='brand') {
-                if ($value!=='ALL') {
-                    if ($value=='SR') {
-                        $this->db->where('i.brand', $value);
-                    } else {
-                        $this->db->where_in('i.brand', ['SB','BT']);
-                    }
-                }
-            } else {
-                $this->db->where($key,$value);
-            }
-        }
-        if ($vendor_id) {
-            $this->db->join('sb_vendor_items vi','vi.vendor_item_id=i.vendor_item_id');
-            $this->db->where('vi.vendor_item_vendor',$vendor_id);
-        }
-
-        if ($search!='') {
-            $where="lower(concat(item_number,item_name)) like '%".strtolower($search)."%'";
-            $this->db->where($where);
-        }
-        $this->db->order_by($order,$direc);
-        if ($limit) {
-            $this->db->limit($limit,$offset);
-        }
-        $result=$this->db->get()->result_array();
-
-        $out_array=array();
-        $curtime=time();
-        $diff=86400;
-        foreach ($result as $row) {
-            $row['itemnameclass']='';
-            if ($curtime-$row['updtime']<$diff) {
-                $row['itemnameclass']='nearlyupdate';
-            }
-            $missings=array();
-            if ($row['colors']==1) {
-                $missings[]=array('type'=>'colors');
-            }
-            if ($row['size']==1) {
-                $missings[]=array('type'=>'size');
-            }
-            if ($row['images']==1) {
-                $missings[]=array('type'=>'images');
-            }
-            if ($row['weigth']==1) {
-                $missings[]=array('type'=>'weight');
-            }
-            if ($row['material']==1) {
-                $missings[]=array('type'=>'material');
-            }
-            if ($row['lead_a']==1) {
-                $missings[]=array('type'=>'lead_a');
-            }
-            if ($row['lead_b']==1) {
-                $missings[]=array('type'=>'lead_b');
-            }
-            if ($row['lead_c']==1) {
-                $missings[]=array('type'=>'lead_c');
-            }
-            if ($row['categories']==1) {
-                $missings[]=array('type'=>'category');
-            }
-            if ($row['prices']==1) {
-                $missings[]=array('type'=>'prices');
-            }
-            if ($row['item_keywords']==1) {
-                $missings[]=array('type'=>'item kw');
-            }
-            if ($row['url']==1) {
-                $missings[]=array('type'=>'url');
-            }
-            if ($row['meta_title']==1) {
-                $missings[]=array('type'=>'meta title');
-            }
-            if ($row['meta_description']==1) {
-                $missings[]=array('type'=>'descript');
-            }
-            if ($row['meta_keywords']==1) {
-                $missings[]=array('type'=>'meta KW');
-            }
-            if ($row['attributes']==1) {
-                $missings[]=array('type'=>'attributes');
-            }
-
-            $out_array[]=array('item_id'=>$row['item_id'],'item_number'=>$row['item_number'],'item_name'=>$row['item_name'],'missings'=>$missings, 'itemnameclass'=>$row['itemnameclass']);
-        }
-        return $out_array;
-    }
+//    function get_missinginfo($options=array(),$order='item_name',$direc='asc',$limit=0,$offset=0,$search='', $vendor_id='') {
+//        $this->db->select('v.*,(v.size+v.weigth+v.material+v.lead_a+v.lead_b+v.lead_c+v.colors+v.categories+v.images+v.prices) as missings',FALSE);
+//        $this->db->select('unix_timestamp(i.update_time) as updtime');
+//        $this->db->from('v_item_missinginfo v');
+//        $this->db->join('sb_items i','i.item_id=v.item_id');
+//        foreach ($options as $key=>$value) {
+//            if ($key=='brand') {
+//                if ($value!=='ALL') {
+//                    if ($value=='SR') {
+//                        $this->db->where('i.brand', $value);
+//                    } else {
+//                        $this->db->where_in('i.brand', ['SB','BT']);
+//                    }
+//                }
+//            } else {
+//                $this->db->where($key,$value);
+//            }
+//        }
+//        if ($vendor_id) {
+//            $this->db->join('sb_vendor_items vi','vi.vendor_item_id=i.vendor_item_id');
+//            $this->db->where('vi.vendor_item_vendor',$vendor_id);
+//        }
+//
+//        if ($search!='') {
+//            $where="lower(concat(item_number,item_name)) like '%".strtolower($search)."%'";
+//            $this->db->where($where);
+//        }
+//        $this->db->order_by($order,$direc);
+//        if ($limit) {
+//            $this->db->limit($limit,$offset);
+//        }
+//        $result=$this->db->get()->result_array();
+//
+//        $out_array=array();
+//        $curtime=time();
+//        $diff=86400;
+//        foreach ($result as $row) {
+//            $row['itemnameclass']='';
+//            if ($curtime-$row['updtime']<$diff) {
+//                $row['itemnameclass']='nearlyupdate';
+//            }
+//            $missings=array();
+//            if ($row['colors']==1) {
+//                $missings[]=array('type'=>'colors');
+//            }
+//            if ($row['size']==1) {
+//                $missings[]=array('type'=>'size');
+//            }
+//            if ($row['images']==1) {
+//                $missings[]=array('type'=>'images');
+//            }
+//            if ($row['weigth']==1) {
+//                $missings[]=array('type'=>'weight');
+//            }
+//            if ($row['material']==1) {
+//                $missings[]=array('type'=>'material');
+//            }
+//            if ($row['lead_a']==1) {
+//                $missings[]=array('type'=>'lead_a');
+//            }
+//            if ($row['lead_b']==1) {
+//                $missings[]=array('type'=>'lead_b');
+//            }
+//            if ($row['lead_c']==1) {
+//                $missings[]=array('type'=>'lead_c');
+//            }
+//            if ($row['categories']==1) {
+//                $missings[]=array('type'=>'category');
+//            }
+//            if ($row['prices']==1) {
+//                $missings[]=array('type'=>'prices');
+//            }
+//            if ($row['item_keywords']==1) {
+//                $missings[]=array('type'=>'item kw');
+//            }
+//            if ($row['url']==1) {
+//                $missings[]=array('type'=>'url');
+//            }
+//            if ($row['meta_title']==1) {
+//                $missings[]=array('type'=>'meta title');
+//            }
+//            if ($row['meta_description']==1) {
+//                $missings[]=array('type'=>'descript');
+//            }
+//            if ($row['meta_keywords']==1) {
+//                $missings[]=array('type'=>'meta KW');
+//            }
+//            if ($row['attributes']==1) {
+//                $missings[]=array('type'=>'attributes');
+//            }
+//
+//            $out_array[]=array('item_id'=>$row['item_id'],'item_number'=>$row['item_number'],'item_name'=>$row['item_name'],'missings'=>$missings, 'itemnameclass'=>$row['itemnameclass']);
+//        }
+//        return $out_array;
+//    }
 
     /* Get array of items */
     public function get_items($options=array(),$sort_by='item_id',$direct='asc',$limit=0,$offset=0,$search='',$vendor_id='') {
@@ -627,13 +627,13 @@ Class Items_model extends My_Model
 
         $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
         $this->db->select('v.vendor_name as vendor, v.vendor_code, v.vendor_phone, v.vendor_email, v.vendor_website, svi.vendor_item_number');
-        $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
+        $this->db->select('(vm.keyinfo+vm.prices+vm.printing+vm.meta+vm.shiping+vm.imagescolors+vm.supplier+vm.similar) as missings');
         $this->db->select('categ.category_name as category');
         $this->db->select('svi.vendor_item_vendor as vendor_id');
         $this->db->from('sb_items i');
         $this->db->join('sb_vendor_items svi','i.vendor_item_id = svi.vendor_item_id','left');
         $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor','left');
-        $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
+        $this->db->join('v_sbitem_missinginfo vm','i.item_id=vm.item_id');
         $this->db->join("({$category_qty}) categ",'categ.item_id=i.item_id', 'left');
         if (ifset($options,'brand', 'ALL')!=='ALL') {
             if ($options['brand']=='SR') {
@@ -687,7 +687,7 @@ Class Items_model extends My_Model
             $item['misinfo_content'] = 'Complete';
             if ($item['missings']>0) {
                 $this->db->select('*');
-                $this->db->from('v_item_missinginfo');
+                $this->db->from('v_sbitem_missinginfo');
                 $this->db->where('item_id', $item['item_id']);
                 $misdata = $this->db->get()->row_array();
                 $item['misinfo_content'] = $this->load->view('dbitems/missinfo_details_view', $misdata, TRUE);
@@ -1292,8 +1292,8 @@ Class Items_model extends My_Model
             $this->db->where('i.category_id',$options['category']);
         }
         if (ifset($options,'missinfo','0')!=0) {
-            $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
-            $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
+            $this->db->select('(vm.keyinfo+vm.prices+vm.printing+vm.meta+vm.shiping+vm.imagescolors+vm.supplier+vm.similar) as missings');
+            $this->db->join('v_sbitem_missinginfo vm','i.item_id=vm.item_id','left');
             if ($options['missinfo']==1) {
                 $this->db->having('missings=0');
             } else {
