@@ -421,6 +421,11 @@ function init_btitemdetails_edit() {
         $.post(url, params, function (response) {
             if (response.errors == '') {
                 $(".vendorshipstate").empty().html(response.data.shipstate);
+                if (newval=='') {
+                    $(this).addClass('missing_info');
+                } else {
+                    $(this).removeClass('missing_info');
+                }
             } else {
                 show_error(response);
             }

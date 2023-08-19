@@ -287,8 +287,8 @@ select.keyinfodata {
     appearance: none; */
 }
 select.missing_info {
-    background: #ffc0cb;
-    border: 1px solid #FF0000;
+    background-color: #ffc0cb!important;
+    border: 1px solid #FF0000!important;
 }
 select.itemdetailsstatus {
     width: 67px;
