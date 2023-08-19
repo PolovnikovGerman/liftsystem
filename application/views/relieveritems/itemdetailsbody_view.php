@@ -1,5 +1,7 @@
 <div class="itemdetails-tab active" data-tabview="infoarea">Main Info</div>
-<div class="itemdetails-tab" data-tabview="history">History</div>
+<?php if ($history_cnt > 0) { ?>
+    <div class="itemdetails-tab" data-tabview="history">History</div>
+<?php } ?>
 <div class="itemdetails-infoarea">
     <div class="leftpartitembody">
         <?=$keyinfo?>
