@@ -422,9 +422,9 @@ function init_btitemdetails_edit() {
             if (response.errors == '') {
                 $(".vendorshipstate").empty().html(response.data.shipstate);
                 if (newval=='') {
-                    $(this).addClass('missing_info');
+                    $(".vendoritemcountyinp").addClass('missing_info');
                 } else {
-                    $(this).removeClass('missing_info');
+                    $(".vendoritemcountyinp").removeClass('missing_info');
                 }
             } else {
                 show_error(response);
