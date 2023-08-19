@@ -25,6 +25,8 @@
         </div>
     </div>
 </div>
-<div class="itemdetails-history">
-    <?=$history?>
-</div>
+<?php if ($history_cnt > 0) { ?>
+    <div class="itemdetails-history">
+        <?=$history?>
+    </div>
+<?php } ?>

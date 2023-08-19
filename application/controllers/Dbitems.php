@@ -232,8 +232,10 @@ class Dbitems extends MY_Controller
                     $shippingview = $this->load->view('btitems/itemship_edit',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
                 }
                 $history_view = '';
+                $history_count = 0;
                 if ($item_id!==0) {
                     $history = $this->items_model->get_item_history($item_id);
+                    $history_count = count($history);
                     $history_list = $this->load->view('itemdetails/history_data_view', ['data' => $history], TRUE);
                     $history_view = $this->load->view('itemdetails/history_view',['listview' => $history_list], TRUE);
                 }
@@ -248,6 +250,7 @@ class Dbitems extends MY_Controller
                     'metaview' => $metaview,
                     'shipping' => $shippingview,
                     'history' => $history_view,
+                    'history_cnt' => $history_count,
                 ];
                 $mdata['content'] = $this->load->view('relieveritems/itemdetailsbody_view', $body_options, TRUE);;
                 $mdata['editmode'] = $editmode;
