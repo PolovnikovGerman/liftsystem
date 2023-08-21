@@ -1165,23 +1165,25 @@ Class Items_model extends My_Model
                     break;
                 }
             }
-            if ($numpp < $pricesmax) {
-                $idx = 1;
-                for ($i=$numpp; $i<=$pricesmax; $i++) {
-                    $prices[] = [
-                        'promo_price_id' => $idx * (-1),
-                        'item_id' => $item_id,
-                        'item_qty' => '',
-                        'price' => '',
-                        'sale_price' => '',
-                        'profit' => '',
-                        'show_first' => '0',
-                        'shipbox' =>  '',
-                        'shipweight' =>  '',
-                        'profit_class' =>  '',
-                        'profit_perc' =>  '',
-                    ];
-                    $idx++;
+            if ($editmode==1) {
+                if ($numpp <= $pricesmax) {
+                    $idx = 1;
+                    for ($i=$numpp; $i<=$pricesmax; $i++) {
+                        $prices[] = [
+                            'promo_price_id' => $idx * (-1),
+                            'item_id' => $item_id,
+                            'item_qty' => '',
+                            'price' => '',
+                            'sale_price' => '',
+                            'profit' => '',
+                            'show_first' => '0',
+                            'shipbox' =>  '',
+                            'shipweight' =>  '',
+                            'profit_class' =>  '',
+                            'profit_perc' =>  '',
+                        ];
+                        $idx++;
+                    }
                 }
             }
             // Special price - setup, print

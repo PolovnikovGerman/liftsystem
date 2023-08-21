@@ -1427,6 +1427,11 @@ class Btitemdetails_model extends MY_Model
                         $this->db->set('item_id', $item_id);
                         $this->db->insert('sb_promo_price');
                     }
+                } else {
+                    if ($price['promo_price_id'] > 0) {
+                        $this->db->where('promo_price_id', $price['promo_price_id']);
+                        $this->db->delete('sb_promo_price');
+                    }
                 }
             }
             // Print Locations
