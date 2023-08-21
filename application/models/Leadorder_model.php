@@ -920,12 +920,14 @@ Class Leadorder_model extends My_Model {
             if ($entity=='order' && $fldname=='customer_name') {
                 $data['customer_name'] = $newval;
                 if (!empty($newval)) {
-                    $shipaddrs = $leadorder['shipping_address'];
-                    $shipadr = $shipaddrs[0];
-                    if (empty($shipadr['ship_company'])) {
-                        $shipaddrs[0]['ship_company'] = $newval;
-                        $out['shipcompany'] = $newval;
-                        $leadorder['shipping_address']=$shipaddrs;
+                    if ($data['brand']!=='SR') {
+                        $shipaddrs = $leadorder['shipping_address'];
+                        $shipadr = $shipaddrs[0];
+                        if (empty($shipadr['ship_company'])) {
+                            $shipaddrs[0]['ship_company'] = $newval;
+                            $out['shipcompany'] = $newval;
+                            $leadorder['shipping_address']=$shipaddrs;
+                        }
                     }
                     $billing = $leadorder['billing'];
                     if (empty($billing['company'])) {
@@ -1279,14 +1281,17 @@ Class Leadorder_model extends My_Model {
             }
         }
         $leadorder['contacts']=$contacts;
+        $order = $leadorder['order'];
         if ($fldname=='contact_name' && intval($contact_id)==-1) {
             if (!empty($newval)) {
-                $shipadrs = $leadorder['shipping_address'];
-                $shipadr = $shipadrs[0];
-                if (empty($shipadr['ship_contact'])) {
-                    $shipadrs[0]['ship_contact'] = $newval;
-                    $out['shipcontact'] = $newval;
-                    $leadorder['shipping_address'] = $shipadrs;
+                if ($order['brand']!='SR') {
+                    $shipadrs = $leadorder['shipping_address'];
+                    $shipadr = $shipadrs[0];
+                    if (empty($shipadr['ship_contact'])) {
+                        $shipadrs[0]['ship_contact'] = $newval;
+                        $out['shipcontact'] = $newval;
+                        $leadorder['shipping_address'] = $shipadrs;
+                    }
                 }
                 $billing = $leadorder['billing'];
                 if (empty($billing['customer_name'])) {
