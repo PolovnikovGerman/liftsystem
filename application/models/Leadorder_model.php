@@ -5731,8 +5731,11 @@ Class Leadorder_model extends My_Model {
             $this->db->where('item_id', $item_id);
             $this->db->order_by('item_qty');
             $priceres=  $this->db->get()->result_array();
-
-            $price=(intval($priceres[0]['sale_price'])==0 ? $priceres[0]['price'] : $priceres[0]['sale_price']);
+            if (count($priceres) > 0 ) {
+                $price=(intval($priceres[0]['sale_price'])==0 ? $priceres[0]['price'] : $priceres[0]['sale_price']);
+            } else {
+                $price = 0;
+            }
             foreach ($priceres as $row) {
                 if ($qty<$row['item_qty']) {
                     break;
