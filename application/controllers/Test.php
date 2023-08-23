@@ -2385,4 +2385,163 @@ class Test extends CI_Controller
             }
         }
     }
+    public function getUpsRates() {
+        $this->load->config('shipping');
+        $this->load->library('UPS_service');
+        $upsservice = new UPS_service();
+        $shipFrom = array(
+            "Name" => "BLUETRACK Internal",
+            "Address" => array(
+                "City" => "Clifton",
+                "StateProvinceCode" => "NJ",
+                "PostalCode" => "07012",
+                "CountryCode" => "US"
+            )
+        );
+        /*
+        $shipTo = array(
+            "Name" => "Test Company",
+            "Address" => array(
+                "AddressLine" => array(
+                    "106 960 Yankee valley Blvd SE",
+                ),
+                "City" => "Toronto",
+                "StateProvinceCode" => "ON",
+                "PostalCode" => "M8Y1H8",
+                "CountryCode" => "CA"
+            )
+        );
+        */
+        $shipTo = [
+            "Name" => "Test Company",
+            "Address" => [
+                "AddressLine" => [
+                    "106 960 Yankee valley Blvd SE",
+                ],
+                "City" => "CINCINNATI",
+                "StateProvinceCode" => "OH",
+                "PostalCode" => "45202",
+                "CountryCode" => "US"
+            ],
+        ];
+        $packWeight = 7.2;
+        $packDimens = [];
+        $packDimens[] = [
+            "PackagingType" => array(
+                "Code" => "02",
+                "Description" => "Packaging"
+            ),
+            "Dimensions" => array(
+                "UnitOfMeasurement" => array(
+                    "Code" => "IN",
+                    "Description" => "Inches"
+                ),
+                "Length" => "15",
+                "Width" => "15",
+                "Height" => "15"
+            ),
+            "PackageWeight" => array(
+                "UnitOfMeasurement" => array(
+                    "Code" => "LBS",
+                    "Description" => "Pounds"
+                ),
+                "Weight" => "7.2"
+            )
+        ];
+
+        $tokenres = $this->getUpsToken();
+        if ($tokenres['result']==0) {
+            echo 'Rates request break on stage Token Generation, reason - '.$tokenres['msg'];
+        } else {
+            $token = $tokenres['token'];
+            // Time in transit
+            $res = $upsservice->getRates($token, $shipTo, $shipFrom, 1,  $packDimens, $packWeight);
+            if ($res['error'] > 0) {
+                echo 'Error, code '.$res['msg'];
+            } else {
+                if (isset($res['errors'])) {
+                    $error = $res['errors'][0];
+                    echo 'Error, code '.$error['code'].' - '.$error['message'].PHP_EOL;
+                } else {
+                    echo 'SUCCESS'.PHP_EOL;
+                    var_dump($res['rates']);
+                }
+            }
+        }
+    }
+
+    public function getTimeinTransit() {
+        $this->load->config('shipping');
+        $this->load->library('UPS_service');
+        $upsservice = new UPS_service();
+        $shipFrom = array(
+            "Name" => "BLUETRACK Internal",
+            "Address" => array(
+                "City" => "Clifton",
+                "StateProvinceCode" => "NJ",
+                "PostalCode" => "07012",
+                "CountryCode" => "US"
+            )
+        );
+//        $shipTo = array(
+//            "Name" => "Test Company",
+//            "Address" => array(
+//                "AddressLine" => array(
+//                    "The Landing",
+//                ),
+//                "City" => "Trafford Park",
+//                "StateProvinceCode" => "",
+//                "PostalCode" => "M502ST",
+//                "CountryCode" => "GB"
+//            )
+//        );
+        $shipTo = [
+            "Name" => "Test Company",
+            "Address" => [
+                "AddressLine" => [
+                    "106 960 Yankee valley Blvd SE",
+                ],
+                "City" => "CINCINNATI",
+                "StateProvinceCode" => "OH",
+                "PostalCode" => "45202",
+                "CountryCode" => "US"
+            ],
+        ];
+
+        $weight = "7.2";
+        $shipdate = "2023-07-31";
+        $shiptime = "10:00:00";
+        $tokenres = $this->getUpsToken();
+        if ($tokenres['result']==1) {
+            $token = $tokenres['token'];
+            $tntres = $upsservice->timeInTransit($token, $shipFrom['Address'], $shipTo['Address'], $weight, 1, 100.5, $shipdate, $shiptime);
+            if ($tntres['error']==0) {
+                $services = $tntres['services'];
+                var_dump($services);
+            }
+        }
+    }
+
+    public function getUpsToken()  {
+        $out = ['result' => 0, 'msg' => 'Error during Token generation'];
+        $this->load->library('UPS_service');
+        $upsservice = new UPS_service();
+        $sessionId =  uniq_link();
+        echo 'Session ID '.$sessionId.PHP_EOL;
+        $tokenresult = $upsservice->generateToken($sessionId);
+        if ($tokenresult['error']==1) {
+
+        } else {
+            if (isset($tokenresult['errors'])) {
+                $errors = $tokenresult['errors'][0];
+                $out['msg'] = 'Error Code '.$errors['code'].' - '.$errors['message'];
+            } else {
+                $out['result'] = 1;
+                $out['token'] = $tokenresult['access_token'];
+                $out['session'] = $sessionId;
+                // echo 'Success Token Type '.$tokenresult['token_type'].' Issued '.$tokenresult['issued_at'].'('.date('Y-m-d H:i:s', $tokenresult['issued_at']).' Expired '.(intval($tokenresult['expires_in'])/60).' min';
+            }
+        }
+        return $out;
+    }
 }
