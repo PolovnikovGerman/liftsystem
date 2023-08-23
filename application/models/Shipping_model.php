@@ -535,10 +535,11 @@ Class Shipping_model extends MY_Model
             $cnt_code = $shipaddr['out_country'];
             $package_price = $item['item_subtotal'];
             $itemqty = ceil($item['item_qty']*$kf);
-            $datpackages = $this->prepare_ship_packages($itemqty, $shipboxes, $item['item_weigth']);
+            $itemweigth = ifset($item, 'item_weigth',0)==0 ? 0.010 : $item['item_weigth'];
+            $datpackages = $this->prepare_ship_packages($itemqty, $shipboxes, $itemweigth);
             $shipoptions = [
                 'itemqty' => $itemqty,
-                'weight' => $item['item_weigth'],
+                'weight' => $itemweigth,
                 'packages' => $datpackages['packages'],
                 'numpackages' => $datpackages['numpackages'],
                 'startdeliv'=> $deliv_date,
@@ -1550,7 +1551,7 @@ Class Shipping_model extends MY_Model
         $out=['result' => $this->error_result, 'msg' => 'Error During Calc Ship rates'];
         $this->load->config('shipping');
         $this->load->model('calendars_model');
-        $itemweight = ifset($options, 'weight', '0.010');
+        $itemweight = ifset($options, 'weight', '0')==0 ? 0.010 : $options['weight'];
         $qty = ifset($options, 'itemqty', 250);
         $startdeliv = ifset($options, 'startdeliv', time());
         $cnt_code = (isset($options['target_country']) ? $options['target_country'] : 'US');
