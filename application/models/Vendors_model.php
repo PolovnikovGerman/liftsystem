@@ -1005,7 +1005,7 @@ Class Vendors_model extends My_Model
     }
 
     // Get Vendor for new edit
-    public function get_item_vendor($vendor_item_id, $inventory_item_id) {
+    public function get_item_vendor($vendor_item_id, $inventory_item_id=0) {
         $this->db->select('vi.*');
         $this->db->select('v.vendor_name, cnt.country_iso_code_2 as item_shipcountry_name');
         $this->db->from('sb_vendor_items vi');

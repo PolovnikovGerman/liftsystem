@@ -1421,6 +1421,14 @@ Class Items_model extends My_Model
         return $this->db->get()->result_array();
     }
 
+    public function get_item_shipboxes($item_id) {
+        $this->db->select('box_qty, box_width, box_height, box_length');
+        $this->db->from('sb_item_shipping');
+        $this->db->where('item_id', $item_id);
+        $this->db->order_by('box_qty','desc');
+        return $this->db->get()->result_array();
+    }
+
     private function _recalc_inventory_profit($prices, $vendor_item_cost) {
         $idx = 0;
         foreach ($prices as $price) {
