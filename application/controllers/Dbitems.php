@@ -148,7 +148,7 @@ class Dbitems extends MY_Controller
                 $this->load->model('prices_model');
                 // $discounts = $this->prices_model->get_price_discounts();
                 $this->load->model('vendors_model');
-                $vendors = $this->vendors_model->get_vendors_list(['status'=>1]);
+                $vendors = $this->vendors_model->get_vendors_list(['status'=>1, 'order_by'=>'vendor_name']);
                 if ($editmode==0) {
                     $keyinfo = $this->load->view('btitems/keyinfo_view',['item' => $data['item'],'categories'=>$data['categories']], TRUE);
                     $similar = $this->load->view('btitems/similar_view',['items' => $data['similar']], TRUE);
@@ -497,7 +497,7 @@ class Dbitems extends MY_Controller
                 $this->load->model('prices_model');
                 $discounts = $this->prices_model->get_price_discounts();
                 $this->load->model('vendors_model');
-                $vendors = $this->vendors_model->get_vendors_list(['status'=>1]);
+                $vendors = $this->vendors_model->get_vendors_list(['status'=>1, 'order_by'=>'vendor_name']);
                 if ($editmode==0) {
                     $category = '';
                     if (!empty($data['item']['category_id'])) {
@@ -508,7 +508,7 @@ class Dbitems extends MY_Controller
                     }
                     $keyinfo = $this->load->view('relieveritems/keyinfo_view',['item' => $data['item']], TRUE);
                     $similar = $this->load->view('relieveritems/similar_view',['items' => $data['similar']], TRUE);
-                    $vendor_main = $this->load->view('relieveritems/vendormain_view',['vendor_item' => $data['vendor_item'],'vendor' => $data['vendor']],TRUE);
+                    $vendor_main = $this->load->view('relieveritems/vendormain_view',['vendor_item' => $data['vendor_item'],],TRUE);
                     $vendor_prices = $this->load->view('relieveritems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
                     $profit_view = $this->load->view('relieveritems/itemprice_profit_view',['item' => $data['item'],'prices'=> $data['prices']],TRUE);
                     $netprices = $this->load->view('relieveritems/itemprice_net_view',['prices' => $data['prices']], TRUE);
