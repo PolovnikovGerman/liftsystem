@@ -336,6 +336,9 @@ select.leadord_filterselect {
     white-space: nowrap;
     width: 247px; /* 163px; */
 }
+.leadorder_datarow > .sritem.customorder {
+    font-weight: bold;
+}
 .leadorder_datarow > .item.customorder {
     font-weight: bold;
 }
