@@ -9,9 +9,9 @@ Class Sritems_model extends My_Model
 
     public function get_relievers_itemscount($options=[]) {
         $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
-        $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
+        $this->db->select('(vm.keyinfo+vm.similar+vm.prices+vm.printing+vm.meta+vm.imagescolors+vm.supplier) as missings');
         $this->db->from('sb_items i');
-        $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
+        $this->db->join('v_sritem_missinginfo vm','i.item_id=vm.item_id','left');
         $this->db->where('i.brand', 'SR');
         if (ifset($options, 'category',0)!=0) {
             $this->db->where('i.category_id', $options['category']);
@@ -45,9 +45,7 @@ Class Sritems_model extends My_Model
 
     public function get_relievers_itemslist($options) {
         $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
-        // $this->db->select('v.vendor_name as vendor, v.vendor_phone, v.vendor_email, v.vendor_website, svi.vendor_item_number');
-        // $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
-        $this->db->select('(vm.size+vm.weigth+vm.material+vm.url+vm.meta_title+vm.meta_description+vm.meta_keywords+vm.attributes+vm.images+vm.itemprices+vm.mainprices) as missings');
+        $this->db->select('(vm.keyinfo+vm.similar+vm.prices+vm.printing+vm.meta+vm.imagescolors+vm.supplier) as missings');
         $this->db->from('sb_items i');
         $this->db->join('v_sritem_missinginfo vm','i.item_id=vm.item_id','left');
         $this->db->where('i.brand', 'SR');
@@ -104,11 +102,16 @@ Class Sritems_model extends My_Model
                 $row['misinfo'] = '-';
             } else {
                 $row['misclas'] = 'missing';
-                if ($row['missings']==1) {
-                    $row['misinfo'] = '1 field';
-                } else {
-                    $row['misinfo'] = $row['missings'].' fields';
-                }
+//                if ($row['missings']==1) {
+//                    $row['misinfo'] = '1 field';
+//                } else {
+//                    $row['misinfo'] = $row['missings'].' fields';
+//                }
+                $this->db->select('*');
+                $this->db->from('v_sritem_missinginfo');
+                $this->db->where('item_id', $row['item_id']);
+                $misdata = $this->db->get()->row_array();
+                $row['misinfo'] = $this->load->view('dbitems/missinfo_details_view', $misdata, TRUE);
             }
             $row['numpp'] = $numpp;
             $out[] = $row;
