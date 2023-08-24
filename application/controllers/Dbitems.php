@@ -567,6 +567,15 @@ class Dbitems extends MY_Controller
                     $metaview = $this->load->view('relieveritems/itemmeta_edit',['item' => $data['item']], TRUE);
                     $shippingview = $this->load->view('relieveritems/itemship_edit',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
                 }
+                $history_view = '';
+                $history_count = 0;
+                if ($item_id!==0) {
+                    $history = $this->items_model->get_item_history($item_id);
+                    $history_count = count($history);
+                    $history_list = $this->load->view('itemdetails/history_data_view', ['data' => $history], TRUE);
+                    $history_view = $this->load->view('itemdetails/history_view',['listview' => $history_list], TRUE);
+                }
+
                 $body_options = [
                     'keyinfo' => $keyinfo,
                     'similar' => $similar,
@@ -577,6 +586,8 @@ class Dbitems extends MY_Controller
                     'customview' => $customview,
                     'metaview' => $metaview,
                     'shipping' => $shippingview,
+                    'history' => $history_view,
+                    'history_cnt' => $history_count,
                 ];
                 $mdata['content'] = $this->load->view('relieveritems/itemdetailsbody_view', $body_options, TRUE);;
                 $mdata['editmode'] = $editmode;
@@ -597,6 +608,11 @@ class Dbitems extends MY_Controller
                 $categories = $this->categories_model->get_reliver_categories(['brand'=>'BT']);
                 $subcategories = []; // $this->categories_model->get_sbitem_categories();
                 $mdata['content'] = $this->load->view('btitems/newitemprepare',['categories' => $categories, 'subcategories' => $subcategories], TRUE);
+            } else {
+                $this->load->model('categories_model');
+                $categories = $this->categories_model->get_reliver_categories(['brand'=>'SR']);
+                $mdata['content'] = $this->load->view('relieveritems/newitemprepare',['categories' => $categories, ], TRUE);
+
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -687,6 +703,13 @@ class Dbitems extends MY_Controller
         $this->load->model('items_model');
         if ($brand=='BT') {
             $res = $this->items_model->new_btitem($postdata, $this->USR_ID);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['newitem'] = $res['item_id'];
+            }
+        } else {
+            $res = $this->items_model->new_sritem($postdata, $this->USR_ID);
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';

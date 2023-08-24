@@ -1,5 +1,5 @@
 <div class="sectionlabel">META &amp; SEARCH:</div>
-<div class="sectionbody">
+<div class="sectionbody metasection">
     <div class="itemparamlabel metatitle">Meta Title:</div>
     <div class="itemparamvalue metatitle <?=empty($item['item_meta_title']) ? 'missing_info' : ''?>"><?=$item['item_meta_title']?></div>
     <div class="content-row">
