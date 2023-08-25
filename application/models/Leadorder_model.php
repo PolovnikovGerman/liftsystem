@@ -113,12 +113,24 @@ Class Leadorder_model extends My_Model {
         $this->db->group_by('i.order_id');
         $itemdatesql = $this->db->get_compiled_select();
 
-        $amountcnt="select order_id, sum(amount_sum) as cnt_amnt from ts_order_amounts where amount_sum>0 group by order_id";
+        $this->db->select('order_id, count(amount_id) as cnt'); // , sum(amount_sum) as cnt_amnt
+        $this->db->from('ts_order_amounts');
+        $this->db->where('amount_sum  > ',0);
+        $this->db->group_by('order_id');
+        $amountsql = $this->db->get_compiled_select();
+
+        $this->db->select('i.order_id, group_concat(distinct(c.item_color)) as item_color');
+        $this->db->from('ts_order_items i');
+        $this->db->join('ts_order_itemcolors c','c.order_item_id=i.order_item_id');
+        $this->db->group_by('i.order_id');
+        $colorsql = $this->db->get_compiled_select();
+
         $this->db->select('o.order_id, o.create_usr, o.order_date, o.brand_id, o.order_num, o.customer_name');
         $this->db->select('o.customer_email, o.revenue, o.shipping, o.is_shipping, o.tax, o.cc_fee, o.order_cog');
         $this->db->select('o.profit, o.profit_perc, o.is_canceled, o.reason,  o.item_id, o.invoice_doc, o.invoice_send');
         $this->db->select('o.order_confirmation, o.order_items, o.order_usr_repic, o.weborder, o.order_qty, o.shipdate');
         $this->db->select('o.is_invoiced, o.order_system, o.order_arthide, o.order_itemnumber, o.deliverydate');
+        $this->db->select('oa.cnt as cnt_amnt, colordat.item_color as itemcolor');
         // ART Stages
         $this->db->select('o.order_art, o.order_redrawn, o.order_proofed, o.order_vectorized, o.order_approved, o.is_canceled');
         $this->db->select('itm.item_name');
@@ -131,7 +143,8 @@ Class Leadorder_model extends My_Model {
         $this->db->join('users u','u.user_id=o.order_usr_repic','left');
         $this->db->join('ts_stock_items st','st.item_id=o.item_id','left');
         $this->db->join('ts_order_billings bil','bil.order_id=o.order_id', 'left');
-        // $this->db->join("({$amountcnt}) oa",'oa.order_id=o.order_id','left');
+        $this->db->join("({$amountsql}) oa",'oa.order_id=o.order_id','left');
+        $this->db->join("({$colorsql}) as colordat",'colordat.order_id=o.order_id','left');
         // $this->db->where('o.is_canceled',0);
         $this->db->join('v_order_artstage vo','vo.order_id=o.order_id','left');
         if (isset($options['unassigned'])) {
@@ -192,31 +205,31 @@ Class Leadorder_model extends My_Model {
         $curdat='';
         $ordidx=1;
         foreach ($res as $row) {
-            $this->db->select('distinct(c.item_color) as item_color');
-            $this->db->from('ts_order_itemcolors c');
-            $this->db->join('ts_order_items i','i.order_item_id=c.order_item_id');
-            $this->db->where('i.order_id', $row['order_id']);
-            $colordat=$this->db->get()->result_array();
-            $itemcolor='';
-            foreach ($colordat as $crow) {
-                $itemcolor.=$crow['item_color'].', ';
-            }
-            $itemcolor=substr($itemcolor,0,-2);
-            $row['itemcolor']=$itemcolor;
+//            $this->db->select('distinct(c.item_color) as item_color');
+//            $this->db->from('ts_order_itemcolors c');
+//            $this->db->join('ts_order_items i','i.order_item_id=c.order_item_id');
+//            $this->db->where('i.order_id', $row['order_id']);
+//            $colordat=$this->db->get()->result_array();
+//            $itemcolor='';
+//            foreach ($colordat as $crow) {
+//                $itemcolor.=$crow['item_color'].', ';
+//            }
+//            $itemcolor=substr($itemcolor,0,-2);
+//            $row['itemcolor']=$itemcolor;
             $row['itemcolorclass']='';
-            if (strlen($itemcolor)>14) {
+            if (strlen($row['itemcolor'])>9) {
                 $row['itemcolorclass']='wide';
             }
-            $this->db->select('count(amount_id) as cnt, sum(amount_sum) as cnt_amnt');
-            $this->db->from('ts_order_amounts');
-            $this->db->where('order_id', $row['order_id']);
-            $this->db->where('amount_sum > 0');
-            $amntres=$this->db->get()->row_array();
-            if ($amntres['cnt']==0) {
-                $row['cnt_amnt']=0;
-            } else {
-                $row['cnt_amnt']=$amntres['cnt_amnt'];
-            }
+//            $this->db->select('count(amount_id) as cnt, sum(amount_sum) as cnt_amnt');
+//            $this->db->from('ts_order_amounts');
+//            $this->db->where('order_id', $row['order_id']);
+//            $this->db->where('amount_sum > 0');
+//            $amntres=$this->db->get()->row_array();
+//            if ($amntres['cnt']==0) {
+            $row['cnt_amnt']=intval($row['cnt_amnt']);
+//            } else {
+//                $row['cnt_amnt']=$amntres['cnt_amnt'];
+//            }
             // group by order_id
             $row['rowclass']='';
             $row['scrdate']=$row['order_date'];
