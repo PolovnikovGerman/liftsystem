@@ -3,6 +3,8 @@
 Class Items_model extends My_Model
 {
     private $Inventory_Source='Stock';
+    protected $max_colors = 56;
+    protected $max_images = 40;
 
 
     function __construct()
@@ -1479,6 +1481,52 @@ Class Items_model extends My_Model
         $this->db->order_by('added_at, item_key','desc');
         return $this->db->get()->result_array();
     }
+
+    public function prepare_options_edit($sessiondata) {
+        $colors = $sessiondata['colors'];
+        $item = $sessiondata['item'];
+        $images = $sessiondata['images'];
+        $numidx = 1;
+        $outcolors = [];
+        foreach ($colors as $color) {
+            $outcolors[] = $color;
+            $numidx++;
+        }
+        if (empty($item['printshop_inventory_id'])) {
+            if ($numidx < $this->max_colors) {
+                for ($i=$numidx; $i < $this->max_colors; $i++) {
+                    $outcolors[] = [
+                        'item_color_id' => ($i)*(-1),
+                        'item_color' => '',
+                        'item_color_image' => '',
+                        'item_color_order' => $i,
+                    ];
+                }
+            }
+        }
+        $outimages = [];
+        $numidx=1;
+        foreach ($images as $image) {
+            $outimages[] = $image;
+            $numidx++;
+        }
+        if ($numidx < $this->max_images) {
+            for ($i=$numidx; $i <= $this->max_images; $i++) {
+                $outimages[] = [
+                    'item_img_id' => $i*(-1),
+                    'item_img_name' => '',
+                    'item_img_order' => $i,
+                    'item_img_label' => '',
+                    'title' => '',
+                ];
+            }
+        }
+        return [
+            'colors' => $outcolors,
+            'images' => $outimages,
+        ];
+    }
+
 
     private function _recalc_inventory_profit($prices, $vendor_item_cost) {
         $idx = 0;

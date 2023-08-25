@@ -355,8 +355,8 @@ select.keyinfodata {
     appearance: none; */
 }
 select.missing_info {
-    background: #ffc0cb;
-    border: 1px solid #FF0000;
+    background-color: #ffc0cb!important;
+    border: 1px solid #FF0000!important;
 }
 select.itemdetailsstatus {
     width: 67px;
@@ -540,6 +540,8 @@ select.similaritems {
     padding-left: 5px;
 }*/
 select.vendornameinp {
+    border: 1px solid #000000;
+    background-color: #ffffff;
     height: 22px;
     line-height: 22px;
     margin-left: -5px;
@@ -571,6 +573,15 @@ input.itemkeyinfoinput.terms {
 input.vendoritemnum, input.vendoritemname {
     width: 160px;
 }
+select.printshopitemselect {
+    border: 1px solid #000000;
+    background-color: #ffffff;
+    height: 22px;
+    line-height: 22px;
+    margin-left: -5px;
+    padding-left: 5px;
+    width: 52px;
+}
 .autocompleter {
     width: 200px!important;
 }
@@ -584,6 +595,24 @@ input.vendordatainpt.missing_info {
     line-height: 23px;
     font-size: 12px;
     font-weight: 600;
+}
+select.vendoritemcountyinp {
+    border: 1px solid #000000;
+    background-color: #ffffff;
+    height: 22px;
+    line-height: 22px;
+    margin-left: -5px;
+    padding-left: 5px;
+    width: 55px;
+}
+textarea.ponotedata {
+    margin-left: -5px;
+    padding-left: 5px;
+    width: 221px;
+    resize: none;
+    border: 1px solid #000;
+    background-color: #fff;
+    overflow-y: auto;
 }
 .itemparamlabel.vedorponote {
     padding-right: 28px;
@@ -651,6 +680,7 @@ input.vendordatainpt.missing_info {
     font-weight: 600;
     margin-right: 5px;
     width: 36px;
+    text-align: center;
 }
 .vendorqtypriceqty.editmode, .vendorqtypriceval.editmode {
     border: none;
@@ -1234,6 +1264,12 @@ select.itemdetailsoptions.missing_info {
 .itemvendorfilebtn.editmode {
     padding: 4px 10px;
 }
+.vectorfilemanage .qq-upload-button {
+    background-color: transparent!important;
+    color: #000000;
+    font-size: 11px!important;
+    width: 33px!important;
+}
 .vendorfile_view, .vendorfile_delete {
     width: 25px;
     text-align: center;
@@ -1533,6 +1569,9 @@ input.chargeperorder {
     width: 39px;
 }
 /* Item Images Modal*/
+#itemImagesModal {
+    z-index: 1052;
+}
 #itemImagesModal .modal-dialog {
     width: 1272px;
 }
@@ -1586,6 +1625,16 @@ input.chargeperorder {
     color: #0000FF;
     margin-top: 7px;
 }
+.replaceimage .qq-upload-button {
+    background-image: none!important;
+    color: #0000FF;
+    height: 16px!important;
+    text-align: center;
+    font-size: 11px;
+    background-color: transparent!important;
+    margin-left: 0;
+    width: auto!important;
+}
 .removeimage {
     background: #000000;
     color: #ffffff;
@@ -1618,20 +1667,30 @@ input.chargeperorder {
     line-height: 24px;
     margin-bottom: 5px;
 }
+.content-row .imgsrcsize {
+    height: 24px;
+    line-height: 24px;
+    font-size: 10px;
+    margin-left: 6px;
+}
 .mainimage_area {
-    margin-left: 66px;
-    width: 124px;
+    margin-left: 55px;
+    width: 140px;
 }
 .mainimage_view {
-    height: 124px;
+    height: 140px;
 }
 .emptyimage.mainimage {
     padding-top: 48px;
     text-align: center;
 }
 .removeimage.mainimage {
-    top: -123px;
-    left: 107px;
+    top: -140px;
+    left: 124px;
+}
+#uploadmainimage .qq-upload-button {
+    top: 0;
+    left: 78px;
 }
 input.itemimagecaption {
     height: 20px;
@@ -1655,6 +1714,10 @@ input.itemimagecaption {
 .removeimage.categoryimage {
     top: -123px;
     left: 249px;
+}
+#uploadcategoryimage .qq-upload-button {
+    top: 0;
+    left: 78px;
 }
 .topbannerimage_area {
     margin-left: 169px;

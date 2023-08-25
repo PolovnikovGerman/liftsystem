@@ -1269,6 +1269,12 @@ select.printshopcolor {
 .itemvendorfilebtn.editmode {
     padding: 4px 10px;
 }
+.vectorfilemanage .qq-upload-button {
+    background-color: transparent!important;
+    color: #000000;
+    font-size: 11px!important;
+    width: 33px!important;
+}
 .vendorfile_view, .vendorfile_delete {
     width: 25px;
     text-align: center;

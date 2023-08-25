@@ -104,17 +104,60 @@ class Sritemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $data = $res['data'];
-                    $vendor = $data['vendor'];
                     $mdata = $this->_prepare_price_response($session);
-                    $mdata['shipaddr_country'] = $vendor['shipaddr_country'];
-                    $mdata['vendor_zipcode'] = $vendor['vendor_zipcode'];
-                    $mdata['shipaddr_state'] = $vendor['shipaddr_state'];
-                    $mdata['po_note'] = $vendor['po_note'];
+                    $sessiondata = usersession($session);
+                    $item = $sessiondata['item'];
+                    $vendor_item = $sessiondata['vendor_item'];
+                    $vendor_price = $sessiondata['vendor_price'];
+                    $colors = $sessiondata['colors'];
+                    if ($res['internal']==1) {
+                        $this->load->model('inventory_model');
+                        $itemlist = $this->inventory_model->get_inventory_itemslist();
+                        $mdata['vendoritemview'] = $this->load->view('relieveritems/vendoritem_inventory_edit', ['item' => $item, 'itemlists' => $itemlist], TRUE);
+                        $mdata['vendor_price'] = $this->load->view('relieveritems/vendorprices_view',['vendor_prices' => $vendor_price, 'venditem' => $vendor_item, 'item' => $item],TRUE);
+                        $mdata['colors'] = $this->load->view('relieveritems/optionimages_view',['colors' => $colors,'item' => $item],TRUE);
+                        // printshopcolors_view
+                    } else {
+                        $mdata['vendoritemview'] = $this->load->view('relieveritems/vendoritem_data_edit',['vendor_item' => $vendor_item], TRUE);
+                        $mdata['vendor_price'] = $this->load->view('relieveritems/vendorprices_edit',['vendor_prices' => $vendor_price, 'venditem' => $vendor_item, 'item' => $item],TRUE);
+                        $mdata['colors'] = $this->load->view('relieveritems/optionimages_view',['colors' => $colors, 'item' => $item],TRUE);
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    public function change_printshopitem() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->session_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'session', 'defsess');
+            $session_data = usersession($session_id);
+            if (!empty($session_data)) {
+                $res = $this->sritems_model->change_printshopitem($postdata, $session_data, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    // prepare views
+                    $mdata = $this->_prepare_price_response($session_id);
+                    $mdata['printshop_name'] = $res['printshop_name'];
+                    $mdata['vendorprice'] = $this->load->view('relieveritems/vendorprices_view',['vendor_prices' => $res['vendor_price'], 'venditem' => $res['vendor_item'], 'item' => $res['item']],TRUE);
+                    // Colors
+                    $mdata['colorsview'] = $this->load->view('relieveritems/optionimages_view',['colors' => $res['colors'], 'item' => $res['item']],TRUE);
+                    if ($res['item']['option_images']==1) {
+                        $mdata['imgoptions'] = '<i class="fa fa-check-square"></i>';
+                    } else {
+                        $mdata['imgoptions'] = '<i class="fa fa-square-o"></i>';
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+
     }
 
     public function relive_vendoritem_check() {
@@ -164,20 +207,28 @@ class Sritemdetails extends MY_Controller
             $sessiondata = usersession($session);
             if (!empty($sessiondata)) {
                 $error = '';
+                $this->load->model('items_model');
+                $res = $this->items_model->prepare_options_edit($sessiondata);
+                $images = $res['images'];
+                $colors = $res['colors'];
+                $sessiondata['popup_colors'] = $colors;
+                $sessiondata['popup_images'] = $images;
+                usersession($session, $sessiondata);
                 $item = $sessiondata['item'];
                 $main_view = $this->load->view('relieveritems/popup_mainimage_edit',['item' => $item], TRUE);
-                $images = $sessiondata['images'];
                 $cntimages = count($images);
                 $addslider = $this->load->view('relieveritems/popup_addimageslder_edit',['images' => $images,'cntimages' => $cntimages], TRUE);
                 $add_view = $this->load->view('relieveritems/popup_addimage_edit',['slider' => $addslider], TRUE);
-                $optimages = $sessiondata['option_images'];
-                $colorslider = $this->load->view('relieveritems/popup_optionimageslider_edit',['images' => $optimages,'cntimages' => count($optimages)], TRUE);
+                $colorslider = $this->load->view('relieveritems/popup_optionimageslider_edit',['colors' => $colors,'cntimages' => count($colors), 'image' => $item['option_images'], 'inventory' => $item['printshop_inventory_id']], TRUE);
                 $optionview = $this->load->view('relieveritems/popup_options_edit',['item' => $item, 'slider' => $colorslider], TRUE);
+                $colorview = 1;
                 $mdata['header'] = 'IMAGES & OPTIONS:';
                 $options = [
                     'main_view' => $main_view,
                     'add_view' => $add_view,
                     'options_view' => $optionview,
+                    'colorview' => $colorview,
+                    'mode' => 'edit',
                 ];
                 $mdata['content'] = $this->load->view('relieveritems/popup_image_edit',$options, TRUE);
             }
@@ -485,6 +536,10 @@ class Sritemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $mdata = $this->_prepare_price_response($session);
+                    $mdata = $this->_prepare_price_response($session);
+                    if ($res['address']==1) {
+                        $mdata['shipstate'] = $res['state'];
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);

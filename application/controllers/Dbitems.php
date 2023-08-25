@@ -521,7 +521,7 @@ class Dbitems extends MY_Controller
                     ];
                     $itemprices = $this->load->view('relieveritems/itemprices_view', $price_options,TRUE);
                     $otherimages = $this->load->view('relieveritems/otherimages_view',['images' => $data['images'], 'imgcnt' => count($data['images'])],TRUE);
-                    $optionsimg = $this->load->view('relieveritems/optionimages_view',['imgoptions' => $data['option_images']],TRUE);
+                    $optionsimg = $this->load->view('relieveritems/optionimages_view',['colors' => $data['colors'], 'item' => $data['item']],TRUE);
                     $imagesoptions = [
                         'otherimages' => $otherimages,
                         'optionsimg' => $optionsimg,
@@ -533,17 +533,29 @@ class Dbitems extends MY_Controller
                     $metaview = $this->load->view('relieveritems/itemmeta_view',['item' => $data['item']], TRUE);
                     $shippingview = $this->load->view('relieveritems/itemship_view',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
                 } else {
+                    $this->load->model('shipping_model');
+                    $country_list = $this->shipping_model->get_countries_list(['orderby'=>'sort']);
                     $keyinfo = $this->load->view('relieveritems/keyinfo_edit',['item' => $data['item'],'subcategories' => $subcategories], TRUE);
                     $simitems = $this->sritems_model->get_relievers_itemslist(['status' => 1,'order_by' => 'item_number']);
                     $similar = $this->load->view('relieveritems/similar_edit',['items' => $data['similar'],'similars' => $simitems], TRUE);
+
+                    if (empty($data['item']['printshop_inventory_id'])) {
+                        $vendoritemview = $this->load->view('relieveritems/vendoritem_data_edit',['vendor_item' => $data['vendor_item']], TRUE);
+                        $vendor_prices = $this->load->view('relieveritems/vendorprices_edit',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
+                    } else {
+                        $this->load->model('inventory_model');
+                        $itemlist = $this->inventory_model->get_inventory_itemslist();
+                        $vendoritemview = $this->load->view('relieveritems/vendoritem_inventory_edit', ['item' => $data['item'],'itemlists' => $itemlist], TRUE);
+                        $vendor_prices = $this->load->view('relieveritems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
+                    }
                     $vendoptions = [
                         'vendor_item' => $data['vendor_item'],
-                        'vendor' => $data['vendor'],
                         'item' => $data['item'],
                         'vendors' => $vendors,
+                        'countries' => $country_list,
+                        'vendoritem_view' => $vendoritemview,
                     ];
                     $vendor_main = $this->load->view('relieveritems/vendormain_edit', $vendoptions,TRUE);
-                    $vendor_prices = $this->load->view('relieveritems/vendorprices_edit',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
                     $profit_view = $this->load->view('relieveritems/itemprice_profit_view',['item' => $data['item'],'prices'=> $data['prices']],TRUE);
                     $netprices = $this->load->view('relieveritems/itemprice_net_view',['prices' => $data['prices']], TRUE);
                     $price_options = [
@@ -555,7 +567,7 @@ class Dbitems extends MY_Controller
                     ];
                     $itemprices = $this->load->view('relieveritems/itemprices_edit', $price_options,TRUE);
                     $otherimages = $this->load->view('relieveritems/otherimages_view',['images' => $data['images'], 'imgcnt' => count($data['images'])],TRUE);
-                    $optionsimg = $this->load->view('relieveritems/optionimages_view',['imgoptions' => $data['option_images']],TRUE);
+                    $optionsimg = $this->load->view('relieveritems/optionimages_view',['colors' => $data['colors'], 'item' => $data['item']],TRUE);
                     $imagesoptions = [
                         'otherimages' => $otherimages,
                         'optionsimg' => $optionsimg,
