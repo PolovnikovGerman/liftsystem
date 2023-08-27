@@ -125,10 +125,31 @@ Class Leadorder_model extends My_Model {
         $this->db->group_by('i.order_id');
         $colorsql = $this->db->get_compiled_select();
 
+        $this->db->select('s.order_id, count(p.order_shippack_id) as cnt');
+        $this->db->from('ts_order_shippacks p');
+        $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
+        $this->db->group_by('s.order_id');
+        $totalpack = $this->db->get_compiled_select();
+
+        $this->db->select('s.order_id, count(p.order_shippack_id) as cnt, max(s.arrive_date) as delivdate, max(p.send_date) as packsenddate');
+        $this->db->select('max(p.track_date) as packtrackdate');
+        $this->db->from('ts_order_shippacks p');
+        $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
+        $this->db->where("coalesce(p.track_code,'') != ''");
+        $this->db->group_by('s.order_id');
+        $sendpack = $this->db->get_compiled_select();
+
+        $this->db->select('s.order_id, count(p.order_shippack_id) as cnt');
+        $this->db->from('ts_order_shippacks p');
+        $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
+        $this->db->where('p.delivered',1);
+        $this->db->group_by('s.order_id');
+        $delivpack = $this->db->get_compiled_select();
+
         $this->db->select('o.order_id, o.create_usr, o.order_date, o.brand_id, o.order_num, o.customer_name');
         $this->db->select('o.customer_email, o.revenue, o.shipping, o.is_shipping, o.tax, o.cc_fee, o.order_cog');
         $this->db->select('o.profit, o.profit_perc, o.is_canceled, o.reason,  o.item_id, o.invoice_doc, o.invoice_send');
-        $this->db->select('o.order_confirmation, o.order_items, o.order_usr_repic, o.weborder, o.order_qty, o.shipdate');
+        $this->db->select('o.order_confirmation, o.order_items, o.order_usr_repic, o.weborder, o.order_qty, o.shipdate as ord_ship');
         $this->db->select('o.is_invoiced, o.order_system, o.order_arthide, o.order_itemnumber, o.deliverydate');
         $this->db->select('oa.cnt as cnt_amnt, colordat.item_color as itemcolor');
         // ART Stages
@@ -138,13 +159,20 @@ Class Leadorder_model extends My_Model {
         $this->db->select('u.user_leadname, u.user_name, bil.customer_ponum');
         $this->db->select('itm.item_number, coalesce(st.item_id, 0) as stok_item', FALSE);
         $this->db->select('vo.order_proj_status as artstage');
+        $this->db->select('s.order_shipping_id, s.shipdate');
+        $this->db->select('totalpack.cnt as totalpacks, sendpack.cnt as sendpacks, sendpack.delivdate, sendpack.packsenddate');
+        $this->db->select('sendpack.packtrackdate, delivpack.cnt as delivpacks');
         $this->db->from('ts_orders o');
         $this->db->join("{$item_dbtable} as itm",'itm.item_id=o.item_id ','left');
         $this->db->join('users u','u.user_id=o.order_usr_repic','left');
         $this->db->join('ts_stock_items st','st.item_id=o.item_id','left');
         $this->db->join('ts_order_billings bil','bil.order_id=o.order_id', 'left');
+        $this->db->join('ts_order_shippings s','s.order_id=o.order_id','left');
         $this->db->join("({$amountsql}) oa",'oa.order_id=o.order_id','left');
         $this->db->join("({$colorsql}) as colordat",'colordat.order_id=o.order_id','left');
+        $this->db->join("({$totalpack}) as totalpack",'totalpack.order_id=o.order_id','left');
+        $this->db->join("({$sendpack}) as sendpack",'sendpack.order_id=o.order_id','left');
+        $this->db->join("({$delivpack}) as delivpack",'delivpack.order_id=o.order_id','left');
         // $this->db->where('o.is_canceled',0);
         $this->db->join('v_order_artstage vo','vo.order_id=o.order_id','left');
         if (isset($options['unassigned'])) {
@@ -205,32 +233,11 @@ Class Leadorder_model extends My_Model {
         $curdat='';
         $ordidx=1;
         foreach ($res as $row) {
-//            $this->db->select('distinct(c.item_color) as item_color');
-//            $this->db->from('ts_order_itemcolors c');
-//            $this->db->join('ts_order_items i','i.order_item_id=c.order_item_id');
-//            $this->db->where('i.order_id', $row['order_id']);
-//            $colordat=$this->db->get()->result_array();
-//            $itemcolor='';
-//            foreach ($colordat as $crow) {
-//                $itemcolor.=$crow['item_color'].', ';
-//            }
-//            $itemcolor=substr($itemcolor,0,-2);
-//            $row['itemcolor']=$itemcolor;
             $row['itemcolorclass']='';
             if (strlen($row['itemcolor'])>9) {
                 $row['itemcolorclass']='wide';
             }
-//            $this->db->select('count(amount_id) as cnt, sum(amount_sum) as cnt_amnt');
-//            $this->db->from('ts_order_amounts');
-//            $this->db->where('order_id', $row['order_id']);
-//            $this->db->where('amount_sum > 0');
-//            $amntres=$this->db->get()->row_array();
-//            if ($amntres['cnt']==0) {
             $row['cnt_amnt']=intval($row['cnt_amnt']);
-//            } else {
-//                $row['cnt_amnt']=$amntres['cnt_amnt'];
-//            }
-            // group by order_id
             $row['rowclass']='';
             $row['scrdate']=$row['order_date'];
             $orddate=date('m/d/y',$row['order_date']);
@@ -359,7 +366,7 @@ Class Leadorder_model extends My_Model {
                         $row['order_status']='FF - Fulfillment';
                         $row['order_status_class']='fulfillment';
                     } else { */
-                    $statusship=$this->_leadorder_shipping_status($row['order_id']);
+                    $statusship=$this->_leadorder_shipping_status($row);
                     $row['order_status']=$statusship['order_status'];
                     $row['order_status_class']=$statusship['order_status_class'];
                     /* } */
@@ -8577,20 +8584,20 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 
-    public function _leadorder_shipping_status($order_id) {
+    public function _leadorder_shipping_status($order) {
         $order_status='FF - To Ship ';
         $order_status_class='fulfillment';
-        $this->db->select('o.shipdate as ord_ship, s.order_shipping_id, s.shipdate');
-        $this->db->from('ts_orders o');
-        $this->db->join('ts_order_shippings s','s.order_id=o.order_id','left');
-        $this->db->where('o.order_id', $order_id);
-        $res=$this->db->get()->row_array();
-        if (intval($res['shipdate'])==0) {
-            $shipdate=$res['ord_ship'];
+//        $this->db->select('o.shipdate as ord_ship, s.order_shipping_id, s.shipdate');
+//        $this->db->from('ts_orders o');
+//        $this->db->join('ts_order_shippings s','s.order_id=o.order_id','left');
+//        $this->db->where('o.order_id', $order_id);
+//        $res=$this->db->get()->row_array();
+        if (intval($order['shipdate'])==0) {
+            $shipdate=$order['ord_ship'];
         } else {
-            $shipdate=$res['shipdate'];
+            $shipdate=$order['shipdate'];
         }
-        if (intval($res['order_shipping_id'])==0) {
+        if (intval($order['order_shipping_id'])==0) {
             // Return shipdate from order;
             $order_status='FF - To Ship '.date('m/d/y',$shipdate);
         } else {
@@ -8599,32 +8606,32 @@ Class Leadorder_model extends My_Model {
                 $order_status_class='late';
             }
             // Select total # of packages
-            $this->db->select('count(p.order_shippack_id) as cnt');
-            $this->db->from('ts_order_shippacks p');
-            $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
-            $this->db->where('s.order_id', $order_id);
-            $cntres=$this->db->get()->row_array();
-            $totalpacks=$cntres['cnt'];
+//            $this->db->select('count(p.order_shippack_id) as cnt');
+//            $this->db->from('ts_order_shippacks p');
+//            $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
+//            $this->db->where('s.order_id', $order_id);
+//            $cntres=$this->db->get()->row_array();
+//            $totalpacks=$cntres['cnt'];
             // Get Data about track codes
-            $this->db->select('count(p.order_shippack_id) as cnt, max(s.arrive_date) as delivdate, max(p.send_date), max(p.track_date)');
-            $this->db->from('ts_order_shippacks p');
-            $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
-            $this->db->where('s.order_id', $order_id);
-            $this->db->where("coalesce(p.track_code,'') != ","''",FALSE);
-            $chkres=$this->db->get()->row_array();
+//            $this->db->select('count(p.order_shippack_id) as cnt, max(s.arrive_date) as delivdate, max(p.send_date), max(p.track_date)');
+//            $this->db->from('ts_order_shippacks p');
+//            $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
+//            $this->db->where('s.order_id', $order_id);
+//            $this->db->where("coalesce(p.track_code,'') != ","''",FALSE);
+//            $chkres=$this->db->get()->row_array();
             // Select data
-            if ($chkres['cnt']>0) {
-                if ($chkres['cnt']==$totalpacks) {
+            if (intval($order['sendpacks'])>0) {
+                if ($order['sendpacks']==intval($order['totalpacks'])) {
                     $order_status='Shipped '.date('m/d/y', $shipdate);
                     $order_status_class='done';
                     // Select Delivered
-                    $this->db->select('count(p.order_shippack_id) as cnt');
-                    $this->db->from('ts_order_shippacks p');
-                    $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
-                    $this->db->where('s.order_id', $order_id);
-                    $this->db->where('p.delivered',1);
-                    $delivres=$this->db->get()->row_array();
-                    if ($delivres['cnt']>0 && $delivres['cnt']==$totalpacks) {
+//                    $this->db->select('count(p.order_shippack_id) as cnt');
+//                    $this->db->from('ts_order_shippacks p');
+//                    $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
+//                    $this->db->where('s.order_id', $order_id);
+//                    $this->db->where('p.delivered',1);
+//                    $delivres=$this->db->get()->row_array();
+                    if (intval($order['delivpacks'])>0 && intval($order['delivpacks'])==intval($order['totalpacks'])) {
                         $order_status='Delivered';
                         $order_status_class='delivered';
                     }
