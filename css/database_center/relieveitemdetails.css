@@ -75,10 +75,12 @@
     width: 384px;
 }
 input.itemname {
-    border: none!important;
+/*    border: none!important;
     height: 30px!important;
     line-height: 30px!important;
-    width: 374px;
+
+ */
+    width: 229px;
 }
 select.categoryitemselect {
     border: none!important;
@@ -295,6 +297,9 @@ select.categoryitemselect {
     margin-right: 8px;
     width: 248px;
 }
+.sectionbody.keyinfosection {
+    height: 502px;
+}
 .relievers_keyinfo .content-row {
     margin-bottom: 8px;
 }
@@ -311,8 +316,8 @@ select.categoryitemselect {
     border: 1px solid #9f9f9f;
     font-size: 12px;
     font-weight: 600;
-    height: 21px;
-    line-height: 21px;
+    height: 22px;
+    line-height: 22px;
     padding-left: 5px;
 }
 .itemparamvalue.editmode {
@@ -322,6 +327,15 @@ select.categoryitemselect {
     background: #ffc0cb;
     border: 1px solid #FF0000;
 }
+.itemparamlabel.itemname {
+    width: 69px;
+}
+.itemparamvalue.itemname {
+    width: 231px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .itemparamlabel.itemactive {
     padding-right: 15px;
     width: 75px;
@@ -330,32 +344,34 @@ select.categoryitemselect {
     width: 70px;
 }
 select.keyinfodata {
-    border: 1px solid #9f9f9f;
+    border: 1px solid #000000;
+    background-color: #ffffff;
     color: #000000;
     height: 22px;
     line-height: 22px;
     margin-left: -5px;
     padding-left: 5px;
-    background: #fff;
-    -webkit-appearance: none;
-    appearance: none;
+    /* -webkit-appearance: none;
+    appearance: none; */
 }
 select.missing_info {
-    background: #ffc0cb;
-    border: 1px solid #FF0000;
+    background-color: #ffc0cb!important;
+    border: 1px solid #FF0000!important;
 }
 select.itemdetailsstatus {
     width: 67px;
 }
 input.itemkeyinfoinput {
-    border: 1px solid #9f9f9f;
+    border: 1px solid #000000;
+    background-color: #ffffff;
     line-height: 20px;
     height: 20px;
     margin-left: -5px;
     padding-left: 5px;
 }
 input.iteminfoinput {
-    border: 1px solid #9f9f9f;
+    border: 1px solid #000000;
+    background-color: #ffffff;
     line-height: 20px;
     height: 20px;
     margin-left: -5px;
@@ -401,7 +417,7 @@ itemparamlabel.tags {
     width: 71px;
 }
 .itemparamvalue.subcategory {
-    width: 167px;
+    width: 160px;
 }
 select.itemsubcategory {
     width: 167px;
@@ -422,9 +438,12 @@ input.itemsize, input.itemmaterial {
 .itemparamvalue.itemdescrip {
     height: 70px;
     width: 232px;
+    overflow: hidden;
+    line-height: 17px;
 }
 textarea.inputkeyinfotext {
     padding-left: 3px;
+    line-height: inherit;
     overflow-y: auto;
     resize: none;
 }
@@ -437,10 +456,11 @@ textarea.itemdescription {
     width: 232px;
 }
 .sectionseparator {
-    border-top: 2.5px solid #000000;
-    height: 8px;
+    border-top: 1.5px solid #000000;
+    height: 10px;
     margin-left: -4px;
-    width: calc(100% - 9px);
+    margin-top: -3px;
+    width: calc(100% + 10px);
 }
 .itemparamlabel.bullets {
     width: 222px;
@@ -468,11 +488,11 @@ textarea.itemdescription {
     width: 248px;
 }
 .relievers_similar .sectionbody {
-    padding-bottom: 10px;
-    padding-top: 10px;
+    /* padding-bottom: 10px; */
+    padding-top: 12px;
 }
 .relievers_similar .content-row {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 .similar_numpp {
     font-size: 14px;
@@ -520,6 +540,8 @@ select.similaritems {
     padding-left: 5px;
 }*/
 select.vendornameinp {
+    border: 1px solid #000000;
+    background-color: #ffffff;
     height: 22px;
     line-height: 22px;
     margin-left: -5px;
@@ -551,6 +573,15 @@ input.itemkeyinfoinput.terms {
 input.vendoritemnum, input.vendoritemname {
     width: 160px;
 }
+select.printshopitemselect {
+    border: 1px solid #000000;
+    background-color: #ffffff;
+    height: 22px;
+    line-height: 22px;
+    margin-left: -5px;
+    padding-left: 5px;
+    width: 52px;
+}
 .autocompleter {
     width: 200px!important;
 }
@@ -564,6 +595,24 @@ input.vendordatainpt.missing_info {
     line-height: 23px;
     font-size: 12px;
     font-weight: 600;
+}
+select.vendoritemcountyinp {
+    border: 1px solid #000000;
+    background-color: #ffffff;
+    height: 22px;
+    line-height: 22px;
+    margin-left: -5px;
+    padding-left: 5px;
+    width: 55px;
+}
+textarea.ponotedata {
+    margin-left: -5px;
+    padding-left: 5px;
+    width: 221px;
+    resize: none;
+    border: 1px solid #000;
+    background-color: #fff;
+    overflow-y: auto;
 }
 .itemparamlabel.vedorponote {
     padding-right: 28px;
@@ -608,6 +657,8 @@ input.vendordatainpt.missing_info {
 }
 .vendorqtypricetitlearea {
     border-bottom: 1px solid #000000;
+    padding-bottom: 5px;
+    margin-top: -3px;
 }
 .vendorqtypricetitle {
     height: 20px;
@@ -629,6 +680,7 @@ input.vendordatainpt.missing_info {
     font-weight: 600;
     margin-right: 5px;
     width: 36px;
+    text-align: center;
 }
 .vendorqtypriceqty.editmode, .vendorqtypriceval.editmode {
     border: none;
@@ -952,8 +1004,8 @@ select.discountselect::-ms-expand {
     border-top: 3px solid #686868;
     height: 5px;
     margin-left: 47px;
-    margin-top: 5px;
-    width: 702px;
+    margin-top: 2px;
+    width: 711px;
 }
 .itemprice_profitqtyarea {
     width: 457px;
@@ -1020,6 +1072,7 @@ select.discountselect::-ms-expand {
 }
 .relievers_itemimages .sectionbody {
     padding: 8px 0 8px 0;
+    height: 431px;
 }
 .itemmainimagearea {
     margin-left: 8px;
@@ -1195,6 +1248,7 @@ select.itemdetailsoptions.missing_info {
 }
 .relievers_customisation .sectionbody {
     padding: 10px 0 0 0;
+    height: 361px;
 }
 .itemvendorfilebtn {
     background: url(/img/itemdetails/vector_file_btn.png) no-repeat;
@@ -1209,6 +1263,12 @@ select.itemdetailsoptions.missing_info {
 }
 .itemvendorfilebtn.editmode {
     padding: 4px 10px;
+}
+.vectorfilemanage .qq-upload-button {
+    background-color: transparent!important;
+    color: #000000;
+    font-size: 11px!important;
+    width: 33px!important;
 }
 .vendorfile_view, .vendorfile_delete {
     width: 25px;
@@ -1291,8 +1351,8 @@ input.locationsize {
     width: 100%;
 }
 .locationsdatarow div {
-    height: 18px;
-    line-height: 18px;
+    height: 21px;
+    line-height: 21px;
     font-size: 12px;
     font-weight: 600;
     white-space: nowrap;
@@ -1304,6 +1364,15 @@ input.locationsize {
     text-align: center;
     cursor: pointer;
 }
+.locationnumber {
+    width: 20px;
+    text-align: right;
+}
+.locationnameview {
+    border-right: 1px solid #000000;
+    width: 140px;
+    padding-left: 4px;
+}
 .locationname {
     padding-left: 8px;
     width: 160px;
@@ -1314,7 +1383,8 @@ input.locationsize {
 }
 .locationplace {
     padding-left: 8px;
-    width: 140px;
+    width: 120px;
+    border-right: 1px solid #000;
 }
 .locationplace.editmode {
     padding-left: 0;
@@ -1341,6 +1411,9 @@ input.locationsize {
 /* Meta */
 .relievers_metasearch {
     width: 424px
+}
+.sectionbody.metasection {
+    height: 360px;
 }
 .itemparamvalue.metatitle {
     margin-bottom: 8px;
@@ -1388,9 +1461,12 @@ input.metaurl {
 .itemshippingarea {
     background: #000048;
     position: relative;
-    top: -215px;
-    left: 215px;
+    top: -245px;
+    left: 214px;
     padding-left: 8px;
+}
+.sectionbody.shippingsection {
+    height: 216px;
 }
 .relievers_shipping {
     width: 203px;
@@ -1493,6 +1569,9 @@ input.chargeperorder {
     width: 39px;
 }
 /* Item Images Modal*/
+#itemImagesModal {
+    z-index: 1052;
+}
 #itemImagesModal .modal-dialog {
     width: 1272px;
 }
@@ -1546,6 +1625,16 @@ input.chargeperorder {
     color: #0000FF;
     margin-top: 7px;
 }
+.replaceimage .qq-upload-button {
+    background-image: none!important;
+    color: #0000FF;
+    height: 16px!important;
+    text-align: center;
+    font-size: 11px;
+    background-color: transparent!important;
+    margin-left: 0;
+    width: auto!important;
+}
 .removeimage {
     background: #000000;
     color: #ffffff;
@@ -1578,20 +1667,30 @@ input.chargeperorder {
     line-height: 24px;
     margin-bottom: 5px;
 }
+.content-row .imgsrcsize {
+    height: 24px;
+    line-height: 24px;
+    font-size: 10px;
+    margin-left: 6px;
+}
 .mainimage_area {
-    margin-left: 66px;
-    width: 124px;
+    margin-left: 55px;
+    width: 140px;
 }
 .mainimage_view {
-    height: 124px;
+    height: 140px;
 }
 .emptyimage.mainimage {
     padding-top: 48px;
     text-align: center;
 }
 .removeimage.mainimage {
-    top: -123px;
-    left: 107px;
+    top: -140px;
+    left: 124px;
+}
+#uploadmainimage .qq-upload-button {
+    top: 0;
+    left: 78px;
 }
 input.itemimagecaption {
     height: 20px;
@@ -1615,6 +1714,10 @@ input.itemimagecaption {
 .removeimage.categoryimage {
     top: -123px;
     left: 249px;
+}
+#uploadcategoryimage .qq-upload-button {
+    top: 0;
+    left: 78px;
 }
 .topbannerimage_area {
     margin-left: 169px;

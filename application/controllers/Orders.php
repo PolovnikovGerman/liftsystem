@@ -431,7 +431,7 @@ class Orders extends MY_Controller
         $users=$this->user_model->get_user_leadreplicas();
 
         $options=[];
-
+        $options['brand'] = $brand;
         $ordertemplate=$liftsearch;
         if (!empty($ordertemplate)) {
             // Check, that such order exits and # of orders==1

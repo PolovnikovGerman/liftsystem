@@ -9,9 +9,9 @@ Class Sritems_model extends My_Model
 
     public function get_relievers_itemscount($options=[]) {
         $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
-        $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
+        $this->db->select('(vm.keyinfo+vm.similar+vm.prices+vm.printing+vm.meta+vm.imagescolors+vm.supplier) as missings');
         $this->db->from('sb_items i');
-        $this->db->join('v_item_missinginfo vm','i.item_id=vm.item_id','left');
+        $this->db->join('v_sritem_missinginfo vm','i.item_id=vm.item_id','left');
         $this->db->where('i.brand', 'SR');
         if (ifset($options, 'category',0)!=0) {
             $this->db->where('i.category_id', $options['category']);
@@ -45,9 +45,7 @@ Class Sritems_model extends My_Model
 
     public function get_relievers_itemslist($options) {
         $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
-        // $this->db->select('v.vendor_name as vendor, v.vendor_phone, v.vendor_email, v.vendor_website, svi.vendor_item_number');
-        // $this->db->select('(vm.size+vm.weigth+vm.material+vm.lead_a+vm.lead_b+vm.lead_c+vm.colors+vm.categories+vm.images+vm.prices) as missings');
-        $this->db->select('(vm.size+vm.weigth+vm.material+vm.url+vm.meta_title+vm.meta_description+vm.meta_keywords+vm.attributes+vm.images+vm.itemprices+vm.mainprices) as missings');
+        $this->db->select('(vm.keyinfo+vm.similar+vm.prices+vm.printing+vm.meta+vm.imagescolors+vm.supplier) as missings');
         $this->db->from('sb_items i');
         $this->db->join('v_sritem_missinginfo vm','i.item_id=vm.item_id','left');
         $this->db->where('i.brand', 'SR');
@@ -104,11 +102,16 @@ Class Sritems_model extends My_Model
                 $row['misinfo'] = '-';
             } else {
                 $row['misclas'] = 'missing';
-                if ($row['missings']==1) {
-                    $row['misinfo'] = '1 field';
-                } else {
-                    $row['misinfo'] = $row['missings'].' fields';
-                }
+//                if ($row['missings']==1) {
+//                    $row['misinfo'] = '1 field';
+//                } else {
+//                    $row['misinfo'] = $row['missings'].' fields';
+//                }
+                $this->db->select('*');
+                $this->db->from('v_sritem_missinginfo');
+                $this->db->where('item_id', $row['item_id']);
+                $misdata = $this->db->get()->row_array();
+                $row['misinfo'] = $this->load->view('dbitems/missinfo_details_view', $misdata, TRUE);
             }
             $row['numpp'] = $numpp;
             $out[] = $row;
@@ -335,10 +338,11 @@ Class Sritems_model extends My_Model
     // Item for View / Edit
     public function get_itemlist_details($item_id, $editmode) {
         $out=['result' => $this->error_result, 'msg' => 'Item Not Found'];
-        $this->db->select('i.*,sr.category_name, ss.subcategory_name');
+        $this->db->select('i.*,sr.category_name, ss.subcategory_name, inv.item_name as printshop_item_name');
         $this->db->from('sb_items i');
         $this->db->join('sr_categories sr', 'sr.category_id=i.category_id');
         $this->db->join('sr_subcategories ss','ss.subcategory_id=i.subcategory_id','left');
+        $this->db->join('ts_inventory_items inv','inv.inventory_item_id=i.printshop_inventory_id','left');
         $this->db->where('item_id', $item_id);
         $item = $this->db->get()->row_array();
         if (ifset($item, 'item_id',0)==$item_id) {
@@ -396,31 +400,56 @@ Class Sritems_model extends My_Model
                     $item['pantone_discount_val'] = $disc['discount']['discount_val'];
                 }
             }
+            if (!empty($item['printshop_inventory_id'])) {
+
+            }
             // Colors
-            $colorsrc = $this->itemcolors_model->get_colors_item($item_id, $editmode);
             $colors = [];
             $numpp=0;
-            foreach ($colorsrc as $itmcolor) {
-                $colors[] = [
-                    'item_color_id' => $itmcolor['item_color_id'],
-                    'item_color' => $itmcolor['item_color'],
-                ];
-                $numpp++;
-            }
-            if ($numpp < 9 ) {
-                for ($i=$numpp; $i < 9 ; $i++) {
+            if (empty($item['printshop_inventory_id'])) {
+                $colorsrc = $this->itemcolors_model->get_colors_item($item_id, $editmode);
+                foreach ($colorsrc as $itmcolor) {
                     $colors[] = [
-                        'item_color_id' => $i*(-1),
-                        'item_color_itemid' => $item_id,
-                        'item_color' => '',
+                        'item_color_id' => $itmcolor['item_color_id'],
+                        'item_color' => $itmcolor['item_color'],
+                        'item_color_image' => $itmcolor['item_color_image'],
+                        'item_color_order' => $numpp+1,
                     ];
+                    $numpp++;
+                }
+            } else {
+                if ($editmode==0) {
+                    $colorsrc = $this->itemcolors_model->get_invent_itemcolors($item_id, $editmode);
+                } else {
+                    $colorsrc = $this->itemcolors_model->get_invent_itemcolors($item['printshop_inventory_id'], $editmode);
+                }
+                foreach ($colorsrc as $itmcolor) {
+                    $colors[] = [
+                        'item_color_id' => $itmcolor['item_color_id'],
+                        'item_color' => $itmcolor['item_color'],
+                        'item_color_image' => $itmcolor['color_image'],
+                        'item_color_order' => empty($itmcolor['color_order']) ? $numpp+1 : $itmcolor['color_order'],
+                        'printshop_color' => $itmcolor['printshop_color_id'],
+                        'item_color_source' => $itmcolor['color'],
+                    ];
+                    $numpp++;
                 }
             }
+//            if ($numpp < 9 ) {
+//                for ($i=$numpp; $i < 9 ; $i++) {
+//                    $colors[] = [
+//                        'item_color_id' => $i*(-1),
+//                        'item_color_itemid' => $item_id,
+//                        'item_color' => '',
+//                    ];
+//                }
+//            }
             // Vendor Info
             $pricesmax = $this->config->item('relievers_prices_val');
-            $vitem = $this->vendors_model->get_item_vendor($item['vendor_item_id']);
+            $vitem = $this->vendors_model->get_item_vendor($item['vendor_item_id'], $item['printshop_inventory_id']);
             $vprices = [];
             if (ifset($vitem,'vendor_item_id', 0 )==0) {
+                // New Vendor Item
                 $vitem=[
                     'vendor_item_id' => -1,
                     'vendor_item_vendor' => '',
@@ -433,6 +462,10 @@ Class Sritems_model extends My_Model
                     'vendor_item_repeat' => 0,
                     'vendor_item_notes' => '',
                     'vendor_item_zipcode' => '',
+                    'item_shipstate' => '',
+                    'item_shipcountry' => '',
+                    'item_shipcountry_name' => '',
+                    'item_shipcity' => '',
                     'printshop_item_id' => '',
                     'stand_days' => '',
                     'rush1_days' => '',
@@ -440,6 +473,8 @@ Class Sritems_model extends My_Model
                     'rush1_price' => '',
                     'rush2_price' => '',
                     'pantone_match' => '',
+                    'po_note' => '',
+                    'vendor_name' => '',
                 ];
                 for ($i=1; $i<=$pricesmax-1; $i++) {
                     $vprices[] = [
@@ -450,28 +485,7 @@ Class Sritems_model extends My_Model
                         'vendorprice_color' => '',
                     ];
                 }
-                $vendor = [
-                    'vendor_id' => '',
-                    'vendor_name' => '',
-                    'vendor_zipcode' => '',
-                    'shipaddr_state' => '',
-                    'shipaddr_country' => '',
-                    'po_note' => '',
-                ];
             } else {
-                $vdat = $this->vendors_model->get_vendor($vitem['vendor_item_vendor']);
-                if ($vdat['result']==$this->error_result) {
-                    $vendor = [
-                        'vendor_id' => '',
-                        'vendor_name' => '',
-                        'vendor_zipcode' => '',
-                        'shipaddr_state' => '',
-                        'shipaddr_country' => '',
-                        'po_note' => '',
-                    ];
-                } else {
-                    $vendor = $vdat['data'];
-                }
                 $results = $this->vendors_model->get_item_vendorprice($item['vendor_item_id']);
                 $numpp = 1;
                 foreach ($results as $result) {
@@ -494,6 +508,80 @@ Class Sritems_model extends My_Model
                     ];
                 }
             }
+//            if (ifset($vitem,'vendor_item_id', 0 )==0) {
+//                $vitem=[
+//                    'vendor_item_id' => -1,
+//                    'vendor_item_vendor' => '',
+//                    'vendor_item_number' => '',
+//                    'vendor_item_name' => '',
+//                    'vendor_item_blankcost' => 0,
+//                    'vendor_item_cost' => 0,
+//                    'vendor_item_exprint' => 0,
+//                    'vendor_item_setup' => 0,
+//                    'vendor_item_repeat' => 0,
+//                    'vendor_item_notes' => '',
+//                    'vendor_item_zipcode' => '',
+//                    'printshop_item_id' => '',
+//                    'stand_days' => '',
+//                    'rush1_days' => '',
+//                    'rush2_days' => '',
+//                    'rush1_price' => '',
+//                    'rush2_price' => '',
+//                    'pantone_match' => '',
+//                ];
+//                for ($i=1; $i<=$pricesmax-1; $i++) {
+//                    $vprices[] = [
+//                        'vendorprice_id' => $i*-1,
+//                        'vendor_item_id' => -1,
+//                        'vendorprice_qty' => '',
+//                        'vendorprice_val' => '',
+//                        'vendorprice_color' => '',
+//                    ];
+//                }
+//                $vendor = [
+//                    'vendor_id' => '',
+//                    'vendor_name' => '',
+//                    'vendor_zipcode' => '',
+//                    'shipaddr_state' => '',
+//                    'shipaddr_country' => '',
+//                    'po_note' => '',
+//                ];
+//            } else {
+//                $vdat = $this->vendors_model->get_vendor($vitem['vendor_item_vendor']);
+//                if ($vdat['result']==$this->error_result) {
+//                    $vendor = [
+//                        'vendor_id' => '',
+//                        'vendor_name' => '',
+//                        'vendor_zipcode' => '',
+//                        'shipaddr_state' => '',
+//                        'shipaddr_country' => '',
+//                        'po_note' => '',
+//                    ];
+//                } else {
+//                    $vendor = $vdat['data'];
+//                }
+//                $results = $this->vendors_model->get_item_vendorprice($item['vendor_item_id']);
+//                $numpp = 1;
+//                foreach ($results as $result) {
+//                    $vprices[] = [
+//                        'vendorprice_id' => $result['vendorprice_id'],
+//                        'vendor_item_id' => $result['vendor_item_id'],
+//                        'vendorprice_qty' => $result['vendorprice_qty'],
+//                        'vendorprice_val' => $result['vendorprice_val'],
+//                        'vendorprice_color' => $result['vendorprice_color'],
+//                    ];
+//                    $numpp++;
+//                }
+//                for ($i=$numpp; $i<=$pricesmax-1; $i++) {
+//                    $vprices[] = [
+//                        'vendorprice_id' => $i*-1,
+//                        'vendor_item_id' => $vitem['vendor_item_id'],
+//                        'vendorprice_qty' => '',
+//                        'vendorprice_val' => '',
+//                        'vendorprice_color' => '',
+//                    ];
+//                }
+//            }
             $imagsrc = $this->itemimages_model->get_itemlist_images($item_id);
             $numpp = 1;
             $images = [];
@@ -517,13 +605,16 @@ Class Sritems_model extends My_Model
                 }
             }
             // Options images
-            if ($item['option_images']==0) {
-                $option_images = [];
-            } else {
-                $option_images = $this->itemimages_model->get_itemoption_images($item_id);
-            }
+//            if ($item['option_images']==0) {
+//                $option_images = [];
+//            } else {
+//                $option_images = $this->itemimages_model->get_itemoption_images($item_id);
+//            }
             $imprints = $this->imprints_model->get_imprint_item($item_id);
             $priceres = $this->prices_model->get_itemlist_price($item_id);
+            if (!empty($item['printshop_inventory_id'])) {
+                $priceres = $this->_recalc_inventory_profit($priceres, $vitem['vendor_item_cost']);
+            }
             $prices = [];
             $numpp = 1;
             foreach ($priceres as $price) {
@@ -550,23 +641,25 @@ Class Sritems_model extends My_Model
                     break;
                 }
             }
-            if ($numpp < $pricesmax) {
-                $idx = 1;
-                for ($i=$numpp; $i<=$pricesmax; $i++) {
-                    $prices[] = [
-                        'promo_price_id' => $idx * (-1),
-                        'item_id' => $item_id,
-                        'item_qty' => '',
-                        'price' => '',
-                        'sale_price' => '',
-                        'profit' => '',
-                        'show_first' => '0',
-                        'shipbox' =>  '',
-                        'shipweight' =>  '',
-                        'profit_class' =>  '',
-                        'profit_perc' =>  '',
-                    ];
-                    $idx++;
+            if ($editmode==1) {
+                if ($numpp < $pricesmax) {
+                    $idx = 1;
+                    for ($i = $numpp; $i <= $pricesmax; $i++) {
+                        $prices[] = [
+                            'promo_price_id' => $idx * (-1),
+                            'item_id' => $item_id,
+                            'item_qty' => '',
+                            'price' => '',
+                            'sale_price' => '',
+                            'profit' => '',
+                            'show_first' => '0',
+                            'shipbox' => '',
+                            'shipweight' => '',
+                            'profit_class' => '',
+                            'profit_perc' => '',
+                        ];
+                        $idx++;
+                    }
                 }
             }
             // Special price - setup, print
@@ -581,11 +674,9 @@ Class Sritems_model extends My_Model
             $data=[
                 'item' => $item,
                 'colors' => $colors,
-                'vendor' => $vendor,
                 'vendor_item' => $vitem,
                 'vendor_price' => $vprices,
                 'images' => $images,
-                'option_images' => $option_images,
                 'inprints' => $imprints,
                 'prices' => $prices,
                 'similar' => $similar,
@@ -695,18 +786,11 @@ Class Sritems_model extends My_Model
 
     public function itemdetails_change_vendor($sessiondata, $postdata, $sessionsid) {
         $out=['result' => $this->error_result,'msg' => 'Item Not Found'];
-        $vendor = $sessiondata['vendor'];
-        $vendor_id = ifset($postdata, 'newval', '-1');
+        $vendor_item = $sessiondata['vendor_item'];
+        $vendor_id = ifset($postdata, 'newval', '');
         if (empty($vendor_id)) {
             $out['result'] = $this->success_result;
-            $vendor=[
-                'vendor_id' => '',
-                'vendor_name' => '',
-                'vendor_zipcode' => '',
-                'shipaddr_state' => '',
-                'shipaddr_country' => '',
-                'po_note' => '',
-            ];
+            $vendor_item['vendor_item_vendor'] = '';
         } else {
             $this->load->model('vendors_model');
             $venddat = $this->vendors_model->get_vendor($vendor_id);
@@ -714,70 +798,126 @@ Class Sritems_model extends My_Model
             if ($venddat['result']==$this->success_result) {
                 $out['result'] = $this->success_result;
                 $data = $venddat['data'];
-                $vendor = [
-                    'vendor_id' => $data['vendor_id'],
-                    'vendor_name' => $data['vendor_name'],
-                    'vendor_zipcode' => $data['vendor_zipcode'],
-                    'shipaddr_state' => $data['shipaddr_state'],
-                    'shipaddr_country' => $data['shipaddr_country'],
-                    'po_note' => $data['po_note'],
-                ];
+                $vendor_item['vendor_item_vendor'] = $data['vendor_id'];
             }
         }
         if ($out['result']==$this->success_result) {
-            $vendor_item = [
-                'vendor_item_id' => -1,
-                'vendor_item_vendor' => '',
-                'vendor_item_number' => '',
-                'vendor_item_name' => '',
-                'vendor_item_blankcost' => 0,
-                'vendor_item_cost' => 0,
-                'vendor_item_exprint' => 0,
-                'vendor_item_setup' => 0,
-                'vendor_item_repeat' => 0,
-                'vendor_item_notes' => '',
-                'vendor_item_zipcode' => '',
-                'printshop_item_id' => '',
-                'stand_days' => '',
-                'rush1_days' => '',
-                'rush2_days' => '',
-                'rush1_price' => '',
-                'rush2_price' => '',
-                'pantone_match' => '',
-            ];
-            $vprices = [];
-            // if ($brand=='SR') {
-            $pricesmax = $this->config->item('relievers_prices_val');
-            // } else {
-            //    $pricesmax = $this->config->item('prices_val');
-            // }
-            for ($i=1; $i<=$pricesmax-1; $i++) {
-                $vprices[] = [
-                    'vendorprice_id' => $i*-1,
-                    'vendor_item_id' => -1,
-                    'vendorprice_qty' => '',
-                    'vendorprice_val' => '',
-                    'vendorprice_color' => '',
-                ];
-            }
-            $sessiondata['vendor'] = $vendor;
             $sessiondata['vendor_item'] = $vendor_item;
-            $sessiondata['vendor_price'] = $vprices;
+            $out['internal'] = 0;
+            if ($vendor_id==$this->config->item('inventory_vendor')) {
+                $out['internal'] = 1;
+                $prices = $sessiondata['vendor_price'];
+                $idx = 0;
+                foreach ($prices as $price) {
+                    $prices[$idx]['vendorprice_qty'] = 0;
+                    $prices[$idx]['vendorprice_val'] = 0;
+                    $prices[$idx]['vendorprice_color'] = 0;
+                    $idx++;
+                }
+                $sessiondata['vendor_price'] = $prices;
+                // Colors;
+                $colors = $sessiondata['colors'];
+                $deleted = $sessiondata['deleted'];
+                foreach ($colors as $color) {
+                    if ($color['item_color_id'] > 0) {
+                        $deleted[] = [
+                            'entity' => 'colors',
+                            'id' => $color['item_color_id'],
+                        ];
+                    }
+                }
+                $colors = [];
+                $sessiondata['colors'] = $colors;
+                $sessiondata['deleted'] = $deleted;
+            }
             usersession($sessionsid, $sessiondata);
-
-            $commonprice = $this->_prepare_common_prices($sessiondata);
-            $prices = $sessiondata['prices'];
-            $item = $sessiondata['item'];
-            $vendor_prices = $sessiondata['vendor_price'];
-            $profits = $this->_recalc_promo_profit($prices, $vendor_prices, $commonprice);
-            $this->_update_profit($profits, $item, $prices, $sessiondata, $sessionsid);
             // Recalc prices and
-            $data=[
-                'vendor' => $vendor,
-                'vendor_item' => $vendor_item,
-                'vendor_price' => $vprices,
-            ];
             $out['data'] = $data;
+        }
+        return $out;
+    }
+
+    public function change_printshopitem($data, $sessiondata, $session) {
+        $out=['result' => $this->error_result,'msg' => 'Item Not Found'];
+        $item = $sessiondata['item'];
+        $vendor_item = $sessiondata['vendor_item'];
+        $inventory_item_id = ifset($data, 'newval','-1');
+        if (intval($inventory_item_id) >= 0) {
+            if (empty($inventory_item_id)) {
+                $item['printshop_inventory_id'] = NULL;
+                $item['option_images'] = 0;
+                $vendor_item['vendor_item_blankcost'] = 0;
+                $vendor_item['vendor_item_cost'] = 0;
+                $vendor_item['vendor_item_number'] = '';
+                $vendor_item['vendor_item_name'] = '';
+                $out['printshop_name'] = '';
+                $invcolors = [];
+                $out['result'] = $this->success_result;
+            } else {
+                $this->load->model('inventory_model');
+                $invres = $this->inventory_model->get_inventory_item($inventory_item_id);
+                $out['msg'] = $invres['msg'];
+                if ($invres['result']==$this->success_result) {
+                    $item['printshop_inventory_id'] = $inventory_item_id;
+                    $item['option_images'] = 1;
+                    $invitem = $invres['data'];
+                    $invcolors = $invres['colors'];
+                    $out['printshop_name'] = $invitem['item_name'];
+                    $vendor_item['vendor_item_blankcost'] = 0;
+                    $vendor_item['vendor_item_cost'] = $invitem['avg_price'];
+                    $vendor_item['vendor_item_number'] = $invitem['item_num'];
+                    $vendor_item['vendor_item_name'] = $invitem['item_name'];
+                    $out['result'] = $this->success_result;
+                }
+            }
+            if ($out['result']==$this->success_result) {
+                $vendor_prices = $sessiondata['vendor_price'];
+                // Delete all vendor prices
+                $idx = 0;
+                foreach ($vendor_prices as $vendor_price) {
+                    $vendor_prices[$idx]['vendorprice_qty'] = '';
+                    $vendor_prices[$idx]['vendorprice_val'] = '';
+                    $vendor_prices[$idx]['vendorprice_color'] = '';
+                    $idx++;
+                }
+                $colors = $sessiondata['colors'];
+                $deleted = $sessiondata['deleted'];
+                foreach ($colors as $color) {
+                    if ($color['item_color_id'] > 0) {
+                        $deleted[] = [
+                            'entity' => 'colors',
+                            'id' => $color['item_color_id'],
+                        ];
+                    }
+                }
+                $colors = [];
+                $newid = 1;
+                foreach ($invcolors as $invcolor) {
+                    $colors[] = [
+                        'item_color_id' => $newid*(-1),
+                        'item_color' => $invcolor['color'],
+                        'item_color_image' => $invcolor['color_image'],
+                        'item_color_order' => $invcolor['color_order'],
+                        'printshop_color' => $invcolor['inventory_color_id'],
+                        'item_color_source' => $invcolor['color'],
+                    ];
+                }
+                $out['colors'] = $colors;
+                $sessiondata['colors'] = $colors;
+                $sessiondata['vendor_item'] = $vendor_item;
+                $sessiondata['item'] = $item;
+                $sessiondata['vendor_price'] = $vendor_prices;
+                $sessiondata['deleted'] = $deleted;
+                usersession($session, $sessiondata);
+                $out['vendor_price'] = $vendor_prices;
+                $out['vendor_item'] = $vendor_item;
+                $out['item'] = $item;
+                $commonprice = $this->_prepare_common_prices($sessiondata);
+                $prices = $sessiondata['prices'];
+                $item = $sessiondata['item'];
+                $profits = $this->_recalc_promo_profit($prices, $vendor_prices, $commonprice);
+                $this->_update_profit($profits, $item, $prices, $sessiondata, $session);
+            }
         }
         return $out;
     }
@@ -1253,6 +1393,20 @@ Class Sritems_model extends My_Model
         if (!empty($fldname) && array_key_exists($fldname,$vendoritem)) {
             $vendoritem[$fldname] = ifset($postdata,'newval','');
             $out['result'] = $this->success_result;
+            if ($fldname=='vendor_item_zipcode' || $fldname=='item_shipcountry') {
+                $out['address'] = 1;
+                $this->load->model('shipping_model');
+                $chkres = $this->shipping_model->get_zip_address($vendoritem['item_shipcountry'], $vendoritem['vendor_item_zipcode']);
+                if ($chkres['result']==$this->error_result) {
+                    $vendoritem['item_shipstate'] = '';
+                    $vendoritem['item_shipcity'] = '';
+                    $out['state'] = '';
+                } else {
+                    $vendoritem['item_shipstate'] = $chkres['state'];
+                    $vendoritem['item_shipcity'] = $chkres['city'];
+                    $out['state'] = $chkres['state'];
+                }
+            }
             $sessiondata['vendor_item'] = $vendoritem;
             usersession($session, $sessiondata);
             // Add base price
@@ -2253,6 +2407,22 @@ Class Sritems_model extends My_Model
             $out['errmsg'] = $errmsg;
         }
         return $out;
+    }
+
+    private function _recalc_inventory_profit($prices, $vendor_item_cost) {
+        $idx = 0;
+        foreach ($prices as $price) {
+            if (!empty($vendor_item_cost) && !empty($price['item_qty'])) {
+                $base_price = $price['price'];
+                if (!empty($price['sale_price'])) {
+                    $base_price = $price['sale_price'];
+                }
+                $profit = round(($base_price - $vendor_item_cost) * $price['item_qty'],2);
+                $prices[$idx]['profit'] = $profit;
+            }
+            $idx++;
+        }
+        return $prices;
     }
 
 }

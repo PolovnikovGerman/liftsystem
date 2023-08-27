@@ -55,50 +55,6 @@ class Btitemdetails_model extends MY_Model
         return $out;
     }
     // Prepare colors and images for edit
-    public function prepare_options_edit($sessiondata) {
-        $colors = $sessiondata['colors'];
-        $item = $sessiondata['item'];
-        $images = $sessiondata['images'];
-        $numidx = 1;
-        $outcolors = [];
-        foreach ($colors as $color) {
-            $outcolors[] = $color;
-            $numidx++;
-        }
-        if (empty($item['printshop_inventory_id'])) {
-            if ($numidx < $this->max_colors) {
-                for ($i=$numidx; $i < $this->max_colors; $i++) {
-                    $outcolors[] = [
-                        'item_color_id' => ($i)*(-1),
-                        'item_color' => '',
-                        'item_color_image' => '',
-                        'item_color_order' => $i,
-                    ];
-                }
-            }
-        }
-        $outimages = [];
-        $numidx=1;
-        foreach ($images as $image) {
-            $outimages[] = $image;
-            $numidx++;
-        }
-        if ($numidx < $this->max_images) {
-            for ($i=$numidx; $i <= $this->max_images; $i++) {
-                $outimages[] = [
-                    'item_img_id' => $i*(-1),
-                    'item_img_name' => '',
-                    'item_img_order' => $i,
-                    'item_img_label' => '',
-                    'title' => '',
-                ];
-            }
-        }
-        return [
-            'colors' => $outcolors,
-            'images' => $outimages,
-        ];
-    }
     // Change item parameter
     public function itemdetails_change_iteminfo($sessiondata, $options, $sessionsid) {
         $out=['result'=>$this->error_result, 'msg' => 'Item Not Found'];
@@ -781,6 +737,8 @@ class Btitemdetails_model extends MY_Model
                 $vendor_item['vendor_item_blankcost'] = 0;
                 $vendor_item['vendor_item_cost'] = 0;
                 $out['printshop_name'] = '';
+                $vendor_item['vendor_item_number'] = '';
+                $vendor_item['vendor_item_name'] = '';
                 $invcolors = [];
                 $out['result'] = $this->success_result;
             } else {
@@ -795,6 +753,8 @@ class Btitemdetails_model extends MY_Model
                     $out['printshop_name'] = $invitem['item_name'];
                     $vendor_item['vendor_item_blankcost'] = 0;
                     $vendor_item['vendor_item_cost'] = $invitem['avg_price'];
+                    $vendor_item['vendor_item_number'] = $invitem['item_num'];
+                    $vendor_item['vendor_item_name'] = $invitem['item_name'];
                     $out['result'] = $this->success_result;
                 }
             }

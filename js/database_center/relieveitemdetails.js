@@ -1,3 +1,19 @@
+var temp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; width: 100%; text-align: center;">'+
+    '<em>upload image</em></span></div>' +
+    '<ul class="qq-upload-list"></ul>' +
+    '<ul class="qq-upload-drop-area"></ul>'+
+    '<div class="clear"></div></div>';
+var replacetemp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: right; width: 100%;">'+
+    '<em>[Replace]</em></span></div>' +
+    '<ul class="qq-upload-list"></ul>' +
+    '<ul class="qq-upload-drop-area"></ul>'+
+    '<div class="clear"></div></div>';
+var addtemp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; width: 85px; text-align: center; margin-top: 4px; color: #0000ff;">'+
+    '<em>add image</em></span></div>' +
+    '<ul class="qq-upload-list"></ul>' +
+    '<ul class="qq-upload-drop-area"></ul>'+
+    '<div class="clear"></div></div>';
+
 function init_relievitemdetails_view(item) {
     $(".edit_itemdetails").unbind('click').click(function () {
         var params=new Array();
@@ -195,77 +211,71 @@ function init_relievitemdetails_edit() {
             if (response.errors=='') {
                 if (newval=='') {
                     $("select.vendornameinp").addClass('missing_info');
-                    $(".itemparamvalue.vendorcountry").empty().addClass('missing_info');
-                    $(".itemparamvalue.vendorzip").empty().addClass('missing_info');
-                    $(".vendorshipstate").empty().addClass('missing_info');
-                    $(".itemparamvalue.vendorponote").empty().addClass('missing_info');
                 } else {
                     $("select.vendornameinp").removeClass('missing_info');
-                    $(".itemparamvalue.vendorcountry").empty().html(response.data.shipaddr_country).removeClass('missing_info');
-                    $(".itemparamvalue.vendorzip").empty().html(response.data.vendor_zipcode).removeClass('missing_info');
-                    $(".vendorshipstate").empty().html(response.data.shipaddr_state).removeClass('missing_info');
-                    $(".itemparamvalue.vendorponote").html(response.data.po_note).empty().removeClass('missing_info');
                 }
-                $("#netpricesarea").empty().html(response.data.netprices);
                 $("#profitdataarea").empty().html(response.data.profit);
-                $(".itemprice_extrasale[data-item='item_sale_print']").empty().html(response.data.saleprint);
-                $(".itemprice_extrasale[data-item='item_sale_setup']").empty().html(response.data.salesetup);
-                $(".itemprice_extrasale[data-item='item_sale_repeat']").empty().html(response.data.salerepeat);
-                $(".itemprice_rushsale[data-item='item_sale_rush1']").empty().html(response.data.salerush1)
-                $(".itemprice_rushsale[data-item='item_sale_rush2']").empty().html(response.data.salerush2)
-                $(".itemprice_pantonesale[data-item='item_sale_pantone']").empty().html(response.data.salepantone);
+                $(".relievers_vendorprices").empty().html(response.data.vendor_price);
+                $(".itemoptionsarea").empty().html(response.data.colors);
+                $("#vendoritemdetailsarea").empty().html(response.data.vendoritemview);
+                init_relievitemdetails_edit();
             } else {
                 show_error(response);
             }
         },'json');
     });
+    $(".vendoritemcountyinp").unbind('change').change(function () {
+        var newval = $(this).val();
+        var fld = $(this).data('item');
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fld', value: fld});
+        params.push({name: 'newval', value: newval});
+        var url = '/sritemdetails/change_relive_vendoritemprice';
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                $(".vendorshipstate").empty().html(response.data.shipstate);
+                if (newval=='') {
+                    $(".vendoritemcountyinp").addClass('missing_info');
+                } else {
+                    $(".vendoritemcountyinp").removeClass('missing_info');
+                }
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
 
-    // $("input.vendoritemnum").autocompleter({
-    //     source: '/itemdetails/search_vendor_item',
-    //     minLength: 3,
-    //     combine: function(params) {
-    //         var vendor_id = $('#vendor_item_vendor').val();
-    //         return {
-    //             q: params.query,
-    //             vendor_id: vendor_id
-    //         };
-    //     },
-    //     callback: function(value, index, object) {
-    //         if (object.id) {
-    //             $("#vendor_item_id").val(object.id);
-    //         }
-    //     }
-    // });
-    //
-    // $("input.vendoritemnum").blur(function(){
-    //     var newval=$(this).val();
-    //     var params = new Array();
-    //     params.push({name: 'session', value: $("#dbdetailsession").val()});
-    //     params.push({name: 'newval', value: newval});
-    //     var url = '/sritemdetails/relive_vendoritem_check';
-    //     $.post(url,params,function(response) {
-    //         if (response.errors=='') {
-    //             $("#netpricesarea").empty().html(response.data.netprices);
-    //             $("#profitdataarea").empty().html(response.data.profit);
-    //             $("select.vendornameinp").val(response.data.vendor_id);
-    //             $(".itemparamvalue.vendorcountry").empty().html(response.data.shipaddr_country);
-    //             $(".itemparamvalue.vendorzip").empty().html(response.data.vendor_zipcode);
-    //             $(".vendorshipstate").empty().html(response.data.shipaddr_state);
-    //             $(".itemparamvalue.vendorponote").empty().html(response.data.po_note);
-    //             $(".relievers_vendorprices").empty().html(response.data.vendor_prices);
-    //             if (newval=='') {
-    //                 $("input.vendoritemnum").val().addClass('missing_info');
-    //                 $("input.vendoritemname").val().addClass('missing_info');
-    //             } else {
-    //                 $("input.vendoritemnum").removeClass('missing_info');
-    //                 $("input.vendoritemname").val(response.data.vendor_item_name).removeClass('missing_info');
-    //             }
-    //             init_relievitemdetails_edit();
-    //         } else {
-    //             show_error(response);
-    //         }
-    //     },'json');
-    // });
+    // Printshop item
+    $("select.printshopitemselect").unbind('change').change(function (){
+        var newval=$(this).val();
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'newval', value: newval});
+        var url='/sritemdetails/change_printshopitem';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                if (newval=='') {
+                    $(".printshopitemselect").addClass('missing_info');
+                } else {
+                    $(".printshopitemselect").removeClass('missing_info');
+                }
+                $(".printshop_item_name").empty().html(response.data.printshop_name);
+                if (response.data.printshop_name=='') {
+                    $(".printshop_item_name").addClass('missing_info');
+                } else {
+                    $(".printshop_item_name").removeClass('missing_info');
+                }
+                $("#profitdataarea").empty().html(response.data.profit);
+                $(".relievers_vendorprices").empty().html(response.data.vendorprice);
+                $(".itemoptionsarea").empty().html(response.data.colorsview);
+                $(".itemoptioncheck").empty().html(response.data.imgoptions);
+                init_relievitemdetails_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 
     $(".itemimagepreview").unbind('click').click(function () {
         var params = new Array();
@@ -273,6 +283,7 @@ function init_relievitemdetails_edit() {
         var url = '/sritemdetails/relive_images_edit';
         $.post(url, params, function (response) {
             if (response.errors=='') {
+                $("#imageoptionsbackground").show();
                 $("#itemImagesModalLabel").empty().html(response.data.header);
                 $("#itemImagesModal").find('div.modal-body').empty().html(response.data.content);
                 $("#itemImagesModal").modal({backdrop: 'static', keyboard: false, show: true});
@@ -345,6 +356,14 @@ function init_relievitemdetails_edit() {
         var url='/sritemdetails/change_relive_vendoritemprice';
         $.post(url, params, function (response) {
             if (response.errors=='') {
+                if (fld=='vendor_item_zipcode') {
+                    $(".vendorshipstate").empty().html(response.data.shipstate);
+                }
+                if (newval=='') {
+                    $(".vendordatainpt[data-item='"+fld+"']").addClass('missing_info');
+                } else {
+                    $(".vendordatainpt[data-item='"+fld+"']").removeClass('missing_info');
+                }
             } else {
                 show_error(response);
             }
@@ -624,6 +643,7 @@ function init_relievitemimages_edit() {
         var url="/sritemdetails/item_images_rebuild";
         $.post(url, params, function(response) {
             if (response.errors=='') {
+                $("#imageoptionsbackground").hide();
                 $(".relievers_itemimages").empty().html(response.data.content);
                 init_relievitemdetails_edit();
                 $(document.body).addClass('modal-open');
@@ -631,24 +651,8 @@ function init_relievitemimages_edit() {
                 show_error(response);
             }
         },'json');
-
     })
-    var temp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; width: 100%; text-align: center;">'+
-        '<em>upload image</em></span></div>' +
-        '<ul class="qq-upload-list"></ul>' +
-        '<ul class="qq-upload-drop-area"></ul>'+
-        '<div class="clear"></div></div>';
-    var replacetemp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: right; width: 100%;">'+
-        '<em>[Replace]</em></span></div>' +
-        '<ul class="qq-upload-list"></ul>' +
-        '<ul class="qq-upload-drop-area"></ul>'+
-        '<div class="clear"></div></div>';
-    var addtemp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; width: 85px; text-align: center; margin-top: 4px; color: #0000ff;">'+
-        '<em>add image</em></span></div>' +
-        '<ul class="qq-upload-list"></ul>' +
-        '<ul class="qq-upload-drop-area"></ul>'+
-        '<div class="clear"></div></div>';
-
+    // Main Image
     if ($("#uploadmainimage").length > 0) {
         var uploader = new qq.FileUploader({
             element: document.getElementById('uploadmainimage'),

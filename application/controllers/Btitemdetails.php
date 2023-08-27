@@ -251,7 +251,8 @@ class Btitemdetails extends MY_Controller
                 $error = '';
                 $item = $sessiondata['item'];
                 $main_view = $this->load->view('btitems/popup_mainimage_edit',['item' => $item], TRUE);
-                $res = $this->btitemdetails_model->prepare_options_edit($sessiondata);
+                $this->load->model('items_model');
+                $res = $this->items_model->prepare_options_edit($sessiondata);
                 // $images = $sessiondata['images'];
                 $images = $res['images'];
                 $colors = $res['colors'];

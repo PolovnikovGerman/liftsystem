@@ -148,7 +148,7 @@ class Dbitems extends MY_Controller
                 $this->load->model('prices_model');
                 // $discounts = $this->prices_model->get_price_discounts();
                 $this->load->model('vendors_model');
-                $vendors = $this->vendors_model->get_vendors_list(['status'=>1]);
+                $vendors = $this->vendors_model->get_vendors_list(['status'=>1, 'order_by'=>'vendor_name']);
                 if ($editmode==0) {
                     $keyinfo = $this->load->view('btitems/keyinfo_view',['item' => $data['item'],'categories'=>$data['categories']], TRUE);
                     $similar = $this->load->view('btitems/similar_view',['items' => $data['similar']], TRUE);
@@ -497,7 +497,7 @@ class Dbitems extends MY_Controller
                 $this->load->model('prices_model');
                 $discounts = $this->prices_model->get_price_discounts();
                 $this->load->model('vendors_model');
-                $vendors = $this->vendors_model->get_vendors_list(['status'=>1]);
+                $vendors = $this->vendors_model->get_vendors_list(['status'=>1, 'order_by'=>'vendor_name']);
                 if ($editmode==0) {
                     $category = '';
                     if (!empty($data['item']['category_id'])) {
@@ -508,7 +508,7 @@ class Dbitems extends MY_Controller
                     }
                     $keyinfo = $this->load->view('relieveritems/keyinfo_view',['item' => $data['item']], TRUE);
                     $similar = $this->load->view('relieveritems/similar_view',['items' => $data['similar']], TRUE);
-                    $vendor_main = $this->load->view('relieveritems/vendormain_view',['vendor_item' => $data['vendor_item'],'vendor' => $data['vendor']],TRUE);
+                    $vendor_main = $this->load->view('relieveritems/vendormain_view',['vendor_item' => $data['vendor_item'],],TRUE);
                     $vendor_prices = $this->load->view('relieveritems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
                     $profit_view = $this->load->view('relieveritems/itemprice_profit_view',['item' => $data['item'],'prices'=> $data['prices']],TRUE);
                     $netprices = $this->load->view('relieveritems/itemprice_net_view',['prices' => $data['prices']], TRUE);
@@ -521,7 +521,7 @@ class Dbitems extends MY_Controller
                     ];
                     $itemprices = $this->load->view('relieveritems/itemprices_view', $price_options,TRUE);
                     $otherimages = $this->load->view('relieveritems/otherimages_view',['images' => $data['images'], 'imgcnt' => count($data['images'])],TRUE);
-                    $optionsimg = $this->load->view('relieveritems/optionimages_view',['imgoptions' => $data['option_images']],TRUE);
+                    $optionsimg = $this->load->view('relieveritems/optionimages_view',['colors' => $data['colors'], 'item' => $data['item']],TRUE);
                     $imagesoptions = [
                         'otherimages' => $otherimages,
                         'optionsimg' => $optionsimg,
@@ -533,17 +533,29 @@ class Dbitems extends MY_Controller
                     $metaview = $this->load->view('relieveritems/itemmeta_view',['item' => $data['item']], TRUE);
                     $shippingview = $this->load->view('relieveritems/itemship_view',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
                 } else {
+                    $this->load->model('shipping_model');
+                    $country_list = $this->shipping_model->get_countries_list(['orderby'=>'sort']);
                     $keyinfo = $this->load->view('relieveritems/keyinfo_edit',['item' => $data['item'],'subcategories' => $subcategories], TRUE);
                     $simitems = $this->sritems_model->get_relievers_itemslist(['status' => 1,'order_by' => 'item_number']);
                     $similar = $this->load->view('relieveritems/similar_edit',['items' => $data['similar'],'similars' => $simitems], TRUE);
+
+                    if (empty($data['item']['printshop_inventory_id'])) {
+                        $vendoritemview = $this->load->view('relieveritems/vendoritem_data_edit',['vendor_item' => $data['vendor_item']], TRUE);
+                        $vendor_prices = $this->load->view('relieveritems/vendorprices_edit',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
+                    } else {
+                        $this->load->model('inventory_model');
+                        $itemlist = $this->inventory_model->get_inventory_itemslist();
+                        $vendoritemview = $this->load->view('relieveritems/vendoritem_inventory_edit', ['item' => $data['item'],'itemlists' => $itemlist], TRUE);
+                        $vendor_prices = $this->load->view('relieveritems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
+                    }
                     $vendoptions = [
                         'vendor_item' => $data['vendor_item'],
-                        'vendor' => $data['vendor'],
                         'item' => $data['item'],
                         'vendors' => $vendors,
+                        'countries' => $country_list,
+                        'vendoritem_view' => $vendoritemview,
                     ];
                     $vendor_main = $this->load->view('relieveritems/vendormain_edit', $vendoptions,TRUE);
-                    $vendor_prices = $this->load->view('relieveritems/vendorprices_edit',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
                     $profit_view = $this->load->view('relieveritems/itemprice_profit_view',['item' => $data['item'],'prices'=> $data['prices']],TRUE);
                     $netprices = $this->load->view('relieveritems/itemprice_net_view',['prices' => $data['prices']], TRUE);
                     $price_options = [
@@ -555,7 +567,7 @@ class Dbitems extends MY_Controller
                     ];
                     $itemprices = $this->load->view('relieveritems/itemprices_edit', $price_options,TRUE);
                     $otherimages = $this->load->view('relieveritems/otherimages_view',['images' => $data['images'], 'imgcnt' => count($data['images'])],TRUE);
-                    $optionsimg = $this->load->view('relieveritems/optionimages_view',['imgoptions' => $data['option_images']],TRUE);
+                    $optionsimg = $this->load->view('relieveritems/optionimages_view',['colors' => $data['colors'], 'item' => $data['item']],TRUE);
                     $imagesoptions = [
                         'otherimages' => $otherimages,
                         'optionsimg' => $optionsimg,
@@ -567,6 +579,15 @@ class Dbitems extends MY_Controller
                     $metaview = $this->load->view('relieveritems/itemmeta_edit',['item' => $data['item']], TRUE);
                     $shippingview = $this->load->view('relieveritems/itemship_edit',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
                 }
+                $history_view = '';
+                $history_count = 0;
+                if ($item_id!==0) {
+                    $history = $this->items_model->get_item_history($item_id);
+                    $history_count = count($history);
+                    $history_list = $this->load->view('itemdetails/history_data_view', ['data' => $history], TRUE);
+                    $history_view = $this->load->view('itemdetails/history_view',['listview' => $history_list], TRUE);
+                }
+
                 $body_options = [
                     'keyinfo' => $keyinfo,
                     'similar' => $similar,
@@ -577,6 +598,8 @@ class Dbitems extends MY_Controller
                     'customview' => $customview,
                     'metaview' => $metaview,
                     'shipping' => $shippingview,
+                    'history' => $history_view,
+                    'history_cnt' => $history_count,
                 ];
                 $mdata['content'] = $this->load->view('relieveritems/itemdetailsbody_view', $body_options, TRUE);;
                 $mdata['editmode'] = $editmode;
@@ -597,6 +620,11 @@ class Dbitems extends MY_Controller
                 $categories = $this->categories_model->get_reliver_categories(['brand'=>'BT']);
                 $subcategories = []; // $this->categories_model->get_sbitem_categories();
                 $mdata['content'] = $this->load->view('btitems/newitemprepare',['categories' => $categories, 'subcategories' => $subcategories], TRUE);
+            } else {
+                $this->load->model('categories_model');
+                $categories = $this->categories_model->get_reliver_categories(['brand'=>'SR']);
+                $mdata['content'] = $this->load->view('relieveritems/newitemprepare',['categories' => $categories, ], TRUE);
+
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -687,6 +715,13 @@ class Dbitems extends MY_Controller
         $this->load->model('items_model');
         if ($brand=='BT') {
             $res = $this->items_model->new_btitem($postdata, $this->USR_ID);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['newitem'] = $res['item_id'];
+            }
+        } else {
+            $res = $this->items_model->new_sritem($postdata, $this->USR_ID);
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';
