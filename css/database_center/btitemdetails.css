@@ -2036,10 +2036,10 @@ select.optimageorderinpt {
     font-size: 14px;
     text-align: center;
 }
-.historydate {
+.historydatahead .historydate {
     width: 140px;
 }
-.historyuser {
+.historydatahead .historyuser {
     width: 122px;
 }
 .historydatahead .historytext {
@@ -2049,7 +2049,7 @@ select.optimageorderinpt {
     background-color: #ffffff;
     overflow-x: hidden;
     overflow-y: auto;
-    height: 588px;
+    height: 563px;
 }
 .historydatarow {
     width: 100%;
@@ -2066,6 +2066,17 @@ select.optimageorderinpt {
 }
 .historydatarow .historydate, .historydatarow .historyuser {
     border-right: 1px solid #000000;
+}
+.historydatarow .historydate {
+    width: 140px;
+}
+.historydatarow .historydate span {
+    font-size: 10px;
+    font-style: italic;
+    color: #5f5f5f;
+}
+.historydatarow .historyuser {
+    width: 122px;
 }
 .historydatarow .historytext {
     text-align: left;

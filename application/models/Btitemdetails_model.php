@@ -1751,36 +1751,40 @@ class Btitemdetails_model extends MY_Model
         $info = [];
         if ($olditem['item_active']!==$item['item_active']) {
             if ($item['item_active']==1) {
-                $info[]='Change Item Status on Active,';
+                $info[]='Changed Item Status from "Non-Active" to "Active"';
             } else {
-                $info[]='Change Item Status on Non-Active';
+                $info[]='Changed Item Status from "Active" to "Non-Active"';
             }
         }
         if ($olditem['item_name']!==$item['item_name']) {
-            $info[]='Change Item Name from "'.$olditem['item_name'].'" to "'.$item['item_name'].'"';
+            $info[]='Changed Item Name from "'.$olditem['item_name'].'" to "'.$item['item_name'].'"';
         }
         if ($olditem['item_template']!==$item['item_template']) {
-            $info[]='Change Item Template from '.$olditem['item_template'].' to '.$item['item_template'];
+            if (empty($olditem['item_template'])) {
+                $info[]='Changed Item Template from "null" to "'.$item['item_template'].'"';
+            } else {
+                $info[]='Changed Item Template from "'.$olditem['item_template'].'" to "'.$item['item_template'].'"';
+            }
         }
         if ($olditem['item_new']!==$item['item_new']) {
             if ($item['item_new']==1) {
-                $info[]='Checked Tag New';
+                $info[]='Changed Item Tag from "Not-New" to "New"';
             } else {
-                $info[]='Unchecked Tag New';
+                $info[]='Changed Item Tag from "New" to "Not-New"';
             }
         }
         if ($olditem['item_sale']!==$item['item_sale']) {
             if ($item['item_sale']==1) {
-                $info[]='Checked Tag Sale';
+                $info[]='Changed Item Tag from "Not-Sale" to "Sale"';
             } else {
-                $info[]='Unchecked Tag Sale';
+                $info[]='Changed Item Tag from "Sale" to "Not-Sale"';
             }
         }
         if ($olditem['item_topsale']!==$item['item_topsale']) {
             if ($item['item_topsale']==1) {
-                $info[]='Checked Tag Top Seller';
+                $info[]='Changed Item Tag from "Not Top Seller" to "Top Seller"';
             } else {
-                $info[]='Unchecked Tag Top Seller';
+                $info[]='Changed Item Tag from "Top Seller" to "Not Top Seller"';
             }
         }
         // Categories
@@ -1789,15 +1793,15 @@ class Btitemdetails_model extends MY_Model
         foreach ($oldcategs as $oldcateg) {
             if ($oldcateg['category_id']!==$categories[$idx]['category_id']) {
                 if (empty($categories[$idx]['cateegory_id'])) {
-                    $info[]='Remove subcategory '.$oldcateg['category_name'];
+                    $info[]='Removed subcategory '.$oldcateg['category_name'];
                 } else {
                     $datcat = $this->categories_model->get_category_data($categories[$idx]['category_id']);
                     if ($datcat['result']==$this->success_result) {
                         $newcat = $datcat['data'];
                         if ($oldcateg['item_categories_id']<0) {
-                            $info[]='Add subcategory '.$newcat['category_name'];
+                            $info[]='Changed Subcategory from "null" to "'.$newcat['category_name'].'"';
                         } else {
-                            $info[]='Change subcategory from '.$oldcateg['category_name'].' to '.$newcat['category_name'];
+                            $info[]='Changed Subcategory from "'.$oldcateg['category_name'].'" to "'.$newcat['category_name'].'"';
                         }
                     }
                 }
@@ -1805,25 +1809,53 @@ class Btitemdetails_model extends MY_Model
             $idx++;
         }
         if ($olditem['item_size']!==$item['item_size']) {
-            $info[]='Change SIZE from '.$olditem['item_size'].' to '.$item['item_size'];
+            if (empty($olditem['item_size'])) {
+                $info[]='Changed SIZE from "null" to "'.$item['item_size'].'"';
+            } else {
+                $info[]='Changed SIZE from "'.$olditem['item_size'].'" to "'.$item['item_size'].'"';
+            }
         }
         if ($olditem['item_material']!==$item['item_material']) {
-            $info[]='Change MATERIAL from '.$olditem['item_material'].' on '.$item['item_material'];
+            if (empty($olditem['item_material'])) {
+                $info[]='Changed MATERIAL from "null" to "'.$item['item_material'].'"';
+            } else {
+                $info[]='Changed MATERIAL from "'.$olditem['item_material'].'" to "'.$item['item_material'].'"';
+            }
         }
         if ($olditem['item_description1']!==$item['item_description1']) {
-            $info[]='Change ITEM DESCRIPTION from "'.$olditem['item_description1'].'" to "'.$item['item_description1'].'"';
+            if (empty($olditem['item_description1'])) {
+                $info[]='Changed ITEM DESCRIPTION from "null" to "'.$item['item_description1'].'"';
+            } else {
+                $info[]='Changed ITEM DESCRIPTION from "'.$olditem['item_description1'].'" to "'.$item['item_description1'].'"';
+            }
         }
         if ($olditem['bullet1']!==$item['bullet1']) {
-            $info[]='Change BULLET POINT 1 "'.$olditem['bullet1'].'" to "'.$item['bullet1'].'"';
+            if (empty($olditem['bullet1'])) {
+                $info[]='Changed BULLET POINT 1 from "null" to "'.$item['bullet1'].'"';
+            } else {
+                $info[]='Changed BULLET POINT 1 from "'.$olditem['bullet1'].'" to "'.$item['bullet1'].'"';
+            }
         }
         if ($olditem['bullet2']!==$item['bullet2']) {
-            $info[]='Change BULLET POINT 2 "'.$olditem['bullet2'].'" to "'.$item['bullet2'].'"';
+            if (empty($olditem['bullet2'])) {
+                $info[]='Changed BULLET POINT 2 from "null" to "'.$item['bullet2'].'"';
+            } else {
+                $info[]='Changed BULLET POINT 2 from "'.$olditem['bullet2'].'" to "'.$item['bullet2'].'"';
+            }
         }
         if ($olditem['bullet3']!==$item['bullet3']) {
-            $info[]='Change BULLET POINT 3 "'.$olditem['bullet3'].'" to "'.$item['bullet4'].'"';
+            if (empty($olditem['bullet3'])) {
+                $info[]='Changed BULLET POINT 3 from "null" to "'.$item['bullet3'].'"';
+            } else {
+                $info[]='Changed BULLET POINT 3 from "'.$olditem['bullet3'].'" to "'.$item['bullet3'].'"';
+            }
         }
         if ($olditem['bullet4']!==$item['bullet4']) {
-            $info[]='Change BULLET POINT 4 "'.$olditem['bullet4'].'" to "'.$item['bullet4'].'"';
+            if (empty($olditem['bullet4'])) {
+                $info[]='Changed BULLET POINT 4 from "null" to "'.$item['bullet4'].'"';
+            } else {
+                $info[]='Changed BULLET POINT 4 from "'.$olditem['bullet4'].'" to "'.$item['bullet4'].'"';
+            }
         }
         return $info;
     }
