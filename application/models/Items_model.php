@@ -1497,8 +1497,23 @@ Class Items_model extends My_Model
         $this->db->from('sb_item_history h');
         $this->db->join('users u','h.user_id=u.user_id');
         $this->db->where('h.item_id', $item_id);
-        $this->db->order_by('added_at, item_key','desc');
-        return $this->db->get()->result_array();
+        $this->db->order_by('added_at, article','desc');
+        $results =  $this->db->get()->result_array();
+        $out = [];
+        $curcode = '';
+        foreach ($results as $result) {
+            if ($curcode!==$result['article']) {
+                $result['newaricle'] = 1;
+                $result['date'] = date('M j, Y - H:i', strtotime($result['added_at'])).' <span>'.date('T', strtotime($result['added_at'])).'</span>';
+                $curcode = $result['article'];
+            } else {
+                $result['newaricle'] = 0;
+                $result['user_name'] = '';
+                $result['date'] = '';
+            }
+            $out[] = $result;
+        }
+        return $out;
     }
 
     public function prepare_options_edit($sessiondata) {
