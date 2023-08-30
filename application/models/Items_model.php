@@ -1017,7 +1017,7 @@ Class Items_model extends My_Model
             $categories = $this->categories_model->get_categories_list();
             // Colors
             $colors = [];
-            $numpp=0;
+            $numpp=1;
             if (empty($item['printshop_inventory_id'])) {
                 $colorsrc = $this->itemcolors_model->get_colors_item($item_id, $editmode);
                 foreach ($colorsrc as $itmcolor) {
@@ -1025,7 +1025,7 @@ Class Items_model extends My_Model
                         'item_color_id' => $itmcolor['item_color_id'],
                         'item_color' => $itmcolor['item_color'],
                         'item_color_image' => $itmcolor['item_color_image'],
-                        'item_color_order' => $numpp+1,
+                        'item_color_order' => $numpp,
                     ];
                     $numpp++;
                 }
@@ -1033,7 +1033,7 @@ Class Items_model extends My_Model
                 if ($editmode==0) {
                     $colorsrc = $this->itemcolors_model->get_invent_itemcolors($item_id, $editmode);
                 } else {
-                    $colorsrc = $this->itemcolors_model->get_invent_itemcolors($item['printshop_inventory_id'], $editmode);
+                    $colorsrc = $this->itemcolors_model->get_invent_itemcolors($item_id, $editmode);
                 }
                 foreach ($colorsrc as $itmcolor) {
                     $colors[] = [
@@ -1123,7 +1123,7 @@ Class Items_model extends My_Model
                     'item_img_item_id' => $image['item_img_item_id'],
                     'item_img_name' => $image['item_img_name'],
                     'item_img_thumb' => $image['item_img_thumb'],
-                    'item_img_order' => $image['item_img_order'],
+                    'item_img_order' => $numpp, // $image['item_img_order'],
                     'item_img_big' => $image['item_img_big'],
                     'item_img_medium' => $image['item_img_medium'],
                     'item_img_small' => $image['item_img_small'],

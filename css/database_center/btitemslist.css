@@ -379,7 +379,8 @@
     font-size: 18px;
     height: 28px;
     line-height: 28px;
-    font-weight: 600;
+    /* font-weight: 600; */
+    font-family: Helvetica-Bold;
 }
 .btitemnewaddarea .canceladd {
     float: right!important;
@@ -403,7 +404,8 @@
     height: 36px;
     line-height: 36px!important;
     font-size: 14px;
-    font-weight: 600;
+    /* font-weight: 600; */
+    font-family: Helvetica-Bold;
     color: #000040;
     text-align: right;
     padding-right: 4px;
