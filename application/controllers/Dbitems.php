@@ -234,8 +234,8 @@ class Dbitems extends MY_Controller
                     $itemimages = $this->load->view('btitems/images_view',$imagesoptions, TRUE);
                     $locations = $this->load->view('btitems/printlocations_edit',['locations' => $data['inprints']], TRUE);
                     $customview = $this->load->view('btitems/itemcustom_edit',['item' => $data['item'], 'locations' => $locations, 'missinfo' => $missinfo['imagescolors']], TRUE);
-                    $metaview = $this->load->view('btitems/itemmeta_edit',['item' => $data['item']], TRUE);
-                    $shippingview = $this->load->view('btitems/itemship_edit',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
+                    $metaview = $this->load->view('btitems/itemmeta_edit',['item' => $data['item'],'missinfo' => $missinfo['meta']], TRUE);
+                    $shippingview = $this->load->view('btitems/itemship_edit',['item' => $data['item'],'boxes' => $data['shipboxes'], 'missinfo' => $missinfo['shiping']], TRUE);
                 }
                 $history_view = '';
                 $history_count = 0;
