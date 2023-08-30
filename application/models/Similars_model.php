@@ -14,6 +14,7 @@ Class Similars_model extends My_Model
         $this->db->from('sb_item_similars si');
         $this->db->join('sb_items i','i.item_id=si.item_similar_similar');
         $this->db->where('si.item_similar_item',$item_id);
+        $this->db->where('i.item_active',1);
         if ($brand=='SR') {
             $this->db->limit($this->config->item('relievers_similar_items'));
         } else {

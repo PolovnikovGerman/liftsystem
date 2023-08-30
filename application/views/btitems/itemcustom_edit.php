@@ -1,6 +1,6 @@
 <div class="relievers_customisation">
     <div class="sectionlabel">PRINTING:</div>
-    <div class="sectionbody">
+    <div class="sectionbody <?=$missinfo==0 ? '' : 'missinginfo'?>"">
         <div class="content-row">
             <div class="itemvendorfilebtn editmode">
                 <div class="content-row">Vector AI</div>

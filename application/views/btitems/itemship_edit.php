@@ -1,6 +1,6 @@
 <div class="relievers_shipping">
     <div class="sectionlabel">SHIPPING:</div>
-    <div class="sectionbody">
+    <div class="sectionbody <?=$missinfo==0 ? '' : 'missinginfo'?>">
         <div class="content-row">
             <div class="itemparamlabel itemweigth">Weight Ea:</div>
             <div class="itemparamvalue itemweigth editmode">

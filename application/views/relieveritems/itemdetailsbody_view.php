@@ -13,7 +13,7 @@
     </div>
     <div class="rightpartbody">
         <div class="pricesarea">
-            <div class="relievers_vendorprices">
+            <div class="relievers_vendorprices <?=$missinfo==0 ? '' : 'missinginfo'?>">
                 <?=$vendor_prices?>
             </div>
             <?=$itemprices?>

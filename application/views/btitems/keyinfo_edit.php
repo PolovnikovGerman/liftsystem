@@ -1,7 +1,7 @@
 <div class="relievers_keyinfo">
     <div class="sectionlabel">Key Info:</div>
     <div class="actionbtn"><?=$item['item_active']==1 ? 'Make Inactive' : 'Make Active'?></div>
-    <div class="sectionbody">
+    <div class="sectionbody <?=$missinfo==0 ? '' : 'missinginfo'?>">
         <div class="content-row">
             <div class="itemparamlabel itemname">Item Name:</div>
             <div class="itemparamvalue editmode itemname">
