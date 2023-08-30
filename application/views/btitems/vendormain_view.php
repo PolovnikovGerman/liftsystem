@@ -1,6 +1,6 @@
 <div class="relievers_vendormain">
     <div class="sectionlabel">SUPPLIER:</div>
-    <div class="vendormainbody">
+    <div class="vendormainbody <?=$missinfo==0 ? '' :  'missinginfo'?>">
         <div class="content-row">
             <div class="itemparamlabel vendorname">Supplier</div>
             <div class="itemparamvalue vendorname <?=empty($vendor_item['vendor_name']) ? 'missing_info' : ''?>"><?=$vendor_item['vendor_name']?></div>

@@ -987,6 +987,24 @@ Class Items_model extends My_Model
                     $item['printshop_item_name'] = $invres['item_name'];
                 }
             }
+            // Missing Info
+            $this->db->select('*');
+            $this->db->from('v_sbitem_missinginfo');
+            $this->db->where('item_id', $item_id);
+            $misinfo = $this->db->get()->row_array();
+            if (ifset($misinfo,'item_id',0)==0) {
+                $misinfo = [
+                    'item_id' => $item_id,
+                    'keyinfo' => 0,
+                    'similar' => 0,
+                    'prices' => 0,
+                    'printing' => 0,
+                    'meta' => 0,
+                    'shiping' => 0,
+                    'imagescolors' => 0,
+                    'supplier' => 0,
+                ];
+            }
             $this->load->model('itemimages_model');
             $this->load->model('vendors_model');
             $this->load->model('imprints_model');
@@ -1211,6 +1229,7 @@ Class Items_model extends My_Model
                 'deleted' => [],
             ];
             $out['data'] = $data;
+            $out['missinfo'] = $misinfo;
         }
         return $out;
     }

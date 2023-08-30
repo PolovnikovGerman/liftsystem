@@ -1,6 +1,6 @@
 <div class="relievers_metasearch">
     <div class="sectionlabel">META &amp; SEARCH:</div>
-    <div class="sectionbody">
+    <div class="sectionbody <?=$missinfo==0 ? '' : 'missinginfo'?>">
         <div class="itemparamlabel metatitle">Meta Title:</div>
         <div class="itemparamvalue metatitle <?=empty($item['item_meta_title']) ? 'missing_info' : ''?>"
              data-event="hover" data-css="itemdetailsballonbox" data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="right" data-textcolor="#000"

@@ -143,15 +143,15 @@ class Dbitems extends MY_Controller
                 } else {
                     $mdata['header'] = $this->load->view('btitems/header_edit', $header_options, TRUE);
                 }
-
+                $missinfo = $res['missinfo'];
                 $subcategories = $this->categories_model->get_categories(['show_dropdown'=>[1,2]]);
                 $this->load->model('prices_model');
                 // $discounts = $this->prices_model->get_price_discounts();
                 $this->load->model('vendors_model');
                 $vendors = $this->vendors_model->get_vendors_list(['status'=>1, 'order_by'=>'vendor_name']);
                 if ($editmode==0) {
-                    $keyinfo = $this->load->view('btitems/keyinfo_view',['item' => $data['item'],'categories'=>$data['categories']], TRUE);
-                    $similar = $this->load->view('btitems/similar_view',['items' => $data['similar']], TRUE);
+                    $keyinfo = $this->load->view('btitems/keyinfo_view',['item' => $data['item'],'categories'=>$data['categories'], 'missinfo' => $missinfo['keyinfo']], TRUE);
+                    $similar = $this->load->view('btitems/similar_view',['items' => $data['similar'], 'missinfo' => $missinfo['similar']], TRUE);
                     if (empty($data['item']['printshop_inventory_id'])) {
                         $vendoritemview = $this->load->view('btitems/vendoritem_data_view',['vendor_item' => $data['vendor_item']], TRUE);
                     } else {
@@ -161,14 +161,16 @@ class Dbitems extends MY_Controller
                         'vendor_item' => $data['vendor_item'],
                         'item' => $data['item'],
                         'vendoritem_view' => $vendoritemview,
+                        'missinfo' => $missinfo['supplier'],
                     ];
                     $vendor_main = $this->load->view('btitems/vendormain_view', $vendor_options,TRUE);
-                    $vendor_prices = $this->load->view('btitems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
+                    $vendor_prices = $this->load->view('btitems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item'], 'missinfo' => $missinfo['supplier'],],TRUE);
                     $profit_view = $this->load->view('btitems/itemprice_profit_view',['item' => $data['item'],'prices'=> $data['prices']],TRUE);
                     $price_options = [
                         'item' => $data['item'],
                         'prices'=> $data['prices'],
                         'profit_view' => $profit_view,
+                        'missinfo' => $missinfo['prices'],
                     ];
                     $itemprices = $this->load->view('btitems/itemprices_view', $price_options,TRUE);
                     $otherimages = $this->load->view('btitems/otherimages_view',['images' => $data['images'], 'imgcnt' => count($data['images'])],TRUE);
@@ -178,18 +180,19 @@ class Dbitems extends MY_Controller
                         'otherimages' => $otherimages,
                         'optionsimg' => $optionsimg,
                         'item' => $data['item'],
+                        'missinfo' => $missinfo['imagescolors'],
                     ];
                     $itemimages = $this->load->view('btitems/images_view',$imagesoptions, TRUE);
                     $locations = $this->load->view('btitems/printlocations_view',['locations' => $data['inprints']], TRUE);
-                    $customview = $this->load->view('btitems/itemcustom_view',['item' => $data['item'], 'locations' => $locations], TRUE);
-                    $metaview = $this->load->view('btitems/itemmeta_view',['item' => $data['item']], TRUE);
-                    $shippingview = $this->load->view('btitems/itemship_view',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
+                    $customview = $this->load->view('btitems/itemcustom_view',['item' => $data['item'], 'locations' => $locations, 'missinfo' => $missinfo['printing'],], TRUE);
+                    $metaview = $this->load->view('btitems/itemmeta_view',['item' => $data['item'], 'missinfo' => $missinfo['meta']], TRUE);
+                    $shippingview = $this->load->view('btitems/itemship_view',['item' => $data['item'],'boxes' => $data['shipboxes'],'missinfo' => $missinfo['shiping']], TRUE);
                 } else {
                     $this->load->model('shipping_model');
                     $country_list = $this->shipping_model->get_countries_list(['orderby'=>'sort']);
-                    $keyinfo = $this->load->view('btitems/keyinfo_edit',['item' => $data['item'],'categories'=>$data['categories'], 'subcategories' => $subcategories], TRUE);
+                    $keyinfo = $this->load->view('btitems/keyinfo_edit',['item' => $data['item'],'categories'=>$data['categories'], 'subcategories' => $subcategories, 'missinfo' => $missinfo['keyinfo']], TRUE);
                     $simitems = $this->items_model->get_items(['item_active' => 1],'item_number','asc');
-                    $similar = $this->load->view('btitems/similar_edit',['items' => $data['similar'],'similars' => $simitems], TRUE);
+                    $similar = $this->load->view('btitems/similar_edit',['items' => $data['similar'],'similars' => $simitems, 'missinfo' => $missinfo['similar']], TRUE);
                     if (empty($data['item']['printshop_inventory_id'])) {
                         $vendoritemview = $this->load->view('btitems/vendoritem_data_edit',['vendor_item' => $data['vendor_item']], TRUE);
                         $vendor_prices = $this->load->view('btitems/vendorprices_edit',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
@@ -205,6 +208,7 @@ class Dbitems extends MY_Controller
                         'vendors' => $vendors,
                         'countries' => $country_list,
                         'vendoritem_view' => $vendoritemview,
+                        'missinfo' => $missinfo['supplier'],
                     ];
                     $vendor_main = $this->load->view('btitems/vendormain_edit', $vendoptions,TRUE);
                     $profit_view = $this->load->view('btitems/itemprice_profit_view',['item' => $data['item'],'prices'=> $data['prices']],TRUE);
@@ -212,6 +216,7 @@ class Dbitems extends MY_Controller
                         'item' => $data['item'],
                         'prices'=> $data['prices'],
                         'profit_view' => $profit_view,
+                        'missinfo' => $missinfo['prices'],
                     ];
                     $itemprices = $this->load->view('btitems/itemprices_edit', $price_options,TRUE);
                     $otherimages = $this->load->view('btitems/otherimages_view',['images' => $data['images'], 'imgcnt' => count($data['images'])],TRUE);
@@ -224,10 +229,11 @@ class Dbitems extends MY_Controller
                         'otherimages' => $otherimages,
                         'optionsimg' => $optionsimg,
                         'item' => $data['item'],
+                        'missinfo' => $missinfo['imagescolors'],
                     ];
                     $itemimages = $this->load->view('btitems/images_view',$imagesoptions, TRUE);
                     $locations = $this->load->view('btitems/printlocations_edit',['locations' => $data['inprints']], TRUE);
-                    $customview = $this->load->view('btitems/itemcustom_edit',['item' => $data['item'], 'locations' => $locations], TRUE);
+                    $customview = $this->load->view('btitems/itemcustom_edit',['item' => $data['item'], 'locations' => $locations, 'missinfo' => $missinfo['imagescolors']], TRUE);
                     $metaview = $this->load->view('btitems/itemmeta_edit',['item' => $data['item']], TRUE);
                     $shippingview = $this->load->view('btitems/itemship_edit',['item' => $data['item'],'boxes' => $data['shipboxes']], TRUE);
                 }
@@ -251,6 +257,7 @@ class Dbitems extends MY_Controller
                     'shipping' => $shippingview,
                     'history' => $history_view,
                     'history_cnt' => $history_count,
+                    'missinfo' => $missinfo['supplier'],
                 ];
                 $mdata['content'] = $this->load->view('relieveritems/itemdetailsbody_view', $body_options, TRUE);;
                 $mdata['editmode'] = $editmode;
