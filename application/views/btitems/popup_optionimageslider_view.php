@@ -12,7 +12,7 @@
                 <?php } ?>
             </div>
             <div class="content-row">
-                <div class="imagecaption"><?=$color['item_color']?></div>
+                <div class="imagecaption view"><?=$color['item_color']?></div>
             </div>
         </div>
         <?php $numpp++;?>

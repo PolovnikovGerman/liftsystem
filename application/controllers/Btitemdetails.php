@@ -379,7 +379,8 @@ class Btitemdetails extends MY_Controller
             $session = ifset($postdata, 'session', 'unkn');
             $sessiondata = usersession($session);
             if (!empty($sessiondata)) {
-                $res = $this->sritems_model->itemdetails_addimages_title($sessiondata, $postdata, $session);
+                // $res = $this->sritems_model->itemdetails_addimages_title($sessiondata, $postdata, $session);
+                $res = $this->btitemdetails_model->itemdetails_addimages_title($sessiondata, $postdata, $session);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
