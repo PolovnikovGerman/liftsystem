@@ -9,6 +9,7 @@
             <div class="img-addimagebox">
                <img src="<?=$image['item_img_name']?>">
             </div>
+            <div class="imagecaption view"><?=$image['item_img_label']?></div>
         </div>
         <?php $numpp++;?>
         <?php if ($numpp%8==0) { ?>
