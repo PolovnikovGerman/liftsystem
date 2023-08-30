@@ -1682,6 +1682,9 @@ input.chargeperorder {
     height: 100%;
     width: 100%;
 }
+.previewimage.emptypreview {
+    background: #c8c8c8;
+}
 .previewimage img {
     width: 100%;
     height: auto;
@@ -1693,6 +1696,9 @@ input.chargeperorder {
     height: 24px;
     line-height: 24px;
     margin-bottom: 5px;
+}
+.content-row .imagetitle.emptytitle {
+    color: #858585;
 }
 .content-row .imgsrcsize {
     height: 24px;
@@ -1889,7 +1895,7 @@ select.itemimagecaptionselect {
     opacity: 0.4;
 }
 .imageorder {
-    margin-top: 11px;
+    margin-top: 3px;
     width: 30px;
 }
 select.imageorderinpt {
@@ -1902,8 +1908,14 @@ select.imageorderinpt {
     text-align: center;
 }
 .imagecaption {
-    margin-top: 11px;
+    margin-top: 3px;
     width: 95px;
+}
+.imagecaption.view {
+    width: 125px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 13px;
 }
 .itemimagecaption.addimage {
     margin-top: 0;

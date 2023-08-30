@@ -28,9 +28,10 @@ class Itemcolors_model extends My_Model
             $result = $this->db->get()->result_array();
         } else {
             $this->db->select('ci.*, c.color, c.color_image, c.color_order, c.inventory_color_id');
-            $this->db->from('ts_inventory_colors c');
-            $this->db->join('sb_item_colors ci','c.inventory_color_id=ci.printshop_color_id','left');
-            $this->db->where('c.inventory_item_id',$item_id);
+            $this->db->from('sb_items i');
+            $this->db->join('sb_item_colors ci','ci.item_color_itemid=i.item_id');
+            $this->db->join('ts_inventory_colors c','c.inventory_color_id=ci.printshop_color_id','left');
+            $this->db->where('i.item_id',$item_id);
             $colors = $this->db->get()->result_array();
             $result = [];
             $numpp=1;

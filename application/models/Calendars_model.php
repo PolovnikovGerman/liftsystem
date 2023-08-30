@@ -585,17 +585,21 @@ Class Calendars_model extends MY_Model
         }
     }
 
-    public function get_business_date($startdate,$diffday,$item_id) {
+    public function get_business_date($startdate,$diffday,$item_id=0) {
         // Get a dates of resting during year
         // Select calendar for check bussiness day
-        $this->db->select('item_id, c.calendar_id as calendar_id',FALSE);
-        $this->db->from('sb_items i');
-        $this->db->join('sb_vendor_items vi','vi.vendor_item_id=i.vendor_item_id');
-        $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
-        $this->db->join("calendars c","c.calendar_id=v.calendar_id");
-        $this->db->where('i.item_id',$item_id);
-        $cal = $this->db->get()->row_array();
-        $calendar_id=($cal['calendar_id']==NULL ? '0' : $cal['calendar_id']);
+        if (!empty($item_id)) {
+            $this->db->select('item_id, c.calendar_id as calendar_id',FALSE);
+            $this->db->from('sb_items i');
+            $this->db->join('sb_vendor_items vi','vi.vendor_item_id=i.vendor_item_id');
+            $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
+            $this->db->join("calendars c","c.calendar_id=v.calendar_id");
+            $this->db->where('i.item_id',$item_id);
+            $cal = $this->db->get()->row_array();
+            $calendar_id=($cal['calendar_id']==NULL ? '0' : $cal['calendar_id']);
+        } else {
+            $calendar_id = $this->config->item('bank_calendar');
+        }
 
         $start=date("Y-m-d",$startdate);
         $last_date=strtotime(date("Y-m-d", strtotime($start)) . " +365 days");
