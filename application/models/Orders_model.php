@@ -2940,8 +2940,6 @@ Class Orders_model extends MY_Model
 
     public function profit_export($postdata) {
         $out=['result'=>$this->error_result,'msg'=>'Select Fields for Export'];
-        set_time_limit(0);
-        ini_set('max_execution_time', 0);
         $fields=$this->_export_fields($postdata);
         $labels=$this->_export_labels($fields);
         if (count($fields)>0) {
