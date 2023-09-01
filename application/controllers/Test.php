@@ -1878,8 +1878,8 @@ class Test extends CI_Controller
     public function payments_rep() {
         $this->db->select('*');
         $this->db->from('ts_order_batches');
-        $this->db->where('batch_date >= ', strtotime('2021-01-01'));
-        $this->db->where('batch_date < ', strtotime('2022-01-01'));
+        $this->db->where('batch_date >= ', strtotime('2022-01-01'));
+        $this->db->where('batch_date < ', strtotime('2023-01-01'));
         $batchs = $this->db->get()->result_array();
         $out = [];
         foreach ($batchs as $batch) {
@@ -1913,7 +1913,7 @@ class Test extends CI_Controller
         }
         echo count($out).' Batches '.PHP_EOL;
         $this->load->config('uploader');
-        $file_name = $this->config->item('upload_path_preload').'payment_report_adv.csv';
+        $file_name = $this->config->item('upload_path_preload').'payment_report_2022.csv';
         @unlink($file_name);
         $fh = fopen($file_name, FOPEN_WRITE_CREATE);
         if ($fh) {
