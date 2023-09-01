@@ -1,6 +1,6 @@
 <?php
-$config['js_version'] = '2.02153';
-$config['css_version']= '2.02153';
+$config['js_version'] = '2.02154';
+$config['css_version']= '2.02154';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
