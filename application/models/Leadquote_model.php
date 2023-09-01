@@ -2190,7 +2190,7 @@ class Leadquote_model extends MY_Model
                 }
                 $pdf->Cell($colWidth[2], $cellheight, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[3], $cellheight, number_format($color['item_price'], $precesion), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
+                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total), 'LR', 0, 'R', $fillrow);
                 $numpp++;
                 $yStart += $cellheight;
                 if ($yStart>=$this->page_heigh_limit) {
@@ -2213,7 +2213,7 @@ class Leadquote_model extends MY_Model
                 $pdf->Cell($colWidth[1], $cellheight, '  '.$imprint['imprint_description'], 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[2], $cellheight, QTYOutput($imprint['imprint_qty']), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[3], $cellheight, number_format($imprint['imprint_price'], 2), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
+                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total), 'LR', 0, 'R', $fillrow);
                 $numpp++;
                 $yStart += $cellheight;
                 if ($yStart>=$this->page_heigh_limit) {
@@ -2231,7 +2231,7 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[1], $cellheight, $quote['mischrg_label1'],'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], $cellheight, number_format($quote['mischrg_value1'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value1']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value1']), 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
             if ($yStart>=$this->page_heigh_limit) {
@@ -2248,7 +2248,7 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[1], $cellheight, $quote['mischrg_label2'],'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], $cellheight, number_format($quote['mischrg_value2'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value2']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value2']), 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
             if ($yStart>=$this->page_heigh_limit) {
@@ -2269,7 +2269,7 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[1], $cellheight, $shipping[0]['shipping_name'].$shippref,'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], $cellheight, number_format($quote['shipping_cost'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['shipping_cost']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['shipping_cost']), 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
             if ($yStart>=$this->page_heigh_limit) {
@@ -2581,7 +2581,7 @@ class Leadquote_model extends MY_Model
 
                 $pdf->Cell($colWidth[2], $cellheight, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[3], $cellheight, number_format($color['item_price'], $precesion), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
+                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) , 'LR', 0, 'R', $fillrow);
                 $numpp++;
                 $yStart += $cellheight;
                 if ($yStart>=$this->page_heigh_limit) {
@@ -2604,7 +2604,7 @@ class Leadquote_model extends MY_Model
                 $pdf->Cell($colWidth[1], $cellheight, '  '.$imprint['imprint_description'], 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[2], $cellheight, QTYOutput($imprint['imprint_qty']), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[3], $cellheight, number_format($imprint['imprint_price'], 2), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
+                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total), 'LR', 0, 'R', $fillrow);
                 $numpp++;
                 $yStart += $cellheight;
                 if ($yStart>=$this->page_heigh_limit) {
@@ -2622,7 +2622,7 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[1], $cellheight, $quote['mischrg_label1'],'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], $cellheight, number_format($quote['mischrg_value1'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value1']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value1']), 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
             if ($yStart>=$this->page_heigh_limit) {
@@ -2639,7 +2639,7 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[1], $cellheight, $quote['mischrg_label2'],'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], $cellheight, number_format($quote['mischrg_value2'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value2']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value2']), 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
             if ($yStart>=$this->page_heigh_limit) {
@@ -2660,7 +2660,7 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[1], $cellheight, $shipping[0]['shipping_name'].$shippref,'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], $cellheight, number_format($quote['shipping_cost'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['shipping_cost']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['shipping_cost']), 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
             if ($yStart>=$this->page_heigh_limit) {

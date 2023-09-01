@@ -1238,3 +1238,48 @@ div.oldvesionlabel {
     font-size: 17px;
     font-weight: 600;
 }
+/* Submenu */
+.brandsubmenu {
+    display: none;
+    position: absolute;
+    left: 35px;
+    top: 185px;
+    z-index: 25;
+    padding: 6px 8px 0 8px;
+}
+.brandsubmenu.bluetrack {
+    background-color: #0100a9;
+}
+.brandsubmenu.relievers {
+    background-color: #00004c;
+}
+.submenu_content {
+    width: 147px;
+}
+.submenuitem {
+    width: 147px;
+    height: 25px;
+    line-height: 25px!important;
+    padding-left: 7px;
+    font-size: 15px;
+    margin-bottom: 7px;
+    cursor: pointer;
+}
+.submenuitem.bluetrack {
+    background-color: #3736fe;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
+.submenuitem.bluetrack:hover {
+    background-color: #0100aa;
+}
+.submenuitem.relievers {
+    background-color: #ebebeb;
+    color: #000000;
+    border: 1px solid #bdbdbd;
+}
+.submenuitem.relievers:hover {
+    background-color: #00004c;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
