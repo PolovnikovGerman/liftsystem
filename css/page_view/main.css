@@ -102,8 +102,21 @@ body div {
 .relievers_logo.active {
     margin: 5px 8.5px 0 8.5px;
 }
+.content_tab_header.sigmasystem {
+    background: #595959;
+    width: 48px;
+}
+.sigma_logo {
+    margin: 18px 16px 15.5px 16px;
+}
+.content_tab_header.active.sigmasystem {
+    background: #aaa9a9;
+}
+.sigma_logo.active {
+    margin: 17px;
+}
 .mainsiteheader {
-    width: calc(100% - 390px);
+    width: calc(100% - 425px);
 }
 .period_analitic_info {
     border: 1px solid #9b9b9b;
@@ -501,6 +514,16 @@ ul.mainmenu #collapsed.dropdown-menu li {
     position: relative;
 }
 .relieverssubtitle {
+    display: block;
+    color: #000000;
+    font-size: 15px;
+    font-weight: 600;
+    font-style: italic;
+    margin-left: 11px;
+    margin-top: -7px;
+    position: relative;
+}
+.sigmasystemsubtitle {
     display: block;
     color: #000000;
     font-size: 15px;

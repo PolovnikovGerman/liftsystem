@@ -503,6 +503,8 @@ Class Menuitems_model extends MY_Model
                 $items = $webpages['srpages'];
             } elseif ($brand=='common') {
                 $items = $webpages['commpages'];
+            } elseif ($brand=='sg') {
+                $items = $webpages['sgpages'];
             }
             $found = 0;
             $child = [];
@@ -557,6 +559,8 @@ Class Menuitems_model extends MY_Model
                     $webpages['srpages']=$items;
                 } elseif ($brand=='common') {
                     $webpages['commpages']=$items;
+                } elseif ($brand=='sg') {
+                    $webpages['sgpages']=$items;
                 }
                 $session_data['webpages']=$webpages;
                 usersession($session_id, $session_data);
@@ -667,6 +671,7 @@ Class Menuitems_model extends MY_Model
     public function save_userpermissions($webpages, $user_id) {
         $sbpages = $webpages['sbpages'];
         $srpages = $webpages['srpages'];
+        $sgpages = $webpages['sgpages'];
         $commpages = $webpages['commpages'];
         foreach ($sbpages as $row) {
             $this->_savemenupermission($row, $user_id);
@@ -690,20 +695,43 @@ Class Menuitems_model extends MY_Model
         foreach ($srpages as $row) {
             $this->_savemenupermission($row, $user_id);
             $res = $this->_chkuserpermission($row['id'], $user_id);
-            $this->db->select('count(up.user_permission_id) as cnt');
-            $this->db->from('user_permissions up');
-            $this->db->join('menu_items mi','up.menu_item_id = mi.menu_item_id');
-            $this->db->where('mi.parent_id', $row['id']);
-            $this->db->where('up.user_id',$user_id);
-            $this->db->where('up.permission_type',1);
-            $resparent = $this->db->get()->row_array();
-            if ($resparent['cnt']>0) {
-                $this->db->set('permission_type', 1);
-            } else {
-                $this->db->set('permission_type', 0);
+            if (is_array($row['element'])) {
+                $this->db->select('count(up.user_permission_id) as cnt');
+                $this->db->from('user_permissions up');
+                $this->db->join('menu_items mi','up.menu_item_id = mi.menu_item_id');
+                $this->db->where('mi.parent_id', $row['id']);
+                $this->db->where('up.user_id',$user_id);
+                $this->db->where('up.permission_type',1);
+                $resparent = $this->db->get()->row_array();
+                if ($resparent['cnt']>0) {
+                    $this->db->set('permission_type', 1);
+                } else {
+                    $this->db->set('permission_type', 0);
+                }
+                $this->db->where('user_permission_id', $res);
+                $this->db->update('user_permissions');
             }
-            $this->db->where('user_permission_id', $res);
-            $this->db->update('user_permissions');
+        }
+        // Sigma
+        foreach ($sgpages as $row) {
+            $this->_savemenupermission($row, $user_id);
+            $res = $this->_chkuserpermission($row['id'], $user_id);
+            if (is_array($row['element'])) {
+                $this->db->select('count(up.user_permission_id) as cnt');
+                $this->db->from('user_permissions up');
+                $this->db->join('menu_items mi','up.menu_item_id = mi.menu_item_id');
+                $this->db->where('mi.parent_id', $row['id']);
+                $this->db->where('up.user_id',$user_id);
+                $this->db->where('up.permission_type',1);
+                $resparent = $this->db->get()->row_array();
+                if ($resparent['cnt']>0) {
+                    $this->db->set('permission_type', 1);
+                } else {
+                    $this->db->set('permission_type', 0);
+                }
+                $this->db->where('user_permission_id', $res);
+                $this->db->update('user_permissions');
+            }
         }
         // Common
         foreach ($commpages as $row) {

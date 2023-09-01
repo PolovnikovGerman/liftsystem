@@ -168,9 +168,11 @@ class Admin extends MY_Controller
                 $sbpages = $this->tree(null, 0, $user_id, 'SB');
                 $srpages = $this->tree(null, 0, $user_id, 'SR');
                 $commonpages = $this->tree(null, 0, $user_id, 'NONE');
+                $sgpages = $this->tree(null, 0, $user_id, 'SG');
                 $wpages=[
                     'sbpages' => $sbpages,
                     'srpages' => $srpages,
+                    'sgpages' => $sgpages,
                     'commpages' => $commonpages,
                 ];
                 $pagepermiss=$this->load->view('admin/webpage_tree_view', $wpages,TRUE);

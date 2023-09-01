@@ -226,3 +226,24 @@
         <div class="brandsubmenu relievers" data-brand="SR">&nbsp;</div>
     </div>
 </div>
+<div class="content_tab <?=$brand=='SG' ? 'active' : ''?> sigmasystem">
+    <div class="sigmasystemsubtitle">LIFT</div>
+    <div class="brandcontentmenu">
+        <?php foreach ($permissions as $menu) { ?>
+            <?php if ($menu['item_link']=='/accounting') { ?>
+                <?php if ($activelnk == $menu['item_link']) { ?>
+                    <div class="brandmenuitemactive relievers" data-url="<?=$menu['item_link']?>" data-brand="SG">
+                        <div class="brandmenuicon active"><img src="/img/page_view/icon-calculate-black.svg"/></div>
+                        <div class="brandmenutitle active">Accounting</div>
+                    </div>
+                <?php } else { ?>
+                    <div class="brandmenuitem relievers" data-url="<?=$menu['item_link']?>" data-brand="SG">
+                        <div class="brandmenuicon" data-brand="SR" data-item="<?=$menu['menu_item_id']?>"><img src="/img/page_view/icon-calculate-black.svg"/></div>
+                        <div class="brandmenutitle">Accounting</div>
+                    </div>
+                <?php } ?>
+            <?php } ?>
+        <?php } ?>
+        <div class="brandsubmenu sigmasystem" data-brand="SR">&nbsp;</div>
+    </div>
+</div>
