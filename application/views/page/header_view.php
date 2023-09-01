@@ -11,6 +11,11 @@
                     <img src="/img/page_view/stressreiliv_logo.png" alt="StressRelievers">
                 </div>
             </div>
+            <div class="content_tab_header sigmasystem" data-brand="SR">
+                <div class="sigma_logo">
+                    <img src="/img/page_view/sigma_logo.png" alt="Sigma">
+                </div>
+            </div>
         <?php } else { ?>
             <div class="content_tab_header active relievers" data-brand="SR">
                 <div class="relievers_logo active">
