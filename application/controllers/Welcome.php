@@ -152,4 +152,25 @@ class Welcome extends MY_Controller {
         echo $msg;
     }
 
+    public function submenus() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Menu Item Not Found';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand','DS');
+            $menu = ifset($postdata,'menu', 0);
+            $user_id = $this->USR_ID;
+            $this->load->model('menuitems_model');
+            $maindat = $this->menuitems_model->get_menuitem('',$menu);
+            if ($maindat['result']==$this->success_result) {
+                $error = '';
+                $mainurl = $maindat['menuitem']['item_link'];
+                $data = $this->menuitems_model->get_user_submenu($menu, $user_id);
+                $mdata['content'] = $this->load->view('page/submenu_view',['items' => $data, 'url' => $mainurl, 'brand' => $brand], TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 }
