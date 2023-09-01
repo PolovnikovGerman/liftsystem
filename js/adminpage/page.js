@@ -25,7 +25,7 @@ $(document).ready(function () {
             var params = new Array();
             params.push({name: 'menu', value: dataid});
             params.push({name: 'brand', value: brand});
-            $.post('welcome/submenus', params, function (response){
+            $.post('/welcome/submenus', params, function (response){
                 if (response.errors=='') {
                     $(".brandsubmenu[data-brand='"+brand+"']").empty().html(response.data.content).show().css('top',loctop);
                     init_submenu(brand);
