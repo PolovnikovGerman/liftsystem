@@ -1923,7 +1923,7 @@ class Test extends CI_Controller
             $msg = 'Date;Order #;Customer;Total Payment;By Credit Card;Other Payment;CC System;Other Type;Payment Type;'.PHP_EOL;
             fwrite($fh, $msg);
             foreach ($out as $row) {
-                $msg = $row['date'].';'.$row['order_num'].';"'.$row['customer'].'";'.number_format($row['amount'],2,'.','').';'.number_format($row['cc_payment'],2,'.','').';'.number_format($row['other_paym'],2,'.','').';'.$row['cc_type'].';'.$row['other_type'].';'.$row['payment_type'].';'.PHP_EOL;
+                $msg = $row['date'].';'.$row['order_num'].';"'.$row['customer'].'";'.$row['amount'].';'.$row['cc_payment'].';'.$row['other_paym'].';'.$row['cc_type'].';'.$row['other_type'].';'.$row['payment_type'].';'.PHP_EOL;
                 fwrite($fh, $msg);
             }
             fclose($fh);
