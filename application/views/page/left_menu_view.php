@@ -232,13 +232,13 @@
         <?php foreach ($permissions as $menu) { ?>
             <?php if ($menu['item_link']=='/accounting') { ?>
                 <?php if ($activelnk == $menu['item_link']) { ?>
-                    <div class="brandmenuitemactive relievers" data-url="<?=$menu['item_link']?>" data-brand="SG">
-                        <div class="brandmenuicon active"><img src="/img/page_view/icon-calculate-black.svg"/></div>
+                    <div class="brandmenuitemactive sigmasystem" data-url="<?=$menu['item_link']?>" data-brand="SG">
+                        <div class="brandmenuicon active"><img src="/img/page_view/icon-calculate-white.svg"/></div>
                         <div class="brandmenutitle active">Accounting</div>
                     </div>
                 <?php } else { ?>
-                    <div class="brandmenuitem relievers" data-url="<?=$menu['item_link']?>" data-brand="SG">
-                        <div class="brandmenuicon" data-brand="SR" data-item="<?=$menu['menu_item_id']?>"><img src="/img/page_view/icon-calculate-black.svg"/></div>
+                    <div class="brandmenuitem sigmasystem" data-url="<?=$menu['item_link']?>" data-brand="SG">
+                        <div class="brandmenuicon" data-brand="SG" data-item="<?=$menu['menu_item_id']?>"><img src="/img/page_view/icon-calculate-black.svg"/></div>
                         <div class="brandmenutitle">Accounting</div>
                     </div>
                 <?php } ?>
