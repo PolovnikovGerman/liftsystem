@@ -1876,10 +1876,11 @@ class Test extends CI_Controller
     }
 
     public function payments_rep() {
-        $this->db->select('*');
-        $this->db->from('ts_order_batches');
-        $this->db->where('batch_date >= ', strtotime('2022-01-01'));
-        $this->db->where('batch_date < ', strtotime('2023-01-01'));
+        $this->db->select('b.*, o.order_num, o.customer_name');
+        $this->db->from('ts_order_batches b');
+        $this->db->join('ts_orders o','o.order_id=b.order_id');
+        $this->db->where('b.batch_date >= ', strtotime('2022-01-01'));
+        $this->db->where('b.batch_date < ', strtotime('2023-01-01'));
         $batchs = $this->db->get()->result_array();
         $out = [];
         foreach ($batchs as $batch) {
@@ -1903,6 +1904,8 @@ class Test extends CI_Controller
             }
             $out[] = [
                 'date' => date('m/d/Y', $batch['batch_date']),
+                'order_num' => $batch['order_num'],
+                'customer' => $batch['customer_name'],
                 'amount' => $batch['batch_amount'],
                 'cc_payment' => $cc_paym,
                 'other_paym' => $other_paym,
@@ -1917,10 +1920,10 @@ class Test extends CI_Controller
         @unlink($file_name);
         $fh = fopen($file_name, FOPEN_WRITE_CREATE);
         if ($fh) {
-            $msg = 'Date;Total Payment;By Credit Card;Other Payment;CC System;Other Type;Payment Type;'.PHP_EOL;
+            $msg = 'Date;Order #;Customer;Total Payment;By Credit Card;Other Payment;CC System;Other Type;Payment Type;'.PHP_EOL;
             fwrite($fh, $msg);
             foreach ($out as $row) {
-                $msg = $row['date'].';'.$row['amount'].';'.$row['cc_payment'].';'.$row['other_paym'].';'.$row['cc_type'].';'.$row['other_type'].';'.$row['payment_type'].';'.PHP_EOL;
+                $msg = $row['date'].';'.$row['order_num'].';'.$row['customer'].';'.$row['amount'].';'.$row['cc_payment'].';'.$row['other_paym'].';'.$row['cc_type'].';'.$row['other_type'].';'.$row['payment_type'].';'.PHP_EOL;
                 fwrite($fh, $msg);
             }
             fclose($fh);
