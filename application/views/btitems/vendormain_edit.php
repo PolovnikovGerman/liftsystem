@@ -20,12 +20,12 @@
                 <select class="vendoritemcountyinp <?=empty($vendor_item['item_shipcountry']) ? 'missing_info' : ''?>" data-item="item_shipcountry">
                     <option value=""></option>
                     <?php foreach ($countries as $country) { ?>
-                        <option value="<?=$country['country_id']?>" <?=$country['country_id']==$vendor_item['item_shipcountry'] ? 'selected="selected"' : ''?>><?=$country['country_iso_code_2']?></option>
+                        <option value="<?=$country['country_id']?>" <?=$country['country_id']==$vendor_item['item_shipcountry'] ? 'selected="selected"' : ''?>><?=$country['country_iso_code_3']?> - <?=$country['country_name']?></option>
                     <?php } ?>
                 </select>
             </div>
             <div class="itemparamvalue vendorzip editmode">
-                <input type="text" class="vendordatainpt vendoritemname <?=empty($vendor_item['vendor_item_zipcode']) ? 'missing_info' : ''?>" data-item="vendor_item_zipcode" value="<?=$vendor_item['vendor_item_zipcode']?>">
+                <input type="text" class="vendordatainpt vendorzipcode <?=empty($vendor_item['vendor_item_zipcode']) ? 'missing_info' : ''?>" data-item="vendor_item_zipcode" value="<?=$vendor_item['vendor_item_zipcode']?>">
             </div>
             <div class="vendorshipstate"><?=$vendor_item['item_shipstate']?></div>
         </div>
