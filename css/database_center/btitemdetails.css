@@ -73,6 +73,9 @@
 }
 .itemdetails-namearea .itemdetails-keydatvalue {
     width: 384px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 input.itemname {
     width: 100%;
@@ -549,7 +552,7 @@ textarea.ponotedata {
 }
 .itemparamvalue.vendorzip {
     margin-left: 7px;
-    width: 47px;
+    width: 61px;
 }
 input.vendordatainpt {
     margin-left: -5px;
@@ -573,7 +576,7 @@ input.vendordatainpt.missing_info {
     border: 1px solid #FF0000; */
 }
 .vendorshipstate {
-    margin-left: 7px;
+    margin-left: 5px;
     height: 23px;
     line-height: 23px;
     font-size: 12px;
