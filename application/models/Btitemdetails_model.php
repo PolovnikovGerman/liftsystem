@@ -2319,9 +2319,9 @@ class Btitemdetails_model extends MY_Model
                     }
                     break;
                 }
-                if ($find==0) {
-                    $info[] = 'Removed Location '.$numpp.' - '.$oldinprint['item_inprint_location'];
-                }
+            }
+            if ($find==0) {
+                $info[] = 'Removed Location '.$numpp.' - '.$oldinprint['item_inprint_location'];
             }
             $numpp++;
         }

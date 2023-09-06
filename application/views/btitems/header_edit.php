@@ -13,7 +13,8 @@
     <div class="itemdetails-keydataarea">
         <div class="itemdetails-namearea">
             <div class="namearea-label">Item Name</div>
-            <div class="itemdetails-keydatvalue"><?=$item['item_name']?></div>
+            <div class="itemdetails-keydatvalue"  data-event="hover" data-css="itemdetailsballonbox" data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="down" data-textcolor="#000"
+                 data-balloon="<?=$item['item_name']?>" data-timer="4000" data-delay="1000"><?=$item['item_name']?></div>
         </div>
         <div class="itemdetails-itemnumarea">
             <div class="namearea-label">Item #</div>

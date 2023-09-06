@@ -200,7 +200,7 @@ class Dbitems extends MY_Controller
                         $this->load->model('inventory_model');
                         $itemlist = $this->inventory_model->get_inventory_itemslist();
                         $vendoritemview = $this->load->view('btitems/vendoritem_inventory_edit', ['item' => $data['item'],'itemlists' => $itemlist], TRUE);
-                        $vendor_prices = $this->load->view('btitems/vendorprices_view',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
+                        $vendor_prices = $this->load->view('btitems/vendorprices_inventory_edit',['vendor_prices' => $data['vendor_price'], 'venditem' => $data['vendor_item'], 'item' => $data['item']],TRUE);
                     }
                     $vendoptions = [
                         'vendor_item' => $data['vendor_item'],
@@ -607,6 +607,7 @@ class Dbitems extends MY_Controller
                     'shipping' => $shippingview,
                     'history' => $history_view,
                     'history_cnt' => $history_count,
+                    'missinfo' => '', // $missinfo['supplier'],
                 ];
                 $mdata['content'] = $this->load->view('relieveritems/itemdetailsbody_view', $body_options, TRUE);;
                 $mdata['editmode'] = $editmode;
