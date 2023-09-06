@@ -1414,13 +1414,17 @@ input.locationsize {
     text-overflow: ellipsis;
 }
 .locationdeleterow {
-    width: 20px;
+    width: 16px;
     text-align: center;
     cursor: pointer;
 }
 .locationnumber {
     width: 20px;
     text-align: right;
+}
+.locationnumber.editmode {
+    width: 17px;
+    margin-right: 4px;
 }
 .locationnameview {
     border-right: 1px solid #000000;

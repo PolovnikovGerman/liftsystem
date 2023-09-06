@@ -2347,6 +2347,7 @@ class Test extends CI_Controller
     }
 
     public function internal_item_transform() {
+        $this->load->model('inventory_model');
         $this->db->select('i.item_id, i.item_number, i.item_name, i.printshop_inventory_id');
         $this->db->select('v.vendor_item_number, v.vendor_item_id');
         $this->db->from('sb_items i');
@@ -2355,7 +2356,7 @@ class Test extends CI_Controller
         $items = $this->db->get()->result_array();
         foreach ($items as $item) {
             echo $item['item_number'].' '.$item['item_name'].' INV '.$item['printshop_inventory_id'].PHP_EOL;
-            if (empty($item['printshop_inventory_id'])) {
+            // if (empty($item['printshop_inventory_id'])) {
                 $this->db->select('*');
                 $this->db->from('ts_inventory_items');
                 $this->db->where('item_num', $item['vendor_item_number']);
@@ -2364,6 +2365,14 @@ class Test extends CI_Controller
                     $this->db->where('item_id', $item['item_id']);
                     $this->db->set('printshop_inventory_id', $invres['inventory_item_id']);
                     $this->db->update('sb_items');
+                    $res = $this->inventory_model->get_inventory_item($invres['inventory_item_id']);
+                    if ($res['result']==1) {
+                        $invdata = $res['data'];
+                        $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                        $this->db->set('vendor_item_cost', $invdata['avg_price']);
+                        $this->db->set('vendor_item_blankcost', $invdata['avg_price']);
+                        $this->db->update('sb_vendor_items');
+                    }
                     $this->db->where('vendor_item_id', $item['vendor_item_id']);
                     $this->db->set('vendor_item_number', $invres['item_num']);
                     $this->db->set('vendor_item_name', $invres['item_name']);
@@ -2386,7 +2395,7 @@ class Test extends CI_Controller
                     }
                     echo 'Transform '.$invres['item_num'].' '.$invres['item_name'].PHP_EOL;
                 }
-            }
+            // }
         }
     }
     public function getUpsRates() {
@@ -2547,5 +2556,25 @@ class Test extends CI_Controller
             }
         }
         return $out;
+    }
+
+    public function clean_schema() {
+        $this->db->select('TABLE_NAME, TABLE_TYPE');
+        $this->db->from('information_schema.TABLES');
+        $this->db->where('TABLE_SCHEMA', 'lift_test');
+        $items = $this->db->get()->result_array();
+        echo 'Find '.count($items).' objects'.PHP_EOL;
+        $filename = $this->config->item('upload_path_preload').'cleanobj.sql';
+        @unlink($filename);
+        $fh = fopen($filename, FOPEN_READ_WRITE_CREATE);
+        foreach ($items as $item) {
+            if ($item['TABLE_TYPE']=='BASE TABLE') {
+                $msg='DROP TABLE IF EXISTS '.$item['TABLE_NAME'].';'.PHP_EOL;
+            } else {
+                $msg='DROP VIEW IF EXISTS '.$item['TABLE_NAME'].';'.PHP_EOL;
+            }
+            fwrite($fh, $msg);
+        }
+        fclose($fh);
     }
 }

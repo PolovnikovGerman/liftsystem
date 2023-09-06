@@ -1941,20 +1941,20 @@ class Btitemdetails_model extends MY_Model
             }
         }
         if ($oldvitem['item_shipcountry']!==$vendor_item['item_shipcountry']) {
-            $this->db->select('country_id, country_name, country_iso_code_2');
+            $this->db->select('country_id, country_name, country_iso_code_3');
             $this->db->from('sb_countries');
             $this->db->where('country_id', $vendor_item['item_shipcountry']);
             $cntres = $this->db->get()->row_array();
             if (ifset($cntres,'country_id',0)==$vendor_item['item_shipcountry']) {
                 if (empty($oldvitem['item_shipcountry'])) {
-                    $info[]='Changed Supplier Shipping Country from "null" to "'.$cntres['country_iso_code_2'].' '.$cntres['country_name'].'"';
+                    $info[]='Changed Supplier Shipping Country from "null" to "'.$cntres['country_iso_code_3'].' '.$cntres['country_name'].'"';
                 } else {
-                    $this->db->select('country_id, country_name, country_iso_code_2');
+                    $this->db->select('country_id, country_name, country_iso_code_3');
                     $this->db->from('sb_countries');
                     $this->db->where('country_id', $oldvitem['item_shipcountry']);
                     $oldcntres = $this->db->get()->row_array();
                     if (ifset($oldcntres,'country_id',0)==$oldvitem['item_shipcountry']) {
-                        $info[]='Changed Supplier Shipping Country from "'.$oldcntres['country_iso_code_2'].' '.$oldcntres['country_name'].'" to "'.$cntres['country_iso_code_2'].' '.$cntres['country_name'].'"';
+                        $info[]='Changed Supplier Shipping Country from "'.$oldcntres['country_iso_code_3'].' '.$oldcntres['country_name'].'" to "'.$cntres['country_iso_code_3'].' '.$cntres['country_name'].'"';
                     }
                 }
             }
