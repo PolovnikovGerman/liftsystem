@@ -751,7 +751,7 @@ class Btitemdetails_model extends MY_Model
                     $invitem = $invres['data'];
                     $invcolors = $invres['colors'];
                     $out['printshop_name'] = $invitem['item_name'];
-                    $vendor_item['vendor_item_blankcost'] = 0;
+                    $vendor_item['vendor_item_blankcost'] = $invitem['avg_price'];
                     $vendor_item['vendor_item_cost'] = $invitem['avg_price'];
                     $vendor_item['vendor_item_number'] = $invitem['item_num'];
                     $vendor_item['vendor_item_name'] = $invitem['item_name'];
@@ -2071,7 +2071,7 @@ class Btitemdetails_model extends MY_Model
         }
         foreach ($colors as $color) {
             if ($color['item_color_id'] < 0 && !empty($color['item_color'])) {
-                $info[]='Changed option # '.$oldcolor['item_color_order'].' from "null" to "'.$color['item_color'].'"';
+                $info[]='Changed option # '.$color['item_color_order'].' from "null" to "'.$color['item_color'].'"';
             }
         }
         return $info;
@@ -2319,9 +2319,9 @@ class Btitemdetails_model extends MY_Model
                     }
                     break;
                 }
-                if ($find==0) {
-                    $info[] = 'Removed Location '.$numpp.' - '.$oldinprint['item_inprint_location'];
-                }
+            }
+            if ($find==0) {
+                $info[] = 'Removed Location '.$numpp.' - '.$oldinprint['item_inprint_location'];
             }
             $numpp++;
         }

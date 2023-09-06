@@ -5,6 +5,7 @@
     <?php foreach ($locations as $location) { ?>
         <div class="locationsdatarow">
             <div class="locationdeleterow" data-idx="<?=$location['item_inprint_id']?>"><i class="fa fa-trash"></i></div>
+            <div class="locationnumber"><?=$numpp?>.</div>
             <div class="locationname editmode">
                 <input class="printlocationinpt locname" data-idx="<?=$location['item_inprint_id']?>" data-item="item_inprint_location" value="<?=$location['item_inprint_location']?>"/>
             </div>
@@ -24,5 +25,6 @@
                 <?php } ?>
             </div>
         </div>
+        <?php $numpp++;?>
     <?php } ?>
 <?php } ?>

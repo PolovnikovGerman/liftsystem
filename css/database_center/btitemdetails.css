@@ -246,7 +246,7 @@ select.categoryitemselect {
     width: 248px;
 }
 .relievers_keyinfo .content-row {
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 .relievers_keyinfo .sectionlabel {
     margin-top: -3px;
@@ -833,7 +833,8 @@ input.vendorpriceinpt {
 .itempricearea {
     border-right: 1px solid #626262;
     padding-top: 3px;
-    width: 452px;
+    /* width: 452px; */
+    width: 488px;
 }
 .itempricearea .content-row {
     margin-bottom: 5px;
@@ -857,7 +858,8 @@ input.vendorpriceinpt {
     line-height: 20px;
     margin-right: 5px;
     text-align: center;
-    width: 35px;
+    /* width: 35px; */
+    width: 39px;
 }
 input.itempriceinpt {
     border: 1px solid #000000;
@@ -874,7 +876,8 @@ input.itempriceinpt {
     line-height: 20px;
     margin-right: 5px;
     text-align: center;
-    width: 35px;
+    /* width: 35px; */
+    width: 39px;
 }
 .itemprice_pub.editmode {
     border: none;
@@ -961,8 +964,10 @@ select.discountselect::-ms-expand {
 }
 .itemprice_rusharea {
     border-right: 1px solid #626262;
-    padding: 11px 0 0 38px;
-    width: 127px;
+    /* padding: 11px 0 0 38px; */
+    padding: 11px 0 0 5px;
+    /* width: 127px; */
+    width: 94px;
 }
 .itemprice_rush {
     margin-right: 5px;
@@ -1027,7 +1032,8 @@ select.discountselect::-ms-expand {
     width: 711px;
 }
 .itemprice_profitqtyarea {
-    width: 457px;
+    /* width: 457px; */
+    width: 487px;
 }
 .itemprice_profittitle {
     font-size: 12px;
@@ -1044,6 +1050,10 @@ select.discountselect::-ms-expand {
     line-height: 20px;
     margin-right: 5px;
     text-align: center;
+    /* width: 35px; */
+    width: 39px;
+}
+.itemprice_profitval.extracost, .itemprice_profitperc.extracost {
     width: 35px;
 }
 .itemprice_profitextraarea {
@@ -1051,8 +1061,9 @@ select.discountselect::-ms-expand {
     width: 134px;
 }
 .itemprice_profitrusharea {
-    padding-left: 24px;
-    width: 112px;
+    padding-left: 5px;
+    /* width: 112px; */
+    width: 94px;
 }
 .itemprice_profitrusharea .itemprice_profitval, .itemprice_profitrusharea .itemprice_profitperc {
     width: 39px;
@@ -1086,7 +1097,7 @@ select.discountselect::-ms-expand {
     color: #000000;
 }
 .itemprice_profitpantonearea {
-    padding-left: 10px;
+    padding-left: 5px;
     width: 46px;
 }
 /* Item Images */
@@ -1371,7 +1382,7 @@ input.printlocationinpt {
     line-height: 18px;
 }
 input.locname {
-    width: 140px;
+    width: 121px;
 }
 input.locationsize {
     width: 110px;
@@ -1424,7 +1435,7 @@ input.locationsize {
 }
 .locationname.editmode {
     padding-left: 0;
-    width: 143px;
+    width: 123px;
 }
 .locationplace {
     padding-left: 8px;
@@ -1512,6 +1523,15 @@ input.metatitle {
 textarea.metadescription, textarea.metakeywords, textarea.itemkeywords {
     width: 203px;
     margin-left: -5px;
+}
+textarea.metadescription {
+    height: 73px;
+}
+textarea.metakeywords {
+    height: 76px;
+}
+textarea.itemkeywords {
+    height: 79px;
 }
 input.metaurl {
     width: 192px;
@@ -1712,7 +1732,7 @@ input.chargeperorder {
     width: 100%;
 }
 .previewimage.emptypreview {
-    background: #c8c8c8;
+    background: #eaeaea;
 }
 .previewimage img {
     width: 100%;
@@ -2021,6 +2041,11 @@ select.optimageorderinpt {
 .itemdetailsballonbox {
     font-size: 13px;
 }
+.itemdetailsballonarea {
+    font-size: 13px;
+    max-width: 400px;
+}
+/* Item History */
 .itemdetails-history {
     width: 100%;
     background: #346af5;
