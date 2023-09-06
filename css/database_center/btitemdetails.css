@@ -1737,6 +1737,7 @@ input.chargeperorder {
 }
 .previewimage.emptypreview {
     background: #eaeaea;
+    border: 1px solid #d1d1d1;
 }
 .previewimage img {
     width: 100%;
