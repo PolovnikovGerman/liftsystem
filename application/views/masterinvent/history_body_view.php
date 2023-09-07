@@ -1,4 +1,5 @@
 <div class="inventoryhistory_body_content">
+    <input type="hidden" id="invenorynewhistoryadd" value="0"/>
     <div class="inventoryhistory_table_head">
         <div class="instock_date">
             <span class="outcomelistadd" data-item="<?=$item['inventory_color_id']?>"><i class="fa fa-plus-circle" aria-hidden="true"></i></span>

@@ -641,7 +641,50 @@ function init_master_inventorytabledat() {
 
 function init_itemcolor_popup() {
     $("#modalEditInventPrice").find('button.close').unbind('click').click(function () {
-        init_master_inventorydata();
+        if (parseInt($("#invenorymanualpriceadd").val())===0) {
+            $("#modalEditInventPrice").modal('hide');
+        } else {
+            var color = $("span.incomelistadd").data('item');
+            var params = new Array();
+            params.push({name: 'itemcolor', value: color});
+            params.push({name: 'inventory_type', value: $("#active_invtype").val()})
+            var url='/masterinventory/update_color_inventory';
+            $.post(url,params, function (response) {
+                if (response.errors=='') {
+                    // Update Color
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.masterinventpercent').removeClass('severevalstock').removeClass('lowinstock').addClass(response.data.color_stockclass);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.masterinventpercent').empty().html(response.data.color_percent);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.masterinventinstock').removeClass('severevalstock').removeClass('lowinstock').addClass(response.data.color_stockclass);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.masterinventinstock').empty().html(response.data.color_instock);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.masterinventreserv').empty().html(response.data.color_reserved);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.masterinventavailab').removeClass('severevalstock').removeClass('lowinstock').addClass(response.data.color_stockclass);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.masterinventavailab').empty().html(response.data.color_available);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.dictprice').empty().html(response.data.color_price);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.avgprice').empty().html(response.data.color_avgprice);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.masterinventtotalval').empty().html(response.data.color_total);
+                    // Update Item
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.masterinventpercent').removeClass('severevalstock').removeClass('lowinstock').addClass(response.data.item_stockclass);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.masterinventpercent').empty().html(response.data.item_percent);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.masterinventinstock').removeClass('severevalstock').removeClass('lowinstock').addClass(response.data.item_stockclass);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.masterinventinstock').empty().html(response.data.item_instock);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.masterinventreserv').empty().html(response.data.item_reserved);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.masterinventavailab').removeClass('severevalstock').removeClass('lowinstock').addClass(response.data.item_stockclass);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.masterinventavailab').empty().html(response.data.item_available);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.dictprice').empty().html(response.data.item_price);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.avgprice').empty().html(response.data.item_avgprice);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.masterinventtotalval').empty().html(response.data.item_total);
+                    // Update Total
+                    $("#masterinventpercent").empty().html(response.data.masterinventpercent);
+                    $("#masterinventorymaximum").empty().html(response.data.masterinventorymaximum);
+                    $("#masterinventinstock").empty().html(response.data.masterinventinstock);
+                    $("#masterinventreserv").empty().html(response.data.masterinventreserv);
+                    $("#masterinventavailab").empty().html(response.data.masterinventavailab);
+                    $("#modalEditInventPrice").modal('hide');
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
     });
     $(".priceheadhistorylnk").unbind('click').click(function () {
         var params = new Array();
@@ -724,18 +767,61 @@ function init_manualincome_manage() {
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#modalEditInventPrice").find('div.modal-body').empty().html(response.data.content);
+                $("#invenorymanualpriceadd").val(1);
                 init_itemcolor_popup();
             } else {
                 show_error(response);
             }
         },'json');
-
     });
 }
 
 function init_colorhistory_popup() {
     $("#modalEditInventHistory").find('button.close').unbind('click').click(function () {
-        init_master_inventorydata();
+        if (parseInt($("#invenorynewhistoryadd").val())===0) {
+            $("#modalEditInventHistory").modal('hide');
+        } else {
+            var color = $("span.outcomelistadd").data('item');
+            var params = new Array();
+            params.push({name: 'itemcolor', value: color});
+            params.push({name: 'inventory_type', value: $("#active_invtype").val()})
+            var url='/masterinventory/update_color_inventory';
+            $.post(url,params, function (response) {
+                if (response.errors=='') {
+                    // Update Color
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.masterinventpercent').removeClass('severevalstock').removeClass('lowinstock').addClass(response.data.color_stockclass);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.masterinventpercent').empty().html(response.data.color_percent);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.masterinventinstock').removeClass('severevalstock').removeClass('lowinstock').addClass(response.data.color_stockclass);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.masterinventinstock').empty().html(response.data.color_instock);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.masterinventreserv').empty().html(response.data.color_reserved);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.masterinventavailab').removeClass('severevalstock').removeClass('lowinstock').addClass(response.data.color_stockclass);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.masterinventavailab').empty().html(response.data.color_available);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.dictprice').empty().html(response.data.color_price);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.avgprice').empty().html(response.data.color_avgprice);
+                    $(".inventorydatarow[data-invcolor='"+color+"']").find('div.masterinventtotalval').empty().html(response.data.color_total);
+                    // Update Item
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.masterinventpercent').removeClass('severevalstock').removeClass('lowinstock').addClass(response.data.item_stockclass);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.masterinventpercent').empty().html(response.data.item_percent);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.masterinventinstock').removeClass('severevalstock').removeClass('lowinstock').addClass(response.data.item_stockclass);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.masterinventinstock').empty().html(response.data.item_instock);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.masterinventreserv').empty().html(response.data.item_reserved);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.masterinventavailab').removeClass('severevalstock').removeClass('lowinstock').addClass(response.data.item_stockclass);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.masterinventavailab').empty().html(response.data.item_available);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.dictprice').empty().html(response.data.item_price);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.avgprice').empty().html(response.data.item_avgprice);
+                    $(".inventorydatarow[data-item='"+response.data.item+"']").find('div.masterinventtotalval').empty().html(response.data.item_total);
+                    // Update Total
+                    $("#masterinventpercent").empty().html(response.data.masterinventpercent);
+                    $("#masterinventorymaximum").empty().html(response.data.masterinventorymaximum);
+                    $("#masterinventinstock").empty().html(response.data.masterinventinstock);
+                    $("#masterinventreserv").empty().html(response.data.masterinventreserv);
+                    $("#masterinventavailab").empty().html(response.data.masterinventavailab);
+                    $("#modalEditInventHistory").modal('hide');
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
     });
     $(".inventoryhistory_view_prices").unbind('click').click(function () {
         var item=$(this).data('item');
@@ -823,6 +909,7 @@ function init_manualoutcome_manage() {
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#modalEditInventHistory").find('div.modal-body').empty().html(response.data.content);
+                $("#invenorynewhistoryadd").val(1);
                 init_colorhistory_popup();
             } else {
                 show_error(response);
