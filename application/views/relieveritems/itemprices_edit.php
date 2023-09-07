@@ -30,7 +30,7 @@
             <span>Loss</span>
         </div>
     </div>
-    <div class="sectionbody">
+    <div class="sectionbody <?=$missinfo==0 ? '' : 'missinginfo'?>">
         <div class="itempricearea">
             <div class="content-row">
                 <div class="itemprice_title">Qty:</div>

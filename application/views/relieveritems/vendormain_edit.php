@@ -1,7 +1,7 @@
 <div class="relievers_vendormain">
     <input type="hidden" id="vendor_item_id" value="<?=$vendor_item['vendor_item_id']?>"/>
     <div class="sectionlabel">SUPPLIER:</div>
-    <div class="vendormainbody">
+    <div class="vendormainbody <?=$missinfo==0 ? '' : 'missinginfo'?>">
         <div class="content-row">
             <div class="itemparamlabel vendorname">Supplier</div>
             <div class="itemparamvalue vendorname">
