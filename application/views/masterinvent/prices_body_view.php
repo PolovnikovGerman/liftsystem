@@ -1,4 +1,5 @@
 <input type="hidden" id="priceslistshowused" value="0"/>
+<input type="hidden" id="invenorymanualpriceadd" value="0">
 <div class="inventoryprice_body_content">
     <div class="inventoryprice_table_head">
         <div class="inventoryincome_date">
