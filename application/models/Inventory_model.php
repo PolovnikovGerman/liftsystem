@@ -248,6 +248,68 @@ class Inventory_model extends MY_Model
         return $reserved;
     }
 
+    public function inventory_item_income($inventory_item_id) {
+        $this->db->select('sum(i.income_qty) as income, count(i.inventory_income_id) as cnt');
+        $this->db->from('ts_inventory_incomes i');
+        $this->db->join('ts_inventory_colors c','i.inventory_color_id=c.inventory_color_id');
+        $this->db->where('c.inventory_item_id', $inventory_item_id);
+        $income=$this->db->get()->row_array();
+        $backup = 0;
+        if($income['cnt']>0) {
+            $backup = intval($income['income']);
+        }
+        return $backup;
+    }
+
+    public function inventory_item_outcome($inventory_item_id) {
+        $this->db->select('sum(i.outcome_qty) as outcome, count(i.inventory_outcome_id) as cnt');
+        $this->db->from('ts_inventory_outcomes i');
+        $this->db->join('ts_inventory_colors c','i.inventory_color_id=c.inventory_color_id');
+        $this->db->where('c.inventory_item_id', $inventory_item_id);
+        $outcome=$this->db->get()->row_array();
+        $outqty = 0;
+        if($outcome['cnt']>0) {
+            $outqty = intval($outcome['outcome']);
+        }
+        return $outqty;
+    }
+
+    public function inventory_item_reserved($inventory_item_id) {
+        // Params $printshop_item_id, $color, $brand
+        return 0;
+//        $this->db->select('sum(i.item_qty) as reserved, count(i.order_itemcolor_id) as cnt');
+//        $this->db->from('ts_order_itemcolors i');
+//        $this->db->join('ts_order_items im','im.order_item_id=i.order_item_id');
+//        $this->db->join('ts_orders o','o.order_id=im.order_id');
+//        $this->db->join('ts_printshop_colors c','c.printshop_item_id=i.printshop_item_id');
+//        $this->db->where('o.order_cog', null);
+//        if ($printshop_item_id>0) {
+//            $this->db->where('i.printshop_item_id', $printshop_item_id);
+//            $this->db->where('i.item_color', $color);
+//        }
+//        if ($brand!=='ALL') {
+//            $this->db->where('o.brand', $brand);
+//        }
+//        $reserv=$this->db->get()->row_array();
+//        $reserved = 0;
+//        if ($reserv['cnt']>0) {
+//            $reserved = intval($reserv['reserved']);
+//        }
+//        return $reserved;
+    }
+
+    public function inventory_item_stock($inventory_item_id) {
+        $this->db->select('sum(suggeststock) as total, count(inventory_color_id) as cnt');
+        $this->db->from('ts_inventory_colors');
+        $this->db->where('inventory_item_id', $inventory_item_id);
+        $stockres=$this->db->get()->row_array();
+        $stock = 0;
+        if ($stockres['cnt']>0) {
+            $stock = intval($stockres['total']);
+        }
+        return $stock;
+    }
+
     public function get_inventtype_stock($inventory_type_id) {
         $this->db->select('inventory_color_id, sum(income_qty) as qty_in');
         $this->db->from('ts_inventory_incomes');
@@ -2230,7 +2292,108 @@ class Inventory_model extends MY_Model
             $out['color']=$res;
         }
         return $out;
+    }
 
+    public function get_inventory_color($color) {
+        $out=['result' => $this->error_result, 'msg' => 'Inventory not found'];
+        $this->db->select('*');
+        $this->db->from('ts_inventory_colors');
+        $this->db->where('inventory_color_id', $color);
+        $invres = $this->db->get()->row_array();
+        if (ifset($invres, 'inventory_color_id',0)==$color) {
+            $out['result'] = $this->success_result;
+            // Get totals by Color
+            $income = $this->inventory_color_income($invres['inventory_color_id']);
+            $outcome = $this->inventory_color_outcome($invres['inventory_color_id']);
+            $reserved = $this->inventory_color_reserved($invres['inventory_color_id']);
+            $instock=$income-$outcome;
+            $available=$instock-$reserved;
+            $max=$invres['suggeststock'];
+            $stockperc='';
+            $stockclass='';
+            if ($max!=0) {
+                $stockperc=round($instock/$max*100,0);
+                if ($stockperc <= $this->config->item('invoutstock')) {
+                    $stockclass = $this->outstockclass;
+                } elseif ($stockperc <= $this->config->item('invlowstock')) {
+                    $stockclass = $this->lowstockclass;
+                }
+            }
+            $outstock = QTYOutput($instock);
+            if (intval($instock) == 0) {
+                $outstock=$this->outstoklabel;
+                $stockclass = $this->emptystockclass;
+            }
+            $outavail = QTYOutput($available);
+            // if ($stockclass==$this->outstockclass && empty($stockperc)) {
+            if (intval($available) == 0 ) {
+                $outavail=$this->outstoklabel;
+                $stockclass = $this->emptystockclass;
+            }
+            $totalclass='';
+            if (intval($available) <=0 ) {
+                $totalclass = 'emptytotal';
+            }
+            $colordat=[
+                'percent' => $stockperc.'%',
+                'stockclass' => $stockclass,
+                'instock' => $outstock,
+                'reserved' => $reserved,
+                'available' => $outavail,
+                'price' => MoneyOutput($invres['price'],3),
+                'avgprice' => MoneyOutput($invres['avg_price'],3),
+                'total' => MoneyOutput($available*$invres['avg_price']),
+                'noreorder' => $invres['notreorder'],
+                'totalclass' => $totalclass,
+            ];
+            // Get Totals by item
+            $income = $this->inventory_item_income($invres['inventory_item_id']);
+            $outcome = $this->inventory_item_outcome($invres['inventory_item_id']);
+            $reserved = $this->inventory_item_reserved($invres['inventory_item_id']);
+            $max = $this->inventory_item_stock($invres['inventory_item_id']);
+            $stockperc='';
+            $stockclass='';
+            if ($max!=0) {
+                $stockperc=round($instock/$max*100,0);
+                if ($stockperc <= $this->config->item('invoutstock')) {
+                    $stockclass = $this->outstockclass;
+                } elseif ($stockperc <= $this->config->item('invlowstock')) {
+                    $stockclass = $this->lowstockclass;
+                }
+            }
+            $outstock = QTYOutput($instock);
+            if (intval($instock) == 0) {
+                $outstock=$this->outstoklabel;
+                $stockclass = $this->emptystockclass;
+            }
+            $outavail = QTYOutput($available);
+            // if ($stockclass==$this->outstockclass && empty($stockperc)) {
+            if (intval($available) == 0 ) {
+                $outavail=$this->outstoklabel;
+                $stockclass = $this->emptystockclass;
+            }
+            $totalclass='';
+            if (intval($available) <=0 ) {
+                $totalclass = 'emptytotal';
+            }
+            $itemdat=[
+                'percent' => $stockperc.'%',
+                'stockclass' => $stockclass,
+                'instock' => $outstock,
+                'reserved' => $reserved,
+                'available' => $outavail,
+                'price' => MoneyOutput($invres['price'],3),
+                'avgprice' => MoneyOutput($invres['avg_price'],3),
+                'total' => MoneyOutput($available*$invres['avg_price']),
+                'noreorder' => $invres['notreorder'],
+                'totalclass' => $totalclass,
+            ];
+            // Get Totals
+            $out['inventory_item'] = $invres['inventory_item_id'];
+            $out['color'] = $colordat;
+            $out['item'] = $itemdat;
+        }
+        return $out;
     }
 
     private function _add_inventory_outcome($orderdata, $user_id) {
