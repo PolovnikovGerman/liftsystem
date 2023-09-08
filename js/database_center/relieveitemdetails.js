@@ -1,15 +1,15 @@
-var temp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; width: 100%; text-align: center;">'+
+var temp= '<div class="qq-uploader"><div class="popupimageedit_upload qq-upload-button"><span style="clear: both; float: left; width: 100%; text-align: center;">'+
     '<em>upload image</em></span></div>' +
     '<ul class="qq-upload-list"></ul>' +
     '<ul class="qq-upload-drop-area"></ul>'+
     '<div class="clear"></div></div>';
-var replacetemp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: right; width: 100%;">'+
+var replacetemp= '<div class="qq-uploader"><div class="popupimageedit_upload qq-upload-button"><span style="clear: both; float: right; width: 100%;">'+
     '<em>[Replace]</em></span></div>' +
     '<ul class="qq-upload-list"></ul>' +
     '<ul class="qq-upload-drop-area"></ul>'+
     '<div class="clear"></div></div>';
-var addtemp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; width: 85px; text-align: center; margin-top: 4px; color: #0000ff;">'+
-    '<em>add image</em></span></div>' +
+var addtemp= '<div class="qq-uploader"><div class="popupimageedit_upload qq-upload-button"><span style="clear: both; float: left;">'+
+    '<em>upload image</em></span></div>' +
     '<ul class="qq-upload-list"></ul>' +
     '<ul class="qq-upload-drop-area"></ul>'+
     '<div class="clear"></div></div>';
@@ -947,63 +947,73 @@ function init_relievitemimages_edit() {
             }
         }, 'json');
     });
-    if ($("#additimgadd").length > 0) {
-        var uploader = new qq.FileUploader({
-            element: document.getElementById('additimgadd'),
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
-            action: '/utils/save_itemimg',
-            template: addtemp,
-            multiple: false,
-            debug: false,
-            onComplete: function(id, fileName, responseJSON){
-                if (responseJSON.success) {
-                    $("ul.qq-upload-list").css('display','none');
-                    var params = new Array();
-                    params.push({name: 'session', value: $("#dbdetailsession").val()});
-                    params.push({name: 'newval', value: responseJSON.filename});
-                    var url="/sritemdetails/save_relive_addimage";
-                    $.post(url, params, function(response){
-                        if (response.errors=='') {
-                            $(".addimages-slider").empty().html(response.data.content);
-                            init_relievitemimages_edit();
-                        } else {
-                            show_error(response);
-                        }
-                    }, 'json');
-                }
-            }
-        });
-    }
+    // Image Slider
+    // Replace
     $(".replaseadditems").each(function () {
         var replid = $(this).prop('id');
-        var uploader = new qq.FileUploader({
-            element: document.getElementById(replid),
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
-            action: '/utils/save_itemimg',
-            template: replacetemp,
-            multiple: false,
-            debug: false,
-            onComplete: function(id, fileName, responseJSON){
-                if (responseJSON.success) {
-                    $("ul.qq-upload-list").css('display','none');
-                    var params = new Array();
-                    params.push({name: 'session', value: $("#dbdetailsession").val()});
-                    params.push({name: 'newval', value: responseJSON.filename});
-                    params.push({name: 'fldidx', value: replid});
-                    var url="/sritemdetails/save_relive_updaddimage";
-                    $.post(url, params, function(response){
-                        if (response.errors=='') {
-                            $(".addimages-slider").empty().html(response.data.content);
-                            init_relievitemimages_edit();
-                        } else {
-                            show_error(response);
-                        }
-                    }, 'json');
+        if (replid!=='') {
+            var uploader = new qq.FileUploader({
+                element: document.getElementById(replid),
+                allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+                action: '/utils/save_itemimg',
+                template: replacetemp,
+                multiple: false,
+                debug: false,
+                onComplete: function(id, fileName, responseJSON){
+                    if (responseJSON.success) {
+                        $("ul.qq-upload-list").css('display','none');
+                        var params = new Array();
+                        params.push({name: 'session', value: $("#dbdetailsession").val()});
+                        params.push({name: 'newval', value: responseJSON.filename});
+                        params.push({name: 'fldidx', value: replid});
+                        var url="/sritemdetails/save_relive_updaddimage";
+                        $.post(url, params, function(response){
+                            if (response.errors=='') {
+                                $(".addimages-slider").empty().html(response.data.content);
+                                init_relievitemimages_edit();
+                            } else {
+                                show_error(response);
+                            }
+                        }, 'json');
+                    }
                 }
-            }
-        });
+            });
+        }
     });
-    $(".removeimage.addimage").unbind('click').click(function () {
+    // Add new
+    $(".addimageslider").each(function (){
+        var replid = $(this).prop('id');
+        if (replid!=='') {
+            var uploader = new qq.FileUploader({
+                element: document.getElementById(replid),
+                allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+                action: '/utils/save_itemimg',
+                template: addtemp,
+                multiple: false,
+                debug: false,
+                onComplete: function(id, fileName, responseJSON){
+                    if (responseJSON.success) {
+                        $("ul.qq-upload-list").css('display','none');
+                        var params = new Array();
+                        params.push({name: 'session', value: $("#dbdetailsession").val()});
+                        params.push({name: 'newval', value: responseJSON.filename});
+                        params.push({name: 'fldidx', value: replid});
+                        var url="/sritemdetails/save_relive_addimage";
+                        $.post(url, params, function(response){
+                            if (response.errors=='') {
+                                $(".addimages-slider").empty().html(response.data.content);
+                                init_relievitemimages_edit();
+                            } else {
+                                show_error(response);
+                            }
+                        }, 'json');
+                    }
+                }
+            });
+        }
+    });
+    // Remove image
+    $(".removeimage.addimage").unbind('click').click(function (){
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fldidx', value: $(this).data('image')});
@@ -1016,7 +1026,7 @@ function init_relievitemimages_edit() {
                 show_error(response);
             }
         }, 'json');
-    })
+    });
     $("select.imageorderinpt").unbind('change').change(function () {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
@@ -1076,6 +1086,7 @@ function init_relievitemimages_edit() {
             }
         },'json');
     });
+    // Check options
     $(".itemoptioncheck").unbind('click').click(function () {
         var fldname = 'option_images';
         var params = new Array();
@@ -1087,74 +1098,79 @@ function init_relievitemimages_edit() {
                 if (parseInt(response.data.newval)==1) {
                     $(".itemoptioncheck").empty().html('<i class="fa fa-check-square" aria-hidden="true"></i>');
                     // Show add item and slider
-                    $("#addoptionimage").show();
-                    $(".colorimages-slider").css('visibility','visible');
                 } else {
                     $(".itemoptioncheck").empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>');
-                    $("#addoptionimage").hide();
-                    $(".colorimages-slider").css('visibility','hidden');
                 }
             } else {
                 show_error(response);
             }
         },'json');
     });
-    if ($("#addoptionimage").length > 0) {
-        var uploader = new qq.FileUploader({
-            element: document.getElementById('addoptionimage'),
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
-            action: '/utils/save_itemimg',
-            template: addtemp,
-            multiple: false,
-            debug: false,
-            onComplete: function(id, fileName, responseJSON){
-                if (responseJSON.success) {
-                    $("ul.qq-upload-list").css('display','none');
-                    var params = new Array();
-                    params.push({name: 'session', value: $("#dbdetailsession").val()});
-                    params.push({name: 'newval', value: responseJSON.filename});
-                    var url="/sritemdetails/save_relive_addoptionimage";
-                    $.post(url, params, function(response){
-                        if (response.errors=='') {
-                            $(".colorimages-slider").empty().html(response.data.content);
-                            init_relievitemimages_edit();
-                        } else {
-                            show_error(response);
-                        }
-                    }, 'json');
+    // Add Image
+    $(".addoptionimageslider").each(function (){
+        var replid = $(this).prop('id');
+        if (replid!=='') {
+            var uploader = new qq.FileUploader({
+                element: document.getElementById(replid),
+                allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+                action: '/utils/save_itemimg',
+                template: addtemp,
+                multiple: false,
+                debug: false,
+                onComplete: function(id, fileName, responseJSON){
+                    if (responseJSON.success) {
+                        $("ul.qq-upload-list").css('display','none');
+                        var params = new Array();
+                        params.push({name: 'session', value: $("#dbdetailsession").val()});
+                        params.push({name: 'newval', value: responseJSON.filename});
+                        params.push({name: 'fldidx', value: replid});
+                        var url="/sritemdetails/save_relive_addoptionimage";
+                        $.post(url, params, function(response){
+                            if (response.errors=='') {
+                                $(".colorimages-slider").empty().html(response.data.content);
+                                init_relievitemimages_edit();
+                            } else {
+                                show_error(response);
+                            }
+                        }, 'json');
+                    }
                 }
-            }
-        });
-    }
+            });
+        }
+    });
+    // Replace Image
     $(".replaseoptionitems").each(function () {
         var replid = $(this).prop('id');
-        var uploader = new qq.FileUploader({
-            element: document.getElementById(replid),
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
-            action: '/utils/save_itemimg',
-            template: replacetemp,
-            multiple: false,
-            debug: false,
-            onComplete: function(id, fileName, responseJSON){
-                if (responseJSON.success) {
-                    $("ul.qq-upload-list").css('display','none');
-                    var params = new Array();
-                    params.push({name: 'session', value: $("#dbdetailsession").val()});
-                    params.push({name: 'newval', value: responseJSON.filename});
-                    params.push({name: 'fldidx', value: replid});
-                    var url="/sritemdetails/save_relive_updoptimage";
-                    $.post(url, params, function(response){
-                        if (response.errors=='') {
-                            $(".colorimages-slider").empty().html(response.data.content);
-                            init_relievitemimages_edit();
-                        } else {
-                            show_error(response);
-                        }
-                    }, 'json');
+        if (replid!=='') {
+            var uploader = new qq.FileUploader({
+                element: document.getElementById(replid),
+                allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+                action: '/utils/save_itemimg',
+                template: replacetemp,
+                multiple: false,
+                debug: false,
+                onComplete: function(id, fileName, responseJSON){
+                    if (responseJSON.success) {
+                        $("ul.qq-upload-list").css('display','none');
+                        var params = new Array();
+                        params.push({name: 'session', value: $("#dbdetailsession").val()});
+                        params.push({name: 'newval', value: responseJSON.filename});
+                        params.push({name: 'fldidx', value: replid});
+                        var url="/sritemdetails/save_relive_updoptimage";
+                        $.post(url, params, function(response){
+                            if (response.errors=='') {
+                                $(".colorimages-slider").empty().html(response.data.content);
+                                init_relievitemimages_edit();
+                            } else {
+                                show_error(response);
+                            }
+                        }, 'json');
+                    }
                 }
-            }
-        });
+            });
+        }
     });
+    // Sorting
     $(".optimageorderinpt").unbind('change').change(function () {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
@@ -1170,7 +1186,8 @@ function init_relievitemimages_edit() {
             }
         }, 'json');
     });
-    $(".removeimage.optimage").unbind('click').click(function () {
+    // Remove image
+    $(".removeimagefull.optimage").unbind('click').click(function () {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fldidx', value: $(this).data('image')});

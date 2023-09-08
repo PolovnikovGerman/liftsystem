@@ -2,9 +2,11 @@
     <div class="sectionlabel">SHIPPING:</div>
     <div class="sectionbody shippingsection <?=$missinfo==0 ? '' : 'missinginfo'?>">
         <div class="content-row">
-            <div class="itemparamlabel itemweigth">Weight Ea:</div>
+            <div class="itemparamlabel itemweigth">Weight Each:</div>
             <div class="itemparamvalue itemweigth <?=empty($item['item_weigth']) ? 'missing_info' : ''?>"><?=$item['item_weigth']?></div>
             <div class="itemparamlabel weight-measure">lbs</div>
+            <div class="itemparamlabel specialeach">Extra $ Each:</div>
+            <div class="itemparamvalue specialeach"><?=number_format($item['charge_pereach'],2)?></div>
         </div>
         <div class="itemboxarea">
             <div class="content-row">
@@ -38,12 +40,6 @@
                     </div>
                 <?php } ?>
             </div>
-        </div>
-        <div class="content-row">
-            <div class="itemparamlabel specialeach">Special Each:</div>
-            <div class="itemparamvalue specialeach"><?=$item['charge_pereach']?></div>
-            <div class="itemparamlabel specialorder">Special Per Order:</div>
-            <div class="itemparamvalue specialorder"><?=$item['charge_perorder']?></div>
         </div>
     </div>
 </div>

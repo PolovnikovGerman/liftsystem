@@ -45,7 +45,7 @@ Class Sritems_model extends My_Model
 
     public function get_relievers_itemslist($options) {
         $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active');
-        $this->db->select('(vm.keyinfo+vm.similar+vm.prices+vm.printing+vm.meta+vm.imagescolors+vm.supplier) as missings');
+        $this->db->select('(vm.keyinfo+vm.similar+vm.prices+vm.printing+vm.meta+vm.imagescolors+vm.supplier+vm.shiping) as missings');
         $this->db->from('sb_items i');
         $this->db->join('v_sritem_missinginfo vm','i.item_id=vm.item_id','left');
         $this->db->where('i.brand', 'SR');
@@ -99,14 +99,9 @@ Class Sritems_model extends My_Model
             $row['status'] = $row['item_active']==1 ? 'Active' : 'Inactive';
             if ($row['missings']==0) {
                 $row['misclas'] = '';
-                $row['misinfo'] = '-';
+                $row['misinfo'] = 'Complete';
             } else {
                 $row['misclas'] = 'missing';
-//                if ($row['missings']==1) {
-//                    $row['misinfo'] = '1 field';
-//                } else {
-//                    $row['misinfo'] = $row['missings'].' fields';
-//                }
                 $this->db->select('*');
                 $this->db->from('v_sritem_missinginfo');
                 $this->db->where('item_id', $row['item_id']);
@@ -421,7 +416,7 @@ Class Sritems_model extends My_Model
                 if ($editmode==0) {
                     $colorsrc = $this->itemcolors_model->get_invent_itemcolors($item_id, $editmode);
                 } else {
-                    $colorsrc = $this->itemcolors_model->get_invent_itemcolors($item['printshop_inventory_id'], $editmode);
+                    $colorsrc = $this->itemcolors_model->get_invent_itemcolors($item_id, $editmode);
                 }
                 foreach ($colorsrc as $itmcolor) {
                     $colors[] = [
@@ -962,30 +957,32 @@ Class Sritems_model extends My_Model
 
     public function itemdetails_save_addimages($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Info not found'];
-        $images = $sessiondata['images'];
-        $neword = 0;
-        foreach ($images as $image) {
-            if ($neword < $image['item_img_order']) {
-                $neword = $image['item_img_order'];
+        $images = $sessiondata['popup_images'];
+        $imgidx = ifset($postdata,'fldidx','');
+        if (!empty($imgidx)) {
+            $imgidx = str_replace(['replimg','addimageslider'], '',$imgidx);
+            $find = 0;
+            $idx = 0;
+            foreach ($images as $image) {
+                if ($image['item_img_id']==$imgidx) {
+                    $find = 1;
+                    $images[$idx]['item_img_name'] = $postdata['newval'];
+                    break;
+                }
+                $idx++;
+            }
+            if ($find==1) {
+                $out['result'] = $this->success_result;
+                $sessiondata['popup_images'] = $images;
+                usersession($session, $sessiondata);
             }
         }
-        $neword+=1;
-        $newid = (count($images)+1) * (-1);
-        $images[] = [
-            'item_img_id' => $newid,
-            'item_img_name' => $postdata['newval'],
-            'item_img_label' => '',
-            'item_img_order' => $neword,
-        ];
-        $sessiondata['images'] = $images;
-        usersession($session, $sessiondata);
-        $out['result'] = $this->success_result;
         return $out;
     }
 
     public function itemdetails_save_updimages($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Info not found'];
-        $images = $sessiondata['images'];
+        $images = $sessiondata['popup_images'];
         $imgidx = ifset($postdata,'fldidx','');
         if (!empty($imgidx)) {
             $imgidx = str_replace('replimg', '',$imgidx);
@@ -1001,7 +998,7 @@ Class Sritems_model extends My_Model
             }
             if ($find==1) {
                 $out['result'] = $this->success_result;
-                $sessiondata['images'] = $images;
+                $sessiondata['popup_images'] = $images;
                 usersession($session, $sessiondata);
             }
         }
@@ -1010,7 +1007,7 @@ Class Sritems_model extends My_Model
 
     public function itemdetails_save_imagessort($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Info not found'];
-        $images = $sessiondata['images'];
+        $images = $sessiondata['popup_images'];
         $imgidx = ifset($postdata,'fldidx','');
         if (!empty($imgidx)) {
             $imgidx = intval($imgidx);
@@ -1047,7 +1044,7 @@ Class Sritems_model extends My_Model
                         }
                     }
                 }
-                $sessiondata['images'] = $newimg;
+                $sessiondata['popup_images'] = $newimg;
                 usersession($session, $sessiondata);
                 $out['result'] = $this->success_result;
             }
@@ -1057,7 +1054,7 @@ Class Sritems_model extends My_Model
 
     public function itemdetails_addimages_delete($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
-        $images = $sessiondata['images'];
+        $images = $sessiondata['popup_images'];
         $deleted = $sessiondata['deleted'];
         $imgidx = ifset($postdata,'fldidx','');
         if (!empty($imgidx)) {
@@ -1083,7 +1080,7 @@ Class Sritems_model extends My_Model
             }
             if ($find==1) {
                 $out['result'] = $this->success_result;
-                $sessiondata['images'] = $newimg;
+                $sessiondata['popup_images'] = $newimg;
                 $sessiondata['deleted'] = $deleted;
                 usersession($session, $sessiondata);
             }
@@ -1093,7 +1090,7 @@ Class Sritems_model extends My_Model
 
     public function itemdetails_addimages_title($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
-        $images = $sessiondata['images'];
+        $images = $sessiondata['popup_images'];
         $imgidx = ifset($postdata,'fldidx','');
         if (!empty($imgidx)) {
             $find = 0;
@@ -1108,7 +1105,7 @@ Class Sritems_model extends My_Model
             }
             if ($find==1) {
                 $out['result'] = $this->success_result;
-                $sessiondata['images'] = $images;
+                $sessiondata['popup_images'] = $images;
                 usersession($session, $sessiondata);
             }
         }
@@ -1117,46 +1114,49 @@ Class Sritems_model extends My_Model
 
     public function itemdetails_optionimages_add($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Info not found'];
-        $images = $sessiondata['option_images'];
-        $neword = 0;
-        foreach ($images as $image) {
-            if ($neword < $image['item_img_order']) {
-                $neword = $image['item_img_order'];
+        $colors = $sessiondata['popup_colors'];
+        $coloridx = ifset($postdata, 'fldidx','');
+        if (!empty($coloridx)) {
+            $coloridx = str_replace('addoptionimageslider','', $coloridx);
+            $find=0;
+            $idx = 0;
+            foreach ($colors as $color) {
+                if ($color['item_color_id']==$coloridx) {
+                    $find=1;
+                    $colors[$idx]['item_color_image'] = $postdata['newval'];
+                    break;
+                } else {
+                    $idx++;
+                }
+            }
+            if ($find==1) {
+                $sessiondata['popup_colors']=$colors;
+                usersession($session, $sessiondata);
+                $out['result'] = $this->success_result;
             }
         }
-        $neword+=1;
-        $newid = (count($images)+1) * (-1);
-        $images[] = [
-            'item_img_id' => $newid,
-            'item_img_name' => $postdata['newval'],
-            'item_img_label' => '',
-            'item_img_order' => $neword,
-        ];
-        $sessiondata['option_images'] = $images;
-        usersession($session, $sessiondata);
-        $out['result'] = $this->success_result;
         return $out;
     }
 
     public function itemdetails_optionimages_update($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Info not found'];
-        $images = $sessiondata['option_images'];
-        $imgidx = ifset($postdata,'fldidx','');
-        if (!empty($imgidx)) {
-            $imgidx = str_replace('reploptimg', '',$imgidx);
+        $colors = $sessiondata['popup_colors'];
+        $coloridx = ifset($postdata,'fldidx','');
+        if (!empty($coloridx)) {
+            $coloridx = str_replace('reploptimg', '',$coloridx);
             $find = 0;
             $idx = 0;
-            foreach ($images as $image) {
-                if ($image['item_img_id']==$imgidx) {
+            foreach ($colors as $color) {
+                if ($color['item_color_id']==$coloridx) {
                     $find = 1;
-                    $images[$idx]['item_img_name'] = $postdata['newval'];
+                    $images[$idx]['item_color_image'] = $postdata['newval'];
                     break;
                 }
                 $idx++;
             }
             if ($find==1) {
                 $out['result'] = $this->success_result;
-                $sessiondata['option_images'] = $images;
+                $sessiondata['popup_colors'] = $colors;
                 usersession($session, $sessiondata);
             }
         }
@@ -1165,7 +1165,7 @@ Class Sritems_model extends My_Model
 
     public function itemdetails_save_optimagessort($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result,'msg' => 'Info not found'];
-        $images = $sessiondata['option_images'];
+        $colors = $sessiondata['popup_colors'];
         $imgidx = ifset($postdata,'fldidx','');
         if (!empty($imgidx)) {
             $imgidx = intval($imgidx);
@@ -1175,16 +1175,16 @@ Class Sritems_model extends My_Model
                 $numord = 1;
                 $newimg = [];
                 $arrimg = [];
-                for ($i=0; $i<count($images); $i++) {
-                    foreach ($images as $image) {
-                        if (!in_array($image['item_img_id'], $arrimg)) {
+                for ($i=0; $i<count($colors); $i++) {
+                    foreach ($colors as $color) {
+                        if (!in_array($color['item_color_id'], $arrimg)) {
                             if ($numord==$numpp) {
                                 array_push($arrimg, $imgidx);
                                 $numord++;
                                 break;
                             } else {
-                                if ($image['item_img_id']!=$imgidx) {
-                                    array_push($arrimg, $image['item_img_id']);
+                                if ($color['item_color_id']!=$imgidx) {
+                                    array_push($arrimg, $color['item_color_id']);
                                     $numord++;
                                     break;
                                 }
@@ -1194,53 +1194,40 @@ Class Sritems_model extends My_Model
                 }
                 $numord=1;
                 foreach ($arrimg as $keyval) {
-                    foreach ($images as $image) {
-                        if ($image['item_img_id']==$keyval) {
-                            $image['item_img_order'] = $numord;
-                            $newimg[] = $image;
+                    foreach ($colors as $color) {
+                        if ($color['item_color_id']==$keyval) {
+                            $color['item_color_order'] = $numord;
+                            $newimg[] = $color;
                             $numord++;
                         }
                     }
                 }
-                $sessiondata['option_images'] = $newimg;
+                $sessiondata['popup_colors'] = $newimg;
                 usersession($session, $sessiondata);
                 $out['result'] = $this->success_result;
             }
         }
         return $out;
-
     }
 
     public function itemdetails_optimages_delete($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
-        $images = $sessiondata['option_images'];
-        $deleted = $sessiondata['deleted'];
-        $imgidx = ifset($postdata,'fldidx','');
-        if (!empty($imgidx)) {
+        $colors = $sessiondata['popup_colors'];
+        $coloridx = ifset($postdata,'fldidx','');
+        if (!empty($coloridx)) {
             $find = 0;
             $idx = 0;
-            $numrow = 1;
-            $newimg = [];
-            foreach ($images as $image) {
-                if ($image['item_img_id']==$imgidx) {
+            foreach ($colors as $color) {
+                if ($color['item_color_id']==$coloridx) {
                     $find = 1;
-                    if ($imgidx > 0) {
-                        $deleted[] = [
-                            'entity' => 'images',
-                            'id' => $imgidx,
-                        ];
-                    }
-                } else {
-                    $image['item_img_order'] = $numrow;
-                    $newimg[] = $image;
-                    $numrow++;
+                    $colors[$idx]['item_color_image'] = '';
+                    break;
                 }
                 $idx++;
             }
             if ($find==1) {
                 $out['result'] = $this->success_result;
-                $sessiondata['option_images'] = $newimg;
-                $sessiondata['deleted'] = $deleted;
+                $sessiondata['popup_colors'] = $colors;
                 usersession($session, $sessiondata);
             }
         }
@@ -1249,22 +1236,22 @@ Class Sritems_model extends My_Model
 
     public function itemdetails_optimages_title($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Image Not Found'];
-        $images = $sessiondata['option_images'];
-        $imgidx = ifset($postdata,'fldidx','');
-        if (!empty($imgidx)) {
+        $colors = $sessiondata['popup_colors'];
+        $coloridx = ifset($postdata,'fldidx','');
+        if (!empty($coloridx)) {
             $find = 0;
             $idx = 0;
-            foreach ($images as $image) {
-                if ($image['item_img_id']==$imgidx) {
+            foreach ($colors as $color) {
+                if ($color['item_color_id']==$coloridx) {
                     $find = 1;
-                    $images[$idx]['item_img_label'] = $postdata['newval'];
+                    $colors[$idx]['item_color'] = $postdata['newval'];
                     break;
                 }
                 $idx++;
             }
             if ($find==1) {
                 $out['result'] = $this->success_result;
-                $sessiondata['option_images'] = $images;
+                $sessiondata['popup_colors'] = $colors;
                 usersession($session, $sessiondata);
             }
         }
@@ -1297,7 +1284,7 @@ Class Sritems_model extends My_Model
         $numorder = 1;
         foreach ($colors as $color) {
             if (!empty($item['printshop_inventory_id'])) {
-                $newcolors = $color;
+                $newcolors[] = $color;
             } else {
                 if (empty($color['item_color'])) {
                     if ($color['item_color_id'] > 0) {
@@ -1318,6 +1305,9 @@ Class Sritems_model extends My_Model
         unset($sessiondata['popup_images']);
         unset($sessiondata['popup_colors']);
         $out['result'] = $this->success_result;
+        $this->db->select('imagescolors')->from('v_sritem_missinginfo')->where('item_id', $item['item_id']);
+        $res = $this->db->get()->row_array();
+        $out['missinfo'] = ifset($res,'imagescolors',1);
         usersession($session, $sessiondata);
         return $out;
     }
@@ -1535,7 +1525,11 @@ Class Sritems_model extends My_Model
             $find = 0;
             foreach ($inprints as $inprint) {
                 if ($inprint['item_inprint_id']==$fldidx) {
-                    $inprints[$idx][$fld] = $postdata['newval'];
+                    if ($fld=='item_inprint_size') {
+                        $inprints[$idx][$fld] = htmlspecialchars($postdata['newval']);
+                    } else {
+                        $inprints[$idx][$fld] = $postdata['newval'];
+                    }
                     $find = 1;
                     break;
                 }
@@ -1625,6 +1619,8 @@ Class Sritems_model extends My_Model
             } else {
                 $item['item_vector_img'] = '';
             }
+            $sessiondata['item'] = $item;
+            usersession($session, $sessiondata);
             $out['result'] = $this->success_result;
             $out['vector'] = $vectorlnk;
         }
@@ -1710,6 +1706,7 @@ Class Sritems_model extends My_Model
             $this->db->set('bullet2', empty($item['bullet2']) ? NULL : $item['bullet2']);
             $this->db->set('bullet3', empty($item['bullet3']) ? NULL : $item['bullet3']);
             $this->db->set('bullet4', empty($item['bullet4']) ? NULL : $item['bullet4']);
+            $this->db->set('printshop_inventory_id', empty($item['printshop_inventory_id'])? null : $item['printshop_inventory_id']);
             $this->db->set('price_discount', empty($item['price_discount'])? null: $item['price_discount']);
             $this->db->set('print_discount', empty($item['print_discount'])? null: $item['print_discount']);
             $this->db->set('setup_discount', empty($item['setup_discount'])? null: $item['setup_discount']);
@@ -1884,6 +1881,17 @@ Class Sritems_model extends My_Model
                 }
             } else {
                 foreach ($colors as $color) {
+                    if (!empty($color['item_color_image']) && stripos($color['item_color_image'], $preload_sh)) {
+                        $img_src = str_replace($preload_sh, '', $color['item_color_image']);
+                        $cpres = @copy($preload_fl . $img_src, $itemimg_fl . $img_src);
+                        if ($cpres) {
+                            $color['item_color_image'] = $itemimg_sh . $img_src;
+                        } else {
+                            $color['item_color_image'] = '';
+                        }
+                    }
+                    $this->db->set('item_color_image', $color['item_color_image']);
+                    $this->db->set('item_color_order', $color['item_color_order']);
                     $this->db->set('item_color', $color['item_color']);
                     $this->db->set('printshop_color_id', $color['printshop_color']);
                     if ($color['item_color_id'] > 0) {
