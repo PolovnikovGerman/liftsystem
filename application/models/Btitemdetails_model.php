@@ -634,7 +634,7 @@ class Btitemdetails_model extends MY_Model
         $colors = $sessiondata['popup_colors'];
         $numorder = 1;
         foreach ($colors as $color) {
-            if (!empty($item[''])) {
+            if (!empty($item['printshop_inventory_id'])) {
                 $newcolors = $color;
             } else {
                 if (empty($color['item_color'])) {
@@ -656,6 +656,9 @@ class Btitemdetails_model extends MY_Model
         unset($sessiondata['popup_images']);
         unset($sessiondata['popup_colors']);
         $out['result'] = $this->success_result;
+        $this->db->select('imagescolors')->from('v_sbitem_missinginfo')->where('item_id', $item['item_id']);
+        $res = $this->db->get()->row_array();
+        $out['missinfo'] = ifset($res,'imagescolors',1);
         usersession($session, $sessiondata);
         return $out;
     }

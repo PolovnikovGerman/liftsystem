@@ -779,7 +779,7 @@ Class Sritems_model extends My_Model
                     $invitem = $invres['data'];
                     $invcolors = $invres['colors'];
                     $out['printshop_name'] = $invitem['item_name'];
-                    $vendor_item['vendor_item_blankcost'] = 0;
+                    $vendor_item['vendor_item_blankcost'] = $invitem['avg_price'];
                     $vendor_item['vendor_item_cost'] = $invitem['avg_price'];
                     $vendor_item['vendor_item_number'] = $invitem['item_num'];
                     $vendor_item['vendor_item_name'] = $invitem['item_name'];
@@ -1271,6 +1271,57 @@ Class Sritems_model extends My_Model
         return $out;
     }
 
+    public function item_images_rebuild($sessiondata, $session) {
+        $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];
+        $item = $sessiondata['item'];
+        $images = $sessiondata['popup_images'];
+        $deleted = $sessiondata['deleted'];
+        $newimg = [];
+        $numorder = 1;
+        foreach ($images as $image) {
+            if (empty($image['item_img_name'])) {
+                if ($image['item_img_id'] > 0) {
+                    $deleted[] = [
+                        'entity' => 'images',
+                        'id' => $image['item_img_id'],
+                    ];
+                }
+            } else {
+                $image['item_img_order'] = $numorder;
+                $newimg[] = $image;
+                $numorder++;
+            }
+        }
+        $newcolors = [];
+        $colors = $sessiondata['popup_colors'];
+        $numorder = 1;
+        foreach ($colors as $color) {
+            if (!empty($item['printshop_inventory_id'])) {
+                $newcolors = $color;
+            } else {
+                if (empty($color['item_color'])) {
+                    if ($color['item_color_id'] > 0) {
+                        $deleted[] = [
+                            'entity' => 'colors',
+                            'id' => $color['item_color_id'],
+                        ];
+                    }
+                } else {
+                    $color['item_color_order'] = $numorder;
+                    $newcolors[] = $color;
+                    $numorder++;
+                }
+            }
+        }
+        $sessiondata['images'] = $newimg;
+        $sessiondata['colors'] = $newcolors;
+        unset($sessiondata['popup_images']);
+        unset($sessiondata['popup_colors']);
+        $out['result'] = $this->success_result;
+        usersession($session, $sessiondata);
+        return $out;
+    }
+
     public function itemdetails_vendor_price($sessiondata, $postdata, $session) {
         $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];
         $vendor_prices = $sessiondata['vendor_price'];
@@ -1303,7 +1354,7 @@ Class Sritems_model extends My_Model
     }
 
     public function itemdetails_vendoritem_price($sessiondata, $postdata, $session) {
-        $out=['result' => $this->error_result, 'msg' => 'Info Not Found'];
+        $out=['result' => $this->error_result, 'msg' => 'Info Not Found', 'address' => 0];
         $vendoritem = $sessiondata['vendor_item'];
         $fldname = ifset($postdata, 'fld', '');
         if (!empty($fldname) && array_key_exists($fldname,$vendoritem)) {
@@ -1895,12 +1946,19 @@ Class Sritems_model extends My_Model
             $this->db->set('rush1_price', $vendor_item['rush1_price']);
             $this->db->set('rush2_price', $vendor_item['rush2_price']);
             $this->db->set('pantone_match', $vendor_item['pantone_match']);
+            $this->db->set('vendor_item_vendor', $vendor_item['vendor_item_vendor']);
+            $this->db->set('vendor_item_zipcode', $vendor_item['vendor_item_zipcode']);
+            $this->db->set('item_shipcountry', $vendor_item['item_shipcountry']);
+            $this->db->set('item_shipstate', $vendor_item['item_shipstate']);
+            $this->db->set('item_shipcity', $vendor_item['item_shipcity']);
+            $this->db->set('po_note', $vendor_item['po_note']);
+
             if ($vendor_item['vendor_item_id'] > 0) {
                 $this->db->where('vendor_item_id', $vendor_item['vendor_item_id']);
                 $this->db->update('sb_vendor_items');
                 $vendor_item_id = $vendor_item['vendor_item_id'];
             } else {
-                $this->db->set('vendor_item_vendor', $vendor['vendor_id']);
+//                $this->db->set('vendor_item_vendor', $vendor_item['vendor_id']);
                 $this->db->insert('sb_vendor_items');
                 $vendor_item_id = $this->db->insert_id();
             }

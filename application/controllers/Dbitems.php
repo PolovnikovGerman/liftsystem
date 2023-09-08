@@ -563,6 +563,7 @@ class Dbitems extends MY_Controller
                         'vendors' => $vendors,
                         'countries' => $country_list,
                         'vendoritem_view' => $vendoritemview,
+                        'missinfo' => $missinfo['supplier'],
                     ];
                     $vendor_main = $this->load->view('relieveritems/vendormain_edit', $vendoptions,TRUE);
                     $profit_view = $this->load->view('relieveritems/itemprice_profit_view',['item' => $data['item'],'prices'=> $data['prices']],TRUE);

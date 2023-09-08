@@ -554,6 +554,7 @@ class Btitemdetails extends MY_Controller
                         'otherimages' => $otherimages,
                         'optionsimg' => $optionsimg,
                         'item' => $item,
+                        'missinfo' => $res['missinfo'],
                     ];
                     $mdata['content'] = $this->load->view('btitems/images_view',$imagesoptions, TRUE);
                 }

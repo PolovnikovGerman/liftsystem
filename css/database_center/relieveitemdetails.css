@@ -154,11 +154,12 @@ select.categoryitemselect {
     margin-top: 5px;
     height: 25px;
     padding: 5px 13px 0 13px;
-    font-size: 15px;
-    color: #000000;
-    background: #ffffff;
-    border-radius : 9px 9px 0 0;
+    font-size: 14px;
+    color: #ffffff;
+    background: #bbbbbb;
+    border-radius: 9px 9px 0 0;
     margin-left: 10px;
+    cursor: pointer;
 }
 .itemdetails-tab.active {
      font-weight: 600;
@@ -361,6 +362,8 @@ textarea.inputkeyinfotext {
     line-height: inherit;
     overflow-y: auto;
     resize: none;
+    background-color: #ffffff;
+    border: 1px solid #000000;
 }
 .inputkeyinfotext.missing_info {
     /*background: #ffc0cb;
@@ -368,7 +371,7 @@ textarea.inputkeyinfotext {
 }
 textarea.itemdescription {
     height: 70px;
-    width: 232px;
+    width: 225px;
 }
 .sectionseparator {
     border-top: 1.5px solid #000000;
@@ -419,6 +422,8 @@ textarea.itemdescription {
     width: 213px;
 }
 select.similaritems {
+    background-color: #ffffff;
+    border: 1px solid #000000;
     height: 22px;
     line-height: 22px;
     width: 210px;
@@ -451,12 +456,6 @@ select.similaritems {
 .itemparamvalue.vendorname {
     width: 162px;
 }
-/*select.vendordatainpt {
-    height: 22px;
-    line-height: 22px;
-    margin-left: -5px;
-    padding-left: 5px;
-}*/
 select.vendornameinp {
     border: 1px solid #000000;
     background-color: #ffffff;
@@ -478,6 +477,8 @@ select.vendornameinp {
     width: 47px;
 }
 input.vendordatainpt {
+    border: 1px solid #000;
+    background-color: #ffffff;
     margin-left: -5px;
     padding-left: 5px;
     height: 22px;
@@ -616,6 +617,8 @@ input.vendordatainpt {
     font-weight: normal;
 }
 input.vendordatapriceinpt {
+    border: 1px solid #000000;
+    background-color: #ffffff;
     width: 100%;
     height: 20px;
     line-height: 20px;
@@ -623,6 +626,8 @@ input.vendordatapriceinpt {
     font-weight: normal;
 }
 input.vendorpriceinpt {
+    border: 1px solid #000000;
+    background-color: #ffffff;
     width: 100%;
     height: 20px;
     line-height: 20px;
@@ -841,6 +846,7 @@ select.discountselect::-ms-expand {
 }
 .itemprice_new {
     border: 1px solid #9f9f9f;
+    background-color: #eaeaea;
     font-size: 12px;
     font-weight: 600;
     height: 20px;
@@ -1031,6 +1037,7 @@ select.discountselect::-ms-expand {
 }
 .itemmainimagesrc {
     border: 1px solid #777777;
+    background-color: #eaeaea;
     height: 26px;
     margin: 6px 0 10px 10px;
     width: 26px;
@@ -1048,6 +1055,7 @@ select.discountselect::-ms-expand {
 }
 .itemcategoryimagesrc {
     border: 1px solid #777777;
+    background-color: #eaeaea;
     height: 26px;
     margin: 6px 0 10px 10px;
     width: 49px;
@@ -1093,6 +1101,7 @@ select.discountselect::-ms-expand {
 }
 .specbannersrc {
     border: 1px solid #777777;
+    background-color: #eaeaea;
     color: #9f9f9f;
     font-size: 12px;
     font-style: italic;
@@ -1165,7 +1174,7 @@ select.itemdetailsoptions.missing_info {
 .itemoptionsarea {
     margin-top: 2px;
     margin-left: 9px;
-    max-height: 157px;
+    max-height: 250px;
     overflow-y: auto;
     width: 224px;
 }
@@ -1179,6 +1188,7 @@ select.itemdetailsoptions.missing_info {
     width: 26px;
 }
 .itemoptionimagelabel {
+    border: 1px solid #777777;
     font-size: 11px;
     font-weight: 600;
     height: 20px;
@@ -1576,9 +1586,13 @@ input.chargeperorder {
     border-bottom: 2px solid #4e4e4e;
     margin: 0 15px;
 }
+.popupimages_section.viewmode {
+    padding-bottom: 10px;
+    padding-top: 7px;
+}
 .replaceimage {
     float: right!important;
-    font-size: 12px;
+    font-size: 11px;
     color: #0000FF;
     margin-top: 7px;
 }
@@ -1603,7 +1617,8 @@ input.chargeperorder {
     cursor: pointer;
 }
 .emptyimage {
-    border: 1px dashed #4e4e4e;
+    background: #eaeaea;
+    border: 1px solid #d1d1d1;
     height: 100%;
     width: 100%;
 }
@@ -1623,6 +1638,9 @@ input.chargeperorder {
     height: 24px;
     line-height: 24px;
     margin-bottom: 5px;
+}
+.content-row .imagetitle.emptytitle {
+    color: #858585;
 }
 .content-row .imgsrcsize {
     height: 24px;
@@ -1838,4 +1856,73 @@ select.optimageorderinpt {
 .itemdetailsballonarea {
     font-size: 13px;
     max-width: 400px;
+}
+/*History */
+.itemdetails-history {
+    width: 100%;
+    background: #000048;
+    padding: 20px 16px 16px 16px;
+    border-radius: 0 0 5px 5px;
+    display: none;
+}
+.historydatahead {
+    background-color: #202044;
+    width: 100%;
+}
+.historydatahead div {
+    color: #ffffff;
+    height: 29px;
+    line-height: 29px;
+    font-size: 14px;
+    text-align: center;
+}
+.historydatahead .historydate {
+    width: 140px;
+}
+.historydatahead .historyuser {
+    width: 122px;
+}
+.historydatahead .historytext {
+    width: 997px;
+}
+.historydatalist {
+    background-color: #ffffff;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 563px;
+}
+.historydatarow {
+    width: 100%;
+}
+.historydatarow.newarticle {
+    border-top: 1px solid #000000;
+}
+.historydatarow > div {
+    height: 28px;
+    line-height: 28px;
+    font-size: 12px;
+    color: #000000;
+    text-align: center;
+}
+.historydatarow .historydate, .historydatarow .historyuser {
+    border-right: 1px solid #000000;
+}
+.historydatarow .historydate {
+    width: 140px;
+}
+.historydatarow .historydate span {
+    font-size: 10px;
+    font-style: italic;
+    color: #5f5f5f;
+}
+.historydatarow .historyuser {
+    width: 122px;
+}
+.historydatarow .historytext {
+    text-align: left;
+    padding-left: 5px;
+    width: 985px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
