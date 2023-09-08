@@ -1,6 +1,6 @@
 <div class="relievers_itemimages">
     <div class="sectionlabel">IMAGES & OPTIONS:</div>
-    <div class="sectionbody">
+    <div class="sectionbody <?=$missinfo==0 ? '' : 'missinginfo'?>">
         <div class="content-row">
             <div class="itemmainimagearea">
                 <div class="itemmainimagetitle">Main Image:</div>

@@ -76,11 +76,6 @@
     width: 384px;
 }
 input.itemname {
-/*    border: none!important;
-    height: 30px!important;
-    line-height: 30px!important;
-
- */
     width: 229px;
 }
 select.categoryitemselect {
@@ -159,11 +154,12 @@ select.categoryitemselect {
     margin-top: 5px;
     height: 25px;
     padding: 5px 13px 0 13px;
-    font-size: 15px;
-    color: #000000;
-    background: #ffffff;
-    border-radius : 9px 9px 0 0;
+    font-size: 14px;
+    color: #ffffff;
+    background: #bbbbbb;
+    border-radius: 9px 9px 0 0;
     margin-left: 10px;
+    cursor: pointer;
 }
 .itemdetails-tab.active {
      font-weight: 600;
@@ -176,93 +172,6 @@ select.categoryitemselect {
     padding: 7px 0;
     border-radius: 0 0 5px 5px;
 }
-/*
-.relieverdetails-left-header {
-    float: left;
-    margin-left: 8px;
-}
-.relieverdetails-left-header div {
-    float: left;
-}
-.itemnameview {
-    height: 37px;
-    border-radius: 4px;
-    background: #ffffff;
-    padding: 5px 7px;
-    width: 584px;
-    margin-right: 10px;
-}
-.itemnameview div {
-    width: 100%;
-    border: 1px solid #9f9f9f;
-    padding-left: 7px;
-    font-size: 18px;
-    font-weight: 600;
-}
-.itemnumberlabel {
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 600;
-    height: 37px;
-    line-height: 37px;
-    margin-right: 5px;
-}
-.itemnumberview {
-    background: #ffffff;
-    border-radius: 5px;
-    color: #000000;
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 37px;
-    height: 37px;
-    text-align: center;
-    width: 105px;
-}
-.relieverdetails-right-header {
-    float: right!important;
-    margin-right: 35px;
-}
-.relieverdetails-action {
-    background: #ffffff;
-    border-radius: 5px;
-    height: 52px;
-    line-height: 52px;
-    padding: 14px 0;
-}
-.relieverdetailseditbtn {
-    background: #cd00d5;
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 600;
-    height: 21px;
-    line-height: 21px;
-    margin: 0 27px;
-    text-align: center;
-    width: 68px;
-}
-.itemlistactivatetbtn {
-    background: #cd00d5;
-    color: #ffffff;
-    font-size: 14px;
-    height: 24px;
-    line-height: 24px!important;
-    padding-left: 13px;
-    padding-right: 13px;
-    border-radius: 9px;
-    cursor: pointer;
-}
-.itemlistsaveactionbtn {
-    background: #1B6633;
-    color: #ffffff;
-    font-size: 14px;
-    height: 24px;
-    line-height: 24px!important;
-    padding-left: 13px;
-    padding-right: 13px;
-    border-radius: 9px;
-    cursor: pointer;
-}
-*/
 /* Sections */
 .leftpartitembody {
     margin-left: 8px;
@@ -288,10 +197,14 @@ select.categoryitemselect {
     width: 100%;
 }
 .sectionbody {
+    border: 1px solid #000000;
     padding: 8px 8px 0 8px;
     background: #eaeaea;
     border-radius: 5px;
     width: 100%;
+}
+.sectionbody.missinginfo {
+    background: #ff78f1;
 }
 /* Key Info */
 .relievers_keyinfo {
@@ -315,6 +228,7 @@ select.categoryitemselect {
 }
 .itemparamvalue {
     border: 1px solid #9f9f9f;
+    background-color: #eaeaea;
     font-size: 12px;
     font-weight: 600;
     height: 22px;
@@ -323,10 +237,11 @@ select.categoryitemselect {
 }
 .itemparamvalue.editmode {
     border: none!important;
+    background-color: transparent;
 }
 .itemparamvalue.missing_info {
-    background: #ffc0cb;
-    border: 1px solid #FF0000;
+    /*background: #ffc0cb;
+    border: 1px solid #FF0000; */
 }
 .itemparamlabel.itemname {
     width: 69px;
@@ -356,8 +271,8 @@ select.keyinfodata {
     appearance: none; */
 }
 select.missing_info {
-    background-color: #ffc0cb!important;
-    border: 1px solid #FF0000!important;
+    /*background-color: #ffc0cb!important;
+    border: 1px solid #FF0000!important;*/
 }
 select.itemdetailsstatus {
     width: 67px;
@@ -379,11 +294,11 @@ input.iteminfoinput {
     padding-left: 5px;
 }
 .itemkeyinfoinput.missing_info {
-    background: #ffc0cb;
-    border: 1px solid #FF0000;
+    /*background: #ffc0cb;
+    border: 1px solid #FF0000;*/
 }
 .itemparamvalue.itemtemplate {
-    width: 156px;
+    width: 154px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -418,10 +333,10 @@ itemparamlabel.tags {
     width: 71px;
 }
 .itemparamvalue.subcategory {
-    width: 160px;
+    width: 158px;
 }
 select.itemsubcategory {
-    width: 167px;
+    width: 159px;
 }
 .itemparamlabel.itemsize, .itemparamlabel.itemmaterial {
     padding-right: 4px;
@@ -447,14 +362,16 @@ textarea.inputkeyinfotext {
     line-height: inherit;
     overflow-y: auto;
     resize: none;
+    background-color: #ffffff;
+    border: 1px solid #000000;
 }
 .inputkeyinfotext.missing_info {
-    background: #ffc0cb;
-    border: 1px solid #FF0000;
+    /*background: #ffc0cb;
+    border: 1px solid #FF0000;*/
 }
 textarea.itemdescription {
     height: 70px;
-    width: 232px;
+    width: 225px;
 }
 .sectionseparator {
     border-top: 1.5px solid #000000;
@@ -502,9 +419,11 @@ textarea.itemdescription {
     width: 17px;
 }
 .itemparamvalue.similarname {
-    width: 215px;
+    width: 213px;
 }
 select.similaritems {
+    background-color: #ffffff;
+    border: 1px solid #000000;
     height: 22px;
     line-height: 22px;
     width: 210px;
@@ -524,6 +443,9 @@ select.similaritems {
     padding: 8px 0 8px 8px;
     width: 100%;
 }
+.vendormainbody.missinginfo {
+    background: #ff78f1;
+}
 .vendormainbody .content-row {
     margin-bottom: 8px;
 }
@@ -534,12 +456,6 @@ select.similaritems {
 .itemparamvalue.vendorname {
     width: 162px;
 }
-/*select.vendordatainpt {
-    height: 22px;
-    line-height: 22px;
-    margin-left: -5px;
-    padding-left: 5px;
-}*/
 select.vendornameinp {
     border: 1px solid #000000;
     background-color: #ffffff;
@@ -561,6 +477,8 @@ select.vendornameinp {
     width: 47px;
 }
 input.vendordatainpt {
+    border: 1px solid #000;
+    background-color: #ffffff;
     margin-left: -5px;
     padding-left: 5px;
     height: 22px;
@@ -587,8 +505,8 @@ select.printshopitemselect {
     width: 200px!important;
 }
 input.vendordatainpt.missing_info {
-    background: #ffc0cb;
-    border: 1px solid #FF0000;
+    /*background: #ffc0cb;
+    border: 1px solid #FF0000;*/
 }
 .vendorshipstate {
     margin-left: 7px;
@@ -644,6 +562,9 @@ textarea.ponotedata {
     padding: 8px 0;
     margin-top: 26px;
 }
+.relievers_vendorprices.missinginfo {
+    background: #ff78f1;
+}
 .vendorqtypricesarea {
     border-right: 1px solid #9f9f9f;
     width: 460px;
@@ -675,6 +596,7 @@ textarea.ponotedata {
 }
 .vendorqtypriceqty, .vendorqtypriceval {
     border: 1px solid #6c6c7d;
+    background-color: #eaeaea;
     height: 20px;
     line-height: 20px;
     font-size: 12px;
@@ -685,6 +607,7 @@ textarea.ponotedata {
 }
 .vendorqtypriceqty.editmode, .vendorqtypriceval.editmode {
     border: none;
+    background-color: transparent;
 }
 input.vendordatainpt {
     width: 100%;
@@ -694,6 +617,8 @@ input.vendordatainpt {
     font-weight: normal;
 }
 input.vendordatapriceinpt {
+    border: 1px solid #000000;
+    background-color: #ffffff;
     width: 100%;
     height: 20px;
     line-height: 20px;
@@ -701,6 +626,8 @@ input.vendordatapriceinpt {
     font-weight: normal;
 }
 input.vendorpriceinpt {
+    border: 1px solid #000000;
+    background-color: #ffffff;
     width: 100%;
     height: 20px;
     line-height: 20px;
@@ -724,6 +651,7 @@ input.vendorpriceinpt {
 }
 .vendorextrapricevalue {
     border: 1px solid #6c6c7d;
+    background-color: #eaeaea;
     font-weight: 600;
     height: 20px;
     line-height: 20px;
@@ -731,6 +659,7 @@ input.vendorpriceinpt {
 }
 .vendorextrapricevalue.editmode {
     border: none;
+    background-color: transparent;
 }
 .vendorextraprice.repeatsetup {
     width: 40px;
@@ -747,11 +676,12 @@ input.vendorpriceinpt {
     width: 42px;
 }
 .vendorrushtitle {
-    font-size: 12px;
+    font-size: 11px;
     margin-bottom: 8px;
 }
 .vendorrushterm {
     border: 1px solid #6c6c7d;
+    background-color: #eaeaea;
     height: 21px;
     line-height: 21px;
     text-align: center;
@@ -761,6 +691,7 @@ input.vendorpriceinpt {
 }
 .vendorrushterm.editmode {
     border: none;
+    background-color: transparent;
 }
 .vendorrushtermtitle {
     font-size: 9px;
@@ -771,6 +702,7 @@ input.vendorpriceinpt {
 }
 .vendorrushprice {
     border: 1px solid #6c6c7d;
+    background-color: #eaeaea;
     height: 21px;
     line-height: 21px;
     width: 37px;
@@ -780,6 +712,7 @@ input.vendorpriceinpt {
 }
 .vendorrushprice.editmode {
     border: none;
+    background-color: transparent;
 }
 .vendorpantonearea {
     margin-left: 3px;
@@ -796,6 +729,7 @@ input.vendorpriceinpt {
 }
 .vendorpantoneprice {
     border: 1px solid #6c6c7d;
+    background-color: #eaeaea;
     font-size: 12px;
     font-weight: 600;
     height: 20px;
@@ -806,6 +740,7 @@ input.vendorpriceinpt {
 }
 .vendorpantoneprice.editmode {
     border: none;
+    background-color: transparent;
 }
 /*Pricing */
 .relievers_itemprices {
@@ -843,7 +778,8 @@ input.vendorpriceinpt {
     width: 47px;
 }
 .itemprice_qtyarea {
-    border-bottom: 1px solid #363636;
+    border-bottom: 1.5px solid #363636;
+    padding-bottom: 3px;
 }
 .itemprice_qty {
     font-size: 12px;
@@ -889,9 +825,15 @@ select.discountselect {
     width: 100%;
     height: 20px;
     line-height: 20px;
-    border: 1px solid #9f9f9f;
+    border: 1px solid #000000;
+    background-color: #ffffff;
     -webkit-appearance: none;
     appearance: none;
+}
+select.discountselect:disabled {
+    border: 1px solid #9f9f9f;
+    background-color: #eaeaea;
+    opacity: 1;
 }
 select.discountselect::-ms-expand {
     display: none;
@@ -904,6 +846,7 @@ select.discountselect::-ms-expand {
 }
 .itemprice_new {
     border: 1px solid #9f9f9f;
+    background-color: #eaeaea;
     font-size: 12px;
     font-weight: 600;
     height: 20px;
@@ -939,9 +882,11 @@ select.discountselect::-ms-expand {
     margin-bottom: 5px;
     text-align: center;
     width: 35px;
+    background-color: #eaeaea;
 }
 .itemprice_extraprice.editmode {
     border: none;
+    background-color: transparent;
 }
 .itemprice_extraprice, .itemprice_extrasale {
     border: 1px solid #9f9f9f;
@@ -968,6 +913,7 @@ select.discountselect::-ms-expand {
     margin-bottom: 5px;
     text-align: center;
     width: 39px;
+    background-color: #eaeaea;
 }
 .itemprice_rushprice, .itemprice_rushsale {
     border: 1px solid #9f9f9f;
@@ -991,12 +937,15 @@ select.discountselect::-ms-expand {
     margin-bottom: 5px;
     text-align: center;
     width: 35px;
+    background-color: #eaeaea;
 }
 .itemprice_pantoneprice.editmode {
     border: none;
+    background-color: transparent;
 }
 .itemprice_rushprice.editmode {
     border: none;
+    background-color: transparent;
 }
 .itemprice_pantoneprice, .itemprice_pantonesale {
     border: 1px solid #9f9f9f;
@@ -1063,6 +1012,10 @@ select.discountselect::-ms-expand {
     background-color: #86ff80;
     color: #000000;
 }
+.itemprice_profitperc.dark_green {
+    background-color: #17ef00;
+    color: #000000;
+}
 .itemprice_profitpantonearea {
     padding-left: 10px;
     width: 46px;
@@ -1084,6 +1037,7 @@ select.discountselect::-ms-expand {
 }
 .itemmainimagesrc {
     border: 1px solid #777777;
+    background-color: #eaeaea;
     height: 26px;
     margin: 6px 0 10px 10px;
     width: 26px;
@@ -1101,6 +1055,7 @@ select.discountselect::-ms-expand {
 }
 .itemcategoryimagesrc {
     border: 1px solid #777777;
+    background-color: #eaeaea;
     height: 26px;
     margin: 6px 0 10px 10px;
     width: 49px;
@@ -1146,6 +1101,7 @@ select.discountselect::-ms-expand {
 }
 .specbannersrc {
     border: 1px solid #777777;
+    background-color: #eaeaea;
     color: #9f9f9f;
     font-size: 12px;
     font-style: italic;
@@ -1181,7 +1137,8 @@ select.discountselect::-ms-expand {
     width: 69px;
 }
 select.itemdetailsoptions {
-    border: 1px solid #777777;
+    border: 1px solid #000000;
+    background-color: #ffffff;
     height: 20px;
     line-height: 20px;
     -webkit-appearance: none;
@@ -1190,9 +1147,14 @@ select.itemdetailsoptions {
     padding-left: 5px;
     width: 100%;
 }
+select.itemdetailsoptions:disabled {
+    border: 1px solid #777777;
+    background-color: #eaeaea;
+    opacity: 1;
+}
 select.itemdetailsoptions.missing_info {
-    background: #ffc0cb;
-    border: 1px solid #FF0000;
+    /* background: #ffc0cb;
+    border: 1px solid #FF0000; */
 }
 .itemoptioncheck {
     margin-left: 14px;
@@ -1212,7 +1174,7 @@ select.itemdetailsoptions.missing_info {
 .itemoptionsarea {
     margin-top: 2px;
     margin-left: 9px;
-    max-height: 157px;
+    max-height: 250px;
     overflow-y: auto;
     width: 224px;
 }
@@ -1226,6 +1188,7 @@ select.itemdetailsoptions.missing_info {
     width: 26px;
 }
 .itemoptionimagelabel {
+    border: 1px solid #777777;
     font-size: 11px;
     font-weight: 600;
     height: 20px;
@@ -1249,7 +1212,7 @@ select.itemdetailsoptions.missing_info {
 }
 .relievers_customisation .sectionbody {
     padding: 10px 0 0 0;
-    height: 361px;
+    height: 358px;
 }
 .itemvendorfilebtn {
     background: url(/img/itemdetails/vector_file_btn.png) no-repeat;
@@ -1414,11 +1377,14 @@ input.locationsize {
     width: 424px
 }
 .sectionbody.metasection {
-    height: 360px;
+    height: 357px;
 }
 .itemparamvalue.metatitle {
     margin-bottom: 8px;
     width: 404px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 .itemparamvalue.metadescription {
     height: 57px;
@@ -1431,7 +1397,7 @@ input.locationsize {
 }
 .itemparamvalue.itemurl {
     margin-left: 12px;
-    width: 192px;
+    width: 190px;
 }
 .itemparamvalue.metakeywords {
     clear: both;
@@ -1620,9 +1586,13 @@ input.chargeperorder {
     border-bottom: 2px solid #4e4e4e;
     margin: 0 15px;
 }
+.popupimages_section.viewmode {
+    padding-bottom: 10px;
+    padding-top: 7px;
+}
 .replaceimage {
     float: right!important;
-    font-size: 12px;
+    font-size: 11px;
     color: #0000FF;
     margin-top: 7px;
 }
@@ -1647,7 +1617,8 @@ input.chargeperorder {
     cursor: pointer;
 }
 .emptyimage {
-    border: 1px dashed #4e4e4e;
+    background: #eaeaea;
+    border: 1px solid #d1d1d1;
     height: 100%;
     width: 100%;
 }
@@ -1667,6 +1638,9 @@ input.chargeperorder {
     height: 24px;
     line-height: 24px;
     margin-bottom: 5px;
+}
+.content-row .imagetitle.emptytitle {
+    color: #858585;
 }
 .content-row .imgsrcsize {
     height: 24px;
@@ -1874,4 +1848,81 @@ select.optimageorderinpt {
 .itemimagecaption.optimage {
     margin-top: 0;
     margin-bottom: 7px;
+}
+/* Ballon Popup */
+.itemdetailsballonbox {
+    font-size: 13px;
+}
+.itemdetailsballonarea {
+    font-size: 13px;
+    max-width: 400px;
+}
+/*History */
+.itemdetails-history {
+    width: 100%;
+    background: #000048;
+    padding: 20px 16px 16px 16px;
+    border-radius: 0 0 5px 5px;
+    display: none;
+}
+.historydatahead {
+    background-color: #202044;
+    width: 100%;
+}
+.historydatahead div {
+    color: #ffffff;
+    height: 29px;
+    line-height: 29px;
+    font-size: 14px;
+    text-align: center;
+}
+.historydatahead .historydate {
+    width: 140px;
+}
+.historydatahead .historyuser {
+    width: 122px;
+}
+.historydatahead .historytext {
+    width: 997px;
+}
+.historydatalist {
+    background-color: #ffffff;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 563px;
+}
+.historydatarow {
+    width: 100%;
+}
+.historydatarow.newarticle {
+    border-top: 1px solid #000000;
+}
+.historydatarow > div {
+    height: 28px;
+    line-height: 28px;
+    font-size: 12px;
+    color: #000000;
+    text-align: center;
+}
+.historydatarow .historydate, .historydatarow .historyuser {
+    border-right: 1px solid #000000;
+}
+.historydatarow .historydate {
+    width: 140px;
+}
+.historydatarow .historydate span {
+    font-size: 10px;
+    font-style: italic;
+    color: #5f5f5f;
+}
+.historydatarow .historyuser {
+    width: 122px;
+}
+.historydatarow .historytext {
+    text-align: left;
+    padding-left: 5px;
+    width: 985px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

@@ -15,6 +15,67 @@ var addtemp= '<div class="qq-uploader"><div class="custom_upload qq-upload-butto
     '<div class="clear"></div></div>';
 
 function init_relievitemdetails_view(item) {
+    $(".itemdetails-tab").unbind('click').click(function (){
+        var tabview=$(this).data('tabview');
+        $(".itemdetails-tab").removeClass('active');
+        $(this).addClass('active');
+        if (tabview=='infoarea') {
+            $(".itemdetails-history").hide();
+            $(".itemdetails-infoarea").show();
+        } else if (tabview=='history') {
+            $(".itemdetails-infoarea").hide();
+            $(".itemdetails-history").show();
+        }
+    })
+    $(".itemimagepreview").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        var url = '/sritemdetails/sritem_images_view';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#imageoptionsbackground").show();
+                $("#itemImagesModalLabel").empty().html(response.data.header);
+                $("#itemImagesModal").find('div.modal-body').empty().html(response.data.content);
+                $("#itemImagesModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#itemImagesModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                    $("#imageoptionsbackground").hide();
+                    // show new images
+                })
+                $(".addimages-slide-list").cycle({
+                    fx: 'carousel',
+                    allowWrap: false,
+                    manualSpeed: 600,
+                    timeout : 0,
+                    slides: '> div',
+                    next : '#nextaddimageslider',
+                    prev : '#prevaddimageslider',
+                });
+                $(".optimages-slide-list").cycle({
+                    fx: 'carousel',
+                    allowWrap: false,
+                    manualSpeed: 600,
+                    timeout : 0,
+                    slides: '> div',
+                    next : '#nextcolorimageslider',
+                    prev : '#prevcolorimageslider',
+                });
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Open AI file
+    $(".itemvendorfilebtn.vectorfile").unbind('click').click(function(){
+        var url = $(this).data('file');
+        // window.openai(url, 'AI Template');
+        openai(url,'vector_file.ai');
+    });
+    // Open Print Location View
+    $(".printlocexample").unbind('click').click(function () {
+        var url = $(this).data('link');
+        window.open(url, 'Print Location','left=120,top=120,width=600,height=600');
+    });
     $(".edit_itemdetails").unbind('click').click(function () {
         var params=new Array();
         params.push({name: 'item_id', value: item});
@@ -289,8 +350,27 @@ function init_relievitemdetails_edit() {
                 $("#itemImagesModal").modal({backdrop: 'static', keyboard: false, show: true});
                 $("#itemImagesModal").on('hidden.bs.modal', function (e) {
                     $(document.body).addClass('modal-open');
+                    $("#imageoptionsbackground").hide();
                     // show new images
                 })
+                $(".addimages-slide-list").cycle({
+                    fx: 'carousel',
+                    allowWrap: false,
+                    manualSpeed: 600,
+                    timeout : 0,
+                    slides: '> div',
+                    next : '#nextaddimageslider',
+                    prev : '#prevaddimageslider',
+                });
+                $(".optimages-slide-list").cycle({
+                    fx: 'carousel',
+                    allowWrap: false,
+                    manualSpeed: 600,
+                    timeout : 0,
+                    slides: '> div',
+                    next : '#nextcolorimageslider',
+                    prev : '#prevcolorimageslider',
+                });
                 init_relievitemimages_edit();
             } else {
                 show_error(response);

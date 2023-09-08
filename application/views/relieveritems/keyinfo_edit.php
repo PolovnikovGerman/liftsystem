@@ -1,6 +1,6 @@
 <div class="relievers_keyinfo">
     <div class="sectionlabel">Key Info:</div>
-    <div class="sectionbody keyinfosection">
+    <div class="sectionbody keyinfosection <?=$missinfo==0 ? '' : 'missinginfo'?>">
         <div class="content-row">
             <div class="itemparamlabel itemname">Item Name:</div>
             <div class="itemparamvalue editmode itemname">
