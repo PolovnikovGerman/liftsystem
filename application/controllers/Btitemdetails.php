@@ -549,7 +549,11 @@ class Btitemdetails extends MY_Controller
                     $images = $sessiondata['images'];
                     $colors = $sessiondata['colors'];
                     $otherimages = $this->load->view('btitems/otherimages_view',['images' => $images, 'imgcnt' => count($images)],TRUE);
-                    $optionsimg = $this->load->view('btitems/optionimages_view',['colors' => $colors,'item' => $item],TRUE);
+                    if (empty($data['item']['printshop_inventory_id'])) {
+                        $optionsimg = $this->load->view('btitems/optionimages_view',['colors' => $colors,'item' => $item],TRUE);
+                    } else {
+                        $optionsimg = $this->load->view('btitems/printshopcolors_view',['colors' => $colors,'item' => $item],TRUE);
+                    }
                     $imagesoptions = [
                         'otherimages' => $otherimages,
                         'optionsimg' => $optionsimg,
