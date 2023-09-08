@@ -6,7 +6,7 @@
         <div class="locationplace"><?=$location['item_inprint_size']?></div>
         <div class="locationview">
             <?php if (!empty($location['item_inprint_view'])) { ?>
-                <div data-link="<?=$location['item_inprint_view']?>">
+                <div data-link="<?=$location['item_inprint_view']?>" style="width: 100%">
                     <i class="fa fa-search"></i>
                 </div>
             <?php } ?>

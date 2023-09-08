@@ -20,7 +20,7 @@
                 <select class="vendoritemcountyinp <?=empty($vendor_item['item_shipcountry']) ? 'missing_info' : ''?>" data-item="item_shipcountry">
                     <option value=""></option>
                     <?php foreach ($countries as $country) { ?>
-                        <option value="<?=$country['country_id']?>" <?=$country['country_id']==$vendor_item['item_shipcountry'] ? 'selected="selected"' : ''?>><?=$country['country_iso_code_2']?></option>
+                        <option value="<?=$country['country_id']?>" <?=$country['country_id']==$vendor_item['item_shipcountry'] ? 'selected="selected"' : ''?>><?=$country['country_iso_code_3']?> <?=$country['country_name']?></option>
                     <?php } ?>
                 </select>
             </div>

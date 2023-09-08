@@ -474,7 +474,7 @@ select.vendornameinp {
 }
 .itemparamvalue.vendorzip {
     margin-left: 7px;
-    width: 47px;
+    width: 61px;
 }
 input.vendordatainpt {
     border: 1px solid #000;
@@ -509,7 +509,7 @@ input.vendordatainpt.missing_info {
     border: 1px solid #FF0000;*/
 }
 .vendorshipstate {
-    margin-left: 7px;
+    margin-left: 5px;
     height: 23px;
     line-height: 23px;
     font-size: 12px;
@@ -1141,8 +1141,8 @@ select.itemdetailsoptions {
     background-color: #ffffff;
     height: 20px;
     line-height: 20px;
-    -webkit-appearance: none;
-    appearance: none;
+/*    -webkit-appearance: none;
+    appearance: none;*/
     margin-left: -5px;
     padding-left: 5px;
     width: 100%;
@@ -1174,7 +1174,7 @@ select.itemdetailsoptions.missing_info {
 .itemoptionsarea {
     margin-top: 2px;
     margin-left: 9px;
-    max-height: 250px;
+    max-height: 192px;
     overflow-y: auto;
     width: 224px;
 }
@@ -1292,7 +1292,7 @@ input.printlocationinpt {
     line-height: 18px;
 }
 input.locname {
-    width: 140px;
+    width: 121px;
 }
 input.locationsize {
     width: 110px;
@@ -1324,13 +1324,17 @@ input.locationsize {
     text-overflow: ellipsis;
 }
 .locationdeleterow {
-    width: 20px;
+    width: 16px;
     text-align: center;
     cursor: pointer;
 }
 .locationnumber {
     width: 20px;
     text-align: right;
+}
+.locationnumber.editmode {
+    width: 17px;
+    margin-right: 4px;
 }
 .locationnameview {
     border-right: 1px solid #000000;
@@ -1340,10 +1344,11 @@ input.locationsize {
 .locationname {
     padding-left: 8px;
     width: 160px;
+    border-right: 1px solid #000000;
 }
 .locationname.editmode {
     padding-left: 0;
-    width: 143px;
+    width: 123px;
 }
 .locationplace {
     padding-left: 8px;
@@ -1358,9 +1363,10 @@ input.locationsize {
     text-align: center;
     font-size: 16px;
     font-weight: normal;
+    width: 42px;
 }
 .printimageview, .printimagedel {
-    width: 22px;
+    width: 21px;
     text-align: center;
     cursor: pointer;
 }
@@ -1391,6 +1397,7 @@ input.locationsize {
     margin-bottom: 8px;
     overflow: hidden;
     width: 203px;
+    line-height: 18px;
 }
 .itemparamlabel.itemurl {
     margin-left: 136px;
@@ -1405,6 +1412,7 @@ input.locationsize {
     margin-bottom: 8px;
     overflow: hidden;
     width: 203px;
+    line-height: 18px;
 }
 .itemparamvalue.itemkeywords {
     clear: both;
@@ -1412,6 +1420,7 @@ input.locationsize {
     margin-bottom: 8px;
     overflow: hidden;
     width: 203px;
+    line-height: 18px;
 }
 input.metatitle {
     width: 404px;
@@ -1423,7 +1432,15 @@ textarea.metadescription, textarea.metakeywords, textarea.itemkeywords {
 input.metaurl {
     width: 192px;
 }
-
+textarea.metadescription {
+    height: 73px;
+}
+textarea.metakeywords {
+    height: 76px;
+}
+textarea.itemkeywords {
+    height: 79px;
+}
 /* Shipping */
 .itemshippingarea {
     background: #000048;
@@ -1442,8 +1459,10 @@ input.metaurl {
     padding: 8px 6px 6px 6px;
 }
 .itemparamlabel.itemweigth {
-    margin-left: 36px;
     margin-right: 3px;
+    width: 40px;
+    line-height: 12px!important;
+    font-size: 11px;
 }
 .itemparamvalue.itemweigth {
     width: 40px;
@@ -1471,10 +1490,9 @@ input.box_width, input.box_length, input.box_height {
     text-align: left;
 }
 .itemboxdataarea {
-    margin-top: 4px;
-    width: 100%;
+    width: 62px;
     border-right: 2px solid #464646;
-    min-height: 90px;
+    height: 29px;
 }
 .itemboxdataarea .content-row {
     margin-bottom: 7px;
@@ -1496,9 +1514,9 @@ input.box_width, input.box_length, input.box_height {
     width: 100%;
 }
 .itemdimensionsdataarea {
-    margin-top: 4px;
+    /* margin-top: 4px;*/
     padding-left: 8px;
-    width: 100%;
+    /* width: 100%; */
 }
 .itemdimensionsdataarea .content-row {
     margin-bottom: 7px;
@@ -1514,11 +1532,12 @@ input.box_width, input.box_length, input.box_height {
 }
 .itemparamlabel.specialeach {
     line-height: 12px;
-    margin-right: 3px;
-    width: 42px;
+    margin-right: 5px;
+    width: 40px;
+    font-size: 11px;
 }
 .itemparamvalue.specialeach {
-    margin-right: 10px;
+    /* margin-right: 10px; */
     width: 36px;
 }
 input.chargepereach {
@@ -1668,6 +1687,8 @@ input.chargeperorder {
     left: 78px;
 }
 input.itemimagecaption {
+    border: 1px solid #000000;
+    background-color: #ffffff;
     height: 20px;
     line-height: 20px;
     margin-top: 6px;
@@ -1733,14 +1754,32 @@ input.itemimagecaption {
     margin-right: 14px;
     display: inline-block;
 }
+.addimages-slide-item .imgsrcsize {
+    height: 20px;
+    line-height: 20px;
+    font-size: 10px;
+    margin-left: 6px;
+}
 .replaseadditems, .replaseoptionitems {
     float: right!important;
     text-align: right!important;
     color: #0000FF;
+    height: 17px;
 }
 .slide-title {
     font: bold 16px monospace;
     display: block;
+}
+.replaseadditems .qq-upload-button, .replaseoptionitems .qq-upload-button, .replaceimage .qq-upload-button {
+    background-image: none!important;
+    color: #0000FF;
+    height: 16px!important;
+    text-align: center;
+    font-size: 10px;
+    background-color: transparent!important;
+    margin-left: 0;
+    width: auto!important;
+    line-height: 18px;
 }
 .cas-arrows {
     position: absolute;
@@ -1785,14 +1824,54 @@ input.itemimagecaption {
     width: 100%;
     height: auto;
 }
+.removeimagefull.optimage {
+    position: relative;
+    left: 108px;
+    top: -123px;
+    z-index: 10;
+    background: #000;
+    color: #fff;
+    height: 16px;
+    width: 16px;
+    text-align: center;
+    line-height: 16px;
+    cursor: pointer;
+}
+/* Upload Button */
+.addimageslider .qq-upload-button,
+.addoptionimageslider .qq-upload-button,
+#uploadmainimage .qq-upload-button,
+#uploadtopbannerimage .qq-upload-button,
+#uploadcategoryimage .qq-upload-button
+{
+    background-color: transparent!important;
+    color: #9f9f9f;
+    font-size: 15px;
+    width: auto!important;
+    top: 51px;
+    left: 16px;
+}
+#uploadmainimage .qq-upload-button {
+    top: 0px;
+}
+#uploadtopbannerimage .qq-upload-button {
+    top: 0px;
+    left: 151px;
+}
+#uploadcategoryimage .qq-upload-button {
+    top: 0;
+    left: 78px;
+}
 .cas-arrows.disabled {
     cursor: default;
     opacity: 0.4;
 }
 .imageorder {
+    margin-top: 3px;
     width: 30px;
 }
 select.imageorderinpt {
+    margin-top: 3px;
     width: 100%;
     -webkit-appearance: none;
     appearance: none;
@@ -1800,12 +1879,14 @@ select.imageorderinpt {
     line-height: 20px;
     background: #fff;
     text-align: center;
+    border: 1px solid #000000;
 }
 .imagecaption {
+    margin-top: 3px;
     width: 95px;
 }
 .itemimagecaption.addimage {
-    margin-top: 0;
+    margin-top: 3px;
     margin-bottom: 7px;
 }
 /* Add Slider*/
@@ -1840,14 +1921,24 @@ select.optimageorderinpt {
     width: 100%;
     -webkit-appearance: none;
     appearance: none;
-    height: 20px;
+    height: 24px;
     line-height: 20px;
     background: #fff;
+    border: 1px solid #000000;
     text-align: center;
 }
 .itemimagecaption.optimage {
     margin-top: 0;
     margin-bottom: 7px;
+}
+select.itemimagecaptionselect {
+    height: 24px;
+    line-height: 20px;
+    margin-bottom: 13px;
+    padding-left: 5px;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #000000;
 }
 /* Ballon Popup */
 .itemdetailsballonbox {

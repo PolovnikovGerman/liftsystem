@@ -24,13 +24,9 @@
                 <?php } else { ?>
                     <img src="<?=$color['item_color_image']?>">
                 <?php } ?>
-                <?php if (empty($inventory)) { ?>
-                        <!-- && !empty($color['item_color']) -->
-
-                    <div class="<?=empty($color['item_color_image']) ? 'removeimage' : 'removeimagefull'?> <?=$image==0 ? 'sideright' : '' ?> optimage" data-image="<?=$color['item_color_id']?>">
-                        <i class="fa fa-trash"></i>
-                    </div>
-                <?php } ?>
+                <div class="<?=empty($color['item_color_image']) ? 'removeimage' : 'removeimagefull'?> <?=$image==0 ? 'sideright' : '' ?> optimage" data-image="<?=$color['item_color_id']?>">
+                    <i class="fa fa-trash"></i>
+                </div>
             </div>
             <div class="content-row">
                 <div class="imageorder">

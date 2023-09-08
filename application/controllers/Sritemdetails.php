@@ -306,7 +306,7 @@ class Sritemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $sessiondata = usersession($session);
-                    $images = $sessiondata['images'];
+                    $images = $sessiondata['popup_images'];
                     $cntimages = count($images);
                     $mdata['content'] = $this->load->view('relieveritems/popup_addimageslder_edit',['images' => $images,'cntimages'=>$cntimages], TRUE);
                 }
@@ -329,7 +329,7 @@ class Sritemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $sessiondata = usersession($session);
-                    $images = $sessiondata['images'];
+                    $images = $sessiondata['popup_images'];
                     $numimgs = count($images);
                     $mdata['content'] = $this->load->view('relieveritems/popup_addimageslder_edit',['images' => $images, 'cntimages' => $numimgs], TRUE);
                 }
@@ -352,7 +352,7 @@ class Sritemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $sessiondata = usersession($session);
-                    $images = $sessiondata['images'];
+                    $images = $sessiondata['popup_images'];
                     $numimgs = count($images);
                     $mdata['content'] = $this->load->view('relieveritems/popup_addimageslder_edit',['images' => $images, 'cntimages' => $numimgs], TRUE);
                 }
@@ -375,7 +375,7 @@ class Sritemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $sessiondata = usersession($session);
-                    $images = $sessiondata['images'];
+                    $images = $sessiondata['popup_images'];
                     $numimgs = count($images);
                     $mdata['content'] = $this->load->view('relieveritems/popup_addimageslder_edit',['images' => $images, 'cntimages' => $numimgs], TRUE);
                 }
@@ -417,8 +417,15 @@ class Sritemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $sessiondata = usersession($session);
-                    $images = $sessiondata['option_images'];
-                    $mdata['content'] = $this->load->view('relieveritems/popup_optionimageslider_edit',['images' => $images,'cntimages' => count($images)], TRUE);
+                    $colors = $sessiondata['popup_colors'];
+                    $item = $sessiondata['item'];
+                    $options = [
+                        'colors' => $colors,
+                        'cntimages' => count($colors),
+                        'image' => $item['option_images'],
+                        'inventory' => $item['printshop_inventory_id']
+                    ];
+                    $mdata['content'] = $this->load->view('relieveritems/popup_optionimageslider_edit',$options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -439,8 +446,15 @@ class Sritemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $sessiondata = usersession($session);
-                    $images = $sessiondata['option_images'];
-                    $mdata['content'] = $this->load->view('relieveritems/popup_optionimageslider_edit',['images' => $images,'cntimages' => count($images)], TRUE);
+                    $colors = $sessiondata['popup_colors'];
+                    $item = $sessiondata['item'];
+                    $options = [
+                        'colors' => $colors,
+                        'cntimages' => count($colors),
+                        'image' => $item['option_images'],
+                        'inventory' => $item['printshop_inventory_id']
+                    ];
+                    $mdata['content'] = $this->load->view('relieveritems/popup_optionimageslider_edit',$options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -461,8 +475,15 @@ class Sritemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $sessiondata = usersession($session);
-                    $images = $sessiondata['option_images'];
-                    $mdata['content'] = $this->load->view('relieveritems/popup_optionimageslider_edit',['images' => $images,'cntimages' => count($images)], TRUE);
+                    $colors = $sessiondata['popup_color'];
+                    $item = $sessiondata['item'];
+                    $options = [
+                        'colors' => $colors,
+                        'cntimages' => count($colors),
+                        'image' => $item['option_images'],
+                        'inventory' => $item['printshop_inventory_id']
+                    ];
+                    $mdata['content'] = $this->load->view('relieveritems/popup_optionimageslider_edit',$options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -483,8 +504,15 @@ class Sritemdetails extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $sessiondata = usersession($session);
-                    $images = $sessiondata['option_images'];
-                    $mdata['content'] = $this->load->view('relieveritems/popup_optionimageslider_edit',['images' => $images,'cntimages' => count($images)], TRUE);
+                    $colors = $sessiondata['popup_colors'];
+                    $item = $sessiondata['item'];
+                    $options = [
+                        'colors' => $colors,
+                        'cntimages' => count($colors),
+                        'image' => $item['option_images'],
+                        'inventory' => $item['printshop_inventory_id']
+                    ];
+                    $mdata['content'] = $this->load->view('relieveritems/popup_optionimageslider_edit',$options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -533,7 +561,7 @@ class Sritemdetails extends MY_Controller
                         'otherimages' => $otherimages,
                         'optionsimg' => $optionsimg,
                         'item' => $item,
-                        // 'missinfo' => $missinfo['imagescolors'],
+                        'missinfo' => $res['missinfo'],
                     ];
                     $mdata['content'] = $this->load->view('relieveritems/images_edit',$imagesoptions, TRUE);
                     $error = '';
