@@ -635,7 +635,7 @@ class Btitemdetails_model extends MY_Model
         $numorder = 1;
         foreach ($colors as $color) {
             if (!empty($item['printshop_inventory_id'])) {
-                $newcolors = $color;
+                $newcolors[] = $color;
             } else {
                 if (empty($color['item_color'])) {
                     if ($color['item_color_id'] > 0) {
