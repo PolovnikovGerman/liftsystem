@@ -235,7 +235,7 @@ Class Leadorder_model extends My_Model {
         foreach ($res as $row) {
             $this->db->select('order_proj_status as artstage')->from('v_order_artstage')->where('order_id', $row['order_id']);
             $art = $this->db->get()->row_array();
-            $row['artstage'] = ''; // ifset($art,'artstage','');
+            $row['artstage'] = ifset($art,'artstage','');
             $row['itemcolorclass']='';
             if (strlen($row['itemcolor'])>9) {
                 $row['itemcolorclass']='wide';
