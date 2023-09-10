@@ -158,7 +158,7 @@ Class Leadorder_model extends My_Model {
         // $this->db->select("coalesce(oa.cnt_amnt,0)  as cnt_amnt",FALSE);
         $this->db->select('u.user_leadname, u.user_name, bil.customer_ponum');
         $this->db->select('itm.item_number, coalesce(st.item_id, 0) as stok_item', FALSE);
-        $this->db->select('vo.order_proj_status as artstage');
+        // $this->db->select('vo.order_proj_status as artstage');
         $this->db->select('s.order_shipping_id, s.shipdate');
         $this->db->select('totalpack.cnt as totalpacks, sendpack.cnt as sendpacks, sendpack.delivdate, sendpack.packsenddate');
         $this->db->select('sendpack.packtrackdate, delivpack.cnt as delivpacks');
@@ -174,7 +174,7 @@ Class Leadorder_model extends My_Model {
         $this->db->join("({$sendpack}) as sendpack",'sendpack.order_id=o.order_id','left');
         $this->db->join("({$delivpack}) as delivpack",'delivpack.order_id=o.order_id','left');
         // $this->db->where('o.is_canceled',0);
-        $this->db->join('v_order_artstage vo','vo.order_id=o.order_id','left');
+        // $this->db->join('v_order_artstage vo','vo.order_id=o.order_id','left');
         if (isset($options['unassigned'])) {
             $this->db->where('o.order_usr_repic is null');
         }
@@ -233,6 +233,9 @@ Class Leadorder_model extends My_Model {
         $curdat='';
         $ordidx=1;
         foreach ($res as $row) {
+            $this->db->select('order_proj_status as artstage')->from('v_order_artstage')->where('order_id', $row['order_id']);
+            $art = $this->db->get()->row_array();
+            $row['artstage'] = ifset($art,'artstage','');
             $row['itemcolorclass']='';
             if (strlen($row['itemcolor'])>9) {
                 $row['itemcolorclass']='wide';
