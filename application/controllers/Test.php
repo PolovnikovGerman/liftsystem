@@ -2354,10 +2354,9 @@ class Test extends CI_Controller
         $this->db->join('sb_vendor_items v','v.vendor_item_id=i.vendor_item_id');
         $this->db->where('v.vendor_item_vendor', $this->config->item('inventory_vendor'));
         $items = $this->db->get()->result_array();
-        var_dump($items);die();
         foreach ($items as $item) {
             echo $item['item_number'].' '.$item['item_name'].' INV '.$item['printshop_inventory_id'].PHP_EOL;
-            // if (empty($item['printshop_inventory_id'])) {
+            if (empty($item['printshop_inventory_id'])) {
                 $this->db->select('*');
                 $this->db->from('ts_inventory_items');
                 $this->db->where('item_num', $item['vendor_item_number']);
@@ -2396,7 +2395,7 @@ class Test extends CI_Controller
                     }
                     echo 'Transform '.$invres['item_num'].' '.$invres['item_name'].PHP_EOL;
                 }
-            // }
+            }
         }
     }
     public function getUpsRates() {
