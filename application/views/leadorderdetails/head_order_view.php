@@ -19,6 +19,6 @@
 <div class="block_3">
     <div class="block_3_text">
         <div class="block_2_text1 text_gray">customer:</div>
-        <input type="text" class="block_3_input input_border_black" size="40" value="<?= $customer_name ?>" readonly="readonly"/>
+        <input type="text" class="block_3_input input_border_black" size="40" maxlength="41" value="<?= $customer_name ?>" readonly="readonly"/>
     </div>
 </div>
