@@ -3353,7 +3353,7 @@ Class Artwork_model extends MY_Model
             array_push($changes, 'customer name to '.$ordernew['customer_name']);
             $historylist[]=array(
                 'parameter_name'=>'Customer name',
-                'parameter_oldvalue'=>substr($orderold['customer_name']),
+                'parameter_oldvalue'=>$orderold['customer_name'],
                 'parameter_newvalue'=>$ordernew['customer_name'],
             );
         }
