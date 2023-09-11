@@ -24,7 +24,7 @@ class Dbitems extends MY_Controller
             $options['brand'] = 'BT';
 
             $options['search'] = strtoupper(ifset($postdata, 'search', ''));
-            $options['vendor'] = ifset($postdata,'vendor', '');
+            $options['vendor_id'] = ifset($postdata,'vendor', '');
             $options['itemstatus'] = ifset($postdata, 'itemstatus', 0);
             $options['category'] = ifset($postdata,'category', 0);
             $options['missinfo'] = ifset($postdata,'missinfo',0);

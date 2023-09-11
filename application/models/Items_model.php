@@ -1290,10 +1290,10 @@ Class Items_model extends My_Model
             $this->db->where('v.vendor_item_vendor',$options['vendor_id']);
         }
         if ($options['brand']!=='ALL') {
-            if ($options['brand'] == 'SB') {
-                $this->db->where_in('i.brand', ['SB', 'BT']);
-            } else {
+            if ($options['brand'] == 'SR') {
                 $this->db->where('i.brand', $options['brand']);
+            } else {
+                $this->db->where_in('i.brand', ['SB', 'BT']);
             }
         }
         if (ifset($options, 'search','')!=='') {
