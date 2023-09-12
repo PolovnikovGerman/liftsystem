@@ -2243,4 +2243,76 @@ class Test extends CI_Controller
             $this->db->update('ts_orders');
         }
     }
+
+    public function export_dbitems() {
+        $normal_template = 'Stressball';
+        $other_template = 'Other Item';
+        // Stressball items
+        // Imprints - 12
+        $this->db->select('*')->from('sb_items')->where('item_template', $normal_template)->order_by('item_number');
+        $items = $this->db->get()->results_array();
+        $this->load->config('uploader');
+        $filenorm = $this->config->item('upload_path_preload').'stressballs_items.csv';
+        @unlink($filenorm);
+
+        $fheader='Item #;Item Name;Active;New;Sale Tag;Template;Lead A;Lead B;Lead C;Lead Blank;Material;Weight;Size;Options;Colors;';
+        $fheader.='Meta Title;URL;Keywords for search;Meta Keywords;Meta Description;Item Description;Cartoon: QTY;Width;Height;Deep;Add Price Each;';
+        $fheader.='Vendor;Vendor Item #;Vendor Item Name;Vendor min cost (blank);Vendor min cost;';
+        for ($i=1; $i<=7; $i++) {
+            $fheader.='Vendor Price QTY;Price (blanc);Price;';
+        }
+        // Imprints
+        for ($i=1;$i<=12;$i++) {
+            $fheader.='Imprint Location;Imprint Size;';
+        }
+        $fnorm = fopen($filenorm, FOPEN_WRITE_CREATE);
+        if ($fnorm) {
+            fwrite($fnorm, $fheader);
+            foreach ($items as $item) {
+                $itmrow = $item['item_number'].';"'.$item['item_name'].'";'.($item['item_active']==1 ? 'Yes' : 'No').';'.$item['item_new']==1 ? 'Yes' : 'No'.';';
+                $itmrow.=$item['item_sale']==1 ? 'Yes' : 'No'.';'.$item['item_template'].';'.$item['item_lead_a'].';'.$item['item_lead_b'].';'.$item['item_lead_c'].';';
+                $itmrow.=$item['item_lead_blank'].';"'.$item['item_material'].'";"'.$item['item_weigth'].'";"'.$item['item_size'].'";"'.$item['options'].'";';
+                $this->db->select('group_concat(item_color) as colorstr')->from('sb_item_colors')->where('item_color_itemid', $item['item_id']);
+                $colors = $this->db->get()->row_array();
+                $itmrow.='"'.$colors['colorstr'].'";"'.$item['item_meta_title'].'";"'.$item['item_url'].'";"'.$item['item_keywords'].'";"'.$item['item_metakeywords'].'";';
+                $itmrow.='"'.$item['item_metadescription'].'";'.$item['item_description1'].'";'.$item['cartoon_qty'].';'.$item['cartoon_width'].';'.$item['cartoon_heigh'].';'.$item['cartoon_depth'].';';
+                $itmrow.=$item['charge_pereach'].';';
+                // Get vendor, vendor item
+                $this->db->select('v.vendor_name, vi.*');
+                $this->db->from('sb_vendor_items vi');
+                $this->db->join('vendors v','v.vendor_id=vi.vendor_item_vendor','left');
+                $this->db->where('vi.vendor_item_id', $item['vendor_item_id']);
+                $vdata = $this->db->get()->row_array();
+                $itmrow.='"'.$vdata['vendor_name'].'";"'.$vdata['vendor_item_number'].'";"'.$vdata['vendor_item_name'].'";'.$vdata['vendor_item_blankcost'].';'.$vdata['vendor_item_cost'].';';
+                $this->db->select('vendorprice_qty, vendorprice_val, vendorprice_color')->from('sb_vendor_prices')->where('vendor_item_id', $item['vendor_item_id']);
+                $vprices = $this->db->get()->result_array();
+                $numpp=0;
+                foreach ($vprices as $vprice) {
+                    $itmrow .= $vprice['vendorprice_qty'] . ';' . $vprice['vendorprice_val'] . ';' . $vprice['vendorprice_color'] . ';';
+                    $numpp++;
+                }
+                if ($numpp < 7) {
+                    for ($i=$numpp;$i<7;$i++) {
+                        $itmrow.=';;;';
+                    }
+                }
+                // Get inprints
+                $this->db->select('item_inprint_location, item_inprint_size')->from('sb_item_inprints')->where('item_inprint_item', $item['item_id']);
+                $prints = $this->db->get()->result_array();
+                $numpp=0;
+                foreach ($prints as $print) {
+                    $itmrow.='"'.$print['item_inprint_location'].'";"'.$print['item_inprint_size'].'":';
+                    $numpp++;
+                }
+                if ($numpp < 12) {
+                    for ($i=$numpp; $i<12; $i++) {
+                        $itmrow.=';;';
+                    }
+                }
+                fwrite($fnorm, $itmrow.PHP_EOL);
+            }
+            fclose($fnorm);
+            echo 'File '.$filenorm.' ready'.PHP_EOL;
+        }
+    }
 }
