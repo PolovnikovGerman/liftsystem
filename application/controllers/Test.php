@@ -2276,15 +2276,15 @@ class Test extends CI_Controller
         }
         $cols = [];
         $cellname = '';
-        $numpp = 0;
-        $ncel = 0;
+        $numpp = 1;
+        $ncel = 1;
         foreach ($titles as $title) {
             $newcell = $cellname.chr(64 + $numpp);
             array_push($cols, $newcell);
             $numpp++;
             if ($numpp==26) {
                 $cellname=chr(64+$ncel);
-                $numpp=0;
+                $numpp=1;
                 $ncel++;
             }
         }
