@@ -2267,7 +2267,7 @@ class Test extends CI_Controller
         }
         $fnorm = fopen($filenorm, FOPEN_WRITE_CREATE);
         if ($fnorm) {
-            fwrite($fnorm, $fheader);
+            fwrite($fnorm, $fheader.PHP_EOL);
             foreach ($items as $item) {
                 $itmrow = $item['item_number'].';"'.$item['item_name'].'";'.($item['item_active']==1 ? 'Yes' : 'No').';'.$item['item_new']==1 ? 'Yes' : 'No'.';';
                 $itmrow.=$item['item_sale']==1 ? 'Yes' : 'No'.';'.$item['item_template'].';'.$item['item_lead_a'].';'.$item['item_lead_b'].';'.$item['item_lead_c'].';';
