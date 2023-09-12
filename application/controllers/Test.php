@@ -2288,9 +2288,6 @@ class Test extends CI_Controller
                 $ncel++;
             }
         }
-        var_dump($titles);
-        var_dump($cols);
-        die();
         /* create report */
         $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
         $sheet = $spreadsheet->getActiveSheet();
