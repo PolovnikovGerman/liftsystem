@@ -2,6 +2,7 @@ var url;
 var timerId;
 var timeout=10000;
 var timeoutlock=60000;
+var updorders = 0;
 function navigation_init() {
     $(".bt-wrapper").css('visibility','hidden');
     $("div.moveprvorder").unbind('click');
@@ -27,18 +28,33 @@ function navigation_init() {
             var callpage=$("input#root_call_page").val();
             if (callpage=='artorderlist') {
                 $("#orderlist").show();
-                init_orders();
+                if (parseInt(updorders)==0) {
+                } else {
+                    init_orders();
+                }
             } else if (callpage=='art_tasks') {
                 $("#taskview").show();
-                init_tasks_management();
-                init_tasks_page();
+                if (parseInt(updorders)==0) {
+                } else {
+                    init_tasks_management();
+                    init_tasks_page();
+                }
             } else if (callpage=='orderslist') {
                 // Orders list
-                search_leadorders();
+                if (parseInt(updorders)==0) {
+                } else {
+                    search_leadorders();
+                }
             } else if (callpage=='profitlist') {
-                search_profit_data();
+                if (parseInt(updorders)==0) {
+                } else {
+                    search_profit_data();
+                }
             } else if (callpage=='accrecive') {
-                init_accounts_receivable();
+                if (parseInt(updorders)==0) {
+                } else {
+                    init_accounts_receivable();
+                }
             }
         }
         $('.modal-backdrop').hide();
@@ -297,35 +313,65 @@ function init_onlineleadorder_edit() {
         // Current page
         if (callpage=='artorderlist') {
             $("#orderlist").show();
-            init_orders();
+            if (parseInt(updorders)==0) {
+            } else {
+                init_orders();
+            }
         } else if (callpage=='art_tasks') {
             $("#taskview").show();
-            init_tasks_management();
-            init_tasks_page();
+            if (parseInt(updorders)==0) {
+            } else {
+                init_tasks_management();
+                init_tasks_page();
+            }
         } else if (callpage=='orderslist') {
             // Orders list
-            search_leadorders();
+            if (parseInt(updorders)==0) {
+            } else {
+                search_leadorders();
+            }
         } else if (callpage=='profitlist') {
-            search_profit_data();
+            if (parseInt(updorders)==0) {
+            } else {
+                search_profit_data();
+            }
         } else if (callpage=='paymonitor') {
-            search_paymonitor();
+            if (parseInt(updorders)==0) {
+            } else {
+                search_paymonitor();
+            }
         } else if (callpage=='accrecive') {
-            init_accounts_receivable();
+            if (parseInt(updorders)==0) {
+            } else {
+                init_accounts_receivable();
+            }
         } else if (callpage=='pototals') {
-            init_purchase_orders();
+            if (parseInt(updorders)==0) {
+            } else {
+                init_purchase_orders();
+            }
         }
         if (callpage=='finance') {
             disablePopup('leadorderdetailspopup');
             $("#pop_content").empty();
-            init_profit_orders();
+            if (parseInt(updorders)==0) {
+            } else {
+                init_profit_orders();
+            }
         } else if (callpage=='art_order') {
             disablePopup('leadorderdetailspopup');
             $("#pop_content").empty();
-            initGeneralPagination();
+            if (parseInt(updorders)==0) {
+            } else {
+                initGeneralPagination();
+            }
         } else if (callpage=='inventory') {
             disablePopup('leadorderdetailspopup');
             $("#pop_content").empty();
-            invetory_exitorder(response.data.color);
+            if (parseInt(updorders)==0) {
+            } else {
+                invetory_exitorder(response.data.color);
+            }
 /*            } else {
             var curpage=$("input#leadorderpage").val();
             pageLeadorderCallback(curpage); */
@@ -4257,7 +4303,8 @@ function save_leadorderdata() {
     params.push({name: 'callpage', value: callpage});
     params.push({name: 'brand', value: $("#root_brand").val()});
     $.post(url,params,function(response){
-        if (response.errors=='') {       
+        if (response.errors=='') {
+            updorders = 1;
             clearTimeout(timerId);
             // Current page
             $("#artModalLabel").empty().html(response.data.header);
