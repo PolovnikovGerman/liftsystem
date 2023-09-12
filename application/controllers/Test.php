@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class Test extends CI_Controller
 {
     public function index() {
@@ -2252,8 +2255,38 @@ class Test extends CI_Controller
         $this->db->select('*')->from('sb_items')->where('item_template', $normal_template)->order_by('item_number');
         $items = $this->db->get()->result_array();
         $this->load->config('uploader');
-        $filenorm = $this->config->item('upload_path_preload').'stressballs_items.csv';
+        $filenorm = $this->config->item('upload_path_preload').'stressballs_items.xlsx';
         @unlink($filenorm);
+        $titles = [
+            'Item #','Item Name','Active','New','Sale Tag','Template','Lead A','Lead B','Lead C','Lead Blank','Material','Weight','Size','Options','Colors',
+            'Meta Title','URL','Keywords for search','Meta Keywords','Meta Description','Item Description','Cartoon: QTY','Width','Height','Deep','Add Price Each',
+            'Vendor','Vendor Item #','Vendor Item Name','Vendor min cost (blank)','Vendor min cost',
+        ];
+        for ($i=1; $i<=7; $i++) {
+            array_push($titles, 'Vendor Price QTY');
+            array_push($titles, 'Price (blank)');
+            array_push($titles, 'Price');
+        }
+        // Imprints
+        for ($i=1;$i<=12;$i++) {
+            array_push($titles, 'Imprint Location');
+            array_push($titles,'Imprint Size');
+        }
+        $cols = [];
+        $cellname = '';
+        $numpp = 0;
+        foreach ($titles as $title) {
+            $newcell = $cellname.chr($numpp);
+            array_push($cols, $newcell);
+            $numpp++;
+        }
+        /* create report */
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('DB Export');
+        $sheet->setCellValue('A1', 'Item #');
+        $sheet->setCellValue('B1', 'Item Name');
+        $sheet->setCellValue('C1', '');
 
         $fheader='Item #;Item Name;Active;New;Sale Tag;Template;Lead A;Lead B;Lead C;Lead Blank;Material;Weight;Size;Options;Colors;';
         $fheader.='Meta Title;URL;Keywords for search;Meta Keywords;Meta Description;Item Description;Cartoon: QTY;Width;Height;Deep;Add Price Each;';
@@ -2269,7 +2302,7 @@ class Test extends CI_Controller
         if ($fnorm) {
             fwrite($fnorm, $fheader.PHP_EOL);
             foreach ($items as $item) {
-                $itmrow = $item['item_number'].';"'.$item['item_name'].'";'.($item['item_active']==1 ? 'Yes' : 'No').';'.$item['item_new']==1 ? 'Yes' : 'No'.';';
+                $itmrow = $item['item_number'].';"'.$item['item_name'].'";'.$item['item_active']==1 ? 'Yes' : 'No'.';'.$item['item_new']==1 ? 'Yes' : 'No'.';';
                 echo '1 row '.$itmrow.PHP_EOL;
                 $itmrow.=$item['item_sale']==1 ? 'Yes' : 'No'.';'.$item['item_template'].';'.$item['item_lead_a'].';'.$item['item_lead_b'].';'.$item['item_lead_c'].';';
                 $itmrow.=$item['item_lead_blank'].';"'.$item['item_material'].'";"'.$item['item_weigth'].'";"'.$item['item_size'].'";"'.$item['options'].'";';
