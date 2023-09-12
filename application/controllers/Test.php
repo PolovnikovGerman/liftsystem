@@ -2282,7 +2282,7 @@ class Test extends CI_Controller
             $newcell = $cellname.chr(64 + $numpp);
             array_push($cols, $newcell);
             $numpp++;
-            if ($numpp==26) {
+            if ($numpp==27) {
                 $cellname=chr(64+$ncel);
                 $numpp=1;
                 $ncel++;
