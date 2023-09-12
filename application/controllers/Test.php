@@ -2270,6 +2270,7 @@ class Test extends CI_Controller
             fwrite($fnorm, $fheader.PHP_EOL);
             foreach ($items as $item) {
                 $itmrow = $item['item_number'].';"'.$item['item_name'].'";'.($item['item_active']==1 ? 'Yes' : 'No').';'.$item['item_new']==1 ? 'Yes' : 'No'.';';
+                echo '1 row '.$itmrow.PHP_EOL;
                 $itmrow.=$item['item_sale']==1 ? 'Yes' : 'No'.';'.$item['item_template'].';'.$item['item_lead_a'].';'.$item['item_lead_b'].';'.$item['item_lead_c'].';';
                 $itmrow.=$item['item_lead_blank'].';"'.$item['item_material'].'";"'.$item['item_weigth'].'";"'.$item['item_size'].'";"'.$item['options'].'";';
                 $this->db->select('group_concat(item_color) as colorstr')->from('sb_item_colors')->where('item_color_itemid', $item['item_id']);
@@ -2288,7 +2289,7 @@ class Test extends CI_Controller
                 $vprices = $this->db->get()->result_array();
                 $numpp=0;
                 foreach ($vprices as $vprice) {
-                    $itmrow .= $vprice['vendorprice_qty'] . ';' . $vprice['vendorprice_val'] . ';' . $vprice['vendorprice_color'] . ';';
+                    $itmrow.=$vprice['vendorprice_qty'].';'.$vprice['vendorprice_val'].';'.$vprice['vendorprice_color'] . ';';
                     $numpp++;
                 }
                 if ($numpp < 7) {
