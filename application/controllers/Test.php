@@ -2288,7 +2288,7 @@ class Test extends CI_Controller
                 $ncel++;
             }
         }
-        var_dump($title);
+        var_dump($titles);
         var_dump($cols);
         die();
         /* create report */
