@@ -2309,6 +2309,8 @@ class Test extends CI_Controller
                         $itmrow.=';;';
                     }
                 }
+                echo $itmrow.PHP_EOL;
+                die();
                 fwrite($fnorm, $itmrow.PHP_EOL);
             }
             fclose($fnorm);
