@@ -2250,7 +2250,7 @@ class Test extends CI_Controller
         // Stressball items
         // Imprints - 12
         $this->db->select('*')->from('sb_items')->where('item_template', $normal_template)->order_by('item_number');
-        $items = $this->db->get()->results_array();
+        $items = $this->db->get()->result_array();
         $this->load->config('uploader');
         $filenorm = $this->config->item('upload_path_preload').'stressballs_items.csv';
         @unlink($filenorm);
