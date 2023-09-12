@@ -2372,7 +2372,6 @@ class Test extends CI_Controller
                 for ($i=$numpp; $i<12; $i++) {
                     $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
                     $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
-                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
                 }
             }
             break;
