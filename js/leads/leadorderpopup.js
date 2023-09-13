@@ -226,6 +226,11 @@ function order_navigate(order, brand) {
     var url="/leadorder/leadordernavigate";
     $.post(url,params, function(response){
         if (response.errors=='') {
+            if (parseInt(response.data.cancelorder)===1) {
+                $("#artModal").find('div.modal-header').addClass('cancelorder');
+            } else {
+                $("#artModal").find('div.modal-header').removeClass('cancelorder');
+            }
             $("input#orderdataid").val(order);
             $("input#ordersession").val(response.data.ordersession);            
             $("div#currentorderheaddataarea").empty().html(response.data.order_head);
