@@ -2250,6 +2250,7 @@ class Test extends CI_Controller
     public function export_dbitems() {
         $normal_template = 'Stressball';
         $other_template = 'Other Item';
+        $this->load->config('siteart_config');
         // Stressball items
         // Imprints - 12
         $this->db->select('*')->from('sb_items')->where('item_template', $normal_template)->order_by('item_number');
@@ -2259,6 +2260,7 @@ class Test extends CI_Controller
         @unlink($filenorm);
         $titles = [
             'Item #','Item Name','Active','New','Sale Tag','Template','Lead A','Lead B','Lead C','Lead Blank','Material','Weight','Size','Options','Colors',
+            'Similar 1','Similar 2','Similar 3',
             'Meta Title','URL','Keywords for search','Meta Keywords','Meta Description','Item Description','Cartoon: QTY','Width','Height','Deep','Add Price Each',
             'Vendor','Vendor Item #','Vendor Item Name','Vendor min cost (blank)','Vendor min cost',
         ];
@@ -2274,6 +2276,16 @@ class Test extends CI_Controller
             array_push($titles, 'Imprint Location');
             array_push($titles,'Imprint Size');
         }
+        // Prices
+        $pricetypes = $this->config->item('price_types');
+        foreach ($pricetypes as $pricetype) {
+            array_push($titles,'Price '.$pricetype['type']);
+            array_push($titles, 'Sale '.$pricetype['type']);
+        }
+        array_push($titles, 'Price Exprint');
+        array_push($titles, 'Sale Exprint');
+        array_push($titles, 'Price Setup');
+        array_push($titles, 'Sale Setup');
         $cols = [];
         $cellname = '';
         $numpp = 1;
@@ -2318,6 +2330,22 @@ class Test extends CI_Controller
             $sheet->setCellValue($cols[$ncol].$nrow, $item['item_size']);$ncol++;
             $sheet->setCellValue($cols[$ncol].$nrow, $item['options']);$ncol++;
             $sheet->setCellValue($cols[$ncol].$nrow, $colors['colorstr']);$ncol++;
+            // Similar
+            $this->db->select('concat(i.item_number,\'-\', i.item_name) as simitem');
+            $this->db->from('sb_item_similars s');
+            $this->db->join('sb_items i','s.item_similar_similar = i.item_id');
+            $this->db->where('s.item_similar_item', $item['item_id']);
+            $simils = $this->db->get()->result_array();
+            $numpp=0;
+            foreach ($simils as $simil) {
+                $sheet->setCellValue($cols[$ncol].$nrow, $simil['simitem']);$ncol++;
+                $numpp++;
+            }
+            if ($numpp < 3) {
+                for ($i=$numpp; $i<3; $i++) {
+                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
+                }
+            }
             $sheet->setCellValue($cols[$ncol].$nrow, $item['item_meta_title']);$ncol++;
             $sheet->setCellValue($cols[$ncol].$nrow, $item['item_url']);$ncol++;
             $sheet->setCellValue($cols[$ncol].$nrow, $item['item_keywords']);$ncol++;
@@ -2374,11 +2402,25 @@ class Test extends CI_Controller
                     $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
                 }
             }
-            break;
+            $this->db->select('*')->from('sb_item_prices')->where('item_price_itemid', $item['item_id']);
+            $iprice = $this->db->get()->row_array();
+            if (ifset($iprice, 'item_price_id',0)==$item['item_id']) {
+                foreach ($pricetypes as $pricetype) {
+                    $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_price_'.$pricetype['type']]);$ncol++;
+                }
+                foreach ($pricetypes as $pricetype) {
+                    $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_sale_'.$pricetype['type']]);$ncol++;
+                }
+                $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_price_print']);$ncol++;
+                $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_sale_print']);$ncol++;
+                $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_price_setup']);$ncol++;
+                $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_sale_setup']);$ncol++;
+            }
 
             // $sheet->setCellValue($cols[$ncol].$nrow, $item['']);$ncol++;
             // $sheet->setCellValue($cols[$ncol].$nrow, $item['']);$ncol++;
             // $sheet->setCellValue($cols[$ncol].$nrow, $item['']);$ncol++;
+            $nrow++;
         }
         $writer = new Xlsx($spreadsheet); // instantiate Xlsx
         $writer->save($filenorm);    // download file
