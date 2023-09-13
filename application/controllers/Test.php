@@ -2248,6 +2248,7 @@ class Test extends CI_Controller
     }
 
     public function export_dbitems() {
+        ini_set("memory_limit","-1");
         $normal_template = 'Stressball';
         $other_template = 'Other Item';
         $this->load->config('siteart_config');
