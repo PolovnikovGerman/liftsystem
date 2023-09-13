@@ -2615,7 +2615,7 @@ class Test extends CI_Controller
                     $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
                 }
             }
-            $this->db->select('item_qty, price, sale_price')->from('sb_promo_price')->where('item_id', $item['id'])->order_by('item_qty');
+            $this->db->select('item_qty, price, sale_price')->from('sb_promo_price')->where('item_id', $item['item_id'])->order_by('item_qty');
             $promprices = $this->db->get()->result_array();
             $numpp=0;
             foreach ($promprices as $promprice) {
