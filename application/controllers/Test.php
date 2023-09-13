@@ -2265,17 +2265,21 @@ class Test extends CI_Controller
             'Meta Title','URL','Keywords for search','Meta Keywords','Meta Description','Item Description','Cartoon: QTY','Width','Height','Deep','Add Price Each',
             'Vendor','Vendor Item #','Vendor Item Name','Vendor min cost (blank)','Vendor min cost',
         ];
+        $numpp=1;
         for ($i=1; $i<=7; $i++) {
-            array_push($titles, 'Vendor Price QTY');
-            array_push($titles, 'Price (blank)');
-            array_push($titles, 'Price');
+            array_push($titles, 'Vendor Price QTY '.$numpp);
+            array_push($titles, 'Price (blank) '.$numpp);
+            array_push($titles, 'Price '.$numpp);
+            $numpp++;
         }
         array_push($titles, 'Vendor Price Exprint');
         array_push($titles, 'Vendor Price Setup');
         // Imprints
+        $numpp=1;
         for ($i=1;$i<=12;$i++) {
-            array_push($titles, 'Imprint Location');
-            array_push($titles,'Imprint Size');
+            array_push($titles, 'Imprint Location '.$numpp);
+            array_push($titles,'Imprint Size '.$numpp);
+            $numpp++;
         }
         // Prices
         $pricetypes = $this->config->item('price_types');
@@ -2434,17 +2438,21 @@ class Test extends CI_Controller
             'Meta Title','URL','Keywords for search','Meta Keywords','Meta Description','Item Description','Cartoon: QTY','Width','Height','Deep','Add Price Each',
             'Vendor','Vendor Item #','Vendor Item Name','Vendor min cost (blank)','Vendor min cost',
         ];
+        $numpp=1;
         for ($i=1; $i<=7; $i++) {
-            array_push($titles, 'Vendor Price QTY');
-            array_push($titles, 'Price (blank)');
-            array_push($titles, 'Price');
+            array_push($titles, 'Vendor Price QTY '.$numpp);
+            array_push($titles, 'Price (blank) '.$numpp);
+            array_push($titles, 'Price '.$numpp);
+            $numpp++;
         }
         array_push($titles, 'Vendor Price Exprint');
         array_push($titles, 'Vendor Price Setup');
         // Imprints
+        $numpp=1;
         for ($i=1;$i<=12;$i++) {
-            array_push($titles, 'Imprint Location');
-            array_push($titles,'Imprint Size');
+            array_push($titles, 'Imprint Location '.$numpp);
+            array_push($titles,'Imprint Size '.$numpp);
+            $numpp++;
         }
         // Prices
         $numpp=1;
@@ -2452,6 +2460,7 @@ class Test extends CI_Controller
             array_push($titles, 'Price QTY '.$numpp);
             array_push($titles, 'Price '.$numpp);
             array_push($titles, 'Sale '.$numpp);
+            $numpp++;
         }
         array_push($titles, 'Price Exprint');
         array_push($titles, 'Sale Exprint');
