@@ -182,6 +182,7 @@ class Leadorder extends MY_Controller
                 usersession($leadsession, $leadorder);
                 $mdata['content']=$content;
                 $mdata['header']=$header;
+                $mdata['cancelorder'] = $orddata['is_canceled'];
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -237,6 +238,7 @@ class Leadorder extends MY_Controller
                 $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                 // Build Content
                 $mdata['content']=$order_data;
+                $mdata['cancelorder'] = $orddata['is_canceled'];
             }
             $this->ajaxResponse($mdata, $error);
         }

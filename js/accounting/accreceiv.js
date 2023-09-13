@@ -102,6 +102,11 @@ function init_accreceive_content() {
                 if (parseInt(order)==0) {
                     init_onlineleadorder_edit();
                 } else {
+                    if (parseInt(response.data.cancelorder)===1) {
+                        $("#artModal").find('div.modal-header').addClass('cancelorder');
+                    } else {
+                        $("#artModal").find('div.modal-header').removeClass('cancelorder');
+                    }
                     navigation_init();
                 }
             } else {
@@ -130,6 +135,11 @@ function init_accreceive_content() {
                 if (parseInt(order)==0) {
                     init_onlineleadorder_edit();
                 } else {
+                    if (parseInt(response.data.cancelorder)===1) {
+                        $("#artModal").find('div.modal-header').addClass('cancelorder');
+                    } else {
+                        $("#artModal").find('div.modal-header').removeClass('cancelorder');
+                    }
                     navigation_init();
                 }
             } else {
