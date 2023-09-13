@@ -492,6 +492,11 @@ function edit_order(order) {
                 init_onlineleadorder_edit();
                 init_rushpast();
             } else {
+                if (parseInt(response.data.cancelorder)===1) {
+                    $("#artModal").find('div.modal-header').addClass('cancelorder');
+                } else {
+                    $("#artModal").find('div.modal-header').removeClass('cancelorder');
+                }
                 navigation_init();
             }
         } else {

@@ -879,6 +879,11 @@ function inventory_order_edit(order) {
             if (parseInt(order)==0) {
                 init_onlineleadorder_edit();
             } else {
+                if (parseInt(response.data.cancelorder)===1) {
+                    $("#artModal").find('div.modal-header').addClass('cancelorder');
+                } else {
+                    $("#artModal").find('div.modal-header').removeClass('cancelorder');
+                }
                 navigation_init();
             }
             // $('body').addClass('modal-open');

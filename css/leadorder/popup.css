@@ -3,7 +3,17 @@
     Author     : polovnikov-go
     Popup Window for Order Details
 */
-.leadorderdetailspopup {    
+#artModal .modal-header.cancelorder {
+    background-color: #000000;
+}
+#artModal .modal-header.cancelorder > button.close {
+    color: #ffffff;
+    opacity: 0.9;
+}
+#artModal .modal-header.cancelorder .leadorderlockdetails {
+    color: #ffffff;
+}
+.leadorderdetailspopup {
     /* background: url(/img/leadorder/backgr_content.png) no-repeat transparent; */
     background: #c59e51;
     border: 1px solid #000;
