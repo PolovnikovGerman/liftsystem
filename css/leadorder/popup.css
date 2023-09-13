@@ -32,7 +32,7 @@
 .leadorderdetailspopupheader {
     float: left;
     font-size: 13px;
-    width: 958px;
+    width: 972px;
     margin-top: -5px;
     margin-left: -15px;
 }
@@ -146,6 +146,8 @@ input.input_checkbox {
     height: 28px; 
     line-height: 28px; 
     font-size: 13px;
+    width: 84px;
+    text-align: center;
 }
 .leadorderlockdetails i {
     float: left;
