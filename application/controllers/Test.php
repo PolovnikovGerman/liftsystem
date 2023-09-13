@@ -2426,7 +2426,7 @@ class Test extends CI_Controller
         $this->db->select('*')->from('sb_items')->where('item_template', $other_template)->order_by('item_number');
         $items = $this->db->get()->result_array();
         $this->load->config('uploader');
-        $fileprom = $this->config->item('upload_path_preload').'stressballs_items.xlsx';
+        $fileprom = $this->config->item('upload_path_preload').'promo_items.xlsx';
         @unlink($fileprom);
         $titles = [
             'Item #','Item Name','Active','New','Sale Tag','Template','Lead A','Lead B','Lead C','Lead Blank','Material','Weight','Size','Options','Colors',
