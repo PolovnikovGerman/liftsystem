@@ -478,6 +478,7 @@ Class Shipping_model extends MY_Model
         $outrate=array();
         $ratekey=array();
         $this->load->model('vendors_model');
+        $this->load->model('shipcalculate_model');
         if (isset($shipaddr['item_qty'])) {
             $order_qty=0;
             foreach ($items as $row) {
@@ -493,13 +494,127 @@ Class Shipping_model extends MY_Model
         }
         $this->load->config('shipping');
         $cntdat=$this->get_country($shipaddr['country_id']);
+
         foreach ($items as $item) {
             // Common Item
             if ($item['item_id'] > 0) {
                 $venditemdat = $this->vendors_model->get_item_vendor($item['vendor_item_id']);
-                
+                // Ship From
+                $shipFrom = [
+                    "Name" => $venditemdat['vendor_name'],
+                    "Address" => array(
+                        "City" => $venditemdat['shipaddr_city'],
+                        "StateProvinceCode" => $venditemdat['shipaddr_state'],
+                        "PostalCode" => $venditemdat['vendor_zipcode'],
+                        "CountryCode" => $venditemdat['country_iso_code_2']
+                    )
+                ];
+                // Packages
+                $datpackages = $this->shipcalculate_model->prepare_ship_packages($item['item_qty'], $item['item_id'], $item['item_weigth']);
+                $adrdat = $this->get_zip_address($shipaddr['country_id'], $shipaddr['zip']);
+                if ($adrdat['result']==$this->success_result) {
+                    $shipTo = [
+                        "Name" => empty($shipaddr['ship_company']) ? 'test company' : $shipaddr['ship_company'],
+                        "Address" => array(
+                            "City" => $adrdat['city'],
+                            "StateProvinceCode" => $adrdat['state'],
+                            "PostalCode" => $shipaddr['zip'],
+                            "CountryCode" => $cntdat['country_iso_code_2'],
+                        )
+                    ];
+                    $shipoptions = [
+                        'numinpack'=>(intval($item['cartoon_qty'])==0 ? $this->config->item('default_inpack') : $item['cartoon_qty']),
+                        'itemqty'=>$item['item_qty'],
+                        'weight'=>$item['item_weigth'],
+                        'packages' => $datpackages['packages'],
+                        'numpackages' => $datpackages['numpackages'],
+                        'startdeliv'=> $deliv_date,
+                        'brand' => $brand,
+                        'shipTo' => $shipTo,
+                        'shipFrom' => $shipFrom,
+                        'target_country' => $shipaddr['country_id'],
+                        'package_price' => $item['item_subtotal'],
+                        'item_id' => $item['item_id'],
+                    ];
+                    $out = $this->shipcalculate_model->calculate_upsshipcost($shipoptions);
+                    if ($out['result']==$this->error_result) {
+                        $res['msg']=$out['error_code'].' - '.$out['msg'];
+                        return $res;
+                    }
+                    $ship=$out['ship'];
+                    $codearray= $out['code'];
+                    if ($default_ship_method=='') {
+                        if (isset($ship['GND'])) {
+                            $ship['deliv']=$ship['GND']['DeliveryDate'];
+                            $ship['GND']['current']=1;
+                        } elseif (isset($ship['UPSStandard'])) {
+                            $ship['deliv']=$ship['UPSStandard']['DeliveryDate'];
+                            $ship['UPSStandard']['current']=1;
+                        } elseif (isset ($ship['UPSExpedited'])) {
+                            $ship['deliv']=$ship['UPSExpedited']['DeliveryDate'];
+                            $ship['UPSExpedited']['current']=1;
+                        } elseif (isset($ship['UPSSaver'])) {
+                            $ship['deliv']=$ship['UPSSaver']['DeliveryDate'];
+                            $ship['UPSSaver']['current']=1;
+                        }
+                    } else {
+                        $shiddeliv=0;
+                        foreach ($codearray as $coderow) {
+                            if ($ship[$coderow]['ServiceName']==$default_ship_method) {
+                                $ship[$coderow]['current']=1;
+                                $shiddeliv=$ship[$coderow]['DeliveryDate'];
+                            }
+                        }
+                        if ($shiddeliv!==0) {
+                            $ship['deliv']=$shiddeliv;
+                        } else {
+                            if (isset($ship['GND'])) {
+                                $ship['deliv']=$ship['GND']['DeliveryDate'];
+                                $ship['GND']['current']=1;
+                            } elseif (isset($ship['UPSStandard'])) {
+                                $ship['deliv']=$ship['UPSStandard']['DeliveryDate'];
+                                $ship['UPSStandard']['current']=1;
+                            } elseif (isset ($ship['UPSExpedited'])) {
+                                $ship['deliv']=$ship['UPSExpedited']['DeliveryDate'];
+                                $ship['UPSExpedited']['current']=1;
+                            } elseif (isset($ship['UPSSaver'])) {
+                                $ship['deliv']=$ship['UPSSaver']['DeliveryDate'];
+                                $ship['UPSSaver']['current']=1;
+                            }
+                        }
+                    }
+                    $shiplast = $this->shipcalculate_model->recalc_rates($ship, $item, $shipoptions['itemqty'],$brand, $shipaddr['country_id']);
+                    foreach ($shiplast as $key=>$row) {
+                        if ($key!='deliv') {
+                            if (!in_array($key , $ratekey)) {
+                                array_push($ratekey, $key);
+                                $outrate[]=array(
+                                    'ServiceName'=>$row['ServiceName'],
+                                    'Rate'=>0,
+                                    'DeliveryDate'=>0,
+                                    'current'=>$row['current'],
+                                );
+                                $srchkey=count($outrate)-1;
+                            } else {
+                                $srchkey=array_search($key, $ratekey);
+                            }
+                            if ($outrate[$srchkey]['DeliveryDate']<$row['DeliveryDate']) {
+                                $outrate[$srchkey]['DeliveryDate']=$row['DeliveryDate'];
+                            }
+                            $outrate[$srchkey]['Rate']+=$row['Rate'];
+                        }
+                    }
+                } else {
+                    $res['result'] = $this->error_result;
+                    $res['msg'] = 'Error during check ZIP (Postal) code';
+                    return $res;
+                }
             }
         }
+        $res['result']=$this->success_result;
+        $res['ships']=$outrate;
+        return $res;
+
 //        foreach ($items as $row) {
 //            $cntdat=$this->get_country($shipaddr['country_id']);
 //            $carton_qty=((isset($row['cartoon_qty']) && intval($row['cartoon_qty'])>0) ? $row['cartoon_qty'] : $this->config->item('default_inpack'));

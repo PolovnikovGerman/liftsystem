@@ -51,6 +51,7 @@
  * @property Inventory_model inventory_model
  * @property Btitemdetails_model btitemdetails_model
  * @property Sritems_model sritems_model
+ * @property Shipcalculate_model shipcalculate_model
  */
 
 class MY_Model extends CI_Model

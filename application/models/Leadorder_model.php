@@ -5635,7 +5635,7 @@ Class Leadorder_model extends My_Model {
 
         $this->db->select('i.item_id, i.item_name, i.item_number, i.item_template, i.item_weigth, i.cartoon_qty, i.cartoon_width');
         $this->db->select('i.cartoon_heigh, i.cartoon_depth, i.boxqty, i.charge_pereach, i.charge_perorder, i.printshop_inventory_id as printshop_item_id');
-        $this->db->select('v.vendor_zipcode, vi.vendor_item_zipcode');
+        $this->db->select('i.vendor_item_id, v.vendor_zipcode, vi.vendor_item_zipcode');
         $this->db->from("{$item_table} i");
         $this->db->join("{$venditem_table} vi",'vi.vendor_item_id=i.vendor_item_id');
         $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor",'left');
