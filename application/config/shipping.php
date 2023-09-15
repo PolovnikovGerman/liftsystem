@@ -37,5 +37,24 @@ $config['ups_address_valid']='https://onlinetools.ups.com/webservices/XAV';
 //$config['fedex_account']='510087240';
 //$config['fedex_meter']='100278692';
 //$config['fedex_password']='14gQ0MfporKJkhRcLNA7EmVKm';
-
-// $config['']
+/* NEW UPS API */
+$config['ups_clientid'] = getenv('UPS_CLIENTID');
+$config['ups_secret'] = getenv('UPS_SECRET');
+$config['ups_oath_url'] = getenv('UPS_OATHTOKEN_URL');
+$config['ups_tokenrefresh_url'] = getenv('UPS_TOKENREFRESH_URL');
+$config['ups_shiper'] = array(
+    "Name" => "BLUETRACK, Inc.",
+    "ShipperNumber" => $config['ups_account_number'],
+    "Address" => array(
+        "AddressLine" => array(
+            "855 Bloomfield Ave"
+        ),
+        "City" => $config['city'],
+        "StateProvinceCode" => "NJ",
+        "PostalCode" => $config['zip'],
+        "CountryCode" => $config['country_code'],
+    ),
+);
+$config['upsapi_tntulr'] = getenv('UPS_TRANSIT_URL');
+$config['upsapi_rate'] = getenv('UPS_RATE_URL');
+$config['upsapi_tracking'] = getenv('UPS_TRACKING_URL');

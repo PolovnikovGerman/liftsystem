@@ -477,6 +477,7 @@ Class Shipping_model extends MY_Model
         $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $outrate=array();
         $ratekey=array();
+        $this->load->model('vendors_model');
         if (isset($shipaddr['item_qty'])) {
             $order_qty=0;
             foreach ($items as $row) {
@@ -491,110 +492,118 @@ Class Shipping_model extends MY_Model
             $kf=1;
         }
         $this->load->config('shipping');
-        foreach ($items as $row) {
-            $cntdat=$this->get_country($shipaddr['country_id']);
-            $carton_qty=((isset($row['cartoon_qty']) && intval($row['cartoon_qty'])>0) ? $row['cartoon_qty'] : $this->config->item('default_inpack'));
-            $cartoon_depth=((isset($row['cartoon_depth']) && intval($row['cartoon_depth'])>0) ? $row['cartoon_depth'] : $this->config->item('default_pack_depth'));
-            $cartoon_width=((isset($row['cartoon_width']) && intval($row['cartoon_width'])>0) ? $row['cartoon_width'] : $this->config->item('default_pack_width'));
-            $cartoon_heigh=((isset($row['cartoon_heigh']) && intval($row['cartoon_heigh'])>0) ? $row['cartoon_heigh'] : $this->config->item('default_pack_heigth'));
-            // $itemweight=((isset($row['item_weigth']) && floatval($row['item_weigth'])>0) ? $row['item_weigth'] : 0.010);
-            $itemweight = (ifset($row, 'item_weigth', 0)>0 ? $row['item_weigth'] : $this->box_empty_weight / $carton_qty);
-            $options=array(
-                'zip'=>$shipaddr['zip'],
-                'numinpack'=>$carton_qty,
-                'itemqty'=>ceil($row['item_qty']*$kf),
-                'startdeliv'=>$deliv_date,
-                'vendor_zip'=>$row['vendor_zipcode'],
-                'item_length'=>$cartoon_depth,
-                'item_width'=>$cartoon_width,
-                'item_height'=>$cartoon_heigh,
-                'ship'=> array(),
-                'weight' =>$itemweight,
-                'cnt_code'=>$cntdat['country_iso_code_2'],
-                'brand' => $brand,
-            );
-
-            $out=calculate_shipcost($options);
-
-            if (!$out['result']) {
-                $res['msg']=$out['error'].' - '.$out['error_code'];
-                return $res;
-            }
-            $ship=$out['ship'];
-            $codearray= array_keys($ship);
-
-            if ($default_ship_method=='') {
-                if (isset($ship['GND'])) {
-                    $ship['deliv']=$ship['GND']['DeliveryDate'];
-                    $ship['GND']['current']=1;
-                } elseif (isset($ship['UPSStandard'])) {
-                    $ship['deliv']=$ship['UPSStandard']['DeliveryDate'];
-                    $ship['UPSStandard']['current']=1;
-                } elseif (isset ($ship['UPSExpedited'])) {
-                    $ship['deliv']=$ship['UPSExpedited']['DeliveryDate'];
-                    $ship['UPSExpedited']['current']=1;
-                } elseif (isset($ship['UPSSaver'])) {
-                    $ship['deliv']=$ship['UPSSaver']['DeliveryDate'];
-                    $ship['UPSSaver']['current']=1;
-                }
-            } else {
-                $shiddeliv=0;
-                foreach ($codearray as $coderow) {
-                    if ($ship[$coderow]['ServiceName']==$default_ship_method) {
-                        $ship[$coderow]['current']=1;
-                        $shiddeliv=$ship[$coderow]['DeliveryDate'];
-                    }
-                }
-                if ($shiddeliv!==0) {
-                    $ship['deliv']=$shiddeliv;
-                } else {
-                    if (isset($ship['GND'])) {
-                        $ship['deliv']=$ship['GND']['DeliveryDate'];
-                        $ship['GND']['current']=1;
-                    } elseif (isset($ship['UPSStandard'])) {
-                        $ship['deliv']=$ship['UPSStandard']['DeliveryDate'];
-                        $ship['UPSStandard']['current']=1;
-                    } elseif (isset ($ship['UPSExpedited'])) {
-                        $ship['deliv']=$ship['UPSExpedited']['DeliveryDate'];
-                        $ship['UPSExpedited']['current']=1;
-                    } elseif (isset($ship['UPSSaver'])) {
-                        $ship['deliv']=$ship['UPSSaver']['DeliveryDate'];
-                        $ship['UPSSaver']['current']=1;
-                    }
-                }
-            }
-
-            $itemdat=array(
-                'charge_perorder'=>(isset($row['charge_perorder']) ? $row['charge_perorder'] : 0),
-                'charge_pereach'=>(isset($row['charge_pereach']) ? $row['charge_pereach'] : 0),
-            );
-            /* Recalc Rates */
-            $shiplast = recalc_rates($ship,$itemdat,$row['item_qty'],$brand, $cntdat['country_iso_code_2'], $shipaddr['country_id']);
-
-            foreach ($shiplast as $key=>$row) {
-                if ($key!='deliv') {
-                    if (!in_array($key , $ratekey)) {
-                        array_push($ratekey, $key);
-                        $outrate[]=array(
-                            'ServiceName'=>$row['ServiceName'],
-                            'Rate'=>0,
-                            'DeliveryDate'=>0,
-                            'current'=>$row['current'],
-                        );
-                        $srchkey=count($outrate)-1;
-                    } else {
-                        $srchkey=array_search($key, $ratekey);
-                    }
-                    if ($outrate[$srchkey]['DeliveryDate']<$row['DeliveryDate']) {
-                        $outrate[$srchkey]['DeliveryDate']=$row['DeliveryDate'];
-                    }
-                    $outrate[$srchkey]['Rate']+=$row['Rate'];
-                }
+        $cntdat=$this->get_country($shipaddr['country_id']);
+        foreach ($items as $item) {
+            // Common Item
+            if ($item['item_id'] > 0) {
+                $venditemdat = $this->vendors_model->get_item_vendor($item['vendor_item_id']);
+                
             }
         }
-        $res['result']=$this->success_result;
-        $res['ships']=$outrate;
-        return $res;
+//        foreach ($items as $row) {
+//            $cntdat=$this->get_country($shipaddr['country_id']);
+//            $carton_qty=((isset($row['cartoon_qty']) && intval($row['cartoon_qty'])>0) ? $row['cartoon_qty'] : $this->config->item('default_inpack'));
+//            $cartoon_depth=((isset($row['cartoon_depth']) && intval($row['cartoon_depth'])>0) ? $row['cartoon_depth'] : $this->config->item('default_pack_depth'));
+//            $cartoon_width=((isset($row['cartoon_width']) && intval($row['cartoon_width'])>0) ? $row['cartoon_width'] : $this->config->item('default_pack_width'));
+//            $cartoon_heigh=((isset($row['cartoon_heigh']) && intval($row['cartoon_heigh'])>0) ? $row['cartoon_heigh'] : $this->config->item('default_pack_heigth'));
+//            // $itemweight=((isset($row['item_weigth']) && floatval($row['item_weigth'])>0) ? $row['item_weigth'] : 0.010);
+//            $itemweight = (ifset($row, 'item_weigth', 0)>0 ? $row['item_weigth'] : $this->box_empty_weight / $carton_qty);
+//            $options=array(
+//                'zip'=>$shipaddr['zip'],
+//                'numinpack'=>$carton_qty,
+//                'itemqty'=>ceil($row['item_qty']*$kf),
+//                'startdeliv'=>$deliv_date,
+//                'vendor_zip'=>$row['vendor_zipcode'],
+//                'item_length'=>$cartoon_depth,
+//                'item_width'=>$cartoon_width,
+//                'item_height'=>$cartoon_heigh,
+//                'ship'=> array(),
+//                'weight' =>$itemweight,
+//                'cnt_code'=>$cntdat['country_iso_code_2'],
+//                'brand' => $brand,
+//            );
+//
+//            $out=calculate_shipcost($options);
+//
+//            if (!$out['result']) {
+//                $res['msg']=$out['error'].' - '.$out['error_code'];
+//                return $res;
+//            }
+//            $ship=$out['ship'];
+//            $codearray= array_keys($ship);
+//
+//            if ($default_ship_method=='') {
+//                if (isset($ship['GND'])) {
+//                    $ship['deliv']=$ship['GND']['DeliveryDate'];
+//                    $ship['GND']['current']=1;
+//                } elseif (isset($ship['UPSStandard'])) {
+//                    $ship['deliv']=$ship['UPSStandard']['DeliveryDate'];
+//                    $ship['UPSStandard']['current']=1;
+//                } elseif (isset ($ship['UPSExpedited'])) {
+//                    $ship['deliv']=$ship['UPSExpedited']['DeliveryDate'];
+//                    $ship['UPSExpedited']['current']=1;
+//                } elseif (isset($ship['UPSSaver'])) {
+//                    $ship['deliv']=$ship['UPSSaver']['DeliveryDate'];
+//                    $ship['UPSSaver']['current']=1;
+//                }
+//            } else {
+//                $shiddeliv=0;
+//                foreach ($codearray as $coderow) {
+//                    if ($ship[$coderow]['ServiceName']==$default_ship_method) {
+//                        $ship[$coderow]['current']=1;
+//                        $shiddeliv=$ship[$coderow]['DeliveryDate'];
+//                    }
+//                }
+//                if ($shiddeliv!==0) {
+//                    $ship['deliv']=$shiddeliv;
+//                } else {
+//                    if (isset($ship['GND'])) {
+//                        $ship['deliv']=$ship['GND']['DeliveryDate'];
+//                        $ship['GND']['current']=1;
+//                    } elseif (isset($ship['UPSStandard'])) {
+//                        $ship['deliv']=$ship['UPSStandard']['DeliveryDate'];
+//                        $ship['UPSStandard']['current']=1;
+//                    } elseif (isset ($ship['UPSExpedited'])) {
+//                        $ship['deliv']=$ship['UPSExpedited']['DeliveryDate'];
+//                        $ship['UPSExpedited']['current']=1;
+//                    } elseif (isset($ship['UPSSaver'])) {
+//                        $ship['deliv']=$ship['UPSSaver']['DeliveryDate'];
+//                        $ship['UPSSaver']['current']=1;
+//                    }
+//                }
+//            }
+//
+//            $itemdat=array(
+//                'charge_perorder'=>(isset($row['charge_perorder']) ? $row['charge_perorder'] : 0),
+//                'charge_pereach'=>(isset($row['charge_pereach']) ? $row['charge_pereach'] : 0),
+//            );
+//            /* Recalc Rates */
+//            $shiplast = recalc_rates($ship,$itemdat,$row['item_qty'],$brand, $cntdat['country_iso_code_2'], $shipaddr['country_id']);
+//
+//            foreach ($shiplast as $key=>$row) {
+//                if ($key!='deliv') {
+//                    if (!in_array($key , $ratekey)) {
+//                        array_push($ratekey, $key);
+//                        $outrate[]=array(
+//                            'ServiceName'=>$row['ServiceName'],
+//                            'Rate'=>0,
+//                            'DeliveryDate'=>0,
+//                            'current'=>$row['current'],
+//                        );
+//                        $srchkey=count($outrate)-1;
+//                    } else {
+//                        $srchkey=array_search($key, $ratekey);
+//                    }
+//                    if ($outrate[$srchkey]['DeliveryDate']<$row['DeliveryDate']) {
+//                        $outrate[$srchkey]['DeliveryDate']=$row['DeliveryDate'];
+//                    }
+//                    $outrate[$srchkey]['Rate']+=$row['Rate'];
+//                }
+//            }
+//        }
+//        $res['result']=$this->success_result;
+//        $res['ships']=$outrate;
+//        return $res;
     }
 
 

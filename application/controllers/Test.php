@@ -2655,4 +2655,44 @@ class Test extends CI_Controller
         echo 'File '.$fileprom.' ready'.PHP_EOL;
 
     }
+
+    public function ups_tracking() {
+        /**
+         * Requires libcurl
+         */
+
+        // const inquiryNumber = "YOUR_inquiryNumber_PARAMETER";
+        $query = array(
+            "locale" => "en_US",
+            "returnSignature" => "false"
+        );
+
+        $curl = curl_init();
+
+        $payload = (object)[];
+
+        curl_setopt_array($curl, [
+            CURLOPT_HTTPHEADER => [
+                "Authorization: Bearer <YOUR_TOKEN_HERE>",
+                "Content-Type: application/json",
+                "transId: string",
+                "transactionSrc: testing"
+            ],
+            CURLOPT_POSTFIELDS => json_encode($payload),
+            CURLOPT_URL => "https://wwwcie.ups.com/api/track/v1/details/" . inquiryNumber . "?" . http_build_query($query),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "GET",
+        ]);
+
+        $response = curl_exec($curl);
+        $error = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($error) {
+            echo "cURL Error #:" . $error;
+        } else {
+            echo $response;
+        }
+    }
 }
