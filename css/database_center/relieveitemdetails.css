@@ -467,7 +467,8 @@ select.vendornameinp {
 }
 .itemparamlabel.vendosrship {
     padding-right: 4px;
-    width: 70px;
+    width: 75px;
+    margin-left: -6px;
 }
 .itemparamvalue.vendorcountry {
     width: 59px;
@@ -534,8 +535,9 @@ textarea.ponotedata {
     overflow-y: auto;
 }
 .itemparamlabel.vedorponote {
-    padding-right: 28px;
+    /* padding-right: 28px; */
     width: 100px;
+    text-align: left;
 }
 .itemparamlabel.vendorinterval {
     padding-right: 4px;
@@ -901,8 +903,8 @@ select.discountselect::-ms-expand {
     width: 39px;
 }
 .itemprice_rushtitle {
-    font-size: 12px;
-    margin-bottom: 5px;
+    font-size: 11px;
+    margin-bottom: 6px;
     text-align: center;
 }
 .itemprice_rushprice, .itemprice_rushtdisc, .itemprice_rushsale {
