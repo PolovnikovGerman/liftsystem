@@ -19,8 +19,8 @@ class UPS_service
         $this->ups_secret = $this->_CI->config->item('ups_secret');
         $this->ups_oath_url = $this->_CI->config->item('ups_oath_url');
         $this->ups_tokenrefresh_url = $this->_CI->config->item('ups_tokenrefresh_url');
-        $this->ups_rate_url = $this->_CI->config->item('ups_rate_url');
-        $this->ups_tnt_url = $this->_CI->config->item('ups_transit_url');
+        $this->ups_rate_url = $this->_CI->config->item('upsapi_rate');
+        $this->ups_tnt_url = $this->_CI->config->item('upsapi_tnturl');
         $this->shiper = $this->_CI->config->item('ups_shiper');
     }
 

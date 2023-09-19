@@ -2,6 +2,8 @@
 
 class Shipcalculate_model extends MY_Model
 {
+    private $box_empty_weight = 25;
+
     function __construct()
     {
         parent::__construct();
@@ -146,6 +148,74 @@ class Shipcalculate_model extends MY_Model
         ];
     }
 
+    public function prepare_ship_custompackages($shipqty) {
+        $packages = [];
+        $numpackages = 0;
+        $boxqty = $this->config->item('default_inpack');
+        $itemweight = $this->box_empty_weight / $boxqty;
+        $ceilpart = floor($shipqty/$boxqty);
+        $boxweight = $itemweight * $boxqty;
+        $box_width = $this->config->item('default_pack_width');
+        $box_length = $this->config->item('default_pack_depth');
+        $box_height = $this->config->item('default_pack_heigth');
+        for ($i=0; $i < $ceilpart; $i++) {
+            $packages[] = [
+                "PackagingType" => [
+                    "Code" => "02",
+                    "Description" => "Packaging"
+                ],
+                "Dimensions" => [
+                    "UnitOfMeasurement" => [
+                        "Code" => "IN",
+                        "Description" => "Inches"
+                    ],
+                    "Length" => "{$box_length}",
+                    "Width" => "{$box_width}",
+                    "Height" => "{$box_height}"
+                ],
+                "PackageWeight" => [
+                    "UnitOfMeasurement" => [
+                        "Code" => "LBS",
+                        "Description" => "Pounds"
+                    ],
+                    "Weight" => "{$boxweight}"
+                ],
+            ];
+            $numpackages++;
+        }
+        $restqty = $shipqty - $ceilpart * $boxqty;
+        if ($restqty > 0) {
+            //
+            $packages[] = [
+                "PackagingType" => [
+                    "Code" => "02",
+                    "Description" => "Packaging"
+                ],
+                "Dimensions" => [
+                    "UnitOfMeasurement" => [
+                        "Code" => "IN",
+                        "Description" => "Inches"
+                    ],
+                    "Length" => "{$box_length}",
+                    "Width" => "{$box_width}",
+                    "Height" => "{$box_height}"
+                ],
+                "PackageWeight" => [
+                    "UnitOfMeasurement" => [
+                        "Code" => "LBS",
+                        "Description" => "Pounds"
+                    ],
+                    "Weight" => "{$boxweight}"
+                ],
+            ];
+            $numpackages++;
+        }
+        return [
+            'packages' => $packages,
+            'numpackages' => $numpackages,
+        ];
+    }
+
     public function calculate_upsshipcost($options) {
         $out=['result' => $this->error_result, 'msg' => 'Error During Calc Ship rates'];
         $this->load->config('shipping');
@@ -163,8 +233,8 @@ class Shipcalculate_model extends MY_Model
         $earlier = new DateTime(date('Y-m-d'));
         $later = new DateTime(date('Y-m-d', $startdeliv));
         $daydiff = $later->diff($earlier)->format("%r%a");
-        $code = '';
-        $token = session('token');
+
+        $token = usersession('token');
         $out['error_code'] = 'Authorization';
         $tokenres = $this->_UpsAuthToken($token);
         $out['msg'] = $tokenres['msg'];
@@ -182,7 +252,7 @@ class Shipcalculate_model extends MY_Model
             $upsservice = new UPS_service();
 
             $transitres = $upsservice->timeInTransit($token, $shipFrom['Address'], $shipTo['Address'], $tntweigth, $tntpacks, $package_price,  date('Y-m-d', $startdeliv), '10:00:00');
-            $out['msg'] = $transitres['msg'];
+            $out['msg'] = 'Invalid Parameters';// $transitres['msg'];
             $out['error_code'] = 'TNT';
             if ($transitres['error']==0) {
                 // All ok
@@ -198,7 +268,6 @@ class Shipcalculate_model extends MY_Model
                     $rates = $rateres['rates'];
                     // Make merged array
                     $ship=[];
-                    $code = '';
                     $codes = [];
                     $calendar_id=$this->config->item('bank_calendar');
                     if ($cnt_code=='US') {
@@ -214,7 +283,6 @@ class Shipcalculate_model extends MY_Model
                                 }
                                 if ($transit==1) {
                                     array_push($codes, 'GND');
-                                    $code .= "GND|";
                                     if ($time['deliverytime'] > '16:00:00') {
                                         $newdate  = $this->calendars_model->get_business_date(strtotime($time['deliverydate']),1, $options['item_id']);
                                         $time['deliverydate'] = date('Y-m-d', $newdate);
@@ -242,7 +310,6 @@ class Shipcalculate_model extends MY_Model
                                 }
                                 if ($transit==1) {
                                     array_push($codes, 'DA2');
-                                    $code .= "2DA|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
                                     if (abs($daydiff) > 10) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
@@ -265,7 +332,6 @@ class Shipcalculate_model extends MY_Model
                                 }
                                 if ($transit==1) {
                                     array_push($codes, 'DA1');
-                                    $code .= "1DA|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
                                     if (abs($daydiff) > 10) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
@@ -300,7 +366,6 @@ class Shipcalculate_model extends MY_Model
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
                                     );
-                                    $code .= "1DP|";
                                 }
                             }
                         }
@@ -317,9 +382,8 @@ class Shipcalculate_model extends MY_Model
                                 }
                                 if ($transit==1) {
                                     array_push($codes, 'GND');
-                                    $code .= "GND|";
                                     if ($time['deliverytime'] > '16:00:00') {
-                                        $newdate  = $this->businesscalendar_model->get_business_date(strtotime($time['deliverydate']),1);
+                                        $newdate  = $this->calendars_model->get_business_date(strtotime($time['deliverydate']),1, $options['item_id']);
                                         $time['deliverydate'] = date('Y-m-d', $newdate);
                                         $time['deliverytime'] = '16:00:00';
                                     }
@@ -345,7 +409,6 @@ class Shipcalculate_model extends MY_Model
                                 }
                                 if ($transit==1) {
                                     array_push($codes, 'UPSExpedited');
-                                    $code .= "08|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
                                     if (abs($daydiff) > 10) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
@@ -368,7 +431,6 @@ class Shipcalculate_model extends MY_Model
                                 }
                                 if ($transit==1) {
                                     array_push($codes, 'UPSSaver');
-                                    $code .= "65|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
                                     if (abs($daydiff) > 10) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
@@ -391,7 +453,6 @@ class Shipcalculate_model extends MY_Model
                                 }
                                 if ($transit==1) {
                                     array_push($codes, 'UPSExpress');
-                                    $code .= "07|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
                                     if (abs($daydiff) > 10) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
@@ -422,7 +483,6 @@ class Shipcalculate_model extends MY_Model
                                 }
                                 if ($transit==1) {
                                     array_push($codes, 'UPSExpress');
-                                    $code .= "07|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
                                     if (abs($daydiff) > 10) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
@@ -445,7 +505,6 @@ class Shipcalculate_model extends MY_Model
                                 }
                                 if ($transit==1) {
                                     array_push($codes, 'UPSExpedited');
-                                    $code .= "08|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
                                     if (abs($daydiff) > 10) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
@@ -475,9 +534,8 @@ class Shipcalculate_model extends MY_Model
                                 }
                                 if ($transit==1) {
                                     array_push($codes, 'GND');
-                                    $code .= "GND|";
                                     if ($time['deliverytime'] > '16:00:00') {
-                                        $newdate  = $this->businesscalendar_model->get_business_date(strtotime($time['deliverydate']),1);
+                                        $newdate  = $this->calendars_model->get_business_date(strtotime($time['deliverydate']),1, $options['item_id']);
                                         $time['deliverydate'] = date('Y-m-d', $newdate);
                                         $time['deliverytime'] = '16:00:00';
                                     }
@@ -501,7 +559,6 @@ class Shipcalculate_model extends MY_Model
                                     }
                                     if ($transit==1) {
                                         array_push($codes, 'ExpressPlus');
-                                        $code .= "54|";
                                         $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
                                         if (abs($daydiff) > 10) {
                                             $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
@@ -514,7 +571,6 @@ class Shipcalculate_model extends MY_Model
                                             'current' => 0,
                                         ];
                                     }
-
                                 }
                             } elseif ($rate['service_code']=='65') {
                                 // Saver
@@ -526,7 +582,6 @@ class Shipcalculate_model extends MY_Model
                                 }
                                 if ($transit==1) {
                                     array_push($codes, 'UPSSaver');
-                                    $code .= "65|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
                                     if (abs($daydiff) > 10) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
@@ -543,7 +598,7 @@ class Shipcalculate_model extends MY_Model
                         }
                     }
                     $out['ship'] = $ship;
-                    $out['code'] = $code;
+                    $out['code'] = $codes;
                 }
             }
         }
@@ -649,7 +704,7 @@ class Shipcalculate_model extends MY_Model
                     $out['result'] = $this->success_result;
                     $out['token'] = $token;
                     $out['session'] = $sessionId;
-                    session('token', $token);
+                    usersession('token', $token);
                 }
             }
         }
@@ -664,7 +719,7 @@ class Shipcalculate_model extends MY_Model
                 $out['result'] = $this->success_result;
                 $out['token'] = $tokenresult['access_token'];
                 $out['session'] = $sessionId;
-                session('token', $tokenresult['access_token']);
+                usersession('token', $tokenresult['access_token']);
             }
         }
         return $out;

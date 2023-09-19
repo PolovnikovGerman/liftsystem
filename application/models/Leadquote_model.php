@@ -200,6 +200,7 @@ class Leadquote_model extends MY_Model
                     $items[$idx]['num_colors'] = count($itemdata['colors']);
                     $items[$idx]['imprint_locations']=ifset($itemdata, 'imprints',[]);
                     $items[$idx]['vendor_zipcode']=ifset($itemdata, 'vendor_zipcode', $this->config->item('zip'));
+                    $items[$idx]['vendor_item_id'] = ifset($itemdata, 'vendor_item_id', NULL);
                     $items[$idx]['charge_perorder']=ifset($itemdata, 'charge_perorder',0);
                     $items[$idx]['charge_pereach']=ifset($itemdata, 'charge_pereach', 0);
                 }
@@ -423,9 +424,11 @@ class Leadquote_model extends MY_Model
             'vendor_zipcode'=>$this->default_zip,
             'charge_perorder'=>0,
             'charge_peritem'=>0,
+            'vendor_item_id' => null,
         ];
         $newprice=0;
         if ($item_id>0) {
+            $quoteitem['vendor_item_id'] = $itemdata['vendor_item_id'];
             // Prices, totals
             $newprice=$this->leadorder_model->_get_item_priceqty($item_id, $quoteitem['template'] , $defqty);
             $setupprice=$this->leadorder_model->_get_item_priceimprint($item_id, 'setup');

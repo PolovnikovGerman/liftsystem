@@ -55,6 +55,6 @@ $config['ups_shiper'] = array(
         "CountryCode" => $config['country_code'],
     ),
 );
-$config['upsapi_tntulr'] = getenv('UPS_TRANSIT_URL');
+$config['upsapi_tnturl'] = getenv('UPS_TRANSIT_URL');
 $config['upsapi_rate'] = getenv('UPS_RATE_URL');
 $config['upsapi_tracking'] = getenv('UPS_TRACKING_URL');

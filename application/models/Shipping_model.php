@@ -503,9 +503,9 @@ Class Shipping_model extends MY_Model
                 $shipFrom = [
                     "Name" => $venditemdat['vendor_name'],
                     "Address" => array(
-                        "City" => $venditemdat['shipaddr_city'],
-                        "StateProvinceCode" => $venditemdat['shipaddr_state'],
-                        "PostalCode" => $venditemdat['vendor_zipcode'],
+                        "City" => $venditemdat['item_shipcity'],
+                        "StateProvinceCode" => $venditemdat['item_shipstate'],
+                        "PostalCode" => $venditemdat['vendor_item_zipcode'],
                         "CountryCode" => $venditemdat['country_iso_code_2']
                     )
                 ];
@@ -532,7 +532,7 @@ Class Shipping_model extends MY_Model
                         'brand' => $brand,
                         'shipTo' => $shipTo,
                         'shipFrom' => $shipFrom,
-                        'target_country' => $shipaddr['country_id'],
+                        'target_country' => $cntdat['country_iso_code_2'],
                         'package_price' => $item['item_subtotal'],
                         'item_id' => $item['item_id'],
                     ];
@@ -1231,37 +1231,64 @@ Class Shipping_model extends MY_Model
         $outrate = [];
         $ratekey = [];
         $kf=1;
+        $this->load->model('shipcalculate_model');
+        $this->load->model('vendors_model');
         $this->load->config('shipping');
         $cntdat=$this->get_country($quote['shipping_country']);
         foreach ($items as $item) {
-            $carton_qty = intval(ifset($item, 'cartoon_qty', 0)) > 0 ? intval($item['cartoon_qty']) : $this->config->item('default_inpack');
-            $cartoon_depth = intval(ifset($item, 'cartoon_depth', 0)) > 0 ? intval($item['cartoon_depth']) : $this->config->item('default_pack_depth');
-            $cartoon_width = intval(ifset($item, 'cartoon_width' , 0)) > 0 ? intval($item['cartoon_width']) : $this->config->item('default_pack_width');
-            $cartoon_heigh = intval(ifset($item, 'cartoon_heigh',0)) > 0 ? intval($item['cartoon_heigh']) : $this->config->item('default_pack_heigth');
-            $itemweight = ifset($item, 'item_weigth', 0) > 0 ? $item['item_weigth'] : $this->box_empty_weight / $carton_qty;
-            $options=array(
-                'zip' => $quote['shipping_zip'],
-                'numinpack'=>$carton_qty,
-                'itemqty'=>ceil($item['item_qty']*$kf),
-                'startdeliv' => $deliv_date,
-                'vendor_zip' => empty($item['vendor_zipcode']) ? $this->config->item('zip') : $item['vendor_zipcode'],
-                'item_length'=>$cartoon_depth,
-                'item_width'=>$cartoon_width,
-                'item_height'=>$cartoon_heigh,
-                'ship'=> array(),
-                'weight' =>$itemweight,
-                'cnt_code'=>$cntdat['country_iso_code_2'],
+            if ($item['item_id'] > 0) {
+                $venditemdat = $this->vendors_model->get_item_vendor($item['vendor_item_id']);
+                // Ship From
+                $shipFrom = [
+                    "Name" => $venditemdat['vendor_name'],
+                    "Address" => array(
+                        "City" => $venditemdat['item_shipcity'],
+                        "StateProvinceCode" => $venditemdat['item_shipstate'],
+                        "PostalCode" => $venditemdat['vendor_item_zipcode'],
+                        "CountryCode" => $venditemdat['country_iso_code_2']
+                    )
+                ];
+                $datpackages = $this->shipcalculate_model->prepare_ship_packages($item['item_qty'], $item['item_id'], $item['item_weigth']);
+            } else {
+                $shiper = $this->config->item('ups_shiper');
+                $shipFrom = [
+                    "Name" => $shiper['Name'],
+                    "Address" => $shiper['Address'],
+                ];
+                $datpackages = $this->shipcalculate_model->prepare_ship_custompackages($item['item_qty']);
+            }
+            $shipTo = [
+                "Name" => empty($quote['shipping_company']) ? 'test company' : $quote['shipping_company'],
+                "Address" => array(
+                    "City" => $quote['shipping_city'],
+                    "StateProvinceCode" => $quote['shipping_state'],
+                    "PostalCode" => $quote['shipping_zip'],
+                    "CountryCode" => $cntdat['country_iso_code_2'],
+                )
+            ];
+            $package_price = $item['item_qty'] * $item['item_price'];
+            $options = [
+                'numinpack'=>(intval($item['cartoon_qty'])==0 ? $this->config->item('default_inpack') : $item['cartoon_qty']),
+                'itemqty'=>$item['item_qty'],
+                'weight'=>$item['item_weigth'],
+                'packages' => $datpackages['packages'],
+                'numpackages' => $datpackages['numpackages'],
+                'startdeliv'=> $deliv_date,
                 'brand' => $brand,
-            );
-
-            $out=calculate_shipcost($options);
-
+                'shipTo' => $shipTo,
+                'shipFrom' => $shipFrom,
+                'target_country' => $cntdat['country_iso_code_2'],
+                'package_price' => empty($package_price) ? 100 : $package_price,
+                'item_id' => $item['item_id'],
+            ];
+            // $out=calculate_shipcost($options);
+            $out = $this->shipcalculate_model->calculate_upsshipcost($options);
             if (!$out['result']) {
-                $res['msg']=$out['error'].' - '.$out['error_code'];
+                $res['msg']=$out['error_code'].' - '.$out['msg'];
                 return $res;
             }
-            $ship=$out['ship'];
-            $codearray= array_keys($ship);
+            $ship = $out['ship'];
+            $codearray= $out['code'];
 
             if ($default_ship_method=='') {
                 if (isset($ship['GND'])) {
@@ -1309,7 +1336,7 @@ Class Shipping_model extends MY_Model
                 'charge_pereach'=> intval(ifset($item, 'charge_pereach',0)),
             );
             /* Recalc Rates */
-            $shiplast = recalc_rates($ship,$itemdat, $item['item_qty'],$brand, $cntdat['country_iso_code_2'], $quote['shipping_country']);
+            $shiplast = $this->shipcalculate_model->recalc_rates($ship,$itemdat, $item['item_qty'],$brand, $quote['shipping_country']);
 
             foreach ($shiplast as $key=>$row) {
                 if ($key!='deliv') {

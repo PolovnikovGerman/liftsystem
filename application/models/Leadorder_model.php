@@ -1365,7 +1365,6 @@ Class Leadorder_model extends My_Model {
             'item_qty'=>$defqty,
             'colors'=>$itemdata['colors'],
             'num_colors'=>$itemdata['num_colors'],
-            'item_qty'=>$defqty,
             'item_template'=>$this->normal_template,
             'item_weigth'=>0,
             'cartoon_qty'=>0,
@@ -1380,6 +1379,7 @@ Class Leadorder_model extends My_Model {
             'item_subtotal'=>0,
             'imprint_subtotal'=>0,
             'vendor_zipcode'=>$this->default_zip,
+            'vendor_item_id' => $itemdata['vendor_item_id'],
             'charge_perorder'=>0,
             'charge_peritem'=>0,
         );
@@ -5829,6 +5829,7 @@ Class Leadorder_model extends My_Model {
                 'imprint_locations'=>array(),
                 // 'qtyinput_class' => 'normal',
                 'base_price' => $row['base_price'],
+                'vendor_item_id' => null,
             );
             $qty_class='normal';
             if ($item_id<0) {
@@ -5869,6 +5870,7 @@ Class Leadorder_model extends My_Model {
                 $newitem['vendor_zipcode']=$itemdata['vendor_zipcode'];
                 $newitem['charge_perorder']=$itemdata['charge_perorder'];
                 $newitem['charge_pereach']=$itemdata['charge_pereach'];
+                $newitem['vendor_item_id'] = $itemdata['vendor_item_id'];
             }
             $colors=$itemdata['colors'];
             // Colors
