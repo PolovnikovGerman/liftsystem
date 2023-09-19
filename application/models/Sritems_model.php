@@ -1427,7 +1427,7 @@ Class Sritems_model extends My_Model
             foreach ($prices as $price) {
                 if ($price['promo_price_id']==$priceidx) {
                     $find = 1;
-                    $prices[$idx][$fldname] = $postdata['newval'];
+                    $prices[$idx][$fldname] = PriceOutput($postdata['newval']);
                     break;
                 }
                 $idx++;
@@ -2088,7 +2088,8 @@ Class Sritems_model extends My_Model
             $idx = 0;
             foreach ($prices as $price) {
                 if ($price['price']!='') {
-                    $prices[$idx]['sale_price'] = round($price['price']*(100-$item['price_discount_val'])/100,3);
+                    $newprice = round($price['price']*(100-$item['price_discount_val'])/100,3);
+                    $prices[$idx]['sale_price'] = PriceOutput($newprice);
                 }
                 $idx++;
             }
@@ -2100,7 +2101,8 @@ Class Sritems_model extends My_Model
             if ($item['item_price_print']=='') {
                 $item['item_sale_print'] = '';
             } else {
-                $item['item_sale_print'] = round($item['item_price_print']*(100-$item['print_discount_val'])/100, 3);
+                $newprice = round($item['item_price_print']*(100-$item['print_discount_val'])/100, 3);
+                $item['item_sale_print'] = PriceOutput($newprice);
             }
         }
         // Setup
@@ -2110,7 +2112,8 @@ Class Sritems_model extends My_Model
             if ($item['item_price_setup']=='') {
                 $item['item_sale_setup'] = '';
             } else {
-                $item['item_sale_setup'] = round(floatval($item['item_price_setup'])*(100-floatval($item['setup_discount_val']))/100, 3);
+                $newprice = round(floatval($item['item_price_setup'])*(100-floatval($item['setup_discount_val']))/100, 3);
+                $item['item_sale_setup'] = PriceOutput($newprice);
             }
         }
         // Repeat
@@ -2120,7 +2123,8 @@ Class Sritems_model extends My_Model
             if ($item['item_price_repeat']=='') {
                 $item['item_sale_repeat'] = '';
             } else {
-                $item['item_sale_repeat'] = round($item['item_price_repeat']*(100-$item['repeat_discount_val'])/100, 3);
+                $newprice = round($item['item_price_repeat']*(100-$item['repeat_discount_val'])/100, 3);
+                $item['item_sale_repeat'] = PriceOutput($newprice);
             }
         }
         // Rush
@@ -2130,7 +2134,8 @@ Class Sritems_model extends My_Model
             if ($item['item_price_rush1']=='') {
                 $item['item_sale_rush1'] = '';
             } else {
-                $item['item_sale_rush1'] = round($item['item_price_rush1']*(100-$item['rush1_discount_val'])/100,3);
+                $newprice = round($item['item_price_rush1']*(100-$item['rush1_discount_val'])/100,3);
+                $item['item_sale_rush1'] = PriceOutput($newprice);
             }
         }
         if (empty($item['rush2_discount'])) {
@@ -2139,7 +2144,8 @@ Class Sritems_model extends My_Model
             if ($item['item_price_rush2']=='') {
                 $item['item_sale_rush2'] = '';
             } else {
-                $item['item_sale_rush2'] = round($item['item_price_rush2']*(100-$item['rush2_discount_val'])/100,3);
+                $newprice = round($item['item_price_rush2']*(100-$item['rush2_discount_val'])/100,3);
+                $item['item_sale_rush2'] = PriceOutput($newprice);
             }
         }
         // Pantone
@@ -2149,7 +2155,8 @@ Class Sritems_model extends My_Model
             if ($item['item_price_pantone']=='') {
                 $item['item_sale_pantone'] = '';
             } else {
-                $item['item_sale_pantone'] = round($item['item_price_pantone']*(100-$item['pantone_discount_val'])/100,3);
+                $newprice = round($item['item_price_pantone']*(100-$item['pantone_discount_val'])/100,3);
+                $item['item_sale_pantone'] = PriceOutput($newprice);
             }
         }
         return [
