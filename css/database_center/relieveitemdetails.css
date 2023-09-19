@@ -467,7 +467,8 @@ select.vendornameinp {
 }
 .itemparamlabel.vendosrship {
     padding-right: 4px;
-    width: 70px;
+    width: 75px;
+    margin-left: -6px;
 }
 .itemparamvalue.vendorcountry {
     width: 59px;
@@ -534,8 +535,9 @@ textarea.ponotedata {
     overflow-y: auto;
 }
 .itemparamlabel.vedorponote {
-    padding-right: 28px;
+    /* padding-right: 28px; */
     width: 100px;
+    text-align: left;
 }
 .itemparamlabel.vendorinterval {
     padding-right: 4px;
@@ -721,7 +723,7 @@ input.vendorpriceinpt {
 }
 .vendorpantonetitle {
     font-size: 12px;
-    margin-top: 23px;
+    margin-top: 21px;
     margin-bottom: 4px;
     line-height: 14px;
     text-align: center;
@@ -827,13 +829,14 @@ select.discountselect {
     line-height: 20px;
     border: 1px solid #000000;
     background-color: #ffffff;
-    -webkit-appearance: none;
-    appearance: none;
 }
 select.discountselect:disabled {
     border: 1px solid #9f9f9f;
     background-color: #eaeaea;
     opacity: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    padding-left: 3px;
 }
 select.discountselect::-ms-expand {
     display: none;
@@ -858,14 +861,14 @@ select.discountselect::-ms-expand {
 .itemprice_extraarea {
     border-right: 1px solid #626262;
     padding-left: 3px;
-    width: 130px;
+    /* width: 130px; */
 }
 .itemprice_extra {
-    width: 35px;
+    width: 42px;
     margin-right: 4px;
 }
 .itemprice_extra.repeatsetup {
-    width: 39px;
+    width: 42px;
     margin-left: 3px;
 }
 .itemprice_extratitle {
@@ -881,7 +884,8 @@ select.discountselect::-ms-expand {
     line-height: 20px;
     margin-bottom: 5px;
     text-align: center;
-    width: 35px;
+    /* width: 35px; */
+    width: 100%;
     background-color: #eaeaea;
 }
 .itemprice_extraprice.editmode {
@@ -893,16 +897,16 @@ select.discountselect::-ms-expand {
 }
 .itemprice_rusharea {
     border-right: 1px solid #626262;
-    padding: 6px 0 0 38px;
-    width: 127px;
+    padding: 6px 0 0 14px;
+    /* width: 127px; */
 }
 .itemprice_rush {
     margin-right: 5px;
-    width: 39px;
+    width: 42px;
 }
 .itemprice_rushtitle {
-    font-size: 12px;
-    margin-bottom: 5px;
+    font-size: 11px;
+    margin-bottom: 6px;
     text-align: center;
 }
 .itemprice_rushprice, .itemprice_rushtdisc, .itemprice_rushsale {
@@ -912,7 +916,8 @@ select.discountselect::-ms-expand {
     line-height: 20px;
     margin-bottom: 5px;
     text-align: center;
-    width: 39px;
+    /* width: 39px; */
+    width: 100%;
     background-color: #eaeaea;
 }
 .itemprice_rushprice, .itemprice_rushsale {
@@ -933,10 +938,10 @@ select.discountselect::-ms-expand {
     font-weight: 600;
     height: 20px;
     line-height: 20px;
-    margin-left: 5px;
+    margin-left: 2px;
     margin-bottom: 5px;
     text-align: center;
-    width: 35px;
+    width: 43px;
     background-color: #eaeaea;
 }
 .itemprice_pantoneprice.editmode {
@@ -1232,7 +1237,7 @@ select.itemdetailsoptions.missing_info {
     background-color: transparent!important;
     color: #000000;
     font-size: 11px!important;
-    width: 33px!important;
+    width: 36px!important;
 }
 .vendorfile_view, .vendorfile_delete {
     width: 25px;
@@ -1446,7 +1451,7 @@ textarea.itemkeywords {
     background: #000048;
     position: relative;
     top: -245px;
-    left: 218px;
+    left: 219px;
     padding-left: 8px;
 }
 .sectionbody.shippingsection {
