@@ -2695,4 +2695,26 @@ class Test extends CI_Controller
             echo $response;
         }
     }
+
+    public function update_vendoritem_ship() {
+        $this->load->model('shipping_model');
+        $this->db->select('vendor_item_zipcode, item_shipcountry, count(vendor_item_id) as cnt');
+        $this->db->from('sb_vendor_items');
+        $this->db->group_by('vendor_item_zipcode, item_shipcountry');
+        $this->db->order_by('vendor_item_zipcode, item_shipcountry');
+        $vitems = $this->db->get()->result_array();
+        foreach ($vitems as $vitem) {
+            if (!empty($vitem['vendor_item_zipcode']) && !empty($vitem['item_shipcountry'])) {
+                $adrdat = $this->shipping_model->get_zip_address($vitem['item_shipcountry'], $vitem['vendor_item_zipcode']);
+                if ($adrdat['result']==1) {
+                    $this->db->where('vendor_item_zipcode', $vitem['vendor_item_zipcode']);
+                    $this->db->where('item_shipcountry', $vitem['item_shipcountry']);
+                    $this->db->set('item_shipstate', $adrdat['state']);
+                    $this->db->set('item_shipcity', $adrdat['city']);
+                    $this->db->update('sb_vendor_items');
+                    echo 'ZIP '.$vitem['vendor_item_zipcode'].' City - '.$adrdat['city'].' '.$adrdat['state'].PHP_EOL;
+                }
+            }
+        }
+    }
 }
