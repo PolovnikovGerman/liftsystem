@@ -30,7 +30,7 @@ function navigation_init() {
                 $("#orderlist").show();
                 if (parseInt(updorders)==0) {
                 } else {
-                    init_orders();
+                    // init_orders();
                 }
             } else if (callpage=='art_tasks') {
                 $("#taskview").show();
@@ -43,12 +43,12 @@ function navigation_init() {
                 // Orders list
                 if (parseInt(updorders)==0) {
                 } else {
-                    search_leadorders();
+                    // search_leadorders();
                 }
             } else if (callpage=='profitlist') {
                 if (parseInt(updorders)==0) {
                 } else {
-                    search_profit_data();
+                    // search_profit_data();
                 }
             } else if (callpage=='accrecive') {
                 if (parseInt(updorders)==0) {
