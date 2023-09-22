@@ -158,7 +158,7 @@ Class Leadorder_model extends My_Model {
         // $this->db->select("coalesce(oa.cnt_amnt,0)  as cnt_amnt",FALSE);
         $this->db->select('u.user_leadname, u.user_name, bil.customer_ponum');
         $this->db->select('itm.item_number, coalesce(st.item_id, 0) as stok_item', FALSE);
-        $this->db->select('vo.order_proj_status as artstage');
+        // $this->db->select('vo.order_proj_status as artstage');
         $this->db->select('s.order_shipping_id, s.shipdate');
         $this->db->select('totalpack.cnt as totalpacks, sendpack.cnt as sendpacks, sendpack.delivdate, sendpack.packsenddate');
         $this->db->select('sendpack.packtrackdate, delivpack.cnt as delivpacks');
@@ -174,7 +174,7 @@ Class Leadorder_model extends My_Model {
         $this->db->join("({$sendpack}) as sendpack",'sendpack.order_id=o.order_id','left');
         $this->db->join("({$delivpack}) as delivpack",'delivpack.order_id=o.order_id','left');
         // $this->db->where('o.is_canceled',0);
-        $this->db->join('v_order_artstage vo','vo.order_id=o.order_id','left');
+        // $this->db->join('v_order_artstage vo','vo.order_id=o.order_id','left');
         if (isset($options['unassigned'])) {
             $this->db->where('o.order_usr_repic is null');
         }
@@ -233,6 +233,9 @@ Class Leadorder_model extends My_Model {
         $curdat='';
         $ordidx=1;
         foreach ($res as $row) {
+            $this->db->select('order_proj_status as artstage')->from('v_order_artstage')->where('order_id', $row['order_id']);
+            $art = $this->db->get()->row_array();
+            $row['artstage'] = ifset($art,'artstage','');
             $row['itemcolorclass']='';
             if (strlen($row['itemcolor'])>9) {
                 $row['itemcolorclass']='wide';
@@ -4814,7 +4817,7 @@ Class Leadorder_model extends My_Model {
         // Update Order
         $this->db->set('order_date',$data['order_date']);
         $this->db->set('brand_id',(empty($data['brand_id']) ? $this->config->item('default_brand') : $data['brand_id']));
-        $this->db->set('customer_name',$data['customer_name']);
+        $this->db->set('customer_name', substr($data['customer_name'],0,41));
 
         $this->db->set('revenue', floatval($data['revenue']));
         $this->db->set('shipping', floatval($data['shipping']));
@@ -5062,11 +5065,11 @@ Class Leadorder_model extends My_Model {
                 $this->db->set('item_description', $irow['item_description']);
                 $this->db->set('item_qty', $irow['item_qty']);
                 $this->db->set('item_price', $irow['item_price']);
-                if (isset($irow['printshop_item_id']) && !empty($irow['printshop_item_id'])) {
-                    $this->db->set('printshop_item_id', $irow['printshop_item_id']);
-                } else {
+//                if (isset($irow['printshop_item_id']) && !empty($irow['printshop_item_id'])) {
+//                    $this->db->set('printshop_item_id', $irow['printshop_item_id']);
+//                } else {
                     $this->db->set('printshop_item_id', NULL);
-                }
+//                }
                 if ($irow['item_id']<0) {
                     $this->db->set('order_item_id', $order_item_id);
                     $this->db->insert('ts_order_itemcolors');
@@ -5639,19 +5642,19 @@ Class Leadorder_model extends My_Model {
         $this->db->where('i.item_id', $item_id);
         $itmres=$this->db->get()->row_array();
         if ($item_id>0 && !empty($itmres)) {
-            if (empty($itmres['printshop_item_id'])) {
+//            if (empty($itmres['printshop_item_id'])) {
                 // Get Item Price, Item Colors
                 // Get Colors
                 $this->db->select('item_color as colors');
                 $this->db->from('sb_item_colors');
                 $this->db->where('item_color_itemid', $item_id);
                 $colors=$this->db->get()->result_array();
-            } else {
-                $this->db->select('color as colors');
-                $this->db->from('ts_printshop_colors');
-                $this->db->where('printshop_item_id',$itmres['printshop_item_id']);
-                $colors=$this->db->get()->result_array();
-            }
+//            } else {
+//                $this->db->select('color as colors');
+//                $this->db->from('ts_printshop_colors');
+//                $this->db->where('printshop_item_id',$itmres['printshop_item_id']);
+//                $colors=$this->db->get()->result_array();
+//            }
             $itmres['num_colors']=count($colors);
             if (count($colors)>0) {
                 $newcolor=array();
