@@ -78,23 +78,25 @@ body div {
 }
 .content_tab_header.stressballs {
     background: #3537fc;
+    height: 49px;
 }
 .content_tab_header.stressballs.active {
     background: #3736fe;
     position: relative;
 }
 .stressballs_logo {
-    margin: 13px 25.5px 12px 25.5px;
+    margin: 13px 25.5px 0 25.5px;
 }
 .stressballs_logo.active {
-    margin: 9px 10.5px 4.5px 10.5px;
+    margin: 9px 10.5px 0 10.5px;
 }
 .content_tab_header.relievers {
     background: rgba(253, 255, 68, 0.4);
-    padding-bottom: 8px;
+    height: 49px;
 }
 .content_tab_header.active.relievers {
     background: rgba(253, 255, 68, 1);
+    height: auto;
 }
 .relievers_logo {
     margin: 5px 20.5px 0 20.5px;
@@ -102,8 +104,22 @@ body div {
 .relievers_logo.active {
     margin: 5px 8.5px 0 8.5px;
 }
+.content_tab_header.sigmasystem {
+    background: #595959;
+    width: 48px;
+    height: 49px;
+}
+.sigma_logo {
+    margin: 18px 16px 0 16px;
+}
+.content_tab_header.active.sigmasystem {
+    background: #aaa9a9;
+}
+.sigma_logo.active {
+    margin: 17px 17px 0 17px;
+}
 .mainsiteheader {
-    width: calc(100% - 390px);
+    width: calc(100% - 425px);
 }
 .period_analitic_info {
     border: 1px solid #9b9b9b;
@@ -490,6 +506,9 @@ ul.mainmenu #collapsed.dropdown-menu li {
 .content_tab.relievers {
     background: #fdff44;
 }
+.content_tab.sigmasystem {
+    background: #aaa9a9;
+}
 .stressballssubtitle {
     display: block;
     color: #000000;
@@ -501,6 +520,16 @@ ul.mainmenu #collapsed.dropdown-menu li {
     position: relative;
 }
 .relieverssubtitle {
+    display: block;
+    color: #000000;
+    font-size: 15px;
+    font-weight: 600;
+    font-style: italic;
+    margin-left: 11px;
+    margin-top: -7px;
+    position: relative;
+}
+.sigmasystemsubtitle {
     display: block;
     color: #000000;
     font-size: 15px;
@@ -533,6 +562,15 @@ ul.mainmenu #collapsed.dropdown-menu li {
 }
 .brandmenuitem.relievers:hover {
     background: #00004b;
+    color: #ffffff;
+}
+.brandmenuitem.sigmasystem {
+    border: 1px solid #000000;
+    background: #d5d5d5;
+    color: #000000;
+}
+.brandmenuitem.sigmasystem:hover {
+    background: #000000;
     color: #ffffff;
 }
 .brandmenuitemactive {
@@ -590,6 +628,9 @@ ul.mainmenu #collapsed.dropdown-menu li {
 }
 .maincontentmenuarea.relieverstab {
     background: #fdff44;
+}
+.maincontentmenuarea.sigmasystem {
+    background: #aaa9a9;
 }
 .maincontentmenuarea.adminmenu {
     /* background: #ff1c1c; */

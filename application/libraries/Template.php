@@ -68,7 +68,7 @@ class Template
                 $total_view = $this->CI->load->view('page/dashboard_total_view', $total_options, TRUE);
             }
         }
-
+        $brands = $this->CI->menuitems_model->get_userbrands($userdat['id']);
         $styles=[];
         if (isset($options['styles'])) {
             $styles=$options['styles'];
@@ -166,6 +166,7 @@ class Template
             'inventoryold' => $inventory_old,
             'test_server' => $this->CI->config->item('test_server'),
             'brand' => $brand,
+            'brands' => $brands,
         ];
         if (ifset($options,'adaptive',0)==1) {
             $dat['header_view'] = $this->CI->load->view('page/header_adaptive_view', $topmenu_options, TRUE);

@@ -15,6 +15,16 @@ $(document).ready(function () {
             $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
         }
     );
+    $(".brandmenuitem.sigmasystem").hover(
+        function () {
+            var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-black.','-white.');
+            $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
+        },
+        function () {
+            var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-white.', '-black.');
+            $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
+        }
+    );
     $(".brandmenuitem").find('div.brandmenuicon').hover(
         function () {
             $(".brandsubmenu[data-brand='SB']").hide();
