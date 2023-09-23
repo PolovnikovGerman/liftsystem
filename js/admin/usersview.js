@@ -150,6 +150,7 @@ function edit_user(user_id) {
 function user_edit_init() {
     $("ul#sbtree").Tree();
     $("ul#srtree").Tree();
+    $("ul#sgtree").Tree();
     $("ul#commontree").Tree();
     $(".webbrandtitle:first").addClass('active');
     var menuview=$(".webbrandtitle:first").data('brand');
