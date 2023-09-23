@@ -6,22 +6,60 @@
                     <img src="/img/page_view/stessball_logo_activ.png" alt="Stressballs">
                 </div>
             </div>
-            <div class="content_tab_header relievers" data-brand="SR">
-                <div class="relievers_logo">
-                    <img src="/img/page_view/stressreiliv_logo.png" alt="StressRelievers">
+            <?php if (in_array('SR', $brands)) { ?>
+                <div class="content_tab_header relievers" data-brand="SR">
+                    <div class="relievers_logo">
+                        <img src="/img/page_view/stressreiliv_logo.png" alt="StressRelievers">
+                    </div>
+                </div>
+            <?php } ?>
+            <?php if (in_array('SG', $brands)) { ?>
+            <div class="content_tab_header sigmasystem" data-brand="SG">
+                <div class="sigma_logo">
+                    <img src="/img/page_view/sigma_logo.png" alt="Sigma">
                 </div>
             </div>
-        <?php } else { ?>
+            <?php } ?>
+        <?php } elseif ($brand=='SR') { ?>
             <div class="content_tab_header active relievers" data-brand="SR">
                 <div class="relievers_logo active">
                     <img src="/img/page_view/stressreiliv_logo_activ.png" alt="StressRelievers">
                 </div>
             </div>
-            <div class="content_tab_header stressballs" data-brand="SB">
-                <div class="stressballs_logo">
-                    <img src="/img/page_view/stessball_logo.png" alt="Stressballs">
+            <?php if (in_array('SB', $brands)) { ?>
+                <div class="content_tab_header stressballs" data-brand="SB">
+                    <div class="stressballs_logo" >
+                        <img src = "/img/page_view/stessball_logo.png" alt = "Stressballs" >
+                    </div >
+                </div >
+            <?php } ?>
+            <?php if (in_array('SG', $brands)) { ?>
+                <div class="content_tab_header sigmasystem" data-brand="SG">
+                    <div class="sigma_logo">
+                        <img src="/img/page_view/sigma_logo.png" alt="Sigma">
+                    </div>
+                </div>
+            <?php } ?>
+        <?php } elseif ($brand=='SG') {?>
+            <div class="content_tab_header active sigmasystem" data-brand="SG">
+                <div class="sigma_logo active">
+                    <img src="/img/page_view/sigma_logo_active.png" alt="Sigma">
                 </div>
             </div>
+            <?php if (in_array('SB', $brands)) { ?>
+                <div class="content_tab_header stressballs" data-brand="SB">
+                    <div class="stressballs_logo" >
+                        <img src = "/img/page_view/stessball_logo.png" alt = "Stressballs" >
+                    </div >
+                </div >
+            <?php } ?>
+            <?php if (in_array('SR', $brands)) { ?>
+                <div class="content_tab_header relievers" data-brand="SR">
+                    <div class="relievers_logo">
+                        <img src="/img/page_view/stressreiliv_logo.png" alt="StressRelievers">
+                    </div>
+                </div>
+            <?php } ?>
         <?php } ?>
     </div>
     <div class="mainsiteheader">
