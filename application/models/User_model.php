@@ -301,7 +301,7 @@ Class User_model extends MY_Model
             'user_id' => 0,
             'user_email' =>'',
             'user_name'=>'',
-            'user_status'=>'0',
+            'user_status'=>'1',
             'user_id'=>0,
             'user_leadrep'=>0,
             'user_leadname'=>'',
