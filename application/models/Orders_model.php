@@ -6477,7 +6477,7 @@ Class Orders_model extends MY_Model
             // Add data about Shipping Address
             $this->db->set('order_id', $neword);
             $this->db->set('country_id', $orddata['shipping_country_id']);
-            $this->db->set('ship_contact', $orddata['shipping_firstname'] . ' ' . $orddata['shipping_lastname']);
+            $this->db->set('ship_contact', empty($orddata['contact_person']) ? $orddata['shipping_firstname'] . ' ' . $orddata['shipping_lastname'] : $orddata['contact_person']);
             $this->db->set('ship_company', (empty($orddata['shipping_company']) ? NULL : $orddata['shipping_company']));
             $this->db->set('ship_address1', $orddata['shipping_street1']);
             $this->db->set('ship_address2', (empty($orddata['shipping_street2']) ? NULL : $orddata['shipping_street2']));
@@ -6688,7 +6688,7 @@ Class Orders_model extends MY_Model
                 }
             }
             $this->db->set('order_id', $neword);
-            $this->db->set('customer_name', $orddata['customer_name']);
+            $this->db->set('customer_name', $orddata['cc_holder']); // $orddata['customer_name']
             $this->db->set('company', $orddata['customer_company']);
             $this->db->set('address_1', $orddata['billing_street1']);
             $this->db->set('address_2', $orddata['billing_street2']);
