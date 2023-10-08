@@ -59,12 +59,16 @@ class Leads extends My_Controller {
         $content_options = [];
         $content_options['start'] = $this->input->get('start', TRUE);
         $content_options['menu'] = $menu;
+        $gmaps = 0;
         foreach ($menu as $row) {
             if ($row['item_link'] == '#leadsview') {
                 $head['styles'][]=array('style'=>'/css/leads/leadsview.css');
                 $head['scripts'][]=array('src'=>'/js/leads/leadsview.js');
                 $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
                 $content_options['leadsview'] = $this->_prepare_leadsview($brand); // $brand, $top_menu
+                if (!empty($this->config->item('google_map_key'))) {
+                    $gmaps = 1;
+                }
             } elseif ($row['item_link']=='#itemslistview') {
                 $head['styles'][]=array('style'=>'/css/leads/itemslistview.css');
                 $head['scripts'][]=array('src'=>'/js/leads/itemslistview.js');
@@ -94,15 +98,20 @@ class Leads extends My_Controller {
                 $head['styles'][]=array('style'=>'/css/leads/leadquotes.css');
                 $head['scripts'][]=array('src'=>'/js/leads/leadquotes.js');
                 $content_options['leadquotesview'] = $this->_prepare_leadquotes_view($brand); // $brand, $top_menu
+                if (!empty($this->config->item('google_map_key'))) {
+                    $gmaps = 1;
+                }
             }
         }
         // Add main page management
         $head['scripts'][] = array('src' => '/js/leads/page.js');
         $head['styles'][] = array('style' => '/css/leads/leadspage.css');
         // Lead popup
-        // $head['styles'][] = array('style' => '/css/leads/lead_popup.css');
         $head['styles'][] = array('style' => '/css/leads/leadpopup.css');
         $head['scripts'][] = array('src' => '/js/leads/lead_popup.js');
+        if ($gmaps==1) {
+            $head['scripts'][] = array('src' => '/js/leads/lead_address.js');
+        }
         // Lead Quote
         $head['styles'][] = array('style' => '/css/leads/leadquote.css');
         $head['scripts'][] = array('src' => '/js/leads/leadquote.js');
@@ -137,6 +146,7 @@ class Leads extends My_Controller {
             'activelnk' => $this->pagelink,
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
+            'gmaps' => $gmaps,
         ];
         $dat = $this->template->prepare_pagecontent($options);
         $content_options['left_menu'] = $dat['left_menu'];

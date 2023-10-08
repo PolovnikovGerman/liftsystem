@@ -57,6 +57,8 @@ class Leadquote extends MY_Controller
 
                     $shipstate = '';
                     $billstate = '';
+                    $shipcode = '';
+                    $bilcode = '';
                     if (!empty($quotedata['shipping_country'])) {
                         $shipstates = $this->shipping_model->get_country_states($quotedata['shipping_country']);
                         if (is_array($shipstates)) {
@@ -68,6 +70,8 @@ class Leadquote extends MY_Controller
                             ];
                             $shipstate = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
                         }
+                        $cntdat = $this->shipping_model->get_country($quotedata['shipping_country']);
+                        $shipcode = strtolower(ifset($cntdat,'country_iso_code_2',''));
                     };
                     if (!empty($quotedata['billing_country'])) {
                         $billstates = $this->shipping_model->get_country_states($quotedata['billing_country']);
@@ -80,6 +84,8 @@ class Leadquote extends MY_Controller
                             ];
                             $billstate = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
                         }
+                        $cntdat = $this->shipping_model->get_country($quotedata['billing_country']);
+                        $bilcode = strtolower(ifset($cntdat,'country_iso_code_2',''));
                     };
                     // Empty Tax view
                     $taxview = $this->load->view('leadpopup/quote_taxempty_view',[],TRUE);
@@ -152,6 +158,7 @@ class Leadquote extends MY_Controller
                         ];
                         $lead_time = $this->load->view('leadpopup/quote_leadtime_edit', $timeoptions, TRUE);
                     }
+                    $mapuse = (empty($this->config->item('google_map_key')) ? 0 : 1);
                     $options = [
                         'quote_session' => $quote_session,
                         'quote_id' => $quotedata['quote_id'],
@@ -166,6 +173,9 @@ class Leadquote extends MY_Controller
                         'shipstate' => $shipstate,
                         'billstate' => $billstate,
                         'taxview' => $taxview,
+                        'shipcode' => $shipcode,
+                        'bilcode' => $bilcode,
+                        'mapuse' => $mapuse,
                     ];
                     $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
                 }
@@ -198,6 +208,8 @@ class Leadquote extends MY_Controller
                     $countries = $this->shipping_model->get_countries_list($cnt_options);
                     $shipstate = '';
                     $billstate = '';
+                    $shipcode = '';
+                    $bilcode = '';
                     if (!empty($quotedata['shipping_country'])) {
                         $shipstates = $this->shipping_model->get_country_states($quotedata['shipping_country']);
                         if (is_array($shipstates)) {
@@ -209,6 +221,8 @@ class Leadquote extends MY_Controller
                             ];
                             $shipstate = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
                         }
+                        $cntdat = $this->shipping_model->get_country($quotedata['shipping_country']);
+                        $shipcode = strtolower(ifset($cntdat,'country_iso_code_2',''));
                     };
                     if (!empty($quotedata['billing_country'])) {
                         $billstates = $this->shipping_model->get_country_states($quotedata['billing_country']);
@@ -221,6 +235,8 @@ class Leadquote extends MY_Controller
                             ];
                             $billstate = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
                         }
+                        $cntdat = $this->shipping_model->get_country($quotedata['billing_country']);
+                        $bilcode = strtolower(ifset($cntdat,'country_iso_code_2',''));
                     };
                     // Tax view
                     if ($quotedata['taxview']==0) {
@@ -288,6 +304,7 @@ class Leadquote extends MY_Controller
                         ];
                         $lead_time = $this->load->view('leadpopup/quote_leadtime_edit', $timeoptions, TRUE);
                     }
+                    $mapuse = (empty($this->config->item('google_map_key')) ? 0 : 1);
                     $options = [
                         'quote_session' => $quote_session,
                         'quote_id' => $quote_id,
@@ -302,6 +319,9 @@ class Leadquote extends MY_Controller
                         'shiprates' => $shiprates,
                         'lead_time' => $lead_time,
                         'taxview' => $taxview,
+                        'shipcode' => $shipcode,
+                        'bilcode' => $bilcode,
+                        'mapuse' => $mapuse,
                     ];
                     $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
                 }
@@ -355,6 +375,14 @@ class Leadquote extends MY_Controller
                     $error = '';
                     $quotesession = usersession($session_id);
                     $quote = $quotesession['quote'];
+                    $mdata['shipcountry'] = $res['shipcountry'];
+                    if ($res['shipcountry']==1) {
+
+                    }
+                    $mdata['bilcountry'] = $res['bilcountry'];
+                    if ($res['bilcountry']==1) {
+
+                    }
                     $mdata['shipstate'] = $res['shipstate'];
                     if ($res['shipstate']==1) {
                         $this->load->model('shipping_model');
@@ -1053,9 +1081,88 @@ class Leadquote extends MY_Controller
                 }
             }
             $this->ajaxResponse($mdata, $error);
-
         }
         show_404();
+    }
+
+    // Update autofill address
+    public function update_autoaddress() {
+        $postdata = $this->input->post();
+        $error = $this->restore_orderdata_error;
+        $session_id = ifset($postdata,'session','unknw');
+        $quotesession = usersession($session_id);
+        $mdata = [];
+        if (!empty($quotesession)) {
+            $res = $this->leadquote_model->update_autoaddress($postdata, $quotesession, $session_id);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $quotesession = usersession($session_id);
+                $quote = $quotesession['quote'];
+                if ($postdata['address_type']=='billing') {
+                    $mdata['country'] = $quote['billing_country'];
+                    $mdata['address_1'] = $quote['billing_address1'];
+                    $mdata['city'] = $quote['billing_city'];
+                    $mdata['state'] = $quote['billing_state'];
+                    $mdata['zip'] = $quote['billing_zip'];
+                } else {
+                    $mdata['country'] = $quote['shipping_country'];
+                    $mdata['address_1'] = $quote['shipping_address1'];
+                    $mdata['city'] = $quote['shipping_city'];
+                    $mdata['state'] = $quote['shipping_state'];
+                    $mdata['zip'] = $quote['shipping_zip'];
+                }
+                $mdata['bilstate'] = $res['bilstate'];
+                $mdata['shipstate'] = $res['shipstate'];
+                if ($res['bilstate']==1) {
+                    $states = $res['states'];
+                    $stateoptions = [
+                        'item' => 'billing_state',
+                        'states' => $states,
+                        'edit_mode' => 1,
+                        'data' => $quote,
+                    ];
+                    $mdata['stateview'] = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
+                }
+                if ($res['shipstate']==1) {
+                    $states = $res['states'];
+                    $stateoptions = [
+                        'item' => 'shipping_state',
+                        'states' => $states,
+                        'edit_mode' => 1,
+                        'data' => $quote,
+                    ];
+                    $mdata['stateview'] = $this->load->view('leadpopup/quote_states_view', $stateoptions, TRUE);
+                }
+                $mdata['ship'] = $res['ship'];
+                if ($res['ship']==1) {
+                    $this->leadquote_model->calc_quote_shipping($session_id);
+                    $this->leadquote_model->calc_quote_totals($session_id);
+                    $quotesession = usersession($session_id);
+                    $quote = $quotesession['quote'];
+                    if ($quote['taxview']==0) {
+                        $mdata['taxview'] = $this->load->view('leadpopup/quote_taxempty_view',[],TRUE);
+                    } else {
+                        $taxoptions = [
+                            'edit_mode' => 1,
+                            'data' => $quote,
+                        ];
+                        $mdata['taxview'] = $this->load->view('leadpopup/quote_tax_edit', $taxoptions,TRUE);
+                    }
+                    $mdata['total'] = MoneyOutput($quote['quote_total']);
+                    $mdata['tax'] = $quote['sales_tax'];
+                    $mdata['shipping_cost'] = $quote['shipping_cost'];
+                    // Ship options
+                    $shipping = $quotesession['shipping'];
+                    $options = [
+                        'shippings' => $shipping,
+                        'edit_mode' => 1,
+                    ];
+                    $mdata['shippingview'] = $this->load->view('leadpopup/quote_shiprates_view', $options, TRUE);
+                }
+            }
+        }
+        $this->ajaxResponse($mdata, $error);
     }
 
     // Save Quote

@@ -135,12 +135,15 @@ class Template
         }
 
         $pagetitle = (isset($options['title']) ? '::'.$options['title'] : '');
-
+        $gmaps = 0;
+        if (!empty($this->CI->config->item('google_map_key'))) {
+            $gmaps = ifset($options, 'gmaps', 0);
+        }
         $head_options=[
             'styles'=>$styles,
             'scripts'=>$scripts,
             'title' => ($this->CI->config->item('system_name').$pagetitle),
-            'gmaps' => ifset($options, 'gmaps', 0),
+            'gmaps' => $gmaps,
         ];
         if (ifset($options,'adaptive',0)==1) {
             $head_options['menu'] = $mobpermissions;

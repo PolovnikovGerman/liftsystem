@@ -19,6 +19,9 @@ function addnewcustomquote() {
                 $(".quotesaddnew").unbind('click');
                 $("#lead_id").val(response.data.lead_id);
                 init_leadquotes_content();
+                if (parseInt($("#quotemapuse").val())==1) {
+                    initQuoteAutocomplete();
+                }
                 $("#loader").hide();
                 if (parseInt(response.data.newitem)!==0) {
                     $(".addprintdetails[data-quoteitem='"+response.data.newitem+"']").trigger('click');
@@ -932,6 +935,9 @@ function init_leadquotes_view() {
                 $(".quotepopupclose").show();
                 $(".leadquotenumberlist").unbind('click');
                 $(".quotesaddnew").unbind('click');
+                if (parseInt($("#quotemapuse").val())==1) {
+                    initQuoteAutocomplete();
+                }
                 init_leadquotes_content();
             } else {
                 show_error(response);

@@ -257,7 +257,7 @@ if ($_SERVER['SERVER_NAME']=='bluetrack.com' || $_SERVER['SERVER_NAME']=='www.bl
     $config['item_quote_images'] = 'https://'.$_SERVER['SERVER_NAME'];
 }
 $config['geo_apikey'] = getenv('GEOIP_KEY');
-$config['googlemapapi'] = getenv('GOOGLEMAP_KEY');
+// $config['googlemapapi'] = getenv('GOOGLEMAP_KEY');
 $config['message_subject']='Bluetrack.com Research Question';
 $config['test_server'] = getenv('TEST_SERVER');
 if ($config['test_server']==1) {
@@ -291,3 +291,4 @@ $config['prooflnk']='https://www.bluetrack.com/proofs/';
 $config['newprooflnk']='https://www.bluetrack.com/proofview/?doc=';
 $config['debug_mode'] = (getenv('TEST_SERVER')==1 ? '1' : 0);
 $config['default_country'] = 223;
+$config['google_map_key'] = getenv('GOOGLEMAPAPI_KEY');

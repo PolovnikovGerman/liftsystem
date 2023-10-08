@@ -310,3 +310,7 @@ function leftmenu_alignment() {
     $(".leftmenuarea").find('div.content_tab.active').css('height', mainheight);
 
 }
+
+function initAutocomplete() {
+
+}
