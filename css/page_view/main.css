@@ -106,20 +106,20 @@ body div {
 }
 .content_tab_header.sigmasystem {
     background: #595959;
-    width: 48px;
+    width: 54px;
     height: 49px;
 }
 .sigma_logo {
-    margin: 18px 16px 0 16px;
+    margin: 16px 16px 0 16px;
 }
 .content_tab_header.active.sigmasystem {
     background: #aaa9a9;
 }
 .sigma_logo.active {
-    margin: 17px 17px 0 17px;
+    margin: 17px 20px 0 20px;
 }
 .mainsiteheader {
-    width: calc(100% - 425px);
+    width: calc(100% - 432px);
 }
 .period_analitic_info {
     border: 1px solid #9b9b9b;

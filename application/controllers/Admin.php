@@ -117,7 +117,7 @@ class Admin extends MY_Controller
             $user_id=$this->input->post('user_id');
             $result=$this->user_model->delete_usr($user_id, $this->USR_ID);
             $error=$result['msg'];
-            if ($result['res']==$this->success_result) {
+            if ($result['result']==$this->success_result) {
                 $error = '';
                 $mdata['total'] = $this->user_model->get_count_user(['status'=> [1,2]]);
             }
