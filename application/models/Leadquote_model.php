@@ -593,6 +593,11 @@ class Leadquote_model extends MY_Model
                 $quote['shipping_address1'] = $quote['shipping_address2'] = '';
                 $out['totalcalc'] = 1;
                 $out['shipcountry'] = 1;
+                $out['countrycode'] = '';
+                $cntdat = $this->shipping_model->get_country($data['newval']);
+                if (ifset($cntdat,'country_id',0) > 0) {
+                    $out['countrycode'] = $cntdat['country_iso_code_2'];
+                }
             } elseif ($fldname=='billing_country') {
                 $out['billrebuild'] = 1;
                 $out['billstate'] = 1;
@@ -601,6 +606,11 @@ class Leadquote_model extends MY_Model
                 $quote['billing_state'] = '';
                 $quote['billing_address1'] =$quote['billing_address2'] = '';
                 $out['bilcountry'] = 1;
+                $out['countrycode'] = '';
+                $cntdat = $this->shipping_model->get_country($data['newval']);
+                if (ifset($cntdat,'country_id',0) > 0) {
+                    $out['countrycode'] = $cntdat['country_iso_code_2'];
+                }
             } elseif ($fldname=='shipping_zip') {
                 $out['shiprebuild'] = 1;
                 $out['totalcalc'] = 1;

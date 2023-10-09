@@ -117,7 +117,7 @@
                     <input class="quoteaddressinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_company"
                            placeholder="Company" value="<?=$data['shipping_company']?>"/>
                 </div>
-                <div class="datarow">
+                <div class="datarow shipadrrlinearea">
                     <input class="quoteaddressinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_address1"
                            placeholder="Address Line 1" value="<?=$data['shipping_address1']?>" id="quoteshipaddress_line1"/>
                 </div>
@@ -200,7 +200,7 @@
                     <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_company"
                            placeholder="Company" value="<?=$data['billing_company']?>">
                 </div>
-                <div class="datarow">
+                <div class="datarow billadrrlinearea">
                     <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_address1"
                            placeholder="Address Line 1" value="<?=$data['billing_address1']?>" id="bill_line1">
                 </div>

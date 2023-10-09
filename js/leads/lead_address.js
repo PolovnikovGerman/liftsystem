@@ -3,19 +3,21 @@ let shipAutocomplete;
 let address1Field;
 let address2Field;
 
-function initQuoteAutocomplete() {
+function initShipQuoteAutocomplete() {
     address1Field = document.getElementById("quoteshipaddress_line1");
     // Shipping Address
     var shipcnt = $("#shipquotecntcode").val();
-    if (shipcnt=='') {
+    if (shipcnt == '') {
         shipcnt = ["us", "ca"];
     }
     shipAutocomplete = new google.maps.places.Autocomplete(address1Field, {
-        componentRestrictions: { country:  shipcnt},
+        componentRestrictions: {country: shipcnt},
         fields: ["address_components", "geometry"],
         types: ["address"],
     })
     shipAutocomplete.addListener('place_changed', fillInShipping);
+}
+function initBillQuoteAutocomplete() {
     address2Field = document.getElementById('bill_line1');
     // Billing Address
     var billcnt = $("#billcountrycode").val();
@@ -64,10 +66,10 @@ function placeParse(place, address_type) {
                 postcode = `${component.long_name}${postcode}`;
                 break;
             }
-            case "postal_code_suffix": {
-                postcode = `${postcode}-${component.long_name}`;
-                break;
-            }
+            // case "postal_code_suffix": {
+            //     postcode = `${postcode}-${component.long_name}`;
+            //     break;
+            // }
             case "locality": {
                 city = component.long_name;
                 break;
@@ -79,6 +81,9 @@ function placeParse(place, address_type) {
             case "country": {
                 country = component.long_name;
                 break;
+            }
+            case "postal_town": {
+                city = component.long_name;
             }
         }
     }
@@ -102,7 +107,7 @@ function updateAddress(address_type, address1, city, state, postcode, country) {
                 $("select[data-item='billing_country']").val(response.data.country);
                 $("input[data-item='billing_address1']").val(response.data.address_1);
                 $("input[data-item='billing_city']").val(response.data.city);
-                $("input[data-item='billing_zipcode']").val(response.data.zipcode);
+                $("input[data-item='billing_zip']").val(response.data.zip);
                 if (parseInt(response.data.bilstate)==1) {
                     $(".quotebilladdresdistrict").empty().html(response.data.stateview);
                 } else {

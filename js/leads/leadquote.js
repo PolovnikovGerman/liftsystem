@@ -20,7 +20,8 @@ function addnewcustomquote() {
                 $("#lead_id").val(response.data.lead_id);
                 init_leadquotes_content();
                 if (parseInt($("#quotemapuse").val())==1) {
-                    initQuoteAutocomplete();
+                    initShipQuoteAutocomplete();
+                    initBillQuoteAutocomplete();
                 }
                 $("#loader").hide();
                 if (parseInt(response.data.newitem)!==0) {
@@ -277,6 +278,20 @@ function init_leadquotes_content() {
         $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
+                if (parseInt(response.data.shipcountry)==1) {
+                    $("#shipquotecntcode").val(response.data.countrycode);
+                    if (parseInt($("#quotemapuse").val())==1) {
+                        $(".shipadrrlinearea").empty().html(response.data.address_view);
+                        initShipQuoteAutocomplete();
+                    }
+                }
+                if (parseInt(response.data.bilcountry)==1) {
+                    $("#billcountrycode").val(response.data.countrycode);
+                    if (parseInt($("#quotemapuse").val())==1) {
+                        $(".billadrrlinearea").empty().html(response.data.address_view);
+                        initBillQuoteAutocomplete();
+                    }
+                }
                 if (parseInt(response.data.shipstate)==1) {
                     $(".quoteshipaddresdistrict").empty().html(response.data.stateview);
                 }
@@ -936,7 +951,8 @@ function init_leadquotes_view() {
                 $(".leadquotenumberlist").unbind('click');
                 $(".quotesaddnew").unbind('click');
                 if (parseInt($("#quotemapuse").val())==1) {
-                    initQuoteAutocomplete();
+                    initShipQuoteAutocomplete();
+                    initBillQuoteAutocomplete();
                 }
                 init_leadquotes_content();
             } else {

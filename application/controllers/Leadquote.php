@@ -377,11 +377,14 @@ class Leadquote extends MY_Controller
                     $quote = $quotesession['quote'];
                     $mdata['shipcountry'] = $res['shipcountry'];
                     if ($res['shipcountry']==1) {
-
+                        // Change ship address line 1
+                        $mdata['countrycode'] = $res['countrycode'];
+                        $mdata['address_view'] = $this->load->view('leadpopup/shipaddr_edit_view',['data' => $quote],TRUE);
                     }
                     $mdata['bilcountry'] = $res['bilcountry'];
                     if ($res['bilcountry']==1) {
-
+                        $mdata['countrycode'] = $res['countrycode'];
+                        $mdata['address_view'] = $this->load->view('leadpopup/billaddr_edit_view',['data' => $quote],TRUE);
                     }
                     $mdata['shipstate'] = $res['shipstate'];
                     if ($res['shipstate']==1) {
