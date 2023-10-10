@@ -9727,6 +9727,68 @@ Class Leadorder_model extends My_Model {
         $out['result'] = $this->success_result;
         return $out;
     }
+
+    // Change autocomplete address
+    public function update_autoaddress($data, $leadorder, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=> 'Empty Address Type');
+        if (ifset($data,'address_type','')!=='') {
+            $out['shipstate'] = $out['bilstate'] = 0;
+            $cntres = [];
+            $states = [];
+            $data['state_id'] = '';
+            if (ifset($data, 'country','')!=='') {
+                $this->db->select('*');
+                $this->db->from('ts_countries');
+                $this->db->where('country_name',$data['country']);
+                $cntres = $this->db->get()->row_array();
+                if (ifset($cntres,'country_id',0) > 0) {
+                    $this->db->select('*');
+                    $this->db->from('sb_states');
+                    $this->db->where('country_id', $cntres['country_id']);
+                    $states = $this->db->get()->result_array();
+                }
+                $out['states'] = $states;
+                if (ifset($data,'state','')!=='') {
+                    $this->db->select('st.state_id');
+                    $this->db->from('ts_states st');
+                    $this->db->join('ts_countries tc','st.country_id = tc.country_id');
+                    $this->db->where('tc.country_name', $data['country']);
+                    $this->db->where('st.state_code', $data['state']);
+                    $stateres = $this->db->get()->row_array();
+                    if (ifset($stateres,'state_id','')!=='') {
+                        $data['state_id'] = $stateres['state_id'];
+                    }
+                }
+            }
+
+
+            if ($data['address_type']=='billing') {
+                $billing = $leadorder['billing'];
+                $billing['address_1'] = ifset($data,'line_1','');
+                $billing['city'] = ifset($data,'city','');
+                $billing['state_id'] = $data['state_id'];
+                $billing['zip'] = ifset($data,'zip','');
+                if (ifset($data, 'country','')!=='') {
+                    $billing['country_id'] = ifset($cntres,'country_id','');
+                }
+                $leadorder['billing'] = $billing;
+                $out['result'] = $this->success_result;
+                $addres = [
+                    'address_1' => $billing['address_1'],
+                    'city' => $billing['city'],
+                    'state' => $billing['state_id'],
+                    'zip' => $billing['zip'],
+                    'country' => $billing['country_id'],
+                ];
+                $out['address'] = $addres;
+            } elseif ($data['address_type']=='shipping') {
+
+            } else {
+                $out['msg'] = 'Unknown Address Type';
+            }
+        }
+        return $out;
+    }
 }
 /* End of file leadorder_model.php */
 /* Location: ./application/models/leadorder_model.php */

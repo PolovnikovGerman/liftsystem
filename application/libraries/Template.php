@@ -469,6 +469,7 @@ class Template
             $billing=$res['order_billing'];
 
             $country_id=ifset($billing, 'country_id', '');
+            $cntdata = $this->CI->shipping_model->get_country($country_id);
             $states=$this->CI->shipping_model->get_country_states($country_id);
             $billoptions=array(
                 'billing'=>$billing,
@@ -476,6 +477,7 @@ class Template
                 'states'=>$states,
                 'order'=>$ord_data,
                 'financeview'=>$usrdat['finuser'],
+                'country_code' => strtolower($cntdata['country_iso_code_2']),
             );
             if ($edit==1) {
                 if ($ord_data['order_id']==0) {

@@ -138,6 +138,9 @@ class Leads extends My_Controller {
         // Order popup
         $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
         $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
+        if ($gmaps==1) {
+            $head['scripts'][] = array('src' => '/js/leads/order_address.js');
+        }
 
         $options = [
             'title' => $head['title'],

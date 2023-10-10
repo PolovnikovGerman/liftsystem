@@ -40,8 +40,6 @@ function fillInAddress() {
 
 function fillInShipping() {
     const place = shipAutocomplete.getPlace();
-    console.log('Ship place');
-    console.log(place);
     placeParse(place, 'shipping');
 }
 

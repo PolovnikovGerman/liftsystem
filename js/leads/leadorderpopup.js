@@ -282,6 +282,10 @@ function edit_currentorder() {
             clearTimeout(timerId);            
             init_onlineleadorder_edit();
             init_rushpast();
+            if (parseInt($("#ordermapuse").val())==1) {
+                // Init billing autofill
+                initBillOrderAutocomplete();
+            }
         } else {
             show_error(response);
         }

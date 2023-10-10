@@ -52,6 +52,7 @@ class Leadorder extends MY_Controller
                 $options=array();
                 $options['current_page']=ifset($postdata,'page', 'art_tasks');
                 $options['leadsession']=$leadsession;
+                $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
                 $orddata=$res['order'];
                 if ($order==0) {
                     $options['order_id']=0;
@@ -5340,6 +5341,51 @@ class Leadorder extends MY_Controller
                     $mdata['previews'] = $previewdocs;
                 }
                 usersession($ordersession, $leadorder);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function update_autoaddress() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->update_autoaddress($postdata, $leadorder, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $address = $res['address'];
+                    $mdata['address_1'] = $address['address_1'];
+                    $mdata['country'] = $address['country'];
+                    $mdata['city'] = $address['city'];
+                    $mdata['zip'] = $address['zip'];
+                    if (!empty($address['state'])) {
+                        $states = $res['states'];
+                        if ($postdata['address_type']=='billing') {
+                            $mdata['bilstate'] = 1;
+                            $options = [
+                                'states' => $states,
+                                'curstate' => $address['state'],
+                            ];
+                            $mdata['stateview'] = $this->load->view('leadorderdetails/billing_state_select', $options, TRUE);
+                        } else {
+                            $mdata['bilstate'] = 0;
+                        }
+                    } else {
+                        if ($postdata['address_type']=='billing') {
+                            $mdata['bilstate'] = 0;
+                        } else {
+
+                        }
+                    }
+                    // $mdata['state'] =
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }
