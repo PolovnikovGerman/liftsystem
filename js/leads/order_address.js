@@ -4,9 +4,9 @@ let address1Field;
 let address2Field;
 
 function initShipOrderAutocomplete() {
-    address1Field = document.getElementById("quoteshipaddress_line1");
+    address1Field = document.getElementById("ordershipaddress_line1");
     // Shipping Address
-    var shipcnt = $("#shipquotecntcode").val();
+    var shipcnt = $("#shipordercntcode").val();
     if (shipcnt == '') {
         shipcnt = ["us", "ca"];
     }
@@ -88,6 +88,10 @@ function updateOrderAddress(address_type, address1, city, state, postcode, count
     var url='/leadorder/update_autoaddress';
     var params = new Array();
     params.push({name: 'address_type', value: address_type});
+    if (address_type=='shipping') {
+        var shipadr = $("#ordershipaddress_line1").data('shipadr');
+        params.push({name: 'shipadr', value: shipadr});
+    }
     params.push({name: 'line_1', value: address1});
     params.push({name: 'city', value: city});
     params.push({name: 'state', value: state});
@@ -100,36 +104,43 @@ function updateOrderAddress(address_type, address1, city, state, postcode, count
             if (address_type=='billing') {
                 $("select[data-field='billing_country']").val(response.data.country);
                 $("input[data-field='address_1']").val(response.data.address_1);
-                $("input[data-field='city']").val(response.data.city);
-                $("input[data-field='zip']").val(response.data.zip);
+                $("input.billinginput[data-field='city']").val(response.data.city);
+                $("input.billinginput[data-field='zip']").val(response.data.zip);
                 if (parseInt(response.data.bilstate)==1) {
                     $("#billingstateselectarea").empty().html(response.data.stateview);
                 } else {
                     $("#billingstateselectarea").empty();
                 }
             } else {
-                $("input[data-item='shipping_address1']").val(response.data.address_1);
-                $("select[data-item='shipping_country']").val(response.data.country);
-                $("input[data-item='shipping_city']").val(response.data.city);
-                $("input[data-item='shipping_zip']").val(response.data.zip);
+                $("input[data-shipadr='"+shipadr+"'][data-fldname='ship_address1']").val(response.data.address_1);
+                $("select.shipcountryselect[data-shipadr='"+shipadr+"']").val(response.data.country);
+                $("input.ship_tax_input1[data-shipadr='"+shipadr+"']").val(response.data.city);
+                $("input.ship_tax_input2[data-shipadr='"+shipadr+"']").val(response.data.zip);
+                $("div[data-content='shipstateshow'][data-shipadr='"+shipadr+"']").empty();
                 if (parseInt(response.data.shipstate)==1) {
-                    $(".quoteshipaddresdistrict").empty().html(response.data.stateview);
-                } else {
-                    $(".quoteshipaddresdistrict").empty(); // .val(response.data.state);
+                    $("div[data-content='shipstateshow'][data-shipadr='"+shipadr+"']").html(response.data.stateview);
                 }
             }
-            if (parseInt(response.data.ship)==1) {
+            if (parseInt(response.data.shipcount)==1) {
                 // Update shipping cost
-                $(".quoteleadshipcostinpt[data-item='shipping_cost']").val(response.data.shipping_cost);
-                $(".quoteshippingcostarea").empty().html(response.data.shippingview);
+                $("div.ship_tax_container2[data-shipadr='"+shipadr+"']").empty().html(response.data.shipcost);
+                $("input.shippingcost").val(response.data.shipping);
+                $("input.salestaxcost").val(response.data.tax);
                 // Tax view
-                $(".quotetaxarea").empty().html(response.data.taxview);
+                if (response.data.taxview.length>0) {
+                    $(".ship_tax_cont_bl3").empty().html(response.data.taxview);
+                }
+                $("div#leadorderprofitarea").empty().html(response.data.profit_content);
                 // Totals
-                $(".quotetotalvalue").empty().html(response.data.total);
-                $(".quotecommondatainpt[data-item='sales_tax']").val(response.data.tax);
-                $("input[data-item='shipping_cost']").val(response.data.shipping_cost);
+                $("div.bl_items_sub-total2").empty().html(response.data.item_subtotal);
+                $(".totalduedataviewarea").empty().html(response.data.total_due);
+                $("#ordertotaloutput").empty().html(response.data.order_revenue);
+                // Shipping Dates
+                $("div.shippingdatesarea").empty().html(response.data.shipdates_content);
+                init_rushpast();
             }
             $("#loader").hide();
+            $("input#loctimeout").val(response.data.loctime);
             init_onlineleadorder_edit();
         } else {
             $("#loader").hide();

@@ -9731,6 +9731,7 @@ Class Leadorder_model extends My_Model {
     // Change autocomplete address
     public function update_autoaddress($data, $leadorder, $ordersession) {
         $out=array('result'=>$this->error_result, 'msg'=> 'Empty Address Type');
+        $shipcount = 0;
         if (ifset($data,'address_type','')!=='') {
             $out['shipstate'] = $out['bilstate'] = 0;
             $cntres = [];
@@ -9772,6 +9773,7 @@ Class Leadorder_model extends My_Model {
                     $billing['country_id'] = ifset($cntres,'country_id','');
                 }
                 $leadorder['billing'] = $billing;
+                usersession($ordersession, $leadorder);
                 $out['result'] = $this->success_result;
                 $addres = [
                     'address_1' => $billing['address_1'],
@@ -9782,12 +9784,126 @@ Class Leadorder_model extends My_Model {
                 ];
                 $out['address'] = $addres;
             } elseif ($data['address_type']=='shipping') {
-
+                $out['msg'] = 'Unknown Shipping Address';
+                $shipadr = ifset($data,'shipadr','');
+                if (!empty($shipadr)) {
+                    $ships = $leadorder['shipping_address'];
+                    $found = 0;
+                    $idx = 0;
+                    $out['msg'] = 'Shipping Address Not Found';
+                    foreach ($ships as $ship) {
+                        if ($ship['order_shipaddr_id']==$shipadr) {
+                            $found=1;
+                            break;
+                        } else {
+                            $idx++;
+                        }
+                    }
+                    if ($found==1) {
+                        // Update Shipping Address
+                        $newzip = ifset($data,'zip','');
+                        if ($newzip!==$ships[$idx]['zip']) {
+                            $shipcount = 1;
+                        }
+                        $ships[$idx]['ship_address1'] = ifset($data,'line_1','');
+                        $ships[$idx]['city'] = ifset($data,'city','');
+                        $ships[$idx]['state_id'] = $data['state_id'];
+                        if ($data['state_id']==$this->tax_state) {
+                            $ships[$idx]['taxcalc'] = 1;
+                            $ships[$idx]['taxview'] = 1;
+                        } else {
+                            $ships[$idx]['taxcalc'] = 0;
+                        }
+                        $ships[$idx]['zip'] = $newzip;
+                        if (ifset($data, 'country','')!=='') {
+                            $ships[$idx]['country_id'] = ifset($cntres,'country_id','');
+                        }
+                        $leadorder['shipping_address'] = $ships;
+                        $out['result'] = $this->success_result;
+                        usersession($ordersession, $leadorder);
+                        $out['shipping_address'] = $ships[$idx];
+                        $addres = [
+                            'address_1' => $ships[$idx]['ship_address1'],
+                            'city' => $ships[$idx]['city'],
+                            'state' => $ships[$idx]['state_id'],
+                            'zip' => $ships[$idx]['zip'],
+                            'country' => $ships[$idx]['country_id'],
+                        ];
+                        $out['address'] = $addres;
+                    }
+                }
             } else {
                 $out['msg'] = 'Unknown Address Type';
             }
         }
+        $out['shipcount'] = $shipcount;
+        if ($out['result']==$this->success_result && $shipcount==1) {
+            // Recount ship
+            $this->_leadorder_shipcost_recount($idx, $ordersession);
+        }
         return $out;
+    }
+
+    private function _leadorder_shipcost_recount($shipidx, $sessionid) {
+        $leadorder = usersession($sessionid);
+        $items=$leadorder['order_items'];
+        $qty=0;
+        foreach ($items as $row) {
+            $qty+=$row['item_qty'];
+        }
+        if ($qty>0) {
+            $shipaddr = $leadorder['shipping_address'];
+            // Old Shipping Method
+            $default_ship_method='';
+            if (isset($shipaddr[$shipidx]['shipping_costs'])) {
+                $oldcosts=$shipaddr[$shipidx]['shipping_costs'];
+                foreach ($oldcosts as $costrow) {
+                    if ($costrow['delflag']==0 && $costrow['current']==1) {
+                        $default_ship_method=$costrow['shipping_method'];
+                    }
+                }
+            }
+            $shipping = $leadorder['shipping'];
+            $order = $leadorder['order'];
+            $this->load->model('shipping_model');
+            $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
+            if ($cntres['result']==$this->error_result) {
+                // $out['msg']=$cntres['msg'];
+                return false;
+            } else {
+                $leadorder['order']=$order;
+                $rates=$cntres['ships'];
+                $shipcost=$shipaddr[$shipidx]['shipping_costs'];
+                $cidx=0;
+                foreach ($shipcost as $row) {
+                    $shipcost[$cidx]['delflag']=1;
+                    $cidx++;
+                }
+                $newidx=count($shipcost)+1;
+                foreach ($rates as $key=>$row) {
+                    $shipcost[]=array(
+                        'order_shipcost_id'=>$newidx*(-1),
+                        'shipping_method'=>$row['ServiceName'],
+                        'shipping_cost'=>$row['Rate'],
+                        'arrive_date'=>$row['DeliveryDate'],
+                        'current'=>$row['current'],
+                        'delflag'=>0,
+                    );
+                    if ($row['current']==1) {
+                        $shipaddr[$shipidx]['shipping']=$row['Rate'];
+                    }
+                    $newidx++;
+                }
+                $shipaddr[$shipidx]['shipping_costs']=$shipcost;
+                $shiptotal=$this->_leadorder_shipcost($shipaddr);
+                $order['shipping']=$shiptotal;
+                $leadorder['shipping_address']=$shipaddr;
+                $leadorder['order'] = $order;
+                usersession($sessionid, $leadorder);
+                $this->_leadorder_totals($leadorder, $sessionid);
+                return true;
+            }
+        }
     }
 }
 /* End of file leadorder_model.php */

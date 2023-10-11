@@ -417,6 +417,7 @@ class Template
                 } else {
                     $taxview=$this->CI->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
                 }
+                $cntres = $this->CI->shipping_model->get_country($country_id);
                 $states=$this->CI->shipping_model->get_country_states($country_id);
                 $shipoptions=array(
                     'shipping'=>$shipping,
@@ -427,6 +428,7 @@ class Template
                     'order'=>$ord_data,
                     'rushview'=>$rushview,
                     'taxview'=>$taxview,
+                    'shipcntcode' => ifset($cntres,'country_code_iso_2',''),
                 );
                 if ($edit==1) {
                     $orddata['shippingview']=$this->CI->load->view('leadorderdetails/single_ship_edit', $shipoptions, TRUE);

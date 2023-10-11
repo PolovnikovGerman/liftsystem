@@ -275,18 +275,23 @@ function edit_currentorder() {
     params.push({name: 'page', value: $("input#currentpage").val()});
     params.push({name: 'edit', value: 1});
     var url="/leadorder/leadorder_change";
+    $("#loader").show();
     $.post(url,params, function(response){
         if (response.errors=='') {
             $("#artModalLabel").empty().html(response.data.header);
             $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#loader").hide();
             clearTimeout(timerId);            
             init_onlineleadorder_edit();
             init_rushpast();
             if (parseInt($("#ordermapuse").val())==1) {
                 // Init billing autofill
                 initBillOrderAutocomplete();
+                // Init simple Shipping address
+                initShipOrderAutocomplete();
             }
         } else {
+            $("#loader").hide();
             show_error(response);
         }
     },'json');    
