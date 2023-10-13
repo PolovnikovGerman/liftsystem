@@ -38,6 +38,4 @@ $config['ups_address_valid']='https://onlinetools.ups.com/webservices/XAV';
 //$config['fedex_meter']='100278692';
 //$config['fedex_password']='14gQ0MfporKJkhRcLNA7EmVKm';
 
-// $config['']
 
-$config['wsdl_path']=BASEPATH.'../wsdl/';
