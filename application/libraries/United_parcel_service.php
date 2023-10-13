@@ -28,12 +28,11 @@ class United_parcel_service
     private $ups_track_url;
     private $_CI;
     private $_error_message;
-    private $wdslpath;
 
     // ============================================================
     function __construct() {
         $this->_CI =& get_instance();
-        $this->_CI->config->load('shipping');
+        $this->_CI->config->load('shipping_old');
         $this->access_key=$this->_CI->config->item('ups_access_key');
         $this->ups_account_username=$this->_CI->config->item('ups_account_username');
         $this->ups_account_password=$this->_CI->config->item('ups_account_password');
@@ -42,7 +41,6 @@ class United_parcel_service
         $this->ups_transit_url=$this->_CI->config->item('ups_transit_url');
         $this->ups_address_valid=$this->_CI->config->item('ups_address_valid');
         $this->ups_track_url = $this->_CI->config->item('ups_track_url');
-        $this->wdslpath = $this->_CI->config->item('wsdl_path');
         $this->_error_message='The zip code you entered is invalid.  Please enter a new one '.PHP_EOL.'or'.PHP_EOL.' call us at 1-800-790-6090 if you continue to experience problems.';
     }
 
@@ -52,8 +50,7 @@ class United_parcel_service
             $access = $this->access_key;
             $userid = $this->ups_account_username;
             $passwd = $this->ups_account_password;
-            // $wsdl=$this->_CI->config->item('wsdl_path').'tnt/TNTWS.wsdl';
-            $wsdl = $this->wdslpath.'tnt/TNTWS.wsdl';
+            $wsdl=$this->_CI->config->item('wsdl_path').'tnt/TNTWS.wsdl';
             $operation = "ProcessTimeInTransit";
             $endpointurl = $this->ups_transit_url;
             $outputFileName = $this->_CI->config->item('upload_path_preload')."TNTResult.xml";
