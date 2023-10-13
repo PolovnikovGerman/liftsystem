@@ -1,45 +1,45 @@
-let addressAutocomplete;
-let shipAutocomplete;
-let address1Field;
-let address2Field;
+let adrOrderAutocomplete;
+let shipOrdAutocomplete;
+let adrOrder1Field;
+let adrOrder2Field;
 
 function initShipOrderAutocomplete() {
-    address1Field = document.getElementById("ordershipaddress_line1");
+    adrOrder1Field = document.getElementById("ordershipaddress_line1");
     // Shipping Address
     var shipcnt = $("#shipordercntcode").val();
     if (shipcnt == '') {
         shipcnt = ["us", "ca"];
     }
-    shipAutocomplete = new google.maps.places.Autocomplete(address1Field, {
+    shipOrdAutocomplete = new google.maps.places.Autocomplete(adrOrder1Field, {
         componentRestrictions: {country: shipcnt},
         fields: ["address_components", "geometry"],
         types: ["address"],
     })
-    shipAutocomplete.addListener('place_changed', fillOrderShipping);
+    shipOrdAutocomplete.addListener('place_changed', fillOrderShipping);
 }
 function initBillOrderAutocomplete() {
-    address2Field = document.getElementById('billorder_line1');
+    adrOrder2Field = document.getElementById('billorder_line1');
     // Billing Address
     var billcnt = $("#billordercntcode").val();
     if (billcnt=='') {
         billcnt = ["us", "ca"];
     }
-    addressAutocomplete = new google.maps.places.Autocomplete(address2Field, {
+    adrOrderAutocomplete = new google.maps.places.Autocomplete(adrOrder2Field, {
         componentRestrictions: { country: billcnt },
         fields: ["address_components", "geometry"],
         types: ["address"],
     });
-    addressAutocomplete.addListener("place_changed", fillOrderAddress);
+    adrOrderAutocomplete.addListener("place_changed", fillOrderAddress);
 }
 
 function fillOrderAddress() {
     // Get the place details from the autocomplete object.
-    const place = addressAutocomplete.getPlace();
+    const place = adrOrderAutocomplete.getPlace();
     placeOrderParse(place, 'billing');
 }
 
 function fillOrderShipping() {
-    const place = shipAutocomplete.getPlace();
+    const place = shipOrdAutocomplete.getPlace();
     placeOrderParse(place, 'shipping');
 }
 
