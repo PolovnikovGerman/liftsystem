@@ -54,7 +54,7 @@ class United_parcel_service
             $operation = "ProcessTimeInTransit";
             $endpointurl = $this->ups_transit_url;
             $outputFileName = $this->_CI->config->item('upload_path_preload')."TNTResult.xml";
-
+            log_message('ERROR', 'TNT WSDL '.$wsdl);
             $weight=round($weight/$number_of_packages,1);
 
             try
