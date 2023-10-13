@@ -27,6 +27,10 @@ $config['default_pack_depth']=13;
 //$config['fedex_meter']='100278692';
 //$config['fedex_password']='14gQ0MfporKJkhRcLNA7EmVKm';
 
+// $config['']
+
+$config['wsdl_path']=BASEPATH.'../wsdl/';
+
 // Env for UPS_SERVICE lib
 $config['ups_access_key']=getenv('UPS_ACCESS_KEY');
 $config['ups_account_username']=getenv('UPS_ACCOUNT_USERNAME');
