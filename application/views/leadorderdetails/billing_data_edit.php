@@ -10,7 +10,7 @@
         <input type="text" class="billing_input2 input_border_gray billinginput leftalign" data-field="company" placeholder="Company" value="<?=$billing['company']?>"/>
     </div>
     <div class="billing_content1_line">
-        <input type="text" class="billing_input4 input_border_gray billinginput leftalign" data-field="address_1" placeholder="Address 1" value="<?=$billing['address_1']?>"/>
+        <input type="text" class="billing_input4 input_border_gray billinginput leftalign" id="billorder_line1" data-field="address_1" placeholder="Address 1" value="<?=$billing['address_1']?>"/>
         <input type="text" class="billing_input4 input_border_gray billinginput leftalign" data-field="address_2" placeholder="Address 2" value="<?=$billing['address_2']?>"/>
     </div>
     <div class="billing_content1_line">
@@ -33,6 +33,7 @@
                 <option value="<?=$row['country_id']?>" <?=$row['country_id']==$billing['country_id'] ? 'selected="selected"' : ''?>><?=$row['country_name']?></option>
             <?php } ?>            
         </select>
+        <input type="hidden" id="billordercntcode" value="<?=$country_code?>"/>
     </div>
 </div>
 <div class="billing_content2">

@@ -52,6 +52,7 @@ class Leadorder extends MY_Controller
                 $options=array();
                 $options['current_page']=ifset($postdata,'page', 'art_tasks');
                 $options['leadsession']=$leadsession;
+                $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
                 $orddata=$res['order'];
                 if ($order==0) {
                     $options['order_id']=0;
@@ -5341,6 +5342,106 @@ class Leadorder extends MY_Controller
                 }
                 usersession($ordersession, $leadorder);
             }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function update_autoaddress() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->update_autoaddress($postdata, $leadorder, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $address = $res['address'];
+                    $mdata['address_1'] = $address['address_1'];
+                    $mdata['country'] = $address['country'];
+                    $mdata['city'] = $address['city'];
+                    $mdata['zip'] = $address['zip'];
+                    if (!empty($address['state'])) {
+                        $states = $res['states'];
+                        if ($postdata['address_type']=='billing') {
+                            $mdata['bilstate'] = 1;
+                            $options = [
+                                'states' => $states,
+                                'curstate' => $address['state'],
+                            ];
+                            $mdata['stateview'] = $this->load->view('leadorderdetails/billing_state_select', $options, TRUE);
+                        } else {
+                            $mdata['shipstate'] = 1;
+                            $options = [
+                                'states' => $states,
+                                'shipadr' => $res['shipping_address'],
+                            ];
+                            $mdata['stateview'] = $this->load->view('leadorderdetails/shipping_state_select', $options, TRUE);
+                        }
+                    } else {
+                        if ($postdata['address_type']=='billing') {
+                            $mdata['bilstate'] = 0;
+                        } else {
+                            $mdata['shipstate'] = 0;
+                        }
+                    }
+                    $mdata['shipcount'] = $res['shipcount'];
+                    if ($res['shipcount']==$this->success_result) {
+                        // Change Shipping cost, total, tax
+                        $leadorder = usersession($ordersession);
+                        $order=$leadorder['order'];
+                        $shipping=$leadorder['shipping'];
+                        $shipping_address=$leadorder['shipping_address'];
+                        $mdata['order_revenue']=MoneyOutput($order['revenue']);
+                        $mdata['shipdate']=$shipping['shipdate'];
+                        $mdata['rush_price']=$shipping['rush_price'];
+                        $mdata['is_shipping']=$order['is_shipping'];
+                        $mdata['shipping']=$order['shipping'];
+                        $mdata['cntshipadrr']=count($shipping_address);
+                        $subtotal=$order['item_cost']+$order['item_imprint']+floatval($order['mischrg_val1'])+floatval($order['mischrg_val2'])-floatval($order['discount_val']);
+                        $mdata['item_subtotal']=MoneyOutput($subtotal);
+                        $total_due=$order['revenue']-$order['payment_total'];
+                        $mdata['ordersystem']=$leadorder['order_system'];
+                        $mdata['balanceopen']=1;
+                        $dueoptions=array(
+                            'totaldue'=>$total_due,
+                        );
+                        if ($total_due==0 && $order['payment_total']>0) {
+                            $dueoptions['class']='closed';
+                            $mdata['balanceopen']=0;
+                        } else {
+                            $dueoptions['class']='open';
+                            if ($total_due<0) {
+                                $dueoptions['class']='overflow';
+                            }
+                        }
+                        $mdata['total_due']=$this->load->view('leadorderdetails/totaldue_data_view', $dueoptions, TRUE);
+                        $mdata['tax']=MoneyOutput($order['tax']);
+                        $mdata['profit_content']=$this->_profit_data_view($order);
+                        if ($mdata['cntshipadrr']==1) {
+                            $shipcost=$shipping_address[0]['shipping_costs'];
+                            $costoptions=array(
+                                'shipadr'=>$postdata['shipadr'],
+                                'shipcost'=>$shipcost,
+                            );
+                            $mdata['shipcost']=$this->load->view('leadorderdetails/ship_cost_edit', $costoptions, TRUE);
+                            // Tax View
+                            $shipaddr=$shipping_address[0];
+                            if ($shipaddr['taxview']==0) {
+                                $taxview=$this->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
+                            } else {
+                                $taxview=$this->load->view('leadorderdetails/tax_data_edit', $shipaddr, TRUE);
+                            }
+                            $mdata['taxview']=$taxview;
+                        }
+                    }
+                }
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();

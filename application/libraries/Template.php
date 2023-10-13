@@ -135,12 +135,15 @@ class Template
         }
 
         $pagetitle = (isset($options['title']) ? '::'.$options['title'] : '');
-
+        $gmaps = 0;
+        if (!empty($this->CI->config->item('google_map_key'))) {
+            $gmaps = ifset($options, 'gmaps', 0);
+        }
         $head_options=[
             'styles'=>$styles,
             'scripts'=>$scripts,
             'title' => ($this->CI->config->item('system_name').$pagetitle),
-            'gmaps' => ifset($options, 'gmaps', 0),
+            'gmaps' => $gmaps,
         ];
         if (ifset($options,'adaptive',0)==1) {
             $head_options['menu'] = $mobpermissions;
@@ -414,6 +417,7 @@ class Template
                 } else {
                     $taxview=$this->CI->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
                 }
+                $cntres = $this->CI->shipping_model->get_country($country_id);
                 $states=$this->CI->shipping_model->get_country_states($country_id);
                 $shipoptions=array(
                     'shipping'=>$shipping,
@@ -424,6 +428,7 @@ class Template
                     'order'=>$ord_data,
                     'rushview'=>$rushview,
                     'taxview'=>$taxview,
+                    'shipcntcode' => ifset($cntres,'country_code_iso_2',''),
                 );
                 if ($edit==1) {
                     $orddata['shippingview']=$this->CI->load->view('leadorderdetails/single_ship_edit', $shipoptions, TRUE);
@@ -466,6 +471,7 @@ class Template
             $billing=$res['order_billing'];
 
             $country_id=ifset($billing, 'country_id', '');
+            $cntdata = $this->CI->shipping_model->get_country($country_id);
             $states=$this->CI->shipping_model->get_country_states($country_id);
             $billoptions=array(
                 'billing'=>$billing,
@@ -473,6 +479,7 @@ class Template
                 'states'=>$states,
                 'order'=>$ord_data,
                 'financeview'=>$usrdat['finuser'],
+                'country_code' => strtolower($cntdata['country_iso_code_2']),
             );
             if ($edit==1) {
                 if ($ord_data['order_id']==0) {

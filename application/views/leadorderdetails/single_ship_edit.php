@@ -7,16 +7,10 @@
                         <option value="<?=$crow['country_id']?>" <?=$crow['country_id'] == $shipadr['country_id'] ? 'selected="selected"' : '' ?>><?= $crow['country_name'] ?></option>
                     <?php } ?>
                 </select>
+                <input type="hidden" id="shipordercntcode" value="<?=$shipcntcode?>"/>
             </div>
             <div class="ship_tax_tabs2 active">&nbsp;</div>
             <div class="shipotherparamsarea">
-<!--                --><?php //if ($user_role=='masteradmin') { ?>
-<!--                    <div class="rushadmindate">-->
-<!--                        <label>Ship in past:</label>-->
-<!--                        <input type="text" readonly="readonly" class="shiprushpast input_border_black" id="rushpast" value=""/>-->
-<!--                    </div>-->
-<!--                --><?php //} ?>
-<!--                <div class="rushselectarea --><?//=$user_role=='masteradmin' ? 'admin' : ''?><!--">-->
                 <div class="rushselectarea">
                     <div class="label">Ships on:</div>
                     <div class="rushdataselect" id="rushdatalistarea"><?=$rushview?></div>
@@ -30,9 +24,9 @@
             <div class="ship_tax_cont_bl1">
                 <input class="ship_tax_textareainpt input_border_gray leftalign" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" data-fldname="ship_contact" placeholder="Contact Name" value="<?=$shipadr['ship_contact']?>"/>
                 <input class="ship_tax_textareainpt input_border_gray leftalign" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" data-fldname="ship_company" placeholder="Company" value="<?=$shipadr['ship_company']?>"/>
-                <input class="ship_tax_textareainpt input_border_gray leftalign" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" data-fldname="ship_address1" placeholder="Address Line 1" value="<?=$shipadr['ship_address1']?>"/>
+                <input class="ship_tax_textareainpt input_border_gray leftalign" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" id="ordershipaddress_line1" data-fldname="ship_address1" placeholder="Address Line 1" value="<?=$shipadr['ship_address1']?>"/>
                 <input class="ship_tax_textareainpt input_border_gray leftalign" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" data-fldname="ship_address2" placeholder="Address Line 2" value="<?=$shipadr['ship_address2']?>"/>
-                <input type="text" class="ship_tax_input2 input_border_gray leftalign" placeholder="Zip" value="<?= $shipadr['zip'] ?>" data-shipadr="<?=$shipadr['order_shipaddr_id']?>"/>
+                <input type="text" class="ship_tax_input2 input_border_gray leftalign" placeholder="Zip" value="<?= $shipadr['zip'] ?>" data-fldname="zip" data-shipadr="<?=$shipadr['order_shipaddr_id']?>"/>
                 <input type="text" class="ship_tax_input1 input_border_gray leftalign" placeholder="City" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" value="<?= $shipadr['city'] ?>"/>
                 <div data-content="shipstateshow" data-shipadr="<?=$shipadr['order_shipaddr_id']?>">
                     <?php if (count($states) == 0) { ?>

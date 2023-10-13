@@ -2,6 +2,7 @@
     <input type="hidden" id="quotesessionid" value="<?=$quote_session?>"/>
     <input type="hidden" id="quoteleadconnect" value="<?=$lead_id?>"/>
     <input type="hidden" id="quoteleadnumber" value="<?=$quote_id?>"/>
+    <input type="hidden" id="quotemapuse" value="<?=$mapuse?>"/>
     <div class="datarow quotetemplaterow">
         <div class="quotetemplatetitle">Template:</div>
         <div class="quotetemplateinpt">
@@ -105,6 +106,7 @@
                         <option value="<?=$country['country_id']?>" <?=$country['country_id']==$data['shipping_country'] ? 'seleted="selected"' : ''?>><?=$country['country_name']?></option>
                     <?php } ?>
                 </select>
+                <input type="hidden" id="shipquotecntcode" value="<?=$shipcode?>"/>
             </div>
             <div class="quoteshipaddressother">
                 <div class="datarow">
@@ -115,9 +117,9 @@
                     <input class="quoteaddressinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_company"
                            placeholder="Company" value="<?=$data['shipping_company']?>"/>
                 </div>
-                <div class="datarow">
+                <div class="datarow shipadrrlinearea">
                     <input class="quoteaddressinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_address1"
-                           placeholder="Address Line 1" value="<?=$data['shipping_address1']?>"/>
+                           placeholder="Address Line 1" value="<?=$data['shipping_address1']?>" id="quoteshipaddress_line1"/>
                 </div>
                 <div class="datarow">
                     <input class="quoteaddressinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_address2"
@@ -179,6 +181,7 @@
                         <option value="<?=$country['country_id']?>" <?=$country['country_id']==$data['billing_country'] ? 'seleted="selected"' : ''?>><?=$country['country_name']?></option>
                     <?php } ?>
                 </select>
+                <input type="hidden" id="billcountrycode" value="<?=$bilcode?>"/>
             </div>
             <?php if ($data['quote_id']==0) { ?>
                 <div class="quotesamebilligaddress">
@@ -197,9 +200,9 @@
                     <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_company"
                            placeholder="Company" value="<?=$data['billing_company']?>">
                 </div>
-                <div class="datarow">
+                <div class="datarow billadrrlinearea">
                     <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_address1"
-                           placeholder="Address Line 1" value="<?=$data['billing_address1']?>">
+                           placeholder="Address Line 1" value="<?=$data['billing_address1']?>" id="bill_line1">
                 </div>
                 <div class="datarow">
                     <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_address2"
