@@ -159,6 +159,8 @@ class Leadquote extends MY_Controller
                         $lead_time = $this->load->view('leadpopup/quote_leadtime_edit', $timeoptions, TRUE);
                     }
                     $mapuse = (empty($this->config->item('google_map_key')) ? 0 : 1);
+                    $billaddress = $this->_prepare_billaddress($quotedata);
+                    $shipaddress = $this->_prepare_shipaddress($quotedata);
                     $options = [
                         'quote_session' => $quote_session,
                         'quote_id' => $quotedata['quote_id'],
@@ -176,6 +178,9 @@ class Leadquote extends MY_Controller
                         'shipcode' => $shipcode,
                         'bilcode' => $bilcode,
                         'mapuse' => $mapuse,
+                        'billaddress' => $billaddress,
+                        'shipaddress' => $shipaddress,
+
                     ];
                     $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
                 }
@@ -305,6 +310,8 @@ class Leadquote extends MY_Controller
                         $lead_time = $this->load->view('leadpopup/quote_leadtime_edit', $timeoptions, TRUE);
                     }
                     $mapuse = (empty($this->config->item('google_map_key')) ? 0 : 1);
+                    $billaddress = $this->_prepare_billaddress($quotedata);
+                    $shipaddress = $this->_prepare_shipaddress($quotedata);
                     $options = [
                         'quote_session' => $quote_session,
                         'quote_id' => $quote_id,
@@ -322,6 +329,8 @@ class Leadquote extends MY_Controller
                         'shipcode' => $shipcode,
                         'bilcode' => $bilcode,
                         'mapuse' => $mapuse,
+                        'billaddress' => $billaddress,
+                        'shipaddress' => $shipaddress,
                     ];
                     $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
                 }
@@ -464,6 +473,8 @@ class Leadquote extends MY_Controller
                         $mdata['total'] = MoneyOutput($quote['quote_total']);
                         $mdata['tax'] = $quote['sales_tax'];
                     }
+                    $mdata['shipaddress'] = $this->_prepare_shipaddress($quote);
+                    $mdata['billaddress'] = $this->_prepare_billaddress($quote);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -1108,12 +1119,14 @@ class Leadquote extends MY_Controller
                     $mdata['city'] = $quote['billing_city'];
                     $mdata['state'] = $quote['billing_state'];
                     $mdata['zip'] = $quote['billing_zip'];
+                    $mdata['billaddress'] = $this->_prepare_billaddress($quote);
                 } else {
                     $mdata['country'] = $quote['shipping_country'];
                     $mdata['address_1'] = $quote['shipping_address1'];
                     $mdata['city'] = $quote['shipping_city'];
                     $mdata['state'] = $quote['shipping_state'];
                     $mdata['zip'] = $quote['shipping_zip'];
+                    $mdata['shipaddress'] = $this->_prepare_shipaddress($quote);
                 }
                 $mdata['bilstate'] = $res['bilstate'];
                 $mdata['shipstate'] = $res['shipstate'];
@@ -1523,5 +1536,37 @@ class Leadquote extends MY_Controller
             usersession($imptintid, $imprintdetails);
         }
         return $out;
+    }
+
+    private function _prepare_billaddress($quotedata) {
+        $billaddress = '';
+        if (!empty($quotedata['billing_contact'])) {$billaddress.=$quotedata['billing_contact'].PHP_EOL;}
+        if (!empty($quotedata['billing_company'])) {$billaddress.=$quotedata['billing_company'].PHP_EOL;}
+        if (!empty($quotedata['billing_address1'])) {$billaddress.=$quotedata['billing_address1'].PHP_EOL;}
+        if (!empty($quotedata['billing_address2'])) {$billaddress.=$quotedata['billing_address2'].PHP_EOL;}
+        $adrline = 0;
+        if (!empty($quotedata['billing_city'])) {$billaddress.=$quotedata['billing_city'].', '; $adrline = 1;}
+        if (!empty($quotedata['billing_state'])) {$billaddress.=$quotedata['billing_state'].' ';$adrline = 1;}
+        if (!empty($quotedata['billing_zip'])) {$billaddress.=$quotedata['billing_zip'];$adrline = 1;}
+        if ($adrline ==1) {
+            $billaddress.=PHP_EOL;
+        }
+        return $billaddress;
+    }
+
+    private function _prepare_shipaddress($quotedata) {
+        $shipaddress = '';
+        if (!empty($quotedata['shipping_contact'])) {$shipaddress.=$quotedata['shipping_contact'].PHP_EOL;}
+        if (!empty($quotedata['shipping_company'])) {$shipaddress.=$quotedata['shipping_company'].PHP_EOL;}
+        if (!empty($quotedata['shipping_address1'])) {$shipaddress.=$quotedata['shipping_address1'].PHP_EOL;}
+        if (!empty($quotedata['shipping_address2'])) {$shipaddress.=$quotedata['shipping_address2'].PHP_EOL;}
+        $adrline = 0;
+        if (!empty($quotedata['shipping_city'])) {$shipaddress.=$quotedata['shipping_city'].', '; $adrline = 1;}
+        if (!empty($quotedata['shipping_state'])) {$shipaddress.=$quotedata['shipping_state'].' ';$adrline = 1;}
+        if (!empty($quotedata['shipping_zip'])) {$shipaddress.=$quotedata['shipping_zip'];$adrline = 1;}
+        if ($adrline ==1) {
+            $shipaddress.=PHP_EOL;
+        }
+        return $shipaddress;
     }
 }
