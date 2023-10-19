@@ -23,6 +23,7 @@ function addnewcustomquote() {
                     initShipQuoteAutocomplete();
                     initBillQuoteAutocomplete();
                 }
+                init_billingaddress_copy();
                 $("#loader").hide();
                 if (parseInt(response.data.newitem)!==0) {
                     $(".addprintdetails[data-quoteitem='"+response.data.newitem+"']").trigger('click');
@@ -322,6 +323,8 @@ function init_leadquotes_content() {
                     $(".quotetotalvalue").empty().html(response.data.total);
                     $(".quotecommondatainpt[data-item='sales_tax']").val(response.data.tax);
                 }
+                $("#shipingcompileaddress").val(response.data.shipaddress);
+                $("#billingcompileaddress").val(response.data.billaddress);
                 $("#loader").hide();
                 init_leadquotes_content();
             } else {
@@ -570,6 +573,17 @@ function init_leadquotes_content() {
                 show_error(response);
             }
         },'json');
+    });
+    // Copy billing address
+    $(".billingaddresscopy").unbind('click').click(function(){
+        var element = document.querySelector("#billingcompileaddress");
+        copyToClipboard(element);
+        $('.quoteaddressinpt[data-item="billing_company"]').focus();
+    });
+    $(".shipaddrescopy").unbind('click').click(function (){
+        var element = document.querySelector("#shipingcompileaddress");
+        copyToClipboard(element);
+        $('.quoteaddressinpt[data-item="shipping_company"]').focus();
     });
 }
 
@@ -954,6 +968,7 @@ function init_leadquotes_view() {
                     initShipQuoteAutocomplete();
                     initBillQuoteAutocomplete();
                 }
+                // init_billingaddress_copy();
                 init_leadquotes_content();
             } else {
                 show_error(response);
@@ -1038,6 +1053,25 @@ function init_leadquotes_view() {
     });
 }
 
+function init_billingaddress_copy() {
+    var copyTextareaBtn = document.querySelector('.billingaddresscopy');
+
+    copyTextareaBtn.addEventListener('click', function(event) {
+        var copyTextarea = document.getElementById('billingcompileaddress');
+
+        copyTextarea.focus();
+        copyTextarea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Msg '+msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+    });
+}
+
 function send_leadquote(quote) {
     var params = new Array();
     params.push({name: 'quote_id', value: quote});
@@ -1057,4 +1091,23 @@ function send_leadquote(quote) {
             show_error(response);
         }
     },'json');
+}
+
+function copyToClipboard(element) {
+    // var $temp = $("<textarea>");
+    // var brRegex = /<br\s*[\/]?>/gi;
+    // $("body").append($temp);
+    // $temp.val($(element).html().replace(brRegex, "\r\n")).select();
+    $(element).show();
+    $(element).focus();
+    $(element).select();
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        console.log('Msg '+msg);
+    } catch (err) {
+        console.log('Oops, unable to copy');
+    }
+    // document.execCommand("copy");
+    $(element).hide();
 }
