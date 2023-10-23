@@ -111,6 +111,7 @@ function updateOrderAddress(address_type, address1, city, state, postcode, count
                 } else {
                     $("#billingstateselectarea").empty();
                 }
+                $("#billingcompileaddress").val(response.data.addresscopy);
             } else {
                 $("input[data-shipadr='"+shipadr+"'][data-fldname='ship_address1']").val(response.data.address_1);
                 $("select.shipcountryselect[data-shipadr='"+shipadr+"']").val(response.data.country);
@@ -120,6 +121,7 @@ function updateOrderAddress(address_type, address1, city, state, postcode, count
                 if (parseInt(response.data.shipstate)==1) {
                     $("div[data-content='shipstateshow'][data-shipadr='"+shipadr+"']").html(response.data.stateview);
                 }
+                $("#shipingcompileaddress").val(response.data.addresscopy);
             }
             if (parseInt(response.data.shipcount)==1) {
                 // Update shipping cost

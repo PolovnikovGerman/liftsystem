@@ -1055,8 +1055,10 @@ Class Leadorder_model extends My_Model {
                 $leadorder['shipping_address']=$shipaddr;
             } elseif ($fldname=='country_id' && $entity=='billing') {
                 $states=$this->shipping_model->get_country_states($newval);
+                $cntdat = $this->shipping_model->get_country($newval);
                 // remove default State
                 $out['defstate']=NULL;
+                $out['cntcode'] = $cntdat['country_iso_code_2'];
                 $data['state_id']=NULL;
 
                 $out['out_states']=$states;
@@ -9793,6 +9795,7 @@ Class Leadorder_model extends My_Model {
                     'country' => $billing['country_id'],
                 ];
                 $out['address'] = $addres;
+                $out['address_full'] = $billing;
             } elseif ($data['address_type']=='shipping') {
                 $out['msg'] = 'Unknown Shipping Address';
                 $shipadr = ifset($data,'shipadr','');
@@ -9829,6 +9832,7 @@ Class Leadorder_model extends My_Model {
                             $ships[$idx]['country_id'] = ifset($cntres,'country_id','');
                         }
                         $leadorder['shipping_address'] = $ships;
+                        $out['address_full'] = $ships[$idx];
                         $out['result'] = $this->success_result;
                         usersession($ordersession, $leadorder);
                         $out['shipping_address'] = $ships[$idx];
