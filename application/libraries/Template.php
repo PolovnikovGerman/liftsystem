@@ -428,7 +428,8 @@ class Template
                     'order'=>$ord_data,
                     'rushview'=>$rushview,
                     'taxview'=>$taxview,
-                    'shipcntcode' => ifset($cntres,'country_code_iso_2',''),
+                    'shipcntcode' => ifset($cntres,'country_iso_code_2',''),
+                    'shipaddress' => $this->CI->shipping_model->prepare_shipaddress($shipping_address[0]),
                 );
                 if ($edit==1) {
                     $orddata['shippingview']=$this->CI->load->view('leadorderdetails/single_ship_edit', $shipoptions, TRUE);
@@ -480,6 +481,7 @@ class Template
                 'order'=>$ord_data,
                 'financeview'=>$usrdat['finuser'],
                 'country_code' => strtolower($cntdata['country_iso_code_2']),
+                'billaddress' => $this->CI->shipping_model->prepare_billaddress($billing),
             );
             if ($edit==1) {
                 if ($ord_data['order_id']==0) {
