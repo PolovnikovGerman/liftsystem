@@ -6530,9 +6530,9 @@ Class Orders_model extends MY_Model
                     $this->db->set('item_price', $item['item_price']);
                     $this->db->set('item_qty', $crow['order_color_qty']);
                     $this->db->set('item_color', $crow['order_color_itemcolor']);
-                    if (!empty($item['printshop_inventory_id'])) {
-                        $this->db->set('printshop_item_id', $item['printshop_inventory_id']);
-                    }
+//                    if (!empty($item['printshop_inventory_id'])) {
+//                        $this->db->set('printshop_item_id', $item['printshop_inventory_id']);
+//                    }
                     $this->db->insert('ts_order_itemcolors');
                 }
                 if ($blank == 1) {
