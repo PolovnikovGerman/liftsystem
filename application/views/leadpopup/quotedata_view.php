@@ -119,7 +119,7 @@
                 </div>
                 <div class="datarow shipadrrlinearea">
                     <input class="quoteaddressinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_address1"
-                           placeholder="Address Line 1" value="<?=$data['shipping_address1']?>" id="quoteshipaddress_line1" autocomplete="new-password"/>
+                           placeholder="Address Line 1" value="<?=$data['shipping_address1']?>" id="quoteshipaddress_line1" autocomplete="new-password" aria-autocomplete="none"/>
                 </div>
                 <div class="datarow">
                     <input class="quoteaddressinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_address2"
@@ -202,7 +202,7 @@
                 </div>
                 <div class="datarow billadrrlinearea">
                     <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_address1"
-                           placeholder="Address Line 1" value="<?=$data['billing_address1']?>" id="bill_line1" autocomplete="new-password">
+                           placeholder="Address Line 1" value="<?=$data['billing_address1']?>" id="bill_line1" aria-autocomplete="none" autocomplete="new-password">
                 </div>
                 <div class="datarow">
                     <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_address2"
