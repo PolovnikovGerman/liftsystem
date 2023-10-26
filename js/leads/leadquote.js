@@ -20,12 +20,6 @@ function addnewcustomquote() {
                 $("#lead_id").val(response.data.lead_id);
                 init_leadquotes_content();
                 if (parseInt($("#quotemapuse").val())==1) {
-                    // var shipid = $("#quoteshipaddress_line1");
-                    // shipid.prop('type','text');
-                    // shipid.removeAttr('autocomplete');
-                    // var bilid = $("#bill_line1");
-                    // bilid.prop('type','text');
-                    // bilid.removeAttr('autocomplete');
                     initShipQuoteAutocomplete();
                     initBillQuoteAutocomplete();
                 }

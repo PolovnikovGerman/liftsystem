@@ -103,7 +103,7 @@
             <div class="quoteshipcountryarea">
                 <select class="quoteaddressinpt quotecountry" <?=$edit_mode==0 ? 'disabled="true"' : '' ?> data-item="shipping_country">
                     <?php foreach ($countries as $country) { ?>
-                        <option value="<?=$country['country_id']?>" <?=$country['country_id']==$data['shipping_country'] ? 'seleted="selected"' : ''?>><?=$country['country_name']?></option>
+                        <option value="<?=$country['country_id']?>" <?=$country['country_id']==$data['shipping_country'] ? 'selected="selected"' : ''?>><?=$country['country_name']?></option>
                     <?php } ?>
                 </select>
                 <input type="hidden" id="shipquotecntcode" value="<?=$shipcode?>"/>
@@ -119,7 +119,7 @@
                                placeholder="Address Line 1" value="<?=$data['shipping_address1']?>" id="quoteshipaddress_line1" autocomplete="new-password"/>
                     </div>
                     <input class="quoteaddressinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_address2"
-                           placeholder="Address Line 2" value="<?=$data['shipping_address2']?>"/>
+                           placeholder="Address Line 2" value="<?=$data['shipping_address2']?>" autocomplete="new-password"/>
                         <input class="quoteaddressinpt quotetown" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_city"
                                placeholder="City" value="<?=$data['shipping_city']?>"/>
                         <div class="quoteshipaddresdistrict"><?=$shipstate?></div>
@@ -170,7 +170,7 @@
             <div class="quotebillcountryarea <?=$data['billingsame']==1 ? 'billingsame' : ''?>">
                 <select class="quoteaddressinpt quotecountry" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_country">
                     <?php foreach ($countries as $country) { ?>
-                        <option value="<?=$country['country_id']?>" <?=$country['country_id']==$data['billing_country'] ? 'seleted="selected"' : ''?>><?=$country['country_name']?></option>
+                        <option value="<?=$country['country_id']?>" <?=$country['country_id']==$data['billing_country'] ? 'selected="selected"' : ''?>><?=$country['country_name']?></option>
                     <?php } ?>
                 </select>
                 <input type="hidden" id="billcountrycode" value="<?=$bilcode?>"/>
