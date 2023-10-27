@@ -4,7 +4,7 @@ let address1Field;
 let address2Field;
 
 function initShipQuoteAutocomplete() {
-    address1Field = document.getElementById("quoteshipaddress_line1");
+    address1Field = document.getElementById("shiplead_line1");
     // Shipping Address
     var shipcnt = $("#shipquotecntcode").val();
     if (shipcnt == '') {
