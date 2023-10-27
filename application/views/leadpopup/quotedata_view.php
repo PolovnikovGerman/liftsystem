@@ -168,7 +168,7 @@
                 <div class="quotesectionlabel">BILLING ADDRESS:</div>
             </div>
             <div class="quotebillcountryarea <?=$data['billingsame']==1 ? 'billingsame' : ''?>">
-                <select class="quoteaddressinpt quotecountry" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_country">
+                <select class="quoteadrinpt quotecountry" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_country">
                     <?php foreach ($countries as $country) { ?>
                         <option value="<?=$country['country_id']?>" <?=$country['country_id']==$data['billing_country'] ? 'selected="selected"' : ''?>><?=$country['country_name']?></option>
                     <?php } ?>
@@ -185,20 +185,20 @@
             <?php  } ?>
             <div class="quotebilladdressother <?=$data['billingsame']==1 ? 'billingsame' : ''?>">
                 <div class="quoteaddressarea">
-                    <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_contact"
+                    <input class="quoteadrinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_contact"
                            placeholder="Contact Name" value="<?=$data['billing_contact']?>">
-                    <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_company"
+                    <input class="quoteadrinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_company"
                            placeholder="Company" value="<?=$data['billing_company']?>">
                     <div class="billadrrlinearea" style="width: 100%">
-                        <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_address1"
-                           placeholder="Address Line 1" value="<?=$data['billing_address1']?>" id="bill_line1" aria-autocomplete="none" autocomplete="new-password">
+                        <input class="quoteadrinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_address1"
+                            <?=$mapuse==0 ? 'placeholder="Address Line 1"' : ''?> value="<?=$data['billing_address1']?>" id="bill_line1" aria-autocomplete="none" autocomplete="new-password">
                     </div>
-                    <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_address2"
+                    <input class="quoteadrinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_address2"
                            placeholder="Address Line 2" value="<?=$data['billing_address2']?>">
-                    <input class="quoteaddressinpt quotetown" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_city"
+                    <input class="quoteadrinpt quotetown" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_city"
                            placeholder="City" value="<?=$data['billing_city']?>"/>
                     <div class="quotebilladdresdistrict"><?=$billstate?></div>
-                    <input class="quoteaddressinpt quotepostal" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_zip"
+                    <input class="quoteadrinpt quotepostal" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_zip"
                            placeholder="Zip" value="<?=$data['billing_zip']?>"/>
                 </div>
                 <div class="billingaddresscopy" <?=($edit_mode==0 || $data['billingsame']==1) ? 'style="display: none"' : ''?>>

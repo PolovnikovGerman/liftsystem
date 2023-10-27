@@ -388,7 +388,8 @@ class Leadquote extends MY_Controller
                     if ($res['shipcountry']==1) {
                         // Change ship address line 1
                         $mdata['countrycode'] = $res['countrycode'];
-                        $mdata['address_view'] = $this->load->view('leadpopup/shipaddr_edit_view',['data' => $quote],TRUE);
+                        $mapuse = (empty($this->config->item('google_map_key')) ? 0 : 1);
+                        $mdata['address_view'] = $this->load->view('leadpopup/shipaddr_edit_view',['data' => $quote, 'mapuse' => $mapuse,],TRUE);
                     }
                     $mdata['bilcountry'] = $res['bilcountry'];
                     if ($res['bilcountry']==1) {
