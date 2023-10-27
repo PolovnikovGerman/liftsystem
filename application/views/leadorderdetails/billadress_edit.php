@@ -30,11 +30,12 @@
 
             <div id="billingaddresslinearea">
                 <input type="text" class="billing_input4 billinginput leftalign" data-field="address_1"
-                       id="billorder_line1" placeholder="Address 1" value="<?= $billing['address_1'] ?>"
+                       id="billorder_line1" value="<?= $billing['address_1'] ?>"
                        autocomplete="new-password"/>
+                <!-- placeholder="Address 1" -->
             </div>
             <input type="text" class="billing_input4 billinginput leftalign" data-field="address_2"
-                   placeholder="Address 2" value="<?= $billing['address_2'] ?>"/>
+                   placeholder="Address 2" value="<?= $billing['address_2'] ?>" autocomplete="new-password"/>
             <input type="text" class="billing_input5 billinginput leftalign" data-field="city"
                    placeholder="City" value="<?= $billing['city'] ?>"/>
             <div id="billingstateselectarea" class="billingstateselectarea">
