@@ -413,7 +413,8 @@ input.quotediscountinpt {
     padding-left: 4px;
     padding-top: 4px;
 }
-select.quoteaddressinpt, input.quoteaddressinpt {
+select.quoteaddressinpt, input.quoteaddressinpt,
+select.quoteadrinpt, input.quoteadrinpt {
     height: 16px;
     width: 102px;
     font-size: 11px;

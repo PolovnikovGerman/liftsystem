@@ -269,6 +269,70 @@ function init_leadquotes_content() {
             }
         },'json');
     });
+    // Try lock autofill
+    $(".quoteadrinpt").unbind('change').change(function(){
+        var params = new Array();
+        params.push({name: 'session', value: $("#quotesessionid").val()});
+        params.push({name: 'fld', value: $(this).data('item')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/leadquote/quoteaddresschange';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (parseInt(response.data.shipcountry)==1) {
+                    $("#shipquotecntcode").val(response.data.countrycode);
+                    if (parseInt($("#quotemapuse").val())==1) {
+                        $(".shipadrrlinearea").empty().html(response.data.address_view);
+                        initShipQuoteAutocomplete();
+                    }
+                }
+                if (parseInt(response.data.bilcountry)==1) {
+                    $("#billcountrycode").val(response.data.countrycode);
+                    if (parseInt($("#quotemapuse").val())==1) {
+                        $(".billadrrlinearea").empty().html(response.data.address_view);
+                        initBillQuoteAutocomplete();
+                    }
+                }
+                if (parseInt(response.data.shipstate)==1) {
+                    $(".quoteshipaddresdistrict").empty().html(response.data.stateview);
+                }
+                if (parseInt(response.data.billstate)==1) {
+                    $(".quotebilladdresdistrict").empty().html(response.data.stateview);
+                }
+                if (parseInt(response.data.shiprebuild)==1) {
+                    // Update zip, city state
+                    $(".quoteadrinpt[data-item='shipping_zip']").val(response.data.shipping_zip);
+                    $(".quoteadrinpt[data-item='shipping_city']").val(response.data.shipping_city);
+                    $(".quoteadrinpt[data-item='shipping_state']").val(response.data.shipping_state);
+                }
+                if (parseInt(response.data.taxview)==1) {
+                    $(".quotetaxarea").empty().html(response.data.taxcontent);
+                }
+                if (parseInt(response.data.billrebuild)==1) {
+                    $(".quoteadrinpt[data-item='billing_zip']").val(response.data.billing_zip);
+                    $(".quoteadrinpt[data-item='billing_city']").val(response.data.billing_city);
+                    $(".quoteadrinpt[data-item='billing_state']").val(response.data.billing_state);
+                }
+                if (parseInt(response.data.calcship)==1) {
+                    // Update shipping cost
+                    $(".quoteleadshipcostinpt[data-item='shipping_cost']").val(response.data.shipping_cost);
+                    $(".quoteshippingcostarea").empty().html(response.data.shippingview);
+                }
+                if (parseInt(response.data.totalcalc)==1) {
+                    $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
+                    $(".quotetotalvalue").empty().html(response.data.total);
+                    $(".quotecommondatainpt[data-item='sales_tax']").val(response.data.tax);
+                }
+                $("#shipingcompileaddress").val(response.data.shipaddress);
+                $("#billingcompileaddress").val(response.data.billaddress);
+                $("#loader").hide();
+                init_leadquotes_content();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
     // Address Input
     $(".quoteaddressinpt").unbind('change').change(function(){
         var params = new Array();

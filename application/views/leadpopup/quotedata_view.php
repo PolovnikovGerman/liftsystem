@@ -101,7 +101,7 @@
     <div class="datarow">
         <div class="quoteshipaddressarea">
             <div class="quoteshipcountryarea">
-                <select class="quoteaddressinpt quotecountry" <?=$edit_mode==0 ? 'disabled="true"' : '' ?> data-item="shipping_country">
+                <select class="quoteadrinpt quotecountry" <?=$edit_mode==0 ? 'disabled="true"' : '' ?> data-item="shipping_country">
                     <?php foreach ($countries as $country) { ?>
                         <option value="<?=$country['country_id']?>" <?=$country['country_id']==$data['shipping_country'] ? 'selected="selected"' : ''?>><?=$country['country_name']?></option>
                     <?php } ?>
@@ -110,20 +110,20 @@
             </div>
             <div class="quoteshipaddressother">
                 <div class="quoteaddressarea">
-                    <input class="quoteaddressinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_contact"
+                    <input class="quoteadrinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_contact"
                            placeholder="Contact Name" value="<?=$data['shipping_contact']?>"/>
-                    <input class="quoteaddressinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_company"
+                    <input class="quoteadrinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_company"
                            placeholder="Company" value="<?=$data['shipping_company']?>"/>
-                    <div class="shipadrrlinearea" style="width: 100%">
-                        <input class="quoteaddressinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_address1"
-                           placeholder="Address Line 1" value="<?=$data['shipping_address1']?>" id="quoteshipaddress_line1" autocomplete="new-password" aria-autocomplete="none"/>
+                    <div class="shiplinearea" style="width: 100%">
+                        <input type="text" class="quoteadrinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_address1"
+                           <?=$mapuse==0 ? 'placeholder="Address Line 1"' : ''?> value="<?=$data['shipping_address1']?>" id="shiplead_line1" autocomplete="new-password" aria-autocomplete="none"/>
                     </div>
-                    <input class="quoteaddressinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_address2"
+                    <input class="quoteadrinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_address2"
                            placeholder="Address Line 2" value="<?=$data['shipping_address2']?>" autocomplete="new-password"/>
-                        <input class="quoteaddressinpt quotetown" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_city"
+                        <input class="quoteadrinpt quotetown" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_city"
                                placeholder="City" value="<?=$data['shipping_city']?>"/>
                         <div class="quoteshipaddresdistrict"><?=$shipstate?></div>
-                        <input class="quoteaddressinpt quotepostal" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_zip"
+                        <input class="quoteadrinpt quotepostal" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_zip"
                                placeholder="Zip" value="<?=$data['shipping_zip']?>"/>
                 </div>
                 <div class="shipaddrescopy" <?=$edit_mode==0 ? 'style="display: none;"' : ''?>>
