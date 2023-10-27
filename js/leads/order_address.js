@@ -4,7 +4,7 @@ let adrOrder1Field;
 let adrOrder2Field;
 
 function initShipOrderAutocomplete() {
-    adrOrder1Field = document.getElementById("ordershipaddress_line1");
+    adrOrder1Field = document.getElementById("shiporder_line1");
     // Shipping Address
     var shipcnt = $("#shipordercntcode").val();
     if (shipcnt == '') {
@@ -89,7 +89,7 @@ function updateOrderAddress(address_type, address1, city, state, postcode, count
     var params = new Array();
     params.push({name: 'address_type', value: address_type});
     if (address_type=='shipping') {
-        var shipadr = $("#ordershipaddress_line1").data('shipadr');
+        var shipadr = $("#shiporder_line1").data('shipadr');
         params.push({name: 'shipadr', value: shipadr});
     }
     params.push({name: 'line_1', value: address1});
@@ -109,7 +109,7 @@ function updateOrderAddress(address_type, address1, city, state, postcode, count
                 if (parseInt(response.data.bilstate)==1) {
                     $("#billingstateselectarea").empty().html(response.data.stateview);
                 } else {
-                    $("#billingstateselectarea").empty();
+                    $("#billingstateselectarea").empty().html('&nbsp;');
                 }
                 $("#billingcompileaddress").val(response.data.addresscopy);
             } else {
@@ -119,7 +119,9 @@ function updateOrderAddress(address_type, address1, city, state, postcode, count
                 $("input.ship_tax_input2[data-shipadr='"+shipadr+"']").val(response.data.zip);
                 $("div[data-content='shipstateshow'][data-shipadr='"+shipadr+"']").empty();
                 if (parseInt(response.data.shipstate)==1) {
-                    $("div[data-content='shipstateshow'][data-shipadr='"+shipadr+"']").html(response.data.stateview);
+                    $("div[data-content='shipstateshow'][data-shipadr='"+shipadr+"']").empty().html(response.data.stateview);
+                } else {
+                    $("div[data-content='shipstateshow'][data-shipadr='"+shipadr+"']").empty().html('&nbsp;');
                 }
                 $("#shipingcompileaddress").val(response.data.addresscopy);
             }
