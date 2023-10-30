@@ -533,6 +533,7 @@ class Leadquote_model extends MY_Model
             }
             if ($i==1) {
                 $newloc['print_1']=0;
+                $newloc['active'] = 1;
             } else {
                 $newloc['print_1']=$quoteitem['imprint_price'];
             }
