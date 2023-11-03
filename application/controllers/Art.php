@@ -47,6 +47,11 @@ class Art extends MY_Controller {
 
         $content_options = [];
         $content_options['start'] = $this->input->get('start', TRUE);
+        $gmaps = 0;
+        if (!empty($this->config->item('google_map_key'))) {
+            $gmaps = 1;
+        }
+
         foreach ($menu as $row) {
             if ($row['item_link']=='#taskview') {
                 // Taks View
@@ -70,6 +75,9 @@ class Art extends MY_Controller {
         $head['styles'][] = array('style'=> '/css/art/artpage.css');
         $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
         $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
+        if ($gmaps==1) {
+            $head['scripts'][]=array('src'=>'/js/leads/order_address.js');
+        }
         // Utils
         // $head['scripts'][]=array('src'=>'/js/jquery.bt.js');
         $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
@@ -106,6 +114,9 @@ class Art extends MY_Controller {
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
         ];
+        if ($gmaps==1) {
+            $options['gmaps'] = $gmaps;
+        }
         $dat = $this->template->prepare_pagecontent($options);
         $content_options['left_menu'] = $dat['left_menu'];
         $content_options['brand'] = $brand;
