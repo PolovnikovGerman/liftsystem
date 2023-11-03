@@ -14,6 +14,10 @@ function order_artstage(order_id, callpage, brand) {
             if (parseInt(order_id)==0) {
                 init_onlineleadorder_edit();
                 init_rushpast();
+                if (parseInt($("#ordermapuse").val())==1) {
+                    // Init simple Shipping address
+                    initShipOrderAutocomplete();
+                }
             } else {
                 if (parseInt(response.data.cancelorder)===1) {
                     $("#artModal").find('div.modal-header').addClass('cancelorder');

@@ -340,6 +340,7 @@ Class Artproof_model extends MY_Model
 
     private function get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, $less=0, $brand, $viewall) {
         $daylimit=24*60*60;
+        $maxlimit = 180*24*60*60;
         /* Get with data More then then 24 hours */
         $this->db->select('v.order_disp_id, v.order_num, v.order_rush as order_rush_val, v.specialdiff, v.commondiff, v.update_date, v.order_proj_status ');
         $this->db->select('v.day_diff, v.hour_diff, v.customer_name, v.item_name, v.order_date, v.revenue, artwok_bypassredraw( v.order_id,v.status_type ) as redraw_bypass',FALSE);
@@ -389,6 +390,7 @@ Class Artproof_model extends MY_Model
         // More then 1 day
         if ($less==0) {
             $this->db->where('v.specialdiff > ',$daylimit);
+            $this->db->where('v.specialdiff <= ',$maxlimit);
             if ($stage=='just_approved' && $viewall==0) {
                 $this->db->limit($this->needapproval_limit);
             }

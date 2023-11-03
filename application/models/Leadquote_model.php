@@ -533,6 +533,7 @@ class Leadquote_model extends MY_Model
             }
             if ($i==1) {
                 $newloc['print_1']=0;
+                $newloc['active'] = 1;
             } else {
                 $newloc['print_1']=$quoteitem['imprint_price'];
             }
@@ -577,9 +578,11 @@ class Leadquote_model extends MY_Model
         $out = ['result' => $this->error_result, 'msg' => 'Empty Need Parameters',
             'shiprebuild' => 0, 'shipstate' => 0,
             'billstate' => 0, 'billrebuild' => 0,
-            'totalcalc' => 0, 'calcship' => 0, 'taxview'=>0];
+            'totalcalc' => 0, 'calcship' => 0, 'taxview'=>0,
+            'shipcountry' => 0, 'bilcountry' => 0];
         $fldname = ifset($data, 'fld','');
         if (!empty($fldname)) {
+            $this->load->model('shipping_model');
             $quote = $quotesession['quote'];
             $quote[$fldname] = $data['newval'];
             if ($fldname=='shipping_country') {
@@ -588,20 +591,33 @@ class Leadquote_model extends MY_Model
                 $quote['shipping_zip'] = '';
                 $quote['shipping_city'] = '';
                 $quote['shipping_state'] = '';
+                $quote['shipping_address1'] = $quote['shipping_address2'] = '';
                 $out['totalcalc'] = 1;
+                $out['shipcountry'] = 1;
+                $out['countrycode'] = '';
+                $cntdat = $this->shipping_model->get_country($data['newval']);
+                if (ifset($cntdat,'country_id',0) > 0) {
+                    $out['countrycode'] = $cntdat['country_iso_code_2'];
+                }
             } elseif ($fldname=='billing_country') {
                 $out['billrebuild'] = 1;
                 $out['billstate'] = 1;
                 $quote['billing_zip'] = '';
                 $quote['billing_city'] = '';
                 $quote['billing_state'] = '';
+                $quote['billing_address1'] =$quote['billing_address2'] = '';
+                $out['bilcountry'] = 1;
+                $out['countrycode'] = '';
+                $cntdat = $this->shipping_model->get_country($data['newval']);
+                if (ifset($cntdat,'country_id',0) > 0) {
+                    $out['countrycode'] = $cntdat['country_iso_code_2'];
+                }
             } elseif ($fldname=='shipping_zip') {
                 $out['shiprebuild'] = 1;
                 $out['totalcalc'] = 1;
                 $out['calcship'] = 1;
                 // Find city and zip
                 if (!empty($data['newval'])) {
-                    $this->load->model('shipping_model');
                     $zipdat = $this->shipping_model->get_zip_address($quote['shipping_country'], $data['newval']);
                     if ($zipdat['result']==$this->success_result) {
                         $quote['shipping_city'] = $zipdat['city'];
@@ -628,7 +644,6 @@ class Leadquote_model extends MY_Model
                 // Find city and zip
                 $out['billrebuild'] = 1;
                 if (!empty($data['newval'])) {
-                    $this->load->model('shipping_model');
                     $zipdat = $this->shipping_model->get_zip_address($quote['billing_country'], $data['newval']);
                     if ($zipdat['result']==$this->success_result) {
                         $quote['billing_city'] = $zipdat['city'];
@@ -3576,6 +3591,66 @@ class Leadquote_model extends MY_Model
         usersession($session_id, $quotesession);
         $out['result'] = $this->success_result;
         $out['billingsame'] = $sameadr;
+        return $out;
+    }
+
+    public function update_autoaddress($data, $quotesession, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Parameter Not Found'];
+        $quote = $quotesession['quote'];
+        $out['msg'] = 'Empty Address Type';
+        if (ifset($data,'address_type','')!=='') {
+            // Not empty address type
+            $out['shipstate'] = $out['bilstate'] = 0;
+            $cntres = [];
+            $states = [];
+            if (ifset($data, 'country','')!=='') {
+                $this->db->select('*');
+                $this->db->from('sb_countries');
+                $this->db->where('country_name',$data['country']);
+                $cntres = $this->db->get()->row_array();
+                if (ifset($cntres,'country_id',0) > 0) {
+                    $this->db->select('*');
+                    $this->db->from('sb_states');
+                    $this->db->where('country_id', $cntres['country_id']);
+                    $states = $this->db->get()->result_array();
+                }
+                $out['states'] = $states;
+            }
+            if ($data['address_type']=='billing') {
+                $quote['billing_country'] = ifset($cntres,'country_id','');
+                $quote['billing_address1'] = ifset($data,'line_1','');
+                $quote['billing_city'] = ifset($data, 'city','');
+                $quote['billing_state'] = ifset($data, 'state','');
+                $quote['billing_zip'] = ifset($data, 'zip','');
+                $out['result'] = $this->success_result;
+                $out['ship'] = 0;
+                if (count($states) > 0) {
+                    $out['bilstate'] = 1;
+                }
+            } elseif ($data['address_type']=='shipping') {
+                $quote['shipping_country'] = ifset($cntres,'country_id','');
+                $quote['shipping_address1'] = ifset($data,'line_1','');
+                $quote['shipping_city'] = ifset($data, 'city','');
+                $quote['shipping_state'] = ifset($data, 'state','');
+                $quote['shipping_zip'] = ifset($data, 'zip','');
+                $out['result'] = $this->success_result;
+                $out['ship'] = 1;
+                if (count($states) > 0) {
+                    $out['shipstate'] = 1;
+                }
+                if (ifset($data,'state','')==$this->tax_state) {
+                    $quote['taxview'] = 1;
+                } else {
+                    $quote['taxview'] = 0;
+                }
+            } else {
+                $out['msg'] = 'Unknown Address Type';
+            }
+            if ($out['result']==$this->success_result) {
+                $quotesession['quote'] = $quote;
+                usersession($session_id, $quotesession);
+            }
+        }
         return $out;
     }
 

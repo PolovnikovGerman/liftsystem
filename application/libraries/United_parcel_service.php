@@ -32,7 +32,7 @@ class United_parcel_service
     // ============================================================
     function __construct() {
         $this->_CI =& get_instance();
-        $this->_CI->config->load('shipping');
+        $this->_CI->config->load('shipping_old');
         $this->access_key=$this->_CI->config->item('ups_access_key');
         $this->ups_account_username=$this->_CI->config->item('ups_account_username');
         $this->ups_account_password=$this->_CI->config->item('ups_account_password');
@@ -54,7 +54,7 @@ class United_parcel_service
             $operation = "ProcessTimeInTransit";
             $endpointurl = $this->ups_transit_url;
             $outputFileName = $this->_CI->config->item('upload_path_preload')."TNTResult.xml";
-
+            log_message('ERROR', 'TNT WSDL '.$wsdl);
             $weight=round($weight/$number_of_packages,1);
 
             try
