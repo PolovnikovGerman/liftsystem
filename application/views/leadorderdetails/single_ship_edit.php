@@ -31,7 +31,7 @@
                 </div>
                 <input class="ship_tax_textareainpt input_border_gray leftalign" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" data-fldname="ship_address2" placeholder="Address Line 2" value="<?=$shipadr['ship_address2']?>" autocomplete="new-password"/>
                 <input type="text" class="ship_tax_input1 input_border_gray leftalign" placeholder="City" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" value="<?= $shipadr['city'] ?>"/>
-                <div data-content="shipstateshow" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" style="float: left; width: 42px;>
+                <div data-content="shipstateshow" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" style="float: left; width: 42px;">
                     <?php if (count($states) == 0) { ?>
                         &nbsp;
                     <?php } else { ?>
