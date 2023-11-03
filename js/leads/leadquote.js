@@ -1027,6 +1027,12 @@ function init_leadquotes_view() {
                 $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
                 init_onlineleadorder_edit();
                 init_rushpast();
+                if (parseInt($("#ordermapuse").val())==1) {
+                    // Init billing autofill
+                    initBillOrderAutocomplete();
+                    // Init simple Shipping address
+                    initShipOrderAutocomplete();
+                }
             } else {
                 $("#loader").hide();
                 show_error(response);

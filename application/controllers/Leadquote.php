@@ -1423,6 +1423,7 @@ class Leadquote extends MY_Controller
                     $order_data = $this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                     $options['order_data'] = $order_data;
                     $options['leadsession'] = $leadsession;
+                    $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
                     $content = $this->load->view('leadorderdetails/placeorder_menu_edit', $options, TRUE);
                     // $mdata['content']=$content;
                     $head_options = [
