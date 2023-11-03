@@ -19,7 +19,7 @@
                 <option value="<?= $row['country_id'] ?>" <?= $row['country_id'] == $billing['country_id'] ? 'selected="selected"' : '' ?>><?= $row['country_name'] ?></option>
             <?php } ?>
         </select>
-        <input type="hidden" id="billordercntcode" value="<?=$billcntcode?>"/>
+        <input type="hidden" id="billordercntcode" value="<?=$country_code?>"/>
     </div>
     <div class="billing_content1_line">
         <div class="billingaddressbox">

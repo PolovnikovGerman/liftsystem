@@ -384,6 +384,7 @@ class Leadorder extends MY_Controller
                     $options['order_data']=$order_data;
                     $options['order_confirmation']='Duplicate';
                     $options['leadsession']=$ordersession;
+                    $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
                     $options['current_page']=ifset($postdata,'current_page','orders');
                     $content=$this->load->view('leadorderdetails/placeorder_menu_edit',$options, TRUE);
                     $mdata['content']=$content;
