@@ -41,6 +41,10 @@ class Accounting extends MY_Controller
 
         $start = $this->input->get('start', TRUE);
         $content_options = [];
+        $gmaps = 0;
+        if (!empty($this->config->item('google_map_key'))) {
+            $gmaps = 1;
+        }
         foreach ($menu as $row) {
             if ($row['item_link']=='#profitordesview') {
                 $head['styles'][]=array('style'=>'/css/accounting/profitordesview.css');
@@ -96,6 +100,9 @@ class Accounting extends MY_Controller
         // Order popup
         $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
         $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
+        if ($gmaps==1) {
+            $head['scripts'][]=array('src'=>'/js/leads/order_address.js');
+        }
         // Uploader
         $head['scripts'][]=array('src'=>'/js/adminpage/fileuploader.js');
         $head['styles'][]=array('style'=>'/css/page_view/fileuploader.css');
@@ -117,7 +124,9 @@ class Accounting extends MY_Controller
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
         ];
-
+        if ($gmaps==1) {
+            $options['gmaps'] = $gmaps;
+        }
         $dat = $this->template->prepare_pagecontent($options);
         $content_options['left_menu'] = $dat['left_menu'];
         $content_options['brand'] = $brand;

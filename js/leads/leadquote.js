@@ -19,6 +19,11 @@ function addnewcustomquote() {
                 $(".quotesaddnew").unbind('click');
                 $("#lead_id").val(response.data.lead_id);
                 init_leadquotes_content();
+                if (parseInt($("#quotemapuse").val())==1) {
+                    initShipQuoteAutocomplete();
+                    initBillQuoteAutocomplete();
+                }
+                init_billingaddress_copy();
                 $("#loader").hide();
                 if (parseInt(response.data.newitem)!==0) {
                     $(".addprintdetails[data-quoteitem='"+response.data.newitem+"']").trigger('click');
@@ -265,7 +270,7 @@ function init_leadquotes_content() {
         },'json');
     });
     // Address Input
-    $(".quoteaddressinpt").unbind('change').change(function(){
+    $(".quoteadrinpt").unbind('change').change(function(){
         var params = new Array();
         params.push({name: 'session', value: $("#quotesessionid").val()});
         params.push({name: 'fld', value: $(this).data('item')});
@@ -274,6 +279,20 @@ function init_leadquotes_content() {
         $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
+                if (parseInt(response.data.shipcountry)==1) {
+                    $("#shipquotecntcode").val(response.data.countrycode);
+                    if (parseInt($("#quotemapuse").val())==1) {
+                        $(".shipadrrlinearea").empty().html(response.data.address_view);
+                        initShipQuoteAutocomplete();
+                    }
+                }
+                if (parseInt(response.data.bilcountry)==1) {
+                    $("#billcountrycode").val(response.data.countrycode);
+                    if (parseInt($("#quotemapuse").val())==1) {
+                        $(".billadrrlinearea").empty().html(response.data.address_view);
+                        initBillQuoteAutocomplete();
+                    }
+                }
                 if (parseInt(response.data.shipstate)==1) {
                     $(".quoteshipaddresdistrict").empty().html(response.data.stateview);
                 }
@@ -282,17 +301,17 @@ function init_leadquotes_content() {
                 }
                 if (parseInt(response.data.shiprebuild)==1) {
                     // Update zip, city state
-                    $(".quoteaddressinpt[data-item='shipping_zip']").val(response.data.shipping_zip);
-                    $(".quoteaddressinpt[data-item='shipping_city']").val(response.data.shipping_city);
-                    $(".quoteaddressinpt[data-item='shipping_state']").val(response.data.shipping_state);
+                    $(".quoteadrinpt[data-item='shipping_zip']").val(response.data.shipping_zip);
+                    $(".quoteadrinpt[data-item='shipping_city']").val(response.data.shipping_city);
+                    $(".quoteadrinpt[data-item='shipping_state']").val(response.data.shipping_state);
                 }
                 if (parseInt(response.data.taxview)==1) {
                     $(".quotetaxarea").empty().html(response.data.taxcontent);
                 }
                 if (parseInt(response.data.billrebuild)==1) {
-                    $(".quoteaddressinpt[data-item='billing_zip']").val(response.data.billing_zip);
-                    $(".quoteaddressinpt[data-item='billing_city']").val(response.data.billing_city);
-                    $(".quoteaddressinpt[data-item='billing_state']").val(response.data.billing_state);
+                    $(".quoteadrinpt[data-item='billing_zip']").val(response.data.billing_zip);
+                    $(".quoteadrinpt[data-item='billing_city']").val(response.data.billing_city);
+                    $(".quoteadrinpt[data-item='billing_state']").val(response.data.billing_state);
                 }
                 if (parseInt(response.data.calcship)==1) {
                     // Update shipping cost
@@ -304,6 +323,8 @@ function init_leadquotes_content() {
                     $(".quotetotalvalue").empty().html(response.data.total);
                     $(".quotecommondatainpt[data-item='sales_tax']").val(response.data.tax);
                 }
+                $("#shipingcompileaddress").val(response.data.shipaddress);
+                $("#billingcompileaddress").val(response.data.billaddress);
                 $("#loader").hide();
                 init_leadquotes_content();
             } else {
@@ -552,6 +573,17 @@ function init_leadquotes_content() {
                 show_error(response);
             }
         },'json');
+    });
+    // Copy billing address
+    $(".billingaddresscopy").unbind('click').click(function(){
+        var element = document.querySelector("#billingcompileaddress");
+        copyToClipboard(element);
+        $('.quoteaddressinpt[data-item="billing_company"]').focus();
+    });
+    $(".shipaddrescopy").unbind('click').click(function (){
+        var element = document.querySelector("#shipingcompileaddress");
+        copyToClipboard(element);
+        $('.quoteaddressinpt[data-item="shipping_company"]').focus();
     });
 }
 
@@ -932,6 +964,11 @@ function init_leadquotes_view() {
                 $(".quotepopupclose").show();
                 $(".leadquotenumberlist").unbind('click');
                 $(".quotesaddnew").unbind('click');
+                if (parseInt($("#quotemapuse").val())==1) {
+                    initShipQuoteAutocomplete();
+                    initBillQuoteAutocomplete();
+                }
+                // init_billingaddress_copy();
                 init_leadquotes_content();
             } else {
                 show_error(response);
@@ -1016,6 +1053,25 @@ function init_leadquotes_view() {
     });
 }
 
+function init_billingaddress_copy() {
+    var copyTextareaBtn = document.querySelector('.billingaddresscopy');
+
+    copyTextareaBtn.addEventListener('click', function(event) {
+        var copyTextarea = document.getElementById('billingcompileaddress');
+
+        copyTextarea.focus();
+        copyTextarea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Msg '+msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+    });
+}
+
 function send_leadquote(quote) {
     var params = new Array();
     params.push({name: 'quote_id', value: quote});
@@ -1035,4 +1091,23 @@ function send_leadquote(quote) {
             show_error(response);
         }
     },'json');
+}
+
+function copyToClipboard(element) {
+    // var $temp = $("<textarea>");
+    // var brRegex = /<br\s*[\/]?>/gi;
+    // $("body").append($temp);
+    // $temp.val($(element).html().replace(brRegex, "\r\n")).select();
+    $(element).show();
+    $(element).focus();
+    $(element).select();
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        console.log('Msg '+msg);
+    } catch (err) {
+        console.log('Oops, unable to copy');
+    }
+    // document.execCommand("copy");
+    $(element).hide();
 }
