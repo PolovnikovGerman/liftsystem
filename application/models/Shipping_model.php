@@ -1253,4 +1253,46 @@ Class Shipping_model extends MY_Model
         return $res;
     }
 
+    public function prepare_shipaddress($address) {
+        $shipaddress = '';
+        if (!empty($address['ship_contact'])) {$shipaddress.=$address['ship_contact'].PHP_EOL;}
+        if (!empty($address['ship_company'])) {$shipaddress.=$address['ship_company'].PHP_EOL;}
+        if (!empty($address['ship_address1'])) {$shipaddress.=$address['ship_address1'].PHP_EOL;}
+        if (!empty($address['ship_address2'])) {$shipaddress.=$address['ship_address2'].PHP_EOL;}
+        $adrline = 0;
+        if (!empty($address['city'])) {$shipaddress.=$address['city'].', '; $adrline = 1;}
+        if (!empty($address['state_id'])) {
+            $statres = $this->get_state($address['state_id']);
+            if (ifset($statres,'state_code','')!=='') {
+                $shipaddress.=$statres['state_code'].' ';$adrline = 1;
+            }
+        }
+        if (!empty($address['zip'])) {$shipaddress.=$address['zip'];$adrline = 1;}
+        if ($adrline ==1) {
+            $shipaddress.=PHP_EOL;
+        }
+        return $shipaddress;
+    }
+
+    public function prepare_billaddress($address) {
+        $billaddress = '';
+        if (!empty($address['customer_name'])) {$billaddress.=$address['customer_name'].PHP_EOL;}
+        if (!empty($address['company'])) {$billaddress.=$address['company'].PHP_EOL;}
+        if (!empty($address['address_1'])) {$billaddress.=$address['address_1'].PHP_EOL;}
+        if (!empty($address['address_2'])) {$billaddress.=$address['address_2'].PHP_EOL;}
+        $adrline = 0;
+        if (!empty($address['city'])) {$billaddress.=$address['city'].', '; $adrline = 1;}
+        if (!empty($address['state_id'])) {
+            $statres = $this->get_state($address['state_id']);
+            if (ifset($statres,'state_code','')!=='') {
+                $billaddress.=$statres['state_code'].' ';$adrline = 1;
+            }
+        }
+        if (!empty($address['zip'])) {$billaddress.=$address['zip'];$adrline = 1;}
+        if ($adrline ==1) {
+            $billaddress.=PHP_EOL;
+        }
+        return $billaddress;
+    }
+
 }
