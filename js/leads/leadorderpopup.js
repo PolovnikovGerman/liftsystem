@@ -286,7 +286,9 @@ function edit_currentorder() {
             init_rushpast();
             if (parseInt($("#ordermapuse").val())==1) {
                 // Init billing autofill
-                initBillOrderAutocomplete();
+                if ($("#billorder_line1").length > 0) {
+                    initBillOrderAutocomplete();
+                }
                 // Init simple Shipping address
                 initShipOrderAutocomplete();
             }
