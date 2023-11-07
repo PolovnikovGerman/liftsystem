@@ -5343,16 +5343,16 @@ Class Leadorder_model extends My_Model {
     // Copy first shipping address to billing
     private function _billingaddres_copy($shipping_address, $biladr) {
         $shipadr=$shipping_address[0];
-        if (empty($biladr['customer_name']) && empty($biladr['address_1']) && empty($biladr['city'])) {
-            $biladr['customer_name']=$shipadr['ship_contact'];
-            $biladr['company']=$shipadr['ship_company'];
+        // if (empty($biladr['customer_name']) && empty($biladr['address_1']) && empty($biladr['city'])) {
+            $biladr['customer_name']=empty($biladr['customer_name']) ? $shipadr['ship_contact'] : $biladr['customer_name'];
+            $biladr['company']=empty($biladr['company']) ? $shipadr['ship_company'] : $biladr['company'];
             $biladr['address_1']=$shipadr['ship_address1'];
             $biladr['address_2']=$shipadr['ship_address2'];
             $biladr['country_id']=$shipadr['country_id'];
             $biladr['state_id']=$shipadr['state_id'];
             $biladr['city']=$shipadr['city'];
             $biladr['zip']=$shipadr['zip'];
-        }
+        // }
         return $biladr;
     }
 
