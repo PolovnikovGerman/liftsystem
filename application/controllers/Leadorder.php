@@ -620,6 +620,7 @@ class Leadorder extends MY_Controller
                                     }
                                     $billoptions['billcntcode'] = $cntcode;
                                     $billoptions['billaddress'] = $this->shipping_model->prepare_billaddress($billing);
+                                    $billoptions['country_code'] = $cntcode;
                                     $leftcont=$this->load->view('leadorderdetails/billadress_edit', $billoptions, TRUE);
                                 } else {
                                     $leftcont=$this->load->view('leadorderdetails/billsameadress_edit', $billoptions, TRUE);
@@ -5451,6 +5452,7 @@ class Leadorder extends MY_Controller
                         $mdata['total_due']=$this->load->view('leadorderdetails/totaldue_data_view', $dueoptions, TRUE);
                         $mdata['tax']=MoneyOutput($order['tax']);
                         $mdata['profit_content']=$this->_profit_data_view($order);
+                        // shipdates_content
                         if ($mdata['cntshipadrr']==1) {
                             $shipcost=$shipping_address[0]['shipping_costs'];
                             $costoptions=array(
@@ -5467,6 +5469,12 @@ class Leadorder extends MY_Controller
                             }
                             $mdata['taxview']=$taxview;
                         }
+                        $dateoptions=array(
+                            'edit'=>1,
+                            'shipping'=>$shipping,
+                            'user_role' => $this->USR_ROLE,
+                        );
+                        $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
                     }
                 }
             }
