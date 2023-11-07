@@ -1,6 +1,6 @@
 <?php
-$config['js_version'] = '2.02177';
-$config['css_version']= '2.02177';
+$config['js_version'] = '2.02178';
+$config['css_version']= '2.02178';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -292,3 +292,4 @@ $config['newprooflnk']='https://www.bluetrack.com/proofview/?doc=';
 $config['debug_mode'] = (getenv('TEST_SERVER')==1 ? '1' : 0);
 $config['default_country'] = 223;
 $config['google_map_key'] = getenv('GOOGLEMAPAPI_KEY');
+$config['srrepeat_cost'] = 12;
