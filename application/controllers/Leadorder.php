@@ -2696,6 +2696,7 @@ class Leadorder extends MY_Controller
                                 $options['timeout']=(time()+$this->config->item('loctimeout'))*1000;
                             }
                             $options['current_page']=ifset($postdata,'callpage','art_tasks');
+                            $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
                             $content=$this->load->view('leadorderdetails/top_menu_edit',$options, TRUE);
                             $header = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
                             /* Save to session */
