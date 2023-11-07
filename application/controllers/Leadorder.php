@@ -2085,8 +2085,8 @@ class Leadorder extends MY_Controller
                             $mdata['details']=$order_imprindetail_id;
                             $mdata['newval']=$newval;
                             if ($fldname=='imprint_type') {
+                                $mdata['setup']=  number_format($res['setup'],2,'.','');
                                 if ($newval=='NEW') {
-                                    $mdata['setup']=  number_format($res['setup'],2,'.','');
                                 } else {
                                     $mdata['class']=$res['class'];
                                 }

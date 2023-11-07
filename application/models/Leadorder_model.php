@@ -2113,13 +2113,30 @@ Class Leadorder_model extends My_Model {
                         $details[$detidx]['setup_2']=0;
                         $details[$detidx]['setup_3']=0;
                         $details[$detidx]['setup_4']=0;
+                        $out['setup'] = 0;
+                    } elseif ($imprintdetails['brand']=='SR') {
+                        $details[$detidx]['setup_1']=$this->config->item('srrepeat_cost');
+                        $details[$detidx]['setup_2']=$this->config->item('srrepeat_cost');
+                        $details[$detidx]['setup_3']=$this->config->item('srrepeat_cost');
+                        $details[$detidx]['setup_4']=$this->config->item('srrepeat_cost');
+                        $out['setup'] = $this->config->item('srrepeat_cost');
                     }
                     $out['class']='';
                     if (!empty($details[$detidx]['repeat_note'])) {
                         $out['class']='full';
                     }
                 } else {
-                    $setupprice=$this->_get_item_priceimprint($imprintdetails['item_id'], 'setup');
+                    if ($imprintdetails['item_id'] == $this->config->item('custom_id')) {
+                        $setupprice = $this->custom_setup_price;
+                    } elseif ($imprintdetails['item_id'] == $this->config->item('other_id')) {
+                        if ($imprintdetails['brand']=='SR') {
+                            $setupprice = $this->other_setupsr_price;
+                        } else {
+                            $setupprice = $this->other_setupsb_price;
+                        }
+                    } else {
+                        $setupprice=$this->_get_item_priceimprint($imprintdetails['item_id'], 'setup');
+                    }
                     $out['setup']=$setupprice;
                     $details[$detidx]['setup_1']=$setupprice;
                     $details[$detidx]['setup_2']=$setupprice;
