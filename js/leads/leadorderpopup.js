@@ -182,6 +182,16 @@ function navigation_init() {
         trigger: 'hover',
         placement: 'right'
     });
+    // Copy billing address
+    $(".billingaddresscopy").unbind('click').click(function (){
+        var element = document.querySelector("#billingcompileaddress");
+        copyOrderToClipboard(element);
+    });
+    // Copy Shipping address
+    $(".shippingadrescopy").unbind('click').click(function (){
+        var element = document.querySelector("#shipingcompileaddress");
+        copyOrderToClipboard(element);
+    });
 }
 
 
@@ -3499,7 +3509,6 @@ function init_leadorder_billing() {
         copyOrderToClipboard(element);
         $('.billinginput[data-fldname="company"]').focus();
     });
-
 }
 
 function init_leadorder_charges() {
