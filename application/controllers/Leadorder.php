@@ -960,9 +960,9 @@ class Leadorder extends MY_Controller
                             $leadorder=usersession($ordersession);
                             $newitem = $res['newitem'];
                             $order=$leadorder['order'];
-                            $mdata['order_revenue']=MoneyOutput($order['revenue']);
                             $shipping=$leadorder['shipping'];
                             $shipping_address=$leadorder['shipping_address'];
+                            $mdata['order_revenue']=MoneyOutput($order['revenue']);
                             $mdata['shipdate']=$shipping['shipdate'];
                             $mdata['rush_price']=$shipping['rush_price'];
                             $mdata['is_shipping']=$order['is_shipping'];
@@ -1024,6 +1024,34 @@ class Leadorder extends MY_Controller
                                 $error = $imprdata['msg'];
                             } else {
                                 $mdata['imprintview'] = $imprdata['content'];
+                            }
+                            // Shipping count results
+                            $mdata['shipcount'] = $res['shipcount'];
+                            if ($res['shipcount']==$this->success_result) {
+                                if ($mdata['cntshipadrr']==1) {
+                                    $mdata['adressship'] = $shipping_address[0]['order_shipaddr_id'];
+                                    // Ship Rates
+                                    $shipcost=$shipping_address[0]['shipping_costs'];
+                                    $costoptions=array(
+                                        'shipadr'=>$shipping_address[0]['order_shipaddr_id'],
+                                        'shipcost'=>$shipcost,
+                                    );
+                                    $mdata['shipcost']=$this->load->view('leadorderdetails/ship_cost_edit', $costoptions, TRUE);
+                                    // Tax View
+                                    $shipaddr=$shipping_address[0];
+                                    if ($shipaddr['taxview']==0) {
+                                        $taxview=$this->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
+                                    } else {
+                                        $taxview=$this->load->view('leadorderdetails/tax_data_edit', $shipaddr, TRUE);
+                                    }
+                                    $mdata['taxview']=$taxview;
+                                }
+                                $dateoptions=array(
+                                    'edit'=>1,
+                                    'shipping'=>$shipping,
+                                    'user_role' => $this->USR_ROLE,
+                                );
+                                $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
                             }
                         }
                     }

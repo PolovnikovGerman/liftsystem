@@ -541,7 +541,9 @@ function init_onlineleadorder_edit() {
                 if (parseInt(response.data.showbilladdress)==1) {
                     // New Order 
                     $("div#leftbillingdataarea").empty().html(response.data.leftbilling);
-                    initBillOrderAutocomplete();
+                    if ($("#billorder_line1").length > 0) {
+                        initBillOrderAutocomplete();
+                    }
                 }
                 $("input#loctimeout").val(response.data.loctime);
                 if (entity=='artwork' && fldname=='artwork_blank') {
@@ -992,6 +994,19 @@ function save_leadorderitem() {
                 $("div.bl_items_sub-total2").empty().html(response.data.item_subtotal);
                 $("div#leadorderprofitarea").empty().html(response.data.profit_content);
                 $("input#loctimeout").val(response.data.loctime);
+                if (parseInt(response.data.shipcount)==1 && parseInt(response.data.cntshipadrr)==1) {
+                    var shipadr = parseInt(response.data.adressship)
+                    // Rates, dates
+                    $("div.ship_tax_container2[data-shipadr='"+shipadr+"']").empty().html(response.data.shipcost);
+                    $("input.shippingcost").val(response.data.shipping);
+                    $("input.salestaxcost").val(response.data.tax);
+                    // Tax view
+                    if (response.data.taxview.length>0) {
+                        $(".ship_tax_cont_bl3").empty().html(response.data.taxview);
+                    }
+                    // Shipping Dates
+                    $("div.shippingdatesarea").empty().html(response.data.shipdates_content);
+                }
                 init_onlineleadorder_edit();
                 // Print details
                 $("#artNextModal").find('div.modal-dialog').css('width','1077px');
@@ -3477,7 +3492,9 @@ function init_leadorder_billing() {
                 $("div#billingstateselectarea").empty().html(response.data.stateview);
                 $("#billordercntcode").val(response.data.country_code);
                 $("#billingaddresslinearea").empty().html(response.data.addresline);
-                initBillOrderAutocomplete();
+                if ($("#billorder_line1").length > 0) {
+                    initBillOrderAutocomplete();
+                }
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
             } else {
