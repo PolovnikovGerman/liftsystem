@@ -39,6 +39,10 @@
             <input type="text" class="billing_input6 billinginput leftalign" readonly="readonly"
                    placeholder="Zip" value="<?= $billing['zip'] ?>"/>
         </div>
+        <div class="billingaddresscopy">
+            <i class="fa fa-copy"></i>
+        </div>
+        <textarea id="billingcompileaddress" style="display: none"><?=$billaddress?></textarea>
     </div>
 </div>
 <div class="billing_content2">
