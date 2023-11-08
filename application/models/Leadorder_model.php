@@ -1579,6 +1579,7 @@ Class Leadorder_model extends My_Model {
         $shipping=$leadorder['shipping'];
         $shipidx=0;
         $cnt=0;
+        $out['shipcount'] = 0;
         foreach ($shipaddr as $shprow) {
             if (!empty($shprow['zip'])) {
                 // Get Old Shipping Method
@@ -1597,6 +1598,7 @@ Class Leadorder_model extends My_Model {
                     usersession($ordersession, $leadorder);
                     return $out;
                 } else {
+                    $out['shipcount'] = 1;
                     $rates=$cntres['ships'];
                     $shipcost=$shipaddr[$shipidx]['shipping_costs'];
                     $cidx=0;
