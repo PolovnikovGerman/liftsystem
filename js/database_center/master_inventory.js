@@ -176,10 +176,13 @@ function init_master_inventorycontent() {
                     $("div.mastinvent_body_container").find('div.after_head').css('width',cwidth);
                     // Edit
                     $(".mastinvent_container_contentarea").find("div.waitarrive[data-container='"+container+"']").empty().html(response.data.managecontent);
-                    $(".mastinvent_container_contentarea").find("input.boatcontainerdate[data-container='"+container+"']").datepicker({
-                        'format' : 'mm/dd/yy',
-                        'autoclose' : true,
-                        'startDate': '0d'
+                    $(".mastinvent_container_contentarea").find("input.boatcontainerdate[data-container='"+container+"']").val(response.data.boatdate).datepicker({
+                        // format : 'mm/dd/yy',
+                        autoclose : true,
+                        todayHighlight: true,
+                        zIndexOffset: 100,
+                    }).on("change", function() {
+                        update_onboat_date($(this).val());
                     });
                     $(".mastinvent_container_contentarea").find("input.boatcontainerfreight[data-container='"+container+"']").val(response.data.freight_price).prop('readonly', false).prop('title','');
                 } else {
@@ -191,10 +194,13 @@ function init_master_inventorycontent() {
                     $("div.mastinvent_body_express").find('div.after_head').css('width',cwidth);
                     // Edit
                     $(".mastinvent_express_contentarea").find("div.waitarrive[data-container='"+container+"']").empty().html(response.data.managecontent);
-                    $(".mastinvent_express_contentarea").find("input.boatcontainerdate[data-container='"+container+"']").datepicker({
-                        'format' : 'mm/dd/yy',
-                        'autoclose' : true,
-                        'startDate': '0d'
+                    $(".mastinvent_express_contentarea").find("input.boatcontainerdate[data-container='"+container+"']").val(response.data.boatdate).datepicker({
+                        format : 'mm/dd/yy',
+                        autoclose : true,
+                        todayHighlight: true,
+                        zIndexOffset: 100,
+                    }).on("change", function() {
+                        update_onboat_date($(this).val());
                     });
                     $(".mastinvent_express_contentarea").find("input.boatcontainerfreight[data-container='"+container+"']").val(response.data.freight_price).prop('readonly', false).prop('title','');
                 }
@@ -231,12 +237,15 @@ function init_master_inventorycontent() {
                 $(".onboatdataareas").find('div.after_head').css('margin-left',response.data.marginleft).css('width',response.data.width).append(response.data.content);
                 // Edit
                 $(".waitarrive[data-container='"+container+"']").empty().html(response.data.managecontent);
-                $(".mastinvent_express_contentarea").find("input.boatcontainerdate[data-container='"+container+"']").datepicker({
-                    'format' : 'mm/dd/yy',
-                    'autoclose' : true,
-                    'startDate': '0d'
+                $(".onboacontainer").find("input.boatcontainerdate[data-container='"+container+"']").datepicker({
+                    // format : 'mm/dd/yy',
+                    autoclose : true,
+                    todayHighlight: true,
+                    zIndexOffset: 100,
+                }).on("change", function() {
+                    update_onboat_date($(this).val());
                 });
-                $(".mastinvent_express_contentarea").find("input.boatcontainerfreight[data-container='"+container+"']").prop('readonly', false).prop('title','');
+                $(".onboacontainer").find("input.boatcontainerfreight[data-container='"+container+"']").prop('readonly', false).prop('title','');
                 init_edit_inventcontainer(container,'C');
             } else {
                 show_error(response);
@@ -268,9 +277,11 @@ function init_master_inventorycontent() {
                 // Edit
                 $(".mastinvent_express_contentarea").find("div.waitarrive[data-container='"+container+"']").empty().html(response.data.managecontent);
                 $(".mastinvent_express_contentarea").find("input.boatcontainerdate[data-container='"+container+"']").datepicker({
-                    'format' : 'mm/dd/yy',
-                    'autoclose' : true,
-                    'startDate': '0d'
+                    format : 'mm/dd/yy',
+                    autoclose : true,
+                    todayHighlight: true,
+                }).on("change", function() {
+                    update_onboat_date($(this).val());
                 });
                 $(".mastinvent_express_contentarea").find("input.boatcontainerfreight[data-container='"+container+"']").prop('readonly', false).prop('title','');
                 init_edit_inventcontainer(container,'E');
@@ -380,19 +391,19 @@ function init_edit_inventcontainer(container, onboat_type) {
             }
         },'json');
     });
-    $("input.boatcontainerdate").unbind('change').change(function(){
-        var params = new Array();
-        params.push({name: 'session', value: $("#container_session").val()});
-        params.push({name: 'entity', value: 'onboat_date'});
-        params.push({name: 'newval', value: $(this).val()});
-        var url='/masterinventory/changecontainer_header';
-        $.post(url, params, function (response){
-            if (response.errors=='') {
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
+    // $("input.boatcontainerdate").unbind('change').change(function(){
+    //     var params = new Array();
+    //     params.push({name: 'session', value: $("#container_session").val()});
+    //     params.push({name: 'entity', value: 'onboat_date'});
+    //     params.push({name: 'newval', value: $(this).val()});
+    //     var url='/masterinventory/changecontainer_header';
+    //     $.post(url, params, function (response){
+    //         if (response.errors=='') {
+    //         } else {
+    //             show_error(response);
+    //         }
+    //     },'json');
+    // });
     $("input.boatcontainerfreight").unbind('change').change(function (){
         var params = new Array();
         params.push({name: 'session', value: $("#container_session").val()});
@@ -462,6 +473,20 @@ function init_edit_inventcontainer(container, onboat_type) {
             }
         },'json');
     });
+}
+
+function update_onboat_date(dateval) {
+        var params = new Array();
+        params.push({name: 'session', value: $("#container_session").val()});
+        params.push({name: 'entity', value: 'onboat_date'});
+        params.push({name: 'newval', value: dateval});
+        var url='/masterinventory/changecontainer_header';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
 }
 function init_inventcontainer_move() {
     $(".mastinvent_container_slideleft").unbind('click').click(function(){
