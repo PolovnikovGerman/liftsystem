@@ -5346,8 +5346,8 @@ Class Leadorder_model extends My_Model {
     private function _billingaddres_copy($shipping_address, $biladr) {
         $shipadr=$shipping_address[0];
         // if (empty($biladr['customer_name']) && empty($biladr['address_1']) && empty($biladr['city'])) {
-            $biladr['customer_name']=empty($biladr['customer_name']) ? $shipadr['ship_contact'] : $biladr['customer_name'];
-            $biladr['company']=empty($biladr['company']) ? $shipadr['ship_company'] : $biladr['company'];
+            $biladr['customer_name']=$shipadr['ship_contact']; // empty($biladr['customer_name']) ? $shipadr['ship_contact'] : $biladr['customer_name'];
+            $biladr['company']=$shipadr['ship_company']; // empty($biladr['company']) ? $shipadr['ship_company'] : $biladr['company'];
             $biladr['address_1']=$shipadr['ship_address1'];
             $biladr['address_2']=$shipadr['ship_address2'];
             $biladr['country_id']=$shipadr['country_id'];
