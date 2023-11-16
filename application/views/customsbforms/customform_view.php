@@ -20,6 +20,7 @@
     </div>
     <div class="customform_tabtitle">
         <div class="numrec">#</div>
+        <div class="numinorder"># in order</div>
         <div class="websys">
             <select class="customformhideincl" id="customformhideincl">
                 <option value="1" selected="selected">Not Hidden</option>

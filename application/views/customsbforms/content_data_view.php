@@ -3,6 +3,7 @@
 <?php foreach ($data as $dat) { ?>
     <div class="content-row <?=$numpp%2==0 ? 'greydatarow' : 'whitedatarow'?>" data-form="<?=$dat['custom_quote_id']?>">
         <div class="numrec showformdetails"><?=$dat['numpp']?></div>
+        <div class="numinorder showformdetails"><?=$dat['numorder']?></div>
         <div class="websys <?=$dat['active']==1 ? 'active' : 'removed'?>" data-form="<?=$dat['custom_quote_id']?>">
             <?php if ($dat['active']==1) { ?>
                 <!-- <i class="fa fa-trash" aria-hidden="true"></i> -->
