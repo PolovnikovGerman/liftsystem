@@ -72,6 +72,9 @@ a.find_customformbnt {
     width: 43px;
     /* border-right: 1px solid #2F2F2F; */
 }
+.customform_tabtitle > .numinorder {
+    width: 60px;
+}
 .customform_tabtitle > .websys {
     width: 76px;
 }
@@ -102,7 +105,7 @@ a.find_customformbnt {
     width: 91px;
 }
 .customform_tabtitle > .itemdescription {
-    width: 238px;
+    width: 178px;
 }
 .customform_tabtitle > .itemqty {
     width:72px;
@@ -116,8 +119,8 @@ a.find_customformbnt {
     border-left: 1.5px solid #000000;
     border-bottom: 1.5px solid #000000;
     border-right: 1.5px solid #000000;
-    /* overflow-x: hidden;
-    overflow-y: auto; */
+    /*overflow-x: hidden;
+    overflow-y: auto;*/
     margin-bottom: 15px;
     max-height: 536px;
 }
@@ -155,6 +158,10 @@ a.find_customformbnt {
 }
 .customform_tabledat .content-row > .numrec {
     width: 43px;
+    border-right: 1px solid #000000;
+}
+.customform_tabledat .content-row > .numinorder {
+    width: 60px;
     border-right: 1px solid #000000;
 }
 .customform_tabledat .content-row > .websys {
@@ -201,7 +208,8 @@ a.find_customformbnt {
     text-overflow: ellipsis;
 }
 .customform_tabledat .content-row > .itemdescription {
-    width: 238px;
+    /* width: 238px; */
+    width: 178px;
     border-right: 1px solid #000000;
     overflow: hidden;
     padding-left: 5px;
@@ -216,10 +224,10 @@ a.find_customformbnt {
     border-right: 1px solid #000000;
 }
 .customform_tabledat .content-row > .eventdate {
-    width: 57px;
+    width: 72px;
 }
 .customform_tabledat .content-row > .eventdate.expand {
-    width: 72px
+    width: 62px;
 }
 .customform_popmessage {
     background-color: #ffffff!important;
