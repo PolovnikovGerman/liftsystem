@@ -4676,6 +4676,7 @@ Class Leadorder_model extends My_Model {
         if ($order_id==0) {
             $this->db->set('create_usr',$user_id);
             $this->db->set('create_date',time());
+            $this->db->set('customer_code', new_customer_code());
             $this->db->insert('ts_orders');
             if ($this->db->insert_id()==0) {
                 $res['msg']='Error during save order data';
@@ -4887,6 +4888,7 @@ Class Leadorder_model extends My_Model {
             $this->db->set('create_usr',$user_id);
             $this->db->set('create_date',time());
             $this->db->set('brand', $data['brand']);
+            $this->db->set('customer_code',new_customer_code());
             $this->db->insert('ts_orders');
             if ($this->db->insert_id()==0) {
                 $res['msg']='Error during save order data';
