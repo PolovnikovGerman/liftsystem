@@ -2684,4 +2684,23 @@ class Test extends CI_Controller
         }
         echo 'All Ready '.PHP_EOL;
     }
+
+    public function update_customers() {
+        $this->db->select('order_id, customer_name');
+        $this->db->from('ts_orders');
+        $this->db->where('brand','SR');
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            $this->db->select('*');
+            $this->db->from('ts_customers');
+            $this->db->where('customer_name', $order['customer_name']);
+            $customer = $this->db->get()->row_array();
+            if (ifset($customer,'customer_id','')!=='') {
+                $this->db->where('order_id', $order['order_id']);
+                $this->db->set('customer_id', $customer['customer_id']);
+                $this->db->update('ts_orders');
+            }
+        }
+        echo 'All Ready '.PHP_EOL;
+    }
 }

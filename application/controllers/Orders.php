@@ -64,6 +64,9 @@ class Orders extends MY_Controller
         // Order popup
         $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
         $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
+        // Customer autocomplete
+        $head['scripts'][] = array('src'=> '/js/adminpage/jquery.autocompleter.js');
+        $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
         // Uploader
         $head['scripts'][]=array('src'=>'/js/adminpage/fileuploader.js');
         $head['styles'][]=array('style'=>'/css/page_view/fileuploader.css');

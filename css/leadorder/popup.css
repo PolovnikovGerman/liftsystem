@@ -148,6 +148,7 @@ input.input_checkbox {
     font-size: 13px;
     width: 84px;
     text-align: center;
+    overflow: hidden;
 }
 .leadorderlockdetails i {
     float: left;
@@ -5258,4 +5259,10 @@ input.ticket_date {
 .pac-container {
     z-index: 1500!important;
     width: 325px!important;
+}
+.autocompleter,
+.autocompleter-closed {
+    top: 37px;
+    max-width: 244px;
+    margin-left: 66px;
 }

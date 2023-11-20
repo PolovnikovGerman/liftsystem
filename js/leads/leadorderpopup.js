@@ -863,6 +863,20 @@ function init_onlineleadorder_edit() {
             }
         });
     }
+    $("#ordercustomername").autocompleter({
+        source: '/leadorder/customersearch',
+        minLength: 3,
+        focusOpen: false,
+        cache: false,
+        callback: function(value, index, object) {
+            // if (object.id) {
+            //     $("#vendor_item_id").val(object.id);
+            // }
+        }
+    });
+    $("#ordercustomername").blur(function (){
+        $(".contact_name_input").first().focus();
+    })
     init_leadorder_artmanage();
     init_leadorder_contactmanage();
     init_leadorder_items();
