@@ -182,6 +182,16 @@ function navigation_init() {
         trigger: 'hover',
         placement: 'right'
     });
+    // Copy billing address
+    $(".billingaddresscopy").unbind('click').click(function (){
+        var element = document.querySelector("#billingcompileaddress");
+        copyOrderToClipboard(element);
+    });
+    // Copy Shipping address
+    $(".shippingadrescopy").unbind('click').click(function (){
+        var element = document.querySelector("#shipingcompileaddress");
+        copyOrderToClipboard(element);
+    });
 }
 
 
@@ -286,7 +296,9 @@ function edit_currentorder() {
             init_rushpast();
             if (parseInt($("#ordermapuse").val())==1) {
                 // Init billing autofill
-                initBillOrderAutocomplete();
+                if ($("#billorder_line1").length > 0) {
+                    initBillOrderAutocomplete();
+                }
                 // Init simple Shipping address
                 initShipOrderAutocomplete();
             }
@@ -529,7 +541,9 @@ function init_onlineleadorder_edit() {
                 if (parseInt(response.data.showbilladdress)==1) {
                     // New Order 
                     $("div#leftbillingdataarea").empty().html(response.data.leftbilling);
-                    initBillOrderAutocomplete();
+                    if ($("#billorder_line1").length > 0) {
+                        initBillOrderAutocomplete();
+                    }
                 }
                 $("input#loctimeout").val(response.data.loctime);
                 if (entity=='artwork' && fldname=='artwork_blank') {
@@ -849,6 +863,20 @@ function init_onlineleadorder_edit() {
             }
         });
     }
+    $("#ordercustomername").autocompleter({
+        source: '/leadorder/customersearch',
+        minLength: 3,
+        focusOpen: false,
+        cache: false,
+        callback: function(value, index, object) {
+            // if (object.id) {
+            //     $("#vendor_item_id").val(object.id);
+            // }
+        }
+    });
+    $("#ordercustomername").blur(function (){
+        $(".contact_name_input").first().focus();
+    })
     init_leadorder_artmanage();
     init_leadorder_contactmanage();
     init_leadorder_items();
@@ -980,6 +1008,19 @@ function save_leadorderitem() {
                 $("div.bl_items_sub-total2").empty().html(response.data.item_subtotal);
                 $("div#leadorderprofitarea").empty().html(response.data.profit_content);
                 $("input#loctimeout").val(response.data.loctime);
+                if (parseInt(response.data.shipcount)==1 && parseInt(response.data.cntshipadrr)==1) {
+                    var shipadr = parseInt(response.data.adressship)
+                    // Rates, dates
+                    $("div.ship_tax_container2[data-shipadr='"+shipadr+"']").empty().html(response.data.shipcost);
+                    $("input.shippingcost").val(response.data.shipping);
+                    $("input.salestaxcost").val(response.data.tax);
+                    // Tax view
+                    if (response.data.taxview.length>0) {
+                        $(".ship_tax_cont_bl3").empty().html(response.data.taxview);
+                    }
+                    // Shipping Dates
+                    $("div.shippingdatesarea").empty().html(response.data.shipdates_content);
+                }
                 init_onlineleadorder_edit();
                 // Print details
                 $("#artNextModal").find('div.modal-dialog').css('width','1077px');
@@ -2145,11 +2186,11 @@ function change_imprint_details(params) {
                 if (response.data.newval=='REPEAT') {
                     // $("div.repeatdetail[data-details='"+response.data.details+"']").addClass('active').removeClass('full').addClass(response.data.class);
                     var brand = $("#imprinteitbrand").val();
-                    if (brand!=='SR') {
+                    // if (brand!=='SR') {
                         for (i=1; i<=4; i++) {
-                            $("input.imprintprice[data-details='"+response.data.details+"'][data-fldname='setup_"+i+"']").val('0.00');
+                            $("input.imprintprice[data-details='"+response.data.details+"'][data-fldname='setup_"+i+"']").val(response.data.setup);
                         }
-                    }
+                    // }
                     $("input.imprintrepeatnote[data-details='"+response.data.details+"']").prop('disabled',false);
                     $("input.imprintrepeatnote[data-details='"+response.data.details+"']").focus();
                 } else {
@@ -3465,7 +3506,9 @@ function init_leadorder_billing() {
                 $("div#billingstateselectarea").empty().html(response.data.stateview);
                 $("#billordercntcode").val(response.data.country_code);
                 $("#billingaddresslinearea").empty().html(response.data.addresline);
-                initBillOrderAutocomplete();
+                if ($("#billorder_line1").length > 0) {
+                    initBillOrderAutocomplete();
+                }
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
             } else {
@@ -3497,7 +3540,6 @@ function init_leadorder_billing() {
         copyOrderToClipboard(element);
         $('.billinginput[data-fldname="company"]').focus();
     });
-
 }
 
 function init_leadorder_charges() {

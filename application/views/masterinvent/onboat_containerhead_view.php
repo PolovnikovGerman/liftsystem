@@ -8,7 +8,7 @@
         <?php } ?>
     </div>
     <div class="containerdate">
-        <input class="boatcontainerdate" data-container="<?= $onboat_container ?>" value="<?= date('m/d/y', $onboat_date) ?>" readonly="readonly"/>
+        <input class="boatcontainerdate" data-container="<?= $onboat_container ?>" value="<?=$edit_mode==0 ?  date('m/d/y', $onboat_date) : date('d/m/Y', $onboat_date) ?>" readonly="readonly"/>
     </div>
     <div class="containrermanage">
         <div class="<?= ($onboat_status == 1 ? 'arrived' : 'waitarrive') ?>" data-onboattype="<?=$onboat_type?>" data-container="<?= $onboat_container ?>"><?=$onboat_status==1 ? 'Arrived' : 'Waiting'?></div>

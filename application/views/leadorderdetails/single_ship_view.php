@@ -40,6 +40,10 @@
                 </div>
                 <input type="text" class="ship_tax_input2 leftalign" placeholder="Zip" value="<?= $shipadr['zip'] ?>" readonly="readonly"/>
             </div>
+            <div class="shippingadrescopy">
+                <i class="fa fa-copy"></i>
+            </div>
+            <textarea id="shipingcompileaddress" style="display: none"><?=$shipaddress?></textarea>
             <div class="ship_tax_cont_bl2 viewdata">
                 <div class="line">
                     <input type="checkbox" <?=$shipadr['resident']==1 ? 'checked="checked"' : ''?> class="input_checkbox shipadrchk" disabled="disabled" style="float: left;"/>

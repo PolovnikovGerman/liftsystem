@@ -2,6 +2,10 @@
     <div class="custom-form">
         <div class="formleft">
             <div class="csf-inputgroup">
+                <input type="text" readonly="readonly" value="<?=date('m/d/Y',strtotime($data['date_add']))?>" data-fld="date_add" class="custom-input-1">
+                <label>Date:</label>
+            </div>
+            <div class="csf-inputgroup">
                 <input type="text" readonly="readonly" value="<?=$data['customer_name']?>" data-fld="customer_name" class="custom-input-1">
                 <label>Customer Name:</label>
             </div>

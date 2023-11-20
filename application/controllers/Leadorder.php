@@ -384,6 +384,7 @@ class Leadorder extends MY_Controller
                     $options['order_data']=$order_data;
                     $options['order_confirmation']='Duplicate';
                     $options['leadsession']=$ordersession;
+                    $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
                     $options['current_page']=ifset($postdata,'current_page','orders');
                     $content=$this->load->view('leadorderdetails/placeorder_menu_edit',$options, TRUE);
                     $mdata['content']=$content;
@@ -619,6 +620,7 @@ class Leadorder extends MY_Controller
                                     }
                                     $billoptions['billcntcode'] = $cntcode;
                                     $billoptions['billaddress'] = $this->shipping_model->prepare_billaddress($billing);
+                                    $billoptions['country_code'] = $cntcode;
                                     $leftcont=$this->load->view('leadorderdetails/billadress_edit', $billoptions, TRUE);
                                 } else {
                                     $leftcont=$this->load->view('leadorderdetails/billsameadress_edit', $billoptions, TRUE);
@@ -958,9 +960,9 @@ class Leadorder extends MY_Controller
                             $leadorder=usersession($ordersession);
                             $newitem = $res['newitem'];
                             $order=$leadorder['order'];
-                            $mdata['order_revenue']=MoneyOutput($order['revenue']);
                             $shipping=$leadorder['shipping'];
                             $shipping_address=$leadorder['shipping_address'];
+                            $mdata['order_revenue']=MoneyOutput($order['revenue']);
                             $mdata['shipdate']=$shipping['shipdate'];
                             $mdata['rush_price']=$shipping['rush_price'];
                             $mdata['is_shipping']=$order['is_shipping'];
@@ -1022,6 +1024,34 @@ class Leadorder extends MY_Controller
                                 $error = $imprdata['msg'];
                             } else {
                                 $mdata['imprintview'] = $imprdata['content'];
+                            }
+                            // Shipping count results
+                            $mdata['shipcount'] = $res['shipcount'];
+                            if ($res['shipcount']==$this->success_result) {
+                                if ($mdata['cntshipadrr']==1) {
+                                    $mdata['adressship'] = $shipping_address[0]['order_shipaddr_id'];
+                                    // Ship Rates
+                                    $shipcost=$shipping_address[0]['shipping_costs'];
+                                    $costoptions=array(
+                                        'shipadr'=>$shipping_address[0]['order_shipaddr_id'],
+                                        'shipcost'=>$shipcost,
+                                    );
+                                    $mdata['shipcost']=$this->load->view('leadorderdetails/ship_cost_edit', $costoptions, TRUE);
+                                    // Tax View
+                                    $shipaddr=$shipping_address[0];
+                                    if ($shipaddr['taxview']==0) {
+                                        $taxview=$this->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
+                                    } else {
+                                        $taxview=$this->load->view('leadorderdetails/tax_data_edit', $shipaddr, TRUE);
+                                    }
+                                    $mdata['taxview']=$taxview;
+                                }
+                                $dateoptions=array(
+                                    'edit'=>1,
+                                    'shipping'=>$shipping,
+                                    'user_role' => $this->USR_ROLE,
+                                );
+                                $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
                             }
                         }
                     }
@@ -2084,8 +2114,8 @@ class Leadorder extends MY_Controller
                             $mdata['details']=$order_imprindetail_id;
                             $mdata['newval']=$newval;
                             if ($fldname=='imprint_type') {
+                                $mdata['setup']=  number_format($res['setup'],2,'.','');
                                 if ($newval=='NEW') {
-                                    $mdata['setup']=  number_format($res['setup'],2,'.','');
                                 } else {
                                     $mdata['class']=$res['class'];
                                 }
@@ -2695,6 +2725,7 @@ class Leadorder extends MY_Controller
                                 $options['timeout']=(time()+$this->config->item('loctimeout'))*1000;
                             }
                             $options['current_page']=ifset($postdata,'callpage','art_tasks');
+                            $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
                             $content=$this->load->view('leadorderdetails/top_menu_edit',$options, TRUE);
                             $header = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
                             /* Save to session */
@@ -5449,6 +5480,7 @@ class Leadorder extends MY_Controller
                         $mdata['total_due']=$this->load->view('leadorderdetails/totaldue_data_view', $dueoptions, TRUE);
                         $mdata['tax']=MoneyOutput($order['tax']);
                         $mdata['profit_content']=$this->_profit_data_view($order);
+                        // shipdates_content
                         if ($mdata['cntshipadrr']==1) {
                             $shipcost=$shipping_address[0]['shipping_costs'];
                             $costoptions=array(
@@ -5465,6 +5497,12 @@ class Leadorder extends MY_Controller
                             }
                             $mdata['taxview']=$taxview;
                         }
+                        $dateoptions=array(
+                            'edit'=>1,
+                            'shipping'=>$shipping,
+                            'user_role' => $this->USR_ROLE,
+                        );
+                        $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
                     }
                 }
             }
@@ -5472,5 +5510,12 @@ class Leadorder extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    public function customersearch() {
+        $search = $this->input->get('query');
+        $limit = $this->input->get('limit');
+        $list = $this->leadorder_model->search_customer($search, $limit);
+        echo json_encode($list);
     }
 }

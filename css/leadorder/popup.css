@@ -148,6 +148,7 @@ input.input_checkbox {
     font-size: 13px;
     width: 84px;
     text-align: center;
+    overflow: hidden;
 }
 .leadorderlockdetails i {
     float: left;
@@ -999,12 +1000,13 @@ input.ship_tax_textareainpt {
     /* height: 28px; */
     /* opacity: 0.5; */
 }
-.ship_tax_cont_bl3 {    
+.ship_tax_cont_bl3 {
     float: left;
     height: 17px;
     line-height: 17px;
-    margin-top: 82px;
+    margin-top: 33px;
     width: 244px;
+    margin-left: 67px;
 }
 .taxlabel {
     color: #000d6e;
@@ -5257,4 +5259,10 @@ input.ticket_date {
 .pac-container {
     z-index: 1500!important;
     width: 325px!important;
+}
+.autocompleter,
+.autocompleter-closed {
+    top: 37px;
+    max-width: 244px;
+    margin-left: 66px;
 }

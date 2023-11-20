@@ -121,6 +121,24 @@ function quote_content_init() {
         quote_include(quote_id);
         return false;
     });
+    $("div.quotelead").unbind('click').click(function (){
+        var lead_id=$(this).data('lead');
+        if (parseInt(lead_id)!=0) {
+            var url="/leadmanagement/edit_lead";
+            $.post(url, {'lead_id':lead_id}, function(response){
+                if (response.errors=='') {
+                    $("#leadformModalLabel").empty().html(response.data.title);
+                    $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+                    $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+                    $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
+                    init_lead_cloneemail();
+                    init_leadpopupedit();
+                } else {
+                    show_error(response);
+                }
+            }, 'json');
+        }
+    })
 }
 
 function quote_include(quote_id) {

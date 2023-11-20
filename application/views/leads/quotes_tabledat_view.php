@@ -3,7 +3,7 @@
     <div class="quotes_tabrow <?=($nrow%2==0 ? 'greydatarow' : 'whitedatarow')?> <?=$row['rowclass']?>" data-email="<?=$row['email_id']?>">
         <div class="quote_ordnum quotecalldetails"><?=$row['ordnum']?></div>
         <div class="quote_brand" data-quoteid="<?=$row['email_id']?>"><?=$row['inclicon']?></div>
-        <div class="quote_status <?=$row['assign_class']?>" data-quoteid="<?=$row['email_id']?>">
+        <div class="quote_status <?=$row['assign_class']?>" data-quoteid="<?=$row['email_id']?>" data-lead="<?=$row['lead_id']?>">
             <div class="quote_replica"><?=$row['lead_number']?></div>
         </div>
         <div class="quote_date quotecalldetails"><?=$row['email_date']?></div>
