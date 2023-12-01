@@ -803,12 +803,13 @@ if (!function_exists('leadPreviewdocOut')) {
         }
         return $previewview;
     }
+}
 
-    if (!function_exists('new_customer_code')) {
-        function new_customer_code() {
-            return uniq_link('3','chars').'-'.uniq_link('10','digits');
-        }
+if (!function_exists('new_customer_code')) {
+    function new_customer_code() {
+        return uniq_link('3','chars').'-'.uniq_link('10','digits');
     }
 }
+
 
 ?>
