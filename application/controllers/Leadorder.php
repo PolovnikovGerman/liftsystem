@@ -52,6 +52,7 @@ class Leadorder extends MY_Controller
                 $options=array();
                 $options['current_page']=ifset($postdata,'page', 'art_tasks');
                 $options['leadsession']=$leadsession;
+                $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
                 $orddata=$res['order'];
                 if ($order==0) {
                     $options['order_id']=0;
@@ -173,6 +174,8 @@ class Leadorder extends MY_Controller
                         'shipping_address'=>$res['shipping_address'],
                         'billing'=>$res['order_billing'],
                         'charges'=>$res['charges'],
+                        'claydocs' => $res['claydocs'],
+                        'previewdocs' => $res['previewdocs'],
                         'delrecords'=>array(),
                         'locrecid'=>$locking,
                     );
@@ -180,6 +183,7 @@ class Leadorder extends MY_Controller
                 usersession($leadsession, $leadorder);
                 $mdata['content']=$content;
                 $mdata['header']=$header;
+                $mdata['cancelorder'] = $orddata['is_canceled'];
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -235,6 +239,7 @@ class Leadorder extends MY_Controller
                 $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                 // Build Content
                 $mdata['content']=$order_data;
+                $mdata['cancelorder'] = $orddata['is_canceled'];
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -379,6 +384,7 @@ class Leadorder extends MY_Controller
                     $options['order_data']=$order_data;
                     $options['order_confirmation']='Duplicate';
                     $options['leadsession']=$ordersession;
+                    $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
                     $options['current_page']=ifset($postdata,'current_page','orders');
                     $content=$this->load->view('leadorderdetails/placeorder_menu_edit',$options, TRUE);
                     $mdata['content']=$content;
@@ -416,6 +422,8 @@ class Leadorder extends MY_Controller
                             'shipping_address'=>$res['shipping_address'],
                             'billing'=>$res['order_billing'],
                             'charges'=>$res['charges'],
+                            'claydocs' => [],
+                            'previewdocs' => [],
                             'delrecords'=>array(),
                             'locrecid'=>0,
                         );
@@ -476,9 +484,11 @@ class Leadorder extends MY_Controller
                         $mdata['old_value']=$res['old_value'];
                     }
                     if ($res['result']==$this->success_result) {
+                        $this->load->model('shipping_model');
                         $error='';
                         $leadorder=usersession($ordersession);
-                        $order=$leadorder['order'];
+                        $order = $leadorder['order'];
+                        $billing = $leadorder['billing'];
                         $mdata['warning']=0;
                         if ($order['shipping']!=$oldshipcost && $oldshipcost!=0) {
                             $mdata['warning']=1;
@@ -573,6 +583,8 @@ class Leadorder extends MY_Controller
                                 );
                                 $mdata['stateview']=$this->load->view('leadorderdetails/billing_state_select', $stateopt, TRUE);
                             }
+                            $mdata['country_code'] = $res['cntcode'];
+                            $mdata['addresline'] = $this->load->view('leadorderdetails/bill_addressline_edit', ['billing' => $billing], true);
                         } elseif ($fldname=='balance_manage' && $entity=='order') {
                             if ($newval==3) {
                                 $editalov=1;
@@ -601,6 +613,14 @@ class Leadorder extends MY_Controller
                                     'order'=>$order,
                                 );
                                 if ($newval==0) {
+                                    $cntcode = '';
+                                    if (ifset($billing,'country_id','')!=='') {
+                                        $cntres = $this->shipping_model->get_country($billing['country_id']);
+                                        $cntcode = $cntres['country_iso_code_2'];
+                                    }
+                                    $billoptions['billcntcode'] = $cntcode;
+                                    $billoptions['billaddress'] = $this->shipping_model->prepare_billaddress($billing);
+                                    $billoptions['country_code'] = $cntcode;
                                     $leftcont=$this->load->view('leadorderdetails/billadress_edit', $billoptions, TRUE);
                                 } else {
                                     $leftcont=$this->load->view('leadorderdetails/billsameadress_edit', $billoptions, TRUE);
@@ -643,6 +663,18 @@ class Leadorder extends MY_Controller
                                 }
                                 $mdata['shipcost']=$cost_view;
                             }
+                        }
+                        $mdata['freshship'] = $mdata['freshbill'] = 0;
+                        if (isset($res['shipcompany'])) {
+                            $mdata['freshship'] = 1;
+                            $mdata['shipcompany'] = $res['shipcompany'];
+                        }
+                        if (isset($res['billcompany'])) {
+                            $mdata['freshbill'] = 1;
+                            $mdata['billcompany'] = $res['billcompany'];
+                        }
+                        if ($entity=='billing') {
+                            $mdata['billaddress'] = $this->shipping_model->prepare_billaddress($billing);
                         }
                     }
                 }
@@ -928,9 +960,9 @@ class Leadorder extends MY_Controller
                             $leadorder=usersession($ordersession);
                             $newitem = $res['newitem'];
                             $order=$leadorder['order'];
-                            $mdata['order_revenue']=MoneyOutput($order['revenue']);
                             $shipping=$leadorder['shipping'];
                             $shipping_address=$leadorder['shipping_address'];
+                            $mdata['order_revenue']=MoneyOutput($order['revenue']);
                             $mdata['shipdate']=$shipping['shipdate'];
                             $mdata['rush_price']=$shipping['rush_price'];
                             $mdata['is_shipping']=$order['is_shipping'];
@@ -992,6 +1024,34 @@ class Leadorder extends MY_Controller
                                 $error = $imprdata['msg'];
                             } else {
                                 $mdata['imprintview'] = $imprdata['content'];
+                            }
+                            // Shipping count results
+                            $mdata['shipcount'] = $res['shipcount'];
+                            if ($res['shipcount']==$this->success_result) {
+                                if ($mdata['cntshipadrr']==1) {
+                                    $mdata['adressship'] = $shipping_address[0]['order_shipaddr_id'];
+                                    // Ship Rates
+                                    $shipcost=$shipping_address[0]['shipping_costs'];
+                                    $costoptions=array(
+                                        'shipadr'=>$shipping_address[0]['order_shipaddr_id'],
+                                        'shipcost'=>$shipcost,
+                                    );
+                                    $mdata['shipcost']=$this->load->view('leadorderdetails/ship_cost_edit', $costoptions, TRUE);
+                                    // Tax View
+                                    $shipaddr=$shipping_address[0];
+                                    if ($shipaddr['taxview']==0) {
+                                        $taxview=$this->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
+                                    } else {
+                                        $taxview=$this->load->view('leadorderdetails/tax_data_edit', $shipaddr, TRUE);
+                                    }
+                                    $mdata['taxview']=$taxview;
+                                }
+                                $dateoptions=array(
+                                    'edit'=>1,
+                                    'shipping'=>$shipping,
+                                    'user_role' => $this->USR_ROLE,
+                                );
+                                $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
                             }
                         }
                     }
@@ -1750,6 +1810,15 @@ class Leadorder extends MY_Controller
                         }
                     }
                     $mdata['contact_phone']=$phone;
+                    $mdata['freshship'] = $mdata['freshbill'] = 0;
+                    if (isset($res['shipcontact'])) {
+                        $mdata['freshship'] = 1;
+                        $mdata['shipcontact'] = $res['shipcontact'];
+                    }
+                    if (isset($res['billcontact'])) {
+                        $mdata['freshbill'] = 1;
+                        $mdata['billcontact'] = $res['billcontact'];
+                    }
                 }
             }
             // Calc new period for lock
@@ -2045,8 +2114,8 @@ class Leadorder extends MY_Controller
                             $mdata['details']=$order_imprindetail_id;
                             $mdata['newval']=$newval;
                             if ($fldname=='imprint_type') {
+                                $mdata['setup']=  number_format($res['setup'],2,'.','');
                                 if ($newval=='NEW') {
-                                    $mdata['setup']=  number_format($res['setup'],2,'.','');
                                 } else {
                                     $mdata['class']=$res['class'];
                                 }
@@ -2411,6 +2480,11 @@ class Leadorder extends MY_Controller
                                 $taxview=$this->load->view('leadorderdetails/tax_data_edit', $shipaddr, TRUE);
                             }
                             $mdata['taxview']=$taxview;
+                            $mdata['addresscopy'] = $this->shipping_model->prepare_shipaddress($shipaddr);
+                            $mdata['cntcode'] = $shipaddr['out_country'];
+                            if ($fldname=='country_id') {
+                                $mdata['addressline'] = $this->load->view('leadorderdetails/shipaddresline_view', ['shipadr' => $shipaddr], true);
+                            }
                         }
                         $dateoptions=array(
                             'edit'=>1,
@@ -2651,6 +2725,7 @@ class Leadorder extends MY_Controller
                                 $options['timeout']=(time()+$this->config->item('loctimeout'))*1000;
                             }
                             $options['current_page']=ifset($postdata,'callpage','art_tasks');
+                            $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
                             $content=$this->load->view('leadorderdetails/top_menu_edit',$options, TRUE);
                             $header = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
                             /* Save to session */
@@ -2930,7 +3005,8 @@ class Leadorder extends MY_Controller
                         $proofs=$res['outproof'];
                         $mdata['content']=leadProfdocOut($proofs, 1);
                         $numoutprofdoc=ceil(count($proofs)/5);
-                        $mdata['profdocwidth']=$numoutprofdoc*160;
+                        // $mdata['profdocwidth']=$numoutprofdoc*160;
+                        $mdata['profdocwidth']=$numoutprofdoc*145;
                     }
             }
             // Calc new period for lock
@@ -2970,7 +3046,8 @@ class Leadorder extends MY_Controller
                     $proofs=$res['outproof'];
                     $mdata['content']=leadProfdocOut($proofs, 1);
                     $numoutprofdoc=ceil(count($proofs)/5);
-                    $mdata['profdocwidth']=$numoutprofdoc*160;
+                    // $mdata['profdocwidth']=$numoutprofdoc*160;
+                    $mdata['profdocwidth']=$numoutprofdoc*145;
                 }
             }
             // Calc new period for lock
@@ -3057,7 +3134,8 @@ class Leadorder extends MY_Controller
                     $proofs=$res['outproof'];
                     $mdata['content']=leadProfdocOut($proofs, 1);
                     $numoutprofdoc=ceil(count($proofs)/5);
-                    $mdata['profdocwidth']=$numoutprofdoc*160;
+                    // $mdata['profdocwidth']=$numoutprofdoc*160;
+                    $mdata['profdocwidth']=$numoutprofdoc*145;
                 }
             }
             // Calc new period for lock
@@ -4118,6 +4196,7 @@ class Leadorder extends MY_Controller
                                 'order' => $order,
                                 'rushview' => $rushview,
                                 'taxview' => $taxview,
+                                'shipaddress' => $this->shipping_model->prepare_shipaddress($shipping_address[0]),
                             );
                             $shippingview = $this->load->view('leadorderdetails/single_ship_edit', $shipoptions, TRUE);
                         } else {
@@ -5162,4 +5241,287 @@ class Leadorder extends MY_Controller
         return $out;
     }
 
+    public function saveclaydocupload() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $postdata=$this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $this->load->model('artlead_model');
+                $res=$this->artlead_model->save_artclaydocs($leadorder, $postdata['claydoc'], $postdata['sourcename'] , $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $claydocs=$res['outdocs'];
+                    $mdata['content']=leadClaydocOut($claydocs, 1);
+                    $numdoc=ceil(count($claydocs)/4);
+                    $mdata['claywidth']=$numdoc*115;
+                    $mdata['numdocs'] = count($claydocs);
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function artclay_remove() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                $this->load->model('artlead_model');
+                $res=$this->artlead_model->remove_artclaydocs($leadorder, $postdata['clayid'], $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $claydocs=$res['outdocs'];
+                    $mdata['content']=leadClaydocOut($claydocs, 1);
+                    $mdata['claywidth'] = ceil(count($claydocs)/4)*115;
+                    $mdata['numdocs'] = count($claydocs);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function showclaymodels() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                $claydocs = $leadorder['claydocs'];
+                $error = 'Any Clay Models Found';
+                if (count($claydocs) > 0) {
+                    $error = '';
+                    $mdata['clays'] = $claydocs;
+                }
+                usersession($ordersession, $leadorder);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function savepreviewdocupload() {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $postdata=$this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $this->load->model('artlead_model');
+                $res=$this->artlead_model->save_artpreviewdocs($leadorder, $postdata['previewdoc'], $postdata['sourcename'] , $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $previewdocs=$res['outdocs'];
+                    $mdata['content']=leadPreviewdocOut($previewdocs, 1);
+                    $mdata['previewwidth'] = ceil(count($previewdocs)/4)*115;
+                    $mdata['numdocs'] = count($previewdocs);
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function artpreview_remove() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                $this->load->model('artlead_model');
+                $res=$this->artlead_model->remove_artpreviewdocs($leadorder, $postdata['previewid'], $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $previewdocs=$res['outdocs'];
+                    $mdata['content']=leadPreviewdocOut($previewdocs, 1);
+                    $mdata['previewwidth'] = ceil(count($previewdocs)/4)*115;
+                    $mdata['numdocs'] = count($previewdocs);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function showpreviewpics() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                $previewdocs = $leadorder['previewdocs'];
+                $error = 'Any Preview Pictures Found';
+                if (count($previewdocs) > 0) {
+                    $error = '';
+                    $mdata['previews'] = $previewdocs;
+                }
+                usersession($ordersession, $leadorder);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function update_autoaddress() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->update_autoaddress($postdata, $leadorder, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $this->load->model('shipping_model');
+                    $error = '';
+                    $address = $res['address'];
+                    $address_full = $res['address_full'];
+                    $mdata['address_1'] = $address['address_1'];
+                    $mdata['country'] = $address['country'];
+                    $mdata['city'] = $address['city'];
+                    $mdata['zip'] = $address['zip'];
+                    if (!empty($address['state'])) {
+                        $states = $res['states'];
+                        if ($postdata['address_type']=='billing') {
+                            $mdata['bilstate'] = 1;
+                            $options = [
+                                'states' => $states,
+                                'curstate' => $address['state'],
+                            ];
+                            $mdata['stateview'] = $this->load->view('leadorderdetails/billing_state_select', $options, TRUE);
+                        } else {
+                            $mdata['shipstate'] = 1;
+                            $options = [
+                                'states' => $states,
+                                'shipadr' => $res['shipping_address'],
+                            ];
+                            $mdata['stateview'] = $this->load->view('leadorderdetails/shipping_state_select', $options, TRUE);
+                        }
+                    } else {
+                        if ($postdata['address_type']=='billing') {
+                            $mdata['bilstate'] = 0;
+                        } else {
+                            $mdata['shipstate'] = 0;
+                        }
+                    }
+                    if ($postdata['address_type']=='billing') {
+                        $mdata['addresscopy'] = $this->shipping_model->prepare_billaddress($address_full);
+                    } else {
+                        $mdata['addresscopy'] = $this->shipping_model->prepare_shipaddress($address_full);
+                    }
+                    $mdata['shipcount'] = $res['shipcount'];
+                    if ($res['shipcount']==$this->success_result) {
+                        // Change Shipping cost, total, tax
+                        $leadorder = usersession($ordersession);
+                        $order=$leadorder['order'];
+                        $shipping=$leadorder['shipping'];
+                        $shipping_address=$leadorder['shipping_address'];
+                        $mdata['order_revenue']=MoneyOutput($order['revenue']);
+                        $mdata['shipdate']=$shipping['shipdate'];
+                        $mdata['rush_price']=$shipping['rush_price'];
+                        $mdata['is_shipping']=$order['is_shipping'];
+                        $mdata['shipping']=$order['shipping'];
+                        $mdata['cntshipadrr']=count($shipping_address);
+                        $subtotal=$order['item_cost']+$order['item_imprint']+floatval($order['mischrg_val1'])+floatval($order['mischrg_val2'])-floatval($order['discount_val']);
+                        $mdata['item_subtotal']=MoneyOutput($subtotal);
+                        $total_due=$order['revenue']-$order['payment_total'];
+                        $mdata['ordersystem']=$leadorder['order_system'];
+                        $mdata['balanceopen']=1;
+                        $dueoptions=array(
+                            'totaldue'=>$total_due,
+                        );
+                        if ($total_due==0 && $order['payment_total']>0) {
+                            $dueoptions['class']='closed';
+                            $mdata['balanceopen']=0;
+                        } else {
+                            $dueoptions['class']='open';
+                            if ($total_due<0) {
+                                $dueoptions['class']='overflow';
+                            }
+                        }
+                        $mdata['total_due']=$this->load->view('leadorderdetails/totaldue_data_view', $dueoptions, TRUE);
+                        $mdata['tax']=MoneyOutput($order['tax']);
+                        $mdata['profit_content']=$this->_profit_data_view($order);
+                        // shipdates_content
+                        if ($mdata['cntshipadrr']==1) {
+                            $shipcost=$shipping_address[0]['shipping_costs'];
+                            $costoptions=array(
+                                'shipadr'=>$postdata['shipadr'],
+                                'shipcost'=>$shipcost,
+                            );
+                            $mdata['shipcost']=$this->load->view('leadorderdetails/ship_cost_edit', $costoptions, TRUE);
+                            // Tax View
+                            $shipaddr=$shipping_address[0];
+                            if ($shipaddr['taxview']==0) {
+                                $taxview=$this->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
+                            } else {
+                                $taxview=$this->load->view('leadorderdetails/tax_data_edit', $shipaddr, TRUE);
+                            }
+                            $mdata['taxview']=$taxview;
+                        }
+                        $dateoptions=array(
+                            'edit'=>1,
+                            'shipping'=>$shipping,
+                            'user_role' => $this->USR_ROLE,
+                        );
+                        $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
+                    }
+                }
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function customersearch() {
+        $search = $this->input->get('query');
+        $limit = $this->input->get('limit');
+        $list = $this->leadorder_model->search_customer($search, $limit);
+        echo json_encode($list);
+    }
 }

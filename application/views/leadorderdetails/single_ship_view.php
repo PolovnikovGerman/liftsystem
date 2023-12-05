@@ -21,26 +21,30 @@
     <div class="ship_tax_content_line1">
         <div class="ship_tax_container">
             <div class="ship_tax_cont_bl1">
-                <input class="ship_tax_textareainpt input_border_gray leftalign" readonly="readonly" placeholder="Contact Name" value="<?=$shipadr['ship_contact']?>"/>
-                <input class="ship_tax_textareainpt input_border_gray leftalign" readonly="readonly" placeholder="Company" value="<?=$shipadr['ship_company']?>"/>
-                <input class="ship_tax_textareainpt input_border_gray leftalign" readonly="readonly" placeholder="Address Line 1" value="<?=$shipadr['ship_address1']?>"/>
-                <input class="ship_tax_textareainpt input_border_gray leftalign" readonly="readonly" placeholder="Address Line 2" value="<?=$shipadr['ship_address2']?>"/>                
-                <input type="text" class="ship_tax_input2 input_border_gray leftalign" placeholder="Zip" value="<?= $shipadr['zip'] ?>" readonly="readonly"/>
-                <input type="text" class="ship_tax_input1 input_border_gray leftalign" placeholder="City" readonly="readonly" value="<?= $shipadr['city'] ?>">
-                <div data-content="shipstateshow" data-shipadr="<?=$shipadr['order_shipaddr_id']?>">
+                <input class="ship_tax_textareainpt leftalign" readonly="readonly" placeholder="Contact Name" value="<?=$shipadr['ship_contact']?>"/>
+                <input class="ship_tax_textareainpt leftalign" readonly="readonly" placeholder="Company" value="<?=$shipadr['ship_company']?>"/>
+                <input class="ship_tax_textareainpt leftalign" readonly="readonly" placeholder="Address Line 1" value="<?=$shipadr['ship_address1']?>"/>
+                <input class="ship_tax_textareainpt leftalign" readonly="readonly" placeholder="Address Line 2" value="<?=$shipadr['ship_address2']?>"/>
+                <input type="text" class="ship_tax_input1 leftalign" placeholder="City" readonly="readonly" value="<?= $shipadr['city'] ?>">
+                <div data-content="shipstateshow" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" style="float: left; width: 42px;">
                     <?php if (count($states) == 0) { ?>
                         &nbsp;
                     <?php } else { ?>
-                        <select class="ship_tax_select2 input_border_gray" disabled="disabled">
+                        <select class="ship_tax_select2" disabled="disabled">
                             <option value="">&nbsp;</option>
                             <?php foreach ($states as $srow) { ?>
                                 <option value="<?= $srow['state_id'] ?>" <?= $srow['state_id'] == $shipadr['state_id'] ? 'selected="selected"' : '' ?>><?= $srow['state_code'] ?></option>
                             <?php } ?>
                         </select>
-                    <?php } ?>                
+                    <?php } ?>
                 </div>
+                <input type="text" class="ship_tax_input2 leftalign" placeholder="Zip" value="<?= $shipadr['zip'] ?>" readonly="readonly"/>
             </div>
-            <div class="ship_tax_cont_bl2">
+            <div class="shippingadrescopy">
+                <i class="fa fa-copy"></i>
+            </div>
+            <textarea id="shipingcompileaddress" style="display: none"><?=$shipaddress?></textarea>
+            <div class="ship_tax_cont_bl2 viewdata">
                 <div class="line">
                     <input type="checkbox" <?=$shipadr['resident']==1 ? 'checked="checked"' : ''?> class="input_checkbox shipadrchk" disabled="disabled" style="float: left;"/>
                     <div class="label <?=$shipadr['resident']==1 ? '' : 'shipblind'?>" id="residentlabel">Resd</div>

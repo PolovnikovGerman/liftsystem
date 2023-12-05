@@ -151,6 +151,9 @@ select.leadord_filterselect {
     float: left;
     width: 64px;
 }
+.leadorder_datahead.relievers > .customerponumber {
+    width: 121px;
+}
 .leadorder_datahead > .customer {
     border-right: 1px solid #000000;
     float: left;
@@ -167,6 +170,9 @@ select.leadord_filterselect {
     float: left;
     width: 83px;
 }
+/* .leadorder_datahead.relievers > .itemcolor {
+    width: 63px;
+}*/
 .leadorder_datahead > .item {
     border-right: 1px solid #000000;
     float: left;
@@ -211,6 +217,9 @@ select.leadord_filterselect {
     float: left;
     width: 107px;
 }
+/*.leadorder_datahead.relievers > .ordstatus {
+    width: 81px;
+}*/
 .leadorder_dataarea {
     border-bottom: 1px solid #000000;
     border-left: 1px solid #000000;
@@ -289,6 +298,9 @@ select.leadord_filterselect {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.leadorder_datarow.relievers > .customerponumber {
+    width: 121px;
+}
 .leadorder_datarow > .customer {
     border-right: 1px solid #000000;
     float: left;
@@ -316,6 +328,9 @@ select.leadord_filterselect {
     white-space: nowrap;
     width: 83px;
 }
+/*.leadorder_datarow.relievers > .itemcolor {
+    width: 63px;
+}*/
 .leadorder_datarow > .item {
     border-right: 1px solid #000000;
     float: left;
@@ -335,6 +350,9 @@ select.leadord_filterselect {
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 247px; /* 163px; */
+}
+.leadorder_datarow > .sritem.customorder {
+    font-weight: bold;
 }
 .leadorder_datarow > .item.customorder {
     font-weight: bold;
@@ -410,6 +428,11 @@ select.leadord_filterselect {
     white-space: nowrap;
     width: 117px;
 }
+/*
+.leadorder_datarow.relievers > .ordstatus {
+    width: 88px;
+}
+*/
 .leadorder_datarow > .ordstatus.art {
     background-color: #005d0b;
     color: #FFFFFF;

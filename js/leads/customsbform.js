@@ -101,14 +101,14 @@ function pageCustomFormsCallback(pageidx) {
             $("#customform_tabledat").empty().html(response.data.content);
             $("#curpagecustomform").val(pageidx);
             /* change size */
-            jQuery.balloon.init();
-            if (parseInt(response.data.totals) > 25) {
+            if (parseInt(response.data.totals) > 21) {
                 $(".customform_tabledat").scrollpanel({
                     'prefix' : 'sp-'
                 });
-                leftmenu_alignment();
             }
+            jQuery.balloon.init();
             init_customform_content();
+            leftmenu_alignment();
             $("#loader").hide();
         } else {
             $("#loader").hide();

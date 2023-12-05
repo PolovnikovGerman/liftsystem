@@ -102,26 +102,6 @@
                     </div>
                 </div>
                 <!-- End Left menu -->
-                <!-- Express -->
-                <div class="mastinvent_header_express">
-                    <div class="datarow">
-                        <div class="mastinvent_express_manage">Express <span>[+]</span></div>
-                    </div>
-                    <div class="datarow">
-                        <div class="mastinvent_express_slide">
-                            <div class="mastinvent_express_slideleft">
-                                <img src="/img/masterinvent/container_nonactive_left.png"/>
-                            </div>
-                        </div>
-                        <div class="mastinvent_express_contentarea">&nbsp;</div>
-                        <div class="mastinvent_express_slide">
-                            <div class="mastinvent_express_slideright">
-                                <img src="/img/masterinvent/container_nonactive_right.png"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End Express -->
                 <!-- Container -->
                 <div class="mastinvent_header_container">
                     <div class="datarow">
@@ -142,6 +122,26 @@
                     </div>
                 </div>
                 <!-- Container -->
+                <!-- Express -->
+                <div class="mastinvent_header_express">
+                    <div class="datarow">
+                        <div class="mastinvent_express_manage">Express <span>[+]</span></div>
+                    </div>
+                    <div class="datarow">
+                        <div class="mastinvent_express_slide">
+                            <div class="mastinvent_express_slideleft">
+                                <img src="/img/masterinvent/container_nonactive_left.png"/>
+                            </div>
+                        </div>
+                        <div class="mastinvent_express_contentarea">&nbsp;</div>
+                        <div class="mastinvent_express_slide">
+                            <div class="mastinvent_express_slideright">
+                                <img src="/img/masterinvent/container_nonactive_right.png"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Express -->
                 <!-- Right part -->
                 <div class="mastinvent_header_right">
                     <div class="masterinventexport">
@@ -165,8 +165,8 @@
                     <div class="masterinventhistory">&nbsp;</div>
                     <div class="masterinventunit">Unit</div>
                 </div>
-                <div class="expresstotals">&nbsp;</div>
                 <div class="containertotals">&nbsp;</div>
+                <div class="expresstotals">&nbsp;</div>
                 <div class="mastinvent_header_right">
                     <div class="masterinventtablehead">
                         <div class="masterinvemptyspace">&nbsp;</div>
@@ -182,8 +182,8 @@
             </div>
             <div class="datarow">
                 <div class="mastinvent_footlink_left">&nbsp;</div>
-                <div class="mastinvent_footlink_express">&nbsp;</div>
                 <div class="mastinvent_footlink_container">&nbsp;</div>
+                <div class="mastinvent_footlink_express">&nbsp;</div>
             </div>
         </div>
     </div>

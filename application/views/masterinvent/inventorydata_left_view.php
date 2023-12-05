@@ -2,6 +2,7 @@
 <?php  foreach ($lists as $list) {?>
     <?php if ($list['item_flag']==1) { ?>
         <div class="inventorydatarow masteritem <?=$expand==1 ? 'expand' : ''?>" id="masterinventoryitem<?=$list['id']?>">
+        <div class="inventorydatarow masteritem <?=$expand==1 ? 'expand' : ''?>" data-item="<?=$list['id']?>">
     <?php } else { ?>
         <div class="inventorydatarow itemcolor <?=$coloridx%2==0 ? 'whitedatarow' : 'greydatarow'?>" data-invcolor="<?=$list['id']?>" id="masterinventorycolor<?=$list['id']?>">
         <?php $coloridx++;?>

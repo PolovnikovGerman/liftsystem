@@ -27,6 +27,6 @@
 <?php } ?>
 <script src="/js/adminpage/jquery.qtip.js"></script>
 <?php if ($gmaps==1) { ?>
-    <script src="https://maps.googleapis.com/maps/api/js?key=<?=$this->config->item('googlemapapi')?>&libraries=places&v=weekly" async></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=<?=$this->config->item('google_map_key')?>&libraries=places&v=weekly&callback=initAutocomplete" async></script>
 <?php } ?>
 <script src="/js/mb_balloons/jquery.mb.balloon.js"></script>

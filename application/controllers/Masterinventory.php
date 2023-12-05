@@ -40,6 +40,7 @@ class Masterinventory extends MY_Controller
             $boathead_totals = '';
             $boatlinks_view = '';
             foreach ($onboats as $onboat) {
+                $onboat['edit_mode'] = 0;
                 $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
                 $boathead_totals.=$this->load->view('masterinvent/onboat_containertotals_view', $onboat, TRUE);
                 $boatlinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $onboat, TRUE);
@@ -72,6 +73,7 @@ class Masterinventory extends MY_Controller
             $expresslinks_view = '';
             $expresshead_totals = '';
             foreach ($expresses as $express) {
+                $express['edit_mode'] = 0;
                 $expresshead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $express, TRUE);
                 $expresslinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $express, TRUE);
                 $expresshead_totals.=$this->load->view('masterinvent/onboat_containertotals_view', $express, TRUE);
@@ -348,6 +350,55 @@ class Masterinventory extends MY_Controller
                 $mdata['content'] = $this->load->view('masterinvent/history_body_view', $options, TRUE);
             }
             $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function update_color_inventory() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $coloritem = ifset($postdata,'itemcolor', 0);
+            $inventory_type = ifset($postdata, 'inventory_type', 0);
+            $res = $this->inventory_model->get_inventory_color($coloritem);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['item'] = $res['inventory_item'];
+                $color = $res['color'];
+                $item = $res['item'];
+                // Total by color
+                $mdata['color_percent'] = $color['percent'];
+                $mdata['color_stockclass'] = $color['stockclass'];
+                $mdata['color_instock'] = $color['instock'];
+                $mdata['color_reserved'] = $color['reserved'];
+                $mdata['color_available'] = $color['available'];
+                $mdata['color_price'] = $color['price'];
+                $mdata['color_avgprice'] = $color['avgprice'];
+                $mdata['color_total'] = $color['total'];
+                $mdata['color_noreorder'] = $color['noreorder'];
+                $mdata['color_totalclass'] = $color['totalclass'];
+                // Total by item
+                $mdata['item_percent'] = $item['percent'];
+                $mdata['item_stockclass'] = $item['stockclass'];
+                $mdata['item_instock'] = $item['instock'];
+                $mdata['item_reserved'] = $item['reserved'];
+                $mdata['item_available'] = $item['available'];
+                $mdata['item_price'] = $item['price'];
+                $mdata['item_avgprice'] = $item['avgprice'];
+                $mdata['item_total'] = $item['total'];
+                $mdata['item_noreorder'] = $item['noreorder'];
+                $mdata['item_totalclass'] = $item['totalclass'];
+                // Get Total by type
+                $totals = $this->inventory_model->get_inventory_totals($inventory_type, 0);
+                $mdata['masterinventpercent'] = $totals['itempercent'];
+                $mdata['masterinventorymaximum'] = empty($totals['max']) ? $this->empty_html_content : QTYOutput($totals['max']);
+                $mdata['masterinventinstock'] = empty($totals['instock']) ? $this->empty_html_content : QTYOutput($totals['instock']);
+                $mdata['masterinventreserv'] = empty($totals['reserved']) ? $this->empty_html_content : QTYOutput($totals['reserved']);
+                $mdata['masterinventavailab'] = empty($totals['available']) ? $this->empty_html_content : QTYOutput($totals['available']);
+                $mdata['maxsum'] = empty($totals['maxsum']) ? $this->empty_html_content : MoneyOutput($totals['maxsum']);
+            }
+            $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
@@ -630,6 +681,7 @@ class Masterinventory extends MY_Controller
                     'onboat_type' => $onboat_type,
                     'onboat_date' => $onboat_date,
                     'freight_price' => $freight_price,
+                    'edit_mode' => 1,
                 ];
                 $mdata['containerhead'] = $this->load->view('masterinvent/onboat_containerhead_view', $head_options, TRUE);
                 $mdata['containertotal'] = $this->load->view('masterinvent/onboat_containertotals_view', $head_options, TRUE);
@@ -645,6 +697,7 @@ class Masterinventory extends MY_Controller
                     $container = $this->inventory_model->get_onboatdetails($onboat_container, $colors, $onboat_type, $inventory_filter,  1);
                     $total = $totals['total'];
                     $onboat_date = $totals['onboat_date'];
+                    $mdata['boatdate']=date('m/d/Y', $onboat_date);
                     $freight_price = $totals['freight_price'];
                     $mdata['freight_price'] = $freight_price;
                     $mdata['content'] = $this->load->view('masterinvent/onboat_container_edit',['data' => $container,'session_id' => $sessionid], TRUE);
@@ -733,6 +786,7 @@ class Masterinventory extends MY_Controller
             $boatlinks_view = '';
             foreach ($onboats as $onboat) {
                 // $onboat['type'] = 'C';
+                $onboat['edit_mode'] = 0;
                 $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
                 $boatlinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $onboat, TRUE);
             }
@@ -805,6 +859,7 @@ class Masterinventory extends MY_Controller
                     $boathead_view='';
                     $boatlinks_view = '';
                     foreach ($onboats as $onboat) {
+                        $onboat['edit_mode'] = 0;
                         $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
                         $boatlinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $onboat, TRUE);
                     }
@@ -880,6 +935,7 @@ class Masterinventory extends MY_Controller
                         $boathead_view='';
                         foreach ($onboats as $onboat) {
                             $onboat['type'] = 'C';
+                            $onboat['edit_mode'] = 0;
                             $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
                         }
                         // Build head content

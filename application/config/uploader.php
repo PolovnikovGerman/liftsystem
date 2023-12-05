@@ -87,5 +87,10 @@ $config['upload_customquote_relative'] = '/uploads/customquote/';
 // AI Template
 $config['item_aitemplate']=BASEPATH.'../uploads/aitemp/';
 $config['item_aitemplate_relative']='/uploads/aitemp/';
+// Clay models
+$config['clay_models'] = BASEPATH.'../uploads/clays/';
+$config['clay_models_relative'] = '/uploads/clays/';
+$config['preview_pics'] = BASEPATH.'../uploads/previews/';
+$config['preview_pics_relative'] = '/uploads/previews/';
 /* End of file uploader.php */
 /* Location: ./application/config/uploader.php */

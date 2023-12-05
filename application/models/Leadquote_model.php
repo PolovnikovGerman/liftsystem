@@ -533,6 +533,7 @@ class Leadquote_model extends MY_Model
             }
             if ($i==1) {
                 $newloc['print_1']=0;
+                $newloc['active'] = 1;
             } else {
                 $newloc['print_1']=$quoteitem['imprint_price'];
             }
@@ -577,9 +578,11 @@ class Leadquote_model extends MY_Model
         $out = ['result' => $this->error_result, 'msg' => 'Empty Need Parameters',
             'shiprebuild' => 0, 'shipstate' => 0,
             'billstate' => 0, 'billrebuild' => 0,
-            'totalcalc' => 0, 'calcship' => 0, 'taxview'=>0];
+            'totalcalc' => 0, 'calcship' => 0, 'taxview'=>0,
+            'shipcountry' => 0, 'bilcountry' => 0];
         $fldname = ifset($data, 'fld','');
         if (!empty($fldname)) {
+            $this->load->model('shipping_model');
             $quote = $quotesession['quote'];
             $quote[$fldname] = $data['newval'];
             if ($fldname=='shipping_country') {
@@ -588,20 +591,33 @@ class Leadquote_model extends MY_Model
                 $quote['shipping_zip'] = '';
                 $quote['shipping_city'] = '';
                 $quote['shipping_state'] = '';
+                $quote['shipping_address1'] = $quote['shipping_address2'] = '';
                 $out['totalcalc'] = 1;
+                $out['shipcountry'] = 1;
+                $out['countrycode'] = '';
+                $cntdat = $this->shipping_model->get_country($data['newval']);
+                if (ifset($cntdat,'country_id',0) > 0) {
+                    $out['countrycode'] = $cntdat['country_iso_code_2'];
+                }
             } elseif ($fldname=='billing_country') {
                 $out['billrebuild'] = 1;
                 $out['billstate'] = 1;
                 $quote['billing_zip'] = '';
                 $quote['billing_city'] = '';
                 $quote['billing_state'] = '';
+                $quote['billing_address1'] =$quote['billing_address2'] = '';
+                $out['bilcountry'] = 1;
+                $out['countrycode'] = '';
+                $cntdat = $this->shipping_model->get_country($data['newval']);
+                if (ifset($cntdat,'country_id',0) > 0) {
+                    $out['countrycode'] = $cntdat['country_iso_code_2'];
+                }
             } elseif ($fldname=='shipping_zip') {
                 $out['shiprebuild'] = 1;
                 $out['totalcalc'] = 1;
                 $out['calcship'] = 1;
                 // Find city and zip
                 if (!empty($data['newval'])) {
-                    $this->load->model('shipping_model');
                     $zipdat = $this->shipping_model->get_zip_address($quote['shipping_country'], $data['newval']);
                     if ($zipdat['result']==$this->success_result) {
                         $quote['shipping_city'] = $zipdat['city'];
@@ -628,7 +644,6 @@ class Leadquote_model extends MY_Model
                 // Find city and zip
                 $out['billrebuild'] = 1;
                 if (!empty($data['newval'])) {
-                    $this->load->model('shipping_model');
                     $zipdat = $this->shipping_model->get_zip_address($quote['billing_country'], $data['newval']);
                     if ($zipdat['result']==$this->success_result) {
                         $quote['billing_city'] = $zipdat['city'];
@@ -937,52 +952,67 @@ class Leadquote_model extends MY_Model
     public function change_imprint_details($imprintdetails, $postdata, $imprintsession_id) {
         $out=['result' => $this->error_result, 'msg' => 'Enter all Parameters for change'];
         $fldname=ifset($postdata, 'fldname','');
-        $quote_imprindetail_id=ifset($postdata, 'details',0);
-        if (!empty($fldname) && !empty($quote_imprindetail_id)) {
-            $newval=$postdata['newval'];
-            $details=$imprintdetails['imprint_details'];
-            $found=0;
-            $detidx=0;
-            foreach ($details as $detail) {
-                if ($detail['quote_imprindetail_id']==$quote_imprindetail_id) {
-                    $found = 1;
-                    break;
-                } else {
+        $newval=$postdata['newval'];
+        if ($fldname=='quote_blank') {
+            $imprintdetails['quote_blank']=$newval;
+            if ($newval==1) {
+                $details=$imprintdetails['imprint_details'];
+                $detidx=0;
+                foreach ($details as $row) {
+                    $details[$detidx]['active']=0;
                     $detidx++;
                 }
+                $imprintdetails['imprint_details']=$details;
             }
-            if ($found==1) {
-                // Detail found
-                $details[$detidx][$fldname]=$newval;
-                if ($fldname=='active' && $newval==1) {
-                    $imprintdetails['quote_blank']=0;
-                }
-                if ($fldname=='imprint_type') {
-                    if ($newval=='REPEAT') {
-                        $details[$detidx]['setup_1']=0;
-                        $details[$detidx]['setup_2']=0;
-                        $details[$detidx]['setup_3']=0;
-                        $details[$detidx]['setup_4']=0;
-                        $out['class']='';
-                        if (!empty($details[$detidx]['repeat_note'])) {
-                            $out['class']='full';
-                        }
+            usersession($imprintsession_id, $imprintdetails);
+            $out['result']=$this->success_result;
+        } else {
+            $quote_imprindetail_id=ifset($postdata, 'details',0);
+            if (!empty($fldname) && !empty($quote_imprindetail_id)) {
+                $details=$imprintdetails['imprint_details'];
+                $found=0;
+                $detidx=0;
+                foreach ($details as $detail) {
+                    if ($detail['quote_imprindetail_id']==$quote_imprindetail_id) {
+                        $found = 1;
+                        break;
                     } else {
-                        $this->load->model('leadorder_model');
-                        $setupprice=$this->leadorder_model->_get_item_priceimprint($imprintdetails['item_id'], 'setup');
-                        $out['setup']=$setupprice;
-                        $details[$detidx]['setup_1']=$setupprice;
-                        $details[$detidx]['setup_2']=$setupprice;
-                        $details[$detidx]['setup_3']=$setupprice;
-                        $details[$detidx]['setup_4']=$setupprice;
+                        $detidx++;
                     }
                 }
-                $imprintdetails['imprint_details']=$details;
-                usersession($imprintsession_id, $imprintdetails);
-                $out['fldname'] = $fldname;
-                $out['details'] = $quote_imprindetail_id;
-                $out['newval'] = $newval;
-                $out['result']=$this->success_result;
+                if ($found==1) {
+                    // Detail found
+                    $details[$detidx][$fldname]=$newval;
+                    if ($fldname=='active' && $newval==1) {
+                        $imprintdetails['quote_blank']=0;
+                    }
+                    if ($fldname=='imprint_type') {
+                        if ($newval=='REPEAT') {
+                            $details[$detidx]['setup_1']=0;
+                            $details[$detidx]['setup_2']=0;
+                            $details[$detidx]['setup_3']=0;
+                            $details[$detidx]['setup_4']=0;
+                            $out['class']='';
+                            if (!empty($details[$detidx]['repeat_note'])) {
+                                $out['class']='full';
+                            }
+                        } else {
+                            $this->load->model('leadorder_model');
+                            $setupprice=$this->leadorder_model->_get_item_priceimprint($imprintdetails['item_id'], 'setup');
+                            $out['setup']=$setupprice;
+                            $details[$detidx]['setup_1']=$setupprice;
+                            $details[$detidx]['setup_2']=$setupprice;
+                            $details[$detidx]['setup_3']=$setupprice;
+                            $details[$detidx]['setup_4']=$setupprice;
+                        }
+                    }
+                    $imprintdetails['imprint_details']=$details;
+                    usersession($imprintsession_id, $imprintdetails);
+                    $out['fldname'] = $fldname;
+                    $out['details'] = $quote_imprindetail_id;
+                    $out['newval'] = $newval;
+                    $out['result']=$this->success_result;
+                }
             }
         }
         return $out;
@@ -1552,6 +1582,7 @@ class Leadquote_model extends MY_Model
             $quote_id = $quote['quote_id'];
         } else {
             $newnum = $this->get_newquote_number($quote['brand']);
+            $newcode = new_customer_code();
             $this->db->set('brand', $quote['brand']);
             $this->db->set('create_time', date('Y-m-d H:i:s'));
             $this->db->set('create_user', $user_id);
@@ -1559,6 +1590,7 @@ class Leadquote_model extends MY_Model
             $this->db->set('lead_id', $lead_id);
             $this->db->set('quote_number', $newnum);
             $this->db->set('quote_date', time());
+            $this->db->set('customer_code', $newcode);
             $this->db->insert('ts_quotes');
             $quote_id = $this->db->insert_id();
         }
@@ -2175,7 +2207,7 @@ class Leadquote_model extends MY_Model
                 }
                 $pdf->Cell($colWidth[2], $cellheight, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[3], $cellheight, number_format($color['item_price'], $precesion), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
+                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total), 'LR', 0, 'R', $fillrow);
                 $numpp++;
                 $yStart += $cellheight;
                 if ($yStart>=$this->page_heigh_limit) {
@@ -2198,7 +2230,7 @@ class Leadquote_model extends MY_Model
                 $pdf->Cell($colWidth[1], $cellheight, '  '.$imprint['imprint_description'], 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[2], $cellheight, QTYOutput($imprint['imprint_qty']), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[3], $cellheight, number_format($imprint['imprint_price'], 2), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
+                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total), 'LR', 0, 'R', $fillrow);
                 $numpp++;
                 $yStart += $cellheight;
                 if ($yStart>=$this->page_heigh_limit) {
@@ -2216,7 +2248,7 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[1], $cellheight, $quote['mischrg_label1'],'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], $cellheight, number_format($quote['mischrg_value1'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value1']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value1']), 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
             if ($yStart>=$this->page_heigh_limit) {
@@ -2233,7 +2265,7 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[1], $cellheight, $quote['mischrg_label2'],'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], $cellheight, number_format($quote['mischrg_value2'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value2']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value2']), 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
             if ($yStart>=$this->page_heigh_limit) {
@@ -2254,7 +2286,7 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[1], $cellheight, $shipping[0]['shipping_name'].$shippref,'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], $cellheight, number_format($quote['shipping_cost'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['shipping_cost']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['shipping_cost']), 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
             if ($yStart>=$this->page_heigh_limit) {
@@ -2566,7 +2598,7 @@ class Leadquote_model extends MY_Model
 
                 $pdf->Cell($colWidth[2], $cellheight, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[3], $cellheight, number_format($color['item_price'], $precesion), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
+                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) , 'LR', 0, 'R', $fillrow);
                 $numpp++;
                 $yStart += $cellheight;
                 if ($yStart>=$this->page_heigh_limit) {
@@ -2589,7 +2621,7 @@ class Leadquote_model extends MY_Model
                 $pdf->Cell($colWidth[1], $cellheight, '  '.$imprint['imprint_description'], 'LR', 0, 'L', $fillrow);
                 $pdf->Cell($colWidth[2], $cellheight, QTYOutput($imprint['imprint_qty']), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[3], $cellheight, number_format($imprint['imprint_price'], 2), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) . 'T', 'LR', 0, 'R', $fillrow);
+                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total), 'LR', 0, 'R', $fillrow);
                 $numpp++;
                 $yStart += $cellheight;
                 if ($yStart>=$this->page_heigh_limit) {
@@ -2607,7 +2639,7 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[1], $cellheight, $quote['mischrg_label1'],'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], $cellheight, number_format($quote['mischrg_value1'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value1']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value1']), 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
             if ($yStart>=$this->page_heigh_limit) {
@@ -2624,7 +2656,7 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[1], $cellheight, $quote['mischrg_label2'],'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], $cellheight, number_format($quote['mischrg_value2'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value2']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['mischrg_value2']), 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
             if ($yStart>=$this->page_heigh_limit) {
@@ -2645,7 +2677,7 @@ class Leadquote_model extends MY_Model
             $pdf->Cell($colWidth[1], $cellheight, $shipping[0]['shipping_name'].$shippref,'LR', 0,'L', $fillrow);
             $pdf->Cell($colWidth[2], $cellheight, 1, 'LR', 0,'C', $fillrow);
             $pdf->Cell($colWidth[3], $cellheight, number_format($quote['shipping_cost'],2), 'LR', 0, 'C', $fillrow);
-            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['shipping_cost']).'T', 'LR', 0,'R', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['shipping_cost']), 'LR', 0,'R', $fillrow);
             $numpp++;
             $yStart+=$cellheight;
             if ($yStart>=$this->page_heigh_limit) {
@@ -2949,6 +2981,8 @@ class Leadquote_model extends MY_Model
                     $out['artwork'] = $orderres['artwork'];
                     $out['artlocations'] = [];
                     $out['proofdocs'] = [];
+                    $out['claydocs'] = [];
+                    $out['previewdocs'] = [];
                     $this->load->model('user_model');
                     $usrdata=$this->user_model->get_user_data($user_id);
                     if (!empty($usrdata['user_leadname'])) {
@@ -3045,6 +3079,7 @@ class Leadquote_model extends MY_Model
         $data['discount_label'] = $quote['discount_label'];
         $data['discount_val'] = $quote['discount_value'];
         $data['revenue'] = $quote['quote_total'];
+        $data['tax'] = $quote['sales_tax'];
         // Contacts
         $contacts=array();
         for ($i=1; $i<=3; $i++) {
@@ -3325,10 +3360,17 @@ class Leadquote_model extends MY_Model
         $out['shipping']=$shipping;
         $shipping_address=[];
         $shipstate = NULL;
+        $outzip = '';
+        $outcnt = '';
+        if (!empty($quote['shipping_country'])) {
+            $cntres = $this->shipping_model->get_country($quote['shipping_country']);
+            $outcnt = $cntres['country_iso_code_2'];
+        }
         if (!empty($quote['shipping_state'])) {
             $stateres = $this->shipping_model->get_statebycode($quote['shipping_state'], $quote['shipping_country']);
             if ($stateres['result']==$this->success_result) {
                 $shipstate = $stateres['data']['state_id'];
+                $outzip = $stateres['data']['state_code'].' '.$quote['shipping_zip'];
             }
         }
         $shipping_address[] = [
@@ -3359,8 +3401,8 @@ class Leadquote_model extends MY_Model
             'tax_exemptdocid' => 1,
             'shipping_costs' => $shipcosts,
             'out_shipping_method' => '',
-            'out_zip' => '',
-            'out_country' => '',
+            'out_zip' => $outzip,
+            'out_country' => $outcnt,
             'packages' => $packages,
         ];
         $out['shipping_address'] = $shipping_address;
@@ -3552,6 +3594,66 @@ class Leadquote_model extends MY_Model
         usersession($session_id, $quotesession);
         $out['result'] = $this->success_result;
         $out['billingsame'] = $sameadr;
+        return $out;
+    }
+
+    public function update_autoaddress($data, $quotesession, $session_id) {
+        $out = ['result' => $this->error_result, 'msg' => 'Parameter Not Found'];
+        $quote = $quotesession['quote'];
+        $out['msg'] = 'Empty Address Type';
+        if (ifset($data,'address_type','')!=='') {
+            // Not empty address type
+            $out['shipstate'] = $out['bilstate'] = 0;
+            $cntres = [];
+            $states = [];
+            if (ifset($data, 'country','')!=='') {
+                $this->db->select('*');
+                $this->db->from('sb_countries');
+                $this->db->where('country_name',$data['country']);
+                $cntres = $this->db->get()->row_array();
+                if (ifset($cntres,'country_id',0) > 0) {
+                    $this->db->select('*');
+                    $this->db->from('sb_states');
+                    $this->db->where('country_id', $cntres['country_id']);
+                    $states = $this->db->get()->result_array();
+                }
+                $out['states'] = $states;
+            }
+            if ($data['address_type']=='billing') {
+                $quote['billing_country'] = ifset($cntres,'country_id','');
+                $quote['billing_address1'] = ifset($data,'line_1','');
+                $quote['billing_city'] = ifset($data, 'city','');
+                $quote['billing_state'] = ifset($data, 'state','');
+                $quote['billing_zip'] = ifset($data, 'zip','');
+                $out['result'] = $this->success_result;
+                $out['ship'] = 0;
+                if (count($states) > 0) {
+                    $out['bilstate'] = 1;
+                }
+            } elseif ($data['address_type']=='shipping') {
+                $quote['shipping_country'] = ifset($cntres,'country_id','');
+                $quote['shipping_address1'] = ifset($data,'line_1','');
+                $quote['shipping_city'] = ifset($data, 'city','');
+                $quote['shipping_state'] = ifset($data, 'state','');
+                $quote['shipping_zip'] = ifset($data, 'zip','');
+                $out['result'] = $this->success_result;
+                $out['ship'] = 1;
+                if (count($states) > 0) {
+                    $out['shipstate'] = 1;
+                }
+                if (ifset($data,'state','')==$this->tax_state) {
+                    $quote['taxview'] = 1;
+                } else {
+                    $quote['taxview'] = 0;
+                }
+            } else {
+                $out['msg'] = 'Unknown Address Type';
+            }
+            if ($out['result']==$this->success_result) {
+                $quotesession['quote'] = $quote;
+                usersession($session_id, $quotesession);
+            }
+        }
         return $out;
     }
 

@@ -3,7 +3,17 @@
     Author     : polovnikov-go
     Popup Window for Order Details
 */
-.leadorderdetailspopup {    
+#artModal .modal-header.cancelorder {
+    background-color: #000000;
+}
+#artModal .modal-header.cancelorder > button.close {
+    color: #ffffff;
+    opacity: 0.9;
+}
+#artModal .modal-header.cancelorder .leadorderlockdetails {
+    color: #ffffff;
+}
+.leadorderdetailspopup {
     /* background: url(/img/leadorder/backgr_content.png) no-repeat transparent; */
     background: #c59e51;
     border: 1px solid #000;
@@ -22,7 +32,7 @@
 .leadorderdetailspopupheader {
     float: left;
     font-size: 13px;
-    width: 958px;
+    width: 972px;
     margin-top: -5px;
     margin-left: -15px;
 }
@@ -55,7 +65,7 @@
     font-weight: normal;
     color: #000000;
     background-color: #dadada;
-    border: 1px solid #acacac !important;
+    border: 1px solid #acacac;
 }
 .leadorderdetailspopup textarea[readonly="readonly"] {
     font-size: 11px;    
@@ -69,7 +79,7 @@
     font-weight: normal;
     color: #000000;
     background-color: #dadada;
-    border: 1px solid #acacac !important;    
+    border: 1px solid #acacac;
 }
 .blinked {
   -webkit-animation: blink2 1s linear infinite;
@@ -136,6 +146,9 @@ input.input_checkbox {
     height: 28px; 
     line-height: 28px; 
     font-size: 13px;
+    width: 84px;
+    text-align: center;
+    overflow: hidden;
 }
 .leadorderlockdetails i {
     float: left;
@@ -924,21 +937,49 @@ input.shiprushcost, input.shippingcost, input.salestaxcost {
     margin-left: 6px;
 }
 input.ship_tax_textareainpt {
-    height: 17px;
+    border-left: none!important;
+    border-top: none!important;
+    border-right: none!important;
+    border-bottom: 1px dotted #858585!important;
+    height: 16px;
     font-size: 11px;
-    margin-left: 6px;
-    width: 171px;
-    margin-bottom: 1px;
+    /* margin-left: 6px; */
+    /* margin-bottom: 1px;*/
+    width: 100%;
 }
 .ship_tax_cont_bl1 {
     float: left;
-    width: 184px;
+    width: 169px;
     margin-top: 5px;
+    border: 2px solid #858585;
+    margin-left: 5px;
+}
+.shippingadrescopy, .billingaddresscopy {
+    background: #000000;
+    color: #ffffff!important;
+    cursor: pointer;
+    float: left;
+    font-size: 11px;
+    height: 16px;
+    left: -17px;
+    margin-right: -6px;
+    position: relative;
+    text-align: center;
+    top: 6px;
+    width: 16px;
+}
+.billingaddresscopy {
+    top: 2px!important;
+    height: 18px!important;
+    /* height: 20px!important; */
 }
 .ship_tax_cont_bl2 {
     float: left;
     margin-top: 5px;
     width: 55px;
+}
+.ship_tax_cont_bl2.viewdata {
+    margin-left: 10px;
 }
 .ship_tax_cont_bl2 > .line {
     clear: both;
@@ -959,12 +1000,13 @@ input.ship_tax_textareainpt {
     /* height: 28px; */
     /* opacity: 0.5; */
 }
-.ship_tax_cont_bl3 {    
+.ship_tax_cont_bl3 {
     float: left;
     height: 17px;
     line-height: 17px;
-    margin-top: 82px;
+    margin-top: 33px;
     width: 244px;
+    margin-left: 67px;
 }
 .taxlabel {
     color: #000d6e;
@@ -1003,25 +1045,22 @@ span.taxemptyview {
     font-style: italic;
 }
 .ship_tax_input1 {
-    float: left;
-    font-size: 11px;
     height: 19px;
-    margin: 3px 0 0 3px;
-    width: 77px;
+    /* margin: 3px 0 0 3px; */
+    width: 81px;
+    border: none!important;
 }
 .ship_tax_input2 {
-    float: left;
-    font-size: 11px;
     height: 19px;
-    margin: 3px 0 0 6px;
-    width: 39px;
+/*    margin: 3px 0 0 6px;*/
+    width: 42px;
+    border: none!important;
 }
 .ship_tax_select2 {
-    float: left;
-    font-size: 11px;
     height: 19px;
-    margin: 3px 2px 0 3px;
+    /* margin: 3px 2px 0 3px; */
     width: 42px;
+    border: none!important;
 }
 /* Input area for shipping date dates */
 .shippingdatesarea {
@@ -1085,7 +1124,11 @@ span.taxemptyview {
     float: left;
     /* height: 70px; */
     margin-top: 3px;
-    width: 318px;
+    /* width: 318px; */
+    width: 240px;
+}
+.billing_content1.samebilling {
+    margin-top: 7px;
 }
 .billing_content2{
     float: right;
@@ -1138,20 +1181,36 @@ span.taxemptyview {
 }
 .billing_content1_line{
     float: left;
-    width: 316px;
+    /* width: 316px; */
     line-height: 20px;
     padding-top: 2px;
 }
+.billingaddressbox {
+    float: left;
+    width: 180px;
+    margin-top: 2px;
+    border: 2px solid #858585;
+    margin-left: 5px;
+    margin-bottom: 3px;
+}
 .billing_input1 {
     float: left;
-    width: 305px;
-    height: 19px;
-    margin: 0 0 0 3px;
+    width: 100%;
+    height: 16px;
+    /* margin: 0 0 0 3px; */
+    border-left: none!important;
+    border-top: none!important;
+    border-right: none!important;
+    border-bottom: 1px dotted #858585!important;
 }
 .billing_input2 {
-    height: 19px;
-    margin: 0 0 0 3px;
-    width: 305px;
+    height: 16px;
+    /* margin: 0 0 0 3px; */
+    width: 100%;
+    border-left: none!important;
+    border-top: none!important;
+    border-right: none!important;
+    border-bottom: 1px dotted #858585!important;
 }
 .billing_input3 {
     height: 19px;
@@ -1166,15 +1225,23 @@ span.taxemptyview {
 }
 .billing_input4 {
     float: left;
-    width: 151px;
-    height: 19px;
-    margin: 0 0 0 3px;
+    width: 100%;
+    height: 16px;
+    /* margin: 0 0 0 3px; */
+    border-left: none!important;
+    border-top: none!important;
+    border-right: none!important;
+    border-bottom: 1px dotted #858585!important;
 }
 .billing_input5 {
     float: left;
-    width: 108px;
-    height: 19px;
-    margin: 0 0 5px 3px;
+    width: 81px;
+    height: 16px;
+    /* margin: 0 0 5px 3px; */
+    border-left: none!important;
+    border-top: none!important;
+    border-right: none!important;
+    border-bottom: 1px dotted #858585!important;
 }
 .billingstateselectarea {
     float: left;
@@ -1182,9 +1249,14 @@ span.taxemptyview {
 }
 .billing_input6 {
     float: left;
-    width: 47px;
-    height: 19px;
-    margin: 0 0 0 3px;
+    /* width: 47px; */
+    width: 53px;
+    height: 16px;
+    /* margin: 0 0 0 3px; */
+    border-left: none!important;
+    border-top: none!important;
+    border-right: none!important;
+    border-bottom: 1px dotted #858585!important;
 }
 .billing_input7 {
     float: left;
@@ -1195,9 +1267,13 @@ span.taxemptyview {
 .billing_select1 {
     float: left;
     font-size: 11px;
-    height: 19px;
-    margin: 0 0 0 3px;
+    height: 16px;
+/*    margin: 0 0 0 3px; */
     width: 42px;
+    border-left: none!important;
+    border-top: none!important;
+    border-right: none!important;
+    border-bottom: 1px dotted #858585!important;
 }
 .billing_select2 {
     float: left;
@@ -1717,12 +1793,12 @@ input.artrepeat {
 .block_7_proofs1 {
     float: left;
     width: 239px;
-    height: 170px;
+    height: 155px;
     margin-left: 2px;
 }
 .block_7_proofs1_scrool {
     border-bottom: 1px solid rgb(62, 62, 62);
-    height: 149px;
+    height: 154px;
     overflow-x: auto;
 }
 .proofs_line1 {
@@ -1748,13 +1824,14 @@ input.artrepeat {
 .proofs_content_area {
     clear: both;
     float: left;
-    height: 106px;
+    /* height: 106px; */
     overflow-x: auto;
     /* width: 2000px; */
+    overflow-y: hidden;
 }
 .proofs_content {
     float: left;
-    height: 104px;
+    height: 112px;
     width: 142px;
     border-right: 1px solid rgb(62, 62, 62);
 }
@@ -3554,7 +3631,9 @@ textarea.proofnotes {
 }
 .billing_content_linecenter {
     float: left;
-    margin-top: 37px;
+    /* margin-top: 37px; */
+    margin-top: 9px;
+    margin-bottom: 15px;
     width: 320px;
     height: 46px;
 }
@@ -5014,4 +5093,187 @@ input.ticket_date {
 .white, .whiteprofit {
     background-color: #ffffff!important;
     color: #000000;
+}
+/* Clay - Preview */
+.artclaypreviewarea {
+    margin-left: 8px;
+    float: left;
+    width: 238px;
+    margin-top: 20px;
+}
+.artclaypreviewarea div {
+    float: left;
+}
+.artclaypreviewarea .areatitle {
+    color: #000000;
+    height: 22px;
+    line-height: 22px;
+    font-size: 13px;
+    font-weight: bold;
+}
+.artclaypreviewarea .areatitle.view {
+    color: #b3b3b3;
+}
+.artclaypreviewarea .areachek {
+    color: #575757;
+    font-size: 11px;
+    height: 22px;
+    line-height: 22px;
+    float: right!important;
+}
+.artclaypreviewarea .areachek input {
+    margin-top: 5px;
+    margin-right: 5px;
+}
+.artclaypreviewarea .openclaymodelsview {
+    color: #0000FF;
+    font-size: 12px;
+    height: 22px;
+    line-height: 22px;
+    cursor: pointer;
+    margin-left: 7px;
+}
+.artclaypreviewarea .claypreviewtable {
+    border: 1px solid #000000;
+    padding: 3px 0;
+    width: 236px;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+.artclaypreviewarea .claypreviewtable.view {
+    border: 1px solid #dbdbdb;
+}
+.artclaypreviewarea .claypreviewtable .claypreviewtableleft, .artclaypreviewarea .claypreviewtable .claypreviewtableright {
+    padding-left: 5px;
+    min-height: 68px;
+    width: 115px;
+}
+.artclaypreviewarea .claypreviewtable .claypreviewtableleft {
+    border-right: 1px solid #000000;
+}
+.artclaypreviewarea .claypreviewtable.view .claypreviewtableleft {
+    border-right: 1px solid #dbdbdb;
+}
+.artclaypreviewarea .claypreviewtable .claydatarow {
+    height: 17px;
+    border-bottom: 1px dotted #000000;
+}
+.artclaypreviewarea .claypreviewtable .claydatarowlast {
+    height: 17px;
+}
+.artclaypreviewarea .claypreviewtable .clayname {
+    width: 96px;
+    line-height: 17px;
+    color: #0000ff;
+    font-size: 11px;
+    cursor: pointer;
+}
+.artclaypreviewarea .claypreviewtable .clayremove {
+    color: #000000;
+    font-size: 13px;
+    cursor: pointer;
+}
+.artclaypreviewarea .addclaypreviewdoc {
+    width: 43px;
+    border-left: 1px solid #dbdbdb;
+    border-bottom: 1px solid #dbdbdb;
+    border-right: 1px solid #dbdbdb;
+    float: right!important;
+}
+/* Previews */
+.artpreviewpreviewarea {
+    margin-left: 8px;
+    float: left;
+    width: 238px;
+    margin-top: 4px;
+}
+.artpreviewpreviewarea div {
+    float: left;
+}
+.artpreviewpreviewarea .areatitle {
+    color: #000000;
+    height: 22px;
+    line-height: 22px;
+    font-size: 13px;
+    font-weight: bold;
+}
+.artpreviewpreviewarea .areatitle.view {
+    color: #b3b3b3;
+}
+.artpreviewpreviewarea .areachek {
+    color: #575757;
+    font-size: 11px;
+    height: 22px;
+    line-height: 22px;
+    float: right!important;
+}
+.artpreviewpreviewarea .areachek input {
+    margin-top: 5px;
+    margin-right: 5px;
+}
+.artpreviewpreviewarea .openpreviewsview {
+    color: #0000FF;
+    font-size: 12px;
+    height: 22px;
+    line-height: 22px;
+    cursor: pointer;
+    margin-left: 7px;
+}
+.artpreviewpreviewarea .previewpreviewtable {
+    border: 1px solid #000000;
+    padding: 3px 0;
+    width: 236px;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+.artpreviewpreviewarea .previewpreviewtable.view {
+    border: 1px solid #dbdbdb;
+}
+.artpreviewpreviewarea .previewpreviewtable .previewpreviewtableleft, .artpreviewpreviewarea .previewpreviewtable .previewpreviewtableright {
+    padding-left: 5px;
+    min-height: 68px;
+    width: 115px;
+}
+.artpreviewpreviewarea .previewpreviewtable .previewpreviewtableleft {
+    border-right: 1px solid #000000;
+}
+.artpreviewpreviewarea .previewpreviewtable.view .previewpreviewtableleft {
+    border-right: 1px solid #dbdbdb;
+}
+.artpreviewpreviewarea .previewpreviewtable .previewdatarow {
+    height: 17px;
+    border-bottom: 1px dotted #000000;
+}
+.artpreviewpreviewarea .previewpreviewtable .previewdatarowlast {
+    height: 17px;
+}
+.artpreviewpreviewarea .previewpreviewtable .previewname {
+    width: 96px;
+    line-height: 17px;
+    color: #0000ff;
+    font-size: 11px;
+    cursor: pointer;
+}
+.artpreviewpreviewarea .previewpreviewtable .previewremove {
+    color: #000000;
+    font-size: 13px;
+    cursor: pointer;
+}
+.artpreviewpreviewarea .addpreviewpreviewdoc {
+    width: 43px;
+    border-left: 1px solid #dbdbdb;
+    border-bottom: 1px solid #dbdbdb;
+    border-right: 1px solid #dbdbdb;
+    float: right!important;
+}
+/* Address Autocomplete */
+.pac-container {
+    z-index: 1500!important;
+    width: 325px!important;
+}
+.autocompleter,
+.autocompleter-closed {
+    top: 37px;
+    max-width: 244px;
+    margin-left: 66px;
 }

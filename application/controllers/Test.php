@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class Test extends CI_Controller
 {
     public function index() {
@@ -1879,9 +1882,11 @@ class Test extends CI_Controller
     }
 
     public function payments_rep() {
-        $this->db->select('*');
-        $this->db->from('ts_order_batches');
-        $this->db->where('batch_date >= ', strtotime('2019-01-01'));
+        $this->db->select('b.*, o.order_num, o.customer_name');
+        $this->db->from('ts_order_batches b');
+        $this->db->join('ts_orders o','o.order_id=b.order_id');
+        $this->db->where('b.batch_date >= ', strtotime('2021-01-01'));
+        $this->db->where('b.batch_date < ', strtotime('2022-01-01'));
         $batchs = $this->db->get()->result_array();
         $out = [];
         foreach ($batchs as $batch) {
@@ -1905,6 +1910,8 @@ class Test extends CI_Controller
             }
             $out[] = [
                 'date' => date('m/d/Y', $batch['batch_date']),
+                'order_num' => $batch['order_num'],
+                'customer' => $batch['customer_name'],
                 'amount' => $batch['batch_amount'],
                 'cc_payment' => $cc_paym,
                 'other_paym' => $other_paym,
@@ -1915,14 +1922,14 @@ class Test extends CI_Controller
         }
         echo count($out).' Batches '.PHP_EOL;
         $this->load->config('uploader');
-        $file_name = $this->config->item('upload_path_preload').'payment_report_adv.csv';
+        $file_name = $this->config->item('upload_path_preload').'payment_report_2021_new.csv';
         @unlink($file_name);
         $fh = fopen($file_name, FOPEN_WRITE_CREATE);
         if ($fh) {
-            $msg = 'Date;Total Payment;By Credit Card;Other Payment;CC System;Other Type;Payment Type;'.PHP_EOL;
+            $msg = 'Date;Order #;Customer;Total Payment;By Credit Card;Other Payment;CC System;Other Type;Payment Type;'.PHP_EOL;
             fwrite($fh, $msg);
             foreach ($out as $row) {
-                $msg = $row['date'].';'.$row['amount'].';'.$row['cc_payment'].';'.$row['other_paym'].';'.$row['cc_type'].';'.$row['other_type'].';'.$row['payment_type'].';'.PHP_EOL;
+                $msg = $row['date'].';'.$row['order_num'].';"'.$row['customer'].'";'.$row['amount'].';'.$row['cc_payment'].';'.$row['other_paym'].';'.$row['cc_type'].';'.$row['other_type'].';'.$row['payment_type'].';'.PHP_EOL;
                 fwrite($fh, $msg);
             }
             fclose($fh);
@@ -2179,5 +2186,524 @@ class Test extends CI_Controller
             }
         }
         echo 'Updated successfully'.PHP_EOL;
+    }
+
+    public function checkfee() {
+        $this->db->select('o.order_num, o.order_date, s.order_shipaddr_id, s.zip, s.country_id');
+        $this->db->from('ts_order_shipaddres s');
+        $this->db->join('ts_orders o','o.order_id=s.order_id');
+        $this->db->where('o.order_date >= ', strtotime('2022-01-01'));
+        $this->db->where('s.state_id', NULL);
+        $this->db->where_in('s.country_id', ['39','223']);
+        $this->db->where('s.zip != ','');
+        $address = $this->db->get()->result_array();
+        foreach ($address as $addres) {
+            echo 'Country '.$addres['country_id'].' Zip '.$addres['zip'].PHP_EOL;
+            $this->db->select('state_id, state_code');
+            $this->db->from('ts_states');
+            $this->db->where('country_id', $addres['country_id']);
+            $stateselect = $this->db->get_compiled_select();
+            $this->db->reset_query();
+
+            $this->db->select('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code as state, t.state_id, count(c.geoip_city_id) as cntcity');
+            $this->db->from('ts_geoipdata gdata');
+            $this->db->join('ts_geoip_city c','c.geoname_id=gdata.geoname_id');
+            $this->db->join('ts_countries cntr','cntr.country_iso_code_2=c.country_iso_code');
+            $this->db->join("({$stateselect}) as t",'t.state_code=c.subdivision_1_iso_code','left');
+            $this->db->where('gdata.postal_code',$addres['zip']);
+            $this->db->where('cntr.country_id',$addres['country_id']);
+            $this->db->group_by('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code, t.state_id');
+            $this->db->order_by('cntcity','desc');
+            $validdata = $this->db->get()->row_array();
+            if (!empty($validdata['geoip_city_id']) && !empty($validdata['state_id'])) {
+                echo 'Valid Country '.$validdata['city_name'].' Zip '.$validdata['state'].' Id '.$validdata['state_id'].PHP_EOL;
+                $this->db->where('order_shipaddr_id', $addres['order_shipaddr_id']);
+                $this->db->set('state_id', $validdata['state_id']);
+                $this->db->update('ts_order_shipaddres');
+            }
+            // echo 'State '.$validdata['subdivision_1_iso_code'].' ID '.$validdata['state_id'].PHP_EOL;
+        }
+    }
+
+    public function claypreviewcheck() {
+        $this->db->select('c.artwork_id, o.order_id, count(c.artwork_clay_id) as cnt');
+        $this->db->from('ts_artwork_clays c');
+        $this->db->join('ts_artworks a','a.artwork_id=c.artwork_id');
+        $this->db->join('ts_orders o', 'o.order_id=a.order_id');
+        $this->db->group_by('c.artwork_id, o.order_id');
+        $clays = $this->db->get()->result_array();
+        foreach ($clays as $clay) {
+            $this->db->where('order_id', $clay['order_id']);
+            $this->db->set('art_clay',1);
+            $this->db->update('ts_orders');
+        }
+        $this->db->select('p.artwork_id, o.order_id, count(p.artwork_preview_id) as cnt');
+        $this->db->from('ts_artwork_previews p');
+        $this->db->join('ts_artworks a','a.artwork_id=p.artwork_id');
+        $this->db->join('ts_orders o', 'o.order_id=a.order_id');
+        $this->db->group_by('p.artwork_id, o.order_id');
+        $previews = $this->db->get()->result_array();
+        foreach ($previews as $preview) {
+            $this->db->where('order_id', $preview['order_id']);
+            $this->db->set('art_preview',1);
+            $this->db->update('ts_orders');
+        }
+    }
+
+    public function export_dbitems() {
+        ini_set("memory_limit","-1");
+        $normal_template = 'Stressball';
+        $other_template = 'Other Item';
+        $this->load->config('siteart_config');
+        // Stressball items
+        // Imprints - 12
+        $this->db->select('*')->from('sb_items')->where('item_template', $normal_template)->order_by('item_number');
+        $items = $this->db->get()->result_array();
+        $this->load->config('uploader');
+        $filenorm = $this->config->item('upload_path_preload').'stressballs_items.xlsx';
+        @unlink($filenorm);
+        $titles = [
+            'Item #','Item Name','Active','New','Sale Tag','Template','Lead A','Lead B','Lead C','Lead Blank','Material','Weight','Size','Options','Colors',
+            'Similar 1','Similar 2','Similar 3',
+            'Meta Title','URL','Keywords for search','Meta Keywords','Meta Description','Item Description','Cartoon: QTY','Width','Height','Deep','Add Price Each',
+            'Vendor','Vendor Item #','Vendor Item Name','Vendor min cost (blank)','Vendor min cost',
+        ];
+        $numpp=1;
+        for ($i=1; $i<=7; $i++) {
+            array_push($titles, 'Vendor Price QTY '.$numpp);
+            array_push($titles, 'Price (blank) '.$numpp);
+            array_push($titles, 'Price '.$numpp);
+            $numpp++;
+        }
+        array_push($titles, 'Vendor Price Exprint');
+        array_push($titles, 'Vendor Price Setup');
+        // Imprints
+        $numpp=1;
+        for ($i=1;$i<=12;$i++) {
+            array_push($titles, 'Imprint Location '.$numpp);
+            array_push($titles,'Imprint Size '.$numpp);
+            $numpp++;
+        }
+        // Prices
+        $pricetypes = $this->config->item('price_types');
+        foreach ($pricetypes as $pricetype) {
+            array_push($titles,'Price '.$pricetype['type']);
+            array_push($titles, 'Sale '.$pricetype['type']);
+        }
+        array_push($titles, 'Price Exprint');
+        array_push($titles, 'Sale Exprint');
+        array_push($titles, 'Price Setup');
+        array_push($titles, 'Sale Setup');
+        $cols = [];
+        $cellname = '';
+        $numpp = 1;
+        $ncel = 1;
+        foreach ($titles as $title) {
+            $newcell = $cellname.chr(64 + $numpp);
+            array_push($cols, $newcell);
+            $numpp++;
+            if ($numpp==27) {
+                $cellname=chr(64+$ncel);
+                $numpp=1;
+                $ncel++;
+            }
+        }
+        /* create report */
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('DB Export');
+        $ncol = 0;
+        foreach ($titles as $title) {
+            $sheet->setCellValue($cols[$ncol].'1', $title);
+            $ncol++;
+        }
+        $nrow = 2;
+        foreach ($items as $item) {
+            $ncol = 0;
+            $this->db->select('group_concat(item_color) as colorstr')->from('sb_item_colors')->where('item_color_itemid', $item['item_id']);
+            $colors = $this->db->get()->row_array();
+
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_number']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_name']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_active']==1 ? 'Yes' : 'No');$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_new']==1 ? 'Yes' : 'No');$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_sale']==1 ? 'Yes' : 'No');$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_template']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_lead_a']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_lead_b']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_lead_c']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_lead_blank']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_material']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_weigth']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_size']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['options']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $colors['colorstr']);$ncol++;
+            // Similar
+            $this->db->select('concat(i.item_number,\'-\', i.item_name) as simitem');
+            $this->db->from('sb_item_similars s');
+            $this->db->join('sb_items i','s.item_similar_similar = i.item_id');
+            $this->db->where('s.item_similar_item', $item['item_id']);
+            $simils = $this->db->get()->result_array();
+            $numpp=0;
+            foreach ($simils as $simil) {
+                $sheet->setCellValue($cols[$ncol].$nrow, $simil['simitem']);$ncol++;
+                $numpp++;
+            }
+            if ($numpp < 3) {
+                for ($i=$numpp; $i<3; $i++) {
+                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
+                }
+            }
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_meta_title']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_url']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_keywords']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_metakeywords']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_metadescription']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_description1']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['cartoon_qty']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['cartoon_width']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['cartoon_heigh']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['cartoon_depth']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $item['charge_pereach']);$ncol++;
+            // Get vendor, vendor item
+            $this->db->select('v.vendor_name, vi.*');
+            $this->db->from('sb_vendor_items vi');
+            $this->db->join('vendors v','v.vendor_id=vi.vendor_item_vendor','left');
+            $this->db->where('vi.vendor_item_id', $item['vendor_item_id']);
+            $vdata = $this->db->get()->row_array();
+            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_name']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_number']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_name']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_blankcost']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_cost']);$ncol++;
+            // Vendor Prices
+            $this->db->select('vendorprice_qty, vendorprice_val, vendorprice_color')->from('sb_vendor_prices')->where('vendor_item_id', $item['vendor_item_id']);
+            $vprices = $this->db->get()->result_array();
+            $numpp = 0;
+            foreach ($vprices as $vprice) {
+                $sheet->setCellValue($cols[$ncol].$nrow, $vprice['vendorprice_qty']);$ncol++;
+                $sheet->setCellValue($cols[$ncol].$nrow, $vprice['vendorprice_val']);$ncol++;
+                $sheet->setCellValue($cols[$ncol].$nrow, $vprice['vendorprice_color']);$ncol++;
+                $numpp++;
+            }
+            if ($numpp < 7) {
+                for ($i=$numpp;$i<7;$i++) {
+                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
+                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
+                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
+                }
+            }
+            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_exprint']);$ncol++;
+            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_setup']);$ncol++;
+            // Get inprints
+            $this->db->select('item_inprint_location, item_inprint_size')->from('sb_item_inprints')->where('item_inprint_item', $item['item_id']);
+            $prints = $this->db->get()->result_array();
+            $numpp=0;
+            foreach ($prints as $print) {
+                $sheet->setCellValue($cols[$ncol].$nrow, $print['item_inprint_location']);$ncol++;
+                $sheet->setCellValue($cols[$ncol].$nrow, $print['item_inprint_size']);$ncol++;
+                $numpp++;
+            }
+            if ($numpp < 12) {
+                for ($i=$numpp; $i<12; $i++) {
+                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
+                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
+                }
+            }
+            $this->db->select('*')->from('sb_item_prices')->where('item_price_itemid', $item['item_id']);
+            $iprice = $this->db->get()->row_array();
+            if (ifset($iprice, 'item_price_id',0)==$item['item_id']) {
+                foreach ($pricetypes as $pricetype) {
+                    $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_price_'.$pricetype['type']]);$ncol++;
+                }
+                foreach ($pricetypes as $pricetype) {
+                    $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_sale_'.$pricetype['type']]);$ncol++;
+                }
+                $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_price_print']);$ncol++;
+                $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_sale_print']);$ncol++;
+                $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_price_setup']);$ncol++;
+                $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_sale_setup']);$ncol++;
+            }
+            $nrow++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($filenorm);    // download file
+        echo 'File '.$filenorm.' ready'.PHP_EOL;
+        // Promo Items
+        $this->db->select('*')->from('sb_items')->where('item_template', $other_template)->order_by('item_number');
+        $items = $this->db->get()->result_array();
+        $this->load->config('uploader');
+        $fileprom = $this->config->item('upload_path_preload').'promo_items.xlsx';
+        @unlink($fileprom);
+        $titles = [
+            'Item #','Item Name','Active','New','Sale Tag','Template','Lead A','Lead B','Lead C','Lead Blank','Material','Weight','Size','Options','Colors',
+            'Similar 1','Similar 2','Similar 3',
+            'Meta Title','URL','Keywords for search','Meta Keywords','Meta Description','Item Description','Cartoon: QTY','Width','Height','Deep','Add Price Each',
+            'Vendor','Vendor Item #','Vendor Item Name','Vendor min cost (blank)','Vendor min cost',
+        ];
+        $numpp=1;
+        for ($i=1; $i<=7; $i++) {
+            array_push($titles, 'Vendor Price QTY '.$numpp);
+            array_push($titles, 'Price (blank) '.$numpp);
+            array_push($titles, 'Price '.$numpp);
+            $numpp++;
+        }
+        array_push($titles, 'Vendor Price Exprint');
+        array_push($titles, 'Vendor Price Setup');
+        // Imprints
+        $numpp=1;
+        for ($i=1;$i<=12;$i++) {
+            array_push($titles, 'Imprint Location '.$numpp);
+            array_push($titles,'Imprint Size '.$numpp);
+            $numpp++;
+        }
+        // Prices
+        $numpp=1;
+        for ($i=0; $i<9; $i++) {
+            array_push($titles, 'Price QTY '.$numpp);
+            array_push($titles, 'Price '.$numpp);
+            array_push($titles, 'Sale '.$numpp);
+            $numpp++;
+        }
+        array_push($titles, 'Price Exprint');
+        array_push($titles, 'Sale Exprint');
+        array_push($titles, 'Price Setup');
+        array_push($titles, 'Sale Setup');
+        $cols = [];
+        $cellname = '';
+        $numpp = 1;
+        $ncel = 1;
+        foreach ($titles as $title) {
+            $newcell = $cellname.chr(64 + $numpp);
+            array_push($cols, $newcell);
+            $numpp++;
+            if ($numpp==27) {
+                $cellname=chr(64+$ncel);
+                $numpp=1;
+                $ncel++;
+            }
+        }
+        /* create report */
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('DB Export');
+        $ncol = 0;
+        foreach ($titles as $title) {
+            $sheet->setCellValue($cols[$ncol].'1', $title);
+            $ncol++;
+        }
+        $nrow = 2;
+        foreach ($items as $item) {
+            $ncol = 0;
+            $this->db->select('group_concat(item_color) as colorstr')->from('sb_item_colors')->where('item_color_itemid', $item['item_id']);
+            $colors = $this->db->get()->row_array();
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_number']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_name']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_active'] == 1 ? 'Yes' : 'No');
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_new'] == 1 ? 'Yes' : 'No');
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_sale'] == 1 ? 'Yes' : 'No');
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_template']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_lead_a']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_lead_b']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_lead_c']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_lead_blank']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_material']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_weigth']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_size']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['options']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $colors['colorstr']);
+            $ncol++;
+            // Similar
+            $this->db->select('concat(i.item_number,\'-\', i.item_name) as simitem');
+            $this->db->from('sb_item_similars s');
+            $this->db->join('sb_items i', 's.item_similar_similar = i.item_id');
+            $this->db->where('s.item_similar_item', $item['item_id']);
+            $simils = $this->db->get()->result_array();
+            $numpp = 0;
+            foreach ($simils as $simil) {
+                $sheet->setCellValue($cols[$ncol] . $nrow, $simil['simitem']);
+                $ncol++;
+                $numpp++;
+            }
+            if ($numpp < 3) {
+                for ($i = $numpp; $i < 3; $i++) {
+                    $sheet->setCellValue($cols[$ncol] . $nrow, '');
+                    $ncol++;
+                }
+            }
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_meta_title']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_url']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_keywords']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_metakeywords']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_metadescription']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_description1']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['cartoon_qty']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['cartoon_width']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['cartoon_heigh']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['cartoon_depth']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $item['charge_pereach']);
+            $ncol++;
+            // Get vendor, vendor item
+            $this->db->select('v.vendor_name, vi.*');
+            $this->db->from('sb_vendor_items vi');
+            $this->db->join('vendors v', 'v.vendor_id=vi.vendor_item_vendor', 'left');
+            $this->db->where('vi.vendor_item_id', $item['vendor_item_id']);
+            $vdata = $this->db->get()->row_array();
+            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_name']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_number']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_name']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_blankcost']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_cost']);
+            $ncol++;
+            // Vendor Prices
+            $this->db->select('vendorprice_qty, vendorprice_val, vendorprice_color')->from('sb_vendor_prices')->where('vendor_item_id', $item['vendor_item_id']);
+            $vprices = $this->db->get()->result_array();
+            $numpp = 0;
+            foreach ($vprices as $vprice) {
+                $sheet->setCellValue($cols[$ncol] . $nrow, $vprice['vendorprice_qty']);
+                $ncol++;
+                $sheet->setCellValue($cols[$ncol] . $nrow, $vprice['vendorprice_val']);
+                $ncol++;
+                $sheet->setCellValue($cols[$ncol] . $nrow, $vprice['vendorprice_color']);
+                $ncol++;
+                $numpp++;
+            }
+            if ($numpp < 7) {
+                for ($i = $numpp; $i < 7; $i++) {
+                    $sheet->setCellValue($cols[$ncol] . $nrow, '');
+                    $ncol++;
+                    $sheet->setCellValue($cols[$ncol] . $nrow, '');
+                    $ncol++;
+                    $sheet->setCellValue($cols[$ncol] . $nrow, '');
+                    $ncol++;
+                }
+            }
+            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_exprint']);
+            $ncol++;
+            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_setup']);
+            $ncol++;
+            // Get inprints
+            $this->db->select('item_inprint_location, item_inprint_size')->from('sb_item_inprints')->where('item_inprint_item', $item['item_id']);
+            $prints = $this->db->get()->result_array();
+            $numpp = 0;
+            foreach ($prints as $print) {
+                $sheet->setCellValue($cols[$ncol] . $nrow, $print['item_inprint_location']);
+                $ncol++;
+                $sheet->setCellValue($cols[$ncol] . $nrow, $print['item_inprint_size']);
+                $ncol++;
+                $numpp++;
+            }
+            if ($numpp < 12) {
+                for ($i = $numpp; $i < 12; $i++) {
+                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
+                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
+                }
+            }
+            $this->db->select('item_qty, price, sale_price')->from('sb_promo_price')->where('item_id', $item['item_id'])->order_by('item_qty');
+            $promprices = $this->db->get()->result_array();
+            $numpp=0;
+            foreach ($promprices as $promprice) {
+                $sheet->setCellValue($cols[$ncol] . $nrow, $promprice['item_qty']);$ncol++;
+                $sheet->setCellValue($cols[$ncol] . $nrow, $promprice['price']);$ncol++;
+                $sheet->setCellValue($cols[$ncol] . $nrow, $promprice['sale_price']);$ncol++;
+                $numpp++;
+            }
+            if ($numpp < 9) {
+                for($i=$numpp; $i<9; $i++) {
+                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
+                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
+                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
+                }
+            }
+            $this->db->select('*')->from('sb_item_prices')->where('item_price_itemid', $item['item_id']);
+            $iprice = $this->db->get()->row_array();
+            if (ifset($iprice, 'item_price_id', 0) == $item['item_id']) {
+                $sheet->setCellValue($cols[$ncol] . $nrow, $iprice['item_price_print']);$ncol++;
+                $sheet->setCellValue($cols[$ncol] . $nrow, $iprice['item_sale_print']);$ncol++;
+                $sheet->setCellValue($cols[$ncol] . $nrow, $iprice['item_price_setup']);$ncol++;
+                $sheet->setCellValue($cols[$ncol] . $nrow, $iprice['item_sale_setup']);$ncol++;
+            }
+            $nrow++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($fileprom);    // download file
+        echo 'File '.$fileprom.' ready'.PHP_EOL;
+
+    }
+
+    public function prepare_customercode() {
+        $this->db->select('order_id');
+        $this->db->from('ts_orders');
+        $this->db->where('order_date >=', strtotime('2020-01-01'));
+        $this->db->where('is_canceled',0);
+        $this->db->where('customer_code',NULL);
+        $this->db->order_by('order_id', 'desc');
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            $custcode = uniq_link('3','chars').'-'.uniq_link('10','digits');
+            $this->db->where('order_id', $order['order_id']);
+            $this->db->set('customer_code', $custcode);
+            $this->db->update('ts_orders');
+        }
+        echo 'Orders Ready '.PHP_EOL;
+        $this->db->select('quote_id');
+        $this->db->from('ts_quotes');
+        $this->db->where('customer_code', NULL);
+        $this->db->order_by('quote_id','desc');
+        $quotes = $this->db->get()->result_array();
+        foreach ($quotes as $quote) {
+            $custcode = uniq_link('3','chars').'-'.uniq_link('10','digits');
+            $this->db->where('quote_id', $quote['quote_id']);
+            $this->db->set('customer_code', $custcode);
+            $this->db->update('ts_quotes');
+        }
+        echo 'All Ready '.PHP_EOL;
+    }
+
+    public function update_customers() {
+        $this->db->select('order_id, customer_name');
+        $this->db->from('ts_orders');
+        $this->db->where('brand','SR');
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            $this->db->select('*');
+            $this->db->from('ts_customers');
+            $this->db->where('customer_name', $order['customer_name']);
+            $customer = $this->db->get()->row_array();
+            if (ifset($customer,'customer_id','')!=='') {
+                $this->db->where('order_id', $order['order_id']);
+                $this->db->set('customer_id', $customer['customer_id']);
+                $this->db->update('ts_orders');
+            }
+        }
+        echo 'All Ready '.PHP_EOL;
     }
 }

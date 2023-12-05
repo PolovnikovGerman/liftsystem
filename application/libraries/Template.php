@@ -58,8 +58,17 @@ class Template
         $dat = array();
         $this->CI->load->model('dashboard_model');
         $this->CI->load->model('menuitems_model');
-        $total_options = $this->CI->dashboard_model->get_totals('week');
-        $total_view = $this->CI->load->view('page/dashboard_total_view', $total_options, TRUE);
+        $this->CI->load->model('user_model');
+        $total_view = '';
+        $userchk = $this->CI->user_model->current_user();
+        if ($userchk['result']==1) {
+            $userdat = $userchk['data'];
+            if ($userdat['user_logged_in']=='masteradmin') {
+                $total_options = $this->CI->dashboard_model->get_totals('week');
+                $total_view = $this->CI->load->view('page/dashboard_total_view', $total_options, TRUE);
+            }
+        }
+        $brands = $this->CI->menuitems_model->get_userbrands($userdat['id']);
         $styles=[];
         if (isset($options['styles'])) {
             $styles=$options['styles'];
@@ -126,12 +135,15 @@ class Template
         }
 
         $pagetitle = (isset($options['title']) ? '::'.$options['title'] : '');
-
+        $gmaps = 0;
+        if (!empty($this->CI->config->item('google_map_key'))) {
+            $gmaps = ifset($options, 'gmaps', 0);
+        }
         $head_options=[
             'styles'=>$styles,
             'scripts'=>$scripts,
             'title' => ($this->CI->config->item('system_name').$pagetitle),
-            'gmaps' => ifset($options, 'gmaps', 0),
+            'gmaps' => $gmaps,
         ];
         if (ifset($options,'adaptive',0)==1) {
             $head_options['menu'] = $mobpermissions;
@@ -157,6 +169,7 @@ class Template
             'inventoryold' => $inventory_old,
             'test_server' => $this->CI->config->item('test_server'),
             'brand' => $brand,
+            'brands' => $brands,
         ];
         if (ifset($options,'adaptive',0)==1) {
             $dat['header_view'] = $this->CI->load->view('page/header_adaptive_view', $topmenu_options, TRUE);
@@ -404,6 +417,7 @@ class Template
                 } else {
                     $taxview=$this->CI->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
                 }
+                $cntres = $this->CI->shipping_model->get_country($country_id);
                 $states=$this->CI->shipping_model->get_country_states($country_id);
                 $shipoptions=array(
                     'shipping'=>$shipping,
@@ -414,6 +428,8 @@ class Template
                     'order'=>$ord_data,
                     'rushview'=>$rushview,
                     'taxview'=>$taxview,
+                    'shipcntcode' => ifset($cntres,'country_iso_code_2',''),
+                    'shipaddress' => $this->CI->shipping_model->prepare_shipaddress($shipping_address[0]),
                 );
                 if ($edit==1) {
                     $orddata['shippingview']=$this->CI->load->view('leadorderdetails/single_ship_edit', $shipoptions, TRUE);
@@ -456,6 +472,7 @@ class Template
             $billing=$res['order_billing'];
 
             $country_id=ifset($billing, 'country_id', '');
+            $cntdata = $this->CI->shipping_model->get_country($country_id);
             $states=$this->CI->shipping_model->get_country_states($country_id);
             $billoptions=array(
                 'billing'=>$billing,
@@ -463,6 +480,8 @@ class Template
                 'states'=>$states,
                 'order'=>$ord_data,
                 'financeview'=>$usrdat['finuser'],
+                'country_code' => strtolower($cntdata['country_iso_code_2']),
+                'billaddress' => $this->CI->shipping_model->prepare_billaddress($billing),
             );
             if ($edit==1) {
                 if ($ord_data['order_id']==0) {
@@ -627,11 +646,24 @@ class Template
         $proofdocs=$res['proofdocs'];
         $proofview=leadProfdocOut($proofdocs, $edit);
         $numoutprofdoc=ceil(count($proofdocs)/5);
-        $artdata['profdocwidth']=$numoutprofdoc*160;
+        $artdata['profdocwidth']=$numoutprofdoc*145; // 160;
         $artdata['weborder']=$weborder;
         $artdata['artcolors']=$artcolors;
         $artdata['artfont']=$artfonts;
         $artdata['proofdoc_view']=$proofview;
+        $artdata['edit'] = $edit;
+        // Clay
+        $claydocs=$res['claydocs'];
+        $clayview=leadClaydocOut($claydocs, $edit);
+        $artdata['claydoc_view']=$clayview;
+        $artdata['claycnt'] = count($claydocs);
+        $artdata['claydocswidth'] = ceil(count($claydocs)/4)*115;
+        // Previews
+        $previewdocs=$res['previewdocs'];
+        $previewview=leadPreviewdocOut($previewdocs, $edit);
+        $artdata['previewdoc_view']=$previewview;
+        $artdata['previewcnt'] = count($previewdocs);
+        $artdata['previewswidth'] = ceil(count($previewdocs)/4)*115;
         // Artwork View
         $data['artview']=$this->CI->load->view('leadorderdetails/artwork_view', $artdata, TRUE);
         return $data;

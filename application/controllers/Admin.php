@@ -117,7 +117,7 @@ class Admin extends MY_Controller
             $user_id=$this->input->post('user_id');
             $result=$this->user_model->delete_usr($user_id, $this->USR_ID);
             $error=$result['msg'];
-            if ($result['res']==$this->success_result) {
+            if ($result['result']==$this->success_result) {
                 $error = '';
                 $mdata['total'] = $this->user_model->get_count_user(['status'=> [1,2]]);
             }
@@ -168,9 +168,11 @@ class Admin extends MY_Controller
                 $sbpages = $this->tree(null, 0, $user_id, 'SB');
                 $srpages = $this->tree(null, 0, $user_id, 'SR');
                 $commonpages = $this->tree(null, 0, $user_id, 'NONE');
+                $sgpages = $this->tree(null, 0, $user_id, 'SG');
                 $wpages=[
                     'sbpages' => $sbpages,
                     'srpages' => $srpages,
+                    'sgpages' => $sgpages,
                     'commpages' => $commonpages,
                 ];
                 $pagepermiss=$this->load->view('admin/webpage_tree_view', $wpages,TRUE);

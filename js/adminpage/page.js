@@ -15,6 +15,40 @@ $(document).ready(function () {
             $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
         }
     );
+    $(".brandmenuitem.sigmasystem").hover(
+        function () {
+            var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-black.','-white.');
+            $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
+        },
+        function () {
+            var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-white.', '-black.');
+            $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
+        }
+    );
+    $(".brandmenuitem").find('div.brandmenuicon').hover(
+        function () {
+            $(".brandsubmenu[data-brand='SB']").hide();
+            var dataid = $(this).data('item');
+            var position = $(this).position();
+            var brand = $(this).data('brand');
+            var loctop = parseInt(position.top)+25;
+            var params = new Array();
+            params.push({name: 'menu', value: dataid});
+            params.push({name: 'brand', value: brand});
+            $.post('/welcome/submenus', params, function (response){
+                if (response.errors=='') {
+                    $(".brandsubmenu[data-brand='"+brand+"']").empty().html(response.data.content).show().css('top',loctop);
+                    init_submenu(brand);
+                } else {
+                    show_error(response);
+                }
+            },'json');
+
+        },
+        function () {
+            // $(".brandsubmenu[data-brand='SB']").hide();
+        }
+    );
     $("div.rowdata").hover(
         function(){
             rowid=$(this).data('orderid');
@@ -178,6 +212,19 @@ $(document).ready(function () {
     jQuery.balloon.init();
 });
 
+function init_submenu(brand) {
+    $(".brandsubmenu[data-brand='"+brand+"']").hover(
+        function() {
+        },
+        function () {
+            $(".brandsubmenu[data-brand='"+brand+"']").hide();
+        }
+    )
+    $(".submenuitem").unbind('click').click(function (){
+        var url = $(this).data('url');
+        window.location.href=url;
+    })
+}
 $(window).resize(function() {
     rebuild_market_offset();
 });
@@ -346,4 +393,8 @@ function liftsite_inventory(item) {
             show_error(response);
         }
     },'json');
+}
+
+function initAutocomplete() {
+
 }

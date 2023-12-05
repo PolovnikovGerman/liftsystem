@@ -113,27 +113,68 @@ Class Leadorder_model extends My_Model {
         $this->db->group_by('i.order_id');
         $itemdatesql = $this->db->get_compiled_select();
 
-        $amountcnt="select order_id, sum(amount_sum) as cnt_amnt from ts_order_amounts where amount_sum>0 group by order_id";
+        $this->db->select('order_id, count(amount_id) as cnt'); // , sum(amount_sum) as cnt_amnt
+        $this->db->from('ts_order_amounts');
+        $this->db->where('amount_sum  > ',0);
+        $this->db->group_by('order_id');
+        $amountsql = $this->db->get_compiled_select();
+
+        $this->db->select('i.order_id, group_concat(distinct(c.item_color)) as item_color');
+        $this->db->from('ts_order_items i');
+        $this->db->join('ts_order_itemcolors c','c.order_item_id=i.order_item_id');
+        $this->db->group_by('i.order_id');
+        $colorsql = $this->db->get_compiled_select();
+
+        $this->db->select('s.order_id, count(p.order_shippack_id) as cnt');
+        $this->db->from('ts_order_shippacks p');
+        $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
+        $this->db->group_by('s.order_id');
+        $totalpack = $this->db->get_compiled_select();
+
+        $this->db->select('s.order_id, count(p.order_shippack_id) as cnt, max(s.arrive_date) as delivdate, max(p.send_date) as packsenddate');
+        $this->db->select('max(p.track_date) as packtrackdate');
+        $this->db->from('ts_order_shippacks p');
+        $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
+        $this->db->where("coalesce(p.track_code,'') != ''");
+        $this->db->group_by('s.order_id');
+        $sendpack = $this->db->get_compiled_select();
+
+        $this->db->select('s.order_id, count(p.order_shippack_id) as cnt');
+        $this->db->from('ts_order_shippacks p');
+        $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
+        $this->db->where('p.delivered',1);
+        $this->db->group_by('s.order_id');
+        $delivpack = $this->db->get_compiled_select();
+
         $this->db->select('o.order_id, o.create_usr, o.order_date, o.brand_id, o.order_num, o.customer_name');
         $this->db->select('o.customer_email, o.revenue, o.shipping, o.is_shipping, o.tax, o.cc_fee, o.order_cog');
         $this->db->select('o.profit, o.profit_perc, o.is_canceled, o.reason,  o.item_id, o.invoice_doc, o.invoice_send');
-        $this->db->select('o.order_confirmation, o.order_items, o.order_usr_repic, o.weborder, o.order_qty, o.shipdate');
+        $this->db->select('o.order_confirmation, o.order_items, o.order_usr_repic, o.weborder, o.order_qty, o.shipdate as ord_ship');
         $this->db->select('o.is_invoiced, o.order_system, o.order_arthide, o.order_itemnumber, o.deliverydate');
+        $this->db->select('oa.cnt as cnt_amnt, colordat.item_color as itemcolor');
         // ART Stages
         $this->db->select('o.order_art, o.order_redrawn, o.order_proofed, o.order_vectorized, o.order_approved, o.is_canceled');
         $this->db->select('itm.item_name');
         // $this->db->select("coalesce(oa.cnt_amnt,0)  as cnt_amnt",FALSE);
         $this->db->select('u.user_leadname, u.user_name, bil.customer_ponum');
         $this->db->select('itm.item_number, coalesce(st.item_id, 0) as stok_item', FALSE);
-        $this->db->select('vo.order_proj_status as artstage');
+        // $this->db->select('vo.order_proj_status as artstage');
+        $this->db->select('s.order_shipping_id, s.shipdate');
+        $this->db->select('totalpack.cnt as totalpacks, sendpack.cnt as sendpacks, sendpack.delivdate, sendpack.packsenddate');
+        $this->db->select('sendpack.packtrackdate, delivpack.cnt as delivpacks');
         $this->db->from('ts_orders o');
         $this->db->join("{$item_dbtable} as itm",'itm.item_id=o.item_id ','left');
         $this->db->join('users u','u.user_id=o.order_usr_repic','left');
         $this->db->join('ts_stock_items st','st.item_id=o.item_id','left');
         $this->db->join('ts_order_billings bil','bil.order_id=o.order_id', 'left');
-        // $this->db->join("({$amountcnt}) oa",'oa.order_id=o.order_id','left');
+        $this->db->join('ts_order_shippings s','s.order_id=o.order_id','left');
+        $this->db->join("({$amountsql}) oa",'oa.order_id=o.order_id','left');
+        $this->db->join("({$colorsql}) as colordat",'colordat.order_id=o.order_id','left');
+        $this->db->join("({$totalpack}) as totalpack",'totalpack.order_id=o.order_id','left');
+        $this->db->join("({$sendpack}) as sendpack",'sendpack.order_id=o.order_id','left');
+        $this->db->join("({$delivpack}) as delivpack",'delivpack.order_id=o.order_id','left');
         // $this->db->where('o.is_canceled',0);
-        $this->db->join('v_order_artstage vo','vo.order_id=o.order_id','left');
+        // $this->db->join('v_order_artstage vo','vo.order_id=o.order_id','left');
         if (isset($options['unassigned'])) {
             $this->db->where('o.order_usr_repic is null');
         }
@@ -192,32 +233,14 @@ Class Leadorder_model extends My_Model {
         $curdat='';
         $ordidx=1;
         foreach ($res as $row) {
-            $this->db->select('distinct(c.item_color) as item_color');
-            $this->db->from('ts_order_itemcolors c');
-            $this->db->join('ts_order_items i','i.order_item_id=c.order_item_id');
-            $this->db->where('i.order_id', $row['order_id']);
-            $colordat=$this->db->get()->result_array();
-            $itemcolor='';
-            foreach ($colordat as $crow) {
-                $itemcolor.=$crow['item_color'].', ';
-            }
-            $itemcolor=substr($itemcolor,0,-2);
-            $row['itemcolor']=$itemcolor;
+            $this->db->select('order_proj_status as artstage')->from('v_order_artstage')->where('order_id', $row['order_id']);
+            $art = $this->db->get()->row_array();
+            $row['artstage'] = ifset($art,'artstage','');
             $row['itemcolorclass']='';
-            if (strlen($itemcolor)>14) {
+            if (strlen($row['itemcolor'])>9) {
                 $row['itemcolorclass']='wide';
             }
-            $this->db->select('count(amount_id) as cnt, sum(amount_sum) as cnt_amnt');
-            $this->db->from('ts_order_amounts');
-            $this->db->where('order_id', $row['order_id']);
-            $this->db->where('amount_sum > 0');
-            $amntres=$this->db->get()->row_array();
-            if ($amntres['cnt']==0) {
-                $row['cnt_amnt']=0;
-            } else {
-                $row['cnt_amnt']=$amntres['cnt_amnt'];
-            }
-            // group by order_id
+            $row['cnt_amnt']=intval($row['cnt_amnt']);
             $row['rowclass']='';
             $row['scrdate']=$row['order_date'];
             $orddate=date('m/d/y',$row['order_date']);
@@ -346,7 +369,7 @@ Class Leadorder_model extends My_Model {
                         $row['order_status']='FF - Fulfillment';
                         $row['order_status_class']='fulfillment';
                     } else { */
-                    $statusship=$this->_leadorder_shipping_status($row['order_id']);
+                    $statusship=$this->_leadorder_shipping_status($row);
                     $row['order_status']=$statusship['order_status'];
                     $row['order_status_class']=$statusship['order_status_class'];
                     /* } */
@@ -413,6 +436,8 @@ Class Leadorder_model extends My_Model {
         }
         $res['newappcreditlink']=0;
         $out['result']=$this->success_result;
+        // Brand
+        $brand=$res['brand'];
         $out['prvorder']=$this->_get_previous_order($order_id, $brand);
         $out['nxtorder']=$this->_get_next_order($order_id, $brand);
         $out['order_system_type']=($res['order_system']=='new' ? 'new' : 'old');
@@ -524,6 +549,12 @@ Class Leadorder_model extends My_Model {
         // Get Artwork Locations
         $locations=$this->artlead_model->get_art_locations($artwork_id);
         $proofdocs=$this->artwork_model->get_artproofs($artwork_id);
+        // Clay && Preview
+        $claydocs = $this->artlead_model->get_claymodels($artwork_id, $res['order_num']);
+        $previews = $this->artlead_model->get_previews($artwork_id, $res['order_num']);
+        $out['claydocs'] = $claydocs;
+        $out['previewdocs'] = $previews;
+        $out['previewdocs'] = $previews;
         $out['artlocations']=$locations;
         $out['proofdocs']=$proofdocs;
         if ($out['order_system_type']=='new') {
@@ -725,6 +756,10 @@ Class Leadorder_model extends My_Model {
         $art['artstage']=$this->NO_ART;
         $art['artstage_txt']=$this->NO_ART_TXT;
         $art['artstage_time']=$this->empty_htmlcontent;
+        // Clay & Preview
+        $art['art_clay'] = $art['art_preview'] = 0;
+        $out['claydocs'] = $out['previewdocs'] = [];
+
         $out['artwork']=$art;
         $out['payments']=array();
         $out['artlocations']=$out['proofdocs']=array();
@@ -905,6 +940,26 @@ Class Leadorder_model extends My_Model {
             if ($entity=='artwork' && $fldname=='artwork_blank') {
                 $leadorder['order']['order_blank'] = $newval;
             }
+            if ($entity=='order' && $fldname=='customer_name') {
+                $data['customer_name'] = $newval;
+                if (!empty($newval)) {
+                    if ($data['brand']!=='SR') {
+                        $shipaddrs = $leadorder['shipping_address'];
+                        $shipadr = $shipaddrs[0];
+                        if (empty($shipadr['ship_company'])) {
+                            $shipaddrs[0]['ship_company'] = $newval;
+                            $out['shipcompany'] = $newval;
+                            $leadorder['shipping_address']=$shipaddrs;
+                        }
+                    }
+                    $billing = $leadorder['billing'];
+                    if (empty($billing['company'])) {
+                        $out['billcompany']=$newval;
+                        $billing['company'] = $newval;
+                        $leadorder['billing'] = $billing;
+                    }
+                }
+            }
             $leadorder[$entity]=$data;
             if ($fldname=='rush_idx') {
                 $params=explode("-", $newval);
@@ -1000,8 +1055,10 @@ Class Leadorder_model extends My_Model {
                 $leadorder['shipping_address']=$shipaddr;
             } elseif ($fldname=='country_id' && $entity=='billing') {
                 $states=$this->shipping_model->get_country_states($newval);
+                $cntdat = $this->shipping_model->get_country($newval);
                 // remove default State
                 $out['defstate']=NULL;
+                $out['cntcode'] = $cntdat['country_iso_code_2'];
                 $data['state_id']=NULL;
 
                 $out['out_states']=$states;
@@ -1249,6 +1306,26 @@ Class Leadorder_model extends My_Model {
             }
         }
         $leadorder['contacts']=$contacts;
+        $order = $leadorder['order'];
+        if ($fldname=='contact_name' && intval($contact_id)==-1) {
+            if (!empty($newval)) {
+                if ($order['brand']!='SR') {
+                    $shipadrs = $leadorder['shipping_address'];
+                    $shipadr = $shipadrs[0];
+                    if (empty($shipadr['ship_contact'])) {
+                        $shipadrs[0]['ship_contact'] = $newval;
+                        $out['shipcontact'] = $newval;
+                        $leadorder['shipping_address'] = $shipadrs;
+                    }
+                }
+                $billing = $leadorder['billing'];
+                if (empty($billing['customer_name'])) {
+                    $billing['customer_name'] = $newval;
+                    $out['billcontact'] = $newval;
+                    $leadorder['billing'] = $billing;
+                }
+            }
+        }
         usersession($ordersession, $leadorder);
         $out['result']=$this->success_result;
         return $out;
@@ -1502,6 +1579,7 @@ Class Leadorder_model extends My_Model {
         $shipping=$leadorder['shipping'];
         $shipidx=0;
         $cnt=0;
+        $out['shipcount'] = 0;
         foreach ($shipaddr as $shprow) {
             if (!empty($shprow['zip'])) {
                 // Get Old Shipping Method
@@ -1520,6 +1598,7 @@ Class Leadorder_model extends My_Model {
                     usersession($ordersession, $leadorder);
                     return $out;
                 } else {
+                    $out['shipcount'] = 1;
                     $rates=$cntres['ships'];
                     $shipcost=$shipaddr[$shipidx]['shipping_costs'];
                     $cidx=0;
@@ -2036,13 +2115,30 @@ Class Leadorder_model extends My_Model {
                         $details[$detidx]['setup_2']=0;
                         $details[$detidx]['setup_3']=0;
                         $details[$detidx]['setup_4']=0;
+                        $out['setup'] = 0;
+                    } elseif ($imprintdetails['brand']=='SR') {
+                        $details[$detidx]['setup_1']=$this->config->item('srrepeat_cost');
+                        $details[$detidx]['setup_2']=$this->config->item('srrepeat_cost');
+                        $details[$detidx]['setup_3']=$this->config->item('srrepeat_cost');
+                        $details[$detidx]['setup_4']=$this->config->item('srrepeat_cost');
+                        $out['setup'] = $this->config->item('srrepeat_cost');
                     }
                     $out['class']='';
                     if (!empty($details[$detidx]['repeat_note'])) {
                         $out['class']='full';
                     }
                 } else {
-                    $setupprice=$this->_get_item_priceimprint($imprintdetails['item_id'], 'setup');
+                    if ($imprintdetails['item_id'] == $this->config->item('custom_id')) {
+                        $setupprice = $this->custom_setup_price;
+                    } elseif ($imprintdetails['item_id'] == $this->config->item('other_id')) {
+                        if ($imprintdetails['brand']=='SR') {
+                            $setupprice = $this->other_setupsr_price;
+                        } else {
+                            $setupprice = $this->other_setupsb_price;
+                        }
+                    } else {
+                        $setupprice=$this->_get_item_priceimprint($imprintdetails['item_id'], 'setup');
+                    }
                     $out['setup']=$setupprice;
                     $details[$detidx]['setup_1']=$setupprice;
                     $details[$detidx]['setup_2']=$setupprice;
@@ -2511,6 +2607,7 @@ Class Leadorder_model extends My_Model {
         $this->load->model('shipping_model');
         $shipaddr=$leadorder['shipping_address'];
         $shipping=$leadorder['shipping'];
+        $order=$leadorder['order'];
         $shipidx=0;
         $found=0;
         foreach ($shipaddr as $row) {
@@ -2574,7 +2671,6 @@ Class Leadorder_model extends My_Model {
                         }
                     }
                 }
-                $order=$leadorder['order'];
                 $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
                 if ($cntres['result']==$this->error_result) {
                     $out['msg']=$cntres['msg'];
@@ -2611,39 +2707,23 @@ Class Leadorder_model extends My_Model {
 
             }
             // Validate Address
-//            if ($shipaddr[$shipidx]['out_country']=='US') {
-//                $tracking=$upsserv->validaddress($newval, $shipaddr[$shipidx]['out_country']);
-//                if ($tracking['result']==$this->success_result) {
-//                    if (!empty($tracking['city'])) {
-//                        $shipaddr[$shipidx]['city']=$tracking['city'];
-//                    }
-//                    if (!empty($tracking['state'])) {
-//                        $shipaddr[$shipidx]['state_id']=$tracking['state_id'];
-//                        $shipaddr[$shipidx]['out_zip']=$tracking['state'].' '.$newval;
-//                        if ($shipaddr[$shipidx]['state_id']==$this->tax_state) {
-//                            $shipaddr[$shipidx]['taxcalc']=0;
-//                            $shipaddr[$shipidx]['taxview']=1;
-//                            if ($shipaddr[$shipidx]['tax_exempt']==0) {
-//                                $shipaddr[$shipidx]['taxcalc']=1;
-//                            }
-//                        } else {
-//                            $shipaddr[$shipidx]['taxcalc']=0;
-//                            $shipaddr[$shipidx]['taxview']=0;
-//                        }
-//                    }
-//                }
-//            }
-            // Build select
             if ($shipaddr[$shipidx]['out_country']=='CA') {
                 $seachzip = substr($newval,0, 3);
             } else {
                 $seachzip = $newval;
             }
+            $this->db->select('state_id, state_code');
+            $this->db->from('ts_states');
+            $this->db->where('country_id', $shipaddr[$shipidx]['country_id']);
+            $stateselect = $this->db->get_compiled_select();
+            $this->db->reset_query();
+            //
             $this->db->select('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code as state, t.state_id, count(c.geoip_city_id) as cntcity');
             $this->db->from('ts_geoipdata gdata');
             $this->db->join('ts_geoip_city c','c.geoname_id=gdata.geoname_id');
             $this->db->join('ts_countries cntr','cntr.country_iso_code_2=c.country_iso_code');
-            $this->db->join('ts_states t','t.state_code=c.subdivision_1_iso_code','left');
+            // $this->db->join('ts_states t','t.state_code=c.subdivision_1_iso_code','left');
+            $this->db->join("({$stateselect}) as t",'t.state_code=c.subdivision_1_iso_code','left');
             $this->db->where('gdata.postal_code',$seachzip);
             $this->db->where('cntr.country_id',$shipaddr[$shipidx]['country_id']);
             $this->db->group_by('c.geoip_city_id, c.city_name, c.subdivision_1_iso_code, t.state_id');
@@ -2689,7 +2769,7 @@ Class Leadorder_model extends My_Model {
                 $shipaddr[$shipidx]['taxcalc']=0;
             }
         }
-
+        $leadorder['order'] = $order;
         $leadorder['shipping_address']=$shipaddr;
         usersession($ordersession, $leadorder);
         $out['result']=$this->success_result;
@@ -4436,6 +4516,24 @@ Class Leadorder_model extends My_Model {
         $proofs=$leadorder['artproofs'];
         $res=$this->artlead_model->save_artproof($proofs, $artwork_id, $user_id);
         $artsyncdoc=$res['artsyncdoc'];
+        // Clay save
+        if (!isset($leadorder['claydocs'])) {
+            log_message('ERROR', 'Order '.$order_id.' Artwork '.$artwork_id.' without clays');
+            $leadorder['claydocs'] = [];
+        }
+        $claydocs = $leadorder['claydocs'];
+        if (count($claydocs)) {
+            $res=$this->artlead_model->save_claymodels($claydocs, $artwork_id, $user_id);
+        }
+        // Preview save
+        if (!isset($leadorder['previewdocs'])) {
+            log_message('ERROR', 'Order '.$order_id.' Artwork '.$artwork_id.' without previews');
+            $leadorder['previewdocs'] = [];
+        }
+        $previewdocs = $leadorder['previewdocs'];
+        if (count($previewdocs)) {
+            $res=$this->artlead_model->save_previewpics($previewdocs, $artwork_id, $user_id);
+        }
         // Save history and message
         $history=$leadorder['message']['history'];
 
@@ -4604,6 +4702,7 @@ Class Leadorder_model extends My_Model {
         if ($order_id==0) {
             $this->db->set('create_usr',$user_id);
             $this->db->set('create_date',time());
+            $this->db->set('customer_code', new_customer_code());
             $this->db->insert('ts_orders');
             if ($this->db->insert_id()==0) {
                 $res['msg']='Error during save order data';
@@ -4766,7 +4865,7 @@ Class Leadorder_model extends My_Model {
         // Update Order
         $this->db->set('order_date',$data['order_date']);
         $this->db->set('brand_id',(empty($data['brand_id']) ? $this->config->item('default_brand') : $data['brand_id']));
-        $this->db->set('customer_name',$data['customer_name']);
+        $this->db->set('customer_name', substr($data['customer_name'],0,41));
 
         $this->db->set('revenue', floatval($data['revenue']));
         $this->db->set('shipping', floatval($data['shipping']));
@@ -4802,6 +4901,9 @@ Class Leadorder_model extends My_Model {
         $this->db->set('discount_label', $data['discount_label']);
         $this->db->set('discount_val', floatval($data['discount_val']));
         $this->db->set('discount_descript', $data['discount_descript']);
+        // Clay preview
+        $this->db->set('art_clay', $data['art_clay']);
+        $this->db->set('art_preview', $data['art_preview']);
         if ($order_id==0) {
             if ($data['brand']=='SR') {
                 $confirm=uniq_link(5,'digits').'-'.strtoupper(uniq_link(2,'chars'));
@@ -4812,6 +4914,7 @@ Class Leadorder_model extends My_Model {
             $this->db->set('create_usr',$user_id);
             $this->db->set('create_date',time());
             $this->db->set('brand', $data['brand']);
+            $this->db->set('customer_code',new_customer_code());
             $this->db->insert('ts_orders');
             if ($this->db->insert_id()==0) {
                 $res['msg']='Error during save order data';
@@ -4861,6 +4964,24 @@ Class Leadorder_model extends My_Model {
             $this->db->set('item_name',$data['order_items']);
             $this->db->where('order_id',$order_id);
             $this->db->update('ts_artworks');
+        }
+        // Add / update customers
+        if (!empty($data['customer_name'])) {
+            $this->db->select('*');
+            $this->db->from('ts_customers');
+            $this->db->where('customer_name', $data['customer_name']);
+            $customer = $this->db->get()->row_array();
+            if (ifset($customer, 'customer_id',0)==0) {
+                $this->db->set('customer_name', $data['customer_name']);
+                $this->db->insert('ts_customers');
+                $customer_id = $this->db->insert_id();
+            } else {
+                $customer_id = $customer['customer_id'];
+            }
+            $this->db->where('order_id', $order_id);
+            $this->db->set('customer_id', $customer_id);
+            $this->db->update('ts_orders');
+            $data['customer_id'] = $customer_id;
         }
         // Add / edit Credit App Doc
         $this->load->model('creditapp_model');
@@ -5011,11 +5132,11 @@ Class Leadorder_model extends My_Model {
                 $this->db->set('item_description', $irow['item_description']);
                 $this->db->set('item_qty', $irow['item_qty']);
                 $this->db->set('item_price', $irow['item_price']);
-                if (isset($irow['printshop_item_id']) && !empty($irow['printshop_item_id'])) {
-                    $this->db->set('printshop_item_id', $irow['printshop_item_id']);
-                } else {
+//                if (isset($irow['printshop_item_id']) && !empty($irow['printshop_item_id'])) {
+//                    $this->db->set('printshop_item_id', $irow['printshop_item_id']);
+//                } else {
                     $this->db->set('printshop_item_id', NULL);
-                }
+//                }
                 if ($irow['item_id']<0) {
                     $this->db->set('order_item_id', $order_item_id);
                     $this->db->insert('ts_order_itemcolors');
@@ -5270,16 +5391,16 @@ Class Leadorder_model extends My_Model {
     // Copy first shipping address to billing
     private function _billingaddres_copy($shipping_address, $biladr) {
         $shipadr=$shipping_address[0];
-        if (empty($biladr['customer_name']) && empty($biladr['address_1']) && empty($biladr['city'])) {
-            $biladr['customer_name']=$shipadr['ship_contact'];
-            $biladr['company']=$shipadr['ship_company'];
+        // if (empty($biladr['customer_name']) && empty($biladr['address_1']) && empty($biladr['city'])) {
+            $biladr['customer_name']=$shipadr['ship_contact']; // empty($biladr['customer_name']) ? $shipadr['ship_contact'] : $biladr['customer_name'];
+            $biladr['company']=$shipadr['ship_company']; // empty($biladr['company']) ? $shipadr['ship_company'] : $biladr['company'];
             $biladr['address_1']=$shipadr['ship_address1'];
             $biladr['address_2']=$shipadr['ship_address2'];
             $biladr['country_id']=$shipadr['country_id'];
             $biladr['state_id']=$shipadr['state_id'];
             $biladr['city']=$shipadr['city'];
             $biladr['zip']=$shipadr['zip'];
-        }
+        // }
         return $biladr;
     }
 
@@ -5588,19 +5709,19 @@ Class Leadorder_model extends My_Model {
         $this->db->where('i.item_id', $item_id);
         $itmres=$this->db->get()->row_array();
         if ($item_id>0 && !empty($itmres)) {
-            if (empty($itmres['printshop_item_id'])) {
+//            if (empty($itmres['printshop_item_id'])) {
                 // Get Item Price, Item Colors
                 // Get Colors
                 $this->db->select('item_color as colors');
                 $this->db->from('sb_item_colors');
                 $this->db->where('item_color_itemid', $item_id);
                 $colors=$this->db->get()->result_array();
-            } else {
-                $this->db->select('color as colors');
-                $this->db->from('ts_printshop_colors');
-                $this->db->where('printshop_item_id',$itmres['printshop_item_id']);
-                $colors=$this->db->get()->result_array();
-            }
+//            } else {
+//                $this->db->select('color as colors');
+//                $this->db->from('ts_printshop_colors');
+//                $this->db->where('printshop_item_id',$itmres['printshop_item_id']);
+//                $colors=$this->db->get()->result_array();
+//            }
             $itmres['num_colors']=count($colors);
             if (count($colors)>0) {
                 $newcolor=array();
@@ -6789,6 +6910,8 @@ Class Leadorder_model extends My_Model {
         $out['charges']=$new_data['charges'];
         $out['artlocations']=$new_data['artlocations'];
         $out['proofdocs']=array();
+        $out['claydocs'] = [];
+        $out['previewdocs'] = [];
         return $out;
     }
 
@@ -8534,20 +8657,20 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 
-    public function _leadorder_shipping_status($order_id) {
+    public function _leadorder_shipping_status($order) {
         $order_status='FF - To Ship ';
         $order_status_class='fulfillment';
-        $this->db->select('o.shipdate as ord_ship, s.order_shipping_id, s.shipdate');
-        $this->db->from('ts_orders o');
-        $this->db->join('ts_order_shippings s','s.order_id=o.order_id','left');
-        $this->db->where('o.order_id', $order_id);
-        $res=$this->db->get()->row_array();
-        if (intval($res['shipdate'])==0) {
-            $shipdate=$res['ord_ship'];
+//        $this->db->select('o.shipdate as ord_ship, s.order_shipping_id, s.shipdate');
+//        $this->db->from('ts_orders o');
+//        $this->db->join('ts_order_shippings s','s.order_id=o.order_id','left');
+//        $this->db->where('o.order_id', $order_id);
+//        $res=$this->db->get()->row_array();
+        if (intval($order['shipdate'])==0) {
+            $shipdate=$order['ord_ship'];
         } else {
-            $shipdate=$res['shipdate'];
+            $shipdate=$order['shipdate'];
         }
-        if (intval($res['order_shipping_id'])==0) {
+        if (intval($order['order_shipping_id'])==0) {
             // Return shipdate from order;
             $order_status='FF - To Ship '.date('m/d/y',$shipdate);
         } else {
@@ -8556,32 +8679,32 @@ Class Leadorder_model extends My_Model {
                 $order_status_class='late';
             }
             // Select total # of packages
-            $this->db->select('count(p.order_shippack_id) as cnt');
-            $this->db->from('ts_order_shippacks p');
-            $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
-            $this->db->where('s.order_id', $order_id);
-            $cntres=$this->db->get()->row_array();
-            $totalpacks=$cntres['cnt'];
+//            $this->db->select('count(p.order_shippack_id) as cnt');
+//            $this->db->from('ts_order_shippacks p');
+//            $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
+//            $this->db->where('s.order_id', $order_id);
+//            $cntres=$this->db->get()->row_array();
+//            $totalpacks=$cntres['cnt'];
             // Get Data about track codes
-            $this->db->select('count(p.order_shippack_id) as cnt, max(s.arrive_date) as delivdate, max(p.send_date), max(p.track_date)');
-            $this->db->from('ts_order_shippacks p');
-            $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
-            $this->db->where('s.order_id', $order_id);
-            $this->db->where("coalesce(p.track_code,'') != ","''",FALSE);
-            $chkres=$this->db->get()->row_array();
+//            $this->db->select('count(p.order_shippack_id) as cnt, max(s.arrive_date) as delivdate, max(p.send_date), max(p.track_date)');
+//            $this->db->from('ts_order_shippacks p');
+//            $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
+//            $this->db->where('s.order_id', $order_id);
+//            $this->db->where("coalesce(p.track_code,'') != ","''",FALSE);
+//            $chkres=$this->db->get()->row_array();
             // Select data
-            if ($chkres['cnt']>0) {
-                if ($chkres['cnt']==$totalpacks) {
+            if (intval($order['sendpacks'])>0) {
+                if ($order['sendpacks']==intval($order['totalpacks'])) {
                     $order_status='Shipped '.date('m/d/y', $shipdate);
                     $order_status_class='done';
                     // Select Delivered
-                    $this->db->select('count(p.order_shippack_id) as cnt');
-                    $this->db->from('ts_order_shippacks p');
-                    $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
-                    $this->db->where('s.order_id', $order_id);
-                    $this->db->where('p.delivered',1);
-                    $delivres=$this->db->get()->row_array();
-                    if ($delivres['cnt']>0 && $delivres['cnt']==$totalpacks) {
+//                    $this->db->select('count(p.order_shippack_id) as cnt');
+//                    $this->db->from('ts_order_shippacks p');
+//                    $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
+//                    $this->db->where('s.order_id', $order_id);
+//                    $this->db->where('p.delivered',1);
+//                    $delivres=$this->db->get()->row_array();
+                    if (intval($order['delivpacks'])>0 && intval($order['delivpacks'])==intval($order['totalpacks'])) {
                         $order_status='Delivered';
                         $order_status_class='delivered';
                     }
@@ -9673,6 +9796,195 @@ Class Leadorder_model extends My_Model {
         usersession($ordersession, $leadorder);
         $out['result'] = $this->success_result;
         return $out;
+    }
+
+    // Change autocomplete address
+    public function update_autoaddress($data, $leadorder, $ordersession) {
+        $out=array('result'=>$this->error_result, 'msg'=> 'Empty Address Type');
+        $shipcount = 0;
+        if (ifset($data,'address_type','')!=='') {
+            $out['shipstate'] = $out['bilstate'] = 0;
+            $cntres = [];
+            $states = [];
+            $data['state_id'] = '';
+            if (ifset($data, 'country','')!=='') {
+                $this->db->select('*');
+                $this->db->from('ts_countries');
+                $this->db->where('country_name',$data['country']);
+                $cntres = $this->db->get()->row_array();
+                if (ifset($cntres,'country_id',0) > 0) {
+                    $this->db->select('*');
+                    $this->db->from('sb_states');
+                    $this->db->where('country_id', $cntres['country_id']);
+                    $states = $this->db->get()->result_array();
+                }
+                $out['states'] = $states;
+                if (ifset($data,'state','')!=='') {
+                    $this->db->select('st.state_id');
+                    $this->db->from('ts_states st');
+                    $this->db->join('ts_countries tc','st.country_id = tc.country_id');
+                    $this->db->where('tc.country_name', $data['country']);
+                    $this->db->where('st.state_code', $data['state']);
+                    $stateres = $this->db->get()->row_array();
+                    if (ifset($stateres,'state_id','')!=='') {
+                        $data['state_id'] = $stateres['state_id'];
+                    }
+                }
+            }
+
+
+            if ($data['address_type']=='billing') {
+                $billing = $leadorder['billing'];
+                $billing['address_1'] = ifset($data,'line_1','');
+                $billing['city'] = ifset($data,'city','');
+                $billing['state_id'] = $data['state_id'];
+                $billing['zip'] = ifset($data,'zip','');
+                if (ifset($data, 'country','')!=='') {
+                    $billing['country_id'] = ifset($cntres,'country_id','');
+                }
+                $leadorder['billing'] = $billing;
+                usersession($ordersession, $leadorder);
+                $out['result'] = $this->success_result;
+                $addres = [
+                    'address_1' => $billing['address_1'],
+                    'city' => $billing['city'],
+                    'state' => $billing['state_id'],
+                    'zip' => $billing['zip'],
+                    'country' => $billing['country_id'],
+                ];
+                $out['address'] = $addres;
+                $out['address_full'] = $billing;
+            } elseif ($data['address_type']=='shipping') {
+                $out['msg'] = 'Unknown Shipping Address';
+                $shipadr = ifset($data,'shipadr','');
+                if (!empty($shipadr)) {
+                    $ships = $leadorder['shipping_address'];
+                    $found = 0;
+                    $idx = 0;
+                    $out['msg'] = 'Shipping Address Not Found';
+                    foreach ($ships as $ship) {
+                        if ($ship['order_shipaddr_id']==$shipadr) {
+                            $found=1;
+                            break;
+                        } else {
+                            $idx++;
+                        }
+                    }
+                    if ($found==1) {
+                        // Update Shipping Address
+                        $newzip = ifset($data,'zip','');
+                        if ($newzip!==$ships[$idx]['zip']) {
+                            $shipcount = 1;
+                        }
+                        $ships[$idx]['ship_address1'] = ifset($data,'line_1','');
+                        $ships[$idx]['city'] = ifset($data,'city','');
+                        $ships[$idx]['state_id'] = $data['state_id'];
+                        if ($data['state_id']==$this->tax_state) {
+                            $ships[$idx]['taxcalc'] = 1;
+                            $ships[$idx]['taxview'] = 1;
+                        } else {
+                            $ships[$idx]['taxcalc'] = 0;
+                        }
+                        $ships[$idx]['zip'] = $newzip;
+                        if (ifset($data, 'country','')!=='') {
+                            $ships[$idx]['country_id'] = ifset($cntres,'country_id','');
+                        }
+                        $leadorder['shipping_address'] = $ships;
+                        $out['address_full'] = $ships[$idx];
+                        $out['result'] = $this->success_result;
+                        usersession($ordersession, $leadorder);
+                        $out['shipping_address'] = $ships[$idx];
+                        $addres = [
+                            'address_1' => $ships[$idx]['ship_address1'],
+                            'city' => $ships[$idx]['city'],
+                            'state' => $ships[$idx]['state_id'],
+                            'zip' => $ships[$idx]['zip'],
+                            'country' => $ships[$idx]['country_id'],
+                        ];
+                        $out['address'] = $addres;
+                    }
+                }
+            } else {
+                $out['msg'] = 'Unknown Address Type';
+            }
+        }
+        $out['shipcount'] = $shipcount;
+        if ($out['result']==$this->success_result && $shipcount==1) {
+            // Recount ship
+            $this->_leadorder_shipcost_recount($idx, $ordersession);
+        }
+        return $out;
+    }
+
+    private function _leadorder_shipcost_recount($shipidx, $sessionid) {
+        $leadorder = usersession($sessionid);
+        $items=$leadorder['order_items'];
+        $qty=0;
+        foreach ($items as $row) {
+            $qty+=$row['item_qty'];
+        }
+        if ($qty>0) {
+            $shipaddr = $leadorder['shipping_address'];
+            // Old Shipping Method
+            $default_ship_method='';
+            if (isset($shipaddr[$shipidx]['shipping_costs'])) {
+                $oldcosts=$shipaddr[$shipidx]['shipping_costs'];
+                foreach ($oldcosts as $costrow) {
+                    if ($costrow['delflag']==0 && $costrow['current']==1) {
+                        $default_ship_method=$costrow['shipping_method'];
+                    }
+                }
+            }
+            $shipping = $leadorder['shipping'];
+            $order = $leadorder['order'];
+            $this->load->model('shipping_model');
+            $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
+            if ($cntres['result']==$this->error_result) {
+                // $out['msg']=$cntres['msg'];
+                return false;
+            } else {
+                $leadorder['order']=$order;
+                $rates=$cntres['ships'];
+                $shipcost=$shipaddr[$shipidx]['shipping_costs'];
+                $cidx=0;
+                foreach ($shipcost as $row) {
+                    $shipcost[$cidx]['delflag']=1;
+                    $cidx++;
+                }
+                $newidx=count($shipcost)+1;
+                foreach ($rates as $key=>$row) {
+                    $shipcost[]=array(
+                        'order_shipcost_id'=>$newidx*(-1),
+                        'shipping_method'=>$row['ServiceName'],
+                        'shipping_cost'=>$row['Rate'],
+                        'arrive_date'=>$row['DeliveryDate'],
+                        'current'=>$row['current'],
+                        'delflag'=>0,
+                    );
+                    if ($row['current']==1) {
+                        $shipaddr[$shipidx]['shipping']=$row['Rate'];
+                    }
+                    $newidx++;
+                }
+                $shipaddr[$shipidx]['shipping_costs']=$shipcost;
+                $shiptotal=$this->_leadorder_shipcost($shipaddr);
+                $order['shipping']=$shiptotal;
+                $leadorder['shipping_address']=$shipaddr;
+                $leadorder['order'] = $order;
+                usersession($sessionid, $leadorder);
+                $this->_leadorder_totals($leadorder, $sessionid);
+                return true;
+            }
+        }
+    }
+
+    public function search_customer($search, $limit=20) {
+        $this->db->select('customer_id as id, customer_name as label');
+        $this->db->from('ts_customers');
+        $this->db->like('customer_name', $search);
+        $this->db->order_by('customer_name');
+        $this->db->limit($limit);
+        return $this->db->get()->result_array();
     }
 
 

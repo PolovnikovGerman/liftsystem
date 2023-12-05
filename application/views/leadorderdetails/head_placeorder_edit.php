@@ -15,6 +15,6 @@
 <div class="block_3">
     <div class="block_3_text">
         <div class="block_2_text1 text_gray">customer:</div>
-        <input type="text" class="block_3_input input_border_black inputleadorddata" data-entity="order" data-field="customer_name" value="<?=$customer_name?>"/>
+        <input type="text" class="block_3_input input_border_black inputleadorddata" data-entity="order" data-field="customer_name" maxlength="41" value="<?=$customer_name?>"/>
     </div>
 </div>
