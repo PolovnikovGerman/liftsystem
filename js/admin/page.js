@@ -25,5 +25,9 @@ function init_page(objid) {
             $("#artalertsview").show();
             init_taskalertsys();
             break;
+        case 'calendarsview':
+            $("#calendarsview").show();
+            init_calendars_page();
+            break;
     }
 }

@@ -16,24 +16,6 @@
         <?php } ?>
         <div class="sritem <?=($row['custom_order']==1 ? 'customorder' : '')?>"><?=$row['out_item']?></div>
         <div class="revenue"><?=$row['revenue']?></div>
-        <div class="usrrepl <?=$row['usrreplclass']?>">
-            <?php if ($role=='user') { ?>
-                <?=$row['user_replic']?>
-            <?php } else { ?>
-                <select data-order="<?=$row['order_id']?>" class="selectreplic">
-                    <?php if ($row['order_usr_repic']=='') { ?>
-                        <option value="">Unassigned</option>
-                    <?php } ?>
-                    <option value="-1">Website</option>
-                    <?php foreach ($users as $urow) {?>
-                        <option value="<?=($urow['user_id'])?>" <?=($urow['user_id']==$row['order_usr_repic'] ? 'selected="selected"' : '')?>>
-                            <?=($urow['user_leadname']=='' ? $urow['user_name'] : $urow['user_leadname'])?>
-                        </option>
-                    <?php } ?>
-                </select>
-            <?php } ?>
-        </div>
-<!--        <div class="ordclass">--><?php //=$row['order_class']?><!--</div>-->
         <div class="artstage"><?=$row['artstage']?></div>
         <div class="points <?=$row['profit_class']?>"><?=$row['points']?></div>
         <div class="pointsdevider">&nbsp;</div>

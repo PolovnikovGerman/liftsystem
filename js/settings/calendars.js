@@ -1,13 +1,13 @@
 function init_calendars_page() {
     init_calendars();
     // Change Brand
-    $("#calendarsviewbrandmenu").find("div.left_tab").unbind('click').click(function(){
-        var brand = $(this).data('brand');
-        $("#calendarsviewbrand").val(brand);
-        $("#calendarsviewbrandmenu").find("div.left_tab").removeClass('active');
-        $("#calendarsviewbrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
-        init_calendars();
-    });
+    // $("#calendarsviewbrandmenu").find("div.left_tab").unbind('click').click(function(){
+    //     var brand = $(this).data('brand');
+    //     $("#calendarsviewbrand").val(brand);
+    //     $("#calendarsviewbrandmenu").find("div.left_tab").removeClass('active');
+    //     $("#calendarsviewbrandmenu").find("div.left_tab[data-brand='"+brand+"']").addClass('active');
+    //     init_calendars();
+    // });
 }
 
 function init_calendar_manage() {
