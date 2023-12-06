@@ -65,7 +65,9 @@ function placeOrderParse(place, address_type) {
                 break;
             }
             case "locality": {
-                city = component.long_name;
+                if (city=='') {
+                    city = component.long_name;
+                }
                 break;
             }
             case "administrative_area_level_1": {
@@ -77,7 +79,16 @@ function placeOrderParse(place, address_type) {
                 break;
             }
             case "postal_town": {
-                city = component.long_name;
+                if (city=='') {
+                    city = component.long_name;
+                }
+                break;
+            }
+            case "sublocality_level_1": {
+                if (city=='') {
+                    city = component.long_name;
+                }
+                break;
             }
         }
     }
