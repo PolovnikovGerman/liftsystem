@@ -24,6 +24,9 @@
             <?php if (isset($artalertsview)) { ?>
                 <div class="admincontentarea" id="artalertsview" style="display: none;"><?=$artalertsview?></div>
             <?php } ?>
+            <?php if (isset($calendarsview)) { ?>
+                <div class="admincontentarea" id="calendarsview" style="display: none;"><?=$calendarsview?></div>
+            <?php } ?>
         </div>
     </div>
 </div>

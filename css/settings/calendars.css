@@ -1,8 +1,7 @@
 .calendarscontent {
     clear: both;
     margin-top: 3px;
-    /* margin-left: 20px; */
-    /* position: relative; */
+    margin: 20px;
     min-height: 565px;
 }
 .calendartable-head {
