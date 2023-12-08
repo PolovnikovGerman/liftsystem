@@ -8,6 +8,9 @@
         </div>
         <div class="contact_content_email">
             <input type="text" class="contact_email_input contact_input input_border_gray ordecontactinput" data-contact="<?=$row['order_contact_id']?>" data-field="contact_emal" value="<?=$row['contact_emal']?>"/>
+            <div class="contactemail_clone" data-contactid="<?=$row['order_contact_id']?>">
+                <i class="fa fa-clone" aria-hidden="true"></i>
+            </div>
         </div>
         <div class="contact_content_art contact_art_input">
             <input type="checkbox" class="input_checkbox ordecontactchk" <?=(ValidEmail($row['contact_emal']) ? '' : 'disabled="disabled"')?> data-contact="<?=$row['order_contact_id']?>" data-field="contact_art" <?=($row['contact_art']==1 ? 'checked="ckecked"' : '')?>/>

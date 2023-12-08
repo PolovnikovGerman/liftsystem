@@ -333,6 +333,7 @@ input.calendarinpt[readonly="readonly"] {
 .contact_content_email {
     float: left;
     width: 205px;
+    max-height: 20px;
 }
 .contact_content_art,
 .contact_content_inv,
@@ -358,6 +359,19 @@ input.calendarinpt[readonly="readonly"] {
 }
 .contact_email_input {
     width: 195px;
+}
+.contactemail_clone {
+    float: right;
+    position: relative;
+    left: -8px;
+    top: -17px;
+    background: #000;
+    color: #fff;
+    font-size: 9px;
+    height: 14.9px;
+    width: 16px;
+    text-align: center;
+    cursor: pointer;
 }
 .contact_art_input,
 .contact_inv_input,
