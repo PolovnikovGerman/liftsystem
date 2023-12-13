@@ -17,6 +17,9 @@ function order_artstage(order_id, callpage, brand) {
                 if (parseInt($("#ordermapuse").val())==1) {
                     // Init simple Shipping address
                     initShipOrderAutocomplete();
+                    if ($("#billorder_line1").length > 0) {
+                        initBillOrderAutocomplete();
+                    }
                 }
             } else {
                 if (parseInt(response.data.cancelorder)===1) {

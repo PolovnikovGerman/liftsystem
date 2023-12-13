@@ -3077,6 +3077,7 @@ class Leadquote_model extends MY_Model
         $data['discount_label'] = $quote['discount_label'];
         $data['discount_val'] = $quote['discount_value'];
         $data['revenue'] = $quote['quote_total'];
+        $data['tax'] = $quote['sales_tax'];
         // Contacts
         $contacts=array();
         for ($i=1; $i<=3; $i++) {

@@ -182,6 +182,23 @@ function navigation_init() {
         trigger: 'hover',
         placement: 'right'
     });
+    // Copy billing address
+    $(".billingaddresscopy").unbind('click').click(function (){
+        var element = document.querySelector("#billingcompileaddress");
+        copyOrderToClipboard(element);
+    });
+    // Copy Shipping address
+    $(".shippingadrescopy").unbind('click').click(function (){
+        var element = document.querySelector("#shipingcompileaddress");
+        copyOrderToClipboard(element);
+    });
+    // Copy contact email
+    $(".contactemail_clone").unbind('click').click(function (){
+        var copydat = $(this).data('contactid');
+        var element = document.querySelector(".contact_email_input[data-contactid='"+copydat+"']");
+        copyOrderToClipboard(element);
+        $(element).show();
+    });
 }
 
 
@@ -286,7 +303,9 @@ function edit_currentorder() {
             init_rushpast();
             if (parseInt($("#ordermapuse").val())==1) {
                 // Init billing autofill
-                initBillOrderAutocomplete();
+                if ($("#billorder_line1").length > 0) {
+                    initBillOrderAutocomplete();
+                }
                 // Init simple Shipping address
                 initShipOrderAutocomplete();
             }
@@ -318,8 +337,8 @@ function init_onlineleadorder_edit() {
             var url="/leadorder/cleanlockedorder";
             var params=new Array();
             params.push({name: 'locrecid', value: locrecid});
-            $.post(url, params, function(response){                
-            },'json');                    
+            $.post(url, params, function(response){
+            },'json');
         }
         $("#artModal").modal('hide');
         $("#artModalLabel").empty();
@@ -398,15 +417,15 @@ function init_onlineleadorder_edit() {
     });
     var order_date=$("input.calendarinpt").data('order');
     $("select.order_itemnumber_select").unbind('change').change(function(){
-        var params=new Array();        
+        var params=new Array();
         params.push({name: 'entity', value:'order'});
         params.push({name: 'fldname', value: 'item_id'});
         params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'ordersession', value: $("input#ordersession").val()});    
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
         var url="/leadorder/change_leadorder_item";
         $("#loader").show();
         $.post(url, params, function(response){
-            if (response.errors=='') {   
+            if (response.errors=='') {
                 $("input[data-field='order_items']").val(response.data.order_items);
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
@@ -419,15 +438,15 @@ function init_onlineleadorder_edit() {
     })
     $("input.inputleadorddata").unbind('change').change(function(){
         var fldname=$(this).data('field');
-        var params=new Array();        
+        var params=new Array();
         params.push({name: 'entity', value:$(this).data('entity')});
         params.push({name: 'fldname', value: fldname});
         params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'ordersession', value: $("input#ordersession").val()});    
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
         var url="/leadorder/change_leadorder_item";
-        $("#loader").show();        
+        $("#loader").show();
         $.post(url, params, function(response){
-            if (response.errors=='') {   
+            if (response.errors=='') {
                 $(".totalduedataviewarea").empty().html(response.data.total_due);
                 $("#ordertotaloutput").empty().html(response.data.order_revenue);
                 $("input.salestaxcost").val(response.data.tax);
@@ -483,15 +502,15 @@ function init_onlineleadorder_edit() {
     });
     $("textarea.inputleadorddata").unbind('change').change(function(){
         var fldname=$(this).data('field');
-        var params=new Array();        
+        var params=new Array();
         params.push({name: 'entity', value:$(this).data('entity')});
         params.push({name: 'fldname', value: fldname});
         params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'ordersession', value: $("input#ordersession").val()});    
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
         var url="/leadorder/change_leadorder_item";
         $("#loader").show();
         $.post(url, params, function(response){
-            if (response.errors=='') {  
+            if (response.errors=='') {
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
                 $("#loader").hide();
@@ -499,7 +518,7 @@ function init_onlineleadorder_edit() {
                 $("#loader").hide();
                 show_error(response);
             }
-        },'json');        
+        },'json');
     });
     $("input.chkboxleadorddata").unbind('change').change(function(){
         var params=new Array();
@@ -512,11 +531,11 @@ function init_onlineleadorder_edit() {
         params.push({name: 'entity', value: entity});
         params.push({name: 'fldname', value: fldname});
         params.push({name: 'newval', value: newval});
-        params.push({name: 'ordersession', value: $("input#ordersession").val()});    
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
         var url="/leadorder/change_leadorder_item";
         $("#loader").show();
         $.post(url, params, function(response){
-            if (response.errors=='') {                
+            if (response.errors=='') {
                 $(".totalduedataviewarea").empty().html(response.data.total_due);
                 $("#ordertotaloutput").empty().html(response.data.order_revenue);
                 $("input.salestaxcost").val(response.data.tax);
@@ -529,7 +548,9 @@ function init_onlineleadorder_edit() {
                 if (parseInt(response.data.showbilladdress)==1) {
                     // New Order 
                     $("div#leftbillingdataarea").empty().html(response.data.leftbilling);
-                    initBillOrderAutocomplete();
+                    if ($("#billorder_line1").length > 0) {
+                        initBillOrderAutocomplete();
+                    }
                 }
                 $("input#loctimeout").val(response.data.loctime);
                 if (entity=='artwork' && fldname=='artwork_blank') {
@@ -549,14 +570,14 @@ function init_onlineleadorder_edit() {
                 $("#loader").hide();
                 show_error(response);
             }
-        },'json');        
+        },'json');
     });
     $("textarea.inputleadorddatas").unbind('change').change(function(){
         var params=new Array();
         params.push({name: 'entity', value:$(this).data('entity')});
         params.push({name: 'fldname', value: $(this).data('field')});
         params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'ordersession', value: $("input#ordersession").val()});    
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
         var url="/leadorder/change_leadorder_item";
         $("#loader").show();
         $.post(url, params, function(response){
@@ -576,12 +597,12 @@ function init_onlineleadorder_edit() {
                 $("#loader").hide();
                 show_error(response);
             }
-        },'json');        
+        },'json');
     });
     $("div.icon_glass.active").unbind('click').click(function(){
         show_leadorditemsearch();
     });
-    
+
     $("input#leadordercredcard").unbind('change').change(function(){
         var fldname='cc_fee';
         var newval=0;
@@ -603,14 +624,14 @@ function init_onlineleadorder_edit() {
     $("input#taxsalecostdata").unbind('change').change(function(){
         var fldname='tax';
         var newval=parseFloat($(this).val());
-        change_leadorder_profit(fldname, newval);        
+        change_leadorder_profit(fldname, newval);
     });
-    $("select.leadorder_selectreplic").unbind('change').change(function(){        
+    $("select.leadorder_selectreplic").unbind('change').change(function(){
         var params=new Array();
         params.push({name: 'entity', value:'order'});
         params.push({name: 'fldname', value: 'order_usr_repic'});
         params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'ordersession', value: $("input#ordersession").val()});            
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
         var url="/leadorder/change_leadorder_item";
         $("#loader").show();
         $.post(url, params, function(response){
@@ -630,7 +651,7 @@ function init_onlineleadorder_edit() {
                 $("#loader").hide();
                 show_error(response);
             }
-        },'json');        
+        },'json');
     });
     $("div.newpaymentadd").unbind('click').click(function(){
         var params=new Array();
@@ -653,9 +674,9 @@ function init_onlineleadorder_edit() {
             }
         },'json');
     });
-   
+
     // Show Attempts
-    $("div.chargeattemptlogcall").unbind('click').click(function(){        
+    $("div.chargeattemptlogcall").unbind('click').click(function(){
         var order=$(this).data('order');
         show_chargeattempts(order);
     })
@@ -679,7 +700,7 @@ function init_onlineleadorder_edit() {
                 save_discountdescription();
             });
             create_editorder_timer();
-        },'json');        
+        },'json');
     })
     // Upload Proof doc
     var upload_templ= '<div class="qq-uploader"><div class="custom_upload qq-upload-button" style="background: none;"><img src="/img/artpage/artpopup_add_btn.png" alt="Add Proof"/></div>' +
@@ -849,6 +870,13 @@ function init_onlineleadorder_edit() {
             }
         });
     }
+    // Copy contact email
+    $(".contactemail_clone").unbind('click').click(function (){
+        var copydat = $(this).data('contactid');
+        var element = document.querySelector(".contact_email_input[data-contact='"+copydat+"']");
+        copyOrderToClipboard(element);
+        $(element).show();
+    });
     init_leadorder_artmanage();
     init_leadorder_contactmanage();
     init_leadorder_items();
@@ -859,7 +887,7 @@ function init_onlineleadorder_edit() {
 }
 
 function save_discountdescription() {
-    var params=new Array();    
+    var params=new Array();
     params.push({name: 'message', value: $("textarea.artworkusertext").val()});
     params.push({name: 'ordersession', value: $("input#ordersession").val()});
     var url='/leadorder/orderdiscount_save';
@@ -980,6 +1008,19 @@ function save_leadorderitem() {
                 $("div.bl_items_sub-total2").empty().html(response.data.item_subtotal);
                 $("div#leadorderprofitarea").empty().html(response.data.profit_content);
                 $("input#loctimeout").val(response.data.loctime);
+                if (parseInt(response.data.shipcount)==1 && parseInt(response.data.cntshipadrr)==1) {
+                    var shipadr = parseInt(response.data.adressship)
+                    // Rates, dates
+                    $("div.ship_tax_container2[data-shipadr='"+shipadr+"']").empty().html(response.data.shipcost);
+                    $("input.shippingcost").val(response.data.shipping);
+                    $("input.salestaxcost").val(response.data.tax);
+                    // Tax view
+                    if (response.data.taxview.length>0) {
+                        $(".ship_tax_cont_bl3").empty().html(response.data.taxview);
+                    }
+                    // Shipping Dates
+                    $("div.shippingdatesarea").empty().html(response.data.shipdates_content);
+                }
                 init_onlineleadorder_edit();
                 // Print details
                 $("#artNextModal").find('div.modal-dialog').css('width','1077px');
@@ -2145,11 +2186,11 @@ function change_imprint_details(params) {
                 if (response.data.newval=='REPEAT') {
                     // $("div.repeatdetail[data-details='"+response.data.details+"']").addClass('active').removeClass('full').addClass(response.data.class);
                     var brand = $("#imprinteitbrand").val();
-                    if (brand!=='SR') {
+                    // if (brand!=='SR') {
                         for (i=1; i<=4; i++) {
-                            $("input.imprintprice[data-details='"+response.data.details+"'][data-fldname='setup_"+i+"']").val('0.00');
+                            $("input.imprintprice[data-details='"+response.data.details+"'][data-fldname='setup_"+i+"']").val(response.data.setup);
                         }
-                    }
+                    // }
                     $("input.imprintrepeatnote[data-details='"+response.data.details+"']").prop('disabled',false);
                     $("input.imprintrepeatnote[data-details='"+response.data.details+"']").focus();
                 } else {
@@ -3465,7 +3506,9 @@ function init_leadorder_billing() {
                 $("div#billingstateselectarea").empty().html(response.data.stateview);
                 $("#billordercntcode").val(response.data.country_code);
                 $("#billingaddresslinearea").empty().html(response.data.addresline);
-                initBillOrderAutocomplete();
+                if ($("#billorder_line1").length > 0) {
+                    initBillOrderAutocomplete();
+                }
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
             } else {
@@ -3497,7 +3540,6 @@ function init_leadorder_billing() {
         copyOrderToClipboard(element);
         $('.billinginput[data-fldname="company"]').focus();
     });
-
 }
 
 function init_leadorder_charges() {

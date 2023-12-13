@@ -31,6 +31,7 @@ class Masterinventory extends MY_Controller
             $boathead_totals = '';
             $boatlinks_view = '';
             foreach ($onboats as $onboat) {
+                $onboat['edit_mode'] = 0;
                 $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
                 $boathead_totals.=$this->load->view('masterinvent/onboat_containertotals_view', $onboat, TRUE);
                 $boatlinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $onboat, TRUE);
@@ -63,6 +64,7 @@ class Masterinventory extends MY_Controller
             $expresslinks_view = '';
             $expresshead_totals = '';
             foreach ($expresses as $express) {
+                $express['edit_mode'] = 0;
                 $expresshead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $express, TRUE);
                 $expresslinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $express, TRUE);
                 $expresshead_totals.=$this->load->view('masterinvent/onboat_containertotals_view', $express, TRUE);
@@ -660,6 +662,7 @@ class Masterinventory extends MY_Controller
                     'onboat_type' => $onboat_type,
                     'onboat_date' => $onboat_date,
                     'freight_price' => $freight_price,
+                    'edit_mode' => 1,
                 ];
                 $mdata['containerhead'] = $this->load->view('masterinvent/onboat_containerhead_view', $head_options, TRUE);
                 $mdata['containertotal'] = $this->load->view('masterinvent/onboat_containertotals_view', $head_options, TRUE);
@@ -675,6 +678,7 @@ class Masterinventory extends MY_Controller
                     $container = $this->inventory_model->get_onboatdetails($onboat_container, $colors, $onboat_type, $inventory_filter,  1);
                     $total = $totals['total'];
                     $onboat_date = $totals['onboat_date'];
+                    $mdata['boatdate']=date('m/d/Y', $onboat_date);
                     $freight_price = $totals['freight_price'];
                     $mdata['freight_price'] = $freight_price;
                     $mdata['content'] = $this->load->view('masterinvent/onboat_container_edit',['data' => $container,'session_id' => $sessionid], TRUE);
@@ -763,6 +767,7 @@ class Masterinventory extends MY_Controller
             $boatlinks_view = '';
             foreach ($onboats as $onboat) {
                 // $onboat['type'] = 'C';
+                $onboat['edit_mode'] = 0;
                 $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
                 $boatlinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $onboat, TRUE);
             }
@@ -835,6 +840,7 @@ class Masterinventory extends MY_Controller
                     $boathead_view='';
                     $boatlinks_view = '';
                     foreach ($onboats as $onboat) {
+                        $onboat['edit_mode'] = 0;
                         $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
                         $boatlinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $onboat, TRUE);
                     }
@@ -910,6 +916,7 @@ class Masterinventory extends MY_Controller
                         $boathead_view='';
                         foreach ($onboats as $onboat) {
                             $onboat['type'] = 'C';
+                            $onboat['edit_mode'] = 0;
                             $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
                         }
                         // Build head content

@@ -171,9 +171,14 @@ select.quotehideincl option {
     border-right: 1px solid #000000;
     width: 65px;
 }
+.quotes_tabrow > .quote_status.quotelead {
+    color: #0000FF;
+    cursor: pointer;
+}
 .quotes_tabrow > .quote_status.quoteassign  {
     background: url(/img/art/assign_lead_btn.png) no-repeat scroll 7px 1px transparent;
     color: #FFFFFF;
+    cursor: pointer;
 }
 .quotes_tabrow > .quote_status > .quote_replica {
     text-align: center;

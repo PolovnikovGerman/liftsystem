@@ -1579,6 +1579,7 @@ Class Leadorder_model extends My_Model {
         $shipping=$leadorder['shipping'];
         $shipidx=0;
         $cnt=0;
+        $out['shipcount'] = 0;
         foreach ($shipaddr as $shprow) {
             if (!empty($shprow['zip'])) {
                 // Get Old Shipping Method
@@ -1597,6 +1598,7 @@ Class Leadorder_model extends My_Model {
                     usersession($ordersession, $leadorder);
                     return $out;
                 } else {
+                    $out['shipcount'] = 1;
                     $rates=$cntres['ships'];
                     $shipcost=$shipaddr[$shipidx]['shipping_costs'];
                     $cidx=0;
@@ -2113,13 +2115,30 @@ Class Leadorder_model extends My_Model {
                         $details[$detidx]['setup_2']=0;
                         $details[$detidx]['setup_3']=0;
                         $details[$detidx]['setup_4']=0;
+                        $out['setup'] = 0;
+                    } elseif ($imprintdetails['brand']=='SR') {
+                        $details[$detidx]['setup_1']=$this->config->item('srrepeat_cost');
+                        $details[$detidx]['setup_2']=$this->config->item('srrepeat_cost');
+                        $details[$detidx]['setup_3']=$this->config->item('srrepeat_cost');
+                        $details[$detidx]['setup_4']=$this->config->item('srrepeat_cost');
+                        $out['setup'] = $this->config->item('srrepeat_cost');
                     }
                     $out['class']='';
                     if (!empty($details[$detidx]['repeat_note'])) {
                         $out['class']='full';
                     }
                 } else {
-                    $setupprice=$this->_get_item_priceimprint($imprintdetails['item_id'], 'setup');
+                    if ($imprintdetails['item_id'] == $this->config->item('custom_id')) {
+                        $setupprice = $this->custom_setup_price;
+                    } elseif ($imprintdetails['item_id'] == $this->config->item('other_id')) {
+                        if ($imprintdetails['brand']=='SR') {
+                            $setupprice = $this->other_setupsr_price;
+                        } else {
+                            $setupprice = $this->other_setupsb_price;
+                        }
+                    } else {
+                        $setupprice=$this->_get_item_priceimprint($imprintdetails['item_id'], 'setup');
+                    }
                     $out['setup']=$setupprice;
                     $details[$detidx]['setup_1']=$setupprice;
                     $details[$detidx]['setup_2']=$setupprice;
@@ -5326,16 +5345,16 @@ Class Leadorder_model extends My_Model {
     // Copy first shipping address to billing
     private function _billingaddres_copy($shipping_address, $biladr) {
         $shipadr=$shipping_address[0];
-        if (empty($biladr['customer_name']) && empty($biladr['address_1']) && empty($biladr['city'])) {
-            $biladr['customer_name']=$shipadr['ship_contact'];
-            $biladr['company']=$shipadr['ship_company'];
+        // if (empty($biladr['customer_name']) && empty($biladr['address_1']) && empty($biladr['city'])) {
+            $biladr['customer_name']=$shipadr['ship_contact']; // empty($biladr['customer_name']) ? $shipadr['ship_contact'] : $biladr['customer_name'];
+            $biladr['company']=$shipadr['ship_company']; // empty($biladr['company']) ? $shipadr['ship_company'] : $biladr['company'];
             $biladr['address_1']=$shipadr['ship_address1'];
             $biladr['address_2']=$shipadr['ship_address2'];
             $biladr['country_id']=$shipadr['country_id'];
             $biladr['state_id']=$shipadr['state_id'];
             $biladr['city']=$shipadr['city'];
             $biladr['zip']=$shipadr['zip'];
-        }
+        // }
         return $biladr;
     }
 

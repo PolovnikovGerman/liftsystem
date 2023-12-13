@@ -1113,7 +1113,7 @@ class Leads extends My_Controller {
             $mdata['totals'] = count($data);
             $event = 'hover'; // click
             $expand = 0;
-            if (count($data) <= 25) {
+            if (count($data) > 21) {
                 $expand = 1;
             }
             if (count($data)==0) {
