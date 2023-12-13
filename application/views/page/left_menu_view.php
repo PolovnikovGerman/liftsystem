@@ -233,7 +233,7 @@
             <?php if ($menu['item_link']=='/accounting') { ?>
                 <?php if ($activelnk == $menu['item_link']) { ?>
                     <div class="brandmenuitemactive sigmasystem" data-url="<?=$menu['item_link']?>" data-brand="SG">
-                        <div class="brandmenuicon active"><img src="/img/page_view/icon-calculate-white.svg"/></div>
+                        <div class="brandmenuicon active"><img src="/img/page_view/icon-calculate-black.svg"/></div>
                         <div class="brandmenutitle active">Accounting</div>
                     </div>
                 <?php } else { ?>

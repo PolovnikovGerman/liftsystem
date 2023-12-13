@@ -608,6 +608,9 @@ class Accounting extends MY_Controller
             $month=$this->input->post('month');
             $year=$this->input->post('year');
             $brand = $this->input->post('brand');
+            if ($brand=='SG') {
+                $brand = 'ALL';
+            }
             $orders=$this->orders_model->orders_by_date($month,$year, $brand);
             $orders['cnt']=count($orders['data_results']);
             $orders['brand']=$brand;
@@ -1285,8 +1288,11 @@ class Accounting extends MY_Controller
     }
 
     private function _prepare_profitcalend_content($brand) {
+        if ($brand=='SG') {
+            $brand = 'ALL';
+        }
         $dats=$this->orders_model->get_profit_limitdates($brand);
-        $legend=$this->load->view('accounting/profit_legend_view',array(),TRUE);
+        $legend=$this->load->view('accounting/profit_legend_view',[],TRUE);
         /* Cur Month */
         if (isset($dats['max_year'])) {
             if (date('Y-m',time())!=$dats['max_year'].'-'.$dats['max_month']) {
