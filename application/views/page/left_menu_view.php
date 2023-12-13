@@ -244,6 +244,6 @@
                 <?php } ?>
             <?php } ?>
         <?php } ?>
-        <div class="brandsubmenu sigmasystem" data-brand="SR">&nbsp;</div>
+        <div class="brandsubmenu sigmasystem" data-brand="SG">&nbsp;</div>
     </div>
 </div>

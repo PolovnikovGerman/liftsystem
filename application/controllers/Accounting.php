@@ -2713,6 +2713,8 @@ class Accounting extends MY_Controller
             }
             if ($i!=$dats['cur_year']) {
                 $prvdata=$ydata;
+            } else {
+                $tt = 1;
             }
             if ($numyears==0 || $i==$dats['cur_year']) {
                 $voptions=array(
