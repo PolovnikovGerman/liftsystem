@@ -1324,3 +1324,13 @@ div.oldvesionlabel {
     color: #ffffff;
     border: 1px solid #ffffff;
 }
+.submenuitem.sigma {
+    background-color: #ebebeb;
+    color: #000000;
+    border: 1px solid #bdbdbd;
+}
+.submenuitem.sigma:hover {
+    background-color: #00004c;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}

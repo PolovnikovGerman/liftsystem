@@ -2,7 +2,7 @@
     <div class="leftmenuarea">
         <?=$left_menu?>
     </div>
-    <div class="maincontentmenuarea <?=$brand=='SB' ? 'stresballstab' : 'relieverstab'?>">
+    <div class="maincontentmenuarea <?=$brand=='SB' ? 'stresballstab' : $brand=='SG' ? 'sigmasystem' : 'relieverstab'?>">
         <div class="maincontentmenu">
             <div class="title">Accounting:</div>
             <?php foreach ($menu as $item) { ?>
