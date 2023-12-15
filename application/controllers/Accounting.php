@@ -2682,7 +2682,12 @@ class Accounting extends MY_Controller
             $refundsort = ifset($postdata,'refundsort','order_date');
             $refunddirec = ifset($postdata, 'refunddirec', 'desc');
             $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec);
-            $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
+            if ($brand=='ALL') {
+                $mdata['content'] = $this->load->view('accreceiv/details_sigma_view', $res, TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
+            }
+
             $error = '';
             $this->ajaxResponse($mdata, $error);
         }
