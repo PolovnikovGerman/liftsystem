@@ -2656,6 +2656,9 @@ class Accounting extends MY_Controller
             $postdata = $this->input->post();
             $period = ifset($postdata,'period', -1);
             $brand = ifset($postdata,'brand', 'ALL');
+            if ($brand=='SG') {
+                $brand = 'ALL';
+            }
             $res = $this->orders_model->accountreceiv_totals($period, $brand);
             $mdata['content'] = $this->load->view('accreceiv/totals_view', $res, TRUE);
             $mdata['totals'] = $this->load->view('accreceiv/balances_view', $res, TRUE);
@@ -2671,12 +2674,20 @@ class Accounting extends MY_Controller
             $postdata = $this->input->post();
             $period = ifset($postdata,'period', -1);
             $brand = ifset($postdata,'brand', 'ALL');
+            if ($brand=='SG') {
+                $brand = 'ALL';
+            }
             $ownsort = ifset($postdata,'ownsort', 'batch_due');
             $owndirec = ifset($postdata,'owndirec', 'desc');
             $refundsort = ifset($postdata,'refundsort','order_date');
             $refunddirec = ifset($postdata, 'refunddirec', 'desc');
             $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec);
-            $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
+            if ($brand=='ALL') {
+                $mdata['content'] = $this->load->view('accreceiv/details_sigma_view', $res, TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
+            }
+
             $error = '';
             $this->ajaxResponse($mdata, $error);
         }
