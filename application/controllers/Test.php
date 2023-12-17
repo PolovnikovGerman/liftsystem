@@ -2655,4 +2655,30 @@ class Test extends CI_Controller
         echo 'File '.$fileprom.' ready'.PHP_EOL;
 
     }
+
+    public function rename_proofdocs()
+    {
+        $this->db->select('artwork_id, order_id')->from('ts_artworks')->where('order_id is not null')->order_by('artwork_id','desc')->limit(1000);
+        $arts = $this->db->get()->result_array();
+        $this->load->config('uploader');
+        $shname = $this->config->item('artwork_proofs_relative');
+        $flname = $this->config->item('artwork_proofs');
+        foreach ($arts as $art) {
+            // Get Order
+            $this->db->select('order_num, brand')->from('ts_orders')->where('order_id', $art['order_id']);
+            $order = $this->db->get()->row_array();
+            // Get proofs
+            $this->db->select('artwork_proof_id, proof_name, proof_ordnum')->from('ts_artwork_proofs');
+            $this->db->where('artwork_id', $art['artwork_id'])->order_by('artwork_proof_id');
+            $proofs = $this->db->get()->result_array();
+            foreach ($proofs as $proof) {
+                $filedat = extract_filename($proof['proof_name']);
+                $newname =  ($order['brand']=='SR' ? 'SR' : 'BT').'_'.$order['order_num'].'_proof_'.str_pad($proof['proof_ordnum'],2, '0', STR_PAD_LEFT).'.'.$filedat['ext'];
+                $chkname = $shname.$art['artwork_id'].'/'.$newname;
+                if ($chkname!==$proof['proof_name']) {
+                    echo 'ArtW '.$art['artwork_id'].' Old Name '.$proof['proof_name'].' New Name '.$newname.PHP_EOL;
+                }
+            }
+        }
+    }
 }
