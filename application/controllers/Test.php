@@ -2685,6 +2685,7 @@ class Test extends CI_Controller
                     $targetfile = str_replace($shname, $flname, $proof['proof_name']);
                     if (!file_exists($targetfile)) {
                         echo 'Source file not exist '.$targetfile.' Order '.$order['order_num'].PHP_EOL;
+                        die();
                     }
                 }
                 $numpp++;
