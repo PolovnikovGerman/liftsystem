@@ -2666,7 +2666,7 @@ class Test extends CI_Controller
         foreach ($arts as $art) {
             // Folder
             $path = $shname.$art['artwork_id'];
-            echo 'Path '.$path.PHP_EOL;
+            // echo 'Path '.$path.PHP_EOL;
             createPath($path);
             // Get Order
             $this->db->select('order_num, brand')->from('ts_orders')->where('order_id', $art['order_id']);
@@ -2682,10 +2682,9 @@ class Test extends CI_Controller
                 $chkname = $shname.$art['artwork_id'].'/'.$newname;
                 if ($chkname!==$proof['proof_name']) {
                     // echo 'ArtW '.$art['artwork_id'].' Old Name '.$proof['proof_name'].' New Name '.$newname.PHP_EOL;
-                    $targetfile = str_replace($shname, $flname, $proof['proof_name']);
-                    if (!file_exists($targetfile)) {
-                        echo 'Source file not exist '.$targetfile.' Order '.$order['order_num'].PHP_EOL;
-                        die();
+                    $sourcefile = str_replace($shname, $flname, $proof['proof_name']);
+                    if (file_exists($sourcefile)) {
+                        // echo 'Source file not exist '.$targetfile.' Order '.$order['order_num'].PHP_EOL;
                     }
                 }
                 $numpp++;
