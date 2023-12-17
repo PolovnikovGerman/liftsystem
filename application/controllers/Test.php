@@ -2679,6 +2679,7 @@ class Test extends CI_Controller
                 if ($chkname!==$proof['proof_name']) {
                     echo 'ArtW '.$art['artwork_id'].' Old Name '.$proof['proof_name'].' New Name '.$newname.PHP_EOL;
                 }
+                $numpp++;
             }
         }
     }
