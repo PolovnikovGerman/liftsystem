@@ -2658,9 +2658,11 @@ class Test extends CI_Controller
 
     public function rename_proofdocs()
     {
+        $this->load->config('uploader');
+        $logfile = $this->config->item('upload_path_preload').'badproofdocs.txt';
+        $fh = fopen($logfile,'a+');
         $this->db->select('artwork_id, order_id')->from('ts_artworks')->where('order_id is not null')->order_by('artwork_id','desc');
         $arts = $this->db->get()->result_array();
-        $this->load->config('uploader');
         $shname = $this->config->item('artwork_proofs_relative');
         $flname = $this->config->item('artwork_proofs');
         foreach ($arts as $art) {
@@ -2685,6 +2687,8 @@ class Test extends CI_Controller
                     $sourcefile = str_replace($shname, $flname, $proof['proof_name']);
                     if (file_exists($sourcefile)) {
                         // echo 'Source file not exist '.$targetfile.' Order '.$order['order_num'].PHP_EOL;
+                        $targetfile = $flname.$art['artwork_id'].'/'.$newname;
+                        echo 'target '.$targetfile.PHP_EOL;
                     }
                 }
                 $numpp++;
