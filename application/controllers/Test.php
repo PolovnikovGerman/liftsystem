@@ -2658,7 +2658,7 @@ class Test extends CI_Controller
 
     public function rename_proofdocs()
     {
-        $this->db->select('artwork_id, order_id')->from('ts_artworks')->where('order_id is not null')->order_by('artwork_id','desc')->limit(1000);
+        $this->db->select('artwork_id, order_id')->from('ts_artworks')->where('order_id is not null')->order_by('artwork_id','desc');
         $arts = $this->db->get()->result_array();
         $this->load->config('uploader');
         $shname = $this->config->item('artwork_proofs_relative');
@@ -2681,11 +2681,11 @@ class Test extends CI_Controller
                 $newname =  ($order['brand']=='SR' ? 'SR' : 'BT').'_'.$order['order_num'].'_proof_'.str_pad($numpp,2, '0', STR_PAD_LEFT).'.'.$filedat['ext'];
                 $chkname = $shname.$art['artwork_id'].'/'.$newname;
                 if ($chkname!==$proof['proof_name']) {
-                    echo 'ArtW '.$art['artwork_id'].' Old Name '.$proof['proof_name'].' New Name '.$newname.PHP_EOL;
-                }
-                $targetfile = str_replace($shname, $flname, $proof['proof_name']);
-                if (file_exists($targetfile)) {
-                    echo 'Ready for rename '.$targetfile.PHP_EOL;
+                    // echo 'ArtW '.$art['artwork_id'].' Old Name '.$proof['proof_name'].' New Name '.$newname.PHP_EOL;
+                    $targetfile = str_replace($shname, $flname, $proof['proof_name']);
+                    if (!file_exists($targetfile)) {
+                        echo 'Source file not exist '.$targetfile.' Order '.$order['order_num'].PHP_EOL;
+                    }
                 }
                 $numpp++;
             }
