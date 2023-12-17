@@ -2688,10 +2688,28 @@ class Test extends CI_Controller
                     if (file_exists($sourcefile)) {
                         // echo 'Source file not exist '.$targetfile.' Order '.$order['order_num'].PHP_EOL;
                         $targetfile = $flname.$art['artwork_id'].'/'.$newname;
-                        echo 'target '.$targetfile.PHP_EOL;
+                        if (!file_exists($targetfile)) {
+                            $cpres = @copy($sourcefile, $targetfile);
+                            if ($cpres) {
+                                $this->db->where('artwork_proof_id', $proof['artwork_proof_id']);
+                                $this->db->set('proof_name', $shname.$art['artwork_id'].'/'.$newname);
+                                $this->db->set('proof_ordnum', $numpp);
+                                $this->db->update('ts_artwork_proofs');
+                                $numpp++;
+                                @unlink($sourcefile);
+                            } else {
+                                echo 'Error copy '.$sourcefile.' to '.$targetfile.PHP_EOL;
+                                die();
+                            }
+                        } else {
+                            echo 'File '.$targetfile.' NON UNIQUE '.$proof['artwork_proof_id'].PHP_EOL;
+                            die();
+                        }
+                    } else {
+                        $msg = 'Proof '.$proof['artwork_proof_id'].' '.$proof['proof_name'].' not exist. Order '.$order['order_num'].PHP_EOL;
+                        fwrite($fh, $msg);
                     }
                 }
-                $numpp++;
             }
         }
     }
