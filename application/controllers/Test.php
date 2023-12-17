@@ -2671,9 +2671,10 @@ class Test extends CI_Controller
             $this->db->select('artwork_proof_id, proof_name, proof_ordnum')->from('ts_artwork_proofs');
             $this->db->where('artwork_id', $art['artwork_id'])->order_by('artwork_proof_id');
             $proofs = $this->db->get()->result_array();
+            $numpp = 1;
             foreach ($proofs as $proof) {
                 $filedat = extract_filename($proof['proof_name']);
-                $newname =  ($order['brand']=='SR' ? 'SR' : 'BT').'_'.$order['order_num'].'_proof_'.str_pad($proof['proof_ordnum'],2, '0', STR_PAD_LEFT).'.'.$filedat['ext'];
+                $newname =  ($order['brand']=='SR' ? 'SR' : 'BT').'_'.$order['order_num'].'_proof_'.str_pad($numpp,2, '0', STR_PAD_LEFT).'.'.$filedat['ext'];
                 $chkname = $shname.$art['artwork_id'].'/'.$newname;
                 if ($chkname!==$proof['proof_name']) {
                     echo 'ArtW '.$art['artwork_id'].' Old Name '.$proof['proof_name'].' New Name '.$newname.PHP_EOL;
