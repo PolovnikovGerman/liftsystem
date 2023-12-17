@@ -2658,7 +2658,7 @@ class Test extends CI_Controller
 
     public function rename_proofdocs()
     {
-        $this->db->selet('artwork_id, order_id')->from('ts_artworks')->where('order_id is not null')->order_by('artwork_id','desc')->limit(1000);
+        $this->db->select('artwork_id, order_id')->from('ts_artworks')->where('order_id is not null')->order_by('artwork_id','desc')->limit(1000);
         $arts = $this->db->get()->result_array();
         $this->load->config('uploader');
         $shname = $this->config->item('artwork_proofs_relative');
