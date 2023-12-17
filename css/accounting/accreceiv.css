@@ -38,17 +38,17 @@
 }
 .accreceiv-content-data {
     /* width: 1067px; */
-    max-width: 1022px;
+    max-width: 1033px;
 }
 .accreceiv-totals, .accreceiv-details {
     width: 100%;
 }
 .accreceiv-content-left {
-    width: 520px;
+    width: 530px;
     margin-right: 30px;
 }
 .accreceiv-content-center {
-    width: 459px;
+    width: 469px;
     /* margin-right: 17px; */
 }
 .accreceiv-content-right {
@@ -281,7 +281,7 @@
     width: 92px;
 }
 .accreceiv-owndetails-headorder {
-    width: 65px;
+    width: 75.2px;
 }
 .accreceiv-owndetails-headcustomer {
     width: 189px;
@@ -344,7 +344,29 @@
     border-right: 1px solid #000000;
     font-weight: bold;
     color: #0000ff;
-    width: 65px;
+    width: 75px;
+    cursor: pointer;
+    text-align: center;
+}
+.accreceiv-owndetails-bodybrand {
+    border-right: 1px solid #000000;
+    font-weight: bold;
+    width: 25px;
+    text-align: center;
+}
+.accreceiv-owndetails-bodybrand.stressrelievers {
+    color: #000000;
+    background: #fdff44;
+}
+.accreceiv-owndetails-bodybrand.bluetrack {
+    color: #FFFFFF;
+    background: #3736fe;
+}
+.accreceiv-owndetails-bodyordersigma {
+    border-right: 1px solid #000000;
+    font-weight: bold;
+    color: #0000ff;
+    width: 50px;
     cursor: pointer;
     text-align: center;
 }
@@ -397,7 +419,7 @@
     width: 83px;
 }
 .accreceiv-refunddetails-headorder {
-    width: 65px;
+    width: 75px;
 }
 .accreceiv-refunddetails-headcustomer {
     width: 213px;
@@ -460,7 +482,29 @@
     border-right: 1px solid #000000;
     font-weight: bold;
     color: #0000ff;
-    width: 65px;
+    width: 75px;
+    cursor: pointer;
+    text-align: center;
+}
+.accreceiv-refunddetails-bodybrand {
+    border-right: 1px solid #000000;
+    font-weight: bold;
+    width: 25px;
+    text-align: center;
+}
+.accreceiv-refunddetails-bodybrand.stressrelievers {
+    color: #000000;
+    background: #fdff44;
+}
+.accreceiv-refunddetails-bodybrand.bluetrack {
+    color: #FFFFFF;
+    background: #3736fe;
+}
+.accreceiv-refunddetails-bodyordersigma {
+    border-right: 1px solid #000000;
+    font-weight: bold;
+    color: #0000ff;
+    width: 50px;
     cursor: pointer;
     text-align: center;
 }
