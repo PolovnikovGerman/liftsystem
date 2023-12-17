@@ -2683,6 +2683,10 @@ class Test extends CI_Controller
                 if ($chkname!==$proof['proof_name']) {
                     echo 'ArtW '.$art['artwork_id'].' Old Name '.$proof['proof_name'].' New Name '.$newname.PHP_EOL;
                 }
+                $targetfile = str_replace($shname, $flname, $proof['proof_name']);
+                if (file_exists($targetfile)) {
+                    echo 'Ready for rename '.$targetfile.PHP_EOL;
+                }
                 $numpp++;
             }
         }
