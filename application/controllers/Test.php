@@ -2664,6 +2664,10 @@ class Test extends CI_Controller
         $shname = $this->config->item('artwork_proofs_relative');
         $flname = $this->config->item('artwork_proofs');
         foreach ($arts as $art) {
+            // Folder
+            $path = $shname.$art['artwork_id'];
+            echo 'Path '.$path.PHP_EOL;
+            createPath($path);
             // Get Order
             $this->db->select('order_num, brand')->from('ts_orders')->where('order_id', $art['order_id']);
             $order = $this->db->get()->row_array();
