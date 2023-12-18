@@ -712,6 +712,8 @@ Class Artlead_model extends MY_Model
         $this->db->where('artwork_id', $artwork_id);
         $orddat=$this->db->get()->row_array();
         $order_id=$orddat['order_id'];
+        $this->db->select('order_num, brand')->from('ts_orders')->where('order_id', $order_id);
+        $orderdata = $this->db->get()->row_array();
         // Full and Short proofs
         $fullpath=$this->config->item('artwork_proofs');
         $shrtpath=$this->config->item('artwork_proofs_relative');
@@ -741,13 +743,15 @@ Class Artlead_model extends MY_Model
                 }
             } else {
                 $saverow=0;
+                $docdata = extract_filename($row['src']);
                 if ($row['artwork_proof_id']<0) {
                     // Artwork Folder
                     $proofdocsrc = str_replace($shortpreload, $fullpreload, $row['src']);
                     if (file_exists($proofdocsrc)) {
                         $this->_artworkfolder($fullpath, $artwork_id);
                         // New Proof Doc
-                        $purename=  str_replace($fullpreload, '', $proofdocsrc);
+                        // $purename=  str_replace($fullpreload, '', $proofdocsrc);
+                        $purename = ($orderdata['brand']=='SR' ? 'SR' : 'BT').$orderdata['order_num'].'_proof_'.str_pad($numpp,2,'0', STR_PAD_LEFT).'.'.$docdata['ext'];
                         $target_file=$fullpath.$artwork_id.'/'.$purename;
                         $cpres=@copy($proofdocsrc,$target_file);
                         if ($cpres) {
@@ -756,7 +760,18 @@ Class Artlead_model extends MY_Model
                         }
                     }
                 } else {
-                    $saverow=1;
+                    $newname = $artwork_id.'/'.($orderdata['brand']=='SR' ? 'SR' : 'BT').$orderdata['order_num'].'_proof_'.str_pad($numpp,2,'0', STR_PAD_LEFT).'.'.$docdata['ext'];
+                    if ($newname!==$row['proof_name']) {
+                        $proofdocsrc = str_replace($shrtpath, $fullpath, $row['src']);
+                        $target_file=$fullpath.$newname;
+                        $cpres=@copy($proofdocsrc,$target_file);
+                        if ($cpres) {
+                            $saverow=1;
+                            $row['src']=$shrtpath.$newname;
+                        }
+                    } else {
+                        $saverow=1;
+                    }
                 }
                 if ($saverow==1) {
                     $this->db->set('updated_user',$user_id);
@@ -797,6 +812,7 @@ Class Artlead_model extends MY_Model
                         $this->db->update('ts_artwork_proofs');
                         $retval=$row['artwork_proof_id'];
                     }
+                    $numpp++;
                 }
             }
         }
