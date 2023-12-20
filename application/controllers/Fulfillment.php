@@ -1714,6 +1714,9 @@ class Fulfillment extends MY_Controller
             $brand = ifset($postdata,'brand');
             if (!empty($brand)) {
                 $error = '';
+                if ($brand=='SG') {
+                    $brand = 'ALL';
+                }
                 $options['brand']=$brand;
                 $res=$this->inventory_model->get_orderreport_data($options);
                 $options=array(
@@ -1742,7 +1745,9 @@ class Fulfillment extends MY_Controller
                 $options['report_year']=$postdata['report_year'];
             }
             if (isset($postdata['brand']) && !empty($postdata['brand'])) {
-                $options['brand'] = $postdata['brand'];
+                if ($postdata['brand']!=='SG') {
+                    $options['brand'] = $postdata['brand'];
+                }
             }
             $res=$this->inventory_model->get_orderreport_data($options);
             $error='Empty content for exxport';
@@ -1776,7 +1781,9 @@ class Fulfillment extends MY_Controller
                     $options['report_year'] = $postdata['report_year'];
                 }
                 if (isset($postdata['brand']) && !empty($postdata['brand'])) {
-                    $options['brand']=$postdata['brand'];
+                    if ($postdata['brand']!=='SG') {
+                        $options['brand']=$postdata['brand'];
+                    }
                 }
                 $mdata['totals']=$this->inventory_model->get_orderreport_counts($options);
                 $summary=$this->inventory_model->get_orderreport_totals($options);
@@ -1815,7 +1822,9 @@ class Fulfillment extends MY_Controller
                 $options['report_year']=$postdata['report_year'];
             }
             if (isset($postdata['brand']) && !empty($postdata['brand'])) {
-                $options['brand'] = $postdata['brand'];
+                if ($postdata['brand']!=='SG') {
+                    $options['brand'] = $postdata['brand'];
+                }
             }
             $mdata['totals']=$this->printshop_model->get_orderreport_counts($options);
             $summary=$this->printshop_model->get_orderreport_totals($options);
@@ -2048,6 +2057,9 @@ class Fulfillment extends MY_Controller
     private function _prepare_printshop_report($brand) {
         // $this->load->model('printshop_model');
         $this->load->model('inventory_model');
+        if ($brand=='SG') {
+            $brand = 'ALL';
+        }
         $total_options = ['brand'=> $brand];
         $totalrecs=$this->inventory_model->get_orderreport_counts($total_options);
         $summary=$this->inventory_model->get_orderreport_totals($total_options);
