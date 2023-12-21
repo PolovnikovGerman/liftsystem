@@ -1,4 +1,4 @@
-<div class="accreceiv-content-left">
+<div class="accreceiv-content-left sigmasystem">
     <div class="accreceiv-owndetails-head">
         <div class="accreceiv-owndetails-headnum">#</div>
         <?php if ($ownsort=='batch_due') { ?>
@@ -54,7 +54,7 @@
         <?php } ?>
     </div>
 </div>
-<div class="accreceiv-content-center">
+<div class="accreceiv-content-center sigmasystem">
     <div class="accreceiv-refunddetails-head">
         <div class="accreceiv-refunddetails-headnum">#</div>
         <?php if ($refundsort=='order_date') { ?>

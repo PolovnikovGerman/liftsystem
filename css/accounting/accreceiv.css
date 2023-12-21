@@ -44,13 +44,18 @@
     width: 100%;
 }
 .accreceiv-content-left {
-    /* width: 530px; */
-    width: 544px;
+    width: 530px;
     margin-right: 30px;
 }
+.accreceiv-content-left.sigmasystem {
+    width: 544px;
+}
 .accreceiv-content-center {
-    width: 483px;
+    width: 469px;
     /* margin-right: 17px; */
+}
+.accreceiv-content-center.sigmasystem {
+    width: 483px;
 }
 .accreceiv-content-right {
     width: 225px;
@@ -429,6 +434,9 @@
 .accreceiv-refunddetails-headbrand {
     width: 52px;
     margin-left: -14px;
+}
+.accreceiv-refunddetails-headorder {
+    width: 75px;
 }
 .accreceiv-refunddetails-headordersigma {
     width: 51px;
