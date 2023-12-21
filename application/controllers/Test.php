@@ -2655,4 +2655,62 @@ class Test extends CI_Controller
         echo 'File '.$fileprom.' ready'.PHP_EOL;
 
     }
+
+    public function rename_proofdocs()
+    {
+        $this->load->config('uploader');
+        $logfile = $this->config->item('upload_path_preload').'badproofdocs.txt';
+        $fh = fopen($logfile,'a+');
+        $this->db->select('artwork_id, order_id')->from('ts_artworks')->where('order_id is not null')->order_by('artwork_id','desc');
+        $arts = $this->db->get()->result_array();
+        $shname = $this->config->item('artwork_proofs_relative');
+        $flname = $this->config->item('artwork_proofs');
+        foreach ($arts as $art) {
+            // Folder
+            $path = $shname.$art['artwork_id'];
+            // echo 'Path '.$path.PHP_EOL;
+            createPath($path);
+            // Get Order
+            $this->db->select('order_num, brand')->from('ts_orders')->where('order_id', $art['order_id']);
+            $order = $this->db->get()->row_array();
+            // Get proofs
+            $this->db->select('artwork_proof_id, proof_name, proof_ordnum')->from('ts_artwork_proofs');
+            $this->db->where('artwork_id', $art['artwork_id'])->order_by('artwork_proof_id');
+            $proofs = $this->db->get()->result_array();
+            $numpp = 1;
+            foreach ($proofs as $proof) {
+                $filedat = extract_filename($proof['proof_name']);
+                $newname =  ($order['brand']=='SR' ? 'SR' : 'BT').'_'.$order['order_num'].'_proof_'.str_pad($numpp,2, '0', STR_PAD_LEFT).'.'.$filedat['ext'];
+                $chkname = $shname.$art['artwork_id'].'/'.$newname;
+                if ($chkname!==$proof['proof_name']) {
+                    // echo 'ArtW '.$art['artwork_id'].' Old Name '.$proof['proof_name'].' New Name '.$newname.PHP_EOL;
+                    $sourcefile = str_replace($shname, $flname, $proof['proof_name']);
+                    if (file_exists($sourcefile)) {
+                        // echo 'Source file not exist '.$targetfile.' Order '.$order['order_num'].PHP_EOL;
+                        $targetfile = $flname.$art['artwork_id'].'/'.$newname;
+                        if (!file_exists($targetfile)) {
+                            $cpres = @copy($sourcefile, $targetfile);
+                            if ($cpres) {
+                                $this->db->where('artwork_proof_id', $proof['artwork_proof_id']);
+                                $this->db->set('proof_name', $shname.$art['artwork_id'].'/'.$newname);
+                                $this->db->set('proof_ordnum', $numpp);
+                                $this->db->update('ts_artwork_proofs');
+                                $numpp++;
+                                @unlink($sourcefile);
+                            } else {
+                                echo 'Error copy '.$sourcefile.' to '.$targetfile.PHP_EOL;
+                                die();
+                            }
+                        } else {
+                            echo 'File '.$targetfile.' NON UNIQUE '.$proof['artwork_proof_id'].PHP_EOL;
+                            die();
+                        }
+                    } else {
+                        $msg = 'Proof '.$proof['artwork_proof_id'].' '.$proof['proof_name'].' not exist. Order '.$order['order_num'].PHP_EOL;
+                        fwrite($fh, $msg);
+                    }
+                }
+            }
+        }
+    }
 }
