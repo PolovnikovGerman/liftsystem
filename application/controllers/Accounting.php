@@ -2660,6 +2660,7 @@ class Accounting extends MY_Controller
                 $brand = 'ALL';
             }
             $res = $this->orders_model->accountreceiv_totals($period, $brand);
+            $res['brand'] = $brand;
             $mdata['content'] = $this->load->view('accreceiv/totals_view', $res, TRUE);
             $mdata['totals'] = $this->load->view('accreceiv/balances_view', $res, TRUE);
             $error = '';
