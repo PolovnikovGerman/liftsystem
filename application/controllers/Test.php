@@ -2713,4 +2713,74 @@ class Test extends CI_Controller
             }
         }
     }
+
+    public function sales_report()
+    {
+        $start_date = strtotime('2016-01-01');
+        $reportres = [];
+        // Web
+        $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as yearorder, cnt(order_id) as total');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.order_date >= ', $start_date);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.weborder',1);
+        $this->db->group_by('yearorder');
+        $this->db->order_by('yearorder');
+        $webres = $this->db->get()->result_array();
+        $reportres[] = [
+            'label' => 'Web Orders',
+            '2016' => 0,
+            '2017' => 0,
+            '2018' => 0,
+            '2019' => 0,
+            '2020' => 0,
+            '2021' => 0,
+            '2022' => 0,
+            '2023' => 0,
+        ];
+        $repidx = count($reportres) - 1;
+        foreach ($webres as $row) {
+            $reportres[$repidx][$row['yearorder']] = $row['total'];
+        }
+        // TOTAL
+        $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as yearorder, cnt(order_id) as total');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.order_date >= ', $start_date);
+        $this->db->where('o.is_canceled',0);
+        $this->db->group_by('yearorder');
+        $this->db->order_by('yearorder');
+        $allres = $this->db->get()->result_array();
+        $reportres[] = [
+            'label' => 'TOTAL',
+            '2016' => 0,
+            '2017' => 0,
+            '2018' => 0,
+            '2019' => 0,
+            '2020' => 0,
+            '2021' => 0,
+            '2022' => 0,
+            '2023' => 0,
+        ];
+        $repidx = count($reportres) - 1;
+        foreach ($allres as $row) {
+            $reportres[$repidx][$row['yearorder']] = $row['total'];
+        }
+        $filename = $this->config->item('upload_path_preload').'sales_report_16_23.csv';
+        @unlink($filename);
+        $fh = fopen($filename,'a+');
+        $msg=';';
+        for($i=2016; $i<2024; $i++) {
+            $msg.$i.';';
+        }
+        $msg.=PHP_EOL;
+        fwrite($fh, $msg);
+        foreach ($reportres as $row) {
+            $msg=$row['label'].';';
+            for($i=2016; $i<2024; $i++) {
+                $msg.=$row[$i]==0 ? '' : $row[$i].';';
+            }
+            $msg.=PHP_EOL;
+            fwrite($fh, $msg);
+        }
+    }
 }
