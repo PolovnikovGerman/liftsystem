@@ -2197,17 +2197,27 @@ class Leadquote_model extends MY_Model
                 if (substr($colorcell,-1,1)!='0') {
                     $precesion = 3;
                 }
-                $pdf->Cell($colWidth[0], $cellheight, $item['item_number'], 'LR', 0, 'L', $fillrow);
                 if (empty($color['item_color'])) {
+                    $pdf->Cell($colWidth[0], $cellheight, $item['item_number'], 'LR', 0, 'L', $fillrow);
                     $pdf->Cell($colWidth[1], $cellheight, $color['item_description'] , 'LR', 0, 'L', $fillrow);
+                    $pdf->Cell($colWidth[2], $cellheight, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
+                    $pdf->Cell($colWidth[3], $cellheight, number_format($color['item_price'], $precesion), 'LR', 0, 'C', $fillrow);
+                    $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total) , 'LR', 0, 'R', $fillrow);
+                    $yStart += $cellheight;
                 } else {
-                    $pdf->Cell($colWidth[1], $cellheight, $color['item_description'] . ' - ' . $color['item_color'], 'LR', 0, 'L', $fillrow);
+                    $pdf->SetX($startPageX+$colWidth[0]);
+                    $pdf->MultiCell($colWidth[1], $cellheight, $color['item_description'] . ' - ' . $color['item_color'], 'LR', 'L', $fillrow);
+                    $multY = $pdf->getY();
+                    $rowHeight = $multY-$yStart;
+                    $pdf->SetXY($startPageX, $yStart);
+                    $pdf->Cell($colWidth[0], $rowHeight, $item['item_number'], 'LR', 0, 'L', $fillrow);
+                    $pdf->SetX($startPageX+$colWidth[0]+$colWidth[1]);
+                    $pdf->Cell($colWidth[2], $rowHeight, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
+                    $pdf->Cell($colWidth[3], $rowHeight, number_format($color['item_price'], $precesion), 'LR', 0, 'C', $fillrow);
+                    $pdf->Cell($colWidth[4], $rowHeight, MoneyOutput($total) , 'LR', 0, 'R', $fillrow);
+                    $yStart += $rowHeight;
                 }
-                $pdf->Cell($colWidth[2], $cellheight, QTYOutput($color['item_qty']), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[3], $cellheight, number_format($color['item_price'], $precesion), 'LR', 0, 'C', $fillrow);
-                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total), 'LR', 0, 'R', $fillrow);
                 $numpp++;
-                $yStart += $cellheight;
                 if ($yStart>=$this->page_heigh_limit) {
                     $pdf->Line($startPageX, $yStart, 197, $yStart);
                     $pdf->AddPage();
