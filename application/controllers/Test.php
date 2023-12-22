@@ -2742,6 +2742,64 @@ class Test extends CI_Controller
         foreach ($webres as $row) {
             $reportres[$repidx][$row['yearorder']] = $row['total'];
         }
+        $users = [];
+        $users[] = ['label' => 'Sage', 'id' => 3];
+        $users[] = ['label' => 'Sean', 'id' => 1];
+        $users[] = ['label' => 'Robert', 'id' => 19];
+        $users[] = ['label' => 'Shanequa', 'id' => 23];
+        $other = [3,1,19,23];
+        // Users
+        foreach ($users as $user) {
+            $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as yearorder, count(order_id) as total');
+            $this->db->from('ts_orders o');
+            $this->db->where('o.order_date >= ', $start_date);
+            $this->db->where('o.is_canceled',0);
+            $this->db->where('o.weborder',0);
+            $this->db->where('o.order_usr_repic',$user['id']);
+            $this->db->group_by('yearorder');
+            $this->db->order_by('yearorder');
+            $userres = $this->db->get()->result_array();
+            $reportres[] = [
+                'label' => $user['label'],
+                '2016' => 0,
+                '2017' => 0,
+                '2018' => 0,
+                '2019' => 0,
+                '2020' => 0,
+                '2021' => 0,
+                '2022' => 0,
+                '2023' => 0,
+            ];
+            $repidx = count($reportres) - 1;
+            foreach ($userres as $row) {
+                $reportres[$repidx][$row['yearorder']] = $row['total'];
+            }
+        }
+        // Other
+        $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as yearorder, count(order_id) as total');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.order_date >= ', $start_date);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.weborder',0);
+        $this->db->where_not_in('o.order_usr_repic',$other);
+        $this->db->group_by('yearorder');
+        $this->db->order_by('yearorder');
+        $otherres = $this->db->get()->result_array();
+        $reportres[] = [
+            'label' => 'Other',
+            '2016' => 0,
+            '2017' => 0,
+            '2018' => 0,
+            '2019' => 0,
+            '2020' => 0,
+            '2021' => 0,
+            '2022' => 0,
+            '2023' => 0,
+        ];
+        $repidx = count($reportres) - 1;
+        foreach ($otherres as $row) {
+            $reportres[$repidx][$row['yearorder']] = $row['total'];
+        }
         // TOTAL
         $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as yearorder, count(order_id) as total');
         $this->db->from('ts_orders o');
@@ -2770,7 +2828,7 @@ class Test extends CI_Controller
         $fh = fopen($filename,'a+');
         $msg=';';
         for($i=2016; $i<2024; $i++) {
-            $msg.$i.';';
+            $msg.=$i.';';
         }
         $msg.=PHP_EOL;
         fwrite($fh, $msg);
@@ -2782,5 +2840,6 @@ class Test extends CI_Controller
             $msg.=PHP_EOL;
             fwrite($fh, $msg);
         }
+        echo 'Report '.$filename.' ready!'.PHP_EOL;
     }
 }
