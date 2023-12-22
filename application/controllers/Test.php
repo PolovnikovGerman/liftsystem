@@ -2719,7 +2719,7 @@ class Test extends CI_Controller
         $start_date = strtotime('2016-01-01');
         $reportres = [];
         // Web
-        $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as yearorder, cnt(order_id) as total');
+        $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as yearorder, count(order_id) as total');
         $this->db->from('ts_orders o');
         $this->db->where('o.order_date >= ', $start_date);
         $this->db->where('o.is_canceled',0);
@@ -2743,7 +2743,7 @@ class Test extends CI_Controller
             $reportres[$repidx][$row['yearorder']] = $row['total'];
         }
         // TOTAL
-        $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as yearorder, cnt(order_id) as total');
+        $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as yearorder, count(order_id) as total');
         $this->db->from('ts_orders o');
         $this->db->where('o.order_date >= ', $start_date);
         $this->db->where('o.is_canceled',0);
