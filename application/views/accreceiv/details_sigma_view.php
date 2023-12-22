@@ -1,4 +1,4 @@
-<div class="accreceiv-content-left">
+<div class="accreceiv-content-left sigmasystem">
     <div class="accreceiv-owndetails-head">
         <div class="accreceiv-owndetails-headnum">#</div>
         <?php if ($ownsort=='batch_due') { ?>
@@ -11,10 +11,15 @@
         <?php } else { ?>
             <div class="accreceiv-owndetails-headbalance ownsort" data-sort="balance">Balance <span></span></div>
         <?php } ?>
-        <?php if ($ownsort=='order_num') { ?>
-            <div class="accreceiv-owndetails-headorder ownsort" data-sort="order_num">Order <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
+        <?php if ($ownsort=='brand') { ?>
+            <div class="accreceiv-owndetails-headbrand ownsort" data-sort="brand">Brand <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
         <?php } else { ?>
-            <div class="accreceiv-owndetails-headorder ownsort" data-sort="order_num">Order <span></span></div>
+            <div class="accreceiv-owndetails-headbrand ownsort" data-sort="brand">Brand <span></span></div>
+        <?php } ?>
+        <?php if ($ownsort=='order_num') { ?>
+            <div class="accreceiv-owndetails-headordersigma ownsort" data-sort="order_num">Order <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
+        <?php } else { ?>
+            <div class="accreceiv-owndetails-headordersigma ownsort" data-sort="order_num">Order <span></span></div>
         <?php } ?>
         <?php if ($ownsort=='customer_name') { ?>
             <div class="accreceiv-owndetails-headcustomer ownsort" data-sort="customer_name">Customer <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
@@ -49,7 +54,7 @@
         <?php } ?>
     </div>
 </div>
-<div class="accreceiv-content-center">
+<div class="accreceiv-content-center sigmasystem">
     <div class="accreceiv-refunddetails-head">
         <div class="accreceiv-refunddetails-headnum">#</div>
         <?php if ($refundsort=='order_date') { ?>
@@ -62,10 +67,15 @@
         <?php } else { ?>
             <div class="accreceiv-refunddetails-headbalance refundsort" data-sort="balance">Refund</div>
         <?php } ?>
-        <?php if ($refundsort=='order_num') { ?>
-            <div class="accreceiv-refunddetails-headorder refundsort" data-sort="order_num">Order <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
+        <?php if ($refundsort=='brand') { ?>
+            <div class="accreceiv-refunddetails-headbrand refundsort" data-sort="brand">Brand <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
         <?php } else { ?>
-            <div class="accreceiv-refunddetails-headorder refundsort" data-sort="order_num">Order</div>
+            <div class="accreceiv-refunddetails-headbrand refundsort" data-sort="brand">Brand</div>
+        <?php } ?>
+        <?php if ($refundsort=='order_num') { ?>
+            <div class="accreceiv-refunddetails-headordersigma refundsort" data-sort="order_num">Order <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
+        <?php } else { ?>
+            <div class="accreceiv-refunddetails-headordersigma refundsort" data-sort="order_num">Order</div>
         <?php } ?>
         <?php if ($refundsort=='customer_name') { ?>
             <div class="accreceiv-refunddetails-headcustomer refundsort" data-sort="customer_name">Customer <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
@@ -86,7 +96,7 @@
                         <?=date('m/d/y', $refund['order_date'])?>
                     </div>
                     <div class="accreceiv-refunddetails-bodybalance">(<?=TotalOutput(abs($refund['balance']))?>)</div>
-                    <div class="accreceiv-refunddetails-bodybrand <?=$refund['brand']=='SR' ? 'stressrelievers' : 'bluetrack'?>"><?=$own['brand']?></div>
+                    <div class="accreceiv-refunddetails-bodybrand <?=$refund['brand']=='SR' ? 'stressrelievers' : 'bluetrack'?>"><?=$refund['brand']?></div>
                     <div class="accreceiv-refunddetails-bodyordersigma" data-brand="<?=$refund['brand']?>" data-order="<?=$refund['order_id']?>"><?=$refund['order_num']?></div>
                     <div class="accreceiv-refunddetails-bodycustomer"><?=$refund['customer_name']?></div>
                 </div>

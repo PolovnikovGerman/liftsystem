@@ -38,7 +38,7 @@
 }
 .accreceiv-content-data {
     /* width: 1067px; */
-    max-width: 1033px;
+    max-width: 1064px;
 }
 .accreceiv-totals, .accreceiv-details {
     width: 100%;
@@ -47,9 +47,15 @@
     width: 530px;
     margin-right: 30px;
 }
+.accreceiv-content-left.sigmasystem {
+    width: 544px;
+}
 .accreceiv-content-center {
     width: 469px;
     /* margin-right: 17px; */
+}
+.accreceiv-content-center.sigmasystem {
+    width: 483px;
 }
 .accreceiv-content-right {
     width: 225px;
@@ -281,7 +287,14 @@
     width: 92px;
 }
 .accreceiv-owndetails-headorder {
-    width: 75.2px;
+    width: 75px;
+}
+.accreceiv-owndetails-headbrand {
+    width: 52px;
+    margin-left: -14px;
+}
+.accreceiv-owndetails-headordersigma {
+    width: 50px;
 }
 .accreceiv-owndetails-headcustomer {
     width: 189px;
@@ -366,7 +379,7 @@
     border-right: 1px solid #000000;
     font-weight: bold;
     color: #0000ff;
-    width: 50px;
+    width: 64px;
     cursor: pointer;
     text-align: center;
 }
@@ -418,8 +431,15 @@
 .accreceiv-refunddetails-headbalance {
     width: 83px;
 }
+.accreceiv-refunddetails-headbrand {
+    width: 52px;
+    margin-left: -14px;
+}
 .accreceiv-refunddetails-headorder {
     width: 75px;
+}
+.accreceiv-refunddetails-headordersigma {
+    width: 51px;
 }
 .accreceiv-refunddetails-headcustomer {
     width: 213px;
@@ -504,7 +524,7 @@
     border-right: 1px solid #000000;
     font-weight: bold;
     color: #0000ff;
-    width: 50px;
+    width: 64px;
     cursor: pointer;
     text-align: center;
 }
