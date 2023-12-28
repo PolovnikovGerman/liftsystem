@@ -2842,4 +2842,56 @@ class Test extends CI_Controller
         }
         echo 'Report '.$filename.' ready!'.PHP_EOL;
     }
+
+    public function ordercog_report() {
+        $start = strtotime('2023-01-01');
+        $this->db->select('order_id, order_num, date_format(from_unixtime(order_date),\'%m/%d/%Y\') as orderdate, brand, revenue, profit, profit_perc, customer_name, order_qty, order_items, order_cog');
+        $this->db->from('ts_orders');
+        $this->db->where('order_date >= ', $start);
+        $this->db->where('is_canceled', 0);
+        $orders = $this->db->get()->result_array();
+        $reports = [];
+        $maxvend = 0;
+        foreach ($orders as $order) {
+            if ($order['cog']=='') {
+                $vendors = [];
+            } else {
+                $this->db->select('v.vendor_name, sum(oa.amount_sum) as total');
+                $this->db->from('ts_order_amounts oa');
+                $this->db->join('vendors v','oa.vendor_id = v.vendor_id');
+                $this->db->where('oa.order_id', $order['order_id']);
+                $this->db->group_by('v.vendor_name');
+                $vendors = $this->db->get()->result_array();
+                if (count($vendors)>$maxvend) {
+                    $maxvend = count($vendors);
+                }
+            }
+            $order['vendors'] = $vendors;
+            $reports[] = $order;
+        }
+        $file = $this->config->item('upload_path_preload').'orders_cog_2023.csv';
+        @unlink($file);
+        $fh = fopen($file, 'a+');
+        $msg = 'Order #;Date;Brand;Revenue;Profit;%;Customer;Item;QTY;COG;';
+        for ($i=1; $i<=$maxvend; $i++) {
+            $msg.='PO '.$i.'Vendor;PO '.$i.' Amount;';
+        }
+        fwrite($fh, $msg);
+        foreach ($reports as $report) {
+            $msg=$report['order_num'].';'.$report['orderdate'].';'.($brand=='SR' ? 'SR' : 'BT').';'.$report['revenue'].';'.$report['profit'].';';
+            $msg.=$report['profit_perc']=='' ? 'PROJ' : $report['profit_perc'].';"'.$report['customer_name'].'";"'.$report['order_items'].'";'.$report['order_qty'].';'.$report['order_cog'].';';
+            foreach ($report['vendors'] as $vendor) {
+                $msg.='"'.$vendor['vendor_name'].'";'.$vendor['total'].';';
+            }
+            if (count($report['vendors'])<$maxvend) {
+                $diff = $maxvend - count($report['vendors']);
+                for ($i=0; $i<$diff;$i++) {
+                    $msg.=';;';
+                }
+            }
+            fwrite($fh, $msg);
+        }
+        fclose($fh);
+        echo 'Report '.$file.' READY '.PHP_EOL;
+    }
 }
