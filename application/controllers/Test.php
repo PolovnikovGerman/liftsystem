@@ -2877,7 +2877,7 @@ class Test extends CI_Controller
         $fh = fopen($file, 'a+');
         $msg = 'Order #;Date;Brand;Revenue;Profit;%;Customer;Item;QTY;COG;';
         for ($i=1; $i<=$maxvend; $i++) {
-            $msg.='PO '.$i.'Vendor;PO '.$i.' Amount;';
+            $msg.='PO '.$i.' Vendor;PO '.$i.' Amount;';
         }
         fwrite($fh, $msg.PHP_EOL);
         foreach ($reports as $report) {
