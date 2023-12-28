@@ -2853,7 +2853,7 @@ class Test extends CI_Controller
         $reports = [];
         $maxvend = 0;
         foreach ($orders as $order) {
-            if ($order['cog']=='') {
+            if ($order['order_cog']=='') {
                 $vendors = [];
             } else {
                 $this->db->select('v.vendor_name, sum(oa.amount_sum) as total');
