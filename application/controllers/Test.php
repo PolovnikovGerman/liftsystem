@@ -2853,8 +2853,11 @@ class Test extends CI_Controller
         $reports = [];
         $maxvend = 0;
         foreach ($orders as $order) {
+            $order['brand'] = $order['brand']=='SR' ? 'SR' : 'BT';
             if ($order['order_cog']=='') {
                 $vendors = [];
+                $order['profit_perc'] = 'PROJ';
+                $order['order_cog']='-';
             } else {
                 $this->db->select('v.vendor_name, sum(oa.amount_sum) as total');
                 $this->db->from('ts_order_amounts oa');
@@ -2878,8 +2881,8 @@ class Test extends CI_Controller
         }
         fwrite($fh, $msg.PHP_EOL);
         foreach ($reports as $report) {
-            $msg=$report['order_num'].';'.$report['orderdate'].';'.($report['brand']=='SR' ? 'SR' : 'BT').';'.$report['revenue'].';'.$report['profit'].';';
-            $msg.=$report['profit_perc']=='' ? 'PROJ' : $report['profit_perc'].';"'.$report['customer_name'].'";"'.$report['order_items'].'";'.$report['order_qty'].';'.$report['order_cog'].';';
+            $msg=$report['order_num'].';'.$report['orderdate'].';'.$report['brand'].';'.$report['revenue'].';'.$report['profit'].';';
+            $msg.=$report['profit_perc'].';"'.$report['customer_name'].'";"'.$report['order_items'].'";'.$report['order_qty'].';'.$report['order_cog'].';';
             foreach ($report['vendors'] as $vendor) {
                 $msg.='"'.$vendor['vendor_name'].'";'.$vendor['total'].';';
             }
