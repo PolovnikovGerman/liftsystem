@@ -2876,7 +2876,7 @@ class Test extends CI_Controller
         for ($i=1; $i<=$maxvend; $i++) {
             $msg.='PO '.$i.'Vendor;PO '.$i.' Amount;';
         }
-        fwrite($fh, $msg);
+        fwrite($fh, $msg.PHP_EOL);
         foreach ($reports as $report) {
             $msg=$report['order_num'].';'.$report['orderdate'].';'.($report['brand']=='SR' ? 'SR' : 'BT').';'.$report['revenue'].';'.$report['profit'].';';
             $msg.=$report['profit_perc']=='' ? 'PROJ' : $report['profit_perc'].';"'.$report['customer_name'].'";"'.$report['order_items'].'";'.$report['order_qty'].';'.$report['order_cog'].';';
@@ -2889,7 +2889,7 @@ class Test extends CI_Controller
                     $msg.=';;';
                 }
             }
-            fwrite($fh, $msg);
+            fwrite($fh, $msg.PHP_EOL);
         }
         fclose($fh);
         echo 'Report '.$file.' READY '.PHP_EOL;
