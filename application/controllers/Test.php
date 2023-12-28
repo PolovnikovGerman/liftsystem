@@ -2878,7 +2878,7 @@ class Test extends CI_Controller
         }
         fwrite($fh, $msg);
         foreach ($reports as $report) {
-            $msg=$report['order_num'].';'.$report['orderdate'].';'.($brand=='SR' ? 'SR' : 'BT').';'.$report['revenue'].';'.$report['profit'].';';
+            $msg=$report['order_num'].';'.$report['orderdate'].';'.($report['brand']=='SR' ? 'SR' : 'BT').';'.$report['revenue'].';'.$report['profit'].';';
             $msg.=$report['profit_perc']=='' ? 'PROJ' : $report['profit_perc'].';"'.$report['customer_name'].'";"'.$report['order_items'].'";'.$report['order_qty'].';'.$report['order_cog'].';';
             foreach ($report['vendors'] as $vendor) {
                 $msg.='"'.$vendor['vendor_name'].'";'.$vendor['total'].';';
