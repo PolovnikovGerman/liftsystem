@@ -1104,8 +1104,7 @@ Class Cronjob extends CI_Controller
 
     public function batchdailyreport()
     {
-        // $dateend=strtotime(date('m/d/Y'));
-        $dateend=strtotime('2023-12-21');
+        $dateend=strtotime(date('m/d/Y'));
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
 
         $this->load->model('batches_model');
@@ -1141,13 +1140,13 @@ Class Cronjob extends CI_Controller
         $config['wordwrap'] = TRUE;
         $this->email->initialize($config);
         $email_from=$this->config->item('email_notification_sender');
-        // $email_to=$this->config->item('sean_email');
-        // $email_cc=array($this->config->item('sage_email'));
+        $email_to=$this->config->item('sean_email');
+        $email_cc=array($this->config->item('sage_email'));
         $this->email->from($email_from);
-        // $this->email->to($email_to);
-        // $this->email->cc($email_cc);
+        $this->email->to($email_to);
+        $this->email->cc($email_cc);
         // Temporary ADD for check
-        $this->email->to([$this->config->item('developer_email')]);
+        $this->email->bcc([$this->config->item('developer_email')]);
         $title=date('D - M d, Y', $datestart).' - Amouts added';
         $this->email->subject($title);
         if ($msgbody=='') {
