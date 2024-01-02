@@ -1125,7 +1125,7 @@ Class Cronjob extends CI_Controller
                     $list = $this->batches_model->batchreport_data($datestart, $dateend, $row['user_id'], $brand);
                     $opt=[
                         'title'=>date('D - M d, Y', $datestart).' - '.empty($row['user_id']) ? 'WEB Order' : $row['user_name'].' - '.$row['user_id'],
-                        'subtitle'=>'Newly Added Amounts:',
+                        'subtitle'=>'User '.$row['user_id'].'! '.$row['user_name'], // Newly Added Amounts:
                         'lists'=>$list,
                     ];
                     $msgbody.=$this->load->view('messages/batches_data_view', $opt, TRUE);
