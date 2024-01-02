@@ -1124,7 +1124,7 @@ Class Cronjob extends CI_Controller
                 foreach ($usrlist as $row) {
                     $list = $this->batches_model->batchreport_data($datestart, $dateend, $row['user_id'], $brand);
                     $opt=[
-                        'title'=>date('D - M d, Y', $datestart).' - '.$row['user_name'],
+                        'title'=>date('D - M d, Y', $datestart).' - '.empty($row['user_name']) ? 'WEB Order' : $row['user_name'],
                         'subtitle'=>'Newly Added Amounts:',
                         'lists'=>$list,
                     ];

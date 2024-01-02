@@ -17,7 +17,7 @@
         <?php foreach ($lists as $row) { ?>
             <tr>
                 <td style="text-align: center;border: 1px solid #000000;"><?=$row['order_num']?></td>
-                <td style="text-align: center;border: 1px solid #000000;"><?=date('m/d/Y',$row['order_date']?></td>
+                <td style="text-align: center;border: 1px solid #000000;"><?=date('m/d/Y',$row['order_date'])?></td>
                 <td style="text-align: left;border: 1px solid #000000;"><?=$row['customer_name']?></td>
                 <td style="text-align: left;border: 1px solid #000000;"><?=$row['items']?></td>
                 <td style="text-align: right;border: 1px solid #000000;"><?=MoneyOutput($row['revenue'])?></td>
