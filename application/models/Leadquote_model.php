@@ -1707,6 +1707,10 @@ class Leadquote_model extends MY_Model
 
             }
             $out['result'] = $this->success_result;
+            // Update Lead
+            $this->db->where('lead_id', $lead_id);
+            $this->db->set('update_date', date('Y-m-d H:i:s'));
+            $this->db->update('ts_leads');
             // Delete session
             usersession($session_id, NULL);
         }
