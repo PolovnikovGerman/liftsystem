@@ -1449,7 +1449,7 @@ class Batches_model extends My_Model
 
         $out = [];
         foreach ($datas as $data) {
-            $this->db->select('sum(batch_amount) as total')->from('ts_order_batches')->where('order_id', $data['order_id']);
+            $this->db->select('sum(batch_amount) as total')->from('ts_order_batches')->where('order_id', $data['order_id'])->where('batch_term',0);
             $balanceres = $this->db->get()->row_array();
             $data['balance'] = $data['revenue'] - $balanceres['total'];
             $out[] = $data;
