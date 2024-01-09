@@ -608,6 +608,9 @@ class Accounting extends MY_Controller
             $month=$this->input->post('month');
             $year=$this->input->post('year');
             $brand = $this->input->post('brand');
+            if ($brand=='SG') {
+                $brand = 'ALL';
+            }
             $orders=$this->orders_model->orders_by_date($month,$year, $brand);
             $orders['cnt']=count($orders['data_results']);
             $orders['brand']=$brand;
@@ -1285,8 +1288,11 @@ class Accounting extends MY_Controller
     }
 
     private function _prepare_profitcalend_content($brand) {
+        if ($brand=='SG') {
+            $brand = 'ALL';
+        }
         $dats=$this->orders_model->get_profit_limitdates($brand);
-        $legend=$this->load->view('accounting/profit_legend_view',array(),TRUE);
+        $legend=$this->load->view('accounting/profit_legend_view',[],TRUE);
         /* Cur Month */
         if (isset($dats['max_year'])) {
             if (date('Y-m',time())!=$dats['max_year'].'-'.$dats['max_month']) {
@@ -2650,7 +2656,11 @@ class Accounting extends MY_Controller
             $postdata = $this->input->post();
             $period = ifset($postdata,'period', -1);
             $brand = ifset($postdata,'brand', 'ALL');
+            if ($brand=='SG') {
+                $brand = 'ALL';
+            }
             $res = $this->orders_model->accountreceiv_totals($period, $brand);
+            $res['brand'] = $brand;
             $mdata['content'] = $this->load->view('accreceiv/totals_view', $res, TRUE);
             $mdata['totals'] = $this->load->view('accreceiv/balances_view', $res, TRUE);
             $error = '';
@@ -2665,12 +2675,20 @@ class Accounting extends MY_Controller
             $postdata = $this->input->post();
             $period = ifset($postdata,'period', -1);
             $brand = ifset($postdata,'brand', 'ALL');
+            if ($brand=='SG') {
+                $brand = 'ALL';
+            }
             $ownsort = ifset($postdata,'ownsort', 'batch_due');
             $owndirec = ifset($postdata,'owndirec', 'desc');
             $refundsort = ifset($postdata,'refundsort','order_date');
             $refunddirec = ifset($postdata, 'refunddirec', 'desc');
             $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec);
-            $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
+            if ($brand=='ALL') {
+                $mdata['content'] = $this->load->view('accreceiv/details_sigma_view', $res, TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
+            }
+
             $error = '';
             $this->ajaxResponse($mdata, $error);
         }
@@ -2707,6 +2725,8 @@ class Accounting extends MY_Controller
             }
             if ($i!=$dats['cur_year']) {
                 $prvdata=$ydata;
+            } else {
+                $tt = 1;
             }
             if ($numyears==0 || $i==$dats['cur_year']) {
                 $voptions=array(

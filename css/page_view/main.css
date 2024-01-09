@@ -581,7 +581,8 @@ ul.mainmenu #collapsed.dropdown-menu li {
     /* height: 35px; */
     height: 25px;
 }
-.brandmenuitemactive.relievers {
+.brandmenuitemactive.relievers,
+.brandmenuitemactive.sigmasystem {
     border-top: 1px solid #000000;
     border-left: 1px solid #000000;
     border-bottom: 1px solid #000000;
@@ -722,7 +723,8 @@ ul.mainmenu #collapsed.dropdown-menu li {
     min-height: 598px;
     margin-top: -1px;
 }
-.relieverstab .maincontent_view {
+.relieverstab .maincontent_view,
+.sigmasystem .maincontent_view {
     border: 1px solid #000000;
 }
 .databrands {
@@ -1320,6 +1322,16 @@ div.oldvesionlabel {
     border: 1px solid #bdbdbd;
 }
 .submenuitem.relievers:hover {
+    background-color: #00004c;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
+.submenuitem.sigma {
+    background-color: #ebebeb;
+    color: #000000;
+    border: 1px solid #bdbdbd;
+}
+.submenuitem.sigma:hover {
     background-color: #00004c;
     color: #ffffff;
     border: 1px solid #ffffff;

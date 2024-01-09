@@ -1408,4 +1408,52 @@ class Batches_model extends My_Model
         }
 
     }
+
+    public function batchreport_users($datestart, $dateend, $brand)
+    {
+        $this->db->select('b.create_usr as user_id, u.user_name, count(b.batch_id) as cnt');
+        $this->db->from('ts_order_batches b');
+        $this->db->join('ts_orders o','o.order_id=b.order_id');
+        $this->db->join('users u','u.user_id = b.create_usr','left');
+        $this->db->where('unix_timestamp(b.create_date) >= ', $datestart);
+        $this->db->where('unix_timestamp(b.create_date) < ', $dateend);
+        $this->db->where('o.is_canceled',0);
+        if ($brand=='SR') {
+            $this->db->where('o.brand', $brand);
+        } else {
+            $this->db->where_in('o.brand', ['SB','BT']);
+        }
+        $this->db->group_by('b.create_usr, u.user_name');
+        return $this->db->get()->result_array();
+    }
+
+    public function batchreport_data($datestart, $dateend, $user_id, $brand)
+    {
+        $this->db->select('o.order_id, o.order_num, o.order_date, o.revenue, o.order_items as items, o.customer_name, b.batch_amount as amount');
+        $this->db->from('ts_order_batches b');
+        $this->db->join('ts_orders o','o.order_id=b.order_id');
+        $this->db->where('unix_timestamp(b.create_date) >= ', $datestart);
+        $this->db->where('unix_timestamp(b.create_date) < ', $dateend);
+        $this->db->where('o.is_canceled',0);
+        if (empty($user_id)) {
+            $this->db->where('b.create_usr', NULL);
+        } else {
+            $this->db->where('b.create_usr', $user_id);
+        }
+        if ($brand=='SR') {
+            $this->db->where('o.brand', $brand);
+        } else {
+            $this->db->where_in('o.brand', ['SB','BT']);
+        }
+        $datas = $this->db->get()->result_array();
+
+        $out = [];
+        foreach ($datas as $data) {
+            $this->db->select('sum(batch_amount) as total')->from('ts_order_batches')->where('order_id', $data['order_id'])->where('batch_term',0);
+            $balanceres = $this->db->get()->row_array();
+            $data['balance'] = $data['revenue'] - $balanceres['total'];
+            $out[] = $data;
+        }
+        return $out;
+    }
 }
