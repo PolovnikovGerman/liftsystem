@@ -251,7 +251,8 @@ $config['notification_systems'] = [
     'Emails - Proof Requests',
     'Researcher Report',
 ];
-$config['img_path']=BASEPATH.'../img/';
+// $config['img_path']=BASEPATH.'../img/';
+$config['img_path']='http://'.$_SERVER['SERVER_NAME'].'/img/';
 $config['item_quote_images'] = 'http://'.$_SERVER['SERVER_NAME'];
 if ($_SERVER['SERVER_NAME']=='bluetrack.com' || $_SERVER['SERVER_NAME']=='www.bluetrack.com') {
     $config['item_quote_images'] = 'https://'.$_SERVER['SERVER_NAME'];
@@ -293,3 +294,5 @@ $config['debug_mode'] = (getenv('TEST_SERVER')==1 ? '1' : 0);
 $config['default_country'] = 223;
 $config['google_map_key'] = getenv('GOOGLEMAPAPI_KEY');
 $config['srrepeat_cost'] = 12;
+$config['contactnote_relievers'] = 'Please call us at 1-800-790-6090 or email sales@stressrelievers.com with questions';
+$config['contactnote_bluetrack'] = 'Please call us at 1-800-790-6090 or email sales@bluetrack.com with questions';

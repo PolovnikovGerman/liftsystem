@@ -10,30 +10,32 @@ class Email_model extends My_Model
 
     private $INIT_MSG = 'Unknown error. Try later';
     private $empty_html_content = '&nbsp;';
+
+    private $PROOF_REQUEST = 'Art_Submit';
     function __construct()
     {
         parent::__construct();
     }
 
-    public function get_email_templates()
-    {
-        $this->db->select('*');
-        $this->db->from('ts_email_templates');
-        $this->db->order_by('email_template_id');
-        $res = $this->db->get()->result_array();
-        return $res;
-    }
+//    public function get_email_templates()
+//    {
+//        $this->db->select('*');
+//        $this->db->from('ts_email_templates');
+//        $this->db->order_by('email_template_id');
+//        $res = $this->db->get()->result_array();
+//        return $res;
+//    }
 
-    public function get_main_template()
-    {
-        $this->db->select('*');
-        $this->db->from('ts_email_templates');
-        $this->db->order_by('email_template_id');
-        $this->db->limit(1);
-        $res = $this->db->get()->row_array();
-        return $res;
-
-    }
+//    public function get_main_template()
+//    {
+//        $this->db->select('*');
+//        $this->db->from('ts_email_templates');
+//        $this->db->order_by('email_template_id');
+//        $this->db->limit(1);
+//        $res = $this->db->get()->row_array();
+//        return $res;
+//
+//    }
 
     public function get_email_template($template)
     {
@@ -371,13 +373,13 @@ class Email_model extends My_Model
             $this->db->set('email_websys', $this->websys);
             $this->db->insert('ts_emails');
             $res = $this->db->insert_id();
-            if ($res != 0) {
-                /* Create Short notification */
-                if ($data['email_type'] == Emails_model::EMAIL_PROOFREQUEST) {
-                    // Insert - update additional Fields
-                    $this->proof_request_extend($data, $res);
-                }
-            }
+//            if ($res != 0) {
+//                /* Create Short notification */
+//                if ($data['email_type'] == $this->EMAIL_PROOFREQUEST) {
+//                    // Insert - update additional Fields
+//                    $this->proof_request_extend($data, $res);
+//                }
+//            }
         }
         return $res;
     }
@@ -441,8 +443,8 @@ class Email_model extends My_Model
         $new_otherinfo = array();
         if ($usrlogo) {
             //
-            $short_place = $ci->config->item('artwork_logo_relative');
-            $full_place = $ci->config->item('artwork_logo');
+            $short_place = $this->config->item('artwork_logo_relative');
+            $full_place = $this->config->item('artwork_logo');
             $logofilename = str_replace($short_place, '', $usrlogo);
 
             $filedetails = extract_filename($logofilename);
@@ -573,7 +575,7 @@ class Email_model extends My_Model
     {
         $this->db->select('max(proof_num) as proof');
         $this->db->from('ts_emails');
-        $this->db->where('email_type', Emails_model::EMAIL_PROOFREQUEST);
+        $this->db->where('email_type', $this->PROOF_REQUEST);
         $res = $this->db->get()->row_array();
         if (!isset($res['proof']) || $res['proof'] == '') {
             $part1 = 0;
@@ -619,13 +621,13 @@ class Email_model extends My_Model
         $ci =& get_instance();
         $this->db->select('notification_email');
         $this->db->from('sb_email_notifications');
-        $this->db->where('notification_system', Emails_model::PROOF_REQUEST);
+        $this->db->where('notification_system', $this->PROOF_REQUEST);
         $email_array = $this->db->get()->result_array();
 
         if (count($email_array) > 0) {
-            $ci->load->library('email');
+            $this->load->library('email');
             $email_conf = array('protocol' => 'sendmail', 'charset' => 'utf-8', 'wordwrap' => TRUE, 'mailtype' => 'html',);
-            $ci->email->initialize($email_conf);
+            $this->email->initialize($email_conf);
 
 
             // $email_from=$options['email_sendermail'];
@@ -637,7 +639,7 @@ class Email_model extends My_Model
                 for ($i = 1; $i < count($email_array); $i++) {
                     array_push($email_cc, $email_array[$i]['notification_email']);
                 }
-                $ci->email->cc($email_cc);
+                $this->email->cc($email_cc);
             }
             $location = '';
             if ($options['user_location']['country_code'] == 'US') {
@@ -668,19 +670,19 @@ class Email_model extends My_Model
             }
             $options['userlocation'] = $location;
             $email_body = $ci->load->view('shop/arttwork_emailtemplate_view', $options, TRUE);
-            $ci->email->from($email_from);
-            $ci->email->to($email_to);
+            $this->email->from($email_from);
+            $this->email->to($email_to);
 
-            $ci->email->subject('Artwork Submission');
-            $ci->email->message($email_body);
+            $this->email->subject('Artwork Submission');
+            $this->email->message($email_body);
 
 
             if (isset($options['attach_logo'])) {
-                $ci->email->attach($options['attach_logo']);
+                $this->email->attach($options['attach_logo']);
             }
 
-            $ci->email->send();
-            $ci->email->clear(TRUE);
+            $this->email->send();
+            $this->email->clear(TRUE);
 
         }
 
@@ -1449,117 +1451,34 @@ class Email_model extends My_Model
         $mails_array = $this->get_emails($options, 'email_id', 'asc', 1, 0);
 
         /* Send message to user */
+        $this->load->model('leads_model');
+        $this->load->model('leadquote_model');
         foreach ($mails_array as $row) {
-            $mail_id = $row['email_id'];
-            $mail = $this->get_email_details($mail_id);
-
-            $mail['colorprint'] = get_json_param($mail['email_other_info'], 'colorprint', 0);
-            $mail['item_id']=get_json_param($mail['email_other_info'],'item_id',0);
-            $mail['item_number']='';
-            if (intval($mail['item_id'])!=0) {
-                $itemdat=$this->items_model->get_item($mail['item_id']);
-                if ($itemdat['result']==$this->success_result) {
-                    $item_det = $itemdat['data'];
-                    $mail['item_number']=$item_det['item_number'];
-                    if ($mail['colorprint'] == 1) {
-                        $mail['colorprint'] = '1 Color Imprinting';
-                    } elseif ($mail['colorprint'] == 2) {
-                        $mail['colorprint'] = '2 Color Imprinting';
-                    } else {
-                        $mail['colorprint'] = 'Blank, No Imprinting';
-                    }
-                    $mail['setup'] = get_json_param($mail['email_other_info'], 'setup', 0);
-                    $mail['imprint'] = get_json_param($mail['email_other_info'], 'imprint', 0);
-                    $mail['itemcost'] = get_json_param($mail['email_other_info'], 'itemcost', 0);
-                    $itemcolors = get_json_param($mail['email_other_info'], 'itemcolors', []);
-                    $colorstr = '';
-                    foreach ($itemcolors as $itemcolor) {
-                        $colorstr.=$itemcolor.',';
-                    }
-                    if (count($itemcolors)>0) {
-                        $colorstr=substr($colorstr,0,-1);
-                    }
-                    $mail['colors'] = $colorstr;
-                        // $mail['colors'] = get_json_param($mail['email_other_info'], 'colors', 0);
-                    $mail['total'] = get_json_param($mail['email_other_info'], 'total', 0);
-                    $mail['ship_rate'] = get_json_param($mail['email_other_info'], 'ship_rate', 0);
-                    $mail['ship_method_name'] = get_json_param($mail['email_other_info'],'ship_method_name','');
-                    $mail['tax'] = get_json_param($mail['email_other_info'], 'tax', 0);
-                    $mail['rush'] = get_json_param($mail['email_other_info'], 'rush', 0);
-                    $mail['rush_days'] = get_json_param($mail['email_other_info'], 'rush_days', 0);
-                    if ($mail['brand']=='SB') {
-                        $mail['saleprice'] = floatval(get_json_param($mail['email_other_info'],'sale_price',0));
-                        $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
-                        $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
-                    } else {
-//                        $mail['saleprice'] = round($mail['itemcost'] / intval($mail['email_qty']), 2);
-//                        $mail['price'] = round(($mail['itemcost'] + $mail['saved']) / intval($mail['email_qty']), 2);
-//                        $mail['saved'] = get_json_param($mail['email_other_info'], 'saved', 0);
-                        $mail['saleprice'] = floatval(get_json_param($mail['email_other_info'],'sale_price',0));
-                        $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
-                        $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
-                    }
-                    $mail['imgpath']=$this->config->item('img_path');
-                    $mail['itemimgpath']=$this->config->item('item_quote_images');
-                    $item_id = get_json_param($mail['email_other_info'], 'item_id', 0);
-
-                    if ($item_id != 0) {
-                        /* Get Main Picture */
-                        $img = $this->itemimages_model->get_item_images($item_id);
-                        $mail['mainimg'] = '';
-                        if (is_array($img)) {
-                            $mail['mainimg'] = $img[0]['item_img_name'];
-                        }
-                    }
-                    if (floatval($mail['ship_rate'])==0) {
-                        $mail['shipinfo']=$this->load->view('quote/quote_shipempty_view',array(),TRUE);
-                    } else {
-                        if ($mail['ship_method_name']=='') {
-                            // Unknown Shipping Method
-                            $mail['shipinfo']=$this->load->view('quote/quote_shipcommon_view',$mail,TRUE);
-                        } else {
-                            if ($mail['quote_country']=='US') {
-                                $mail['ziplabel']='Zip Code:';
-                            } else {
-                                $mail['ziplabel']='Postal Code:';
-                            }
-                            $mail['shipinfo']=$this->load->view('quote/quote_shipmethod_view',$mail,TRUE);
-                        }
-                    }
-
-                    $html = $this->load->view('quote/quote_mail_dompdf_view', $mail, TRUE);
-                    /* Create UNIQUE file name */
-                    $file_name = 'BLUETRACK_Quote_'.date('ymd').$mail_id.'.pdf';
-                    $file_out = $this->config->item('quotes') . $file_name;
-                    pdf_create($html, $file_out, true);
-                    if (file_exists($file_out)) {
-                        /* Update email */
-                        $upddata = array(
-                            'email_id' => $mail_id,
-                            'email_quota_link' => $this->config->item('quotes_relative') . $file_name,
-                        );
-                        $this->email_update($upddata);
-                        /* Prepare Message for send */
-                        $msg_options=array(
-                            'item_name'=>$mail['email_item_name'],
-                            'item_qty'=>intval($mail['email_qty']),
-                        );
-                        $content=$this->load->view('messages/quote_message_view',$msg_options,TRUE);
-                        $msgbody=($content);
-                        /* Send message to user */
-                        $mail_options=array(
-                            'touser'=>$mail['email_sendermail'],
-                            'fromuser'=>$this->config->item('email_notification_sender'),
-                            'subject'=>intval($mail['email_qty']).' '.$mail['email_item_name'] . ' Quote',
-                            /* 'message'=>'Hi ! Here is the qoute you requested.',*/
-                            'message'=>$msgbody,
-                            'fileattach'=>$file_out,
-                        );
-                        if ($_SERVER['SERVER_NAME']!=='lift_stressballs.local') {
-                            $this->send_quota($mail_options);
-                        }
-                    }
-                }
+            $this->_sendquote($row);
+            $other_info = json_decode($row['email_other_info'],TRUE);
+            // Insert Lead
+            $this->db->set('lead_company',$row['email_sendercompany']);
+            $this->db->set('lead_phone',$row['email_senderphone']);
+            $this->db->set('lead_value', ifset($other_info, 'total',0));
+            $this->db->set('lead_customer', $row['email_sender']);
+            $this->db->set('lead_mail', $row['email_sendermail']);
+            $this->db->set('lead_itemqty', ifset($other_info,'qty',0));
+            $this->db->set('lead_item', $row['email_item_name']);
+            $this->db->set('lead_item_id', $row['email_item_id']);
+            $this->db->set('brand', $row['brand']);
+            $this->db->set('lead_date',time());
+            $this->db->set('lead_type',2);
+            $this->db->set('lead_assign_time',time());
+            // $this->db->set('create_user',$usr_id);
+            // $this->db->set('update_usr',$usr_id);
+            $this->db->set('create_date',date('Y-m-d H:i:s'));
+            $leadnum=$this->leads_model->get_leadnum($row['brand']);
+            $this->db->set('lead_number',$leadnum);
+            $this->db->insert('ts_leads');
+            $lead_id=$this->db->insert_id();
+            if ($lead_id !== 0) {
+                // Insert Lead Quote
+                $this->leadquote_model->add_leadquote_web($row, $lead_id);
             }
         }
     }
@@ -1586,6 +1505,116 @@ class Email_model extends My_Model
         return true;
     }
 
+    private function _sendquote($row)
+    {
+        $mail_id = $row['email_id'];
+        $mail = $this->get_email_details($mail_id);
 
+        $mail['colorprint'] = get_json_param($mail['email_other_info'], 'colorprint', 0);
+        $mail['item_id']=get_json_param($mail['email_other_info'],'item_id',0);
+        $mail['item_number']='';
+        if (intval($mail['item_id'])!=0) {
+            $itemdat=$this->items_model->get_item($mail['item_id']);
+            if ($itemdat['result']==$this->success_result) {
+                $item_det = $itemdat['data'];
+                $mail['item_number']=$item_det['item_number'];
+                if ($mail['colorprint'] == 1) {
+                    $mail['colorprint'] = '1 Color Imprinting';
+                } elseif ($mail['colorprint'] == 2) {
+                    $mail['colorprint'] = '2 Color Imprinting';
+                } else {
+                    $mail['colorprint'] = 'Blank, No Imprinting';
+                }
+                $mail['setup'] = get_json_param($mail['email_other_info'], 'setup', 0);
+                $mail['imprint'] = get_json_param($mail['email_other_info'], 'imprint', 0);
+                $mail['itemcost'] = get_json_param($mail['email_other_info'], 'itemcost', 0);
+                $itemcolors = get_json_param($mail['email_other_info'], 'itemcolors', []);
+                $colorstr = '';
+                foreach ($itemcolors as $itemcolor) {
+                    $colorstr.=$itemcolor.',';
+                }
+                if (count($itemcolors)>0) {
+                    $colorstr=substr($colorstr,0,-1);
+                }
+                $mail['colors'] = $colorstr;
+                // $mail['colors'] = get_json_param($mail['email_other_info'],'colors','');
+                $mail['total'] = get_json_param($mail['email_other_info'], 'total', 0);
+                $mail['ship_rate'] = get_json_param($mail['email_other_info'], 'ship_rate', 0);
+                $mail['ship_method_name'] = get_json_param($mail['email_other_info'],'ship_method_name','');
+                $mail['tax'] = get_json_param($mail['email_other_info'], 'tax', 0);
+                $mail['rush'] = get_json_param($mail['email_other_info'], 'rush', 0);
+                $mail['rush_days'] = get_json_param($mail['email_other_info'], 'rush_days', 0);
+                if ($mail['brand']=='SB') {
+                    $mail['saleprice'] = floatval(get_json_param($mail['email_other_info'],'sale_price',0));
+                    $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
+                    $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
+                } else {
+                    $mail['saleprice'] = floatval(get_json_param($mail['email_other_info'],'sale_price',0));
+                    $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
+                    $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
+                }
+                $mail['imgpath']=$this->config->item('img_path');
+                $mail['itemimgpath']=$this->config->item('item_quote_images');
+                $item_id = get_json_param($mail['email_other_info'], 'item_id', 0);
+
+                if ($item_id != 0) {
+                    /* Get Main Picture */
+                    $img = $this->itemimages_model->get_item_images($item_id);
+                    $mail['mainimg'] = '';
+                    if (is_array($img)) {
+                        $mail['mainimg'] = $img[0]['item_img_name'];
+                    }
+                }
+                if (floatval($mail['ship_rate'])==0) {
+                    $mail['shipinfo']=$this->load->view('quote/quote_shipempty_view',array(),TRUE);
+                } else {
+                    if ($mail['ship_method_name']=='') {
+                        // Unknown Shipping Method
+                        $mail['shipinfo']=$this->load->view('quote/quote_shipcommon_view',$mail,TRUE);
+                    } else {
+                        if ($mail['quote_country']=='US') {
+                            $mail['ziplabel']='Zip Code:';
+                        } else {
+                            $mail['ziplabel']='Postal Code:';
+                        }
+                        $mail['shipinfo']=$this->load->view('quote/quote_shipmethod_view',$mail,TRUE);
+                    }
+                }
+
+                $html = $this->load->view('quote/quote_mail_dompdf_view', $mail, TRUE);
+                /* Create UNIQUE file name */
+                $file_name = 'BLUETRACK_Quote_'.date('ymd').$mail_id.'.pdf';
+                $file_out = $this->config->item('quotes') . $file_name;
+                pdf_create($html, $file_out, true);
+                if (file_exists($file_out)) {
+                    /* Update email */
+                    $upddata = array(
+                        'email_id' => $mail_id,
+                        'email_quota_link' => $this->config->item('quotes_relative') . $file_name,
+                    );
+                    $this->email_update($upddata);
+                    /* Prepare Message for send */
+                    $msg_options=array(
+                        'item_name'=>$mail['email_item_name'],
+                        'item_qty'=>intval($mail['email_qty']),
+                    );
+                    $content=$this->load->view('messages/quote_message_view',$msg_options,TRUE);
+                    $msgbody=($content);
+                    /* Send message to user */
+                    $mail_options=array(
+                        'touser'=>$mail['email_sendermail'],
+                        'fromuser'=>$this->config->item('email_notification_sender'),
+                        'subject'=>intval($mail['email_qty']).' '.$mail['email_item_name'] . ' Quote',
+                        /* 'message'=>'Hi ! Here is the qoute you requested.',*/
+                        'message'=>$msgbody,
+                        'fileattach'=>$file_out,
+                    );
+                    if ($_SERVER['SERVER_NAME']!=='lift_stressballs.local') {
+                        $this->send_quota($mail_options);
+                    }
+                }
+            }
+        }
+    }
 }
 

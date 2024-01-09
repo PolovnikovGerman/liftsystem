@@ -546,11 +546,13 @@ Class Leads_model extends MY_Model
                 $this->db->where('lead_id',$leadpost['lead_id']);
                 $this->db->delete('ts_lead_users');
                 foreach ($lead_usr as $row) {
-                    $this->db->trans_start();
-                    $this->db->set('lead_id',$leadpost['lead_id']);
-                    $this->db->set('user_id',$row);
-                    $this->db->insert('ts_lead_users');
-                    $this->db->trans_complete();
+                    if (intval($row) > 0) {
+                        $this->db->trans_start();
+                        $this->db->set('lead_id',$leadpost['lead_id']);
+                        $this->db->set('user_id',$row);
+                        $this->db->insert('ts_lead_users');
+                        $this->db->trans_complete();
+                    }
                 }
                 // Attachments
                 $session_attach = ifset($leadpost,'session_attach','unkn');
