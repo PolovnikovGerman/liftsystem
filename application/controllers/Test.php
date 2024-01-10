@@ -2897,4 +2897,142 @@ class Test extends CI_Controller
         fclose($fh);
         echo 'Report '.$file.' READY '.PHP_EOL;
     }
+
+    public function testquote()
+    {
+        $mail_id = 24433;
+        $this->load->model('email_model');
+        $mail = $this->email_model->get_email_details($mail_id);
+        $other_info = json_decode($mail['email_other_info'], TRUE);
+        $mail['colorprint'] = ifset($other_info,'colorprint', 0);
+        $mail['item_id'] = ifset($other_info, 'item_id',0);
+        $mail['item_number']='';
+        $this->load->model('itemimages_model');
+        $this->load->model('items_model');
+        if (intval($mail['item_id'])!=0) {
+            $itemdat = $this->items_model->get_item($mail['item_id']);
+            if ($itemdat['result'] == 1) {
+                $item_det = $itemdat['data'];
+                $mail['item_number'] = $item_det['item_number'];
+                if ($mail['colorprint'] == 1) {
+                    $mail['colorprint'] = '1 Color Imprinting';
+                } elseif ($mail['colorprint'] == 2) {
+                    $mail['colorprint'] = '2 Color Imprinting';
+                } else {
+                    $mail['colorprint'] = 'Blank, No Imprinting';
+                }
+                $mail['setup'] = ifset($other_info, 'setup', 0);
+                $mail['imprint'] = ifset($other_info, 'imprint', 0);
+                $mail['itemcost'] = ifset($other_info, 'itemcost', 0);
+                $itemcolors = ifset($other_info, 'itemcolors', []);
+                $colorstr = '';
+                foreach ($itemcolors as $itemcolor) {
+                    $colorstr .= $itemcolor . ',';
+                }
+                if (count($itemcolors) > 0) {
+                    $colorstr = substr($colorstr, 0, -1);
+                }
+                $mail['colors'] = $colorstr;
+                // $mail['colors'] = get_json_param($mail['email_other_info'], 'colors', 0);
+                $mail['total'] = ifset($other_info, 'total', 0);
+                $mail['ship_rate'] = ifset($other_info, 'ship_rate', 0);
+                $mail['ship_method_name'] = ifset($other_info, 'ship_method_name', '');
+                $mail['tax'] = ifset($other_info, 'tax', 0);
+                $mail['rush'] = ifset($other_info, 'rush', 0);
+                $mail['rush_days'] = ifset($other_info, 'rush_days', 0);
+                // if ($mail['brand']=='SB') {
+                $mail['saleprice'] = floatval(ifset($other_info, 'sale_price', 0));
+                $mail['price'] = floatval(ifset($other_info, 'reg_price', 0));
+                $mail['saved'] = (-1) * ifset($other_info, 'saved', 0);
+//                } else {
+//                    $mail['saleprice'] = floatval(get_json_param($mail['email_other_info'],'sale_price',0));
+//                    $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
+//                    $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
+            }
+            $mail['imgpath'] = $this->config->item('img_path');
+            $mail['itemimgpath'] = $this->config->item('item_quote_images');
+            /* Get Main Picture */
+            $img = $this->itemimages_model->get_item_images($mail['item_id']);
+            $mail['mainimg'] = '';
+            if (is_array($img)) {
+                $mail['mainimg'] = $img[0]['item_img_name'];
+            }
+            if ($mail['quote_country'] == 'US') {
+                $mail['ziplabel'] = 'Zip Code:';
+            } else {
+                $mail['ziplabel'] = 'Postal Code:';
+            }
+
+//                if (floatval($mail['ship_rate'])==0) {
+//                    $mail['shipinfo']=$this->load->view('quote/quote_shipempty_view',array(),TRUE);
+//                } else {
+//                    if ($mail['ship_method_name']=='') {
+//                        // Unknown Shipping Method
+//                        $mail['shipinfo']=$this->load->view('quote/quote_shipcommon_view',$mail,TRUE);
+//                    } else {
+//                        $mail['shipinfo']=$this->load->view('quote/quote_shipmethod_view',$mail,TRUE);
+//                    }
+//                }
+            // Build doc
+            $this->_buildquotedoc($mail);
+        }
+    }
+
+    private function _buildquotedoc($mail)
+    {
+        define('FPDF_FONTPATH', FCPATH.'font');
+        $this->load->library('fpdf/fpdfeps');
+        // Logo
+        $startPageX = 10;
+
+        $logoFile = FCPATH."/img/quote/quote_head.jpg";
+        $logoWidth = 190;
+        $logoHeight = 30;
+        $logoYPos = 7;
+        $logoXPos = 10;
+        // Table Cols
+        $colWidth=[
+            30,84,18,28,30,
+        ];
+        $pdf = new FPDFEPS('P','mm','A4');
+        $pdf->AddPage();
+        $pdf->SetFont('Times','',9.035143);
+        // Top Logo
+        $pdf->Image($logoFile, $logoXPos, $logoYPos, $logoWidth, $logoHeight);
+        $pdf->SetXY($startPageX,35);
+        $pdf->SetFont('','I',12);
+        $pdf->SetTextColor(84,84,84);
+        $pdf->Cell(45,7,'Over 1200 Stress',0,0,'L');
+        $pdf->SetXY($startPageX,39.5);
+        $pdf->Cell(45,7,'Shapes Available!',0,0,'L');
+        $pdf->SetFont('','B',22);
+        $pdf->SetTextColor(70, 69, 69);
+        $pdf->SetXY(78,38);
+        $pdf->Cell(82,10, 'Official Website Quote',0,0,'L');
+        $pdf->SetFont('','B',13.2);
+        $pdf->SetTextColor(0, 0, 0);
+        $pdf->SetXY(182,39);
+        $pdf->Cell(23,6, $mail['email_date_show'],0,0,'L');
+        // Table Head
+        $pdf->SetXY($startPageX, 52);
+        $pdf->SetCellMargin(3);
+        $pdf->SetFont('','B',11);
+        $yStart = $pdf->getY()-2;
+        $pdf->setFillColor(0, 0, 255);
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->SetXY($startPageX, $yStart);
+        $pdf->Cell($colWidth[0], 6, 'Image:',0,0,'C', true);
+        $pdf->Cell($colWidth[1], 6, 'Item:',0, 0,'C', true);
+        $pdf->Cell($colWidth[2], 6, 'Qty:', 0, 0,'C', true);
+        $pdf->Cell($colWidth[3], 6, 'Price Each:', 0, 0, 'C', true);
+        $pdf->Cell($colWidth[4], 6, 'Subtotal:', 0, 0,'C', true);
+        $yStart+=6;
+
+
+        $filename = 'BLUETRACK_Quote_'.date('ymd').$mail['email_id'].'.pdf';
+
+        $file_out = $this->config->item('upload_path_preload').$filename;
+        $pdf->Output('F', $file_out);
+        echo $file_out.' Ready '.PHP_EOL;
+    }
 }
