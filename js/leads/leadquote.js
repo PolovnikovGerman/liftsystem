@@ -108,7 +108,7 @@ function init_leadquotes_content() {
                     }
                 },'json')
             } else {
-                show_error();
+                show_error(response);
             }
         },'json');
     });
@@ -141,7 +141,7 @@ function init_leadquotes_content() {
                 },'json');
 
             } else {
-                show_error();
+                show_error(response);
             }
         },'json');
     });
