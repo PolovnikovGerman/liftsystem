@@ -187,6 +187,10 @@ Class Orders_model extends MY_Model
                 $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
+        // Custom orders
+        if (isset($filtr['custom_orders']) && $filtr['custom_orders']==1) {
+            $this->db->where_in('o.item_id', [$this->config->item('custom_id')]); // , $this->config->item('other_id')
+        }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
     }
@@ -2466,6 +2470,9 @@ Class Orders_model extends MY_Model
                     $this->db->where_in('o.brand', ['SB','BT']);
                 }
             }
+            if (ifset($filtr,'custom_orders',0)==1) {
+                $this->db->where_in('o.item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id'),
+            }
         }
         $totalres=$this->db->get()->row_array();
         $balance = $this->count_totalbalance($filtr);
@@ -2684,6 +2691,9 @@ Class Orders_model extends MY_Model
                 $this->db->where('o.order_blank',0);
                 $this->db->where('o.arttype', $addtype);
             }
+            if (ifset($filtr,'custom_orders',0)==1) {
+                $this->db->where_in('o.item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id'),
+            }
         }
         $totalres=$this->db->get()->row_array();
         $totalres['balance'] = $this->count_totalbalance($filtr, $addtype);
@@ -2787,6 +2797,9 @@ Class Orders_model extends MY_Model
                 } else {
                     $this->db->where_in('o.brand', ['BT','SB']);
                 }
+            }
+            if (ifset($filtr,'custom_orders',0)==1) {
+                $this->db->where_in('o.item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id'),
             }
         }
         $this->db->limit($limit,$offset);
@@ -3070,6 +3083,9 @@ Class Orders_model extends MY_Model
                 $cartsql = "select order_id, group_concat(cardnum) as paycardnum from ts_order_payments group by order_id ";
                 $this->db->join("({$cartsql}) as p",'p.order_id=o.order_id','left');
             }
+            if (ifset($postdata,'custom_orders',0)==1) {
+                $this->db->where_in('o.item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id'),
+            }
             $this->db->order_by('o.order_id');
             $res=$this->db->get()->result_array();
 
@@ -3306,7 +3322,7 @@ Class Orders_model extends MY_Model
         return $labels;
     }
 
-    public function get_profit_limitdates($brand) {
+    public function get_profit_limitdates($brand, $custom_orders=0) {
         $this->db->select('max(order_date) as max_date, min(order_date) as min_date');
         $this->db->from('ts_orders');
         $this->db->where('is_canceled',0);
@@ -3316,6 +3332,9 @@ Class Orders_model extends MY_Model
             } else {
                 $this->db->where_in('brand', ['BT','SB']);
             }
+        }
+        if ($custom_orders==1) {
+            $this->db->where_in('item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id')
         }
         $res=$this->db->get()->row_array();
         if (isset($res['max_date'])) {
@@ -3336,7 +3355,7 @@ Class Orders_model extends MY_Model
     }
 
     /* Calculate average  */
-    public function calendar_orders($year, $brand) {
+    public function calendar_orders($year, $brand, $custom_orders=0) {
         /* Empty array */
         $empty_val='&mdash;';
         $kilolimit=10000;
@@ -3391,6 +3410,9 @@ Class Orders_model extends MY_Model
             }
         }
         $this->db->where("date_format(from_unixtime(order_date),'%Y')",$year);
+        if ($custom_orders==1) {
+            $this->db->where_in('ord.item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id'),
+        }
         $this->db->group_by("order_year");
         $res=$this->db->get()->row_array();
         $out = array(
@@ -7399,6 +7421,9 @@ Class Orders_model extends MY_Model
                 } else {
                     $this->db->where_in('o.brand', ['SB','BT']);
                 }
+            }
+            if (ifset($filtr,'custom_orders',0)==1) {
+                $this->db->where_in('o.item_id', [$this->config->item('custom_id')]); // $this->config->item('other_id'),
             }
         }
         if (!empty($addtype)) {
