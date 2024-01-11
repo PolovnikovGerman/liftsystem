@@ -1524,195 +1524,199 @@ class Leadquote_model extends MY_Model
         $shipping = $quotesession['shipping'];
         $deleted = $quotesession['deleted'];
         // Check filling data
-        // All Ok, start save
-        // Same address
-        if ($quote['quote_id']==0 && ifset($quote, 'billingsame',0)==1) {
-            $quote['billing_country'] = $quote['shipping_country'];
-            $quote['billing_contact'] = $quote['shipping_contact'];
-            $quote['billing_company'] = $quote['shipping_company'];
-            $quote['billing_address1'] = $quote['shipping_address1'];
-            $quote['billing_address2'] = $quote['shipping_address2'];
-            $quote['billing_zip'] = $quote['shipping_zip'];
-            $quote['billing_city'] = $quote['shipping_city'];
-            $quote['billing_state'] = $quote['shipping_state'];
-        }
-        $this->db->set('quote_template', $quote['quote_template']);
-        $this->db->set('mischrg_label1', $quote['mischrg_label1']);
-        $this->db->set('mischrg_value1', floatval($quote['mischrg_value1']));
-        $this->db->set('mischrg_label2', $quote['mischrg_label2']);
-        $this->db->set('mischrg_value2', floatval($quote['mischrg_value2']));
-        $this->db->set('discount_label', $quote['discount_label']);
-        $this->db->set('discount_value', floatval($quote['discount_value']));
-        $this->db->set('lead_time', $quote['lead_time']);
-        $this->db->set('shipping_country', $quote['shipping_country']);
-        $this->db->set('shipping_contact', $quote['shipping_contact']);
-        $this->db->set('shipping_company', empty($quote['shipping_company']) ? null : $quote['shipping_company']);
-        $this->db->set('shipping_address1', $quote['shipping_address1']);
-        $this->db->set('shipping_address2', empty($quote['shipping_address2']) ? null : $quote['shipping_address2']);
-        $this->db->set('shipping_zip', $quote['shipping_zip']);
-        $this->db->set('shipping_city', $quote['shipping_city']);
-        $this->db->set('shipping_state', $quote['shipping_state']);
-        $this->db->set('sales_tax', floatval($quote['sales_tax']));
-        $this->db->set('tax_exempt', intval($quote['tax_exempt']));
-        $this->db->set('taxview', intval($quote['taxview']));
-        $this->db->set('tax_reason', $quote['tax_reason']);
-        $this->db->set('rush_terms', $quote['rush_terms']);
-        $this->db->set('rush_days', $quote['rush_days']);
-        $this->db->set('rush_cost', floatval($quote['rush_cost']));
-        $this->db->set('shipping_cost', floatval($quote['shipping_cost']));
-        $this->db->set('billing_country', $quote['billing_country']);
-        $this->db->set('billing_contact', $quote['billing_contact']);
-        $this->db->set('billing_company', empty($quote['billing_company']) ? null : $quote['billing_company']);
-        $this->db->set('billing_address1', $quote['billing_address1']);
-        $this->db->set('billing_address2', empty($quote['billing_address2']) ? null : $quote['billing_address2']);
-        $this->db->set('billing_zip', $quote['billing_zip']);
-        $this->db->set('billing_city', $quote['billing_city']);
-        $this->db->set('billing_state', $quote['billing_state']);
-        $this->db->set('quote_blank', intval($quote['quote_blank']));
-        $this->db->set('quote_note', $quote['quote_note']);
-        $this->db->set('quote_repcontact', $quote['quote_repcontact']);
-        $this->db->set('items_subtotal', floatval($quote['items_subtotal']));
-        $this->db->set('imprint_subtotal', floatval($quote['imprint_subtotal']));
-        $this->db->set('quote_total', floatval($quote['quote_total']));
-        if ($quote['quote_id'] > 0 ) {
-            // Update
-            $this->db->where('quote_id', $quote['quote_id']);
-            $this->db->set('update_user', $user_id);
-            $this->db->update('ts_quotes');
-            $quote_id = $quote['quote_id'];
-        } else {
-            $newnum = $this->get_newquote_number($quote['brand']);
-            $this->db->set('brand', $quote['brand']);
-            $this->db->set('create_time', date('Y-m-d H:i:s'));
-            $this->db->set('create_user', $user_id);
-            $this->db->set('update_user', $user_id);
-            $this->db->set('lead_id', $lead_id);
-            $this->db->set('quote_number', $newnum);
-            $this->db->set('quote_date', time());
-            $this->db->insert('ts_quotes');
-            $quote_id = $this->db->insert_id();
-        }
-        // NEW
-        $out['msg'] = 'Error during add new quote';
-        if ($quote_id > 0) {
-            $out['quote_id'] = $quote_id;
-            // Save items, colors, imprints, etc
-            foreach ($items as $item) {
-                $this->db->set('item_id', $item['item_id']);
-                $this->db->set('item_qty', intval($item['item_qty']));
-                $this->db->set('item_price', floatval($item['item_price']));
-                $this->db->set('imprint_price', floatval($item['imprint_price']));
-                $this->db->set('setup_price', floatval($item['setup_price']));
-                $this->db->set('item_weigth', floatval($item['item_weigth']));
-                $this->db->set('cartoon_qty', intval($item['cartoon_qty']));
-                $this->db->set('cartoon_width', intval($item['cartoon_width']));
-                $this->db->set('cartoon_heigh', intval($item['cartoon_heigh']));
-                $this->db->set('cartoon_depth', intval($item['cartoon_depth']));
-                $this->db->set('template', $item['template']);
-                $this->db->set('base_price', floatval($item['base_price']));
-                if ($item['quote_item_id'] > 0) {
-                    $this->db->where('quote_item_id', $item['quote_item_id']);
-                    $this->db->update('ts_quote_items');
-                    $quote_item_id = $item['quote_item_id'];
-                } else {
-                    $this->db->set('quote_id', $quote_id);
-                    $this->db->insert('ts_quote_items');
-                    $quote_item_id = $this->db->insert_id();
-                }
-                $colors = $item['items'];
-                foreach ($colors as $color) {
-                    $this->db->set('item_description', $color['item_description']);
-                    $this->db->set('item_color', $color['item_color']);
-                    $this->db->set('item_qty', intval($color['item_qty']));
-                    $this->db->set('item_price', floatval($color['item_price']));
-                    if ($color['item_id'] > 0) {
-                        $this->db->where('quote_itemcolor_id', $color['item_id']);
-                        $this->db->update('ts_quote_itemcolors');
+        $chkres = $this->_check_quote($quote, $items, $shipping);
+        $out['msg'] = $chkres['msg'];
+        if ($chkres['result']==$this->success_result) {
+            // All Ok, start save
+            // Same address
+            if ($quote['quote_id']==0 && ifset($quote, 'billingsame',0)==1) {
+                $quote['billing_country'] = $quote['shipping_country'];
+                $quote['billing_contact'] = $quote['shipping_contact'];
+                $quote['billing_company'] = $quote['shipping_company'];
+                $quote['billing_address1'] = $quote['shipping_address1'];
+                $quote['billing_address2'] = $quote['shipping_address2'];
+                $quote['billing_zip'] = $quote['shipping_zip'];
+                $quote['billing_city'] = $quote['shipping_city'];
+                $quote['billing_state'] = $quote['shipping_state'];
+            }
+            $this->db->set('quote_template', $quote['quote_template']);
+            $this->db->set('mischrg_label1', $quote['mischrg_label1']);
+            $this->db->set('mischrg_value1', floatval($quote['mischrg_value1']));
+            $this->db->set('mischrg_label2', $quote['mischrg_label2']);
+            $this->db->set('mischrg_value2', floatval($quote['mischrg_value2']));
+            $this->db->set('discount_label', $quote['discount_label']);
+            $this->db->set('discount_value', floatval($quote['discount_value']));
+            $this->db->set('lead_time', $quote['lead_time']);
+            $this->db->set('shipping_country', $quote['shipping_country']);
+            $this->db->set('shipping_contact', $quote['shipping_contact']);
+            $this->db->set('shipping_company', empty($quote['shipping_company']) ? null : $quote['shipping_company']);
+            $this->db->set('shipping_address1', $quote['shipping_address1']);
+            $this->db->set('shipping_address2', empty($quote['shipping_address2']) ? null : $quote['shipping_address2']);
+            $this->db->set('shipping_zip', $quote['shipping_zip']);
+            $this->db->set('shipping_city', $quote['shipping_city']);
+            $this->db->set('shipping_state', $quote['shipping_state']);
+            $this->db->set('sales_tax', floatval($quote['sales_tax']));
+            $this->db->set('tax_exempt', intval($quote['tax_exempt']));
+            $this->db->set('taxview', intval($quote['taxview']));
+            $this->db->set('tax_reason', $quote['tax_reason']);
+            $this->db->set('rush_terms', $quote['rush_terms']);
+            $this->db->set('rush_days', $quote['rush_days']);
+            $this->db->set('rush_cost', floatval($quote['rush_cost']));
+            $this->db->set('shipping_cost', floatval($quote['shipping_cost']));
+            $this->db->set('billing_country', $quote['billing_country']);
+            $this->db->set('billing_contact', $quote['billing_contact']);
+            $this->db->set('billing_company', empty($quote['billing_company']) ? null : $quote['billing_company']);
+            $this->db->set('billing_address1', $quote['billing_address1']);
+            $this->db->set('billing_address2', empty($quote['billing_address2']) ? null : $quote['billing_address2']);
+            $this->db->set('billing_zip', $quote['billing_zip']);
+            $this->db->set('billing_city', $quote['billing_city']);
+            $this->db->set('billing_state', $quote['billing_state']);
+            $this->db->set('quote_blank', intval($quote['quote_blank']));
+            $this->db->set('quote_note', $quote['quote_note']);
+            $this->db->set('quote_repcontact', $quote['quote_repcontact']);
+            $this->db->set('items_subtotal', floatval($quote['items_subtotal']));
+            $this->db->set('imprint_subtotal', floatval($quote['imprint_subtotal']));
+            $this->db->set('quote_total', floatval($quote['quote_total']));
+            if ($quote['quote_id'] > 0 ) {
+                // Update
+                $this->db->where('quote_id', $quote['quote_id']);
+                $this->db->set('update_user', $user_id);
+                $this->db->update('ts_quotes');
+                $quote_id = $quote['quote_id'];
+            } else {
+                $newnum = $this->get_newquote_number($quote['brand']);
+                $this->db->set('brand', $quote['brand']);
+                $this->db->set('create_time', date('Y-m-d H:i:s'));
+                $this->db->set('create_user', $user_id);
+                $this->db->set('update_user', $user_id);
+                $this->db->set('lead_id', $lead_id);
+                $this->db->set('quote_number', $newnum);
+                $this->db->set('quote_date', time());
+                $this->db->insert('ts_quotes');
+                $quote_id = $this->db->insert_id();
+            }
+            // NEW
+            $out['msg'] = 'Error during add new quote';
+            if ($quote_id > 0) {
+                $out['quote_id'] = $quote_id;
+                // Save items, colors, imprints, etc
+                foreach ($items as $item) {
+                    $this->db->set('item_id', $item['item_id']);
+                    $this->db->set('item_qty', intval($item['item_qty']));
+                    $this->db->set('item_price', floatval($item['item_price']));
+                    $this->db->set('imprint_price', floatval($item['imprint_price']));
+                    $this->db->set('setup_price', floatval($item['setup_price']));
+                    $this->db->set('item_weigth', floatval($item['item_weigth']));
+                    $this->db->set('cartoon_qty', intval($item['cartoon_qty']));
+                    $this->db->set('cartoon_width', intval($item['cartoon_width']));
+                    $this->db->set('cartoon_heigh', intval($item['cartoon_heigh']));
+                    $this->db->set('cartoon_depth', intval($item['cartoon_depth']));
+                    $this->db->set('template', $item['template']);
+                    $this->db->set('base_price', floatval($item['base_price']));
+                    if ($item['quote_item_id'] > 0) {
+                        $this->db->where('quote_item_id', $item['quote_item_id']);
+                        $this->db->update('ts_quote_items');
+                        $quote_item_id = $item['quote_item_id'];
                     } else {
-                        $this->db->set('quote_item_id', $quote_item_id);
-                        $this->db->insert('ts_quote_itemcolors');
+                        $this->db->set('quote_id', $quote_id);
+                        $this->db->insert('ts_quote_items');
+                        $quote_item_id = $this->db->insert_id();
                     }
-                }
-                $imprints = $item['imprints'];
-                foreach ($imprints as $imprint) {
-                    if ($imprint['imprint_description']!=='&nbsp;') {
-                        $this->db->set('imprint_description', $imprint['imprint_description']);
-                        $this->db->set('imprint_item', $imprint['imprint_item']);
-                        $this->db->set('imprint_qty', intval($imprint['imprint_qty']));
-                        $this->db->set('imprint_price', floatval($imprint['imprint_price']));
-                        if ($imprint['quote_imprint_id'] > 0) {
-                            $this->db->where('quote_imprint_id', $imprint['quote_imprint_id']);
-                            $this->db->update('ts_quote_imprints');
+                    $colors = $item['items'];
+                    foreach ($colors as $color) {
+                        $this->db->set('item_description', $color['item_description']);
+                        $this->db->set('item_color', $color['item_color']);
+                        $this->db->set('item_qty', intval($color['item_qty']));
+                        $this->db->set('item_price', floatval($color['item_price']));
+                        if ($color['item_id'] > 0) {
+                            $this->db->where('quote_itemcolor_id', $color['item_id']);
+                            $this->db->update('ts_quote_itemcolors');
                         } else {
                             $this->db->set('quote_item_id', $quote_item_id);
-                            $this->db->insert('ts_quote_imprints');
+                            $this->db->insert('ts_quote_itemcolors');
+                        }
+                    }
+                    $imprints = $item['imprints'];
+                    foreach ($imprints as $imprint) {
+                        if ($imprint['imprint_description']!=='&nbsp;') {
+                            $this->db->set('imprint_description', $imprint['imprint_description']);
+                            $this->db->set('imprint_item', $imprint['imprint_item']);
+                            $this->db->set('imprint_qty', intval($imprint['imprint_qty']));
+                            $this->db->set('imprint_price', floatval($imprint['imprint_price']));
+                            if ($imprint['quote_imprint_id'] > 0) {
+                                $this->db->where('quote_imprint_id', $imprint['quote_imprint_id']);
+                                $this->db->update('ts_quote_imprints');
+                            } else {
+                                $this->db->set('quote_item_id', $quote_item_id);
+                                $this->db->insert('ts_quote_imprints');
+                            }
+                        }
+                    }
+                    $imprintdetails = $item['imprint_details'];
+                    foreach ($imprintdetails as $imprintdetail) {
+                        $this->db->set('imprint_active', $imprintdetail['active']);
+                        $this->db->set('imprint_type', $imprintdetail['imprint_type']);
+                        $this->db->set('repeat_note', $imprintdetail['repeat_note']);
+                        $this->db->set('location_id', empty($imprintdetail['location_id']) ? NULL : $imprintdetail['location_id']);
+                        $this->db->set('num_colors', $imprintdetail['num_colors']);
+                        $this->db->set('print_1', $imprintdetail['print_1']);
+                        $this->db->set('print_2', $imprintdetail['print_2']);
+                        $this->db->set('print_3', $imprintdetail['print_3']);
+                        $this->db->set('print_4', $imprintdetail['print_4']);
+                        $this->db->set('setup_1', $imprintdetail['setup_1']);
+                        $this->db->set('setup_2', $imprintdetail['setup_2']);
+                        $this->db->set('setup_3', $imprintdetail['setup_3']);
+                        $this->db->set('setup_4', $imprintdetail['setup_4']);
+                        $this->db->set('extra_cost', $imprintdetail['extra_cost']);
+                        if ($imprintdetail['quote_imprindetail_id'] > 0) {
+                            $this->db->where('quote_imprindetail_id', $imprintdetail['quote_imprindetail_id']);
+                            $this->db->update('ts_quote_imprindetails');
+                        } else {
+                            $this->db->set('quote_item_id', $quote_item_id);
+                            $this->db->insert('ts_quote_imprindetails');
                         }
                     }
                 }
-                $imprintdetails = $item['imprint_details'];
-                foreach ($imprintdetails as $imprintdetail) {
-                    $this->db->set('imprint_active', $imprintdetail['active']);
-                    $this->db->set('imprint_type', $imprintdetail['imprint_type']);
-                    $this->db->set('repeat_note', $imprintdetail['repeat_note']);
-                    $this->db->set('location_id', empty($imprintdetail['location_id']) ? NULL : $imprintdetail['location_id']);
-                    $this->db->set('num_colors', $imprintdetail['num_colors']);
-                    $this->db->set('print_1', $imprintdetail['print_1']);
-                    $this->db->set('print_2', $imprintdetail['print_2']);
-                    $this->db->set('print_3', $imprintdetail['print_3']);
-                    $this->db->set('print_4', $imprintdetail['print_4']);
-                    $this->db->set('setup_1', $imprintdetail['setup_1']);
-                    $this->db->set('setup_2', $imprintdetail['setup_2']);
-                    $this->db->set('setup_3', $imprintdetail['setup_3']);
-                    $this->db->set('setup_4', $imprintdetail['setup_4']);
-                    $this->db->set('extra_cost', $imprintdetail['extra_cost']);
-                    if ($imprintdetail['quote_imprindetail_id'] > 0) {
-                        $this->db->where('quote_imprindetail_id', $imprintdetail['quote_imprindetail_id']);
-                        $this->db->update('ts_quote_imprindetails');
+                // Ship Rates
+                foreach ($shipping as $rate) {
+                    $this->db->set('active', $rate['active']);
+                    $this->db->set('shipping_code', $rate['shipping_code']);
+                    $this->db->set('shipping_name', $rate['shipping_name']);
+                    $this->db->set('shipping_rate', $rate['shipping_rate']);
+                    $this->db->set('shipping_date', $rate['shipping_date']);
+                    if ($rate['quote_shipping_id'] > 0) {
+                        $this->db->where('quote_shipping_id', $rate['quote_shipping_id']);
+                        $this->db->update('ts_quote_shippings');
                     } else {
-                        $this->db->set('quote_item_id', $quote_item_id);
-                        $this->db->insert('ts_quote_imprindetails');
+                        $this->db->set('quote_id', $quote_id);
+                        $this->db->insert('ts_quote_shippings');
                     }
                 }
-            }
-            // Ship Rates
-            foreach ($shipping as $rate) {
-                $this->db->set('active', $rate['active']);
-                $this->db->set('shipping_code', $rate['shipping_code']);
-                $this->db->set('shipping_name', $rate['shipping_name']);
-                $this->db->set('shipping_rate', $rate['shipping_rate']);
-                $this->db->set('shipping_date', $rate['shipping_date']);
-                if ($rate['quote_shipping_id'] > 0) {
-                    $this->db->where('quote_shipping_id', $rate['quote_shipping_id']);
-                    $this->db->update('ts_quote_shippings');
-                } else {
-                    $this->db->set('quote_id', $quote_id);
-                    $this->db->insert('ts_quote_shippings');
-                }
-            }
 
-            foreach ($deleted as $row) {
-                if ($row['entity']=='imprints') {
-                    $this->db->where('quote_imprint_id', $row['id']);
-                    $this->db->delete('ts_quote_imprints');
-                } elseif ($row['entity']=='imprint_details') {
-                    $this->db->where('quote_imprindetail_id', $row['id']);
-                    $this->db->delete('ts_quote_imprindetails');
-                } elseif ($row['entity']=='shipping') {
-                    $this->db->where('quote_shipping_id', $row['id']);
-                    $this->db->delete('ts_quote_shippings');
-                } elseif ($row['entity']=='items') {
-                    $this->db->where('quote_item_id', $row['id']);
-                    $this->db->delete('ts_quote_items');
-                }
+                foreach ($deleted as $row) {
+                    if ($row['entity']=='imprints') {
+                        $this->db->where('quote_imprint_id', $row['id']);
+                        $this->db->delete('ts_quote_imprints');
+                    } elseif ($row['entity']=='imprint_details') {
+                        $this->db->where('quote_imprindetail_id', $row['id']);
+                        $this->db->delete('ts_quote_imprindetails');
+                    } elseif ($row['entity']=='shipping') {
+                        $this->db->where('quote_shipping_id', $row['id']);
+                        $this->db->delete('ts_quote_shippings');
+                    } elseif ($row['entity']=='items') {
+                        $this->db->where('quote_item_id', $row['id']);
+                        $this->db->delete('ts_quote_items');
+                    }
 
+                }
+                $out['result'] = $this->success_result;
+                // Update Lead
+                $this->db->where('lead_id', $lead_id);
+                $this->db->set('update_date', date('Y-m-d H:i:s'));
+                $this->db->update('ts_leads');
+                // Delete session
+                usersession($session_id, NULL);
             }
-            $out['result'] = $this->success_result;
-            // Update Lead
-            $this->db->where('lead_id', $lead_id);
-            $this->db->set('update_date', date('Y-m-d H:i:s'));
-            $this->db->update('ts_leads');
-            // Delete session
-            usersession($session_id, NULL);
         }
         return $out;
     }
@@ -3696,6 +3700,20 @@ class Leadquote_model extends MY_Model
         $pdf->setFillcolor(230, 230, 230);
         $pdf->SetTextColor(0,0,0);
 
+    }
+
+    private function _check_quote($quote, $items, $shipping)
+    {
+        $out = ['result' => $this->error_result, 'msg' => $this->error_message];
+        $errflag = 0;
+        if (floatval($quote['shipping_cost'])==0) {
+            $errflag = 1;
+            $out['msg'] = 'Shipping amount is required';
+        }
+        if ($errflag==0) {
+            $out['result'] = $this->success_result;
+        }
+        return $out;
     }
 
 }
