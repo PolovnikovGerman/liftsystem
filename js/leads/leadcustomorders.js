@@ -9,7 +9,116 @@ function init_leadcustomorders() {
     $("div.exportdatacall").unbind('click').click(function(){
         prepare_custom_export();
     });
-
+    $("#profitsearch").keypress(function(event){
+        if (event.which == 13) {
+            search_customorder_data();
+        }
+    });
+    $("#find_profit").unbind('click').click(function(){
+        search_customorder_data();
+    });
+    $("#clear_profit").unbind('click').click(function(){
+        clear_customorder_search();
+    });
+    // Change sort
+    $(".profitorder_date").unbind('click').click(function(){
+        change_customorder_sort('o.order_date','profitorder_date');
+    })
+    // $(".profitorder_brand").unbind('click').click(function(){
+    //     change_customorder_sort('b.brand_name','profitorder_brand');
+    // })
+    $(".profitorder_numorder").unbind('click').click(function(){
+        change_customorder_sort('o.order_num','profitorder_numorder');
+    })
+    $(".profitorder_customer").unbind('click').click(function(){
+        change_customorder_sort('o.customer_name','profitorder_customer');
+    })
+    $(".profitorder_revenue").unbind('click').click(function(){
+        change_customorder_sort('o.revenue','profitorder_revenue');
+    })
+    $(".profitorder_confirm").unbind('click').click(function () {
+        change_customorder_sort('o.order_confirmation','profitorder_confirm');
+    })
+    $(".profitorder_profit").unbind('click').click(function(){
+        change_customorder_sort('o.profit','profitorder_profit');
+    })
+    $(".profitorder_profitperc").unbind('click').click(function(){
+        change_customorder_sort('o.profit_perc','profitorder_profitperc');
+    });
+    $("select#order_filtr").unbind('change').change(function(){
+        search_customorder_data();
+    })
+    $("select#perpage_profitorders").unbind('change').change(function(){
+        $("#curpagetab1").val(0);
+        initCustomOrderPagination();
+    });
+    // Change type of filter
+    $("#profitdatetypechoise1").unbind('click').click(function(){
+        $(".selectorderyeardat").prop('disabled',false).addClass('active');
+        $(".selectordermonthdat").prop('disabled',false).addClass('active');
+        search_customorder_data();
+        $("#customdatebgn").prop('disabled',true);
+        $("#customdateend").prop('disabled',true);
+        $(".profitorder_dateinpt").datepicker("option", "disabled", true );
+    });
+    // Change Year
+    $(".selectorderyeardat").unbind('change').change(function () {
+        search_customorder_data();
+    });
+    $(".selectordermonthdat").unbind('change').change(function () {
+        search_customorder_data();
+    });
+    $(".selectshiplocationdat").unbind('change').change(function(){
+        if (parseInt($(".selectshiplocationdat").val())>0) {
+            // Add Shipping States
+            var url="/accounting/orderprofit_states";
+            $.post(url, {'country_id': $(".selectshiplocationdat").val()}, function (response) {
+                if (response.errors=='') {
+                    $(".selectstatelocation").empty().html(response.data.content);
+                    $(".selectstatelocationdat").unbind('change').change(function(){
+                        search_customorder_data();
+                    })
+                    search_customorder_data();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        } else {
+            $(".selectstatelocation").empty().html('&nbsp;');
+            search_customorder_data();
+        }
+    });
+    $(".selectordertypesdat").unbind('change').change(function(){
+        search_customorder_data();
+    })
+    $("#profitdatetypechoise2").unbind('click').click(function(){
+        $(".selectorderyeardat").prop('disabled',true).removeClass('active');
+        $(".selectordermonthdat").prop('disabled',true).removeClass('active');
+        $("#customdatebgn").prop('disabled',false);
+        $("#customdateend").prop('disabled',false);
+        search_customorder_data();
+    });
+    $("#customdatebgn").unbind('change').change(function () {
+        search_customorder_data();
+    });
+    $("#customdateend").unbind('change').change(function () {
+        search_customorder_data();
+    });
+    // Change include quickbox
+    $("div#hidequickboxcheck").unbind('click').click(function(){
+        var url="/accounting/exclude_quickbook";
+        var params=new Array();
+        params.push({name: 'exclude_quickbook', value: $("#quickbookexclude").val()});
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("div#hidequickboxcheck").empty().html(response.data.content);
+                $("input#quickbookexclude").val(response.data.newval);
+                search_customorder_data();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
 }
 
 function search_customorder_data() {
@@ -58,6 +167,16 @@ function search_customorder_data() {
             show_error(response);
         }
     }, 'json');
+}
+
+function clear_customorder_search() {
+    // Clear inputs, dropdowns
+    $("#profitsearch").val('');
+    $("#order_filtr").val(0);
+    $(".selectorderyeardat").val(0);
+    $("#customdatebgn").val('');
+    $("#customdateend").val('');
+    search_customorder_data();
 }
 
 function prepare_customorder_filter() {
@@ -396,4 +515,28 @@ function init_prepare_customexport() {
             show_error(response);
         }
     },'json');
+}
+
+function change_customorder_sort(sortname,sortclass) {
+    var cur_sort=$("#orderbytab1").val();
+    var cur_dir=$("#directiontab1").val();
+    $("div#profitordesview .orders-table-title").children().each(function(i) {
+        $(this).removeClass('activesortdesc');
+        $(this).removeClass('activesortasc');
+    })
+
+    if (cur_sort==sortname) {
+        if (cur_dir=='asc') {
+            $("#directiontab1").val('desc');
+            $("div#profitordesview ."+sortclass).addClass('activesortdesc');
+        } else {
+            $("#directiontab1").val('asc');
+            $("div#profitordesview ."+sortclass).addClass('activesortasc');
+        }
+    } else {
+        $("#directiontab1").val('desc');
+        $("#orderbytab1").val(sortname);
+        $("div#profitordesview ."+sortclass).addClass('activesortdesc');
+    }
+    initCustomOrderPagination();
 }
