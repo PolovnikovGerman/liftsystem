@@ -2897,4 +2897,10 @@ class Test extends CI_Controller
         fclose($fh);
         echo 'Report '.$file.' READY '.PHP_EOL;
     }
+
+    public function export_sritems()
+    {
+        $this->load->model('exportexcell_model');
+        $res = $this->exportexcell_model->export_sritems();
+    }
 }
