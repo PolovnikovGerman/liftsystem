@@ -1,6 +1,6 @@
 <?php
-$config['js_version'] = '2.02165';
-$config['css_version']= '2.02165';
+$config['js_version'] = '2.02206';
+$config['css_version']= '2.02206';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -111,7 +111,7 @@ $config['localserver']=array(
 $config['salestax']=7;
 $config['datenewtax']= strtotime('2018-07-23');
 $config['salesnewtax']=6.625;
-
+$config['outsalestax']=6.625;
 $config['report_vendors']=array(
     'Ariel',
     'Alpi',
@@ -257,7 +257,7 @@ if ($_SERVER['SERVER_NAME']=='bluetrack.com' || $_SERVER['SERVER_NAME']=='www.bl
     $config['item_quote_images'] = 'https://'.$_SERVER['SERVER_NAME'];
 }
 $config['geo_apikey'] = getenv('GEOIP_KEY');
-$config['googlemapapi'] = getenv('GOOGLEMAP_KEY');
+// $config['googlemapapi'] = getenv('GOOGLEMAP_KEY');
 $config['message_subject']='Bluetrack.com Research Question';
 $config['test_server'] = getenv('TEST_SERVER');
 if ($config['test_server']==1) {
@@ -291,3 +291,5 @@ $config['prooflnk']='https://www.bluetrack.com/proofs/';
 $config['newprooflnk']='https://www.bluetrack.com/proofview/?doc=';
 $config['debug_mode'] = (getenv('TEST_SERVER')==1 ? '1' : 0);
 $config['default_country'] = 223;
+$config['google_map_key'] = getenv('GOOGLEMAPAPI_KEY');
+$config['srrepeat_cost'] = 12;

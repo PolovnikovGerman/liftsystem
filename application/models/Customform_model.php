@@ -9,10 +9,11 @@ class Customform_model extends MY_Model
     }
 
     public function get_count_forms($params) {
-        $this->db->select('count(custom_quote_id) as cnt');
-        $this->db->from('ts_custom_quotes');
-        if (ifset($params,'assign')) {
-
+        $this->db->select('count(q.custom_quote_id) as cnt');
+        $this->db->from('ts_custom_quotes q');
+        if (ifset($params,'assign','')=='1') {
+            $this->db->join('ts_lead_emails le','le.custom_quote_id=q.custom_quote_id','left');
+            $this->db->where('le.leademail_id is null');
         }
         if (ifset($params,'search','')!=='') {
             $this->db->like('concat(customer_name, customer_company,customer_email)', $params['search']);
@@ -73,11 +74,12 @@ class Customform_model extends MY_Model
 
         $dats = $this->db->get()->result_array();
         $out = [];
-        $numpp = $offset;
+        // $numpp = $offset;
+        $numpp = 0;
         $this->load->model('leads_model');
         foreach ($dats as $dat) {
             $numpp++;
-            // $dat['numpp'] = $numpp;
+            $dat['numorder'] = $numpp;
             $dat['numpp'] = $dat['quote_number'];
             if (!empty($dat['lead_id'])) {
                 $ldat = $this->leads_model->get_lead($dat['lead_id']);

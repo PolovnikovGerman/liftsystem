@@ -993,6 +993,13 @@ Class Reports_model extends My_Model
         $this->db->where_in('o.item_id', array($this->config->item('multy_id'),-4,-5));
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.order_date >= ', $start);
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            }
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $multi_monthdata=$this->db->get()->result_array();
@@ -4877,6 +4884,13 @@ Class Reports_model extends My_Model
         $this->db->where('o.is_canceled', 0);
         $this->db->where('o.order_date >= ', $start_date);
         $this->db->where('o.order_date < ', $end_report);
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            }
+        }
         $this->db->group_by('repyear, repmonth');
         $this->db->order_by('repyear, repmonth');
         $multi_monthdata = $this->db->get()->result_array();
@@ -6217,7 +6231,11 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date >= ', $dateBgn);
             $this->db->where('o.order_date < ', $dateEnd);
             if ($brand!='ALL') {
-                $this->db->where('o.brand', $brand);
+                if ($brand=='SR') {
+                    $this->db->where('o.brand', $brand);
+                } else {
+                    $this->db->where_in('o.brand', ['SB','BT']);
+                }
             }
             $this->db->group_by('month');
             $multi_monthdata=$this->db->get()->result_array();
@@ -6250,7 +6268,11 @@ Class Reports_model extends My_Model
             $this->db->where('o.order_date < ', $dateEnd);
             $this->db->where('o.profit_perc is null');
             if ($brand!='ALL') {
-                $this->db->where('o.brand', $brand);
+                if ($brand=='SR') {
+                    $this->db->where('o.brand', $brand);
+                } else {
+                    $this->db->where_in('o.brand', ['SB','BT']);
+                }
             }
             $this->db->group_by('month');
             $proj_multi=$this->db->get()->result_array();

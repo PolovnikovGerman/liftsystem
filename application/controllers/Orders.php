@@ -35,6 +35,11 @@ class Orders extends MY_Controller
         $content_options['start'] = $this->input->get('start', TRUE);
         $search = usersession('liftsearch');
         usersession('liftsearch', NULL);
+        $gmaps = 0;
+        if (!empty($this->config->item('google_map_key'))) {
+            $gmaps = 1;
+        }
+
         foreach ($menu as $row) {
             if ($row['item_link']=='#ordersview') {
                 // Orders
@@ -62,6 +67,9 @@ class Orders extends MY_Controller
         // Uploader
         $head['scripts'][]=array('src'=>'/js/adminpage/fileuploader.js');
         $head['styles'][]=array('style'=>'/css/page_view/fileuploader.css');
+        if ($gmaps==1) {
+            $head['scripts'][]=array('src'=>'/js/leads/order_address.js');
+        }
         // File Download
         $head['scripts'][]=array('src'=>'/js/adminpage/jquery.fileDownload.js');
         // Datepicker
@@ -83,6 +91,9 @@ class Orders extends MY_Controller
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
         ];
+        if ($gmaps==1) {
+            $options['gmaps'] = $gmaps;
+        }
         $dat = $this->template->prepare_pagecontent($options);
         $content_options['left_menu'] = $dat['left_menu'];
         $content_options['brand'] = $brand;

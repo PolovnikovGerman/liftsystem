@@ -2989,4 +2989,252 @@ class Test extends CI_Controller
         echo 'File '.$fileprom.' ready'.PHP_EOL;
 
     }
+
+    public function rename_proofdocs()
+    {
+        $this->load->config('uploader');
+        $logfile = $this->config->item('upload_path_preload').'badproofdocs.txt';
+        $fh = fopen($logfile,'a+');
+        $this->db->select('artwork_id, order_id')->from('ts_artworks')->where('order_id is not null')->order_by('artwork_id','desc');
+        $arts = $this->db->get()->result_array();
+        $shname = $this->config->item('artwork_proofs_relative');
+        $flname = $this->config->item('artwork_proofs');
+        foreach ($arts as $art) {
+            // Folder
+            $path = $shname.$art['artwork_id'];
+            // echo 'Path '.$path.PHP_EOL;
+            createPath($path);
+            // Get Order
+            $this->db->select('order_num, brand')->from('ts_orders')->where('order_id', $art['order_id']);
+            $order = $this->db->get()->row_array();
+            // Get proofs
+            $this->db->select('artwork_proof_id, proof_name, proof_ordnum')->from('ts_artwork_proofs');
+            $this->db->where('artwork_id', $art['artwork_id'])->order_by('artwork_proof_id');
+            $proofs = $this->db->get()->result_array();
+            $numpp = 1;
+            foreach ($proofs as $proof) {
+                $filedat = extract_filename($proof['proof_name']);
+                $newname =  ($order['brand']=='SR' ? 'SR' : 'BT').'_'.$order['order_num'].'_proof_'.str_pad($numpp,2, '0', STR_PAD_LEFT).'.'.$filedat['ext'];
+                $chkname = $shname.$art['artwork_id'].'/'.$newname;
+                if ($chkname!==$proof['proof_name']) {
+                    // echo 'ArtW '.$art['artwork_id'].' Old Name '.$proof['proof_name'].' New Name '.$newname.PHP_EOL;
+                    $sourcefile = str_replace($shname, $flname, $proof['proof_name']);
+                    if (file_exists($sourcefile)) {
+                        // echo 'Source file not exist '.$targetfile.' Order '.$order['order_num'].PHP_EOL;
+                        $targetfile = $flname.$art['artwork_id'].'/'.$newname;
+                        if (!file_exists($targetfile)) {
+                            $cpres = @copy($sourcefile, $targetfile);
+                            if ($cpres) {
+                                $this->db->where('artwork_proof_id', $proof['artwork_proof_id']);
+                                $this->db->set('proof_name', $shname.$art['artwork_id'].'/'.$newname);
+                                $this->db->set('proof_ordnum', $numpp);
+                                $this->db->update('ts_artwork_proofs');
+                                $numpp++;
+                                @unlink($sourcefile);
+                            } else {
+                                echo 'Error copy '.$sourcefile.' to '.$targetfile.PHP_EOL;
+                                die();
+                            }
+                        } else {
+                            echo 'File '.$targetfile.' NON UNIQUE '.$proof['artwork_proof_id'].PHP_EOL;
+                            die();
+                        }
+                    } else {
+                        $msg = 'Proof '.$proof['artwork_proof_id'].' '.$proof['proof_name'].' not exist. Order '.$order['order_num'].PHP_EOL;
+                        fwrite($fh, $msg);
+                    }
+                }
+            }
+        }
+    }
+
+    public function sales_report()
+    {
+        $start_date = strtotime('2016-01-01');
+        $reportres = [];
+        // Web
+        $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as yearorder, count(order_id) as total');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.order_date >= ', $start_date);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.weborder',1);
+        $this->db->group_by('yearorder');
+        $this->db->order_by('yearorder');
+        $webres = $this->db->get()->result_array();
+        $reportres[] = [
+            'label' => 'Web Orders',
+            '2016' => 0,
+            '2017' => 0,
+            '2018' => 0,
+            '2019' => 0,
+            '2020' => 0,
+            '2021' => 0,
+            '2022' => 0,
+            '2023' => 0,
+        ];
+        $repidx = count($reportres) - 1;
+        foreach ($webres as $row) {
+            $reportres[$repidx][$row['yearorder']] = $row['total'];
+        }
+        $users = [];
+        $users[] = ['label' => 'Sage', 'id' => 3];
+        $users[] = ['label' => 'Sean', 'id' => 1];
+        $users[] = ['label' => 'Robert', 'id' => 19];
+        $users[] = ['label' => 'Shanequa', 'id' => 23];
+        $other = [3,1,19,23];
+        // Users
+        foreach ($users as $user) {
+            $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as yearorder, count(order_id) as total');
+            $this->db->from('ts_orders o');
+            $this->db->where('o.order_date >= ', $start_date);
+            $this->db->where('o.is_canceled',0);
+            $this->db->where('o.weborder',0);
+            $this->db->where('o.order_usr_repic',$user['id']);
+            $this->db->group_by('yearorder');
+            $this->db->order_by('yearorder');
+            $userres = $this->db->get()->result_array();
+            $reportres[] = [
+                'label' => $user['label'],
+                '2016' => 0,
+                '2017' => 0,
+                '2018' => 0,
+                '2019' => 0,
+                '2020' => 0,
+                '2021' => 0,
+                '2022' => 0,
+                '2023' => 0,
+            ];
+            $repidx = count($reportres) - 1;
+            foreach ($userres as $row) {
+                $reportres[$repidx][$row['yearorder']] = $row['total'];
+            }
+        }
+        // Other
+        $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as yearorder, count(order_id) as total');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.order_date >= ', $start_date);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.weborder',0);
+        $this->db->where_not_in('o.order_usr_repic',$other);
+        $this->db->group_by('yearorder');
+        $this->db->order_by('yearorder');
+        $otherres = $this->db->get()->result_array();
+        $reportres[] = [
+            'label' => 'Other',
+            '2016' => 0,
+            '2017' => 0,
+            '2018' => 0,
+            '2019' => 0,
+            '2020' => 0,
+            '2021' => 0,
+            '2022' => 0,
+            '2023' => 0,
+        ];
+        $repidx = count($reportres) - 1;
+        foreach ($otherres as $row) {
+            $reportres[$repidx][$row['yearorder']] = $row['total'];
+        }
+        // TOTAL
+        $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as yearorder, count(order_id) as total');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.order_date >= ', $start_date);
+        $this->db->where('o.is_canceled',0);
+        $this->db->group_by('yearorder');
+        $this->db->order_by('yearorder');
+        $allres = $this->db->get()->result_array();
+        $reportres[] = [
+            'label' => 'TOTAL',
+            '2016' => 0,
+            '2017' => 0,
+            '2018' => 0,
+            '2019' => 0,
+            '2020' => 0,
+            '2021' => 0,
+            '2022' => 0,
+            '2023' => 0,
+        ];
+        $repidx = count($reportres) - 1;
+        foreach ($allres as $row) {
+            $reportres[$repidx][$row['yearorder']] = $row['total'];
+        }
+        $filename = $this->config->item('upload_path_preload').'sales_report_16_23.csv';
+        @unlink($filename);
+        $fh = fopen($filename,'a+');
+        $msg=';';
+        for($i=2016; $i<2024; $i++) {
+            $msg.=$i.';';
+        }
+        $msg.=PHP_EOL;
+        fwrite($fh, $msg);
+        foreach ($reportres as $row) {
+            $msg=$row['label'].';';
+            for($i=2016; $i<2024; $i++) {
+                $msg.=$row[$i]==0 ? '' : $row[$i].';';
+            }
+            $msg.=PHP_EOL;
+            fwrite($fh, $msg);
+        }
+        echo 'Report '.$filename.' ready!'.PHP_EOL;
+    }
+
+    public function ordercog_report() {
+        $start = strtotime('2023-01-01');
+        $this->db->select('order_id, order_num, date_format(from_unixtime(order_date),\'%m/%d/%Y\') as orderdate, brand, revenue, profit, profit_perc, customer_name, order_qty, order_items, order_cog');
+        $this->db->from('ts_orders');
+        $this->db->where('order_date >= ', $start);
+        $this->db->where('is_canceled', 0);
+        $orders = $this->db->get()->result_array();
+        $reports = [];
+        $maxvend = 0;
+        foreach ($orders as $order) {
+            $order['brand'] = $order['brand']=='SR' ? 'SR' : 'BT';
+            if ($order['order_cog']=='') {
+                $vendors = [];
+                $order['profit_perc'] = 'PROJ';
+                $order['order_cog']='-';
+            } else {
+                $this->db->select('v.vendor_name, sum(oa.amount_sum) as total');
+                $this->db->from('ts_order_amounts oa');
+                $this->db->join('vendors v','oa.vendor_id = v.vendor_id');
+                $this->db->where('oa.order_id', $order['order_id']);
+                $this->db->group_by('v.vendor_name');
+                $vendors = $this->db->get()->result_array();
+                if (count($vendors)>$maxvend) {
+                    $maxvend = count($vendors);
+                }
+            }
+            $order['vendors'] = $vendors;
+            $reports[] = $order;
+        }
+        $file = $this->config->item('upload_path_preload').'orders_cog_2023.csv';
+        @unlink($file);
+        $fh = fopen($file, 'a+');
+        $msg = 'Order #;Date;Brand;Revenue;Profit;%;Customer;Item;QTY;COG;';
+        for ($i=1; $i<=$maxvend; $i++) {
+            $msg.='PO '.$i.' Vendor;PO '.$i.' Amount;';
+        }
+        fwrite($fh, $msg.PHP_EOL);
+        foreach ($reports as $report) {
+            $msg=$report['order_num'].';'.$report['orderdate'].';'.$report['brand'].';'.$report['revenue'].';'.$report['profit'].';';
+            $msg.=$report['profit_perc'].';"'.$report['customer_name'].'";"'.$report['order_items'].'";'.$report['order_qty'].';'.$report['order_cog'].';';
+            foreach ($report['vendors'] as $vendor) {
+                $msg.='"'.$vendor['vendor_name'].'";'.$vendor['total'].';';
+            }
+            if (count($report['vendors'])<$maxvend) {
+                $diff = $maxvend - count($report['vendors']);
+                for ($i=0; $i<$diff;$i++) {
+                    $msg.=';;';
+                }
+            }
+            fwrite($fh, $msg.PHP_EOL);
+        }
+        fclose($fh);
+        echo 'Report '.$file.' READY '.PHP_EOL;
+    }
+
+    public function export_sritems()
+    {
+        $this->load->model('exportexcell_model');
+        $res = $this->exportexcell_model->export_sritems();
+    }
 }

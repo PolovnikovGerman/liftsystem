@@ -73,6 +73,13 @@ function init_poorders_content() {
                 $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
                 if (parseInt(order)==0) {
                     init_onlineleadorder_edit();
+                    if (parseInt($("#ordermapuse").val())==1) {
+                        // Init simple Shipping address
+                        initShipOrderAutocomplete();
+                        if ($("#billorder_line1").length > 0) {
+                            initBillOrderAutocomplete();
+                        }
+                    }
                 } else {
                     if (parseInt(response.data.cancelorder)===1) {
                         $("#artModal").find('div.modal-header').addClass('cancelorder');

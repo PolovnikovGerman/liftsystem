@@ -49,6 +49,10 @@ class Admin extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/admin/jquery.spinnercontrol.css');
                 $head['scripts'][]=array('src'=>'/js/admin/jquery.spinnercontrol.js');
                 $content_options['artalertsview'] = $this->_prepare_artalert_view();
+            } elseif ($row['item_link']=='#calendarsview') {
+                $head['styles'][] = array('style' => '/css/settings/calendars.css');
+                $head['scripts'][] = array('src' => '/js/settings/calendars.js');
+                $content_options['calendarsview'] = $this->_prepare_calendars_view();
             }
         }
 
@@ -117,7 +121,7 @@ class Admin extends MY_Controller
             $user_id=$this->input->post('user_id');
             $result=$this->user_model->delete_usr($user_id, $this->USR_ID);
             $error=$result['msg'];
-            if ($result['res']==$this->success_result) {
+            if ($result['result']==$this->success_result) {
                 $error = '';
                 $mdata['total'] = $this->user_model->get_count_user(['status'=> [1,2]]);
             }
@@ -650,6 +654,25 @@ class Admin extends MY_Controller
         $cfg=$this->artproof_model->get_taskalert_config();
         $content=$this->load->view('admin/taskalert_setup_view',$cfg,TRUE);
         return $content;
+    }
+
+    private function _prepare_calendars_view()
+    {
+        $this->load->model('calendars_model');
+        $totals = $this->calendars_model->count_calendars('ALL');
+        $orderby='calendar_id';
+        $direc='asc';
+
+        $options=array(
+            'total'=>$totals,
+            'perpage'=>$this->PERPAGE,
+            'orderby'=>$orderby,
+            'direct'=>$direc,
+        );
+
+        $content=$this->load->view('settings/calendars_view',$options,TRUE);
+        return $content;
+
     }
 
 }

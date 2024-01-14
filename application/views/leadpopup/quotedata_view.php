@@ -2,6 +2,7 @@
     <input type="hidden" id="quotesessionid" value="<?=$quote_session?>"/>
     <input type="hidden" id="quoteleadconnect" value="<?=$lead_id?>"/>
     <input type="hidden" id="quoteleadnumber" value="<?=$quote_id?>"/>
+    <input type="hidden" id="quotemapuse" value="<?=$mapuse?>"/>
     <div class="datarow quotetemplaterow">
         <div class="quotetemplatetitle">Template:</div>
         <div class="quotetemplateinpt">
@@ -100,43 +101,36 @@
     <div class="datarow">
         <div class="quoteshipaddressarea">
             <div class="quoteshipcountryarea">
-                <select class="quoteaddressinpt quotecountry" <?=$edit_mode==0 ? 'disabled="true"' : '' ?> data-item="shipping_country">
+                <select class="quoteadrinpt quotecountry" <?=$edit_mode==0 ? 'disabled="true"' : '' ?> data-item="shipping_country">
                     <?php foreach ($countries as $country) { ?>
-                        <option value="<?=$country['country_id']?>" <?=$country['country_id']==$data['shipping_country'] ? 'seleted="selected"' : ''?>><?=$country['country_name']?></option>
+                        <option value="<?=$country['country_id']?>" <?=$country['country_id']==$data['shipping_country'] ? 'selected="selected"' : ''?>><?=$country['country_name']?></option>
                     <?php } ?>
                 </select>
+                <input type="hidden" id="shipquotecntcode" value="<?=$shipcode?>"/>
             </div>
             <div class="quoteshipaddressother">
-                <div class="datarow">
-                    <input class="quoteaddressinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_contact"
+                <div class="quoteaddressarea">
+                    <input class="quoteadrinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_contact"
                            placeholder="Contact Name" value="<?=$data['shipping_contact']?>"/>
-                </div>
-                <div class="datarow">
-                    <input class="quoteaddressinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_company"
+                    <input class="quoteadrinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_company"
                            placeholder="Company" value="<?=$data['shipping_company']?>"/>
-                </div>
-                <div class="datarow">
-                    <input class="quoteaddressinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_address1"
-                           placeholder="Address Line 1" value="<?=$data['shipping_address1']?>"/>
-                </div>
-                <div class="datarow">
-                    <input class="quoteaddressinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_address2"
-                           placeholder="Address Line 2" value="<?=$data['shipping_address2']?>"/>
-                </div>
-            </div>
-            <div class="quoteshipaddresszip">
-                <div class="datarow">
-                    <div class="quoteshipaddreszipcode">
-                        <input class="quoteaddressinpt quotepostal" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_zip"
-                               placeholder="Zip" value="<?=$data['shipping_zip']?>"/>
+                    <div class="shiplinearea" style="width: 100%">
+                        <input type="text" class="quoteadrinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_address1"
+                           <?=$mapuse==0 ? 'placeholder="Address Line 1"' : ''?> value="<?=$data['shipping_address1']?>" id="shiplead_line1" autocomplete="new-password" aria-autocomplete="none"/>
                     </div>
-                    <div class="quoteshipaddrescity">
-                        <input class="quoteaddressinpt quotetown" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_city"
+                    <input class="quoteadrinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_address2"
+                           placeholder="Address Line 2" value="<?=$data['shipping_address2']?>" autocomplete="new-password"/>
+                        <input class="quoteadrinpt quotetown" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_city"
                                placeholder="City" value="<?=$data['shipping_city']?>"/>
-                    </div>
-                    <div class="quoteshipaddresdistrict"><?=$shipstate?></div>
+                        <div class="quoteshipaddresdistrict"><?=$shipstate?></div>
+                        <input class="quoteadrinpt quotepostal" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_zip"
+                               placeholder="Zip" value="<?=$data['shipping_zip']?>"/>
+                </div>
+                <div class="shipaddrescopy" <?=$edit_mode==0 ? 'style="display: none;"' : ''?>>
+                    <i class="fa fa-copy"></i>
                 </div>
             </div>
+            <textarea id="shipingcompileaddress" style="display: none"><?=$shipaddress?></textarea>
         </div>
         <div class="quoterushdataarea">
             <div class="datarow">
@@ -174,11 +168,12 @@
                 <div class="quotesectionlabel">BILLING ADDRESS:</div>
             </div>
             <div class="quotebillcountryarea <?=$data['billingsame']==1 ? 'billingsame' : ''?>">
-                <select class="quoteaddressinpt quotecountry" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_country">
+                <select class="quoteadrinpt quotecountry" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_country">
                     <?php foreach ($countries as $country) { ?>
-                        <option value="<?=$country['country_id']?>" <?=$country['country_id']==$data['billing_country'] ? 'seleted="selected"' : ''?>><?=$country['country_name']?></option>
+                        <option value="<?=$country['country_id']?>" <?=$country['country_id']==$data['billing_country'] ? 'selected="selected"' : ''?>><?=$country['country_name']?></option>
                     <?php } ?>
                 </select>
+                <input type="hidden" id="billcountrycode" value="<?=$bilcode?>"/>
             </div>
             <?php if ($data['quote_id']==0) { ?>
                 <div class="quotesamebilligaddress">
@@ -189,33 +184,27 @@
                 </div>
             <?php  } ?>
             <div class="quotebilladdressother <?=$data['billingsame']==1 ? 'billingsame' : ''?>">
-                <div class="datarow">
-                    <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_contact"
+                <div class="quoteaddressarea">
+                    <input class="quoteadrinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_contact"
                            placeholder="Contact Name" value="<?=$data['billing_contact']?>">
-                </div>
-                <div class="datarow">
-                    <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_company"
+                    <input class="quoteadrinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_company"
                            placeholder="Company" value="<?=$data['billing_company']?>">
-                </div>
-                <div class="datarow">
-                    <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_address1"
-                           placeholder="Address Line 1" value="<?=$data['billing_address1']?>">
-                </div>
-                <div class="datarow">
-                    <input class="quoteaddressinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_address2"
+                    <div class="billadrrlinearea" style="width: 100%">
+                        <input class="quoteadrinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_address1"
+                            <?=$mapuse==0 ? 'placeholder="Address Line 1"' : ''?> value="<?=$data['billing_address1']?>" id="bill_line1" aria-autocomplete="none" autocomplete="new-password">
+                    </div>
+                    <input class="quoteadrinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_address2"
                            placeholder="Address Line 2" value="<?=$data['billing_address2']?>">
-                </div>
-                <div class="datarow">
-                    <div class="quotebilladdreszipcode">
-                        <input class="quoteaddressinpt quotepostal" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_zip"
-                               placeholder="Zip" value="<?=$data['billing_zip']?>"/>
-                    </div>
-                    <div class="quotebilladdrescity">
-                        <input class="quoteaddressinpt quotetown" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_city"
-                               placeholder="City" value="<?=$data['billing_city']?>"/>
-                    </div>
+                    <input class="quoteadrinpt quotetown" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_city"
+                           placeholder="City" value="<?=$data['billing_city']?>"/>
                     <div class="quotebilladdresdistrict"><?=$billstate?></div>
+                    <input class="quoteadrinpt quotepostal" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_zip"
+                           placeholder="Zip" value="<?=$data['billing_zip']?>"/>
                 </div>
+                <div class="billingaddresscopy" <?=($edit_mode==0 || $data['billingsame']==1) ? 'style="display: none"' : ''?>>
+                    <i class="fa fa-copy"></i>
+                </div>
+                <textarea id="billingcompileaddress" style="display: none"><?=$billaddress?></textarea>
             </div>
         </div>
         <div class="quotenotesarea">

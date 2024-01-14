@@ -3,9 +3,10 @@
     <input type="hidden" id="ordersession" value="<?=$leadsession?>"/>
     <input type="hidden" id="callpage" value="<?=$current_page?>"/>
     <?php if (isset($locrecid)) {?>
-    <input type="hidden" id="locrecid" value="<?=$locrecid?>"/>
+        <input type="hidden" id="locrecid" value="<?=$locrecid?>"/>
     <?php } ?>
     <input type="hidden" id="loctimeout" value="<?=$timeout?>"/>
+    <input type="hidden" id="ordermapuse" value="<?=$mapuse?>"/>
     <div id="currentorderdataarea">
         <?=$order_data?>
     </div>    

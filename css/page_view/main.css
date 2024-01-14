@@ -106,20 +106,20 @@ body div {
 }
 .content_tab_header.sigmasystem {
     background: #595959;
-    width: 48px;
+    width: 54px;
     height: 49px;
 }
 .sigma_logo {
-    margin: 18px 16px 0 16px;
+    margin: 16px 16px 0 16px;
 }
 .content_tab_header.active.sigmasystem {
     background: #aaa9a9;
 }
 .sigma_logo.active {
-    margin: 17px 17px 0 17px;
+    margin: 17px 20px 0 20px;
 }
 .mainsiteheader {
-    width: calc(100% - 425px);
+    width: calc(100% - 432px);
 }
 .period_analitic_info {
     border: 1px solid #9b9b9b;
@@ -581,7 +581,8 @@ ul.mainmenu #collapsed.dropdown-menu li {
     /* height: 35px; */
     height: 25px;
 }
-.brandmenuitemactive.relievers {
+.brandmenuitemactive.relievers,
+.brandmenuitemactive.sigmasystem {
     border-top: 1px solid #000000;
     border-left: 1px solid #000000;
     border-bottom: 1px solid #000000;
@@ -722,7 +723,8 @@ ul.mainmenu #collapsed.dropdown-menu li {
     min-height: 598px;
     margin-top: -1px;
 }
-.relieverstab .maincontent_view {
+.relieverstab .maincontent_view,
+.sigmasystem .maincontent_view {
     border: 1px solid #000000;
 }
 .databrands {
@@ -1320,6 +1322,16 @@ div.oldvesionlabel {
     border: 1px solid #bdbdbd;
 }
 .submenuitem.relievers:hover {
+    background-color: #00004c;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
+.submenuitem.sigma {
+    background-color: #ebebeb;
+    color: #000000;
+    border: 1px solid #bdbdbd;
+}
+.submenuitem.sigma:hover {
     background-color: #00004c;
     color: #ffffff;
     border: 1px solid #ffffff;

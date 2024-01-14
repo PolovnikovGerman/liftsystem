@@ -65,7 +65,7 @@
     font-weight: normal;
     color: #000000;
     background-color: #dadada;
-    border: 1px solid #acacac !important;
+    border: 1px solid #acacac;
 }
 .leadorderdetailspopup textarea[readonly="readonly"] {
     font-size: 11px;    
@@ -79,7 +79,7 @@
     font-weight: normal;
     color: #000000;
     background-color: #dadada;
-    border: 1px solid #acacac !important;    
+    border: 1px solid #acacac;
 }
 .blinked {
   -webkit-animation: blink2 1s linear infinite;
@@ -333,6 +333,7 @@ input.calendarinpt[readonly="readonly"] {
 .contact_content_email {
     float: left;
     width: 205px;
+    max-height: 20px;
 }
 .contact_content_art,
 .contact_content_inv,
@@ -358,6 +359,19 @@ input.calendarinpt[readonly="readonly"] {
 }
 .contact_email_input {
     width: 195px;
+}
+.contactemail_clone {
+    float: right;
+    position: relative;
+    left: -8px;
+    top: -17px;
+    background: #000;
+    color: #fff;
+    font-size: 9px;
+    height: 14.9px;
+    width: 16px;
+    text-align: center;
+    cursor: pointer;
 }
 .contact_art_input,
 .contact_inv_input,
@@ -936,21 +950,49 @@ input.shiprushcost, input.shippingcost, input.salestaxcost {
     margin-left: 6px;
 }
 input.ship_tax_textareainpt {
-    height: 17px;
+    border-left: none!important;
+    border-top: none!important;
+    border-right: none!important;
+    border-bottom: 1px dotted #858585!important;
+    height: 16px;
     font-size: 11px;
-    margin-left: 6px;
-    width: 171px;
-    margin-bottom: 1px;
+    /* margin-left: 6px; */
+    /* margin-bottom: 1px;*/
+    width: 100%;
 }
 .ship_tax_cont_bl1 {
     float: left;
-    width: 184px;
+    width: 169px;
     margin-top: 5px;
+    border: 2px solid #858585;
+    margin-left: 5px;
+}
+.shippingadrescopy, .billingaddresscopy {
+    background: #000000;
+    color: #ffffff!important;
+    cursor: pointer;
+    float: left;
+    font-size: 11px;
+    height: 16px;
+    left: -17px;
+    margin-right: -6px;
+    position: relative;
+    text-align: center;
+    top: 6px;
+    width: 16px;
+}
+.billingaddresscopy {
+    top: 2px!important;
+    height: 18px!important;
+    /* height: 20px!important; */
 }
 .ship_tax_cont_bl2 {
     float: left;
     margin-top: 5px;
     width: 55px;
+}
+.ship_tax_cont_bl2.viewdata {
+    margin-left: 10px;
 }
 .ship_tax_cont_bl2 > .line {
     clear: both;
@@ -971,12 +1013,13 @@ input.ship_tax_textareainpt {
     /* height: 28px; */
     /* opacity: 0.5; */
 }
-.ship_tax_cont_bl3 {    
+.ship_tax_cont_bl3 {
     float: left;
     height: 17px;
     line-height: 17px;
-    margin-top: 82px;
+    margin-top: 33px;
     width: 244px;
+    margin-left: 67px;
 }
 .taxlabel {
     color: #000d6e;
@@ -984,7 +1027,8 @@ input.ship_tax_textareainpt {
     font-size: 12px;
     font-weight: bold;
     text-align: center;
-    width: 75px;
+    /* width: 75px; */
+    width: 96px;
 }
 .taxexcept {
     float: left;
@@ -1015,25 +1059,22 @@ span.taxemptyview {
     font-style: italic;
 }
 .ship_tax_input1 {
-    float: left;
-    font-size: 11px;
     height: 19px;
-    margin: 3px 0 0 3px;
-    width: 77px;
+    /* margin: 3px 0 0 3px; */
+    width: 81px;
+    border: none!important;
 }
 .ship_tax_input2 {
-    float: left;
-    font-size: 11px;
     height: 19px;
-    margin: 3px 0 0 6px;
-    width: 39px;
+/*    margin: 3px 0 0 6px;*/
+    width: 42px;
+    border: none!important;
 }
 .ship_tax_select2 {
-    float: left;
-    font-size: 11px;
     height: 19px;
-    margin: 3px 2px 0 3px;
+    /* margin: 3px 2px 0 3px; */
     width: 42px;
+    border: none!important;
 }
 /* Input area for shipping date dates */
 .shippingdatesarea {
@@ -1097,7 +1138,11 @@ span.taxemptyview {
     float: left;
     /* height: 70px; */
     margin-top: 3px;
-    width: 318px;
+    /* width: 318px; */
+    width: 240px;
+}
+.billing_content1.samebilling {
+    margin-top: 7px;
 }
 .billing_content2{
     float: right;
@@ -1150,20 +1195,36 @@ span.taxemptyview {
 }
 .billing_content1_line{
     float: left;
-    width: 316px;
+    /* width: 316px; */
     line-height: 20px;
     padding-top: 2px;
 }
+.billingaddressbox {
+    float: left;
+    width: 180px;
+    margin-top: 2px;
+    border: 2px solid #858585;
+    margin-left: 5px;
+    margin-bottom: 3px;
+}
 .billing_input1 {
     float: left;
-    width: 305px;
-    height: 19px;
-    margin: 0 0 0 3px;
+    width: 100%;
+    height: 16px;
+    /* margin: 0 0 0 3px; */
+    border-left: none!important;
+    border-top: none!important;
+    border-right: none!important;
+    border-bottom: 1px dotted #858585!important;
 }
 .billing_input2 {
-    height: 19px;
-    margin: 0 0 0 3px;
-    width: 305px;
+    height: 16px;
+    /* margin: 0 0 0 3px; */
+    width: 100%;
+    border-left: none!important;
+    border-top: none!important;
+    border-right: none!important;
+    border-bottom: 1px dotted #858585!important;
 }
 .billing_input3 {
     height: 19px;
@@ -1178,15 +1239,23 @@ span.taxemptyview {
 }
 .billing_input4 {
     float: left;
-    width: 151px;
-    height: 19px;
-    margin: 0 0 0 3px;
+    width: 100%;
+    height: 16px;
+    /* margin: 0 0 0 3px; */
+    border-left: none!important;
+    border-top: none!important;
+    border-right: none!important;
+    border-bottom: 1px dotted #858585!important;
 }
 .billing_input5 {
     float: left;
-    width: 108px;
-    height: 19px;
-    margin: 0 0 5px 3px;
+    width: 81px;
+    height: 16px;
+    /* margin: 0 0 5px 3px; */
+    border-left: none!important;
+    border-top: none!important;
+    border-right: none!important;
+    border-bottom: 1px dotted #858585!important;
 }
 .billingstateselectarea {
     float: left;
@@ -1194,9 +1263,14 @@ span.taxemptyview {
 }
 .billing_input6 {
     float: left;
-    width: 47px;
-    height: 19px;
-    margin: 0 0 0 3px;
+    /* width: 47px; */
+    width: 53px;
+    height: 16px;
+    /* margin: 0 0 0 3px; */
+    border-left: none!important;
+    border-top: none!important;
+    border-right: none!important;
+    border-bottom: 1px dotted #858585!important;
 }
 .billing_input7 {
     float: left;
@@ -1207,9 +1281,13 @@ span.taxemptyview {
 .billing_select1 {
     float: left;
     font-size: 11px;
-    height: 19px;
-    margin: 0 0 0 3px;
+    height: 16px;
+/*    margin: 0 0 0 3px; */
     width: 42px;
+    border-left: none!important;
+    border-top: none!important;
+    border-right: none!important;
+    border-bottom: 1px dotted #858585!important;
 }
 .billing_select2 {
     float: left;
@@ -3561,7 +3639,9 @@ textarea.proofnotes {
 }
 .billing_content_linecenter {
     float: left;
-    margin-top: 37px;
+    /* margin-top: 37px; */
+    margin-top: 9px;
+    margin-bottom: 15px;
     width: 320px;
     height: 46px;
 }
@@ -5188,4 +5268,9 @@ input.ticket_date {
     border-bottom: 1px solid #dbdbdb;
     border-right: 1px solid #dbdbdb;
     float: right!important;
+}
+/* Address Autocomplete */
+.pac-container {
+    z-index: 1500!important;
+    width: 325px!important;
 }

@@ -101,6 +101,52 @@ function init_accreceive_content() {
                 $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
                 if (parseInt(order)==0) {
                     init_onlineleadorder_edit();
+                    if (parseInt($("#ordermapuse").val())==1) {
+                        // Init simple Shipping address
+                        initShipOrderAutocomplete();
+                        if ($("#billorder_line1").length > 0) {
+                            initBillOrderAutocomplete();
+                        }
+                    }
+                } else {
+                    if (parseInt(response.data.cancelorder)===1) {
+                        $("#artModal").find('div.modal-header').addClass('cancelorder');
+                    } else {
+                        $("#artModal").find('div.modal-header').removeClass('cancelorder');
+                    }
+                    navigation_init();
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+    $(".accreceiv-owndetails-bodyordersigma").unbind('click').click(function () {
+        var order = $(this).data('order');
+        var callpage = 'accrecive';
+        var brand = $(this).data('brand');
+        var url="/leadorder/leadorder_change";
+        var params = new Array();
+        params.push({name: 'order', value: order});
+        params.push({name: 'page', value: callpage});
+        params.push({name: 'edit', value: 0});
+        params.push({name: 'brand', value: brand});
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("#artModalLabel").empty().html(response.data.header);
+                $("#artModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artModal").find('div.modal-dialog').css('width','1004px');
+                $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
+                $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
+                if (parseInt(order)==0) {
+                    init_onlineleadorder_edit();
+                    if (parseInt($("#ordermapuse").val())==1) {
+                        // Init simple Shipping address
+                        initShipOrderAutocomplete();
+                        if ($("#billorder_line1").length > 0) {
+                            initBillOrderAutocomplete();
+                        }
+                    }
                 } else {
                     if (parseInt(response.data.cancelorder)===1) {
                         $("#artModal").find('div.modal-header').addClass('cancelorder');
@@ -134,6 +180,52 @@ function init_accreceive_content() {
                 $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
                 if (parseInt(order)==0) {
                     init_onlineleadorder_edit();
+                    if (parseInt($("#ordermapuse").val())==1) {
+                        // Init simple Shipping address
+                        initShipOrderAutocomplete();
+                        if ($("#billorder_line1").length > 0) {
+                            initBillOrderAutocomplete();
+                        }
+                    }
+                } else {
+                    if (parseInt(response.data.cancelorder)===1) {
+                        $("#artModal").find('div.modal-header').addClass('cancelorder');
+                    } else {
+                        $("#artModal").find('div.modal-header').removeClass('cancelorder');
+                    }
+                    navigation_init();
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+    $(".accreceiv-refunddetails-bodyordersigma").unbind('click').click(function () {
+        var order = $(this).data('order');
+        var callpage = 'accrecive';
+        var brand = $(this).data('brand');
+        var url="/leadorder/leadorder_change";
+        var params = new Array();
+        params.push({name: 'order', value: order});
+        params.push({name: 'page', value: callpage});
+        params.push({name: 'edit', value: 0});
+        params.push({name: 'brand', value: brand});
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("#artModalLabel").empty().html(response.data.header);
+                $("#artModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artModal").find('div.modal-dialog').css('width','1004px');
+                $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
+                $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
+                if (parseInt(order)==0) {
+                    init_onlineleadorder_edit();
+                    if (parseInt($("#ordermapuse").val())==1) {
+                        // Init simple Shipping address
+                        initShipOrderAutocomplete();
+                        if ($("#billorder_line1").length > 0) {
+                            initBillOrderAutocomplete();
+                        }
+                    }
                 } else {
                     if (parseInt(response.data.cancelorder)===1) {
                         $("#artModal").find('div.modal-header').addClass('cancelorder');

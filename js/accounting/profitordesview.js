@@ -491,6 +491,13 @@ function edit_order(order) {
             if (parseInt(order)==0) {
                 init_onlineleadorder_edit();
                 init_rushpast();
+                if (parseInt($("#ordermapuse").val())==1) {
+                    // Init simple Shipping address
+                    initShipOrderAutocomplete();
+                    if ($("#billorder_line1").length > 0) {
+                        initBillOrderAutocomplete();
+                    }
+                }
             } else {
                 if (parseInt(response.data.cancelorder)===1) {
                     $("#artModal").find('div.modal-header').addClass('cancelorder');
@@ -542,6 +549,13 @@ function add_leadorder(brand) {
             $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
             init_onlineleadorder_edit();
             init_rushpast();
+            if (parseInt($("#ordermapuse").val())==1) {
+                // Init simple Shipping address
+                initShipOrderAutocomplete();
+                if ($("#billorder_line1").length > 0) {
+                    initBillOrderAutocomplete();
+                }
+            }
         } else {
             show_error(response);
         }

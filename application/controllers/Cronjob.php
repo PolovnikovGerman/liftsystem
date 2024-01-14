@@ -1101,4 +1101,63 @@ Class Cronjob extends CI_Controller
         $this->load->model('artlead_model');
         $this->artlead_model->artclay_export();
     }
+
+    public function batchdailyreport()
+    {
+        $dateend=strtotime(date('m/d/Y'));
+        $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
+
+        $this->load->model('batches_model');
+        $brands = ['SB', 'SR'];
+        $msgbody='';
+        foreach ($brands as $brand) {
+            $usrlist = $this->batches_model->batchreport_users($datestart, $dateend, $brand);
+            if (count($usrlist) > 0) {
+                $title = 'Amounts added to ';
+                if ($brand=='SB') {
+                    $title.='Bluetrack/Stressballs';
+                } elseif ($brand=='SR') {
+                    $title.='StressRelievers.com';
+                }
+                $msgbody.='<span style="font-weight: bold">'.$title.'</span><br/>';
+                foreach ($usrlist as $row) {
+                    $list = $this->batches_model->batchreport_data($datestart, $dateend, $row['user_id'], $brand);
+                    if (empty($row['user_id'])) {
+                        $row['user_name'] = 'WEB Order';
+                    }
+                    $opt=[
+                        'title'=>date('D - M d, Y', $datestart).' - '.$row['user_name'],
+                        'subtitle'=>'', // Newly Added Amounts:
+                        'lists'=>$list,
+                    ];
+                    $msgbody.=$this->load->view('messages/batches_data_view', $opt, TRUE);
+                }
+            }
+        }
+        $this->load->library('email');
+        $config['charset'] = 'utf-8';
+        $config['mailtype']='html';
+        $config['wordwrap'] = TRUE;
+        $this->email->initialize($config);
+        $email_from=$this->config->item('email_notification_sender');
+        $email_to=$this->config->item('sean_email');
+        $email_cc=array($this->config->item('sage_email'));
+        $this->email->from($email_from);
+        $this->email->to($email_to);
+        $this->email->cc($email_cc);
+        // Temporary ADD for check
+        $this->email->bcc([$this->config->item('developer_email')]);
+        $title=date('D - M d, Y', $datestart).' - Amouts added';
+        $this->email->subject($title);
+        if ($msgbody=='') {
+            $body='<span style="font-weight: bold">'.$title.'</span>';
+            $this->email->message($body);
+        } else {
+            $body=$this->load->view('messages/amount_note_view', array('content'=>$msgbody),TRUE);
+            $this->email->message($body);
+        }
+        $this->email->send();
+        $this->email->clear(TRUE);
+
+    }
 }

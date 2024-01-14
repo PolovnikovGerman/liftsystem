@@ -28,6 +28,8 @@ $(document).ready(function () {
     $(".brandmenuitem").find('div.brandmenuicon').hover(
         function () {
             $(".brandsubmenu[data-brand='SB']").hide();
+            $(".brandsubmenu[data-brand='SR']").hide();
+            $(".brandsubmenu[data-brand='SG']").hide();
             var dataid = $(this).data('item');
             var position = $(this).position();
             var brand = $(this).data('brand');
@@ -43,7 +45,6 @@ $(document).ready(function () {
                     show_error(response);
                 }
             },'json');
-
         },
         function () {
             // $(".brandsubmenu[data-brand='SB']").hide();
@@ -308,5 +309,9 @@ function ordertotalsparse() {
 function leftmenu_alignment() {
     var mainheight = $("div.maincontentmenuarea").css('height');
     $(".leftmenuarea").find('div.content_tab.active').css('height', mainheight);
+
+}
+
+function initAutocomplete() {
 
 }
