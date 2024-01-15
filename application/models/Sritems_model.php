@@ -3349,7 +3349,8 @@ Class Sritems_model extends My_Model
         foreach ($items as $item) {
             $filename = '';
             $templat = 'ai-temp_'.$item['item_num'].'_*.ai';
-            $chfiles = glob($templat);
+            echo 'Item '.$item['item_num'].' Template '.$path_fl.$templat.PHP_EOL;
+            $chfiles = glob($path_fl.$templat);
             if (count($chfiles)==1) {
                 $filename = str_replace($path_fl, $path_sh, $chfiles[0]);
             } else {
