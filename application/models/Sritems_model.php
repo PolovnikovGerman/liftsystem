@@ -3421,17 +3421,18 @@ Class Sritems_model extends My_Model
                 $cpres = @copy($srcname, $targname);
                 if ($cpres) {
                     @unlink($srcname);
-                    $itemimg = $path_sh.$item['managed'].'/'.str_replace($preload_fl.$itemname.'/','',$chimg);
-                    $this->db->set('item_img_item_id', $item['managed']);
-                    $this->db->set('item_img_name', $itemimg);
-                    $this->db->set('item_img_order', $numpp);
-                    $this->db->insert('sb_item_images');
                     if ($numpp==1) {
                         $this->db->where('item_id', $item['managed']);
                         $this->db->set('main_image', $itemimg);
                         $this->db->update('sb_items');
+                    } else {
+                        $itemimg = $path_sh.$item['managed'].'/'.str_replace($preload_fl.$itemname.'/','',$chimg);
+                        $this->db->set('item_img_item_id', $item['managed']);
+                        $this->db->set('item_img_name', $itemimg);
+                        $this->db->set('item_img_order', $numpp);
+                        $this->db->insert('sb_item_images');
+                        $numpp++;
                     }
-                    $numpp++;
                 }
             }
             echo 'Item '.$item['item_num'].' Add Images finished'.PHP_EOL;
