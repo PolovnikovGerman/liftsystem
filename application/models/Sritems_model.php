@@ -3288,7 +3288,7 @@ Class Sritems_model extends My_Model
                     $numpp = 1;
                     foreach ($colors as $color) {
                         $this->db->set('item_color_itemid', $newid);
-                        $this->db->set('item_color', $color);
+                        $this->db->set('item_color', trim($color));
                         $this->db->set('item_color_order', $numpp);
                         $this->db->insert('sb_item_colors');
                         $numpp++;
@@ -3386,12 +3386,28 @@ Class Sritems_model extends My_Model
 //                }
 //            }
             // Colors
+            $this->db->select('*')->from('sb_item_colors')->where('item_color_itemid', $item['managed']);
+            $colors = $this->db->get()->result_arrays();
             $preload_fl = $this->config->item('upload_path_preload').'items/';
             $itemname = $item['item_num'].'_'.strtolower(str_replace(' ','',str_replace(' Stress Balls','',$item['item_name'])));
-            $template = $preload_fl.$itemname.'/*jpg';
-            echo $template.PHP_EOL;
-            $chimg = glob($preload_fl.$itemname.'/*jpg');
-            var_dump($chimg);die();
+            foreach ($colors as $color) {
+                $colorname = strtolower(str_replace([' ','/'],'',$colors['item_color']));
+                $template = $preload_fl.$itemname.'/*'.$colorname.'.jpg';
+                echo $template.PHP_EOL;
+                $chimgs = glob($template);
+                if (count($chimgs) > 0) {
+                    var_dump($chimgs);
+                    die();
+                }
+            }
+
+
+
+            $chimgs = glob($preload_fl.$itemname.'/*jpg');
+
+            foreach ($chimgs as $chimg) {
+
+            }
 
         }
     }
