@@ -3344,26 +3344,46 @@ Class Sritems_model extends My_Model
     public function sritems_images() {
         $this->db->select('*')->from('sritems_export');
         $items = $this->db->get()->result_array();
-        $path_fl = $this->config->item('item_aitemplate');
-        $path_sh = $this->config->item('item_aitemplate_relative');
         foreach ($items as $item) {
-            $filename = '';
-            $templat = 'ai-temp_'.$item['item_num'].'_*.ai';
-            echo 'Item '.$item['item_num'].' Template '.$path_fl.$templat.PHP_EOL;
-            $chfiles = glob($path_fl.$templat);
-            if (count($chfiles)==1) {
-                $filename = str_replace($path_fl, $path_sh, $chfiles[0]);
-            } else {
-                $templat = 'ai-temp_'.$item['item_num'].'_*.pdf';
-                $chfiles = glob($templat);
+            // AI template
+//            $path_fl = $this->config->item('item_aitemplate');
+//            $path_sh = $this->config->item('item_aitemplate_relative');
+//            $filename = '';
+//            $templat = 'ai-temp_'.$item['item_num'].'_*.ai';
+//            echo 'Item '.$item['item_num'].' Template '.$path_fl.$templat.PHP_EOL;
+//            $chfiles = glob($path_fl.$templat);
+//            if (count($chfiles)==1) {
+//                $filename = str_replace($path_fl, $path_sh, $chfiles[0]);
+//            } else {
+//                $templat = 'ai-temp_'.$item['item_num'].'_*.pdf';
+//                $chfiles = glob($templat);
+//                if (count($chfiles)==1) {
+//                    $filename = str_replace($path_fl, $path_sh, $chfiles[0]);
+//                }
+//            }
+//            if (!empty($filename)) {
+//                $this->db->where('item_id', $item['managed']);
+//                $this->db->set('item_vector_img', $filename);
+//                $this->db->update('sb_items');
+//            }
+            // Get imprints
+            $path_fl = $this->config->item('imprint_images_relative');
+            $path_sh = $this->config->item('imprint_images');
+            $this->db->select('*')->from('sb_item_inprints')->where('item_inprint_item', $item['managed']);
+            $imprints = $this->db->get()->result_array();
+            foreach ($imprints as $imprint) {
+                $filename = '';
+                $templat = $item['item_num'].'_*_'.str_replace([' ',', '],'_',$imprint['item_inprint_location']).'.jpg';
+                echo 'Item '.$item['item_num'].' Template '.$path_fl.$templat.PHP_EOL;
+                $chfiles = glob($path_fl.$templat);
                 if (count($chfiles)==1) {
                     $filename = str_replace($path_fl, $path_sh, $chfiles[0]);
                 }
-            }
-            if (!empty($filename)) {
-                $this->db->where('item_id', $item['managed']);
-                $this->db->set('item_vector_img', $filename);
-                $this->db->update('sb_items');
+                if (!empty($filename)) {
+                    $this->db->where('item_inprint_id', $imprint['item_inprint_id']);
+                    $this->db->set('item_inprint_view', $filename);
+                    $this->db->update('sb_item_inprints');
+                }
             }
         }
     }
