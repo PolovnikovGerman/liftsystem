@@ -3392,7 +3392,7 @@ Class Sritems_model extends My_Model
             $itemname = $item['item_num'].'_'.strtolower(str_replace(' ','',str_replace(' Stress Balls','',$item['item_name'])));
             foreach ($colors as $color) {
                 $colorname = strtolower(str_replace([' ','/'],'',$color['item_color']));
-                $template = $preload_fl.$itemname.'/*'.$colorname.'.jpg';
+                $template = $preload_fl.$itemname.'/*-'.$colorname.'.jpg';
                 echo $template.PHP_EOL;
                 $chimgs = glob($template);
                 if (count($chimgs) > 0) {
