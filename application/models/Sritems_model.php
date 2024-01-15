@@ -3367,24 +3367,30 @@ Class Sritems_model extends My_Model
 //                $this->db->update('sb_items');
 //            }
             // Get imprints
-            $path_fl = $this->config->item('imprint_images_relative');
-            $path_sh = $this->config->item('imprint_images');
-            $this->db->select('*')->from('sb_item_inprints')->where('item_inprint_item', $item['managed']);
-            $imprints = $this->db->get()->result_array();
-            foreach ($imprints as $imprint) {
-                $filename = '';
-                $templat = $item['item_num'].'_*_'.str_replace([' ',', '],'_',strtolower($imprint['item_inprint_location'])).'.jpg';
-                echo 'Item '.$item['item_num'].' Template '.$path_fl.$templat.PHP_EOL;
-                $chfiles = glob($path_fl.$templat);
-                if (count($chfiles)==1) {
-                    $filename = str_replace($path_fl, $path_sh, $chfiles[0]);
-                }
-                if (!empty($filename)) {
-                    $this->db->where('item_inprint_id', $imprint['item_inprint_id']);
-                    $this->db->set('item_inprint_view', $filename);
-                    $this->db->update('sb_item_inprints');
-                }
-            }
+//            $path_fl = $this->config->item('imprint_images_relative');
+//            $path_sh = $this->config->item('imprint_images');
+//            $this->db->select('*')->from('sb_item_inprints')->where('item_inprint_item', $item['managed']);
+//            $imprints = $this->db->get()->result_array();
+//            foreach ($imprints as $imprint) {
+//                $filename = '';
+//                $templat = $item['item_num'].'_*_'.str_replace([' ',', '],'_',strtolower($imprint['item_inprint_location'])).'.jpg';
+//                echo 'Item '.$item['item_num'].' Template '.$path_fl.$templat.PHP_EOL;
+//                $chfiles = glob($path_fl.$templat);
+//                if (count($chfiles)==1) {
+//                    $filename = str_replace($path_fl, $path_sh, $chfiles[0]);
+//                }
+//                if (!empty($filename)) {
+//                    $this->db->where('item_inprint_id', $imprint['item_inprint_id']);
+//                    $this->db->set('item_inprint_view', $filename);
+//                    $this->db->update('sb_item_inprints');
+//                }
+//            }
+            // Colors
+            $preload_fl = $this->config->item('upload_path_preload').'items/';
+            $itemname = $item['item_num'].'_'.strtolower(str_replace(' ','',str_replace(' Stress Balls','',$item['item_name'])));
+            $chimg = glob($preload_fl.$itemname.'*jpg');
+            var_dump($chimg);die();
+
         }
     }
 }
