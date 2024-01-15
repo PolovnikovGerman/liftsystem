@@ -3428,7 +3428,7 @@ Class Sritems_model extends My_Model
                     $this->db->insert('sb_item_images');
                     if ($numpp==1) {
                         $this->db->where('item_id', $item['managed']);
-                        $this->db->set('main_img', $itemimg);
+                        $this->db->set('main_image', $itemimg);
                         $this->db->update('sb_items');
                     }
                     $numpp++;
