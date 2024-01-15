@@ -3373,7 +3373,7 @@ Class Sritems_model extends My_Model
             $imprints = $this->db->get()->result_array();
             foreach ($imprints as $imprint) {
                 $filename = '';
-                $templat = $item['item_num'].'_*_'.str_replace([' ',', '],'_',$imprint['item_inprint_location']).'.jpg';
+                $templat = $item['item_num'].'_*_'.str_replace([' ',', '],'_',strtolower($imprint['item_inprint_location'])).'.jpg';
                 echo 'Item '.$item['item_num'].' Template '.$path_fl.$templat.PHP_EOL;
                 $chfiles = glob($path_fl.$templat);
                 if (count($chfiles)==1) {
