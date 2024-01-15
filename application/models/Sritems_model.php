@@ -3391,7 +3391,7 @@ Class Sritems_model extends My_Model
             $preload_fl = $this->config->item('upload_path_preload').'items/';
             $itemname = $item['item_num'].'_'.strtolower(str_replace(' ','',str_replace(' Stress Balls','',$item['item_name'])));
             foreach ($colors as $color) {
-                $colorname = strtolower(str_replace([' ','/'],'',$colors['item_color']));
+                $colorname = strtolower(str_replace([' ','/'],'',$color['item_color']));
                 $template = $preload_fl.$itemname.'/*'.$colorname.'.jpg';
                 echo $template.PHP_EOL;
                 $chimgs = glob($template);
