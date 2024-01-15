@@ -3389,6 +3389,9 @@ Class Sritems_model extends My_Model
             $this->db->select('*')->from('sb_item_colors')->where('item_color_itemid', $item['managed']);
             $colors = $this->db->get()->result_array();
             $preload_fl = $this->config->item('upload_path_preload').'items/';
+            $path_fl = $this->config->item('item_images_relative');
+            $path_sh = $this->config->item('item_images');
+            createPath($path_sh.$item['managed']);
             $itemname = $item['item_num'].'_'.strtolower(str_replace(' ','',str_replace(' Stress Balls','',$item['item_name'])));
             foreach ($colors as $color) {
                 $colorname = strtolower(str_replace([' ','/'],'',$color['item_color']));
@@ -3396,19 +3399,42 @@ Class Sritems_model extends My_Model
                 echo $template.PHP_EOL;
                 $chimgs = glob($template);
                 if (count($chimgs) > 0) {
-                    var_dump($chimgs);
-                    die();
+                    $srcname = $chimgs[0];
+                    $targname = $path_fl.$item['managed'].'/'.str_replace($preload_fl.$itemname.'/','',$chimgs[0]);
+                    $cpres = @copy($srcname, $targname);
+                    if ($cpres) {
+                        @unlink($srcname);
+                        // Update colors
+                        $colorimg = $path_sh.$item['managed'].'/'.str_replace($preload_fl.$itemname.'/','',$chimgs[0]);
+                        $this->db->where('item_color_id', $color['item_color_id']);
+                        $this->db->set('item_color_image', $colorimg);
+                        $this->db->update('sb_item_colors');
+                    }
                 }
             }
-
-
-
+            echo 'Item '.$item['item_num'].' Update colors finished'.PHP_EOL;
             $chimgs = glob($preload_fl.$itemname.'/*jpg');
-
+            $numpp=1;
             foreach ($chimgs as $chimg) {
-
+                $srcname = $chimg;
+                $targname = $path_fl.$item['managed'].'/'.str_replace($preload_fl.$itemname.'/','',$chimg);
+                $cpres = @copy($srcname, $targname);
+                if ($cpres) {
+                    @unlink($srcname);
+                    $itemimg = $path_sh.$item['managed'].'/'.str_replace($preload_fl.$itemname.'/','',$chimg);
+                    $this->db->set('item_img_item_id', $item['managed']);
+                    $this->db->set('item_img_name', $itemimg);
+                    $this->db->set('item_img_order', $numpp);
+                    $this->db->insert('sb_item_images');
+                    if ($numpp==1) {
+                        $this->db->where('item_id', $item['managed']);
+                        $this->db->set('main_img', $itemimg);
+                        $this->db->update('sb_items');
+                    }
+                    $numpp++;
+                }
             }
-
+            echo 'Item '.$item['item_num'].' Add Images finished'.PHP_EOL;
         }
     }
 }
