@@ -3243,4 +3243,10 @@ class Test extends CI_Controller
         $this->load->model('sritems_model');
         $res = $this->sritems_model->convert_sritems();
     }
+
+    public function sritems_images()
+    {
+        $this->load->model('sritems_model');
+        $res = $this->sritems_model->sritems_images();
+    }
 }
