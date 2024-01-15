@@ -3387,7 +3387,7 @@ Class Sritems_model extends My_Model
 //            }
             // Colors
             $this->db->select('*')->from('sb_item_colors')->where('item_color_itemid', $item['managed']);
-            $colors = $this->db->get()->result_arrays();
+            $colors = $this->db->get()->result_array();
             $preload_fl = $this->config->item('upload_path_preload').'items/';
             $itemname = $item['item_num'].'_'.strtolower(str_replace(' ','',str_replace(' Stress Balls','',$item['item_name'])));
             foreach ($colors as $color) {
