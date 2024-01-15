@@ -3237,4 +3237,10 @@ class Test extends CI_Controller
         $this->load->model('exportexcell_model');
         $res = $this->exportexcell_model->export_sritems();
     }
+
+    public function convert_sritems()
+    {
+        $this->load->model('sritems_model');
+        $res = $this->sritems_model->convert_sritems();
+    }
 }
