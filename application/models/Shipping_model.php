@@ -473,7 +473,7 @@ Class Shipping_model extends MY_Model
         return $out_val;
     }
 
-    public function count_shiprates($items, $shipaddr, $deliv_date, $brand, $default_ship_method='') {
+    public function count_shiprates_new($items, $shipaddr, $deliv_date, $brand, $default_ship_method='') {
         $res=['result'=>$this->error_result, 'msg'=>$this->error_message];
         $this->load->model('items_model');
         $this->load->model('vendors_model');
@@ -630,7 +630,7 @@ Class Shipping_model extends MY_Model
         return $res;
     }
 
-    public function count_shiprates_old($items, $shipaddr, $deliv_date, $brand, $default_ship_method='') {
+    public function count_shiprates($items, $shipaddr, $deliv_date, $brand, $default_ship_method='') {
         $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $outrate=array();
         $ratekey=array();
