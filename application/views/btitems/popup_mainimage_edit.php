@@ -1,6 +1,7 @@
 <div class="mainimage_area">
     <div class="content-row">
         <div class="imagetitle">Main:</div>
+        <div class="imgsrcsize">(800x800)</div>
         <?php if (!empty($item['main_image'])) { ?>
             <div class="replaceimage mainimage" id="replaceimagemain"></div>
         <?php } ?>
@@ -23,9 +24,33 @@
         <input class="itemimagecaption mainimage" placeholder="Enter Caption..."/>
     </div>
 </div>
+<div class="categoryimage_area">
+    <div class="content-row">
+        <div class="imagetitle">Category Page:</div>
+        <div class="imgsrcsize">(1200x600)</div>
+        <?php if (!empty($item['category_image'])) { ?>
+            <div class="replaceimage categoryimage" id="replaceimagecategory"></div>
+        <?php } ?>
+    </div>
+    <div class="content-row categoryimage_view">
+        <?php if (empty($item['category_image'])) { ?>
+            <div class="emptyimage categoryimage">
+                <div id="uploadcategoryimage" style="float: unset"></div>
+            </div>
+        <?php } else { ?>
+            <div class="previewimage categoryimage">
+                <img src="<?=$item['category_image']?>" alt="Category Image"/>
+            </div>
+            <div class="removeimage categoryimage">
+                <i class="fa fa-trash"></i>
+            </div>
+        <?php } ?>
+    </div>
+</div>
 <div class="topbannerimage_area">
     <div class="content-row">
         <div class="imagetitle">Special Top Banner:</div>
+        <div class="imgsrcsize">(1880x420)</div>
         <?php if (!empty($item['top_banner'])) { ?>
             <div class="replaceimage topbannerimage" id="replaceimagetopbanner"></div>
         <?php } ?>

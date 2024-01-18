@@ -1160,4 +1160,19 @@ Class Cronjob extends CI_Controller
         $this->email->clear(TRUE);
 
     }
+
+    public function clean_preload() {
+        $path = $this->config->item('upload_path_preload');
+        if ($handle = opendir($path)) {
+            while (false !== ($file = readdir($handle))) {
+                if (is_file($path.$file)) {
+                    if ((time()-filectime($path.$file)) > $this->config->item('maxstoretime')) {  // 30 * 24 * 60 * 60 - 30 days
+                        echo $path.$file.PHP_EOL;
+                        unlink($path.$file);
+                    }
+                }
+            }
+        }
+    }
+
 }

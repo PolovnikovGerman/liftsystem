@@ -1492,7 +1492,7 @@ class Test extends CI_Controller
                 $this->db->set('item_similar_similar', $simres['sim_3']);
                 $this->db->insert('sb_item_similars');
             }
-            echo 'Similar OK';
+            echo ' Similar OK';
             // Images
             if (empty($item['main_image'])) {
                 $this->db->select('*');
@@ -1508,7 +1508,7 @@ class Test extends CI_Controller
                     // $this->db->delete('sb_item_images');
                 }
             }
-            echo 'Images OK';
+            echo ' Images OK';
             // Prices
             if ($item['item_template']=='Stressball') {
                 $this->db->select('*');
@@ -1528,7 +1528,7 @@ class Test extends CI_Controller
                     }
                 }
             }
-            echo 'Prices OK'.PHP_EOL;
+            echo ' Prices OK'.PHP_EOL;
             // Add box
             $this->db->where('item_id', $item['item_id']);
             $this->db->delete('sb_item_shipping');
@@ -2247,6 +2247,340 @@ class Test extends CI_Controller
         }
     }
 
+    public function duplicate_vendor_items() {
+        $this->db->select('vendor_item_id, count(*) as cnt');
+        $this->db->from('sb_items');
+        $this->db->group_by('vendor_item_id');
+        $this->db->having('cnt > 1');
+        $vresults = $this->db->get()->result_array();
+        foreach ($vresults as $vresult) {
+            $this->db->select('*');
+            $this->db->from('sb_vendor_items');
+            $this->db->where('vendor_item_id', $vresult['vendor_item_id']);
+            $vitem = $this->db->get()->row_array();
+            $this->db->select('*');
+            $this->db->from('sb_vendor_prices');
+            $this->db->where('vendor_item_id', $vresult['vendor_item_id']);
+            $vprices = $this->db->get()->result_array();
+            $this->db->select('item_id, item_number, item_name');
+            $this->db->from('sb_items i');
+            $this->db->where('vendor_item_id', $vresult['vendor_item_id']);
+            $this->db->order_by('item_id');
+            $items = $this->db->get()->result_array();
+            echo 'Vendor Item '.$vitem['vendor_item_number'].' Prices '.count($vprices).PHP_EOL;
+            $itemnum=1;
+            foreach ($items as $item) {
+                if ($itemnum > 1) {
+                    $this->db->set('vendor_item_vendor', $vitem['vendor_item_vendor']);
+                    $this->db->set('vendor_item_number', $vitem['vendor_item_number']);
+                    $this->db->set('vendor_item_name', $vitem['vendor_item_name']);
+                    $this->db->set('vendor_item_blankcost', $vitem['vendor_item_blankcost']);
+                    $this->db->set('vendor_item_cost', $vitem['vendor_item_cost']);
+                    $this->db->set('vendor_item_exprint', $vitem['vendor_item_exprint']);
+                    $this->db->set('vendor_item_setup', $vitem['vendor_item_setup']);
+                    $this->db->set('vendor_item_repeat', $vitem['vendor_item_repeat']);
+                    $this->db->set('vendor_item_notes', $vitem['vendor_item_notes']);
+                    $this->db->set('vendor_item_zipcode', $vitem['vendor_item_zipcode']);
+                    $this->db->set('printshop_item_id', $vitem['printshop_item_id']);
+                    $this->db->set('stand_days', $vitem['stand_days']);
+                    $this->db->set('rush1_days', $vitem['rush1_days']);
+                    $this->db->set('rush2_days', $vitem['rush2_days']);
+                    $this->db->set('rush1_price', $vitem['rush1_price']);
+                    $this->db->set('rush2_price', $vitem['rush2_price']);
+                    $this->db->set('pantone_match', $vitem['pantone_match']);
+                    $this->db->insert('sb_vendor_items');
+                    $newid = $this->db->insert_id();
+                    $this->db->where('item_id', $item['item_id']);
+                    $this->db->set('vendor_item_id', $newid);
+                    $this->db->update('sb_items');
+                    if (count($vprices) > 0) {
+                        foreach ($vprices as $vprice) {
+                            $this->db->set('vendorprice_qty', $vprice['vendorprice_qty']);
+                            $this->db->set('vendorprice_val', $vprice['vendorprice_val']);
+                            $this->db->set('vendorprice_color', $vprice['vendorprice_color']);
+                            $this->db->set('vendor_item_id', $newid);
+                            $this->db->insert('sb_vendor_prices');
+                        }
+                    }
+                }
+                echo 'Item # '.$item['item_number'].' - '.$item['item_name'].PHP_EOL;
+                $itemnum++;
+            }
+        }
+    }
+
+    public function update_vendoritem_ship() {
+        $this->db->select('vi.vendor_item_id, vi.vendor_item_zipcode, v.shipaddr_city, v.shipaddr_state, v.shipaddr_country, v.vendor_zipcode');
+        $this->db->from('sb_vendor_items vi');
+        $this->db->join('vendors v','v.vendor_id = vi.vendor_item_vendor');
+        $vaddrs = $this->db->get()->result_array();
+        foreach ($vaddrs as $vaddr) {
+            if (!empty($vaddr['vendor_item_zipcode'])) {
+                $this->db->where('vendor_item_id', $vaddr['vendor_item_id']);
+                $this->db->set('item_shipcountry', 223);
+                $this->db->update('sb_vendor_items');
+            } else {
+                $this->db->where('vendor_item_id', $vaddr['vendor_item_id']);
+                $this->db->set('vendor_item_zipcode', $vaddr['vendor_zipcode']);
+                if (!empty($vaddr['shipaddr_country'])) {
+                    $this->db->set('item_shipcountry', 223);
+                    $this->db->set('item_shipstate', $vaddr['shipaddr_state']);
+                    $this->db->set('item_shipcity', $vaddr['shipaddr_city']);
+                }
+                $this->db->update('sb_vendor_items');
+            }
+        }
+        $this->db->select('vi.vendor_item_zipcode, vi.item_shipcountry, count(vi.vendor_item_id) as cnt');
+        $this->db->from('sb_vendor_items vi');
+        $this->db->where('vi.item_shipcity',null);
+        $this->db->group_by('vi.vendor_item_zipcode, vi.item_shipcountry');
+        $vaddrs = $this->db->get()->result_array();
+        $this->load->model('shipping_model');
+        foreach ($vaddrs as $vaddr) {
+            // Get shipping data
+            $shipres = $this->shipping_model->get_zip_address($vaddr['item_shipcountry'], $vaddr['vendor_item_zipcode']);
+            if ($shipres['result']==1) {
+                $this->db->where('vendor_item_zipcode', $vaddr['vendor_item_zipcode']);
+                $this->db->where('item_shipcountry', $vaddr['item_shipcountry']);
+                $this->db->set('item_shipstate', $shipres['state']);
+                $this->db->set('item_shipcity', $shipres['city']);
+                $this->db->update('sb_vendor_items');
+            }
+        }
+    }
+
+    public function internal_item_transform() {
+        $this->load->model('inventory_model');
+        $this->db->select('i.item_id, i.item_number, i.item_name, i.printshop_inventory_id');
+        $this->db->select('v.vendor_item_number, v.vendor_item_id');
+        $this->db->from('sb_items i');
+        $this->db->join('sb_vendor_items v','v.vendor_item_id=i.vendor_item_id');
+        $this->db->where('v.vendor_item_vendor', $this->config->item('inventory_vendor'));
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            echo $item['item_number'].' '.$item['item_name'].' INV '.$item['printshop_inventory_id'].PHP_EOL;
+            if (empty($item['printshop_inventory_id'])) {
+                $this->db->select('*');
+                $this->db->from('ts_inventory_items');
+                $this->db->where('item_num', $item['vendor_item_number']);
+                $invres = $this->db->get()->row_array();
+                if (ifset($invres,'inventory_item_id',0)>0) {
+                    $this->db->where('item_id', $item['item_id']);
+                    $this->db->set('printshop_inventory_id', $invres['inventory_item_id']);
+                    $this->db->update('sb_items');
+                    $res = $this->inventory_model->get_inventory_item($invres['inventory_item_id']);
+                    if ($res['result']==1) {
+                        $invdata = $res['data'];
+                        $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                        $this->db->set('vendor_item_cost', $invdata['avg_price']);
+                        $this->db->set('vendor_item_blankcost', $invdata['avg_price']);
+                        $this->db->update('sb_vendor_items');
+                    }
+                    $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                    $this->db->set('vendor_item_number', $invres['item_num']);
+                    $this->db->set('vendor_item_name', $invres['item_name']);
+                    $this->db->update('sb_vendor_items');
+                    // Delete vendor prices
+                    $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                    $this->db->delete('sb_vendor_prices');
+                    $this->db->where('item_color_itemid', $item['item_id']);
+                    $this->db->delete('sb_item_colors');
+                    $this->db->select('*');
+                    $this->db->from('ts_inventory_colors');
+                    $this->db->where('inventory_item_id', $invres['inventory_item_id']);
+                    $colors = $this->db->get()->result_array();
+                    foreach ($colors as $color) {
+                        $this->db->set('item_color_itemid', $item['item_id']);
+                        $this->db->set('item_color', $color['color']);
+                        $this->db->set('item_color_order', $color['color_order']);
+                        $this->db->set('printshop_color_id', $color['inventory_color_id']);
+                        $this->db->insert('sb_item_colors');
+                    }
+                    echo 'Transform '.$invres['item_num'].' '.$invres['item_name'].PHP_EOL;
+                }
+            }
+        }
+    }
+    public function getUpsRates() {
+        $this->load->config('shipping');
+        $this->load->library('UPS_service');
+        $upsservice = new UPS_service();
+        $shipFrom = array(
+            "Name" => "BLUETRACK Internal",
+            "Address" => array(
+                "City" => "Clifton",
+                "StateProvinceCode" => "NJ",
+                "PostalCode" => "07012",
+                "CountryCode" => "US"
+            )
+        );
+        /*
+        $shipTo = array(
+            "Name" => "Test Company",
+            "Address" => array(
+                "AddressLine" => array(
+                    "106 960 Yankee valley Blvd SE",
+                ),
+                "City" => "Toronto",
+                "StateProvinceCode" => "ON",
+                "PostalCode" => "M8Y1H8",
+                "CountryCode" => "CA"
+            )
+        );
+        */
+        $shipTo = [
+            "Name" => "Test Company",
+            "Address" => [
+                "AddressLine" => [
+                    "106 960 Yankee valley Blvd SE",
+                ],
+                "City" => "CINCINNATI",
+                "StateProvinceCode" => "OH",
+                "PostalCode" => "45202",
+                "CountryCode" => "US"
+            ],
+        ];
+        $packWeight = 7.2;
+        $packDimens = [];
+        $packDimens[] = [
+            "PackagingType" => array(
+                "Code" => "02",
+                "Description" => "Packaging"
+            ),
+            "Dimensions" => array(
+                "UnitOfMeasurement" => array(
+                    "Code" => "IN",
+                    "Description" => "Inches"
+                ),
+                "Length" => "15",
+                "Width" => "15",
+                "Height" => "15"
+            ),
+            "PackageWeight" => array(
+                "UnitOfMeasurement" => array(
+                    "Code" => "LBS",
+                    "Description" => "Pounds"
+                ),
+                "Weight" => "7.2"
+            )
+        ];
+
+        $tokenres = $this->getUpsToken();
+        if ($tokenres['result']==0) {
+            echo 'Rates request break on stage Token Generation, reason - '.$tokenres['msg'];
+        } else {
+            $token = $tokenres['token'];
+            // Time in transit
+            $res = $upsservice->getRates($token, $shipTo, $shipFrom, 1,  $packDimens, $packWeight);
+            if ($res['error'] > 0) {
+                echo 'Error, code '.$res['msg'];
+            } else {
+                if (isset($res['errors'])) {
+                    $error = $res['errors'][0];
+                    echo 'Error, code '.$error['code'].' - '.$error['message'].PHP_EOL;
+                } else {
+                    echo 'SUCCESS'.PHP_EOL;
+                    var_dump($res['rates']);
+                }
+            }
+        }
+    }
+
+    public function getTimeinTransit() {
+        $this->load->config('shipping');
+        $this->load->library('UPS_service');
+        $upsservice = new UPS_service();
+        $shipFrom = array(
+            "Name" => "BLUETRACK Internal",
+            "Address" => array(
+                "City" => "Clifton",
+                "StateProvinceCode" => "NJ",
+                "PostalCode" => "07012",
+                "CountryCode" => "US"
+            )
+        );
+//        $shipTo = array(
+//            "Name" => "Test Company",
+//            "Address" => array(
+//                "AddressLine" => array(
+//                    "The Landing",
+//                ),
+//                "City" => "Trafford Park",
+//                "StateProvinceCode" => "",
+//                "PostalCode" => "M502ST",
+//                "CountryCode" => "GB"
+//            )
+//        );
+        $shipTo = [
+            "Name" => "Test Company",
+            "Address" => [
+                "AddressLine" => [
+                    "106 960 Yankee valley Blvd SE",
+                ],
+                "City" => "CINCINNATI",
+                "StateProvinceCode" => "OH",
+                "PostalCode" => "45202",
+                "CountryCode" => "US"
+            ],
+        ];
+
+        $weight = "7.2";
+        $shipdate = "2023-07-31";
+        $shiptime = "10:00:00";
+        $tokenres = $this->getUpsToken();
+        if ($tokenres['result']==1) {
+            $token = $tokenres['token'];
+            $tntres = $upsservice->timeInTransit($token, $shipFrom['Address'], $shipTo['Address'], $weight, 1, 100.5, $shipdate, $shiptime);
+            if ($tntres['error']==0) {
+                $services = $tntres['services'];
+                var_dump($services);
+            }
+        }
+    }
+
+    public function getUpsToken()  {
+        $out = ['result' => 0, 'msg' => 'Error during Token generation'];
+        $this->load->library('UPS_service');
+        $upsservice = new UPS_service();
+        $sessionId =  uniq_link();
+        echo 'Session ID '.$sessionId.PHP_EOL;
+        $tokenresult = $upsservice->generateToken($sessionId);
+        if ($tokenresult['error']==1) {
+
+        } else {
+            if (isset($tokenresult['errors'])) {
+                $errors = $tokenresult['errors'][0];
+                $out['msg'] = 'Error Code '.$errors['code'].' - '.$errors['message'];
+            } else {
+                $out['result'] = 1;
+                $out['token'] = $tokenresult['access_token'];
+                $out['session'] = $sessionId;
+                // echo 'Success Token Type '.$tokenresult['token_type'].' Issued '.$tokenresult['issued_at'].'('.date('Y-m-d H:i:s', $tokenresult['issued_at']).' Expired '.(intval($tokenresult['expires_in'])/60).' min';
+            }
+        }
+        return $out;
+    }
+
+    public function clean_schema() {
+        $this->db->select('TABLE_NAME, TABLE_TYPE');
+        $this->db->from('information_schema.TABLES');
+        $this->db->where('TABLE_SCHEMA', 'lift_test');
+        $items = $this->db->get()->result_array();
+        echo 'Find '.count($items).' objects'.PHP_EOL;
+        $filename = $this->config->item('upload_path_preload').'cleanobj.sql';
+        @unlink($filename);
+        $fh = fopen($filename, FOPEN_READ_WRITE_CREATE);
+        foreach ($items as $item) {
+            if ($item['TABLE_TYPE']=='BASE TABLE') {
+                $msg='DROP TABLE IF EXISTS '.$item['TABLE_NAME'].';'.PHP_EOL;
+            } else {
+                $msg='DROP VIEW IF EXISTS '.$item['TABLE_NAME'].';'.PHP_EOL;
+            }
+            fwrite($fh, $msg);
+        }
+        fclose($fh);
+    }
+
     public function export_dbitems() {
         ini_set("memory_limit","-1");
         $normal_template = 'Stressball';
@@ -2902,5 +3236,17 @@ class Test extends CI_Controller
     {
         $this->load->model('exportexcell_model');
         $res = $this->exportexcell_model->export_sritems();
+    }
+
+    public function convert_sritems()
+    {
+        $this->load->model('sritems_model');
+        $res = $this->sritems_model->convert_sritems();
+    }
+
+    public function sritems_images()
+    {
+        $this->load->model('sritems_model');
+        $res = $this->sritems_model->sritems_images();
     }
 }

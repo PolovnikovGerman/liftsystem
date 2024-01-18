@@ -9,7 +9,7 @@
         <div class="pageheadfilter">
             <select class="itemcategoryfilter">
                 <?php foreach ($categories as $category) { ?>
-                    <option <?=$category['category_active']==1 ? '' : 'disabled="true"'?> value="<?=$category['category_id']?>" <?=$category['category_id']==$category_id ? 'selected="selected"' : ''?>>
+                    <option data-categ="<?=$category['category_id']?>" <?=$category['category_active']==1 ? '' : 'disabled="true"'?> value="<?=$category['category_id']?>" <?=$category['category_id']==$category_id ? 'selected="selected"' : ''?>>
                         <?=$category['category_code'].' - '.$category['category_name']?>
                     </option>
                 <?php } ?>
@@ -94,6 +94,8 @@
             <div class="suplier sortable" data-sortcell="vendor">Supplier</div>
             <div class="missinfo">Complete or Missing Info</div>
         </div>
+        <div class="btitemnewaddarea"></div>
+        <div class="btitemnewsucategarea"></div>
         <div class="" id="btitemdata">
         </div>
     </div>
