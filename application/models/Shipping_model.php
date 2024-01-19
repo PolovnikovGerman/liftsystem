@@ -73,19 +73,8 @@ Class Shipping_model extends MY_Model
         if ($this->_chk_business_day($start_time, $item_id)==0) {
             $proof_date=$this->_get_business_date($start_time, 1, $item_id);
         }
-
-        $this->db->select('item_id, item_lead_a, coalesce(item_lead_b,0) as item_lead_b, coalesce(item_lead_c,0) as item_lead_c, c.calendar_id as calendar_id',FALSE);
-        $this->db->from("sb_items i");
-        $this->db->join("sb_vendor_items vi",'vi.vendor_item_id=i.vendor_item_id');
-        $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
-        $this->db->join("calendars c","c.calendar_id=v.calendar_id",'left');
-        $this->db->where('i.item_id',$item_id);
-        $leads = $this->db->get()->row_array();
-        if (!isset($leads['calendar_id'])) {
-            $leads['calendar_id']=$this->_get_default_calend();
-        }
-        /* Rebuild as array */
-        if (!isset($leads['item_lead_a'])) {
+        if ($item_id < 0 ) {
+            $leads = [];
             if ($item_id==$this->config->item('custom_id')) {
                 $leads['item_lead_a'] = $this->config->item('custom_proof_time');
             } elseif ($item_id==$this->config->item('other_id')) {
@@ -93,12 +82,51 @@ Class Shipping_model extends MY_Model
             } else {
                 $leads['item_lead_a']=0;
             }
-        }
-        if (!isset($leads['item_lead_b'])) {
             $leads['item_lead_b']=0;
-        }
-        if (!isset($leads['item_lead_c'])) {
             $leads['item_lead_c']=0;
+            $leads['calendar_id']=$this->_get_default_calend();
+        } else {
+            $this->db->select('item_id, brand')->from('sb_items')->where('item_id', $item_id);
+            $itmdat = $this->db->get()->row_array();
+            if ($itmdat['brand']=='SR') {
+                $this->db->select('i.item_id, vi.stand_days as item_lead_a, coalesce(vi.rush1_days,0) as item_lead_b, coalesce(vi.rush2_days,0) as item_lead_c, c.calendar_id as calendar_id');
+                $this->db->select('i.brand, p.item_sale_rush1, p.item_sale_rush2');
+                $this->db->from("sb_items i");
+                $this->db->join("sb_vendor_items vi",'vi.vendor_item_id=i.vendor_item_id');
+                $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
+                $this->db->join("calendars c","c.calendar_id=v.calendar_id",'left');
+                $this->db->join('sb_item_prices p','p.item_price_itemid=i.item_id');
+                $this->db->where('i.item_id',$item_id);
+                $leads = $this->db->get()->row_array();
+            } else {
+                $this->db->select('item_id, item_lead_a, coalesce(item_lead_b,0) as item_lead_b, coalesce(item_lead_c,0) as item_lead_c, c.calendar_id as calendar_id, i.brand');
+                $this->db->from("sb_items i");
+                $this->db->join("sb_vendor_items vi",'vi.vendor_item_id=i.vendor_item_id');
+                $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
+                $this->db->join("calendars c","c.calendar_id=v.calendar_id",'left');
+                $this->db->where('i.item_id',$item_id);
+                $leads = $this->db->get()->row_array();
+            }
+            if (!isset($leads['calendar_id'])) {
+                $leads['calendar_id']=$this->_get_default_calend();
+            }
+            /* Rebuild as array */
+            if (!isset($leads['item_lead_a'])) {
+                if ($item_id==$this->config->item('custom_id')) {
+                    $leads['item_lead_a'] = $this->config->item('custom_proof_time');
+                } elseif ($item_id==$this->config->item('other_id')) {
+                    $leads['item_lead_a'] = $this->config->item('other_proof_time');
+                } else {
+                    $leads['item_lead_a']=0;
+                }
+            }
+            if (!isset($leads['item_lead_b'])) {
+                $leads['item_lead_b']=0;
+            }
+            if (!isset($leads['item_lead_c'])) {
+                $leads['item_lead_c']=0;
+            }
+
         }
 
         if ($item_id==$this->config->item('custom_id') || $item_id==$this->config->item('other_id')) {
@@ -111,22 +139,40 @@ Class Shipping_model extends MY_Model
 
         if ($leads['item_lead_b']>0) {
             $min=$leads['item_lead_b'];
-            $ship_array[]=array(
-                'min'=>$min,
-                'max'=>$leads['item_lead_a'],
-                'price'=>$this->_get_config_value('rush_3days'),
-                'rush_term'=>$leads['item_lead_b'].' Day Rush',
-            );
+            if (ifset($leads,'brand','SB')=='SR') {
+                $ship_array[]=array(
+                    'min'=>$min,
+                    'max'=>$leads['item_lead_a'],
+                    'price'=>$leads['item_sale_rush1'],
+                    'rush_term'=>$leads['item_lead_b'].' Day Rush',
+                );
+            } else {
+                $ship_array[]=array(
+                    'min'=>$min,
+                    'max'=>$leads['item_lead_a'],
+                    'price'=>$this->_get_config_value('rush_3days'),
+                    'rush_term'=>$leads['item_lead_b'].' Day Rush',
+                );
+            }
         }
 
         if ($leads['item_lead_c']>0) {
             $min=$leads['item_lead_c'];
-            $ship_array[]=array(
-                'min'=>$min,
-                'max'=>($leads['item_lead_b']==0 ? $leads['item_lead_a'] : $leads['item_lead_b']),
-                'price'=>$this->_get_config_value('rush_next_day'),
-                'rush_term'=>$leads['item_lead_c'].' Day Rush',
-            );
+            if (ifset($leads,'brand','SB')=='SR') {
+                $ship_array[]=array(
+                    'min'=>$min,
+                    'max'=>($leads['item_lead_b']==0 ? $leads['item_lead_a'] : $leads['item_lead_b']),
+                    'price'=>$this->_get_config_value('rush_next_day'),
+                    'rush_term'=>$leads['item_lead_c'].' Day Rush',
+                );
+            } else {
+                $ship_array[]=array(
+                    'min'=>$min,
+                    'max'=>($leads['item_lead_b']==0 ? $leads['item_lead_a'] : $leads['item_lead_b']),
+                    'price'=>$this->$leads['item_sale_rush2'],
+                    'rush_term'=>$leads['item_lead_c'].' Day Rush',
+                );
+            }
         }
 
         $ship_array[]=array(
@@ -206,7 +252,6 @@ Class Shipping_model extends MY_Model
         }
         if ($current==0) {
             $rush[0]['current'] = 1;
-
         }
         return array('rush'=>$rush,'current_rush'=>$current_rush);
     }
