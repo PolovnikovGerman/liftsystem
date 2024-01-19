@@ -3241,12 +3241,14 @@ class Test extends CI_Controller
     public function convert_sritems()
     {
         $this->load->model('sritems_model');
-        $res = $this->sritems_model->convert_sritems();
+        // $res = $this->sritems_model->convert_sritems();
+        $res = $this->sritems_model->convert_srspecial();
     }
 
     public function sritems_images()
     {
         $this->load->model('sritems_model');
-        $res = $this->sritems_model->sritems_images();
+        // $res = $this->sritems_model->sritems_images();
+        $res = $this->sritems_model->srspecial_images();
     }
 }

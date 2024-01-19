@@ -3437,4 +3437,82 @@ Class Sritems_model extends My_Model
             echo 'Item '.$item['item_num'].' Add Images finished'.PHP_EOL;
         }
     }
+
+    public function convert_srspecial()
+    {
+        $this->db->select('*')->from('srspecial_export')->where('managed', 0);
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $this->db->select('*')->from('sr_categories')->where('brand', 'SR')->where('category_code', substr($item['item_number'], 0, 1));
+            $categdat = $this->db->get()->row_array();
+            $this->db->set('item_number', $item['item_number']);
+            $this->db->set('item_name', $item['item_name']);
+            $this->db->set('item_active', 1);
+            $this->db->set('item_url', $item['item_url']);
+            $this->db->set('brand','SR');
+            $this->db->set('category_id', $categdat['category_id']);
+            $this->db->insert('sb_items');
+            $newid = $this->db->insert_id();
+            if ($newid > 0) {
+                $this->db->where('id', $item['id']);
+                $this->db->set('managed', $newid);
+                $this->db->update('srspecial_export');
+                // Prices
+                $this->db->set('item_id', $newid);
+                $this->db->set('item_qty',500);
+                $this->db->set('price', $item['price_500']);
+                $this->db->set('sale_price', $item['sale_500']);
+                $this->db->insert('sb_promo_price');
+                $this->db->set('item_id', $newid);
+                $this->db->set('item_qty',1000);
+                $this->db->set('price', $item['price_1000']);
+                $this->db->set('sale_price', $item['sale_1000']);
+                $this->db->insert('sb_promo_price');
+                $this->db->set('item_id', $newid);
+                $this->db->set('item_qty',200);
+                $this->db->set('price', $item['price_2000']);
+                $this->db->set('sale_price', $item['sale_2000']);
+                $this->db->insert('sb_promo_price');
+                $this->db->set('item_id', $newid);
+                $this->db->set('item_qty',3000);
+                $this->db->set('price', $item['price_3000']);
+                $this->db->set('sale_price', $item['sale_3000']);
+                $this->db->insert('sb_promo_price');
+            }
+        }
+    }
+
+    public function srspecial_images()
+    {
+        $this->db->select('*')->from('srspecial_export');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $preload_fl = $this->config->item('upload_path_preload').'specials';
+            $path_fl = $this->config->item('item_images_relative');
+            $path_sh = $this->config->item('item_images');
+            createPath($path_sh.$item['managed']);
+            $chimgs = glob($preload_fl.'/'.$item['item_number'].'*jpg');
+            $numpp=1;
+            foreach ($chimgs as $chimg) {
+                $srcname = $chimg;
+                $targname = $path_fl.$item['managed'].str_replace($preload_fl,'',$chimg);
+                $cpres = @copy($srcname, $targname);
+                if ($cpres) {
+                    // @unlink($srcname);
+                    $itemimg = $path_sh.$item['managed'].str_replace($preload_fl,'',$chimg);
+                    if ($numpp==1) {
+                        $this->db->where('item_id', $item['managed']);
+                        $this->db->set('main_image', $itemimg);
+                        $this->db->update('sb_items');
+                    }
+//                    $this->db->set('item_img_item_id', $item['managed']);
+//                    $this->db->set('item_img_name', $itemimg);
+//                    $this->db->set('item_img_order', $numpp);
+//                    $this->db->insert('sb_item_images');
+                    $numpp++;
+                }
+            }
+            echo 'Item '.$item['item_number'].' Add Images finished'.PHP_EOL;
+        }
+    }
 }
