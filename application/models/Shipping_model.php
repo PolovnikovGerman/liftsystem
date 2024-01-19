@@ -162,14 +162,14 @@ Class Shipping_model extends MY_Model
                 $ship_array[]=array(
                     'min'=>$min,
                     'max'=>($leads['item_lead_b']==0 ? $leads['item_lead_a'] : $leads['item_lead_b']),
-                    'price'=>$this->_get_config_value('rush_next_day'),
+                    'price'=>$leads['item_sale_rush2'],
                     'rush_term'=>$leads['item_lead_c'].' Day Rush',
                 );
             } else {
                 $ship_array[]=array(
                     'min'=>$min,
                     'max'=>($leads['item_lead_b']==0 ? $leads['item_lead_a'] : $leads['item_lead_b']),
-                    'price'=>$this->$leads['item_sale_rush2'],
+                    'price'=>$this->_get_config_value('rush_next_day'),
                     'rush_term'=>$leads['item_lead_c'].' Day Rush',
                 );
             }
