@@ -256,7 +256,22 @@ class UPS_service
                 $out['services'] = $outservices;
             } else {
                 $out['error'] = 2;
-                $out['msg'] = ifset($apiResponse, 'validationList', 'Invalid Parameters');
+                $msg = ifset($apiResponse, 'validationList', 'Invalid Parameters');
+                if (is_array($msg)) {
+                    $errmsg = '';
+                    if (isset($msg['invalidFieldList'])) {
+                        $errmsg.='Invalid Parameter '.$msg['invalidFieldList'][0].' ';
+                    }
+                    if (isset($msg['invalidFieldListCodes'])) {
+                        $errmsg.='Error code # '.$msg['invalidFieldListCodes'][0];
+                    }
+                    if (!empty($errmsg)) {
+                        $msg = $errmsg;
+                    } else {
+                        $msg = 'Invalid Calculation';
+                    }
+                }
+                $out['msg'] = $msg;
             }
         }
         return $out;
