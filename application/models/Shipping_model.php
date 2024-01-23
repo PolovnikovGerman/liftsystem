@@ -1430,27 +1430,42 @@ Class Shipping_model extends MY_Model
         $ratekey = [];
         $this->load->model('items_model');
         $this->load->model('vendors_model');
-        $kf=1;
+        // $kf=1;
         $this->load->config('shipping');
         $cntdat=$this->get_country($quote['shipping_country']);
         $this->load->config('shipping');
         $shiper = $this->config->item('ups_shiper');
         foreach ($items as $item) {
+            $flagitem = 0;
             if ($item['item_id'] > 0) {
-                // Get Item Shipboxes
-                $shipboxes = $this->items_model->get_item_shipboxes($item['item_id']);
-                // Vendor
-                $vendordat = $this->vendors_model->get_item_vendor($item['vendor_item_id']);
-                $shipFrom = [
-                    "Name" => $vendordat['vendor_name'],
-                    "Address" => [
-                        "City" => $vendordat['item_shipcity'],
-                        "StateProvinceCode" => $vendordat['item_shipstate'],
-                        "PostalCode" => $vendordat['vendor_item_zipcode'],
-                        "CountryCode" => $vendordat['item_shipcountry_code']
-                    ],
-                ];
-            } else {
+                $itemres = $this->items_model->get_item($item['item_id']);
+                if ($itemres['result']==$this->success_result) {
+                    $itemdat =  $itemres['data'];
+                    $flagitem = 1;
+                    $item['item_weigth'] = $itemdat['item_weigth'];
+                    // Get Item Shipboxes
+                    $shipboxes = $this->items_model->get_item_shipboxes($item['item_id']);
+                    // Vendor
+                    // QTY KF
+                    $qtykf = 1;
+                    $maxqty = $shipboxes[0]['box_qty'] * 100;
+                    $itemqty = $item['item_qty'];
+                    if ($itemqty > $maxqty) {
+
+                    }
+                    $vendordat = $this->vendors_model->get_item_vendor($itemdat['vendor_item_id']);
+                    $shipFrom = [
+                        "Name" => $vendordat['vendor_name'],
+                        "Address" => [
+                            "City" => $vendordat['item_shipcity'],
+                            "StateProvinceCode" => $vendordat['item_shipstate'],
+                            "PostalCode" => $vendordat['vendor_item_zipcode'],
+                            "CountryCode" => $vendordat['item_shipcountry_code']
+                        ],
+                    ];
+                }
+            }
+            if ($flagitem==0){
                 $shipboxes=[];
                 $shipboxes[] = [
                     'box_qty' => $this->config->item('default_inpack'),
@@ -1464,7 +1479,6 @@ Class Shipping_model extends MY_Model
                 ];
             }
 
-
             $shipTo = [
                 "Name" => !empty($quote['shipping_company']) ? $quote['shipping_company'] : "Test Company",
                 "Address" => [
@@ -1475,7 +1489,7 @@ Class Shipping_model extends MY_Model
                 ]
             ];
             $package_price = $quote['items_subtotal'];
-            $itemqty = ceil($item['item_qty']*$kf);
+            // $itemqty = ceil($item['item_qty']*$kf);
             $itemweigth = ifset($item, 'item_weigth',0)==0 ? 0.010 : $item['item_weigth'];
             $datpackages = $this->prepare_ship_packages($itemqty, $shipboxes, $itemweigth);
             $shipoptions = [
@@ -1491,8 +1505,8 @@ Class Shipping_model extends MY_Model
                 'package_price' => $package_price,
             ];
             $shipres = $this->calculate_shipcost($shipoptions);
-            if (!$shipres['result']) {
-                $res['msg']=$shipres['error'].' - '.$shipres['error_code'];
+            if ($shipres['result']==$this->error_result) {
+                $res['msg']=$shipres['msg'].' - '.$shipres['error_code'];
                 return $res;
             }
             $ship=$shipres['ship'];
@@ -1750,7 +1764,7 @@ Class Shipping_model extends MY_Model
     }
 
     public function calculate_shipcost($options) {
-        $out=['result' => $this->error_result, 'msg' => 'Error During Calc Ship rates'];
+        $out=['result' => $this->error_result, 'msg' => 'Error During Calc Ship rates', 'error_code'=>'Auth'];
         $this->load->config('shipping');
         $this->load->model('calendars_model');
         $itemweight = ifset($options, 'weight', '0')==0 ? 0.010 : $options['weight'];
@@ -1766,7 +1780,7 @@ Class Shipping_model extends MY_Model
         $earlier = new DateTime(date('Y-m-d'));
         $later = new DateTime(date('Y-m-d', $startdeliv));
         $daydiff = $later->diff($earlier)->format("%r%a");
-        $code = '';
+
         $token = usersession('upstoken');
         $tokenres = $this->_UpsAuthToken($token);
         $out['msg'] = $tokenres['msg'];
@@ -1790,11 +1804,11 @@ Class Shipping_model extends MY_Model
                 // All ok
                 $times = $transitres['services'];
                 // Calc rates
+                $out['error_code']='Rates';
                 $packDimens = $options['packages'];
                 $rateres = $upsservice->getRates($token, $shipTo, $shipFrom, $tntpacks,  $packDimens, $tntweigth);
                 if ($rateres['error'] > 0) {
                     $out['msg'] = $rateres['msg'];
-                    $out['error_code'] = 'Rates';
                 } else {
                     $out['result'] = $this->success_result;
                     $rates = $rateres['rates'];
