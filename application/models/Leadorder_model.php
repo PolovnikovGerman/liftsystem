@@ -278,10 +278,10 @@ Class Leadorder_model extends My_Model {
             $row['proftitleclass']='';
             $row['proftitle']='';
             $row['out_item']='&nbsp;';
-            $row['custom_order']=($row['item_id'] < 0  ? 1 : 0); // ($row['item_id']==$this->config->item('custom_id') ? 1 : 0);
+            $row['custom_order']=($row['item_id']==$this->config->item('custom_id') ? 1 : 0);
             if ($row['order_items']) {
                 if (!empty($row['item_number'])) {
-                    $row['out_item']=$row['item_number'].'-'.$row['order_items'];
+                    $row['out_item']=$row['item_number'].' - '.$row['order_items'];
                 } else {
                     $row['out_item']=$row['order_items'];
                 }

@@ -3251,4 +3251,18 @@ class Test extends CI_Controller
         // $res = $this->sritems_model->sritems_images();
         $res = $this->sritems_model->srspecial_images();
     }
+
+    public function addshipsettings()
+    {
+        $this->db->select('shipzone_id, method_id, method_percent, method_dimens')->from('sb_shipzone_methods')->where('brand','BT');
+        $results = $this->db->get()->result_array();
+        foreach ($results as $result) {
+            $this->db->set('shipzone_id', $result['shipzone_id']);
+            $this->db->set('method_id', $result['method_id']);
+            $this->db->set('method_percent', $result['method_percent']);
+            $this->db->set('method_dimens', $result['method_dimens']);
+            $this->db->set('brand','SR');
+            $this->db->insert('sb_shipzone_methods');
+        }
+    }
 }
