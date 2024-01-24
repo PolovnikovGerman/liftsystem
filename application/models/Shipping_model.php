@@ -6,6 +6,8 @@ Class Shipping_model extends MY_Model
     private $empty_htmlcontent='&nbsp;';
     private $box_empty_weight = 25;
 
+    private $srstandship = 7;
+
     public function __construct()
     {
         parent::__construct();
@@ -89,7 +91,7 @@ Class Shipping_model extends MY_Model
             $this->db->select('item_id, brand')->from('sb_items')->where('item_id', $item_id);
             $itmdat = $this->db->get()->row_array();
             if ($itmdat['brand']=='SR') {
-                $this->db->select('i.item_id, vi.stand_days as item_lead_a, coalesce(vi.rush1_days,0) as item_lead_b, coalesce(vi.rush2_days,0) as item_lead_c, c.calendar_id as calendar_id');
+                $this->db->select('i.item_id, i.item_lead_a, coalesce(i.item_lead_b,0) as item_lead_b, coalesce(i.item_lead_c,0) as item_lead_c, c.calendar_id as calendar_id');
                 $this->db->select('i.brand, p.item_sale_rush1, p.item_sale_rush2');
                 $this->db->from("sb_items i");
                 $this->db->join("sb_vendor_items vi",'vi.vendor_item_id=i.vendor_item_id');
@@ -128,7 +130,7 @@ Class Shipping_model extends MY_Model
             }
 
         }
-
+        $itembrand = (isset($leads['brand']) ? $leads['brand'] : 'SB');
         if ($item_id==$this->config->item('custom_id') || $item_id==$this->config->item('other_id')) {
             $min = 1;
         } else {
@@ -223,9 +225,14 @@ Class Shipping_model extends MY_Model
                 if ($prefix>=0) {
                     if ($current==0) {
                         if (empty($defstart)) {
-                            if ($i==$leads['item_lead_a']) {
+                            if ($itembrand=='SR' && $i>=$leads['item_lead_a'] && $i==$this->srstandship) {
                                 $current = 1;
                                 $current_rush = $prefix;
+                            } else {
+                                if ($i==$leads['item_lead_a']) {
+                                    $current = 1;
+                                    $current_rush = $prefix;
+                                }
                             }
                         } else {
                             if ($rushterm==$defstart) {
