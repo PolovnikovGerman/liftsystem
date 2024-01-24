@@ -89,7 +89,7 @@ Class Shipping_model extends MY_Model
             $this->db->select('item_id, brand')->from('sb_items')->where('item_id', $item_id);
             $itmdat = $this->db->get()->row_array();
             if ($itmdat['brand']=='SR') {
-                $this->db->select('i.item_id, vi.stand_days as item_lead_a, coalesce(vi.rush1_days,0) as item_lead_b, coalesce(vi.rush2_days,0) as item_lead_c, c.calendar_id as calendar_id');
+                $this->db->select('i.item_id, i.item_lead_a, coalesce(i.item_lead_b,0) as item_lead_b, coalesce(i.item_lead_c,0) as item_lead_c, c.calendar_id as calendar_id');
                 $this->db->select('i.brand, p.item_sale_rush1, p.item_sale_rush2');
                 $this->db->from("sb_items i");
                 $this->db->join("sb_vendor_items vi",'vi.vendor_item_id=i.vendor_item_id');
@@ -1451,7 +1451,8 @@ Class Shipping_model extends MY_Model
                     $maxqty = $shipboxes[0]['box_qty'] * 100;
                     $itemqty = $item['item_qty'];
                     if ($itemqty > $maxqty) {
-
+                        $qtykf = $maxqty / $itemqty;
+                        $itemqty = round($itemqty*$qtykf,0);
                     }
                     $vendordat = $this->vendors_model->get_item_vendor($itemdat['vendor_item_id']);
                     $shipFrom = [
