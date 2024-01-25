@@ -43,3 +43,19 @@ input.search_input {
 .accounting_pagination {
     float: right!important;
 }
+.orders-table-title > .customorder_item {
+    width: 264px; /* 131px; */
+}
+.customorder_item_data {
+    border-right: 1px solid #000000;
+    overflow: hidden;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: left!important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 265px; /* 132px; */
+}
+.profitorder_item_data.customitem {
+    font-weight: bold;
+}
