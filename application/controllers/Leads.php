@@ -1478,7 +1478,7 @@ class Leads extends My_Controller {
                     'orders'=>$ordersdat,
                     'brand' => ifset($postdata,'brand','SB'),
                 );
-                $content = $this->load->view('orderprofit/table_data_view',$data, TRUE);
+                $content = $this->load->view('customorders/table_data_view',$data, TRUE);
             }
             $mdata['content']=$content;
             $this->ajaxResponse($mdata, $error);
@@ -1733,7 +1733,7 @@ class Leads extends My_Controller {
         $view_options['years']=$years_options;
         $view_options['bottom_view']=$this->load->view('accounting/admin_bottom_view',array('year'=>$years,'orders_cnttotal'=>$orders_cnttotal),TRUE);
 
-        $content=$this->load->view('orderprofit/admin_head_view',$view_options,TRUE);
+        $content=$this->load->view('customorders/head_view',$view_options,TRUE);
 
         return $content;
     }
