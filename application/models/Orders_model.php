@@ -2927,7 +2927,7 @@ Class Orders_model extends MY_Model
             }
             $row['out_shipdate']=($row['shipdate']==0 ? '&nbsp;' : date('m/d', $row['shipdate']));
             if (ifset($filtr,'custom_orders',0)==1) {
-                $this->db->select('p.artwork_preview_id, p.preview_link')->from('ts_artwork_previews p')->join('ts_artworks a','a.artwork_id=p.artwork_id')->where('a.order_id', $row['order_id']);
+                $this->db->select('p.artwork_preview_id, p.preview_link')->from('ts_artwork_previews p')->join('ts_artworks a','a.artwork_id=p.artwork_id')->where('a.order_id', $row['order_id'])->where_in('substring(p.preview_link,-3,3)',['jpg','png']);
                 $prevres = $this->db->get()->row_array();
                 if (ifset($prevres,'artwork_preview_id',0)>0) {
                     $row['preview_link'] = $prevres['preview_link'];
