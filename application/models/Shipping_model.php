@@ -1448,7 +1448,7 @@ Class Shipping_model extends MY_Model
                     // Vendor
                     // QTY KF
                     $qtykf = 1;
-                    $maxqty = $shipboxes[0]['box_qty'] * 100;
+                    $maxqty = $shipboxes[0]['box_qty'] * 50;
                     $itemqty = $item['item_qty'];
                     if ($itemqty > $maxqty) {
                         $qtykf = $maxqty / $itemqty;
@@ -1504,6 +1504,7 @@ Class Shipping_model extends MY_Model
                 'target_country' => $cntdat['country_iso_code_2'],
                 'brand' => $brand,
                 'package_price' => $package_price,
+                'qtykf' => $qtykf,
             ];
             $shipres = $this->calculate_shipcost($shipoptions);
             if ($shipres['result']==$this->error_result) {
@@ -1773,7 +1774,7 @@ Class Shipping_model extends MY_Model
         $startdeliv = ifset($options, 'startdeliv', time());
         $cnt_code = (isset($options['target_country']) ? $options['target_country'] : 'US');
         $package_price = ifset($options, 'package_price', 100);
-
+        $qtykf = ifset($options,'qtykf',1);
         $shipTo = $options['shipTo'];
         $shipFrom = $options['shipFrom'];
         // Calculate REST of full cartoon
@@ -1844,7 +1845,7 @@ Class Shipping_model extends MY_Model
                                     $ship['GND'] = [
                                         'ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
                                     ];
@@ -1867,7 +1868,7 @@ Class Shipping_model extends MY_Model
                                     $ship['DA2'] = [
                                         'ServiceCode' => 'DA2', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => '2nd Day Air', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
                                     ];
@@ -1890,7 +1891,7 @@ Class Shipping_model extends MY_Model
                                     $ship['DA1'] = array(
                                         'ServiceCode' => '1DM',
                                         'ServiceName' => 'Next Day AM',
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
                                     );
@@ -1913,7 +1914,7 @@ Class Shipping_model extends MY_Model
                                     $ship['DP1'] = array(
                                         'ServiceCode' => '1DP',
                                         'ServiceName' => 'Next Day PM',
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
                                     );
@@ -1947,7 +1948,7 @@ Class Shipping_model extends MY_Model
                                     $ship['GND'] = [
                                         'ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
                                     ];
@@ -1970,7 +1971,7 @@ Class Shipping_model extends MY_Model
                                     $ship['UPSExpedited'] = [
                                         'ServiceCode' => '08', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Expedited', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
                                     ];
@@ -1993,7 +1994,7 @@ Class Shipping_model extends MY_Model
                                     $ship['UPSSaver'] = [
                                         'ServiceCode' => '65', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Saver', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
                                     ];
@@ -2016,7 +2017,7 @@ Class Shipping_model extends MY_Model
                                     $ship['UPSExpress'] = [
                                         'ServiceCode' => '07', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Express', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
                                     ];
@@ -2047,7 +2048,7 @@ Class Shipping_model extends MY_Model
                                     $ship['UPSExpress'] = [
                                         'ServiceCode' => '07', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Express', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
                                     ];
@@ -2070,7 +2071,7 @@ Class Shipping_model extends MY_Model
                                     $ship['UPSExpedited'] = [
                                         'ServiceCode' => '08', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Expedited', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
                                     ];
@@ -2105,7 +2106,7 @@ Class Shipping_model extends MY_Model
                                     $ship['GND'] = [
                                         'ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
                                     ];
@@ -2126,7 +2127,7 @@ Class Shipping_model extends MY_Model
                                         $ship['ExpressPlus'] = [
                                             'ServiceCode' => '54', // 'ServiceName' =>$row['ServiceName'],
                                             'ServiceName' => 'Express Plus', // 'Rate' =>$row['Rate'],
-                                            'Rate' => round($rate['rate'], 2),
+                                            'Rate' => round($rate['rate']/$qtykf, 2),
                                             'DeliveryDate' => $delivdate,
                                             'current' => 0,
                                         ];
@@ -2151,7 +2152,7 @@ Class Shipping_model extends MY_Model
                                     $ship['UPSSaver'] = [
                                         'ServiceCode' => '65', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Saver', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
                                     ];
