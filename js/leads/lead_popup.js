@@ -123,9 +123,15 @@ function init_leadpopupedit() {
             $("div.lead_history").addClass('expandhistory');
         }
     }
-    $("select#lead_item").searchable();
-    $("select#lead_item").unbind('change').change(function(){
-        lead_itemchange($("select#lead_item").val());
+
+    // $("select#lead_item").searchable();
+    $("select#lead_item").select2({
+        dropdownParent: $('#leadformModal'),
+        matcher: matchStart,
+    });
+    $("select#lead_item").change(function(){
+        var item_id=$("select#lead_item").val();
+        lead_itemchange(item_id);
     })
 
     $("input.usrrepliccheck").unbind('change').change(function(){
@@ -473,7 +479,6 @@ function lead_itemchange(item_id) {
             show_error(response);
         }
     }, 'json');
-
 }
 
 function duplicatelead() {

@@ -150,7 +150,14 @@ class Leadmanagement extends MY_Controller
                 $dead_option='';
             }
             /* Get Available Items */
-            $items_list=$this->leads_model->items_list($lead_data['brand']);
+            // $items_list=$this->leads_model->items_list($lead_data['brand']);
+            $dboptions=array(
+                'exclude'=>array(-4, -5, -2),
+                'brand' => $lead_data['brand'],
+            );
+            $this->load->model('orders_model');
+            $items_list = $this->orders_model->get_item_list($dboptions);
+
             // Attachs
             $leadattach_view = $this->load->view('leadpopup/attach_view',array('attachs'=>$leads_attach),TRUE);
             // $itemslist=$this->m
