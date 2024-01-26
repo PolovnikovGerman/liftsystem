@@ -305,6 +305,10 @@ select.lead_item_select {
     height: 23px;
     width: 182px;
 }
+/* Select 2*/
+#leadformModal .select2-container--open .select2-dropdown--below {
+    width: 320px!important;
+}
 .lead_popup_iteminpt select {
     font-size: 14px;
 }

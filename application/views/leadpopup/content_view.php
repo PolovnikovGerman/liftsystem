@@ -63,7 +63,7 @@
                     <option value="">Select..</option>
                     <?php foreach ($items as $row) {?>
                         <option value="<?=$row['item_id']?>" <?=($row['item_id']==$data['lead_item_id'] ? 'selected="selected"' : '')?>>
-                            <?=$row['item_name']?> <?=($row['item_id']<1 ? '' : '/ '.$row['item_number'])?>
+                            <?=$row['itemnumber']?> &mdash; <?=$row['itemname']?>
                         </option>
                     <?php } ?>
                 </select>
@@ -95,7 +95,7 @@
                 </div>
             </div>
             <div class="leadstatusarea">
-                <div class="item_otheritemarea">
+                <div class="item_otheritemarea" <?=$data['lead_item_id'] < 0 ? 'style="display:block"' : 'style="display:none"' ?>>
                     <div class="item_otheritem_label"><?=$data['other_item_label']?></div>
                     <textarea id="other_item_name" class="other_item_name" name="other_item_name"><?=$data['other_item_name']?></textarea>
                 </div>
