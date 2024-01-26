@@ -95,7 +95,7 @@
                 </div>
             </div>
             <div class="leadstatusarea">
-                <div class="item_otheritemarea" <?=$data['lead_item_id'] < 0 ? 'style="display:block"' : 'style="display:none"' ?>>
+                <div class="item_otheritemarea">
                     <div class="item_otheritem_label"><?=$data['other_item_label']?></div>
                     <textarea id="other_item_name" class="other_item_name" name="other_item_name"><?=$data['other_item_name']?></textarea>
                 </div>

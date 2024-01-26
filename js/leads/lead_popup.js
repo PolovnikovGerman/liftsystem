@@ -113,16 +113,16 @@ function init_leadpopupedit() {
         }
     })
 
-    // var itemid=$("select#lead_item").val();
-    // if (itemid!='') {
-    //     if (parseInt(itemid)<1) {
-    //         $("div.item_otheritemarea").show();
-    //         $("div.lead_history").removeClass('expandhistory');
-    //     } else {
-    //         $("div.item_otheritemarea").hide();
-    //         $("div.lead_history").addClass('expandhistory');
-    //     }
-    // }
+    var itemid=$("select#lead_item").val();
+    if (itemid!='') {
+        if (parseInt(itemid)<1) {
+            $("div.item_otheritemarea").show();
+            $("div.lead_history").removeClass('expandhistory');
+        } else {
+            $("div.item_otheritemarea").hide();
+            $("div.lead_history").addClass('expandhistory');
+        }
+    }
 
     // $("select#lead_item").searchable();
     $("select#lead_item").select2({
