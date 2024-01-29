@@ -29,8 +29,10 @@
                     <input class="ship_tax_textareainpt input_border_gray leftalign" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" data-fldname="ship_company" placeholder="Company" value="<?=$shipadr['ship_company']?>"/>
                     <input class="ship_tax_textareainpt input_border_gray leftalign" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" data-fldname="ship_address1" placeholder="Address Line 1" value="<?=$shipadr['ship_address1']?>"/>
                     <input class="ship_tax_textareainpt input_border_gray leftalign" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" data-fldname="ship_address2" placeholder="Address Line 2" value="<?=$shipadr['ship_address2']?>"/>
-                    <input type="text" class="ship_tax_input2 shipaddrinput input_border_gray" data-shipadr="<?= $shipadr['order_shipaddr_id'] ?>" data-fldname="zip" value="<?= $shipadr['zip'] ?>"/>
-                    <input type="text" class="ship_tax_input1 shipaddrinput input_border_gray" data-shipadr="<?= $shipadr['order_shipaddr_id'] ?>" data-fldname="city" value="<?= $shipadr['city'] ?>">
+                    <input type="text" class="ship_tax_input2 shipaddrinput input_border_gray" data-shipadr="<?= $shipadr['order_shipaddr_id'] ?>"
+                           data-fldname="zip" placeholder="Zip" value="<?= $shipadr['zip'] ?>"/>
+                    <input type="text" class="ship_tax_input1 shipaddrinput input_border_gray" data-shipadr="<?= $shipadr['order_shipaddr_id'] ?>"
+                           data-fldname="city" placeholder="City" value="<?= $shipadr['city'] ?>">
                     <div data-content="shipstateshow" data-shipadr="<?= $shipadr['order_shipaddr_id'] ?>">
                         <?php if (count($states) == 0) { ?>
                             &nbsp;
@@ -44,6 +46,11 @@
                         <?php } ?>                
                     </div>
                 </div>
+<!--                <div class="shippingadrescopy">-->
+<!--                    <i class="fa fa-copy"></i>-->
+<!--                </div>-->
+<!--                <textarea id="shipingcompileaddress" style="display: none">--><?php //=$shipaddress?><!--</textarea>-->
+
                 <div class="ship_tax_cont_bl2">
                     <div class="line">
                         <input type="checkbox" <?= $shipadr['resident'] == 1 ? 'checked="checked"' : '' ?> class="input_checkbox shipadrchk" style="float: left;" data-fldname="resident" data-shipadr="<?=$shipadr['order_shipaddr_id']?>"/>
@@ -67,6 +74,10 @@
                 <div class="labeltax">Sales Tax</div>
                 <div class="dataarea">
                     <input type="text" class="salestaxcost input_border_black input_text_right shipaddrinput" data-shipadr="<?= $shipadr['order_shipaddr_id'] ?>" data-fldname="sales_tax" value="<?=number_format($shipadr['sales_tax'],2)?>"/>
+                </div>
+                <div class="labelarrival">Arrival Date:</div>
+                <div class="dataarea">
+                    <input type="text" class="salesarrivedate input_border_black shipaddrinput" data-shipadr="<?= $shipadr['order_shipaddr_id'] ?>" data-fldname="arrive_date" value="<?=empty($shipadr['arrive_date']) ? '' : date('m/d/Y', $shipadr['arrive_date'])?>"/>
                 </div>
             </div>
         </div>

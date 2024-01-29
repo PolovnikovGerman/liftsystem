@@ -4071,6 +4071,9 @@ Class Leadorder_model extends My_Model {
             $shipping_address[$idx]['out_shipping_method']=$newval;
             $shipping_address[$idx]['shipping_costs']=$shipcost;
         }else {
+            if ($fldname=='arrive_date') {
+                $newval = strtotime($newval);
+            }
             $shipping_address[$idx][$fldname]=$newval;
             switch ($fldname) {
                 case 'zip':
@@ -4147,6 +4150,7 @@ Class Leadorder_model extends My_Model {
                 $this->db->join('ts_states t','t.state_code=c.subdivision_1_iso_code','left');
                 $this->db->where('gdata.postal_code',$seachzip);
                 $this->db->where('cntr.country_id',$shipping_address[$idx]['country_id']);
+                $this->db->where('t.country_id', $shipping_address[$idx]['country_id']);
                 $validres = $this->db->get()->row_array();
 
                 if (ifset($validres,'geoip_city_id',0)>0) {
@@ -4203,6 +4207,7 @@ Class Leadorder_model extends My_Model {
                     if ($row['current']==1) {
                         $shipping_address[$idx]['shipping']=$row['Rate'];
                         $shiprate+=$row['Rate'];
+                        $shipping_address[$idx]['arrive_date']=$row['DeliveryDate'];
                     }
                     $outshipcost[]=array(
                         'order_shipcost_id'=>$newidx*(-1),
@@ -4275,7 +4280,7 @@ Class Leadorder_model extends My_Model {
             foreach ($costs as $crow) {
                 if ($crow['current']==1 && $crow['delflag']==0) {
                     $method_name=$crow['shipping_method'];
-                    $shipping_address[$sidx]['arrive_date']=$crow['arrive_date'];
+                    // $shipping_address[$sidx]['arrive_date']=$crow['arrive_date'];
                 }
             }
             $shipping_address[$sidx]['out_shipping_method']=$method_name;
@@ -5509,11 +5514,11 @@ Class Leadorder_model extends My_Model {
         // Rebuild Arrive Date
         $arrivedate=0;
         foreach ($shipping_address as $srow) {
-            foreach ($srow['shipping_costs'] as $rcost) {
-                if ($rcost['delflag']==0 && $rcost['current']==1) {
-                    $arrivedate=($arrivedate<$rcost['arrive_date'] ? $rcost['arrive_date'] : $arrivedate);
-                }
-            }
+            // foreach ($srow['shipping_costs'] as $rcost) {
+                // if ($rcost['delflag']==0 && $rcost['current']==1) {
+                    $arrivedate=($arrivedate<$srow['arrive_date'] ? $srow['arrive_date'] : $arrivedate);
+                // }
+            // }
         }
         $shipping['arrive_date']=$arrivedate;
         $shipping['arriveclass']='';
