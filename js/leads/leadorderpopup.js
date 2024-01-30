@@ -307,7 +307,9 @@ function edit_currentorder() {
                     initBillOrderAutocomplete();
                 }
                 // Init simple Shipping address
-                initShipOrderAutocomplete();
+                if ($("#shiporder_line1").length > 0) {
+                    initShipOrderAutocomplete();
+                }
             }
         } else {
             $("#loader").hide();
@@ -2985,6 +2987,9 @@ function init_leadorder_shipping() {
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();                
                 init_multiaddress_ship();
+                if (parseInt($("#ordermapuse").val())==1) {
+                    initMapMultiship();
+                }
             } else {
                 show_error(response);                
             }
@@ -3008,6 +3013,9 @@ function init_leadorder_shipping() {
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();                
                 init_multiaddress_ship();
+                if (parseInt($("#ordermapuse").val())==1) {
+                    initMapMultiship();
+                }
             } else {
                 show_error(response);                
             }
@@ -3032,6 +3040,9 @@ function edit_multishipaddress() {
             $("input#loctimeout").val(response.data.loctime);
             init_onlineleadorder_edit();
             init_multiaddress_ship();
+            if (parseInt($("#ordermapuse").val())==1) {
+                initMapMultiship();
+            }
         } else {
             show_error(response);                
         }
@@ -3117,6 +3128,9 @@ function init_multiaddress_ship() {
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
                 init_multiaddress_ship();
+                if (parseInt($("#ordermapuse").val())==1) {
+                    initMapMultiship();
+                }
             } else {
                 $("#loader").hide();
                 show_error(response);

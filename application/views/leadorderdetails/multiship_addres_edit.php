@@ -27,7 +27,8 @@
                 <div class="ship_tax_cont_bl1">
                     <input class="ship_tax_textareainpt input_border_gray leftalign" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" data-fldname="ship_contact" placeholder="Contact Name" value="<?=$shipadr['ship_contact']?>"/>
                     <input class="ship_tax_textareainpt input_border_gray leftalign" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" data-fldname="ship_company" placeholder="Company" value="<?=$shipadr['ship_company']?>"/>
-                    <input class="ship_tax_textareainpt input_border_gray leftalign" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" data-fldname="ship_address1" placeholder="Address Line 1" value="<?=$shipadr['ship_address1']?>"/>
+                    <input class="ship_tax_textareainpt input_border_gray leftalign multiaddresline" data-shipadr="<?=$shipadr['order_shipaddr_id']?>"
+                           data-fldname="ship_address1" placeholder="Address Line 1" value="<?=$shipadr['ship_address1']?>" id="multishipadr<?=$shipadr['order_shipaddr_id']?>"/>
                     <input class="ship_tax_textareainpt input_border_gray leftalign" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" data-fldname="ship_address2" placeholder="Address Line 2" value="<?=$shipadr['ship_address2']?>"/>
                     <input type="text" class="ship_tax_input2 shipaddrinput input_border_gray" data-shipadr="<?= $shipadr['order_shipaddr_id'] ?>"
                            data-fldname="zip" placeholder="Zip" value="<?= $shipadr['zip'] ?>"/>
@@ -50,7 +51,6 @@
 <!--                    <i class="fa fa-copy"></i>-->
 <!--                </div>-->
 <!--                <textarea id="shipingcompileaddress" style="display: none">--><?php //=$shipaddress?><!--</textarea>-->
-
                 <div class="ship_tax_cont_bl2">
                     <div class="line">
                         <input type="checkbox" <?= $shipadr['resident'] == 1 ? 'checked="checked"' : '' ?> class="input_checkbox shipadrchk" style="float: left;" data-fldname="resident" data-shipadr="<?=$shipadr['order_shipaddr_id']?>"/>
@@ -63,7 +63,7 @@
                 </div>
                 <div class="ship_tax_cont_bl3" data-shipadr="<?= $shipadr['order_shipaddr_id'] ?>"><?= $taxview ?></div>
             </div>
-            <div class="ship_tax_container2" data-shipadr="<?=$shipadr['order_shipaddr_id'] ?>">                    
+            <div class="ship_tax_container2" data-shipadr="<?=$shipadr['order_shipaddr_id'] ?>">
                 <?=$shipcostview ?>
             </div>
             <div class="shipdetailsarea">

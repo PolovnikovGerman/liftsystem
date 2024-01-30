@@ -5526,4 +5526,97 @@ class Leadorder extends MY_Controller
         }
         show_404();
     }
+
+    public function update_autoaddressmulti()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                usersession($ordersession, $leadorder);
+                $shipsession=$postdata['shipsession'];
+                $multishipping=usersession($shipsession);
+                if (!empty($multishipping)) {
+                    $res = $this->leadorder_model->update_autoaddress_multi($postdata, $multishipping, $shipsession);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        // Prepare output
+                        $mdata['is_calc']=0;
+                        $mdata['taxdata']=0;
+                        $multishipping=usersession($shipsession);
+                        $shipping_address=$multishipping['shipping_address'];
+                        $order = $multishipping['order'];
+                        $order_qty=$order['order_qty'];
+                        $mdata['total_view']=$this->_build_shiptotals_view($shipping_address, $order_qty);
+                        $shipadr = $res['shipadr'];
+                        $adridx=0;
+                        foreach ($shipping_address as $adrrow) {
+                            if ($adrrow['order_shipaddr_id']==$shipadr) {
+                                break;
+                            } else {
+                                $adridx++;
+                            }
+                        }
+                        $srow=$shipping_address[$adridx];
+                        $mdata['address_1'] = $srow['ship_address1'];
+                        $mdata['country'] = $srow['country_id'];
+                        $mdata['city']=$srow['city'];
+                        $mdata['zip'] = $srow['zip'];
+                        $mdata['state_id']=$srow['state_id'];
+                        // Build Content
+                        $mdata['shiprate']=number_format($srow['shipping'],2);
+                        $mdata['sales_tax']=number_format($srow['sales_tax'],2);
+                        $mdata['arrivedate'] = (intval($srow['arrive_date'])==0 ? '' : date('m/d/Y', $srow['arrive_date']));
+                        if ($res['shipcount']==1) {
+                            $mdata['is_calc']=1;
+                            $mdata['shipcount'] = 1;
+                            $shipcost=$srow['shipping_costs'];
+                            $costoptions=array(
+                                'shipadr'=>$srow['order_shipaddr_id'],
+                                'shipcost'=>$shipcost,
+                                'costname'=>'shippingrate'.$srow['order_shipaddr_id'],
+                            );
+                            $mdata['cost_view']=$this->load->view('leadorderdetails/ship_cost_edit', $costoptions,TRUE);
+                        }
+                        $states=$res['states'];
+                        if (count($states)==0) {
+                            $mdata['stateview']='&nbsp;';
+                            $mdata['shipstate'] = 0;
+                        } else {
+                            $mdata['shipstate'] = 1;
+                            $stateoptions=array(
+                                // 'shipadr'=>$res['shipadr'],
+                                'shipadr'=>$srow,
+                                'states'=>$res['states'],
+                            );
+                            $mdata['stateview']=$this->load->view('leadorderdetails/shipping_state_select', $stateoptions, TRUE);
+                        }
+                        $shipaddr=$srow;
+                        if ($shipaddr['taxview']==0) {
+                            $taxview=$this->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
+                        } else {
+                            $taxview=$this->load->view('leadorderdetails/tax_data_edit', $shipaddr, TRUE);
+                        }
+                        $mdata['taxview']=$taxview;
+                        $mdata['taxdata']=1;
+                        $mdata['save_view']=$this->_checksaveview($shipping_address, $order_qty);
+                        $mdata['viewadd'] = $this->_checknewshipaddres($shipping_address, $order_qty);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }
