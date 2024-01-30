@@ -19,6 +19,7 @@
                             <option value="<?= $crow['country_id'] ?>" <?= $crow['country_id'] == $shipadr['country_id'] ? 'selected="selected"' : '' ?>><?= $crow['country_name'] ?></option>
                         <?php } ?>
                     </select>
+                    <input type="hidden" id="multishipcntcode<?=$shipadr['order_shipaddr_id']?>" value="<?=$shipcntcode?>"/>
                 </div>
             </div>
         </div>

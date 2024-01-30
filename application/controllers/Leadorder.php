@@ -4312,6 +4312,7 @@ class Leadorder extends MY_Controller
             } else {
                 $taxview=$this->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
             }
+            $cntdat = $this->shipping_model->get_country($country_id);
             $states=$this->shipping_model->get_country_states($country_id);
             $shipoptions=array(
                 'shipping'=>$shipping,
@@ -4322,6 +4323,7 @@ class Leadorder extends MY_Controller
                 'taxview'=>$taxview,
                 'numpp'=>$numpp,
                 'total_itemqty'=>$order_qty,
+                'shipcntcode' => $cntdat['country_iso_code_2'],
             );
             if ($edit==1) {
                 $shipaddrview.=$this->load->view('leadorderdetails/multiship_addres_edit', $shipoptions, TRUE);

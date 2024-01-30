@@ -170,7 +170,13 @@ function initMapMultiship() {
     var autocompletes = [];
     var shipcnt;
     for (var i = 0; i < inputs.length; i++) {
-        shipcnt = ["us", "ca"];
+        var adrid = inputs[i].id;
+        var cntid = adrid.replace('multishipadr','');
+        var codefld = '#multishipcntcode'+cntid;
+        shipcnt = $(codefld).val();
+        if (shipcnt == '') {
+            shipcnt = ["us", "ca"];
+        }
         var autocomplete = new google.maps.places.Autocomplete(inputs[i], {
             componentRestrictions: {country: shipcnt},
             fields: ["address_components", "geometry"],
