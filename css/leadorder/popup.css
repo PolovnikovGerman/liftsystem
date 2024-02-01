@@ -1016,8 +1016,11 @@ input.ship_tax_textareainpt {
     height: 17px;
     line-height: 17px;
     margin-top: 33px;
-    width: 244px;
-    margin-left: 67px;
+    /*width: 244px;*/
+    /*margin-left: 67px;*/
+    width: 266px;
+    margin-left: 40px;
+    text-align: right;
 }
 .taxlabel {
     color: #000d6e;
