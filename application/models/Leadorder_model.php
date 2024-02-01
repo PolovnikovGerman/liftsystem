@@ -2763,6 +2763,7 @@ Class Leadorder_model extends My_Model {
                         );
                         if ($row['current']==1) {
                             $shipaddr[$shipidx]['shipping']=$row['Rate'];
+                            $shipaddr[$shipidx]['arrive_date']=$row['DeliveryDate'];
                         }
                         $newidx++;
                     }
