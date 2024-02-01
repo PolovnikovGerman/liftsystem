@@ -2363,9 +2363,29 @@ Class Leadorder_model extends My_Model {
                                         $reptotal+=floatval($row[$setupindx]);
                                     }
                                 }
-                                if ($reptotal > 0) {
+                                if ($order['brand']=='SR') {
+                                    if ($reptotal > 0) {
+                                        $title='Repeat Setup Charge '.$row['repeat_note'];
+                                        $repprice = round($reptotal/$repqty,2);
+                                        $imprint_total+=floatval($reptotal);
+                                        $extra[]=array(
+                                            'order_imprint_id'=>(-1)*$newidx,
+                                            'imprint_description'=>$title,
+                                            'imprint_item'=>0,
+                                            'imprint_qty'=>$repqty,
+                                            'imprint_price'=>$repprice,
+                                            'outqty'=>$repqty,
+                                            'outprice'=>MoneyOutput($reptotal),
+                                            'imprint_subtotal'=>MoneyOutput($reptotal),
+                                            'imprint_price_class' => 'normal',
+                                            'imprint_price_title' => '',
+                                            'delflag'=>0,
+                                        );
+                                        $newidx++;
+                                    }
+                                } else {
                                     $title='Repeat Setup Charge '.$row['repeat_note'];
-                                    $repprice = round($reptotal/$repqty,2);
+                                    $repprice = ($repqty==0 ? 0 : round($reptotal/$repqty,2));
                                     $imprint_total+=floatval($reptotal);
                                     $extra[]=array(
                                         'order_imprint_id'=>(-1)*$newidx,
@@ -2374,7 +2394,7 @@ Class Leadorder_model extends My_Model {
                                         'imprint_qty'=>$repqty,
                                         'imprint_price'=>$repprice,
                                         'outqty'=>$repqty,
-                                        'outprice'=>MoneyOutput($reptotal),
+                                        'outprice'=>$reptotal=='0' ? '---' : MoneyOutput($reptotal),
                                         'imprint_subtotal'=>MoneyOutput($reptotal),
                                         'imprint_price_class' => 'normal',
                                         'imprint_price_title' => '',
@@ -2452,9 +2472,29 @@ Class Leadorder_model extends My_Model {
                                     $reptotal+=floatval($row[$setupindx]);
                                 }
                             }
-                            if ($reptotal > 0) {
+                            if ($order['brand']=='SR') {
+                                if ($reptotal > 0) {
+                                    $title='Repeat Setup Charge '.$row['repeat_note'];
+                                    $repprice = round($reptotal/$repqty,2);
+                                    $imprint_total+=floatval($reptotal);
+                                    $extra[]=array(
+                                        'order_imprint_id'=>(-1)*$newidx,
+                                        'imprint_description'=>$title,
+                                        'imprint_item'=>0,
+                                        'imprint_qty'=>$repqty,
+                                        'imprint_price'=>$repprice,
+                                        'outqty'=>$repqty,
+                                        'outprice'=>MoneyOutput($reptotal),
+                                        'imprint_subtotal'=>MoneyOutput($reptotal),
+                                        'imprint_price_class' => 'normal',
+                                        'imprint_price_title' => '',
+                                        'delflag'=>0,
+                                    );
+                                    $newidx++;
+                                }
+                            } else {
                                 $title='Repeat Setup Charge '.$row['repeat_note'];
-                                $repprice = round($reptotal/$repqty,2);
+                                $repprice = ($repqty==0 ? 0 : round($reptotal/$repqty,2));
                                 $imprint_total+=floatval($reptotal);
                                 $extra[]=array(
                                     'order_imprint_id'=>(-1)*$newidx,
@@ -2463,7 +2503,7 @@ Class Leadorder_model extends My_Model {
                                     'imprint_qty'=>$repqty,
                                     'imprint_price'=>$repprice,
                                     'outqty'=>$repqty,
-                                    'outprice'=>MoneyOutput($reptotal),
+                                    'outprice'=> ($reptotal==0 ? '--' : MoneyOutput($reptotal)),
                                     'imprint_subtotal'=>MoneyOutput($reptotal),
                                     'imprint_price_class' => 'normal',
                                     'imprint_price_title' => '',
