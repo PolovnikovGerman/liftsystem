@@ -9807,6 +9807,13 @@ Class Leadorder_model extends My_Model {
 //            $shipping['arrivedate_class']='';
 //        }
         $leadorder['shipping'] = $shipping;
+        $ships = $leadorder['shipping_address'];
+        $sidx = 0;
+        foreach ($ships as $ship) {
+            $ships[$sidx]['arrive_date'] = $newval;
+            $sidx++;
+        }
+        $leadorder['shipping_address'] = $ships;
         usersession($ordersession, $leadorder);
         $out['result'] = $this->success_result;
         return $out;
