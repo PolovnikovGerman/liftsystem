@@ -3252,17 +3252,15 @@ class Test extends CI_Controller
         $res = $this->sritems_model->srspecial_images();
     }
 
-    public function addshipsettings()
+    public function fixarrive()
     {
-        $this->db->select('shipzone_id, method_id, method_percent, method_dimens')->from('sb_shipzone_methods')->where('brand','BT');
-        $results = $this->db->get()->result_array();
-        foreach ($results as $result) {
-            $this->db->set('shipzone_id', $result['shipzone_id']);
-            $this->db->set('method_id', $result['method_id']);
-            $this->db->set('method_percent', $result['method_percent']);
-            $this->db->set('method_dimens', $result['method_dimens']);
-            $this->db->set('brand','SR');
-            $this->db->insert('sb_shipzone_methods');
+        $this->db->select('o.order_id, o.order_num, o.update_usr, o.item_id, s.order_shipping_id, t.order_shipaddr_id, c.arrive_date');
+        $this->db->from('ts_orders o')->join('ts_order_shippings s','s.order_id=o.order_id')->join('ts_order_shipaddres t','o.order_id = t.order_id');
+        $this->db->join('ts_order_shipcosts c','c.order_shipaddr_id=t.order_shipaddr_id')->where('s.arrive_date',0)->where('c.current',1)->where('o.is_canceled',0);
+        $this->db->order_by('o.order_id','desc');
+        $dats = $this->db->get()->result_array();
+        foreach ($dats as $dat) {
+            echo 'Order '.$dat['order_num'].' Date '.date('Y-m-d', $dat['arrive_date']).PHP_EOL;
         }
     }
 }
