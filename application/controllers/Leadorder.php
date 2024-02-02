@@ -5577,8 +5577,8 @@ class Leadorder extends MY_Controller
                         $mdata['zip'] = $srow['zip'];
                         $mdata['state_id']=$srow['state_id'];
                         // Build Content
-                        $mdata['shiprate']=number_format($srow['shipping'],2);
-                        $mdata['sales_tax']=number_format($srow['sales_tax'],2);
+                        $mdata['shipping']=number_format($srow['shipping'],2);
+                        $mdata['tax']=number_format($srow['sales_tax'],2);
                         $mdata['arrivedate'] = (intval($srow['arrive_date'])==0 ? '' : date('m/d/Y', $srow['arrive_date']));
                         if ($res['shipcount']==1) {
                             $mdata['is_calc']=1;

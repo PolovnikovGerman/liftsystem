@@ -3234,7 +3234,8 @@ function init_multiaddress_ship() {
                 $("div.multishippopuparea").find("div.ship_tax_cont2_line[data-shipadr='"+shipadr+"'][data-shipcost='"+response.data.shipping_cost_id+"']").removeClass('opast');
                 $("div.multishippopuparea").find("div.shiprateshowarea[data-shipadr='"+shipadr+"'][data-shipcost='"+response.data.shipping_cost_id+"']").addClass('active');
                 $("input.shippingcost[data-shipadr='"+shipadr+"']").val(response.data.shiprate);                
-                $("input.salestaxcost[data-shipadr='"+shipadr+"']").val(response.data.sales_tax);                
+                $("input.salestaxcost[data-shipadr='"+shipadr+"']").val(response.data.sales_tax);
+                $("input.salesarrivedate[data-shipadr='"+shipadr+"']").val(response.data.arrivedate);
                 $("div#multishiptotals").empty().html(response.data.total_view);
                 show_multishipsave(response);
                 $("input#loctimeout").val(response.data.loctime);

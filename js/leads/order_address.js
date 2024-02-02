@@ -277,6 +277,8 @@ function updateMultiAddress(adresid, address1, city, state, postcode, country) {
             }
             $("#loader").hide();
             $("input#loctimeout").val(response.data.loctime);
+            show_multishipsave(response);
+            show_addnewaddress(response);
             init_onlineleadorder_edit();
             init_multiaddress_ship();
         } else {
