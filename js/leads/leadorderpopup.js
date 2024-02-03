@@ -307,7 +307,9 @@ function edit_currentorder() {
                     initBillOrderAutocomplete();
                 }
                 // Init simple Shipping address
-                initShipOrderAutocomplete();
+                if ($("#shiporder_line1").length > 0) {
+                    initShipOrderAutocomplete();
+                }
             }
         } else {
             $("#loader").hide();
@@ -2985,6 +2987,9 @@ function init_leadorder_shipping() {
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();                
                 init_multiaddress_ship();
+                if (parseInt($("#ordermapuse").val())==1) {
+                    initMapMultiship();
+                }
             } else {
                 show_error(response);                
             }
@@ -3008,6 +3013,9 @@ function init_leadorder_shipping() {
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();                
                 init_multiaddress_ship();
+                if (parseInt($("#ordermapuse").val())==1) {
+                    initMapMultiship();
+                }
             } else {
                 show_error(response);                
             }
@@ -3032,6 +3040,9 @@ function edit_multishipaddress() {
             $("input#loctimeout").val(response.data.loctime);
             init_onlineleadorder_edit();
             init_multiaddress_ship();
+            if (parseInt($("#ordermapuse").val())==1) {
+                initMapMultiship();
+            }
         } else {
             show_error(response);                
         }
@@ -3069,6 +3080,10 @@ function init_multiaddress_ship() {
                 show_error(response);
             }
         },'json');
+    });
+    $("input.salesarrivedate").datepicker({
+        autoclose: true,
+        todayHighlight: true
     });
     $("select.shiprashselect").unbind('change').change(function(){
         var params=new Array();
@@ -3108,16 +3123,19 @@ function init_multiaddress_ship() {
                 $("div#multishiptotals").empty().html(response.data.total_view);
                 $("div.numaddress").empty().html(response.data.numaddress)
                 show_multishipsave(response);
+                show_addnewaddress(response);
                 $("#loader").hide();
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
                 init_multiaddress_ship();
+                if (parseInt($("#ordermapuse").val())==1) {
+                    initMapMultiship();
+                }
             } else {
                 $("#loader").hide();
                 show_error(response);
             }
         },'json');
-        
     });
     // Change Number of QTY
     $("input.shipaddrinput").unbind('change').change(function(){
@@ -3136,6 +3154,7 @@ function init_multiaddress_ship() {
                 $("div#multishiptotals").empty().html(response.data.total_view);
                 $("input.shippingcost[data-shipadr='"+shipadr+"']").val(response.data.shiprate);
                 $("input.salestaxcost[data-shipadr='"+shipadr+"']").val(response.data.sales_tax);
+                $("input.salesarrivedate[data-shipadr='"+shipadr+"']").val(response.data.arrivedate);
                 if (parseInt(response.data.is_calc)===1) {
                     $("div.multishippopuparea").find("div.ship_tax_container2[data-shipadr='"+shipadr+"']").empty().html(response.data.cost_view);
                 }
@@ -3145,6 +3164,7 @@ function init_multiaddress_ship() {
                 $("input.ship_tax_input1[data-shipadr='"+shipadr+"']").val(response.data.city);
                 $("select.ship_tax_select2[data-shipadr='"+shipadr+"']").val(response.data.state_id);
                 show_multishipsave(response);
+                show_addnewaddress(response);
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
                 init_multiaddress_ship();
@@ -3214,7 +3234,8 @@ function init_multiaddress_ship() {
                 $("div.multishippopuparea").find("div.ship_tax_cont2_line[data-shipadr='"+shipadr+"'][data-shipcost='"+response.data.shipping_cost_id+"']").removeClass('opast');
                 $("div.multishippopuparea").find("div.shiprateshowarea[data-shipadr='"+shipadr+"'][data-shipcost='"+response.data.shipping_cost_id+"']").addClass('active');
                 $("input.shippingcost[data-shipadr='"+shipadr+"']").val(response.data.shiprate);                
-                $("input.salestaxcost[data-shipadr='"+shipadr+"']").val(response.data.sales_tax);                
+                $("input.salestaxcost[data-shipadr='"+shipadr+"']").val(response.data.sales_tax);
+                $("input.salesarrivedate[data-shipadr='"+shipadr+"']").val(response.data.arrivedate);
                 $("div#multishiptotals").empty().html(response.data.total_view);
                 show_multishipsave(response);
                 $("input#loctimeout").val(response.data.loctime);
@@ -3371,6 +3392,7 @@ function init_multiaddress_ship() {
                     $("div#multishiptotals").empty().html(response.data.total_view);
                     $("div.numaddress").empty().html(response.data.numaddress);
                     show_multishipsave(response);
+                    show_addnewaddress(response);
                     $("input#loctimeout").val(response.data.loctime);
                     init_onlineleadorder_edit();
                     init_multiaddress_ship();
@@ -3419,6 +3441,13 @@ function show_multishipsave(response) {
     }
 }
 
+function show_addnewaddress(response) {
+    if (parseInt(response.data.viewadd) === 1) {
+        $("div.multishipadressadd").show();
+    } else {
+        $("div.multishipadressadd").hide();
+    }
+}
 function init_taxdocupload(shipadr) {
     var temp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; padding-left: 10px; padding-top: 8px;">'+
       '<em>Upload</em></span></div>' +
