@@ -1790,7 +1790,7 @@ Class Shipping_model extends MY_Model
             $token = $tokenres['token'];
             // Get Times in transit
             $oldstart = 0;
-            if (abs($daydiff) > 10) {
+            if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                 $oldstart = $startdeliv;
                 $startdeliv = strtotime(date('Y-m-d'));
             }
@@ -1839,7 +1839,7 @@ Class Shipping_model extends MY_Model
                                         $time['deliverytime'] = '16:00:00';
                                     }
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['GND'] = [
@@ -1862,7 +1862,7 @@ Class Shipping_model extends MY_Model
                                     array_push($codes, 'DA2');
                                     $code .= "2DA|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['DA2'] = [
@@ -1885,7 +1885,7 @@ Class Shipping_model extends MY_Model
                                     array_push($codes, 'DA1');
                                     $code .= "1DA|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['DA1'] = array(
@@ -1907,7 +1907,7 @@ Class Shipping_model extends MY_Model
                                 if ($transit==1) {
                                     array_push($codes, 'DP1');
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         // Make changes in deliv date
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
@@ -1942,7 +1942,7 @@ Class Shipping_model extends MY_Model
                                         $time['deliverytime'] = '16:00:00';
                                     }
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['GND'] = [
@@ -1965,7 +1965,7 @@ Class Shipping_model extends MY_Model
                                     array_push($codes, 'UPSExpedited');
                                     $code .= "08|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['UPSExpedited'] = [
@@ -1988,7 +1988,7 @@ Class Shipping_model extends MY_Model
                                     array_push($codes, 'UPSSaver');
                                     $code .= "65|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['UPSSaver'] = [
@@ -2011,7 +2011,7 @@ Class Shipping_model extends MY_Model
                                     array_push($codes, 'UPSExpress');
                                     $code .= "07|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['UPSExpress'] = [
@@ -2042,7 +2042,7 @@ Class Shipping_model extends MY_Model
                                     array_push($codes, 'UPSExpress');
                                     $code .= "07|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['UPSExpress'] = [
@@ -2065,7 +2065,7 @@ Class Shipping_model extends MY_Model
                                     array_push($codes, 'UPSExpedited');
                                     $code .= "08|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['UPSExpedited'] = [
@@ -2100,7 +2100,7 @@ Class Shipping_model extends MY_Model
                                         $time['deliverytime'] = '16:00:00';
                                     }
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['GND'] = [
@@ -2121,7 +2121,7 @@ Class Shipping_model extends MY_Model
                                         array_push($codes, 'ExpressPlus');
                                         $code .= "54|";
                                         $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                        if (abs($daydiff) > 10) {
+                                        if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                             $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                         }
                                         $ship['ExpressPlus'] = [
@@ -2146,7 +2146,7 @@ Class Shipping_model extends MY_Model
                                     array_push($codes, 'UPSSaver');
                                     $code .= "65|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['UPSSaver'] = [
