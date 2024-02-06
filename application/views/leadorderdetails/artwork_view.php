@@ -21,7 +21,7 @@
                 Templates:
             </div>
             <div class="block_7_artwork4 text_blue">
-                <div class="icon_file empty_template" style="margin: 0 3px;">&nbsp;</div> Master
+                <div class="icon_file empty_template" data-url="<?=$empty_url?>" data-title="<?=$empty_title?>" style="margin: 0 3px;">&nbsp;</div> Master
             </div>
             <div class="block_7_artwork4 text_blue">
                 <div class="icon_file artpopup_templview" style="margin: 0 3px;">&nbsp;</div> Item
