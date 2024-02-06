@@ -75,3 +75,7 @@ $config['relievers_similar_items']=4;
 $config['slider_images']=32;
 $config['prices_val'] = 10;
 $config['relievers_prices_val'] = 10;
+$config['sr_empty_template'] = '/uploads/aitemp/proof_SR15000_customer_item.pdf';
+$config['sr_empty_title'] = 'proof_SR15000_customer_item.pdf';
+$config['sb_empty_template'] = '/uploads/aitemp/proof_BT15000_customer_item.ai';
+$config['sb_empty_title'] = 'proof_BT15000_customer_item.ai';
