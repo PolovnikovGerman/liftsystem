@@ -1437,6 +1437,8 @@ Class Shipping_model extends MY_Model
         $shiper = $this->config->item('ups_shiper');
         foreach ($items as $item) {
             $flagitem = 0;
+            $itemqty = $item['item_qty'];
+            $qtykf = 1;
             if ($item['item_id'] > 0) {
                 $itemres = $this->items_model->get_item($item['item_id']);
                 if ($itemres['result']==$this->success_result) {
@@ -1449,7 +1451,6 @@ Class Shipping_model extends MY_Model
                     // QTY KF
                     $qtykf = 1;
                     $maxqty = $shipboxes[0]['box_qty'] * 50;
-                    $itemqty = $item['item_qty'];
                     if ($itemqty > $maxqty) {
                         $qtykf = $maxqty / $itemqty;
                         $itemqty = round($itemqty*$qtykf,0);
