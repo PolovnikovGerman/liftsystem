@@ -65,3 +65,4 @@ $config['ups_shiper'] = array(
     ),
 );
 
+$config['delivery_daydiff'] = 15;
