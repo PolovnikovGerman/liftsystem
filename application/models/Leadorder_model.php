@@ -8821,6 +8821,7 @@ Class Leadorder_model extends My_Model {
     public function get_templates($leadorder) {
         $out=array('result'=> $this->error_result, 'msg'=> 'Item Not Select');
         $items=$leadorder['order_items'];
+        $brand=$leadorder['order']['brand'];
         $outfiles=array();
         $custom=0;
         $dbtablename='sb_items';
@@ -8846,6 +8847,11 @@ Class Leadorder_model extends My_Model {
             $this->db->select("item_id, item_number, item_name, item_vector_img");
             $this->db->from($dbtablename);
             $this->db->where('item_vector_img is not null');
+            if ($brand=='SR') {
+                $this->db->where('brand','SR');
+            } else {
+                $this->db->where_in('brand',['SB','BT']);
+            }
             $res=$this->db->get()->result_array();
             $out['templates']=$res;
         } else {

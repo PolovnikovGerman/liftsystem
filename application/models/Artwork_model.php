@@ -2112,9 +2112,15 @@ Class Artwork_model extends MY_Model
             $out['msg']='Artwork data was lost. Please reload data';
         } else {
             $dbtablename='sb_items';
+            $brand = ifset($artdata, 'brand','BT');
             $this->db->select("item_id, item_number, item_name, item_vector_img");
             $this->db->from($dbtablename);
             $this->db->where('item_vector_img is not null');
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_id('brand',['SB','BT']);
+            }
             $result=$this->db->get()->result_array();
 
             $out['templates']=$result;

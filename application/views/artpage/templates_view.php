@@ -7,7 +7,7 @@
     <div class="artpopup_templviewicon empty_template">
         <img src="/img/artpage/artstatus_icon.png"/>
     </div>
-    <div class="artpopup_templtype empty_template">Blank</div>
+    <div class="artpopup_templtype empty_template" data-url="<?=$emptytemplate_url?>" data-title="<?=$templatetitle?>">Blank</div>
     <div class="artpopup_templtypeemp">&nbsp;</div>
     <div class="artpopup_templviewicon item_template">
         <img src="/img/artpage/artstatus_icon.png"/>
