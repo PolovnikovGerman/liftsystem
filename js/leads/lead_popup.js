@@ -134,6 +134,11 @@ function init_leadpopupedit() {
         lead_itemchange(item_id);
     })
 
+    $("input#lead_itemqty").on('focusout',function(){
+        $("#lead_item").select2('open');
+        $("#lead_item").find('input.select2-search__field').focus();
+    });
+
     $("input.usrrepliccheck").unbind('change').change(function(){
         var value=1;
         if ($(this).prop('checked')==true) {
