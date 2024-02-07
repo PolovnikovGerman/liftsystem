@@ -123,6 +123,10 @@ function updateOrderAddress(address_type, address1, city, state, postcode, count
                     $("#billingstateselectarea").empty().html('&nbsp;');
                 }
                 $("#billingcompileaddress").val(response.data.addresscopy);
+                $("input.billinginput[data-field='address_2']").focus().addClass('flashed');
+                setTimeout(function() {
+                    $("input.billinginput[data-field='address_2']").removeClass('flashed');
+                },5000);
             } else {
                 $("input[data-shipadr='"+shipadr+"'][data-fldname='ship_address1']").val(response.data.address_1);
                 $("select.shipcountryselect[data-shipadr='"+shipadr+"']").val(response.data.country);
@@ -135,6 +139,10 @@ function updateOrderAddress(address_type, address1, city, state, postcode, count
                     $("div[data-content='shipstateshow'][data-shipadr='"+shipadr+"']").empty().html('&nbsp;');
                 }
                 $("#shipingcompileaddress").val(response.data.addresscopy);
+                $("input.ship_tax_textareainpt[data-fldname='ship_address2']").focus().addClass('flashed');
+                setTimeout(function() {
+                    $("input.ship_tax_textareainpt[data-fldname='ship_address2']").removeClass('flashed');
+                },5000);
             }
             if (parseInt(response.data.shipcount)==1) {
                 // Update shipping cost
@@ -262,6 +270,10 @@ function updateMultiAddress(adresid, address1, city, state, postcode, country) {
                 $("div[data-content='shipstateshow'][data-shipadr='"+shipadr+"']").empty().html('&nbsp;');
             }
             // $("#shipingcompileaddress").val(response.data.addresscopy);
+            $(".ship_tax_textareainpt[data-shipadr='"+shipadr+"'][data-fldname='ship_address2']").focus().addClass('flashed');
+            setTimeout(function (){
+                $(".ship_tax_textareainpt[data-shipadr='"+shipadr+"'][data-fldname='ship_address2']").removeClass('flashed');
+            },5000);
             if (parseInt(response.data.shipcount)==1) {
                 // Update shipping cost
                 $("div.ship_tax_container2[data-shipadr='"+shipadr+"']").empty().html(response.data.cost_view);
