@@ -561,11 +561,23 @@ Class Leadorder_model extends My_Model {
         $out['previewdocs'] = $previews;
         $out['artlocations']=$locations;
         $out['proofdocs']=$proofdocs;
+        $extetndedview = 0;
         if ($out['order_system_type']=='new') {
             // Get Contacts
             $out['contacts']=$this->get_order_contacts($order_id);
             // Get Order Items
             $out['order_items']=$this->get_order_items($order_id);
+            if ($brand=='SR') {
+                $items = $out['order_items'];
+                foreach ($items as $item) {
+                    if ($item['item_id']==$this->config->item('custom_id')) {
+                        $extetndedview = 1;
+                    }
+                }
+            } else {
+                $extetndedview = 1;
+            }
+            $out['extendview'] = $extetndedview;
             $item_cost=$item_imprint=0;
             foreach ($out['order_items'] as $item) {
                 $item_cost+=$item['item_subtotal'];
@@ -851,6 +863,11 @@ Class Leadorder_model extends My_Model {
         $payfld=$this->db->list_fields('ts_order_payments');
         $charges=array();
         $out['charges']=$charges;
+        if ($brand=='SR') {
+            $out['extendview'] = 0;
+        } else {
+            $out['extendview'] = 1;
+        }
         return $out;
     }
 
@@ -1580,6 +1597,15 @@ Class Leadorder_model extends My_Model {
         // Add new element to Order Items
         $order_items[]=$orditem;
         $out['newitem'] = $orditem['order_item_id'];
+        $out['extendview']=1;
+        if ($order['brand']=='SR') {
+            $out['extendview']=0;
+            foreach ($order_items as $item) {
+                if ($item['item_id']==$this->config->item('custom_id')) {
+                    $out['extendview']=1;
+                }
+            }
+        }
         $leadorder['order_items']=$order_items;
         // Calculate shipping
         $this->load->model('shipping_model');

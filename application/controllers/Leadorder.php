@@ -1053,6 +1053,7 @@ class Leadorder extends MY_Controller
                                 );
                                 $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
                             }
+                            $mdata['extendview'] = $res['extendview'];
                         }
                     }
                 }

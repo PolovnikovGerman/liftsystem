@@ -1023,6 +1023,13 @@ function save_leadorderitem() {
                     // Shipping Dates
                     $("div.shippingdatesarea").empty().html(response.data.shipdates_content);
                 }
+                if (parseInt(response.data.extendview)==1) {
+                    $(".artclaypreviewarea").show();
+                    $(".artpreviewpreviewarea").show();
+                } else {
+                    $(".artclaypreviewarea").hide();
+                    $(".artpreviewpreviewarea").hide();
+                }
                 init_onlineleadorder_edit();
                 // Print details
                 $("#artNextModal").find('div.modal-dialog').css('width','1077px');
