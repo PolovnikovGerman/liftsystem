@@ -2998,7 +2998,7 @@ class Leadquote_model extends MY_Model
                         $out['extendview'] = 0;
                         $items = $orderres['order_items'];
                         foreach ($items as $item) {
-                            if ($item['item_id']==$this->config->item('customer_id')) {
+                            if ($item['item_id']==$this->config->item('custom_id')) {
                                 $out['extendview'] = 1;
                             }
                         }

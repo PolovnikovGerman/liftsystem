@@ -6951,6 +6951,16 @@ Class Leadorder_model extends My_Model {
         $out['proofdocs']=array();
         $out['claydocs'] = [];
         $out['previewdocs'] = [];
+        $out['extendview'] = 1;
+        if ($new_data['order']['brand']=='SR') {
+            $out['extendview'] = 0;
+            $items = $new_data['order_items'];
+            foreach ($items as $item) {
+                if ($item['item_id']==$this->config->item('custom_id')) {
+                    $out['extendview'] = 1;
+                }
+            }
+        }
         return $out;
     }
 
