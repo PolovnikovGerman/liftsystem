@@ -2993,7 +2993,16 @@ class Leadquote_model extends MY_Model
                         'orderby'=>'sort, country_name',
                     );
                     $out['countries'] = $this->shipping_model->get_countries_list($cnt_options);
-
+                    $out['extendview'] = 1;
+                    if ($quote['brand']=='SR') {
+                        $out['extendview'] = 0;
+                        $items = $orderres['order_items'];
+                        foreach ($items as $item) {
+                            if ($item['item_id']==$this->config->item('customer_id')) {
+                                $out['extendview'] = 1;
+                            }
+                        }
+                    }
                     // Empty Arrays
                     $out['contacts'] = $orderres['contacts'];
                     $out['order_items'] = $orderres['order_items'];
