@@ -3513,13 +3513,15 @@ Class Artwork_model extends MY_Model
                 'parameter_newvalue'=>(intval($shippingnew['event_date'])==0 ? '' : date('m/d/Y', $shippingnew['event_date'])),
             );
         }
-        if (floatval($shippingold['rush_price'])!=  floatval($shippingnew['rush_price'])) {
-            array_push($changes, 'Rush Price to '.MoneyOutput($ordernew['rush_price'],2));
-            $historylist[]=array(
-                'parameter_name'=>'Rush Price',
-                'parameter_oldvalue'=>  MoneyOutput($shippingold['rush_price'],2),
-                'parameter_newvalue'=>  MoneyOutput($shippingnew['rush_price'],2),
-            );
+        if (isset($shippingnew['rush_price']) && isset($shippingold['rush_price'])) {
+            if (floatval($shippingold['rush_price'])!=  floatval($shippingnew['rush_price'])) {
+                array_push($changes, 'Rush Price to '.MoneyOutput($ordernew['rush_price'],2));
+                $historylist[]=array(
+                    'parameter_name'=>'Rush Price',
+                    'parameter_oldvalue'=>  MoneyOutput($shippingold['rush_price'],2),
+                    'parameter_newvalue'=>  MoneyOutput($shippingnew['rush_price'],2),
+                );
+            }
         }
         // Shipping Address
         $shipoldaddress=$compare_array['shipping_address'];
