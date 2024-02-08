@@ -658,6 +658,8 @@ Class Shipping_model extends MY_Model
                             'Rate'=>0,
                             'DeliveryDate'=>0,
                             'current'=>$row['current'],
+                            'arrive' => $row['arrive'],
+                            'tntdays' => $row['tntdays'],
                         );
                         $srchkey=count($outrate)-1;
                     } else {
@@ -1834,11 +1836,11 @@ Class Shipping_model extends MY_Model
                                 if ($transit==1) {
                                     array_push($codes, 'GND');
                                     $code .= "GND|";
-                                    if ($time['deliverytime'] > '16:00:00') {
-                                        $newdate  = $this->calendars_model->get_business_date(strtotime($time['deliverydate']),1);
-                                        $time['deliverydate'] = date('Y-m-d', $newdate);
-                                        $time['deliverytime'] = '16:00:00';
-                                    }
+//                                    if ($time['deliverytime'] > '16:00:00') {
+//                                        $newdate  = $this->calendars_model->get_business_date(strtotime($time['deliverydate']),1);
+//                                        $time['deliverydate'] = date('Y-m-d', $newdate);
+//                                        $time['deliverytime'] = '16:00:00';
+//                                    }
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
                                     if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
@@ -1849,6 +1851,8 @@ Class Shipping_model extends MY_Model
                                         'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             } elseif ($rate['service_code']=='02') {
@@ -1872,6 +1876,8 @@ Class Shipping_model extends MY_Model
                                         'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             } elseif ($rate['service_code']=='14') {
@@ -1895,6 +1901,8 @@ Class Shipping_model extends MY_Model
                                         'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     );
                                 }
                             } elseif ($rate['service_code']=='13') {
@@ -1918,6 +1926,8 @@ Class Shipping_model extends MY_Model
                                         'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     );
                                     $code .= "1DP|";
                                 }
@@ -1937,11 +1947,11 @@ Class Shipping_model extends MY_Model
                                 if ($transit==1) {
                                     array_push($codes, 'GND');
                                     $code .= "GND|";
-                                    if ($time['deliverytime'] > '16:00:00') {
-                                        $newdate  = $this->calendars_model->get_business_date(strtotime($time['deliverydate']),1);
-                                        $time['deliverydate'] = date('Y-m-d', $newdate);
-                                        $time['deliverytime'] = '16:00:00';
-                                    }
+//                                    if ($time['deliverytime'] > '16:00:00') {
+//                                        $newdate  = $this->calendars_model->get_business_date(strtotime($time['deliverydate']),1);
+//                                        $time['deliverydate'] = date('Y-m-d', $newdate);
+//                                        $time['deliverytime'] = '16:00:00';
+//                                    }
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
                                     if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
@@ -1952,6 +1962,8 @@ Class Shipping_model extends MY_Model
                                         'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             } elseif ($rate['service_code']=='08') {
@@ -1975,6 +1987,8 @@ Class Shipping_model extends MY_Model
                                         'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             } elseif ($rate['service_code']=='65') {
@@ -1998,6 +2012,8 @@ Class Shipping_model extends MY_Model
                                         'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             } elseif ($rate['service_code']=='07') {
@@ -2021,6 +2037,8 @@ Class Shipping_model extends MY_Model
                                         'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             }
@@ -2052,6 +2070,8 @@ Class Shipping_model extends MY_Model
                                         'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             } elseif ($rate['service_code']=='08') {
@@ -2075,6 +2095,8 @@ Class Shipping_model extends MY_Model
                                         'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             } elseif ($rate['service_code']=='11') {
@@ -2095,11 +2117,11 @@ Class Shipping_model extends MY_Model
                                 if ($transit==1) {
                                     array_push($codes, 'GND');
                                     $code .= "GND|";
-                                    if ($time['deliverytime'] > '16:00:00') {
-                                        $newdate  = $this->calendars_model->get_business_date(strtotime($time['deliverydate']),1);
-                                        $time['deliverydate'] = date('Y-m-d', $newdate);
-                                        $time['deliverytime'] = '16:00:00';
-                                    }
+//                                    if ($time['deliverytime'] > '16:00:00') {
+//                                        $newdate  = $this->calendars_model->get_business_date(strtotime($time['deliverydate']),1);
+//                                        $time['deliverydate'] = date('Y-m-d', $newdate);
+//                                        $time['deliverytime'] = '16:00:00';
+//                                    }
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
                                     if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
@@ -2110,6 +2132,8 @@ Class Shipping_model extends MY_Model
                                         'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             } elseif ($rate['service_code']=='54') {
@@ -2131,6 +2155,8 @@ Class Shipping_model extends MY_Model
                                             'Rate' => round($rate['rate']/$qtykf, 2),
                                             'DeliveryDate' => $delivdate,
                                             'current' => 0,
+                                            'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                            'tntdays' => $time['bisnessdays'],
                                         ];
                                     }
 
@@ -2156,6 +2182,8 @@ Class Shipping_model extends MY_Model
                                         'Rate' => round($rate['rate']/$qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             }
