@@ -123,6 +123,12 @@
                     <?=$webpages?>
                 </div>
                 <div class="input_row">
+                    <div class="labeltxt exportaccess">Access to Order Export: </div>
+                    <div class="inputval exportaccess">
+                        <input type="checkbox" class="userpersdatachk" data-name="user_leadrep" id="user_leadrep" value="1" <?=($user['user_leadrep']==1 ? 'checked="checked"' : '')?> />
+                    </div>
+                </div>
+                <div class="input_row">
                     <div class="labeltxt">User Default page</div>
                     <div class="inputval"><?=$pages_select?></div>
                 </div>
