@@ -291,6 +291,8 @@ class Leadmanagement extends MY_Controller
     /* Restore Lead Edit form */
     public function restore_ledform() {
         if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mail_id = ifset($postdata,'email_id',0);
             $mdata=array();
             $error=$this->restore_orderdata_error;
             $this->load->model('questions_model');
@@ -314,6 +316,10 @@ class Leadmanagement extends MY_Controller
                     $lead_usr=array();
                     $leads_attach = [];
                 } else {
+                    if ($mail_id > 0) {
+                        // Update lead
+                        $this->leads_model->update_lead($lead_id);
+                    }
                     $lead_data=$this->leads_model->get_lead($lead_id);
                     if (isset($lead_data['create_date'])) {
                         $crtime=strtotime($lead_data['create_date']);
