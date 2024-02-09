@@ -7261,6 +7261,7 @@ Class Leadorder_model extends My_Model {
                     'imprints'=>$newimpr,
                     'imprint_details'=>$newdetais,
                     'imprint_locations'=>$irow['imprint_locations'],
+                    'vendor_item_id' => $irow['vendor_item_id'],
                     // 'qtyinput_class' => $irow['qtyinput_class'],
                 );
             }

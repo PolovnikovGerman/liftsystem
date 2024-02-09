@@ -1692,10 +1692,10 @@ Class Shipping_model extends MY_Model
             }
         } else {
             $restqty = $shipqty;
-            foreach ($shipboxes as $shipbox) {
-                $ceilpart = floor($shipqty / $shipbox['box_qty']);
+            if ($restqty > $shipboxes[$maxshipbox]['box_qty']) {
+                $ceilpart = floor($shipqty / $shipboxes[$maxshipbox]['box_qty']);
                 if ($ceilpart > 0) {
-                    $boxweight = $itemweight * $shipbox['box_qty'];
+                    $boxweight = $itemweight * $shipboxes[$maxshipbox]['box_qty'];
                     for ($i=0; $i < $ceilpart; $i++) {
                         $packages[] = [
                             "PackagingType" => [
@@ -1707,9 +1707,9 @@ Class Shipping_model extends MY_Model
                                     "Code" => "IN",
                                     "Description" => "Inches"
                                 ],
-                                "Length" => "{$shipbox['box_length']}",
-                                "Width" => "{$shipbox['box_width']}",
-                                "Height" => "{$shipbox['box_height']}"
+                                "Length" => "{$shipboxes[$maxshipbox]['box_length']}",
+                                "Width" => "{$shipboxes[$maxshipbox]['box_width']}",
+                                "Height" => "{$shipboxes[$maxshipbox]['box_height']}"
                             ],
                             "PackageWeight" => [
                                 "UnitOfMeasurement" => [
@@ -1721,15 +1721,13 @@ Class Shipping_model extends MY_Model
                         ];
                         $numpackages++;
                     }
-                    $restqty = $shipqty - ($ceilpart * $shipbox['box_qty']);
-                    $shipqty = 0;
+                    $restqty = $restqty - ($ceilpart * $shipboxes[$maxshipbox]['box_qty']);
                 }
             }
 
-            if ($restqty > 0) {
-                for ($i=$maxshipbox; $i >= 0; $i--) {
-                    $shipbox = $shipboxes[$i];
-                    if ($shipbox['box_qty'] >= $restqty) {
+            while ($restqty > 0) {
+                foreach ($shipboxes as $shipbox) {
+                    if ($shipbox['box_qty']>=$restqty) {
                         $boxweight = $itemweight * $restqty;
                         $packages[] = [
                             "PackagingType" => [
@@ -1755,9 +1753,9 @@ Class Shipping_model extends MY_Model
                         ];
                         $numpackages++;
                         $restqty = $restqty - $shipbox['box_qty'];
-                        if ($restqty <= 0 ) {
-                            break;
-                        }
+                    }
+                    if ($restqty <= 0) {
+                        break;
                     }
                 }
             }
@@ -1822,6 +1820,7 @@ Class Shipping_model extends MY_Model
                     $code = '';
                     $codes = [];
                     $calendar_id=$this->config->item('bank_calendar');
+                    $this->load->model('calendars_model');
                     if ($cnt_code=='US') {
                         foreach ($rates as $rate) {
                             $transit = 0;
@@ -1845,6 +1844,7 @@ Class Shipping_model extends MY_Model
                                     if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
+                                    $delivdate = $this->calendars_model->businessdate($delivdate);
                                     $ship['GND'] = [
                                         'ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
@@ -1956,6 +1956,7 @@ Class Shipping_model extends MY_Model
                                     if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
+                                    $delivdate = $this->calendars_model->businessdate($delivdate);
                                     $ship['GND'] = [
                                         'ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
@@ -2126,6 +2127,7 @@ Class Shipping_model extends MY_Model
                                     if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
+                                    $delivdate = $this->calendars_model->businessdate($delivdate);
                                     $ship['GND'] = [
                                         'ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
