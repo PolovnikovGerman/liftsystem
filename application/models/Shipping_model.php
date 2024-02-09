@@ -1820,6 +1820,7 @@ Class Shipping_model extends MY_Model
                     $code = '';
                     $codes = [];
                     $calendar_id=$this->config->item('bank_calendar');
+                    $this->load->model('calendars_model');
                     if ($cnt_code=='US') {
                         foreach ($rates as $rate) {
                             $transit = 0;
@@ -1843,6 +1844,7 @@ Class Shipping_model extends MY_Model
                                     if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
+                                    $delivdate = $this->calendars_model->businessdate($delivdate);
                                     $ship['GND'] = [
                                         'ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
@@ -1954,6 +1956,7 @@ Class Shipping_model extends MY_Model
                                     if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
+                                    $delivdate = $this->calendars_model->businessdate($delivdate);
                                     $ship['GND'] = [
                                         'ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
@@ -2124,6 +2127,7 @@ Class Shipping_model extends MY_Model
                                     if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
+                                    $delivdate = $this->calendars_model->businessdate($delivdate);
                                     $ship['GND'] = [
                                         'ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
