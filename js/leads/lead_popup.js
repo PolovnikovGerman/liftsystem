@@ -425,13 +425,13 @@ function init_artpopupcontent(lead_id, mail_id,relation_type) {
             var url = mainurl+"/lead_deleteproof";
             $.post(url,{'email_id':mail_id},function(response){
                 if (response.errors=='') {
-                    restore_leadform();
+                    restore_leadform(0);
                 } else {
                     show_error(response);
                 }
             },'json');
         } else {
-            restore_leadform();
+            restore_leadform(0);
         }
 
     })
@@ -441,7 +441,7 @@ function init_artpopupcontent(lead_id, mail_id,relation_type) {
         $.post(url, dat, function(response){
             if (response.errors=='') {
                 $("#artModal").modal('hide');
-                restore_leadform();
+                restore_leadform(mail_id);
             } else {
                 show_error(response);
             }
@@ -450,9 +450,9 @@ function init_artpopupcontent(lead_id, mail_id,relation_type) {
 
 }
 
-function restore_leadform() {
+function restore_leadform(mail_id) {
     var url=mainurl+"/restore_ledform";
-    $.post(url, {}, function(response){
+    $.post(url, {'email_id' : mail_id}, function(response){
         if (response.errors=='') {
             $("#leadformModalLabel").empty().html(response.data.title);
             $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
