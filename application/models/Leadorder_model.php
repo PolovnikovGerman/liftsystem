@@ -3331,16 +3331,25 @@ Class Leadorder_model extends My_Model {
             }
         }
         // Change shipping address
-        $shipping['arriveclass']='';
-        if (!empty($shipping['event_date'])) {
-            if (!empty($shipping['arrive_date'])){
-                $eventdate=$shipping['event_date']+$this->config->item('event_time');
-                if ($shipping['arrive_date']>$eventdate) {
-                    $shipping['arriveclass']='arrivelate';
+//        $shipping['arriveclass']='';
+//        if (!empty($shipping['event_date'])) {
+//            if (!empty($shipping['arrive_date'])){
+//                $eventdate=$shipping['event_date']+$this->config->item('event_time');
+//                if ($shipping['arrive_date']>$eventdate) {
+//                    $shipping['arriveclass']='arrivelate';
+//                }
+//            }
+//        }
+//        $leadorder['shipping']=$shipping;
+        $newshipping['arriveclass'] = '';
+        if (!empty($newshipping['event_date'])) {
+            if (!empty($newshipping['arrive_date'])){
+                $eventdate=$newshipping['event_date']+$this->config->item('event_time');
+                if ($newshipping['arrive_date']>$eventdate) {
+                    $newshipping['arriveclass']='arrivelate';
                 }
             }
         }
-        $leadorder['shipping']=$shipping;
         $order['profit']=$profit;
         $leadorder['order']=$order;
         $leadorder['shipping']=$newshipping;
