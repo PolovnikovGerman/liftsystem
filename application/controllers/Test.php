@@ -3261,12 +3261,12 @@ class Test extends CI_Controller
         $dats = $this->db->get()->result_array();
         foreach ($dats as $dat) {
             echo 'Order '.$dat['order_num'].' Date '.date('Y-m-d', $dat['arrive_date']).PHP_EOL;
-            $this->db->where('order_shipping_id', $dat['order_shipping_id']);
-            $this->db->set('arrive_date', $dat['arrive_date']);
-            $this->db->update('ts_order_shippings');
-            $this->db->where('order_shipaddr_id', $dat['order_shipaddr_id']);
-            $this->db->set('arrive_date', $dat['arrive_date']);
-            $this->db->update('ts_order_shipaddres');
+            // $this->db->where('order_shipping_id', $dat['order_shipping_id']);
+            // $this->db->set('arrive_date', $dat['arrive_date']);
+            // $this->db->update('ts_order_shippings');
+            // $this->db->where('order_shipaddr_id', $dat['order_shipaddr_id']);
+            // $this->db->set('arrive_date', $dat['arrive_date']);
+            // $this->db->update('ts_order_shipaddres');
         }
     }
 }
