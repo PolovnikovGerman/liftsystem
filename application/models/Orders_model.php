@@ -6392,7 +6392,9 @@ Class Orders_model extends MY_Model
             $this->db->set('shipdate', $item['shipping_date']);
         }
         if ($item['arrive_date']) {
-            $this->db->set('deliverydate', $item['deliverydate']);
+            $this->db->set('deliverydate', $item['arrive_date']);
+        } else {
+            $this->db->set('deliverydate', 0);
         }
         $this->db->set('order_confirmation', $confirmation);
         $this->db->set('order_system', 'new');
