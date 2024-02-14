@@ -156,6 +156,12 @@ button.addnewusers {
     width: 202px;
     text-align: left;
 }
+.input_row .labeltxt.exportaccess {
+    width: 180px;
+}
+.input_row .inputval.exportaccess {
+    width: 178px;
+}
 .inputval input.large {
     width: 194px;
 }
