@@ -6077,7 +6077,8 @@ Class Orders_model extends MY_Model
         $this->db->where('is_void', 0);
         $this->db->where('unix_timestamp(order_date) <= ', $datemin->format('U'));
         $this->db->order_by('order_id');
-        $this->db->limit(10);
+        // $this->db->limit(10);
+        $this->db->limit(1);
         $res = $this->db->get()->result_array();
         foreach ($res as $row) {
             if ($row['order_type']=='NEW') {
@@ -6380,6 +6381,7 @@ Class Orders_model extends MY_Model
         }
         $ordnum = $this->finorder_num();
         /* Inser into Brown Orders */
+        echo 'Deliv date '.$item['deliverydate'].PHP_EOL;
         $this->db->set('create_date', time());
         $this->db->set('update_date', time());
         $this->db->set('order_date', strtotime($orddata['order_date']));
@@ -6393,6 +6395,8 @@ Class Orders_model extends MY_Model
         }
         if ($item['arrive_date']) {
             $this->db->set('deliverydate', $item['deliverydate']);
+        } else {
+            $this->db->set('deliverydate', 0);
         }
         $this->db->set('order_confirmation', $confirmation);
         $this->db->set('order_system', 'new');
