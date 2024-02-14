@@ -6381,7 +6381,7 @@ Class Orders_model extends MY_Model
         }
         $ordnum = $this->finorder_num();
         /* Inser into Brown Orders */
-        echo 'Deliv date '.$item['deliverydate'].PHP_EOL;
+        echo 'Deliv date '.$item['arrive_date'].PHP_EOL;
         $this->db->set('create_date', time());
         $this->db->set('update_date', time());
         $this->db->set('order_date', strtotime($orddata['order_date']));
@@ -6394,7 +6394,7 @@ Class Orders_model extends MY_Model
             $this->db->set('shipdate', $item['shipping_date']);
         }
         if ($item['arrive_date']) {
-            $this->db->set('deliverydate', $item['deliverydate']);
+            $this->db->set('deliverydate', $item['arrive_date']);
         } else {
             $this->db->set('deliverydate', 0);
         }
