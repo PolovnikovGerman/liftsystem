@@ -3376,6 +3376,7 @@ class Leadquote_model extends MY_Model
                 $shipping['out_arrivedate'] = date('m/d/y', $rate['shipping_date']);
                 // $data['shipping'] = $rate['shipping_rate'];
                 $shiprate = $rate['shipping_rate'];
+                $arrivedate = $rate['shipping_date'];
             }
         }
         $packages = [];
