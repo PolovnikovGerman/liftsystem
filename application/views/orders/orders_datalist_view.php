@@ -16,6 +16,7 @@
         <?php } ?>
         <div class="item <?=($row['custom_order']==1 ? 'customorder' : '')?>"><?=$row['out_item']?></div>
         <div class="revenue"><?=$row['revenue']?></div>
+        <div class="balance <?=$row['balance_class']?>"><?=$row['balance']?></div>
         <div class="usrrepl <?=$row['usrreplclass']?>">
             <?php if ($role=='user') { ?>
                 <?=$row['user_replic']?>

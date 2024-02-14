@@ -6391,6 +6391,9 @@ Class Orders_model extends MY_Model
         if ($item['shipping_date']) {
             $this->db->set('shipdate', $item['shipping_date']);
         }
+        if ($item['arrive_date']) {
+            $this->db->set('deliverydate', $item['deliverydate']);
+        }
         $this->db->set('order_confirmation', $confirmation);
         $this->db->set('order_system', 'new');
         $this->db->set('arttype','new');
@@ -6525,6 +6528,7 @@ Class Orders_model extends MY_Model
                 $this->db->set('shipping', $item['shipping_cost']);
             }
             $this->db->set('sales_tax', $item['tax']);
+            $this->db->set('arrive_date', $item['arrive_date']);
             $this->db->insert('ts_order_shipaddres');
             $adrid = $this->db->insert_id();
             // Shipping Cost
