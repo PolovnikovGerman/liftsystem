@@ -222,7 +222,8 @@ textarea.emailsignature {
     clear: both;
     float: left;
     font-size: 12px;
-    height: 428px;
+    /* height: 428px; */
+    height: 533px;
     margin-top: 5px;
     overflow-y: auto;
     width: 518px;
