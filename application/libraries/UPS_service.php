@@ -277,4 +277,97 @@ class UPS_service
         return $out;
     }
 
+    public function getNegotRates($token, $shipTo, $shipFrom, $numPack, $packDimens, $packWeight ) {
+        $query = array(
+            // "additionalinfo" => "timeintransit"
+        );
+
+        $curl = curl_init();
+
+        $payload = array(
+            "RateRequest" => array(
+                "Request" => array(
+                    "TransactionReference" => array(
+                        "CustomerContext" => "CustomerContext",
+                    )
+                ),
+                "Shipment" => array(
+                    "Shipper" => $this->shiper,
+                    "ShipTo" => $shipTo,
+                    "ShipFrom" => $shipFrom,
+                    "PaymentDetails" => array(
+                        "ShipmentCharge" => array(
+                            "Type" => "01",
+                            "BillShipper" => array(
+                                "AccountNumber" => $this->_CI->config->item('ups_account_number'),
+                            )
+                        )
+                    ),
+                    "ShipmentRatingOptions" => array(
+                        "TPFCNegotiatedRatesIndicator" => "Y",
+                        "NegotiatedRatesIndicator" => "Y"
+                    ),
+                    "Service" => array(
+                        "Code" => "03",
+                        "Description" => "Ground"
+                    ),
+                    "ShipmentTotalWeight" => array(
+                        "UnitOfMeasurement" => array(
+                            "Code" => "LBS",
+                            "Description" => "Pounds"
+                        ),
+                        "Weight" => $packWeight,
+                    ),
+                    "NumOfPieces" => $numPack,
+                    "Package" => $packDimens,
+                )
+            )
+        );
+        echo json_encode($payload).PHP_EOL;
+        curl_setopt_array($curl, [
+            CURLOPT_HTTPHEADER => [
+                "Authorization: Bearer {$token}",
+                "Content-Type: application/json",
+                "transId: string",
+                "transactionSrc: testing"
+            ],
+            CURLOPT_POSTFIELDS => json_encode($payload),
+            CURLOPT_URL => $this->ups_rate_url."?" . http_build_query($query),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "POST",
+        ]);
+
+        $response = curl_exec($curl);
+        $error = curl_error($curl);
+        curl_close($curl);
+        $out = [];
+        if ($error) {
+            $out['error'] = 1;
+            $out['msg'] = $error;
+        } else {
+            $apiResponse = json_decode($response, true);
+            if (isset($apiResponse['response'])) {
+                $errordat = $apiResponse['response'];
+                $out['error'] = 2;
+                $msgdat = $errordat['errors'][0];
+                $out['msg'] = 'Rating calc error, code '.$msgdat['code'].' - '.$msgdat['message'];
+            } else {
+                $ratesdat = $apiResponse['RateResponse'];
+                $outrates = [];
+                foreach ($ratesdat['RatedShipment'] as $item) {
+                    $newrate = [];
+                    $newrate['service_code'] = $item['Service']['Code'];
+                    $newrate['service'] = $item['Service']['Description'];
+                    $newrate['billing_weigh'] = $item['BillingWeight']['Weight'];
+                    $newrate['rate'] = $item['TotalCharges']['MonetaryValue'];
+                    $outrates[] = $newrate;
+                }
+                $out['error'] = 0;
+                $out['rates'] = $outrates;
+            }
+        }
+        return $out;
+    }
+
+
 }

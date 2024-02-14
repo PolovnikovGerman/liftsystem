@@ -2428,50 +2428,107 @@ class Test extends CI_Controller
             )
         );
         */
+//        $shipTo = [
+//            "Name" => "Test Company",
+//            "Address" => [
+//                "AddressLine" => [
+//                    "106 960 Yankee valley Blvd SE",
+//                ],
+//                "City" => "CINCINNATI",
+//                "StateProvinceCode" => "OH",
+//                "PostalCode" => "45202",
+//                "CountryCode" => "US"
+//            ],
+//        ];
         $shipTo = [
             "Name" => "Test Company",
             "Address" => [
                 "AddressLine" => [
                     "106 960 Yankee valley Blvd SE",
                 ],
-                "City" => "CINCINNATI",
-                "StateProvinceCode" => "OH",
-                "PostalCode" => "45202",
+                "City" => "Phoenix",
+                "StateProvinceCode" => "AZ",
+                "PostalCode" => "85007",
                 "CountryCode" => "US"
             ],
         ];
-        $packWeight = 7.2;
+        $packWeight = 28.8;
         $packDimens = [];
-        $packDimens[] = [
-            "PackagingType" => array(
+//        $packDimens[] = [
+//            "PackagingType" => array(
+//                "Code" => "02",
+//                "Description" => "Packaging"
+//            ),
+//            "Dimensions" => array(
+//                "UnitOfMeasurement" => array(
+//                    "Code" => "IN",
+//                    "Description" => "Inches"
+//                ),
+//                "Length" => "15",
+//                "Width" => "15",
+//                "Height" => "15"
+//            ),
+//            "PackageWeight" => array(
+//                "UnitOfMeasurement" => array(
+//                    "Code" => "LBS",
+//                    "Description" => "Pounds"
+//                ),
+//                "Weight" => "7.2"
+//            )
+//        ];
+        $packDimens[] =
+            array(
+                "PackagingType" => array(
                 "Code" => "02",
-                "Description" => "Packaging"
-            ),
-            "Dimensions" => array(
+                    "Description" => "Packaging",
+                ),
+                "Dimensions" => array (
                 "UnitOfMeasurement" => array(
                     "Code" => "IN",
-                    "Description" => "Inches"
+                        "Description" => "Inches"
                 ),
-                "Length" => "15",
-                "Width" => "15",
-                "Height" => "15"
-            ),
-            "PackageWeight" => array(
+                    "Length" => "16",
+                    "Width" => "16",
+                    "Height" => "16"
+                ),
+                "PackageWeight" => array(
+                "UnitOfMeasurement" =>  array(
+                    "Code" => "LBS",
+                        "Description" => "Pounds"
+                ),
+                    "Weight" => "21.6"
+                )
+            );
+        $packDimens[] =
+            array(
+                "PackagingType" => array(
+                "Code" => "02",
+                    "Description" => "Packaging",
+                ),
+                "Dimensions" => array(
+                "UnitOfMeasurement" => array(
+                    "Code" => "IN",
+                        "Description" => "Inches"
+                ),
+                    "Length" => "11",
+                    "Width" => "11",
+                    "Height" => "11"
+                ),
+                "PackageWeight" => array(
                 "UnitOfMeasurement" => array(
                     "Code" => "LBS",
                     "Description" => "Pounds"
                 ),
-                "Weight" => "7.2"
-            )
-        ];
-
+                    "Weight" => "7.2"
+                )
+            );
         $tokenres = $this->getUpsToken();
         if ($tokenres['result']==0) {
             echo 'Rates request break on stage Token Generation, reason - '.$tokenres['msg'];
         } else {
             $token = $tokenres['token'];
             // Time in transit
-            $res = $upsservice->getRates($token, $shipTo, $shipFrom, 1,  $packDimens, $packWeight);
+            $res = $upsservice->getNegotRates($token, $shipTo, $shipFrom, 2,  $packDimens, $packWeight);
             if ($res['error'] > 0) {
                 echo 'Error, code '.$res['msg'];
             } else {
