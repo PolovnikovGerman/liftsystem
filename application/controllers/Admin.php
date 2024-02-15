@@ -439,6 +439,11 @@ class Admin extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                    $user_id = $res['user_id'];
+                    if ($user_id==$this->USR_ID) {
+                        // Re Init current user
+                        $this->user_model->rebuild_currentuser($user_id);
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);
