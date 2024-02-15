@@ -3254,33 +3254,33 @@ class Test extends CI_Controller
 
     public function fixarrive()
     {
-//        $this->db->select('o.order_id, o.order_num, o.update_usr, o.item_id, s.order_shipping_id, t.order_shipaddr_id, c.arrive_date');
-//        $this->db->from('ts_orders o')->join('ts_order_shippings s','s.order_id=o.order_id')->join('ts_order_shipaddres t','o.order_id = t.order_id');
-//        $this->db->join('ts_order_shipcosts c','c.order_shipaddr_id=t.order_shipaddr_id')->where('s.arrive_date',0)->where('c.current',1)->where('o.is_canceled',0);
-//        $this->db->order_by('o.order_id','desc');
-//        $dats = $this->db->get()->result_array();
-//        foreach ($dats as $dat) {
-//            echo 'Order '.$dat['order_num'].' Date '.date('Y-m-d', $dat['arrive_date']).PHP_EOL;
-//            // $this->db->where('order_shipping_id', $dat['order_shipping_id']);
-//            // $this->db->set('arrive_date', $dat['arrive_date']);
-//            // $this->db->update('ts_order_shippings');
-//            // $this->db->where('order_shipaddr_id', $dat['order_shipaddr_id']);
-//            // $this->db->set('arrive_date', $dat['arrive_date']);
-//            // $this->db->update('ts_order_shipaddres');
-//        }
-        $this->db->select('o.order_num, p.arrive_date, p.order_shipping_id, s.order_shipaddr_id');
-        $this->db->from('ts_orders o');
-        $this->db->join('ts_order_shippings p','p.order_id=o.order_id');
-        $this->db->join('ts_order_shipaddres s','s.order_id=o.order_id');
-        $this->db->where('s.arrive_date',0);
-        $this->db->where('p.arrive_date > ',0);
+        $this->db->select('o.order_id, o.order_num, o.update_usr, o.item_id, s.order_shipping_id, t.order_shipaddr_id, c.arrive_date');
+        $this->db->from('ts_orders o')->join('ts_order_shippings s','s.order_id=o.order_id')->join('ts_order_shipaddres t','o.order_id = t.order_id');
+        $this->db->join('ts_order_shipcosts c','c.order_shipaddr_id=t.order_shipaddr_id')->where('s.arrive_date',0)->where('c.current',1)->where('o.is_canceled',0);
         $this->db->order_by('o.order_id','desc');
-        $datas = $this->db->get()->result_array();
-        foreach ($datas as $data) {
-            $this->db->where('order_shipaddr_id',$data['order_shipaddr_id']);
-            $this->db->set('arrive_date', $data['arrive_date']);
-            $this->db->update('ts_order_shipaddres');
-            echo 'Order '.$data['order_num'].' Arrive '.date('Y-m-d', $data['arrive_date']).PHP_EOL;
+        $dats = $this->db->get()->result_array();
+        foreach ($dats as $dat) {
+            echo 'Order '.$dat['order_num'].' Date '.date('Y-m-d', $dat['arrive_date']).PHP_EOL;
+            // $this->db->where('order_shipping_id', $dat['order_shipping_id']);
+            // $this->db->set('arrive_date', $dat['arrive_date']);
+            // $this->db->update('ts_order_shippings');
+            // $this->db->where('order_shipaddr_id', $dat['order_shipaddr_id']);
+            // $this->db->set('arrive_date', $dat['arrive_date']);
+            // $this->db->update('ts_order_shipaddres');
         }
-    }
+//        $this->db->select('o.order_num, p.arrive_date, p.order_shipping_id, s.order_shipaddr_id');
+//        $this->db->from('ts_orders o');
+//        $this->db->join('ts_order_shippings p','p.order_id=o.order_id');
+//        $this->db->join('ts_order_shipaddres s','s.order_id=o.order_id');
+//        $this->db->where('s.arrive_date',0);
+//        $this->db->where('p.arrive_date > ',0);
+//        $this->db->order_by('o.order_id','desc');
+//        $datas = $this->db->get()->result_array();
+//        foreach ($datas as $data) {
+//            $this->db->where('order_shipaddr_id',$data['order_shipaddr_id']);
+//            $this->db->set('arrive_date', $data['arrive_date']);
+//            $this->db->update('ts_order_shipaddres');
+//            echo 'Order '.$data['order_num'].' Arrive '.date('Y-m-d', $data['arrive_date']).PHP_EOL;
+//        }
+//    }
 }
