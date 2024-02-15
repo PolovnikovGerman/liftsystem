@@ -3268,5 +3268,19 @@ class Test extends CI_Controller
             // $this->db->set('arrive_date', $dat['arrive_date']);
             // $this->db->update('ts_order_shipaddres');
         }
+//        $this->db->select('o.order_num, p.arrive_date, p.order_shipping_id, s.order_shipaddr_id');
+//        $this->db->from('ts_orders o');
+//        $this->db->join('ts_order_shippings p','p.order_id=o.order_id');
+//        $this->db->join('ts_order_shipaddres s','s.order_id=o.order_id');
+//        $this->db->where('s.arrive_date',0);
+//        $this->db->where('p.arrive_date > ',0);
+//        $this->db->order_by('o.order_id','desc');
+//        $datas = $this->db->get()->result_array();
+//        foreach ($datas as $data) {
+//            $this->db->where('order_shipaddr_id',$data['order_shipaddr_id']);
+//            $this->db->set('arrive_date', $data['arrive_date']);
+//            $this->db->update('ts_order_shipaddres');
+//            echo 'Order '.$data['order_num'].' Arrive '.date('Y-m-d', $data['arrive_date']).PHP_EOL;
+//        }
     }
 }
