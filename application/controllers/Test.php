@@ -3282,5 +3282,5 @@ class Test extends CI_Controller
 //            $this->db->update('ts_order_shipaddres');
 //            echo 'Order '.$data['order_num'].' Arrive '.date('Y-m-d', $data['arrive_date']).PHP_EOL;
 //        }
-//    }
+    }
 }
