@@ -2384,15 +2384,20 @@ Class Leadorder_model extends My_Model {
             );
             $imprint_total=0;
         } else {
+            // Order With imprint
             $setup_qty=0;
             $setup_total=0;
             $imprint_total=0;
             $extra=array();
             $numpp = 1;
+            // Check imprints rows
             foreach ($imprint_details as $row) {
+                // Row ACTIVE
                 if ($row['active']==1) {
-                    // Prepare New Imprints
+                    $reptotal = 0;
+                    $repqty =0;
                     $title=$row['title'];
+                    // Full Colors
                     if ($row['num_colors']==5) {
                         $imprint_price_class = 'normal';
                         $imprint_price_title = '';
@@ -2409,64 +2414,57 @@ Class Leadorder_model extends My_Model {
                                 }
                             }
                         }
-                        $numpp++;
+//                        $numpp++;
                         $imprint_total+=$subtotal;
                         if ($row['imprint_type']!='REPEAT') {
                             $setup_qty+=1;
                             $setup_total+=floatval($row[$setupindx]);
                             $imprint_total+=floatval($row[$setupindx]);
                         } else {
-                            // if ($order['brand']=='SR') {
-                                $reptotal = 0;
-                                $repqty =0;
-                                for ($i=1; $i<=$row['num_colors']; $i++) {
-                                    $setupindx='setup_'.$i;
-                                    if (floatval($row[$setupindx])) {
-                                        $repqty+=1;
-                                        $reptotal+=floatval($row[$setupindx]);
-                                    }
-                                }
-                                if ($order['brand']=='SR') {
-                                    if ($reptotal > 0) {
-                                        $title='Repeat Setup Charge '.$row['repeat_note'];
-                                        $repprice = round($reptotal/$repqty,2);
-                                        $imprint_total+=floatval($reptotal);
-                                        $extra[]=array(
-                                            'order_imprint_id'=>(-1)*$newidx,
-                                            'imprint_description'=>$title,
-                                            'imprint_item'=>0,
-                                            'imprint_qty'=>$repqty,
-                                            'imprint_price'=>$repprice,
-                                            'outqty'=>$repqty,
-                                            'outprice'=>MoneyOutput($reptotal),
-                                            'imprint_subtotal'=>MoneyOutput($reptotal),
-                                            'imprint_price_class' => 'normal',
-                                            'imprint_price_title' => '',
-                                            'delflag'=>0,
-                                        );
-                                        $newidx++;
-                                    }
-                                } else {
-                                    $title='Repeat Setup Charge '.$row['repeat_note'];
-                                    $repprice = ($repqty==0 ? 0 : round($reptotal/$repqty,2));
-                                    $imprint_total+=floatval($reptotal);
-                                    $extra[]=array(
-                                        'order_imprint_id'=>(-1)*$newidx,
-                                        'imprint_description'=>$title,
-                                        'imprint_item'=>0,
-                                        'imprint_qty'=>$repqty,
-                                        'imprint_price'=>$repprice,
-                                        'outqty'=>$repqty,
-                                        'outprice'=>$reptotal=='0' ? '---' : MoneyOutput($reptotal),
-                                        'imprint_subtotal'=>MoneyOutput($reptotal),
-                                        'imprint_price_class' => 'normal',
-                                        'imprint_price_title' => '',
-                                        'delflag'=>0,
-                                    );
-                                    $newidx++;
-                                }
-                            //}
+                            $repqty+=1;
+                            $reptotal+=floatval($row[$setupindx]);
                         }
+//                        if ($repqty > 0) {
+//                            if ($order['brand']=='SR') {
+//                                if ($reptotal > 0) {
+//                                    $title='Repeat Setup Charge '.$row['repeat_note'];
+//                                    $repprice = round($reptotal/$repqty,2);
+//                                    $imprint_total+=floatval($reptotal);
+//                                    $extra[]=array(
+//                                        'order_imprint_id'=>(-1)*$newidx,
+//                                        'imprint_description'=>$title,
+//                                        'imprint_item'=>0,
+//                                        'imprint_qty'=>$repqty,
+//                                        'imprint_price'=>$repprice,
+//                                        'outqty'=>$repqty,
+//                                        'outprice'=>MoneyOutput($reptotal),
+//                                        'imprint_subtotal'=>MoneyOutput($reptotal),
+//                                        'imprint_price_class' => 'normal',
+//                                        'imprint_price_title' => '',
+//                                        'delflag'=>0,
+//                                    );
+//                                    $newidx++;
+//                                }
+//                            } else {
+//                                $title='Repeat Setup Charge '.$row['repeat_note'];
+//                                $repprice = ($repqty==0 ? 0 : round($reptotal/$repqty,2));
+//                                $imprint_total+=floatval($reptotal);
+//                                $extra[]=array(
+//                                    'order_imprint_id'=>(-1)*$newidx,
+//                                    'imprint_description'=>$title,
+//                                    'imprint_item'=>0,
+//                                    'imprint_qty'=>$repqty,
+//                                    'imprint_price'=>$repprice,
+//                                    'outqty'=>$repqty,
+//                                    'outprice'=>$reptotal=='0' ? '---' : MoneyOutput($reptotal),
+//                                    'imprint_subtotal'=>MoneyOutput($reptotal),
+//                                    'imprint_price_class' => 'normal',
+//                                    'imprint_price_title' => '',
+//                                    'delflag'=>0,
+//                                );
+//                                $newidx++;
+//                            }
+//                        }
                         $imprints[]=array(
                             'order_imprint_id'=>(-1)*$newidx,
                             'imprint_description'=>$imprtitle,
@@ -2482,6 +2480,7 @@ Class Leadorder_model extends My_Model {
                         );
                         $newidx++;
                     } else {
+                        // Colors 1..4
                         for ($i=1; $i<=$row['num_colors']; $i++) {
                             $imprint_price_class = 'normal';
                             $imprint_price_title = '';
@@ -2507,6 +2506,10 @@ Class Leadorder_model extends My_Model {
                                 $setup_total+=floatval($row[$setupindx]);
                                 $imprint_total+=floatval($row[$setupindx]);
                                 //}
+                            } else {
+                                $repqty+=1;
+                                $reptotal+=floatval($row[$setupindx]);
+                                $imprint_total+=floatval($row[$setupindx]);
                             }
                             $imprints[]=array(
                                 'order_imprint_id'=>(-1)*$newidx,
@@ -2523,41 +2526,12 @@ Class Leadorder_model extends My_Model {
                             );
                             $newidx++;
                         }
-                    }
-                    if ($row['imprint_type']=='REPEAT') {
-                        // if ($order['brand']=='SR') {
-                            $reptotal = 0;
-                            $repqty =0;
-                            for ($i=1; $i<=$row['num_colors']; $i++) {
-                                $setupindx='setup_'.$i;
-                                if (floatval($row[$setupindx])) {
-                                    $repqty+=1;
-                                    $reptotal+=floatval($row[$setupindx]);
-                                }
-                            }
-                            if ($order['brand']=='SR') {
-                                if ($reptotal > 0) {
-                                    $title='Repeat Setup Charge '.$row['repeat_note'];
-                                    $repprice = round($reptotal/$repqty,2);
-                                    $imprint_total+=floatval($reptotal);
-                                    $extra[]=array(
-                                        'order_imprint_id'=>(-1)*$newidx,
-                                        'imprint_description'=>$title,
-                                        'imprint_item'=>0,
-                                        'imprint_qty'=>$repqty,
-                                        'imprint_price'=>$repprice,
-                                        'outqty'=>$repqty,
-                                        'outprice'=>MoneyOutput($reptotal),
-                                        'imprint_subtotal'=>MoneyOutput($reptotal),
-                                        'imprint_price_class' => 'normal',
-                                        'imprint_price_title' => '',
-                                        'delflag'=>0,
-                                    );
-                                    $newidx++;
-                                }
-                            } else {
+                    } // End Colors choise
+                    if ($repqty > 0) {
+                        if ($order['brand']=='SR') {
+                            if ($reptotal > 0) {
                                 $title='Repeat Setup Charge '.$row['repeat_note'];
-                                $repprice = ($repqty==0 ? 0 : round($reptotal/$repqty,2));
+                                $repprice = round($reptotal/$repqty,2);
                                 $imprint_total+=floatval($reptotal);
                                 $extra[]=array(
                                     'order_imprint_id'=>(-1)*$newidx,
@@ -2566,7 +2540,7 @@ Class Leadorder_model extends My_Model {
                                     'imprint_qty'=>$repqty,
                                     'imprint_price'=>$repprice,
                                     'outqty'=>$repqty,
-                                    'outprice'=> ($reptotal==0 ? '--' : MoneyOutput($reptotal)),
+                                    'outprice'=>MoneyOutput($reptotal),
                                     'imprint_subtotal'=>MoneyOutput($reptotal),
                                     'imprint_price_class' => 'normal',
                                     'imprint_price_title' => '',
@@ -2574,28 +2548,26 @@ Class Leadorder_model extends My_Model {
                                 );
                                 $newidx++;
                             }
-//                        } else {
-//                            $extracost=floatval($row['extra_cost']);
-//                            $imprint_total+=$extracost;
-//                            // Add Imprint
-//                            $title='Repeat Setup Charge '.$row['repeat_note'];
-//                            $extra[]=array(
-//                                'order_imprint_id'=>(-1)*$newidx,
-//                                'imprint_description'=>$title,
-//                                'imprint_item'=>0,
-//                                'imprint_qty'=>1,
-//                                'imprint_price'=>floatval($row['extra_cost']),
-//                                'outqty'=>1,
-//                                'outprice'=>MoneyOutput($extracost),
-//                                'imprint_subtotal'=>MoneyOutput($extracost),
-//                                'imprint_price_class' => 'normal',
-//                                'imprint_price_title' => '',
-//                                'delflag'=>0,
-//                            );
-//                            $newidx++;
-                        // }
+                        } else {
+                            $title='Repeat Setup Charge '.$row['repeat_note'];
+                            $repprice = ($repqty==0 ? 0 : round($reptotal/$repqty,2));
+                            $extra[]=array(
+                                'order_imprint_id'=>(-1)*$newidx,
+                                'imprint_description'=>$title,
+                                'imprint_item'=>0,
+                                'imprint_qty'=>$repqty,
+                                'imprint_price'=>$repprice,
+                                'outqty'=>$repqty,
+                                'outprice'=>$reptotal=='0' ? '---' : MoneyOutput($reptotal),
+                                'imprint_subtotal'=>MoneyOutput($reptotal),
+                                'imprint_price_class' => 'normal',
+                                'imprint_price_title' => '',
+                                'delflag'=>0,
+                            );
+                            $newidx++;
+                        }
                     }
-                }
+                } // Row ACTIVE END
             }
             if (count($extra)>0) {
                 foreach ($extra as $erow) {
@@ -2610,7 +2582,6 @@ Class Leadorder_model extends My_Model {
                 $imprint_price_class='normal';
                 $imprint_price_title='';
                 if ($order_items[$idx]['item_id']>0) {
-                    // $newsetup_price = $this->_get_item_priceimprint($order_items[$idx]['item_id'],'setup');
                     $newsetup_price = $order_items[$idx]['setup_price'];
                     if (round(floatval($newsetup_price),2)!=round(floatval($setup_price),2)) {
                         $imprint_price_class='warningprice';
