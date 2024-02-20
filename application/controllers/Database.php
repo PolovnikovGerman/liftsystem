@@ -181,7 +181,10 @@ class Database extends MY_Controller
                     $head['scripts'][] = array('src' => '/js/adminpage/fileuploader.js');
                     $head['styles'][] = array('style' => '/css/page_view/fileuploader.css');
                 } elseif ($row['item_link']=='#srsettings') {
-                    $content_options['settingsview'] = $this->load->view('relieversetting/page_view',[],TRUE);
+                    // $content_options['settingsview'] = $this->load->view('relieversetting/page_view',[],TRUE);
+                    $head['styles'][] = array('style' => '/css/settings/shippings.css');
+                    $head['scripts'][] = array('src' => '/js/settings/shippings.js');
+                    $content_options['settingsview'] = $this->_prepare_shipping_view('SR');
                 } elseif ($row['item_link']=='#legacyview') {
                     $legacylnk = '#legacyview';
                     $head['scripts'][]=array('src'=>'/js/database/legacy.js');

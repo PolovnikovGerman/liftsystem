@@ -305,6 +305,10 @@ select.lead_item_select {
     height: 23px;
     width: 182px;
 }
+/* Select 2*/
+#leadformModal .select2-container--open .select2-dropdown--below {
+    width: 320px!important;
+}
 .lead_popup_iteminpt select {
     font-size: 14px;
 }
@@ -356,7 +360,7 @@ select.lead_item_select {
     height: 394px;
     border-radius: 7px;
     background: #9a9a9a;
-    padding: 6px;
+    padding: 6px 0 6px 6px;
     color: #000000;
     font-size: 11px;
     margin-left: 8px;
@@ -367,16 +371,18 @@ select.lead_item_select {
 }
 .leadquotesarea {
     width: 100%;
-    height: 305px;
+    /* height: 376px; */
+    height: 336px;
     margin-bottom: 7px;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 .leadquotesarea .datarow  > div {
     height: 22px;
     line-height: 22px;
 }
 .leadquotedatelist {
-    width: 37px;
+    width: 33px;
 }
 .leadquotenumberlist {
     height: 18px!important;

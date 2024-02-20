@@ -1882,8 +1882,8 @@ class Test extends CI_Controller
         $this->db->select('b.*, o.order_num, o.customer_name');
         $this->db->from('ts_order_batches b');
         $this->db->join('ts_orders o','o.order_id=b.order_id');
-        $this->db->where('b.batch_date >= ', strtotime('2021-01-01'));
-        $this->db->where('b.batch_date < ', strtotime('2022-01-01'));
+        $this->db->where('b.batch_date >= ', strtotime('2023-01-01'));
+        $this->db->where('b.batch_date < ', strtotime('2024-01-01'));
         $batchs = $this->db->get()->result_array();
         $out = [];
         foreach ($batchs as $batch) {
@@ -1919,7 +1919,7 @@ class Test extends CI_Controller
         }
         echo count($out).' Batches '.PHP_EOL;
         $this->load->config('uploader');
-        $file_name = $this->config->item('upload_path_preload').'payment_report_2021_new.csv';
+        $file_name = $this->config->item('upload_path_preload').'payment_report_2023_new.csv';
         @unlink($file_name);
         $fh = fopen($file_name, FOPEN_WRITE_CREATE);
         if ($fh) {
@@ -3278,5 +3278,57 @@ class Test extends CI_Controller
         }
         fclose($fh);
         echo 'Report '.$file.' READY '.PHP_EOL;
+    }
+
+    public function export_sritems()
+    {
+        $this->load->model('exportexcell_model');
+        $res = $this->exportexcell_model->export_sritems();
+    }
+
+    public function convert_sritems()
+    {
+        $this->load->model('sritems_model');
+        // $res = $this->sritems_model->convert_sritems();
+        $res = $this->sritems_model->convert_srspecial();
+    }
+
+    public function sritems_images()
+    {
+        $this->load->model('sritems_model');
+        // $res = $this->sritems_model->sritems_images();
+        $res = $this->sritems_model->srspecial_images();
+    }
+
+    public function fixarrive()
+    {
+        $this->db->select('o.order_id, o.order_num, o.update_usr, o.item_id, s.order_shipping_id, t.order_shipaddr_id, c.arrive_date');
+        $this->db->from('ts_orders o')->join('ts_order_shippings s','s.order_id=o.order_id')->join('ts_order_shipaddres t','o.order_id = t.order_id');
+        $this->db->join('ts_order_shipcosts c','c.order_shipaddr_id=t.order_shipaddr_id')->where('s.arrive_date',0)->where('c.current',1)->where('o.is_canceled',0);
+        $this->db->order_by('o.order_id','desc');
+        $dats = $this->db->get()->result_array();
+        foreach ($dats as $dat) {
+            echo 'Order '.$dat['order_num'].' Date '.date('Y-m-d', $dat['arrive_date']).PHP_EOL;
+            // $this->db->where('order_shipping_id', $dat['order_shipping_id']);
+            // $this->db->set('arrive_date', $dat['arrive_date']);
+            // $this->db->update('ts_order_shippings');
+            // $this->db->where('order_shipaddr_id', $dat['order_shipaddr_id']);
+            // $this->db->set('arrive_date', $dat['arrive_date']);
+            // $this->db->update('ts_order_shipaddres');
+        }
+//        $this->db->select('o.order_num, p.arrive_date, p.order_shipping_id, s.order_shipaddr_id');
+//        $this->db->from('ts_orders o');
+//        $this->db->join('ts_order_shippings p','p.order_id=o.order_id');
+//        $this->db->join('ts_order_shipaddres s','s.order_id=o.order_id');
+//        $this->db->where('s.arrive_date',0);
+//        $this->db->where('p.arrive_date > ',0);
+//        $this->db->order_by('o.order_id','desc');
+//        $datas = $this->db->get()->result_array();
+//        foreach ($datas as $data) {
+//            $this->db->where('order_shipaddr_id',$data['order_shipaddr_id']);
+//            $this->db->set('arrive_date', $data['arrive_date']);
+//            $this->db->update('ts_order_shipaddres');
+//            echo 'Order '.$data['order_num'].' Arrive '.date('Y-m-d', $data['arrive_date']).PHP_EOL;
+//        }
     }
 }

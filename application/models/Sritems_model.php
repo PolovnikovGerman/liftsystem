@@ -3147,4 +3147,372 @@ Class Sritems_model extends My_Model
         return $info;
     }
 
+    public function convert_sritems()
+    {
+        $this->db->select('*')->from('sritems_export')->where('managed',0);
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $this->db->select('*')->from('sr_categories')->where('brand','SR')->where('category_code', substr($item['item_num'],0,1));
+            $categdat = $this->db->get()->row_array();
+            $this->db->select('*')->from('sr_subcategories')->where('subcategory_name', $item['sub_categ1']);
+            $subcatdat = $this->db->get()->row_array();
+            // Discounts
+            $this->db->select('*')->from('sb_price_discounts')->where('discount_label', $item['price_discount']);
+            $qtydisc = $this->db->get()->row_array();
+            $this->db->select('*')->from('sb_price_discounts')->where('discount_label', $item['addprint_discount']);
+            $printdisc = $this->db->get()->row_array();
+            $this->db->select('*')->from('sb_price_discounts')->where('discount_label', $item['newsetup_discount']);
+            $newdisc = $this->db->get()->row_array();
+            $this->db->select('*')->from('sb_price_discounts')->where('discount_label', $item['repeat_discount']);
+            $repeatdisc = $this->db->get()->row_array();
+            $this->db->select('*')->from('sb_price_discounts')->where('discount_label', $item['rush1_discount']);
+            $rush1disc = $this->db->get()->row_array();
+            $this->db->select('*')->from('sb_price_discounts')->where('discount_label', $item['rush2_discount']);
+            $rush2disc = $this->db->get()->row_array();
+            $this->db->select('*')->from('sb_price_discounts')->where('discount_label', $item['pantone_discount']);
+            $pantdisc = $this->db->get()->row_array();
+            // Insert
+            $this->db->set('item_number', $item['item_num']);
+            $this->db->set('item_name', $item['item_name']);
+            $this->db->set('item_active', $item['active']=='Active' ? 1 : 0);
+            $this->db->set('item_new', $item['new']=='Yes' ? 1 : 0);
+            $this->db->set('item_template', $item['template']);
+            $this->db->set('item_lead_a', $item['su_stad_days']);
+            $this->db->set('item_lead_b', $item['su_rush1_days']);
+            $this->db->set('item_lead_c', $item['su_rush2_days']);
+            $this->db->set('item_material', $item['material']);
+            $this->db->set('item_weigth', $item['item_weight']);
+            $this->db->set('item_size', $item['size']);
+            $this->db->set('item_keywords', $item['internal_search']);
+            $this->db->set('item_url', str_replace('http://www.stressrelievers.com/','', $item['page_url']));
+            $this->db->set('item_meta_title', $item['meta_title']);
+            $this->db->set('item_metadescription', $item['meta_desc']);
+            $this->db->set('item_metakeywords', $item['meta_keywords']);
+            $this->db->set('item_description1', $item['description']);
+            $this->db->set('imprint_method', $item['print_method']);
+            $this->db->set('imprint_color', $item['print_colors']);
+            $this->db->set('options', $item['options']);
+            $this->db->set('option_images', $item['options_images']=='Yes' ? 1 : 0);
+            $this->db->set('category_id', $categdat['category_id']);
+            $this->db->set('subcategory_id', $subcatdat['subcategory_id']);
+            $this->db->set('item_sale', $item['sale']=='Yes' ? 1 : 0);
+            $this->db->set('item_topsale', $item['top_seller']=='Yes' ? 1 : 0);
+            $this->db->set('brand','SR');
+            $this->db->set('price_discount', $qtydisc['price_discount_id']);
+            $this->db->set('print_discount', $printdisc['price_discount_id']);
+            $this->db->set('setup_discount', $newdisc['price_discount_id']);
+            $this->db->set('repeat_discount', $repeatdisc['price_discount_id']);
+            $this->db->set('rush1_discount', $rush1disc['price_discount_id']);
+            $this->db->set('rush2_discount', $rush2disc['price_discount_id']);
+            $this->db->set('pantone_discount', $pantdisc['price_discount_id']);
+            $this->db->set('bullet1', $item['bullet_1']);
+            $this->db->set('bullet2', $item['bullet_2']);
+            $this->db->set('bullet3', $item['bullet_3']);
+            $this->db->set('bullet4', $item['bullet_4']);
+            $this->db->insert('sb_items');
+            $newid = $this->db->insert_id();
+            if ($newid > 0) {
+                echo 'Item '.$item['item_num'].' added '.PHP_EOL;
+                $this->db->where('id', $item['id']);
+                $this->db->set('managed', $newid);
+                $this->db->update('sritems_export');
+                // Internal Vendor
+                $this->db->select('vendor_id')->from('vendors')->where('vendor_name', 'INTERNAL');
+                $interdat = $this->db->get()->row_array();
+                $vendor_id = $interdat['vendor_id'];
+                // Vendor Item
+                $this->db->set('vendor_item_vendor', $vendor_id);
+                $this->db->set('vendor_item_number', $item['vendor_item_num']);
+                $this->db->set('vendor_item_name', $item['vendor_item_name']);
+                $this->db->set('vendor_item_cost', floatval($item['su_price']));
+                $this->db->set('vendor_item_exprint', $item['su_addl_price']);
+                $this->db->set('vendor_item_setup', $item['su_new_setup']);
+                $this->db->set('vendor_item_repeat', $item['su_repeat_setup']);
+                $this->db->set('po_note', $item['po_notes']);
+                $this->db->set('vendor_item_zipcode', $item['ship_zip']);
+                $this->db->set('item_shipcountry', $this->config->item('default_country'));
+                $this->db->set('item_shipstate','NJ');
+                $this->db->set('item_shipcity','Clifton');
+                $this->db->set('stand_days', $item['su_stad_days']);
+                $this->db->set('rush1_days', $item['su_rush1_days']);
+                $this->db->set('rush2_days', $item['su_rush2_days']);
+                $this->db->set('rush1_price', $item['su_rush1_price']);
+                $this->db->set('rush2_price', $item['su_rush2_price']);
+                $this->db->set('pantone_match', $item['su_pantone']);
+                $this->db->insert('sb_vendor_items');
+                $vendor_item_id = $this->db->insert_id();
+                if ($vendor_item_id > 0) {
+                    $this->db->where('item_id', $newid);
+                    $this->db->set('vendor_item_id', $vendor_item_id);
+                    $this->db->update('sb_items');
+                }
+                for ($j=1; $j<6; $j++) {
+                    if (intval($item['price_qty'.$j]) > 0) {
+                        $sale = round($item['price_'.$j]*(1-$qtydisc['discount_val']/100),3);
+                        $profit = null;
+                        if ($item['su_price']>0) {
+                            $profit = ($sale - $item['su_price']) * $item['price_qty'.$j];
+                        }
+                        $this->db->set('item_id', $newid);
+                        $this->db->set('item_qty', $item['price_qty'.$j]);
+                        $this->db->set('price', $item['price_'.$j]);
+                        $this->db->set('sale_price', $sale);
+                        $this->db->set('profit', $profit);
+                        $this->db->insert('sb_promo_price');
+                    }
+                }
+                // Insert Item Price
+                $saleprint = round($item['add_print']*(1-$printdisc['discount_val']/100),3);
+                $salenewsetup = round($item['new_setup']*(1-$newdisc['discount_val']/100),3);
+                $salerepeat = round($item['repeat_setup']*(1-$repeatdisc['discount_val']/100),3);
+                $salepantone = round($item['pantone_price']*(1-$pantdisc['discount_val']/100),3);
+                $salerush1 = round($item['rush1_price']*(1-$rush1disc['discount_val']/100),3);
+                $salerush2 = round($item['rush2_price']*(1-$rush2disc['discount_val']/100),3);
+                $this->db->set('item_price_itemid', $newid);
+                $this->db->set('item_price_print', $item['add_print']);
+                $this->db->set('item_price_setup', $item['new_setup']);
+                $this->db->set('item_price_repeat', $item['repeat_setup']);
+                $this->db->set('item_price_pantone', $item['pantone_price']);
+                $this->db->set('item_price_rush1', $item['rush1_price']);
+                $this->db->set('item_price_rush2', $item['rush2_price']);
+                $this->db->set('item_sale_print', $saleprint);
+                $this->db->set('item_sale_setup', $salenewsetup);
+                $this->db->set('item_sale_repeat', $salerepeat);
+                $this->db->set('item_sale_pantone', $salepantone);
+                $this->db->set('item_sale_rush1', $salerush1);
+                $this->db->set('item_sale_rush2', $salerush2);
+                $this->db->insert('sb_item_prices');
+                // Item Colors
+                $colors = explode(',', $item['options_val']);
+                if ($colors > 0) {
+                    $numpp = 1;
+                    foreach ($colors as $color) {
+                        $this->db->set('item_color_itemid', $newid);
+                        $this->db->set('item_color', trim($color));
+                        $this->db->set('item_color_order', $numpp);
+                        $this->db->insert('sb_item_colors');
+                        $numpp++;
+                    }
+                }
+                // Item Imprints
+                for ($i=1; $i<13; $i++) {
+                    if (!empty($item['location_'.$i.'_name'])) {
+                        echo $item['item_num'].' Locat '.$item['location_'.$i.'_name'].' Size '.$item['location_'.$i.'_size'].PHP_EOL;
+                        $this->db->set('item_inprint_item', $newid);
+                        $this->db->set('item_inprint_location', $item['location_'.$i.'_name']);
+                        $this->db->set('item_inprint_size', $item['location_'.$i.'_size']);
+                        $this->db->insert('sb_item_inprints');
+                    }
+                }
+                // Shipping
+                for ($i=1; $i<5; $i++) {
+                    if (intval($item['box'.$i.'_qty']) > 0) {
+                        $this->db->set('item_id', $newid);
+                        $this->db->set('box_qty', $item['box'.$i.'_qty']);
+                        $this->db->set('box_width', $item['box'.$i.'_width']);
+                        $this->db->set('box_length', $item['box'.$i.'_length']);
+                        $this->db->set('box_height', $item['box'.$i.'_height']);
+                        $this->db->insert('sb_item_shipping');
+                    }
+                }
+            }
+        }
+        echo 'Add similars '.PHP_EOL;
+        // Build similars
+        $this->db->select('*')->from('sritems_export');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            if ($item['managed'] > 0) {
+                for ($i=1; $i<5; $i++) {
+                    if (!empty($item['similar_'.$i])) {
+                        $searchitem = substr($item['similar_'.$i],0,4);
+                        $this->db->select('item_id')->from('sb_items')->where('brand','SR')->where('item_number', $searchitem);
+                        $simdat = $this->db->get()->row_array();
+                        if (ifset($simdat,'item_id', 0)>0) {
+                            $this->db->set('item_similar_item', $item['managed']);
+                            $this->db->set('item_similar_similar', $simdat['item_id']);
+                            $this->db->insert('sb_item_similars');
+                        }
+                    }
+                }
+                echo 'Item '.$item['item_num'].' add similars '.PHP_EOL;
+            }
+            // Add Vector Image
+        }
+    }
+
+    public function sritems_images() {
+        $this->db->select('*')->from('sritems_export');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            // AI template
+            $path_fl = $this->config->item('item_aitemplate');
+            $path_sh = $this->config->item('item_aitemplate_relative');
+            $filename = '';
+            $templat = 'ai-temp_'.$item['item_num'].'_*.ai';
+            echo 'Item '.$item['item_num'].' Template '.$path_fl.$templat.PHP_EOL;
+            $chfiles = glob($path_fl.$templat);
+            if (count($chfiles)==1) {
+                $filename = str_replace($path_fl, $path_sh, $chfiles[0]);
+            } else {
+                $templat = 'ai-temp_'.$item['item_num'].'_*.pdf';
+                $chfiles = glob($templat);
+                if (count($chfiles)==1) {
+                    $filename = str_replace($path_fl, $path_sh, $chfiles[0]);
+                }
+            }
+            if (!empty($filename)) {
+                $this->db->where('item_id', $item['managed']);
+                $this->db->set('item_vector_img', $filename);
+                $this->db->update('sb_items');
+            }
+            // Get imprints
+            $path_fl = $this->config->item('imprint_images_relative');
+            $path_sh = $this->config->item('imprint_images');
+            $this->db->select('*')->from('sb_item_inprints')->where('item_inprint_item', $item['managed']);
+            $imprints = $this->db->get()->result_array();
+            foreach ($imprints as $imprint) {
+                $filename = '';
+                $templat = $item['item_num'].'_*_'.str_replace([' ',', '],'_',strtolower($imprint['item_inprint_location'])).'.jpg';
+                echo 'Item '.$item['item_num'].' Template '.$path_fl.$templat.PHP_EOL;
+                $chfiles = glob($path_fl.$templat);
+                if (count($chfiles)==1) {
+                    $filename = str_replace($path_fl, $path_sh, $chfiles[0]);
+                }
+                if (!empty($filename)) {
+                    $this->db->where('item_inprint_id', $imprint['item_inprint_id']);
+                    $this->db->set('item_inprint_view', $filename);
+                    $this->db->update('sb_item_inprints');
+                }
+            }
+            // Colors
+            $this->db->select('*')->from('sb_item_colors')->where('item_color_itemid', $item['managed']);
+            $colors = $this->db->get()->result_array();
+            $preload_fl = $this->config->item('upload_path_preload').'items/';
+            $path_fl = $this->config->item('item_images_relative');
+            $path_sh = $this->config->item('item_images');
+            createPath($path_sh.$item['managed']);
+            $itemname = $item['item_num'].'_'.strtolower(str_replace(' ','',str_replace(' Stress Balls','',$item['item_name'])));
+            foreach ($colors as $color) {
+                $colorname = strtolower(str_replace([' ','/'],'',$color['item_color']));
+                $template = $preload_fl.$itemname.'/*-'.$colorname.'.jpg';
+                echo $template.PHP_EOL;
+                $chimgs = glob($template);
+                if (count($chimgs) > 0) {
+                    $srcname = $chimgs[0];
+                    $targname = $path_fl.$item['managed'].'/'.str_replace($preload_fl.$itemname.'/','',$chimgs[0]);
+                    $cpres = @copy($srcname, $targname);
+                    if ($cpres) {
+                        @unlink($srcname);
+                        // Update colors
+                        $colorimg = $path_sh.$item['managed'].'/'.str_replace($preload_fl.$itemname.'/','',$chimgs[0]);
+                        $this->db->where('item_color_id', $color['item_color_id']);
+                        $this->db->set('item_color_image', $colorimg);
+                        $this->db->update('sb_item_colors');
+                    }
+                }
+            }
+            echo 'Item '.$item['item_num'].' Update colors finished'.PHP_EOL;
+            $chimgs = glob($preload_fl.$itemname.'/*jpg');
+            $numpp=1;
+            foreach ($chimgs as $chimg) {
+                $srcname = $chimg;
+                $targname = $path_fl.$item['managed'].'/'.str_replace($preload_fl.$itemname.'/','',$chimg);
+                $cpres = @copy($srcname, $targname);
+                if ($cpres) {
+                    @unlink($srcname);
+                    $itemimg = $path_sh.$item['managed'].'/'.str_replace($preload_fl.$itemname.'/','',$chimg);
+                    if ($numpp==1) {
+                        $this->db->where('item_id', $item['managed']);
+                        $this->db->set('main_image', $itemimg);
+                        $this->db->update('sb_items');
+                    }
+                    $this->db->set('item_img_item_id', $item['managed']);
+                    $this->db->set('item_img_name', $itemimg);
+                    $this->db->set('item_img_order', $numpp);
+                    $this->db->insert('sb_item_images');
+                    $numpp++;
+                }
+            }
+            echo 'Item '.$item['item_num'].' Add Images finished'.PHP_EOL;
+        }
+    }
+
+    public function convert_srspecial()
+    {
+        $this->db->select('*')->from('srspecial_export')->where('managed', 0);
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $this->db->select('*')->from('sr_categories')->where('brand', 'SR')->where('category_code', substr($item['item_number'], 0, 1));
+            $categdat = $this->db->get()->row_array();
+            $this->db->set('item_number', $item['item_number']);
+            $this->db->set('item_name', $item['item_name']);
+            $this->db->set('item_active', 1);
+            $this->db->set('item_url', $item['item_url']);
+            $this->db->set('brand','SR');
+            $this->db->set('category_id', $categdat['category_id']);
+            $this->db->insert('sb_items');
+            $newid = $this->db->insert_id();
+            if ($newid > 0) {
+                $this->db->where('id', $item['id']);
+                $this->db->set('managed', $newid);
+                $this->db->update('srspecial_export');
+                // Prices
+                $this->db->set('item_id', $newid);
+                $this->db->set('item_qty',500);
+                $this->db->set('price', $item['price_500']);
+                $this->db->set('sale_price', $item['sale_500']);
+                $this->db->insert('sb_promo_price');
+                $this->db->set('item_id', $newid);
+                $this->db->set('item_qty',1000);
+                $this->db->set('price', $item['price_1000']);
+                $this->db->set('sale_price', $item['sale_1000']);
+                $this->db->insert('sb_promo_price');
+                $this->db->set('item_id', $newid);
+                $this->db->set('item_qty',200);
+                $this->db->set('price', $item['price_2000']);
+                $this->db->set('sale_price', $item['sale_2000']);
+                $this->db->insert('sb_promo_price');
+                $this->db->set('item_id', $newid);
+                $this->db->set('item_qty',3000);
+                $this->db->set('price', $item['price_3000']);
+                $this->db->set('sale_price', $item['sale_3000']);
+                $this->db->insert('sb_promo_price');
+            }
+        }
+    }
+
+    public function srspecial_images()
+    {
+        $this->db->select('*')->from('srspecial_export');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $preload_fl = $this->config->item('upload_path_preload').'specials';
+            $path_fl = $this->config->item('item_images_relative');
+            $path_sh = $this->config->item('item_images');
+            createPath($path_sh.$item['managed']);
+            $chimgs = glob($preload_fl.'/'.$item['item_number'].'*jpg');
+            $numpp=1;
+            foreach ($chimgs as $chimg) {
+                $srcname = $chimg;
+                $targname = $path_fl.$item['managed'].str_replace($preload_fl,'',$chimg);
+                $cpres = @copy($srcname, $targname);
+                if ($cpres) {
+                    // @unlink($srcname);
+                    $itemimg = $path_sh.$item['managed'].str_replace($preload_fl,'',$chimg);
+                    if ($numpp==1) {
+                        $this->db->where('item_id', $item['managed']);
+                        $this->db->set('main_image', $itemimg);
+                        $this->db->update('sb_items');
+                    }
+//                    $this->db->set('item_img_item_id', $item['managed']);
+//                    $this->db->set('item_img_name', $itemimg);
+//                    $this->db->set('item_img_order', $numpp);
+//                    $this->db->insert('sb_item_images');
+                    $numpp++;
+                }
+            }
+            echo 'Item '.$item['item_number'].' Add Images finished'.PHP_EOL;
+        }
+    }
 }

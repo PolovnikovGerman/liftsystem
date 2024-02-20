@@ -957,8 +957,6 @@ input.ship_tax_textareainpt {
     border-bottom: 1px dotted #858585!important;
     height: 16px;
     font-size: 11px;
-    /* margin-left: 6px; */
-    /* margin-bottom: 1px;*/
     width: 100%;
 }
 .ship_tax_cont_bl1 {
@@ -1019,8 +1017,11 @@ input.ship_tax_textareainpt {
     height: 17px;
     line-height: 17px;
     margin-top: 33px;
-    width: 244px;
-    margin-left: 67px;
+    /*width: 244px;*/
+    /*margin-left: 67px;*/
+    width: 266px;
+    margin-left: 40px;
+    text-align: right;
 }
 .taxlabel {
     color: #000d6e;
@@ -3263,10 +3264,19 @@ textarea.proofrequestnotes {
     padding: 0 13px 0 12px;
     width: 598px;
 }
-.multishippopuparea input {
+.multishippopuparea input, .multishippopuparea select {
+    float: left;
+    font-size: 11px;
     padding-left: 3px;
+    background-color: #FFFFFF;
 }
-.multishippopuparea input[readonly="readonly"] {    
+/*.multishippopuparea input {*/
+/*    padding-left: 3px;*/
+/*}*/
+/*.multishippopuparea input.ship_tax_input1, .multishippopuparea input.ship_tax_textareainpt {*/
+/*    padding-left: unset;*/
+/*}*/
+.multishippopuparea input[readonly="readonly"] {
     font-weight: bold;
     background-color: #aeaeae;
     border: 1px solid #949494 !important;
@@ -3305,19 +3315,20 @@ textarea.proofrequestnotes {
 .multishipsubtitle {
     border-bottom: 2px solid #000000;
     color: #010101;
-    height: 27px;
-    line-height: 27px;    
     font-size: 12px;
     width: 573px;    
 }
+.multishipsubtitle  div {
+    height: 27px;
+    line-height: 27px;
+}
 .multishipsubtitle > .eventdate {
-    width: 130px;
+    width: 107px;
     margin-right: 7px;
     text-align: right;    
 }
 .multishipsubtitle > .eventdatevalue {
-    /* padding-top: 4px; */
-    width: 59px;
+    /* width: 59px; */
 }
 .multishipsubtitle > .rushselectarea {
     margin-left: 6px;
@@ -3328,8 +3339,11 @@ textarea.proofrequestnotes {
     width: 152px;
 }
 .multishipsubtitle > .rushpricevalue {
-    /* padding-top: 4px; */
-    width: 67px;
+     padding-top: 4px;
+     width: 67px;
+}
+.multishippopuparea input.salesarrivedate {
+    width: 63px;
 }
 .multishipadressarea {
     border-bottom: 2px solid #000000;
@@ -3341,7 +3355,7 @@ textarea.proofrequestnotes {
 /* Multiship Address rows */
 .multishipadressdatarow {
     margin-top: 8px;
-    width: 558px;    
+    width: 100%;
 }
 .multishipadressdata {
     color: #000000;
@@ -3361,29 +3375,58 @@ textarea.proofrequestnotes {
     width: 45px;
 }
 input.shipaddrqty {
+    height: 18px;
     width: 37px;
 }
 .multishipadressdata > .orderitemqty {
     color: #535050;
     font-size: 11px;
-    /* width: 46px; */
+    height: 18px;
+    margin-top: 4px;
+    line-height: 18px;
 }
 .multishipadressdata > .shipadrtrash {
     font-size: 14px;
-    padding-top: 4px;
     text-align: center;
     width: 22px;
 }
 .multishipadressdata > .shipadrtrash i {
     cursor: pointer;
 }
+/* Ship address area */
+.multishipadressdatarow .ship_tax_cont_bl1 {
+    width: 170px;
+    margin-right: 6px;
+}
 /* Price Container */
 .multishipadressdatarow .ship_tax_container2 {
-    left: 256px;
+    position: relative!important;
+    left: 248px;
+    top: -103px;
 }
 .multishipadressdatarow .bl_ship_tax_content {
     height: 154px;
-    width: 549px;    
+    width: 100%;
+}
+.multishipadressdatarow .ship_tax_cont_bl3 {
+    margin-top: -9px;
+    margin-left: 229px;
+}
+.multishipadressdatarow .shipdetailsarea {
+    margin-top: -124px;
+    margin-left: 255px;
+}
+.multishipadressdatarow .shipdetailsarea > .labeltax {
+    margin-top: 6px;
+}
+.multishipadressdatarow .shipdetailsarea > .labelarrival {
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    width: 70px;
+    color: #000;
+    padding-left: 0!important;
+    margin-top: 6px;
 }
 .multishipadressdatarow > .multishipadressadd {
     background: url('/img/leadorder/add_shipaddress_btn.png') no-repeat transparent;
@@ -3391,6 +3434,7 @@ input.shipaddrqty {
     margin-left: 18px;
     height: 24px;
     width: 83px;
+    display: none;
 }
 /* add_shipaddress_btn.png */
 /* Multiship Totals */

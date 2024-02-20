@@ -1566,8 +1566,17 @@ Class Items_model extends My_Model
         $this->db->select('box_qty, box_width, box_height, box_length');
         $this->db->from('sb_item_shipping');
         $this->db->where('item_id', $item_id);
-        $this->db->order_by('box_qty','desc');
+        // $this->db->order_by('box_qty','desc');
         return $this->db->get()->result_array();
+    }
+
+    public function get_item_maxbox($item_id)
+    {
+        $this->db->select('max(box_qty) as box_qty');
+        $this->db->from('sb_item_shipping');
+        $this->db->where('item_id', $item_id);
+        $res =  $this->db->get()->row_array();
+        return intval($res['box_qty']);
     }
 
     private function _recalc_inventory_profit($prices, $vendor_item_cost) {

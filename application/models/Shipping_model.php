@@ -73,19 +73,8 @@ Class Shipping_model extends MY_Model
         if ($this->_chk_business_day($start_time, $item_id)==0) {
             $proof_date=$this->_get_business_date($start_time, 1, $item_id);
         }
-
-        $this->db->select('item_id, item_lead_a, coalesce(item_lead_b,0) as item_lead_b, coalesce(item_lead_c,0) as item_lead_c, c.calendar_id as calendar_id',FALSE);
-        $this->db->from("sb_items i");
-        $this->db->join("sb_vendor_items vi",'vi.vendor_item_id=i.vendor_item_id');
-        $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
-        $this->db->join("calendars c","c.calendar_id=v.calendar_id",'left');
-        $this->db->where('i.item_id',$item_id);
-        $leads = $this->db->get()->row_array();
-        if (!isset($leads['calendar_id'])) {
-            $leads['calendar_id']=$this->_get_default_calend();
-        }
-        /* Rebuild as array */
-        if (!isset($leads['item_lead_a'])) {
+        if ($item_id < 0 ) {
+            $leads = [];
             if ($item_id==$this->config->item('custom_id')) {
                 $leads['item_lead_a'] = $this->config->item('custom_proof_time');
             } elseif ($item_id==$this->config->item('other_id')) {
@@ -93,12 +82,51 @@ Class Shipping_model extends MY_Model
             } else {
                 $leads['item_lead_a']=0;
             }
-        }
-        if (!isset($leads['item_lead_b'])) {
             $leads['item_lead_b']=0;
-        }
-        if (!isset($leads['item_lead_c'])) {
             $leads['item_lead_c']=0;
+            $leads['calendar_id']=$this->_get_default_calend();
+        } else {
+            $this->db->select('item_id, brand')->from('sb_items')->where('item_id', $item_id);
+            $itmdat = $this->db->get()->row_array();
+            if ($itmdat['brand']=='SR') {
+                $this->db->select('i.item_id, i.item_lead_a, coalesce(i.item_lead_b,0) as item_lead_b, coalesce(i.item_lead_c,0) as item_lead_c, c.calendar_id as calendar_id');
+                $this->db->select('i.brand, p.item_sale_rush1, p.item_sale_rush2');
+                $this->db->from("sb_items i");
+                $this->db->join("sb_vendor_items vi",'vi.vendor_item_id=i.vendor_item_id');
+                $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
+                $this->db->join("calendars c","c.calendar_id=v.calendar_id",'left');
+                $this->db->join('sb_item_prices p','p.item_price_itemid=i.item_id');
+                $this->db->where('i.item_id',$item_id);
+                $leads = $this->db->get()->row_array();
+            } else {
+                $this->db->select('item_id, item_lead_a, coalesce(item_lead_b,0) as item_lead_b, coalesce(item_lead_c,0) as item_lead_c, c.calendar_id as calendar_id, i.brand');
+                $this->db->from("sb_items i");
+                $this->db->join("sb_vendor_items vi",'vi.vendor_item_id=i.vendor_item_id');
+                $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
+                $this->db->join("calendars c","c.calendar_id=v.calendar_id",'left');
+                $this->db->where('i.item_id',$item_id);
+                $leads = $this->db->get()->row_array();
+            }
+            if (!isset($leads['calendar_id'])) {
+                $leads['calendar_id']=$this->_get_default_calend();
+            }
+            /* Rebuild as array */
+            if (!isset($leads['item_lead_a'])) {
+                if ($item_id==$this->config->item('custom_id')) {
+                    $leads['item_lead_a'] = $this->config->item('custom_proof_time');
+                } elseif ($item_id==$this->config->item('other_id')) {
+                    $leads['item_lead_a'] = $this->config->item('other_proof_time');
+                } else {
+                    $leads['item_lead_a']=0;
+                }
+            }
+            if (!isset($leads['item_lead_b'])) {
+                $leads['item_lead_b']=0;
+            }
+            if (!isset($leads['item_lead_c'])) {
+                $leads['item_lead_c']=0;
+            }
+
         }
 
         if ($item_id==$this->config->item('custom_id') || $item_id==$this->config->item('other_id')) {
@@ -111,22 +139,40 @@ Class Shipping_model extends MY_Model
 
         if ($leads['item_lead_b']>0) {
             $min=$leads['item_lead_b'];
-            $ship_array[]=array(
-                'min'=>$min,
-                'max'=>$leads['item_lead_a'],
-                'price'=>$this->_get_config_value('rush_3days'),
-                'rush_term'=>$leads['item_lead_b'].' Day Rush',
-            );
+            if (ifset($leads,'brand','SB')=='SR') {
+                $ship_array[]=array(
+                    'min'=>$min,
+                    'max'=>$leads['item_lead_a'],
+                    'price'=>$leads['item_sale_rush1'],
+                    'rush_term'=>$leads['item_lead_b'].' Day Rush',
+                );
+            } else {
+                $ship_array[]=array(
+                    'min'=>$min,
+                    'max'=>$leads['item_lead_a'],
+                    'price'=>$this->_get_config_value('rush_3days'),
+                    'rush_term'=>$leads['item_lead_b'].' Day Rush',
+                );
+            }
         }
 
         if ($leads['item_lead_c']>0) {
             $min=$leads['item_lead_c'];
-            $ship_array[]=array(
-                'min'=>$min,
-                'max'=>($leads['item_lead_b']==0 ? $leads['item_lead_a'] : $leads['item_lead_b']),
-                'price'=>$this->_get_config_value('rush_next_day'),
-                'rush_term'=>$leads['item_lead_c'].' Day Rush',
-            );
+            if (ifset($leads,'brand','SB')=='SR') {
+                $ship_array[]=array(
+                    'min'=>$min,
+                    'max'=>($leads['item_lead_b']==0 ? $leads['item_lead_a'] : $leads['item_lead_b']),
+                    'price'=>$leads['item_sale_rush2'],
+                    'rush_term'=>$leads['item_lead_c'].' Day Rush',
+                );
+            } else {
+                $ship_array[]=array(
+                    'min'=>$min,
+                    'max'=>($leads['item_lead_b']==0 ? $leads['item_lead_a'] : $leads['item_lead_b']),
+                    'price'=>$this->_get_config_value('rush_next_day'),
+                    'rush_term'=>$leads['item_lead_c'].' Day Rush',
+                );
+            }
         }
 
         $ship_array[]=array(
@@ -206,7 +252,6 @@ Class Shipping_model extends MY_Model
         }
         if ($current==0) {
             $rush[0]['current'] = 1;
-
         }
         return array('rush'=>$rush,'current_rush'=>$current_rush);
     }
@@ -473,7 +518,7 @@ Class Shipping_model extends MY_Model
         return $out_val;
     }
 
-    public function count_shiprates($items, $shipaddr, $deliv_date, $brand, $default_ship_method='') {
+    public function count_shiprates_new($items, $shipaddr, $deliv_date, $brand, $default_ship_method='') {
         $res=['result'=>$this->error_result, 'msg'=>$this->error_message];
         $this->load->model('items_model');
         $this->load->model('vendors_model');
@@ -495,9 +540,24 @@ Class Shipping_model extends MY_Model
         $this->load->config('shipping');
         $shiper = $this->config->item('ups_shiper');
         foreach ($items as $item) {
+            $addqty = 0;
+            $itemqty = ceil($item['item_qty']*$kf);
             if ($item['item_id'] > 0) {
                 // Get Item Shipboxes
                 $shipboxes = $this->items_model->get_item_shipboxes($item['item_id']);
+                // Max box
+                $maxbox = $this->items_model->get_item_maxbox($item['item_id']);
+                // Max available QTY
+                $maxqty = $maxbox * 30;
+                if ($itemqty > $maxqty) {
+                    $qtykf = floor($itemqty/$maxbox);
+                    $addqty = $maxbox * $qtykf;
+                    $itemqty = $itemqty - $addqty;
+                    if ($itemqty==0) {
+                        $addqty=$addqty-$maxbox;
+                        $itemqty = $maxbox;
+                    }
+                }
                 // Vendor
                 $vendordat = $this->vendors_model->get_item_vendor($item['vendor_item_id']);
                 $shipFrom = [
@@ -506,7 +566,7 @@ Class Shipping_model extends MY_Model
                         "City" => $vendordat['item_shipcity'],
                         "StateProvinceCode" => $vendordat['item_shipstate'],
                         "PostalCode" => $vendordat['vendor_item_zipcode'],
-                        "CountryCode" => $vendordat['item_shipcountry_name']
+                        "CountryCode" => $vendordat['item_shipcountry_code']
                     ],
                 ];
             } else {
@@ -534,7 +594,6 @@ Class Shipping_model extends MY_Model
             ];
             $cnt_code = $shipaddr['out_country'];
             $package_price = $item['item_subtotal'];
-            $itemqty = ceil($item['item_qty']*$kf);
             $itemweigth = ifset($item, 'item_weigth',0)==0 ? 0.010 : $item['item_weigth'];
             $datpackages = $this->prepare_ship_packages($itemqty, $shipboxes, $itemweigth);
             $shipoptions = [
@@ -556,6 +615,25 @@ Class Shipping_model extends MY_Model
             }
             $ship=$shipres['ship'];
             $codearray= array_keys($ship);
+            // Add QTY shippng
+            if ($addqty > 0) {
+                $qtykf = $addqty / $maxbox;
+                $addpackages = $this->prepare_ship_packages($maxbox, $shipboxes, $itemweigth);
+                $shipoptions['packages'] = $addpackages['packages'];
+                $shipoptions['numpackages'] = $addpackages['numpackages'];
+                $shipoptions['qtykf'] = $qtykf;
+                $shipoptions['itemqty'] = $maxbox;
+                $addratesdat = $this->addpackages_rates($shipoptions);
+                if ($addratesdat['result']==$this->success_result) {
+                    $addrates = $addratesdat['ship'];
+                    foreach ($codearray as $coderow) {
+                        if (isset($addrates[$coderow]['Rate'])) {
+                            $ship[$coderow]['Rate']+=$addrates[$coderow]['Rate'];
+                        }
+                    }
+                }
+            }
+            // Default method
             if ($default_ship_method=='') {
                 if (isset($ship['GND'])) {
                     $ship['deliv']=$ship['GND']['DeliveryDate'];
@@ -613,6 +691,8 @@ Class Shipping_model extends MY_Model
                             'Rate'=>0,
                             'DeliveryDate'=>0,
                             'current'=>$row['current'],
+                            'arrive' => $row['arrive'],
+                            'tntdays' => $row['tntdays'],
                         );
                         $srchkey=count($outrate)-1;
                     } else {
@@ -630,81 +710,60 @@ Class Shipping_model extends MY_Model
         return $res;
     }
 
-    public function count_shiprates_old($items, $shipaddr, $deliv_date, $brand, $default_ship_method='') {
-        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-        $outrate=array();
-        $ratekey=array();
-        if (isset($shipaddr['item_qty'])) {
-            $order_qty=0;
-            foreach ($items as $row) {
-                $order_qty+=$row['item_qty'];
-            }
-            if ($order_qty==0) {
-                $kf=1;
-            } else {
-                $kf=($shipaddr['item_qty']/$order_qty);
-            }
+    public function count_shiprates($items, $shipaddr, $deliv_date, $brand, $default_ship_method='') {
+        if ($brand=='SR') {
+            return $this->count_shiprates_new($items, $shipaddr, $deliv_date, $brand, $default_ship_method);
         } else {
-            $kf=1;
-        }
-        $this->load->config('shipping');
-        foreach ($items as $row) {
-            $cntdat=$this->get_country($shipaddr['country_id']);
-            $carton_qty=((isset($row['cartoon_qty']) && intval($row['cartoon_qty'])>0) ? $row['cartoon_qty'] : $this->config->item('default_inpack'));
-            $cartoon_depth=((isset($row['cartoon_depth']) && intval($row['cartoon_depth'])>0) ? $row['cartoon_depth'] : $this->config->item('default_pack_depth'));
-            $cartoon_width=((isset($row['cartoon_width']) && intval($row['cartoon_width'])>0) ? $row['cartoon_width'] : $this->config->item('default_pack_width'));
-            $cartoon_heigh=((isset($row['cartoon_heigh']) && intval($row['cartoon_heigh'])>0) ? $row['cartoon_heigh'] : $this->config->item('default_pack_heigth'));
-            // $itemweight=((isset($row['item_weigth']) && floatval($row['item_weigth'])>0) ? $row['item_weigth'] : 0.010);
-            $itemweight = (ifset($row, 'item_weigth', 0)>0 ? $row['item_weigth'] : $this->box_empty_weight / $carton_qty);
-            $options=array(
-                'zip'=>$shipaddr['zip'],
-                'numinpack'=>$carton_qty,
-                'itemqty'=>ceil($row['item_qty']*$kf),
-                'startdeliv'=>$deliv_date,
-                'vendor_zip'=>$row['vendor_zipcode'],
-                'item_length'=>$cartoon_depth,
-                'item_width'=>$cartoon_width,
-                'item_height'=>$cartoon_heigh,
-                'ship'=> array(),
-                'weight' =>$itemweight,
-                'cnt_code'=>$cntdat['country_iso_code_2'],
-                'brand' => $brand,
-            );
-
-            $out=calculate_shipcost($options);
-
-            if (!$out['result']) {
-                $res['msg']=$out['error'].' - '.$out['error_code'];
-                return $res;
-            }
-            $ship=$out['ship'];
-            $codearray= array_keys($ship);
-
-            if ($default_ship_method=='') {
-                if (isset($ship['GND'])) {
-                    $ship['deliv']=$ship['GND']['DeliveryDate'];
-                    $ship['GND']['current']=1;
-                } elseif (isset($ship['UPSStandard'])) {
-                    $ship['deliv']=$ship['UPSStandard']['DeliveryDate'];
-                    $ship['UPSStandard']['current']=1;
-                } elseif (isset ($ship['UPSExpedited'])) {
-                    $ship['deliv']=$ship['UPSExpedited']['DeliveryDate'];
-                    $ship['UPSExpedited']['current']=1;
-                } elseif (isset($ship['UPSSaver'])) {
-                    $ship['deliv']=$ship['UPSSaver']['DeliveryDate'];
-                    $ship['UPSSaver']['current']=1;
+            $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+            $outrate=array();
+            $ratekey=array();
+            if (isset($shipaddr['item_qty'])) {
+                $order_qty=0;
+                foreach ($items as $row) {
+                    $order_qty+=$row['item_qty'];
+                }
+                if ($order_qty==0) {
+                    $kf=1;
+                } else {
+                    $kf=($shipaddr['item_qty']/$order_qty);
                 }
             } else {
-                $shiddeliv=0;
-                foreach ($codearray as $coderow) {
-                    if ($ship[$coderow]['ServiceName']==$default_ship_method) {
-                        $ship[$coderow]['current']=1;
-                        $shiddeliv=$ship[$coderow]['DeliveryDate'];
-                    }
+                $kf=1;
+            }
+            $this->load->config('shipping');
+            foreach ($items as $row) {
+                $cntdat=$this->get_country($shipaddr['country_id']);
+                $carton_qty=((isset($row['cartoon_qty']) && intval($row['cartoon_qty'])>0) ? $row['cartoon_qty'] : $this->config->item('default_inpack'));
+                $cartoon_depth=((isset($row['cartoon_depth']) && intval($row['cartoon_depth'])>0) ? $row['cartoon_depth'] : $this->config->item('default_pack_depth'));
+                $cartoon_width=((isset($row['cartoon_width']) && intval($row['cartoon_width'])>0) ? $row['cartoon_width'] : $this->config->item('default_pack_width'));
+                $cartoon_heigh=((isset($row['cartoon_heigh']) && intval($row['cartoon_heigh'])>0) ? $row['cartoon_heigh'] : $this->config->item('default_pack_heigth'));
+                // $itemweight=((isset($row['item_weigth']) && floatval($row['item_weigth'])>0) ? $row['item_weigth'] : 0.010);
+                $itemweight = (ifset($row, 'item_weigth', 0)>0 ? $row['item_weigth'] : $this->box_empty_weight / $carton_qty);
+                $options=array(
+                    'zip'=>$shipaddr['zip'],
+                    'numinpack'=>$carton_qty,
+                    'itemqty'=>ceil($row['item_qty']*$kf),
+                    'startdeliv'=>$deliv_date,
+                    'vendor_zip'=>$row['vendor_zipcode'],
+                    'item_length'=>$cartoon_depth,
+                    'item_width'=>$cartoon_width,
+                    'item_height'=>$cartoon_heigh,
+                    'ship'=> array(),
+                    'weight' =>$itemweight,
+                    'cnt_code'=>$cntdat['country_iso_code_2'],
+                    'brand' => $brand,
+                );
+
+                $out=calculate_shipcost($options);
+
+                if (!$out['result']) {
+                    $res['msg']=$out['error'].' - '.$out['error_code'];
+                    return $res;
                 }
-                if ($shiddeliv!==0) {
-                    $ship['deliv']=$shiddeliv;
-                } else {
+                $ship=$out['ship'];
+                $codearray= array_keys($ship);
+
+                if ($default_ship_method=='') {
                     if (isset($ship['GND'])) {
                         $ship['deliv']=$ship['GND']['DeliveryDate'];
                         $ship['GND']['current']=1;
@@ -718,40 +777,65 @@ Class Shipping_model extends MY_Model
                         $ship['deliv']=$ship['UPSSaver']['DeliveryDate'];
                         $ship['UPSSaver']['current']=1;
                     }
-                }
-            }
-
-            $itemdat=array(
-                'charge_perorder'=>(isset($row['charge_perorder']) ? $row['charge_perorder'] : 0),
-                'charge_pereach'=>(isset($row['charge_pereach']) ? $row['charge_pereach'] : 0),
-            );
-            /* Recalc Rates */
-            $shiplast = recalc_rates($ship,$itemdat,$row['item_qty'],$brand, $cntdat['country_iso_code_2'], $shipaddr['country_id']);
-
-            foreach ($shiplast as $key=>$row) {
-                if ($key!='deliv') {
-                    if (!in_array($key , $ratekey)) {
-                        array_push($ratekey, $key);
-                        $outrate[]=array(
-                            'ServiceName'=>$row['ServiceName'],
-                            'Rate'=>0,
-                            'DeliveryDate'=>0,
-                            'current'=>$row['current'],
-                        );
-                        $srchkey=count($outrate)-1;
+                } else {
+                    $shiddeliv=0;
+                    foreach ($codearray as $coderow) {
+                        if ($ship[$coderow]['ServiceName']==$default_ship_method) {
+                            $ship[$coderow]['current']=1;
+                            $shiddeliv=$ship[$coderow]['DeliveryDate'];
+                        }
+                    }
+                    if ($shiddeliv!==0) {
+                        $ship['deliv']=$shiddeliv;
                     } else {
-                        $srchkey=array_search($key, $ratekey);
+                        if (isset($ship['GND'])) {
+                            $ship['deliv']=$ship['GND']['DeliveryDate'];
+                            $ship['GND']['current']=1;
+                        } elseif (isset($ship['UPSStandard'])) {
+                            $ship['deliv']=$ship['UPSStandard']['DeliveryDate'];
+                            $ship['UPSStandard']['current']=1;
+                        } elseif (isset ($ship['UPSExpedited'])) {
+                            $ship['deliv']=$ship['UPSExpedited']['DeliveryDate'];
+                            $ship['UPSExpedited']['current']=1;
+                        } elseif (isset($ship['UPSSaver'])) {
+                            $ship['deliv']=$ship['UPSSaver']['DeliveryDate'];
+                            $ship['UPSSaver']['current']=1;
+                        }
                     }
-                    if ($outrate[$srchkey]['DeliveryDate']<$row['DeliveryDate']) {
-                        $outrate[$srchkey]['DeliveryDate']=$row['DeliveryDate'];
+                }
+
+                $itemdat=array(
+                    'charge_perorder'=>(isset($row['charge_perorder']) ? $row['charge_perorder'] : 0),
+                    'charge_pereach'=>(isset($row['charge_pereach']) ? $row['charge_pereach'] : 0),
+                );
+                /* Recalc Rates */
+                $shiplast = recalc_rates($ship,$itemdat,$row['item_qty'],$brand, $cntdat['country_iso_code_2'], $shipaddr['country_id']);
+
+                foreach ($shiplast as $key=>$row) {
+                    if ($key!='deliv') {
+                        if (!in_array($key , $ratekey)) {
+                            array_push($ratekey, $key);
+                            $outrate[]=array(
+                                'ServiceName'=>$row['ServiceName'],
+                                'Rate'=>0,
+                                'DeliveryDate'=>0,
+                                'current'=>$row['current'],
+                            );
+                            $srchkey=count($outrate)-1;
+                        } else {
+                            $srchkey=array_search($key, $ratekey);
+                        }
+                        if ($outrate[$srchkey]['DeliveryDate']<$row['DeliveryDate']) {
+                            $outrate[$srchkey]['DeliveryDate']=$row['DeliveryDate'];
+                        }
+                        $outrate[$srchkey]['Rate']+=$row['Rate'];
                     }
-                    $outrate[$srchkey]['Rate']+=$row['Rate'];
                 }
             }
+            $res['result']=$this->success_result;
+            $res['ships']=$outrate;
+            return $res;
         }
-        $res['result']=$this->success_result;
-        $res['ships']=$outrate;
-        return $res;
     }
 
 
@@ -1260,6 +1344,9 @@ Class Shipping_model extends MY_Model
     }
 
     public function count_quoteshiprates($items, $quote, $deliv_date, $brand, $default_ship_method='') {
+        if ($brand=='SR') {
+            return $this->count_quoteshiprates_new($items, $quote, $deliv_date, $brand, $default_ship_method='');
+        }
         $res=['result'=>$this->error_result,  'msg'=>$this->error_message];
         $outrate = [];
         $ratekey = [];
@@ -1296,6 +1383,201 @@ Class Shipping_model extends MY_Model
             $ship=$out['ship'];
             $codearray= array_keys($ship);
 
+            if ($default_ship_method=='') {
+                if (isset($ship['GND'])) {
+                    $ship['deliv']=$ship['GND']['DeliveryDate'];
+                    $ship['GND']['current']=1;
+                } elseif (isset($ship['UPSStandard'])) {
+                    $ship['deliv']=$ship['UPSStandard']['DeliveryDate'];
+                    $ship['UPSStandard']['current']=1;
+                } elseif (isset ($ship['UPSExpedited'])) {
+                    $ship['deliv']=$ship['UPSExpedited']['DeliveryDate'];
+                    $ship['UPSExpedited']['current']=1;
+                } elseif (isset($ship['UPSSaver'])) {
+                    $ship['deliv']=$ship['UPSSaver']['DeliveryDate'];
+                    $ship['UPSSaver']['current']=1;
+                }
+            } else {
+                $shiddeliv=0;
+                foreach ($codearray as $coderow) {
+                    if ($ship[$coderow]['ServiceName']==$default_ship_method) {
+                        $ship[$coderow]['current']=1;
+                        $shiddeliv=$ship[$coderow]['DeliveryDate'];
+                    }
+                }
+                if ($shiddeliv!==0) {
+                    $ship['deliv']=$shiddeliv;
+                } else {
+                    if (isset($ship['GND'])) {
+                        $ship['deliv']=$ship['GND']['DeliveryDate'];
+                        $ship['GND']['current']=1;
+                    } elseif (isset($ship['UPSStandard'])) {
+                        $ship['deliv']=$ship['UPSStandard']['DeliveryDate'];
+                        $ship['UPSStandard']['current']=1;
+                    } elseif (isset ($ship['UPSExpedited'])) {
+                        $ship['deliv']=$ship['UPSExpedited']['DeliveryDate'];
+                        $ship['UPSExpedited']['current']=1;
+                    } elseif (isset($ship['UPSSaver'])) {
+                        $ship['deliv']=$ship['UPSSaver']['DeliveryDate'];
+                        $ship['UPSSaver']['current']=1;
+                    }
+                }
+            }
+
+            $itemdat=array(
+                'charge_perorder'=> intval(ifset($item, 'charge_perorder',0)),
+                'charge_pereach'=> intval(ifset($item, 'charge_pereach',0)),
+            );
+            /* Recalc Rates */
+            $shiplast = recalc_rates($ship,$itemdat, $item['item_qty'],$brand, $cntdat['country_iso_code_2'], $quote['shipping_country']);
+
+            foreach ($shiplast as $key=>$row) {
+                if ($key!='deliv') {
+                    if (!in_array($key , $ratekey)) {
+                        array_push($ratekey, $key);
+                        $outrate[]=array(
+                            'ServiceName'=>$row['ServiceName'],
+                            'Rate'=>0,
+                            'DeliveryDate'=>0,
+                            'current'=>$row['current'],
+                            'code' => $key,
+                        );
+                        $srchkey=count($outrate)-1;
+                    } else {
+                        $srchkey=array_search($key, $ratekey);
+                    }
+                    if ($outrate[$srchkey]['DeliveryDate']<$row['DeliveryDate']) {
+                        $outrate[$srchkey]['DeliveryDate']=$row['DeliveryDate'];
+                    }
+                    $outrate[$srchkey]['Rate']+=$row['Rate'];
+                }
+            }
+        }
+        $res['result']=$this->success_result;
+        $res['ships']=$outrate;
+        return $res;
+    }
+
+    public function count_quoteshiprates_new($items, $quote, $deliv_date, $brand, $default_ship_method='')
+    {
+        $res=['result'=>$this->error_result, 'msg'=>$this->error_message];
+        $outrate = [];
+        $ratekey = [];
+        $this->load->model('items_model');
+        $this->load->model('vendors_model');
+        // $kf=1;
+        $this->load->config('shipping');
+        $cntdat=$this->get_country($quote['shipping_country']);
+        $this->load->config('shipping');
+        $shiper = $this->config->item('ups_shiper');
+        foreach ($items as $item) {
+            $flagitem = 0;
+            $itemqty = $item['item_qty'];
+            $qtykf = 1;
+            $addqty = 0;
+            if ($item['item_id'] > 0) {
+                $itemres = $this->items_model->get_item($item['item_id']);
+                if ($itemres['result']==$this->success_result) {
+                    $itemdat =  $itemres['data'];
+                    $flagitem = 1;
+                    $item['item_weigth'] = $itemdat['item_weigth'];
+                    // Get Item Shipboxes
+                    $shipboxes = $this->items_model->get_item_shipboxes($item['item_id']);
+                    $maxbox = $this->items_model->get_item_maxbox($item['item_id']);
+                    $maxqty = $maxbox * 30;
+                    if ($itemqty > $maxqty) {
+                        $qtykf = floor($itemqty/$maxbox);
+                        $addqty = $maxbox * $qtykf;
+                        $itemqty = $itemqty - $addqty;
+                        if ($itemqty==0) {
+                            $addqty=$addqty-$maxbox;
+                            $itemqty = $maxbox;
+                        }
+                    }
+                    // Vendor
+                    // QTY KF
+//                    $qtykf = 1;
+//                    $maxqty = $shipboxes[0]['box_qty'] * 50;
+//                    if ($itemqty > $maxqty) {
+//                        $qtykf = $maxqty / $itemqty;
+//                        $itemqty = round($itemqty*$qtykf,0);
+//                    }
+                    $vendordat = $this->vendors_model->get_item_vendor($itemdat['vendor_item_id']);
+                    $shipFrom = [
+                        "Name" => $vendordat['vendor_name'],
+                        "Address" => [
+                            "City" => $vendordat['item_shipcity'],
+                            "StateProvinceCode" => $vendordat['item_shipstate'],
+                            "PostalCode" => $vendordat['vendor_item_zipcode'],
+                            "CountryCode" => $vendordat['item_shipcountry_code']
+                        ],
+                    ];
+                }
+            }
+            if ($flagitem==0){
+                $shipboxes=[];
+                $shipboxes[] = [
+                    'box_qty' => $this->config->item('default_inpack'),
+                    'box_width' => $this->config->item('default_pack_width'),
+                    'box_height' => $this->config->item('default_pack_heigth'),
+                    'box_length' => $this->config->item('default_pack_depth'),
+                ];
+                $maxbox = $this->config->item('default_inpack');
+                $shipFrom = [
+                    "Name" => "INTERNAL",
+                    "Address" => $shiper['Address'],
+                ];
+            }
+
+            $shipTo = [
+                "Name" => !empty($quote['shipping_company']) ? $quote['shipping_company'] : "Test Company",
+                "Address" => [
+                    "City" => $quote['shipping_city'],
+                    "StateProvinceCode" => $quote['shipping_state'],
+                    "PostalCode" => $quote['shipping_zip'],
+                    "CountryCode" => $cntdat['country_iso_code_2'],
+                ]
+            ];
+            $package_price = $quote['items_subtotal'];
+            // $itemqty = ceil($item['item_qty']*$kf);
+            $itemweigth = ifset($item, 'item_weigth',0)==0 ? 0.010 : $item['item_weigth'];
+            $datpackages = $this->prepare_ship_packages($itemqty, $shipboxes, $itemweigth);
+            $shipoptions = [
+                'itemqty' => $itemqty,
+                'weight' => $itemweigth,
+                'packages' => $datpackages['packages'],
+                'numpackages' => $datpackages['numpackages'],
+                'startdeliv'=> $deliv_date,
+                'shipTo' => $shipTo,
+                'shipFrom' => $shipFrom,
+                'target_country' => $cntdat['country_iso_code_2'],
+                'brand' => $brand,
+                'package_price' => $package_price,
+            ];
+            $shipres = $this->calculate_shipcost($shipoptions);
+            if ($shipres['result']==$this->error_result) {
+                $res['msg']=$shipres['msg'].' - '.$shipres['error_code'];
+                return $res;
+            }
+            $ship=$shipres['ship'];
+            $codearray= array_keys($ship);
+            if ($addqty > 0) {
+                $qtykf = $addqty / $maxbox;
+                $addpackages = $this->prepare_ship_packages($maxbox, $shipboxes, $itemweigth);
+                $shipoptions['packages'] = $addpackages['packages'];
+                $shipoptions['numpackages'] = $addpackages['numpackages'];
+                $shipoptions['qtykf'] = $qtykf;
+                $shipoptions['itemqty'] = $maxbox;
+                $addratesdat = $this->addpackages_rates($shipoptions);
+                if ($addratesdat['result']==$this->success_result) {
+                    $addrates = $addratesdat['ship'];
+                    foreach ($codearray as $coderow) {
+                        if (isset($addrates[$coderow]['Rate'])) {
+                            $ship[$coderow]['Rate']+=$addrates[$coderow]['Rate'];
+                        }
+                    }
+                }
+            }
             if ($default_ship_method=='') {
                 if (isset($ship['GND'])) {
                     $ship['deliv']=$ship['GND']['DeliveryDate'];
@@ -1471,10 +1753,10 @@ Class Shipping_model extends MY_Model
             }
         } else {
             $restqty = $shipqty;
-            foreach ($shipboxes as $shipbox) {
-                $ceilpart = floor($shipqty / $shipbox['box_qty']);
+            if ($restqty > $shipboxes[$maxshipbox]['box_qty']) {
+                $ceilpart = floor($shipqty / $shipboxes[$maxshipbox]['box_qty']);
                 if ($ceilpart > 0) {
-                    $boxweight = $itemweight * $shipbox['box_qty'];
+                    $boxweight = $itemweight * $shipboxes[$maxshipbox]['box_qty'];
                     for ($i=0; $i < $ceilpart; $i++) {
                         $packages[] = [
                             "PackagingType" => [
@@ -1486,9 +1768,9 @@ Class Shipping_model extends MY_Model
                                     "Code" => "IN",
                                     "Description" => "Inches"
                                 ],
-                                "Length" => "{$shipbox['box_length']}",
-                                "Width" => "{$shipbox['box_width']}",
-                                "Height" => "{$shipbox['box_height']}"
+                                "Length" => "{$shipboxes[$maxshipbox]['box_length']}",
+                                "Width" => "{$shipboxes[$maxshipbox]['box_width']}",
+                                "Height" => "{$shipboxes[$maxshipbox]['box_height']}"
                             ],
                             "PackageWeight" => [
                                 "UnitOfMeasurement" => [
@@ -1500,15 +1782,13 @@ Class Shipping_model extends MY_Model
                         ];
                         $numpackages++;
                     }
-                    $restqty = $shipqty - ($ceilpart * $shipbox['box_qty']);
-                    $shipqty = 0;
+                    $restqty = $restqty - ($ceilpart * $shipboxes[$maxshipbox]['box_qty']);
                 }
             }
 
-            if ($restqty > 0) {
-                for ($i=$maxshipbox; $i >= 0; $i--) {
-                    $shipbox = $shipboxes[$i];
-                    if ($shipbox['box_qty'] >= $restqty) {
+            while ($restqty > 0) {
+                foreach ($shipboxes as $shipbox) {
+                    if ($shipbox['box_qty']>=$restqty) {
                         $boxweight = $itemweight * $restqty;
                         $packages[] = [
                             "PackagingType" => [
@@ -1534,9 +1814,9 @@ Class Shipping_model extends MY_Model
                         ];
                         $numpackages++;
                         $restqty = $restqty - $shipbox['box_qty'];
-                        if ($restqty <= 0 ) {
-                            break;
-                        }
+                    }
+                    if ($restqty <= 0) {
+                        break;
                     }
                 }
             }
@@ -1548,7 +1828,7 @@ Class Shipping_model extends MY_Model
     }
 
     public function calculate_shipcost($options) {
-        $out=['result' => $this->error_result, 'msg' => 'Error During Calc Ship rates'];
+        $out=['result' => $this->error_result, 'msg' => 'Error During Calc Ship rates', 'error_code'=>'Auth'];
         $this->load->config('shipping');
         $this->load->model('calendars_model');
         $itemweight = ifset($options, 'weight', '0')==0 ? 0.010 : $options['weight'];
@@ -1556,7 +1836,7 @@ Class Shipping_model extends MY_Model
         $startdeliv = ifset($options, 'startdeliv', time());
         $cnt_code = (isset($options['target_country']) ? $options['target_country'] : 'US');
         $package_price = ifset($options, 'package_price', 100);
-
+        // $qtykf = ifset($options,'qtykf',1);
         $shipTo = $options['shipTo'];
         $shipFrom = $options['shipFrom'];
         // Calculate REST of full cartoon
@@ -1564,7 +1844,7 @@ Class Shipping_model extends MY_Model
         $earlier = new DateTime(date('Y-m-d'));
         $later = new DateTime(date('Y-m-d', $startdeliv));
         $daydiff = $later->diff($earlier)->format("%r%a");
-        $code = '';
+
         $token = usersession('upstoken');
         $tokenres = $this->_UpsAuthToken($token);
         $out['msg'] = $tokenres['msg'];
@@ -1572,7 +1852,7 @@ Class Shipping_model extends MY_Model
             $token = $tokenres['token'];
             // Get Times in transit
             $oldstart = 0;
-            if (abs($daydiff) > 10) {
+            if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                 $oldstart = $startdeliv;
                 $startdeliv = strtotime(date('Y-m-d'));
             }
@@ -1588,11 +1868,11 @@ Class Shipping_model extends MY_Model
                 // All ok
                 $times = $transitres['services'];
                 // Calc rates
+                $out['error_code']='Rates';
                 $packDimens = $options['packages'];
                 $rateres = $upsservice->getRates($token, $shipTo, $shipFrom, $tntpacks,  $packDimens, $tntweigth);
                 if ($rateres['error'] > 0) {
                     $out['msg'] = $rateres['msg'];
-                    $out['error_code'] = 'Rates';
                 } else {
                     $out['result'] = $this->success_result;
                     $rates = $rateres['rates'];
@@ -1601,6 +1881,7 @@ Class Shipping_model extends MY_Model
                     $code = '';
                     $codes = [];
                     $calendar_id=$this->config->item('bank_calendar');
+                    $this->load->model('calendars_model');
                     if ($cnt_code=='US') {
                         foreach ($rates as $rate) {
                             $transit = 0;
@@ -1615,21 +1896,24 @@ Class Shipping_model extends MY_Model
                                 if ($transit==1) {
                                     array_push($codes, 'GND');
                                     $code .= "GND|";
-                                    if ($time['deliverytime'] > '16:00:00') {
-                                        $newdate  = $this->calendars_model->get_business_date(strtotime($time['deliverydate']),1);
-                                        $time['deliverydate'] = date('Y-m-d', $newdate);
-                                        $time['deliverytime'] = '16:00:00';
-                                    }
+//                                    if ($time['deliverytime'] > '16:00:00') {
+//                                        $newdate  = $this->calendars_model->get_business_date(strtotime($time['deliverydate']),1);
+//                                        $time['deliverydate'] = date('Y-m-d', $newdate);
+//                                        $time['deliverytime'] = '16:00:00';
+//                                    }
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
+                                    $delivdate = $this->calendars_model->businessdate($delivdate);
                                     $ship['GND'] = [
                                         'ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => $rate['rate'],
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             } elseif ($rate['service_code']=='02') {
@@ -1644,15 +1928,17 @@ Class Shipping_model extends MY_Model
                                     array_push($codes, 'DA2');
                                     $code .= "2DA|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['DA2'] = [
                                         'ServiceCode' => 'DA2', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => '2nd Day Air', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => $rate['rate'],
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             } elseif ($rate['service_code']=='14') {
@@ -1667,15 +1953,17 @@ Class Shipping_model extends MY_Model
                                     array_push($codes, 'DA1');
                                     $code .= "1DA|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['DA1'] = array(
                                         'ServiceCode' => '1DM',
                                         'ServiceName' => 'Next Day AM',
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => $rate['rate'],
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     );
                                 }
                             } elseif ($rate['service_code']=='13') {
@@ -1689,16 +1977,18 @@ Class Shipping_model extends MY_Model
                                 if ($transit==1) {
                                     array_push($codes, 'DP1');
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         // Make changes in deliv date
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['DP1'] = array(
                                         'ServiceCode' => '1DP',
                                         'ServiceName' => 'Next Day PM',
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => $rate['rate'],
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     );
                                     $code .= "1DP|";
                                 }
@@ -1718,21 +2008,24 @@ Class Shipping_model extends MY_Model
                                 if ($transit==1) {
                                     array_push($codes, 'GND');
                                     $code .= "GND|";
-                                    if ($time['deliverytime'] > '16:00:00') {
-                                        $newdate  = $this->calendars_model->get_business_date(strtotime($time['deliverydate']),1);
-                                        $time['deliverydate'] = date('Y-m-d', $newdate);
-                                        $time['deliverytime'] = '16:00:00';
-                                    }
+//                                    if ($time['deliverytime'] > '16:00:00') {
+//                                        $newdate  = $this->calendars_model->get_business_date(strtotime($time['deliverydate']),1);
+//                                        $time['deliverydate'] = date('Y-m-d', $newdate);
+//                                        $time['deliverytime'] = '16:00:00';
+//                                    }
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
+                                    $delivdate = $this->calendars_model->businessdate($delivdate);
                                     $ship['GND'] = [
                                         'ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => $rate['rate'],
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             } elseif ($rate['service_code']=='08') {
@@ -1747,15 +2040,17 @@ Class Shipping_model extends MY_Model
                                     array_push($codes, 'UPSExpedited');
                                     $code .= "08|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['UPSExpedited'] = [
                                         'ServiceCode' => '08', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Expedited', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => $rate['rate'],
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             } elseif ($rate['service_code']=='65') {
@@ -1770,15 +2065,17 @@ Class Shipping_model extends MY_Model
                                     array_push($codes, 'UPSSaver');
                                     $code .= "65|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['UPSSaver'] = [
                                         'ServiceCode' => '65', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Saver', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => $rate['rate'],
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             } elseif ($rate['service_code']=='07') {
@@ -1793,15 +2090,17 @@ Class Shipping_model extends MY_Model
                                     array_push($codes, 'UPSExpress');
                                     $code .= "07|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['UPSExpress'] = [
                                         'ServiceCode' => '07', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Express', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => $rate['rate'],
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             }
@@ -1824,15 +2123,17 @@ Class Shipping_model extends MY_Model
                                     array_push($codes, 'UPSExpress');
                                     $code .= "07|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['UPSExpress'] = [
                                         'ServiceCode' => '07', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Express', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => $rate['rate'],
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             } elseif ($rate['service_code']=='08') {
@@ -1847,15 +2148,17 @@ Class Shipping_model extends MY_Model
                                     array_push($codes, 'UPSExpedited');
                                     $code .= "08|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['UPSExpedited'] = [
                                         'ServiceCode' => '08', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Expedited', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => $rate['rate'],
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             } elseif ($rate['service_code']=='11') {
@@ -1876,21 +2179,24 @@ Class Shipping_model extends MY_Model
                                 if ($transit==1) {
                                     array_push($codes, 'GND');
                                     $code .= "GND|";
-                                    if ($time['deliverytime'] > '16:00:00') {
-                                        $newdate  = $this->calendars_model->get_business_date(strtotime($time['deliverydate']),1);
-                                        $time['deliverydate'] = date('Y-m-d', $newdate);
-                                        $time['deliverytime'] = '16:00:00';
-                                    }
+//                                    if ($time['deliverytime'] > '16:00:00') {
+//                                        $newdate  = $this->calendars_model->get_business_date(strtotime($time['deliverydate']),1);
+//                                        $time['deliverydate'] = date('Y-m-d', $newdate);
+//                                        $time['deliverytime'] = '16:00:00';
+//                                    }
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
+                                    $delivdate = $this->calendars_model->businessdate($delivdate);
                                     $ship['GND'] = [
                                         'ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => $rate['rate'],
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             } elseif ($rate['service_code']=='54') {
@@ -1903,15 +2209,17 @@ Class Shipping_model extends MY_Model
                                         array_push($codes, 'ExpressPlus');
                                         $code .= "54|";
                                         $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                        if (abs($daydiff) > 10) {
+                                        if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                             $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                         }
                                         $ship['ExpressPlus'] = [
                                             'ServiceCode' => '54', // 'ServiceName' =>$row['ServiceName'],
                                             'ServiceName' => 'Express Plus', // 'Rate' =>$row['Rate'],
-                                            'Rate' => round($rate['rate'], 2),
+                                            'Rate' => $rate['rate'],
                                             'DeliveryDate' => $delivdate,
                                             'current' => 0,
+                                            'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                            'tntdays' => $time['bisnessdays'],
                                         ];
                                     }
 
@@ -1928,15 +2236,17 @@ Class Shipping_model extends MY_Model
                                     array_push($codes, 'UPSSaver');
                                     $code .= "65|";
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
-                                    if (abs($daydiff) > 10) {
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
                                     }
                                     $ship['UPSSaver'] = [
                                         'ServiceCode' => '65', // 'ServiceName' =>$row['ServiceName'],
                                         'ServiceName' => 'Saver', // 'Rate' =>$row['Rate'],
-                                        'Rate' => round($rate['rate'], 2),
+                                        'Rate' => $rate['rate'],
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
                                     ];
                                 }
                             }
@@ -1946,6 +2256,188 @@ Class Shipping_model extends MY_Model
                     $out['code'] = $code;
                 }
             }
+        }
+        return $out;
+    }
+
+    public function addpackages_rates($options)
+    {
+        $out=['result' => $this->error_result, 'msg' => 'Error During Calc Ship rates', 'error_code'=>'Auth'];
+        $this->load->config('shipping');
+        $this->load->model('calendars_model');
+        $itemweight = ifset($options, 'weight', '0')==0 ? 0.010 : $options['weight'];
+        $qty = ifset($options, 'itemqty', 250);
+        $tntweigth = $qty * $itemweight;
+        $startdeliv = ifset($options, 'startdeliv', time());
+        $cnt_code = (isset($options['target_country']) ? $options['target_country'] : 'US');
+        $package_price = ifset($options, 'package_price', 100);
+        $qtykf = ifset($options,'qtykf',1);
+        $shipTo = $options['shipTo'];
+        $shipFrom = $options['shipFrom'];
+        // Calculate REST of full cartoon
+        $tntpacks = ifset($options, 'numpackages', 1);
+        $earlier = new DateTime(date('Y-m-d'));
+        $later = new DateTime(date('Y-m-d', $startdeliv));
+        $daydiff = $later->diff($earlier)->format("%r%a");
+
+        $token = usersession('upstoken');
+        $tokenres = $this->_UpsAuthToken($token);
+        $out['msg'] = $tokenres['msg'];
+        if ($tokenres['result']==$this->success_result) {
+            $token = $tokenres['token'];
+            // Get Times in transit
+            $ratescalc = 0;
+            $this->load->library('UPS_service');
+            $upsservice = new UPS_service();
+            // Calc rates
+            $out['error_code']='Rates';
+            $packDimens = $options['packages'];
+            $rateres = $upsservice->getRates($token, $shipTo, $shipFrom, $tntpacks,  $packDimens, $tntweigth);
+            if ($rateres['error'] > 0) {
+                $out['msg'] = $rateres['msg'];
+            } else {
+                $out['result'] = $this->success_result;
+                $rates = $rateres['rates'];
+                // Make merged array
+                $ship=[];
+                $code = '';
+                $codes = [];
+//                $calendar_id=$this->config->item('bank_calendar');
+//                $this->load->model('calendars_model');
+                if ($cnt_code=='US') {
+                    foreach ($rates as $rate) {
+                        $transit = 0;
+                        if ($rate['service_code']=='03') {
+                            // Ground
+                            array_push($codes, 'GND');
+                            $code .= "GND|";
+                            $ship['GND'] = [
+                                'ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
+                                'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
+                                'Rate' => round($rate['rate']*$qtykf,2),
+                            ];
+                        } elseif ($rate['service_code']=='02') {
+                            // Two days
+                            array_push($codes, 'DA2');
+                            $code .= "2DA|";
+                            $ship['DA2'] = [
+                                'ServiceCode' => 'DA2', // 'ServiceName' =>$row['ServiceName'],
+                                'ServiceName' => '2nd Day Air', // 'Rate' =>$row['Rate'],
+                                'Rate' => round($rate['rate']*$qtykf,2),
+                            ];
+                        } elseif ($rate['service_code']=='14') {
+                            // UPS Next Day Air Early
+                            array_push($codes, 'DA1');
+                            $code .= "1DA|";
+                            $ship['DA1'] = array(
+                                'ServiceCode' => '1DM',
+                                'ServiceName' => 'Next Day AM',
+                                'Rate' => round($rate['rate']*$qtykf,2),
+                            );
+                        } elseif ($rate['service_code']=='13') {
+                            // UPS Next Day Air Saver
+                            array_push($codes, 'DP1');
+                            $code .= "1DP|";
+                            $ship['DP1'] = array(
+                                'ServiceCode' => '1DP',
+                                'ServiceName' => 'Next Day PM',
+                                'Rate' => round($rate['rate']*$qty,2),
+                            );
+                        }
+                    }
+                } elseif ($cnt_code=='CA') {
+                    foreach ($rates as $rate) {
+                        if ($rate['service_code']=='11') {
+                            // Ground
+                            array_push($codes, 'GND');
+                            $code .= "GND|";
+                            $ship['GND'] = [
+                                'ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
+                                'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
+                                'Rate' => round($rate['rate']*$qtykf,2),
+                            ];
+                        } elseif ($rate['service_code']=='08') {
+                            // UPS Expedited
+                            array_push($codes, 'UPSExpedited');
+                            $code .= "08|";
+                            $ship['UPSExpedited'] = [
+                                'ServiceCode' => '08', // 'ServiceName' =>$row['ServiceName'],
+                                'ServiceName' => 'Expedited', // 'Rate' =>$row['Rate'],
+                                'Rate' => round($rate['rate']*$qtykf,2),
+                            ];
+                        } elseif ($rate['service_code']=='65') {
+                            // Saver
+                            array_push($codes, 'UPSSaver');
+                            $code .= "65|";
+                            $ship['UPSSaver'] = [
+                                'ServiceCode' => '65', // 'ServiceName' =>$row['ServiceName'],
+                                'ServiceName' => 'Saver', // 'Rate' =>$row['Rate'],
+                                'Rate' => round($rate['rate']*$qtykf,2),
+                            ];
+                        } elseif ($rate['service_code']=='07') {
+                            // UPSWorExpress
+                            array_push($codes, 'UPSExpress');
+                            $code .= "07|";
+                            $ship['UPSExpress'] = [
+                                'ServiceCode' => '07', // 'ServiceName' =>$row['ServiceName'],
+                                'ServiceName' => 'Express', // 'Rate' =>$row['Rate'],
+                                'Rate' => round($rate['rate']*$qtykf,2),
+                            ];
+                        }
+                    }
+                } else {
+                    foreach ($rates as $rate) {
+                        if ($rate['service_code']=='07') {
+                            // UPSWorExpress
+                            array_push($codes, 'UPSExpress');
+                            $code .= "07|";
+                            $ship['UPSExpress'] = [
+                                'ServiceCode' => '07', // 'ServiceName' =>$row['ServiceName'],
+                                'ServiceName' => 'Express', // 'Rate' =>$row['Rate'],
+                                'Rate' => round($rate['rate']*$qtykf,2),
+                            ];
+                        } elseif ($rate['service_code']=='08') {
+                            // UPS Expedited
+                            array_push($codes, 'UPSExpedited');
+                            $code .= "08|";
+                            $ship['UPSExpedited'] = [
+                                'ServiceCode' => '08', // 'ServiceName' =>$row['ServiceName'],
+                                'ServiceName' => 'Expedited', // 'Rate' =>$row['Rate'],
+                                'Rate' => round($rate['rate']*$qtykf,2),
+                            ];
+                        } elseif ($rate['service_code']=='11') {
+                            // Ground
+                            array_push($codes, 'GND');
+                            $code .= "GND|";
+                            $ship['GND'] = [
+                                'ServiceCode' => 'GND', // 'ServiceName' =>$row['ServiceName'],
+                                'ServiceName' => 'Ground', // 'Rate' =>$row['Rate'],
+                                'Rate' => round($rate['rate']*$qtykf,2),
+                            ];
+                        } elseif ($rate['service_code']=='54') {
+                            array_push($codes, 'ExpressPlus');
+                            $code .= "54|";
+                            $ship['ExpressPlus'] = [
+                                'ServiceCode' => '54', // 'ServiceName' =>$row['ServiceName'],
+                                'ServiceName' => 'Express Plus', // 'Rate' =>$row['Rate'],
+                                'Rate' => round($rate['rate']*$qtykf,2),
+                            ];
+                        } elseif ($rate['service_code']=='65') {
+                            // Saver
+                            array_push($codes, 'UPSSaver');
+                            $code .= "65|";
+                            $ship['UPSSaver'] = [
+                                'ServiceCode' => '65', // 'ServiceName' =>$row['ServiceName'],
+                                'ServiceName' => 'Saver', // 'Rate' =>$row['Rate'],
+                                'Rate' => round($rate['rate']*$qtykf,2),
+                            ];
+                        }
+                    }
+                }
+                $out['ship'] = $ship;
+                $out['code'] = $code;
+            }
+
         }
         return $out;
     }

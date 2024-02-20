@@ -1705,7 +1705,7 @@ Class Artlead_model extends MY_Model
         $password = "07031";
         if (createPath($shrtpath)) {
             $doc_link = str_replace(['../docs/','../../system/docs/'],'http://bluetrack.net/system/docs/', $export['doc_link']);
-            $newfile = $fullpath.$export['doc_name'];
+            $newfile = $fullpath.str_replace([' ','%','"'],'_',$export['doc_name']);
 //            $opts = array(
 //                'http'=>array(
 //                    'method'=>"GET",
@@ -1730,7 +1730,7 @@ Class Artlead_model extends MY_Model
                 $this->db->set('add_time', date('Y-m-d H:i:s'));
                 $this->db->set('artwork_id', $artwork_id);
                 $this->db->set('numpp', $numpp);
-                $this->db->set('clay_link', $shrtpath.$export['doc_name']);
+                $this->db->set('clay_link', $shrtpath.str_replace([' ','%','"'],'_',$export['doc_name']));
                 $this->db->set('clay_source', $export['doc_name']);
                 $this->db->insert('ts_artwork_clays');
                 $this->db->where('id', $export['id']);
@@ -1749,7 +1749,7 @@ Class Artlead_model extends MY_Model
         $password = "07031";
         if (createPath($shrtpath)) {
             $doc_link = str_replace(['../docs/','../../system/docs/'],'http://bluetrack.net/system/docs/', $export['doc_link']);
-            $newfile = $fullpath.$export['doc_name'];
+            $newfile = $fullpath.str_replace([' ','%','"'],'_',$export['doc_name']);
             if ($this->_save_remotefile($doc_link, $newfile)) {
                 // Select max numpp
                 $this->db->select('count(artwork_preview_id) as cnt, max(numpp) as maxnum');
@@ -1765,7 +1765,7 @@ Class Artlead_model extends MY_Model
                 $this->db->set('add_time', date('Y-m-d H:i:s'));
                 $this->db->set('artwork_id', $artwork_id);
                 $this->db->set('numpp', $numpp);
-                $this->db->set('preview_link', $shrtpath.$export['doc_name']);
+                $this->db->set('preview_link', $shrtpath.str_replace([' ','%','"'],'_',$export['doc_name']));
                 $this->db->set('preview_source', $export['doc_name']);
                 $this->db->insert('ts_artwork_previews');
                 $this->db->where('id', $export['id']);

@@ -2112,9 +2112,15 @@ Class Artwork_model extends MY_Model
             $out['msg']='Artwork data was lost. Please reload data';
         } else {
             $dbtablename='sb_items';
+            $brand = ifset($artdata, 'brand','BT');
             $this->db->select("item_id, item_number, item_name, item_vector_img");
             $this->db->from($dbtablename);
             $this->db->where('item_vector_img is not null');
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_id('brand',['SB','BT']);
+            }
             $result=$this->db->get()->result_array();
 
             $out['templates']=$result;
@@ -3507,14 +3513,16 @@ Class Artwork_model extends MY_Model
                 'parameter_newvalue'=>(intval($shippingnew['event_date'])==0 ? '' : date('m/d/Y', $shippingnew['event_date'])),
             );
         }
+
         if (floatval($shippingold['rush_price'])!=  floatval($shippingnew['rush_price'])) {
-            array_push($changes, 'Rush Price to '.MoneyOutput($ordernew['rush_price'],2));
+            array_push($changes, 'Rush Price to '.MoneyOutput(floatval($shippingnew['rush_price']),2));
             $historylist[]=array(
                 'parameter_name'=>'Rush Price',
                 'parameter_oldvalue'=>  MoneyOutput($shippingold['rush_price'],2),
                 'parameter_newvalue'=>  MoneyOutput($shippingnew['rush_price'],2),
             );
         }
+
         // Shipping Address
         $shipoldaddress=$compare_array['shipping_address'];
         $shipnewaddress=$neworddata['shipping_address'];

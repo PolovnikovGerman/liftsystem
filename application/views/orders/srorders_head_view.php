@@ -76,6 +76,7 @@
         <div class="itemcolor">Color</div>
         <div class="sritem">Item</div>
         <div class="revenue">Revenue</div>
+        <div class="balance">Balance</div>
         <!-- <div class="usrrepl">Sales Rep</div> -->
         <!-- <div class="ordclass">Class</div> -->
         <div class="artstage">Art Status</div>

@@ -123,10 +123,21 @@ function init_leadpopupedit() {
             $("div.lead_history").addClass('expandhistory');
         }
     }
-    $("select#lead_item").searchable();
-    $("select#lead_item").unbind('change').change(function(){
-        lead_itemchange($("select#lead_item").val());
+
+    // $("select#lead_item").searchable();
+    $("select#lead_item").select2({
+        dropdownParent: $('#leadformModal'),
+        matcher: matchStart,
+    });
+    $("select#lead_item").change(function(){
+        var item_id=$("select#lead_item").val();
+        lead_itemchange(item_id);
     })
+
+    $("input#lead_itemqty").on('focusout',function(){
+        $("#lead_item").select2('open');
+        $("#lead_item").find('input.select2-search__field').focus();
+    });
 
     $("input.usrrepliccheck").unbind('change').change(function(){
         var value=1;
@@ -414,13 +425,13 @@ function init_artpopupcontent(lead_id, mail_id,relation_type) {
             var url = mainurl+"/lead_deleteproof";
             $.post(url,{'email_id':mail_id},function(response){
                 if (response.errors=='') {
-                    restore_leadform();
+                    restore_leadform(0);
                 } else {
                     show_error(response);
                 }
             },'json');
         } else {
-            restore_leadform();
+            restore_leadform(0);
         }
 
     })
@@ -430,7 +441,7 @@ function init_artpopupcontent(lead_id, mail_id,relation_type) {
         $.post(url, dat, function(response){
             if (response.errors=='') {
                 $("#artModal").modal('hide');
-                restore_leadform();
+                restore_leadform(mail_id);
             } else {
                 show_error(response);
             }
@@ -439,9 +450,9 @@ function init_artpopupcontent(lead_id, mail_id,relation_type) {
 
 }
 
-function restore_leadform() {
+function restore_leadform(mail_id) {
     var url=mainurl+"/restore_ledform";
-    $.post(url, {}, function(response){
+    $.post(url, {'email_id' : mail_id}, function(response){
         if (response.errors=='') {
             $("#leadformModalLabel").empty().html(response.data.title);
             $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
@@ -473,7 +484,6 @@ function lead_itemchange(item_id) {
             show_error(response);
         }
     }, 'json');
-
 }
 
 function duplicatelead() {

@@ -185,7 +185,8 @@ class Accounting extends MY_Controller
             $options['exclude_quickbook'] = ifset($postdata,'exclude_quickbook',0);
             /* count number of orders */
             $options['admin_mode']=0;
-            if ($this->USR_ROLE=='masteradmin') {
+            // if ($this->USR_ROLE=='masteradmin') {
+            if ($this->USER_ORDER_EXPORT==1) {
                 $options['admin_mode']=1;
             }
             if (isset($postdata['brand']) && !empty($postdata['brand'])) {
@@ -401,7 +402,8 @@ class Accounting extends MY_Controller
             }
 
             /* Fetch data about prices */
-            if ($this->USR_ROLE=='masteradmin') {
+            // if ($this->USR_ROLE=='masteradmin') {
+            if ($this->USER_ORDER_EXPORT==1) {
                 $admin_mode=1;
             } else {
                 $admin_mode=0;
@@ -1264,7 +1266,8 @@ class Accounting extends MY_Controller
             // 'searchform'=>$search_form,
             'legend'=>$legend,
             'total_row'=>'', // $totalrow,
-            'adminview' => $this->USR_ROLE=='masteradmin' ? 1 : 0,
+            // 'adminview' => $this->USR_ROLE=='masteradmin' ? 1 : 0,
+            'adminview' => $this->USER_ORDER_EXPORT==1 ? 1 : 0,
             'brand' => $brand,
         );
         $years=$this->orders_model->get_orders_dates($options);
