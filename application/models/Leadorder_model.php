@@ -901,6 +901,8 @@ Class Leadorder_model extends My_Model {
         } else {
             $out['extendview'] = 1;
         }
+        // Empty items
+        $out['order_items'] = $this->_create_empty_orderitems();
         return $out;
     }
 
@@ -10210,6 +10212,61 @@ Class Leadorder_model extends My_Model {
                 return true;
             }
         }
+    }
+
+    private function _create_empty_orderitems()
+    {
+        $items=[];
+        $newitem = [
+            'order_item_id' => -1,
+            'item_id' => '',
+            'item_number' => '',
+            'item_name' => '',
+            'item_qty' => '',
+            'colors' => [],
+            'num_colors' => 0,
+            'item_template' => '',
+            'item_weigth' => '',
+            'cartoon_qty' => '',
+            'cartoon_width' =>  '',
+            'cartoon_heigh' =>  '',
+            'cartoon_depth' =>  '',
+            'boxqty' =>  '',
+            'setup_price' =>  '',
+            'print_price' =>  '',
+            'item_subtotal' =>  0,
+            'imprint_subtotal' =>  0,
+            'vendor_zipcode' =>  '',
+            'charge_perorder' =>  '',
+            'charge_peritem' =>  '',
+            'charge_pereach' =>  '',
+            'imprint_locations' => [],
+            'base_price' => '',
+            'vendor_item_id' => '',
+        ];
+        $color = [
+            'order_item_id' => -1,
+            'item_id' => '',
+            'item_row' => 1,
+            'item_number' => '',
+            'item_color' => '',
+            'colors' => [],
+            'out_colors' => '',
+            'num_colors' => 0,
+            'item_description' => '',
+            'item_color_add' => 0,
+            'item_qty' => '',
+            'item_price' => '',
+            'item_subtotal' => '',
+            'printshop_item_id' => '',
+            'qtyinput_class' => '',
+            'qtyinput_title' => '',
+        ];
+        $newitem['items'][] = $color;
+        $newitem['imprints'] = [];
+        $newitem['imprint_details'] = [];
+        $items[] = $newitem;
+        return $items;
     }
 }
 /* End of file leadorder_model.php */

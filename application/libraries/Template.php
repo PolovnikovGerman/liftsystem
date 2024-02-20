@@ -356,7 +356,12 @@ class Template
                 );
                 $subtotal+=($irow['imprint_subtotal']+$irow['item_subtotal']);
                 if ($edit==1) {
-                    $content.=$this->CI->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                    if ($irow['item_id']=='') {
+                        $item_options['itemslist'] = $res['itemslist'];
+                        $content.=$this->CI->load->view('leadorderdetails/items_data_add', $item_options, TRUE);
+                    } else {
+                        $content.=$this->CI->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                    }
                 } else {
                     $content.=$this->CI->load->view('leadorderdetails/items_data_view', $item_options, TRUE);
                 }

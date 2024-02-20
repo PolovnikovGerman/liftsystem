@@ -40,6 +40,13 @@ class Leadorder extends MY_Controller
             if ($order==0) {
                 $res=$this->leadorder_model->add_newlead_order($this->USR_ID, $brand);
                 $edit=1;
+                // Add items list
+                $this->load->model('orders_model');
+                $dboptions=array(
+                    'exclude'=>array(-4, -5, -2),
+                    'brand' => ($brand=='SR') ? 'SR' : 'BT',
+                );
+                $res['itemslist']=$this->orders_model->get_item_list($dboptions);
             } else {
                 $res=$this->leadorder_model->get_leadorder($order, $this->USR_ID, $brand);
                 $edit=(isset($postdata['edit']) ? $postdata['edit'] : 0);
