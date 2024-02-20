@@ -1570,6 +1570,15 @@ Class Items_model extends My_Model
         return $this->db->get()->result_array();
     }
 
+    public function get_item_maxbox($item_id)
+    {
+        $this->db->select('max(box_qty) as box_qty');
+        $this->db->from('sb_item_shipping');
+        $this->db->where('item_id', $item_id);
+        $res =  $this->db->get()->row_array();
+        return intval($res['box_qty']);
+    }
+
     private function _recalc_inventory_profit($prices, $vendor_item_cost) {
         $idx = 0;
         foreach ($prices as $price) {
