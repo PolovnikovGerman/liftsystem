@@ -556,8 +556,166 @@ input.order_itemqty_input {
 .items_table_line{
     float: left;
     line-height: 20px;
-    width: 520px;
+    /*width: 520px;*/
+    width: calc(100% - 5px);
 }
+/* Add new item */
+.items_content_add {
+    float: left;
+    width: 258px;
+}
+select.addnewitem {
+    width: 255px;
+}
+.items_content_add span.select2-selection--single {
+    height: 20px!important;
+}
+.items_content_add .select2-selection__rendered {
+    line-height: 19px!important;
+}
+.items_content_add .select2-selection__arrow {
+    height: 18px!important;
+}
+.itemcolor_adddata {
+    float: left;
+    padding-left: 2px;
+    width: 91px;
+}
+.items_content_addqty {
+    float: left;
+    padding-right: 2px;
+    text-align: right;
+    width: 53px
+}
+.items_content_addprice {
+    float: left;
+    width: 41px;
+}
+.items_content_addprint {
+    float: left;
+    width: 14px;
+    color: #008000;
+    font-size: 15px;
+    cursor: pointer;
+    visibility: hidden;
+}
+.items_content_cancel {
+    float: left;
+    text-align: center;
+    font-size: 14px;
+    width: 14px;
+}
+input.orderitemadd_input {
+    height: 19px;
+    margin: 0 2px;
+}
+
+/* End Add New */
+/* Invertory popup */
+.orderitem_inventoryview {
+    display: none;
+    position: absolute;
+    position: absolute;
+    left: 289px;
+    top: 148px;
+    z-index: 1052;
+}
+.orderitem_inventoryview div {
+    float: left;
+}
+.orderitem_inventoryview_head {
+    background: #707070;
+    color: #FFFFFF;
+    height: 18px;
+    font-size: 12px;
+}
+.orderitem_inventoryview_head div {
+    line-height: 18px;
+    text-align: center;
+}
+.orderitem_inventoryview_head .inventorycolor {
+    width: 99px;
+    margin-right: 10px;
+}
+.orderitem_inventoryview_head .inventorypercent {
+    width: 36px;
+}
+.orderitem_inventoryview_head .inventoryinstock {
+    width: 44px;
+}
+.orderitem_inventoryview_head .inventoryreserv {
+    width: 42px;
+}
+.orderitem_inventoryview_head .inventoryavailable {
+    width: 44px;
+    margin-right: 10px;
+}
+.orderitem_inventoryview_head .inventoryonboat {
+    width: 66px;
+}
+.orderitem_inventoryview_body {
+    clear: both;
+    background: #707070;
+    color: #FFFFFF;
+    font-size: 12px;
+    border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+.orderitem_inventoryview_body div {
+    line-height: 18px;
+    height: 18px;
+    text-align: center;
+}
+.orderitem_inventoryview_body .datarow {
+    clear: both;
+    cursor: pointer;
+}
+.inventorydataempty {
+    width: 10px;
+    background: #707070;
+}
+.orderitem_inventoryview_body .inventorycolor {
+    width: 99px;
+    text-align: right;
+    padding-right: 7px;
+}
+.orderitem_inventoryview_body .inventorycolor.selected {
+    background: #707070;
+    color: #FFFFFF;
+}
+.orderitem_inventoryview_body .inventorypercent {
+    width: 36px;
+    border-right: 1px solid #000000;
+}
+.orderitem_inventoryview_body .inventorypercent.severevalstock {
+    background: #FF0000;
+    color: #ffffff;
+}
+.orderitem_inventoryview_body .inventorypercent.lowinstock {
+    background: #ff9900;
+    color: #000000;
+}
+.orderitem_inventoryview_body .inventorydatacell.selected {
+    border-top: 2px #707070 solid;
+    border-bottom: 2px #707070 solid;
+    line-height: 14px;
+}
+.orderitem_inventoryview_body .inventoryinstock {
+    width: 44px;
+    border-right: 1px solid #000000;
+}
+.orderitem_inventoryview_body .inventoryreserv {
+    width: 42px;
+    border-right: 1px solid #000000;
+}
+.orderitem_inventoryview_body .inventoryavailable {
+    width: 44px;
+}
+.orderitem_inventoryview_body .inventoryonboat {
+    width: 66px;
+    border-right: 1px solid #000000;
+}
+/* End Inventory Popup */
 .items_table_text {
     font-size: 11px;
     color: #535050;
@@ -2416,8 +2574,10 @@ select.orderitemcolors {
     width: 87px;
 }
 input.orderitem_input {
-    height: 16px;
-    margin: 2px 2px;
+/*    height: 16px;
+    margin: 2px 2px;*/
+    height: 19px;
+    margin: 0 2px;
 }
 input.orderitem_description {
    width: 168px; 
