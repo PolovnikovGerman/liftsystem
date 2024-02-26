@@ -677,7 +677,7 @@ class Template
             $artdata['empty_url'] = $this->CI->config->item('sb_empty_template');
             $artdata['empty_title'] = $this->CI->config->item('sb_empty_title');
         }
-        $artdata['extendview'] = $res['extendview'];
+        $artdata['extendview'] = ifset($res, 'extendview',0);
         // Artwork View
         $data['artview']=$this->CI->load->view('leadorderdetails/artwork_view', $artdata, TRUE);
         return $data;
