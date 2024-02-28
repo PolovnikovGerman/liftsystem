@@ -47,6 +47,7 @@ function init_master_inventorydata() {
     params.push({name: 'inventory_type', value: $("#active_invtype").val()});
     params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
     params.push({name: 'showmax', value: $("#invshowmax").val()});
+    params.push({name: 'sortby', value: $(".inventcolorsort").val()});
     var url="/masterinventory/get_inventory_list";
     $("#loader").show();
     $.post(url, params, function (response) {
@@ -328,6 +329,10 @@ function init_master_inventorycontent() {
                 show_error(response);
             }
         },'json');
+    });
+    // Change Sort
+    $("select.inventcolorsort").unbind('change').change(function(){
+        init_master_inventorydata();
     });
 }
 
