@@ -5670,6 +5670,7 @@ Class Orders_model extends MY_Model
                     $this->db->where('artdata_sync_id', $row['artdata_sync_id']);
                     $this->db->update('ts_artdata_sync');
                 } else {
+                    echo 'Export '.$row['order_num'].' Error '.PHP_EOL;
                     echo 'Error '.$array['error'].PHP_EOL;
                 }
             }
