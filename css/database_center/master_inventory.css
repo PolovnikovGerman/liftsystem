@@ -274,12 +274,18 @@ input.inventadd {
     height: 22px;
     line-height: 22px;
 }
+.masterinventtotals .inventcolorsortarea {
+    width: 100px;
+}
+.masterinventtotals select.inventcolorsort {
+    color: #000000;
+    background-color: #ffffff;
+    font-size: 11px;
+}
 .masterinventtotals .inventtotalmaxshow {
-    /* margin-left: 435px; */
-    margin-left: 169px;
+    margin-left: 69px; /* 169px; */
     color: #8989ff;
     width: 67px;
-    /* text-align: center; */
     cursor: pointer;
     font-size: 12px;
 }
