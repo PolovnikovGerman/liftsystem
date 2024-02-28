@@ -356,7 +356,12 @@ class Template
                 );
                 $subtotal+=($irow['imprint_subtotal']+$irow['item_subtotal']);
                 if ($edit==1) {
-                    $content.=$this->CI->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                    if ($irow['item_id']=='') {
+                        $item_options['itemslist'] = $res['itemslist'];
+                        $content.=$this->CI->load->view('leadorderdetails/items_data_add', $item_options, TRUE);
+                    } else {
+                        $content.=$this->CI->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                    }
                 } else {
                     $content.=$this->CI->load->view('leadorderdetails/items_data_view', $item_options, TRUE);
                 }
@@ -672,7 +677,7 @@ class Template
             $artdata['empty_url'] = $this->CI->config->item('sb_empty_template');
             $artdata['empty_title'] = $this->CI->config->item('sb_empty_title');
         }
-        $artdata['extendview'] = $res['extendview'];
+        $artdata['extendview'] = ifset($res, 'extendview',0);
         // Artwork View
         $data['artview']=$this->CI->load->view('leadorderdetails/artwork_view', $artdata, TRUE);
         return $data;
