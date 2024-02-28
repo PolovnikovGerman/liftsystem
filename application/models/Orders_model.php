@@ -5671,7 +5671,8 @@ Class Orders_model extends MY_Model
                     $this->db->update('ts_artdata_sync');
                 } else {
                     echo 'Export '.$row['order_num'].' Error '.PHP_EOL;
-                    echo 'Error '.$array['error'].PHP_EOL;
+                    // echo 'Error '.$array['error'].PHP_EOL;
+                    echo 'Error '.$res.PHP_EOL;
                 }
             }
             curl_close($curl);
