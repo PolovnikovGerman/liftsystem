@@ -21,7 +21,6 @@
             </div>
             <div class="items_content_cancel bord_l" data-orderitem="<?=$row['order_item_id']?>"><i class="fa fa-trash"></i></div>
         </div>
-        <div class="orderitem_inventoryview">&nbsp;</div>
         <?php $nrow++;?>
     <?php } ?>
 </div>

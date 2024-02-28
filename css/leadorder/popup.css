@@ -581,6 +581,9 @@ select.addnewitem {
     padding-left: 2px;
     width: 91px;
 }
+.itemcolor_adddata span.addnewcolor {
+    cursor: pointer;
+}
 .items_content_addqty {
     float: left;
     padding-right: 2px;
@@ -604,6 +607,7 @@ select.addnewitem {
     text-align: center;
     font-size: 14px;
     width: 14px;
+    cursor: pointer;
 }
 input.orderitemadd_input {
     height: 19px;
@@ -714,6 +718,14 @@ input.orderitemadd_input {
 .orderitem_inventoryview_body .inventoryonboat {
     width: 66px;
     border-right: 1px solid #000000;
+}
+.orderitem_inventoryview_close {
+    position: relative;
+    top: -13px;
+    left: -7px;
+    z-index: 1055;
+    font-size: 15px;
+    cursor: pointer;
 }
 /* End Inventory Popup */
 .items_table_text {
@@ -2553,6 +2565,9 @@ input.artrepeat {
     padding-left: 2px;
     width: 91px;
 }
+.itemcolor_data span.addnewcolor {
+    cursor: pointer;
+}
 .itemcolor_data_view {
     float: left;
     padding-left: 2px;
@@ -2602,12 +2617,9 @@ input.orderitem_price {
     width: 100%;
 }
 .itemcoloradd {
-/*    clear: both;*/
     cursor: pointer;
     float: left;
-/*  padding-top: 4px;
-   margin-left: 335px;
-    margin-top: -5px;*/
+    margin-left: 195px;
 }
 /*  */
 .imprintdataarea {

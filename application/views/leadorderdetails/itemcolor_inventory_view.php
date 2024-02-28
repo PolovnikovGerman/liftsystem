@@ -8,6 +8,9 @@
         <div class="inventoryonboat"><?=$onboat['onboat_container']?> (<?=date('M d', $onboat['onboat_date'])?>)</div>
     <?php } ?>
 </div>
+<?php if ($itemstatus==1) { ?>
+    <div class="orderitem_inventoryview_close"><i class="fa fa-times-circle"></i></div>
+<?php } ?>
 <div class="orderitem_inventoryview_body">
     <?php $numpp = 1;?>
     <?php foreach ($invents as $invent) { ?>

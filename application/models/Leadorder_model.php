@@ -1853,6 +1853,7 @@ Class Leadorder_model extends My_Model {
     public function add_itemcolor($leadorder, $order_item_id, $item_id, $ordersession) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $order_items=$leadorder['order_items'];
+        $order = $leadorder['order'];
         $idx=0;
         $found=0;
         foreach ($order_items as $row) {
@@ -1896,8 +1897,14 @@ Class Leadorder_model extends My_Model {
                 'item_id'=>$newitem['item_id'],
                 'colors'=>$newitem['colors'],
                 'item_color'=>$newitem['item_color'],
+                'brand' => $order['brand'],
             );
-            $newitem['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+            if ($order['brand']=='SR') {
+                $newitem['out_colors']=$this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
+            } else {
+                $newitem['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+            }
+
         }
         if ($newitem['num_colors']>1) {
             $newitem['item_color_add']=1;
@@ -2324,6 +2331,7 @@ Class Leadorder_model extends My_Model {
         $artwork=$leadorder['artwork'];
         $locations=$leadorder['artlocations'];
         // Lets go - Find Order Items
+        $this->load->model('shipping_model');
         $found=0;
         $idx=0;
         foreach ($order_items as $row) {
@@ -2358,6 +2366,7 @@ Class Leadorder_model extends My_Model {
         $out['shiprebuild']=0;
         if ($itemstatus=='new') {
             $out['shiprebuild']=1;
+            $shipping=$leadorder['shipping'];
             if ($order_blank==1) {
                 $rush=$this->shipping_model->get_rushlist_blank($order['item_id'], $order['order_date']);
             } else {
@@ -5907,6 +5916,7 @@ Class Leadorder_model extends My_Model {
         if ($full==0) {
             return $res;
         }
+        $order = $this->orders_model->get_order_detail($order_id);
         // Begin Build full object
         $out=array();
         foreach ($res as $row) {
@@ -6019,7 +6029,12 @@ Class Leadorder_model extends My_Model {
                         $colors[]=$irow['item_color'];
                         $options['colors']=$colors;
                     }
-                    $out_colors=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+                    if ($order['brand']=='SR') {
+                        $out_colors=$this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
+                    } else {
+                        $out_colors=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+                    }
+
                 }
                 $qty_class = 'normal';
                 $qty_title = '';
@@ -10251,6 +10266,31 @@ Class Leadorder_model extends My_Model {
         return $items;
     }
 
+    public function preparenewitem($leadorder, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Order Item Not Found'];
+        // Add new order items
+        $order_items = $leadorder['order_items'];
+        $minidx = 0;
+        foreach ($order_items as $order_item) {
+            if ($order_item['order_item_id'] < $minidx) {
+                $minidx = $order_item['order_item_id'];
+            }
+        }
+        $minidx-=1;
+        $itemdata = $this->_create_empty_orderitems();
+        $newitem = $itemdata[0];
+        $newitem['order_item_id'] = $minidx;
+        $newitem['items'][0]['order_item_id'] = $minidx;
+        $order_items[] = $newitem;
+        $leadorder['order_items'] = $order_items;
+        usersession($ordersession, $leadorder);
+        $out['result'] = $this->success_result;
+        $out['order_items'] = $order_items;
+        $out['order'] = $leadorder['order'];
+        $out['order_item_id'] = $newitem['order_item_id'];
+        return $out;
+    }
     // Temporary Save Order Item
     public function saveneworderitem($leadorder, $item_id, $order_item_id, $ordersession)
     {
@@ -10519,17 +10559,33 @@ Class Leadorder_model extends My_Model {
             // Found
             if ($paramname=='color') {
                 $order_items[$idx]['items'][0]['item_color'] = $newval;
+                $coloropt = [
+                    'order_item_id' => $order_item_id,
+                    'item_id' => $order_items[$idx]['items'][0]['item_id'],
+                    'item_color' => $order_items[$idx]['items'][0]['item_color'],
+                    'colors' => $order_items[$idx]['items'][0]['colors'],
+                ];
+                if ($order['brand']=='SR') {
+                    $order_items[$idx]['items'][0]['out_colors'] = $this->load->view('leadorderdetails/sradditem_color_view', $coloropt, true);
+                } else {
+                    $order_items[$idx]['items'][0]['out_colors'] = $this->load->view('leadorderdetails/item_color_choice', $coloropt, true);
+                }
             } elseif ($paramname=='qty') {
                 $order_items[$idx]['item_qty'] = intval($newval);
+                $order_items[$idx]['items'][0]['item_qty'] = intval($newval);
                 if ($order_items[$idx]['item_id'] > 0) {
                     // Get New Price
                     $newprice=$this->_get_item_priceqty($order_items[$idx]['item_id'], $order_items[$idx]['item_template'] , intval($newval));
                     $order_items[$idx]['base_price'] = $newprice;
+                    $order_items[$idx]['items'][0]['item_price'] = $newprice;
                 }
                 $order_items[$idx]['item_subtotal'] = $order_items[$idx]['base_price'] * $newval;
+                $order_items[$idx]['items'][0]['item_subtotal'] = $order_items[$idx]['items'][0]['item_price'] * $newval;
             } else {
                 $order_items[$idx]['base_price'] = floatval($newval);
-                $order_items[$idx]['item_subtotal'] = $order_items[$idx]['base_price'] * $newval;
+                $order_items[$idx]['item_subtotal'] = $order_items[$idx]['item_qty'] * $order_items[$idx]['base_price'];
+                $order_items[$idx]['items'][0]['item_price'] = floatval($newval);
+                $order_items[$idx]['items'][0]['item_subtotal'] = $order_items[$idx]['items'][0]['item_price'] * $order_items[$idx]['items'][0]['item_qty'];
             }
             $leadorder['order_items'] = $order_items;
             usersession($ordersession, $leadorder);
@@ -10541,6 +10597,32 @@ Class Leadorder_model extends My_Model {
             $out['base_price'] = $order_items[$idx]['base_price'];
             $out['item_subtotal'] = $order_items[$idx]['item_subtotal'];
             $out['brand'] = $order['brand'];
+        }
+        return $out;
+    }
+
+    public function cancelneworderitem($leadorder, $order_item_id, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Order Item Not Found'];
+        $order_items=$leadorder['order_items'];
+        $order = $leadorder['order'];
+        $idx = 0;
+        $found = 0;
+        $newitems = [];
+        foreach ($order_items as $order_item) {
+            if ($order_item['order_item_id']==$order_item_id) {
+                $found = 1;
+            } else {
+                $newitems[] = $order_item;
+            }
+            $idx++;
+        }
+        if ($found==1) {
+            $out['result'] = $this->success_result;
+            $out['order_items'] = $newitems;
+            $out['order'] = $order;
+            $leadorder['order_items'] = $newitems;
+            usersession($ordersession, $leadorder);
         }
         return $out;
     }
