@@ -5595,8 +5595,9 @@ Class Orders_model extends MY_Model
         $this->db->from('ts_artdata_sync s');
         $this->db->join('ts_orders o','o.order_id=s.order_id');
         $this->db->where('s.sended',0);
+        $this->db->where('o.brand != ','SR');
+        $this->db->order_by('s.artdata_sync_id');
         $datares=$this->db->get()->result_array();
-
         foreach ($datares as $row) {
             $postdata=array(
                 'sync'=>'data',
