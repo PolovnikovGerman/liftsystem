@@ -7832,18 +7832,24 @@ Class Leadorder_model extends My_Model {
     // Show Item Picture
     public function get_leadorder_itemimage($item_id) {
         $out=array('result'=>  $this->error_result, 'msg'=>$this->error_message);
-        $this->db->select('i.item_img_thumb, i.item_img_id');
-        $this->db->from('sb_item_images i');
-        $this->db->where('i.item_img_item_id', $item_id);
-        $this->db->order_by('i.item_img_order');
-        $res=$this->db->get()->row_array();
-        if (!isset($res['item_img_id'])) {
+//        $this->db->select('i.item_img_thumb, i.item_img_id');
+//        $this->db->from('sb_item_images i');
+//        $this->db->where('i.item_img_item_id', $item_id);
+//        $this->db->order_by('i.item_img_order');
+//        $res=$this->db->get()->row_array();
+//        if (!isset($res['item_img_id'])) {
+//            $out['msg']='Image Not Found';
+//            return $out;
+//        }
+        $this->db->select('main_image')->from('sb_items')->where('item_id', $item_id);
+        $imgdat = $this->db->get()->row_array();
+        if (empty($imgdat['main_image'])) {
             $out['msg']='Image Not Found';
             return $out;
         }
         $path_sh=$this->config->item('itemimages_relative');
         $path_fl=$this->config->item('itemimages');
-        $source=$res['item_img_thumb'];
+        $source = $imgdat['main_image'];
         $filesource=  str_replace($path_sh, $path_fl, $source);
         if (!file_exists($filesource)) {
             $out['msg']='Source File '.$filesource.' Not Found ';
@@ -10643,6 +10649,22 @@ Class Leadorder_model extends My_Model {
             $out['order'] = $order;
             $leadorder['order_items'] = $newitems;
             usersession($ordersession, $leadorder);
+        }
+        return $out;
+    }
+
+    public function show_iteminvent($item_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Order Item Not Found'];
+        // $item_number = $order_items[$idx]['item_number'];
+        $this->db->select('ii.inventory_item_id')->from('ts_inventory_items ii')->join('sb_items i','i.item_number=ii.item_num')->where('i.item_id', $item_id);
+        $invres = $this->db->get()->row_array();
+        if (ifset($invres,'inventory_item_id',0)>0) {
+            $out['result'] = $this->success_result;
+            $this->load->model('inventory_model');
+            $res = $this->inventory_model->orderitem_inventory($invres['inventory_item_id']);
+            $out['onboats'] = $res['onboats'];
+            $out['invents'] = $res['inventory'];
         }
         return $out;
     }
