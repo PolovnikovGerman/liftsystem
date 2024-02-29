@@ -879,20 +879,20 @@ function init_onlineleadorder_edit() {
         copyOrderToClipboard(element);
         $(element).show();
     });
-    $("#ordercustomername").autocompleter({
-        source: '/leadorder/customersearch',
-        minLength: 3,
-        focusOpen: false,
-        cache: false,
-        callback: function(value, index, object) {
-            // if (object.id) {
-            //     $("#vendor_item_id").val(object.id);
-            // }
-        }
-    });
-    $("#ordercustomername").blur(function (){
-        $(".contact_name_input").first().focus();
-    })
+    // $("#ordercustomername").autocompleter({
+    //     source: '/leadorder/customersearch',
+    //     minLength: 3,
+    //     focusOpen: false,
+    //     cache: false,
+    //     callback: function(value, index, object) {
+    //         // if (object.id) {
+    //         //     $("#vendor_item_id").val(object.id);
+    //         // }
+    //     }
+    // });
+    // $("#ordercustomername").blur(function (){
+    //     $(".contact_name_input").first().focus();
+    // })
     init_leadorder_artmanage();
     init_leadorder_contactmanage();
     init_leadorder_items();
@@ -2295,7 +2295,7 @@ function save_imprint_details() {
             } else {
                 $("div.imprintdataarea[data-orderitem='"+response.data.order_item_id+"']").empty().html(response.data.imprint_content);
             }
-            $("#ordertotaloutput").empty().html(response.data.order_revenue);            
+            $("#ordertotaloutput").empty().html(response.data.order_revenue);
             $("div.bl_items_sub-total2").empty().html(response.data.item_subtotal);
             $(".totalduedataviewarea").empty().html(response.data.total_due);
             if (parseInt(response.data.order_blank)===1) {
@@ -2319,7 +2319,7 @@ function save_imprint_details() {
             }
             $("input#loctimeout").val(response.data.loctime);
             $(".addleadorderitem").show();
-            init_onlineleadorder_edit();            
+            init_onlineleadorder_edit();
         } else {
             show_error(response);
         }
