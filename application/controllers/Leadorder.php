@@ -6006,10 +6006,4 @@ class Leadorder extends MY_Controller
         echo json_encode($list);
     }
 
-    public function customersearch() {
-        $search = $this->input->get('query');
-        $limit = $this->input->get('limit');
-        $list = $this->leadorder_model->search_customer($search, $limit);
-        echo json_encode($list);
-    }
 }
