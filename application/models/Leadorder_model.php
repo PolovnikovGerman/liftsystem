@@ -4777,7 +4777,7 @@ Class Leadorder_model extends My_Model {
         if ($order_id==0) {
             $this->db->set('create_usr',$user_id);
             $this->db->set('create_date',time());
-            $this->db->set('customer_code', new_customer_code());
+//            $this->db->set('customer_code', new_customer_code());
             $this->db->insert('ts_orders');
             if ($this->db->insert_id()==0) {
                 $res['msg']='Error during save order data';
@@ -4989,7 +4989,7 @@ Class Leadorder_model extends My_Model {
             $this->db->set('create_usr',$user_id);
             $this->db->set('create_date',time());
             $this->db->set('brand', $data['brand']);
-            $this->db->set('customer_code',new_customer_code());
+//            $this->db->set('customer_code',new_customer_code());
             $this->db->insert('ts_orders');
             if ($this->db->insert_id()==0) {
                 $res['msg']='Error during save order data';
@@ -5041,23 +5041,23 @@ Class Leadorder_model extends My_Model {
             $this->db->update('ts_artworks');
         }
         // Add / update customers
-        if (!empty($data['customer_name'])) {
-            $this->db->select('*');
-            $this->db->from('ts_customers');
-            $this->db->where('customer_name', $data['customer_name']);
-            $customer = $this->db->get()->row_array();
-            if (ifset($customer, 'customer_id',0)==0) {
-                $this->db->set('customer_name', $data['customer_name']);
-                $this->db->insert('ts_customers');
-                $customer_id = $this->db->insert_id();
-            } else {
-                $customer_id = $customer['customer_id'];
-            }
-            $this->db->where('order_id', $order_id);
-            $this->db->set('customer_id', $customer_id);
-            $this->db->update('ts_orders');
-            $data['customer_id'] = $customer_id;
-        }
+//        if (!empty($data['customer_name'])) {
+//            $this->db->select('*');
+//            $this->db->from('ts_customers');
+//            $this->db->where('customer_name', $data['customer_name']);
+//            $customer = $this->db->get()->row_array();
+//            if (ifset($customer, 'customer_id',0)==0) {
+//                $this->db->set('customer_name', $data['customer_name']);
+//                $this->db->insert('ts_customers');
+//                $customer_id = $this->db->insert_id();
+//            } else {
+//                $customer_id = $customer['customer_id'];
+//            }
+//            $this->db->where('order_id', $order_id);
+//            $this->db->set('customer_id', $customer_id);
+//            $this->db->update('ts_orders');
+//            $data['customer_id'] = $customer_id;
+//        }
         // Add / edit Credit App Doc
         $this->load->model('creditapp_model');
         if ($data['balance_manage']==3) {
