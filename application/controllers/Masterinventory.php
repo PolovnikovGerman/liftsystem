@@ -109,9 +109,10 @@ class Masterinventory extends MY_Controller
             $inventory_type = ifset($postdata,'inventory_type',0);
             $inventory_filter = ifset($postdata,'inventory_filter',0);
             $showmax = ifset($postdata,'showmax', 0);
+            $sortby = ifset($postdata,'sortby', 'color_order');
             $mdata=[];
 
-            $data = $this->inventory_model->get_masterinvent_list($inventory_type, $inventory_filter);
+            $data = $this->inventory_model->get_masterinvent_list($inventory_type, $inventory_filter, $sortby);
             $mdata['bodylist'] = $this->load->view('masterinvent/inventory_body_view',[], TRUE);
             if (count($data['list'])==0) {
                 $mdata['left_content']=$this->load->view('masterinvent/inventorylist_emptydata_view',[],TRUE);

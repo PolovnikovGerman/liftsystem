@@ -3331,4 +3331,39 @@ class Test extends CI_Controller
 //            echo 'Order '.$data['order_num'].' Arrive '.date('Y-m-d', $data['arrive_date']).PHP_EOL;
 //        }
     }
+
+    public function customorderslist()
+    {
+        $this->db->select('o.order_id, o.order_num, o.order_date, o.customer_name, o.revenue, t.shipdate, t.arrive_date, t.event_date');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_shippings t','o.order_id = t.order_id');
+        $this->db->where('o.item_id', $this->config->item('custom_id'));
+        $this->db->where('o.order_num >= ',63000);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.brand != ','SR');
+        $orders = $this->db->get()->result_array();
+        $filename = $this->config->item('upload_path_preload').'custom_orders.csv';
+        @unlink($filename);
+        $fh = fopen($filename, FOPEN_READ_WRITE_CREATE);
+        if ($fh) {
+            $msg = 'Order #;Order Date;Customer;Revenue;Ship Date;Arrival Date;Event Date;'.PHP_EOL;
+            fwrite($fh, $msg);
+            foreach ($orders as $order) {
+                $msg=$order['order_num'].';'.date('m/d/Y', $order['order_date']).';"'.$order['customer_name'].'";'.$order['revenue'].';';
+                $msg.=date('m/d/Y', $order['shipdate']).';'.date('m/d/Y', $order['arrive_date']).';';
+                if (!empty($order['event_date'])) {
+                    $msg.=date('m/d/Y', $order['event_date']);
+                } else {
+                    $msg.="";
+                }
+                $msg.=';'.PHP_EOL;
+                fwrite($fh,$msg);
+            }
+            fclose($fh);
+            echo 'Report '.$filename.' READY'.PHP_EOL;
+        } else {
+            echo 'Error create file'.PHP_EOL;
+        }
+
+    }
 }

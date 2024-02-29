@@ -26,7 +26,7 @@ class Inventory_model extends MY_Model
         return $this->db->get()->result_array();
     }
 
-    public function get_masterinvent_list($inventory_type, $inventory_filter) {
+    public function get_masterinvent_list($inventory_type, $inventory_filter, $sortby) {
         $type_instock = $type_available = $type_maximum = 0;
         $this->db->select('*');
         $this->db->from('ts_inventory_items');
@@ -91,7 +91,7 @@ class Inventory_model extends MY_Model
                 } elseif ($inventory_filter==2) {
                     $this->db->where('color_status',0);
                 }
-                $this->db->order_by('color_order');
+                $this->db->order_by($sortby); // 'color_order'
                 $colors = $this->db->get()->result_array();
                 $color_seq = 1;
                 foreach ($colors as $color) {
