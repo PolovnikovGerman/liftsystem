@@ -17,8 +17,7 @@
         <?php } ?>
     </div>
     <div class="itemoptionchecklabel">Require Images</div>
-    <div id="addoptionimage" style="<?=$item['option_images']==1 ? '' : 'display: none;'?>"></div>
 </div>
-<div class="colorimages-slider" style="<?=$item['option_images']==1 ? 'visibility: visible;' : 'visibility: hidden;'?>">
+<div class="colorimages-slider">
     <?=$slider?>
 </div>

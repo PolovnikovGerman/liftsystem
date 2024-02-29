@@ -1492,7 +1492,7 @@ class Test extends CI_Controller
                 $this->db->set('item_similar_similar', $simres['sim_3']);
                 $this->db->insert('sb_item_similars');
             }
-            echo 'Similar OK';
+            echo ' Similar OK';
             // Images
             if (empty($item['main_image'])) {
                 $this->db->select('*');
@@ -1508,7 +1508,7 @@ class Test extends CI_Controller
                     // $this->db->delete('sb_item_images');
                 }
             }
-            echo 'Images OK';
+            echo ' Images OK';
             // Prices
             if ($item['item_template']=='Stressball') {
                 $this->db->select('*');
@@ -1528,7 +1528,7 @@ class Test extends CI_Controller
                     }
                 }
             }
-            echo 'Prices OK'.PHP_EOL;
+            echo ' Prices OK'.PHP_EOL;
             // Add box
             $this->db->where('item_id', $item['item_id']);
             $this->db->delete('sb_item_shipping');
@@ -1882,8 +1882,8 @@ class Test extends CI_Controller
         $this->db->select('b.*, o.order_num, o.customer_name');
         $this->db->from('ts_order_batches b');
         $this->db->join('ts_orders o','o.order_id=b.order_id');
-        $this->db->where('b.batch_date >= ', strtotime('2021-01-01'));
-        $this->db->where('b.batch_date < ', strtotime('2022-01-01'));
+        $this->db->where('b.batch_date >= ', strtotime('2023-01-01'));
+        $this->db->where('b.batch_date < ', strtotime('2024-01-01'));
         $batchs = $this->db->get()->result_array();
         $out = [];
         foreach ($batchs as $batch) {
@@ -1919,7 +1919,7 @@ class Test extends CI_Controller
         }
         echo count($out).' Batches '.PHP_EOL;
         $this->load->config('uploader');
-        $file_name = $this->config->item('upload_path_preload').'payment_report_2021_new.csv';
+        $file_name = $this->config->item('upload_path_preload').'payment_report_2023_new.csv';
         @unlink($file_name);
         $fh = fopen($file_name, FOPEN_WRITE_CREATE);
         if ($fh) {
@@ -2245,6 +2245,340 @@ class Test extends CI_Controller
             $this->db->set('art_preview',1);
             $this->db->update('ts_orders');
         }
+    }
+
+    public function duplicate_vendor_items() {
+        $this->db->select('vendor_item_id, count(*) as cnt');
+        $this->db->from('sb_items');
+        $this->db->group_by('vendor_item_id');
+        $this->db->having('cnt > 1');
+        $vresults = $this->db->get()->result_array();
+        foreach ($vresults as $vresult) {
+            $this->db->select('*');
+            $this->db->from('sb_vendor_items');
+            $this->db->where('vendor_item_id', $vresult['vendor_item_id']);
+            $vitem = $this->db->get()->row_array();
+            $this->db->select('*');
+            $this->db->from('sb_vendor_prices');
+            $this->db->where('vendor_item_id', $vresult['vendor_item_id']);
+            $vprices = $this->db->get()->result_array();
+            $this->db->select('item_id, item_number, item_name');
+            $this->db->from('sb_items i');
+            $this->db->where('vendor_item_id', $vresult['vendor_item_id']);
+            $this->db->order_by('item_id');
+            $items = $this->db->get()->result_array();
+            echo 'Vendor Item '.$vitem['vendor_item_number'].' Prices '.count($vprices).PHP_EOL;
+            $itemnum=1;
+            foreach ($items as $item) {
+                if ($itemnum > 1) {
+                    $this->db->set('vendor_item_vendor', $vitem['vendor_item_vendor']);
+                    $this->db->set('vendor_item_number', $vitem['vendor_item_number']);
+                    $this->db->set('vendor_item_name', $vitem['vendor_item_name']);
+                    $this->db->set('vendor_item_blankcost', $vitem['vendor_item_blankcost']);
+                    $this->db->set('vendor_item_cost', $vitem['vendor_item_cost']);
+                    $this->db->set('vendor_item_exprint', $vitem['vendor_item_exprint']);
+                    $this->db->set('vendor_item_setup', $vitem['vendor_item_setup']);
+                    $this->db->set('vendor_item_repeat', $vitem['vendor_item_repeat']);
+                    $this->db->set('vendor_item_notes', $vitem['vendor_item_notes']);
+                    $this->db->set('vendor_item_zipcode', $vitem['vendor_item_zipcode']);
+                    $this->db->set('printshop_item_id', $vitem['printshop_item_id']);
+                    $this->db->set('stand_days', $vitem['stand_days']);
+                    $this->db->set('rush1_days', $vitem['rush1_days']);
+                    $this->db->set('rush2_days', $vitem['rush2_days']);
+                    $this->db->set('rush1_price', $vitem['rush1_price']);
+                    $this->db->set('rush2_price', $vitem['rush2_price']);
+                    $this->db->set('pantone_match', $vitem['pantone_match']);
+                    $this->db->insert('sb_vendor_items');
+                    $newid = $this->db->insert_id();
+                    $this->db->where('item_id', $item['item_id']);
+                    $this->db->set('vendor_item_id', $newid);
+                    $this->db->update('sb_items');
+                    if (count($vprices) > 0) {
+                        foreach ($vprices as $vprice) {
+                            $this->db->set('vendorprice_qty', $vprice['vendorprice_qty']);
+                            $this->db->set('vendorprice_val', $vprice['vendorprice_val']);
+                            $this->db->set('vendorprice_color', $vprice['vendorprice_color']);
+                            $this->db->set('vendor_item_id', $newid);
+                            $this->db->insert('sb_vendor_prices');
+                        }
+                    }
+                }
+                echo 'Item # '.$item['item_number'].' - '.$item['item_name'].PHP_EOL;
+                $itemnum++;
+            }
+        }
+    }
+
+    public function update_vendoritem_ship() {
+        $this->db->select('vi.vendor_item_id, vi.vendor_item_zipcode, v.shipaddr_city, v.shipaddr_state, v.shipaddr_country, v.vendor_zipcode');
+        $this->db->from('sb_vendor_items vi');
+        $this->db->join('vendors v','v.vendor_id = vi.vendor_item_vendor');
+        $vaddrs = $this->db->get()->result_array();
+        foreach ($vaddrs as $vaddr) {
+            if (!empty($vaddr['vendor_item_zipcode'])) {
+                $this->db->where('vendor_item_id', $vaddr['vendor_item_id']);
+                $this->db->set('item_shipcountry', 223);
+                $this->db->update('sb_vendor_items');
+            } else {
+                $this->db->where('vendor_item_id', $vaddr['vendor_item_id']);
+                $this->db->set('vendor_item_zipcode', $vaddr['vendor_zipcode']);
+                if (!empty($vaddr['shipaddr_country'])) {
+                    $this->db->set('item_shipcountry', 223);
+                    $this->db->set('item_shipstate', $vaddr['shipaddr_state']);
+                    $this->db->set('item_shipcity', $vaddr['shipaddr_city']);
+                }
+                $this->db->update('sb_vendor_items');
+            }
+        }
+        $this->db->select('vi.vendor_item_zipcode, vi.item_shipcountry, count(vi.vendor_item_id) as cnt');
+        $this->db->from('sb_vendor_items vi');
+        $this->db->where('vi.item_shipcity',null);
+        $this->db->group_by('vi.vendor_item_zipcode, vi.item_shipcountry');
+        $vaddrs = $this->db->get()->result_array();
+        $this->load->model('shipping_model');
+        foreach ($vaddrs as $vaddr) {
+            // Get shipping data
+            $shipres = $this->shipping_model->get_zip_address($vaddr['item_shipcountry'], $vaddr['vendor_item_zipcode']);
+            if ($shipres['result']==1) {
+                $this->db->where('vendor_item_zipcode', $vaddr['vendor_item_zipcode']);
+                $this->db->where('item_shipcountry', $vaddr['item_shipcountry']);
+                $this->db->set('item_shipstate', $shipres['state']);
+                $this->db->set('item_shipcity', $shipres['city']);
+                $this->db->update('sb_vendor_items');
+            }
+        }
+    }
+
+    public function internal_item_transform() {
+        $this->load->model('inventory_model');
+        $this->db->select('i.item_id, i.item_number, i.item_name, i.printshop_inventory_id');
+        $this->db->select('v.vendor_item_number, v.vendor_item_id');
+        $this->db->from('sb_items i');
+        $this->db->join('sb_vendor_items v','v.vendor_item_id=i.vendor_item_id');
+        $this->db->where('v.vendor_item_vendor', $this->config->item('inventory_vendor'));
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            echo $item['item_number'].' '.$item['item_name'].' INV '.$item['printshop_inventory_id'].PHP_EOL;
+            if (empty($item['printshop_inventory_id'])) {
+                $this->db->select('*');
+                $this->db->from('ts_inventory_items');
+                $this->db->where('item_num', $item['vendor_item_number']);
+                $invres = $this->db->get()->row_array();
+                if (ifset($invres,'inventory_item_id',0)>0) {
+                    $this->db->where('item_id', $item['item_id']);
+                    $this->db->set('printshop_inventory_id', $invres['inventory_item_id']);
+                    $this->db->update('sb_items');
+                    $res = $this->inventory_model->get_inventory_item($invres['inventory_item_id']);
+                    if ($res['result']==1) {
+                        $invdata = $res['data'];
+                        $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                        $this->db->set('vendor_item_cost', $invdata['avg_price']);
+                        $this->db->set('vendor_item_blankcost', $invdata['avg_price']);
+                        $this->db->update('sb_vendor_items');
+                    }
+                    $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                    $this->db->set('vendor_item_number', $invres['item_num']);
+                    $this->db->set('vendor_item_name', $invres['item_name']);
+                    $this->db->update('sb_vendor_items');
+                    // Delete vendor prices
+                    $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                    $this->db->delete('sb_vendor_prices');
+                    $this->db->where('item_color_itemid', $item['item_id']);
+                    $this->db->delete('sb_item_colors');
+                    $this->db->select('*');
+                    $this->db->from('ts_inventory_colors');
+                    $this->db->where('inventory_item_id', $invres['inventory_item_id']);
+                    $colors = $this->db->get()->result_array();
+                    foreach ($colors as $color) {
+                        $this->db->set('item_color_itemid', $item['item_id']);
+                        $this->db->set('item_color', $color['color']);
+                        $this->db->set('item_color_order', $color['color_order']);
+                        $this->db->set('printshop_color_id', $color['inventory_color_id']);
+                        $this->db->insert('sb_item_colors');
+                    }
+                    echo 'Transform '.$invres['item_num'].' '.$invres['item_name'].PHP_EOL;
+                }
+            }
+        }
+    }
+    public function getUpsRates() {
+        $this->load->config('shipping');
+        $this->load->library('UPS_service');
+        $upsservice = new UPS_service();
+        $shipFrom = array(
+            "Name" => "BLUETRACK Internal",
+            "Address" => array(
+                "City" => "Clifton",
+                "StateProvinceCode" => "NJ",
+                "PostalCode" => "07012",
+                "CountryCode" => "US"
+            )
+        );
+        /*
+        $shipTo = array(
+            "Name" => "Test Company",
+            "Address" => array(
+                "AddressLine" => array(
+                    "106 960 Yankee valley Blvd SE",
+                ),
+                "City" => "Toronto",
+                "StateProvinceCode" => "ON",
+                "PostalCode" => "M8Y1H8",
+                "CountryCode" => "CA"
+            )
+        );
+        */
+        $shipTo = [
+            "Name" => "Test Company",
+            "Address" => [
+                "AddressLine" => [
+                    "106 960 Yankee valley Blvd SE",
+                ],
+                "City" => "CINCINNATI",
+                "StateProvinceCode" => "OH",
+                "PostalCode" => "45202",
+                "CountryCode" => "US"
+            ],
+        ];
+        $packWeight = 7.2;
+        $packDimens = [];
+        $packDimens[] = [
+            "PackagingType" => array(
+                "Code" => "02",
+                "Description" => "Packaging"
+            ),
+            "Dimensions" => array(
+                "UnitOfMeasurement" => array(
+                    "Code" => "IN",
+                    "Description" => "Inches"
+                ),
+                "Length" => "15",
+                "Width" => "15",
+                "Height" => "15"
+            ),
+            "PackageWeight" => array(
+                "UnitOfMeasurement" => array(
+                    "Code" => "LBS",
+                    "Description" => "Pounds"
+                ),
+                "Weight" => "7.2"
+            )
+        ];
+
+        $tokenres = $this->getUpsToken();
+        if ($tokenres['result']==0) {
+            echo 'Rates request break on stage Token Generation, reason - '.$tokenres['msg'];
+        } else {
+            $token = $tokenres['token'];
+            // Time in transit
+            $res = $upsservice->getRates($token, $shipTo, $shipFrom, 1,  $packDimens, $packWeight);
+            if ($res['error'] > 0) {
+                echo 'Error, code '.$res['msg'];
+            } else {
+                if (isset($res['errors'])) {
+                    $error = $res['errors'][0];
+                    echo 'Error, code '.$error['code'].' - '.$error['message'].PHP_EOL;
+                } else {
+                    echo 'SUCCESS'.PHP_EOL;
+                    var_dump($res['rates']);
+                }
+            }
+        }
+    }
+
+    public function getTimeinTransit() {
+        $this->load->config('shipping');
+        $this->load->library('UPS_service');
+        $upsservice = new UPS_service();
+        $shipFrom = array(
+            "Name" => "BLUETRACK Internal",
+            "Address" => array(
+                "City" => "Clifton",
+                "StateProvinceCode" => "NJ",
+                "PostalCode" => "07012",
+                "CountryCode" => "US"
+            )
+        );
+//        $shipTo = array(
+//            "Name" => "Test Company",
+//            "Address" => array(
+//                "AddressLine" => array(
+//                    "The Landing",
+//                ),
+//                "City" => "Trafford Park",
+//                "StateProvinceCode" => "",
+//                "PostalCode" => "M502ST",
+//                "CountryCode" => "GB"
+//            )
+//        );
+        $shipTo = [
+            "Name" => "Test Company",
+            "Address" => [
+                "AddressLine" => [
+                    "106 960 Yankee valley Blvd SE",
+                ],
+                "City" => "CINCINNATI",
+                "StateProvinceCode" => "OH",
+                "PostalCode" => "45202",
+                "CountryCode" => "US"
+            ],
+        ];
+
+        $weight = "7.2";
+        $shipdate = "2023-07-31";
+        $shiptime = "10:00:00";
+        $tokenres = $this->getUpsToken();
+        if ($tokenres['result']==1) {
+            $token = $tokenres['token'];
+            $tntres = $upsservice->timeInTransit($token, $shipFrom['Address'], $shipTo['Address'], $weight, 1, 100.5, $shipdate, $shiptime);
+            if ($tntres['error']==0) {
+                $services = $tntres['services'];
+                var_dump($services);
+            }
+        }
+    }
+
+    public function getUpsToken()  {
+        $out = ['result' => 0, 'msg' => 'Error during Token generation'];
+        $this->load->library('UPS_service');
+        $upsservice = new UPS_service();
+        $sessionId =  uniq_link();
+        echo 'Session ID '.$sessionId.PHP_EOL;
+        $tokenresult = $upsservice->generateToken($sessionId);
+        if ($tokenresult['error']==1) {
+
+        } else {
+            if (isset($tokenresult['errors'])) {
+                $errors = $tokenresult['errors'][0];
+                $out['msg'] = 'Error Code '.$errors['code'].' - '.$errors['message'];
+            } else {
+                $out['result'] = 1;
+                $out['token'] = $tokenresult['access_token'];
+                $out['session'] = $sessionId;
+                // echo 'Success Token Type '.$tokenresult['token_type'].' Issued '.$tokenresult['issued_at'].'('.date('Y-m-d H:i:s', $tokenresult['issued_at']).' Expired '.(intval($tokenresult['expires_in'])/60).' min';
+            }
+        }
+        return $out;
+    }
+
+    public function clean_schema() {
+        $this->db->select('TABLE_NAME, TABLE_TYPE');
+        $this->db->from('information_schema.TABLES');
+        $this->db->where('TABLE_SCHEMA', 'lift_test');
+        $items = $this->db->get()->result_array();
+        echo 'Find '.count($items).' objects'.PHP_EOL;
+        $filename = $this->config->item('upload_path_preload').'cleanobj.sql';
+        @unlink($filename);
+        $fh = fopen($filename, FOPEN_READ_WRITE_CREATE);
+        foreach ($items as $item) {
+            if ($item['TABLE_TYPE']=='BASE TABLE') {
+                $msg='DROP TABLE IF EXISTS '.$item['TABLE_NAME'].';'.PHP_EOL;
+            } else {
+                $msg='DROP VIEW IF EXISTS '.$item['TABLE_NAME'].';'.PHP_EOL;
+            }
+            fwrite($fh, $msg);
+        }
+        fclose($fh);
     }
 
     public function export_dbitems() {
@@ -2653,6 +2987,335 @@ class Test extends CI_Controller
         $writer = new Xlsx($spreadsheet); // instantiate Xlsx
         $writer->save($fileprom);    // download file
         echo 'File '.$fileprom.' ready'.PHP_EOL;
+
+    }
+
+    public function rename_proofdocs()
+    {
+        $this->load->config('uploader');
+        $logfile = $this->config->item('upload_path_preload').'badproofdocs.txt';
+        $fh = fopen($logfile,'a+');
+        $this->db->select('artwork_id, order_id')->from('ts_artworks')->where('order_id is not null')->order_by('artwork_id','desc');
+        $arts = $this->db->get()->result_array();
+        $shname = $this->config->item('artwork_proofs_relative');
+        $flname = $this->config->item('artwork_proofs');
+        foreach ($arts as $art) {
+            // Folder
+            $path = $shname.$art['artwork_id'];
+            // echo 'Path '.$path.PHP_EOL;
+            createPath($path);
+            // Get Order
+            $this->db->select('order_num, brand')->from('ts_orders')->where('order_id', $art['order_id']);
+            $order = $this->db->get()->row_array();
+            // Get proofs
+            $this->db->select('artwork_proof_id, proof_name, proof_ordnum')->from('ts_artwork_proofs');
+            $this->db->where('artwork_id', $art['artwork_id'])->order_by('artwork_proof_id');
+            $proofs = $this->db->get()->result_array();
+            $numpp = 1;
+            foreach ($proofs as $proof) {
+                $filedat = extract_filename($proof['proof_name']);
+                $newname =  ($order['brand']=='SR' ? 'SR' : 'BT').'_'.$order['order_num'].'_proof_'.str_pad($numpp,2, '0', STR_PAD_LEFT).'.'.$filedat['ext'];
+                $chkname = $shname.$art['artwork_id'].'/'.$newname;
+                if ($chkname!==$proof['proof_name']) {
+                    // echo 'ArtW '.$art['artwork_id'].' Old Name '.$proof['proof_name'].' New Name '.$newname.PHP_EOL;
+                    $sourcefile = str_replace($shname, $flname, $proof['proof_name']);
+                    if (file_exists($sourcefile)) {
+                        // echo 'Source file not exist '.$targetfile.' Order '.$order['order_num'].PHP_EOL;
+                        $targetfile = $flname.$art['artwork_id'].'/'.$newname;
+                        if (!file_exists($targetfile)) {
+                            $cpres = @copy($sourcefile, $targetfile);
+                            if ($cpres) {
+                                $this->db->where('artwork_proof_id', $proof['artwork_proof_id']);
+                                $this->db->set('proof_name', $shname.$art['artwork_id'].'/'.$newname);
+                                $this->db->set('proof_ordnum', $numpp);
+                                $this->db->update('ts_artwork_proofs');
+                                $numpp++;
+                                @unlink($sourcefile);
+                            } else {
+                                echo 'Error copy '.$sourcefile.' to '.$targetfile.PHP_EOL;
+                                die();
+                            }
+                        } else {
+                            echo 'File '.$targetfile.' NON UNIQUE '.$proof['artwork_proof_id'].PHP_EOL;
+                            die();
+                        }
+                    } else {
+                        $msg = 'Proof '.$proof['artwork_proof_id'].' '.$proof['proof_name'].' not exist. Order '.$order['order_num'].PHP_EOL;
+                        fwrite($fh, $msg);
+                    }
+                }
+            }
+        }
+    }
+
+    public function sales_report()
+    {
+        $start_date = strtotime('2016-01-01');
+        $reportres = [];
+        // Web
+        $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as yearorder, count(order_id) as total');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.order_date >= ', $start_date);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.weborder',1);
+        $this->db->group_by('yearorder');
+        $this->db->order_by('yearorder');
+        $webres = $this->db->get()->result_array();
+        $reportres[] = [
+            'label' => 'Web Orders',
+            '2016' => 0,
+            '2017' => 0,
+            '2018' => 0,
+            '2019' => 0,
+            '2020' => 0,
+            '2021' => 0,
+            '2022' => 0,
+            '2023' => 0,
+        ];
+        $repidx = count($reportres) - 1;
+        foreach ($webres as $row) {
+            $reportres[$repidx][$row['yearorder']] = $row['total'];
+        }
+        $users = [];
+        $users[] = ['label' => 'Sage', 'id' => 3];
+        $users[] = ['label' => 'Sean', 'id' => 1];
+        $users[] = ['label' => 'Robert', 'id' => 19];
+        $users[] = ['label' => 'Shanequa', 'id' => 23];
+        $other = [3,1,19,23];
+        // Users
+        foreach ($users as $user) {
+            $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as yearorder, count(order_id) as total');
+            $this->db->from('ts_orders o');
+            $this->db->where('o.order_date >= ', $start_date);
+            $this->db->where('o.is_canceled',0);
+            $this->db->where('o.weborder',0);
+            $this->db->where('o.order_usr_repic',$user['id']);
+            $this->db->group_by('yearorder');
+            $this->db->order_by('yearorder');
+            $userres = $this->db->get()->result_array();
+            $reportres[] = [
+                'label' => $user['label'],
+                '2016' => 0,
+                '2017' => 0,
+                '2018' => 0,
+                '2019' => 0,
+                '2020' => 0,
+                '2021' => 0,
+                '2022' => 0,
+                '2023' => 0,
+            ];
+            $repidx = count($reportres) - 1;
+            foreach ($userres as $row) {
+                $reportres[$repidx][$row['yearorder']] = $row['total'];
+            }
+        }
+        // Other
+        $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as yearorder, count(order_id) as total');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.order_date >= ', $start_date);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.weborder',0);
+        $this->db->where_not_in('o.order_usr_repic',$other);
+        $this->db->group_by('yearorder');
+        $this->db->order_by('yearorder');
+        $otherres = $this->db->get()->result_array();
+        $reportres[] = [
+            'label' => 'Other',
+            '2016' => 0,
+            '2017' => 0,
+            '2018' => 0,
+            '2019' => 0,
+            '2020' => 0,
+            '2021' => 0,
+            '2022' => 0,
+            '2023' => 0,
+        ];
+        $repidx = count($reportres) - 1;
+        foreach ($otherres as $row) {
+            $reportres[$repidx][$row['yearorder']] = $row['total'];
+        }
+        // TOTAL
+        $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as yearorder, count(order_id) as total');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.order_date >= ', $start_date);
+        $this->db->where('o.is_canceled',0);
+        $this->db->group_by('yearorder');
+        $this->db->order_by('yearorder');
+        $allres = $this->db->get()->result_array();
+        $reportres[] = [
+            'label' => 'TOTAL',
+            '2016' => 0,
+            '2017' => 0,
+            '2018' => 0,
+            '2019' => 0,
+            '2020' => 0,
+            '2021' => 0,
+            '2022' => 0,
+            '2023' => 0,
+        ];
+        $repidx = count($reportres) - 1;
+        foreach ($allres as $row) {
+            $reportres[$repidx][$row['yearorder']] = $row['total'];
+        }
+        $filename = $this->config->item('upload_path_preload').'sales_report_16_23.csv';
+        @unlink($filename);
+        $fh = fopen($filename,'a+');
+        $msg=';';
+        for($i=2016; $i<2024; $i++) {
+            $msg.=$i.';';
+        }
+        $msg.=PHP_EOL;
+        fwrite($fh, $msg);
+        foreach ($reportres as $row) {
+            $msg=$row['label'].';';
+            for($i=2016; $i<2024; $i++) {
+                $msg.=$row[$i]==0 ? '' : $row[$i].';';
+            }
+            $msg.=PHP_EOL;
+            fwrite($fh, $msg);
+        }
+        echo 'Report '.$filename.' ready!'.PHP_EOL;
+    }
+
+    public function ordercog_report() {
+        $start = strtotime('2023-01-01');
+        $this->db->select('order_id, order_num, date_format(from_unixtime(order_date),\'%m/%d/%Y\') as orderdate, brand, revenue, profit, profit_perc, customer_name, order_qty, order_items, order_cog');
+        $this->db->from('ts_orders');
+        $this->db->where('order_date >= ', $start);
+        $this->db->where('is_canceled', 0);
+        $orders = $this->db->get()->result_array();
+        $reports = [];
+        $maxvend = 0;
+        foreach ($orders as $order) {
+            $order['brand'] = $order['brand']=='SR' ? 'SR' : 'BT';
+            if ($order['order_cog']=='') {
+                $vendors = [];
+                $order['profit_perc'] = 'PROJ';
+                $order['order_cog']='-';
+            } else {
+                $this->db->select('v.vendor_name, sum(oa.amount_sum) as total');
+                $this->db->from('ts_order_amounts oa');
+                $this->db->join('vendors v','oa.vendor_id = v.vendor_id');
+                $this->db->where('oa.order_id', $order['order_id']);
+                $this->db->group_by('v.vendor_name');
+                $vendors = $this->db->get()->result_array();
+                if (count($vendors)>$maxvend) {
+                    $maxvend = count($vendors);
+                }
+            }
+            $order['vendors'] = $vendors;
+            $reports[] = $order;
+        }
+        $file = $this->config->item('upload_path_preload').'orders_cog_2023.csv';
+        @unlink($file);
+        $fh = fopen($file, 'a+');
+        $msg = 'Order #;Date;Brand;Revenue;Profit;%;Customer;Item;QTY;COG;';
+        for ($i=1; $i<=$maxvend; $i++) {
+            $msg.='PO '.$i.' Vendor;PO '.$i.' Amount;';
+        }
+        fwrite($fh, $msg.PHP_EOL);
+        foreach ($reports as $report) {
+            $msg=$report['order_num'].';'.$report['orderdate'].';'.$report['brand'].';'.$report['revenue'].';'.$report['profit'].';';
+            $msg.=$report['profit_perc'].';"'.$report['customer_name'].'";"'.$report['order_items'].'";'.$report['order_qty'].';'.$report['order_cog'].';';
+            foreach ($report['vendors'] as $vendor) {
+                $msg.='"'.$vendor['vendor_name'].'";'.$vendor['total'].';';
+            }
+            if (count($report['vendors'])<$maxvend) {
+                $diff = $maxvend - count($report['vendors']);
+                for ($i=0; $i<$diff;$i++) {
+                    $msg.=';;';
+                }
+            }
+            fwrite($fh, $msg.PHP_EOL);
+        }
+        fclose($fh);
+        echo 'Report '.$file.' READY '.PHP_EOL;
+    }
+
+    public function export_sritems()
+    {
+        $this->load->model('exportexcell_model');
+        $res = $this->exportexcell_model->export_sritems();
+    }
+
+    public function convert_sritems()
+    {
+        $this->load->model('sritems_model');
+        // $res = $this->sritems_model->convert_sritems();
+        $res = $this->sritems_model->convert_srspecial();
+    }
+
+    public function sritems_images()
+    {
+        $this->load->model('sritems_model');
+        // $res = $this->sritems_model->sritems_images();
+        $res = $this->sritems_model->srspecial_images();
+    }
+
+    public function fixarrive()
+    {
+        $this->db->select('o.order_id, o.order_num, o.update_usr, o.item_id, s.order_shipping_id, t.order_shipaddr_id, c.arrive_date');
+        $this->db->from('ts_orders o')->join('ts_order_shippings s','s.order_id=o.order_id')->join('ts_order_shipaddres t','o.order_id = t.order_id');
+        $this->db->join('ts_order_shipcosts c','c.order_shipaddr_id=t.order_shipaddr_id')->where('s.arrive_date',0)->where('c.current',1)->where('o.is_canceled',0);
+        $this->db->order_by('o.order_id','desc');
+        $dats = $this->db->get()->result_array();
+        foreach ($dats as $dat) {
+            echo 'Order '.$dat['order_num'].' Date '.date('Y-m-d', $dat['arrive_date']).PHP_EOL;
+            // $this->db->where('order_shipping_id', $dat['order_shipping_id']);
+            // $this->db->set('arrive_date', $dat['arrive_date']);
+            // $this->db->update('ts_order_shippings');
+            // $this->db->where('order_shipaddr_id', $dat['order_shipaddr_id']);
+            // $this->db->set('arrive_date', $dat['arrive_date']);
+            // $this->db->update('ts_order_shipaddres');
+        }
+//        $this->db->select('o.order_num, p.arrive_date, p.order_shipping_id, s.order_shipaddr_id');
+//        $this->db->from('ts_orders o');
+//        $this->db->join('ts_order_shippings p','p.order_id=o.order_id');
+//        $this->db->join('ts_order_shipaddres s','s.order_id=o.order_id');
+//        $this->db->where('s.arrive_date',0);
+//        $this->db->where('p.arrive_date > ',0);
+//        $this->db->order_by('o.order_id','desc');
+//        $datas = $this->db->get()->result_array();
+//        foreach ($datas as $data) {
+//            $this->db->where('order_shipaddr_id',$data['order_shipaddr_id']);
+//            $this->db->set('arrive_date', $data['arrive_date']);
+//            $this->db->update('ts_order_shipaddres');
+//            echo 'Order '.$data['order_num'].' Arrive '.date('Y-m-d', $data['arrive_date']).PHP_EOL;
+//        }
+    }
+
+    public function customorderslist()
+    {
+        $this->db->select('o.order_id, o.order_num, o.order_date, o.customer_name, o.revenue, t.shipdate, t.arrive_date, t.event_date');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_shippings t','o.order_id = t.order_id');
+        $this->db->where('o.item_id', $this->config->item('custom_id'));
+        $this->db->where('o.order_num >= ',63000);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.brand != ','SR');
+        $orders = $this->db->get()->result_array();
+        $filename = $this->config->item('upload_path_preload').'custom_orders.csv';
+        @unlink($filename);
+        $fh = fopen($filename, FOPEN_READ_WRITE_CREATE);
+        if ($fh) {
+            $msg = 'Order #;Order Date;Customer;Revenue;Ship Date;Arrival Date;Event Date;'.PHP_EOL;
+            fwrite($fh, $msg);
+            foreach ($orders as $order) {
+                $msg=$order['order_num'].';'.date('m/d/Y', $order['order_date']).';"'.$order['customer_name'].'";'.$order['revenue'].';';
+                $msg.=date('m/d/Y', $order['shipdate']).';'.date('m/d/Y', $order['arrive_date']).';';
+                if (!empty($order['event_date'])) {
+                    $msg.=date('m/d/Y', $order['event_date']);
+                } else {
+                    $msg.="";
+                }
+                $msg.=';'.PHP_EOL;
+                fwrite($fh,$msg);
+            }
+            fclose($fh);
+            echo 'Report '.$filename.' READY'.PHP_EOL;
+        } else {
+            echo 'Error create file'.PHP_EOL;
+        }
 
     }
 

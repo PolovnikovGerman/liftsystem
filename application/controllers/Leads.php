@@ -64,7 +64,7 @@ class Leads extends My_Controller {
             if ($row['item_link'] == '#leadsview') {
                 $head['styles'][]=array('style'=>'/css/leads/leadsview.css');
                 $head['scripts'][]=array('src'=>'/js/leads/leadsview.js');
-                $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
+                // $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
                 $content_options['leadsview'] = $this->_prepare_leadsview($brand); // $brand, $top_menu
                 if (!empty($this->config->item('google_map_key'))) {
                     $gmaps = 1;
@@ -98,6 +98,14 @@ class Leads extends My_Controller {
                 $head['styles'][]=array('style'=>'/css/leads/leadquotes.css');
                 $head['scripts'][]=array('src'=>'/js/leads/leadquotes.js');
                 $content_options['leadquotesview'] = $this->_prepare_leadquotes_view($brand); // $brand, $top_menu
+                if (!empty($this->config->item('google_map_key'))) {
+                    $gmaps = 1;
+                }
+            } elseif ($row['item_link']=='#customorders') {
+                $head['styles'][]=array('style'=>'/css/leads/leadcustomorders.css');
+                $head['styles'][]=array('style'=>'/css/accounting/profitordesview.css');
+                $head['scripts'][]=array('src'=>'/js/leads/leadcustomorders.js');
+                $content_options['leadordersview'] = $this->_prepare_customorders_view($brand); // $brand, $top_menu
                 if (!empty($this->config->item('google_map_key'))) {
                     $gmaps = 1;
                 }
@@ -1209,6 +1217,306 @@ class Leads extends My_Controller {
         show_404();
     }
 
+    public function search_custom_orders()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $this->load->model('orders_model');
+            $postdata=$this->input->post();
+            $options=array();
+            if (isset($postdata['search'])) {
+                $options['search']=$postdata['search'];
+            }
+            if (isset($postdata['filter'])) {
+                $options['filter']=$postdata['filter'];
+            }
+            if (isset($postdata['add_filter'])) {
+                $options['add_filtr']=$postdata['add_filter'];
+            }
+            if ($postdata['show_year']==1) {
+                if ($postdata['year']>0) {
+                    $nxtyear = $postdata['year']+1;
+                    if ($postdata['month']==0) {
+                        $options['date_bgn']=strtotime($postdata['year'].'-01-01');
+                        $options['date_end']=strtotime($nxtyear.'-01-01');
+                    } else {
+                        $start = $postdata['year'].'-'.str_pad($postdata['month'],2,'0',STR_PAD_LEFT).'-01';
+                        $options['date_bgn']=strtotime($start);
+                        $finish = date('Y-m-d', strtotime($start. ' + 1 month'));
+                        $options['date_end']=strtotime($finish);
+                    }
+                }
+            } else {
+                if ($postdata['date_bgn']) {
+                    $options['date_bgn']=strtotime($postdata['date_bgn']);
+                }
+                if ($postdata['date_end']) {
+                    $d_finish = date('Y-m-d',strtotime($postdata['date_end']));
+                    $options['date_end'] = date(strtotime("+1 day", strtotime($d_finish)));
+                }
+            }
+            if (isset($postdata['shipping_country']) && intval($postdata['shipping_country'])!==0) {
+                $options['shipping_country']=$postdata['shipping_country'];
+                if (isset($postdata['shipping_state']) && intval($postdata['shipping_state'])>0) {
+                    $options['shipping_state'] = $postdata['shipping_state'];
+                }
+            }
+            if (isset($postdata['order_type']) && !empty($postdata['order_type'])) {
+                $options['order_type']=$postdata['order_type'];
+            }
+            $options['exclude_quickbook'] = ifset($postdata,'exclude_quickbook',0);
+            /* count number of orders */
+            $options['admin_mode']=0;
+            if ($this->USR_ROLE=='masteradmin') {
+                $options['admin_mode']=1;
+            }
+            if (isset($postdata['brand']) && !empty($postdata['brand'])) {
+                $options['brand'] = $postdata['brand'];
+            }
+            $options['custom_orders'] = 1;
+            $mdata['totals']=$this->orders_model->get_count_orders($options);
+            /* Total of sums */
+            $totalord=$this->orders_model->orders_profit_tolals($options);
+            if (!isset($options['order_type'])) {
+                // Prepare tooltip
+                $order_tool_options = [
+                    'title' => 'Orders',
+                    'type' => 'qty',
+                    'new_val' => $totalord['numorders_detail_new'],
+                    'repeat_val' => $totalord['numorders_detail_repeat'],
+                    'blank_val' => $totalord['numorders_detail_blank'],
+                    'new_perc' => $totalord['numorders_detail_newperc'],
+                    'repeat_perc' => $totalord['numorders_detail_repeatperc'],
+                    'blank_perc'=> $totalord['numorders_detail_blankperc'],
+                ];
+                $order_tooltip = $this->load->view('orderprofit/total_tooltip_view', $order_tool_options, TRUE);
+                $qty_tool_options = [
+                    'title' => 'QTY',
+                    'type' => 'qty',
+                    'new_val' => $totalord['qty_detail_new'],
+                    'repeat_val' => $totalord['qty_detail_repeat'],
+                    'blank_val' => $totalord['qty_detail_blank'],
+                    'new_perc' => $totalord['qty_detail_newperc'],
+                    'repeat_perc' => $totalord['qty_detail_repeatperc'],
+                    'blank_perc'=> $totalord['qty_detail_blankperc'],
+                ];
+                $qty_tooltip = $this->load->view('orderprofit/total_tooltip_view', $qty_tool_options, TRUE);
+                $revenue_tool_options = [
+                    'title' => 'Revenue',
+                    'type' => 'money',
+                    'new_val' => $totalord['revenue_detail_new'],
+                    'repeat_val' => $totalord['revenue_detail_repeat'],
+                    'blank_val' => $totalord['revenue_detail_blank'],
+                    'new_perc' => $totalord['revenue_detail_newproc'],
+                    'repeat_perc' => $totalord['revenue_detail_repeatproc'],
+                    'blank_perc'=> $totalord['revenue_detail_blankproc'],
+                ];
+                $revenue_tooltip = $this->load->view('orderprofit/total_tooltip_view', $revenue_tool_options, TRUE);
+                // Balance
+                $balance_tool_options = [
+                    'title' => 'Balance',
+                    'type' => 'money',
+                    'new_val' => $totalord['balance_detail_new'],
+                    'repeat_val' => $totalord['balance_detail_repeat'],
+                    'blank_val' => $totalord['balance_detail_blank'],
+                    'new_perc' => $totalord['balance_detail_newproc'],
+                    'repeat_perc' => $totalord['balance_detail_repeatproc'],
+                    'blank_perc'=> $totalord['balance_detail_blankproc'],
+                ];
+                $balance_tooltip = $this->load->view('orderprofit/total_tooltip_view', $balance_tool_options, TRUE);
+
+                $shipping_tool_options = [
+                    'title' => 'Shipping',
+                    'type' => 'money',
+                    'new_val' => $totalord['shipping_detail_new'],
+                    'repeat_val' => $totalord['shipping_detail_repeat'],
+                    'blank_val' => $totalord['shipping_detail_blank'],
+                    'new_perc' => $totalord['shipping_detail_newperc'],
+                    'repeat_perc' => $totalord['shipping_detail_repeatperc'],
+                    'blank_perc'=> $totalord['shipping_detail_blankperc'],
+                ];
+                $shipping_tooltip = $this->load->view('orderprofit/total_tooltip_view', $shipping_tool_options, TRUE);
+                $tax_tool_options = [
+                    'title' => 'Tax',
+                    'type' => 'money',
+                    'new_val' => $totalord['tax_detail_new'],
+                    'repeat_val' => $totalord['tax_detail_repeat'],
+                    'blank_val' => $totalord['tax_detail_blank'],
+                    'new_perc' => $totalord['tax_detail_newperc'],
+                    'repeat_perc' => $totalord['tax_detail_repeatperc'],
+                    'blank_perc'=> $totalord['tax_detail_blankperc'],
+                ];
+                $tax_tooltip = $this->load->view('orderprofit/total_tooltip_view', $tax_tool_options, TRUE);
+                $cog_tool_options = [
+                    'title' => 'COG',
+                    'type' => 'money',
+                    'new_val' => $totalord['cog_detail_new'],
+                    'repeat_val' => $totalord['cog_detail_repeat'],
+                    'blank_val' => $totalord['cog_detail_blank'],
+                    'new_perc' => $totalord['cog_detail_newperc'],
+                    'repeat_perc' => $totalord['cog_detail_repeatperc'],
+                    'blank_perc'=> $totalord['cog_detail_blankperc'],
+                ];
+                $cog_tooltip = $this->load->view('orderprofit/total_tooltip_view', $cog_tool_options, TRUE);
+                $profit_tool_options = [
+                    'title' => 'Profit',
+                    'type' => 'money',
+                    'new_val' => $totalord['profit_detail_new'],
+                    'repeat_val' => $totalord['profit_detail_repeat'],
+                    'blank_val' => $totalord['profit_detail_blank'],
+                    'new_perc' => $totalord['profit_detail_newperc'],
+                    'repeat_perc' => $totalord['profit_detail_repeatperc'],
+                    'blank_perc'=> $totalord['profit_detail_blankperc'],
+                ];
+                $profi_tooltip = $this->load->view('orderprofit/total_tooltip_view', $profit_tool_options, TRUE);
+                $total_options = [
+                    'data' => $totalord,
+                    'order_tooltip' => $order_tooltip,
+                    'qty_tooltip' => $qty_tooltip,
+                    'revenue_tooltip' => $revenue_tooltip,
+                    'shipping_tooltip' => $shipping_tooltip,
+                    'tax_tooltip' => $tax_tooltip,
+                    'cog_tooltip' => $cog_tooltip,
+                    'profit_tooltip' => $profi_tooltip,
+                    'balance_tooltip' => $balance_tooltip,
+                    'brand' => ifset($postdata,'brand','SB'),
+                ];
+                $mdata['total_row']=$this->load->view('orderprofit/total_profitall_view',$total_options,TRUE);
+                $mdata['totals_head']=$this->load->view('orderprofit/total_allprofittitle_view',['brand' => ifset($postdata,'brand','SB'),],TRUE);
+                // $mdata['total_row']=$this->load->view('orderprofit/total_profit_view',$totalord,TRUE);
+            } else {
+                $mdata['totals_head']=$this->load->view('orderprofit/total_profittitle_view',[],TRUE);
+                $mdata['total_row']=$this->load->view('orderprofit/total_profit_view',$totalord,TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function customordersdat()
+    {
+        if ($this->isAjax()) {
+            $mdata=array('content'=>'','totals'=>'');
+            $error='';
+            $this->load->model('orders_model');
+            $postdata = $this->input->post();
+            $offset=0; $limit=10; $order_by='order_num';
+            $direct = 'asc';
+            if (isset($postdata['limit'])) {
+                $limit=$postdata['limit'];
+            }
+            if (isset($postdata['offset'])) {
+                $offset=$postdata['offset']*$limit;
+            }
+            if (isset($postdata['order_by'])) {
+                $order_by=$postdata['order_by'];
+            }
+            if (isset($postdata['direction'])) {
+                $direct=$postdata['direction'];
+            }
+            $search=array();
+            if (isset($postdata['search'])) {
+                $search['search']=$postdata['search'];
+            }
+            if (isset($postdata['filter'])) {
+                $search['filter']=$postdata['filter'];
+            }
+            if (isset($postdata['add_filter'])) {
+                $search['add_filtr']=$postdata['add_filter'];
+            }
+            if ($postdata['show_year']==1) {
+                if ($postdata['year']>0) {
+                    $nxtyear = $postdata['year']+1;
+                    if ($postdata['month']==0) {
+                        $search['start_date']=strtotime($postdata['year'].'-01-01');
+                        $search['end_date']=strtotime($nxtyear.'-01-01');
+                    } else {
+                        $start = $postdata['year'].'-'.str_pad($postdata['month'],2,'0',STR_PAD_LEFT).'-01';
+                        $search['start_date']=strtotime($start);
+                        $finish = date('Y-m-d', strtotime($start. ' + 1 month'));
+                        $search['end_date']=strtotime($finish);
+                    }
+                }
+            } else {
+                if ($postdata['date_bgn']) {
+                    $search['start_date']=strtotime($postdata['date_bgn']);
+                }
+                if ($postdata['date_end']) {
+                    // $search['end_date']=strtotime($postdata['date_end']);
+                    $d_finish = date('Y-m-d',strtotime($postdata['date_end']));
+                    $search['end_date'] = date(strtotime("+1 day", strtotime($d_finish)));
+                }
+            }
+            if (isset($postdata['shipping_country']) && intval($postdata['shipping_country'])!==0) {
+                $search['shipping_country']=$postdata['shipping_country'];
+                if (isset($postdata['shipping_state']) && intval($postdata['shipping_state'])>0) {
+                    $search['shipping_state'] = $postdata['shipping_state'];
+                }
+            }
+            if (isset($postdata['order_type']) && !empty($postdata['order_type'])) {
+                $search['order_type']=$postdata['order_type'];
+            }
+
+            /* Fetch data about prices */
+            if ($this->USR_ROLE=='masteradmin') {
+                $admin_mode=1;
+            } else {
+                $admin_mode=0;
+            }
+            if (isset($postdata['brand']) && !empty($postdata['brand'])) {
+                $search['brand'] = $postdata['brand'];
+            }
+            $search['exclude_quickbook'] = ifset($postdata,'exclude_quickbook',0);
+            $search['custom_orders'] = 1;
+            $ordersdat=$this->orders_model->get_profit_orders($search,$order_by,$direct,$limit,$offset, $admin_mode, $this->USR_ID);
+
+            if (count($ordersdat)==0) {
+                $content=$this->load->view('orderprofit/empty_view',array(),TRUE);
+            } else {
+                $data=array(
+                    'orders'=>$ordersdat,
+                    'brand' => ifset($postdata,'brand','SB'),
+                );
+                $content = $this->load->view('customorders/table_data_view',$data, TRUE);
+            }
+            $mdata['content']=$content;
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function customordercnt_total()
+    {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $out=$this->_prepare_customorder_bottom($brand);
+                $mdata['content']=$out['content'];
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function customorder_export()
+    {
+        $mdata=[];
+        $error='';
+        $postdata=$this->input->post();
+        $postdata['custom_orders'] = 1;
+        $this->load->model('orders_model');
+        $res = $this->orders_model->profit_export($postdata);
+        $error=$res['msg'];
+        if ($res['result']==$this->success_result) {
+            $error='';
+            $mdata['url']=$res['url'];
+        }
+        $this->ajaxResponse($mdata, $error);
+    }
 
     private function _prepare_leadsview($brand) {
         $ldat=array();
@@ -1382,7 +1690,96 @@ class Leads extends My_Controller {
         $datqs['replicas'] = $replicas;
         $content=$this->load->view('leadquotes/page_view',$datqs,TRUE);
         return $content;
+    }
 
+    private function _prepare_customorders_view($brand) {
+        $this->load->model('orders_model');
+        $legend=$this->load->view('accounting/profit_legend_view',[],TRUE);
+        $options = [
+            'custom_orders' => 1,
+            'exclude_quickbook' => 1,
+            'brand' => $brand,
+        ];
+        $totals = $this->orders_model->get_count_orders($options);
+        $perpage_data=array(
+            'fieldname'=>'perpage_profitorders',
+            'default_value'=> $this->PERPAGE_LEADS,
+            'numrecs'=>$this->PERPAGE_ORDERS,
+        );
+        $perpage_view=$this->load->view('page/number_records', $perpage_data, TRUE);
+        $view_options = [
+            'total'=>$totals,
+            'order'=>'o.order_num',
+            'direc'=>'desc',
+            'perpage_view'=>$perpage_view,
+            'curpage'=>0,
+            'legend'=>$legend,
+            'total_row'=>'', // $totalrow,
+            'adminview' => $this->USR_ROLE=='masteradmin' ? 1 : 0,
+            'brand' => $brand,
+        ];
+        $years=$this->orders_model->get_orders_dates($options);
+        $orders_cnttotal='';
+        $years_options=[];
+        $years_options[]=['key'=>0, 'label'=>'All time'];
+        $select_year=$years['max_year'];
+        for ($i=0; $i<100; $i++) {
+            $years_options[]=['key'=>$select_year,'label'=>$select_year];
+            $select_year=intval($select_year)-1;
+            if ($select_year<$years['min_year']) {
+                break;
+            }
+        }
+        $view_options['years']=$years_options;
+        $view_options['bottom_view']=$this->load->view('accounting/admin_bottom_view',array('year'=>$years,'orders_cnttotal'=>$orders_cnttotal),TRUE);
+
+        $content=$this->load->view('customorders/head_view',$view_options,TRUE);
+
+        return $content;
+    }
+
+    private function _prepare_customorder_bottom($brand)
+    {
+        $this->load->model('orders_model');
+        $yearview='';
+        $dats=$this->orders_model->get_profit_limitdates($brand, 1);
+        if (isset($dats['max_year'])) {
+            if (date('Y-m',time())!=$dats['max_year'].'-'.$dats['max_month']) {
+                $dats['cur_month']=$dats['max_month'];
+                $dats['cur_year']=$dats['max_year'];
+            } else {
+                $dats['cur_month']=date('m');
+                $dats['cur_year']=date('Y');
+            }
+        } else {
+            $dats['max_month']=date('m');
+            $dats['max_year']=date('Y');
+            $dats['max_date']=time();
+            $dats['cur_month']=date('m');
+            $dats['cur_year']=date('Y');
+        }
+        $year=$dats['cur_year'];
+        $i=0;
+        while ($i<5) {
+            $out = $this->orders_model->calendar_orders($year, $brand, 1);
+            $voptions = array('title' => $year);
+            foreach ($out as $k => $v) {
+                $voptions[$k] = $out[$k];
+            }
+            if ($i==4) {
+                $voptions['lastrow']='lastrow';
+            } else {
+                $voptions['lastrow']='';
+            }
+            $yearview .= $this->load->view('accounting/admin_ordercnt_view', $voptions, TRUE);
+            $year--;
+            $i++;
+        }
+
+        $voption=array(
+            'content'=>$yearview,
+        );
+        return $voption;
     }
 
 }

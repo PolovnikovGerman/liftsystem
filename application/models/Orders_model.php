@@ -187,6 +187,10 @@ Class Orders_model extends MY_Model
                 $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
+        // Custom orders
+        if (isset($filtr['custom_orders']) && $filtr['custom_orders']==1) {
+            $this->db->where_in('o.item_id', [$this->config->item('custom_id')]); // , $this->config->item('other_id')
+        }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
     }
@@ -2466,6 +2470,9 @@ Class Orders_model extends MY_Model
                     $this->db->where_in('o.brand', ['SB','BT']);
                 }
             }
+            if (ifset($filtr,'custom_orders',0)==1) {
+                $this->db->where_in('o.item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id'),
+            }
         }
         $totalres=$this->db->get()->row_array();
         $balance = $this->count_totalbalance($filtr);
@@ -2684,6 +2691,9 @@ Class Orders_model extends MY_Model
                 $this->db->where('o.order_blank',0);
                 $this->db->where('o.arttype', $addtype);
             }
+            if (ifset($filtr,'custom_orders',0)==1) {
+                $this->db->where_in('o.item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id'),
+            }
         }
         $totalres=$this->db->get()->row_array();
         $totalres['balance'] = $this->count_totalbalance($filtr, $addtype);
@@ -2787,6 +2797,9 @@ Class Orders_model extends MY_Model
                 } else {
                     $this->db->where_in('o.brand', ['BT','SB']);
                 }
+            }
+            if (ifset($filtr,'custom_orders',0)==1) {
+                $this->db->where_in('o.item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id'),
             }
         }
         $this->db->limit($limit,$offset);
@@ -2913,6 +2926,15 @@ Class Orders_model extends MY_Model
                 }
             }
             $row['out_shipdate']=($row['shipdate']==0 ? '&nbsp;' : date('m/d', $row['shipdate']));
+            if (ifset($filtr,'custom_orders',0)==1) {
+                $this->db->select('p.artwork_preview_id, p.preview_link')->from('ts_artwork_previews p')->join('ts_artworks a','a.artwork_id=p.artwork_id')->where('a.order_id', $row['order_id'])->where_in('substring(p.preview_link,-3,3)',['jpg','png']);
+                $prevres = $this->db->get()->row_array();
+                if (ifset($prevres,'artwork_preview_id',0)>0) {
+                    $row['preview_link'] = $prevres['preview_link'];
+                } else {
+                    $row['preview_link'] = '';
+                }
+            }
             $out_array[]=$row;
         }
         return $out_array;
@@ -3069,6 +3091,9 @@ Class Orders_model extends MY_Model
                 $this->db->select('p.paycardnum');
                 $cartsql = "select order_id, group_concat(cardnum) as paycardnum from ts_order_payments group by order_id ";
                 $this->db->join("({$cartsql}) as p",'p.order_id=o.order_id','left');
+            }
+            if (ifset($postdata,'custom_orders',0)==1) {
+                $this->db->where_in('o.item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id'),
             }
             $this->db->order_by('o.order_id');
             $res=$this->db->get()->result_array();
@@ -3306,7 +3331,7 @@ Class Orders_model extends MY_Model
         return $labels;
     }
 
-    public function get_profit_limitdates($brand) {
+    public function get_profit_limitdates($brand, $custom_orders=0) {
         $this->db->select('max(order_date) as max_date, min(order_date) as min_date');
         $this->db->from('ts_orders');
         $this->db->where('is_canceled',0);
@@ -3316,6 +3341,9 @@ Class Orders_model extends MY_Model
             } else {
                 $this->db->where_in('brand', ['BT','SB']);
             }
+        }
+        if ($custom_orders==1) {
+            $this->db->where_in('item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id')
         }
         $res=$this->db->get()->row_array();
         if (isset($res['max_date'])) {
@@ -3336,7 +3364,7 @@ Class Orders_model extends MY_Model
     }
 
     /* Calculate average  */
-    public function calendar_orders($year, $brand) {
+    public function calendar_orders($year, $brand, $custom_orders=0) {
         /* Empty array */
         $empty_val='&mdash;';
         $kilolimit=10000;
@@ -3391,6 +3419,9 @@ Class Orders_model extends MY_Model
             }
         }
         $this->db->where("date_format(from_unixtime(order_date),'%Y')",$year);
+        if ($custom_orders==1) {
+            $this->db->where_in('ord.item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id'),
+        }
         $this->db->group_by("order_year");
         $res=$this->db->get()->row_array();
         $out = array(
@@ -5564,8 +5595,9 @@ Class Orders_model extends MY_Model
         $this->db->from('ts_artdata_sync s');
         $this->db->join('ts_orders o','o.order_id=s.order_id');
         $this->db->where('s.sended',0);
+        $this->db->where('o.brand != ','SR');
+        $this->db->order_by('s.artdata_sync_id');
         $datares=$this->db->get()->result_array();
-
         foreach ($datares as $row) {
             $postdata=array(
                 'sync'=>'data',
@@ -5638,7 +5670,9 @@ Class Orders_model extends MY_Model
                     $this->db->where('artdata_sync_id', $row['artdata_sync_id']);
                     $this->db->update('ts_artdata_sync');
                 } else {
-                    echo 'Error '.$array['error'].PHP_EOL;
+                    echo 'Export '.$row['order_num'].' Error '.PHP_EOL;
+                    // echo 'Error '.$array['error'].PHP_EOL;
+                    echo 'Error '.$res.PHP_EOL;
                 }
             }
             curl_close($curl);
@@ -6360,6 +6394,11 @@ Class Orders_model extends MY_Model
         if ($item['shipping_date']) {
             $this->db->set('shipdate', $item['shipping_date']);
         }
+        if ($item['arrive_date']) {
+            $this->db->set('deliverydate', $item['arrive_date']);
+        } else {
+            $this->db->set('deliverydate', 0);
+        }
         $this->db->set('order_confirmation', $confirmation);
         $this->db->set('order_system', 'new');
         $this->db->set('arttype','new');
@@ -6495,6 +6534,7 @@ Class Orders_model extends MY_Model
                 $this->db->set('shipping', $item['shipping_cost']);
             }
             $this->db->set('sales_tax', $item['tax']);
+            $this->db->set('arrive_date', $item['arrive_date']);
             $this->db->insert('ts_order_shipaddres');
             $adrid = $this->db->insert_id();
             // Shipping Cost
@@ -7400,6 +7440,9 @@ Class Orders_model extends MY_Model
                 } else {
                     $this->db->where_in('o.brand', ['SB','BT']);
                 }
+            }
+            if (ifset($filtr,'custom_orders',0)==1) {
+                $this->db->where_in('o.item_id', [$this->config->item('custom_id')]); // $this->config->item('other_id'),
             }
         }
         if (!empty($addtype)) {

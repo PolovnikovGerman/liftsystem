@@ -120,7 +120,7 @@ select.leadord_filterselect {
     clear: both;
     color: #FFFFFF;
     /* width: 1013px; */
-    width: 1084px;
+    width: 1144px;
 }
 .leadorder_datahead.relievers {
     width: 1148px;
@@ -181,12 +181,17 @@ select.leadord_filterselect {
 .leadorder_datahead > .sritem {
     border-right: 1px solid #000000;
     float: left;
-    width: 247px; /* 163px; */
+    width: 187px; /* 163px; */
 }
 .leadorder_datahead > .revenue {
     border-right: 1px solid #000000;
     float: left;
     width: 65px;
+}
+.leadorder_datahead > .balance {
+    border-right: 1px solid #000000;
+    float: left;
+    width: 60px;
 }
 .leadorder_datahead > .usrrepl {
     border-right: 1px solid #000000;
@@ -230,7 +235,7 @@ select.leadord_filterselect {
     overflow-y: scroll;
     overflow-x: hidden;
     /* width: 1015px; */
-    width: 1085px;
+    width: 1145px;
 }
 .leadorder_dataarea.relievers {
     width: 1149px;
@@ -240,7 +245,7 @@ select.leadord_filterselect {
     float: left;
     overflow-x: hidden;
     /* width: 1004px; */
-    width: 1075px;
+    width: 1135px;
 }
 .leadorder_datarow.relievers {
     width: 1139px;
@@ -349,7 +354,7 @@ select.leadord_filterselect {
     padding-left: 4px;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 247px; /* 163px; */
+    width: 187px; /* 163px; */
 }
 .leadorder_datarow > .sritem.customorder {
     font-weight: bold;
@@ -363,6 +368,27 @@ select.leadord_filterselect {
     float: left;
     width: 65px;
 }
+.leadorder_datarow > .balance {
+    border-right: 1px solid #000000;
+    text-align: center;
+    float: left;
+    width: 60px;
+}
+.leadorder_datarow > .balance.balancepaid {
+    font-weight: bold;
+    color: #000000;
+}
+.leadorder_datarow > .balance.balancepositive {
+    font-weight: bold;
+    color: #FFFFFF!important;
+    background: #0000ff;
+}
+.leadorder_datarow > .balance.balancenegative {
+    font-weight: bold;
+    color: #FF0000!important;
+    background: #000000;
+}
+
 .leadorder_datarow > .usrrepl {
     border-right: 1px solid #000000;
     float: left;

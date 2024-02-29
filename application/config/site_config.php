@@ -1,6 +1,6 @@
 <?php
-$config['js_version'] = '2.02192';
-$config['css_version']= '2.02192';
+$config['js_version'] = '2.02222';
+$config['css_version']= '2.02222';
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -111,7 +111,7 @@ $config['localserver']=array(
 $config['salestax']=7;
 $config['datenewtax']= strtotime('2018-07-23');
 $config['salesnewtax']=6.625;
-
+$config['outsalestax']=6.625;
 $config['report_vendors']=array(
     'Ariel',
     'Alpi',

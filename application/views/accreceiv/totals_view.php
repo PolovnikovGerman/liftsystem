@@ -1,4 +1,4 @@
-<div class="accreceiv-content-left">
+<div class="accreceiv-content-left <?=$brand=='ALL' ? 'sigmasystem' : ''?>">
     <div class="accreceiv-totalown">
         <div class="accreceiv-totalown-title">Owed to Us:</div>
         <div class="accreceiv-totalown-value"><?=TotalOutput($totalown)?></div>
@@ -16,7 +16,7 @@
         <?php } ?>
     </div>
 </div>
-<div class="accreceiv-content-center">
+<div class="accreceiv-content-center <?=$brand=='ALL' ? 'sigmasystem' : ''?>">
     <div class="accreceiv-totalrefund">
         <div class="accreceiv-totalrefund-title">Refunds to Customers:</div>
         <div class="accreceiv-totalrefund-value">(<?=TotalOutput(abs($totalrefund))?>)</div>

@@ -339,8 +339,10 @@ if (!function_exists('profit_bgclass')) {
             $out_class='orange';
         } elseif ($profit_perc>=30 && $profit_perc<40) {
             $out_class='white';
-        } elseif ($profit_perc>=40) {
+        } elseif ($profit_perc>=40 && $profit_perc < 50) {
             $out_class='green';
+        } elseif ($profit_perc >=50) {
+            $out_class = 'dark_green';
         }
         return $out_class;
     }

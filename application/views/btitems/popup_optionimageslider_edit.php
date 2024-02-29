@@ -5,16 +5,28 @@
             <div class="optimages-slide-wrap">
         <?php } ?>
         <div class="optimages-slide-item">
-            <div class="replaseoptionitems" id="reploptimg<?=$color['item_color_id']?>"></div>
-            <div class="img-addimagebox">
+            <?php if ($image==1) { ?>
                 <?php if (empty($color['item_color_image'])) { ?>
-                    &nbsp;
+                    <div class="replaseoptionitems">&nbsp;</div>
+                <?php } else { ?>
+                    <div class="replaseoptionitems" id="reploptimg<?=$color['item_color_id']?>"></div>
+                <?php } ?>
+            <?php } else { ?>
+                <div class="replaseoptionitems">&nbsp;</div>
+            <?php } ?>
+            <div class="img-addimagebox" data-image="<?=$color['item_color_id']?>">
+                <?php if (empty($color['item_color_image'])) { ?>
+                    <?php if ($image==1) { ?>
+                        <div class="addoptionimageslider" id="addoptionimageslider<?=$color['item_color_id']?>"></div>
+                    <?php } else { ?>
+                        &nbsp;
+                    <?php } ?>
                 <?php } else { ?>
                     <img src="<?=$color['item_color_image']?>">
                 <?php } ?>
-            </div>
-            <div class="removeimage optimage" data-image="<?=$color['item_color_id']?>">
-                <i class="fa fa-trash"></i>
+                <div class="<?=empty($color['item_color_image']) ? 'removeimage' : 'removeimagefull'?> <?=$image==0 ? 'sideright' : '' ?> optimage" data-image="<?=$color['item_color_id']?>">
+                    <i class="fa fa-trash"></i>
+                </div>
             </div>
             <div class="content-row">
                 <div class="imageorder">
@@ -25,7 +37,14 @@
                     </select>
                 </div>
                 <div class="imagecaption">
-                    <input class="itemimagecaption optimage" data-image="<?=$color['item_color_id']?>" value="<?=$color['item_color']?>" placeholder="Enter Caption..."/>
+                    <?php if (empty($inventory)) { ?>
+                        <input class="itemimagecaption optimage" data-image="<?=$color['item_color_id']?>" value="<?=$color['item_color']?>" placeholder="Enter Caption..."/>
+                    <?php } else { ?>
+                        <select class="itemimagecaptionselect optimage" data-image="<?=$color['item_color_id']?>">
+                            <option value="" <?=$color['item_color']=='' ? 'selected="selected"' : ''?>></option>
+                            <option value="<?=$color['item_color_source']?>" <?=$color['item_color']==$color['item_color_source'] ? 'selected="selected"' : ''?>><?=$color['item_color_source']?></option>
+                        </select>
+                    <?php } ?>
                 </div>
             </div>
         </div>

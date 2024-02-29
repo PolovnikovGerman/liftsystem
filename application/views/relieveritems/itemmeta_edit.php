@@ -1,5 +1,5 @@
 <div class="sectionlabel">META &amp; SEARCH:</div>
-<div class="sectionbody">
+<div class="sectionbody metasection <?=$missinfo==0 ? '' : 'missinginfo'?>">
     <div class="itemparamlabel metatitle">Meta Title:</div>
     <div class="itemparamvalue metatitle editmode">
         <input type="text" class="itemkeyinfoinput metatitle <?=empty($item['item_meta_title']) ? 'missing_info' : ''?>" data-item="item_meta_title" value="<?=$item['item_meta_title']?>"/>

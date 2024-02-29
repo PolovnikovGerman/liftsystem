@@ -1,6 +1,6 @@
 <div class="relievers_customisation">
-    <div class="sectionlabel">CUSTOMIZATION:</div>
-    <div class="sectionbody">
+    <div class="sectionlabel">PRINTING:</div>
+    <div class="sectionbody <?=$missinfo==0 ? '' : 'missinginfo'?>">
         <div class="content-row">
             <div class="itemvendorfilebtn <?=empty($item['item_vector_img']) ? '' : 'vectorfile'?>" data-file="<?=$item['item_vector_img']?>">
                 Vector AI File

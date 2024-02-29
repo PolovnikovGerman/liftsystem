@@ -8,19 +8,67 @@ var replacetemp= '<div class="qq-uploader"><div class="popupimageedit_upload qq-
     '<ul class="qq-upload-list"></ul>' +
     '<ul class="qq-upload-drop-area"></ul>'+
     '<div class="clear"></div></div>';
-var addtemp= '<div class="qq-uploader"><div class="popupimageedit_upload qq-upload-button"><span style="clear: both; float: left; width: 85px; text-align: center; margin-top: 4px; color: #0000ff;">'+
-    '<em>add image</em></span></div>' +
+var addtemp= '<div class="qq-uploader"><div class="popupimageedit_upload qq-upload-button"><span style="clear: both; float: left;">'+
+    '<em>upload image</em></span></div>' +
     '<ul class="qq-upload-list"></ul>' +
     '<ul class="qq-upload-drop-area"></ul>'+
     '<div class="clear"></div></div>';
 
 function init_btitemdetails_view(item) {
+    $(".itemdetails-tab").unbind('click').click(function (){
+        var tabview=$(this).data('tabview');
+        $(".itemdetails-tab").removeClass('active');
+        $(this).addClass('active');
+        if (tabview=='infoarea') {
+            $(".itemdetails-history").hide();
+            $(".itemdetails-infoarea").show();
+        } else if (tabview=='history') {
+            $(".itemdetails-infoarea").hide();
+            $(".itemdetails-history").show();
+        }
+    })
     $(".itemimagepreview").unbind('click').click(function () {
-        // Show popup with images and colors
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        var url = '/btitemdetails/btitem_images_view';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#imageoptionsbackground").show();
+                $("#itemImagesModalLabel").empty().html(response.data.header);
+                $("#itemImagesModal").find('div.modal-body').empty().html(response.data.content);
+                $("#itemImagesModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#itemImagesModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                    $("#imageoptionsbackground").hide();
+                    // show new images
+                })
+                $(".addimages-slide-list").cycle({
+                    fx: 'carousel',
+                    allowWrap: false,
+                    manualSpeed: 600,
+                    timeout : 0,
+                    slides: '> div',
+                    next : '#nextaddimageslider',
+                    prev : '#prevaddimageslider',
+                });
+                $(".optimages-slide-list").cycle({
+                    fx: 'carousel',
+                    allowWrap: false,
+                    manualSpeed: 600,
+                    timeout : 0,
+                    slides: '> div',
+                    next : '#nextcolorimageslider',
+                    prev : '#prevcolorimageslider',
+                });
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
     $(".itemvendorfilebtn.vectorfile").unbind('click').click(function(){
         var url = $(this).data('file');
-        window.openai(url, 'AI Template');
+        // window.openai(url, 'AI Template');
+        openai(url,'vector_file.ai');
     });
     $(".printlocexample").unbind('click').click(function () {
         var url = $(this).data('link');
@@ -45,6 +93,18 @@ function init_btitemdetails_view(item) {
 }
 
 function init_btitemdetails_edit() {
+    $(".itemdetails-tab").unbind('click').click(function (){
+        var tabview=$(this).data('tabview');
+        $(".itemdetails-tab").removeClass('active');
+        $(this).addClass('active');
+        if (tabview=='infoarea') {
+            $(".itemdetails-history").hide();
+            $(".itemdetails-infoarea").show();
+        } else if (tabview=='history') {
+            $(".itemdetails-infoarea").hide();
+            $(".itemdetails-history").show();
+        }
+    })
     $(".save_itemdetails").unbind('click').click(function () {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
@@ -53,7 +113,8 @@ function init_btitemdetails_edit() {
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#itemDetailsModal").modal('hide');
-                init_btitemslist_view();
+                // init_btitemslist_view();
+                search_itemlists();
             } else {
                 $("#loader").hide();
                 show_error(response);
@@ -215,61 +276,13 @@ function init_btitemdetails_edit() {
             if (response.errors=='') {
                 if (newval=='') {
                     $("select.vendornameinp").addClass('missing_info');
-                    $(".itemparamvalue.vendorcountry").empty().addClass('missing_info');
-                    $(".itemparamvalue.vendorzip").empty().addClass('missing_info');
-                    $(".vendorshipstate").empty().addClass('missing_info');
-                    $(".itemparamvalue.vendorponote").empty().addClass('missing_info');
                 } else {
                     $("select.vendornameinp").removeClass('missing_info');
-                    $(".itemparamvalue.vendorcountry").empty().html(response.data.shipaddr_country).removeClass('missing_info');
-                    $(".itemparamvalue.vendorzip").empty().html(response.data.vendor_zipcode).removeClass('missing_info');
-                    $(".vendorshipstate").empty().html(response.data.shipaddr_state).removeClass('missing_info');
-                    $(".itemparamvalue.vendorponote").html(response.data.po_note).empty().removeClass('missing_info');
                 }
                 $("#profitdataarea").empty().html(response.data.profit);
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
-    $("input.vendoritemnum").autocompleter({
-        source: '/itemdetails/search_vendor_item',
-        minLength: 3,
-        combine: function(params) {
-            var vendor_id = $('#vendor_item_vendor').val();
-            return {
-                q: params.query,
-                vendor_id: vendor_id
-            };
-        },
-        callback: function(value, index, object) {
-            if (object.id) {
-                $("#vendor_item_id").val(object.id);
-            }
-        }
-    });
-    $("input.vendoritemnum").blur(function(){
-        var newval=$(this).val();
-        var params = new Array();
-        params.push({name: 'session', value: $("#dbdetailsession").val()});
-        params.push({name: 'newval', value: newval});
-        var url = '/btitemdetails/vendoritem_check';
-        $.post(url,params,function(response) {
-            if (response.errors=='') {
-                $("#profitdataarea").empty().html(response.data.profit);
-                $("select.vendornameinp").val(response.data.vendor_id);
-                $(".itemparamvalue.vendorcountry").empty().html(response.data.shipaddr_country);
-                $(".itemparamvalue.vendorzip").empty().html(response.data.vendor_zipcode);
-                $(".vendorshipstate").empty().html(response.data.shipaddr_state);
-                $(".itemparamvalue.vendorponote").empty().html(response.data.po_note);
-                $(".relievers_vendorprices").empty().html(response.data.vendor_prices);
-                if (newval=='') {
-                    $("input.vendoritemnum").val().addClass('missing_info');
-                    $("input.vendoritemname").val().addClass('missing_info');
-                } else {
-                    $("input.vendoritemnum").removeClass('missing_info');
-                    $("input.vendoritemname").val(response.data.vendor_item_name).removeClass('missing_info');
-                }
+                $(".relievers_vendorprices").empty().html(response.data.vendor_price);
+                $(".itemoptionsarea").empty().html(response.data.colors);
+                $("#vendoritemdetailsarea").empty().html(response.data.vendoritemview);
                 init_btitemdetails_edit();
             } else {
                 show_error(response);
@@ -282,9 +295,11 @@ function init_btitemdetails_edit() {
         var url = '/btitemdetails/btitem_images_edit';
         $.post(url, params, function (response) {
             if (response.errors=='') {
+                $("#imageoptionsbackground").show();
                 $("#itemImagesModalLabel").empty().html(response.data.header);
                 $("#itemImagesModal").find('div.modal-body').empty().html(response.data.content);
                 $("#itemImagesModal").modal({backdrop: 'static', keyboard: false, show: true});
+                // $("#itemImagesModal").modal({show: true});
                 $("#itemImagesModal").on('hidden.bs.modal', function (e) {
                     $(document.body).addClass('modal-open');
                     // show new images
@@ -340,10 +355,81 @@ function init_btitemdetails_edit() {
         var url='/btitemdetails/change_btvendoritemprice';
         $.post(url, params, function (response) {
             if (response.errors=='') {
+                if (fld=='vendor_item_zipcode') {
+                    $(".vendorshipstate").empty().html(response.data.shipstate);
+                }
+                if (newval=='') {
+                    $(".vendordatainpt[data-item='"+fld+"']").addClass('missing_info');
+                } else {
+                    $(".vendordatainpt[data-item='"+fld+"']").removeClass('missing_info');
+                }
             } else {
                 show_error(response);
             }
         },'json');
+    });
+    // Printshop item
+    $("select.printshopitemselect").unbind('change').change(function (){
+        var newval=$(this).val();
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'newval', value: newval});
+        var url='/btitemdetails/change_printshopitem';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".printshop_item_name").empty().html(response.data.printshop_name);
+                if (response.data.printshop_name=='') {
+                    $(".printshop_item_name").addClass('missing_info');
+                } else {
+                    $(".printshop_item_name").removeClass('missing_info');
+                }
+                $("#profitdataarea").empty().html(response.data.profit);
+                $(".relievers_vendorprices").empty().html(response.data.vendorprice);
+                $(".itemoptionsarea").empty().html(response.data.colorsview);
+                $(".itemoptioncheck").empty().html(response.data.imgoptions);
+                init_btitemdetails_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Printshop color
+    $(".printshopcolor").unbind('change').change(function (){
+        var newval=$(this).val();
+        var color = $(this).data('color');
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'newval', value: newval});
+        params.push({name: 'color', value: color});
+        var url='/btitemdetails/change_printshopcolor';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+
+    })
+    $(".vendoritemcountyinp").unbind('change').change(function () {
+        var newval = $(this).val();
+        var fld = $(this).data('item');
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fld', value: fld});
+        params.push({name: 'newval', value: newval});
+        var url = '/btitemdetails/change_btvendoritemprice';
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                $(".vendorshipstate").empty().html(response.data.shipstate);
+                if (newval=='') {
+                    $(".vendoritemcountyinp").addClass('missing_info');
+                } else {
+                    $(".vendoritemcountyinp").removeClass('missing_info');
+                }
+            } else {
+                show_error(response);
+            }
+        }, 'json');
     });
     // Change item price
     $(".priceinpt").unbind('change').change(function () {
@@ -584,6 +670,7 @@ function init_btitemimages_edit() {
         var url="/btitemdetails/item_images_rebuild";
         $.post(url, params, function(response) {
             if (response.errors=='') {
+                $("#imageoptionsbackground").hide();
                 $(".relievers_itemimages").empty().html(response.data.content);
                 init_btitemdetails_edit();
                 $(document.body).addClass('modal-open');
@@ -592,7 +679,7 @@ function init_btitemimages_edit() {
             }
         },'json');
     })
-
+    // Main Image
     if ($("#uploadmainimage").length > 0) {
         var uploader = new qq.FileUploader({
             element: document.getElementById('uploadmainimage'),
@@ -664,6 +751,80 @@ function init_btitemimages_edit() {
             }
         }, 'json');
     });
+    // Category Image
+    if ($("#uploadcategoryimage").length > 0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('uploadcategoryimage'),
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            action: '/utils/save_itemimg',
+            template: temp,
+            multiple: false,
+            debug: false,
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success) {
+                    $("ul.qq-upload-list").css('display','none');
+                    var params = new Array();
+                    params.push({name: 'session', value: $("#dbdetailsession").val()});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    params.push({name: 'fld', value: 'category_image'})
+                    var url="/btitemdetails/save_btimage";
+                    $.post(url, params, function(response){
+                        if (response.errors=='') {
+                            $(".popupimages_section.itemimagesection").empty().html(response.data.content);
+                            init_btitemimages_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    }, 'json');
+                }
+            }
+        });
+    }
+    if ($("#replaceimagecategory").length > 0) {
+        var uploader = new qq.FileUploader({
+            element: document.getElementById('replaceimagecategory'),
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+            action: '/utils/save_itemimg',
+            template: replacetemp,
+            multiple: false,
+            debug: false,
+            onComplete: function(id, fileName, responseJSON){
+                if (responseJSON.success) {
+                    $("ul.qq-upload-list").css('display','none');
+                    var params = new Array();
+                    params.push({name: 'session', value: $("#dbdetailsession").val()});
+                    params.push({name: 'newval', value: responseJSON.filename});
+                    params.push({name: 'fld', value: 'category_image'})
+                    var url="/btitemdetails/save_btimage";
+                    $.post(url, params, function(response){
+                        if (response.errors=='') {
+                            $(".popupimages_section.itemimagesection").empty().html(response.data.content);
+                            init_btitemimages_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    }, 'json');
+                }
+            }
+        });
+    }
+    $(".removeimage.categoryimage").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'newval', value: ''});
+        params.push({name: 'fld', value: 'category_image'})
+        var url="/btitemdetails/save_btimage";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".popupimages_section.itemimagesection").empty().html(response.data.content);
+                init_btitemimages_edit();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+
+    // Top Banner
     if ($("#uploadtopbannerimage").length > 0) {
         var uploader = new qq.FileUploader({
             element: document.getElementById('uploadtopbannerimage'),
@@ -735,61 +896,67 @@ function init_btitemimages_edit() {
             }
         }, 'json');
     });
-    if ($("#additimgadd").length > 0) {
-        var uploader = new qq.FileUploader({
-            element: document.getElementById('additimgadd'),
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
-            action: '/utils/save_itemimg',
-            template: addtemp,
-            multiple: false,
-            debug: false,
-            onComplete: function(id, fileName, responseJSON){
-                if (responseJSON.success) {
-                    $("ul.qq-upload-list").css('display','none');
-                    var params = new Array();
-                    params.push({name: 'session', value: $("#dbdetailsession").val()});
-                    params.push({name: 'newval', value: responseJSON.filename});
-                    var url="/btitemdetails/save_btaddimage";
-                    $.post(url, params, function(response){
-                        if (response.errors=='') {
-                            $(".addimages-slider").empty().html(response.data.content);
-                            init_btitemimages_edit();
-                        } else {
-                            show_error(response);
-                        }
-                    }, 'json');
-                }
-            }
-        });
-    }
     $(".replaseadditems").each(function () {
         var replid = $(this).prop('id');
-        var uploader = new qq.FileUploader({
-            element: document.getElementById(replid),
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
-            action: '/utils/save_itemimg',
-            template: replacetemp,
-            multiple: false,
-            debug: false,
-            onComplete: function(id, fileName, responseJSON){
-                if (responseJSON.success) {
-                    $("ul.qq-upload-list").css('display','none');
-                    var params = new Array();
-                    params.push({name: 'session', value: $("#dbdetailsession").val()});
-                    params.push({name: 'newval', value: responseJSON.filename});
-                    params.push({name: 'fldidx', value: replid});
-                    var url="/btitemdetails/save_btupdaddimage";
-                    $.post(url, params, function(response){
-                        if (response.errors=='') {
-                            $(".addimages-slider").empty().html(response.data.content);
-                            init_btitemimages_edit();
-                        } else {
-                            show_error(response);
-                        }
-                    }, 'json');
+        if (replid!=='') {
+            var uploader = new qq.FileUploader({
+                element: document.getElementById(replid),
+                allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+                action: '/utils/save_itemimg',
+                template: replacetemp,
+                multiple: false,
+                debug: false,
+                onComplete: function(id, fileName, responseJSON){
+                    if (responseJSON.success) {
+                        $("ul.qq-upload-list").css('display','none');
+                        var params = new Array();
+                        params.push({name: 'session', value: $("#dbdetailsession").val()});
+                        params.push({name: 'newval', value: responseJSON.filename});
+                        params.push({name: 'fldidx', value: replid});
+                        var url="/btitemdetails/save_btupdaddimage";
+                        $.post(url, params, function(response){
+                            if (response.errors=='') {
+                                $(".addimages-slider").empty().html(response.data.content);
+                                init_btitemimages_edit();
+                            } else {
+                                show_error(response);
+                            }
+                        }, 'json');
+                    }
                 }
-            }
-        });
+            });
+        }
+    });
+    $(".addimageslider").each(function (){
+        var replid = $(this).prop('id');
+        if (replid!=='') {
+            var uploader = new qq.FileUploader({
+                element: document.getElementById(replid),
+                allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+                action: '/utils/save_itemimg',
+                template: addtemp,
+                multiple: false,
+                debug: false,
+                onComplete: function(id, fileName, responseJSON){
+                    if (responseJSON.success) {
+                        $("ul.qq-upload-list").css('display','none');
+                        var params = new Array();
+                        params.push({name: 'session', value: $("#dbdetailsession").val()});
+                        params.push({name: 'newval', value: responseJSON.filename});
+                        params.push({name: 'fldidx', value: replid});
+                        var url="/btitemdetails/save_btupdaddimage";
+                        $.post(url, params, function(response){
+                            if (response.errors=='') {
+                                $(".addimages-slider").empty().html(response.data.content);
+                                init_btitemimages_edit();
+                            } else {
+                                show_error(response);
+                            }
+                        }, 'json');
+                    }
+                }
+            });
+        }
     });
     $(".removeimage.addimage").unbind('click').click(function () {
         var params = new Array();
@@ -925,32 +1092,65 @@ function init_optionslider() {
     }
     $(".replaseoptionitems").each(function () {
         var replid = $(this).prop('id');
-        var uploader = new qq.FileUploader({
-            element: document.getElementById(replid),
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
-            action: '/utils/save_itemimg',
-            template: replacetemp,
-            multiple: false,
-            debug: false,
-            onComplete: function(id, fileName, responseJSON){
-                if (responseJSON.success) {
-                    $("ul.qq-upload-list").css('display','none');
-                    var params = new Array();
-                    params.push({name: 'session', value: $("#dbdetailsession").val()});
-                    params.push({name: 'newval', value: responseJSON.filename});
-                    params.push({name: 'fldidx', value: replid});
-                    var url="/btitemdetails/save_updoptimage";
-                    $.post(url, params, function(response){
-                        if (response.errors=='') {
-                            $(".colorimages-slider").empty().html(response.data.content);
-                            init_optionslider();
-                        } else {
-                            show_error(response);
-                        }
-                    }, 'json');
+        if (replid != '') {
+            var uploader = new qq.FileUploader({
+                element: document.getElementById(replid),
+                allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+                action: '/utils/save_itemimg',
+                template: replacetemp,
+                multiple: false,
+                debug: false,
+                onComplete: function(id, fileName, responseJSON){
+                    if (responseJSON.success) {
+                        $("ul.qq-upload-list").css('display','none');
+                        var params = new Array();
+                        params.push({name: 'session', value: $("#dbdetailsession").val()});
+                        params.push({name: 'newval', value: responseJSON.filename});
+                        params.push({name: 'fldidx', value: replid});
+                        var url="/btitemdetails/save_updoptimage";
+                        $.post(url, params, function(response){
+                            if (response.errors=='') {
+                                $(".colorimages-slider").empty().html(response.data.content);
+                                init_optionslider();
+                            } else {
+                                show_error(response);
+                            }
+                        }, 'json');
+                    }
                 }
-            }
-        });
+            });
+        }
+    });
+    $(".addoptionimageslider").each(function (){
+        var replid = $(this).prop('id');
+        if (replid != '') {
+            var uploader = new qq.FileUploader({
+                element: document.getElementById(replid),
+                allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+                action: '/utils/save_itemimg',
+                template: addtemp,
+                multiple: false,
+                debug: false,
+                onComplete: function(id, fileName, responseJSON){
+                    if (responseJSON.success) {
+                        $("ul.qq-upload-list").css('display','none');
+                        var params = new Array();
+                        params.push({name: 'session', value: $("#dbdetailsession").val()});
+                        params.push({name: 'newval', value: responseJSON.filename});
+                        params.push({name: 'fldidx', value: replid});
+                        var url="/btitemdetails/save_updoptimage";
+                        $.post(url, params, function(response){
+                            if (response.errors=='') {
+                                $(".colorimages-slider").empty().html(response.data.content);
+                                init_optionslider();
+                            } else {
+                                show_error(response);
+                            }
+                        }, 'json');
+                    }
+                }
+            });
+        }
     });
     $(".optimageorderinpt").unbind('change').change(function () {
         var params = new Array();
@@ -968,6 +1168,20 @@ function init_optionslider() {
         }, 'json');
     });
     $(".removeimage.optimage").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'fldidx', value: $(this).data('image')});
+        var url="/btitemdetails/save_optiondel";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".colorimages-slider").empty().html(response.data.content);
+                init_optionslider();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    $(".removeimagefull").unbind('click').click(function () {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
         params.push({name: 'fldidx', value: $(this).data('image')});

@@ -664,6 +664,15 @@ class Template
         $artdata['previewdoc_view']=$previewview;
         $artdata['previewcnt'] = count($previewdocs);
         $artdata['previewswidth'] = ceil(count($previewdocs)/4)*115;
+        // Templates
+        if ($ord_data['brand']=='SR') {
+            $artdata['empty_url'] = $this->CI->config->item('sr_empty_template');
+            $artdata['empty_title'] = $this->CI->config->item('sr_empty_title');
+        } else {
+            $artdata['empty_url'] = $this->CI->config->item('sb_empty_template');
+            $artdata['empty_title'] = $this->CI->config->item('sb_empty_title');
+        }
+        $artdata['extendview'] = ifset($res, 'extendview',0);
         // Artwork View
         $data['artview']=$this->CI->load->view('leadorderdetails/artwork_view', $artdata, TRUE);
         return $data;

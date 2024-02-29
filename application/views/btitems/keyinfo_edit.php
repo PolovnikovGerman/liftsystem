@@ -1,9 +1,15 @@
 <div class="relievers_keyinfo">
     <div class="sectionlabel">Key Info:</div>
     <div class="actionbtn"><?=$item['item_active']==1 ? 'Make Inactive' : 'Make Active'?></div>
-    <div class="sectionbody">
+    <div class="sectionbody <?=$missinfo==0 ? '' : 'missinginfo'?>">
         <div class="content-row">
-            <div class="itemparamlabel itemactive">Template:</div>
+            <div class="itemparamlabel itemname">Item Name:</div>
+            <div class="itemparamvalue editmode itemname">
+                <input type="text" class="itemkeyinfoinput itemname <?=empty($item['item_name']) ? 'missing_info' : ''?>" data-item="item_name" value="<?=htmlspecialchars($item['item_name'])?>"/>
+            </div>
+        </div>
+        <div class="content-row">
+            <div class="itemparamlabel itemtemplate">Template:</div>
             <div class="itemparamvalue editmode itemtemplate">
                 <select class="keyinfodata itemdetailstemplate <?=empty($item['item_template']) ? 'missing_info' : ''?>">
                     <option value="">Template...</option>
@@ -69,7 +75,6 @@
                 <input type="text" class="itemkeyinfoinput itemmaterial <?=empty($item['item_material']) ? 'missing_info' : ''?>"  data-item="item_material" value="<?=$item['item_material']?>"/>
             </div>
         </div>
-        <div class="sectionseparator">&nbsp;</div>
         <div class="content-row">
             <div class="itemparamlabel itemdescrip">Description:</div>
             <div class="itemparamvalue editmode itemdescrip">

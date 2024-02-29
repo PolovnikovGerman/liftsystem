@@ -57,6 +57,7 @@ Class User_model extends MY_Model
                     'user_name'=>$user['user_name'],
                     'user_replica'=>(!empty($user['user_leadname']) ? $user['user_leadname'] : $user['first_name']),
                     'user_logo' => (empty($user['user_logo']) ? $this->config->item('empty_profile') : $user['user_logo']),
+                    'user_order_export' => $user['user_order_export'],
                 ];
                 $out['result']=$this->success_result;
             }
@@ -154,6 +155,7 @@ Class User_model extends MY_Model
                                 'user_name'=>$res['user_name'],
                                 'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
                                 'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
+                                'user_order_export' => $res['user_order_export'],
                             );
                             usersession('usr_data', $usr_data);
                             // Create access token
@@ -463,6 +465,7 @@ Class User_model extends MY_Model
             $this->db->set('contactnote_relievers', $user['contactnote_relievers']);
             $this->db->set('profit_view', $user['profit_view']);
             $this->db->set('user_page', ifset($user,'user_page',NULL));
+            $this->db->set('user_order_export', ifset($user,'user_order_export',0));
             if ($user['user_id']==0) {
                 $this->db->insert('users');
                 $user_id = $this->db->insert_id();
@@ -490,6 +493,7 @@ Class User_model extends MY_Model
                     $this->db->delete('user_restrictions');
                 }
                 $out['result']=$this->success_result;
+                $out['user_id'] = $user_id;
                 usersession($session_id, NULL);
             }
         }
@@ -663,6 +667,26 @@ Class User_model extends MY_Model
         $this->db->where('menu_item_id', $res['parent_id']);
         $main = $this->db->get()->row_array();
         return $main['item_link'].'/?start='.str_replace('#', '', $res['item_link']);
+    }
+
+    public function rebuild_currentuser($user_id)
+    {
+        $this->db->select('u.*, r.role_short');
+        $this->db->from('users u');
+        $this->db->join('roles r','r.role_id=u.role_id','left');
+        $this->db->where('u.user_id', $user_id);
+        $res = $this->db->get()->row_array();
+        $usr_data = array(
+            'id' => $res['user_id'],
+            'user_logged_in'=> $res['role_short'],
+            'user_email' => $res['user_email'],
+            'user_name'=>$res['user_name'],
+            'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
+            'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
+            'user_order_export' => $res['user_order_export'],
+        );
+        usersession('usr_data', $usr_data);
+        return TRUE;
     }
 
 }

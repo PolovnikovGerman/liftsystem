@@ -1008,19 +1008,21 @@ Class Artwork_model extends MY_Model
                         'email_id'=>$artdata['proofs_id'],
                     );
                     $this->proof_update($proof_dat);
+                    $this->db->select('order_num, brand')->from('ts_orders')->where('order_id', $artdata['order_id']);
+                    $assigndata = $this->db->get()->row_array();
                     // Order #, Mail NUM
-                    $ordpref=$artdata['order_num'];
-                    $mailpref='pr'.$artdata['proof_num'];
-                    $orddocpref=$artdata['order_num'];
-                    $maildocpref='proof_'.$artdata['proof_num'];
-                    /* Proofs */
-                    $idxproof=0;
-                    foreach ($artdata['proofs'] as $prrow) {
-                        $namedoc=$prrow['proof_name'];
-                        $newname=str_replace($maildocpref, $orddocpref, $namedoc);
-                        $artdata['proofs'][$idxproof]['proof_name']=$newname;
-                        $idxproof++;
-                    }
+//                    $ordpref=$artdata['order_num'];
+//                    $mailpref='pr'.$artdata['proof_num'];
+//                    $orddocpref=$artdata['order_num'];
+//                    $maildocpref='proof_'.$artdata['proof_num'];
+//                    /* Proofs */
+//                    $idxproof=0;
+//                    foreach ($artdata['proofs'] as $prrow) {
+//                        $namedoc=$prrow['proof_name'];
+//                        $newname=str_replace($maildocpref, $orddocpref, $namedoc);
+//                        $artdata['proofs'][$idxproof]['proof_name']=$newname;
+//                        $idxproof++;
+//                    }
                 }
                 $orddata=array(
                     'order_rush'=>$artdata['rush'],
@@ -1045,13 +1047,18 @@ Class Artwork_model extends MY_Model
             // $idxproof=0;
             $path_prooffull=$this->config->item('artwork_proofs');
             $path_proofsh=$this->config->item('artwork_proofs_relative');
-            $path_full=$this->config->item('upload_path_preload');
-            $path_sh=$this->config->item('pathpreload');
+            if ($assign_order==1) {
+                $path_prooffull=$this->config->item('artwork_proofs').$artwork_id.'/';
+                $path_proofsh=$this->config->item('artwork_proofs_relative').$artwork_id.'/';
+            }
             createPath($path_proofsh);
+            $numpp = 1;
             foreach ($artdata['proofs'] as $prow) {
                 /* Analyse row*/
                 $proof=array();
                 if ($prow['artwork_proof_id']<0) {
+                    $path_sh=$this->config->item('pathpreload');
+                    $path_full=$this->config->item('upload_path_preload');
                     $chkfilescr=str_replace($path_sh,$path_full,$prow['src']);
                     if (!file_exists($chkfilescr)) {
                         if ($prow['deleted']==0) {
@@ -1059,36 +1066,39 @@ Class Artwork_model extends MY_Model
                         }
                         $prow['deleted']=1;
                     }
+                } else {
+                    $path_sh=$this->config->item('artwork_proofs_relative');
+                    $path_full=$this->config->item('artwork_proofs');
                 }
                 if ($prow['deleted']=='') {
-                    if ($prow['artwork_proof_id']<0) {
-                        // $srclocation=str_replace($path_sh,$path_full,$prow['src']);
-                        // New rec
-                        $proof['artwork_proof_id']=0;
-                        /* rebuild Doc src */
-                        $proofsrc=$prow['src'];
-                        $proofname=$prow['proof_name'];
-                        $srclocation=str_replace($path_sh,$path_full,$proofsrc);
-                        $newlocation=$path_prooffull.$proofname;
-                        @copy($srclocation, $newlocation);
-                        @unlink($srclocation);
-                        $newsrc=$path_proofsh.$proofname;
-                        $proof['proof_name']=$newsrc;
+                    $proofsrc=$prow['src'];
+                    $docnameattr = extract_filename($proofsrc);
+                    if ($assign_order==1) {
+                        $proofname = ($assigndata['brand']=='SR' ? 'SR' : 'BT').$assigndata['order_num'].'_proof_'.str_pad($numpp,2,'0',STR_PAD_LEFT).'.'.$docnameattr['ext'];
                     } else {
-                        $proof['artwork_proof_id']=$prow['artwork_proof_id'];
-                        $proofsrc=$prow['src'];
-                        $proofname=$prow['proof_name'];
+                        $proofname = 'proof_'.$artdata['proof_num'].'_'.str_pad($numpp,2,'0',STR_PAD_LEFT).'.'.$docnameattr['ext'];
+                    }
+                    $srclocation=str_replace($path_sh,$path_full,$proofsrc);
+                    $newlocation=$path_prooffull.$proofname;
+                    $copyneed = 0;
+                    if ($prow['artwork_proof_id']<0) {
+                        $proof['artwork_proof_id'] = 0;
+                        $copyneed = 1;
+                    } else {
+                        $proof['artwork_proof_id'] = $prow['artwork_proof_id'];
                         if (str_replace($path_proofsh,'',$proofsrc)!=$proofname) {
-                            // Need to rename
-                            $srclocation=str_replace($path_proofsh,$path_prooffull,$proofsrc);
-                            $newlocation=$path_prooffull.$proofname;
-                            @copy($srclocation, $newlocation);
-                            @unlink($srclocation);
-                            $newsrc=$path_proofsh.$proofname;
-                            $proof['proof_name']=$newsrc;
+                            $copyneed = 1;
                         }
                     }
-                    $proof['proof_ordnum']=$prow['proof_ordnum'];
+                    /* rebuild Doc src */
+                    if ($copyneed) {
+                        @copy($srclocation, $newlocation);
+                        @unlink($srclocation);
+                    }
+                    $newsrc=$path_proofsh.$proofname;
+                    $proof['proof_name']=$newsrc;
+                    $proof['proof_ordnum']=$numpp;
+                    $numpp++;
                     $proof['source_name']=$prow['source_name'];
                     $proof['artwork_id']=$artwork_id;
                     if ($prow['approved']==1) {
@@ -2102,9 +2112,15 @@ Class Artwork_model extends MY_Model
             $out['msg']='Artwork data was lost. Please reload data';
         } else {
             $dbtablename='sb_items';
+            $brand = ifset($artdata, 'brand','BT');
             $this->db->select("item_id, item_number, item_name, item_vector_img");
             $this->db->from($dbtablename);
             $this->db->where('item_vector_img is not null');
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_id('brand',['SB','BT']);
+            }
             $result=$this->db->get()->result_array();
 
             $out['templates']=$result;
@@ -3497,14 +3513,16 @@ Class Artwork_model extends MY_Model
                 'parameter_newvalue'=>(intval($shippingnew['event_date'])==0 ? '' : date('m/d/Y', $shippingnew['event_date'])),
             );
         }
+
         if (floatval($shippingold['rush_price'])!=  floatval($shippingnew['rush_price'])) {
-            array_push($changes, 'Rush Price to '.MoneyOutput($ordernew['rush_price'],2));
+            array_push($changes, 'Rush Price to '.MoneyOutput(floatval($shippingnew['rush_price']),2));
             $historylist[]=array(
                 'parameter_name'=>'Rush Price',
                 'parameter_oldvalue'=>  MoneyOutput($shippingold['rush_price'],2),
                 'parameter_newvalue'=>  MoneyOutput($shippingnew['rush_price'],2),
             );
         }
+
         // Shipping Address
         $shipoldaddress=$compare_array['shipping_address'];
         $shipnewaddress=$neworddata['shipping_address'];

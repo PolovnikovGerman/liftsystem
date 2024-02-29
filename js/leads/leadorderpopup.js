@@ -192,6 +192,13 @@ function navigation_init() {
         var element = document.querySelector("#shipingcompileaddress");
         copyOrderToClipboard(element);
     });
+    // Copy contact email
+    $(".contactemail_clone").unbind('click').click(function (){
+        var copydat = $(this).data('contactid');
+        var element = document.querySelector(".contact_email_input[data-contactid='"+copydat+"']");
+        copyOrderToClipboard(element);
+        $(element).show();
+    });
 }
 
 
@@ -300,7 +307,9 @@ function edit_currentorder() {
                     initBillOrderAutocomplete();
                 }
                 // Init simple Shipping address
-                initShipOrderAutocomplete();
+                if ($("#shiporder_line1").length > 0) {
+                    initShipOrderAutocomplete();
+                }
             }
         } else {
             $("#loader").hide();
@@ -330,8 +339,8 @@ function init_onlineleadorder_edit() {
             var url="/leadorder/cleanlockedorder";
             var params=new Array();
             params.push({name: 'locrecid', value: locrecid});
-            $.post(url, params, function(response){                
-            },'json');                    
+            $.post(url, params, function(response){
+            },'json');
         }
         $("#artModal").modal('hide');
         $("#artModalLabel").empty();
@@ -410,15 +419,15 @@ function init_onlineleadorder_edit() {
     });
     var order_date=$("input.calendarinpt").data('order');
     $("select.order_itemnumber_select").unbind('change').change(function(){
-        var params=new Array();        
+        var params=new Array();
         params.push({name: 'entity', value:'order'});
         params.push({name: 'fldname', value: 'item_id'});
         params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'ordersession', value: $("input#ordersession").val()});    
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
         var url="/leadorder/change_leadorder_item";
         $("#loader").show();
         $.post(url, params, function(response){
-            if (response.errors=='') {   
+            if (response.errors=='') {
                 $("input[data-field='order_items']").val(response.data.order_items);
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
@@ -431,15 +440,15 @@ function init_onlineleadorder_edit() {
     })
     $("input.inputleadorddata").unbind('change').change(function(){
         var fldname=$(this).data('field');
-        var params=new Array();        
+        var params=new Array();
         params.push({name: 'entity', value:$(this).data('entity')});
         params.push({name: 'fldname', value: fldname});
         params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'ordersession', value: $("input#ordersession").val()});    
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
         var url="/leadorder/change_leadorder_item";
-        $("#loader").show();        
+        $("#loader").show();
         $.post(url, params, function(response){
-            if (response.errors=='') {   
+            if (response.errors=='') {
                 $(".totalduedataviewarea").empty().html(response.data.total_due);
                 $("#ordertotaloutput").empty().html(response.data.order_revenue);
                 $("input.salestaxcost").val(response.data.tax);
@@ -495,15 +504,15 @@ function init_onlineleadorder_edit() {
     });
     $("textarea.inputleadorddata").unbind('change').change(function(){
         var fldname=$(this).data('field');
-        var params=new Array();        
+        var params=new Array();
         params.push({name: 'entity', value:$(this).data('entity')});
         params.push({name: 'fldname', value: fldname});
         params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'ordersession', value: $("input#ordersession").val()});    
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
         var url="/leadorder/change_leadorder_item";
         $("#loader").show();
         $.post(url, params, function(response){
-            if (response.errors=='') {  
+            if (response.errors=='') {
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
                 $("#loader").hide();
@@ -511,7 +520,7 @@ function init_onlineleadorder_edit() {
                 $("#loader").hide();
                 show_error(response);
             }
-        },'json');        
+        },'json');
     });
     $("input.chkboxleadorddata").unbind('change').change(function(){
         var params=new Array();
@@ -524,11 +533,11 @@ function init_onlineleadorder_edit() {
         params.push({name: 'entity', value: entity});
         params.push({name: 'fldname', value: fldname});
         params.push({name: 'newval', value: newval});
-        params.push({name: 'ordersession', value: $("input#ordersession").val()});    
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
         var url="/leadorder/change_leadorder_item";
         $("#loader").show();
         $.post(url, params, function(response){
-            if (response.errors=='') {                
+            if (response.errors=='') {
                 $(".totalduedataviewarea").empty().html(response.data.total_due);
                 $("#ordertotaloutput").empty().html(response.data.order_revenue);
                 $("input.salestaxcost").val(response.data.tax);
@@ -563,14 +572,14 @@ function init_onlineleadorder_edit() {
                 $("#loader").hide();
                 show_error(response);
             }
-        },'json');        
+        },'json');
     });
     $("textarea.inputleadorddatas").unbind('change').change(function(){
         var params=new Array();
         params.push({name: 'entity', value:$(this).data('entity')});
         params.push({name: 'fldname', value: $(this).data('field')});
         params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'ordersession', value: $("input#ordersession").val()});    
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
         var url="/leadorder/change_leadorder_item";
         $("#loader").show();
         $.post(url, params, function(response){
@@ -590,12 +599,12 @@ function init_onlineleadorder_edit() {
                 $("#loader").hide();
                 show_error(response);
             }
-        },'json');        
+        },'json');
     });
     $("div.icon_glass.active").unbind('click').click(function(){
         show_leadorditemsearch();
     });
-    
+
     $("input#leadordercredcard").unbind('change').change(function(){
         var fldname='cc_fee';
         var newval=0;
@@ -617,14 +626,14 @@ function init_onlineleadorder_edit() {
     $("input#taxsalecostdata").unbind('change').change(function(){
         var fldname='tax';
         var newval=parseFloat($(this).val());
-        change_leadorder_profit(fldname, newval);        
+        change_leadorder_profit(fldname, newval);
     });
-    $("select.leadorder_selectreplic").unbind('change').change(function(){        
+    $("select.leadorder_selectreplic").unbind('change').change(function(){
         var params=new Array();
         params.push({name: 'entity', value:'order'});
         params.push({name: 'fldname', value: 'order_usr_repic'});
         params.push({name: 'newval', value: $(this).val()});
-        params.push({name: 'ordersession', value: $("input#ordersession").val()});            
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
         var url="/leadorder/change_leadorder_item";
         $("#loader").show();
         $.post(url, params, function(response){
@@ -644,7 +653,7 @@ function init_onlineleadorder_edit() {
                 $("#loader").hide();
                 show_error(response);
             }
-        },'json');        
+        },'json');
     });
     $("div.newpaymentadd").unbind('click').click(function(){
         var params=new Array();
@@ -667,9 +676,9 @@ function init_onlineleadorder_edit() {
             }
         },'json');
     });
-   
+
     // Show Attempts
-    $("div.chargeattemptlogcall").unbind('click').click(function(){        
+    $("div.chargeattemptlogcall").unbind('click').click(function(){
         var order=$(this).data('order');
         show_chargeattempts(order);
     })
@@ -693,7 +702,7 @@ function init_onlineleadorder_edit() {
                 save_discountdescription();
             });
             create_editorder_timer();
-        },'json');        
+        },'json');
     })
     // Upload Proof doc
     var upload_templ= '<div class="qq-uploader"><div class="custom_upload qq-upload-button" style="background: none;"><img src="/img/artpage/artpopup_add_btn.png" alt="Add Proof"/></div>' +
@@ -863,6 +872,13 @@ function init_onlineleadorder_edit() {
             }
         });
     }
+    // Copy contact email
+    $(".contactemail_clone").unbind('click').click(function (){
+        var copydat = $(this).data('contactid');
+        var element = document.querySelector(".contact_email_input[data-contact='"+copydat+"']");
+        copyOrderToClipboard(element);
+        $(element).show();
+    });
     $("#ordercustomername").autocompleter({
         source: '/leadorder/customersearch',
         minLength: 3,
@@ -887,7 +903,7 @@ function init_onlineleadorder_edit() {
 }
 
 function save_discountdescription() {
-    var params=new Array();    
+    var params=new Array();
     params.push({name: 'message', value: $("textarea.artworkusertext").val()});
     params.push({name: 'ordersession', value: $("input#ordersession").val()});
     var url='/leadorder/orderdiscount_save';
@@ -1020,6 +1036,13 @@ function save_leadorderitem() {
                     }
                     // Shipping Dates
                     $("div.shippingdatesarea").empty().html(response.data.shipdates_content);
+                }
+                if (parseInt(response.data.extendview)==1) {
+                    $(".artclaypreviewarea").show();
+                    $(".artpreviewpreviewarea").show();
+                } else {
+                    $(".artclaypreviewarea").hide();
+                    $(".artpreviewpreviewarea").hide();
                 }
                 init_onlineleadorder_edit();
                 // Print details
@@ -1590,8 +1613,9 @@ function init_showartlocs() {
         show_leadtemplates();
     })
     $("div.empty_template").click(function(){
-        var imgurl="/uploads/aitemp/proof_BT15000_customer_item.ai";
-        openai(imgurl,'proof_BT15000_customer_item.ai');
+        var imgurl= $(this).data('url');
+        var title = $(this).data('title');
+        openai(imgurl, title);
     })
     
     function show_leadtemplates() {
@@ -2985,6 +3009,9 @@ function init_leadorder_shipping() {
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();                
                 init_multiaddress_ship();
+                if (parseInt($("#ordermapuse").val())==1) {
+                    initMapMultiship();
+                }
             } else {
                 show_error(response);                
             }
@@ -3008,6 +3035,9 @@ function init_leadorder_shipping() {
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();                
                 init_multiaddress_ship();
+                if (parseInt($("#ordermapuse").val())==1) {
+                    initMapMultiship();
+                }
             } else {
                 show_error(response);                
             }
@@ -3032,6 +3062,9 @@ function edit_multishipaddress() {
             $("input#loctimeout").val(response.data.loctime);
             init_onlineleadorder_edit();
             init_multiaddress_ship();
+            if (parseInt($("#ordermapuse").val())==1) {
+                initMapMultiship();
+            }
         } else {
             show_error(response);                
         }
@@ -3069,6 +3102,10 @@ function init_multiaddress_ship() {
                 show_error(response);
             }
         },'json');
+    });
+    $("input.salesarrivedate").datepicker({
+        autoclose: true,
+        todayHighlight: true
     });
     $("select.shiprashselect").unbind('change').change(function(){
         var params=new Array();
@@ -3108,16 +3145,19 @@ function init_multiaddress_ship() {
                 $("div#multishiptotals").empty().html(response.data.total_view);
                 $("div.numaddress").empty().html(response.data.numaddress)
                 show_multishipsave(response);
+                show_addnewaddress(response);
                 $("#loader").hide();
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
                 init_multiaddress_ship();
+                if (parseInt($("#ordermapuse").val())==1) {
+                    initMapMultiship();
+                }
             } else {
                 $("#loader").hide();
                 show_error(response);
             }
         },'json');
-        
     });
     // Change Number of QTY
     $("input.shipaddrinput").unbind('change').change(function(){
@@ -3136,6 +3176,7 @@ function init_multiaddress_ship() {
                 $("div#multishiptotals").empty().html(response.data.total_view);
                 $("input.shippingcost[data-shipadr='"+shipadr+"']").val(response.data.shiprate);
                 $("input.salestaxcost[data-shipadr='"+shipadr+"']").val(response.data.sales_tax);
+                $("input.salesarrivedate[data-shipadr='"+shipadr+"']").val(response.data.arrivedate);
                 if (parseInt(response.data.is_calc)===1) {
                     $("div.multishippopuparea").find("div.ship_tax_container2[data-shipadr='"+shipadr+"']").empty().html(response.data.cost_view);
                 }
@@ -3145,6 +3186,7 @@ function init_multiaddress_ship() {
                 $("input.ship_tax_input1[data-shipadr='"+shipadr+"']").val(response.data.city);
                 $("select.ship_tax_select2[data-shipadr='"+shipadr+"']").val(response.data.state_id);
                 show_multishipsave(response);
+                show_addnewaddress(response);
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
                 init_multiaddress_ship();
@@ -3214,7 +3256,8 @@ function init_multiaddress_ship() {
                 $("div.multishippopuparea").find("div.ship_tax_cont2_line[data-shipadr='"+shipadr+"'][data-shipcost='"+response.data.shipping_cost_id+"']").removeClass('opast');
                 $("div.multishippopuparea").find("div.shiprateshowarea[data-shipadr='"+shipadr+"'][data-shipcost='"+response.data.shipping_cost_id+"']").addClass('active');
                 $("input.shippingcost[data-shipadr='"+shipadr+"']").val(response.data.shiprate);                
-                $("input.salestaxcost[data-shipadr='"+shipadr+"']").val(response.data.sales_tax);                
+                $("input.salestaxcost[data-shipadr='"+shipadr+"']").val(response.data.sales_tax);
+                $("input.salesarrivedate[data-shipadr='"+shipadr+"']").val(response.data.arrivedate);
                 $("div#multishiptotals").empty().html(response.data.total_view);
                 show_multishipsave(response);
                 $("input#loctimeout").val(response.data.loctime);
@@ -3371,6 +3414,7 @@ function init_multiaddress_ship() {
                     $("div#multishiptotals").empty().html(response.data.total_view);
                     $("div.numaddress").empty().html(response.data.numaddress);
                     show_multishipsave(response);
+                    show_addnewaddress(response);
                     $("input#loctimeout").val(response.data.loctime);
                     init_onlineleadorder_edit();
                     init_multiaddress_ship();
@@ -3419,6 +3463,13 @@ function show_multishipsave(response) {
     }
 }
 
+function show_addnewaddress(response) {
+    if (parseInt(response.data.viewadd) === 1) {
+        $("div.multishipadressadd").show();
+    } else {
+        $("div.multishipadressadd").hide();
+    }
+}
 function init_taxdocupload(shipadr) {
     var temp= '<div class="qq-uploader"><div class="custom_upload qq-upload-button"><span style="clear: both; float: left; padding-left: 10px; padding-top: 8px;">'+
       '<em>Upload</em></span></div>' +

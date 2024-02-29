@@ -16,6 +16,7 @@
         <?php } ?>
         <div class="sritem <?=($row['custom_order']==1 ? 'customorder' : '')?>"><?=$row['out_item']?></div>
         <div class="revenue"><?=$row['revenue']?></div>
+        <div class="balance <?=$row['balance_class']?>"><?=$row['balance']?></div>
         <div class="artstage"><?=$row['artstage']?></div>
         <div class="points <?=$row['profit_class']?>"><?=$row['points']?></div>
         <div class="pointsdevider">&nbsp;</div>
