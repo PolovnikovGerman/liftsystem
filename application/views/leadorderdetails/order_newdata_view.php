@@ -39,7 +39,11 @@
                     <div class="items_table_line">
                         <div class="items_content_item2 text_green addleadorderitem">+ add item</div>
                         <div class="orderitem_inventoryview">&nbsp;</div>
-                    </div>                    
+                    </div>
+                <?php } else { ?>
+                <div class="items_table_line">
+                    <div class="orderitem_inventoryview">&nbsp;</div>
+                </div>
                 <?php } ?>
             </div>
         </div>

@@ -1485,21 +1485,21 @@ function save_leadorderrdnote(artloc) {
 
 function init_showartlocs() {
     // View Item Images
-    $("div.icon_glass.newactive").hover(
-        function(){
-            var e=$(this);
-            $.get(e.data('viewsrc'),function(d) {
-                e.popover({
-                    content: d,
-                    placement: 'right',
-                    html: true
-                }).popover('show');
-            });
-        },
-        function(){
-            $(this).popover('hide');
-        }
-    );
+    // $("div.icon_glass.newactive").hover(
+    //     function(){
+    //         var e=$(this);
+    //         $.get(e.data('viewsrc'),function(d) {
+    //             e.popover({
+    //                 content: d,
+    //                 placement: 'right',
+    //                 html: true
+    //             }).popover('show');
+    //         });
+    //     },
+    //     function(){
+    //         $(this).popover('hide');
+    //     }
+    // );
     $("div.uploadproofdoc").popover({
         html: true,
         trigger: 'hover',
@@ -1687,6 +1687,23 @@ function init_showartlocs() {
                 for (index = 0; index < previews.length; ++index) {
                     var open = window.open(previews[index]['preview_link'],'PreviewPic'+previews[index]['artwork_preview_id'],'left=320,top=120,width=800,height=580,resizable=yes,scrollbars=yes,status=yes');
                 }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Inventory
+    $(".iteminventoryshow").unbind('click').click(function(){
+        var params = new Array();
+        params.push({name: 'item_id', value: $(this).data('item')});
+        var url = '/leadorder/showinventory';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".orderitem_inventoryview").empty().html(response.data.content);
+                $(".orderitem_inventoryview").show();
+                $(".orderitem_inventoryview_close").unbind('click').click(function (){
+                    $(".orderitem_inventoryview").hide();
+                });
             } else {
                 show_error(response);
             }

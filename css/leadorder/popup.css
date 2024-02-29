@@ -431,6 +431,13 @@ input.order_itemqty_input {
     text-align: right;
     width: 73px;
 }
+.iteminventoryshow {
+    width: 16px;
+    float: left;
+    font-size: 14px;
+    cursor: pointer;
+    color: #a5a0a0;
+}
 .items_content_item2.short {
     width: 57px;
 }
@@ -726,6 +733,7 @@ input.orderitemadd_input {
     z-index: 1055;
     font-size: 15px;
     cursor: pointer;
+    height: 14px;
 }
 /* End Inventory Popup */
 .items_table_text {
@@ -2388,7 +2396,9 @@ input.artrepeat {
     height: 13px;
     float: left;
     margin-top: 2px;
-    margin-left: 4px;
+    /* margin-left: 4px;*/
+    margin-left: -19px;
+    position: absolute;
 }
 .icon_glass.active {
     cursor: pointer;

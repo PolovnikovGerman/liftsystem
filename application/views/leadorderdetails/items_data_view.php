@@ -2,13 +2,19 @@
 <div class="orderitemsarea" data-orderitem="<?=$order_item_id?>">
 <?php foreach ($items as $row) { ?>
     <div class="items_table_line bord_b <?=($nrow%2==0 ? '' : 'items_line_gray')?>">
-        <div class="items_content_item2"><?=$row['item_number']?>
-            <?php if ($row['item_row']==1) { ?>
-                <?php if ($item_id>0) { ?>
-                    <div class="icon_glass newactive" data-viewsrc="/leadorder/viewitemimage?id=<?=$item_id?>">&nbsp;</div>
-                <?php } else { ?>
-                    <div class="icon_glass">&nbsp;</div>
-                <?php } ?>                
+        <?php if ($row['item_row']==1) { ?>
+            <?php if ($item_id>0) { ?>
+                <!-- <div class="icon_glass newactive" data-viewsrc="/leadorder/viewitemimage?id=<?php //$item_id?>">&nbsp;</div> -->
+                <div class="icon_glass newactive" data-event="hover" data-css="weekbrandtotals" data-bgcolor="#FFFFFF" data-bordercolor="#adadad"
+                     data-textcolor="#FFFFFF" data-position="right" data-balloon="{ajax} /leadorder/viewitemimage?id=<?=$item_id?>">&nbsp;</div>
+            <?php } else { ?>
+                <div class="icon_glass">&nbsp;</div>
+            <?php } ?>
+        <?php } ?>
+        <div class="items_content_item2">
+            <?=$row['item_number']?>
+            <?php if ($showinvent==1) { ?>
+                <div class="iteminventoryshow" data-item="<?=$item_id?>"><i class="fa fa-info-circle" aria-hidden="true"></i></div>
             <?php } ?>
         </div>
         <div class="itemdescription_data_view bord_l">

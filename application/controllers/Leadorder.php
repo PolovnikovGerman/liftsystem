@@ -5972,4 +5972,30 @@ class Leadorder extends MY_Controller
         }
         show_404();
     }
+
+    public function showinventory()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $item_id = ifset($postdata,'item_id',0);
+            if (empty($item_id)) {
+                $error = 'Empty Item';
+            } else {
+                $res = $this->leadorder_model->show_iteminvent($item_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $options = [
+                        'onboats' => $res['onboats'],
+                        'invents' => $res['invents'],
+                        'itemstatus' => 1,
+                    ];
+                    $mdata['content'] = $this->load->view('leadorderdetails/itemcolor_inventory_view', $options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }
