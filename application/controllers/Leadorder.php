@@ -966,6 +966,10 @@ class Leadorder extends MY_Controller
                                 'imprints'=>$imprints,
                             );
                             $imprintview=$this->load->view('leadorderdetails/imprint_data_edit', $imprint_options, TRUE);
+                            $showinvent = 0;
+                            if ($order['brand']=='SR' && $irow['item_id']>0) {
+                                $showinvent = 1;
+                            }
                             $item_options=array(
                                 'order_item_id'=>$irow['order_item_id'],
                                 'items'=>$irow['items'],
@@ -974,6 +978,7 @@ class Leadorder extends MY_Controller
                                 'item_id'=>$irow['item_id'],
                                 'brand' => $order['brand'],
                                 'itemslist' => $itemslist,
+                                'showinvent' => $showinvent,
                             );
                             if ($irow['order_item_id']==$res['order_item_id']) {
                                 $content.=$this->load->view('leadorderdetails/items_data_add', $item_options, TRUE);
@@ -1219,6 +1224,10 @@ class Leadorder extends MY_Controller
                             'imprints'=>$imprints,
                         );
                         $imprintview=$this->load->view('leadorderdetails/imprint_data_edit', $imprint_options, TRUE);
+                        $showinvent = 0;
+                        if ($order['brand']=='SR' && $irow['item_id']>0) {
+                            $showinvent = 1;
+                        }
                         $item_options=array(
                             'order_item_id'=>$irow['order_item_id'],
                             'items'=>$irow['items'],
@@ -1226,6 +1235,7 @@ class Leadorder extends MY_Controller
                             'edit'=>1,
                             'item_id'=>$irow['item_id'],
                             'brand' => $order['brand'],
+                            'showinvent' => $showinvent,
                         );
                         $content.=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
                     }
@@ -1321,6 +1331,10 @@ class Leadorder extends MY_Controller
                                     'imprints'=>$imprints,
                                 );
                                 $imprintview=$this->load->view('leadorderdetails/imprint_data_edit', $imprint_options, TRUE);
+                                $showinvent = 0;
+                                if ($order['brand']=='SR' && $irow['item_id']>0) {
+                                    $showinvent = 1;
+                                }
                                 $item_options=array(
                                     'order_item_id'=>$irow['order_item_id'],
                                     'items'=>$irow['items'],
@@ -1328,6 +1342,7 @@ class Leadorder extends MY_Controller
                                     'edit'=>1,
                                     'item_id'=>$irow['item_id'],
                                     'brand' => $order['brand'],
+                                    'showinvent' => $showinvent,
                                 );
                                 $content.=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
                             }
@@ -1453,12 +1468,17 @@ class Leadorder extends MY_Controller
                             'imprints' => $imprints,
                         );
                         $imprintview = $this->load->view('leadorderdetails/imprint_data_edit', $imprint_options, TRUE);
+                        $showinvent = 0;
+                        if ($order['brand']=='SR' && $irow['item_id']>0) {
+                            $showinvent = 1;
+                        }
                         $item_options = array(
                             'order_item_id' => $irow['order_item_id'],
                             'items' => $irow['items'],
                             'imprintview' => $imprintview,
                             'edit' => 1,
                             'item_id' => $irow['item_id'],
+                            'showinvent' => $showinvent,
                         );
                         $content.=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
                     }
@@ -2182,11 +2202,16 @@ class Leadorder extends MY_Controller
                     $order_items=$res['items'];
                     $imprints=$order_items['imprints'];
                     $imprintview=$this->load->view('leadorderdetails/imprint_data_edit', array('imprints'=>$imprints), TRUE);
+                    $showinvent = 0;
+                    if ($res['order']['brand']=='SR' && $order_items['item_id']>0) {
+                        $showinvent = 1;
+                    }
                     $item_options=array(
                         'order_item_id'=>$order_items['order_item_id'],
                         'items'=>$order_items['items'],
                         'imprintview'=>$imprintview,
                         'edit'=>1,
+                        'showinvent' => $showinvent,
                     );
                     $mdata['content']=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
                 }
@@ -2615,6 +2640,10 @@ class Leadorder extends MY_Controller
                                 'imprints'=>$imprints,
                             );
                             $imprintview=$this->load->view('leadorderdetails/imprint_data_edit', $imprint_options, TRUE);
+                            $showinvent = 0;
+                            if ($order['brand']=='SR' && $irow['item_id']>0) {
+                                $showinvent = 1;
+                            }
                             $item_options=array(
                                 'order_item_id'=>$irow['order_item_id'],
                                 'items'=>$irow['items'],
@@ -2622,6 +2651,7 @@ class Leadorder extends MY_Controller
                                 'edit'=>1,
                                 'item_id'=>$irow['item_id'],
                                 'brand' => $order['brand'],
+                                'showinvent' => $showinvent,
                             );
                             $content.=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
                         }

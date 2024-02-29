@@ -1928,6 +1928,7 @@ Class Leadorder_model extends My_Model {
         usersession($ordersession, $leadorder);
         $out['result']=$this->success_result;
         $out['items']=$order_items[$idx];
+        $out['order'] = $order;
         return $out;
     }
 
