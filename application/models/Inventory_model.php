@@ -91,7 +91,12 @@ class Inventory_model extends MY_Model
                 } elseif ($inventory_filter==2) {
                     $this->db->where('color_status',0);
                 }
-                $this->db->order_by($sortby); // 'color_order'
+                if ($sortby=='suggeststock') {
+                    $this->db->order_by($sortby,'desc'); // 'color_order'
+                } else {
+                    $this->db->order_by($sortby); // 'color_order'
+                }
+
                 $colors = $this->db->get()->result_array();
                 $color_seq = 1;
                 foreach ($colors as $color) {
