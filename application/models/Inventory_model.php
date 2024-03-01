@@ -2529,10 +2529,10 @@ class Inventory_model extends MY_Model
         // Get Onboats on way
         $this->db->select('o.onboat_container,o.onboat_type,o.onboat_date,count(o.inventory_onboat_id) as cnt');
         $this->db->from('ts_inventory_onboats o');
-        $this->db->join('ts_inventory_colors c','o.inventory_color_id = c.inventory_color_id');
-        $this->db->join('ts_inventory_items i','c.inventory_item_id = i.inventory_item_id');
+        // $this->db->join('ts_inventory_colors c','o.inventory_color_id = c.inventory_color_id');
+        // $this->db->join('ts_inventory_items i','c.inventory_item_id = i.inventory_item_id');
         $this->db->where('o.onboat_status',0);
-        $this->db->where('i.inventory_item_id', $inventory_item_id);
+        // $this->db->where('i.inventory_item_id', $inventory_item_id);
         $this->db->group_by('o.onboat_container,o.onboat_type,o.onboat_date');
         $onboats = $this->db->get()->result_array();
         // Get colors
@@ -2582,6 +2582,10 @@ class Inventory_model extends MY_Model
                 'reserved' => $reserved,
                 'available' => $outavail,
             ];
+            $idx = count($outcolors) - 1;
+            foreach ($onboats as $onboat) {
+                $outcolors[$idx]['onboat'.$onboat['onboat_container']]='';
+            }
         }
         // Add onboat
         foreach ($onboats as $onboat) {
@@ -2596,7 +2600,6 @@ class Inventory_model extends MY_Model
             $idx = 0;
             foreach ($outcolors as $outcolor) {
                 foreach ($onroads as $onroad) {
-                    $outcolors[$idx]['onboat'.$onboat['onboat_container']]='';
                     if ($onroad['inventory_color_id']==$outcolor['id']) {
                         $outcolors[$idx]['onboat'.$onboat['onboat_container']]=QTYOutput($onroad['onroutestock']);
                         break;
