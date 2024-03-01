@@ -902,7 +902,7 @@ Class Leadorder_model extends My_Model {
             $out['extendview'] = 1;
         }
         // Empty items
-        $out['order_items'] = $this->_create_empty_orderitems();
+        // $out['order_items'] = $this->_create_empty_orderitems();
         return $out;
     }
 

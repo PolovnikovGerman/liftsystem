@@ -6,20 +6,20 @@
                 <select class="addnewitem" data-orderitem="<?=$order_item_id?>">
                     <option value="">Enter &amp; Select Item</option>
                     <?php foreach ($itemslist as $list) { ?>
-                        <option value="<?=$list['item_id']?>"><?=$list['itemnumber']?> <?=$list['itemname']?></option>
+                        <option value="<?=$list['item_id']?>"><?=$list['itemnumber']?> &ndash; <?=$list['itemname']?></option>
                     <?php } ?>
                 </select>
             </div>
-            <div class="itemcolor_adddata bord_l">&nbsp;</div>
-            <div class="items_content_addqty bord_l">&nbsp;</div>
-            <div class="items_content_addprice bord_l">&nbsp;</div>
-            <div class="items_content_sub_total2 bord_l" data-item="<?=$row['item_id']?>" data-orderitem="<?=$row['order_item_id']?>">
+            <div class="itemcolor_adddata">&nbsp;</div>
+            <div class="items_content_addqty">&nbsp;</div>
+            <div class="items_content_addprice">&nbsp;</div>
+            <div class="items_content_sub_total2" data-item="<?=$row['item_id']?>" data-orderitem="<?=$row['order_item_id']?>">
                 <div class="items_content_addprint" data-orderitem="<?=$row['order_item_id']?>">
                     <i class="fa fa-check-square"></i>
                 </div>
                 <span class="itemsubtotal"></span>
             </div>
-            <div class="items_content_cancel bord_l" data-orderitem="<?=$row['order_item_id']?>"><i class="fa fa-trash"></i></div>
+            <div class="items_content_cancel" data-orderitem="<?=$row['order_item_id']?>"><i class="fa fa-trash"></i></div>
         </div>
         <?php $nrow++;?>
     <?php } ?>

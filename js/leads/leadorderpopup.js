@@ -959,6 +959,11 @@ function show_leadorditemsearch() {
             init_onlineleadorder_edit();
             $("div#orderitemdataarea").empty().html(response.data.items_content);
             init_leadorder_items();
+            $('select.addnewitem').select2({
+                dropdownParent: $('#artModal'),
+                matcher: matchStart,
+            });
+            $(".addnewitem").select2('open');
             // Focus on Items select
 
             // $("#artNextModal").find('div.modal-dialog').css('width','455px');
@@ -5279,10 +5284,6 @@ function copyOrderToClipboard(element) {
 }
 
 function init_addneworderitem() {
-    $('select.addnewitem').select2({
-        dropdownParent: $('#artModal'),
-        matcher: matchStart,
-    });
     $("span.addnewcolor").unbind('click').click(function () {
         var orderitem_id = $(this).data('orderitem');
         var params = new Array();
@@ -5311,19 +5312,25 @@ function init_addneworderitem() {
         $.post(url, params, function (response) {
             if (response.errors == '') {
                 $(".itemcolor_adddata").empty().html(response.data.outcolors);
-                $(".items_content_addqty").empty().html(response.data.qty);
-                $(".items_content_addprice").empty().html(response.data.price);
-                $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal);
                 $(".items_content_addprint").css('visibility','visible');
                 init_addneworderitem();
                 // Open color select
                 if (parseInt(response.data.special)==0) {
                     if (response.data.brand == 'SR') {
+                        $(".items_content_addqty").empty().html(response.data.qty).css('visibility','hidden');
+                        $(".items_content_addprice").empty().html(response.data.price).css('visibility','hidden');
+                        $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal).css('visibility','hidden');
                         $("span.addnewcolor").trigger('click');
                     } else {
                         // Focus on
+                        $('.itemcolor_adddata').find("select.orderitemcolors").focus();
+                        $(".items_content_addqty").empty().html(response.data.qty);
+                        $(".items_content_addprice").empty().html(response.data.price);
                     }
                 } else {
+                    $(".items_content_addqty").empty().html(response.data.qty);
+                    $(".items_content_addprice").empty().html(response.data.price);
+                    $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal);
                     // Focus on QTY
                     $(".items_content_addqty").find('input.orderitem_qty').focus();
                 }
@@ -5362,11 +5369,21 @@ function init_addneworderitem() {
         $.post(url, params, function (response) {
             if (response.errors == '') {
                 $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal);
+                // Init Print Details
+                $(".items_content_addprint").trigger('click');
                 init_addneworderitem();
             } else {
                 show_error(response);
             }
         }, 'json');
+    });
+    $(".items_content_addprice").find('input.orderitem_price').on('keydown', function(event){
+        let key = (event.keyCode ? event.keyCode : event.which);
+        if (key==13) {
+            $(".items_content_addprint").trigger('click');
+        } else if (key==9) {
+            $(".items_content_addprint").trigger('click');
+        }
     });
     $(".items_content_addprint").unbind('click').click(function(){
         var orderitem_id = $(this).data('orderitem');
@@ -5433,7 +5450,11 @@ function init_srinventory_select(orderitem_id) {
             if (response.errors=='') {
                 $(".itemcolor_adddata").empty().html(response.data.outcolors);
                 $(".orderitem_inventoryview").hide();
+                $(".items_content_addqty").css('visibility','visible');
+                $(".items_content_addprice").css('visibility','visible');
+                $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').css('visibility','visible');
                 $(".items_content_addqty").find('input.orderitem_qty').focus();
+                // $("select.addnewitem").next().focus();
                 init_addneworderitem();
             } else {
                 show_error(response);
@@ -5473,6 +5494,9 @@ function init_srcolor_select(orderitem_id, item_id) {
             if (response.errors == '') {
                 $(".orderitem_inventoryview").hide();
                 $(".addnewcolor[data-orderitem='"+orderitem_id+"'][data-item='"+item_id+"']").empty().html(colorname);
+                if ($(".orderitem_inventoryview_close").length==0) {
+
+                }
                 init_onlineleadorder_edit();
             } else {
                 show_error(response);

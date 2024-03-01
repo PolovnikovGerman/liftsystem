@@ -5998,6 +5998,7 @@ class Leadorder extends MY_Controller
                     }
                 }
             }
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
