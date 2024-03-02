@@ -1715,6 +1715,7 @@ function init_showartlocs() {
     $(".iteminventoryshow").unbind('click').click(function(){
         var params = new Array();
         params.push({name: 'item_id', value: $(this).data('item')});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
         var url = '/leadorder/showinventory';
         $.post(url, params, function (response){
             if (response.errors=='') {

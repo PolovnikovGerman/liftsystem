@@ -1546,8 +1546,13 @@ Class Leadorder_model extends My_Model {
                     'item_id'=>$newitem['item_id'],
                     'colors'=>$newitem['colors'],
                     'item_color'=>$newitem['item_color'],
+                    'brand' => $order['brand'],
                 );
-                $newitem['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+                if ($order['brand']=='SR') {
+                    $newitem['out_colors']=$this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
+                } else {
+                    $newitem['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+                }
             }
             if ($newitem['num_colors']>1) {
                 $newitem['item_color_add']=1;
@@ -2008,8 +2013,13 @@ Class Leadorder_model extends My_Model {
                 'item_id'=>$items[$itmidx]['item_id'],
                 'colors'=>$items[$itmidx]['colors'],
                 'item_color'=>$items[$itmidx]['item_color'],
+                'brand' => $order['brand'],
             );
-            $items[$itmidx]['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+            if ($order['brand']=='SR') {
+                $items[$itmidx]['out_colors']=$this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
+            } else {
+                $items[$itmidx]['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+            }
         } elseif ($fldname=='item_price') {
             // Get  Item price
             if($order_items[$idx]['item_id']>0) {
@@ -7200,8 +7210,13 @@ Class Leadorder_model extends My_Model {
                         'item_id'=>(-1)*($itmid),
                         'colors'=>$pitem['colors'],
                         'item_color'=>$pitem['item_color'],
+                        'brand' => $order['brand'],
                     );
-                    $out_colors=$this->load->view('leadorderdetails/item_color_choice', $coloroptions, TRUE);
+                    if ($order['brand']=='SR') {
+                        $out_colors=$this->load->view('leadorderdetails/sradditem_color_view', $coloroptions, TRUE);
+                    } else {
+                        $out_colors=$this->load->view('leadorderdetails/item_color_choice', $coloroptions, TRUE);
+                    }
                     $newitems[]=array(
                         'order_item_id'=>(-1)*$idx,
                         'item_id' =>(-1)*($itmid),
@@ -7384,8 +7399,13 @@ Class Leadorder_model extends My_Model {
                     'item_id'=>$newitem['item_id'],
                     'colors'=>$newitem['colors'],
                     'item_color'=>$newitem['item_color'],
+                    'brand' => $order['brand'],
                 );
-                $newitem['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+                if ($order['brand']=='SR') {
+                    $newitem['out_colors']=$this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
+                } else {
+                    $newitem['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+                }
             }
             if ($newitem['num_colors']>1) {
                 $newitem['item_color_add']=1;
@@ -10431,8 +10451,13 @@ Class Leadorder_model extends My_Model {
                     'item_id'=>$newitem['item_id'],
                     'colors'=>$newitem['colors'],
                     'item_color'=>$newitem['item_color'],
+                    'brand' => $order['brand'],
                 );
-                $newitem['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+                if ($order['brand']=='SR') {
+                    $newitem['out_colors']=$this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
+                } else {
+                    $newitem['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+                }
             }
             if ($newitem['num_colors']>1) {
                 $newitem['item_color_add']=1;
@@ -10654,19 +10679,30 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 
-    public function show_iteminvent($item_id)
+    public function show_iteminvent($leadorder, $order_item_id, $ordersession)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Order Item Not Found'];
-        // $item_number = $order_items[$idx]['item_number'];
-        $this->db->select('ii.inventory_item_id')->from('ts_inventory_items ii')->join('sb_items i','i.item_number=ii.item_num')->where('i.item_id', $item_id);
-        $invres = $this->db->get()->row_array();
-        if (ifset($invres,'inventory_item_id',0)>0) {
-            $out['result'] = $this->success_result;
-            $this->load->model('inventory_model');
-            $res = $this->inventory_model->orderitem_inventory($invres['inventory_item_id']);
-            $out['onboats'] = $res['onboats'];
-            $out['invents'] = $res['inventory'];
+        $order_items = $leadorder['order_items'];
+        $find = 0;
+        foreach ($order_items as $order_item) {
+            if ($order_item['order_item_id']==$order_item_id) {
+                $find = 1;
+                $item_id = $order_item['item_id'];
+                break;
+            }
         }
+        if ($find == 1) {
+            $this->db->select('ii.inventory_item_id')->from('ts_inventory_items ii')->join('sb_items i','i.item_number=ii.item_num')->where('i.item_id', $item_id);
+            $invres = $this->db->get()->row_array();
+            if (ifset($invres,'inventory_item_id',0)>0) {
+                $out['result'] = $this->success_result;
+                $this->load->model('inventory_model');
+                $res = $this->inventory_model->orderitem_inventory($invres['inventory_item_id']);
+                $out['onboats'] = $res['onboats'];
+                $out['invents'] = $res['inventory'];
+            }
+        }
+        // $item_number = $order_items[$idx]['item_number'];
         return $out;
     }
 
