@@ -564,7 +564,7 @@ input.order_itemqty_input {
     float: left;
     line-height: 20px;
     /*width: 520px;*/
-    width: calc(100% - 5px);
+    width: calc(100% - 3px);
 }
 /* Add new item */
 .items_content_add {

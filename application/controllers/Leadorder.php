@@ -6008,21 +6008,26 @@ class Leadorder extends MY_Controller
     {
         if ($this->isAjax()) {
             $mdata = [];
-            $postdata = $this->input->post();
-            $item_id = ifset($postdata,'item_id',0);
-            if (empty($item_id)) {
-                $error = 'Empty Item';
-            } else {
-                $res = $this->leadorder_model->show_iteminvent($item_id);
-                $error = $res['msg'];
-                if ($res['result']==$this->success_result) {
-                    $error = '';
-                    $options = [
-                        'onboats' => $res['onboats'],
-                        'invents' => $res['invents'],
-                        'itemstatus' => 1,
-                    ];
-                    $mdata['content'] = $this->load->view('leadorderdetails/itemcolor_inventory_view', $options, TRUE);
+            $error = $this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $order_item_id = ifset($postdata,'item_id',0);
+                if (empty($order_item_id)) {
+                    $error = 'Empty Item';
+                } else {
+                    $res = $this->leadorder_model->show_iteminvent($leadorder, $order_item_id, $ordersession);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $options = [
+                            'onboats' => $res['onboats'],
+                            'invents' => $res['invents'],
+                            'itemstatus' => 1,
+                        ];
+                        $mdata['content'] = $this->load->view('leadorderdetails/itemcolor_inventory_view', $options, TRUE);
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);

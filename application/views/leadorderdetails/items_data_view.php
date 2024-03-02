@@ -13,8 +13,8 @@
         <?php } ?>
         <div class="items_content_item2">
             <?=$row['item_number']?>
-            <?php if ($showinvent==1) { ?>
-                <div class="iteminventoryshow" data-item="<?=$item_id?>"><i class="fa fa-info-circle" aria-hidden="true"></i></div>
+            <?php if ($showinvent==1 && $row['item_row']==1) { ?>
+                <div class="iteminventoryshow" data-item="<?=$order_item_id?>"><i class="fa fa-info-circle" aria-hidden="true"></i></div>
             <?php } ?>
         </div>
         <div class="itemdescription_data_view bord_l">
