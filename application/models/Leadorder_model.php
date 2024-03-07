@@ -1838,7 +1838,9 @@ Class Leadorder_model extends My_Model {
             $shipping=$shpres['shipping'];
             $shipping_address=$shpres['shipping_address'];
         }
-
+        if (count($neworder)==0) {
+            $neworder = $this->_create_empty_orderitems();
+        }
         $leadorder['shipping']=$shipping;
         $leadorder['artlocations']=$artlocations;
         $leadorder['order']=$order;
@@ -10672,6 +10674,9 @@ Class Leadorder_model extends My_Model {
         }
         if ($found==1) {
             $out['result'] = $this->success_result;
+            if (count($newitems)==0) {
+                $newitems = $this->_create_empty_orderitems();
+            }
             $out['order_items'] = $newitems;
             $out['order'] = $order;
             $leadorder['order_items'] = $newitems;

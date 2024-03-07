@@ -1217,6 +1217,7 @@ class Leadorder extends MY_Controller
                     $order_items=$res['order_items'];
                     $order = $res['order'];
                     $content='';
+                    $mdata['newitem'] = 0;
                     foreach ($order_items as $irow) {
                         $imprints=$irow['imprints'];
                         $imprint_options=array(
@@ -1237,7 +1238,19 @@ class Leadorder extends MY_Controller
                             'brand' => $order['brand'],
                             'showinvent' => $showinvent,
                         );
-                        $content.=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                        if ($irow['item_id']=='') {
+                            $this->load->model('orders_model');
+                            $dboptions=array(
+                                'exclude'=>array(-4, -5, -2),
+                                'brand' => ($order['brand']=='SR') ? 'SR' : 'BT',
+                            );
+                            $itemslist=$this->orders_model->get_item_list($dboptions);
+                            $item_options['itemslist'] = $itemslist;
+                            $content.=$this->load->view('leadorderdetails/items_data_add', $item_options, TRUE);
+                            $mdata['newitem'] = 1;
+                        } else {
+                            $content.=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                        }
                     }
                     $mdata['items_content']=$content;
                 }
@@ -1461,6 +1474,7 @@ class Leadorder extends MY_Controller
                     $order_items = $res['order_items'];
 
                     $content = '';
+                    $mdata['newitem'] = 0;
                     foreach ($order_items as $irow) {
                         $imprints = $irow['imprints'];
                         $imprint_options = array(
@@ -1479,8 +1493,22 @@ class Leadorder extends MY_Controller
                             'edit' => 1,
                             'item_id' => $irow['item_id'],
                             'showinvent' => $showinvent,
+                            'brand' => $order['brand'],
                         );
-                        $content.=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                        if ($irow['item_id']=='') {
+                            $this->load->model('orders_model');
+                            $dboptions=array(
+                                'exclude'=>array(-4, -5, -2),
+                                'brand' => ($order['brand']=='SR') ? 'SR' : 'BT',
+                            );
+                            $itemslist=$this->orders_model->get_item_list($dboptions);
+                            $item_options['itemslist'] = $itemslist;
+                            $content.=$this->load->view('leadorderdetails/items_data_add', $item_options, TRUE);
+                            $mdata['newitem'] = 1;
+                        } else {
+                            $content.=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                        }
+                        // $content.=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
                     }
                     $mdata['content'] = $content;
                     /* Rush */
