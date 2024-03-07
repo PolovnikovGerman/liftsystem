@@ -5313,13 +5313,13 @@ function init_addneworderitem() {
         $.post(url, params, function (response) {
             if (response.errors == '') {
                 $(".itemcolor_adddata").empty().html(response.data.outcolors);
-                $(".items_content_addprint").css('visibility','visible');
+                // $(".items_content_addprint").css('visibility','visible');
                 init_addneworderitem();
                 // Open color select
                 if (parseInt(response.data.special)==0) {
                     if (response.data.brand == 'SR') {
-                        $(".items_content_addqty").empty().html(response.data.qty).css('visibility','hidden');
-                        $(".items_content_addprice").empty().html(response.data.price).css('visibility','hidden');
+                        $(".items_content_addqty").empty().html(response.data.qty).css('visibility','hidden'); //
+                        $(".items_content_addprice").empty().html(response.data.price).css('visibility','hidden'); //
                         $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal).css('visibility','hidden');
                         $("span.addnewcolor").trigger('click');
                     } else {
@@ -5350,9 +5350,11 @@ function init_addneworderitem() {
         var url = "/leadorder/saveneworderitemparam";
         $.post(url, params, function (response) {
             if (response.errors == '') {
-                $(".items_content_addprice").empty().html(response.data.price);
+                $(".items_content_addprice").empty().html(response.data.price).css('visibility','visible');
                 $(".items_content_addprice").find('input.orderitem_price').focus();
-                $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal);
+                $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal).css('visibility','visible');
+                $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").css('visibility','visible');
+                $(".items_content_addprint").css('visibility','visible');
                 init_addneworderitem();
             } else {
                 show_error(response);
@@ -5369,7 +5371,8 @@ function init_addneworderitem() {
         var url = "/leadorder/saveneworderitemparam";
         $.post(url, params, function (response) {
             if (response.errors == '') {
-                $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal);
+                $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal).css('visibility','visible');
+                // $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal);
                 // Init Print Details
                 $(".items_content_addprint").trigger('click');
                 init_addneworderitem();
@@ -5452,8 +5455,8 @@ function init_srinventory_select(orderitem_id) {
                 $(".itemcolor_adddata").empty().html(response.data.outcolors);
                 $(".orderitem_inventoryview").hide();
                 $(".items_content_addqty").css('visibility','visible');
-                $(".items_content_addprice").css('visibility','visible');
-                $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').css('visibility','visible');
+                // $(".items_content_addprice").css('visibility','visible');
+                // $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').css('visibility','visible');
                 $(".items_content_addqty").find('input.orderitem_qty').focus();
                 // $("select.addnewitem").next().focus();
                 init_addneworderitem();

@@ -10367,19 +10367,20 @@ Class Leadorder_model extends My_Model {
                 $itmcolor=$colors[0];
             }
             $item_description=$itemdata['item_name'];
-            $defqty=$this->config->item('defqty_common');
+            $defqty= 0; // $this->config->item('defqty_common');
+            $minqty = 0;
             if ($item_id==$this->config->item('custom_id')) {
                 $defqty=$this->config->item('defqty_custom');
             } else {
                 if ($item_id > 0) {
                     $prices = $this->prices_model->get_itemlist_price($item_id);
-                    $minqty = intval($prices[0]['item_qty']);
+                    // $minqty = intval($prices[0]['item_qty']);
                 } else {
-                    $minqty = $defqty;
+                    // $minqty = $defqty;
                 }
-                if ($minqty > $defqty) {
-                    $defqty = $minqty;
-                }
+//                if ($minqty > $defqty) {
+//                    $defqty = $minqty;
+//                }
             }
             $orditem=array(
                 'order_item_id'=>$order_item_id,
