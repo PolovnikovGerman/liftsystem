@@ -606,11 +606,16 @@ li.select2-results__option {
 }
 .items_content_addprint {
     float: left;
-    /* width: 14px; */
-    color: #008000;
-    font-size: 11px;
+    color: #ffffff;
+    font-size: 10px;
     cursor: pointer;
     visibility: hidden;
+    background: #008000;
+    height: 18px;
+    border-radius: 4px;
+    padding: 0 3px;
+    line-height: 18px;
+    margin-top: 1px;
 }
 .items_content_cancel {
     float: left;
