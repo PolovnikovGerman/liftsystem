@@ -263,7 +263,7 @@ function matchStart(params, data) {
     // `data.text` is the text that is displayed for the data object
     if (data.text.toUpperCase().indexOf(params.term.toUpperCase()) > -1) {
         var modifiedData = $.extend({}, data, true);
-        modifiedData.text += ' (matched)';
+        // modifiedData.text += ' (matched)';
 
         // You can return modified objects from here
         // This includes matching the `children` how you want in nested data sets

@@ -347,16 +347,26 @@ class Template
                     );
                     $imprintview=$this->CI->load->view('leadorderdetails/imprint_data_edit', $ioptions, TRUE);
                 }
+                $showinvent = 0;
+                if ($ord_data['brand']=='SR' && $irow['item_id']>0) {
+                    $showinvent = 1;
+                }
                 $item_options=array(
                     'order_item_id'=>$irow['order_item_id'],
                     'item_id'=>$irow['item_id'],
                     'items'=>$irow['items'],
                     'imprintview'=>$imprintview,
                     'edit'=>$edit,
+                    'showinvent' => $showinvent,
                 );
                 $subtotal+=($irow['imprint_subtotal']+$irow['item_subtotal']);
                 if ($edit==1) {
-                    $content.=$this->CI->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                    if ($irow['item_id']=='') {
+                        $item_options['itemslist'] = $res['itemslist'];
+                        $content.=$this->CI->load->view('leadorderdetails/items_data_add', $item_options, TRUE);
+                    } else {
+                        $content.=$this->CI->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                    }
                 } else {
                     $content.=$this->CI->load->view('leadorderdetails/items_data_view', $item_options, TRUE);
                 }

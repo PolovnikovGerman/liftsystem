@@ -2529,4 +2529,94 @@ class Inventory_model extends MY_Model
         return $out;
     }
 
+    public function orderitem_inventory($inventory_item_id)
+    {
+        // Get Onboats on way
+        $this->db->select('o.onboat_container,o.onboat_type,o.onboat_date,count(o.inventory_onboat_id) as cnt');
+        $this->db->from('ts_inventory_onboats o');
+        // $this->db->join('ts_inventory_colors c','o.inventory_color_id = c.inventory_color_id');
+        // $this->db->join('ts_inventory_items i','c.inventory_item_id = i.inventory_item_id');
+        $this->db->where('o.onboat_status',0);
+        // $this->db->where('i.inventory_item_id', $inventory_item_id);
+        $this->db->group_by('o.onboat_container,o.onboat_type,o.onboat_date');
+        $onboats = $this->db->get()->result_array();
+        // Get colors
+        $this->db->select('*');
+        $this->db->from('ts_inventory_colors');
+        $this->db->where('inventory_item_id', $inventory_item_id);
+        $this->db->order_by('color_order');
+        $colors = $this->db->get()->result_array();
+        $outcolors = [];
+        foreach ($colors as $color) {
+            $income = $this->inventory_color_income($color['inventory_color_id']);
+            $outcome = $this->inventory_color_outcome($color['inventory_color_id']);
+            $reserved = $this->inventory_color_reserved($color['inventory_color_id']);
+            $instock=$income-$outcome;
+            $available=$instock-$reserved;
+            $max=$color['suggeststock'];
+            $stockperc='';
+            $stockclass='';
+            if ($max!=0) {
+                $stockperc=round($instock/$max*100,0);
+                if ($stockperc <= $this->config->item('invoutstock')) {
+                    $stockclass = $this->outstockclass;
+                } elseif ($stockperc <= $this->config->item('invlowstock')) {
+                    $stockclass = $this->lowstockclass;
+                }
+            }
+            $outstock = QTYOutput($instock);
+            if (intval($instock) == 0) {
+                $outstock=$this->outstoklabel;
+                $stockclass = $this->emptystockclass;
+            }
+            $outavail = QTYOutput($available);
+            if (intval($available) == 0 ) {
+                $outavail=$this->outstoklabel;
+                $stockclass = $this->emptystockclass;
+            }
+            $totalclass='';
+            if (intval($available) <=0 ) {
+                $totalclass = 'emptytotal';
+            }
+            $outcolors[] = [
+                'id' => $color['inventory_color_id'],
+                'color' => $color['color'],
+                'percent' => $stockperc,
+                'stockclass' => $stockclass,
+                'instock' => $outstock,
+                'reserved' => $reserved,
+                'available' => $outavail,
+            ];
+            $idx = count($outcolors) - 1;
+            foreach ($onboats as $onboat) {
+                $outcolors[$idx]['onboat'.$onboat['onboat_container']]='';
+            }
+        }
+        // Add onboat
+        foreach ($onboats as $onboat) {
+            $this->db->select('o.inventory_color_id, o.onroutestock');
+            $this->db->from('ts_inventory_onboats o');
+            $this->db->join('ts_inventory_colors c', 'o.inventory_color_id = c.inventory_color_id');
+            $this->db->join('ts_inventory_items i','c.inventory_item_id = i.inventory_item_id');
+            $this->db->where('o.onboat_container', $onboat['onboat_container']);
+            $this->db->where('onboat_type', $onboat['onboat_type']);
+            $this->db->where('i.inventory_item_id', $inventory_item_id);
+            $onroads = $this->db->get()->result_array();
+            $idx = 0;
+            foreach ($outcolors as $outcolor) {
+                foreach ($onroads as $onroad) {
+                    if ($onroad['inventory_color_id']==$outcolor['id']) {
+                        $outcolors[$idx]['onboat'.$onboat['onboat_container']]=QTYOutput($onroad['onroutestock']);
+                        break;
+                    }
+                }
+                $idx++;
+            }
+        }
+        return [
+            'inventory' => $outcolors,
+            'onboats' => $onboats,
+        ];
+    }
+
 }
