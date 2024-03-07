@@ -5300,7 +5300,6 @@ function init_addneworderitem() {
             if (response.errors == '') {
                 $(".itemcolor_adddata").empty().html(response.data.outcolors);
                 // $(".items_content_addprint").css('visibility','visible');
-                init_addneworderitem();
                 // Open color select
                 if (parseInt(response.data.special)==0) {
                     if (response.data.brand == 'SR') {
@@ -5314,12 +5313,15 @@ function init_addneworderitem() {
                         $(".items_content_addqty").empty().html(response.data.qty);
                         $(".items_content_addprice").empty().html(response.data.price);
                     }
+                    init_addneworderitem();
                 } else {
                     $(".items_content_addqty").empty().html(response.data.qty);
                     $(".items_content_addprice").empty().html(response.data.price);
                     $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal);
                     // Focus on QTY
                     $(".items_content_addqty").find('input.orderitem_qty').focus();
+                    $(".items_content_addprint").css('visibility','visible');
+                    init_addneworderitem();
                 }
             } else {
                 show_error(response);
@@ -5357,8 +5359,7 @@ function init_addneworderitem() {
         var url = "/leadorder/saveneworderitemparam";
         $.post(url, params, function (response) {
             if (response.errors == '') {
-                $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal).css('visibility','visible');
-                // $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal);
+                $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal);
                 // Init Print Details
                 $(".items_content_addprint").trigger('click');
                 init_addneworderitem();
