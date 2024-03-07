@@ -5314,6 +5314,7 @@ function init_addneworderitem() {
             if (response.errors == '') {
                 $(".itemcolor_adddata").empty().html(response.data.outcolors);
                 // $(".items_content_addprint").css('visibility','visible');
+                init_addneworderitem();
                 // Open color select
                 if (parseInt(response.data.special)==0) {
                     if (response.data.brand == 'SR') {
@@ -5326,8 +5327,8 @@ function init_addneworderitem() {
                         $('.itemcolor_adddata').find("select.orderitemcolors").focus();
                         $(".items_content_addqty").empty().html(response.data.qty);
                         $(".items_content_addprice").empty().html(response.data.price);
+                        init_addneworderitem();
                     }
-                    init_addneworderitem();
                 } else {
                     $(".items_content_addqty").empty().html(response.data.qty);
                     $(".items_content_addprice").empty().html(response.data.price);
