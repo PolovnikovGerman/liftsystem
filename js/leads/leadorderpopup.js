@@ -5498,6 +5498,14 @@ function init_srcolor_select(orderitem_id, item_id) {
 }
 
 function leadordernewitem() {
-    $(".addleadorderitem").trigger('click');
-    $("input.select2-search__field").focus();
+    // $(".addleadorderitem").trigger('click');
+    // $("input.select2-search__field").focus();
+    $('select.addnewitem').select2({
+        dropdownParent: $('#artModal'),
+        matcher: matchStart,
+    });
+    $('select.addnewitem').focus(function(){
+        $(".addnewitem").select2('open');
+        $("input.select2-search__field").focus();
+    });
 }

@@ -902,7 +902,7 @@ Class Leadorder_model extends My_Model {
             $out['extendview'] = 1;
         }
         // Empty items
-        // $out['order_items'] = $this->_create_empty_orderitems();
+        $out['order_items'] = $this->_create_empty_orderitems();
         return $out;
     }
 
@@ -3299,7 +3299,7 @@ Class Leadorder_model extends My_Model {
             foreach ($order_items as $row) {
                 $total_item+=$row['item_subtotal'];
                 $total_imprint+=$row['imprint_subtotal'];
-                $total_qty+=$row['item_qty'];
+                $total_qty+=intval($row['item_qty']);
             }
             $order['item_imprint']=$total_imprint;
             $order['item_cost']=$total_item;
