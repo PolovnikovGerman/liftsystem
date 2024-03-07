@@ -5491,3 +5491,8 @@ function init_srcolor_select(orderitem_id, item_id) {
         }, 'json');
     })
 }
+
+function leadordernewitem() {
+    $(".addleadorderitem").trigger('click');
+    $("input.select2-search__field").focus();
+}
