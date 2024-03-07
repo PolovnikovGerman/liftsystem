@@ -1998,6 +1998,9 @@ function init_leadorder_items() {
                     }                    
                     $("input#loctimeout").val(response.data.loctime);
                     init_onlineleadorder_edit();
+                    if (parseInt(response.data.newitem)==1) {
+                        leadordernewitem();
+                    }
                 } else {
                     $("#loader").hide();
                     show_error(response);
@@ -5306,7 +5309,7 @@ function init_addneworderitem() {
                     if (response.data.brand == 'SR') {
                         $(".items_content_addqty").empty().html(response.data.qty).css('visibility','hidden'); //
                         $(".items_content_addprice").empty().html(response.data.price).css('visibility','hidden'); //
-                        $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal).css('visibility','hidden');
+                        // $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal).css('visibility','hidden');
                         $("span.addnewcolor").trigger('click');
                     } else {
                         // Focus on
@@ -5318,7 +5321,7 @@ function init_addneworderitem() {
                 } else {
                     $(".items_content_addqty").empty().html(response.data.qty);
                     $(".items_content_addprice").empty().html(response.data.price);
-                    $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal);
+                    // $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal);
                     // Focus on QTY
                     $(".items_content_addqty").find('input.orderitem_qty').focus();
                     $(".items_content_addprint").css('visibility','visible');
@@ -5341,7 +5344,7 @@ function init_addneworderitem() {
             if (response.errors == '') {
                 $(".items_content_addprice").empty().html(response.data.price).css('visibility','visible');
                 $(".items_content_addprice").find('input.orderitem_price').focus();
-                $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal).css('visibility','visible');
+                // $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal).css('visibility','visible');
                 $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").css('visibility','visible');
                 $(".items_content_addprint").css('visibility','visible');
                 init_addneworderitem();
@@ -5360,7 +5363,7 @@ function init_addneworderitem() {
         var url = "/leadorder/saveneworderitemparam";
         $.post(url, params, function (response) {
             if (response.errors == '') {
-                $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal);
+                // $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal);
                 // Init Print Details
                 $(".items_content_addprint").trigger('click');
                 init_addneworderitem();
@@ -5410,8 +5413,12 @@ function init_addneworderitem() {
             $.post(url, params, function (response) {
                 if (response.errors == '') {
                     $("div#orderitemdataarea").empty().html(response.data.items_content);
+                    if (parseInt(response.data.newitem)==1) {
+                        leadordernewitem();
+                    } else {
+                        $(".addleadorderitem").show();
+                    }
                     $("input#loctimeout").val(response.data.loctime);
-                    $(".addleadorderitem").show();
                     init_onlineleadorder_edit();
                 } else {
                     show_error(response);
