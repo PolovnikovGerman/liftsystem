@@ -2337,7 +2337,6 @@ Class Leadorder_model extends My_Model {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $order=$leadorder['order'];
         $order_items=$leadorder['order_items'];
-        $shipaddress = $leadorder['shipping_address'];
         $order_item_id=$details['order_item_id'];
         $imprint_details=$details['imprint_details'];
         $order_blank=intval($details['order_blank']);
@@ -2349,10 +2348,14 @@ Class Leadorder_model extends My_Model {
         $found=0;
         $idx=0;
         $item_id = '';
+        $item_num = '';
+        $item_name = '';
         foreach ($order_items as $row) {
             if ($row['order_item_id']==$order_item_id) {
                 $found=1;
                 $item_id = $row['item_id'];
+                $item_num = $row['item_number'];
+                $item_name = $row['item_name'];
                 break;
             } else {
                 $idx++;
@@ -2400,14 +2403,30 @@ Class Leadorder_model extends My_Model {
                 }
             }
             $leadorder['shipping']=$shipping;
-            if (count($shipaddress)==1) {
-                $itemorder_qty = 0;
-                foreach ($order_items as $orderitem) {
-                    $itemorder_qty+=$orderitem['item_qty'];
-                }
-                $shipaddress[0]['item_qty'] = $itemorder_qty;
+            $itemorder_qty = 0;
+            foreach ($order_items as $orderitem) {
+                $itemorder_qty+=$orderitem['item_qty'];
             }
-            $leadorder['shipping_address'] = $shipaddress;
+            $shipaddress = $leadorder['shipping_address'];
+            if (count($shipaddress)==1) {
+                $shipaddress[0]['item_qty'] = $itemorder_qty;
+                $leadorder['shipping_address'] = $shipaddress;
+            }
+            // Order items
+            if (empty($order['item_id'])) {
+                $order['order_items'] = $item_name;
+                $order['order_itemnumber'] = $item_num;
+                $order['item_id'] = $item_id;
+            } else {
+                $orditem_id=$this->config->item('multy_id');
+                $this->load->model('orders_model');
+                $orditm=$this->orders_model->get_itemdat($orditem_id);
+                $order['item_id']=$orditem_id;
+                $order['order_items']=$orditm['item_name'];
+                $order['order_itemnumber']=$orditm['item_number'];
+            }
+            $order['order_qty']=$itemorder_qty;
+            $order['shipdate'] = $shipping['shipdate'];
         } else {
             if ($order_blank!=$order['order_blank']) {
                 $out['shiprebuild']=1;
