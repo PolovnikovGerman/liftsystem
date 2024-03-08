@@ -2544,7 +2544,8 @@ class Inventory_model extends MY_Model
         $this->db->select('*');
         $this->db->from('ts_inventory_colors');
         $this->db->where('inventory_item_id', $inventory_item_id);
-        $this->db->order_by('color_order');
+        // $this->db->order_by('color_order');
+        $this->db->order_by('suggeststock','desc');
         $colors = $this->db->get()->result_array();
         $outcolors = [];
         foreach ($colors as $color) {
