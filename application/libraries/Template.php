@@ -358,6 +358,7 @@ class Template
                     'imprintview'=>$imprintview,
                     'edit'=>$edit,
                     'showinvent' => $showinvent,
+                    'brand' => $ord_data['brand'],
                 );
                 $subtotal+=($irow['imprint_subtotal']+$irow['item_subtotal']);
                 if ($edit==1) {

@@ -2337,19 +2337,22 @@ Class Leadorder_model extends My_Model {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $order=$leadorder['order'];
         $order_items=$leadorder['order_items'];
+        $shipaddress = $leadorder['shipping_address'];
         $order_item_id=$details['order_item_id'];
         $imprint_details=$details['imprint_details'];
         $order_blank=intval($details['order_blank']);
-        $itemstatus =  $details['itemstatus'];
+        $itemstatus =  ifset($details, 'itemstatus','old');
         $artwork=$leadorder['artwork'];
         $locations=$leadorder['artlocations'];
         // Lets go - Find Order Items
         $this->load->model('shipping_model');
         $found=0;
         $idx=0;
+        $item_id = '';
         foreach ($order_items as $row) {
             if ($row['order_item_id']==$order_item_id) {
                 $found=1;
+                $item_id = $row['item_id'];
                 break;
             } else {
                 $idx++;
@@ -2381,9 +2384,9 @@ Class Leadorder_model extends My_Model {
             $out['shiprebuild']=1;
             $shipping=$leadorder['shipping'];
             if ($order_blank==1) {
-                $rush=$this->shipping_model->get_rushlist_blank($order['item_id'], $order['order_date']);
+                $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
             } else {
-                $rush=$this->shipping_model->get_rushlist($order['item_id'], $order['order_date']);
+                $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
             }
             $shipping['rush_list']=serialize($rush);
             $shipping['out_rushlist']=$rush;
@@ -2397,6 +2400,14 @@ Class Leadorder_model extends My_Model {
                 }
             }
             $leadorder['shipping']=$shipping;
+            if (count($shipaddress)==1) {
+                $itemorder_qty = 0;
+                foreach ($order_items as $orderitem) {
+                    $itemorder_qty+=$orderitem['item_qty'];
+                }
+                $shipaddress[0]['item_qty'] = $itemorder_qty;
+            }
+            $leadorder['shipping_address'] = $shipaddress;
         } else {
             if ($order_blank!=$order['order_blank']) {
                 $out['shiprebuild']=1;

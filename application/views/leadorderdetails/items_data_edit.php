@@ -13,7 +13,7 @@
             <div class="itemcoloradd text_green" data-item="<?=$row['order_item_id']?>" data-orderitem="<?=$row['order_item_id']?>">+color</div>
             <?php } ?>            
         </div>
-        <div class="itemcolor_data <?=($row['item_color_add']==1 ? '' : 'bord_l') ?>">
+        <div class="itemcolor_data <?=($row['item_color_add']==1 ? '' : 'bord_l') ?> <?=$brand=='SR' ? 'inventcolors' : ''?>">
             <?=$row['out_colors']?>
         </div>
         <div class="items_content_qty2 bord_l">

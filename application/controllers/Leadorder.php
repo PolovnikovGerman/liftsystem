@@ -2240,6 +2240,7 @@ class Leadorder extends MY_Controller
                         'imprintview'=>$imprintview,
                         'edit'=>1,
                         'showinvent' => $showinvent,
+                        'brand' => $res['order']['brand'],
                     );
                     $mdata['content']=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
                 }

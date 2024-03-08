@@ -1,6 +1,6 @@
 <div class="orderitem_inventoryview_head">
     <div class="inventorycolor">Color</div>
-    <div class="inventorypercent">%</div>
+<!--    <div class="inventorypercent">%</div>-->
     <div class="inventoryinstock">In Stock</div>
     <div class="inventoryreserv">Resv</div>
     <div class="inventoryavailable">Avail</div>
@@ -17,8 +17,8 @@
         <div class="datarow <?=$numpp%2==0 ? 'whitedatarow' : 'greydatarow'?>" data-itemcolor="<?=$invent['color']?>">
             <div class="inventorycolor"><?=$invent['color']?></div>
             <div class="inventorydataempty">&nbsp;</div>
-            <div class="inventorypercent <?=$invent['stockclass']?> inventorydatacell"><?=$invent['percent']?></div>
-            <div class="inventoryinstock inventorydatacell"><?=$invent['instock']?></div>
+<!--            <div class="inventorypercent --><?php //=$invent['stockclass']?><!-- inventorydatacell">--><?php //=$invent['percent']?><!--</div>-->
+            <div class="inventoryinstock <?=$invent['stockclass']?> inventorydatacell"><?=$invent['instock']?></div>
             <div class="inventoryreserv inventorydatacell"><?=$invent['reserved']?></div>
             <div class="inventoryavailable inventorydatacell"><?=$invent['available']?></div>
             <div class="inventorydataempty">&nbsp;</div>
