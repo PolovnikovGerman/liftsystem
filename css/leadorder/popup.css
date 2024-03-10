@@ -521,7 +521,8 @@ input.order_itemqty_input {
     float: left;
     padding-right: 5px;
     text-align: right;
-    width: 80px;
+    /* width: 80px; */
+    width: 78px;
 }
 .items_content_trash {
     float: left;
