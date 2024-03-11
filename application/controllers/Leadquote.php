@@ -107,8 +107,13 @@ class Leadquote extends MY_Controller
                             'edit'=>1,
                             'item_id'=>$quote_item['item_id'],
                         ];
-                        $item_view=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
-                        $item_subtotal+=$quote_item['item_subtotal'];
+                        if ($quote_item['item_id']=='') {
+                            $item_view=$this->load->view('leadpopup/items_data_add', $item_options, TRUE);
+                        } else {
+                            $item_view=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
+                        }
+                        // $item_view=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
+                        $item_subtotal+=floatval($quote_item['item_subtotal']);
                         $items_views[] = [
                             'quote_item_id'=>$quote_item['quote_item_id'],
                             'view' => $item_view,

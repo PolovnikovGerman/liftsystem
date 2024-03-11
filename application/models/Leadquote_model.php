@@ -151,6 +151,8 @@ class Leadquote_model extends MY_Model
                         }
                     }
                 }
+            } else {
+                $quote_items = $this->_create_empty_items();
             }
             $response['quote'] = $quotedat;
             $response['quote_items'] = $quote_items;
@@ -3724,6 +3726,55 @@ class Leadquote_model extends MY_Model
             $out['result'] = $this->success_result;
         }
         return $out;
+    }
+
+    private function _create_empty_items($last_item_id=0)
+    {
+        $newitemid = $last_item_id - 1;
+        $items=[];
+        $newitem = [
+            'quote_item_id' => $newitemid,
+            'item_id' => -1,
+            'item_qty' => 0,
+            'item_price' => 0.000,
+            'imprint_price' => 0.00,
+            'setup_price' => 0.00,
+            'item_weigth' => 0.0000,
+            'cartoon_qty' => 0,
+            'cartoon_width' => 0,
+            'cartoon_heigh' => 0,
+            'cartoon_depth' => 0,
+            'template' => '',
+            'base_price' => 0.000,
+            'item_number' => '',
+            'item_name' => '',
+            'colors' => [],
+            'num_colors' => 0,
+            'imprint_locations' => [],
+            'vendor_zipcode' => '',
+            'charge_perorder' => 0,
+            'charge_pereach' => 0,
+        ];
+        $color = [
+            'item_id' => -1,
+            'item_description' => '',
+            'item_color' => '',
+            'item_qty' => 0,
+            'item_price' => 0,
+            'item_subtotal' => 0,
+            'item_number' => '',
+            'item_row' => 1,
+            'colors' => [],
+            'num_colors' => 0,
+            'out_colors' => '',
+            'printshop_item_id' => 0,
+            'qtyinput_class' => '',
+            'qtyinput_title' => '',
+            'item_color_add' => 0,
+        ];
+        $newitem['item'] = $color;
+        $items = $newitem;
+        return $items;
     }
 
 }
