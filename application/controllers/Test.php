@@ -3318,4 +3318,38 @@ class Test extends CI_Controller
         }
 
     }
+
+    public function container33()
+    {
+        $this->db->select('*')->from('container_33');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $price = floatval(str_replace('$','',$item['cost_ea']));
+            $invitem = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $item['item_number'])->get()->row_array();
+            if (ifset($invitem,'inventory_item_id',0)>0) {
+                $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $invitem['inventory_item_id'])->where('color', $item['color']);
+                $invcolor = $this->db->get()->row_array();
+                if (ifset($invcolor, 'inventory_color_id',0)>0) {
+                    $this->db->where('id', $item['id']);
+                    $this->db->set('price', $price);
+                    $this->db->set('color_id', $invcolor['inventory_color_id']);
+                    $this->db->update('container_33');
+                }
+            }
+        }
+        // onboat_date = 1709874000, freight_price = 8622.750
+        $this->db->select('*')->from('container_33');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $this->db->set('inventory_color_id', $item['color_id']);
+            $this->db->set('onroutestock', $item['qty']);
+            $this->db->set('onboat_date', 1709874000);
+            $this->db->set('freight_price',8622.750);
+            $this->db->set('vendor_price', $item['price']);
+            $this->db->set('onboat_container',33);
+            $this->db->set('onboat_type', 'C');
+            $this->db->set('onboat_status',0);
+            $this->db->insert('ts_inventory_onboats');
+        }
+    }
 }
