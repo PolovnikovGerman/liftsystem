@@ -3321,6 +3321,7 @@ class Test extends CI_Controller
 
     public function sbitems_list()
     {
+        ini_set('memory_limit', '-1');
         $this->db->select('i.*, vi.vendor_item_number, vi.vendor_item_name, vi.vendor_item_cost, vi.vendor_item_exprint, vi.vendor_item_setup, v.vendor_name')
             ->select('ip.item_price_print as price_print , ip.item_price_setup as price_setup , ip.item_sale_print as sale_print , ip.item_sale_setup as sale_setup')
             ->from('sb_items i')->join("sb_vendor_items vi","vi.vendor_item_id=i.vendor_item_id","left")
