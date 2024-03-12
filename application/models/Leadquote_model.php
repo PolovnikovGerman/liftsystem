@@ -3734,7 +3734,7 @@ class Leadquote_model extends MY_Model
         $items=[];
         $newitem = [
             'quote_item_id' => $newitemid,
-            'item_id' => -1,
+            'item_id' => '',
             'item_qty' => 0,
             'item_price' => 0.000,
             'imprint_price' => 0.00,
@@ -3754,6 +3754,8 @@ class Leadquote_model extends MY_Model
             'vendor_zipcode' => '',
             'charge_perorder' => 0,
             'charge_pereach' => 0,
+            'imprints' => [],
+            'item_subtotal' => 0,
         ];
         $color = [
             'item_id' => -1,
@@ -3772,8 +3774,8 @@ class Leadquote_model extends MY_Model
             'qtyinput_title' => '',
             'item_color_add' => 0,
         ];
-        $newitem['item'] = $color;
-        $items = $newitem;
+        $newitem['items'] = $color;
+        $items[] = $newitem;
         return $items;
     }
 

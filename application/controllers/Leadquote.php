@@ -106,8 +106,15 @@ class Leadquote extends MY_Controller
                             'imprintview'=>$imprintview,
                             'edit'=>1,
                             'item_id'=>$quote_item['item_id'],
+                            'brand' => $lead_data['brand'],
                         ];
                         if ($quote_item['item_id']=='') {
+                            $this->load->model('orders_model');
+                            $dboptions=array(
+                                'exclude'=>array(-4, -5, -2),
+                                'brand' => ($lead_data['brand']=='SR') ? 'SR' : 'BT',
+                            );
+                            $item_options['itemslist']=$this->orders_model->get_item_list($dboptions);
                             $item_view=$this->load->view('leadpopup/items_data_add', $item_options, TRUE);
                         } else {
                             $item_view=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
