@@ -140,7 +140,7 @@ class Leadquote_model extends MY_Model
                     // Get Delivery Terms
                     if ($lead_data['lead_item_id'] > 0) {
                         $this->load->model('calendars_model');
-                        $termdat = $this->calendars_model->get_delivery_date($lead_data['lead_item_id']);
+                        $termdat = $this->calendars_model->get_delivery_date($lead_data['lead_item_id'], $lead_data['brand']);
                         $quotedat['lead_time'] = json_encode($termdat);
                         foreach ($termdat as $row) {
                             if ($row['current']==1) {
@@ -1499,7 +1499,7 @@ class Leadquote_model extends MY_Model
                     // Get Delivery Terms
                     if ($item_id > 0) {
                         $this->load->model('calendars_model');
-                        $termdat = $this->calendars_model->get_delivery_date($item_id);
+                        $termdat = $this->calendars_model->get_delivery_date($item_id,$quote['brand']);
                         $quote['lead_time'] = json_encode($termdat);
                         foreach ($termdat as $row) {
                             if ($row['current']==1) {
@@ -2247,6 +2247,24 @@ class Leadquote_model extends MY_Model
                 $pdf->Cell($colWidth[2], $cellheight, QTYOutput($imprint['imprint_qty']), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[3], $cellheight, number_format($imprint['imprint_price'], 2), 'LR', 0, 'C', $fillrow);
                 $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($total), 'LR', 0, 'R', $fillrow);
+                $numpp++;
+                $yStart += $cellheight;
+                if ($yStart>=$this->page_heigh_limit) {
+                    $pdf->Line($startPageX, $yStart, 197, $yStart);
+                    $pdf->AddPage();
+                    $this->_newpagetablestart($pdf);
+                    $yStart = 21;
+                }
+            }
+            if ($quote['rush_cost'] > 0) {
+                $fillrow = ($numpp % 2) == 0 ? 1 : 0;
+                $rowcode = 'SR-rush';
+                $pdf->SetXY($startPageX, $yStart);
+                $pdf->Cell($colWidth[0], $cellheight, $rowcode, 'LR', 0, 'L', $fillrow);
+                $pdf->Cell($colWidth[1], $cellheight, $quote['rush_terms'], 'LR', 0, 'L', $fillrow);
+                $pdf->Cell($colWidth[2], $cellheight, '1', 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[3], $cellheight, number_format($quote['rush_cost'], 2), 'LR', 0, 'C', $fillrow);
+                $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['rush_cost']), 'LR', 0, 'R', $fillrow);
                 $numpp++;
                 $yStart += $cellheight;
                 if ($yStart>=$this->page_heigh_limit) {

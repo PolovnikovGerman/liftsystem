@@ -332,7 +332,7 @@ Class Calendars_model extends MY_Model
         return $out;
     }
 
-    public function parse_rushcalend($item_id) {
+    public function parse_rushcalend($item_id, $brand='BT') {
         $start=date("Y-m-d");// current date
         /* Check Current Day - may be it is weekend or holiday */
         $start_time=strtotime($start);
@@ -372,20 +372,30 @@ Class Calendars_model extends MY_Model
 
         if ($leads['item_lead_b']>0) {
             $min=$leads['item_lead_b'];
+            if ($brand=='SR') {
+                $rushprice = $this->_get_config_value('rush_3days_sr');
+            } else {
+                $rushprice = $this->_get_config_value('rush_3days');
+            }
             $ship_array[]=array(
                 'min'=>$min,
                 'max'=>$leads['item_lead_a'],
-                'price'=>$this->_get_config_value('rush_3days'),
+                'price'=>$rushprice,
                 'rush_term'=>$leads['item_lead_b'].' Day Rush',
             );
         }
 
         if ($leads['item_lead_c']>0) {
             $min=$leads['item_lead_c'];
+            if ($brand=='SR') {
+                $rushprice = $this->_get_config_value('rush_next_day_sr');
+            } else {
+                $rushprice = $this->_get_config_value('rush_next_day');
+            }
             $ship_array[]=array(
                 'min'=>$min,
                 'max'=>($leads['item_lead_b']==0 ? $leads['item_lead_a'] : $leads['item_lead_b']),
-                'price'=>$this->_get_config_value('rush_next_day'),
+                'price'=>$rushprice,
                 'rush_term'=>$leads['item_lead_c'].' Day Rush',
             );
         }
@@ -648,7 +658,7 @@ Class Calendars_model extends MY_Model
         return $out_val;
     }
 
-    public function get_delivery_date($item_id, $blank=0) {
+    public function get_delivery_date($item_id, $brand, $blank=0) {
         if ($item_id < 0) {
             // Custom item
             $lead_times = [];
@@ -664,7 +674,7 @@ Class Calendars_model extends MY_Model
             if ($blank==1) {
                 $rushdat = $this->parse_rushblankcalend($item_id);
             } else {
-                $rushdat = $this->parse_rushcalend($item_id);
+                $rushdat = $this->parse_rushcalend($item_id, $brand);
             }
             $caleendlines = $rushdat['rush'];
             $start = $caleendlines[0];
