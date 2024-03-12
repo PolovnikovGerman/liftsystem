@@ -27,7 +27,7 @@
         <div class="items_content_price_view bord_l">
             <?=PriceOutput($row['item_price'])?>
         </div>
-        <div class="items_content_subtotal_view bord_l"><?=$row['item_subtotal']?></div>
+        <div class="items_content_subtotal_view bord_l"><?=MoneyOutput($row['item_subtotal'])?></div>
     </div>
     <?php $nrow++;?>
 <?php } ?>

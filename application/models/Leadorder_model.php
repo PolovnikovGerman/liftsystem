@@ -3306,6 +3306,7 @@ Class Leadorder_model extends My_Model {
             // }
             // Rebuild Shipping Data
             $newshipping=$this->_leadorder_shipping($shipping_address, $shipping, $past);
+            $order['shipdate'] = $newshipping['shipdate'];
             $total_item=0;
             $total_qty=0;
             $total_imprint=0;
@@ -6079,7 +6080,7 @@ Class Leadorder_model extends My_Model {
                     'item_color_add' =>$coloradd,
                     'item_qty' =>$irow['item_qty'],
                     'item_price'=>$irow['item_price'],
-                    'item_subtotal'=>MoneyOutput($subtotal),
+                    'item_subtotal'=>$subtotal, // MoneyOutput($subtotal)
                     'printshop_item_id'=>(isset($irow['printshop_item_id']) ? $irow['printshop_item_id'] : ''),
                     'qtyinput_class' => $qty_class,
                     'qtyinput_title' => $qty_title,
