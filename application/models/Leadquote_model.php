@@ -3185,11 +3185,15 @@ class Leadquote_model extends MY_Model
                     'item_color'=> $quotecolor['item_color'],
                 );
                 if (count($itemdata['colors'])==0) {
-                    // $out_colors=$this->empty_htmlcontent;
-                    $out_colors=$this->load->view('leadorderdetails/item_color_input', $options, TRUE);
+                    $out_colors=$this->empty_htmlcontent;
+                    // $out_colors=$this->load->view('leadorderdetails/item_color_input', $options, TRUE);
                 } else {
+                    if ($quote['brand']=='SR') {
+                        $out_colors = $this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
+                    } else {
+                        $out_colors=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+                    }
                     // check that current color exist
-                    $out_colors=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
                 }
                 $itemsubtotal+=$quotecolor['item_qty']*$quotecolor['item_price'];
                 $coloritems[] = [
@@ -3293,6 +3297,7 @@ class Leadquote_model extends MY_Model
                 'items' => $coloritems,
                 'imprints' => $imprints,
                 'imprint_details' => $imprdetails,
+                'vendor_item_id' => ifset($itemdata, 'vendor_item_id', ''),
             ];
             $itemid++;
         }
