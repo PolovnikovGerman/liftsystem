@@ -3319,37 +3319,108 @@ class Test extends CI_Controller
 
     }
 
-    public function container33()
+    public function sbitems_list()
     {
-        $this->db->select('*')->from('container_33');
+        ini_set('memory_limit', '-1');
+        $this->db->select('i.*, vi.vendor_item_number, vi.vendor_item_name, vi.vendor_item_cost, vi.vendor_item_exprint, vi.vendor_item_setup, v.vendor_name')
+            ->select('ip.item_price_print as price_print , ip.item_price_setup as price_setup , ip.item_sale_print as sale_print , ip.item_sale_setup as sale_setup')
+            ->from('sb_items i')->join("sb_vendor_items vi","vi.vendor_item_id=i.vendor_item_id","left")
+            ->join("vendors v","v.vendor_id=vi.vendor_item_vendor","left")->join('sb_item_prices ip','ip.item_price_itemid=i.item_id','left')
+            ->where('i.brand','BT')->order_by('item_number');
         $items = $this->db->get()->result_array();
+        $heads = [
+            'Item #', 'Item name', "Item active?", "Item new?", "Item Template", "Lead A", "Lead B", "Lead C", "Material", "Weight (in lbs)", "Item Size (in)",
+            "Internal Keywords", "Page URL", 'Meta Title', 'Meta description', 'Meta Keywords', 'Item attribute - row 1', 'Item attribute - row 2',
+            'Item Page - bottom Text', 'Type of options (color, size, etc)', 'Colors', 'Number of Items in Cartoon', 'Cartoon Width (in)', 'Cartoon Height (in)',
+            'Cartoon Depth (in)', 'Special charges (shipping) per each Item', 'Special charges (shipping) per order', 'Special offer', 'Vendor Item #',
+            'Vendor Item Name', 'Vendor Item Cost', 'Vendor Item Exprint Cost', 'Vendor Item Setup Cost', 'Vendor Name', 'Qty Price 1', 'Price 1', 'Sale Price 1',
+            'Qty Price 2', 'Price 2', 'Sale Price 2', 'Qty Price 3', 'Price 3', 'Sale Price 3', 'Qty Price 4', 'Price 4', 'Sale Price 4', 'Qty Price 5',
+            'Price 5', 'Sale Price 5', 'Qty Price 6', 'Price 6', 'Sale Price 6', 'Qty Price 7', 'Price 7', 'Sale Price 7', 'Qty Price 8', 'Price 8', 'Sale Price 8',
+            'Qty Price 9', 'Price 9', 'Sale Price 9', 'Qty Price 10', 'Price 10', 'Sale Price 10',
+            'Exprint Price', 'Exprint Sale Price', 'Setup Price','Setup Sale Price'
+        ];
+        for ($i=1; $i<13; $i++) {
+            array_push($heads,'Imprit Location '.$i);
+            array_push($heads,'Imprit Size '.$i);
+        }
+        $filename = $this->config->item('upload_path_preload').'bt_items_list.xlsx';
+//        @unlink($filename);
+//        $fh = fopen($filename, FOPEN_WRITE_CREATE);
+//        $msg = implode($heads,';');
+//        fwrite($fh, $msg.PHP_EOL);
+        $itemidx = 0;
         foreach ($items as $item) {
-            $price = floatval(str_replace('$','',$item['cost_ea']));
-            $invitem = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $item['item_number'])->get()->row_array();
-            if (ifset($invitem,'inventory_item_id',0)>0) {
-                $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $invitem['inventory_item_id'])->where('color', $item['color']);
-                $invcolor = $this->db->get()->row_array();
-                if (ifset($invcolor, 'inventory_color_id',0)>0) {
-                    $this->db->where('id', $item['id']);
-                    $this->db->set('price', $price);
-                    $this->db->set('color_id', $invcolor['inventory_color_id']);
-                    $this->db->update('container_33');
+            // colors
+            $this->db->select('group_concat(item_color) as color')->from('sb_item_colors')->where('item_color_itemid', $item['item_id']);
+            $coldat = $this->db->get()->row_array();
+            $color = $coldat['color'];
+            // Prices
+            $prices = [];
+            if ($item['item_template']=='Stressball') {
+                $this->db->select('*')->from('sb_item_prices')->where('item_price_itemid', $item['item_id']);
+                $pricedat = $this->db->get()->row_array();
+                $bases = $this->config->item('price_types');
+                foreach ($bases as $based) {
+                    if (!empty($pricedat['item_price_'.$based['base']]) || !empty($pricedat['item_sale_'.$based['base']])) {
+                        $prices[] = [
+                            'qty' => $based['base'],
+                            'price' => $pricedat['item_price_'.$based['base']],
+                            'sale' => $pricedat['item_sale_'.$based['base']],
+                        ];
+                    }
+                }
+            } else {
+                $this->db->select('*')->from('sb_promo_price')->where('item_id', $item['item_id'])->order_by('item_qty');
+                $promodats = $this->db->get()->result_array();
+                foreach ($promodats as $promodat) {
+                    $prices[] = [
+                        'qty' => $promodat['item_qty'],
+                        'price' => $promodat['price'],
+                        'sale' => $promodat['sale_price'],
+                    ];
                 }
             }
+            if (count($prices)<10) {
+                for ($j=count($prices); $j<10; $j++) {
+                    $prices[] = [
+                        'qty' => '',
+                        'price' => '',
+                        'sale' => '',
+                    ];
+                }
+            }
+//            if ($item['item_number']=='23-PP002') {
+//                var_dump($prices);
+//                die();
+//            }
+            // Imprints
+            $this->db->select('item_inprint_location, item_inprint_size')->from('sb_item_inprints')->where('item_inprint_item',$item['item_id']);
+            $impritems = $this->db->get()->result_array();
+            $imprints = [];
+            foreach ($impritems as $impritem) {
+                $imprints[] = [
+                    'location' => $impritem['item_inprint_location'],
+                    'size' => $impritem['item_inprint_size'],
+                ];
+            }
+            if (count($imprints)<12) {
+                for ($j=count($imprints); $j<12; $j++) {
+                    $imprints[] = [
+                        'location' => '',
+                        'size' => '',
+                    ];
+                }
+            }
+            $items[$itemidx]['prices'] = $prices;
+            $items[$itemidx]['colors'] = $color;
+            $items[$itemidx]['imprints'] = $imprints;
+            $itemidx++;
         }
-        // onboat_date = 1709874000, freight_price = 8622.750
-        $this->db->select('*')->from('container_33');
-        $items = $this->db->get()->result_array();
-        foreach ($items as $item) {
-            $this->db->set('inventory_color_id', $item['color_id']);
-            $this->db->set('onroutestock', $item['qty']);
-            $this->db->set('onboat_date', 1709874000);
-            $this->db->set('freight_price',8622.750);
-            $this->db->set('vendor_price', $item['price']);
-            $this->db->set('onboat_container',33);
-            $this->db->set('onboat_type', 'C');
-            $this->db->set('onboat_status',0);
-            $this->db->insert('ts_inventory_onboats');
+        $this->load->model('exportexcell_model');
+        $res = $this->exportexcell_model->fullitems_list($filename, $heads, $items);
+        if ($res['result']==1) {
+            echo 'File '.$filename.' READY'.PHP_EOL;
         }
+//        fclose($fh);
     }
 }
