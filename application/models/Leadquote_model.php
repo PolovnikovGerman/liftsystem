@@ -3762,7 +3762,8 @@ class Leadquote_model extends MY_Model
             'imprints' => [],
             'item_subtotal' => 0,
         ];
-        $color = [
+        $color = [];
+        $color[] = [
             'item_id' => -1,
             'item_description' => '',
             'item_color' => '',
@@ -3784,4 +3785,66 @@ class Leadquote_model extends MY_Model
         return $items;
     }
 
+    public function savenewquoteitem($postdata, $quotesession, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Item Not Found'];
+        $quote = $quotesession['quote'];
+        $quote_items = $quotesession['quote_items'];
+        $quoteitem_id = ifset($postdata,'quoteitem_id',0);
+        $item_id = ifset($postdata,'item_id',0);
+        if (!empty($quoteitem_id) && !empty($item_id)) {
+            $itemidx = 0;
+            $found = 0;
+            foreach ($quote_items as $quote_item) {
+                if ($quote_item['quote_item_id']==$quoteitem_id) {
+                    $found = 1;
+                    break;
+                }
+                $itemidx++;
+            }
+            if ($found==1) {
+                $out['result'] = $this->success_result;
+                $quote_items[$itemidx]['item_id'] = $item_id;
+                $this->load->model('orders_model');
+                $this->load->model('prices_model');
+                if ($item_id<0) {
+                    $itemdata=$this->orders_model->get_newitemdat($item_id);
+                } else {
+                    $this->load->model('leadorder_model');
+                    $itemdata=$this->leadorder_model->_get_itemdata($item_id);
+                }
+                $colors=$itemdata['colors'];
+                $itmcolor='';
+                if ($itemdata['num_colors']>0) {
+                    $itmcolor=$colors[0];
+                }
+                $out['color'] = $itmcolor;
+                $quote_items[$itemidx]['items'][0]['item_description'] = $itemdata['item_name'];
+                $quote_items[$itemidx]['items'][0]['item_color'] = $itmcolor;
+                $quote_items[$itemidx]['items'][0]['item_number'] = $itemdata['item_number'];
+                $quote_items[$itemidx]['items'][0]['colors'] = $colors;
+                $quote_items[$itemidx]['items'][0]['num_colors'] = count($colors);
+                $options=[
+                    'order_item_id'=>$quote_items[$itemidx]['quote_item_id'],
+                    'item_id'=>$quote_items[$itemidx]['items'][0]['item_id'],
+                    'colors'=>$colors,
+                    'item_color'=>$itmcolor,
+                    'brand' => $quote['brand'],
+                ];
+                if ($quote['brand']=='SR') {
+                    $out_colors = $this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
+                } else {
+                    $out_colors = $this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+                }
+                $quote_items[$itemidx]['items'][0]['out_colors'] = $out_colors;
+                $out['outcolors'] = $out_colors;
+                $out['special'] = ($item_id > 0 ? 0 : 1);
+                $out['brand'] = $quote['brand'];
+                $quotesession['quote'] = $quote;
+                $quotesession['quote_items'] = $quote_items;
+                usersession($session_id, $quotesession);
+            }
+        }
+        return $out;
+    }
 }

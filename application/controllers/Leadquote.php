@@ -1597,4 +1597,27 @@ class Leadquote extends MY_Controller
         }
         return $shipaddress;
     }
+
+    public function savenewquoteitem()
+    {
+        if ($this->isAjax()) {
+            $error = $this->restore_orderdata_error;
+            $mdata = [];
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'session','unknw');
+            $quotesession = usersession($session_id);
+            if (!empty($quotesession)) {
+                $res = $this->leadquote_model->savenewquoteitem($postdata, $quotesession, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['color'] = $res['outcolors'];
+                    $mdata['special'] = $res['special'];
+                    $mdata['brand'] = $res['brand'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }

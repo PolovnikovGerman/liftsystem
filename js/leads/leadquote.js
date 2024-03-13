@@ -585,6 +585,12 @@ function init_leadquotes_content() {
         copyToClipboard(element);
         $('.quoteaddressinpt[data-item="shipping_company"]').focus();
     });
+    // Init newitem content
+    if ($(".quoteitems_content_add").length > 0) {
+        // Init content
+        init_quoteadditem();
+        init_newquote_item();
+    }
 }
 
 function show_leadquoteitemsearch() {
@@ -1116,4 +1122,35 @@ function copyToClipboard(element) {
     }
     // document.execCommand("copy");
     $(element).hide();
+}
+
+function init_quoteadditem() {
+    $("select.addnewquoteitem").select2({
+        dropdownParent: $('#leadformModal'),
+        matcher: matchStart,
+    });
+    $("select.addnewquoteitem").focus(function (){
+        $(".addnewquoteitem").select2('open');
+        $("input.select2-search__field").focus();
+    });
+    $(".addquoteitem").hide();
+}
+
+function init_newquote_item() {
+    $("select.addnewquoteitem").unbind('change').change(function (){
+        var quoteitem_id = $(this).data('quoteitem');
+        var params = new Array();
+        params.push({name: 'item_id', value: $(this).val()});
+        params.push({name: 'quoteitem_id', value: quoteitem_id});
+        params.push({name: 'session', value: $("#quotesessionid").val()});
+        var url = "/leadquote/savenewquoteitem";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".quotecolor_adddata").empty().html(response.data.color).css('visibility','visible');
+                init_newquote_item();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }

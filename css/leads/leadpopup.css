@@ -886,3 +886,52 @@ textarea.quoteemail_message {
     float: right!important;
     cursor: pointer;
 }
+/* New Item */
+.quoteitems_content_add {
+    width: 252px;
+}
+select.addnewquoteitem {
+    width: 249px;
+}
+.quoteitems_content_add span.select2-selection--single {
+    height: 20px!important;
+    line-height: 20px!important;
+}
+.quoteitems_content_add span.select2-selection__arrow {
+    height: 20px!important;
+    line-height: 20px!important;
+}
+.quoteitems_content_add .select2-selection__rendered {
+    line-height: 19px!important;
+}
+.quoteitems_content_add .select2-selection__arrow {
+    height: 18px!important;
+}
+.quotecolor_adddata {
+    width: 153px;
+    visibility: hidden;
+}
+.quote_content_addqty {
+    width: 52px;
+    visibility: hidden;
+}
+.quote_content_addprice {
+    width: 41px;
+    visibility: hidden;
+}
+.quote_content_addprint {
+    color: #ffffff;
+    font-size: 10px;
+    cursor: pointer;
+    visibility: hidden;
+    background: #008000;
+    height: 18px;
+    border-radius: 4px;
+    padding: 0 5px;
+    line-height: 18px;
+    margin-top: 1px;
+}
+.quote_content_cancel {
+    width: 14px;
+    height: 14px;
+}
