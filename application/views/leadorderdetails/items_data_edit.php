@@ -7,6 +7,7 @@
                 <div class="iteminventoryshow" data-item="<?=$order_item_id?>"><i class="fa fa-info-circle" aria-hidden="true"></i></div>
             <?php } ?>
         </div>
+        <?php if ($item_id > 0) { ?>
         <div class="itemdescription_data long bord_l">
             <input type="text" class="orderitem_description_long orderitem_input input_border_gray" data-field="item_description" data-item="<?=$row['item_id']?>" data-orderitem="<?=$row['order_item_id']?>"  value="<?=htmlspecialchars($row['item_description'])?>" />
             <?php if ($row['item_color_add']) { ?>
@@ -16,6 +17,11 @@
         <div class="itemcolor_data <?=($row['item_color_add']==1 ? '' : 'bord_l') ?> <?=$brand=='SR' ? 'inventcolors' : ''?>">
             <?=$row['out_colors']?>
         </div>
+        <?php } else { ?>
+        <div class="itemdescription_data customitemdescript long bord_l">
+            <input type="text" class="orderitem_description_long customitemdescript orderitem_input input_border_gray" data-field="item_description" data-item="<?=$row['item_id']?>" data-orderitem="<?=$row['order_item_id']?>"  value="<?=htmlspecialchars($row['item_description'])?>" />
+        </div>
+        <?php } ?>
         <div class="items_content_qty2 bord_l">
             <input type="text" class="orderitem_qty input_text_right orderitem_input input_border_gray" data-field="item_qty" data-item="<?=$row['item_id']?>" data-orderitem="<?=$row['order_item_id']?>" value="<?=$row['item_qty']?>" />
         </div>
