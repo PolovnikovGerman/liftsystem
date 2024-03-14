@@ -1712,7 +1712,8 @@ span.taxemptyview {
     border-radius: 5px;
     background-color: #ffffff;
     width: 154px;
-    height: 726px;
+    /* height: 726px; */
+    height: 654px;
     /* margin-left: -2px; */
     box-shadow: 0.3em 0.3em 6px rgb(0 0 0 / 50%);
 }
@@ -1739,13 +1740,15 @@ span.taxemptyview {
     margin-left: 5px;
 }
 .block_6_historytext {
-    height: 357px;
+    /* height: 357px; */
+    height: 278px;
     margin-left: 5px;
     overflow-y: auto;
     width: 143px;
 }
 .block_6_historytext.previewmode {
-    height: 527px;
+    /* height: 527px; */
+    height: 453px;
 }
 .history_day {
     height: 18px;
@@ -1781,7 +1784,8 @@ span.taxemptyview {
     border-radius: 5px;
     width: 253px;
     box-shadow: 0.3em 0.3em 6px rgb(0 0 0 / 50%);
-    height: 761px;
+    /* height: 761px; */
+    height: 654px;
     margin-left: -2px;
 }
 .block_7_artwork {
@@ -1838,7 +1842,8 @@ span.taxemptyview {
     resize: none;
     overflow-y: auto;
     width: 237px;
-    height: 108px;
+    /* height: 108px; */
+    height: 103px;
     margin-left: 2px;
 }
 .block_7_art {
@@ -1850,7 +1855,8 @@ span.taxemptyview {
     float: left;
     overflow-y: auto;
     width: 239px;
-    height: 120px;
+    /* height: 120px; */
+    height: 102px;
     margin-left: 2px;
 }
 .blankorderlogos {
@@ -2004,12 +2010,13 @@ input.artrepeat {
 .block_7_proofs1 {
     float: left;
     width: 239px;
-    height: 155px;
+    /* height: 155px; */
     margin-left: 2px;
 }
 .block_7_proofs1_scrool {
-    border-bottom: 1px solid rgb(62, 62, 62);
-    height: 154px;
+    /* border-bottom: 1px solid rgb(62, 62, 62); */
+    /* height: 154px; */
+    height: 139px;
     overflow-x: auto;
 }
 .proofs_line1 {
@@ -2042,14 +2049,16 @@ input.artrepeat {
 }
 .proofs_content {
     float: left;
-    height: 112px;
+    /* height: 112px; */
+    height: 99px;
     width: 142px;
     border-right: 1px solid rgb(62, 62, 62);
 }
 .proofs_line2 {
     float: left;
     font-size: 10px;
-    line-height: 20px;
+    /* line-height: 20px; */
+    line-height: 18px;
 }
 .proofs_line2_text1 {
     float: left;
@@ -2155,8 +2164,9 @@ input.artrepeat {
     height: 23px;
     line-height: 22px;
     /* margin: 0 15px; */
-    margin: 0 15px 0 37px;
+    /* margin: 0 15px 0 37px; */
     width: 126px;
+    border-radius: 7px;
 }
 .block_10.profitdetailsviewarea {
     cursor: pointer;
@@ -2423,19 +2433,22 @@ input.artrepeat {
 }
 .marglef {
     float: left;
-    margin-left: 7px;
-    margin-top: 10px;
+    /* margin-left: 7px; */
+    /* margin-top: 10px; */
+    margin-top: 8px;
+    width: 987px;
 }
 .ticketdataviewarea {
     cursor: pointer;
     float: left;    
-    width: 148px;    
+    width: 148px;
+    display: none;
 }
 .shippingdataviewarea {
     cursor: pointer;
-    float: left;
-    margin-left: 56px;
-    width: 166px;
+    float: right!important;
+    /* margin-left: 56px; */
+    /* width: 166px; */
 }
 .totalduedataviewarea {
     float: left;
@@ -5351,7 +5364,8 @@ input.ticket_date {
     margin-left: 8px;
     float: left;
     width: 238px;
-    margin-top: 20px;
+    /* margin-top: 20px; */
+    margin-top: 5px;
 }
 .artclaypreviewarea div {
     float: left;
@@ -5397,7 +5411,8 @@ input.ticket_date {
 }
 .artclaypreviewarea .claypreviewtable .claypreviewtableleft, .artclaypreviewarea .claypreviewtable .claypreviewtableright {
     padding-left: 5px;
-    min-height: 68px;
+    /* min-height: 68px; */
+    min-height: 51px;
     width: 115px;
 }
 .artclaypreviewarea .claypreviewtable .claypreviewtableleft {
@@ -5483,7 +5498,8 @@ input.ticket_date {
 }
 .artpreviewpreviewarea .previewpreviewtable .previewpreviewtableleft, .artpreviewpreviewarea .previewpreviewtable .previewpreviewtableright {
     padding-left: 5px;
-    min-height: 68px;
+    /* min-height: 68px; */
+    min-height: 51px;
     width: 115px;
 }
 .artpreviewpreviewarea .previewpreviewtable .previewpreviewtableleft {
