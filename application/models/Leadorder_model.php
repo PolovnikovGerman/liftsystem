@@ -2337,19 +2337,23 @@ Class Leadorder_model extends My_Model {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $order=$leadorder['order'];
         $order_items=$leadorder['order_items'];
+        $shipaddress = $leadorder['shipping_address'];
         $order_item_id=$details['order_item_id'];
         $imprint_details=$details['imprint_details'];
         $order_blank=intval($details['order_blank']);
-        $itemstatus =  $details['itemstatus'];
+        $itemstatus =  ifset($details, 'itemstatus','old');
         $artwork=$leadorder['artwork'];
         $locations=$leadorder['artlocations'];
         // Lets go - Find Order Items
         $this->load->model('shipping_model');
+        $this->load->model('orders_model');
         $found=0;
         $idx=0;
+        $item_id = '';
         foreach ($order_items as $row) {
             if ($row['order_item_id']==$order_item_id) {
                 $found=1;
+                $item_id = $row['item_id'];
                 break;
             } else {
                 $idx++;
@@ -2377,14 +2381,67 @@ Class Leadorder_model extends My_Model {
         // Create Imprint
         $newidx=count($imprints)+1;
         $out['shiprebuild']=0;
+        $recalshipcost = 0;
         if ($itemstatus=='new') {
+            // New Item
             $out['shiprebuild']=1;
+            if (count($order_items)==1) {
+                $shipping=$leadorder['shipping'];
+                if ($order_blank==1) {
+                    $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
+                } else {
+                    $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
+                }
+                $shipping['rush_list']=serialize($rush);
+                $shipping['out_rushlist']=$rush;
+                foreach ($rush['rush'] as $row) {
+                    if ($row['current']==1) {
+                        $shipping['shipdate']=$row['date'];
+                        $shipping['shipdate_orig']=$row['date'];
+                        $shipping['shipdate_class']='';
+                        $shipping['rush_price']=$row['price'];
+                        $shipping['rush_idx']=$row['id'];
+                    }
+                }
+                $order['shipdate'] = $shipping['shipdate'];
+                $leadorder['shipping']=$shipping;
+                if ($item_id<0) {
+                    $itemdata=$this->orders_model->get_newitemdat($item_id);
+                } else {
+                    $itemdata=$this->_get_itemdata($item_id);
+                }
+                $order['order_items']=$itemdata['item_name'];
+                $order['order_itemnumber']=$itemdata['item_number'];
+                $order['item_id']=$item_id;
+            } else {
+                $orditem_id=$this->config->item('multy_id');
+                $itemdata=$this->orders_model->get_itemdat($orditem_id);
+                $order['item_id']=$orditem_id;
+                $order['order_items']=$itemdata['item_name'];
+                $order['order_itemnumber']=$itemdata['item_number'];
+            }
+            if (count($shipaddress)==1) {
+                $itemorder_qty = 0;
+                foreach ($order_items as $orderitem) {
+                    $itemorder_qty+=$orderitem['item_qty'];
+                }
+                $shipaddress[0]['item_qty'] = $itemorder_qty;
+            }
+            $leadorder['shipping_address'] = $shipaddress;
+            //
+            $recalshipcost = 1;
+        }
+        if ($order_blank!=$order['order_blank']) {
+            $out['shiprebuild']=1;
+            // Rebuild shipping
+            $this->load->model('shipping_model');
             $shipping=$leadorder['shipping'];
             if ($order_blank==1) {
                 $rush=$this->shipping_model->get_rushlist_blank($order['item_id'], $order['order_date']);
             } else {
                 $rush=$this->shipping_model->get_rushlist($order['item_id'], $order['order_date']);
             }
+
             $shipping['rush_list']=serialize($rush);
             $shipping['out_rushlist']=$rush;
             foreach ($rush['rush'] as $row) {
@@ -2397,31 +2454,6 @@ Class Leadorder_model extends My_Model {
                 }
             }
             $leadorder['shipping']=$shipping;
-        } else {
-            if ($order_blank!=$order['order_blank']) {
-                $out['shiprebuild']=1;
-                // Rebuild shipping
-                $this->load->model('shipping_model');
-                $shipping=$leadorder['shipping'];
-                if ($order_blank==1) {
-                    $rush=$this->shipping_model->get_rushlist_blank($order['item_id'], $order['order_date']);
-                } else {
-                    $rush=$this->shipping_model->get_rushlist($order['item_id'], $order['order_date']);
-                }
-
-                $shipping['rush_list']=serialize($rush);
-                $shipping['out_rushlist']=$rush;
-                foreach ($rush['rush'] as $row) {
-                    if ($row['current']==1) {
-                        $shipping['shipdate']=$row['date'];
-                        $shipping['shipdate_orig']=$row['date'];
-                        $shipping['shipdate_class']='';
-                        $shipping['rush_price']=$row['price'];
-                        $shipping['rush_idx']=$row['id'];
-                    }
-                }
-                $leadorder['shipping']=$shipping;
-            }
         }
 
         if ($order_blank==1) {
@@ -2693,6 +2725,83 @@ Class Leadorder_model extends My_Model {
         $order_items[$idx]['imprints']=$imprints;
         $leadorder['order_items']=$order_items;
         $leadorder['order']=$order;
+        $out['shipcount'] = 0;
+        if ($recalshipcost==1) {
+            // Try to calculate ship rates
+            // Calculate shipping
+            $this->load->model('shipping_model');
+            $shiprate=0;
+            $items=$leadorder['order_items'];
+            $shipaddr=$leadorder['shipping_address'];
+//            if (count($shipaddr)==1) {
+//                $shipaddr[0]['item_qty']=$order['order_qty'];
+//            }
+            $shipping=$leadorder['shipping'];
+            $shipidx=0;
+            $cnt=0;
+            foreach ($shipaddr as $shprow) {
+                if (!empty($shprow['zip'])) {
+                    // Get Old Shipping Method
+                    $default_ship_method='';
+                    if (isset($shprow['shipping_cost'])) {
+                        $oldcosts=$shprow['shipping_costs'];
+                        foreach ($oldcosts as $costrow) {
+                            if ($costrow['delflag']==0 && $costrow['current']==1) {
+                                $default_ship_method=$costrow['shipping_method'];
+                            }
+                        }
+                    }
+                    $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
+                    if ($cntres['result']==$this->error_result) {
+                        $out['msg']=$cntres['msg'];
+                        usersession($ordersession, $leadorder);
+                        return $out;
+                    } else {
+                        $out['shipcount'] = 1;
+                        $rates=$cntres['ships'];
+                        $shipcost=$shipaddr[$shipidx]['shipping_costs'];
+                        $cidx=0;
+                        foreach ($shipcost as $row) {
+                            $shipcost[$cidx]['delflag']=1;
+                            $cidx++;
+                        }
+                        $newidx=count($shipcost)+1;
+                        foreach ($rates as $row) {
+                            $shipcost[]=array(
+                                'order_shipcost_id'=>$newidx*(-1),
+                                'shipping_method'=>$row['ServiceName'],
+                                'shipping_cost'=>$row['Rate'],
+                                'arrive_date'=>$row['DeliveryDate'],
+                                'current'=>$row['current'],
+                                'delflag'=>0,
+                            );
+                            if ($row['current']==1) {
+                                $shipaddr[$shipidx]['shipping']=$row['Rate'];
+                                $shipaddr[$shipidx]['arrive_date'] = $row['DeliveryDate'];
+                                $shiprate+=$row['Rate'];
+                            }
+                            $newidx++;
+                        }
+                        $shipaddr[$shipidx]['shipping_costs']=$shipcost;
+                    }
+                }
+                $shipidx++;
+                $cnt++;
+            }
+            $out['shipping']=$shiprate;
+            $order['shipping']=$shiprate;
+            $out['cntshipadrr']=$cnt;
+            if ($cnt==1) {
+                $out['shipaddr']=$shipaddr[0];
+            } else {
+                $out['shipaddress']=$shipaddr;
+            }
+            $leadorder['order'] = $order;
+            $leadorder['shipping'] = $shipping;
+            $leadorder['shipping_address'] = $shipaddr;
+            $leadorder['order_items'] = $items;
+            // End calc
+        }
         usersession($ordersession, $leadorder);
         usersession($imprintsession, NULL);
         $out['result']=$this->success_result;
@@ -3295,6 +3404,7 @@ Class Leadorder_model extends My_Model {
             // }
             // Rebuild Shipping Data
             $newshipping=$this->_leadorder_shipping($shipping_address, $shipping, $past);
+            $order['shipdate'] = $newshipping['shipdate'];
             $total_item=0;
             $total_qty=0;
             $total_imprint=0;
@@ -6088,7 +6198,7 @@ Class Leadorder_model extends My_Model {
                     'item_color_add' =>$coloradd,
                     'item_qty' =>$irow['item_qty'],
                     'item_price'=>$irow['item_price'],
-                    'item_subtotal'=>MoneyOutput($subtotal),
+                    'item_subtotal'=>$subtotal, // MoneyOutput($subtotal)
                     'printshop_item_id'=>(isset($irow['printshop_item_id']) ? $irow['printshop_item_id'] : ''),
                     'qtyinput_class' => $qty_class,
                     'qtyinput_title' => $qty_title,
@@ -10202,7 +10312,7 @@ Class Leadorder_model extends My_Model {
         $items=$leadorder['order_items'];
         $qty=0;
         foreach ($items as $row) {
-            $qty+=$row['item_qty'];
+            $qty+=intval($row['item_qty']);
         }
         if ($qty>0) {
             $shipaddr = $leadorder['shipping_address'];

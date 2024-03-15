@@ -140,7 +140,7 @@ class Leadquote_model extends MY_Model
                     // Get Delivery Terms
                     if ($lead_data['lead_item_id'] > 0) {
                         $this->load->model('calendars_model');
-                        $termdat = $this->calendars_model->get_delivery_date($lead_data['lead_item_id']);
+                        $termdat = $this->calendars_model->get_delivery_date($lead_data['lead_item_id'], $lead_data['brand']);
                         $quotedat['lead_time'] = json_encode($termdat);
                         foreach ($termdat as $row) {
                             if ($row['current']==1) {
@@ -1499,7 +1499,7 @@ class Leadquote_model extends MY_Model
                     // Get Delivery Terms
                     if ($item_id > 0) {
                         $this->load->model('calendars_model');
-                        $termdat = $this->calendars_model->get_delivery_date($item_id);
+                        $termdat = $this->calendars_model->get_delivery_date($item_id,$quote['brand']);
                         $quote['lead_time'] = json_encode($termdat);
                         foreach ($termdat as $row) {
                             if ($row['current']==1) {
@@ -2259,6 +2259,24 @@ class Leadquote_model extends MY_Model
                 }
             }
         }
+        if ($quote['rush_cost'] > 0) {
+            $fillrow = ($numpp % 2) == 0 ? 1 : 0;
+            $rowcode = 'SR-rush';
+            $pdf->SetXY($startPageX, $yStart);
+            $pdf->Cell($colWidth[0], $cellheight, $rowcode, 'LR', 0, 'L', $fillrow);
+            $pdf->Cell($colWidth[1], $cellheight, $quote['rush_terms'], 'LR', 0, 'L', $fillrow);
+            $pdf->Cell($colWidth[2], $cellheight, '1', 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[3], $cellheight, number_format($quote['rush_cost'], 2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['rush_cost']), 'LR', 0, 'R', $fillrow);
+            $numpp++;
+            $yStart += $cellheight;
+            if ($yStart>=$this->page_heigh_limit) {
+                $pdf->Line($startPageX, $yStart, 197, $yStart);
+                $pdf->AddPage();
+                $this->_newpagetablestart($pdf);
+                $yStart = 21;
+            }
+        }
         if (!empty($quote['mischrg_label1']) && !empty($quote['mischrg_value1'])) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
@@ -2657,6 +2675,24 @@ class Leadquote_model extends MY_Model
                     $this->_newpagetablestart($pdf);
                     $yStart = 21;
                 }
+            }
+        }
+        if ($quote['rush_cost'] > 0) {
+            $fillrow = ($numpp % 2) == 0 ? 1 : 0;
+            $rowcode = 'SB-rush';
+            $pdf->SetXY($startPageX, $yStart);
+            $pdf->Cell($colWidth[0], $cellheight, $rowcode, 'LR', 0, 'L', $fillrow);
+            $pdf->Cell($colWidth[1], $cellheight, $quote['rush_terms'], 'LR', 0, 'L', $fillrow);
+            $pdf->Cell($colWidth[2], $cellheight, '1', 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[3], $cellheight, number_format($quote['rush_cost'], 2), 'LR', 0, 'C', $fillrow);
+            $pdf->Cell($colWidth[4], $cellheight, MoneyOutput($quote['rush_cost']), 'LR', 0, 'R', $fillrow);
+            $numpp++;
+            $yStart += $cellheight;
+            if ($yStart>=$this->page_heigh_limit) {
+                $pdf->Line($startPageX, $yStart, 197, $yStart);
+                $pdf->AddPage();
+                $this->_newpagetablestart($pdf);
+                $yStart = 21;
             }
         }
         if (!empty($quote['mischrg_label1']) && !empty($quote['mischrg_value1'])) {
@@ -3185,11 +3221,15 @@ class Leadquote_model extends MY_Model
                     'item_color'=> $quotecolor['item_color'],
                 );
                 if (count($itemdata['colors'])==0) {
-                    // $out_colors=$this->empty_htmlcontent;
-                    $out_colors=$this->load->view('leadorderdetails/item_color_input', $options, TRUE);
+                    $out_colors=$this->empty_htmlcontent;
+                    // $out_colors=$this->load->view('leadorderdetails/item_color_input', $options, TRUE);
                 } else {
+                    if ($quote['brand']=='SR') {
+                        $out_colors = $this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
+                    } else {
+                        $out_colors=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+                    }
                     // check that current color exist
-                    $out_colors=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
                 }
                 $itemsubtotal+=$quotecolor['item_qty']*$quotecolor['item_price'];
                 $coloritems[] = [
@@ -3293,6 +3333,7 @@ class Leadquote_model extends MY_Model
                 'items' => $coloritems,
                 'imprints' => $imprints,
                 'imprint_details' => $imprdetails,
+                'vendor_item_id' => ifset($itemdata, 'vendor_item_id', ''),
             ];
             $itemid++;
         }

@@ -2326,6 +2326,15 @@ function save_imprint_details() {
             if (response.data.artlocchange==1) {
                 $("#artlocationsarea").empty().html(response.data.locat_view);
             }
+            // Shipping rates
+            if (response.data.shipcount==1) {
+                $("div.ship_tax_container2[data-shipadr='"+response.data.shipaddress+"']").empty().html(response.data.shipcost);
+                $("input.shippingcost").val(response.data.shipping);
+                $("input.salestaxcost").val(response.data.tax);
+                if (response.data.taxview.length>0) {
+                    $(".ship_tax_cont_bl3").empty().html(response.data.taxview);
+                }
+            }
             $("input#loctimeout").val(response.data.loctime);
             $(".addleadorderitem").show();
             init_onlineleadorder_edit();
@@ -3897,8 +3906,10 @@ function init_orderbottom_content(edit_mode) {
             }
         },
         position: {
-            my: 'bottom right',
-            at: 'middle left',
+            // my: 'bottom right',
+            // at: 'middle left',
+            my: 'bottom left',
+            at: 'top right',
         },
         style: {
             classes: 'qtip-dark profitdetails_tooltip'

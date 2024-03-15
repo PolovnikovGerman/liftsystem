@@ -358,6 +358,7 @@ class Template
                     'imprintview'=>$imprintview,
                     'edit'=>$edit,
                     'showinvent' => $showinvent,
+                    'brand' => $ord_data['brand'],
                 );
                 $subtotal+=($irow['imprint_subtotal']+$irow['item_subtotal']);
                 if ($edit==1) {
@@ -667,13 +668,13 @@ class Template
         $clayview=leadClaydocOut($claydocs, $edit);
         $artdata['claydoc_view']=$clayview;
         $artdata['claycnt'] = count($claydocs);
-        $artdata['claydocswidth'] = ceil(count($claydocs)/4)*115;
+        $artdata['claydocswidth'] = ceil(count($claydocs)/3)*115;
         // Previews
         $previewdocs=$res['previewdocs'];
         $previewview=leadPreviewdocOut($previewdocs, $edit);
         $artdata['previewdoc_view']=$previewview;
         $artdata['previewcnt'] = count($previewdocs);
-        $artdata['previewswidth'] = ceil(count($previewdocs)/4)*115;
+        $artdata['previewswidth'] = ceil(count($previewdocs)/3)*115;
         // Templates
         if ($ord_data['brand']=='SR') {
             $artdata['empty_url'] = $this->CI->config->item('sr_empty_template');

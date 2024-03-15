@@ -739,7 +739,7 @@ if (!function_exists('leadClaydocOut')) {
         $numdocs=count($claydocs);
         $numpp=0;
         $opendiv=1;
-        $maxcols = ceil($numdocs/4);
+        $maxcols = ceil($numdocs/3);
         $numcolumn = 1;
         foreach ($claydocs as $row) {
             $row['edit']=$edit;
@@ -747,7 +747,7 @@ if (!function_exists('leadClaydocOut')) {
             $row['rownum']=$numpor;
             $clayview.=$ci->load->view('leadorderdetails/artwork_claydoc_view', $row,TRUE);
             $numpp++;
-            if ($numpor==4) {
+            if ($numpor==3) {
                 $numpor=0;
                 $numcolumn++;
                 $clayview.='</div>';
@@ -777,7 +777,7 @@ if (!function_exists('leadPreviewdocOut')) {
         $numdocs=count($previewdocs);
         $numpp=0;
         $opendiv=1;
-        $maxcols = ceil($numdocs/4);
+        $maxcols = ceil($numdocs/3);
         $numcol = 1;
         foreach ($previewdocs as $row) {
             $row['edit']=$edit;
@@ -785,7 +785,7 @@ if (!function_exists('leadPreviewdocOut')) {
             $row['rownum']=$numpor;
             $previewview.=$ci->load->view('leadorderdetails/artwork_previewdoc_view', $row,TRUE);
             $numpp++;
-            if ($numpor==4) {
+            if ($numpor==3) {
                 $numpor=0;
                 $previewview.='</div>';
                 $opendiv=0;

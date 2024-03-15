@@ -13,7 +13,7 @@
             <div class="itemcolor_adddata">&nbsp;</div>
             <div class="items_content_addqty">&nbsp;</div>
             <div class="items_content_addprice">&nbsp;</div>
-            <div class="items_content_sub_total2" data-item="<?=$row['item_id']?>" data-orderitem="<?=$row['order_item_id']?>">
+            <div class="items_content_sub_total2 newitemcoloradd" data-item="<?=$row['item_id']?>" data-orderitem="<?=$row['order_item_id']?>">
                 <div class="items_content_addprint" data-orderitem="<?=$row['order_item_id']?>">Print Details</div>
                 <!-- <span class="itemsubtotal"></span> -->
             </div>
