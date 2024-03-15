@@ -3892,8 +3892,10 @@ function init_orderbottom_content(edit_mode) {
             }
         },
         position: {
-            my: 'bottom right',
-            at: 'middle left',
+            // my: 'bottom right',
+            // at: 'middle left',
+            my: 'bottom left',
+            at: 'top right',
         },
         style: {
             classes: 'qtip-dark profitdetails_tooltip'
