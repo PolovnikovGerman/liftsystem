@@ -2579,7 +2579,7 @@ Class Leadorder_model extends My_Model {
                             if ($reptotal > 0) {
                                 $title='Repeat Setup Charge '.$row['repeat_note'];
                                 $repprice = round($reptotal/$repqty,2);
-                                $imprint_total+=floatval($reptotal);
+                                // $imprint_total+=floatval($reptotal);
                                 $extra[]=array(
                                     'order_imprint_id'=>(-1)*$newidx,
                                     'imprint_description'=>$title,
