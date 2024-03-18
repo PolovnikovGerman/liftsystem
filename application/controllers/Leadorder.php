@@ -2224,9 +2224,9 @@ class Leadorder extends MY_Controller
                 $order_item_id=$postdata['order_item'];
                 $item_id=$postdata['item'];
                 $res=$this->leadorder_model->add_itemcolor($leadorder, $order_item_id, $item_id, $ordersession);
-                if ($res['result']==$this->error_result) {
-                    $error=$res['msg'];
-                } else {
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
                     $order_items=$res['items'];
                     $imprints=$order_items['imprints'];
                     $imprintview=$this->load->view('leadorderdetails/imprint_data_edit', array('imprints'=>$imprints), TRUE);
@@ -2241,6 +2241,7 @@ class Leadorder extends MY_Controller
                         'edit'=>1,
                         'showinvent' => $showinvent,
                         'brand' => $res['order']['brand'],
+                        'item_id' => $order_items['item_id'],
                     );
                     $mdata['content']=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
                 }
