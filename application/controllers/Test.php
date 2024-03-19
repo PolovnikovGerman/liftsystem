@@ -3446,7 +3446,7 @@ class Test extends CI_Controller
 //                }
             }
             if (!empty($filename)) {
-                $this->db->where('item_id', $item['managed']);
+                $this->db->where('item_id', $item['item_id']);
                 $this->db->set('item_vector_img', $filename);
                 $this->db->update('sb_items');
             }
