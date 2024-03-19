@@ -3433,8 +3433,8 @@ class Test extends CI_Controller
             $path_fl = $this->config->item('item_aitemplate');
             $path_sh = $this->config->item('item_aitemplate_relative');
             $filename = '';
-            $templat = 'ai-temp_'.$item['item_num'].'_*.ai';
-            echo 'Item '.$item['item_num'].' Template '.$path_fl.$templat.PHP_EOL;
+            $templat = 'ai-temp_'.$item['item_number'].'_*.ai';
+            echo 'Item '.$item['item_number'].' Template '.$path_fl.$templat.PHP_EOL;
             $chfiles = glob($path_fl.$templat);
             if (count($chfiles)==1) {
                 $filename = str_replace($path_fl, $path_sh, $chfiles[0]);
