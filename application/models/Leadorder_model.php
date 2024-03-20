@@ -7769,7 +7769,7 @@ Class Leadorder_model extends My_Model {
                     'item_description'=>$item_description,
                     'item_qty'=>$irow['item_qty'],
                     'item_price'=>PriceOutput($irow['item_price']),
-                    'item_subtotal'=>$irow['item_subtotal'],
+                    'item_subtotal'=>MoneyOutput($irow['item_subtotal']),
                     'item_color'=>'#000000',
                     'item' => 1,
                 );
