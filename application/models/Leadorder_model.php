@@ -7261,12 +7261,12 @@ Class Leadorder_model extends My_Model {
             'customer_contact' =>$artwork['customer_contact'],
             'customer_phone' => $artwork['customer_phone'],
             'customer_email' => $artwork['customer_phone'],
-            'item_name' => $order['brand']=='SR' ? '' : $artwork['item_name'],
-            'other_item' => $order['brand']=='SR' ? '' : $artwork['other_item'],
-            'item_number' => $order['brand']=='SR' ? '' : $artwork['item_number'],
-            'item_id' => $order['brand']=='SR' ? '' : $artwork['item_id'],
-            'item_color' => $order['brand']=='SR' ? '' : $artwork['item_color'],
-            'item_qty' => $order['brand']=='SR' ? '' : $artwork['item_qty'],
+            'item_name' => $artwork['item_name'],
+            'other_item' => $artwork['other_item'],
+            'item_number' => $artwork['item_number'],
+            'item_id' => $artwork['item_id'],
+            'item_color' => $artwork['item_color'],
+            'item_qty' => $artwork['item_qty'],
             'artwork_rush' =>$artwork['artwork_rush'],
             'artwork_note' =>$artwork['artwork_note'],
             'customer_art' =>$artwork['customer_art'],
@@ -7280,6 +7280,10 @@ Class Leadorder_model extends My_Model {
             'artstage_txt'=>$this->NO_ART_TXT,
             'artstage_time'=>'0h',
         );
+        if ($order['brand']=='SR') {
+            $newartw['item_name'] = $newartw['other_item'] = $newartw['item_number'] = $newartw['item_id'] = $newartw['item_color'] = '';
+            $newartw['item_qty'] = 0;
+        }
         $locations=$this->artlead_model->get_art_locations($artwork['artwork_id']);
 
         $artlocations=array();
