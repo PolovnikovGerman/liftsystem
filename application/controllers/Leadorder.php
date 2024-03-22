@@ -75,6 +75,7 @@ class Leadorder extends MY_Controller
                         'prvorder' => 0,
                         'nxtorder' => 0,
                         'order_id' => 0,
+                        'brand' => $brand
                     ];
                     $header = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
                     $locking='';
@@ -93,6 +94,7 @@ class Leadorder extends MY_Controller
                             'prvorder' => $res['prvorder'],
                             'nxtorder' => $res['nxtorder'],
                             'order_id' => $orddata['order_id'],
+                            'brand' => $brand,
                         ];
                         // Build View
                         $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, 0);
@@ -135,6 +137,7 @@ class Leadorder extends MY_Controller
                             'order_head' => $this->load->view('leadorderdetails/head_order_edit', $orddata,TRUE),
                             'prvorder' => $res['prvorder'],
                             'nxtorder' => $res['nxtorder'],
+                            'brand' => $res['order']['brand'],
                         ];
                         // Build View
                         $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $edit);
@@ -400,6 +403,7 @@ class Leadorder extends MY_Controller
                         'prvorder' => 0,
                         'nxtorder' => 0,
                         'order_id' => 0,
+                        'brand' => $orddata['brand'],
                     ];
                     $mdata['header'] = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
                     /* Save to session */
@@ -437,7 +441,7 @@ class Leadorder extends MY_Controller
                     }
                     usersession($ordersession, $leadorder);
                 }
-                $this->ajaxResponse($mdata, $error);
+                // $this->ajaxResponse($mdata, $error);
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -3148,6 +3152,7 @@ class Leadorder extends MY_Controller
                                 'order_head' => $this->load->view('leadorderdetails/head_order_edit', $orddata,TRUE),
                                 'prvorder' => $res['prvorder'],
                                 'nxtorder' => $res['nxtorder'],
+                                'brand' => $brand,
                             ];
                             // Build View
                             $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, 1);
@@ -5209,6 +5214,7 @@ class Leadorder extends MY_Controller
                             'nxtorder' => $res['nxtorder'],
                             'order_id' => $orddata['order_id'],
                             'unlocked' => $engade_res['result'],
+                            'brand' => $brand,
                         ];
                         if ($engade_res['result']==$this->error_result) {
                             $voptions=array(

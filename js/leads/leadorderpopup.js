@@ -119,6 +119,10 @@ function navigation_init() {
                     clearTimeout(timerId);
                     init_onlineleadorder_edit();
                     init_rushpast();
+                    $('select.addnewitem').select2({
+                        dropdownParent: $('#artModal'),
+                        matcher: matchStart,
+                    });
                     $("#loader").hide();
                 } else {
                     $("#loader").hide();
