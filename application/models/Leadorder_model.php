@@ -7259,10 +7259,12 @@ Class Leadorder_model extends My_Model {
             'artstage' =>$this->NO_ART,
             'artstage_txt'=>$this->NO_ART_TXT,
             'artstage_time'=>'0h',
+            'general_notes' => '',
         );
         if ($order['brand']=='SR') {
             $newartw['item_name'] = $newartw['other_item'] = $newartw['item_number'] = $newartw['item_id'] = $newartw['item_color'] = '';
             $newartw['item_qty'] = 0;
+            $newartw['general_notes'] = $artwork['general_notes'];
         }
         $locations=$this->artlead_model->get_art_locations($artwork['artwork_id']);
 
@@ -7782,8 +7784,8 @@ Class Leadorder_model extends My_Model {
         $newshipping=$this->_leadorder_shipping($newshipaddr, $shipping);
 
         $message=array(
-            'general_notes'=>'',
-            'history'=>$newart_history,
+            'general_notes' => $newartw['general_notes'],
+            'history' => $newart_history,
         );
         $oldcharges=$this->get_order_charges($order['order_id']);
         $newcharge=array();
