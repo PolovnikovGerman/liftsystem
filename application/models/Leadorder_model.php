@@ -3277,19 +3277,26 @@ Class Leadorder_model extends My_Model {
             $out['msg']=$transres['error_msg'];
             $cc_options = [
                 'amount'=>$charge['amount'],
-                'cardnum'=>$cardnum,
+                'cardnum'=>hide_cardnumber($cardnum),
                 'cardtype'=>($cardtype=='American Express' ? 'Amex' : $cardtype),
                 'cardcode'=>$charge['cardcode'],
             ];
             $this->_save_order_paymentlog($order_id, $usr_id, $transres['error_msg'], $cc_options);
+            $charge['cardnum'] = '';
+            $charge['cardcode'] = '';
+            $charges[$chridx] = $charge;
+            $leadorder['charges'] = $charges;
+            usersession($ordersession, $leadorder);
         } else {
             $cc_options = [
                 'amount'=>$charge['amount'],
-                'cardnum'=>$cardnum,
+                'cardnum'=>hide_cardnumber($cardnum),
                 'cardtype'=>($cardtype=='American Express' ? 'Amex' : $cardtype),
                 'cardcode'=>$charge['cardcode'],
             ];
             $this->_save_order_paymentlog($order_id, $usr_id, $transres['transaction_id'], $cc_options, 1);
+            $charge['cardnum'] = hide_cardnumber($cardnum);
+            $charge['cardcode'] = '';
             // Batch data
             $paymethod='';
             if ($pay_options['cardtype']=='amex') {
@@ -3306,7 +3313,7 @@ Class Leadorder_model extends My_Model {
                 'order_id'=>$order_id,
                 'batch_received'=>1,
                 'batch_type'=>$pay_options['cardtype'],
-                'batch_num'=>$pay_options['cardnum'],
+                'batch_num'=>substr($cardnum,-4),
                 'batch_transaction'=>$transres['transaction_id'],
             );
             $batchres = $this->batches_model->save_batch($batch_data, $order, $usr_id);
@@ -6752,12 +6759,21 @@ Class Leadorder_model extends My_Model {
                 $transres=$this->order_payment($pay_options);
                 if ($transres['result']==$this->error_result) {
                     $out['msg']=$transres['error_msg'];
+                    if (!empty($pay_options['cardnum'])) {
+                        $pay_options['cardnum'] = hide_cardnumber($pay_options['cardnum']);
+                    }
                     $this->_save_order_paymentlog($order_id, $user_id, $out['msg'], $pay_options);
+                    $this->db->where('order_payment_id', $row['order_payment_id']);
+                    $this->db->set('cardcode','');
+                    $this->db->set('cardnum','');
+                    $this->db->update('ts_order_payments');
                     return $out;
                 } else {
                     // Make Current row Amount=0, Add Charge
                     $this->db->set('amount',0);
                     $this->db->where('order_payment_id', $row['order_payment_id']);
+                    $this->db->set('cardcode','');
+                    $this->db->set('cardnum', hide_cardnumber($pay_options['cardnum']));
                     $this->db->update('ts_order_payments');
                     // Batch data
                     $paymethod='';
@@ -6775,10 +6791,11 @@ Class Leadorder_model extends My_Model {
                         'order_id'=>$order_id,
                         'batch_received'=>0,
                         'batch_type'=>$pay_options['cardtype'],
-                        'batch_num'=>$pay_options['cardnum'],
+                        'batch_num'=>substr($pay_options['cardnum'],-4),
                         'batch_transaction'=>$transres['transaction_id'],
                     );
                     $batch_id=$this->batches_model->save_batch($batch_data, $order_data, $user_id);
+                    $pay_options['cardnum'] = hide_cardnumber($pay_options['cardnum']);
                     $this->_save_order_paymentlog($order_id, $user_id, $transres['transaction_id'], $pay_options, 1);
                 }
             } else {
@@ -9260,7 +9277,7 @@ Class Leadorder_model extends My_Model {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message, 'fin'=>0);
         $charges=$leadorder['charges'];
         $order_data=$leadorder['order'];
-        $order_revenue=$order_data['revenue'];
+        $order_revenue=floatval($order_data['revenue']);
         // Calc amount of charges
         $chargesum=0;
         $chargenum=0;
@@ -9273,7 +9290,7 @@ Class Leadorder_model extends My_Model {
         if ($chargesum==0) {
             $out['result']=$this->success_result;
         } else {
-            if ($chargesum==$order_revenue) {
+            if (round($chargesum,2)==round($order_revenue,2)) {
                 $out['result']=$this->success_result;
             } else {
                 if ($chargenum==1) {
