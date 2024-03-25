@@ -608,13 +608,33 @@ class Fulfillment extends MY_Controller
 
                     if (in_array($ext, $arrayext )) {
                         $filesource = $path . $newfilename . '.' . $ext;
-                        $file->save($filesource);
-
-                        $data['filesource'] = $filesource;
-                        $data['filename'] = $filename;
-                        usersession($uploadsession, $data);
-                        $response['success'] = true;
-                        $response['error'] = '';
+                        $ressave = $file->save($filesource);
+                        if ($ressave) {
+                            $mimeext = $this->mimetypes[$ext];
+                            $mimetype = mime_content_type($filesource);
+                            if ($mimetype==$mimeext) {
+                                $data['filesource'] = $filesource;
+                                $data['filename'] = $filename;
+                                usersession($uploadsession, $data);
+                                $response['success'] = true;
+                                $response['error'] = '';
+                            } else {
+                                $response['error'] = 'Error During save File';
+                                @unlink($filesource);
+                                // Insert data into log
+                                $this->db->set('file_name', $file->getName());
+                                $this->db->set('file_ext', $mimetype);
+                                if (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
+                                    $this->db->set('page_call',$_SERVER['HTTP_REFERER']);
+                                }
+                                if (isset($_SERVER['HTTP_HOST']) && !empty($_SERVER['HTTP_HOST'])) {
+                                    $this->db->set('site', $_SERVER['HTTP_HOST']);
+                                }
+                                $this->db->set('user_ip', $this->input->ip_address());
+                                $this->db->set('user_id', $this->USR_ID);
+                                $this->db->insert('ts_uploadfile_logs');
+                            }
+                        }
                     }
                 }
             }
