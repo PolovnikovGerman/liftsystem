@@ -256,6 +256,13 @@ Class User_model extends MY_Model
                 $this->db->order_by($options['sort']);
             }
         }
+        if (isset($options['sort2'])) {
+            if (isset($options['sort_direct2'])) {
+                $this->db->order_by($options['sort2'], $options['sort_direct2']);
+            } else {
+                $this->db->order_by($options['sort2']);
+            }
+        }
         $res=$this->db->get()->result_array();
 
         $data = [];
@@ -440,7 +447,7 @@ Class User_model extends MY_Model
         return $res;
     }
 
-    public function update_userdata($session_data, $session_id) {
+    public function update_userdata($session_data, $session_id, $updusr) {
         $out = ['result' => $this->error_result, 'msg' => 'Error during update user'];
         $user = $session_data['user'];
         $userip = $session_data['userip'];
@@ -467,9 +474,13 @@ Class User_model extends MY_Model
             $this->db->set('user_page', ifset($user,'user_page',NULL));
             $this->db->set('user_order_export', ifset($user,'user_order_export',0));
             if ($user['user_id']==0) {
+                $this->db->set('created_at', date('Y-m-d H:i:s'));
+                $this->db->set('created_by', $updusr);
+                $this->db->set('updated_by', $updusr);
                 $this->db->insert('users');
                 $user_id = $this->db->insert_id();
             } else {
+                $this->db->set('updated_by', $updusr);
                 $this->db->where('user_id', $user['user_id']);
                 $this->db->update('users');
                 $user_id = $user['user_id'];
