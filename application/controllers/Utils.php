@@ -9,7 +9,7 @@ Class Utils extends CI_Controller
         'png' => 'image/png',
         'gif' => 'image/gif',
         'eps' => 'image/x-eps', // 'application/postscript',
-        'ai' => 'application/postscript',
+        'ai' => 'application/pdf', // 'application/postscript',
         'pdf' => 'application/pdf',
         'psd' => 'image/vnd.adobe.photoshop',
     ];
