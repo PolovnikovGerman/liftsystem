@@ -21,6 +21,17 @@ class Artproofrequest extends MY_Controller
     private $nonredrawn = array('ai', 'pdf', 'eps');
     private $logo_imageext = array('jpg', 'jpeg', 'png', 'gif');
 
+    private $mimetypes = [
+        'jpg' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'png' => 'image/png',
+        'gif' => 'image/gif',
+        'eps' => 'application/postscript',
+        'ai' => 'application/postscript',
+        'pdf' => 'application/pdf',
+        'psd' => 'image/vnd.adobe.photoshop',
+    ];
+
     public function __construct()
     {
         parent::__construct();
@@ -195,8 +206,31 @@ class Artproofrequest extends MY_Controller
                 echo (json_encode(array('success' => false, 'error' => 'File has an invalid extension, it should be one of '. $these . '.')));
                 exit();
             } else {
-                $file->save($path . $filename . '.' . $ext);
-                echo (json_encode(array('success' => true, 'uplsource' => $filename . '.' . $ext, 'filename' => $path.$filename . '.' . $ext, 'filesize' => $filesize,'source'=>$file->getName())));
+                $ressave = $file->save($path . $filename . '.' . $ext);
+                if ($ressave) {
+                    $mimeext = $this->mimetypes[$ext];
+                    $mimetype = mime_content_type($path . $filename . '.' . $ext);
+                    if ($mimetype==$mimeext) {
+                        echo (json_encode(array('success' => true, 'uplsource' => $filename . '.' . $ext, 'filename' => $path.$filename . '.' . $ext, 'filesize' => $filesize,'source'=>$file->getName())));
+                    } else {
+                        @unlink($path . $filename . '.' . $ext);
+                        // Insert data into log
+                        $this->db->set('file_name', $file->getName());
+                        $this->db->set('file_ext', $mimetype);
+                        if (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
+                            $this->db->set('page_call',$_SERVER['HTTP_REFERER']);
+                        }
+                        if (isset($_SERVER['HTTP_HOST']) && !empty($_SERVER['HTTP_HOST'])) {
+                            $this->db->set('site', $_SERVER['HTTP_HOST']);
+                        }
+                        $this->db->set('user_ip', $this->input->ip_address());
+                        $this->db->set('user_id', $this->USR_ID);
+                        $this->db->insert('ts_uploadfile_logs');
+                        echo(json_encode(array('success' => false, 'error' => 'Error During save File')));
+                    }
+                } else {
+                    echo (json_encode(array('success' => false,'error'=> 'Error During save File')));
+                }
                 exit();
             }
         } else {
@@ -496,12 +530,39 @@ class Artproofrequest extends MY_Controller
                 echo (json_encode(array('success' => false, 'error' => 'File has an invalid extension, it should be one of '. $these . '.')));
                 exit();
             } else {
-                $file->save($path . $newfilename . '.' . $ext);
-                // Add new file to data
-                $this->load->model('artproof_model');
-                $this->artproof_model->add_proofdoc_log($data['artwork_id'], $this->USR_ID, $path . $newfilename . '.' . $ext, $filename, 'Upload');
-                // Build new content
-                echo (json_encode(array('success' => true, 'filename'=> $newfilename. '.' . $ext, 'srcname'=>$filename)));
+                $ressave = $file->save($path . $newfilename . '.' . $ext);
+                if ($ressave) {
+                    $mimeext = $this->mimetypes[$ext];
+                    $mimetype = mime_content_type($path . $newfilename . '.' . $ext);
+                    if ($mimetype==$mimeext) {
+                        // Add new file to data
+                        $this->load->model('artproof_model');
+                        $this->artproof_model->add_proofdoc_log($data['artwork_id'], $this->USR_ID, $path . $newfilename . '.' . $ext, $filename, 'Upload');
+                        // Build new content
+                        echo (json_encode(array('success' => true, 'filename'=> $newfilename. '.' . $ext, 'srcname'=>$filename)));
+                    } else {
+                        @unlink($path . $filename . '.' . $ext);
+                        // Insert data into log
+                        $user=usersession('usr_data');
+                        $usrid = ifset($user,'id',0);
+                        $this->db->set('file_name', $file->getName());
+                        $this->db->set('file_ext', $mimetype);
+                        if (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
+                            $this->db->set('page_call',$_SERVER['HTTP_REFERER']);
+                        }
+                        if (isset($_SERVER['HTTP_HOST']) && !empty($_SERVER['HTTP_HOST'])) {
+                            $this->db->set('site', $_SERVER['HTTP_HOST']);
+                        }
+                        $this->db->set('user_ip', $this->input->ip_address());
+                        if ($usrid) {
+                            $this->db->set('user_id', $usrid);
+                        }
+                        $this->db->insert('ts_uploadfile_logs');
+                        echo(json_encode(array('success' => false, 'error' => 'Error During save File')));
+                    }
+                } else {
+                    echo (json_encode(array('success' => false,'error'=> 'Error During save File')));
+                }
                 exit();
             }
         } else {

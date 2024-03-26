@@ -2,10 +2,22 @@
     margin-left: 20px;
     margin-top: 20px;
     clear: both;
-    width: 980px;
+    width: 988px;
 }
 .users_filters {
+    height: 25px;
+}
+.users_filters div {
+    line-height: 25px;
+}
+.usersortlabel {
+    margin-right: 4px;
+}
+.usersortvalue {
 
+}
+select.usrsorter {
+    width: 102px;
 }
 .userdata_head {
     clear: both;
@@ -20,17 +32,23 @@
     text-align: center;
 }
 .userdata_head > .actions {
-    width: 93px;
+    /* width: 93px; */
+    width: 69px;
 }
 button.addnewusers {
-    padding: 4px!important;
+    padding: 2px 4px!important;
     font-size: 12px;
     margin-top: -1px;
+    margin-left: 5px;
+    position: relative;
+}
+.userdata_head > .userid {
+    width: 38px;
 }
 .userdata_head > .username {
     width: 130px;
 }
-.userdata_head > .userstatus {
+.userdata_head > .userstatushead {
     width: 82px;
 }
 .userdata_head > .userrealname {
@@ -54,7 +72,7 @@ button.addnewusers {
     border-left: 1px solid #000;
     border-bottom: 1px solid #000;
     border-right: 1px solid #000;
-    width: 972px;
+    width: 986px;
 }
 .usertabledata > .userdatarow {
 }
@@ -69,6 +87,14 @@ button.addnewusers {
     color: #000;
     text-align: left;
 }
+.userdatarow.nonactive > div {
+    color: #9c9797;
+}
+.userdatarow > .userid {
+    width: 38px;
+    text-align: center;
+    border-right: 1px solid #000000;
+}
 .userdatarow > .actions {
     border-right: 1px solid #000000;
 }
@@ -78,14 +104,16 @@ button.addnewusers {
 {
     height: 22px;
     line-height: 22px;
-    width: 31px;
+    /* width: 31px; */
+    width: 23px;
     text-align: center;
 }
 .userdatarow .edituser i,
 .userdatarow .deleteuser i,
 .userdatarow .userstatus i
 {
-    font-size: 20px;
+    /* font-size: 20px; */
+    font-size: 16px;
     cursor: pointer;
 }
 

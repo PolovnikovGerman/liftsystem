@@ -3789,6 +3789,7 @@ function init_leadorder_charges() {
     });
     $("div.pay_method_buttonsend").unbind('click').click(function(){
         var params=new Array();
+        var charge_id = $(this).data('charge');
         params.push({name: 'order_payment_id', value: $(this).data('charge')});
         params.push({name: 'ordersession', value: $("input#ordersession").val()});
         var callpage=$("input#callpage").val();
@@ -3806,6 +3807,8 @@ function init_leadorder_charges() {
             } else {
                 $("#loader").hide();
                 show_error(response);
+                $(".chargeinput[data-charge='"+charge_id+"'][data-field='cardnum']").val('');
+                $(".chargeinput[data-charge='"+charge_id+"'][data-field='cardcode']").val('');
             }
         },'json');
     })
