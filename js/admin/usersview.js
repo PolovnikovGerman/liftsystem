@@ -1,5 +1,35 @@
 function init_users() {
     initUserPagination();
+    $("select.usrsorter").unbind('change').change(function (){
+        var sortid = $(this).data('sortlevel');
+        var fldsort = $(this).val();
+        if (fldsort=='level') {
+            if (sortid == 1) {
+                $("#direcusr").val('desc');
+                $("#orderusr").val('role_id');
+            } else {
+                $("#direcusr2").val('desc');
+                $("#orderusr2").val('role_id');
+            }
+        } else if (fldsort=='lastactivity') {
+            if (sortid == 1) {
+                $("#direcusr").val('desc');
+                $("#orderusr").val('lastactivity');
+            } else {
+                $("#direcusr2").val('desc');
+                $("#orderusr2").val('lastactivity');
+            }
+        } else {
+            if (sortid==1) {
+                $("#direcusr").val('asc');
+                $("#orderusr").val(fldsort);
+            } else {
+                $("#direcusr2").val('asc');
+                $("#orderusr2").val(fldsort);
+            }
+        }
+        initUserPagination();
+    });
 }
 
 function initUserPagination() {
@@ -32,6 +62,8 @@ function pageUserCallback(page_index) {
     params.push({name:'limit',value:$("#perpageusr").val()});
     params.push({name:'order_by',value:$("#orderusr").val()});
     params.push({name:'direction', value:$("#direcusr").val()});
+    params.push({name:'order_by2',value:$("#orderusr2").val()});
+    params.push({name:'direction2', value:$("#direcusr2").val()});
     params.push({name:'maxval', value:$('#totalusers').val()});
     var url='/admin/usersdata';
     $("#loader").show();

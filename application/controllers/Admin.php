@@ -97,8 +97,12 @@ class Admin extends MY_Controller
             $limit = ifset($postdata,'limit',$this->PERPAGE);
             $options['limit']=$limit;
             $options['offset']=$pagenum*$limit;
-            $options['order_by'] = ifset($postdata,'order_by','user_id');
-            $options['direction'] = ifset($postdata,'direction','asc');
+
+            $options['sort'] = ifset($postdata,'order_by','user_id');
+            $options['sort_direct'] = ifset($postdata,'direction','asc');
+            $options['sort2'] = ifset($postdata,'order_by2','user_id');
+            $options['sort_direct2'] = ifset($postdata,'direction2','asc');
+
             $res = $this->user_model->get_userscontrollist($options);
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
@@ -435,7 +439,7 @@ class Admin extends MY_Controller
             $session_id = ifset($postdata, 'session','emptysession');
             $session_data = usersession($session_id);
             if (!empty($session_data)) {
-                $res = $this->user_model->update_userdata($session_data, $session_id);
+                $res = $this->user_model->update_userdata($session_data, $session_id, $this->USR_ID);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
@@ -452,13 +456,15 @@ class Admin extends MY_Controller
 
     private function _prepare_users_view() {
         $total=$this->user_model->get_count_user(['status'=> [1,2]]);
-        $orderby='user_id';
+        $orderby='user_status';
         $direc='asc';
         $options=array(
             'total'=>$total,
             'perpage'=>$this->PERPAGE,
             'orderby'=>$orderby,
             'direct'=>$direc,
+            'orderby2' => 'lastactivity',
+            'direct2' => 'desc',
         );
         $content=$this->load->view('admin/users_view',$options,TRUE);
         return $content;
