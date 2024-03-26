@@ -432,6 +432,13 @@ input.order_itemqty_input {
     text-align: right;
     width: 73px;
 }
+.iteminventoryshow {
+    width: 16px;
+    float: left;
+    font-size: 14px;
+    cursor: pointer;
+    color: #a5a0a0;
+}
 .items_content_item2.short {
     width: 57px;
 }
@@ -508,11 +515,14 @@ input.order_itemqty_input {
     text-align: right;
     width: 65px;
 }
+.items_content_sub_total2.newitemcoloradd {
+    width: 70px;
+}
 .items_content_subtotal_view {
     float: left;
     padding-right: 5px;
     text-align: right;
-    width: 80px;
+    width: 82px;
 }
 .items_content_trash {
     float: left;
@@ -543,8 +553,8 @@ input.order_itemqty_input {
 }
 .bl_items_content_table{
     float: left;
-    width: 536px;
-    height: 162px;
+    width: 531px;
+    height: 159px;
     /* overflow-y: scroll; */
     overflow-y: auto;
     overflow-x: hidden;
@@ -557,8 +567,194 @@ input.order_itemqty_input {
 .items_table_line{
     float: left;
     line-height: 20px;
-    width: 520px;
+    width: 532px;
+    overflow-x: hidden;
+    /* width: 100%; */
 }
+/* Add new item */
+.items_content_add {
+    float: left;
+    width: 258px;
+}
+select.addnewitem {
+    width: 255px;
+}
+.items_content_add span.select2-selection--single {
+    height: 20px!important;
+}
+.items_content_add .select2-selection__rendered {
+    line-height: 19px!important;
+}
+.items_content_add .select2-selection__arrow {
+    height: 18px!important;
+}
+li.select2-results__option {
+    font-size: 12px;
+}
+.itemcolor_adddata {
+    float: left;
+    padding-left: 2px;
+    width: 91px;
+}
+.itemcolor_adddata span.addnewcolor {
+    cursor: pointer;
+}
+.items_content_addqty {
+    float: left;
+    padding-right: 2px;
+    text-align: right;
+    width: 53px
+}
+.items_content_addprice {
+    float: left;
+    width: 41px;
+}
+.items_content_addprint {
+    float: left;
+    color: #ffffff;
+    font-size: 10px;
+    cursor: pointer;
+    visibility: hidden;
+    background: #008000;
+    height: 18px;
+    border-radius: 4px;
+    padding: 0 5px;
+    line-height: 18px;
+    margin-top: 1px;
+}
+.items_content_cancel {
+    float: left;
+    text-align: center;
+    font-size: 14px;
+    width: 14px;
+    cursor: pointer;
+}
+input.orderitemadd_input {
+    height: 19px;
+    margin: 0 2px;
+}
+
+/* End Add New */
+/* Invertory popup */
+.orderitem_inventoryview {
+    display: none;
+    position: absolute;
+    position: absolute;
+    left: 289px;
+    top: 148px;
+    z-index: 1052;
+}
+.orderitem_inventoryview div {
+    float: left;
+}
+.orderitem_inventoryview_head {
+    background: #707070;
+    color: #FFFFFF;
+    height: 18px;
+    font-size: 11px;
+}
+.orderitem_inventoryview_head div {
+    line-height: 18px;
+    text-align: center;
+}
+.orderitem_inventoryview_head .inventorycolor {
+    width: 99px;
+    margin-right: 10px;
+}
+.orderitem_inventoryview_head .inventorypercent {
+    width: 36px;
+}
+.orderitem_inventoryview_head .inventoryinstock {
+    width: 52px; /* 44px; */
+}
+.orderitem_inventoryview_head .inventoryreserv {
+    width: 42px;
+}
+.orderitem_inventoryview_head .inventoryavailable {
+    width: 52px; /* 44px; */
+    margin-right: 10px;
+}
+.orderitem_inventoryview_head .inventoryonboat {
+    width: 66px;
+}
+.orderitem_inventoryview_body {
+    clear: both;
+    background: #707070;
+    /* color: #FFFFFF; */
+    font-size: 12px;
+    border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+.orderitem_inventoryview_body div {
+    line-height: 18px;
+    height: 18px;
+    text-align: center;
+    color: #000000;
+}
+.orderitem_inventoryview_body .datarow {
+    clear: both;
+    cursor: pointer;
+}
+.inventorydataempty {
+    width: 10px;
+    background: #707070;
+}
+.orderitem_inventoryview_body .inventorycolor {
+    width: 99px;
+    text-align: right;
+    font-size: 13px;
+    padding-right: 7px;
+}
+.orderitem_inventoryview_body .inventorycolor.selected {
+    background: #000000;
+    color: #FFFFFF;
+}
+.orderitem_inventoryview_body .inventorypercent {
+    width: 36px;
+    color: #7d7d7d;
+    border-right: 1px solid #000000;
+}
+.orderitem_inventoryview_body .inventorypercent.severevalstock,
+.orderitem_inventoryview_body .inventoryinstock.severevalstock
+{
+    background: #f77777;
+    /* color: #ffffff; */
+}
+.orderitem_inventoryview_body .inventorypercent.lowinstock,
+.orderitem_inventoryview_body .inventoryinstock.lowinstock {
+    background: #ffcc7f;
+    /* color: #000000; */
+}
+.orderitem_inventoryview_body .inventorydatacell.selected {
+    border-top: 2px #000000 solid;
+    border-bottom: 2px #000000 solid;
+    line-height: 14px;
+}
+.orderitem_inventoryview_body .inventoryinstock {
+    width: 52px; /* 44px */
+    border-right: 1px solid #000000;
+}
+.orderitem_inventoryview_body .inventoryreserv {
+    width: 42px;
+    border-right: 1px solid #000000;
+}
+.orderitem_inventoryview_body .inventoryavailable {
+    width: 52px; /* 44px */
+}
+.orderitem_inventoryview_body .inventoryonboat {
+    width: 66px;
+    border-right: 1px solid #000000;
+}
+.orderitem_inventoryview_close {
+    position: relative;
+    top: -13px;
+    left: -7px;
+    z-index: 1055;
+    font-size: 15px;
+    cursor: pointer;
+    height: 14px;
+}
+/* End Inventory Popup */
 .items_table_text {
     font-size: 11px;
     color: #535050;
@@ -1517,7 +1713,8 @@ span.taxemptyview {
     border-radius: 5px;
     background-color: #ffffff;
     width: 154px;
-    height: 726px;
+    /* height: 726px; */
+    height: 654px;
     /* margin-left: -2px; */
     box-shadow: 0.3em 0.3em 6px rgb(0 0 0 / 50%);
 }
@@ -1544,13 +1741,15 @@ span.taxemptyview {
     margin-left: 5px;
 }
 .block_6_historytext {
-    height: 357px;
+    /* height: 357px; */
+    height: 278px;
     margin-left: 5px;
     overflow-y: auto;
     width: 143px;
 }
 .block_6_historytext.previewmode {
-    height: 527px;
+    /* height: 527px; */
+    height: 453px;
 }
 .history_day {
     height: 18px;
@@ -1586,7 +1785,8 @@ span.taxemptyview {
     border-radius: 5px;
     width: 253px;
     box-shadow: 0.3em 0.3em 6px rgb(0 0 0 / 50%);
-    height: 761px;
+    /* height: 761px; */
+    height: 654px;
     margin-left: -2px;
 }
 .block_7_artwork {
@@ -1643,7 +1843,8 @@ span.taxemptyview {
     resize: none;
     overflow-y: auto;
     width: 237px;
-    height: 108px;
+    /* height: 108px; */
+    height: 103px;
     margin-left: 2px;
 }
 .block_7_art {
@@ -1655,7 +1856,8 @@ span.taxemptyview {
     float: left;
     overflow-y: auto;
     width: 239px;
-    height: 120px;
+    /* height: 120px; */
+    height: 102px;
     margin-left: 2px;
 }
 .blankorderlogos {
@@ -1809,12 +2011,13 @@ input.artrepeat {
 .block_7_proofs1 {
     float: left;
     width: 239px;
-    height: 155px;
+    /* height: 155px; */
     margin-left: 2px;
 }
 .block_7_proofs1_scrool {
-    border-bottom: 1px solid rgb(62, 62, 62);
-    height: 154px;
+    /* border-bottom: 1px solid rgb(62, 62, 62); */
+    /* height: 154px; */
+    height: 139px;
     overflow-x: auto;
 }
 .proofs_line1 {
@@ -1847,14 +2050,16 @@ input.artrepeat {
 }
 .proofs_content {
     float: left;
-    height: 112px;
+    /* height: 112px; */
+    height: 99px;
     width: 142px;
     border-right: 1px solid rgb(62, 62, 62);
 }
 .proofs_line2 {
     float: left;
     font-size: 10px;
-    line-height: 20px;
+    /* line-height: 20px; */
+    line-height: 18px;
 }
 .proofs_line2_text1 {
     float: left;
@@ -1960,8 +2165,9 @@ input.artrepeat {
     height: 23px;
     line-height: 22px;
     /* margin: 0 15px; */
-    margin: 0 15px 0 37px;
+    /* margin: 0 15px 0 37px; */
     width: 126px;
+    border-radius: 7px;
 }
 .block_10.profitdetailsviewarea {
     cursor: pointer;
@@ -2219,26 +2425,31 @@ input.artrepeat {
     height: 13px;
     float: left;
     margin-top: 2px;
-    margin-left: 4px;
+    /* margin-left: 4px;*/
+    margin-left: -19px;
+    position: absolute;
 }
 .icon_glass.active {
     cursor: pointer;
 }
 .marglef {
     float: left;
-    margin-left: 7px;
-    margin-top: 10px;
+    /* margin-left: 7px; */
+    /* margin-top: 10px; */
+    margin-top: 8px;
+    width: 987px;
 }
 .ticketdataviewarea {
     cursor: pointer;
     float: left;    
-    width: 148px;    
+    width: 148px;
+    display: none;
 }
 .shippingdataviewarea {
     cursor: pointer;
-    float: left;
-    margin-left: 56px;
-    width: 166px;
+    float: right!important;
+    /* margin-left: 56px; */
+    /* width: 166px; */
 }
 .totalduedataviewarea {
     float: left;
@@ -2384,8 +2595,14 @@ input.artrepeat {
     padding-left: 2px;
     width: 180px;
 }
+.itemdescription_data_view.customitemdescript {
+    width: 273px;
+}
 .itemdescription_data.long {
     width: 198px;
+}
+.itemdescription_data.long.customitemdescript {
+    width: 289px;
 }
 .itemcolor_head {
     float: left;
@@ -2395,6 +2612,14 @@ input.artrepeat {
     float: left;
     padding-left: 2px;
     width: 91px;
+}
+.itemcolor_data.inventcolors {
+    border: 1px solid #b5b5b5;
+    height: 19px;
+    line-height: 19px;
+}
+.itemcolor_data span.addnewcolor {
+    cursor: pointer;
 }
 .itemcolor_data_view {
     float: left;
@@ -2408,7 +2633,8 @@ input.artrepeat {
 }
 .inprint_content_description {
     float: left;
-    padding-left: 2px;
+    /* padding-left: 2px; */
+    padding-left: 8px;
     width: 273px;
 }
 select.orderitemcolors {
@@ -2417,14 +2643,19 @@ select.orderitemcolors {
     width: 87px;
 }
 input.orderitem_input {
-    height: 16px;
-    margin: 2px 2px;
+/*    height: 16px;
+    margin: 2px 2px;*/
+    height: 19px;
+    margin: 0 2px;
 }
 input.orderitem_description {
    width: 168px; 
 }
 input.orderitem_description_long {
    width: 190px; 
+}
+input.orderitem_description_long.customitemdescript {
+    width: 282px;
 }
 input.orderitem_description_short {
    width: 161px; 
@@ -2443,12 +2674,9 @@ input.orderitem_price {
     width: 100%;
 }
 .itemcoloradd {
-/*    clear: both;*/
     cursor: pointer;
     float: left;
-/*  padding-top: 4px;
-   margin-left: 335px;
-    margin-top: -5px;*/
+    margin-left: 195px;
 }
 /*  */
 .imprintdataarea {
@@ -5147,7 +5375,8 @@ input.ticket_date {
     margin-left: 8px;
     float: left;
     width: 238px;
-    margin-top: 20px;
+    /* margin-top: 20px; */
+    margin-top: 5px;
 }
 .artclaypreviewarea div {
     float: left;
@@ -5193,7 +5422,8 @@ input.ticket_date {
 }
 .artclaypreviewarea .claypreviewtable .claypreviewtableleft, .artclaypreviewarea .claypreviewtable .claypreviewtableright {
     padding-left: 5px;
-    min-height: 68px;
+    /* min-height: 68px; */
+    min-height: 51px;
     width: 115px;
 }
 .artclaypreviewarea .claypreviewtable .claypreviewtableleft {
@@ -5279,7 +5509,8 @@ input.ticket_date {
 }
 .artpreviewpreviewarea .previewpreviewtable .previewpreviewtableleft, .artpreviewpreviewarea .previewpreviewtable .previewpreviewtableright {
     padding-left: 5px;
-    min-height: 68px;
+    /* min-height: 68px; */
+    min-height: 51px;
     width: 115px;
 }
 .artpreviewpreviewarea .previewpreviewtable .previewpreviewtableleft {

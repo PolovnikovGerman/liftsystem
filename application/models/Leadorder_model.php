@@ -901,6 +901,8 @@ Class Leadorder_model extends My_Model {
         } else {
             $out['extendview'] = 1;
         }
+        // Empty items
+        $out['order_items'] = $this->_create_empty_orderitems();
         return $out;
     }
 
@@ -1386,342 +1388,358 @@ Class Leadorder_model extends My_Model {
     }
 
     // Save item for new type of Order
-    public function save_order_items($leadorder, $item_id, $custom_item, $ordersession) {
+    public function save_order_items($leadorder, $item_id, $order_item_id, $ordersession) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $this->load->model('prices_model');
         $order_items=$leadorder['order_items'];
-        $order=$leadorder['order'];
-        $this->load->model('orders_model');
-        if ($item_id<0) {
-            $itemdata=$this->orders_model->get_newitemdat($item_id);
-        } else {
-            $itemdata=$this->_get_itemdata($item_id);
-        }
-        $colors=$itemdata['colors'];
-        $itmcolor='';
-        if ($itemdata['num_colors']>0) {
-            $itmcolor=$colors[0];
-        }
-        $newid=count($order_items)+1;
-        if ($item_id<0) {
-            $item_description=$custom_item;
-        } else {
-            $item_description=$itemdata['item_name'];
-        }
-        $defqty=$this->config->item('defqty_common');
-        if ($item_id==$this->config->item('custom_id')) {
-            $defqty=$this->config->item('defqty_custom');
-        } else {
-            if ($item_id > 0) {
-                $prices = $this->prices_model->get_itemlist_price($item_id);
-                $minqty = intval($prices[0]['item_qty']);
-            } else {
-                $minqty = $defqty;
+        $idx = 0;
+        $found = 0;
+        foreach ($order_items as $order_item) {
+            if ($order_item['order_item_id']==$order_item_id) {
+                $found = 1;
+                break;
             }
-            if ($minqty > $defqty) {
-                $defqty = $minqty;
-            }
+            $idx++;
         }
-
-        // Prepare Parts of Order Items
-        $orditem=array(
-            'order_item_id'=>$newid*(-1),
-            'item_id'=>$item_id,
-            'item_number'=>$itemdata['item_number'],
-            'item_name'=>$item_description,
-            'item_qty'=>$defqty,
-            'colors'=>$itemdata['colors'],
-            'num_colors'=>$itemdata['num_colors'],
-            'item_qty'=>$defqty,
-            'item_template'=>$this->normal_template,
-            'item_weigth'=>0,
-            'cartoon_qty'=>0,
-            'cartoon_width'=>0,
-            'cartoon_heigh'=>0,
-            'cartoon_depth'=>0,
-            'boxqty'=>'',
-            'setup_price'=>0,
-            'print_price'=>0,
-            'base_price' => 0,
-            'imprint_locations'=>array(),
-            'item_subtotal'=>0,
-            'imprint_subtotal'=>0,
-            'vendor_zipcode'=>$this->default_zip,
-            'charge_perorder'=>0,
-            'charge_peritem'=>0,
-            'vendor_item_id' => '',
-        );
-        $newprice=0;
-        if ($item_id>0) {
-            // Prices, totals
-            $newprice=$this->_get_item_priceqty($item_id, $orditem['item_template'] , $defqty);
-            $setupprice=$this->_get_item_priceimprint($item_id, 'setup');
-            $printprice=$this->_get_item_priceimprint($item_id, 'imprint');
-            $orditem['item_template']=$itemdata['item_template'];
-            $orditem['item_weigth']=$itemdata['item_weigth'];
-            $orditem['cartoon_qty']=$itemdata['cartoon_qty'];
-            $orditem['cartoon_width']=$itemdata['cartoon_width'];
-            $orditem['cartoon_heigh']=$itemdata['cartoon_heigh'];
-            $orditem['cartoon_depth']=$itemdata['cartoon_depth'];
-            $orditem['boxqty']=$itemdata['boxqty'];
-            $orditem['setup_price']=$setupprice;
-            $orditem['print_price']=$printprice;
-            $orditem['base_price']=$newprice;
-            $orditem['imprint_locations']=$itemdata['imprints'];
-            $orditem['vendor_zipcode']=$itemdata['vendor_zipcode'];
-            $orditem['charge_perorder']=$itemdata['charge_perorder'];
-            $orditem['charge_pereach']=$itemdata['charge_pereach'];
-            $orditem['item_subtotal']=$defqty*$newprice;
-            $orditem['vendor_item_id'] = $itemdata['vendor_item_id'];
-        }
-
-        if (count($order_items)==0) {
-            $order['order_items']=$orditem['item_name'];
-            $order['order_itemnumber']=$orditem['item_number'];
-            $order['item_id']=$orditem['item_id'];
-        } else {
-            $orditem_id=$this->config->item('multy_id');
+        if ($found==1) {
+            $order=$leadorder['order'];
             $this->load->model('orders_model');
-            $orditm=$this->orders_model->get_itemdat($orditem_id);
-            $order['item_id']=$orditem_id;
-            $order['order_items']=$orditm['item_name'];
-            $order['order_itemnumber']=$orditm['item_number'];
-        }
-        $order['order_qty']=intval($order['order_qty'])+intval($defqty);
-        //
-        $this->load->model('shipping_model');
-        if ($order['order_blank']==0) {
-            $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
-        } else {
-            $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
-        }
-        $out['rushlist']=$rush;
-        $shipping=$leadorder['shipping'];
-        $shipping['rush_list']=serialize($rush);
-        $shipping['out_rushlist']=$rush;
-        foreach ($rush['rush'] as $row) {
-            if ($row['current']==1) {
-                $shipping['shipdate']=$row['date'];
-                $shipping['shipdate_orig']=$row['date'];
-                $shipping['shipdate_class'] = '';
-                $shipping['rush_price']=$row['price'];
-                $shipping['rush_idx']=$row['id'];
-                $order['shipdate']=$row['date'];
-                $out['current']=$row['id'];
-            }
-        }
-        $leadorder['shipping']=$shipping;
-        $leadorder['order']=$order;
-        $out['shipdate']=$shipping['shipdate'];
-        $out['rush_price']=$shipping['rush_price'];
-        // Prepare firt item (as itemcolors)
-        $newitem=array(
-            'order_item_id'=>$newid*(-1),
-            'item_id'=>-1,
-            'item_row'=>1,
-            'item_number'=>$itemdata['item_number'],
-            'item_color'=>$itmcolor,
-            'colors'=>$colors,
-            'num_colors'=>$itemdata['num_colors'],
-            'item_description'=>$orditem['item_name'],
-        );
-        //
-        if ($itemdata['num_colors']==0) {
-            $newitem['out_colors']=$this->empty_htmlcontent;
-        } else {
-            $options=array(
-                'order_item_id'=>$newitem['order_item_id'],
-                'item_id'=>$newitem['item_id'],
-                'colors'=>$newitem['colors'],
-                'item_color'=>$newitem['item_color'],
-            );
-            $newitem['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
-        }
-        if ($newitem['num_colors']>1) {
-            $newitem['item_color_add']=1;
-        } else {
-            $newitem['item_color_add']=0;
-        }
-
-        $newitem['item_qty']=$defqty;
-        $newitem['item_price']=$newprice;
-        $newitem['item_subtotal']=MoneyOutput($defqty*$newprice);
-        $newitem['printshop_item_id']=(isset($itemdata['printshop_item_id']) ? $itemdata['printshop_item_id']  : '');
-        $newitem['qtyinput_class']='normal';
-        $newitem['qtyinput_title']='';
-        $items[]=$newitem;
-
-        $orditem['items']=$items;
-        // Prepare Imprint, Imprint Details
-        $imprint[]=array(
-            'order_imprint_id'=>-1,
-            'imprint_description'=>'&nbsp;',
-            'imprint_qty'=>0,
-            'imprint_price'=>0,
-            'imprint_item'=>0,
-            'imprint_subtotal'=>'&nbsp;',
-            'imprint_price_class' => 'normal',
-            'imprint_price_title' => '',
-            'delflag'=>0,
-        );
-        $orditem['imprints']=$imprint;
-        // Change Imprint Details
-        $imprdetails=array();
-        $detailfld=$this->db->list_fields('ts_order_imprindetails');
-        for ($i=1; $i<13; $i++) {
-            $newloc=array(
-                'title'=>'Loc '.$i,
-                'active'=>0,
-            );
-            foreach ($detailfld as $row) {
-                switch ($row) {
-                    case 'order_imprindetail_id':
-                        $newloc[$row]=$i*(-1);
-                        break;
-                    case 'imprint_type':
-                        $newloc[$row]='NEW';
-                        break;
-                    case 'num_colors':
-                        $newloc[$row]=1;
-                        break;
-                    default :
-                        $newloc[$row]='';
-                }
-            }
-            if ($i==1) {
-                $newloc['print_1']=0;
+            if ($item_id<0) {
+                $itemdata=$this->orders_model->get_newitemdat($item_id);
             } else {
-                if ($orditem['item_id']==$this->config->item('custom_id')) {
-                    $newloc['print_1'] = $this->custom_print_price;
-                } elseif ($orditem['item_id']==$this->config->item('other_id')) {
-                    $newloc['print_1'] = $this->other_print_price;
+                $itemdata=$this->_get_itemdata($item_id);
+            }
+            $colors=$itemdata['colors'];
+            $itmcolor='';
+            if ($itemdata['num_colors']>0) {
+                $itmcolor=$colors[0];
+            }
+            // $newid=count($order_items)+1;
+            // if ($item_id<0) {
+            // $item_description=$custom_item;
+            // } else {
+            $item_description=$itemdata['item_name'];
+            // }
+            $defqty=$this->config->item('defqty_common');
+            if ($item_id==$this->config->item('custom_id')) {
+                $defqty=$this->config->item('defqty_custom');
+            } else {
+                if ($item_id > 0) {
+                    $prices = $this->prices_model->get_itemlist_price($item_id);
+                    $minqty = intval($prices[0]['item_qty']);
                 } else {
-                    $newloc['print_1']=$orditem['print_price'];
+                    $minqty = $defqty;
+                }
+                if ($minqty > $defqty) {
+                    $defqty = $minqty;
                 }
             }
-            if ($orditem['item_id']==$this->config->item('custom_id')) {
-                $newloc['print_2']=$this->custom_print_price;
-                $newloc['print_3']=$this->custom_print_price;
-                $newloc['print_4']=$this->custom_print_price;
-            } elseif ($orditem['item_id']==$this->config->item('other_id')) {
-                $newloc['print_2']=$this->other_print_price;
-                $newloc['print_3']=$this->other_print_price;
-                $newloc['print_4']=$this->other_print_price;
-            } else {
-                $newloc['print_2']=$orditem['print_price'];
-                $newloc['print_3']=$orditem['print_price'];
-                $newloc['print_4']=$orditem['print_price'];
+
+            // Prepare Parts of Order Items
+            $orditem=array(
+                'order_item_id'=>$order_item_id,
+                'item_id'=>$item_id,
+                'item_number'=>$itemdata['item_number'],
+                'item_name'=>$item_description,
+                'item_qty'=>$defqty,
+                'colors'=>$itemdata['colors'],
+                'num_colors'=>$itemdata['num_colors'],
+                'item_qty'=>$defqty,
+                'item_template'=>$this->normal_template,
+                'item_weigth'=>0,
+                'cartoon_qty'=>0,
+                'cartoon_width'=>0,
+                'cartoon_heigh'=>0,
+                'cartoon_depth'=>0,
+                'boxqty'=>'',
+                'setup_price'=>0,
+                'print_price'=>0,
+                'base_price' => 0,
+                'imprint_locations'=>array(),
+                'item_subtotal'=>0,
+                'imprint_subtotal'=>0,
+                'vendor_zipcode'=>$this->default_zip,
+                'charge_perorder'=>0,
+                'charge_peritem'=>0,
+                'vendor_item_id' => '',
+            );
+            $newprice=0;
+            if ($item_id>0) {
+                // Prices, totals
+                $newprice=$this->_get_item_priceqty($item_id, $orditem['item_template'] , $defqty);
+                $setupprice=$this->_get_item_priceimprint($item_id, 'setup');
+                $printprice=$this->_get_item_priceimprint($item_id, 'imprint');
+                $orditem['item_template']=$itemdata['item_template'];
+                $orditem['item_weigth']=$itemdata['item_weigth'];
+                $orditem['cartoon_qty']=$itemdata['cartoon_qty'];
+                $orditem['cartoon_width']=$itemdata['cartoon_width'];
+                $orditem['cartoon_heigh']=$itemdata['cartoon_heigh'];
+                $orditem['cartoon_depth']=$itemdata['cartoon_depth'];
+                $orditem['boxqty']=$itemdata['boxqty'];
+                $orditem['setup_price']=$setupprice;
+                $orditem['print_price']=$printprice;
+                $orditem['base_price']=$newprice;
+                $orditem['imprint_locations']=$itemdata['imprints'];
+                $orditem['vendor_zipcode']=$itemdata['vendor_zipcode'];
+                $orditem['charge_perorder']=$itemdata['charge_perorder'];
+                $orditem['charge_pereach']=$itemdata['charge_pereach'];
+                $orditem['item_subtotal']=$defqty*$newprice;
+                $orditem['vendor_item_id'] = $itemdata['vendor_item_id'];
             }
-            if ($orditem['item_id']==$this->config->item('custom_id')) {
-                $print_setup = $this->custom_setup_price;
-            } elseif ($orditem['item_id']==$this->config->item('other_id')) {
+
+            if (count($order_items)==0) {
+                $order['order_items']=$orditem['item_name'];
+                $order['order_itemnumber']=$orditem['item_number'];
+                $order['item_id']=$orditem['item_id'];
+            } else {
+                $orditem_id=$this->config->item('multy_id');
+                $this->load->model('orders_model');
+                $orditm=$this->orders_model->get_itemdat($orditem_id);
+                $order['item_id']=$orditem_id;
+                $order['order_items']=$orditm['item_name'];
+                $order['order_itemnumber']=$orditm['item_number'];
+            }
+            $order['order_qty']=intval($order['order_qty'])+intval($defqty);
+            //
+            $this->load->model('shipping_model');
+            if ($order['order_blank']==0) {
+                $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
+            } else {
+                $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
+            }
+            $out['rushlist']=$rush;
+            $shipping=$leadorder['shipping'];
+            $shipping['rush_list']=serialize($rush);
+            $shipping['out_rushlist']=$rush;
+            foreach ($rush['rush'] as $row) {
+                if ($row['current']==1) {
+                    $shipping['shipdate']=$row['date'];
+                    $shipping['shipdate_orig']=$row['date'];
+                    $shipping['shipdate_class'] = '';
+                    $shipping['rush_price']=$row['price'];
+                    $shipping['rush_idx']=$row['id'];
+                    $order['shipdate']=$row['date'];
+                    $out['current']=$row['id'];
+                }
+            }
+            $leadorder['shipping']=$shipping;
+            $leadorder['order']=$order;
+            $out['shipdate']=$shipping['shipdate'];
+            $out['rush_price']=$shipping['rush_price'];
+            // Prepare firt item (as itemcolors)
+            $newitem=array(
+                'order_item_id'=> $order_item_id, // $newid*(-1),
+                'item_id'=>-1,
+                'item_row'=>1,
+                'item_number'=>$itemdata['item_number'],
+                'item_color'=>$itmcolor,
+                'colors'=>$colors,
+                'num_colors'=>$itemdata['num_colors'],
+                'item_description'=>$orditem['item_name'],
+            );
+            //
+            if ($itemdata['num_colors']==0) {
+                $newitem['out_colors']=$this->empty_htmlcontent;
+            } else {
+                $options=array(
+                    'order_item_id'=>$newitem['order_item_id'],
+                    'item_id'=>$newitem['item_id'],
+                    'colors'=>$newitem['colors'],
+                    'item_color'=>$newitem['item_color'],
+                    'brand' => $order['brand'],
+                );
                 if ($order['brand']=='SR') {
-                    $print_setup = $this->other_setupsr_price;
+                    $newitem['out_colors']=$this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
                 } else {
-                    $print_setup = $this->other_setupsb_price;
+                    $newitem['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
                 }
+            }
+            if ($newitem['num_colors']>1) {
+                $newitem['item_color_add']=1;
             } else {
-                $print_setup = $orditem['setup_price'];
+                $newitem['item_color_add']=0;
             }
-            // Setup
-            $newloc['setup_1']=$print_setup;
-            $newloc['setup_2']=$print_setup;
-            $newloc['setup_3']=$print_setup;
-            $newloc['setup_4']=$print_setup;
-            $imprdetails[]=$newloc;
-        }
-        $orditem['imprint_details']=$imprdetails;
-        // Add new element to Order Items
-        $order_items[]=$orditem;
-        $out['newitem'] = $orditem['order_item_id'];
-        $out['extendview']=1;
-        if ($order['brand']=='SR') {
-            $out['extendview']=0;
-            foreach ($order_items as $item) {
-                if ($item['item_id']==$this->config->item('custom_id')) {
-                    $out['extendview']=1;
-                }
-            }
-        }
-        $leadorder['order_items']=$order_items;
-        // Calculate shipping
-        $this->load->model('shipping_model');
-        $shiprate=0;
-        $items=$leadorder['order_items'];
-        $shipaddr=$leadorder['shipping_address'];
-        if (count($shipaddr)==1) {
-            $shipaddr[0]['item_qty']=$order['order_qty'];
-        }
-        $shipping=$leadorder['shipping'];
-        $shipidx=0;
-        $cnt=0;
-        $out['shipcount'] = 0;
-        foreach ($shipaddr as $shprow) {
-            if (!empty($shprow['zip'])) {
-                // Get Old Shipping Method
-                $default_ship_method='';
-                if (isset($shprow['shipping_cost'])) {
-                    $oldcosts=$shprow['shipping_costs'];
-                    foreach ($oldcosts as $costrow) {
-                        if ($costrow['delflag']==0 && $costrow['current']==1) {
-                            $default_ship_method=$costrow['shipping_method'];
-                        }
-                    }
-                }
-                $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
-                if ($cntres['result']==$this->error_result) {
-                    $out['msg']=$cntres['msg'];
-                    usersession($ordersession, $leadorder);
-                    return $out;
-                } else {
-                    $out['shipcount'] = 1;
-                    $rates=$cntres['ships'];
-                    $shipcost=$shipaddr[$shipidx]['shipping_costs'];
-                    $cidx=0;
-                    foreach ($shipcost as $row) {
-                        $shipcost[$cidx]['delflag']=1;
-                        $cidx++;
-                    }
-                    $newidx=count($shipcost)+1;
-                    foreach ($rates as $row) {
-                        $shipcost[]=array(
-                            'order_shipcost_id'=>$newidx*(-1),
-                            'shipping_method'=>$row['ServiceName'],
-                            'shipping_cost'=>$row['Rate'],
-                            'arrive_date'=>$row['DeliveryDate'],
-                            'current'=>$row['current'],
-                            'delflag'=>0,
-                        );
-                        if ($row['current']==1) {
-                            $shipaddr[$shipidx]['shipping']=$row['Rate'];
-                            $shipaddr[$shipidx]['arrive_date'] = $row['DeliveryDate'];
-                            $shiprate+=$row['Rate'];
-                        }
-                        $newidx++;
-                    }
-                    $shipaddr[$shipidx]['shipping_costs']=$shipcost;
-                }
-            }
-            $shipidx++;
-            $cnt++;
-        }
-        $out['shipping']=$shiprate;
-        $order['shipping']=$shiprate;
-        $out['cntshipadrr']=$cnt;
-        if ($cnt==1) {
-            $out['shipaddr']=$shipaddr[0];
-        } else {
-            $out['shipaddress']=$shipaddr;
-        }
-        // Save data into Session
-        $leadorder['order']=$order;
-        $leadorder['shipping']=$shipping;
-        $leadorder['shipping_address']=$shipaddr;
-        usersession($ordersession, $leadorder);
 
-        $out['result']=$this->success_result;
-        $out['order_items']=$order_items;
-        $this->_leadorder_totals($leadorder, $ordersession);
+            $newitem['item_qty']=$defqty;
+            $newitem['item_price']=$newprice;
+            $newitem['item_subtotal']=MoneyOutput($defqty*$newprice);
+            $newitem['printshop_item_id']=(isset($itemdata['printshop_item_id']) ? $itemdata['printshop_item_id']  : '');
+            $newitem['qtyinput_class']='normal';
+            $newitem['qtyinput_title']='';
+            $items[]=$newitem;
+
+            $orditem['items']=$items;
+            // Prepare Imprint, Imprint Details
+            $imprint[]=array(
+                'order_imprint_id'=>-1,
+                'imprint_description'=>'&nbsp;',
+                'imprint_qty'=>0,
+                'imprint_price'=>0,
+                'imprint_item'=>0,
+                'imprint_subtotal'=>'&nbsp;',
+                'imprint_price_class' => 'normal',
+                'imprint_price_title' => '',
+                'delflag'=>0,
+            );
+            $orditem['imprints']=$imprint;
+            // Change Imprint Details
+            $imprdetails=array();
+            $detailfld=$this->db->list_fields('ts_order_imprindetails');
+            for ($i=1; $i<13; $i++) {
+                $newloc=array(
+                    'title'=>'Loc '.$i,
+                    'active'=>0,
+                );
+                foreach ($detailfld as $row) {
+                    switch ($row) {
+                        case 'order_imprindetail_id':
+                            $newloc[$row]=$i*(-1);
+                            break;
+                        case 'imprint_type':
+                            $newloc[$row]='NEW';
+                            break;
+                        case 'num_colors':
+                            $newloc[$row]=1;
+                            break;
+                        default :
+                            $newloc[$row]='';
+                    }
+                }
+                if ($i==1) {
+                    $newloc['print_1']=0;
+                } else {
+                    if ($orditem['item_id']==$this->config->item('custom_id')) {
+                        $newloc['print_1'] = $this->custom_print_price;
+                    } elseif ($orditem['item_id']==$this->config->item('other_id')) {
+                        $newloc['print_1'] = $this->other_print_price;
+                    } else {
+                        $newloc['print_1']=$orditem['print_price'];
+                    }
+                }
+                if ($orditem['item_id']==$this->config->item('custom_id')) {
+                    $newloc['print_2']=$this->custom_print_price;
+                    $newloc['print_3']=$this->custom_print_price;
+                    $newloc['print_4']=$this->custom_print_price;
+                } elseif ($orditem['item_id']==$this->config->item('other_id')) {
+                    $newloc['print_2']=$this->other_print_price;
+                    $newloc['print_3']=$this->other_print_price;
+                    $newloc['print_4']=$this->other_print_price;
+                } else {
+                    $newloc['print_2']=$orditem['print_price'];
+                    $newloc['print_3']=$orditem['print_price'];
+                    $newloc['print_4']=$orditem['print_price'];
+                }
+                if ($orditem['item_id']==$this->config->item('custom_id')) {
+                    $print_setup = $this->custom_setup_price;
+                } elseif ($orditem['item_id']==$this->config->item('other_id')) {
+                    if ($order['brand']=='SR') {
+                        $print_setup = $this->other_setupsr_price;
+                    } else {
+                        $print_setup = $this->other_setupsb_price;
+                    }
+                } else {
+                    $print_setup = $orditem['setup_price'];
+                }
+                // Setup
+                $newloc['setup_1']=$print_setup;
+                $newloc['setup_2']=$print_setup;
+                $newloc['setup_3']=$print_setup;
+                $newloc['setup_4']=$print_setup;
+                $imprdetails[]=$newloc;
+            }
+            $orditem['imprint_details']=$imprdetails;
+            // Add new element to Order Items
+            $order_items[$idx]=$orditem;
+            $out['newitem'] = $orditem['order_item_id'];
+            $out['extendview'] = 1;
+            if ($order['brand']=='SR') {
+                $out['extendview']=0;
+                foreach ($order_items as $item) {
+                    if ($item['item_id']==$this->config->item('custom_id')) {
+                        $out['extendview']=1;
+                    }
+                }
+            }
+            $leadorder['order_items']=$order_items;
+            // Calculate shipping
+            $this->load->model('shipping_model');
+            $shiprate=0;
+            $items=$leadorder['order_items'];
+            $shipaddr=$leadorder['shipping_address'];
+            if (count($shipaddr)==1) {
+                $shipaddr[0]['item_qty']=$order['order_qty'];
+            }
+            $shipping=$leadorder['shipping'];
+            $shipidx=0;
+            $cnt=0;
+            $out['shipcount'] = 0;
+            foreach ($shipaddr as $shprow) {
+                if (!empty($shprow['zip'])) {
+                    // Get Old Shipping Method
+                    $default_ship_method='';
+                    if (isset($shprow['shipping_cost'])) {
+                        $oldcosts=$shprow['shipping_costs'];
+                        foreach ($oldcosts as $costrow) {
+                            if ($costrow['delflag']==0 && $costrow['current']==1) {
+                                $default_ship_method=$costrow['shipping_method'];
+                            }
+                        }
+                    }
+                    $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
+                    if ($cntres['result']==$this->error_result) {
+                        $out['msg']=$cntres['msg'];
+                        usersession($ordersession, $leadorder);
+                        return $out;
+                    } else {
+                        $out['shipcount'] = 1;
+                        $rates=$cntres['ships'];
+                        $shipcost=$shipaddr[$shipidx]['shipping_costs'];
+                        $cidx=0;
+                        foreach ($shipcost as $row) {
+                            $shipcost[$cidx]['delflag']=1;
+                            $cidx++;
+                        }
+                        $newidx=count($shipcost)+1;
+                        foreach ($rates as $row) {
+                            $shipcost[]=array(
+                                'order_shipcost_id'=>$newidx*(-1),
+                                'shipping_method'=>$row['ServiceName'],
+                                'shipping_cost'=>$row['Rate'],
+                                'arrive_date'=>$row['DeliveryDate'],
+                                'current'=>$row['current'],
+                                'delflag'=>0,
+                            );
+                            if ($row['current']==1) {
+                                $shipaddr[$shipidx]['shipping']=$row['Rate'];
+                                $shipaddr[$shipidx]['arrive_date'] = $row['DeliveryDate'];
+                                $shiprate+=$row['Rate'];
+                            }
+                            $newidx++;
+                        }
+                        $shipaddr[$shipidx]['shipping_costs']=$shipcost;
+                    }
+                }
+                $shipidx++;
+                $cnt++;
+            }
+            $out['shipping']=$shiprate;
+            $order['shipping']=$shiprate;
+            $out['cntshipadrr']=$cnt;
+            if ($cnt==1) {
+                $out['shipaddr']=$shipaddr[0];
+            } else {
+                $out['shipaddress']=$shipaddr;
+            }
+            // Save data into Session
+            $leadorder['order']=$order;
+            $leadorder['shipping']=$shipping;
+            $leadorder['shipping_address']=$shipaddr;
+            usersession($ordersession, $leadorder);
+
+            $out['result']=$this->success_result;
+            $out['order_items']=$order_items;
+            $this->_leadorder_totals($leadorder, $ordersession);
+        }
         return $out;
     }
 
@@ -1820,7 +1838,9 @@ Class Leadorder_model extends My_Model {
             $shipping=$shpres['shipping'];
             $shipping_address=$shpres['shipping_address'];
         }
-
+        if (count($neworder)==0) {
+            $neworder = $this->_create_empty_orderitems();
+        }
         $leadorder['shipping']=$shipping;
         $leadorder['artlocations']=$artlocations;
         $leadorder['order']=$order;
@@ -1840,6 +1860,7 @@ Class Leadorder_model extends My_Model {
     public function add_itemcolor($leadorder, $order_item_id, $item_id, $ordersession) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $order_items=$leadorder['order_items'];
+        $order = $leadorder['order'];
         $idx=0;
         $found=0;
         foreach ($order_items as $row) {
@@ -1883,8 +1904,14 @@ Class Leadorder_model extends My_Model {
                 'item_id'=>$newitem['item_id'],
                 'colors'=>$newitem['colors'],
                 'item_color'=>$newitem['item_color'],
+                'brand' => $order['brand'],
             );
-            $newitem['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+            if ($order['brand']=='SR') {
+                $newitem['out_colors']=$this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
+            } else {
+                $newitem['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+            }
+
         }
         if ($newitem['num_colors']>1) {
             $newitem['item_color_add']=1;
@@ -1908,6 +1935,7 @@ Class Leadorder_model extends My_Model {
         usersession($ordersession, $leadorder);
         $out['result']=$this->success_result;
         $out['items']=$order_items[$idx];
+        $out['order'] = $order;
         return $out;
     }
 
@@ -1987,8 +2015,13 @@ Class Leadorder_model extends My_Model {
                 'item_id'=>$items[$itmidx]['item_id'],
                 'colors'=>$items[$itmidx]['colors'],
                 'item_color'=>$items[$itmidx]['item_color'],
+                'brand' => $order['brand'],
             );
-            $items[$itmidx]['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+            if ($order['brand']=='SR') {
+                $items[$itmidx]['out_colors']=$this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
+            } else {
+                $items[$itmidx]['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+            }
         } elseif ($fldname=='item_price') {
             // Get  Item price
             if($order_items[$idx]['item_id']>0) {
@@ -2304,17 +2337,23 @@ Class Leadorder_model extends My_Model {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $order=$leadorder['order'];
         $order_items=$leadorder['order_items'];
+        $shipaddress = $leadorder['shipping_address'];
         $order_item_id=$details['order_item_id'];
         $imprint_details=$details['imprint_details'];
         $order_blank=intval($details['order_blank']);
+        $itemstatus =  ifset($details, 'itemstatus','old');
         $artwork=$leadorder['artwork'];
         $locations=$leadorder['artlocations'];
         // Lets go - Find Order Items
+        $this->load->model('shipping_model');
+        $this->load->model('orders_model');
         $found=0;
         $idx=0;
+        $item_id = '';
         foreach ($order_items as $row) {
             if ($row['order_item_id']==$order_item_id) {
                 $found=1;
+                $item_id = $row['item_id'];
                 break;
             } else {
                 $idx++;
@@ -2342,6 +2381,56 @@ Class Leadorder_model extends My_Model {
         // Create Imprint
         $newidx=count($imprints)+1;
         $out['shiprebuild']=0;
+        $recalshipcost = 0;
+        if ($itemstatus=='new') {
+            // New Item
+            $out['shiprebuild']=1;
+            if (count($order_items)==1) {
+                $shipping=$leadorder['shipping'];
+                if ($order_blank==1) {
+                    $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
+                } else {
+                    $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
+                }
+                $shipping['rush_list']=serialize($rush);
+                $shipping['out_rushlist']=$rush;
+                foreach ($rush['rush'] as $row) {
+                    if ($row['current']==1) {
+                        $shipping['shipdate']=$row['date'];
+                        $shipping['shipdate_orig']=$row['date'];
+                        $shipping['shipdate_class']='';
+                        $shipping['rush_price']=$row['price'];
+                        $shipping['rush_idx']=$row['id'];
+                    }
+                }
+                $order['shipdate'] = $shipping['shipdate'];
+                $leadorder['shipping']=$shipping;
+                if ($item_id<0) {
+                    $itemdata=$this->orders_model->get_newitemdat($item_id);
+                } else {
+                    $itemdata=$this->_get_itemdata($item_id);
+                }
+                $order['order_items']=$itemdata['item_name'];
+                $order['order_itemnumber']=$itemdata['item_number'];
+                $order['item_id']=$item_id;
+            } else {
+                $orditem_id=$this->config->item('multy_id');
+                $itemdata=$this->orders_model->get_itemdat($orditem_id);
+                $order['item_id']=$orditem_id;
+                $order['order_items']=$itemdata['item_name'];
+                $order['order_itemnumber']=$itemdata['item_number'];
+            }
+            if (count($shipaddress)==1) {
+                $itemorder_qty = 0;
+                foreach ($order_items as $orderitem) {
+                    $itemorder_qty+=$orderitem['item_qty'];
+                }
+                $shipaddress[0]['item_qty'] = $itemorder_qty;
+            }
+            $leadorder['shipping_address'] = $shipaddress;
+            //
+            $recalshipcost = 1;
+        }
         if ($order_blank!=$order['order_blank']) {
             $out['shiprebuild']=1;
             // Rebuild shipping
@@ -2414,7 +2503,6 @@ Class Leadorder_model extends My_Model {
                                 }
                             }
                         }
-//                        $numpp++;
                         $imprint_total+=$subtotal;
                         if ($row['imprint_type']!='REPEAT') {
                             $setup_qty+=1;
@@ -2424,47 +2512,6 @@ Class Leadorder_model extends My_Model {
                             $repqty+=1;
                             $reptotal+=floatval($row[$setupindx]);
                         }
-//                        if ($repqty > 0) {
-//                            if ($order['brand']=='SR') {
-//                                if ($reptotal > 0) {
-//                                    $title='Repeat Setup Charge '.$row['repeat_note'];
-//                                    $repprice = round($reptotal/$repqty,2);
-//                                    $imprint_total+=floatval($reptotal);
-//                                    $extra[]=array(
-//                                        'order_imprint_id'=>(-1)*$newidx,
-//                                        'imprint_description'=>$title,
-//                                        'imprint_item'=>0,
-//                                        'imprint_qty'=>$repqty,
-//                                        'imprint_price'=>$repprice,
-//                                        'outqty'=>$repqty,
-//                                        'outprice'=>MoneyOutput($reptotal),
-//                                        'imprint_subtotal'=>MoneyOutput($reptotal),
-//                                        'imprint_price_class' => 'normal',
-//                                        'imprint_price_title' => '',
-//                                        'delflag'=>0,
-//                                    );
-//                                    $newidx++;
-//                                }
-//                            } else {
-//                                $title='Repeat Setup Charge '.$row['repeat_note'];
-//                                $repprice = ($repqty==0 ? 0 : round($reptotal/$repqty,2));
-//                                $imprint_total+=floatval($reptotal);
-//                                $extra[]=array(
-//                                    'order_imprint_id'=>(-1)*$newidx,
-//                                    'imprint_description'=>$title,
-//                                    'imprint_item'=>0,
-//                                    'imprint_qty'=>$repqty,
-//                                    'imprint_price'=>$repprice,
-//                                    'outqty'=>$repqty,
-//                                    'outprice'=>$reptotal=='0' ? '---' : MoneyOutput($reptotal),
-//                                    'imprint_subtotal'=>MoneyOutput($reptotal),
-//                                    'imprint_price_class' => 'normal',
-//                                    'imprint_price_title' => '',
-//                                    'delflag'=>0,
-//                                );
-//                                $newidx++;
-//                            }
-//                        }
                         $imprints[]=array(
                             'order_imprint_id'=>(-1)*$newidx,
                             'imprint_description'=>$imprtitle,
@@ -2532,7 +2579,7 @@ Class Leadorder_model extends My_Model {
                             if ($reptotal > 0) {
                                 $title='Repeat Setup Charge '.$row['repeat_note'];
                                 $repprice = round($reptotal/$repqty,2);
-                                $imprint_total+=floatval($reptotal);
+                                // $imprint_total+=floatval($reptotal);
                                 $extra[]=array(
                                     'order_imprint_id'=>(-1)*$newidx,
                                     'imprint_description'=>$title,
@@ -2678,11 +2725,89 @@ Class Leadorder_model extends My_Model {
         $order_items[$idx]['imprints']=$imprints;
         $leadorder['order_items']=$order_items;
         $leadorder['order']=$order;
+        $out['shipcount'] = 0;
+        if ($recalshipcost==1) {
+            // Try to calculate ship rates
+            // Calculate shipping
+            $this->load->model('shipping_model');
+            $shiprate=0;
+            $items=$leadorder['order_items'];
+            $shipaddr=$leadorder['shipping_address'];
+//            if (count($shipaddr)==1) {
+//                $shipaddr[0]['item_qty']=$order['order_qty'];
+//            }
+            $shipping=$leadorder['shipping'];
+            $shipidx=0;
+            $cnt=0;
+            foreach ($shipaddr as $shprow) {
+                if (!empty($shprow['zip'])) {
+                    // Get Old Shipping Method
+                    $default_ship_method='';
+                    if (isset($shprow['shipping_cost'])) {
+                        $oldcosts=$shprow['shipping_costs'];
+                        foreach ($oldcosts as $costrow) {
+                            if ($costrow['delflag']==0 && $costrow['current']==1) {
+                                $default_ship_method=$costrow['shipping_method'];
+                            }
+                        }
+                    }
+                    $cntres=$this->shipping_model->count_shiprates($items, $shipaddr[$shipidx], $shipping['shipdate'], $order['brand'], $default_ship_method);
+                    if ($cntres['result']==$this->error_result) {
+                        $out['msg']=$cntres['msg'];
+                        usersession($ordersession, $leadorder);
+                        return $out;
+                    } else {
+                        $out['shipcount'] = 1;
+                        $rates=$cntres['ships'];
+                        $shipcost=$shipaddr[$shipidx]['shipping_costs'];
+                        $cidx=0;
+                        foreach ($shipcost as $row) {
+                            $shipcost[$cidx]['delflag']=1;
+                            $cidx++;
+                        }
+                        $newidx=count($shipcost)+1;
+                        foreach ($rates as $row) {
+                            $shipcost[]=array(
+                                'order_shipcost_id'=>$newidx*(-1),
+                                'shipping_method'=>$row['ServiceName'],
+                                'shipping_cost'=>$row['Rate'],
+                                'arrive_date'=>$row['DeliveryDate'],
+                                'current'=>$row['current'],
+                                'delflag'=>0,
+                            );
+                            if ($row['current']==1) {
+                                $shipaddr[$shipidx]['shipping']=$row['Rate'];
+                                $shipaddr[$shipidx]['arrive_date'] = $row['DeliveryDate'];
+                                $shiprate+=$row['Rate'];
+                            }
+                            $newidx++;
+                        }
+                        $shipaddr[$shipidx]['shipping_costs']=$shipcost;
+                    }
+                }
+                $shipidx++;
+                $cnt++;
+            }
+            $out['shipping']=$shiprate;
+            $order['shipping']=$shiprate;
+            $out['cntshipadrr']=$cnt;
+            if ($cnt==1) {
+                $out['shipaddr']=$shipaddr[0];
+            } else {
+                $out['shipaddress']=$shipaddr;
+            }
+            $leadorder['order'] = $order;
+            $leadorder['shipping'] = $shipping;
+            $leadorder['shipping_address'] = $shipaddr;
+            $leadorder['order_items'] = $items;
+            // End calc
+        }
         usersession($ordersession, $leadorder);
         usersession($imprintsession, NULL);
         $out['result']=$this->success_result;
         $out['item']=$order_items[$idx];
         $out['artlocchange']=$artlocchange;
+        $out['itemstatus'] = $itemstatus;
         if ($artlocchange==1) {
             $out['artlocat']=$locations;
         }
@@ -3152,19 +3277,26 @@ Class Leadorder_model extends My_Model {
             $out['msg']=$transres['error_msg'];
             $cc_options = [
                 'amount'=>$charge['amount'],
-                'cardnum'=>$cardnum,
+                'cardnum'=>hide_cardnumber($cardnum),
                 'cardtype'=>($cardtype=='American Express' ? 'Amex' : $cardtype),
                 'cardcode'=>$charge['cardcode'],
             ];
             $this->_save_order_paymentlog($order_id, $usr_id, $transres['error_msg'], $cc_options);
+            $charge['cardnum'] = '';
+            $charge['cardcode'] = '';
+            $charges[$chridx] = $charge;
+            $leadorder['charges'] = $charges;
+            usersession($ordersession, $leadorder);
         } else {
             $cc_options = [
                 'amount'=>$charge['amount'],
-                'cardnum'=>$cardnum,
+                'cardnum'=>hide_cardnumber($cardnum),
                 'cardtype'=>($cardtype=='American Express' ? 'Amex' : $cardtype),
                 'cardcode'=>$charge['cardcode'],
             ];
             $this->_save_order_paymentlog($order_id, $usr_id, $transres['transaction_id'], $cc_options, 1);
+            $charge['cardnum'] = hide_cardnumber($cardnum);
+            $charge['cardcode'] = '';
             // Batch data
             $paymethod='';
             if ($pay_options['cardtype']=='amex') {
@@ -3181,7 +3313,7 @@ Class Leadorder_model extends My_Model {
                 'order_id'=>$order_id,
                 'batch_received'=>1,
                 'batch_type'=>$pay_options['cardtype'],
-                'batch_num'=>$pay_options['cardnum'],
+                'batch_num'=>substr($cardnum,-4),
                 'batch_transaction'=>$transres['transaction_id'],
             );
             $batchres = $this->batches_model->save_batch($batch_data, $order, $usr_id);
@@ -3279,13 +3411,14 @@ Class Leadorder_model extends My_Model {
             // }
             // Rebuild Shipping Data
             $newshipping=$this->_leadorder_shipping($shipping_address, $shipping, $past);
+            $order['shipdate'] = $newshipping['shipdate'];
             $total_item=0;
             $total_qty=0;
             $total_imprint=0;
             foreach ($order_items as $row) {
                 $total_item+=$row['item_subtotal'];
                 $total_imprint+=$row['imprint_subtotal'];
-                $total_qty+=$row['item_qty'];
+                $total_qty+=intval($row['item_qty']);
             }
             $order['item_imprint']=$total_imprint;
             $order['item_cost']=$total_item;
@@ -3335,16 +3468,6 @@ Class Leadorder_model extends My_Model {
             }
         }
         // Change shipping address
-//        $shipping['arriveclass']='';
-//        if (!empty($shipping['event_date'])) {
-//            if (!empty($shipping['arrive_date'])){
-//                $eventdate=$shipping['event_date']+$this->config->item('event_time');
-//                if ($shipping['arrive_date']>$eventdate) {
-//                    $shipping['arriveclass']='arrivelate';
-//                }
-//            }
-//        }
-//        $leadorder['shipping']=$shipping;
         $newshipping['arriveclass'] = '';
         if (!empty($newshipping['event_date'])) {
             if (!empty($newshipping['arrive_date'])){
@@ -5943,6 +6066,7 @@ Class Leadorder_model extends My_Model {
         if ($full==0) {
             return $res;
         }
+        $order = $this->orders_model->get_order_detail($order_id);
         // Begin Build full object
         $out=array();
         foreach ($res as $row) {
@@ -6055,7 +6179,12 @@ Class Leadorder_model extends My_Model {
                         $colors[]=$irow['item_color'];
                         $options['colors']=$colors;
                     }
-                    $out_colors=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+                    if ($order['brand']=='SR') {
+                        $out_colors=$this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
+                    } else {
+                        $out_colors=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+                    }
+
                 }
                 $qty_class = 'normal';
                 $qty_title = '';
@@ -6076,7 +6205,7 @@ Class Leadorder_model extends My_Model {
                     'item_color_add' =>$coloradd,
                     'item_qty' =>$irow['item_qty'],
                     'item_price'=>$irow['item_price'],
-                    'item_subtotal'=>MoneyOutput($subtotal),
+                    'item_subtotal'=>$subtotal, // MoneyOutput($subtotal)
                     'printshop_item_id'=>(isset($irow['printshop_item_id']) ? $irow['printshop_item_id'] : ''),
                     'qtyinput_class' => $qty_class,
                     'qtyinput_title' => $qty_title,
@@ -6650,12 +6779,21 @@ Class Leadorder_model extends My_Model {
                 $transres=$this->order_payment($pay_options);
                 if ($transres['result']==$this->error_result) {
                     $out['msg']=$transres['error_msg'];
+                    if (!empty($pay_options['cardnum'])) {
+                        $pay_options['cardnum'] = hide_cardnumber($pay_options['cardnum']);
+                    }
                     $this->_save_order_paymentlog($order_id, $user_id, $out['msg'], $pay_options);
+                    $this->db->where('order_payment_id', $row['order_payment_id']);
+                    $this->db->set('cardcode','');
+                    $this->db->set('cardnum','');
+                    $this->db->update('ts_order_payments');
                     return $out;
                 } else {
                     // Make Current row Amount=0, Add Charge
                     $this->db->set('amount',0);
                     $this->db->where('order_payment_id', $row['order_payment_id']);
+                    $this->db->set('cardcode','');
+                    $this->db->set('cardnum', hide_cardnumber($pay_options['cardnum']));
                     $this->db->update('ts_order_payments');
                     // Batch data
                     $paymethod='';
@@ -6673,10 +6811,11 @@ Class Leadorder_model extends My_Model {
                         'order_id'=>$order_id,
                         'batch_received'=>0,
                         'batch_type'=>$pay_options['cardtype'],
-                        'batch_num'=>$pay_options['cardnum'],
+                        'batch_num'=>substr($pay_options['cardnum'],-4),
                         'batch_transaction'=>$transres['transaction_id'],
                     );
                     $batch_id=$this->batches_model->save_batch($batch_data, $order_data, $user_id);
+                    $pay_options['cardnum'] = hide_cardnumber($pay_options['cardnum']);
                     $this->_save_order_paymentlog($order_id, $user_id, $transres['transaction_id'], $pay_options, 1);
                 }
             } else {
@@ -7200,8 +7339,13 @@ Class Leadorder_model extends My_Model {
                         'item_id'=>(-1)*($itmid),
                         'colors'=>$pitem['colors'],
                         'item_color'=>$pitem['item_color'],
+                        'brand' => $order['brand'],
                     );
-                    $out_colors=$this->load->view('leadorderdetails/item_color_choice', $coloroptions, TRUE);
+                    if ($order['brand']=='SR') {
+                        $out_colors=$this->load->view('leadorderdetails/sradditem_color_view', $coloroptions, TRUE);
+                    } else {
+                        $out_colors=$this->load->view('leadorderdetails/item_color_choice', $coloroptions, TRUE);
+                    }
                     $newitems[]=array(
                         'order_item_id'=>(-1)*$idx,
                         'item_id' =>(-1)*($itmid),
@@ -7384,8 +7528,13 @@ Class Leadorder_model extends My_Model {
                     'item_id'=>$newitem['item_id'],
                     'colors'=>$newitem['colors'],
                     'item_color'=>$newitem['item_color'],
+                    'brand' => $order['brand'],
                 );
-                $newitem['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+                if ($order['brand']=='SR') {
+                    $newitem['out_colors']=$this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
+                } else {
+                    $newitem['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+                }
             }
             if ($newitem['num_colors']>1) {
                 $newitem['item_color_add']=1;
@@ -7657,7 +7806,7 @@ Class Leadorder_model extends My_Model {
                     'item_description'=>$item_description,
                     'item_qty'=>$irow['item_qty'],
                     'item_price'=>PriceOutput($irow['item_price']),
-                    'item_subtotal'=>$irow['item_subtotal'],
+                    'item_subtotal'=>MoneyOutput($irow['item_subtotal']),
                     'item_color'=>'#000000',
                     'item' => 1,
                 );
@@ -7833,18 +7982,24 @@ Class Leadorder_model extends My_Model {
     // Show Item Picture
     public function get_leadorder_itemimage($item_id) {
         $out=array('result'=>  $this->error_result, 'msg'=>$this->error_message);
-        $this->db->select('i.item_img_thumb, i.item_img_id');
-        $this->db->from('sb_item_images i');
-        $this->db->where('i.item_img_item_id', $item_id);
-        $this->db->order_by('i.item_img_order');
-        $res=$this->db->get()->row_array();
-        if (!isset($res['item_img_id'])) {
+//        $this->db->select('i.item_img_thumb, i.item_img_id');
+//        $this->db->from('sb_item_images i');
+//        $this->db->where('i.item_img_item_id', $item_id);
+//        $this->db->order_by('i.item_img_order');
+//        $res=$this->db->get()->row_array();
+//        if (!isset($res['item_img_id'])) {
+//            $out['msg']='Image Not Found';
+//            return $out;
+//        }
+        $this->db->select('main_image')->from('sb_items')->where('item_id', $item_id);
+        $imgdat = $this->db->get()->row_array();
+        if (empty($imgdat['main_image'])) {
             $out['msg']='Image Not Found';
             return $out;
         }
         $path_sh=$this->config->item('itemimages_relative');
         $path_fl=$this->config->item('itemimages');
-        $source=$res['item_img_thumb'];
+        $source = $imgdat['main_image'];
         $filesource=  str_replace($path_sh, $path_fl, $source);
         if (!file_exists($filesource)) {
             $out['msg']='Source File '.$filesource.' Not Found ';
@@ -9142,7 +9297,7 @@ Class Leadorder_model extends My_Model {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message, 'fin'=>0);
         $charges=$leadorder['charges'];
         $order_data=$leadorder['order'];
-        $order_revenue=$order_data['revenue'];
+        $order_revenue=floatval($order_data['revenue']);
         // Calc amount of charges
         $chargesum=0;
         $chargenum=0;
@@ -9155,7 +9310,7 @@ Class Leadorder_model extends My_Model {
         if ($chargesum==0) {
             $out['result']=$this->success_result;
         } else {
-            if ($chargesum==$order_revenue) {
+            if (round($chargesum,2)==round($order_revenue,2)) {
                 $out['result']=$this->success_result;
             } else {
                 if ($chargenum==1) {
@@ -10174,7 +10329,7 @@ Class Leadorder_model extends My_Model {
         $items=$leadorder['order_items'];
         $qty=0;
         foreach ($items as $row) {
-            $qty+=$row['item_qty'];
+            $qty+=intval($row['item_qty']);
         }
         if ($qty>0) {
             $shipaddr = $leadorder['shipping_address'];
@@ -10230,6 +10385,458 @@ Class Leadorder_model extends My_Model {
                 return true;
             }
         }
+    }
+
+    private function _create_empty_orderitems()
+    {
+        $items=[];
+        $newitem = [
+            'order_item_id' => -1,
+            'item_id' => '',
+            'item_number' => '',
+            'item_name' => '',
+            'item_qty' => '',
+            'colors' => [],
+            'num_colors' => 0,
+            'item_template' => '',
+            'item_weigth' => '',
+            'cartoon_qty' => '',
+            'cartoon_width' =>  '',
+            'cartoon_heigh' =>  '',
+            'cartoon_depth' =>  '',
+            'boxqty' =>  '',
+            'setup_price' =>  '',
+            'print_price' =>  '',
+            'item_subtotal' =>  0,
+            'imprint_subtotal' =>  0,
+            'vendor_zipcode' =>  '',
+            'charge_perorder' =>  '',
+            'charge_peritem' =>  '',
+            'charge_pereach' =>  '',
+            'imprint_locations' => [],
+            'base_price' => '',
+            'vendor_item_id' => '',
+        ];
+        $color = [
+            'order_item_id' => -1,
+            'item_id' => '',
+            'item_row' => 1,
+            'item_number' => '',
+            'item_color' => '',
+            'colors' => [],
+            'out_colors' => '',
+            'num_colors' => 0,
+            'item_description' => '',
+            'item_color_add' => 0,
+            'item_qty' => '',
+            'item_price' => '',
+            'item_subtotal' => '',
+            'printshop_item_id' => '',
+            'qtyinput_class' => '',
+            'qtyinput_title' => '',
+        ];
+        $newitem['items'][] = $color;
+        $newitem['imprints'] = [];
+        $newitem['imprint_details'] = [];
+        $items[] = $newitem;
+        return $items;
+    }
+
+    public function preparenewitem($leadorder, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Order Item Not Found'];
+        // Add new order items
+        $order_items = $leadorder['order_items'];
+        $minidx = 0;
+        foreach ($order_items as $order_item) {
+            if ($order_item['order_item_id'] < $minidx) {
+                $minidx = $order_item['order_item_id'];
+            }
+        }
+        $minidx-=1;
+        $itemdata = $this->_create_empty_orderitems();
+        $newitem = $itemdata[0];
+        $newitem['order_item_id'] = $minidx;
+        $newitem['items'][0]['order_item_id'] = $minidx;
+        $order_items[] = $newitem;
+        $leadorder['order_items'] = $order_items;
+        usersession($ordersession, $leadorder);
+        $out['result'] = $this->success_result;
+        $out['order_items'] = $order_items;
+        $out['order'] = $leadorder['order'];
+        $out['order_item_id'] = $newitem['order_item_id'];
+        return $out;
+    }
+    // Temporary Save Order Item
+    public function saveneworderitem($leadorder, $item_id, $order_item_id, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Order Item Not Found'];
+        $order_items=$leadorder['order_items'];
+        $idx = 0;
+        $found = 0;
+        foreach ($order_items as $order_item) {
+            if ($order_item['order_item_id']==$order_item_id) {
+                $found = 1;
+                break;
+            }
+            $idx++;
+        }
+        if ($found==1) {
+            $order=$leadorder['order'];
+            $this->load->model('orders_model');
+            $this->load->model('prices_model');
+            if ($item_id<0) {
+                $itemdata=$this->orders_model->get_newitemdat($item_id);
+            } else {
+                $itemdata=$this->_get_itemdata($item_id);
+            }
+            $colors=$itemdata['colors'];
+            $itmcolor='';
+            if ($itemdata['num_colors']>0) {
+                $itmcolor=$colors[0];
+            }
+            $item_description=$itemdata['item_name'];
+            $defqty= 0; // $this->config->item('defqty_common');
+            $minqty = 0;
+            if ($item_id==$this->config->item('custom_id')) {
+                $defqty=$this->config->item('defqty_custom');
+            } else {
+                if ($item_id > 0) {
+                    $prices = $this->prices_model->get_itemlist_price($item_id);
+                    // $minqty = intval($prices[0]['item_qty']);
+                } else {
+                    // $minqty = $defqty;
+                }
+//                if ($minqty > $defqty) {
+//                    $defqty = $minqty;
+//                }
+            }
+            $orditem=array(
+                'order_item_id'=>$order_item_id,
+                'item_id'=>$item_id,
+                'item_number'=>$itemdata['item_number'],
+                'item_name'=>$item_description,
+                'item_qty'=>$defqty,
+                'colors'=>$itemdata['colors'],
+                'num_colors'=>$itemdata['num_colors'],
+                'item_qty'=>$defqty,
+                'item_template'=>$this->normal_template,
+                'item_weigth'=>0,
+                'cartoon_qty'=>0,
+                'cartoon_width'=>0,
+                'cartoon_heigh'=>0,
+                'cartoon_depth'=>0,
+                'boxqty'=>'',
+                'setup_price'=>0,
+                'print_price'=>0,
+                'base_price' => 0,
+                'imprint_locations'=>array(),
+                'item_subtotal'=>0,
+                'imprint_subtotal'=>0,
+                'vendor_zipcode'=>$this->default_zip,
+                'charge_perorder'=>0,
+                'charge_peritem'=>0,
+                'vendor_item_id' => '',
+            );
+            $newprice=0;
+            if ($item_id>0) {
+                // Prices, totals
+                $newprice=$this->_get_item_priceqty($item_id, $orditem['item_template'] , $defqty);
+                $setupprice=$this->_get_item_priceimprint($item_id, 'setup');
+                $printprice=$this->_get_item_priceimprint($item_id, 'imprint');
+                $orditem['item_template']=$itemdata['item_template'];
+                $orditem['item_weigth']=$itemdata['item_weigth'];
+                $orditem['cartoon_qty']=$itemdata['cartoon_qty'];
+                $orditem['cartoon_width']=$itemdata['cartoon_width'];
+                $orditem['cartoon_heigh']=$itemdata['cartoon_heigh'];
+                $orditem['cartoon_depth']=$itemdata['cartoon_depth'];
+                $orditem['boxqty']=$itemdata['boxqty'];
+                $orditem['setup_price']=$setupprice;
+                $orditem['print_price']=$printprice;
+                $orditem['base_price']=$newprice;
+                $orditem['imprint_locations']=$itemdata['imprints'];
+                $orditem['vendor_zipcode']=$itemdata['vendor_zipcode'];
+                $orditem['charge_perorder']=$itemdata['charge_perorder'];
+                $orditem['charge_pereach']=$itemdata['charge_pereach'];
+                $orditem['item_subtotal']=$defqty*$newprice;
+                $orditem['vendor_item_id'] = $itemdata['vendor_item_id'];
+            }
+            // Prepare firt item (as itemcolors)
+            $newitem=array(
+                'order_item_id'=> $order_item_id, // $newid*(-1),
+                'item_id'=>-1,
+                'item_row'=>1,
+                'item_number'=>$itemdata['item_number'],
+                'item_color'=>$itmcolor,
+                'colors'=>$colors,
+                'num_colors'=>$itemdata['num_colors'],
+                'item_description'=>$orditem['item_name'],
+            );
+            //
+            if ($itemdata['num_colors']==0) {
+                $newitem['out_colors']=$this->empty_htmlcontent;
+            } else {
+                $options=array(
+                    'order_item_id'=>$newitem['order_item_id'],
+                    'item_id'=>$newitem['item_id'],
+                    'colors'=>$newitem['colors'],
+                    'item_color'=>$newitem['item_color'],
+                    'brand' => $order['brand'],
+                );
+                if ($order['brand']=='SR') {
+                    $newitem['out_colors']=$this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
+                } else {
+                    $newitem['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+                }
+            }
+            if ($newitem['num_colors']>1) {
+                $newitem['item_color_add']=1;
+            } else {
+                $newitem['item_color_add']=0;
+            }
+
+            $newitem['item_qty']=$defqty;
+            $newitem['item_price']=$newprice;
+            $newitem['item_subtotal']=MoneyOutput($defqty*$newprice);
+            $newitem['printshop_item_id']=(isset($itemdata['printshop_item_id']) ? $itemdata['printshop_item_id']  : '');
+            $newitem['qtyinput_class']='normal';
+            $newitem['qtyinput_title']='';
+            $items[]=$newitem;
+            $orditem['items']=$items;
+            // Prepare Imprint, Imprint Details
+            $imprint[]=array(
+                'order_imprint_id'=>-1,
+                'imprint_description'=>'&nbsp;',
+                'imprint_qty'=>0,
+                'imprint_price'=>0,
+                'imprint_item'=>0,
+                'imprint_subtotal'=>'&nbsp;',
+                'imprint_price_class' => 'normal',
+                'imprint_price_title' => '',
+                'delflag'=>0,
+            );
+            $orditem['imprints']=$imprint;
+            // Change Imprint Details
+            $imprdetails=array();
+            $detailfld=$this->db->list_fields('ts_order_imprindetails');
+            for ($i=1; $i<13; $i++) {
+                $newloc=array(
+                    'title'=>'Loc '.$i,
+                    'active'=>0,
+                );
+                foreach ($detailfld as $row) {
+                    switch ($row) {
+                        case 'order_imprindetail_id':
+                            $newloc[$row]=$i*(-1);
+                            break;
+                        case 'imprint_type':
+                            $newloc[$row]='NEW';
+                            break;
+                        case 'num_colors':
+                            $newloc[$row]=1;
+                            break;
+                        default :
+                            $newloc[$row]='';
+                    }
+                }
+                if ($i==1) {
+                    $newloc['print_1']=0;
+                } else {
+                    if ($orditem['item_id']==$this->config->item('custom_id')) {
+                        $newloc['print_1'] = $this->custom_print_price;
+                    } elseif ($orditem['item_id']==$this->config->item('other_id')) {
+                        $newloc['print_1'] = $this->other_print_price;
+                    } else {
+                        $newloc['print_1']=$orditem['print_price'];
+                    }
+                }
+                if ($orditem['item_id']==$this->config->item('custom_id')) {
+                    $newloc['print_2']=$this->custom_print_price;
+                    $newloc['print_3']=$this->custom_print_price;
+                    $newloc['print_4']=$this->custom_print_price;
+                } elseif ($orditem['item_id']==$this->config->item('other_id')) {
+                    $newloc['print_2']=$this->other_print_price;
+                    $newloc['print_3']=$this->other_print_price;
+                    $newloc['print_4']=$this->other_print_price;
+                } else {
+                    $newloc['print_2']=$orditem['print_price'];
+                    $newloc['print_3']=$orditem['print_price'];
+                    $newloc['print_4']=$orditem['print_price'];
+                }
+                if ($orditem['item_id']==$this->config->item('custom_id')) {
+                    $print_setup = $this->custom_setup_price;
+                } elseif ($orditem['item_id']==$this->config->item('other_id')) {
+                    if ($order['brand']=='SR') {
+                        $print_setup = $this->other_setupsr_price;
+                    } else {
+                        $print_setup = $this->other_setupsb_price;
+                    }
+                } else {
+                    $print_setup = $orditem['setup_price'];
+                }
+                // Setup
+                $newloc['setup_1']=$print_setup;
+                $newloc['setup_2']=$print_setup;
+                $newloc['setup_3']=$print_setup;
+                $newloc['setup_4']=$print_setup;
+                $imprdetails[]=$newloc;
+            }
+            $orditem['imprint_details']=$imprdetails;
+            // Add new element to Order Items
+            $order_items[$idx]=$orditem;
+            $out['result'] = $this->success_result;
+            $out['item'] = $orditem;
+            $out['brand'] = $order['brand'];
+            $leadorder['order_items']=$order_items;
+            $leadorder['order']=$order;
+            usersession($ordersession, $leadorder);
+        }
+        return $out;
+    }
+
+    public function orderiteminventory($leadorder, $order_item_id, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Order Item Not Found'];
+        $order_items=$leadorder['order_items'];
+        $idx = 0;
+        $found = 0;
+        foreach ($order_items as $order_item) {
+            if ($order_item['order_item_id']==$order_item_id) {
+                $found = 1;
+                break;
+            }
+            $idx++;
+        }
+        if ($found==1) {
+            $item_number = $order_items[$idx]['item_number'];
+            $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $item_number);
+            $invres = $this->db->get()->row_array();
+            if (ifset($invres,'inventory_item_id',0)>0) {
+                $out['result'] = $this->success_result;
+                $this->load->model('inventory_model');
+                $res = $this->inventory_model->orderitem_inventory($invres['inventory_item_id']);
+                $out['onboats'] = $res['onboats'];
+                $out['invents'] = $res['inventory'];
+                usersession($ordersession, $leadorder);
+            }
+        }
+        return $out;
+    }
+
+    public function saveneworderitemparam($leadorder, $order_item_id, $paramname, $newval, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Order Item Not Found'];
+        $order_items=$leadorder['order_items'];
+        $order = $leadorder['order'];
+        $idx = 0;
+        $found = 0;
+        foreach ($order_items as $order_item) {
+            if ($order_item['order_item_id']==$order_item_id) {
+                $found = 1;
+                break;
+            }
+            $idx++;
+        }
+        if ($found==1) {
+            // Found
+            if ($paramname=='color') {
+                $order_items[$idx]['items'][0]['item_color'] = $newval;
+                $coloropt = [
+                    'order_item_id' => $order_item_id,
+                    'item_id' => $order_items[$idx]['items'][0]['item_id'],
+                    'item_color' => $order_items[$idx]['items'][0]['item_color'],
+                    'colors' => $order_items[$idx]['items'][0]['colors'],
+                ];
+                if ($order['brand']=='SR') {
+                    $order_items[$idx]['items'][0]['out_colors'] = $this->load->view('leadorderdetails/sradditem_color_view', $coloropt, true);
+                } else {
+                    $order_items[$idx]['items'][0]['out_colors'] = $this->load->view('leadorderdetails/item_color_choice', $coloropt, true);
+                }
+            } elseif ($paramname=='qty') {
+                $order_items[$idx]['item_qty'] = intval($newval);
+                $order_items[$idx]['items'][0]['item_qty'] = intval($newval);
+                if ($order_items[$idx]['item_id'] > 0) {
+                    // Get New Price
+                    $newprice=$this->_get_item_priceqty($order_items[$idx]['item_id'], $order_items[$idx]['item_template'] , intval($newval));
+                    $order_items[$idx]['base_price'] = $newprice;
+                    $order_items[$idx]['items'][0]['item_price'] = $newprice;
+                }
+                $order_items[$idx]['item_subtotal'] = $order_items[$idx]['base_price'] * $newval;
+                $order_items[$idx]['items'][0]['item_subtotal'] = $order_items[$idx]['items'][0]['item_price'] * $newval;
+            } else {
+                $order_items[$idx]['base_price'] = floatval($newval);
+                $order_items[$idx]['item_subtotal'] = $order_items[$idx]['item_qty'] * $order_items[$idx]['base_price'];
+                $order_items[$idx]['items'][0]['item_price'] = floatval($newval);
+                $order_items[$idx]['items'][0]['item_subtotal'] = $order_items[$idx]['items'][0]['item_price'] * $order_items[$idx]['items'][0]['item_qty'];
+            }
+            $leadorder['order_items'] = $order_items;
+            usersession($ordersession, $leadorder);
+            $out['result'] = $this->success_result;
+            $out['color'] = $order_items[$idx]['items'][0]['item_color'];
+            $out['item_id'] = $order_items[$idx]['item_id'];
+            $out['colors'] = $order_items[$idx]['colors'];
+            $out['item_qty'] = $order_items[$idx]['item_qty'];
+            $out['base_price'] = $order_items[$idx]['base_price'];
+            $out['item_subtotal'] = $order_items[$idx]['item_subtotal'];
+            $out['brand'] = $order['brand'];
+        }
+        return $out;
+    }
+
+    public function cancelneworderitem($leadorder, $order_item_id, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Order Item Not Found'];
+        $order_items=$leadorder['order_items'];
+        $order = $leadorder['order'];
+        $idx = 0;
+        $found = 0;
+        $newitems = [];
+        foreach ($order_items as $order_item) {
+            if ($order_item['order_item_id']==$order_item_id) {
+                $found = 1;
+            } else {
+                $newitems[] = $order_item;
+            }
+            $idx++;
+        }
+        if ($found==1) {
+            $out['result'] = $this->success_result;
+            if (count($newitems)==0) {
+                $newitems = $this->_create_empty_orderitems();
+            }
+            $out['order_items'] = $newitems;
+            $out['order'] = $order;
+            $leadorder['order_items'] = $newitems;
+            usersession($ordersession, $leadorder);
+        }
+        return $out;
+    }
+
+    public function show_iteminvent($leadorder, $order_item_id, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Order Item Not Found'];
+        $order_items = $leadorder['order_items'];
+        $find = 0;
+        foreach ($order_items as $order_item) {
+            if ($order_item['order_item_id']==$order_item_id) {
+                $find = 1;
+                $item_id = $order_item['item_id'];
+                break;
+            }
+        }
+        if ($find == 1) {
+            $this->db->select('ii.inventory_item_id')->from('ts_inventory_items ii')->join('sb_items i','i.item_number=ii.item_num')->where('i.item_id', $item_id);
+            $invres = $this->db->get()->row_array();
+            if (ifset($invres,'inventory_item_id',0)>0) {
+                $out['result'] = $this->success_result;
+                $this->load->model('inventory_model');
+                $res = $this->inventory_model->orderitem_inventory($invres['inventory_item_id']);
+                $out['onboats'] = $res['onboats'];
+                $out['invents'] = $res['inventory'];
+            }
+        }
+        // $item_number = $order_items[$idx]['item_number'];
+        return $out;
     }
 
     public function search_customer($search, $limit=20) {

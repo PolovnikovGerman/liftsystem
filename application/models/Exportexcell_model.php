@@ -775,4 +775,223 @@ class Exportexcell_model extends CI_Model
 //        }
 
     }
+
+    public function fullitems_list($filename, $heads, $items)
+    {
+        $cols_array=array(
+            '0'=>'A',
+            '1'=>'B',
+            '2'=>'C',
+            '3'=>'D',
+            '4'=>'E',
+            '5'=>'F',
+            '6'=>'G',
+            '7'=>'H',
+            '8'=>'I',
+            '9'=>'J',
+            '10'=>'K',
+            '11'=>'L',
+            '12'=>'M',
+            '13'=>'N',
+            '14'=>'O',
+            '15'=>'P',
+            '16'=>'Q',
+            '17'=>'R',
+            '18'=>'S',
+            '19'=>'T',
+            '20'=>'U',
+            '21'=>'V',
+            '22'=>'W',
+            '23'=>'X',
+            '24'=>'Y',
+            '25'=>'Z',
+            '26'=>'AA',
+            '27'=>'AB',
+            '28'=>'AC',
+            '29'=>'AD',
+            '30'=>'AE',
+            '31'=>'AF',
+            '32'=>'AG',
+            '33'=>'AH',
+            '34'=>'AI',
+            '35'=>'AJ',
+            '36'=>'AK',
+            '37'=>'AL',
+            '38'=>'AM',
+            '39'=>'AN',
+            '40'=>'AO',
+            '41'=>'AP',
+            '42'=>'AQ',
+            '43'=>'AR',
+            '44'=>'AS',
+            '45'=>'AT',
+            '46'=>'AU',
+            '47'=>'AV',
+            '48'=>'AW',
+            '49'=>'AX',
+            '50'=>'AY',
+            '51'=>'AZ',
+            '52'=>'BA',
+            '53'=>'BB',
+            '54'=>'BC',
+            '55'=>'BD',
+            '56'=>'BE',
+            '57'=>'BF',
+            '58'=>'BG',
+            '59'=>'BH',
+            '60'=>'BI',
+            '61'=>'BJ',
+            '62'=>'BK',
+            '63'=>'BL',
+            '64'=>'BM',
+            '65'=>'BN',
+            '66'=>'BO',
+            '67'=>'BP',
+            '68'=>'BQ',
+            '69'=>'BR',
+            '70'=>'BS',
+            '71'=>'BT',
+            '72'=>'BU',
+            '73'=>'BV',
+            '74'=>'BW',
+            '75'=>'BX',
+            '76'=>'BY',
+            '77'=>'BZ',
+            '78'=>'CA',
+            '79'=>'CB',
+            '80'=>'CC',
+            '81'=>'CD',
+            '82'=>'CE',
+            '83'=>'CF',
+            '84'=>'CG',
+            '85'=>'CH',
+            '86'=>'CI',
+            '87'=>'CJ',
+            '88'=>'CK',
+            '89'=>'CL',
+            '90'=>'CM',
+            '91'=>'CN',
+            '92'=>'CO',
+        );
+        $i=0;
+
+        /* create report */
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+
+        /* sheet */
+        $sheet->setTitle('DB Export');
+        $colidx = 0;
+        foreach ($heads as $head) {
+            $sheet->setCellValue("{$cols_array[$colidx]}1",$head);
+            $colidx++;
+        }
+        // Body
+        $nrow = 2;
+        foreach ($items as $item) {
+            $sheet->setCellValue( $cols_array[0].$nrow, $item['item_number']);
+            $sheet->setCellValue( $cols_array[1].$nrow, $item['item_name']);
+            $sheet->setCellValue( $cols_array[2].$nrow, $item['item_active']==1 ? 'Yes' : 'No');
+            $sheet->setCellValue( $cols_array[3].$nrow, $item['item_new']==1 ? 'Yes' : 'No');
+            $sheet->setCellValue( $cols_array[4].$nrow, $item['item_template']);
+            $sheet->setCellValue( $cols_array[5].$nrow, $item['item_lead_a']);
+            $sheet->setCellValue( $cols_array[6].$nrow, $item['item_lead_b']);
+            $sheet->setCellValue( $cols_array[7].$nrow, $item['item_lead_c']);
+            $sheet->setCellValue( $cols_array[8].$nrow, $item['item_material']);
+            $sheet->setCellValue( $cols_array[9].$nrow, $item['item_weigth']);
+            $sheet->setCellValue( $cols_array[10].$nrow, $item['item_size']);
+            $sheet->setCellValue( $cols_array[11].$nrow, $item['item_keywords']);
+            $sheet->setCellValue( $cols_array[12].$nrow, $item['item_url']);
+            $sheet->setCellValue( $cols_array[13].$nrow, $item['item_meta_title']);
+            $sheet->setCellValue( $cols_array[14].$nrow, $item['item_metadescription']);
+            $sheet->setCellValue( $cols_array[15].$nrow, $item['item_metakeywords']);
+            $sheet->setCellValue( $cols_array[16].$nrow, $item['item_description1']);
+            $sheet->setCellValue( $cols_array[17].$nrow, $item['item_description2']);
+            $sheet->setCellValue( $cols_array[18].$nrow, $item['bottom_text']);
+            $sheet->setCellValue( $cols_array[19].$nrow, $item['options']);
+            $sheet->setCellValue( $cols_array[20].$nrow, $item['colors']);
+            $sheet->setCellValue( $cols_array[21].$nrow, $item['cartoon_qty']);
+            $sheet->setCellValue( $cols_array[22].$nrow, $item['cartoon_width']);
+            $sheet->setCellValue( $cols_array[23].$nrow, $item['cartoon_heigh']);
+            $sheet->setCellValue( $cols_array[24].$nrow, $item['cartoon_depth']);
+            $sheet->setCellValue( $cols_array[25].$nrow, $item['charge_pereach']);
+            $sheet->setCellValue( $cols_array[26].$nrow, $item['charge_perorder']);
+            $sheet->setCellValue( $cols_array[27].$nrow, $item['special']);
+            $sheet->setCellValue( $cols_array[28].$nrow, $item['vendor_item_number']);
+            $sheet->setCellValue( $cols_array[29].$nrow, $item['vendor_item_name']);
+            $sheet->setCellValue( $cols_array[30].$nrow, $item['vendor_item_cost']);
+            $sheet->setCellValue( $cols_array[31].$nrow, $item['vendor_item_exprint']);
+            $sheet->setCellValue( $cols_array[32].$nrow, $item['vendor_item_setup']);
+            $sheet->setCellValue( $cols_array[33].$nrow, $item['vendor_name']);
+            $prices = $item['prices'];
+            $ncol = 34;
+            foreach ($prices as $price) {
+                $sheet->setCellValue( $cols_array[$ncol].$nrow, $price['qty']);
+                $ncol++;
+                $sheet->setCellValue( $cols_array[$ncol].$nrow, $price['price']);
+                $ncol++;
+                $sheet->setCellValue( $cols_array[$ncol].$nrow, $price['sale']);
+                $ncol++;
+            }
+
+            $sheet->setCellValue( $cols_array[$ncol].$nrow, $item['price_print']);
+            $ncol++;
+            $sheet->setCellValue( $cols_array[$ncol].$nrow, $item['sale_print']);
+            $ncol++;
+            $sheet->setCellValue( $cols_array[$ncol].$nrow, $item['price_setup']);
+            $ncol++;
+            $sheet->setCellValue( $cols_array[$ncol].$nrow, $item['sale_setup']);
+            $ncol++;
+            $imprints = $item['imprints'];
+            foreach ($imprints as $imprint) {
+                $sheet->setCellValue( $cols_array[$ncol].$nrow, $imprint['location']);
+                $ncol++;
+                $sheet->setCellValue( $cols_array[$ncol].$nrow, $imprint['size']);
+                $ncol++;
+            }
+            /*
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            $sheet->setCellValue( $cols_array[].$nrow, $item['']);
+            */
+            $nrow++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($filename);    // download file
+
+        return ['result' => 1];
+    }
 }

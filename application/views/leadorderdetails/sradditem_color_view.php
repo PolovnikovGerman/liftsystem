@@ -1,0 +1,1 @@
+<span class="addnewcolor" data-orderitem="<?=$order_item_id?>" data-item="<?=$item_id?>"><?=$item_color?></span>
