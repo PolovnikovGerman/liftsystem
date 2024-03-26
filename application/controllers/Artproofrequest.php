@@ -21,6 +21,17 @@ class Artproofrequest extends MY_Controller
     private $nonredrawn = array('ai', 'pdf', 'eps');
     private $logo_imageext = array('jpg', 'jpeg', 'png', 'gif');
 
+    private $mimetypes = [
+        'jpg' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'png' => 'image/png',
+        'gif' => 'image/gif',
+        'eps' => 'application/postscript',
+        'ai' => 'application/postscript',
+        'pdf' => 'application/pdf',
+        'psd' => 'image/vnd.adobe.photoshop',
+    ];
+
     public function __construct()
     {
         parent::__construct();
@@ -522,7 +533,7 @@ class Artproofrequest extends MY_Controller
                 $ressave = $file->save($path . $newfilename . '.' . $ext);
                 if ($ressave) {
                     $mimeext = $this->mimetypes[$ext];
-                    $mimetype = mime_content_type($path . $filename . '.' . $ext);
+                    $mimetype = mime_content_type($path . $newfilename . '.' . $ext);
                     if ($mimetype==$mimeext) {
                         // Add new file to data
                         $this->load->model('artproof_model');

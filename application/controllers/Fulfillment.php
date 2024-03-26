@@ -15,6 +15,16 @@ class Fulfillment extends MY_Controller
     private $empty_html_content='&nbsp;';
     private $container_type = 'C';
     private $express_type = 'E';
+    private $mimetypes = [
+        'jpg' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'png' => 'image/png',
+        'gif' => 'image/gif',
+        'eps' => 'application/postscript',
+        'ai' => 'application/postscript',
+        'pdf' => 'application/pdf',
+        'psd' => 'image/vnd.adobe.photoshop',
+    ];
 
     public function __construct()
     {
