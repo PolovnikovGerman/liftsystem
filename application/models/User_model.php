@@ -271,7 +271,7 @@ Class User_model extends MY_Model
             $row['numpp']=$numpp;
             $row['last_activity']= 'n/a';
             if (!empty($row['lastactivity'])) {
-                $row['last_activity']=substr(date('D', $row['lastactivity']),0,1).' - '.date('M j, Y H:i', $row['lastactivity']);
+                $row['last_activity']=date('D', $row['lastactivity']).' - '.date('M j, Y H:i', $row['lastactivity']);
             }
             // $row['last_activity']=(empty($row['lastactivity']) ? 'n/a' : substr(date('D', $row['lastactivity']),0,1).' - '.date('M j, Y H:i', $row['lastactivity']));
             if ($row['user_status']==$this->user_active) {
