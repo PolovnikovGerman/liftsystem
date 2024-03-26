@@ -26,7 +26,7 @@ class Artproofrequest extends MY_Controller
         'jpeg' => 'image/jpeg',
         'png' => 'image/png',
         'gif' => 'image/gif',
-        'eps' => 'application/postscript',
+        'eps' => 'image/x-eps',
         'ai' => 'application/postscript',
         'pdf' => 'application/pdf',
         'psd' => 'image/vnd.adobe.photoshop',
