@@ -3423,4 +3423,35 @@ class Test extends CI_Controller
         }
 //        fclose($fh);
     }
+
+    public function hide_payments()
+    {
+        // $this->db->select('*')->from('ts_order_payments')->where('order_id > ', 42941); // 42941
+        $this->db->select('*')->from('ts_order_payments')->order_by('order_payment_id', 'desc')->limit(400); // 42941
+        $payments = $this->db->get()->result_array();
+        foreach ($payments as $payment) {
+            // echo 'Order ' . $payment['order_id'] . ' CC # ' . $payment['cardnum'] . PHP_EOL;
+            $cardnum = $payment['cardnum'];
+            if (!empty($payment['cardnum'])) {
+                $newcc = hide_cardnumber($cardnum);
+                $newcvv = str_repeat('X',strlen($payment['cardcode']));
+                $this->db->set('cardnum',$newcc);
+                $this->db->set('cardcode',$newcvv);
+                $this->db->where('order_payment_id', $payment['order_payment_id']);
+                $this->db->update('ts_order_payments');
+            }
+        }
+        echo 'Change log '.PHP_EOL;
+        $this->db->select('*')->from('ts_order_paymentlog')->order_by('order_paymentlog_id','desc');
+        $paylogs = $this->db->get()->result_array();
+        foreach ($paylogs as $paylog) {
+            if (!empty($paylog['card_num'])) {
+                $newcardn = hide_cardnumber($paylog['card_num']);
+                $this->db->where('order_paymentlog_id', $paylog['order_paymentlog_id']);
+                $this->db->set('card_num', $newcardn);
+                $this->db->update('ts_order_paymentlog');
+            }
+        }
+    }
+
 }
