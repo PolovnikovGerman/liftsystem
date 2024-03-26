@@ -20,7 +20,7 @@ class Fulfillment extends MY_Controller
         'jpeg' => 'image/jpeg',
         'png' => 'image/png',
         'gif' => 'image/gif',
-        'eps' => 'application/postscript',
+        'eps' => 'image/x-eps', //  'application/postscript',
         'ai' => 'application/postscript',
         'pdf' => 'application/pdf',
         'psd' => 'image/vnd.adobe.photoshop',
