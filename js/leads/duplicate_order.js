@@ -5,7 +5,7 @@ $(document).ready(function (){
     init_onlineleadorder_edit();
     init_rushpast();
     $('select.addnewitem').select2({
-        /* dropdownParent: $('#artModal'), */
+        dropdownParent: $('#artModal'),
         matcher: matchStart,
     });
     if (parseInt($("#ordermapuse").val())==1) {

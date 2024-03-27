@@ -7232,7 +7232,7 @@ Class Leadorder_model extends My_Model {
         } else {
             $addusr=$usrdata['user_name'];
         }
-        $msg='Order was created '.date('m/d/y h:i:s a', time()).' by duplicate order # '.$order['order_num'].' by '.$usrdata['user_name'];
+        $msg='Order was created '.date('m/d/y h:i:s a', time()).' by customer copy function order # '.$order['order_num'].' by '.$usrdata['user_name'];
         // Add Record about duplicate
         $newart_history[]=array(
             'artwork_history_id'=>(-1),
@@ -7253,7 +7253,7 @@ Class Leadorder_model extends My_Model {
             'artwork_id'=>-1,
             'order_id' =>0,
             'last_message' =>'',
-            'customer_instruct' =>$artwork['customer_instruct'],
+            'customer_instruct' => '', // $artwork['customer_instruct'],
             'customer' => $artwork['customer'],
             'customer_contact' =>$artwork['customer_contact'],
             'customer_phone' => $artwork['customer_phone'],
@@ -7264,7 +7264,7 @@ Class Leadorder_model extends My_Model {
             'item_id' => $artwork['item_id'],
             'item_color' => $artwork['item_color'],
             'item_qty' => $artwork['item_qty'],
-            'artwork_rush' =>$artwork['artwork_rush'],
+            'artwork_rush' => 0, // $artwork['artwork_rush'],
             'artwork_note' =>$artwork['artwork_note'],
             'customer_art' =>$artwork['customer_art'],
             'customer_inv' =>$artwork['customer_inv'],
