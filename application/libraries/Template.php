@@ -689,4 +689,27 @@ class Template
         return $data;
     }
 
+    public function prepare_duplicateorder($options)
+    {
+        $dat = array();
+        $styles=[];
+        if (isset($options['styles'])) {
+            $styles=$options['styles'];
+        }
+        if ($_SERVER['SERVER_NAME']=='lifttest.stressballs.com') {
+            $styles[]=array('style'=>'/css/page_view/testsite_view.css');
+        }
+        $scripts=[];
+        if (isset($options['scripts'])) {
+            $scripts=$options['scripts'];
+        }
+
+        $head_options=[
+            'styles'=>$styles,
+            'scripts'=>$scripts,
+            'gmaps' => ifset($options,'gmaps',0),
+        ];
+        $dat['head'] = $this->CI->load->view('duplcate_orders/head_view', $head_options, TRUE);
+        return $dat;
+    }
 }

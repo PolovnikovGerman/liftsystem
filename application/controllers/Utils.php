@@ -133,29 +133,33 @@ Class Utils extends CI_Controller
             } else {
                 $saveres = $file->save($path . $filename . '.' . $ext);
                 if ($saveres) {
-                    $mimeext = $this->mimetypes[$ext];
-                    $mimetype = mime_content_type($path . $filename . '.' . $ext);
-                    if ($mimetype==$mimeext) {
+                    if ($ext=='eps') {
                         echo (json_encode(array('success' => true, 'filename' => $path_sh.$filename . '.' . $ext, 'filesize' => $filesize,'source'=>$file->getName())));
                     } else {
-                        @unlink($path . $filename . '.' . $ext);
-                        // Insert data into log
-                        $user=usersession('usr_data');
-                        $usrid = ifset($user,'id',0);
-                        $this->db->set('file_name', $file->getName());
-                        $this->db->set('file_ext', $mimetype);
-                        if (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
-                            $this->db->set('page_call',$_SERVER['HTTP_REFERER']);
+                        $mimeext = $this->mimetypes[$ext];
+                        $mimetype = mime_content_type($path . $filename . '.' . $ext);
+                        if ($mimetype==$mimeext) {
+                            echo (json_encode(array('success' => true, 'filename' => $path_sh.$filename . '.' . $ext, 'filesize' => $filesize,'source'=>$file->getName())));
+                        } else {
+                            @unlink($path . $filename . '.' . $ext);
+                            // Insert data into log
+                            $user=usersession('usr_data');
+                            $usrid = ifset($user,'id',0);
+                            $this->db->set('file_name', $file->getName());
+                            $this->db->set('file_ext', $mimetype);
+                            if (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
+                                $this->db->set('page_call',$_SERVER['HTTP_REFERER']);
+                            }
+                            if (isset($_SERVER['HTTP_HOST']) && !empty($_SERVER['HTTP_HOST'])) {
+                                $this->db->set('site', $_SERVER['HTTP_HOST']);
+                            }
+                            $this->db->set('user_ip', $this->input->ip_address());
+                            if ($usrid) {
+                                $this->db->set('user_id', $usrid);
+                            }
+                            $this->db->insert('ts_uploadfile_logs');
+                            echo(json_encode(array('success' => false, 'error' => 'Error During save File')));
                         }
-                        if (isset($_SERVER['HTTP_HOST']) && !empty($_SERVER['HTTP_HOST'])) {
-                            $this->db->set('site', $_SERVER['HTTP_HOST']);
-                        }
-                        $this->db->set('user_ip', $this->input->ip_address());
-                        if ($usrid) {
-                            $this->db->set('user_id', $usrid);
-                        }
-                        $this->db->insert('ts_uploadfile_logs');
-                        echo(json_encode(array('success' => false, 'error' => 'Error During save File')));
                     }
                 } else {
                     echo (json_encode(array('success' => false, 'error' => 'Error During save File')));
@@ -205,29 +209,33 @@ Class Utils extends CI_Controller
             } else {
                 $saveres = $file->save($path . $filename . '.' . $ext);
                 if ($saveres) {
-                    $mimeext = $this->mimetypes[$ext];
-                    $mimetype = mime_content_type($path . $filename . '.' . $ext);
-                    if ($mimetype==$mimeext) {
+                    if ($ext=='eps') {
                         echo (json_encode(array('success' => true, 'filename' => $path.$filename . '.' . $ext, 'filesize' => $filesize)));
                     } else {
-                        @unlink($path . $filename . '.' . $ext);
-                        // Insert data into log
-                        $user=usersession('usr_data');
-                        $usrid = ifset($user,'id',0);
-                        $this->db->set('file_name', $file->getName());
-                        $this->db->set('file_ext', $mimetype);
-                        if (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
-                            $this->db->set('page_call',$_SERVER['HTTP_REFERER']);
+                        $mimeext = $this->mimetypes[$ext];
+                        $mimetype = mime_content_type($path . $filename . '.' . $ext);
+                        if ($mimetype==$mimeext) {
+                            echo (json_encode(array('success' => true, 'filename' => $path.$filename . '.' . $ext, 'filesize' => $filesize)));
+                        } else {
+                            @unlink($path . $filename . '.' . $ext);
+                            // Insert data into log
+                            $user=usersession('usr_data');
+                            $usrid = ifset($user,'id',0);
+                            $this->db->set('file_name', $file->getName());
+                            $this->db->set('file_ext', $mimetype);
+                            if (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
+                                $this->db->set('page_call',$_SERVER['HTTP_REFERER']);
+                            }
+                            if (isset($_SERVER['HTTP_HOST']) && !empty($_SERVER['HTTP_HOST'])) {
+                                $this->db->set('site', $_SERVER['HTTP_HOST']);
+                            }
+                            $this->db->set('user_ip', $this->input->ip_address());
+                            if ($usrid) {
+                                $this->db->set('user_id', $usrid);
+                            }
+                            $this->db->insert('ts_uploadfile_logs');
+                            echo(json_encode(array('success' => false, 'error' => 'Error During save File')));
                         }
-                        if (isset($_SERVER['HTTP_HOST']) && !empty($_SERVER['HTTP_HOST'])) {
-                            $this->db->set('site', $_SERVER['HTTP_HOST']);
-                        }
-                        $this->db->set('user_ip', $this->input->ip_address());
-                        if ($usrid) {
-                            $this->db->set('user_id', $usrid);
-                        }
-                        $this->db->insert('ts_uploadfile_logs');
-                        echo(json_encode(array('success' => false, 'error' => 'Error During save File')));
                     }
                 } else {
                     echo(json_encode(array('success' => false, 'error' => 'Error During save File')));
@@ -539,29 +547,33 @@ Class Utils extends CI_Controller
             } else {
                 $ressave = $file->save($path . $filename . '.' . $ext);
                 if ($ressave) {
-                    $mimeext = $this->mimetypes[$ext];
-                    $mimetype = mime_content_type($path . $filename . '.' . $ext);
-                    if ($mimetype==$mimeext) {
+                    if ($ext=='eps') {
                         echo (json_encode(array('success' => true, 'filename' => $path_sh.$filename . '.' . $ext, 'filesize' => $filesize, 'source'=>$filenamesrc)));
                     } else {
-                        @unlink($path . $filename . '.' . $ext);
-                        // Insert data into log
-                        $user=usersession('usr_data');
-                        $usrid = ifset($user,'id',0);
-                        $this->db->set('file_name', $file->getName());
-                        $this->db->set('file_ext', $mimetype);
-                        if (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
-                            $this->db->set('page_call',$_SERVER['HTTP_REFERER']);
+                        $mimeext = $this->mimetypes[$ext];
+                        $mimetype = mime_content_type($path . $filename . '.' . $ext);
+                        if ($mimetype==$mimeext) {
+                            echo (json_encode(array('success' => true, 'filename' => $path_sh.$filename . '.' . $ext, 'filesize' => $filesize, 'source'=>$filenamesrc)));
+                        } else {
+                            @unlink($path . $filename . '.' . $ext);
+                            // Insert data into log
+                            $user=usersession('usr_data');
+                            $usrid = ifset($user,'id',0);
+                            $this->db->set('file_name', $file->getName());
+                            $this->db->set('file_ext', $mimetype);
+                            if (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
+                                $this->db->set('page_call',$_SERVER['HTTP_REFERER']);
+                            }
+                            if (isset($_SERVER['HTTP_HOST']) && !empty($_SERVER['HTTP_HOST'])) {
+                                $this->db->set('site', $_SERVER['HTTP_HOST']);
+                            }
+                            $this->db->set('user_ip', $this->input->ip_address());
+                            if ($usrid) {
+                                $this->db->set('user_id', $usrid);
+                            }
+                            $this->db->insert('ts_uploadfile_logs');
+                            echo(json_encode(array('success' => false, 'error' => 'Error During save File')));
                         }
-                        if (isset($_SERVER['HTTP_HOST']) && !empty($_SERVER['HTTP_HOST'])) {
-                            $this->db->set('site', $_SERVER['HTTP_HOST']);
-                        }
-                        $this->db->set('user_ip', $this->input->ip_address());
-                        if ($usrid) {
-                            $this->db->set('user_id', $usrid);
-                        }
-                        $this->db->insert('ts_uploadfile_logs');
-                        echo(json_encode(array('success' => false, 'error' => 'Error During save File')));
                     }
                 } else {
                     echo (json_encode(array('success' => false,'error'=> 'Error During save File')));
