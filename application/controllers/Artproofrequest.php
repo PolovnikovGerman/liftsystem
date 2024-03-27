@@ -226,10 +226,10 @@ class Artproofrequest extends MY_Controller
                         $this->db->set('user_ip', $this->input->ip_address());
                         $this->db->set('user_id', $this->USR_ID);
                         $this->db->insert('ts_uploadfile_logs');
-                        echo(json_encode(array('success' => false, 'error' => 'Error During save File')));
+                        echo(json_encode(array('success' => false, 'error' => 'Error During save File. Mime Type '.$mimetype.' Need '.$mimeext)));
                     }
                 } else {
-                    echo (json_encode(array('success' => false,'error'=> 'Error During save File')));
+                    echo (json_encode(array('success' => false,'error'=> 'Error During save File. Error during transfer file to storage')));
                 }
                 exit();
             }
