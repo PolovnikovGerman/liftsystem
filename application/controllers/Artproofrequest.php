@@ -229,7 +229,7 @@ class Artproofrequest extends MY_Controller
                         echo(json_encode(array('success' => false, 'error' => 'Error During save File. Mime Type '.$mimetype.' Need '.$mimeext)));
                     }
                 } else {
-                    echo (json_encode(array('success' => false,'error'=> 'Error During save File')));
+                    echo (json_encode(array('success' => false,'error'=> 'Error During save File. File can\'t transfer successfully')));
                 }
                 exit();
             }
