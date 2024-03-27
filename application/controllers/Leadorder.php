@@ -5294,7 +5294,7 @@ class Leadorder extends MY_Controller
                         $mdata['popupmsg']=$res['popupmsg'];
                         $mdata['finerror'] = $res['finerror'];
                     }
-
+                    $brand = ifset($postdata,'brand', 'ALL');
                     $res=$this->leadorder_model->get_leadorder($order_id, $this->USR_ID, $brand);
                     $error=$res['msg'];
                     if ($res['result']==$this->success_result) {
@@ -5303,7 +5303,7 @@ class Leadorder extends MY_Controller
                         $engade_res=$this->engaded_model->check_engade(array('entity'=>'ts_orders','entity_id'=>$order_id));
                         $res['unlocked']=$engade_res['result'];
                         $orddata=$res['order'];
-                        $brand = $orddata['brand'];
+
                         // Build View
                         $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE,0);
 
