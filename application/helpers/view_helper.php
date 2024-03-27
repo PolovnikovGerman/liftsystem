@@ -814,4 +814,22 @@ if (!function_exists('new_customer_code')) {
 }
 
 
+if (!function_exists('hide_cardnumber')) {
+    function hide_cardnumber($cardnum)
+    {
+        $cardn = str_replace('-', '', $cardnum);
+        $ngroups = floor(strlen($cardn) / 4);
+        if (strlen($cardn)%4==0) {
+            $ngroups-=1;
+        }
+        $newcc = '';
+        for ($i = 0; $i < $ngroups; $i++) {
+            $newcc .= 'XXXX-';
+        }
+        $bgn = $ngroups * 4;
+        $lastgr = substr($cardn, $bgn);
+        $newcc .= $lastgr;
+        return $newcc;
+    }
+}
 ?>
