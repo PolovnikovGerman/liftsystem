@@ -3454,4 +3454,25 @@ class Test extends CI_Controller
         }
     }
 
+    public function regenerate_passwords()
+    {
+        $this->load->library('email');
+        $config['charset'] = 'utf-8';
+        $config['mailtype']='html';
+        $config['wordwrap'] = TRUE;
+        $this->email->initialize($config);
+        $email_from=$this->config->item('email_notification_sender');
+
+        $this->db->select('*')->from('users');
+        $users = $this->db->get()->result_array();
+        foreach ($users as $user) {
+            $newpasswd = uniq_link(12);
+            if ($user['user_status']==1) {
+                echo $user['user_name'].', email '.$user['user_email'].' New Password - '.$newpasswd.PHP_EOL;
+                $this->email->from($email_from);
+                $this->email->to($user['user_email']);
+
+            }
+        }
+    }
 }
