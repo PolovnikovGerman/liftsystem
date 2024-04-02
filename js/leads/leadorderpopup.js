@@ -102,6 +102,17 @@ function navigation_init() {
             }
         },'json');
     });
+    // $("div.dublicateorder.active").unbind('click').click(function(){
+    //     // var ordernum=$(this).data('order');
+    //     // if (confirm('Duplicate Order # '+ordernum+' ?')==true) {
+    //     // if (confirm('Duplicate Order ?')==true) {
+    //         var params=new Array();
+    //         params.push({name: 'ordersession', value: $("input#ordersession").val()});
+    //         params.push({name: 'current_page', value: $("#curpage").val()});
+    //         var url="/leadorder/leadorder_dublicate/"+$("input#ordersession").val();
+    //         window.open(url,'duplicate_order','left=120,top=120,width=1560,height=745');
+    //     //}
+    // });
     $("div.dublicateorder.active").unbind('click').click(function(){
         // var ordernum=$(this).data('order');
         // if (confirm('Duplicate Order # '+ordernum+' ?')==true) {
@@ -109,39 +120,38 @@ function navigation_init() {
             var params=new Array();
             params.push({name: 'ordersession', value: $("input#ordersession").val()});
             params.push({name: 'current_page', value: $("#curpage").val()});
-            var url="/leadorder/leadorder_dublicate/"+$("input#ordersession").val();
-            window.open(url,'duplicate_order','left=120,top=120,width=1560,height=745');
-        //}
+            var url="/leadorder/leadorder_dublicate";
+            $("#loader").show();
+            $.post(url,params,function(response){
+                if (response.errors=='') {
+                    // $("#pop_content").empty().html(response.data.content);
+                    $("#artModalLabel").empty().html(response.data.header);
+                    $("#artModal").find('div.modal-body').empty().html(response.data.content);
+                    clearTimeout(timerId);
+                    init_onlineleadorder_edit();
+                    init_rushpast();
+                    $('select.addnewitem').select2({
+                        dropdownParent: $('#artModal'),
+                        matcher: matchStart,
+                    });
+                    if (parseInt($("#ordermapuse").val())==1) {
+                        // Init billing autofill
+                        if ($("#billorder_line1").length > 0) {
+                            initBillOrderAutocomplete();
+                        }
+                        // Init simple Shipping address
+                        if ($("#shiporder_line1").length > 0) {
+                            initShipOrderAutocomplete();
+                        }
+                    }
+                    $("#loader").hide();
+                } else {
+                    $("#loader").hide();
+                    show_error(response);
+                }
+            },'json');
+        // }
     });
-    // $("div.dublicateorder.active").unbind('click').click(function(){
-    //     // var ordernum=$(this).data('order');
-    //     // if (confirm('Duplicate Order # '+ordernum+' ?')==true) {
-    //     if (confirm('Duplicate Order ?')==true) {
-    //         var params=new Array();
-    //         params.push({name: 'ordersession', value: $("input#ordersession").val()});
-    //         params.push({name: 'current_page', value: $("#curpage").val()});
-    //         var url="/leadorder/leadorder_dublicate";
-    //         $("#loader").show();
-    //         $.post(url,params,function(response){
-    //             if (response.errors=='') {
-    //                 // $("#pop_content").empty().html(response.data.content);
-    //                 $("#artModalLabel").empty().html(response.data.header);
-    //                 $("#artModal").find('div.modal-body').empty().html(response.data.content);
-    //                 clearTimeout(timerId);
-    //                 init_onlineleadorder_edit();
-    //                 init_rushpast();
-    //                 $('select.addnewitem').select2({
-    //                     dropdownParent: $('#artModal'),
-    //                     matcher: matchStart,
-    //                 });
-    //                 $("#loader").hide();
-    //             } else {
-    //                 $("#loader").hide();
-    //                 show_error(response);
-    //             }
-    //         },'json');
-    //     }
-    // });
     $("div.pdfprintorder.active").unbind('click').click(function(){
         var params=new Array();
         params.push({name: 'ordersession', value: $("input#ordersession").val()});

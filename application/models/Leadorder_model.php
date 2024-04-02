@@ -7191,6 +7191,9 @@ Class Leadorder_model extends My_Model {
             $neworder['order_items'] = $neworder['order_itemnumber'] = $neworder['item_id'] = $neworder['order_qty'] = NULL;
             $neworder['revenue'] = $neworder['shipping'] = $neworder['tax'] = $neworder['other_cost'] = 0;
             $neworder['shipdate'] = $neworder['deliverydate'] = NULL;
+            // mischrg_label1, mischrg_val1, mischrg_label2, mischrg_val2, discount_descript, discount_label, discount_val
+            $neworder['mischrg_label1'] = $neworder['mischrg_label2'] = $neworder['discount_descript'] = $neworder['discount_label'] = '';
+            $neworder['mischrg_val1'] = $neworder['mischrg_val2'] = $neworder['discount_val'] = 0;
         }
         // Contacts
         $contacts=array();
@@ -7806,16 +7809,16 @@ Class Leadorder_model extends My_Model {
         );
         $oldcharges=$this->get_order_charges($order['order_id']);
         $newcharge=array();
-        $chridx=1;
-        foreach ($oldcharges as $row) {
-            $row['order_payment_id']=$chridx*(-1);
-            unset($row['order_id']);
-            if ($chridx==1) {
-                $row['amount']=$neworder['revenue'];
-            }
-            $newcharge[]=$row;
-            $chridx++;
-        }
+//        $chridx=1;
+//        foreach ($oldcharges as $row) {
+//            $row['order_payment_id']=$chridx*(-1);
+//            unset($row['order_id']);
+//            if ($chridx==1) {
+//                $row['amount']=$neworder['revenue'];
+//            }
+//            $newcharge[]=$row;
+//            $chridx++;
+//        }
         // Recalc totals for new order
         $out=$this->_dublicate_order_totals($neworder,$contacts,$neworder_items, $newartw,$newshipping,$newshipaddr,$newbilling,$message,$countries,$newcharge,$artlocations);
         return $out;
