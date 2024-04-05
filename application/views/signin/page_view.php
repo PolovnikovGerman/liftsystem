@@ -14,6 +14,7 @@
     <main class="container-fluid">
         <div class="row wrapper">
             <div class="signin_form">
+                <form id="signinform">
                 <div class="col-10 col-sm-10 col-md-10 col-lg-10">
                     <div class="form-group">
                         <input id="email" type="text" class="form-control signinformelement" placeholder="email address"/>
@@ -23,6 +24,7 @@
                         <input id="passwd" type="password" class="form-control signinformelement" placeholder="password"/>
                     </div>
                 </div>
+                </form>
                 <div class="go" id="letsgo">&nbsp;</div>
             </div>
         </div>

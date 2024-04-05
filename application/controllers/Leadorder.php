@@ -75,6 +75,7 @@ class Leadorder extends MY_Controller
                         'prvorder' => 0,
                         'nxtorder' => 0,
                         'order_id' => 0,
+                        'brand' => $brand
                     ];
                     $header = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
                     $locking='';
@@ -93,6 +94,7 @@ class Leadorder extends MY_Controller
                             'prvorder' => $res['prvorder'],
                             'nxtorder' => $res['nxtorder'],
                             'order_id' => $orddata['order_id'],
+                            'brand' => $brand,
                         ];
                         // Build View
                         $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, 0);
@@ -135,6 +137,7 @@ class Leadorder extends MY_Controller
                             'order_head' => $this->load->view('leadorderdetails/head_order_edit', $orddata,TRUE),
                             'prvorder' => $res['prvorder'],
                             'nxtorder' => $res['nxtorder'],
+                            'brand' => $res['order']['brand'],
                         ];
                         // Build View
                         $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $edit);
@@ -381,7 +384,7 @@ class Leadorder extends MY_Controller
                     $error = '';
                     $options=array();
                     $orddata=$res['order'];
-                    // Build Head                    
+                    // Build Head
                     $options['order_head']=$this->load->view('leadorderdetails/head_order_view', $orddata,TRUE);
                     // Build View
                     $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE,1);
@@ -400,6 +403,7 @@ class Leadorder extends MY_Controller
                         'prvorder' => 0,
                         'nxtorder' => 0,
                         'order_id' => 0,
+                        'brand' => $orddata['brand'],
                     ];
                     $mdata['header'] = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
                     /* Save to session */
@@ -437,13 +441,120 @@ class Leadorder extends MY_Controller
                     }
                     usersession($ordersession, $leadorder);
                 }
-                $this->ajaxResponse($mdata, $error);
+                // $this->ajaxResponse($mdata, $error);
             }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
 
+//    public function leadorder_dublicate($ordersession) {
+//        $leadorder = usersession($ordersession);
+//        usersession($ordersession,NULL);
+//        if (!empty($leadorder)) {
+//            $res = $this->leadorder_model->dublicate_order($leadorder, $this->USR_ID);
+//            $error=$res['msg'];
+//            if ($res['result']==$this->success_result) {
+//                $content_options = [];
+//                $options = array();
+//                $orddata = $res['order'];
+//                // Build Head
+//                $options['order_head'] = $this->load->view('leadorderdetails/head_order_view', $orddata, TRUE);
+//                // Build View
+//                $data = $this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, 1);
+//
+//                $order_data = $this->load->view('leadorderdetails/order_content_view', $data, TRUE);
+//                // Build Content
+//                $options['order_data'] = $order_data;
+//                $options['order_confirmation'] = 'Duplicate';
+//                $options['leadsession'] = $ordersession;
+//                $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
+//                $options['current_page'] = 'orders';
+//                // $ions['user_id'] = $this->USR_ID;
+//                // $options['user_name'] = $this->USER_NAME;
+//                $gmaps = 0;
+//                if (!empty($this->config->item('google_map_key'))) {
+//                    $gmaps = 1;
+//                }
+//                $head['gmaps'] = $gmaps;
+//                // Uploader
+//                $head['scripts'][]=array('src'=>'/js/adminpage/fileuploader.js');
+//                $head['styles'][]=array('style'=>'/css/page_view/fileuploader.css');
+//                if ($gmaps==1) {
+//                    $head['scripts'][]=array('src'=>'/js/leads/order_address.js');
+//                }
+//                // File Download
+//                $head['scripts'][]=array('src'=>'/js/adminpage/jquery.fileDownload.js');
+//                // Datepicker
+//                $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
+//                $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+//                // Select 2
+//                $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
+//                $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
+//
+//                // Order popup
+//                $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
+//                $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
+//                $head['styles'][] = array('style'=>'/css/leadorder/duplicate_order.css');
+//                $head['scripts'][]=array('src'=>'/js/leads/duplicate_order.js');
+//
+//                $content = $this->load->view('leadorderdetails/placeorder_menu_edit', $options, TRUE);
+//                $content_options['content'] = $content;
+//                $head_options = [
+//                    'order_head' => $this->load->view('leadorderdetails/head_placeorder_edit', $orddata, TRUE),
+//                    'prvorder' => 0,
+//                    'nxtorder' => 0,
+//                    'order_id' => 0,
+//                    'brand' => $orddata['brand'],
+//                ];
+//                $content_options['header'] = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
+//                /* Save to session */
+//                if ($res['order_system_type'] == 'old') {
+//                    $leadorder = array(
+//                        'order' => $orddata,
+//                        'payments' => $res['payments'],
+//                        'artwork' => $res['artwork'],
+//                        'artlocations' => $res['artlocations'],
+//                        'artproofs' => $res['proofdocs'],
+//                        'message' => $res['message'],
+//                        'order_system' => $res['order_system_type'],
+//                        'locrecid' => 0,
+//                    );
+//                } else {
+//                    $leadorder = array(
+//                        'order' => $orddata,
+//                        'payments' => $res['payments'],
+//                        'artwork' => $res['artwork'],
+//                        'artlocations' => $res['artlocations'],
+//                        'artproofs' => $res['proofdocs'],
+//                        'message' => $res['message'],
+//                        'contacts' => $res['contacts'],
+//                        'order_items' => $res['order_items'],
+//                        'order_system' => $res['order_system_type'],
+//                        'shipping' => $res['shipping'],
+//                        'shipping_address' => $res['shipping_address'],
+//                        'billing' => $res['order_billing'],
+//                        'charges' => $res['charges'],
+//                        'claydocs' => [],
+//                        'previewdocs' => [],
+//                        'delrecords' => array(),
+//                        'locrecid' => 0,
+//                    );
+//                }
+//                usersession($ordersession, $leadorder);
+//                $dat = $this->template->prepare_duplicateorder($head);
+//                // $content_options['left_menu'] = $dat['left_menu'];
+//                $content_options['brand'] = $orddata['brand'];
+//                $content_view = $this->load->view('duplcate_orders/page_view', $content_options, TRUE);
+//                $dat['content'] = $content_view;
+//                $this->load->view('public_pages/public_template_view', $dat);
+//            } else {
+//                show_404();
+//            }
+//        } else {
+//            show_404();
+//        }
+//    }
 
     public function change_leadorder_item() {
         if ($this->isAjax()) {
@@ -3148,6 +3259,7 @@ class Leadorder extends MY_Controller
                                 'order_head' => $this->load->view('leadorderdetails/head_order_edit', $orddata,TRUE),
                                 'prvorder' => $res['prvorder'],
                                 'nxtorder' => $res['nxtorder'],
+                                'brand' => $brand,
                             ];
                             // Build View
                             $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, 1);
@@ -5182,15 +5294,16 @@ class Leadorder extends MY_Controller
                         $mdata['popupmsg']=$res['popupmsg'];
                         $mdata['finerror'] = $res['finerror'];
                     }
-                    $brand = ifset($postdata, 'brand', 'ALL');
+                    $brand = ifset($postdata,'brand', 'ALL');
                     $res=$this->leadorder_model->get_leadorder($order_id, $this->USR_ID, $brand);
                     $error=$res['msg'];
                     if ($res['result']==$this->success_result) {
                         $error='';
-                        // Build Head                    
+                        // Build Head
                         $engade_res=$this->engaded_model->check_engade(array('entity'=>'ts_orders','entity_id'=>$order_id));
                         $res['unlocked']=$engade_res['result'];
                         $orddata=$res['order'];
+
                         // Build View
                         $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE,0);
 
@@ -5209,6 +5322,7 @@ class Leadorder extends MY_Controller
                             'nxtorder' => $res['nxtorder'],
                             'order_id' => $orddata['order_id'],
                             'unlocked' => $engade_res['result'],
+                            'brand' => $brand,
                         ];
                         if ($engade_res['result']==$this->error_result) {
                             $voptions=array(

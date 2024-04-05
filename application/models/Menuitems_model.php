@@ -907,34 +907,51 @@ Class Menuitems_model extends MY_Model
 
     public function get_webpages() {
         // Get list of main branches
-        $this->db->select('*');
-        $this->db->from('menu_items');
-        $this->db->where('parent_id is null');
-        $this->db->where('item_link is not null');
-        $this->db->order_by('menu_order');
-        $main=$this->db->get()->result_array();
-        $out=array();
-        foreach ($main as $mrow) {
-            $out[]=array(
-                'key'=>$mrow['menu_item_id'],
-                'label'=>$mrow['item_name'],
-            );
-            // Get subpages
+        // $this->db->select('brand, count(menu_item_id) as cnt')->from('menu_items')->where('brand != ','UNKN')->group_by('brand');
+        // $brands = $this->db->get()->result_array();
+        $brands = [
+            "NONE", "SB", "SR", "SG",
+        ];
+        $out=[];
+        foreach ($brands as $brand) {
+            if ($brand=='NONE') {
+                $prefix = ' ';
+            } elseif ($brand=='SB') {
+                $prefix = 'BT ';
+            } elseif ($brand=='SR') {
+                $prefix = 'SR ';
+            } elseif ($brand=='SG') {
+                $prefix = 'Sigma ';
+            }
             $this->db->select('*');
             $this->db->from('menu_items');
-            $this->db->where('parent_id', $mrow['menu_item_id']);
+            $this->db->where('brand', $brand);
+            $this->db->where('parent_id is null');
             $this->db->where('item_link is not null');
             $this->db->order_by('menu_order');
-            $pages=$this->db->get()->result_array();
-            foreach ($pages as $row) {
+            $main=$this->db->get()->result_array();
+            foreach ($main as $mrow) {
                 $out[]=array(
-                    'key'=>$row['menu_item_id'],
-                    'label'=>' &ndash; '.$row['item_name'],
+                    'key'=> $mrow['menu_item_id'],
+                    'label'=> $prefix.$mrow['item_name'],
                 );
+                // Get subpages
+                $this->db->select('*');
+                $this->db->from('menu_items');
+                $this->db->where('brand', $brand);
+                $this->db->where('parent_id', $mrow['menu_item_id']);
+                $this->db->where('item_link is not null');
+                $this->db->order_by('menu_order');
+                $pages=$this->db->get()->result_array();
+                foreach ($pages as $row) {
+                    $out[]=array(
+                        'key'=> $row['menu_item_id'],
+                        'label'=> $prefix.' &ndash; '.$row['item_name'],
+                    );
+                }
             }
         }
         return $out;
-
     }
 
     public function get_submenu($user_id, $root_lnk) {
