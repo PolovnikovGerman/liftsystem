@@ -151,6 +151,8 @@ class Leadquote_model extends MY_Model
                         }
                     }
                 }
+            } else {
+                $quote_items = $this->_create_empty_quoteitems();
             }
             $response['quote'] = $quotedat;
             $response['quote_items'] = $quote_items;
@@ -3769,4 +3771,260 @@ class Leadquote_model extends MY_Model
         return $out;
     }
 
+    private function _create_empty_quoteitems()
+    {
+        $items=[];
+        $newitem = [
+            'quote_item_id' => -1,
+            'item_id' => '',
+            'imprints' => [],
+        ];
+        $colors = [
+            'quote_item_id' => -1,
+            'item_id' => '',
+            'item_row' => 1,
+            'item_number' => '',
+            'item_description' => '',
+            'item_color' => '',
+            'item_subtotal' => 0,
+        ];
+        $newitem['items'][] = $colors;
+        $items[] = $newitem;
+        return $items;
+    }
+
+    public function savenewquoteitem($quotesession, $item_id, $quote_item_id, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Quote Item Not Found'];
+        $quote_items = $quotesession['items'];
+        $itemidx = 0;
+        $find = 0;
+        foreach ($quote_items as $quote_item) {
+            if ($quote_item['quote_item_id']==$quote_item_id) {
+                $find = 1;
+                break;
+            }
+        }
+        if ($find==1) {
+            // Item find, change it
+            $quote = $quotesession['quote'];
+            $this->load->model('orders_model');
+            $this->load->model('leadorder_model');
+            $this->load->model('prices_model');
+            if ($item_id < 0) {
+                $itemdata = $this->orders_model->get_newitemdat($item_id);
+            } else {
+                $itemdata = $this->leadorder_model->_get_itemdata($item_id);
+            }
+            $colors = $itemdata['colors'];
+            $itmcolor = '';
+            if ($itemdata['num_colors'] > 0) {
+                $itmcolor = $colors[0];
+            }
+            $item_description = $itemdata['item_name'];
+            $defqty = 0; // $this->config->item('defqty_common');
+            $minqty = 0;
+            if ($item_id == $this->config->item('custom_id')) {
+                $defqty = $this->config->item('defqty_custom');
+            } else {
+                if ($item_id > 0) {
+                    $prices = $this->prices_model->get_itemlist_price($item_id);
+                    // $minqty = intval($prices[0]['item_qty']);
+                } else {
+                    // $minqty = $defqty;
+                }
+//                if ($minqty > $defqty) {
+//                    $defqty = $minqty;
+//                }
+            }
+            $quoteitem = [
+                'quote_item_id' => $quote_item_id,
+                'item_id' => $item_id,
+                'item_number' => $itemdata['item_number'],
+                'item_name' => $item_description,
+                'item_qty' => $defqty,
+                'colors' => $itemdata['colors'],
+                'num_colors' => $itemdata['num_colors'],
+                'template' => ifset($itemdata, 'item_template', $this->normal_template),
+                'item_weigth' => 0,
+                'cartoon_qty' => 0,
+                'cartoon_width' => 0,
+                'cartoon_heigh' => 0,
+                'cartoon_depth' => 0,
+                'boxqty' => '',
+                'item_price' => 0,
+                'setup_price' => 0,
+                'imprint_price' => 0,
+                'base_price' => 0,
+                'imprint_locations' => [],
+                'item_subtotal' => 0,
+                'imprint_subtotal' => 0,
+                'vendor_zipcode' => $this->default_zip,
+                'charge_perorder' => 0,
+                'charge_peritem' => 0,
+            ];
+            $newprice = 0;
+            if ($item_id > 0) {
+                $newprice = $this->leadorder_model->_get_item_priceqty($item_id, $quoteitem['template'], $defqty);
+                $setupprice = $this->leadorder_model->_get_item_priceimprint($item_id, 'setup');
+                $printprice = $this->leadorder_model->_get_item_priceimprint($item_id, 'imprint');
+                $quoteitem['item_weigth'] = $itemdata['item_weigth'];
+                $quoteitem['cartoon_qty'] = $itemdata['cartoon_qty'];
+                $quoteitem['cartoon_width'] = $itemdata['cartoon_width'];
+                $quoteitem['cartoon_heigh'] = $itemdata['cartoon_heigh'];
+                $quoteitem['cartoon_depth'] = $itemdata['cartoon_depth'];
+                $quoteitem['boxqty'] = $itemdata['boxqty'];
+                $quoteitem['setup_price'] = $setupprice;
+                $quoteitem['imprint_price'] = $printprice;
+                $quoteitem['base_price'] = $newprice;
+                $quoteitem['item_price'] = $newprice;
+                $quoteitem['imprint_locations'] = $itemdata['imprints'];
+                $quoteitem['vendor_zipcode'] = $itemdata['vendor_zipcode'];
+                $quoteitem['charge_perorder'] = $itemdata['charge_perorder'];
+                $quoteitem['charge_pereach'] = $itemdata['charge_pereach'];
+                $quoteitem['item_subtotal'] = $defqty * $newprice;
+            } elseif ($item_id == $this->config->item('custom_id')) {
+                $quoteitem['imprint_price'] = $this->custom_print_price;
+                $quoteitem['setup_price'] = $this->custom_setup_price;
+            } elseif ($item_id == $this->config->item('other_id')) {
+                $quoteitem['imprint_price'] = $this->other_print_price;
+                if ($quote['brand']=='SR') {
+                    $quoteitem['setup_price'] = $this->other_setupsr_price;
+                } else {
+                    $quoteitem['setup_price'] = $this->other_setupsb_price;
+                }
+            }
+            //
+            $newitem=array(
+                'quote_item_id'=>$quote_item_id,
+                'item_id'=>-1,
+                'item_row'=>1,
+                'item_number'=>$itemdata['item_number'],
+                'item_color'=>$itmcolor,
+                'colors'=>$colors,
+                'num_colors'=>$itemdata['num_colors'],
+                'item_description'=>$quoteitem['item_name']
+            );
+            //
+            if ($itemdata['num_colors']==0) {
+                $newitem['out_colors']=$this->empty_htmlcontent;
+            } else {
+                $options=array(
+                    'quote_item_id'=>$newitem['quote_item_id'],
+                    'item_id'=>$newitem['item_id'],
+                    'colors'=>$newitem['colors'],
+                    'item_color'=> '', //$newitem['item_color'],
+                );
+                if ($quote['brand']=='SR') {
+                    $newitem['out_colors']=$this->load->view('leadpopup/quotesritem_color_choice', $options, TRUE);
+                } else {
+                    $newitem['out_colors']=$this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
+                }
+            }
+            $newitem['item_qty']=$defqty;
+            $newitem['item_price']=$newprice;
+            $newitem['item_subtotal']=$defqty*$newprice;
+            $newitem['printshop_item_id']=(isset($itemdata['printshop_item_id']) ? $itemdata['printshop_item_id']  : '');
+            $newitem['qtyinput_class']='normal';
+            $newitem['qtyinput_title']='';
+            $items[]=$newitem;
+            $quoteitem['items']=$items;
+            $quote_items[$itemidx] = $quoteitem;
+            $quotesession['items'] = $quote_items;
+            usersession($session_id, $quotesession);
+            $out['result'] = $this->success_result;
+            $out['item'] = $quote_items[$itemidx];
+            $out['brand'] = $quote['brand'];
+        }
+        return $out;
+    }
+
+    public function quoteiteminventory($quotesession, $quoteitem_id, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Quote Item Not Found'];
+        $quote_items=$quotesession['items'];
+        $idx = 0;
+        $found = 0;
+        foreach ($quote_items as $quote_item) {
+            if ($quote_item['quote_item_id']==$quoteitem_id) {
+                $found = 1;
+                break;
+            }
+            $idx++;
+        }
+        if ($found==1) {
+            $item_number = $quote_items[$idx]['item_number'];
+            $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $item_number);
+            $invres = $this->db->get()->row_array();
+            if (ifset($invres,'inventory_item_id',0)>0) {
+                $out['result'] = $this->success_result;
+                $this->load->model('inventory_model');
+                $res = $this->inventory_model->orderitem_inventory($invres['inventory_item_id']);
+                $out['onboats'] = $res['onboats'];
+                $out['invents'] = $res['inventory'];
+                usersession($session_id, $quotesession);
+            }
+        }
+        return $out;
+    }
+
+    public function savenewitemparam($quotesession, $quoteitem_id, $paramname, $newval, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Quote Item Not Found'];
+        $quote_items=$quotesession['items'];
+        $quote = $quotesession['quote'];
+        $idx = 0;
+        $found = 0;
+        foreach ($quote_items as $quote_item) {
+            if ($quote_item['quote_item_id']==$quoteitem_id) {
+                $found = 1;
+                break;
+            }
+            $idx++;
+        }
+        if ($found==1) {
+            // Found
+            if ($paramname == 'color') {
+                $quote_items[$idx]['items'][0]['item_color'] = $newval;
+                $coloropt = [
+                    'quote_item_id' => $quoteitem_id,
+                    'item_id' => $quote_items[$idx]['items'][0]['item_id'],
+                    'item_color' => $quote_items[$idx]['items'][0]['item_color'],
+                    'colors' => $quote_items[$idx]['items'][0]['colors'],
+                ];
+                if ($quote['brand'] == 'SR') {
+                    $quote_items[$idx]['items'][0]['out_colors'] = $this->load->view('leadpopup/quotesritem_color_choice', $coloropt, true);
+                } else {
+                    $quote_items[$idx]['items'][0]['out_colors'] = $this->load->view('leadpopup/quoteitem_color_choice', $coloropt, true);
+                }
+            } elseif ($paramname == 'qty') {
+                $quote_items[$idx]['item_qty'] = intval($newval);
+                $quote_items[$idx]['items'][0]['item_qty'] = intval($newval);
+                if ($quote_items[$idx]['item_id'] > 0) {
+                    // Get New Price
+                    $newprice = $this->leadorder_model->_get_item_priceqty($quote_items[$idx]['item_id'], $quote_items[$idx]['item_template'], intval($newval));
+                    $quote_items[$idx]['base_price'] = $newprice;
+                    $quote_items[$idx]['items'][0]['item_price'] = $newprice;
+                }
+                $quote_items[$idx]['item_subtotal'] = $quote_items[$idx]['base_price'] * $newval;
+                $quote_items[$idx]['items'][0]['item_subtotal'] = $quote_items[$idx]['items'][0]['item_price'] * $newval;
+            } else {
+                $quote_items[$idx]['base_price'] = floatval($newval);
+                $quote_items[$idx]['item_subtotal'] = $quote_items[$idx]['item_qty'] * $quote_items[$idx]['base_price'];
+                $quote_items[$idx]['items'][0]['item_price'] = floatval($newval);
+                $quote_items[$idx]['items'][0]['item_subtotal'] = $quote_items[$idx]['items'][0]['item_price'] * $quote_items[$idx]['items'][0]['item_qty'];
+            }
+            $quotesession['items'] = $quote_items;
+            usersession($session_id, $quotesession);
+            $out['result'] = $this->success_result;
+            $out['color'] = $quote_items[$idx]['items'][0]['out_colors'];
+            $out['item_id'] = $quote_items[$idx]['item_id'];
+            $out['colors'] = $quote_items[$idx]['colors'];
+            $out['item_qty'] = $quote_items[$idx]['item_qty'];
+            $out['base_price'] = $quote_items[$idx]['base_price'];
+            $out['item_subtotal'] = $quote_items[$idx]['item_subtotal'];
+            $out['brand'] = $quote['brand'];
+        }
+        return $out;
+    }
 }

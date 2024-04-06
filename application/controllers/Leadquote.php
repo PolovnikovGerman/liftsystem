@@ -107,8 +107,19 @@ class Leadquote extends MY_Controller
                             'edit'=>1,
                             'item_id'=>$quote_item['item_id'],
                         ];
-                        $item_view=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
-                        $item_subtotal+=$quote_item['item_subtotal'];
+                        if (empty($quote_item['item_id'])) {
+                            $this->load->model('orders_model');
+                            $dboptions=array(
+                                'exclude'=>array(-4, -5, -2),
+                                'brand' => ($quotedata['brand']=='SR') ? 'SR' : 'BT',
+                            );
+                            $item_options['itemslist']=$this->orders_model->get_item_list($dboptions);
+                            $item_view=$this->load->view('leadpopup/items_data_add', $item_options, TRUE);
+                        } else {
+                            $item_subtotal+=$quote_item['item_subtotal'];
+                            $item_view=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
+                        }
+
                         $items_views[] = [
                             'quote_item_id'=>$quote_item['quote_item_id'],
                             'view' => $item_view,
@@ -1584,5 +1595,133 @@ class Leadquote extends MY_Controller
             $shipaddress.=PHP_EOL;
         }
         return $shipaddress;
+    }
+
+    public function savenewquoteitem()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'quotesession','unknw');
+            $quotesession = usersession($session_id);
+            if (!empty($quotesession)) {
+                $quote_item_id = ifset($postdata,'quoteitem_id',0);
+                $item_id = ifset($postdata, 'item_id',0);
+                if (empty($item_id)) {
+                    $error = 'Select Item';
+                } elseif (empty($quote_item_id)) {
+                    $error = 'Select Quote Item';
+                } else {
+                    $res = $this->leadquote_model->savenewquoteitem($quotesession, $item_id, $quote_item_id, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $item = $res['item'];
+                        // Prepare out
+                        $special = 0;
+                        if ($item['item_id']<0) {
+                            $special = 1;
+                        }
+                        $mdata['special'] = $special;
+
+                        $options = [
+                            'quote_item_id' => $quote_item_id,
+                            'item_id' => $item_id,
+                            'item_color' => $item['items'][0]['item_color'],
+                            'colors' => $item['items'][0]['colors'],
+                            'qty' => $item['item_qty'],
+                            'price' => $item['base_price'],
+                        ];
+                        if ($special==0) {
+                            $mdata['outcolors'] = $item['items'][0]['out_colors'];
+                        } else {
+                            $mdata['outcolors'] = '&nbsp;';
+                        }
+                        $mdata['qty'] = $this->load->view('leadpopup/additem_qty_view', $options, TRUE); // $item['item_qty']
+                        $mdata['price'] = $this->load->view('leadpopup/additem_price_view', $options, TRUE); // $item['base_price']
+                        $mdata['subtotal'] = MoneyOutput($item['item_subtotal']);
+                        $mdata['brand'] = $res['brand'];
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function inventoryitem()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'quotesession','unknw');
+            $quotesession = usersession($session_id);
+            if (!empty($quotesession)) {
+                $quoteitem_id = ifset($postdata, 'quoteitem_id',0);
+                $itemstatus = ifset($postdata, 'itemstatus',0);
+                if (empty($quoteitem_id)) {
+                    $error = 'Select Order Item';
+                } else {
+                    $res = $this->leadquote_model->quoteiteminventory($quotesession, $quoteitem_id, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $options = [
+                            'onboats' => $res['onboats'],
+                            'invents' => $res['invents'],
+                            'itemstatus' => $itemstatus,
+                        ];
+                        $mdata['content'] = $this->load->view('leadpopup/itemcolor_inventory_view', $options, TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function savenewitemparam()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata=$this->input->post();
+            $session_id = ifset($postdata,'quotesession','unknw');
+            $quotesession = usersession($session_id);
+            if (empty($quotesession)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                $quoteitem_id = ifset($postdata, 'quoteitem_id',0);
+                $paramname = ifset($postdata,'paramname','');
+                $newval = ifset($postdata, 'newval', '');
+                if (empty($quoteitem_id)) {
+                    $error = 'Select Order Item';
+                } elseif (empty($paramname)) {
+                    $error = 'Empty Parameter';
+                } else {
+                    $res = $this->leadquote_model->savenewitemparam($quotesession, $quoteitem_id, $paramname, $newval, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $options = [
+                            'quote_item_id' => $quoteitem_id,
+                            'item_id' => $res['item_id'],
+                            'item_color' => $res['color'],
+                            'colors' => $res['colors'],
+                            'qty' => $res['item_qty'],
+                            'price' => $res['base_price'],
+                        ];
+                        $mdata['outcolors'] = $res['color'];
+                        $mdata['qty'] = $this->load->view('leadpopup/additem_qty_view', $options, TRUE); // $item['item_qty']
+                        $mdata['price'] = $this->load->view('leadpopup/additem_price_view', $options, TRUE); // $item['base_price']
+                        $mdata['subtotal'] = MoneyOutput($res['item_subtotal']);
+                        $mdata['brand'] = $res['brand'];
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 }

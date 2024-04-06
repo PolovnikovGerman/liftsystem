@@ -24,6 +24,10 @@ function addnewcustomquote() {
                     initBillQuoteAutocomplete();
                 }
                 init_billingaddress_copy();
+                $('select.addnewquoteitem').select2({
+                    dropdownParent: $('#leadformModal'),
+                    matcher: matchStart,
+                });
                 $("#loader").hide();
                 if (parseInt(response.data.newitem)!==0) {
                     $(".addprintdetails[data-quoteitem='"+response.data.newitem+"']").trigger('click');
@@ -585,6 +589,10 @@ function init_leadquotes_content() {
         copyToClipboard(element);
         $('.quoteaddressinpt[data-item="shipping_company"]').focus();
     });
+    if ($("select.addnewquoteitem").length > 0) {
+        $(".addquoteitem").hide();
+        init_addnewquoteitem();
+    }
 }
 
 function show_leadquoteitemsearch() {
@@ -1116,4 +1124,95 @@ function copyToClipboard(element) {
     }
     // document.execCommand("copy");
     $(element).hide();
+}
+
+function init_addnewquoteitem() {
+    $('select.addnewquoteitem').change(function () {
+        // Save item
+        var quoteitem_id = $(this).data('quoteitem');
+        var params = new Array();
+        params.push({name: 'item_id', value: $(this).val()});
+        params.push({name: 'quoteitem_id', value: quoteitem_id});
+        params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+        var url = "/leadquote/savenewquoteitem";
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                $(".quoteitemcolor_adddata").empty().html(response.data.outcolors);
+                init_addnewquoteitem();
+                // Open color select
+                if (parseInt(response.data.special)==0) {
+                    if (response.data.brand == 'SR') {
+                        $(".quoteitems_content_addqty").empty().html(response.data.qty).css('visibility','hidden');
+                        $(".quoteitems_content_addprice").empty().html(response.data.price).css('visibility','hidden');
+                        $("span.addnewquotecolor").trigger('click');
+                    } else {
+                        // Focus on
+                        $('.quoteitemcolor_adddata').find("select.quoteitemcolors").focus();
+                        $(".quoteitems_content_addqty").empty().html(response.data.qty);
+                        $(".quoteitems_content_addprice").empty().html(response.data.price);
+                        init_addnewquoteitem();
+                    }
+                } else {
+                    $(".quoteitems_content_addqty").empty().html(response.data.qty);
+                    $(".quoteitems_content_addprice").empty().html(response.data.price);
+                    // $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal);
+                    // Focus on QTY
+                    $(".quoteitems_content_addqty").find('input.orderitem_qty').focus();
+                    $(".quoteitems_content_addprint").css('visibility','visible');
+                    init_addnewquoteitem();
+                }
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    $("span.addnewquotecolor").unbind('click').click(function () {
+        var quoteitem_id = $(this).data('quoteitem');
+        var params = new Array();
+        params.push({name: 'item_id', value: $(this).val()});
+        params.push({name: 'quoteitem_id', value: quoteitem_id});
+        params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+        var url = "/leadquote/inventoryitem";
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                $(".quoteitem_inventoryview").empty().html(response.data.content);
+                $(".quoteitem_inventoryview").show();
+                init_srinventory_quote(quoteitem_id);
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+}
+
+function init_srinventory_quote(quoteitem_id) {
+    $(".quoteitem_inventoryview_body").find('div.datarow').hover(
+        function () {
+            $(this).find('div.inventorycolor').addClass('selected');
+            $(this).find('div.inventorydatacell').addClass('selected');
+        },
+        function () {
+            $(this).find('div.inventorycolor').removeClass('selected');
+            $(this).find('div.inventorydatacell').removeClass('selected');
+        }
+    );
+    $(".quoteitem_inventoryview_body").find('div.datarow').unbind('click').click(function(){
+        var params = Array();
+        params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+        params.push({name: 'quoteitem_id', value: quoteitem_id});
+        params.push({name: 'paramname', value: 'color'})
+        params.push({name: 'newval', value: $(this).data('itemcolor')});
+        var url="/leadquote/savenewitemparam";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".quoteitemcolor_adddata").empty().html(response.data.outcolors);
+                $(".quoteitem_inventoryview").hide();
+                $(".quoteitems_content_addqty").css('visibility','visible');
+                $(".quoteitems_content_addqty").find('input.quoteitem_qty').focus();
+                init_addnewquoteitem();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
