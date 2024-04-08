@@ -472,7 +472,45 @@ function init_leadquotes_content() {
             }
         },'json');
     });
-
+    // SR item color change
+    $("span.addnewquotecolor").unbind('click').click(function(){
+        var itemcolor = $(this).data('item');
+        var item = $(this).data('quoteitem');
+        var params = new Array();
+        params.push({name: 'session', value: $("#quotesessionid").val()});
+        params.push({name: 'item', value: item });
+        params.push({name: 'itemcolor', value: itemcolor});
+        params.push({name: 'itemstatus', value: 1});
+        var url = "/leadquote/inventoryitemcolor";
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                $(".quoteitem_inventoryview").empty().html(response.data.content);
+                $(".quoteitem_inventoryview").show();
+                init_srinventory_quote(item, itemcolor);
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+        // $.post(url, params, function (response){
+        //     if (response.errors=='') {
+        //         if (parseInt(response.data.refresh)==1) {
+        //             $(".quoteitemsarea[data-quoteitem='"+item+"']").empty().html(response.data.itemcontent);
+        //         } else {
+        //             $(".quoteitemrowsubtotal[data-item='"+itemcolor+"'][data-quoteitem='"+item+"']").empty().html(response.data.itemcolor_subtotal);
+        //         }
+        //         if (parseInt(response.data.totals)==1) {
+        //             $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
+        //             $(".quotetotalvalue").empty().html(response.data.total);
+        //             $(".quotecommondatainpt[data-item='sales_tax']").val(response.data.tax);
+        //         }
+        //         if (parseInt(response.data.refresh)==1) {
+        //             init_leadquotes_content();
+        //         }
+        //     } else {
+        //         show_error(response);
+        //     }
+        // },'json');
+    });
     // Add color
     $(".itemcoloradd").unbind('click').click(function () {
         var item = $(this).data('quoteitem');
@@ -1180,7 +1218,7 @@ function init_addnewquoteitem() {
             if (response.errors == '') {
                 $(".quoteitem_inventoryview").empty().html(response.data.content);
                 $(".quoteitem_inventoryview").show();
-                init_srinventory_quote(quoteitem_id);
+                init_srinventory_quote(quoteitem_id, 0);
             } else {
                 show_error(response);
             }
@@ -1258,7 +1296,7 @@ function init_addnewquoteitem() {
 
 }
 
-function init_srinventory_quote(quoteitem_id) {
+function init_srinventory_quote(quoteitem_id, color_id) {
     $(".quoteitem_inventoryview_body").find('div.datarow').hover(
         function () {
             $(this).find('div.inventorycolor').addClass('selected');
@@ -1271,11 +1309,19 @@ function init_srinventory_quote(quoteitem_id) {
     );
     $(".quoteitem_inventoryview_body").find('div.datarow').unbind('click').click(function(){
         var params = Array();
-        params.push({name: 'quotesession', value: $("#quotesessionid").val()});
-        params.push({name: 'quoteitem_id', value: quoteitem_id});
-        params.push({name: 'paramname', value: 'color'})
-        params.push({name: 'newval', value: $(this).data('itemcolor')});
         var url="/leadquote/savenewitemparam";
+        if (parseInt(color_id)==0) {
+            params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+            params.push({name: 'quoteitem_id', value: quoteitem_id});
+            params.push({name: 'paramname', value: 'color'})
+            params.push({name: 'newval', value: $(this).data('itemcolor')});
+        } else {
+            params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+            params.push({name: 'quoteitem_id', value: quoteitem_id});
+            params.push
+            params.push({name: 'paramname', value: 'color'})
+            params.push({name: 'newval', value: $(this).data('itemcolor')});
+        }
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $(".quoteitemcolor_adddata").empty().html(response.data.outcolors);

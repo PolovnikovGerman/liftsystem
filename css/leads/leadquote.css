@@ -240,6 +240,9 @@ input.quoteitem_description_long {
 .quoteitemtabledatarow .itemcolor {
     width: 153px;
 }
+span.addnewquotecolor {
+    cursor: pointer;
+}
 .quoteitemtabledatarow .itemcolor.viewmode {
     padding-left: 5px;
 }

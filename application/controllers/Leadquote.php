@@ -666,6 +666,38 @@ class Leadquote extends MY_Controller
         show_404();
     }
 
+    public function inventoryitemcolor()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'session','unknw');
+            $quotesession = usersession($session_id);
+            if (!empty($quotesession)) {
+                $quoteitem_id = ifset($postdata, 'item',0);
+                $itemstatus = ifset($postdata, 'itemstatus',0);
+                if (empty($quoteitem_id)) {
+                    $error = 'Select Order Item';
+                } else {
+                    $res = $this->leadquote_model->quoteiteminventory($quotesession, $quoteitem_id, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $options = [
+                            'onboats' => $res['onboats'],
+                            'invents' => $res['invents'],
+                            'itemstatus' => $itemstatus,
+                        ];
+                        $mdata['content'] = $this->load->view('leadpopup/itemcolor_inventory_view', $options, TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Add Item Color
     public function quoteitemaddcolor() {
         if ($this->isAjax()) {
