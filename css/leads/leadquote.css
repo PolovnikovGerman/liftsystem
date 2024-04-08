@@ -1168,10 +1168,10 @@ textarea.quoteitemsvalue {
 }
 /* New item section */
 .quoteitems_content_add {
-    width: 258px;
+    width: 253px;
 }
-.addnewquoteitem {
-    width: 255px;
+select.addnewquoteitem {
+    width: 250px;
 }
 .quoteitems_content_add span.select2-selection--single {
     height: 20px !important;
@@ -1183,7 +1183,8 @@ textarea.quoteitemsvalue {
     line-height: 19px !important;
 }
 .quoteitemcolor_adddata {
-    width: 91px;
+    width: 152px;
+    padding-left: 3px;
 }
 .quoteitemcolor_adddata span.addnewcolor {
     cursor: pointer;
@@ -1191,24 +1192,30 @@ textarea.quoteitemsvalue {
 .quoteitems_content_addqty {
     width: 53px;
 }
+input.quoteitemadd_input {
+    height: 19px;
+    margin: 0 2px;
+}
 .quoteitems_content_addprice {
     width: 41px;
 }
-.quoteitemrowsubtotal {
-    width: 70px;
+.quoteitemrowsubtotal.newitem {
+    width: 70px!important;
+    padding-left: 2px;
 }
 .quoteitems_content_addprint {
-    float: left;
-    color: #ffffff;
+    color: #ffffff!important;
     font-size: 10px;
+    font-weight: normal!important;
     cursor: pointer;
     visibility: hidden;
     background: #008000;
     height: 18px;
     border-radius: 4px;
-    padding: 0 5px;
+    padding: 0 4px;
     line-height: 18px;
     margin-top: 1px;
+    text-align: center;
 }
 .items_content_cancel {
     width: 14px;

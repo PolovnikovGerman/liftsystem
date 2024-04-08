@@ -31,6 +31,8 @@ function addnewcustomquote() {
                 $("#loader").hide();
                 if (parseInt(response.data.newitem)!==0) {
                     $(".addprintdetails[data-quoteitem='"+response.data.newitem+"']").trigger('click');
+                } else {
+                    $('select.addnewquoteitem').select2('open');
                 }
             } else {
                 $("#loader").hide();
@@ -838,6 +840,7 @@ function save_quoteprint_details() {
             $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
             $("input[data-item='sales_tax']").val(response.data.tax);
             $(".quotetotalvalue").empty().html(response.data.total);
+            $(".addquoteitem").show();
             init_leadquotes_content();
         } else {
             show_error(response);
@@ -1183,6 +1186,76 @@ function init_addnewquoteitem() {
             }
         }, 'json');
     });
+    // Change QTY
+    $(".quoteitems_content_addqty").find('input.quoteitem_qty').unbind('change').change(function (){
+        var quoteitem_id = $(this).data('quoteitem');
+        var params = new Array();
+        params.push({name: 'quoteitem_id', value: quoteitem_id});
+        params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+        params.push({name: 'paramname', value: 'qty'})
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/leadquote/savenewitemparam";
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                $(".quoteitems_content_addprice").empty().html(response.data.price).css('visibility','visible');
+                $(".quoteitems_content_addprice").find('input.quoteitem_price').focus();
+                // $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").css('visibility','visible');
+                $(".quoteitems_content_addprint").css('visibility','visible');
+                init_addnewquoteitem();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    // Change price
+    $(".quoteitems_content_addprice").find('input.quoteitem_price').unbind('change').change(function () {
+        var quoteitem_id = $(this).data('quoteitem');
+        var params = Array();
+        params.push({name: 'quoteitem_id', value: quoteitem_id});
+        params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+        params.push({name: 'paramname', value: 'price'})
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/leadquote/savenewitemparam";
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                $(".quoteitems_content_addprint").trigger('click');
+                init_addnewquoteitem();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    $(".quoteitems_content_addprice").find('input.quoteitem_price').on('keydown', function(event){
+        let key = (event.keyCode ? event.keyCode : event.which);
+        if (key==13) {
+            $(".quoteitems_content_addprint").trigger('click');
+        } else if (key==9) {
+            $(".quoteitems_content_addprint").trigger('click');
+        }
+    });
+    $(".quoteitems_content_addprint").unbind('click').click(function(){
+        var quoteitem_id = $(this).data('quoteitem');
+        var params = Array();
+        params.push({name: 'item', value: quoteitem_id});
+        params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+        var url = "/leadquote/newquoteimprints";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                // Print details
+                $("#artNextModal").find('div.modal-dialog').css('width','1077px');
+                $("#artNextModal").find('.modal-title').empty().html('Order Item Imprint');
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.imprintview);
+                $("#artNextModal").modal({keyboard: false, show: true}); // backdrop: 'static',
+                $("#artNextModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
+                init_quote_printdetails();;
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+
 }
 
 function init_srinventory_quote(quoteitem_id) {

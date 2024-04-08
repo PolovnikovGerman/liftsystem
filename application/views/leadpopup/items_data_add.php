@@ -12,7 +12,7 @@
         <div class="quoteitemcolor_adddata">&nbsp;</div>
         <div class="quoteitems_content_addqty">&nbsp;</div>
         <div class="quoteitems_content_addprice">&nbsp;</div>
-        <div class="quoteitemrowsubtotal" data-item="<?=$row['item_id']?>" data-quoteitem="<?= $quote_item_id ?>"><?=$row['item_subtotal']?>
+        <div class="quoteitemrowsubtotal newitem" data-quoteitem="<?= $quote_item_id ?>">
             <div class="quoteitems_content_addprint" data-quoteitem="<?=$row['quote_item_id']?>">Print Details</div>
         </div>
         <div class="items_content_cancel" data-quoteitem="<?=$row['quote_item_id']?>"><i class="fa fa-trash"></i></div>

@@ -227,7 +227,12 @@ class Leadquote_model extends MY_Model
                             'colors'=>$itemdata['colors'],
                             'item_color'=>$color['item_color'],
                         );
-                        $colors[$coloridx]['out_colors']=$this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
+                        if ($quote['brand']=='SR') {
+                            $colors[$coloridx]['out_colors']=$this->load->view('leadpopup/quotesritem_color_choice', $options, TRUE);
+                        } else {
+                            $colors[$coloridx]['out_colors']=$this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
+                        }
+
                     }
                     $colors[$coloridx]['printshop_item_id'] = ifset($itemdata, 'printshop_item_id', 0);
                     $colors[$coloridx]['qtyinput_class'] = 'normal';
@@ -459,7 +464,7 @@ class Leadquote_model extends MY_Model
             }
         }
        //
-        // Prepare firt item (as itemcolors)
+        // Prepare first item (as itemcolors)
         $newitem=array(
             'quote_item_id'=>$newid,
             'item_id'=>-1,
@@ -480,7 +485,11 @@ class Leadquote_model extends MY_Model
                 'colors'=>$newitem['colors'],
                 'item_color'=>$newitem['item_color'],
             );
-            $newitem['out_colors']=$this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
+            if ($brand=='SR') {
+                $newitem['out_colors']=$this->load->view('leadpopup/quotesritem_color_choice', $options, TRUE);
+            } else {
+                $newitem['out_colors']=$this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
+            }
         }
         if ($newitem['num_colors']>1) {
             $newitem['item_color_add']=1;
@@ -1075,6 +1084,7 @@ class Leadquote_model extends MY_Model
         $quote_item_id=$details['quote_item_id'];
         $imprint_details=$details['imprint_details'];
         $quote_blank=intval($details['quote_blank']);
+        $itemstatus =  ifset($details, 'itemstatus','old');
         $found=0;
         $idx=0;
         foreach ($items as $item) {
@@ -1092,6 +1102,11 @@ class Leadquote_model extends MY_Model
                     $out['msg']=$row['title'].' Empty Repeat Note';
                     return $out;
                 }
+            }
+            $out['shiprebuild']=0;
+            $recalshipcost = 0;
+            if ($itemstatus=='new') {
+                $out['shiprebuild']=1;
             }
             // New imprint details
             $items[$idx]['imprint_details'] = $imprint_details;
@@ -3837,6 +3852,10 @@ class Leadquote_model extends MY_Model
 //                    $defqty = $minqty;
 //                }
             }
+            $addcolor = 0;
+            if (count($itemdata['colors'])>1) {
+                $addcolor = 1;
+            }
             $quoteitem = [
                 'quote_item_id' => $quote_item_id,
                 'item_id' => $item_id,
@@ -3903,7 +3922,8 @@ class Leadquote_model extends MY_Model
                 'item_color'=>$itmcolor,
                 'colors'=>$colors,
                 'num_colors'=>$itemdata['num_colors'],
-                'item_description'=>$quoteitem['item_name']
+                'item_description'=>$quoteitem['item_name'],
+                'item_color_add' => $addcolor,
             );
             //
             if ($itemdata['num_colors']==0) {
@@ -3998,11 +4018,12 @@ class Leadquote_model extends MY_Model
                     $quote_items[$idx]['items'][0]['out_colors'] = $this->load->view('leadpopup/quoteitem_color_choice', $coloropt, true);
                 }
             } elseif ($paramname == 'qty') {
+                $this->load->model('leadorder_model');
                 $quote_items[$idx]['item_qty'] = intval($newval);
                 $quote_items[$idx]['items'][0]['item_qty'] = intval($newval);
                 if ($quote_items[$idx]['item_id'] > 0) {
                     // Get New Price
-                    $newprice = $this->leadorder_model->_get_item_priceqty($quote_items[$idx]['item_id'], $quote_items[$idx]['item_template'], intval($newval));
+                    $newprice = $this->leadorder_model->_get_item_priceqty($quote_items[$idx]['item_id'], $quote_items[$idx]['template'], intval($newval));
                     $quote_items[$idx]['base_price'] = $newprice;
                     $quote_items[$idx]['items'][0]['item_price'] = $newprice;
                 }
@@ -4024,6 +4045,97 @@ class Leadquote_model extends MY_Model
             $out['base_price'] = $quote_items[$idx]['base_price'];
             $out['item_subtotal'] = $quote_items[$idx]['item_subtotal'];
             $out['brand'] = $quote['brand'];
+        }
+        return $out;
+    }
+
+    public function newitemimprint($quotesession, $quoteitem_id, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Quote Item Not Found'];
+        $quote_items=$quotesession['items'];
+        $quote = $quotesession['quote'];
+        $idx = 0;
+        $found = 0;
+        foreach ($quote_items as $quote_item) {
+            if ($quote_item['quote_item_id']==$quoteitem_id) {
+                $found = 1;
+                break;
+            }
+            $idx++;
+        }
+        if ($found==1) {
+            $quote_items[$idx]['imprints'] = [];
+            $imprdetails=array();
+            $detailfld=$this->db->list_fields('ts_quote_imprindetails');
+            for ($i=1; $i<13; $i++) {
+                $newloc = [
+                    'title'=>'Loc '.$i,
+                    'active'=>0,
+                ];
+                if ($quote['quote_blank']==0 && $i==1) {
+                    $newloc['active'] = 1;
+                }
+                foreach ($detailfld as $row) {
+                    switch ($row) {
+                        case 'quote_imprindetail_id':
+                            $newloc[$row]=$i*(-1);
+                            break;
+                        case 'imprint_type':
+                            $newloc[$row]='NEW';
+                            break;
+                        case 'num_colors':
+                            $newloc[$row]=1;
+                            break;
+                        default :
+                            $newloc[$row]='';
+                    }
+                }
+                if ($i==1) {
+                    $newloc['print_1']=0;
+                } else {
+                    if ($quote_items[$idx]['item_id']==$this->config->item('custom_id')) {
+                        $newloc['print_1'] = $this->custom_print_price;
+                    } elseif ($quote_items[$idx]['item_id']==$this->config->item('other_id')) {
+                        $newloc['print_1'] = $this->other_print_price;
+                    } else {
+                        $newloc['print_1']=$quote_items[$idx]['imprint_price'];
+                    }
+                }
+                if ($quote_items[$idx]['item_id']==$this->config->item('custom_id')) {
+                    $newloc['print_2']=$this->custom_print_price;
+                    $newloc['print_3']=$this->custom_print_price;
+                    $newloc['print_4']=$this->custom_print_price;
+                } elseif ($quote_items[$idx]['item_id']==$this->config->item('other_id')) {
+                    $newloc['print_2']=$this->other_print_price;
+                    $newloc['print_3']=$this->other_print_price;
+                    $newloc['print_4']=$this->other_print_price;
+                } else {
+                    $newloc['print_2']=$quote_items[$idx]['imprint_price'];
+                    $newloc['print_3']=$quote_items[$idx]['imprint_price'];
+                    $newloc['print_4']=$quote_items[$idx]['imprint_price'];
+                }
+                if ($quote_items[$idx]['item_id']==$this->config->item('custom_id')) {
+                    $print_setup = $this->custom_setup_price;
+                } elseif ($quote_items[$idx]['item_id']==$this->config->item('other_id')) {
+                    if ($quote['brand']=='SR') {
+                        $print_setup = $this->other_setupsr_price;
+                    } else {
+                        $print_setup = $this->other_setupsb_price;
+                    }
+                } else {
+                    $print_setup = $quote_items[$idx]['setup_price'];
+                }
+                // Setup
+                $newloc['setup_1']=$print_setup;
+                $newloc['setup_2']=$print_setup;
+                $newloc['setup_3']=$print_setup;
+                $newloc['setup_4']=$print_setup;
+                $imprdetails[]=$newloc;
+            }
+            $quote_items[$idx]['imprint_details'] = $imprdetails;
+            $quotesession['items'] = $quote_items;
+            usersession($session_id, $quotesession);
+            $out['result'] = $this->success_result;
         }
         return $out;
     }

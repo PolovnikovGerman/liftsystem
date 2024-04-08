@@ -1531,7 +1531,7 @@ class Leadquote extends MY_Controller
         show_404();
     }
 
-    private function _prepare_imprint_details($quotesession, $postdata, $session_id) {
+    private function _prepare_imprint_details($quotesession, $postdata, $session_id, $itemstatus='old') {
         $out = ['result' => $this->error_result, 'msg' => 'Unknown Error'];
         $res = $this->leadquote_model->prepare_print_details($quotesession, $postdata, $session_id);
         $out['msg'] = $res['msg'];
@@ -1559,6 +1559,7 @@ class Leadquote extends MY_Controller
                 'quote_blank' => $quote_blank,
                 'quote_item_id' => $postdata['item'],
                 'item_id' => $item_id,
+                'itemstatus' => $itemstatus,
             );
             usersession($imptintid, $imprintdetails);
         }
@@ -1696,7 +1697,7 @@ class Leadquote extends MY_Controller
                 $paramname = ifset($postdata,'paramname','');
                 $newval = ifset($postdata, 'newval', '');
                 if (empty($quoteitem_id)) {
-                    $error = 'Select Order Item';
+                    $error = 'Select Quote Item';
                 } elseif (empty($paramname)) {
                     $error = 'Empty Parameter';
                 } else {
@@ -1717,6 +1718,39 @@ class Leadquote extends MY_Controller
                         $mdata['price'] = $this->load->view('leadpopup/additem_price_view', $options, TRUE); // $item['base_price']
                         $mdata['subtotal'] = MoneyOutput($res['item_subtotal']);
                         $mdata['brand'] = $res['brand'];
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function newquoteimprints()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'quotesession', 'unknw');
+            $quotesession = usersession($session_id);
+            if (empty($quotesession)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                $quoteitem_id = ifset($postdata, 'item', 0);
+                if (empty($quoteitem_id)) {
+                    $error = 'Select Quote Item';
+                } else {
+                    $res = $this->leadquote_model->newitemimprint($quotesession, $quoteitem_id, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        // Re init session variables
+                        $quotesession = usersession($session_id);
+                        $imprdata = $this->_prepare_imprint_details($quotesession, $postdata, $session_id, 'new');
+                        $error = $imprdata['msg'];
+                        if ($imprdata['result']==$this->success_result) {
+                            $error = '';
+                            $mdata['imprintview'] = $imprdata['content'];
+                        }
                     }
                 }
             }
