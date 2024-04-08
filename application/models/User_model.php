@@ -44,6 +44,7 @@ Class User_model extends MY_Model
                     'domain' => '.'.$server,
                     'path'   => '/',
                     'secure' => FALSE,
+                    'SameSite' => 'Strict',
                 );
                 set_cookie($cookienew);
             }
@@ -186,6 +187,7 @@ Class User_model extends MY_Model
                                 'domain' => '.'.$server,
                                 'path'   => '/',
                                 'secure' => FALSE,
+                                'SameSite' => 'Strict',
                             );
                             set_cookie($cookie);
                             usersession('currentbrand',null);
