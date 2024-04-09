@@ -6344,7 +6344,7 @@ Class Leadorder_model extends My_Model {
         $this->db->order_by('order_shipaddr_id');
         $res=$this->db->get()->row_array();
         $address=array();
-        if (count($res)==0) {
+        if (ifset($res,'order_shipaddr_id',0)==0) {
             $packs=array();
             $packs[]=array(
                 'order_shippack_id'=>-1,

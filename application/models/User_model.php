@@ -14,17 +14,19 @@ Class User_model extends MY_Model
     public function current_user() {
         $this->load->helper('cookie');
         $out = ['result' =>$this->error_result,];
-        $user=usersession('usr_data');
+        // $user=usersession('usr_data');
+        $user = [];
         $cookie=get_cookie('acctoken');
-        if (empty($user)) {
+        //if (empty($user)) {
             if ($cookie) {
                 $res=$this->get_user_accesstoken($cookie);
                 if ($res['result']==$this->success_result) {
                     $user=$res['user'];
                 }
             }
-        }
-        if (is_array($user)) {
+        //}
+        // if (is_array($user)) {
+        if (ifset($user,'id',0)>0) {
             /* Try to check Cooikie */
             $this->db->select('user_status');
             $this->db->from('users');
@@ -33,7 +35,18 @@ Class User_model extends MY_Model
             if ($chkres['user_status']==1) {
                 $out['result'] = $this->success_result;
                 $out['data'] = $user;
-                usersession('usr_data', $user);
+                // usersession('usr_data', $user);
+                $server=$this->input->server('SERVER_NAME');
+                $cookienew = array(
+                    'name'   => 'acctoken',
+                    'value'  => $cookie,
+                    'expire' => '86500',
+                    'domain' => $server,
+                    'path'   => '/; SameSite=Strict',
+                    'secure' => TRUE,
+                    'httponly' => TRUE,
+                );
+                set_cookie($cookienew);
             }
         }
         return $out;
@@ -148,16 +161,16 @@ Class User_model extends MY_Model
                             $out['result'] = $this->success_result;
                             $out['msg'] = '';
                             $out['usrdat'] = $res;
-                            $usr_data = array(
-                                'id' => $res['user_id'],
-                                'user_logged_in'=> $res['role_short'],
-                                'user_email' => $res['user_email'],
-                                'user_name'=>$res['user_name'],
-                                'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
-                                'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
-                                'user_order_export' => $res['user_order_export'],
-                            );
-                            usersession('usr_data', $usr_data);
+//                            $usr_data = array(
+//                                'id' => $res['user_id'],
+//                                'user_logged_in'=> $res['role_short'],
+//                                'user_email' => $res['user_email'],
+//                                'user_name'=>$res['user_name'],
+//                                'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
+//                                'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
+//                                'user_order_export' => $res['user_order_export'],
+//                            );
+//                            usersession('usr_data', $usr_data);
                             // Create access token
                             $res['token']=uniq_link(30);
                             /* Save token to DB */
@@ -171,11 +184,14 @@ Class User_model extends MY_Model
                                 'name'   => 'acctoken',
                                 'value'  => $res['token'],
                                 'expire' => '86500',
-                                'domain' => '.'.$server,
-                                'path'   => '/',
+                                'domain' => $server,
+                                'path'   => '/; SameSite=Strict',
+                                'prefix' => '',
                                 'secure' => FALSE,
+                                'httponly' => FALSE,
                             );
                             set_cookie($cookie);
+                            usersession('currentbrand',null);
                         }
                     }
                 }
@@ -375,15 +391,15 @@ Class User_model extends MY_Model
         $this->db->where('u.user_id', $user_id);
         $res = $this->db->get()->row_array();
 
-        $usr_data = array(
-            'id' => $res['user_id'],
-            'user_logged_in'=> $res['role_short'],
-            'user_email' => $res['user_email'],
-            'user_name'=>$res['user_name'],
-            'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
-            'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
-        );
-        usersession('usr_data', $usr_data);
+//        $usr_data = array(
+//            'id' => $res['user_id'],
+//            'user_logged_in'=> $res['role_short'],
+//            'user_email' => $res['user_email'],
+//            'user_name'=>$res['user_name'],
+//            'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
+//            'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
+//        );
+//        usersession('usr_data', $usr_data);
         return TRUE;
 
     }
@@ -410,6 +426,9 @@ Class User_model extends MY_Model
             $this->db->update('users');
             $out['result'] = $this->success_result;
             $this->userlog($executor_id,'Delete User '.$user_id, 1);
+            // Delete access tokens
+            $this->db->where('user_id', $user_id);
+            $this->db->delete('ts_acces_tokens');
         }
         return $out;
     }
@@ -435,6 +454,9 @@ Class User_model extends MY_Model
                 $out['user_status'] = $this->user_active;
                 $out['status_txt'] = 'Active';
             }
+            // Delete access tokens
+            $this->db->where('user_id', $user_id);
+            $this->db->delete('ts_acces_tokens');
         }
         return $out;
     }
@@ -493,6 +515,9 @@ Class User_model extends MY_Model
                     $this->db->set('user_passwd_txt', $user['user_passwd_txt1']);
                     $this->db->where('user_id', $user_id);
                     $this->db->update('users');
+                    // Delete access tokens
+                    $this->db->where('user_id', $user_id);
+                    $this->db->delete('ts_acces_tokens');
                 }
                 // Update restrict
                 $this->update_iprestrict($userip, $user_id);
@@ -687,16 +712,16 @@ Class User_model extends MY_Model
         $this->db->join('roles r','r.role_id=u.role_id','left');
         $this->db->where('u.user_id', $user_id);
         $res = $this->db->get()->row_array();
-        $usr_data = array(
-            'id' => $res['user_id'],
-            'user_logged_in'=> $res['role_short'],
-            'user_email' => $res['user_email'],
-            'user_name'=>$res['user_name'],
-            'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
-            'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
-            'user_order_export' => $res['user_order_export'],
-        );
-        usersession('usr_data', $usr_data);
+//        $usr_data = array(
+//            'id' => $res['user_id'],
+//            'user_logged_in'=> $res['role_short'],
+//            'user_email' => $res['user_email'],
+//            'user_name'=>$res['user_name'],
+//            'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
+//            'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
+//            'user_order_export' => $res['user_order_export'],
+//        );
+//        usersession('usr_data', $usr_data);
         return TRUE;
     }
 
