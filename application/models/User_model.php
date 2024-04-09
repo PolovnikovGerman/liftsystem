@@ -41,10 +41,10 @@ Class User_model extends MY_Model
                     'name'   => 'acctoken',
                     'value'  => $cookie,
                     'expire' => '86500',
-                    'domain' => '.'.$server,
-                    'path'   => '/',
-                    'secure' => FALSE,
-                    'samesite' => 'Strict',
+                    'domain' => $server,
+                    'path'   => '/; SameSite=Strict',
+                    'secure' => TRUE,
+                    'httponly' => TRUE,
                 );
                 set_cookie($cookienew);
             }
@@ -184,10 +184,11 @@ Class User_model extends MY_Model
                                 'name'   => 'acctoken',
                                 'value'  => $res['token'],
                                 'expire' => '86500',
-                                'domain' => '.'.$server,
-                                'path'   => '/',
+                                'domain' => $server,
+                                'path'   => '/; SameSite=Strict',
+                                'prefix' => '',
                                 'secure' => FALSE,
-                                'samesite' => 'Strict',
+                                'httponly' => FALSE,
                             );
                             set_cookie($cookie);
                             usersession('currentbrand',null);
