@@ -1316,22 +1316,45 @@ function init_srinventory_quote(quoteitem_id, color_id) {
             params.push({name: 'paramname', value: 'color'})
             params.push({name: 'newval', value: $(this).data('itemcolor')});
         } else {
-            params.push({name: 'quotesession', value: $("#quotesessionid").val()});
-            params.push({name: 'quoteitem_id', value: quoteitem_id});
-            params.push
+            url = '/leadquote/quoteitemchange'
+            params.push({name: 'session', value: $("#quotesessionid").val()});
+            params.push({name: 'item', value: quoteitem_id});
+            params.push({name: 'itemcolor', value: color_id});
             params.push({name: 'paramname', value: 'color'})
             params.push({name: 'newval', value: $(this).data('itemcolor')});
         }
         $.post(url, params, function (response){
             if (response.errors=='') {
-                $(".quoteitemcolor_adddata").empty().html(response.data.outcolors);
-                $(".quoteitem_inventoryview").hide();
-                $(".quoteitems_content_addqty").css('visibility','visible');
-                $(".quoteitems_content_addqty").find('input.quoteitem_qty').focus();
-                init_addnewquoteitem();
+                if (parseInt(color_id)==0) {
+                    $(".quoteitemcolor_adddata").empty().html(response.data.outcolors);
+                    $(".quoteitem_inventoryview").hide();
+                    $(".quoteitems_content_addqty").css('visibility','visible');
+                    $(".quoteitems_content_addqty").find('input.quoteitem_qty').focus();
+                    init_addnewquoteitem();
+                } else {
+                    if (parseInt(response.data.refresh)==1) {
+                        $(".quoteitemsarea[data-quoteitem='"+item+"']").empty().html(response.data.itemcontent);
+                    } else {
+                        $(".quoteitemrowsubtotal[data-item='"+itemcolor+"'][data-quoteitem='"+item+"']").empty().html(response.data.itemcolor_subtotal);
+                    }
+                    if (parseInt(response.data.totals)==1) {
+                        $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
+                        $(".quotetotalvalue").empty().html(response.data.total);
+                        $(".quotecommondatainpt[data-item='sales_tax']").val(response.data.tax);
+                    }
+                    if (parseInt(response.data.shipping)==1) {
+                        $(".quoteleadshipcostinpt[data-item='shipping_cost']").val(response.data.shipping_cost);
+                        $(".quoteshippingcostarea").empty().html(response.data.shippingview);
+                    }
+                    $("#loader").hide();
+                    init_leadquotes_content();
+                }
             } else {
                 show_error(response);
             }
         },'json');
     });
+    $(".quoteitem_inventoryview_close").unbind('click').click(function (){
+        $(".quoteitem_inventoryview").hide();
+    })
 }
