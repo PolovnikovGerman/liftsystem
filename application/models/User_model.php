@@ -15,7 +15,7 @@ Class User_model extends MY_Model
         $this->load->helper('cookie');
         $out = ['result' =>$this->error_result,];
         $user=usersession('usr_data');
-        $user = [];
+        // $user = [];
         $cookie=get_cookie('acctoken');
         if (empty($user)) {
             if ($cookie) {
@@ -35,17 +35,20 @@ Class User_model extends MY_Model
                 $out['result'] = $this->success_result;
                 $out['data'] = $user;
                 usersession('usr_data', $user);
-                $server=$this->input->server('SERVER_NAME');
-                $cookienew = array(
-                    'name'   => 'acctoken',
-                    'value'  => $cookie,
-                    'expire' => '86500',
-                    'domain' => $server,
-                    'path'   => '/; SameSite=Strict',
-                    'secure' => TRUE,
-                    'httponly' => TRUE,
-                );
-                set_cookie($cookienew);
+                // If empty cookie
+                if ($cookie) {
+                    $server=$this->input->server('SERVER_NAME');
+                    $cookienew = array(
+                        'name'   => 'acctoken',
+                        'value'  => $cookie,
+                        'expire' => '86500',
+                        'domain' => $server,
+                        'path'   => '/; SameSite=Strict',
+                        'secure' => TRUE,
+                        'httponly' => TRUE,
+                    );
+                    set_cookie($cookienew);
+                }
             }
         }
         return $out;
