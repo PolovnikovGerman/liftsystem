@@ -45,6 +45,20 @@ body div {
     position: relative;
     bottom: 4.8rem;
 }
+.verifycode_form {
+    width: 25%;
+    margin-right: auto;
+    margin-left: auto;
+    background: url(/img/signin/signin_form.png) no-repeat;
+    /* background-position: bottom center;*/
+}
+.verifygo {
+    cursor: pointer;
+    float: right;
+    width: 4rem;
+    height: 4rem;
+    position: relative;
+}
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
     .signin_form {
@@ -52,6 +66,13 @@ body div {
     }
     .go {
         bottom: 4.6rem;
+    }
+    .verifycode_form {
+        background-position: bottom 0.3rem center;
+    }
+    .verifygo {
+        bottom: 1.8rem;
+        right: 7.2rem;
     }
     .navbar-brand img {
         max-width: 10.96875rem;

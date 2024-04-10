@@ -1,11 +1,8 @@
-<div class="signin_form">
+<div class="verifycode_form">
     <div class="datarow">
-        <input class="signinformelement" id="email" type="text" placeholder="email address"/>
+        <input class="verifyformelement" id="code" type="text" placeholder="Verification code"/>
     </div>
     <div class="datarow">
-        <input class="signinformelement" id="passwd" type="password" placeholder="password"/>
-    </div>
-    <div class="datarow">
-        <div class="go" id="letsgo">&nbsp;</div>
+        <div class="verifygo" id="letsverify">&nbsp;</div>
     </div>
 </div>

@@ -73,6 +73,8 @@ Class User_model extends MY_Model
                     'user_replica'=>(!empty($user['user_leadname']) ? $user['user_leadname'] : $user['first_name']),
                     'user_logo' => (empty($user['user_logo']) ? $this->config->item('empty_profile') : $user['user_logo']),
                     'user_order_export' => $user['user_order_export'],
+                    'user_secret' => $user['user_secret'],
+                    'user_payuser' => $user['user_payuser'],
                 ];
                 $out['result']=$this->success_result;
             }
@@ -171,6 +173,8 @@ Class User_model extends MY_Model
                                 'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
                                 'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
                                 'user_order_export' => $res['user_order_export'],
+                                'user_secret' => $res['user_secret'],
+                                'user_payuser' => $res['user_payuser'],
                             );
                             usersession('usr_data', $usr_data);
                             // Create access token
@@ -400,6 +404,9 @@ Class User_model extends MY_Model
             'user_name'=>$res['user_name'],
             'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
             'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
+            'user_order_export' => $res['user_order_export'],
+            'user_secret' => $res['user_secret'],
+            'user_payuser' => $res['user_payuser'],
         );
         usersession('usr_data', $usr_data);
         return TRUE;
@@ -722,9 +729,39 @@ Class User_model extends MY_Model
             'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
             'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
             'user_order_export' => $res['user_order_export'],
+            'user_secret' => $res['user_secret'],
+            'user_payuser' => $res['user_payuser'],
         );
         usersession('usr_data', $usr_data);
         return TRUE;
+    }
+
+    public function verify_user_code($code)
+    {
+        $out = ['result' => $this->error_result,'msg' => 'Sign in failed'];
+        $user = usersession('usr_data');
+        $this->load->library('GoogleAuthenticator');
+        if (ifset($user,'id',0) > 0) {
+            $out['msg'] = 'Empty User Secret Key';
+            $secret = ifset($user,'user_secret','');
+            if (!empty($secret)) {
+                $out['msg'] = 'Invalid Verification code';
+                $ga=new GoogleAuthenticator();
+                $chkcode=$ga->getCode($secret);
+                if ($chkcode == $code) {
+                    $this->db->where('user_id',$user['id']);
+                    $this->db->set('last_verified', time());
+                    $this->db->update('users');
+                    $out['result'] = $this->success_result;
+                    // Get default Page
+                    $this->db->select('user_page')->from('users')->where('user_id',$user['id']);
+                    $pagedat = $this->db->get()->row_array();
+                    $out['user_page'] = $pagedat['user_page'];
+                    $out['user_id'] = $user['id'];
+                }
+            }
+        }
+        return $out;
     }
 
 }
