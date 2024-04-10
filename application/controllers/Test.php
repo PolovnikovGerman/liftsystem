@@ -3469,10 +3469,14 @@ class Test extends CI_Controller
         );
         $this->email->initialize($email_conf);
         $email_from = 'admin@bluetrack.com';
+        $email_cc = 'to_german@yahoo.com';
         $this->db->select('*')->from('users')->where('status',1)->where('user_email','polovnikov.g@gmail.com');
         $users = $this->db->get()->result_array();
         foreach ($users as $user) {
             $secret = $ga->generateSecret();
+            $this->db->where('user_id', $user['user_id']);
+            $this->db->set('user_secret', $secret);
+            $this->db->update('users');
             // URL
             $url = $ga->getUrl($user['user_email'], 'lift.bluetrack.com', $secret);
             echo 'Secret '.$secret.PHP_EOL;
@@ -3484,7 +3488,16 @@ class Test extends CI_Controller
                 'manual_url' => 'https://support.google.com/accounts/answer/1066447?hl=en',
             ];
             $message_body = $this->load->view('messages/secret_update_view', $options, TRUE);
-
+            $this->email->to($user['user_email']);
+            $this->email->cc($email_cc);
+            // $this->email->bcc($this->config->item('developer_email'));
+            $this->email->from($email_from);
+            $mail_subj = 'Update account security';
+            $this->email->subject($mail_subj);
+            $this->email->message($message_body);
+            $this->email->send();
+            $this->email->clear(TRUE);
+            echo 'Email Send'.PHP_EOL;
         }
     }
 }
