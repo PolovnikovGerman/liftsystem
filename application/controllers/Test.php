@@ -3518,7 +3518,7 @@ class Test extends CI_Controller
         $this->email->initialize($email_conf);
         $email_from = 'admin@bluetrack.com';
         $email_cc = 'to_german@yahoo.com';
-        $this->db->select('*')->from('users')->where('status',1)->where('user_email','polovnikov.g@gmail.com');
+        $this->db->select('*')->from('users')->where('user_status',1)->where('user_email','polovnikov.g@gmail.com');
         $users = $this->db->get()->result_array();
         foreach ($users as $user) {
             $secret = $ga->generateSecret();
