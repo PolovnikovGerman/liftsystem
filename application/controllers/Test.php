@@ -3470,7 +3470,7 @@ class Test extends CI_Controller
         $this->email->initialize($email_conf);
         $email_from = 'admin@bluetrack.com';
         $email_cc = 'to_german@yahoo.com';
-        $this->db->select('*')->from('users')->where('user_status',1)->where('user_email','polovnikov.g@gmail.com');
+        $this->db->select('*')->from('users')->where('user_status',1)->where('user_email','sean@bluetrack.com');
         $users = $this->db->get()->result_array();
         foreach ($users as $user) {
             $secret = $ga->generateSecret();
@@ -3478,7 +3478,11 @@ class Test extends CI_Controller
             $this->db->set('user_secret', $secret);
             $this->db->update('users');
             // URL
-            $url = $ga->getUrl($user['user_email'], 'lift.bluetrack.com', $secret);
+            $usrlogin = $user['userlogin'];
+            if (empty($usrlogin)) {
+                $usrlogin = $user['user_email'];
+            }
+            $url = $ga->getUrl($usrlogin, 'lift.bluetrack.com', $secret);
             echo 'Secret '.$secret.PHP_EOL;
             echo 'URL '.$url.PHP_EOL;
             $options = [
