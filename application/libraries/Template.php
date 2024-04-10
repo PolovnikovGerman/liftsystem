@@ -290,7 +290,7 @@ class Template
             }
         }
         if ($usrdat['profit_view']=='Points') {
-            $profoptions['profit']=round($orddata['profit']*$this->CI->config->item('profitpts'),0).' pts';
+            $profoptions['profit']=round(floatval($orddata['profit'])*$this->CI->config->item('profitpts'),0).' pts';
             $profoptions['profit_view']='points';
         }
         if (empty($orddata['profit_perc'])) {

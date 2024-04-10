@@ -3502,4 +3502,37 @@ class Test extends CI_Controller
         }
     }
 
+    public function generate_secret()
+    {
+        // GA init
+        $this->load->library('GoogleAuthenticator');
+        $ga = new GoogleAuthenticator();
+        // Email init
+        $this->load->library('email');
+        $email_conf = array(
+            'protocol' => 'sendmail',
+            'charset' => 'utf-8',
+            'wordwrap' => TRUE,
+            'mailtype' => 'html',
+        );
+        $this->email->initialize($email_conf);
+        $email_from = 'admin@bluetrack.com';
+        $this->db->select('*')->from('users')->where('status',1)->where('user_email','polovnikov.g@gmail.com');
+        $users = $this->db->get()->result_array();
+        foreach ($users as $user) {
+            $secret = $ga->generateSecret();
+            // URL
+            $url = $ga->getUrl($user['user_email'], 'lift.bluetrack.com', $secret);
+            echo 'Secret '.$secret.PHP_EOL;
+            echo 'URL '.$url.PHP_EOL;
+            $options = [
+                'user_name' => $user['user_name'],
+                'secret' => $secret,
+                'url' => $url,
+                'manual_url' => 'https://support.google.com/accounts/answer/1066447?hl=en',
+            ];
+            $message_body = $this->load->view('messages/secret_update_view', $options, TRUE);
+
+        }
+    }
 }

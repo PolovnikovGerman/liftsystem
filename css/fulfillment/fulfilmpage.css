@@ -103,6 +103,10 @@ input.boatcontainerdate {
     background-color: #6d0303;
     color: #ffffff;
 }
+.dark_green {
+    background-color: #17ef00;
+    color: #000000!important;
+}
 /* Tooltip for Color details */
 .colordata_tooltip {
     width: 225px;

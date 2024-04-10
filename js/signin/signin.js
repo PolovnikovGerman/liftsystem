@@ -15,6 +15,7 @@ function init_signin_resize() {
 
     $(".login-form").css('height', heigth);
     $(".signin_form").css('margin-top',marginform);
+    $(".verifycode_form").css('margin-top',marginform);
 
 }
 function init_signin() {
@@ -25,7 +26,13 @@ function init_signin() {
         var url='/login/signin';
         $.post(url, params, function (resposne) {
             if (resposne.errors=='') {
-                window.location.href=resposne.data.url;
+                if (parseInt(resposne.data.chkcode)==1) {
+                    $("#signformarea").empty().html(resposne.data.content);
+                    init_signin_resize();
+                    init_codeverify();
+                } else {
+                    window.location.href=resposne.data.url;
+                }
             } else {
                 show_errors(resposne);
             }
@@ -39,12 +46,46 @@ function init_signin() {
             var url='/login/signin';
             $.post(url, params, function (resposne) {
                 if (resposne.errors=='') {
+                    if (parseInt(resposne.data.chkcode)==1) {
+                        $("#signformarea").empty().html(resposne.data.content);
+                        init_codeverify();
+                    } else {
+                        window.location.href=resposne.data.url;
+                    }
+                } else {
+                    show_errors(resposne);
+                }
+            },'json');
+        }
+    });
+}
+
+function init_codeverify() {
+    $("input.verifyformelement").keypress(function(event) {
+        if (event.which == 13) {
+            var params = new Array();
+            params.push({name: 'code', value: $("#code").val()});
+            var url = '/login/codeverify';
+            $.post(url, params, function (resposne) {
+                if (resposne.errors=='') {
                     window.location.href=resposne.data.url;
                 } else {
                     show_errors(resposne);
                 }
             },'json');
         }
+    });
+    $("#letsverify").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'code', value: $("#code").val()});
+        var url = '/login/codeverify';
+        $.post(url, params, function (resposne) {
+            if (resposne.errors=='') {
+                window.location.href=resposne.data.url;
+            } else {
+                show_errors(resposne);
+            }
+        },'json');
     });
 }
 
