@@ -3504,4 +3504,34 @@ class Test extends CI_Controller
             echo 'Email Send'.PHP_EOL;
         }
     }
+
+    public function update_ordersave()
+    {
+        $this->db->select('*')->from('ts_order_payments')->order_by('order_id', 'desc');
+        $payments = $this->db->get()->result_array();
+        foreach ($payments as $payment) {
+            if (!empty($payment['cardcode']) && substr($payment['cardcode'],0,1)!=='X') {
+                // Hide CVV
+                $this->db->where('order_payment_id', $payment['order_payment_id']);
+                $this->db->set('cardcode', hide_card_code($payment['cardcode']));
+                $this->db->set('payment_save',1);
+                $this->db->update('ts_order_payments');
+                echo 'Update Order '.$payment['order_id'].PHP_EOL;
+            }
+        }
+//        $this->db->select('*')->from('ts_orders')->where('payment_save',1);
+//        $orders = $this->db->get()->result_array();
+//        foreach ($orders as $order) {
+//            $this->db->select('*')->from('ts_order_payments')->where('order_id', $order['order_id']);
+//            $payments = $this->db->get()->result_array();
+//            foreach ($payments as $payment) {
+//                if (!empty($payment['cardcode']) && substr($payment['cardcode'],0,1)!=='X') {
+//                    $this->db->where('order_payment_id', $payment['order_payment_id']);
+//                    $this->db->set('cardcode', show_card_code($payment['cardcode']));
+//                    $this->db->update('ts_order_payments');
+//                    echo 'Update Order '.$payment['order_id'].PHP_EOL;
+//                }
+//            }
+//        }
+    }
 }

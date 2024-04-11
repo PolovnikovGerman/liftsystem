@@ -64,7 +64,7 @@ class Leadorder extends MY_Controller
                 if ($order==0) {
                     $options['order_id']=0;
                     $options['order_head']=$this->load->view('leadorderdetails/head_order_view', $orddata,TRUE);
-                    $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, 1);
+                    $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 1);
                     $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                     $options['order_data']=$order_data;
                     $options['leadsession']=$leadsession;
@@ -97,7 +97,7 @@ class Leadorder extends MY_Controller
                             'brand' => $brand,
                         ];
                         // Build View
-                        $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, 0);
+                        $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT,0);
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
                         $head_options['unlocked']=$engade_res['result'];
@@ -140,7 +140,7 @@ class Leadorder extends MY_Controller
                             'brand' => $res['order']['brand'],
                         ];
                         // Build View
-                        $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $edit);
+                        $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, $edit);
 
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
@@ -227,7 +227,7 @@ class Leadorder extends MY_Controller
                 $mdata['prvorder']=$res['prvorder'];
                 $mdata['nxtorder']=$res['nxtorder'];
                 $mdata['order_system']=$res['order_system_type'];
-                $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE,0);
+                $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 0);
                 /* Save to session */
                 $leadorder=array(
                     'order'=>$orddata,
@@ -387,7 +387,7 @@ class Leadorder extends MY_Controller
                     // Build Head
                     $options['order_head']=$this->load->view('leadorderdetails/head_order_view', $orddata,TRUE);
                     // Build View
-                    $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE,1);
+                    $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 1);
 
                     $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                     // Build Content
@@ -3262,7 +3262,7 @@ class Leadorder extends MY_Controller
                                 'brand' => $brand,
                             ];
                             // Build View
-                            $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, 1);
+                            $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 1);
                             $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                             // Build Content
                             $options['order_data']=$order_data;
@@ -5305,7 +5305,7 @@ class Leadorder extends MY_Controller
                         $orddata=$res['order'];
 
                         // Build View
-                        $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE,0);
+                        $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 0);
 
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content

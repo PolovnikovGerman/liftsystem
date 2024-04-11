@@ -770,6 +770,7 @@ Class Leadorder_model extends My_Model {
             $data['showbilladdress']=1;
         }
         $data['brand'] = $brand;
+        $data['payment_save'] = 0;
         $out['order_system_type']=$defsystem;
         $out['order']=$data;
         $out['numtickets']=0;
@@ -6613,19 +6614,28 @@ Class Leadorder_model extends My_Model {
                 'order_id'=>$order_id,
                 'amount'=>0,
                 'cardnum' =>'',
+                'cardnum_view' => '',
                 'exp_month' =>'',
                 'exp_year' =>'',
                 'cardcode'=>'',
+                'cardcode_view' => '',
                 'exp_date'=>'',
                 'out_amount'=>'',
                 'autopay' =>1,
                 'delflag'=>0,
+                'payment_save' => 0,
             );
         } else {
             foreach ($res as $row) {
                 $row['exp_date']=str_pad($row['exp_month'], 2, '0', STR_PAD_LEFT).'/'.str_pad($row['exp_year'], 2,'0', STR_PAD_LEFT);
                 $row['out_amount']=($row['amount']==0 ? '' : MoneyOutput($row['amount']));
                 $row['delflag']=0;
+                if ($row['payment_save']==1) {
+                    $row['cardnum_view'] = hide_cardnumber($row['cardnum']);
+                } else {
+                    $row['cardnum_view'] = $row['cardnum'];
+                }
+                $row['cardcode_view'] = '';
                 $out[]=$row;
             }
         }

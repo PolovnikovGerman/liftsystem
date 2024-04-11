@@ -825,4 +825,37 @@ if (!function_exists('hide_cardnumber')) {
         return $newcc;
     }
 }
+
+if (!function_exists('hide_card_code')) {
+    function hide_card_code($code)
+    {
+        $newcode = '';
+        for($i=0;$i<strlen($code);$i++) {
+            $symb = substr($code,$i,1);
+            $symb = (intval($symb)+($i+5));
+            if ($symb >= 10) {
+                $symb = $symb - 10;
+            }
+            $newcode.=$symb;
+        }
+        return $newcode;
+    }
+}
+
+if (!function_exists('show_card_code')) {
+    function show_card_code($code)
+    {
+        $newcode = '';
+        for($i=0;$i<strlen($code);$i++) {
+            $symb = substr($code,$i,1);
+            $symb = (intval($symb)-($i+5));
+            if ($symb < 0) {
+                $symb = $symb + 10;
+            }
+            $newcode.=$symb;
+        }
+        return $newcode;
+    }
+}
+
 ?>
