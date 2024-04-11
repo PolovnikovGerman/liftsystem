@@ -88,6 +88,14 @@
                         <div class="infotext">Inventory</div>
                     </div>
                 <?php } ?>
+                <?php if ($adminchk) { ?>
+                    <div class="infoalerts" id="admin">
+                        <div class="alerticon admin" title="Admin">
+                            <img src="/img/icons/cog_white.svg" class="img-responsive"/>
+                        </div>
+                        <!--                    <div class="alerttext">Admin</div>-->
+                    </div>
+                <?php } ?>
             </div>
             <?php if ($test_server==1) { ?>
                 <div class="row">
@@ -108,14 +116,6 @@
                         </div>
                     </div>
                 </div>
-                <?php if ($adminchk) { ?>
-                    <div class="infoalerts" id="admin">
-                        <div class="alerticon admin" title="Admin">
-                            <img src="/img/icons/cog_white.svg" class="img-responsive"/>
-                        </div>
-                        <!--                    <div class="alerttext">Admin</div>-->
-                    </div>
-                <?php } ?>
                 <?php if ($resourcechk) { ?>
                     <div class="infoalerts resources" id="resources">
                         <div class="alerticon" title="Resources">
