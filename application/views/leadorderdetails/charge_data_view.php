@@ -8,9 +8,9 @@
     <div class="pay_method_content1_line">
         <div class="pay_method_inputs">
             <input type="text" class="pay_method_input1 input_border_gray leftalign" readonly="readonly" placeholder="Amount" value="<?=$row['out_amount']?>"/>
-            <input type="text" class="pay_method_input2 input_border_gray leftalign" readonly="readonly" placeholder="Credit Card #" value="<?=$row['cardnum_view']?>"/>
+            <input type="text" class="pay_method_input2 input_border_gray leftalign" readonly="readonly" placeholder="Credit Card #" data-charge="<?=$row['order_payment_id']?>" value="<?=$row['cardnum_view']?>"/>
             <input type="text" class="pay_method_input3 input_border_gray" readonly="readonly" value="<?=$row['exp_date']?>"/>
-            <input type="text" class="pay_method_inputcvc input_border_gray leftalign" readonly="readonly" placeholder="cvc" value="<?=$row['cardcode_view']?>"/>
+            <input type="text" class="pay_method_inputcvc input_border_gray leftalign" readonly="readonly" placeholder="cvc" data-charge="<?=$row['order_payment_id']?>" value="<?=$row['cardcode_view']?>"/>
         </div>
         <!--
         <div class="pay_method_button">

@@ -545,6 +545,7 @@ class Template
                 'order'=>$ord_data,
                 'balanceview'=>$balanceview,
                 'financeview'=>$usrdat['finuser'],
+                'payment_user' => $user_payment,
             );
 
             if ($edit==1) {

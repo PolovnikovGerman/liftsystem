@@ -3167,6 +3167,10 @@ class Leadorder extends MY_Controller
                         if ($fldname=='cardnum') {
                             $mdata['cardnum']=$res['charge']['cardnum'];
                         }
+                        $mdata['hidelock'] = 0;
+                        if ($fldname=='cardnum' || $fldname=='cardcode') {
+                            $mdata['hidelock'] = 1;
+                        }
                         $order=$leadorder['order'];
                         $shipping=$leadorder['shipping'];
                         $shipping_address=$leadorder['shipping_address'];
@@ -3349,9 +3353,12 @@ class Leadorder extends MY_Controller
                     $order = $leadorder['order'];
                     $order_id=$order['order_id'];
                     $charges=$leadorder['charges'];
+                    $user = usersession('usr_data');
                     $options=array(
                         'charges'=>$charges,
                         'order_id'=>$order_id,
+                        'payment_user' => $this->USER_PAYMENT,
+                        'financeview' => $user['finuser'],
                     );
                     $mdata['content']=$this->load->view('leadorderdetails/charge_details_view',$options,TRUE);
                 }
@@ -6199,6 +6206,28 @@ class Leadorder extends MY_Controller
                         ];
                         $mdata['content'] = $this->load->view('leadorderdetails/itemcolor_inventory_view', $options, TRUE);
                     }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function unlockpayparams()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->unlock_payment_content($leadorder, $postdata, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['cardnum'] = $res['cardnum'];
+                    $mdata['cardcode'] = $res['cardcode'];
                 }
             }
             $this->ajaxResponse($mdata, $error);
