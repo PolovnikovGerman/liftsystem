@@ -2917,9 +2917,21 @@ class Leadquote_model extends MY_Model
 
     // List of quotes
     public function leadquotes_count($options) {
+        // Quote Items
+        $this->db->select('q.quote_id, group_concat(qc.item_description, v.item_number) as quote_item');
+        $this->db->from('ts_quotes q');
+        $this->db->join('ts_quote_items qi','qi.quote_id=q.quote_id');
+        $this->db->join('ts_quote_itemcolors qc','qi.quote_item_id = qc.quote_item_id');
+        $this->db->join('v_itemsearch v','v.item_id=qi.item_id');
+        $this->db->group_by('q.quote_id');
+        $item_qry = $this->db->get_compiled_select();
+        $this->db->reset_query();
+
         $this->db->select('count(q.quote_id) as cnt');
         $this->db->from('ts_quotes q');
         $this->db->join('ts_leads l','l.lead_id=q.lead_id');
+        $this->db->join("({$item_qry}) qitem",'qitem.quote_id=q.quote_id');
+
         if (ifset($options,'brand', 'ALL')!=='ALL') {
             if ($options['brand']=='SR') {
                 $this->db->where('q.brand', $options['brand']);
@@ -2928,8 +2940,9 @@ class Leadquote_model extends MY_Model
             }
         }
         if (ifset($options,'search','')!=='') {
-            $this->db->like('concat(coalesce(l.lead_company,\'\'),coalesce(l.lead_customer,\'\'),coalesce(l.lead_phone,\'\'),q.quote_number)', $options['search']);
-        } if (!empty(ifset($options,'replica',''))) {
+            $this->db->like('concat(coalesce(l.lead_company,\'\'),coalesce(l.lead_customer,\'\'),coalesce(l.lead_phone,\'\'),q.quote_number, qitem.quote_item)', $options['search']);
+        }
+        if (!empty(ifset($options,'replica',''))) {
             $this->db->where('q.create_user', $options['replica']);
         }
         $res = $this->db->get()->row_array();
@@ -2937,10 +2950,21 @@ class Leadquote_model extends MY_Model
     }
 
     public function leadquotes_lists($options) {
+        // Quote Items
+        $this->db->select('q.quote_id, group_concat(qc.item_description, v.item_number) as quote_item');
+        $this->db->from('ts_quotes q');
+        $this->db->join('ts_quote_items qi','qi.quote_id=q.quote_id');
+        $this->db->join('ts_quote_itemcolors qc','qi.quote_item_id = qc.quote_item_id');
+        $this->db->join('v_itemsearch v','v.item_id=qi.item_id');
+        $this->db->group_by('q.quote_id');
+        $item_qry = $this->db->get_compiled_select();
+        $this->db->reset_query();
+
         $this->db->select('q.quote_id, q.lead_id, q.quote_date, q.brand, q.quote_number, q.quote_total, l.lead_company, l.lead_customer, u.user_name, u.user_initials');
         $this->db->from('ts_quotes q');
         $this->db->join('users u','u.user_id=q.create_user','left');
         $this->db->join('ts_leads l','l.lead_id=q.lead_id');
+        $this->db->join("({$item_qry}) qitem",'qitem.quote_id=q.quote_id');
         if (ifset($options,'brand', 'ALL')!=='ALL') {
             if ($options['brand']=='SR') {
                 $this->db->where('q.brand', $options['brand']);
@@ -2949,7 +2973,7 @@ class Leadquote_model extends MY_Model
             }
         }
         if (ifset($options,'search','')!=='') {
-            $this->db->like('concat(coalesce(l.lead_company,\'\'),coalesce(l.lead_customer,\'\'),coalesce(l.lead_phone,\'\'),q.quote_number)', $options['search']);
+            $this->db->like('concat(coalesce(l.lead_company,\'\'),coalesce(l.lead_customer,\'\'),coalesce(l.lead_phone,\'\'),q.quote_number, qitem.quote_item)', $options['search']);
         } if (!empty(ifset($options,'replica',''))) {
             $this->db->where('q.create_user', $options['replica']);
         }
