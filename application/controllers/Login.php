@@ -43,7 +43,7 @@ class Login extends Base_Controller
                     $curtime = time();
                     if ($curtime - intval($usrdat['last_verified']) > (24*60*60)) {
                         // Prepare verify
-                        $mdata['content'] = $this->load->view('signin/form_view', [], TRUE);
+                        $mdata['content'] = $this->load->view('page/unlock_content_view', [], TRUE);
                         $mdata['chkcode'] = 1;
                     } else {
                         $mdata['url']='welcome';

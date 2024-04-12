@@ -15,7 +15,7 @@ function init_signin_resize() {
 
     $(".login-form").css('height', heigth);
     $(".signin_form").css('margin-top',marginform);
-    $(".verifycode_form").css('margin-top',marginform);
+    $("#unlockContentModal").css('margin-top',marginform);
 
 }
 function init_signin() {
@@ -27,8 +27,17 @@ function init_signin() {
         $.post(url, params, function (resposne) {
             if (resposne.errors=='') {
                 if (parseInt(resposne.data.chkcode)==1) {
-                    $("#signformarea").empty().html(resposne.data.content);
-                    init_signin_resize();
+                    $("#signformarea").empty();
+                    //.html(resposne.data.content);
+                    // init_signin_resize();
+                    $("#unlockContentModal").find('div.modal-body').empty().html(resposne.data.content);
+                    $("#unlockContentModal").modal({backdrop: 'static', keyboard: false, show: true});
+                    $("#unlockContentModal").on('hidden.bs.modal', function (e) {
+                        $(document.body).addClass('modal-open');
+                    });
+                    $('#unlockContentModal').on('shown.bs.modal', function () {
+                        $('#contentunlock').focus();
+                    });
                     init_codeverify();
                 } else {
                     window.location.href=resposne.data.url;
@@ -61,10 +70,10 @@ function init_signin() {
 }
 
 function init_codeverify() {
-    $("input.verifyformelement").keypress(function(event) {
+    $("input#contentunlock").keypress(function(event) {
         if (event.which == 13) {
             var params = new Array();
-            params.push({name: 'code', value: $("#code").val()});
+            params.push({name: 'code', value: $("#contentunlock").val()});
             var url = '/login/codeverify';
             $.post(url, params, function (resposne) {
                 if (resposne.errors=='') {
@@ -75,9 +84,9 @@ function init_codeverify() {
             },'json');
         }
     });
-    $("#letsverify").unbind('click').click(function () {
+    $(".unlockpaymentbtn").unbind('click').click(function () {
         var params = new Array();
-        params.push({name: 'code', value: $("#code").val()});
+        params.push({name: 'code', value: $("#contentunlock").val()});
         var url = '/login/codeverify';
         $.post(url, params, function (resposne) {
             if (resposne.errors=='') {

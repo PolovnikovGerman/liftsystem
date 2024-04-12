@@ -131,3 +131,22 @@ body div {
         max-width: 7.65rem;
     }
 }
+
+/* Unlock content */
+#unlockContentModal .modal-dialog {
+    width: 310px;
+    /*margin-left: 381px;*/
+    /*margin-top: 223px;*/
+}
+#unlockContentModal .modal-header {
+    background: #000066;
+    color: #ffffff;
+    display: flow;
+}
+#unlockContentModal .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+}
+#unlockContentModal .modal-title {
+    font-weight: 600;
+}

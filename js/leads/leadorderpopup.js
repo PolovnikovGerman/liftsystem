@@ -238,7 +238,6 @@ function navigation_init() {
                 $('#unlockContentModal').on('shown.bs.modal', function () {
                     $('#contentunlock').focus();
                 })
-                $("#unlockContentModal").find('input.unlockcode').focus();
                 init_unlockcontent(paymentid);
             } else {
                 show_error(response);
