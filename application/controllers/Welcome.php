@@ -173,4 +173,15 @@ class Welcome extends MY_Controller {
         show_404();
     }
 
+    public function unlockcontent()
+    {
+        if ($this->isAjax()) {
+            $error = '';
+            $mdata=[];
+            $mdata['content'] = $this->load->view('page/unlock_content_view',[], TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 }

@@ -170,7 +170,7 @@ button.addnewusers {
     margin-bottom: 7px;
 }
 .input_row .labeltxt {
-    clear: both;
+    /* clear: both; */
     float: left;
     font-weight: bold;
     line-height: 18px;
@@ -183,6 +183,9 @@ button.addnewusers {
     float: left;
     width: 202px;
     text-align: left;
+}
+.input_row .inputval.chkbox {
+    width: 20px;
 }
 .input_row .labeltxt.exportaccess {
     width: 180px;

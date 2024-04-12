@@ -64,7 +64,7 @@ class Leadorder extends MY_Controller
                 if ($order==0) {
                     $options['order_id']=0;
                     $options['order_head']=$this->load->view('leadorderdetails/head_order_view', $orddata,TRUE);
-                    $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, 1);
+                    $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 1);
                     $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                     $options['order_data']=$order_data;
                     $options['leadsession']=$leadsession;
@@ -97,7 +97,7 @@ class Leadorder extends MY_Controller
                             'brand' => $brand,
                         ];
                         // Build View
-                        $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, 0);
+                        $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT,0);
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
                         $head_options['unlocked']=$engade_res['result'];
@@ -140,7 +140,7 @@ class Leadorder extends MY_Controller
                             'brand' => $res['order']['brand'],
                         ];
                         // Build View
-                        $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $edit);
+                        $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, $edit);
 
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
@@ -227,7 +227,7 @@ class Leadorder extends MY_Controller
                 $mdata['prvorder']=$res['prvorder'];
                 $mdata['nxtorder']=$res['nxtorder'];
                 $mdata['order_system']=$res['order_system_type'];
-                $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE,0);
+                $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 0);
                 /* Save to session */
                 $leadorder=array(
                     'order'=>$orddata,
@@ -387,7 +387,7 @@ class Leadorder extends MY_Controller
                     // Build Head
                     $options['order_head']=$this->load->view('leadorderdetails/head_order_view', $orddata,TRUE);
                     // Build View
-                    $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE,1);
+                    $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 1);
 
                     $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                     // Build Content
@@ -3167,6 +3167,10 @@ class Leadorder extends MY_Controller
                         if ($fldname=='cardnum') {
                             $mdata['cardnum']=$res['charge']['cardnum'];
                         }
+                        $mdata['hidelock'] = 0;
+                        if ($fldname=='cardnum' || $fldname=='cardcode') {
+                            $mdata['hidelock'] = 1;
+                        }
                         $order=$leadorder['order'];
                         $shipping=$leadorder['shipping'];
                         $shipping_address=$leadorder['shipping_address'];
@@ -3262,7 +3266,7 @@ class Leadorder extends MY_Controller
                                 'brand' => $brand,
                             ];
                             // Build View
-                            $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, 1);
+                            $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 1);
                             $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                             // Build Content
                             $options['order_data']=$order_data;
@@ -3349,9 +3353,12 @@ class Leadorder extends MY_Controller
                     $order = $leadorder['order'];
                     $order_id=$order['order_id'];
                     $charges=$leadorder['charges'];
+                    $user = usersession('usr_data');
                     $options=array(
                         'charges'=>$charges,
                         'order_id'=>$order_id,
+                        'payment_user' => $this->USER_PAYMENT,
+                        'financeview' => $user['finuser'],
                     );
                     $mdata['content']=$this->load->view('leadorderdetails/charge_details_view',$options,TRUE);
                 }
@@ -5305,7 +5312,7 @@ class Leadorder extends MY_Controller
                         $orddata=$res['order'];
 
                         // Build View
-                        $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE,0);
+                        $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 0);
 
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
@@ -6213,4 +6220,26 @@ class Leadorder extends MY_Controller
         echo json_encode($list);
     }
 
+
+    public function unlockpayparams()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->unlock_payment_content($leadorder, $postdata, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['cardnum'] = $res['cardnum'];
+                    $mdata['cardcode'] = $res['cardcode'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }

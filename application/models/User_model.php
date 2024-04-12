@@ -348,6 +348,7 @@ Class User_model extends MY_Model
             'user_passwd_txt1' => '',
             'user_passwd_txt2' => '',
             'profit_view'=>'Points',
+            'user_payuser' => 0,
         ];
         return $data;
     }
@@ -504,12 +505,15 @@ Class User_model extends MY_Model
             $this->db->set('profit_view', $user['profit_view']);
             $this->db->set('user_page', ifset($user,'user_page',NULL));
             $this->db->set('user_order_export', ifset($user,'user_order_export',0));
+            $this->db->set('user_payuser', $user['user_payuser']);
             if ($user['user_id']==0) {
                 $this->db->set('created_at', date('Y-m-d H:i:s'));
                 $this->db->set('created_by', $updusr);
                 $this->db->set('updated_by', $updusr);
                 $this->db->insert('users');
                 $user_id = $this->db->insert_id();
+                // Generate secret
+                $this->_secret_code($user, $user_id);
             } else {
                 $this->db->set('updated_by', $updusr);
                 $this->db->where('user_id', $user['user_id']);
@@ -522,6 +526,7 @@ Class User_model extends MY_Model
                 if (!empty($user['user_passwd_txt1'])) {
                     $this->db->set('user_passwd', md5($user['user_passwd_txt1']));
                     $this->db->set('user_passwd_txt', $user['user_passwd_txt1']);
+                    $this->db->set('last_verified', 0);
                     $this->db->where('user_id', $user_id);
                     $this->db->update('users');
                     // Delete access tokens
@@ -762,6 +767,47 @@ Class User_model extends MY_Model
             }
         }
         return $out;
+    }
+
+    private function _secret_code($user, $user_id)
+    {
+        // Init Mail
+        $this->load->library('email');
+        $email_conf = array(
+            'protocol' => 'sendmail',
+            'charset' => 'utf-8',
+            'wordwrap' => TRUE,
+            'mailtype' => 'html',
+        );
+        $this->email->initialize($email_conf);
+        $email_from = 'admin@bluetrack.com';
+        // Init GA
+        $this->load->library('GoogleAuthenticator');
+        $ga = new GoogleAuthenticator();
+        $secret = $ga->generateSecret();
+        $this->db->where('user_id', $user_id);
+        $this->db->set('user_secret', $secret);
+        $this->db->update('users');
+        $usrlogin = $user['userlogin'];
+        if (empty($usrlogin)) {
+            $usrlogin = $user['user_email'];
+        }
+        $url = $ga->getUrl($usrlogin, 'lift.bluetrack.com', $secret);
+        $options = [
+            'user_name' => $user['user_name'],
+            'secret' => $secret,
+            'url' => $url,
+            'manual_url' => 'https://support.google.com/accounts/answer/1066447?hl=en',
+        ];
+        $message_body = $this->load->view('messages/secret_update_view', $options, TRUE);
+        $this->email->to($user['user_email']);
+        $this->email->from($email_from);
+        $mail_subj = 'Update account security';
+        $this->email->subject($mail_subj);
+        $this->email->message($message_body);
+        $this->email->send();
+        $this->email->clear(TRUE);
+        return TRUE;
     }
 
 }
