@@ -44,14 +44,18 @@
                 <legend>Add'l Info</legend>
                 <div class="input_row">
                     <div class="labeltxt">Leads Rep:</div>
-                    <div class="inputval">
+                    <div class="inputval chkbox">
                         <input type="checkbox" class="userpersdatachk" data-name="user_leadrep" id="user_leadrep" value="1" <?=($user['user_leadrep']==1 ? 'checked="checked"' : '')?> />
+                    </div>
+                    <div class="labeltxt">Finance User:</div>
+                    <div class="inputval chkbox">
+                        <input type="checkbox" class="userpersdatachk" data-name="finuser" id="finuser" value="1" <?=($user['finuser']==1 ? 'checked="checked"' : '')?> />
                     </div>
                 </div>
                 <div class="input_row">
-                    <div class="labeltxt">Finance User:</div>
-                    <div class="inputval">
-                        <input type="checkbox" class="userpersdatachk" data-name="finuser" id="finuser" value="1" <?=($user['finuser']==1 ? 'checked="checked"' : '')?> />
+                    <div class="labeltxt">Payment User:</div>
+                    <div class="inputval chkbox">
+                        <input type="checkbox" class="userpersdatachk" data-name="user_payuser" id="user_payuser" value="1" <?=($user['user_payuser']==1 ? 'checked="checked"' : '')?> />
                     </div>
                 </div>
                 <div class="input_row">

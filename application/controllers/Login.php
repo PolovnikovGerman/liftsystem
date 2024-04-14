@@ -10,6 +10,7 @@ class Login extends Base_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('user_model');
     }
 
     public function index() {
@@ -32,25 +33,67 @@ class Login extends Base_Controller
         if ($this->isAjax()) {
             $mdata=[];
             $postdata = $this->input->post();
-            $this->load->model('user_model');
             $res = $this->user_model->login($postdata);
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';
-                $mdata['url']='welcome';
+                $mdata['chkcode'] = 0;
                 $usrdat = $res['usrdat'];
-                if (ifset($usrdat, 'user_page',0) > 0) {
-                   $mdata['url'] = $this->user_model->default_page($usrdat['user_page']);
+                if (!empty($usrdat['user_secret'])) {
+                    $curtime = time();
+                    if ($curtime - intval($usrdat['last_verified']) > (24*60*60)) {
+                        // Prepare verify
+                        $mdata['content'] = $this->load->view('page/unlock_content_view', [], TRUE);
+                        $mdata['chkcode'] = 1;
+                    } else {
+                        $mdata['url']='welcome';
+                        if (ifset($usrdat, 'user_page',0) > 0) {
+                            $mdata['url'] = $this->user_model->default_page($usrdat['user_page']);
+                        }
+                        $this->load->model('useractivity_model');
+                        $this->useractivity_model->userlog($usrdat['user_id'],'Sign in', 1);
+                    }
+                } else {
+                    $mdata['url']='welcome';
+                    if (ifset($usrdat, 'user_page',0) > 0) {
+                        $mdata['url'] = $this->user_model->default_page($usrdat['user_page']);
+                    }
+                    $this->load->model('useractivity_model');
+                    $this->useractivity_model->userlog($usrdat['user_id'],'Sign in', 1);
                 }
-                $this->load->model('useractivity_model');
-                $this->useractivity_model->userlog($usrdat['user_id'],'Sign in', 1);
             }
             $this->ajaxResponse($mdata, $error);
         }
     }
 
+    // Verify code
+    public function codeverify()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Very Code';
+            $postdata = $this->input->post();
+            $code = ifset($postdata,'code','');
+            if (!empty($code)) {
+                $res = $this->user_model->verify_user_code($code);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['url']='welcome';
+                    if (ifset($res, 'user_page',0) > 0) {
+                        $mdata['url'] = $this->user_model->default_page($res['user_page']);
+                    }
+                    $this->load->model('useractivity_model');
+                    $this->useractivity_model->userlog($res['user_id'],'Verify Account', 1);
+
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function logout() {
-        $this->load->model('user_model');
         $this->user_model->signout();
         redirect('/login');
     }
