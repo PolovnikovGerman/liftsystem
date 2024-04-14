@@ -2,7 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?=$title?></title>
 <link rel="shortcut icon" href="/img/lift_favicon_180x180.ico" type="image/ico">
-<-- IOS -->
+<!-- IOS -->
 <link rel="apple-touch-icon" href="/img/lift_favicon_180x180.ico">
 <link rel="stylesheet" href="/css/page_view/public.css?v=<?=getsitecssversion()?>">
 <!--<link rel="stylesheet" href="/css/page_view/bootstrap.min.css">-->
