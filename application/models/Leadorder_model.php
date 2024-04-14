@@ -3149,7 +3149,17 @@ Class Leadorder_model extends My_Model {
         if ($fldname=='cardnum' && !empty($newval)) {
             $newval=creditcard_format($newval);
         }
-        $charges[$chrgidx][$fldname]=$newval;
+        if ($fldname=='cardnum') {
+            $charges[$chrgidx][$fldname]=$newval;
+            $charges[$chrgidx]['cardnum_view']=$newval;
+            $charges[$chrgidx]['payment_save'] = 0;
+        } elseif ($fldname=='cardcode') {
+            $charges[$chrgidx][$fldname]=$newval;
+            $charges[$chrgidx]['cardcode_view']=$newval;
+            $charges[$chrgidx]['payment_save'] = 0;
+        } else {
+            $charges[$chrgidx][$fldname]=$newval;
+        }
         $out['charge']=$charges[$chrgidx];
         $leadorder['charges']=$charges;
         usersession($ordersession, $leadorder);
@@ -3295,8 +3305,8 @@ Class Leadorder_model extends My_Model {
                 'cardcode'=>$charge['cardcode'],
             ];
             $this->_save_order_paymentlog($order_id, $usr_id, $transres['transaction_id'], $cc_options, 1);
-            $charge['cardnum'] = hide_cardnumber($cardnum);
-            $charge['cardcode'] = '';
+            // $charge['cardnum'] = hide_cardnumber($cardnum);
+            // $charge['cardcode'] = '';
             // Batch data
             $paymethod='';
             if ($pay_options['cardtype']=='amex') {
@@ -3352,7 +3362,7 @@ Class Leadorder_model extends My_Model {
     public function add_chargedata($leadorder, $ordersession) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $order=$leadorder['order'];
-        $total_due=$order['revenue']-$order['payment_total'];
+        $total_due=floatval($order['revenue'])-floatval($order['payment_total']);
 
         $charges=$leadorder['charges'];
         $newidx=count($charges)+1;
@@ -3375,6 +3385,9 @@ Class Leadorder_model extends My_Model {
             }
         }
         $newpay['delflag']=0;
+        $newpay['cardnum_view'] = '';
+        $newpay['cardcode_view'] = '';
+        $newpay['payment_save'] = 0;
         $charges[]=$newpay;
         $out['charges']=$charges;
         $leadorder['charges']=$charges;
@@ -5613,8 +5626,13 @@ Class Leadorder_model extends My_Model {
             $this->db->set('cardnum', $row['cardnum']);
             $this->db->set('exp_month', intval($row['exp_month']));
             $this->db->set('exp_year', intval($row['exp_year']));
-            $this->db->set('cardcode', $row['cardcode']);
+            if ($row['payment_save']==0) {
+                $this->db->set('cardcode', hide_card_code($row['cardcode']));
+            } else {
+                $this->db->set('cardcode', $row['cardcode']);
+            }
             $this->db->set('autopay', intval($row['autopay']));
+            $this->db->set('payment_save',1);
             if ($row['order_payment_id']<0) {
                 $this->db->set('order_id', $order_id);
                 $this->db->insert('ts_order_payments');
@@ -6613,19 +6631,28 @@ Class Leadorder_model extends My_Model {
                 'order_id'=>$order_id,
                 'amount'=>0,
                 'cardnum' =>'',
+                'cardnum_view' => '',
                 'exp_month' =>'',
                 'exp_year' =>'',
                 'cardcode'=>'',
+                'cardcode_view' => '',
                 'exp_date'=>'',
                 'out_amount'=>'',
                 'autopay' =>1,
                 'delflag'=>0,
+                'payment_save' => 0,
             );
         } else {
             foreach ($res as $row) {
                 $row['exp_date']=str_pad($row['exp_month'], 2, '0', STR_PAD_LEFT).'/'.str_pad($row['exp_year'], 2,'0', STR_PAD_LEFT);
                 $row['out_amount']=($row['amount']==0 ? '' : MoneyOutput($row['amount']));
                 $row['delflag']=0;
+                if ($row['payment_save']==1) {
+                    $row['cardnum_view'] = hide_cardnumber($row['cardnum']);
+                } else {
+                    $row['cardnum_view'] = $row['cardnum'];
+                }
+                $row['cardcode_view'] = '';
                 $out[]=$row;
             }
         }
@@ -10873,6 +10900,50 @@ Class Leadorder_model extends My_Model {
             }
         }
         // $item_number = $order_items[$idx]['item_number'];
+        usersession($ordersession, $leadorder);
+        return $out;
+    }
+
+    public function unlock_payment_content($leadorder, $postdata, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Payment Not Found'];
+        $user = usersession('usr_data');
+        $secret = $user['user_secret'];
+        $code = ifset($postdata,'code','');
+        $order_payment_id = ifset($postdata, 'order_payment_id', 0);
+        if (!empty($order_payment_id)) {
+            $out['msg'] = 'Code Empty';
+            if (!empty($code)) {
+                $out['msg'] = 'Invalid Verification code';
+                $this->load->library('GoogleAuthenticator');
+                $ga = new GoogleAuthenticator();
+                $chkcode=$ga->getCode($secret);
+                if ($chkcode==$code) {
+                    $out['msg'] = 'Payment Not Found';
+                    $charges = $leadorder['charges'];
+                    $found = 0;
+                    $chidx = 0;
+                    foreach ($charges as $charge) {
+                        if ($charge['order_payment_id']==$order_payment_id) {
+                            $found=1;
+                            break;
+                        }
+                        $chidx++;
+                    }
+                    if ($found==1) {
+                        $out['result'] = $this->success_result;
+                        $out['cardnum'] = $charge['cardnum'];
+                        $out['cardcode'] = show_card_code($charge['cardcode']);
+                        $charges[$chidx]['cardnum_view'] = $charge['cardnum'];
+                        $charges[$chidx]['cardcode_view'] = show_card_code($charge['cardcode']);
+                        $charges[$chidx]['cardcode'] = $charges[$chidx]['cardcode_view'];
+                        $charges[$chidx]['payment_save'] = 0;
+                        $leadorder['charges'] = $charges;
+                        usersession($ordersession, $leadorder);
+                    }
+                }
+            }
+        }
         return $out;
     }
 }
