@@ -27,27 +27,31 @@ Class User_model extends MY_Model
         }
         if (ifset($user,'id',0)>0) {
             /* Try to check Cooikie */
-            $this->db->select('user_status');
+            $this->db->select('user_status, user_secret, last_verified');
             $this->db->from('users');
             $this->db->where('user_id', $user['id']);
             $chkres=$this->db->get()->row_array();
-            if ($chkres['user_status']==1) {
-                $out['result'] = $this->success_result;
-                $out['data'] = $user;
-                usersession('usr_data', $user);
-                // If empty cookie
-                if ($cookie) {
-                    $server=$this->input->server('SERVER_NAME');
-                    $cookienew = array(
-                        'name'   => 'acctoken',
-                        'value'  => $cookie,
-                        'expire' => '86500',
-                        'domain' => $server,
-                        'path'   => '/; SameSite=Strict',
-                        'secure' => TRUE,
-                        'httponly' => TRUE,
-                    );
-                    set_cookie($cookienew);
+            if (!empty($chkres['user_secret']) && empty($chkres['last_verified'])) {
+                usersession('usr_data', null);
+            } else {
+                if ($chkres['user_status']==1) {
+                    $out['result'] = $this->success_result;
+                    $out['data'] = $user;
+                    usersession('usr_data', $user);
+                    // If empty cookie
+                    if ($cookie) {
+                        $server=$this->input->server('SERVER_NAME');
+                        $cookienew = array(
+                            'name'   => 'acctoken',
+                            'value'  => $cookie,
+                            'expire' => '86500',
+                            'domain' => $server,
+                            'path'   => '/; SameSite=Strict',
+                            'secure' => TRUE,
+                            'httponly' => TRUE,
+                        );
+                        set_cookie($cookienew);
+                    }
                 }
             }
         }
