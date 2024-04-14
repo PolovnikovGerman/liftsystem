@@ -3534,4 +3534,24 @@ class Test extends CI_Controller
 //            }
 //        }
     }
+
+    public function updateweborders()
+    {
+        $this->db->select('s.order_id, s.order_num, s.payment_card_type, s.payment_card_number, s.payment_card_vn, o.order_id, p.order_payment_id, p.cardnum');
+        $this->db->from('sb_orders s');
+        $this->db->join('ts_orders o','o.order_num=s.order_num');
+        $this->db->join('ts_order_payments p','o.order_id = p.order_id');
+        $this->db->where('s.order_id >= ',10481);
+        $weborders = $this->db->get()->result_array();
+        foreach ($weborders as $weborder) {
+            if (!empty($weborder['cardnum'])) {
+                $this->db->where('order_payment_id', $weborder['order_payment_id']);
+                $this->db->set('cardnum', $weborder['payment_card_number']);
+                $this->db->set('cardcode', hide_card_code($weborder['payment_card_vn']));
+                $this->db->set('payment_save',1);
+                $this->db->update('ts_order_payments');
+                echo 'Order '.$weborder['order_num'].' Updated'.PHP_EOL;
+            }
+        }
+    }
 }
