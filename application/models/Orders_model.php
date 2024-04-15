@@ -6773,15 +6773,17 @@ Class Orders_model extends MY_Model
             $this->db->set('cc_fee', ($item['total'] - $pureval));
             $this->db->update('ts_orders');
             // Charge value
-            $cardnum = hide_cardnumber($orddata['payment_card_number']);
+            // $cardnum = hide_cardnumber($orddata['payment_card_number']);
+            $cardnum = creditcard_format($orddata['payment_card_number']);
             $this->db->set('order_id', $neword);
             // $this->db->set('cardnum', $orddata['payment_card_number']);
             $this->db->set('cardnum', $cardnum);
             $this->db->set('exp_month', $orddata['payment_card_month']);
             $this->db->set('exp_year', $orddata['payment_card_year']);
             // Remove save cvv code
-            // $this->db->set('cardcode', $orddata['payment_card_vn']);
+            $this->db->set('cardcode', hide_card_code($orddata['payment_card_vn']));
             $this->db->set('autopay', 1);
+            $this->db->set('payment_save',1);
             $this->db->insert('ts_order_payments');
         }
         return $out;
