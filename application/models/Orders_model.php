@@ -8290,7 +8290,7 @@ Class Orders_model extends MY_Model
         return $out;
     }
 
-    public function orderonline_details($order_id)
+    public function orderonline_details($order_id, $user_payment=0)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Unknown order'];
         $this->db->select("o.*,concat(coalesce(o.shipping_street1,''),' ',coalesce(o.shipping_street2,'')) as ship_street,sc.country_name as ship_cnt, sc.country_iso_code_2 as ship_cntcode");
@@ -8301,7 +8301,6 @@ Class Orders_model extends MY_Model
         $this->db->join('sb_countries sc', 'sc.country_id=o.shipping_country_id', 'left');
         $this->db->join('sb_countries bc', 'bc.country_id=o.billing_country_id', 'left');
         $this->db->join('sb_payment_cards pp', 'pp.payment_card_id=o.payment_card_type', 'left');
-        // $this->db->join('sb_items i', 'i.item_id=o.order_item_id', 'left');
         $this->db->join('sb_shipping_methods ss', 'ss.shipping_method_id=o.shipping_method', 'left');
         $this->db->join('sb_coupons disc', 'disc.coupon_id=o.coupon_id', 'left');
         $this->db->where('o.order_id', $order_id);
@@ -8398,12 +8397,44 @@ Class Orders_model extends MY_Model
                 $res['item_number'] = '';
             }
             $res['payment_exp'] = $res['payment_card_month'] . '/' . $res['payment_card_year'];
+            $res['payment_lock'] = 0;
+            if (intval($res['ccnumb_hide'])==0) {
+                $res['payment_card_number'] = hide_cardnumber($res['payment_card_number']);
+                $res['payment_card_vn']='';
+                if ($user_payment==1) {
+                    $res['payment_lock'] = 1;
+                }
+            }
             $pure_price = round($res['item_qty'] * $res['item_price'], 2);
             $res['pure_price'] = number_format($pure_price, 2);
             $res['total'] = number_format($res['order_total'], 2);
             /* Get Order num */
             $out['result'] = $this->success_result;
             $out['data'] = $res;
+        }
+        return $out;
+    }
+
+    public function online_payment_view($code, $order_id, $usr_id)
+    {
+        $out=['result' => $this->error_result,'msg' => 'User Secret Key not Found'];
+        $user = usersession('usr_data');
+        $secret = $user['user_secret'];
+        if (!empty($secret)) {
+            $out['msg'] = 'Invalid Verification code';
+            $this->load->library('GoogleAuthenticator');
+            $ga = new GoogleAuthenticator();
+            $chkcode=$ga->getCode($secret);
+            if ($chkcode==$code) {
+                $out['msg'] = 'Order Not Found';
+                $this->db->select('order_id, payment_card_number, payment_card_vn')->from('sb_orders')->where('order_id', $order_id);
+                $data = $this->db->get()->row_array();
+                if (ifset($data,'order_id',0)==$order_id) {
+                    $out['result'] = $this->success_result;
+                    $out['cardnum'] = creditcard_format($data['payment_card_number']);
+                    $out['cardcode'] = $data['payment_card_vn'];
+                }
+            }
         }
         return $out;
     }
