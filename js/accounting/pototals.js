@@ -311,8 +311,8 @@ function search_poorderdata(order_num) {
                 $(".orderitemnameplace").empty().html(response.data.item);
                 $(".amountprofitval").empty().html(response.data.profitval);
                 $(".amountprofitprc").empty().html(response.data.profitprc);
-                $(".amountprofitval").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profitclass);
-                $(".amountprofitprc").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profitclass);
+                $(".amountprofitval").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').removeClass('dark_green').addClass(response.data.profitclass);
+                $(".amountprofitprc").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').removeClass('dark_green').addClass(response.data.profitclass);
             }
         } else {
             show_error(response);
@@ -328,8 +328,8 @@ function order_purchase_details(order_num) {
             $(".orderitemnameplace").empty().html(response.data.item);
             $(".amountprofitval").empty().html(response.data.profitval);
             $(".amountprofitprc").empty().html(response.data.profitprc);
-            $(".amountprofitval").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profitclass);
-            $(".amountprofitprc").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profitclass);
+            $(".amountprofitval").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').removeClass('dark_green').addClass(response.data.profitclass);
+            $(".amountprofitprc").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').removeClass('dark_green').addClass(response.data.profitclass);
             if (parseInt(response.data.vendor_id)>0) {
                 $(".amountvendorselect").val(response.data.vendor_id);
             }
@@ -358,8 +358,8 @@ function save_amntdetails(fldname, newval) {
     $.post(url, {'fld': fldname, 'value':newval}, function(response){
         if (response.errors=='') {
             if (response.data.profit_class) {
-                $("div.amountprofitval").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profit_class);
-                $("div.amountprofitprc").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').addClass(response.data.profit_class);
+                $("div.amountprofitval").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').removeClass('dark_green').addClass(response.data.profit_class);
+                $("div.amountprofitprc").removeClass('projprof').removeClass('green').removeClass('red').removeClass('black').removeClass('orange').removeClass('moroon').removeClass('white').removeClass('dark_green').addClass(response.data.profit_class);
             }
             if (response.data.profit_perc) {
                 $("div.amountprofitprc").empty().html(response.data.profit_perc);

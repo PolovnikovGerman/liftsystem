@@ -101,6 +101,7 @@ class MY_Controller extends Base_Controller
     public $USER_EMAIL='';
     public $USER_REPLICA='';
     public $USER_ORDER_EXPORT=0;
+    public $USER_PAYMENT = 0;
 
     public function __construct()
     {
@@ -130,6 +131,7 @@ class MY_Controller extends Base_Controller
         $this->URER_LOGO = $userdat['user_logo'];
         $this->USER_REPLICA=$userdat['user_replica'];
         $this->USER_ORDER_EXPORT = intval(ifset($userdat, 'user_order_export',0));
+        $this->USER_PAYMENT = intval(ifset($userdat, 'user_payuser',0));
     }
 
     public function userlog($user_id, $action='', $activity=0) {

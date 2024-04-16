@@ -1575,6 +1575,15 @@ span.taxemptyview {
     height: 15px;
     margin: 0 0 0 3px;
 }
+/* Lock method */
+.paymentdetails_unlock {
+    float: left;
+    width: 19px;
+    height: 16px;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+}
 .pay_method_add {
     float: left;
     font-size: 11px;
@@ -5550,6 +5559,24 @@ input.ticket_date {
     z-index: 1500!important;
     width: 325px!important;
 }
+/* Unlock content */
+#unlockContentModal .modal-dialog {
+    width: 300px;
+    margin-left: 381px;
+    margin-top: 223px;
+}
+#unlockContentModal .modal-header {
+    background: #000066;
+    color: #ffffff;
+}
+#unlockContentModal .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+}
+#unlockContentModal .modal-title {
+    font-weight: 600;
+}
+
 .autocompleter,
 .autocompleter-closed {
     top: 37px;

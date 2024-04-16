@@ -224,6 +224,26 @@ function navigation_init() {
         copyOrderToClipboard(element);
         $(element).show();
     });
+    // Unlock Payment
+    $(".paymentdetails_unlock").unbind('click').click(function (){
+        var paymentid = $(this).data('payid');
+        var url = '/welcome/unlockcontent';
+        $.post(url, [], function(response){
+            if (response.errors=='') {
+                $("#unlockContentModal").find('div.modal-body').empty().html(response.data.content);
+                $("#unlockContentModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#unlockContentModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                });
+                $('#unlockContentModal').on('shown.bs.modal', function () {
+                    $('#contentunlock').focus();
+                })
+                init_unlockcontent(paymentid);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 
@@ -3705,6 +3725,10 @@ function init_leadorder_charges() {
                 if (fldname=='cardnum') {                    
                     $("input.pay_method_input2[data-charge='"+chargeid+"']").val(response.data.cardnum);
                 }
+                if (parseInt(response.data.hidelock)==1) {
+                    $(".paymentdetails_unlock[data-payid='"+chargeid+"']").hide();
+                    $(".pay_method_buttonsend[data-charge='"+chargeid+"']").show();
+                }
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
             } else {
@@ -3846,7 +3870,28 @@ function init_leadorder_charges() {
                 $(".chargeinput[data-charge='"+charge_id+"'][data-field='cardcode']").val('');
             }
         },'json');
-    })
+    });
+    // Unlock Payment
+    $(".paymentdetails_unlock").unbind('click').click(function (){
+        var paymentid = $(this).data('payid');
+        var url = '/welcome/unlockcontent';
+        $.post(url, [], function(response){
+            if (response.errors=='') {
+                $("#unlockContentModal").find('div.modal-body').empty().html(response.data.content);
+                $("#unlockContentModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#unlockContentModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                });
+                $('#unlockContentModal').on('shown.bs.modal', function () {
+                    $('#contentunlock').focus();
+                })
+                $("#unlockContentModal").find('input.unlockcode').focus();
+                init_unlockcontent(paymentid);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 function save_creditappdoc(newdoc, srcname) {
@@ -5568,4 +5613,47 @@ function leadordernewitem() {
         $(".addnewitem").select2('open');
         $("input.select2-search__field").focus();
     });
+}
+
+function init_unlockcontent(paymentid) {
+    $("input#contentunlock").keypress(function(event) {
+        if (event.which == 13) {
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'code', value: $("input#contentunlock").val()});
+            params.push({name: 'order_payment_id', value: paymentid});
+            var url = '/leadorder/unlockpayparams';
+            $.post(url, params, function (resposne) {
+                if (resposne.errors=='') {
+                    $("input.pay_method_input2[data-charge='"+paymentid+"']").val(resposne.data.cardnum);
+                    $("input.pay_method_inputcvc[data-charge='"+paymentid+"']").val(resposne.data.cardcode);
+                    $("#unlockContentModal").modal('hide');
+                    $(".paymentdetails_unlock[data-payid='"+paymentid+"']").hide();
+                    $(".pay_method_buttonsend[data-charge='"+paymentid+"']").show();
+                } else {
+                    show_error(resposne);
+                }
+            },'json');
+        }
+    });
+    $(".unlockpaymentbtn").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'code', value: $("input#contentunlock").val()});
+        params.push({name: 'order_payment_id', value: paymentid});
+        var url = '/leadorder/unlockpayparams';
+        $.post(url, params, function (resposne) {
+            if (resposne.errors=='') {
+                $("input.pay_method_input2[data-charge='"+paymentid+"']").val(resposne.data.cardnum);
+                $("input.pay_method_inputcvc[data-charge='"+paymentid+"']").val(resposne.data.cardcode);
+                $("#unlockContentModal").modal('hide');
+                $(".paymentdetails_unlock[data-payid='"+paymentid+"']").hide();
+                $(".pay_method_buttonsend[data-charge='"+paymentid+"']").show();
+            } else {
+                show_error(resposne);
+            }
+        },'json');
+    });
+
+
 }

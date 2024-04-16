@@ -1462,7 +1462,7 @@ class Leadquote extends MY_Controller
 
                     $options['order_id'] = 0;
                     $options['order_head'] = $this->load->view('leadorderdetails/head_order_view', $orddata, TRUE);
-                    $data = $this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, 1);
+                    $data = $this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT,1);
                     $order_data = $this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                     $options['order_data'] = $order_data;
                     $options['leadsession'] = $leadsession;
