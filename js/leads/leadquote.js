@@ -1317,10 +1317,14 @@ function init_srinventory_quote(quoteitem_id, color_id) {
             params.push({name: 'newval', value: $(this).data('itemcolor')});
         } else {
             url = '/leadquote/quoteitemchange'
+            var item = quoteitem_id;
+            var itemcolor = color_id;
+            var colorname = $(this).data('itemcolor');
             params.push({name: 'session', value: $("#quotesessionid").val()});
             params.push({name: 'item', value: quoteitem_id});
             params.push({name: 'itemcolor', value: color_id});
-            params.push({name: 'paramname', value: 'color'})
+            // params.push({name: 'paramname', value: 'color'})
+            params.push({name: 'fld', value: 'color'})
             params.push({name: 'newval', value: $(this).data('itemcolor')});
         }
         $.post(url, params, function (response){
@@ -1332,6 +1336,8 @@ function init_srinventory_quote(quoteitem_id, color_id) {
                     $(".quoteitems_content_addqty").find('input.quoteitem_qty').focus();
                     init_addnewquoteitem();
                 } else {
+                    $(".quoteitem_inventoryview").hide();
+                    $(".addnewquotecolor[data-item='"+itemcolor+"'][data-quoteitem='"+item+"']").empty().html(colorname);
                     if (parseInt(response.data.refresh)==1) {
                         $(".quoteitemsarea[data-quoteitem='"+item+"']").empty().html(response.data.itemcontent);
                     } else {

@@ -831,7 +831,7 @@ class Leadquote_model extends MY_Model
                         }
                         $items[$itemidx]['items'][$ridx]['qtyinput_class']='normal';
                         $rowtotal = $items[$itemidx]['items'][$ridx]['item_qty']*$items[$itemidx]['items'][$ridx]['item_price'];
-                        $items[$itemidx]['items'][$ridx]['item_subtotal']=MoneyOutput($rowtotal);
+                        $items[$itemidx]['items'][$ridx]['item_subtotal']=$rowtotal;
                         $ridx++;
                     }
                     // Change imprints
@@ -880,6 +880,7 @@ class Leadquote_model extends MY_Model
         if ($quote_item_id!==0) {
             $itemidx = 0;
             $items = $session['items'];
+            $quote = $session['quote'];
             foreach ($items as $item) {
                 if ($item['quote_item_id']==$quote_item_id) {
                     $itemcolors = $item['items'];
@@ -920,7 +921,11 @@ class Leadquote_model extends MY_Model
                         'colors'=>$newitemcolor['colors'],
                         'item_color'=>$newitemcolor['item_color'],
                     );
-                    $newitemcolor['out_colors']=$this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
+                    if ($quote['brand']=='SR') {
+                        $newitemcolor['out_colors']=$this->load->view('leadpopup/quotesritem_color_choice', $options, TRUE);
+                    } else {
+                        $newitemcolor['out_colors']=$this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
+                    }
                     $itemcolors[] = $newitemcolor;
                     $items[$itemidx]['items'] = $itemcolors;
                     $session['items'] = $items;
