@@ -564,7 +564,16 @@ function init_leadquotes_content() {
             $("#loader").show();
             $.post(url, params, function(response){
                 if (response.errors=='') {
-                    $(".quoteitemsarea[data-quoteitem='"+item+"']").empty();
+                    $("#quoteitemtabledata").empty().html(response.data.itemcontent);
+                    if (parseInt(response.data.newitem)==1) {
+                        $('select.addnewquoteitem').select2({
+                            dropdownParent: $('#leadformModal'),
+                            matcher: matchStart,
+                        });
+                        $('select.addnewquoteitem').select2('open');
+                    } else {
+                        $(".addquoteitem").show();
+                    }
                     $(".quoteleadtime").empty().html(response.data.leadtime);
                     $(".quoteshippingcostarea").empty().html(response.data.shippingview);
                     $(".quotecommondatainpt[data-item='sales_tax']").val(response.data.tax);
@@ -638,87 +647,33 @@ function init_leadquotes_content() {
 function show_leadquoteitemsearch() {
     var params=new Array();
     params.push({name: 'session', value: $("#quotesessionid").val()});
-    var url="/leadquote/show_itemsearch";
-    $.post(url,params,function(response){
+    var url="/leadquote/addquoteitem";
+    $("#loader").show();
+    $.post(url, params, function(response){
         if (response.errors=='') {
-            $("#artNextModal").find('div.modal-dialog').css('width','455px');
-            $("#artNextModal").find('.modal-title').empty().html('Quote Item');
-            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
-            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
-            $("#artNextModal").on('hidden.bs.modal', function (e) {
-                $(document.body).addClass('modal-open');
-            })
-            if (response.data.showother=='1') {
-                $("div.quote_itemedit_text").show();
-            } else {
-                $("div.quote_itemedit_text").hide();
-            }
-            // $("select#orderitem_id").searchable();
-            $('#quoteitem_id').select2({
-                dropdownParent: $('#artNextModal'),
+            $("#quoteitemtabledata").empty().html(response.data.item_content);
+            // $(".quoteleadtime").empty().html(response.data.leadtime);
+            // $(".quoteshippingcostarea").empty().html(response.data.shippingview);
+            // $("input[data-item='sales_tax']").val(response.data.tax);
+            // $("input[data-item='rush_cost']").val(response.data.rush_cost);
+            // $("input[data-item='shipping_cost']").val(response.data.shipping_cost);
+            // $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
+            // $(".quotetotalvalue").empty().html(response.data.total);
+            $("#loader").hide();
+            $('select.addnewquoteitem').select2({
+                dropdownParent: $('#leadformModal'),
                 matcher: matchStart,
             });
-            // $("select#orderitem_id").focus();
-            $("select#quoteitem_id").change(function(){
-                var item_id=$("select#quoteitem_id").val();
-                switch(item_id) {
-                    case '-1':
-                        $("div.quote_itemedit_text").show();
-                        $("div.quote_itemedit_text label").empty().html($("select#quoteitem_id option:selected").text());
-                        break;
-                    case '-2':
-                        $("div.quote_itemedit_text").show();
-                        $("div.quote_itemedit_text label").empty().html($("select#quoteitem_id option:selected").text());
-                        break;
-                    case '-3':
-                        $("div.quote_itemedit_text").show();
-                        $("div.quote_itemedit_text label").empty().html($("select#quoteitem_id option:selected").text());
-                        break;
-                    default:
-                        $("div.quote_itemedit_text").hide();
-                        break;
-                }
-            })
-            $("div.quote_itemedit_save").click(function(){
-                save_leadquoteitem();
-            });
+            $('select.addnewquoteitem').select2('open');
+            init_leadquotes_content();
         } else {
+            $("#loader").hide();
             show_error(response);
         }
     },'json');
 }
 
 function save_leadquoteitem() {
-    var params=new Array();
-    params.push({name: 'session', value: $("#quotesessionid").val()});
-    params.push({name: 'item_id', value:$("select#quoteitem_id").val()});
-    params.push({name: 'quote_item', value:$("textarea.quoteitemsvalue").val()});
-    var url="/leadquote/addquoteitem";
-    $("#loader").show();
-    $.post(url, params, function(response){
-        if (response.errors=='') {
-            // $("#artNextModal").modal('hide');
-            $("#quoteitemtabledata").empty().html(response.data.item_content);
-            $(".quoteleadtime").empty().html(response.data.leadtime);
-            $(".quoteshippingcostarea").empty().html(response.data.shippingview);
-            $("input[data-item='sales_tax']").val(response.data.tax);
-            $("input[data-item='rush_cost']").val(response.data.rush_cost);
-            $("input[data-item='shipping_cost']").val(response.data.shipping_cost);
-            $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
-            $(".quotetotalvalue").empty().html(response.data.total);
-            $("#loader").hide();
-            init_leadquotes_content();
-            // $(".addprintdetails[data-quoteitem='"+response.data.newitem+"']").trigger('click');
-            // Print details
-            $("#artNextModal").find('div.modal-dialog').css('width','1077px');
-            $("#artNextModal").find('.modal-title').empty().html('Order Item Imprint');
-            $("#artNextModal").find('div.modal-body').empty().html(response.data.impritview);
-            init_quote_printdetails();
-        } else {
-            $("#loader").hide();
-            show_error(response);
-        }
-    },'json');
 }
 
 function init_quote_printdetails() {
@@ -874,11 +829,17 @@ function save_quoteprint_details() {
     $.post(url, params , function(response){
         if (response.errors=='') {
             $("#artNextModal").modal('hide');
-            $(".quoteitemsarea[data-quoteitem='"+response.data.item_id+"']").empty().html(response.data.itemcontent);
+            $("#quoteitemtabledata").empty().html(response.data.itemcontent);
             $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
             $("input[data-item='sales_tax']").val(response.data.tax);
             $(".quotetotalvalue").empty().html(response.data.total);
             $(".addquoteitem").show();
+            if (parseInt(response.data.shiprebuild)==1) {
+                $(".quoteleadtime").empty().html(response.data.leadtime);
+            }
+            if (parseInt(response.data.calcship)==1) {
+                $(".quoteshippingcostarea").empty().html(response.data.shippingview);
+            }
             init_leadquotes_content();
         } else {
             show_error(response);
@@ -1292,6 +1253,33 @@ function init_addnewquoteitem() {
                 show_error(response);
             }
         },'json');
+    });
+    // Cancel add item
+    $(".items_content_cancel").unbind('click').click(function (){
+        if (confirm('Cancel Add New Item?')==true) {
+            var quotetem_id = $(this).data('quoteitem');
+            var params = Array();
+            params.push({name: 'quotesession', value: $("#quotesessionid").val()});
+            params.push({name: 'quoteitem_id', value: quotetem_id});
+            var url = "/leadquote/cancelnewitem";
+            $.post(url, params, function (response) {
+                if (response.errors == '') {
+                    $("#quoteitemtabledata").empty().html(response.data.itemcontent);
+                    if (parseInt(response.data.newitem)==1) {
+                        $('select.addnewquoteitem').select2({
+                            dropdownParent: $('#leadformModal'),
+                            matcher: matchStart,
+                        });
+                        $('select.addnewquoteitem').select2('open');
+                    } else {
+                        $(".addquoteitem").show();
+                    }
+                    init_leadquotes_content();
+                } else {
+                    show_error(response);
+                }
+            }, 'json');
+        }
     });
 
 }

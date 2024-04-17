@@ -1090,6 +1090,7 @@ class Leadquote_model extends MY_Model
         $imprint_details=$details['imprint_details'];
         $quote_blank=intval($details['quote_blank']);
         $itemstatus =  ifset($details, 'itemstatus','old');
+        $out['status'] = $itemstatus;
         $found=0;
         $idx=0;
         foreach ($items as $item) {
@@ -1107,11 +1108,6 @@ class Leadquote_model extends MY_Model
                     $out['msg']=$row['title'].' Empty Repeat Note';
                     return $out;
                 }
-            }
-            $out['shiprebuild']=0;
-            $recalshipcost = 0;
-            if ($itemstatus=='new') {
-                $out['shiprebuild']=1;
             }
             // New imprint details
             $items[$idx]['imprint_details'] = $imprint_details;
@@ -1347,6 +1343,24 @@ class Leadquote_model extends MY_Model
             $items[$idx]['imprint_subtotal']=$imprint_total;
             $quote['quote_blank']=$quote_blank;
             $out['quote_blank']=$quote_blank;
+            $out['shiprebuild']=0;
+            $out['calcship'] = 0;
+            if ($itemstatus=='new') {
+                $out['shiprebuild']=1;
+                if (count($items)==1) {
+                    $this->load->model('calendars_model');
+                    $termdat = $this->calendars_model->get_delivery_date($items[$idx]['item_id'],$quote['brand'], $quote_blank);
+                    $quote['lead_time'] = json_encode($termdat);
+                    foreach ($termdat as $row) {
+                        if ($row['current']==1) {
+                            $quote['rush_cost'] = $row['price'];
+                            $quote['rush_days'] = $row['date'];
+                            $quote['rush_terms'] = $row['name'];
+                        }
+                    }
+                }
+                $out['calcship'] = 1;
+            }
             $quotedat['items']=$items;
             $quotedat['quote']=$quote;
             $quotedat['deleted'] = $deleted;
@@ -1354,6 +1368,7 @@ class Leadquote_model extends MY_Model
             usersession($imprintsession_id, NULL);
             $out['result']=$this->success_result;
             $out['item']=$items[$idx];
+            $out['totalcalc'] = 1;
         }
         return $out;
     }
@@ -1436,10 +1451,12 @@ class Leadquote_model extends MY_Model
             $imprint_subtotal = 0;
             $colors = $item['items'];
             foreach ($colors as $color) {
-                $item_subtotal+=intval($color['item_qty'])*floatval($color['item_price']);
+                $colorqty = ifset($color,'item_qty',0);
+                $colorprice = ifset($color,'item_price',0);
+                $item_subtotal+=intval($colorqty)*floatval($colorprice);
             }
             $items[$itmidx]['item_subtotal'] = $item_subtotal;
-            $imprints = $item['imprints'];
+            $imprints = ifset($item, 'imprints',[]);
             foreach ($imprints as $imprint) {
                 $imprint_subtotal += $imprint['imprint_qty'] * $imprint['imprint_price'];
             }
@@ -1492,6 +1509,8 @@ class Leadquote_model extends MY_Model
                     $quote['rush_terms'] = '';
                     $quote['rush_days'] = '';
                     $quote['rush_cost'] = 0;
+                    // Add empty item
+                    $newitems = $this->_create_empty_quoteitems();
                 }
                 $quotesession['quote'] = $quote;
                 $quotesession['items'] = $newitems;
@@ -1504,39 +1523,51 @@ class Leadquote_model extends MY_Model
 
     public function addquoteitem($postdata, $quotesession, $session_id) {
         $out=['result' => $this->error_result, 'msg' => 'Not all parameters send'];
-        $item_id = ifset($postdata,'item_id',0);
-        $custom_item = ifset($postdata, 'quote_item', '');
-        if (!empty($item_id)) {
-            $items = $quotesession['items'];
-            $quote = $quotesession['quote'];
-            $startid = count($items)+1;
-            $itemdat = $this->add_newleadquote_item($item_id, $custom_item, 0, $quote['brand'], $startid);
-            $out['msg'] = $itemdat['msg'];
-            if ($itemdat['result']==$this->success_result) {
-                $out['result'] = $this->success_result;
-                $out['newitem'] = $itemdat['newitem'];
-                $newitem = $itemdat['quote_items'];
-                $items[] = $newitem;
-                if (empty($quote['lead_time'])) {
-                    // Get Delivery Terms
-                    if ($item_id > 0) {
-                        $this->load->model('calendars_model');
-                        $termdat = $this->calendars_model->get_delivery_date($item_id,$quote['brand']);
-                        $quote['lead_time'] = json_encode($termdat);
-                        foreach ($termdat as $row) {
-                            if ($row['current']==1) {
-                                $quote['rush_cost'] = $row['price'];
-                                $quote['rush_days'] = $row['date'];
-                                $quote['rush_terms'] = $row['name'];
-                            }
-                        }
-                    }
-                }
-                $quotesession['quote'] = $quote;
-                $quotesession['items'] = $items;
-                usersession($session_id, $quotesession);
-            }
-        }
+        $newitem = $this->_create_empty_quoteitems();
+        $quote_items = $quotesession['items'];
+        $newidx = (count($quote_items)+1)*(-1);
+        $newitem[0]['quote_item_id']=$newidx;
+        $newitem[0]['items'][0]['quote_item_id'] = $newidx;
+        // Add new item
+        $quote_items[] = $newitem[0];
+        $quote = $quotesession['quote'];
+        $quotesession['items'] = $quote_items;
+        usersession($session_id, $quotesession);
+        $out['result'] = $this->success_result;
+        $out['newitem'] = $newitem[0];
+//        $item_id = ifset($postdata,'item_id',0);
+//        $custom_item = ifset($postdata, 'quote_item', '');
+//        if (!empty($item_id)) {
+//            $items = $quotesession['items'];
+//            $quote = $quotesession['quote'];
+//            $startid = count($items)+1;
+//            $itemdat = $this->add_newleadquote_item($item_id, $custom_item, 0, $quote['brand'], $startid);
+//            $out['msg'] = $itemdat['msg'];
+//            if ($itemdat['result']==$this->success_result) {
+//                $out['result'] = $this->success_result;
+//                $out['newitem'] = $itemdat['newitem'];
+//                $newitem = $itemdat['quote_items'];
+//                $items[] = $newitem;
+//                if (empty($quote['lead_time'])) {
+//                    // Get Delivery Terms
+//                    if ($item_id > 0) {
+//                        $this->load->model('calendars_model');
+//                        $termdat = $this->calendars_model->get_delivery_date($item_id,$quote['brand']);
+//                        $quote['lead_time'] = json_encode($termdat);
+//                        foreach ($termdat as $row) {
+//                            if ($row['current']==1) {
+//                                $quote['rush_cost'] = $row['price'];
+//                                $quote['rush_days'] = $row['date'];
+//                                $quote['rush_terms'] = $row['name'];
+//                            }
+//                        }
+//                    }
+//                }
+//                $quotesession['quote'] = $quote;
+//                $quotesession['items'] = $items;
+//                usersession($session_id, $quotesession);
+//            }
+//        }
         return $out;
     }
     public function savequote($quotesession, $lead_id, $user_id, $session_id) {
@@ -3848,6 +3879,7 @@ class Leadquote_model extends MY_Model
                 $find = 1;
                 break;
             }
+            $itemidx++;
         }
         if ($find==1) {
             // Item find, change it
@@ -4165,6 +4197,33 @@ class Leadquote_model extends MY_Model
             $quotesession['items'] = $quote_items;
             usersession($session_id, $quotesession);
             $out['result'] = $this->success_result;
+        }
+        return $out;
+    }
+
+    public function cancelnewitem($quotesession, $quoteitem_id, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Quote Item Not Found'];
+        $quote_items=$quotesession['items'];
+        $quote = $quotesession['quote'];
+        $found = 0;
+        $newitems = [];
+        foreach ($quote_items as $quote_item) {
+            if ($quote_item['quote_item_id']==$quoteitem_id) {
+                $found = 1;
+            } else {
+                $newitems[] = $quote_item;
+            }
+        }
+        if ($found==1) {
+            $out['result'] = $this->success_result;
+            if (count($newitems)==0) {
+                $newitems = $this->_create_empty_quoteitems();
+            }
+            $out['items'] = $newitems;
+            $out['quote'] = $quote;
+            $quotesession['items'] = $newitems;
+            usersession($session_id, $quotesession);
         }
         return $out;
     }
