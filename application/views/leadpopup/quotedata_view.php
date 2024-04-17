@@ -51,6 +51,7 @@
             <div id="quoteitemtabledata"><?=$itemsview?></div>
             <?php if ($edit_mode==1) { ?>
                 <div class="datarow"><div class="addquoteitem">+ add item</div></div>
+                <div class="quoteitem_inventoryview">&nbsp;</div>
             <?php } ?>
         </div>
     </div>

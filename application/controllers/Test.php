@@ -3367,6 +3367,54 @@ class Test extends CI_Controller
 
     }
 
+    public function prepare_customercode() {
+        $this->db->select('order_id');
+        $this->db->from('ts_orders');
+        $this->db->where('order_date >=', strtotime('2020-01-01'));
+        $this->db->where('is_canceled',0);
+        $this->db->where('customer_code',NULL);
+        $this->db->order_by('order_id', 'desc');
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            $custcode = uniq_link('3','chars').'-'.uniq_link('10','digits');
+            $this->db->where('order_id', $order['order_id']);
+            $this->db->set('customer_code', $custcode);
+            $this->db->update('ts_orders');
+        }
+        echo 'Orders Ready '.PHP_EOL;
+        $this->db->select('quote_id');
+        $this->db->from('ts_quotes');
+        $this->db->where('customer_code', NULL);
+        $this->db->order_by('quote_id','desc');
+        $quotes = $this->db->get()->result_array();
+        foreach ($quotes as $quote) {
+            $custcode = uniq_link('3','chars').'-'.uniq_link('10','digits');
+            $this->db->where('quote_id', $quote['quote_id']);
+            $this->db->set('customer_code', $custcode);
+            $this->db->update('ts_quotes');
+        }
+        echo 'All Ready '.PHP_EOL;
+    }
+
+    public function update_customers() {
+        $this->db->select('order_id, customer_name');
+        $this->db->from('ts_orders');
+        $this->db->where('brand','SR');
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            $this->db->select('*');
+            $this->db->from('ts_customers');
+            $this->db->where('customer_name', $order['customer_name']);
+            $customer = $this->db->get()->row_array();
+            if (ifset($customer,'customer_id','')!=='') {
+                $this->db->where('order_id', $order['order_id']);
+                $this->db->set('customer_id', $customer['customer_id']);
+                $this->db->update('ts_orders');
+            }
+        }
+        echo 'All Ready '.PHP_EOL;
+    }
+
     public function sbitems_list()
     {
         ini_set('memory_limit', '-1');
@@ -3518,38 +3566,38 @@ class Test extends CI_Controller
         $this->email->initialize($email_conf);
         $email_from = 'admin@bluetrack.com';
         $email_cc = 'to_german@yahoo.com';
-        $this->db->select('*')->from('users')->where('user_status',1)->where('user_email','sean@bluetrack.com');
+        $this->db->select('*')->from('users')->where('user_status',1)->where('user_status',1);
         $users = $this->db->get()->result_array();
         foreach ($users as $user) {
             $secret = $ga->generateSecret();
             $this->db->where('user_id', $user['user_id']);
             $this->db->set('user_secret', $secret);
             $this->db->update('users');
-            // URL
-            $usrlogin = $user['userlogin'];
-            if (empty($usrlogin)) {
-                $usrlogin = $user['user_email'];
-            }
-            $url = $ga->getUrl($usrlogin, 'lift.bluetrack.com', $secret);
-            echo 'Secret '.$secret.PHP_EOL;
-            echo 'URL '.$url.PHP_EOL;
-            $options = [
-                'user_name' => $user['user_name'],
-                'secret' => $secret,
-                'url' => $url,
-                'manual_url' => 'https://support.google.com/accounts/answer/1066447?hl=en',
-            ];
-            $message_body = $this->load->view('messages/secret_update_view', $options, TRUE);
-            $this->email->to($user['user_email']);
-            $this->email->cc($email_cc);
-            // $this->email->bcc($this->config->item('developer_email'));
-            $this->email->from($email_from);
-            $mail_subj = 'Update account security';
-            $this->email->subject($mail_subj);
-            $this->email->message($message_body);
-            $this->email->send();
-            $this->email->clear(TRUE);
-            echo 'Email Send'.PHP_EOL;
+//            // URL
+//            $usrlogin = $user['userlogin'];
+//            if (empty($usrlogin)) {
+//                $usrlogin = $user['user_email'];
+//            }
+//            $url = $ga->getUrl($usrlogin, 'lift.bluetrack.com', $secret);
+            echo 'Email '.$user['user_email'].' Secret '.$secret.PHP_EOL;
+//            echo 'URL '.$url.PHP_EOL;
+//            $options = [
+//                'user_name' => $user['user_name'],
+//                'secret' => $secret,
+//                'url' => $url,
+//                'manual_url' => 'https://support.google.com/accounts/answer/1066447?hl=en',
+//            ];
+//            $message_body = $this->load->view('messages/secret_update_view', $options, TRUE);
+//            $this->email->to($user['user_email']);
+//            $this->email->cc($email_cc);
+//            // $this->email->bcc($this->config->item('developer_email'));
+//            $this->email->from($email_from);
+//            $mail_subj = 'Update account security';
+//            $this->email->subject($mail_subj);
+//            $this->email->message($message_body);
+//            $this->email->send();
+//            $this->email->clear(TRUE);
+//            echo 'Email Send'.PHP_EOL;
         }
     }
 
@@ -3581,5 +3629,25 @@ class Test extends CI_Controller
 //                }
 //            }
 //        }
+    }
+
+    public function updateweborders()
+    {
+        $this->db->select('s.order_id, s.order_num, s.payment_card_type, s.payment_card_number, s.payment_card_vn, o.order_id, p.order_payment_id, p.cardnum');
+        $this->db->from('sb_orders s');
+        $this->db->join('ts_orders o','o.order_num=s.order_num');
+        $this->db->join('ts_order_payments p','o.order_id = p.order_id');
+        $this->db->where('s.order_id >= ',10481);
+        $weborders = $this->db->get()->result_array();
+        foreach ($weborders as $weborder) {
+            if (!empty($weborder['cardnum'])) {
+                $this->db->where('order_payment_id', $weborder['order_payment_id']);
+                $this->db->set('cardnum', $weborder['payment_card_number']);
+                $this->db->set('cardcode', hide_card_code($weborder['payment_card_vn']));
+                $this->db->set('payment_save',1);
+                $this->db->update('ts_order_payments');
+                echo 'Order '.$weborder['order_num'].' Updated'.PHP_EOL;
+            }
+        }
     }
 }

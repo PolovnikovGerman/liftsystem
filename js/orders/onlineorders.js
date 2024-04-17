@@ -124,7 +124,11 @@ function showorderdetails(objid) {
             });
             $("div.orderdat_button-save").click(function(){
                 save_orderdetails();
-            })
+            });
+            $(".onlinepayment_lock").unbind('click').click(function(){
+                var order = $(this).data('order');
+                unlock_onlinepayment(order);
+            });
         } else {
             show_error(response);
         }
@@ -171,6 +175,61 @@ function save_orderdetails() {
     }
 }
 
+function unlock_onlinepayment(order) {
+    var url = '/welcome/unlockcontent';
+    $.post(url, [], function(response){
+        if (response.errors=='') {
+            $("#unlockContentModal").find('div.modal-body').empty().html(response.data.content);
+            $("#unlockContentModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#unlockContentModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            });
+            $('#unlockContentModal').on('shown.bs.modal', function () {
+                $('#contentunlock').focus();
+            });
+            online_unlockcontent(order);
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function online_unlockcontent(order) {
+    $("input#contentunlock").keypress(function(event) {
+        if (event.which == 13) {
+            var params = new Array();
+            params.push({name: 'code', value: $("input#contentunlock").val()});
+            params.push({name: 'order_id', value: order});
+            var url = '/orders/unlockonlinepayments';
+            $.post(url, params, function (resposne) {
+                if (resposne.errors=='') {
+                    $("input#payment_card_number").val(resposne.data.cardnum);
+                    $("input#payment_card_vn").val(resposne.data.cardcode);
+                    $("#unlockContentModal").modal('hide');
+                    $(".onlinepayment_lock").hide();
+                } else {
+                    show_error(resposne);
+                }
+            },'json');
+        }
+    });
+    $(".unlockpaymentbtn").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'code', value: $("input#contentunlock").val()});
+        params.push({name: 'order_id', value: order});
+        var url = '/orders/unlockonlinepayments';
+        $.post(url, params, function (resposne) {
+            if (resposne.errors=='') {
+                $("input#payment_card_number").val(resposne.data.cardnum);
+                $("input#payment_card_vn").val(resposne.data.cardcode);
+                $("#unlockContentModal").modal('hide');
+                $(".onlinepayment_lock").hide();
+            } else {
+                show_error(resposne);
+            }
+        },'json');
+    });
+}
 function search_onlineorderdata() {
     var params = new Array();
     params.push({name: 'brand', value: $("#onlineordersbrand").val()});

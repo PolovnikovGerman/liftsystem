@@ -240,6 +240,9 @@ input.quoteitem_description_long {
 .quoteitemtabledatarow .itemcolor {
     width: 153px;
 }
+span.addnewquotecolor {
+    cursor: pointer;
+}
 .quoteitemtabledatarow .itemcolor.viewmode {
     padding-left: 5px;
 }
@@ -1166,3 +1169,180 @@ textarea.quoteitemsvalue {
     z-index: 1500!important;
     width: 325px!important;
 }
+/* New item section */
+.quoteitems_content_add {
+    width: 253px;
+}
+select.addnewquoteitem {
+    width: 250px;
+}
+.quoteitems_content_add span.select2-selection--single {
+    height: 20px !important;
+}
+.quoteitems_content_add .select2-selection__arrow {
+    height: 18px !important;
+}
+.quoteitems_content_add .select2-selection__rendered {
+    line-height: 19px !important;
+}
+.quoteitemcolor_adddata {
+    width: 152px;
+    padding-left: 3px;
+}
+.quoteitemcolor_adddata span.addnewcolor {
+    cursor: pointer;
+}
+.quoteitems_content_addqty {
+    width: 53px;
+}
+input.quoteitemadd_input {
+    height: 19px;
+    margin: 0 2px;
+}
+.quoteitems_content_addprice {
+    width: 41px;
+}
+.quoteitemrowsubtotal.newitem {
+    width: 70px!important;
+    padding-left: 2px;
+}
+.quoteitems_content_addprint {
+    color: #ffffff!important;
+    font-size: 10px;
+    font-weight: normal!important;
+    cursor: pointer;
+    visibility: hidden;
+    background: #008000;
+    height: 18px;
+    border-radius: 4px;
+    padding: 0 4px;
+    line-height: 18px;
+    margin-top: 1px;
+    text-align: center;
+}
+.items_content_cancel {
+    width: 14px;
+}
+/* Inventory Popup */
+.quoteitem_inventoryview {
+    display: none;
+    position: absolute;
+    position: absolute;
+    left: 200px;
+    top: 118px;
+    z-index: 1052;
+}
+.quoteitem_inventoryview div {
+    float: left;
+}
+.quoteitem_inventoryview_head {
+    background: #707070;
+    color: #FFFFFF;
+    height: 18px;
+    font-size: 11px;
+}
+.quoteitem_inventoryview_head div {
+    line-height: 18px;
+    text-align: center;
+}
+.quoteitem_inventoryview_head .inventorycolor {
+    width: 99px;
+    margin-right: 10px;
+}
+.quoteitem_inventoryview_head .inventorypercent {
+    width: 36px;
+}
+.quoteitem_inventoryview_head .inventoryinstock {
+    width: 52px; /* 44px; */
+}
+.quoteitem_inventoryview_head .inventoryreserv {
+    width: 42px;
+}
+.quoteitem_inventoryview_head .inventoryavailable {
+    width: 52px; /* 44px; */
+    margin-right: 10px;
+}
+.quoteitem_inventoryview_head .inventoryonboat {
+    width: 66px;
+}
+.quoteitem_inventoryview_body {
+    clear: both;
+    background: #707070;
+    /* color: #FFFFFF; */
+    font-size: 12px;
+    border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+.quoteitem_inventoryview_body div {
+    line-height: 18px;
+    height: 18px;
+    text-align: center;
+    color: #000000;
+}
+.quoteitem_inventoryview_body .datarow {
+    clear: both;
+    cursor: pointer;
+}
+.inventorydataempty {
+    width: 10px;
+    background: #707070;
+}
+.quoteitem_inventoryview_body .inventorycolor {
+    width: 99px;
+    text-align: right;
+    font-size: 13px;
+    padding-right: 7px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.quoteitem_inventoryview_body .inventorycolor.selected {
+    background: #000000;
+    color: #FFFFFF;
+}
+.quoteitem_inventoryview_body .inventorypercent {
+    width: 36px;
+    color: #7d7d7d;
+    border-right: 1px solid #000000;
+}
+.quoteitem_inventoryview_body .inventorypercent.severevalstock,
+.quoteitem_inventoryview_body .inventoryinstock.severevalstock
+{
+    background: #f77777;
+    /* color: #ffffff; */
+}
+.quoteitem_inventoryview_body .inventorypercent.lowinstock,
+.quoteitem_inventoryview_body .inventoryinstock.lowinstock {
+    background: #ffcc7f;
+    /* color: #000000; */
+}
+.quoteitem_inventoryview_body .inventorydatacell.selected {
+    border-top: 2px #000000 solid;
+    border-bottom: 2px #000000 solid;
+    line-height: 14px;
+}
+.quoteitem_inventoryview_body .inventoryinstock {
+    width: 52px; /* 44px */
+    border-right: 1px solid #000000;
+}
+.quoteitem_inventoryview_body .inventoryreserv {
+    width: 42px;
+    border-right: 1px solid #000000;
+}
+.quoteitem_inventoryview_body .inventoryavailable {
+    width: 52px; /* 44px */
+}
+.quoteitem_inventoryview_body .inventoryonboat {
+    width: 66px;
+    border-right: 1px solid #000000;
+}
+.quoteitem_inventoryview_close {
+    position: relative;
+    top: -13px;
+    left: -7px;
+    z-index: 1055;
+    font-size: 15px;
+    cursor: pointer;
+    height: 14px;
+}
+/* End Inventory Popup */

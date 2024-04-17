@@ -107,8 +107,19 @@ class Leadquote extends MY_Controller
                             'edit'=>1,
                             'item_id'=>$quote_item['item_id'],
                         ];
-                        $item_view=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
-                        $item_subtotal+=$quote_item['item_subtotal'];
+                        if (empty($quote_item['item_id'])) {
+                            $this->load->model('orders_model');
+                            $dboptions=array(
+                                'exclude'=>array(-4, -5, -2),
+                                'brand' => ($quotedata['brand']=='SR') ? 'SR' : 'BT',
+                            );
+                            $item_options['itemslist']=$this->orders_model->get_item_list($dboptions);
+                            $item_view=$this->load->view('leadpopup/items_data_add', $item_options, TRUE);
+                        } else {
+                            $item_subtotal+=$quote_item['item_subtotal'];
+                            $item_view=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
+                        }
+
                         $items_views[] = [
                             'quote_item_id'=>$quote_item['quote_item_id'],
                             'view' => $item_view,
@@ -655,6 +666,38 @@ class Leadquote extends MY_Controller
         show_404();
     }
 
+    public function inventoryitemcolor()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'session','unknw');
+            $quotesession = usersession($session_id);
+            if (!empty($quotesession)) {
+                $quoteitem_id = ifset($postdata, 'item',0);
+                $itemstatus = ifset($postdata, 'itemstatus',0);
+                if (empty($quoteitem_id)) {
+                    $error = 'Select Order Item';
+                } else {
+                    $res = $this->leadquote_model->quoteiteminventory($quotesession, $quoteitem_id, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $options = [
+                            'onboats' => $res['onboats'],
+                            'invents' => $res['invents'],
+                            'itemstatus' => $itemstatus,
+                        ];
+                        $mdata['content'] = $this->load->view('leadpopup/itemcolor_inventory_view', $options, TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Add Item Color
     public function quoteitemaddcolor() {
         if ($this->isAjax()) {
@@ -885,33 +928,76 @@ class Leadquote extends MY_Controller
                     if ($res['result']==$this->success_result) {
                         $error = '';
                         // Start
-                        $this->leadquote_model->calc_quote_totals($quotesession_id);
                         $quotesession = usersession($quotesession_id);
-                        $quote = $quotesession['quote'];
-                        $mdata['items_subtotal'] = MoneyOutput($quote['items_subtotal']);
-                        $mdata['total'] = MoneyOutput($quote['quote_total']);
-                        $mdata['tax']=number_format(floatval($quote['sales_tax']),2,'.','');
-
                         $item_content='';
-                        $quote_item = $res['item'];
-                        $imprints=$quote_item['imprints'];
-                        $imprint_options=[
-                            'quote_item_id'=>$quote_item['quote_item_id'],
-                            'imprints'=>$imprints,
-                            'edit_mode' => 1,
-                        ];
-                        $imprintview=$this->load->view('leadpopup/imprint_data_edit', $imprint_options, TRUE);
-                        $item_options=[
-                            'quote_item_id'=>$quote_item['quote_item_id'],
-                            'items'=>$quote_item['items'],
-                            'imprintview'=>$imprintview,
-                            'edit' => 1,
-                            'item_id' => $quote_item['item_id'],
-                        ];
-                        $item_content.=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
+                        $quote_items = $quotesession['items']; //$res['item'];
+                        $quote = $quotesession['quote'];
+                        foreach ($quote_items as $quote_item) {
+                            $imprints = $quote_item['imprints'];
+                            $imprint_options = [
+                                'quote_item_id' => $quote_item['quote_item_id'],
+                                'imprints' => $imprints,
+                                'edit_mode' => 1,
+                            ];
+                            $imprintview = $this->load->view('leadpopup/imprint_data_edit', $imprint_options, TRUE);
+                            $item_options = [
+                                'quote_item_id' => $quote_item['quote_item_id'],
+                                'items' => $quote_item['items'],
+                                'imprintview' => $imprintview,
+                                'edit' => 1,
+                                'item_id' => $quote_item['item_id'],
+                            ];
+                            if (empty($quote_item['item_id'])) {
+                                $this->load->model('orders_model');
+                                $dboptions = array(
+                                    'exclude' => array(-4, -5, -2),
+                                    'brand' => ($quote['brand'] == 'SR') ? 'SR' : 'BT',
+                                );
+                                $item_options['itemslist'] = $this->orders_model->get_item_list($dboptions);
+                                $item_view = $this->load->view('leadpopup/items_data_add', $item_options, TRUE);
+                            } else {
+                                // $item_subtotal+=$quote_item['item_subtotal'];
+                                $item_view = $this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
+                            }
+                            $item_content.= $item_view;
+                        }
                         $mdata['itemcontent'] = $item_content;
-                        $mdata['item_id'] = $quote_item['quote_item_id'];
-                        // End
+                        $mdata['shiprebuild'] = $res['shiprebuild'];
+                        if ($res['shiprebuild']==1) {
+                            $lead_time = '';
+                            if (!empty($quote['lead_time'])) {
+                                $lead_times = json_decode($quote['lead_time'], true);
+                                $timeoptions = [
+                                    'lead_times' => $lead_times,
+                                    'edit_mode' => 1,
+                                ];
+                                $lead_time = $this->load->view('leadpopup/quote_leadtime_edit', $timeoptions, TRUE);
+                            }
+                            $mdata['leadtime'] = $lead_time;
+                        }
+                        $mdata['calcship'] = $res['calcship'];
+                        if ($res['calcship']==1) {
+                            $this->leadquote_model->calc_quote_shipping($quotesession_id);
+                            // Show shipping costs
+                            $quotesession = usersession($quotesession_id);
+                            $quote = $quotesession['quote'];
+                            $mdata['shipping_cost'] = $quote['shipping_cost'];
+                            $shipping = $quotesession['shipping'];
+                            $options = [
+                                'shippings' => $shipping,
+                                'edit_mode' => 1,
+                            ];
+                            $mdata['shippingview'] = $this->load->view('leadpopup/quote_shiprates_view', $options, TRUE);
+                        }
+                        $mdata['totalcalc'] = $res['totalcalc'];
+                        if ($res['totalcalc']==1) {
+                            $this->leadquote_model->calc_quote_totals($quotesession_id);
+                            $quotesession = usersession($quotesession_id);
+                            $quote = $quotesession['quote'];
+                            $mdata['items_subtotal'] = MoneyOutput($quote['items_subtotal']);
+                            $mdata['total'] = MoneyOutput($quote['quote_total']);
+                            $mdata['tax'] = $quote['sales_tax'];
+                        }
                     }
                 }
             }
@@ -936,6 +1022,39 @@ class Leadquote extends MY_Controller
                     $this->leadquote_model->calc_quote_totals($session_id);
                     $quotesession = usersession($session_id);
                     $quote = $quotesession['quote'];
+                    $quote_items = $quotesession['items'];
+                    $mdata['newitem'] = 0;
+                    $item_content = '';
+                    foreach ($quote_items as $quote_item) {
+                        $imprints = $quote_item['imprints'];
+                        $imprint_options = [
+                            'quote_item_id' => $quote_item['quote_item_id'],
+                            'imprints' => $imprints,
+                            'edit_mode' => 1,
+                        ];
+                        $imprintview = $this->load->view('leadpopup/imprint_data_edit', $imprint_options, TRUE);
+                        $item_options = [
+                            'quote_item_id' => $quote_item['quote_item_id'],
+                            'items' => $quote_item['items'],
+                            'imprintview' => $imprintview,
+                            'edit' => 1,
+                            'item_id' => $quote_item['item_id'],
+                        ];
+                        if (empty($quote_item['item_id'])) {
+                            $this->load->model('orders_model');
+                            $dboptions = array(
+                                'exclude' => array(-4, -5, -2),
+                                'brand' => ($quote['brand'] == 'SR') ? 'SR' : 'BT',
+                            );
+                            $item_options['itemslist'] = $this->orders_model->get_item_list($dboptions);
+                            $item_view = $this->load->view('leadpopup/items_data_add', $item_options, TRUE);
+                            $mdata['newitem'] = 1;
+                        } else {
+                            $item_view = $this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
+                        }
+                        $item_content.= $item_view;
+                    }
+                    $mdata['itemcontent'] = $item_content;
                     $shippings = $quotesession['shipping'];
                     $lead_time = '';
                     if (!empty($quote['lead_time'])) {
@@ -1012,68 +1131,40 @@ class Leadquote extends MY_Controller
             $res = $this->leadquote_model->addquoteitem($postdata, $quotesession, $session_id);
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
-                $quotesession = usersession($session_id);
-                // Prepare imprint details view
-                $details['item'] = $res['newitem'];
-                $imprdata = $this->_prepare_imprint_details($quotesession, $details, $session_id);
-                $error = $imprdata['msg'];
-                if ($imprdata['result']==$this->success_result) {
-                    $error = '';
-                    $mdata['impritview'] = $imprdata['content'];
-                    $this->leadquote_model->calc_quote_shipping($session_id);
-                    $this->leadquote_model->calc_quote_totals($session_id);
-                    $quote = $quotesession['quote'];
-                    $items = $quotesession['items'];
-                    $shippings = $quotesession['shipping'];
-                    $items_views = [];
-                    foreach ($items as $quote_item) {
-                        $imprints=$quote_item['imprints'];
-                        $imprint_options=[
-                            'quote_item_id'=>$quote_item['quote_item_id'],
-                            'imprints'=>$imprints,
-                            'edit_mode' => 1,
-                        ];
-                        $imprintview=$this->load->view('leadpopup/imprint_data_edit', $imprint_options, TRUE);
-                        $item_options=[
-                            'quote_item_id'=>$quote_item['quote_item_id'],
-                            'items'=>$quote_item['items'],
-                            'imprintview'=>$imprintview,
-                            'edit'=> 1,
-                            'item_id'=>$quote_item['item_id'],
-                        ];
-                        $view=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
-                        $items_views[] = [
-                            'quote_item_id'=>$quote_item['quote_item_id'],
-                            'view' => $view,
-                        ];
+                $error = '';
+                $itemsview = '';
+                $quotesession=usersession($session_id);
+                $quote_items = $quotesession['items'];
+                $quotedata = $quotesession['quote'];
+                foreach ($quote_items as $quote_item) {
+                    $imprints=$quote_item['imprints'];
+                    $imprint_options=[
+                        'quote_item_id'=>$quote_item['quote_item_id'],
+                        'imprints'=>$imprints,
+                        'edit_mode' => 1,
+                    ];
+                    $imprintview=$this->load->view('leadpopup/imprint_data_edit', $imprint_options, TRUE);
+                    $item_options=[
+                        'quote_item_id'=>$quote_item['quote_item_id'],
+                        'items'=>$quote_item['items'],
+                        'imprintview'=>$imprintview,
+                        'edit'=>1,
+                        'item_id'=>$quote_item['item_id'],
+                    ];
+                    if (empty($quote_item['item_id'])) {
+                        $this->load->model('orders_model');
+                        $dboptions=array(
+                            'exclude'=>array(-4, -5, -2),
+                            'brand' => ($quotedata['brand']=='SR') ? 'SR' : 'BT',
+                        );
+                        $item_options['itemslist']=$this->orders_model->get_item_list($dboptions);
+                        $item_view=$this->load->view('leadpopup/items_data_add', $item_options, TRUE);
+                    } else {
+                        $item_view=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
                     }
-                    $mdata['item_content'] = $this->load->view('leadpopup/items_content_view', ['data' => $items_views], TRUE);
-                    $lead_time = '';
-                    if (!empty($quote['lead_time'])) {
-                        $lead_times = json_decode($quote['lead_time'], true);
-                        $timeoptions = [
-                            'lead_times' => $lead_times,
-                            'edit_mode' => 1,
-                        ];
-                        $lead_time = $this->load->view('leadpopup/quote_leadtime_edit', $timeoptions, TRUE);
-                    }
-                    $mdata['leadtime'] = $lead_time;
-                    // Shipping view
-                    $shiprates = '';
-                    if (count($shippings) > 0) {
-                        $shipoptions = [
-                            'edit_mode' => 1,
-                            'shippings' => $shippings,
-                        ];
-                        $shiprates = $this->load->view('leadpopup/quote_shiprates_view', $shipoptions, TRUE);
-                    }
-                    $mdata['shippingview'] = $shiprates;
-                    $mdata['tax'] = $quote['sales_tax'];
-                    $mdata['shipping_cost'] = $quote['shipping_cost'];
-                    $mdata['rush_cost'] = $quote['rush_cost'];
-                    $mdata['items_subtotal'] = MoneyOutput($quote['items_subtotal']);
-                    $mdata['total'] = MoneyOutput($quote['quote_total']);
+                    $itemsview.=$item_view;
                 }
+                $mdata['item_content'] = $itemsview;
             }
         }
         $this->ajaxResponse($mdata, $error);
@@ -1419,7 +1510,7 @@ class Leadquote extends MY_Controller
 
                     $options['order_id'] = 0;
                     $options['order_head'] = $this->load->view('leadorderdetails/head_order_view', $orddata, TRUE);
-                    $data = $this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, 1);
+                    $data = $this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT,1);
                     $order_data = $this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                     $options['order_data'] = $order_data;
                     $options['leadsession'] = $leadsession;
@@ -1520,7 +1611,7 @@ class Leadquote extends MY_Controller
         show_404();
     }
 
-    private function _prepare_imprint_details($quotesession, $postdata, $session_id) {
+    private function _prepare_imprint_details($quotesession, $postdata, $session_id, $itemstatus='old') {
         $out = ['result' => $this->error_result, 'msg' => 'Unknown Error'];
         $res = $this->leadquote_model->prepare_print_details($quotesession, $postdata, $session_id);
         $out['msg'] = $res['msg'];
@@ -1548,6 +1639,7 @@ class Leadquote extends MY_Controller
                 'quote_blank' => $quote_blank,
                 'quote_item_id' => $postdata['item'],
                 'item_id' => $item_id,
+                'itemstatus' => $itemstatus,
             );
             usersession($imptintid, $imprintdetails);
         }
@@ -1584,5 +1676,228 @@ class Leadquote extends MY_Controller
             $shipaddress.=PHP_EOL;
         }
         return $shipaddress;
+    }
+
+    public function savenewquoteitem()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'quotesession','unknw');
+            $quotesession = usersession($session_id);
+            if (!empty($quotesession)) {
+                $quote_item_id = ifset($postdata,'quoteitem_id',0);
+                $item_id = ifset($postdata, 'item_id',0);
+                if (empty($item_id)) {
+                    $error = 'Select Item';
+                } elseif (empty($quote_item_id)) {
+                    $error = 'Select Quote Item';
+                } else {
+                    $res = $this->leadquote_model->savenewquoteitem($quotesession, $item_id, $quote_item_id, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $item = $res['item'];
+                        // Prepare out
+                        $special = 0;
+                        if ($item['item_id']<0) {
+                            $special = 1;
+                        }
+                        $mdata['special'] = $special;
+
+                        $options = [
+                            'quote_item_id' => $quote_item_id,
+                            'item_id' => $item_id,
+                            'item_color' => $item['items'][0]['item_color'],
+                            'colors' => $item['items'][0]['colors'],
+                            'qty' => $item['item_qty'],
+                            'price' => $item['base_price'],
+                        ];
+                        if ($special==0) {
+                            $mdata['outcolors'] = $item['items'][0]['out_colors'];
+                        } else {
+                            $mdata['outcolors'] = '&nbsp;';
+                        }
+                        $mdata['qty'] = $this->load->view('leadpopup/additem_qty_view', $options, TRUE); // $item['item_qty']
+                        $mdata['price'] = $this->load->view('leadpopup/additem_price_view', $options, TRUE); // $item['base_price']
+                        $mdata['subtotal'] = MoneyOutput($item['item_subtotal']);
+                        $mdata['brand'] = $res['brand'];
+
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function inventoryitem()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'quotesession','unknw');
+            $quotesession = usersession($session_id);
+            if (!empty($quotesession)) {
+                $quoteitem_id = ifset($postdata, 'quoteitem_id',0);
+                $itemstatus = ifset($postdata, 'itemstatus',0);
+                if (empty($quoteitem_id)) {
+                    $error = 'Select Order Item';
+                } else {
+                    $res = $this->leadquote_model->quoteiteminventory($quotesession, $quoteitem_id, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $options = [
+                            'onboats' => $res['onboats'],
+                            'invents' => $res['invents'],
+                            'itemstatus' => $itemstatus,
+                        ];
+                        $mdata['content'] = $this->load->view('leadpopup/itemcolor_inventory_view', $options, TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function savenewitemparam()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata=$this->input->post();
+            $session_id = ifset($postdata,'quotesession','unknw');
+            $quotesession = usersession($session_id);
+            if (empty($quotesession)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                $quoteitem_id = ifset($postdata, 'quoteitem_id',0);
+                $paramname = ifset($postdata,'paramname','');
+                $newval = ifset($postdata, 'newval', '');
+                if (empty($quoteitem_id)) {
+                    $error = 'Select Quote Item';
+                } elseif (empty($paramname)) {
+                    $error = 'Empty Parameter';
+                } else {
+                    $res = $this->leadquote_model->savenewitemparam($quotesession, $quoteitem_id, $paramname, $newval, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $options = [
+                            'quote_item_id' => $quoteitem_id,
+                            'item_id' => $res['item_id'],
+                            'item_color' => $res['color'],
+                            'colors' => $res['colors'],
+                            'qty' => $res['item_qty'],
+                            'price' => $res['base_price'],
+                        ];
+                        $mdata['outcolors'] = $res['color'];
+                        $mdata['qty'] = $this->load->view('leadpopup/additem_qty_view', $options, TRUE); // $item['item_qty']
+                        $mdata['price'] = $this->load->view('leadpopup/additem_price_view', $options, TRUE); // $item['base_price']
+                        $mdata['subtotal'] = MoneyOutput($res['item_subtotal']);
+                        $mdata['brand'] = $res['brand'];
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function newquoteimprints()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'quotesession', 'unknw');
+            $quotesession = usersession($session_id);
+            if (empty($quotesession)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                $quoteitem_id = ifset($postdata, 'item', 0);
+                if (empty($quoteitem_id)) {
+                    $error = 'Select Quote Item';
+                } else {
+                    $res = $this->leadquote_model->newitemimprint($quotesession, $quoteitem_id, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        // Re init session variables
+                        $quotesession = usersession($session_id);
+                        $imprdata = $this->_prepare_imprint_details($quotesession, $postdata, $session_id, 'new');
+                        $error = $imprdata['msg'];
+                        if ($imprdata['result']==$this->success_result) {
+                            $error = '';
+                            $mdata['imprintview'] = $imprdata['content'];
+                        }
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function cancelnewitem()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'quotesession', 'unknw');
+            $quotesession = usersession($session_id);
+            if (empty($quotesession)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                $quoteitem_id = ifset($postdata,'quoteitem_id',0);
+                if (empty($quoteitem_id)) {
+                    $error = 'Select Quote Item';
+                } else {
+                    $res = $this->leadquote_model->cancelnewitem($quotesession, $quoteitem_id, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $mdata['newitem'] = 0;
+                        $quote_items = $res['items'];
+                        $quote = $res['quote'];
+                        $item_content = '';
+                        foreach ($quote_items as $quote_item) {
+                            $imprints = $quote_item['imprints'];
+                            $imprint_options = [
+                                'quote_item_id' => $quote_item['quote_item_id'],
+                                'imprints' => $imprints,
+                                'edit_mode' => 1,
+                            ];
+                            $imprintview = $this->load->view('leadpopup/imprint_data_edit', $imprint_options, TRUE);
+                            $item_options = [
+                                'quote_item_id' => $quote_item['quote_item_id'],
+                                'items' => $quote_item['items'],
+                                'imprintview' => $imprintview,
+                                'edit' => 1,
+                                'item_id' => $quote_item['item_id'],
+                            ];
+                            if (empty($quote_item['item_id'])) {
+                                $this->load->model('orders_model');
+                                $dboptions = array(
+                                    'exclude' => array(-4, -5, -2),
+                                    'brand' => ($quote['brand'] == 'SR') ? 'SR' : 'BT',
+                                );
+                                $item_options['itemslist'] = $this->orders_model->get_item_list($dboptions);
+                                $item_view = $this->load->view('leadpopup/items_data_add', $item_options, TRUE);
+                                $mdata['newitem'] = 1;
+                            } else {
+                                // $item_subtotal+=$quote_item['item_subtotal'];
+                                $item_view = $this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
+                            }
+                            $item_content.= $item_view;
+                        }
+                        $mdata['itemcontent'] = $item_content;
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 }

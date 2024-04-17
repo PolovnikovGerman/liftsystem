@@ -5582,3 +5582,10 @@ input.ticket_date {
 #unlockContentModal .modal-title {
     font-weight: 600;
 }
+
+.autocompleter,
+.autocompleter-closed {
+    top: 37px;
+    max-width: 244px;
+    margin-left: 66px;
+}

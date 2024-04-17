@@ -5652,7 +5652,11 @@ Class Leadorder_model extends My_Model {
                 $this->db->set('cardcode', $row['cardcode']);
             }
             $this->db->set('autopay', intval($row['autopay']));
-            $this->db->set('payment_save',1);
+            if (empty($row['cardcode'])) {
+                $this->db->set('payment_save',0);
+            } else {
+                $this->db->set('payment_save',1);
+            }
             if ($row['order_payment_id']<0) {
                 $this->db->set('order_id', $order_id);
                 $this->db->insert('ts_order_payments');
