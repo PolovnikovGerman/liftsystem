@@ -1402,9 +1402,6 @@ div.oldvesionlabel {
     .content_tab_header.sigmasystem {
         width: 43px;
     }
-    .publicsearch > .publicsearch_btn {
-        left: 611px;
-    }
     .mainsiteheader {
         width: calc(100% - 353px);
     }
