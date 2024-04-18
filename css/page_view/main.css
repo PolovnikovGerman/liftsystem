@@ -187,6 +187,7 @@ body div {
 }
 .publicsearch {
     margin-left: 9px;
+    position: relative;
     /* Compensation for magnif.icon */
     /* margin-right: -16px; */
 }
@@ -215,6 +216,7 @@ body div {
     /*left: -21px;*/
     /*top: 4px;*/
     /*cursor: pointer;*/
+    position: absolute;
     left: auto;
     right: 5px;
     top: 4px;
