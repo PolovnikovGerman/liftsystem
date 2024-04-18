@@ -65,7 +65,9 @@
     <div class="mainsiteheader">
         <div class="datarow">
             <div class="left-box">
-                <div class="period_analitic_info"><?=$total_view?></div>
+                <?php if ($usrrole=='masteradmin') { ?>
+                    <div class="period_analitic_info"><?=$total_view?></div>
+                <?php } ?>
                 <div class="publicsearch">
                     <input type="text" class="publicsearch_template" id="publicsearch_template" placeholder="Find Orders"/>
                     <div class="publicsearch_btn">
