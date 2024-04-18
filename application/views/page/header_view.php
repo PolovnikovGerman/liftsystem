@@ -106,29 +106,30 @@
                     </div>
                 </div>
             <?php } ?>
-            <div class="right-box">
-                <div class="userinfo">
-                    <div class="datarow">
-                        <div class="signout" id="signout">[sign out]</div>
-                        <div class="usersigninfo"><?=$user_name?></div>
-                    </div>
-                    <div class="datarow">
-                        <div class="dateinfo">
-                            <?=date('D, F j, Y')?>
-                        </div>
-                    </div>
-                </div>
-                <?php if ($resourcechk) { ?>
-                    <div class="infoalerts resources" id="resources">
-                        <div class="alerticon" title="Resources">
-                            <img src="/img/icons/book-open-white.svg" class="img-responsive"/>
-                        </div>
-                        <!--                    <div class="alerttext">Resources</div>-->
-                    </div>
-                <?php } ?>
-            </div>
         </div>
     </div>
+    <div class="right-box">
+        <div class="userinfo">
+            <div class="datarow">
+                <div class="signout" id="signout">[sign out]</div>
+                <div class="usersigninfo"><?=$user_name?></div>
+            </div>
+            <div class="datarow">
+                <div class="dateinfo">
+                    <?=date('D, F j, Y')?>
+                </div>
+            </div>
+        </div>
+        <?php if ($resourcechk) { ?>
+            <div class="infoalerts resources" id="resources">
+                <div class="alerticon" title="Resources">
+                    <img src="/img/icons/book-open-white.svg" class="img-responsive"/>
+                </div>
+                <!--                    <div class="alerttext">Resources</div>-->
+            </div>
+        <?php } ?>
+    </div>
+
     <input type="hidden" id="mainmenuactivelnk" value="<?=$activelnk?>"/>
     <input type="hidden" id="currentbrand" value="SB"/>
 </div>
