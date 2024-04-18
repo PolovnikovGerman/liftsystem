@@ -116,7 +116,7 @@
             </div>
             <div class="datarow">
                 <div class="dateinfo">
-                    <?=date('D, F j, Y')?>
+                    <?=date('F j, Y')?>
                 </div>
             </div>
         </div>
