@@ -1419,10 +1419,10 @@ div.oldvesionlabel {
         margin-right: unset;
     }
     .userinfo .signout {
-        font-size: 12px;
+        /* font-size: 12px; */
     }
     .userinfo .usersigninfo {
-        font-size: 12px;
+        /* font-size: 12px; */
     }
     .userinfo .dateinfo {
         font-size: 12px;
