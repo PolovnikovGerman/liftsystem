@@ -119,7 +119,7 @@ body div {
     margin: 17px 20px 0 20px;
 }
 .mainsiteheader {
-    width: calc(100% - 432px);
+    /* width: calc(100% - 432px); */
 }
 .period_analitic_info {
     border: 1px solid #9b9b9b;
@@ -1411,7 +1411,7 @@ div.oldvesionlabel {
         width: 43px;
     }
     .mainsiteheader {
-        width: calc(100% - 353px);
+        /* width: calc(100% - 353px); */
     }
     .userinfo {
         width: unset;
