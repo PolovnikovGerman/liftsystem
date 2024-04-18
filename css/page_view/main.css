@@ -139,6 +139,14 @@ body div {
     color: #55aeff;
     text-transform: uppercase;
 }
+.period_analitic_info .period_results {
+    width: 100%;
+    text-align: center;
+}
+.period_analitic_info .param_value,.period_analitic_info  .param_value_label,.period_analitic_info  .param_value.money {
+    float: none;
+    display: inline-block;
+}
 .period_analitic_info .param_value_label {
     /* text-align: right;
     padding-right: 7px;
@@ -207,10 +215,9 @@ body div {
     /*left: -21px;*/
     /*top: 4px;*/
     /*cursor: pointer;*/
-    position: absolute;
-    float: left;
-    left: 681px;
-    top: 14px;
+    left: auto;
+    right: 5px;
+    top: 4px;
     cursor: pointer;
 }
 .userinfo {

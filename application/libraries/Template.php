@@ -170,6 +170,7 @@ class Template
             'test_server' => $this->CI->config->item('test_server'),
             'brand' => $brand,
             'brands' => $brands,
+            'usrrole' => $userdat['user_logged_in'],
         ];
         if (ifset($options,'adaptive',0)==1) {
             $dat['header_view'] = $this->CI->load->view('page/header_adaptive_view', $topmenu_options, TRUE);
