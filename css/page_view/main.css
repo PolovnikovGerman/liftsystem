@@ -240,10 +240,11 @@ body div {
     font-family: Helvetica-Oblique;
     font-size: 12px;
     font-style: italic;
-    width: 50px;
+    /* width: 50px;*/
     padding-top: 1px;
     float: right!important;
     cursor: pointer;
+    margin-right: 8px;
 }
 .userinfo .usersigninfo {
     float: right!important;

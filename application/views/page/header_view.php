@@ -111,7 +111,7 @@
     <div class="right-box">
         <div class="userinfo">
             <div class="datarow">
-                <div class="signout" id="signout">[sign out]</div>
+                <div class="signout" id="signout">[exit]</div>
                 <div class="usersigninfo"><?=$user_name?></div>
             </div>
             <div class="datarow">
