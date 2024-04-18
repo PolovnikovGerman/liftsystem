@@ -238,7 +238,7 @@ body div {
 .userinfo .signout {
     color: #82f8ff;
     font-family: Helvetica-Oblique;
-    font-size: 12px;
+    font-size: 13px;
     font-style: italic;
     /* width: 50px;*/
     padding-top: 1px;
@@ -253,7 +253,7 @@ body div {
     color: #ffffff;
     font-family: Helvetica-Oblique;
     font-style: italic;
-    font-size: 14px;
+    font-size: 13px;
 }
 .userinfo .dateinfo {
     float: right!important;
