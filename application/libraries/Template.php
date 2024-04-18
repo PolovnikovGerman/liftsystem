@@ -155,7 +155,7 @@ class Template
 
 
         $topmenu_options = [
-            'user_name' => $options['user_name'],
+            'user_name' => $userdat['first_name'],
             'activelnk' => (isset($options['activelnk']) ? $options['activelnk'] : ''),
             'total_view' => $total_view,
             // 'menu_view' => $menu_view,

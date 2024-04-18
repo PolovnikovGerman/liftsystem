@@ -79,6 +79,8 @@ Class User_model extends MY_Model
                     'user_order_export' => $user['user_order_export'],
                     'user_secret' => $user['user_secret'],
                     'user_payuser' => $user['user_payuser'],
+                    'finuser' => $user['finuser'],
+                    'first_name' => $user['first_name'],
                 ];
                 $out['result']=$this->success_result;
             }
@@ -180,6 +182,7 @@ Class User_model extends MY_Model
                                 'finuser' => $res['finuser'],
                                 'user_secret' => $res['user_secret'],
                                 'user_payuser' => $res['user_payuser'],
+                                'first_name' => $res['first_name'],
                             );
                             usersession('usr_data', $usr_data);
                             // Create access token
