@@ -1175,4 +1175,10 @@ Class Cronjob extends CI_Controller
         }
     }
 
+    public function cleanverification()
+    {
+        $this->load->model('user_model');
+        $this->user_model->clean_verification();
+    }
+
 }

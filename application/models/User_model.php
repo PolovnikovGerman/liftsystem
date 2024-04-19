@@ -815,6 +815,14 @@ Class User_model extends MY_Model
         return TRUE;
     }
 
+    public function clean_verification()
+    {
+        $this->db->where('user_status',1);
+        $this->db->set('last_verified',0);
+        $this->db->update('users');
+        return true;
+    }
+
 }
 /* End of file user_model.php */
 /* Location: ./application/models/user_model.php */
