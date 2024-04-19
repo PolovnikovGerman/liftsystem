@@ -3505,53 +3505,36 @@ class Test extends CI_Controller
         }
     }
 
-    public function update_ordersave()
+    public function updatechecklist()
     {
-        $this->db->select('*')->from('ts_order_payments')->order_by('order_id', 'desc');
-        $payments = $this->db->get()->result_array();
-        foreach ($payments as $payment) {
-            if (!empty($payment['cardcode']) && substr($payment['cardcode'],0,1)!=='X') {
-                // Hide CVV
-                $this->db->where('order_payment_id', $payment['order_payment_id']);
-                $this->db->set('cardcode', hide_card_code($payment['cardcode']));
-                $this->db->set('payment_save',1);
-                $this->db->update('ts_order_payments');
-                echo 'Update Order '.$payment['order_id'].PHP_EOL;
-            }
-        }
-//        $this->db->select('*')->from('ts_orders')->where('payment_save',1);
-//        $orders = $this->db->get()->result_array();
-//        foreach ($orders as $order) {
-//            $this->db->select('*')->from('ts_order_payments')->where('order_id', $order['order_id']);
-//            $payments = $this->db->get()->result_array();
-//            foreach ($payments as $payment) {
-//                if (!empty($payment['cardcode']) && substr($payment['cardcode'],0,1)!=='X') {
-//                    $this->db->where('order_payment_id', $payment['order_payment_id']);
-//                    $this->db->set('cardcode', show_card_code($payment['cardcode']));
-//                    $this->db->update('ts_order_payments');
-//                    echo 'Update Order '.$payment['order_id'].PHP_EOL;
-//                }
-//            }
-//        }
-    }
+        $inputFileType = 'Xlsx';
+        $this->load->config('uploader');
+        $inputFileName = $this->config->item('upload_path_preload').'list_customers-paidbycheck.xlsx';
 
-    public function updateweborders()
-    {
-        $this->db->select('s.order_id, s.order_num, s.payment_card_type, s.payment_card_number, s.payment_card_vn, o.order_id, p.order_payment_id, p.cardnum');
-        $this->db->from('sb_orders s');
-        $this->db->join('ts_orders o','o.order_num=s.order_num');
-        $this->db->join('ts_order_payments p','o.order_id = p.order_id');
-        $this->db->where('s.order_id >= ',10481);
-        $weborders = $this->db->get()->result_array();
-        foreach ($weborders as $weborder) {
-            if (!empty($weborder['cardnum'])) {
-                $this->db->where('order_payment_id', $weborder['order_payment_id']);
-                $this->db->set('cardnum', $weborder['payment_card_number']);
-                $this->db->set('cardcode', hide_card_code($weborder['payment_card_vn']));
-                $this->db->set('payment_save',1);
-                $this->db->update('ts_order_payments');
-                echo 'Order '.$weborder['order_num'].' Updated'.PHP_EOL;
+        $reader = PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+        $spreadsheet = $reader->load($inputFileName);
+
+        $worksheet = $spreadsheet->getSheetByName('Final Data');
+
+        $dataArray = $worksheet->toArray();
+        $outdata = [];
+        $idx = 0;
+        foreach ($dataArray as $row) {
+            if (!empty(row['0']) && $row[0]!=='Year') {
+                $outdata[] = [
+                    'idx' => $idx,
+                    'order_num' => $row['1'],
+                    'order_id' => 0,
+                    'email' => '',
+                    'billing_address' => '',
+                ];
+            } else {
+                $outdata[] = [
+                    'idx' => $idx,
+                    'order_num' => '',
+                ];
             }
         }
+        
     }
 }
