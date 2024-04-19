@@ -123,7 +123,7 @@ body div {
 }
 .period_analitic_info {
     border: 1px solid #9b9b9b;
-    width: 150px;
+    width: 183px;
 }
 .period_analitic_info div {
     height: 18px;
@@ -237,9 +237,8 @@ body div {
 }
 .userinfo .signout {
     color: #82f8ff;
-    font-family: Helvetica-Oblique;
+    font-family: Helvetica;
     font-size: 13px;
-    font-style: italic;
     /* width: 50px;*/
     /* padding-top: 1px; */
     float: right!important;
@@ -251,9 +250,8 @@ body div {
     padding-right: 7px;
     text-align: right;
     color: #ffffff;
-    font-family: Helvetica-Oblique;
-    font-style: italic;
-    font-size: 13px;
+    font-family: Helvetica;
+    font-size: 14px;
 }
 .userinfo .dateinfo {
     float: right!important;
@@ -711,7 +709,6 @@ ul.mainmenu #collapsed.dropdown-menu li {
 }
 .maincontentmenu_item {
     background: #5a5aff;
-    margin-top: 5px;
     height: 23px;
     line-height: 23px!important;
     text-align: center;
@@ -734,7 +731,7 @@ ul.mainmenu #collapsed.dropdown-menu li {
     color: #2E2E2E;
 }
 .maincontentmenu_item.oldver {
-    padding: 0 13px 0 1px;
+    /* padding: 0 13px 0 1px; */
 }
 .maincontentmenu_item.active {
     color: #000;
@@ -891,15 +888,15 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     padding: 0 16px;
 }
 .menuitem.oldver {
-    padding: 0 16px 0 4px!important;
+    /* padding: 0 16px 0 4px!important; */
 }
 div.oldvesionlabel {
     opacity: 0.6;
-    position: relative;
+    position: absolute;
     left: 47%;
     background-color: #b53535;
     width: 12px;
-    margin-top: 0px;
+    /* margin-top: 0px; */
     height: 23px;
 }
 .menuitem.activelink, .menuitem.activelink:hover {
@@ -1419,10 +1416,10 @@ div.oldvesionlabel {
         margin-right: unset;
     }
     .userinfo .signout {
-        /* font-size: 12px; */
+        font-size: 12px;
     }
     .userinfo .usersigninfo {
-        /* font-size: 12px; */
+        font-size: 13px;
     }
     .userinfo .dateinfo {
         font-size: 12px;
@@ -1432,5 +1429,31 @@ div.oldvesionlabel {
     }
     .sigma_logo.active {
         margin: 17px 15px 0 15px;
+    }
+    /* Tabs, menu */
+    .maincontentmenu > .title {
+        margin-left: 5px;
+        margin-right: 8px;
+        font-size: 16px;
+        height: 24px;
+        line-height: 24px !important;
+        margin-top: 7px;
+    }
+    .maincontentmenu_item {
+        height: 21px;
+        line-height: 21px!important;
+        padding: 0 6px;
+        font-size: 12px;
+        margin-right: 3px;
+        cursor: pointer;
+        margin-top: 11px;
+    }
+    div.oldvesionlabel {
+        height: 21px;
+    }
+    .maincontentmenu_item.active {
+        line-height: 24px !important;
+        height: 24px;
+        margin-top: 9px;
     }
 }
