@@ -135,7 +135,7 @@ body div {
     text-align: center;
     font-family: Arial;
     font-weight: bold;
-    font-size: 11px;
+    font-size: 14px;
     color: #55aeff;
     text-transform: uppercase;
     line-height: 16px;
@@ -238,7 +238,7 @@ body div {
 .userinfo .signout {
     color: #82f8ff;
     font-family: Helvetica;
-    font-size: 13px;
+    font-size: 12px;
     /* width: 50px;*/
     /* padding-top: 1px; */
     float: right!important;
@@ -1411,12 +1411,15 @@ div.oldvesionlabel {
     .mainsiteheader {
         /* width: calc(100% - 353px); */
     }
+    .period_analitic_info .period_name {
+        font-size: 13px;
+    }
     .userinfo {
         width: unset;
         margin-right: unset;
     }
     .userinfo .signout {
-        font-size: 12px;
+        font-size: 11px;
     }
     .userinfo .usersigninfo {
         font-size: 13px;
