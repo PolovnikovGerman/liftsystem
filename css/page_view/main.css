@@ -123,7 +123,7 @@ body div {
 }
 .period_analitic_info {
     border: 1px solid #9b9b9b;
-    width: 150px;
+    width: 183px;
 }
 .period_analitic_info div {
     height: 18px;
@@ -237,9 +237,8 @@ body div {
 }
 .userinfo .signout {
     color: #82f8ff;
-    font-family: Helvetica-Oblique;
+    font-family: Helvetica;
     font-size: 13px;
-    font-style: italic;
     /* width: 50px;*/
     /* padding-top: 1px; */
     float: right!important;
@@ -251,9 +250,8 @@ body div {
     padding-right: 7px;
     text-align: right;
     color: #ffffff;
-    font-family: Helvetica-Oblique;
-    font-style: italic;
-    font-size: 13px;
+    font-family: Helvetica;
+    font-size: 14px;
 }
 .userinfo .dateinfo {
     float: right!important;
@@ -1419,10 +1417,10 @@ div.oldvesionlabel {
         margin-right: unset;
     }
     .userinfo .signout {
-        /* font-size: 12px; */
+        font-size: 12px;
     }
     .userinfo .usersigninfo {
-        /* font-size: 12px; */
+        font-size: 13px;
     }
     .userinfo .dateinfo {
         font-size: 12px;
