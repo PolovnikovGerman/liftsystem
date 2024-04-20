@@ -3510,17 +3510,18 @@ class Test extends CI_Controller
         $inputFileType = 'Xlsx';
         $this->load->config('uploader');
         $inputFileName = $this->config->item('upload_path_preload').'list_customers-paidbycheck.xlsx';
-
-        $reader = PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
-        $spreadsheet = $reader->load($inputFileName);
-
+        $outFileName = $this->config->item('upload_path_preload').'list_customers-paidbycheck_finale.xlsx';
+        @unlink($outFileName);
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($inputFileName);
         $worksheet = $spreadsheet->getSheetByName('Final Data');
 
         $dataArray = $worksheet->toArray();
+
         $outdata = [];
+
         $idx = 0;
         foreach ($dataArray as $row) {
-            if (!empty(row['0']) && $row[0]!=='Year') {
+            if (!empty($row['0']) && $row[0]!=='Year') {
                 $outdata[] = [
                     'idx' => $idx,
                     'order_num' => $row['1'],
@@ -3534,7 +3535,73 @@ class Test extends CI_Controller
                     'order_num' => '',
                 ];
             }
+            $idx++;
         }
-        
+        // Check orders
+        $idx = 0;
+        foreach ($outdata as $item) {
+            if (!empty($item['order_num'])) {
+                $this->db->select('*')->from('ts_orders')->where('order_num', $item['order_num']);
+                $order = $this->db->get()->row_array();
+                if (ifset($order,'order_id',0) > 0) {
+                    $outdata[$idx]['order_id'] = $order['order_id'];
+                    $outdata[$idx]['email'] = $order['customer_email'];
+                    if (!empty($order['order_system']) && $order['order_system']=='new') {
+                        // echo 'New Order '.$order['order_num'].PHP_EOL;
+                        $outdata[$idx]['billing_address'] = $this->_order_biladdress($order['order_id']);
+                    }
+                }
+            }
+            $idx++;
+        }
+        // write date to xls file
+        foreach ($outdata as $item) {
+            if (!empty($item['order_id'])) {
+                $coordY = $item['idx']+1;
+                $worksheet->setCellValue('G'.$coordY,$item['email']);
+                $worksheet->setCellValue('H'.$coordY,$item['billing_address']);
+            }
+        }
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+        // $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        // $writer->setIncludeCharts(true);
+        $writer->save($outFileName);
+
+        echo 'Ended '.PHP_EOL;
+    }
+
+    private function _order_biladdress($order_id)
+    {
+        $billaddr = '';
+        $this->db->select('b.order_billing_id, b.company, b.customer_name, b.address_1, b.address_2, b.city, b.zip, tc.country_iso_code_2 as cntcode, coalesce(t.state_code) as stcode');
+        $this->db->from('ts_order_billings b');
+        $this->db->join('ts_countries tc', 'b.country_id = tc.country_id');
+        $this->db->join('ts_states t', 'b.state_id = t.state_id', 'left');
+        $this->db->where('b.order_id', $order_id);
+        $bildat = $this->db->get()->row_array();
+        if (ifset($bildat, 'order_billing_id',0) > 0) {
+            if ($order_id==42663) {
+                echo 'Bill Address 42663'.PHP_EOL;
+            }
+            if (!empty($bildat['company'])) {
+                $billaddr.=$bildat['company'].PHP_EOL;
+            }
+            if (!empty($bildat['customer_name'])) {
+                $billaddr.=$bildat['customer_name'].PHP_EOL;
+            }
+            $billaddr.=$bildat['address_1'].PHP_EOL;
+            if (!empty($bildat['address_2'])) {
+                $billaddr.=$bildat['address_2'].PHP_EOL;
+            }
+            $billaddr.=$bildat['city'];
+            if (!empty($bildat['stcode'])) {
+                $billaddr.=' '.$bildat['stcode'];
+            }
+            $billaddr.=' '.$bildat['zip'];
+            if ($order_id==42663) {
+                echo $billaddr;
+            }
+        }
+        return $billaddr;
     }
 }
