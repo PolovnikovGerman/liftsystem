@@ -3553,53 +3553,103 @@ class Test extends CI_Controller
         }
     }
 
-    public function update_ordersave()
+    public function updatechecklist()
     {
-        $this->db->select('*')->from('ts_order_payments')->order_by('order_id', 'desc');
-        $payments = $this->db->get()->result_array();
-        foreach ($payments as $payment) {
-            if (!empty($payment['cardcode']) && substr($payment['cardcode'],0,1)!=='X') {
-                // Hide CVV
-                $this->db->where('order_payment_id', $payment['order_payment_id']);
-                $this->db->set('cardcode', hide_card_code($payment['cardcode']));
-                $this->db->set('payment_save',1);
-                $this->db->update('ts_order_payments');
-                echo 'Update Order '.$payment['order_id'].PHP_EOL;
+        $inputFileType = 'Xlsx';
+        $this->load->config('uploader');
+        $inputFileName = $this->config->item('upload_path_preload').'list_customers-paidbycheck.xlsx';
+        $outFileName = $this->config->item('upload_path_preload').'list_customers-paidbycheck_finale.xlsx';
+        @unlink($outFileName);
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($inputFileName);
+        $worksheet = $spreadsheet->getSheetByName('Final Data');
+
+        $dataArray = $worksheet->toArray();
+
+        $outdata = [];
+
+        $idx = 0;
+        foreach ($dataArray as $row) {
+            if (!empty($row['0']) && $row[0]!=='Year') {
+                $outdata[] = [
+                    'idx' => $idx,
+                    'order_num' => $row['1'],
+                    'order_id' => 0,
+                    'email' => '',
+                    'billing_address' => '',
+                ];
+            } else {
+                $outdata[] = [
+                    'idx' => $idx,
+                    'order_num' => '',
+                ];
+            }
+            $idx++;
+        }
+        // Check orders
+        $idx = 0;
+        foreach ($outdata as $item) {
+            if (!empty($item['order_num'])) {
+                $this->db->select('*')->from('ts_orders')->where('order_num', $item['order_num']);
+                $order = $this->db->get()->row_array();
+                if (ifset($order,'order_id',0) > 0) {
+                    $outdata[$idx]['order_id'] = $order['order_id'];
+                    $outdata[$idx]['email'] = $order['customer_email'];
+                    if (!empty($order['order_system']) && $order['order_system']=='new') {
+                        // echo 'New Order '.$order['order_num'].PHP_EOL;
+                        $outdata[$idx]['billing_address'] = $this->_order_biladdress($order['order_id']);
+                    }
+                }
+            }
+            $idx++;
+        }
+        // write date to xls file
+        foreach ($outdata as $item) {
+            if (!empty($item['order_id'])) {
+                $coordY = $item['idx']+1;
+                $worksheet->setCellValue('G'.$coordY,$item['email']);
+                $worksheet->setCellValue('H'.$coordY,$item['billing_address']);
             }
         }
-//        $this->db->select('*')->from('ts_orders')->where('payment_save',1);
-//        $orders = $this->db->get()->result_array();
-//        foreach ($orders as $order) {
-//            $this->db->select('*')->from('ts_order_payments')->where('order_id', $order['order_id']);
-//            $payments = $this->db->get()->result_array();
-//            foreach ($payments as $payment) {
-//                if (!empty($payment['cardcode']) && substr($payment['cardcode'],0,1)!=='X') {
-//                    $this->db->where('order_payment_id', $payment['order_payment_id']);
-//                    $this->db->set('cardcode', show_card_code($payment['cardcode']));
-//                    $this->db->update('ts_order_payments');
-//                    echo 'Update Order '.$payment['order_id'].PHP_EOL;
-//                }
-//            }
-//        }
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+        // $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        // $writer->setIncludeCharts(true);
+        $writer->save($outFileName);
+
+        echo 'Ended '.PHP_EOL;
     }
 
-    public function updateweborders()
+    private function _order_biladdress($order_id)
     {
-        $this->db->select('s.order_id, s.order_num, s.payment_card_type, s.payment_card_number, s.payment_card_vn, o.order_id, p.order_payment_id, p.cardnum');
-        $this->db->from('sb_orders s');
-        $this->db->join('ts_orders o','o.order_num=s.order_num');
-        $this->db->join('ts_order_payments p','o.order_id = p.order_id');
-        $this->db->where('s.order_id >= ',10481);
-        $weborders = $this->db->get()->result_array();
-        foreach ($weborders as $weborder) {
-            if (!empty($weborder['cardnum'])) {
-                $this->db->where('order_payment_id', $weborder['order_payment_id']);
-                $this->db->set('cardnum', $weborder['payment_card_number']);
-                $this->db->set('cardcode', hide_card_code($weborder['payment_card_vn']));
-                $this->db->set('payment_save',1);
-                $this->db->update('ts_order_payments');
-                echo 'Order '.$weborder['order_num'].' Updated'.PHP_EOL;
+        $billaddr = '';
+        $this->db->select('b.order_billing_id, b.company, b.customer_name, b.address_1, b.address_2, b.city, b.zip, tc.country_iso_code_2 as cntcode, coalesce(t.state_code) as stcode');
+        $this->db->from('ts_order_billings b');
+        $this->db->join('ts_countries tc', 'b.country_id = tc.country_id');
+        $this->db->join('ts_states t', 'b.state_id = t.state_id', 'left');
+        $this->db->where('b.order_id', $order_id);
+        $bildat = $this->db->get()->row_array();
+        if (ifset($bildat, 'order_billing_id',0) > 0) {
+            if ($order_id==42663) {
+                echo 'Bill Address 42663'.PHP_EOL;
+            }
+            if (!empty($bildat['company'])) {
+                $billaddr.=$bildat['company'].PHP_EOL;
+            }
+            if (!empty($bildat['customer_name'])) {
+                $billaddr.=$bildat['customer_name'].PHP_EOL;
+            }
+            $billaddr.=$bildat['address_1'].PHP_EOL;
+            if (!empty($bildat['address_2'])) {
+                $billaddr.=$bildat['address_2'].PHP_EOL;
+            }
+            $billaddr.=$bildat['city'];
+            if (!empty($bildat['stcode'])) {
+                $billaddr.=' '.$bildat['stcode'];
+            }
+            $billaddr.=' '.$bildat['zip'];
+            if ($order_id==42663) {
+                echo $billaddr;
             }
         }
+        return $billaddr;
     }
 }

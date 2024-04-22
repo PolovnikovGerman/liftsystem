@@ -3292,8 +3292,8 @@ Class Leadorder_model extends My_Model {
                 'cardcode'=>$charge['cardcode'],
             ];
             $this->_save_order_paymentlog($order_id, $usr_id, $transres['error_msg'], $cc_options);
-            $charge['cardnum'] = '';
-            $charge['cardcode'] = '';
+            // $charge['cardnum'] = '';
+            // $charge['cardcode'] = '';
             $charges[$chridx] = $charge;
             $leadorder['charges'] = $charges;
             usersession($ordersession, $leadorder);

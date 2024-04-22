@@ -1210,7 +1210,7 @@ class Inventory_model extends MY_Model
         }
         return $container;
     }
-    public function get_inventory_colors($inventory_type, $inventory_filter) {
+    public function get_inventory_colors($inventory_type, $inventory_filter, $sortby) {
         $this->db->select('*');
         $this->db->from('ts_inventory_items');
         $this->db->where('inventory_type_id', $inventory_type);
@@ -1246,7 +1246,11 @@ class Inventory_model extends MY_Model
                 } elseif ($inventory_filter==2) {
                     $this->db->where('color_status',0);
                 }
-                $this->db->order_by('color_order');
+                if ($sortby=='suggeststock') {
+                    $this->db->order_by($sortby,'desc');
+                } else {
+                    $this->db->order_by($sortby);
+                }
                 $colors = $this->db->get()->result_array();
                 foreach ($colors as $color) {
                     $colorsdata[] = [
