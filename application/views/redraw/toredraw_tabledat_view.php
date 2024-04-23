@@ -12,7 +12,14 @@
         <div class="timedata"><?=$row['diff']?></div>
         <div class="proofdata"><?=$row['proof_num']?></div>
         <div class="orderdat"><?=$row['order_num']?></div>
-        <div class="filesourcedata <?=$row['imagesourceclass']?>" data-redrawid="<?=$row['artwork_logo_id']?>" data-redrawsource="<?=$row['redrawsource']?>"><?=$row['filename']?></div>
+        <?php if ($row['imagesourceclass']=='imagesourceview') { ?>
+            <div class="filesourcedata imagesourceview" data-event="click" data-css="weekbrandtotals" data-bgcolor="#000000" data-bordercolor="#adadad" data-textcolor="#FFFFFF"
+                 data-position="right" data-balloon="<img src='<?=$row['redrawsource']?>' alt='Preview' style='width:250px; height: auto'/>">
+        <?php } else { ?>
+            <div class="filesourcedata" data-redrawid="<?=$row['artwork_logo_id']?>" data-redrawsource="<?=$row['redrawsource']?>">
+        <?php } ?>
+            <?=$row['filename']?>
+        </div>
         <div class="vectchkdata">
             <?php if ($row['filename']=='') { ?>&nbsp;<?php } else {?>
                 <input type="checkbox" class="markasvector" id="vectchk<?=$row['artwork_logo_id']?>" name="vectchk<?=$row['artwork_logo_id']?>" value="<?=$row['artwork_logo_id']?>" />
