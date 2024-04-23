@@ -414,8 +414,10 @@ Class User_model extends MY_Model
             'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
             'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
             'user_order_export' => $res['user_order_export'],
+            'finuser' => $res['finuser'],
             'user_secret' => $res['user_secret'],
             'user_payuser' => $res['user_payuser'],
+            'first_name' => $res['first_name'],
         );
         usersession('usr_data', $usr_data);
         return TRUE;
@@ -742,8 +744,10 @@ Class User_model extends MY_Model
             'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
             'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
             'user_order_export' => $res['user_order_export'],
+            'finuser' => $res['finuser'],
             'user_secret' => $res['user_secret'],
             'user_payuser' => $res['user_payuser'],
+            'first_name' => $res['first_name'],
         );
         usersession('usr_data', $usr_data);
         return TRUE;

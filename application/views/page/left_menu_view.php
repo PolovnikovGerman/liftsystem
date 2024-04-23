@@ -256,6 +256,19 @@
                     </div>
                 <?php } ?>
             <?php } ?>
+            <?php if ($menu['item_link']=='/redraw') { ?>
+                <?php if ($activelnk == $menu['item_link']) { ?>
+                    <div class="brandmenuitemactive sigmasystem" data-url="<?=$menu['item_link']?>" data-brand="SG">
+                        <div class="brandmenuicon active"><img src="/img/page_view/noun-palette-black.svg"/></div>
+                        <div class="brandmenutitle active"><?=$menu['item_name']?></div>
+                    </div>
+                <?php } else { ?>
+                    <div class="brandmenuitem sigmasystem" data-url="<?=$menu['item_link']?>" data-brand="SG">
+                        <div class="brandmenuicon" data-brand="SG" data-item="<?=$menu['menu_item_id']?>"><img src="/img/page_view/noun-palette-black.svg"/></div>
+                        <div class="brandmenutitle"><?=$menu['item_name']?></div>
+                    </div>
+                <?php } ?>
+            <?php } ?>
         <?php } ?>
         <div class="brandsubmenu sigmasystem" data-brand="SG">&nbsp;</div>
     </div>
