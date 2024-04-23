@@ -706,7 +706,7 @@ Class User_model extends MY_Model
         return $res;
     }
 
-    public function default_page($user_page) {
+    public function default_page($user_page, $brand = '') {
         $this->db->select('menu_item_id, parent_id, item_link, brand');
         $this->db->from('menu_items');
         $this->db->where('menu_item_id', $user_page);
@@ -714,8 +714,10 @@ Class User_model extends MY_Model
         if (ifset($res, 'menu_item_id', 0)==0) {
             return 'welcome';
         }
-        if (!empty($res['brand']) && $res['brand']!=='NONE') {
-            usersession('currentbrand', $res['brand']);
+        if (empty($brand)) {
+            if (!empty($res['brand']) && $res['brand']!=='NONE') {
+                usersession('currentbrand', $res['brand']);
+            }
         }
         if (empty($res['parent_id'])) {
             return $res['item_link'];
