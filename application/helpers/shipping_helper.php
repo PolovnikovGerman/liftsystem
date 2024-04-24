@@ -242,10 +242,10 @@ if (!function_exists('calculate_shipcost')) {
                         array_push($codes, 'DA1');
                         $shipRate = 0;
                         if (isset($fullRates['14'])) {
-                            $shipRate+=round($fullRates['14']['Rate']*$ratekf, 2);
+                            $shipRate += round($fullRates['14']['Rate'] * $ratekf, 2);
                         }
                         if (isset($restRates['14'])) {
-                            $shipRate+=$restRates['14']['Rate'];
+                            $shipRate += $restRates['14']['Rate'];
                         }
                         $ship['DA1'] = array(
                             'ServiceCode' => '1DM',
@@ -255,6 +255,32 @@ if (!function_exists('calculate_shipcost')) {
                             'current' => 0,
                         );
                         $code .= "1DA|";
+                    }
+                } elseif ($ratescode=='12') {
+                    // 3 Day Shipping
+                    if (isset($transit_arr['3DS'])) {
+                        $delivdate = $transit_arr['3DS']['transit_timestamp'];
+                        if (abs($daydiff) > 10) {
+                            // Make changes in deliv date
+                            $tnt_time = TNTDays($startdeliv, $delivdate, $calendar_id);
+                            $delivdate = recalc_arrive_date($oldstart, $tnt_time, $calendar_id);
+                        }
+                        array_push($codes, '3DS');
+                        $shipRate = 0;
+                        if (isset($fullRates['12'])) {
+                            $shipRate += round($fullRates['12']['Rate'] * $ratekf, 2);
+                        }
+                        if (isset($restRates['12'])) {
+                            $shipRate += $restRates['12']['Rate'];
+                        }
+                        $ship['3DS'] = array(
+                            'ServiceCode' => '3DS',
+                            'ServiceName' => 'UPS Three-Day',
+                            'Rate' => round($shipRate, 2),
+                            'DeliveryDate' => $delivdate,
+                            'current' => 0,
+                        );
+                        $code .= "3DS|";
                     }
                 } elseif ($ratescode=='08') {
                     // UPS Expedited
@@ -445,7 +471,16 @@ if (!function_exists('recalc_rates')) {
             $rate=round($rate*(100+$disc)/100 ,2)+$add_price;
             $ship['UPSStandard']['Rate']=$rate;
         }
-
+        if (isset($ship['3DS'])) {
+            $disc=0;
+            if (in_array('3DS', $idxmethods)) {
+                $idxmtd=  array_search('3DS', $idxmethods);
+                $disc=$methods[$idxmtd]['method_percent'];
+            }
+            $rate=$ship['3DS']['Rate'];
+            $rate=round($rate*(100+$disc)/100 ,2)+$add_price;
+            $ship['3DS']['Rate']=$rate;
+        }
         return $ship;
     }
 }
