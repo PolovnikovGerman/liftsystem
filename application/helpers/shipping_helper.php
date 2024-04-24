@@ -257,7 +257,7 @@ if (!function_exists('calculate_shipcost')) {
                         $code .= "1DA|";
                     }
                 } elseif ($ratescode=='12') {
-                    // 3 Day Shipping
+                    // 3 Day Shipping Select
                     if (isset($transit_arr['3DS'])) {
                         $delivdate = $transit_arr['3DS']['transit_timestamp'];
                         if (abs($daydiff) > 10) {
