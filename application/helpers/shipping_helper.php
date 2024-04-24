@@ -198,7 +198,7 @@ if (!function_exists('calculate_shipcost')) {
                             $shipRate+=$restRates['02']['Rate'];
                         }
                         $ship['DA2'] = array(
-                            'ServiceCode' => '2DA',
+                            'ServiceCode' => 'DA2',
                             'ServiceName' => '2nd Day Air',
                             'Rate' => round($shipRate, 2),
                             'DeliveryDate' => $delivdate, 'current' => 0,
@@ -275,7 +275,7 @@ if (!function_exists('calculate_shipcost')) {
                         }
                         $ship['3DS'] = array(
                             'ServiceCode' => '3DS',
-                            'ServiceName' => 'UPS Three-Day',
+                            'ServiceName' => 'UPS 3 Day Select',
                             'Rate' => round($shipRate, 2),
                             'DeliveryDate' => $delivdate,
                             'current' => 0,
@@ -350,7 +350,7 @@ if (!function_exists('calculate_shipcost')) {
                             $shipRate+=$restRates['65']['Rate'];
                         }
                         $ship['UPSSaver'] = array(
-                            'ServiceCode' => '65',
+                            'ServiceCode' => '28',
                             'ServiceName' => 'Saver',
                             'Rate' => round($shipRate, 2),
                             'DeliveryDate' => $delivdate,
@@ -481,7 +481,26 @@ if (!function_exists('recalc_rates')) {
             $rate=round($rate*(100+$disc)/100 ,2)+$add_price;
             $ship['3DS']['Rate']=$rate;
         }
-        return $ship;
+        // SORT
+        $newships = [];
+        $newships['deliv'] = $ship['deliv'];
+        unset($ship['deliv']);
+
+        foreach ($methods as $method) {
+            $upscode = $method['ups_sort'];
+            foreach ($ship as $key => $item) {
+                if ($item['ServiceCode']==$upscode) {
+                    $newships[$upscode] = $ship[$key];
+                    unset($ship[$key]);
+                }
+            }
+        }
+        $tt1 = 1;
+        foreach ($ship as $key => $item) {
+            $newships[$key] = $ship[$key];
+        }
+        $tt = 1;
+        return $newships;
     }
 }
 
