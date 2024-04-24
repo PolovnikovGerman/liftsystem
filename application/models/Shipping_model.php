@@ -1931,6 +1931,31 @@ Class Shipping_model extends MY_Model
                                     );
                                     $code .= "1DP|";
                                 }
+                            } elseif ($rate['service_code']=='12') {
+                                foreach ($times as $time) {
+                                    if ($time['code']=='3DS') {
+                                        $transit=1;
+                                        break;
+                                    }
+                                }
+                                if ($transit==1) {
+                                    array_push($codes, '3DS');
+                                    $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
+                                        // Make changes in deliv date
+                                        $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
+                                    }
+                                    $ship['3DS'] = array(
+                                        'ServiceCode' => '3DS',
+                                        'ServiceName' => 'UPS Three-Day',
+                                        'Rate' => round($rate['rate']/$qtykf, 2),
+                                        'DeliveryDate' => $delivdate,
+                                        'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
+                                    );
+                                    $code .= "3DS|";
+                                }
                             }
                         }
                     } elseif ($cnt_code=='CA') {
