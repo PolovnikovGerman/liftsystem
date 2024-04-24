@@ -91,7 +91,7 @@ $(document).ready(function () {
             var url='/welcome/brandshow';
             $.post(url, params, function (response) {
                 if (response.errors=='') {
-                    window.location.href='/';
+                    window.location.href=response.data.url;
                 } else {
                     show_error(response);
                 }

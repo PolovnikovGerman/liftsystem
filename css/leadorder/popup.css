@@ -1545,7 +1545,8 @@ span.taxemptyview {
 .pay_method_input2 {
     height: 15px;
     margin: 0 0 0 3px;
-    width: 119px;
+    /* width: 119px; */
+    width: 132px;
 }
 .pay_method_input3 {
     height: 15px;
