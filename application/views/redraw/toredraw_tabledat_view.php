@@ -13,7 +13,7 @@
         <div class="proofdata"><?=$row['proof_num']?></div>
         <div class="orderdat"><?=$row['order_num']?></div>
         <?php if ($row['imagesourceclass']=='imagesourceview') { ?>
-            <div class="filesourcedata imagesourceview" data-event="click" data-css="weekbrandtotals" data-bgcolor="#000000" data-bordercolor="#adadad" data-textcolor="#FFFFFF"
+            <div class="filesourcedata imagesourceview" data-event="hover" data-timer = 5000 data-css="weekbrandtotals" data-bgcolor="#000000" data-bordercolor="#adadad" data-textcolor="#FFFFFF"
                  data-position="right" data-balloon="<img src='<?=$row['redrawsource']?>' alt='Preview' style='width:250px; height: auto'/>">
         <?php } else { ?>
             <div class="filesourcedata" data-redrawid="<?=$row['artwork_logo_id']?>" data-redrawsource="<?=$row['redrawsource']?>">
@@ -25,21 +25,24 @@
                 <input type="checkbox" class="markasvector" id="vectchk<?=$row['artwork_logo_id']?>" name="vectchk<?=$row['artwork_logo_id']?>" value="<?=$row['artwork_logo_id']?>" />
             <?php } ?>
         </div>
-        <div class="usrtextdata <?=$row['usrtext_class']?>" title="<?=$row['user_title']?>">
-            <?php if ($row['user_txt']==0) { ?>
-                &nbsp;
-            <?php } else { ?>
+        <?php if ($row['user_txt']==0) { ?>
+            <div class="usrtextdata">&nbsp;</div>
+        <?php } else { ?>
+            <div class="usrtextdata" data-event="hover" data-css="redrawnessageballonarea" data-bgcolor="#FFFFFF"
+                data-bordercolor="#000" data-position="right" data-textcolor="#000" data-balloon="<?=$row['user_title']?>" data-timer="6000">
                 <i class="fa fa-file-text-o" aria-hidden="true"></i>
-            <?php } ?>
-        </div>
+            </div>
+        <?php } ?>
+
         <div class="messagedata"><?=$row['redraw_message']?></div>
-        <div class="messagedetails <?=$row['message_class']?>" data-redraw="/redraw/redrawmsg?msg=<?=$row['artwork_logo_id']?>">
-            <?php if ($row['message_details']==0) { ?>
-                &nbsp;
-            <?php } else { ?>
+        <?php if ($row['message_details']==0) { ?>
+            <div class="messagedetails">&nbsp;</div>
+        <?php } else { ?>
+            <div class="messagedetails" data-event="hover" data-css="redrawnessageballonarea" data-bgcolor="#FFFFFF"
+                data-bordercolor="#000" data-position="left" data-textcolor="#000" data-balloon="<?=$row['redraw_message']?>" data-timer="6000">
                 <i class="fa fa-search" aria-hidden="true"></i>
-            <?php } ?>
-        </div>
+            </div>
+        <?php } ?>
         <div class="submitdata" data-logo="<?=$row['artwork_logo_id']?>">
             <img src="/img/redraw/upload_vector_btn.png" alt="upload"/>
         </div>

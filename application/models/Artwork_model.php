@@ -3823,7 +3823,8 @@ Class Artwork_model extends MY_Model
             $row['imagesourceclass']=$row['redrawsource']='';
             if (in_array($sourcedet['ext'], $this->logo_imageext)) {
                 $row['imagesourceclass']='imagesourceview';
-                $row['redrawsource']='/redraw/viewsource/?id='.$row['artwork_logo_id'];
+                // $row['redrawsource']='/redraw/viewsource/?id='.$row['artwork_logo_id'];
+                $row['redrawsource'] = $row['logo_src'];
             }
             $out[]=$row;
         }
@@ -4069,6 +4070,104 @@ Class Artwork_model extends MY_Model
             $this->email->clear(TRUE);
         }
         return TRUE;
+    }
+
+    public function total_vectorized() {
+        $out=array(
+            'total_jobs'=>0,
+            'avg_time'=>'',
+            'avg_rush'=>'',
+        );
+        $this->db->select('count(artwork_art_id) as cnt, avg(vectorized_time-redraw_time) as avg_time');
+        $this->db->from('ts_artwork_arts al');
+        $this->db->join('ts_artworks aw','aw.artwork_id=al.artwork_id');
+        $this->db->join('ts_orders ord','ord.order_id=aw.order_id','left');
+        $this->db->join('ts_emails pr','pr.email_id=aw.mail_id','left');
+        $this->db->where('vectorized_time > ',0);
+        $this->db->where('redrawvect',1);
+        $this->db->where('sys_redrawn',0);
+        $this->db->where('logo_src != logo_vectorized');
+        $this->db->where('coalesce(ord.is_canceled,0)',0);
+        $this->db->where('coalesce(pr.email_status,0) != ',2);
+        $res=$this->db->get()->row_array();
+        $out['total_jobs']=$res['cnt'];
+        if ($res['cnt']>0) {
+            $out['avg_time']=show_time($res['avg_time']);
+        }
+        /* AVG time RUSH */
+        $this->db->select('count(al.artwork_art_id) as cnt, avg(al.vectorized_time-al.redraw_time) as avg_time');
+        $this->db->from('ts_artwork_arts al');
+        $this->db->join('ts_artworks aw','aw.artwork_id=al.artwork_id');
+        $this->db->join('ts_orders ord','ord.order_id=aw.order_id','left');
+        $this->db->join('ts_emails pr','pr.email_id=aw.mail_id','left');
+        $this->db->where('al.rush',1);
+        $this->db->where('al.vectorized_time > ',0);
+        $this->db->where('al.redrawvect',1);
+        $this->db->where('sys_redrawn',0);
+        $this->db->where('logo_src != logo_vectorized');
+        $this->db->where('coalesce(ord.is_canceled,0)',0);
+        $this->db->where('coalesce(pr.email_status,0) != ',2);
+        $rushres=$this->db->get()->row_array();
+        if ($rushres['cnt']>0) {
+            $out['avg_rush']=show_time($rushres['avg_time']);
+        }
+        return $out;
+    }
+
+    function get_vectorized($order_by, $direction, $limit, $offset,$maxval) {
+        $this->db->select('a.artwork_art_id as artwork_logo_id, a.rush as rush_redraw, a.logo_vectorized, a.logo_src, a.vectorized_time,
+            (a.vectorized_time-a.redraw_time) as spend_time, pr.proof_num, ord.order_num, a.art_ordnum');
+        $this->db->select('aw.artwork_rush');
+        $this->db->from('ts_artwork_arts a');
+        $this->db->join('ts_artworks aw','aw.artwork_id=a.artwork_id');
+        $this->db->join('ts_orders ord','ord.order_id=aw.order_id','left');
+        $this->db->join('ts_emails pr','pr.email_id=aw.mail_id','left');
+        $this->db->where('a.redrawvect',1);
+        $this->db->where('a.vectorized_time > ',0);
+        $this->db->where('sys_redrawn',0);
+        $this->db->where('logo_src != logo_vectorized');
+        $this->db->where('coalesce(ord.is_canceled,0)',0);
+        $this->db->where('coalesce(pr.email_status,0) != ',2);
+        $this->db->order_by($order_by, $direction);
+        $this->db->limit($limit, $offset);
+        $res=$this->db->get()->result_array();
+
+        $out=array();
+        if ($offset>$maxval) {
+            $ordnum = $maxval;
+        } else {
+            $ordnum = $maxval - $offset;
+        }
+
+        // $path_sh=$this->config->item('artwork_logo_relative');
+        // $rush_icon="<img src='/img/task_rushicon.png' alt='rush'/>";
+        foreach ($res as $row) {
+            $row['num_pp']=$ordnum; /* Tempsolution */
+            $sourcedata = extract_filename($row['logo_src']);
+            $vectordata = extract_filename($row['logo_vectorized']);
+            $name_file = ($row['order_num']=='' ? 'pr_'.$row['proof_num'] : $row['order_num']);
+            $name_file.='_'.str_pad($row['art_ordnum'], 2, '0', STR_PAD_LEFT);
+            $row['vectorfile'] = $name_file.'.'.$vectordata['ext'];
+            $row['srcfile'] = $name_file.'.'.$sourcedata['ext'];
+            $row['proof_num'] = ($row['proof_num']=='' ? '&nbsp;' :$row['proof_num']);
+            $row['order_num'] = ($row['order_num']=='' ? '&nbsp;' : $row['order_num']);
+            $row['exec_date'] = date('m/d/y H:i:s',$row['vectorized_time']);
+            $spend_time = get_time($row['spend_time']);
+            $row['spend_days']=$spend_time['days'];
+            $row['spend_hours']=$spend_time['hours'];
+            $row['spend_mins']=$spend_time['mins'];
+            // $row['vectorfile']=  str_replace($path_sh, '', $row['logo_vectorized']);
+            // $row['srcfile']=str_replace($path_sh, '', $row['logo_src']);
+            $row['rush']=(($row['rush_redraw']==1 || $row['artwork_rush']==1) ? 1 : 0);
+            $row['imagesourceclass']=$row['redrawedsource']='';
+            if (in_array($sourcedata['ext'], $this->logo_imageext)) {
+                $row['imagesourceclass']='imagereadysourceview';
+                $row['redrawedsource']=$row['logo_src'];
+            }
+            $out[]=$row;
+            $ordnum--;
+        }
+        return $out;
     }
 
 }

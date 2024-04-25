@@ -19,7 +19,7 @@
                 <div class="redrawcontentarea" id="redrawlistview" style="display: none;"><?=$redrawlistview?></div>
             <?php } ?>
             <?php if (isset($completlistview)) { ?>
-                <div class="redrawcontentarea" id="redrawcompletview" style="display: none;"><?=$completlistview?></div>
+                <div class="redrawcontentarea completeddata" id="redrawcompletview" style="display: none;"><?=$completlistview?></div>
             <?php } ?>
         </div>
     </div>

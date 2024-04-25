@@ -3,6 +3,7 @@
 class Redraw extends MY_Controller
 {
     private $pagelink = '/redraw';
+    protected $perpage=250;
 
     public function __construct()
     {
@@ -39,7 +40,7 @@ class Redraw extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/redraw/listredraw.css');
                 $head['scripts'][]=array('src'=>'/js/redraw/listredraw.js');
                 $content_options['redrawlistview'] = $this->_prepare_redrawlistview($brand); // $brand, $top_menu
-            } elseif ($row['item_link']=='#redrawcoplet') {
+            } elseif ($row['item_link']=='#redrawcomplet') {
                 $head['styles'][]=array('style'=>'/css/redraw/listcompleted.css');
                 $head['scripts'][]=array('src'=>'/js/redraw/listcompleted.js');
                 $content_options['completlistview'] = $this->_prepare_listcompleted($brand); // $brand, $top_menu
@@ -260,6 +261,47 @@ class Redraw extends MY_Controller
         show_404();
     }
 
+    public function complited_count()
+    {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $totals=$this->artwork_model->total_vectorized();
+            $mdata['total']=$totals['total_jobs'];
+            $mdata['avg_time']=$totals['avg_time'];
+            $mdata['avg_rush']=$totals['avg_rush'];
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function completed_datalist()
+    {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata = $this->input->post();
+            $limit = ifset($postdata, 'limit', $this->perpage);
+            $order_by = ifset($postdata, 'order_by', 'artwork_logo_id');
+            $direction = ifset($postdata, 'direction', 'desc');
+            $maxval = ifset($postdata, 'maxval', 0);
+            $pagenum = ifset($postdata, 'offset', 0);
+            $offset = $pagenum*$limit;
+            /* Get Data */
+            $data=$this->artwork_model->get_vectorized($order_by, $direction, $limit, $offset, $maxval);
+
+            if (count($data)==0) {
+                $content=$this->load->view('redraw/completed_empty_view',array(),TRUE);
+            } else {
+                $content=$this->load->view('redraw/completed_data_view',array('data'=>$data),TRUE);
+            }
+            $mdata['content']=$content;
+
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     private function _prepare_redrawlistview($brand)
     {
         $total=$this->artwork_model->get_toredrawcont();
@@ -269,7 +311,17 @@ class Redraw extends MY_Controller
 
     private function _prepare_listcompleted($brand)
     {
-        $content = '';
+        // $totals=$this->artwork_model->total_vectorized();
+        $options=array(
+            'perpage'=> $this->perpage,
+            'order'=>'artwork_logo_id',
+            'direc'=>'desc',
+            'total'=>0,
+            'curpage'=>0,
+            'avg_time'=>'',
+            'avg_rush'=>'',
+        );
+        $content=$this->load->view('redraw/completed_title_view',$options,TRUE);
         return $content;
     }
 }

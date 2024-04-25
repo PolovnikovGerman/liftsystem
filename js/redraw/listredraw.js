@@ -4,7 +4,9 @@ function init_redrawlist() {
         if (response.errors=='') {
             $("div.redrawdata").empty().html(response.data.content);
             // $("input#toredraw_total").val(response.data.total);
+            jQuery.balloon.init();
             redrawcontent_manage();
+            leftmenu_alignment();
         } else {
             show_error(response);
         }
@@ -12,18 +14,6 @@ function init_redrawlist() {
 }
 
 function redrawcontent_manage() {
-    // $("div.usertextlogo").bt({
-    //     fill : '#FFFFFF',
-    //     cornerRadius: 10,
-    //     width: 220,
-    //     padding: 10,
-    //     strokeWidth: '2',
-    //     positions: "most",
-    //     strokeStyle : '#000000',
-    //     strokeHeight: '18',
-    //     cssClass: 'white_tooltip',
-    //     cssStyles: {color: '#000000'}
-    // })
     $("input.markasvector").change(function(){
         mark_asvector(this);
     })
@@ -44,33 +34,6 @@ function redrawcontent_manage() {
         var logo=$(this).data('logo');
         upload_logo(logo);
     });
-    // $("div.imagesourceview").each(function(){
-    //     $(this).bt({
-    //         ajaxCache: false,
-    //         width: 200,
-    //         fill: 'white',
-    //         cornerRadius: 20,
-    //         padding: 20,
-    //         strokeWidth: 1,
-    //         ajaxPath: ["$(this).data('redrawsource')"]
-    //     });
-    // });
-    // $(".longredrawmessage").each(function(){
-    //     $(this).bt({
-    //         ajaxCache: false,
-    //         /* trigger: 'click', */
-    //         fill : '#FFFFFF',
-    //         cornerRadius: 10,
-    //         width: 250,
-    //         padding: 10,
-    //         strokeWidth: '2',
-    //         positions: "most",
-    //         strokeStyle : '#000000',
-    //         strokeHeight: '18',
-    //         cssClass: 'white_tooltip',
-    //         ajaxPath: ["$(this).data('redraw')"]
-    //     });
-    // })
 }
 
 function mark_asvector(obj) {

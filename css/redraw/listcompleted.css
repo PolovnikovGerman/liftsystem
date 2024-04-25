@@ -1,0 +1,98 @@
+.completed_totals {
+    width: 482px;
+    font-size: 14px;
+    color: #000000;
+}
+.completed_jobs_label {
+    width: 62px;
+}
+.completed_jobs_label.avgtime {
+    width: 100px;
+}
+.completed_jobs_value {
+    font-weight: 600;
+    margin-right: 14px;
+}
+.completed_pagesviews {
+    float: right!important;
+    margin-right: 10px;
+}
+.completed_title {
+    margin-top: 7px;
+    text-align: center;
+    color: #ffffff;
+    font-size: 13px;
+}
+.completed_title div {
+    height: 31px;
+    line-height: 31px;
+    background: #0d01b3;
+}
+.completed_title .completed_numpp_title {
+    border-top-left-radius: 7px;
+    width: 42px;
+}
+.completed_title .rushtitle {
+    width: 35px;
+}
+.completed_title .prooftitle {
+    width: 82px;
+}
+.completed_title .completed_ordernum_title {
+    width: 82px;
+}
+.completed_title .completed_srcfile_title {
+    width: 123px;
+}
+.completed_title .completed_srcfile_title {
+    width: 123px;
+}
+.completed_title .completed_date_title {
+    width: 114px;
+}
+.completed_title .completed_totaltime_title {
+    border-top-right-radius: 7px;
+    width: 125px;
+}
+.content-art-table {
+    clear: both;
+    max-height: 577px;
+    overflow-y: auto;
+    width: 727px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid #000000;
+}
+.completed_data_row {}
+.completed_data_row div {
+    line-height: 24px;
+    height: 24px;
+    font-size: 12px;
+    color: #000;
+    text-align: center;
+}
+.completed_numpp_data {
+    width: 42px;
+    border-left: 1px solid #000000;
+}
+.rushdata {
+    width: 35px;
+}
+.rushdata i {
+    color: #B00000;
+    font-size: 16px;
+    padding-top: 3px;
+}
+.completed_proofnum_data, .completed_ordernum_data {
+    width: 82px;
+}
+.completed_srcfile_data {
+    width: 123px;
+    color: #000cff!important;
+    cursor: pointer;
+}
+.exectime_data {
+    width: 119px;
+}
+.spendtime_data {
+    width: 34px;
+}
