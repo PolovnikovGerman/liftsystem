@@ -414,8 +414,10 @@ Class User_model extends MY_Model
             'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
             'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
             'user_order_export' => $res['user_order_export'],
+            'finuser' => $res['finuser'],
             'user_secret' => $res['user_secret'],
             'user_payuser' => $res['user_payuser'],
+            'first_name' => $res['first_name'],
         );
         usersession('usr_data', $usr_data);
         return TRUE;
@@ -706,7 +708,7 @@ Class User_model extends MY_Model
         return $res;
     }
 
-    public function default_page($user_page) {
+    public function default_page($user_page, $brand = '') {
         $this->db->select('menu_item_id, parent_id, item_link, brand');
         $this->db->from('menu_items');
         $this->db->where('menu_item_id', $user_page);
@@ -714,8 +716,10 @@ Class User_model extends MY_Model
         if (ifset($res, 'menu_item_id', 0)==0) {
             return 'welcome';
         }
-        if (!empty($res['brand']) && $res['brand']!=='NONE') {
-            usersession('currentbrand', $res['brand']);
+        if (empty($brand)) {
+            if (!empty($res['brand']) && $res['brand']!=='NONE') {
+                usersession('currentbrand', $res['brand']);
+            }
         }
         if (empty($res['parent_id'])) {
             return $res['item_link'];
@@ -742,8 +746,10 @@ Class User_model extends MY_Model
             'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
             'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
             'user_order_export' => $res['user_order_export'],
+            'finuser' => $res['finuser'],
             'user_secret' => $res['user_secret'],
             'user_payuser' => $res['user_payuser'],
+            'first_name' => $res['first_name'],
         );
         usersession('usr_data', $usr_data);
         return TRUE;

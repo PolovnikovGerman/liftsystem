@@ -842,7 +842,7 @@ Class Shipping_model extends MY_Model
     public function get_ship_methods($country_id, $brand, $option='all') {
 
         $this->db->select('m.shipping_method_id, m.shipping_method_name, m.ups_code, m.default_rate, m.minimal_rate,
-            m.shipping_method_available, zm.method_dimens,zm.method_percent');
+            m.shipping_method_available, zm.method_dimens,zm.method_percent,m.ups_sort'); //
         $this->db->from('sb_countries cnt');
         $this->db->join('sb_shipzone_methods zm','cnt.zone_id=zm.shipzone_id');
         $this->db->join('sb_shipping_methods m','m.shipping_method_id=zm.method_id');
@@ -1991,6 +1991,31 @@ Class Shipping_model extends MY_Model
                                         'tntdays' => $time['bisnessdays'],
                                     );
                                     $code .= "1DP|";
+                                }
+                            } elseif ($rate['service_code']=='12') {
+                                foreach ($times as $time) {
+                                    if ($time['code']=='3DS') {
+                                        $transit=1;
+                                        break;
+                                    }
+                                }
+                                if ($transit==1) {
+                                    array_push($codes, '3DS');
+                                    $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
+                                    if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
+                                        // Make changes in deliv date
+                                        $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
+                                    }
+                                    $ship['3DS'] = array(
+                                        'ServiceCode' => '3DS',
+                                        'ServiceName' => 'UPS 3 Day Select',
+                                        'Rate' => round($rate['rate']/$qtykf, 2),
+                                        'DeliveryDate' => $delivdate,
+                                        'current' => 0,
+                                        'arrive' => $time['deliverydate'].' '.$time['deliverytime'],
+                                        'tntdays' => $time['bisnessdays'],
+                                    );
+                                    $code .= "3DS|";
                                 }
                             }
                         }

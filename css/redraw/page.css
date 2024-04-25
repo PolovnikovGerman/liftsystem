@@ -1,0 +1,9 @@
+.redrawcontentarea {
+    clear: both;
+    margin-top: 22px;
+    margin-left: 14px;
+    width: 990px;
+}
+.redrawcontentarea.completeddata {
+    width: 730px;
+}

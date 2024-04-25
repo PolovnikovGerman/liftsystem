@@ -3735,5 +3735,439 @@ Class Artwork_model extends MY_Model
         return TRUE;
     }
 
+    public function get_toredrawcont()
+    {
+        $this->db->select('count(arts.artwork_art_id) as cnt');
+        $this->db->from('ts_artwork_arts arts');
+        $this->db->join('ts_artworks artw','artw.artwork_id=arts.artwork_id');
+        $this->db->join('ts_emails prof','prof.email_id=artw.mail_id','left');
+        $this->db->join('ts_orders ord','ord.order_id=artw.order_id','left');
+        $this->db->where('arts.redrawvect', 1);
+        $this->db->where('redraw_time > ', 0);
+        $this->db->where('vectorized_time', 0);
+        $this->db->where('coalesce(prof.email_status, 0) != ', 4);
+        $this->db->where('coalesce(ord.is_canceled, 0) = ', 0);
+        $res = $this->db->get()->row_array();
+        return $res['cnt'];
+    }
+
+    public function get_logo_toredraw()
+    {
+        $day=24*60*60;
+        $hour=60*60;
+        // $logo_place=$this->config->item('artwork_logo_relative');
+        $this->db->select('arts.artwork_art_id as artwork_logo_id, arts.redo, arts.rush as rush, arts.redraw_time, arts.vectorized_time, prof.proof_num, ord.order_num, arts.art_ordnum',FALSE);
+        $this->db->select('arts.logo_src, arts.customer_text as logo_text, arts.redraw_message, coalesce(prof.email_status,0) as email_status, coalesce(ord.is_canceled,0) as order_status ',FALSE);
+        $this->db->select('artw.artwork_rush');
+        $this->db->from('ts_artwork_arts arts');
+        $this->db->join('ts_artworks artw','artw.artwork_id=arts.artwork_id');
+        $this->db->join('ts_emails prof','prof.email_id=artw.mail_id','left');
+        $this->db->join('ts_orders ord','ord.order_id=artw.order_id','left');
+        $this->db->where('arts.redrawvect',1);
+        $this->db->where('redraw_time > ',0);
+        $this->db->where('vectorized_time',0);
+        $this->db->having(array('email_status != ' => 2, 'email_status != ' => 4,  'order_status = ' => 0));
+        $this->db->order_by('arts.redo desc, arts.rush desc, arts.redraw_time asc');
+        $res=$this->db->get()->result_array();
+
+        $out=array();
+        // $rush_icon="<img src='/img/task_rushicon.png' alt='rush'/>";
+        // $text_icon="<img src='/img/redraw/usrtext_icon.png' alt='User Text'/>";
+        // $details_icon='<img src="/img/magnifier.png" alt="details"/>';
+
+        foreach ($res as $row) {
+            $msgclass='';
+            $diff=time()-$row['redraw_time'];
+            $outdiff='';
+            if ($diff>=$day) {
+                /* days */
+                $numdays=round($diff/$day,0);
+                $diff=$diff-($day*$numdays);
+                $outdiff.=$numdays.'d ';
+            }
+            if ($diff>=$hour) {
+                $numhours=round($diff/$hour,0);
+                $diff=$diff-($numhours*$hour);
+                $outdiff.=$numhours.'h ';
+            }
+            if ($diff>60) {
+                $nummins=round($diff/60,0);
+                if ($nummins>0) {
+                    $outdiff.=$nummins.'m';
+                }
+            }
+            $row['diff']=$outdiff;
+            $row['redo']=($row['redo']==0 ? '&nbsp;' : 'REDO');
+            $row['rush']=(($row['rush']=='1' || $row['artwork_rush']==1) ? 1 : 0);
+            $user_txt=0;
+            $user_title=$usrtext_class='';
+            if ($row['logo_text']) {
+                $user_txt=1;
+                $user_title=$row['logo_text'];
+                $usrtext_class='usertextlogo';
+            }
+            $row['user_txt']=$user_txt;
+            $row['user_title']=$user_title;
+            $row['usrtext_class']=$usrtext_class;
+            $details=0;
+            if ($row['redraw_message'] && strlen($row['redraw_message'])>59) {
+                $details=1;
+                $msgclass='longredrawmessage';
+            }
+            $row['message_details']=$details;
+            $row['message_class']=$msgclass;
+            $sourcedet=extract_filename($row['logo_src']);
+            $srcname=($row['order_num']=='' ? 'pr_'.$row['proof_num'] : $row['order_num']);
+            $srcname.='_'.str_pad($row['art_ordnum'], 2, '0', STR_PAD_LEFT).'.'.$sourcedet['ext'];
+            $row['filename']=$srcname;
+            $row['imagesourceclass']=$row['redrawsource']='';
+            if (in_array($sourcedet['ext'], $this->logo_imageext)) {
+                $row['imagesourceclass']='imagesourceview';
+                // $row['redrawsource']='/redraw/viewsource/?id='.$row['artwork_logo_id'];
+                $row['redrawsource'] = $row['logo_src'];
+            }
+            $out[]=$row;
+        }
+        return $out;
+    }
+
+    public function logo_vectored($logo_id, $user_id)
+    {
+        $out=['result'=>  $this->error_result, 'msg'=> 'Logo Not Found'];
+        $res=$this->redrawnlogo_details($logo_id);
+        if (ifset($res, 'artwork_art_id',0) > 0 ) {
+            $this->db->where('artwork_art_id',$logo_id);
+            $this->db->set('logo_vectorized',$res['logo_src']);
+            $this->db->set('vectorized_time',  time());
+            $this->db->set('redo',0);
+            $this->db->update('ts_artwork_arts');
+            /* Calc # of logos in Need Vectored stage */
+            $reschk=$this->redrawn_checkartwork($res['artwork_id']);
+            if ($reschk==0) {
+                if ($res['order_id']) {
+                    $this->db->where('order_id',$res['order_id']);
+                    $this->db->set('update_usr',$user_id);
+                    $this->db->set('update_date',time());
+                    $this->db->set('order_redrawn',1);
+                    $this->db->set('order_redrawn_update',time());
+                    $this->db->set('order_vectorized',1);
+                    $this->db->set('order_vectorized_update',  time());
+                    $this->db->update('ts_orders');
+                } else {
+                    $this->db->where('email_id',$res['mail_id']);
+                    $this->db->set('proof_updated',time());
+                    $this->db->set('email_redrawn',1);
+                    $this->db->set('email_redrawn_update',time());
+                    $this->db->set('email_vectorized',1);
+                    $this->db->set('email_vectorized_update',time());
+                    $this->db->update('ts_emails');
+                }
+//            } else {
+//                if ($res['order_id']) {
+//                    $this->db->set('update_usr',$user_id);
+//                    $this->db->set('update_date',time());
+//                    $this->db->set('order_redrawn',1);
+//                    $this->db->set('order_redrawn_update',time());
+//                } else {
+//                    $this->db->set('proof_updated',time());
+//                    $this->db->set('email_redrawn',1);
+//                    $this->db->set('email_redrawn_update',time());
+//                }
+            }
+            $out['result'] = $this->success_result;
+        }
+        return $out;
+    }
+
+    private function redrawnlogo_details($logo_id) {
+        $this->db->select('a.*, art.mail_id, art.order_id, mail.proof_num, ord.order_num, art.artwork_rush, ord.order_blank');
+        $this->db->from('ts_artwork_arts a');
+        $this->db->join('ts_artworks art','art.artwork_id=a.artwork_id');
+        $this->db->join('ts_emails mail','mail.email_id=art.mail_id','left');
+        $this->db->join('ts_orders ord','ord.order_id=art.order_id','left');
+        $this->db->where('a.artwork_art_id',$logo_id);
+        $res=$this->db->get()->row_array();
+        return $res;
+    }
+
+    public function redrawn_checkartwork($artwork_id) {
+        $this->db->select('count(a.artwork_art_id) as cnt');
+        $this->db->from('ts_artwork_arts a');
+        $this->db->where('a.artwork_id',$artwork_id);
+        $this->db->where('a.redrawvect',1);
+        $this->db->where('a.vectorized_time', 0);
+        $reschk=$this->db->get()->row_array();
+        return $reschk['cnt'];
+    }
+
+    public function get_artlocation_details($artwork_art_id)
+    {
+        $this->db->select('art.*, prof.proof_num, ord.order_num');
+        $this->db->from('ts_artwork_arts art');
+        $this->db->join('ts_artworks a','a.artwork_id=art.artwork_id');
+        $this->db->join('ts_emails prof','prof.email_id=a.mail_id','left');
+        $this->db->join('ts_orders ord','ord.order_id=a.order_id','left');
+        $this->db->where('artwork_art_id',$artwork_art_id);
+        $res=$this->db->get()->row_array();
+        return $res;
+    }
+
+    public function save_vectorfile($logo, $file, $user_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Unknown error. Try later'];
+        $path_sh = $this->config->item('pathpreload');
+        $path = $this->config->item('upload_path_preload');
+        $filesrc = $path.str_replace($path_sh, '', $file);
+        if (!$logo) {
+            $out['msg'] = 'Unknown Logo file r1893';
+        } elseif (!$filesrc) {
+            $out['msg'] = 'Empty Upload File r1895';
+        } elseif (!$this->isLogoExist($logo)) {
+            $out['msg'] = 'Logo File was Deleted r1897';
+        } else {
+            $newfile = str_replace($path, '', $filesrc);
+            if (!$newfile) {
+                $out['msg'] = 'Incorrect Uploaded File r1902';
+            } else {
+                $filedet = extract_filename($newfile);
+                if (!$filedet['ext'] || $filedet['ext'] != 'ai') {
+                    $out['msg'] = 'Incorrect Uploaded File Format r1906';
+                } else {
+                    /* get data about logo by ID */
+                    $logodet = $this->redrawnlogo_details($logo);
+                    if ($logodet['art_type']=='Text') {
+                        if ($logodet['order_id']=='') {
+                            $logodet['logo_src']='pr'.$logodet['proof_num'].'_'.$logodet['art_ordnum'].'.png';
+                        } else {
+                            $logodet['logo_src']=$logodet['order_num'].'_'.$logodet['art_ordnum'].'.png';
+                        }
+                    } else {
+                        if ($logodet['logo_src']=='') {
+                            if ($logodet['order_id']=='') {
+                                $logodet['logo_src']='pr'.$logodet['proof_num'].'_'.$logodet['art_ordnum'].'.png';
+                            } else {
+                                $logodet['logo_src']=$logodet['order_num'].'_'.$logodet['art_ordnum'].'.png';
+                            }
+                        }
+                    }
+
+                    $src_det = extract_filename(str_replace($this->config->item('artwork_logo_relative'), '', $logodet['logo_src']));
+                    $newtargfile = $src_det['name'] . '.' . $filedet['ext'];
+                    $destfile = $this->config->item('artwork_logo') . $newtargfile;
+                    @copy($filesrc, $destfile);
+                    if (file_exists($destfile)) {
+                        @unlink($filesrc);
+                        /* update LOGO record */
+                        $this->db->set('logo_vectorized', $this->config->item('artwork_logo_relative').$newtargfile);
+                        $this->db->set('vectorized_time', time());
+                        $this->db->set('redo', 0);
+                        $this->db->where('artwork_art_id', $logo);
+                        $this->db->update('ts_artwork_arts');
+                        $out['result'] = $this->success_result;
+                        /* Send message about Redraw */
+                        if (!in_array($_SERVER['SERVER_NAME'], $this->config->item('localserver'))) {
+                            $this->send_notification($logodet);
+                        }
+                        /* Check Artwork */
+                        $reschk=$this->redrawn_checkartwork($logodet['artwork_id']);
+                        if ($reschk==0) {
+                            if ($logodet['order_id']) {
+                                $this->db->set('update_usr',$user_id);
+                                $this->db->set('update_date',time());
+                                $this->db->set('order_redrawn',1);
+                                $this->db->set('order_redrawn_update',  time());
+                                $this->db->set('order_vectorized',1);
+                                $this->db->set('order_vectorized_update',  time());
+                                $this->db->where('order_id',$logodet['order_id']);
+                                $this->db->update('ts_orders');
+                                // Add record to Art Sync
+                                $this->load->model('orders_model');
+                                $orddet=$this->orders_model->get_order_detail($logodet['order_id']);
+                                $this->db->set('user_id', $user_id);
+                                $this->db->set('order_id', $logodet['order_id']);
+                                $this->db->set('customer', $orddet['customer_name']);
+                                $this->db->set('item_descript', $orddet['item_name']);
+                                $this->db->set('rush', $logodet['artwork_rush']);
+                                $this->db->set('blank', $logodet['order_blank']);
+                                $this->db->set('art_stage',1);
+                                $this->db->set('redraw_stage',1);
+                                $this->db->set('vector_stage',1);
+                                $this->db->insert('ts_artdata_sync');
+                                // item_name
+                            } else {
+                                $this->db->set('proof_updated',time());
+                                $this->db->set('email_vectorized',1);
+                                $this->db->set('email_vectorized_update',time());
+                                $this->db->where('email_id',$logodet['mail_id']);
+                                $this->db->update('ts_emails');
+                            }
+                        }
+                    } else {
+                        $out['msg'] = 'Error during save file '.$destfile;
+                    }
+                }
+            }
+        }
+        return $out;
+    }
+
+    private function isLogoExist($logo_id) {
+        $this->db->select('count(artwork_art_id) as cnt')->from('ts_artwork_arts')->where('artwork_art_id',$logo_id);
+        $res=$this->db->get()->row_array();
+        if ($res['cnt']==0) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    private function send_notification($logodet) {
+        /* select emails */
+        $emails=$this->get_emails_fornotification('Redraw Finished');
+        $num_emails=count($emails);
+        $cc_array=array();
+        if ($num_emails>0) {
+            if ($num_emails==1) {
+                $from=$emails[0]['email_address'];
+            } else {
+                $from=$emails[0]['email_address'];
+                $idx=0;
+                foreach ($emails as $row) {
+                    if ($idx>0) {
+                        array_push($cc_array, $row['email_address']);
+                    }
+                    $idx++;
+                }
+            }
+            $maindoc=($logodet['order_id']=='' ? 'Proof Request #'.$logodet['proof_num'] : 'Order #'.$logodet['order_num']);
+            $msg_subj='Redraw of '.$maindoc.'  Finished - Production : '.($logodet['rush']=='1' ? ' Rush' : 'Standard');
+
+            $body_options=array(
+                'document'=>$maindoc,
+                'type'=>$logodet['art_type'],
+            );
+            /* ART order or Proof */
+            $email_body=$this->load->view('messages/redraw_finish_view',$body_options,TRUE);
+            // Send message
+
+            $this->load->library('email');
+            $config['protocol'] = 'sendmail';
+            $config['charset'] = 'utf8';
+            $config['wordwrap'] = TRUE;
+            $config['mailtype'] = 'html';
+
+            $this->email->initialize($config);
+
+            $this->email->to($from);
+            if (count($cc_array)!=0) {
+                $this->email->cc($cc_array);
+            }
+            $from=$this->config->item('redraw_email');
+            $this->email->from($from);
+            $this->email->subject($msg_subj);
+            $this->email->message($email_body);
+            $this->email->send();
+            $this->email->clear(TRUE);
+        }
+        return TRUE;
+    }
+
+    public function total_vectorized() {
+        $out=array(
+            'total_jobs'=>0,
+            'avg_time'=>'',
+            'avg_rush'=>'',
+        );
+        $this->db->select('count(artwork_art_id) as cnt, avg(vectorized_time-redraw_time) as avg_time');
+        $this->db->from('ts_artwork_arts al');
+        $this->db->join('ts_artworks aw','aw.artwork_id=al.artwork_id');
+        $this->db->join('ts_orders ord','ord.order_id=aw.order_id','left');
+        $this->db->join('ts_emails pr','pr.email_id=aw.mail_id','left');
+        $this->db->where('vectorized_time > ',0);
+        $this->db->where('redrawvect',1);
+        $this->db->where('sys_redrawn',0);
+        $this->db->where('logo_src != logo_vectorized');
+        $this->db->where('coalesce(ord.is_canceled,0)',0);
+        $this->db->where('coalesce(pr.email_status,0) != ',2);
+        $res=$this->db->get()->row_array();
+        $out['total_jobs']=$res['cnt'];
+        if ($res['cnt']>0) {
+            $out['avg_time']=show_time($res['avg_time']);
+        }
+        /* AVG time RUSH */
+        $this->db->select('count(al.artwork_art_id) as cnt, avg(al.vectorized_time-al.redraw_time) as avg_time');
+        $this->db->from('ts_artwork_arts al');
+        $this->db->join('ts_artworks aw','aw.artwork_id=al.artwork_id');
+        $this->db->join('ts_orders ord','ord.order_id=aw.order_id','left');
+        $this->db->join('ts_emails pr','pr.email_id=aw.mail_id','left');
+        $this->db->where('al.rush',1);
+        $this->db->where('al.vectorized_time > ',0);
+        $this->db->where('al.redrawvect',1);
+        $this->db->where('sys_redrawn',0);
+        $this->db->where('logo_src != logo_vectorized');
+        $this->db->where('coalesce(ord.is_canceled,0)',0);
+        $this->db->where('coalesce(pr.email_status,0) != ',2);
+        $rushres=$this->db->get()->row_array();
+        if ($rushres['cnt']>0) {
+            $out['avg_rush']=show_time($rushres['avg_time']);
+        }
+        return $out;
+    }
+
+    function get_vectorized($order_by, $direction, $limit, $offset,$maxval) {
+        $this->db->select('a.artwork_art_id as artwork_logo_id, a.rush as rush_redraw, a.logo_vectorized, a.logo_src, a.vectorized_time,
+            (a.vectorized_time-a.redraw_time) as spend_time, pr.proof_num, ord.order_num, a.art_ordnum');
+        $this->db->select('aw.artwork_rush');
+        $this->db->from('ts_artwork_arts a');
+        $this->db->join('ts_artworks aw','aw.artwork_id=a.artwork_id');
+        $this->db->join('ts_orders ord','ord.order_id=aw.order_id','left');
+        $this->db->join('ts_emails pr','pr.email_id=aw.mail_id','left');
+        $this->db->where('a.redrawvect',1);
+        $this->db->where('a.vectorized_time > ',0);
+        $this->db->where('sys_redrawn',0);
+        $this->db->where('logo_src != logo_vectorized');
+        $this->db->where('coalesce(ord.is_canceled,0)',0);
+        $this->db->where('coalesce(pr.email_status,0) != ',2);
+        $this->db->order_by($order_by, $direction);
+        $this->db->limit($limit, $offset);
+        $res=$this->db->get()->result_array();
+
+        $out=array();
+        if ($offset>$maxval) {
+            $ordnum = $maxval;
+        } else {
+            $ordnum = $maxval - $offset;
+        }
+
+        // $path_sh=$this->config->item('artwork_logo_relative');
+        // $rush_icon="<img src='/img/task_rushicon.png' alt='rush'/>";
+        foreach ($res as $row) {
+            $row['num_pp']=$ordnum; /* Tempsolution */
+            $sourcedata = extract_filename($row['logo_src']);
+            $vectordata = extract_filename($row['logo_vectorized']);
+            $name_file = ($row['order_num']=='' ? 'pr_'.$row['proof_num'] : $row['order_num']);
+            $name_file.='_'.str_pad($row['art_ordnum'], 2, '0', STR_PAD_LEFT);
+            $row['vectorfile'] = $name_file.'.'.$vectordata['ext'];
+            $row['srcfile'] = $name_file.'.'.$sourcedata['ext'];
+            $row['proof_num'] = ($row['proof_num']=='' ? '&nbsp;' :$row['proof_num']);
+            $row['order_num'] = ($row['order_num']=='' ? '&nbsp;' : $row['order_num']);
+            $row['exec_date'] = date('m/d/y H:i:s',$row['vectorized_time']);
+            $spend_time = get_time($row['spend_time']);
+            $row['spend_days']=$spend_time['days'];
+            $row['spend_hours']=$spend_time['hours'];
+            $row['spend_mins']=$spend_time['mins'];
+            // $row['vectorfile']=  str_replace($path_sh, '', $row['logo_vectorized']);
+            // $row['srcfile']=str_replace($path_sh, '', $row['logo_src']);
+            $row['rush']=(($row['rush_redraw']==1 || $row['artwork_rush']==1) ? 1 : 0);
+            $row['imagesourceclass']=$row['redrawedsource']='';
+            if (in_array($sourcedata['ext'], $this->logo_imageext)) {
+                $row['imagesourceclass']='imagereadysourceview';
+                $row['redrawedsource']=$row['logo_src'];
+            }
+            $out[]=$row;
+            $ordnum--;
+        }
+        return $out;
+    }
 
 }

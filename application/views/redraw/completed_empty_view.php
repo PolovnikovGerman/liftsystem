@@ -1,0 +1,1 @@
+<div class="completed_data_row emptydata">No Data about Completed Redrawn</div>

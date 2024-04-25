@@ -865,4 +865,63 @@ if (!function_exists('show_card_code')) {
     }
 }
 
+if (!function_exists('show_time')) {
+    function show_time($timediff) {
+        /* Time income in sec */
+        $day=24*60*60;
+        $hour=60*60;
+        $min=60;
+        $days=0;
+        $hours=0;
+        $mins=0;
+        $out='';
+        if ($timediff>=$day) {
+            $days=round($timediff/$day,0);
+            $timediff=$timediff-$days*$day;
+            $out.=$days.'d ';
+        }
+        if ($timediff>=$hour) {
+            $hours=round($timediff/$hour,0);
+            $timediff=$timediff-$hours*$hour;
+            $out.=$hours.'h ';
+        }
+        if ($timediff>=$min) {
+            $mins=round($timediff/$min);
+            $out.=$mins.'m';
+        }
+        return $out;
+    }
+}
+
+if (!function_exists('get_time')) {
+    function get_time($timediff) {
+        /* Time income in sec */
+        $day=24*60*60;
+        $hour=60*60;
+        $min=60;
+        $days=0;
+        $hours=0;
+        $mins=0;
+        $out=array(
+            'days'=>'',
+            'hours'=>'',
+            'mins'=>'',
+        );
+        if ($timediff>=$day) {
+            $days=round($timediff/$day,0);
+            $timediff=$timediff-$days*$day;
+            $out['days']=$days.'d ';
+        }
+        if ($timediff>=$hour) {
+            $hours=round($timediff/$hour,0);
+            $timediff=$timediff-$hours*$hour;
+            $out['hours']=$hours.'h ';
+        }
+        if ($timediff>=$min) {
+            $mins=round($timediff/$min);
+            $out['mins']=$mins.'m';
+        }
+        return $out;
+    }
+}
 ?>

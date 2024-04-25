@@ -1,0 +1,200 @@
+.redraw_title {
+    text-align: center;
+    color: #ffffff;
+    font-size: 13px;
+}
+.redraw_title div {
+    height: 31px;
+    line-height: 31px;
+    background: #0d01b3;
+}
+.redraw_title .redotitle {
+    border-top-left-radius: 7px;
+    width: 50px;
+}
+.redraw_title .rushtitle {
+    width: 35px;
+}
+.redraw_title .timetitle {
+    width: 73px;
+}
+.redraw_title .prooftitle {
+    width: 82px;
+}
+.redraw_title .ordertitle {
+    width: 57px;
+}
+.redraw_title .filesourcetitle {
+    width: 120px;
+}
+.redraw_title .vectchktitle {
+    width: 44px;
+}
+.redraw_title .usrtexttitle {
+    width: 73px;
+}
+.redraw_title .messagetitle {
+    width: 332px;
+}
+.redraw_title .submittitle {
+    border-top-right-radius: 7px;
+    width: 82px;
+}
+.redrawdata {
+    max-height: 622px;
+    border-left: 1px solid #000;
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+    overflow-y: auto;
+}
+.redraw_row {
+}
+.redraw_row div {
+    line-height: 24px;
+    height: 24px;
+    font-size: 12px;
+    color: #000;
+    text-align: center;
+}
+.redraw_row .redodata {
+    color: #B00000;
+    font-weight: bold;
+    width: 50px;
+}
+.redraw_row .rushdata {
+    width: 35px;
+}
+.redraw_row .rushdata i {
+    color: #B00000;
+    font-size: 16px;
+}
+.redraw_row .timedata {
+    width: 73px;
+}
+.redraw_row .proofdata {
+    width: 82px;
+}
+.redraw_row .orderdat {
+    border-right: 1px solid #000000;
+    width: 56px;
+}
+.redraw_row .filesourcedata {
+    width: 120px;
+    color: #000cff;
+    cursor: pointer;
+}
+.redraw_row .vectchkdata {
+    width: 44px;
+}
+.redraw_row .usrtextdata {
+    width: 19px;
+    margin: 0 27px;
+}
+.redraw_row .usrtextdata i {
+    font-size: 14px;
+}
+.redraw_row .messagedata {
+    text-align: left;
+    width: 312px;
+    overflow: hidden;
+    white-space: nowrap;
+    padding-left: 5px;
+    text-overflow: ellipsis;
+}
+.redraw_row .messagedetails {
+    border-right: 1px solid #000000;
+    width: 20px;
+}
+.redraw_row .messagedetails i {
+    font-size: 14px;
+    color: #000cff;
+}
+.redraw_row .submitdata {
+    width: 82px;
+}
+/* Balloon */
+.redrawnessageballonarea {
+    font-size: 13px;
+    max-width: 400px;
+}
+/* POPUP */
+#modalRedrawUpload .modal-dialog {
+    width: 450px;
+}
+#modalRedrawUpload .modal-header {
+    /*background: #;*/
+    /*color: #ffffff;*/
+}
+#modalRedrawUpload .modal-header .close {
+    /*color: #ffffff!important;*/
+    /*opacity: 1!important;*/
+    margin-top: -25px;
+}
+#modalRedrawUpload .modal-title {
+    font-weight: 600;
+}
+#modalRedrawUpload .modal-body {
+    background: #FFFFFF;
+    width: 100%;
+    margin-top: -4px;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+}
+.qq-uploader {
+    margin-bottom: 5px;
+}
+.qq-upload-button {
+    background: url('/img/redraw/browse1.png') no-repeat!important;
+    width: 76px!important;
+    height: 34px!important;
+    margin-bottom: 3px;
+}
+.vectorupload_data {
+    float: left;
+    color: #000;
+    font-size: 14px;
+    width: 410px;
+}
+.vectoruploads {
+    clear: both;
+    float: left;
+    width: 400px;
+    height: 42px;
+}
+.vectorfiledat {
+    clear: both;
+    float: left;
+    width: 400px;
+}
+.vectorfilename {
+    float: left;
+    width: 325px;
+    margin-left: 15px;
+    height: 24px;
+}
+.delvectofile {
+    float: left;
+    width: 32px;
+    text-align: center;
+    cursor: pointer;
+}
+.delvectofile i {
+    font-size: 16px;
+    color: #ff0000;
+}
+.vectorsave_data {
+    load: left;
+    width: 75px;
+    margin-left: 180px;
+    display: none;
+    background: #008000;
+    text-align: center;
+    color: #FFFFFF;
+    font-size: 16px;
+    border-radius: 7px;
+    margin-top: 3px;
+    font-weight: 600;
+    cursor: pointer;
+    height: 24px;
+    line-height: 24px;
+}
