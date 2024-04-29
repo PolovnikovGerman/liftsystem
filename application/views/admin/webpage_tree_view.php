@@ -40,6 +40,10 @@
             </li>
         <?php } ?>
     </ul>
+    <div class="input_row">
+        <div class="labeltxt">User Default Page</div>
+        <div class="inputval"><?=$pages_list_sb?></div>
+    </div>
 </div>
 <div class="menuitemsview" data-brand="srweb">
     <ul id="srtree">
@@ -76,6 +80,10 @@
             </li>
         <?php } ?>
     </ul>
+    <div class="input_row">
+        <div class="labeltxt">User Default Page</div>
+        <div class="inputval"><?=$pages_list_sr?></div>
+    </div>
 </div>
 <div class="menuitemsview" data-brand="sgweb">
     <ul id="sgtree">
@@ -112,6 +120,10 @@
             </li>
         <?php } ?>
     </ul>
+    <div class="input_row">
+        <div class="labeltxt">User Default Page</div>
+        <div class="inputval"><?=$pages_list_sg?></div>
+    </div>
 </div>
 <div class="menuitemsview" data-brand="commonweb">
     <ul id="commontree">
