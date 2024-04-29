@@ -3608,7 +3608,7 @@ class Test extends CI_Controller
     public function user_defpage()
     {
         $this->db->select('user_id, user_page')->from('users')->where('user_page is not NULL');
-        $usrdats=$this->db->get()->row_array();
+        $usrdats=$this->db->get()->result_array();
 
         foreach ($usrdats as $usrdat) {
             if (!empty($usrdat['user_page'])) {
