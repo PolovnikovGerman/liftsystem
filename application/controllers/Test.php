@@ -3615,6 +3615,7 @@ class Test extends CI_Controller
                 $this->db->select('brand')->from('menu_items')->where('menu_item_id', $usrdat['user_page']);
                 $brdat = $this->db->get->row_array();
                 $brand = $brdat['brand'];
+                echo 'User '.$usrdat['user_id'].' Brand '.$brand.PHP_EOL;
                 $this->db->where('user_id', $usrdat['user_id']);
                 $this->db->set('default_brand', $brand);
                 $this->db->update('users');
