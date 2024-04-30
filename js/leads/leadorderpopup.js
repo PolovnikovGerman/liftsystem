@@ -3866,8 +3866,8 @@ function init_leadorder_charges() {
             } else {
                 $("#loader").hide();
                 show_error(response);
-                $(".chargeinput[data-charge='"+charge_id+"'][data-field='cardnum']").val('');
-                $(".chargeinput[data-charge='"+charge_id+"'][data-field='cardcode']").val('');
+                // $(".chargeinput[data-charge='"+charge_id+"'][data-field='cardnum']").val('');
+                // $(".chargeinput[data-charge='"+charge_id+"'][data-field='cardcode']").val('');
             }
         },'json');
     });

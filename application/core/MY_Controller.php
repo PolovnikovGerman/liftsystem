@@ -102,7 +102,7 @@ class MY_Controller extends Base_Controller
     public $USER_REPLICA='';
     public $USER_ORDER_EXPORT=0;
     public $USER_PAYMENT = 0;
-
+    public $USER_LOGNAME = '';
     public function __construct()
     {
         parent::__construct();
@@ -132,6 +132,7 @@ class MY_Controller extends Base_Controller
         $this->USER_REPLICA=$userdat['user_replica'];
         $this->USER_ORDER_EXPORT = intval(ifset($userdat, 'user_order_export',0));
         $this->USER_PAYMENT = intval(ifset($userdat, 'user_payuser',0));
+        $this->USER_LOGNAME = $userdat['first_name'];
     }
 
     public function userlog($user_id, $action='', $activity=0) {

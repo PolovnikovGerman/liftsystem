@@ -3292,8 +3292,8 @@ Class Leadorder_model extends My_Model {
                 'cardcode'=>$charge['cardcode'],
             ];
             $this->_save_order_paymentlog($order_id, $usr_id, $transres['error_msg'], $cc_options);
-            $charge['cardnum'] = '';
-            $charge['cardcode'] = '';
+            // $charge['cardnum'] = '';
+            // $charge['cardcode'] = '';
             $charges[$chridx] = $charge;
             $leadorder['charges'] = $charges;
             usersession($ordersession, $leadorder);
@@ -3305,8 +3305,6 @@ Class Leadorder_model extends My_Model {
                 'cardcode'=>$charge['cardcode'],
             ];
             $this->_save_order_paymentlog($order_id, $usr_id, $transres['transaction_id'], $cc_options, 1);
-            // $charge['cardnum'] = hide_cardnumber($cardnum);
-            // $charge['cardcode'] = '';
             // Batch data
             $paymethod='';
             if ($pay_options['cardtype']=='amex') {
@@ -5652,7 +5650,7 @@ Class Leadorder_model extends My_Model {
                 $this->db->set('cardcode', $row['cardcode']);
             }
             $this->db->set('autopay', intval($row['autopay']));
-            if (empty($row['cardcode'])) {
+            if (empty($row['cardcode']) && empty($row['cardnum'])) {
                 $this->db->set('payment_save',0);
             } else {
                 $this->db->set('payment_save',1);
@@ -6814,17 +6812,17 @@ Class Leadorder_model extends My_Model {
                         $pay_options['cardnum'] = hide_cardnumber($pay_options['cardnum']);
                     }
                     $this->_save_order_paymentlog($order_id, $user_id, $out['msg'], $pay_options);
-                    $this->db->where('order_payment_id', $row['order_payment_id']);
-                    $this->db->set('cardcode','');
-                    $this->db->set('cardnum','');
-                    $this->db->update('ts_order_payments');
+//                    $this->db->where('order_payment_id', $row['order_payment_id']);
+//                    $this->db->set('cardcode','');
+//                    $this->db->set('cardnum','');
+//                    $this->db->update('ts_order_payments');
                     return $out;
                 } else {
                     // Make Current row Amount=0, Add Charge
                     $this->db->set('amount',0);
                     $this->db->where('order_payment_id', $row['order_payment_id']);
-                    $this->db->set('cardcode','');
-                    $this->db->set('cardnum', hide_cardnumber($pay_options['cardnum']));
+//                    $this->db->set('cardcode','');
+//                    $this->db->set('cardnum', hide_cardnumber($pay_options['cardnum']));
                     $this->db->update('ts_order_payments');
                     // Batch data
                     $paymethod='';
