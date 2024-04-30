@@ -3747,6 +3747,7 @@ Class Artwork_model extends MY_Model
         $this->db->where('vectorized_time', 0);
         $this->db->where('coalesce(prof.email_status, 0) != ', 4);
         $this->db->where('coalesce(ord.is_canceled, 0) = ', 0);
+        $this->db->where('arts.art_type != ','Reference');
         $res = $this->db->get()->row_array();
         return $res['cnt'];
     }
@@ -3766,6 +3767,7 @@ Class Artwork_model extends MY_Model
         $this->db->where('arts.redrawvect',1);
         $this->db->where('redraw_time > ',0);
         $this->db->where('vectorized_time',0);
+        $this->db->where('arts.art_type != ','Reference');
         $this->db->having(array('email_status != ' => 2, 'email_status != ' => 4,  'order_status = ' => 0));
         $this->db->order_by('arts.redo desc, arts.rush desc, arts.redraw_time asc');
         $res=$this->db->get()->result_array();
