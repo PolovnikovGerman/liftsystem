@@ -401,7 +401,7 @@ input.quotediscountinpt {
     line-height: 21px;
 }
 .quoteshipaddressarea {
-    width: 285px;
+    width: 255px;
     margin-bottom: 8px;
 }
 .quoteshipcountryarea {
@@ -435,7 +435,7 @@ select.quotecountry:disabled {
     border-left: 2px solid #000000;
     border-top: 2px solid #000000;
     border-right: 2px solid #000000;
-    width: 285px;
+    width: 255px;
     background: #dadada;
     margin-top: -2px;
     padding-left: 4px;
@@ -470,8 +470,11 @@ input.quotepostal {
     float: left;
 }
 input.quotetown {
-    float: left;
     width: 76px;
+    float: left;
+}
+input.quoteshiptown {
+    width: 130px;
     float: left;
 }
 .quoteshipaddresdistrict {
@@ -482,7 +485,7 @@ select.quotestate {
     width: 38px;
 }
 .quoterushdataarea {
-    width: 302px;
+    width: 337px;
 }
 .quoteleadtimelabel {
     width: 95px;
@@ -493,7 +496,7 @@ select.quotestate {
     text-align: right;
 }
 .quoteleadtime {
-    width: 152px;
+    width: 190px;
     height: 20px;
     line-height: 20px;
 }
@@ -516,7 +519,7 @@ input.quoteleadrushcost {
     width: 49px;
 }
 .quoteshippingcostarea {
-    width: 237px;
+    width: 274px;
     height: 66px;
     background: #f5f5f5;
     border: 2px solid #000000;
@@ -567,7 +570,7 @@ input.quoteshipcostvalue {
     background: #dadada;
     margin-top: 9px;
     padding-top: 2px;
-    width: 244px;
+    width: 280px;
     margin-left: -2px;
     padding-left: 6px;
 }
@@ -680,11 +683,14 @@ input.quotesalestaxvalue {
     padding-left: 4px;
     padding-bottom: 4px;
 }
-.quoteaddressarea {
+.quoteaddressarea, .quotebilladdressarea {
     width: 168px;
     border: 2px solid #8f8f9d;
     padding: 5px;
     margin-top: 3px;
+}
+.quoteaddressarea {
+    width: 222px;
 }
 .quotebilladdressother.billingsame {
     border-bottom: 2px solid #737373;

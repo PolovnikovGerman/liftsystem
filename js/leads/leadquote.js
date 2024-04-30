@@ -309,7 +309,7 @@ function init_leadquotes_content() {
                     // Update zip, city state
                     $(".quoteadrinpt[data-item='shipping_zip']").val(response.data.shipping_zip);
                     $(".quoteadrinpt[data-item='shipping_city']").val(response.data.shipping_city);
-                    $(".quoteadrinpt[data-item='shipping_state']").val(response.data.shipping_state);
+                    $(".quoteaddressinpt[data-item='shipping_state']").val(response.data.shipping_state);
                 }
                 if (parseInt(response.data.taxview)==1) {
                     $(".quotetaxarea").empty().html(response.data.taxcontent);
@@ -317,7 +317,7 @@ function init_leadquotes_content() {
                 if (parseInt(response.data.billrebuild)==1) {
                     $(".quoteadrinpt[data-item='billing_zip']").val(response.data.billing_zip);
                     $(".quoteadrinpt[data-item='billing_city']").val(response.data.billing_city);
-                    $(".quoteadrinpt[data-item='billing_state']").val(response.data.billing_state);
+                    $(".quoteaddressinpt[data-item='billing_state']").val(response.data.billing_state);
                 }
                 if (parseInt(response.data.calcship)==1) {
                     // Update shipping cost
