@@ -1,6 +1,22 @@
 {
+    "description": "CodeIgniter 3 with Database Migration & Seeding",
+    "name": "codeigniter/migration-seeding",
+    "type": "project",
+    "homepage": "https://aaronvandenberg.nl",
+    "license": "MIT",
+    "support": {
+        "source": "https://github.com/aaron5670/CodeIgniter-3-Database-Migration-and-Seeding"
+    },
     "require": {
         "phpoffice/phpspreadsheet": "^1.8",
-        "dompdf/dompdf": "^0.8.3"
+        "dompdf/dompdf": "^0.8.3",
+        "fzaninotto/faker": "^1.8"
+    },
+    "suggest": {
+        "paragonie/random_compat": "Provides better randomness in PHP 5.x"
+    },
+    "require-dev": {
+        "mikey179/vfsstream": "1.1.*",
+        "phpunit/phpunit": "4.* || 5.*"
     }
 }

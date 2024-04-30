@@ -133,8 +133,14 @@
                     </div>
                 </div>
                 <div class="input_row">
-                    <div class="labeltxt">User Default page</div>
-                    <div class="inputval"><?=$pages_select?></div>
+                    <div class="labeltxt">User Default Brand</div>
+                    <div class="inputval">
+                        <select data-name="default_brand" class="userpersdata brandselect">
+                            <option value="SB" <?=$user['default_brand']=='SB' ? 'selected="selecte"' : ''?>>StressBalls</option>
+                            <option value="SR" <?=$user['default_brand']=='SR' ? 'selected="selecte"' : ''?>>StressRelievers</option>
+                            <option value="SG" <?=$user['default_brand']=='SG' ? 'selected="selecte"' : ''?>>Sigma</option>
+                        </select>
+                    </div>
                 </div>
             </fieldset>
         </div>

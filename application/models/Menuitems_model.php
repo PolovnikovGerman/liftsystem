@@ -905,7 +905,34 @@ Class Menuitems_model extends MY_Model
         return $result;
     }
 
-    public function get_webpages() {
+    public function get_webpages($brand)
+    {
+        $out=[];
+        $this->db->select('*')->from('menu_items')->where('brand', $brand)->where('parent_id is null')->where('item_link is not null')->order_by('menu_order');
+        $main=$this->db->get()->result_array();
+        foreach ($main as $mrow) {
+            $out[] = array(
+                'key' => $mrow['menu_item_id'],
+                'label' => $mrow['item_name'],
+            );
+            // Get subpages
+            $this->db->select('*');
+            $this->db->from('menu_items');
+            $this->db->where('brand', $brand);
+            $this->db->where('parent_id', $mrow['menu_item_id']);
+            $this->db->where('item_link is not null');
+            $this->db->order_by('menu_order');
+            $pages=$this->db->get()->result_array();
+            foreach ($pages as $row) {
+                $out[]=array(
+                    'key'=> $row['menu_item_id'],
+                    'label'=> ' &ndash; '.$row['item_name'],
+                );
+            }
+        }
+        return $out;
+    }
+    public function _get_webpages() {
         // Get list of main branches
         // $this->db->select('brand, count(menu_item_id) as cnt')->from('menu_items')->where('brand != ','UNKN')->group_by('brand');
         // $brands = $this->db->get()->result_array();
