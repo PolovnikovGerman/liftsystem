@@ -1,6 +1,10 @@
 <?php
-$config['js_version'] = '2.02278';
-$config['css_version']= '2.02278';
+$config['js_version'] = '2.02279';
+$config['css_version']= '2.02279';
+/* SET EMPTY SERVER NAME */
+if (!isset($_SERVER['SERVER_NAME'])) {
+    $_SERVER['SERVER_NAME'] = getenv('server_name');
+}
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;

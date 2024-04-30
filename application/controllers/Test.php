@@ -3604,4 +3604,26 @@ class Test extends CI_Controller
         }
         return $billaddr;
     }
+
+    public function user_defpage()
+    {
+        $this->db->select('user_id, user_page')->from('users')->where('user_page is not NULL');
+        $usrdats=$this->db->get()->result_array();
+
+        foreach ($usrdats as $usrdat) {
+            if (!empty($usrdat['user_page'])) {
+                $this->db->select('brand')->from('menu_items')->where('menu_item_id', $usrdat['user_page']);
+                $brdat = $this->db->get()->row_array();
+                $brand = $brdat['brand'];
+                echo 'User '.$usrdat['user_id'].' Brand '.$brand.PHP_EOL;
+                $this->db->where('user_id', $usrdat['user_id']);
+                $this->db->set('default_brand', $brand);
+                $this->db->update('users');
+                $this->db->set('user_id', $usrdat['user_id']);
+                $this->db->set('brand', $brand);
+                $this->db->set('page_id', $usrdat['user_page']);
+                $this->db->insert('user_default_page');
+            }
+        }
+    }
 }

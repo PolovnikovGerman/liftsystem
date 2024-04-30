@@ -357,6 +357,7 @@ Class User_model extends MY_Model
             'user_passwd_txt2' => '',
             'profit_view'=>'Points',
             'user_payuser' => 0,
+            'default_brand' => 'SB',
         ];
         return $data;
     }
@@ -516,6 +517,7 @@ Class User_model extends MY_Model
             $this->db->set('user_page', ifset($user,'user_page',NULL));
             $this->db->set('user_order_export', ifset($user,'user_order_export',0));
             $this->db->set('user_payuser', $user['user_payuser']);
+            $this->db->set('default_brand', $user['default_brand']);
             if ($user['user_id']==0) {
                 $this->db->set('created_at', date('Y-m-d H:i:s'));
                 $this->db->set('created_by', $updusr);
@@ -548,6 +550,65 @@ Class User_model extends MY_Model
                 // Update page permissions
                 $this->load->model('menuitems_model');
                 $this->menuitems_model->save_userpermissions($webpages, $user_id);
+                // Update default pages
+                $this->db->select('*')->from('user_default_page')->where(['user_id'=> $user_id, 'brand'=> 'SB']);
+                $chksb = $this->db->get()->row_array();
+                if (ifset($chksb, 'user_page_id', 0)==0) {
+                    if (!empty($session_data['defsbpage'])) {
+                        $this->db->set('user_id', $user_id);
+                        $this->db->set('brand', 'SB');
+                        $this->db->set('page_id', $session_data['defsbpage']);
+                        $this->db->insert('user_default_page');
+                    }
+                } else {
+                    if (!empty($session_data['defsbpage'])) {
+                        $this->db->where('user_page_id', $chksb['user_page_id']);
+                        $this->db->set('page_id', $session_data['defsbpage']);
+                        $this->db->update('user_default_page');
+                    } else {
+                        $this->db->where('user_page_id', $chksb['user_page_id']);
+                        $this->db->delete('user_default_page');
+                    }
+                }
+                $this->db->select('*')->from('user_default_page')->where(['user_id'=> $user_id, 'brand'=> 'SR']);
+                $chksr = $this->db->get()->row_array();
+                if (ifset($chksr, 'user_page_id', 0)==0) {
+                    if (!empty($session_data['defsrpage'])) {
+                        $this->db->set('user_id', $user_id);
+                        $this->db->set('brand', 'SR');
+                        $this->db->set('page_id', $session_data['defsrpage']);
+                        $this->db->insert('user_default_page');
+                    }
+                } else {
+                    if (!empty($session_data['defsrpage'])) {
+                        $this->db->where('user_page_id', $chksr['user_page_id']);
+                        $this->db->set('page_id', $session_data['defsrpage']);
+                        $this->db->update('user_default_page');
+                    } else {
+                        $this->db->where('user_page_id', $chksr['user_page_id']);
+                        $this->db->delete('user_default_page');
+                    }
+                }
+                $this->db->select('*')->from('user_default_page')->where(['user_id'=> $user_id, 'brand'=> 'SG']);
+                $chksg = $this->db->get()->row_array();
+                if (ifset($chksg, 'user_page_id', 0)==0) {
+                    if (!empty($session_data['defsgpage'])) {
+                        $this->db->set('user_id', $user_id);
+                        $this->db->set('brand', 'SG');
+                        $this->db->set('page_id', $session_data['defsgpage']);
+                        $this->db->insert('user_default_page');
+                    }
+                } else {
+                    if (!empty($session_data['defsgpage'])) {
+                        $this->db->where('user_page_id', $chksg['user_page_id']);
+                        $this->db->set('page_id', $session_data['defsgpage']);
+                        $this->db->update('user_default_page');
+                    } else {
+                        $this->db->where('user_page_id', $chksg['user_page_id']);
+                        $this->db->delete('user_default_page');
+                    }
+                }
+                // Delete not used parameters
                 foreach ($deleted as $row) {
                     $this->db->where('user_restriction_id', $row);
                     $this->db->delete('user_restrictions');
@@ -708,27 +769,31 @@ Class User_model extends MY_Model
         return $res;
     }
 
-    public function default_page($user_page, $brand = '') {
-        $this->db->select('menu_item_id, parent_id, item_link, brand');
-        $this->db->from('menu_items');
-        $this->db->where('menu_item_id', $user_page);
+    public function default_page($user_id) {
+        $this->db->select('default_brand as brand')->from('users')->where('user_id', $user_id);
+        $brdat = $this->db->get()->row_array();
+        $brand = ifset($brdat,'brand', 'SB');
+        usersession('currentbrand', $brand);
+        // Get default url for brand
+        $this->db->select('menu_item_id, parent_id, item_link');
+        $this->db->from('menu_items mi');
+        $this->db->join('user_default_page usrp', 'usrp.page_id=mi.menu_item_id');
+        $this->db->where('usrp.user_id', $user_id);
+        $this->db->where('usrp.brand', $brand);
         $res = $this->db->get()->row_array();
         if (ifset($res, 'menu_item_id', 0)==0) {
-            return 'welcome';
-        }
-        if (empty($brand)) {
-            if (!empty($res['brand']) && $res['brand']!=='NONE') {
-                usersession('currentbrand', $res['brand']);
+            return '/welcome';
+        } else {
+            if (empty($res['parent_id'])) {
+                return $res['item_link'];
+            } else {
+                $this->db->select('menu_item_id, item_link');
+                $this->db->from('menu_items');
+                $this->db->where('menu_item_id', $res['parent_id']);
+                $main = $this->db->get()->row_array();
+                return $main['item_link'].'/?start='.str_replace('#', '', $res['item_link']);
             }
         }
-        if (empty($res['parent_id'])) {
-            return $res['item_link'];
-        }
-        $this->db->select('menu_item_id, item_link');
-        $this->db->from('menu_items');
-        $this->db->where('menu_item_id', $res['parent_id']);
-        $main = $this->db->get()->row_array();
-        return $main['item_link'].'/?start='.str_replace('#', '', $res['item_link']);
     }
 
     public function rebuild_currentuser($user_id)
@@ -830,6 +895,53 @@ Class User_model extends MY_Model
         $this->db->set('last_verified',0);
         $this->db->update('users');
         return true;
+    }
+
+    public function get_user_defaultpages($user_id)
+    {
+        $this->db->select('*')->from('user_default_page')->where('user_id',$user_id);
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
+
+    public function userpage_edit($item, $newval, $brand, $session_data, $session_id)
+    {
+        $out=['result' => $this->error_result, 'msg' => 'Select Brand'];
+        if (!empty($brand)) {
+            if ($brand=='SB') {
+                $session_data['defsbpage'] = $newval;
+            } elseif ($brand=='SR') {
+                $session_data['defsrpage'] = $newval;
+            } else {
+                $session_data['defsgpage'] = $newval;
+            }
+            $out['result'] = $this->success_result;
+            usersession($session_id, $session_data);
+        }
+        return $out;
+    }
+
+    public function default_brandpage($user_id, $brand)
+    {
+        $this->db->select('menu_item_id, parent_id, item_link');
+        $this->db->from('menu_items mi');
+        $this->db->join('user_default_page usrp', 'usrp.page_id=mi.menu_item_id');
+        $this->db->where('usrp.user_id', $user_id);
+        $this->db->where('usrp.brand', $brand);
+        $res = $this->db->get()->row_array();
+        if (ifset($res, 'menu_item_id', 0)==0) {
+            return '/welcome';
+        } else {
+            if (empty($res['parent_id'])) {
+                return $res['item_link'];
+            } else {
+                $this->db->select('menu_item_id, item_link');
+                $this->db->from('menu_items');
+                $this->db->where('menu_item_id', $res['parent_id']);
+                $main = $this->db->get()->row_array();
+                return $main['item_link'].'/?start='.str_replace('#', '', $res['item_link']);
+            }
+        }
     }
 
 }

@@ -135,11 +135,11 @@ class Welcome extends MY_Controller {
                 usersession('currentbrand', $currentbrand);
 
                 $this->load->model('user_model');
-                $usrdat = $this->user_model->get_user_data($this->USR_ID);
-                $url = '/';
-                if (!empty($usrdat['user_page'])) {
-                    $url = $this->user_model->default_page($usrdat['user_page'], $currentbrand);
-                }
+                // $usrdat = $this->user_model->get_user_data($this->USR_ID);
+                // $url = '/';
+                // if (!empty($usrdat['user_page'])) {
+                $url = $this->user_model->default_brandpage($this->USR_ID, $currentbrand);
+                // }
                 $mdata['url'] = $url;
             }
             $this->ajaxResponse($mdata, $error);
