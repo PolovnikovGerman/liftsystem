@@ -272,6 +272,9 @@ class UPS_service
                     }
                 }
                 $out['msg'] = $msg;
+                if (isset($apiResponse['destinationPickList'])) {
+                    $out['cities'] = $apiResponse['destinationPickList'];
+                }
             }
         }
         return $out;
