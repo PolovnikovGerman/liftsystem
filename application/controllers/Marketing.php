@@ -40,76 +40,26 @@ class Marketing extends MY_Controller
                 // Search results by time
                 $head['styles'][]=array('style'=>'/css/marketing/searchestimeview.css');
                 $head['scripts'][]=array('src'=>'/js/marketing/searchestimeview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['searchestimeview'] = $this->_prepare_searchbytime($brand);
             } elseif ($row['item_link']=='#searcheswordview') {
                 // Search Results by Keywords
                 $head['styles'][]=array('style'=>'/css/marketing/searcheswordview.css');
                 $head['scripts'][]=array('src'=>'/js/marketing/searcheswordview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['searcheswordview'] = $this->_prepare_searchbywords($brand);
             } elseif ($row['item_link']=='#searchesipadrview') {
                 // Search results by IP
                 $head['styles'][]=array('style'=>'/css/marketing/searchesipadrview.css');
                 $head['scripts'][]=array('src'=>'/js/marketing/searchesipadrview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['searchesipadrview'] = $this->_prepare_searckipaddress($brand);
             } elseif ($row['item_link']=='#signupview') {
                 // Search results by IP
                 $head['styles'][]=array('style'=>'/css/marketing/signupview.css');
                 $head['scripts'][]=array('src'=>'/js/marketing/signupview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['signupview'] = $this->_prepare_signup($brand);
             } elseif ($row['item_link']=='#couponsview') {
                 // Search results by IP
                 $head['styles'][]=array('style'=>'/css/marketing/couponsview.css');
                 $head['scripts'][]=array('src'=>'/js/marketing/couponsview.js');
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['couponsview'] = $this->_prepare_couponsview($brand);
             }
         }
@@ -155,17 +105,22 @@ class Marketing extends MY_Controller
 
             if (!empty($period) && !empty($brand)) {
                 $error = 'Unknown period';
-                if (in_array($period,['week','month','custom'])) {
+                if (in_array($period,['week','month','year','custom'])) {
                     $error = '';
                     if ($period=='week') {
                         $dates = getDatesByWeek(date('W'),date('Y'));
                         $d_bgn = $dates['start_week'];
                         $d_end = $dates['end_week'];
                     } elseif ($period=='month') {
-                        $curtime=date('Y-m-').'01 00:00:00';
-                        $d_bgn=strtotime($curtime);
-                        $curtime=date('Y-m-t').' 23:59:59';
-                        $d_end=strtotime($curtime);
+                        $curtime = date('Y-m-') . '01 00:00:00';
+                        $d_bgn = strtotime($curtime);
+                        $curtime = date('Y-m-t') . ' 23:59:59';
+                        $d_end = strtotime($curtime);
+                    } elseif ($period=='year') {
+                        $curtime = date('Y-') . '01-01 00:00:00';
+                        $d_bgn = strtotime($curtime);
+                        $curtime = date('Y-m-t') . ' 23:59:59';
+                        $d_end = strtotime($curtime);
                     } else {
                         $d_bgn=ifset($postdata,'d_bgn','');
                         if (!empty($d_bgn)) {
@@ -191,10 +146,10 @@ class Marketing extends MY_Controller
             $postdata = $this->input->post();
             $mdata = [];
             $period = ifset($postdata, 'period');
-            $show_result = ifset($postdata, 'result');
-            $brand = ifset($postdata,'brand');
+            $show_result = ifset($postdata, 'result',0);
+            $brand = ifset($postdata,'brand','SB');
             $error = 'Empty Parameters';
-            if (!empty($period) && !empty($show_result) && !empty($brand)) {
+            if (!empty($period) && !empty($brand)) {
                 $error='Unknown Period';
                 if (in_array($period,['today','week','month','custom'])) {
                     $error = '';
@@ -227,8 +182,22 @@ class Marketing extends MY_Controller
                     }
                     $this->load->model('searchresults_model');
                     $data=$this->searchresults_model->get_search_bykeywords($brand, $d_bgn,$d_end,$show_result);
-                    $mdata['num_cols']=ceil(count($data)/20);
-                    $mdata['content']=$this->load->view('marketing/searchkeyword_dat_view',['dat'=> $data],TRUE);
+                    $numres = count($data);
+                    if ($numres <= 60) {
+                        $num_cols=ceil(count($data)/20);
+                        $numrows = 20;
+                    } else {
+                        $num_cols = 3;
+                        $numrows = ceil($numres/3);
+                    }
+                    $options = [
+                        'dat'=> $data,
+                        'numrows' => $numrows,
+                        'numcols' => $num_cols,
+                        'numrecs' => $numres,
+                    ];
+                    $mdata['content']=$this->load->view('marketing/searchkeyword_dat_view', $options,TRUE);
+                    $mdata['num_cols'] = $num_cols;
                 }
             }
             $this->ajaxResponse($mdata, $error);

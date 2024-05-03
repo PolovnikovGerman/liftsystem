@@ -69,7 +69,7 @@ function show_today_keywords() {
         if (response.errors=='') {
             // calculate width of div
             var contwidth=343*response.data.num_cols;
-            $("#keywordsearchcontent").empty().html(response.data.content).css('width',contwidth);
+            $("#keywordsearchcontent").empty().html(response.data.content); // .css('width',contwidth);
         } else {
             show_error(response);
         }
@@ -93,7 +93,7 @@ function show_week_keywords() {
         if (response.errors=='') {
             // calculate width of div
             var contwidth=343*response.data.num_cols;
-            $("#keywordsearchcontent").empty().html(response.data.content).css('width',contwidth);
+            $("#keywordsearchcontent").empty().html(response.data.content); // .css('width',contwidth);
         } else {
             show_error(response);
         }
@@ -117,7 +117,7 @@ function show_month_keywords() {
         if (response.errors=='') {
             // calculate width of div
             var contwidth=343*response.data.num_cols;
-            $("#keywordsearchcontent").empty().html(response.data.content).css('width',contwidth);
+            $("#keywordsearchcontent").empty().html(response.data.content); //.css('width',contwidth);
         } else {
             show_error(response);
         }
@@ -148,7 +148,7 @@ function keywords_show_custom() {
         if (response.errors=='') {
             // calculate width of div
             var contwidth=343*response.data.num_cols;
-            $("#keywordsearchcontent").empty().html(response.data.content).css('width',contwidth);
+            $("#keywordsearchcontent").empty().html(response.data.content); //.css('width',contwidth);
         } else {
             show_error(response);
         }
