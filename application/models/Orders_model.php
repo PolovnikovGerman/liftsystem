@@ -1841,6 +1841,7 @@ Class Orders_model extends MY_Model
         $attres = $this->db->get()->result_array();
         $this->db->select('basket_id as order_id, unix_timestamp(created_time) as attdate, 0 as orderdat, 0 as attempt, 1 as basket');
         $this->db->from('sb_baskets');
+        $this->db->where('order_id', NULL);
         $this->db->where('unix_timestamp(created_time) >= ', $start);
         $this->db->where('unix_timestamp(created_time) <= ', $end);
         if ($brand!=='ALL') {
