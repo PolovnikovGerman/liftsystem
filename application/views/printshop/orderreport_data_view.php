@@ -27,10 +27,10 @@
     <div class="totalea"><?=number_format($row['totalea'],3)?></div>
     <div class="totaladdlcost"><?=MoneyOutput($row['extraitem'])?></div>
     <div class="itemscost"><?=MoneyOutput($row['costitem'])?></div>
-    <div class="oranplate"><?=QTYOutput($row['oranplate'],1)?></div>
-    <div class="blueplate"><?=QTYOutput($row['blueplate'],1)?></div>
-    <div class="beigeplate"><?=QTYOutput($row['beigeplate'],1)?></div>
-    <div class="totalplate"><?=QTYOutput($row['totalplates'],1)?></div>
+    <div class="oranplate"><?=QTYOutput($row['oranplate'],2)?></div>
+    <div class="blueplate"><?=QTYOutput($row['blueplate'],2)?></div>
+    <div class="beigeplate"><?=QTYOutput($row['beigeplate'],2)?></div>
+    <div class="totalplate"><?=QTYOutput($row['totalplates'],2)?></div>
     <div class="platecost"><?=MoneyOutput($row['platescost'])?></div>
     <div class="totalcost"><?=MoneyOutput($row['itemstotalcost'])?></div>
     <div class="misprintcost"><?=  MoneyOutput($row['misprintcost'])?></div>
