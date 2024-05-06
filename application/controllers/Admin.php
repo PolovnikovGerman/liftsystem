@@ -161,6 +161,7 @@ class Admin extends MY_Controller
                 $error = '';
                 $mdata['title'] = 'Add New User';
                 $userip = [];
+                $userdefpages = [];
             } else {
                 $res = $this->user_model->get_user_details($user_id);
                 $error = $res['msg'];
@@ -169,6 +170,7 @@ class Admin extends MY_Controller
                     $data = $res['data'];
                     $mdata['title'] = 'Edit User '.$data['user_name'];
                     $userip = $this->user_model->get_user_iprestrict($user_id);
+                    $userdefpages = $this->user_model->get_user_defaultpages($user_id);
                 }
             }
 
@@ -177,21 +179,57 @@ class Admin extends MY_Controller
                 $srpages = $this->tree(null, 0, $user_id, 'SR');
                 $commonpages = $this->tree(null, 0, $user_id, 'NONE');
                 $sgpages = $this->tree(null, 0, $user_id, 'SG');
+                // Default pages
+                $pages_list_sb=$this->menuitems_model->get_webpages('SB');
+                $sbmain = '';
+                foreach ($userdefpages as $userdefpage) {
+                    if ($userdefpage['brand']=='SB') {
+                        $sbmain = $userdefpage['page_id'];
+                    }
+                }
+                $pages_select_sb = $this->load->view('admin/user_defaultpage_view',['data' => $pages_list_sb, 'defpage' => $sbmain,'brand'=>'SB'], TRUE);
+                $pages_list_sr=$this->menuitems_model->get_webpages('SR');
+                $srmain = '';
+                foreach ($userdefpages as $userdefpage) {
+                    if ($userdefpage['brand']=='SR') {
+                        $srmain = $userdefpage['page_id'];
+                    }
+                }
+                $pages_select_sr = $this->load->view('admin/user_defaultpage_view',['data' => $pages_list_sr, 'defpage' => $srmain,'brand'=>'SR'], TRUE);
+                $pages_list_sg=$this->menuitems_model->get_webpages('SG');
+                $sgmain = '';
+                foreach ($userdefpages as $userdefpage) {
+                    if ($userdefpage['brand']=='SG') {
+                        $sgmain = $userdefpage['page_id'];
+                    }
+                }
+                $pages_select_sg = $this->load->view('admin/user_defaultpage_view',['data' => $pages_list_sg, 'defpage' => $sgmain,'brand'=>'SG'], TRUE);
+
+                $permoptions = [
+                    'sbpages' => $sbpages,
+                    'srpages' => $srpages,
+                    'sgpages' => $sgpages,
+                    'commpages' => $commonpages,
+                    'pages_list_sb' => $pages_select_sb,
+                    'pages_list_sr' => $pages_select_sr,
+                    'pages_list_sg' => $pages_select_sg,
+                ];
+                $pagepermiss=$this->load->view('admin/webpage_tree_view', $permoptions,TRUE);
+                $iprestricts = $this->load->view('admin/user_iprestrict_view',['userip'=>$userip], TRUE);
+
                 $wpages=[
                     'sbpages' => $sbpages,
                     'srpages' => $srpages,
                     'sgpages' => $sgpages,
                     'commpages' => $commonpages,
                 ];
-                $pagepermiss=$this->load->view('admin/webpage_tree_view', $wpages,TRUE);
-                $iprestricts = $this->load->view('admin/user_iprestrict_view',['userip'=>$userip], TRUE);
-                $pages_list=$this->menuitems_model->get_webpages();
-                $pages_select = $this->load->view('admin/user_defaultpage_view',['data' => $pages_list, 'defpage' => $data['user_page']], TRUE);
-
                 $session_data = [
                     'user' => $data,
                     'userip' => $userip,
                     'webpages' => $wpages,
+                    'defsbpage' => $sbmain,
+                    'defsrpage' => $srmain,
+                    'defsgpage' => $sgmain,
                     'deleted' => [],
                 ];
                 $session_id = 'userdata'.uniq_link(10);
@@ -201,7 +239,6 @@ class Admin extends MY_Controller
                     'iprestricts' => $iprestricts,
                     'webpages' => $pagepermiss,
                     'session' => $session_id,
-                    'pages_select' => $pages_select,
                 ];
 
                 $mdata['content'] = $this->load->view('admin/user_details_view', $options, TRUE);
@@ -420,7 +457,12 @@ class Admin extends MY_Controller
             if (!empty($session_data)) {
                 $item = ifset($postdata, 'item', '');
                 $newval = ifset($postdata, 'newval', '');
-                $res = $this->user_model->userdata_edit($item, $newval, $session_data, $session_id);
+                if ($item=='user_page') {
+                    $brand = ifset($postdata, 'brand','');
+                    $res = $this->user_model->userpage_edit($item, $newval, $brand, $session_data, $session_id);
+                } else {
+                    $res = $this->user_model->userdata_edit($item, $newval, $session_data, $session_id);
+                }
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
