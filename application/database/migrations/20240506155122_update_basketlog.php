@@ -3,19 +3,14 @@
 class Migration_update_basketlog extends CI_Migration {
 
     public function up() {
-        $this->dbforge->add_field(array(
-            'id' => array(
-                'type' => 'INT',
-                'constraint' => 11,
-                'auto_increment' => TRUE
-            )
-        ));
-        $this->dbforge->add_key('id', TRUE);
-        $this->dbforge->create_table('update_basketlog');
+        $fields = array(
+            'order_id' => array('type' => 'INT', 'constraint' => 11,'null' => TRUE,),
+        );
+        $this->dbforge->add_column('sb_basketchange_log', $fields);
     }
 
     public function down() {
-        $this->dbforge->drop_table('update_basketlog');
+        $this->dbforge->drop_column('sb_basketchange_log', 'order_id');
     }
 
 }
