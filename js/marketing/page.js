@@ -28,7 +28,7 @@ function init_page(objid) {
             break;
         case 'searchesipadrview':
             $("#searchesipadrview").show();
-            init_searchipaddres_content();
+            show_ipaddress_result();
             break
         case 'signupview':
             $("#signupview").show();

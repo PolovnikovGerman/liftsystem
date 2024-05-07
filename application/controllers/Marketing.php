@@ -245,8 +245,21 @@ class Marketing extends MY_Controller
                     }
                     $this->load->model('searchresults_model');
                     $data=$this->searchresults_model->get_search_byipaddress($brand, $d_bgn,$d_end);
-                    $mdata['num_cols']=ceil(count($data)/20);
-                    $mdata['content']=$this->load->view('marketing/searchipaddress_dat_view',['dat'=>$data],TRUE);
+                    $numres = count($data);
+                    if ($numres <= 60) {
+                        $num_cols=ceil(count($data)/20);
+                        $numrows = 20;
+                    } else {
+                        $num_cols = 3;
+                        $numrows = ceil($numres/3);
+                    }
+                    $options = [
+                        'dat'=> $data,
+                        'numrows' => $numrows,
+                        'numcols' => $num_cols,
+                        'numrecs' => $numres,
+                    ];
+                    $mdata['content']=$this->load->view('marketing/searchipaddress_dat_view', $options,TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);

@@ -1,20 +1,21 @@
+function show_ipaddress_result() {
+    if ($("#ipaddres_today").prop('checked')==true) {
+        show_today_ipaddress();
+    }
+    if ($("#ipaddres_week").prop('checked')==true) {
+        show_week_ipaddress();
+    }
+    if ($("#ipaddres_month").prop('checked')==true) {
+        show_month_ipaddress();
+    }
+    if ($("#ipaddres_custom").prop('checked')==true) {
+        ipaddress_show_custom();
+    }
+    init_searchipaddres_content();
+}
+
 function init_searchipaddres_content() {
     // Change Brand
-    $("#searchipaddrmenu").find("div.brandchoseval").unbind('click').click(function(){
-        var brand = $(this).data('brand');
-        $("#searchipaddrbrand").val(brand);
-        $("#searchipaddrmenu").find("div.brandchoseval").each(function(){
-            var curbrand=$(this).data('brand');
-            if (curbrand==brand) {
-                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
-                $("#searchipaddrmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
-            } else {
-                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
-                $("#searchipaddrmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
-            }
-        });
-        show_ipaddress_result();
-    });
     $("#ipaddres_today").unbind('click').click(function(){
         show_today_ipaddress();
     });
@@ -38,22 +39,7 @@ function init_searchipaddres_content() {
         autoclose: true,
         todayHighlight: true
     });
-    show_today_ipaddress();
-}
-
-function show_ipaddress_result() {
-    if ($("#ipaddres_today").prop('checked')==true) {
-        show_today_ipaddress();
-    }
-    if ($("#ipaddres_week").prop('checked')==true) {
-        show_week_ipaddress();
-    }
-    if ($("#ipaddres_month").prop('checked')==true) {
-        show_month_ipaddress();
-    }
-    if ($("#ipaddres_custom").prop('checked')==true) {
-        ipaddress_show_custom();
-    }
+    // show_today_ipaddress();
 }
 
 function show_today_ipaddress() {
@@ -66,8 +52,8 @@ function show_today_ipaddress() {
     $.post(url, params, function(response){
         if (response.errors=='') {
             // calculate width of div
-            var contwidth=343*response.data.num_cols;
-            $("#ipaddressearchcontent").empty().html(response.data.content).css('width',contwidth);
+            // var contwidth=343*response.data.num_cols;
+            $("#ipaddressearchcontent").empty().html(response.data.content); // .css('width',contwidth);
             $("#loader").hide();
         } else {
             $("#loader").hide();
@@ -86,8 +72,8 @@ function show_week_ipaddress() {
     $.post(url, params, function(response){
         if (response.errors=='') {
             // calculate width of div
-            var contwidth=343*response.data.num_cols;
-            $("#ipaddressearchcontent").empty().html(response.data.content).css('width',contwidth);
+            // var contwidth=343*response.data.num_cols;
+            $("#ipaddressearchcontent").empty().html(response.data.content); // .css('width',contwidth);
             $("#loader").hide();
         } else {
             $("#loader").hide();
@@ -106,8 +92,8 @@ function show_month_ipaddress() {
     $.post(url, params, function(response){
         if (response.errors=='') {
             // calculate width of div
-            var contwidth=343*response.data.num_cols;
-            $("#ipaddressearchcontent").empty().html(response.data.content).css('width',contwidth);
+            // var contwidth=343*response.data.num_cols;
+            $("#ipaddressearchcontent").empty().html(response.data.content); // .css('width',contwidth);
             $("#loader").hide();
         } else {
             $("#loader").hide();
@@ -118,8 +104,8 @@ function show_month_ipaddress() {
 
 function ipaddressearch_customrange() {
     $("#datarangeview_ipaddress").css('visibility','visible');
-    $("#dbgn_ipaddres").val('');
-    $("#dend_ipaddres").val('');
+    // $("#dbgn_ipaddres").val('');
+    // $("#dend_ipaddres").val('');
 }
 
 function ipaddress_show_custom() {
@@ -133,8 +119,8 @@ function ipaddress_show_custom() {
     $.post(url, params, function(response){
         if (response.errors=='') {
             // calculate width of div
-            var contwidth=343*response.data.num_cols;
-            $("#ipaddressearchcontent").empty().html(response.data.content).css('width',contwidth);
+            // var contwidth=343*response.data.num_cols;
+            $("#ipaddressearchcontent").empty().html(response.data.content); // .css('width',contwidth);
             $("#loader").hide();
         } else {
             $("#loader").hide();
