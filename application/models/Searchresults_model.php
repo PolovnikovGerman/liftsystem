@@ -320,8 +320,8 @@ class Searchresults_model extends My_Model
         foreach ($results as $result) {
             if ($result['country_code']=='US') {
                 $usrgeo = $result['city_name'].', '.$result['region_code'];
-            } elseif ($result['country_code']=='CA') {
-                $usrgeo = $result['city_name'].', '.$result['region_code'].', '.$result['country_code'];
+//            } elseif ($result['country_code']=='CA') {
+//                $usrgeo = $result['city_name'].', '.$result['region_code'].', '.$result['country_code'];
             } else {
                 $usrgeo = $result['city_name'].' '.$result['country_name'];
             }
