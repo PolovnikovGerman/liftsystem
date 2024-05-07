@@ -300,20 +300,39 @@ class Searchresults_model extends My_Model
         } else {
             $d_bgn=strtotime(date('Y-m-d',$d_bgn).' 00:00:00');
         }
-        $this->db->select('search_ip, search_user, count(*) as cnt');
-        $this->db->from('sb_search_results');
-        $this->db->where('unix_timestamp(search_time) >= ', $d_bgn);
-        $this->db->where('unix_timestamp(search_time) <= ', $d_end);
+        $this->db->select('s.search_ip, g.city_name, g.region_code, g.country_name, g.country_code,  count(*) as cnt');
+        $this->db->from('sb_search_results s');
+        $this->db->join('sb_geoips g', 'g.user_ip=s.search_ip','left');
+        $this->db->where('unix_timestamp(s.search_time) >= ', $d_bgn);
+        $this->db->where('unix_timestamp(s.search_time) <= ', $d_end);
         if ($brand!=='ALL') {
             if ($brand=='SR') {
-                $this->db->where('brand', $brand);
+                $this->db->where('s.brand', $brand);
             } else {
-                $this->db->where_in('brand', ['BT','SB']);
+                $this->db->where_in('s.brand', ['BT','SB']);
             }
         }
-        $this->db->group_by('search_ip, search_user');
+        $this->db->group_by('s.search_ip, g.city_name, g.region_code, g.country_name, g.country_code');
         $this->db->order_by('cnt','desc');
-        $res_ar=$this->db->get()->result_array();
-        return $res_ar;
+        $results=$this->db->get()->result_array();
+        $out = [];
+        $numpp = 1;
+        foreach ($results as $result) {
+            if ($result['country_code']=='US') {
+                $usrgeo = $result['city_name'].', '.$result['region_code'];
+            } elseif ($result['country_code']=='CA') {
+                $usrgeo = $result['city_name'].', '.$result['region_code'].', '.$result['country_code'];
+            } else {
+                $usrgeo = $result['city_name'].' '.$result['country_name'];
+            }
+            $out[] = [
+                'rank' => $numpp,
+                'search_ip' => $result['search_ip'],
+                'search_user' => $usrgeo,
+                'cnt' => $result['cnt'],
+            ];
+            $numpp++;
+        }
+        return $out;
     }
 }
