@@ -24,7 +24,7 @@ function init_page(objid) {
             break;
         case 'searcheswordview':
             $("#searcheswordview").show();
-            init_searchkeyword_content();
+            show_keywords_result();
             break;
         case 'searchesipadrview':
             $("#searchesipadrview").show();
