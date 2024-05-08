@@ -190,11 +190,11 @@ class Marketing extends MY_Controller
         if ($this->isAjax()) {
             $postdata = $this->input->post();
             $mdata = [];
-            $period = ifset($postdata, 'period');
-            $show_result = ifset($postdata, 'result');
-            $brand = ifset($postdata,'brand');
+            $period = ifset($postdata, 'period','today');
+            $show_result = ifset($postdata, 'result','0');
+            $brand = ifset($postdata,'brand','ALL');
             $error = 'Empty Parameters';
-            if (!empty($period) && !empty($show_result) && !empty($brand)) {
+            if (!empty($period) && !empty($brand)) { // !empty($show_result) &&
                 $error='Unknown Period';
                 if (in_array($period,['today','week','month','custom'])) {
                     $error = '';
