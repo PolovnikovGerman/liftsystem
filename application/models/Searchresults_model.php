@@ -335,4 +335,24 @@ class Searchresults_model extends My_Model
         }
         return $out;
     }
+
+    public function get_searchdates($brand)
+    {
+        $this->db->select('max(search_time) as max_time, min(search_time) as min_time');
+        $this->db->from('sb_search_results');
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
+            }
+        }
+        $res=$this->db->get()->row_array();
+        $minyear = date('Y', strtotime($res['min_time']));
+        $maxyear = date('Y', strtotime($res['max_time']));
+        return [
+            'minyear' => $minyear,
+            'maxyear' => $maxyear,
+        ];
+    }
 }

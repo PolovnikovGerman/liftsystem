@@ -58,9 +58,14 @@ class Marketing extends MY_Controller
                 $content_options['signupview'] = $this->_prepare_signup($brand);
             } elseif ($row['item_link']=='#couponsview') {
                 // Search results by IP
-                $head['styles'][]=array('style'=>'/css/marketing/couponsview.css');
-                $head['scripts'][]=array('src'=>'/js/marketing/couponsview.js');
+                $head['styles'][] = array('style' => '/css/marketing/couponsview.css');
+                $head['scripts'][] = array('src' => '/js/marketing/couponsview.js');
                 $content_options['couponsview'] = $this->_prepare_couponsview($brand);
+            } elseif ($row['item_link']=='#searchesview') {
+                // Search results
+                $head['styles'][]=array('style'=>'/css/marketing/searchesview.css');
+                $head['scripts'][]=array('src'=>'/js/marketing/searchesview.js');
+                $content_options['searchesview'] = $this->_prepare_search($brand);
             }
         }
 
@@ -565,6 +570,17 @@ class Marketing extends MY_Controller
             'brand' => $brand,
         ];
         return $this->load->view('marketing/coupons_view',$view_options,TRUE);
+    }
 
+    private function _prepare_search($brand)
+    {
+        $this->load->model('searchresults_model');
+        $dates = $this->searchresults_model->get_searchdates($brand);
+        $options = [
+            'brand' => $brand,
+            'minyear' => $dates['minyear'],
+            'maxyear' => $dates['maxyear'],
+        ];
+        return $this->load->view('marketing/searches_view', $options,TRUE);
     }
 }

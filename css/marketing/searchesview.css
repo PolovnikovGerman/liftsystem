@@ -1,0 +1,14 @@
+.searches_content {
+    margin: 16px 0 0 26px;
+    width: 1647px;
+    font-size: 13px;
+}
+.searches_displayoptions {
+    height: 24px;
+    line-height: 24px;
+}
+.searches_displayoptions span.active {
+    border: 1px solid #757272;
+    background: #ededed;
+    font-weight: 600;
+}
