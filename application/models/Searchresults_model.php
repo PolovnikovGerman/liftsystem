@@ -350,9 +350,136 @@ class Searchresults_model extends My_Model
         $res=$this->db->get()->row_array();
         $minyear = date('Y', strtotime($res['min_time']));
         $maxyear = date('Y', strtotime($res['max_time']));
+        $maxdate = strtotime($res['max_time']);
+        $mindate = strtotime($res['min_time']);
+        // Transform
+        $maxdate = strtotime(date('Y-m', $maxdate).'-01');
+        $final = strtotime("-1 month", $mindate);
+        $mindate = strtotime(date('Y-m',$final).'-01');
+        $months = [];
+        while ($maxdate > $mindate) {
+            $months[] = ['key' => date('Y-m', $maxdate), 'val' => date('F Y', $maxdate)];
+            $maxdate = strtotime("-1 month", $maxdate);
+            if ($maxdate<=$mindate) {
+                break;
+            }
+        }
         return [
             'minyear' => $minyear,
             'maxyear' => $maxyear,
+            'months' => $months,
+        ];
+    }
+
+    public function get_count_searches($display_option, $d_bgn, $d_end, $brand)
+    {
+        $out=[];
+        // Calc words
+        $this->db->select('search_text, count(search_result_id)')->from('sb_search_results');
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand',['SB', 'BT']);
+            }
+        }
+        if (!empty($d_bgn)) {
+            $this->db->where('unix_timestamp(search_time) >= ', $d_bgn);
+        }
+        if (!empty($d_end)) {
+            $this->db->where('unix_timestamp(search_time) <= ', $d_end);
+        }
+        if ($display_option==1) {
+            $this->db->where('search_result',1);
+        } elseif ($display_option==2) {
+            $this->db->where('search_result',0);
+        }
+        $this->db->group_by('search_text');
+        $kres = $this->db->get()->result_array();
+        $out['keyword'] = count($kres);
+        $this->db->select('search_ip, count(search_result_id)')->from('sb_search_results');
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand',['SB', 'BT']);
+            }
+        }
+        if (!empty($d_bgn)) {
+            $this->db->where('unix_timestamp(search_time) >= ', $d_bgn);
+        }
+        if (!empty($d_end)) {
+            $this->db->where('unix_timestamp(search_time) <= ', $d_end);
+        }
+        if ($display_option==1) {
+            $this->db->where('search_result',1);
+        } elseif ($display_option==2) {
+            $this->db->where('search_result',0);
+        }
+        $this->db->group_by('search_ip');
+        $ires = $this->db->get()->result_array();
+        $out['ipaddr'] = count($ires);
+        return $out;
+    }
+
+    public function get_keywords_data($display_option, $d_bgn, $d_end, $brand, $limit, $offset)
+    {
+        $this->db->select('search_text, count(search_result_id) as cnt')->from('sb_search_results');
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand',['SB', 'BT']);
+            }
+        }
+        if (!empty($d_bgn)) {
+            $this->db->where('unix_timestamp(search_time) >= ', $d_bgn);
+        }
+        if (!empty($d_end)) {
+            $this->db->where('unix_timestamp(search_time) <= ', $d_end);
+        }
+        if ($display_option==1) {
+            $this->db->where('search_result',1);
+        } elseif ($display_option==2) {
+            $this->db->where('search_result',0);
+        }
+        $this->db->group_by('search_text');
+        $this->db->order_by('cnt', 'desc');
+        if ($limit) {
+            if ($offset) {
+                $this->db->limit($limit, $offset);
+            } else {
+                $this->db->limit($limit);
+            }
+        }
+        $results = $this->db->get()->result_array();
+        $out = [];
+        $start = $offset+1;
+        foreach ($results as $result) {
+            $out[] = [
+                'rank' => $start,
+                'keyword' => $result['search_text'],
+                'result' => $result['cnt'],
+            ];
+            $start++;
+        }
+        return $out;
+    }
+
+    private function _searchdates($brand)
+    {
+        $this->db->select('max(search_time) as max_time, min(search_time) as min_time')->from('sb_search_results');
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
+            }
+        }
+        $res=$this->db->get()->row_array();
+        return [
+            'd_bgn' => strtotime(date('Y-m-d', $res['min_time']).' 00:00:00'),
+            'd_end' => strtotime(date('Y-m-d', $res['max_time']).' 23:59:59'),
         ];
     }
 }

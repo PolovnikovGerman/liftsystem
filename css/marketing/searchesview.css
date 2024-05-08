@@ -1,14 +1,182 @@
 .searches_content {
     margin: 16px 0 0 26px;
-    width: 1647px;
+    width: 1320px;
     font-size: 13px;
 }
 .searches_displayoptions {
+    margin-bottom: 12px;
+}
+.searches_displayoptions div {
     height: 24px;
     line-height: 24px;
 }
-.searches_displayoptions span.active {
-    border: 1px solid #757272;
+.displayoptiontitle, .displayperiodtitle {
+    font-weight: 600;
+    font-size: 18px;
+    margin-right: 3px;
+}
+.displayoptionarea {
+    font-size: 17px;
+    padding: 0 11px 0 5px;
+    margin-right: 5px;
+}
+.displayoptionarea.active {
+    border: 1px solid #838383;
     background: #ededed;
     font-weight: 600;
+    font-size: 18px;
+}
+.searches_displayperiod {
+    margin-bottom: 12px;
+}
+.searches_displayperiod div {
+    height: 33px;
+    line-height: 33px;
+}
+.displayperiodtitle {
+    margin-right: 22px;
+}
+.displayperiodarea {
+    font-size: 17px;
+    padding: 0 11px 0 5px;
+    margin-right: 5px;
+}
+.displayperiodarea.active {
+    border: 1px solid #838383;
+    background: #ededed;
+    font-weight: 600;
+    font-size: 18px;
+}
+.searches_customdates {
+    font-size: 17px;
+    padding: 0 11px 0 5px;
+}
+.searches_customdates.active {
+    border: 1px solid #838383;
+    background: #ededed;
+    font-weight: 600;
+    font-size: 18px;
+}
+select.searchmonthsselect {
+    width: 130px;
+    height: 25px;
+    font-size: 17px!important;
+}
+select.searchyearselect {
+    width: 66px;
+    height: 25px;
+    font-size: 17px!important;
+}
+input.customdateinpt {
+    width: 96px;
+    height: 24px;
+    text-align: center;
+    font-size: 17px!important;
+}
+.displaycustomresult {
+    font-size: 17px;
+    width: 70px;
+    height: 26px!important;
+    line-height: 26px!important;
+    margin-left: 9px;
+    margin-top: 3px;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    color: #f7e2e2;
+    background: #a62424;
+    text-align: center;
+    display: none;
+    cursor: pointer;
+}
+.searcheskeywordshead {
+    width: 1310px;
+    background: #4957f7;
+    color: #ffffff;
+    border-left: 1px solid #919191;
+    border-top: 1px solid #919191;
+    border-right: 1px solid #919191;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+}
+.searcheskeywordshead.stressrelievers {
+    background: #9f7b01;
+}
+.searcheskeywordshead div {
+    height: 40px;
+    line-height: 40px;
+
+}
+.searcheskeywordshead .title {
+    margin-left: 19px;
+    font-size: 24px;
+    font-weight: 600;
+}
+.keywordspaginator {
+    float: right!important;
+    margin-right: 15px;
+    font-size: 17px;
+    color: #ffffff;
+}
+.keywordspaginator .navigateprev, .keywordspaginator .navigatenext {
+    width: 24px;
+    opacity: 0.4;
+}
+.keywordspaginator .navigateprev.active, .keywordspaginator .navigatenext.active  {
+    opacity: 1;
+}
+.keywordspaginator .navigatelabel {
+    margin-left: 8px;
+    width: 153px;
+}
+.searcheskeywordssubhead {
+    background: #00004c;
+    color: #ffffff;
+    border-right: 2px solid #ededed;
+}
+.searcheskeywordssubhead.lastcol {
+    border-right: 1px solid #000000;
+}
+.searcheskeywordssubhead div {
+    height: 33px;
+    line-height: 33px;
+    font-weight: 600;
+    font-size: 17px;
+    text-align: center;
+}
+.searcheskeywordssubhead .rank {
+    width: 44px;
+}
+.searcheskeywordssubhead .keyword {
+    width: 180px;
+}
+.searcheskeywordssubhead .result {
+    width: 77px;
+}
+.searcheskeywordarea {
+    clear: both;
+    border-right: 2px solid #ededed;
+}
+.searcheskeywordarea.lastcol {
+    border-right: 1px solid #000000;
+}
+.searcheskeywordarea div {
+    height: 28px;
+    line-height: 28px;
+    font-size: 17px;
+}
+.searcheskeywordarea .rank {
+    background: #bcbcbc;
+    text-align: center;
+    width: 44px;
+}
+.searcheskeywordarea .keyword {
+    padding-left: 6px;
+    width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 1px solid #ededed;
+}
+.searcheskeywordarea .result {
+    width: 77px;
 }
