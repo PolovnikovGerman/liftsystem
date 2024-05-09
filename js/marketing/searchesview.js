@@ -12,6 +12,7 @@ function init_searches_view() {
         autoclose: true,
         todayHighlight: true
     });
+    leftmenu_alignment();
 }
 
 function view_daily_view() {
@@ -36,6 +37,7 @@ function view_daily_view() {
             }
             init_searches_manage();
             $("#loader").hide();
+            leftmenu_alignment();
         } else {
             show_error(response);
         }
@@ -107,6 +109,7 @@ function view_keywords_content() {
             $(".keywordspaginator").find('div.navigatelabel').empty().html(response.data.label);
             init_searches_manage();
             $("#loader").hide();
+            leftmenu_alignment();
         } else {
             $("#loader").hide();
             show_error(response);
@@ -145,6 +148,7 @@ function view_ipaddress_content() {
             $(".ipaddresspaginator").find('div.navigatelabel').empty().html(response.data.label);
             init_searches_manage();
             $("#loader").hide();
+            leftmenu_alignment();
         } else {
             $("#loader").hide();
             show_error(response);
