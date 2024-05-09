@@ -5,7 +5,8 @@ class Marketing extends MY_Controller
 {
 
     private $pagelink = '/marketing';
-
+    private $keywodslist = 100;
+    private $ipaddrlist = 50;
     public function __construct()
     {
         parent::__construct();
@@ -58,9 +59,14 @@ class Marketing extends MY_Controller
                 $content_options['signupview'] = $this->_prepare_signup($brand);
             } elseif ($row['item_link']=='#couponsview') {
                 // Search results by IP
-                $head['styles'][]=array('style'=>'/css/marketing/couponsview.css');
-                $head['scripts'][]=array('src'=>'/js/marketing/couponsview.js');
+                $head['styles'][] = array('style' => '/css/marketing/couponsview.css');
+                $head['scripts'][] = array('src' => '/js/marketing/couponsview.js');
                 $content_options['couponsview'] = $this->_prepare_couponsview($brand);
+            } elseif ($row['item_link']=='#searchesview') {
+                // Search results
+                $head['styles'][]=array('style'=>'/css/marketing/searchesview.css');
+                $head['scripts'][]=array('src'=>'/js/marketing/searchesview.js');
+                $content_options['searchesview'] = $this->_prepare_search($brand);
             }
         }
 
@@ -145,11 +151,11 @@ class Marketing extends MY_Controller
         if ($this->isAjax()) {
             $postdata = $this->input->post();
             $mdata = [];
-            $period = ifset($postdata, 'period');
-            $show_result = ifset($postdata, 'result',0);
-            $brand = ifset($postdata,'brand','SB');
+            $period = ifset($postdata, 'period','today');
+            $show_result = ifset($postdata, 'result','0');
+            $brand = ifset($postdata,'brand','ALL');
             $error = 'Empty Parameters';
-            if (!empty($period) && !empty($brand)) {
+            if (!empty($period) && !empty($brand)) { // !empty($show_result) &&
                 $error='Unknown Period';
                 if (in_array($period,['today','week','month','custom'])) {
                     $error = '';
@@ -491,6 +497,123 @@ class Marketing extends MY_Controller
         show_404();
     }
 
+    // Searches fuctions
+    public function searches_count()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand','ALL');
+            $display_option = ifset($postdata,'display_option',0);
+            $display_period = ifset($postdata, 'display_period','today');
+            if ($display_period=='today') {
+                $d_bgn = strtotime(date('Y-m-d').' 00:00:00');
+                $d_end = strtotime(date('Y-m-d').' 23:59:59');
+            } elseif ($display_period=='week') {
+                $dates = getDatesByWeek(date('W'), date('Y'));
+                $d_bgn = $dates['start_week'];
+                $d_end = $dates['end_week'];
+            } elseif ($display_period=='month') {
+                $month = $postdata['month'];
+                $d_bgn = strtotime($month.'-01');
+                $d_end = strtotime("+1 month", $d_bgn)-1;
+            } elseif ($display_period=='year') {
+                $year = $postdata['year'];
+                $d_bgn = strtotime($year.'-01-01');
+                $d_end = strtotime("+1 year", $d_bgn)-1;
+            } elseif ($display_period=='custom') {
+                $datbgn = $postdata['d_bgn'];
+                $datend = $postdata['d_end'];
+                $d_bgn = $d_end = '';
+                if (!empty($datbgn)) {
+                    $d_bgn = strtotime($datbgn);
+                }
+                if (!empty($datend)) {
+                    $d_end = strtotime($datend);
+                }
+            }
+
+            $this->load->model('searchresults_model');
+            $res = $this->searchresults_model->get_count_searches($display_option, $d_bgn, $d_end, $brand);
+            $mdata['keyword'] = $res['keyword'];
+            $mdata['ipaddr'] = $res['ipaddr'];
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function searches_keywords()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand','ALL');
+            $display_option = ifset($postdata,'display_option',0);
+            $display_period = ifset($postdata, 'display_period','today');
+            if ($display_period=='today') {
+                $d_bgn = strtotime(date('Y-m-d').' 00:00:00');
+                $d_end = strtotime(date('Y-m-d').' 23:59:59');
+            } elseif ($display_period=='week') {
+                $dates = getDatesByWeek(date('W'), date('Y'));
+                $d_bgn = $dates['start_week'];
+                $d_end = $dates['end_week'];
+            } elseif ($display_period=='month') {
+                $month = $postdata['month'];
+                $d_bgn = strtotime($month.'-01');
+                $d_end = strtotime("+1 month", $d_bgn)-1;
+            } elseif ($display_period=='year') {
+                $year = $postdata['year'];
+                $d_bgn = strtotime($year.'-01-01');
+                $d_end = strtotime("+1 year", $d_bgn)-1;
+            } elseif ($display_period=='custom') {
+                $datbgn = $postdata['d_bgn'];
+                $datend = $postdata['d_end'];
+                $d_bgn = $d_end = '';
+                if (!empty($datbgn)) {
+                    $d_bgn = strtotime($datbgn);
+                }
+                if (!empty($datend)) {
+                    $d_end = strtotime($datend);
+                }
+            }
+            $page = ifset($postdata,'page',0);
+            $total = ifset($postdata,'total', 0);
+            $offset = intval($page * $this->keywodslist);
+            $limit = $this->keywodslist;
+            $this->load->model('searchresults_model');
+            $res = $this->searchresults_model->get_keywords_data($display_option, $d_bgn, $d_end, $brand, $limit, $offset);
+            $options = [
+                'total' => count($res),
+                'items' => $res,
+                'numcols' => intval(ceil(count($res)/25)),
+                'limit' => 25,
+            ];
+            $mdata['content']=$this->load->view('marketing/keywords_content_view', $options, TRUE);
+            $mdata['prev'] = 0;
+            if ($page > 0) {
+                $mdata['prev'] = 1;
+            }
+            $mdata['next'] = ($total <= $limit ? 0 : 1);
+            if (($offset+$limit) >= $total) {
+                $mdata['next'] = 0;
+            }
+            $label = '';
+            if (count($res)==0) {
+                $label = '0 from '.$total;
+            } else {
+                $start = ($offset+1);
+                $finish = $offset+count($res);
+                $label = $start.' - '.$finish.' from '.$total;
+            }
+            $mdata['label'] = $label;
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 
     private function _prepare_searchbytime($brand) {
         $options = [
@@ -565,6 +688,18 @@ class Marketing extends MY_Controller
             'brand' => $brand,
         ];
         return $this->load->view('marketing/coupons_view',$view_options,TRUE);
+    }
 
+    private function _prepare_search($brand)
+    {
+        $this->load->model('searchresults_model');
+        $dates = $this->searchresults_model->get_searchdates($brand);
+        $options = [
+            'brand' => $brand,
+            'minyear' => $dates['minyear'],
+            'maxyear' => $dates['maxyear'],
+            'months' => $dates['months'],
+        ];
+        return $this->load->view('marketing/searches_view', $options,TRUE);
     }
 }
