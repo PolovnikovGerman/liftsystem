@@ -683,6 +683,34 @@ class Marketing extends MY_Controller
         show_404();
     }
 
+    public function searches_daily()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand','ALL');
+            $year = ifset($postdata, 'year', date('Y'));
+            $minyear = ifset($postdata,'minyear', date('Y'));
+            $maxyear = ifset($postdata, 'maxyear', date('Y'));
+            $d_bgn = strtotime($year.'-01-01');
+            $d_end = strtotime($year.'-12-31 23:59:59');
+            $this->load->model('searchresults_model');
+            $data=$this->searchresults_model->get_search_bytime($brand, $d_bgn,$d_end);
+            $mdata['content'] = $this->load->view('marketing/daily_content_view',['items' => $data], TRUE);
+            $mdata['prev'] = $mdata['next'] = 0;
+            if ($year < $maxyear) {
+                $mdata['prev'] = 1;
+            }
+            if ($year > $minyear) {
+                $mdata['next'] = 1;
+            }
+            $mdata['label'] = $year;
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     private function _prepare_searchbytime($brand) {
         $options = [
             'brand' => $brand,

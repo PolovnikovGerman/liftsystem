@@ -56,32 +56,36 @@
         </div>
     </div>
     <div class="searcheskeywordsdata">&nbsp;</div>
-    <div class="searchesipaddresshead <?=$brand=='SR' ? 'stressrelievers' : ''?>">
-        <div class="title">Searches by IP Address:</div>
-        <div class="ipaddresspaginator">
-            <div class="navigateprev"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
-            <div class="navigatelabel"></div>
-            <div class="navigatenext"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+    <div class="searchleftcontent">
+        <div class="searchesipaddresshead <?=$brand=='SR' ? 'stressrelievers' : ''?>">
+            <div class="title">Searches by IP Address:</div>
+            <div class="ipaddresspaginator">
+                <div class="navigateprev"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+                <div class="navigatelabel"></div>
+                <div class="navigatenext"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+            </div>
         </div>
+        <div class="searchesipaddressdata">&nbsp;</div>
     </div>
-    <div class="searchesipaddressdata">&nbsp;</div>
-<!--    <div class="searchesdailyhead --><?php //=$brand=='SR' ? 'stressrelievers' : ''?><!--">-->
-<!--        <div class="title">Number Searches by Day:</div>-->
-<!--        <div class="dailysearchpaginator">-->
-<!--            <div class="navigateprev"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>-->
-<!--            <div class="navigatelabel">--><?php //=date('Y')?><!--</div>-->
-<!--            <div class="navigatenext active"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="searchesdailysubhead">-->
-<!--        <div class="weeknum">Week</div>-->
-<!--        <div class="weekday">Mon</div>-->
-<!--        <div class="weekday">Tue</div>-->
-<!--        <div class="weekday">Wed</div>-->
-<!--        <div class="weekday">Thu</div>-->
-<!--        <div class="weekday">Fri</div>-->
-<!--        <div class="weekday">Sat</div>-->
-<!--        <div class="weekday">Sun</div>-->
-<!--    </div>-->
-<!--    <div class="searchesdailydata">&nbsp;</div>-->
+    <div class="serchrightcontent">
+        <div class="searchesdailyhead <?=$brand=='SR' ? 'stressrelievers' : ''?>">
+            <div class="title">Number Searches by Day:</div>
+            <div class="dailysearchpaginator">
+                <div class="navigateprev"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+                <div class="navigatelabel"><?=date('Y')?></div>
+                <div class="navigatenext"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+            </div>
+        </div>
+        <div class="searchesdailysubhead">
+            <div class="weeknum">Week</div>
+            <div class="weekday">Mon</div>
+            <div class="weekday">Tue</div>
+            <div class="weekday">Wed</div>
+            <div class="weekday">Thu</div>
+            <div class="weekday">Fri</div>
+            <div class="weekday">Sat</div>
+            <div class="weekday">Sun</div>
+        </div>
+        <div class="searchesdailydata">&nbsp;</div>
+    </div>
 </div>

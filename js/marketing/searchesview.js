@@ -15,7 +15,31 @@ function init_searches_view() {
 }
 
 function view_daily_view() {
-
+    var params = new Array();
+    params.push({name: 'brand', value: $("#searchesbrand").val()});
+    params.push({name: 'year', value: $("#searchdayyear").val()});
+    params.push({name: 'minyear', value: $("#searchdayyearmin").val()});
+    params.push({name: 'maxyear', value: $("#searchdayyearmax").val()});
+    var url='/marketing/searches_daily';
+    $("#loader").show();
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $(".searchesdailydata").empty().html(response.data.content);
+            $(".dailysearchpaginator").find('div.navigateprev').removeClass('active');
+            $(".dailysearchpaginator").find('div.navigatenext').removeClass('active');
+            $(".dailysearchpaginator").find('div.navigatelabel').empty().html(response.data.label);
+            if (parseInt(response.data.prev)==1) {
+                $(".dailysearchpaginator").find('div.navigateprev').addClass('active');
+            }
+            if (parseInt(response.data.next)==1) {
+                $(".dailysearchpaginator").find('div.navigatenext').addClass('active');
+            }
+            init_searches_manage();
+            $("#loader").hide();
+        } else {
+            show_error(response);
+        }
+    },'json');
 }
 
 function init_searches_results() {
@@ -232,6 +256,7 @@ function init_searches_manage() {
         }
     });
     // IP address pagination
+    // Prev
     $(".ipaddresspaginator").find('div.navigateprev').unbind('click').click(function (){
         if ($(this).hasClass('active')) {
             var page = parseInt($("#searchesippage").val());
@@ -243,12 +268,40 @@ function init_searches_manage() {
             view_ipaddress_content();
         }
     });
+    // Next
     $(".ipaddresspaginator").find('div.navigatenext').unbind('click').click(function (){
         if ($(this).hasClass('active')) {
             var page = parseInt($("#searchesippage").val());
             page = page + 1;
             $("#searchesippage").val(page);
             view_ipaddress_content();
+        }
+    });
+    // Daily results navigate
+    // prev
+    $(".dailysearchpaginator").find('div.navigateprev').unbind('click').click(function (){
+        if ($(this).hasClass('active')) {
+            var year = parseInt($("#searchdayyear").val());
+            var maxyear = parseInt($("#searchdayyearmax").val());
+            year = year + 1;
+            if (year > maxyear) {
+                year = maxyear;
+            }
+            $("#searchdayyear").val(year);
+            view_daily_view();
+        }
+    });
+    // Next
+    $(".dailysearchpaginator").find('div.navigatenext').unbind('click').click(function (){
+        if ($(this).hasClass('active')) {
+            var year = parseInt($("#searchdayyear").val());
+            var minyear = parseInt($("#searchdayyearmin").val());
+            year = year - 1;
+            if (year < minyear) {
+                year = minyear;
+            }
+            $("#searchdayyear").val(year);
+            view_daily_view();
         }
     });
     // Show results

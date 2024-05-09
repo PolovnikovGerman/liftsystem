@@ -109,7 +109,6 @@ class Searchresults_model extends My_Model
         $this->db->from('sb_search_results');
         $this->db->where('unix_timestamp(search_time) >= ', $d_bgn);
         $this->db->where('unix_timestamp(search_time) <= ', $d_end);
-
         $res_ar = $this->db->get()->result_array();
 
         $out_array = array();
@@ -127,7 +126,14 @@ class Searchresults_model extends My_Model
                 $index_date = date('M d', $week_bgn) . '-' . date('d, Y', $week_end);
             }
 
-            $out_array[] = array('date' => $index_date, 'mon_good' => 0, 'mon_bad' => 0, 'tue_good' => 0, 'tue_bad' => 0, 'wed_good' => 0, 'wed_bad' => 0, 'thu_good' => 0, 'thu_bad' => 0, 'fri_good' => 0, 'fri_bad' => 0, 'sat_good' => 0, 'sat_bad' => 0, 'sun_good' => 0, 'sun_bad' => 0);
+            $out_array[] = array('date' => $index_date,
+                'mon_good' => 0, 'mon_bad' => 0, 'mon_total' => 0,
+                'tue_good' => 0, 'tue_bad' => 0, 'tue_total' => 0,
+                'wed_good' => 0, 'wed_bad' => 0, 'wed_total' => 0,
+                'thu_good' => 0, 'thu_bad' => 0, 'thu_total' => 0,
+                'fri_good' => 0, 'fri_bad' => 0, 'fri_total' => 0,
+                'sat_good' => 0, 'sat_bad' => 0, 'sat_total' => 0,
+                'sun_good' => 0, 'sun_bad' => 0, 'sun_total' => 0,);
             $search_array[] = $row['search_date'];
             $start_date = strtotime(date("Y-m-d", $start_date) . " +7 days");
         }
@@ -163,24 +169,31 @@ class Searchresults_model extends My_Model
                 case 0:
                     /* Sunday */
                     $out_array[$index]['sun_' . $prefix] = $row['cnt'];
+                    $out_array[$index]['sun_total'] += $row['cnt'];
                     break;
                 case 1:
                     $out_array[$index]['mon_' . $prefix] = $row['cnt'];
+                    $out_array[$index]['mon_total'] += $row['cnt'];
                     break;
                 case 2:
                     $out_array[$index]['tue_' . $prefix] = $row['cnt'];
+                    $out_array[$index]['tue_total'] += $row['cnt'];
                     break;
                 case 3:
                     $out_array[$index]['wed_' . $prefix] = $row['cnt'];
+                    $out_array[$index]['wed_total'] += $row['cnt'];
                     break;
                 case 4:
                     $out_array[$index]['thu_' . $prefix] = $row['cnt'];
+                    $out_array[$index]['thu_total'] += $row['cnt'];
                     break;
                 case 5:
                     $out_array[$index]['fri_' . $prefix] = $row['cnt'];
+                    $out_array[$index]['fri_total'] += $row['cnt'];
                     break;
                 case 6:
                     $out_array[$index]['sat_' . $prefix] = $row['cnt'];
+                    $out_array[$index]['sat_total'] += $row['cnt'];
                     break;
                 default:
                     break;
