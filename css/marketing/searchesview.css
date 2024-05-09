@@ -4,7 +4,7 @@
     font-size: 13px;
 }
 .searches_displayoptions {
-    margin-bottom: 12px;
+    margin-bottom: 5px;
 }
 .searches_displayoptions div {
     height: 24px;
@@ -12,19 +12,20 @@
 }
 .displayoptiontitle, .displayperiodtitle {
     font-weight: 600;
-    font-size: 18px;
+    font-size: 16px;
     margin-right: 3px;
 }
 .displayoptionarea {
-    font-size: 17px;
-    padding: 0 11px 0 5px;
+    font-size: 16px;
+    padding: 0 11px 0 7px;
     margin-right: 5px;
 }
 .displayoptionarea.active {
     border: 1px solid #838383;
     background: #ededed;
     font-weight: 600;
-    font-size: 18px;
+    font-size: 16px;
+    border-radius: 3px;
 }
 .searches_displayperiod {
     margin-bottom: 12px;
@@ -34,7 +35,7 @@
     line-height: 33px;
 }
 .displayperiodtitle {
-    margin-right: 22px;
+    margin-right: 10px;
 }
 .displayperiodarea {
     font-size: 17px;
@@ -45,7 +46,8 @@
     border: 1px solid #838383;
     background: #ededed;
     font-weight: 600;
-    font-size: 18px;
+    font-size: 16px;
+    border-radius: 3px;
 }
 .searches_customdates {
     font-size: 17px;
@@ -55,12 +57,13 @@
     border: 1px solid #838383;
     background: #ededed;
     font-weight: 600;
-    font-size: 18px;
+    font-size: 16px;
+    border-radius: 3px;
 }
 select.searchmonthsselect {
-    width: 130px;
+    width: 140px;
     height: 25px;
-    font-size: 17px!important;
+    font-size: 17px !important;
 }
 select.searchyearselect {
     width: 66px;
@@ -110,7 +113,7 @@ input.customdateinpt {
 }
 .searcheskeywordshead .title {
     margin-left: 19px;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
 }
 .keywordspaginator {
@@ -145,26 +148,26 @@ input.customdateinpt {
     border-right: 2px solid #ededed;
 }
 .searcheskeywordssubhead.lastcol {
-    border-right: 1px solid #000000;
+    border-right: 3px solid #00004c;
 }
 .searcheskeywordssubhead div {
     height: 33px;
     line-height: 33px;
     font-weight: 600;
-    font-size: 17px;
+    font-size: 15px;
     text-align: center;
 }
 .searcheskeywordssubhead .rank {
     width: 44px;
 }
 .searcheskeywordssubhead .keyword {
-    width: 196px;
+    width: 185px;
 }
 .searcheskeywordssubhead .result {
-    width: 85px;
+    width: 95px;
 }
 .searcheskeywordarea {
-    border-right: 3px solid #000000;
+    border-right: 4px solid #000000;
     border-bottom: 1px solid #716f6f;
     width: 100%;
 }
@@ -177,7 +180,7 @@ input.customdateinpt {
 .searcheskeywordarea div {
     height: 28px;
     line-height: 28px;
-    font-size: 17px;
+    font-size: 15px;
 }
 .searcheskeywordarea .rank {
     background: #bcbcbc;
@@ -187,7 +190,7 @@ input.customdateinpt {
 }
 .searcheskeywordarea .keyword {
     padding-left: 6px;
-    width: 196px;
+    width: 185px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -198,9 +201,9 @@ input.customdateinpt {
     text-align: center;
 }
 .searcheskeywordarea .result {
-    width: 56px;
+    width: 66px;
     text-align: right;
-    padding-right: 6px;
+    padding-right: 10px;
 }
 /* IP Search */
 .searchesipaddresshead {

@@ -1,6 +1,8 @@
 function init_searches_view() {
     // Build init display
     init_searches_results();
+    // Build weekly results
+    view_d
     // calendar_init();
     $("#custom_bgn").datepicker({
         autoclose: true,
