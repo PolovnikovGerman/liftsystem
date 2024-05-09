@@ -42,6 +42,13 @@
     padding: 0 11px 0 5px;
     margin-right: 5px;
 }
+.displayperiodarea input[type=radio] {
+    margin: 0px 0 0;
+    margin-top: 1px \9;
+    line-height: normal;
+    position: relative;
+    top: 2px;
+}
 .displayperiodarea.active {
     border: 1px solid #838383;
     background: #ededed;
