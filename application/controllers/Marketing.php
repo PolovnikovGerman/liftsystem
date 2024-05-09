@@ -589,7 +589,7 @@ class Marketing extends MY_Controller
             $options = [
                 'total' => count($res),
                 'items' => $res,
-                'numcols' => ceil(count($res)/4),
+                'numcols' => intval(ceil(count($res)/25)),
                 'limit' => 25,
             ];
             $mdata['content']=$this->load->view('marketing/keywords_content_view', $options, TRUE);

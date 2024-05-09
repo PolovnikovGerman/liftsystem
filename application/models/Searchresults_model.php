@@ -375,7 +375,7 @@ class Searchresults_model extends My_Model
     {
         $out=[];
         // Calc words
-        $this->db->select('search_text, count(search_result_id)')->from('sb_search_results');
+        $this->db->select('search_text, search_result, count(search_result_id)')->from('sb_search_results');
         if ($brand!=='ALL') {
             if ($brand=='SR') {
                 $this->db->where('brand', $brand);
@@ -394,7 +394,7 @@ class Searchresults_model extends My_Model
         } elseif ($display_option==2) {
             $this->db->where('search_result',0);
         }
-        $this->db->group_by('search_text');
+        $this->db->group_by('search_text, search_result');
         $kres = $this->db->get()->result_array();
         $out['keyword'] = count($kres);
         $this->db->select('search_ip, count(search_result_id)')->from('sb_search_results');
@@ -424,7 +424,7 @@ class Searchresults_model extends My_Model
 
     public function get_keywords_data($display_option, $d_bgn, $d_end, $brand, $limit, $offset)
     {
-        $this->db->select('search_text, count(search_result_id) as cnt')->from('sb_search_results');
+        $this->db->select('search_text,  search_result, count(search_result_id) as cnt')->from('sb_search_results');
         if ($brand!=='ALL') {
             if ($brand=='SR') {
                 $this->db->where('brand', $brand);
@@ -443,7 +443,7 @@ class Searchresults_model extends My_Model
         } elseif ($display_option==2) {
             $this->db->where('search_result',0);
         }
-        $this->db->group_by('search_text');
+        $this->db->group_by('search_text,  search_result');
         $this->db->order_by('cnt', 'desc');
         if ($limit) {
             if ($offset) {
@@ -459,7 +459,8 @@ class Searchresults_model extends My_Model
             $out[] = [
                 'rank' => $start,
                 'keyword' => $result['search_text'],
-                'result' => $result['cnt'],
+                'result' => $result['search_result'],
+                'searches' => $result['cnt'],
             ];
             $start++;
         }

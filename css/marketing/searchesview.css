@@ -72,6 +72,7 @@ input.customdateinpt {
     height: 24px;
     text-align: center;
     font-size: 17px!important;
+    font-weight: normal;
 }
 .displaycustomresult {
     font-size: 17px;
@@ -89,7 +90,7 @@ input.customdateinpt {
     cursor: pointer;
 }
 .searcheskeywordshead {
-    width: 1310px;
+    width: 1307px;
     background: #4957f7;
     color: #ffffff;
     border-left: 1px solid #919191;
@@ -123,10 +124,18 @@ input.customdateinpt {
 }
 .keywordspaginator .navigateprev.active, .keywordspaginator .navigatenext.active  {
     opacity: 1;
+    cursor: pointer;
 }
 .keywordspaginator .navigatelabel {
     margin-left: 8px;
     width: 153px;
+    margin-right: 8px;
+}
+.searcheskeywordsdata {
+    width: 1310px;
+}
+.searcheskeywordsarea {
+    width: 327px;
 }
 .searcheskeywordssubhead {
     background: #00004c;
@@ -147,14 +156,14 @@ input.customdateinpt {
     width: 44px;
 }
 .searcheskeywordssubhead .keyword {
-    width: 180px;
+    width: 196px;
 }
 .searcheskeywordssubhead .result {
-    width: 77px;
+    width: 85px;
 }
 .searcheskeywordarea {
-    clear: both;
-    border-right: 2px solid #ededed;
+    /* clear: both; */
+    border-right: 2px solid #000000;
 }
 .searcheskeywordarea.lastcol {
     border-right: 1px solid #000000;
@@ -171,12 +180,18 @@ input.customdateinpt {
 }
 .searcheskeywordarea .keyword {
     padding-left: 6px;
-    width: 180px;
+    width: 196px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     border-right: 1px solid #ededed;
 }
+.searcheskeywordarea .negativeflag {
+    width: 27px;
+    text-align: center;
+}
 .searcheskeywordarea .result {
-    width: 77px;
+    width: 58px;
+    text-align: right;
+    padding-right: 6px;
 }
