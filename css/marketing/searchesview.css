@@ -7,8 +7,8 @@
     margin-bottom: 5px;
 }
 .searches_displayoptions div {
-    height: 24px;
-    line-height: 24px;
+    height: 28px;
+    line-height: 28px;
 }
 .displayoptiontitle, .displayperiodtitle {
     font-weight: 600;
@@ -28,11 +28,11 @@
     border-radius: 3px;
 }
 .searches_displayperiod {
-    margin-bottom: 12px;
+    margin-bottom: 7px;
 }
 .searches_displayperiod div {
-    height: 33px;
-    line-height: 33px;
+    height: 30px;
+    line-height: 28px;
 }
 .displayperiodtitle {
     margin-right: 10px;
@@ -61,20 +61,20 @@
     border-radius: 3px;
 }
 select.searchmonthsselect {
-    width: 140px;
-    height: 25px;
-    font-size: 17px !important;
+    width: 128px;
+    height: 24px;
+    font-size: 15px !important;
 }
 select.searchyearselect {
-    width: 66px;
-    height: 25px;
-    font-size: 17px!important;
+    width: 60px;
+    height: 24px;
+    font-size: 15px !important;
 }
 input.customdateinpt {
     width: 96px;
     height: 24px;
     text-align: center;
-    font-size: 17px!important;
+    font-size: 15px !important;
     font-weight: normal;
 }
 .displaycustomresult {
@@ -134,6 +134,7 @@ input.customdateinpt {
     margin-left: 8px;
     width: 153px;
     margin-right: 8px;
+    font-size: 15px;
 }
 .searcheskeywordsdata {
     width: 1310px;
@@ -207,7 +208,7 @@ input.customdateinpt {
 }
 /* IP Search */
 .searchesipaddresshead {
-    width: 860px;
+    width: 826px;
     background: #4957f7;
     color: #ffffff;
     border-left: 1px solid #919191;
@@ -252,7 +253,7 @@ input.customdateinpt {
     margin-bottom: 20px;
 }
 .searchesipaddrsarea {
-    width: 430px;
+    width: 413px;
 }
 .searchesipaddrsubhead {
     background: #00004c;
@@ -260,23 +261,23 @@ input.customdateinpt {
     border-right: 2px solid #ededed;
 }
 .searchesipaddrsubhead.lastcol {
-    border-right: 1px solid #000000;
+    border-right: 2px solid #00004c;
 }
 .searchesipaddrsubhead div {
     height: 33px;
     line-height: 33px;
     font-weight: 600;
-    font-size: 17px;
+    font-size: 15px;
     text-align: center;
 }
 .searchesipaddrsubhead .rank {
     width: 44px;
 }
 .searchesipaddrsubhead .keyword {
-    width: 137px;
+    width: 135px;
 }
 .searchesipaddrsubhead .result {
-    width: 70px;
+    width: 55px;
 }
 .searchesipaddrsubhead .location {
     width: 177px;
@@ -295,7 +296,7 @@ input.customdateinpt {
 .searchesipaddrarea div {
     height: 28px;
     line-height: 28px;
-    font-size: 17px;
+    font-size: 15px;
     text-align: center;
 }
 .searchesipaddrarea .rank {
@@ -303,11 +304,13 @@ input.customdateinpt {
     border-right: 1px solid #716f6f;
 }
 .searchesipaddrarea .keyword {
-    width: 137px;
+    width: 135px;
     border-right: 1px solid #716f6f;
+    text-align: left;
+    padding-left: 5px;
 }
 .searchesipaddrarea .result {
-    width: 70px;
+    width: 55px;
     border-right: 1px solid #716f6f;
 }
 .searchesipaddrarea .location {
