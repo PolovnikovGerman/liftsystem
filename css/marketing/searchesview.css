@@ -89,6 +89,7 @@ input.customdateinpt {
     display: none;
     cursor: pointer;
 }
+/* Keyword search */
 .searcheskeywordshead {
     width: 1307px;
     background: #4957f7;
@@ -200,4 +201,117 @@ input.customdateinpt {
     width: 56px;
     text-align: right;
     padding-right: 6px;
+}
+/* IP Search */
+.searchesipaddresshead {
+    width: 860px;
+    background: #4957f7;
+    color: #ffffff;
+    border-left: 1px solid #919191;
+    border-top: 1px solid #919191;
+    border-right: 1px solid #919191;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+}
+.searchesipaddresshead.stressrelievers {
+    background: #9f7b01;
+}
+.searchesipaddresshead div {
+    height: 40px;
+    line-height: 40px;
+}
+.searchesipaddresshead .title {
+    margin-left: 19px;
+    font-size: 24px;
+    font-weight: 600;
+}
+.ipaddresspaginator {
+    float: right!important;
+    margin-right: 15px;
+    font-size: 17px;
+    color: #ffffff;
+}
+.ipaddresspaginator .navigateprev, .ipaddresspaginator .navigatenext {
+    width: 24px;
+    opacity: 0.4;
+}
+.ipaddresspaginator .navigateprev.active, .ipaddresspaginator .navigatenext.active {
+    opacity: 1;
+    cursor: pointer;
+}
+.ipaddresspaginator .navigatelabel {
+    margin-left: 8px;
+    width: 153px;
+    margin-right: 8px;
+}
+.searchesipaddressdata {
+    width: 862px;
+    margin-bottom: 20px;
+}
+.searchesipaddrsarea {
+    width: 430px;
+}
+.searchesipaddrsubhead {
+    background: #00004c;
+    color: #ffffff;
+    border-right: 2px solid #ededed;
+}
+.searchesipaddrsubhead.lastcol {
+    border-right: 1px solid #000000;
+}
+.searchesipaddrsubhead div {
+    height: 33px;
+    line-height: 33px;
+    font-weight: 600;
+    font-size: 17px;
+    text-align: center;
+}
+.searchesipaddrsubhead .rank {
+    width: 44px;
+}
+.searchesipaddrsubhead .keyword {
+    width: 137px;
+}
+.searchesipaddrsubhead .result {
+    width: 70px;
+}
+.searchesipaddrsubhead .location {
+    width: 177px;
+}
+.searchesipaddrarea {
+    border-right: 3px solid #000000;
+    border-bottom: 1px solid #716f6f;
+    width: 100%;
+}
+.searchesipaddrarea.firstcol {
+    border-left: 1px solid #716f6f;
+}
+.searchesipaddrarea.lastcol {
+    border-right: 1px solid #000000;
+}
+.searchesipaddrarea div {
+    height: 28px;
+    line-height: 28px;
+    font-size: 17px;
+    text-align: center;
+}
+.searchesipaddrarea .rank {
+    width: 44px;
+    border-right: 1px solid #716f6f;
+}
+.searchesipaddrarea .keyword {
+    width: 137px;
+    border-right: 1px solid #716f6f;
+}
+.searchesipaddrarea .result {
+    width: 70px;
+    border-right: 1px solid #716f6f;
+}
+.searchesipaddrarea .location {
+    width: 175px;
+    padding-left: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
 }

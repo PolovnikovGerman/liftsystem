@@ -467,6 +467,58 @@ class Searchresults_model extends My_Model
         return $out;
     }
 
+    public function get_ipaddress_data($display_option, $d_bgn, $d_end, $brand, $limit, $offset)
+    {
+        $this->db->select('s.search_ip, g.city_name, g.region_code, g.country_name, g.country_code, count(s.search_result_id) as cnt');
+        $this->db->from('sb_search_results s');
+        $this->db->join('sb_geoips g', 'g.user_ip=s.search_ip','left');
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('s.brand', $brand);
+            } else {
+                $this->db->where_in('s.brand',['SB', 'BT']);
+            }
+        }
+        if (!empty($d_bgn)) {
+            $this->db->where('unix_timestamp(s.search_time) >= ', $d_bgn);
+        }
+        if (!empty($d_end)) {
+            $this->db->where('unix_timestamp(s.search_time) <= ', $d_end);
+        }
+        if ($display_option==1) {
+            $this->db->where('s.search_result',1);
+        } elseif ($display_option==2) {
+            $this->db->where('s.search_result',0);
+        }
+        $this->db->group_by('s.search_ip, g.city_name, g.region_code, g.country_name, g.country_code');
+        $this->db->order_by('cnt', 'desc');
+        if ($limit) {
+            if ($offset) {
+                $this->db->limit($limit, $offset);
+            } else {
+                $this->db->limit($limit);
+            }
+        }
+        $results = $this->db->get()->result_array();
+        $start = $offset+1;
+        $out=[];
+        foreach ($results as $result) {
+            if ($result['country_code']=='US') {
+                $location=$result['city_name'].', '.$result['region_code'];
+            } else {
+                $location=$result['city_name'].' '.$result['country_name'];
+            }
+            $out[] = [
+                'rank' => $start,
+                'ipaddres' => $result['search_ip'],
+                'searches' => $result['cnt'],
+                'location' => $location,
+            ];
+            $start++;
+        }
+        return $out;
+    }
+
     private function _searchdates($brand)
     {
         $this->db->select('max(search_time) as max_time, min(search_time) as min_time')->from('sb_search_results');
