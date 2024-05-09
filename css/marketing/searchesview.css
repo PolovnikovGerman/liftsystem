@@ -213,9 +213,14 @@ input.customdateinpt {
     text-align: right;
     padding-right: 10px;
 }
+/* Left part content */
+.searchleftcontent {
+    width: 792px;
+    margin-right: 15px;
+}
 /* IP Search */
 .searchesipaddresshead {
-    width: 826px;
+    width: 789px;
     background: #4957f7;
     color: #ffffff;
     border-left: 1px solid #919191;
@@ -233,7 +238,7 @@ input.customdateinpt {
 }
 .searchesipaddresshead .title {
     margin-left: 19px;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
 }
 .ipaddresspaginator {
@@ -256,11 +261,11 @@ input.customdateinpt {
     margin-right: 8px;
 }
 .searchesipaddressdata {
-    width: 862px;
+    width: 792px;
     margin-bottom: 20px;
 }
 .searchesipaddrsarea {
-    width: 413px;
+    width: 394px;
 }
 .searchesipaddrsubhead {
     background: #00004c;
@@ -281,13 +286,13 @@ input.customdateinpt {
     width: 44px;
 }
 .searchesipaddrsubhead .keyword {
-    width: 135px;
+    width: 128px;
 }
 .searchesipaddrsubhead .result {
     width: 55px;
 }
 .searchesipaddrsubhead .location {
-    width: 177px;
+    width: 165px;
 }
 .searchesipaddrarea {
     border-right: 3px solid #000000;
@@ -304,27 +309,112 @@ input.customdateinpt {
     height: 28px;
     line-height: 28px;
     font-size: 15px;
-    text-align: center;
+    text-align: left;
 }
 .searchesipaddrarea .rank {
     width: 44px;
     border-right: 1px solid #716f6f;
+    text-align: center;
+    background: #bcbcbc;
 }
 .searchesipaddrarea .keyword {
-    width: 135px;
+    width: 128px;
     border-right: 1px solid #716f6f;
-    text-align: left;
     padding-left: 5px;
 }
 .searchesipaddrarea .result {
     width: 55px;
     border-right: 1px solid #716f6f;
+    text-align: center;
 }
 .searchesipaddrarea .location {
-    width: 175px;
+    width: 163px;
     padding-left: 6px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-align: left;
+}
+.serchrightcontent {
+    width: 508px;
+}
+/* Daily results */
+.searchesdailyhead {
+    width: 508px;
+    background: #4957f7;
+    color: #ffffff;
+    border-left: 1px solid #919191;
+    border-top: 1px solid #919191;
+    border-right: 1px solid #919191;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+}
+.searchesdailyhead.stressrelievers {
+    background: #9f7b01;
+}
+.searchesdailyhead div {
+    height: 40px;
+    line-height: 40px;
+}
+.searchesdailyhead .title {
+    margin-left: 19px;
+    font-size: 22px;
+    font-weight: 600;
+}
+.dailysearchpaginator {
+    float: right!important;
+    margin-right: 15px;
+    font-size: 17px;
+    color: #ffffff;
+}
+.dailysearchpaginator .navigateprev, .dailysearchpaginator .navigatenext {
+    width: 24px;
+    opacity: 0.4;
+}
+.dailysearchpaginator .navigateprev.active, .dailysearchpaginator .navigatenext.active {
+    opacity: 1;
+    cursor: pointer;
+}
+.dailysearchpaginator .navigatelabel {
+    margin-left: 8px;
+    width: 42px;
+    margin-right: 8px;
+}
+.searchesdailysubhead {
+    background: #00004c;
+    color: #ffffff;
+}
+.searchesdailysubhead div {
+    height: 33px;
+    line-height: 33px;
+    font-weight: 600;
+    font-size: 15px;
+    text-align: center;
+}
+.searchesdailysubhead .weeknum {
+    width: 151px;
+}
+.searchesdailysubhead .weekday {
+    width: 51px;
+}
+.searchesdailydata {
+    width: 522px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #716f6f;
+    max-height: 700px;
+    overflow-y: auto;
+}
+.searchesdailydata div {
+    height: 28px;
+    line-height: 28px;
+    font-size: 15px;
+    text-align: center;
+}
+.searchesdailydata .weeknum {
+    width: 151px;
+    background: #bcbcbc;
+    border-left: 1px solid #716f6f;
+}
+.searchesdailydata .weekday {
+    width: 51px;
+    border-right: 1px solid #716f6f;
 }
