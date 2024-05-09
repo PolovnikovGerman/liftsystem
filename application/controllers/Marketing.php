@@ -601,11 +601,11 @@ class Marketing extends MY_Controller
             }
             $label = '';
             if (count($res)==0) {
-                $label = '0 from '.$total;
+                $label = 'Row 0 from '.$total;
             } else {
                 $start = ($offset+1);
                 $finish = $offset+count($res);
-                $label = $start.' - '.$finish.' from '.$total;
+                $label = 'Row '.$start.' - '.$finish.' from '.$total;
             }
             $mdata['label'] = $label;
             $this->ajaxResponse($mdata, $error);
@@ -671,11 +671,11 @@ class Marketing extends MY_Controller
             }
             $label = '';
             if (count($res)==0) {
-                $label = '0 from '.$total;
+                $label = 'Row 0 from '.$total;
             } else {
                 $start = ($offset+1);
                 $finish = $offset+count($res);
-                $label = $start.' - '.$finish.' from '.$total;
+                $label = 'Row '.$start.' - '.$finish.' from '.$total;
             }
             $mdata['label'] = $label;
             $this->ajaxResponse($mdata, $error);
