@@ -38,6 +38,7 @@ function view_daily_view() {
             init_searches_manage();
             $("#loader").hide();
             leftmenu_alignment();
+            jQuery.balloon.init();
         } else {
             show_error(response);
         }

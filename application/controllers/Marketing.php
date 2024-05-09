@@ -711,6 +711,14 @@ class Marketing extends MY_Controller
         show_404();
     }
 
+    public function daytotals()
+    {
+        $positiv = $this->input->get('r');
+        $negativ = $this->input->get('n');
+        $content = $this->load->view('marketing/daily_popup_view',['positiv' => $positiv, 'negativ' => $negativ], TRUE);
+        echo $content;
+    }
+
     private function _prepare_searchbytime($brand) {
         $options = [
             'brand' => $brand,

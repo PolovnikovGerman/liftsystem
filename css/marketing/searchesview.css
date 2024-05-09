@@ -418,3 +418,21 @@ input.customdateinpt {
     width: 51px;
     border-right: 1px solid #716f6f;
 }
+/* Popup */
+.dailypopupcontent {
+    margin: 6px;
+    float: left;
+}
+.dailypopupcontent .dailypositive {
+    font-size: 15px;
+    font-style: italic;
+    color: #000000;
+    float: left;
+}
+.dailypopupcontent .dailynegative {
+    font-size: 15px;
+    font-style: italic;
+    color: #0000ff;
+    float: left;
+    padding-left: 3px;
+}
