@@ -2,7 +2,7 @@ function init_searches_view() {
     // Build init display
     init_searches_results();
     // Build weekly results
-    // view_d
+    view_daily_view();
     // calendar_init();
     $("#custom_bgn").datepicker({
         autoclose: true,
@@ -12,6 +12,10 @@ function init_searches_view() {
         autoclose: true,
         todayHighlight: true
     });
+}
+
+function view_daily_view() {
+
 }
 
 function init_searches_results() {
