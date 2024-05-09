@@ -548,8 +548,6 @@ class Marketing extends MY_Controller
         if ($this->isAjax()) {
             $mdata = [];
             $error = '';
-            $mdata = [];
-            $error = '';
             $postdata = $this->input->post();
             $brand = ifset($postdata,'brand','ALL');
             $display_option = ifset($postdata,'display_option',0);
@@ -593,6 +591,76 @@ class Marketing extends MY_Controller
                 'limit' => 25,
             ];
             $mdata['content']=$this->load->view('marketing/keywords_content_view', $options, TRUE);
+            $mdata['prev'] = 0;
+            if ($page > 0) {
+                $mdata['prev'] = 1;
+            }
+            $mdata['next'] = ($total <= $limit ? 0 : 1);
+            if (($offset+$limit) >= $total) {
+                $mdata['next'] = 0;
+            }
+            $label = '';
+            if (count($res)==0) {
+                $label = '0 from '.$total;
+            } else {
+                $start = ($offset+1);
+                $finish = $offset+count($res);
+                $label = $start.' - '.$finish.' from '.$total;
+            }
+            $mdata['label'] = $label;
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function searches_ipaddress()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand','ALL');
+            $display_option = ifset($postdata,'display_option',0);
+            $display_period = ifset($postdata, 'display_period','today');
+            if ($display_period=='today') {
+                $d_bgn = strtotime(date('Y-m-d').' 00:00:00');
+                $d_end = strtotime(date('Y-m-d').' 23:59:59');
+            } elseif ($display_period=='week') {
+                $dates = getDatesByWeek(date('W'), date('Y'));
+                $d_bgn = $dates['start_week'];
+                $d_end = $dates['end_week'];
+            } elseif ($display_period=='month') {
+                $month = $postdata['month'];
+                $d_bgn = strtotime($month.'-01');
+                $d_end = strtotime("+1 month", $d_bgn)-1;
+            } elseif ($display_period=='year') {
+                $year = $postdata['year'];
+                $d_bgn = strtotime($year.'-01-01');
+                $d_end = strtotime("+1 year", $d_bgn)-1;
+            } elseif ($display_period=='custom') {
+                $datbgn = $postdata['d_bgn'];
+                $datend = $postdata['d_end'];
+                $d_bgn = $d_end = '';
+                if (!empty($datbgn)) {
+                    $d_bgn = strtotime($datbgn);
+                }
+                if (!empty($datend)) {
+                    $d_end = strtotime($datend);
+                }
+            }
+            $page = ifset($postdata,'page',0);
+            $total = ifset($postdata,'total', 0);
+            $offset = intval($page * $this->ipaddrlist);
+            $limit = $this->ipaddrlist;
+            $this->load->model('searchresults_model');
+            $res = $this->searchresults_model->get_ipaddress_data($display_option, $d_bgn, $d_end, $brand, $limit, $offset);
+            $options = [
+                'total' => count($res),
+                'items' => $res,
+                'numcols' => intval(ceil(count($res)/25)),
+                'limit' => 25,
+            ];
+            $mdata['content']=$this->load->view('marketing/ipaddres_content_view', $options, TRUE);
             $mdata['prev'] = 0;
             if ($page > 0) {
                 $mdata['prev'] = 1;

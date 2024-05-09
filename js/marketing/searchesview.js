@@ -84,7 +84,42 @@ function view_keywords_content() {
     },'json');
 }
 function view_ipaddress_content() {
-
+    var params = new Array();
+    var dispperiod = $("input[name='searchperiodradio']:checked").val();
+    params.push({name: 'display_option', value: $("input[name='searchdisplatradio']:checked").val()});
+    params.push({name: 'display_period', value: dispperiod});
+    params.push({name: 'brand', value: $("#searchesbrand").val()});
+    params.push({name: 'total', value: $("#searchesiptotal").val()});
+    params.push({name: 'page', value: $("#searchesippage").val()});
+    if (dispperiod=='month') {
+        params.push({name: 'month', value: $(".searchmonthsselect").val()});
+    } else if (dispperiod=='year') {
+        params.push({name: 'year', value: $(".searchyearselect").val()});
+    } else if (dispperiod=='custom') {
+        params.push({name: 'd_bgn', value: $("#custom_bgn").val()});
+        params.push({name: 'd_end', value: $("#custom_end").val()});
+    }
+    $("#loader").show();
+    var url = '/marketing/searches_ipaddress';
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".searchesipaddressdata").empty().html(response.data.content);
+            $(".ipaddresspaginator").find('div.navigateprev').removeClass('active');
+            $(".ipaddresspaginator").find('div.navigatenext').removeClass('active');
+            if (parseInt(response.data.prev)==1) {
+                $(".ipaddresspaginator").find('div.navigateprev').addClass('active');
+            }
+            if (parseInt(response.data.next)==1) {
+                $(".ipaddresspaginator").find('div.navigatenext').addClass('active');
+            }
+            $(".ipaddresspaginator").find('div.navigatelabel').empty().html(response.data.label);
+            init_searches_manage();
+            $("#loader").hide();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
 }
 
 function init_searches_manage() {
@@ -190,6 +225,27 @@ function init_searches_manage() {
             view_keywords_content();
         }
     });
+    // IP address pagination
+    $(".ipaddresspaginator").find('div.navigateprev').unbind('click').click(function (){
+        if ($(this).hasClass('active')) {
+            var page = parseInt($("#searchesippage").val());
+            page = page - 1;
+            if (page < 0) {
+                page = 0;
+            }
+            $("#searchesippage").val(page);
+            view_ipaddress_content();
+        }
+    });
+    $(".ipaddresspaginator").find('div.navigatenext').unbind('click').click(function (){
+        if ($(this).hasClass('active')) {
+            var page = parseInt($("#searchesippage").val());
+            page = page + 1;
+            $("#searchesippage").val(page);
+            view_ipaddress_content();
+        }
+    });
+    // Show results
     $(".displaycustomresult").unbind('click').click(function(){
         $(".displaycustomresult").hide();
         init_searches_results();
