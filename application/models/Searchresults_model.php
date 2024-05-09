@@ -199,7 +199,12 @@ class Searchresults_model extends My_Model
                     break;
             }
         }
-        return $out_array;
+        $idx = count($out_array)-1;
+        $out = [];
+        for ($i=$idx; $i>=0; $i--) {
+            $out[]=$out_array[$i];
+        }
+        return $out;
     }
 
     public function get_search_bykeywords($brand, $d_bgn, $d_end, $show_result) {
