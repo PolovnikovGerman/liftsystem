@@ -18,7 +18,7 @@
             <div class="keyword">Keyword</div>
             <div class="result">Searches</div>
         </div>
-        <div class="searcheskeywordarea <?=$i==$numcols ? 'lastcol' : ''?>">
+        <div class="searcheskeywordarea <?=$i==$numcols ? 'lastcol' : ''?> <?=$i==1 ? 'firstcol' : ''?>">
         <?php for ($j=0; $j<$limit; $j++) { ?>
             <div class="datarow <?=$j%2==0 ? 'whitedatarow' : 'greydatarow'?>">
                 <div class="rank"><?=$items[$idx]['rank']?></div>

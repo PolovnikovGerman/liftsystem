@@ -133,6 +133,7 @@ input.customdateinpt {
 }
 .searcheskeywordsdata {
     width: 1310px;
+    margin-bottom: 20px;
 }
 .searcheskeywordsarea {
     width: 327px;
@@ -162,8 +163,12 @@ input.customdateinpt {
     width: 85px;
 }
 .searcheskeywordarea {
-    /* clear: both; */
-    border-right: 2px solid #000000;
+    border-right: 3px solid #000000;
+    border-bottom: 1px solid #716f6f;
+    width: 100%;
+}
+.searcheskeywordarea.firstcol {
+    border-left: 1px solid #716f6f;
 }
 .searcheskeywordarea.lastcol {
     border-right: 1px solid #000000;
@@ -177,6 +182,7 @@ input.customdateinpt {
     background: #bcbcbc;
     text-align: center;
     width: 44px;
+    border-right: 1px solid #716f6f;
 }
 .searcheskeywordarea .keyword {
     padding-left: 6px;
@@ -184,14 +190,14 @@ input.customdateinpt {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    border-right: 1px solid #ededed;
+    border-right: 1px solid #716f6f;
 }
 .searcheskeywordarea .negativeflag {
     width: 27px;
     text-align: center;
 }
 .searcheskeywordarea .result {
-    width: 58px;
+    width: 56px;
     text-align: right;
     padding-right: 6px;
 }
