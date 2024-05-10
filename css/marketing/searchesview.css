@@ -123,10 +123,10 @@ input.customdateinpt {
     font-weight: 600;
 }
 .searcheskeywordshead .titleresults {
-    margin-left: 4px;
-    font-size: 17px;
+    margin-left: 6px;
+    font-size: 14px;
     font-style: italic;
-    font-weight: 600;
+    line-height: 44px;
 }
 .keywordspaginator {
     float: right!important;
@@ -180,7 +180,7 @@ input.customdateinpt {
     width: 95px;
 }
 .searcheskeyworemptycontent {
-    width: 324px;
+    width: 1306px;
     height: 28px;
     line-height: 28px!important;
     font-size: 15px;
@@ -258,10 +258,10 @@ input.customdateinpt {
     font-weight: 600;
 }
 .searchesipaddresshead .titleresults {
-    margin-left: 4px;
-    font-size: 17px;
+    margin-left: 6px;
+    font-size: 14px;
     font-style: italic;
-    font-weight: 600;
+    line-height: 44px;
 }
 .ipaddresspaginator {
     float: right!important;
@@ -321,7 +321,7 @@ input.customdateinpt {
     border-bottom: 1px solid #716f6f;
     border-left: 1px solid #716f6f;
     border-right: 1px solid #716f6f;
-    width: 392px;
+    width: 789px;
     height: 28px;
     line-height: 28px!important;
     font-size: 15px;
