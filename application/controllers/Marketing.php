@@ -584,13 +584,17 @@ class Marketing extends MY_Controller
             $limit = $this->keywodslist;
             $this->load->model('searchresults_model');
             $res = $this->searchresults_model->get_keywords_data($display_option, $d_bgn, $d_end, $brand, $limit, $offset);
-            $options = [
-                'total' => count($res),
-                'items' => $res,
-                'numcols' => intval(ceil(count($res)/25)),
-                'limit' => 25,
-            ];
-            $mdata['content']=$this->load->view('marketing/keywords_content_view', $options, TRUE);
+            if (count($res)==0) {
+                $mdata['content']=$this->load->view('marketing/keywords_emptycontent_view', [], TRUE);
+            } else {
+                $options = [
+                    'total' => count($res),
+                    'items' => $res,
+                    'numcols' => intval(ceil(count($res)/25)),
+                    'limit' => 25,
+                ];
+                $mdata['content']=$this->load->view('marketing/keywords_content_view', $options, TRUE);
+            }
             $mdata['prev'] = 0;
             if ($page > 0) {
                 $mdata['prev'] = 1;
@@ -601,7 +605,7 @@ class Marketing extends MY_Controller
             }
             $label = '';
             if (count($res)==0) {
-                $label = 'Row 0 from '.$total;
+                $label = 'Row 0 of '.$total;
             } else {
                 $start = ($offset+1);
                 $finish = $offset+count($res);
@@ -654,13 +658,17 @@ class Marketing extends MY_Controller
             $limit = $this->ipaddrlist;
             $this->load->model('searchresults_model');
             $res = $this->searchresults_model->get_ipaddress_data($display_option, $d_bgn, $d_end, $brand, $limit, $offset);
-            $options = [
-                'total' => count($res),
-                'items' => $res,
-                'numcols' => intval(ceil(count($res)/25)),
-                'limit' => 25,
-            ];
-            $mdata['content']=$this->load->view('marketing/ipaddres_content_view', $options, TRUE);
+            if (count($res)==0) {
+                $mdata['content']=$this->load->view('marketing/ipaddres_emptycontent_view', [], TRUE);
+            } else {
+                $options = [
+                    'total' => count($res),
+                    'items' => $res,
+                    'numcols' => intval(ceil(count($res)/25)),
+                    'limit' => 25,
+                ];
+                $mdata['content']=$this->load->view('marketing/ipaddres_content_view', $options, TRUE);
+            }
             $mdata['prev'] = 0;
             if ($page > 0) {
                 $mdata['prev'] = 1;
@@ -671,7 +679,7 @@ class Marketing extends MY_Controller
             }
             $label = '';
             if (count($res)==0) {
-                $label = 'Row 0 from '.$total;
+                $label = 'Row 0 of '.$total;
             } else {
                 $start = ($offset+1);
                 $finish = $offset+count($res);
