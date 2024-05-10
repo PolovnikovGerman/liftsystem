@@ -259,6 +259,7 @@ input.customdateinpt {
     margin-left: 8px;
     width: 153px;
     margin-right: 8px;
+    font-size: 15px;
 }
 .searchesipaddressdata {
     width: 792px;
@@ -421,6 +422,7 @@ input.customdateinpt {
 .searchesdailydata .weekday {
     width: 51px;
     border-right: 1px solid #716f6f;
+    cursor: pointer;
 }
 /* Popup */
 .dailypopupcontent {
