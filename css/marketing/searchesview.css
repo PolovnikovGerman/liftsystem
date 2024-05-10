@@ -16,7 +16,7 @@
     margin-right: 3px;
 }
 .displayoptionarea {
-    font-size: 16px;
+    font-size: 15px;
     padding: 0 11px 0 7px;
     margin-right: 5px;
 }
@@ -24,7 +24,7 @@
     border: 1px solid #838383;
     background: #ededed;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 15px;
     border-radius: 3px;
 }
 .searches_displayperiod {
@@ -38,7 +38,7 @@
     margin-right: 10px;
 }
 .displayperiodarea {
-    font-size: 17px;
+    font-size: 15px;
     padding: 0 11px 0 5px;
     margin-right: 5px;
 }
@@ -53,18 +53,18 @@
     border: 1px solid #838383;
     background: #ededed;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 15px;
     border-radius: 3px;
 }
 .searches_customdates {
-    font-size: 17px;
+    font-size: 15px;
     padding: 0 11px 0 5px;
 }
 .searches_customdates.active {
     border: 1px solid #838383;
     background: #ededed;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 15px;
     border-radius: 3px;
 }
 select.searchmonthsselect {
@@ -116,12 +116,17 @@ input.customdateinpt {
 .searcheskeywordshead div {
     height: 40px;
     line-height: 40px;
-
 }
 .searcheskeywordshead .title {
     margin-left: 19px;
-    font-size: 22px;
+    font-size: 19px;
     font-weight: 600;
+}
+.searcheskeywordshead .titleresults {
+    margin-left: 6px;
+    font-size: 14px;
+    font-style: italic;
+    line-height: 44px;
 }
 .keywordspaginator {
     float: right!important;
@@ -175,7 +180,7 @@ input.customdateinpt {
     width: 95px;
 }
 .searcheskeyworemptycontent {
-    width: 324px;
+    width: 1306px;
     height: 28px;
     line-height: 28px!important;
     font-size: 15px;
@@ -249,8 +254,14 @@ input.customdateinpt {
 }
 .searchesipaddresshead .title {
     margin-left: 19px;
-    font-size: 22px;
+    font-size: 19px;
     font-weight: 600;
+}
+.searchesipaddresshead .titleresults {
+    margin-left: 6px;
+    font-size: 14px;
+    font-style: italic;
+    line-height: 44px;
 }
 .ipaddresspaginator {
     float: right!important;
@@ -310,7 +321,7 @@ input.customdateinpt {
     border-bottom: 1px solid #716f6f;
     border-left: 1px solid #716f6f;
     border-right: 1px solid #716f6f;
-    width: 392px;
+    width: 789px;
     height: 28px;
     line-height: 28px!important;
     font-size: 15px;
@@ -380,7 +391,7 @@ input.customdateinpt {
 }
 .searchesdailyhead .title {
     margin-left: 19px;
-    font-size: 22px;
+    font-size: 19px;
     font-weight: 600;
 }
 .dailysearchpaginator {
