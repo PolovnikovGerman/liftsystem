@@ -403,6 +403,9 @@ input.customdateinpt {
     max-height: 700px;
     overflow-y: auto;
 }
+.searchesdailydata.short {
+    width: 508px;
+}
 .searchesdailydata div {
     height: 28px;
     line-height: 28px;
