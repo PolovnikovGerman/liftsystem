@@ -130,7 +130,7 @@ input.customdateinpt {
     color: #ffffff;
 }
 .keywordspaginator .navigateprev, .keywordspaginator .navigatenext {
-    width: 24px;
+    /* width: 24px; */
     opacity: 0.4;
 }
 .keywordspaginator .navigateprev.active, .keywordspaginator .navigatenext.active  {
@@ -139,7 +139,7 @@ input.customdateinpt {
 }
 .keywordspaginator .navigatelabel {
     margin-left: 8px;
-    width: 153px;
+    /* width: 153px; */
     margin-right: 8px;
     font-size: 15px;
 }
@@ -248,7 +248,7 @@ input.customdateinpt {
     color: #ffffff;
 }
 .ipaddresspaginator .navigateprev, .ipaddresspaginator .navigatenext {
-    width: 24px;
+    /* width: 24px; */
     opacity: 0.4;
 }
 .ipaddresspaginator .navigateprev.active, .ipaddresspaginator .navigatenext.active {
@@ -257,7 +257,7 @@ input.customdateinpt {
 }
 .ipaddresspaginator .navigatelabel {
     margin-left: 8px;
-    width: 153px;
+    /* width: 153px; */
     margin-right: 8px;
     font-size: 15px;
 }
@@ -368,7 +368,7 @@ input.customdateinpt {
     color: #ffffff;
 }
 .dailysearchpaginator .navigateprev, .dailysearchpaginator .navigatenext {
-    width: 24px;
+    /* width: 24px; */
     opacity: 0.4;
 }
 .dailysearchpaginator .navigateprev.active, .dailysearchpaginator .navigatenext.active {
@@ -377,7 +377,7 @@ input.customdateinpt {
 }
 .dailysearchpaginator .navigatelabel {
     margin-left: 8px;
-    width: 42px;
+    /* width: 42px; */
     margin-right: 8px;
 }
 .searchesdailysubhead {
