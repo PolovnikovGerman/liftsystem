@@ -706,6 +706,7 @@ class Marketing extends MY_Controller
                 $mdata['next'] = 1;
             }
             $mdata['label'] = $year;
+            $mdata['total'] = count($data);
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
