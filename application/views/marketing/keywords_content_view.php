@@ -1,18 +1,6 @@
-<?php if ($total==0) { ?>
+<?php $idx = 0;?>
+<?php for ($i=1; $i<=$numcols; $i++) { ?>
     <div class="searcheskeywordsarea">
-        <div class="searcheskeywordssubhead">
-            <div class="rank">#</div>
-            <div class="keyword">Keyword</div>
-            <div class="result">Searches</div>
-        </div>
-        <div class="searcheskeywordarea">
-            <div class="datarow whitedatarow" style="text-align: center;">No data about Searches for this period</div>
-        </div>
-    </div>
-<?php } else { ?>
-    <?php $idx = 0;?>
-    <?php for ($i=1; $i<=$numcols; $i++) { ?>
-        <div class="searcheskeywordsarea">
         <div class="searcheskeywordssubhead <?=$i==$numcols ? 'lastcol' : ''?>">
             <div class="rank">#</div>
             <div class="keyword">Keyword</div>
@@ -32,6 +20,5 @@
             <?php } ?>
         <?php } ?>
         </div>
-        </div>
-    <?php } ?>
+    </div>
 <?php } ?>
