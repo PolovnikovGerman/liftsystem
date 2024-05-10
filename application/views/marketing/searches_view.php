@@ -48,7 +48,7 @@
         <div class="displaycustomresult">Show</div>
     </div>
     <div class="searcheskeywordshead <?=$brand=='SR' ? 'stressrelievers' : ''?>">
-        <div class="title">Searches by Phrase / Keyword:</div>
+        <div class="title">Searches by Phrase / Keyword:</div><div class="titleresults"></div>
         <div class="keywordspaginator">
             <div class="navigateprev"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
             <div class="navigatelabel"></div>
@@ -58,7 +58,7 @@
     <div class="searcheskeywordsdata">&nbsp;</div>
     <div class="searchleftcontent">
         <div class="searchesipaddresshead <?=$brand=='SR' ? 'stressrelievers' : ''?>">
-            <div class="title">Searches by IP Address:</div>
+            <div class="title">Searches by IP Address:</div><div class="titleresults"></div>
             <div class="ipaddresspaginator">
                 <div class="navigateprev"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
                 <div class="navigatelabel"></div>

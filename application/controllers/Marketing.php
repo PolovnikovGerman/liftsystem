@@ -538,8 +538,8 @@ class Marketing extends MY_Controller
             $res = $this->searchresults_model->get_count_searches($display_option, $d_bgn, $d_end, $brand);
             $mdata['keyword'] = $res['keyword'];
             $mdata['ipaddr'] = $res['ipaddr'];
-            $mdata['keyword_title'] = 'Searches by Phrase / Keyword: '.$res['keyword'].' Searches';
-            $mdata['ipaddr_title'] = 'Searches by IP Address: '.$res['ipaddr'].' Searches';
+            $mdata['keyword_title'] = $res['keyword'].' Searches';
+            $mdata['ipaddr_title'] = $res['ipaddr'].' Searches';
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -586,14 +586,20 @@ class Marketing extends MY_Controller
             $limit = $this->keywodslist;
             $this->load->model('searchresults_model');
             $res = $this->searchresults_model->get_keywords_data($display_option, $d_bgn, $d_end, $brand, $limit, $offset);
-            if (count($res)==0) {
+            $totalres = count($res);
+            if ($totalres==0) {
                 $mdata['content']=$this->load->view('marketing/keywords_emptycontent_view', [], TRUE);
             } else {
+                if ($totalres <$limit) {
+                    $limitview = ceil($totalres/4);
+                } else {
+                    $limitview = 25;
+                }
                 $options = [
-                    'total' => count($res),
+                    'total' => $totalres,
                     'items' => $res,
-                    'numcols' => intval(ceil(count($res)/25)),
-                    'limit' => 25,
+                    'numcols' => 4, // intval(ceil(count($res)/25)),
+                    'limit' => $limitview,
                 ];
                 $mdata['content']=$this->load->view('marketing/keywords_content_view', $options, TRUE);
             }
@@ -660,14 +666,20 @@ class Marketing extends MY_Controller
             $limit = $this->ipaddrlist;
             $this->load->model('searchresults_model');
             $res = $this->searchresults_model->get_ipaddress_data($display_option, $d_bgn, $d_end, $brand, $limit, $offset);
-            if (count($res)==0) {
+            $totalres = count($res);
+            if ($totalres==0) {
                 $mdata['content']=$this->load->view('marketing/ipaddres_emptycontent_view', [], TRUE);
             } else {
+                if ($totalres < $limit ) {
+                    $limitview = ceil($totalres/2);
+                } else {
+                    $limitview = 25;
+                }
                 $options = [
-                    'total' => count($res),
+                    'total' => $totalres,
                     'items' => $res,
-                    'numcols' => intval(ceil(count($res)/25)),
-                    'limit' => 25,
+                    'numcols' => 2, // intval(ceil(count($res)/25)),
+                    'limit' => $limitview,
                 ];
                 $mdata['content']=$this->load->view('marketing/ipaddres_content_view', $options, TRUE);
             }
