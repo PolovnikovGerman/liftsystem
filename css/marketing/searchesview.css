@@ -16,7 +16,7 @@
     margin-right: 3px;
 }
 .displayoptionarea {
-    font-size: 16px;
+    font-size: 15px;
     padding: 0 11px 0 7px;
     margin-right: 5px;
 }
@@ -24,7 +24,7 @@
     border: 1px solid #838383;
     background: #ededed;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 15px;
     border-radius: 3px;
 }
 .searches_displayperiod {
@@ -38,7 +38,7 @@
     margin-right: 10px;
 }
 .displayperiodarea {
-    font-size: 17px;
+    font-size: 15px;
     padding: 0 11px 0 5px;
     margin-right: 5px;
 }
@@ -53,18 +53,18 @@
     border: 1px solid #838383;
     background: #ededed;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 15px;
     border-radius: 3px;
 }
 .searches_customdates {
-    font-size: 17px;
+    font-size: 15px;
     padding: 0 11px 0 5px;
 }
 .searches_customdates.active {
     border: 1px solid #838383;
     background: #ededed;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 15px;
     border-radius: 3px;
 }
 select.searchmonthsselect {
@@ -116,11 +116,10 @@ input.customdateinpt {
 .searcheskeywordshead div {
     height: 40px;
     line-height: 40px;
-
 }
 .searcheskeywordshead .title {
     margin-left: 19px;
-    font-size: 22px;
+    font-size: 19px;
     font-weight: 600;
 }
 .keywordspaginator {
@@ -249,7 +248,7 @@ input.customdateinpt {
 }
 .searchesipaddresshead .title {
     margin-left: 19px;
-    font-size: 22px;
+    font-size: 19px;
     font-weight: 600;
 }
 .ipaddresspaginator {

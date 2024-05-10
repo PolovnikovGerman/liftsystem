@@ -538,6 +538,8 @@ class Marketing extends MY_Controller
             $res = $this->searchresults_model->get_count_searches($display_option, $d_bgn, $d_end, $brand);
             $mdata['keyword'] = $res['keyword'];
             $mdata['ipaddr'] = $res['ipaddr'];
+            $mdata['keyword_title'] = 'Searches by Phrase / Keyword: '.$res['keyword'].' Searches';
+            $mdata['ipaddr_title'] = 'Searches by IP Address: '.$res['ipaddr'].' Searches';
             $this->ajaxResponse($mdata, $error);
         }
         show_404();

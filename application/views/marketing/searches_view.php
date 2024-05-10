@@ -21,18 +21,18 @@
     </div>
     <div class="searches_displayperiod datarow">
         <div class="displayperiodtitle">Display Dates:</div>
-        <div class="displayperiodarea active" data-period="day"><input type="radio" name="searchperiodradio" id="searchtoday" value="today" checked="checked"/> Today</div>
+        <div class="displayperiodarea" data-period="day"><input type="radio" name="searchperiodradio" id="searchtoday" value="today"/> Today</div>
         <div class="displayperiodarea" data-period="week"><input type="radio" name="searchperiodradio" id="searchweek" value="week"/> This Week</div>
-        <div class="displayperiodarea" data-period="month">
-            <input type="radio" name="searchperiodradio" id="searchmonth" value="month"/>
-            <select class="searchmonthsselect" disabled="disabled">
+        <div class="displayperiodarea active" data-period="month">
+            <input type="radio" name="searchperiodradio" id="searchmonth" value="month" checked="checked"/> Month
+            <select class="searchmonthsselect">
                 <?php foreach ($months as $month) { ?>
                     <option value="<?=$month['key']?>"><?=$month['val']?></option>
                 <?php } ?>
             </select>
         </div>
         <div class="displayperiodarea" data-period="year">
-            <input type="radio" name="searchperiodradio" id="searchyear" value="year"/>
+            <input type="radio" name="searchperiodradio" id="searchyear" value="year"/> Year
             <select class="searchyearselect" disabled="disabled">
                 <?php for($i=$maxyear; $i>=$minyear; $i--) { ?>
                     <option value="<?=$i?>"><?=$i?></option>

@@ -73,6 +73,8 @@ function init_searches_results() {
             $("#searchesiptotal").val(parseInt(response.data.ipaddr));
             $("#searcheswordpage").val(0);
             $("#searchesippage").val(0);
+            $(".searcheskeywordshead").find('div.title').empty().html(response.data.keyword_title);
+            $(".searchesipaddresshead").find('div.title').empty().html(response.data.ipaddr_title);
             view_keywords_content();
             view_ipaddress_content();
             $("#loader").hide();
