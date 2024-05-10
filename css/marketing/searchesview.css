@@ -405,6 +405,7 @@ input.customdateinpt {
 }
 .searchesdailydata.short {
     width: 508px;
+    overflow-y: hidden;
 }
 .searchesdailydata div {
     height: 28px;
