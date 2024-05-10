@@ -127,7 +127,7 @@ function view_keywords_content() {
 function view_ipaddress_content() {
     var params = new Array();
     var dispperiod = $("input[name='searchperiodradio']:checked").val();
-    params.push({name: 'display_option', value: $("input[name='searchdisplatradio']:checked").val()});
+    // params.push({name: 'display_option', value: $("input[name='searchdisplatradio']:checked").val()});
     params.push({name: 'display_period', value: dispperiod});
     params.push({name: 'brand', value: $("#searchesbrand").val()});
     params.push({name: 'total', value: $("#searchesiptotal").val()});

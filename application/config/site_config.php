@@ -1,6 +1,6 @@
 <?php
-$config['js_version'] = '2.02295';
-$config['css_version']= '2.02295';
+$config['js_version'] = '2.02296';
+$config['css_version']= '2.02296';
 /* SET EMPTY SERVER NAME */
 if (!isset($_SERVER['SERVER_NAME'])) {
     $_SERVER['SERVER_NAME'] = getenv('server_name');
