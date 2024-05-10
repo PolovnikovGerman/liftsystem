@@ -605,7 +605,7 @@ class Marketing extends MY_Controller
             } else {
                 $start = ($offset+1);
                 $finish = $offset+count($res);
-                $label = 'Row '.$start.' - '.$finish.' from '.$total;
+                $label = 'Row '.$start.' - '.$finish.' of '.$total; // from
             }
             $mdata['label'] = $label;
             $this->ajaxResponse($mdata, $error);
@@ -675,7 +675,7 @@ class Marketing extends MY_Controller
             } else {
                 $start = ($offset+1);
                 $finish = $offset+count($res);
-                $label = 'Row '.$start.' - '.$finish.' from '.$total;
+                $label = 'Row '.$start.' - '.$finish.' of '.$total; // from
             }
             $mdata['label'] = $label;
             $this->ajaxResponse($mdata, $error);
