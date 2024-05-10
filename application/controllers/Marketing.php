@@ -632,7 +632,7 @@ class Marketing extends MY_Controller
             $error = '';
             $postdata = $this->input->post();
             $brand = ifset($postdata,'brand','ALL');
-            $display_option = ifset($postdata,'display_option',0);
+            // $display_option = ifset($postdata,'display_option',0);
             $display_period = ifset($postdata, 'display_period','today');
             if ($display_period=='today') {
                 $d_bgn = strtotime(date('Y-m-d').' 00:00:00');
@@ -665,7 +665,7 @@ class Marketing extends MY_Controller
             $offset = intval($page * $this->ipaddrlist);
             $limit = $this->ipaddrlist;
             $this->load->model('searchresults_model');
-            $res = $this->searchresults_model->get_ipaddress_data($display_option, $d_bgn, $d_end, $brand, $limit, $offset);
+            $res = $this->searchresults_model->get_ipaddress_data($d_bgn, $d_end, $brand, $limit, $offset);
             $totalres = count($res);
             if ($totalres==0) {
                 $mdata['content']=$this->load->view('marketing/ipaddres_emptycontent_view', [], TRUE);
