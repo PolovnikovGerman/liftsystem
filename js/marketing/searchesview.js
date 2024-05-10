@@ -25,12 +25,12 @@ function view_daily_view() {
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $(".searchesdailydata").empty().html(response.data.content);
             if (parseInt(response.data.total) > 25) {
                 $(".searchesdailydata").removeClass('short');
             } else {
                 $(".searchesdailydata").addClass('short');
             }
+            $(".searchesdailydata").empty().html(response.data.content);
             $(".dailysearchpaginator").find('div.navigateprev').removeClass('active');
             $(".dailysearchpaginator").find('div.navigatenext').removeClass('active');
             $(".dailysearchpaginator").find('div.navigatelabel').empty().html(response.data.label);
