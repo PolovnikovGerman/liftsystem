@@ -54,7 +54,6 @@ function init_searches_results() {
     // Count
     var params = new Array();
     var dispperiod = $("input[name='searchperiodradio']:checked").val();
-    // params.push({name: 'display_option', value: $("input[name='searchdisplatradio']:checked").val()});
     params.push({name: 'display_option', value: $("select.searchdisplselect").val()});
     params.push({name: 'display_period', value: dispperiod});
     params.push({name: 'brand', value: $("#searchesbrand").val()});
@@ -158,7 +157,6 @@ function view_keywords_content() {
 function view_ipaddress_content() {
     var params = new Array();
     var dispperiod = $("input[name='searchperiodradio']:checked").val();
-    // params.push({name: 'display_option', value: $("input[name='searchdisplatradio']:checked").val()});
     params.push({name: 'display_period', value: dispperiod});
     params.push({name: 'brand', value: $("#searchesbrand").val()});
     params.push({name: 'total', value: $("#searchesiptotal").val()});
@@ -197,27 +195,6 @@ function view_ipaddress_content() {
 
 function init_searches_manage() {
     // Display Options
-    // All
-    // $("#searchdisplayall").unbind('click').click(function (){
-    //     $(".displayoptionarea").removeClass('active');
-    //     $(".displayoptionarea[data-option='All']").addClass('active');
-    //     $(".displaycustomresult").hide();
-    //     init_searches_results();
-    // });
-    // // Positive
-    // $("#searchdisplaypositiv").unbind('click').click(function (){
-    //     $(".displayoptionarea").removeClass('active');
-    //     $(".displayoptionarea[data-option='Positiv']").addClass('active');
-    //     $(".displaycustomresult").hide();
-    //     init_searches_results();
-    // });
-    // // Negative
-    // $("#searchdisplaynegativ").unbind('click').click(function (){
-    //     $(".displayoptionarea").removeClass('active');
-    //     $(".displayoptionarea[data-option='Negativ']").addClass('active');
-    //     $(".displaycustomresult").hide();
-    //     init_searches_results();
-    // })
     $("select.searchdisplselect").unbind('change').change(function (){
         init_keywords_search();
     });
