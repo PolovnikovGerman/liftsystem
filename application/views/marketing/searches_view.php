@@ -7,18 +7,6 @@
 <input type="hidden" id="searcheswordtotal" value="0"/>
 <input type="hidden" id="searchesiptotal" value="0"/>
 <div class="searches_content">
-    <div class="searches_displayoptions datarow">
-        <div class="displayoptiontitle">Display Options:</div>
-        <div class="displayoptionarea active" data-option="All">
-            <input type="radio" name="searchdisplatradio" id="searchdisplayall" value="0" checked="checked"/> All
-        </div>
-        <div class="displayoptionarea" data-option="Positiv">
-            <input type="radio" name="searchdisplatradio" id="searchdisplaypositiv" value="1"/> With Results Only
-        </div>
-        <div class="displayoptionarea" data-option="Negativ">
-            <input type="radio" name="searchdisplatradio" id="searchdisplaynegativ" value="2"/> With NO Results Only
-        </div>
-    </div>
     <div class="searches_displayperiod datarow">
         <div class="displayperiodtitle">Display Dates:</div>
         <div class="displayperiodarea" data-period="day"><input type="radio" name="searchperiodradio" id="searchtoday" value="today"/> Today</div>
@@ -53,6 +41,16 @@
             <div class="navigateprev"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
             <div class="navigatelabel"></div>
             <div class="navigatenext"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+        </div>
+        <div class="keywords_options">
+            <div class="keywordsoptionlabel">Display:</div>
+            <div class="keywordsoptionvalue">
+                <select class="searchdisplselect">
+                    <option value="0">All</option>
+                    <option value="1">Results</option>
+                    <option value="2">No Results</option>
+                </select>
+            </div>
         </div>
     </div>
     <div class="searcheskeywordsdata">&nbsp;</div>

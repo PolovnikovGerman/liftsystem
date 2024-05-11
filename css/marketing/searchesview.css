@@ -128,6 +128,23 @@ input.customdateinpt {
     font-style: italic;
     line-height: 44px;
 }
+.keywords_options {
+    float: right!important;
+    margin-right: 7px;
+}
+.keywordsoptionlabel {
+    font-size: 15px;
+    font-weight: bolder;
+    margin-right: 4px;
+}
+.keywordsoptionvalue {
+    padding-top: 1px;
+}
+.searchdisplselect {
+    font-size: 15px;
+    color: #000000;
+    height: 22px;
+}
 .keywordspaginator {
     float: right!important;
     margin-right: 15px;
