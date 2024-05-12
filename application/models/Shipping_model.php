@@ -1803,6 +1803,23 @@ Class Shipping_model extends MY_Model
             $transitres = $upsservice->timeInTransit($token, $shipFrom['Address'], $shipTo['Address'], $tntweigth, $tntpacks, $package_price,  date('Y-m-d', $startdeliv), '10:00:00');
             $out['msg'] = $transitres['msg'];
             $out['error_code'] = 'TNT';
+            if ($transitres['error']==2) {
+                if (isset($transitres['cities'])) {
+                    $candidates = $transitres['cities'];
+                    foreach ($candidates as $candidate) {
+                        if ($candidate['postalCode']==$shipTo['Address']['PostalCode']) {
+                            $shipTo['Address']['StateProvinceCode'] = $candidate['stateProvince'];
+                            $shipTo['Address']['City'] = $candidate['city'];
+                            break;
+                        }
+                    }
+                    $transitres = $upsservice->timeInTransit($token, $shipFrom['Address'], $shipTo['Address'], $tntweigth, $tntpacks, $package_price,  date('Y-m-d', $startdeliv), '10:00:00');
+                    $out['msg'] = $transitres['msg'];
+                    if ($transitres['error']==0) {
+                        $out['cityname'] = $candidate['city'];
+                    }
+                }
+            }
             if ($transitres['error']==0) {
                 // All ok
                 $times = $transitres['services'];
