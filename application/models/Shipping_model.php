@@ -1439,7 +1439,7 @@ Class Shipping_model extends MY_Model
         $shiper = $this->config->item('ups_shiper');
         foreach ($items as $item) {
             $flagitem = 0;
-            $itemqty = $item['item_qty'];
+            $itemqty = ifset($item, 'item_qty', 0);
             $qtykf = 1;
             if ($item['item_id'] > 0) {
                 $itemres = $this->items_model->get_item($item['item_id']);

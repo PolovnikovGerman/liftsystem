@@ -148,6 +148,7 @@ input.input_checkbox {
     font-size: 13px;
     width: 84px;
     text-align: center;
+    overflow: hidden;
 }
 .leadorderlockdetails i {
     float: left;
@@ -5575,4 +5576,11 @@ input.ticket_date {
 }
 #unlockContentModal .modal-title {
     font-weight: 600;
+}
+
+.autocompleter,
+.autocompleter-closed {
+    top: 37px;
+    max-width: 244px;
+    margin-left: 66px;
 }
