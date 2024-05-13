@@ -1638,7 +1638,7 @@ class Leadquote_model extends MY_Model
                 $quote_id = $quote['quote_id'];
             } else {
                 $newnum = $this->get_newquote_number($quote['brand']);
-            $newcode = new_customer_code();
+//              $newcode = new_customer_code();
                 $this->db->set('brand', $quote['brand']);
                 $this->db->set('create_time', date('Y-m-d H:i:s'));
                 $this->db->set('create_user', $user_id);
@@ -1646,7 +1646,7 @@ class Leadquote_model extends MY_Model
                 $this->db->set('lead_id', $lead_id);
                 $this->db->set('quote_number', $newnum);
                 $this->db->set('quote_date', time());
-            $this->db->set('customer_code', $newcode);
+//                $this->db->set('customer_code', $newcode);
                 $this->db->insert('ts_quotes');
                 $quote_id = $this->db->insert_id();
             }
