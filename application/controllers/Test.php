@@ -3653,26 +3653,56 @@ class Test extends CI_Controller
         return $billaddr;
     }
 
-    public function update_ipsearch()
+    public function inventory_rest()
     {
-        $this->db->select('s.search_ip, g.country_code, g.city_name, count(s.search_result_id) as cnt');
-        $this->db->from('sb_search_results s');
-        $this->db->join('sb_geoips g','g.user_ip=s.search_ip','left');
-        $this->db->where('s.brand','SR');
-        $this->db->where('g.country_code',null);
-        $this->db->group_by('s.search_ip, g.country_code, g.city_name');
-        $results = $this->db->get()->result_array();
-        $this->load->model('seo_model');
-        foreach ($results as $result) {
-            if ($result['search_ip']!=='127.0.0.1') {
-                echo 'User IP '.$result['search_ip'].PHP_EOL;
-                $geores = $this->seo_model->get_geolocation($result['search_ip']);
-                if ($geores['result']==1) {
-                    $ipdata = $geores['geodata'];
-                    $this->seo_model->update_geoip($ipdata, $result['search_ip']);
-                    echo 'Update '.$ipdata['country_name'].' '.$ipdata['city_name'].PHP_EOL;
+        $daterest = strtotime('2022-01-01');
+        $invents = [];
+
+        $this->db->select('inventory_item_id, item_num, item_name')->from('ts_inventory_items')->order_by('item_num');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $this->db->select('inventory_color_id, color')->from('ts_inventory_colors')->where('inventory_item_id',$item['inventory_item_id'])->order_by('color_order');
+            $colors = $this->db->get()->result_array();
+            foreach ($colors as $color) {
+                $avgprice = 0;
+                $this->db->select('count(inventory_income_id) as cnt, sum(income_qty) as rest, sum(income_qty*income_price) as totalinc')->from('ts_inventory_incomes')->where(['inventory_color_id' => $color['inventory_color_id'],'income_date < ' => $daterest]);
+                $restincome = $this->db->get()->row_array();
+                if ($restincome['cnt']!==0) {
+                    $restqty = $restincome['rest'];
+                    $resttotal = $restincome['totalinc'];
+                    $avgprice = round($resttotal/$restqty,3);
+                }
+                $this->db->select('count(inventory_outcome_id) as cnt, sum(outcome_qty) as outcom')->from('ts_inventory_outcomes')->where(['inventory_color_id' => $color['inventory_color_id'],'outcome_date < ' => $daterest]);
+                $restoutcome = $this->db->get()->row_array();
+                if ($restoutcome['cnt']!==0) {
+                    $restqty = $restqty - $restoutcome['outcom'];
+                    $resttotal = $restqty * $avgprice;
+                }
+                if ($restqty != 0) {
+                    $out[] = [
+                        'item_num' => $item['item_num'],
+                        'item_name' => $item['item_name'],
+                        'color' => $color['color'],
+                        'rest' => $restqty,
+                        'price' => $avgprice,
+                        'total' => $resttotal,
+                    ];
                 }
             }
+        }
+        if (count($out) > 0) {
+            $this->load->config('uploader');
+            $filename = $this->config->item('upload_path_preload').'inventory_rest_2021.csv';
+            @unlink($filename);
+            $fh = fopen($filename,'a+');
+            $msg='Item #;Item;Color;QTY;Price;Total;'.PHP_EOL;
+            fwrite($fh, $msg);
+            foreach ($out as $row) {
+                $msg = $row['item_num'].';"'.$row['item_name'].'";'.$row['color'].';'.$row['rest'].';'.$row['price'].';'.$row['total'].';'.PHP_EOL;
+                fwrite($fh, $msg);
+            }
+            fclose($fh);
+            echo 'File '.$filename.' ready'.PHP_EOL;
         }
     }
 }
