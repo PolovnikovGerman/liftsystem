@@ -3670,7 +3670,12 @@ class Test extends CI_Controller
                 if ($restincome['cnt']!==0) {
                     $restqty = $restincome['rest'];
                     $resttotal = $restincome['totalinc'];
-                    $avgprice = round($resttotal/$restqty,3);
+                    if ($restqty !=0) {
+                        $avgprice = round($resttotal/$restqty,3);
+                    } else {
+                        echo 'Item '.$item['item_num'].' Color '.$color['color'].PHP_EOL;
+                    }
+
                 }
                 $this->db->select('count(inventory_outcome_id) as cnt, sum(outcome_qty) as outcom')->from('ts_inventory_outcomes')->where(['inventory_color_id' => $color['inventory_color_id'],'outcome_date < ' => $daterest]);
                 $restoutcome = $this->db->get()->row_array();
