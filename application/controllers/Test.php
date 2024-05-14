@@ -3653,24 +3653,25 @@ class Test extends CI_Controller
         return $billaddr;
     }
 
-    public function user_defpage()
+    public function update_ipsearch()
     {
-        $this->db->select('user_id, user_page')->from('users')->where('user_page is not NULL');
-        $usrdats=$this->db->get()->result_array();
-
-        foreach ($usrdats as $usrdat) {
-            if (!empty($usrdat['user_page'])) {
-                $this->db->select('brand')->from('menu_items')->where('menu_item_id', $usrdat['user_page']);
-                $brdat = $this->db->get()->row_array();
-                $brand = $brdat['brand'];
-                echo 'User '.$usrdat['user_id'].' Brand '.$brand.PHP_EOL;
-                $this->db->where('user_id', $usrdat['user_id']);
-                $this->db->set('default_brand', $brand);
-                $this->db->update('users');
-                $this->db->set('user_id', $usrdat['user_id']);
-                $this->db->set('brand', $brand);
-                $this->db->set('page_id', $usrdat['user_page']);
-                $this->db->insert('user_default_page');
+        $this->db->select('s.search_ip, g.country_code, g.city_name, count(s.search_result_id) as cnt');
+        $this->db->from('sb_search_results s');
+        $this->db->join('sb_geoips g','g.user_ip=s.search_ip','left');
+        $this->db->where('s.brand','SR');
+        $this->db->where('g.country_code',null);
+        $this->db->group_by('s.search_ip, g.country_code, g.city_name');
+        $results = $this->db->get()->result_array();
+        $this->load->model('seo_model');
+        foreach ($results as $result) {
+            if ($result['search_ip']!=='127.0.0.1') {
+                echo 'User IP '.$result['search_ip'].PHP_EOL;
+                $geores = $this->seo_model->get_geolocation($result['search_ip']);
+                if ($geores['result']==1) {
+                    $ipdata = $geores['geodata'];
+                    $this->seo_model->update_geoip($ipdata, $result['search_ip']);
+                    echo 'Update '.$ipdata['country_name'].' '.$ipdata['city_name'].PHP_EOL;
+                }
             }
         }
     }
