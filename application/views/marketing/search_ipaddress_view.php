@@ -19,7 +19,7 @@
         </div>
     </div>
     <div class="searchipaddres_dataconatiner">
-        <div class="table-dat" id="ipaddressearchcontent" style="clear: both;float: left;  width: 56666px;">
+        <div class="table-dat" id="ipaddressearchcontent">
 
         </div>
     </div>

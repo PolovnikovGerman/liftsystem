@@ -1,0 +1,494 @@
+.searches_content {
+    margin: 16px 0 0 26px;
+    width: 1320px;
+    font-size: 13px;
+}
+.searches_displayoptions {
+    margin-bottom: 5px;
+}
+.searches_displayoptions div {
+    height: 28px;
+    line-height: 28px;
+}
+.displayoptiontitle, .displayperiodtitle {
+    font-weight: 600;
+    font-size: 16px;
+    margin-right: 3px;
+}
+.displayoptionarea {
+    font-size: 15px;
+    padding: 0 11px 0 7px;
+    margin-right: 5px;
+}
+.displayoptionarea.active {
+    border: 1px solid #838383;
+    background: #ededed;
+    font-weight: 600;
+    font-size: 15px;
+    border-radius: 3px;
+}
+.searches_displayperiod {
+    margin-bottom: 7px;
+}
+.searches_displayperiod div {
+    height: 30px;
+    line-height: 28px;
+}
+.displayperiodtitle {
+    margin-right: 10px;
+}
+.displayperiodarea {
+    font-size: 15px;
+    padding: 0 11px 0 5px;
+    margin-right: 5px;
+}
+.displayperiodarea input[type=radio] {
+    margin: 0px 0 0;
+    margin-top: 1px \9;
+    line-height: normal;
+    position: relative;
+    top: 2px;
+}
+.displayperiodarea.active {
+    border: 1px solid #838383;
+    background: #ededed;
+    font-weight: 600;
+    font-size: 15px;
+    border-radius: 3px;
+}
+.searches_customdates {
+    font-size: 15px;
+    padding: 0 11px 0 5px;
+}
+.searches_customdates.active {
+    border: 1px solid #838383;
+    background: #ededed;
+    font-weight: 600;
+    font-size: 15px;
+    border-radius: 3px;
+}
+select.searchmonthsselect {
+    width: 128px;
+    height: 24px;
+    font-size: 15px !important;
+}
+select.searchyearselect {
+    width: 60px;
+    height: 24px;
+    font-size: 15px !important;
+}
+input.customdateinpt {
+    width: 96px;
+    height: 24px;
+    text-align: center;
+    font-size: 15px !important;
+    font-weight: normal;
+}
+.displaycustomresult {
+    font-size: 17px;
+    width: 70px;
+    height: 26px!important;
+    line-height: 26px!important;
+    margin-left: 9px;
+    margin-top: 3px;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    color: #f7e2e2;
+    background: #a62424;
+    text-align: center;
+    display: none;
+    cursor: pointer;
+}
+/* Keyword search */
+.searcheskeywordshead {
+    width: 1307px;
+    background: #4957f7;
+    color: #ffffff;
+    border-left: 1px solid #919191;
+    border-top: 1px solid #919191;
+    border-right: 1px solid #919191;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+}
+.searcheskeywordshead.stressrelievers {
+    background: #9f7b01;
+}
+.searcheskeywordshead div {
+    height: 40px;
+    line-height: 40px;
+}
+.searcheskeywordshead .title {
+    margin-left: 19px;
+    font-size: 19px;
+    font-weight: 600;
+}
+.searcheskeywordshead .titleresults {
+    margin-left: 6px;
+    font-size: 14px;
+    font-style: italic;
+    line-height: 44px;
+}
+.keywords_options {
+    float: right!important;
+    margin-right: 7px;
+}
+.keywordsoptionlabel {
+    font-size: 15px;
+    font-weight: bolder;
+    margin-right: 4px;
+}
+.keywordsoptionvalue {
+    padding-top: 1px;
+}
+.searchdisplselect {
+    font-size: 15px;
+    color: #000000;
+    height: 22px;
+}
+.keywordspaginator {
+    float: right!important;
+    margin-right: 15px;
+    font-size: 17px;
+    color: #ffffff;
+}
+.keywordspaginator .navigateprev, .keywordspaginator .navigatenext {
+    /* width: 24px; */
+    opacity: 0.4;
+}
+.keywordspaginator .navigateprev.active, .keywordspaginator .navigatenext.active  {
+    opacity: 1;
+    cursor: pointer;
+}
+.keywordspaginator .navigatelabel {
+    margin-left: 8px;
+    /* width: 153px; */
+    margin-right: 8px;
+    font-size: 15px;
+}
+.searcheskeywordsdata {
+    width: 1310px;
+    margin-bottom: 20px;
+}
+.searcheskeywordsarea {
+    width: 327px;
+}
+.searcheskeywordssubhead {
+    background: #00004c;
+    color: #ffffff;
+    border-right: 2px solid #ededed;
+}
+.searcheskeywordssubhead.lastcol {
+    border-right: 3px solid #00004c;
+}
+.searcheskeywordssubhead div {
+    height: 33px;
+    line-height: 33px;
+    font-weight: 600;
+    font-size: 15px;
+    text-align: center;
+}
+.searcheskeywordssubhead .rank {
+    width: 44px;
+}
+.searcheskeywordssubhead .keyword {
+    width: 185px;
+}
+.searcheskeywordssubhead .result {
+    width: 95px;
+}
+.searcheskeyworemptycontent {
+    width: 1306px;
+    height: 28px;
+    line-height: 28px!important;
+    font-size: 15px;
+    text-align: center;
+    color: #ff0000;
+    border-bottom: 1px solid #716f6f;
+    border-left: 1px solid #716f6f;
+    border-right: 1px solid #716f6f;
+}
+.searcheskeywordarea {
+    border-right: 4px solid #000000;
+    border-bottom: 1px solid #716f6f;
+    width: 100%;
+}
+.searcheskeywordarea.firstcol {
+    border-left: 1px solid #716f6f;
+}
+.searcheskeywordarea.lastcol {
+    border-right: 1px solid #000000;
+}
+.searcheskeywordarea div {
+    height: 28px;
+    line-height: 28px;
+    font-size: 15px;
+}
+.searcheskeywordarea .rank {
+    background: #bcbcbc;
+    text-align: center;
+    width: 44px;
+    border-right: 1px solid #716f6f;
+}
+.searcheskeywordarea .keyword {
+    padding-left: 6px;
+    width: 185px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 1px solid #716f6f;
+}
+.searcheskeywordarea .negativeflag {
+    width: 27px;
+    text-align: center;
+}
+.searcheskeywordarea .result {
+    width: 66px;
+    text-align: right;
+    padding-right: 10px;
+}
+/* Left part content */
+.searchleftcontent {
+    width: 792px;
+    margin-right: 15px;
+}
+/* IP Search */
+.searchesipaddresshead {
+    width: 789px;
+    background: #4957f7;
+    color: #ffffff;
+    border-left: 1px solid #919191;
+    border-top: 1px solid #919191;
+    border-right: 1px solid #919191;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+}
+.searchesipaddresshead.stressrelievers {
+    background: #9f7b01;
+}
+.searchesipaddresshead div {
+    height: 40px;
+    line-height: 40px;
+}
+.searchesipaddresshead .title {
+    margin-left: 19px;
+    font-size: 19px;
+    font-weight: 600;
+}
+.searchesipaddresshead .titleresults {
+    margin-left: 6px;
+    font-size: 14px;
+    font-style: italic;
+    line-height: 44px;
+}
+.ipaddresspaginator {
+    float: right!important;
+    margin-right: 15px;
+    font-size: 17px;
+    color: #ffffff;
+}
+.ipaddresspaginator .navigateprev, .ipaddresspaginator .navigatenext {
+    /* width: 24px; */
+    opacity: 0.4;
+}
+.ipaddresspaginator .navigateprev.active, .ipaddresspaginator .navigatenext.active {
+    opacity: 1;
+    cursor: pointer;
+}
+.ipaddresspaginator .navigatelabel {
+    margin-left: 8px;
+    /* width: 153px; */
+    margin-right: 8px;
+    font-size: 15px;
+}
+.searchesipaddressdata {
+    width: 792px;
+    margin-bottom: 20px;
+}
+.searchesipaddrsarea {
+    width: 394px;
+}
+.searchesipaddrsubhead {
+    background: #00004c;
+    color: #ffffff;
+    border-right: 2px solid #ededed;
+}
+.searchesipaddrsubhead.lastcol {
+    border-right: 2px solid #00004c;
+}
+.searchesipaddrsubhead div {
+    height: 33px;
+    line-height: 33px;
+    font-weight: 600;
+    font-size: 15px;
+    text-align: center;
+}
+.searchesipaddrsubhead .rank {
+    width: 44px;
+}
+.searchesipaddrsubhead .keyword {
+    width: 128px;
+}
+.searchesipaddrsubhead .result {
+    width: 55px;
+}
+.searchesipaddrsubhead .location {
+    width: 165px;
+}
+.searchesipaddrempty {
+    border-bottom: 1px solid #716f6f;
+    border-left: 1px solid #716f6f;
+    border-right: 1px solid #716f6f;
+    width: 789px;
+    height: 28px;
+    line-height: 28px!important;
+    font-size: 15px;
+    text-align: center;
+    color: #ff0000;
+}
+.searchesipaddrarea {
+    border-right: 3px solid #000000;
+    border-bottom: 1px solid #716f6f;
+    width: 100%;
+}
+.searchesipaddrarea.firstcol {
+    border-left: 1px solid #716f6f;
+}
+.searchesipaddrarea.lastcol {
+    border-right: 1px solid #000000;
+}
+.searchesipaddrarea div {
+    height: 28px;
+    line-height: 28px;
+    font-size: 15px;
+    text-align: left;
+}
+.searchesipaddrarea .rank {
+    width: 44px;
+    border-right: 1px solid #716f6f;
+    text-align: center;
+    background: #bcbcbc;
+}
+.searchesipaddrarea .keyword {
+    width: 128px;
+    border-right: 1px solid #716f6f;
+    padding-left: 5px;
+}
+.searchesipaddrarea .result {
+    width: 55px;
+    border-right: 1px solid #716f6f;
+    text-align: center;
+}
+.searchesipaddrarea .location {
+    width: 163px;
+    padding-left: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.serchrightcontent {
+    width: 508px;
+}
+/* Daily results */
+.searchesdailyhead {
+    width: 508px;
+    background: #4957f7;
+    color: #ffffff;
+    border-left: 1px solid #919191;
+    border-top: 1px solid #919191;
+    border-right: 1px solid #919191;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+}
+.searchesdailyhead.stressrelievers {
+    background: #9f7b01;
+}
+.searchesdailyhead div {
+    height: 40px;
+    line-height: 40px;
+}
+.searchesdailyhead .title {
+    margin-left: 19px;
+    font-size: 19px;
+    font-weight: 600;
+}
+.dailysearchpaginator {
+    float: right!important;
+    margin-right: 15px;
+    font-size: 17px;
+    color: #ffffff;
+}
+.dailysearchpaginator .navigateprev, .dailysearchpaginator .navigatenext {
+    /* width: 24px; */
+    opacity: 0.4;
+}
+.dailysearchpaginator .navigateprev.active, .dailysearchpaginator .navigatenext.active {
+    opacity: 1;
+    cursor: pointer;
+}
+.dailysearchpaginator .navigatelabel {
+    margin-left: 8px;
+    /* width: 42px; */
+    margin-right: 8px;
+}
+.searchesdailysubhead {
+    background: #00004c;
+    color: #ffffff;
+}
+.searchesdailysubhead div {
+    height: 33px;
+    line-height: 33px;
+    font-weight: 600;
+    font-size: 15px;
+    text-align: center;
+}
+.searchesdailysubhead .weeknum {
+    width: 151px;
+}
+.searchesdailysubhead .weekday {
+    width: 51px;
+}
+.searchesdailydata {
+    width: 522px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #716f6f;
+    max-height: 700px;
+    overflow-y: auto;
+}
+.searchesdailydata.short {
+    width: 508px;
+    overflow-y: hidden;
+}
+.searchesdailydata div {
+    height: 28px;
+    line-height: 28px;
+    font-size: 15px;
+    text-align: center;
+}
+.searchesdailydata .weeknum {
+    width: 151px;
+    background: #bcbcbc;
+    border-left: 1px solid #716f6f;
+}
+.searchesdailydata .weekday {
+    width: 51px;
+    border-right: 1px solid #716f6f;
+    cursor: pointer;
+}
+/* Popup */
+.dailypopupcontent {
+    margin: 6px;
+    float: left;
+}
+.dailypopupcontent .dailypositive {
+    font-size: 15px;
+    font-style: italic;
+    color: #000000;
+    float: left;
+}
+.dailypopupcontent .dailynegative {
+    font-size: 15px;
+    font-style: italic;
+    color: #0000ff;
+    float: left;
+    padding-left: 3px;
+}

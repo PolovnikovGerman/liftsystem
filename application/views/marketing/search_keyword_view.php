@@ -24,9 +24,9 @@
             <input type="radio" value="2" id="negative" name="keywordresultdisp"/> No Results
         </div>
     </div>
-    <div class="searchkeyword_dataconatiner">
-        <div class="table-dat" id="keywordsearchcontent" style="clear: both;float: left;  width: 56666px;">
+    <div class="searchkeyword_dataconatiner" id="keywordsearchcontent">
+        <!-- <div class="table-dat" id="keywordsearchcontent">
 
-        </div>
+        </div> -->
     </div>
 </div>
