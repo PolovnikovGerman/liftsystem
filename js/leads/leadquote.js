@@ -1312,7 +1312,7 @@ function init_srinventory_quote(quoteitem_id, color_id) {
             params.push({name: 'item', value: quoteitem_id});
             params.push({name: 'itemcolor', value: color_id});
             // params.push({name: 'paramname', value: 'color'})
-            params.push({name: 'fld', value: 'color'})
+            params.push({name: 'fld', value: 'item_color'})
             params.push({name: 'newval', value: $(this).data('itemcolor')});
         }
         $.post(url, params, function (response){

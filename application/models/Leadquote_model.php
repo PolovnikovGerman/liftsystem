@@ -781,6 +781,7 @@ class Leadquote_model extends MY_Model
         if (!empty($fldname) && !empty($itemid) && !empty($itemcolor)) {
             $out['msg'] = 'Item Not Found';
             $items = $quotesession['items'];
+            $quote = $quotesession['quote'];
             if ($fldname=='item_qty' || $fldname=='item_price') {
                 $out['totalcalc'] = 1;
             }
@@ -852,15 +853,20 @@ class Leadquote_model extends MY_Model
                     } else {
                         $items[$itemidx]['items'][$itemcoloridx][$fldname] = $data['newval'];
                     }
-                    if ($fldname=='item_color') {
+                    if ($fldname=='item_color') { // item_color
                         // Rebuild out
-                        $options=array(
+                        $coloropt = array(
                             'quote_item_id'=> $items[$itemidx]['items'][$itemcoloridx]['quote_item_id'],
                             'item_id'=> $items[$itemidx]['items'][$itemcoloridx]['item_id'],
                             'colors'=> $items[$itemidx]['items'][$itemcoloridx]['colors'],
                             'item_color'=> $data['newval'],
                         );
-                        $items[$itemidx]['items'][$itemcoloridx]['out_colors']=$this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
+                        if ($quote['brand'] == 'SR') {
+                            $items[$itemidx]['items'][$itemcoloridx]['out_colors'] = $this->load->view('leadpopup/quotesritem_color_choice', $coloropt, true);
+                        } else {
+                            $items[$itemidx]['items'][$itemcoloridx]['out_colors'] = $this->load->view('leadpopup/quoteitem_color_choice', $coloropt, true);
+                        }
+                        // $items[$itemidx]['items'][$itemcoloridx]['out_colors']=$this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
                     }
                     $subtotal = intval($items[$itemidx]['items'][$itemcoloridx]['item_qty']) * floatval($items[$itemidx]['items'][$itemcoloridx]['item_price']);
                     $items[$itemidx]['items'][$itemcoloridx]['item_subtotal'] = MoneyOutput($subtotal);
