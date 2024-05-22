@@ -3653,25 +3653,61 @@ class Test extends CI_Controller
         return $billaddr;
     }
 
-    public function user_defpage()
+    public function inventory_rest()
     {
-        $this->db->select('user_id, user_page')->from('users')->where('user_page is not NULL');
-        $usrdats=$this->db->get()->result_array();
+        $daterest = strtotime('2022-01-01');
+        $invents = [];
 
-        foreach ($usrdats as $usrdat) {
-            if (!empty($usrdat['user_page'])) {
-                $this->db->select('brand')->from('menu_items')->where('menu_item_id', $usrdat['user_page']);
-                $brdat = $this->db->get()->row_array();
-                $brand = $brdat['brand'];
-                echo 'User '.$usrdat['user_id'].' Brand '.$brand.PHP_EOL;
-                $this->db->where('user_id', $usrdat['user_id']);
-                $this->db->set('default_brand', $brand);
-                $this->db->update('users');
-                $this->db->set('user_id', $usrdat['user_id']);
-                $this->db->set('brand', $brand);
-                $this->db->set('page_id', $usrdat['user_page']);
-                $this->db->insert('user_default_page');
+        $this->db->select('inventory_item_id, item_num, item_name')->from('ts_inventory_items')->order_by('item_num');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $this->db->select('inventory_color_id, color')->from('ts_inventory_colors')->where('inventory_item_id',$item['inventory_item_id'])->order_by('color_order');
+            $colors = $this->db->get()->result_array();
+            foreach ($colors as $color) {
+                $avgprice = 0;
+                $this->db->select('count(inventory_income_id) as cnt, sum(income_qty) as rest, sum(income_qty*income_price) as totalinc')->from('ts_inventory_incomes')->where(['inventory_color_id' => $color['inventory_color_id'],'income_date < ' => $daterest]);
+                $restincome = $this->db->get()->row_array();
+                if ($restincome['cnt']!==0) {
+                    $restqty = $restincome['rest'];
+                    $resttotal = $restincome['totalinc'];
+                    if ($restqty !=0) {
+                        $avgprice = round($resttotal/$restqty,3);
+                    } else {
+                        echo 'Item '.$item['item_num'].' Color '.$color['color'].PHP_EOL;
+                    }
+
+                }
+                $this->db->select('count(inventory_outcome_id) as cnt, sum(outcome_qty) as outcom')->from('ts_inventory_outcomes')->where(['inventory_color_id' => $color['inventory_color_id'],'outcome_date < ' => $daterest]);
+                $restoutcome = $this->db->get()->row_array();
+                if ($restoutcome['cnt']!==0) {
+                    $restqty = $restqty - $restoutcome['outcom'];
+                    $resttotal = $restqty * $avgprice;
+                }
+                if ($restqty != 0) {
+                    $out[] = [
+                        'item_num' => $item['item_num'],
+                        'item_name' => $item['item_name'],
+                        'color' => $color['color'],
+                        'rest' => $restqty,
+                        'price' => $avgprice,
+                        'total' => $resttotal,
+                    ];
+                }
             }
+        }
+        if (count($out) > 0) {
+            $this->load->config('uploader');
+            $filename = $this->config->item('upload_path_preload').'inventory_rest_2021.csv';
+            @unlink($filename);
+            $fh = fopen($filename,'a+');
+            $msg='Item #;Item;Color;QTY;Price;Total;'.PHP_EOL;
+            fwrite($fh, $msg);
+            foreach ($out as $row) {
+                $msg = $row['item_num'].';"'.$row['item_name'].'";'.$row['color'].';'.$row['rest'].';'.$row['price'].';'.$row['total'].';'.PHP_EOL;
+                fwrite($fh, $msg);
+            }
+            fclose($fh);
+            echo 'File '.$filename.' ready'.PHP_EOL;
         }
     }
 }

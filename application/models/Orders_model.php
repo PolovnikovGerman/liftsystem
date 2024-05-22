@@ -6404,7 +6404,7 @@ Class Orders_model extends MY_Model
         $this->db->set('order_system', 'new');
         $this->db->set('arttype','new');
         $this->db->set('brand', $orddata['brand']);
-        $this->db->set('customer_code', new_customer_code());
+        // $this->db->set('customer_code', new_customer_code());
         $this->db->insert('ts_orders');
         $neword = $this->db->insert_id();
         if ($neword != 0) {

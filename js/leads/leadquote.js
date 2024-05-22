@@ -874,7 +874,8 @@ function change_quote_printdetails(params) {
                 if (response.data.newval=='REPEAT') {
                     // $("div.repeatdetail[data-details='"+response.data.details+"']").addClass('active').removeClass('full').addClass(response.data.class);
                     for (i=1; i<=4; i++) {
-                        $("input.imprintprice[data-details='"+response.data.details+"'][data-fldname='setup_"+i+"']").val('0.00');
+                        // $("input.imprintprice[data-details='"+response.data.details+"'][data-fldname='setup_"+i+"']").val('0.00');
+                        $("input.imprintprice[data-details='"+response.data.details+"'][data-fldname='setup_"+i+"']").val(response.data.setup);
                     }
                     $("input.imprintrepeatnote[data-details='"+response.data.details+"']").prop('disabled',false);
                     $("input.imprintrepeatnote[data-details='"+response.data.details+"']").focus();
@@ -1312,7 +1313,7 @@ function init_srinventory_quote(quoteitem_id, color_id) {
             params.push({name: 'item', value: quoteitem_id});
             params.push({name: 'itemcolor', value: color_id});
             // params.push({name: 'paramname', value: 'color'})
-            params.push({name: 'fld', value: 'color'})
+            params.push({name: 'fld', value: 'item_color'})
             params.push({name: 'newval', value: $(this).data('itemcolor')});
         }
         $.post(url, params, function (response){
