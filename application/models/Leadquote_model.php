@@ -20,9 +20,12 @@ class Leadquote_model extends MY_Model
     private $template = 'Lead Quote';
     private $custom_print_price = 0.12;
     private $custom_setup_price = 30;
+    private $custom_srsetup_price = 28;
     private $other_print_price = 0.20;
     private $other_setupsb_price = 30;
     private $other_setupsr_price = 28;
+
+    private $repeat_srsetup_price = 12;
 
     private $page_heigh_limit = 270;
 
@@ -454,7 +457,11 @@ class Leadquote_model extends MY_Model
             $quoteitem['item_subtotal']=$defqty*$newprice;
         } elseif ($item_id==$this->config->item('custom_id')) {
             $quoteitem['imprint_price'] = $this->custom_print_price;
-            $quoteitem['setup_price'] = $this->custom_setup_price;
+            if ($brand=='SR') {
+                $quoteitem['setup_price'] = $this->custom_srsetup_price;
+            } else {
+                $quoteitem['setup_price'] = $this->custom_setup_price;
+            }
         } elseif ($item_id==$this->config->item('other_id')) {
             $quoteitem['imprint_price'] = $this->other_print_price;
             if ($brand=='SR') {
@@ -536,7 +543,11 @@ class Leadquote_model extends MY_Model
                         $newloc[$row]='NEW';
                         break;
                     case 'num_colors':
-                        $newloc[$row]=1;
+                        if ($i==1 && $item_id==$this->config->item('custom_id')) {
+                            $newloc[$row]=5;
+                        } else {
+                            $newloc[$row]=1;
+                        }
                         break;
                     default :
                         $newloc[$row]='';
@@ -1009,12 +1020,21 @@ class Leadquote_model extends MY_Model
                         $imprintdetails['quote_blank']=0;
                     }
                     if ($fldname=='imprint_type') {
+                        $out['class']='';
                         if ($newval=='REPEAT') {
-                            $details[$detidx]['setup_1']=0;
-                            $details[$detidx]['setup_2']=0;
-                            $details[$detidx]['setup_3']=0;
-                            $details[$detidx]['setup_4']=0;
-                            $out['class']='';
+                            if ($imprintdetails['brand']=='SR' && $imprintdetails['item_id']!==$this->config->item('custom_id')) {
+                                $details[$detidx]['setup_1']=$this->repeat_srsetup_price;
+                                $details[$detidx]['setup_2']=$this->repeat_srsetup_price;
+                                $details[$detidx]['setup_3']=$this->repeat_srsetup_price;
+                                $details[$detidx]['setup_4']=$this->repeat_srsetup_price;
+                                $out['setup']=$this->repeat_srsetup_price;
+                            } else {
+                                $details[$detidx]['setup_1']=0;
+                                $details[$detidx]['setup_2']=0;
+                                $details[$detidx]['setup_3']=0;
+                                $details[$detidx]['setup_4']=0;
+                                $out['setup']=0;
+                            }
                             if (!empty($details[$detidx]['repeat_note'])) {
                                 $out['class']='full';
                             }
