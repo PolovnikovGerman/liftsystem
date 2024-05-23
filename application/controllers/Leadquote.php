@@ -784,6 +784,7 @@ class Leadquote extends MY_Controller
                         'quote_blank' => $quote_blank,
                         'quote_item_id' => $postdata['item'],
                         'item_id' => $item_id,
+                        'brand' => $quote['brand'],
                     );
                     usersession($imptintid, $imprintdetails);
 
@@ -872,11 +873,11 @@ class Leadquote extends MY_Controller
                         $mdata['details']=$res['details'];
                         $mdata['newval']=$res['newval'];
                         if ($mdata['fldname']=='imprint_type') {
-                            if ($mdata['newval']=='NEW') {
+                            // if ($mdata['newval']=='NEW') {
                                 $mdata['setup'] =  number_format($res['setup'],2,'.','');
-                            } else {
+                            // } else {
                                 $mdata['class']=$res['class'];
-                            }
+                            // }
                         }
                     }
                 }
