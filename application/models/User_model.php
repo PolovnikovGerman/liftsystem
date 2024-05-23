@@ -158,7 +158,7 @@ Class User_model extends MY_Model
                             /* Chk User time restrict */
                             $chktime = 1;
                         } else {
-                            $times = get_timerestrict($res['user_timerestrict']);
+                            $times = get_timerestrict($res['time_restrict']);
                             $curtime = time();
                             if ($curtime >= $times['begin'] && $curtime <= $times['end']) {
                                 $chktime = 1;
