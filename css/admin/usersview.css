@@ -210,7 +210,7 @@ textarea.emailsignature {
     width: 215px;
 }
 .permisselect {
-    width: 209px;
+    width: 193px;
 }
 .saveuser {
     float: left;
@@ -254,7 +254,7 @@ textarea.emailsignature {
     float: left;
     font-size: 12px;
     /* height: 428px; */
-    height: 533px;
+    height: 565px;
     margin-top: 5px;
     overflow-y: auto;
     width: 518px;
