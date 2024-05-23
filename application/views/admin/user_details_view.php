@@ -6,15 +6,21 @@
                 <legend>User Personal Data</legend>
                 <div class="clearfix"></div>
                 <div class="input_row">
-                    <div class="labeltxt">User Email (login):</div>
+                    <div class="labeltxt">Email (login):</div>
                     <div class="inputval">
                         <input type="text" class="large userpersdata" data-name="user_email" id="user_email" value="<?=$user['user_email']?>"/>
                     </div>
                 </div>
                 <div class="input_row">
-                    <div class="labeltxt">User Name:</div>
+                    <div class="labeltxt">First Name:</div>
                     <div class="inputval">
-                        <input type="text" class="large userpersdata" data-name="user_name" id="user_name" value="<?=$user['user_name']?>"/>
+                        <input type="text" class="large userpersdata" data-name="first_name" id="first_name" value="<?=$user['first_name']?>"/>
+                    </div>
+                </div>
+                <div class="input_row">
+                    <div class="labeltxt">Last Name:</div>
+                    <div class="inputval">
+                        <input type="text" class="large userpersdata" data-name="last_name" id="last_name" value="<?=$user['last_name']?>"/>
                     </div>
                 </div>
                 <div class="input_row">
@@ -27,7 +33,7 @@
                     </div>
                 </div>
                 <div class="input_row userpasswd">
-                    <div class="labeltxt">User Password:</div>
+                    <div class="labeltxt">Password:</div>
                     <div class="inputval">
                         <input type="user_passwd_txt" class="large userpersdata" data-name="user_passwd_txt1" id="user_passwd_txt1" value=""/>
                     </div>

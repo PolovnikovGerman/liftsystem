@@ -340,6 +340,8 @@ Class User_model extends MY_Model
             'user_id' => 0,
             'user_email' =>'',
             'user_name'=>'',
+            'first_name' => '',
+            'last_name' => '',
             'user_status'=>'1',
             'user_id'=>0,
             'user_leadrep'=>0,
@@ -358,6 +360,7 @@ Class User_model extends MY_Model
             'profit_view'=>'Points',
             'user_payuser' => 0,
             'default_brand' => 'SB',
+            'user_order_export' => 0,
         ];
         return $data;
     }
@@ -500,9 +503,15 @@ Class User_model extends MY_Model
         $chkusrdat = $this->_checkuserdata($user);
         $out['msg'] = $chkusrdat['msg'];
         if ($chkusrdat['result']==$this->success_result) {
+            $usrname = $user['first_name'];
+            if (!empty($user['last_name'])) {
+                $usrname.=' '.$user['last_name'];
+            }
             // Update
             $this->db->set('user_email', $user['user_email']);
-            $this->db->set('user_name', $user['user_name']);
+            $this->db->set('user_name', $usrname);
+            $this->db->set('first_name', $user['first_name']);
+            $this->db->set('last_name', $user['last_name']);
             $this->db->set('user_status', $user['user_status']);
             $this->db->set('user_leadrep', $user['user_leadrep']);
             $this->db->set('finuser', $user['finuser']);
@@ -524,6 +533,7 @@ Class User_model extends MY_Model
                 $this->db->set('updated_by', $updusr);
                 $this->db->insert('users');
                 $user_id = $this->db->insert_id();
+                $user['user_name'] = $usrname;
                 // Generate secret
                 $this->_secret_code($user, $user_id);
             } else {
@@ -867,7 +877,7 @@ Class User_model extends MY_Model
         $this->db->where('user_id', $user_id);
         $this->db->set('user_secret', $secret);
         $this->db->update('users');
-        $usrlogin = $user['userlogin'];
+        $usrlogin = ifset($user, 'userlogin','');
         if (empty($usrlogin)) {
             $usrlogin = $user['user_email'];
         }
