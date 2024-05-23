@@ -26,20 +26,25 @@ class Welcome extends MY_Controller {
             }
             usersession('currentbrand', $brand);
         }
-        $options = [
-            'title' => $head['title'],
-            'user_id' => $this->USR_ID,
-            'user_name' => $this->USER_NAME,
-            'activelnk' => '',
-            'brand' => $brand,
-        ];
-        $dat = $this->template->prepare_pagecontent($options);
-        $options=[
-            'left_menu' => $dat['left_menu'],
-            'brand' => $brand,
-        ];
-        $dat['content_view'] = $this->load->view('welcome/page_view', $options, TRUE);
-        $this->load->view('page/page_template_view', $dat);
+        $url = $this->user_model->default_brandpage($this->USR_ID, $brand);
+        if ($url=='/welcome' || $url=='/' || empty($url)) {
+            $options = [
+                'title' => $head['title'],
+                'user_id' => $this->USR_ID,
+                'user_name' => $this->USER_NAME,
+                'activelnk' => '',
+                'brand' => $brand,
+            ];
+            $dat = $this->template->prepare_pagecontent($options);
+            $options=[
+                'left_menu' => $dat['left_menu'],
+                'brand' => $brand,
+            ];
+            $dat['content_view'] = $this->load->view('welcome/page_view', $options, TRUE);
+            $this->load->view('page/page_template_view', $dat);
+        } else {
+            redirect($url,'refresh');
+        }
     }
 
     /* Open File content */
