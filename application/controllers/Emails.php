@@ -19,8 +19,8 @@ class Emails extends MY_Controller
     {
         phpinfo();die();
         $mailbox = 'mail.yahoosmallbusiness.com';
-        $username = 'german.polovnikov@bluetrack.com'; // german.polovnikov@bluetrack.com
-        $password = 'Brilliance70!';
+        $username = ''; // german.polovnikov@bluetrack.com
+        $password = '';
         $encryption = Imap::ENCRYPT_SSL;
 
         try{
