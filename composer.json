@@ -10,7 +10,8 @@
     "require": {
         "phpoffice/phpspreadsheet": "^1.8",
         "dompdf/dompdf": "^0.8.3",
-        "fzaninotto/faker": "^1.8"
+        "fzaninotto/faker": "^1.8",
+        "ssilence/php-imap-client": "dev-master"
     },
     "suggest": {
         "paragonie/random_compat": "Provides better randomness in PHP 5.x"
