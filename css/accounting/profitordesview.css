@@ -412,6 +412,9 @@ select.profitorder-filtrer {
 .orderprofitcontent-table > .tr.relievers {
     width: 1150px;
 }
+.orderprofitcontent-table > .tr.topseparate {
+    border-top: 1px solid #000000;
+}
 .orderprofitcontent-table > .tr > div {
     color: #000000;
     font-size: 12px;
