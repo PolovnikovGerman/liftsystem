@@ -413,7 +413,7 @@ select.profitorder-filtrer {
     width: 1150px;
 }
 .orderprofitcontent-table > .tr.topseparate {
-    border-top: 1px solid #000000;
+    border-top: 2px solid #000000;
 }
 .orderprofitcontent-table > .tr > div {
     color: #000000;
@@ -442,7 +442,7 @@ select.profitorder-filtrer {
 .profitorder_ordertype {
     font-weight: bold;
     width: 14px;
-    border-right: 1px solid #000000;
+    border-right: 2px solid #000000;
 }
 .profitorder_ordertype.ordertypeblank {
     color: #0b6100!important;
