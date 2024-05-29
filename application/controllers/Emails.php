@@ -17,8 +17,8 @@ class Emails extends MY_Controller
 
     public function test()
     {
-        phpinfo();die();
-        $mailbox = 'mail.yahoosmallbusiness.com';
+//        phpinfo();die();
+        $mailbox = 'imap.mail.yahoo.com';
         $username = ''; // german.polovnikov@bluetrack.com
         $password = '';
         $encryption = Imap::ENCRYPT_SSL;
@@ -31,7 +31,20 @@ class Emails extends MY_Controller
             echo $error->getMessage().PHP_EOL; // You know the rule, no errors in production ...
             die(); // Oh no :( we failed
         }
-        echo 'Imap Open successfully'.PHP_EOL;
-        die();
+        // Get all folders as array of strings
+        $folders = $imap->getFolders();
+        foreach($folders as $key=>$val) {
+            echo 'Folder - '.$key.PHP_EOL;
+        }
+        // Select the folder INBOX
+        $imap->selectFolder('INBOX');
+
+        // Count the messages in current folder
+        $overallMessages = $imap->countMessages();
+        $unreadMessages = $imap->countUnreadMessages();
+        echo 'All Messages - '.$overallMessages.' UnRead '.$unreadMessages.PHP_EOL;
+        // Fetch all the messages in the current folder
+        $emails = $imap->getMessages(5,10, 'asc');
+        var_dump($emails);
     }
 }
