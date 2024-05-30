@@ -7858,16 +7858,20 @@ Class Leadorder_model extends My_Model {
         );
         $oldcharges=$this->get_order_charges($order['order_id']);
         $newcharge=array();
-//        $chridx=1;
-//        foreach ($oldcharges as $row) {
-//            $row['order_payment_id']=$chridx*(-1);
-//            unset($row['order_id']);
-//            if ($chridx==1) {
-//                $row['amount']=$neworder['revenue'];
-//            }
-//            $newcharge[]=$row;
-//            $chridx++;
-//        }
+        $chridx=1;
+        foreach ($oldcharges as $row) {
+            if (!empty($row['cardnum']) || !empty($row['cardcode'])) {
+                $row['order_payment_id']=$chridx*(-1);
+                unset($row['order_id']);
+                if ($chridx==1) {
+                    $row['amount']=$neworder['revenue'];
+                }
+                $row['autopay'] = 0;
+                $row['payment_save'] = 1;
+                $newcharge[]=$row;
+                $chridx++;
+            }
+        }
         // Recalc totals for new order
         $out=$this->_dublicate_order_totals($neworder,$contacts,$neworder_items, $newartw,$newshipping,$newshipaddr,$newbilling,$message,$countries,$newcharge,$artlocations);
         return $out;
@@ -10960,6 +10964,7 @@ Class Leadorder_model extends My_Model {
                         $charges[$chidx]['cardcode_view'] = show_card_code($charge['cardcode']);
                         $charges[$chidx]['cardcode'] = $charges[$chidx]['cardcode_view'];
                         $charges[$chidx]['payment_save'] = 0;
+                        $charges[$chidx]['autopay'] = 1;
                         $leadorder['charges'] = $charges;
                         usersession($ordersession, $leadorder);
                     }
