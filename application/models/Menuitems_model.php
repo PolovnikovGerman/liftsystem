@@ -213,7 +213,7 @@ Class Menuitems_model extends MY_Model
             $this->db->where('menu_item_id', $menu_id);
         }
         if (!empty($brand)) {
-            $this->db->where('brand', $brand)
+            $this->db->where('brand', $brand);
         }
         $res = $this->db->get()->row_array();
         if (!empty($res) && array_key_exists('menu_item_id', $res)) {
