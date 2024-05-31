@@ -8,17 +8,24 @@
         <div class="pay_method_content1_line">
             <div class="pay_method_inputs">
                 <input type="text" class="pay_method_input1 input_border_gray chargeinput leftalign" placeholder="Amount" data-charge="<?=$row['order_payment_id']?>" data-field="amount" value="<?=$row['amount']?>"/>
-                <input type="text" class="pay_method_input2 input_border_gray chargeinput leftalign" placeholder="Credit Card #" data-charge="<?=$row['order_payment_id']?>" data-field="cardnum" value="<?=$row['cardnum']?>"/>
+                <input type="text" class="pay_method_input2 input_border_gray chargeinput leftalign" placeholder="Credit Card #" data-charge="<?=$row['order_payment_id']?>" data-field="cardnum" value="<?=$row['cardnum_view']?>"/>
                 <input type="text" class="pay_method_input3_small input_border_gray chargeinput" data-charge="<?=$row['order_payment_id']?>" data-field="exp_month" value="<?=$row['exp_month']?>">
                 <div style="float: left; margin-left: 2px; margin-top: 2px;">/</div>
                 <input type="text" class="pay_method_input3_smallyear input_border_gray chargeinput leftalign" data-charge="<?=$row['order_payment_id']?>" data-field="exp_year" value="<?=$row['exp_year']?>">
-                <input type="text" class="pay_method_inputcvc input_border_gray chargeinput leftalign" placeholder="cvc" data-charge="<?=$row['order_payment_id']?>" data-field="cardcode" value="<?=$row['cardcode']?>">
+                <input type="text" class="pay_method_inputcvc input_border_gray chargeinput leftalign" placeholder="cvc" data-charge="<?=$row['order_payment_id']?>" data-field="cardcode" value="<?=$row['cardcode_view']?>">
             </div>
-            <div class="pay_method_button">
-                <input type="checkbox" class="autopaycharge" <?=$row['autopay']==1 ? 'checked="checked"' : ''?> data-charge="<?=$row['order_payment_id']?>"/>
-                <div class="label">auto</div>
-            </div>
-        </div>        
+            <?php if ($row['payment_save']==1 && $payment_user==1) { ?>
+                <div class="paymentdetails_unlock" data-payid="<?=$row['order_payment_id']?>">
+                    <i class="fa fa-lock"></i>
+                </div>
+            <?php } ?>
+            <?php if ($financeview==1) { ?>
+                <div class="pay_method_button" style="<?=($row['payment_save']==1 && $payment_user==1) ? 'display: none' : ''?>" data-charge="<?=$row['order_payment_id']?>">
+                    <input type="checkbox" class="autopaycharge" <?= $row['autopay'] == 1 ? 'checked="checked"' : '' ?> data-charge="<?= $row['order_payment_id'] ?>"/>
+                    <div class="label">auto</div>
+                </div>
+            <?php } ?>
+        </div>
     <?php } ?>        
     </div>
     <div class="pay_method_content1_line">
