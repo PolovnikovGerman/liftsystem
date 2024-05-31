@@ -27,7 +27,9 @@ class Migration_postbox_messages extends CI_Migration {
                 'null' => true,
                 'comment' => 'Message Subject',
             ),
-            'message_subject' =>
+            'message_subject' => array(
+
+            ),
         ));
         $this->dbforge->add_key('id', TRUE);
         $this->dbforge->create_table('postbox_messages');

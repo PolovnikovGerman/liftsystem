@@ -19,8 +19,8 @@ class Emails extends MY_Controller
     {
 //        phpinfo();die();
         $mailbox = 'imap.mail.yahoo.com';
-        $username = ''; // german.polovnikov@bluetrack.com
-        $password = '';
+        $username = 'german.polovnikov@bluetrack.com'; // german.polovnikov@bluetrack.com
+        $password = 'nxxrbadiwvrdzuwo';
         $encryption = Imap::ENCRYPT_SSL;
 
         try{
@@ -34,7 +34,7 @@ class Emails extends MY_Controller
         // Get all folders as array of strings
         $folders = $imap->getFolders();
         foreach($folders as $key=>$val) {
-            echo 'Folder - '.$key.PHP_EOL;
+            echo 'Folder - '.$key.PHP_EOL.'<br>';
         }
         // Select the folder INBOX
         $imap->selectFolder('INBOX');
@@ -42,9 +42,11 @@ class Emails extends MY_Controller
         // Count the messages in current folder
         $overallMessages = $imap->countMessages();
         $unreadMessages = $imap->countUnreadMessages();
-        echo 'All Messages - '.$overallMessages.' UnRead '.$unreadMessages.PHP_EOL;
+        echo 'All Messages - '.$overallMessages.' UnRead '.$unreadMessages.PHP_EOL.'<br>';
         // Fetch all the messages in the current folder
-        $emails = $imap->getMessages(5,10, 'asc');
+        $emails = $imap->getMessages(1,0, 'desc');
+        $message = $emails[0];
+        $tt=1;
         var_dump($emails);
     }
 }
