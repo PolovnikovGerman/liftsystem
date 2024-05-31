@@ -202,7 +202,7 @@ Class Menuitems_model extends MY_Model
         return $out;
     }
 
-    public function get_menuitem($lnk='', $menu_id=0) {
+    public function get_menuitem($lnk='', $menu_id=0, $brand='') {
         $out=['result'=>$this->error_result,'msg'=>'Menu Item Not Found'];
         $this->db->select('*');
         $this->db->from('menu_items');
@@ -211,6 +211,9 @@ Class Menuitems_model extends MY_Model
         }
         if (!empty($menu_id)) {
             $this->db->where('menu_item_id', $menu_id);
+        }
+        if (!empty($brand)) {
+            $this->db->where('brand', $brand)
         }
         $res = $this->db->get()->row_array();
         if (!empty($res) && array_key_exists('menu_item_id', $res)) {
