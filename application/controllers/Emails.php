@@ -20,7 +20,7 @@ class Emails extends MY_Controller
 //        phpinfo();die();
         $mailbox = 'imap.mail.yahoo.com';
         $username = 'german.polovnikov@bluetrack.com'; // german.polovnikov@bluetrack.com
-        $password = 'nxxrbadiwvrdzuwo';
+        $password = '';
         $encryption = Imap::ENCRYPT_SSL;
 
         try{
