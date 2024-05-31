@@ -29,7 +29,8 @@ class Fulfillment extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink);
+        $brand = $this->menuitems_model->get_current_brand();
+        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink,0, $brand);
         if ($pagedat['result'] == $this->error_result) {
             show_404();
         }
