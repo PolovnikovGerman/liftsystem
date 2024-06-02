@@ -96,7 +96,7 @@ body div {
 }
 .content_tab_header.active.relievers {
     background: rgba(253, 255, 68, 1);
-    height: auto;
+    /* height: auto; */
 }
 .relievers_logo {
     margin: 5px 20.5px 0 20.5px;
