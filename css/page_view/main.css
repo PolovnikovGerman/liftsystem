@@ -78,7 +78,7 @@ body div {
 }
 .content_tab_header.stressballs {
     background: #3537fc;
-    height: 49px;
+    height: 51px;
 }
 .content_tab_header.stressballs.active {
     background: #3736fe;
@@ -92,11 +92,11 @@ body div {
 }
 .content_tab_header.relievers {
     background: rgba(253, 255, 68, 0.4);
-    height: 49px;
+    height: 51px;
 }
 .content_tab_header.active.relievers {
     background: rgba(253, 255, 68, 1);
-    height: auto;
+    /* height: auto; */
 }
 .relievers_logo {
     margin: 5px 20.5px 0 20.5px;
@@ -107,7 +107,7 @@ body div {
 .content_tab_header.sigmasystem {
     background: #595959;
     width: 54px;
-    height: 49px;
+    height: 51px;
 }
 .sigma_logo {
     margin: 16px 16px 0 16px;
@@ -1371,6 +1371,45 @@ div.oldvesionlabel {
     -webkit-animation-iteration-count: infinite;
     -webkit-animation-timing-function: cubic-bezier(.5, 0, 1, 1);
     -webkit-animation-duration: 1.7s;
+}
+.period_debt_info {
+    clear: both;
+    border: 1px solid #9b9b9b;
+    height: 18px;
+    color: #ffffff;
+    margin: -14px 0px 0 320px;
+    cursor: pointer;
+    padding: 0 6px;
+    line-height: 18px !important;
+    position: relative;
+    top: -1px;
+    left: -2px;
+}
+.period_debt_info:hover {
+    background: #000080;
+}
+.period_debt_info .debtinfo_label {
+    text-align: center;
+    font-family: Arial;
+    font-weight: bold;
+    font-size: 12px;
+    color: #55aeff;
+    text-transform: uppercase;
+    line-height: 16px;
+    margin-top: 0px;
+    height: 16px;
+}
+.period_debt_info .debtinfo_value {
+    min-width: 26px;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: right;
+    padding-right: 3px;
+    height: 16px;
+    line-height: 16px;
+    color: #ffffff;
+    margin-top: 0px;
 }
 /* Portrait notepads */
 @media (min-width: 992px) and (max-width: 1199px) {

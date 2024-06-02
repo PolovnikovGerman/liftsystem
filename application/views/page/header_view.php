@@ -98,6 +98,13 @@
                         <!--                    <div class="alerttext">Admin</div>-->
                     </div>
                 <?php } ?>
+                <?php if ($debtpermiss) { ?>
+                    <div class="period_debt_info" id="debttotalview" data-event="click" data-css="weekbrandtotals" data-bgcolor="#000000"
+                         data-bordercolor="#adadad" data-textcolor="#FFFFFF" data-position="down" data-balloon="{ajax} /welcome/viewbalance">
+                        <div class="debtinfo_label">AR:</div>
+                        <div class="debtinfo_value"><?=MoneyOutput($debttotal,0)?></div>
+                    </div>
+                <?php } ?>
             </div>
             <?php if ($test_server==1) { ?>
                 <div class="row">

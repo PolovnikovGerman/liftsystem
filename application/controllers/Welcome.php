@@ -197,4 +197,17 @@ class Welcome extends MY_Controller {
         show_404();
     }
 
+    public function viewbalance()
+    {
+        $this->load->model('dashboard_model');
+        $totals = $this->dashboard_model->get_total_balance();
+        if (count($totals) > 0) {
+            $msg = $this->load->view('page/dashboard_totalbalance_view',['totals'=> $totals], TRUE);
+        } else {
+            $msg = $this->load->view('page/dashboard_totalempty_view',[], TRUE);
+        }
+        echo $msg;
+
+    }
+
 }

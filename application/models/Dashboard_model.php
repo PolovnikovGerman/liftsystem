@@ -86,5 +86,38 @@ Class Dashboard_model extends MY_Model
         }
         return $out;
     }
+
+    public function get_total_balance()
+    {
+        // $this->db->select('customer_name, sum(balance) as debettotal')->from('v_order_balances')->group_by('customer_name')->having('debettotal > 0')->order_by('debettotal','desc');
+        $this->db->select('brand, sum(balance) as debettotal')->from('v_order_balances')->where('balance > ',0)->group_by('brand')->order_by('brand');
+        // where yearorder >= 2021
+        $results = $this->db->get()->result_array();
+        $srtotal = $sbtotal = 0;
+        foreach ($results as $result) {
+            if ($result['brand']=='SR') {
+                $srtotal+=$result['debettotal'];
+            } else {
+                $sbtotal+=$result['debettotal'];
+            }
+        }
+        $out = [];
+        $out[] = ['label' => 'Stress Balls', 'value' => MoneyOutput($sbtotal,0)];
+        $out[] = ['label' => 'Stress Relievers', 'value' => MoneyOutput($srtotal,0)];
+        return $out;
+    }
+
+    public function get_debt_totals()
+    {
+        $this->db->select('count(order_id) cntdebt, sum(balance) as debettotal')->from('v_order_balances')->where('balance > ',0);
+        // where yearorder >= 2021
+        $res = $this->db->get()->row_array();
+        if ($res['cntdebt']==0) {
+            return 0;
+        } else {
+            return $res['debettotal'];
+        }
+    }
+
 }
 ?>
