@@ -133,6 +133,15 @@ class Template
             $inventory_permissions = 1;
             $inventory_old = $inventorychk['menuitem']['newver'];
         }
+        // Balance
+        $debt_permissions = 0;
+        $debt_total = 0;
+        $debtviewchk = $this->CI->menuitems_model->get_menuitem('#accreceiv');
+        if ($debtviewchk['result']==$this->success_result) {
+            $debt_permissions = 1;
+            $this->CI->load->model('dashboard_model');
+            $debt_total = $this->CI->dashboard_model->get_debt_totals();
+        }
 
         $pagetitle = (isset($options['title']) ? '::'.$options['title'] : '');
         $gmaps = 0;
@@ -171,6 +180,8 @@ class Template
             'brand' => $brand,
             'brands' => $brands,
             'usrrole' => $userdat['user_logged_in'],
+            'debtpermiss' => $debt_permissions,
+            'debttotal' => $debt_total,
         ];
         if (ifset($options,'adaptive',0)==1) {
             $dat['header_view'] = $this->CI->load->view('page/header_adaptive_view', $topmenu_options, TRUE);
