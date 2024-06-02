@@ -5630,6 +5630,8 @@ function init_unlockcontent(paymentid) {
                     $("#unlockContentModal").modal('hide');
                     $(".paymentdetails_unlock[data-payid='"+paymentid+"']").hide();
                     $(".pay_method_buttonsend[data-charge='"+paymentid+"']").show();
+                    $(".pay_method_button[data-charge='"+paymentid+"']").find('input.autopaycharge').prop('checked',true);
+                    $(".pay_method_button[data-charge='"+paymentid+"']").show();
                 } else {
                     show_error(resposne);
                 }
@@ -5649,6 +5651,8 @@ function init_unlockcontent(paymentid) {
                 $("#unlockContentModal").modal('hide');
                 $(".paymentdetails_unlock[data-payid='"+paymentid+"']").hide();
                 $(".pay_method_buttonsend[data-charge='"+paymentid+"']").show();
+                $(".pay_method_button[data-charge='"+paymentid+"']").find('input.autopaycharge').prop('checked',true);
+                $(".pay_method_button[data-charge='"+paymentid+"']").show();
             } else {
                 show_error(resposne);
             }

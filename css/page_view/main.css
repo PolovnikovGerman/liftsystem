@@ -1372,6 +1372,41 @@ div.oldvesionlabel {
     -webkit-animation-timing-function: cubic-bezier(.5, 0, 1, 1);
     -webkit-animation-duration: 1.7s;
 }
+.period_debt_info {
+    clear: both;
+    border: 1px solid #9b9b9b;
+    height: 26px;
+    color: #ffffff;
+    margin: -14px 0px 0 320px;
+    cursor: pointer;
+    padding: 0 6px;
+}
+.period_debt_info:hover {
+    background: #000080;
+}
+.period_debt_info .debtinfo_label {
+    text-align: center;
+    font-family: Arial;
+    font-weight: bold;
+    font-size: 14px;
+    color: #55aeff;
+    text-transform: uppercase;
+    line-height: 16px;
+    margin-top: 3px;
+    height: 16px;
+}
+.period_debt_info .debtinfo_value {
+    min-width: 26px;
+    font-family: Arial;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: right;
+    padding-right: 3px;
+    height: 16px;
+    line-height: 16px;
+    color: #ffffff;
+    margin-top: 3px;
+}
 /* Portrait notepads */
 @media (min-width: 992px) and (max-width: 1199px) {
     .testsitelabel {
