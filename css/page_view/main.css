@@ -78,7 +78,7 @@ body div {
 }
 .content_tab_header.stressballs {
     background: #3537fc;
-    height: 49px;
+    height: 51px;
 }
 .content_tab_header.stressballs.active {
     background: #3736fe;
@@ -92,7 +92,7 @@ body div {
 }
 .content_tab_header.relievers {
     background: rgba(253, 255, 68, 0.4);
-    height: 49px;
+    height: 51px;
 }
 .content_tab_header.active.relievers {
     background: rgba(253, 255, 68, 1);
@@ -107,7 +107,7 @@ body div {
 .content_tab_header.sigmasystem {
     background: #595959;
     width: 54px;
-    height: 49px;
+    height: 51px;
 }
 .sigma_logo {
     margin: 16px 16px 0 16px;
