@@ -103,7 +103,7 @@ class Template
         // Reports
         $reports_permissions = 0;
         $reports_old = 1;
-        $reportchk = $this->CI->menuitems_model->get_menuitem('/analytics');
+        $reportchk = $this->CI->menuitems_model->get_menuitem('/analytics',0, $brand);
 
         if ($reportchk['result']==$this->success_result) {
             $report_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $reportchk['menuitem']['menu_item_id']);
@@ -115,7 +115,7 @@ class Template
         // Resources
         $resource_permissions = 0;
         $resource_old = 1;
-        $resourcechk = $this->CI->menuitems_model->get_menuitem('/resources');
+        $resourcechk = $this->CI->menuitems_model->get_menuitem('/resources',0, $brand);
 
         if ($resourcechk['result']==$this->success_result) {
             $resource_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $resourcechk['menuitem']['menu_item_id']);
@@ -128,19 +128,25 @@ class Template
         // Inventory
         $inventory_permissions = 0;
         $inventory_old = 1;
-        $inventorychk = $this->CI->menuitems_model->get_menuitem('#printshopinventview');
+        $inventorychk = $this->CI->menuitems_model->get_menuitem('#printshopinventview',0, $brand);
         if ($inventorychk['result']==$this->success_result) {
-            $inventory_permissions = 1;
-            $inventory_old = $inventorychk['menuitem']['newver'];
+            $inventorypermischk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $inventorychk['menuitem']['menu_item_id']);
+            if ($inventorypermischk['result']==$this->success_result && $inventorypermischk['permission']>0) {
+                $inventory_old = $inventorychk['menuitem']['newver'];
+                $inventory_permissions = 1;
+            }
         }
         // Balance
         $debt_permissions = 0;
         $debt_total = 0;
-        $debtviewchk = $this->CI->menuitems_model->get_menuitem('#accreceiv');
+        $debtviewchk = $this->CI->menuitems_model->get_menuitem('#accreceiv',0, $brand);
         if ($debtviewchk['result']==$this->success_result) {
-            $debt_permissions = 1;
-            $this->CI->load->model('dashboard_model');
-            $debt_total = $this->CI->dashboard_model->get_debt_totals();
+            $debtpermischk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $debtviewchk['menuitem']['menu_item_id']);
+            if ($debtpermischk['result']==$this->success_result && $debtpermischk['permission']>0) {
+                $debt_permissions = 1;
+                $this->CI->load->model('dashboard_model');
+                $debt_total = $this->CI->dashboard_model->get_debt_totals();
+            }
         }
 
         $pagetitle = (isset($options['title']) ? '::'.$options['title'] : '');
