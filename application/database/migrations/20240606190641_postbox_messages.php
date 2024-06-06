@@ -9,7 +9,7 @@ class Migration_postbox_messages extends CI_Migration {
                 'constraint' => 11,
                 'auto_increment' => TRUE
             ),
-            'postbox_id' => array(
+            'folder_id' => array(
                 'type' => 'INT',
                 'constraint' => 11,
                 'null' => true,
@@ -27,8 +27,10 @@ class Migration_postbox_messages extends CI_Migration {
                 'null' => true,
                 'comment' => 'Message Subject',
             ),
-            'message_subject' => array(
-
+            'message_text' => array(
+                'type' => 'TEXT',
+                'null' => true,
+                'comment' => 'Message Text',
             ),
         ));
         $this->dbforge->add_key('id', TRUE);
