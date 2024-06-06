@@ -1079,23 +1079,31 @@ Class Menuitems_model extends MY_Model
         $brand =  usersession('currentbrand');
         if (!empty($brand)) {
             usersession('currentbrand', $brand);
+            $this->_brandcookie($brand);
         } else {
-            $user = $this->user_model->current_user();
-            $userdata = ifset($user,'data',[]);
-            $userid = ifset($userdata,'id',0);
-            $this->db->select('count(i.menu_item_id) as cnt');
-            $this->db->from('menu_items i');
-            $this->db->join('user_permissions u','i.menu_item_id = u.menu_item_id');
-            $this->db->where('u.user_id', $userid);
-            $this->db->where('u.permission_type > ',0);
-            $this->db->where('i.brand = ','SB');
-            $dats = $this->db->get()->row_array();
-            if ($dats['cnt'] > 0) {
-                $brand = 'SB';
+            $brand = get_cookie('brandtoken');
+            if ($brand) {
+                usersession('currentbrand', $brand);
+                $this->_brandcookie($brand);
             } else {
-                $brand = 'SR';
+                $user = $this->user_model->current_user();
+                $userdata = ifset($user,'data',[]);
+                $userid = ifset($userdata,'id',0);
+                $this->db->select('count(i.menu_item_id) as cnt');
+                $this->db->from('menu_items i');
+                $this->db->join('user_permissions u','i.menu_item_id = u.menu_item_id');
+                $this->db->where('u.user_id', $userid);
+                $this->db->where('u.permission_type > ',0);
+                $this->db->where('i.brand = ','SB');
+                $dats = $this->db->get()->row_array();
+                if ($dats['cnt'] > 0) {
+                    $brand = 'SB';
+                } else {
+                    $brand = 'SR';
+                }
+                usersession('currentbrand', $brand);
+                $this->_brandcookie($brand);
             }
-            usersession('currentbrand', $brand);
         }
         return $brand;
     }
@@ -1126,6 +1134,21 @@ Class Menuitems_model extends MY_Model
         $this->db->group_by('m.menu_item_id');
         $this->db->order_by('m.menu_order, m.menu_section');
         return $this->db->get()->result_array();
+    }
+
+    private function _brandcookie($brand)
+    {
+        $server=$this->input->server('SERVER_NAME');
+        $cookienew = array(
+            'name'   => 'brandtoken',
+            'value'  => $brand,
+            'expire' => '86500',
+            'domain' => $server,
+            'path'   => '/; SameSite=Strict',
+            'secure' => TRUE,
+            'httponly' => TRUE,
+        );
+        set_cookie($cookienew);
     }
 
 }
