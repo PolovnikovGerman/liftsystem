@@ -81,7 +81,7 @@ Class Permissions_model extends My_Model
 //    }
 
     function get_subitems($user_id, $item_lnk, $brand) {
-        if ($brand=='SG') {
+        if ($brand=='ALL') {
             $res =[
                 ['user_permission_id'=>4794,'user_id'=>1,'websys_page_id'=>89,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsalescustoms',],
             ];

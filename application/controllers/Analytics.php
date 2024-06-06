@@ -1063,6 +1063,9 @@ class Analytics extends MY_Controller
 
 
     private function _prepare_salestype_view($brand) {
+        if ($brand=='SG') {
+            $brand = 'ALL';
+        }
         $this->load->model('permissions_model');
         $usrdat=$this->user_model->get_user_data($this->USR_ID);
         $reppermis=$this->permissions_model->get_subitems($this->USR_ID, 'salestypebtn', $brand);
