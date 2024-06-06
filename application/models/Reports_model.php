@@ -220,6 +220,7 @@ Class Reports_model extends My_Model
                 }
 
                 if ($custom==1) {
+                    $row['totals']['rob_diff'] = $row['totals']['sage_diff'] = $row['totals']['sean_diff'] = 0;
                     if ($prvtotals['rob_val']!=0) {
                         $row['totals']['rob_diff']=round(($row['totals']['rob_val']-$prvtotals['rob_val'])/$prvtotals['rob_val']*100,0).'%';
                     } else {
@@ -1531,6 +1532,7 @@ Class Reports_model extends My_Model
             }
         }
         if ($goaltype=='CUSTOMS') {
+            $totals['rob_diff'] = $totals['sage_diff'] = $totals['sean_diff'] = $this->empty_show;
             if ($prvtotals['rob_val']!=0) {
                 $totals['rob_diff']=round(($totals['rob_val']-$prvtotals['rob_val'])/$prvtotals['rob_val']*100,0).'%';
             } else {
