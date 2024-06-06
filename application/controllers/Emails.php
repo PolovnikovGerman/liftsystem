@@ -19,8 +19,8 @@ class Emails extends MY_Controller
     {
 //        phpinfo();die();
         $mailbox = 'imap.mail.yahoo.com';
-        $username = '';
-        $password = '';
+        $username = getenv('EMAIL_USER');
+        $password = getenv('EMAIL_PASSWD');
         $encryption = Imap::ENCRYPT_SSL;
 
         try{
@@ -44,9 +44,9 @@ class Emails extends MY_Controller
         $unreadMessages = $imap->countUnreadMessages();
         echo 'All Messages - '.$overallMessages.' UnRead '.$unreadMessages.PHP_EOL.'<br>';
         // Fetch all the messages in the current folder
-        $emails = $imap->getMessages(1,0, 'desc');
+        $emails = $imap->getMessages(1,10, 'desc');
         $message = $emails[0];
         $tt=1;
-        var_dump($emails);
+        var_dump($message);
     }
 }

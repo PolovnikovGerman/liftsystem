@@ -27,6 +27,7 @@ class Migration_post_folders extends CI_Migration {
             )
         ));
         $this->dbforge->add_key('id', TRUE);
+        $this->dbforge->add_field('CONSTRAINT FOREIGN KEY (postbox_id) REFERENCES user_postboxes(postbox_id) on update cascade on delete set null');
         $this->dbforge->create_table('postbox_folders');
     }
 
