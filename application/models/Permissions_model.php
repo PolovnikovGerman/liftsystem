@@ -80,18 +80,24 @@ Class Permissions_model extends My_Model
 //        }
 //    }
 
-    function get_subitems($user_id, $item_lnk) {
-        $res =[
-            ['user_permission_id'=>4794,'user_id'=>1,'websys_page_id'=>89,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsalescustoms',],
-            ['user_permission_id'=>4795,'user_id'=>1,'websys_page_id'=>90,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsalesstock',],
-            ['user_permission_id'=>4796,'user_id'=>1,'websys_page_id'=>91,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsalesariel',],
-            ['user_permission_id'=>4797,'user_id'=>1,'websys_page_id'=>92,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsalesalpi',],
-            ['user_permission_id'=>4798,'user_id'=>1,'websys_page_id'=>93,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsalesmailine',],
-            ['user_permission_id'=>4799,'user_id'=>1,'websys_page_id'=>94,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsalesother',],
-            ['user_permission_id'=>4800,'user_id'=>1,'websys_page_id'=>95,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsaleshit',],
-            ['user_permission_id'=>4800,'user_id'=>1,'websys_page_id'=>96,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsalesesp',],
-            // ['user_permission_id'=>4795,'user_id'=>1,'websys_page_id'=>90,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'',],
-        ];
+    function get_subitems($user_id, $item_lnk, $brand) {
+        if ($brand=='SG') {
+            $res =[
+                ['user_permission_id'=>4794,'user_id'=>1,'websys_page_id'=>89,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsalescustoms',],
+            ];
+        } else {
+            $res =[
+                ['user_permission_id'=>4794,'user_id'=>1,'websys_page_id'=>89,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsalescustoms',],
+                ['user_permission_id'=>4795,'user_id'=>1,'websys_page_id'=>90,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsalesstock',],
+                ['user_permission_id'=>4796,'user_id'=>1,'websys_page_id'=>91,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsalesariel',],
+                ['user_permission_id'=>4797,'user_id'=>1,'websys_page_id'=>92,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsalesalpi',],
+                ['user_permission_id'=>4798,'user_id'=>1,'websys_page_id'=>93,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsalesmailine',],
+                ['user_permission_id'=>4799,'user_id'=>1,'websys_page_id'=>94,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsalesother',],
+                ['user_permission_id'=>4800,'user_id'=>1,'websys_page_id'=>95,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsaleshit',],
+                ['user_permission_id'=>4800,'user_id'=>1,'websys_page_id'=>96,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'itemsalesesp',],
+                // ['user_permission_id'=>4795,'user_id'=>1,'websys_page_id'=>90,'permission_type'=>1,'profit_view'=>'Profit','websys_page_link'=>'',],
+            ];
+        }
 //        $this->db->select('rp.*, wp.websys_page_link');
 //        $this->db->from('user_permissions rp');
 //        $this->db->join('websys_pages wp','wp.websys_page_id=rp.websys_page_id');

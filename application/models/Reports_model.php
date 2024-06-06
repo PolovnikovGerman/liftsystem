@@ -915,7 +915,7 @@ Class Reports_model extends My_Model
 
     public function get_newesp_salestypes($dates, $oldesp, $brand) {
         // Get Month Data
-        $item_table='.sb_items';
+        $item_table='sb_items';
         $vendoritem_table='sb_vendor_items';
         $year=date('Y');
         $month=date('m');
@@ -4230,7 +4230,7 @@ Class Reports_model extends My_Model
 
     private function _get_itemreport_ariel_old($usr_profitview, $profitview, $start_date, $end_report, $brand) {
         $ariels = $ariel_keys = $ariel_scryears = array();
-        $item_table='.sb_items';
+        $item_table='sb_items';
         $vendoritem_table='sb_vendor_items';
 
         $profit_type = $usr_profitview;
