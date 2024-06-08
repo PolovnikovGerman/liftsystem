@@ -43,10 +43,35 @@ class Emails extends MY_Controller
         $overallMessages = $imap->countMessages();
         $unreadMessages = $imap->countUnreadMessages();
         echo 'All Messages - '.$overallMessages.' UnRead '.$unreadMessages.PHP_EOL.'<br>';
+//        $tt = $imap->getBriefInfoMessages();
+//        print_r($tt);
+//        die();
         // Fetch all the messages in the current folder
-        $emails = $imap->getMessages(1,10, 'desc');
-        $message = $emails[0];
+        // $emails = $imap->getMessages(100,1, 'desc');
+        $uid = '67759';
+        $id = $imap->getId($uid);
+        $email = $imap->getMessage($id);
+        $this->load->config('uploader');
+        // foreach ($emails as $email) {
+            $attachments = $email->attachments;
+            if (count($attachments) > 0) {
+                // $imap->saveAttachments(['dir' => $this->config->item('upload_path_preload'),'incomingMessage'=>$email]);
+                echo 'UID '.$email->header->uid.' Date '.$email->header->date.' Subject '.$email->header->subject.PHP_EOL.'<br/>';
+
+                foreach ($attachments as $attachment) {
+                    if ($attachment->info->structure->encoding == 3) {
+                        echo 'Name '.$attachment->name.PHP_EOL.'</br>';
+                        echo 'Type '.$attachment->info->structure->type.PHP_EOL.'</br>';
+                        echo 'Encoding '.$attachment->info->structure->encoding.'<br/>';
+                        echo 'Subtype '.$attachment->info->structure->subtype.'<br/>';
+                        file_put_contents($this->config->item('upload_path_preload').$attachment->name, base64_decode($attachment->body));
+                    }
+                    // print_r($attachment->info).PHP_EOL.'</br>';;
+                }
+                die();
+            }
+        // }
         $tt=1;
-        var_dump($message);
+
     }
 }
