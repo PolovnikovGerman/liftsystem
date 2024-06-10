@@ -159,6 +159,7 @@ class Template
             'scripts'=>$scripts,
             'title' => ($this->CI->config->item('system_name').$pagetitle),
             'gmaps' => $gmaps,
+            'googlefont' => ifset($options,'googlefont', 0),
         ];
         if (ifset($options,'adaptive',0)==1) {
             $head_options['menu'] = $mobpermissions;

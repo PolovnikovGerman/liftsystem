@@ -2,6 +2,19 @@
     <div class="stressballssubtitle">LIFT</div>
     <div class="brandcontentmenu">
         <?php foreach ($permissions as $menu) { ?>
+            <?php if ($menu['item_link']=='/mailbox') { ?>
+                <?php if ($activelnk == $menu['item_link']) { ?>
+                    <div class="brandmenuitemactive" data-url="<?=$menu['item_link']?>" data-brand="SB">
+                        <div class="brandmenuicon active" "><img src="/img/page_view/email-black.svg"/></div>
+                        <div class="brandmenutitle active"><?=$menu['item_name']?></div>
+                    </div>
+                <?php } else { ?>
+                    <div class="brandmenuitem" data-url="<?=$menu['item_link']?>" data-brand="SB">
+                        <div class="brandmenuicon" data-brand="SB" data-item="<?=$menu['menu_item_id']?>"><img src="/img/page_view/email-white.svg"/></div>
+                        <div class="brandmenutitle"><?=$menu['item_name']?></div>
+                    </div>
+                <?php } ?>
+            <?php } ?>
             <?php if ($menu['item_link']=='/marketing') { ?>
                 <?php if ($activelnk == $menu['item_link']) { ?>
                     <div class="brandmenuitemactive" data-url="<?=$menu['item_link']?>" data-brand="SB">
@@ -116,6 +129,19 @@
     <div class="relieverssubtitle">LIFT</div>
     <div class="brandcontentmenu">
         <?php foreach ($permissions as $menu) { ?>
+            <?php if ($menu['item_link']=='/mailbox') { ?>
+                <?php if ($activelnk == $menu['item_link']) { ?>
+                    <div class="brandmenuitemactive relievers" data-url="<?=$menu['item_link']?>" data-brand="SR">
+                        <div class="brandmenuicon active" "><img src="/img/page_view/email-black.svg"/></div>
+                        <div class="brandmenutitle active"><?=$menu['item_name']?></div>
+                    </div>
+                <?php } else { ?>
+                    <div class="brandmenuitem" data-url="<?=$menu['item_link']?>" data-brand="SB">
+                        <div class="brandmenuicon" data-brand="SB" data-item="<?=$menu['menu_item_id']?>"><img src="/img/page_view/email-white.svg"/></div>
+                        <div class="brandmenutitle"><?=$menu['item_name']?></div>
+                    </div>
+                <?php } ?>
+            <?php } ?>
             <?php if ($menu['item_link']=='/marketing') { ?>
                 <?php if ($activelnk == $menu['item_link']) { ?>
                     <div class="brandmenuitemactive relievers" data-url="<?=$menu['item_link']?>" data-brand="SR">

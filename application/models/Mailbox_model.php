@@ -5,6 +5,18 @@ use SSilence\ImapClient\ImapClient as Imap;
 
 class Mailbox_model extends MY_Model
 {
+    var $inbox_name = 'Inbox';
+    var $mainfolders = [
+        'Inbox',
+        'Unread',
+        'Starred',
+        'Draft',
+        'Bulk',
+        'Sent',
+        'Archive',
+        'Spam',
+        'Trash',
+    ];
     function __construct()
     {
         parent::__construct();
@@ -148,6 +160,83 @@ class Mailbox_model extends MY_Model
         }
         $out['result'] = $this->success_result;
         $out['imap'] = $imap;
+        return $out;
+    }
+    // Output functions
+    public function get_user_mailboxes($usr_id, $brand='ALL')
+    {
+        $this->db->select('*')->from('user_postboxes')->where('user_id', $usr_id);
+        // Add select by brand
+        $results = $this->db->get()->result_array();
+        $out = [];
+        foreach ($results as $result) {
+            $mailtitle = explode('@',$result['postbox_user']);
+            $result['postbox_title'] = $mailtitle[0].'@';
+            $out[] = $result;
+        }
+        return $out;
+    }
+
+    public function get_postbox_details($postbox_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Non exist postbox'];
+        $this->db->select('*')->from('user_postboxes')->where('postbox_id', $postbox_id);
+        $postbres = $this->db->get()->row_array();
+        if (ifset($postbres,'postbox_id',0)==$postbox_id) {
+            $out['result'] = $this->success_result;
+            // Calc folders statistics
+            $this->db->select('f.folder_id, f.folder_name, count(m.message_id) as cnt')->from('postbox_folders f')->join('postbox_messages m','f.folder_id=m.folder_id','left')->where('f.postbox_id', $postbox_id)->group_by('folder_id, f.folder_name');
+            $folders = $this->db->get()->result_array();
+            // Calc unread messages
+            $this->db->select('count(m.message_id) as cnt')->from('postbox_messages m')->join('postbox_folders f', 'f.folder_id=m.folder_id')->where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_seen'=>0]);
+            $newmsg = $this->db->get()->row_array();
+            // Calc stared
+            $this->db->select('count(m.message_id) as cnt')->from('postbox_messages m')->join('postbox_folders f', 'f.folder_id=m.folder_id')->where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_flagged'=>1]);
+            $starmsg = $this->db->get()->row_array();
+
+            $folders[] = [
+                'folder_id' => 'new',
+                'folder_name' => 'Unread',
+                'cnt' => $newmsg['cnt'],
+            ];
+            $folders[] = [
+                'folder_id' => 'flagged',
+                'folder_name' => 'Starred',
+                'cnt' => $newmsg['cnt'],
+            ];
+            $newfolders = [];
+            // Check all folders
+            $active = 1;
+            foreach ($this->mainfolders as $keyfold) {
+                foreach ($folders as $folder) {
+                    if ($folder['folder_name']==$keyfold) {
+                        $newfolders[] = [
+                            'folder_id' => $folder['folder_id'],
+                            'folder_name' => $folder['folder_name'],
+                            'main' => 1,
+                            'active' => $active,
+                            'empty' => $folder['cnt']==0 ? 1 : 0,
+                            'cnt' => short_number($folder['cnt'],1),
+                        ];
+                        if ($active==1) { $active = 0; }
+                        break;
+                    }
+                }
+            }
+            foreach ($folders as $folder) {
+                if (!in_array($folder['folder_name'], $this->mainfolders)) {
+                    $newfolders[] = [
+                        'folder_id' => $folder['folder_id'],
+                        'folder_name' => $folder['folder_name'],
+                        'main' => 0,
+                        'active' => $active==1 ? 'active' : '',
+                        'empty' => $folder['cnt']==0 ? 1 : 0,
+                        'cnt' => short_number($folder['cnt'],1),
+                    ];
+                }
+            }
+            $out['folders'] = $newfolders;
+        }
         return $out;
     }
 }
