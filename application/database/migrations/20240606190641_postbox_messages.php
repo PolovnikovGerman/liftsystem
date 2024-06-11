@@ -95,6 +95,12 @@ class Migration_postbox_messages extends CI_Migration {
                 'null' => true,
                 'comment' => 'Message Draft flag'
             ),
+            'message_udate' => array(
+                'type' => 'INT',
+                'constraint' => 12,
+                'null' => true,
+                'comment' => 'Message Date UTC'
+            ),
             'message_text' => array(
                 'type' => 'TEXT',
                 'null' => true,

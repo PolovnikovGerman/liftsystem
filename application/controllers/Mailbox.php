@@ -101,9 +101,24 @@ class Mailbox extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+//                    $out['folders'] = $newfolders;
+//                    $out['folder_name'] = $folder_name;
+//                    $out['active_folder'] = $active_folder;
+//                    $out['active_cnt'] = $active_cnt;
+//                    $out['messages'] = $messages;
+                    if ($res['active_cnt']==0) {
+                        $header_view = $this->load->view('mailbox/folder_header_empty',['folder'=>$res['folder_name']], true);
+                    } else {
+                        $header_view = $this->load->view('mailbox/folder_header_view',['folder'=>$res['active_folder']], true);
+                    }
                     $folders_view = $this->load->view('mailbox/folders_view',['folders'=>$res['folders']], TRUE);
                     $messages_view = '';
+                    if (count($res['messages'])>0) {
+                        $messages_view = $this->_prepare_messages_view($res['messages']);
+                    }
                     $options = [
+                        'postbox' => $postbox,
+                        'headers_view' => $header_view,
                         'folders' => $folders_view,
                         'messages' => $messages_view,
                     ];
@@ -114,4 +129,84 @@ class Mailbox extends MY_Controller
         }
         show_404();
     }
+
+    public function postbox_addfolder()
+    {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $postbox = ifset($postdata, 'postbox');
+            $folder = ifset($postdata,'folder', '');
+            $res = $this->mailbox_model->postbox_addfolder($postbox, $folder);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['content'] = $this->load->view('mailbox/custom_folders_view',['folders'=>$res['folders']], TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // View folder
+    public function view_folder()
+    {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $folder = ifset($postdata,'folder', '');
+            $postbox = ifset($postdata,'postbox', '');
+            $res = $this->mailbox_model->postbox_viewfolder($postbox, $folder);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $folder = $res['folder'];
+                $messages = $res['messages'];
+                if (count($messages)==0) {
+                    $header_view = $this->load->view('mailbox/folder_header_empty',['folder'=>$folder['folder_name']], true);
+                } else {
+                    $header_view = $this->load->view('mailbox/folder_header_view',['folder'=>$folder['folder_id']], true);
+                }
+                $mdata['header'] = $header_view;
+                $mdata['content'] = '';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    private function _prepare_messages_view($messages, $sort='date_asc')
+    {
+        $curdate = date('Y-m-d');
+        $today_bgn = strtotime($curdate);
+        $today_end = strtotime($curdate.' 23:59:59');
+        $curyear = date('Y');
+        $curyear_bgn = strtotime($curyear.'-01-01');
+        if ($sort=='date_desc') {
+            $yesterday = date('Y-m-d', strtotime("-1 day", $curdate));
+            $yesterday_bgn=strtotime($yesterday);
+            $yesterday_end=strtotime($yesterday.' 23:59:59');
+            // Week bgn
+            $weekbgn = date('Y-m-d', strtotime("-1 week", $curdate));
+            $options = [
+                'messages' => $messages,
+                'today_bgn' => $today_bgn,
+                'today_end' => $today_end,
+                'yesterday_bgn' => $yesterday_bgn,
+                'yesterday_end' => $yesterday_end,
+                'week_bgn' => $weekbgn,
+                'year_bgn' => $curyear_bgn,
+            ];
+            $content = $this->load->view();
+        } else {
+            $options = [
+                'messages' => $messages,
+                'today_bgn' => $today_bgn,
+                'year_bgn' => $curyear_bgn,
+            ];
+            $content = $this->load->view('mailbox/messages_common_view', $options, TRUE);
+        }
+        return $content;
+    }
+
 }

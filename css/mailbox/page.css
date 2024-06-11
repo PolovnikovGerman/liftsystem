@@ -24,6 +24,7 @@
     text-align: center;
     border-radius: 3px;
     margin-left: 6px;
+    cursor: pointer;
 }
 .left-nav-list {
     width: 100%;
@@ -48,11 +49,13 @@
     font-weight: 600;
     font-size: 14px;
     margin-bottom: 6px;
+    cursor: pointer;
 }
 .left-nav-list ul li.active {
     background: #27547e;
     border-left: 2px solid #4faaff;
     padding-left: 8px;
+    cursor: default;
 }
 .left-nav-list ul li span {
     float: right;
@@ -156,6 +159,9 @@ tr.tr-unread th.tab-th-05 span.subject-email {
 .table-emails span.ic-grey {
     color: #979ea8;
 }
+.table-emails span.ic-orange {
+    color: #fd6100;;
+}
 .table-emails span.ic-blue {
     color: #0f69ff;
 }
@@ -224,6 +230,7 @@ span.arrow-select {
 .list-folder-title span {
     float: right;
     margin-right: 3px;
+    cursor: pointer;
 }
 .views-show {
     color: #fff;
@@ -242,13 +249,16 @@ span.arrow-select {
 }
 .list-newfolder {
     color: #fff;
-    height: 28px;
-    line-height: 28px;
     padding-left: 10px;
     font-weight: 600;
     font-size: 14px;
     margin-bottom: 2px;
     width: 145px;
+    cursor: pointer;
+}
+.newfolderadd {
+    height: 28px;
+    line-height: 28px!important;
 }
 .list-newfolder span.plus-folder {
     float: left;
@@ -256,6 +266,32 @@ span.arrow-select {
     padding-right: 7px;
     padding-left: 0;
     font-size: 11px;
+}
+.list-newfolder span.cancel-folder {
+    float: left;
+    color: #a1aab2;
+    padding-right: 7px;
+    padding-left: 0;
+    font-size: 12px;
+    cursor: pointer;
+}
+input.newfoldername {
+    float: left;
+    font-size: 12px;
+    height: 28px;
+    width: 98px;
+    padding-left: 2px;
+    color: #000000;
+}
+.list-newfolder span.save-newfolder {
+    float: left;
+    padding-right: 5px;
+    padding-left: 2px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.list-newfolder span.save-newfolder img {
+    width: 12px;
 }
 .left-nav-list ul.list-folders {
     padding-left: 14px;
