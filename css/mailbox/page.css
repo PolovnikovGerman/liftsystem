@@ -90,14 +90,13 @@
 }
 .emails-block-body {
     width: 100%;
+    height: 563px;
+    overflow-y: auto;
 }
 .table-emails {
     font-size: 13.5px;
     padding-left: 15px;
-    height: 563px;
-    overflow-y: scroll;
 }
-
 .tab-tr {
     border-bottom: 1px solid #e0e4e9;
     height: 24px;

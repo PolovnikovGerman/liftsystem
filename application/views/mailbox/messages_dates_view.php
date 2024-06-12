@@ -15,41 +15,50 @@ $curdate = '';
         <?php $curdate = date('Y-m-d', $message['message_udate']);?>
     <?php if ($message['message_udate']>=$today_bgn && $todaystart==0) { ?>
         <div class="emailes-date">Today</div>
+        <div class="table-emails">
         <table>
         <?php $todaystart = 1; $opentable = 1;?>
     <?php } elseif ($message['message_udate'] >= $yesterday_bgn && $yesterdaystart == 0) { ?>
         <?php if ($opentable==1) { ?>
             </table>
+            </div>
         <?php } ?>
         <div class="emailes-date">Yesterday</div>
+        <div class="table-emails">
         <table>
         <?php $yesterdaystart = 1; $opentable = 1; ?>
     <?php } elseif ($message['message_udate'] >= $week_bgn && $message['message_udate'] < $yesterday_bgn && $weekstart==0) { ?>
         <?php if ($opentable==1) { ?>
             </table>
+            </div>
         <?php } ?>
         <div class="emailes-date">Last week</div>
+        <div class="table-emails">
         <table>
         <?php $weekstart = 1; $opentable = 1; ?>
     <?php } elseif ($message['message_udate'] >= $year_bgn && $message['message_udate'] < $week_bgn) {?> <!--  && $yearstart==0 -->
         <?php if ($curmonth!==date('m', $message['message_udate'])) { ?>
             <?php if ($opentable==1) { ?>
                 </table>
+                </div>
             <?php } ?>
             <?php $yearstart=1; $opentable = 0;?>
             <?php $curmonth = date('m', $message['message_udate']);?>
             <div class="emailes-date"><?=date('F', $message['message_udate'])?></div>
+            <div class="table-emails">
             <table>
             <?php $opentable = 1;?>
         <?php } ?>
     <?php } elseif ($message['message_udate'] < $year_bgn && $otherstart==0) {?>
         <?php if ($opentable==1) { ?>
             </table>
+            </div>
         <?php } ?>
         <?php $otherstart=1; $opentable = 0;?>
         <?php if ($otheryear!==date('Y', $message['message_udate'])) { ?>
             <?php $otheryear = date('Y', $message['message_udate']);?>
                 <div class="emailes-date"><?=date('Y', $message['message_udate'])?></div>
+                <div class="table-emails">
                 <table>
             <?php $opentable = 1;?>
         <?php } ?>
@@ -89,4 +98,5 @@ $curdate = '';
 <?php } ?>
 <?php if ($opentable==1) { ?>
     </table>
+    </div>
 <?php } ?>
