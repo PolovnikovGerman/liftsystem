@@ -353,9 +353,22 @@ class Mailbox_model extends MY_Model
         return $out;
     }
 
-    public function postbox_viewfolder($postbox_id, $folder_id)
+    public function postbox_viewfolder($postbox_id, $folder_id, $postsort)
     {
         $out=['result' => $this->error_result, 'msg' => 'Empty Folder id'];
+        if ($postsort=='date_desc') {
+            $sortby = 'm.message_udate';
+            $sortorder = 'desc';
+        } elseif ('date_asc') {
+            $sortby = 'm.message_udate';
+            $sortorder = 'asc';
+        } elseif ('unread_asc') {
+            $sortby = 'm.message_seen';
+            $sortorder = 'asc';
+        } elseif ('flagged_first') {
+            $sortby = 'm.message_flagged';
+            $sortorder = 'desc';
+        }
         if (!empty($folder_id)) {
             $this->db->select('message_id, count(attachment_id) as cnt')->from('postbox_attachments')->group_by('message_id');
             $attachssql = $this->db->get_compiled_select();
@@ -369,7 +382,7 @@ class Mailbox_model extends MY_Model
                     ];
                     $this->db->select('m.*, coalesce(atchs.cnt,0) as numattach')->from('postbox_messages m')->
                     join('postbox_folders f', 'f.folder_id=m.folder_id')->join("({$attachssql}) as atchs",'m.message_id=atchs.message_id', 'left')->
-                    where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_seen'=>0])->order_by('m.message_udate','desc');
+                    where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_seen'=>0])->order_by($sortby, $sortorder);
                     $messages = $this->db->get()->result_array();
                 } else {
                     $folder = [
@@ -378,7 +391,7 @@ class Mailbox_model extends MY_Model
                     ];
                     $this->db->select('m.*, coalesce(atchs.cnt,0) as numattach')->from('postbox_messages m')->
                     join('postbox_folders f', 'f.folder_id=m.folder_id')->join("({$attachssql}) as atchs",'m.message_id=atchs.message_id', 'left')->
-                    where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_flagged'=>1])->order_by('m.message_udate','desc');
+                    where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_flagged'=>1])->order_by($sortby, $sortorder);
                     $messages = $this->db->get()->result_array();
                 }
                 $out['messages'] = $messages;
@@ -391,12 +404,18 @@ class Mailbox_model extends MY_Model
                     $out['result'] = $this->success_result;
                     $out['folder'] = $folder;
                     $this->db->select('m.*, coalesce(atchs.cnt,0) as numattach')->from('postbox_messages m')->
-                    join("({$attachssql}) as atchs",'m.message_id=atchs.message_id', 'left')->where('folder_id', $folder_id)->order_by('m.message_udate','desc');
+                    join("({$attachssql}) as atchs",'m.message_id=atchs.message_id', 'left')->where('folder_id', $folder_id)->order_by($sortby, $sortorder);
                     $messages = $this->db->get()->result_array();
                     $out['messages'] = $messages;
                 }
             }
         }
         return $out;
+    }
+
+    // Update read status
+    public function update_message_readstatus($message, $postbox)
+    {
+        $out = ['result' => ]
     }
 }

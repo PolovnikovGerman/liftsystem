@@ -163,6 +163,7 @@ tr.tr-unread th.tab-th-05 span.subject-email {
 }
 .table-emails span.ic-blue {
     color: #0f69ff;
+    cursor: pointer;
 }
 .choose-all {
     padding-left: 25px;

@@ -156,7 +156,8 @@ class Mailbox extends MY_Controller
             $mdata = [];
             $folder = ifset($postdata,'folder', '');
             $postbox = ifset($postdata,'postbox', '');
-            $res = $this->mailbox_model->postbox_viewfolder($postbox, $folder);
+            $postsort = ifset($postdata,'postsort','date_desc');
+            $res = $this->mailbox_model->postbox_viewfolder($postbox, $folder, $postsort);
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';
@@ -168,7 +169,30 @@ class Mailbox extends MY_Controller
                     $header_view = $this->load->view('mailbox/folder_header_view',['folder'=>$folder['folder_id']], true);
                 }
                 $mdata['header'] = $header_view;
-                $mdata['messages'] = $this->_prepare_messages_view($messages);
+                $mdata['messages'] = $this->_prepare_messages_view($messages, $postsort);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Update unread / read status
+    public function update_message_readstatus()
+    {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $postbox = ifset($postdata, 'postbox', '');
+            $message = ifset($postdata, 'message', '');
+            $res = $this->mailbox_model->update_message_readstatus($message, $postbox);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                if ($res['newstatus']==1) {
+
+                } else {
+
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }

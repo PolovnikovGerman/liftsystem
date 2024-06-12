@@ -68,6 +68,7 @@ function init_mailbox_manage() {
         var params = new Array();
         params.push({name: 'folder', value: folder});
         params.push({name: 'postbox', value: $("#postbox").val()});
+        params.push({name: 'postsort', value: $("#postboxsort").val()});
         var url = '/mailbox/view_folder';
         $("#loader").show();
         $.post(url, params, function (response){
@@ -108,6 +109,11 @@ function init_mailbox_manage() {
             }
         },'json');
     });
+    // Mark as read
+    $(".tab-th-02").find('span.ic-blue').unbind('click').click(function (){
+        var message = $(this).data('message');
+        update_message_readstatus(message);
+    });
 }
 
 function add_newfolder() {
@@ -140,6 +146,19 @@ function add_postbox_folder(folder_name) {
         } else {
             $("#loader").hide();
             show_errors(response);
+        }
+    },'json');
+}
+
+function update_message_readstatus(message) {
+    var params = new Array();
+    params.push({name: 'message_id', value: message});
+    params.push({name: 'postbox', value: $("#postbox").val()});
+    var url = '/mailbox/update_message_readstatus';
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".tab-th-02[data-message='"+message+"']").empty().html;(response.data.content);
+            init_mailbox_manage();
         }
     },'json');
 }
