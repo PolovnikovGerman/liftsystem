@@ -232,7 +232,7 @@ class Mailbox_model extends MY_Model
             $folders[] = [
                 'folder_id' => 'flagged',
                 'folder_name' => 'Starred',
-                'cnt' => $newmsg['cnt'],
+                'cnt' => $starmsg['cnt'],
             ];
             $newfolders = [];
             // Check all folders
@@ -357,6 +357,9 @@ class Mailbox_model extends MY_Model
     {
         $out=['result' => $this->error_result, 'msg' => 'Empty Folder id'];
         if (!empty($folder_id)) {
+            $this->db->select('message_id, count(attachment_id) as cnt')->from('postbox_attachments')->group_by('message_id');
+            $attachssql = $this->db->get_compiled_select();
+
             if ($folder_id=='new' || $folder_id=='flagged') {
                 $out['result'] = $this->success_result;
                 if ($folder_id=='new') {
@@ -364,14 +367,18 @@ class Mailbox_model extends MY_Model
                         'folder_id' => $folder_id,
                         'folder_name' => 'Unread',
                     ];
-                    $this->db->select('m.*')->from('postbox_messages m')->join('postbox_folders f', 'f.folder_id=m.folder_id')->where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_seen'=>0]);
+                    $this->db->select('m.*, coalesce(atchs.cnt,0) as numattach')->from('postbox_messages m')->
+                    join('postbox_folders f', 'f.folder_id=m.folder_id')->join("({$attachssql}) as atchs",'m.message_id=atchs.message_id', 'left')->
+                    where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_seen'=>0])->order_by('m.message_udate','desc');
                     $messages = $this->db->get()->result_array();
                 } else {
                     $folder = [
                         'folder_id' => $folder_id,
-                        'folder_name' => 'Unread',
+                        'folder_name' => 'Starred',
                     ];
-                    $this->db->select('m.*')->from('postbox_messages m')->join('postbox_folders f', 'f.folder_id=m.folder_id')->where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_flagged'=>1]);
+                    $this->db->select('m.*, coalesce(atchs.cnt,0) as numattach')->from('postbox_messages m')->
+                    join('postbox_folders f', 'f.folder_id=m.folder_id')->join("({$attachssql}) as atchs",'m.message_id=atchs.message_id', 'left')->
+                    where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_flagged'=>1])->order_by('m.message_udate','desc');
                     $messages = $this->db->get()->result_array();
                 }
                 $out['messages'] = $messages;
@@ -383,7 +390,8 @@ class Mailbox_model extends MY_Model
                 if (ifset($folder, 'folder_id',0)==$folder_id) {
                     $out['result'] = $this->success_result;
                     $out['folder'] = $folder;
-                    $this->db->select('*')->from('postbox_messages')->where('folder_id', $folder_id)->order_by('message_date', 'desc');
+                    $this->db->select('m.*, coalesce(atchs.cnt,0) as numattach')->from('postbox_messages m')->
+                    join("({$attachssql}) as atchs",'m.message_id=atchs.message_id', 'left')->where('folder_id', $folder_id)->order_by('m.message_udate','desc');
                     $messages = $this->db->get()->result_array();
                     $out['messages'] = $messages;
                 }

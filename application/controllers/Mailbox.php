@@ -168,14 +168,14 @@ class Mailbox extends MY_Controller
                     $header_view = $this->load->view('mailbox/folder_header_view',['folder'=>$folder['folder_id']], true);
                 }
                 $mdata['header'] = $header_view;
-                $mdata['content'] = '';
+                $mdata['messages'] = $this->_prepare_messages_view($messages);
             }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
 
-    private function _prepare_messages_view($messages, $sort='date_asc')
+    private function _prepare_messages_view($messages, $sort='date_desc')
     {
         $curdate = date('Y-m-d');
         $today_bgn = strtotime($curdate);
@@ -183,11 +183,12 @@ class Mailbox extends MY_Controller
         $curyear = date('Y');
         $curyear_bgn = strtotime($curyear.'-01-01');
         if ($sort=='date_desc') {
-            $yesterday = date('Y-m-d', strtotime("-1 day", $curdate));
+            $contant = '';
+            $yesterday = date('Y-m-d', strtotime($curdate. ' - 1 day'));
             $yesterday_bgn=strtotime($yesterday);
             $yesterday_end=strtotime($yesterday.' 23:59:59');
             // Week bgn
-            $weekbgn = date('Y-m-d', strtotime("-1 week", $curdate));
+            $weekbgn = strtotime($curdate. ' - 1 week');
             $options = [
                 'messages' => $messages,
                 'today_bgn' => $today_bgn,
@@ -197,7 +198,7 @@ class Mailbox extends MY_Controller
                 'week_bgn' => $weekbgn,
                 'year_bgn' => $curyear_bgn,
             ];
-            $content = $this->load->view();
+            $content = $this->load->view('mailbox/messages_dates_view', $options, TRUE);
         } else {
             $options = [
                 'messages' => $messages,
