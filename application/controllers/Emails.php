@@ -74,4 +74,27 @@ class Emails extends MY_Controller
         $tt=1;
 
     }
+
+    public function testmsg()
+    {
+        $mailbox = 'imap.mail.yahoo.com';
+        $username = getenv('EMAIL_USER');
+        $password = getenv('EMAIL_PASSWD');
+        $encryption = Imap::ENCRYPT_SSL;
+
+        try{
+            $imap = new Imap($mailbox, $username, $password, $encryption);
+            // You can also check out example-connect.php for more connection options
+
+        }catch (ImapClientException $error){
+            echo $error->getMessage().PHP_EOL; // You know the rule, no errors in production ...
+            die(); // Oh no :( we failed
+        }
+        $uid = '69057';
+        $id = $imap->getId($uid);
+        echo 'Message ID '.$id.'<br>';
+        $imap->setUnseenMessage($id);
+
+    }
+
 }

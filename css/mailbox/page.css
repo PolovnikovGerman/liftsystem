@@ -165,6 +165,10 @@ tr.tr-unread th.tab-th-05 span.subject-email {
     color: #0f69ff;
     cursor: pointer;
 }
+.table-emails span.ic-normal {
+    color: #979ea8;
+    cursor: pointer;
+}
 .choose-all {
     padding-left: 25px;
     margin-top: 4px;

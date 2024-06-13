@@ -69,11 +69,11 @@ $curdate = '';
         </th>
         <th class="tab-th-02" data-message="<?=$message['message_id']?>">
             <?php if ($message['message_seen']==0) { ?>
-                <span class="ic-blue" data-message="<?=$message['message_id']?>"><i class="fa fa-circle" aria-hidden="true"></i></span>
+                <span class="ic-blue" data-message="<?=$message['message_id']?>" title="Mark As Read"><i class="fa fa-circle" aria-hidden="true"></i></span>
             <?php } elseif ($message['message_answered']==1) { ?>
                 <span class="ic-grey"><i class="fa fa-reply" aria-hidden="true"></i></span>
             <?php } else { ?>
-                <span class="ic-normal" data-message="<?=$message['message_id']?>">&nbsp;</span>
+                <span class="ic-normal" data-message="<?=$message['message_id']?>" title="Mark As Unread"><i class="fa fa-circle-thin"></i></span>
             <?php } ?>
         </th>
         <th class="tab-th-03" data-message="<?=$message['message_id']?>"><?=$message['message_from']?></th>

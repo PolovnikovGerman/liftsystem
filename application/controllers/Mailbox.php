@@ -183,15 +183,15 @@ class Mailbox extends MY_Controller
             $postdata = $this->input->post();
             $mdata = [];
             $postbox = ifset($postdata, 'postbox', '');
-            $message = ifset($postdata, 'message', '');
+            $message = ifset($postdata, 'message_id', '');
             $res = $this->mailbox_model->update_message_readstatus($message, $postbox);
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';
-                if ($res['newstatus']==1) {
-
+                if ($res['unread']==1) {
+                    $mdata['content'] = '<span class="ic-normal" data-message="'.$message.'">&nbsp;</span>';
                 } else {
-
+                    $mdata['content'] = '<span class="ic-blue" data-message="'.$message.'"><i class="fa fa-circle" aria-hidden="true"></i></span>';
                 }
             }
             $this->ajaxResponse($mdata, $error);

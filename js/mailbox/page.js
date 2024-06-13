@@ -114,6 +114,10 @@ function init_mailbox_manage() {
         var message = $(this).data('message');
         update_message_readstatus(message);
     });
+    $(".tab-th-02").find('span.ic-normal').unbind('click').click(function (){
+        var message = $(this).data('message');
+        update_message_readstatus(message);
+    });
 }
 
 function add_newfolder() {
@@ -155,10 +159,15 @@ function update_message_readstatus(message) {
     params.push({name: 'message_id', value: message});
     params.push({name: 'postbox', value: $("#postbox").val()});
     var url = '/mailbox/update_message_readstatus';
+    $("#loader").show();
     $.post(url, params, function (response){
         if (response.errors=='') {
-            $(".tab-th-02[data-message='"+message+"']").empty().html;(response.data.content);
+            $(".tab-th-02[data-message='"+message+"']").empty().html(response.data.content);
+            $("#loader").hide();
             init_mailbox_manage();
+        } else {
+            $("#loader").hide();
+            show_errors(response);
         }
     },'json');
 }

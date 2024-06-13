@@ -145,6 +145,70 @@ class Mailbox_model extends MY_Model
         return $out;
     }
 
+    public function update_folders_msgs($postbox, $folder)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Error with connection'];
+        $imapdat = $this->_create_imap_client($postbox);
+        $out['msg'] = $imapdat['msg'];
+        if ($imapdat['result']==$this->success_result) {
+            $out['result'] = $this->success_result;
+            $imap = $imapdat['imap'];
+            $imap->selectFolder($folder['folder_name']);
+            $briefinfos = $imap->getBriefInfoMessages();
+            // Get last 20 messages
+            $numinfos = count($briefinfos);
+            $fisrtid = 0;
+            if ($numinfos > 20) {
+                $fisrtid = $numinfos - 20;
+            }
+            for ($i=$fisrtid; $i< $numinfos; $i++) {
+                $message = $imap->getMessage($briefinfos[$i]['id']);
+                echo 'Manage msg '.$briefinfos[$i]['id'].' Messaage ID '.$message->header->message_id.PHP_EOL;
+                $postmsgid = $message->header->message_id;
+                // Check - if such msg exist
+                $this->db->select('count(message_id) as cnt, max(message_id) as msgid')->from('postbox_messages')->where('postmessage_id', $postmsgid);
+                $msgchk = $this->db->get()->row_array();
+                if ($msgchk['cnt']==0) {
+                    // New Message
+                    echo 'Add message '.$postmsgid.PHP_EOL;
+                    $this->db->set('folder_id', $folder['folder_id']);
+                    $this->db->set('message_subject', $message->header->subject);
+                    $this->db->set('message_from', $message->header->from);
+                    $this->db->set('message_to', $message->header->to);
+                    $this->db->set('message_date', $message->header->date);
+                    $this->db->set('postmessage_id', $message->header->message_id);
+                    $this->db->set('message_uid', $message->header->uid);
+                    $this->db->set('message_recent', $message->header->recent);
+                    $this->db->set('message_flagged', $message->header->flagged);
+                    $this->db->set('message_answered', $message->header->answered);
+                    $this->db->set('message_deleted', $message->header->deleted);
+                    $this->db->set('message_seen', $message->header->seen);
+                    $this->db->set('message_draft', $message->header->draft);
+                    $this->db->set('message_udate', $message->header->udate);
+                    $this->db->set('message_text', $message->message->info[1]->body);
+                    $this->db->insert('postbox_messages');
+                    $msgid = $this->db->insert_id();
+                    $attachments = $message->attachments;
+                    if (count($attachments) > 0) {
+                        $this->_save_attachment($msgid, $attachments);
+                    }
+                } else {
+                    echo 'Update message '.$postmsgid.PHP_EOL;
+                    $this->db->where('message_id', $msgchk['msgid']);
+                    $this->db->set('folder_id', $folder['folder_id']);
+                    $this->db->set('message_flagged', $message->header->flagged);
+                    $this->db->set('message_answered', $message->header->answered);
+                    $this->db->set('message_deleted', $message->header->deleted);
+                    $this->db->set('message_seen', $message->header->seen);
+                    $this->db->set('message_draft', $message->header->draft);
+                    $this->db->set('message_udate', $message->header->udate);
+                    $this->db->update('postbox_messages');
+                }
+
+            }
+        }
+    }
+
     // Save attachments
     private function _save_attachment($msgid, $attachments)
     {
@@ -414,8 +478,45 @@ class Mailbox_model extends MY_Model
     }
 
     // Update read status
-    public function update_message_readstatus($message, $postbox)
+    public function update_message_readstatus($message_id, $postbox_id)
     {
-        $out = ['result' => ]
+        $out = ['result' => $this->error_result, 'msg' => 'Postbox Not Found'];
+        $this->db->select('*')->from('user_postboxes')->where('postbox_id', $postbox_id);
+        $postbox = $this->db->get()->row_array();
+        if (ifset($postbox, 'postbox_id', 0) == $postbox_id) {
+            $imapres = $this->_create_imap_client($postbox);
+            $out['msg'] = $imapres['msg'];
+            if ($imapres['result']==$this->success_result) {
+                $imap = $imapres['imap'];
+                $out['msg'] = 'Message Not Exist';
+                $this->db->select('*')->from('postbox_messages')->where('message_id', $message_id);
+                $message = $this->db->get()->row_array();
+                if (ifset($message, 'message_id',0)==$message_id) {
+                    $id = $imap->getId($message['message_uid']);
+                    $unread = $message['message_seen']==0 ? 1 : 0;
+                    if ($unread==0) {
+                        try{
+                            $imap->setUnseenMessage($id);
+                        } catch (ImapClientException $error){
+                            $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
+                            return $out;
+                        }
+                    } else {
+                        try{
+                            $imap->setSeenMessage($id);
+                        } catch (ImapClientException $error){
+                            $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
+                            return $out;
+                        }
+                    }
+                    $this->db->where('message_id', $message_id);
+                    $this->db->set('message_seen', $unread);
+                    $this->db->update('postbox_messages');
+                    $out['result'] = $this->success_result;
+                    $out['unread'] = $unread;
+                }
+            }
+        }
+        return $out;
     }
 }
