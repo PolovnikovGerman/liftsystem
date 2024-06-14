@@ -3710,4 +3710,76 @@ class Test extends CI_Controller
             echo 'File '.$filename.' ready'.PHP_EOL;
         }
     }
+
+    public function report_printshop_amount()
+    {
+        $brands = ['SB','SR'];
+        $this->load->config('uploader');
+        $this->db->select('min(create_date) as mindate, max(create_date) as maxdate');
+        $this->db->from('ts_order_amounts');
+        $this->db->where('printshop',1);
+        $this->db->where('printshop_total != amount_sum');
+        $years = $this->db->get()->row_array();
+        $min_year = date('Y', $years['mindate']);
+        $max_year = date('Y', $years['maxdate']);
+        for ($i=$min_year; $i<=$max_year; $i++) {
+            $datebgn = strtotime($i.'-01-01');
+            $dateend = strtotime(($i+1).'-01-01');
+            echo 'Period '.date('d.m.Y', $datebgn).' - '.date('d.m.Y', $dateend).PHP_EOL;
+            foreach ($brands as $key=>$brand) {
+                $this->db->select('o.order_id, o.order_num, o.order_cog, o.profit, o.revenue, o.order_date as amount_date, a.amount_sum, a.printshop_total');
+                $this->db->from('ts_order_amounts a');
+                $this->db->join('ts_orders o','o.order_id=a.order_id');
+                $this->db->where('o.order_date >= ',$datebgn);
+                $this->db->where('o.order_date < ',$dateend);
+                $this->db->where('a.printshop',1);
+                $this->db->where('a.printshop_history',0);
+                $this->db->where('a.printshop_total != a.amount_sum');
+                if ($brand=='SB') {
+                    $this->db->where_in('o.brand', ['SB','BT']);
+                } else {
+                    $this->db->where('o.brand', $brand);
+                }
+
+                $results = $this->db->get()->result_array();
+                if (count($results)>0) {
+                    $order_keys = [];
+                    $orders = [];
+                    foreach ($results as $result) {
+                        if (!in_array($result['order_id'], $order_keys)) {
+                            array_push($order_keys, $result['order_id']);
+                            $this->db->select('sum(amount_sum) as amnttotal, sum(printshop_total) as printtotal');
+                            $this->db->from('ts_order_amounts');
+                            $this->db->where('order_id', $result['order_id']);
+                            $this->db->where('printshop',1);
+                            $this->db->where('printshop_history',0);
+                            $printres = $this->db->get()->row_array();
+                            $diff = $printres['amnttotal']-$printres['printtotal'];
+                            $fixcog = $result['order_cog'] - $diff;
+                            $fixprofit = $result['profit'] + $diff;
+                            $orders[] = [
+                                'order_num' => $result['order_num'],
+                                'amount_date' => date('m/d/Y', $result['amount_date']),
+                                'order_cog' => $result['order_cog'],
+                                'profit' => $result['profit'],
+                                'fix_cog' => round($fixcog,2),
+                                'fix_profit' => round($fixprofit,2),
+                            ];
+                        }
+                    }
+                    $filename = $this->config->item('upload_path_preload').'change_cog_'.$i.'_'.strtolower($brand).'.csv';
+                    @unlink($filename);
+                    $fh = fopen($filename, FOPEN_READ_WRITE_CREATE);
+                    $head = 'Order #,Date,Current COG,Current Profit,Fixed COG,Fixed Profit'.PHP_EOL;
+                    fwrite($fh, $head);
+                    foreach ($orders as $result) {
+                        $row = $result['order_num'].','.$result['amount_date'].','.$result['order_cog'].','.$result['profit'].','.$result['fix_cog'].','.$result['fix_profit'].PHP_EOL;
+                        fwrite($fh, $row);
+                    }
+                    fclose($fh);
+                    echo 'File '.$filename.' ready'.PHP_EOL;
+                }
+            }
+        }
+    }
 }
