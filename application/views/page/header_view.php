@@ -79,7 +79,7 @@
                         <div class="icon" title="Reports">
                             <img src="/img/icons/chart-line-white.svg" class="img-responsive"/>
                         </div>
-                        <div class="infotext">Reports</div>
+                        <div class="infotext" style="padding-right: 4px;">Reports</div>
                     </div>
                 <?php } ?>
                 <?php if ($inventorychk) { ?>
