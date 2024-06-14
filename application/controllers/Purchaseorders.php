@@ -95,6 +95,7 @@ class Purchaseorders extends MY_Controller
             $this->load->model('vendors_model');
             $v_options = [
                 'order_by' => 'v.vendor_name',
+                'exclude' => $this->config->item('inventory_vendor'),
             ];
             $vendors=$this->vendors_model->get_vendors_list($v_options);
             $methods=$this->orders_model->get_methods_edit();
@@ -155,6 +156,7 @@ class Purchaseorders extends MY_Controller
             $this->load->model('payments_model');
             $v_options = [
                 'order_by' => 'v.vendor_name',
+                'exclude' => $this->config->item('inventory_vendor'),
             ];
             $vendors=$this->vendors_model->get_vendors_list($v_options);
             $methods=$this->orders_model->get_methods_edit();

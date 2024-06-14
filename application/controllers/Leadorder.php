@@ -5420,7 +5420,6 @@ class Leadorder extends MY_Controller
         $order_id=(isset($postdata['ord']) ? intval($postdata['ord']) : 0);
         $cogcontent='<div class="error">Order Not Found</div>';
         if (!empty($order_id)) {
-
             $this->load->model('leadorder_model');
             $res=$this->leadorder_model->get_leadorder_amounts($order_id);
             $options=array(
@@ -5698,6 +5697,7 @@ class Leadorder extends MY_Controller
                     $this->load->model('orders_model');
                     $v_options = [
                         'order_by' => 'v.vendor_name',
+                        'exclude' => $this->config->item('inventory_vendor'),
                     ];
                     $vendors=$this->vendors_model->get_vendors_list($v_options);
                     $methods=$this->orders_model->get_methods_edit();

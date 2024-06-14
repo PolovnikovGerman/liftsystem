@@ -228,6 +228,13 @@ Class Vendors_model extends My_Model
         if (ifset($options,'vtype','')!=='') {
             $this->db->where('vendor_type', $options['vtype']);
         }
+        if (isset($options['exclude'])) {
+            if (is_array($options['exclude'])) {
+                $this->db->where_not_in('vendor_id', $options['exclude']);
+            } else {
+                $this->db->where('vendor_id != ', $options['exclude']);
+            }
+        }
         if (isset($options['limit'])) {
             if (isset($options['offset'])) {
                 $this->db->limit($options['limit'], $options['offset']);
