@@ -189,9 +189,11 @@ class Mailbox extends MY_Controller
             if ($res['result']==$this->success_result) {
                 $error = '';
                 if ($res['unread']==1) {
-                    $mdata['content'] = '<span class="ic-normal" data-message="'.$message.'">&nbsp;</span>';
+                    $mdata['content'] = '<span class="ic-normal" data-message="'.$message.'" title="Mark As Unread"><i class="fa fa-circle-thin"></i></span>';
+                    $mdata['read_state'] = 0;
                 } else {
-                    $mdata['content'] = '<span class="ic-blue" data-message="'.$message.'"><i class="fa fa-circle" aria-hidden="true"></i></span>';
+                    $mdata['content'] = '<span class="ic-blue" data-message="'.$message.'" title="Mark As Read"><i class="fa fa-circle" aria-hidden="true"></i></span>';
+                    $mdata['read_state'] = 1;
                 }
             }
             $this->ajaxResponse($mdata, $error);

@@ -63,7 +63,7 @@ $curdate = '';
             <?php $opentable = 1;?>
         <?php } ?>
     <?php } ?>
-    <tr class="tab-tr <?=$message['message_seen']==1 ? 'tr-read' : 'tr-unread'?>">
+    <tr class="tab-tr <?=$message['message_seen']==1 ? 'tr-read' : 'tr-unread'?>" data-message="<?=$message['message_id']?>">
         <th class="tab-th-01">
             <input class="eb-checkbox" type="checkbox" data-message="<?=$message['message_id']?>">
         </th>
@@ -79,9 +79,9 @@ $curdate = '';
         <th class="tab-th-03" data-message="<?=$message['message_id']?>"><?=$message['message_from']?></th>
         <th class="tab-th-04" data-message="<?=$message['message_id']?>">
             <?php if ($message['message_flagged']==1) { ?>
-                <span class="ic-orange"><i class="fa fa-star" aria-hidden="true"></i></span>
+                <span class="ic-orange" data-message="<?=$message['message_id']?>"><i class="fa fa-star" aria-hidden="true"></i></span>
             <?php } else { ?>
-                <span class="ic-grey"><i class="fa fa-star-o" aria-hidden="true"></i></span>
+                <span class="ic-grey" data-message="<?=$message['message_id']?>"><i class="fa fa-star-o" aria-hidden="true"></i></span>
             <?php } ?>
         </th>
         <th class="tab-th-05" data-message="<?=$message['message_id']?>"><span class="subject-email"><?=$message['message_subject']?></span></th>

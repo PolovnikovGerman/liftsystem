@@ -114,9 +114,15 @@ function init_mailbox_manage() {
         var message = $(this).data('message');
         update_message_readstatus(message);
     });
+    // Mark as unread
     $(".tab-th-02").find('span.ic-normal').unbind('click').click(function (){
         var message = $(this).data('message');
         update_message_readstatus(message);
+    });
+    // Mark as flagged
+    $(".tab-th-04").find('span.ic-grey').unbind('click').click(function (){
+        var message = $(this).data('message');
+        update_message_flagged(message);
     });
 }
 
@@ -163,10 +169,31 @@ function update_message_readstatus(message) {
     $.post(url, params, function (response){
         if (response.errors=='') {
             $(".tab-th-02[data-message='"+message+"']").empty().html(response.data.content);
+            $("tr.tab-tr[data-message='"+message+"']").removeClass('tr-read').removeClass('tr-unread');
+            if (parseInt(response.data.read_state)==1) {
+                $("tr.tab-tr[data-message='"+message+"']").addClass('tr-unread');
+            } else {
+                $("tr.tab-tr[data-message='"+message+"']").addClass('tr-read');
+            }
             $("#loader").hide();
             init_mailbox_manage();
         } else {
             $("#loader").hide();
+            show_errors(response);
+        }
+    },'json');
+}
+
+function update_message_flagged(message) {
+    var params = new Array();
+    params.push({name: 'message_id', value: message});
+    params.push({name: 'postbox', value: $("#postbox").val()});
+    var url = '/mailbox/update_message_star';
+    $("#loader").show();
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".tab-th-04[data-message='"+message+"']").empty().html(response.data.content);
+        } else {
             show_errors(response);
         }
     },'json');
