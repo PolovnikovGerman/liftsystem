@@ -3715,14 +3715,15 @@ class Test extends CI_Controller
     {
         $brands = ['SB','SR'];
         $this->load->config('uploader');
-        $this->db->select('min(create_date) as mindate, max(create_date) as maxdate');
-        $this->db->from('ts_order_amounts');
-        $this->db->where('printshop',1);
-        $this->db->where('printshop_history',0);
-        $this->db->where('printshop_total != amount_sum');
-        $years = $this->db->get()->row_array();
-        $min_year = date('Y', $years['mindate']);
-        $max_year = date('Y', $years['maxdate']);
+//        $this->db->select('min(create_date) as mindate, max(create_date) as maxdate');
+//        $this->db->from('ts_order_amounts');
+//        $this->db->where('printshop',1);
+//        $this->db->where('printshop_history',0);
+//        $this->db->where('printshop_total != amount_sum');
+//        $years = $this->db->get()->row_array();
+//        $min_year = date('Y', $years['mindate']);
+//        $max_year = date('Y', $years['maxdate']);
+        $min_year = 2016; $max_year = 2024;
         foreach ($brands as $brand) {
             $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
             $nsheet = 0;
@@ -3736,7 +3737,7 @@ class Test extends CI_Controller
                 $this->db->where('o.order_date >= ', $datebgn);
                 $this->db->where('o.order_date < ', $dateend);
                 $this->db->where('a.printshop', 1);
-                $this->db->where('a.printshop_history', 0);
+                // $this->db->where('a.printshop_history', 0);
                 $this->db->where('a.printshop_total != a.amount_sum');
                 if ($brand == 'SB') {
                     $this->db->where_in('o.brand', ['SB', 'BT']);
@@ -3747,7 +3748,7 @@ class Test extends CI_Controller
                 if (count($results) > 0) {
                     if ($nsheet==0) {
                         $sheet = $spreadsheet->getActiveSheet();
-                        $sheet->setTitle($i);
+                        $sheet->setTitle('Year '.$i);
                     } else {
                         $spreadsheet->createSheet();
                         // Zero based, so set the second tab as active sheet
@@ -3775,7 +3776,7 @@ class Test extends CI_Controller
                             $this->db->from('ts_order_amounts');
                             $this->db->where('order_id', $result['order_id']);
                             $this->db->where('printshop', 1);
-                            $this->db->where('printshop_history', 0);
+                            // $this->db->where('printshop_history', 0);
                             $printres = $this->db->get()->row_array();
                             $diff = $printres['amnttotal'] - $printres['printtotal'];
                             $fixcog = $result['order_cog'] - $diff;
@@ -3802,6 +3803,33 @@ class Test extends CI_Controller
             @unlink($filename);
             $writer->save($filename);
             echo 'File '.$filename.' ready'.PHP_EOL;
+        }
+    }
+
+    public function fix_printshop_amount()
+    {
+        $this->db->select('*');
+        $this->db->from('ts_order_amounts');
+        $this->db->where('printshop', 1);
+        $this->db->where('printshop_total != amount_sum');
+        $this->db->where('printshop_history', 0);
+        $amounts = $this->db->get()->result_array();
+        foreach ($amounts as $amount) {
+            $diff = $amount['amount_sum'] - $amount['printshop_total'];
+            $this->db->where('amount_id', $amount['amount_id']);
+            $this->db->set('amount_sum', $amount['printshop_total']);
+            $this->db->update('ts_order_amounts');
+            $this->db->select('*')->from('ts_orders')->where('order_id', $amount['order_id']);
+            $order = $this->db->get()->row_array();
+            echo 'Update Order '.$order['order_num'].PHP_EOL;
+            $fixcog = $order['order_cog'] - $diff;
+            $fixprofit = $order['profit'] + $diff;
+            $fixperc = round($fixprofit/$order['revenue']*100,1);
+            $this->db->where('order_id', $order['order_id']);
+            $this->db->set('order_cog', $fixcog);
+            $this->db->set('profit', $fixprofit);
+            $this->db->set('profit_perc', $fixperc);
+            $this->db->update('ts_orders');
         }
     }
 }
