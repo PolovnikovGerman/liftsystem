@@ -247,7 +247,7 @@ Class Leadorder_model extends My_Model {
             $art = $this->db->get()->row_array();
             $row['artstage'] = ifset($art,'artstage','');
             $row['itemcolorclass']='';
-            if (strlen($row['itemcolor'])>9) {
+            if (ifset($row, 'itemcolor','')!='' && strlen($row['itemcolor'])>9) {
                 $row['itemcolorclass']='wide';
             }
             $row['cnt_amnt']=intval($row['cnt_amnt']);
@@ -331,7 +331,7 @@ Class Leadorder_model extends My_Model {
             $row['order_class']=$this->vendor_class;
             if ($row['item_id']==$this->config->item('custom_id')) {
                 $row['order_class']=$this->custom_class;
-            } elseif (substr($row['item_number'],0,2)=='23') {
+            } elseif (ifset($row,'item_number','')!='' && substr($row['item_number'],0,2)=='23') {
                 $row['order_class']=$this->other_class;
             } elseif ($row['stok_item']>0) {
                 $row['order_class']=$this->common_class;

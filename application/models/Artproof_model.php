@@ -338,7 +338,7 @@ Class Artproof_model extends MY_Model
         return $out;
     }
 
-    private function get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, $less=0, $brand, $viewall) {
+    private function get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, $less, $brand, $viewall) {
         $daylimit=24*60*60;
         $maxlimit = 180*24*60*60;
         /* Get with data More then then 24 hours */

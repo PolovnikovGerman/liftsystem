@@ -1302,21 +1302,21 @@ Class Payments_model extends MY_Model {
             }
             // cost
             $cost1 = $cost2 = 0;
-            $basecost1 = round($data['cost_year2'],0);
-            $basecost2 = round($data['cost_year3'],0);
+            $basecost1 = round(floatval($data['cost_year2']),0);
+            $basecost2 = round(floatval($data['cost_year3']),0);
             if (empty($basecost1)) {
                 if (!empty($data['cost_year1'])) {
                     $cost1 = 100;
                 }
             } else {
-                $cost1 = (round($data['cost_year1'],0)/$basecost1*100)-100;
+                $cost1 = (round(floatval($data['cost_year1']),0)/$basecost1*100)-100;
             }
             if (empty($basecost2)) {
                 if (!empty($data['cost_year2'])) {
                     $cost2 = 100;
                 }
             } else {
-                $cost2 = (round($data['cost_year2'],0)/$basecost2*100)-100;
+                $cost2 = (round(floatval($data['cost_year2']),0)/$basecost2*100)-100;
             }
             // profit
             $profit1 = $profit2 = 0;
@@ -1345,14 +1345,14 @@ Class Payments_model extends MY_Model {
                     $avg1 = 100;
                 }
             } else {
-                $avg1 = (round($data['avgprof_year1'],0)/round($baseavg1,0)*100)-100;
+                $avg1 = (round(floatval($data['avgprof_year1']),0)/round($baseavg1,0)*100)-100;
             }
             if (empty($baseavg2)) {
                 if (!empty($data['avgprof_year2'])) {
                     $avg2 = 100;
                 }
             } else {
-                $avg2 = (round($data['avgprof_year2'],0)/round($baseavg2,0)*100)-100;
+                $avg2 = (round(floatval($data['avgprof_year2']),0)/round($baseavg2,0)*100)-100;
             }
             $data['qtygrow_year1'] = round(abs($qty1),1);
             $data['qtygrow_class_year1'] = (!empty($qty1) ? ($qty1 > 0 ? $this->positive_grow_class : $this->negative_grow_class): '');
