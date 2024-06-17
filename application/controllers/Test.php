@@ -3805,4 +3805,31 @@ class Test extends CI_Controller
             echo 'File '.$filename.' ready'.PHP_EOL;
         }
     }
+
+    public function fix_printshop_amount()
+    {
+        $this->db->select('*');
+        $this->db->from('ts_order_amounts');
+        $this->db->where('printshop', 1);
+        $this->db->where('printshop_total != amount_sum');
+        $this->db->where('printshop_history', 0);
+        $amounts = $this->db->get()->result_array();
+        foreach ($amounts as $amount) {
+            $diff = $amount['amount_sum'] - $amount['printshop_total'];
+            $this->db->where('amount_id', $amount['amount_id']);
+            $this->db->set('amount_sum', $amount['printshop_total']);
+            $this->db->update('ts_order_amounts');
+            $this->db->select('*')->from('ts_orders')->where('order_id', $amount['order_id']);
+            $order = $this->db->get()->row_array();
+            echo 'Update Order '.$order['order_num'].PHP_EOL;
+            $fixcog = $order['order_cog'] - $diff;
+            $fixprofit = $order['profit'] + $diff;
+            $fixperc = round($fixprofit/$order['revenue']*100,1);
+            $this->db->where('order_id', $order['order_id']);
+            $this->db->set('order_cog', $fixcog);
+            $this->db->set('profit', $fixprofit);
+            $this->db->set('profit_perc', $fixperc);
+            $this->db->update('ts_orders');
+        }
+    }
 }
