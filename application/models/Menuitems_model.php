@@ -1144,7 +1144,7 @@ Class Menuitems_model extends MY_Model
             'value'  => $brand,
             'expire' => '86500',
             'domain' => $server,
-            'path'   => '/; SameSite=Strict',
+            'path'   => '/',
             'secure' => TRUE,
             'httponly' => TRUE,
         );

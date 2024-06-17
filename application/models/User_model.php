@@ -46,7 +46,7 @@ Class User_model extends MY_Model
                             'value'  => $cookie,
                             'expire' => '86500',
                             'domain' => $server,
-                            'path'   => '/; SameSite=Strict',
+                            'path'   => '/',
                             'secure' => TRUE,
                             'httponly' => TRUE,
                         );
@@ -199,7 +199,7 @@ Class User_model extends MY_Model
                                 'value'  => $res['token'],
                                 'expire' => '86500',
                                 'domain' => $server,
-                                'path'   => '/; SameSite=Strict',
+                                'path'   => '/',
                                 'prefix' => '',
                                 'secure' => FALSE,
                                 'httponly' => FALSE,
