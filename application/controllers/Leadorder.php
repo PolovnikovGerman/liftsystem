@@ -141,6 +141,7 @@ class Leadorder extends MY_Controller
                             'prvorder' => $res['prvorder'],
                             'nxtorder' => $res['nxtorder'],
                             'brand' => $res['order']['brand'],
+                            'order_id' => $res['order']['order_id'],
                         ];
                         // Build View
                         $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, $edit);
@@ -149,6 +150,7 @@ class Leadorder extends MY_Controller
                         // Build Content
                         $options['order_data']=$order_data;
                         $options['locrecid']=$locking;
+                        $options['order_id'] = $orddata['order_id'];
                         if ($this->input->ip_address()=='127.0.0.1') {
                             $options['timeout']=(time()+$this->config->item('loctimeout_local'))*1000;
                         } else {
@@ -3267,6 +3269,7 @@ class Leadorder extends MY_Controller
                                 'prvorder' => $res['prvorder'],
                                 'nxtorder' => $res['nxtorder'],
                                 'brand' => $brand,
+                                'order_id' => $res['order']['order_id'],
                             ];
                             // Build View
                             $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 1);
@@ -3282,6 +3285,7 @@ class Leadorder extends MY_Controller
                             }
                             $options['current_page']=ifset($postdata,'callpage','art_tasks');
                             $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
+                            $options['order_id'] = $orddata['order_id'];
                             $content=$this->load->view('leadorderdetails/top_menu_edit',$options, TRUE);
                             $header = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
                             /* Save to session */

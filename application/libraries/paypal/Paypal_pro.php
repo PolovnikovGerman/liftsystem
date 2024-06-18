@@ -3,7 +3,7 @@
  * 	Angell EYE PayPal NVP CodeIgniter Library
  *	An open source PHP library written to easily work with PayPal's API's
  *	
- *  Copyright © 2012  Andrew K. Angell
+ *  Copyright ï¿½ 2012  Andrew K. Angell
  *	Email:  andrew@angelleye.com
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
  *
  * @package			Angell_EYE_PayPal_Class_Library
  * @author			Andrew K. Angell
- * @copyright		Copyright © 2012 Angell EYE, LLC
+ * @copyright		Copyright ï¿½ 2012 Angell EYE, LLC
  * @link			http://www.angelleye.com
  * @since			Version 2.4
  * @updated			10.31.2012
@@ -43,7 +43,13 @@ class PayPal_Pro
 	var $BetaSandbox = '';
 	var $PathToCertKeyPEM = '';
 	var $SSL = '';
-	
+	var $NVPCredentials = '';
+    var $Countries = [];
+    var $States = [];
+    var $AVSCodes = '';
+    var $CVV2Codes = '';
+    var $CurrencyCodes = [];
+
 	/**
 	 * Constructor
 	 *
