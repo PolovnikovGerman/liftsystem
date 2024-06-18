@@ -1052,7 +1052,7 @@ class Art extends MY_Controller {
         $artworkdata['proofs']=$proofdat;
         // $prdat=array();
         // $approved=array();
-        $proofs_view=$this->load->view('artpage/prooflist_edit_view',array('proofs'=>$proofdat),TRUE);
+        $proofs_view=$this->load->view('artpage/prooflist_edit_view',array('proofs'=>$proofdat, 'artwork_id' => $artwork_id),TRUE);
         $proof_options=array(
             'artwork_id'=>$artwork_id,
             'proofs_view'=>$proofs_view,

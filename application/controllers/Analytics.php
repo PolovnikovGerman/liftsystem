@@ -1152,6 +1152,7 @@ class Analytics extends MY_Controller
                 'newlabel'=>'stock',
                 'profit_type'=>$profit_type,
                 'brand' => $brand,
+                'goals' => $newstock['goals'],
             );
             $stocks_view=$this->load->view('reports/customs_data_view', $stock_options, TRUE);
         }
@@ -1188,7 +1189,9 @@ class Analytics extends MY_Controller
                 'data'=>$olddata['ariel'],
                 'curview'=>$newariel_view,
                 'newlabel'=>'ariel',
+                'profit_type'=>$profit_type,
                 'brand' => $brand,
+                'goals' => $newariel['goals'],
             );
             $ariel_view=$this->load->view('reports/customs_data_view', $ariel_options, TRUE);
         }
@@ -1224,7 +1227,9 @@ class Analytics extends MY_Controller
                 'data'=>$olddata['alpi'],
                 'curview'=>$newalpi_view,
                 'newlabel'=>'alpi',
+                'profit_type'=>$profit_type,
                 'brand' => $brand,
+                'goals' => $newalpi['goals'],
             );
             $alpi_view=$this->load->view('reports/customs_data_view', $alpi_options, TRUE);
         }
@@ -1260,7 +1265,9 @@ class Analytics extends MY_Controller
                 'data'=>$olddata['mailine'],
                 'curview'=>$newmailine_view,
                 'newlabel'=>'mailine',
+                'profit_type'=>$profit_type,
                 'brand' => $brand,
+                'goals' => $newmailine['goals'],
             );
             $mailine_view=$this->load->view('reports/customs_data_view', $mailine_options, TRUE);
         }
@@ -1296,7 +1303,9 @@ class Analytics extends MY_Controller
                 'data'=>$olddata['esp'],
                 'curview'=>$newesp_view,
                 'newlabel'=>'esp',
+                'profit_type'=>$profit_type,
                 'brand' => $brand,
+                'goals' => $newesp['goals'],
             );
             $esp_view=$this->load->view('reports/customs_data_view', $esp_options, TRUE);
         }
@@ -1332,7 +1341,9 @@ class Analytics extends MY_Controller
                 'data'=>$olddata['hits'],
                 'curview'=>$newhit_view,
                 'newlabel'=>'hits',
+                'profit_type'=>$profit_type,
                 'brand' => $brand,
+                'goals' => $newhit['goals'],
             );
             $hit_view=$this->load->view('reports/customs_data_view', $hit_options, TRUE);
         }
@@ -1370,7 +1381,9 @@ class Analytics extends MY_Controller
                 'data'=>$olddata['others'],
                 'curview'=>$newother_view,
                 'newlabel'=>'others',
+                'profit_type'=>$profit_type,
                 'brand' => $brand,
+                'goals' => $newother['goals'],
             );
             $other_view=$this->load->view('reports/customs_data_view', $other_options, TRUE);
         }
@@ -1546,6 +1559,7 @@ class Analytics extends MY_Controller
         /* Load Footer */
         $content['footer']=$this->load->view('reports/checkout_footer_view',$sum_days,TRUE);
         // $content['dialog']=$this->load->view('orders/order_graph_view',array(),TRUE);
+        $content['brand'] = $brand;
         return $this->load->view('reports/checkout_page_view',$content,TRUE);
         // return $content;
 

@@ -155,7 +155,7 @@ class Accounting extends MY_Controller
             if ($postdata['show_year']==1) {
                 if ($postdata['year']>0) {
                     $nxtyear = $postdata['year']+1;
-                    if ($postdata['month']==0) {
+                    if (empty($postdata['month'])) {
                         $options['date_bgn']=strtotime($postdata['year'].'-01-01');
                         $options['date_end']=strtotime($nxtyear.'-01-01');
                     } else {
@@ -371,7 +371,7 @@ class Accounting extends MY_Controller
             if ($postdata['show_year']==1) {
                 if ($postdata['year']>0) {
                     $nxtyear = $postdata['year']+1;
-                    if ($postdata['month']==0) {
+                    if (empty($postdata['month'])) {
                         $search['start_date']=strtotime($postdata['year'].'-01-01');
                         $search['end_date']=strtotime($nxtyear.'-01-01');
                     } else {
@@ -1342,6 +1342,7 @@ class Accounting extends MY_Controller
             'showgrowth'=>1,
             'showhidegrowth'=>'[hide growth]',
             'montfilterend'=>$datefiltr->format('m'),
+            'brand' => $brand,
         );
         $content=$this->load->view('accounting/profit_date_view',$options,TRUE);
         return $content;

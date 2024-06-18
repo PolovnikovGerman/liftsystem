@@ -113,8 +113,11 @@ class Leadorder extends MY_Controller
                         }
                         $options['order_data']=$order_data;
                         $head_options['order_dublcnum']=$orddata['order_num'];
+                        $head_options['order_system']=$res['order_system_type'];
                         $header = $this->load->view('leadorderdetails/head_view', $head_options, TRUE);
                         $options['order_system']=$res['order_system_type'];
+                        $options['order_id'] = $orddata['order_id'];
+                        $options['unlocked']=$engade_res['result'];
                         $content=$this->load->view('leadorderdetails/top_menu_view',$options, TRUE);
                         $locking='';
                     } else {
@@ -5322,6 +5325,7 @@ class Leadorder extends MY_Controller
                         // $options['current_page']='orders';
                         $options['current_page'] = $callpage;
                         $options['unlocked'] = $engade_res['result'];
+                        $options['order_id'] = $orddata['order_id'];
                         $mdata['content']=$this->load->view('leadorderdetails/top_menu_view',$options, TRUE);
                         $head_options = [
                             'order_head' => $this->load->view('leadorderdetails/head_order_view', $orddata,TRUE),
@@ -5342,6 +5346,7 @@ class Leadorder extends MY_Controller
                             $head_options['editbtnview']=$this->load->view('leadorderdetails/ordercanceled_view', array(), TRUE);
                         }
                         $head_options['order_dublcnum']=$orddata['order_num'];
+                        $head_options['order_system']=$res['order_system_type'];
                         $mdata['header'] = $this->load->view('leadorderdetails/head_view', $head_options, TRUE);
 
                         /* Save to session */
