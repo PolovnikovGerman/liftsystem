@@ -3727,7 +3727,7 @@ class Test extends CI_Controller
                     // Count outcome
                     $this->db->select('count(*) as cnt, sum(outcome_qty) as total_outcome')->from('ts_inventory_outcomes')->where('inventory_color_id', $color['inventory_color_id']);
                     $outcomeres = $this->db->get()->row_array();
-                    if ($outcomeres['total_outcome']!=$incomeres['total_exp']) {
+                    if ($outcomeres['total_outcome']!=$incomeres['total_exp'] && $outcomeres['cnt']>0) {
                         $diff = $incomeres['total_exp'] - $outcomeres['total_outcome'];
                         echo 'Item '.$item['item_num'].' - '.$item['item_name'].' Color '.$color['color'].' Balance Diff '.$diff.' Outcome '.$outcomeres['total_outcome'].' Expense '.$incomeres['total_exp'].PHP_EOL;
                     }
