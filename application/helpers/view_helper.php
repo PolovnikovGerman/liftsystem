@@ -2,8 +2,9 @@
 
 
 if (!function_exists('MoneyOutput')) {
-    function MoneyOutput($total, $decimal = 2, $thousdelim = ',')
+    function MoneyOutput($totalsrc, $decimal = 2, $thousdelim = ',')
     {
+        $total = floatval($totalsrc);
         if ($total < 0) {
             $output = '-$';
         } else {
@@ -378,7 +379,8 @@ if (!function_exists('openfile')) {
 }
 
 if (!function_exists('orderProfitClass')) {
-    function orderProfitClass($profit_perc) {
+    function orderProfitClass($profit_percsrc) {
+        $profit_perc = floatval($profit_percsrc);
         $profit_class='';
         if (round($profit_perc,0)<=0) {
             $profit_class='black';
@@ -655,8 +657,9 @@ if ( ! function_exists('show_403'))
 }
 
 if (!function_exists('PriceOutput')) {
-    function PriceOutput($total, $decimal = 3, $thousdelim = ',')
+    function PriceOutput($totalsrc, $decimal = 3, $thousdelim = ',')
     {
+        $total = floatval($totalsrc);
         $output = number_format($total, $decimal);
         if (substr($output,-1)=='0') {
             $output = substr($output,0,-1);

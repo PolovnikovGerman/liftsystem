@@ -5213,7 +5213,7 @@ class Leadorder extends MY_Controller
         $out=array('result'=>$this->error_result, 'msg'=>$this->locktimeout);
         if (!isset($leadorder['locrecid'])) {
             $out['result']=$this->success_result;
-        } elseif ($leadorder['locrecid']==0) {
+        } elseif (empty($leadorder['locrecid'])) {
             $out['result']=$this->success_result;
         } else {
             $locrecid=$leadorder['locrecid'];
