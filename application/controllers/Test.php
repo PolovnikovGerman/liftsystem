@@ -3729,7 +3729,7 @@ class Test extends CI_Controller
                     $outcomeres = $this->db->get()->row_array();
                     if ($outcomeres['total_outcome']!=$incomeres['total_exp']) {
                         $diff = $incomeres['total_exp'] - $outcomeres['total_outcome'];
-                        echo 'Item '.$item['item_num'].' - '.$item['item_name'].' Color '.$color['color'].' Balance Diff '.$diff.PHP_EOL;
+                        echo 'Item '.$item['item_num'].' - '.$item['item_name'].' Color '.$color['color'].' Balance Diff '.$diff.' Outcome '.$outcomeres['total_outcome'].' Expense '.$incomeres['total_exp'].PHP_EOL;
                     }
                 }
             }
