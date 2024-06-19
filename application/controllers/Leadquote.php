@@ -999,6 +999,9 @@ class Leadquote extends MY_Controller
                             $mdata['total'] = MoneyOutput($quote['quote_total']);
                             $mdata['tax'] = $quote['sales_tax'];
                         }
+                        $mdata['quote_repcontact'] = $quote['quote_repcontact'];
+                        $mdata['mischrg_label1'] = $quote['mischrg_label1'];
+                        $mdata['mischrg_value1'] = $quote['mischrg_value1'];
                     }
                 }
             }
@@ -1015,7 +1018,7 @@ class Leadquote extends MY_Controller
             $quotesession = usersession($session_id);
             $mdata = [];
             if (!empty($quotesession)) {
-                $res = $this->leadquote_model->removeitem($postdata, $quotesession, $session_id);
+                $res = $this->leadquote_model->removeitem($postdata, $quotesession, $session_id, $this->USR_ID);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
@@ -1082,6 +1085,11 @@ class Leadquote extends MY_Controller
                     $mdata['rush_cost'] = $quote['rush_cost'];
                     $mdata['items_subtotal'] = MoneyOutput($quote['items_subtotal']);
                     $mdata['total'] = MoneyOutput($quote['quote_total']);
+                    //
+                    $mdata['quote_repcontact'] = $quote['quote_repcontact'];
+                    $mdata['mischrg_label1'] = $quote['mischrg_label1'];
+                    $mdata['mischrg_value1'] = $quote['mischrg_value1'];
+
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -1695,7 +1703,7 @@ class Leadquote extends MY_Controller
                 } elseif (empty($quote_item_id)) {
                     $error = 'Select Quote Item';
                 } else {
-                    $res = $this->leadquote_model->savenewquoteitem($quotesession, $item_id, $quote_item_id, $session_id);
+                    $res = $this->leadquote_model->savenewquoteitem($quotesession, $item_id, $quote_item_id, $session_id, $this->USR_ID);
                     $error = $res['msg'];
                     if ($res['result']==$this->success_result) {
                         $error = '';

@@ -1513,7 +1513,7 @@ class Leadquote_model extends MY_Model
         usersession($session_id, $quotesession);
     }
 
-    public function removeitem($data, $quotesession, $session_id) {
+    public function removeitem($data, $quotesession, $session_id, $user_id) {
         $out = ['result' => $this->error_result, 'msg' => 'Item Not Found'];
         $quote_item_id = ifset($data,'item', 0);
         if (!empty($quote_item_id)) {
@@ -1542,6 +1542,27 @@ class Leadquote_model extends MY_Model
                     $quote['rush_cost'] = 0;
                     // Add empty item
                     $newitems = $this->_create_empty_quoteitems();
+                }
+                // check custom id
+                $custfind = 0;
+                foreach ($newitems as $item) {
+                    if ($item['item_id']==$this->config->item('custom_id')) {
+                        $custfind++;
+                    }
+                }
+                if ($custfind == 0) {
+                    // $quote
+                    $this->db->select('contactnote_relievers, contactnote_bluetrack')->from('users')->where('user_id', $user_id);
+                    $usrdat = $this->db->get()->row_array();
+                    if ($quote['brand']=='SR') {
+                        $quote['quote_repcontact'] = $usrdat['contactnote_relievers'];
+                    } else {
+                        $quote['quote_repcontact'] = $usrdat['contactnote_bluetrack'];
+                    }
+                    if ($quote['mischrg_label1']==$this->config->item('custom_mischrg_label')) {
+                        $quote['mischrg_label1'] = '';
+                        $quote['mischrg_value1'] = 0;
+                    }
                 }
                 $quotesession['quote'] = $quote;
                 $quotesession['items'] = $newitems;
@@ -3899,7 +3920,7 @@ class Leadquote_model extends MY_Model
         return $items;
     }
 
-    public function savenewquoteitem($quotesession, $item_id, $quote_item_id, $session_id)
+    public function savenewquoteitem($quotesession, $item_id, $quote_item_id, $session_id, $user_id)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Quote Item Not Found'];
         $quote_items = $quotesession['items'];
@@ -4041,12 +4062,29 @@ class Leadquote_model extends MY_Model
             $newitem['qtyinput_title']='';
             $items[]=$newitem;
             $quoteitem['items']=$items;
+            $quote_items[$itemidx] = $quoteitem;
             // check custom id
             $custfind = 0;
-            foreach ($items as $item) {
-                // if ($item[''])
+            foreach ($quote_items as $item) {
+                if ($item['item_id']==$this->config->item('custom_id')) {
+                    $custfind++;
+                }
             }
-            $quote_items[$itemidx] = $quoteitem;
+            if ($custfind > 0) {
+                // $quote
+                $this->db->select('contactnote_relievers, contactnote_bluetrack')->from('users')->where('user_id', $user_id);
+                $usrdat = $this->db->get()->row_array();
+                if ($quote['brand']=='SR') {
+                    $quote['quote_repcontact'] = $this->config->item('custom_quote_note').$usrdat['contactnote_relievers'];
+                } else {
+                    $quote['quote_repcontact'] = $this->config->item('custom_quote_note').$usrdat['contactnote_bluetrack'];
+                }
+                if ($quote['mischrg_label1']!==$this->config->item('custom_mischrg_label')) {
+                    $quote['mischrg_label1'] = $this->config->item('custom_mischrg_label');
+                    $quote['mischrg_value1'] = $this->config->item('custom_mischrg_value');
+                }
+                $quotesession['quote'] = $quote;
+            }
             $quotesession['items'] = $quote_items;
             usersession($session_id, $quotesession);
             $out['result'] = $this->success_result;
