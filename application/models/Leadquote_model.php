@@ -153,6 +153,11 @@ class Leadquote_model extends MY_Model
                             }
                         }
                     }
+                    if ($lead_data['lead_item_id']==$this->config->item('custom_id')) {
+                        $quotedat['quote_repcontact'] = $this->config->item('custom_quote_note').$quotedat['quote_repcontact'];
+                        $quotedat['mischrg_label1'] = $this->config->item('custom_mischrg_label');
+                        $quotedat['mischrg_value1'] = $this->config->item('custom_mischrg_value');
+                    }
                 }
             } else {
                 $quote_items = $this->_create_empty_quoteitems();
@@ -4036,6 +4041,11 @@ class Leadquote_model extends MY_Model
             $newitem['qtyinput_title']='';
             $items[]=$newitem;
             $quoteitem['items']=$items;
+            // check custom id
+            $custfind = 0;
+            foreach ($items as $item) {
+                // if ($item[''])
+            }
             $quote_items[$itemidx] = $quoteitem;
             $quotesession['items'] = $quote_items;
             usersession($session_id, $quotesession);
