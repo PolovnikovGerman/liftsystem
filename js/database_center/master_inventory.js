@@ -1,4 +1,4 @@
-var sliderwidth=183;
+var sliderwidth= 243; // 183;
 
 function init_master_inventory() {
     init_master_inventoryhead();
