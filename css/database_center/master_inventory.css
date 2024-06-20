@@ -1787,8 +1787,13 @@ i.cancelboatcontainer {
     line-height: 23px!important;
 }
 
-.expresstotals, .containertotals {
-    width: 180px;
+.expresstotals {
+    width: 120px;
+    margin-right: 43px;
+    overflow-x: hidden;
+}
+.containertotals {
+    width: 240px;
     margin-right: 43px;
     overflow-x: hidden;
 }
