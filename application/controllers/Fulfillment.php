@@ -103,9 +103,6 @@ class Fulfillment extends MY_Controller
         $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
         // Scroll panel
         $head['scripts'][] = array('src' => '/js/adminpage/jquery-scrollpanel.js');
-        // Order popup
-        $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
-        $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
 
         $options = [
             'title' => $head['title'],
