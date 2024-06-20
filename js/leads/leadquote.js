@@ -581,6 +581,9 @@ function init_leadquotes_content() {
                     $(".quoteleadshipcostinpt[data-item='rush_cost']").val(response.data.rush_cost);
                     $(".quoteitemsubtotalvalue").empty().html(response.data.items_subtotal);
                     $(".quotetotalvalue").empty().html(response.data.total);
+                    $("input[data-item='mischrg_label1']").val(response.data.mischrg_label1);
+                    $("input[data-item='mischrg_value1']").val(response.data.mischrg_value1);
+                    $("textarea[data-item='quote_repcontact']").val(response.data.quote_repcontact);
                     $("#loader").hide();
                     init_leadquotes_content();
                 } else {
@@ -840,6 +843,9 @@ function save_quoteprint_details() {
             if (parseInt(response.data.calcship)==1) {
                 $(".quoteshippingcostarea").empty().html(response.data.shippingview);
             }
+            $("input[data-item='mischrg_label1']").val(response.data.mischrg_label1);
+            $("input[data-item='mischrg_value1']").val(response.data.mischrg_value1);
+            $("textarea[data-item='quote_repcontact']").val(response.data.quote_repcontact);
             init_leadquotes_content();
         } else {
             show_error(response);

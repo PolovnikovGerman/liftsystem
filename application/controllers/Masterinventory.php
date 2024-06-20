@@ -4,7 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Masterinventory extends MY_Controller
 {
-    private $maxlength=183;
+    private $maxlength=243; // 183;
+    private $maxlengthexpress = 123;
     private $container_type = 'C';
     private $express_type = 'E';
     private $container_with=60;
@@ -71,7 +72,7 @@ class Masterinventory extends MY_Controller
             }
             // Build head containers  content
             $slider_width=60*count($expresses);
-            $margin = $this->maxlength-$slider_width;
+            $margin = $this->maxlengthexpress-$slider_width;
             $margin=($margin>0 ? 0 : $margin);
             // $width_edit = 58;
             $expressoptions=array(
@@ -167,7 +168,7 @@ class Masterinventory extends MY_Controller
                     $express_view.=$this->load->view('masterinvent/onboat_container_view', $boptions, TRUE);
                 }
                 $slider_width=60*(count($expresses));
-                $margin=$this->maxlength-$slider_width;
+                $margin=$this->maxlengthexpress-$slider_width;
                 $expressoptions=array(
                     'width'=>$slider_width,
                     'margin'=>($margin>0 ? 0 : $margin),
@@ -657,7 +658,11 @@ class Masterinventory extends MY_Controller
                 $onboats = $this->inventory_model->get_data_onboat($inventory_type, $onboat_type, $inventory_filter);
                 $viewwidth=(count($onboats)+1)*$this->container_with;
                 $mdata['width']=$viewwidth;
-                $marginleft=($viewwidth>$this->maxlength ? ($this->maxlength-$viewwidth) : 0);
+                if ($onboat_type==$this->container_type) {
+                    $marginleft=($viewwidth>$this->maxlength ? ($this->maxlength-$viewwidth) : 0);
+                } else {
+                    $marginleft=($viewwidth>$this->maxlengthexpress ? ($this->maxlengthexpress-$viewwidth) : 0);
+                }
                 $mdata['marginleft']= $marginleft;
                 $head_options = [
                     'onboat_status' => 0,
@@ -777,7 +782,11 @@ class Masterinventory extends MY_Controller
             }
             // Build head content
             $slider_width=60*count($onboats);
-            $margin = $this->maxlength-$slider_width;
+            if ($onboat_type==$this->container_type) {
+                $margin = $this->maxlength-$slider_width;
+            } else {
+                $margin = $this->maxlengthexpress-$slider_width;
+            }
             $margin=($margin>0 ? 0 : $margin);
             // $width_edit = 58;
             $boatoptions=array(
@@ -808,7 +817,11 @@ class Masterinventory extends MY_Controller
                 $containers_view.=$this->load->view('masterinvent/onboat_container_view', $boptions, TRUE);
             }
             $slider_width=60*(count($onboats));
-            $margin=$this->maxlength-$slider_width;
+            if ($onboat_type==$this->container_type) {
+                $margin = $this->maxlength-$slider_width;
+            } else {
+                $margin = $this->maxlengthexpress-$slider_width;
+            }
             $boatoptions=array(
                 'width'=>$slider_width,
                 'margin'=>($margin>0 ? 0 : $margin),
@@ -851,7 +864,11 @@ class Masterinventory extends MY_Controller
                     }
                     // Build head content
                     $slider_width=60*count($onboats);
-                    $margin = $this->maxlength-$slider_width;
+                    if ($onboat_type==$this->container_type) {
+                        $margin = $this->maxlength-$slider_width;
+                    } else {
+                        $margin = $this->maxlengthexpress-$slider_width;
+                    }
                     $margin=($margin>0 ? 0 : $margin);
                     // $width_edit = 58;
                     $boatoptions=array(
@@ -881,7 +898,11 @@ class Masterinventory extends MY_Controller
                         $containers_view.=$this->load->view('masterinvent/onboat_container_view', $boptions, TRUE);
                     }
                     $slider_width=60*(count($onboats));
-                    $margin=$this->maxlength-$slider_width;
+                    if ($onboat_type==$this->container_type) {
+                        $margin = $this->maxlength-$slider_width;
+                    } else {
+                        $margin = $this->maxlengthexpress-$slider_width;
+                    }
                     $boatoptions=array(
                         'width'=>$slider_width,
                         'margin'=>($margin>0 ? 0 : $margin),
@@ -926,7 +947,11 @@ class Masterinventory extends MY_Controller
                         }
                         // Build head content
                         $slider_width=60*count($onboats);
-                        $margin = $this->maxlength-$slider_width;
+                        if ($onboat_type==$this->container_type) {
+                            $margin = $this->maxlength-$slider_width;
+                        } else {
+                            $margin = $this->maxlengthexpress-$slider_width;
+                        }
                         $margin=($margin>0 ? 0 : $margin);
                         // $width_edit = 58;
                         $boatoptions=array(
