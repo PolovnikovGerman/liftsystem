@@ -3786,6 +3786,7 @@ class Test extends CI_Controller
     }
     public function fix_printreport_prices()
     {
+        ini_set('memory_limit', '-1');
         $brands = ['SR', 'SB'];
         $changes = [];
         foreach ($brands as $brand) {
