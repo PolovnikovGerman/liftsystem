@@ -1,6 +1,6 @@
 <?php
-$config['js_version'] = '2.02309';
-$config['css_version']= '2.02309';
+$config['js_version'] = '2.02311';
+$config['css_version']= '2.02311';
 /* SET EMPTY SERVER NAME */
 if (!isset($_SERVER['SERVER_NAME'])) {
     $_SERVER['SERVER_NAME'] = getenv('server_name');
@@ -297,3 +297,6 @@ $config['debug_mode'] = (getenv('TEST_SERVER')==1 ? '1' : 0);
 $config['default_country'] = 223;
 $config['google_map_key'] = getenv('GOOGLEMAPAPI_KEY');
 $config['srrepeat_cost'] = 12;
+$config['custom_quote_note'] = '4-5 Week Lead Time'.PHP_EOL.'Add\'l Print Locations: $0.12 ea & $30 setup'.PHP_EOL.PHP_EOL;
+$config['custom_mischrg_label'] = 'Custom Design Charge';
+$config['custom_mischrg_value'] = 150;

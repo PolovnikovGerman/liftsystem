@@ -430,10 +430,12 @@ input.inventadd {
     width: 562px;
 }
 .masterinventtablebody .mastinvent_body_express {
-    width: 283px;
+    /* width: 283px;*/
+    width: 223px;
 }
 .masterinventtablebody .mastinvent_body_container {
-    width: 283px;
+    /* width: 283px; */
+    width: 343px;
     margin-left: 10px;
 }
 .masterinventtablebody .mastinvent_body_container.showmax {
@@ -1522,7 +1524,8 @@ input.colorvendorpriceinpt {
 }
 /* Express */
 .mastinvent_header_express {
-    width: 283px;
+    /* width: 283px; */
+    width: 223px;
 }
 .mastinvent_header_express .mastinvent_express_manage {
     width: 100%;
@@ -1550,12 +1553,14 @@ input.colorvendorpriceinpt {
     width: 100%;
 }
 .mastinvent_express_contentarea {
-    width: 180px;
+    /* width: 180px; */
+    width: 120px;
     overflow-x: hidden;
 }
 /* Container */
 .mastinvent_header_container {
-    width: 283px;
+    /* width: 283px; */
+    width: 343px;
     margin-left: 10px;
 }
 .mastinvent_header_container.showmax {
@@ -1590,7 +1595,8 @@ input.colorvendorpriceinpt {
     width: 100%;
 }
 .mastinvent_container_contentarea {
-    width: 180px;
+    /* width: 180px; */
+    width: 240px;
     overflow-x: hidden;
 }
 .mastinvent_container_contentarea .onboacontainer, .mastinvent_express_contentarea .onboacontainer {
@@ -1664,10 +1670,20 @@ input.colorvendorpriceinpt {
     width: 34px;
 }
 .mastinvent_body_container .onboatdataareas, .mastinvent_body_express .onboatdataareas {
-    width: 180px;
+    /* width: 180px;*/
+    width: 240px;
     overflow-x: hidden;
 }
-.mastinvent_body_container .onboatdataareas.editdata, .mastinvent_body_express .onboatdataareas.editdata {
+.mastinvent_body_express .onboatdataareas {
+    /* width: 180px; */
+    width: 120px;
+    overflow-x: hidden;
+}
+.mastinvent_body_container .onboatdataareas.editdata {
+    /* width: 240px; */
+    width: 300px;
+}
+.mastinvent_body_express .onboatdataareas.editdata {
     width: 240px;
 }
 .mastinvent_body_container .onboacontainerdata.arrived, .mastinvent_body_express .onboacontainerdata.arrived {

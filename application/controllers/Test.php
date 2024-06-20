@@ -3832,4 +3832,78 @@ class Test extends CI_Controller
             $this->db->update('ts_orders');
         }
     }
+
+    public function inventory_rest_fix()
+    {
+        // Get Items
+        $this->db->select('*')->from('ts_inventory_items')->order_by('item_num');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $this->db->select('*')->from('ts_inventory_colors')->where('inventory_item_id', $item['inventory_item_id'])->order_by('color');
+            $colors = $this->db->get()->result_array();
+            foreach ($colors as $color) {
+                // Get total income
+                $this->db->select('count(*) as cnt, sum(income_qty) as total_income, sum(income_expense) as total_exp')->from('ts_inventory_incomes')->where('inventory_color_id', $color['inventory_color_id']);
+                $incomeres = $this->db->get()->row_array();
+                if ($incomeres['cnt']>0) {
+                    // Count outcome
+                    $this->db->select('count(*) as cnt, sum(outcome_qty) as total_outcome')->from('ts_inventory_outcomes')->where('inventory_color_id', $color['inventory_color_id']);
+                    $outcomeres = $this->db->get()->row_array();
+                    if ($outcomeres['total_outcome']!=$incomeres['total_exp'] && $outcomeres['cnt']>0) {
+                        $diff = $incomeres['total_exp'] - $outcomeres['total_outcome'];
+                        echo 'Item '.$item['item_num'].' - '.$item['item_name'].' Color '.$color['color'].' Balance Diff '.$diff.' Outcome '.$outcomeres['total_outcome'].' Expense '.$incomeres['total_exp'].PHP_EOL;
+                        $this->_inventory_expand_fix($color['inventory_color_id']);
+                    }
+                }
+            }
+
+        }
+    }
+
+    private function _inventory_expand_fix($inventory_color_id)
+    {
+        $this->db->select('*')->from('ts_inventory_incomes')->where('inventory_color_id', $inventory_color_id)->order_by('income_date','asc');
+        $incomes = $this->db->get()->result_array();
+        // Set expand = 0
+        foreach ($incomes as $income) {
+            $this->db->where('inventory_income_id', $income['inventory_income_id']);
+            $this->db->set('income_expense',0);
+            $this->db->update('ts_inventory_incomes');
+        }
+        // Get Outcome
+        $this->db->select('*')->from('ts_inventory_outcomes')->where('inventory_color_id', $inventory_color_id)->order_by('outcome_date','asc');
+        $outcomes = $this->db->get()->result_array();
+        foreach ($outcomes as $outcome) {
+            $qtyout = $outcome['outcome_qty'];
+            $this->db->select('inventory_income_id, (income_qty - income_expense) as leftqty, income_qty, income_expense');
+            $this->db->from('ts_inventory_incomes');
+            $this->db->where('inventory_color_id', $inventory_color_id);
+            $this->db->having('leftqty > 0');
+            $this->db->order_by('income_date');
+            $candidats = $this->db->get()->result_array();
+            foreach ($candidats as $candidat) {
+                if ($qtyout > $candidat['leftqty']) {
+                    $newexp = $candidat['income_expense'] + $candidat['leftqty'];
+                    $ordinv = $candidat['leftqty'];
+                } else {
+                    $newexp = $candidat['income_expense'] + $qtyout;
+                    $ordinv = $qtyout;
+                }
+                // echo 'QTY '.$qtyout.' New Expens '.$newexp.' Get INV '.$ordinv.PHP_EOL;
+                $this->db->where('inventory_income_id', $candidat['inventory_income_id']);
+                $this->db->set('income_expense', $newexp);
+                $this->db->update('ts_inventory_incomes');
+                // Insert to order inventory
+//                $this->db->set('order_id', $outcome['order_id']);
+//                $this->db->set('inventory_income_id', $candidat['inventory_income_id']);
+//                $this->db->set('qty',$ordinv);
+//                $this->db->insert('ts_order_inventory');
+                $qtyout= $qtyout - $candidat['leftqty'];
+                if ($qtyout <= 0 ) {
+                    break;
+                }
+            }
+        }
+        return true;
+    }
 }
