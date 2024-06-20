@@ -1365,8 +1365,8 @@ Class Printshop_model extends MY_Model
         $this->db->where('oa.printshop',1);
         // Additional Options
         if (isset($options['search'])) {
-            $this->db->join('ts_printshop_colors c','c.printshop_color_id=oa.printshop_color_id');
-            $this->db->join('ts_printshop_items i','i.printshop_item_id=c.printshop_item_id');
+            $this->db->join('ts_inventory_colors c','c.inventory_color_id=oa.inventory_color_id');
+            $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
             $this->db->like('upper(concat(o.order_num, o.customer_name, i.item_num, i.item_name))', $options['search']);
         }
         if (isset($options['report_year'])) {
