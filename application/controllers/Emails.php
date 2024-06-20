@@ -3,7 +3,7 @@ use SSilence\ImapClient\ImapClientException;
 use SSilence\ImapClient\ImapConnect;
 use SSilence\ImapClient\ImapClient as Imap;
 
-class Emails extends MY_Controller
+class Emails extends CI_Controller
 {
     public function __construct()
     {
@@ -81,9 +81,10 @@ class Emails extends MY_Controller
         $username = getenv('EMAIL_USER');
         $password = getenv('EMAIL_PASSWD');
         $encryption = Imap::ENCRYPT_SSL;
+        $this->load->library('Imapclient');
 
         try{
-            $imap = new Imap($mailbox, $username, $password, $encryption);
+            $imap = new Imapclient($mailbox, $username, $password, $encryption);
             // You can also check out example-connect.php for more connection options
 
         }catch (ImapClientException $error){
@@ -93,7 +94,9 @@ class Emails extends MY_Controller
         $uid = '69057';
         $id = $imap->getId($uid);
         echo 'Message ID '.$id.'<br>';
-        $imap->setUnseenMessage($id);
+        $imap->setUnstarredMessage($id);
+
+        // $imap->setUnseenMessage($id);
 
     }
 

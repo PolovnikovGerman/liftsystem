@@ -245,9 +245,10 @@ class Mailbox_model extends MY_Model
         $username = $postbox['postbox_user'];
         $password = $postbox['postbox_passwd'];
         $encryption = Imap::ENCRYPT_SSL;
+        $this->load->library('Imapclient');
 
         try{
-            $imap = new Imap($mailbox, $username, $password, $encryption);
+            $imap = new ImapClient($mailbox, $username, $password, $encryption);
         } catch (ImapClientException $error){
             $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
             return $out;
