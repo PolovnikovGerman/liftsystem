@@ -520,4 +520,67 @@ class Mailbox_model extends MY_Model
         }
         return $out;
     }
+
+    public function update_message_flagged($message_id, $postbox_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Postbox Not Found'];
+        $this->db->select('*')->from('user_postboxes')->where('postbox_id', $postbox_id);
+        $postbox = $this->db->get()->row_array();
+        if (ifset($postbox, 'postbox_id', 0) == $postbox_id) {
+            $imapres = $this->_create_imap_client($postbox);
+            $out['msg'] = $imapres['msg'];
+            if ($imapres['result']==$this->success_result) {
+                $imap = $imapres['imap'];
+                $out['msg'] = 'Message Not Exist';
+                $this->db->select('*')->from('postbox_messages')->where('message_id', $message_id);
+                $message = $this->db->get()->row_array();
+                if (ifset($message, 'message_id',0)==$message_id) {
+                    $id = $imap->getId($message['message_uid']);
+                    $unflag = $message['message_flagged']==0 ? 1 : 0;
+                    if ($unflag==0) {
+                        try{
+                            $imap->setStarredMessage($id);
+                        } catch (ImapClientException $error){
+                            $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
+                            return $out;
+                        }
+                    } else {
+                        try{
+                            $imap->setUnstarredMessage($id);
+                        } catch (ImapClientException $error){
+                            $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
+                            return $out;
+                        }
+                    }
+                    $this->db->where('message_id', $message_id);
+                    $this->db->set('message_flagged', $unflag);
+                    $this->db->update('postbox_messages');
+                    $out['result'] = $this->success_result;
+                    $out['unflag'] = $unflag;
+                }
+            }
+        }
+        return $out;
+    }
+
+    public function view_message($message_id, $postbox_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Postbox Not Found'];
+        $this->db->select('*')->from('user_postboxes')->where('postbox_id', $postbox_id);
+        $postbox = $this->db->get()->row_array();
+        if (ifset($postbox, 'postbox_id', 0) == $postbox_id) {
+            $out['msg'] = 'Message Not Exist';
+            $this->db->select('*')->from('postbox_messages')->where('message_id', $message_id);
+            $message = $this->db->get()->row_array();
+            if (ifset($message, 'message_id',0)==$message_id) {
+                $out['result'] = $this->success_result;
+                // Get attached
+                $this->db->select('*')->from('postbox_attachments')->where('message_id', $message_id);
+                $attachs = $this->db->get()->result_array();
+                $out['message'] = $message;
+                $out['attachments'] = $attachs;
+            }
+        }
+        return $out;
+    }
 }

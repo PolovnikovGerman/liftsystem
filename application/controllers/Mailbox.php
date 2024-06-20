@@ -116,11 +116,11 @@ class Mailbox extends MY_Controller
                     if (count($res['messages'])>0) {
                         $messages_view = $this->_prepare_messages_view($res['messages']);
                     }
+                    $folder_view = $this->load->view('mailbox/folder_detail_view',['headers_view'=>$header_view, 'messages' => $messages_view],true);
                     $options = [
                         'postbox' => $postbox,
-                        'headers_view' => $header_view,
                         'folders' => $folders_view,
-                        'messages' => $messages_view,
+                        'folder_view' => $folder_view,
                     ];
                     $mdata['content'] = $this->load->view('mailbox/postbox_details_view', $options, TRUE);
                 }
@@ -199,6 +199,50 @@ class Mailbox extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+    // Update flagged
+    public function update_message_star()
+    {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $postbox = ifset($postdata, 'postbox', '');
+            $message = ifset($postdata, 'message_id', '');
+            $res = $this->mailbox_model->update_message_flagged($message, $postbox);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                if ($res['unflag']==1) {
+                    $mdata['content'] = '<span class="ic-orange" data-message="'.$message.'"><i class="fa fa-star" aria-hidden="true"></i></span>';
+                } else {
+                    $mdata['content'] = '<span class="ic-grey" data-message="'.$message.'"><i class="fa fa-star-o" aria-hidden="true"></i></span>';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function view_message()
+    {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $postbox = ifset($postdata, 'postbox', '');
+            $message = ifset($postdata, 'message_id', '');
+            $res = $this->mailbox_model->view_message($message, $postbox);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $options = [
+                    'message' => $res['message'],
+                    'attachments' => $res['attachments'],
+                    'numattachs' => count($res['attachments']),
+                ];
+                $mdata['content'] = $this->load->view('mailbox/message_details_view',$options, TRUE);
+                $mdata['body'] = $res['message']['message_text'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
     }
 
     private function _prepare_messages_view($messages, $sort='date_desc')

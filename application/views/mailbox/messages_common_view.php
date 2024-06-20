@@ -21,23 +21,23 @@
                         <span class="ic-normal" data-message="<?=$message['message_id']?>">&nbsp;</span>
                     <?php } ?>
                 </th>
-                <th class="tab-th-03"><?=$message['message_from']?></th>
+                <th class="tab-th-03" data-message="<?=$message['message_id']?>"><?=$message['message_from']?></th>
                 <th class="tab-th-04" data-message="<?=$message['message_id']?>">
                     <?php if ($message['message_flagged']==1) { ?>
-                        <span class="ic-orange"><i class="fa fa-star" aria-hidden="true"></i></span>
+                        <span class="ic-orange" data-message="<?=$message['message_id']?>"><i class="fa fa-star" aria-hidden="true"></i></span>
                     <?php } else { ?>
-                        <span class="ic-grey"><i class="fa fa-star-o" aria-hidden="true"></i></span>
+                        <span class="ic-grey" data-message="<?=$message['message_id']?>"><i class="fa fa-star-o" aria-hidden="true"></i></span>
                     <?php } ?>
                 </th>
-                <th class="tab-th-05"><span class="subject-email"><?=$message['message_subject']?></span></th>
-                <th class="tab-th-06">
+                <th class="tab-th-05" data-message="<?=$message['message_id']?>"><span class="subject-email"><?=$message['message_subject']?></span></th>
+                <th class="tab-th-06" data-message="<?=$message['message_id']?>">
                     <?php if ($message['numattach']>0) { ?>
                         <span class="ic-grey"><i class="fa fa-file-image-o" aria-hidden="true"></i></span>
                     <?php } else { ?>
                         &nbsp;
                     <?php } ?>
                 </th>
-                <th class="tab-th-07"><?=$outdate?></th>
+                <th class="tab-th-07" data-message="<?=$message['message_id']?>"><?=$outdate?></th>
             </tr>
         <?php } ?>
     </table>

@@ -6,10 +6,5 @@
     <div class="left-nav">
         <?=$folders?>
     </div>
-    <div class="emails-block">
-        <div class="emails-block-header">
-            <?=$headers_view?>
-        </div>
-        <div class="emails-block-body"><?=$messages?></div>
-    </div>
+    <div class="emails-block"><?=$folder_view?></div>
 </div>

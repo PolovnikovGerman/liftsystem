@@ -124,6 +124,16 @@ function init_mailbox_manage() {
         var message = $(this).data('message');
         update_message_flagged(message);
     });
+    // Mark as unflagged
+    $(".tab-th-04").find('span.ic-orange').unbind('click').click(function (){
+        var message = $(this).data('message');
+        update_message_flagged(message);
+    });
+    // Show message details
+    $(".tab-th-03").unbind('click').click(function (){
+        var message = $(this).data('message');
+        view_message(message);
+    });
 }
 
 function add_newfolder() {
@@ -193,8 +203,32 @@ function update_message_flagged(message) {
     $.post(url, params, function (response){
         if (response.errors=='') {
             $(".tab-th-04[data-message='"+message+"']").empty().html(response.data.content);
+            $("#loader").hide();
+            init_mailbox_manage();
         } else {
+            $("#loader").hide();
             show_errors(response);
         }
     },'json');
+}
+
+function view_message(message) {
+    var params = new Array();
+    params.push({name: 'message_id', value: message});
+    params.push({name: 'postbox', value: $("#postbox").val()});
+    var url = '/mailbox/view_message';
+    $("#loader").show();
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".emails-block").empty().html(response.data.content);
+            // Get content
+            // $("iframe.box-email-body").prop('scr', response.data.body);
+            $("#loader").hide();
+            // Init message manage
+        } else {
+            $("#loader").hide();
+            show_errors(response);
+        }
+    },'json');
+
 }
