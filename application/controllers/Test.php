@@ -3907,39 +3907,4 @@ class Test extends CI_Controller
         return true;
     }
 
-    public function fix_printreport_prices()
-    {
-        $brands = ['SR', 'SB'];
-        //
-        foreach ($brands as $brand) {
-            $this->db->select('oa.*, o.order_num');
-            $this->db->from('ts_order_amounts oa');
-            $this->db->join('ts_orders o','o.order_id=oa.order_id');
-            $this->db->where('oa.printshop',1);
-            $this->db->where('(oa.shipped+oa.kepted+oa.misprint) > ',0);
-            if ($brand=='SR') {
-                $this->db->where('o.brand', $brand);
-            } else {
-                $this->db->where_in('o.brand',['SB','BT']);
-            }
-            $this->db->order_by('oa.printshop_date');
-            $amnts = $this->db->get()->result_array();
-            $changes = [];
-            foreach ($amnts as $amnt) {
-                echo 'Order # '.$amnt['order_num'].PHP_EOL;
-                $this->db->select('sum(oi.qty*i.income_price) as totalrev, sum(oi.qty) as totalqty, count(oi.order_inventory_id) as cnt');
-                $this->db->from('ts_order_inventory oi');
-                $this->db->join('ts_inventory_incomes i', 'i.inventory_income_id=oi.inventory_income_id');
-                $this->db->where('oi.amount_id', $amnt['amount_id']);
-                $baseprice = $this->db->get()->row_array();
-                if ($baseprice['cnt']>0) {
-                    // Calc new price
-                    $newprice = round($baseprice['totalrev']/$baseprice['totalqty'],3);
-                    if (round($amnt['price'],3)!==$newprice) {
-                        echo 'Calc Price '.$newprice.' Rep Price '.$amnt['price'].PHP_EOL;
-                    }
-                }
-            }
-        }
-    }
 }
