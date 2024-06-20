@@ -3812,7 +3812,7 @@ class Test extends CI_Controller
         $this->db->from('ts_order_amounts');
         $this->db->where('printshop', 1);
         $this->db->where('printshop_total != amount_sum');
-        $this->db->where('printshop_history', 0);
+        // $this->db->where('printshop_history', 0);
         $amounts = $this->db->get()->result_array();
         foreach ($amounts as $amount) {
             $diff = $amount['amount_sum'] - $amount['printshop_total'];
