@@ -222,7 +222,12 @@ function view_message(message) {
         if (response.errors=='') {
             $(".emails-block").empty().html(response.data.content);
             // Get content
-            // $("iframe.box-email-body").prop('scr', response.data.body);
+            $("#iframe").ready(function() {
+                // var body = $("#iframe").contents().find("body");
+                // body.html(response.data.body);
+                $("#iframe").attr('srcdoc', response.data.body);
+            });
+            // $("iframe.box-email-body").prop('scr', );
             $("#loader").hide();
             // Init message manage
         } else {

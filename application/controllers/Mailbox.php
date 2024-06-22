@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+// change vendor/ssilence/php-imap-client/ImapClient/IncomingMessage.php
+// const SECTION_ATTACHMENTS = 0;
 class Mailbox extends MY_Controller
 {
 

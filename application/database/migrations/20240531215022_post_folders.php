@@ -20,7 +20,14 @@ class Migration_post_folders extends CI_Migration {
                 'constraint' => 250,
                 'null' => true,
                 'comment' => 'Post Folder Name'
-            )
+            ),
+            'folder_messages' => array(
+                'type' => 'INT',
+                'constraint' => 11,
+                'null' => false,
+                'default' => 0,
+                'comment' => '# of messages in folder'
+            ),
         ));
         $this->dbforge->add_key('folder_id', TRUE);
         $this->dbforge->add_field('CONSTRAINT FOREIGN KEY (postbox_id) REFERENCES user_postboxes(postbox_id) on update cascade on delete set null');

@@ -63,7 +63,7 @@
                 <div class="favorite"><i class="fa fa-star-o" aria-hidden="true"></i></div>
             </div>
         </div>
-        <iframe srcdoc="<?=$message['message_text']?>" class="box-email-body" title="description"></iframe>
+        <iframe class="box-email-body" id="address_typeiframe"></iframe>
         <div class="box-email-bottom">
             <div class="box-email-bottom-nav">
                 <div class="bottom-nav-button">

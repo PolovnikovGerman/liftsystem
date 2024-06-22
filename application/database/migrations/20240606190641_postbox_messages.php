@@ -102,7 +102,7 @@ class Migration_postbox_messages extends CI_Migration {
                 'comment' => 'Message Date UTC'
             ),
             'message_text' => array(
-                'type' => 'TEXT',
+                'type' => 'LONGTEXT',
                 'null' => true,
                 'comment' => 'Message Text',
             ),

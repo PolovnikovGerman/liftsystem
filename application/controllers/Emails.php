@@ -51,6 +51,17 @@ class Emails extends CI_Controller
         $uid = '67759';
         $id = $imap->getId($uid);
         $email = $imap->getMessage($id);
+        $emailcc = $email->header->details->cc;
+        echo 'CC '.PHP_EOL;
+        foreach ($emailcc as $emailc) {
+            echo $emailc->mailbox.'@'.$emailc->host.PHP_EOL;
+        }
+        if (isset($email->header->details->bcc)) {
+            $emailbcc = $email->header->details->bcc;
+            echo 'BCC '.PHP_EOL;
+            var_dump($emailbcc);
+        }
+
         $this->load->config('uploader');
         // foreach ($emails as $email) {
             $attachments = $email->attachments;

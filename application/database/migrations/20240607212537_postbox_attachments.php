@@ -26,6 +26,12 @@ class Migration_postbox_attachments extends CI_Migration {
                 'constraint' => 250,
                 'null' => true,
                 'comment' => 'Attachment Local Copy',
+            ),
+            'attachment_type' => array(
+                'type' => 'VARCHAR',
+                'constraint' => 250,
+                'null' => true,
+                'comment' => 'Attachment Type',
             )
         ));
         $this->dbforge->add_key('attachment_id', TRUE);

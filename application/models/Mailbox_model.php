@@ -94,14 +94,16 @@ class Mailbox_model extends MY_Model
             $imap->selectFolder($folder['folder_name']);
             $overallMessages = $imap->countMessages();
             $unreadMessages = $imap->countUnreadMessages();
-
-            $out['totalmsg'] = $overallMessages;
-            $out['unread'] = $unreadMessages;
+            $this->db->where('folder_id', $folder['folder_id']);
+            $this->db->set('folder_messages', $overallMessages);
+            $this->db->update('postbox_folders');
+            // $out['totalmsg'] = $overallMessages;
+            // $out['unread'] = $unreadMessages;
             $briefinfos = $imap->getBriefInfoMessages();
             foreach ($briefinfos as $briefinfo) {
                 $message = $imap->getMessage($briefinfo['id']);
                 echo 'Manage msg '.$briefinfo['id'].' Messaage ID '.$message->header->message_id.PHP_EOL;
-                echo 'UDate '.$message->header->udate.PHP_EOL;
+                // echo 'UDate '.$message->header->udate.PHP_EOL;
                 $postmsgid = $message->header->message_id;
                 // Check - if such msg exist
                 $this->db->select('count(message_id) as cnt, max(message_id) as msgid')->from('postbox_messages')->where('postmessage_id', $postmsgid);
@@ -122,12 +124,32 @@ class Mailbox_model extends MY_Model
                     $this->db->set('message_seen', $message->header->seen);
                     $this->db->set('message_draft', $message->header->draft);
                     $this->db->set('message_udate', $message->header->udate);
-                    $this->db->set('message_text', $message->message->info[1]->body);
+                    if (isset($message->message->info[1]->body)) {
+                        $this->db->set('message_text', $message->message->info[1]->body);
+                    } else {
+                        $this->db->set('message_text', $message->message->info[0]->body);
+                    }
                     $this->db->insert('postbox_messages');
                     $msgid = $this->db->insert_id();
                     $attachments = $message->attachments;
                     if (count($attachments) > 0) {
                         $this->_save_attachment($msgid, $attachments);
+                    }
+                    if (isset($message->header->details->cc)) {
+                        foreach ($message->header->details->cc as $ccaddres) {
+                            $this->db->set('message_id', $msgid);
+                            $this->db->set('address_type','CC');
+                            $this->db->set('address', $ccaddres->mailbox.'@'.$ccaddres->host);
+                            $this->db->insert('postmessage_address');
+                        }
+                    }
+                    if (isset($message->header->details->bcc)) {
+                        foreach ($message->header->details->bcc as $ccaddres) {
+                            $this->db->set('message_id', $msgid);
+                            $this->db->set('address_type','BCC');
+                            $this->db->set('address', $ccaddres->mailbox.'@'.$ccaddres->host);
+                            $this->db->insert('postmessage_address');
+                        }
                     }
                 } else {
                     $this->db->where('message_id', $msgchk['msgid']);
@@ -228,6 +250,7 @@ class Mailbox_model extends MY_Model
                                 $this->db->set('message_id', $msgid);
                                 $this->db->set('attachment_name', $attachment->name);
                                 $this->db->set('attachment_link', $shrtpath . $newattachname);
+                                $this->db->set('attachment_type', $attachment->info->structure->subtype);
                                 $this->db->insert('postbox_attachments');
                             }
                         }
