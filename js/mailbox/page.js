@@ -18,6 +18,7 @@ function init_postbox(postbox) {
             $("#loader").hide();
             init_mailbox_manage();
             $(".maincontentmenu_item[data-postbox='"+postbox+"']").addClass('active');
+            leftmenu_alignment();
         } else {
             show_errors(response);
             $("#loader").hide();
@@ -220,20 +221,27 @@ function view_message(message) {
     $("#loader").show();
     $.post(url, params, function (response){
         if (response.errors=='') {
-            $(".emails-block").empty().html(response.data.content);
+            $(".emails-block").addClass('messagedetails').empty().html(response.data.content);
             // Get content
             $("#iframe").ready(function() {
                 // var body = $("#iframe").contents().find("body");
                 // body.html(response.data.body);
                 $("#iframe").attr('srcdoc', response.data.body);
             });
-            // $("iframe.box-email-body").prop('scr', );
             $("#loader").hide();
             // Init message manage
+            init_message_details();
+            leftmenu_alignment();
         } else {
             $("#loader").hide();
             show_errors(response);
         }
     },'json');
+}
 
+// manage Email Details
+function init_message_details() {
+    $(".backpostfolder").unbind('click').click(function (){
+
+    });
 }

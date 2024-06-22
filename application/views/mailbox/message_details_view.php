@@ -1,6 +1,8 @@
+<input type="hidden" id="message" value="<?=$message['message_id']?>"/>
+<input type="hidden" id="folder" value="<?=$message['folder_id']?>"/>
 <div class="emails-block-header">
     <div class="ebh-left">
-        <div class="ebh-left-button">
+        <div class="ebh-left-button backpostfolder">
             <span class="ebh-left-back"><img src="/img/mailbox/arrow-left.svg"></span> Back
         </div>
         <div class="ebh-left-button">
@@ -13,7 +15,7 @@
             <span class="ebh-left-forward"><img src="/img/mailbox/arrow-alt-right.svg"></span>
         </div>
     </div>
-    <div class="menu-icons">
+    <div class="menu-icons messagedetails">
         <ul>
             <li><span><img src="/img/mailbox/icon-archive.svg"></span> Archive</li>
             <li><span><img src="/img/mailbox/icon-move.svg"></span> Move</li>
@@ -39,10 +41,10 @@
     <div class="box-email-header">
         <div class="box-email-dateinfo">
             <span class="dateinfo-circle"><i class="fa fa-circle" aria-hidden="true"></i></span>
-            Sun - Jun 09, 2024 - <span class="email-subject">Sales Report (Shanequa Hall) (Owners version) (Bluetrack/Stressballs)</span>
+            <?=date('D - M d, Y', $message['message_udate'])?> - <span class="email-subject"><?=$message['message_subject']?></span>
         </div>
         <div class="box-email-inbox">
-            Inbox <span><i class="fa fa-star-o" aria-hidden="true"></i></span>
+            <?=$folder?> <span><i class="fa fa-star-o" aria-hidden="true"></i></span>
         </div>
     </div>
     <div class="box-email">
@@ -52,18 +54,19 @@
             </div>
             <div class="box-email-info-from">
                 <span class="status"><i class="fa fa-circle" aria-hidden="true"></i></span>
-                <p class="nameuser">sales@bluetrack.com</p>
-                <p><span>From:</span> sales@bluetrack.com</p>
-                <p><span>To:</span> sean@bluetrack.com</p>
-                <p><span>Cc:</span> sage@bluetrack.com</p>
+                <p class="nameuser"><?=$message['message_from']?></p>
+                <p><span>From:</span> <?=$message['message_from']?></p>
+                <p><span>To:</span> <?=$message['message_to']?></p>
+                <?=$adrcc?>
+                <?=$adrbcc?>
             </div>
             <div class="box-email-info-right">
                 <div class="btn-print"><img src="/img/mailbox/print.svg"></div>
-                <div class="date">Mon, Jun 10 at 3:00 PM</div>
+                <div class="date"><?=date('D, M d', $message['message_udate'])?> at <?=date('h:i A')?></div>
                 <div class="favorite"><i class="fa fa-star-o" aria-hidden="true"></i></div>
             </div>
         </div>
-        <iframe class="box-email-body" id="address_typeiframe"></iframe>
+        <iframe class="box-email-body" id="iframe"></iframe>
         <div class="box-email-bottom">
             <div class="box-email-bottom-nav">
                 <div class="bottom-nav-button">

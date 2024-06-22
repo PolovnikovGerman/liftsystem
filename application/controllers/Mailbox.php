@@ -234,10 +234,31 @@ class Mailbox extends MY_Controller
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';
+                $adrcc_view = '';
+                if (!empty($res['adrcc'])) {
+                    $adresses = [];
+                    foreach ($res['adrcc'] as $adr) {
+                        $adresses[] = $adr['address'];
+                    }
+                    $address = implode(',', $adresses);
+                    $adrcc_view = $this->load->view('mailbox/message_copy_view',['type'=>'Cc', 'address' => $address], TRUE);
+                }
+                $adrbcc_view = '';
+                if (!empty($res['adrbcc'])) {
+                    $adresses = [];
+                    foreach ($res['adrbcc'] as $adr) {
+                        $adresses[] = $adr['address'];
+                    }
+                    $address = implode(',', $adresses);
+                    $adrbcc_view = $this->load->view('mailbox/message_copy_view',['type'=>'Bcc', 'address' => $address], TRUE);
+                }
                 $options = [
                     'message' => $res['message'],
                     'attachments' => $res['attachments'],
                     'numattachs' => count($res['attachments']),
+                    'folder' => $res['folder'],
+                    'adrcc' => $adrcc_view,
+                    'adrbcc' => $adrbcc_view,
                 ];
                 $mdata['content'] = $this->load->view('mailbox/message_details_view',$options, TRUE);
                 $mdata['body'] = $res['message']['message_text'];

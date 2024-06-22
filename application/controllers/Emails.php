@@ -40,9 +40,9 @@ class Emails extends CI_Controller
         $imap->selectFolder('INBOX');
 
         // Count the messages in current folder
-        $overallMessages = $imap->countMessages();
-        $unreadMessages = $imap->countUnreadMessages();
-        echo 'All Messages - '.$overallMessages.' UnRead '.$unreadMessages.PHP_EOL.'<br>';
+        // $overallMessages = $imap->countMessages();
+        // $unreadMessages = $imap->countUnreadMessages();
+        // echo 'All Messages - '.$overallMessages.' UnRead '.$unreadMessages.PHP_EOL.'<br>';
 //        $tt = $imap->getBriefInfoMessages();
 //        print_r($tt);
 //        die();
@@ -61,7 +61,7 @@ class Emails extends CI_Controller
             echo 'BCC '.PHP_EOL;
             var_dump($emailbcc);
         }
-
+        echo 'FROM '.$email->header->from.PHP_EOL;
         $this->load->config('uploader');
         // foreach ($emails as $email) {
             $attachments = $email->attachments;

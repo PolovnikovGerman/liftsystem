@@ -112,7 +112,7 @@ class Mailbox_model extends MY_Model
                     // New Message
                     $this->db->set('folder_id', $folder['folder_id']);
                     $this->db->set('message_subject', $message->header->subject);
-                    $this->db->set('message_from', $message->header->from);
+                    $this->db->set('message_from', str_replace('"','',$message->header->from));
                     $this->db->set('message_to', $message->header->to);
                     $this->db->set('message_date', $message->header->date);
                     $this->db->set('postmessage_id', $message->header->message_id);
@@ -598,10 +598,21 @@ class Mailbox_model extends MY_Model
             if (ifset($message, 'message_id',0)==$message_id) {
                 $out['result'] = $this->success_result;
                 // Get attached
+                $this->db->select('folder_name')->from('postbox_folders')->where('folder_id', $message['folder_id']);
+                $folderdat = $this->db->get()->row_array();
                 $this->db->select('*')->from('postbox_attachments')->where('message_id', $message_id);
                 $attachs = $this->db->get()->result_array();
+                // Get CC
+                $this->db->select('*')->from('postmessage_address')->where(['message_id' => $message_id, 'address_type' => 'CC']);
+                $adrcc = $this->db->get()->result_array();
+                // Get BCC
+                $this->db->select('*')->from('postmessage_address')->where(['message_id' => $message_id, 'address_type' => 'BCC']);
+                $adrbcc = $this->db->get()->result_array();
                 $out['message'] = $message;
                 $out['attachments'] = $attachs;
+                $out['adrcc'] = $adrcc;
+                $out['adrbcc'] = $adrbcc;
+                $out['folder'] = $folderdat['folder_name'];
             }
         }
         return $out;

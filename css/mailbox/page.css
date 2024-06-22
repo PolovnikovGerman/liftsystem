@@ -44,7 +44,7 @@
 .left-nav-list ul li {
     color: #fff;
     height: 24px;
-    line-height: 24px;
+    line-height: 24px!important;
     padding-left: 10px;
     font-weight: 600;
     font-size: 14px;
@@ -76,6 +76,9 @@
 .emails-block {
     width: 965px;
 }
+.emails-block.messagedetails {
+    margin-left: 15px;
+}
 .emails-block-header {
     font-family: "Oswald", sans-serif;
     width: 100%;
@@ -100,7 +103,7 @@
 .tab-tr {
     border-bottom: 1px solid #e0e4e9;
     height: 24px;
-    line-height: 24px;
+    line-height: 24px!important;
 }
 .tab-th-01 {
     float: left;
@@ -196,6 +199,9 @@ span.arrow-select {
     width: 820px;
     text-align: center;
 }
+.menu-icons.messagedetails {
+    width: 726px;
+}
 .menu-icons ul {
     list-style: none;
     padding-left: 0;
@@ -218,6 +224,7 @@ span.arrow-select {
     font-size: 26px;
     position: relative;
     top: 3px;
+    cursor: pointer;
 }
 .menu-icons ul li span img {
     height: 19px;
@@ -226,7 +233,7 @@ span.arrow-select {
 .list-folder-title {
     color: #fff;
     height: 28px;
-    line-height: 28px;
+    line-height: 28px!important;
     padding-left: 10px;
     font-weight: 600;
     font-size: 14px;
@@ -242,7 +249,7 @@ span.arrow-select {
 .views-show {
     color: #fff;
     height: 28px;
-    line-height: 28px;
+    line-height: 28px!important;
     padding-left: 10px;
     font-weight: 600;
     font-size: 14px;
@@ -342,7 +349,7 @@ input.newfoldername {
     font-size: 14px;
 }
 .ebh-right-button {
-    float: right;
+    float: right!important;
     cursor: pointer;
     margin: 0 5px;
     font-size: 14px;
@@ -360,7 +367,7 @@ input.newfoldername {
     height: 14px;
     width: auto;
     position: relative;
-    top: 2px;
+    top: -1px;
 }
 .ebh-left-reply img,
 .ebh-left-reply-all img,
@@ -385,19 +392,19 @@ input.newfoldername {
 .email-block {
     width: 965px;
     height: 596px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 .box-email {
     border: 2px solid #b9bcc3;
     padding: 7px 10px;
-    width: 924px;
+    min-width: 924px;
 }
 .box-email-header {
     width: 940px;
 }
 .box-email-dateinfo {
     padding-left: 20px;
-    line-height: 35px;
+    line-height: 35px!important;
     font-size: 15px;
 }
 .dateinfo-circle {
@@ -408,7 +415,7 @@ input.newfoldername {
     margin-right: 4px;
 }
 .box-email-inbox {
-    float: right;
+    float: right!important;
     text-align: right;
     color: #b2aeaf;
     font-size: 14px;
@@ -455,7 +462,7 @@ input.newfoldername {
 .views-show {
     color: #fff;
     height: 28px;
-    line-height: 28px;
+    line-height: 28px!important;
     padding-left: 10px;
     font-weight: 600;
     font-size: 14px;
@@ -499,7 +506,7 @@ input.newfoldername {
     color: #979eae;
 }
 .box-email-info-right {
-    float: right;
+    float: right!important;
 }
 .btn-print {
     cursor: pointer;

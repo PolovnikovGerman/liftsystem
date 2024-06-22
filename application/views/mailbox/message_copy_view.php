@@ -1,1 +1,1 @@
-<?php
+<p><span><?=$type?>:</span> <?=$address?></p>
