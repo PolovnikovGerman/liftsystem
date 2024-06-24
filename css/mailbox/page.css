@@ -440,6 +440,11 @@ input.newfoldername {
     height: 35px;
     text-align: center;
 }
+.box-email-bottom-attachments {
+    display: inline-block;
+    border: 1px solid #eceef1;
+    padding: 0 7px;
+}
 .box-email-bottom-nav {
     display: inline-block;
     border: 1px solid #eceef1;
@@ -529,4 +534,7 @@ input.newfoldername {
     position: relative;
     top: -1px;
     cursor: pointer;
+}
+.favorite.flagged {
+    color: #fd6100;
 }
