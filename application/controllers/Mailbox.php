@@ -70,6 +70,9 @@ class Mailbox extends MY_Controller
 //        $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
         // Scroll panel
         $head['scripts'][] = array('src' => '/js/adminpage/jquery-scrollpanel.js');
+        // File Download
+        $head['scripts'][]=array('src'=>'/js/adminpage/jquery.fileDownload.js');
+
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
@@ -248,16 +251,19 @@ class Mailbox extends MY_Controller
                     $address = implode(',', $adresses);
                     $adrbcc_view = $this->load->view('mailbox/message_copy_view',['type'=>'Bcc', 'address' => $address], TRUE);
                 }
-                $folder_name = $folder;
+                $folder_name = $res['folder'];
                 if ($folder=='new') {
                     $folder_name = 'Unread';
                 } elseif ($folder=='flagged') {
                     $folder_name = 'Starred';
                 }
+                $attachment_view = '';
+                if (count($res['attachments'])>0) {
+                    $attachment_view = $this->load->view('mailbox/message_attachments_view',['attachments' => $res['attachments']], TRUE);
+                }
                 $options = [
                     'message' => $res['message'],
-                    'attachments' => $res['attachments'],
-                    'numattachs' => count($res['attachments']),
+                    'attachments' => $attachment_view,
                     'folder' => $folder,
                     'folder_name' => $folder_name,
                     'adrcc' => $adrcc_view,
@@ -268,6 +274,32 @@ class Mailbox extends MY_Controller
             }
             $this->ajaxResponse($mdata, $error);
         }
+    }
+
+    public function message_flag()
+    {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $postbox = ifset($postdata, 'postbox', '');
+            $message = ifset($postdata, 'message', '');
+            $res = $this->mailbox_model->update_message_flagged($message, $postbox);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['flag'] = $res['unflag'];
+                if ($res['unflag']==1) {
+                    $mdata['content_head'] = '<span class="ic-orange"><i class="fa fa-star" aria-hidden="true"></i></span>';
+                    $mdata['content'] = '<i class="fa fa-star" aria-hidden="true"></i>';
+                } else {
+                    $mdata['content_head'] = '<span class="ic-nonflagged"><i class="fa fa-star-o" aria-hidden="true"></i></span>';
+                    $mdata['content'] = '<i class="fa fa-star-o" aria-hidden="true"></i>';
+                }
+
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 
     private function _prepare_messages_view($messages, $sort='date_desc')

@@ -265,4 +265,63 @@ function init_message_details() {
             }
         },'json');
     });
+    $(".attach-file-area").unbind('click').click(function (){
+        var imgurl = $(this).data('link');
+        var imgname = $(this).data('name');
+        if (navigator.appVersion.indexOf("Mac")!=-1) {
+            /* Mac OS*/
+            $.fileDownload('/welcome/art_openimg', {httpMethod : "POST", data: {url : imgurl, file: imgname}});
+            return false; //this is critical to stop the click event which will trigger a normal file download!            return false; //this is critical to stop the click event which will trigger a normal file download!
+            window.open(imgurl, 'showfile');
+        } else {
+            var open = window.open(imgurl,imgname,'left=120,top=120,width=500,height=400');
+            if (open == null || typeof(open)=='undefined')
+                alert("Turn off your pop-up blocker!\n\nWe try to open the following url:\n"+url);
+        }
+    });
+    // Click star label
+    $(".favorite").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'postbox', value: $("#postbox").val()});
+        params.push({name: 'message', value: $("#message").val()});
+        var url = '/mailbox/message_flag';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#message_flagarea").empty().html(response.data.content_head);
+                if (response.data.flag==1) {
+                    $(".favorite").addClass('flagged').empty().html(response.data.content);
+                } else {
+                    $(".favorite").removeClass('flagged').empty().html(response.data.content);
+                }
+                $("#loader").hide();
+                init_message_details();
+            } else {
+                $("#loader").hide();
+                show_errors(response);
+            }
+        },'json');
+    });
+    $("#message_flagarea").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'postbox', value: $("#postbox").val()});
+        params.push({name: 'message', value: $("#message").val()});
+        var url = '/mailbox/message_flag';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#message_flagarea").empty().html(response.data.content_head);
+                if (response.data.flag==1) {
+                    $(".favorite").addClass('flagged').empty().html(response.data.content);
+                } else {
+                    $(".favorite").removeClass('flagged').empty().html(response.data.content);
+                }
+                $("#loader").hide();
+                init_message_details();
+            } else {
+                $("#loader").hide();
+                show_errors(response);
+            }
+        },'json');
+    });
 }

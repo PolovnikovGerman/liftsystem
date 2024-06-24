@@ -437,13 +437,49 @@ input.newfoldername {
 }
 .box-email-bottom {
     width: 100%;
-    height: 35px;
+    /* height: 35px; */
     text-align: center;
 }
 .box-email-bottom-attachments {
     display: inline-block;
-    border: 1px solid #eceef1;
+    /* border: 1px solid #eceef1; */
     padding: 0 7px;
+    width: 100%;
+}
+ul.attachmentlist {
+    float: left;
+    width: 100%;
+    padding-left: 0;
+    margin-top: 15px;
+    margin-bottom: 0;
+    list-style: none;
+}
+li.attachmentbox {
+    float: left;
+    width: 130px;
+}
+.attach-file-area {
+    width: 100px;
+    height: 100px;
+    line-height: 100px!important;
+    background: #eceef1;
+    color: #D3D3D3;
+    cursor: pointer;
+}
+.attach-file-area img {
+    width: 100%;
+}
+.attach-file-area i {
+    font-size: 33px;
+    margin-top: 33px;
+}
+.attachmenttitle {
+    font-size: 12px;
+    margin-top: 7px;
+    width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .box-email-bottom-nav {
     display: inline-block;

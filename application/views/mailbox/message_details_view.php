@@ -45,12 +45,13 @@
         </div>
         <div class="box-email-inbox">
             <?=$folder_name?>
-            <?php if ($message['message_flagged']==1) { ?>
-                <span class="ic-orange"><i class="fa fa-star" aria-hidden="true"></i></span>
-            <?php } else { ?>
-                <span class="ic-nonflagged"><i class="fa fa-star-o" aria-hidden="true"></i></span>
-            <?php } ?>
-
+            <div id="message_flagarea" style="float: right!important; margin-left: 3px;">
+                <?php if ($message['message_flagged']==1) { ?>
+                    <span class="ic-orange"><i class="fa fa-star" aria-hidden="true"></i></span>
+                <?php } else { ?>
+                    <span class="ic-nonflagged"><i class="fa fa-star-o" aria-hidden="true"></i></span>
+                <?php } ?>
+            </div>
         </div>
     </div>
     <div class="box-email">
@@ -76,32 +77,7 @@
         </div>
         <iframe class="box-email-body" id="iframe"></iframe>
         <div class="box-email-bottom">
-            <?php if ($numattachs > 0) { ?>
-            <div class="box-email-bottom-attachments">
-                <ul class="attachmentlist">
-                <?php foreach ($attachments as $attachment) { ?>
-                    <li class="attachmentbox">
-                        <div class="attach-file-area" data-link="<?=$attachment['attachment_link']?>">
-                            <?php if ($attachment['attachment_type']=='JPEG' || $attachment['attachment_type']=='JPG' || $attachment['attachment_type']=='PNG' || $attachment['attachment_type']=='GIF') { ?>}
-                                <img src="<?=$attachment['attachment_link']?>" alt="Preview"/>
-                            <?php } elseif ($attachment['attachment_type']=='VND.OPENXMLFORMATS-OFFICEDOCUMENT.SPREADSHEETML.SHEET') {?>
-                                <i class="fa fa-file-excel-o"></i>
-                            <?php } elseif ($attachment['attachment_type']=='POSTSCRIPT') {?>
-                                <i class="fa fa-file-photo-o"></i>
-                            <?php } elseif ($attachment['attachment_type']=='X-PHOTOSHOP') {?>
-                                <i class="fa fa-file-photo-o"></i>
-                            <?php } elseif ($attachment['attachment_type']=='PDF') {?>
-                                <i class="fa fa-file-pdf-o"></i>
-                            <?php } else { ?>
-                                <i class="fa fa-file-text-o"></i>
-                            <?php } ?>
-                        </div>
-                        <span><?=$attachment['attachment_name']?></span>
-                    </li>
-                <?php } ?>
-                </ul>
-            </div>
-            <?php } ?>
+            <?=$attachments?>
             <div class="box-email-bottom-nav">
                 <div class="bottom-nav-button">
                     <span class="bnb-reply"><img src="/img/mailbox/reply.svg"></span>

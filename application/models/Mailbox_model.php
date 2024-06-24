@@ -597,8 +597,8 @@ class Mailbox_model extends MY_Model
             $message = $this->db->get()->row_array();
             if (ifset($message, 'message_id',0)==$message_id) {
                 $out['result'] = $this->success_result;
-//                $this->db->select('folder_name')->from('postbox_folders')->where('folder_id', $message['folder_id']);
-//                $folderdat = $this->db->get()->row_array();
+                $this->db->select('folder_name')->from('postbox_folders')->where('folder_id', $message['folder_id']);
+                $folderdat = $this->db->get()->row_array();
                 // Get attached
                 $this->db->select('*')->from('postbox_attachments')->where('message_id', $message_id);
                 $attachs = $this->db->get()->result_array();
@@ -608,11 +608,29 @@ class Mailbox_model extends MY_Model
                 // Get BCC
                 $this->db->select('*')->from('postmessage_address')->where(['message_id' => $message_id, 'address_type' => 'BCC']);
                 $adrbcc = $this->db->get()->result_array();
+                // Change Message Seen Flag
+                if ($message['message_seen']==0) {
+                    $imapdat = $this->_create_imap_client($postbox);
+                    if ($imapdat['result']==$this->success_result) {
+                        $imap = $imapdat['imap'];
+                        $id = $imap->getId($message['message_uid']);
+                        try{
+                            $imap->setSeenMessage($id);
+                            $message['message_seen'] = 1;
+                            $this->db->where('message_id', $message_id);
+                            $this->db->set('message_seen',1);
+                            $this->db->update('postbox_messages');
+                        } catch (ImapClientException $error){
+                            // $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
+                            // return $out;
+                        }
+                    }
+                }
                 $out['message'] = $message;
                 $out['attachments'] = $attachs;
                 $out['adrcc'] = $adrcc;
                 $out['adrbcc'] = $adrbcc;
-//                $out['folder'] = $folderdat['folder_name'];
+                $out['folder'] = $folderdat['folder_name'];
             }
         }
         return $out;
