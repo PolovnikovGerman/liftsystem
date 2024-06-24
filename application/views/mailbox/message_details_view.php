@@ -1,5 +1,5 @@
 <input type="hidden" id="message" value="<?=$message['message_id']?>"/>
-<input type="hidden" id="folder" value="<?=$message['folder_id']?>"/>
+<input type="hidden" id="folder_id" value="<?=$folder?>"/>
 <div class="emails-block-header">
     <div class="ebh-left">
         <div class="ebh-left-button backpostfolder">
@@ -44,7 +44,13 @@
             <?=date('D - M d, Y', $message['message_udate'])?> - <span class="email-subject"><?=$message['message_subject']?></span>
         </div>
         <div class="box-email-inbox">
-            <?=$folder?> <span><i class="fa fa-star-o" aria-hidden="true"></i></span>
+            <?=$folder_name?>
+            <?php if ($message['message_flagged']==1) { ?>
+                <span class="ic-orange"><i class="fa fa-star" aria-hidden="true"></i></span>
+            <?php } else { ?>
+                <span><i class="fa fa-star-o" aria-hidden="true"></i></span>
+            <?php } ?>
+
         </div>
     </div>
     <div class="box-email">

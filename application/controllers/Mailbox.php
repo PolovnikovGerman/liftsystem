@@ -102,11 +102,6 @@ class Mailbox extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
-//                    $out['folders'] = $newfolders;
-//                    $out['folder_name'] = $folder_name;
-//                    $out['active_folder'] = $active_folder;
-//                    $out['active_cnt'] = $active_cnt;
-//                    $out['messages'] = $messages;
                     if ($res['active_cnt']==0) {
                         $header_view = $this->load->view('mailbox/folder_header_empty',['folder'=>$res['folder_name']], true);
                     } else {
@@ -230,6 +225,7 @@ class Mailbox extends MY_Controller
             $mdata = [];
             $postbox = ifset($postdata, 'postbox', '');
             $message = ifset($postdata, 'message_id', '');
+            $folder = ifset($postdata,'folder', 'Inbox');
             $res = $this->mailbox_model->view_message($message, $postbox);
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
@@ -252,11 +248,18 @@ class Mailbox extends MY_Controller
                     $address = implode(',', $adresses);
                     $adrbcc_view = $this->load->view('mailbox/message_copy_view',['type'=>'Bcc', 'address' => $address], TRUE);
                 }
+                $folder_name = $folder;
+                if ($folder=='new') {
+                    $folder_name = 'Unread';
+                } elseif ($folder=='flagged') {
+                    $folder_name = 'Starred';
+                }
                 $options = [
                     'message' => $res['message'],
                     'attachments' => $res['attachments'],
                     'numattachs' => count($res['attachments']),
-                    'folder' => $res['folder'],
+                    'folder' => $folder,
+                    'folder_name' => $folder_name,
                     'adrcc' => $adrcc_view,
                     'adrbcc' => $adrbcc_view,
                 ];

@@ -597,9 +597,9 @@ class Mailbox_model extends MY_Model
             $message = $this->db->get()->row_array();
             if (ifset($message, 'message_id',0)==$message_id) {
                 $out['result'] = $this->success_result;
+//                $this->db->select('folder_name')->from('postbox_folders')->where('folder_id', $message['folder_id']);
+//                $folderdat = $this->db->get()->row_array();
                 // Get attached
-                $this->db->select('folder_name')->from('postbox_folders')->where('folder_id', $message['folder_id']);
-                $folderdat = $this->db->get()->row_array();
                 $this->db->select('*')->from('postbox_attachments')->where('message_id', $message_id);
                 $attachs = $this->db->get()->result_array();
                 // Get CC
@@ -612,7 +612,7 @@ class Mailbox_model extends MY_Model
                 $out['attachments'] = $attachs;
                 $out['adrcc'] = $adrcc;
                 $out['adrbcc'] = $adrbcc;
-                $out['folder'] = $folderdat['folder_name'];
+//                $out['folder'] = $folderdat['folder_name'];
             }
         }
         return $out;
