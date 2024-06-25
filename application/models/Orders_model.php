@@ -8024,49 +8024,10 @@ Class Orders_model extends MY_Model
             $totalref+=$refr['balance'];
         }
 
-        $own = [];
-        $refund = [];
-        if ($limit_year==0) {
-            $this->db->select('min(yearorder) as yearorder');
-            $this->db->from('v_order_balances');
-            $yearres = $this->db->get()->row_array();
-            $limit_year = $yearres['yearorder'];
-        }
-        for ($i=0; $i<1000; $i++) {
-            $yearown=0;
-            $yearref=0;
-            foreach ($ownsrc as $row) {
-                if ($row['yearorder']==($cur_year-$i)) {
-                    $yearown=$row['balance'];
-                    break;
-                }
-            }
-            foreach ($refsrc as $row) {
-                if ($row['yearorder']==($cur_year-$i)) {
-                    $yearref=$row['balance'];
-                    break;
-                }
-            }
-
-            $own[] = [
-                'year' => $cur_year - $i,
-                'balance' => $yearown,
-            ];
-
-            $refund[] = [
-                'year' => $cur_year - $i,
-                'balance' => $yearref,
-            ];
-            if (($cur_year - $i)<=$limit_year) {
-                break;
-            }
-        }
         return array(
             'totalown' => $totalown,
             'pastown' => $pastown,
             'totalrefund' => $totalref,
-            'own' => $own,
-            'refund' => $refund,
             'balance' => $totalown+$totalref,
         );
     }

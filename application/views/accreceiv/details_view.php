@@ -11,6 +11,7 @@
         <?php } else { ?>
             <div class="accreceiv-owndetails-headbalance ownsort" data-sort="balance">Balance <span></span></div>
         <?php } ?>
+        <div class="accreceiv-owndetails-headrunningtotal">Running Total</div>
         <?php if ($ownsort=='order_num') { ?>
             <div class="accreceiv-owndetails-headorder ownsort" data-sort="order_num">Order <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
         <?php } else { ?>
@@ -26,6 +27,8 @@
         <?php } else { ?>
             <div class="accreceiv-owndetails-headtype ownsort" data-sort="owntype">Type <span></span></div>
         <?php } ?>
+        <div class="accreceiv-owndetails-headapproval">Approval</div>
+        <div class="accreceiv-owndetails-headstatus">Status</div>
     </div>
     <div class="accreceiv-owndetails-body">
         <?php if (count($owns)==0) { ?>

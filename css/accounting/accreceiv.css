@@ -20,8 +20,8 @@
     font-weight: bold;
 }
 .accreceiv-period {
-    width: 209px;
-    float: right!important;
+    width: 204px; /* 209 */
+    /* float: right!important; */
     text-align: right;
 }
 .accreceiv-period span {
@@ -38,31 +38,33 @@
 }
 .accreceiv-content-data {
     /* width: 1067px; */
-    max-width: 1064px;
+    width: 1300px;
 }
 .accreceiv-totals, .accreceiv-details {
     width: 100%;
 }
 .accreceiv-content-left {
-    width: 530px;
-    margin-right: 30px;
+    width: 754px; /* 530px; */
+    margin-right: 125px;
 }
 .accreceiv-content-left.sigmasystem {
     width: 544px;
 }
 .accreceiv-content-center {
-    width: 469px;
-    /* margin-right: 17px; */
+    width: 420px;
 }
 .accreceiv-content-center.sigmasystem {
     width: 483px;
 }
 .accreceiv-content-right {
-    width: 225px;
+    border: 2px solid #000000;
+    width: 227px;
     float: right!important;
+    margin-top: -34px;
 }
 .accreceiv-totalown {
-    width: 230px;
+    width: 142px; /* 230px */
+    margin-bottom: 7px;
 }
 .accreceiv-totalown-title {
     font-size: 14px;
@@ -70,7 +72,7 @@
     color: #0000ff;
     height: 28px;
     line-height: 28px!important;
-    width: 87px;
+    /* width: 87px; */
 }
 .accreceiv-totalown-value {
     border: 2px solid #000000;
@@ -80,7 +82,7 @@
     line-height: 24px!important;
     padding-right: 5px;
     text-align: right;
-    width: 137px;
+    width: 100%; /* 137px */
 }
 .accreceiv-totalown-value span {
     font-size: 12px;
@@ -89,20 +91,27 @@
     margin-left: 1px;
 }
 .accreceiv-totalpast {
-    width: 94px;
-    float: right!important;
-    margin-top: -9px;
+    margin-left: 16px;
+    width: 142px;
+    margin-bottom: 7px;
 }
 .accreceiv-totalpast-title {
     font-weight: bold;
     font-size: 14px;
     color: #ff0000;
     width: 100%;
+    height: 28px;
+    line-height: 24px!important;
 }
 .accreceiv-totalpast-value {
+    border: 2px solid #ff0000;
     font-weight: bold;
     font-size: 17px;
     width: 100%;
+    height: 28px;
+    line-height: 24px!important;
+    text-align: right;
+    padding-right: 5px;
 }
 .accreceiv-totalpast-value span {
     font-size: 12px;
@@ -142,7 +151,8 @@
     margin-left: 0.5px;
 }
 .accreceiv-totalrefund {
-    width: 360px;
+    width: 161px; /*  360px; */
+    margin-bottom: 7px;
 }
 .accreceiv-totalrefund-title {
     font-size: 14px;
@@ -227,6 +237,9 @@
     line-height: 28px!important;
     color: #0000ff;
 }
+.accreceiv-totals-title.refund {
+    color: #ff0000;
+}
 .accreceiv-totals-title.totalar {
     font-size: 16px;
 }
@@ -246,8 +259,8 @@
     margin-left: 2px;
 }
 .accreceiv-totals-value.totalbalance {
-    border: 2px solid #000000;
-    line-height: 24px!important;
+    /* border: 2px solid #000000;
+    line-height: 24px!important; */
 }
 .accreceiv-totals-value.refund {
     color: #ff0000;
@@ -281,13 +294,16 @@
     width: 24px;
 }
 .accreceiv-owndetails-headdue {
-    width: 63px;
+    width: 58px;
 }
 .accreceiv-owndetails-headbalance {
-    width: 92px;
+    width: 86px;
+}
+.accreceiv-owndetails-headrunningtotal {
+    width: 62px;
 }
 .accreceiv-owndetails-headorder {
-    width: 75px;
+    width: 47px;
 }
 .accreceiv-owndetails-headbrand {
     width: 52px;
@@ -297,10 +313,16 @@
     width: 50px;
 }
 .accreceiv-owndetails-headcustomer {
-    width: 189px;
+    width: 180px;
 }
 .accreceiv-owndetails-headtype {
-    width: 85px;
+    width: 70px;
+}
+.accreceiv-owndetails-headapproval {
+    width: 84px;
+}
+.accreceiv-owndetails-headstatus {
+    width: 140px;
 }
 .accreceiv-owndetails-body {
     border-left: 1px solid #000000;
