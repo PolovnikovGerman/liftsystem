@@ -424,6 +424,7 @@
     width: 70px;
     text-align: center;
     font-size: 13px!important;
+    border-right: 1px solid #000000;
 }
 .accreceiv-owndetails-bodytype.creditcard {
     color: #0000ff;
@@ -431,10 +432,20 @@
 .accreceiv-owndetails-bodyapproval {
     width: 84px;
     text-align: center;
+    border-right: 1px solid #000000;
+    font-size: 12px!important;
+}
+.accreceiv-owndetails-bodyapproval.notapproved {
+    background: yellow;
 }
 .accreceiv-owndetails-bodystatus {
     width: 140px;
     padding-left: 5px;
+}
+select.debtstatus {
+    width: 129px;
+    padding-left: 3px;
+    color: #000000;
 }
 /* Refund */
 .accreceiv-refunddetails-head {

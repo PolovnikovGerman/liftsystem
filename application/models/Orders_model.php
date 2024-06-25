@@ -8043,12 +8043,14 @@ Class Orders_model extends MY_Model
         /* Prepare Approved view */
         $this->db->select('a.order_id, (p.artwork_proof_id) as cnt');
         $this->db->from('ts_artworks a');
-        $this->db->join('ts_artwork_proofs p on p.artwork_id=a.artwork_id');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
         $this->db->group_by('a.order_id');
         $proofsql = $this->db->get_compiled_select();
 
-        $this->db->select('v.*');
+        $this->db->select('v.*, coalesce(cnt,0) approved, o.debt_status');
         $this->db->from('v_order_balances v');
+        $this->db->join('('.$proofsql.') p','p.order_id=v.order_id','left');
+        $this->db->join('ts_orders o','o.order_id=v.order_id');
         $this->db->where('v.balance > 0');
         if ($limit_year!==0) {
             $this->db->where('v.yearorder >= ', $limit_year);
@@ -8408,6 +8410,25 @@ Class Orders_model extends MY_Model
                     $out['cardcode'] = $data['payment_card_vn'];
                 }
             }
+        }
+        return $out;
+    }
+
+    public function update_debtstatus($order_id, $debt_status)
+    {
+        $out=['result' => $this->error_result,'msg' => 'Order Not Exist'];
+        $this->db->select('order_id')->from('ts_orders')->where('order_id', $order_id);
+        $orddat = $this->db->get()->row_array();
+        if (ifset($orddat, 'order_id',0)==$order_id) {
+            $out['result'] = $this->success_result;
+            $this->db->where('order_id', $order_id);
+            if (empty($debt_status)) {
+                $this->db->set('debt_status', NULL);
+            } else {
+                $this->db->set('debt_status', $debt_status);
+            }
+            $this->db->set('update_date', time());
+            $this->db->update('ts_orders');
         }
         return $out;
     }

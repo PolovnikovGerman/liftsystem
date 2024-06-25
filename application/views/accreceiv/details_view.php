@@ -35,6 +35,7 @@
             <div class="accreceiv-owndetails-bodyrow empty">No orders</div>
         <?php } else { ?>
             <?php $numpp=1;?>
+            <?php $startdue = ''?>
             <?php foreach ($owns as $own) { ?>
                 <div class="accreceiv-owndetails-bodyrow <?=$numpp%2 == 0 ? 'greydatarow' : 'whitedatarow'?>">
                     <div class="accreceiv-owndetails-bodynum"><?=$numpp?></div>
@@ -46,8 +47,17 @@
                     <div class="accreceiv-owndetails-bodyorder" data-order="<?=$own['order_id']?>"><?=$own['order_num']?></div>
                     <div class="accreceiv-owndetails-bodycustomer"><?=$own['customer_name']?></div>
                     <div class="accreceiv-owndetails-bodytype <?=$own['typeclass']?>"><?=$own['type']?></div>
-                    <div class="accreceiv-owndetails-bodyapproval">&nbsp;</div>
-                    <div class="accreceiv-owndetails-bodystatus">&nbsp;</div>
+                    <div class="accreceiv-owndetails-bodyapproval <?=$own['approved']==0 ? 'notapproved' : ''?>"><?=$own['approved']==0 ? 'Not Approved' : 'Approved'?></div>
+                    <div class="accreceiv-owndetails-bodystatus">
+                        <select class="debtstatus" data-order="<?=$own['order_id']?>">
+                            <option value="">---</option>
+                            <option value="no_reply" <?=$own['debt_status']=='no_reply' ? 'selected="selected"' : ''?>>Contacted, No Reply</option>
+                            <option value="customer_check" <?=$own['debt_status']=='customer_check' ? 'selected="selected"' : ''?>>Customer Checking</option>
+                            <option value="future_payment" <?=$own['debt_status']=='future_payment' ? 'selected="selected"' : ''?>>Payment Being Sent</option>
+                            <option value="cc_declined" <?=$own['debt_status']=='cc_declined' ? 'selected="selected"' : ''?>>Credit Card Declined</option>
+                            <option value="cancelled" <?=$own['debt_status']=='cancelled' ? 'selected="selected"' : ''?>>Cancelled</option>
+                        </select>
+                    </div>
                 </div>
                 <?php $numpp++;?>
             <?php } ?>
