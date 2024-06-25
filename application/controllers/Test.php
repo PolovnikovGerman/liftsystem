@@ -3833,6 +3833,51 @@ class Test extends CI_Controller
         }
     }
 
+    public function init_postboxes()
+    {
+        $this->load->model('mailbox_model');
+        $postboxes = $this->mailbox_model->get_mailboxes();
+        foreach ($postboxes as $postbox) {
+            // Get folders
+            $folddat = $this->mailbox_model->get_postbox_folders($postbox);
+            $errormsg = $folddat['msg'];
+            if ($folddat['result']==1) {
+                $errormsg = '';
+                $folders = $folddat['folders'];
+                // Read messages from folder
+                foreach ($folders as $folder) {
+                    echo 'Read messages from '.$folder['folder_name'].PHP_EOL;
+                    $msgdat = $this->mailbox_model->read_folders_msgs($postbox, $folder);
+                }
+            } else {
+                echo $errormsg; die();
+            }
+        }
+    }
+
+    public function update_postboxes()
+    {
+        $this->load->model('mailbox_model');
+        $postboxes = $this->mailbox_model->get_mailboxes();
+        foreach ($postboxes as $postbox) {
+            $folddat = $this->mailbox_model->get_postbox_folders($postbox);
+            $errormsg = $folddat['msg'];
+            if ($folddat['result']==1) {
+                $errormsg = '';
+                $folders = $folddat['folders'];
+                // Read messages from folder
+                foreach ($folders as $folder) {
+                    echo 'Update messages from '.$folder['folder_name'].PHP_EOL;
+                    $msgdat = $this->mailbox_model->update_folders_msgs($postbox, $folder);
+
+                }
+            } else {
+                echo $errormsg; die();
+            }
+        }
+    }
+
+
     public function inventory_rest_fix()
     {
         // Get Items
@@ -3905,5 +3950,71 @@ class Test extends CI_Controller
             }
         }
         return true;
+    }
+    public function fix_printreport_prices()
+    {
+        ini_set('memory_limit', '-1');
+        $brands = ['SR', 'SB'];
+        $changes = [];
+        foreach ($brands as $brand) {
+            $this->db->select('oa.*, o.order_num');
+            $this->db->from('ts_order_amounts oa');
+            $this->db->join('ts_orders o','o.order_id=oa.order_id');
+            $this->db->where('oa.printshop',1);
+            $this->db->where('(oa.shipped+oa.kepted+oa.misprint) > ',0);
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand',['SB','BT']);
+            }
+            $this->db->order_by('oa.printshop_date');
+            $amnts = $this->db->get()->result_array();
+
+            foreach ($amnts as $amnt) {
+                echo 'Order # '.$amnt['order_num'].PHP_EOL;
+                $this->db->select('sum(oi.qty*i.income_price) as totalrev, sum(oi.qty) as totalqty, count(oi.order_inventory_id) as cnt');
+                $this->db->from('ts_order_inventory oi');
+                $this->db->join('ts_inventory_incomes i', 'i.inventory_income_id=oi.inventory_income_id');
+                $this->db->where('oi.amount_id', $amnt['amount_id']);
+                $baseprice = $this->db->get()->row_array();
+                if ($baseprice['cnt']>0) {
+                    // Calc new price
+                    $newprice = round($baseprice['totalrev']/$baseprice['totalqty'],3);
+                    if (round($amnt['price'],3)!==$newprice) {
+                        // echo 'Calc Price '.$newprice.' Rep Price '.$amnt['price'].PHP_EOL;
+                        $newtotal = ($amnt['shipped']+$amnt['kepted']+$amnt['misprint'])*($newprice+$amnt['extracost']);
+                        $newtotal+=($amnt['orangeplate']*$amnt['orangeplate_price']);
+                        $newtotal+=($amnt['blueplate']*$amnt['blueplate_price']);
+                        $newtotal+=($amnt['beigeplate']*$amnt['beigeplate_price']);
+                        $changes[] = [
+                            'order_num' => $amnt['order_num'],
+                            'date' => date('m/d/Y', $amnt['printshop_date']),
+                            'oldprice' => round($amnt['price'],3),
+                            'oldtotal' => $amnt['printshop_total'],
+                            'newprice' => $newprice,
+                            'newtotal' => $newtotal,
+                            'diff' => ($newtotal-$amnt['printshop_total']),
+                            'amount' => $amnt['amount_id'],
+                        ];
+                    }
+                }
+            }
+        }
+        if (count($changes)>0) {
+            $this->load->config('uploader');
+            $file = $this->config->item('upload_path_preload').'fix_printreport.csv';
+            @unlink($file);
+            $fh = fopen($file, FOPEN_WRITE_CREATE);
+            $head = 'Order #;Date,Old Price;Old Total;New Price;New Total;Diff;'.PHP_EOL;
+            fwrite($fh, $head);
+            foreach ($changes as $change) {
+                $msg=$change['order_num'].';'.$change['date'].';'.$change['oldprice'].';'.$change['oldtotal'].';';
+                $msg.=$change['newprice'].';'.$change['newtotal'].';'.$change['diff'].';'.PHP_EOL;
+                fwrite($fh, $msg);
+            }
+            fclose($fh);
+            echo 'File '.$file.' ready'.PHP_EOL;
+        }
+
     }
 }

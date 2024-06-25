@@ -1420,6 +1420,14 @@ class Leadquote_model extends MY_Model
             }
             $quotesession['deleted'] = $deleted;
             $quotesession['shipping'] = [];
+        } elseif (count($items)==0) {
+            foreach ($shippings as $shipping) {
+                if ($shipping['quote_shipping_id'] > 0) {
+                    $deleted[] = ['entity' => 'shipping', 'id' => $shipping['quote_shipping_id']];
+                }
+            }
+            $quotesession['deleted'] = $deleted;
+            $quotesession['shipping'] = [];
         } else {
             if (empty($quote['rush_days'])) {
                 $this->load->model('calendars_model');
