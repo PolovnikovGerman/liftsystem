@@ -472,7 +472,6 @@ select.debtstatus {
     width: 15px;
 }
 .accreceiv-refunddetails-headorderdate {
-    /* width: 69px; */
     width: 81px;
 }
 .accreceiv-refunddetails-headbalance {
@@ -483,17 +482,14 @@ select.debtstatus {
     margin-left: -14px;
 }
 .accreceiv-refunddetails-headorder {
-    width: 75px;
+    width: 52px;
 }
 .accreceiv-refunddetails-headordersigma {
     width: 51px;
 }
 .accreceiv-refunddetails-headcustomer {
-    width: 213px;
+    width: 187px;
 }
-/*.accreceiv-refunddetails-headtype {*/
-/*    width: 75px;*/
-/*}*/
 .accreceiv-refunddetails-body {
     border-left: 1px solid #000000;
     border-bottom: 1px solid #000000;
@@ -522,13 +518,13 @@ select.debtstatus {
 }
 .accreceiv-refunddetails-bodynum {
     text-align: center;
-    width: 23px;
+    width: 20px;
     border-right: 1px solid #000000;
     font-weight: bold;
 }
 .accreceiv-refunddetails-bodyorderdate {
     text-align: center;
-    width: 63px;
+    width: 59px;
     border-right: 1px solid #000000;
 }
 .accreceiv-refunddetails-bodybalance {
@@ -537,7 +533,7 @@ select.debtstatus {
     font-weight: bold;
     color: #ff0000;
     border-right: 1px solid #000000;
-    width: 92px;
+    width: 87px;
 }
 .accreceiv-refunddetails-bodybalance span {
     font-size: 9px;
@@ -549,7 +545,7 @@ select.debtstatus {
     border-right: 1px solid #000000;
     font-weight: bold;
     color: #0000ff;
-    width: 75px;
+    width: 50px;
     cursor: pointer;
     text-align: center;
 }
@@ -582,12 +578,5 @@ select.debtstatus {
     white-space: nowrap;
     padding-left: 5px;
     padding-right: 5px;
-    width: 214px;
+    width: 202px;
 }
-/*.accreceiv-refunddetails-bodytype {*/
-/*    width: 76px;*/
-/*    text-align: center;*/
-/*}*/
-/*.accreceiv-refunddetails-bodytype.creditcard {*/
-/*    color: #0000ff;*/
-/*}*/

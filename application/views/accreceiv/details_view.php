@@ -87,7 +87,6 @@
         <?php } else { ?>
             <div class="accreceiv-refunddetails-headcustomer refundsort" data-sort="customer_name">Customer</div>
         <?php } ?>
-        <!--        <div class="accreceiv-refunddetails-headtype">Type</div>-->
     </div>
     <div class="accreceiv-refunddetails-body">
         <?php if (count($refunds)==0) { ?>
