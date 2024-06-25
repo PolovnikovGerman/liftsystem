@@ -253,11 +253,12 @@
 .accreceiv-totals-value {
     width: 105px;
     text-align: right;
-    font-size: 17px;
+    font-size: 15px;
     font-weight: bold;
     height: 28px;
     line-height: 28px !important;
     padding-right: 7px;
+    color: #1818ff;
 }
 .accreceiv-totals-value span {
     font-size: 11px;
@@ -266,8 +267,8 @@
     margin-left: 2px;
 }
 .accreceiv-totals-value.totalbalance {
-    /* border: 2px solid #000000;
-    line-height: 24px!important; */
+    color: #000;
+    font-size: 17px;
 }
 .accreceiv-totals-value.refund {
     color: #ff0000;
