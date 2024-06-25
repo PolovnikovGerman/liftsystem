@@ -354,12 +354,11 @@
 }
 .accreceiv-owndetails-bodydue {
     text-align: center;
-    width: 63px;
+    width: 58px;
     border-right: 1px solid #000000;
 }
 .accreceiv-owndetails-bodydue.pastdue {
     color: #ff0000;
-    /*font-size: 11px;*/
     font-weight: bold;
 }
 .accreceiv-owndetails-bodybalance {
@@ -367,7 +366,7 @@
     padding-right: 5px;
     font-weight: bold;
     border-right: 1px solid #000000;
-    width: 92px;
+    width: 86px;
 }
 .accreceiv-owndetails-bodybalance span {
     font-size: 9px;
@@ -375,11 +374,18 @@
     top: -4px;
     margin-left: 0.5px;
 }
+.accreceiv-owndetails-bodyrunningtotal {
+    text-align: right;
+    padding-right: 5px;
+    font-weight: bold;
+    border-right: 1px solid #000000;
+    width: 62px;
+}
 .accreceiv-owndetails-bodyorder {
     border-right: 1px solid #000000;
     font-weight: bold;
     color: #0000ff;
-    width: 75px;
+    width: 47px;
     cursor: pointer;
     text-align: center;
 }
@@ -412,15 +418,23 @@
     white-space: nowrap;
     padding-left: 5px;
     padding-right: 5px;
-    width: 189px;
+    width: 180px;
 }
 .accreceiv-owndetails-bodytype {
-    width: 86px;
+    width: 70px;
     text-align: center;
     font-size: 13px!important;
 }
 .accreceiv-owndetails-bodytype.creditcard {
     color: #0000ff;
+}
+.accreceiv-owndetails-bodyapproval {
+    width: 84px;
+    text-align: center;
+}
+.accreceiv-owndetails-bodystatus {
+    width: 140px;
+    padding-left: 5px;
 }
 /* Refund */
 .accreceiv-refunddetails-head {

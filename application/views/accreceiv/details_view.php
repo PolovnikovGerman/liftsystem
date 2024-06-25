@@ -42,9 +42,12 @@
                         <?=date('m/d/y', $own['batch_due'])?>
                     </div>
                     <div class="accreceiv-owndetails-bodybalance"><?=TotalOutput($own['balance'])?></div>
+                    <div class="accreceiv-owndetails-bodyrunningtotal"><?=MoneyOutput($own['rundebt'],0)?></div>
                     <div class="accreceiv-owndetails-bodyorder" data-order="<?=$own['order_id']?>"><?=$own['order_num']?></div>
                     <div class="accreceiv-owndetails-bodycustomer"><?=$own['customer_name']?></div>
                     <div class="accreceiv-owndetails-bodytype <?=$own['typeclass']?>"><?=$own['type']?></div>
+                    <div class="accreceiv-owndetails-bodyapproval">&nbsp;</div>
+                    <div class="accreceiv-owndetails-bodystatus">&nbsp;</div>
                 </div>
                 <?php $numpp++;?>
             <?php } ?>

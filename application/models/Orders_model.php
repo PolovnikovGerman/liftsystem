@@ -8040,17 +8040,24 @@ Class Orders_model extends MY_Model
         if ($period > 0) {
             $limit_year = $cur_year - intval($period) + 1;
         }
-        $this->db->select('*');
-        $this->db->from('v_order_balances');
-        $this->db->where('balance > 0');
+        /* Prepare Approved view */
+        $this->db->select('a.order_id, (p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p on p.artwork_id=a.artwork_id');
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+
+        $this->db->select('v.*');
+        $this->db->from('v_order_balances v');
+        $this->db->where('v.balance > 0');
         if ($limit_year!==0) {
-            $this->db->where('yearorder >= ', $limit_year);
+            $this->db->where('v.yearorder >= ', $limit_year);
         }
         if ($brand!=='ALL') {
             if ($brand=='SR') {
-                $this->db->where('brand', $brand);
+                $this->db->where('v.brand', $brand);
             } else {
-                $this->db->where_in('brand', ['BT','SB']);
+                $this->db->where_in('v.brand', ['BT','SB']);
             }
         }
         if ($ownsort!='owntype') {
@@ -8058,6 +8065,7 @@ Class Orders_model extends MY_Model
         }
         $owndats = $this->db->get()->result_array();
         $owns=[];
+        $rundebt = 0;
         foreach ($owndats as $owndat) {
             $sclass = '';
             if ($owndat['balance_manage']==3) {
@@ -8071,6 +8079,8 @@ Class Orders_model extends MY_Model
                     $sclass='creditcard';
                 }
             }
+            $rundebt += $owndat['balance'];
+            $owndat['rundebt'] = $rundebt;
             $owndat['type']=$stype;
             $owndat['typeclass'] = $sclass;
             $owns[]=$owndat;
