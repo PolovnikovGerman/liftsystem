@@ -2689,6 +2689,8 @@ class Accounting extends MY_Controller
             $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec);
             if ($brand=='ALL') {
                 $mdata['content'] = $this->load->view('accreceiv/details_sigma_view', $res, TRUE);
+            } elseif ($brand=='SR') {
+                $mdata['content'] = $this->load->view('accreceiv/details_sr_view', $res, TRUE);
             } else {
                 $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
             }

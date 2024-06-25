@@ -44,8 +44,12 @@
     width: 100%;
 }
 .accreceiv-content-left {
-    width: 754px; /* 530px; */
+    width: 754px;
     margin-right: 125px;
+}
+.accreceiv-content-left.stressrelievers {
+    width: 838px;
+    margin-right: 41px;
 }
 .accreceiv-content-left.sigmasystem {
     width: 544px;
@@ -446,6 +450,20 @@ select.debtstatus {
     width: 129px;
     padding-left: 3px;
     color: #000000;
+}
+/* SR & Sigma fields */
+.accreceiv-owndetails-headponumber {
+    width: 84px;
+}
+.accreceiv-owndetails-bodyponumber {
+    border-right: 1px solid #000000;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 84px;
 }
 /* Refund */
 .accreceiv-refunddetails-head {
