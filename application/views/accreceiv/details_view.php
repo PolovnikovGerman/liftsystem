@@ -11,6 +11,7 @@
         <?php } else { ?>
             <div class="accreceiv-owndetails-headbalance ownsort" data-sort="balance">Balance <span></span></div>
         <?php } ?>
+        <div class="accreceiv-owndetails-headrunningtotal">Running Total</div>
         <?php if ($ownsort=='order_num') { ?>
             <div class="accreceiv-owndetails-headorder ownsort" data-sort="order_num">Order <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
         <?php } else { ?>
@@ -26,12 +27,15 @@
         <?php } else { ?>
             <div class="accreceiv-owndetails-headtype ownsort" data-sort="owntype">Type <span></span></div>
         <?php } ?>
+        <div class="accreceiv-owndetails-headapproval">Approval</div>
+        <div class="accreceiv-owndetails-headstatus">Status</div>
     </div>
     <div class="accreceiv-owndetails-body">
         <?php if (count($owns)==0) { ?>
             <div class="accreceiv-owndetails-bodyrow empty">No orders</div>
         <?php } else { ?>
             <?php $numpp=1;?>
+            <?php $startdue = ''?>
             <?php foreach ($owns as $own) { ?>
                 <div class="accreceiv-owndetails-bodyrow <?=$numpp%2 == 0 ? 'greydatarow' : 'whitedatarow'?>">
                     <div class="accreceiv-owndetails-bodynum"><?=$numpp?></div>
@@ -39,9 +43,21 @@
                         <?=date('m/d/y', $own['batch_due'])?>
                     </div>
                     <div class="accreceiv-owndetails-bodybalance"><?=TotalOutput($own['balance'])?></div>
+                    <div class="accreceiv-owndetails-bodyrunningtotal"><?=MoneyOutput($own['rundebt'],0)?></div>
                     <div class="accreceiv-owndetails-bodyorder" data-order="<?=$own['order_id']?>"><?=$own['order_num']?></div>
                     <div class="accreceiv-owndetails-bodycustomer"><?=$own['customer_name']?></div>
                     <div class="accreceiv-owndetails-bodytype <?=$own['typeclass']?>"><?=$own['type']?></div>
+                    <div class="accreceiv-owndetails-bodyapproval <?=$own['approved']==0 ? 'notapproved' : ''?>"><?=$own['approved']==0 ? 'Not Approved' : 'Approved'?></div>
+                    <div class="accreceiv-owndetails-bodystatus">
+                        <select class="debtstatus" data-order="<?=$own['order_id']?>">
+                            <option value="">---</option>
+                            <option value="no_reply" <?=$own['debt_status']=='no_reply' ? 'selected="selected"' : ''?>>Contacted, No Reply</option>
+                            <option value="customer_check" <?=$own['debt_status']=='customer_check' ? 'selected="selected"' : ''?>>Customer Checking</option>
+                            <option value="future_payment" <?=$own['debt_status']=='future_payment' ? 'selected="selected"' : ''?>>Payment Being Sent</option>
+                            <option value="cc_declined" <?=$own['debt_status']=='cc_declined' ? 'selected="selected"' : ''?>>Credit Card Declined</option>
+                            <option value="cancelled" <?=$own['debt_status']=='cancelled' ? 'selected="selected"' : ''?>>Cancelled</option>
+                        </select>
+                    </div>
                 </div>
                 <?php $numpp++;?>
             <?php } ?>
@@ -71,7 +87,6 @@
         <?php } else { ?>
             <div class="accreceiv-refunddetails-headcustomer refundsort" data-sort="customer_name">Customer</div>
         <?php } ?>
-        <!--        <div class="accreceiv-refunddetails-headtype">Type</div>-->
     </div>
     <div class="accreceiv-refunddetails-body">
         <?php if (count($refunds)==0) { ?>

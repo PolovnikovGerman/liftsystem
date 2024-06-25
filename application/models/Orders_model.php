@@ -8024,49 +8024,10 @@ Class Orders_model extends MY_Model
             $totalref+=$refr['balance'];
         }
 
-        $own = [];
-        $refund = [];
-        if ($limit_year==0) {
-            $this->db->select('min(yearorder) as yearorder');
-            $this->db->from('v_order_balances');
-            $yearres = $this->db->get()->row_array();
-            $limit_year = $yearres['yearorder'];
-        }
-        for ($i=0; $i<1000; $i++) {
-            $yearown=0;
-            $yearref=0;
-            foreach ($ownsrc as $row) {
-                if ($row['yearorder']==($cur_year-$i)) {
-                    $yearown=$row['balance'];
-                    break;
-                }
-            }
-            foreach ($refsrc as $row) {
-                if ($row['yearorder']==($cur_year-$i)) {
-                    $yearref=$row['balance'];
-                    break;
-                }
-            }
-
-            $own[] = [
-                'year' => $cur_year - $i,
-                'balance' => $yearown,
-            ];
-
-            $refund[] = [
-                'year' => $cur_year - $i,
-                'balance' => $yearref,
-            ];
-            if (($cur_year - $i)<=$limit_year) {
-                break;
-            }
-        }
         return array(
             'totalown' => $totalown,
             'pastown' => $pastown,
             'totalrefund' => $totalref,
-            'own' => $own,
-            'refund' => $refund,
             'balance' => $totalown+$totalref,
         );
     }
@@ -8079,17 +8040,26 @@ Class Orders_model extends MY_Model
         if ($period > 0) {
             $limit_year = $cur_year - intval($period) + 1;
         }
-        $this->db->select('*');
-        $this->db->from('v_order_balances');
-        $this->db->where('balance > 0');
+        /* Prepare Approved view */
+        $this->db->select('a.order_id, (p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+
+        $this->db->select('v.*, coalesce(cnt,0) approved, o.debt_status');
+        $this->db->from('v_order_balances v');
+        $this->db->join('('.$proofsql.') p','p.order_id=v.order_id','left');
+        $this->db->join('ts_orders o','o.order_id=v.order_id');
+        $this->db->where('v.balance > 0');
         if ($limit_year!==0) {
-            $this->db->where('yearorder >= ', $limit_year);
+            $this->db->where('v.yearorder >= ', $limit_year);
         }
         if ($brand!=='ALL') {
             if ($brand=='SR') {
-                $this->db->where('brand', $brand);
+                $this->db->where('v.brand', $brand);
             } else {
-                $this->db->where_in('brand', ['BT','SB']);
+                $this->db->where_in('v.brand', ['BT','SB']);
             }
         }
         if ($ownsort!='owntype') {
@@ -8097,6 +8067,7 @@ Class Orders_model extends MY_Model
         }
         $owndats = $this->db->get()->result_array();
         $owns=[];
+        $rundebt = 0;
         foreach ($owndats as $owndat) {
             $sclass = '';
             if ($owndat['balance_manage']==3) {
@@ -8110,6 +8081,8 @@ Class Orders_model extends MY_Model
                     $sclass='creditcard';
                 }
             }
+            $rundebt += $owndat['balance'];
+            $owndat['rundebt'] = $rundebt;
             $owndat['type']=$stype;
             $owndat['typeclass'] = $sclass;
             $owns[]=$owndat;
@@ -8437,6 +8410,25 @@ Class Orders_model extends MY_Model
                     $out['cardcode'] = $data['payment_card_vn'];
                 }
             }
+        }
+        return $out;
+    }
+
+    public function update_debtstatus($order_id, $debt_status)
+    {
+        $out=['result' => $this->error_result,'msg' => 'Order Not Exist'];
+        $this->db->select('order_id')->from('ts_orders')->where('order_id', $order_id);
+        $orddat = $this->db->get()->row_array();
+        if (ifset($orddat, 'order_id',0)==$order_id) {
+            $out['result'] = $this->success_result;
+            $this->db->where('order_id', $order_id);
+            if (empty($debt_status)) {
+                $this->db->set('debt_status', NULL);
+            } else {
+                $this->db->set('debt_status', $debt_status);
+            }
+            $this->db->set('update_date', time());
+            $this->db->update('ts_orders');
         }
         return $out;
     }

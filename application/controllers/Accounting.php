@@ -2699,6 +2699,26 @@ class Accounting extends MY_Controller
         show_404();
     }
 
+    public function debtstatus()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Parameters';
+            $postdata = $this->input->post();
+            $order_id = ifset($postdata, 'order_id',0);
+            $debt_status = ifset($postdata, 'debt_status','');
+            if (!empty($order_id)) {
+                $res = $this->orders_model->update_debtstatus($order_id, $debt_status);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     private function _prepare_profit_dateslider($brand, $showgrowth=1) {
         $yearview='';
         $numyears=0;

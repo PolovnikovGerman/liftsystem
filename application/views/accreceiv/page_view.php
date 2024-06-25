@@ -1,9 +1,9 @@
 <div class="accreceiv-content">
     <input type="hidden" id="accreceivebrand" value="<?=$brand?>">
     <input type="hidden" id="accreciveownsort" value="batch_due"/>
-    <input type="hidden" id="accreciveowndir" value="desc"/>
+    <input type="hidden" id="accreciveowndir" value="asc"/>
     <input type="hidden" id="accreceiverefundsort" value="order_date"/>
-    <input type="hidden" id="accreceiverefunddir" value="desc"/>
+    <input type="hidden" id="accreceiverefunddir" value="asc"/>
     <div class="accreceive-title">
         <div class="accreceiv-label">Accounts Receivable</div>
         <div class="accreceiv-period">
@@ -19,5 +19,4 @@
         <div class="accreceiv-totals"></div>
         <div class="accreceiv-details"></div>
     </div>
-    <div class="accreceiv-content-right"></div>
 </div>

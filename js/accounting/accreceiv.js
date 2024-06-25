@@ -269,5 +269,17 @@ function init_accreceive_content() {
         $("#accreceiverefunddir").val(newdir);
         init_accreceive_details();
     })
-    
+    // Change Status
+    $("select.debtstatus").unbind('change').change(function (){
+        var params = new Array();
+        params.push({name: 'order_id', value: $(this).data('order')});
+        params.push({name: 'debt_status', value: $(this).val()});
+        var url = '/accounting/debtstatus';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
