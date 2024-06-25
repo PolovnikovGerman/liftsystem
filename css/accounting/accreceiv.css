@@ -38,7 +38,7 @@
 }
 .accreceiv-content-data {
     /* width: 1067px; */
-    width: 1300px;
+    width: 1365px;
 }
 .accreceiv-totals, .accreceiv-details {
     width: 100%;
@@ -52,13 +52,14 @@
     margin-right: 41px;
 }
 .accreceiv-content-left.sigmasystem {
-    width: 544px;
+    width: 879px;
+    margin-right: 20px;
 }
 .accreceiv-content-center {
     width: 420px;
 }
 .accreceiv-content-center.sigmasystem {
-    width: 483px;
+    width: 459px;
 }
 .accreceiv-content-right {
     border: 2px solid #000000;
