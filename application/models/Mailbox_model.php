@@ -303,25 +303,7 @@ class Mailbox_model extends MY_Model
         if (ifset($postbres,'postbox_id',0)==$postbox_id) {
             $out['result'] = $this->success_result;
             // Calc folders statistics
-            $this->db->select('f.folder_id, f.folder_name, count(m.message_id) as cnt')->from('postbox_folders f')->join('postbox_messages m','f.folder_id=m.folder_id','left')->where('f.postbox_id', $postbox_id)->group_by('folder_id, f.folder_name');
-            $folders = $this->db->get()->result_array();
-            // Calc unread messages
-            $this->db->select('count(m.message_id) as cnt')->from('postbox_messages m')->join('postbox_folders f', 'f.folder_id=m.folder_id')->where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_seen'=>0]);
-            $newmsg = $this->db->get()->row_array();
-            // Calc stared
-            $this->db->select('count(m.message_id) as cnt')->from('postbox_messages m')->join('postbox_folders f', 'f.folder_id=m.folder_id')->where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_flagged'=>1]);
-            $starmsg = $this->db->get()->row_array();
-
-            $folders[] = [
-                'folder_id' => 'new',
-                'folder_name' => 'Unread',
-                'cnt' => $newmsg['cnt'],
-            ];
-            $folders[] = [
-                'folder_id' => 'flagged',
-                'folder_name' => 'Starred',
-                'cnt' => $starmsg['cnt'],
-            ];
+            $folders = $this->_folders_statistic($postbox_id);
             $newfolders = [];
             // Check all folders
             $active = 1;
@@ -634,5 +616,44 @@ class Mailbox_model extends MY_Model
             }
         }
         return $out;
+    }
+
+    public function count_folders_messages($postbox_id)
+    {
+        $folders = $this->_folders_statistic($postbox_id);
+        $idx = 0;
+        foreach ($folders as $folder) {
+            if ($folder['cnt']==0) {
+                $folders[$idx]['cnt'] = '';
+            } else {
+                $folders[$idx]['cnt'] = short_number($folder['cnt'],1);
+            }
+            $idx++;
+        }
+        return $folders;
+    }
+
+    private function _folders_statistic($postbox_id)
+    {
+        $this->db->select('f.folder_id, f.folder_name, count(m.message_id) as cnt')->from('postbox_folders f')->join('postbox_messages m','f.folder_id=m.folder_id','left')->where('f.postbox_id', $postbox_id)->group_by('folder_id, f.folder_name');
+        $folders = $this->db->get()->result_array();
+        // Calc unread messages
+        $this->db->select('count(m.message_id) as cnt')->from('postbox_messages m')->join('postbox_folders f', 'f.folder_id=m.folder_id')->where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_seen'=>0]);
+        $newmsg = $this->db->get()->row_array();
+        // Calc stared
+        $this->db->select('count(m.message_id) as cnt')->from('postbox_messages m')->join('postbox_folders f', 'f.folder_id=m.folder_id')->where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_flagged'=>1]);
+        $starmsg = $this->db->get()->row_array();
+
+        $folders[] = [
+            'folder_id' => 'new',
+            'folder_name' => 'Unread',
+            'cnt' => $newmsg['cnt'],
+        ];
+        $folders[] = [
+            'folder_id' => 'flagged',
+            'folder_name' => 'Starred',
+            'cnt' => $starmsg['cnt'],
+        ];
+        return $folders;
     }
 }

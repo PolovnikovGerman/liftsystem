@@ -194,6 +194,8 @@ class Mailbox extends MY_Controller
                     $mdata['content'] = '<span class="ic-blue" data-message="'.$message.'" title="Mark As Read"><i class="fa fa-circle" aria-hidden="true"></i></span>';
                     $mdata['read_state'] = 1;
                 }
+                // Count # of messages in folder
+                $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -216,6 +218,7 @@ class Mailbox extends MY_Controller
                 } else {
                     $mdata['content'] = '<span class="ic-grey" data-message="'.$message.'"><i class="fa fa-star-o" aria-hidden="true"></i></span>';
                 }
+                $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -271,6 +274,7 @@ class Mailbox extends MY_Controller
                 ];
                 $mdata['content'] = $this->load->view('mailbox/message_details_view',$options, TRUE);
                 $mdata['body'] = $res['message']['message_text'];
+                $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -295,7 +299,7 @@ class Mailbox extends MY_Controller
                     $mdata['content_head'] = '<span class="ic-nonflagged"><i class="fa fa-star-o" aria-hidden="true"></i></span>';
                     $mdata['content'] = '<i class="fa fa-star-o" aria-hidden="true"></i>';
                 }
-
+                $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
             }
             $this->ajaxResponse($mdata, $error);
         }

@@ -186,6 +186,10 @@ function update_message_readstatus(message) {
             } else {
                 $("tr.tab-tr[data-message='"+message+"']").addClass('tr-read');
             }
+            var folders = response.data.folders;
+            for (var i = 0; i < folders.length; i++) {
+                $("li.viewfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
+            }
             $("#loader").hide();
             init_mailbox_manage();
         } else {
@@ -204,6 +208,10 @@ function update_message_flagged(message) {
     $.post(url, params, function (response){
         if (response.errors=='') {
             $(".tab-th-04[data-message='"+message+"']").empty().html(response.data.content);
+            var folders = response.data.folders;
+            for (var i = 0; i < folders.length; i++) {
+                $("li.viewfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
+            }
             $("#loader").hide();
             init_mailbox_manage();
         } else {
@@ -231,6 +239,10 @@ function view_message(message) {
                 $("#iframe").attr('srcdoc', response.data.body);
             });
             $("#loader").hide();
+            var folders = response.data.folders;
+            for (var i = 0; i < folders.length; i++) {
+                $("li.viewfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
+            }
             // Init message manage
             init_message_details();
             leftmenu_alignment();
@@ -294,6 +306,10 @@ function init_message_details() {
                 } else {
                     $(".favorite").removeClass('flagged').empty().html(response.data.content);
                 }
+                var folders = response.data.folders;
+                for (var i = 0; i < folders.length; i++) {
+                    $("li.viewfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
+                }
                 $("#loader").hide();
                 init_message_details();
             } else {
@@ -315,6 +331,10 @@ function init_message_details() {
                     $(".favorite").addClass('flagged').empty().html(response.data.content);
                 } else {
                     $(".favorite").removeClass('flagged').empty().html(response.data.content);
+                }
+                var folders = response.data.folders;
+                for (var i = 0; i < folders.length; i++) {
+                    $("li.viewfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
                 }
                 $("#loader").hide();
                 init_message_details();
