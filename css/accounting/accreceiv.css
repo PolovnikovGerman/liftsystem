@@ -358,6 +358,9 @@
     line-height: 25px;
     font-size: 13px;
 }
+.accreceiv-owndetails-bodyrow > div.separated {
+    border-top: 1px solid #000000;
+}
 .accreceiv-owndetails-bodyrow.current_row > div {
     background: #0000ff;
     color: #ffffff!important;
@@ -365,6 +368,9 @@
 .accreceiv-owndetails-bodyrow.empty {
     color: #ff0000;
     text-align: center;
+}
+.accreceiv-owndetails-bodyrow.separated {
+    border-top: 1px solid #000000;
 }
 .accreceiv-owndetails-bodynum {
     text-align: center;
@@ -450,6 +456,9 @@
 .accreceiv-owndetails-bodytype.creditcard {
     color: #0000ff;
 }
+/*.accreceiv-owndetails-bodytype.separated {
+    border-top: 1px solid #000000;
+}*/
 .accreceiv-owndetails-bodyapproval {
     width: 84px;
     text-align: center;
@@ -468,6 +477,9 @@ select.debtstatus {
     padding-left: 3px;
     color: #000000;
     background: #e9e9ed;
+}
+select.debtstatus.checked {
+    background: #FFFFFF;
 }
 /* SR & Sigma fields */
 .accreceiv-owndetails-headponumber {
