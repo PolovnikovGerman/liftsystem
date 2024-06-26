@@ -298,6 +298,7 @@ class Mailbox_model extends MY_Model
     public function get_postbox_details($postbox_id)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Non exist postbox'];
+        ini_set('memory_limit',-1);
         $this->db->select('*')->from('user_postboxes')->where('postbox_id', $postbox_id);
         $postbres = $this->db->get()->row_array();
         if (ifset($postbres,'postbox_id',0)==$postbox_id) {
