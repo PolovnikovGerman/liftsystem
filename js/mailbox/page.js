@@ -77,6 +77,9 @@ function init_mailbox_manage() {
                 $("li.viewfoldermsg").removeClass('active');
                 $("li.customfoldermsg").removeClass('active');
                 $("li.viewfoldermsg[data-folder='"+folder+"']").addClass('active');
+                $(".emails-block").removeClass('messagedetails').empty();
+                $(".emails-block").append('<div class="emails-block-header"></div>');
+                $(".emails-block").append('<div class="emails-block-body"></div>');
                 $(".emails-block-body").empty().html(response.data.messages);
                 $(".emails-block-header").empty().html(response.data.header);
                 $("#loader").hide();
@@ -100,6 +103,9 @@ function init_mailbox_manage() {
                 $("li.viewfoldermsg").removeClass('active');
                 $("li.customfoldermsg").removeClass('active');
                 $("li.customfoldermsg[data-folder='"+folder+"']").addClass('active');
+                $(".emails-block").removeClass('messagedetails').empty();
+                $(".emails-block").append('<div class="emails-block-header"></div>');
+                $(".emails-block").append('<div class="emails-block-body"></div>');
                 $(".emails-block-body").empty().html(response.data.messages);
                 $(".emails-block-header").empty().html(response.data.header);
                 $("#loader").hide();
