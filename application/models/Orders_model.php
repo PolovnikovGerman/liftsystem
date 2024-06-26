@@ -8086,6 +8086,11 @@ Class Orders_model extends MY_Model
             $owndat['rundebt'] = $rundebt;
             $owndat['type']=$stype;
             $owndat['typeclass'] = $sclass;
+            $owndat['dueclass'] = '';
+            if ($owndat['batch_due'] < $daystart) {
+                $owndat['dueclass'] = 'pastdue';
+            }
+            $owndat['approved']=($owndat['approved']==0 ? 0 : 1);
             $owns[]=$owndat;
         }
         if ($ownsort=='owntype') {
