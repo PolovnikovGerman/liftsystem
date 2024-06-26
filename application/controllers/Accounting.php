@@ -2689,11 +2689,33 @@ class Accounting extends MY_Controller
             $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec);
             if ($brand=='ALL') {
                 $mdata['content'] = $this->load->view('accreceiv/details_sigma_view', $res, TRUE);
+            } elseif ($brand=='SR') {
+                $mdata['content'] = $this->load->view('accreceiv/details_sr_view', $res, TRUE);
             } else {
                 $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
             }
 
             $error = '';
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function debtstatus()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Parameters';
+            $postdata = $this->input->post();
+            $order_id = ifset($postdata, 'order_id',0);
+            $debt_status = ifset($postdata, 'debt_status','');
+            if (!empty($order_id)) {
+                $res = $this->orders_model->update_debtstatus($order_id, $debt_status);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
