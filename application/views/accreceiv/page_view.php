@@ -19,5 +19,4 @@
         <div class="accreceiv-totals"></div>
         <div class="accreceiv-details"></div>
     </div>
-    <div class="accreceiv-content-right"></div>
 </div>

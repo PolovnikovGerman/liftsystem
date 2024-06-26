@@ -1,4 +1,4 @@
-<div class="accreceiv-content-left">
+<div class="accreceiv-content-left stressrelievers">
     <div class="accreceiv-owndetails-head">
         <div class="accreceiv-owndetails-headnum">#</div>
 <!--        --><?php //if ($ownsort=='batch_due') { ?>
@@ -6,7 +6,7 @@
 <!--        --><?php //} else { ?>
 <!--            <div class="accreceiv-owndetails-headdue ownsort" data-sort="batch_due">Due <span></span></div>-->
 <!--        --><?php //} ?>
-        <div class="accreceiv-owndetails-headdue ownsort" data-sort="batch_due">Due </div>
+        <div class="accreceiv-owndetails-headdue stressrelievers ownsort" data-sort="batch_due">Due</div>
         <?php if ($ownsort=='balance') { ?>
             <div class="accreceiv-owndetails-headbalance ownsort" data-sort="balance">Balance <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
         <?php } else { ?>
@@ -17,6 +17,11 @@
             <div class="accreceiv-owndetails-headorder ownsort" data-sort="order_num">Order <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
         <?php } else { ?>
             <div class="accreceiv-owndetails-headorder ownsort" data-sort="order_num">Order <span></span></div>
+        <?php } ?>
+        <?php if ($ownsort=='customer_ponum') { ?>
+            <div class="accreceiv-owndetails-headponumber ownsort" data-sort="customer_ponum">PO # <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
+        <?php } else { ?>
+            <div class="accreceiv-owndetails-headponumber ownsort" data-sort="customer_ponum">PO # <span></span></div>
         <?php } ?>
         <?php if ($ownsort=='customer_name') { ?>
             <div class="accreceiv-owndetails-headcustomer ownsort" data-sort="customer_name">Customer <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
@@ -49,6 +54,7 @@
                     <div class="accreceiv-owndetails-bodybalance"><?=TotalOutput($own['balance'])?></div>
                     <div class="accreceiv-owndetails-bodyrunningtotal"><?=MoneyOutput($own['rundebt'],0)?></div>
                     <div class="accreceiv-owndetails-bodyorder" data-order="<?=$own['order_id']?>"><?=$own['order_num']?></div>
+                    <div class="accreceiv-owndetails-bodyponumber" title="<?=$own['customer_ponum']?>"><?=$own['customer_ponum']?></div>
                     <div class="accreceiv-owndetails-bodycustomer"><?=$own['customer_name']?></div>
                     <div class="accreceiv-owndetails-bodytype <?=$own['typeclass']?> <?=$starttype!==$own['type'] ? 'separated' : ''?>"><?=$own['type']?></div>
                     <div class="accreceiv-owndetails-bodyapproval <?=$own['approved']==0 ? 'notapproved' : ''?> <?=$starapprov!==$own['approved'] ? 'separated' : ''?>"><?=$own['approved']==0 ? 'Not Approved' : 'Approved'?></div>
@@ -80,7 +86,7 @@
 <!--        --><?php //} else { ?>
 <!--            <div class="accreceiv-refunddetails-headorderdate refundsort" data-sort="order_date">Order Date</div>-->
 <!--        --><?php //} ?>
-        <div class="accreceiv-refunddetails-headorderdate refundsort" data-sort="order_date">Order Date</div>
+        <div class="accreceiv-refunddetails-headorderdate stressrelievers refundsort" data-sort="order_date">Order Date</div>
         <?php if ($refundsort=='balance') { ?>
             <div class="accreceiv-refunddetails-headbalance refundsort" data-sort="balance">Refund <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
         <?php } else { ?>
@@ -111,11 +117,10 @@
                     <div class="accreceiv-refunddetails-bodybalance">(<?=TotalOutput(abs($refund['balance']))?>)</div>
                     <div class="accreceiv-refunddetails-bodyorder" data-order="<?=$refund['order_id']?>"><?=$refund['order_num']?></div>
                     <div class="accreceiv-refunddetails-bodycustomer"><?=$refund['customer_name']?></div>
-<!--                    <div class="accreceiv-refunddetails-bodytype --><?//=$refund['typeclass']?><!--">--><?//=$refund['type']?><!--</div>-->
+                    <!--                    <div class="accreceiv-refunddetails-bodytype --><?//=$refund['typeclass']?><!--">--><?//=$refund['type']?><!--</div>-->
                 </div>
                 <?php $numpp++; ?>
             <?php } ?>
         <?php } ?>
     </div>
-
 </div>
