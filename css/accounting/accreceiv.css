@@ -326,11 +326,11 @@
     width: 47px;
 }
 .accreceiv-owndetails-headbrand {
-    width: 52px;
-    margin-left: -14px;
+    width: 24px;
+    /* margin-left: -14px; */
 }
 .accreceiv-owndetails-headordersigma {
-    width: 50px;
+    width: 64px;
 }
 .accreceiv-owndetails-headcustomer {
     width: 180px;
