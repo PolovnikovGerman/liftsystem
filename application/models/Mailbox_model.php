@@ -427,6 +427,7 @@ class Mailbox_model extends MY_Model
     public function postbox_viewfolder($postbox_id, $folder_id, $postsort)
     {
         $out=['result' => $this->error_result, 'msg' => 'Empty Folder id'];
+        ini_set('memory_limit',-1);
         if ($postsort=='date_desc') {
             $sortby = 'm.message_udate';
             $sortorder = 'desc';
