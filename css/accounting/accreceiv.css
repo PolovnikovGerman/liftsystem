@@ -294,24 +294,30 @@
 .ownsort {
     cursor: pointer;
 }
-.ownsort span {
-    font-size: 9px;
-    font-weight: normal;
+/*.ownsort span {*/
+/*    font-size: 9px;*/
+/*    font-weight: normal;*/
+/*}*/
+.accreceiv-owndetails-head > div.activesortbt {
+    background: #1849ff!important;
+}
+.accreceiv-owndetails-head > div.activesortsr {
+    background: #fdff44!important;
+    color: #000000;
+}
+.accreceiv-owndetails-head > div.activesortsigma {
+    background: #aaa9a9!important;
+    color: #000000;
 }
 .accreceiv-owndetails-headnum {
     width: 24px;
 }
 .accreceiv-owndetails-headdue {
     width: 58px;
-    background: #1849ff!important;
 }
 .accreceiv-owndetails-headdue.stressrelievers {
-    background: #fdff44!important;
-    color: #000000;
 }
 .accreceiv-owndetails-headdue.sigmasystem {
-    background: #aaa9a9!important;
-    color: #000000;
 }
 .accreceiv-owndetails-headbalance {
     width: 86px;
@@ -327,7 +333,6 @@
 }
 .accreceiv-owndetails-headbrand {
     width: 24px;
-    /* margin-left: -14px; */
 }
 .accreceiv-owndetails-headordersigma {
     width: 64px;
@@ -354,8 +359,8 @@
     width: 100%;
 }
 .accreceiv-owndetails-bodyrow > div {
-    height: 25px;
-    line-height: 25px;
+    height: 22px;
+    line-height: 22px;
     font-size: 13px;
 }
 .accreceiv-owndetails-bodyrow > div.separated {
@@ -407,6 +412,7 @@
     border-right: 1px solid #000000;
     width: 62px;
     color: #6c6c6c;
+    font-size: 11px!important;
 }
 .accreceiv-owndetails-bodyorder {
     border-right: 1px solid #000000;
@@ -450,23 +456,24 @@
 .accreceiv-owndetails-bodytype {
     width: 70px;
     text-align: center;
-    font-size: 12px!important;
-    border-right: 1px solid #000000;
+    font-size: 11px!important;
 }
 .accreceiv-owndetails-bodytype.creditcard {
     color: #0000ff;
 }
-/*.accreceiv-owndetails-bodytype.separated {
-    border-top: 1px solid #000000;
-}*/
+.accreceiv-owndetails-bodytype.sorted {
+    border-right: 1px solid #000000;
+}
 .accreceiv-owndetails-bodyapproval {
     width: 84px;
     text-align: center;
-    border-right: 1px solid #000000;
     font-size: 12px!important;
 }
 .accreceiv-owndetails-bodyapproval.notapproved {
     background: #fcfdab;
+}
+.accreceiv-owndetails-bodyapproval.sorted {
+    border-right: 1px solid #000000;
 }
 .accreceiv-owndetails-bodystatus {
     width: 140px;
@@ -477,6 +484,7 @@ select.debtstatus {
     padding-left: 3px;
     color: #000000;
     background: #e9e9ed;
+    font-size: 11px;
 }
 select.debtstatus.checked {
     background: #FFFFFF;
@@ -512,16 +520,26 @@ select.debtstatus.checked {
 .refundsort {
     cursor: pointer;
 }
-.refundsort span {
-    font-size: 9px;
-    font-weight: normal;
+.accreceiv-refunddetails-head > div.activesortbt {
+    background: #1849ff!important;
 }
+.accreceiv-refunddetails-head > div.activesortsr {
+    background: #fdff44!important;
+    color: #000000;
+}
+.accreceiv-refunddetails-head > div.activesortsigma {
+    background: #aaa9a9!important;
+    color: #000000;
+}
+/*.refundsort span {*/
+/*    font-size: 9px;*/
+/*    font-weight: normal;*/
+/*}*/
 .accreceiv-refunddetails-headnum {
     width: 20px;
 }
 .accreceiv-refunddetails-headorderdate {
     width: 58px;
-    background: #1849ff !important;
     font-size: 12px !important;
     line-height: 14px !important;
 }
@@ -537,14 +555,13 @@ select.debtstatus.checked {
     width: 87px;
 }
 .accreceiv-refunddetails-headbrand {
-    width: 52px;
-    margin-left: -14px;
+    width: 25px;
 }
 .accreceiv-refunddetails-headorder {
     width: 50px;
 }
 .accreceiv-refunddetails-headordersigma {
-    width: 51px;
+    width: 64px;
 }
 .accreceiv-refunddetails-headcustomer {
     width: 202px;
@@ -560,8 +577,8 @@ select.debtstatus.checked {
     width: 100%;
 }
 .accreceiv-refunddetails-bodyrow > div {
-    height: 25px;
-    line-height: 25px;
+    height: 22px;
+    line-height: 22px;
     font-size: 13px;
 }
 .accreceiv-refunddetails-bodyrow.current_row > div {

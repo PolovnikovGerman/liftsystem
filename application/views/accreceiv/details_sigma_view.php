@@ -1,45 +1,16 @@
 <div class="accreceiv-content-left sigmasystem">
     <div class="accreceiv-owndetails-head">
         <div class="accreceiv-owndetails-headnum">#</div>
-<!--        --><?php //if ($ownsort=='batch_due') { ?>
-<!--            <div class="accreceiv-owndetails-headdue ownsort" data-sort="batch_due">Due <span><i class="fa --><?php //=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?><!--"></i></span></div>-->
-<!--        --><?php //} else { ?>
-<!--            <div class="accreceiv-owndetails-headdue ownsort" data-sort="batch_due">Due <span></span></div>-->
-<!--        --><?php //} ?>
-        <div class="accreceiv-owndetails-headdue sigmasystem ownsort" data-sort="batch_due">Due</div>
-        <?php if ($ownsort=='balance') { ?>
-            <div class="accreceiv-owndetails-headbalance ownsort" data-sort="balance">Balance <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
-        <?php } else { ?>
-            <div class="accreceiv-owndetails-headbalance ownsort" data-sort="balance">Balance <span></span></div>
-        <?php } ?>
         <div class="accreceiv-owndetails-headrunningtotal">Running Total</div>
-        <?php if ($ownsort=='brand') { ?>
-            <div class="accreceiv-owndetails-headbrand ownsort" data-sort="brand"> <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
-        <?php } else { ?>
-            <div class="accreceiv-owndetails-headbrand ownsort" data-sort="brand"><span></span></div>
-        <?php } ?>
-        <?php if ($ownsort=='order_num') { ?>
-            <div class="accreceiv-owndetails-headordersigma ownsort" data-sort="order_num">Order <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
-        <?php } else { ?>
-            <div class="accreceiv-owndetails-headordersigma ownsort" data-sort="order_num">Order <span></span></div>
-        <?php } ?>
-        <?php if ($ownsort=='customer_ponum') { ?>
-            <div class="accreceiv-owndetails-headponumber ownsort" data-sort="customer_ponum">PO # <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
-        <?php } else { ?>
-            <div class="accreceiv-owndetails-headponumber ownsort" data-sort="customer_ponum">PO # <span></span></div>
-        <?php } ?>
-        <?php if ($ownsort=='customer_name') { ?>
-            <div class="accreceiv-owndetails-headcustomer ownsort" data-sort="customer_name">Customer <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
-        <?php } else { ?>
-            <div class="accreceiv-owndetails-headcustomer ownsort" data-sort="customer_name">Customer <span></span></div>
-        <?php } ?>
-        <?php if ($ownsort=='owntype') { ?>
-            <div class="accreceiv-owndetails-headtype ownsort" data-sort="owntype">Type <span><i class="fa <?=$owndir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i></span></div>
-        <?php } else { ?>
-            <div class="accreceiv-owndetails-headtype ownsort" data-sort="owntype">Type <span></span></div>
-        <?php } ?>
-        <div class="accreceiv-owndetails-headapproval">Approval</div>
-        <div class="accreceiv-owndetails-headstatus">Status</div>
+        <div class="accreceiv-owndetails-headdue ownsort <?=$ownsort=='batch_due' ? 'activesortsigma' : ''?>" data-sort="batch_due">Due </div>
+        <div class="accreceiv-owndetails-headbalance ownsort <?=$ownsort=='balance' ? 'activesortsigma' : ''?>" data-sort="balance">Balance</div>
+        <div class="accreceiv-owndetails-headbrand ownsort <?=$ownsort=='brand' ? 'activesortsigma' : ''?>" data-sort="brand"><span></span></div>
+        <div class="accreceiv-owndetails-headordersigma ownsort <?=$ownsort=='order_num' ? 'activesortsigma' : ''?>" data-sort="order_num">Order</div>
+        <div class="accreceiv-owndetails-headponumber ownsort <?=$ownsort=='customer_ponum' ? 'activesortsigma' : ''?>" data-sort="customer_ponum">PO #</div>
+        <div class="accreceiv-owndetails-headcustomer ownsort <?=$ownsort=='customer_name' ? 'activesortsigma' : ''?>" data-sort="customer_name">Customer <span></span></div>
+        <div class="accreceiv-owndetails-headtype ownsort <?=$ownsort=='owntype' ? 'activesortsigma' : ''?>" data-sort="owntype">Type <span></span></div>
+        <div class="accreceiv-owndetails-headapproval ownsort <?=$ownsort=='ownapprove' ? 'activesortsigma' : ''?>" data-sort="ownapprove">Approval</div>
+        <div class="accreceiv-owndetails-headstatus ownsort <?=$ownsort=='debt_status' ? 'activesortsigma' : ''?>" data-sort="debt_status">Status</div>
     </div>
     <div class="accreceiv-owndetails-body">
         <?php if (count($owns)==0) { ?>
@@ -53,17 +24,17 @@
             <?php foreach ($owns as $own) { ?>
                 <div class="accreceiv-owndetails-bodyrow <?=$numpp%2 == 0 ? 'greydatarow' : 'whitedatarow'?> <?=$own['dueclass']!==$startdue ? 'separated' : ''?>">
                     <div class="accreceiv-owndetails-bodynum"><?=$numpp?></div>
+                    <div class="accreceiv-owndetails-bodyrunningtotal"><?=MoneyOutput($own['rundebt'],0)?></div>
                     <div class="accreceiv-owndetails-bodydue <?=$own['dueclass']?>">
                         <?=date('m/d/y', $own['batch_due'])?>
                     </div>
                     <div class="accreceiv-owndetails-bodybalance"><?=TotalOutput($own['balance'])?></div>
-                    <div class="accreceiv-owndetails-bodyrunningtotal"><?=MoneyOutput($own['rundebt'],0)?></div>
                     <div class="accreceiv-owndetails-bodybrand <?=$own['brand']=='SR' ? 'stressrelievers' : 'bluetrack'?>"><?=$own['brand']?></div>
                     <div class="accreceiv-owndetails-bodyordersigma" data-brand="<?=$own['brand']?>" data-order="<?=$own['order_id']?>"><?=$own['order_num']?></div>
                     <div class="accreceiv-owndetails-bodyponumber" title="<?=$own['customer_ponum']?>"><?=$own['customer_ponum']?></div>
                     <div class="accreceiv-owndetails-bodycustomer"><?=$own['customer_name']?></div>
-                    <div class="accreceiv-owndetails-bodytype <?=$own['typeclass']?> <?=$starttype!==$own['type'] ? 'separated' : ''?>"><?=$own['type']?></div>
-                    <div class="accreceiv-owndetails-bodyapproval <?=$own['approved']==0 ? 'notapproved' : ''?> <?=$starapprov!==$own['approved'] ? 'separated' : ''?>"><?=$own['approved']==0 ? 'Not Approved' : 'Approved'?></div>
+                    <div class="accreceiv-owndetails-bodytype <?=$own['typeclass']?> <?=$starttype!==$own['type'] ? 'separated' : ''?> <?=$ownsort=='owntype' ? 'sorted' : ''?>"><?=$own['type']?></div>
+                    <div class="accreceiv-owndetails-bodyapproval <?=$own['approved']==0 ? 'notapproved' : ''?> <?=$starapprov!==$own['approved'] ? 'separated' : ''?> <?=$ownsort=='ownapprove' ? 'sorted' : ''?>"><?=$own['approved']==0 ? 'Not Approved' : 'Approved'?></div>
                     <div class="accreceiv-owndetails-bodystatus <?=$starstatus!==$own['debt_status'] ? 'separated' : ''?>">
                         <select class="debtstatus <?=$own['debt_status']=='' ? '' : 'checked'?>" data-order="<?=$own['order_id']?>">
                             <option value="">---</option>
@@ -87,32 +58,11 @@
 <div class="accreceiv-content-center sigmasystem">
     <div class="accreceiv-refunddetails-head">
         <div class="accreceiv-refunddetails-headnum">#</div>
-<!--        --><?php //if ($refundsort=='order_date') { ?>
-<!--            <div class="accreceiv-refunddetails-headorderdate refundsort" data-sort="order_date">Order Date <span><i class="fa --><?php //=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?><!--"></i> </span></div>-->
-<!--        --><?php //} else { ?>
-<!--            <div class="accreceiv-refunddetails-headorderdate refundsort" data-sort="order_date">Order Date</div>-->
-<!--        --><?php //} ?>
-        <div class="accreceiv-refunddetails-headorderdate sigmasystem refundsort" data-sort="order_date">Order Date</div>
-        <?php if ($refundsort=='balance') { ?>
-            <div class="accreceiv-refunddetails-headbalance refundsort" data-sort="balance">Refund <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
-        <?php } else { ?>
-            <div class="accreceiv-refunddetails-headbalance refundsort" data-sort="balance">Refund</div>
-        <?php } ?>
-        <?php if ($refundsort=='brand') { ?>
-            <div class="accreceiv-refunddetails-headbrand refundsort" data-sort="brand"> <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
-        <?php } else { ?>
-            <div class="accreceiv-refunddetails-headbrand refundsort" data-sort="brand"> <span></span></div>
-        <?php } ?>
-        <?php if ($refundsort=='order_num') { ?>
-            <div class="accreceiv-refunddetails-headorder refundsort" data-sort="order_num">Order <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
-        <?php } else { ?>
-            <div class="accreceiv-refunddetails-headorder refundsort" data-sort="order_num">Order <span></span></div>
-        <?php } ?>
-        <?php if ($refundsort=='customer_name') { ?>
-            <div class="accreceiv-refunddetails-headcustomer refundsort" data-sort="customer_name">Customer <span><i class="fa <?=$refunddir=='desc' ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'?>"></i> </span></div>
-        <?php } else { ?>
-            <div class="accreceiv-refunddetails-headcustomer refundsort" data-sort="customer_name">Customer <span></span></div>
-        <?php } ?>
+        <div class="accreceiv-refunddetails-headorderdate refundsort <?=$refundsort=='order_date' ? 'activesortsigma' : ''?>" data-sort="order_date">Order Date</div>
+        <div class="accreceiv-refunddetails-headbalance refundsort <?=$refundsort=='balance' ? 'activesortsigma' : ''?>" data-sort="balance">Refund</div>
+        <div class="accreceiv-refunddetails-headbrand refundsort  <?=$refundsort=='brand' ? 'activesortsigma' : ''?>" data-sort="brand"></div>
+        <div class="accreceiv-refunddetails-headordersigma refundsort <?=$refundsort=='order_num' ? 'activesortsigma' : ''?>" data-sort="order_num">Order</div>
+        <div class="accreceiv-refunddetails-headcustomer refundsort <?=$refundsort=='customer_name' ? 'activesortsigma' : ''?>" data-sort="customer_name">Customer</div>
     </div>
     <div class="accreceiv-refunddetails-body">
         <?php if (count($refunds)==0) { ?>
