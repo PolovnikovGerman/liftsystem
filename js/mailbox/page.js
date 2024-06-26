@@ -135,6 +135,14 @@ function init_mailbox_manage() {
         var message = $(this).data('message');
         view_message(message);
     });
+    $(".tab-th-05").unbind('click').click(function (){
+        var message = $(this).data('message');
+        view_message(message);
+    });
+    $(".tab-th-07").unbind('click').click(function (){
+        var message = $(this).data('message');
+        view_message(message);
+    });
 }
 
 function add_newfolder() {

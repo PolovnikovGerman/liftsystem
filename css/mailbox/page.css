@@ -122,6 +122,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     font-weight: 400;
+    cursor: pointer;
 }
 tr.tr-unread th.tab-th-03 {
     font-weight: 600;
@@ -142,6 +143,7 @@ tr.tr-unread th.tab-th-03 {
     text-overflow: ellipsis;
     font-weight: 400;
     color: #626a71;
+    cursor: pointer;
 }
 th.tab-th-05 span.subject-email {
     color: #000;
@@ -157,6 +159,7 @@ tr.tr-unread th.tab-th-05 span.subject-email {
     float: left;
     width: 76px;
     text-align: right;
+    cursor: pointer;
 }
 .table-emails span {
     font-size: 14px;
