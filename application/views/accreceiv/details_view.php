@@ -29,8 +29,8 @@
                     <div class="accreceiv-owndetails-bodybalance"><?=TotalOutput($own['balance'])?></div>
                     <div class="accreceiv-owndetails-bodyorder" data-order="<?=$own['order_id']?>"><?=$own['order_num']?></div>
                     <div class="accreceiv-owndetails-bodycustomer"><?=$own['customer_name']?></div>
-                    <div class="accreceiv-owndetails-bodytype <?=$own['typeclass']?> <?=$starttype!==$own['type'] ? 'separated' : ''?> <?=$ownsort=='owntype' ? 'sorted' : ''?>"><?=$own['type']?></div>
-                    <div class="accreceiv-owndetails-bodyapproval <?=$own['approved']==0 ? 'notapproved' : ''?> <?=$starapprov!==$own['approved'] ? 'separated' : ''?> <?=$ownsort=='ownapprove' ? 'sorted' : ''?>"><?=$own['approved']==0 ? 'Not Approved' : 'Approved'?></div>
+                    <div class="accreceiv-owndetails-bodytype <?=$own['typeclass']?> <?=($starttype!==$own['type'] && $ownsort=='owntype') ? 'separated' : ''?>"><?=$own['type']?></div>
+                    <div class="accreceiv-owndetails-bodyapproval <?=$own['approved']==0 ? 'notapproved' : ''?> <?=($starapprov!==$own['approved'] && $ownsort=='ownapprove') ? 'separated' : ''?>"><?=$own['approved']==0 ? 'Not Approved' : 'Approved'?></div>
                     <div class="accreceiv-owndetails-bodystatus <?=$starstatus!==$own['debt_status'] ? 'separated' : ''?>">
                         <select class="debtstatus <?=$own['debt_status']=='' ? '' : 'checked'?>" data-order="<?=$own['order_id']?>">
                             <option value="">---</option>

@@ -457,23 +457,23 @@
     width: 70px;
     text-align: center;
     font-size: 11px!important;
+    border-right: 1px solid #000000;
 }
 .accreceiv-owndetails-bodytype.creditcard {
     color: #0000ff;
 }
 .accreceiv-owndetails-bodytype.sorted {
-    border-right: 1px solid #000000;
 }
 .accreceiv-owndetails-bodyapproval {
     width: 84px;
     text-align: center;
     font-size: 12px!important;
+    border-right: 1px solid #000000;
 }
 .accreceiv-owndetails-bodyapproval.notapproved {
     background: #fcfdab;
 }
 .accreceiv-owndetails-bodyapproval.sorted {
-    border-right: 1px solid #000000;
 }
 .accreceiv-owndetails-bodystatus {
     width: 140px;
