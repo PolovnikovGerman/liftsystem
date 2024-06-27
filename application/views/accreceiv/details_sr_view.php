@@ -33,7 +33,7 @@
                     <div class="accreceiv-owndetails-bodycustomer"><?=$own['customer_name']?></div>
                     <div class="accreceiv-owndetails-bodytype <?=$own['typeclass']?> <?=($starttype!==$own['type'] && $ownsort=='owntype') ? 'separated' : ''?>"><?=$own['type']?></div>
                     <div class="accreceiv-owndetails-bodyapproval <?=$own['approved']==0 ? 'notapproved' : ''?> <?=($starapprov!==$own['approved'] && $ownsort=='ownapprove') ? 'separated' : ''?>"><?=$own['approved']==0 ? 'Not Approved' : 'Approved'?></div>
-                    <div class="accreceiv-owndetails-bodystatus <?=$starstatus!==$own['debt_status'] ? 'separated' : ''?>">
+                    <div class="accreceiv-owndetails-bodystatus <?=($starstatus!==$own['debt_status'] && $ownsort=='debt_status') ? 'separated' : ''?>">
                         <select class="debtstatus <?=$own['debt_status']=='' ? '' : 'checked'?>" data-order="<?=$own['order_id']?>">
                             <option value="">---</option>
                             <option value="no_reply" <?=$own['debt_status']=='no_reply' ? 'selected="selected"' : ''?>>Contacted, No Reply</option>
