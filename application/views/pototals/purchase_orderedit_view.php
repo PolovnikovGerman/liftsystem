@@ -22,8 +22,8 @@
     <div class="datarow">
         <div class="poeditlabel">&nbsp;</div>
         <div class="poeditinput">
-            <span>incl. shipping</span>
-            <input type="checkbox" class="po_shipping" <?=$order['is_shipping']==1 ? 'checked' : ''?>/>
+<!--            <span>incl. shipping</span>-->
+<!--            <input type="checkbox" class="po_shipping" --><?php //=$order['is_shipping']==1 ? 'checked' : ''?><!--/>-->
         </div>
         <div class="poeditleftpart">
             <div class="amountprofitprc <?=$order['profit_class']?>"><?=empty($order['profit_perc']) ? '&nbsp;' : $order['profit_perc'].'%'?></div>

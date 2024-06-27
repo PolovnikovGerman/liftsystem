@@ -205,7 +205,7 @@ Class Payments_model extends MY_Model {
         $vendor_id=$data['vendor_id'];
         $method_id=$data['method_id'];
         $user_id=$amtdata['user_id'];
-        $is_shipping=(isset($data['is_shipping']) ? $data['is_shipping'] : 0);
+
         $old_amount_sum=$data['oldamount_sum'];
         $profperc=floatval($amtdata['order']['profit_perc']);
         $brand = $amtdata['brand'];
@@ -234,7 +234,7 @@ Class Payments_model extends MY_Model {
             $res['msg']='Enter Reason for Low Profit';
             return $res;
         }
-        $this->db->select('order_cog, revenue, profit, shipping, tax, cc_fee, order_num, order_date');
+        $this->db->select('order_cog, revenue, profit, shipping, is_shipping, tax, cc_fee, order_num, order_date');
         $this->db->from('ts_orders');
         $this->db->where('order_id',$order_id);
         $cog=$this->db->get()->row_array();
@@ -284,10 +284,10 @@ Class Payments_model extends MY_Model {
             $this->db->where('order_id', $order_id);
             $cogcalc = $this->db->get()->row_array();
             $new_order_cog = floatval($cogcalc['sumcog']);
-            $new_profit=$revenue-($shipping*$is_shipping)-$tax-$cc_fee-$new_order_cog;
+            $new_profit=$revenue-($shipping*$cog['is_shipping'])-$tax-$cc_fee-$new_order_cog;
             $new_profit_pc=($revenue==0 ? null : round(($new_profit/$revenue)*100,1));
             $this->db->set('order_cog',$new_order_cog);
-            $this->db->set('is_shipping',$is_shipping);
+
             $this->db->set('profit',$new_profit);
             $this->db->set('profit_perc',$new_profit_pc);
             $this->db->set('order_artview', $statres['aprrovview']);
@@ -410,7 +410,6 @@ Class Payments_model extends MY_Model {
                         'oldtotalrun'=>$outoldrundebt,
                         'newtotalrun'=>$outnewrundebt,
                     );
-                    firephplog('Start send email');
                     $this->orders_model->notify_netdebtchanged($notifoptions);
                 }
             }
@@ -454,149 +453,6 @@ Class Payments_model extends MY_Model {
         $this->email->clear(TRUE);
         return TRUE;
     }
-
-//    function save_amount($amount_id,$order_id,$amount_date,$amount_sum,$vendor_id, $method_id,$user_id,$is_shipping,$attach) {
-//        $res=array('result'=>0,'msg'=>'Unknown error');
-//        /* Check Incoming Data */
-//        if (!$order_id) {
-//            $res['msg']='Non-exist PO#';
-//        } elseif (floatval($amount_sum)==0) {
-//            $res['msg']='Amount sum not entered';
-//        } elseif(intval($vendor_id)==0) {
-//            $res['msg']='Select Vendor';
-//        } elseif (intval($method_id)==0) {
-//            $res['msg']='Select Purchase Method';
-//        } else {
-//            $this->db->select('order_cog, revenue, shipping, tax, cc_fee');
-//            $this->db->from('ts_orders');
-//            $this->db->where('order_id',$order_id);
-//            $cog=$this->db->get()->row_array();
-//            $order_cog=floatval($cog['order_cog']);
-//            $revenue=floatval($cog['revenue']);
-//            $shipping=floatval($cog['shipping']);
-//            $tax=floatval($cog['tax']);
-//            $cc_fee=floatval($cog['cc_fee']);
-//            if ($amount_id==0) {
-//                $old_amount_sum=0;
-//            } else {
-//                $this->db->select('amount_sum');
-//                $this->db->from('ts_order_amounts');
-//                $this->db->where('amount_id',$amount_id);
-//                $amn=$this->db->get()->row_array();
-//                $old_amount_sum=floatval($amn['amount_sum']);
-//            }
-//            /* Insert update Amount */
-//            $this->db->set('amount_date', strtotime($amount_date));
-//            $this->db->set('vendor_id',$vendor_id);
-//            $this->db->set('method_id',$method_id);
-//            $this->db->set('amount_sum', floatval($amount_sum));
-//            if ($amount_id==0) {
-//                $this->db->set('order_id',$order_id);
-//                $this->db->set('create_date', time());
-//                $this->db->set('create_user',$user_id);
-//                $this->db->set('update_date',time());
-//                $this->db->set('update_user',$user_id);
-//                $this->db->insert('ts_order_amounts');
-//                $resins=$this->db->insert_id();
-//                $amount_id=$resins;
-//            } else {
-//                $this->db->set('update_date',time());
-//                $this->db->set('update_user',$user_id);
-//                $this->db->where('amount_id',$amount_id);
-//                $this->db->update('ts_order_amounts');
-//                $resins=1;
-//            }
-//            if ($resins) {
-//                $res['msg']='';
-//                $res['result']=1;
-//                /* Update order */
-//                $this->db->select('order_approved_view(order_id) as aprrovview, order_placed(order_id) as placeord');
-//                $this->db->from('ts_orders');
-//                $this->db->where('order_id',$order_id);
-//                $statres=$this->db->get()->row_array();
-//                $new_order_cog=$order_cog-$old_amount_sum+floatval($amount_sum);
-//                $new_profit=$revenue-($shipping*$is_shipping)-$tax-$cc_fee-$new_order_cog;
-//                $new_profit_pc=($revenue==0 ? null : round(($new_profit/$revenue)*100,1));
-//                $this->db->set('order_cog',$new_order_cog);
-//                $this->db->set('is_shipping',$is_shipping);
-//                $this->db->set('profit',$new_profit);
-//                $this->db->set('profit_perc',$new_profit_pc);
-//                $this->db->set('order_artview', $statres['aprrovview']);
-//                $this->db->set('order_placed', $statres['placeord']);
-//                $this->db->where('order_id',$order_id);
-//                $this->db->update('ts_orders');
-//                /* Insert attachments */
-//                $this->db->where('amount_id',$amount_id);
-//                $this->db->delete('ts_amount_docs');
-//                /* Insert new/old data */
-//                foreach ($attach as $row) {
-//                    $fl_avail=0;
-//                    if (stripos($this->config->item('pathpreload'),$row['doc_link'])) {
-//                        /* new file */
-//                        $filename=str_replace($this->config->item('pathpreload'), '', $row['doc_link']);
-//                        $dest=$this->config->item('amountattach');
-//                        $src=$this->config->item('upload_path_preload');
-//                        $res=$this->func->move_docfile($filename, $src, $dest);
-//                        if ($res) {
-//                            $fl_avail=1;
-//                            $row['doc_link']=$this->config->item('amountattach_path').$filename;
-//                        }
-//                    } else {
-//                        $fl_avail=1;
-//                    }
-//                    if ($fl_avail) {
-//                        $dat=date('Y-m-d H:i:s',strtotime($row['upd_time']));
-//                        $this->db->set('upd_time',$dat);
-//                        $this->db->set('amount_id',$amount_id);
-//                        $this->db->set('doc_link',$row['doc_link']);
-//                        $this->db->set('doc_name',$row['doc_name']);
-//                        $this->db->insert('ts_amount_docs');
-//                    }
-//                }
-//            } else {
-//                $res['msg']='New amount not inserted';
-//            }
-//
-//        }
-//        return $res;
-//    }
-//
-//    function get_order_payments($order_id) {
-//        $this->db->select('*');
-//        $this->db->from('ts_order_charges');
-//        $this->db->where('order_id',$order_id);
-//        $this->db->order_by('charge_date');
-//        $res=$this->db->get()->result_array();
-//        $out_array=array();
-//        foreach ($res as $row) {
-//            $row['charge_date']=($row['charge_date']=='' ? '-' : date('m/d/Y',$row['charge_date']));
-//            $row['charge_sum']=(floatval($row['charge_sum'])==0 ? '-' : number_format($row['charge_sum'],2,'.',','));
-//            $out_array[]=$row;
-//        }
-//        return $out_array;
-//    }
-//
-//    function get_order_details($order_id) {
-//        $this->db->select('o.*, pay.numchr, pay.sumchr');
-//        $this->db->from('ts_orders o');
-//        $this->db->join('(select order_id, count(charge_id) as numchr, sum(charge_sum) sumchr from ts_order_charges group by order_id) pay','pay.order_id=o.order_id','left');
-//        $this->db->where('o.order_id',$order_id);
-//        $order_dat=$this->db->get()->row_array();
-//        if (isset($order_dat['order_id'])) {
-//            /* Rest */
-//            $order_dat['rest']=floatval($order_dat['order_cog'])-floatval($order_dat['sumchr']);
-//            $order_dat['rest']=number_format($order_dat['rest'],2,'.',',');
-//        }
-//        return $order_dat;
-//    }
-//
-//    function get_charge_data($charge_id) {
-//        $this->db->select('*');
-//        $this->db->from('ts_order_charges');
-//        $this->db->where('charge_id',$charge_id);
-//        $res=$this->db->get()->row_array();
-//        return $res;
-//    }
 
     public function delete_amount($amount_id, $user_id, $brand) {
         $outres=0;
@@ -757,155 +613,6 @@ Class Payments_model extends MY_Model {
         }
         return $outres;
     }
-
-//    function delete_payment($charge_id,$amount_id) {
-//        $this->db->where('charge_id',$charge_id);
-//        $this->db->delete('ts_order_charges');
-//        $res=$this->db->affected_rows();
-//        if ($res!=0) {
-//            $this->db->select('max(charge_date) as max_charge');
-//            $this->db->from('ts_order_charges');
-//            $this->db->where('amount_id',$amount_id);
-//            $dat=$this->db->get()->row_array();
-//
-//            $data=$this->get_amount_details($amount_id);
-//            if ($data['rest_num']<=0) {
-//                $this->db->set('is_closed',1);
-//            } else {
-//                $this->db->set('is_closed',0);
-//            }
-//            $this->db->set('date_charge',$dat['max_charge']);
-//            $this->db->where('amount_id',$amount_id);
-//            $this->db->update('ts_order_amounts');
-//        }
-//
-//        return $res;
-//    }
-//
-//
-//    function save_charge($charge_id, $amount_id, $charge_date, $charge_sum, $user_id) {
-//        $res=array('result'=>0, 'msg'=>'Unknown Error');
-//
-//        /* check parameters */
-//        if (!$amount_id) {
-//            $res['msg']='Unknown PO';
-//        } elseif (!$charge_date) {
-//            $res['msg']='Fill charge date';
-//        } elseif (floatval($charge_sum)==0) {
-//            $res['msg']='Fill charge sum';
-//        } elseif (!$user_id) {
-//            $res['msg']='You have no permissions to make this operation';
-//        } else {
-//            $this->db->set('charge_date', strtotime($charge_date));
-//            $this->db->set('charge_sum', floatval($charge_sum));
-//            if ($charge_id==0) {
-//                $this->db->set('amount_id',$amount_id);
-//                $this->db->set('create_time', time());
-//                $this->db->set('create_user',$user_id);
-//                $this->db->set('update_time',time());
-//                $this->db->set('update_user',$user_id);
-//                $this->db->insert('ts_order_charges');
-//                $resins=$this->db->insert_id();
-//            } else {
-//                $this->db->set('update_time',time());
-//                $this->db->set('update_user',$user_id);
-//                $this->db->where('charge_id',$charge_id);
-//                $this->db->update('ts_order_charges');
-//                $resins=1;
-//            }
-//            if ($resins) {
-//                $res['result']=1;$res['msg']='';
-//
-//                $this->db->select('max(charge_date) as max_charge');
-//                $this->db->from('ts_order_charges');
-//                $this->db->where('amount_id',$amount_id);
-//                $dat=$this->db->get()->row_array();
-//                /* Auto cloase */
-//                $data=$this->get_amount_details($amount_id);
-//                if ($data['rest_num']<=0) {
-//                    $isclose=1;
-//                } else {
-//                    $isclose=0;
-//                }
-//                if ($isclose==1) {
-//                    $this->db->set('is_closed',1);
-//                }
-//                $this->db->set('date_charge',$dat['max_charge']);
-//                $this->db->where('amount_id',$amount_id);
-//                $this->db->update('ts_order_amounts');
-//            } else {
-//                $res['msg']='Error during insert data';
-//            }
-//        }
-//        return $res;
-//    }
-//
-//    function get_amount_details($amount_id) {
-//        $this->db->select('oa.*,o.order_num, pay.numchr, pay.sumchr');
-//        $this->db->from('ts_order_amounts oa');
-//        $this->db->join('ts_orders o','o.order_id=oa.order_id');
-//        $this->db->join('(select amount_id, count(charge_id) as numchr, sum(charge_sum) sumchr from ts_order_charges group by amount_id) pay','pay.amount_id=oa.amount_id','left');
-//        $this->db->where('oa.amount_id',$amount_id);
-//        $amount_dat=$this->db->get()->row_array();
-//        if (isset($amount_dat['amount_id'])) {
-//            /* Rest */
-//            $amount_dat['rest_num']=floatval($amount_dat['amount_sum'])-floatval($amount_dat['sumchr']);
-//            $amount_dat['rest']='$'.number_format($amount_dat['rest_num'],2,'.',',');
-//        }
-//        return $amount_dat;
-//    }
-//
-//    function get_amount_payments($amount_id) {
-//        $this->db->select('*');
-//        $this->db->from('ts_order_charges');
-//        $this->db->where('amount_id',$amount_id);
-//        $this->db->order_by('charge_date');
-//        $res=$this->db->get()->result_array();
-//        $out_array=array();
-//        foreach ($res as $row) {
-//            $row['charge_date']=($row['charge_date']=='' ? '-' : date('m/d/Y',$row['charge_date']));
-//            $row['charge_sum']=(floatval($row['charge_sum'])==0 ? '-' : number_format($row['charge_sum'],2,'.',','));
-//            $out_array[]=$row;
-//        }
-//        return $out_array;
-//    }
-//
-//    function save_status($amount_id, $order_status, $order_replica,$user_id) {
-//        $res=array('result'=>  Order_model::ERR_FLAG,'msg'=>'Unknown Error');
-//        $this->db->set('is_closed',$order_status);
-//        $this->db->set('order_replica',  strtoupper($order_replica));
-//        $this->db->set('update_user',$user_id);
-//        $this->db->where('amount_id',$amount_id);
-//        $this->db->update('ts_order_amounts');
-//
-//        $res['result']=0;
-//        $res['msg']='';
-//        return $res;
-//
-//    }
-//
-//    public function profit_class($profit_perc) {
-//        $profit_class='';
-//        if (round($profit_perc,0)<=0) {
-//            $profit_class='black';
-//        } elseif ($profit_perc>0 && $profit_perc<10) {
-//            $profit_class='moroon';
-//        } elseif ($profit_perc>=10 && $profit_perc<20) {
-//            $profit_class='red';
-//        } elseif ($profit_perc>=20 && $profit_perc<30) {
-//            $profit_class='orange';
-//        } elseif ($profit_perc>=30 && $profit_perc<40) {
-//            $profit_class='white';
-//        } elseif ($profit_perc>=40) {
-//            $profit_class='green';
-//        }
-//
-//        return $profit_class;
-//    }
-//
-//    function get_batches() {
-//        return array();
-//    }
 
     function get_amount_attachments($amount_id) {
         $this->db->select('*');
@@ -1092,7 +799,7 @@ Class Payments_model extends MY_Model {
         $out['profclass']='projprof';
         if ($order_data['order_cog']==0 && $amount_data['amount_sum']==0) {
         } else {
-            $costs=floatval($amount_data['is_shipping'])*floatval($order_data['shipping'])+floatval($order_data['tax'])+floatval($order_data['cc_fee'])+
+            $costs=floatval($order_data['is_shipping'])*floatval($order_data['shipping'])+floatval($order_data['tax'])+floatval($order_data['cc_fee'])+
                 floatval($amount_data['amount_sum'])-floatval($amount_data['oldamount_sum'])+floatval($order_data['order_cog']);
             $out['profval']=round(floatval($order_data['revenue'])-$costs,2);
             $out['profperc']=round(($out['profval']/$order_data['revenue'])*100,1);

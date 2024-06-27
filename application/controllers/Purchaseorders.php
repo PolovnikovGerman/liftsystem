@@ -112,7 +112,6 @@ class Purchaseorders extends MY_Controller
                 'oldamount_sum'=>0,
                 'vendor_id'=>$order_data['vendor_id'],
                 'method_id'=>'',
-                'is_shipping'=>$order_data['is_shipping'],
                 'lowprofit'=>'',
                 'reason'=>'',
             );
@@ -171,7 +170,6 @@ class Purchaseorders extends MY_Controller
                     'amount_sum'=>'',
                     'vendor_id'=>'',
                     'method_id'=>'',
-                    'is_shipping'=>1,
                     'oldamount_sum'=>0,
                     'lowprofit'=>'',
                     'reason'=>'',
@@ -180,7 +178,6 @@ class Purchaseorders extends MY_Controller
                     'item_name' => '',
                     'profit_class' => '',
                     'profit' => '',
-                    'is_shipping' => 0,
                     'order_qty' => '',
                     'order_items' => '',
                 );
@@ -262,7 +259,6 @@ class Purchaseorders extends MY_Controller
                     } else {
                         $mdata['profitprc']=$order_data['profit_perc'];
                     }
-                    $mdata['is_shipping'] = $order_data['is_shipping'];
                     $mdata['content']=$this->load->view('pototals/purchase_orderdata_view', $order_data, TRUE);
                     $mdata['item']=$order_data['order_qty'].' '.$order_data['order_items'];
 
@@ -301,7 +297,6 @@ class Purchaseorders extends MY_Controller
                     } else {
                         $mdata['profitprc']=$order_data['profit_perc'];
                     }
-                    $mdata['is_shipping'] = $order_data['is_shipping'];
                     $mdata['item']=$order_data['order_qty'].' '.$order_data['order_items'];
                     $mdata['customer'] = $order_data['customer_name'];
                 }

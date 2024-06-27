@@ -572,7 +572,6 @@ class Accounting extends MY_Controller
         if ($this->isAjax()) {
             $mdata=array();
             $order_id=$this->input->post('order_id');
-            // $is_shipping=$this->input->post('shipincl');
             $res=$this->orders_model->ship_orderprofit($order_id);
             $error=$res['msg'];
             if ($res['result']==$this->success_result) {
