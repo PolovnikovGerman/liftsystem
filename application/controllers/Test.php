@@ -3850,4 +3850,16 @@ class Test extends CI_Controller
         }
 
     }
+
+    public function fix_shippingcost()
+    {
+        $this->db->select('o.order_id, o.order_num, o.brand, o.is_shipping, o.order_cog, lo.quote_id as quote_id');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_leadquote_orders lo', 'lo.order_id=o.order_id');
+        $this->db->where('o.order_cog', NULL);
+        $this->db->where('o.is_shipping',0);
+        $orders = $this->db->get()->result_array();
+        echo 'Find '.count($orders).PHP_EOL;
+
+    }
 }
