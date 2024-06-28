@@ -3860,6 +3860,10 @@ class Test extends CI_Controller
         $this->db->where('o.is_shipping',0);
         $orders = $this->db->get()->result_array();
         echo 'Find '.count($orders).PHP_EOL;
-
+        foreach ($orders as $order) {
+            $this->db->where('order_id', $order['order_id']);
+            $this->db->set('is_shipping', 1);
+            $this->db->update('ts_orders');
+        }
     }
 }
