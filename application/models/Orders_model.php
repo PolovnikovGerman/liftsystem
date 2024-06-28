@@ -8063,7 +8063,7 @@ Class Orders_model extends MY_Model
                 $this->db->where_in('v.brand', ['BT','SB']);
             }
         }
-        if ($ownsort!='owntype') {
+        if ($ownsort!='owntype' && $ownsort!=='ownapprove') {
             $this->db->order_by($ownsort, $owndirec);
         }
         $owndats = $this->db->get()->result_array();
@@ -8101,6 +8101,16 @@ Class Orders_model extends MY_Model
             } else {
                 usort($owns, function ($item1, $item2) {
                     return $item2['type'] <=> $item1['type'];
+                });
+            }
+        } elseif ($ownsort=='ownapprove') {
+            if ($owndirec=='asc') {
+                usort($owns, function ($item1, $item2) {
+                    return $item1['approved'] <=> $item2['approved'];
+                });
+            } else {
+                usort($owns, function ($item1, $item2) {
+                    return $item2['approved'] <=> $item1['approved'];
                 });
             }
         }
