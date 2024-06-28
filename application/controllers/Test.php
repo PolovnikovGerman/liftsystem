@@ -3853,12 +3853,51 @@ class Test extends CI_Controller
 
     public function fix_shippingcost()
     {
-        $this->db->select('o.order_id, o.order_num, o.brand, o.is_shipping, o.order_cog, lo.quote_id as quote_id');
+        ini_set('memory_limit', '-1');
+        $this->db->select('o.order_id, o.order_num, o.brand, o.is_shipping, o.order_cog, o.profit, o.profit, o.profit_perc, o.revenue');
+        $this->db->select('o.order_items, o.order_itemnumber, o.shipping, o.tax, o.cc_fee, o.customer_name, o.order_date, lo.quote_id as quote_id, v.vendor_name');
         $this->db->from('ts_orders o');
         $this->db->join('ts_leadquote_orders lo', 'lo.order_id=o.order_id');
+        $this->db->join('sb_items i', 'i.item_id=o.item_id','left');
+        $this->db->join('sb_vendor_items vi', 'vi.vendor_item_id=i.vendor_item_id', 'left');
+        $this->db->join('vendors v', 'v.vendor_id=vi.vendor_item_vendor');
         $this->db->where('o.order_cog is not null');
         $this->db->where('o.is_shipping',0);
         $orders = $this->db->get()->result_array();
         echo 'Find '.count($orders).PHP_EOL;
+        $changes = [];
+        foreach ($orders as $order) {
+            // Calc new profit
+            $newprofit = $order['revenue'] - ($order['order_cog']+$order['shipping']+$order['tax']+$order['cc_fee']);
+            $newprofit_perc = round($newprofit / $order['revenue'] * 100,1);
+            $changes[] = [
+                'order_num' => $order['order_num'],
+                'order_date' => date('m/d/Y', $order['order_date']),
+                'customer' => $order['customer_name'],
+                'item_number' => $order['order_itemnumber'],
+                'item' => $order['order_items'],
+                'vendor' => (empty($order['vendor_name']) ? 'INTERNAL' : $order['vendor_name']),
+                'profit' => $order['order_profit'],
+                'profit_perc' => $order['profit_perc'],
+                'newprofit' => $newprofit,
+                'newprofit_perc' => $newprofit_perc,
+            ];
+        }
+        if (count($changes) > 0) {
+            $this->load->config('uploader');
+            $file = $this->config->item('upload_path_preload').'fix_profit_ship.csv';
+            @unlink($file);
+            $fh = fopen($file, FOPEN_WRITE_CREATE);
+            $head = 'Order #;Date;Customer;Item #;Item;Vendor;Profit;Profit %;New Profit;New Profit %;'.PHP_EOL;
+            fwrite($fh, $head);
+            foreach ($changes as $change) {
+                $msg=$change['order_num'].';'.$change['order_date'].';"'.$change['customer'].'";'.$change['item_number'].';"';
+                $msg.=$change['item'].'";"'.$change['vendor'].'";'.$change['profit'].';'.$change['profit_perc'].';';
+                $msg.=$change['newprofit'].';'.$change['newprofit_perc'].';'.PHP_EOL;
+                fwrite($fh, $msg);
+            }
+            fclose($fh);
+            echo 'File '.$file.' ready'.PHP_EOL;
+        }
     }
 }
