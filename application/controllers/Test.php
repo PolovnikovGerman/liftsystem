@@ -3856,14 +3856,9 @@ class Test extends CI_Controller
         $this->db->select('o.order_id, o.order_num, o.brand, o.is_shipping, o.order_cog, lo.quote_id as quote_id');
         $this->db->from('ts_orders o');
         $this->db->join('ts_leadquote_orders lo', 'lo.order_id=o.order_id');
-        $this->db->where('o.order_cog', NULL);
+        $this->db->where('o.order_cog is not null');
         $this->db->where('o.is_shipping',0);
         $orders = $this->db->get()->result_array();
         echo 'Find '.count($orders).PHP_EOL;
-        foreach ($orders as $order) {
-            $this->db->where('order_id', $order['order_id']);
-            $this->db->set('is_shipping', 1);
-            $this->db->update('ts_orders');
-        }
     }
 }
