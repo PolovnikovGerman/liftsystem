@@ -3855,7 +3855,7 @@ class Test extends CI_Controller
     {
         ini_set('memory_limit', '-1');
         $this->db->select('o.order_id, o.order_num, o.brand, o.is_shipping, o.order_cog, o.profit, o.profit, o.profit_perc, o.revenue');
-        $this->db->select('o.order_items, o.order_itemnumber, o.shipping, o.tax, o.cc_fee, o.customer_name, o.order_date, o.order_profit, o.profit_perc, lo.quote_id as quote_id, v.vendor_name');
+        $this->db->select('o.order_items, o.order_itemnumber, o.shipping, o.tax, o.cc_fee, o.customer_name, o.order_date, o.profit, o.profit_perc, lo.quote_id as quote_id, v.vendor_name');
         $this->db->from('ts_orders o');
         $this->db->join('ts_leadquote_orders lo', 'lo.order_id=o.order_id');
         $this->db->join('sb_items i', 'i.item_id=o.item_id','left');
@@ -3877,7 +3877,7 @@ class Test extends CI_Controller
                 'item_number' => $order['order_itemnumber'],
                 'item' => $order['order_items'],
                 'vendor' => (empty($order['vendor_name']) ? 'INTERNAL' : $order['vendor_name']),
-                'profit' => $order['order_profit'],
+                'profit' => $order['profit'],
                 'profit_perc' => $order['profit_perc'],
                 'newprofit' => $newprofit,
                 'newprofit_perc' => $newprofit_perc,
