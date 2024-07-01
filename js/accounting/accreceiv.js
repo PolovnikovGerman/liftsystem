@@ -243,11 +243,11 @@ function init_accreceive_content() {
     $(".ownsort").unbind('click').click(function () {
         var newsort = $(this).data('sort');
         var oldsort = $("#accreciveownsort").val();
-        var newdir = 'desc';
+        var newdir = 'asc';
         if (newsort==oldsort) {
             var olddir = $("#accreciveowndir").val();
-            if (olddir=='desc') {
-                newdir='asc';
+            if (olddir=='asc') {
+                newdir='desc';
             }
         }
         $("#accreciveownsort").val(newsort);
@@ -258,11 +258,11 @@ function init_accreceive_content() {
     $(".refundsort").unbind('click').click(function () {
         var newsort = $(this).data('sort');
         var oldsort = $("#accreceiverefundsort").val();
-        var newdir = 'desc';
+        var newdir = 'asc';
         if (newsort==oldsort) {
             var olddir = $("#accreceiverefunddir").val();
-            if (olddir=='desc') {
-                newdir='asc';
+            if (olddir=='asc') {
+                newdir='desc';
             }
         }
         $("#accreceiverefundsort").val(newsort);

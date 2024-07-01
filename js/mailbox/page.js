@@ -77,6 +77,9 @@ function init_mailbox_manage() {
                 $("li.viewfoldermsg").removeClass('active');
                 $("li.customfoldermsg").removeClass('active');
                 $("li.viewfoldermsg[data-folder='"+folder+"']").addClass('active');
+                $(".emails-block").removeClass('messagedetails').empty();
+                $(".emails-block").append('<div class="emails-block-header"></div>');
+                $(".emails-block").append('<div class="emails-block-body"></div>');
                 $(".emails-block-body").empty().html(response.data.messages);
                 $(".emails-block-header").empty().html(response.data.header);
                 $("#loader").hide();
@@ -100,6 +103,9 @@ function init_mailbox_manage() {
                 $("li.viewfoldermsg").removeClass('active');
                 $("li.customfoldermsg").removeClass('active');
                 $("li.customfoldermsg[data-folder='"+folder+"']").addClass('active');
+                $(".emails-block").removeClass('messagedetails').empty();
+                $(".emails-block").append('<div class="emails-block-header"></div>');
+                $(".emails-block").append('<div class="emails-block-body"></div>');
                 $(".emails-block-body").empty().html(response.data.messages);
                 $(".emails-block-header").empty().html(response.data.header);
                 $("#loader").hide();
@@ -143,6 +149,32 @@ function init_mailbox_manage() {
         var message = $(this).data('message');
         view_message(message);
     });
+    // Check messages
+    $(".eb-checkbox").unbind('change').change(function (){
+        // Count
+        var cntmsg = $(".eb-checkbox:checked").length;
+        if (parseInt(cntmsg)==0) {
+            $(".selectedmsgcount").empty();
+        } else {
+            $(".selectedmsgcount").empty().html(cntmsg);
+        }
+    });
+    $(".eb-checkboxall").unbind('change').change(function (){
+        if ($(this).prop('checked')==false) {
+            $(".eb-checkbox").prop('checked',false);
+            $(".selectedmsgcount").empty();
+        } else {
+            $(".eb-checkbox").prop('checked', true);
+            var cntmsg = $(".eb-checkbox:checked").length;
+            if (parseInt(cntmsg)==0) {
+                $(".selectedmsgcount").empty();
+            } else {
+                $(".selectedmsgcount").empty().html(cntmsg);
+            }
+        }
+    })
+
+
 }
 
 function add_newfolder() {

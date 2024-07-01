@@ -3267,7 +3267,7 @@ class Leadquote_model extends MY_Model
         $data['credit_appdue']=strtotime(date("Y-m-d", time()) . " +30 days");
         $data['newappcreditlink']=0;
         $data['credit_applink']='';
-        $data['is_shipping']=0;
+        $data['is_shipping']=1;
         $data['shipping'] = floatval($quote['shipping_cost']);
         $data['showbilladdress']=1;
         $data['brand'] = $quote['brand'];
