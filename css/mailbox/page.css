@@ -85,7 +85,7 @@
     height: 38px;
     border-bottom: 1px solid #e0e4e9;
 }
-.eb-checkbox {
+.eb-checkbox, .eb-checkboxall {
     border: 1px solid #b9bdc5;
     width: 14px;
     height: 14px;
@@ -401,6 +401,7 @@ input.newfoldername {
     border: 2px solid #b9bcc3;
     padding: 7px 10px;
     min-width: 924px;
+    height: 427px;
 }
 .box-email-header {
     width: 940px;
@@ -442,6 +443,8 @@ input.newfoldername {
     width: 100%;
     /* height: 35px; */
     text-align: center;
+    position: absolute !important;
+    bottom: 10px;
 }
 .box-email-bottom-attachments {
     display: inline-block;

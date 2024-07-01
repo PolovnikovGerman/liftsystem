@@ -1,6 +1,7 @@
 <div class="choose-all">
-    <input class="eb-checkbox" type="checkbox" name="option1" value="a0">
+    <input class="eb-checkboxall" type="checkbox" name="option1" value="a0">
     <span class="arrow-select"><i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+    <span class="selectedmsgcount"></span>
 </div>
 <div class="menu-icons">
     <ul>

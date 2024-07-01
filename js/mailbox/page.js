@@ -149,6 +149,32 @@ function init_mailbox_manage() {
         var message = $(this).data('message');
         view_message(message);
     });
+    // Check messages
+    $(".eb-checkbox").unbind('change').change(function (){
+        // Count
+        var cntmsg = $(".eb-checkbox:checked").length;
+        if (parseInt(cntmsg)==0) {
+            $(".selectedmsgcount").empty();
+        } else {
+            $(".selectedmsgcount").empty().html(cntmsg);
+        }
+    });
+    $(".eb-checkboxall").unbind('change').change(function (){
+        if ($(this).prop('checked')==false) {
+            $(".eb-checkbox").prop('checked',false);
+            $(".selectedmsgcount").empty();
+        } else {
+            $(".eb-checkbox").prop('checked', true);
+            var cntmsg = $(".eb-checkbox:checked").length;
+            if (parseInt(cntmsg)==0) {
+                $(".selectedmsgcount").empty();
+            } else {
+                $(".selectedmsgcount").empty().html(cntmsg);
+            }
+        }
+    })
+
+
 }
 
 function add_newfolder() {
