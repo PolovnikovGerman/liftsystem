@@ -13,6 +13,7 @@
     background: #142b40;
     padding: 2px 9px 2px 2px;
     font-family: "Oswald", sans-serif;
+    min-height: 635px;
 }
 .left-nav-title {
     width: 160px;
@@ -394,14 +395,15 @@ input.newfoldername {
 }
 .email-block {
     width: 965px;
-    height: 596px;
-    overflow-y: auto;
+    height: 590px;
+    /* overflow-y: auto; */
+    position: relative;
 }
 .box-email {
     border: 2px solid #b9bcc3;
     padding: 7px 10px;
     min-width: 924px;
-    height: 427px;
+    height: 554px;
 }
 .box-email-header {
     width: 940px;
