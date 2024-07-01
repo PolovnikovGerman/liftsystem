@@ -440,6 +440,7 @@ input.newfoldername {
 }
 .box-email-body {
     width: 930px;
+    min-height: 419px;
 }
 .box-email-bottom {
     width: 100%;
