@@ -120,6 +120,7 @@ class Mailbox extends MY_Controller
                         'postbox' => $postbox,
                         'folders' => $folders_view,
                         'folder_view' => $folder_view,
+                        'folder_id' => $res['active_folder'],
                     ];
                     $mdata['content'] = $this->load->view('mailbox/postbox_details_view', $options, TRUE);
                 }
@@ -300,6 +301,43 @@ class Mailbox extends MY_Controller
                     $mdata['content'] = '<i class="fa fa-star-o" aria-hidden="true"></i>';
                 }
                 $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function messages_archive()
+    {
+        if ($this->isAjax()) {
+            $mdata =[];
+            $error = 'Empty Postbox Details';
+            $postdata = $this->input->post();
+            $postbox = ifset($postdata, 'postbox', '');
+            $folder = ifset($postdata,'folder', '');
+            $msgsrc = ifset($postdata, 'messages','');
+            $postsort = ifset($postdata,'postsort','date_desc');
+            if (!empty($postbox) && !empty($folder) && !empty($msgsrc)) {
+                $messages = explode(',', $msgsrc);
+                $res = $this->mailbox_model->messages_archive($messages, $postbox);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $resfld = $this->mailbox_model->postbox_viewfolder($postbox, $folder, $postsort);
+                    $error = $resfld['msg'];
+                    if ($resfld['result']==$this->success_result) {
+                        $error = '';
+                        $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
+                        $folder = $resfld['folder'];
+                        $messages = $resfld['messages'];
+                        if (count($messages)==0) {
+                            $header_view = $this->load->view('mailbox/folder_header_empty',['folder'=>$folder['folder_name']], true);
+                        } else {
+                            $header_view = $this->load->view('mailbox/folder_header_view',['folder'=>$folder['folder_id']], true);
+                        }
+                        $mdata['header'] = $header_view;
+                        $mdata['messages'] = $this->_prepare_messages_view($messages, $postsort);
+                    }
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }

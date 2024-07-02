@@ -6,6 +6,8 @@ use SSilence\ImapClient\ImapClient as Imap;
 class Mailbox_model extends MY_Model
 {
     var $inbox_name = 'Inbox';
+    var $archive_name = 'Archive';
+
     var $mainfolders = [
         'Inbox',
         'Unread',
@@ -444,7 +446,6 @@ class Mailbox_model extends MY_Model
         if (!empty($folder_id)) {
             $this->db->select('message_id, count(attachment_id) as cnt')->from('postbox_attachments')->group_by('message_id');
             $attachssql = $this->db->get_compiled_select();
-
             if ($folder_id=='new' || $folder_id=='flagged') {
                 $out['result'] = $this->success_result;
                 if ($folder_id=='new') {
@@ -633,6 +634,44 @@ class Mailbox_model extends MY_Model
             $idx++;
         }
         return $folders;
+    }
+
+    public function messages_archive($messages, $postbox_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Postbox Not Found'];
+        $this->db->select('*')->from('user_postboxes')->where('postbox_id', $postbox_id);
+        $postbox = $this->db->get()->row_array();
+        if (ifset($postbox, 'postbox_id', 0) == $postbox_id) {
+            // Select folder archive
+            $out['msg'] = 'Folder Archive Not Exist';
+            $this->db->select('*')->from('postbox_folders')->where('folder_name', $this->archive_name);
+            $archfolder = $this->db->get()->row_array();
+            if (ifset($archfolder, 'folder_id', 0) >0) {
+                $archive_id = $archfolder['folder_id'];
+                $imapdat = $this->_create_imap_client($postbox);
+                $out['msg'] = $imapdat['msg'];
+                if ($imapdat['result']==$this->success_result) {
+                    $imap = $imapdat['imap'];
+                    foreach ($messages as $message) {
+                        $this->db->select('message_uid')->from('postbox_messages')->where('message_id', $message);
+                        $msgdat = $this->db->get()->row_array();
+                        if (!empty($msgdat['message_uid'])) {
+                            try {
+                                $imap->moveMessage($msgdat['message_uid'], 'Archive');
+                                $this->db->where('message_id', $message);
+                                $this->db->set('folder_id', $archive_id);
+                                $this->db->update('postbox_messages');
+                            } catch (ImapClientException $error) {
+                                $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
+                                return $out;
+                            }
+                        }
+                    }
+                    $out['result'] = $this->success_result;
+                }
+            }
+        }
+        return $out;
     }
 
     private function _folders_statistic($postbox_id)
