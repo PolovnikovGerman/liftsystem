@@ -182,6 +182,7 @@ tr.tr-unread th.tab-th-05 span.subject-email {
 .choose-all {
     padding-left: 25px;
     margin-top: 4px;
+    width: 100px;
 }
 .choose-all .eb-checkbox {
     border: 1px solid #000;

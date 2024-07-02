@@ -305,8 +305,8 @@ class Mailbox extends MY_Controller
         }
         show_404();
     }
-
-    private function _prepare_messages_view($messages, $sort='date_desc')
+    // date_desc
+    private function _prepare_messages_view($messages, $sort='messages')
     {
         $curdate = date('Y-m-d');
         $today_bgn = strtotime($curdate);
