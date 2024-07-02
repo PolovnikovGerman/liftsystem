@@ -247,11 +247,15 @@ class Template
         }
         // Shipping Date
         $shipstatus=$this->CI->leadorder_model->_leadorderview_shipping_status($res);
-        $shipoption=array(
-            'label'=>$shipstatus['order_status'],
-            'class'=>$shipstatus['order_status_class'],
-        );
-        $shipview=$this->CI->load->view('leadorderdetails/shipdate_data_view', $shipoption, TRUE);
+//        $shipoption=array(
+//            'label'=>$shipstatus['order_status'],
+//            'class'=>$shipstatus['order_status_class'],
+//        );
+//        $shipview=$this->CI->load->view('leadorderdetails/shipdate_data_view', $shipoption, TRUE);
+        $shipoptions = [
+            'shipdate' => $shipstatus['order_status'],
+        ];
+        $shipview = $this->CI->load->view('leadorderdetails/tracking_data_view', $shipoptions, TRUE);
         // Total Due
         $total_due=$res['total_due'];
         $dueoptions=array(
