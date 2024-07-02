@@ -159,6 +159,7 @@ function init_mailbox_manage() {
             $(".selectedmsgcount").empty().html(cntmsg);
         }
     });
+    // Check All
     $(".eb-checkboxall").unbind('change').change(function (){
         if ($(this).prop('checked')==false) {
             $(".eb-checkbox").prop('checked',false);
@@ -172,8 +173,23 @@ function init_mailbox_manage() {
                 $(".selectedmsgcount").empty().html(cntmsg);
             }
         }
-    })
-
+    });
+    // Archive
+    $(".archivemsgs").unbind('click').click(function (){
+        var cntmsg = $(".eb-checkbox:checked").length;
+        if (parseInt(cntmsg) > 0) {
+            // get array of checked messages
+            var msgs = new Array();
+            $(".eb-checkbox").every(function (e){
+                if ($(this).prop('checked')==true) {
+                    msgs.push($(this).data('message'));
+                }
+            });
+            var params = new Array();
+            params.push({name: 'messages', value: msgs});
+            params.push({})
+        }
+    });
 
 }
 

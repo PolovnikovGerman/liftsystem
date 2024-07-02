@@ -5,11 +5,11 @@
 </div>
 <div class="menu-icons">
     <ul>
-        <li><span><img src="/img/mailbox/icon-archive.svg"></span> Archive</li>
-        <li><span><img src="/img/mailbox/icon-move.svg"></span> Move</li>
-        <li><span><img src="/img/mailbox/icon-delete.svg"></span> Delete</li>
+        <li><span class="archivemsgs"><img src="/img/mailbox/icon-archive.svg"></span cl> Archive</li>
+        <li><span class="movemsgsfolder"><img src="/img/mailbox/icon-move.svg"></span> Move</li>
+        <li><span class="deletemsgs"><img src="/img/mailbox/icon-delete.svg"></span> Delete</li>
         <li><span><img src="/img/mailbox/icon-spam.svg"></span> Spam</li>
-        <li><span><img src="/img/mailbox/icon-more.svg"></span></li>
+        <li><span class="moreoptionmsgs"><img src="/img/mailbox/icon-more.svg"></span></li>
     </ul>
 </div>
 <div class="choose-sort">
