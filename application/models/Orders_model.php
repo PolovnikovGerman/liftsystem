@@ -8044,6 +8044,7 @@ Class Orders_model extends MY_Model
         $this->db->select('a.order_id, (p.artwork_proof_id) as cnt');
         $this->db->from('ts_artworks a');
         $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
         $this->db->group_by('a.order_id');
         $proofsql = $this->db->get_compiled_select();
 
