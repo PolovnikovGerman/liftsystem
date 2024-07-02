@@ -5591,6 +5591,7 @@ input.ticket_date {
     width: 412px;
     height: 150px;
     margin-top: -120px;
+    border-radius: 7px;
 }
 .trackingdataheader, .trackingdatafooter {
     background: #000000;
@@ -5608,7 +5609,9 @@ input.ticket_date {
     border-bottom-left-radius: 7px;
     border-bottom-right-radius: 7px;
 }
-.trackingdatafooter .nontracked {}
+.trackingdatafooter .nontracked {
+    float: left;
+}
 .trackingdatafooter .shipdate {
     float: right!important;
     margin-right: 16px;

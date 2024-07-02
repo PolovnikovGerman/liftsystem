@@ -254,6 +254,8 @@ class Template
 //        $shipview=$this->CI->load->view('leadorderdetails/shipdate_data_view', $shipoption, TRUE);
         $shipoptions = [
             'shipdate' => $shipstatus['order_status'],
+            'item' => $ord_data['order_items'],
+            'qty' => $ord_data['order_qty'],
         ];
         $shipview = $this->CI->load->view('leadorderdetails/tracking_data_view', $shipoptions, TRUE);
         // Total Due

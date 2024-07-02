@@ -627,6 +627,8 @@ Class Leadorder_model extends My_Model {
             $out['order_billing']=$this->get_order_billing($order_id);
             // Get Charge Info
             $out['charges']=$this->get_order_charges($order_id);
+            // Get Shipping packages
+            $out['trackings'] = $this->get_order_trackinfo($order_id);
         } else {
             $out['contacts']=$out['order_items']=$out['shipping']=$out['order_billing']=$out['charges']=array();
             $out['shipping_address']=$this->get_orderold_shippaddress($res);
@@ -10981,6 +10983,11 @@ Class Leadorder_model extends My_Model {
         $this->db->order_by('customer_name');
         $this->db->limit($limit);
         return $this->db->get()->result_array();
+    }
+
+    public function get_order_trackinfo($order_id)
+    {
+        
     }
 }
 /* End of file leadorder_model.php */
