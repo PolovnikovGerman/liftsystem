@@ -258,15 +258,15 @@ class Template
             $trackbody = '';
             if (!empty($order_items[0]['trackings'])) {
                 $tbodyoptions = [
-                    'trackins' => $order_items[0]['trackings'],
+                    'trackings' => $order_items[0]['trackings'],
                 ];
                 if ($edit==1) {
-                    $trackbody = $this->load->view('leadorderdetails/tracking_data_edit', $tbodyoptions, TRUE);
+                    $trackbody = $this->CI->load->view('leadorderdetails/tracking_data_edit', $tbodyoptions, TRUE);
                 } else {
-                    $trackbody = $this->load->view('leadorderdetails/tracking_data_view', $tbodyoptions, TRUE);
+                    $trackbody = $this->CI->load->view('leadorderdetails/tracking_data_view', $tbodyoptions, TRUE);
                 }
-
             }
+            $shipoptions['trackbody'] = $trackbody;
             $tracktotal = 0;
             if (!empty($order_items[0]['trackings'])) {
                 foreach ($order_items[0]['trackings'] as $tracking) {

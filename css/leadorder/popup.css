@@ -5619,5 +5619,48 @@ input.ticket_date {
 .trackingdatabody {
     background: #ebebeb;
     height: 102px;
+    padding: 5px 16px 7px 16px;
     width: 100%;
+}
+.trackingdatabody .datarow > div {
+    float: left;
+    height: 17px;
+    line-height: 17px;
+    font-size: 12px;
+    color: #000000;
+}
+.trackingdatabody .trackqty {
+    width: 35px;
+    padding-right: 7px;
+    text-align: right;
+    border-right: 1px solid #000000;
+}
+.trackingdatabody .trackdate {
+    width: 70px;
+    text-align: center;
+    border-right: 1px solid #000000;
+}
+.trackingdatabody .trackservice {
+    width: 62px;
+    padding-left: 7px;
+    border-right: 1px solid #000000;
+}
+.trackingdatabody .trackcode {
+    width: 140px;
+    padding-left: 7px;
+    color: #0000FF;
+}
+.trackingdatabody .trackcodecopy {
+    background: #000000;
+    color: #ffffff!important;
+    cursor: pointer;
+    float: left;
+    font-size: 11px;
+    height: 17px;
+    /*left: -17px;
+    margin-right: -6px;
+    position: relative;*/
+    text-align: center;
+    /* top: 6px; */
+    width: 17px;
 }

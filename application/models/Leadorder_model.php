@@ -10992,6 +10992,7 @@ Class Leadorder_model extends My_Model {
     {
         $this->db->select('*')->from('ts_order_trackings')->where('order_item_id', $order_item_id);
         $res = $this->db->get()->result_array();
+        return $res;
     }
 }
 /* End of file leadorder_model.php */
