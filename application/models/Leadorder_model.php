@@ -6299,6 +6299,8 @@ Class Leadorder_model extends My_Model {
                 $numdet++;
             }
             $newitem['imprint_details']=$impr_details;
+            // Get tracking packages
+            $newitem['trackings'] = $this->_get_itemorder_trackings($row['order_item_id']);
             $out[]=$newitem;
         }
         return $out;
@@ -10985,9 +10987,10 @@ Class Leadorder_model extends My_Model {
         return $this->db->get()->result_array();
     }
 
-    public function get_order_trackinfo($order_id)
+    private function _get_itemorder_trackings($order_item_id)
     {
-
+        $this->db->select('*')->from('ts_order_trackings')->where('order_item_id', $order_item_id);
+        $res = $this->db->get()->result_array();
     }
 }
 /* End of file leadorder_model.php */
