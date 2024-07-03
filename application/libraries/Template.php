@@ -357,6 +357,7 @@ class Template
 
             $content='';
             $subtotal=0;
+            
             foreach ($order_items as $irow) {
                 $imprints=$irow['imprints'];
                 if ($orddata['order_blank']==1 && count($imprints)==1) {

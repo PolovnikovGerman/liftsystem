@@ -10532,6 +10532,7 @@ Class Leadorder_model extends My_Model {
         $newitem['items'][] = $color;
         $newitem['imprints'] = [];
         $newitem['imprint_details'] = [];
+        $newitem['trackings'] = [];
         $items[] = $newitem;
         return $items;
     }
