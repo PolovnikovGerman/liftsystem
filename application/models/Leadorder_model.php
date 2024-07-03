@@ -628,7 +628,7 @@ Class Leadorder_model extends My_Model {
             // Get Charge Info
             $out['charges']=$this->get_order_charges($order_id);
             // Get Shipping packages
-            $out['trackings'] = $this->get_order_trackinfo($order_id);
+            // $out['trackings'] = $this->get_order_trackinfo($order_id);
         } else {
             $out['contacts']=$out['order_items']=$out['shipping']=$out['order_billing']=$out['charges']=array();
             $out['shipping_address']=$this->get_orderold_shippaddress($res);
@@ -10987,7 +10987,7 @@ Class Leadorder_model extends My_Model {
 
     public function get_order_trackinfo($order_id)
     {
-        
+
     }
 }
 /* End of file leadorder_model.php */
