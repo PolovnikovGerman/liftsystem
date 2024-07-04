@@ -3880,12 +3880,12 @@ class Test extends CI_Controller
             'income' => 'AJ01930',
             'new_price' => 0.410,
         ];
-        $changes[] = [
-            'item_num' => 'i021',
-            'color' => 'Grass Green',
-            'income' => 'AJ02075',
-            'new_price' => 0.460,
-        ];
+//        $changes[] = [
+//            'item_num' => 'i021',
+//            'color' => 'Grass Green',
+//            'income' => 'AJ02075',
+//            'new_price' => 0.460,
+//        ];
         $changes[] = [
             'item_num' => 'i021',
             'color' => 'Red',
@@ -3912,10 +3912,7 @@ class Test extends CI_Controller
                 echo 'QRY '.$this->db->last_query().PHP_EOL;
                 // die();
             } else {
-                //echo 'Color '.$change['color'].' QTY '.$candidat['income_qty'].' Price '.$candidat['income_price'].' New Price '.$change['new_price'].PHP_EOL;
-                if (floatval($change['new_price'])==floatval($candidat['income_price'])) {
-                    echo 'Color '.$change['color'].' QTY '.$candidat['income_qty'].' Price '.$candidat['income_price'].' New Price '.$change['new_price'].PHP_EOL;
-                }
+                echo 'Color '.$change['color'].' QTY '.$candidat['income_qty'].' Rest '.$candidat['income_expense'].' Price '.$candidat['income_price'].' New Price '.$change['new_price'].PHP_EOL;
             }
         }
     }
