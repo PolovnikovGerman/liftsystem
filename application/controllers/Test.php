@@ -3899,7 +3899,7 @@ class Test extends CI_Controller
             'new_price' => 0.460,
         ];
         foreach ($changes as $change) {
-            $this->db->select('i.income_price, i.income_qty, i.income_expense, c.inventory_color_id, im.inventory_item_id');
+            $this->db->select('i.income_price, i.income_qty, i.income_expense, c.inventory_color_id, i.inventory_income_id, im.inventory_item_id');
             $this->db->from('ts_inventory_incomes i');
             $this->db->join('ts_inventory_colors c','c.inventory_color_id=i.inventory_color_id');
             $this->db->join('ts_inventory_items im','im.inventory_item_id=c.inventory_item_id');
@@ -3912,7 +3912,7 @@ class Test extends CI_Controller
                 echo 'QRY '.$this->db->last_query().PHP_EOL;
                 // die();
             } else {
-                echo 'Color '.$change['color'].' QTY '.$candidat['income_qty'].' Rest '.$candidat['income_expense'].' Price '.$candidat['income_price'].' New Price '.$change['new_price'].PHP_EOL;
+                echo 'Color '.$change['color'].' QTY '.$candidat['income_qty'].' Rest '.$candidat['income_expense'].' Price '.$candidat['income_price'].' New Price '.$change['new_price'].' Check '.$candidat['inventory_income_id'].PHP_EOL;
             }
         }
     }
