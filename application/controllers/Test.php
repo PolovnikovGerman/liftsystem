@@ -3905,7 +3905,7 @@ class Test extends CI_Controller
             $this->db->join('ts_inventory_items im','im.inventory_item_id=c.inventory_item_id');
             $this->db->where('im.item_num', $change['item_num']);
             $this->db->where('c.color', $change['color']);
-            $this->db->where('i.income_record','AJ01930');
+            $this->db->where('i.income_record', $change['income']);
             $candidat = $this->db->get()->row_array();
             if (ifset($candidat,'inventory_color_id',0)==0) {
                 echo 'Color '.$change['color'].' Income '.$change['income'].' not found'.PHP_EOL;
