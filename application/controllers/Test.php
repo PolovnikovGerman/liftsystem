@@ -3917,6 +3917,7 @@ class Test extends CI_Controller
                 $amnts = $this->db->get()->result_array();
                 foreach ($amnts as $amnt) {
                     $this->db->select('oa.amount_id, oa.price, oa.shipped, oa.misprint, oa.kepted, i.income_price, oi.qty, i.inventory_income_id');
+                    $this->db->select('oa.orangeplate, oa.blueplate, oa.orangeplate_price, oa.blueplate_price, oa.beigeplate, oa.beigeplate_price, oa.extracost');
                     $this->db->from('ts_order_amounts oa');
                     $this->db->join('ts_order_inventory oi','oi.amount_id=oa.amount_id');
                     $this->db->join('ts_inventory_incomes i','i.inventory_income_id=oi.inventory_income_id');
@@ -3933,8 +3934,14 @@ class Test extends CI_Controller
                         $sumqty+=$amtdata['shipped']+$amtdata['misprint']+$amtdata['kepted'];
                         $sumtotal+=$price * ($amtdata['shipped']+$amtdata['misprint']+$amtdata['kepted']);
                     }
-                    $amtprice = round($sumtotal/$sumqty,3);
-                    echo 'Amount '.$amtdata['amount_id'].' New Price '.$amtprice.PHP_EOL;
+                    $amtprice = round($sumtotal/$sumqty,3)+$amtdata['extracost'];
+                    echo 'Amount '.$amtdata['amount_id'].'Old Price '.$amtdata['price'].' New Price '.$amtprice.PHP_EOL;
+                    $amounttotal = $sumtotal+($amtdata['extracost']*$sumqty)+($amtdata['orangeplate']*$amtdata['orangeplate_price'])+($amtdata['blueplate']*$amtdata['blueplate_price'])+($amtdata['beigeplate']*$amtdata['beigeplate_price']);
+                    // Update Amount
+//                    $this->db->set('price', $amtprice);
+//                    $this->db->set('printshop_total', $sumtotal);
+//                    $this->db->set('amount_sum', $sumtotal);
+
                 }
 
             }
