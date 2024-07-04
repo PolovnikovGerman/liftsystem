@@ -3909,6 +3909,7 @@ class Test extends CI_Controller
             $candidat = $this->db->get()->row_array();
             if (ifset($candidat,'inventory_color_id',0)==0) {
                 echo 'Color '.$change['color'].' Income '.$change['income'].' not found'.PHP_EOL;
+                echo 'QRY '.$this->db->last_query().PHP_EOL;
                 // die();
             } else {
                 echo 'Color '.$change['color'].' QTY '.$candidat['income_qty'].' Price '.$candidat['income_price'].' New Price '.$change['new_price'].PHP_EOL;
