@@ -5621,7 +5621,7 @@ input.ticket_date {
 .trackingdatabody {
     background: #ebebeb;
     height: 102px;
-    padding: 5px 16px 7px 16px;
+    padding: 5px;
     width: 100%;
 }
 .trackingdatabody .datarow {
