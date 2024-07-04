@@ -255,10 +255,20 @@ class Template
                 'item' => $order_items[0]['item_name'],
                 'qty' => $order_items[0]['item_qty'],
             ];
+            $tracktotal = 0;
+            if (!empty($order_items[0]['trackings'])) {
+                foreach ($order_items[0]['trackings'] as $tracking) {
+                    $tracktotal+=$tracking['qty'];
+                }
+            }
+            $resttrack = $order_items[0]['item_qty'] - $tracktotal;
+            $shipoptions['remind'] = $resttrack;
+            $shipoptions['completed'] = ($resttrack > 0 ? 0 : 1);
             $trackbody = '';
             if (!empty($order_items[0]['trackings'])) {
                 $tbodyoptions = [
                     'trackings' => $order_items[0]['trackings'],
+                    'completed' => ($resttrack > 0 ? 0 : 1),
                 ];
                 if ($edit==1) {
                     $trackbody = $this->CI->load->view('leadorderdetails/tracking_data_edit', $tbodyoptions, TRUE);
@@ -267,13 +277,6 @@ class Template
                 }
             }
             $shipoptions['trackbody'] = $trackbody;
-            $tracktotal = 0;
-            if (!empty($order_items[0]['trackings'])) {
-                foreach ($order_items[0]['trackings'] as $tracking) {
-                    $tracktotal+=$tracking['qty'];
-                }
-            }
-            $shipoptions['remind'] = $order_items[0]['item_qty'] - $tracktotal;
             if ($edit==1) {
                 $trackcontent = $this->CI->load->view('leadorderdetails/tracking_edit', $shipoptions, TRUE);
             } else {

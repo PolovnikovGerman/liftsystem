@@ -1,5 +1,5 @@
 <?php foreach ($trackings as $tracking) { ?>
-    <div class="datarow">
+    <div class="trackdatarow <?=$completed==1 ? 'completed' : ''?>">
         <input type="hidden" class="trackcodehidden" data-track="<?=$tracking['tracking_id']?>" value="<?=$tracking['trackcode']?>"/>
         <div class="trackqty"><?=$tracking['qty']?></div>
         <div class="trackdate"><?=date('m/d/y', $tracking['trackdate'])?></div>
