@@ -3910,9 +3910,33 @@ class Test extends CI_Controller
             if (ifset($candidat,'inventory_color_id',0)==0) {
                 echo 'Color '.$change['color'].' Income '.$change['income'].' not found'.PHP_EOL;
                 echo 'QRY '.$this->db->last_query().PHP_EOL;
-                // die();
+                die();
             } else {
                 echo 'Color '.$change['color'].' QTY '.$candidat['income_qty'].' Rest '.$candidat['income_expense'].' Price '.$candidat['income_price'].' New Price '.$change['new_price'].' Check '.$candidat['inventory_income_id'].PHP_EOL;
+                $this->db->select('order_id, amount_id, qty')->from('ts_order_inventory')->where('inventory_income_id', $candidat['inventory_income_id']);
+                $amnts = $this->db->get()->result_array();
+                foreach ($amnts as $amnt) {
+                    $this->db->select('oa.amount_id, oa.price, oa.shipped, oa.misprint, oa.kepted, i.income_price, oi.qty, i.inventory_income_id');
+                    $this->db->from('ts_order_amounts oa');
+                    $this->db->join('ts_order_inventory oi','oi.amount_id=oa.amount_id');
+                    $this->db->join('ts_inventory_incomes i','i.inventory_income_id=oi.inventory_income_id');
+                    $this->db->where('oa.amount_id',$amnt['amount_id']);
+                    $amtdatas = $this->db->get()->result_array();
+                    $sumtotal = 0;
+                    $sumqty = 0;
+                    foreach ($amtdatas as $amtdata) {
+                        if ($amtdata['inventory_income_id']==$candidat['inventory_income_id']) {
+                            $price = $change['new_price'];
+                        } else {
+                            $price = $amtdata['price'];
+                        }
+                        $sumqty+=$amtdata['shipped']+$amtdata['misprint']+$amtdata['kepted'];
+                        $sumtotal+=$price * ($amtdata['shipped']+$amtdata['misprint']+$amtdata['kepted']);
+                    }
+                    $amtprice = round($sumtotal/$sumqty,3);
+                    echo 'New Price '.$amtprice.PHP_EOL;
+                }
+
             }
         }
     }
