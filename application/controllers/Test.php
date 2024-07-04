@@ -3870,4 +3870,48 @@ class Test extends CI_Controller
 
     }
 
+    public function change_incomeprices()
+    {
+        /* Array */
+        $changes = [];
+        $changes[] = [
+            'item_num' => 'i021',
+            'color' => 'Blue',
+            'income' => 'AJ01930',
+            'new_price' => 0.410,
+        ];
+        $changes[] = [
+            'item_num' => 'i021',
+            'color' => 'Grass Green',
+            'income' => 'AJ02075',
+            'new_price' => 0.460,
+        ];
+        $changes[] = [
+            'item_num' => 'i021',
+            'color' => 'Red',
+            'income' => 'AJ01933',
+            'new_price' => 0.460,
+        ];
+        $changes[] = [
+            'item_num' => 'i021',
+            'color' => 'Yellow',
+            'income' => 'AJ01932',
+            'new_price' => 0.460,
+        ];
+        foreach ($changes as $change) {
+            $this->db->select('i.income_price, i.income_qty, i.income_expense, c.inventory_color_id, im.inventory_item_id');
+            $this->db->from('ts_inventory_incomes i');
+            $this->db->join('ts_inventory_colors c','c.inventory_color_id=i.inventory_color_id');
+            $this->db->join('ts_inventory_items im','im.inventory_item_id=c.inventory_item_id');
+            $this->db->where('im.item_num', $change['item_num']);
+            $this->db->where('c.color', $change['color']);
+            $this->db->where('i.income_record','AJ01930');
+            $candidat = $this->db->get()->row_array();
+            if (ifset($candidat,'inventory_color_id',0)==0) {
+                echo 'Color '.$change['color'].' Income '.$change['income'].' not found'.PHP_EOL;
+                die();
+            }
+        }
+    }
+
 }
