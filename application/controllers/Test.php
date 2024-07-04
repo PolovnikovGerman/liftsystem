@@ -3934,7 +3934,7 @@ class Test extends CI_Controller
                         $sumtotal+=$price * ($amtdata['shipped']+$amtdata['misprint']+$amtdata['kepted']);
                     }
                     $amtprice = round($sumtotal/$sumqty,3);
-                    echo 'New Price '.$amtprice.PHP_EOL;
+                    echo 'Amount '.$amtdata['amount_id'].' New Price '.$amtprice.PHP_EOL;
                 }
 
             }
