@@ -3935,7 +3935,7 @@ class Test extends CI_Controller
                         $sumtotal+=$price * ($amtdata['shipped']+$amtdata['misprint']+$amtdata['kepted']);
                     }
                     $amtprice = round($sumtotal/$sumqty,3)+$amtdata['extracost'];
-                    echo 'Amount '.$amtdata['amount_id'].'Old Price '.$amtdata['price'].' New Price '.$amtprice.PHP_EOL;
+                    echo 'Amount '.$amtdata['amount_id'].' Old Price '.$amtdata['price'].' New Price '.$amtprice.PHP_EOL;
                     $amounttotal = $sumtotal+($amtdata['extracost']*$sumqty)+($amtdata['orangeplate']*$amtdata['orangeplate_price'])+($amtdata['blueplate']*$amtdata['blueplate_price'])+($amtdata['beigeplate']*$amtdata['beigeplate_price']);
                     // Update Amount
 //                    $this->db->set('price', $amtprice);
