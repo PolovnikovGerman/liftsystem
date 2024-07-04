@@ -2456,7 +2456,7 @@ input.artrepeat {
     display: none;
 }
 .shippingdataviewarea {
-    cursor: pointer;
+    /* cursor: pointer; */
     float: right!important;
     /* margin-left: 56px; */
     /* width: 166px; */
@@ -5613,6 +5613,12 @@ input.ticket_date {
     border-left: 1px solid #000000;
     border-right: 1px solid #000000;
     border-top: 1px solid #000000;;
+}
+/* Add button */
+.trackingdataheader .addnewtrack {
+    cursor: pointer;
+    font-size: 13px;
+    margin-left: 5px;
 }
 .trackingdatafooter {
     border-bottom-left-radius: 7px;

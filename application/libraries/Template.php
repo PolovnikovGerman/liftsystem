@@ -254,6 +254,7 @@ class Template
                 'shipdate' => $shipstatus['order_status'],
                 'item' => $order_items[0]['item_name'],
                 'qty' => $order_items[0]['item_qty'],
+                'order_item' => $order_items[0]['order_item_id'],
             ];
             $tracktotal = 0;
             if (!empty($order_items[0]['trackings'])) {
@@ -278,7 +279,11 @@ class Template
             }
             $shipoptions['trackbody'] = $trackbody;
             if ($edit==1) {
-                $trackcontent = $this->CI->load->view('leadorderdetails/tracking_edit', $shipoptions, TRUE);
+                if ($resttrack==0) {
+                    $trackcontent = $this->CI->load->view('leadorderdetails/tracking_view', $shipoptions, TRUE);
+                } else {
+                    $trackcontent = $this->CI->load->view('leadorderdetails/tracking_edit', $shipoptions, TRUE);
+                }
             } else {
                 $trackcontent = $this->CI->load->view('leadorderdetails/tracking_view', $shipoptions, TRUE);
             }
