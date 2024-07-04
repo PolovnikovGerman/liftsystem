@@ -5598,6 +5598,8 @@ input.ticket_date {
     height: 24px;
     line-height: 24px;
     color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 600;
     padding-left: 16px;
     width: 100%;
 }
@@ -5622,6 +5624,10 @@ input.ticket_date {
     padding: 5px 16px 7px 16px;
     width: 100%;
 }
+.trackingdatabody .datarow {
+    border: 1px solid #000000;
+    margin-bottom: 3px;
+}
 .trackingdatabody .datarow > div {
     float: left;
     height: 17px;
@@ -5630,8 +5636,8 @@ input.ticket_date {
     color: #000000;
 }
 .trackingdatabody .trackqty {
-    width: 35px;
-    padding-right: 7px;
+    width: 49px;
+    padding-right: 5px;
     text-align: right;
     border-right: 1px solid #000000;
 }
@@ -5646,9 +5652,9 @@ input.ticket_date {
     border-right: 1px solid #000000;
 }
 .trackingdatabody .trackcode {
-    width: 140px;
+    width: 130px;
     padding-left: 7px;
-    color: #0000FF;
+    color: #0000FF!important;
 }
 .trackingdatabody .trackcodecopy {
     background: #000000;
@@ -5657,10 +5663,14 @@ input.ticket_date {
     float: left;
     font-size: 11px;
     height: 17px;
-    /*left: -17px;
-    margin-right: -6px;
-    position: relative;*/
     text-align: center;
-    /* top: 6px; */
     width: 17px;
 }
+/* subtotal */
+/* font-size: 12px; color: #a1a1a1; */
+/* completed */
+/* background: #c59e51; */
+/* completed datarow */
+/* background: #f0d091; */
+/* footer - 100% FULFILLED*/
+/* font-size: 14px */
