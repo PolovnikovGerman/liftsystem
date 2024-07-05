@@ -3098,7 +3098,7 @@ class Leadquote_model extends MY_Model
         }
         $this->db->order_by('quote_number','desc');
         $lists = $this->db->get()->result_array();
-
+        log_message('error','QuoteList SQL '.$this->db->last_query());
         $out=[];
         foreach ($lists as $list) {
             if ($list['brand']=='SR') {
