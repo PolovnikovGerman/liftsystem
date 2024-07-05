@@ -3896,30 +3896,30 @@ class Test extends CI_Controller
     {
         /* Array */
         $changes = [];
-        $changes[] = [
-            'item_num' => 'i021',
-            'color' => 'Blue',
-            'income' => 'AJ01930',
-            'new_price' => 0.410,
-        ];
 //        $changes[] = [
 //            'item_num' => 'i021',
-//            'color' => 'Grass Green',
-//            'income' => 'AJ01931',
-//            'new_price' => 0.460,
+//            'color' => 'Blue',
+//            'income' => 'AJ01930',
+//            'new_price' => 0.410,
 //        ];
         $changes[] = [
             'item_num' => 'i021',
-            'color' => 'Red',
-            'income' => 'AJ01933',
+            'color' => 'Grass Green',
+            'income' => 'AJ01931',
             'new_price' => 0.460,
         ];
-        $changes[] = [
-            'item_num' => 'i021',
-            'color' => 'Yellow',
-            'income' => 'AJ01932',
-            'new_price' => 0.460,
-        ];
+//        $changes[] = [
+//            'item_num' => 'i021',
+//            'color' => 'Red',
+//            'income' => 'AJ01933',
+//            'new_price' => 0.460,
+//        ];
+//        $changes[] = [
+//            'item_num' => 'i021',
+//            'color' => 'Yellow',
+//            'income' => 'AJ01932',
+//            'new_price' => 0.460,
+//        ];
         foreach ($changes as $change) {
             $this->db->select('i.income_price, i.income_qty, i.income_expense, c.inventory_color_id, i.inventory_income_id, im.inventory_item_id');
             $this->db->from('ts_inventory_incomes i');
