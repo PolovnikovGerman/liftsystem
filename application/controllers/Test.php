@@ -3880,12 +3880,12 @@ class Test extends CI_Controller
             'income' => 'AJ01930',
             'new_price' => 0.410,
         ];
-//        $changes[] = [
-//            'item_num' => 'i021',
-//            'color' => 'Grass Green',
-//            'income' => 'AJ02075',
-//            'new_price' => 0.460,
-//        ];
+        $changes[] = [
+            'item_num' => 'i021',
+            'color' => 'Grass Green',
+            'income' => 'AJ01931',
+            'new_price' => 0.460,
+        ];
         $changes[] = [
             'item_num' => 'i021',
             'color' => 'Red',
