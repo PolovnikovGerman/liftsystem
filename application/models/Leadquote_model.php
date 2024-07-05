@@ -36,21 +36,18 @@ class Leadquote_model extends MY_Model
     // Get list of quotes, related with lead
     public function get_leadquotes($lead_id) {
         $this->db->select('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, sum(qc.item_qty) as item_qty');
-        $this->db->select('group_concat(distinct(qc.item_description)) as item_name, max(o.order_id) as orders');
+        $this->db->select('group_concat(distinct(qc.item_description)) as item_name');
         $this->db->from('ts_quotes q');
         $this->db->join('ts_quote_items i','i.quote_id=q.quote_id','left ');
         $this->db->join('ts_quote_itemcolors qc','qc.quote_item_id=i.quote_item_id','left');
-        $this->db->join('ts_leadquote_orders o','q.quote_id = o.quote_id','left');
         $this->db->where('q.lead_id', $lead_id);
         $this->db->group_by('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total');
         $lists = $this->db->get()->result_array();
         $out = [];
         foreach ($lists as $list) {
-            $orders = 0;
-            if (ifset($list, 'orders', 0) > 0) {
-                $orders = 1;
-            }
-            $list['orders'] = $orders;
+            $this->db->select('count(order_id) as orders')->from('ts_leadquote_orders')->where('quote_id', $list['quote_id']);
+            $orddat = $this->db->get()->row_array();
+            $list['orders'] = $orddat['orders'];
             $out[] = $list;
         }
         return $out;
