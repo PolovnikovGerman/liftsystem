@@ -3073,7 +3073,7 @@ class Leadquote_model extends MY_Model
         $item_qry = $this->db->get_compiled_select();
         $this->db->reset_query();
 
-        $this->db->select('q.quote_id, q.lead_id, q.quote_date, q.brand, q.quote_number, q.quote_total, l.lead_company, l.lead_customer, u.user_name, u.user_initials, o.order_id');
+        $this->db->select('q.quote_id, q.lead_id, q.quote_date, q.brand, q.quote_number, q.quote_total, l.lead_company, l.lead_customer, u.user_name, u.user_initials, max(o.order_id) as order_id');
         $this->db->from('ts_quotes q');
         $this->db->join('users u','u.user_id=q.create_user');
         $this->db->join('ts_leads l','l.lead_id=q.lead_id');
@@ -3098,7 +3098,7 @@ class Leadquote_model extends MY_Model
         }
         $this->db->order_by('quote_number','desc');
         $lists = $this->db->get()->result_array();
-        log_message('error','QuoteList SQL '.$this->db->last_query());
+
         $out=[];
         foreach ($lists as $list) {
             if ($list['brand']=='SR') {
