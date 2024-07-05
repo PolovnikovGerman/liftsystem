@@ -10994,6 +10994,50 @@ Class Leadorder_model extends My_Model {
         $res = $this->db->get()->result_array();
         return $res;
     }
+
+    // Track code
+    public function newtrackcode($leadorder, $postdata, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => $this->error_message];
+        if (ifset($postdata,'order_item_id',0)!==0) {
+            // Search item
+            $out['msg'] = 'Order Item Not Found';
+            $found = 0;
+            $order_items = $leadorder['order_items'];
+            $itemidx = 0;
+            foreach ($order_items as $order_item) {
+                $tt = 1;
+                if ($order_item['order_item_id']==$postdata['order_item_id']) {
+                    $found = 1;
+                    break;
+                }
+                $itemidx++;
+            }
+            if ($found==1) {
+                $out['result'] = $this->success_result;
+                $trackings = $order_items[$itemidx]['trackings'];
+                $newidx = 0;
+                foreach ($trackings as $tracking) {
+                    if ($tracking['tracking_id'] < $newidx) {
+                        $newidx = $tracking['tracking_id'];
+                    }
+                }
+                $newidx = $newidx - 1;
+                $trackings[] = [
+                    'tracking_id' => $newidx,
+                    'qty' => 0,
+                    'trackdate' => time(),
+                    'trackservice' => 'UPS',
+                    'trackcode' => '',
+                ];
+                $order_items[$itemidx]['trackings'] = $trackings;
+                $leadorder['order_items'] = $order_items;
+                usersession($ordersession, $leadorder);
+                $out['trackings'] = $trackings;
+            }
+        }
+        return $out;
+    }
 }
 /* End of file leadorder_model.php */
 /* Location: ./application/models/leadorder_model.php */

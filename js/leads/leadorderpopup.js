@@ -5662,5 +5662,19 @@ function init_unlockcontent(paymentid) {
 }
 
 function init_tracking_manage() {
-
+    $(".addnewtrack").unbind('click').click(function(){
+        var orderitem = $(this).data('orderitem');
+        var params = new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'order_item_id', value: $(this).data('orderitem')});
+        var url = '/leadorder/newtrackcode';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".trackingdatabody[data-orderitem='"+orderitem+"']").empty().html(response.data.content);
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
 }
