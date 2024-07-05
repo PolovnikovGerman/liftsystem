@@ -3913,7 +3913,9 @@ class Test extends CI_Controller
                 die();
             } else {
                 echo 'Color '.$change['color'].' QTY '.$candidat['income_qty'].' Rest '.$candidat['income_expense'].' Price '.$candidat['income_price'].' New Price '.$change['new_price'].' Check '.$candidat['inventory_income_id'].PHP_EOL;
-                $this->db->select('order_id, amount_id, qty')->from('ts_order_inventory')->where('inventory_income_id', $candidat['inventory_income_id']);
+                $this->db->select('oi.order_id, oi.amount_id, oi.qty, o.order_cog, o.profit, o.revenue, o.profit_perc');
+                $this->db->from('ts_order_inventory oi');
+                $this->db->where('oi.inventory_income_id', $candidat['inventory_income_id']);
                 $amnts = $this->db->get()->result_array();
                 foreach ($amnts as $amnt) {
                     $this->db->select('oa.amount_id, oa.price, oa.shipped, oa.misprint, oa.kepted, i.income_price, oi.qty, i.inventory_income_id');
@@ -3938,12 +3940,26 @@ class Test extends CI_Controller
                     echo 'Amount '.$amtdata['amount_id'].' Old Price '.$amtdata['price'].' New Price '.$amtprice.PHP_EOL;
                     $amounttotal = $sumtotal+($amtdata['extracost']*$sumqty)+($amtdata['orangeplate']*$amtdata['orangeplate_price'])+($amtdata['blueplate']*$amtdata['blueplate_price'])+($amtdata['beigeplate']*$amtdata['beigeplate_price']);
                     // Update Amount
+//                    $this->db->where('amount_id', $amnt['amount_id']);
 //                    $this->db->set('price', $amtprice);
-//                    $this->db->set('printshop_total', $sumtotal);
-//                    $this->db->set('amount_sum', $sumtotal);
-
+//                    $this->db->set('printshop_total', $amounttotal);
+//                    $this->db->set('amount_sum', $amounttotal);
+//                    $this->db->update('ts_order_amounts');
+//                    // Update Order
+//                    // New cog, profit, profit percent
+//                    $diffcog = $amounttotal - $amnt['order_cog'];
+//                    $newprofit = $amnt['profit'] - $diffcog;
+//                    $newprofit_perc = round($newprofit/$amnt['revenue']*100,1);
+//                    $this->db->where('order_id', $amnt['order_id']);
+//                    $this->db->set('order_cog', $amounttotal);
+//                    $this->db->set('profit', $newprofit);
+//                    $this->db->set('profit_perc', $newprofit_perc);
+//                    $this->db->update('ts_orders');
                 }
-
+                // Update income
+//                $this->db->where('inventory_income_id', $candidat['inventory_income_id']);
+//                $this->db->set('income_price', $change['new_price']);
+//                $this->db->update('ts_inventory_incomes');
             }
         }
     }
