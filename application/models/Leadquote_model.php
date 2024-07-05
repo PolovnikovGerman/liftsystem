@@ -3073,10 +3073,11 @@ class Leadquote_model extends MY_Model
         $item_qry = $this->db->get_compiled_select();
         $this->db->reset_query();
 
-        $this->db->select('q.quote_id, q.lead_id, q.quote_date, q.brand, q.quote_number, q.quote_total, l.lead_company, l.lead_customer, u.user_name, u.user_initials');
+        $this->db->select('q.quote_id, q.lead_id, q.quote_date, q.brand, q.quote_number, q.quote_total, l.lead_company, l.lead_customer, u.user_name, u.user_initials, o.order_id');
         $this->db->from('ts_quotes q');
         $this->db->join('users u','u.user_id=q.create_user');
         $this->db->join('ts_leads l','l.lead_id=q.lead_id');
+        $this->db->join('ts_leadquote_orders o','q.quote_id = o.quote_id','left');
         $this->db->join("({$item_qry}) qitem",'qitem.quote_id=q.quote_id');
         if (ifset($options,'brand', 'ALL')!=='ALL') {
             if ($options['brand']=='SR') {
@@ -3106,19 +3107,28 @@ class Leadquote_model extends MY_Model
                 $qnumber = 'QB-'.str_pad($list['quote_number'],5,'0',STR_PAD_LEFT);
             }
             $list['qnumber'] = $qnumber;
+            $this->db->select('quote_item_id')->from('ts_quote_items')->where('quote_id', $list['quote_id']);
+            $items = $this->db->get()->result_array();
+            $quote_items = [];
+            foreach ($items as $item) {
+                array_push($quote_items, $item['quote_item_id']);
+            }
             $this->db->select('sum(qc.item_qty) as item_qty, group_concat(distinct(qc.item_description)) as item_name, count(qc.quote_itemcolor_id) as cnt');
-            $this->db->select('count(o.order_id) as orders');
-            $this->db->from('ts_quote_items qi');
-            $this->db->join('ts_quote_itemcolors qc','qc.quote_item_id=qi.quote_item_id');
-            $this->db->join('ts_leadquote_orders o','qi.quote_id = o.quote_id','left');
-            $this->db->where('qi.quote_id', $list['quote_id']);
+            // $this->db->select('count(o.order_id) as orders');
+            // $this->db->from('ts_quote_items qi');
+            $this->db->from('ts_quote_itemcolors qc');
+            // $this->db->join('ts_leadquote_orders o','qi.quote_id = o.quote_id','left');
+            $this->db->where_in('qc.quote_item_id', $quote_items);
             $itemres = $this->db->get()->row_array();
             $list['item_name'] = $list['item_qty'] = '';
             $list['orders'] = 0;
+            if (ifset($list,'order_id', 0) > 0) {
+                $list['orders'] = 1;
+            }
             if ($itemres['cnt'] > 0) {
                 $list['item_name'] = $itemres['item_name'];
                 $list['item_qty'] = $itemres['item_qty'];
-                $list['orders'] = $itemres['orders'];
+                // $list['orders'] = $itemres['orders'];
             }
             $list['customer'] = '';
             // q.shipping_company, q.shipping_contact, q.billing_company, q.billing_contact
