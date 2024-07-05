@@ -3915,6 +3915,7 @@ class Test extends CI_Controller
                 echo 'Color '.$change['color'].' QTY '.$candidat['income_qty'].' Rest '.$candidat['income_expense'].' Price '.$candidat['income_price'].' New Price '.$change['new_price'].' Check '.$candidat['inventory_income_id'].PHP_EOL;
                 $this->db->select('oi.order_id, oi.amount_id, oi.qty, o.order_cog, o.profit, o.revenue, o.profit_perc');
                 $this->db->from('ts_order_inventory oi');
+                $this->db->join('ts_orders o','oi.order_id=o.order_id');
                 $this->db->where('oi.inventory_income_id', $candidat['inventory_income_id']);
                 $amnts = $this->db->get()->result_array();
                 foreach ($amnts as $amnt) {
