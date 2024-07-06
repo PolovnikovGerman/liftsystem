@@ -3264,9 +3264,9 @@ span.orderconfirm {
 .shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow > .trackcodeinptarea {
     width: 169px;
 }
-input.trackcodeinpt {
+/*input.trackcodeinpt {
     width: 160px;
-}
+}*/
 .shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow > .edit {
     width: 15px;
 }
@@ -5659,6 +5659,9 @@ input.ticket_date {
     clear: both;
     float: left;
 }
+.trackingdatabody .trackdatarow.editmode {
+    border: none!important;
+}
 .trackingdatabody .trackdatarow.completed {
     background: #f0d091;
 }
@@ -5675,15 +5678,24 @@ input.ticket_date {
     text-align: right;
     border-right: 1px solid #000000;
 }
+.trackingdatabody .trackqty.editmode {
+    border-right: none;
+}
 .trackingdatabody .trackdate {
     width: 70px;
     text-align: center;
     border-right: 1px solid #000000;
 }
+.trackingdatabody .trackdate.editmode {
+    border-right: none;
+}
 .trackingdatabody .trackservice {
     width: 62px;
     padding-left: 7px;
     border-right: 1px solid #000000;
+}
+.trackingdatabody .trackservice.editmode {
+    border-right: none;
 }
 .trackingdatabody .trackcode {
     width: 142px;
@@ -5700,11 +5712,30 @@ input.ticket_date {
     text-align: center;
     width: 17px;
 }
-/* subtotal */
-/* font-size: 12px; color: #a1a1a1; */
-/* completed */
-/* background: #c59e51; */
-/* completed datarow */
-/* background: #f0d091; */
-/* footer - 100% FULFILLED*/
-/* font-size: 14px */
+.trackingdatabody .trackcoderemove {
+    background: #000000;
+    color: #ffffff!important;
+    cursor: pointer;
+    float: left;
+    font-size: 11px;
+    height: 17px;
+    text-align: center;
+    width: 17px;
+    margin-left: 3px;
+}
+.trackingdatabody input, .trackingdatabody select {
+    height: 17px;
+    border: 1px solid #4d4d4d;
+}
+.trackqtyinpt {
+    width: 46px;
+}
+.trackdateinpt {
+    width: 68px;
+}
+.trackserviceinpt {
+    width: 60px;
+}
+.trackcodeinpt {
+    width: 133px;
+}

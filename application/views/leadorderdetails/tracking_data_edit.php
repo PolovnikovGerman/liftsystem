@@ -1,13 +1,13 @@
 <?php foreach ($trackings as $tracking) { ?>
-    <div class="trackdatarow" data-track="<?=$tracking['tracking_id']?>">
+    <div class="trackdatarow editmode" data-track="<?=$tracking['tracking_id']?>">
         <input type="hidden" class="trackcodehidden" data-track="<?=$tracking['tracking_id']?>" value="<?=$tracking['trackcode']?>"/>
-        <div class="trackqty">
+        <div class="trackqty editmode">
             <input type="text" class="trackqtyinpt" data-track="<?=$tracking['tracking_id']?>" value="<?=$tracking['qty']?>"/>
         </div>
-        <div class="trackdate">
+        <div class="trackdate editmode">
             <input type="text" class="trackdateinpt" data-track="<?=$tracking['tracking_id']?>" value="<?=date('m/d/y', $tracking['trackdate'])?>"/>
         </div>
-        <div class="trackservice">
+        <div class="trackservice editmode">
             <select class="trackserviceinpt" data-track="<?=$tracking['tracking_id']?>">
                 <option value=""></option>
                 <option value="UPS" <?=$tracking['trackservice']=='UPS' ? 'selected="selected"' : ''?>>UPS</option>
@@ -20,13 +20,13 @@
                 <option value="Other" <?=$tracking['trackservice']=='Other' ? 'selected="selected"' : ''?>>Other</option>
             </select>
         </div>
-        <div class="trackcode">
+        <div class="trackcode editmode">
             <input type="text" class="trackcodeinpt" data-track="<?=$tracking['tracking_id']?>" value="<?=$tracking['trackcode']?>"/>
         </div>
         <div class="trackcodecopy" data-track="<?=$tracking['tracking_id']?>">
             <i class="fa fa-copy"></i>
         </div>
-        <div class="traccoderemove" data-track="<?=$tracking['tracking_id']?>">
+        <div class="trackcoderemove" data-track="<?=$tracking['tracking_id']?>">
             <i class="fa fa-trash-o"></i>
         </div>
     </div>

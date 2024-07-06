@@ -11006,7 +11006,6 @@ Class Leadorder_model extends My_Model {
             $order_items = $leadorder['order_items'];
             $itemidx = 0;
             foreach ($order_items as $order_item) {
-                $tt = 1;
                 if ($order_item['order_item_id']==$postdata['order_item_id']) {
                     $found = 1;
                     break;
