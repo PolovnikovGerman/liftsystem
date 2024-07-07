@@ -2958,6 +2958,12 @@ function init_leadorder_shipping() {
                 if (parseInt(response.data.cntshipadrr)==1) {
                     $("#shipingcompileaddress").val(response.data.addresscopy);
                 }
+                // Tracking code
+                if (parseInt(response.data.trackcount)==1) {
+                    $(".trackingdatabody[data-orderitem='"+response.data.order_item+"']").empty().html(response.data.trackbody);
+                } else {
+                    // Multi Orders Items
+                }
                 $("#loader").hide();
                 if (response.data.warning==1) {
                     // alert(response.data.shipwarn);

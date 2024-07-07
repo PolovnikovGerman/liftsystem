@@ -2974,6 +2974,29 @@ Class Leadorder_model extends My_Model {
                     $shiptotal=$this->_leadorder_shipcost($shipaddr);
                     $out['shipping']=$shiptotal;
                     $order['shipping']=$shiptotal;
+                    // Check and add Tracking Codes
+                    $itemidx = 0;
+                    foreach ($items as $item) {
+                        $trackings = $item['trackings'];
+                        if (count($trackings)==0) {
+                            $newtrackidx = -1;
+                            if (isset($shipping['shipdate'])) {
+                                $trackdate = $shipping['shipdate'];
+                            } else {
+                                $trackdate = time();
+                            }
+                            $trackings[] = [
+                                'tracking_id' => $newtrackidx,
+                                'qty' => 0,
+                                'trackdate' => $trackdate,
+                                'trackservice' => 'UPS',
+                                'trackcode' => '',
+                            ];
+                            $items[$itemidx]['trackings'] = $trackings;
+                        }
+                        $itemidx++;
+                    }
+                    $leadorder['order_items'] = $items;
                 }
             }
         } elseif ($fldname=='tax_exempt') {

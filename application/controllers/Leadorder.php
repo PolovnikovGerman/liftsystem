@@ -2996,6 +2996,16 @@ class Leadorder extends MY_Controller
                         $mdata['total_due']=$this->load->view('leadorderdetails/totaldue_data_view', $dueoptions, TRUE);
                         $mdata['tax']=MoneyOutput($order['tax']);
                         $mdata['profit_content']=$this->_profit_data_view($order);
+                        $order_items = $leadorder['order_items'];
+                        if (count($order_items)==1) {
+                            $mdata['trackcount'] = 1;
+                            $options = [
+                                'trackings' => $order_items[0]['trackings'],
+                                'completed' => 0,
+                            ];
+                            $mdata['trackbody'] = $this->load->view('leadorderdetails/tracking_data_edit', $options, TRUE);
+                            $mdata['order_item'] = $order_items[0]['order_item_id'];
+                        }
                         if ($fldname=='country_id') {
                             if (count($res['states'])==0) {
                                 $mdata['stateview']='&nbsp;';
