@@ -945,6 +945,11 @@ function init_onlineleadorder_edit() {
     init_leadorder_billing();
     init_leadorder_charges();
     init_orderbottom_content(1);
+    // Date picker
+    $("input.trackdateinpt").datepicker({
+        autoclose: true,
+        todayHighlight: true
+    });
     init_tracking_manage();
 }
 
@@ -5677,6 +5682,7 @@ function init_tracking_manage() {
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $(".trackingdatabody[data-orderitem='"+orderitem+"']").empty().html(response.data.content);
+                $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
             } else {
                 show_error(response);
@@ -5696,12 +5702,33 @@ function init_tracking_manage() {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $(".nontracked[data-orderitem='"+orderitem+"']").empty().html(response.data.rest+' Remains');
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
             } else {
                 $(".trackqtyinpt[data-orderitem='"+orderitem+"'][data-track='"+tracking+"']").val(response.data.oldval);
                 show_error(response);
             }
         },'json');
     });
+    $(".trackdateinpt").unbind('change').change(function (){
+        var orderitem = $(this).data('orderitem');
+        var tracking = $(this).data('track');
+        var params = new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'order_item_id', value: orderitem});
+        params.push({name: 'tracking', value: tracking});
+        params.push({name: 'fldname', value: 'trackservice'});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/leadorder/updatetrackinfo';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
     $(".trackserviceinpt").unbind('change').change(function (){
         var orderitem = $(this).data('orderitem');
         var tracking = $(this).data('track');
@@ -5714,6 +5741,8 @@ function init_tracking_manage() {
         var url = '/leadorder/updatetrackinfo';
         $.post(url, params, function (response){
             if (response.errors=='') {
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
             } else {
                 show_error(response);
             }
@@ -5731,9 +5760,30 @@ function init_tracking_manage() {
         var url = '/leadorder/updatetrackinfo';
         $.post(url, params, function (response){
             if (response.errors=='') {
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
             } else {
                 show_error(response);
             }
         },'json');
+    });
+    $(".trackcoderemove").unbind('click').click(function(){
+        if (confirm('Delete Track #?')==true) {
+            var orderitem = $(this).data('orderitem');
+            var tracking = $(this).data('track');
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'order_item_id', value: orderitem});
+            params.push({name: 'tracking', value: tracking});
+            var url = '/leadorder/deletetrackinfo';
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $("input#loctimeout").val(response.data.loctime);
+                    init_onlineleadorder_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
     });
 }

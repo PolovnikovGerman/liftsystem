@@ -6306,4 +6306,23 @@ class Leadorder extends MY_Controller
         }
         show_404();
     }
+
+    public function deletetrackinfo()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->deletetrackinfo($leadorder, $postdata, $ordersession);
+                $error = $res['msg'];
+
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }

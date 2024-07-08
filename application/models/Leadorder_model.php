@@ -11140,6 +11140,43 @@ Class Leadorder_model extends My_Model {
         }
         return $out;
     }
+
+    public function deletetrackinfo($leadorder, $postdata, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => $this->error_message];
+        $order_item_id = ifset($postdata,'order_item_id',0);
+        $tracking_id = ifset($postdata, 'tracking',0);
+        if ($order_item_id!==0 && $tracking_id!==0) {
+            $out['msg'] = 'Order Item Not Found';
+            $found = 0;
+            $order_items = $leadorder['order_items'];
+            $itemidx = 0;
+            foreach ($order_items as $order_item) {
+                if ($order_item['order_item_id']==$order_item_id) {
+                    $found = 1;
+                    break;
+                }
+                $itemidx++;
+            }
+            if ($found == 1) {
+                $trackings = $order_items[$itemidx]['trackings'];
+                $found = 0;
+                $out['msg'] = 'Tracking Info not found';
+                $trackidx = 0;
+                foreach ($trackings as $tracking) {
+                    if ($tracking['tracking_id']==$tracking_id) {
+                        $found = 1;
+                        break;
+                    }
+                    $trackidx++;
+                }
+                if ($found==1) {
+                    
+                }
+            }
+        }
+        return $out;
+    }
 }
 /* End of file leadorder_model.php */
 /* Location: ./application/models/leadorder_model.php */
