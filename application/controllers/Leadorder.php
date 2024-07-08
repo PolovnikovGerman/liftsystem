@@ -6318,7 +6318,10 @@ class Leadorder extends MY_Controller
             if (!empty($leadorder)) {
                 $res = $this->leadorder_model->deletetrackinfo($leadorder, $postdata, $ordersession);
                 $error = $res['msg'];
-
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    
+                }
             }
             $mdata['loctime'] = $this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);

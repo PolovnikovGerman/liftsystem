@@ -5747,6 +5747,10 @@ Class Leadorder_model extends My_Model {
                     $this->db->where('order_shipaddr_id', $row['id']);
                     $this->db->delete('ts_order_shipaddres');
                     break;
+                case 'trackings':
+                    $this->db->where('tracking_id', $row['id']);
+                    $this->db->delete('ts_order_trackings');
+                    break;
             }
         }
         return TRUE;
@@ -11162,16 +11166,30 @@ Class Leadorder_model extends My_Model {
                 $trackings = $order_items[$itemidx]['trackings'];
                 $found = 0;
                 $out['msg'] = 'Tracking Info not found';
-                $trackidx = 0;
+                $total = 0;
+                $newtracks = [];
+                $delrecords=$leadorder['delrecords'];
                 foreach ($trackings as $tracking) {
                     if ($tracking['tracking_id']==$tracking_id) {
                         $found = 1;
-                        break;
+                        if ($tracking['tracking_id']>0) {
+                            $delrecords[] = [
+                                'id' => $tracking['tracking_id'],
+                                'entity' => 'trackings',
+                            ];
+                        }
+                    } else {
+                        $newtracks[] = $tracking;
+                        $total+=$tracking['qty'];
                     }
-                    $trackidx++;
                 }
                 if ($found==1) {
-                    
+                    // Save leadorder
+                    $leadorder['delrecords'] = $delrecords;
+                    $order_items[$itemidx]['trackings'] = $newtracks;
+                    usersession($ordersession, $leadorder);
+                    $out['rest'] = $order_items[$itemidx]['item_qty'] - $total;
+                    $out['result'] = $this->success_result;
                 }
             }
         }
