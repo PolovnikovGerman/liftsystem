@@ -3002,6 +3002,7 @@ class Leadorder extends MY_Controller
                             $options = [
                                 'trackings' => $order_items[0]['trackings'],
                                 'completed' => 0,
+                                'order_item' => $order_items[0]['order_item_id'],
                             ];
                             $mdata['trackbody'] = $this->load->view('leadorderdetails/tracking_data_edit', $options, TRUE);
                             $mdata['order_item'] = $order_items[0]['order_item_id'];
@@ -6268,8 +6269,34 @@ class Leadorder extends MY_Controller
                     $options = [
                         'trackings' => $res['trackings'],
                         'completed' => 0,
+                        'order_item' => $postdata['order_item_id'],
                     ];
                     $mdata['content'] = $this->load->view('leadorderdetails/tracking_data_edit', $options, TRUE);
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function updatetrackinfo()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->updatetrackinfo($leadorder, $postdata, $ordersession);
+                $error = $res['msg'];
+                if (isset($res['oldval'])) {
+                    $mdata['oldval'] = $res['oldval'];
+                }
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['rest'] = $res['rest'];
                 }
             }
             $mdata['loctime'] = $this->_leadorder_locktime();

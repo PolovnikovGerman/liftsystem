@@ -270,6 +270,7 @@ class Template
                 $tbodyoptions = [
                     'trackings' => $order_items[0]['trackings'],
                     'completed' => ($resttrack > 0 ? 0 : 1),
+                    'order_item' => $order_items[0]['order_item_id'],
                 ];
                 if ($edit==1) {
                     $trackbody = $this->CI->load->view('leadorderdetails/tracking_data_edit', $tbodyoptions, TRUE);

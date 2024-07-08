@@ -5455,6 +5455,24 @@ Class Leadorder_model extends My_Model {
                 $detidx++;
                 $numpp++;
             }
+            // Tracking codes
+            $trackings = $row['trackings'];
+            foreach ($trackings as $tracking) {
+                $this->db->set('updated_by', $user_id);
+                $this->db->set('order_item_id', $order_item_id);
+                $this->db->set('qty', intval($tracking['qty']));
+                $this->db->set('trackdate', $tracking['trackdate']);
+                $this->db->set('trackservice', $tracking['trackservice']);
+                $this->db->set('trackcode', $tracking['trackcode']);
+                if ($tracking['tracking_id']>0) {
+                    $this->db->where('tracking_id', $tracking['tracking_id']);
+                    $this->db->update('ts_order_trackings');
+                } else {
+                    $this->db->set('created_at', date('Y-m-d H:i:s'));
+                    $this->db->set('created_by', $user_id);
+                    $this->db->insert('ts_order_trackings');
+                }
+            }
             $itmidx++;
         }
         $this->db->set('order_qty', $totalqty);
@@ -11056,6 +11074,61 @@ Class Leadorder_model extends My_Model {
                 $leadorder['order_items'] = $order_items;
                 usersession($ordersession, $leadorder);
                 $out['trackings'] = $trackings;
+            }
+        }
+        return $out;
+    }
+
+    public function updatetrackinfo($leadorder, $postdata, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => $this->error_message];
+        $order_item_id = ifset($postdata,'order_item_id',0);
+        $tracking_id = ifset($postdata, 'tracking',0);
+        $fldname = ifset($postdata, 'fldname', '');
+        if ($order_item_id!==0 && $tracking_id!==0 && !empty($fldname)) {
+            // Search item
+            $out['msg'] = 'Order Item Not Found';
+            $found = 0;
+            $order_items = $leadorder['order_items'];
+            $itemidx = 0;
+            foreach ($order_items as $order_item) {
+                if ($order_item['order_item_id']==$order_item_id) {
+                    $found = 1;
+                    break;
+                }
+                $itemidx++;
+            }
+            if ($found == 1) {
+                // Search track code
+                $trackings = $order_items[$itemidx]['trackings'];
+                $found = 0;
+                $out['msg'] = 'Tracking Info not found';
+                $trackidx = 0;
+                foreach ($trackings as $tracking) {
+                    if ($tracking['tracking_id']==$tracking_id) {
+                        $found = 1;
+                        break;
+                    }
+                    $trackidx++;
+                }
+                if ($found==1) {
+                    // Change
+                    if ($fldname=='qty') {
+                        $oldval = $trackings[$trackidx]['qty'];
+                        $trackings[$trackidx][$fldname] = $postdata['newval'];
+                        $total = 0;
+                        foreach ($trackings as $tracking) {
+                            $total+=intval($tracking['qty']);
+                        }
+                    } else {
+                        $trackings[$trackidx][$fldname] = $postdata['newval'];
+                    }
+
+                    $order_items[$itemidx]['trackings'] = $trackings;
+                    $leadorder['order_items'] = $order_items;
+                    usersession($ordersession, $leadorder);
+
+                }
             }
         }
         return $out;

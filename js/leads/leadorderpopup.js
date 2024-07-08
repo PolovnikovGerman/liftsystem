@@ -5682,5 +5682,22 @@ function init_tracking_manage() {
                 show_error(response);
             }
         },'json');
-    })
+    });
+    $(".trackqtyinpt").unbind('change').change(function (){
+        var orderitem = $(this).data('orderitem');
+        var tracking = $(this).data('track');
+        var params = new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'order_item_id', value: orderitem});
+        params.push({name: 'tracking', value: tracking});
+        params.push({name: 'fldname', value: 'qty'});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/leadorder/updatetrackinfo';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
