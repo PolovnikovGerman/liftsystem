@@ -11120,14 +11120,21 @@ Class Leadorder_model extends My_Model {
                         foreach ($trackings as $tracking) {
                             $total+=intval($tracking['qty']);
                         }
+                        if ($total > intval($order_items[$itemidx]['item_qty'])) {
+                            $out['oldval'] = $oldval;
+                            $trackings[$trackidx][$fldname] = $oldval;
+                            $out['msg'] = 'Incorrect Tracking Value';
+                        } else {
+                            $out['rest'] = $order_items[$itemidx]['item_qty'] - $total;
+                            $out['result'] = $this->success_result;
+                        }
                     } else {
                         $trackings[$trackidx][$fldname] = $postdata['newval'];
+                        $out['result'] = $this->success_result;
                     }
-
                     $order_items[$itemidx]['trackings'] = $trackings;
                     $leadorder['order_items'] = $order_items;
                     usersession($ordersession, $leadorder);
-
                 }
             }
         }

@@ -5695,6 +5695,42 @@ function init_tracking_manage() {
         var url = '/leadorder/updatetrackinfo';
         $.post(url, params, function (response){
             if (response.errors=='') {
+                $(".nontracked[data-orderitem='"+orderitem+"']").empty().html(response.data.rest+' Remains');
+            } else {
+                $(".trackqtyinpt[data-orderitem='"+orderitem+"'][data-track='"+tracking+"']").val(response.data.oldval);
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".trackserviceinpt").unbind('change').change(function (){
+        var orderitem = $(this).data('orderitem');
+        var tracking = $(this).data('track');
+        var params = new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'order_item_id', value: orderitem});
+        params.push({name: 'tracking', value: tracking});
+        params.push({name: 'fldname', value: 'trackservice'});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/leadorder/updatetrackinfo';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".trackcodeinpt").unbind('change').change(function (){
+        var orderitem = $(this).data('orderitem');
+        var tracking = $(this).data('track');
+        var params = new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'order_item_id', value: orderitem});
+        params.push({name: 'tracking', value: tracking});
+        params.push({name: 'fldname', value: 'trackcode'});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/leadorder/updatetrackinfo';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
             } else {
                 show_error(response);
             }

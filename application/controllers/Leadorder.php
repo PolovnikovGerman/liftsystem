@@ -6296,7 +6296,9 @@ class Leadorder extends MY_Controller
                 }
                 if ($res['result']==$this->success_result) {
                     $error = '';
-                    $mdata['rest'] = $res['rest'];
+                    if (isset($res['rest'])) {
+                        $mdata['rest'] = $res['rest'];
+                    }
                 }
             }
             $mdata['loctime'] = $this->_leadorder_locktime();
