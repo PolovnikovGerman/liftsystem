@@ -11189,6 +11189,7 @@ Class Leadorder_model extends My_Model {
                     $order_items[$itemidx]['trackings'] = $newtracks;
                     usersession($ordersession, $leadorder);
                     $out['rest'] = $order_items[$itemidx]['item_qty'] - $total;
+                    $out['item'] = $order_items[$itemidx];
                     $out['result'] = $this->success_result;
                 }
             }
