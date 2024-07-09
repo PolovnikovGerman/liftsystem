@@ -11187,9 +11187,8 @@ Class Leadorder_model extends My_Model {
                     // Save leadorder
                     $leadorder['delrecords'] = $delrecords;
                     $order_items[$itemidx]['trackings'] = $newtracks;
+                    $leadorder['order_items'] = $order_items;
                     usersession($ordersession, $leadorder);
-                    $out['rest'] = $order_items[$itemidx]['item_qty'] - $total;
-                    $out['item'] = $order_items[$itemidx];
                     $out['result'] = $this->success_result;
                 }
             }

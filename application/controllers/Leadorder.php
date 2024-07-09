@@ -6320,12 +6320,41 @@ class Leadorder extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
-                    
                 }
             }
             $mdata['loctime'] = $this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    private function _prepare_tracking_view($order_items, $edit =1) {
+        // $order_item = $res['item'];
+        $shipoptions = [
+            'shipdate' => 'To Ship '.date('m/d/y', $leadorder['shipping']['shipdate']),
+            'item' => $order_item['item_name'],
+            'qty' => $order_item['item_qty'],
+            'order_item' => $order_item['order_item_id'],
+        ];
+        $resttrack = $res['rest'];
+        $shipoptions['remind'] = $resttrack;
+        $shipoptions['completed'] = ($resttrack > 0 ? 0 : 1);
+        $trackbody = '';
+        if (!empty($order_item['trackings'])) {
+            $tbodyoptions = [
+                'trackings' => $order_item['trackings'],
+                'completed' => ($resttrack > 0 ? 0 : 1),
+                'order_item' => $order_item['order_item_id'],
+            ];
+            $trackbody = $this->load->view('leadorderdetails/tracking_data_edit', $tbodyoptions, TRUE);
+        }
+        $shipoptions['trackbody'] = $trackbody;
+        if ($resttrack==0) {
+            $trackcontent = $this->load->view('leadorderdetails/tracking_view', $shipoptions, TRUE);
+        } else {
+            $trackcontent = $this->load->view('leadorderdetails/tracking_edit', $shipoptions, TRUE);
+        }
+        $mdata['content'] = $trackcontent;
+
     }
 }

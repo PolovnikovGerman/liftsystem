@@ -5778,6 +5778,7 @@ function init_tracking_manage() {
             var url = '/leadorder/deletetrackinfo';
             $.post(url, params, function (response){
                 if (response.errors=='') {
+                    $(".shippingdataviewarea").empty().html(response.data.content);
                     $("input#loctimeout").val(response.data.loctime);
                     init_onlineleadorder_edit();
                 } else {
