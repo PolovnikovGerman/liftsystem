@@ -5,7 +5,7 @@
             <input type="text" class="trackqtyinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" value="<?=$tracking['qty']?>"/>
         </div>
         <div class="trackdate editmode">
-            <input type="text" class="trackdateinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" value="<?=date('m/d/y', $tracking['trackdate'])?>"/>
+            <input type="text" class="trackdateinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" value="<?=date('m/d/Y', $tracking['trackdate'])?>"/>
         </div>
         <div class="trackservice editmode">
             <select class="trackserviceinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>">

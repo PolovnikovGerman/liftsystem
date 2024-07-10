@@ -244,6 +244,12 @@ function navigation_init() {
             }
         },'json');
     });
+    // Lock track #
+    $(".trackcodecopy").unbind('click').click(function (){
+        var trackdat = $(this).data('track');
+        var txtVal = $(".trackcodehidden[data-track='"+trackdat+"']").val();
+        copyTextToClipboard(txtVal);
+    })
 }
 
 
@@ -5382,6 +5388,47 @@ function copyOrderToClipboard(element) {
     }
     $(element).hide();
 }
+function copyTextToClipboard(text) {
+    var textArea = document.createElement("textarea");
+
+    // Place in the top-left corner of screen regardless of scroll position.
+    textArea.style.position = 'fixed';
+    textArea.style.top = 0;
+    textArea.style.left = 0;
+
+    // Ensure it has a small width and height. Setting to 1px / 1em
+    // doesn't work as this gives a negative w/h on some browsers.
+    textArea.style.width = '2em';
+    textArea.style.height = '2em';
+
+    // We don't need padding, reducing the size if it does flash render.
+    textArea.style.padding = 0;
+
+    // Clean up any borders.
+    textArea.style.border = 'none';
+    textArea.style.outline = 'none';
+    textArea.style.boxShadow = 'none';
+
+    // Avoid flash of the white box if rendered for any reason.
+    textArea.style.background = 'transparent';
+
+
+    textArea.value = text;
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        console.log('Copying text command was ' + msg);
+    } catch (err) {
+        console.log('Oops, unable to copy');
+    }
+
+    document.body.removeChild(textArea);
+}
 
 function init_addneworderitem() {
     $("span.addnewcolor").unbind('click').click(function () {
@@ -5698,10 +5745,11 @@ function init_tracking_manage() {
         params.push({name: 'tracking', value: tracking});
         params.push({name: 'fldname', value: 'qty'});
         params.push({name: 'newval', value: $(this).val()});
-        var url = '/leadorder/updatetrackinfo';
+        var url = '/leadorder/updatetrackqtyinfo';
         $.post(url, params, function (response){
             if (response.errors=='') {
-                $(".nontracked[data-orderitem='"+orderitem+"']").empty().html(response.data.rest+' Remains');
+                $(".shippingdataviewarea").empty().html(response.data.content);
+                $(".trackdateinpt[data-orderitem='"+orderitem+"'][data-track='"+tracking+"']").focus();
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
             } else {
@@ -5751,15 +5799,18 @@ function init_tracking_manage() {
     $(".trackcodeinpt").unbind('change').change(function (){
         var orderitem = $(this).data('orderitem');
         var tracking = $(this).data('track');
+        var newcode = $(this).val();
         var params = new Array();
         params.push({name: 'ordersession', value: $("input#ordersession").val()});
         params.push({name: 'order_item_id', value: orderitem});
         params.push({name: 'tracking', value: tracking});
         params.push({name: 'fldname', value: 'trackcode'});
-        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'newval', value: newcode});
         var url = '/leadorder/updatetrackinfo';
         $.post(url, params, function (response){
             if (response.errors=='') {
+                // Update code
+                $(".trackcodehidden[data-track='"+tracking+"'][data-orderitem='"+orderitem+"']").val(newcode)
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
             } else {
@@ -5786,5 +5837,12 @@ function init_tracking_manage() {
                 }
             },'json');
         }
+    });
+    $(".trackcodecopy").unbind('click').click(function (){
+        var tracking = $(this).data('track');
+        var orderitem = $(this).data('orderitem');
+        var txtVal = $(".trackcodehidden[data-track='"+tracking+"'][data-orderitem='"+orderitem+"']").val();
+        console.log('Code '+txtVal)
+        copyTextToClipboard(txtVal);
     });
 }
