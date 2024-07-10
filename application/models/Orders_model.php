@@ -8087,7 +8087,7 @@ Class Orders_model extends MY_Model
             $owndat['rundebt'] = $rundebt;
             $owndat['type']=$stype;
             $owndat['typeclass'] = $sclass;
-            $owndat['dueclass'] = '';
+            $owndat['dueclass'] = 'current';
             if ($owndat['batch_due'] < $daystart) {
                 $owndat['dueclass'] = 'pastdue';
             }
@@ -8116,7 +8116,35 @@ Class Orders_model extends MY_Model
             }
         }
         //
-
+        $ownidx = 0;
+        $startdue = $starttype = $starapprov = '';
+        $starstatus = '0';
+        foreach ($owns as $own) {
+            $datclass = '';
+            if ($ownsort=='batch_due' && $startdue!==$own['dueclass']) {
+                if (!empty($startdue)) {
+                    $datclass = 'separated';
+                }
+                $startdue = $own['dueclass'];
+            } elseif ($ownsort=='owntype' && $own['type']!==$starttype) {
+                if (!empty($starttype)) {
+                    $datclass = 'separated';
+                }
+                $starttype = $own['type'];
+            } elseif ($ownsort=='ownapprove' && $own['approved']!==$starapprov) {
+                if ($starapprov!=='') {
+                    $datclass = 'separated';
+                }
+                $starapprov = $own['approved'];
+            } elseif ($ownsort=='debt_status' && $own['debt_status']!==$starstatus) {
+                if ($starstatus!==0) {
+                    $datclass = 'separated';
+                }
+                $starstatus = $own['debt_status'];
+            }
+            $owns[$ownidx]['datclass'] = $datclass;
+            $ownidx++;
+        }
         // Refund
         if ($refundsort=='balance') {
             if ($refunddirec=='asc') {
