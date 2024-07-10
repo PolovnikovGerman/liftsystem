@@ -298,27 +298,51 @@ class Template
                     $tracktotal+=$tracking['qty'];
                 }
             }
+            $remains = $totalitems - $tracktotal;
             $completed = 1;
-            if ($tracktotal < $totalitems) {
+            if ($remains > 0) {
                 $completed = 0;
             }
+            $trackcontent = '<div class="trackingdataarea">';
             $numhead = 1;
+            $trackcontent.='<div class="multitrackbodyarea">';
             foreach ($order_items as $order_item) {
                 $headoptions = [
                     'item' => $order_item['item_name'],
                     'qty' => $order_item['item_qty'],
                     'order_item' => $order_item['order_item_id'],
-                    'headclass' => ($numhead==1 ? 'starthead' : ''),
+                    'headclass' => ($numhead==1 ? '' : 'middlehead'),
                     'completed' => $completed,
                 ];
                 if ($edit==1) {
-                    $trackcontent.= $this->CI->load->view('leadorderdetails/track_view', $headoptions, TRUE);
+                    if ($completed==1) {
+                        $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
+                    } else {
+                        $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_edit', $headoptions, TRUE);
+                    }
                 } else {
-                    $trackcontent.= $this->CI->load->view('leadorderdetails/track_view', $headoptions, TRUE);
+                    $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
                 }
-
+                $tbodyoptions = [
+                    'trackings' => $order_item['trackings'],
+                    'completed' => $completed,
+                    'order_item' => $order_item['order_item_id'],
+                ];
+                if ($edit==1) {
+                    $trackcontent.=$this->CI->load->view('leadorderdetails/multitrack_data_edit', $tbodyoptions, TRUE);
+                } else {
+                    $trackcontent.=$this->CI->load->view('leadorderdetails/multitrack_data_view', $tbodyoptions, TRUE);
+                }
                 $numhead++;
             }
+            $trackcontent.='</div>';
+            $tfooteroptions = [
+                'completed' => $completed,
+                'remind' => $remains,
+                'shipdate' => $shipstatus['order_status']
+            ];
+            $trackcontent.=$this->CI->load->view('leadorderdetails/multitrack_footer_view', $tfooteroptions, TRUE);
+            $trackcontent.='</div>';
         }
 
         // Total Due

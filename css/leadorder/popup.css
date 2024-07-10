@@ -5614,6 +5614,10 @@ input.ticket_date {
     border-right: 1px solid #000000;
     border-top: 1px solid #000000;;
 }
+.trackingdataheader.middlehead {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
 /* Add button */
 .trackingdataheader .addnewtrack {
     cursor: pointer;
@@ -5644,11 +5648,11 @@ input.ticket_date {
 }
 .trackingdatabody {
     background: #FFFFFF;
-    height: 102px;
     padding: 5px;
     width: 100%;
     border-left: 1px solid #000000;
     border-right: 1px solid #000000;
+    height: 102px;
 }
 .trackingdatabody.completed {
     background: #c59e51;
@@ -5739,4 +5743,20 @@ input.ticket_date {
 }
 .trackcodeinpt {
     width: 133px;
+}
+/* Multi item tracks */
+.multitrackbodyarea {
+    max-height: 126px;
+    overflow-y: auto;
+}
+.multitrackdatabody {
+    min-height: 39px;
+    background: #FFFFFF;
+    padding: 5px;
+    width: 100%;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+}
+.multitrackdatabody.completed {
+    background: #c59e51;
 }
