@@ -36,15 +36,21 @@ class Leadquote_model extends MY_Model
     // Get list of quotes, related with lead
     public function get_leadquotes($lead_id) {
         $this->db->select('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, sum(qc.item_qty) as item_qty');
-        $this->db->select('group_concat(distinct(qc.item_description)) as item_name, count(o.order_id) as orders');
+        $this->db->select('group_concat(distinct(qc.item_description)) as item_name');
         $this->db->from('ts_quotes q');
         $this->db->join('ts_quote_items i','i.quote_id=q.quote_id','left ');
         $this->db->join('ts_quote_itemcolors qc','qc.quote_item_id=i.quote_item_id','left');
-        $this->db->join('ts_leadquote_orders o','q.quote_id = o.quote_id','left');
         $this->db->where('q.lead_id', $lead_id);
         $this->db->group_by('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total');
-        return $this->db->get()->result_array();
-
+        $lists = $this->db->get()->result_array();
+        $out = [];
+        foreach ($lists as $list) {
+            $this->db->select('count(order_id) as orders')->from('ts_leadquote_orders')->where('quote_id', $list['quote_id']);
+            $orddat = $this->db->get()->row_array();
+            $list['orders'] = $orddat['orders'];
+            $out[] = $list;
+        }
+        return $out;
     }
 
     public function add_leadquote($lead_data, $usr_id, $user_name) {
@@ -3073,10 +3079,12 @@ class Leadquote_model extends MY_Model
         $item_qry = $this->db->get_compiled_select();
         $this->db->reset_query();
 
+
         $this->db->select('q.quote_id, q.lead_id, q.quote_date, q.brand, q.quote_number, q.quote_total, l.lead_company, l.lead_customer, u.user_name, u.user_initials');
         $this->db->from('ts_quotes q');
         $this->db->join('users u','u.user_id=q.create_user','left');
         $this->db->join('ts_leads l','l.lead_id=q.lead_id');
+        // $this->db->join('ts_leadquote_orders o','q.quote_id = o.quote_id','left');
         $this->db->join("({$item_qry}) qitem",'qitem.quote_id=q.quote_id');
         if (ifset($options,'brand', 'ALL')!=='ALL') {
             if ($options['brand']=='SR') {
@@ -3106,19 +3114,27 @@ class Leadquote_model extends MY_Model
                 $qnumber = 'QB-'.str_pad($list['quote_number'],5,'0',STR_PAD_LEFT);
             }
             $list['qnumber'] = $qnumber;
+            $this->db->select('quote_item_id')->from('ts_quote_items')->where('quote_id', $list['quote_id']);
+            $items = $this->db->get()->result_array();
+            $quote_items = [];
+            foreach ($items as $item) {
+                array_push($quote_items, $item['quote_item_id']);
+            }
             $this->db->select('sum(qc.item_qty) as item_qty, group_concat(distinct(qc.item_description)) as item_name, count(qc.quote_itemcolor_id) as cnt');
-            $this->db->select('count(o.order_id) as orders');
-            $this->db->from('ts_quote_items qi');
-            $this->db->join('ts_quote_itemcolors qc','qc.quote_item_id=qi.quote_item_id');
-            $this->db->join('ts_leadquote_orders o','qi.quote_id = o.quote_id','left');
-            $this->db->where('qi.quote_id', $list['quote_id']);
+            // $this->db->select('count(o.order_id) as orders');
+            // $this->db->from('ts_quote_items qi');
+            $this->db->from('ts_quote_itemcolors qc');
+            // $this->db->join('ts_leadquote_orders o','qi.quote_id = o.quote_id','left');
+            $this->db->where_in('qc.quote_item_id', $quote_items);
             $itemres = $this->db->get()->row_array();
+            $this->db->select('count(order_id) as cnt')->from('ts_leadquote_orders')->where('quote_id', $list['quote_id']);
+            $ordres = $this->db->get()->row_array();
+            $list['orders'] = $ordres['cnt'];
             $list['item_name'] = $list['item_qty'] = '';
-            $list['orders'] = 0;
             if ($itemres['cnt'] > 0) {
                 $list['item_name'] = $itemres['item_name'];
                 $list['item_qty'] = $itemres['item_qty'];
-                $list['orders'] = $itemres['orders'];
+                // $list['orders'] = $itemres['orders'];
             }
             $list['customer'] = '';
             // q.shipping_company, q.shipping_contact, q.billing_company, q.billing_contact
@@ -3494,22 +3510,24 @@ class Leadquote_model extends MY_Model
                 $rush=$this->shipping_model->get_rushlist_blank($item_id);
             }
         }
-        if ($quoterush!=0 && count($rush) > 0) {
+        if ($quoterush!=0 && count($rush['rush']) > 0) {
+            $rushdats = $rush['rush'];
             $rushidx = 0;
-            foreach ($rush as $rushrow) {
+            foreach ($rushdats as $rushrow) {
                 if ($rushrow['current']==1) {
-                    $rush[$rushidx]['current'] = 0;
+                    $rushdats[$rushidx]['current'] = 0;
                 }
                 $rushidx++;
             }
             $rushidx = 0;
-            foreach ($rush as $rushrow) {
+            foreach ($rushdats as $rushrow) {
                 if ($rushrow['price']==$quoterush) {
-                    $rush[$rushidx]['current'] = 1;
+                    $rushdats[$rushidx]['current'] = 1;
                     break;
                 }
                 $rushidx++;
             }
+            $rush['rush'] = $rushdats;
         }
         // Recalc dates
 

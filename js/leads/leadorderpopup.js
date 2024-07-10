@@ -244,6 +244,12 @@ function navigation_init() {
             }
         },'json');
     });
+    // Lock track #
+    $(".trackcodecopy").unbind('click').click(function (){
+        var trackdat = $(this).data('track');
+        var txtVal = $(".trackcodehidden[data-track='"+trackdat+"']").val();
+        copyTextToClipboard(txtVal);
+    })
 }
 
 
@@ -945,6 +951,12 @@ function init_onlineleadorder_edit() {
     init_leadorder_billing();
     init_leadorder_charges();
     init_orderbottom_content(1);
+    // Date picker
+    $("input.trackdateinpt").datepicker({
+        autoclose: true,
+        todayHighlight: true
+    });
+    init_tracking_manage();
 }
 
 function save_discountdescription() {
@@ -2957,6 +2969,12 @@ function init_leadorder_shipping() {
                 if (parseInt(response.data.cntshipadrr)==1) {
                     $("#shipingcompileaddress").val(response.data.addresscopy);
                 }
+                // Tracking code
+                if (parseInt(response.data.trackcount)==1) {
+                    $(".trackingdatabody[data-orderitem='"+response.data.order_item+"']").empty().html(response.data.trackbody);
+                } else {
+                    // Multi Orders Items
+                }
                 $("#loader").hide();
                 if (response.data.warning==1) {
                     // alert(response.data.shipwarn);
@@ -3938,27 +3956,27 @@ function init_orderbottom_content(edit_mode) {
             }            
         },'json');
     });    
-    $("div.shippingdataviewarea").unbind('click').click(function(){
-        var url="/leadorder/shiptracks_show";
-        var params=new Array();
-        params.push({name: 'ordersession', value: $("input#ordersession").val()});
-        $.post(url, params, function(response){
-            if (response.errors=='') {
-                $("#artNextModal").find('div.modal-dialog').css('width','925px');
-                $("#artNextModal").find('.modal-title').empty().html('Shipping Track Codes');
-                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
-                $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
-                $("#artNextModal").on('hidden.bs.modal', function (e) {
-                    $(document.body).addClass('modal-open');
-                })
-                init_orderstatus_change(edit_mode);
-                $("input#loctimeout").val(response.data.loctime);
-                init_onlineleadorder_edit();                
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
+    // $("div.shippingdataviewarea").unbind('click').click(function(){
+    //     var url="/leadorder/shiptracks_show";
+    //     var params=new Array();
+    //     params.push({name: 'ordersession', value: $("input#ordersession").val()});
+    //     $.post(url, params, function(response){
+    //         if (response.errors=='') {
+    //             $("#artNextModal").find('div.modal-dialog').css('width','925px');
+    //             $("#artNextModal").find('.modal-title').empty().html('Shipping Track Codes');
+    //             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+    //             $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+    //             $("#artNextModal").on('hidden.bs.modal', function (e) {
+    //                 $(document.body).addClass('modal-open');
+    //             })
+    //             init_orderstatus_change(edit_mode);
+    //             $("input#loctimeout").val(response.data.loctime);
+    //             init_onlineleadorder_edit();
+    //         } else {
+    //             show_error(response);
+    //         }
+    //     },'json');
+    // });
     // Profit
     $("div.profitdetailsviewarea").qtip({
         content : {
@@ -4171,284 +4189,284 @@ function save_orderticket() {
 }
 
 // Ship Track codes
-function init_orderstatus_change(edit_mode) {    
-    // Add new package
-    $("input.trackcodeinpt").keypress(function(event){
-        var addres=$(this).data('shipaddr');        
-        var newval=$(this).val();
-        var package=$(this).data('shippack');
-        if (newval!='') {
-            $("div.trackcodeupdate[data-shippack='"+package+"'][data-shipaddr='"+addres+"']").addClass('active');
-        } else {
-            $("div.trackcodeupdate[data-shippack='"+package+"'][data-shipaddr='"+addres+"']").removeClass('active');
-        }
-    });
-    // 
-    $(".newshippack").unbind('click').click(function(){
-        var shipadr=$(this).parent('div.shiptrackpackrow').data('shipaddr');
-        var url="/leadorder/shippackage_add";
-        var params=new Array();
-        params.push({name:'shipaddr', value: shipadr});
-        params.push({name:'ordersession', value: $("input#ordersession").val()});
-        params.push({name:'shiptraccodes', value: $("input#tracksession").val()});
-        $.post(url,params, function(response){
-            if (response.errors=='') {
-                $("div.shiptrackadrpacks").empty().html(response.data.shipaddr_content);
-                init_orderstatus_change(edit_mode);
-                if (edit_mode==1) {
-                    $("input#loctimeout").val(response.data.loctime);
-                    init_onlineleadorder_edit();                
-                }
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
-    // Update code
-    $("div.trackcodeupdate").unbind('click').click(function(){
-        var addres=$(this).data('shipaddr');
-        var field='track_code';
-        var package=$(this).data('shippack');
-        var newval=$("input.trackcodeinpt[data-shipaddr='"+addres+"'][data-shippack='"+package+"']").val();
-        shiptrack_change(addres, package, field, newval, edit_mode);
-    });
-    $("select.deliveryservicelist").unbind('change').change(function(){
-        var addres=$(this).data('shipaddr');
-        var field='deliver_service';
-        var newval=$(this).val();
-        var package=$(this).data('shippack');
-        shiptrack_change(addres, package, field, newval, edit_mode);
-    });
-    $("input.trackcodeinpt").unbind('change').change(function(){
-        var addres=$(this).data('shipaddr');
-        var field='track_code';
-        var newval=$(this).val();
-        var package=$(this).data('shippack');
-        shiptrack_change(addres, package, field, newval, edit_mode);        
-    });
-    // Remove Package
-    $("div.trackcoderemove").unbind('click').click(function(){
-        if (confirm('Remove Track Code?')==true) {
-            var address=$(this).data('shipaddr');
-            var params=new Array();        
-            params.push({name: 'shipaddres', value: address});
-            params.push({name: 'package_id', value: $(this).data('shippack')});
-            params.push({name:'ordersession', value: $("input#ordersession").val()});
-            params.push({name:'shiptraccodes', value: $("input#tracksession").val()});
-            var url="/leadorder/shiptrackpackage_remove";
-            $.post(url, params, function(response){
-                if (response.errors=='') {
-                    $("div.shiptrackadrpacks[data-shipaddr='"+address+"']").empty().html(response.data.shipaddr_content);
-                    if (response.data.showalltrack==1) {
-                        $("div.trackallbtn").show();                
-                    } else {
-                        $("div.trackallbtn").hide();
-                    }
-                    init_orderstatus_change(edit_mode);
-                    if (edit_mode==1) {
-                        $("input#loctimeout").val(response.data.loctime);
-                        init_onlineleadorder_edit();                
-                    }
-                } else {
-                    show_error(response);
-                }
-            },'json');            
-        }
-    });       
-    // Track Code
-    $("div.trackcodemanage").unbind('click').click(function(){
-        var addres=$(this).data('shipaddr');
-        var package=$(this).data('shippack');
-        var params=new Array();
-        params.push({name: 'shipaddres', value: addres});
-        params.push({name: 'package_id', value: package});
-        params.push({name:'ordersession', value: $("input#ordersession").val()});
-        params.push({name:'shiptraccodes', value: $("input#tracksession").val()});
-        var url="/leadorder/shiptrackpackage_tracking";
-        $.post(url, params, function(response){
-            if (response.errors=='') {
-                // Change Package View
-                $("div.shiptrackpackrow[data-shipaddr='"+addres+"'][data-shippack='"+package+"']").empty().html(response.data.packageview);
-                init_orderstatus_change(edit_mode);
-                $.colorbox({html:response.data.content});
-                if (edit_mode==1) {
-                    $("input#loctimeout").val(response.data.loctime);
-                    init_onlineleadorder_edit();
-                }
-            } else {
-                show_error(response);
-            }
-        },'json');
-    })
-
-    // Show / Hide Send form
-    $("input.senttrackcode").unbind('change').change(function(){
-        var newval=0;
-        if ($(this).prop('checked')==true) {
-            newval=1;
-        }
-        var addres=$(this).data('shipaddr');
-        var package=$(this).data('shippack');
-        check_sendtrack(addres, package, newval);
-    });
-    // Email Fields
-    $("input.trackemailinpt").unbind('change').change(function(){
-        var fldname=$(this).data('field');
-        var newval=$(this).val();
-        shiptrack_message_change(fldname, newval);
-    });
-    $("input.trackemailsubj").unbind('change').change(function(){
-        var fldname='subject';
-        var newval=$(this).val();
-        shiptrack_message_change(fldname, newval);        
-    });
-    $("textarea.trackemailto").unbind('change').change(function(){
-        var fldname='customer';
-        var newval=$(this).val();
-        shiptrack_message_change(fldname, newval);
-    });
-    $("textarea.trackemailmessage").unbind('change').change(function(){
-        var fldname='message';
-        var newval=$(this).val();
-        shiptrack_message_change(fldname, newval);        
-    });
-    $("div.showtrackmailbcc").unbind('click').click(function(){
-        $("#trackshowbccarea").empty().html('<div class="label">From:</div><div class="value"><input type="text" class="trackemailinpt" data-field="bcc" value=""/></div>');
-        init_orderstatus_change(edit_mode);
-    });
-    $("div.sendtraccodemessage").unbind('click').click(function(){
-        if (confirm('Send Track codes?')==true) {
-            var params=new Array();
-            params.push({name: 'edit_mode', value: edit_mode});
-            params.push({name:'ordersession', value: $("input#ordersession").val()});
-            params.push({name:'shiptraccodes', value: $("input#tracksession").val()});            
-            var url="/leadorder/shiptrackmessage_send";            
-            $.post(url,params, function(response){
-                if (response.errors=='') {
-                    $("#artNextModal").modal('hide');
-                    $(".shippingdataviewarea").empty().html(response.data.shipstatus);
-                    if (edit_mode==1) {
-                        $("input#loctimeout").val(response.data.loctime);
-                        init_onlineleadorder_edit();
-                    }
-                } else {
-                    show_error(response);
-                }
-            },'json');
-        }
-    });
-    $("div.orderstatussave").unbind('click').click(function(){        
-        var url="/leadorder/shiptrack_save";
-        var params=new Array();
-        params.push({name: 'edit_mode', value: edit_mode});
-        params.push({name:'ordersession', value: $("input#ordersession").val()});
-        params.push({name:'shiptraccodes', value: $("input#tracksession").val()});            
-        $.post(url,params,function(response){
-            if (response.errors=='') {
-                $("#artNextModal").modal('hide');
-                $("#loader").hide();
-                $(".shippingdataviewarea").empty().html(response.data.shipstatus);
-                if (edit_mode==1) {
-                    $("input#loctimeout").val(response.data.loctime);
-                    init_onlineleadorder_edit();
-                }
-            } else {
-                $("#loader").hide();
-                show_error(response);
-            }
-        },'json');
-    });    
-}
-
-function shiptrack_change(addres, package, field, newval, edit_mode) {
-    var params=new Array();
-    params.push({name: 'shipaddres', value: addres});
-    params.push({name: 'package_id', value: package});
-    params.push({name: 'field', value: field});
-    params.push({name: 'newval', value: newval});
-    params.push({name:'ordersession', value: $("input#ordersession").val()});
-    params.push({name:'shiptraccodes', value: $("input#tracksession").val()});    
-    var url="/leadorder/shiptrack_change";
-    $.post(url, params, function(response){
-        if (response.errors=='') {
-            if (response.data.shownewrow==1) {
-                $("div.shiptrackpackrow[data-shipaddr='"+addres+"'][data-shippack='"+package+"']").empty().html(response.data.packageview);
-            }
-            if (response.data.viewtrack==1) {
-                $("div.trackcodemanage[data-shipaddr='"+addres+"'][data-shippack='"+package+"']").css('visibility','visible');
-            } else {
-                $("div.trackcodemanage[data-shipaddr='"+addres+"'][data-shippack='"+package+"']").css('visibility','hidden');
-            }
-            if (response.data.showalltrack==1) {
-                $("div.trackallbtn").show();                
-            } else {
-                $("div.trackallbtn").hide();
-            }
-            init_orderstatus_change(edit_mode);
-            if (edit_mode==1) {
-                $("input#loctimeout").val(response.data.loctime);
-                init_onlineleadorder_edit();                
-            }
-        } else {
-            show_error(response);
-        }
-    },'json');
-}
-
-function check_sendtrack(addres, package, newval, edit_mode) {
-    var params=new Array();    
-    var numchk=0;
-    $("div.shiptrackaddresarea").find('input.senttrackcode').each(function(){
-    if ($(this).prop('checked')==true) {
-            numchk+=1;
-        }
-    });    
-    params.push({name: 'shipaddres', value: addres});
-    params.push({name: 'package_id', value: package});
-    params.push({name: 'field', value: 'senddata'});
-    params.push({name: 'newval', value: newval});
-    params.push({name:'ordersession', value: $("input#ordersession").val()});
-    params.push({name:'shiptraccodes', value: $("input#tracksession").val()});        
-    var url="/leadorder/shiptrack_change";
-    $.post(url, params, function(response){
-        if (response.errors=='') {            
-            if (newval==0) {
-                if (numchk==0) {
-                    $("div.shiptracksendarea").empty();
-                } 
-            } else {
-                if ($("div.sendtraccodemessage").length==0) {
-                    $("div.shiptracksendarea").empty().html(response.data.email_view);                    
-                }                
-            }
-            init_orderstatus_change(edit_mode);
-            if (edit_mode==1) {
-                $("input#loctimeout").val(response.data.loctime);
-                init_onlineleadorder_edit();                
-            }            
-        } else {
-            show_error(response);
-        }
-    },'json');
-}
-
-// Change parameters of value
-function shiptrack_message_change(fldname, newval) {
-    var url="/leadorder/shiptrackmessage_change";
-    var params=new Array();
-    params.push({name:'field', value: fldname});
-    params.push({name: 'newval', value: newval});
-    params.push({name:'ordersession', value: $("input#ordersession").val()});
-    params.push({name:'shiptraccodes', value: $("input#tracksession").val()});
-    $.post(url, params,function(response){
-        if (response.errors=='') {
-            $("input#loctimeout").val(response.data.loctime);
-            init_onlineleadorder_edit();
-        } else {
-            show_error(response);
-        }
-    },'json');
-}
+// function init_orderstatus_change(edit_mode) {
+//     // Add new package
+//     $("input.trackcodeinpt").keypress(function(event){
+//         var addres=$(this).data('shipaddr');
+//         var newval=$(this).val();
+//         var package=$(this).data('shippack');
+//         if (newval!='') {
+//             $("div.trackcodeupdate[data-shippack='"+package+"'][data-shipaddr='"+addres+"']").addClass('active');
+//         } else {
+//             $("div.trackcodeupdate[data-shippack='"+package+"'][data-shipaddr='"+addres+"']").removeClass('active');
+//         }
+//     });
+//     //
+//     $(".newshippack").unbind('click').click(function(){
+//         var shipadr=$(this).parent('div.shiptrackpackrow').data('shipaddr');
+//         var url="/leadorder/shippackage_add";
+//         var params=new Array();
+//         params.push({name:'shipaddr', value: shipadr});
+//         params.push({name:'ordersession', value: $("input#ordersession").val()});
+//         params.push({name:'shiptraccodes', value: $("input#tracksession").val()});
+//         $.post(url,params, function(response){
+//             if (response.errors=='') {
+//                 $("div.shiptrackadrpacks").empty().html(response.data.shipaddr_content);
+//                 init_orderstatus_change(edit_mode);
+//                 if (edit_mode==1) {
+//                     $("input#loctimeout").val(response.data.loctime);
+//                     init_onlineleadorder_edit();
+//                 }
+//             } else {
+//                 show_error(response);
+//             }
+//         },'json');
+//     });
+//     // Update code
+//     $("div.trackcodeupdate").unbind('click').click(function(){
+//         var addres=$(this).data('shipaddr');
+//         var field='track_code';
+//         var package=$(this).data('shippack');
+//         var newval=$("input.trackcodeinpt[data-shipaddr='"+addres+"'][data-shippack='"+package+"']").val();
+//         shiptrack_change(addres, package, field, newval, edit_mode);
+//     });
+//     $("select.deliveryservicelist").unbind('change').change(function(){
+//         var addres=$(this).data('shipaddr');
+//         var field='deliver_service';
+//         var newval=$(this).val();
+//         var package=$(this).data('shippack');
+//         shiptrack_change(addres, package, field, newval, edit_mode);
+//     });
+//     $("input.trackcodeinpt").unbind('change').change(function(){
+//         var addres=$(this).data('shipaddr');
+//         var field='track_code';
+//         var newval=$(this).val();
+//         var package=$(this).data('shippack');
+//         shiptrack_change(addres, package, field, newval, edit_mode);
+//     });
+//     // Remove Package
+//     $("div.trackcoderemove").unbind('click').click(function(){
+//         if (confirm('Remove Track Code?')==true) {
+//             var address=$(this).data('shipaddr');
+//             var params=new Array();
+//             params.push({name: 'shipaddres', value: address});
+//             params.push({name: 'package_id', value: $(this).data('shippack')});
+//             params.push({name:'ordersession', value: $("input#ordersession").val()});
+//             params.push({name:'shiptraccodes', value: $("input#tracksession").val()});
+//             var url="/leadorder/shiptrackpackage_remove";
+//             $.post(url, params, function(response){
+//                 if (response.errors=='') {
+//                     $("div.shiptrackadrpacks[data-shipaddr='"+address+"']").empty().html(response.data.shipaddr_content);
+//                     if (response.data.showalltrack==1) {
+//                         $("div.trackallbtn").show();
+//                     } else {
+//                         $("div.trackallbtn").hide();
+//                     }
+//                     init_orderstatus_change(edit_mode);
+//                     if (edit_mode==1) {
+//                         $("input#loctimeout").val(response.data.loctime);
+//                         init_onlineleadorder_edit();
+//                     }
+//                 } else {
+//                     show_error(response);
+//                 }
+//             },'json');
+//         }
+//     });
+//     // Track Code
+//     $("div.trackcodemanage").unbind('click').click(function(){
+//         var addres=$(this).data('shipaddr');
+//         var package=$(this).data('shippack');
+//         var params=new Array();
+//         params.push({name: 'shipaddres', value: addres});
+//         params.push({name: 'package_id', value: package});
+//         params.push({name:'ordersession', value: $("input#ordersession").val()});
+//         params.push({name:'shiptraccodes', value: $("input#tracksession").val()});
+//         var url="/leadorder/shiptrackpackage_tracking";
+//         $.post(url, params, function(response){
+//             if (response.errors=='') {
+//                 // Change Package View
+//                 $("div.shiptrackpackrow[data-shipaddr='"+addres+"'][data-shippack='"+package+"']").empty().html(response.data.packageview);
+//                 init_orderstatus_change(edit_mode);
+//                 $.colorbox({html:response.data.content});
+//                 if (edit_mode==1) {
+//                     $("input#loctimeout").val(response.data.loctime);
+//                     init_onlineleadorder_edit();
+//                 }
+//             } else {
+//                 show_error(response);
+//             }
+//         },'json');
+//     })
+//
+//     // Show / Hide Send form
+//     $("input.senttrackcode").unbind('change').change(function(){
+//         var newval=0;
+//         if ($(this).prop('checked')==true) {
+//             newval=1;
+//         }
+//         var addres=$(this).data('shipaddr');
+//         var package=$(this).data('shippack');
+//         check_sendtrack(addres, package, newval);
+//     });
+//     // Email Fields
+//     $("input.trackemailinpt").unbind('change').change(function(){
+//         var fldname=$(this).data('field');
+//         var newval=$(this).val();
+//         shiptrack_message_change(fldname, newval);
+//     });
+//     $("input.trackemailsubj").unbind('change').change(function(){
+//         var fldname='subject';
+//         var newval=$(this).val();
+//         shiptrack_message_change(fldname, newval);
+//     });
+//     $("textarea.trackemailto").unbind('change').change(function(){
+//         var fldname='customer';
+//         var newval=$(this).val();
+//         shiptrack_message_change(fldname, newval);
+//     });
+//     $("textarea.trackemailmessage").unbind('change').change(function(){
+//         var fldname='message';
+//         var newval=$(this).val();
+//         shiptrack_message_change(fldname, newval);
+//     });
+//     $("div.showtrackmailbcc").unbind('click').click(function(){
+//         $("#trackshowbccarea").empty().html('<div class="label">From:</div><div class="value"><input type="text" class="trackemailinpt" data-field="bcc" value=""/></div>');
+//         init_orderstatus_change(edit_mode);
+//     });
+//     $("div.sendtraccodemessage").unbind('click').click(function(){
+//         if (confirm('Send Track codes?')==true) {
+//             var params=new Array();
+//             params.push({name: 'edit_mode', value: edit_mode});
+//             params.push({name:'ordersession', value: $("input#ordersession").val()});
+//             params.push({name:'shiptraccodes', value: $("input#tracksession").val()});
+//             var url="/leadorder/shiptrackmessage_send";
+//             $.post(url,params, function(response){
+//                 if (response.errors=='') {
+//                     $("#artNextModal").modal('hide');
+//                     $(".shippingdataviewarea").empty().html(response.data.shipstatus);
+//                     if (edit_mode==1) {
+//                         $("input#loctimeout").val(response.data.loctime);
+//                         init_onlineleadorder_edit();
+//                     }
+//                 } else {
+//                     show_error(response);
+//                 }
+//             },'json');
+//         }
+//     });
+//     $("div.orderstatussave").unbind('click').click(function(){
+//         var url="/leadorder/shiptrack_save";
+//         var params=new Array();
+//         params.push({name: 'edit_mode', value: edit_mode});
+//         params.push({name:'ordersession', value: $("input#ordersession").val()});
+//         params.push({name:'shiptraccodes', value: $("input#tracksession").val()});
+//         $.post(url,params,function(response){
+//             if (response.errors=='') {
+//                 $("#artNextModal").modal('hide');
+//                 $("#loader").hide();
+//                 $(".shippingdataviewarea").empty().html(response.data.shipstatus);
+//                 if (edit_mode==1) {
+//                     $("input#loctimeout").val(response.data.loctime);
+//                     init_onlineleadorder_edit();
+//                 }
+//             } else {
+//                 $("#loader").hide();
+//                 show_error(response);
+//             }
+//         },'json');
+//     });
+// }
+//
+// function shiptrack_change(addres, package, field, newval, edit_mode) {
+//     var params=new Array();
+//     params.push({name: 'shipaddres', value: addres});
+//     params.push({name: 'package_id', value: package});
+//     params.push({name: 'field', value: field});
+//     params.push({name: 'newval', value: newval});
+//     params.push({name:'ordersession', value: $("input#ordersession").val()});
+//     params.push({name:'shiptraccodes', value: $("input#tracksession").val()});
+//     var url="/leadorder/shiptrack_change";
+//     $.post(url, params, function(response){
+//         if (response.errors=='') {
+//             if (response.data.shownewrow==1) {
+//                 $("div.shiptrackpackrow[data-shipaddr='"+addres+"'][data-shippack='"+package+"']").empty().html(response.data.packageview);
+//             }
+//             if (response.data.viewtrack==1) {
+//                 $("div.trackcodemanage[data-shipaddr='"+addres+"'][data-shippack='"+package+"']").css('visibility','visible');
+//             } else {
+//                 $("div.trackcodemanage[data-shipaddr='"+addres+"'][data-shippack='"+package+"']").css('visibility','hidden');
+//             }
+//             if (response.data.showalltrack==1) {
+//                 $("div.trackallbtn").show();
+//             } else {
+//                 $("div.trackallbtn").hide();
+//             }
+//             init_orderstatus_change(edit_mode);
+//             if (edit_mode==1) {
+//                 $("input#loctimeout").val(response.data.loctime);
+//                 init_onlineleadorder_edit();
+//             }
+//         } else {
+//             show_error(response);
+//         }
+//     },'json');
+// }
+//
+// function check_sendtrack(addres, package, newval, edit_mode) {
+//     var params=new Array();
+//     var numchk=0;
+//     $("div.shiptrackaddresarea").find('input.senttrackcode').each(function(){
+//     if ($(this).prop('checked')==true) {
+//             numchk+=1;
+//         }
+//     });
+//     params.push({name: 'shipaddres', value: addres});
+//     params.push({name: 'package_id', value: package});
+//     params.push({name: 'field', value: 'senddata'});
+//     params.push({name: 'newval', value: newval});
+//     params.push({name:'ordersession', value: $("input#ordersession").val()});
+//     params.push({name:'shiptraccodes', value: $("input#tracksession").val()});
+//     var url="/leadorder/shiptrack_change";
+//     $.post(url, params, function(response){
+//         if (response.errors=='') {
+//             if (newval==0) {
+//                 if (numchk==0) {
+//                     $("div.shiptracksendarea").empty();
+//                 }
+//             } else {
+//                 if ($("div.sendtraccodemessage").length==0) {
+//                     $("div.shiptracksendarea").empty().html(response.data.email_view);
+//                 }
+//             }
+//             init_orderstatus_change(edit_mode);
+//             if (edit_mode==1) {
+//                 $("input#loctimeout").val(response.data.loctime);
+//                 init_onlineleadorder_edit();
+//             }
+//         } else {
+//             show_error(response);
+//         }
+//     },'json');
+// }
+//
+// // Change parameters of value
+// function shiptrack_message_change(fldname, newval) {
+//     var url="/leadorder/shiptrackmessage_change";
+//     var params=new Array();
+//     params.push({name:'field', value: fldname});
+//     params.push({name: 'newval', value: newval});
+//     params.push({name:'ordersession', value: $("input#ordersession").val()});
+//     params.push({name:'shiptraccodes', value: $("input#tracksession").val()});
+//     $.post(url, params,function(response){
+//         if (response.errors=='') {
+//             $("input#loctimeout").val(response.data.loctime);
+//             init_onlineleadorder_edit();
+//         } else {
+//             show_error(response);
+//         }
+//     },'json');
+// }
 
 // New Manualy Payment
 function init_newpayment() {
@@ -5370,6 +5388,47 @@ function copyOrderToClipboard(element) {
     }
     $(element).hide();
 }
+function copyTextToClipboard(text) {
+    var textArea = document.createElement("textarea");
+
+    // Place in the top-left corner of screen regardless of scroll position.
+    textArea.style.position = 'fixed';
+    textArea.style.top = 0;
+    textArea.style.left = 0;
+
+    // Ensure it has a small width and height. Setting to 1px / 1em
+    // doesn't work as this gives a negative w/h on some browsers.
+    textArea.style.width = '2em';
+    textArea.style.height = '2em';
+
+    // We don't need padding, reducing the size if it does flash render.
+    textArea.style.padding = 0;
+
+    // Clean up any borders.
+    textArea.style.border = 'none';
+    textArea.style.outline = 'none';
+    textArea.style.boxShadow = 'none';
+
+    // Avoid flash of the white box if rendered for any reason.
+    textArea.style.background = 'transparent';
+
+
+    textArea.value = text;
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        console.log('Copying text command was ' + msg);
+    } catch (err) {
+        console.log('Oops, unable to copy');
+    }
+
+    document.body.removeChild(textArea);
+}
 
 function init_addneworderitem() {
     $("span.addnewcolor").unbind('click').click(function () {
@@ -5658,6 +5717,132 @@ function init_unlockcontent(paymentid) {
             }
         },'json');
     });
+}
 
-
+function init_tracking_manage() {
+    $(".addnewtrack").unbind('click').click(function(){
+        var orderitem = $(this).data('orderitem');
+        var params = new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'order_item_id', value: $(this).data('orderitem')});
+        var url = '/leadorder/newtrackcode';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $(".trackingdatabody[data-orderitem='"+orderitem+"']").empty().html(response.data.content);
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".trackqtyinpt").unbind('change').change(function (){
+        var orderitem = $(this).data('orderitem');
+        var tracking = $(this).data('track');
+        var params = new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'order_item_id', value: orderitem});
+        params.push({name: 'tracking', value: tracking});
+        params.push({name: 'fldname', value: 'qty'});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/leadorder/updatetrackqtyinfo';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".shippingdataviewarea").empty().html(response.data.content);
+                $(".trackdateinpt[data-orderitem='"+orderitem+"'][data-track='"+tracking+"']").focus();
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+            } else {
+                $(".trackqtyinpt[data-orderitem='"+orderitem+"'][data-track='"+tracking+"']").val(response.data.oldval);
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".trackdateinpt").unbind('change').change(function (){
+        var orderitem = $(this).data('orderitem');
+        var tracking = $(this).data('track');
+        var params = new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'order_item_id', value: orderitem});
+        params.push({name: 'tracking', value: tracking});
+        params.push({name: 'fldname', value: 'trackservice'});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/leadorder/updatetrackinfo';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+    $(".trackserviceinpt").unbind('change').change(function (){
+        var orderitem = $(this).data('orderitem');
+        var tracking = $(this).data('track');
+        var params = new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'order_item_id', value: orderitem});
+        params.push({name: 'tracking', value: tracking});
+        params.push({name: 'fldname', value: 'trackservice'});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/leadorder/updatetrackinfo';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".trackcodeinpt").unbind('change').change(function (){
+        var orderitem = $(this).data('orderitem');
+        var tracking = $(this).data('track');
+        var newcode = $(this).val();
+        var params = new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'order_item_id', value: orderitem});
+        params.push({name: 'tracking', value: tracking});
+        params.push({name: 'fldname', value: 'trackcode'});
+        params.push({name: 'newval', value: newcode});
+        var url = '/leadorder/updatetrackinfo';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                // Update code
+                $(".trackcodehidden[data-track='"+tracking+"'][data-orderitem='"+orderitem+"']").val(newcode)
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".trackcoderemove").unbind('click').click(function(){
+        if (confirm('Delete Track #?')==true) {
+            var orderitem = $(this).data('orderitem');
+            var tracking = $(this).data('track');
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'order_item_id', value: orderitem});
+            params.push({name: 'tracking', value: tracking});
+            var url = '/leadorder/deletetrackinfo';
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $(".shippingdataviewarea").empty().html(response.data.content);
+                    $("input#loctimeout").val(response.data.loctime);
+                    init_onlineleadorder_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    $(".trackcodecopy").unbind('click').click(function (){
+        var tracking = $(this).data('track');
+        var orderitem = $(this).data('orderitem');
+        var txtVal = $(".trackcodehidden[data-track='"+tracking+"'][data-orderitem='"+orderitem+"']").val();
+        console.log('Code '+txtVal)
+        copyTextToClipboard(txtVal);
+    });
 }

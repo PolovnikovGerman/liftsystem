@@ -2996,6 +2996,17 @@ class Leadorder extends MY_Controller
                         $mdata['total_due']=$this->load->view('leadorderdetails/totaldue_data_view', $dueoptions, TRUE);
                         $mdata['tax']=MoneyOutput($order['tax']);
                         $mdata['profit_content']=$this->_profit_data_view($order);
+                        $order_items = $leadorder['order_items'];
+                        if (count($order_items)==1) {
+                            $mdata['trackcount'] = 1;
+                            $options = [
+                                'trackings' => $order_items[0]['trackings'],
+                                'completed' => 0,
+                                'order_item' => $order_items[0]['order_item_id'],
+                            ];
+                            $mdata['trackbody'] = $this->load->view('leadorderdetails/tracking_data_edit', $options, TRUE);
+                            $mdata['order_item'] = $order_items[0]['order_item_id'];
+                        }
                         if ($fldname=='country_id') {
                             if (count($res['states'])==0) {
                                 $mdata['stateview']='&nbsp;';
@@ -6240,5 +6251,147 @@ class Leadorder extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    public function newtrackcode()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->newtrackcode($leadorder, $postdata, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $options = [
+                        'trackings' => $res['trackings'],
+                        'completed' => 0,
+                        'order_item' => $postdata['order_item_id'],
+                    ];
+                    $mdata['content'] = $this->load->view('leadorderdetails/tracking_data_edit', $options, TRUE);
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function updatetrackqtyinfo()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->updatetrackinfo($leadorder, $postdata, $ordersession);
+                $error = $res['msg'];
+                if (isset($res['oldval'])) {
+                    $mdata['oldval'] = $res['oldval'];
+                }
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $leadorder = usersession($ordersession);
+                    $mdata['content'] = $this->_prepare_tracking_view($leadorder, 1);
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function updatetrackinfo()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->updatetrackinfo($leadorder, $postdata, $ordersession);
+                $error = $res['msg'];
+                if (isset($res['oldval'])) {
+                    $mdata['oldval'] = $res['oldval'];
+                }
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    if (isset($res['rest'])) {
+                        $mdata['rest'] = $res['rest'];
+                    }
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function deletetrackinfo()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->deletetrackinfo($leadorder, $postdata, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $leadorder = usersession($ordersession);
+                    $mdata['content'] = $this->_prepare_tracking_view($leadorder, 1);
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    private function _prepare_tracking_view($leadorder, $edit =1) {
+        $order_items = $leadorder['order_items'];
+        $shipping = $leadorder['shipping'];
+        // $order_item = $res['item'];
+        $contant = '';
+        foreach ($order_items as $order_item) {
+            $shipoptions = [
+                'shipdate' => 'To Ship '.date('m/d/y', $shipping['shipdate']),
+                'item' => $order_item['item_name'],
+                'qty' => $order_item['item_qty'],
+                'order_item' => $order_item['order_item_id'],
+            ];
+            $totaltrack = 0;
+            foreach ($order_item['trackings'] as $tracking) {
+                $totaltrack+=$tracking['qty'];
+            }
+            $resttrack = $order_item['item_qty']-$totaltrack;
+            $shipoptions['remind'] = $resttrack;
+            $shipoptions['completed'] = ($resttrack > 0 ? 0 : 1);
+            $trackbody = '';
+            if (!empty($order_item['trackings'])) {
+                $tbodyoptions = [
+                    'trackings' => $order_item['trackings'],
+                    'completed' => ($resttrack > 0 ? 0 : 1),
+                    'order_item' => $order_item['order_item_id'],
+                ];
+                $trackbody = $this->load->view('leadorderdetails/tracking_data_edit', $tbodyoptions, TRUE);
+            }
+            $shipoptions['trackbody'] = $trackbody;
+            if ($resttrack==0) {
+                $trackcontent = $this->load->view('leadorderdetails/tracking_view', $shipoptions, TRUE);
+            } else {
+                $trackcontent = $this->load->view('leadorderdetails/tracking_edit', $shipoptions, TRUE);
+            }
+            $contant.=$trackcontent;
+        }
+        return $contant;
     }
 }

@@ -17,12 +17,8 @@
             <div class="accreceiv-owndetails-bodyrow empty">No orders</div>
         <?php } else { ?>
             <?php $numpp=1;?>
-            <?php $startdue = $owns[0]['dueclass']?>
-            <?php $starttype = $owns[0]['type'];?>
-            <?php $starapprov = $owns[0]['approved'];?>
-            <?php $starstatus = $owns[0]['debt_status'];?>
             <?php foreach ($owns as $own) { ?>
-                <div class="accreceiv-owndetails-bodyrow <?=$numpp%2 == 0 ? 'greydatarow' : 'whitedatarow'?> <?=$own['dueclass']!==$startdue ? 'separated' : ''?>">
+                <div class="accreceiv-owndetails-bodyrow <?=$numpp%2 == 0 ? 'greydatarow' : 'whitedatarow'?> <?=$own['datclass']?>">
                     <div class="accreceiv-owndetails-bodynum"><?=$numpp?></div>
                     <div class="accreceiv-owndetails-bodyrunningtotal"><?=MoneyOutput($own['rundebt'],0)?></div>
                     <div class="accreceiv-owndetails-bodydue <?=$own['dueclass']?>">
@@ -33,9 +29,9 @@
                     <div class="accreceiv-owndetails-bodyordersigma" data-brand="<?=$own['brand']?>" data-order="<?=$own['order_id']?>"><?=$own['order_num']?></div>
                     <div class="accreceiv-owndetails-bodyponumber" title="<?=$own['customer_ponum']?>"><?=$own['customer_ponum']?></div>
                     <div class="accreceiv-owndetails-bodycustomer"><?=$own['customer_name']?></div>
-                    <div class="accreceiv-owndetails-bodytype <?=$own['typeclass']?> <?=($starttype!==$own['type'] && $ownsort=='owntype') ? 'separated' : ''?>"><?=$own['type']?></div>
-                    <div class="accreceiv-owndetails-bodyapproval <?=$own['approved']==0 ? 'notapproved' : ''?> <?=($starapprov!==$own['approved'] && $ownsort=='ownapprove') ? 'separated' : ''?>"><?=$own['approved']==0 ? 'Not Approved' : 'Approved'?></div>
-                    <div class="accreceiv-owndetails-bodystatus <?=($starstatus!==$own['debt_status'] && $ownsort=='debt_status') ? 'separated' : ''?>">
+                    <div class="accreceiv-owndetails-bodytype <?=$own['typeclass']?>"><?=$own['type']?></div>
+                    <div class="accreceiv-owndetails-bodyapproval <?=$own['approved']==0 ? 'notapproved' : ''?>"><?=$own['approved']==0 ? 'Not Approved' : 'Approved'?></div>
+                    <div class="accreceiv-owndetails-bodystatus">
                         <select class="debtstatus <?=$own['debt_status']=='' ? '' : 'checked'?>" data-order="<?=$own['order_id']?>">
                             <option value="">---</option>
                             <option value="no_reply" <?=$own['debt_status']=='no_reply' ? 'selected="selected"' : ''?>>Contacted, No Reply</option>
@@ -47,10 +43,6 @@
                     </div>
                 </div>
                 <?php $numpp++;?>
-                <?php $startdue = $own['dueclass']?>
-                <?php $starttype = $own['type'];?>
-                <?php $starapprov = $own['approved'];?>
-                <?php $starstatus = $own['debt_status'];?>
             <?php } ?>
         <?php } ?>
     </div>

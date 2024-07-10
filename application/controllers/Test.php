@@ -1460,8 +1460,85 @@ class Test extends CI_Controller
 
     // Transform BT items to new format
     public function transformbtitems() {
-        $this->load->config('siteart_config');
-        $pricetypes = $this->config->item('price_types');
+//        $this->load->config('siteart_config');
+//        $pricetypes = $this->config->item('price_types');
+//        $this->db->select('item_id, item_number, item_template, vendor_item_id, main_image, cartoon_width, cartoon_heigh, cartoon_depth,cartoon_qty');
+//        $this->db->from('sb_items');
+//        $this->db->where('brand','BT');
+//        $this->db->order_by('item_number');
+//        $items = $this->db->get()->result_array();
+//        foreach ($items as $item) {
+//            $item_id = $item['item_id'];
+//            echo "Item ".$item['item_number'];
+//            // Similar
+//            $this->db->where('item_similar_item', $item_id);
+//            $this->db->delete('sb_item_similars');
+//            $this->db->select('*');
+//            $this->db->from('sb_simulars');
+//            $this->db->where('item_id', $item_id);
+//            $simres = $this->db->get()->row_array();
+//            if (!empty($simres['sim_1'])) {
+//                $this->db->set('item_similar_item', $item_id);
+//                $this->db->set('item_similar_similar', $simres['sim_1']);
+//                $this->db->insert('sb_item_similars');
+//            }
+//            if (!empty($simres['sim_2'])) {
+//                $this->db->set('item_similar_item', $item_id);
+//                $this->db->set('item_similar_similar', $simres['sim_2']);
+//                $this->db->insert('sb_item_similars');
+//            }
+//            if (!empty($simres['sim_3'])) {
+//                $this->db->set('item_similar_item', $item_id);
+//                $this->db->set('item_similar_similar', $simres['sim_3']);
+//                $this->db->insert('sb_item_similars');
+//            }
+//            echo ' Similar OK';
+//            // Images
+//            if (empty($item['main_image'])) {
+//                $this->db->select('*');
+//                $this->db->from('sb_item_images');
+//                $this->db->where('item_img_item_id', $item_id);
+//                $imgs = $this->db->get()->result_array();
+//                if (count($imgs)>0) {
+//                    $this->db->set('main_image', $imgs[0]['item_img_name']);
+//                    $this->db->where('item_id', $item_id);
+//                    $this->db->update('sb_items');
+//                    // Delete first image
+//                    // $this->db->where('item_img_id', $imgs[0]['item_img_id']);
+//                    // $this->db->delete('sb_item_images');
+//                }
+//            }
+//            echo ' Images OK';
+//            // Prices
+//            if ($item['item_template']=='Stressball') {
+//                $this->db->select('*');
+//                $this->db->from('sb_item_prices');
+//                $this->db->where('item_price_itemid', $item_id);
+//                $itmprice = $this->db->get()->row_array();
+//                if (ifset($itmprice,'item_price_id',0) > 0) {
+//                    $this->db->where('item_id', $item_id);
+//                    $this->db->delete('sb_promo_price');
+//                    foreach ($pricetypes as $pricetype) {
+//                        $this->db->set('item_id', $item_id);
+//                        $this->db->set('item_qty', $pricetype['base']);
+//                        $this->db->set('price', (empty($itmprice['item_price_'.$pricetype['type']]) ? null :  $itmprice['item_price_'.$pricetype['type']]));
+//                        $this->db->set('sale_price', (empty($itmprice['item_sale_'.$pricetype['type']]) ? null :  $itmprice['item_sale_'.$pricetype['type']]));
+//                        $this->db->set('profit', $itmprice['profit_'.$pricetype['type']]);
+//                        $this->db->insert('sb_promo_price');
+//                    }
+//                }
+//            }
+//            echo ' Prices OK'.PHP_EOL;
+//            // Add box
+//            $this->db->where('item_id', $item['item_id']);
+//            $this->db->delete('sb_item_shipping');
+//            $this->db->set('item_id', $item['item_id']);
+//            $this->db->set('box_qty', $item['cartoon_qty']);
+//            $this->db->set('box_width', $item['cartoon_width']);
+//            $this->db->set('box_length', $item['cartoon_depth']);
+//            $this->db->set('box_height', $item['cartoon_heigh']);
+//            $this->db->insert('sb_item_shipping');
+//        }
         $this->db->select('item_id, item_number, item_template, vendor_item_id, main_image, cartoon_width, cartoon_heigh, cartoon_depth,cartoon_qty');
         $this->db->from('sb_items');
         $this->db->where('brand','BT');
@@ -1469,75 +1546,17 @@ class Test extends CI_Controller
         $items = $this->db->get()->result_array();
         foreach ($items as $item) {
             $item_id = $item['item_id'];
-            echo "Item ".$item['item_number'];
-            // Similar
-            $this->db->where('item_similar_item', $item_id);
-            $this->db->delete('sb_item_similars');
+            echo 'Item # '.$item['item_number'].PHP_EOL;
             $this->db->select('*');
-            $this->db->from('sb_simulars');
-            $this->db->where('item_id', $item_id);
-            $simres = $this->db->get()->row_array();
-            if (!empty($simres['sim_1'])) {
-                $this->db->set('item_similar_item', $item_id);
-                $this->db->set('item_similar_similar', $simres['sim_1']);
-                $this->db->insert('sb_item_similars');
+            $this->db->from('sb_item_images');
+            $this->db->where('item_img_item_id', $item_id);
+            $this->db->order_by('item_img_order');
+            $imgs = $this->db->get()->result_array();
+            if (count($imgs)>0) {
+                $this->db->set('main_image', $imgs[0]['item_img_name']);
+                $this->db->where('item_id', $item_id);
+                $this->db->update('sb_items');
             }
-            if (!empty($simres['sim_2'])) {
-                $this->db->set('item_similar_item', $item_id);
-                $this->db->set('item_similar_similar', $simres['sim_2']);
-                $this->db->insert('sb_item_similars');
-            }
-            if (!empty($simres['sim_3'])) {
-                $this->db->set('item_similar_item', $item_id);
-                $this->db->set('item_similar_similar', $simres['sim_3']);
-                $this->db->insert('sb_item_similars');
-            }
-            echo ' Similar OK';
-            // Images
-            if (empty($item['main_image'])) {
-                $this->db->select('*');
-                $this->db->from('sb_item_images');
-                $this->db->where('item_img_item_id', $item_id);
-                $imgs = $this->db->get()->result_array();
-                if (count($imgs)>0) {
-                    $this->db->set('main_image', $imgs[0]['item_img_name']);
-                    $this->db->where('item_id', $item_id);
-                    $this->db->update('sb_items');
-                    // Delete first image
-                    // $this->db->where('item_img_id', $imgs[0]['item_img_id']);
-                    // $this->db->delete('sb_item_images');
-                }
-            }
-            echo ' Images OK';
-            // Prices
-            if ($item['item_template']=='Stressball') {
-                $this->db->select('*');
-                $this->db->from('sb_item_prices');
-                $this->db->where('item_price_itemid', $item_id);
-                $itmprice = $this->db->get()->row_array();
-                if (ifset($itmprice,'item_price_id',0) > 0) {
-                    $this->db->where('item_id', $item_id);
-                    $this->db->delete('sb_promo_price');
-                    foreach ($pricetypes as $pricetype) {
-                        $this->db->set('item_id', $item_id);
-                        $this->db->set('item_qty', $pricetype['base']);
-                        $this->db->set('price', (empty($itmprice['item_price_'.$pricetype['type']]) ? null :  $itmprice['item_price_'.$pricetype['type']]));
-                        $this->db->set('sale_price', (empty($itmprice['item_sale_'.$pricetype['type']]) ? null :  $itmprice['item_sale_'.$pricetype['type']]));
-                        $this->db->set('profit', $itmprice['profit_'.$pricetype['type']]);
-                        $this->db->insert('sb_promo_price');
-                    }
-                }
-            }
-            echo ' Prices OK'.PHP_EOL;
-            // Add box
-            $this->db->where('item_id', $item['item_id']);
-            $this->db->delete('sb_item_shipping');
-            $this->db->set('item_id', $item['item_id']);
-            $this->db->set('box_qty', $item['cartoon_qty']);
-            $this->db->set('box_width', $item['cartoon_width']);
-            $this->db->set('box_length', $item['cartoon_depth']);
-            $this->db->set('box_height', $item['cartoon_heigh']);
-            $this->db->insert('sb_item_shipping');
         }
         echo 'Convert finished'.PHP_EOL;
     }
@@ -4016,6 +4035,123 @@ class Test extends CI_Controller
             echo 'File '.$file.' ready'.PHP_EOL;
         }
 
+    }
+
+    public function transfort_trackpackages()
+    {
+        $this->db->select('sp.track_code, sa.item_qty, o.order_num, oi.order_item_id, o.shipdate, sp.deliver_service');
+        $this->db->from('ts_order_shippacks sp');
+        $this->db->join('ts_order_shipaddres sa', 'sp.order_shipaddr_id=sa.order_shipaddr_id');
+        $this->db->join('ts_orders o', 'o.order_id=sa.order_id');
+        $this->db->join('ts_order_items oi', 'o.order_id=oi.order_id');
+        $this->db->where("coalesce(sp.track_code,'') != ''");
+        $packs = $this->db->get()->result_array();
+        foreach ($packs as $pack) {
+            $this->db->set('created_at', date('Y-m-d H:i:s'));
+            $this->db->set('created_by', 1);
+            $this->db->set('updated_by', 1);
+            $this->db->set('order_item_id', $pack['order_item_id']);
+            $this->db->set('qty', $pack['item_qty']);
+            $this->db->set('trackdate', $pack['shipdate']);
+            $this->db->set('trackservice', $pack['deliver_service']);
+            $this->db->set('trackcode', $pack['track_code']);
+            $this->db->insert('ts_order_trackings');
+            echo 'Order # '.$pack['order_num'].' add Track'.PHP_EOL;
+        }
+    }
+    public function change_incomeprices()
+    {
+        /* Array */
+        $changes = [];
+//        $changes[] = [
+//            'item_num' => 'i021',
+//            'color' => 'Blue',
+//            'income' => 'AJ01930',
+//            'new_price' => 0.410,
+//        ];
+        $changes[] = [
+            'item_num' => 'i021',
+            'color' => 'Grass Green',
+            'income' => 'AJ01931',
+            'new_price' => 0.460,
+        ];
+//        $changes[] = [
+//            'item_num' => 'i021',
+//            'color' => 'Red',
+//            'income' => 'AJ01933',
+//            'new_price' => 0.460,
+//        ];
+//        $changes[] = [
+//            'item_num' => 'i021',
+//            'color' => 'Yellow',
+//            'income' => 'AJ01932',
+//            'new_price' => 0.460,
+//        ];
+        foreach ($changes as $change) {
+            $this->db->select('i.income_price, i.income_qty, i.income_expense, c.inventory_color_id, i.inventory_income_id, im.inventory_item_id');
+            $this->db->from('ts_inventory_incomes i');
+            $this->db->join('ts_inventory_colors c','c.inventory_color_id=i.inventory_color_id');
+            $this->db->join('ts_inventory_items im','im.inventory_item_id=c.inventory_item_id');
+            $this->db->where('im.item_num', $change['item_num']);
+            $this->db->where('c.color', $change['color']);
+            $this->db->where('i.income_record', $change['income']);
+            $candidat = $this->db->get()->row_array();
+            if (ifset($candidat,'inventory_color_id',0)==0) {
+                echo 'Color '.$change['color'].' Income '.$change['income'].' not found'.PHP_EOL;
+                echo 'QRY '.$this->db->last_query().PHP_EOL;
+                die();
+            } else {
+                echo 'Color '.$change['color'].' QTY '.$candidat['income_qty'].' Rest '.$candidat['income_expense'].' Price '.$candidat['income_price'].' New Price '.$change['new_price'].' Check '.$candidat['inventory_income_id'].PHP_EOL;
+                $this->db->select('oi.order_id, oi.amount_id, oi.qty, o.order_cog, o.profit, o.revenue, o.profit_perc');
+                $this->db->from('ts_order_inventory oi');
+                $this->db->join('ts_orders o','oi.order_id=o.order_id');
+                $this->db->where('oi.inventory_income_id', $candidat['inventory_income_id']);
+                $amnts = $this->db->get()->result_array();
+                foreach ($amnts as $amnt) {
+                    $this->db->select('oa.amount_id, oa.price, oa.shipped, oa.misprint, oa.kepted, i.income_price, oi.qty, i.inventory_income_id');
+                    $this->db->select('oa.orangeplate, oa.blueplate, oa.orangeplate_price, oa.blueplate_price, oa.beigeplate, oa.beigeplate_price, oa.extracost');
+                    $this->db->from('ts_order_amounts oa');
+                    $this->db->join('ts_order_inventory oi','oi.amount_id=oa.amount_id');
+                    $this->db->join('ts_inventory_incomes i','i.inventory_income_id=oi.inventory_income_id');
+                    $this->db->where('oa.amount_id',$amnt['amount_id']);
+                    $amtdatas = $this->db->get()->result_array();
+                    $sumtotal = 0;
+                    $sumqty = 0;
+                    foreach ($amtdatas as $amtdata) {
+                        if ($amtdata['inventory_income_id']==$candidat['inventory_income_id']) {
+                            $price = $change['new_price'];
+                        } else {
+                            $price = $amtdata['price'];
+                        }
+                        $sumqty+=$amtdata['shipped']+$amtdata['misprint']+$amtdata['kepted'];
+                        $sumtotal+=$price * ($amtdata['shipped']+$amtdata['misprint']+$amtdata['kepted']);
+                    }
+                    $amtprice = round($sumtotal/$sumqty,3); // +$amtdata['extracost'];
+                    echo 'Amount '.$amtdata['amount_id'].' Old Price '.$amtdata['price'].' New Price '.$amtprice.PHP_EOL;
+                    $amounttotal = $sumtotal+($amtdata['extracost']*$sumqty)+($amtdata['orangeplate']*$amtdata['orangeplate_price'])+($amtdata['blueplate']*$amtdata['blueplate_price'])+($amtdata['beigeplate']*$amtdata['beigeplate_price']);
+                    // Update Amount
+                    $this->db->where('amount_id', $amnt['amount_id']);
+                    $this->db->set('price', $amtprice);
+                    $this->db->set('printshop_total', $amounttotal);
+                    $this->db->set('amount_sum', $amounttotal);
+                    $this->db->update('ts_order_amounts');
+                    // Update Order
+                    // New cog, profit, profit percent
+                    $diffcog = $amounttotal - $amnt['order_cog'];
+                    $newprofit = $amnt['profit'] - $diffcog;
+                    $newprofit_perc = round($newprofit/$amnt['revenue']*100,1);
+                    $this->db->where('order_id', $amnt['order_id']);
+                    $this->db->set('order_cog', $amounttotal);
+                    $this->db->set('profit', $newprofit);
+                    $this->db->set('profit_perc', $newprofit_perc);
+                    $this->db->update('ts_orders');
+                }
+                // Update income
+                $this->db->where('inventory_income_id', $candidat['inventory_income_id']);
+                $this->db->set('income_price', $change['new_price']);
+                $this->db->update('ts_inventory_incomes');
+            }
+        }
     }
 
 }

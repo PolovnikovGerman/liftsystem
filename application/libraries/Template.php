@@ -248,11 +248,51 @@ class Template
         }
         // Shipping Date
         $shipstatus=$this->CI->leadorder_model->_leadorderview_shipping_status($res);
-        $shipoption=array(
-            'label'=>$shipstatus['order_status'],
-            'class'=>$shipstatus['order_status_class'],
-        );
-        $shipview=$this->CI->load->view('leadorderdetails/shipdate_data_view', $shipoption, TRUE);
+        $trackcontent = '';
+        $order_items=$res['order_items'];
+        if (count($order_items)==1) {
+            $shipoptions = [
+                'shipdate' => $shipstatus['order_status'],
+                'item' => $order_items[0]['item_name'],
+                'qty' => $order_items[0]['item_qty'],
+                'order_item' => $order_items[0]['order_item_id'],
+            ];
+            $tracktotal = 0;
+            if (!empty($order_items[0]['trackings'])) {
+                foreach ($order_items[0]['trackings'] as $tracking) {
+                    $tracktotal+=$tracking['qty'];
+                }
+            }
+            $resttrack = $order_items[0]['item_qty'] - $tracktotal;
+            $shipoptions['remind'] = $resttrack;
+            $shipoptions['completed'] = ($resttrack > 0 ? 0 : 1);
+            $trackbody = '';
+            if (!empty($order_items[0]['trackings'])) {
+                $tbodyoptions = [
+                    'trackings' => $order_items[0]['trackings'],
+                    'completed' => ($resttrack > 0 ? 0 : 1),
+                    'order_item' => $order_items[0]['order_item_id'],
+                ];
+                if ($edit==1) {
+                    $trackbody = $this->CI->load->view('leadorderdetails/tracking_data_edit', $tbodyoptions, TRUE);
+                } else {
+                    $trackbody = $this->CI->load->view('leadorderdetails/tracking_data_view', $tbodyoptions, TRUE);
+                }
+            }
+            $shipoptions['trackbody'] = $trackbody;
+            if ($edit==1) {
+                if ($resttrack==0) {
+                    $trackcontent = $this->CI->load->view('leadorderdetails/tracking_view', $shipoptions, TRUE);
+                } else {
+                    $trackcontent = $this->CI->load->view('leadorderdetails/tracking_edit', $shipoptions, TRUE);
+                }
+            } else {
+                $trackcontent = $this->CI->load->view('leadorderdetails/tracking_view', $shipoptions, TRUE);
+            }
+        } else {
+            // Multihip
+        }
+
         // Total Due
         $total_due=$res['total_due'];
         $dueoptions=array(
@@ -270,7 +310,7 @@ class Template
         $dueview=$this->CI->load->view('leadorderdetails/totaldue_data_view', $dueoptions, TRUE);
         $bottom_options=array(
             'ticketview'=>$ticketview,
-            'shippview'=>$shipview,
+            'shippview'=> $trackcontent,
             'totaldueview'=>$dueview,
         );
         $orddata['taxalign']='';
@@ -348,10 +388,11 @@ class Template
             } else {
                 $orddata['contacts']=$this->CI->load->view('leadorderdetails/contact_detail_edit', array('data'=>$contacts), TRUE);
             }
-            $order_items=$res['order_items'];
+            // $order_items=$res['order_items'];
 
             $content='';
             $subtotal=0;
+            
             foreach ($order_items as $irow) {
                 $imprints=$irow['imprints'];
                 if ($orddata['order_blank']==1 && count($imprints)==1) {
