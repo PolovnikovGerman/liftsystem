@@ -290,6 +290,35 @@ class Template
             }
         } else {
             // Multihip
+            $totalitems = 0;
+            $tracktotal = 0;
+            foreach ($order_items as $order_item) {
+                $totalitems+=$order_item['item_qty'];
+                foreach ($order_item['trackings'] as $tracking) {
+                    $tracktotal+=$tracking['qty'];
+                }
+            }
+            $completed = 1;
+            if ($tracktotal < $totalitems) {
+                $completed = 0;
+            }
+            $numhead = 1;
+            foreach ($order_items as $order_item) {
+                $headoptions = [
+                    'item' => $order_item['item_name'],
+                    'qty' => $order_item['item_qty'],
+                    'order_item' => $order_item['order_item_id'],
+                    'headclass' => ($numhead==1 ? 'starthead' : ''),
+                    'completed' => $completed,
+                ];
+                if ($edit==1) {
+                    $trackcontent.= $this->CI->load->view('leadorderdetails/track_view', $headoptions, TRUE);
+                } else {
+                    $trackcontent.= $this->CI->load->view('leadorderdetails/track_view', $headoptions, TRUE);
+                }
+
+                $numhead++;
+            }
         }
 
         // Total Due
