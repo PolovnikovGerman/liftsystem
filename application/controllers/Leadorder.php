@@ -6394,4 +6394,65 @@ class Leadorder extends MY_Controller
         }
         return $contant;
     }
+
+    private function _prepare_multitrack_view($leadorder, $edit=1)
+    {
+        $order_items = $leadorder['order_items'];
+        $shipping = $leadorder['shipping'];
+        $totalitems = 0;
+        $tracktotal = 0;
+        foreach ($order_items as $order_item) {
+            $totalitems+=$order_item['item_qty'];
+            foreach ($order_item['trackings'] as $tracking) {
+                $tracktotal+=$tracking['qty'];
+            }
+        }
+        $remains = $totalitems - $tracktotal;
+        $completed = 1;
+        if ($remains > 0) {
+            $completed = 0;
+        }
+
+        $trackcontent = '<div class="trackingdataarea">';
+        $numhead = 1;
+        $trackcontent.='<div class="multitrackbodyarea">';
+        foreach ($order_items as $order_item) {
+            $headoptions = [
+                'item' => $order_item['item_name'],
+                'qty' => $order_item['item_qty'],
+                'order_item' => $order_item['order_item_id'],
+                'headclass' => ($numhead==1 ? '' : 'middlehead'),
+                'completed' => $completed,
+            ];
+            if ($edit==1) {
+                if ($completed==1) {
+                    $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
+                } else {
+                    $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_edit', $headoptions, TRUE);
+                }
+            } else {
+                $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
+            }
+            $tbodyoptions = [
+                'trackings' => $order_item['trackings'],
+                'completed' => $completed,
+                'order_item' => $order_item['order_item_id'],
+            ];
+            if ($edit==1) {
+                $trackcontent.=$this->CI->load->view('leadorderdetails/multitrack_data_edit', $tbodyoptions, TRUE);
+            } else {
+                $trackcontent.=$this->CI->load->view('leadorderdetails/multitrack_data_view', $tbodyoptions, TRUE);
+            }
+            $numhead++;
+        }
+        $trackcontent.='</div>';
+        $tfooteroptions = [
+            'completed' => $completed,
+            'remind' => $remains,
+            'shipdate' => 'To Ship '.date('m/d/y', $shipping['shipdate']),
+        ];
+        $trackcontent.=$this->CI->load->view('leadorderdetails/multitrack_footer_view', $tfooteroptions, TRUE);
+        $trackcontent.='</div>';
+        return $trackcontent;
+    }
 }

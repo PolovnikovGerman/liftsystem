@@ -5760,3 +5760,78 @@ input.ticket_date {
 .multitrackdatabody.completed {
     background: #c59e51;
 }
+.multitrackdatabody .trackdatarow {
+    border: 1px solid #000000;
+    margin-bottom: 3px;
+    clear: both;
+    float: left;
+}
+.multitrackdatabody .trackdatarow.editmode {
+    border: none!important;
+}
+.multitrackdatabody .trackdatarow.completed {
+    background: #f0d091;
+}
+.multitrackdatabody .trackdatarow > div {
+    float: left;
+    height: 17px;
+    line-height: 17px;
+    font-size: 12px;
+    color: #000000;
+}
+.multitrackdatabody .trackqty {
+    width: 49px;
+    padding-right: 5px;
+    text-align: right;
+    border-right: 1px solid #000000;
+}
+.multitrackdatabody .trackqty.editmode {
+    border-right: none;
+}
+.multitrackdatabody .trackdate {
+    width: 70px;
+    text-align: center;
+    border-right: 1px solid #000000;
+}
+.multitrackdatabody .trackdate.editmode {
+    border-right: none;
+}
+.multitrackdatabody .trackservice {
+    width: 62px;
+    padding-left: 7px;
+    border-right: 1px solid #000000;
+}
+.multitrackdatabody .trackservice.editmode {
+    border-right: none;
+}
+.multitrackdatabody .trackcode {
+    width: 142px;
+    padding-left: 7px;
+    color: #0000FF!important;
+}
+.multitrackdatabody .trackcodecopy {
+    background: #000000;
+    color: #ffffff!important;
+    cursor: pointer;
+    float: left;
+    font-size: 11px;
+    height: 17px;
+    text-align: center;
+    width: 17px;
+}
+.multitrackdatabody .trackcoderemove {
+    background: #000000;
+    color: #ffffff!important;
+    cursor: pointer;
+    float: left;
+    font-size: 11px;
+    height: 17px;
+    text-align: center;
+    width: 17px;
+    margin-left: 3px;
+}
+.multitrackdatabody input, .multitrackdatabody select {
+    height: 17px;
+    border: 1px solid #4d4d4d;
+    color: #000000;
+}
