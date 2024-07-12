@@ -4039,6 +4039,7 @@ class Test extends CI_Controller
 
     public function transform_trackpackages()
     {
+        ini_set("memory_limit","-1");
         $this->db->select('sp.track_code, oi.item_qty, o.order_num, oi.order_item_id, o.shipdate, sp.deliver_service'); // sa.item_qty
         $this->db->from('ts_order_shippacks sp');
         $this->db->join('ts_order_shipaddres sa', 'sp.order_shipaddr_id=sa.order_shipaddr_id');
