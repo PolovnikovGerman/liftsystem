@@ -249,7 +249,13 @@ function navigation_init() {
         var trackdat = $(this).data('track');
         var txtVal = $(".trackcodehidden[data-track='"+trackdat+"']").val();
         copyTextToClipboard(txtVal);
-    })
+    });
+    // Open Tracking Window
+    $("a.trackservicelnk").unbind('click').click(function (){
+        var url = $(this).data('lnkdata');
+        // Open new window
+        window.open(url, 'trackformwin', 'width=600, height=800,toolbar=1')
+    });
 }
 
 
@@ -2478,7 +2484,10 @@ function change_leadorder_item(params) {
                 // alert(response.data.shipwarn);
                 init_confirmshipcost(response.data.shipwarn);
             }
-            
+            // Track code
+            if (parseInt(response.data.trackcode)==1) {
+                $(".shippingdataviewarea").empty().html(response.data.trackbody);
+            }
             $("input#loctimeout").val(response.data.loctime);
             init_onlineleadorder_edit();
             $("#loader").hide();               
@@ -2971,9 +2980,7 @@ function init_leadorder_shipping() {
                 }
                 // Tracking code
                 if (parseInt(response.data.trackcount)==1) {
-                    $(".trackingdatabody[data-orderitem='"+response.data.order_item+"']").empty().html(response.data.trackbody);
-                } else {
-                    // Multi Orders Items
+                    $(".shippingdataviewarea").empty().html(response.data.trackbodby);
                 }
                 $("#loader").hide();
                 if (response.data.warning==1) {

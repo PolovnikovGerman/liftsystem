@@ -2489,6 +2489,16 @@ class Leadorder extends MY_Controller
                                 $mdata['shipcost']=$this->_build_multiship_view($shipping_address, $rushview, $order, $shipping);
                             }
                         }
+                        $mdata['trackcode'] = 0;
+                        if ($postdata['fldname']=='item_qty') {
+                            $mdata['trackcode'] = 1;
+                            $orderitems = $leadorder['order_items'];
+                            if (count($orderitems)==1) {
+                                $mdata['trackbody'] = $this->_prepare_tracking_view($leadorder, 1);
+                            } else {
+                                $mdata['trackbody'] = $this->_prepare_multitrack_view($leadorder,1);
+                            }
+                        }
                     }
                 }
             }
@@ -2997,15 +3007,11 @@ class Leadorder extends MY_Controller
                         $mdata['tax']=MoneyOutput($order['tax']);
                         $mdata['profit_content']=$this->_profit_data_view($order);
                         $order_items = $leadorder['order_items'];
+                        $mdata['trackcount'] = 1;
                         if (count($order_items)==1) {
-                            $mdata['trackcount'] = 1;
-                            $options = [
-                                'trackings' => $order_items[0]['trackings'],
-                                'completed' => 0,
-                                'order_item' => $order_items[0]['order_item_id'],
-                            ];
-                            $mdata['trackbody'] = $this->load->view('leadorderdetails/tracking_data_edit', $options, TRUE);
-                            $mdata['order_item'] = $order_items[0]['order_item_id'];
+                            $mdata['trackbodby'] = $this->_prepare_tracking_view($leadorder, 1);
+                        } else {
+                            $mdata['trackbodby'] = $this->_prepare_multitrack_view($leadorder, 1);
                         }
                         if ($fldname=='country_id') {
                             if (count($res['states'])==0) {
@@ -6359,7 +6365,6 @@ class Leadorder extends MY_Controller
     private function _prepare_tracking_view($leadorder, $edit =1) {
         $order_items = $leadorder['order_items'];
         $shipping = $leadorder['shipping'];
-        // $order_item = $res['item'];
         $contant = '';
         foreach ($order_items as $order_item) {
             $shipoptions = [
@@ -6369,12 +6374,17 @@ class Leadorder extends MY_Controller
                 'order_item' => $order_item['order_item_id'],
             ];
             $totaltrack = 0;
+            $totaloldtrack = 0;
             foreach ($order_item['trackings'] as $tracking) {
                 $totaltrack+=$tracking['qty'];
+                if ($tracking['tracking_id']>0) {
+                    $totaloldtrack+=$tracking['qty'];
+                }
             }
             $resttrack = $order_item['item_qty']-$totaltrack;
+            $chkrest = $order_item['item_qty'] - $totaloldtrack;
             $shipoptions['remind'] = $resttrack;
-            $shipoptions['completed'] = ($resttrack > 0 ? 0 : 1);
+            $shipoptions['completed'] = ($chkrest > 0 ? 0 : 1);
             $trackbody = '';
             if (!empty($order_item['trackings'])) {
                 $tbodyoptions = [
@@ -6385,7 +6395,7 @@ class Leadorder extends MY_Controller
                 $trackbody = $this->load->view('leadorderdetails/tracking_data_edit', $tbodyoptions, TRUE);
             }
             $shipoptions['trackbody'] = $trackbody;
-            if ($resttrack==0) {
+            if ($edit==0) {
                 $trackcontent = $this->load->view('leadorderdetails/tracking_view', $shipoptions, TRUE);
             } else {
                 $trackcontent = $this->load->view('leadorderdetails/tracking_edit', $shipoptions, TRUE);
@@ -6426,12 +6436,12 @@ class Leadorder extends MY_Controller
             ];
             if ($edit==1) {
                 if ($completed==1) {
-                    $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
+                    $trackcontent.= $this->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
                 } else {
-                    $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_edit', $headoptions, TRUE);
+                    $trackcontent.= $this->load->view('leadorderdetails/multitrack_head_edit', $headoptions, TRUE);
                 }
             } else {
-                $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
+                $trackcontent.= $this->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
             }
             $tbodyoptions = [
                 'trackings' => $order_item['trackings'],
@@ -6439,9 +6449,9 @@ class Leadorder extends MY_Controller
                 'order_item' => $order_item['order_item_id'],
             ];
             if ($edit==1) {
-                $trackcontent.=$this->CI->load->view('leadorderdetails/multitrack_data_edit', $tbodyoptions, TRUE);
+                $trackcontent.=$this->load->view('leadorderdetails/multitrack_data_edit', $tbodyoptions, TRUE);
             } else {
-                $trackcontent.=$this->CI->load->view('leadorderdetails/multitrack_data_view', $tbodyoptions, TRUE);
+                $trackcontent.=$this->load->view('leadorderdetails/multitrack_data_view', $tbodyoptions, TRUE);
             }
             $numhead++;
         }
@@ -6451,7 +6461,7 @@ class Leadorder extends MY_Controller
             'remind' => $remains,
             'shipdate' => 'To Ship '.date('m/d/y', $shipping['shipdate']),
         ];
-        $trackcontent.=$this->CI->load->view('leadorderdetails/multitrack_footer_view', $tfooteroptions, TRUE);
+        $trackcontent.=$this->load->view('leadorderdetails/multitrack_footer_view', $tfooteroptions, TRUE);
         $trackcontent.='</div>';
         return $trackcontent;
     }

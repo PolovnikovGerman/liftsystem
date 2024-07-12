@@ -1,6 +1,6 @@
-<div class="multitrackdatabody">
+<div class="multitrackdatabody <?=$completed==1 ? 'completed' : ''?>">
     <?php foreach ($trackings as $tracking) { ?>
-        <div class="trackdatarow editmode" data-track="<?=$tracking['tracking_id']?>">
+        <div class="trackdatarow editmode <?=$completed==1 ? 'completed' : ''?>" data-track="<?=$tracking['tracking_id']?>">
             <input type="hidden" class="trackcodehidden" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" value="<?=$tracking['trackcode']?>"/>
             <div class="trackqty editmode">
                 <input type="text" class="trackqtyinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" value="<?=$tracking['qty']?>"/>

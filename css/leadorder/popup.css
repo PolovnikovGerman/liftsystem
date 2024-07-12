@@ -1853,9 +1853,11 @@ span.taxemptyview {
     resize: none;
     overflow-y: auto;
     width: 237px;
-    /* height: 108px; */
-    height: 103px;
+    height: 69px;
     margin-left: 2px;
+}
+.block_7_textarea:read-only {
+    height: 103px;
 }
 .block_7_art {
     float: left;
@@ -2174,10 +2176,9 @@ input.artrepeat {
     float: left;
     height: 23px;
     line-height: 22px;
-    /* margin: 0 15px; */
-    /* margin: 0 15px 0 37px; */
     width: 126px;
     border-radius: 7px;
+    margin-top: 7px;
 }
 .block_10.profitdetailsviewarea {
     cursor: pointer;
@@ -2464,6 +2465,7 @@ input.artrepeat {
 .totalduedataviewarea {
     float: left;
     width: 155px;
+    margin-top: 6px;
 }
 /* System Switcher */
 .orderssystemswitch {
@@ -5707,8 +5709,8 @@ input.ticket_date {
     color: #0000FF!important;
 }
 .trackingdatabody .trackcodecopy {
-    background: #000000;
-    color: #ffffff!important;
+    background: #979797;
+    color: #000000!important;
     cursor: pointer;
     float: left;
     font-size: 11px;
@@ -5807,11 +5809,10 @@ input.ticket_date {
 .multitrackdatabody .trackcode {
     width: 142px;
     padding-left: 7px;
-    color: #0000FF!important;
 }
 .multitrackdatabody .trackcodecopy {
-    background: #000000;
-    color: #ffffff!important;
+    background: #979797;
+    color: #000000!important;
     cursor: pointer;
     float: left;
     font-size: 11px;
@@ -5834,4 +5835,13 @@ input.ticket_date {
     height: 17px;
     border: 1px solid #4d4d4d;
     color: #000000;
+}
+a.trackservicelnk {
+    color: #0000FF!important;
+    text-decoration: none;
+    cursor: pointer;
+}
+a.trackservicelnk:hover, a.trackservicelnk:focus {
+    text-decoration: none;
+    cursor: pointer;
 }
