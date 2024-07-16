@@ -12,6 +12,9 @@
         <li><span class="moreoptionmsgs"><img src="/img/mailbox/icon-more.svg"></span></li>
     </ul>
 </div>
+<div class="popup_move_window" id="popup_move_window">&nbsp;</div>
+<div class="popup_addition_window"></div>
+<div class="popup_sorting_window"></div>
 <div class="choose-sort">
     <label>Sort</label>
     <span class="arrow-select"><i class="fa fa-chevron-down" aria-hidden="true"></i></span>

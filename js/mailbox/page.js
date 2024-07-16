@@ -200,6 +200,11 @@ function init_mailbox_manage() {
                     $(".emails-block").append('<div class="emails-block-body"></div>');
                     $(".emails-block-body").empty().html(response.data.messages);
                     $(".emails-block-header").empty().html(response.data.header);
+                    // Folders
+                    var folders = response.data.folders;
+                    for (var i = 0; i < folders.length; i++) {
+                        $("li.viewfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
+                    }
                     $("#loader").hide();
                     init_mailbox_manage();
                 } else {
@@ -207,6 +212,26 @@ function init_mailbox_manage() {
                     show_error(response);
                 }
             },'json');
+        }
+    });
+    // Move BTN
+    $(".movemsgsfolder").unbind('click').click(function () {
+        var cntmsg = $(".eb-checkbox:checked").length;
+        if (parseInt(cntmsg) > 0) {
+            var params = new Array();
+            params.push({name: 'folder', value: $("#folder").val()});
+            params.push({name: 'postbox', value: $("#postbox").val()});
+            var url = '/mailbox/prepare_movemsgs';
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $("#popup_move_window").empty().html(response.data.content);
+                    $("#popup_move_window").show();
+                    // init folders select
+                } else {
+                    show_error(response);
+                }
+            },'json');
+
         }
     });
 

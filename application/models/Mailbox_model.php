@@ -674,6 +674,18 @@ class Mailbox_model extends MY_Model
         return $out;
     }
 
+    public function get_postbox_folderslist($postbox_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Issue with Connection'];
+        $this->db->select('*')->from('postbox_folders')->where('postbox_id', $postbox_id)->order_by('folder_id','asc');
+        $folders = $this->db->get()->result_array();
+        if (count($folders) > 0) {
+            $out['result'] = $this->success_result;
+            $out['folders'] = $folders;
+        }
+        return $out;
+    }
+
     private function _folders_statistic($postbox_id)
     {
         $this->db->select('f.folder_id, f.folder_name, count(m.message_id) as cnt')->from('postbox_folders f')->join('postbox_messages m','f.folder_id=m.folder_id','left')->where('f.postbox_id', $postbox_id)->group_by('folder_id, f.folder_name');

@@ -88,7 +88,8 @@ $curdate = '';
         <th class="tab-th-05" data-message="<?=$message['message_id']?>"><span class="subject-email"><?=$message['message_subject']?></span></th>
         <th class="tab-th-06" data-message="<?=$message['message_id']?>">
             <?php if ($message['numattach']>0) { ?>
-                <span class="ic-grey"><i class="fa fa-file-image-o" aria-hidden="true"></i></span>
+                <span class="ic-grey"><i class="fa fa-paperclip" aria-hidden="true"></i></span>
+        <!-- fa fa-file-image-o -->
             <?php } else { ?>
                 &nbsp;
             <?php } ?>

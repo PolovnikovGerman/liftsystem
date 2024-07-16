@@ -38,9 +38,6 @@ class Mailbox extends MY_Controller
         $menu_view = $this->load->view('mailbox/postboxes_view', ['postboxes' => $postboxes], TRUE);
         $content_options = [];
         $gmaps = 0;
-//        if (!empty($this->config->item('google_map_key'))) {
-//            $gmaps = 1;
-//        }
 
         $content_options['menu'] = $menu_view;
         // Add main page management
@@ -52,22 +49,6 @@ class Mailbox extends MY_Controller
         // DatePicker
         $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
         $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
-//        /*Google Chart */
-//        $head['scripts'][]=array('src'=>"https://www.gstatic.com/charts/loader.js");
-        // Order popup
-//        $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
-//        $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
-//        if ($gmaps==1) {
-//            $head['scripts'][]=array('src'=>'/js/leads/order_address.js');
-//        }
-        // Uploader
-//        $head['scripts'][]=array('src'=>'/js/adminpage/fileuploader.js');
-//        $head['styles'][]=array('style'=>'/css/page_view/fileuploader.css');
-//        // File Download
-//        $head['scripts'][]=array('src'=>'/js/adminpage/jquery.fileDownload.js');
-//        // Select 2
-//        $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
-//        $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
         // Scroll panel
         $head['scripts'][] = array('src' => '/js/adminpage/jquery-scrollpanel.js');
         // File Download
@@ -336,7 +317,29 @@ class Mailbox extends MY_Controller
                         }
                         $mdata['header'] = $header_view;
                         $mdata['messages'] = $this->_prepare_messages_view($messages, $postsort);
+                        // Count # of messages in folder
+                        $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
                     }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function prepare_movemsgs() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Postbox Details';
+            $postdata = $this->input->post();
+            $postbox = ifset($postdata, 'postbox', '');
+            $folder = ifset($postdata,'folder', '');
+            if (!empty($postbox) && !empty($folder)) {
+                $res = $this->mailbox_model->get_postbox_folderslist($postbox);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['content'] = $this->load->view('mailbox/move_messages_view',['folders'=>$res['folders'], 'current' => $folder], TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
