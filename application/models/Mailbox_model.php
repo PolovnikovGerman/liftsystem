@@ -674,6 +674,42 @@ class Mailbox_model extends MY_Model
         return $out;
     }
 
+    public function messages_move($messages, $postbox_id, $target_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Postbox Not Found'];
+        $this->db->select('*')->from('user_postboxes')->where('postbox_id', $postbox_id);
+        $postbox = $this->db->get()->row_array();
+        if (ifset($postbox, 'postbox_id',0)==$postbox_id) {
+            $out['msg'] = 'Target Folder Not Exist';
+            $this->db->select('*')->from('postbox_folders')->where('folder_id', $target_id);
+            $folder = $this->db->get()->row_array();
+            if (ifset($folder, 'folder_id', 0)==$target_id) {
+                $imapdat = $this->_create_imap_client($postbox);
+                $out['msg'] = $imapdat['msg'];
+                if ($imapdat['result']==$this->success_result) {
+                    $imap = $imapdat['imap'];
+                    foreach ($messages as $message) {
+                        $this->db->select('message_uid')->from('postbox_messages')->where('message_id', $message);
+                        $msgdat = $this->db->get()->row_array();
+                        if (!empty($msgdat['message_uid'])) {
+                            try {
+                                $imap->moveMessage($msgdat['message_uid'], $folder['folder_name']);
+                                $this->db->where('message_id', $message);
+                                $this->db->set('folder_id', $target_id);
+                                $this->db->update('postbox_messages');
+                            } catch (ImapClientException $error) {
+                                $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
+                                return $out;
+                            }
+                        }
+                    }
+                    $out['result'] = $this->success_result;
+                }
+            }
+        }
+        return $out;
+    }
+
     public function get_postbox_folderslist($postbox_id)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Issue with Connection'];

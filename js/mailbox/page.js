@@ -191,6 +191,7 @@ function init_mailbox_manage() {
             params.push({name: 'messages', value: msgs});
             params.push({name: 'folder', value: $("#folder").val()});
             params.push({name: 'postbox', value: $("#postbox").val()});
+            params.push({name: 'postsort', value: $("#postboxsort").val()});
             var url = '/mailbox/messages_archive';
             $("#loader").show();
             $.post(url, params, function(response){
@@ -227,6 +228,7 @@ function init_mailbox_manage() {
                     $("#popup_move_window").empty().html(response.data.content);
                     $("#popup_move_window").show();
                     // init folders select
+                    move_messages_init();
                 } else {
                     show_error(response);
                 }
@@ -234,7 +236,50 @@ function init_mailbox_manage() {
 
         }
     });
+}
 
+function move_messages_init() {
+    $('body').on('click',function(event){
+        if(!$(event.target).is('#popup_move_window')){
+            $("#popup_move_window").hide();
+        }
+    });
+    $(".movemsgfolder.available").unbind('click').click(function (){
+        var newfolder = $(this).data('folder');
+        var msgs = new Array();
+        $(".eb-checkbox").each(function (e){
+            if ($(this).prop('checked')==true) {
+                msgs.push($(this).data('message'));
+            }
+        });
+        var params = new Array();
+        params.push({name: 'messages', value: msgs});
+        params.push({name: 'folder', value: $("#folder").val()});
+        params.push({name: 'postbox', value: $("#postbox").val()});
+        params.push({name: 'target', value: newfolder});
+        params.push({name: 'postsort', value: $("#postboxsort").val()});
+        var url = '/mailbox/messages_move';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".emails-block").removeClass('messagedetails').empty();
+                $(".emails-block").append('<div class="emails-block-header"></div>');
+                $(".emails-block").append('<div class="emails-block-body"></div>');
+                $(".emails-block-body").empty().html(response.data.messages);
+                $(".emails-block-header").empty().html(response.data.header);
+                // Folders
+                var folders = response.data.folders;
+                for (var i = 0; i < folders.length; i++) {
+                    $("li.viewfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
+                }
+                $("#loader").hide();
+                init_mailbox_manage();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 function add_newfolder() {

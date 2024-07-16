@@ -347,6 +347,47 @@ class Mailbox extends MY_Controller
         show_404();
     }
 
+    // Move messages to target
+    public function messages_move()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Postbox Details';
+            $postdata = $this->input->post();
+            $postbox = ifset($postdata, 'postbox', '');
+            $folder = ifset($postdata,'folder', '');
+            $msgsrc = ifset($postdata, 'messages','');
+            $postsort = ifset($postdata,'postsort','date_desc');
+            $target = ifset($postdata, 'target', '');
+            if (!empty($postbox) && !empty($folder) && !empty($msgsrc) && !empty($target)) {
+                $messages = explode(',', $msgsrc);
+                $res = $this->mailbox_model->messages_move($messages, $postbox, $target);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $resfld = $this->mailbox_model->postbox_viewfolder($postbox, $folder, $postsort);
+                    $error = $resfld['msg'];
+                    if ($resfld['result']==$this->success_result) {
+                        $error = '';
+                        $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
+                        $folder = $resfld['folder'];
+                        $messages = $resfld['messages'];
+                        if (count($messages)==0) {
+                            $header_view = $this->load->view('mailbox/folder_header_empty',['folder'=>$folder['folder_name']], true);
+                        } else {
+                            $header_view = $this->load->view('mailbox/folder_header_view',['folder'=>$folder['folder_id']], true);
+                        }
+                        $mdata['header'] = $header_view;
+                        $mdata['messages'] = $this->_prepare_messages_view($messages, $postsort);
+                        // Count # of messages in folder
+                        $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     private function _prepare_messages_view($messages, $sort='date_desc')
     {
         $curdate = date('Y-m-d');
