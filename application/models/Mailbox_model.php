@@ -7,7 +7,7 @@ class Mailbox_model extends MY_Model
 {
     var $inbox_name = 'Inbox';
     var $archive_name = 'Archive';
-
+    var $trash_name = 'Trash';
     var $mainfolders = [
         'Inbox',
         'Unread',
@@ -455,7 +455,7 @@ class Mailbox_model extends MY_Model
                     ];
                     $this->db->select('m.*, coalesce(atchs.cnt,0) as numattach')->from('postbox_messages m')->
                     join('postbox_folders f', 'f.folder_id=m.folder_id')->join("({$attachssql}) as atchs",'m.message_id=atchs.message_id', 'left')->
-                    where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_seen'=>0])->order_by($sortby, $sortorder);
+                    where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_seen' => 0,'m.message_deleted' => 0])->order_by($sortby, $sortorder);
                     $messages = $this->db->get()->result_array();
                 } else {
                     $folder = [
@@ -464,7 +464,7 @@ class Mailbox_model extends MY_Model
                     ];
                     $this->db->select('m.*, coalesce(atchs.cnt,0) as numattach')->from('postbox_messages m')->
                     join('postbox_folders f', 'f.folder_id=m.folder_id')->join("({$attachssql}) as atchs",'m.message_id=atchs.message_id', 'left')->
-                    where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_flagged'=>1])->order_by($sortby, $sortorder);
+                    where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_flagged'=>1,'m.message_deleted' => 0])->order_by($sortby, $sortorder);
                     $messages = $this->db->get()->result_array();
                 }
                 $out['messages'] = $messages;
@@ -477,7 +477,7 @@ class Mailbox_model extends MY_Model
                     $out['result'] = $this->success_result;
                     $out['folder'] = $folder;
                     $this->db->select('m.*, coalesce(atchs.cnt,0) as numattach')->from('postbox_messages m')->
-                    join("({$attachssql}) as atchs",'m.message_id=atchs.message_id', 'left')->where('folder_id', $folder_id)->order_by($sortby, $sortorder);
+                    join("({$attachssql}) as atchs",'m.message_id=atchs.message_id', 'left')->where(['folder_id' => $folder_id, 'm.message_deleted' => 0])->order_by($sortby, $sortorder);
                     $messages = $this->db->get()->result_array();
                     $out['messages'] = $messages;
                 }
@@ -710,6 +710,59 @@ class Mailbox_model extends MY_Model
         return $out;
     }
 
+    public function messages_delete($messages, $postbox_id, $folder_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Postbox Not Found'];
+        $this->db->select('*')->from('user_postboxes')->where('postbox_id', $postbox_id);
+        $postbox = $this->db->get()->row_array();
+        if (ifset($postbox, 'postbox_id',0)==$postbox_id) {
+            $out['msg'] = 'Target Folder Not Exist';
+            $this->db->select('*')->from('postbox_folders')->where('folder_name', $this->trash_name);
+            $folder = $this->db->get()->row_array();
+            if (ifset($folder, 'folder_id', 0)>0) {
+                $trash_id = $folder['folder_id'];
+                $realdelete = 0;
+                if ($folder_id==$trash_id) {
+                    $realdelete = 1;
+                }
+                $imapdat = $this->_create_imap_client($postbox);
+                $out['msg'] = $imapdat['msg'];
+                if ($imapdat['result']==$this->success_result) {
+                    $imap = $imapdat['imap'];
+                    foreach ($messages as $message) {
+                        $this->db->select('message_uid')->from('postbox_messages')->where('message_id', $message);
+                        $msgdat = $this->db->get()->row_array();
+                        if (!empty($msgdat['message_uid'])) {
+                            if ($realdelete) {
+                                try {
+                                    $imap->deleteMessage($msgdat['message_uid']);
+                                    $this->db->where('message_id', $message);
+                                    $this->db->set('message_deleted', 1);
+                                    $this->db->update('postbox_messages');
+                                } catch (ImapClientException $error) {
+                                    $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
+                                    return $out;
+                                }
+                            } else {
+                                try {
+                                    $imap->moveMessage($msgdat['message_uid'], $folder['folder_name']);
+                                    $this->db->where('message_id', $message);
+                                    $this->db->set('folder_id', $trash_id);
+                                    $this->db->update('postbox_messages');
+                                } catch (ImapClientException $error) {
+                                    $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
+                                    return $out;
+                                }
+                            }
+                        }
+                    }
+                    $out['result'] = $this->success_result;
+                }
+            }
+        }
+        return $out;
+    }
+
     public function get_postbox_folderslist($postbox_id)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Issue with Connection'];
@@ -724,13 +777,13 @@ class Mailbox_model extends MY_Model
 
     private function _folders_statistic($postbox_id)
     {
-        $this->db->select('f.folder_id, f.folder_name, count(m.message_id) as cnt')->from('postbox_folders f')->join('postbox_messages m','f.folder_id=m.folder_id','left')->where('f.postbox_id', $postbox_id)->group_by('folder_id, f.folder_name');
+        $this->db->select('f.folder_id, f.folder_name, count(m.message_id) as cnt')->from('postbox_folders f')->join('postbox_messages m','f.folder_id=m.folder_id','left')->where(['f.postbox_id'=>$postbox_id,'m.message_deleted' => 0])->group_by('folder_id, f.folder_name');
         $folders = $this->db->get()->result_array();
         // Calc unread messages
-        $this->db->select('count(m.message_id) as cnt')->from('postbox_messages m')->join('postbox_folders f', 'f.folder_id=m.folder_id')->where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_seen'=>0]);
+        $this->db->select('count(m.message_id) as cnt')->from('postbox_messages m')->join('postbox_folders f', 'f.folder_id=m.folder_id')->where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_seen'=>0,'m.message_deleted' => 0]);
         $newmsg = $this->db->get()->row_array();
         // Calc stared
-        $this->db->select('count(m.message_id) as cnt')->from('postbox_messages m')->join('postbox_folders f', 'f.folder_id=m.folder_id')->where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_flagged'=>1]);
+        $this->db->select('count(m.message_id) as cnt')->from('postbox_messages m')->join('postbox_folders f', 'f.folder_id=m.folder_id')->where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_flagged'=>1,'m.message_deleted' => 0]);
         $starmsg = $this->db->get()->row_array();
 
         $folders[] = [

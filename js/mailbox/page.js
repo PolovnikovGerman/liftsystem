@@ -205,6 +205,7 @@ function init_mailbox_manage() {
                     var folders = response.data.folders;
                     for (var i = 0; i < folders.length; i++) {
                         $("li.viewfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
+                        $("li.customfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
                     }
                     $("#loader").hide();
                     init_mailbox_manage();
@@ -236,6 +237,46 @@ function init_mailbox_manage() {
 
         }
     });
+    // Delete BTN
+    $(".deletemsgs").unbind('click').click(function (){
+        var cntmsg = $(".eb-checkbox:checked").length;
+        if (parseInt(cntmsg) > 0) {
+            var msgs = new Array();
+            $(".eb-checkbox").each(function (e){
+                if ($(this).prop('checked')==true) {
+                    msgs.push($(this).data('message'));
+                }
+            });
+            var params = new Array();
+            params.push({name: 'messages', value: msgs});
+            params.push({name: 'folder', value: $("#folder").val()});
+            params.push({name: 'postbox', value: $("#postbox").val()});
+            params.push({name: 'postsort', value: $("#postboxsort").val()});
+            var url = '/mailbox/messages_delete';
+            $("#loader").show();
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $(".emails-block").removeClass('messagedetails').empty();
+                    $(".emails-block").append('<div class="emails-block-header"></div>');
+                    $(".emails-block").append('<div class="emails-block-body"></div>');
+                    $(".emails-block-body").empty().html(response.data.messages);
+                    $(".emails-block-header").empty().html(response.data.header);
+                    // Folders
+                    var folders = response.data.folders;
+                    for (var i = 0; i < folders.length; i++) {
+                        $("li.viewfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
+                        $("li.customfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
+                    }
+                    $("#loader").hide();
+                    init_mailbox_manage();
+                } else {
+                    $("#loader").hide();
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+
 }
 
 function move_messages_init() {
@@ -271,6 +312,7 @@ function move_messages_init() {
                 var folders = response.data.folders;
                 for (var i = 0; i < folders.length; i++) {
                     $("li.viewfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
+                    $("li.customfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
                 }
                 $("#loader").hide();
                 init_mailbox_manage();
@@ -334,6 +376,7 @@ function update_message_readstatus(message) {
             var folders = response.data.folders;
             for (var i = 0; i < folders.length; i++) {
                 $("li.viewfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
+                $("li.customfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
             }
             $("#loader").hide();
             init_mailbox_manage();
@@ -356,6 +399,7 @@ function update_message_flagged(message) {
             var folders = response.data.folders;
             for (var i = 0; i < folders.length; i++) {
                 $("li.viewfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
+                $("li.customfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
             }
             $("#loader").hide();
             init_mailbox_manage();
@@ -387,6 +431,7 @@ function view_message(message) {
             var folders = response.data.folders;
             for (var i = 0; i < folders.length; i++) {
                 $("li.viewfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
+                $("li.customfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
             }
             // Init message manage
             init_message_details();
@@ -454,6 +499,7 @@ function init_message_details() {
                 var folders = response.data.folders;
                 for (var i = 0; i < folders.length; i++) {
                     $("li.viewfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
+                    $("li.customfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
                 }
                 $("#loader").hide();
                 init_message_details();
@@ -480,6 +526,7 @@ function init_message_details() {
                 var folders = response.data.folders;
                 for (var i = 0; i < folders.length; i++) {
                     $("li.viewfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
+                    $("li.customfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
                 }
                 $("#loader").hide();
                 init_message_details();
