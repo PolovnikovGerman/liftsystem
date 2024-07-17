@@ -588,8 +588,6 @@ li.attachmentbox {
 .popup_move_window {
     display: none;
     position: relative;
-    /* left: -360px; */
-    /* top: -30px; */
     left: 333px;
     top: 0;
     z-index: 25;
@@ -603,12 +601,33 @@ li.attachmentbox {
 }
 .movemsgfolder {
     height: 18px;
-    line-height: 18px;
+    line-height: 18px!important;
     width: 100%;
     font-size: 12px;
     color: #7e7e7e;
 }
 .movemsgfolder.available {
+    color: #000000;
+    cursor: pointer;
+}
+/* POPUP More actions */
+.popup_addition_window {
+    display: none;
+    position: relative;
+    left: 596px;
+    top: 0;
+    z-index: 25;
+    width: 159px;
+    background: #FFFFFF;
+    border-radius: 5px;
+    border: 1px solid #000000;
+    padding: 7px;
+}
+.moreactionmsg {
+    height: 18px;
+    line-height: 18px!important;
+    width: 100%;
+    font-size: 12px;
     color: #000000;
     cursor: pointer;
 }

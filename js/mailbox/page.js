@@ -234,7 +234,6 @@ function init_mailbox_manage() {
                     show_error(response);
                 }
             },'json');
-
         }
     });
     // Delete BTN
@@ -276,7 +275,22 @@ function init_mailbox_manage() {
             },'json');
         }
     });
-
+    $(".moreoptionmsgs").unbind('click').click(function (){
+        var cntmsg = $(".eb-checkbox:checked").length;
+        if (parseInt(cntmsg) > 0) {
+            var url = '/mailbox/prepare_moreactions';
+            $.post(url, {}, function (response){
+                if (response.errors=='') {
+                    $("#popup_addition_window").empty().html(response.data.content);
+                    $("#popup_addition_window").show();
+                    // init folders select
+                    addactions_messages_init();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
 }
 
 function move_messages_init() {
@@ -322,6 +336,60 @@ function move_messages_init() {
             }
         },'json');
     });
+}
+
+function addactions_messages_init() {
+    $('body').on('click',function(event){
+        if(!$(event.target).is('#popup_addition_window')){
+            $("#popup_addition_window").hide();
+        }
+    });
+    $(".moreactionmsg").unbind('click').click(function (){
+        var action = $(this).data('action');
+        var msgs = new Array();
+        $(".eb-checkbox").each(function (e){
+            if ($(this).prop('checked')==true) {
+                msgs.push($(this).data('message'));
+            }
+        });
+
+        var params = new Array();
+        params.push({name: 'messages', value: msgs});
+        params.push({name: 'folder', value: $("#folder").val()});
+        params.push({name: 'postbox', value: $("#postbox").val()});
+        params.push({name: 'postsort', value: $("#postboxsort").val()});
+        var url = '/mailbox/messages_moreactions';
+        if (action=='markread') {
+            params.push({name: 'flagread', value: 1});
+        } else if (action=='markunread') {
+            params.push({name: 'flagread', value: 0});
+        } else if (action=='markstar') {
+            params.push({name: 'flagstar', value: 1});
+        } else {
+            params.push({name: 'flagstar', value: 0});
+        }
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".emails-block").removeClass('messagedetails').empty();
+                $(".emails-block").append('<div class="emails-block-header"></div>');
+                $(".emails-block").append('<div class="emails-block-body"></div>');
+                $(".emails-block-body").empty().html(response.data.messages);
+                $(".emails-block-header").empty().html(response.data.header);
+                // Folders
+                var folders = response.data.folders;
+                for (var i = 0; i < folders.length; i++) {
+                    $("li.viewfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
+                    $("li.customfoldermsg[data-folder='"+folders[i]['folder_id']+"']").find('span').empty().html(folders[i]['cnt']);
+                }
+                $("#loader").hide();
+                init_mailbox_manage();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    })
 }
 
 function add_newfolder() {

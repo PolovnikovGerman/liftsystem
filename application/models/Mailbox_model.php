@@ -529,6 +529,49 @@ class Mailbox_model extends MY_Model
         return $out;
     }
 
+    public function update_messages_readstatus($postbox_id, $messages, $flagread)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Postbox Not Found'];
+        $this->db->select('*')->from('user_postboxes')->where('postbox_id', $postbox_id);
+        $postbox = $this->db->get()->row_array();
+        if (ifset($postbox, 'postbox_id', 0) == $postbox_id) {
+            $imapres = $this->_create_imap_client($postbox);
+            $out['msg'] = $imapres['msg'];
+            if ($imapres['result']==$this->success_result) {
+                $imap = $imapres['imap'];
+                foreach ($messages as $message) {
+                    $this->db->select('message_uid, message_seen')->from('postbox_messages')->where('message_id', $message);
+                    $msgdat = $this->db->get()->row_array();
+                    if (!empty($msgdat['message_uid'])) {
+                        if ($flagread==1 && $msgdat['message_seen']==0) {
+                            try {
+                                $imap->setSeenMessage($msgdat['message_uid']);
+                                $this->db->where('message_id', $message);
+                                $this->db->set('message_seen', 1);
+                                $this->db->update('postbox_messages');
+                            } catch (ImapClientException $error) {
+                                $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
+                                return $out;
+                            }
+                        } elseif ($flagread==0 && $msgdat['message_seen']==1) {
+                            try {
+                                $imap->setUnseenMessage($msgdat['message_uid']);
+                                $this->db->where('message_id', $message);
+                                $this->db->set('message_seen', 0);
+                                $this->db->update('postbox_messages');
+                            } catch (ImapClientException $error) {
+                                $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
+                                return $out;
+                            }
+                        }
+                    }
+                }
+                $out['result'] = $this->success_result;
+            }
+        }
+        return $out;
+    }
+
     public function update_message_flagged($message_id, $postbox_id)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Postbox Not Found'];
