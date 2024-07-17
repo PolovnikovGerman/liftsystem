@@ -13,6 +13,7 @@ $curdate = '';
     <?php } ?>
     <?php if ($curdate!==date('Y-m-d', $message['message_udate'])) { ?>
         <?php $curdate = date('Y-m-d', $message['message_udate']);?>
+    <?php } ?>
     <?php if ($message['message_udate']>=$today_bgn && $todaystart==0) { ?>
         <div class="emailes-date">Today</div>
         <div class="table-emails">
@@ -57,9 +58,9 @@ $curdate = '';
         <?php $otherstart=1; $opentable = 0;?>
         <?php if ($otheryear!==date('Y', $message['message_udate'])) { ?>
             <?php $otheryear = date('Y', $message['message_udate']);?>
-                <div class="emailes-date"><?=date('Y', $message['message_udate'])?></div>
-                <div class="table-emails">
-                <table>
+            <div class="emailes-date"><?=date('Y', $message['message_udate'])?></div>
+            <div class="table-emails">
+            <table>
             <?php $opentable = 1;?>
         <?php } ?>
     <?php } ?>
@@ -87,14 +88,14 @@ $curdate = '';
         <th class="tab-th-05" data-message="<?=$message['message_id']?>"><span class="subject-email"><?=$message['message_subject']?></span></th>
         <th class="tab-th-06" data-message="<?=$message['message_id']?>">
             <?php if ($message['numattach']>0) { ?>
-                <span class="ic-grey"><i class="fa fa-file-image-o" aria-hidden="true"></i></span>
+                <span class="ic-grey"><i class="fa fa-paperclip" aria-hidden="true"></i></span>
+        <!-- fa fa-file-image-o -->
             <?php } else { ?>
                 &nbsp;
             <?php } ?>
         </th>
         <th class="tab-th-07" data-message="<?=$message['message_id']?>"><?=$outdate?></th>
     </tr>
-    <?php } ?>
 <?php } ?>
 <?php if ($opentable==1) { ?>
     </table>
