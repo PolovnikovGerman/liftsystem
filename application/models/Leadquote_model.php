@@ -467,6 +467,8 @@ class Leadquote_model extends MY_Model
             $quoteitem['charge_pereach']=$itemdata['charge_pereach'];
             $quoteitem['item_subtotal']=$defqty*$newprice;
         } elseif ($item_id==$this->config->item('custom_id')) {
+            $newprice = $this->config->item('custom_itemprice');
+            $quoteitem['item_price'] = $newprice;
             $quoteitem['imprint_price'] = $this->custom_print_price;
             if ($brand=='SR') {
                 $quoteitem['setup_price'] = $this->custom_srsetup_price;
@@ -3398,7 +3400,7 @@ class Leadquote_model extends MY_Model
                     'item_color_add' => $addcolor,
                     'item_qty' => $quotecolor['item_qty'],
                     'item_price' => $quotecolor['item_price'],
-                    'item_subtotal' => MoneyOutput($quotecolor['item_qty']*$quotecolor['item_price']),
+                    'item_subtotal' => ($quotecolor['item_qty']*$quotecolor['item_price']), // MoneyOutput($quotecolor['item_qty']*$quotecolor['item_price'])
                     'printshop_item_id' => ifset($itemdata, 'printshop_item_id',''),
                     'qtyinput_class' => '',
                     'qtyinput_title' => '',
@@ -4184,6 +4186,9 @@ class Leadquote_model extends MY_Model
                 $quoteitem['charge_pereach'] = $itemdata['charge_pereach'];
                 $quoteitem['item_subtotal'] = $defqty * $newprice;
             } elseif ($item_id == $this->config->item('custom_id')) {
+                $newprice = $this->config->item('custom_itemprice');
+                $quoteitem['base_price'] = $newprice;
+                $quoteitem['item_price'] = $newprice;
                 $quoteitem['imprint_price'] = $this->custom_print_price;
                 $quoteitem['setup_price'] = $this->custom_setup_price;
             } elseif ($item_id == $this->config->item('other_id')) {
