@@ -8477,4 +8477,78 @@ Class Orders_model extends MY_Model
         }
         return $out;
     }
+
+    public function orderitems_price_report()
+    {
+        // $dateend = strtotime(date('m/d/Y'));
+        $dateend = strtotime('2017-09-27');
+        $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
+        // Get Order, items
+        $brands = ['BT', 'SR'];
+        $this->load->model('leadorder_model');
+        foreach ($brands as $brand) {
+            $this->db->select('o.order_id,o.order_num, oi.order_item_id, oi.item_id, oi.template, oi.item_qty as itemqty, ic.item_description, ic.item_color, ic.item_price, ic.item_qty as colorqty');
+            $this->db->from('ts_orders o');
+            $this->db->join('ts_order_items oi','oi.order_id=o.order_id');
+            $this->db->join('ts_order_itemcolors ic','ic.order_item_id=oi.order_item_id');
+            $this->db->where('o.order_date >= ', $datestart);
+            $this->db->where('o.order_date < ',$dateend);
+            if ($brand=='SR') {
+                $this->db->where('o.brand', 'SR');
+            } else {
+                $this->db->where_in('o.brand',['SB','BT']);
+            }
+            $this->db->order_by('o.order_num, oi.order_item_id');
+            $items = $this->db->get()->result_array();
+            // Check items
+            $outdats = [];
+            foreach ($items as $item) {
+                if ($item['item_id']>0) {
+                    $price = $this->leadorder_model->_get_item_priceqty($item['item_id'], $item['template'], $item['itemqty']);
+                    if (round(floatval($price),3) > round(floatval($item['item_price']),3)) {
+                        $diff = (round(floatval($price),3) - round(floatval($item['item_price']),3))*$item['colorqty'];
+                        $outdats[] = [
+                            'order' => $item['order_num'],
+                            'item' => $item['item_description'],
+                            'color' => $item['item_color'],
+                            'qty' => $item['colorqty'],
+                            'order_price' => $item['item_price'],
+                            'price' => $price,
+                            'diff' => MoneyOutput($diff,2),
+                        ];
+                    }
+                }
+            }
+            if (count($outdats)>0) {
+                // Prepare email
+                $this->orderitems_price_email($brand, $outdats);
+            }
+        }
+    }
+
+    private function orderitems_price_email($brand, $items)
+    {
+        $this->load->library('email');
+        $email_conf = array(
+            'protocol'=>'sendmail',
+            'charset'=>'utf-8',
+            'wordwrap'=>TRUE,
+            'mailtype'=>'html',
+        );
+        $this->email->initialize($email_conf);
+
+        // $mail_to=array($this->config->item('sage_email'), $this->config->item('sean_email'));
+        $mail_to=array($this->config->item('developer_email'));
+
+        $this->email->to($mail_to);
+        // $this->email->cc($mail_cc);
+
+        $this->email->from('no-replay@bluetrack.com');
+        $title = 'Report about Low Orders Prices '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)');
+        $this->email->subject($title);
+        $mail_body = $this->load->view('messages/orderitems_price_view',['items' => $items], TRUE);
+        $this->email->message($mail_body);
+        $res=$this->email->send();
+        $this->email->clear(TRUE);
+    }
 }
