@@ -8538,7 +8538,7 @@ Class Orders_model extends MY_Model
         $this->email->initialize($email_conf);
 
         // $mail_to=array($this->config->item('sage_email'), $this->config->item('sean_email'));
-        $mail_to=array($this->config->item('developer_email'));
+        $mail_to=array('to_german@yahoo.com');
 
         $this->email->to($mail_to);
         // $this->email->cc($mail_cc);
@@ -8550,5 +8550,6 @@ Class Orders_model extends MY_Model
         $this->email->message($mail_body);
         $res=$this->email->send();
         $this->email->clear(TRUE);
+        echo 'Email send '.$mail_to[0].PHP_EOL;
     }
 }
