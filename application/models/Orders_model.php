@@ -8514,19 +8514,19 @@ Class Orders_model extends MY_Model
                             'qty' => $item['colorqty'],
                             'order_price' => $item['item_price'],
                             'price' => $price,
-                            'diff' => MoneyOutput($diff,2),
+                            'diff' => $diff,
                         ];
                     }
                 }
             }
             if (count($outdats)>0) {
                 // Prepare email
-                $this->orderitems_price_email($brand, $outdats);
+                $this->orderitems_price_email($brand, $outdats, $datestart);
             }
         }
     }
 
-    private function orderitems_price_email($brand, $items)
+    private function orderitems_price_email($brand, $items, $date)
     {
         $this->load->library('email');
         $email_conf = array(
@@ -8544,12 +8544,11 @@ Class Orders_model extends MY_Model
         // $this->email->cc($mail_cc);
 
         $this->email->from('no-replay@bluetrack.com');
-        $title = 'Report about Low Orders Prices '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)');
+        $title = 'Report about Low Orders Prices '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)').' ('.date('m/d/Y', $date).')';
         $this->email->subject($title);
         $mail_body = $this->load->view('messages/orderitems_price_view',['items' => $items], TRUE);
         $this->email->message($mail_body);
         $res=$this->email->send();
         $this->email->clear(TRUE);
-        echo 'Email send '.$mail_to[0].PHP_EOL;
     }
 }

@@ -13,13 +13,13 @@
     <tbody>
     <?php foreach ($items as $item) { ?>
         <tr>
-            <td><?=$item['order_num']?></td>
+            <td><?=$item['order']?></td>
             <td><?=$item['item']?></td>
             <td><?=$item['color']?></td>
             <td><?=$item['qty']?></td>
-            <td align="right"><?=MoneyOutput($item['order_price'])?></td>
-            <td align="right"><?=MoneyOutput($item['price'])?></td>
-            <td align="right"><?=MoneyOutput($item['diff'])?></td>
+            <td align="right"><?=MoneyOutput($item['order_price'],3)?></td>
+            <td align="right"><?=MoneyOutput($item['price'],3)?></td>
+            <td align="right"><?=MoneyOutput($item['diff'],2)?></td>
         </tr>
     <?php } ?>
     </tbody>
