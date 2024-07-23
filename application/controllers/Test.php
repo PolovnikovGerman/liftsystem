@@ -4084,18 +4084,18 @@ class Test extends CI_Controller
     {
         /* Array */
         $changes = [];
+        $changes[] = [
+            'item_num' => 'i004',
+            'color' => 'Blue',
+            'income' => 'AJ02185',
+            'new_price' => 0.696,
+        ];
 //        $changes[] = [
 //            'item_num' => 'i021',
-//            'color' => 'Blue',
-//            'income' => 'AJ01930',
-//            'new_price' => 0.410,
+//            'color' => 'Grass Green',
+//            'income' => 'AJ01931',
+//            'new_price' => 0.460,
 //        ];
-        $changes[] = [
-            'item_num' => 'i021',
-            'color' => 'Grass Green',
-            'income' => 'AJ01931',
-            'new_price' => 0.460,
-        ];
 //        $changes[] = [
 //            'item_num' => 'i021',
 //            'color' => 'Red',
