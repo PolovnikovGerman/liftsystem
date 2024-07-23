@@ -1,14 +1,15 @@
+<?php $numpp = 1;?>
 <?php foreach ($trackings as $tracking) { ?>
     <div class="trackdatarow editmode" data-track="<?=$tracking['tracking_id']?>">
-        <input type="hidden" class="trackcodehidden" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" value="<?=$tracking['trackcode']?>"/>
+        <input type="hidden" class="trackcodehidden" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>" value="<?=$tracking['trackcode']?>"/>
         <div class="trackqty editmode">
-            <input type="text" class="trackqtyinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" value="<?=$tracking['qty']?>"/>
+            <input type="text" class="trackqtyinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>" value="<?=$tracking['qty']?>"/>
         </div>
         <div class="trackdate editmode">
-            <input type="text" class="trackdateinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" value="<?=date('m/d/Y', $tracking['trackdate'])?>"/>
+            <input type="text" class="trackdateinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>" value="<?=date('m/d/Y', $tracking['trackdate'])?>"/>
         </div>
         <div class="trackservice editmode">
-            <select class="trackserviceinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>">
+            <select class="trackserviceinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>">
                 <option value=""></option>
                 <option value="UPS" <?=$tracking['trackservice']=='UPS' ? 'selected="selected"' : ''?>>UPS</option>
                 <option value="FedEx" <?=$tracking['trackservice']=='FedEx' ? 'selected="selected"' : ''?>>FedEx</option>
@@ -21,13 +22,16 @@
             </select>
         </div>
         <div class="trackcode editmode">
-            <input type="text" class="trackcodeinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" value="<?=$tracking['trackcode']?>"/>
+            <input type="text" class="trackcodeinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>" value="<?=$tracking['trackcode']?>"/>
         </div>
-        <div class="trackcodecopy" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>">
+        <div class="trackcodecopy" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>">
             <i class="fa fa-copy"></i>
         </div>
-        <div class="trackcoderemove" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>">
-            <i class="fa fa-trash-o"></i>
-        </div>
+        <?php if ($numpp > 1) { ?>
+            <div class="trackcoderemove" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>">
+                <i class="fa fa-trash-o"></i>
+            </div>
+        <?php } ?>
+        <?php $numpp++; ?>
     </div>
 <?php } ?>

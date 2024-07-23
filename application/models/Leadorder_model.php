@@ -6260,7 +6260,7 @@ Class Leadorder_model extends My_Model {
                     $qty_title = 'Base Price '.MoneyOutput($item_price);
                 }
                 // Get tracking packages
-                $trackings = $this->_get_itemorder_trackings($row['order_itemcolor_id']);
+                $trackings = $this->_get_itemorder_trackings($irow['item_id']);
                 $items[]=array(
                     'order_item_id' =>$irow['order_item_id'],
                     'item_id' =>$irow['item_id'],
@@ -11036,7 +11036,7 @@ Class Leadorder_model extends My_Model {
 
     private function _get_itemorder_trackings($order_itemcolor_id)
     {
-        $this->db->select('*')->from('ts_order_trackings')->where('order_item_id', $order_itemcolor_id);
+        $this->db->select('*')->from('ts_order_trackings')->where('order_itemcolor_id', $order_itemcolor_id);
         $res = $this->db->get()->result_array();
         return $res;
     }

@@ -5729,13 +5729,15 @@ function init_unlockcontent(paymentid) {
 function init_tracking_manage() {
     $(".addnewtrack").unbind('click').click(function(){
         var orderitem = $(this).data('orderitem');
+        var itemcolor = $(this).data('color');
         var params = new Array();
         params.push({name: 'ordersession', value: $("input#ordersession").val()});
         params.push({name: 'order_item_id', value: $(this).data('orderitem')});
+        params.push({name: 'item_color', value: itemcolor});
         var url = '/leadorder/newtrackcode';
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                $(".trackingdatabody[data-orderitem='"+orderitem+"']").empty().html(response.data.content);
+                $(".trackingdatabody[data-orderitem='"+orderitem+"'][data-color='"+itemcolor+"']").empty().html(response.data.content);
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
             } else {
@@ -5746,9 +5748,11 @@ function init_tracking_manage() {
     $(".trackqtyinpt").unbind('change').change(function (){
         var orderitem = $(this).data('orderitem');
         var tracking = $(this).data('track');
+        var itemcolor = $(this).data('color');
         var params = new Array();
         params.push({name: 'ordersession', value: $("input#ordersession").val()});
         params.push({name: 'order_item_id', value: orderitem});
+        params.push({name: 'item_color', value: itemcolor});
         params.push({name: 'tracking', value: tracking});
         params.push({name: 'fldname', value: 'qty'});
         params.push({name: 'newval', value: $(this).val()});
@@ -5756,7 +5760,7 @@ function init_tracking_manage() {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $(".shippingdataviewarea").empty().html(response.data.content);
-                $(".trackdateinpt[data-orderitem='"+orderitem+"'][data-track='"+tracking+"']").focus();
+                $(".trackdateinpt[data-orderitem='"+orderitem+"'][data-track='"+tracking+"'][data-color='"+itemcolor+"']").focus();
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
             } else {
