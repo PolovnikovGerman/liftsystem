@@ -29,10 +29,10 @@
             <span class="ebh-right-close"><img src="/img/mailbox/times.svg"></span>
         </div>
         <div class="ebh-right-button">
-            <span class="ebh-right-down active"><img src="/img/mailbox/caret-down.svg"></span>
+            <span class="ebh-right-down <?=$nxtcnt > 0 ? 'active' : ''?>" data-message="<?=$nxtid?>"><img src="/img/mailbox/caret-down.svg"></span>
         </div>
         <div class="ebh-right-button">
-            <span class="ebh-right-up"><img src="/img/mailbox/caret-up.svg"></span>
+            <span class="ebh-right-up <?=$prvcnt > 0 ? 'active' : ''?>" data-message="<?=$prvid?>"><img src="/img/mailbox/caret-up.svg"></span>
         </div>
     </div>
 </div>

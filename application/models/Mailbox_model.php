@@ -430,19 +430,28 @@ class Mailbox_model extends MY_Model
     {
         $out=['result' => $this->error_result, 'msg' => 'Empty Folder id'];
         ini_set('memory_limit',-1);
-        if ($postsort=='date_desc') {
-            $sortby = 'm.message_udate';
-            $sortorder = 'desc';
-        } elseif ('date_asc') {
+        $sortby = 'm.message_udate';
+        $sortorder = 'desc';
+        if ($postsort=='date_asc') {
             $sortby = 'm.message_udate';
             $sortorder = 'asc';
-        } elseif ('unread_asc') {
+        } elseif ($postsort=='unread_asc') {
             $sortby = 'm.message_seen';
             $sortorder = 'asc';
-        } elseif ('flagged_first') {
+        } elseif ($postsort=='starred_asc') {
             $sortby = 'm.message_flagged';
             $sortorder = 'desc';
+        } elseif ($postsort=='sender_asc') {
+            $sortby = 'm.message_from';
+            $sortorder = 'asc';
+        } elseif ($postsort=='subject_asc') {
+            $sortby = 'm.message_subject';
+            $sortorder = 'asc';
+        } elseif ($postsort=='attach_asc') {
+            $sortby = 'numattach';
+            $sortorder = 'desc';
         }
+
         if (!empty($folder_id)) {
             $this->db->select('message_id, count(attachment_id) as cnt')->from('postbox_attachments')->group_by('message_id');
             $attachssql = $this->db->get_compiled_select();
@@ -535,38 +544,46 @@ class Mailbox_model extends MY_Model
         $this->db->select('*')->from('user_postboxes')->where('postbox_id', $postbox_id);
         $postbox = $this->db->get()->row_array();
         if (ifset($postbox, 'postbox_id', 0) == $postbox_id) {
-            $imapres = $this->_create_imap_client($postbox);
-            $out['msg'] = $imapres['msg'];
-            if ($imapres['result']==$this->success_result) {
-                $imap = $imapres['imap'];
-                foreach ($messages as $message) {
-                    $this->db->select('message_uid, message_seen')->from('postbox_messages')->where('message_id', $message);
-                    $msgdat = $this->db->get()->row_array();
-                    if (!empty($msgdat['message_uid'])) {
-                        if ($flagread==1 && $msgdat['message_seen']==0) {
-                            try {
-                                $imap->setSeenMessage($msgdat['message_uid']);
-                                $this->db->where('message_id', $message);
-                                $this->db->set('message_seen', 1);
-                                $this->db->update('postbox_messages');
-                            } catch (ImapClientException $error) {
-                                $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
-                                return $out;
-                            }
-                        } elseif ($flagread==0 && $msgdat['message_seen']==1) {
-                            try {
-                                $imap->setUnseenMessage($msgdat['message_uid']);
-                                $this->db->where('message_id', $message);
-                                $this->db->set('message_seen', 0);
-                                $this->db->update('postbox_messages');
-                            } catch (ImapClientException $error) {
-                                $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
-                                return $out;
-                            }
+            $msgdat = explode(',', $messages);
+            $this->db->select('group_concat(message_uid) as uid')->from('postbox_messages')->where_in('message_id', $msgdat);
+            if ($flagread==0) {
+                $this->db->where('message_seen', 1);
+            } else {
+                $this->db->where('message_seen', 0);
+            }
+            $candres = $this->db->get()->row_array();
+            if (ifset($candres, 'uid', '')!=='') {
+                // Prepare imap
+                $imapres = $this->_create_imap_client($postbox);
+                $out['msg'] = $imapres['msg'];
+                if ($imapres['result']==$this->success_result) {
+                    $imap = $imapres['imap'];
+                    if ($flagread==1) {
+                        try {
+                            $imap->setSeenMessage($candres['uid']);
+                        } catch (ImapClientException $error) {
+                            $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
+                            return $out;
+                        }
+                    } else {
+                        try {
+                            $imap->setUnseenMessage($candres['uid']);
+                        } catch (ImapClientException $error) {
+                            $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
+                            return $out;
                         }
                     }
+                    foreach ($msgdat as $dat) {
+                        $this->db->where('message_id', $dat);
+                        if ($flagread==1) {
+                            $this->db->set('message_seen', 1);
+                        } else {
+                            $this->db->set('message_seen', 0);
+                        }
+                        $this->db->update('postbox_messages');
+                    }
+                    $out['result'] = $this->success_result;
                 }
-                $out['result'] = $this->success_result;
             }
         }
         return $out;
@@ -637,28 +654,29 @@ class Mailbox_model extends MY_Model
                 $this->db->select('*')->from('postmessage_address')->where(['message_id' => $message_id, 'address_type' => 'BCC']);
                 $adrbcc = $this->db->get()->result_array();
                 // Change Message Seen Flag
-                if ($message['message_seen']==0) {
-                    $imapdat = $this->_create_imap_client($postbox);
-                    if ($imapdat['result']==$this->success_result) {
-                        $imap = $imapdat['imap'];
-                        $id = $imap->getId($message['message_uid']);
-                        try{
-                            $imap->setSeenMessage($id);
-                            $message['message_seen'] = 1;
-                            $this->db->where('message_id', $message_id);
-                            $this->db->set('message_seen',1);
-                            $this->db->update('postbox_messages');
-                        } catch (ImapClientException $error){
-                            // $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
-                            // return $out;
-                        }
-                    }
-                }
+//                if ($message['message_seen']==0) {
+//                    $imapdat = $this->_create_imap_client($postbox);
+//                    if ($imapdat['result']==$this->success_result) {
+//                        $imap = $imapdat['imap'];
+//                        $id = $imap->getId($message['message_uid']);
+//                        try{
+//                            $imap->setSeenMessage($id);
+//                            $message['message_seen'] = 1;
+//                            $this->db->where('message_id', $message_id);
+//                            $this->db->set('message_seen',1);
+//                            $this->db->update('postbox_messages');
+//                        } catch (ImapClientException $error){
+//                            // $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
+//                            // return $out;
+//                        }
+//                    }
+//                }
                 $out['message'] = $message;
                 $out['attachments'] = $attachs;
                 $out['adrcc'] = $adrcc;
                 $out['adrbcc'] = $adrbcc;
                 $out['folder'] = $folderdat['folder_name'];
+                $out['seen'] = ($message['message_seen']==0 ? 1 : 0);
             }
         }
         return $out;
@@ -840,5 +858,75 @@ class Mailbox_model extends MY_Model
             'cnt' => $starmsg['cnt'],
         ];
         return $folders;
+    }
+
+    // count messages
+    public function count_messages($postbox_id, $folder_id, $message_id, $postsort)
+    {
+        $out=['prvcnt' => 0, 'prvid' => 0, 'nxtcnt' => 0, 'nxtid' => 0];
+        ini_set('memory_limit',-1);
+        $sortby = 'm.message_udate';
+        $sortorder = 'desc';
+        if ($postsort=='date_asc') {
+            $sortby = 'm.message_udate';
+            $sortorder = 'asc';
+        } elseif ($postsort=='unread_asc') {
+            $sortby = 'm.message_seen';
+            $sortorder = 'asc';
+        } elseif ($postsort=='starred_asc') {
+            $sortby = 'm.message_flagged';
+            $sortorder = 'desc';
+        } elseif ($postsort=='sender_asc') {
+            $sortby = 'm.message_from';
+            $sortorder = 'asc';
+        } elseif ($postsort=='subject_asc') {
+            $sortby = 'm.message_subject';
+            $sortorder = 'asc';
+        } elseif ($postsort=='attach_asc') {
+            $sortby = 'numattach';
+            $sortorder = 'desc';
+        }
+
+        $this->db->select('message_id, count(attachment_id) as cnt')->from('postbox_attachments')->group_by('message_id');
+        $attachssql = $this->db->get_compiled_select();
+        if ($folder_id=='new' || $folder_id=='flagged') {
+            if ($folder_id=='new') {
+                $this->db->select('m.*, coalesce(atchs.cnt,0) as numattach')->from('postbox_messages m')->
+                join('postbox_folders f', 'f.folder_id=m.folder_id')->join("({$attachssql}) as atchs",'m.message_id=atchs.message_id', 'left')->
+                where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_seen' => 0,'m.message_deleted' => 0])->order_by($sortby, $sortorder);
+            } else {
+                $this->db->select('m.*, coalesce(atchs.cnt,0) as numattach')->from('postbox_messages m')->
+                join('postbox_folders f', 'f.folder_id=m.folder_id')->join("({$attachssql}) as atchs",'m.message_id=atchs.message_id', 'left')->
+                where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_flagged'=>1,'m.message_deleted' => 0])->order_by($sortby, $sortorder);
+            }
+            $messages = $this->db->get()->result_array();
+        } else {
+            $this->db->select('m.*, coalesce(atchs.cnt,0) as numattach')->from('postbox_messages m')->
+            join("({$attachssql}) as atchs", 'm.message_id=atchs.message_id', 'left')->where(['folder_id' => $folder_id, 'm.message_deleted' => 0])->order_by($sortby, $sortorder);
+            $messages = $this->db->get()->result_array();
+        }
+        //
+        $prvcnt = $prvid = 0;
+        $idx=0;
+        foreach ($messages as $message) {
+            if ($message['message_id']==$message_id) {
+                break;
+            }
+            $prvcnt++;
+            $prvid = $message['message_id'];
+            $idx++;
+        }
+        $out['prvcnt'] = $prvcnt;
+        $out['prvid'] = $prvid;
+        if ($idx < count($messages)-1) {
+            for ($i=$idx; $i < count($messages); $i++) {
+                if ($messages[$i]!=$message_id) {
+                    $out['nxtcnt']=1;
+                    $out['nxtid'] = $messages[$i]['message_id'];
+                    break;
+                }
+            }
+        }
+        return $out;
     }
 }

@@ -215,10 +215,13 @@ class Mailbox extends MY_Controller
             $postbox = ifset($postdata, 'postbox', '');
             $message = ifset($postdata, 'message_id', '');
             $folder = ifset($postdata,'folder', 'Inbox');
+            $postsort = ifset($postdata,'postsort','date_desc');
             $res = $this->mailbox_model->view_message($message, $postbox);
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';
+                // Calc prev / next messages
+                $msgnavig = $this->mailbox_model->count_messages($postbox, $folder, $message, $postsort);
                 $adrcc_view = '';
                 if (!empty($res['adrcc'])) {
                     $adresses = [];
@@ -254,10 +257,15 @@ class Mailbox extends MY_Controller
                     'folder_name' => $folder_name,
                     'adrcc' => $adrcc_view,
                     'adrbcc' => $adrbcc_view,
+                    'prvcnt' => $msgnavig['prvcnt'],
+                    'prvid' => $msgnavig['prvid'],
+                    'nxtcnt' => $msgnavig['nxtcnt'],
+                    'nxtid' => $msgnavig['nxtid'],
                 ];
                 $mdata['content'] = $this->load->view('mailbox/message_details_view',$options, TRUE);
                 $mdata['body'] = $res['message']['message_text'];
                 $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
+                $mdata['seen'] = $res['seen'];
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -448,12 +456,12 @@ class Mailbox extends MY_Controller
             $postdata = $this->input->post();
             $postbox = ifset($postdata, 'postbox', '');
             $folder = ifset($postdata,'folder', '');
-            $msgsrc = ifset($postdata, 'messages','');
+            $messages = ifset($postdata, 'messages','');
             $postsort = ifset($postdata,'postsort','date_desc');
             $flagread = ifset($postdata, 'flagread', '-1');
             $flagstar = ifset($postdata, 'flagstar', '-1');
-            if (!empty($postbox) && !empty($folder) && !empty($msgsrc)) {
-                $messages = explode(',', $msgsrc);
+            if (!empty($postbox) && !empty($folder) && !empty($messages)) {
+                // $messages = explode(',', $msgsrc);
                 if ($flagread>=0) {
                     $res = $this->mailbox_model->update_messages_readstatus($postbox, $messages, $flagread);
                     $error = $res['msg'];
@@ -465,6 +473,7 @@ class Mailbox extends MY_Controller
                 } else {
                     $error = 'Flag Not Send';
                 }
+                $this->ajaxResponse($mdata, $error);;
                 if (empty($error)) {
                     $resfld = $this->mailbox_model->postbox_viewfolder($postbox, $folder, $postsort);
                     $error = $resfld['msg'];
@@ -480,11 +489,58 @@ class Mailbox extends MY_Controller
                         }
                         $mdata['header'] = $header_view;
                         $mdata['messages'] = $this->_prepare_messages_view($messages, $postsort);
-                        // Count # of messages in folder
-                        $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
                     }
                 }
             }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function prepare_sortactions()
+    {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $error = '';
+            $mdata = [];
+            $postsort = ifset($postdata,'postsort','date_desc');
+            $options = [
+                'postsort' => $postsort,
+            ];
+            $mdata['content'] = $this->load->view('mailbox/sortactions_view',$options,true);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function messages_sortview()
+    {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $error = 'Empty Postbox Details';
+            $postbox = ifset($postdata, 'postbox', '');
+            $folder = ifset($postdata,'folder', '');
+            $postsort = ifset($postdata,'postsort','');
+            if (!empty($postbox) && !empty($folder) && !empty($postsort)) {
+                $resfld = $this->mailbox_model->postbox_viewfolder($postbox, $folder, $postsort);
+                $error = $resfld['msg'];
+                if ($resfld['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
+                    $folder = $resfld['folder'];
+                    $messages = $resfld['messages'];
+                    if (count($messages)==0) {
+                        $header_view = $this->load->view('mailbox/folder_header_empty',['folder'=>$folder['folder_name']], true);
+                    } else {
+                        $header_view = $this->load->view('mailbox/folder_header_view',['folder'=>$folder['folder_id']], true);
+                    }
+                    $mdata['header'] = $header_view;
+                    $mdata['messages'] = $this->_prepare_messages_view($messages, $postsort);
+                }
+
+            }
+            // $mdata['content'] = $this->load->view('mailbox/sortactions_view',$options,true);
             $this->ajaxResponse($mdata, $error);
         }
         show_404();

@@ -631,3 +631,27 @@ li.attachmentbox {
     color: #000000;
     cursor: pointer;
 }
+/* POPUP Sorting */
+.popup_sorting_window {
+    display: none;
+    position: relative;
+    left: 880px;
+    top: 0;
+    z-index: 25;
+    width: 129px;
+    background: #FFFFFF;
+    border-radius: 5px;
+    border: 1px solid #000000;
+    padding: 7px;
+}
+.sortactionmsg {
+    height: 18px;
+    line-height: 18px!important;
+    width: 100%;
+    font-size: 12px;
+    color: #000000;
+}
+.sortactionmsg.active {
+    cursor: pointer;
+    padding-left: 15px;
+}
