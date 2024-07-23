@@ -1181,4 +1181,10 @@ Class Cronjob extends CI_Controller
         $this->user_model->clean_verification();
     }
 
+    public function orderitems_price_report()
+    {
+        $this->load->model('orders_model');
+        $this->orders_model->orderitems_price_report();
+    }
+
 }
