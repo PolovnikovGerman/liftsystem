@@ -6259,6 +6259,8 @@ Class Leadorder_model extends My_Model {
                     $qty_class=$newitem['qtyinput_class']='warningprice';
                     $qty_title = 'Base Price '.MoneyOutput($item_price);
                 }
+                // Get tracking packages
+                $trackings = $this->_get_itemorder_trackings($row['order_itemcolor_id']);
                 $items[]=array(
                     'order_item_id' =>$irow['order_item_id'],
                     'item_id' =>$irow['item_id'],
@@ -6276,6 +6278,7 @@ Class Leadorder_model extends My_Model {
                     'printshop_item_id'=>(isset($irow['printshop_item_id']) ? $irow['printshop_item_id'] : ''),
                     'qtyinput_class' => $qty_class,
                     'qtyinput_title' => $qty_title,
+                    'trackings' => $trackings,
                 );
                 $numpp++;
             }
@@ -6344,8 +6347,6 @@ Class Leadorder_model extends My_Model {
                 $numdet++;
             }
             $newitem['imprint_details']=$impr_details;
-            // Get tracking packages
-            $newitem['trackings'] = $this->_get_itemorder_trackings($row['order_item_id']);
             $out[]=$newitem;
         }
         return $out;
@@ -11033,9 +11034,9 @@ Class Leadorder_model extends My_Model {
         return $this->db->get()->result_array();
     }
 
-    private function _get_itemorder_trackings($order_item_id)
+    private function _get_itemorder_trackings($order_itemcolor_id)
     {
-        $this->db->select('*')->from('ts_order_trackings')->where('order_item_id', $order_item_id);
+        $this->db->select('*')->from('ts_order_trackings')->where('order_item_id', $order_itemcolor_id);
         $res = $this->db->get()->result_array();
         return $res;
     }

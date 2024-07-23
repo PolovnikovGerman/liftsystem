@@ -249,6 +249,8 @@ class Template
         $shipstatus=$this->CI->leadorder_model->_leadorderview_shipping_status($res);
         $trackcontent = '';
         $order_items=$res['order_items'];
+        $numcolors = 0;
+        foreach ()
         if (count($order_items)==1) {
             $shipoptions = [
                 'shipdate' => $shipstatus['order_status'],

@@ -3873,18 +3873,19 @@ class Test extends CI_Controller
     public function transform_trackpackages()
     {
         ini_set("memory_limit","-1");
-        $this->db->select('sp.track_code, oi.item_qty, o.order_num, oi.order_item_id, o.shipdate, sp.deliver_service'); // sa.item_qty
+        $this->db->select('sp.track_code, ic.item_qty, o.order_num, ic.order_itemcolor_id, o.shipdate, sp.deliver_service'); // sa.item_qty
         $this->db->from('ts_order_shippacks sp');
         $this->db->join('ts_order_shipaddres sa', 'sp.order_shipaddr_id=sa.order_shipaddr_id');
         $this->db->join('ts_orders o', 'o.order_id=sa.order_id');
         $this->db->join('ts_order_items oi', 'o.order_id=oi.order_id');
+        $this->db->join('ts_order_itemcolors ic','ic.order_item_id=oi.order_item_id');
         $this->db->where("coalesce(sp.track_code,'') != ''");
         $packs = $this->db->get()->result_array();
         foreach ($packs as $pack) {
             $this->db->set('created_at', date('Y-m-d H:i:s'));
             $this->db->set('created_by', 1);
             $this->db->set('updated_by', 1);
-            $this->db->set('order_item_id', $pack['order_item_id']);
+            $this->db->set('order_itemcolor_id', $pack['order_itemcolor_id']);
             $this->db->set('qty', $pack['item_qty']);
             $this->db->set('trackdate', $pack['shipdate']);
             $this->db->set('trackservice', $pack['deliver_service']);
@@ -3893,16 +3894,16 @@ class Test extends CI_Controller
             echo 'Order # '.$pack['order_num'].' add Track'.PHP_EOL;
         }
         // Add empty tracks
-        $this->db->select('o.order_num, o.order_id, o.shipdate, oi.order_item_id')->from('ts_orders o')->join('ts_order_items oi','o.order_id=oi.order_id')->where(['o.is_canceled'=>0, 'o.order_system'=> 'new'])->order_by('order_id','desc');
+        $this->db->select('o.order_num, o.order_id, o.shipdate, ic.order_itemcolor_id')->from('ts_orders o')->join('ts_order_items oi','o.order_id=oi.order_id')->join('ts_order_itemcolors ic','ic.order_item_id=oi.order_item_id')->where(['o.is_canceled'=>0, 'o.order_system'=> 'new'])->order_by('order_id','desc');
         $orderitms = $this->db->get()->result_array();
         foreach ($orderitms as $orderitm) {
-            $this->db->select('count(tracking_id) as cnt')->from('ts_order_trackings')->where('order_item_id', $orderitm['order_item_id']);
+            $this->db->select('count(tracking_id) as cnt')->from('ts_order_trackings')->where('order_itemcolor_id', $orderitm['order_itemcolor_id']);
             $trackres = $this->db->get()->row_array();
             if ($trackres['cnt']==0) {
                 $this->db->set('created_at', date('Y-m-d H:i:s'));
                 $this->db->set('created_by', 1);
                 $this->db->set('updated_by', 1);
-                $this->db->set('order_item_id', $orderitm['order_item_id']);
+                $this->db->set('order_itemcolor_id', $orderitm['order_itemcolor_id']);
                 $this->db->set('qty', 0);
                 $this->db->set('trackdate', $orderitm['shipdate']);
                 $this->db->set('trackservice', 'UPS');
