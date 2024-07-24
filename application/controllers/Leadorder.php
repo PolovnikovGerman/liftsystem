@@ -6276,6 +6276,7 @@ class Leadorder extends MY_Controller
                         'trackings' => $res['trackings'],
                         'completed' => 0,
                         'order_item' => $postdata['order_item_id'],
+                        'item_color' => $postdata['item_color'],
                     ];
                     $mdata['content'] = $this->load->view('leadorderdetails/tracking_data_edit', $options, TRUE);
                 }
@@ -6367,40 +6368,45 @@ class Leadorder extends MY_Controller
         $shipping = $leadorder['shipping'];
         $contant = '';
         foreach ($order_items as $order_item) {
-            $shipoptions = [
-                'shipdate' => 'To Ship '.date('m/d/y', $shipping['shipdate']),
-                'item' => $order_item['item_name'],
-                'qty' => $order_item['item_qty'],
-                'order_item' => $order_item['order_item_id'],
-            ];
-            $totaltrack = 0;
-            $totaloldtrack = 0;
-            foreach ($order_item['trackings'] as $tracking) {
-                $totaltrack+=$tracking['qty'];
-                if ($tracking['tracking_id']>0) {
-                    $totaloldtrack+=$tracking['qty'];
-                }
-            }
-            $resttrack = $order_item['item_qty']-$totaltrack;
-            $chkrest = $order_item['item_qty'] - $totaloldtrack;
-            $shipoptions['remind'] = $resttrack;
-            $shipoptions['completed'] = ($chkrest > 0 ? 0 : 1);
-            $trackbody = '';
-            if (!empty($order_item['trackings'])) {
-                $tbodyoptions = [
-                    'trackings' => $order_item['trackings'],
-                    'completed' => ($resttrack > 0 ? 0 : 1),
+            $itemcolors = $order_item['items'];
+            foreach ($itemcolors as $itemcolor) {
+                $shipoptions = [
+                    'shipdate' => 'To Ship '.date('m/d/y', $shipping['shipdate']),
+                    'item' => $order_item['item_name'].' '.$itemcolor['item_color'],
+                    'qty' => $itemcolor['item_qty'],
                     'order_item' => $order_item['order_item_id'],
+                    'item_color' => $itemcolor['item_id'],
                 ];
-                $trackbody = $this->load->view('leadorderdetails/tracking_data_edit', $tbodyoptions, TRUE);
+                $totaltrack = 0;
+                $totaloldtrack = 0;
+                foreach ($itemcolor['trackings'] as $tracking) {
+                    $totaltrack+=$tracking['qty'];
+                    if ($tracking['tracking_id']>0) {
+                        $totaloldtrack+=$tracking['qty'];
+                    }
+                }
+                $resttrack = $itemcolor['item_qty']-$totaltrack;
+                $chkrest = $itemcolor['item_qty'] - $totaloldtrack;
+                $shipoptions['remind'] = $resttrack;
+                $shipoptions['completed'] = ($chkrest > 0 ? 0 : 1);
+                $trackbody = '';
+                if (!empty($itemcolor['trackings'])) {
+                    $tbodyoptions = [
+                        'trackings' => $itemcolor['trackings'],
+                        'completed' => ($resttrack > 0 ? 0 : 1),
+                        'order_item' => $order_item['order_item_id'],
+                        'item_color' => $itemcolor['item_id'],
+                    ];
+                    $trackbody = $this->load->view('leadorderdetails/tracking_data_edit', $tbodyoptions, TRUE);
+                }
+                $shipoptions['trackbody'] = $trackbody;
+                if ($edit==0) {
+                    $trackcontent = $this->load->view('leadorderdetails/tracking_view', $shipoptions, TRUE);
+                } else {
+                    $trackcontent = $this->load->view('leadorderdetails/tracking_edit', $shipoptions, TRUE);
+                }
+                $contant.=$trackcontent;
             }
-            $shipoptions['trackbody'] = $trackbody;
-            if ($edit==0) {
-                $trackcontent = $this->load->view('leadorderdetails/tracking_view', $shipoptions, TRUE);
-            } else {
-                $trackcontent = $this->load->view('leadorderdetails/tracking_edit', $shipoptions, TRUE);
-            }
-            $contant.=$trackcontent;
         }
         return $contant;
     }

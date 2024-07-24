@@ -259,7 +259,7 @@ class Template
             $itemdata = $orderitem['items'][0];
             $shipoptions = [
                 'shipdate' => $shipstatus['order_status'],
-                'item' => $order_items[0]['item_name'].' '.$itemdata['item_color'],
+                'item' => $orderitem['item_name'].' '.$itemdata['item_color'],
                 'qty' => $itemdata['item_qty'],
                 'order_item' => $orderitem['order_item_id'],
                 'item_color' => $itemdata['item_id'],
@@ -278,7 +278,8 @@ class Template
                 $tbodyoptions = [
                     'trackings' => $itemdata['trackings'],
                     'completed' => ($resttrack > 0 ? 0 : 1),
-                    'order_itemcolor' => $itemdata['item_id'],
+                    'order_item' => $orderitem['order_item_id'],
+                    'item_color' => $itemdata['item_id'],
                 ];
                 if ($edit==1) {
                     $trackbody = $this->CI->load->view('leadorderdetails/tracking_data_edit', $tbodyoptions, TRUE);
