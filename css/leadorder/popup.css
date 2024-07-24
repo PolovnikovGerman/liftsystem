@@ -2606,6 +2606,9 @@ input.artrepeat {
     float: left;
     padding-left: 2px;
     width: 180px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .itemdescription_data_view.customitemdescript {
     width: 273px;
