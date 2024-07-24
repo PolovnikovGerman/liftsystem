@@ -5629,8 +5629,9 @@ input.ticket_date {
 /* Add button */
 .trackingdataheader .addnewtrack {
     cursor: pointer;
-    font-size: 13px;
+    font-size: 12px;
     margin-left: 5px;
+    font-style: italic;
 }
 .trackingdatafooter {
     border-bottom-left-radius: 7px;

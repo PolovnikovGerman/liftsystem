@@ -2494,7 +2494,12 @@ class Leadorder extends MY_Controller
                             $mdata['trackcode'] = 1;
                             $orderitems = $leadorder['order_items'];
                             if (count($orderitems)==1) {
-                                $mdata['trackbody'] = $this->_prepare_tracking_view($leadorder, 1);
+                                $itemdat = $orderitems[0]['items'];
+                                if (count($itemdat)==1) {
+                                    $mdata['trackbody'] = $this->_prepare_tracking_view($leadorder, 1);
+                                } else {
+                                    $mdata['trackbody'] = $this->_prepare_multitrack_view($leadorder,1);
+                                }
                             } else {
                                 $mdata['trackbody'] = $this->_prepare_multitrack_view($leadorder,1);
                             }
@@ -3009,7 +3014,12 @@ class Leadorder extends MY_Controller
                         $order_items = $leadorder['order_items'];
                         $mdata['trackcount'] = 1;
                         if (count($order_items)==1) {
-                            $mdata['trackbodby'] = $this->_prepare_tracking_view($leadorder, 1);
+                            $itemdat = $order_items[0]['items'];
+                            if (count($itemdat)==1) {
+                                $mdata['trackbodby'] = $this->_prepare_tracking_view($leadorder, 1);
+                            } else {
+                                $mdata['trackbodby'] = $this->_prepare_multitrack_view($leadorder, 1);
+                            }
                         } else {
                             $mdata['trackbodby'] = $this->_prepare_multitrack_view($leadorder, 1);
                         }
@@ -6276,6 +6286,7 @@ class Leadorder extends MY_Controller
                         'trackings' => $res['trackings'],
                         'completed' => 0,
                         'order_item' => $postdata['order_item_id'],
+                        'item_color' => $postdata['item_color'],
                     ];
                     $mdata['content'] = $this->load->view('leadorderdetails/tracking_data_edit', $options, TRUE);
                 }
@@ -6303,7 +6314,17 @@ class Leadorder extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $leadorder = usersession($ordersession);
-                    $mdata['content'] = $this->_prepare_tracking_view($leadorder, 1);
+                    $order_items = $leadorder['order_items'];
+                    if (count($order_items)==1) {
+                        $itemdat = $order_items[0]['items'];
+                        if (count($itemdat)==1) {
+                            $mdata['content'] = $this->_prepare_tracking_view($leadorder, 1);
+                        } else {
+                            $mdata['content'] = $this->_prepare_multitrack_view($leadorder, 1);
+                        }
+                    } else {
+                        $mdata['content'] = $this->_prepare_multitrack_view($leadorder, 1);
+                    }
                 }
             }
             $mdata['loctime'] = $this->_leadorder_locktime();
@@ -6353,7 +6374,17 @@ class Leadorder extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $leadorder = usersession($ordersession);
-                    $mdata['content'] = $this->_prepare_tracking_view($leadorder, 1);
+                    $order_items = $leadorder['order_items'];
+                    if (count($order_items)==1) {
+                        $itemdat = $order_items[0]['items'];
+                        if (count($itemdat)==1) {
+                            $mdata['content'] = $this->_prepare_tracking_view($leadorder, 1);
+                        } else {
+                            $mdata['content'] = $this->_prepare_multitrack_view($leadorder, 1);
+                        }
+                    } else {
+                        $mdata['content'] = $this->_prepare_multitrack_view($leadorder, 1);
+                    }
                 }
             }
             $mdata['loctime'] = $this->_leadorder_locktime();
@@ -6367,40 +6398,45 @@ class Leadorder extends MY_Controller
         $shipping = $leadorder['shipping'];
         $contant = '';
         foreach ($order_items as $order_item) {
-            $shipoptions = [
-                'shipdate' => 'To Ship '.date('m/d/y', $shipping['shipdate']),
-                'item' => $order_item['item_name'],
-                'qty' => $order_item['item_qty'],
-                'order_item' => $order_item['order_item_id'],
-            ];
-            $totaltrack = 0;
-            $totaloldtrack = 0;
-            foreach ($order_item['trackings'] as $tracking) {
-                $totaltrack+=$tracking['qty'];
-                if ($tracking['tracking_id']>0) {
-                    $totaloldtrack+=$tracking['qty'];
-                }
-            }
-            $resttrack = $order_item['item_qty']-$totaltrack;
-            $chkrest = $order_item['item_qty'] - $totaloldtrack;
-            $shipoptions['remind'] = $resttrack;
-            $shipoptions['completed'] = ($chkrest > 0 ? 0 : 1);
-            $trackbody = '';
-            if (!empty($order_item['trackings'])) {
-                $tbodyoptions = [
-                    'trackings' => $order_item['trackings'],
-                    'completed' => ($resttrack > 0 ? 0 : 1),
+            $itemcolors = $order_item['items'];
+            foreach ($itemcolors as $itemcolor) {
+                $shipoptions = [
+                    'shipdate' => 'To Ship '.date('m/d/y', $shipping['shipdate']),
+                    'item' => $order_item['item_name'].' '.$itemcolor['item_color'],
+                    'qty' => $itemcolor['item_qty'],
                     'order_item' => $order_item['order_item_id'],
+                    'item_color' => $itemcolor['item_id'],
                 ];
-                $trackbody = $this->load->view('leadorderdetails/tracking_data_edit', $tbodyoptions, TRUE);
+                $totaltrack = 0;
+                $totaloldtrack = 0;
+                foreach ($itemcolor['trackings'] as $tracking) {
+                    $totaltrack+=$tracking['qty'];
+                    if ($tracking['tracking_id']>0) {
+                        $totaloldtrack+=$tracking['qty'];
+                    }
+                }
+                $resttrack = $itemcolor['item_qty']-$totaltrack;
+                $chkrest = $itemcolor['item_qty'] - $totaloldtrack;
+                $shipoptions['remind'] = $resttrack;
+                $shipoptions['completed'] = ($chkrest > 0 ? 0 : 1);
+                $trackbody = '';
+                if (!empty($itemcolor['trackings'])) {
+                    $tbodyoptions = [
+                        'trackings' => $itemcolor['trackings'],
+                        'completed' => ($resttrack > 0 ? 0 : 1),
+                        'order_item' => $order_item['order_item_id'],
+                        'item_color' => $itemcolor['item_id'],
+                    ];
+                    $trackbody = $this->load->view('leadorderdetails/tracking_data_edit', $tbodyoptions, TRUE);
+                }
+                $shipoptions['trackbody'] = $trackbody;
+                if ($edit==0) {
+                    $trackcontent = $this->load->view('leadorderdetails/tracking_view', $shipoptions, TRUE);
+                } else {
+                    $trackcontent = $this->load->view('leadorderdetails/tracking_edit', $shipoptions, TRUE);
+                }
+                $contant.=$trackcontent;
             }
-            $shipoptions['trackbody'] = $trackbody;
-            if ($edit==0) {
-                $trackcontent = $this->load->view('leadorderdetails/tracking_view', $shipoptions, TRUE);
-            } else {
-                $trackcontent = $this->load->view('leadorderdetails/tracking_edit', $shipoptions, TRUE);
-            }
-            $contant.=$trackcontent;
         }
         return $contant;
     }
@@ -6413,8 +6449,11 @@ class Leadorder extends MY_Controller
         $tracktotal = 0;
         foreach ($order_items as $order_item) {
             $totalitems+=$order_item['item_qty'];
-            foreach ($order_item['trackings'] as $tracking) {
-                $tracktotal+=$tracking['qty'];
+            $itemcolors = $order_item['items'];
+            foreach ($itemcolors as $itemcolor) {
+                foreach ($itemcolor['trackings'] as $tracking) {
+                    $tracktotal+=$tracking['qty'];
+                }
             }
         }
         $remains = $totalitems - $tracktotal;
@@ -6427,33 +6466,38 @@ class Leadorder extends MY_Controller
         $numhead = 1;
         $trackcontent.='<div class="multitrackbodyarea">';
         foreach ($order_items as $order_item) {
-            $headoptions = [
-                'item' => $order_item['item_name'],
-                'qty' => $order_item['item_qty'],
-                'order_item' => $order_item['order_item_id'],
-                'headclass' => ($numhead==1 ? '' : 'middlehead'),
-                'completed' => $completed,
-            ];
-            if ($edit==1) {
-                if ($completed==1) {
-                    $trackcontent.= $this->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
+            $itemcolors = $order_item['items'];
+            foreach ($itemcolors as $itemcolor) {
+                $headoptions = [
+                    'item' => $order_item['item_name'].' '.$itemcolor['item_color'],
+                    'qty' => $itemcolor['item_qty'],
+                    'order_item' => $order_item['order_item_id'],
+                    'item_color' => $itemcolor['item_id'],
+                    'headclass' => ($numhead==1 ? '' : 'middlehead'),
+                    'completed' => $completed,
+                ];
+                if ($edit==1) {
+                    if ($completed==1) {
+                        $trackcontent.= $this->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
+                    } else {
+                        $trackcontent.= $this->load->view('leadorderdetails/multitrack_head_edit', $headoptions, TRUE);
+                    }
                 } else {
-                    $trackcontent.= $this->load->view('leadorderdetails/multitrack_head_edit', $headoptions, TRUE);
+                    $trackcontent.= $this->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
                 }
-            } else {
-                $trackcontent.= $this->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
+                $tbodyoptions = [
+                    'trackings' => $itemcolor['trackings'],
+                    'completed' => $completed,
+                    'order_item' => $order_item['order_item_id'],
+                    'item_color' => $itemcolor['item_id'],
+                ];
+                if ($edit==1) {
+                    $trackcontent.=$this->load->view('leadorderdetails/multitrack_data_edit', $tbodyoptions, TRUE);
+                } else {
+                    $trackcontent.=$this->load->view('leadorderdetails/multitrack_data_view', $tbodyoptions, TRUE);
+                }
+                $numhead++;
             }
-            $tbodyoptions = [
-                'trackings' => $order_item['trackings'],
-                'completed' => $completed,
-                'order_item' => $order_item['order_item_id'],
-            ];
-            if ($edit==1) {
-                $trackcontent.=$this->load->view('leadorderdetails/multitrack_data_edit', $tbodyoptions, TRUE);
-            } else {
-                $trackcontent.=$this->load->view('leadorderdetails/multitrack_data_view', $tbodyoptions, TRUE);
-            }
-            $numhead++;
         }
         $trackcontent.='</div>';
         $tfooteroptions = [
