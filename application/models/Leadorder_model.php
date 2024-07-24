@@ -1930,6 +1930,22 @@ Class Leadorder_model extends My_Model {
         $newprice=$this->_get_item_priceqty($order_items[$idx]['item_id'], $order_items[$idx]['item_template'] , $order_items[$idx]['item_qty']);
         $newitem['item_price']=$newprice;
         $newitem['item_subtotal']=MoneyOutput(0);
+        // Add tracking codes
+        $shipping=$leadorder['shipping'];
+        $newtrackidx = -1;
+        if (isset($shipping['shipdate'])) {
+            $trackdate = $shipping['shipdate'];
+        } else {
+            $trackdate = time();
+        }
+        $trackings[] = [
+            'tracking_id' => $newtrackidx,
+            'qty' => 0,
+            'trackdate' => $trackdate,
+            'trackservice' => 'UPS',
+            'trackcode' => '',
+        ];
+        $newitem['trackings'] = $trackings;
         $items[]=$newitem;
         // Save
         $order_items[$idx]['items']=$items;
@@ -2974,28 +2990,6 @@ Class Leadorder_model extends My_Model {
                     $shiptotal=$this->_leadorder_shipcost($shipaddr);
                     $out['shipping']=$shiptotal;
                     $order['shipping']=$shiptotal;
-                    // Check and add Tracking Codes
-                    $itemidx = 0;
-                    foreach ($items as $item) {
-                        $trackings = $item['trackings'];
-                        if (count($trackings)==0) {
-                            $newtrackidx = -1;
-                            if (isset($shipping['shipdate'])) {
-                                $trackdate = $shipping['shipdate'];
-                            } else {
-                                $trackdate = time();
-                            }
-                            $trackings[] = [
-                                'tracking_id' => $newtrackidx,
-                                'qty' => 0,
-                                'trackdate' => $trackdate,
-                                'trackservice' => 'UPS',
-                                'trackcode' => '',
-                            ];
-                            $items[$itemidx]['trackings'] = $trackings;
-                        }
-                        $itemidx++;
-                    }
                     $leadorder['order_items'] = $items;
                 }
             }
