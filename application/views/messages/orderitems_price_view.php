@@ -2,6 +2,8 @@
     <thead>
     <tr>
         <th>Order Number</th>
+        <th>Customer</th>
+        <td>Last Update</td>
         <th>Item</th>
         <th>Color</th>
         <th>QTY</th>
@@ -14,6 +16,8 @@
     <?php foreach ($items as $item) { ?>
         <tr>
             <td><?=$item['order']?></td>
+            <td><?=$item['customer']?></td>
+            <td><?=$item['user']?></td>
             <td><?=$item['item']?></td>
             <td><?=$item['color']?></td>
             <td><?=$item['qty']?></td>
