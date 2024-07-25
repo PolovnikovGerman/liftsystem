@@ -1,15 +1,15 @@
-<table cellspacing="2" border="1" cellpadding="5" width="800">
+<table cellspacing="2" border="1" cellpadding="5" width="900">
     <thead>
     <tr>
-        <th>Order Number</th>
-        <th>Customer</th>
-        <td>Last Update</td>
-        <th>Item</th>
-        <th>Color</th>
-        <th>QTY</th>
-        <th>Price in Order</th>
-        <th>Price by QTY</th>
-        <th>Diff</th>
+        <th align="center">Order #</th>
+        <th align="center">Customer</th>
+        <th align="center">Last Update</th>
+        <th align="center">Item</th>
+        <th align="center">Color</th>
+        <th align="center">QTY</th>
+        <th align="center">Order Price</th>
+        <th align="center">Price by QTY</th>
+        <th align="center">Diff</th>
     </tr>
     </thead>
     <tbody>
