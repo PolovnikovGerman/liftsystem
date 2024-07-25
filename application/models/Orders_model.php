@@ -8539,11 +8539,11 @@ Class Orders_model extends MY_Model
         );
         $this->email->initialize($email_conf);
 
-        // $mail_to=array($this->config->item('sage_email'), $this->config->item('sean_email'));
-        $mail_to=array('to_german@yahoo.com');
+        $mail_to=array($this->config->item('sage_email'), $this->config->item('sean_email'));
+        $mail_cc=array('to_german@yahoo.com');
 
         $this->email->to($mail_to);
-        // $this->email->cc($mail_cc);
+        $this->email->cc($mail_cc);
 
         $this->email->from('no-replay@bluetrack.com');
         $title = 'Report about Low Orders Prices '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)').' ('.date('m/d/Y', $date).')';
