@@ -1915,11 +1915,6 @@ Class Shipping_model extends MY_Model
                                 if ($transit==1) {
                                     array_push($codes, 'GND');
                                     $code .= "GND|";
-//                                    if ($time['deliverytime'] > '16:00:00') {
-//                                        $newdate  = $this->calendars_model->get_business_date(strtotime($time['deliverydate']),1);
-//                                        $time['deliverydate'] = date('Y-m-d', $newdate);
-//                                        $time['deliverytime'] = '16:00:00';
-//                                    }
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
                                     if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);
