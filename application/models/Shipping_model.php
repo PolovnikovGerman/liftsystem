@@ -1777,6 +1777,7 @@ Class Shipping_model extends MY_Model
         $startdeliv = ifset($options, 'startdeliv', time());
         $cnt_code = (isset($options['target_country']) ? $options['target_country'] : 'US');
         $package_price = ifset($options, 'package_price', 100);
+        
         $qtykf = ifset($options,'qtykf',1);
         $shipTo = $options['shipTo'];
         $shipFrom = $options['shipFrom'];
