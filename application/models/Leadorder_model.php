@@ -5374,6 +5374,11 @@ Class Leadorder_model extends My_Model {
                 // Tracking codes
                 $trackings = $irow['trackings'];
                 foreach ($trackings as $tracking) {
+                    if (!empty($tracking['qty']) || !empty($tracking['trackcode'])) {
+                        if (empty($tracking['trackdate'])) {
+                            $tracking['trackdate'] = time();
+                        }
+                    }
                     $this->db->set('updated_by', $user_id);
                     $this->db->set('order_itemcolor_id', $colorid);
                     $this->db->set('qty', intval($tracking['qty']));
@@ -11084,7 +11089,7 @@ Class Leadorder_model extends My_Model {
                     $order_items[$itemidx]['items'] = $itemcolors;
                     $leadorder['order_items'] = $order_items;
                     usersession($ordersession, $leadorder);
-                    $out['trackings'] = $trackings;
+                    $out['tracking'] = $newidx;
                 }
             }
         }
@@ -11149,6 +11154,14 @@ Class Leadorder_model extends My_Model {
                             $out['result'] = $this->success_result;
 //                        }
                         } else {
+                            if ($fldname=='trackdate') {
+                                if (empty($postdata['newval'])) {
+                                    $newval = time();
+                                } else {
+                                    $newval = strtotime($postdata['newval']);
+                                }
+                                $postdata['newval'] = $newval;
+                            }
                             $trackings[$trackidx][$fldname] = $postdata['newval'];
                             $out['result'] = $this->success_result;
                         }

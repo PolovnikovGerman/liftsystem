@@ -5737,7 +5737,8 @@ function init_tracking_manage() {
         var url = '/leadorder/newtrackcode';
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                $(".trackingdatabody[data-orderitem='"+orderitem+"'][data-color='"+itemcolor+"']").empty().html(response.data.content);
+                $(".shippingdataviewarea").empty().html(response.data.content);
+                $(".trackqtyinpt[data-orderitem='"+orderitem+"'][data-track='"+response.data.tracking+"'][data-color='"+itemcolor+"']").focus();
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
             } else {
@@ -5778,12 +5779,13 @@ function init_tracking_manage() {
         params.push({name: 'order_item_id', value: orderitem});
         params.push({name: 'item_color', value: itemcolor});
         params.push({name: 'tracking', value: tracking});
-        params.push({name: 'fldname', value: 'trackservice'});
+        params.push({name: 'fldname', value: 'trackdate'});
         params.push({name: 'newval', value: $(this).val()});
         var url = '/leadorder/updatetrackinfo';
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $("input#loctimeout").val(response.data.loctime);
+                $(".trackserviceinpt[data-orderitem='"+orderitem+"'][data-track='"+tracking+"'][data-color='"+itemcolor+"']").focus();
                 init_onlineleadorder_edit();
             } else {
                 show_error(response);
@@ -5805,6 +5807,7 @@ function init_tracking_manage() {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $("input#loctimeout").val(response.data.loctime);
+                $(".trackcodeinpt[data-orderitem='"+orderitem+"'][data-track='"+tracking+"'][data-color='"+itemcolor+"']").focus();
                 init_onlineleadorder_edit();
             } else {
                 show_error(response);

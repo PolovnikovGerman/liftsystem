@@ -1,5 +1,5 @@
 <div class="trackingdataarea">
-    <div class="trackingdataheader"><?=QTYOutput($qty)?> <?=$item?> <span class="addnewtrack" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>">[add new]</span></div>
+    <div class="trackingdataheader"><?=QTYOutput($qty)?> <?=$item?> </div>
     <div class="trackingdatabody" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>"><?=$trackbody?></div>
     <div class="trackingdatafooter">
         <?php if ($remind>=0) { ?>

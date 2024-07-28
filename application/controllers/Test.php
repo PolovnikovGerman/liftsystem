@@ -3905,7 +3905,7 @@ class Test extends CI_Controller
                 $this->db->set('updated_by', 1);
                 $this->db->set('order_itemcolor_id', $orderitm['order_itemcolor_id']);
                 $this->db->set('qty', 0);
-                $this->db->set('trackdate', $orderitm['shipdate']);
+                $this->db->set('trackdate', null);
                 $this->db->set('trackservice', 'UPS');
                 $this->db->set('trackcode', '');
                 $this->db->insert('ts_order_trackings');

@@ -6282,13 +6282,19 @@ class Leadorder extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
-                    $options = [
-                        'trackings' => $res['trackings'],
-                        'completed' => 0,
-                        'order_item' => $postdata['order_item_id'],
-                        'item_color' => $postdata['item_color'],
-                    ];
-                    $mdata['content'] = $this->load->view('leadorderdetails/tracking_data_edit', $options, TRUE);
+                    $mdata['tracking'] = $res['tracking'];
+                    $leadorder = usersession($ordersession);
+                    $order_items = $leadorder['order_items'];
+                    if (count($order_items)==1) {
+                        $itemdat = $order_items[0]['items'];
+                        if (count($itemdat)==1) {
+                            $mdata['content'] = $this->_prepare_tracking_view($leadorder, 1);
+                        } else {
+                            $mdata['content'] = $this->_prepare_multitrack_view($leadorder, 1);
+                        }
+                    } else {
+                        $mdata['content'] = $this->_prepare_multitrack_view($leadorder, 1);
+                    }
                 }
             }
             $mdata['loctime'] = $this->_leadorder_locktime();
@@ -6402,7 +6408,7 @@ class Leadorder extends MY_Controller
             foreach ($itemcolors as $itemcolor) {
                 $shipoptions = [
                     'shipdate' => 'To Ship '.date('m/d/y', $shipping['shipdate']),
-                    'item' => $order_item['item_name'].' '.$itemcolor['item_color'],
+                    'item' => $order_item['item_name'].' - '.$itemcolor['item_color'],
                     'qty' => $itemcolor['item_qty'],
                     'order_item' => $order_item['order_item_id'],
                     'item_color' => $itemcolor['item_id'],
@@ -6469,7 +6475,7 @@ class Leadorder extends MY_Controller
             $itemcolors = $order_item['items'];
             foreach ($itemcolors as $itemcolor) {
                 $headoptions = [
-                    'item' => $order_item['item_name'].' '.$itemcolor['item_color'],
+                    'item' => $order_item['item_name'].' - '.$itemcolor['item_color'],
                     'qty' => $itemcolor['item_qty'],
                     'order_item' => $order_item['order_item_id'],
                     'item_color' => $itemcolor['item_id'],
