@@ -7,7 +7,7 @@
                 <input type="text" class="trackqtyinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>" value="<?=$tracking['qty']?>"/>
             </div>
             <div class="trackdate editmode">
-                <input type="text" class="trackdateinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>" value="<?=date('m/d/Y', $tracking['trackdate'])?>"/>
+                <input type="text" class="trackdateinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>" value="<?=empty($tracking['trackdate']) ? date('m/d/Y') : date('m/d/Y', $tracking['trackdate'])?>"/>
             </div>
             <div class="trackservice editmode">
                 <select class="trackserviceinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>">
@@ -35,4 +35,7 @@
             <?php } ?>
         </div>
     <?php } ?>
+    <div class="trackdatarow editmode">
+        <span class="addnewtrack" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>">[add new]</span>
+    </div>
 </div>

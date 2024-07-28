@@ -260,7 +260,7 @@ class Template
             $itemdata = $orderitem['items'][0];
             $shipoptions = [
                 'shipdate' => $shipstatus['order_status'],
-                'item' => $orderitem['item_name'].' '.$itemdata['item_color'],
+                'item' => $orderitem['item_name'].' - '.$itemdata['item_color'],
                 'qty' => $itemdata['item_qty'],
                 'order_item' => $orderitem['order_item_id'],
                 'item_color' => $itemdata['item_id'],
@@ -323,7 +323,7 @@ class Template
                 $itemcolors = $order_item['items'];
                 foreach ($itemcolors as $itemcolor) {
                     $headoptions = [
-                        'item' => $order_item['item_name'].' '.$itemcolor['item_color'],
+                        'item' => $order_item['item_name'].' - '.$itemcolor['item_color'],
                         'qty' => $itemcolor['item_qty'],
                         'order_item' => $order_item['order_item_id'],
                         'item_color' => $itemcolor['item_id'],

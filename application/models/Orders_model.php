@@ -8486,10 +8486,11 @@ Class Orders_model extends MY_Model
         $brands = ['BT', 'SR'];
         $this->load->model('leadorder_model');
         foreach ($brands as $brand) {
-            $this->db->select('o.order_id,o.order_num, oi.order_item_id, oi.item_id, oi.template, oi.item_qty as itemqty, ic.item_description, ic.item_color, ic.item_price, ic.item_qty as colorqty');
+            $this->db->select('o.order_id,o.order_num, o.customer_name, u.user_name as last_upd, oi.order_item_id, oi.item_id, oi.template, oi.item_qty as itemqty, ic.item_description, ic.item_color, ic.item_price, ic.item_qty as colorqty');
             $this->db->from('ts_orders o');
             $this->db->join('ts_order_items oi','oi.order_id=o.order_id');
             $this->db->join('ts_order_itemcolors ic','ic.order_item_id=oi.order_item_id');
+            $this->db->join('users u', 'o.update_usr=u.user_id');
             $this->db->where('o.order_date >= ', $datestart);
             $this->db->where('o.order_date < ',$dateend);
             if ($brand=='SR') {
@@ -8508,6 +8509,8 @@ Class Orders_model extends MY_Model
                         $diff = (round(floatval($price),3) - round(floatval($item['item_price']),3))*$item['colorqty'];
                         $outdats[] = [
                             'order' => $item['order_num'],
+                            'customer' => $item['customer_name'],
+                            'user' => $item['last_upd'],
                             'item' => $item['item_description'],
                             'color' => $item['item_color'],
                             'qty' => $item['colorqty'],
