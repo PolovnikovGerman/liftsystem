@@ -6408,7 +6408,7 @@ class Leadorder extends MY_Controller
             foreach ($itemcolors as $itemcolor) {
                 $shipoptions = [
                     'shipdate' => 'To Ship '.date('m/d/y', $shipping['shipdate']),
-                    'item' => $order_item['item_name'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']),
+                    'item' => $order_item['item_name'].' - '.$itemcolor['item_color'],
                     'qty' => $itemcolor['item_qty'],
                     'order_item' => $order_item['order_item_id'],
                     'item_color' => $itemcolor['item_id'],
@@ -6436,7 +6436,6 @@ class Leadorder extends MY_Controller
                     $trackbody = $this->load->view('leadorderdetails/tracking_data_edit', $tbodyoptions, TRUE);
                 }
                 $shipoptions['trackbody'] = $trackbody;
-                $shipoptions['shipped'] = $totaltrack;
                 if ($edit==0) {
                     $trackcontent = $this->load->view('leadorderdetails/tracking_view', $shipoptions, TRUE);
                 } else {
@@ -6475,12 +6474,6 @@ class Leadorder extends MY_Controller
         foreach ($order_items as $order_item) {
             $itemcolors = $order_item['items'];
             foreach ($itemcolors as $itemcolor) {
-                $trackings = $itemcolor['trackings'];
-                $shipped = 0;
-                foreach ($trackings as $tracking) {
-                    $shipped+=$tracking['qty'];
-                }
-                $completed = ($itemcolor['item_qty'] > $shipped ? 0 : 1);
                 $headoptions = [
                     'item' => $order_item['item_name'].' - '.$itemcolor['item_color'],
                     'qty' => $itemcolor['item_qty'],
@@ -6490,11 +6483,11 @@ class Leadorder extends MY_Controller
                     'completed' => $completed,
                 ];
                 if ($edit==1) {
-//                    if ($completed==1) {
-//                        $trackcontent.= $this->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
-//                    } else {
+                    if ($completed==1) {
+                        $trackcontent.= $this->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
+                    } else {
                         $trackcontent.= $this->load->view('leadorderdetails/multitrack_head_edit', $headoptions, TRUE);
-//                    }
+                    }
                 } else {
                     $trackcontent.= $this->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
                 }
@@ -6503,7 +6496,6 @@ class Leadorder extends MY_Controller
                     'completed' => $completed,
                     'order_item' => $order_item['order_item_id'],
                     'item_color' => $itemcolor['item_id'],
-                    'shipped' => $shipped,
                 ];
                 if ($edit==1) {
                     $trackcontent.=$this->load->view('leadorderdetails/multitrack_data_edit', $tbodyoptions, TRUE);

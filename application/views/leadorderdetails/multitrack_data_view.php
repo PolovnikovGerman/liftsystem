@@ -20,5 +20,4 @@
             </div>
         <?php } ?>
     <?php } ?>
-    <div class="multitrackshipped"><?=$shipped?> Shipped</div>
 </div>

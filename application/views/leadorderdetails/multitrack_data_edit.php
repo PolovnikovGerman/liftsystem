@@ -38,5 +38,4 @@
     <div class="trackdatarow editmode">
         <span class="addnewtrack" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>">[add new]</span>
     </div>
-    <div class="multitrackshipped"><?=$shipped?> Shipped</div>
 </div>
