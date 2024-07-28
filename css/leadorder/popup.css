@@ -5651,6 +5651,16 @@ input.ticket_date {
     background: #c59e51;
     color: #000000;
 }
+.trackingdatafooter .trackshippeddata {
+    position: relative;
+    top: -24px;
+    color: #6e6c6c;
+    font-size: 12px;
+    font-weight: normal;
+    font-style: italic;
+    width: 100%;
+    margin-bottom: -24px;
+}
 .trackingdatafooter .nontracked {
     float: left;
 }
@@ -5775,6 +5785,14 @@ input.ticket_date {
 }
 .multitrackdatabody.completed {
     background: #c59e51;
+}
+.multitrackdatabody .multitrackshipped {
+    color: #6e6c6c;
+    font-size: 12px;
+    font-weight: normal;
+    font-style: italic;
+    width: 100%;
+    margin-bottom: 3px;
 }
 .multitrackdatabody .trackdatarow {
     border: 1px solid #000000;

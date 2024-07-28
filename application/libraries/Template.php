@@ -260,7 +260,7 @@ class Template
             $itemdata = $orderitem['items'][0];
             $shipoptions = [
                 'shipdate' => $shipstatus['order_status'],
-                'item' => $orderitem['item_name'].' - '.$itemdata['item_color'],
+                'item' => $orderitem['item_name'].(empty($itemdata['item_color']) ? '' : ' - '.$itemdata['item_color']),
                 'qty' => $itemdata['item_qty'],
                 'order_item' => $orderitem['order_item_id'],
                 'item_color' => $itemdata['item_id'],
@@ -281,6 +281,7 @@ class Template
                     'completed' => ($resttrack > 0 ? 0 : 1),
                     'order_item' => $orderitem['order_item_id'],
                     'item_color' => $itemdata['item_id'],
+                    'shipped' => $tracktotal,
                 ];
                 if ($edit==1) {
                     $trackbody = $this->CI->load->view('leadorderdetails/tracking_data_edit', $tbodyoptions, TRUE);
@@ -322,8 +323,14 @@ class Template
             foreach ($order_items as $order_item) {
                 $itemcolors = $order_item['items'];
                 foreach ($itemcolors as $itemcolor) {
+                    $trackings = $itemcolor['trackings'];
+                    $shipped = 0;
+                    foreach ($trackings as $tracking) {
+                        $shipped+=$tracking['qty'];
+                    }
+                    $completed = ($itemcolor['item_qty'] > $shipped ? 0 : 1);
                     $headoptions = [
-                        'item' => $order_item['item_name'].' - '.$itemcolor['item_color'],
+                        'item' => $order_item['item_name'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']),
                         'qty' => $itemcolor['item_qty'],
                         'order_item' => $order_item['order_item_id'],
                         'item_color' => $itemcolor['item_id'],
@@ -331,11 +338,11 @@ class Template
                         'completed' => $completed,
                     ];
                     if ($edit==1) {
-                        if ($completed==1) {
-                            $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
-                        } else {
+                        //if ($completed==1) {
+                        //    $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
+                        //} else {
                             $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_edit', $headoptions, TRUE);
-                        }
+                        // }
                     } else {
                         $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
                     }
@@ -344,6 +351,7 @@ class Template
                         'completed' => $completed,
                         'order_item' => $order_item['order_item_id'],
                         'item_color' => $itemcolor['item_id'],
+                        'shipped' => $shipped,
                     ];
                     if ($edit==1) {
                         $trackcontent.=$this->CI->load->view('leadorderdetails/multitrack_data_edit', $tbodyoptions, TRUE);
