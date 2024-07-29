@@ -1777,6 +1777,7 @@ Class Shipping_model extends MY_Model
         $startdeliv = ifset($options, 'startdeliv', time());
         $cnt_code = (isset($options['target_country']) ? $options['target_country'] : 'US');
         $package_price = ifset($options, 'package_price', 100);
+        
         $qtykf = ifset($options,'qtykf',1);
         $shipTo = $options['shipTo'];
         $shipFrom = $options['shipFrom'];
@@ -1854,11 +1855,6 @@ Class Shipping_model extends MY_Model
                                 if ($transit==1) {
                                     array_push($codes, 'GND');
                                     $code .= "GND|";
-//                                    if ($time['deliverytime'] > '16:00:00') {
-//                                        $newdate  = $this->calendars_model->get_business_date(strtotime($time['deliverydate']),1);
-//                                        $time['deliverydate'] = date('Y-m-d', $newdate);
-//                                        $time['deliverytime'] = '16:00:00';
-//                                    }
                                     $delivdate = strtotime($time['deliverydate'].' '.$time['deliverytime']);
                                     if (abs($daydiff) > $this->config->item('delivery_daydiff')) {
                                         $delivdate = $this->recalc_arrive_date($oldstart, $time['bisnessdays'], $calendar_id);

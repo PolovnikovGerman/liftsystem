@@ -865,4 +865,22 @@ if (!function_exists('show_card_code')) {
     }
 }
 
+if (!function_exists('trackcodeurl')) {
+    function trackcodeurl($service, $trackcode)
+    {
+        $url = '';
+        if (!empty($service) && !empty($trackcode)) {
+            if ($service=='UPS') {
+                $url='https://www.ups.com/track?trackNums='.$trackcode;
+            } elseif ($service=='FedEx') {
+                $url='https://www.fedex.com/fedextrack?trknbr='.$trackcode;
+            } elseif ($service=='DHL') {
+                $url='https://mydhl.express.dhl/tracking?id='.$trackcode;
+            } elseif ($service=='USPS') {
+                $url='https://tools.usps.com/go/TrackConfirmAction_input?strOrigTrackNum='.$trackcode;
+            }
+        }
+        return $url;
+    }
+}
 ?>

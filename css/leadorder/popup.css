@@ -1853,9 +1853,11 @@ span.taxemptyview {
     resize: none;
     overflow-y: auto;
     width: 237px;
-    /* height: 108px; */
-    height: 103px;
+    height: 69px;
     margin-left: 2px;
+}
+.block_7_textarea:read-only {
+    height: 103px;
 }
 .block_7_art {
     float: left;
@@ -2174,10 +2176,9 @@ input.artrepeat {
     float: left;
     height: 23px;
     line-height: 22px;
-    /* margin: 0 15px; */
-    /* margin: 0 15px 0 37px; */
     width: 126px;
     border-radius: 7px;
+    margin-top: 7px;
 }
 .block_10.profitdetailsviewarea {
     cursor: pointer;
@@ -2456,7 +2457,7 @@ input.artrepeat {
     display: none;
 }
 .shippingdataviewarea {
-    cursor: pointer;
+    /* cursor: pointer; */
     float: right!important;
     /* margin-left: 56px; */
     /* width: 166px; */
@@ -2464,6 +2465,7 @@ input.artrepeat {
 .totalduedataviewarea {
     float: left;
     width: 155px;
+    margin-top: 6px;
 }
 /* System Switcher */
 .orderssystemswitch {
@@ -2604,6 +2606,9 @@ input.artrepeat {
     float: left;
     padding-left: 2px;
     width: 180px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .itemdescription_data_view.customitemdescript {
     width: 273px;
@@ -3264,9 +3269,9 @@ span.orderconfirm {
 .shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow > .trackcodeinptarea {
     width: 169px;
 }
-input.trackcodeinpt {
+/*input.trackcodeinpt {
     width: 160px;
-}
+}*/
 .shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow > .edit {
     width: 15px;
 }
@@ -5560,6 +5565,12 @@ input.ticket_date {
     z-index: 1500!important;
     width: 325px!important;
 }
+.autocompleter,
+.autocompleter-closed {
+    top: 37px;
+    max-width: 244px;
+    margin-left: 66px;
+}
 /* Unlock content */
 #unlockContentModal .modal-dialog {
     width: 300px;
@@ -5583,4 +5594,294 @@ input.ticket_date {
     top: 37px;
     max-width: 244px;
     margin-left: 66px;
+}
+
+/* Tracking Info */
+.trackingdataarea {
+    background: #FFFFFF;
+    width: 412px;
+    height: 150px;
+    margin-top: -120px;
+    border-radius: 7px;
+}
+.trackingdataarea div {
+    float: left;
+}
+.trackingdataheader, .trackingdatafooter {
+    background: #000000;
+    height: 24px;
+    line-height: 24px;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 600;
+    padding-left: 16px;
+    width: 100%;
+}
+.trackingdataheader.completed {
+    background: #c59e51;
+    color: #000000;
+}
+.trackingdataheader {
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;;
+}
+.trackingdataheader.middlehead {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+/* Add button */
+.trackingdataarea .addnewtrack {
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 5px;
+    font-style: italic;
+    color: #0000FF;
+}
+.trackingdatafooter {
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+.trackingdatafooter.completed {
+    background: #c59e51;
+    color: #000000;
+    border-top: 1px solid #000;
+}
+.trackingdatafooter .trackshippeddata {
+    position: relative;
+    top: -24px;
+    color: #6e6c6c;
+    font-size: 12px;
+    font-weight: normal;
+    font-style: italic;
+    width: 100%;
+    margin-bottom: -24px;
+}
+.trackingdatafooter .trackshippeddata.completed {
+    color: #000000;
+}
+.trackingdatafooter .nontracked {
+    /* float: left; */
+}
+.trackingdatafooter .shipdate {
+    float: right!important;
+    margin-right: 16px;
+}
+.trackingdatafooter .completedfull {
+    text-align: center;
+    font-size: 14px;
+    width: 100%;
+}
+.trackingdatabody {
+    background: #FFFFFF;
+    padding: 5px;
+    width: 100%;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    height: 102px;
+}
+.trackingdatabody.completed {
+    background: #c59e51;
+}
+.trackingdatabody .trackdatarow {
+    border: 1px solid #000000;
+    margin-bottom: 3px;
+    clear: both;
+    float: left;
+}
+.trackingdatabody .trackdatarow.editmode {
+    border: none!important;
+}
+.trackingdatabody .trackdatarow.completed {
+    background: #f0d091;
+}
+.trackingdatabody .trackdatarow > div {
+    float: left;
+    height: 17px;
+    line-height: 17px;
+    font-size: 12px;
+    color: #000000;
+}
+.trackingdatabody .trackqty {
+    width: 49px;
+    padding-right: 5px;
+    text-align: right;
+    border-right: 1px solid #000000;
+}
+.trackingdatabody .trackqty.editmode {
+    border-right: none;
+}
+.trackingdatabody .trackdate {
+    width: 70px;
+    text-align: center;
+    border-right: 1px solid #000000;
+}
+.trackingdatabody .trackdate.editmode {
+    border-right: none;
+}
+.trackingdatabody .trackservice {
+    width: 62px;
+    padding-left: 7px;
+    border-right: 1px solid #000000;
+}
+.trackingdatabody .trackservice.editmode {
+    border-right: none;
+}
+.trackingdatabody .trackcode {
+    width: 142px;
+    padding-left: 7px;
+    color: #0000FF!important;
+}
+.trackingdatabody .trackcodecopy {
+    background: #979797;
+    color: #000000!important;
+    cursor: pointer;
+    float: left;
+    font-size: 11px;
+    height: 17px;
+    text-align: center;
+    width: 17px;
+}
+.trackingdatabody .trackcoderemove {
+    background: #000000;
+    color: #ffffff!important;
+    cursor: pointer;
+    float: left;
+    font-size: 11px;
+    height: 17px;
+    text-align: center;
+    width: 17px;
+    margin-left: 3px;
+}
+.trackingdatabody input, .trackingdatabody select {
+    height: 17px;
+    border: 1px solid #4d4d4d;
+    color: #000000;
+}
+.trackqtyinpt {
+    width: 46px;
+}
+.trackdateinpt {
+    width: 68px;
+}
+.trackserviceinpt {
+    width: 60px;
+}
+.trackcodeinpt {
+    width: 133px;
+}
+/* Multi item tracks */
+.multitrackbodyarea {
+    max-height: 126px;
+    overflow-y: auto;
+}
+.multitrackdatabody {
+    min-height: 39px;
+    background: #FFFFFF;
+    padding: 5px;
+    width: 100%;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+}
+.multitrackdatabody.completed {
+    background: #c59e51;
+}
+.multitrackdatabody .multitrackshipped {
+    color: #6e6c6c;
+    font-size: 12px;
+    font-weight: normal;
+    font-style: italic;
+    width: 100%;
+    margin-bottom: 3px;
+}
+.multitrackdatabody .multitrackshipped.completed {
+    color: #000000;
+}
+.multitrackdatabody .trackdatarow {
+    border: 1px solid #000000;
+    margin-bottom: 3px;
+    clear: both;
+    float: left;
+}
+.multitrackdatabody .trackdatarow.editmode {
+    border: none!important;
+}
+.multitrackdatabody .trackdatarow.completed {
+    background: #f0d091;
+}
+.multitrackdatabody .trackdatarow > div {
+    float: left;
+    height: 17px;
+    line-height: 17px;
+    font-size: 12px;
+    color: #000000;
+}
+.multitrackdatabody .trackqty {
+    width: 49px;
+    padding-right: 5px;
+    text-align: right;
+    border-right: 1px solid #000000;
+}
+.multitrackdatabody .trackqty.editmode {
+    border-right: none;
+}
+.multitrackdatabody .trackdate {
+    width: 70px;
+    text-align: center;
+    border-right: 1px solid #000000;
+}
+.multitrackdatabody .trackdate.editmode {
+    border-right: none;
+}
+.multitrackdatabody .trackservice {
+    width: 62px;
+    padding-left: 7px;
+    border-right: 1px solid #000000;
+}
+.multitrackdatabody .trackservice.editmode {
+    border-right: none;
+}
+.multitrackdatabody .trackcode {
+    width: 142px;
+    padding-left: 7px;
+}
+.multitrackdatabody .trackcodecopy {
+    background: #979797;
+    color: #000000!important;
+    cursor: pointer;
+    float: left;
+    font-size: 11px;
+    height: 17px;
+    text-align: center;
+    width: 17px;
+}
+.multitrackdatabody .trackcoderemove {
+    background: #000000;
+    color: #ffffff!important;
+    cursor: pointer;
+    float: left;
+    font-size: 11px;
+    height: 17px;
+    text-align: center;
+    width: 17px;
+    margin-left: 3px;
+}
+.multitrackdatabody input, .multitrackdatabody select {
+    height: 17px;
+    border: 1px solid #4d4d4d;
+    color: #000000;
+}
+a.trackservicelnk {
+    color: #0000FF!important;
+    text-decoration: none;
+    cursor: pointer;
+}
+a.trackservicelnk:hover, a.trackservicelnk:focus {
+    text-decoration: none;
+    cursor: pointer;
 }

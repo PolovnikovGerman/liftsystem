@@ -627,6 +627,8 @@ Class Leadorder_model extends My_Model {
             $out['order_billing']=$this->get_order_billing($order_id);
             // Get Charge Info
             $out['charges']=$this->get_order_charges($order_id);
+            // Get Shipping packages
+            // $out['trackings'] = $this->get_order_trackinfo($order_id);
         } else {
             $out['contacts']=$out['order_items']=$out['shipping']=$out['order_billing']=$out['charges']=array();
             $out['shipping_address']=$this->get_orderold_shippaddress($res);
@@ -1928,6 +1930,22 @@ Class Leadorder_model extends My_Model {
         $newprice=$this->_get_item_priceqty($order_items[$idx]['item_id'], $order_items[$idx]['item_template'] , $order_items[$idx]['item_qty']);
         $newitem['item_price']=$newprice;
         $newitem['item_subtotal']=MoneyOutput(0);
+        // Add tracking codes
+        $shipping=$leadorder['shipping'];
+        $newtrackidx = -1;
+        if (isset($shipping['shipdate'])) {
+            $trackdate = $shipping['shipdate'];
+        } else {
+            $trackdate = time();
+        }
+        $trackings[] = [
+            'tracking_id' => $newtrackidx,
+            'qty' => 0,
+            'trackdate' => $trackdate,
+            'trackservice' => 'UPS',
+            'trackcode' => '',
+        ];
+        $newitem['trackings'] = $trackings;
         $items[]=$newitem;
         // Save
         $order_items[$idx]['items']=$items;
@@ -2972,6 +2990,7 @@ Class Leadorder_model extends My_Model {
                     $shiptotal=$this->_leadorder_shipcost($shipaddr);
                     $out['shipping']=$shiptotal;
                     $order['shipping']=$shiptotal;
+                    $leadorder['order_items'] = $items;
                 }
             }
         } elseif ($fldname=='tax_exempt') {
@@ -5341,19 +5360,41 @@ Class Leadorder_model extends My_Model {
                 $this->db->set('item_description', $irow['item_description']);
                 $this->db->set('item_qty', $irow['item_qty']);
                 $this->db->set('item_price', $irow['item_price']);
-//                if (isset($irow['printshop_item_id']) && !empty($irow['printshop_item_id'])) {
-//                    $this->db->set('printshop_item_id', $irow['printshop_item_id']);
-//                } else {
-                    $this->db->set('printshop_item_id', NULL);
-//                }
+                $this->db->set('printshop_item_id', NULL);
                 if ($irow['item_id']<0) {
                     $this->db->set('order_item_id', $order_item_id);
                     $this->db->insert('ts_order_itemcolors');
+                    $colorid = $this->db->insert_id();
                 } else {
                     $this->db->where('order_itemcolor_id', $irow['item_id']);
                     $this->db->update('ts_order_itemcolors');
+                    $colorid = $irow['item_id'];
                 }
                 $totalqty+=$irow['item_qty'];
+                // Tracking codes
+                $trackings = $irow['trackings'];
+                foreach ($trackings as $tracking) {
+                    if (!empty($tracking['qty']) || !empty($tracking['trackcode'])) {
+                        if (empty($tracking['trackdate'])) {
+                            $tracking['trackdate'] = time();
+                        }
+                    }
+                    $this->db->set('updated_by', $user_id);
+                    $this->db->set('order_itemcolor_id', $colorid);
+                    $this->db->set('qty', intval($tracking['qty']));
+                    $this->db->set('trackdate', $tracking['trackdate']);
+                    $this->db->set('trackservice', $tracking['trackservice']);
+                    $this->db->set('trackcode', $tracking['trackcode']);
+                    if ($tracking['tracking_id']>0) {
+                        $this->db->where('tracking_id', $tracking['tracking_id']);
+                        $this->db->update('ts_order_trackings');
+                    } else {
+                        $this->db->set('created_at', date('Y-m-d H:i:s'));
+                        $this->db->set('created_by', $user_id);
+                        $this->db->insert('ts_order_trackings');
+                    }
+                }
+
             }
 
             $imprints=$row['imprints'];
@@ -5703,6 +5744,10 @@ Class Leadorder_model extends My_Model {
                 case 'shipping_address':
                     $this->db->where('order_shipaddr_id', $row['id']);
                     $this->db->delete('ts_order_shipaddres');
+                    break;
+                case 'trackings':
+                    $this->db->where('tracking_id', $row['id']);
+                    $this->db->delete('ts_order_trackings');
                     break;
             }
         }
@@ -6212,6 +6257,8 @@ Class Leadorder_model extends My_Model {
                     $qty_class=$newitem['qtyinput_class']='warningprice';
                     $qty_title = 'Base Price '.MoneyOutput($item_price);
                 }
+                // Get tracking packages
+                $trackings = $this->_get_itemorder_trackings($irow['item_id']);
                 $items[]=array(
                     'order_item_id' =>$irow['order_item_id'],
                     'item_id' =>$irow['item_id'],
@@ -6229,6 +6276,7 @@ Class Leadorder_model extends My_Model {
                     'printshop_item_id'=>(isset($irow['printshop_item_id']) ? $irow['printshop_item_id'] : ''),
                     'qtyinput_class' => $qty_class,
                     'qtyinput_title' => $qty_title,
+                    'trackings' => $trackings,
                 );
                 $numpp++;
             }
@@ -10528,6 +10576,7 @@ Class Leadorder_model extends My_Model {
         $newitem['items'][] = $color;
         $newitem['imprints'] = [];
         $newitem['imprint_details'] = [];
+        $newitem['trackings'] = [];
         $items[] = $newitem;
         return $items;
     }
@@ -10981,6 +11030,216 @@ Class Leadorder_model extends My_Model {
         $this->db->order_by('customer_name');
         $this->db->limit($limit);
         return $this->db->get()->result_array();
+    }
+
+    private function _get_itemorder_trackings($order_itemcolor_id)
+    {
+        $this->db->select('*')->from('ts_order_trackings')->where('order_itemcolor_id', $order_itemcolor_id);
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
+
+    // Track code
+    public function newtrackcode($leadorder, $postdata, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => $this->error_message];
+        if (ifset($postdata,'order_item_id',0)!==0 && ifset($postdata,'item_color',0)!==0) {
+            // Search item
+            $out['msg'] = 'Order Item Not Found';
+            $found = 0;
+            $order_items = $leadorder['order_items'];
+            $itemidx = 0;
+            foreach ($order_items as $order_item) {
+                if ($order_item['order_item_id']==$postdata['order_item_id']) {
+                    $found = 1;
+                    break;
+                }
+                $itemidx++;
+            }
+            if ($found==1) {
+                $out['msg'] = 'Item Color Not Found';
+                $itemcolors = $order_items[$itemidx]['items'];
+                $coloridx = 0;
+                $found = 0;
+                foreach ($itemcolors as $itemcolor) {
+                    if ($itemcolor['item_id']==$postdata['item_color']) {
+                        $found = 1;
+                        break;
+                    }
+                    $coloridx++;
+                }
+                if ($found==1) {
+                    $out['result'] = $this->success_result;
+                    $trackings = $itemcolors[$coloridx]['trackings'];
+                    $newidx = 0;
+                    foreach ($trackings as $tracking) {
+                        if ($tracking['tracking_id'] < $newidx) {
+                            $newidx = $tracking['tracking_id'];
+                        }
+                    }
+                    $newidx = $newidx - 1;
+                    $trackings[] = [
+                        'tracking_id' => $newidx,
+                        'qty' => 0,
+                        'trackdate' => time(),
+                        'trackservice' => 'UPS',
+                        'trackcode' => '',
+                    ];
+                    $itemcolors[$coloridx]['trackings'] = $trackings;
+                    $order_items[$itemidx]['items'] = $itemcolors;
+                    $leadorder['order_items'] = $order_items;
+                    usersession($ordersession, $leadorder);
+                    $out['tracking'] = $newidx;
+                }
+            }
+        }
+        return $out;
+    }
+
+    public function updatetrackinfo($leadorder, $postdata, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => $this->error_message];
+        $order_item_id = ifset($postdata,'order_item_id',0);
+        $item_color = ifset($postdata, 'item_color', 0);
+        $tracking_id = ifset($postdata, 'tracking',0);
+        $fldname = ifset($postdata, 'fldname', '');
+        if ($order_item_id!==0 && $tracking_id!==0 && $item_color!==0 && !empty($fldname)) {
+            // Search item
+            $out['msg'] = 'Order Item Not Found';
+            $found = 0;
+            $order_items = $leadorder['order_items'];
+            $itemidx = 0;
+            foreach ($order_items as $order_item) {
+                if ($order_item['order_item_id']==$order_item_id) {
+                    $found = 1;
+                    break;
+                }
+                $itemidx++;
+            }
+            if ($found == 1) {
+                // Search track code
+                $out['msg'] = 'Item Color Not Found';
+                $coloridx = 0;
+                $found = 0;
+                $itemcolors = $order_items[$itemidx]['items'];
+                foreach ($itemcolors as $itemcolor) {
+                    if ($itemcolor['item_id']==$item_color) {
+                        $found = 1;
+                        break;
+                    }
+                    $coloridx++;
+                }
+                if ($found==1) {
+                    $trackings = $itemcolors[$coloridx]['trackings'];
+                    $found = 0;
+                    $out['msg'] = 'Tracking Info not found';
+                    $trackidx = 0;
+                    foreach ($trackings as $tracking) {
+                        if ($tracking['tracking_id']==$tracking_id) {
+                            $found = 1;
+                            break;
+                        }
+                        $trackidx++;
+                    }
+                    if ($found==1) {
+                        // Change
+                        if ($fldname=='qty') {
+                            $oldval = $trackings[$trackidx]['qty'];
+                            $trackings[$trackidx][$fldname] = $postdata['newval'];
+                            $total = 0;
+                            foreach ($trackings as $tracking) {
+                                $total+=intval($tracking['qty']);
+                            }
+                            $out['rest'] = $itemcolors[$coloridx]['item_qty'] - $total;
+                            $out['result'] = $this->success_result;
+//                        }
+                        } else {
+                            if ($fldname=='trackdate') {
+                                if (empty($postdata['newval'])) {
+                                    $newval = time();
+                                } else {
+                                    $newval = strtotime($postdata['newval']);
+                                }
+                                $postdata['newval'] = $newval;
+                            }
+                            $trackings[$trackidx][$fldname] = $postdata['newval'];
+                            $out['result'] = $this->success_result;
+                        }
+                        $itemcolors[$coloridx]['trackings'] = $trackings;
+                        $order_items[$itemidx]['items'] = $itemcolors;
+                        $leadorder['order_items'] = $order_items;
+                        usersession($ordersession, $leadorder);
+                    }
+                }
+            }
+        }
+        return $out;
+    }
+
+    public function deletetrackinfo($leadorder, $postdata, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => $this->error_message];
+        $order_item_id = ifset($postdata,'order_item_id',0);
+        $item_color = ifset($postdata, 'item_color', 0);
+        $tracking_id = ifset($postdata, 'tracking',0);
+        if ($order_item_id!==0 && $item_color!==0 && $tracking_id!==0) {
+            $out['msg'] = 'Order Item Not Found';
+            $found = 0;
+            $order_items = $leadorder['order_items'];
+            $itemidx = 0;
+            foreach ($order_items as $order_item) {
+                if ($order_item['order_item_id']==$order_item_id) {
+                    $found = 1;
+                    break;
+                }
+                $itemidx++;
+            }
+            if ($found == 1) {
+                $out['msg'] = 'Item Color Not Found';
+                $itemcolors = $order_items[$itemidx]['items'];
+                $found = 0;
+                $coloridx = 0;
+                foreach ($itemcolors as $itemcolor) {
+                    if ($itemcolor['item_id']==$item_color) {
+                        $found = 1;
+                        break;
+                    }
+                    $coloridx++;
+                }
+                if ($found==1) {
+                    $trackings = $itemcolors[$coloridx]['trackings'];
+                    $found = 0;
+                    $out['msg'] = 'Tracking Info not found';
+                    $total = 0;
+                    $newtracks = [];
+                    $delrecords=$leadorder['delrecords'];
+                    foreach ($trackings as $tracking) {
+                        if ($tracking['tracking_id']==$tracking_id) {
+                            $found = 1;
+                            if ($tracking['tracking_id']>0) {
+                                $delrecords[] = [
+                                    'id' => $tracking['tracking_id'],
+                                    'entity' => 'trackings',
+                                ];
+                            }
+                        } else {
+                            $newtracks[] = $tracking;
+                            $total+=$tracking['qty'];
+                        }
+                    }
+                    if ($found==1) {
+                        // Save leadorder
+                        $leadorder['delrecords'] = $delrecords;
+                        $itemcolors[$coloridx]['trackings'] = $newtracks;
+                        $order_items[$itemidx]['items'] = $itemcolors;
+                        $leadorder['order_items'] = $order_items;
+                        usersession($ordersession, $leadorder);
+                        $out['result'] = $this->success_result;
+                    }
+                }
+            }
+        }
+        return $out;
     }
 }
 /* End of file leadorder_model.php */
