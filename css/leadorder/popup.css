@@ -5645,11 +5645,12 @@ input.ticket_date {
     border-bottom-right-radius: 7px;
     border-left: 1px solid #000000;
     border-right: 1px solid #000000;
-    border-bottom: 1px solid #000000;;
+    border-bottom: 1px solid #000000;
 }
 .trackingdatafooter.completed {
     background: #c59e51;
     color: #000000;
+    border-top: 1px solid #000;
 }
 .trackingdatafooter .trackshippeddata {
     position: relative;
@@ -5661,8 +5662,11 @@ input.ticket_date {
     width: 100%;
     margin-bottom: -24px;
 }
+.trackingdatafooter .trackshippeddata.completed {
+    color: #000000;
+}
 .trackingdatafooter .nontracked {
-    float: left;
+    /* float: left; */
 }
 .trackingdatafooter .shipdate {
     float: right!important;
@@ -5671,6 +5675,7 @@ input.ticket_date {
 .trackingdatafooter .completedfull {
     text-align: center;
     font-size: 14px;
+    width: 100%;
 }
 .trackingdatabody {
     background: #FFFFFF;
@@ -5793,6 +5798,9 @@ input.ticket_date {
     font-style: italic;
     width: 100%;
     margin-bottom: 3px;
+}
+.multitrackdatabody .multitrackshipped.completed {
+    color: #000000;
 }
 .multitrackdatabody .trackdatarow {
     border: 1px solid #000000;

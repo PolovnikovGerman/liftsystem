@@ -3,7 +3,7 @@
     <div class="trackingdatabody <?=$completed==1 ? 'completed' : ''?>"><?=$trackbody?></div>
 
     <div class="trackingdatafooter <?=$completed==1 ? 'completed' : ''?>">
-        <div class="trackshippeddata" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>"><?=$shipped?> Shipped</div>
+        <div class="trackshippeddata <?=$completed==1 ? 'completed' : ''?>" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>"><?=$shipped?> Shipped</div>
         <?php if ($completed==0) { ?>
             <div class="nontracked"><?=$remind?> Remaining</div>
             <div class="shipdate"><?=$shipdate?></div>

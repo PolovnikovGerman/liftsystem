@@ -5761,6 +5761,10 @@ function init_tracking_manage() {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $(".shippingdataviewarea").empty().html(response.data.content);
+                $("input.trackdateinpt").datepicker({
+                    autoclose: true,
+                    todayHighlight: true
+                });
                 $(".trackdateinpt[data-orderitem='"+orderitem+"'][data-track='"+tracking+"'][data-color='"+itemcolor+"']").focus();
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
@@ -5839,7 +5843,7 @@ function init_tracking_manage() {
         },'json');
     });
     $(".trackcoderemove").unbind('click').click(function(){
-        if (confirm('Delete Track #?')==true) {
+        if (confirm('Delete Tracking #?')==true) {
             var orderitem = $(this).data('orderitem');
             var tracking = $(this).data('track');
             var itemcolor = $(this).data('color');
