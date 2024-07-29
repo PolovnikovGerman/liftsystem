@@ -275,6 +275,7 @@ class Template
                 $resttrack = intval($itemdata['item_qty']) - intval($tracktotal);
                 $shipoptions['remind'] = $resttrack;
                 $shipoptions['completed'] = ($resttrack > 0 ? 0 : 1);
+                $shipoptions['shipped'] = intval($tracktotal);
                 $trackbody = '';
                 if (!empty($itemdata['trackings'])) {
                     $tbodyoptions = [
