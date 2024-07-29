@@ -20,5 +20,5 @@
             </div>
         <?php } ?>
     <?php } ?>
-    <div class="multitrackshipped"><?=$shipped?> Shipped</div>
+    <div class="multitrackshipped <?=$completed==1 ? 'completed' : ''?>"><?=$shipped?> Shipped</div>
 </div>
