@@ -271,7 +271,7 @@ class Template
                     $tracktotal+=$tracking['qty'];
                 }
             }
-            $resttrack = $itemdata['item_qty'] - $tracktotal;
+            $resttrack = $itemdata['item_qty'] - intval($tracktotal);
             $shipoptions['remind'] = $resttrack;
             $shipoptions['completed'] = ($resttrack > 0 ? 0 : 1);
             $trackbody = '';
