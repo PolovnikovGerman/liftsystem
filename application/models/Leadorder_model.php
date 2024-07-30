@@ -11069,7 +11069,7 @@ Class Leadorder_model extends My_Model {
 
     private function _get_itemorder_trackings($order_itemcolor_id)
     {
-        $this->db->select('*')->from('ts_order_trackings')->where('order_itemcolor_id', $order_itemcolor_id);
+        $this->db->select('*')->from('ts_order_trackings')->where('order_itemcolor_id', $order_itemcolor_id)->order_by('trackdate');
         $res = $this->db->get()->result_array();
         return $res;
     }
