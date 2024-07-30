@@ -6576,6 +6576,11 @@ Class Orders_model extends MY_Model
 //                        $this->db->set('printshop_item_id', $item['printshop_inventory_id']);
 //                    }
                     $this->db->insert('ts_order_itemcolors');
+                    $itemcolorid = $this->db->insert_id();
+                    $this->db->set('created_at', time());
+                    $this->db->set('order_itemcolor_id', $itemcolorid);
+                    $this->db->set('trackservice', 'UPS');
+                    $this->db->insert('ts_order_trackings');
                 }
                 if ($blank == 1) {
                     $this->db->set('order_item_id', $item_id);
