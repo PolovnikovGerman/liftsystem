@@ -107,6 +107,7 @@ Class Shipping_model extends MY_Model
                 $this->db->where('i.item_id',$item_id);
                 $leads = $this->db->get()->row_array();
             }
+            $leads['brand'] = $itmdat['brand'];
             if (!isset($leads['calendar_id'])) {
                 $leads['calendar_id']=$this->_get_default_calend();
             }
@@ -1775,6 +1776,9 @@ Class Shipping_model extends MY_Model
         $itemweight = ifset($options, 'weight', '0')==0 ? 0.010 : $options['weight'];
         $qty = ifset($options, 'itemqty', 250);
         $startdeliv = ifset($options, 'startdeliv', time());
+        if (empty($startdeliv)) {
+            $startdeliv = time();
+        }
         $cnt_code = (isset($options['target_country']) ? $options['target_country'] : 'US');
         $package_price = ifset($options, 'package_price', 100);
         
