@@ -5834,7 +5834,12 @@ function init_tracking_manage() {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 // Update code
-                $(".trackcodehidden[data-orderitem='"+orderitem+"'][data-track='"+tracking+"'][data-color='"+itemcolor+"']").val(newcode)
+                $(".trackcodehidden[data-orderitem='"+orderitem+"'][data-track='"+tracking+"'][data-color='"+itemcolor+"']").val(newcode);
+                if (parseInt(response.data.hidecopy)==1) {
+                    $(".trackcodecopy[data-orderitem='"+orderitem+"'][data-track='"+tracking+"'][data-color='"+itemcolor+"']").addClass('emptycopy');
+                } else {
+                    $(".trackcodecopy[data-orderitem='"+orderitem+"'][data-track='"+tracking+"'][data-color='"+itemcolor+"']").removeClass('emptycopy');
+                }
                 $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
             } else {

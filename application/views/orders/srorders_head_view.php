@@ -85,3 +85,4 @@
     </div>
     <div class="leadorder_dataarea <?=$brand=='SR' ? 'relievers' : ''?>">&nbsp;</div>
 </div>
+<!-- <div class="ordertraciknglegend" style="float: left; border: 1px solid #000000; height: 60px; width: 120px">&nbsp;</div> -->

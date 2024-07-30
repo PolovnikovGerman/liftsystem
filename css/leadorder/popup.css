@@ -5747,6 +5747,9 @@ input.ticket_date {
     text-align: center;
     width: 17px;
 }
+.trackingdatabody .trackcodecopy.emptycopy {
+    display: none;
+}
 .trackingdatabody .trackcoderemove {
     background: #000000;
     color: #ffffff!important;
@@ -5859,6 +5862,9 @@ input.ticket_date {
     height: 17px;
     text-align: center;
     width: 17px;
+}
+.multitrackdatabody .trackcodecopy.emptycopy {
+    display: none;
 }
 .multitrackdatabody .trackcoderemove {
     background: #000000;
