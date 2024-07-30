@@ -14,7 +14,7 @@
                         <?=$tracking['trackcode']?>
                     <?php } ?>
                 </div>
-                <div class="trackcodecopy" data-track="<?=$tracking['tracking_id']?>">
+                <div class="trackcodecopy <?=empty($tracking['trackcode']) ? 'emptycopy' : '' ?>" data-track="<?=$tracking['tracking_id']?>">
                     <i class="fa fa-copy"></i>
                 </div>
             </div>
