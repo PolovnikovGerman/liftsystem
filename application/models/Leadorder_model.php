@@ -1929,7 +1929,7 @@ Class Leadorder_model extends My_Model {
         }
         $newprice=$this->_get_item_priceqty($order_items[$idx]['item_id'], $order_items[$idx]['item_template'] , $order_items[$idx]['item_qty']);
         $newitem['item_price']=$newprice;
-        $newitem['item_subtotal']=MoneyOutput(0);
+        $newitem['item_subtotal']=0; //$newprice*$order_items[$idx]['item_qty'];
         // Add tracking codes
         $shipping=$leadorder['shipping'];
         $newtrackidx = -1;
@@ -7452,6 +7452,17 @@ Class Leadorder_model extends My_Model {
                         } else {
                             $out_colors=$this->load->view('leadorderdetails/item_color_choice', $coloroptions, TRUE);
                         }
+                        $newtrackidx = -1;
+                        $trackdate = time();
+                        $trackings = [];
+                        $trackings[] = [
+                            'tracking_id' => $newtrackidx,
+                            'qty' => 0,
+                            'trackdate' => $trackdate,
+                            'trackservice' => 'UPS',
+                            'trackcode' => '',
+                        ];
+
                         $newitems[]=array(
                             'order_item_id'=>(-1)*$idx,
                             'item_id' =>(-1)*($itmid),
@@ -7469,6 +7480,7 @@ Class Leadorder_model extends My_Model {
                             'qtyinput_class' => $pitem['qtyinput_class'],
                             'qtyinput_title' => $pitem['qtyinput_title'],
                             'printshop_item_id'=>$pitem['printshop_item_id'],
+                            'trackings' => $trackings,
                         );
                         $itmid++;
                     }
@@ -10573,10 +10585,19 @@ Class Leadorder_model extends My_Model {
             'qtyinput_class' => '',
             'qtyinput_title' => '',
         ];
+        $newtrackidx = -1;
+        $trackdate = time();
+        $trackings[] = [
+            'tracking_id' => $newtrackidx,
+            'qty' => 0,
+            'trackdate' => $trackdate,
+            'trackservice' => 'UPS',
+            'trackcode' => '',
+        ];
+        $color['trackings'] = $trackings;
         $newitem['items'][] = $color;
         $newitem['imprints'] = [];
         $newitem['imprint_details'] = [];
-        $newitem['trackings'] = [];
         $items[] = $newitem;
         return $items;
     }
@@ -10740,6 +10761,20 @@ Class Leadorder_model extends My_Model {
             $newitem['printshop_item_id']=(isset($itemdata['printshop_item_id']) ? $itemdata['printshop_item_id']  : '');
             $newitem['qtyinput_class']='normal';
             $newitem['qtyinput_title']='';
+            $newtrackidx = -1;
+//            if (isset($shipping['shipdate'])) {
+//                $trackdate = $shipping['shipdate'];
+//            } else {
+                $trackdate = time();
+//            }
+            $trackings[] = [
+                'tracking_id' => $newtrackidx,
+                'qty' => 0,
+                'trackdate' => $trackdate,
+                'trackservice' => 'UPS',
+                'trackcode' => '',
+            ];
+            $newitem['trackings'] = $trackings;
             $items[]=$newitem;
             $orditem['items']=$items;
             // Prepare Imprint, Imprint Details

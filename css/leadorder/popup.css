@@ -3931,7 +3931,7 @@ textarea.proofnotes {
     margin-top: 9px;
     margin-bottom: 15px;
     width: 320px;
-    height: 46px;
+    height: 82px; /* 46px;*/
 }
 a.historydetailsview {
     text-decoration: none;
