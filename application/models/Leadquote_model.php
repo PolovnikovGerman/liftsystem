@@ -3387,6 +3387,16 @@ class Leadquote_model extends MY_Model
                     // check that current color exist
                 }
                 $itemsubtotal+=$quotecolor['item_qty']*$quotecolor['item_price'];
+                $newtrackidx = -1;
+                $trackdate = time();
+                $trackings = [];
+                $trackings[] = [
+                    'tracking_id' => $newtrackidx,
+                    'qty' => 0,
+                    'trackdate' => $trackdate,
+                    'trackservice' => 'UPS',
+                    'trackcode' => '',
+                ];
                 $coloritems[] = [
                     'order_item_id' => $itemid*(-1),
                     'item_id' => $colorid*(-1),
@@ -3404,6 +3414,7 @@ class Leadquote_model extends MY_Model
                     'printshop_item_id' => ifset($itemdata, 'printshop_item_id',''),
                     'qtyinput_class' => '',
                     'qtyinput_title' => '',
+                    'trackings' => $trackings,
                 ];
                 $colorid++;
                 $totalitemqty += $quotecolor['item_qty'];
@@ -3500,6 +3511,7 @@ class Leadquote_model extends MY_Model
             foreach ($lead_time as $timerow) {
                 if ($timerow['current']==1) {
                     $quoterush = $timerow['price'];
+                    $quoterushname = $timerow['name'];
                 }
             }
         }
@@ -3523,7 +3535,9 @@ class Leadquote_model extends MY_Model
             }
             $rushidx = 0;
             foreach ($rushdats as $rushrow) {
-                if ($rushrow['price']==$quoterush) {
+                // if ($rushrow['price']==$quoterush) {
+                //    $rushdats[$rushidx]['current'] = 1;
+                if ($rushrow['rushterm']==$quoterushname) {
                     $rushdats[$rushidx]['current'] = 1;
                     break;
                 }
