@@ -6358,6 +6358,11 @@ class Leadorder extends MY_Controller
                     if (isset($res['rest'])) {
                         $mdata['rest'] = $res['rest'];
                     }
+                    if (empty($res['trackcode'])) {
+                        $mdata['hidecopy'] = 1;
+                    } else {
+                        $mdata['hidecopy'] = 0;
+                    }
                 }
             }
             $mdata['loctime'] = $this->_leadorder_locktime();

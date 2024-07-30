@@ -11198,11 +11198,13 @@ Class Leadorder_model extends My_Model {
                                 $postdata['newval'] = $newval;
                             }
                             $trackings[$trackidx][$fldname] = $postdata['newval'];
+                            $out['trackcode'] = $trackings[$trackidx]['trackcode'];
                             $out['result'] = $this->success_result;
                         }
                         $itemcolors[$coloridx]['trackings'] = $trackings;
                         $order_items[$itemidx]['items'] = $itemcolors;
                         $leadorder['order_items'] = $order_items;
+
                         usersession($ordersession, $leadorder);
                     }
                 }

@@ -24,7 +24,7 @@
         <div class="trackcode editmode">
             <input type="text" class="trackcodeinpt" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>" value="<?=$tracking['trackcode']?>"/>
         </div>
-        <div class="trackcodecopy" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>">
+        <div class="trackcodecopy <?=empty($tracking['trackcode']) ? 'emptycopy' : '' ?>" data-track="<?=$tracking['tracking_id']?>" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>">
             <i class="fa fa-copy"></i>
         </div>
         <?php if ($numpp > 1) { ?>
