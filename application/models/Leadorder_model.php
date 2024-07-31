@@ -152,6 +152,15 @@ Class Leadorder_model extends My_Model {
         $this->db->group_by('order_id');
         $balancesql = $this->db->get_compiled_select();
 
+        // Traking results
+        $this->db->select('o.order_id, count(t.tracking_id) as trackcnt, sum(t.qty) as trackqty');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_items toi', 'o.order_id = toi.order_id');
+        $this->db->join('ts_order_itemcolors itemcolor', 'toi.order_item_id = itemcolor.order_item_id');
+        $this->db->join('ts_order_trackings t', 't.order_itemcolor_id=itemcolor.order_itemcolor_id');
+        $this->db->where('t.trackcode != ','');
+        $this->db->group_by('o.order_id');
+        $tracksql = $this->db->get_compiled_select();
 
         $this->db->select('o.order_id, o.create_usr, o.order_date, o.brand_id, o.order_num, o.customer_name');
         $this->db->select('o.customer_email, o.revenue, o.shipping, o.is_shipping, o.tax, o.cc_fee, o.order_cog');
@@ -170,6 +179,7 @@ Class Leadorder_model extends My_Model {
         $this->db->select('totalpack.cnt as totalpacks, sendpack.cnt as sendpacks, sendpack.delivdate, sendpack.packsenddate');
         $this->db->select('sendpack.packtrackdate, delivpack.cnt as delivpacks');
         $this->db->select('p.batchcnt, p.batchsum, coalesce(o.revenue,0) - coalesce(p.batchsum,0) as balance ');
+        $this->db->select('track.trackcnt, track.trackqty');
         $this->db->from('ts_orders o');
         $this->db->join("{$item_dbtable} as itm",'itm.item_id=o.item_id ','left');
         $this->db->join('users u','u.user_id=o.order_usr_repic','left');
@@ -182,6 +192,7 @@ Class Leadorder_model extends My_Model {
         $this->db->join("({$sendpack}) as sendpack",'sendpack.order_id=o.order_id','left');
         $this->db->join("({$delivpack}) as delivpack",'delivpack.order_id=o.order_id','left');
         $this->db->join("({$balancesql}) as p",'p.order_id=o.order_id','left');
+        $this->db->join("({$tracksql}) as track", 'track.order_id=o.order_id','left');
 
         // $this->db->where('o.is_canceled',0);
         // $this->db->join('v_order_artstage vo','vo.order_id=o.order_id','left');
@@ -352,45 +363,46 @@ Class Leadorder_model extends My_Model {
             if ($row['is_canceled']==1) {
                 $row['order_status']='canceled';
                 $row['order_status_class']='canceled';
+                $row['order_status_perc'] = '';
             } else {
-                if ($row['order_arthide']==0) {
-                    if ($row['cnt_amnt']>0 && $row['order_approved']=1) {
-                        // Order Placed
-                    } else {
-                        if ($row['order_art'] = 1 && $row['order_redrawn'] = 0) {
-                            $order_proj_status='05_notredr';
-                        } elseif ($row['order_approved'] = 0 && $row['order_proofed'] = 1) {
-                            $order_proj_status='02_notapprov';
-                        } elseif ($row['order_proofed']= 0 && $row['order_vectorized'] = 1) {
-                            $order_proj_status='03_notprof';
-                        } elseif ($row['order_vectorized'] = 0 && $row['order_redrawn'] = 1) {
-                            $order_proj_status='04_notvector';
-                        } elseif ($row['order_art'] = 0) {
-                            $order_proj_status='06_noart';
-                        }
-                    }
-                }
-                if (!empty($order_proj_status)) {
-                    foreach ($this->art_stages as $stagerow) {
-                        if ($stagerow['key']==$order_proj_status) {
-                            $row['order_status']=$stagerow['value'];
-                            $row['order_status_class']=$stagerow['class'];
-                            break;
-                        }
-                    }
-                } else {
-                    /*if (intval($row['tickcnt'])>0) {
-                        $row['order_status']='FF - Fulfillment';
-                        $row['order_status_class']='fulfillment';
-                    } else { */
+//                if ($row['order_arthide']==0) {
+//                    if ($row['cnt_amnt']>0 && $row['order_approved']=1) {
+//                        // Order Placed
+//                    } else {
+//                        if ($row['order_art'] = 1 && $row['order_redrawn'] = 0) {
+//                            $order_proj_status='05_notredr';
+//                        } elseif ($row['order_approved'] = 0 && $row['order_proofed'] = 1) {
+//                            $order_proj_status='02_notapprov';
+//                        } elseif ($row['order_proofed']= 0 && $row['order_vectorized'] = 1) {
+//                            $order_proj_status='03_notprof';
+//                        } elseif ($row['order_vectorized'] = 0 && $row['order_redrawn'] = 1) {
+//                            $order_proj_status='04_notvector';
+//                        } elseif ($row['order_art'] = 0) {
+//                            $order_proj_status='06_noart';
+//                        }
+//                    }
+//                }
+//                if (!empty($order_proj_status)) {
+//                    foreach ($this->art_stages as $stagerow) {
+//                        if ($stagerow['key']==$order_proj_status) {
+//                            $row['order_status']=$stagerow['value'];
+//                            $row['order_status_class']=$stagerow['class'];
+//                            break;
+//                        }
+//                    }
+//                } else {
+//                    /*if (intval($row['tickcnt'])>0) {
+//                        $row['order_status']='FF - Fulfillment';
+//                        $row['order_status_class']='fulfillment';
+//                    } else { */
                     $statusship=$this->_leadorder_shipping_status($row);
-                    $row['order_status']=$statusship['order_status'];
-                    $row['order_status_class']=$statusship['order_status_class'];
-                    /* } */
-                }
-            }
-            if ($row['order_id']==42881) {
-                $zz=1;
+//                    $row['order_status']=$statusship['order_status'];
+//                    $row['order_status_class']=$statusship['order_status_class'];
+//                    /* } */
+//                }
+                $row['order_status'] = $statusship['label'];
+                $row['order_status_class'] = $statusship['class'];
+                $row['order_status_perc'] = $statusship['percent'];
             }
             if ($row['is_canceled']==1) {
                 $balance_class='';
@@ -9053,14 +9065,39 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 
-    public function _leadorder_shipping_status($order) {
+    public function _leadorder_shipping_status($order)
+    {
+        if (intval($order['shipdate'])==0) {
+            $shipdate=$order['ord_ship'];
+        } else {
+            $shipdate=$order['shipdate'];
+        }
+        $outstatus = [
+            'class' => '',
+            'percent' => '-',
+            'label' => '',
+        ];
+        if (intval($order['trackqty'])>0) {
+            $outstatus['percent'] = round(intval($order['trackqty'])/intval($order['order_qty'])*100,0).'%';
+        }
+        if (intval($order['order_qty'])<=intval($order['trackqty'])) {
+            $outstatus['class'] = 'completed';
+            $outstatus['label'] = 'Completed';
+        } else {
+            if ($shipdate < time()) {
+                $outstatus['label'] = 'Late ('.date('m/d', $shipdate).')';
+                $outstatus['class'] = 'late';
+            } else {
+                $outstatus['label'] = 'To ship '.date('m/d/y', $shipdate);
+                $outstatus['class'] = 'ontime';
+            }
+        }
+        return $outstatus;
+    }
+
+    public function _leadorder_shipold_status($order) {
         $order_status='FF - To Ship ';
         $order_status_class='fulfillment';
-//        $this->db->select('o.shipdate as ord_ship, s.order_shipping_id, s.shipdate');
-//        $this->db->from('ts_orders o');
-//        $this->db->join('ts_order_shippings s','s.order_id=o.order_id','left');
-//        $this->db->where('o.order_id', $order_id);
-//        $res=$this->db->get()->row_array();
         if (intval($order['shipdate'])==0) {
             $shipdate=$order['ord_ship'];
         } else {
