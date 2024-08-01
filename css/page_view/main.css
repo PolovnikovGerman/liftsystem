@@ -142,8 +142,23 @@ body div {
     margin-top: 3px;
     height: 16px;
 }
+.period_analitic_info .totalsalesprev, .period_analitic_info .totalsalesnext {
+    width: 20px;
+    text-align: center;
+    font-size: 19px;
+    height: 20px;
+    line-height: 20px;
+    opacity: 0.6;
+}
+.period_analitic_info .totalsalesnext {
+    float: right!important;
+}
+.period_analitic_info .totalsalesprev.active, .period_analitic_info .totalsalesnext.active {
+    opacity: 1;
+    cursor: pointer;
+}
 .period_analitic_info .period_results {
-    width: 100%;
+    width: calc(100% - 40px);
     text-align: center;
     margin-bottom: 2px;
     margin-top: 2px;
@@ -166,7 +181,7 @@ body div {
     top: -2px;
 }
 .period_analitic_info .param_value {
-    min-width: 26px;
+    min-width: 23px;
     font-family: Arial;
     font-size: 16px;
     font-weight: 600;

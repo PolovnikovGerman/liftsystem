@@ -8,7 +8,7 @@ Class Dashboard_model extends MY_Model
         parent::__construct();
     }
 
-    public function get_totals($dayview) {
+    public function get_totals($dayview, $weeknum=0, $year=0) {
         if ($dayview =='day') {
             $options = [
                 'conversions' => 45,
@@ -17,38 +17,81 @@ Class Dashboard_model extends MY_Model
             ];
             $label = date('l, F j, Y');
         } else {
-            $weeknum = date('W');
-            $year = date('Y');
-            $dates = getDatesByWeek($weeknum, $year);
-            $label = 'M '.date('M j', $dates['start_week']).' - S '.date('M j', $dates['end_week']).' '.$year;
+            $curweek=date('W');
+            $curyear=date('Y');
+            if ($curweek==$weeknum && $curyear==$year) {
+                $weeknum = 0;
+                $year = 0;
+            }
+            if ($weeknum==0) {
+                $label = 'ALL BRANDS THIS WEEK';
+                $weeknum = date('W');
+                $year = date('Y');
+                $dates = getDatesByWeek($weeknum, $year);
+                $nxtweek = 0;
+                $nxtnavig = 0;
+                $prvweek = $date = strtotime(date("Y-m-d", $dates['start_week']) . " -1 week");
+                $prvnavig = 1;
+            } else {
+                $dates = getDatesByWeek($weeknum, $year);
+                $dstart = $dates['start_week'];
+                $dend = $dates['end_week'];
+                $year = date('Y', $dstart);
+                $weekname = '';
+                if (date('M', $dstart) != date('M', $dend)) {
+                    $weekname .= date('M', $dstart) . '/' . date('M', $dend);
+                } else {
+                    $weekname .= date('M', $dstart);
+                }
+                $weekname .= ' ' . date('j', $dstart) . '-' . date('j', $dend);
+                $weekname .= ', ' . date('Y', $dend);
+                $label = $weekname; // 'M '.date('M j', $dates['start_week']).' - S '.date('M j', $dates['end_week']).' '.$year;
+                $nxtweek = strtotime(date("Y-m-d", $dates['start_week']) . " +1 week");;
+                $nxtnavig = 1;
+                $prvweek = strtotime(date("Y-m-d", $dates['start_week']) . " -1 week");
+                $prvnavig = 1;
+            }
             $this->db->select('count(order_id) as cnt, sum(revenue) as revenue');
             $this->db->from('ts_orders');
             $this->db->where('order_date >= ', $dates['start_week']);
             $this->db->where('order_date < ', $dates['end_week']);
             $this->db->where('is_canceled',0);
             $res = $this->db->get()->row_array();
-            if ($res['cnt']==0) {
-                $options = [
-                    'conversions' => 204,
-                    'sales' => 0,
-                    'revenue' => 0,
-                ];
-            } else {
+//            if ($res['cnt']==0) {
+//                $options = [
+//                    'conversions' => 204,
+//                    'sales' => 0,
+//                    'revenue' => 0,
+//                ];
+//            } else {
                 $options = [
                     'conversions' => 204,
                     'sales' => $res['cnt'],
                     'revenue' => $res['revenue'],
+                    'start_week' => $dates['start_week'],
+                    'end_week' => $dates['end_week'],
+                    'label' => $label,
+                    'currweek' => $dates['start_week'],
+                    'prev_week' => $prvweek,
+                    'prev_navig' => $prvnavig,
+                    'next_week' => $nxtweek,
+                    'next_navig' => $nxtnavig,
                 ];
-            }
+//            }
         }
         return ['data'=>$options, 'label'=>$label];
     }
 
-    public function get_totals_brand($resulttype = 'totals') {
-        $weeknum = date('W');
-        $year = date('Y');
+    public function get_totals_brand($resulttype = 'totals', $curweek = 0) {
+        if ($curweek==0) {
+            $weeknum = date('W');
+            $year = date('Y');
+        } else {
+            $weeknum = date('W', $curweek);
+            $year = date('Y', $curweek);
+        }
         $dates = getDatesByWeek($weeknum, $year);
-        $label = 'M '.date('M j', $dates['start_week']).' - S '.date('M j', $dates['end_week']).' '.$year;
+        // $label = 'M '.date('M j', $dates['start_week']).' - S '.date('M j', $dates['end_week']).' '.$year;
         $this->db->select('brand, count(order_id) as cnt, sum(revenue) as revenue');
         $this->db->from('ts_orders');
         $this->db->where('order_date >= ', $dates['start_week']);

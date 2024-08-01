@@ -165,6 +165,8 @@ $(document).ready(function () {
     // Create timer
     timerId = setTimeout('ordertotalsparse()', timeLapse);
     jQuery.balloon.init();
+    // Init Header Totals
+    init_totalinfo_content();
 });
 
 function init_submenu(brand) {
@@ -314,4 +316,34 @@ function leftmenu_alignment() {
 
 function initAutocomplete() {
 
+}
+
+/* Scroll to previous week results */
+function init_totalinfo_content() {
+    $(".totalsalesprev.active").unbind('click').click(function (){
+        var params=new Array();
+        params.push({name: 'weekdate', value: $(this).data('week')});
+        var url = '/welcome/salestotals';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".period_analitic_info").empty().html(response.data.content);
+                init_totalinfo_content();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".totalsalesnext.active").unbind('click').click(function (){
+        var params=new Array();
+        params.push({name: 'weekdate', value: $(this).data('week')});
+        var url = '/welcome/salestotals';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".period_analitic_info").empty().html(response.data.content);
+                init_totalinfo_content();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
