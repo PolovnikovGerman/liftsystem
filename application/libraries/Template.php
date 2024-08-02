@@ -316,9 +316,9 @@ class Template
                 }
             }
             $remains = $totalitems - $tracktotal;
-            $completed = 1;
+            $allcompleted = 1;
             if ($remains > 0) {
-                $completed = 0;
+                $allcompleted = 0;
             }
             $trackcontent = '<div class="trackingdataarea">';
             $numhead = 1;
@@ -366,7 +366,7 @@ class Template
             }
             $trackcontent.='</div>';
             $tfooteroptions = [
-                'completed' => $completed,
+                'completed' => $allcompleted,
                 'remind' => $remains,
                 'shipdate' => $shipstatus['order_status']
             ];
