@@ -123,7 +123,7 @@ body div {
 }
 .period_analitic_info {
     border: 1px solid #9b9b9b;
-    width: 193px;
+    width: 210px;
 }
 .period_analitic_info div {
     height: 18px;
@@ -1392,7 +1392,7 @@ div.oldvesionlabel {
     border: 1px solid #9b9b9b;
     height: 18px;
     color: #ffffff;
-    margin: -14px 0px 0 320px;
+    margin: -14px 0px 0 337px;
     cursor: pointer;
     padding: 0 6px;
     line-height: 18px !important;
