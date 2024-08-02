@@ -6469,9 +6469,9 @@ class Leadorder extends MY_Controller
             }
         }
         $remains = $totalitems - $tracktotal;
-        $completed = 1;
+        $allcompleted = 1;
         if ($remains > 0) {
-            $completed = 0;
+            $allcompleted = 0;
         }
 
         $trackcontent = '<div class="trackingdataarea">';
@@ -6520,7 +6520,7 @@ class Leadorder extends MY_Controller
         }
         $trackcontent.='</div>';
         $tfooteroptions = [
-            'completed' => $completed,
+            'completed' => $allcompleted,
             'remind' => $remains,
             'shipdate' => 'To Ship '.date('m/d/y', $shipping['shipdate']),
         ];
