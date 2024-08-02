@@ -123,7 +123,7 @@ body div {
 }
 .period_analitic_info {
     border: 1px solid #9b9b9b;
-    width: 193px;
+    width: 217px;
 }
 .period_analitic_info div {
     height: 18px;
@@ -142,8 +142,23 @@ body div {
     margin-top: 3px;
     height: 16px;
 }
+.period_analitic_info .totalsalesprev, .period_analitic_info .totalsalesnext {
+    width: 20px;
+    text-align: center;
+    font-size: 19px;
+    height: 20px;
+    line-height: 20px;
+    opacity: 0.6;
+}
+.period_analitic_info .totalsalesnext {
+    float: right!important;
+}
+.period_analitic_info .totalsalesprev.active, .period_analitic_info .totalsalesnext.active {
+    opacity: 1;
+    cursor: pointer;
+}
 .period_analitic_info .period_results {
-    width: 100%;
+    width: calc(100% - 40px);
     text-align: center;
     margin-bottom: 2px;
     margin-top: 2px;
@@ -166,7 +181,7 @@ body div {
     top: -2px;
 }
 .period_analitic_info .param_value {
-    min-width: 26px;
+    min-width: 23px;
     font-family: Arial;
     font-size: 16px;
     font-weight: 600;
@@ -1377,7 +1392,7 @@ div.oldvesionlabel {
     border: 1px solid #9b9b9b;
     height: 18px;
     color: #ffffff;
-    margin: -14px 0px 0 320px;
+    margin: -14px 0px 0 344px;
     cursor: pointer;
     padding: 0 6px;
     line-height: 18px !important;
@@ -1411,6 +1426,88 @@ div.oldvesionlabel {
     line-height: 16px;
     color: #ffffff;
     margin-top: 0px;
+}
+.brantotalmoneyarea {
+    display: inline-table;
+    background: #000000;
+    padding: 7px;
+    width: 544px;
+}
+.brantotalmoneyarea div {
+    float: left;
+}
+.revenuelabel, .paidtotallabel, .unpaidtotallabel {
+    font-size: 12px;
+    color: #4ca4ee;
+    height: 18px;
+    line-height: 18px!important;
+}
+.revenuelabel {
+    margin-left: 149px;
+}
+.paidtotallabel {
+    margin-left: 108px;
+}
+.unpaidtotallabel {
+    margin-left: 95px;
+}
+.totalrevenuesection {
+    width: 259px;
+}
+.totalrevenuesection .datarow > div {
+    height: 22px;
+    line-height: 22px!important;
+}
+.brantotalmoneyarea .totalrowlabel {
+    width: 130px;
+    padding-right: 7px;
+    text-align: right;
+    color: #4ca4ee;
+    font-size: 15px;
+    font-weight: 600;
+}
+.brantotalmoneyarea .totalrowvalue {
+    padding-left: 10px;
+    color: #FFFFFF;
+    font-size: 17px;
+    font-weight: 600;
+    text-align: right;
+    width: 82px;
+}
+.brantotalmoneyarea .totalrowvalue.revenuetotal, .brantotalmoneyarea .totalrowpercent.revenuetotal {
+    border-top: 1px solid #ffffff;
+}
+.brantotalmoneyarea .totalrowpercent {
+    width: 47px;
+    text-align: center;
+    color: #4ca4ee;
+    font-size: 13px;
+    font-weight: 600;
+}
+.brantotalmoneyarea .totalpaymentsection {
+    margin-left: 12px;
+}
+.brantotalmoneyarea .totalpaymentdatasection {
+    border: 1px solid #ffffff;
+}
+.brantotalmoneyarea .totalpaymentsection .datarow > div {
+    height: 22px;
+    line-height: 22px!important;
+}
+.brantotalmoneyarea .totalpaymentvalue, .brantotalmoneyarea .totalunpaidvalue {
+    padding-left: 10px;
+    color: #FFFFFF;
+    font-size: 17px;
+    font-weight: 600;
+    text-align: right;
+    width: 80px;
+}
+.brantotalmoneyarea .totalpaymentperentvalue {
+    width: 48px;
+    text-align: center;
+    color: #4ca4ee;
+    font-size: 13px;
+    font-weight: 600;
 }
 /* Portrait notepads */
 @media (min-width: 992px) and (max-width: 1199px) {
