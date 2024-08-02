@@ -1443,13 +1443,13 @@ div.oldvesionlabel {
     line-height: 18px!important;
 }
 .revenuelabel {
-    margin-left: 144px;
+    margin-left: 149px;
 }
 .paidtotallabel {
-    margin-left: 113px;
+    margin-left: 108px;
 }
 .unpaidtotallabel {
-    margin-left: 93px;
+    margin-left: 95px;
 }
 .totalrevenuesection {
     width: 259px;
@@ -1472,16 +1472,16 @@ div.oldvesionlabel {
     font-size: 17px;
     font-weight: 600;
     text-align: right;
-    width: 70px;
+    width: 82px;
 }
 .brantotalmoneyarea .totalrowvalue.revenuetotal, .brantotalmoneyarea .totalrowpercent.revenuetotal {
     border-top: 1px solid #ffffff;
 }
 .brantotalmoneyarea .totalrowpercent {
-    width: 56px;
+    width: 47px;
     text-align: center;
     color: #4ca4ee;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
 }
 .brantotalmoneyarea .totalpaymentsection {
@@ -1500,13 +1500,13 @@ div.oldvesionlabel {
     font-size: 17px;
     font-weight: 600;
     text-align: right;
-    width: 70px;
+    width: 80px;
 }
 .brantotalmoneyarea .totalpaymentperentvalue {
-    width: 56px;
+    width: 48px;
     text-align: center;
     color: #4ca4ee;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
 }
 /* Portrait notepads */
