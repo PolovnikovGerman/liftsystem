@@ -162,13 +162,13 @@ Class Dashboard_model extends MY_Model
                 $out['allpaymentperc'] = round($totalpaym / $totalrevenue * 100,1);
                 $out['allunpaidperc'] = round($totalunpaid / $totalrevenue * 100, 1);
             }
-            if ($totalpaym != 0 ) {
-                $out['sbpaymentperc'] = round($sbpaym / $totalpaym * 100, 1);
-                $out['srpaymentperc'] = round($srpaym / $totalpaym * 100, 1);
+            if ($sbtotal != 0 ) {
+                $out['sbpaymentperc'] = round($sbpaym / $sbtotal * 100, 1);
+                $out['sbunpaidperc'] = round($out['sbunpaid'] / $sbtotal * 100,1);
             }
-            if ($totalunpaid != 0 ) {
-                $out['sbunpaidperc'] = round($out['sbunpaid'] / $totalunpaid * 100,1);
-                $out['srunpaidperc'] = round($out['srunpaid'] / $totalunpaid * 100, 1);
+            if ($srtotal != 0 ) {
+                $out['srpaymentperc'] = round($srpaym / $srtotal * 100, 1);
+                $out['srunpaidperc'] = round($out['srunpaid'] / $srtotal * 100, 1);
             }
 //                ''
 //            ];
