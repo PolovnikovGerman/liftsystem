@@ -92,28 +92,41 @@ Class Dashboard_model extends MY_Model
         }
         $dates = getDatesByWeek($weeknum, $year);
         // $label = 'M '.date('M j', $dates['start_week']).' - S '.date('M j', $dates['end_week']).' '.$year;
-        $this->db->select('brand, count(order_id) as cnt, sum(revenue) as revenue');
-        $this->db->from('ts_orders');
-        $this->db->where('order_date >= ', $dates['start_week']);
-        $this->db->where('order_date < ', $dates['end_week']);
-        $this->db->where('is_canceled',0);
+        // Batches sql
+        $this->db->select('order_id, count(batch_id) cnt, sum(batch_amount) paysum');
+        $this->db->from('ts_order_batches');
+        $this->db->where('batch_term',0);
+        $this->db->group_by('order_id');
+        $batchsql = $this->db->get_compiled_select();
+
+        $this->db->select('o.brand, count(o.order_id) as cnt, sum(o.revenue) as revenue, sum(b.paysum) as paysum');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.order_date >= ', $dates['start_week']);
+        $this->db->where('o.order_date < ', $dates['end_week']);
+        $this->db->where('o.is_canceled',0);
+        $this->db->join("({$batchsql}) b",'b.order_id=o.order_id','left');
         $this->db->group_by('brand');
         $res = $this->db->get()->result_array();
         $sbtotal = $srtotal = 0;
+        $sbpaym = $srpaym = 0;
         $sborders = $srorders = 0;
         foreach ($res as $row) {
             if ($row['brand']=='SR') {
                 $srtotal+=$row['revenue'];
                 $srorders+=$row['cnt'];
+                $srpaym+=floatval($row['paysum']);
             } else {
                 $sbtotal+=$row['revenue'];
                 $sborders+=$row['cnt'];
+                $sbpaym+=floatval($row['paysum']);
             }
         }
         // Temporary -
         if ($srtotal==0 && $sbtotal==0 && $this->config->item('test_server')==1) {
             $srtotal = 5204;
             $sbtotal = 17405;
+            $srpaym = 1522.96;
+            $sbpaym = 9872.13;
         }
         if ($sborders==0 && $srorders==0 && $this->config->item('test_server')==1) {
             $sborders = 32;
@@ -121,8 +134,46 @@ Class Dashboard_model extends MY_Model
         }
         $out = [];
         if ($resulttype=='totals') {
-            $out[] = ['label' => 'Stress Balls', 'value' => MoneyOutput($sbtotal,0)];
-            $out[] = ['label' => 'Stress Relievers', 'value' => MoneyOutput($srtotal,0)];
+            $totalrevenue = $srtotal + $sbtotal;
+            $totalpaym  = $srpaym + $sbpaym;
+            $totalunpaid = $totalrevenue - $totalpaym;
+            $out = [
+                'sbtotal' => $sbtotal,
+                'srtotal' => $srtotal,
+                'alltotal' => $totalrevenue,
+                'sbrevenueperc' => 0,
+                'srrevenueperc' => 0,
+                'sbpayment' => $sbpaym,
+                'srpayment' => $srpaym,
+                'allpayment' => $totalpaym,
+                'sbpaymentperc' => 0,
+                'srpaymentperc' => 0,
+                'allpaymentperc' => 0,
+                'sbunpaid' => $sbtotal - $sbpaym,
+                'srunpaid' => $srtotal - $srpaym,
+                'allunpaid' => $totalunpaid,
+                'sbunpaidperc' => 0,
+                'srunpaidperc' => 0,
+                'allunpaidperc' => 0,
+            ];
+            if ($totalrevenue != 0) {
+                $out['sbrevenueperc'] = round($sbtotal/$totalrevenue*100,1);
+                $out['srrevenueperc'] = round($srtotal/$totalrevenue*100,1);
+                $out['allpaymentperc'] = round($totalpaym / $totalrevenue * 100,1);
+                $out['allunpaidperc'] = round($totalunpaid / $totalrevenue * 100, 1);
+            }
+            if ($totalpaym != 0 ) {
+                $out['sbpaymentperc'] = round($sbpaym / $totalpaym * 100, 1);
+                $out['srpaymentperc'] = round($srpaym / $totalpaym * 100, 1);
+            }
+            if ($totalunpaid != 0 ) {
+                $out['sbunpaidperc'] = round($out['sbunpaid'] / $totalunpaid * 100,1);
+                $out['srunpaidperc'] = round($out['srunpaid'] / $totalunpaid * 100, 1);
+            }
+//                ''
+//            ];
+//            $out[] = ['label' => 'Stress Balls', 'value' => MoneyOutput($sbtotal,0)];
+//            $out[] = ['label' => 'Stress Relievers', 'value' => MoneyOutput($srtotal,0)];
         } else {
             $out[] = ['label' => 'Stress Balls', 'value' => QTYOutput($sborders,0)];
             $out[] = ['label' => 'Stress Relievers', 'value' => QTYOutput($srorders,0)];

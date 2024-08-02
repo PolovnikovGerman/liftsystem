@@ -154,7 +154,7 @@ class Welcome extends MY_Controller {
     public function weektotals($curweek) {
         $this->load->model('dashboard_model');
         $totals = $this->dashboard_model->get_totals_brand( 'totals', $curweek);
-        $msg = $this->load->view('page/dashboard_totalbrand_view',['totals'=> $totals], TRUE);
+        $msg = $this->load->view('page/dashboard_totalrevenuebrand_view', $totals, TRUE);
         echo $msg;
     }
 

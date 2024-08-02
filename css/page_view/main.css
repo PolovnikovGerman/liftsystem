@@ -1427,6 +1427,88 @@ div.oldvesionlabel {
     color: #ffffff;
     margin-top: 0px;
 }
+.brantotalmoneyarea {
+    display: inline-table;
+    background: #000000;
+    padding: 7px;
+    width: 544px;
+}
+.brantotalmoneyarea div {
+    float: left;
+}
+.revenuelabel, .paidtotallabel, .unpaidtotallabel {
+    font-size: 12px;
+    color: #4ca4ee;
+    height: 18px;
+    line-height: 18px!important;
+}
+.revenuelabel {
+    margin-left: 144px;
+}
+.paidtotallabel {
+    margin-left: 113px;
+}
+.unpaidtotallabel {
+    margin-left: 93px;
+}
+.totalrevenuesection {
+    width: 259px;
+}
+.totalrevenuesection .datarow > div {
+    height: 22px;
+    line-height: 22px!important;
+}
+.brantotalmoneyarea .totalrowlabel {
+    width: 130px;
+    padding-right: 7px;
+    text-align: right;
+    color: #4ca4ee;
+    font-size: 15px;
+    font-weight: 600;
+}
+.brantotalmoneyarea .totalrowvalue {
+    padding-left: 10px;
+    color: #FFFFFF;
+    font-size: 17px;
+    font-weight: 600;
+    text-align: right;
+    width: 70px;
+}
+.brantotalmoneyarea .totalrowvalue.revenuetotal, .brantotalmoneyarea .totalrowpercent.revenuetotal {
+    border-top: 1px solid #ffffff;
+}
+.brantotalmoneyarea .totalrowpercent {
+    width: 56px;
+    text-align: center;
+    color: #4ca4ee;
+    font-size: 14px;
+    font-weight: 600;
+}
+.brantotalmoneyarea .totalpaymentsection {
+    margin-left: 12px;
+}
+.brantotalmoneyarea .totalpaymentdatasection {
+    border: 1px solid #ffffff;
+}
+.brantotalmoneyarea .totalpaymentsection .datarow > div {
+    height: 22px;
+    line-height: 22px!important;
+}
+.brantotalmoneyarea .totalpaymentvalue, .brantotalmoneyarea .totalunpaidvalue {
+    padding-left: 10px;
+    color: #FFFFFF;
+    font-size: 17px;
+    font-weight: 600;
+    text-align: right;
+    width: 70px;
+}
+.brantotalmoneyarea .totalpaymentperentvalue {
+    width: 56px;
+    text-align: center;
+    color: #4ca4ee;
+    font-size: 14px;
+    font-weight: 600;
+}
 /* Portrait notepads */
 @media (min-width: 992px) and (max-width: 1199px) {
     .testsitelabel {
