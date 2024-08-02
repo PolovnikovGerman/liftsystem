@@ -1438,17 +1438,19 @@ div.oldvesionlabel {
 }
 .revenuelabel, .paidtotallabel, .unpaidtotallabel {
     font-size: 12px;
-    color: #4ca4ee;
     height: 18px;
     line-height: 18px!important;
 }
 .revenuelabel {
+    color: #4ca4ee;
     margin-left: 149px;
 }
 .paidtotallabel {
+    color: #00d1ca;
     margin-left: 108px;
 }
 .unpaidtotallabel {
+    color: #00d1ca;
     margin-left: 95px;
 }
 .totalrevenuesection {
@@ -1505,7 +1507,7 @@ div.oldvesionlabel {
 .brantotalmoneyarea .totalpaymentperentvalue {
     width: 48px;
     text-align: center;
-    color: #61ffaf;
+    color: #00d1ca;
     font-size: 12px;
     font-weight: 600;
 }
