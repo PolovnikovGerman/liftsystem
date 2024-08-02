@@ -151,16 +151,16 @@ class Welcome extends MY_Controller {
         }
     }
 
-    public function weektotals() {
+    public function weektotals($curweek) {
         $this->load->model('dashboard_model');
-        $totals = $this->dashboard_model->get_totals_brand( 'totals');
-        $msg = $this->load->view('page/dashboard_totalbrand_view',['totals'=> $totals], TRUE);
+        $totals = $this->dashboard_model->get_totals_brand( 'totals', $curweek);
+        $msg = $this->load->view('page/dashboard_totalrevenuebrand_view', $totals, TRUE);
         echo $msg;
     }
 
-    public function weektotalorders() {
+    public function weektotalorders($curweek) {
         $this->load->model('dashboard_model');
-        $totals = $this->dashboard_model->get_totals_brand('orders');
+        $totals = $this->dashboard_model->get_totals_brand('orders', $curweek);
         $msg = $this->load->view('page/dashboard_totalbrand_view',['totals'=> $totals], TRUE);
         echo $msg;
     }
@@ -207,7 +207,26 @@ class Welcome extends MY_Controller {
             $msg = $this->load->view('page/dashboard_totalempty_view',[], TRUE);
         }
         echo $msg;
+    }
 
+    public function salestotals()
+    {
+        if ($this->isAjax()) {
+            $error = 'Date wasn\'t define';
+            $mdata = [];
+            $postdata = $this->input->post();
+            $weekdate = ifset($postdata,'weekdate','');
+            if (!empty($weekdate)) {
+                $error = '';
+                $this->load->model('dashboard_model');
+                $weeknum = date('W', $weekdate);
+                $year = date('Y', $weekdate);
+                $total_options = $this->dashboard_model->get_totals('week', $weeknum, $year);
+                $mdata['content'] = $this->load->view('page/dashboard_total_view', $total_options, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 
 }

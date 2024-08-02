@@ -444,6 +444,7 @@ select.leadord_filterselect {
     width: 3px;
 }
 .leadorder_datarow > .ordstatuspercent {
+    border-right: 1px solid #000000;
     float: left;
     font-size: 11px;
     color: #252525;

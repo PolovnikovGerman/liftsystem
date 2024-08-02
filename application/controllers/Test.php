@@ -4176,4 +4176,67 @@ class Test extends CI_Controller
         }
     }
 
+    public function customitemsreport()
+    {
+        $years = [2019,2022,2023,2024];
+        $this->load->config('uploader');
+        foreach ($years as $year) {
+            $datbgn = strtotime($year.'-01-01');
+            $nxtyear = intval($year)+1;
+            $datend = strtotime($nxtyear.'-01-01');
+            $this->db->select('*')->from('ts_orders')->where(['item_id' => -3, 'order_date >= ' => $datbgn, 'order_date < ' => $datend])->order_by('order_date');
+            $orders = $this->db->get()->result_array();
+            $outs = [];
+            foreach ($orders as $order) {
+                $this->db->select('group_concat(i.item_description) as itmname')->from('ts_order_itemcolors i')->join('ts_order_items o','o.order_item_id=i.order_item_id')->where('o.order_id', $order['order_id']);
+                $itmres = $this->db->get()->row_array();
+                $itemname = ifset($itmres,'itmname','Custom Item');
+                $outs[] = [
+                    'date' => date('m/d/Y', $order['order_date']),
+                    'order_num' => $order['order_num'],
+                    'canceled' => $order['is_canceled']==1 ? 'YES' : 'NO',
+                    'revenue' => $order['revenue'],
+                    'profit' => $order['profit'],
+                    'profit_perc' => $order['profit_perc']==null ? 'Proj' : $order['profit_perc'],
+                    'qty' => $order['order_qty'],
+                    'item_description' => $itemname,
+                    'customer' => $order['customer_name'],
+                    'ship_amount' => $order['shipping'],
+                ];
+            }
+            $filenorm = $this->config->item('upload_path_preload').'customitem_orders_'.$year.'.xlsx';
+            @unlink($filenorm);
+            $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->setTitle('Custom Item Orders '.$year);
+            $sheet->setCellValue('A1', 'Date');
+            $sheet->setCellValue('B1','Order #');
+            $sheet->setCellValue('C1','Cancelled');
+            $sheet->setCellValue('D1', 'Revenue');
+            $sheet->setCellValue('E1', 'Profit');
+            $sheet->setCellValue('F1', 'Profit %');
+            $sheet->setCellValue('G1', 'Quantity');
+            $sheet->setCellValue('H1', 'Item Description');
+            $sheet->setCellValue('I1', 'Customer');
+            $sheet->setCellValue('J1', 'Shipping Amount');
+            $nrow = 2;
+            foreach ($outs as $out) {
+                $sheet->setCellValue('A'.$nrow, $out['date']);
+                $sheet->setCellValue('B'.$nrow,$out['order_num']);
+                $sheet->setCellValue('C'.$nrow,$out['canceled']);
+                $sheet->setCellValue('D'.$nrow, $out['revenue']);
+                $sheet->setCellValue('E'.$nrow, $out['profit']);
+                $sheet->setCellValue('F'.$nrow, $out['profit_perc']);
+                $sheet->setCellValue('G'.$nrow, $out['qty']);
+                $sheet->setCellValue('H'.$nrow, $out['item_description']);
+                $sheet->setCellValue('I'.$nrow, $out['customer']);
+                $sheet->setCellValue('J'.$nrow, $out['ship_amount']);
+                $nrow++;
+            }
+            $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+            $writer->save($filenorm);    // download file
+            echo 'File '.$filenorm.' ready'.PHP_EOL;
+        }
+    }
+
 }
