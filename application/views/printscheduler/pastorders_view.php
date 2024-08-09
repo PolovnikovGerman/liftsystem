@@ -28,7 +28,7 @@
                         <?php } ?>
                     </span>
                 </div>
-                <div class="pdo-table-td-ship overdue-ship"><?=date('m/d/y', $order['shipdate'])?></div>
+                <div class="pdo-table-td-ship overdue-ship"><?=date('m/d', $order['shipdate'])?></div>
                 <div class="pdo-table-td-order"><?=$order['order_num']?></div>
                 <div class="pdo-table-td-items"><?=$order['order_qty']?></div>
                 <div class="pdo-table-td-imp"><?=$order['imprint']?></div>
