@@ -91,7 +91,7 @@ class Printscheduler_model extends MY_Model
     public function get_ontimeorders_dates($brand)
     {
         $curdate = strtotime(date('Y-m-d'));
-        $this->db->select('date_format(from_unixtime(o.print_date), \'%Y-%m-%d\') as printdate, count(distinct(o.order_id)) as cntorder, sum(oi.item_qty) as totalitems, sum(imp.imprint_qty) as totalimpr');
+        $this->db->select('date_format(from_unixtime(o.print_date), \'%Y-%m-%d\') as printdate, count(distinct(o.order_id)) as cntorder, sum(imp.imprint_qty) as totalimpr');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi','oi.order_id=o.order_id');
         $this->db->join('ts_order_imprints imp','imp.order_item_id=oi.order_item_id');
@@ -107,6 +107,26 @@ class Printscheduler_model extends MY_Model
         $this->db->group_by('printdate');
         $this->db->order_by('printdate');
         $newres = $this->db->get()->result_array();
+        $newresidx = 0;
+        foreach ($newres as $newitem) {
+            $daybgn = strtotime($newitem['printdate']);
+            $dayend = strtotime('+1 day', $daybgn);
+            $this->db->select('sum(oi.item_qty) as totalitem');
+            $this->db->from('ts_orders o');
+            $this->db->join('ts_order_items oi','oi.order_id=o.order_id');
+            $this->db->where('o.print_date >= ', $daybgn);
+            $this->db->where('o.print_date < ', $dayend);
+            $this->db->where('o.is_canceled',0);
+            $this->db->where('o.print_finish',null);
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
+            $itemdat = $this->db->get()->row_array();
+            $newres[$newresidx]['totalitems'] = intval($itemdat['totalitem']);
+            $newresidx++;
+        }
         return $newres;
     }
 
