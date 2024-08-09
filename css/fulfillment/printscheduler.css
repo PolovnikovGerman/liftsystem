@@ -68,13 +68,13 @@
 }
 .img-skull {
     position: relative;
-    top: 1px;
+    top: -1px;
     height: 13px;
     width: auto;
 }
 .img-rush {
     position: relative;
-    top: 1px;
+    top: -2px;
     height: 13px;
     width: auto;
 }
