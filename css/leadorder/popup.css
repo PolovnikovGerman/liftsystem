@@ -2226,10 +2226,12 @@ input.artrepeat {
     width: 35px;
 }
 .profitdetails_tooltip {
-    /* width: 465px;/* 398px; */
-    /* max-width: 465px!important; /* 398px!important; */
     width: 462px;
     max-width: 462px!important;
+}
+.profitprojectdetails_tooltip {
+    width: 609px;
+    max-width: 609px!important;
 }
 .button_save {
     float: left;
@@ -4105,7 +4107,7 @@ a.historydetailsview {
 .ordercogdetailsviewarea {
     float: left;
     padding: 10px 3px 10px 10px;
-    width: 460px;
+    width: 468px;
     margin-left: -8px;
     margin-top: -4px;
     margin-bottom: -4px;
@@ -5890,4 +5892,224 @@ a.trackservicelnk {
 a.trackservicelnk:hover, a.trackservicelnk:focus {
     text-decoration: none;
     cursor: pointer;
+}
+/* Project COG */
+.ordercogdetailsviewarea.project {
+    background-color: #001072;
+    color: #ffffff;
+    width: 607px;
+    padding: 10px!important;
+    margin: 0;
+}
+.projcoglabel {
+    font-size: 14px;
+    font-weight: 600;
+}
+.revenueareaproj {
+    font-weight: 600;
+    font-size: 13px;
+    float: right!important;
+    margin-right: 52px;
+}
+.revenueareaproj > .revenuetitle {
+    width: 97px;
+    height: 18px;
+    line-height: 18px;
+}
+.revenueareaproj > .revenueval {
+    text-align: right;
+    width: 62px;
+    height: 18px;
+    line-height: 18px;
+}
+.costsareaproj {
+    border: 1px solid #000000;
+    background: #FFFFFF;
+    margin-right: 9px;
+    float: right!important;
+}
+.costsareaproj > .datarow > div {
+    height: 18px;
+    line-height: 18px;
+    color: #f90505;
+    text-align: right;
+}
+.costsareaproj .costlabel {
+    width: 94px;
+    font-size: 12px;
+}
+.costsareaproj .costvalue {
+    width: 62px;
+    font-size: 13px;
+    padding-right: 4px;
+}
+.costspercareaproj {
+    float: right!important;
+}
+.costspercareaproj > div {
+    height: 18px;
+    line-height: 18px;
+    width: 42px;
+    text-align: right;
+    font-size: 11px;
+}
+.ordercogdetailsviewarea.project .itemtitle {
+    margin-top: 7px;
+    margin-bottom: 4px;
+}
+.ordercogdetailsviewarea.project .itemtitle > .labelrow {
+    font-weight: 600;
+    margin-right: 23px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 13px;
+}
+.ordercogdetailsviewarea.project .itemtitle > .valuerow > div {
+    height: 20px;
+    line-height: 20px;
+    font-size: 13px;
+}
+.ordercogdetailsviewarea.project > .tabledataarea {
+    width: 530px;
+    margin-bottom: 21px;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .titletable {
+    width: 100%;
+    border: 1px solid #ffffff;
+    background-color: #000044;
+    color: #ffffff;
+    font-size: 12px;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .titletable > div {
+    height: 21px;
+    line-height: 21px;
+    text-align: center;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .titletable > .qty {
+    margin-left: 66px;
+    /* width: 20px; */
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .titletable > .date {
+    margin-left: 31px;
+    /* width: 27px; */
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .titletable > .amnttype {
+    margin-left: 28px;
+    /* width: 33px; */
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .titletable > .vendor {
+    margin-left: 69px;
+    /* width: 45px; */
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .titletable > .amntpaymetod {
+    margin-left: 67px;
+    /* width: 67px; */
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .titletable > .amountsum {
+    margin-left: 23px;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .placepo {
+    border: 1px solid #000000;
+    background: #ffffff;
+    color: #000000;
+    font-size: 12px;
+    font-style: italic;
+    text-align: center;
+    height: 19px;
+    line-height: 19px;
+    margin: 5px 0;
+    width: 100%;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .placepo.active {
+    cursor: pointer;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection {
+    border: 1px solid #ffffff;
+    font-size: 12px;
+    width: 100%;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > div {
+    height: 20px;
+    line-height: 20px;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .qty {
+    text-align: right;
+    padding-right: 5px;
+    width: 89px;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .datadevide {
+    width: 21px;
+    text-align: center;
+    font-weight: 600;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .amnttype {
+    width: 72px;
+    text-align: center;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .vendor {
+    width: 89px;
+    text-align: center;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .date {
+    width: 49px;
+    text-align: center;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .amntpaymetod {
+    width: 73px;
+    text-align: center;
+    margin-left: 12px;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .amountsum {
+    float: right;
+    padding-right: 5px;
+}
+.ordercogdetailsviewarea.project > .procentsarea {
+    float: right!important;
+    width: auto;
+    margin: 56px 0 0 0;
+}
+.totalcogprojarea {
+    font-weight: 600;
+    font-size: 15px;
+    float: right!important;
+    margin-right: 52px;
+}
+.totalcogprojarea > .totalcoglabel {
+    width: 97px;
+    height: 21px;
+    line-height: 21px;
+}
+.totalcogprojarea > .totalcogvalue {
+    text-align: right;
+    width: 62px;
+    height: 21px;
+    line-height: 21px;
+}
+.profitprojarea {
+    margin-right: 17px;
+    border: 1px solid #000000;
+    background: #FFFFFF;
+    float: right!important;
+    color: #000000;
+}
+.profitprojarea > div {
+    height: 20px;
+    line-height: 20px;
+    font-weight: 600;
+    text-align: right;
+}
+.profitprojarea > .profitlabel {
+    font-size: 14px;
+    width: 50px;
+}
+.profitprojarea > .profitvalue {
+    font-size: 15px;
+    width: 83px;
+    padding-right: 4px;
+    color: #000000;
+}
+.ordercogdetailsviewarea.project .profitperc {
+    float: right!important;
+    height: 20px;
+    line-height: 20px;
 }

@@ -5155,6 +5155,7 @@ Class Leadorder_model extends My_Model {
             $this->db->set('create_date',time());
             $this->db->set('brand', $data['brand']);
 //            $this->db->set('customer_code',new_customer_code());
+            $this->db->set('print_date', $data['shipdate']);
             $this->db->insert('ts_orders');
             if ($this->db->insert_id()==0) {
                 $res['msg']='Error during save order data';
@@ -9426,6 +9427,87 @@ Class Leadorder_model extends My_Model {
         }
         $out['list'] = $list;
         // return $res;
+        return $out;
+    }
+
+    public function get_leadorder_projamounts($order_id)
+    {
+        $this->db->select('revenue, shipping, tax, order_cog, profit, profit_perc, cc_fee, shipdate, print_date, order_qty');
+        $this->db->from('ts_orders');
+        $this->db->where('order_id', $order_id);
+        $orddata = $this->db->get()->row_array();
+        $out=[];
+        $out['revenue'] = $orddata['revenue'];
+        $expens = [];
+        if (!empty(floatval($orddata['shipping']))) {
+            $expens[] = [
+                'label' => 'Shipping',
+                'value' => $orddata['shipping'],
+                'proc' => round($orddata['shipping']/$orddata['revenue']*100,2),
+            ];
+        }
+        if (!empty(floatval($orddata['tax']))) {
+            $expens[] = [
+                'label' => $this->config->item('salesnewtax').'% Tax',
+                'value' => $orddata['tax'],
+                'proc' => round($orddata['tax']/$orddata['revenue']*100,2),
+            ];
+        }
+        if (!empty(floatval($orddata['cc_fee']))) {
+            $this->db->select('sum(batch_amount) as b_amnt, sum(batch_vmd) b_vmd, sum(batch_amex) as b_amex, count(batch_id) cnt');
+            $this->db->from('ts_order_batches');
+            $this->db->where('order_id', $order_id);
+            $this->db->where('(batch_vmd > 0 or batch_amex > 0)');
+            $batchres = $this->db->get()->row_array();
+            $label = '2.11% CC Fee';
+            if ($batchres['cnt'] > 0 && $batchres['b_amnt'] != 0) {
+                $percent = round(($batchres['b_amnt'] - $batchres['b_vmd'] - $batchres['b_amex'])/$batchres['b_amnt']*100,2);
+                if ($percent > 2.12 && $percent < 3.25) {
+                    $label = '2.2% CC Fee';
+                } elseif($percent >=3.25) {
+                    $label = '3.25% CC Fee';
+                }
+            } else {
+                $percent = round($orddata['cc_fee']/$orddata['revenue']*100,2);
+                if ($percent > 2.12 && $percent < 3.25) {
+                    $label = '2.2% CC Fee';
+                } elseif ($percent >= 3.25) {
+                    $label = '3.25% CC Fee';
+                }
+            }
+
+            $expens[] = [
+                'label' => $label,
+                'value' => $orddata['cc_fee'],
+                'proc' => round($orddata['cc_fee']/$orddata['revenue']*100,2),
+            ];
+        }
+        $out['costs'] = $expens;
+        $out['cog_value'] = $orddata['revenue'] - $orddata['profit'];
+        $out['cog_proc'] = round($out['cog_value'] / $orddata['revenue'] * 100,2);
+        $out['profit_value'] = $orddata['profit'];
+        $out['profit_proc'] = round($orddata['profit'] / $orddata['revenue'] * 100,2);
+        $out['order_id'] = $order_id;
+        $out['print_date'] = (empty($orddata['print_date'])? $orddata['shipdate'] : $orddata['print_date']);
+        $out['order_qty'] = $orddata['order_qty'];
+        $out['amount_sum'] = $orddata['revenue'] - $orddata['profit'] - $orddata['shipping'] - $orddata['cc_fee'] - $orddata['tax'];
+        $this->db->select('ic.item_description, ic.item_color, ic.item_qty');
+        $this->db->from('ts_order_itemcolors ic');
+        $this->db->join('ts_order_items oi','ic.order_item_id=oi.order_item_id');
+        $this->db->where('oi.order_id', $order_id);
+        $amnts=$this->db->get()->result_array();
+//        $this->db->select('oa.amount_id, oa.amount_date, oa.printshop, v.vendor_name, oa.amount_sum');
+//        $this->db->from('ts_order_amounts oa');
+//        $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
+//        $this->db->where('oa.order_id', $order_id);
+//        $this->db->order_by('oa.amount_date');
+//        $amnts=$this->db->get()->result_array();
+        $list = [];
+        foreach ($amnts as $amnt) {
+//            $amnt['proc'] = round($amnt['amount_sum'] / $orddata['revenue'] * 100,2);
+            $list[] = $amnt;
+        }
+        $out['list'] = $list;
         return $out;
     }
 

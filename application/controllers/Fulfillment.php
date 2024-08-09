@@ -87,6 +87,10 @@ class Fulfillment extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/fulfillment/printshopreportview.css');
                 $head['scripts'][] = array('src'=>'/js/fulfillment/printshopreportview.js');
                 $content_options['printshopreportview'] = $this->_prepare_printshop_report($brand);
+            } elseif ($row['item_link']=='#printscheduleview') {
+                $head['styles'][]=array('style'=>'/css/fulfillment/printscheduler.css');
+                $head['scripts'][] = array('src'=>'/js/fulfillment/printscheduler.js');
+                $content_options['printschedulerview'] = $this->_prepare_printscheduler_view($brand);
             }
         }
         $content_options['menu'] = $menu;
@@ -2209,6 +2213,17 @@ class Fulfillment extends MY_Controller
             'express_leftview' => $express_leftview,
         ];
         $content = $this->load->view('masterinvent/page_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_printscheduler_view($brand)
+    {
+        // Prepare t
+        $this->load->model('printscheduler_model');
+
+        $res = $this->printscheduler_model->get_printsheduler_totals($brand);
+
+        $content = $this->load->view('printscheduler/page_view', $res, true);
         return $content;
     }
 

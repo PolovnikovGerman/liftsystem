@@ -97,7 +97,7 @@ class Leadorder extends MY_Controller
                             'brand' => $brand,
                         ];
                         // Build View
-                        $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT,0);
+                        $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT,0);
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
                         $head_options['unlocked']=$engade_res['result'];
@@ -140,7 +140,7 @@ class Leadorder extends MY_Controller
                             'brand' => $res['order']['brand'],
                         ];
                         // Build View
-                        $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, $edit);
+                        $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, $edit);
 
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
@@ -227,7 +227,7 @@ class Leadorder extends MY_Controller
                 $mdata['prvorder']=$res['prvorder'];
                 $mdata['nxtorder']=$res['nxtorder'];
                 $mdata['order_system']=$res['order_system_type'];
-                $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 0);
+                $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 0);
                 /* Save to session */
                 $leadorder=array(
                     'order'=>$orddata,
@@ -3293,7 +3293,7 @@ class Leadorder extends MY_Controller
                                 'brand' => $brand,
                             ];
                             // Build View
-                            $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 1);
+                            $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 1);
                             $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                             // Build Content
                             $options['order_data']=$order_data;
@@ -5339,7 +5339,7 @@ class Leadorder extends MY_Controller
                         $orddata=$res['order'];
 
                         // Build View
-                        $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 0);
+                        $data=$this->template->_prepare_leadorder_view($res, $ordersession, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 0);
 
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
@@ -5455,6 +5455,26 @@ class Leadorder extends MY_Controller
                 'edit_mode' => (ifset($postdata,'edit',1)),
             );
             $cogcontent=$this->load->view('leadorderdetails/ordercog_details_view', $options, TRUE);
+        }
+        echo $cogcontent;
+    }
+
+    public function orderprojdetails()
+    {
+        $postdata=$this->input->get();
+        $order_id=(isset($postdata['ord']) ? intval($postdata['ord']) : 0);
+        $session = (isset($postdata['sess']) ? $postdata['sess'] : '');
+        $editmode = (isset($postdata['edit']) ? intval($postdata['edit']) : 0);
+        $cogcontent='<div class="error">Order Not Found</div>';
+        if (!empty($order_id)) {
+            $this->load->model('leadorder_model');
+            $res=$this->leadorder_model->get_leadorder_projamounts($order_id);
+            // Get data for project amount
+            $options = [
+                'edit_mode' => (ifset($postdata,'edit',1)),
+                'data' => $res,
+            ];
+            $cogcontent=$this->load->view('leadorderdetails/orderprojcog_details_view', $options, TRUE);
         }
         echo $cogcontent;
     }

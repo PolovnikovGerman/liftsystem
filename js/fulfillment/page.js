@@ -54,6 +54,11 @@ function init_page(objid) {
             init_orderreport_content();
             document.title = 'Lift: Print Shop Report';
             break;
+        case 'printscheduleview':
+            $("#printschedulerview").show();
+            init_printscheduler_content();
+            document.title = 'Lift: Print Shop Report';
+            break;
     }
 
 }
