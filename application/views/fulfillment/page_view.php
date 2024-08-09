@@ -36,6 +36,9 @@
             <?php if (isset($printshopreportview)) { ?>
                 <div class="fulfillcontentarea" id="printshopreportview" style="display: none;"><?=$printshopreportview?></div>
             <?php } ?>
+            <?php if(isset($printschedulerview)) { ?>
+                <div class="fulfillcontentarea" id="printschedulerview" style="display: none;"><?=$printschedulerview?></div>
+            <?php } ?>
         </div>
     </div>
 </div>

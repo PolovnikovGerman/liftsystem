@@ -3963,34 +3963,11 @@ function init_orderbottom_content(edit_mode) {
             }            
         },'json');
     });    
-    // $("div.shippingdataviewarea").unbind('click').click(function(){
-    //     var url="/leadorder/shiptracks_show";
-    //     var params=new Array();
-    //     params.push({name: 'ordersession', value: $("input#ordersession").val()});
-    //     $.post(url, params, function(response){
-    //         if (response.errors=='') {
-    //             $("#artNextModal").find('div.modal-dialog').css('width','925px');
-    //             $("#artNextModal").find('.modal-title').empty().html('Shipping Track Codes');
-    //             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
-    //             $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
-    //             $("#artNextModal").on('hidden.bs.modal', function (e) {
-    //                 $(document.body).addClass('modal-open');
-    //             })
-    //             init_orderstatus_change(edit_mode);
-    //             $("input#loctimeout").val(response.data.loctime);
-    //             init_onlineleadorder_edit();
-    //         } else {
-    //             show_error(response);
-    //         }
-    //     },'json');
-    // });
     // Profit
     $("div.profitdetailsviewarea").qtip({
         content : {
             text: function(event, api) {
                 $.ajax({
-                    // url: href // Use href attribute as URL
-                    // url: api.elements.target.data('viewsrc') // Use href attribute as URL
                     url: $(this).data('viewsrc')
                 }).then(function(content) {
                     // Set the tooltip content upon successful retrieval
@@ -4004,23 +3981,40 @@ function init_orderbottom_content(edit_mode) {
             }
         },
         position: {
-            // my: 'bottom right',
-            // at: 'middle left',
             my: 'bottom left',
             at: 'top right',
         },
         style: {
             classes: 'qtip-dark profitdetails_tooltip'
         },
-        // show: {
-            // effect: function() { $(this).fadeIn(250); }
-        // },
         show: 'click',
-        // hide: {
-        //    delay: 200,
-        //     fixed: true, // <--- add this
-        //    effect: function() { $(this).fadeOut(250); }
-        // },
+        hide: 'unfocus'
+    });
+    // Profit
+    $("div.profitprojectdetailsviewarea").qtip({
+        content : {
+            text: function(event, api) {
+                $.ajax({
+                    url: $(this).data('viewsrc')
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                    init_profitedit_call(edit_mode);
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
+        },
+        position: {
+            my: 'bottom left',
+            at: 'top right',
+        },
+        style: {
+            classes: 'qtip-dark profitprojectdetails_tooltip'
+        },
+        show: 'click',
         hide: 'unfocus'
     });
 
