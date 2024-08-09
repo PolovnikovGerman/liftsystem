@@ -100,7 +100,7 @@
 .pastdue-title {
     width: 555px;
     margin-left: 5px;
-    line-height: 30px!important;
+    height: 30px;
 }
 .pastdue-title h4 {
     float: left;
@@ -108,11 +108,13 @@
     margin: 0;
     font-size: 18px;
     font-weight: bold;
+    line-height: 30px!important;
 }
 .pastdue-summary {
     color: #fff;
     font-size: 13px;
     margin-left: 10px;
+    line-height: 30px !important;
 }
 .pastdue-summary span {
     font-weight: bold;
@@ -288,7 +290,7 @@
 .current-title {
     width: 555px;
     margin-left: 5px;
-    line-height: 30px!important;
+    height: 30px;
 }
 .current-title h4 {
     float: left;
@@ -296,11 +298,13 @@
     margin: 0;
     font-size: 18px;
     font-weight: bold;
+    line-height: 30px!important;
 }
 .current-summary {
     color: #fff;
     font-size: 13px;
     margin-left: 10px;
+    line-height: 30px !important;
 }
 .current-summary span {
     font-weight: bold;
@@ -480,6 +484,9 @@
     border-right: 1px solid #d4d2d2;
     font-size: 11px;
     text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .itm-table-td-descriptions {
     width: 184px;
@@ -487,6 +494,9 @@
     font-size: 12px;
     padding-left: 5px;
     font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .itm-table-td-art {
     width: 24px;
