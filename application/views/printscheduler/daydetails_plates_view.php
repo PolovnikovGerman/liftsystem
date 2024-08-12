@@ -17,6 +17,6 @@
                 <div class="ic-teal-art"><img class="img-magnifier-white" src="/img/printscheduler/magnifier-white.svg"></div>
             </div>
         </div>
-        <div class="plates-table-td-descriptions"><?=$plate['itemm_name']?></div>
+        <div class="plates-table-td-descriptions"><?=$plate['item_name']?></div>
     </div>
 <?php endforeach; ?>
