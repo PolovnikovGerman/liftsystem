@@ -39,7 +39,7 @@
                     <img class="chevron-up" src="/img/printscheduler/chevron-up-white.svg">
                 </div>
             </div>
-            <div id="printschcurrentbody" class="day-block-open"></div>
+            <div id="printschcurrentbody"></div> <!-- class="day-block-open" -->
         </div>
     </div>
     <div class="right-block">

@@ -79,7 +79,7 @@
     width: auto;
 }
 .pastdue {
-    width: 561px;
+    width: 580px;
     direction: ltr;
     padding: 0 10px;
     background: #fb0404;
@@ -133,7 +133,7 @@
 .pastdue-body {
     background: #fff;
     padding: 8px 5px;
-    width: 550px;
+    width: 558px;
 }
 .pastdue-table {
     width: 546px;
@@ -278,7 +278,7 @@
 
 
 .current {
-    width: 561px;
+    width: 580px;
     direction: ltr;
     padding: 0 10px 10px;
     background: #908f90;
