@@ -172,4 +172,60 @@ class Printscheduler_model extends MY_Model
         return $res;
     }
 
+    public function get_dayorders($printdate, $brand)
+    {
+        $daybgn = strtotime($printdate);
+        $dayend = strtotime('+1 day', $daybgn);
+        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.print_date >= ', $daybgn);
+        $this->db->where('o.print_date < ', $dayend);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.print_finish',null);
+        if ($brand=='SR') {
+            $this->db->where('o.brand', $brand);
+        } else {
+            $this->db->where_in('o.brand', ['SB','BT']);
+        }
+        $this->db->order_by('o.order_rush desc, o.order_num');
+        $orders = $this->db->get()->result_array();
+        $stocks = $plates = [];
+        foreach ($orders as $order) {
+            $this->db->select('group_concat(v.item_number,\'-\', toi.item_description) as itemdescr, group_concat(toi.item_color) as itemcolor');
+            $this->db->from('ts_order_items i');
+            $this->db->join('ts_order_itemcolors toi','i.order_item_id = toi.order_item_id');
+            $this->db->join('v_itemsearch v', 'v.item_id=i.item_id');
+            $this->db->where('i.order_id', $order['order_id']);
+            $itemdet = $this->db->get()->row_array();
+            // Imprints
+            $this->db->select('sum(if(i.imprint_item=1, 1, i.imprint_qty)) as imprint, sum(if(i.imprint_item=1, i.imprint_qty, 0)) as imprqty');
+            $this->db->from('ts_order_imprints i');
+            $this->db->join('ts_order_items toi','i.order_item_id = toi.order_item_id');
+            $this->db->where('toi.order_id', $order['order_id']);
+            $imprdet = $this->db->get()->row_array();
+            $order['item_name'] = $itemdet['itemdescr'];
+            $order['item_color'] = $itemdet['itemcolor'];
+            $order['imprint'] = intval($imprdet['imprint']);
+            $order['imprint_qty'] = intval($imprdet['imprqty']);
+            $stocks[] = $order;
+            // Get plates
+            $this->db->select('count(amount_id) as platescnt,  sum(blueplate+orangeplate+beigeplate) as platessum')->from('ts_order_amounts')->where('order_id', $order['order_id']);
+            $platedet = $this->db->get()->row_array();
+            if ($platedet['platescnt'] > 0) {
+                $plates[] = [
+                    'order_id' => $order['order_id'],
+                    'print_ready' => $order['print_ready'],
+                    'order_num' => $order['order_num'],
+                    'plates_qty' => $platedet['platessum'],
+                    'item_name' => $itemdet['itemdescr'],
+                    'item_color' => $itemdet['itemcolor'],
+                ];
+            }
+        }
+        return [
+            'stocks' => $stocks,
+            'plates' => $plates,
+        ];
+    }
+
 }

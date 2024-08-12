@@ -14,10 +14,15 @@
         </div>
         <?php foreach ($orders as $order) { ?>
             <div class="pdo-table-tr">
-                <div class="pdo-table-td-move"><img class="icon-move" src="/img/printscheduler/move-blue.svg"></div>
+                <div class="pdo-table-td-move">
+                    <?php if ($brand=='SR') { ?>
+                        <img class="icon-move" src="/img/printscheduler/move-yellow.svg">
+                    <?php } else { ?>
+                        <img class="icon-move" src="/img/printscheduler/move-blue.svg">
+                    <?php } ?>
+                </div>
                 <div class="pdo-table-td-icons">
                     <span class="ic-skull">
-                        &nbsp;
 <!--                        <img class="img-skull" src="/img/printscheduler/icon-skull.svg">-->
                     </span>
                     <span class="ic-rush">

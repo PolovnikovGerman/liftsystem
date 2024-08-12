@@ -3,19 +3,16 @@
 class Migration_altusers extends CI_Migration {
 
     public function up() {
+        $fields = array(
+        );
         $this->dbforge->add_field(array(
-            'id' => array(
-                'type' => 'INT',
-                'constraint' => 11,
-                'auto_increment' => TRUE
-            )
+            'print_scheduler' => array('type' => 'INT', 'constraint' => 1, 'default' => 0, 'null' => false, 'comment' => 'Include to scheduler Users'),
         ));
-        $this->dbforge->add_key('id', TRUE);
-        $this->dbforge->create_table('altusers');
+        $this->dbforge->add_column('users', $fields);
     }
 
     public function down() {
-        $this->dbforge->drop_table('altusers');
+        $this->dbforge->drop_column('users', 'print_scheduler');
     }
 
 }
