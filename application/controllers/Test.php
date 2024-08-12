@@ -4239,4 +4239,16 @@ class Test extends CI_Controller
         }
     }
 
+    public function updateprintdate()
+    {
+        $this->db->select('o.order_id, o.shipdate')->from('ts_orders o')->join('ts_order_items oi','oi.order_id=o.order_id')->join('sb_items i','i.item_id=oi.item_id')->join('sb_vendor_items vi','vi.vendor_item_id=i.vendor_item_id');
+        $this->db->where(['o.brand' => 'SR', 'o.is_canceled' => 0, 'vi.vendor_item_vendor' => $this->config->item('inventory_vendor')]);
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            $this->db->where('order_id', $order['order_id']);
+            $this->db->set('print_date', $order['shipdate']);
+            $this->db->update('ts_orders');
+        }
+    }
+
 }

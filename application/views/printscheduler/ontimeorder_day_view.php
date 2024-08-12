@@ -1,8 +1,8 @@
-<div class="day-block-open">
+<div class="day-block-open" data-orderday="<?=$dayhead['printdate']?>">
     <div class="day-block-header">
         <div class="day-name">
             <h4><?=date('D - M j, Y', strtotime($dayhead['printdate']))?></h4>
-            <div class="day-name-arrow" data-orderday="<?=$dayhead['printdate']?>">
+            <div class="day-name-arrow open" data-orderday="<?=$dayhead['printdate']?>">
                 <img class="day-name-arrow-up" src="/img/printscheduler/chevron-up-white.svg">
             </div>
         </div>
@@ -15,7 +15,7 @@
             <img class="long-arrow-right" src="/img/printscheduler/long-arrow-right-black.svg">
         </div>
     </div>
-    <div class="current-table">
+    <div class="current-table" data-orderday="<?=$dayhead['printdate']?>">
         <div class="itm-table-tr itm-table-header">
             <div class="itm-table-td-move">&nbsp;</div>
             <div class="itm-table-td-icons">&nbsp;</div>
@@ -30,7 +30,13 @@
         </div>
         <?php foreach ($orders as $order) { ?>
             <div class="itm-table-tr">
-                <div class="itm-table-td-move"><img class="icon-move" src="/img/printscheduler/move-blue.svg"></div>
+                <div class="itm-table-td-move">
+                    <?php if ($brand=='SR') { ?>
+                        <img class="icon-move" src="/img/printscheduler/move-yellow.svg">
+                    <?php } else { ?>
+                        <img class="icon-move" src="/img/printscheduler/move-blue.svg">
+                    <?php } ?>
+                </div>
                 <div class="itm-table-td-icons">
                     <span class="ic-skull" style="opacity: 0;"><img class="img-skull" src="/img/printscheduler/icon-skull.svg"></span>
                     <span class="ic-rush">

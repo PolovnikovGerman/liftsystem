@@ -15,7 +15,7 @@
     width: 598px;
     height: 730px;
     margin-right: 10px;
-    overflow-y: scroll;
+    overflow-y: auto; /* scroll; */
     direction: rtl;
 }
 .right-block {
@@ -319,7 +319,8 @@
     margin-bottom: 0;
 }
 .day-block-open.hide {
-    opacity: .3;
+    opacity: .3!important;
+    display: block!important;
 }
 .day-block-open.active {
     position: relative;
@@ -517,11 +518,11 @@
 
 
 .dateblock {
-    width: 700px;
+    width: 716px;
     height: 710px;
     background: #00004c;
     padding: 10px;
-    overflow-y: scroll;
+    overflow-y: auto; /* scroll;*/
 }
 .dates-block {
     height: 25px;
