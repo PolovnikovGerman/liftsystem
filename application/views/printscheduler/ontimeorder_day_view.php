@@ -38,7 +38,7 @@
                     <?php } ?>
                 </div>
                 <div class="itm-table-td-icons">
-                    <span class="ic-skull" style="opacity: 0;"><img class="img-skull" src="/img/printscheduler/icon-skull.svg"></span>
+                    <div class="ic-skull" style="opacity: 0;"><img class="img-skull" src="/img/printscheduler/icon-skull.svg"></div>
                     <span class="ic-rush">
                         <?php if ($order['order_rush']==1) { ?>
                             <img class="img-rush" src="/img/printscheduler/icon-rush.svg">

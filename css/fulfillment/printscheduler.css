@@ -15,7 +15,7 @@
     direction: rtl;
 }
 .right-block {
-    width: 702px;
+    width: 730px;
     margin-top: -25px;
 }
 .designations {
@@ -536,7 +536,7 @@
 
 
 .dateblock {
-    width: 716px;
+    width: 730px;
     height: 720px;
     background: #00004c;
     padding: 10px;
@@ -544,7 +544,7 @@
 }
 .dates-block {
     height: 25px;
-    width: 715px;
+    width: 730px;
 }
 .list-dates-tabs {
     width: 560px;
@@ -630,7 +630,7 @@
     top: 2px;
 }
 .stock-plates-box {
-    width: 695px;
+    width: 710px;
     background: #fff;
     padding: 5px 5px 7px;
 }
@@ -639,7 +639,7 @@
     margin-right: 10px;
 }
 .plates-box {
-    width: 295px;
+    width: 315px;
 }
 .stock-plates-box h4 {
     margin-top: 0;
@@ -731,10 +731,10 @@
     left: 2px;
 }
 .plates-table {
-    width: 298px;
+    width: 315px;
 }
 .plates-table-tr {
-    width: 298px;
+    width: 315px;
     height: 18px;
     line-height: 18px !important;
     border: 1px solid #888888;
@@ -770,14 +770,14 @@
 }
 .plates-table-td-plates {
     position: relative;
-    width: 33px;
+    width: 48px;
     border-right: 1px solid #d4d2d2;
     font-size: 12px;
     text-align: center;
     line-height: 17px !important;
 }
 .plates-table-td-descriptions {
-    width: 170px;
+    width: 185px;
     font-size: 12px;
     padding-left: 5px;
     font-weight: bold;
@@ -803,6 +803,8 @@
 .number-plates {
     width: 23px;
     text-align: center;
+    line-height: 17px !important;
+    margin-left: 2px;
 }
 .btn-plates {
     float: right !important;
