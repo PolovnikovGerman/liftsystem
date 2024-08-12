@@ -22,9 +22,9 @@
                     <?php } ?>
                 </div>
                 <div class="pdo-table-td-icons">
-                    <span class="ic-skull">
+                    <div class="ic-skull">
 <!--                        <img class="img-skull" src="/img/printscheduler/icon-skull.svg">-->
-                    </span>
+                    </div>
                     <span class="ic-rush">
                         <?php if ($order['order_rush']==1) { ?>
                             <img class="img-rush" src="/img/printscheduler/icon-rush.svg">
