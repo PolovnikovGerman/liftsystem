@@ -680,12 +680,18 @@
     border-right: 1px solid #d4d2d2;
     font-size: 11px;
     text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .stock-table-td-descriptions {
     width: 175px;
     font-size: 12px;
     padding-left: 5px;
     font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .stock-table-header .stock-table-td-order,
 .stock-table-header .stock-table-td-done,
@@ -751,6 +757,9 @@
     font-size: 12px;
     padding-left: 5px;
     font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .plates-table-header .plates-table-td-order,
 .plates-table-header .plates-table-td-done,
