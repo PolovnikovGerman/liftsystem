@@ -163,7 +163,14 @@ function init_assignprint(order) {
         var url = '/printscheduler/assignprintorder';
         $("#loader").show();
         $.post(url, params, function (response){
-            
+            if (response.errors=='') {
+                $(".ready-print-block").empty().html(response.data.content);
+                $("#loader").hide();
+                init_printscheduler_dayview();
+            } else {
+                show_error(response);
+                $("#loader").hide();
+            }
         },'json');
     });
 }

@@ -86,10 +86,32 @@ class Printscheduler extends MY_Controller
                 $this->load->model('user_model');
                 $userlist = $this->user_model->get_printschedul_users();
                 $unassignorders = $this->printscheduler_model->get_dayunassignorders($printdate, $brand);
+                $alltotals = [
+                    'prints' => $unassignorders['totals']['prints'],
+                    'items' => $unassignorders['totals']['items'],
+                    'orders' => $unassignorders['totals']['orders'],
+                ];
                 $printoptions = [];
                 $printoptions['unsignview'] = $this->load->view('printscheduler/daydetails_unsigns_view', ['orders' => $unassignorders['orders'], 'total' => $unassignorders['totals'], 'users' => $userlist, 'brand' => $brand], TRUE);
-                $printoptions['assignview'] = '';
+                $printusers = $this->printscheduler_model->get_day_assignusers($printdate, $brand);
+                $assignview = '';
+                foreach ($printusers as $printuser) {
+                    $assignorders = $this->printscheduler_model->get_dayassignorders($printdate, $printuser['user_id'], $brand);
+                    $usroptions = [
+                        'user_name' => $printuser['user_name'],
+                        'orders' => $assignorders['orders'],
+                        'totals' => $assignorders['totals'],
+                        'brand' => $brand,
+                    ];
+                    $assignview.=$this->load->view('printscheduler/daydetails_assigns_view', $usroptions, TRUE);
+                    $alltotals['prints']+=$assignorders['totals']['prints'];
+                    $alltotals['items']+=$assignorders['totals']['items'];
+                    $alltotals['orders']+=$assignorders['totals']['orders'];
+                }
+                $printoptions['assignview'] = $assignview;
+                $printoptions['totals'] = $alltotals;
                 $printview = $this->load->view('printscheduler/daydetails_printorders_view', $printoptions, TRUE);
+
                 $options = [
                     'dateview' => $dateview,
                     'stockview' => $stockview,
@@ -117,12 +139,87 @@ class Printscheduler extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                    $printdate = $res['printdate'];
                     $this->load->model('user_model');
                     $userlist = $this->user_model->get_printschedul_users();
-                    $unassignorders = $this->printscheduler_model->get_dayunassignorders($res['printdate'], $brand);
+                    $unassignorders = $this->printscheduler_model->get_dayunassignorders($printdate, $brand);
                     $printoptions = [];
                     $printoptions['unsignview'] = $this->load->view('printscheduler/daydetails_unsigns_view', ['orders' => $unassignorders['orders'], 'total' => $unassignorders['totals'], 'users' => $userlist, 'brand' => $brand], TRUE);
-                    $printoptions['assignview'] = '';
+                    $alltotals = [
+                        'prints' => $unassignorders['totals']['prints'],
+                        'items' => $unassignorders['totals']['items'],
+                        'orders' => $unassignorders['totals']['orders'],
+                    ];
+                    // Get list of print users
+                    $printusers = $this->printscheduler_model->get_day_assignusers($printdate, $brand);
+                    $assignview = '';
+                    foreach ($printusers as $printuser) {
+                        $assignorders = $this->printscheduler_model->get_dayassignorders($printdate, $printuser['user_id'], $brand);
+                        $usroptions = [
+                            'user_name' => $printuser['user_name'],
+                            'orders' => $assignorders['orders'],
+                            'totals' => $assignorders['totals'],
+                            'brand' => $brand,
+                        ];
+                        $assignview.=$this->load->view('printscheduler/daydetails_assigns_view', $usroptions, TRUE);
+                        $alltotals['prints']+=$assignorders['totals']['prints'];
+                        $alltotals['items']+=$assignorders['totals']['items'];
+                        $alltotals['orders']+=$assignorders['totals']['orders'];
+                    }
+                    $printoptions['assignview'] = $assignview;
+                    $printoptions['totals'] = $alltotals;
+                    $mdata['content'] = $this->load->view('printscheduler/daydetails_printorders_view', $printoptions, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function assignprintorder()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $error = 'Empty Order';
+            $order_id = ifset($postdata, 'order', '');
+            $user_id = ifset($postdata, 'user','');
+            $brand = ifset($postdata, 'brand', 'SR');
+            if (!empty($order_id) && !empty($user_id)) {
+                // Assign order
+                $res = $this->printscheduler_model->assignorder($order_id, $user_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $printdate = $res['printdate'];
+                    $this->load->model('user_model');
+                    $userlist = $this->user_model->get_printschedul_users();
+                    $unassignorders = $this->printscheduler_model->get_dayunassignorders($printdate, $brand);
+                    $printoptions = [];
+                    $printoptions['unsignview'] = $this->load->view('printscheduler/daydetails_unsigns_view', ['orders' => $unassignorders['orders'], 'total' => $unassignorders['totals'], 'users' => $userlist, 'brand' => $brand], TRUE);
+                    $alltotals = [
+                        'prints' => $unassignorders['totals']['prints'],
+                        'items' => $unassignorders['totals']['items'],
+                        'orders' => $unassignorders['totals']['orders'],
+                    ];
+                    // Get list of print users
+                    $printusers = $this->printscheduler_model->get_day_assignusers($printdate, $brand);
+                    $assignview = '';
+                    foreach ($printusers as $printuser) {
+                        $assignorders = $this->printscheduler_model->get_dayassignorders($printdate, $printuser['user_id'], $brand);
+                        $usroptions = [
+                            'user_name' => $printuser['user_name'],
+                            'orders' => $assignorders['orders'],
+                            'totals' => $assignorders['totals'],
+                            'brand' => $brand,
+                        ];
+                        $assignview.=$this->load->view('printscheduler/daydetails_assigns_view', $usroptions, TRUE);
+                        $alltotals['prints']+=$assignorders['totals']['prints'];
+                        $alltotals['items']+=$assignorders['totals']['items'];
+                        $alltotals['orders']+=$assignorders['totals']['orders'];
+                    }
+                    $printoptions['assignview'] = $assignview;
+                    $printoptions['totals'] = $alltotals;
                     $mdata['content'] = $this->load->view('printscheduler/daydetails_printorders_view', $printoptions, TRUE);
                 }
             }
