@@ -1,19 +1,20 @@
 <div class="dates-block">
     <div class="list-dates-tabs">
-<!--        <div class="ld-arrow-left">-->
-<!--            <img class="lda-left" src="img/chevron-left-grey.svg">-->
-<!--        </div>-->
+        <div class="ld-arrow-left <?=$prevactive==1 ? 'active' : ''?>" data-print="<?=$printdate?>">
+            <img class="lda-left" src="/img/printscheduler/chevron-left-dark.svg">
+        </div>
         <ul>
-<!--            <li class="tab-date">Tue - Jul 16</li>-->
-            <li class="tab-date active-date">Wed- Jul 17, 2024</li>
-<!--            <li class="tab-date">Thu - Jul 18</li>-->
-<!--            <li class="tab-date">Fri - Jul 19</li>-->
-<!--            <li class="tab-date">Sat - Jul 20</li>-->
-<!--            <li class="tab-date">Sun - Jul 21</li>-->
+            <?php foreach ($dates as $date): ?>
+                <?php if ($date['printdate']==$printdate): ?>
+                    <li class="tab-date active-date" data-printdate="<?=$date['printdate']?>"><?=date('D - M j, Y', strtotime($date['printdate']))?></li>
+                <?php else: ?>
+                    <li class="tab-date" data-printdate="<?=$date['printdate']?>"><?=date('D - M j', strtotime($date['printdate']))?></li>
+                <?php endif;?>
+            <?php endforeach;?>
         </ul>
-<!--        <div class="ld-arrow-right">-->
-<!--            <img class="lda-right" src="img/chevron-right-dark.svg">-->
-<!--        </div>-->
+        <div class="ld-arrow-right <?=$nxtactive==1 ? 'active' : ''?>" data-print="<?=$printdate?>">
+            <img class="lda-right" src="/img/printscheduler/chevron-right-dark.svg">
+        </div>
     </div>
     <div class="select-date">
         <label>Go to:</label>
