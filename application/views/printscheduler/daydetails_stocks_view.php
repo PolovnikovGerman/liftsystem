@@ -8,7 +8,7 @@
             <?php } ?>
         </div>
         <div class="stock-table-td-done">
-            <input type="checkbox" data-order="<?=$stock['order_id']?>" <?=$stock['print_ready']==0 ? '' : 'checked="checked"'?>/>
+            <input class="stock-done-checkbox" type="checkbox" data-order="<?=$stock['order_id']?>" <?=$stock['print_ready']==0 ? '' : 'checked="checked"'?>/>
         </div>
         <div class="stock-table-td-order"><?=$stock['order_num']?></div>
         <div class="stock-table-td-qty"><?=$stock['order_qty']?></div>

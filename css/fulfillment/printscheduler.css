@@ -338,7 +338,7 @@
     left: -1px;
     background: #fff;
     padding: 8px 5px;
-    width: 550px;
+/*    width: 550px; */
     margin-bottom: 10px;
     border: 2px solid #00004c;
 }
@@ -577,7 +577,7 @@
 }
 .tab-date.active-date {
     width: 140px;
-    height: 24px;
+    height: 25px;
     border-left: 1px solid #00004c;
     border-right: 1px solid #00004c;
     border-top: 1px solid #00004c;
@@ -596,10 +596,14 @@
     height: 13px;
     width: auto;
 }
-.ld-arrow-left,
-.ld-arrow-right {
+.ld-arrow-left, .ld-arrow-right {
     margin: 6px 7px;
+
+    opacity: 0.5;
+}
+.ld-arrow-left.active, .ld-arrow-right.active {
     cursor: pointer;
+    opacity: 1;
 }
 .select-date {
     float: right;
@@ -853,14 +857,13 @@
 .completed-print-summary span {
     font-weight: bold;
 }
-.ready-print-box,
-.completed-print-box {
-    width: 680px;
+.ready-print-box, .completed-print-box {
+    width: 710px;
     background: #fff;
     padding: 7px 5px 7px;
 }
 .rpbox-printer {
-    width: 670px;
+    width: 696px;
     margin-top: 10px;
 }
 .rpbox-printer:first-child {
@@ -898,9 +901,8 @@
 .rpbox-printer-summary span {
     font-weight: bold;
 }
-.rp-btn-link,
-.cpj-btn-link {
-    float: right;
+.rp-btn-link, .cpj-btn-link {
+    float: right!important;
     color: #fff;
     font-style: italic;
     font-size: 11px;

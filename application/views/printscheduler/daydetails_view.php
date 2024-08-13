@@ -29,4 +29,7 @@
             </div>
         </div>
     </div>
+    <div class="ready-print-block">
+        <?=$printview?>
+    </div>
 </div>

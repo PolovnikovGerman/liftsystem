@@ -954,6 +954,13 @@ Class User_model extends MY_Model
         }
     }
 
+    public function get_printschedul_users()
+    {
+        $this->db->select('user_id, first_name')->from('users')->where(['print_scheduler' =>1,'user_status' => $this->user_active])->order_by('first_name');
+        $users = $this->db->get()->result_array();
+        return $users;
+    }
+
 }
 /* End of file user_model.php */
 /* Location: ./application/models/user_model.php */
