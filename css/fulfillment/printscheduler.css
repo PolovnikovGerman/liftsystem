@@ -961,6 +961,7 @@
     background: #fff;
     border: 1px solid #000;
     z-index: 10;
+    display: none;
 }
 /*.assign-popup:before {
 	content: "";

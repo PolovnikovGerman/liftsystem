@@ -55,8 +55,10 @@
                 </div>
                 <div class="rpbox-table-td-assign">
                     <?php if ($displaymain==1) : ?>
-                    <div class="ic-assign"><img class="img-icon-user" src="/img/printscheduler/icon-user-white.svg"></div>
-                    <div class="assign-popup">
+                    <div class="ic-assign" data-order="<?=$order['order_id']?>">
+                        <img class="img-icon-user" src="/img/printscheduler/icon-user-white.svg">
+                    </div>
+                    <div class="assign-popup" data-order="<?=$order['order_id']?>">
                         <ul>
                             <?php foreach ($users as $user) : ?>
                                 <li class="assignusr" data-user="<?=$user['user_id']?>"><?=$user['first_name']?></li>

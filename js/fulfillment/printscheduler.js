@@ -145,5 +145,25 @@ function init_printscheduler_dayview() {
                 $("#loader").hide();
             }
         },'json');
-    })
+    });
+    $(".ic-assign").unbind('click').click(function (){
+        var order = $(this).data('order');
+        $(".assign-popup[data-order='"+order+"']").show();
+        init_assignprint(order);
+    });
+}
+
+function init_assignprint(order) {
+    $("li.assignusr").unbind('click').click(function (){
+        var user = $(this).data('user');
+        var params = new Array();
+        params.push({name: 'order', value: order});
+        params.push({name: 'user', value: user});
+        params.push({name: 'brand', value: $("#printschbrand").val()});
+        var url = '/printscheduler/assignprintorder';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            
+        },'json');
+    });
 }
