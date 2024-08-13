@@ -146,6 +146,24 @@ function init_printscheduler_dayview() {
             }
         },'json');
     });
+    $(".plates-done-checkbox").unbind('change').change(function (){
+        var order = $(this).data('order');
+        var params = new Array();
+        params.push({name: 'order', value: order});
+        params.push({name: 'brand', value: $("#printschbrand").val()});
+        var url = '/printscheduler/stockdonecheck';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".ready-print-block").empty().html(response.data.content);
+                $("#loader").hide();
+                init_printscheduler_dayview();
+            } else {
+                show_error(response)
+                $("#loader").hide();
+            }
+        },'json');
+    });
     $(".ic-assign").unbind('click').click(function (){
         var order = $(this).data('order');
         $(".assign-popup[data-order='"+order+"']").show();

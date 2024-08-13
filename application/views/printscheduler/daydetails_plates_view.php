@@ -8,7 +8,7 @@
             <?php } ?>
         </div>
         <div class="plates-table-td-done">
-            <input type="checkbox" data-order="<?=$plate['order_id']?>" <?=$plate['print_ready']==0 ? '' : 'checked="checked"'?>/>
+            <input type="checkbox" class="plates-done-checkbox" data-order="<?=$plate['order_id']?>" <?=$plate['print_ready']==0 ? '' : 'checked="checked"'?>/>
         </div>
         <div class="plates-table-td-order"><?=$plate['order_num']?></div>
         <div class="plates-table-td-plates">
