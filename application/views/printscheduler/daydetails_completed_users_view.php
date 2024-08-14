@@ -24,10 +24,10 @@
         </div>
         <?php $ordernum = ''; $displaymain =0;?>
         <?php foreach ($orders as $order): ?>
-        <?php if ($order['order_num']!==$ordernum): ?>
-        <?php $ordernum = $order['order_num']; $displaymain = 1;?>
-        <?php endif; ?>
-            <div class="rpbox-table-tr">
+            <?php if ($order['order_num']!==$ordernum): ?>
+            <?php $ordernum = $order['order_num']; $displaymain = 1;?>
+            <?php endif; ?>
+            <div class="rpbox-table-tr <?=$displaymain==1 ? '' : 'addition'?>">
                 <?php if ($displaymain==1): ?>
                     <div class="rpbox-table-td-move">
                         <?php if ($brand=='SR') : ?>
@@ -55,12 +55,6 @@
                     </div>
                     <div class="rpbox-table-td-ship"><?=date('m/d', $order['shipdate'])?></div>
                     <div class="rpbox-table-td-order"><?=$order['order_num']?></div>
-                <?php else: ?>
-                    <div class="rpbox-table-td-move">&nbsp;</div>
-                    <div class="rpbox-table-td-icons">&nbsp;</div>
-                    <div class="rpbox-table-td-assign">&nbsp;</div>
-                    <div class="rpbox-table-td-ship">&nbsp;</div>
-                    <div class="rpbox-table-td-order">&nbsp;</div>
                 <?php endif; ?>
                 <div class="rpbox-table-td-print">
                     <div class="ic-purpul-print"><img class="img-icon-print" src="/img/printscheduler/icon-print-white.svg"></div>
