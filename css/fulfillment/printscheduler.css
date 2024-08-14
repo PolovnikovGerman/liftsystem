@@ -59,8 +59,9 @@
 }
 .mustshipbox {
     background: #9002d0;
-    color: #fff!important;
+    color: #fff !important;
     font-weight: bold;
+    line-height: 17px !important;
 }
 .img-skull {
     position: relative;
@@ -870,8 +871,8 @@
     margin-top: 0;
 }
 .rpbox-printer-header {
-    width: 670px;
-    line-height: 20px!important;
+    width: 694px;
+    /* line-height: 20px!important; */
 }
 .rpbox-printer-header h4 {
     float: left;
@@ -1107,28 +1108,28 @@
     left: 1px;
 }
 .ic-assign {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border: 1px solid #747474;
     background: #747474;
     border-radius: 2px;
-    margin: 2px;
+    margin: 1px;
     cursor: pointer;
 }
 .unassigned .ic-assign {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border: 1px solid #000;
     background: #000;
     border-radius: 2px;
-    margin: 2px;
+    margin: 1px;
     cursor: pointer;
 }
 .img-icon-user {
-    width: 9px;
+    width: 10px;
     height: auto;
     position: relative;
-    top: -4px;
+    top: -3px;
     left: 1px;
 }
 .rpbox-table-td-inputs input {
@@ -1323,12 +1324,14 @@
     border-right: 1px solid #7fa9d2;
 }
 .rsbox-table-td-method select {
-    height: 15px;
+    height: 14px;
     width: 62px;
-    margin: 1px 3px;
+    margin: 0 3px;
     border: 1px solid #888888;
     font-size: 11px;
     background: #fff;
+    position: relative;
+    top: -0.5px;
 }
 .date-shipqty {
     width: 32px;
@@ -1336,7 +1339,7 @@
 }
 .rsbox-table-td-shipqty input.inp-shipqty {
     float: right;
-    height: 12px;
+    height: 14px;
     width: 38px;
     border: 1px solid #888888;
     margin-right: 3px;
@@ -1346,8 +1349,8 @@
 }
 .rsbox-table-td-tracking input.inp-tracking {
     float: left;
-    height: 12px;
-    width: 178px;
+    height: 14px;
+    width: 185px;
     border: 1px solid #888888;
     margin-left: 3px;
     margin-top: 1px;
