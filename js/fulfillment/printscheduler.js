@@ -169,6 +169,12 @@ function init_printscheduler_dayview() {
         $(".assign-popup[data-order='"+order+"']").show();
         init_assignprint(order);
     });
+    $(".rp-btn-link").unbind('click').click(function (){
+        $(".completed-print-block").show();
+    });
+    $(".cpj-btn-link").unbind('click').click(function (){
+        $(".completed-print-block").hide();
+    })
 }
 
 function init_assignprint(order) {
