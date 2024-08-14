@@ -55,10 +55,10 @@
                     </div>
                     <div class="rpbox-table-td-ship"><?=date('m/d', $order['shipdate'])?></div>
                     <div class="rpbox-table-td-order"><?=$order['order_num']?></div>
+                    <div class="rpbox-table-td-print">
+                        <div class="ic-purpul-print"><img class="img-icon-print" src="/img/printscheduler/icon-print-white.svg"></div>
+                    </div>
                 <?php endif; ?>
-                <div class="rpbox-table-td-print">
-                    <div class="ic-purpul-print"><img class="img-icon-print" src="/img/printscheduler/icon-print-white.svg"></div>
-                </div>
                 <div class="rpbox-table-td-items"><?=$order['item_qty']?></div>
                 <div class="rpbox-table-td-imp"><?=$order['imprints']?></div>
                 <div class="rpbox-table-td-prints"><?=$order['prints']?></div>
