@@ -911,11 +911,11 @@
     top: 8px;
 }
 .rpbox-printer-table {
-    width: 680px;
+    width: 694px;
     margin-top: 4px;
 }
 .rpbox-table-tr {
-    width: 680px;
+    width: 694px;
     height: 18px;
     border: 1px solid #888888;
     margin-bottom: 2px;
@@ -924,9 +924,9 @@
     line-height: 17px !important;
 }
 .rpbox-table-tr.addition {
-    width: 509px; /* 680px; */
+    width: 523px;
     height: 18px;
-    line-height: 18px!important;
+    line-height: 18px !important;
     margin-bottom: 2px;
     margin-top: -2px;
     border-right: 1px solid #888888;
@@ -1089,20 +1089,20 @@
     text-align: left;
 }
 .ic-purpul-print {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border: 1px solid #3c484b;
     background: #9b59b6;
     border-radius: 2px;
-    margin: 2px 3px;
+    margin: 1px 3px;
     cursor: pointer;
 }
 .img-icon-print {
     width: 9px;
     height: auto;
     position: relative;
-    top: -4px;
-    left: 2px;
+    top: -3px;
+    left: 1px;
 }
 .ic-assign {
     width: 12px;
@@ -1251,10 +1251,10 @@
     padding: 7px 5px 7px;
 }
 .rsbox-table {
-    width: 680px;
+    width: 694px;
 }
 .rsbox-table-tr {
-    width: 680px;
+    width: 694px;
     height: 18px;
     border: 1px solid #888888;
     margin-bottom: 2px;
