@@ -47,7 +47,7 @@
                 </div>
                 <div class="rpbox-table-td-icons">
                     <?php if ($displaymain==1) : ?>
-                        <div class="ic-skull" style="opacity: 0;"><img class="img-skull" src="img/icon-skull.svg"></div>
+                        <div class="ic-skull" style="opacity: 0;"><img class="img-skull" src="/img/printscheduler/icon-skull.svg"></div>
                         <div class="ic-rush">
                             <?php if ($order['order_rush']==1 ): ?>
                                 <img class="img-rush" src="/img/printscheduler/icon-rush.svg"/>

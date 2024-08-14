@@ -1234,7 +1234,7 @@
     font-weight: bold;
 }
 .rs-btn-link {
-    float: right;
+    float: right!important;
     color: #fff;
     font-style: italic;
     font-size: 11px;
