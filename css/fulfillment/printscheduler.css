@@ -897,6 +897,7 @@
     color: #000;
     font-size: 13px;
     margin-left: 10px;
+    line-height: 20px!important;
 }
 .rpbox-printer-summary span {
     font-weight: bold;
@@ -921,7 +922,7 @@
     margin-bottom: 2px;
 }
 .rpbox-table-tr > div, .rsbox-table-tr > div {
-    line-height: 17px !important;
+    line-height: 17px!important;
 }
 .rpbox-table-tr.addition {
     width: 523px;
@@ -931,9 +932,9 @@
     margin-top: -2px;
     border-right: 1px solid #888888;
     border-top: none;
-    border-bottom: none;
     border-left: none;
     margin-left: 171px;
+    border-bottom: 1px solid #888888;
 }
 .rpbox-table-header {
     background: #dbdbdb;
@@ -1071,22 +1072,23 @@
     font-size: 11px!important;
 }
 .rpbox-table-td-itemcolor {
-    width: 71px;
+    width: 72px;
     border-right: 1px solid #d4d2d2;
     font-size: 11px;
     text-align: center;
 }
 .rpbox-table-td-descriptions {
-    width: 170px;
+    width: 190px;
     font-size: 12px;
     padding-left: 5px;
     font-weight: bold;
     border-right: 2px solid #d4d2d2;
 }
 .rpbox-table-td-inputs {
-    width: 154px;
+    width: 155px;
     font-size: 11px;
     text-align: left;
+    padding-left: 1px;
 }
 .ic-purpul-print {
     width: 14px;
@@ -1131,15 +1133,16 @@
 }
 .rpbox-table-td-inputs input {
     float: left;
-    height: 12px;
+    height: 14px;
     border: 1px solid #888888;
     margin-right: 3px;
-    margin-top: 1px;
+    margin-top: 1.5px;
     font-size: 11px;
     text-align: center;
+    line-height: 14px!important;
 }
 .rpbox-inp-good {
-    width: 33px;
+    width: 38px;
     margin-left: 2px;
 }
 .span-good {
@@ -1148,7 +1151,7 @@
     text-align: center;
 }
 .rpbox-inp-kept {
-    width: 15px;
+    width: 20px;
 }
 .span-kept {
     display: inline-block;
@@ -1158,7 +1161,7 @@
     left: -3px;
 }
 .rpbox-inp-mispt {
-    width: 20px;
+    width: 26px;
 }
 .span-mispt {
     display: inline-block;
@@ -1166,7 +1169,7 @@
     text-align: center;
 }
 .rpbox-inp-plate {
-    width: 15px;
+    width: 20px;
 }
 .span-plate {
     display: inline-block;
@@ -1176,18 +1179,18 @@
     right: -5px;
 }
 .btn-greensave {
-    float: right;
+    float: right !important;
     background: #34924c;
     background: linear-gradient(to top, #0b7827, #64b076);
     color: #fff;
     border: 1px solid #055c1c;
     font-size: 10px;
     text-align: center;
-    height: 13px;
-    width: 28px;
-    line-height: 12px!important;
+    height: 14px;
+    width: 30px;
+    line-height: 12px !important;
     border-radius: 5px;
-    margin-top: 1px;
+    margin-top: 1.5px;
     margin-right: 3px;
 }
 .rpbox-table-tr.addition .rpbox-table-td-move,
@@ -1355,18 +1358,18 @@ input.inp-tracking::placeholder {
     color: #807e7e;
 }
 .btn-greydone {
-    float: right;
+    float: right !important;
     background: #6e6d6d;
     background: linear-gradient(to top, #5e5d5d, #7c7b7b);
     color: #fff;
     border: 1px solid #464545;
     font-size: 10px;
     text-align: center;
-    height: 13px;
-    width: 28px;
-    line-height: 13px!important;
+    height: 14px;
+    width: 30px;
+    line-height: 13px !important;
     border-radius: 5px;
-    margin-top: 1px;
+    margin-top: 1.5px;
     margin-right: 3px;
 }
 .shipped-block input.inp-tracking::placeholder {
