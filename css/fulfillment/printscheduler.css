@@ -920,7 +920,7 @@
     border: 1px solid #888888;
     margin-bottom: 2px;
 }
-.rpbox-table-tr div, .rsbox-table-tr div {
+.rpbox-table-tr > div, .rsbox-table-tr > div {
     line-height: 17px !important;
 }
 .rpbox-table-tr.addition {
