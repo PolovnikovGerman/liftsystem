@@ -25,7 +25,7 @@
         <?php $ordernum = ''; $displaymain =0;?>
         <?php foreach ($orders as $order): ?>
             <?php if ($order['order_num']!==$ordernum): ?>
-            <?php $ordernum = $order['order_num']; $displaymain = 1;?>
+                <?php $ordernum = $order['order_num']; $displaymain = 1;?>
             <?php endif; ?>
             <div class="rpbox-table-tr <?=$displaymain==1 ? '' : 'addition'?>">
                 <?php if ($displaymain==1): ?>
