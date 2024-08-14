@@ -21,7 +21,7 @@
     <?php $ordernum=''; $displaymain = 0;?>
     <?php foreach($orders as $order) :?>
         <?php if ($order['order_num'] != $ordernum): ?>
-            <?php $ordernum = $order['order_number']; $displaymain = 1; ?>
+            <?php $ordernum = $order['order_num']; $displaymain = 1; ?>
         <?php endif;?>
         <div class="rsbox-table-tr">
             <?php if ($displaymain==1) : ?>
