@@ -32,4 +32,10 @@
     <div class="ready-print-block">
         <?=$printview?>
     </div>
+    <div class="ready-ship-block">
+        <?=$readyship?>
+    </div>
+    <div class="completed-print-block">
+        <?=$completed?>
+    </div>
 </div>
