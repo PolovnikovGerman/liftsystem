@@ -135,6 +135,9 @@ class Printscheduler extends MY_Controller
                     $totalcomlet['prints']+=$compljob['totals']['prints'];
                 }
                 $complljobview = $this->load->view('printscheduler/daydetails_completedorders_view',['totals' => $totalcomlet, 'content' => $completedview], TRUE);
+                // Shipped
+                $shipres = $this->printscheduler_model->getshippedorders($printdate, $brand);
+                $shippedview = $this->load->view('printscheduler/daydetails_shippeddorders_view',['totals' => $shipres['totals'], 'orders' => $shipres['orders']], TRUE);
                 $options = [
                     'dateview' => $dateview,
                     'stockview' => $stockview,
@@ -142,6 +145,7 @@ class Printscheduler extends MY_Controller
                     'printview' => $printview,
                     'readyship' => $readyshipview,
                     'completed' => $complljobview,
+                    'shippedview' => $shippedview,
                 ];
                 $mdata['content'] = $this->load->view('printscheduler/daydetails_view', $options, TRUE);
             }

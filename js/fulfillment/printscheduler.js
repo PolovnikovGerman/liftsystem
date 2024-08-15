@@ -174,7 +174,11 @@ function init_printscheduler_dayview() {
     });
     $(".cpj-btn-link").unbind('click').click(function (){
         $(".completed-print-block").hide();
-    })
+    });
+    $(".rs-btn-link").unbind('click').click(function (){
+        $(".shipped-block").show();
+    });
+    // rs-btn-link 
 }
 
 function init_assignprint(order) {
