@@ -10,41 +10,83 @@ class Printscheduler_model extends MY_Model
     public function get_printsheduler_totals($brand)
     {
         $curdate = strtotime(date('Y-m-d'));
-        $this->db->select('count(distinct(o.order_id)) as cntorder, sum(oi.item_qty) as totalitems, sum(imp.imprint_qty) as totalimpr');
+        $this->db->select('count(o.order_id) as cntorder');
         $this->db->from('ts_orders o');
-        $this->db->join('ts_order_items oi','oi.order_id=o.order_id');
-        $this->db->join('ts_order_imprints imp','imp.order_item_id=oi.order_item_id');
         $this->db->where('o.print_date < ', $curdate);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_finish',0);
+        $this->db->where('o.shipped_date',0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
             $this->db->where_in('o.brand', ['SB','BT']);
         }
-        $this->db->where('imp.imprint_item',1);
-        $oldres = $this->db->get()->row_array();
-        $this->db->select('count(distinct(o.order_id)) as cntorder, sum(oi.item_qty) as totalitems, sum(imp.imprint_qty) as totalimpr');
-        $this->db->from('ts_orders o');
-        $this->db->join('ts_order_items oi','oi.order_id=o.order_id');
-        $this->db->join('ts_order_imprints imp','imp.order_item_id=oi.order_item_id');
-        $this->db->where('o.print_date >= ', $curdate);
+
+        $oldorderres = $this->db->get()->row_array();
+        $this->db->select('sum(oi.item_qty) as totalitems')->from('ts_order_items oi')->join('ts_orders o','oi.order_id=o.order_id');
+        $this->db->where('o.print_date < ', $curdate);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_finish',0);
+        $this->db->where('o.shipped_date',0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
             $this->db->where_in('o.brand', ['SB','BT']);
         }
+        $olditemres = $this->db->get()->row_array();
+
+        $this->db->select('sum(imp.imprint_qty) as totalimpr')->from('ts_order_imprints imp')->join('ts_order_items oi','imp.order_item_id=oi.order_item_id')->join('ts_orders o','o.order_id=oi.order_id');
         $this->db->where('imp.imprint_item',1);
-        $newres = $this->db->get()->row_array();
+        $this->db->where('o.print_date < ', $curdate);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.shipped_date',0);
+        if ($brand=='SR') {
+            $this->db->where('o.brand', $brand);
+        } else {
+            $this->db->where_in('o.brand', ['SB','BT']);
+        }
+        $oldimprres = $this->db->get()->row_array();
+
+        $this->db->select('count(o.order_id) as cntorder');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.print_date < ', $curdate);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.shipped_date',0);
+        if ($brand=='SR') {
+            $this->db->where('o.brand', $brand);
+        } else {
+            $this->db->where_in('o.brand', ['SB','BT']);
+        }
+        $neworderres = $this->db->get()->row_array();
+
+        $this->db->select('sum(oi.item_qty) as totalitems')->from('ts_order_items oi')->join('ts_orders o','oi.order_id=o.order_id');
+        $this->db->where('o.print_date < ', $curdate);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.shipped_date',0);
+        if ($brand=='SR') {
+            $this->db->where('o.brand', $brand);
+        } else {
+            $this->db->where_in('o.brand', ['SB','BT']);
+        }
+        $newitemres = $this->db->get()->row_array();
+
+        $this->db->select('sum(imp.imprint_qty) as totalimpr')->from('ts_order_imprints imp')->join('ts_order_items oi','imp.order_item_id=oi.order_item_id')->join('ts_orders o','o.order_id=oi.order_id');
+        $this->db->where('imp.imprint_item',1);
+        $this->db->where('o.print_date < ', $curdate);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.shipped_date',0);
+        if ($brand=='SR') {
+            $this->db->where('o.brand', $brand);
+        } else {
+            $this->db->where_in('o.brand', ['SB','BT']);
+        }
+        $newimprres = $this->db->get()->row_array();
+
         return [
-            'old_orders' => $oldres['cntorder'],
-            'old_items' => intval($oldres['totalitems']),
-            'old_prints' => intval($oldres['totalimpr']),
-            'new_orders' => $newres['cntorder'],
-            'new_items' => intval($newres['totalitems']),
-            'new_prints' => intval($newres['totalimpr']),
+            'old_orders' => $oldorderres['cntorder'],
+            'old_items' => intval($olditemres['totalitems']),
+            'old_prints' => intval($oldimprres['totalimpr']),
+            'new_orders' => $neworderres['cntorder'],
+            'new_items' => intval($newitemres['totalitems']),
+            'new_prints' => intval($newimprres['totalimpr']),
             'brand' => $brand,
         ];
     }
@@ -52,40 +94,37 @@ class Printscheduler_model extends MY_Model
     public function get_pastorders($brand)
     {
         $curdate = strtotime(date('Y-m-d'));
-        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush');
+        // get order details
+        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id');
+        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty');
         $this->db->from('ts_orders o');
+        $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
+        $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
+        $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
         $this->db->where('o.print_date < ', $curdate);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_finish',0);
+        $this->db->where('o.shipped_date', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
             $this->db->where_in('o.brand', ['SB','BT']);
         }
-        $this->db->order_by('o.order_rush desc, o.print_date');
-        $orders = $this->db->get()->result_array();
-        $res = [];
-        foreach ($orders as $order) {
-            // Item Name, Item Color
-            $this->db->select('group_concat(v.item_number,\'-\', toi.item_description) as itemdescr, group_concat(toi.item_color) as itemcolor');
-            $this->db->from('ts_order_items i');
-            $this->db->join('ts_order_itemcolors toi','i.order_item_id = toi.order_item_id');
-            $this->db->join('v_itemsearch v', 'v.item_id=i.item_id');
-            $this->db->where('i.order_id', $order['order_id']);
-            $itemdet = $this->db->get()->row_array();
+        $this->db->order_by('o.order_rush desc, o.order_num');
+        $pastorders = $this->db->get()->result_array();
+        $orders = [];
+
+        foreach ($pastorders as $pastorder) {
             // Imprints
-            $this->db->select('sum(if(i.imprint_item=1, 1, i.imprint_qty)) as imprint, sum(if(i.imprint_item=1, i.imprint_qty, 0)) as imprqty');
+            $this->db->select('sum(if(i.imprint_item=1, 1, i.imprint_qty)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
             $this->db->from('ts_order_imprints i');
-            $this->db->join('ts_order_items toi','i.order_item_id = toi.order_item_id');
-            $this->db->where('toi.order_id', $order['order_id']);
+            $this->db->where('i.order_item_id', $pastorder['order_item_id']);
             $imprdet = $this->db->get()->row_array();
-            $order['item_name'] = $itemdet['itemdescr'];
-            $order['item_color'] = $itemdet['itemcolor'];
-            $order['imprint'] = intval($imprdet['imprint']);
-            $order['imprint_qty'] = intval($imprdet['imprqty']);
-            $res[] = $order;
+            $pastorder['imprints'] = $imprdet['imprints'];
+            $pastorder['prints'] = $imprdet['imprqty']*$pastorder['item_qty'];
+            $pastorder['item_name'] = $pastorder['item_number'].' - '.$pastorder['item_description'];
+            $orders[] = $pastorder;
         }
-        return $res;
+        return $orders;
     }
 
     public function get_ontimeorders_dates($brand)
@@ -654,7 +693,6 @@ class Printscheduler_model extends MY_Model
             'orders' => $ships,
             'totals' => $totals,
         ];
-
     }
 
     public function stockdonecheck($order_id)
