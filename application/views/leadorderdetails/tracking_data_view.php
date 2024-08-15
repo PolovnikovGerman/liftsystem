@@ -5,14 +5,15 @@
             <div class="trackqty"><?=$tracking['qty']?></div>
             <div class="trackdate"><?=date('m/d/y', $tracking['trackdate'])?></div>
             <div class="trackservice"><?=$tracking['trackservice']?></div>
-            <div class="trackcode">
-                <?php $url = trackcodeurl($tracking['trackservice'], $tracking['trackcode']); ?>
-                <?php if (!empty($url)) { ?>
-                    <a class="trackservicelnk" data-lnkdata="<?=$url?>"><?=$tracking['trackcode']?></a>
-                <?php } else { ?>
+            <?php $url = trackcodeurl($tracking['trackservice'], $tracking['trackcode']); ?>
+            <?php if (!empty($url)) : ?>
+                <div class="trackcode trackservicelnk" data-lnkdata="<?=$url?>">
+                    <input type="text" class="trackcodeinpt" data-track="<?=$tracking['tracking_id']?>" value="<?=$tracking['trackcode']?>" readonly="readonly"/>
+                </div>
+            <?php  else : ?>
+                <div class="trackcode" data-lnkdata="<?=$url?>">
                     <?=$tracking['trackcode']?>
-                <?php } ?>
-            </div>
+            <?php endif; ?>
             <div class="trackcodecopy <?=empty($tracking['trackcode']) ? 'emptycopy' : '' ?>" data-track="<?=$tracking['tracking_id']?>">
                 <i class="fa fa-copy"></i>
             </div>

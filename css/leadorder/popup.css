@@ -5882,12 +5882,15 @@ input.ticket_date {
     border: 1px solid #4d4d4d;
     color: #000000;
 }
-a.trackservicelnk {
+div.trackservicelnk > input {
     color: #0000FF!important;
-    text-decoration: none;
+    /* text-decoration: none; */
     cursor: pointer;
+    border: none;
+    background: transparent!important;
 }
-a.trackservicelnk:hover, a.trackservicelnk:focus {
-    text-decoration: none;
-    cursor: pointer;
-}
+
+/*a.trackservicelnk:hover, a.trackservicelnk:focus {*/
+/*    text-decoration: none;*/
+/*    cursor: pointer;*/
+/*}*/
