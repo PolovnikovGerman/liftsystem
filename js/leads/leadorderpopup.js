@@ -247,11 +247,14 @@ function navigation_init() {
     // Lock track #
     $(".trackcodecopy").unbind('click').click(function (){
         var trackdat = $(this).data('track');
-        var txtVal = $(".trackcodehidden[data-track='"+trackdat+"']").val();
-        copyTextToClipboard(txtVal);
+        // var txtVal = $(".trackcodehidden[data-track='"+trackdat+"']").val();
+        // copyTextToClipboard(txtVal);
+        var element = document.querySelector(".trackcodeinpt[data-track='"+trackdat+"']");
+        copyOrderToClipboard(element);
+        $(element).show();
     });
     // Open Tracking Window
-    $("a.trackservicelnk").unbind('click').click(function (){
+    $("div.trackservicelnk").unbind('click').click(function (){
         var url = $(this).data('lnkdata');
         // Open new window
         window.open(url, 'trackformwin', 'width=600, height=800,toolbar=1')
@@ -5877,8 +5880,12 @@ function init_tracking_manage() {
         var tracking = $(this).data('track');
         var orderitem = $(this).data('orderitem');
         var itemcolor = $(this).data('color');
-        var txtVal = $(".trackcodehidden[data-track='"+tracking+"'][data-orderitem='"+orderitem+"'][data-color='"+itemcolor+"']").val();
-        console.log('Code '+txtVal)
-        copyTextToClipboard(txtVal);
+        // var txtVal = $(".trackcodehidden[data-track='"+tracking+"'][data-orderitem='"+orderitem+"'][data-color='"+itemcolor+"']").val();
+        // console.log('Code '+txtVal)
+        // copyTextToClipboard(txtVal);
+        var element = document.querySelector(".trackcodeinpt[data-track='"+tracking+"'][data-orderitem='"+orderitem+"'][data-color='"+itemcolor+"']");
+        copyOrderToClipboard(element);
+        $(element).show();
+
     });
 }
