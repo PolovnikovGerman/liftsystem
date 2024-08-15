@@ -10,6 +10,7 @@
         <div class="rsbox-table-tr rsbox-table-header">
             <div class="rsbox-table-td-move">&nbsp;</div>
             <div class="rsbox-table-td-order">Order#</div>
+            <div class="rsbox-table-td-itemcolor">Color/s</div>
             <div class="rsbox-table-td-descriptions">Item /Description</div>
             <div class="rsbox-table-td-items">#Items</div>
             <div class="rsbox-table-td-shipqty">Sh Date Qty</div>
@@ -23,22 +24,19 @@
         <?php if ($order['order_num'] != $ordernum): ?>
             <?php $ordernum = $order['order_num']; $displaymain = 1; ?>
         <?php endif;?>
-        <div class="rsbox-table-tr">
+        <div class="rsbox-table-tr <?=$displaymain==1 ? '' : 'addition'?>">
             <?php if ($displaymain==1) : ?>
-            <div class="rsbox-table-td-move">
-                <?php if($brand=='SR'): ?>
-                <img class="icon-move" src="/img/printscheduler/move-yellow.svg">
-                <?php else: ?>
-                <img class="icon-move" src="/img/printscheduler/move-blue.svg">
-                <?php endif; ?>
-            </div>
-            <div class="rsbox-table-td-order"><?=$order['order_num']?></div>
-            <div class="rsbox-table-td-descriptions"><?=$order['item_name']?></div>
-            <?php else: ?>
-                <div class="rsbox-table-td-move">&nbsp;</div>
-                <div class="rsbox-table-td-order">&nbsp;</div>
-                <div class="rsbox-table-td-descriptions">&nbsp;</div>
+                <div class="rsbox-table-td-move">
+                    <?php if($brand=='SR'): ?>
+                    <img class="icon-move" src="/img/printscheduler/move-yellow.svg">
+                    <?php else: ?>
+                    <img class="icon-move" src="/img/printscheduler/move-blue.svg">
+                    <?php endif; ?>
+                </div>
+                <div class="rsbox-table-td-order"><?=$order['order_num']?></div>
             <?php endif ?>
+            <div class="rsbox-table-td-itemcolor"><?=$order['item_color']?></div>
+            <div class="rsbox-table-td-descriptions"><?=$order['item_name']?></div>
             <div class="rsbox-table-td-items"><?=$order['item_qty']?></div>
             <div class="rsbox-table-td-shipqty">
                 <div class="date-shipqty mustshipbox"><?=date('m/d', $order['shipdate'])?></div>
@@ -64,5 +62,6 @@
                 <div class="btn-greensave">save</div>
             </div>
         </div>
+        <?php $displaymain = 0; ?>
     <?php endforeach;?>
 </div>

@@ -38,4 +38,7 @@
     <div class="completed-print-block">
         <?=$completed?>
     </div>
+    <div class="shipped-block">
+        <?=$shippedview?>
+    </div>
 </div>

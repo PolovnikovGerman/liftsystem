@@ -16,7 +16,7 @@ class Printscheduler_model extends MY_Model
         $this->db->join('ts_order_imprints imp','imp.order_item_id=oi.order_item_id');
         $this->db->where('o.print_date < ', $curdate);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_finish',null);
+        $this->db->where('o.print_finish',0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -30,7 +30,7 @@ class Printscheduler_model extends MY_Model
         $this->db->join('ts_order_imprints imp','imp.order_item_id=oi.order_item_id');
         $this->db->where('o.print_date >= ', $curdate);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_finish',null);
+        $this->db->where('o.print_finish',0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -56,7 +56,7 @@ class Printscheduler_model extends MY_Model
         $this->db->from('ts_orders o');
         $this->db->where('o.print_date < ', $curdate);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_finish',null);
+        $this->db->where('o.print_finish',0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -97,7 +97,7 @@ class Printscheduler_model extends MY_Model
         $this->db->join('ts_order_imprints imp','imp.order_item_id=oi.order_item_id');
         $this->db->where('o.print_date >= ', $curdate);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_finish',null);
+        $this->db->where('o.print_finish',0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -117,7 +117,7 @@ class Printscheduler_model extends MY_Model
             $this->db->where('o.print_date >= ', $daybgn);
             $this->db->where('o.print_date < ', $dayend);
             $this->db->where('o.is_canceled',0);
-            $this->db->where('o.print_finish',null);
+            $this->db->where('o.print_finish',0);
             if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
             } else {
@@ -140,7 +140,7 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_finish',null);
+        $this->db->where('o.print_finish',0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -182,7 +182,7 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.shipping_ready',0);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_finish',null);
+        $this->db->where('o.print_finish',0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -242,7 +242,7 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_finish',null);
+        $this->db->where('o.print_finish',0);
         $this->db->where('o.print_ready > ', 0);
         $this->db->where('o.shipping_ready',0);
         if ($brand=='SR') {
@@ -302,7 +302,7 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_finish',null);
+        $this->db->where('o.print_finish',0);
         $this->db->where('o.print_ready > ', 0);
         $this->db->where('o.shipping_ready',0);
         $this->db->where('o.print_user', null);
@@ -322,7 +322,7 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_finish',null);
+        $this->db->where('o.print_finish',0);
         $this->db->where('o.print_ready > ', 0);
         $this->db->where('o.shipping_ready',0);
         $this->db->where('o.print_user', null);
@@ -368,7 +368,7 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_finish',null);
+        $this->db->where('o.print_finish',0);
         $this->db->where('o.print_ready > ', 0);
         $this->db->where('o.shipping_ready',0);
         $this->db->where('o.print_user', $user_id);
@@ -388,7 +388,7 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_finish',null);
+        $this->db->where('o.print_finish',0);
         $this->db->where('o.print_ready > ', 0);
         $this->db->where('o.shipping_ready',0);
         $this->db->where('o.print_user', $user_id);
@@ -434,7 +434,7 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_finish',null);
+        $this->db->where('o.print_finish',0);
         $this->db->where('o.print_ready > ', 0);
         $this->db->where('o.shipping_ready',0);
         $this->db->where('o.print_user != ', null);
@@ -459,8 +459,8 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_finish',null);
         $this->db->where('o.shipping_ready > ',0);
+        $this->db->where('o.shipped_date', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -482,7 +482,7 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_finish',null);
+        $this->db->where('o.shipped_date', 0);
         $this->db->where('o.shipping_ready > ',0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
@@ -522,7 +522,7 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.print_finish > ',0);
-        // $this->>db->where('o.shipped_date', 0);
+        $this->db->where('o.shipped_date', 0);
         $this->db->where('o.print_user != ', null);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
@@ -545,6 +545,7 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.print_finish > ',0);
+        $this->db->where('o.shipped_date', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -592,6 +593,68 @@ class Printscheduler_model extends MY_Model
             'orders' => $ships,
             'totals' => $totals,
         ];
+    }
+
+    public function getshippedorders($printdate, $brand)
+    {
+        $daybgn = strtotime($printdate);
+        $dayend = strtotime('+1 day', $daybgn);
+        // Total orders
+        $this->db->select('count(order_id) as cnt');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.print_date >= ', $daybgn);
+        $this->db->where('o.print_date < ', $dayend);
+        $this->db->where('o.is_canceled',0);
+        // $this->db->where('o.shipping_ready > ',0);
+        $this->db->where('o.shipped_date > ', 0);
+        if ($brand=='SR') {
+            $this->db->where('o.brand', $brand);
+        } else {
+            $this->db->where_in('o.brand', ['SB','BT']);
+        }
+        $ordercnt = $this->db->get()->row_array();
+        $totals = [
+            'prints' => 0,
+            'items' => 0,
+            'orders' => $ordercnt['cnt'],
+        ];
+        // get order details
+        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id');
+        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
+        $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
+        $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
+        $this->db->where('o.print_date >= ', $daybgn);
+        $this->db->where('o.print_date < ', $dayend);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.shipped_date > ', 0);
+        if ($brand=='SR') {
+            $this->db->where('o.brand', $brand);
+        } else {
+            $this->db->where_in('o.brand', ['SB','BT']);
+        }
+        $this->db->order_by('o.order_rush desc, o.order_num');
+        $orders = $this->db->get()->result_array();
+        $ships = [];
+        foreach ($orders as $order) {
+            $totals['items']+=$order['item_qty'];
+            // Imprints
+            $this->db->select('sum(if(i.imprint_item=1, 1, i.imprint_qty)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
+            $this->db->from('ts_order_imprints i');
+            $this->db->where('i.order_item_id', $order['order_item_id']);
+            $imprdet = $this->db->get()->row_array();
+            $order['imprints'] = $imprdet['imprints'];
+            $order['prints'] = $imprdet['imprqty']*$order['item_qty'];
+            $totals['prints']+=$imprdet['imprqty']*$order['item_qty'];
+            $order['item_name'] = $order['item_number'].' - '.$order['item_description'];
+            $ships[] = $order;
+        }
+        return [
+            'orders' => $ships,
+            'totals' => $totals,
+        ];
+
     }
 
     public function stockdonecheck($order_id)
