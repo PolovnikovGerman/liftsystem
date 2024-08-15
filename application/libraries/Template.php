@@ -259,9 +259,14 @@ class Template
             $orderitem = $order_items[0];
             $itemdata = $orderitem['items'][0];
             if (!empty($itemdata['item_qty'])) {
+                if ($orderitem['item_id']>0) {
+                    $itemname = $orderitem['item_name'].(empty($itemdata['item_color']) ? '' : ' - '.$itemdata['item_color']);
+                } else {
+                    $itemname = $itemdata['item_description'];
+                }
                 $shipoptions = [
                     'shipdate' => $shipstatus['order_status'],
-                    'item' => $orderitem['item_name'].(empty($itemdata['item_color']) ? '' : ' - '.$itemdata['item_color']),
+                    'item' => $itemname, // $orderitem['item_name'].(empty($itemdata['item_color']) ? '' : ' - '.$itemdata['item_color']),
                     'qty' => $itemdata['item_qty'],
                     'order_item' => $orderitem['order_item_id'],
                     'item_color' => $itemdata['item_id'],
@@ -332,8 +337,13 @@ class Template
                         $shipped+=$tracking['qty'];
                     }
                     $completed = ($itemcolor['item_qty'] > $shipped ? 0 : 1);
+                    if ($order_item['item_id'] > 0) {
+                        $itemname = $order_item['item_name'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']);
+                    } else {
+                        $itemname = $itemcolor['item_description'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']);
+                    }
                     $headoptions = [
-                        'item' => $order_item['item_name'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']),
+                        'item' => $itemname, // $order_item['item_name'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']),
                         'qty' => $itemcolor['item_qty'],
                         'order_item' => $order_item['order_item_id'],
                         'item_color' => $itemcolor['item_id'],

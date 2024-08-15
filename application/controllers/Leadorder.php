@@ -1675,7 +1675,19 @@ class Leadorder extends MY_Controller
                         }
                     }
                     $mdata['locat_view']=$locat_view;
-
+                    // Tracking
+                    $mdata['trackbody'] = '';
+                    $orderitems = $leadorder['order_items'];
+                    if (count($orderitems)==1) {
+                        $itemdat = $orderitems[0]['items'];
+                        if (count($itemdat)==1) {
+                            $mdata['trackbody'] = $this->_prepare_tracking_view($leadorder, 1);
+                        } else {
+                            $mdata['trackbody'] = $this->_prepare_multitrack_view($leadorder,1);
+                        }
+                    } elseif (count($orderitems)>1) {
+                        $mdata['trackbody'] = $this->_prepare_multitrack_view($leadorder,1);
+                    }
                 }
             }
             // Calc new period for lock
@@ -2490,7 +2502,7 @@ class Leadorder extends MY_Controller
                             }
                         }
                         $mdata['trackcode'] = 0;
-                        if ($postdata['fldname']=='item_qty') {
+                        if ($postdata['fldname']=='item_qty' || $postdata['fldname']=='item_description' || $postdata['fldname']=='item_color') {
                             $mdata['trackcode'] = 1;
                             $orderitems = $leadorder['order_items'];
                             if (count($orderitems)==1) {
@@ -2915,6 +2927,18 @@ class Leadorder extends MY_Controller
                             'user_role' => $this->USR_ROLE,
                         );
                         $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
+                    }
+                    // Tracking info
+                    $orderitems = $leadorder['order_items'];
+                    if (count($orderitems)==1) {
+                        $itemdat = $orderitems[0]['items'];
+                        if (count($itemdat)==1) {
+                            $mdata['trackbody'] = $this->_prepare_tracking_view($leadorder, 1);
+                        } else {
+                            $mdata['trackbody'] = $this->_prepare_multitrack_view($leadorder,1);
+                        }
+                    } else {
+                        $mdata['trackbody'] = $this->_prepare_multitrack_view($leadorder,1);
                     }
                 }
             }
@@ -6411,9 +6435,14 @@ class Leadorder extends MY_Controller
         foreach ($order_items as $order_item) {
             $itemcolors = $order_item['items'];
             foreach ($itemcolors as $itemcolor) {
+                if ($order_item['item_id'] > 0 ) {
+                    $itemname = $order_item['item_name'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']);
+                } else {
+                    $itemname = $itemcolor['item_description'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']);
+                }
                 $shipoptions = [
                     'shipdate' => 'To Ship '.date('m/d/y', $shipping['shipdate']),
-                    'item' => $order_item['item_name'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']),
+                    'item' => $itemname, // $order_item['item_name'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']),
                     'qty' => $itemcolor['item_qty'],
                     'order_item' => $order_item['order_item_id'],
                     'item_color' => $itemcolor['item_id'],
@@ -6486,8 +6515,13 @@ class Leadorder extends MY_Controller
                     $shipped+=$tracking['qty'];
                 }
                 $completed = ($itemcolor['item_qty'] > $shipped ? 0 : 1);
+                if ($order_item['item_id'] > 0) {
+                    $itemname = $order_item['item_name'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']);
+                } else {
+                    $itemname = $itemcolor['item_description'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']);
+                }
                 $headoptions = [
-                    'item' => $order_item['item_name'].' - '.$itemcolor['item_color'],
+                    'item' => $itemname, // $order_item['item_name'].' - '.$itemcolor['item_color'],
                     'qty' => $itemcolor['item_qty'],
                     'order_item' => $order_item['order_item_id'],
                     'item_color' => $itemcolor['item_id'],
