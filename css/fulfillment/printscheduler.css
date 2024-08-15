@@ -152,6 +152,13 @@
     border: 1px solid #888888;
     margin-bottom: 2px;
 }
+.pdo-table-tr.addition {
+    margin-left: 138px;
+    width: 408px;
+    border-top: none;
+    /* border-left: none; */
+    margin-top: -2px;
+}
 .pdo-table-td-move {
     width: 12px;
 }
