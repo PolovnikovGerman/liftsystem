@@ -49,9 +49,9 @@
                     <option value="FedEx">FedEx</option>
                     <option value="DHL">DHL</option>
                     <option value="USPS">USPS</option>
-                    <option value="Van">>Van</option>
-                    <option value="Pickup">>Pickup</option>
-                    <option value="Courier">>Courier</option>
+                    <option value="Van">Van</option>
+                    <option value="Pickup">Pickup</option>
+                    <option value="Courier">Courier</option>
                     <option value="Other">Other</option>
                 </select>
             </div>
