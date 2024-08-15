@@ -4,7 +4,7 @@
         <span><?=QTYOutput($totals['items'])?></span> items,
         <span><?=$totals['orders']?></span> orders
     </div>
-    <div class="rs-btn-link">[hide]</div>
+    <div class="shipped-btn-link">[hide]</div>
     <div class="ready-ship-box">
         <div class="rsbox-table">
             <div class="rsbox-table-tr rsbox-table-header">
@@ -48,9 +48,9 @@
                             <option value="FedEx">FedEx</option>
                             <option value="DHL">DHL</option>
                             <option value="USPS">USPS</option>
-                            <option value="Van">>Van</option>
-                            <option value="Pickup">>Pickup</option>
-                            <option value="Courier">>Courier</option>
+                            <option value="Van">Van</option>
+                            <option value="Pickup">Pickup</option>
+                            <option value="Courier">Courier</option>
                             <option value="Other">Other</option>
                         </select>
                     </div>

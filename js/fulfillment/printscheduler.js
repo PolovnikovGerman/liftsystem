@@ -178,7 +178,9 @@ function init_printscheduler_dayview() {
     $(".rs-btn-link").unbind('click').click(function (){
         $(".shipped-block").show();
     });
-    // rs-btn-link 
+    $(".shipped-btn-link").unbind('click').click(function (){
+        $(".shipped-block").hide();
+    });
 }
 
 function init_assignprint(order) {

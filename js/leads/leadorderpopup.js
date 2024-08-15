@@ -2074,6 +2074,8 @@ function init_leadorder_items() {
                         openbalancemanage(response.data.balanceopen);
                     }                    
                     $("input#loctimeout").val(response.data.loctime);
+                    // Track body
+                    $(".shippingdataviewarea").empty().html(response.data.trackbody);
                     init_onlineleadorder_edit();
                     if (parseInt(response.data.newitem)==1) {
                         leadordernewitem();
@@ -2397,6 +2399,8 @@ function save_imprint_details() {
                 if (response.data.taxview.length>0) {
                     $(".ship_tax_cont_bl3").empty().html(response.data.taxview);
                 }
+                // Track body
+                $(".shippingdataviewarea").empty().html(response.data.trackbody);
             }
             $("input#loctimeout").val(response.data.loctime);
             $(".addleadorderitem").show();
