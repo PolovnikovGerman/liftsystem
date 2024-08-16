@@ -3350,7 +3350,7 @@ Class Leadorder_model extends My_Model {
                 'amount'=>$charge['amount'],
                 'batch_note'=>NULL,
                 'order_id'=>$order_id,
-                'batch_received'=>1,
+                // 'batch_received'=>1,
                 'batch_type'=>$pay_options['cardtype'],
                 'batch_num'=>substr($cardnum,-4),
                 'batch_transaction'=>$transres['transaction_id'],
@@ -5736,7 +5736,7 @@ Class Leadorder_model extends My_Model {
                 $this->db->set('batch_internal', $row['batch_internal']);
                 $this->db->set('batch_type', $row['batch_type']);
                 $this->db->set('batch_num', $row['batch_num']);
-                $this->db->set('batch_received', 1);
+                // $this->db->set('batch_received', 1);
                 $this->db->insert('ts_order_batches');
             }
         }
