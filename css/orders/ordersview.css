@@ -463,6 +463,10 @@ select.leadord_filterselect {
     background-color: #FFFFFF;
     color: #000000;
 }
+.leadorder_datarow > .ordstatuspercent.today {
+    background-color: #ea8a0e;
+    color: #000000;
+}
 .leadorder_datarow > .ordstatus {
     float: left;
     font-size: 11px;
@@ -493,6 +497,10 @@ select.leadord_filterselect {
 }
 .leadorder_datarow > .ordstatus.done, .leadorder_datarow > .ordstatus.completed {
     background-color: #FFFFFF;
+    color: #000000;
+}
+.leadorder_datarow > .ordstatus.today {
+    background-color: #ea8a0e;
     color: #000000;
 }
 /* Profit class */
@@ -888,7 +896,7 @@ select.selectorderitem {
 /* Tracking legend */
 .ordertraciknglegend {
     /* height: 60px; */
-    /* width: 120px; */
+    width: 196px;
     margin-top: 22px;
     margin-left: 7px;
 }
@@ -908,6 +916,9 @@ select.selectorderitem {
 }
 .trackinglabelarea.completedlabel {
     color: #000000;
+}
+.trackinglabelarea.todaytimelabel {
+    color: #ea8a0e;
 }
 .trackinglabeltitle {
     height: 18px;

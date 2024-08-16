@@ -3350,7 +3350,7 @@ Class Leadorder_model extends My_Model {
                 'amount'=>$charge['amount'],
                 'batch_note'=>NULL,
                 'order_id'=>$order_id,
-                'batch_received'=>1,
+                // 'batch_received'=>1,
                 'batch_type'=>$pay_options['cardtype'],
                 'batch_num'=>substr($cardnum,-4),
                 'batch_transaction'=>$transres['transaction_id'],
@@ -5737,7 +5737,7 @@ Class Leadorder_model extends My_Model {
                 $this->db->set('batch_internal', $row['batch_internal']);
                 $this->db->set('batch_type', $row['batch_type']);
                 $this->db->set('batch_num', $row['batch_num']);
-                $this->db->set('batch_received', 1);
+                // $this->db->set('batch_received', 1);
                 $this->db->insert('ts_order_batches');
             }
         }
@@ -9085,9 +9085,14 @@ Class Leadorder_model extends My_Model {
             $outstatus['class'] = 'completed';
             $outstatus['label'] = 'Completed';
         } else {
-            if ($shipdate < time()) {
+            $curdate_bgn = strtotime(date('Y-m-d'));
+            $curdate_end = strtotime("+1 day", $curdate_bgn);
+            if ($shipdate < $curdate_bgn) {
                 $outstatus['label'] = 'Late ('.date('m/d', $shipdate).')';
                 $outstatus['class'] = 'late';
+            } elseif ($shipdate >= $curdate_bgn && $shipdate < $curdate_end) {
+                $outstatus['label'] = 'Today '.date('m/d/y', $shipdate);
+                $outstatus['class'] = 'today';
             } else {
                 $outstatus['label'] = 'To ship '.date('m/d/y', $shipdate);
                 $outstatus['class'] = 'ontime';
