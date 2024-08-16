@@ -5891,10 +5891,10 @@ div.trackservicelnk > input {
     border: none;
     background: transparent!important;
 }
-a.trackservicelnk:hover, a.trackservicelnk:focus {
-    text-decoration: none;
-    cursor: pointer;
-}
+/*a.trackservicelnk:hover, a.trackservicelnk:focus {*/
+/*    text-decoration: none;*/
+/*    cursor: pointer;*/
+/*}*/
 /* Project COG */
 .ordercogdetailsviewarea.project {
     background-color: #001072;

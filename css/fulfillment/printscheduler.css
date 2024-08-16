@@ -124,7 +124,7 @@
     position: relative;
     width: 14px;
     height: auto;
-    top: 2px;
+    top: 6px;
 }
 .pastdue-body {
     background: #fff;
@@ -444,6 +444,12 @@
     line-height: 18px!important;
     border: 1px solid #888888;
     margin-bottom: 2px;
+}
+.itm-table-tr.addition {
+    margin-left: 138px;
+    width: 408px;
+    border-top: none;
+    margin-top: -2px;
 }
 .itm-table-td-move {
     width: 12px;
