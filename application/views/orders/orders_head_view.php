@@ -88,15 +88,23 @@
 </div>
 <div class="ordertraciknglegend">
     <div class="datarow">
-        <div class="trackinglabelarea ontimelabel"><i class="fa fa-square"></i></div>
-        <div class="trackinglabeltitle">On Time</div>
+        <div class="trackinglegendarea" style="width: 40%">
+            <div class="trackinglabelarea ontimelabel"><i class="fa fa-square"></i></div>
+            <div class="trackinglabeltitle">On Time</div>
+        </div>
+        <div class="trackinglegendarea" style="width: 60%">
+            <div class="trackinglabelarea todaytimelabel"><i class="fa fa-square"></i></div>
+            <div class="trackinglabeltitle">Today</div>
+        </div>
     </div>
     <div class="datarow">
-        <div class="trackinglabelarea latelabel"><i class="fa fa-square "></i></div>
-        <div class="trackinglabeltitle">Late</div>
-    </div>
-    <div class="datarow">
-        <div class="trackinglabelarea completedlabel"><i class="fa fa-square-o"></i></div>
-        <div class="trackinglabeltitle">100% completed</div>
+        <div class="trackinglegendarea" style="width: 40%">
+            <div class="trackinglabelarea latelabel"><i class="fa fa-square "></i></div>
+            <div class="trackinglabeltitle">Late</div>
+        </div>
+        <div class="trackinglegendarea" style="width: 60%">
+            <div class="trackinglabelarea completedlabel"><i class="fa fa-square-o"></i></div>
+            <div class="trackinglabeltitle">100% completed</div>
+        </div>
     </div>
 </div>

@@ -495,6 +495,10 @@ select.leadord_filterselect {
     background-color: #FFFFFF;
     color: #000000;
 }
+.leadorder_datarow > .ordstatus.today {
+    background-color: #ea8a0e;
+    color: #000000;
+}
 /* Profit class */
 .points.projprof {
     background-color: #001072;
@@ -888,7 +892,7 @@ select.selectorderitem {
 /* Tracking legend */
 .ordertraciknglegend {
     /* height: 60px; */
-    /* width: 120px; */
+    width: 196px;
     margin-top: 22px;
     margin-left: 7px;
 }
@@ -908,6 +912,9 @@ select.selectorderitem {
 }
 .trackinglabelarea.completedlabel {
     color: #000000;
+}
+.trackinglabelarea.todaytimelabel {
+    color: #ea8a0e;
 }
 .trackinglabeltitle {
     height: 18px;
