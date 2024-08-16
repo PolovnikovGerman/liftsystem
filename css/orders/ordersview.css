@@ -463,6 +463,10 @@ select.leadord_filterselect {
     background-color: #FFFFFF;
     color: #000000;
 }
+.leadorder_datarow > .ordstatuspercent.today {
+    background-color: #ea8a0e;
+    color: #000000;
+}
 .leadorder_datarow > .ordstatus {
     float: left;
     font-size: 11px;
