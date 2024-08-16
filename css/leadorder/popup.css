@@ -5884,15 +5884,17 @@ input.ticket_date {
     border: 1px solid #4d4d4d;
     color: #000000;
 }
-a.trackservicelnk {
+div.trackservicelnk > input {
     color: #0000FF!important;
-    text-decoration: none;
+    /* text-decoration: none; */
     cursor: pointer;
+    border: none;
+    background: transparent!important;
 }
-a.trackservicelnk:hover, a.trackservicelnk:focus {
-    text-decoration: none;
-    cursor: pointer;
-}
+/*a.trackservicelnk:hover, a.trackservicelnk:focus {*/
+/*    text-decoration: none;*/
+/*    cursor: pointer;*/
+/*}*/
 /* Project COG */
 .ordercogdetailsviewarea.project {
     background-color: #001072;
@@ -6113,3 +6115,8 @@ a.trackservicelnk:hover, a.trackservicelnk:focus {
     height: 20px;
     line-height: 20px;
 }
+
+/*a.trackservicelnk:hover, a.trackservicelnk:focus {*/
+/*    text-decoration: none;*/
+/*    cursor: pointer;*/
+/*}*/
