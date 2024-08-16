@@ -96,6 +96,10 @@ select.batchviewyearselect {
     padding-top: 3px;
     font-size: 11px;
 }
+.batchdetailtable_title.stressrelivers {
+    background-color: #fdff44;
+    color: #000000;
+}
 .batchdetailtable_totalinvoiced {
     clear: both;
     float: left;

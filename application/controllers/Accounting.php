@@ -808,6 +808,7 @@ class Accounting extends MY_Controller
                     $options=array(
                         'totals'=>$row['totals'],
                         'details'=>$row['lines'],
+                        'brand' => $brand,
                     );
                     $content=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
                     $detdat[]=array(
@@ -1039,7 +1040,7 @@ class Accounting extends MY_Controller
             $options=$this->input->post();
             $user_id=$this->USR_ID;
             $filtr=$options['filter'];
-            $brand = ifset($options,'brand');
+            $brand = ifset($options,'brand','SR');
             $batch_data=$this->batches_model->get_batch_detail($options['batch_id']);
             if ($batch_data['order_id']) {
                 $options['batch_sum']=($this->batches_model->get_batchsum_order($batch_data['order_id'])-$batch_data['batch_amount']);
@@ -1053,6 +1054,7 @@ class Accounting extends MY_Controller
                 $res=$this->batches_model->save_batchrow($options,$user_id);
             } else {
                 $options['batch_date']=$batch_data['batch_date'];
+                $options['batch_writeoff'] = ifset($options,'batch_writeoff',0);
                 $old_batch_due=$batch_data['batch_due'];
                 $batch_date=$batch_data['batch_date'];
                 $mdata['batch_date']=$batch_date;
@@ -1081,6 +1083,7 @@ class Accounting extends MY_Controller
                     $options=array(
                         'totals'=>$batchs['totals'],
                         'details'=>$batchs['details'],
+                        'brand' => $brand,
                     );
                     $mdata['content']=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
                 }
@@ -1121,40 +1124,49 @@ class Accounting extends MY_Controller
     public function batch_addmanual() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
-            $batchdate=$this->input->post('batchdate');
-            $filtr=$this->input->post('filter');
-            $brand = $this->input->post('brand');
-            $newrec=array(
-                'create_usr'=>  $this->USR_ID,
-                'create_date'=>date('Y-m-d H:i:s'),
-                'update_usr'=>  $this->USR_ID,
-                'batch_date'=>$batchdate,
-            );
-            $this->load->model('batches_model');
-            $duedate=$this->batches_model->getAmexDueDate($batchdate,'paypal');
-            $newrec['batch_due']=$duedate;
-            $res=$this->batches_model->batch_freebatchadd($newrec);
-            $error=$res['msg'];
-            if ($res['result']=$this->success_result) {
-                $error = '';
-                $options=array(
+            $error='Empty Payment date';
+            $postdata = $this->input->post();
+            $batchdat = ifset($postdata,'batchdate', '');
+            if (!empty($batchdat)) {
+                $batchdate=strtotime($batchdat);
+                $filtr = ifset($postdata,'filter','');
+                $brand = ifset($postdata,'brand','SR');
+
+                $newrec=array(
+                    'create_usr'=>  $this->USR_ID,
+                    'create_date'=>date('Y-m-d H:i:s'),
+                    'update_usr'=>  $this->USR_ID,
                     'batch_date'=>$batchdate,
                     'brand' => $brand,
                 );
-                if ($filtr!='') {
-                    $options['received']=$filtr;
-                }
-                $batchs=$this->batches_model->get_batchdetails_date($options);
-                if (count($batchs['details'])>0) {
+                $this->load->model('batches_model');
+                $duedate=$this->batches_model->getAmexDueDate($batchdate,'paypal');
+                $newrec['batch_due']=$duedate;
+                $res=$this->batches_model->batch_freebatchadd($newrec);
+                $error=$res['msg'];
+                if ($res['result']=$this->success_result) {
+                    $error = '';
                     $options=array(
-                        'totals'=>$batchs['totals'],
-                        'details'=>$batchs['details'],
+                        'batch_date'=>$batchdate,
+                        'batch_enddate' => strtotime('+1 day', $batchdate),
+                        'brand' => $brand,
                     );
-                    $mdata['content']=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
-                } else {
-                    $mdata['content']='';
+                    if ($filtr!='') {
+                        $options['received']=$filtr;
+                    }
+                    $batchs=$this->batches_model->get_batchdetails_date($options);
+                    if (count($batchs['details'])>0) {
+                        $options=array(
+                            'totals'=>$batchs['totals'],
+                            'details'=>$batchs['details'],
+                            'brand' => $brand,
+                        );
+                        $mdata['content']=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
+                    } else {
+                        $mdata['content']='';
+                    }
                 }
+
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -1206,6 +1218,7 @@ class Accounting extends MY_Controller
                     $options=array(
                         'totals'=>$batchs['totals'],
                         'details'=>$batchs['details'],
+                        'brand' => $brand,
                     );
                     $mdata['content']=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
                 }
@@ -1234,6 +1247,7 @@ class Accounting extends MY_Controller
             $options=array(
                 'totals'=>$batchdetails['totals'],
                 'details'=>$batchdetails['details'],
+                'brand' => $brand,
             );
             $mdata['content']=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
             $this->ajaxResponse($mdata,$error);

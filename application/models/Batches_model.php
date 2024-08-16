@@ -16,7 +16,7 @@ class Batches_model extends My_Model
     private $WRITE_OFF = 'w';
     private $INTERNAL = 'i';
     private $paypal_apply='2013-01-28';
-    private $manual_batch='<img src="/img/manual_batch.png" alt="Manual Batch"/>';
+    private $manual_batch='<img src="/img/batch/manual_batch.png" alt="Manual Batch"/>';
 
 
     function __construct()
@@ -29,7 +29,11 @@ class Batches_model extends My_Model
         $this->db->from('ts_order_batches b');
         if ($brand!=='ALL') {
             $this->db->join('ts_orders o', 'o.order_id=b.order_id');
-            $this->db->where('o.brand', $brand);
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $res=$this->db->get()->row_array();
         return $res;
@@ -48,7 +52,11 @@ class Batches_model extends My_Model
         $this->db->from('ts_order_batches b');
         if (isset($options['brand']) && $options['brand']!=='ALL') {
             $this->db->join('ts_orders o', 'o.order_id=b.order_id');
-            $this->db->where('o.brand', $options['brand']);
+            if ($options['brand']=='SR') {
+                $this->db->where('o.brand', $options['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $this->db->group_by('b.batch_due');
         $this->db->order_by('b.batch_due');
@@ -300,7 +308,11 @@ class Batches_model extends My_Model
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
             $this->db->join('ts_orders o','o.order_id=b.order_id');
-            $this->db->where('o.brand', $options['brand']);
+            if ($options['brand']=='SR') {
+                $this->db->where('o.brand', $options['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $this->db->group_by('date_format(from_unixtime(b.batch_date),\'%Y-%m-%d\')');
         $this->db->order_by('batch_date','desc');
@@ -309,6 +321,49 @@ class Batches_model extends My_Model
         $numpp=1;
 
         foreach ($res as $row) {
+            if (isset($options['brand']) && $options['brand']!=='ALL') {
+                // Get Manual totals
+                $datbgn = strtotime($row['batch_date']);
+                $datend = strtotime("+1 day", $datbgn);
+
+                $this->db->select('count(b.batch_id) as total_orders, sum(if(b.batch_vmd!=0,b.batch_amount,0)) as inv_vmd');
+                $this->db->select('sum(if(b.batch_amex!=0,b.batch_amount,0)) as inv_amex, sum(if(b.batch_other!=0,b.batch_amount,0)) as inv_other');
+                $this->db->select('sum(if(b.batch_term!=0,b.batch_amount,0)) as inv_term, sum(if(b.batch_writeoff!=0,b.batch_amount,0)) as inv_writeoff, sum(if(b.batch_internal!=0,b.batch_amount,0)) as inv_internal');
+                $this->db->select('(-1)*sum(if(b.batch_vmd!=0,b.batch_amount,0)*(b.batch_received-1)) as deb_vmd, (-1)*sum(if(b.batch_amex!=0,b.batch_amount,0)*(b.batch_received-1)) as deb_amex');
+                $this->db->select('(-1)*sum(if(b.batch_other!=0,b.batch_amount,0)*(b.batch_received-1)) as deb_other, (-1)*sum(if(b.batch_term!=0,b.batch_amount,0)*(b.batch_received-1)) as deb_term');
+                $this->db->select('(-1)*sum(if(b.batch_writeoff!=0,b.batch_amount,0)*(b.batch_received-1)) as deb_writeoff');
+                $this->db->select('(-1)*sum(if(b.batch_internal!=0,b.batch_amount,0)*(b.batch_received-1)) as deb_internal');
+                $this->db->select('(-1)*sum(b.batch_vmd*(b.batch_received-1)+b.batch_amex*(b.batch_received-1)+b.batch_other*(b.batch_received-1)+b.batch_term*(b.batch_received-1)+b.batch_writeoff*(b.batch_received-1)) as deb_total');
+                $this->db->select('sum(if(b.batch_vmd!=0,b.batch_amount,0)*(b.batch_received)) as receiv_vmd, sum(if(b.batch_amex!=0,b.batch_amount,0)*b.batch_received) as receiv_amex');
+                $this->db->select('sum(if(b.batch_other!=0,b.batch_amount,0)*(b.batch_received)) as receiv_other, sum(if(b.batch_term!=0,b.batch_amount,0)*(b.batch_received)) as receiv_term');
+                $this->db->select('sum(if(b.batch_writeoff!=0,b.batch_amount,0)*(b.batch_received)) as receiv_writeoff');
+                $this->db->select('sum(if(b.batch_internal!=0,b.batch_amount,0)*(b.batch_received)) as receiv_internal');
+                $this->db->select('sum(b.batch_vmd*b.batch_received+b.batch_amex*b.batch_received+b.batch_other*b.batch_received+b.batch_term*b.batch_received+b.batch_writeoff*b.batch_received+b.batch_internal*b.batch_received) as receiv_total');
+                $this->db->from('ts_order_batches b');
+                $this->db->where('b.batch_date >= ',$datbgn);
+                $this->db->where('b.batch_date < ',$datend);
+                if ($options['brand']=='SR') {
+                    $this->db->where('b.brand', $options['brand']);
+                } else {
+                    $this->db->where_in('b.brand', ['SB','BT']);
+                }
+                $otherres=$this->db->get()->row_array();
+
+                $row['total_orders'] +=$otherres['total_orders'];
+                $row['inv_vmd'] +=$otherres['inv_vmd'];
+                $row['inv_amex'] +=$otherres['inv_amex'];
+                $row['inv_other'] +=$otherres['inv_other'];
+                $row['inv_term'] +=$otherres['inv_term'];
+                $row['inv_writeoff'] +=$otherres['inv_writeoff'];
+                $row['inv_internal'] +=$otherres['inv_internal'];
+                $row['deb_vmd'] +=$otherres['deb_vmd'];
+                $row['deb_amex'] +=$otherres['deb_amex'];
+                $row['deb_other'] +=$otherres['deb_other'];
+                $row['receiv_vmd'] +=$otherres['receiv_vmd'];
+                $row['receiv_amex'] +=$otherres['receiv_amex'];
+                $row['receiv_other'] +=$otherres['receiv_other'];
+                $row['receiv_total'] +=$otherres['receiv_total'];
+            }
             $numord=intval($row['total_orders']);
             if ($numord>0) {
                 $row['day_results']=$numord;
@@ -427,9 +482,7 @@ class Batches_model extends My_Model
             /* Select Lines */
             $this->db->select('b.*,o.order_num, o.customer_name');
             $this->db->from('ts_order_batches b');
-            $this->db->join('ts_orders o','o.order_id=b.order_id','left');
-            // start-end
-            // $this->db->where('b.batch_date',$batch_date);
+            $this->db->join('ts_orders o','o.order_id=b.order_id');
             $this->db->where('b.batch_date >=', $datebgn);
             $this->db->where('b.batch_date < ', $dateend);
             if (isset($options['received'])) {
@@ -439,8 +492,41 @@ class Batches_model extends My_Model
                     $this->db->where('batch_received',1);
                 }
             }
+            if (isset($options['brand']) && $options['brand']!=='ALL') {
+                if ($options['brand']=='SR') {
+                    $this->db->where('o.brand', $options['brand']);
+                } else {
+                    $this->db->where_in('o.brand', ['SB','BT']);
+                }
+            }
             $this->db->order_by('batch_id');
             $lines=$this->db->get()->result_array();
+
+            // Select manual payments
+            $this->db->select('b.*');
+            $this->db->from('ts_order_batches b');
+            $this->db->where('b.batch_date >=', $datebgn);
+            $this->db->where('b.batch_date < ', $dateend);
+            if (isset($options['received'])) {
+                if ($options['received']==0) {
+                    $this->db->where('batch_received',0);
+                } elseif($options['received']==1) {
+                    $this->db->where('batch_received',1);
+                }
+            }
+            if (isset($options['brand']) && $options['brand']!=='ALL') {
+                if ($options['brand']=='SR') {
+                    $this->db->where('brand', $options['brand']);
+                } else {
+                    $this->db->where_in('brand', ['SB','BT']);
+                }
+            }
+            $this->db->order_by('batch_id');
+            $mlines=$this->db->get()->result_array();
+            foreach ($mlines as $mline) {
+                $mline['order_num'] = $mline['customer_name'] = '';
+                $lines[] = $mline;
+            }
 
             $outlines=array();
             foreach($lines as $lrow) {
@@ -547,6 +633,48 @@ class Batches_model extends My_Model
             }
         }
         $res=$this->db->get()->row_array();
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->select('count(b.batch_id) as total_orders, sum(if(b.batch_vmd!=0,b.batch_amount,0)) as inv_vmd');
+            $this->db->select('sum(if(b.batch_amex!=0,b.batch_amount,0)) as inv_amex, sum(if(b.batch_other!=0,b.batch_amount,0)) as inv_other');
+            $this->db->select('sum(if(b.batch_term!=0,b.batch_amount,0)) as inv_term, sum(if(b.batch_writeoff!=0,b.batch_amount,0)) as inv_writeoff, sum(if(b.batch_internal!=0,b.batch_amount,0)) as inv_internal');
+            $this->db->select('(-1)*sum(if(b.batch_vmd!=0,b.batch_amount,0)*(b.batch_received-1)) as deb_vmd, (-1)*sum(if(b.batch_amex!=0,b.batch_amount,0)*(b.batch_received-1)) as deb_amex');
+            $this->db->select('(-1)*sum(if(b.batch_other!=0,b.batch_amount,0)*(b.batch_received-1)) as deb_other, (-1)*sum(if(b.batch_term!=0,b.batch_amount,0)*(b.batch_received-1)) as deb_term');
+            $this->db->select('(-1)*sum(if(b.batch_writeoff!=0,b.batch_amount,0)*(b.batch_received-1)) as deb_writeoff');
+            $this->db->select('(-1)*sum(if(b.batch_internal!=0,b.batch_amount,0)*(b.batch_received-1)) as deb_internal');
+            $this->db->select('(-1)*sum(b.batch_vmd*(b.batch_received-1)+b.batch_amex*(b.batch_received-1)+b.batch_other*(b.batch_received-1)+b.batch_term*(b.batch_received-1)+b.batch_writeoff*(b.batch_received-1)) as deb_total');
+            $this->db->select('sum(if(b.batch_vmd!=0,b.batch_amount,0)*(b.batch_received)) as receiv_vmd, sum(if(b.batch_amex!=0,b.batch_amount,0)*b.batch_received) as receiv_amex');
+            $this->db->select('sum(if(b.batch_other!=0,b.batch_amount,0)*(b.batch_received)) as receiv_other, sum(if(b.batch_term!=0,b.batch_amount,0)*(b.batch_received)) as receiv_term');
+            $this->db->select('sum(if(b.batch_writeoff!=0,b.batch_amount,0)*(b.batch_received)) as receiv_writeoff');
+            $this->db->select('sum(if(b.batch_internal!=0,b.batch_amount,0)*(b.batch_received)) as receiv_internal');
+            $this->db->select('sum(b.batch_vmd*b.batch_received+b.batch_amex*b.batch_received+b.batch_other*b.batch_received+b.batch_term*b.batch_received+b.batch_writeoff*b.batch_received+b.batch_internal*b.batch_received) as receiv_total');
+            $this->db->from('ts_order_batches b');
+            if (isset($options['batch_enddate'])) {
+                $this->db->where('b.batch_date >= ',$options['batch_date']);
+                $this->db->where('b.batch_date < ',$options['batch_enddate']);
+            } else {
+                $this->db->where('b.batch_date',$options['batch_date']);
+            }
+            if ($options['brand']=='SR') {
+                $this->db->where('b.brand', $options['brand']);
+            } else {
+                $this->db->where_in('b.brand', ['SB','BT']);
+            }
+            $otherres=$this->db->get()->row_array();
+            $res['total_orders'] +=$otherres['total_orders'];
+            $res['inv_vmd'] +=$otherres['inv_vmd'];
+            $res['inv_amex'] +=$otherres['inv_amex'];
+            $res['inv_other'] +=$otherres['inv_other'];
+            $res['inv_term'] +=$otherres['inv_term'];
+            $res['inv_writeoff'] +=$otherres['inv_writeoff'];
+            $res['inv_internal'] +=$otherres['inv_internal'];
+            $res['deb_vmd'] +=$otherres['deb_vmd'];
+            $res['deb_amex'] +=$otherres['deb_amex'];
+            $res['deb_other'] +=$otherres['deb_other'];
+            $res['receiv_vmd'] +=$otherres['receiv_vmd'];
+            $res['receiv_amex'] +=$otherres['receiv_amex'];
+            $res['receiv_other'] +=$otherres['receiv_other'];
+            $res['receiv_total'] +=$otherres['receiv_total'];
+        }
 
         $total=array();
         // if (isset($res['batch_date'])) {
@@ -710,6 +838,37 @@ class Batches_model extends My_Model
         }
         $this->db->order_by('batch_id');
         $res=$this->db->get()->result_array();
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            $this->db->select('b.*');
+            $this->db->from('ts_order_batches b');
+            if (isset($options['batch_enddate'])) {
+                $this->db->where('b.batch_date >= ',$options['batch_date']);
+                $this->db->where('b.batch_date < ',$options['batch_enddate']);
+            } else {
+                $this->db->where('b.batch_date',$options['batch_date']);
+            }
+            if (isset($options['received'])) {
+                if ($options['received']==0) {
+                    $this->db->where('batch_received',0);
+                } elseif($options['received']==1) {
+                    $this->db->where('batch_received',1);
+                }
+            }
+            if (isset($options['brand']) && $options['brand']!=='ALL') {
+                if ($options['brand']=='SR') {
+                    $this->db->where('b.brand', $options['brand']);
+                } else {
+                    $this->db->where_in('b.brand', ['SB','BT']);
+                }
+            }
+            $this->db->order_by('batch_id');
+            $mlines=$this->db->get()->result_array();
+            // ,o.order_num, o.customer_name
+            foreach ($mlines as $mline) {
+                $mline['order_num'] = $mline['customer_name'] = '';
+                $res[] = $mline;
+            }
+        }
         $out=array();
         foreach($res as $row) {
             $sumrow=floatval($row['batch_amount']);
@@ -1311,6 +1470,7 @@ class Batches_model extends My_Model
         $this->db->set('update_usr',$newrec['update_usr']);
         $this->db->set('batch_date',$newrec['batch_date']);
         $this->db->set('batch_due',$newrec['batch_due']);
+        $this->db->set('brand', $newrec['brand']);
         $this->db->insert('ts_order_batches');
         $newbatch=$this->db->insert_id();
         if ($newbatch>0) {
@@ -1325,7 +1485,11 @@ class Batches_model extends My_Model
         $this->db->from('ts_order_batches b');
         if ($brand!=='ALL') {
             $this->db->join('ts_orders o','o.order_id=b.order_id');
-            $this->db->where('o.brand', $brand);
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $this->db->order_by('year', 'desc');
         $res=$this->db->get()->result_array();
