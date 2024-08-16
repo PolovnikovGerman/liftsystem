@@ -814,7 +814,7 @@ class Batches_model extends My_Model
         /* select orders included in batch */
         $this->db->select('b.*,o.order_num, o.customer_name');
         $this->db->from('ts_order_batches b');
-        $this->db->join('ts_orders o','o.order_id=b.order_id','left');
+        $this->db->join('ts_orders o','o.order_id=b.order_id');
         // $this->db->where('b.batch_date',$options['batch_date']);
         if (isset($options['batch_enddate'])) {
             $this->db->where('b.batch_date >= ',$options['batch_date']);
