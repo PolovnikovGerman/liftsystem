@@ -181,6 +181,33 @@ function init_printscheduler_dayview() {
     $(".shipped-btn-link").unbind('click').click(function (){
         $(".shipped-block").hide();
     });
+    // Update outcome
+    $(".btn-greensave").unbind('click').click(function (){
+        var order = $(this).data('order');
+        var color = $(this).data('color');
+        var shipped = $("input.rpbox-inp-good[data-order='"+order+"'][data-color='"+color+"']").val();
+        var kept = $("input.rpbox-inp-kept[data-order='"+order+"'][data-color='"+color+"']").val();
+        var mistprint = $("input.rpbox-inp-mispt[data-order='"+order+"'][data-color='"+color+"']").val();
+        var plates = $("input.rpbox-inp-plate[data-order='"+order+"'][data-color='"+color+"']").val();
+        var params = new Array();
+        params.push({name: 'itemcolor', value: order});
+        params.push({name: 'inventcolor', value: color});
+        params.push({name: 'shipped', value: shipped});
+        params.push({name: 'kepted', value: kept});
+        params.push({name: 'misprint', value: mistprint});
+        params.push({name: 'plates', value: plates});
+        params.push({name: 'brand', value: $("#printschbrand").val()});
+        var url = '/printscheduler/outcome';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#loader").hide();
+            } else {
+                show_error(response);
+                $("#loader").hide();
+            }
+        },'json');
+    })
 }
 
 function init_assignprint(order) {

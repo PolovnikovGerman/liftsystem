@@ -73,11 +73,11 @@
                 <div class="rpbox-table-td-itemcolor"><?=$order['item_color']?></div>
                 <div class="rpbox-table-td-descriptions"><?=$order['item_name']?></div>
                 <div class="rpbox-table-td-inputs">
-                    <input class="rpbox-inp-good" type="text" name="">
-                    <input class="rpbox-inp-kept" type="text" name="">
-                    <input class="rpbox-inp-mispt" type="text" name="">
-                    <input class="rpbox-inp-plate" type="text" name="">
-                    <div class="btn-greensave">save</div>
+                    <input class="rpbox-inp-good" type="text" data-order="<?=$order['order_itemcolor_id']?>" data-color="<?=$order['inventory_color']?>"/>
+                    <input class="rpbox-inp-kept" type="text" data-order="<?=$order['order_itemcolor_id']?>" data-color="<?=$order['inventory_color']?>"/>
+                    <input class="rpbox-inp-mispt" type="text" data-order="<?=$order['order_itemcolor_id']?>" data-color="<?=$order['inventory_color']?>"/>
+                    <input class="rpbox-inp-plate" type="text" data-order="<?=$order['order_itemcolor_id']?>" data-color="<?=$order['inventory_color']?>"/>
+                    <div class="btn-greensave" data-order="<?=$order['order_itemcolor_id']?>" data-color="<?=$order['inventory_color']?>">save</div>
                 </div>
                 <?php $displaymain = 0;?>
             </div>

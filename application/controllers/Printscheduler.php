@@ -256,4 +256,31 @@ class Printscheduler extends MY_Controller
         }
         show_404();
     }
+
+    public function outcome()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Order';
+            $postdata = $this->input->post();
+            // Params
+            $order_itemcolor_id = ifset($postdata,'itemcolor','');
+            $inventory_color_id = ifset($postdata,'inventorycolor','');
+            $shipped = intval(ifset($postdata,'shipped',0));
+            $kepted = floatval(ifset($postdata,'kepted',0));
+            $misprint = floatval(ifset($postdata,'misprint',0));
+            $plates = floatval(ifset($postdata,'plates',0));
+            $brand = ifset($postdata,'brand','SR');
+            if (!empty($order_itemcolor_id) && !empty($inventory_color_id)) {
+                $res = $this->printscheduler_model->outcome($order_itemcolor_id, $inventory_color_id, $shipped, $kepted, $misprint, $plates, $this->USR_ID);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }
