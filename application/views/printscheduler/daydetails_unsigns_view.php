@@ -37,7 +37,7 @@
                     <?php endif; ?>
                     </div>
                     <div class="rpbox-table-td-icons">
-                        <div class="ic-skull" style="opacity: 0;"><img class="img-skull" src="/img/printscheduler/icon-skull.svg"></div>
+                        <div class="ic-skull <?=$order['stock_class']?>"><img class="img-skull" src="/img/printscheduler/icon-skull.svg"></div>
                         <div class="ic-rush">
                         <?php if ($order['order_rush']==1 ): ?>
                             <img class="img-rush" src="/img/printscheduler/icon-rush.svg"/>
@@ -59,7 +59,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="rpbox-table-td-ship"><?=date('m/d', $order['shipdate'])?></div>
+                    <div class="rpbox-table-td-ship <?=$order['shipclass']?>"><?=date('m/d', $order['shipdate'])?></div>
                     <div class="rpbox-table-td-order"><?=$order['order_num']?></div>
                     <div class="rpbox-table-td-print">
                         <div class="ic-purpul-print">

@@ -43,7 +43,9 @@
                         <?php } ?>
                     </div>
                     <div class="itm-table-td-icons">
-                        <div class="ic-skull" style="opacity: 0;"><img class="img-skull" src="/img/printscheduler/icon-skull.svg"></div>
+                        <div class="ic-skull <?=$order['stock_class']?>">
+                            <img class="img-skull" src="/img/printscheduler/icon-skull.svg">
+                        </div>
                         <div class="ic-rush">
                         <?php if ($order['order_rush']==1) { ?>
                             <img class="img-rush" src="/img/printscheduler/icon-rush.svg">
@@ -52,7 +54,7 @@
                         <?php } ?>
                         </div>
                     </div>
-                    <div class="itm-table-td-ship"><?=date('m/d', $order['shipdate'])?></div>
+                    <div class="itm-table-td-ship <?=$order['shipclass']?>"><?=date('m/d', $order['shipdate'])?></div>
                     <div class="itm-table-td-order"><?=$order['order_num']?></div>
                 <?php endif; ?>
                 <div class="itm-table-td-items"><?=$order['order_qty']?></div>
@@ -61,7 +63,7 @@
                 <div class="itm-table-td-itemcolor"><?=$order['item_color']?></div>
                 <div class="itm-table-td-descriptions"><?=$order['item_name']?></div>
                 <div class="itm-table-td-art">
-                    <div class="ic-green-art" data-order="<?=$order['order_id']?>">
+                    <div class="ic-green-art" data-order="<?=$order['order_itemcolor_id']?>">
                         <img class="img-magnifier-white" src="/img/printscheduler/magnifier-white.svg">
                     </div>
                 </div>

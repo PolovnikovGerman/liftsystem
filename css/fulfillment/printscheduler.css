@@ -170,12 +170,17 @@
 .pdo-table-td-icons span {
     margin: 0 2px;
 }
-.pdo-table-td-icons span.ic-skull {
+.pdo-table-td-icons .ic-skull {
     position: relative;
     left: 2px;
+    visibility: hidden;
 }
-.pdo-table-td-icons span.ic-rush {
+.pdo-table-td-icons .ic-skull.emptybalance {
+    visibility: visible;
+}
+.pdo-table-td-icons .ic-rush {
     position: relative;
+    float: right!important;
     right: 1px;
 }
 .pdo-table-td-ship {
@@ -462,13 +467,18 @@
 .itm-table-td-icons span {
     margin: 0 2px;
 }
-.itm-table-td-icons span.ic-skull {
+.itm-table-td-icons .ic-skull {
     position: relative;
     left: 2px;
+    visibility: hidden;
 }
-.itm-table-td-icons span.ic-rush {
+.itm-table-td-icons .ic-skull.emptybalance {
+    visibility: visible;
+}
+.itm-table-td-icons .ic-rush {
     position: relative;
-    right: 1px;
+    float: right!important;
+    right: 4px;
 }
 .itm-table-td-ship {
     width: 35px;
@@ -677,6 +687,13 @@
     line-height: 18px !important;
     border: 1px solid #888888;
     margin-bottom: 2px;
+}
+.stock-table-tr.addition {
+    margin-left: 79px;
+    width: 291px;
+    border-top: none;
+    /* border-left: none; */
+    margin-top: -2px;
 }
 .stock-table-header {
     background: #5e5d5d;
@@ -967,6 +984,19 @@
     position: relative;
     width: 35px;
     border-right: 1px solid #d4d2d2;
+}
+.rpbox-table-td-icons .ic-skull {
+    position: relative;
+    left: 2px;
+    visibility: hidden;
+}
+.rpbox-table-td-icons .ic-skull.emptybalance {
+    visibility: visible;
+}
+.rpbox-table-td-icons .ic-rush {
+    position: relative;
+    float: right!important;
+    right: 1px;
 }
 .rpbox-table-td-assign {
     position: relative;
