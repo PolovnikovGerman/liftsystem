@@ -3990,4 +3990,64 @@ class Test extends CI_Controller
         }
     }
 
+    public function emaillist()
+    {
+        $orders = $leads = $signup = [];
+        $datebgn = strtotime(date('2019-08-23'));
+        // Orders
+        $this->db->select('toc.contact_emal as email')->from('ts_orders o')->join('ts_order_contacts toc','o.order_id = toc.order_id');
+        $this->db->where('o.order_date >= ', $datebgn);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('coalesce(toc.contact_emal,\'\') != ','');
+        $this->db->where_in('brand',['SB','BT']);
+        $lists = $this->db->get()->result_array();
+        foreach ($lists as $list) {
+            if (array_key_exists($list['email'], $orders)===FALSE) {
+                array_push($orders, $list['email']);
+            }
+        }
+        // Leads
+        $this->db->select('lead_mail as email')->from('ts_leads')->where('update_date >= ','2019-08-23')->where_in('brand',['SB','BT'])->where('coalesce(lead_mail,\'\') != ','');
+        $lists = $this->db->get()->result_array();
+        foreach ($lists as $list) {
+            if (array_key_exists($list['email'], $leads)===FALSE) {
+                array_push($leads, $list['email']);
+            }
+        }
+        // signup
+        $this->db->select('email_sendermail as email')->from('ts_emails')->where('email_date >= ','2019-08-23')->where('email_type','Signups')->where_in('brand',['SB','BT']);
+        $lists = $this->db->get()->result_array();
+        foreach ($lists as $list) {
+            if (array_key_exists($list['email'], $signup)===FALSE) {
+                array_push($signup, $list['email']);
+            }
+        }
+        // Create file
+        $filenorm = $this->config->item('upload_path_preload').'emails_list.xlsx';
+        @unlink($filenorm);
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Email Lists');
+        $sheet->setCellValue('A1', 'Orders');
+        $sheet->setCellValue('B1','Leads');
+        $sheet->setCellValue('C1','Sign Up');
+        $numpp = 2;
+        foreach ($orders as $order) {
+            $sheet->setCellValue('A'.$numpp, $order);
+            $numpp++;
+        }
+        $numpp = 2;
+        foreach ($leads as $lead) {
+            $sheet->setCellValue('B'.$numpp, $lead);
+            $numpp++;
+        }
+        $numpp = 2;
+        foreach ($signup as $list) {
+            $sheet->setCellValue('C'.$numpp, $list);
+            $numpp++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($filenorm);    // download file
+        echo 'File '.$filenorm.' ready'.PHP_EOL;
+    }
 }
