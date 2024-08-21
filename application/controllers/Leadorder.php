@@ -6432,7 +6432,9 @@ class Leadorder extends MY_Controller
         $order_items = $leadorder['order_items'];
         $shipping = $leadorder['shipping'];
         $shipdate = ifset($shipping,'shipdate', time());
-        log_message('error','Ship date '.$shipdate.'!');
+        if (empty($shipdate)) {
+            $shipdate = time();
+        }
         $contant = '';
         foreach ($order_items as $order_item) {
             $itemcolors = $order_item['items'];
