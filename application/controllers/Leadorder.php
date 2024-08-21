@@ -6460,7 +6460,7 @@ class Leadorder extends MY_Controller
                     }
                 }
                 $resttrack = intval($itemcolor['item_qty'])-$totaltrack;
-                $chkrest = $itemcolor['item_qty'] - $totaloldtrack;
+                $chkrest = intval($itemcolor['item_qty']) - $totaloldtrack;
                 $shipoptions['remind'] = $resttrack;
                 $shipoptions['completed'] = ($chkrest > 0 ? 0 : 1);
                 $trackbody = '';
