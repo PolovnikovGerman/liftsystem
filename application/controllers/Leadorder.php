@@ -6431,6 +6431,7 @@ class Leadorder extends MY_Controller
     private function _prepare_tracking_view($leadorder, $edit =1) {
         $order_items = $leadorder['order_items'];
         $shipping = $leadorder['shipping'];
+        $shipdate = ifset($shipping,'shipdate', time());
         $contant = '';
         foreach ($order_items as $order_item) {
             $itemcolors = $order_item['items'];
@@ -6441,7 +6442,7 @@ class Leadorder extends MY_Controller
                     $itemname = $itemcolor['item_description'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']);
                 }
                 $shipoptions = [
-                    'shipdate' => 'To Ship '.date('m/d/y', $shipping['shipdate']),
+                    'shipdate' => 'To Ship '.date('m/d/y', $shipdate), // $shipping['shipdate']
                     'item' => $itemname, // $order_item['item_name'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']),
                     'qty' => $itemcolor['item_qty'],
                     'order_item' => $order_item['order_item_id'],
