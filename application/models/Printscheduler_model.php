@@ -604,12 +604,16 @@ class Printscheduler_model extends MY_Model
         $daybgn = strtotime($printdate);
         $dayend = strtotime('+1 day', $daybgn);
         // Total orders
-        $this->db->select('count(order_id) as cnt');
+        $this->db->select('count(distinct(o.order_id)) as cnt');
         $this->db->from('ts_orders o');
+        $this->db->join('ts_order_items oi', 'o.order_id=oi.order_id');
+        $this->db->join('ts_order_itemcolors oic', 'oi.order_item_id=oi.order_item_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.shipping_ready > ',0);
+        $this->db->where('oic.print_date > ',0);
+        $this->db->where('oic.print_completed', 1);
+        $this->db->where('oic.shipping_ready',0);
         $this->db->where('o.shipped_date', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
@@ -669,7 +673,7 @@ class Printscheduler_model extends MY_Model
         $this->db->from('ts_orders o');
         $this->db->join('users u','u.user_id=o.print_user');
         $this->db->join('ts_order_items oi', 'o.order_id=oi.order_id');
-        $this->db->join('ts_order_itemcolors oic', 'oi.order_item_id=oi.order_item_id');
+        $this->db->join('ts_order_itemcolors oic', 'oi.order_item_id=oic.order_item_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
