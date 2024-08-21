@@ -201,13 +201,52 @@ function init_printscheduler_dayview() {
         $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
+                $("#platesordersdata").empty().html(response.data.plateview);
+                $(".ready-print-block").empty().html(response.data.printview);
+                $(".ready-ship-block").empty().html(response.data.readyshipview);
+                $(".completed-print-block").empty().html(response.data.complljobview);
+                $(".shipped-block").empty().html(response.data.shippedview);
                 $("#loader").hide();
+                init_printscheduler_dayview();
             } else {
                 show_error(response);
                 $("#loader").hide();
             }
         },'json');
-    })
+    });
+    // Grey DONE
+    $(".btn-greydone").unbind('click').click(function (){
+        var order = $(this).data('order');
+        var color = $(this).data('color');
+        var shipped = $("input.rdbox-inp-good[data-order='"+order+"'][data-color='"+color+"']").val();
+        var kept = $("input.rdbox-inp-kept[data-order='"+order+"'][data-color='"+color+"']").val();
+        var mistprint = $("input.rdbox-inp-mispt[data-order='"+order+"'][data-color='"+color+"']").val();
+        var plates = $("input.rdbox-inp-plate[data-order='"+order+"'][data-color='"+color+"']").val();
+        var params = new Array();
+        params.push({name: 'itemcolor', value: order});
+        params.push({name: 'inventcolor', value: color});
+        params.push({name: 'shipped', value: shipped});
+        params.push({name: 'kepted', value: kept});
+        params.push({name: 'misprint', value: mistprint});
+        params.push({name: 'plates', value: plates});
+        params.push({name: 'brand', value: $("#printschbrand").val()});
+        var url = '/printscheduler/outcome';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#platesordersdata").empty().html(response.data.plateview);
+                $(".ready-print-block").empty().html(response.data.printview);
+                $(".ready-ship-block").empty().html(response.data.readyshipview);
+                $(".completed-print-block").empty().html(response.data.complljobview);
+                $(".shipped-block").empty().html(response.data.shippedview);
+                $("#loader").hide();
+                init_printscheduler_dayview();
+            } else {
+                show_error(response);
+                $("#loader").hide();
+            }
+        },'json');
+    });
 }
 
 function init_assignprint(order) {

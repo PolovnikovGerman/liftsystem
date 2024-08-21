@@ -12,7 +12,7 @@
                     <div class="stock-table-td-itemcolor">Item Color/s</div>
                     <div class="stock-table-td-descriptions">Item / Description</div>
                 </div>
-                <?= $stockview ?>
+                <div id="stockordersdata"><?= $stockview ?></div>
             </div>
         </div>
         <div class="plates-box">
@@ -25,7 +25,7 @@
                     <div class="plates-table-td-plates">Qty</div>
                     <div class="plates-table-td-descriptions">Item / Description</div>
                 </div>
-                <?= $plateview ?>
+                <div id="platesordersdata"><?= $plateview ?></div>
             </div>
         </div>
     </div>

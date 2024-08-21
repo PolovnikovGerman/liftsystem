@@ -1186,7 +1186,7 @@
     text-align: center;
     line-height: 14px!important;
 }
-.rpbox-inp-good {
+.rpbox-inp-good, .rdbox-inp-good {
     width: 38px;
     margin-left: 2px;
 }
@@ -1195,7 +1195,7 @@
     width: 38px;
     text-align: center;
 }
-.rpbox-inp-kept {
+.rpbox-inp-kept, .rdbox-inp-kept {
     width: 20px;
 }
 .span-kept {
@@ -1205,7 +1205,7 @@
     position: relative;
     left: -3px;
 }
-.rpbox-inp-mispt {
+.rpbox-inp-mispt, .rdbox-inp-mispt {
     width: 26px;
 }
 .span-mispt {
@@ -1213,7 +1213,7 @@
     width: 28px;
     text-align: center;
 }
-.rpbox-inp-plate {
+.rpbox-inp-plate, .rdbox-inp-plate {
     width: 20px;
 }
 .span-plate {
@@ -1444,6 +1444,7 @@ input.inp-tracking::placeholder {
     border-radius: 5px;
     margin-top: 1.5px;
     margin-right: 3px;
+    cursor: pointer;
 }
 .shipped-block input.inp-tracking::placeholder {
     color: #000!important;
