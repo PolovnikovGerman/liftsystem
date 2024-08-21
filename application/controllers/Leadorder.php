@@ -6459,7 +6459,7 @@ class Leadorder extends MY_Controller
                         $totaloldtrack+=$tracking['qty'];
                     }
                 }
-                $resttrack = $itemcolor['item_qty']-$totaltrack;
+                $resttrack = intval($itemcolor['item_qty'])-$totaltrack;
                 $chkrest = $itemcolor['item_qty'] - $totaloldtrack;
                 $shipoptions['remind'] = $resttrack;
                 $shipoptions['completed'] = ($chkrest > 0 ? 0 : 1);
