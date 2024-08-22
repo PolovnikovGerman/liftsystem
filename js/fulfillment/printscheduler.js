@@ -139,6 +139,12 @@ function init_printscheduler_dayview() {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $(".ready-print-block").empty().html(response.data.content);
+                // Update plates
+                if (parseInt(response.data.checked)==1) {
+                    $(".plates-done-checkbox[data-order='"+order+"']").prop('checked', true);
+                } else {
+                    $(".plates-done-checkbox[data-order='"+order+"']").prop('checked', false);
+                }
                 $("#loader").hide();
                 init_printscheduler_dayview();
             } else {
@@ -157,6 +163,11 @@ function init_printscheduler_dayview() {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $(".ready-print-block").empty().html(response.data.content);
+                if (parseInt(response.data.checked)==1) {
+                    $(".stock-done-checkbox[data-order='"+order+"']").prop('checked', true);
+                } else {
+                    $(".stock-done-checkbox[data-order='"+order+"']").prop('checked', false);
+                }
                 $("#loader").hide();
                 init_printscheduler_dayview();
             } else {

@@ -858,8 +858,10 @@ class Printscheduler_model extends MY_Model
             $this->db->where('order_id', $order_id);
             if ($orderres['print_ready']==0) {
                 $this->db->set('print_ready',time());
+                $out['checked'] = 1;
             } else {
                 $this->db->set('print_ready',0);
+                $out['checked'] = 0;
             }
             $this->db->update('ts_orders');
         }
