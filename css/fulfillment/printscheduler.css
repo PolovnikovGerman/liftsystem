@@ -1013,11 +1013,12 @@
     position: absolute;
     top: 20px;
     left: -20px;
-    width: 53px;
+    /* width: 53px; */
     background: #fff;
     border: 1px solid #000;
     z-index: 10;
     display: none;
+    padding: 0 7px;
 }
 /*.assign-popup:before {
 	content: "";
