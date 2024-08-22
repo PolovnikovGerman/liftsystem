@@ -39,24 +39,24 @@
                 <div class="rsbox-table-td-descriptions"><?=$order['item_name']?></div>
                 <div class="rsbox-table-td-items"><?=$order['item_qty']?></div>
                 <div class="rsbox-table-td-shipqty">
-                    <div class="date-shipqty"><?=date('m/d', $order['shipdate'])?></div>
-                    <input class="inp-shipqty" type="text" name="" placeholder="1200">
+                    <div class="date-shipqty <?=$order['shipclass']?>"><?=date('m/d', $order['shipdate'])?></div>
+                    <input class="inp-shipqty" type="text" readonly="readonly" placeholder="1200" value="<?=$order['shipqty']?>"/>
                 </div>
                 <div class="rsbox-table-td-method">
-                    <select>
+                    <select disabled="disabled">
                         <option value=""></option>
-                        <option value="UPS">UPS</option>
-                        <option value="FedEx">FedEx</option>
-                        <option value="DHL">DHL</option>
-                        <option value="USPS">USPS</option>
-                        <option value="Van">Van</option>
-                        <option value="Pickup">Pickup</option>
-                        <option value="Courier">Courier</option>
-                        <option value="Other">Other</option>
+                        <option value="UPS" <?=$order['shipmethod']=='UPS' ? 'selected="selected"' : ''?>>UPS</option>
+                        <option value="FedEx" <?=$order['shipmethod']=='FedEx' ? 'selected="selected"' : ''?>>FedEx</option>
+                        <option value="DHL" <?=$order['shipmethod']=='DHL' ? 'selected="selected"' : ''?>>DHL</option>
+                        <option value="USPS" <?=$order['shipmethod']=='USPS' ? 'selected="selected"' : ''?>>USPS</option>
+                        <option value="Van" <?=$order['shipmethod']=='Van' ? 'selected="selected"' : ''?>>Van</option>
+                        <option value="Pickup" <?=$order['shipmethod']=='Pickup' ? 'selected="selected"' : ''?>>Pickup</option>
+                        <option value="Courier" <?=$order['shipmethod']=='Courier' ? 'selected="selected"' : ''?>>Courier</option>
+                        <option value="Other" <?=$order['shipmethod']=='Other' ? 'selected="selected"' : ''?>>Other</option>
                     </select>
                 </div>
                 <div class="rsbox-table-td-tracking">
-                    <input class="inp-tracking" type="text" name=""  placeholder="20 2458 4578 459 46">
+                    <input class="inp-tracking" type="text" readonly="readonly" placeholder="20 2458 4578 459 46" value="<?=$order['trackcode']?>">
                 </div>
                 <div class="rsbox-table-td-btnsave">
                     <div class="icon-check"><img class="img-check" src="/img/printscheduler/check-green.svg"></div>

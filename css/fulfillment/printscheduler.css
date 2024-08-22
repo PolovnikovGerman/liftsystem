@@ -776,6 +776,12 @@
     border: 1px solid #888888;
     margin-bottom: 2px;
 }
+.plates-table-tr.addition {
+    width: 235px;
+    margin-left: 80px;
+    border-top: none;
+    margin-top: -2px;
+}
 .plates-table-header {
     background: #5e5d5d;
     color: #fff;
@@ -1226,7 +1232,7 @@
     position: relative;
     right: -5px;
 }
-.btn-greensave {
+.btn-greensave, .btn-greensaveship {
     float: right !important;
     background: #34924c;
     background: linear-gradient(to top, #0b7827, #64b076);

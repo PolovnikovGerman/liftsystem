@@ -247,6 +247,36 @@ function init_printscheduler_dayview() {
             }
         },'json');
     });
+    // Green Shipping
+    $(".btn-greensaveship").unbind('click').click(function (){
+        var order = $(this).data('order');
+        var shipqty = $("input.inp-shipqty[data-order='"+order+"']").val();
+        var shipmethod = $(".shippingmethodselect[data-order='"+order+"']").val();
+        var trackcode = $("input.inp-tracking[data-order='"+order+"']").val();
+        var params = new Array();
+        params.push({name: 'itemcolor', value: order});
+        params.push({name: 'shipqty', value: shipqty});
+        params.push({name: 'shipmethod', value: shipmethod});
+        params.push({name: 'trackcode', value: trackcode});
+        params.push({name: 'brand', value: $("#printschbrand").val()});
+        var url = '/printscheduler/shiporder';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#stockordersdata").empty().html(response.data.stockview);
+                $("#platesordersdata").empty().html(response.data.plateview);
+                $(".ready-print-block").empty().html(response.data.printview);
+                $(".ready-ship-block").empty().html(response.data.readyshipview);
+                $(".completed-print-block").empty().html(response.data.complljobview);
+                $(".shipped-block").empty().html(response.data.shippedview);
+                $("#loader").hide();
+                init_printscheduler_dayview();
+            } else {
+                show_error(response);
+                $("#loader").hide();
+            }
+        },'json');
+    });
 }
 
 function init_assignprint(order) {

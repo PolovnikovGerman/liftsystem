@@ -39,11 +39,11 @@
             <div class="rsbox-table-td-descriptions"><?=$order['item_name']?></div>
             <div class="rsbox-table-td-items"><?=$order['item_qty']?></div>
             <div class="rsbox-table-td-shipqty">
-                <div class="date-shipqty mustshipbox"><?=date('m/d', $order['shipdate'])?></div>
-                <input class="inp-shipqty" type="text">
+                <div class="date-shipqty <?=$order['shipclass']?>"><?=date('m/d', $order['shipdate'])?></div>
+                <input class="inp-shipqty" type="text" data-order="<?=$order['order_itemcolor_id']?>" value="<?=$order['item_qty']?>">
             </div>
             <div class="rsbox-table-td-method">
-                <select>
+                <select class="shippingmethodselect" data-order="<?=$order['order_itemcolor_id']?>">
                     <option value=""></option>
                     <option value="UPS">UPS</option>
                     <option value="FedEx">FedEx</option>
@@ -56,10 +56,10 @@
                 </select>
             </div>
             <div class="rsbox-table-td-tracking">
-                <input class="inp-tracking" type="text" placeholder="Enter Tracking #s">
+                <input class="inp-tracking" type="text" placeholder="Enter Tracking #s" data-order="<?=$order['order_itemcolor_id']?>"/>
             </div>
             <div class="rsbox-table-td-btnsave">
-                <div class="btn-greensave">save</div>
+                <div class="btn-greensaveship" data-order="<?=$order['order_itemcolor_id']?>">save</div>
             </div>
         </div>
         <?php $displaymain = 0; ?>
