@@ -170,12 +170,17 @@
 .pdo-table-td-icons span {
     margin: 0 2px;
 }
-.pdo-table-td-icons span.ic-skull {
+.pdo-table-td-icons .ic-skull {
     position: relative;
     left: 2px;
+    visibility: hidden;
 }
-.pdo-table-td-icons span.ic-rush {
+.pdo-table-td-icons .ic-skull.emptybalance {
+    visibility: visible;
+}
+.pdo-table-td-icons .ic-rush {
     position: relative;
+    float: right!important;
     right: 1px;
 }
 .pdo-table-td-ship {
@@ -462,13 +467,18 @@
 .itm-table-td-icons span {
     margin: 0 2px;
 }
-.itm-table-td-icons span.ic-skull {
+.itm-table-td-icons .ic-skull {
     position: relative;
     left: 2px;
+    visibility: hidden;
 }
-.itm-table-td-icons span.ic-rush {
+.itm-table-td-icons .ic-skull.emptybalance {
+    visibility: visible;
+}
+.itm-table-td-icons .ic-rush {
     position: relative;
-    right: 1px;
+    float: right!important;
+    right: 4px;
 }
 .itm-table-td-ship {
     width: 35px;
@@ -678,6 +688,13 @@
     border: 1px solid #888888;
     margin-bottom: 2px;
 }
+.stock-table-tr.addition {
+    margin-left: 79px;
+    width: 291px;
+    border-top: none;
+    /* border-left: none; */
+    margin-top: -2px;
+}
 .stock-table-header {
     background: #5e5d5d;
     color: #fff;
@@ -758,6 +775,12 @@
     line-height: 18px !important;
     border: 1px solid #888888;
     margin-bottom: 2px;
+}
+.plates-table-tr.addition {
+    width: 235px;
+    margin-left: 80px;
+    border-top: none;
+    margin-top: -2px;
 }
 .plates-table-header {
     background: #5e5d5d;
@@ -968,6 +991,19 @@
     width: 35px;
     border-right: 1px solid #d4d2d2;
 }
+.rpbox-table-td-icons .ic-skull {
+    position: relative;
+    left: 2px;
+    visibility: hidden;
+}
+.rpbox-table-td-icons .ic-skull.emptybalance {
+    visibility: visible;
+}
+.rpbox-table-td-icons .ic-rush {
+    position: relative;
+    float: right!important;
+    right: 1px;
+}
 .rpbox-table-td-assign {
     position: relative;
     width: 17px;
@@ -1098,6 +1134,9 @@
     padding-left: 5px;
     font-weight: bold;
     border-right: 2px solid #d4d2d2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .rpbox-table-td-inputs {
     width: 155px;
@@ -1156,7 +1195,7 @@
     text-align: center;
     line-height: 14px!important;
 }
-.rpbox-inp-good {
+.rpbox-inp-good, .rdbox-inp-good {
     width: 38px;
     margin-left: 2px;
 }
@@ -1165,7 +1204,7 @@
     width: 38px;
     text-align: center;
 }
-.rpbox-inp-kept {
+.rpbox-inp-kept, .rdbox-inp-kept {
     width: 20px;
 }
 .span-kept {
@@ -1175,7 +1214,7 @@
     position: relative;
     left: -3px;
 }
-.rpbox-inp-mispt {
+.rpbox-inp-mispt, .rdbox-inp-mispt {
     width: 26px;
 }
 .span-mispt {
@@ -1183,7 +1222,7 @@
     width: 28px;
     text-align: center;
 }
-.rpbox-inp-plate {
+.rpbox-inp-plate, .rdbox-inp-plate {
     width: 20px;
 }
 .span-plate {
@@ -1193,7 +1232,7 @@
     position: relative;
     right: -5px;
 }
-.btn-greensave {
+.btn-greensave, .btn-greensaveship {
     float: right !important;
     background: #34924c;
     background: linear-gradient(to top, #0b7827, #64b076);
@@ -1414,6 +1453,7 @@ input.inp-tracking::placeholder {
     border-radius: 5px;
     margin-top: 1.5px;
     margin-right: 3px;
+    cursor: pointer;
 }
 .shipped-block input.inp-tracking::placeholder {
     color: #000!important;

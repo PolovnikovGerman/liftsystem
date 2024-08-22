@@ -37,7 +37,7 @@
                     <?php endif; ?>
                     </div>
                     <div class="rpbox-table-td-icons">
-                        <div class="ic-skull" style="opacity: 0;"><img class="img-skull" src="/img/printscheduler/icon-skull.svg"></div>
+                        <div class="ic-skull <?=$order['stock_class']?>"><img class="img-skull" src="/img/printscheduler/icon-skull.svg"></div>
                         <div class="ic-rush">
                         <?php if ($order['order_rush']==1 ): ?>
                             <img class="img-rush" src="/img/printscheduler/icon-rush.svg"/>
@@ -59,7 +59,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="rpbox-table-td-ship"><?=date('m/d', $order['shipdate'])?></div>
+                    <div class="rpbox-table-td-ship <?=$order['shipclass']?>"><?=date('m/d', $order['shipdate'])?></div>
                     <div class="rpbox-table-td-order"><?=$order['order_num']?></div>
                     <div class="rpbox-table-td-print">
                         <div class="ic-purpul-print">
@@ -67,17 +67,17 @@
                         </div>
                     </div>
                 <?php endif;?>
-                <div class="rpbox-table-td-items"><?=$order['item_qty']?></div>
+                <div class="rpbox-table-td-items <?=$order['qtyclass']?>"><?=$order['item_qty']?></div>
                 <div class="rpbox-table-td-imp"><?=$order['imprints']?></div>
                 <div class="rpbox-table-td-prints"><?=$order['prints']?></div>
                 <div class="rpbox-table-td-itemcolor"><?=$order['item_color']?></div>
                 <div class="rpbox-table-td-descriptions"><?=$order['item_name']?></div>
                 <div class="rpbox-table-td-inputs">
-                    <input class="rpbox-inp-good" type="text" name="">
-                    <input class="rpbox-inp-kept" type="text" name="">
-                    <input class="rpbox-inp-mispt" type="text" name="">
-                    <input class="rpbox-inp-plate" type="text" name="">
-                    <div class="btn-greensave">save</div>
+                    <input class="rpbox-inp-good" type="text" data-order="<?=$order['order_itemcolor_id']?>" data-color="<?=$order['inventory_color']?>"/>
+                    <input class="rpbox-inp-kept" type="text" data-order="<?=$order['order_itemcolor_id']?>" data-color="<?=$order['inventory_color']?>"/>
+                    <input class="rpbox-inp-mispt" type="text" data-order="<?=$order['order_itemcolor_id']?>" data-color="<?=$order['inventory_color']?>"/>
+                    <input class="rpbox-inp-plate" type="text" data-order="<?=$order['order_itemcolor_id']?>" data-color="<?=$order['inventory_color']?>"/>
+                    <div class="btn-greensave" data-order="<?=$order['order_itemcolor_id']?>" data-color="<?=$order['inventory_color']?>">save</div>
                 </div>
                 <?php $displaymain = 0;?>
             </div>

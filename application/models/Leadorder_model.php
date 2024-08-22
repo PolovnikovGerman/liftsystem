@@ -9085,9 +9085,14 @@ Class Leadorder_model extends My_Model {
             $outstatus['class'] = 'completed';
             $outstatus['label'] = 'Completed';
         } else {
-            if ($shipdate < time()) {
+            $curdate_bgn = strtotime(date('Y-m-d'));
+            $curdate_end = strtotime("+1 day", $curdate_bgn);
+            if ($shipdate < $curdate_bgn) {
                 $outstatus['label'] = 'Late ('.date('m/d', $shipdate).')';
                 $outstatus['class'] = 'late';
+            } elseif ($shipdate >= $curdate_bgn && $shipdate < $curdate_end) {
+                $outstatus['label'] = 'Today '.date('m/d/y', $shipdate);
+                $outstatus['class'] = 'today';
             } else {
                 $outstatus['label'] = 'To ship '.date('m/d/y', $shipdate);
                 $outstatus['class'] = 'ontime';

@@ -19,7 +19,7 @@
             <?php endif; ?>
             <div class="pdo-table-tr <?=$displaymain==1 ? '' : 'addition'?>">
                 <?php if ($displaymain==1) : ?>
-                    <div class="pdo-table-td-move">
+                    <div class="pdo-table-td-move" data-order="<?=$order['order_itemcolor_id']?>">
                         <?php if ($brand=='SR') : ?>
                             <img class="icon-move" src="/img/printscheduler/move-yellow.svg">
                         <?php  else : ?>
@@ -27,8 +27,8 @@
                         <?php endif; ?>
                     </div>
                     <div class="pdo-table-td-icons">
-                        <div class="ic-skull">
-    <!--                        <img class="img-skull" src="/img/printscheduler/icon-skull.svg">-->
+                        <div class="ic-skull <?=$order['stock_class']?>">
+                            <img class="img-skull" src="/img/printscheduler/icon-skull.svg">
                         </div>
                         <div class="ic-rush">
                             <?php if ($order['order_rush']==1) : ?>
@@ -47,7 +47,7 @@
                 <div class="pdo-table-td-itemcolor"><?=$order['item_color']?></div>
                 <div class="pdo-table-td-descriptions"><?=$order['item_name']?></div>
                 <div class="pdo-table-td-art">
-                    <div class="ic-green-art" data-order="<?=$order['order_id']?>">
+                    <div class="ic-green-art" data-order="<?=$order['order_itemcolor_id']?>">
                         <img class="img-magnifier-white" src="/img/printscheduler/magnifier-white.svg">
                     </div>
                 </div>

@@ -2408,7 +2408,7 @@ class Inventory_model extends MY_Model
         return $out;
     }
 
-    private function _add_inventory_outcome($orderdata, $user_id) {
+    public function _add_inventory_outcome($orderdata, $user_id) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $outcome_type = 'P';
         // $this->db->select('count(inventory_outcome_id) as cnt, max(outcome_number) as outnumb');
