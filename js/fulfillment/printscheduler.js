@@ -1,4 +1,5 @@
 function init_printscheduler_content() {
+    $(".right-block").empty();
     init_printscheduler_past();
     init_printscheduler_current();
     leftmenu_alignment();
@@ -299,4 +300,8 @@ function init_assignprint(order) {
             }
         },'json');
     });
+    $(".ic-assign[data-order='"+order+"']").unbind('click').click(function (){
+        $(".assign-popup[data-order='"+order+"']").hide();
+        init_printscheduler_dayview();
+    })
 }
