@@ -289,6 +289,50 @@ function init_printscheduler_dayview() {
             }
         },'json');
     });
+    // Navigate
+    // Previous date
+    $(".ld-arrow-left.active").unbind('click').click(function (){
+        var printdate = $(this).data('print');
+        var params = new Array();
+        params.push({name: 'printdate', value: printdate});
+        params.push({name: 'direction', value: 'prev'});
+        params.push({name: 'brand', value: $("#printschbrand").val()});
+        var url = '/printscheduler/datenavigate';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                show_scheduler_date(response.data.printdate);
+            } else {
+                show_error(response);
+                $("#loader").hide();
+            }
+        },'json');
+    });
+    $(".ld-arrow-right.active").unbind('click').click(function (){
+        var printdate = $(this).data('print');
+        var params = new Array();
+        params.push({name: 'printdate', value: printdate});
+        params.push({name: 'direction', value: 'next'});
+        params.push({name: 'brand', value: $("#printschbrand").val()});
+        var url = '/printscheduler/datenavigate';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                show_scheduler_date(response.data.printdate);
+            } else {
+                show_error(response);
+                $("#loader").hide();
+            }
+        },'json');
+    });
+    $(".tab-date").unbind('click').click(function (){
+        if ($(this).hasClass('active-date')) {
+        } else {
+            var printdate = $(this).data('printdate');
+            $("#loader").show();
+            show_scheduler_date(printdate);
+        }
+    });
 }
 
 function init_assignprint(order) {
@@ -315,4 +359,39 @@ function init_assignprint(order) {
         $(".assign-popup[data-order='"+order+"']").hide();
         init_printscheduler_dayview();
     })
+}
+
+function show_scheduler_date(printdate) {
+    $(".right-block").empty();
+    init_printscheduler_current();
+    // leftmenu_alignment();
+    var params = new Array();
+    params.push({name: 'printdate', value: printdate});
+    params.push({name: 'brand', value: $("#printschbrand").val()});
+    var url = '/printscheduler/dayscheduler';
+    $("#loader").show();
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".right-block").empty().html(response.data.content);
+            $(".day-block-open").addClass('hide');
+            $(".day-block-open[data-orderday='"+printdate+"']").removeClass('hide').addClass('active');
+            $(".current-table").hide();
+            $(".day-name-arrow").removeClass('open').addClass('closed').empty().html('<img class="chevron-up" src="/img/printscheduler/chevron-down-white.svg">');
+            $(".day-block-open[data-orderday='"+printdate+"']").find('div.day-arrow-open').empty().html('<img class="long-arrow-right" src="/img/printscheduler/long-arrow-right-white.svg">');
+            $(".current-table[data-orderday='"+printdate+"']").show();
+            $(".day-name-arrow[data-orderday='"+printdate+"']").removeClass('closed').addClass('open').empty().html('<img class="chevron-up" src="/img/printscheduler/chevron-up-white.svg">');
+            $("#loader").hide();
+            $(".day-block-open.hide").find('div.day-arrow-open').unbind('click');
+            $(".day-block-open.active").find('div.day-arrow-open').unbind('click').click(function (){
+                $(".right-block").empty();
+                init_printscheduler_current();
+                leftmenu_alignment();
+            })
+            init_printscheduler_dayview();
+        }  else {
+            show_error(response);
+            $("#loader").hide();
+        }
+    },'json');
+
 }

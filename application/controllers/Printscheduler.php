@@ -438,4 +438,45 @@ class Printscheduler extends MY_Controller
         }
         show_404();
     }
+
+    public function datenavigate()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Print Date';
+            $postdata = $this->input->post();
+            $printdate = ifset($postdata,'printdate', '');
+            $brand = ifset($postdata,'brand', 'SR');
+            $direction = ifset($postdata,'direction', 'prev');
+            if (!empty($printdate)) {
+                $dates = $this->printscheduler_model->get_ontimeorders_dates($brand);
+                $idx = 0;
+                $find = 0;
+                foreach ($dates as $datrow) {
+                    if ($datrow['printdate'] == $printdate) {
+                        $find = 1;
+                        break;
+                    }
+                    $idx++;
+                }
+                if ($find == 1) {
+                    if ($direction == 'prev') {
+                        $datidx = $idx - 1;
+                    } else {
+                        $datidx = $idx + 1;
+                    }
+                    if ($datidx < 0) {
+                        $error = 'Invalid Date';
+                    } elseif ($datidx > count($dates)-1) {
+                        $error = 'Invalid Date';
+                    } else {
+                        $error = '';
+                        $mdata['printdate'] = $dates[$datidx]['printdate'];
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }
