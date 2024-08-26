@@ -314,10 +314,10 @@ function init_printscheduler_dayview() {
         if (newleftoffset >= 0 ) {
             newleftoffset = 0;
             $(".ld-arrow-left").removeClass('active');
-            var listwidth = parseInt($(".ld-datetabsarea").css('width'));
-            if (listwidth < sliderwidth ) {
-                $(".ld-arrow-right").addClass('active');
-            }
+        }
+        var listwidth = parseInt($(".ld-datetabsarea").css('width'));
+        if (listwidth < sliderwidth ) {
+            $(".ld-arrow-right").addClass('active');
         }
         $(".ld-datetabsarea").find('ul').css('margin-left', newleftoffset);
         init_printscheduler_dayview();
