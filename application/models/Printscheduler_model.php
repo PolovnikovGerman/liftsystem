@@ -194,6 +194,27 @@ class Printscheduler_model extends MY_Model
         return $newres;
     }
 
+    public function get_ontimedates($brand)
+    {
+        $curdate = strtotime(date('Y-m-d'));
+        $this->db->select('min(o.print_date) as mindate, max(o.print_date) as maxdate, count(o.order_id) as cntorder');
+        $this->db->from('ts_orders o');
+        $this->db->where('o.print_date >= ', $curdate);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.shipped_date', 0);
+        if ($brand=='SR') {
+            $this->db->where('o.brand', $brand);
+        } else {
+            $this->db->where_in('o.brand', ['SB','BT']);
+        }
+        $res = $this->db->get()->row_array();
+        if ($res['cntorder']>0) {
+            return ['min' => $res['mindate'], 'max' => $res['maxdate']];
+        } else {
+            return ['min' => $curdate, 'max' => $curdate];
+        }
+    }
+
     public function get_ontimeorders_day($printdate, $brand)
     {
         $daybgn = strtotime($printdate);
