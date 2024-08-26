@@ -63,26 +63,84 @@ class Printscheduler extends MY_Controller
             $brand = ifset($postdata,'brand', 'SR');
             if (!empty($printdate)) {
                 $error = '';
-                $dates = $this->printscheduler_model->get_ontimeorders_dates($brand);
-                $leftactive = $rightactive = 1;
-                if ($dates[0]['printdate']==$printdate) {
-                    $leftactive = 0;
+                $dates = $this->printscheduler_model->get_ontimedates($brand);
+                $weekbgn = date('W', $dates['min']);
+                $yearbgn = date('Y', $dates['min']);
+                $startweek = getDatesByWeek($weekbgn, $yearbgn);
+                $weekend = date('W', $dates['max']);
+                $yearend = date('Y', $dates['max']);
+                $endweek = getDatesByWeek($weekend, $yearend);
+                $periodbgn = $startweek['start_week'];
+                $periodend = $startweek['end_week'];
+                $leftactive = $rightactive = 0;
+                if ($endweek['start_week'] != $startweek['start_week']) {
+                    $periodend = $endweek['end_week'];
+                    $rightactive = 1;
                 }
-                $datesidx = count($dates)-1;
-                if ($dates[$datesidx]['printdate']==$printdate) {
+                $datetabs = [];
+                $curdate = strtotime(date('Y-m-d'));
+                $curidx = 0;
+                while (1==1) {
+                    $dayclass = '';
+                    if ($periodbgn < $curdate) {
+                        $dayclass = 'lockday';
+                    }
+                    $datetabs[] = ['printdate' => date('Y-m-d', $periodbgn), 'dayclass' => $dayclass];
+                    if ($periodbgn < strtotime($printdate)) {
+                        $curidx++;
+                    }
+                    $periodbgn = strtotime('+1 day', $periodbgn);
+                    if ($periodbgn > $periodend) {
+                        break;
+                    }
+                }
+                $weeknum = floor($curidx/ 7 );
+                if ($weeknum > 0) {
+                    $leftactive = 1;
+                }
+                $totalweeks = floor(count($datetabs) / 7);
+                if ($totalweeks <= $weeknum + 1) {
                     $rightactive = 0;
                 }
+//                if ($dates[0]['printdate']==$printdate) {
+//                    $leftactive = 0;
+//                }
+//                $datesidx = count($dates)-1;
+//                if ($dates[$datesidx]['printdate']==$printdate) {
+//                    $rightactive = 0;
+//                }
+                $totalwidth = 77 * count($datetabs);
                 $datoptions = [
-                    'dates' => $dates,
+                    'dates' => $datetabs,
                     'printdate' => $printdate,
                     'brand' => $brand,
                     'prevactive' => $leftactive,
                     'nxtactive' => $rightactive,
+                    'totalwidth' => $totalwidth,
+                    'offset' => $weeknum * (-7 * 77),
                 ];
                 $dateview = $this->load->view('printscheduler/daydetails_date_view', $datoptions, TRUE);
+                $mdata['content'] = $this->load->view('printscheduler/daydetails_view',['dateview' => $dateview], TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function dayscheduledetails()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Print Date';
+            $postdata = $this->input->post();
+            $printdate = ifset($postdata,'printdate', '');
+            $brand = ifset($postdata,'brand', 'SR');
+            if (!empty($printdate)) {
+                $error = '';
                 $orders = $this->printscheduler_model->get_dayorders($printdate, $brand);
-                $stockview = $this->load->view('printscheduler/daydetails_stocks_view', ['stocks' => $orders['stocks'], 'brand' => $brand], TRUE);
-                $plateview = $this->load->view('printscheduler/daydetails_plates_view', ['plates' => $orders['plates'], 'brand' => $brand], TRUE);
+                $mdata['stockview'] = $this->load->view('printscheduler/daydetails_stocks_view', ['stocks' => $orders['stocks'], 'brand' => $brand], TRUE);
+                $mdata['plateview'] = $this->load->view('printscheduler/daydetails_plates_view', ['plates' => $orders['plates'], 'brand' => $brand], TRUE);
+                // Print orders
                 $this->load->model('user_model');
                 $userlist = $this->user_model->get_printschedul_users();
                 $unassignorders = $this->printscheduler_model->get_dayunassignorders($printdate, $brand);
@@ -110,10 +168,10 @@ class Printscheduler extends MY_Controller
                 }
                 $printoptions['assignview'] = $assignview;
                 $printoptions['totals'] = $alltotals;
-                $printview = $this->load->view('printscheduler/daydetails_printorders_view', $printoptions, TRUE);
+                $mdata['printview'] = $this->load->view('printscheduler/daydetails_printorders_view', $printoptions, TRUE);
                 // Build ready to ship
                 $shipready = $this->printscheduler_model->getreadyshiporders($printdate, $brand);
-                $readyshipview = $this->load->view('printscheduler/daydetails_readyshiporders_view',['orders' => $shipready['orders'], 'totals'=> $shipready['totals'], 'brand' => $brand], TRUE);
+                $mdata['readyship'] = $this->load->view('printscheduler/daydetails_readyshiporders_view',['orders' => $shipready['orders'], 'totals'=> $shipready['totals'], 'brand' => $brand], TRUE);
                 // Completed Printjob
                 $completed_users = $this->printscheduler_model->get_day_completedusers($printdate, $brand);
                 $totalcomlet = [
@@ -134,20 +192,10 @@ class Printscheduler extends MY_Controller
                     $totalcomlet['items']+=$compljob['totals']['items'];
                     $totalcomlet['prints']+=$compljob['totals']['prints'];
                 }
-                $complljobview = $this->load->view('printscheduler/daydetails_completedorders_view',['totals' => $totalcomlet, 'content' => $completedview], TRUE);
+                $mdata['completed'] = $this->load->view('printscheduler/daydetails_completedorders_view',['totals' => $totalcomlet, 'content' => $completedview], TRUE);
                 // Shipped
                 $shipres = $this->printscheduler_model->getshippedorders($printdate, $brand);
-                $shippedview = $this->load->view('printscheduler/daydetails_shippeddorders_view',['totals' => $shipres['totals'], 'orders' => $shipres['orders']], TRUE);
-                $options = [
-                    'dateview' => $dateview,
-                    'stockview' => $stockview,
-                    'plateview' => $plateview,
-                    'printview' => $printview,
-                    'readyship' => $readyshipview,
-                    'completed' => $complljobview,
-                    'shippedview' => $shippedview,
-                ];
-                $mdata['content'] = $this->load->view('printscheduler/daydetails_view', $options, TRUE);
+                $mdata['shippedview'] = $this->load->view('printscheduler/daydetails_shippeddorders_view',['totals' => $shipres['totals'], 'orders' => $shipres['orders']], TRUE);
             }
             $this->ajaxResponse($mdata, $error);
         }

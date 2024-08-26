@@ -12,7 +12,7 @@
                     <div class="stock-table-td-itemcolor">Item Color/s</div>
                     <div class="stock-table-td-descriptions">Item / Description</div>
                 </div>
-                <div id="stockordersdata"><?= $stockview ?></div>
+                <div id="stockordersdata"></div>
             </div>
         </div>
         <div class="plates-box">
@@ -25,20 +25,12 @@
                     <div class="plates-table-td-plates">Qty</div>
                     <div class="plates-table-td-descriptions">Item / Description</div>
                 </div>
-                <div id="platesordersdata"><?= $plateview ?></div>
+                <div id="platesordersdata"></div>
             </div>
         </div>
     </div>
-    <div class="ready-print-block">
-        <?=$printview?>
-    </div>
-    <div class="ready-ship-block">
-        <?=$readyship?>
-    </div>
-    <div class="completed-print-block">
-        <?=$completed?>
-    </div>
-    <div class="shipped-block">
-        <?=$shippedview?>
-    </div>
+    <div class="ready-print-block"></div>
+    <div class="ready-ship-block"></div>
+    <div class="completed-print-block"></div>
+    <div class="shipped-block"></div>
 </div>
