@@ -96,7 +96,6 @@ function pastupdate(printdate, order) {
             show_error(response);
         }
     },'json');
-
 }
 
 function init_ontimeorders_content() {
@@ -180,6 +179,40 @@ function init_ontimeorders_content() {
            }
         },'json');
     });
+    // Change printdate
+    $(".itm-table-td-move").unbind('click').click(function() {
+        var order=$(this).data('order');
+        $(".itm-table-td-printdate[data-order='"+order+"']").show();
+        $("input.intimeorderprintdate[data-order='"+order+"']").datepicker({
+            'format' : 'mm/dd/yyyy',
+            'autoclose' : true,
+            'startDate': '0d',
+            'orientation': 'bottom_right',
+        }).on('change', function(selected){
+            var printdate = $("input.intimeorderprintdate[data-order='"+order+"']").val();
+            intimeupdate(printdate, order);
+            $(".itm-table-td-printdate[data-order='"+order+"']").hide();
+        }).on('hide', function (){
+            $(".itm-table-td-printdate[data-order='"+order+"']").hide();
+        });
+        $("input.intimeorderprintdate[data-order='"+order+"']").datepicker('show');
+    });
+}
+
+function intimeupdate(printdate, order) {
+    var params = new Array();
+    params.push({name: 'printdate', value: printdate});
+    params.push({name: 'order', value: order});
+    params.push({name: 'brand', value: $("#printschbrand").val()});
+    var url = '/printscheduler/update_pastprintdate';
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            init_printscheduler_current();
+            leftmenu_alignment();
+        } else {
+            show_error(response);
+        }
+    },'json');
 }
 
 function init_printscheduler_dayview() {
