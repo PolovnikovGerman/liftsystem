@@ -1133,4 +1133,19 @@ class Printscheduler_model extends MY_Model
         }
         return $out;
     }
+
+    public function update_printdate($printdate, $order)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Error during Update Printdate'];
+        $print_date = strtotime($printdate);
+        $this->db->select('order_id, print_date')->from('ts_orders')->where('order_id' , $order);
+        $orddat = $this->db->get()->row_array();
+        if (ifset($orddat, 'order_id', 0) == $order) {
+            $out['result'] = $this->success_result;
+            $this->db->where('order_id', $order);
+            $this->db->set('print_date', $print_date);
+            $this->db->update('ts_orders');
+        }
+        return $out;
+    }
 }

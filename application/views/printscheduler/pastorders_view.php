@@ -19,15 +19,15 @@
             <?php endif; ?>
             <div class="pdo-table-tr <?=$displaymain==1 ? '' : 'addition'?>">
                 <?php if ($displaymain==1) : ?>
-                    <div class="pdo-table-td-move" data-order="<?=$order['order_itemcolor_id']?>">
+                    <div class="pdo-table-td-move" data-order="<?=$order['order_id']?>">
                         <?php if ($brand=='SR') : ?>
                             <img class="icon-move" src="/img/printscheduler/move-yellow.svg">
                         <?php  else : ?>
                             <img class="icon-move" src="/img/printscheduler/move-blue.svg">
                         <?php endif; ?>
                     </div>
-                    <div class="pdo-table-td-printdate" style="width: 2px; display: none; float: left; margin-left: -9px;" data-order="<?=$order['order_itemcolor_id']?>">
-                        <input type="text" class="pastorderprintdate" value="<?=date('m/d',$order['print_date'])?>" data-order="<?=$order['order_itemcolor_id']?>" style="width: 2px"/>
+                    <div class="pdo-table-td-printdate" style="width: 2px; display: none; float: left; margin-left: -9px;" data-order="<?=$order['order_id']?>">
+                        <input type="text" class="pastorderprintdate" value="<?=date('m/d',$order['print_date'])?>" data-order="<?=$order['order_id']?>" style="width: 2px"/>
                     </div>
                     <div class="pdo-table-td-icons">
                         <div class="ic-skull <?=$order['stock_class']?>">

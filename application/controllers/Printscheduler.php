@@ -527,4 +527,25 @@ class Printscheduler extends MY_Controller
         }
         show_404();
     }
+
+    public function update_pastprintdate()
+    {
+        if ($this->isAjax()) {
+            $error = 'Empty Print Date';
+            $postdata = $this->input->post();
+            $mdata = [];
+            $printdate = ifset($postdata,'printdate', '');
+            $order = ifset($postdata,'order', '');
+            $brand = ifset($postdata,'brand', 'SR');
+            if (!empty($printdate) && !empty($order)) {
+                $res = $this->printscheduler_model->update_printdate($printdate, $order);
+                $error = $res['msg'];
+                if ($res['result'] == $this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }
