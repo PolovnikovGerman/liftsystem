@@ -99,7 +99,7 @@ class Printscheduler_model extends MY_Model
         $curdate = strtotime(date('Y-m-d'));
         // get order details
         $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, toi.order_itemcolor_id');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty');
+        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.print_date');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
@@ -222,7 +222,7 @@ class Printscheduler_model extends MY_Model
 
         // get order details
         $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, sh.event_date, toi.order_itemcolor_id');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty');
+        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.print_date');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
@@ -1130,6 +1130,21 @@ class Printscheduler_model extends MY_Model
             // successfully
             $out['result'] = $this->success_result;
             $out['amount_id'] = $amntid;
+        }
+        return $out;
+    }
+
+    public function update_printdate($printdate, $order)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Error during Update Printdate'];
+        $print_date = strtotime($printdate);
+        $this->db->select('order_id, print_date')->from('ts_orders')->where('order_id' , $order);
+        $orddat = $this->db->get()->row_array();
+        if (ifset($orddat, 'order_id', 0) == $order) {
+            $out['result'] = $this->success_result;
+            $this->db->where('order_id', $order);
+            $this->db->set('print_date', $print_date);
+            $this->db->update('ts_orders');
         }
         return $out;
     }

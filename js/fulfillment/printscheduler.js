@@ -59,6 +59,44 @@ function init_pastdueorders_content() {
            $("#printschpastopen").val(1);
        }
     });
+    // Print date change
+    $(".pdo-table-td-move").unbind('click').click(function(){
+        var order=$(this).data('order');
+        $(".pdo-table-td-printdate[data-order='"+order+"']").show();
+        $("input.pastorderprintdate[data-order='"+order+"']").datepicker({
+            'format' : 'mm/dd/yyyy',
+            'autoclose' : true,
+            'startDate': '0d',
+            'orientation': 'bottom_right',
+        }).on('change', function(selected){
+            console.log('New Date '+$("input.pastorderprintdate[data-order='"+order+"']").val()+'!');
+            var printdate = $("input.pastorderprintdate[data-order='"+order+"']").val();
+            pastupdate(printdate, order);
+            // alert("startDate..."+selected.timeStamp);
+            $(".pdo-table-td-printdate[data-order='"+order+"']").hide();
+        }).on('hide', function (){
+            $(".pdo-table-td-printdate[data-order='"+order+"']").hide();
+        });
+        $("input.pastorderprintdate[data-order='"+order+"']").datepicker('show');
+    });
+}
+
+function pastupdate(printdate, order) {
+    var params = new Array();
+    params.push({name: 'printdate', value: printdate});
+    params.push({name: 'order', value: order});
+    params.push({name: 'brand', value: $("#printschbrand").val()});
+    var url = '/printscheduler/update_pastprintdate';
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            init_printscheduler_past();
+            init_printscheduler_current();
+            leftmenu_alignment();
+        } else {
+            show_error(response);
+        }
+    },'json');
+
 }
 
 function init_ontimeorders_content() {
@@ -321,21 +359,6 @@ function init_printscheduler_dayview() {
         }
         $(".ld-datetabsarea").find('ul').css('margin-left', newleftoffset);
         init_printscheduler_dayview();
-        // var printdate = $(this).data('print');
-        // var params = new Array();
-        // params.push({name: 'printdate', value: printdate});
-        // params.push({name: 'direction', value: 'prev'});
-        // params.push({name: 'brand', value: $("#printschbrand").val()});
-        // var url = '/printscheduler/datenavigate';
-        // $("#loader").show();
-        // $.post(url, params, function (response){
-        //     if (response.errors=='') {
-        //         show_scheduler_date(response.data.printdate);
-        //     } else {
-        //         show_error(response);
-        //         $("#loader").hide();
-        //     }
-        // },'json');
     });
     $(".ld-arrow-right.active").unbind('click').click(function (){
         var sliderwidth = parseInt($("#schedulesliderwidth").val());
@@ -350,21 +373,6 @@ function init_printscheduler_dayview() {
         }
         $(".ld-datetabsarea").find('ul').css('margin-left', newleftoffset);
         init_printscheduler_dayview();
-        // var printdate = $(this).data('print');
-        // var params = new Array();
-        // params.push({name: 'printdate', value: printdate});
-        // params.push({name: 'direction', value: 'next'});
-        // params.push({name: 'brand', value: $("#printschbrand").val()});
-        // var url = '/printscheduler/datenavigate';
-        // $("#loader").show();
-        // $.post(url, params, function (response){
-        //     if (response.errors=='') {
-        //         show_scheduler_date(response.data.printdate);
-        //     } else {
-        //         show_error(response);
-        //         $("#loader").hide();
-        //     }
-        // },'json');
     });
     // Tab click
     $(".tab-date").unbind('click').click(function (){
