@@ -59,6 +59,16 @@ function init_pastdueorders_content() {
            $("#printschpastopen").val(1);
        }
     });
+    // Print date change
+    $(".pdo-table-td-move").unbind('click').click(function(){
+       $(this).datepicker({
+            'format' : 'mm/dd/yy',
+            'autoclose' : true,
+            'startDate': '0d'
+        }).on('change', function(selected){
+           alert("startDate..."+selected.timeStamp);
+       }).on('close');
+    });
 }
 
 function init_ontimeorders_content() {
@@ -321,21 +331,6 @@ function init_printscheduler_dayview() {
         }
         $(".ld-datetabsarea").find('ul').css('margin-left', newleftoffset);
         init_printscheduler_dayview();
-        // var printdate = $(this).data('print');
-        // var params = new Array();
-        // params.push({name: 'printdate', value: printdate});
-        // params.push({name: 'direction', value: 'prev'});
-        // params.push({name: 'brand', value: $("#printschbrand").val()});
-        // var url = '/printscheduler/datenavigate';
-        // $("#loader").show();
-        // $.post(url, params, function (response){
-        //     if (response.errors=='') {
-        //         show_scheduler_date(response.data.printdate);
-        //     } else {
-        //         show_error(response);
-        //         $("#loader").hide();
-        //     }
-        // },'json');
     });
     $(".ld-arrow-right.active").unbind('click').click(function (){
         var sliderwidth = parseInt($("#schedulesliderwidth").val());
@@ -350,21 +345,6 @@ function init_printscheduler_dayview() {
         }
         $(".ld-datetabsarea").find('ul').css('margin-left', newleftoffset);
         init_printscheduler_dayview();
-        // var printdate = $(this).data('print');
-        // var params = new Array();
-        // params.push({name: 'printdate', value: printdate});
-        // params.push({name: 'direction', value: 'next'});
-        // params.push({name: 'brand', value: $("#printschbrand").val()});
-        // var url = '/printscheduler/datenavigate';
-        // $("#loader").show();
-        // $.post(url, params, function (response){
-        //     if (response.errors=='') {
-        //         show_scheduler_date(response.data.printdate);
-        //     } else {
-        //         show_error(response);
-        //         $("#loader").hide();
-        //     }
-        // },'json');
     });
     // Tab click
     $(".tab-date").unbind('click').click(function (){
