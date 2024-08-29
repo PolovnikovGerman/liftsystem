@@ -61,13 +61,21 @@ function init_pastdueorders_content() {
     });
     // Print date change
     $(".pdo-table-td-move").unbind('click').click(function(){
-       $(this).datepicker({
-            'format' : 'mm/dd/yy',
+        var order=$(this).data('order');
+        $(".pdo-table-td-printdate").show();
+        $("input.pastorderprintdate[data-order='"+order+"']").datepicker({
+            'format' : 'mm/dd/yyyy',
             'autoclose' : true,
-            'startDate': '0d'
+            'startDate': '0d',
+            'orientation': 'bottom_right',
         }).on('change', function(selected){
-           alert("startDate..."+selected.timeStamp);
-       }).on('close');
+            console.log('New Date '+$("input.pastorderprintdate[data-order='"+order+"']").val()+'!');
+            // alert("startDate..."+selected.timeStamp);
+            $(".pdo-table-td-printdate[data-order='"+order+"']").hide();
+        }).on('hide', function (){
+            $(".pdo-table-td-printdate[data-order='"+order+"']").hide();
+        });
+        $("input.pastorderprintdate[data-order='"+order+"']").datepicker('show');
     });
 }
 

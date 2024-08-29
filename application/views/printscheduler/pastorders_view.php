@@ -26,6 +26,9 @@
                             <img class="icon-move" src="/img/printscheduler/move-blue.svg">
                         <?php endif; ?>
                     </div>
+                    <div class="pdo-table-td-printdate" style="width: 2px; display: none; float: left; margin-left: -9px;" data-order="<?=$order['order_itemcolor_id']?>">
+                        <input type="text" class="pastorderprintdate" value="<?=date('m/d',$order['print_date'])?>" data-order="<?=$order['order_itemcolor_id']?>" style="width: 2px"/>
+                    </div>
                     <div class="pdo-table-td-icons">
                         <div class="ic-skull <?=$order['stock_class']?>">
                             <img class="img-skull" src="/img/printscheduler/icon-skull.svg">
