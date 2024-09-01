@@ -809,7 +809,7 @@ class Accounting extends MY_Controller
                     $options=array(
                         'totals'=>$row['totals'],
                         'details'=>$row['lines'],
-                        'brand' => $brandcalc,
+                        'brand' => $brand,
                     );
                     $content=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
                     $detdat[]=array(
@@ -821,6 +821,21 @@ class Accounting extends MY_Controller
             }
             $this->ajaxResponse($mdata,$error);
         }
+    }
+
+    // View popup batch due
+    public function batchdue()
+    {
+        $date=$this->input->get('day');
+        $this->load->model('batches_model');
+        $batches=$this->batches_model->get_batches_duedate($date);
+        $options=array(
+            'batches'=>$batches,
+            'cnt'=>count($batches),
+            'date'=>$date,
+        );
+        $content=$this->load->view('batch/batches_due_view',$options, TRUE);
+        echo $content;
     }
 
     /* Change Batch option EMAILED */
@@ -3463,7 +3478,8 @@ class Accounting extends MY_Controller
         $calendar_view='';
         // Get a list of batch years
         $this->load->model('batches_model');
-        $years_list=$this->batches_model->get_batches_years($brand);
+        $brandcalc = 'ALL';
+        $years_list=$this->batches_model->get_batches_years($brandcalc);
         $options=array(
             'details'=>$details,
             'calendar'=>$calendar_view,
