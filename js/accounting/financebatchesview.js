@@ -115,14 +115,6 @@ function init_batches() {
                     color: '#000000'
                 }
             }); */
-            $("div.batchcalend_dateinfo").each(function(){
-                /* $("div#"+$(this).prop('id')).bt({
-                    trigger: 'click',
-                    ajaxCache: false,
-                    width: '463px',
-                    ajaxPath: ["$(this).attr('href')"]
-                }); */
-            });
             // Init manage elements
             $("#loader").hide();
             init_batches_management();

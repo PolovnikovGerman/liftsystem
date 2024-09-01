@@ -761,10 +761,11 @@ class Accounting extends MY_Controller
             $year_view = ifset($postdata, 'year', date('Y'));
             $brand = ifset($postdata, 'brand');
             if (!empty($brand)) {
+                $brandcalc = 'ALL';
                 $error = '';
                 $this->load->model('batches_model');
                 /* Get Max & min date  */
-                $batch_dates=$this->batches_model->get_batches_limits($brand);
+                $batch_dates=$this->batches_model->get_batches_limits($brandcalc);
                 $max_date=strtotime(date("Y-m-d", time()) . " +5 week");
                 $min_date=strtotime(date("Y-m-d",time())." -5 week");
                 if (isset($batch_dates['min_date']) && $min_date>$batch_dates['min_date']) {
@@ -779,7 +780,7 @@ class Accounting extends MY_Controller
                     'monday'=>$dats['start_week'],
                     'max_date'=>$max_date,
                     'min_date'=>$min_date,
-                    'brand' => $brand,
+                    'brand' => $brandcalc,
                 );
                 if ($filtr!='') {
                     $options['received']=$filtr;
@@ -817,10 +818,24 @@ class Accounting extends MY_Controller
                     );
                 }
                 $mdata['details']=$this->load->view('batch/batch_detailpart_view',array('details'=>$detdat),TRUE);
-
             }
             $this->ajaxResponse($mdata,$error);
         }
+    }
+
+    // View popup batch due
+    public function batchdue()
+    {
+        $date=$this->input->get('day');
+        $this->load->model('batches_model');
+        $batches=$this->batches_model->get_batches_duedate($date);
+        $options=array(
+            'batches'=>$batches,
+            'cnt'=>count($batches),
+            'date'=>$date,
+        );
+        $content=$this->load->view('batch/batches_due_view',$options, TRUE);
+        echo $content;
     }
 
     /* Change Batch option EMAILED */
@@ -3463,7 +3478,8 @@ class Accounting extends MY_Controller
         $calendar_view='';
         // Get a list of batch years
         $this->load->model('batches_model');
-        $years_list=$this->batches_model->get_batches_years($brand);
+        $brandcalc = 'ALL';
+        $years_list=$this->batches_model->get_batches_years($brandcalc);
         $options=array(
             'details'=>$details,
             'calendar'=>$calendar_view,

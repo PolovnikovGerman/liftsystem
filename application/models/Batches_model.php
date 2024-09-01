@@ -505,6 +505,7 @@ class Batches_model extends My_Model
             // Select manual payments
             $this->db->select('b.*');
             $this->db->from('ts_order_batches b');
+            $this->db->where('b.order_id', NULL);
             $this->db->where('b.batch_date >=', $datebgn);
             $this->db->where('b.batch_date < ', $dateend);
             if (isset($options['received'])) {
@@ -1619,5 +1620,50 @@ class Batches_model extends My_Model
             $out[] = $data;
         }
         return $out;
+    }
+
+    public function get_batches_duedate($due)
+    {
+        $duestart = strtotime(date('Y-m-d',$due));
+        $duefinish = strtotime(date('Y-m-d', $duestart)." +1 day");
+        $this->db->select('b.batch_date, b.batch_vmd, b.batch_amex, b.batch_other, b.batch_term, b.batch_writeoff, b.batch_received, b.batch_amount');
+        $this->db->select('o.order_num, o.customer_name, o.revenue');
+        $this->db->from('ts_order_batches b');
+        $this->db->join('ts_orders o','o.order_id=b.order_id','left');
+        $this->db->where("batch_due >= ",$duestart);
+        $this->db->where("batch_due <= ",$duefinish);
+        $res=$this->db->get()->result_array();
+        $out=[];
+        foreach ($res as $row) {
+            $paymeth='';
+            $paysum=floatval($row['batch_amount']);
+            if (floatval($row['batch_vmd'])!=0) {
+                $paymeth='VMD';
+            } elseif(floatval($row['batch_amex']!=0)) {
+                $paymeth='Amex';
+            } elseif (floatval($row['batch_other'])!=0) {
+                $paymeth='Other';
+            } elseif (floatval($row['batch_term'])!=0) {
+                $paymeth='Term';
+            } elseif (floatval($row['batch_writeoff'])!=0) {
+                $paymeth='WriteOFF';
+            }
+            if ($paymeth!='') {
+                $row['paymeth']=$paymeth;
+                $row['paysum_class']='';
+                if ($paysum<0) {
+                    $row['paysum_class']='batchnegative';
+                    $row['paysum']='($'.number_format(abs($paysum),2,'.',',').')';
+                } else {
+                    $row['paysum']='$'.number_format($paysum,2,'.',',');
+                }
+                $row['batch_date']=date('m/d/y',$row['batch_date']);
+                $row['order_num']=($row['order_num']=='' ? $this->manual_batch : $row['order_num']);
+                $row['rowclass']=($row['batch_received']==1 ? 'duereceived' : '');
+                $out[]=$row;
+            }
+        }
+        return $out;
+
     }
 }
