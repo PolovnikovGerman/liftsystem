@@ -13,6 +13,7 @@
             <?php  else : ?>
                 <div class="trackcode" data-lnkdata="<?=$url?>">
                     <?=$tracking['trackcode']?>
+                </div>
             <?php endif; ?>
             <div class="trackcodecopy <?=empty($tracking['trackcode']) ? 'emptycopy' : '' ?>" data-track="<?=$tracking['tracking_id']?>">
                 <i class="fa fa-copy"></i>
