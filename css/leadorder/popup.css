@@ -5683,7 +5683,10 @@ input.ticket_date {
     width: 100%;
     border-left: 1px solid #000000;
     border-right: 1px solid #000000;
-    height: 102px;
+/*    height: 102px; */
+    max-height: 82px;
+    overflow-y: auto;
+    margin-bottom: 20px;
 }
 .trackingdatabody.completed {
     background: #c59e51;
@@ -5886,7 +5889,7 @@ div.trackservicelnk > input {
     color: #0000FF!important;
     /* text-decoration: none; */
     cursor: pointer;
-    border: none;
+    border: none!important;
     background: transparent!important;
 }
 
