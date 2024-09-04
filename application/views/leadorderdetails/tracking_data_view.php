@@ -1,3 +1,4 @@
+<div class="trackingdatabodyarea">
 <?php foreach ($trackings as $tracking) { ?>
         <?php if (intval($tracking['qty'])>0) { ?>
         <div class="trackdatarow <?=$completed==1 ? 'completed' : ''?>">
@@ -21,3 +22,4 @@
         </div>
         <?php } ?>
 <?php } ?>
+</div>
