@@ -1,3 +1,4 @@
+<div class="trackingdatabodyarea">
 <?php $numpp = 1;?>
 <?php foreach ($trackings as $tracking) { ?>
     <div class="trackdatarow editmode" data-track="<?=$tracking['tracking_id']?>">
@@ -37,4 +38,5 @@
 <?php } ?>
 <div class="trackdatarow editmode">
     <span class="addnewtrack" data-orderitem="<?=$order_item?>" data-color="<?=$item_color?>">[add new]</span>
+</div>
 </div>
