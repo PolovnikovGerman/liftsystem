@@ -12,8 +12,12 @@
                     <img class="icon-move" src="/img/printscheduler/move-blue.svg">
                 <?php } ?>
             </div>
-            <div class="plates-table-td-done">
-                <input type="checkbox" class="plates-done-checkbox" data-order="<?=$plate['order_id']?>" <?=$plate['print_ready']==0 ? '' : 'checked="checked"'?>/>
+            <div class="plates-table-td-done" data-order="<?=$plate['order_id']?>">
+                <?php if ($plate['print_ready']==0) : ?>
+                    <i class="fa fa-square-o" data-order="<?=$plate['order_id']?>"></i>
+                <?php else : ?>
+                    <i class="fa fa-check-square-o" data-order="<?=$plate['order_id']?>"></i>
+                <?php endif; ?>
             </div>
             <div class="plates-table-td-order"><?=$plate['order_num']?></div>
         <?php endif; ?>
