@@ -217,6 +217,11 @@ class Printscheduler extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $mdata['checked'] = $res['checked'];
+                    if ($res['checked']==0) {
+                        $mdata['orderchk'] = '<i class="fa fa-square-o" data-order="'.$order_id.'"></i>';
+                    } else {
+                        $mdata['orderchk'] = '<i class="fa fa-check-square-o" data-order="'.$order_id.'"></i>';
+                    }
                     $printdate = $res['printdate'];
                     $this->load->model('user_model');
                     $userlist = $this->user_model->get_printschedul_users();

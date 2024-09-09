@@ -216,7 +216,8 @@ function intimeupdate(printdate, order) {
 }
 
 function init_printscheduler_dayview() {
-    $(".stock-done-checkbox").unbind('change').change(function (){
+    // $(".stock-done-checkbox").unbind('change').change(function (){
+    $(".stock-table-td-done").find('i').unbind('click').click(function (){
         var order = $(this).data('order');
         var params = new Array();
         params.push({name: 'order', value: order});
@@ -227,11 +228,8 @@ function init_printscheduler_dayview() {
             if (response.errors=='') {
                 $(".ready-print-block").empty().html(response.data.content);
                 // Update plates
-                if (parseInt(response.data.checked)==1) {
-                    $(".plates-done-checkbox[data-order='"+order+"']").prop('checked', true);
-                } else {
-                    $(".plates-done-checkbox[data-order='"+order+"']").prop('checked', false);
-                }
+                $(".stock-table-td-done[data-order='"+order+"']").empty().html(response.data.orderchk);
+                $(".plates-table-td-done[data-order='"+order+"']").empty().html(response.data.orderchk);
                 $("#loader").hide();
                 init_printscheduler_dayview();
             } else {
@@ -240,7 +238,7 @@ function init_printscheduler_dayview() {
             }
         },'json');
     });
-    $(".plates-done-checkbox").unbind('change').change(function (){
+    $(".plates-table-td-done").find('i').unbind('click').click(function (){
         var order = $(this).data('order');
         var params = new Array();
         params.push({name: 'order', value: order});
@@ -250,11 +248,8 @@ function init_printscheduler_dayview() {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $(".ready-print-block").empty().html(response.data.content);
-                if (parseInt(response.data.checked)==1) {
-                    $(".stock-done-checkbox[data-order='"+order+"']").prop('checked', true);
-                } else {
-                    $(".stock-done-checkbox[data-order='"+order+"']").prop('checked', false);
-                }
+                $(".stock-table-td-done[data-order='"+order+"']").empty().html(response.data.orderchk);
+                $(".plates-table-td-done[data-order='"+order+"']").empty().html(response.data.orderchk);
                 $("#loader").hide();
                 init_printscheduler_dayview();
             } else {

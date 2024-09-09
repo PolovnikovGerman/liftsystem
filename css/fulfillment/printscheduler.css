@@ -130,6 +130,9 @@
     background: #fff;
     padding: 8px 5px;
     width: 558px;
+    max-height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 .pastdue-table {
     width: 546px;
@@ -715,6 +718,12 @@
 .stock-table-td-done {
     width: 18px;
     border-right: 1px solid #d4d2d2;
+    line-height: 17px !important;
+    height: 17px;
+    text-align: center;
+}
+.stock-table-td-done i {
+    cursor: pointer;
 }
 .stock-table-td-order {
     width: 49px;
@@ -802,6 +811,12 @@
 .plates-table-td-done {
     width: 18px;
     border-right: 1px solid #d4d2d2;
+    text-align: center;
+    line-height: 17px !important;
+    height: 17px;
+}
+.plates-table-td-done i {
+    cursor: pointer;
 }
 .plates-table-td-order {
     width: 49px;
