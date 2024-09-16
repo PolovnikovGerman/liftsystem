@@ -6588,4 +6588,61 @@ class Leadorder extends MY_Controller
         $trackcontent.='</div>';
         return $trackcontent;
     }
+
+    public function pototal_add()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error=$this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $ordercolor = ifset($postdata,'ordercolor',0);
+                $editmode = ifset($postdata,'editmode',0);
+                $this->load->model('leadorder_model');
+                $res=$this->leadorder_model->add_amount($ordercolor, $this->USR_ID, $editmode, $leadorder, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $this->load->model('vendors_model');
+                    $this->load->model('orders_model');
+                    $v_options = [
+                        'order_by' => 'v.vendor_name',
+                        'exclude' => $this->config->item('inventory_vendor'),
+                    ];
+                    $vendors=$this->vendors_model->get_vendors_list($v_options);
+                    $methods=$this->orders_model->get_methods_edit();
+                    $order_view=$this->load->view('pototals/purchase_orderdata_view', $res['order'],TRUE);
+                    $poeditview = $this->load->view('pototals/purchase_reason_view', $res['amount'],TRUE);
+                    $lowprofit_view = '';
+                    if (!empty($res['order']['reason'])) {
+                        $lowprofit_view = $this->load->view('pototals/lowprofit_reason_view', $res['order'],TRUE);
+                    }
+                    $options=array(
+                        'order'=>$res['order'],
+                        'amount'=>$res['amount'],
+                        'attach'=>'',
+                        'vendors'=>$vendors,
+                        'methods'=>$methods,
+                        'order_view'=>$order_view,
+                        'lowprofit_view'=>$lowprofit_view,
+                        'editpo_view'=>$poeditview,
+                    );
+                    $content=$this->load->view('pototals/purchase_orderedit_view',$options,TRUE);
+                    $mdata['content']=$content;
+                    $data=array(
+                        'amount'=>$res['amount'],
+                        'order'=>$res['order'],
+                        'attach'=>array(),
+                    );
+                    // Save Data to Session
+                    usersession('editpurchase', $data);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+
+        }
+        show_404();
+    }
 }

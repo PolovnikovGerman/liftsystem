@@ -904,7 +904,7 @@ class Printscheduler_model extends MY_Model
         return $out;
     }
 
-    public function outcome($order_itemcolor_id, $inventory_color_id, $shipped, $kepted, $misprint, $plates, $user_id)
+    public function outcomedata($order_itemcolor_id, $inventory_color_id, $shipped, $kepted, $misprint, $plates, $user_id)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Order not found'];
         // Get order
@@ -1114,6 +1114,7 @@ class Printscheduler_model extends MY_Model
         $this->db->set('printshop_type', $orderdata['printshop_type']);
         $this->db->set('printshop', 1);
         $this->db->set('order_id', $orderdata['order_id']);
+        $this->db->set('order_itemcolor_id', $orderdata['order_itemcolor_id']);
         // $this->db->set('orangeplate_price', $orderdata['orangeplate_price']);
         $this->db->set('blueplate_price', $orderdata['blueplate_price']);
         // $this->db->set('beigeplate_price', floatval($orderdata['beigeplate_price']));

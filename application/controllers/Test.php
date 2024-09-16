@@ -4050,4 +4050,10 @@ class Test extends CI_Controller
         $writer->save($filenorm);    // download file
         echo 'File '.$filenorm.' ready'.PHP_EOL;
     }
+
+    public function order_amount_transform()
+    {
+        $this->load->model('orders_model');
+        $this->orders_model->order_amount_transform();
+    }
 }

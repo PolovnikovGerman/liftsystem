@@ -1426,4 +1426,9 @@ Class Payments_model extends MY_Model {
 
     }
 
+    public function add_purchase_order($order_id,$order_itemcolor_id)
+    {
+
+    }
+
 }

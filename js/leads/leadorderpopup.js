@@ -4078,7 +4078,39 @@ function init_profitedit_call(edit_mode) {
                 }
             },'json')
         }
-    })
+    });
+    $(".placepo.active").unbind('click').click(function(){
+        var color = $(this).data('order');
+        $(".profitdetails_tooltip").hide();
+        var params = new Array();
+        params.push({name: 'ordercolor', value: color});
+        params.push({name: 'editmode', value: edit_mode});
+        params.push({name:'ordersession', value: $("input#ordersession").val()});
+        var url='/leadorder/pototal_add';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".profitprojectdetails_tooltip").qtip('hide');
+                $("#artNextModal").find('div.modal-dialog').css('width','500px');
+                $("#artNextModal").find('.modal-title').empty().html('Enter PO Value');
+                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#artNextModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                })
+                // Date picker
+                $("input#podateinpt").datepicker({
+                    autoclose: true,
+                    todayHighlight: true,
+                }).on("change", function() {
+                    show_amountchangesave();
+                    save_amntchangedetails('amount_date', $(this).val());
+                });
+                init_pochange(edit_mode);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 /* Common Edit INIT */
