@@ -8722,7 +8722,8 @@ Class Leadorder_model extends My_Model {
             }
             $label.='- '.date('m/d/y', $prow['batch_date']);
             if (empty($prow['batch_transaction'])) {
-                $label.=' (Internal)';
+                // $label.=' (Internal)';
+                $label.=' (Credit Card)';
             }
             if ($type=='payment' && !empty($prow['batch_transaction'])) {
                 if ($prow['batch_type']=='ACH') {
