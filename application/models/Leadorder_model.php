@@ -10181,8 +10181,27 @@ Class Leadorder_model extends My_Model {
             if ($res['result']==$this->success_result) {
                 $out['result'] = $this->success_result;
                 $out['amount'] = $res['data'];
-                $this->load->model('orders_model');
-                $out['order'] = $this->orders_model->get_order_detail($order['order_id']);
+                $colorid = $res['data']['order_itemcolor_id'];
+                $order_items = $leadorder['order_items'];
+                // search
+                $find = 0;
+                foreach ($order_items as $order_item) {
+                    $colors = $order_item['items'];
+                    foreach ($colors as $color) {
+                        if ($color['item_id']==$colorid) {
+                            $find = 1;
+                            $colordata = $color;
+                            break;
+                        }
+                    }
+                }
+                if ($find==1) {
+                    $this->load->model('orders_model');
+                    $out['order'] = $this->orders_model->get_order_detail($order['order_id']);
+                    $out['itemcolor'] = $colordata;
+                } else {
+                    $out['result'] = $this->error_result;
+                }
             }
             usersession($ordersession, $leadorder);
         }
@@ -10212,7 +10231,9 @@ Class Leadorder_model extends My_Model {
                     'amount_date'=>time(),
                     'order_id'=>$order['order_id'],
                     'order_itemcolor_id' => $ordercolor,
-                    'amount_sum'=>0,
+                    'amount_sum' => 0,
+                    'shipped' => '',
+                    'shipped_price' => '',
                     'oldamount_sum'=>0,
                     'vendor_id'=>$order['vendor_id'],
                     'method_id'=>'',

@@ -5781,6 +5781,7 @@ class Leadorder extends MY_Controller
                     $options=array(
                         'order'=>$res['order'],
                         'amount'=>$res['amount'],
+                        'itemcolor' => $res['itemcolor'],
                         'attach'=>'',
                         'vendors'=>$vendors,
                         'methods'=>$methods,
@@ -5788,16 +5789,16 @@ class Leadorder extends MY_Controller
                         'lowprofit_view'=>$lowprofit_view,
                         'editpo_view'=>$poeditview,
                     );
-                    $content=$this->load->view('pototals/purchase_orderedit_view',$options,TRUE);
+                    $content=$this->load->view('pototals/purchase_ordercoloredit_view',$options,TRUE);
                     $mdata['content']=$content;
                     $data=array(
                         'amount'=>$res['amount'],
+                        'itemcolor' => $res['itemcolor'],
                         'order'=>$res['order'],
                         'attach'=>array(),
                     );
                     // Save Data to Session
                     usersession('editpurchase', $data);
-                    // $mdata['content']=$this->_profit_data_view($order);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -6614,26 +6615,23 @@ class Leadorder extends MY_Controller
                     $vendors=$this->vendors_model->get_vendors_list($v_options);
                     $methods=$this->orders_model->get_methods_edit();
                     $order_view=$this->load->view('pototals/purchase_orderdata_view', $res['order'],TRUE);
-                    $poeditview = $this->load->view('pototals/purchase_reason_view', $res['amount'],TRUE);
-                    $lowprofit_view = '';
-                    if (!empty($res['order']['reason'])) {
-                        $lowprofit_view = $this->load->view('pototals/lowprofit_reason_view', $res['order'],TRUE);
-                    }
                     $options=array(
                         'order'=>$res['order'],
                         'amount'=>$res['amount'],
+                        'itemcolor' => $res['itemcolor'],
                         'attach'=>'',
                         'vendors'=>$vendors,
                         'methods'=>$methods,
                         'order_view'=>$order_view,
-                        'lowprofit_view'=>$lowprofit_view,
-                        'editpo_view'=>$poeditview,
+                        'lowprofit_view' => '',
+                        'editpo_view'=> '',
                     );
-                    $content=$this->load->view('pototals/purchase_orderedit_view',$options,TRUE);
+                    $content=$this->load->view('pototals/purchase_ordercoloredit_view',$options,TRUE);
                     $mdata['content']=$content;
                     $data=array(
                         'amount'=>$res['amount'],
                         'order'=>$res['order'],
+                        'itemcolor' => $res['itemcolor'],
                         'attach'=>array(),
                     );
                     // Save Data to Session

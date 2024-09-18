@@ -1004,6 +1004,7 @@ class Printscheduler_model extends MY_Model
                 $this->db->set('trackdate', time());
                 $this->db->set('trackservice', $shipmethod);
                 $this->db->set('trackcode', $trackcode);
+                $this->db->set('qty', $shippingqty);
                 $this->db->update('ts_order_trackings');
             } else {
                 // ???
@@ -1040,7 +1041,7 @@ class Printscheduler_model extends MY_Model
         return $balance;
     }
 
-    private function _inventory_color($item_number, $item_color)
+    public function _inventory_color($item_number, $item_color)
     {
         $color_id = NULL;
         $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $item_number);

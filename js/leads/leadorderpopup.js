@@ -4039,6 +4039,7 @@ function init_profitedit_call(edit_mode) {
         var url='/leadorder/pototal_edit';
         $.post(url, params, function (response) {
             if (response.errors=='') {
+                $(".profitprojectdetails_tooltip").qtip('hide');
                 $("#artNextModal").find('div.modal-dialog').css('width','500px');
                 $("#artNextModal").find('.modal-title').empty().html('Enter PO Value');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
@@ -4116,6 +4117,16 @@ function init_profitedit_call(edit_mode) {
 /* Common Edit INIT */
 function init_pochange(edit_mode) {
     // Change Ship Check
+    $("input.amountqtyinpt").unbind('change').change(function () {
+        var newval = $(this).val();
+        show_amountchangesave();
+        save_amntchangedetails('shipped', newval);
+    });
+    $("input.amountpriceinpt").unbind('change').change(function () {
+        var newval = $(this).val();
+        show_amountchangesave();
+        save_amntchangedetails('shipped_price', newval);
+    });
     // Add Order Data
     $("input.amountvalueinpt").unbind('change').change(function () {
         var newval = $(this).val();
@@ -4170,6 +4181,9 @@ function save_amntchangedetails(fldname, newval) {
             if (response.data.profit) {
                 $("div.amountprofitval").empty().html(response.data.profit);
             }
+            $("input.amountqtyinpt").val(response.data.qty);
+            $("input.amountpriceinpt").val(response.data.price);
+            $("input.amountvalueinpt").val(response.data.amount);
             $("div#lowprofitpercreasonarea").empty().html(response.data.reason);
             $("textarea#po_comment").unbind('change').change(function(){
                 var newval=$(this).val();

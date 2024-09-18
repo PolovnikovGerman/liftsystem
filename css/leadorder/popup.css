@@ -5303,14 +5303,26 @@ input.ticket_date {
     height: 28.8px;
     line-height: 28.8px;
 }
+.poeditlabel.labelqty {
+    width: 45px;
+}
+.poeditlabel.labelprice {
+    width: 45px;
+}
 .poeditinput {
     width: 173px;
     height: 28.8px;
     line-height: 28.8px;
 }
+.poeditinput.itemqty, .poeditinput.itemprice {
+    width: 68px;
+}
 .poeditinput span {
     float: left;
     margin-right: 6px;
+}
+.amountqtyinpt, .amountpriceinpt {
+    width: 64px;
 }
 .poamntdateinpt, .amountvalueinpt, .ordernuminpt {
     width: 78px;
