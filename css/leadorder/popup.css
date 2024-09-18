@@ -5303,14 +5303,26 @@ input.ticket_date {
     height: 28.8px;
     line-height: 28.8px;
 }
+.poeditlabel.labelqty {
+    width: 45px;
+}
+.poeditlabel.labelprice {
+    width: 45px;
+}
 .poeditinput {
     width: 173px;
     height: 28.8px;
     line-height: 28.8px;
 }
+.poeditinput.itemqty, .poeditinput.itemprice {
+    width: 68px;
+}
 .poeditinput span {
     float: left;
     margin-right: 6px;
+}
+.amountqtyinpt, .amountpriceinpt {
+    width: 64px;
 }
 .poamntdateinpt, .amountvalueinpt, .ordernuminpt {
     width: 78px;
@@ -6036,14 +6048,49 @@ div.trackservicelnk > input {
     font-size: 12px;
     width: 100%;
 }
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection.printdetails {
+    background: #6e6e6e;
+    color: #FFFFFF;
+    border: 1px solid #000000;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection.details {
+    background: #c4c4c4;
+    color: #252525;
+    border: 1px solid #000000;
+}
 .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > div {
     height: 20px;
     line-height: 20px;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .editamount,
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .delamount {
+    font-size: 14px;
+    cursor: pointer;
+    width: 24px;
+    text-align: center;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .delamount {
+    border-right: 1px solid #000000;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .openprintamnt {
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 48px;
+    text-align: center;
+    color: #0000FF;
+    border-right: 1px solid #000000;
 }
 .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .qty {
     text-align: right;
     padding-right: 5px;
     width: 89px;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .qtyamnt {
+    text-align: right;
+    width: 51px;
+    text-align: center;
+    border-right: 1px solid #000000;
 }
 .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .datadevide {
     width: 21px;
@@ -6054,22 +6101,49 @@ div.trackservicelnk > input {
     width: 72px;
     text-align: center;
 }
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .typeamnt {
+    width: 73px;
+    text-align: center;
+    border-right: 1px solid #000000;
+}
 .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .vendor {
     width: 89px;
     text-align: center;
 }
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .vendoramnt {
+    width: 133px;
+    text-align: center;
+    border-right: 1px solid #000000;
+}
 .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .date {
     width: 49px;
     text-align: center;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .dateamnt {
+    width: 59px;
+    text-align: center;
+    border-right: 1px solid #000000;
 }
 .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .amntpaymetod {
     width: 73px;
     text-align: center;
     margin-left: 12px;
 }
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .paymetodamnt {
+    width: 88px;
+    text-align: center;
+    border-right: 1px solid #000000;
+}
 .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .amountsum {
     float: right;
     padding-right: 5px;
+}
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .profitdataperc {
+    text-align: right;
+    position: relative;
+    left: 129px;
+    width: 50px;
+    margin-left: -46px;
 }
 .ordercogdetailsviewarea.project > .procentsarea {
     float: right!important;
@@ -6117,7 +6191,7 @@ div.trackservicelnk > input {
     color: #000000;
 }
 .ordercogdetailsviewarea.project .profitperc {
-    float: right!important;
+    float: right !important;
     height: 20px;
     line-height: 20px;
 }

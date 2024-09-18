@@ -2217,44 +2217,63 @@ class Inventory_model extends MY_Model
         $this->db->where('order_id', $order_id);
         $orddat=$this->db->get()->row_array();
         if (ifset($orddat, 'order_id',0)==$order_id) {
-            $revenue=  floatval($orddat['revenue']);
-            $shipping=floatval($orddat['shipping']);
-            $is_shipping=intval($orddat['is_shipping']);
-            $tax=floatval($orddat['tax']);
-            $cc_fee=floatval($orddat['cc_fee']);
-            // Get COG Value
-            $this->db->select('count(amount_id) cnt, sum(amount_sum) as cog');
-            $this->db->from('ts_order_amounts');
-            $this->db->where('order_id', $order_id);
-            $cogres=$this->db->get()->row_array();
-            if ($cogres['cnt']==0) {
-                // Default
-                $new_order_cog=NULL;
-                $new_profit_pc=NULL;
-                $new_profit=round((floatval($revenue))*$this->config->item('default_profit')/100,2);
-                log_message('ERROR','Empty order COG, Order ID '.$order_id.'!');
-            } else {
-                $new_order_cog=floatval($cogres['cog']);
-                $new_profit=$revenue-($shipping*$is_shipping)-$tax-$cc_fee-$new_order_cog;
-                $new_profit_pc=($revenue==0 ? null : round(($new_profit/$revenue)*100,1));
+            $chkqty = 1;
+            $this->db->select('ic.order_itemcolor_id, ic.item_qty')->from('ts_order_itemcolors ic')->join('ts_order_items i','ic.order_item_id = i.order_item_id')->where('i.order_id', $order_id);
+            $colors = $this->db->get()->result_array();
+            foreach ($colors as $color) {
+                $this->db->select('count(amount_id) as cnt, sum(shipped) as qtytotal')->from('ts_order_amounts')->where('order_itemcolor_id', $color['order_itemcolor_id']);
+                $amntres = $this->db->get()->row_array();
+                if ($amntres['cnt']==0) {
+                    $chkqty = 0;
+                    break;
+                } elseif ($color['item_qty']>=$amntres['qtytotal']) {
+                    $chkqty = 0;
+                    break;
+                }
             }
-            $this->db->set('order_cog',$new_order_cog);
-            $this->db->set('profit',$new_profit);
-            $this->db->set('profit_perc',$new_profit_pc);
-            $this->db->where('order_id',$order_id);
-            $this->db->update('ts_orders');
-            if (!empty($new_order_cog)) {
-                $this->db->select('order_id, order_cog');
-                $this->db->from('ts_orders');
-                $this->db->where('order_id',$order_id);
-                $orderchk = $this->db->get()->row_array();
-                if (floatval($orderchk['order_cog'])==$new_order_cog) {
-                    $out['result'] = $this->success_result;
+            if ($chkqty==1) {
+                $revenue=  floatval($orddat['revenue']);
+                $shipping=floatval($orddat['shipping']);
+                $is_shipping=intval($orddat['is_shipping']);
+                $tax=floatval($orddat['tax']);
+                $cc_fee=floatval($orddat['cc_fee']);
+                // Get COG Value
+                $this->db->select('count(amount_id) cnt, sum(amount_sum) as cog');
+                $this->db->from('ts_order_amounts');
+                $this->db->where('order_id', $order_id);
+                $cogres=$this->db->get()->row_array();
+                if ($cogres['cnt']==0) {
+                    // Default
+                    $new_order_cog=NULL;
+                    $new_profit_pc=NULL;
+                    $new_profit=round((floatval($revenue))*$this->config->item('default_profit')/100,2);
+                    log_message('ERROR','Empty order COG, Order ID '.$order_id.'!');
                 } else {
-                    log_message('ERROR','Order COG update unsuccess, Order ID '.$order_id.'!');
-                    $out['msg'] = 'Order COG update unsuccess';
+                    $new_order_cog=floatval($cogres['cog']);
+                    $new_profit=$revenue-($shipping*$is_shipping)-$tax-$cc_fee-$new_order_cog;
+                    $new_profit_pc=($revenue==0 ? null : round(($new_profit/$revenue)*100,1));
+                }
+                $this->db->set('order_cog',$new_order_cog);
+                $this->db->set('profit',$new_profit);
+                $this->db->set('profit_perc',$new_profit_pc);
+                $this->db->where('order_id',$order_id);
+                $this->db->update('ts_orders');
+                if (!empty($new_order_cog)) {
+                    $this->db->select('order_id, order_cog');
+                    $this->db->from('ts_orders');
+                    $this->db->where('order_id',$order_id);
+                    $orderchk = $this->db->get()->row_array();
+                    if (floatval($orderchk['order_cog'])==$new_order_cog) {
+                        $out['result'] = $this->success_result;
+                    } else {
+                        log_message('ERROR','Order COG update unsuccess, Order ID '.$order_id.'!');
+                        $out['msg'] = 'Order COG update unsuccess';
+                    }
+                } else {
+                    $out['result'] = $this->success_result;
                 }
             } else {
+                // Not all qty added
                 $out['result'] = $this->success_result;
             }
         } else {

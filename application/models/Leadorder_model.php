@@ -8723,7 +8723,8 @@ Class Leadorder_model extends My_Model {
             }
             $label.='- '.date('m/d/y', $prow['batch_date']);
             if (empty($prow['batch_transaction'])) {
-                $label.=' (Internal)';
+                // $label.=' (Internal)';
+                $label.=' (Credit Card)';
             }
             if ($type=='payment' && !empty($prow['batch_transaction'])) {
                 if ($prow['batch_type']=='ACH') {
@@ -9496,20 +9497,56 @@ Class Leadorder_model extends My_Model {
         $out['print_date'] = (empty($orddata['print_date'])? $orddata['shipdate'] : $orddata['print_date']);
         $out['order_qty'] = $orddata['order_qty'];
         $out['amount_sum'] = $orddata['revenue'] - $orddata['profit'] - $orddata['shipping'] - $orddata['cc_fee'] - $orddata['tax'];
-        $this->db->select('ic.item_description, ic.item_color, ic.item_qty');
+        $this->db->select('ic.order_itemcolor_id, ic.item_description, ic.item_color, ic.item_qty, ic.item_price');
         $this->db->from('ts_order_itemcolors ic');
         $this->db->join('ts_order_items oi','ic.order_item_id=oi.order_item_id');
         $this->db->where('oi.order_id', $order_id);
         $amnts=$this->db->get()->result_array();
-//        $this->db->select('oa.amount_id, oa.amount_date, oa.printshop, v.vendor_name, oa.amount_sum');
-//        $this->db->from('ts_order_amounts oa');
-//        $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
-//        $this->db->where('oa.order_id', $order_id);
-//        $this->db->order_by('oa.amount_date');
-//        $amnts=$this->db->get()->result_array();
+        $restqty = $orddata['order_qty'];
         $list = [];
         foreach ($amnts as $amnt) {
-//            $amnt['proc'] = round($amnt['amount_sum'] / $orddata['revenue'] * 100,2);
+            $restlistqty = $amnt['item_qty'];
+            $listprofit = round($amnt['item_qty']*$amnt['item_price']*$this->config->item('default_profit')/100,2);
+            $this->db->select('oa.amount_id, oa.amount_date, oa.printshop, v.vendor_name, oa.amount_sum, oa.shipped, p.method_name');
+            $this->db->from('ts_order_amounts oa');
+            $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
+            $this->db->join('purchase_methods p','p.method_id=oa.method_id','left');
+            $this->db->where('oa.order_itemcolor_id', $amnt['order_itemcolor_id']);
+            $this->db->order_by('oa.amount_date');
+            $listdats=$this->db->get()->result_array();
+            $listamnts = [];
+            $listproject = [];
+            foreach ($listdats as $listdat) {
+                $listamnts[] = [
+                    'amount_id' => $listdat['amount_id'],
+                    'qty' => $listdat['shipped'],
+                    'amount_date' => $listdat['amount_date'],
+                    'type' => $listdat['printshop']==1 ? 'Print Shop' : 'Item PO',
+                    'vendor' => $listdat['vendor_name'],
+                    'payment_method' => $listdat['method_name'],
+                    'amount' => $listdat['amount_sum'],
+                    'profit_perc' => round($listdat['amount_sum']/$orddata['revenue']*100,2),
+                    'printshop' => $listdat['printshop'],
+                ];
+                $restlistqty-=$listdat['shipped'];
+                $listprofit-=$listdat['amount_sum'];
+                $restqty-=$listdat['shipped'];
+            }
+
+            if ($restlistqty > 0) {
+                $listproject[] = [
+                    'amount_id' => '',
+                    'qty' => $restlistqty,
+                    'amount_date' => '',
+                    'type' => 'PRINT SHOP',
+                    'vendor' => '',
+                    'payment_method' => 'Projected:',
+                    'amount' => $listprofit,
+                    'profit_perc' => round($listprofit/$orddata['revenue']*100,2),
+                ];
+            }
+            $amnt['details'] = $listamnts;
+            $amnt['projects'] = $listproject;
             $list[] = $amnt;
         }
         $out['list'] = $list;
@@ -10144,11 +10181,73 @@ Class Leadorder_model extends My_Model {
             if ($res['result']==$this->success_result) {
                 $out['result'] = $this->success_result;
                 $out['amount'] = $res['data'];
-                $this->load->model('orders_model');
-                $out['order'] = $this->orders_model->get_order_detail($order['order_id']);
+                $colorid = $res['data']['order_itemcolor_id'];
+                $order_items = $leadorder['order_items'];
+                // search
+                $find = 0;
+                foreach ($order_items as $order_item) {
+                    $colors = $order_item['items'];
+                    foreach ($colors as $color) {
+                        if ($color['item_id']==$colorid) {
+                            $find = 1;
+                            $colordata = $color;
+                            break;
+                        }
+                    }
+                }
+                if ($find==1) {
+                    $this->load->model('orders_model');
+                    $out['order'] = $this->orders_model->get_order_detail($order['order_id']);
+                    $out['itemcolor'] = $colordata;
+                } else {
+                    $out['result'] = $this->error_result;
+                }
             }
             usersession($ordersession, $leadorder);
         }
+        return $out;
+    }
+
+    public function add_amount($ordercolor, $user_id, $editmode, $leadorder, $ordersession)
+    {
+        $out=array('result'=>$this->error_result, 'msg'=>'');
+        if ($editmode==0) {
+            $order = $leadorder['order'];
+            $order_items = $leadorder['order_items'];
+            $find = 0;
+            foreach ($order_items as $order_item) {
+                $colors = $order_item['items'];
+                foreach ($colors as $color) {
+                    if ($color['item_id']==$ordercolor) {
+                        $find = 1;
+                        $colordata = $color;
+                        break;
+                    }
+                }
+            }
+            if ($find==1) {
+                $amount_data=array(
+                    'amount_id'=>0,
+                    'amount_date'=>time(),
+                    'order_id'=>$order['order_id'],
+                    'order_itemcolor_id' => $ordercolor,
+                    'amount_sum' => 0,
+                    'shipped' => '',
+                    'shipped_price' => '',
+                    'oldamount_sum'=>0,
+                    'vendor_id'=>$order['vendor_id'],
+                    'method_id'=>'',
+                    'is_shipping'=>$order['is_shipping'],
+                    'lowprofit'=>'',
+                    'reason'=>'',
+                );
+                $out['result'] = $this->success_result;
+                $out['amount'] = $amount_data;
+                $out['order'] = $order;
+                $out['itemcolor'] = $colordata;
+            }
+        }
+        usersession($ordersession, $leadorder);
         return $out;
     }
 

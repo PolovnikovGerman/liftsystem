@@ -326,7 +326,7 @@ class Printscheduler extends MY_Controller
             $plates = floatval(ifset($postdata,'plates',0));
             $brand = ifset($postdata,'brand','SR');
             if (!empty($order_itemcolor_id) && !empty($inventory_color_id)) {
-                $res = $this->printscheduler_model->outcome($order_itemcolor_id, $inventory_color_id, $shipped, $kepted, $misprint, $plates, $this->USR_ID);
+                $res = $this->printscheduler_model->outcomedata($order_itemcolor_id, $inventory_color_id, $shipped, $kepted, $misprint, $plates, $this->USR_ID);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $amount_id = $res['printshop_income_id'];

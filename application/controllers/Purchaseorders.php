@@ -330,6 +330,9 @@ class Purchaseorders extends MY_Controller
                     $mdata['profit_perc']=$res['profit_perc'];
                     $mdata['profit']=MoneyOutput($res['profit']);
                     $mdata['reason']=$res['reason'];
+                    $mdata['qty'] = empty($res['qty']) ? '' : $res['qty'];
+                    $mdata['price'] = empty($res['price']) ? '' : $res['price'];
+                    $mdata['amount'] = empty($res['amount']) ? '' : $res['amount'];
                 }
             }
             $this->ajaxResponse($mdata, $error);

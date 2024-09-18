@@ -140,6 +140,7 @@ Class Payments_model extends MY_Model {
             $res['import_label']=($import_cog==0 ? '' : 'Imported COG');
             $res['closed_view']='/img/fulfillment/'.($res['is_closed']==1 ? 'closed' : 'opened').'.png';
             $res['oldamount_sum'] = $res['amount_sum'];
+            $res['shipped_price'] = $res['price'];
             if (floatval($res['profit'])==0) {
                 $res['profit']='-';
             } else {
@@ -200,6 +201,7 @@ Class Payments_model extends MY_Model {
         $attach=$amtdata['attach'];
         $amount_id=$data['amount_id'];
         $order_id=$data['order_id'];
+        $order_itemcolor_id = $data['order_itemcolor_id'];
         $amount_date=$data['amount_date'];
         $amount_sum=floatval($data['amount_sum']);
         $vendor_id=$data['vendor_id'];
@@ -208,6 +210,8 @@ Class Payments_model extends MY_Model {
         $is_shipping=(isset($data['is_shipping']) ? $data['is_shipping'] : 0);
         $old_amount_sum=$data['oldamount_sum'];
         $profperc=floatval($amtdata['order']['profit_perc']);
+        $shipped = intval($data['shipped']);
+        $shipped_price = floatval($data['shipped_price']);
         $brand = $amtdata['brand'];
         if (!$order_id) {
             $res['msg']='Non-exist PO#';
@@ -251,17 +255,30 @@ Class Payments_model extends MY_Model {
         $this->db->set('vendor_id',$vendor_id);
         $this->db->set('method_id',$method_id);
         $this->db->set('amount_sum', $amount_sum);
+        $this->db->set('shipped', $shipped);
+        $this->db->set('price', $shipped_price);
+
         if (isset($data['reason'])) {
             $this->db->set('reason', $data['reason']);
         }
         if ($amount_id==0) {
             $this->db->set('order_id',$order_id);
+            $this->db->set('order_itemcolor_id', $order_itemcolor_id);
             $this->db->set('create_date', time());
             $this->db->set('create_user',$user_id);
             $this->db->set('update_date',time());
             $this->db->set('update_user',$user_id);
             $this->db->insert('ts_order_amounts');
             $resins=$this->db->insert_id();
+            if ($resins > 0 ) {
+                $itemcolor = $amtdata['itemcolor'];
+                // Check inventory
+                $this->load->model('printscheduler_model');
+                $invent_color = $this->printscheduler_model->_inventory_color($itemcolor['item_number'], $itemcolor['item_color']);
+                if ($invent_color) {
+                    $this->db->set('inventory_color_id', $invent_color);
+                }
+            }
             $amount_id=$resins;
         } else {
             $this->db->set('update_date',time());
@@ -274,29 +291,34 @@ Class Payments_model extends MY_Model {
             $res['msg']='';
             $res['result']=$this->success_result;
             /* Update order */
-            $this->db->select('order_approved_view(order_id) as aprrovview, order_placed(order_id) as placeord');
+            $this->db->select('order_approved_view(order_id) as aprrovview, order_placed(order_id) as placeord, order_qty');
             $this->db->from('ts_orders');
             $this->db->where('order_id',$order_id);
             $statres=$this->db->get()->row_array();
             // $new_order_cog=$order_cog-$old_amount_sum+$amount_sum;
-            $this->db->select('sum(amount_sum) as sumcog, count(amount_id)');
+            $this->db->select('sum(amount_sum) as sumcog, count(amount_id) cnt, sum(shipped) as qty');
             $this->db->from('ts_order_amounts');
             $this->db->where('order_id', $order_id);
             $cogcalc = $this->db->get()->row_array();
-            $new_order_cog = floatval($cogcalc['sumcog']);
-            $new_profit=$revenue-($shipping*$is_shipping)-$tax-$cc_fee-$new_order_cog;
-            $new_profit_pc=($revenue==0 ? null : round(($new_profit/$revenue)*100,1));
-            $this->db->set('order_cog',$new_order_cog);
-            $this->db->set('is_shipping',$is_shipping);
-            $this->db->set('profit',$new_profit);
-            $this->db->set('profit_perc',$new_profit_pc);
+            if ($cogcalc['qty']>=$statres['order_qty']) {
+                $new_order_cog = floatval($cogcalc['sumcog']);
+                $new_profit=$revenue-($shipping*$is_shipping)-$tax-$cc_fee-$new_order_cog;
+                $new_profit_pc=($revenue==0 ? null : round(($new_profit/$revenue)*100,1));
+                $this->db->set('order_cog',$new_order_cog);
+                $this->db->set('is_shipping',$is_shipping);
+                $this->db->set('profit',$new_profit);
+                $this->db->set('profit_perc',$new_profit_pc);
+                if ($new_profit_pc<$this->config->item('minimal_profitperc') && isset($data['lowprofit'])) {
+                    $this->db->set('reason', $data['lowprofit']);
+                }
+                $this->db->where('order_id',$order_id);
+                $this->db->update('ts_orders');
+            }
             $this->db->set('order_artview', $statres['aprrovview']);
             $this->db->set('order_placed', $statres['placeord']);
-            if ($new_profit_pc<$this->config->item('minimal_profitperc') && isset($data['lowprofit'])) {
-                $this->db->set('reason', $data['lowprofit']);
-            }
             $this->db->where('order_id',$order_id);
             $this->db->update('ts_orders');
+
             /* Insert attachments */
             $this->db->where('amount_id',$amount_id);
             $this->db->delete('ts_amount_docs');
@@ -410,7 +432,6 @@ Class Payments_model extends MY_Model {
                         'oldtotalrun'=>$outoldrundebt,
                         'newtotalrun'=>$outnewrundebt,
                     );
-                    firephplog('Start send email');
                     $this->orders_model->notify_netdebtchanged($notifoptions);
                 }
             }
@@ -998,7 +1019,6 @@ Class Payments_model extends MY_Model {
         $out=array('result'=>  $this->error_result, 'msg'=> 'Unknown Error');
         $this->load->model('orders_model');
         $amount_data=$data['amount'];
-
         $order_id=$amount_data['order_id'];
         $order_data=$this->orders_model->get_order_detail($order_id);
         // Make changes
@@ -1012,6 +1032,36 @@ Class Payments_model extends MY_Model {
             case 'amount_date':
                 $amount_data['amount_date']=  strtotime($value);
                 $edit=1;
+                break;
+            case 'shipped':
+                $edit=1;
+                $newship=intval($value);
+                $amount_data['shipped'] = $newship;
+                if ($newship > 0) {
+                    if (floatval($amount_data['amount_sum']) > 0) {
+                        $amount_data['shipped_price'] = round($amount_data['amount_sum']/$newship,3);
+                        $rescalc=$this->recalc_orderprofit($order_data, $amount_data);
+                        $profval=$rescalc['profval'];
+                        $profperc=$rescalc['profperc'];
+                        $profclass=$rescalc['profclass'];
+                    } elseif (floatval($amount_data['shipped_price']) > 0 ) {
+                        $amount_data['amount_sum'] = round($amount_data['shipped_price']*$newship,2);
+                        $rescalc=$this->recalc_orderprofit($order_data, $amount_data);
+                        $profval=$rescalc['profval'];
+                        $profperc=$rescalc['profperc'];
+                        $profclass=$rescalc['profclass'];
+                    }
+                }
+                break;
+            case 'shipped_price':
+                $edit = 1;
+                $newship=floatval($value);
+                $amount_data['shipped_price'] = $newship;
+                $amount_data['amount_sum'] = round(intval($amount_data['shipped'])*$newship,2);
+                $rescalc=$this->recalc_orderprofit($order_data, $amount_data);
+                $profval=$rescalc['profval'];
+                $profperc=$rescalc['profperc'];
+                $profclass=$rescalc['profclass'];
                 break;
             case 'amount_sum':
                 $edit=1;
@@ -1073,6 +1123,7 @@ Class Payments_model extends MY_Model {
                 'amount'=>$amount_data,
                 'order'=>$order_data,
                 'attach'=>$data['attach'],
+                'itemcolor' => $data['itemcolor'],
             );
             usersession('editpurchase', $newdata);
             $out['result']= $this->success_result;
@@ -1081,6 +1132,9 @@ Class Payments_model extends MY_Model {
             $out['profit_perc']=($profperc=='' ? 'Proj' : $profperc.' %');
             $out['profit']=$profval;
             $out['reason']=$reason_view;
+            $out['qty'] = $amount_data['shipped'];
+            $out['price'] = $amount_data['shipped_price'];
+            $out['amount'] = $amount_data['amount_sum'];
         }
         return $out;
     }
@@ -1423,6 +1477,11 @@ Class Payments_model extends MY_Model {
             $msg = $vendproc.'% of '.MoneyOutput($totalres['profit'],0).' Total Profit $$';
         }
         return $msg;
+
+    }
+
+    public function add_purchase_order($order_id,$order_itemcolor_id)
+    {
 
     }
 
