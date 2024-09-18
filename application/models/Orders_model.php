@@ -8562,35 +8562,35 @@ Class Orders_model extends MY_Model
     public function order_amount_transform()
     {
         $brand = 'SR';
-//        $this->db->select('order_id, order_num')->from('ts_orders')->where(['brand' => $brand, 'profit_perc is not null']);
-//        $orders = $this->db->get()->result_array();
-//        foreach ($orders as $order) {
-//            echo 'Order # '.$order['order_num'].PHP_EOL;
-//            $this->db->where('order_id', $order['order_id']);
-//            $this->db->set('order_itemcolor_id',NULL);
-//            $this->db->update('ts_order_amounts');
-//            // Count # of item colors
-//            $this->db->select('ic.order_itemcolor_id, ic.item_qty, ic.item_color')->from('ts_order_items i')->join('ts_order_itemcolors ic','ic.order_item_id=i.order_item_id')->where('i.order_id', $order['order_id']);
-//            $colors = $this->db->get()->result_array();
-//            if (count($colors)==1) {
-//                $this->db->where('order_id', $order['order_id']);
-//                $this->db->set('order_itemcolor_id', $colors[0]['order_itemcolor_id']);
-//                $this->db->update('ts_order_amounts');
-//            } else {
-//                $this->db->select('oa.amount_id, oa.shipped, c.color')->from('ts_order_amounts oa')->join('ts_inventory_colors c','oa.inventory_color_id = c.inventory_color_id')->where('oa.order_id',$order['order_id']);
-//                $amnts = $this->db->get()->result_array();
-//                foreach ($colors as $color) {
-//                    foreach ($amnts as $amnt) {
-//                        if ($amnt['color']==$color['item_color']) {
-//                            $this->db->where('amount_id', $amnt['amount_id']);
-//                            $this->db->set('order_itemcolor_id', $color['order_itemcolor_id']);
-//                            $this->db->update('ts_order_amounts');
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        $this->db->select('order_id, order_num')->from('ts_orders')->where(['brand' => $brand, 'profit_perc is not null']);
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            echo 'Order # '.$order['order_num'].PHP_EOL;
+            $this->db->where('order_id', $order['order_id']);
+            $this->db->set('order_itemcolor_id',NULL);
+            $this->db->update('ts_order_amounts');
+            // Count # of item colors
+            $this->db->select('ic.order_itemcolor_id, ic.item_qty, ic.item_color')->from('ts_order_items i')->join('ts_order_itemcolors ic','ic.order_item_id=i.order_item_id')->where('i.order_id', $order['order_id']);
+            $colors = $this->db->get()->result_array();
+            if (count($colors)==1) {
+                $this->db->where('order_id', $order['order_id']);
+                $this->db->set('order_itemcolor_id', $colors[0]['order_itemcolor_id']);
+                $this->db->update('ts_order_amounts');
+            } else {
+                $this->db->select('oa.amount_id, oa.shipped, c.color')->from('ts_order_amounts oa')->join('ts_inventory_colors c','oa.inventory_color_id = c.inventory_color_id')->where('oa.order_id',$order['order_id']);
+                $amnts = $this->db->get()->result_array();
+                foreach ($colors as $color) {
+                    foreach ($amnts as $amnt) {
+                        if ($amnt['color']==$color['item_color']) {
+                            $this->db->where('amount_id', $amnt['amount_id']);
+                            $this->db->set('order_itemcolor_id', $color['order_itemcolor_id']);
+                            $this->db->update('ts_order_amounts');
+                            break;
+                        }
+                    }
+                }
+            }
+        }
         $this->db->select('order_id, order_num, order_qty')->from('ts_orders')->where(['brand' => $brand, 'profit_perc is not null']);
         $orders = $this->db->get()->result_array();
         foreach ($orders as $order) {
