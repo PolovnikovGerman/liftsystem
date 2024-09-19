@@ -4076,6 +4076,8 @@ function init_profitedit_call(edit_mode) {
                     // Change content
                     $("#leadorderprofitarea").empty().html(response.data.content);
                     init_orderbottom_content(edit_mode);
+                } else {
+                    show_error(response);
                 }
             },'json')
         }
