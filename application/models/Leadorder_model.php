@@ -9497,15 +9497,27 @@ Class Leadorder_model extends My_Model {
         $out['print_date'] = (empty($orddata['print_date'])? $orddata['shipdate'] : $orddata['print_date']);
         $out['order_qty'] = $orddata['order_qty'];
         $out['amount_sum'] = $orddata['revenue'] - $orddata['profit'] - $orddata['shipping'] - $orddata['cc_fee'] - $orddata['tax'];
-        $this->db->select('ic.order_itemcolor_id, ic.item_description, ic.item_color, ic.item_qty, ic.item_price');
+        $this->db->select('ic.order_itemcolor_id, ic.item_description, ic.item_color, ic.item_qty, ic.item_price, i.vendor_id, i.item_id');
         $this->db->from('ts_order_itemcolors ic');
         $this->db->join('ts_order_items oi','ic.order_item_id=oi.order_item_id');
+        $this->db->join('v_itemsearch i','i.item_id=oi.item_id');
         $this->db->where('oi.order_id', $order_id);
         $amnts=$this->db->get()->result_array();
         $restqty = $orddata['order_qty'];
+        $itemtype = '';
+        $completed = 0;
         $list = [];
         foreach ($amnts as $amnt) {
             $restlistqty = $amnt['item_qty'];
+            if ($itemtype=='') {
+                if ($amnt['item_id']==$this->config->item('custom_id')) {
+                    $itemtype = 'CUSTOM';
+                } elseif ($amnt['vendor_id']==$this->config->item('inventory_vendor')) {
+                    $itemtype = 'INTERNAL';
+                } else {
+                    $itemtype = 'DROPSHIP';
+                }
+            }
             $listprofit = round($amnt['item_qty']*$amnt['item_price']*$this->config->item('default_profit')/100,2);
             $this->db->select('oa.amount_id, oa.amount_date, oa.printshop, v.vendor_name, oa.amount_sum, oa.shipped, p.method_name');
             $this->db->from('ts_order_amounts oa');
@@ -9521,7 +9533,7 @@ Class Leadorder_model extends My_Model {
                     'amount_id' => $listdat['amount_id'],
                     'qty' => $listdat['shipped'],
                     'amount_date' => $listdat['amount_date'],
-                    'type' => $listdat['printshop']==1 ? 'Print Shop' : 'Item PO',
+                    'type' => $listdat['printshop']==1 ? 'Print Shop' : ($listdat['shipped']==0 ? 'Other' : 'Item PO'),
                     'vendor' => $listdat['vendor_name'],
                     'payment_method' => $listdat['method_name'],
                     'amount' => $listdat['amount_sum'],
@@ -9545,11 +9557,16 @@ Class Leadorder_model extends My_Model {
                     'profit_perc' => round($listprofit/$orddata['revenue']*100,2),
                 ];
             }
+            if ($restlistqty <= 0) {
+                $completed = 1;
+            }
             $amnt['details'] = $listamnts;
             $amnt['projects'] = $listproject;
             $list[] = $amnt;
         }
         $out['list'] = $list;
+        $out['itemtype'] = $itemtype;
+        $out['completed'] = $completed;
         return $out;
     }
 

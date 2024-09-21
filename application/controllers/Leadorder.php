@@ -5472,13 +5472,13 @@ class Leadorder extends MY_Controller
         $cogcontent='<div class="error">Order Not Found</div>';
         if (!empty($order_id)) {
             $this->load->model('leadorder_model');
-            $res=$this->leadorder_model->get_leadorder_amounts($order_id);
+            $res=$this->leadorder_model->get_leadorder_projamounts($order_id);// get_leadorder_amounts($order_id);
             $options=array(
                 'data'=>$res,
                 'profit_class'=>$postdata['clas'],
                 'edit_mode' => (ifset($postdata,'edit',1)),
             );
-            $cogcontent=$this->load->view('leadorderdetails/ordercog_details_view', $options, TRUE);
+            $cogcontent=$this->load->view('leadorderdetails/ordercog_newdetails_view', $options, TRUE);
         }
         echo $cogcontent;
     }

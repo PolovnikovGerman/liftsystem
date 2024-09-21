@@ -1,5 +1,5 @@
 <div class="ordercogdetailsviewarea project">
-    <div class="projcoglabel">INTERNAL</div>
+    <div class="projcoglabel"><?=$data['itemtype']?></div>
     <div class="revenueareaproj">
         <div class="revenuetitle">Total Revenue:</div>
         <div class="revenueval"><?=MoneyOutput($data['revenue'])?></div>
@@ -70,6 +70,9 @@
                 <div class="amountsum"><?=MoneyOutput($project['amount'], 2)?></div>
                 <div class="profitdataperc"><?=$project['profit_perc']?>%</div>
             </div>
+            <?php if ($data['completed']==1) : ?>
+                <div class="amountcompleted">100% Complete</div>
+            <?php endif; ?>
             <?php endforeach; ?>
         </div>
     <?php } ?>
