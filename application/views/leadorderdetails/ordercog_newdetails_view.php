@@ -1,4 +1,4 @@
-<div class="ordercogdetailsviewarea project">
+<div class="ordercogdetailsviewarea <?=$profit_class?>">
     <div class="projcoglabel"><?=$data['itemtype']?></div>
     <div class="revenueareaproj">
         <div class="revenuetitle">Total Revenue:</div>
@@ -27,7 +27,7 @@
             </div>
         </div>
         <div class="tabledataarea">
-            <div class="titletable">
+            <div class="titletable <?=$profit_class?>">
                 <div class="qty">QTY</div>
                 <div class="date">Date</div>
                 <div class="amnttype">Type</div>
@@ -58,21 +58,21 @@
             <?php } ?>
             <?php $projects = $item['projects'];?>
             <?php foreach ($projects as $project) : ?>
-            <div class="tabledatasection">
-                <div class="qty"><?=$project['qty']?></div>
-                <div class="datadevide">-</div>
-                <div class="amnttype">TO PRINT</div>
-                <div class="datadevide">-</div>
-                <div class="vendor">PRINT SHOP</div>
-                <div class="datadevide">-</div>
-                <div class="date"><?=date('M j', $data['print_date'])?></div>
-                <div class="amntpaymetod">Projected:</div>
-                <div class="amountsum"><?=MoneyOutput($project['amount'], 2)?></div>
-                <div class="profitdataperc"><?=$project['profit_perc']?>%</div>
-            </div>
-            <?php if ($data['completed']==1) : ?>
-                <div class="amountcompleted">100% Complete</div>
-            <?php endif; ?>
+                <div class="tabledatasection">
+                    <div class="qty"><?=$project['qty']?></div>
+                    <div class="datadevide">-</div>
+                    <div class="amnttype">TO PRINT</div>
+                    <div class="datadevide">-</div>
+                    <div class="vendor">PRINT SHOP</div>
+                    <div class="datadevide">-</div>
+                    <div class="date"><?=date('M j', $data['print_date'])?></div>
+                    <div class="amntpaymetod">Projected:</div>
+                    <div class="amountsum"><?=MoneyOutput($project['amount'], 2)?></div>
+                    <div class="profitdataperc"><?=$project['profit_perc']?>%</div>
+                </div>
+                <?php if ($data['completed']==1) : ?>
+                    <div class="amountcompleted">100% Complete</div>
+                <?php endif; ?>
             <?php endforeach; ?>
         </div>
     <?php } ?>
@@ -80,11 +80,9 @@
         <div class="totalcoglabel">Total COG:</div>
         <div class="totalcogvalue"><?=MoneyOutput($data['cog_value'])?></div>
     </div>
-    <div class="datarow">
-        <div class="profitperc"><?=$data['profit_proc']?>%</div>
-        <div class="profitprojarea">
-            <div class="profitlabel">Profit:</div>
-            <div class="profitvalue"><?=MoneyOutput($data['profit_value'])?></div>
-        </div>
+    <div class="profitarea">
+        <div class="profitlabel">Profit:</div>
+        <div class="profitvalue"><?=MoneyOutput($data['profit_value'])?></div>
     </div>
+    <div class="profitperc"><?=number_format($data['profit_proc'],2)?>%</div>
 </div>

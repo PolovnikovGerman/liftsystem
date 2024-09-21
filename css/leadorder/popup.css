@@ -2226,8 +2226,10 @@ input.artrepeat {
     width: 35px;
 }
 .profitdetails_tooltip {
-    width: 462px;
-    max-width: 462px!important;
+    /*width: 462px;*/
+    /*max-width: 462px!important;*/
+    width: 609px;
+    max-width: 609px!important;
 }
 .profitprojectdetails_tooltip {
     width: 609px;
@@ -4106,11 +4108,14 @@ a.historydetailsview {
 /* COG Details Popup */
 .ordercogdetailsviewarea {
     float: left;
-    padding: 10px 3px 10px 10px;
-    width: 468px;
-    margin-left: -8px;
-    margin-top: -4px;
-    margin-bottom: -4px;
+    /*padding: 10px 3px 10px 10px;*/
+    /*width: 468px;*/
+    /*margin-left: -8px;*/
+    /*margin-top: -4px;*/
+    /*margin-bottom: -4px;*/
+    width: 607px;
+    padding: 10px!important;
+    margin: 0;
 }
 .ordercogdetailsviewarea.black {
     background-color: #000000;
@@ -4286,7 +4291,8 @@ a.historydetailsview {
     font-weight: normal;
 }
 .ordercogdetailsviewarea > .profitarea {
-    margin-left: 265px;
+    /* margin-left: 265px;*/
+    margin-left: 403px;
     border: 1px solid #000000;
     background: #FFFFFF;
 }
@@ -4310,7 +4316,7 @@ a.historydetailsview {
 .ordercogdetailsviewarea > .profitperc {
     height: 20px;
     line-height: 20px;
-    width: 42px;
+    width: 48px; /* 42px; */
     font-size: 11px;
     text-align: right;
 }
@@ -5973,62 +5979,67 @@ div.trackservicelnk > input {
     text-align: right;
     font-size: 11px;
 }
-.ordercogdetailsviewarea.project .itemtitle {
+.ordercogdetailsviewarea .itemtitle { /* .ordercogdetailsviewarea.project .itemtitle */
     margin-top: 7px;
     margin-bottom: 4px;
 }
-.ordercogdetailsviewarea.project .itemtitle > .labelrow {
+.ordercogdetailsviewarea .itemtitle > .labelrow { /* .ordercogdetailsviewarea.project .itemtitle > .labelrow */
     font-weight: 600;
     margin-right: 23px;
     height: 20px;
     line-height: 20px;
     font-size: 13px;
 }
-.ordercogdetailsviewarea.project .itemtitle > .valuerow > div {
+.ordercogdetailsviewarea .itemtitle > .valuerow > div { /* .ordercogdetailsviewarea.project .itemtitle > .valuerow > div */
     height: 20px;
     line-height: 20px;
     font-size: 13px;
 }
-.ordercogdetailsviewarea.project > .tabledataarea {
+.ordercogdetailsviewarea > .tabledataarea { /* .ordercogdetailsviewarea.project > .tabledataarea */
     width: 530px;
     margin-bottom: 21px;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .titletable {
+.ordercogdetailsviewarea > .tabledataarea > .titletable { /* .ordercogdetailsviewarea.project > .tabledataarea > .titletable */
     width: 100%;
     border: 1px solid #ffffff;
     background-color: #000044;
     color: #ffffff;
     font-size: 12px;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .titletable > div {
+.ordercogdetailsviewarea > .tabledataarea > .titletable.green {
+    border: 1px solid #000000;
+    background-color: #154024!important;
+    color: #ffffff!important;
+}
+.ordercogdetailsviewarea > .tabledataarea > .titletable > div { /* .ordercogdetailsviewarea.project > .tabledataarea > .titletable > div */
     height: 21px;
     line-height: 21px;
     text-align: center;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .titletable > .qty {
+.ordercogdetailsviewarea > .tabledataarea > .titletable > .qty { /* .ordercogdetailsviewarea.project > .tabledataarea > .titletable > .qty */
     margin-left: 66px;
     /* width: 20px; */
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .titletable > .date {
+.ordercogdetailsviewarea > .tabledataarea > .titletable > .date { /* .ordercogdetailsviewarea.project > .tabledataarea > .titletable > .date */
     margin-left: 31px;
     /* width: 27px; */
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .titletable > .amnttype {
+.ordercogdetailsviewarea > .tabledataarea > .titletable > .amnttype { /* .ordercogdetailsviewarea.project > .tabledataarea > .titletable > .amnttype */
     margin-left: 28px;
     /* width: 33px; */
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .titletable > .vendor {
+.ordercogdetailsviewarea > .tabledataarea > .titletable > .vendor { /* .ordercogdetailsviewarea.project > .tabledataarea > .titletable > .vendor { */
     margin-left: 69px;
     /* width: 45px; */
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .titletable > .amntpaymetod {
+.ordercogdetailsviewarea > .tabledataarea > .titletable > .amntpaymetod { /* .ordercogdetailsviewarea.project > .tabledataarea > .titletable > .amntpaymetod { */
     margin-left: 67px;
     /* width: 67px; */
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .titletable > .amountsum {
+.ordercogdetailsviewarea > .tabledataarea > .titletable > .amountsum { /* .ordercogdetailsviewarea.project > .tabledataarea > .titletable > .amountsum { */
     margin-left: 23px;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .placepo {
+.ordercogdetailsviewarea > .tabledataarea > .placepo { /* .ordercogdetailsviewarea.project > .tabledataarea > .placepo { */
     border: 1px solid #000000;
     background: #ffffff;
     color: #000000;
@@ -6040,39 +6051,43 @@ div.trackservicelnk > input {
     margin: 5px 0;
     width: 100%;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .placepo.active {
+.ordercogdetailsviewarea > .tabledataarea > .placepo.active { /* .ordercogdetailsviewarea.project > .tabledataarea > .placepo.active { */
     cursor: pointer;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection { */
     border: 1px solid #ffffff;
     font-size: 12px;
     width: 100%;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection.printdetails {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection.printdetails { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection.printdetails { */
     background: #6e6e6e;
     color: #FFFFFF;
     border: 1px solid #000000;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection.details {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection.details { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection.details { */
     background: #c4c4c4;
     color: #252525;
     border: 1px solid #000000;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > div {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > div { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > div { */
     height: 20px;
     line-height: 20px;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .editamount,
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .delamount {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > .editamount,
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > .delamount {
     font-size: 14px;
     cursor: pointer;
     width: 24px;
     text-align: center;
 }
+/*
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .editamount,
 .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .delamount {
+ */
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > .delamount { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .delamount */
     border-right: 1px solid #000000;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .openprintamnt {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > .openprintamnt { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .openprintamnt { */
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
@@ -6081,71 +6096,75 @@ div.trackservicelnk > input {
     color: #0000FF;
     border-right: 1px solid #000000;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .qty {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > .qty { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .qty */
     text-align: right;
     padding-right: 5px;
     width: 89px;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .qtyamnt {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > .qtyamnt { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .qtyamnt  */
     text-align: right;
     width: 51px;
     text-align: center;
     border-right: 1px solid #000000;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .datadevide {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > .datadevide { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .datadevide { */
     width: 21px;
     text-align: center;
     font-weight: 600;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .amnttype {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > .amnttype { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .amnttype  */
     width: 72px;
     text-align: center;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .typeamnt {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > .typeamnt { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .typeamnt */
     width: 73px;
     text-align: center;
     border-right: 1px solid #000000;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .vendor {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > .vendor { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .vendor */
     width: 89px;
     text-align: center;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .vendoramnt {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > .vendoramnt { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .vendoramnt */
     width: 133px;
     text-align: center;
     border-right: 1px solid #000000;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .date {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > .date { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .date { */
     width: 49px;
     text-align: center;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .dateamnt {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > .dateamnt { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .dateamnt { */
     width: 59px;
     text-align: center;
     border-right: 1px solid #000000;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .amntpaymetod {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > .amntpaymetod { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .amntpaymetod { */
     width: 73px;
     text-align: center;
     margin-left: 12px;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .paymetodamnt {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > .paymetodamnt { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .paymetodamnt { */
     width: 88px;
     text-align: center;
     border-right: 1px solid #000000;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .amountsum {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > .amountsum { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .amountsum { */
     float: right;
     padding-right: 5px;
 }
-.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .profitdataperc {
+.ordercogdetailsviewarea > .tabledataarea > .tabledatasection > .profitdataperc { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .profitdataperc { */
     text-align: right;
     position: relative;
     left: 129px;
     width: 50px;
     margin-left: -46px;
+    color: #000000;
 }
-.ordercogdetailsviewarea.project > .procentsarea {
+.ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > .profitdataperc {
+    color: #FFFFFF;
+}
+.ordercogdetailsviewarea > .procentsarea { /* .ordercogdetailsviewarea.project > .procentsarea { */
     float: right!important;
     width: auto;
     margin: 56px 0 0 0;
@@ -6200,3 +6219,6 @@ div.trackservicelnk > input {
 /*    text-decoration: none;*/
 /*    cursor: pointer;*/
 /*}*/
+.profitdetails_tooltip .qtip-content {
+    padding: 0!important;
+}
