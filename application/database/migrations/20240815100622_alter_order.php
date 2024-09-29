@@ -1,6 +1,6 @@
 <?php
 
-class Migration_alter_orders extends CI_Migration {
+class Migration_alter_order extends CI_Migration {
 
     public function up() {
         $fields = array(
