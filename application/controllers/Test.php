@@ -1901,8 +1901,8 @@ class Test extends CI_Controller
         $this->db->select('b.*, o.order_num, o.customer_name');
         $this->db->from('ts_order_batches b');
         $this->db->join('ts_orders o','o.order_id=b.order_id');
-        $this->db->where('b.batch_date >= ', strtotime('2023-01-01'));
-        $this->db->where('b.batch_date < ', strtotime('2024-01-01'));
+        $this->db->where('b.batch_date >= ', strtotime('2024-01-01'));
+        $this->db->where('b.batch_date < ', strtotime('2024-09-01'));
         $batchs = $this->db->get()->result_array();
         $out = [];
         foreach ($batchs as $batch) {
@@ -1938,7 +1938,7 @@ class Test extends CI_Controller
         }
         echo count($out).' Batches '.PHP_EOL;
         $this->load->config('uploader');
-        $file_name = $this->config->item('upload_path_preload').'payment_report_2023_new.csv';
+        $file_name = $this->config->item('upload_path_preload').'payment_report_2024_new.csv';
         @unlink($file_name);
         $fh = fopen($file_name, FOPEN_WRITE_CREATE);
         if ($fh) {
