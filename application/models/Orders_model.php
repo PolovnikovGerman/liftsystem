@@ -8088,8 +8088,6 @@ Class Orders_model extends MY_Model
                     $sclass='creditcard';
                 }
             }
-            $rundebt += $owndat['balance'];
-            $owndat['rundebt'] = $rundebt;
             $owndat['type']=$stype;
             $owndat['typeclass'] = $sclass;
             $owndat['dueclass'] = 'current';
@@ -8124,6 +8122,7 @@ Class Orders_model extends MY_Model
         $ownidx = 0;
         $startdue = $starttype = $starapprov = '';
         $starstatus = '0';
+        $rundebt = 0;
         foreach ($owns as $own) {
             $datclass = '';
             if ($ownsort=='batch_due' && $startdue!==$own['dueclass']) {
@@ -8148,6 +8147,8 @@ Class Orders_model extends MY_Model
                 $starstatus = $own['debt_status'];
             }
             $owns[$ownidx]['datclass'] = $datclass;
+            $rundebt += $owns[$ownidx]['balance'];
+            $owns[$ownidx]['rundebt'] = $rundebt;
             $ownidx++;
         }
         // Refund
