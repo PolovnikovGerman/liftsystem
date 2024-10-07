@@ -296,8 +296,9 @@ function init_templateview() {
         show_templates(artid);
     })
     $("div.empty_template").click(function(){
-        var imgurl="/uploads/aitemp/proof_BT15000_customer_item.ai";
-        openai(imgurl,'proof_BT15000_customer_item.ai');
+        var imgurl = $(this).data('url');
+        var title = $(this).data('title');
+        openai(imgurl,title);
     })
     /* Show Item AI */
     $("div.item_template").click(function(){

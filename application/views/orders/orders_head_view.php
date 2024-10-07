@@ -76,11 +76,35 @@
         <div class="itemcolor">Color</div>
         <div class="item">Item</div>
         <div class="revenue">Revenue</div>
+        <div class="balance">Balance</div>
         <div class="usrrepl">Sales Rep</div>
         <div class="ordclass">Class</div>
         <div class="artstage">Art Status</div>
         <div class="points">Points</div>
-        <div class="ordstatus">Status</div>
+        <div class="ordstatus">Fulfilled</div>
+        <!-- Status -->
     </div>
     <div class="leadorder_dataarea <?=$brand=='SR' ? 'relievers' : ''?>">&nbsp;</div>
+</div>
+<div class="ordertraciknglegend">
+    <div class="datarow">
+        <div class="trackinglegendarea" style="width: 37%">
+            <div class="trackinglabelarea ontimelabel"><i class="fa fa-square"></i></div>
+            <div class="trackinglabeltitle">On Time</div>
+        </div>
+        <div class="trackinglegendarea" style="width: 63%">
+            <div class="trackinglabelarea todaytimelabel"><i class="fa fa-square"></i></div>
+            <div class="trackinglabeltitle">Today</div>
+        </div>
+    </div>
+    <div class="datarow">
+        <div class="trackinglegendarea" style="width: 37%">
+            <div class="trackinglabelarea latelabel"><i class="fa fa-square "></i></div>
+            <div class="trackinglabeltitle">Late</div>
+        </div>
+        <div class="trackinglegendarea" style="width: 63%">
+            <div class="trackinglabelarea completedlabel"><i class="fa fa-square-o"></i></div>
+            <div class="trackinglabeltitle">100% completed</div>
+        </div>
+    </div>
 </div>

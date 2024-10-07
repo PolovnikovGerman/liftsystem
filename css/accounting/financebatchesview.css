@@ -96,6 +96,10 @@ select.batchviewyearselect {
     padding-top: 3px;
     font-size: 11px;
 }
+.batchdetailtable_title.stressrelivers {
+    background-color: #fdff44;
+    color: #000000;
+}
 .batchdetailtable_totalinvoiced {
     clear: both;
     float: left;
@@ -367,4 +371,81 @@ input.input_batch {
 .qtip-light {
     font-size: 14px!important;
     padding: 7px!important;
+}
+
+.batches_duedate {
+    clear: both;
+    float: left;
+    width: 459px;
+    padding: 10px;
+    background-color: #fff;
+    color: #000;
+    font-size: 12px;
+}
+.batches_duedate_title {
+    clear: both;
+    float: left;
+    width: 439px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+.batches_duedate_tablehead {
+    clear: both;
+    float: left;
+    width: 439px;
+    background-color: #C8C8C8;
+    text-align: center;
+    font-weight: bold;
+}
+
+.batchdue_date {
+    float: left;
+    width: 60px;
+}
+.batchdue_paymetod {
+    float: left;
+    width: 50px;
+    text-align: center;
+}
+.batchdue_sum {
+    float: left;
+    width: 70px;
+}
+.batchdue_sum_dat {
+    float: left;
+    width: 70px;
+    text-align: right;
+}
+.batchdue_ordernum {
+    float: left;
+    width: 60px;
+    text-align: center;
+}
+.batchdue_customer {
+    float: left;
+    width: 199px;
+}
+.batchdue_customer_dat {
+    float: left;
+    width: 172px;
+    margin-left: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.batchdue_tabledat {
+    clear: both;
+    float: left;
+    width: 439px;
+    max-height: 280px;
+    overflow-y: auto;
+}
+.batchdue_tablerow {
+    clear: both;
+    float: left;
+    width: 423px;
+}
+.duereceived {
+    color: #808080;
+    text-decoration:line-through;
 }

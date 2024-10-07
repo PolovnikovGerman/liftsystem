@@ -257,6 +257,10 @@
 }
 .itemlistview .tabledataarea .tabrow {
     width: 100%;
+    height: 25px;
+}
+.itemlistview .tabledataarea .tabrow.selected {
+    background-color: #f0ff00!important;
 }
 .itemlistview .tabledataarea .tabrow.expand {
     width: 1271px;
@@ -319,10 +323,30 @@
     font-weight: 600;
 }
 .itemlistview .tabledataarea .tabrow .missinfo {
-    width: 362px;
+    /* width: 362px; */
+    width: 374px;
 }
 .itemlistview .tabledataarea .tabrow .missinfo.missing {
-    color: #FF0000;
+    padding-left: 5px;
+    /* white-space: nowrap; */
+    overflow: hidden;
+    text-align: left;
+    /* color: #FF0000; */
+}
+.missing_info_details {
+    background-color: #ff78f1;
+    border: 1px solid #000;
+    font-size: 9px!important;
+    font-weight: 600;
+    height: 18px!important;
+    line-height: 16px!important;
+    padding: 0 3px;
+    margin-top: 3px;
+    margin-right: 3px;
+    display: inline-block;
+}
+.missing_info_details.unvisible {
+    visibility: hidden;
 }
 .itemlistview .tabledataarea .tabrow .emptydataview {
     color: #FF0000;
@@ -335,4 +359,178 @@
 }
 .pagination a {
     color: #ffffff!important;
+}
+/* Add new item */
+.btitemnewaddarea {
+    border: 2px solid #4a4a4a;
+    border-radius: 5px;
+    background: #d7d7d7;
+    display: none;
+    font-family: Helvetica;
+    height: 210px;
+    padding: 4px 7px 7px 13px;
+    position: absolute;
+    top: 244px;
+    left: 277px;
+    z-index: 120;
+    width: 514px;
+}
+.btitemnewaddarea .pagetitleadd {
+    font-size: 18px;
+    height: 28px;
+    line-height: 28px;
+    /* font-weight: 600; */
+    font-family: Helvetica-Bold;
+}
+.btitemnewaddarea .canceladd {
+    float: right!important;
+    color: #ff0000;
+    height: 20px;
+    line-height: 20px;
+    cursor: pointer;
+}
+.btitemnewaddarea .canceladd span {
+    font-size: 13px;
+    /* font-weight: bold; */
+}
+.btitemnewaddarea .canceladd i {
+    font-size: 14px;
+    margin-left: 7px;
+}
+.btitemnewaddarea .itemaddform {
+    margin-top: 12px;
+}
+.btitemnewaddarea .itemaddform-label {
+    height: 36px;
+    line-height: 36px!important;
+    font-size: 14px;
+    /* font-weight: 600; */
+    font-family: Helvetica-Bold;
+    color: #000040;
+    text-align: right;
+    padding-right: 4px;
+    width: 102px;
+}
+.btitemnewaddarea .itemaddform-value {
+    height: 36px;
+    line-height: 36px!important;
+}
+.btitemnewaddarea select.addnewitemoption {
+    height: 28px;
+    font-size: 14px;
+    line-height: 28px;
+    padding-left: 6px;
+    width: 200px;
+}
+.btitemnewaddarea input.addnewiteminput {
+    height: 28px;
+    line-height: 28px;
+    padding-left: 6px;
+    font-size: 14px;
+    /* font-weight: 600; */
+    width: 380px;
+    font-family: Helvetica-Bold!important;
+}
+.btitemnewaddarea .procedaddnewitem {
+    background-color: #00009c;
+    border-radius: 7px;
+    color: #ffffff;
+    cursor: pointer;
+    float: right!important;
+    font-size: 14px;
+    /* font-weight: 600; */
+    height: 28px;
+    line-height: 28px!important;
+    padding: 0 11px;
+    box-shadow: -0.4em 0.4em 5px rgba(122,122,122,0.5);
+    margin-right: 9px;
+    margin-top: 11px;
+    font-family: Helvetica-Bold!important;
+}
+.btitemnewsucategarea {
+    border: 2px solid #4a4a4a;
+    border-radius: 5px;
+    background: #d7d7d7;
+    display: none;
+    font-family: Helvetica;
+    height: 210px;
+    padding: 4px 7px 7px 13px;
+    position: absolute;
+    top: 244px;
+    left: 277px;
+    z-index: 125;
+    width: 514px;
+}
+.btitemnewsucategarea .pagetitleadd {
+    font-size: 18px;
+    height: 28px;
+    line-height: 28px;
+    font-weight: 600;
+}
+.btitemnewsucategarea .cancelsubcateg {
+    float: right!important;
+    color: #ff0000;
+    height: 20px;
+    line-height: 20px;
+    cursor: pointer;
+}
+.btitemnewsucategarea .cancelsubcateg span {
+    font-size: 13px;
+    /* font-weight: bold; */
+}
+.btitemnewsucategarea .cancelsubcateg i {
+    font-size: 14px;
+    margin-left: 7px;
+}
+.btitemnewsucategarea .subcategaddform {
+    margin-top: 12px;
+}
+.btitemnewsucategarea .subcategaddform-label {
+    height: 36px;
+    line-height: 36px!important;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000040;
+    text-align: right;
+    padding-right: 4px;
+    width: 136px;
+}
+.btitemnewsucategarea .subcategaddform-value {
+    height: 36px;
+    line-height: 36px!important;
+}
+.btitemnewsucategarea .subcategaddform-value span {
+    font-size: 16px;
+    margin-left: 4px;
+}
+.btitemnewsucategarea input.addnewsubcategoryinput {
+    height: 28px;
+    line-height: 28px;
+    padding-left: 6px;
+    font-size: 14px;
+    /* font-weight: 600; */
+    font-family: Helvetica-Bold!important;
+}
+.btitemnewsucategarea input.addnewsubcategoryinput.code {
+    width: 33px;
+    text-transform: uppercase;
+}
+.btitemnewsucategarea input.addnewsubcategoryinput.name {
+    width: 345px;
+}
+.btitemnewsucategarea .procedaddnewsubcateg {
+    background-color: #00009c;
+    border-radius: 7px;
+    color: #ffffff;
+    cursor: pointer;
+    float: right!important;
+    font-size: 14px;
+    /* font-weight: 600; */
+    height: 28px;
+    line-height: 28px!important;
+    padding: 0 11px;
+    box-shadow: -0.4em 0.4em 5px rgba(122,122,122,0.5);
+    margin-right: 9px;
+    margin-top: 11px;
+    font-family: Helvetica-Bold!important;
 }

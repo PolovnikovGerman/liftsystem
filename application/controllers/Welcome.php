@@ -26,20 +26,25 @@ class Welcome extends MY_Controller {
             }
             usersession('currentbrand', $brand);
         }
-        $options = [
-            'title' => $head['title'],
-            'user_id' => $this->USR_ID,
-            'user_name' => $this->USER_NAME,
-            'activelnk' => '',
-            'brand' => $brand,
-        ];
-        $dat = $this->template->prepare_pagecontent($options);
-        $options=[
-            'left_menu' => $dat['left_menu'],
-            'brand' => $brand,
-        ];
-        $dat['content_view'] = $this->load->view('welcome/page_view', $options, TRUE);
-        $this->load->view('page/page_template_view', $dat);
+        $url = $this->user_model->default_brandpage($this->USR_ID, $brand);
+        if ($url=='/welcome' || $url=='/' || empty($url)) {
+            $options = [
+                'title' => $head['title'],
+                'user_id' => $this->USR_ID,
+                'user_name' => $this->USER_NAME,
+                'activelnk' => '',
+                'brand' => $brand,
+            ];
+            $dat = $this->template->prepare_pagecontent($options);
+            $options=[
+                'left_menu' => $dat['left_menu'],
+                'brand' => $brand,
+            ];
+            $dat['content_view'] = $this->load->view('welcome/page_view', $options, TRUE);
+            $this->load->view('page/page_template_view', $dat);
+        } else {
+            redirect($url,'refresh');
+        }
     }
 
     /* Open File content */
@@ -133,21 +138,29 @@ class Welcome extends MY_Controller {
                 $error = '';
                 $currentbrand=$postdata['brand'];
                 usersession('currentbrand', $currentbrand);
+
+                $this->load->model('user_model');
+                // $usrdat = $this->user_model->get_user_data($this->USR_ID);
+                // $url = '/';
+                // if (!empty($usrdat['user_page'])) {
+                $url = $this->user_model->default_brandpage($this->USR_ID, $currentbrand);
+                // }
+                $mdata['url'] = $url;
             }
             $this->ajaxResponse($mdata, $error);
         }
     }
 
-    public function weektotals() {
+    public function weektotals($curweek) {
         $this->load->model('dashboard_model');
-        $totals = $this->dashboard_model->get_totals_brand( 'totals');
-        $msg = $this->load->view('page/dashboard_totalbrand_view',['totals'=> $totals], TRUE);
+        $totals = $this->dashboard_model->get_totals_brand( 'totals', $curweek);
+        $msg = $this->load->view('page/dashboard_totalrevenuebrand_view', $totals, TRUE);
         echo $msg;
     }
 
-    public function weektotalorders() {
+    public function weektotalorders($curweek) {
         $this->load->model('dashboard_model');
-        $totals = $this->dashboard_model->get_totals_brand('orders');
+        $totals = $this->dashboard_model->get_totals_brand('orders', $curweek);
         $msg = $this->load->view('page/dashboard_totalbrand_view',['totals'=> $totals], TRUE);
         echo $msg;
     }
@@ -167,6 +180,49 @@ class Welcome extends MY_Controller {
                 $mainurl = $maindat['menuitem']['item_link'];
                 $data = $this->menuitems_model->get_user_submenu($menu, $user_id);
                 $mdata['content'] = $this->load->view('page/submenu_view',['items' => $data, 'url' => $mainurl, 'brand' => $brand], TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function unlockcontent()
+    {
+        if ($this->isAjax()) {
+            $error = '';
+            $mdata=[];
+            $mdata['content'] = $this->load->view('page/unlock_content_view',[], TRUE);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function viewbalance()
+    {
+        $this->load->model('dashboard_model');
+        $totals = $this->dashboard_model->get_total_balance();
+        if (count($totals) > 0) {
+            $msg = $this->load->view('page/dashboard_totalbalance_view',['totals'=> $totals], TRUE);
+        } else {
+            $msg = $this->load->view('page/dashboard_totalempty_view',[], TRUE);
+        }
+        echo $msg;
+    }
+
+    public function salestotals()
+    {
+        if ($this->isAjax()) {
+            $error = 'Date wasn\'t define';
+            $mdata = [];
+            $postdata = $this->input->post();
+            $weekdate = ifset($postdata,'weekdate','');
+            if (!empty($weekdate)) {
+                $error = '';
+                $this->load->model('dashboard_model');
+                $weeknum = date('W', $weekdate);
+                $year = date('Y', $weekdate);
+                $total_options = $this->dashboard_model->get_totals('week', $weeknum, $year);
+                $mdata['content'] = $this->load->view('page/dashboard_total_view', $total_options, TRUE);
             }
             $this->ajaxResponse($mdata, $error);
         }

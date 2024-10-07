@@ -26,7 +26,7 @@ class Inventory_model extends MY_Model
         return $this->db->get()->result_array();
     }
 
-    public function get_masterinvent_list($inventory_type, $inventory_filter) {
+    public function get_masterinvent_list($inventory_type, $inventory_filter, $sortby) {
         $type_instock = $type_available = $type_maximum = 0;
         $this->db->select('*');
         $this->db->from('ts_inventory_items');
@@ -35,6 +35,7 @@ class Inventory_model extends MY_Model
         $items=$this->db->get()->result_array();
         $colorsdata = [];
         $out = [];
+        $color_seq_total = 1;
         foreach ($items as $item) {
             $additem = 1;
             if ($inventory_filter) {
@@ -91,7 +92,12 @@ class Inventory_model extends MY_Model
                 } elseif ($inventory_filter==2) {
                     $this->db->where('color_status',0);
                 }
-                $this->db->order_by('color_order');
+                if ($sortby=='suggeststock') {
+                    $this->db->order_by($sortby,'desc'); // 'color_order'
+                } else {
+                    $this->db->order_by($sortby); // 'color_order'
+                }
+
                 $colors = $this->db->get()->result_array();
                 $color_seq = 1;
                 foreach ($colors as $color) {
@@ -139,7 +145,8 @@ class Inventory_model extends MY_Model
                         'item_id' => $item['inventory_item_id'],
                         'item_flag' =>0,
                         'status' => ($color['notreorder']==1 ? $this->donotreorder : ''), // ($color['color_status']==1 ? 'Active' : 'Inactive')),
-                        'item_seq' => $color['color_order'], // $color_seq,
+                        'item_seq' => $color_seq, // $color['color_order'], //
+                        'item_seq_total' => $color_seq_total,
                         'item_code' => '',
                         'description' => $color['color'],
                         'max' => $max,
@@ -158,6 +165,7 @@ class Inventory_model extends MY_Model
                         'color_image' => $color['color_image'],
                     ];
                     $color_seq++;
+                    $color_seq_total++;
                     $colorsdata[] = [
                         'item_id' => $item['inventory_item_id'],
                         'color_id' => $color['inventory_color_id'],
@@ -1205,7 +1213,7 @@ class Inventory_model extends MY_Model
         }
         return $container;
     }
-    public function get_inventory_colors($inventory_type, $inventory_filter) {
+    public function get_inventory_colors($inventory_type, $inventory_filter, $sortby) {
         $this->db->select('*');
         $this->db->from('ts_inventory_items');
         $this->db->where('inventory_type_id', $inventory_type);
@@ -1241,7 +1249,11 @@ class Inventory_model extends MY_Model
                 } elseif ($inventory_filter==2) {
                     $this->db->where('color_status',0);
                 }
-                $this->db->order_by('color_order');
+                if ($sortby=='suggeststock') {
+                    $this->db->order_by($sortby,'desc');
+                } else {
+                    $this->db->order_by($sortby);
+                }
                 $colors = $this->db->get()->result_array();
                 foreach ($colors as $color) {
                     $colorsdata[] = [
@@ -2476,6 +2488,143 @@ class Inventory_model extends MY_Model
             $extracost = floatval($itmdat['type_addcost']);
         }
         return $extracost;
+    }
+
+    public function get_inventory_itemslist($inventory_type = 0) {
+        $this->db->select('*');
+        $this->db->from('ts_inventory_items');
+        if ($inventory_type!==0) {
+            $this->db->where('inventory_type_id', $inventory_type);
+        }
+        $this->db->order_by('inventory_type_id, item_num');
+        return $this->db->get()->result_array();
+    }
+
+    public function get_inventory_item($inventory_item_id) {
+        $out=['result'=>$this->error_result, 'msg'=>'Item Not Exist'];
+        $this->db->select('*');
+        $this->db->from('ts_inventory_items');
+        $this->db->where('inventory_item_id', $inventory_item_id);
+        $itemres = $this->db->get()->row_array();
+        if (ifset($itemres,'inventory_item_id',0)==$inventory_item_id) {
+            $out['result'] = $this->success_result;
+            $this->db->select('*');
+            $this->db->from('ts_inventory_colors');
+            $this->db->where('inventory_item_id', $inventory_item_id);
+            $colors = $this->db->get()->result_array();
+            $out['colors'] = $colors;
+            $sum_instock = 0;
+            $total_invent = 0;
+            $sum_available = 0;
+            $avg_price = 0;
+            foreach ($colors as $color) {
+                $income = $this->inventory_color_income($color['inventory_color_id']);
+                $outcome = $this->inventory_color_outcome($color['inventory_color_id']);
+                $reserved = $this->inventory_color_reserved($color['inventory_color_id']);
+                $instock=$income-$outcome;
+                $sum_instock = $sum_instock + $instock;
+                $available=$instock-$reserved;
+                $sum_available = $sum_available + $available;
+                $total_invent+=($available*$color['avg_price']);
+            }
+            if ($sum_available!=0) {
+                $avg_price = round($total_invent / $sum_available,3);
+            }
+            $itemres['avg_price'] = $avg_price;
+            $out['data'] = $itemres;
+        }
+        return $out;
+    }
+
+    public function orderitem_inventory($inventory_item_id)
+    {
+        // Get Onboats on way
+        $this->db->select('o.onboat_container,o.onboat_type,o.onboat_date,count(o.inventory_onboat_id) as cnt');
+        $this->db->from('ts_inventory_onboats o');
+        // $this->db->join('ts_inventory_colors c','o.inventory_color_id = c.inventory_color_id');
+        // $this->db->join('ts_inventory_items i','c.inventory_item_id = i.inventory_item_id');
+        $this->db->where('o.onboat_status',0);
+        // $this->db->where('i.inventory_item_id', $inventory_item_id);
+        $this->db->group_by('o.onboat_container,o.onboat_type,o.onboat_date');
+        $onboats = $this->db->get()->result_array();
+        // Get colors
+        $this->db->select('*');
+        $this->db->from('ts_inventory_colors');
+        $this->db->where('inventory_item_id', $inventory_item_id);
+        // $this->db->order_by('color_order');
+        $this->db->order_by('suggeststock','desc');
+        $colors = $this->db->get()->result_array();
+        $outcolors = [];
+        foreach ($colors as $color) {
+            $income = $this->inventory_color_income($color['inventory_color_id']);
+            $outcome = $this->inventory_color_outcome($color['inventory_color_id']);
+            $reserved = $this->inventory_color_reserved($color['inventory_color_id']);
+            $instock=$income-$outcome;
+            $available=$instock-$reserved;
+            $max=$color['suggeststock'];
+            $stockperc='';
+            $stockclass='';
+            if ($max!=0) {
+                $stockperc=round($instock/$max*100,0);
+                if ($stockperc <= $this->config->item('invoutstock')) {
+                    $stockclass = $this->outstockclass;
+                } elseif ($stockperc <= $this->config->item('invlowstock')) {
+                    $stockclass = $this->lowstockclass;
+                }
+            }
+            $outstock = QTYOutput($instock);
+            if (intval($instock) == 0) {
+                $outstock=$this->outstoklabel;
+                $stockclass = $this->emptystockclass;
+            }
+            $outavail = QTYOutput($available);
+            if (intval($available) == 0 ) {
+                $outavail=$this->outstoklabel;
+                $stockclass = $this->emptystockclass;
+            }
+            $totalclass='';
+            if (intval($available) <=0 ) {
+                $totalclass = 'emptytotal';
+            }
+            $outcolors[] = [
+                'id' => $color['inventory_color_id'],
+                'color' => $color['color'],
+                'percent' => $stockperc,
+                'stockclass' => $stockclass,
+                'instock' => $outstock,
+                'reserved' => $reserved,
+                'available' => $outavail,
+            ];
+            $idx = count($outcolors) - 1;
+            foreach ($onboats as $onboat) {
+                $outcolors[$idx]['onboat'.$onboat['onboat_container']]='';
+            }
+        }
+        // Add onboat
+        foreach ($onboats as $onboat) {
+            $this->db->select('o.inventory_color_id, o.onroutestock');
+            $this->db->from('ts_inventory_onboats o');
+            $this->db->join('ts_inventory_colors c', 'o.inventory_color_id = c.inventory_color_id');
+            $this->db->join('ts_inventory_items i','c.inventory_item_id = i.inventory_item_id');
+            $this->db->where('o.onboat_container', $onboat['onboat_container']);
+            $this->db->where('onboat_type', $onboat['onboat_type']);
+            $this->db->where('i.inventory_item_id', $inventory_item_id);
+            $onroads = $this->db->get()->result_array();
+            $idx = 0;
+            foreach ($outcolors as $outcolor) {
+                foreach ($onroads as $onroad) {
+                    if ($onroad['inventory_color_id']==$outcolor['id']) {
+                        $outcolors[$idx]['onboat'.$onboat['onboat_container']]=QTYOutput($onroad['onroutestock']);
+                        break;
+                    }
+                }
+                $idx++;
+            }
+        }
+        return [
+            'inventory' => $outcolors,
+            'onboats' => $onboats,
+        ];
     }
 
 }

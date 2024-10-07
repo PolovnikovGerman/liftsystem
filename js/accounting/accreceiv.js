@@ -243,11 +243,11 @@ function init_accreceive_content() {
     $(".ownsort").unbind('click').click(function () {
         var newsort = $(this).data('sort');
         var oldsort = $("#accreciveownsort").val();
-        var newdir = 'desc';
+        var newdir = 'asc';
         if (newsort==oldsort) {
             var olddir = $("#accreciveowndir").val();
-            if (olddir=='desc') {
-                newdir='asc';
+            if (olddir=='asc') {
+                newdir='desc';
             }
         }
         $("#accreciveownsort").val(newsort);
@@ -258,16 +258,35 @@ function init_accreceive_content() {
     $(".refundsort").unbind('click').click(function () {
         var newsort = $(this).data('sort');
         var oldsort = $("#accreceiverefundsort").val();
-        var newdir = 'desc';
+        var newdir = 'asc';
         if (newsort==oldsort) {
             var olddir = $("#accreceiverefunddir").val();
-            if (olddir=='desc') {
-                newdir='asc';
+            if (olddir=='asc') {
+                newdir='desc';
             }
         }
         $("#accreceiverefundsort").val(newsort);
         $("#accreceiverefunddir").val(newdir);
         init_accreceive_details();
     })
-    
+    // Change Status
+    $("select.debtstatus").unbind('change').change(function (){
+        var newval = $(this).val();
+        var order = $(this).data('order');
+        var params = new Array();
+        params.push({name: 'order_id', value: order});
+        params.push({name: 'debt_status', value: newval});
+        var url = '/accounting/debtstatus';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (newval=='') {
+                    $("select.debtstatus[data-order='"+order+"']").removeClass('checked');
+                } else {
+                    $("select.debtstatus[data-order='"+order+"']").addClass('checked');
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }

@@ -819,3 +819,11 @@ input.onlinecustomer {
     text-align:left;
     padding-left:15px;
 }
+/* Lock payment */
+.onlinepayment_lock {
+    float: left;
+    width: 20px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 14px;
+}

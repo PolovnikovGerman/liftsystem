@@ -187,6 +187,10 @@ Class Orders_model extends MY_Model
                 $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
+        // Custom orders
+        if (isset($filtr['custom_orders']) && $filtr['custom_orders']==1) {
+            $this->db->where_in('o.item_id', [$this->config->item('custom_id')]); // , $this->config->item('other_id')
+        }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
     }
@@ -1837,6 +1841,7 @@ Class Orders_model extends MY_Model
         $attres = $this->db->get()->result_array();
         $this->db->select('basket_id as order_id, unix_timestamp(created_time) as attdate, 0 as orderdat, 0 as attempt, 1 as basket');
         $this->db->from('sb_baskets');
+        $this->db->where('order_id', NULL);
         $this->db->where('unix_timestamp(created_time) >= ', $start);
         $this->db->where('unix_timestamp(created_time) <= ', $end);
         if ($brand!=='ALL') {
@@ -2466,6 +2471,9 @@ Class Orders_model extends MY_Model
                     $this->db->where_in('o.brand', ['SB','BT']);
                 }
             }
+            if (ifset($filtr,'custom_orders',0)==1) {
+                $this->db->where_in('o.item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id'),
+            }
         }
         $totalres=$this->db->get()->row_array();
         $balance = $this->count_totalbalance($filtr);
@@ -2684,6 +2692,9 @@ Class Orders_model extends MY_Model
                 $this->db->where('o.order_blank',0);
                 $this->db->where('o.arttype', $addtype);
             }
+            if (ifset($filtr,'custom_orders',0)==1) {
+                $this->db->where_in('o.item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id'),
+            }
         }
         $totalres=$this->db->get()->row_array();
         $totalres['balance'] = $this->count_totalbalance($filtr, $addtype);
@@ -2787,6 +2798,9 @@ Class Orders_model extends MY_Model
                 } else {
                     $this->db->where_in('o.brand', ['BT','SB']);
                 }
+            }
+            if (ifset($filtr,'custom_orders',0)==1) {
+                $this->db->where_in('o.item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id'),
             }
         }
         $this->db->limit($limit,$offset);
@@ -2913,6 +2927,15 @@ Class Orders_model extends MY_Model
                 }
             }
             $row['out_shipdate']=($row['shipdate']==0 ? '&nbsp;' : date('m/d', $row['shipdate']));
+            if (ifset($filtr,'custom_orders',0)==1) {
+                $this->db->select('p.artwork_preview_id, p.preview_link')->from('ts_artwork_previews p')->join('ts_artworks a','a.artwork_id=p.artwork_id')->where('a.order_id', $row['order_id'])->where_in('substring(p.preview_link,-3,3)',['jpg','png']);
+                $prevres = $this->db->get()->row_array();
+                if (ifset($prevres,'artwork_preview_id',0)>0) {
+                    $row['preview_link'] = $prevres['preview_link'];
+                } else {
+                    $row['preview_link'] = '';
+                }
+            }
             $out_array[]=$row;
         }
         return $out_array;
@@ -3069,6 +3092,9 @@ Class Orders_model extends MY_Model
                 $this->db->select('p.paycardnum');
                 $cartsql = "select order_id, group_concat(cardnum) as paycardnum from ts_order_payments group by order_id ";
                 $this->db->join("({$cartsql}) as p",'p.order_id=o.order_id','left');
+            }
+            if (ifset($postdata,'custom_orders',0)==1) {
+                $this->db->where_in('o.item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id'),
             }
             $this->db->order_by('o.order_id');
             $res=$this->db->get()->result_array();
@@ -3306,7 +3332,7 @@ Class Orders_model extends MY_Model
         return $labels;
     }
 
-    public function get_profit_limitdates($brand) {
+    public function get_profit_limitdates($brand, $custom_orders=0) {
         $this->db->select('max(order_date) as max_date, min(order_date) as min_date');
         $this->db->from('ts_orders');
         $this->db->where('is_canceled',0);
@@ -3316,6 +3342,9 @@ Class Orders_model extends MY_Model
             } else {
                 $this->db->where_in('brand', ['BT','SB']);
             }
+        }
+        if ($custom_orders==1) {
+            $this->db->where_in('item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id')
         }
         $res=$this->db->get()->row_array();
         if (isset($res['max_date'])) {
@@ -3336,7 +3365,7 @@ Class Orders_model extends MY_Model
     }
 
     /* Calculate average  */
-    public function calendar_orders($year, $brand) {
+    public function calendar_orders($year, $brand, $custom_orders=0) {
         /* Empty array */
         $empty_val='&mdash;';
         $kilolimit=10000;
@@ -3391,6 +3420,9 @@ Class Orders_model extends MY_Model
             }
         }
         $this->db->where("date_format(from_unixtime(order_date),'%Y')",$year);
+        if ($custom_orders==1) {
+            $this->db->where_in('ord.item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id'),
+        }
         $this->db->group_by("order_year");
         $res=$this->db->get()->row_array();
         $out = array(
@@ -5564,8 +5596,9 @@ Class Orders_model extends MY_Model
         $this->db->from('ts_artdata_sync s');
         $this->db->join('ts_orders o','o.order_id=s.order_id');
         $this->db->where('s.sended',0);
+        $this->db->where('o.brand != ','SR');
+        $this->db->order_by('s.artdata_sync_id');
         $datares=$this->db->get()->result_array();
-
         foreach ($datares as $row) {
             $postdata=array(
                 'sync'=>'data',
@@ -5638,7 +5671,9 @@ Class Orders_model extends MY_Model
                     $this->db->where('artdata_sync_id', $row['artdata_sync_id']);
                     $this->db->update('ts_artdata_sync');
                 } else {
-                    echo 'Error '.$array['error'].PHP_EOL;
+                    echo 'Export '.$row['order_num'].' Error '.PHP_EOL;
+                    // echo 'Error '.$array['error'].PHP_EOL;
+                    echo 'Error '.$res.PHP_EOL;
                 }
             }
             curl_close($curl);
@@ -6360,10 +6395,16 @@ Class Orders_model extends MY_Model
         if ($item['shipping_date']) {
             $this->db->set('shipdate', $item['shipping_date']);
         }
+        if ($item['arrive_date']) {
+            $this->db->set('deliverydate', $item['arrive_date']);
+        } else {
+            $this->db->set('deliverydate', 0);
+        }
         $this->db->set('order_confirmation', $confirmation);
         $this->db->set('order_system', 'new');
         $this->db->set('arttype','new');
         $this->db->set('brand', $orddata['brand']);
+        // $this->db->set('customer_code', new_customer_code());
         $this->db->insert('ts_orders');
         $neword = $this->db->insert_id();
         if ($neword != 0) {
@@ -6494,6 +6535,7 @@ Class Orders_model extends MY_Model
                 $this->db->set('shipping', $item['shipping_cost']);
             }
             $this->db->set('sales_tax', $item['tax']);
+            $this->db->set('arrive_date', $item['arrive_date']);
             $this->db->insert('ts_order_shipaddres');
             $adrid = $this->db->insert_id();
             // Shipping Cost
@@ -6534,6 +6576,11 @@ Class Orders_model extends MY_Model
 //                        $this->db->set('printshop_item_id', $item['printshop_inventory_id']);
 //                    }
                     $this->db->insert('ts_order_itemcolors');
+                    $itemcolorid = $this->db->insert_id();
+                    $this->db->set('created_at', time());
+                    $this->db->set('order_itemcolor_id', $itemcolorid);
+                    $this->db->set('trackservice', 'UPS');
+                    $this->db->insert('ts_order_trackings');
                 }
                 if ($blank == 1) {
                     $this->db->set('order_item_id', $item_id);
@@ -6733,12 +6780,17 @@ Class Orders_model extends MY_Model
             $this->db->set('cc_fee', ($item['total'] - $pureval));
             $this->db->update('ts_orders');
             // Charge value
+            // $cardnum = hide_cardnumber($orddata['payment_card_number']);
+            $cardnum = creditcard_format($orddata['payment_card_number']);
             $this->db->set('order_id', $neword);
-            $this->db->set('cardnum', $orddata['payment_card_number']);
+            // $this->db->set('cardnum', $orddata['payment_card_number']);
+            $this->db->set('cardnum', $cardnum);
             $this->db->set('exp_month', $orddata['payment_card_month']);
             $this->db->set('exp_year', $orddata['payment_card_year']);
-            $this->db->set('cardcode', $orddata['payment_card_vn']);
+            // Remove save cvv code
+            $this->db->set('cardcode', hide_card_code($orddata['payment_card_vn']));
             $this->db->set('autopay', 1);
+            $this->db->set('payment_save',1);
             $this->db->insert('ts_order_payments');
         }
         return $out;
@@ -7400,6 +7452,9 @@ Class Orders_model extends MY_Model
                     $this->db->where_in('o.brand', ['SB','BT']);
                 }
             }
+            if (ifset($filtr,'custom_orders',0)==1) {
+                $this->db->where_in('o.item_id', [$this->config->item('custom_id')]); // $this->config->item('other_id'),
+            }
         }
         if (!empty($addtype)) {
             if ($addtype=='blank') {
@@ -7974,49 +8029,10 @@ Class Orders_model extends MY_Model
             $totalref+=$refr['balance'];
         }
 
-        $own = [];
-        $refund = [];
-        if ($limit_year==0) {
-            $this->db->select('min(yearorder) as yearorder');
-            $this->db->from('v_order_balances');
-            $yearres = $this->db->get()->row_array();
-            $limit_year = $yearres['yearorder'];
-        }
-        for ($i=0; $i<1000; $i++) {
-            $yearown=0;
-            $yearref=0;
-            foreach ($ownsrc as $row) {
-                if ($row['yearorder']==($cur_year-$i)) {
-                    $yearown=$row['balance'];
-                    break;
-                }
-            }
-            foreach ($refsrc as $row) {
-                if ($row['yearorder']==($cur_year-$i)) {
-                    $yearref=$row['balance'];
-                    break;
-                }
-            }
-
-            $own[] = [
-                'year' => $cur_year - $i,
-                'balance' => $yearown,
-            ];
-
-            $refund[] = [
-                'year' => $cur_year - $i,
-                'balance' => $yearref,
-            ];
-            if (($cur_year - $i)<=$limit_year) {
-                break;
-            }
-        }
         return array(
             'totalown' => $totalown,
             'pastown' => $pastown,
             'totalrefund' => $totalref,
-            'own' => $own,
-            'refund' => $refund,
             'balance' => $totalown+$totalref,
         );
     }
@@ -8029,24 +8045,36 @@ Class Orders_model extends MY_Model
         if ($period > 0) {
             $limit_year = $cur_year - intval($period) + 1;
         }
-        $this->db->select('*');
-        $this->db->from('v_order_balances');
-        $this->db->where('balance > 0');
+        /* Prepare Approved view */
+        $this->db->select('a.order_id, (p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+
+        $this->db->select('v.*, coalesce(cnt,0) approved, o.debt_status, ob.customer_ponum');
+        $this->db->from('v_order_balances v');
+        $this->db->join('('.$proofsql.') p','p.order_id=v.order_id','left');
+        $this->db->join('ts_orders o','o.order_id=v.order_id');
+        $this->db->join('ts_order_billings ob','ob.order_id=v.order_id');
+        $this->db->where('v.balance > 0');
         if ($limit_year!==0) {
-            $this->db->where('yearorder >= ', $limit_year);
+            $this->db->where('v.yearorder >= ', $limit_year);
         }
         if ($brand!=='ALL') {
             if ($brand=='SR') {
-                $this->db->where('brand', $brand);
+                $this->db->where('v.brand', $brand);
             } else {
-                $this->db->where_in('brand', ['BT','SB']);
+                $this->db->where_in('v.brand', ['BT','SB']);
             }
         }
-        if ($ownsort!='owntype') {
+        if ($ownsort!='owntype' && $ownsort!=='ownapprove') {
             $this->db->order_by($ownsort, $owndirec);
         }
         $owndats = $this->db->get()->result_array();
         $owns=[];
+        $rundebt = 0;
         foreach ($owndats as $owndat) {
             $sclass = '';
             if ($owndat['balance_manage']==3) {
@@ -8062,6 +8090,11 @@ Class Orders_model extends MY_Model
             }
             $owndat['type']=$stype;
             $owndat['typeclass'] = $sclass;
+            $owndat['dueclass'] = 'current';
+            if ($owndat['batch_due'] < $daystart) {
+                $owndat['dueclass'] = 'pastdue';
+            }
+            $owndat['approved']=($owndat['approved']==0 ? 0 : 1);
             $owns[]=$owndat;
         }
         if ($ownsort=='owntype') {
@@ -8074,9 +8107,50 @@ Class Orders_model extends MY_Model
                     return $item2['type'] <=> $item1['type'];
                 });
             }
+        } elseif ($ownsort=='ownapprove') {
+            if ($owndirec=='asc') {
+                usort($owns, function ($item1, $item2) {
+                    return $item1['approved'] <=> $item2['approved'];
+                });
+            } else {
+                usort($owns, function ($item1, $item2) {
+                    return $item2['approved'] <=> $item1['approved'];
+                });
+            }
         }
         //
-
+        $ownidx = 0;
+        $startdue = $starttype = $starapprov = '';
+        $starstatus = '0';
+        $rundebt = 0;
+        foreach ($owns as $own) {
+            $datclass = '';
+            if ($ownsort=='batch_due' && $startdue!==$own['dueclass']) {
+                if (!empty($startdue)) {
+                    $datclass = 'separated';
+                }
+                $startdue = $own['dueclass'];
+            } elseif ($ownsort=='owntype' && $own['type']!==$starttype) {
+                if (!empty($starttype)) {
+                    $datclass = 'separated';
+                }
+                $starttype = $own['type'];
+            } elseif ($ownsort=='ownapprove' && $own['approved']!==$starapprov) {
+                if ($starapprov!=='') {
+                    $datclass = 'separated';
+                }
+                $starapprov = $own['approved'];
+            } elseif ($ownsort=='debt_status' && $own['debt_status']!==$starstatus) {
+                if ($starstatus!==0) {
+                    $datclass = 'separated';
+                }
+                $starstatus = $own['debt_status'];
+            }
+            $owns[$ownidx]['datclass'] = $datclass;
+            $rundebt += $owns[$ownidx]['balance'];
+            $owns[$ownidx]['rundebt'] = $rundebt;
+            $ownidx++;
+        }
         // Refund
         if ($refundsort=='balance') {
             if ($refunddirec=='asc') {
@@ -8242,7 +8316,7 @@ Class Orders_model extends MY_Model
         return $out;
     }
 
-    public function orderonline_details($order_id)
+    public function orderonline_details($order_id, $user_payment=0)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Unknown order'];
         $this->db->select("o.*,concat(coalesce(o.shipping_street1,''),' ',coalesce(o.shipping_street2,'')) as ship_street,sc.country_name as ship_cnt, sc.country_iso_code_2 as ship_cntcode");
@@ -8253,7 +8327,6 @@ Class Orders_model extends MY_Model
         $this->db->join('sb_countries sc', 'sc.country_id=o.shipping_country_id', 'left');
         $this->db->join('sb_countries bc', 'bc.country_id=o.billing_country_id', 'left');
         $this->db->join('sb_payment_cards pp', 'pp.payment_card_id=o.payment_card_type', 'left');
-        // $this->db->join('sb_items i', 'i.item_id=o.order_item_id', 'left');
         $this->db->join('sb_shipping_methods ss', 'ss.shipping_method_id=o.shipping_method', 'left');
         $this->db->join('sb_coupons disc', 'disc.coupon_id=o.coupon_id', 'left');
         $this->db->where('o.order_id', $order_id);
@@ -8350,6 +8423,14 @@ Class Orders_model extends MY_Model
                 $res['item_number'] = '';
             }
             $res['payment_exp'] = $res['payment_card_month'] . '/' . $res['payment_card_year'];
+            $res['payment_lock'] = 0;
+            if (intval($res['ccnumb_hide'])==0) {
+                $res['payment_card_number'] = hide_cardnumber($res['payment_card_number']);
+                $res['payment_card_vn']='';
+                if ($user_payment==1) {
+                    $res['payment_lock'] = 1;
+                }
+            }
             $pure_price = round($res['item_qty'] * $res['item_price'], 2);
             $res['pure_price'] = number_format($pure_price, 2);
             $res['total'] = number_format($res['order_total'], 2);
@@ -8358,5 +8439,124 @@ Class Orders_model extends MY_Model
             $out['data'] = $res;
         }
         return $out;
+    }
+
+    public function online_payment_view($code, $order_id, $usr_id)
+    {
+        $out=['result' => $this->error_result,'msg' => 'User Secret Key not Found'];
+        $user = usersession('usr_data');
+        $secret = $user['user_secret'];
+        if (!empty($secret)) {
+            $out['msg'] = 'Invalid Verification code';
+            $this->load->library('GoogleAuthenticator');
+            $ga = new GoogleAuthenticator();
+            $chkcode=$ga->getCode($secret);
+            if ($chkcode==$code) {
+                $out['msg'] = 'Order Not Found';
+                $this->db->select('order_id, payment_card_number, payment_card_vn')->from('sb_orders')->where('order_id', $order_id);
+                $data = $this->db->get()->row_array();
+                if (ifset($data,'order_id',0)==$order_id) {
+                    $out['result'] = $this->success_result;
+                    $out['cardnum'] = creditcard_format($data['payment_card_number']);
+                    $out['cardcode'] = $data['payment_card_vn'];
+                }
+            }
+        }
+        return $out;
+    }
+
+    public function update_debtstatus($order_id, $debt_status)
+    {
+        $out=['result' => $this->error_result,'msg' => 'Order Not Exist'];
+        $this->db->select('order_id')->from('ts_orders')->where('order_id', $order_id);
+        $orddat = $this->db->get()->row_array();
+        if (ifset($orddat, 'order_id',0)==$order_id) {
+            $out['result'] = $this->success_result;
+            $this->db->where('order_id', $order_id);
+            if (empty($debt_status)) {
+                $this->db->set('debt_status', NULL);
+            } else {
+                $this->db->set('debt_status', $debt_status);
+            }
+            $this->db->set('update_date', time());
+            $this->db->update('ts_orders');
+        }
+        return $out;
+    }
+
+    public function orderitems_price_report()
+    {
+        $dateend = strtotime(date('m/d/Y'));
+        $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
+        // Get Order, items
+        $brands = ['BT', 'SR'];
+        $this->load->model('leadorder_model');
+        foreach ($brands as $brand) {
+            $this->db->select('o.order_id,o.order_num, o.customer_name, u.user_name as last_upd, oi.order_item_id, oi.item_id, oi.template, oi.item_qty as itemqty, ic.item_description, ic.item_color, ic.item_price, ic.item_qty as colorqty');
+            $this->db->from('ts_orders o');
+            $this->db->join('ts_order_items oi','oi.order_id=o.order_id');
+            $this->db->join('ts_order_itemcolors ic','ic.order_item_id=oi.order_item_id');
+            $this->db->join('users u', 'o.update_usr=u.user_id');
+            $this->db->where('o.order_date >= ', $datestart);
+            $this->db->where('o.order_date < ',$dateend);
+            if ($brand=='SR') {
+                $this->db->where('o.brand', 'SR');
+            } else {
+                $this->db->where_in('o.brand',['SB','BT']);
+            }
+            $this->db->order_by('o.order_num, oi.order_item_id');
+            $items = $this->db->get()->result_array();
+            // Check items
+            $outdats = [];
+            foreach ($items as $item) {
+                if ($item['item_id']>0) {
+                    $price = $this->leadorder_model->_get_item_priceqty($item['item_id'], $item['template'], $item['itemqty']);
+                    if (round(floatval($price),3) > round(floatval($item['item_price']),3)) {
+                        $diff = (round(floatval($price),3) - round(floatval($item['item_price']),3))*$item['colorqty'];
+                        $outdats[] = [
+                            'order' => $item['order_num'],
+                            'customer' => $item['customer_name'],
+                            'user' => $item['last_upd'],
+                            'item' => $item['item_description'],
+                            'color' => $item['item_color'],
+                            'qty' => $item['colorqty'],
+                            'order_price' => $item['item_price'],
+                            'price' => $price,
+                            'diff' => $diff,
+                        ];
+                    }
+                }
+            }
+            if (count($outdats)>0) {
+                // Prepare email
+                $this->orderitems_price_email($brand, $outdats, $datestart);
+            }
+        }
+    }
+
+    private function orderitems_price_email($brand, $items, $date)
+    {
+        $this->load->library('email');
+        $email_conf = array(
+            'protocol'=>'sendmail',
+            'charset'=>'utf-8',
+            'wordwrap'=>TRUE,
+            'mailtype'=>'html',
+        );
+        $this->email->initialize($email_conf);
+
+        $mail_to=array($this->config->item('sage_email'), $this->config->item('sean_email'));
+        $mail_cc=array('to_german@yahoo.com');
+
+        $this->email->to($mail_to);
+        $this->email->cc($mail_cc);
+
+        $this->email->from('no-replay@bluetrack.com');
+        $title = 'Report about Low Orders Prices '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)').' ('.date('m/d/Y', $date).')';
+        $this->email->subject($title);
+        $mail_body = $this->load->view('messages/orderitems_price_view',['items' => $items], TRUE);
+        $this->email->message($mail_body);
+        $res=$this->email->send();
+        $this->email->clear(TRUE);
     }
 }

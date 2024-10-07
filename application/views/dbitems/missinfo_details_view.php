@@ -1,48 +1,8 @@
-<?php if ($size!=0) { ?>
-    Item Size <br>
-<?php } ?>
-<?php if ($weigth!=0) { ?>
-    Weigth<br>
-<?php } ?>
-<?php if ($material!=0) { ?>
-    Material<br>
-<?php } ?>
-<?php if ($lead_a!=0) { ?>
-    Lead A<br>
-<?php } ?>
-<?php if ($lead_b!=0) {?>
-    Lead B<br>
-<?php } ?>
-<?php if ($lead_c!=0) { ?>
-    Lead C<br>
-<?php } ?>
-<?php if ($colors!=0) { ?>
-    Colors<br>
-<?php } ?>
-<?php if($categories!=0) { ?>
-    Categories<br>
-<?php } ?>
-<?php if ($images!=0) { ?>
-    Images<br>
-<?php } ?>
-<?php if ($prices!=0) { ?>
-    Prices
-<?php } ?>
-<?php if ($item_keywords!=0) { ?>
-    Item Keywords<br>
-<?php } ?>
-<?php if ($url!=0) { ?>
-    Item URL<br>
-<?php } ?>
-<?php if ($meta_title!=0) { ?>
-    Meta Title
-<?php } ?>
-<?php if ($meta_description!=0) { ?>
-    Meta Description<br>
-<?php } ?>
-<?php if ($meta_keywords!=0) { ?>
-    Meta Keywords<br>
-<?php } ?>
-<?php if ($attributes!=0) { ?>
-    Attributes<br>
-<?php } ?>
+<div class="missing_info_details <?=$keyinfo==0 ? 'unvisible' : ''?>">Key Info</div>
+<div class="missing_info_details <?=$similar==0 ? 'unvisible' : ''?>">Similar</div>
+<div class="missing_info_details <?=$supplier==0 ? 'unvisible' : ''?>">Supplier</div>
+<div class="missing_info_details <?=$imagescolors==0 ? 'unvisible' : ''?>">Images</div>
+<div class="missing_info_details <?=$prices==0 ? 'unvisible' : ''?>">Pricing</div>
+<div class="missing_info_details <?=$printing==0 ? 'unvisible' : ''?>">Printing</div>
+<div class="missing_info_details <?=$meta==0 ? 'unvisible' : ''?>">Meta</div>
+<div class="missing_info_details <?=$shiping==0 ? 'unvisible' : ''?>">Shipping</div>

@@ -40,6 +40,13 @@ class Leadorder extends MY_Controller
             if ($order==0) {
                 $res=$this->leadorder_model->add_newlead_order($this->USR_ID, $brand);
                 $edit=1;
+                // Add items list
+                $this->load->model('orders_model');
+                $dboptions=array(
+                    'exclude'=>array(-4, -5, -2),
+                    'brand' => ($brand=='SR') ? 'SR' : 'BT',
+                );
+                $res['itemslist']=$this->orders_model->get_item_list($dboptions);
             } else {
                 $res=$this->leadorder_model->get_leadorder($order, $this->USR_ID, $brand);
                 $edit=(isset($postdata['edit']) ? $postdata['edit'] : 0);
@@ -57,7 +64,7 @@ class Leadorder extends MY_Controller
                 if ($order==0) {
                     $options['order_id']=0;
                     $options['order_head']=$this->load->view('leadorderdetails/head_order_view', $orddata,TRUE);
-                    $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, 1);
+                    $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 1);
                     $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                     $options['order_data']=$order_data;
                     $options['leadsession']=$leadsession;
@@ -68,6 +75,7 @@ class Leadorder extends MY_Controller
                         'prvorder' => 0,
                         'nxtorder' => 0,
                         'order_id' => 0,
+                        'brand' => $brand
                     ];
                     $header = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
                     $locking='';
@@ -86,9 +94,10 @@ class Leadorder extends MY_Controller
                             'prvorder' => $res['prvorder'],
                             'nxtorder' => $res['nxtorder'],
                             'order_id' => $orddata['order_id'],
+                            'brand' => $brand,
                         ];
                         // Build View
-                        $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, 0);
+                        $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT,0);
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
                         $head_options['unlocked']=$engade_res['result'];
@@ -128,9 +137,10 @@ class Leadorder extends MY_Controller
                             'order_head' => $this->load->view('leadorderdetails/head_order_edit', $orddata,TRUE),
                             'prvorder' => $res['prvorder'],
                             'nxtorder' => $res['nxtorder'],
+                            'brand' => $res['order']['brand'],
                         ];
                         // Build View
-                        $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $edit);
+                        $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, $edit);
 
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
@@ -217,7 +227,7 @@ class Leadorder extends MY_Controller
                 $mdata['prvorder']=$res['prvorder'];
                 $mdata['nxtorder']=$res['nxtorder'];
                 $mdata['order_system']=$res['order_system_type'];
-                $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE,0);
+                $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 0);
                 /* Save to session */
                 $leadorder=array(
                     'order'=>$orddata,
@@ -374,10 +384,10 @@ class Leadorder extends MY_Controller
                     $error = '';
                     $options=array();
                     $orddata=$res['order'];
-                    // Build Head                    
+                    // Build Head
                     $options['order_head']=$this->load->view('leadorderdetails/head_order_view', $orddata,TRUE);
                     // Build View
-                    $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE,1);
+                    $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 1);
 
                     $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                     // Build Content
@@ -393,6 +403,7 @@ class Leadorder extends MY_Controller
                         'prvorder' => 0,
                         'nxtorder' => 0,
                         'order_id' => 0,
+                        'brand' => $orddata['brand'],
                     ];
                     $mdata['header'] = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
                     /* Save to session */
@@ -430,13 +441,120 @@ class Leadorder extends MY_Controller
                     }
                     usersession($ordersession, $leadorder);
                 }
-                $this->ajaxResponse($mdata, $error);
+                // $this->ajaxResponse($mdata, $error);
             }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
 
+//    public function leadorder_dublicate($ordersession) {
+//        $leadorder = usersession($ordersession);
+//        usersession($ordersession,NULL);
+//        if (!empty($leadorder)) {
+//            $res = $this->leadorder_model->dublicate_order($leadorder, $this->USR_ID);
+//            $error=$res['msg'];
+//            if ($res['result']==$this->success_result) {
+//                $content_options = [];
+//                $options = array();
+//                $orddata = $res['order'];
+//                // Build Head
+//                $options['order_head'] = $this->load->view('leadorderdetails/head_order_view', $orddata, TRUE);
+//                // Build View
+//                $data = $this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, 1);
+//
+//                $order_data = $this->load->view('leadorderdetails/order_content_view', $data, TRUE);
+//                // Build Content
+//                $options['order_data'] = $order_data;
+//                $options['order_confirmation'] = 'Duplicate';
+//                $options['leadsession'] = $ordersession;
+//                $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
+//                $options['current_page'] = 'orders';
+//                // $ions['user_id'] = $this->USR_ID;
+//                // $options['user_name'] = $this->USER_NAME;
+//                $gmaps = 0;
+//                if (!empty($this->config->item('google_map_key'))) {
+//                    $gmaps = 1;
+//                }
+//                $head['gmaps'] = $gmaps;
+//                // Uploader
+//                $head['scripts'][]=array('src'=>'/js/adminpage/fileuploader.js');
+//                $head['styles'][]=array('style'=>'/css/page_view/fileuploader.css');
+//                if ($gmaps==1) {
+//                    $head['scripts'][]=array('src'=>'/js/leads/order_address.js');
+//                }
+//                // File Download
+//                $head['scripts'][]=array('src'=>'/js/adminpage/jquery.fileDownload.js');
+//                // Datepicker
+//                $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
+//                $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+//                // Select 2
+//                $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
+//                $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
+//
+//                // Order popup
+//                $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
+//                $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
+//                $head['styles'][] = array('style'=>'/css/leadorder/duplicate_order.css');
+//                $head['scripts'][]=array('src'=>'/js/leads/duplicate_order.js');
+//
+//                $content = $this->load->view('leadorderdetails/placeorder_menu_edit', $options, TRUE);
+//                $content_options['content'] = $content;
+//                $head_options = [
+//                    'order_head' => $this->load->view('leadorderdetails/head_placeorder_edit', $orddata, TRUE),
+//                    'prvorder' => 0,
+//                    'nxtorder' => 0,
+//                    'order_id' => 0,
+//                    'brand' => $orddata['brand'],
+//                ];
+//                $content_options['header'] = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
+//                /* Save to session */
+//                if ($res['order_system_type'] == 'old') {
+//                    $leadorder = array(
+//                        'order' => $orddata,
+//                        'payments' => $res['payments'],
+//                        'artwork' => $res['artwork'],
+//                        'artlocations' => $res['artlocations'],
+//                        'artproofs' => $res['proofdocs'],
+//                        'message' => $res['message'],
+//                        'order_system' => $res['order_system_type'],
+//                        'locrecid' => 0,
+//                    );
+//                } else {
+//                    $leadorder = array(
+//                        'order' => $orddata,
+//                        'payments' => $res['payments'],
+//                        'artwork' => $res['artwork'],
+//                        'artlocations' => $res['artlocations'],
+//                        'artproofs' => $res['proofdocs'],
+//                        'message' => $res['message'],
+//                        'contacts' => $res['contacts'],
+//                        'order_items' => $res['order_items'],
+//                        'order_system' => $res['order_system_type'],
+//                        'shipping' => $res['shipping'],
+//                        'shipping_address' => $res['shipping_address'],
+//                        'billing' => $res['order_billing'],
+//                        'charges' => $res['charges'],
+//                        'claydocs' => [],
+//                        'previewdocs' => [],
+//                        'delrecords' => array(),
+//                        'locrecid' => 0,
+//                    );
+//                }
+//                usersession($ordersession, $leadorder);
+//                $dat = $this->template->prepare_duplicateorder($head);
+//                // $content_options['left_menu'] = $dat['left_menu'];
+//                $content_options['brand'] = $orddata['brand'];
+//                $content_view = $this->load->view('duplcate_orders/page_view', $content_options, TRUE);
+//                $dat['content'] = $content_view;
+//                $this->load->view('public_pages/public_template_view', $dat);
+//            } else {
+//                show_404();
+//            }
+//        } else {
+//            show_404();
+//        }
+//    }
 
     public function change_leadorder_item() {
         if ($this->isAjax()) {
@@ -919,6 +1037,341 @@ class Leadorder extends MY_Controller
         show_404();
     }
 
+    public function preparenewitem()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres = $this->_lockorder($leadorder);
+                if ($locres['result'] == $this->error_result) {
+                    $leadorder = usersession($ordersession, NULL);
+                    $error = $locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                } else {
+                    $res = $this->leadorder_model->preparenewitem($leadorder, $ordersession);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $mdata['orderitem'] = $res['order_item_id'];
+
+                        $order_items=$res['order_items'];
+                        $order = $res['order'];
+                        $this->load->model('orders_model');
+                        $dboptions=array(
+                            'exclude'=>array(-4, -5, -2),
+                            'brand' => ($order['brand']=='SR') ? 'SR' : 'BT',
+                        );
+                        $itemslist = $this->orders_model->get_item_list($dboptions);
+
+                        $content='';
+                        foreach ($order_items as $irow) {
+                            $imprints=$irow['imprints'];
+                            $imprint_options=array(
+                                'order_item_id'=>$irow['order_item_id'],
+                                'imprints'=>$imprints,
+                            );
+                            $imprintview=$this->load->view('leadorderdetails/imprint_data_edit', $imprint_options, TRUE);
+                            $showinvent = 0;
+                            if ($order['brand']=='SR' && $irow['item_id']>0) {
+                                $showinvent = 1;
+                            }
+                            $item_options=array(
+                                'order_item_id'=>$irow['order_item_id'],
+                                'items'=>$irow['items'],
+                                'imprintview'=>$imprintview,
+                                'edit'=>1,
+                                'item_id'=>$irow['item_id'],
+                                'brand' => $order['brand'],
+                                'itemslist' => $itemslist,
+                                'showinvent' => $showinvent,
+                            );
+                            if ($irow['order_item_id']==$res['order_item_id']) {
+                                $content.=$this->load->view('leadorderdetails/items_data_add', $item_options, TRUE);
+                            } else {
+                                $content.=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                            }
+                        }
+                        $mdata['items_content']=$content;
+                    }
+                }
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // New item
+    public function saveneworderitem()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                } else {
+                    $orderitem_id = ifset($postdata, 'orderitem_id',0);
+                    $item_id = ifset($postdata, 'item_id', 0);
+                    if (empty($item_id)) {
+                        $error = 'Select Item';
+                    } elseif (empty($orderitem_id)) {
+                        $error = 'Select Order Item';
+                    } else {
+                        $res = $this->leadorder_model->saveneworderitem($leadorder, $item_id, $orderitem_id, $ordersession);
+                        $error = $res['msg'];
+                        if ($res['result']==$this->success_result) {
+                            $error = '';
+                            $item = $res['item'];
+                            // Prepare out
+                            $special = 0;
+                            if ($item['item_id']<0) {
+                                $special = 1;
+                            }
+                            $mdata['special'] = $special;
+                            $options = [
+                                'order_item_id' => $orderitem_id,
+                                'item_id' => $item_id,
+                                'item_color' => $item['items'][0]['item_color'],
+                                'colors' => $item['colors'],
+                                'qty' => $item['item_qty'],
+                                'price' => $item['base_price'],
+                            ];
+                            if ($special==0) {
+                                if ($res['brand']=='SR') {
+                                    $mdata['outcolors'] = $this->load->view('leadorderdetails/sradditem_color_view', $options, true);
+                                } else {
+                                    $mdata['outcolors'] = $this->load->view('leadorderdetails/item_color_choice', $options, true);
+                                }
+                            } else {
+                                $mdata['outcolors'] = '&nbsp;';
+                            }
+                            $mdata['qty'] = $this->load->view('leadorderdetails/additem_qty_view', $options, TRUE); // $item['item_qty']
+                            $mdata['price'] = $this->load->view('leadorderdetails/additem_price_view', $options, TRUE); // $item['base_price']
+                            $mdata['subtotal'] = MoneyOutput($item['item_subtotal']);
+                            $mdata['brand'] = $res['brand'];
+                        }
+                    }
+                }
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function inventoryitem()
+    {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                } else {
+                    $orderitem_id = ifset($postdata, 'orderitem_id',0);
+                    $itemstatus = ifset($postdata, 'itemstatus',0);
+                    if (empty($orderitem_id)) {
+                        $error = 'Select Order Item';
+                    } else {
+                        $res = $this->leadorder_model->orderiteminventory($leadorder, $orderitem_id, $ordersession);
+                        $error = $res['msg'];
+                        if ($res['result']==$this->success_result) {
+                            $error = '';
+                            $options = [
+                                'onboats' => $res['onboats'],
+                                'invents' => $res['invents'],
+                                'itemstatus' => $itemstatus,
+                            ];
+                            $mdata['content'] = $this->load->view('leadorderdetails/itemcolor_inventory_view', $options, TRUE);
+                        }
+                    }
+                }
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function saveneworderitemparam()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata=$this->input->post();
+            $ordersession= ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $orderitem_id = ifset($postdata, 'orderitem_id',0);
+                $paramname = ifset($postdata,'paramname','');
+                $newval = ifset($postdata, 'newval', '');
+                if (empty($orderitem_id)) {
+                    $error = 'Select Order Item';
+                } elseif (empty($paramname)) {
+                    $error = 'Empty Parameter';
+                } else {
+                    $res = $this->leadorder_model->saveneworderitemparam($leadorder, $orderitem_id, $paramname, $newval, $ordersession);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $options = [
+                            'order_item_id' => $orderitem_id,
+                            'item_id' => $res['item_id'],
+                            'item_color' => $res['color'],
+                            'colors' => $res['colors'],
+                            'qty' => $res['item_qty'],
+                            'price' => $res['base_price'],
+                        ];
+                        if ($res['brand']=='SR') {
+                            $mdata['outcolors'] = $this->load->view('leadorderdetails/sradditem_color_view', $options, true);
+                        } else {
+                            $mdata['outcolors'] = $this->load->view('leadorderdetails/item_color_choice', $options, true);
+                        }
+                        $mdata['qty'] = $this->load->view('leadorderdetails/additem_qty_view', $options, TRUE); // $item['item_qty']
+                        $mdata['price'] = $this->load->view('leadorderdetails/additem_price_view', $options, TRUE); // $item['base_price']
+                        $mdata['subtotal'] = MoneyOutput($res['item_subtotal']);
+                        $mdata['brand'] = $res['brand'];
+                    }
+                }
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function neworderitemimprints()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata=$this->input->post();
+            $ordersession= ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres = $this->_lockorder($leadorder);
+                if ($locres['result'] == $this->error_result) {
+                    $leadorder = usersession($ordersession, NULL);
+                    $error = $locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $orderitem_id = ifset($postdata, 'orderitem_id', 0);
+                $imprdata = $this->_prepare_imprint_details($leadorder, $orderitem_id, $ordersession, 'new');
+                $error = $imprdata['msg'];
+                if ($imprdata['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['imprintview'] = $imprdata['content'];
+                }
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Cancel new Item
+    public function cancelneworderitem()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata=$this->input->post();
+            $ordersession= ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres = $this->_lockorder($leadorder);
+                if ($locres['result'] == $this->error_result) {
+                    $leadorder = usersession($ordersession, NULL);
+                    $error = $locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $orderitem_id = ifset($postdata, 'orderitem_id', 0);
+                $res = $this->leadorder_model->cancelneworderitem($leadorder, $orderitem_id, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $order_items=$res['order_items'];
+                    $order = $res['order'];
+                    $content='';
+                    $mdata['newitem'] = 0;
+                    foreach ($order_items as $irow) {
+                        $imprints=$irow['imprints'];
+                        $imprint_options=array(
+                            'order_item_id'=>$irow['order_item_id'],
+                            'imprints'=>$imprints,
+                        );
+                        $imprintview=$this->load->view('leadorderdetails/imprint_data_edit', $imprint_options, TRUE);
+                        $showinvent = 0;
+                        if ($order['brand']=='SR' && $irow['item_id']>0) {
+                            $showinvent = 1;
+                        }
+                        $item_options=array(
+                            'order_item_id'=>$irow['order_item_id'],
+                            'items'=>$irow['items'],
+                            'imprintview'=>$imprintview,
+                            'edit'=>1,
+                            'item_id'=>$irow['item_id'],
+                            'brand' => $order['brand'],
+                            'showinvent' => $showinvent,
+                        );
+                        if ($irow['item_id']=='') {
+                            $this->load->model('orders_model');
+                            $dboptions=array(
+                                'exclude'=>array(-4, -5, -2),
+                                'brand' => ($order['brand']=='SR') ? 'SR' : 'BT',
+                            );
+                            $itemslist=$this->orders_model->get_item_list($dboptions);
+                            $item_options['itemslist'] = $itemslist;
+                            $content.=$this->load->view('leadorderdetails/items_data_add', $item_options, TRUE);
+                            $mdata['newitem'] = 1;
+                        } else {
+                            $content.=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                        }
+                    }
+                    $mdata['items_content']=$content;
+                }
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Save Order item
     public function save_orderitem() {
         if ($this->isAjax()) {
@@ -938,22 +1391,25 @@ class Leadorder extends MY_Controller
                     $this->ajaxResponse($mdata, $error);
                 }
                 $item_id=(isset($postdata['item_id']) ? intval($postdata['item_id']) : 0);
-                $custom_item=(isset($postdata['order_items']) ? $postdata['order_items'] : '');
+                // $custom_item=(isset($postdata['order_items']) ? $postdata['order_items'] : '');
+                $orderitem_id = ifset($postdata,'orderitem_id',0);
                 if (empty($item_id)) {
-                    $error='Select Item';
+                    $error = 'Select Item';
+                } elseif (empty($orderitem_id)) {
+                    $error = 'Select Order Item';
                 } else {
                     $mdata['order_system']=$leadorder['order_system'];
                     if ($leadorder['order_system']=='old') {
-                        $res=$this->leadorder_model->save_item($leadorder, $item_id, $custom_item, $ordersession);
-                        if ($res['result']==$this->error_result) {
-                            $error=$res['msg'];
-                        } else {
+                        $res=$this->leadorder_model->save_item($leadorder, $item_id, $orderitem_id, $ordersession);
+                        $error=$res['msg'];
+                        if ($res['result']==$this->success_result) {
+                            $error = '';
                             $mdata['item_num']=$res['item_number'];
                             $mdata['item_description']=$res['item_name'];
                         }
                     } else {
                         // New Order
-                        $res=$this->leadorder_model->save_order_items($leadorder, $item_id, $custom_item, $ordersession);
+                        $res=$this->leadorder_model->save_order_items($leadorder, $item_id, $orderitem_id, $ordersession);
                         $error=$res['msg'];
                         if ($res['result']==$this->success_result) {
                             $error = '';
@@ -999,12 +1455,18 @@ class Leadorder extends MY_Controller
                                     'imprints'=>$imprints,
                                 );
                                 $imprintview=$this->load->view('leadorderdetails/imprint_data_edit', $imprint_options, TRUE);
+                                $showinvent = 0;
+                                if ($order['brand']=='SR' && $irow['item_id']>0) {
+                                    $showinvent = 1;
+                                }
                                 $item_options=array(
                                     'order_item_id'=>$irow['order_item_id'],
                                     'items'=>$irow['items'],
                                     'imprintview'=>$imprintview,
                                     'edit'=>1,
                                     'item_id'=>$irow['item_id'],
+                                    'brand' => $order['brand'],
+                                    'showinvent' => $showinvent,
                                 );
                                 $content.=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
                             }
@@ -1053,6 +1515,7 @@ class Leadorder extends MY_Controller
                                 );
                                 $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
                             }
+                            $mdata['extendview'] = $res['extendview'];
                         }
                     }
                 }
@@ -1122,6 +1585,7 @@ class Leadorder extends MY_Controller
                     $order_items = $res['order_items'];
 
                     $content = '';
+                    $mdata['newitem'] = 0;
                     foreach ($order_items as $irow) {
                         $imprints = $irow['imprints'];
                         $imprint_options = array(
@@ -1129,14 +1593,33 @@ class Leadorder extends MY_Controller
                             'imprints' => $imprints,
                         );
                         $imprintview = $this->load->view('leadorderdetails/imprint_data_edit', $imprint_options, TRUE);
+                        $showinvent = 0;
+                        if ($order['brand']=='SR' && $irow['item_id']>0) {
+                            $showinvent = 1;
+                        }
                         $item_options = array(
                             'order_item_id' => $irow['order_item_id'],
                             'items' => $irow['items'],
                             'imprintview' => $imprintview,
                             'edit' => 1,
                             'item_id' => $irow['item_id'],
+                            'showinvent' => $showinvent,
+                            'brand' => $order['brand'],
                         );
-                        $content.=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                        if ($irow['item_id']=='') {
+                            $this->load->model('orders_model');
+                            $dboptions=array(
+                                'exclude'=>array(-4, -5, -2),
+                                'brand' => ($order['brand']=='SR') ? 'SR' : 'BT',
+                            );
+                            $itemslist=$this->orders_model->get_item_list($dboptions);
+                            $item_options['itemslist'] = $itemslist;
+                            $content.=$this->load->view('leadorderdetails/items_data_add', $item_options, TRUE);
+                            $mdata['newitem'] = 1;
+                        } else {
+                            $content.=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                        }
+                        // $content.=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
                     }
                     $mdata['content'] = $content;
                     /* Rush */
@@ -1192,7 +1675,19 @@ class Leadorder extends MY_Controller
                         }
                     }
                     $mdata['locat_view']=$locat_view;
-
+                    // Tracking
+                    $mdata['trackbody'] = '';
+                    $orderitems = $leadorder['order_items'];
+                    if (count($orderitems)==1) {
+                        $itemdat = $orderitems[0]['items'];
+                        if (count($itemdat)==1) {
+                            $mdata['trackbody'] = $this->_prepare_tracking_view($leadorder, 1);
+                        } else {
+                            $mdata['trackbody'] = $this->_prepare_multitrack_view($leadorder,1);
+                        }
+                    } elseif (count($orderitems)>1) {
+                        $mdata['trackbody'] = $this->_prepare_multitrack_view($leadorder,1);
+                    }
                 }
             }
             // Calc new period for lock
@@ -1852,17 +2347,24 @@ class Leadorder extends MY_Controller
                 $order_item_id=$postdata['order_item'];
                 $item_id=$postdata['item'];
                 $res=$this->leadorder_model->add_itemcolor($leadorder, $order_item_id, $item_id, $ordersession);
-                if ($res['result']==$this->error_result) {
-                    $error=$res['msg'];
-                } else {
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
                     $order_items=$res['items'];
                     $imprints=$order_items['imprints'];
                     $imprintview=$this->load->view('leadorderdetails/imprint_data_edit', array('imprints'=>$imprints), TRUE);
+                    $showinvent = 0;
+                    if ($res['order']['brand']=='SR' && $order_items['item_id']>0) {
+                        $showinvent = 1;
+                    }
                     $item_options=array(
                         'order_item_id'=>$order_items['order_item_id'],
                         'items'=>$order_items['items'],
                         'imprintview'=>$imprintview,
                         'edit'=>1,
+                        'showinvent' => $showinvent,
+                        'brand' => $res['order']['brand'],
+                        'item_id' => $order_items['item_id'],
                     );
                     $mdata['content']=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
                 }
@@ -1997,6 +2499,21 @@ class Leadorder extends MY_Controller
                                 $rushview=$this->load->view('leadorderdetails/rushlist_view', $rushopt, TRUE);
 
                                 $mdata['shipcost']=$this->_build_multiship_view($shipping_address, $rushview, $order, $shipping);
+                            }
+                        }
+                        $mdata['trackcode'] = 0;
+                        if ($postdata['fldname']=='item_qty' || $postdata['fldname']=='item_description' || $postdata['fldname']=='item_color') {
+                            $mdata['trackcode'] = 1;
+                            $orderitems = $leadorder['order_items'];
+                            if (count($orderitems)==1) {
+                                $itemdat = $orderitems[0]['items'];
+                                if (count($itemdat)==1) {
+                                    $mdata['trackbody'] = $this->_prepare_tracking_view($leadorder, 1);
+                                } else {
+                                    $mdata['trackbody'] = $this->_prepare_multitrack_view($leadorder,1);
+                                }
+                            } else {
+                                $mdata['trackbody'] = $this->_prepare_multitrack_view($leadorder,1);
                             }
                         }
                     }
@@ -2271,14 +2788,44 @@ class Leadorder extends MY_Controller
                 }
 
                 $res=$this->leadorder_model->save_imprintdetails($leadorder, $imprint_details, $ordersession, $imprintdetails);
-                if ($res['result']==$this->error_result) {
-                    $error=$res['msg'];
-                } else {
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
                     $leadorder=usersession($ordersession);
                     $order=$leadorder['order'];
-                    $mdata['order_revenue']=MoneyOutput($order['revenue']);
                     $shipping=$leadorder['shipping'];
                     $shipping_address=$leadorder['shipping_address'];
+                    // $order_items
+                    $mdata['ordersystem']=$leadorder['order_system'];
+                    $mdata['newitem'] = $res['itemstatus']=='new' ? 1 : 0;
+                    if ($res['itemstatus']=='new') {
+                        $order_items = $leadorder['order_items'];
+                        $content='';
+                        foreach ($order_items as $irow) {
+                            $imprints=$irow['imprints'];
+                            $imprint_options=array(
+                                'order_item_id'=>$irow['order_item_id'],
+                                'imprints'=>$imprints,
+                            );
+                            $imprintview=$this->load->view('leadorderdetails/imprint_data_edit', $imprint_options, TRUE);
+                            $showinvent = 0;
+                            if ($order['brand']=='SR' && $irow['item_id']>0) {
+                                $showinvent = 1;
+                            }
+                            $item_options=array(
+                                'order_item_id'=>$irow['order_item_id'],
+                                'items'=>$irow['items'],
+                                'imprintview'=>$imprintview,
+                                'edit'=>1,
+                                'item_id'=>$irow['item_id'],
+                                'brand' => $order['brand'],
+                                'showinvent' => $showinvent,
+                            );
+                            $content.=$this->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                        }
+                        $mdata['items_content']=$content;
+                    }
+                    $mdata['order_revenue']=MoneyOutput($order['revenue']);
                     $mdata['shipdate']=$shipping['shipdate'];
                     $mdata['rush_price']=$shipping['rush_price'];
                     $mdata['is_shipping']=$order['is_shipping'];
@@ -2301,14 +2848,15 @@ class Leadorder extends MY_Controller
                     $mdata['total_due']=$this->load->view('leadorderdetails/totaldue_data_view', $dueoptions, TRUE);
                     $mdata['tax']=MoneyOutput($order['tax']);
                     $mdata['profit_content']=$this->_profit_data_view($order);
-
-                    $order_items=$res['item'];
-                    $imprint_options=array(
-                        'order_item_id'=>$order_items['order_item_id'],
-                        'imprints'=>$order_items['imprints'],
-                    );
-                    $mdata['imprint_content']=$this->load->view('leadorderdetails/imprint_data_edit', $imprint_options, TRUE);
-                    $mdata['order_item_id']=$order_items['order_item_id'];
+                    if ($res['itemstatus']=='old') {
+                        $order_items=$res['item'];
+                        $imprint_options=array(
+                            'order_item_id'=>$order_items['order_item_id'],
+                            'imprints'=>$order_items['imprints'],
+                        );
+                        $mdata['imprint_content']=$this->load->view('leadorderdetails/imprint_data_edit', $imprint_options, TRUE);
+                        $mdata['order_item_id']=$order_items['order_item_id'];
+                    }
                     $mdata['order_blank']=$res['order_blank'];
                     $mdata['shiprebuild']=$res['shiprebuild'];
                     if ($res['shiprebuild']==1) {
@@ -2352,6 +2900,45 @@ class Leadorder extends MY_Controller
                             }
                         }
                         $mdata['locat_view']=$locat_view;
+                    }
+                    $mdata['shipcount'] = $res['shipcount'];
+                    if ($res['shipcount']==$this->success_result) {
+                        if ($mdata['cntshipadrr']==1) {
+                            $mdata['shipaddress'] = $shipping_address[0]['order_shipaddr_id'];
+                            // Ship Rates
+                            $shipcost=$shipping_address[0]['shipping_costs'];
+                            $costoptions=array(
+                                'shipadr'=>$shipping_address[0]['order_shipaddr_id'],
+                                'shipcost'=>$shipcost,
+                            );
+                            $mdata['shipcost']=$this->load->view('leadorderdetails/ship_cost_edit', $costoptions, TRUE);
+                            // Tax View
+                            $shipaddr=$shipping_address[0];
+                            if ($shipaddr['taxview']==0) {
+                                $taxview=$this->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
+                            } else {
+                                $taxview=$this->load->view('leadorderdetails/tax_data_edit', $shipaddr, TRUE);
+                            }
+                            $mdata['taxview']=$taxview;
+                        }
+                        $dateoptions=array(
+                            'edit'=>1,
+                            'shipping'=>$shipping,
+                            'user_role' => $this->USR_ROLE,
+                        );
+                        $mdata['shipdates_content']=$this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
+                    }
+                    // Tracking info
+                    $orderitems = $leadorder['order_items'];
+                    if (count($orderitems)==1) {
+                        $itemdat = $orderitems[0]['items'];
+                        if (count($itemdat)==1) {
+                            $mdata['trackbody'] = $this->_prepare_tracking_view($leadorder, 1);
+                        } else {
+                            $mdata['trackbody'] = $this->_prepare_multitrack_view($leadorder,1);
+                        }
+                    } else {
+                        $mdata['trackbody'] = $this->_prepare_multitrack_view($leadorder,1);
                     }
                 }
             }
@@ -2448,6 +3035,18 @@ class Leadorder extends MY_Controller
                         $mdata['total_due']=$this->load->view('leadorderdetails/totaldue_data_view', $dueoptions, TRUE);
                         $mdata['tax']=MoneyOutput($order['tax']);
                         $mdata['profit_content']=$this->_profit_data_view($order);
+                        $order_items = $leadorder['order_items'];
+                        $mdata['trackcount'] = 1;
+                        if (count($order_items)==1) {
+                            $itemdat = $order_items[0]['items'];
+                            if (count($itemdat)==1) {
+                                $mdata['trackbodby'] = $this->_prepare_tracking_view($leadorder, 1);
+                            } else {
+                                $mdata['trackbodby'] = $this->_prepare_multitrack_view($leadorder, 1);
+                            }
+                        } else {
+                            $mdata['trackbodby'] = $this->_prepare_multitrack_view($leadorder, 1);
+                        }
                         if ($fldname=='country_id') {
                             if (count($res['states'])==0) {
                                 $mdata['stateview']='&nbsp;';
@@ -2619,6 +3218,10 @@ class Leadorder extends MY_Controller
                         if ($fldname=='cardnum') {
                             $mdata['cardnum']=$res['charge']['cardnum'];
                         }
+                        $mdata['hidelock'] = 0;
+                        if ($fldname=='cardnum' || $fldname=='cardcode') {
+                            $mdata['hidelock'] = 1;
+                        }
                         $order=$leadorder['order'];
                         $shipping=$leadorder['shipping'];
                         $shipping_address=$leadorder['shipping_address'];
@@ -2711,9 +3314,10 @@ class Leadorder extends MY_Controller
                                 'order_head' => $this->load->view('leadorderdetails/head_order_edit', $orddata,TRUE),
                                 'prvorder' => $res['prvorder'],
                                 'nxtorder' => $res['nxtorder'],
+                                'brand' => $brand,
                             ];
                             // Build View
-                            $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, 1);
+                            $data=$this->template->_prepare_leadorder_view($res,$this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 1);
                             $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                             // Build Content
                             $options['order_data']=$order_data;
@@ -2800,9 +3404,12 @@ class Leadorder extends MY_Controller
                     $order = $leadorder['order'];
                     $order_id=$order['order_id'];
                     $charges=$leadorder['charges'];
+                    $user = usersession('usr_data');
                     $options=array(
                         'charges'=>$charges,
                         'order_id'=>$order_id,
+                        'payment_user' => $this->USER_PAYMENT,
+                        'financeview' => $user['finuser'],
                     );
                     $mdata['content']=$this->load->view('leadorderdetails/charge_details_view',$options,TRUE);
                 }
@@ -3909,6 +4516,7 @@ class Leadorder extends MY_Controller
                     }
                     $mdata['total_view']=$this->_build_shiptotals_view($shipping_address, $order_qty);
                     $mdata['save_view']=$this->_checksaveview($shipping_address, $order_qty);
+                    $mdata['viewadd'] = $this->_checknewshipaddres($shipping_address, $order_qty);
                 }
             }
             // Calc new period for lock
@@ -3955,6 +4563,7 @@ class Leadorder extends MY_Controller
                         $mdata['shipcontent']=$this->_build_shippadress_view($shipping_address, $shipping, $order_qty, 1);
                         $mdata['total_view']=$this->_build_shiptotals_view($shipping_address, $order_qty);
                         $mdata['save_view']=$this->_checksaveview($shipping_address, $order_qty);
+                        $mdata['viewadd'] = $this->_checknewshipaddres($shipping_address, $order_qty);
                     }
                 }
             }
@@ -4002,8 +4611,8 @@ class Leadorder extends MY_Controller
                         $mdata['total_view']=$this->_build_shiptotals_view($shipping_address, $order_qty);
                         $mdata['numaddress']=count($shipping_address).' Addresses';
                         $mdata['save_view']=$this->_checksaveview($shipping_address, $order_qty);
+                        $mdata['viewadd'] = $this->_checknewshipaddres($shipping_address, $order_qty);
                     }
-
                 }
             }
             // Calc new period for lock
@@ -4031,7 +4640,6 @@ class Leadorder extends MY_Controller
                     $this->ajaxResponse($mdata, $error);
                 }
                 usersession($ordersession, $leadorder);
-
                 $shipsession=$postdata['shipsession'];
                 $multishipping=usersession($shipsession);
                 if (empty($multishipping)) {
@@ -4043,9 +4651,9 @@ class Leadorder extends MY_Controller
                     $newval=$postdata['newval'];
                     $order=$multishipping['order'];
                     $res=$this->leadorder_model->change_multishiporder_address($multishipping, $shipadr, $fldname, $newval, $order['brand'], $shipsession);
-                    if ($res['result']==$this->error_result) {
-                        $error=$res['msg'];
-                    } else {
+                    $error=$res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
                         $mdata['is_calc']=0;
                         $mdata['taxdata']=0;
                         $multishipping=usersession($shipsession);
@@ -4066,6 +4674,7 @@ class Leadorder extends MY_Controller
                         // Build Content
                         $mdata['shiprate']=number_format($srow['shipping'],2);
                         $mdata['sales_tax']=number_format($srow['sales_tax'],2);
+                        $mdata['arrivedate'] = (intval($srow['arrive_date'])==0 ? '' : date('m/d/Y', $srow['arrive_date']));
                         if (($fldname=='item_qty' || $fldname=='zip') && $res['shipcalc']==1) {
                             $mdata['is_calc']=1;
                             $shipcost=$srow['shipping_costs'];
@@ -4101,8 +4710,8 @@ class Leadorder extends MY_Controller
                         }
                         $mdata['taxview']=$taxview;
                         $mdata['taxdata']=1;
-
                         $mdata['save_view']=$this->_checksaveview($shipping_address, $order_qty);
+                        $mdata['viewadd'] = $this->_checknewshipaddres($shipping_address, $order_qty);
                     }
                 }
             }
@@ -4310,6 +4919,7 @@ class Leadorder extends MY_Controller
             } else {
                 $taxview=$this->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
             }
+            $cntdat = $this->shipping_model->get_country($country_id);
             $states=$this->shipping_model->get_country_states($country_id);
             $shipoptions=array(
                 'shipping'=>$shipping,
@@ -4320,6 +4930,7 @@ class Leadorder extends MY_Controller
                 'taxview'=>$taxview,
                 'numpp'=>$numpp,
                 'total_itemqty'=>$order_qty,
+                'shipcntcode' => $cntdat['country_iso_code_2'],
             );
             if ($edit==1) {
                 $shipaddrview.=$this->load->view('leadorderdetails/multiship_addres_edit', $shipoptions, TRUE);
@@ -4344,6 +4955,19 @@ class Leadorder extends MY_Controller
             $totalqty+=$row['item_qty'];
         }
         if ($totalqty==$order_qty) {
+            $showview=1;
+        }
+        return $showview;
+    }
+
+    private function _checknewshipaddres($shipping_address, $order_qty)
+    {
+        $showview=0;
+        $totalqty=0;
+        foreach ($shipping_address as $row) {
+            $totalqty+=$row['item_qty'];
+        }
+        if ($totalqty!=$order_qty) {
             $showview=1;
         }
         return $showview;
@@ -4728,17 +5352,18 @@ class Leadorder extends MY_Controller
                         $mdata['popupmsg']=$res['popupmsg'];
                         $mdata['finerror'] = $res['finerror'];
                     }
-                    $brand = ifset($postdata, 'brand', 'ALL');
+                    $brand = ifset($postdata,'brand', 'ALL');
                     $res=$this->leadorder_model->get_leadorder($order_id, $this->USR_ID, $brand);
                     $error=$res['msg'];
                     if ($res['result']==$this->success_result) {
                         $error='';
-                        // Build Head                    
+                        // Build Head
                         $engade_res=$this->engaded_model->check_engade(array('entity'=>'ts_orders','entity_id'=>$order_id));
                         $res['unlocked']=$engade_res['result'];
                         $orddata=$res['order'];
+
                         // Build View
-                        $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE,0);
+                        $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 0);
 
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
@@ -4755,6 +5380,7 @@ class Leadorder extends MY_Controller
                             'nxtorder' => $res['nxtorder'],
                             'order_id' => $orddata['order_id'],
                             'unlocked' => $engade_res['result'],
+                            'brand' => $brand,
                         ];
                         if ($engade_res['result']==$this->error_result) {
                             $voptions=array(
@@ -4845,7 +5471,6 @@ class Leadorder extends MY_Controller
         $order_id=(isset($postdata['ord']) ? intval($postdata['ord']) : 0);
         $cogcontent='<div class="error">Order Not Found</div>';
         if (!empty($order_id)) {
-
             $this->load->model('leadorder_model');
             $res=$this->leadorder_model->get_leadorder_amounts($order_id);
             $options=array(
@@ -5123,6 +5748,7 @@ class Leadorder extends MY_Controller
                     $this->load->model('orders_model');
                     $v_options = [
                         'order_by' => 'v.vendor_name',
+                        'exclude' => $this->config->item('inventory_vendor'),
                     ];
                     $vendors=$this->vendors_model->get_vendors_list($v_options);
                     $methods=$this->orders_model->get_methods_edit();
@@ -5186,7 +5812,7 @@ class Leadorder extends MY_Controller
         show_404();
     }
 
-    private function _prepare_imprint_details($leadorder, $newitem, $ordersession) {
+    private function _prepare_imprint_details($leadorder, $newitem, $ordersession, $itemstatus='old') {
         $out = ['result' => $this->error_result, 'msg' => 'Unknown Error'];
         $res=$this->leadorder_model->prepare_imprint_details($leadorder, $newitem, $ordersession);
         if ($res['result']==$this->error_result) {
@@ -5229,6 +5855,7 @@ class Leadorder extends MY_Controller
                 'order_item_id' => $newitem,
                 'item_id' => $item_id,
                 'brand' => $res['brand'],
+                'itemstatus' => $itemstatus,
             );
             usersession($imptintid, $imprintdetails);
         }
@@ -5510,5 +6137,435 @@ class Leadorder extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    public function update_autoaddressmulti()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                usersession($ordersession, $leadorder);
+                $shipsession=$postdata['shipsession'];
+                $multishipping=usersession($shipsession);
+                if (!empty($multishipping)) {
+                    $res = $this->leadorder_model->update_autoaddress_multi($postdata, $multishipping, $shipsession);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        // Prepare output
+                        $mdata['is_calc']=0;
+                        $mdata['taxdata']=0;
+                        $multishipping=usersession($shipsession);
+                        $shipping_address=$multishipping['shipping_address'];
+                        $order = $multishipping['order'];
+                        $order_qty=$order['order_qty'];
+                        $mdata['total_view']=$this->_build_shiptotals_view($shipping_address, $order_qty);
+                        $shipadr = $res['shipadr'];
+                        $adridx=0;
+                        foreach ($shipping_address as $adrrow) {
+                            if ($adrrow['order_shipaddr_id']==$shipadr) {
+                                break;
+                            } else {
+                                $adridx++;
+                            }
+                        }
+                        $srow=$shipping_address[$adridx];
+                        $mdata['address_1'] = $srow['ship_address1'];
+                        $mdata['country'] = $srow['country_id'];
+                        $mdata['city']=$srow['city'];
+                        $mdata['zip'] = $srow['zip'];
+                        $mdata['state_id']=$srow['state_id'];
+                        // Build Content
+                        $mdata['shipping']=number_format($srow['shipping'],2);
+                        $mdata['tax']=number_format($srow['sales_tax'],2);
+                        $mdata['arrivedate'] = (intval($srow['arrive_date'])==0 ? '' : date('m/d/Y', $srow['arrive_date']));
+                        if ($res['shipcount']==1) {
+                            $mdata['is_calc']=1;
+                            $mdata['shipcount'] = 1;
+                            $shipcost=$srow['shipping_costs'];
+                            $costoptions=array(
+                                'shipadr'=>$srow['order_shipaddr_id'],
+                                'shipcost'=>$shipcost,
+                                'costname'=>'shippingrate'.$srow['order_shipaddr_id'],
+                            );
+                            $mdata['cost_view']=$this->load->view('leadorderdetails/ship_cost_edit', $costoptions,TRUE);
+                        }
+                        $states=$res['states'];
+                        if (count($states)==0) {
+                            $mdata['stateview']='&nbsp;';
+                            $mdata['shipstate'] = 0;
+                        } else {
+                            $mdata['shipstate'] = 1;
+                            $stateoptions=array(
+                                // 'shipadr'=>$res['shipadr'],
+                                'shipadr'=>$srow,
+                                'states'=>$res['states'],
+                            );
+                            $mdata['stateview']=$this->load->view('leadorderdetails/shipping_state_select', $stateoptions, TRUE);
+                        }
+                        $shipaddr=$srow;
+                        if ($shipaddr['taxview']==0) {
+                            $taxview=$this->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
+                        } else {
+                            $taxview=$this->load->view('leadorderdetails/tax_data_edit', $shipaddr, TRUE);
+                        }
+                        $mdata['taxview']=$taxview;
+                        $mdata['taxdata']=1;
+                        $mdata['save_view']=$this->_checksaveview($shipping_address, $order_qty);
+                        $mdata['viewadd'] = $this->_checknewshipaddres($shipping_address, $order_qty);
+                    }
+                }
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function showinventory()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $order_item_id = ifset($postdata,'item_id',0);
+                if (empty($order_item_id)) {
+                    $error = 'Empty Item';
+                } else {
+                    $res = $this->leadorder_model->show_iteminvent($leadorder, $order_item_id, $ordersession);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $options = [
+                            'onboats' => $res['onboats'],
+                            'invents' => $res['invents'],
+                            'itemstatus' => 1,
+                        ];
+                        $mdata['content'] = $this->load->view('leadorderdetails/itemcolor_inventory_view', $options, TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function customersearch() {
+        $search = $this->input->get('query');
+        $limit = $this->input->get('limit');
+        $list = $this->leadorder_model->search_customer($search, $limit);
+        echo json_encode($list);
+    }
+
+    public function unlockpayparams()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->unlock_payment_content($leadorder, $postdata, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['cardnum'] = $res['cardnum'];
+                    $mdata['cardcode'] = $res['cardcode'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function newtrackcode()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->newtrackcode($leadorder, $postdata, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['tracking'] = $res['tracking'];
+                    $leadorder = usersession($ordersession);
+                    $order_items = $leadorder['order_items'];
+                    if (count($order_items)==1) {
+                        $itemdat = $order_items[0]['items'];
+                        if (count($itemdat)==1) {
+                            $mdata['content'] = $this->_prepare_tracking_view($leadorder, 1);
+                        } else {
+                            $mdata['content'] = $this->_prepare_multitrack_view($leadorder, 1);
+                        }
+                    } else {
+                        $mdata['content'] = $this->_prepare_multitrack_view($leadorder, 1);
+                    }
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function updatetrackqtyinfo()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->updatetrackinfo($leadorder, $postdata, $ordersession);
+                $error = $res['msg'];
+                if (isset($res['oldval'])) {
+                    $mdata['oldval'] = $res['oldval'];
+                }
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $leadorder = usersession($ordersession);
+                    $order_items = $leadorder['order_items'];
+                    if (count($order_items)==1) {
+                        $itemdat = $order_items[0]['items'];
+                        if (count($itemdat)==1) {
+                            $mdata['content'] = $this->_prepare_tracking_view($leadorder, 1);
+                        } else {
+                            $mdata['content'] = $this->_prepare_multitrack_view($leadorder, 1);
+                        }
+                    } else {
+                        $mdata['content'] = $this->_prepare_multitrack_view($leadorder, 1);
+                    }
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function updatetrackinfo()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->updatetrackinfo($leadorder, $postdata, $ordersession);
+                $error = $res['msg'];
+                if (isset($res['oldval'])) {
+                    $mdata['oldval'] = $res['oldval'];
+                }
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    if (isset($res['rest'])) {
+                        $mdata['rest'] = $res['rest'];
+                    }
+                    if (empty($res['trackcode'])) {
+                        $mdata['hidecopy'] = 1;
+                    } else {
+                        $mdata['hidecopy'] = 0;
+                    }
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function deletetrackinfo()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->deletetrackinfo($leadorder, $postdata, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $leadorder = usersession($ordersession);
+                    $order_items = $leadorder['order_items'];
+                    if (count($order_items)==1) {
+                        $itemdat = $order_items[0]['items'];
+                        if (count($itemdat)==1) {
+                            $mdata['content'] = $this->_prepare_tracking_view($leadorder, 1);
+                        } else {
+                            $mdata['content'] = $this->_prepare_multitrack_view($leadorder, 1);
+                        }
+                    } else {
+                        $mdata['content'] = $this->_prepare_multitrack_view($leadorder, 1);
+                    }
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    private function _prepare_tracking_view($leadorder, $edit =1) {
+        $order_items = $leadorder['order_items'];
+        $shipping = $leadorder['shipping'];
+        $shipdate = ifset($shipping,'shipdate', time());
+        if (empty($shipdate)) {
+            $shipdate = time();
+        }
+        $contant = '';
+        foreach ($order_items as $order_item) {
+            if (!empty($order_item['item_id'])) {
+                $itemcolors = $order_item['items'];
+                foreach ($itemcolors as $itemcolor) {
+                    if ($order_item['item_id'] > 0 ) {
+                        $itemname = $order_item['item_name'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']);
+                    } else {
+                        $itemname = $itemcolor['item_description'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']);
+                    }
+                    $shipoptions = [
+                        'shipdate' => 'To Ship '.date('m/d/y', $shipdate), // $shipping['shipdate']
+                        'item' => $itemname, // $order_item['item_name'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']),
+                        'qty' => $itemcolor['item_qty'],
+                        'order_item' => $order_item['order_item_id'],
+                        'item_color' => $itemcolor['item_id'],
+                    ];
+                    $totaltrack = 0;
+                    $totaloldtrack = 0;
+                    foreach ($itemcolor['trackings'] as $tracking) {
+                        $totaltrack+=$tracking['qty'];
+                        if ($tracking['tracking_id']>0) {
+                            $totaloldtrack+=$tracking['qty'];
+                        }
+                    }
+                    $resttrack = intval($itemcolor['item_qty'])-$totaltrack;
+                    $chkrest = intval($itemcolor['item_qty']) - $totaloldtrack;
+                    $shipoptions['remind'] = $resttrack;
+                    $shipoptions['completed'] = ($chkrest > 0 ? 0 : 1);
+                    $trackbody = '';
+                    if (!empty($itemcolor['trackings'])) {
+                        $tbodyoptions = [
+                            'trackings' => $itemcolor['trackings'],
+                            'completed' => ($resttrack > 0 ? 0 : 1),
+                            'order_item' => $order_item['order_item_id'],
+                            'item_color' => $itemcolor['item_id'],
+                        ];
+                        $trackbody = $this->load->view('leadorderdetails/tracking_data_edit', $tbodyoptions, TRUE);
+                    }
+                    $shipoptions['trackbody'] = $trackbody;
+                    $shipoptions['shipped'] = $totaltrack;
+                    if ($edit==0) {
+                        $trackcontent = $this->load->view('leadorderdetails/tracking_view', $shipoptions, TRUE);
+                    } else {
+                        $trackcontent = $this->load->view('leadorderdetails/tracking_edit', $shipoptions, TRUE);
+                    }
+                    $contant.=$trackcontent;
+                }
+            }
+        }
+        return $contant;
+    }
+
+    private function _prepare_multitrack_view($leadorder, $edit=1)
+    {
+        $order_items = $leadorder['order_items'];
+        $shipping = $leadorder['shipping'];
+        $totalitems = 0;
+        $tracktotal = 0;
+        foreach ($order_items as $order_item) {
+            $totalitems+=$order_item['item_qty'];
+            $itemcolors = $order_item['items'];
+            foreach ($itemcolors as $itemcolor) {
+                foreach ($itemcolor['trackings'] as $tracking) {
+                    $tracktotal+=$tracking['qty'];
+                }
+            }
+        }
+        $remains = $totalitems - $tracktotal;
+        $allcompleted = 1;
+        if ($remains > 0) {
+            $allcompleted = 0;
+        }
+
+        $trackcontent = '<div class="trackingdataarea">';
+        $numhead = 1;
+        $trackcontent.='<div class="multitrackbodyarea">';
+        foreach ($order_items as $order_item) {
+            $itemcolors = $order_item['items'];
+            foreach ($itemcolors as $itemcolor) {
+                $trackings = $itemcolor['trackings'];
+                $shipped = 0;
+                foreach ($trackings as $tracking) {
+                    $shipped+=$tracking['qty'];
+                }
+                $completed = ($itemcolor['item_qty'] > $shipped ? 0 : 1);
+                if ($order_item['item_id'] > 0) {
+                    $itemname = $order_item['item_name'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']);
+                } else {
+                    $itemname = $itemcolor['item_description'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']);
+                }
+                $headoptions = [
+                    'item' => $itemname, // $order_item['item_name'].' - '.$itemcolor['item_color'],
+                    'qty' => $itemcolor['item_qty'],
+                    'order_item' => $order_item['order_item_id'],
+                    'item_color' => $itemcolor['item_id'],
+                    'headclass' => ($numhead==1 ? '' : 'middlehead'),
+                    'completed' => $completed,
+                ];
+                if ($edit==1) {
+//                    if ($completed==1) {
+//                        $trackcontent.= $this->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
+//                    } else {
+                        $trackcontent.= $this->load->view('leadorderdetails/multitrack_head_edit', $headoptions, TRUE);
+//                    }
+                } else {
+                    $trackcontent.= $this->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
+                }
+                $tbodyoptions = [
+                    'trackings' => $itemcolor['trackings'],
+                    'completed' => $completed,
+                    'order_item' => $order_item['order_item_id'],
+                    'item_color' => $itemcolor['item_id'],
+                    'shipped' => $shipped,
+                ];
+                if ($edit==1) {
+                    $trackcontent.=$this->load->view('leadorderdetails/multitrack_data_edit', $tbodyoptions, TRUE);
+                } else {
+                    $trackcontent.=$this->load->view('leadorderdetails/multitrack_data_view', $tbodyoptions, TRUE);
+                }
+                $numhead++;
+            }
+        }
+        $trackcontent.='</div>';
+        $tfooteroptions = [
+            'completed' => $allcompleted,
+            'remind' => $remains,
+            'shipdate' => 'To Ship '.date('m/d/y', $shipping['shipdate']),
+        ];
+        $trackcontent.=$this->load->view('leadorderdetails/multitrack_footer_view', $tfooteroptions, TRUE);
+        $trackcontent.='</div>';
+        return $trackcontent;
     }
 }

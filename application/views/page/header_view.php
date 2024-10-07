@@ -65,7 +65,9 @@
     <div class="mainsiteheader">
         <div class="datarow">
             <div class="left-box">
-                <div class="period_analitic_info"><?=$total_view?></div>
+                <?php if ($usrrole=='masteradmin') { ?>
+                    <div class="period_analitic_info"><?=$total_view?></div>
+                <?php } ?>
                 <div class="publicsearch">
                     <input type="text" class="publicsearch_template" id="publicsearch_template" placeholder="Find Orders"/>
                     <div class="publicsearch_btn">
@@ -77,7 +79,7 @@
                         <div class="icon" title="Reports">
                             <img src="/img/icons/chart-line-white.svg" class="img-responsive"/>
                         </div>
-                        <div class="infotext">Reports</div>
+                        <div class="infotext" style="padding-right: 4px;">Reports</div>
                     </div>
                 <?php } ?>
                 <?php if ($inventorychk) { ?>
@@ -88,26 +90,6 @@
                         <div class="infotext">Inventory</div>
                     </div>
                 <?php } ?>
-            </div>
-            <?php if ($test_server==1) { ?>
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <div class="testsitelabel">TEST</div>
-                    </div>
-                </div>
-            <?php } ?>
-            <div class="right-box">
-                <div class="userinfo">
-                    <div class="datarow">
-                        <div class="signout" id="signout">[sign out]</div>
-                        <div class="usersigninfo"><?=$user_name?></div>
-                    </div>
-                    <div class="datarow">
-                        <div class="dateinfo">
-                            <?=date('D, F j, Y')?>
-                        </div>
-                    </div>
-                </div>
                 <?php if ($adminchk) { ?>
                     <div class="infoalerts" id="admin">
                         <div class="alerticon admin" title="Admin">
@@ -116,17 +98,45 @@
                         <!--                    <div class="alerttext">Admin</div>-->
                     </div>
                 <?php } ?>
-                <?php if ($resourcechk) { ?>
-                    <div class="infoalerts resources" id="resources">
-                        <div class="alerticon" title="Resources">
-                            <img src="/img/icons/book-open-white.svg" class="img-responsive"/>
-                        </div>
-                        <!--                    <div class="alerttext">Resources</div>-->
+                <?php if ($debtpermiss) { ?>
+                    <div class="period_debt_info" id="debttotalview" data-event="click" data-css="weekbrandtotals" data-bgcolor="#000000"
+                         data-bordercolor="#adadad" data-textcolor="#FFFFFF" data-position="down" data-balloon="{ajax} /welcome/viewbalance">
+                        <div class="debtinfo_label">AR:</div>
+                        <div class="debtinfo_value"><?=MoneyOutput($debttotal,0)?></div>
                     </div>
                 <?php } ?>
             </div>
+            <?php if ($test_server==1) { ?>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <div class="testsitelabel">TEST</div>
+                    </div>
+                </div>
+            <?php } ?>
         </div>
     </div>
+    <div class="right-box">
+        <div class="userinfo">
+            <div class="datarow">
+                <div class="signout" id="signout">[exit]</div>
+                <div class="usersigninfo"><?=$user_name?></div>
+            </div>
+            <div class="datarow">
+                <div class="dateinfo">
+                    <?=date('F j, Y')?>
+                </div>
+            </div>
+        </div>
+        <?php if ($resourcechk) { ?>
+            <div class="infoalerts resources" id="resources">
+                <div class="alerticon" title="Resources">
+                    <img src="/img/icons/book-open-white.svg" class="img-responsive"/>
+                </div>
+                <!--                    <div class="alerttext">Resources</div>-->
+            </div>
+        <?php } ?>
+    </div>
+
     <input type="hidden" id="mainmenuactivelnk" value="<?=$activelnk?>"/>
     <input type="hidden" id="currentbrand" value="SB"/>
 </div>

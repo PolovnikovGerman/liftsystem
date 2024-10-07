@@ -1,20 +1,5 @@
 function init_searchkeyword_content() {
     // Change Brand
-    $("#searchkeywordbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
-        var brand = $(this).data('brand');
-        $("#searchkeywordbrand").val(brand);
-        $("#searchkeywordbrandmenu").find("div.brandchoseval").each(function(){
-            var curbrand=$(this).data('brand');
-            if (curbrand==brand) {
-                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
-                $("#searchkeywordbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
-            } else {
-                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
-                $("#searchkeywordbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
-            }
-        });
-        show_keywords_result();
-    });
     $("#today_keywords").unbind('click').click(function(){
         show_today_keywords();
     });
@@ -48,7 +33,6 @@ function init_searchkeyword_content() {
     $("#negative").live('click').click(function(){
         show_keywords_result();
     });
-    show_today_keywords();
 }
 
 function show_today_keywords() {
@@ -69,7 +53,7 @@ function show_today_keywords() {
         if (response.errors=='') {
             // calculate width of div
             var contwidth=343*response.data.num_cols;
-            $("#keywordsearchcontent").empty().html(response.data.content).css('width',contwidth);
+            $("#keywordsearchcontent").empty().html(response.data.content); // .css('width',contwidth);
         } else {
             show_error(response);
         }
@@ -93,7 +77,7 @@ function show_week_keywords() {
         if (response.errors=='') {
             // calculate width of div
             var contwidth=343*response.data.num_cols;
-            $("#keywordsearchcontent").empty().html(response.data.content).css('width',contwidth);
+            $("#keywordsearchcontent").empty().html(response.data.content); // .css('width',contwidth);
         } else {
             show_error(response);
         }
@@ -117,7 +101,7 @@ function show_month_keywords() {
         if (response.errors=='') {
             // calculate width of div
             var contwidth=343*response.data.num_cols;
-            $("#keywordsearchcontent").empty().html(response.data.content).css('width',contwidth);
+            $("#keywordsearchcontent").empty().html(response.data.content); //.css('width',contwidth);
         } else {
             show_error(response);
         }
@@ -126,8 +110,8 @@ function show_month_keywords() {
 
 function keywordsearch_customrange() {
     $("#datarangeview_keywords").css('visibility','visible');
-    $("#dbgn_keywords").val('');
-    $("#dend_keywords").val('');
+    // $("#dbgn_keywords").val('');
+    // $("#dend_keywords").val('');
 }
 
 function keywords_show_custom() {
@@ -148,7 +132,7 @@ function keywords_show_custom() {
         if (response.errors=='') {
             // calculate width of div
             var contwidth=343*response.data.num_cols;
-            $("#keywordsearchcontent").empty().html(response.data.content).css('width',contwidth);
+            $("#keywordsearchcontent").empty().html(response.data.content); //.css('width',contwidth);
         } else {
             show_error(response);
         }
@@ -165,4 +149,5 @@ function show_keywords_result() {
     } else if ($("#custom_keywords").prop('checked')) {
         keywords_show_custom();
     }
+    init_searchkeyword_content();
 }

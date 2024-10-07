@@ -103,7 +103,7 @@ class Template
         // Reports
         $reports_permissions = 0;
         $reports_old = 1;
-        $reportchk = $this->CI->menuitems_model->get_menuitem('/analytics');
+        $reportchk = $this->CI->menuitems_model->get_menuitem('/analytics',0, $brand);
 
         if ($reportchk['result']==$this->success_result) {
             $report_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $reportchk['menuitem']['menu_item_id']);
@@ -115,7 +115,7 @@ class Template
         // Resources
         $resource_permissions = 0;
         $resource_old = 1;
-        $resourcechk = $this->CI->menuitems_model->get_menuitem('/resources');
+        $resourcechk = $this->CI->menuitems_model->get_menuitem('/resources',0, $brand);
 
         if ($resourcechk['result']==$this->success_result) {
             $resource_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $resourcechk['menuitem']['menu_item_id']);
@@ -128,10 +128,25 @@ class Template
         // Inventory
         $inventory_permissions = 0;
         $inventory_old = 1;
-        $inventorychk = $this->CI->menuitems_model->get_menuitem('#printshopinventview');
+        $inventorychk = $this->CI->menuitems_model->get_menuitem('#printshopinventview',0, $brand);
         if ($inventorychk['result']==$this->success_result) {
-            $inventory_permissions = 1;
-            $inventory_old = $inventorychk['menuitem']['newver'];
+            $inventorypermischk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $inventorychk['menuitem']['menu_item_id']);
+            if ($inventorypermischk['result']==$this->success_result && $inventorypermischk['permission']>0) {
+                $inventory_old = $inventorychk['menuitem']['newver'];
+                $inventory_permissions = 1;
+            }
+        }
+        // Balance
+        $debt_permissions = 0;
+        $debt_total = 0;
+        $debtviewchk = $this->CI->menuitems_model->get_menuitem('#accreceiv',0, $brand);
+        if ($debtviewchk['result']==$this->success_result) {
+            $debtpermischk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $debtviewchk['menuitem']['menu_item_id']);
+            if ($debtpermischk['result']==$this->success_result && $debtpermischk['permission']>0) {
+                $debt_permissions = 1;
+                $this->CI->load->model('dashboard_model');
+                $debt_total = $this->CI->dashboard_model->get_debt_totals();
+            }
         }
 
         $pagetitle = (isset($options['title']) ? '::'.$options['title'] : '');
@@ -144,6 +159,7 @@ class Template
             'scripts'=>$scripts,
             'title' => ($this->CI->config->item('system_name').$pagetitle),
             'gmaps' => $gmaps,
+            'googlefont' => ifset($options,'googlefont', 0),
         ];
         if (ifset($options,'adaptive',0)==1) {
             $head_options['menu'] = $mobpermissions;
@@ -155,7 +171,7 @@ class Template
 
 
         $topmenu_options = [
-            'user_name' => $options['user_name'],
+            'user_name' => $userdat['first_name'],
             'activelnk' => (isset($options['activelnk']) ? $options['activelnk'] : ''),
             'total_view' => $total_view,
             // 'menu_view' => $menu_view,
@@ -170,6 +186,9 @@ class Template
             'test_server' => $this->CI->config->item('test_server'),
             'brand' => $brand,
             'brands' => $brands,
+            'usrrole' => $userdat['user_logged_in'],
+            'debtpermiss' => $debt_permissions,
+            'debttotal' => $debt_total,
         ];
         if (ifset($options,'adaptive',0)==1) {
             $dat['header_view'] = $this->CI->load->view('page/header_adaptive_view', $topmenu_options, TRUE);
@@ -186,7 +205,7 @@ class Template
         return $dat;
     }
 
-    public function _prepare_leadorder_view($res,$user_id, $user_role='manager', $edit=0) {
+    public function _prepare_leadorder_view($res,$user_id, $user_role='manager', $user_payment=0, $edit=0) {
         $this->CI->load->model('shipping_model');
         $this->CI->load->model('orders_model');
         $this->CI->load->model('leadorder_model');
@@ -229,11 +248,141 @@ class Template
         }
         // Shipping Date
         $shipstatus=$this->CI->leadorder_model->_leadorderview_shipping_status($res);
-        $shipoption=array(
-            'label'=>$shipstatus['order_status'],
-            'class'=>$shipstatus['order_status_class'],
-        );
-        $shipview=$this->CI->load->view('leadorderdetails/shipdate_data_view', $shipoption, TRUE);
+        $trackcontent = '';
+        $order_items=$res['order_items'];
+        $numcolors = 0;
+        foreach ($order_items as $order_item) {
+            $numcolors+=count($order_item['items']);
+        }
+        // 1 tracking
+        if ($numcolors==1) {
+            $orderitem = $order_items[0];
+            $itemdata = $orderitem['items'][0];
+            if (!empty($itemdata['item_qty'])) {
+                if ($orderitem['item_id']>0) {
+                    $itemname = $orderitem['item_name'].(empty($itemdata['item_color']) ? '' : ' - '.$itemdata['item_color']);
+                } else {
+                    $itemname = $itemdata['item_description'];
+                }
+                $shipoptions = [
+                    'shipdate' => $shipstatus['order_status'],
+                    'item' => $itemname, // $orderitem['item_name'].(empty($itemdata['item_color']) ? '' : ' - '.$itemdata['item_color']),
+                    'qty' => $itemdata['item_qty'],
+                    'order_item' => $orderitem['order_item_id'],
+                    'item_color' => $itemdata['item_id'],
+                ];
+                $tracktotal = 0;
+                if (!empty($itemdata['trackings'])) {
+                    foreach ($itemdata['trackings'] as $tracking) {
+                        $tracktotal+=$tracking['qty'];
+                    }
+                }
+                $resttrack = intval($itemdata['item_qty']) - intval($tracktotal);
+                $shipoptions['remind'] = $resttrack;
+                $shipoptions['completed'] = ($resttrack > 0 ? 0 : 1);
+                $shipoptions['shipped'] = intval($tracktotal);
+                $trackbody = '';
+                if (!empty($itemdata['trackings'])) {
+                    $tbodyoptions = [
+                        'trackings' => $itemdata['trackings'],
+                        'completed' => ($resttrack > 0 ? 0 : 1),
+                        'order_item' => $orderitem['order_item_id'],
+                        'item_color' => $itemdata['item_id'],
+                        'shipped' => $tracktotal,
+                    ];
+                    if ($edit==1) {
+                        $trackbody = $this->CI->load->view('leadorderdetails/tracking_data_edit', $tbodyoptions, TRUE);
+                    } else {
+                        $trackbody = $this->CI->load->view('leadorderdetails/tracking_data_view', $tbodyoptions, TRUE);
+                    }
+                }
+                $shipoptions['trackbody'] = $trackbody;
+                if ($edit==1) {
+                    if ($resttrack==0) {
+                        $trackcontent = $this->CI->load->view('leadorderdetails/tracking_view', $shipoptions, TRUE);
+                    } else {
+                        $trackcontent = $this->CI->load->view('leadorderdetails/tracking_edit', $shipoptions, TRUE);
+                    }
+                } else {
+                    $trackcontent = $this->CI->load->view('leadorderdetails/tracking_view', $shipoptions, TRUE);
+                }
+            }
+        } elseif ($numcolors > 1) {
+            // Multihip
+            $totalitems = 0;
+            $tracktotal = 0;
+            foreach ($order_items as $order_item) {
+                $totalitems+=$order_item['item_qty'];
+                $itemcolors = $order_item['items'];
+                foreach ($itemcolors as $itemcolor) {
+                    foreach ($itemcolor['trackings'] as $tracking) {
+                        $tracktotal+=$tracking['qty'];
+                    }
+                }
+            }
+            $remains = $totalitems - $tracktotal;
+            $allcompleted = 1;
+            if ($remains > 0) {
+                $allcompleted = 0;
+            }
+            $trackcontent = '<div class="trackingdataarea">';
+            $numhead = 1;
+            $trackcontent.='<div class="multitrackbodyarea">';
+            foreach ($order_items as $order_item) {
+                $itemcolors = $order_item['items'];
+                foreach ($itemcolors as $itemcolor) {
+                    $trackings = $itemcolor['trackings'];
+                    $shipped = 0;
+                    foreach ($trackings as $tracking) {
+                        $shipped+=$tracking['qty'];
+                    }
+                    $completed = ($itemcolor['item_qty'] > $shipped ? 0 : 1);
+                    if ($order_item['item_id'] > 0) {
+                        $itemname = $order_item['item_name'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']);
+                    } else {
+                        $itemname = $itemcolor['item_description'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']);
+                    }
+                    $headoptions = [
+                        'item' => $itemname, // $order_item['item_name'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']),
+                        'qty' => $itemcolor['item_qty'],
+                        'order_item' => $order_item['order_item_id'],
+                        'item_color' => $itemcolor['item_id'],
+                        'headclass' => ($numhead==1 ? '' : 'middlehead'),
+                        'completed' => $completed,
+                    ];
+                    if ($edit==1) {
+                        //if ($completed==1) {
+                        //    $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
+                        //} else {
+                            $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_edit', $headoptions, TRUE);
+                        // }
+                    } else {
+                        $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
+                    }
+                    $tbodyoptions = [
+                        'trackings' => $itemcolor['trackings'],
+                        'completed' => $completed,
+                        'order_item' => $order_item['order_item_id'],
+                        'item_color' => $itemcolor['item_id'],
+                        'shipped' => $shipped,
+                    ];
+                    if ($edit==1) {
+                        $trackcontent.=$this->CI->load->view('leadorderdetails/multitrack_data_edit', $tbodyoptions, TRUE);
+                    } else {
+                        $trackcontent.=$this->CI->load->view('leadorderdetails/multitrack_data_view', $tbodyoptions, TRUE);
+                    }
+                    $numhead++;
+                }
+            }
+            $trackcontent.='</div>';
+            $tfooteroptions = [
+                'completed' => $allcompleted,
+                'remind' => $remains,
+                'shipdate' => $shipstatus['order_status']
+            ];
+            $trackcontent.=$this->CI->load->view('leadorderdetails/multitrack_footer_view', $tfooteroptions, TRUE);
+            $trackcontent.='</div>';
+        }
         // Total Due
         $total_due=$res['total_due'];
         $dueoptions=array(
@@ -251,7 +400,7 @@ class Template
         $dueview=$this->CI->load->view('leadorderdetails/totaldue_data_view', $dueoptions, TRUE);
         $bottom_options=array(
             'ticketview'=>$ticketview,
-            'shippview'=>$shipview,
+            'shippview'=> $trackcontent,
             'totaldueview'=>$dueview,
         );
         $orddata['taxalign']='';
@@ -290,7 +439,7 @@ class Template
             }
         }
         if ($usrdat['profit_view']=='Points') {
-            $profoptions['profit']=round($orddata['profit']*$this->CI->config->item('profitpts'),0).' pts';
+            $profoptions['profit']=round(floatval($orddata['profit'])*$this->CI->config->item('profitpts'),0).' pts';
             $profoptions['profit_view']='points';
         }
         if (empty($orddata['profit_perc'])) {
@@ -329,10 +478,11 @@ class Template
             } else {
                 $orddata['contacts']=$this->CI->load->view('leadorderdetails/contact_detail_edit', array('data'=>$contacts), TRUE);
             }
-            $order_items=$res['order_items'];
+            // $order_items=$res['order_items'];
 
             $content='';
             $subtotal=0;
+            
             foreach ($order_items as $irow) {
                 $imprints=$irow['imprints'];
                 if ($orddata['order_blank']==1 && count($imprints)==1) {
@@ -347,16 +497,27 @@ class Template
                     );
                     $imprintview=$this->CI->load->view('leadorderdetails/imprint_data_edit', $ioptions, TRUE);
                 }
+                $showinvent = 0;
+                if ($ord_data['brand']=='SR' && $irow['item_id']>0) {
+                    $showinvent = 1;
+                }
                 $item_options=array(
                     'order_item_id'=>$irow['order_item_id'],
                     'item_id'=>$irow['item_id'],
                     'items'=>$irow['items'],
                     'imprintview'=>$imprintview,
                     'edit'=>$edit,
+                    'showinvent' => $showinvent,
+                    'brand' => $ord_data['brand'],
                 );
                 $subtotal+=($irow['imprint_subtotal']+$irow['item_subtotal']);
                 if ($edit==1) {
-                    $content.=$this->CI->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                    if ($irow['item_id']=='') {
+                        $item_options['itemslist'] = $res['itemslist'];
+                        $content.=$this->CI->load->view('leadorderdetails/items_data_add', $item_options, TRUE);
+                    } else {
+                        $content.=$this->CI->load->view('leadorderdetails/items_data_edit', $item_options, TRUE);
+                    }
                 } else {
                     $content.=$this->CI->load->view('leadorderdetails/items_data_view', $item_options, TRUE);
                 }
@@ -534,6 +695,7 @@ class Template
                 'order'=>$ord_data,
                 'balanceview'=>$balanceview,
                 'financeview'=>$usrdat['finuser'],
+                'payment_user' => $user_payment,
             );
 
             if ($edit==1) {
@@ -657,16 +819,48 @@ class Template
         $clayview=leadClaydocOut($claydocs, $edit);
         $artdata['claydoc_view']=$clayview;
         $artdata['claycnt'] = count($claydocs);
-        $artdata['claydocswidth'] = ceil(count($claydocs)/4)*115;
+        $artdata['claydocswidth'] = ceil(count($claydocs)/3)*115;
         // Previews
         $previewdocs=$res['previewdocs'];
         $previewview=leadPreviewdocOut($previewdocs, $edit);
         $artdata['previewdoc_view']=$previewview;
         $artdata['previewcnt'] = count($previewdocs);
-        $artdata['previewswidth'] = ceil(count($previewdocs)/4)*115;
+        $artdata['previewswidth'] = ceil(count($previewdocs)/3)*115;
+        // Templates
+        if ($ord_data['brand']=='SR') {
+            $artdata['empty_url'] = $this->CI->config->item('sr_empty_template');
+            $artdata['empty_title'] = $this->CI->config->item('sr_empty_title');
+        } else {
+            $artdata['empty_url'] = $this->CI->config->item('sb_empty_template');
+            $artdata['empty_title'] = $this->CI->config->item('sb_empty_title');
+        }
+        $artdata['extendview'] = ifset($res, 'extendview',0);
         // Artwork View
         $data['artview']=$this->CI->load->view('leadorderdetails/artwork_view', $artdata, TRUE);
         return $data;
     }
 
+    public function prepare_duplicateorder($options)
+    {
+        $dat = array();
+        $styles=[];
+        if (isset($options['styles'])) {
+            $styles=$options['styles'];
+        }
+        if ($_SERVER['SERVER_NAME']=='lifttest.stressballs.com') {
+            $styles[]=array('style'=>'/css/page_view/testsite_view.css');
+        }
+        $scripts=[];
+        if (isset($options['scripts'])) {
+            $scripts=$options['scripts'];
+        }
+
+        $head_options=[
+            'styles'=>$styles,
+            'scripts'=>$scripts,
+            'gmaps' => ifset($options,'gmaps',0),
+        ];
+        $dat['head'] = $this->CI->load->view('duplcate_orders/head_view', $head_options, TRUE);
+        return $dat;
+    }
 }

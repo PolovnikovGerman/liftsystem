@@ -13,9 +13,8 @@
     <div class="itemdetails-keydataarea">
         <div class="itemdetails-namearea">
             <div class="namearea-label">Item Name</div>
-            <div class="itemdetails-keydatvalue">
-                <input type="text" class="itemkeyinfoinput itemname"  data-item="item_name" value="<?=$item['item_name']?>"/>
-            </div>
+            <div class="itemdetails-keydatvalue" data-event="hover" data-css="itemdetailsballonbox" data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="down" data-textcolor="#000"
+                 data-balloon="<?=$item['item_name']?>" data-timer="4000" data-delay="1000"><?=$item['item_name']?></div>
         </div>
         <div class="itemdetails-itemnumarea">
             <div class="namearea-label">Item #</div>
@@ -23,19 +22,7 @@
         </div>
         <div class="itemdetails-itemcategory">
             <div class="namearea-label">Category:</div>
-            <div class="itemdetails-keydatvalue">
-                <?php if ($item['item_id'] > 0) { ?>
-                    <?=$item['category_name']?>
-                <?php } else { ?>
-                    <select class="categoryitemselect">
-                        <option value=""></option>
-                        <?php foreach ($categories as $category) { ?>
-                            <option value="<?=$category['category_id']?>"><?=$category['category_name']?></option>
-                        <?php } ?>
-                    </select>
-                <?php } ?>
-
-            </div>
+            <div class="itemdetails-keydatvalue"><?=$item['category_name']?></div>
         </div>
     </div>
     <div class="itemdetails-mode">

@@ -78,7 +78,7 @@ body div {
 }
 .content_tab_header.stressballs {
     background: #3537fc;
-    height: 49px;
+    height: 51px;
 }
 .content_tab_header.stressballs.active {
     background: #3736fe;
@@ -92,11 +92,11 @@ body div {
 }
 .content_tab_header.relievers {
     background: rgba(253, 255, 68, 0.4);
-    height: 49px;
+    height: 51px;
 }
 .content_tab_header.active.relievers {
     background: rgba(253, 255, 68, 1);
-    height: auto;
+    /* height: auto; */
 }
 .relievers_logo {
     margin: 5px 20.5px 0 20.5px;
@@ -107,7 +107,7 @@ body div {
 .content_tab_header.sigmasystem {
     background: #595959;
     width: 54px;
-    height: 49px;
+    height: 51px;
 }
 .sigma_logo {
     margin: 16px 16px 0 16px;
@@ -119,44 +119,80 @@ body div {
     margin: 17px 20px 0 20px;
 }
 .mainsiteheader {
-    width: calc(100% - 432px);
+    /* width: calc(100% - 432px); */
 }
 .period_analitic_info {
     border: 1px solid #9b9b9b;
+    width: 217px;
 }
 .period_analitic_info div {
-    height: 24px;
-    line-height: 24px;
+    height: 18px;
+    line-height: 18px;
     color: #ffffff;
 }
 .period_analitic_info .period_name {
-    width: 86px;
+    width: 100%;
     text-align: center;
     font-family: Arial;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 14px;
     color: #55aeff;
     text-transform: uppercase;
+    line-height: 16px;
+    margin-top: 3px;
+    height: 16px;
 }
-.period_analitic_info .param_value_label {
-    text-align: right;
-    padding-right: 7px;
-    text-transform: uppercase;
-    font-family: Helvetica CE;
-    font-size: 12px;
+.period_analitic_info .totalsalesprev, .period_analitic_info .totalsalesnext {
+    width: 20px;
+    text-align: center;
+    font-size: 19px;
+    height: 20px;
+    line-height: 20px;
+    opacity: 0.6;
+}
+.period_analitic_info .totalsalesnext {
+    float: right!important;
+}
+.period_analitic_info .totalsalesprev.active, .period_analitic_info .totalsalesnext.active {
+    opacity: 1;
     cursor: pointer;
 }
+.period_analitic_info .period_results {
+    width: calc(100% - 40px);
+    text-align: center;
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
+.period_analitic_info .param_value,.period_analitic_info  .param_value_label,.period_analitic_info  .param_value.money {
+    float: none;
+    display: inline-block;
+}
+.period_analitic_info .param_value_label {
+    font-family: Arial;
+    font-size: 14px;
+    color: #979797;
+    font-weight: 600;
+    width: 68px;
+    text-align: left;
+    /* cursor: pointer; */
+}
+.period_analitic_info .param_value_label span {
+    position: relative;
+    top: -2px;
+}
 .period_analitic_info .param_value {
-    min-width: 26px;
-    font-family: Helvetica-Bold;
-    font-size: 18px;
-    padding-right: 7px;
+    min-width: 23px;
+    font-family: Arial;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: right;
+    padding-right: 3px;
     cursor: pointer;
 }
 .period_analitic_info .param_value.money {
     min-width: 45px;
-    padding-left: 7px;
     cursor: pointer;
+    text-align: left;
 }
 .period_analitic_info .allbrandstotalweek {
     border-left: 1px solid #9b9b9b;
@@ -169,9 +205,10 @@ body div {
     cursor: pointer;
 }
 .publicsearch {
-    margin-left: 5px;
+    margin-left: 9px;
+    position: relative;
     /* Compensation for magnif.icon */
-    margin-right: -16px;
+    /* margin-right: -16px; */
 }
 .publicsearch > select.publicsearch_type {
     height: 29px;
@@ -187,15 +224,20 @@ body div {
     font-size: 14px;
     font-family: Arial;
     padding-left: 6px;
-    width: 111px;
+    width: 107px;
 }
 .publicsearch > input.publicsearch_template::placeholder {
     text-align: left;
 }
 .publicsearch > .publicsearch_btn {
-    position: relative;
-    float: right;
-    left: -21px;
+    /*position: relative;*/
+    /*float: right;*/
+    /*left: -21px;*/
+    /*top: 4px;*/
+    /*cursor: pointer;*/
+    position: absolute;
+    left: auto;
+    right: 5px;
     top: 4px;
     cursor: pointer;
 }
@@ -206,21 +248,20 @@ body div {
 }
 .userinfo .signout {
     color: #82f8ff;
-    font-family: Helvetica-Oblique;
+    font-family: Helvetica;
     font-size: 12px;
-    font-style: italic;
-    width: 50px;
-    padding-top: 1px;
+    /* width: 50px;*/
+    /* padding-top: 1px; */
     float: right!important;
     cursor: pointer;
+    margin-right: 8px;
 }
 .userinfo .usersigninfo {
     float: right!important;
     padding-right: 7px;
     text-align: right;
     color: #ffffff;
-    font-family: Helvetica-Oblique;
-    font-style: italic;
+    font-family: Helvetica;
     font-size: 14px;
 }
 .userinfo .dateinfo {
@@ -236,7 +277,7 @@ body div {
     height: 26px;
     color: #ffffff;
     /* width: 105px; */
-    margin: 0.25rem 4px 0 4px;
+    margin: 0.25rem 0px 0 9px;
     cursor: pointer;
     padding: 0 6px;
 }
@@ -270,7 +311,7 @@ body div {
     height: 26px;
     color: #ffffff;
     /* width: 90px; */
-    margin-right: 4px;
+    margin-left: 8px;
     float: right!important;
     cursor: pointer;
     padding: 0 6px;
@@ -679,7 +720,6 @@ ul.mainmenu #collapsed.dropdown-menu li {
 }
 .maincontentmenu_item {
     background: #5a5aff;
-    margin-top: 5px;
     height: 23px;
     line-height: 23px!important;
     text-align: center;
@@ -702,7 +742,7 @@ ul.mainmenu #collapsed.dropdown-menu li {
     color: #2E2E2E;
 }
 .maincontentmenu_item.oldver {
-    padding: 0 13px 0 1px;
+    /* padding: 0 13px 0 1px; */
 }
 .maincontentmenu_item.active {
     color: #000;
@@ -859,15 +899,15 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     padding: 0 16px;
 }
 .menuitem.oldver {
-    padding: 0 16px 0 4px!important;
+    /* padding: 0 16px 0 4px!important; */
 }
 div.oldvesionlabel {
     opacity: 0.6;
-    position: relative;
+    position: absolute;
     left: 47%;
     background-color: #b53535;
     width: 12px;
-    margin-top: 0px;
+    /* margin-top: 0px; */
     height: 23px;
 }
 .menuitem.activelink, .menuitem.activelink:hover {
@@ -1335,4 +1375,223 @@ div.oldvesionlabel {
     background-color: #00004c;
     color: #ffffff;
     border: 1px solid #ffffff;
+}
+/* Flash */
+@-webkit-keyframes blinker {
+    from { opacity: 1.0; }
+    to { opacity: 0.0; }
+}
+.flashed {
+    -webkit-animation-name: blinker;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: cubic-bezier(.5, 0, 1, 1);
+    -webkit-animation-duration: 1.7s;
+}
+.period_debt_info {
+    clear: both;
+    border: 1px solid #9b9b9b;
+    height: 18px;
+    color: #ffffff;
+    margin: -14px 0px 0 344px;
+    cursor: pointer;
+    padding: 0 6px;
+    line-height: 18px !important;
+    position: relative;
+    top: -1px;
+    left: -2px;
+}
+.period_debt_info:hover {
+    background: #000080;
+}
+.period_debt_info .debtinfo_label {
+    text-align: center;
+    font-family: Arial;
+    font-weight: bold;
+    font-size: 12px;
+    color: #55aeff;
+    text-transform: uppercase;
+    line-height: 16px;
+    margin-top: 0px;
+    height: 16px;
+}
+.period_debt_info .debtinfo_value {
+    min-width: 26px;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: right;
+    padding-right: 3px;
+    padding-left: 5px;
+    height: 16px;
+    line-height: 16px;
+    color: #ffffff;
+    margin-top: 0px;
+}
+.brantotalmoneyarea {
+    display: inline-table;
+    background: #000000;
+    padding: 7px;
+    width: 544px;
+}
+.brantotalmoneyarea div {
+    float: left;
+}
+.revenuelabel, .paidtotallabel, .unpaidtotallabel {
+    font-size: 12px;
+    height: 18px;
+    line-height: 18px!important;
+}
+.revenuelabel {
+    color: #4ca4ee;
+    margin-left: 149px;
+}
+.paidtotallabel {
+    color: #00d1ca;
+    margin-left: 108px;
+}
+.unpaidtotallabel {
+    color: #00d1ca;
+    margin-left: 95px;
+}
+.totalrevenuesection {
+    width: 259px;
+}
+.totalrevenuesection .datarow > div {
+    height: 22px;
+    line-height: 22px!important;
+}
+.brantotalmoneyarea .totalrowlabel {
+    width: 130px;
+    padding-right: 7px;
+    text-align: right;
+    color: #4ca4ee;
+    font-size: 15px;
+    font-weight: 600;
+}
+.brantotalmoneyarea .totalrowvalue {
+    padding-left: 10px;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: right;
+    width: 82px;
+}
+.brantotalmoneyarea .totalrowvalue.revenuetotal, .brantotalmoneyarea .totalrowpercent.revenuetotal {
+    border-top: 1px solid #ffffff;
+}
+.brantotalmoneyarea .totalrowpercent {
+    width: 47px;
+    text-align: center;
+    color: #4ca4ee;
+    font-size: 12px;
+    font-weight: 600;
+}
+.brantotalmoneyarea .totalpaymentsection {
+    margin-left: 12px;
+}
+.brantotalmoneyarea .totalpaymentdatasection {
+    border: 1px solid #ffffff;
+}
+.brantotalmoneyarea .totalpaymentsection .datarow > div {
+    height: 22px;
+    line-height: 22px!important;
+}
+.brantotalmoneyarea .totalpaymentvalue, .brantotalmoneyarea .totalunpaidvalue {
+    padding-left: 10px;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: right;
+    width: 80px;
+}
+.brantotalmoneyarea .totalpaymentperentvalue {
+    width: 48px;
+    text-align: center;
+    color: #00d1ca;
+    font-size: 12px;
+    font-weight: 600;
+}
+/* Portrait notepads */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .testsitelabel {
+        display: none;
+    }
+    .relievers_logo > img {
+        width: 127px;
+    }
+    .relievers_logo {
+        margin: 7px 11.5px 0px 11.5px;
+    }
+    .relievers_logo.active > img {
+        width: 135px;
+    }
+    .relievers_logo.active {
+        margin: 5px 8.5px 9px 8.5px;
+    }
+    .stressballs_logo > img {
+        width: 110px;
+    }
+    .stressballs_logo.active > img {
+        width: 134px;
+    }
+    .stressballs_logo {
+        margin: 13px 14.5px 0 14.5px;
+    }
+    .content_tab_header {
+        width: 155px;
+    }
+    .content_tab_header.sigmasystem {
+        width: 43px;
+    }
+    .mainsiteheader {
+        /* width: calc(100% - 353px); */
+    }
+    .period_analitic_info .period_name {
+        font-size: 13px;
+    }
+    .userinfo {
+        width: unset;
+        margin-right: unset;
+    }
+    .userinfo .signout {
+        font-size: 11px;
+    }
+    .userinfo .usersigninfo {
+        font-size: 13px;
+    }
+    .userinfo .dateinfo {
+        font-size: 12px;
+    }
+    .sigmasystemsubtitle {
+        margin-left: 7px;
+    }
+    .sigma_logo.active {
+        margin: 17px 15px 0 15px;
+    }
+    /* Tabs, menu */
+    .maincontentmenu > .title {
+        margin-left: 5px;
+        margin-right: 8px;
+        font-size: 16px;
+        height: 24px;
+        line-height: 24px !important;
+        margin-top: 7px;
+    }
+    .maincontentmenu_item {
+        height: 21px;
+        line-height: 21px!important;
+        padding: 0 4px;
+        font-size: 12px;
+        margin-right: 3px;
+        cursor: pointer;
+        margin-top: 11px;
+    }
+    div.oldvesionlabel {
+        height: 21px;
+    }
+    .maincontentmenu_item.active {
+        line-height: 24px !important;
+        height: 24px;
+        margin-top: 9px;
+    }
 }

@@ -6,15 +6,21 @@
                 <legend>User Personal Data</legend>
                 <div class="clearfix"></div>
                 <div class="input_row">
-                    <div class="labeltxt">User Email (login):</div>
+                    <div class="labeltxt">Email (login):</div>
                     <div class="inputval">
                         <input type="text" class="large userpersdata" data-name="user_email" id="user_email" value="<?=$user['user_email']?>"/>
                     </div>
                 </div>
                 <div class="input_row">
-                    <div class="labeltxt">User Name:</div>
+                    <div class="labeltxt">First Name:</div>
                     <div class="inputval">
-                        <input type="text" class="large userpersdata" data-name="user_name" id="user_name" value="<?=$user['user_name']?>"/>
+                        <input type="text" class="large userpersdata" data-name="first_name" id="first_name" value="<?=$user['first_name']?>"/>
+                    </div>
+                </div>
+                <div class="input_row">
+                    <div class="labeltxt">Last Name:</div>
+                    <div class="inputval">
+                        <input type="text" class="large userpersdata" data-name="last_name" id="last_name" value="<?=$user['last_name']?>"/>
                     </div>
                 </div>
                 <div class="input_row">
@@ -27,7 +33,7 @@
                     </div>
                 </div>
                 <div class="input_row userpasswd">
-                    <div class="labeltxt">User Password:</div>
+                    <div class="labeltxt">Password:</div>
                     <div class="inputval">
                         <input type="user_passwd_txt" class="large userpersdata" data-name="user_passwd_txt1" id="user_passwd_txt1" value=""/>
                     </div>
@@ -44,14 +50,18 @@
                 <legend>Add'l Info</legend>
                 <div class="input_row">
                     <div class="labeltxt">Leads Rep:</div>
-                    <div class="inputval">
+                    <div class="inputval chkbox">
                         <input type="checkbox" class="userpersdatachk" data-name="user_leadrep" id="user_leadrep" value="1" <?=($user['user_leadrep']==1 ? 'checked="checked"' : '')?> />
+                    </div>
+                    <div class="labeltxt">Finance User:</div>
+                    <div class="inputval chkbox">
+                        <input type="checkbox" class="userpersdatachk" data-name="finuser" id="finuser" value="1" <?=($user['finuser']==1 ? 'checked="checked"' : '')?> />
                     </div>
                 </div>
                 <div class="input_row">
-                    <div class="labeltxt">Finance User:</div>
-                    <div class="inputval">
-                        <input type="checkbox" class="userpersdatachk" data-name="finuser" id="finuser" value="1" <?=($user['finuser']==1 ? 'checked="checked"' : '')?> />
+                    <div class="labeltxt">Payment User:</div>
+                    <div class="inputval chkbox">
+                        <input type="checkbox" class="userpersdatachk" data-name="user_payuser" id="user_payuser" value="1" <?=($user['user_payuser']==1 ? 'checked="checked"' : '')?> />
                     </div>
                 </div>
                 <div class="input_row">
@@ -123,8 +133,20 @@
                     <?=$webpages?>
                 </div>
                 <div class="input_row">
-                    <div class="labeltxt">User Default page</div>
-                    <div class="inputval"><?=$pages_select?></div>
+                    <div class="labeltxt exportaccess">Access to Order Export: </div>
+                    <div class="inputval exportaccess">
+                        <input type="checkbox" class="userpersdatachk" data-name="user_order_export" id="user_order_export" value="1" <?=($user['user_order_export']==1 ? 'checked="checked"' : '')?> />
+                    </div>
+                </div>
+                <div class="input_row">
+                    <div class="labeltxt">User Default Brand</div>
+                    <div class="inputval">
+                        <select data-name="default_brand" class="userpersdata brandselect">
+                            <option value="SB" <?=$user['default_brand']=='SB' ? 'selected="selecte"' : ''?>>StressBalls</option>
+                            <option value="SR" <?=$user['default_brand']=='SR' ? 'selected="selecte"' : ''?>>StressRelievers</option>
+                            <option value="SG" <?=$user['default_brand']=='SG' ? 'selected="selecte"' : ''?>>Sigma</option>
+                        </select>
+                    </div>
                 </div>
             </fieldset>
         </div>

@@ -2112,9 +2112,15 @@ Class Artwork_model extends MY_Model
             $out['msg']='Artwork data was lost. Please reload data';
         } else {
             $dbtablename='sb_items';
+            $brand = ifset($artdata, 'brand','BT');
             $this->db->select("item_id, item_number, item_name, item_vector_img");
             $this->db->from($dbtablename);
             $this->db->where('item_vector_img is not null');
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_id('brand',['SB','BT']);
+            }
             $result=$this->db->get()->result_array();
 
             $out['templates']=$result;
@@ -3507,14 +3513,16 @@ Class Artwork_model extends MY_Model
                 'parameter_newvalue'=>(intval($shippingnew['event_date'])==0 ? '' : date('m/d/Y', $shippingnew['event_date'])),
             );
         }
+
         if (floatval($shippingold['rush_price'])!=  floatval($shippingnew['rush_price'])) {
-            array_push($changes, 'Rush Price to '.MoneyOutput($ordernew['rush_price'],2));
+            array_push($changes, 'Rush Price to '.MoneyOutput(floatval($shippingnew['rush_price']),2));
             $historylist[]=array(
                 'parameter_name'=>'Rush Price',
                 'parameter_oldvalue'=>  MoneyOutput($shippingold['rush_price'],2),
                 'parameter_newvalue'=>  MoneyOutput($shippingnew['rush_price'],2),
             );
         }
+
         // Shipping Address
         $shipoldaddress=$compare_array['shipping_address'];
         $shipnewaddress=$neworddata['shipping_address'];
@@ -3671,6 +3679,70 @@ Class Artwork_model extends MY_Model
                 'parameter_newvalue'=>$newcntr,
             );
         }
+        // Trackings
+//        $olditems = $compare_array['order_items'];
+//        $newitems = $neworddata['order_items'];
+//        $oldtracks = [];
+//        $newtracks = [];
+//        foreach ($olditems as $olditem) {
+//            foreach ($olditem['trackings'] as $row) {
+//                $oldtracks[] = [
+//                    'tracking_id' => $row['tracking_id'],
+//                    'qty' => $row['qty'],
+//                    'trackdate' => $row['trackdate'],
+//                    'trackservice' => $row['trackservice'],
+//                    'trackcode' => $row['trackcode'],
+//                ];
+//            }
+//        }
+//        foreach ($newitems as $newitem) {
+//            foreach ($newitem['trackings'] as $row) {
+//                $newtracks[] = [
+//                    'tracking_id' => $row['tracking_id'],
+//                    'qty' => $row['qty'],
+//                    'trackdate' => $row['trackdate'],
+//                    'trackservice' => $row['trackservice'],
+//                    'trackcode' => $row['trackcode'],
+//                ];
+//            }
+//        }
+//        foreach ($oldtracks as $oldtrack) {
+//            $find=0;
+//            foreach ($newtracks as $newtrack) {
+//                if ($newtrack['tracking_id']==$oldtrack['tracking_id']) {
+//                    $find = 1;
+//                    if ($oldtrack['qty']!=$newtrack['qty'] ) {
+//                        $historylist[]=array(
+//                            'parameter_name'=>'Change Tracking QTY',
+//                            'parameter_oldvalue'=>$oldtrack['qty'],
+//                            'parameter_newvalue'=>$newtrack['qty'],
+//                        );
+//                    }
+//                    if (date('m/d/Y', $oldtrack['trackdate'])!==date('m/d/Y', $newtrack['trackdate'])) {
+//                        $historylist[]=array(
+//                            'parameter_name'=>'Change Tracking Date',
+//                            'parameter_oldvalue'=> date('m/d/Y', $oldtrack['trackdate']),
+//                            'parameter_newvalue'=> date('m/d/Y', $newtrack['trackdate']),
+//                        );
+//                    }
+//                    if ($oldtrack['trackservice']!==$newtrack['trackservice']) {
+//                        $historylist[]=array(
+//                            'parameter_name'=>'Change Tracking Service',
+//                            'parameter_oldvalue'=> $oldtrack['trackservice'],
+//                            'parameter_newvalue'=> $newtrack['trackservice'],
+//                        );
+//                    }
+//                    if ($oldtrack['trackcode']!==$newtrack['trackcode']) {
+//                        $historylist[]=array(
+//                            'parameter_name'=>'Change Tracking Number',
+//                            'parameter_oldvalue'=> $oldtrack['trackcode'],
+//                            'parameter_newvalue'=> $newtrack['trackcode'],
+//                        );
+//                    }
+//                    break;
+//                }
+//            }
+//        }
         // Artwork
         $artworkold=$compare_array['artwork'];
         $artworknew=$neworddata['artwork'];

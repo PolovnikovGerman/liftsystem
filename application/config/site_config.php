@@ -1,6 +1,10 @@
 <?php
-$config['js_version'] = '2.02203';
-$config['css_version']= '2.02203';
+$config['js_version'] = '2.02377';
+$config['css_version']= '2.02377';
+/* SET EMPTY SERVER NAME */
+if (!isset($_SERVER['SERVER_NAME'])) {
+    $_SERVER['SERVER_NAME'] = getenv('server_name');
+}
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -111,7 +115,7 @@ $config['localserver']=array(
 $config['salestax']=7;
 $config['datenewtax']= strtotime('2018-07-23');
 $config['salesnewtax']=6.625;
-
+$config['outsalestax']=6.625;
 $config['report_vendors']=array(
     'Ariel',
     'Alpi',
@@ -133,7 +137,7 @@ $config['defqty_custom']=1000;
 // Minimal timeout of lock - 20 min
 $config['max_lock_time']=180;
 // Timeout for edit - 10 min - JS - X 1000
-$config['loctimeout']=130;
+$config['loctimeout']=130; // 130
 $config['loctimeout_local']=6000; //1200;
 // Default Inventory Vendor && Payment Method
 $config['inventory_vendor']=getenv('INVENTORY_VENDOR');
@@ -293,3 +297,7 @@ $config['debug_mode'] = (getenv('TEST_SERVER')==1 ? '1' : 0);
 $config['default_country'] = 223;
 $config['google_map_key'] = getenv('GOOGLEMAPAPI_KEY');
 $config['srrepeat_cost'] = 12;
+$config['custom_quote_note'] = '4-5 Week Lead Time'.PHP_EOL.'Add\'l Print Locations: $0.12 ea & $30 setup'.PHP_EOL.PHP_EOL;
+$config['custom_mischrg_label'] = 'Custom Design Charge';
+$config['custom_mischrg_value'] = 150;
+$config['custom_itemprice'] = 3.00;

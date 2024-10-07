@@ -1092,8 +1092,8 @@ Class Payments_model extends MY_Model {
         $out['profclass']='projprof';
         if ($order_data['order_cog']==0 && $amount_data['amount_sum']==0) {
         } else {
-            $costs=floatval($amount_data['is_shipping'])*$order_data['shipping']+floatval($order_data['tax'])+floatval($order_data['cc_fee'])+
-                floatval($amount_data['amount_sum']-$amount_data['oldamount_sum'])+floatval($order_data['order_cog']);
+            $costs=floatval($amount_data['is_shipping'])*floatval($order_data['shipping'])+floatval($order_data['tax'])+floatval($order_data['cc_fee'])+
+                floatval($amount_data['amount_sum'])-floatval($amount_data['oldamount_sum'])+floatval($order_data['order_cog']);
             $out['profval']=round(floatval($order_data['revenue'])-$costs,2);
             $out['profperc']=round(($out['profval']/$order_data['revenue'])*100,1);
             $out['profclass']=profit_bgclass($out['profperc']);

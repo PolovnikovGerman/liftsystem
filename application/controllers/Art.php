@@ -23,7 +23,8 @@ class Art extends MY_Controller {
     public function __construct()
     {
         parent::__construct();
-        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink);
+        $brand = $this->menuitems_model->get_current_brand();
+        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink,0, $brand);
         if ($pagedat['result']==$this->error_result) {
             show_404();
         }
@@ -1031,7 +1032,19 @@ class Art extends MY_Controller {
 
 
         /* Templates */
-        $templates_view=$this->load->view('artpage/templates_view',array('artwork_id'=>$artwork_id),TRUE);
+        if ($artworkdata['brand']=='SR') {
+            $templurl = $this->config->item('sr_empty_template');
+            $templtitle = $this->config->item('sr_empty_title');
+        } else {
+            $templurl = $this->config->item('sb_empty_template');
+            $templtitle = $this->config->item('sb_empty_title');
+        }
+        $templ_options = [
+            'emptytemplate_url' => $templurl,
+            'templatetitle' => $templtitle,
+            'artwork_id'=>$artwork_id,
+        ];
+        $templates_view=$this->load->view('artpage/templates_view', $templ_options,TRUE);
 
         /* Get Proofs */
         $proofdat=$this->artwork_model->get_artproofs($artwork_id);

@@ -1,4 +1,7 @@
-<div class="itemdetails-tab active">Main Info</div>
+<div class="itemdetails-tab active" data-tabview="infoarea">Main Info</div>
+<?php if ($history_cnt > 0) { ?>
+    <div class="itemdetails-tab" data-tabview="history">History</div>
+<?php } ?>
 <div class="itemdetails-infoarea">
     <div class="leftpartitembody">
         <?=$keyinfo?>
@@ -10,7 +13,7 @@
     </div>
     <div class="rightpartbody">
         <div class="pricesarea">
-            <div class="relievers_vendorprices">
+            <div class="relievers_vendorprices <?=$missinfo==0 ? '' : 'missinginfo'?>">
                 <?=$vendor_prices?>
             </div>
             <?=$itemprices?>
@@ -24,3 +27,8 @@
         </div>
     </div>
 </div>
+<?php if ($history_cnt > 0) { ?>
+    <div class="itemdetails-history">
+        <?=$history?>
+    </div>
+<?php } ?>

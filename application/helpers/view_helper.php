@@ -339,8 +339,10 @@ if (!function_exists('profit_bgclass')) {
             $out_class='orange';
         } elseif ($profit_perc>=30 && $profit_perc<40) {
             $out_class='white';
-        } elseif ($profit_perc>=40) {
+        } elseif ($profit_perc>=40 && $profit_perc < 50) {
             $out_class='green';
+        } elseif ($profit_perc >=50) {
+            $out_class = 'dark_green';
         }
         return $out_class;
     }
@@ -737,7 +739,7 @@ if (!function_exists('leadClaydocOut')) {
         $numdocs=count($claydocs);
         $numpp=0;
         $opendiv=1;
-        $maxcols = ceil($numdocs/4);
+        $maxcols = ceil($numdocs/3);
         $numcolumn = 1;
         foreach ($claydocs as $row) {
             $row['edit']=$edit;
@@ -745,7 +747,7 @@ if (!function_exists('leadClaydocOut')) {
             $row['rownum']=$numpor;
             $clayview.=$ci->load->view('leadorderdetails/artwork_claydoc_view', $row,TRUE);
             $numpp++;
-            if ($numpor==4) {
+            if ($numpor==3) {
                 $numpor=0;
                 $numcolumn++;
                 $clayview.='</div>';
@@ -775,7 +777,7 @@ if (!function_exists('leadPreviewdocOut')) {
         $numdocs=count($previewdocs);
         $numpp=0;
         $opendiv=1;
-        $maxcols = ceil($numdocs/4);
+        $maxcols = ceil($numdocs/3);
         $numcol = 1;
         foreach ($previewdocs as $row) {
             $row['edit']=$edit;
@@ -783,7 +785,7 @@ if (!function_exists('leadPreviewdocOut')) {
             $row['rownum']=$numpor;
             $previewview.=$ci->load->view('leadorderdetails/artwork_previewdoc_view', $row,TRUE);
             $numpp++;
-            if ($numpor==4) {
+            if ($numpor==3) {
                 $numpor=0;
                 $previewview.='</div>';
                 $opendiv=0;
@@ -805,4 +807,80 @@ if (!function_exists('leadPreviewdocOut')) {
     }
 }
 
+if (!function_exists('new_customer_code')) {
+    function new_customer_code() {
+        return uniq_link('3','chars').'-'.uniq_link('10','digits');
+    }
+}
+
+
+if (!function_exists('hide_cardnumber')) {
+    function hide_cardnumber($cardnum)
+    {
+        $cardn = str_replace('-', '', $cardnum);
+        $ngroups = floor(strlen($cardn) / 4);
+        if (strlen($cardn)%4==0) {
+            $ngroups-=1;
+        }
+        $newcc = '';
+        for ($i = 0; $i < $ngroups; $i++) {
+            $newcc .= 'XXXX-';
+        }
+        $bgn = $ngroups * 4;
+        $lastgr = substr($cardn, $bgn);
+        $newcc .= $lastgr;
+        return $newcc;
+    }
+}
+
+if (!function_exists('hide_card_code')) {
+    function hide_card_code($code)
+    {
+        $newcode = '';
+        for($i=0;$i<strlen($code);$i++) {
+            $symb = substr($code,$i,1);
+            $symb = (intval($symb)+($i+5));
+            if ($symb >= 10) {
+                $symb = $symb - 10;
+            }
+            $newcode.=$symb;
+        }
+        return $newcode;
+    }
+}
+
+if (!function_exists('show_card_code')) {
+    function show_card_code($code)
+    {
+        $newcode = '';
+        for($i=0;$i<strlen($code);$i++) {
+            $symb = substr($code,$i,1);
+            $symb = (intval($symb)-($i+5));
+            if ($symb < 0) {
+                $symb = $symb + 10;
+            }
+            $newcode.=$symb;
+        }
+        return $newcode;
+    }
+}
+
+if (!function_exists('trackcodeurl')) {
+    function trackcodeurl($service, $trackcode)
+    {
+        $url = '';
+        if (!empty($service) && !empty($trackcode)) {
+            if ($service=='UPS') {
+                $url='https://www.ups.com/track?trackNums='.$trackcode;
+            } elseif ($service=='FedEx') {
+                $url='https://www.fedex.com/fedextrack?trknbr='.$trackcode;
+            } elseif ($service=='DHL') {
+                $url='https://mydhl.express.dhl/tracking?id='.$trackcode;
+            } elseif ($service=='USPS') {
+                $url='https://tools.usps.com/go/TrackConfirmAction_input?strOrigTrackNum='.$trackcode;
+            }
+        }
+        return $url;
+    }
+}
 ?>

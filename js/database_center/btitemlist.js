@@ -1,4 +1,5 @@
 function init_btitemslist_view() {
+    $(".btitemnewaddarea").hide();
     initItemsListPagination();
     $(".itemcategoryfilter").unbind('change').change(function () {
         var newcat = $(this).val();
@@ -121,13 +122,144 @@ function prepare_search_params() {
 
 function init_itemlist_content() {
     $("#addnewbtitems").unbind('click').click(function(){
-        var item=0;
-        edit_btitem(item);
+        // var item=0;
+        // edit_btitem(item);
+        prepare_newbtitem();
     });
     $(".btitemedit").unbind('click').click(function () {
         var item=$(this).data('item');
         edit_btitem(item);
+    });
+    $('#btitemdata').find('div.tabrow').hover(
+        function() {
+            $( this ).addClass('selected');
+        }, function() {
+            $( this ).removeClass('selected');
+        }
+    );
+}
+
+function prepare_newbtitem() {
+    var params = new Array();
+    params.push({name: 'brand', value: 'BT'});
+    var url="/dbitems/addnewitemform";
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".btitemnewaddarea").empty().html(response.data.content).show();
+            init_addnewbtitem();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function init_addnewbtitem() {
+    $(".btitemnewaddarea").find('div.canceladd').click(function (){
+        $(".btitemnewaddarea").empty();
+        $(".btitemnewaddarea").hide();
+    });
+    $("#itemnewcategory").unbind('change').change(function (){
+        var params = new Array();
+        params.push({name: 'category_id', value: $("#itemnewcategory").val()});
+        var url = '/dbitems/subcategories_list';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#itemnewsubcategory").empty();
+                $("#itemnewsubcategory").append('<option value=""> </option>');
+                var list = response.data.subcategories;
+                for (i=0; i<list.length; i++) {
+                    $("#itemnewsubcategory").append('<option value="'+list[i]['id']+'">'+list[i]['name']+'</option>');
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("#itemnewsubcategory").unbind('change').change(function (){
+        if ($("#itemnewsubcategory").val()=='-1') {
+            var params = new Array();
+            params.push({name: 'category_id', value: $("#itemnewcategory").val()});
+            var url = '/dbitems/prepare_newsubcateg';
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $(".btitemnewaddarea").hide();
+                    $(".btitemnewsucategarea").empty().html(response.data.content).show();
+                    init_addnewsubcategory();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
     })
+    $(".btitemnewaddarea").find('div.procedaddnewitem').unbind('click').click(function (){
+        var params = new Array();
+        var category = $("#itemnewcategory").val();
+        params.push({name: 'category', value: category });
+        params.push({name: 'subcategory', value: $("#itemnewsubcategory").val()});
+        params.push({name: 'itemname', value: $("#itemnewname").val()});
+        params.push({name: 'brand', value: 'BT'});
+        var url="/dbitems/addnewitem";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".btitemnewaddarea").empty().hide();
+                $(".btcategorybtn").removeClass('active');
+                $(".btcategorybtn[data-category='"+category+"']").removeClass('locked').addClass('active');
+                $(".itemcategoryfilter option[data-categ='"+category+"']").prop('disabled',false);
+                $(".itemcategoryfilter").val(category);
+                var item = response.data.newitem;
+                var itmparams = new Array();
+                itmparams.push({name: 'item_id', value: item});
+                itmparams.push({name: 'editmode', value: 1});
+                itmparams.push({name: 'brand', value: 'BT'});
+                var url = '/dbitems/itemlistdetails';
+                $.post(url, itmparams, function (response) {
+                    if (response.errors=='') {
+                        $("#itemDetailsModalLabel").empty().html(response.data.header);
+                        $("#itemDetailsModal").find('div.modal-body').empty().html(response.data.content);
+                        $("#itemDetailsModal").modal({backdrop: 'static', keyboard: false, show: true});
+                        init_btitemdetails_edit();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+}
+
+function init_addnewsubcategory() {
+    $(".btitemnewsucategarea").find('div.cancelsubcateg').click(function (){
+        $(".btitemnewsucategarea").empty()
+        $(".btitemnewsucategarea").hide();
+        $(".btitemnewaddarea").show();
+        $("#itemnewsubcategory").val('');
+        init_addnewbtitem();
+    });
+    $(".procedaddnewsubcateg").unbind('click').click(function(){
+        var params = new Array();
+        params.push({name: 'category_id', value: $("#itemnewcategory").val()});
+        params.push({name: 'subcateg_code', value: $("#newsubcategcode").val()});
+        params.push({name: 'subcateg_name', value: $("#newsubcategname").val()});
+        var url = '/dbitems/addsubcategory';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#itemnewsubcategory").empty();
+                $("#itemnewsubcategory").append('<option value=""> </option>');
+                var list = response.data.subcategories;
+                for (i=0; i<list.length; i++) {
+                    $("#itemnewsubcategory").append('<option value="'+list[i]['id']+'">'+list[i]['name']+'</option>');
+                }
+                $("#itemnewsubcategory").val(response.data.subcategory);
+                $(".btitemnewsucategarea").empty()
+                $(".btitemnewsucategarea").hide();
+                $(".btitemnewaddarea").show();
+                $("#itemnewname").focus();
+                init_addnewbtitem();
+            }
+        },'json');
+    });
 }
 
 function edit_btitem(item) {

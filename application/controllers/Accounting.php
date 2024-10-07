@@ -14,7 +14,8 @@ class Accounting extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink);
+        $brand = $this->menuitems_model->get_current_brand();
+        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink,0, $brand);
         if ($pagedat['result'] == $this->error_result) {
             show_404();
         }
@@ -185,7 +186,8 @@ class Accounting extends MY_Controller
             $options['exclude_quickbook'] = ifset($postdata,'exclude_quickbook',0);
             /* count number of orders */
             $options['admin_mode']=0;
-            if ($this->USR_ROLE=='masteradmin') {
+            // if ($this->USR_ROLE=='masteradmin') {
+            if ($this->USER_ORDER_EXPORT==1) {
                 $options['admin_mode']=1;
             }
             if (isset($postdata['brand']) && !empty($postdata['brand'])) {
@@ -401,7 +403,8 @@ class Accounting extends MY_Controller
             }
 
             /* Fetch data about prices */
-            if ($this->USR_ROLE=='masteradmin') {
+            // if ($this->USR_ROLE=='masteradmin') {
+            if ($this->USER_ORDER_EXPORT==1) {
                 $admin_mode=1;
             } else {
                 $admin_mode=0;
@@ -758,10 +761,11 @@ class Accounting extends MY_Controller
             $year_view = ifset($postdata, 'year', date('Y'));
             $brand = ifset($postdata, 'brand');
             if (!empty($brand)) {
+                $brandcalc = 'ALL';
                 $error = '';
                 $this->load->model('batches_model');
                 /* Get Max & min date  */
-                $batch_dates=$this->batches_model->get_batches_limits($brand);
+                $batch_dates=$this->batches_model->get_batches_limits($brandcalc);
                 $max_date=strtotime(date("Y-m-d", time()) . " +5 week");
                 $min_date=strtotime(date("Y-m-d",time())." -5 week");
                 if (isset($batch_dates['min_date']) && $min_date>$batch_dates['min_date']) {
@@ -776,7 +780,7 @@ class Accounting extends MY_Controller
                     'monday'=>$dats['start_week'],
                     'max_date'=>$max_date,
                     'min_date'=>$min_date,
-                    'brand' => $brand,
+                    'brand' => $brandcalc,
                 );
                 if ($filtr!='') {
                     $options['received']=$filtr;
@@ -805,6 +809,7 @@ class Accounting extends MY_Controller
                     $options=array(
                         'totals'=>$row['totals'],
                         'details'=>$row['lines'],
+                        'brand' => $brand,
                     );
                     $content=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
                     $detdat[]=array(
@@ -813,10 +818,24 @@ class Accounting extends MY_Controller
                     );
                 }
                 $mdata['details']=$this->load->view('batch/batch_detailpart_view',array('details'=>$detdat),TRUE);
-
             }
             $this->ajaxResponse($mdata,$error);
         }
+    }
+
+    // View popup batch due
+    public function batchdue()
+    {
+        $date=$this->input->get('day');
+        $this->load->model('batches_model');
+        $batches=$this->batches_model->get_batches_duedate($date);
+        $options=array(
+            'batches'=>$batches,
+            'cnt'=>count($batches),
+            'date'=>$date,
+        );
+        $content=$this->load->view('batch/batches_due_view',$options, TRUE);
+        echo $content;
     }
 
     /* Change Batch option EMAILED */
@@ -1036,7 +1055,7 @@ class Accounting extends MY_Controller
             $options=$this->input->post();
             $user_id=$this->USR_ID;
             $filtr=$options['filter'];
-            $brand = ifset($options,'brand');
+            $brand = ifset($options,'brand','SR');
             $batch_data=$this->batches_model->get_batch_detail($options['batch_id']);
             if ($batch_data['order_id']) {
                 $options['batch_sum']=($this->batches_model->get_batchsum_order($batch_data['order_id'])-$batch_data['batch_amount']);
@@ -1050,6 +1069,7 @@ class Accounting extends MY_Controller
                 $res=$this->batches_model->save_batchrow($options,$user_id);
             } else {
                 $options['batch_date']=$batch_data['batch_date'];
+                $options['batch_writeoff'] = ifset($options,'batch_writeoff',0);
                 $old_batch_due=$batch_data['batch_due'];
                 $batch_date=$batch_data['batch_date'];
                 $mdata['batch_date']=$batch_date;
@@ -1078,6 +1098,7 @@ class Accounting extends MY_Controller
                     $options=array(
                         'totals'=>$batchs['totals'],
                         'details'=>$batchs['details'],
+                        'brand' => $brand,
                     );
                     $mdata['content']=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
                 }
@@ -1118,40 +1139,49 @@ class Accounting extends MY_Controller
     public function batch_addmanual() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
-            $batchdate=$this->input->post('batchdate');
-            $filtr=$this->input->post('filter');
-            $brand = $this->input->post('brand');
-            $newrec=array(
-                'create_usr'=>  $this->USR_ID,
-                'create_date'=>date('Y-m-d H:i:s'),
-                'update_usr'=>  $this->USR_ID,
-                'batch_date'=>$batchdate,
-            );
-            $this->load->model('batches_model');
-            $duedate=$this->batches_model->getAmexDueDate($batchdate,'paypal');
-            $newrec['batch_due']=$duedate;
-            $res=$this->batches_model->batch_freebatchadd($newrec);
-            $error=$res['msg'];
-            if ($res['result']=$this->success_result) {
-                $error = '';
-                $options=array(
+            $error='Empty Payment date';
+            $postdata = $this->input->post();
+            $batchdat = ifset($postdata,'batchdate', '');
+            if (!empty($batchdat)) {
+                $batchdate=strtotime($batchdat);
+                $filtr = ifset($postdata,'filter','');
+                $brand = ifset($postdata,'brand','SR');
+
+                $newrec=array(
+                    'create_usr'=>  $this->USR_ID,
+                    'create_date'=>date('Y-m-d H:i:s'),
+                    'update_usr'=>  $this->USR_ID,
                     'batch_date'=>$batchdate,
                     'brand' => $brand,
                 );
-                if ($filtr!='') {
-                    $options['received']=$filtr;
-                }
-                $batchs=$this->batches_model->get_batchdetails_date($options);
-                if (count($batchs['details'])>0) {
+                $this->load->model('batches_model');
+                $duedate=$this->batches_model->getAmexDueDate($batchdate,'paypal');
+                $newrec['batch_due']=$duedate;
+                $res=$this->batches_model->batch_freebatchadd($newrec);
+                $error=$res['msg'];
+                if ($res['result']=$this->success_result) {
+                    $error = '';
                     $options=array(
-                        'totals'=>$batchs['totals'],
-                        'details'=>$batchs['details'],
+                        'batch_date'=>$batchdate,
+                        'batch_enddate' => strtotime('+1 day', $batchdate),
+                        'brand' => $brand,
                     );
-                    $mdata['content']=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
-                } else {
-                    $mdata['content']='';
+                    if ($filtr!='') {
+                        $options['received']=$filtr;
+                    }
+                    $batchs=$this->batches_model->get_batchdetails_date($options);
+                    if (count($batchs['details'])>0) {
+                        $options=array(
+                            'totals'=>$batchs['totals'],
+                            'details'=>$batchs['details'],
+                            'brand' => $brand,
+                        );
+                        $mdata['content']=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
+                    } else {
+                        $mdata['content']='';
+                    }
                 }
+
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -1203,6 +1233,7 @@ class Accounting extends MY_Controller
                     $options=array(
                         'totals'=>$batchs['totals'],
                         'details'=>$batchs['details'],
+                        'brand' => $brand,
                     );
                     $mdata['content']=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
                 }
@@ -1231,6 +1262,7 @@ class Accounting extends MY_Controller
             $options=array(
                 'totals'=>$batchdetails['totals'],
                 'details'=>$batchdetails['details'],
+                'brand' => $brand,
             );
             $mdata['content']=$this->load->view('batch/batch_daydetails_view',$options,TRUE);
             $this->ajaxResponse($mdata,$error);
@@ -1264,7 +1296,8 @@ class Accounting extends MY_Controller
             // 'searchform'=>$search_form,
             'legend'=>$legend,
             'total_row'=>'', // $totalrow,
-            'adminview' => $this->USR_ROLE=='masteradmin' ? 1 : 0,
+            // 'adminview' => $this->USR_ROLE=='masteradmin' ? 1 : 0,
+            'adminview' => $this->USER_ORDER_EXPORT==1 ? 1 : 0,
             'brand' => $brand,
         );
         $years=$this->orders_model->get_orders_dates($options);
@@ -2685,11 +2718,33 @@ class Accounting extends MY_Controller
             $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec);
             if ($brand=='ALL') {
                 $mdata['content'] = $this->load->view('accreceiv/details_sigma_view', $res, TRUE);
+            } elseif ($brand=='SR') {
+                $mdata['content'] = $this->load->view('accreceiv/details_sr_view', $res, TRUE);
             } else {
                 $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
             }
 
             $error = '';
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function debtstatus()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Parameters';
+            $postdata = $this->input->post();
+            $order_id = ifset($postdata, 'order_id',0);
+            $debt_status = ifset($postdata, 'debt_status','');
+            if (!empty($order_id)) {
+                $res = $this->orders_model->update_debtstatus($order_id, $debt_status);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -3423,7 +3478,8 @@ class Accounting extends MY_Controller
         $calendar_view='';
         // Get a list of batch years
         $this->load->model('batches_model');
-        $years_list=$this->batches_model->get_batches_years($brand);
+        $brandcalc = 'ALL';
+        $years_list=$this->batches_model->get_batches_years($brandcalc);
         $options=array(
             'details'=>$details,
             'calendar'=>$calendar_view,

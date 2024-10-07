@@ -1101,4 +1101,185 @@ Class Cronjob extends CI_Controller
         $this->load->model('artlead_model');
         $this->artlead_model->artclay_export();
     }
+
+    public function batchdailyreport()
+    {
+        $dateend=strtotime(date('m/d/Y'));
+        $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
+
+        $this->load->model('batches_model');
+        $brands = ['SB', 'SR'];
+        $msgbody='';
+        foreach ($brands as $brand) {
+            $usrlist = $this->batches_model->batchreport_users($datestart, $dateend, $brand);
+            if (count($usrlist) > 0) {
+                $title = 'Amounts added to ';
+                if ($brand=='SB') {
+                    $title.='Bluetrack/Stressballs';
+                } elseif ($brand=='SR') {
+                    $title.='StressRelievers.com';
+                }
+                $msgbody.='<span style="font-weight: bold">'.$title.'</span><br/>';
+                foreach ($usrlist as $row) {
+                    $list = $this->batches_model->batchreport_data($datestart, $dateend, $row['user_id'], $brand);
+                    if (empty($row['user_id'])) {
+                        $row['user_name'] = 'WEB Order';
+                    }
+                    $opt=[
+                        'title'=>date('D - M d, Y', $datestart).' - '.$row['user_name'],
+                        'subtitle'=>'', // Newly Added Amounts:
+                        'lists'=>$list,
+                    ];
+                    $msgbody.=$this->load->view('messages/batches_data_view', $opt, TRUE);
+                }
+            }
+        }
+        $this->load->library('email');
+        $config['charset'] = 'utf-8';
+        $config['mailtype']='html';
+        $config['wordwrap'] = TRUE;
+        $this->email->initialize($config);
+        $email_from=$this->config->item('email_notification_sender');
+        $email_to=$this->config->item('sean_email');
+        $email_cc=array($this->config->item('sage_email'));
+        $this->email->from($email_from);
+        $this->email->to($email_to);
+        $this->email->cc($email_cc);
+        // Temporary ADD for check
+        $this->email->bcc([$this->config->item('developer_email')]);
+        $title=date('D - M d, Y', $datestart).' - Amouts added';
+        $this->email->subject($title);
+        if ($msgbody=='') {
+            $body='<span style="font-weight: bold">'.$title.'</span>';
+            $this->email->message($body);
+        } else {
+            $body=$this->load->view('messages/amount_note_view', array('content'=>$msgbody),TRUE);
+            $this->email->message($body);
+        }
+        $this->email->send();
+        $this->email->clear(TRUE);
+
+    }
+
+    public function clean_preload() {
+        $path = $this->config->item('upload_path_preload');
+        if ($handle = opendir($path)) {
+            while (false !== ($file = readdir($handle))) {
+                if (is_file($path.$file)) {
+                    if ((time()-filectime($path.$file)) > $this->config->item('maxstoretime')) {  // 30 * 24 * 60 * 60 - 30 days
+                        echo $path.$file.PHP_EOL;
+                        unlink($path.$file);
+                    }
+                }
+            }
+        }
+    }
+
+    public function cleanverification()
+    {
+        $this->load->model('user_model');
+        $this->user_model->clean_verification();
+    }
+
+    public function orderitems_price_report()
+    {
+        $this->load->model('orders_model');
+        $this->orders_model->orderitems_price_report();
+    }
+
+    public function change_incomeprices()
+    {
+        /* Array */
+        $changes = [];
+        $changes[] = [
+            'item_num' => 'i001',
+            'color' => 'Navy Blue',
+            'income' => 'AJ02318',
+            'new_price' => 0.6197,
+        ];
+//        $changes[] = [
+//            'item_num' => 'i021',
+//            'color' => 'Grass Green',
+//            'income' => 'AJ01931',
+//            'new_price' => 0.460,
+//        ];
+//        $changes[] = [
+//            'item_num' => 'i021',
+//            'color' => 'Red',
+//            'income' => 'AJ01933',
+//            'new_price' => 0.460,
+//        ];
+//        $changes[] = [
+//            'item_num' => 'i021',
+//            'color' => 'Yellow',
+//            'income' => 'AJ01932',
+//            'new_price' => 0.460,
+//        ];
+        foreach ($changes as $change) {
+            $this->db->select('i.income_price, i.income_qty, i.income_expense, c.inventory_color_id, i.inventory_income_id, im.inventory_item_id');
+            $this->db->from('ts_inventory_incomes i');
+            $this->db->join('ts_inventory_colors c','c.inventory_color_id=i.inventory_color_id');
+            $this->db->join('ts_inventory_items im','im.inventory_item_id=c.inventory_item_id');
+            $this->db->where('im.item_num', $change['item_num']);
+            $this->db->where('c.color', $change['color']);
+            $this->db->where('i.income_record', $change['income']);
+            $candidat = $this->db->get()->row_array();
+            if (ifset($candidat,'inventory_color_id',0)==0) {
+                echo 'Color '.$change['color'].' Income '.$change['income'].' not found'.PHP_EOL;
+                echo 'QRY '.$this->db->last_query().PHP_EOL;
+                die();
+            } else {
+                echo 'Color '.$change['color'].' QTY '.$candidat['income_qty'].' Rest '.$candidat['income_expense'].' Price '.$candidat['income_price'].' New Price '.$change['new_price'].' Check '.$candidat['inventory_income_id'].PHP_EOL;
+                $this->db->select('oi.order_id, oi.amount_id, oi.qty, o.order_cog, o.profit, o.revenue, o.profit_perc');
+                $this->db->from('ts_order_inventory oi');
+                $this->db->join('ts_orders o','oi.order_id=o.order_id');
+                $this->db->where('oi.inventory_income_id', $candidat['inventory_income_id']);
+                $amnts = $this->db->get()->result_array();
+                foreach ($amnts as $amnt) {
+                    $this->db->select('oa.amount_id, oa.price, oa.shipped, oa.misprint, oa.kepted, i.income_price, oi.qty, i.inventory_income_id');
+                    $this->db->select('oa.orangeplate, oa.blueplate, oa.orangeplate_price, oa.blueplate_price, oa.beigeplate, oa.beigeplate_price, oa.extracost');
+                    $this->db->from('ts_order_amounts oa');
+                    $this->db->join('ts_order_inventory oi','oi.amount_id=oa.amount_id');
+                    $this->db->join('ts_inventory_incomes i','i.inventory_income_id=oi.inventory_income_id');
+                    $this->db->where('oa.amount_id',$amnt['amount_id']);
+                    $amtdatas = $this->db->get()->result_array();
+                    $sumtotal = 0;
+                    $sumqty = 0;
+                    foreach ($amtdatas as $amtdata) {
+                        if ($amtdata['inventory_income_id']==$candidat['inventory_income_id']) {
+                            $price = $change['new_price'];
+                        } else {
+                            $price = $amtdata['price'];
+                        }
+                        $sumqty+=$amtdata['shipped']+$amtdata['misprint']+$amtdata['kepted'];
+                        $sumtotal+=$price * ($amtdata['shipped']+$amtdata['misprint']+$amtdata['kepted']);
+                    }
+                    $amtprice = round($sumtotal/$sumqty,3); // +$amtdata['extracost'];
+                    echo 'Amount '.$amtdata['amount_id'].' Old Price '.$amtdata['price'].' New Price '.$amtprice.PHP_EOL;
+                    $amounttotal = $sumtotal+($amtdata['extracost']*$sumqty)+($amtdata['orangeplate']*$amtdata['orangeplate_price'])+($amtdata['blueplate']*$amtdata['blueplate_price'])+($amtdata['beigeplate']*$amtdata['beigeplate_price']);
+                    // Update Amount
+                    $this->db->where('amount_id', $amnt['amount_id']);
+                    $this->db->set('price', $amtprice);
+                    $this->db->set('printshop_total', $amounttotal);
+                    $this->db->set('amount_sum', $amounttotal);
+                    $this->db->update('ts_order_amounts');
+                    // Update Order
+                    // New cog, profit, profit percent
+                    $diffcog = $amounttotal - $amnt['order_cog'];
+                    $newprofit = $amnt['profit'] - $diffcog;
+                    $newprofit_perc = round($newprofit/$amnt['revenue']*100,1);
+                    $this->db->where('order_id', $amnt['order_id']);
+                    $this->db->set('order_cog', $amounttotal);
+                    $this->db->set('profit', $newprofit);
+                    $this->db->set('profit_perc', $newprofit_perc);
+                    $this->db->update('ts_orders');
+                }
+                // Update income
+                $this->db->where('inventory_income_id', $candidat['inventory_income_id']);
+                $this->db->set('income_price', $change['new_price']);
+                $this->db->update('ts_inventory_incomes');
+            }
+        }
+    }
+
 }

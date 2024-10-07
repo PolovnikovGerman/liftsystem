@@ -24,11 +24,11 @@ function init_page(objid) {
             break;
         case 'searcheswordview':
             $("#searcheswordview").show();
-            init_searchkeyword_content();
+            show_keywords_result();
             break;
         case 'searchesipadrview':
             $("#searchesipadrview").show();
-            init_searchipaddres_content();
+            show_ipaddress_result();
             break
         case 'signupview':
             $("#signupview").show();
@@ -37,6 +37,10 @@ function init_page(objid) {
         case 'couponsview':
             $("#couponsview").show();
             init_coupon_view();
+            break;
+        case 'searchesview':
+            $("#searchesview").show();
+            init_searches_view();
             break;
     }
 

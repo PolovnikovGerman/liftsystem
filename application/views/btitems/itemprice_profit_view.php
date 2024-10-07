@@ -14,14 +14,14 @@
 </div>
 <div class="itemprice_profitextraarea">
     <div class="content-row">
-        <div class="itemprice_profitval"><?=empty($item['profit_print']) ? '' : ProfitOutput($item['profit_print'],2)?></div>
-        <div class="itemprice_profitval"><?=empty($item['profit_setup']) ? '' : ProfitOutput($item['profit_setup'],0)?></div>
-        <div class="itemprice_profitval"><?=empty($item['profit_repeat']) ? '' : ProfitOutput($item['profit_repeat'],0)?></div>
+        <div class="itemprice_profitval extracost"><?=empty($item['profit_print']) ? '' : ProfitOutput($item['profit_print'],2)?></div>
+        <div class="itemprice_profitval extracost"><?=empty($item['profit_setup']) ? '' : ProfitOutput($item['profit_setup'],0)?></div>
+        <div class="itemprice_profitval extracost"><?=empty($item['profit_repeat']) ? '' : ProfitOutput($item['profit_repeat'],0)?></div>
     </div>
     <div class="content-row">
-        <div class="itemprice_profitperc <?=$item['profit_print_class']?>"><?=empty($item['profit_print_perc']) ? '' : $item['profit_print_perc'].'%'?></div>
-        <div class="itemprice_profitperc <?=$item['profit_setup_class']?>"><?=empty($item['profit_setup_perc']) ? '' : $item['profit_setup_perc'].'%'?></div>
-        <div class="itemprice_profitperc <?=$item['profit_repeat_class']?>"><?=empty($item['profit_repeat_perc']) ? '' : $item['profit_repeat_perc'].'%'?></div>
+        <div class="itemprice_profitperc extracost <?=$item['profit_print_class']?>"><?=empty($item['profit_print_perc']) ? '' : $item['profit_print_perc'].'%'?></div>
+        <div class="itemprice_profitperc extracost <?=$item['profit_setup_class']?>"><?=empty($item['profit_setup_perc']) ? '' : $item['profit_setup_perc'].'%'?></div>
+        <div class="itemprice_profitperc extracost <?=$item['profit_repeat_class']?>"><?=empty($item['profit_repeat_perc']) ? '' : $item['profit_repeat_perc'].'%'?></div>
     </div>
 </div>
 <div class="itemprice_profitrusharea">

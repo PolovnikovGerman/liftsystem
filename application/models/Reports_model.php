@@ -220,6 +220,7 @@ Class Reports_model extends My_Model
                 }
 
                 if ($custom==1) {
+                    $row['totals']['rob_diff'] = $row['totals']['sage_diff'] = $row['totals']['sean_diff'] = 0;
                     if ($prvtotals['rob_val']!=0) {
                         $row['totals']['rob_diff']=round(($row['totals']['rob_val']-$prvtotals['rob_val'])/$prvtotals['rob_val']*100,0).'%';
                     } else {
@@ -915,7 +916,7 @@ Class Reports_model extends My_Model
 
     public function get_newesp_salestypes($dates, $oldesp, $brand) {
         // Get Month Data
-        $item_table='.sb_items';
+        $item_table='sb_items';
         $vendoritem_table='sb_vendor_items';
         $year=date('Y');
         $month=date('m');
@@ -1531,6 +1532,7 @@ Class Reports_model extends My_Model
             }
         }
         if ($goaltype=='CUSTOMS') {
+            $totals['rob_diff'] = $totals['sage_diff'] = $totals['sean_diff'] = $this->empty_show;
             if ($prvtotals['rob_val']!=0) {
                 $totals['rob_diff']=round(($totals['rob_val']-$prvtotals['rob_val'])/$prvtotals['rob_val']*100,0).'%';
             } else {
@@ -4230,7 +4232,7 @@ Class Reports_model extends My_Model
 
     private function _get_itemreport_ariel_old($usr_profitview, $profitview, $start_date, $end_report, $brand) {
         $ariels = $ariel_keys = $ariel_scryears = array();
-        $item_table='.sb_items';
+        $item_table='sb_items';
         $vendoritem_table='sb_vendor_items';
 
         $profit_type = $usr_profitview;
