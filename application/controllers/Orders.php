@@ -28,6 +28,95 @@ class Orders extends MY_Controller
 
     public function index()
     {
+        if (isMobile()) {
+            $this->_prepare_mobile();
+        } else {
+            $this->_prepare_desktop();
+        }
+    }
+
+    private function _prepare_mobile()
+    {
+        $head = [];
+        $head['title'] = 'Orders';
+        $brand = $this->menuitems_model->get_current_brand();
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
+        $content_options = [];
+        $content_options['start'] = $this->input->get('start', TRUE);
+        $search = usersession('liftsearch');
+        usersession('liftsearch', NULL);
+        $gmaps = 0;
+        if (!empty($this->config->item('google_map_key'))) {
+            $gmaps = 1;
+        }
+
+        foreach ($menu as $row) {
+            if ($row['item_link']=='#ordersview') {
+                // Orders
+                $head['scripts'][]=array('src'=>'/js/orders_mobile/ordersview.js');
+                $content_options['ordersview'] = $this->_prepare_moborders_view($brand, $search);
+//            } elseif ($row['item_link']=='#orderlistsview') {
+//                $head['styles'][]=array('style'=>'/css/orders_mobile/orderslistview.css');
+//                $head['scripts'][]=array('src'=>'/js/orders_mobile/orderslistview.js');
+//                $content_options['orderlistsview'] = $this->_prepare_orderlist_view($brand);
+//            } elseif ($row['item_link']=='#onlineordersview') {
+//                $head['styles'][]=array('style'=>'/css/orders_mobile/onlineorders.css');
+//                $head['scripts'][]=array('src'=>'/js/orders_mobile/onlineorders.js');
+//                $content_options['onlineordersview'] = $this->_prepare_onlineorders($brand);
+            }
+        }
+        $head['styles'][]=array('style'=>'/css/orders_mobile/ordersview.css');
+//        $content_options['menu'] = $menu;
+//        // Add main page management
+        $head['scripts'][] = array('src' => '/js/orders_mobile/page_view.js');
+//        $head['styles'][] = array('style' => '/css/orders/orderspage.css');
+//        // Order popup
+//        $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
+//        $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
+//        // Customer autocomplete
+//        $head['scripts'][] = array('src'=> '/js/adminpage/jquery.autocompleter.js');
+//        $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
+//        // Uploader
+//        $head['scripts'][]=array('src'=>'/js/adminpage/fileuploader.js');
+//        $head['styles'][]=array('style'=>'/css/page_view/fileuploader.css');
+//        if ($gmaps==1) {
+//            $head['scripts'][]=array('src'=>'/js/leads/order_address.js');
+//        }
+//        // File Download
+//        $head['scripts'][]=array('src'=>'/js/adminpage/jquery.fileDownload.js');
+//        // Datepicker
+//        $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
+//        $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+//        // Select 2
+//        $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
+//        $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
+//
+//        // Utils
+        $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
+        $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
+//
+        $options = [
+            'title' => $head['title'],
+            'user_id' => $this->USR_ID,
+            'user_name' => $this->USER_NAME,
+            'activelnk' => $this->pagelink,
+            'styles' => $head['styles'],
+            'scripts' => $head['scripts'],
+        ];
+        if ($gmaps==1) {
+            $options['gmaps'] = $gmaps;
+        }
+        $dat = $this->template->prepare_mobpagecontent($options);
+        $content_options['left_menu'] = $dat['left_menu'];
+        $content_options['brand'] = $brand;
+        $content_options['menu'] = $menu;
+        $content_view = $this->load->view('orders_mobile/page_view', $content_options, TRUE);
+        $dat['content_view'] = $content_view;
+        $this->load->view('page_mobile/page_template_view', $dat);
+    }
+
+    private function _prepare_desktop()
+    {
         $head = [];
         $head['title'] = 'Orders';
         $brand = $this->menuitems_model->get_current_brand();
@@ -217,10 +306,14 @@ class Orders extends MY_Controller
                         'role'=>'user',
                         'brand' => ifset($postdata,'brand','SB'),
                     );
-                    if ($brand=='SR') {
-                        $content = $this->load->view('orders/srorders_datalist_view', $data, TRUE);
+                    if (isMobile()) {
+                        $content = $this->load->view('orders_mobile/orders_datalist_view', $data, TRUE);
                     } else {
-                        $content = $this->load->view('orders/orders_datalist_view', $data, TRUE);
+                        if ($brand=='SR') {
+                            $content = $this->load->view('orders/srorders_datalist_view', $data, TRUE);
+                        } else {
+                            $content = $this->load->view('orders/orders_datalist_view', $data, TRUE);
+                        }
                     }
 
                 }
@@ -532,6 +625,45 @@ class Orders extends MY_Controller
         $datl['last_cart']=$this->orders_model->last_attempt($brand);
         // $content=$this->load->view('orders/orders_list_view',$datl,TRUE);
         return $this->load->view('orders/onlineorders_head_view',$datl,TRUE);
+    }
 
+    private function _prepare_moborders_view($brand, $liftsearch)
+    {
+        $datqs=[
+            'brand' => $brand,
+            'perpage' => $this->config->item('perpage_orders'),
+            'activesearch' => '',
+            'default_perpage' => 500,
+        ];
+        $this->load->model('orders_model');
+        $users=$this->user_model->get_user_leadreplicas();
+
+        $options=[];
+        $options['brand'] = $brand;
+        $ordertemplate=$liftsearch;
+        if (!empty($ordertemplate)) {
+            // Check, that such order exits and # of orders==1
+            $res=$this->orders_model->get_orderbynum($ordertemplate, $brand);
+            if ($res['detail']!=0) {
+                $datqs['activesearch']=$res['detail'];
+            }
+            $options['search']=strtoupper($ordertemplate);
+            $datqs['search']=$ordertemplate;
+        } else {
+            $datqs['search']='';
+        }
+        $this->load->model('orders_model');
+        $datqs['total']=$this->orders_model->get_count_orders($options);
+        $datqs['users']=$users;
+
+        $datqs['current_user']=-2;
+        $datqs['order_by']='order_id';
+        $datqs['direction']='desc';
+        $datqs['cur_page']=0;
+//        if ($brand=='SR') {
+//            return  $this->load->view('orders_mobile/srorders_head_view',$datqs,TRUE);
+//        } else {
+            return  $this->load->view('orders_mobile/orders_head_view',$datqs,TRUE);
+//        }
     }
 }

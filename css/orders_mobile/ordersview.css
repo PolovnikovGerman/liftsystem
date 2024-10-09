@@ -1,0 +1,568 @@
+/*--------------------Orders---------------------*/
+.ic-magnifier {
+    display: inline-block;
+    position: relative;
+    top: 2px;
+    left: 3px;
+}
+.leadord_search input {
+    width: 100%;
+    height: 1.625rem;
+    line-height: 1.625rem;
+    border: 1px solid #2a2a2a;
+}
+.leadord_search input::placeholder {
+    color: #757575;
+    font-style: italic;
+}
+.btn-searchall {
+    width: 4.875rem;
+    height: 1.625rem;
+    line-height: 1.5rem;
+    display: inline-block;
+    background: #bdbdbd;
+    background: linear-gradient(to top, #a6a6a6, #dddddd);
+    border: 1px solid #2a2a2a;
+    border-radius: 5px;
+    text-align: center;
+    padding: 0 .5rem;
+    font-size: .9rem;
+    cursor: pointer;
+    color: #000000;
+}
+.btn-clear {
+    width: 3.188rem;
+    height: 1.625rem;
+    line-height: 1.5rem;
+    display: inline-block;
+    background: #bdbdbd;
+    background: linear-gradient(to top, #a6a6a6, #dddddd);
+    border: 1px solid #2a2a2a;
+    border-radius: 5px;
+    text-align: center;
+    padding: 0 .5rem;
+    font-size: .9rem;
+    cursor: pointer;
+    color: #000000;
+}
+.rec_per_page label {
+    /*font-size: .8rem;*/
+}
+.rec_per_page select {
+    background: #fff;
+    border: 1px solid #2a2a2a;
+    border-radius: 0;
+    height: 1.625rem;
+    line-height: 1.625rem;
+    width: 100%;
+}
+.sel-view select {
+    background: #fff;
+    border: 1px solid #2a2a2a;
+    border-radius: 0;
+    height: 1.625rem;
+    line-height: 1.625rem;
+    width: 100%;
+    position: relative;
+    top: 4px;
+}
+.list-pages .pagination {
+    float: right;
+    margin-bottom: .3rem;
+}
+.list-pages .page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    cursor: auto;
+    background-color: #fff;
+    border: none;
+}
+.list-pages .page-link {
+    position: relative;
+    display: block;
+    padding: .3rem .5rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #007bff;
+    background-color: #fff;
+    border: none;
+}
+.list-pages .page-item.active .page-link {
+    z-index: 3;
+    color: #6c757d;
+    background-color: #fff;
+}
+
+.btn-addnew {
+    width: 4.625rem;
+    height: 1.625rem;
+    line-height: 1.4rem;
+    display: inline-block;
+    background: #5a5bf9;
+    background: linear-gradient(to top, #4c4cfb, #6b6ef7);
+    border: 1px solid #2a2a2a;
+    color: #fff;
+    border-radius: 5px;
+    text-align: center;
+    padding: 0 .5rem;
+    font-size: .9rem;
+    cursor: pointer;
+}
+
+.table-orders {
+    border: 1px solid #000;
+}
+.table.table-orders th {
+    padding: 0!important;
+    vertical-align: top;
+    /*border-top: 1px solid #dee2e6;*/
+    border-top: none;
+    font-size: .9rem;
+}
+.tbl-title {
+    background: #0808ff;
+    color: #fff!important;
+}
+.tbl-title .tbl-td {
+    font-weight: 600 !important;
+}
+.tbl-title .td-class,
+.tbl-title .td-customer,
+.tbl-title .td-item,
+.tbl-title .td-color,
+.tbl-title .td-salesrep,
+.tbl-title .td-artstatus,
+.tbl-title .td-points {
+    text-align: center!important;
+}
+.tbl-td {
+    text-align: center;
+    line-height: 1.625rem;
+    border-left: 1px solid #d4d2d2 ;
+    font-weight: 400;
+}
+.td-order {
+    width: 3.125rem;
+    color: #0000ff;
+    font-weight: bold;
+}
+.tbl-title .td-order {
+    color: #fff !important;
+}
+.td-customer {
+    width: 10.238rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+    padding-left: .2rem;
+}
+.td-qty {
+    width: 3.125rem;
+}
+.td-item {
+    width: 12.488rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left!important;
+    padding-left: .2rem;
+}
+.td-color {
+    width: 6.038rem;
+    text-align: left;
+    padding-left: .4rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.td-conf {
+    width: 4.938rem;
+}
+.td-revenue {
+    width: 5.063rem;
+}
+.td-balance {
+    width: 4.625rem;
+}
+.td-salesrep {
+    width: 5.2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+    padding-left: .2rem;
+}
+.td-class {
+    width: 6.3rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+    padding-left: .2rem;
+}
+.td-artstatus {
+    width: 5.425rem;
+    text-align: left;
+    padding-left: .2rem;
+}
+.td-points {
+    width: 4.2rem;
+    text-align: right;
+    padding-right: .4rem;
+}
+.td-fulfilled {
+    width: 10.5rem;
+}
+.td-date {
+    background: #5c5c5d;
+    color: #fff;
+    font-weight: bold!important;
+    text-align: left !important;
+    padding-left: .7rem;
+}
+.fulf-proc {
+    display: inline-block;
+    width: 2.5rem;
+    border-right: 1px solid #d4d2d2;
+}
+.fulf-status {
+    display: inline-block;
+    width: 7.5rem;
+    text-align: right;
+    padding-right: .4rem;
+}
+.greyline {
+    background: #ededed;
+}
+
+.boldtxt {
+    font-weight: bold !important;
+}
+.purpletxt {
+    color: #7700cb;
+    font-weight: bold !important;
+}
+.tdbg-blue, .balancepositive {
+    background: #0000ff;
+    color: #fff!important;
+}
+.tdbg-darkblue, .ontime, .td-points.projprof {
+    background: #001072;
+    color: #fff!important;
+}
+.tdbg-red, .late, .td-points.red {
+    background: #ff0000;
+    color: #fff!important;
+}
+.tdbg-darkred, .td-points.moroon {
+    background: #6d0303;
+    color: #fff!important;
+}
+.tdbg-green, .td-points.green {
+    background: #00e947;
+}
+.tdbg-white, .td-points.white {
+    background: #fff;
+}
+.tdbg-orange, .td-points.orange {
+    background: #ea8a0e;
+}
+.tdbg-black-red, .balancenegative {
+    background: #000;
+    color: #ff0000!important;
+}
+.tdbg-black-white, .td-points.black {
+    background: #000;
+    color: #fff!important;
+}
+.rec_per_page .form-group,
+.sel-view .form-group {
+    margin-bottom: .3rem;
+}
+
+
+
+
+
+
+/*--------------------Orders List---------------------*/
+.table-orderslist {
+    border: 1px solid #000;
+}
+.table.table-orderslist th {
+    padding: 0!important;
+    vertical-align: top;
+    border-top: none;
+    font-size: .9rem;
+}
+.table-orderslist th {
+    border-right: 1px solid #000 !important;
+}
+.table-orderslist th:last-child {
+    border-right: none;
+}
+.olt-title {
+    background: #d0d0d0;
+    height: 2.375rem;
+    border-bottom: 1px solid #000;
+}
+.olt-title .olt-td {
+    line-height: 2.375rem;
+}
+.olt-title .olt-customer,
+.olt-title .olt-item {
+    text-align: center!important;
+}
+.olt-td {
+    text-align: center;
+    line-height: 1.625rem;
+    border-left: 1px solid #d4d2d2 ;
+    font-weight: 400;
+}
+.olt-number {
+    width: 2.5rem;
+}
+.olt-date {
+    width: 4.1rem;
+}
+.olt-order {
+    width: 3.375rem;
+}
+.olt-customer {
+    width: 17.8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+    padding-left: .2rem;
+}
+.olt-qty {
+    width: 3.438rem;
+}
+.olt-qty input {
+    border: 1px solid #000;
+    width: 2.688rem;
+    height: 1rem;
+}
+.olt-itemnum {
+    width: 5rem;
+}
+.olt-item {
+    width: 17.2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+    padding-left: .2rem;
+}
+.olt-revenue {
+    width: 5.938rem;
+}
+.olt-null {
+    width: 7rem;
+}
+.enddate {
+    border-bottom: 2px solid #000;
+}
+
+
+/*--------------------Online Orders---------------------*/
+
+.oor-form label {
+    margin-bottom: .2rem;
+}
+.oor-form input {
+    border: 1px solid #868686;
+    border-radius: 0;
+    height: 1.8rem;
+    line-height: 1.8rem;
+}
+.oor-form .form-group {
+    margin-bottom: 0;
+}
+.oor-top {
+    padding-top: 1.8rem;
+}
+.table-onlineorders {
+    border: 1px solid #000;
+}
+.oor-title {
+    background: #666464;
+    background: linear-gradient(to top, #797878, #3a3939);
+    height: 2.188rem;
+    border-bottom: 1px solid #000;
+    color: #fff !important;
+}
+.oor-title .oor-td {
+    line-height: 2.375rem;
+    text-align: center !important;
+    font-weight: bold !important;
+}
+.table.table-onlineorders th {
+    padding: 0!important;
+    vertical-align: top;
+    border-top: none;
+    font-size: .9rem;
+}
+.table-orderslist th {
+    border-right: 1px solid #000 !important;
+}
+.table-orderslist th:last-child {
+    border-right: none;
+}
+.oor-td {
+    position: relative;
+    text-align: center;
+    line-height: 1.625rem;
+    border-left: 1px solid #d4d2d2 ;
+    font-weight: 400;
+}
+.oor-status {
+    width: 9.525rem;
+}
+.oor-our {
+    width: 4.813rem;
+}
+.oor-our input {
+    border: 1px solid #c2d1dd;
+    width: 4.063rem;
+    height: 1.438rem;
+}
+.oor-our input::placeholder {
+    text-align: center;
+}
+.oor-rep {
+    width: 4rem;
+}
+.oor-rep input {
+    border: 1px solid #c2d1dd;
+    width: 3.563rem;
+    height: 1.438rem;
+}
+.oor-rep input::placeholder {
+    text-align: center;
+}
+.oor-date {
+    width: 5rem;
+}
+.oor-confirmation {
+    width: 7.25rem;
+    color: #0000ff;
+}
+.oor-title .oor-confirmation {
+    color: #fff!important;
+}
+.oor-name {
+    width: 8.863rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+    padding-left: .2rem;
+}
+.oor-company {
+    width: 10.3rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+    padding-left: .2rem;
+}
+.oor-item {
+    width: 14.375rem;
+}
+.oor-amount {
+    width: 6.75rem;
+}
+.oor-export {
+    width: 4.813rem;
+}
+.oor-statnum {
+    width: 3.125rem;
+}
+.oor-stat {
+    width: 5.2rem;
+}
+.oor-statbox {
+    width: 1.2rem;
+}
+.oor-statbox input[type="checkbox"] {
+    box-sizing: border-box;
+    padding: 0;
+    position: relative;
+    left: .6rem;
+}
+
+/*----------------------------MEDIA---------------------------*/
+
+/* Large desktops and laptops */
+@media (min-width: 1200px) {
+}
+/* Portrait tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+}
+/* Portrait tablets and small desktops */
+@media (min-width: 768px) and (max-width: 991px) {
+}
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+
+
+
+}
+
+
+
+/* Surface Duo */
+@media (max-width: 540px) {
+
+
+    .btn-clear {
+        width: 3rem;
+        height: 1.625rem;
+        line-height: 1.5rem;
+        display: inline-block;
+        background: #bdbdbd;
+        background: linear-gradient(to top, #a6a6a6, #dddddd);
+        border: 1px solid #2a2a2a;
+        border-radius: 5px;
+        text-align: center;
+        padding: 0 .35rem;
+        font-size: .9rem;
+        cursor: pointer;
+    }
+    .btn-searchall {
+        width: 4.5rem;
+        height: 1.625rem;
+        line-height: 1.5rem;
+        display: inline-block;
+        background: #bdbdbd;
+        background: linear-gradient(to top, #a6a6a6, #dddddd);
+        border: 1px solid #2a2a2a;
+        border-radius: 5px;
+        text-align: center;
+        padding: 0 .35rem;
+        font-size: .9rem;
+        cursor: pointer;
+    }
+    .oor-top {
+        padding-top: .7rem;
+    }
+
+
+
+
+
+
+
+}
+
+/* Landscape phones and smaller */
+@media (max-width: 480px) {
+
+
+
+
+
+}
