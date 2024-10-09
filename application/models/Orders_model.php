@@ -692,9 +692,11 @@ Class Orders_model extends MY_Model
     }
 
     public function get_online_orders($options, $order_by, $direct, $limit, $offset, $search) {
-        $this->db->select("*,sb_items.item_name as item_name", FALSE);
-        $this->db->from('sb_orders');
-        $this->db->join('sb_items', 'sb_items.item_id=sb_orders.order_item_id', 'left');
+        $this->db->select("*,items.item_name as item_name, newitem.item_name as newitem_name");
+        $this->db->from('sb_orders o');
+        $this->db->join('sb_items items', 'items.item_id=o.order_item_id', 'left');
+        $this->db->join('sb_order_items oitem','o.order_id = oitem.order_id','left');
+        $this->db->join('sb_items newitem', 'newitem.item_id = oitem.item_id','left');
         foreach ($options as $key => $value) {
             $this->db->where($key, $value);
         }
@@ -709,9 +711,9 @@ Class Orders_model extends MY_Model
         }
         if (isset($search['brand']) && $search['brand']!=='ALL') {
             if ($search['brand']=='SR') {
-                $this->db->where('sb_orders.brand', $search['brand']);
+                $this->db->where('o.brand', $search['brand']);
             } else {
-                $this->db->where_in('sb_orders.brand', ['BT','SB']);
+                $this->db->where_in('o.brand', ['BT','SB']);
             }
         }
         $this->db->order_by($order_by, $direct);
@@ -721,6 +723,9 @@ Class Orders_model extends MY_Model
         $result = $this->db->get()->result_array();
         $out_arr = array();
         foreach ($result as $row) {
+            if (empty($row['item_name'])) {
+                $row['item_name'] = $row['newitem_name'];
+            }
             $row['order_out_status']='NEW!';
             $row['order_status_class']='neworder';
             if ($row['is_void'] == 1) {

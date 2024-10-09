@@ -59,10 +59,10 @@ class Orders extends MY_Controller
 //                $head['styles'][]=array('style'=>'/css/orders_mobile/orderslistview.css');
 //                $head['scripts'][]=array('src'=>'/js/orders_mobile/orderslistview.js');
 //                $content_options['orderlistsview'] = $this->_prepare_orderlist_view($brand);
-//            } elseif ($row['item_link']=='#onlineordersview') {
+            } elseif ($row['item_link']=='#onlineordersview') {
 //                $head['styles'][]=array('style'=>'/css/orders_mobile/onlineorders.css');
-//                $head['scripts'][]=array('src'=>'/js/orders_mobile/onlineorders.js');
-//                $content_options['onlineordersview'] = $this->_prepare_onlineorders($brand);
+                $head['scripts'][]=array('src'=>'/js/orders_mobile/onlineorders.js');
+                $content_options['onlineordersview'] = $this->_prepare_mobonlineorders($brand);
             }
         }
         $head['styles'][]=array('style'=>'/css/orders_mobile/ordersview.css');
@@ -412,16 +412,17 @@ class Orders extends MY_Controller
         if ($this->isAjax()) {
             $mdata=array();
             $error='';
+            $postdata = $this->input->post();
+            $pagenum = ifset($postdata,'offset',0);
+            $limit = ifset($postdata,'limit',10);
+            $order_by = ifset($postdata,'order_by','order_id');
+            $direct = ifset($postdata,'direction','desc');
+            $replica = ifset($postdata,'replica','');
+            $confirm = ifset($postdata,'confirm','');
+            $customer = ifset($postdata,'customer','');
+            $brand = ifset($postdata,'brand','ALL');
 
-            $offset = $this->input->post('offset', 0);
-            $limit = $this->input->post('limit', 10);
-            $order_by = $this->input->post('order_by', 'order_id');
-            $direct = $this->input->post('direction', 'desc');
-            $replica = $this->input->post('replica');
-            $confirm = $this->input->post('confirm');
-            $customer = $this->input->post('customer');
-            $brand = $this->input->post('brand');
-            $offset = $offset * $limit;
+            $offset = $pagenum * $limit;
 
             $search = array();
             if ($replica != '') {
@@ -437,10 +438,13 @@ class Orders extends MY_Controller
             /* Get data  */
             $this->load->model('orders_model');
             $orders_dat = $this->orders_model->get_online_orders(array(), $order_by, $direct, $limit, $offset, $search);
-
-            $data = array('orders_dat' => $orders_dat);
-
-            $mdata['content']=$this->load->view('orders/onlineorders_data_view', $data, TRUE);
+            if (isMobile()) {
+                $data = array('orders' => $orders_dat);
+                $mdata['content']=$this->load->view('orders_mobile/onlineorders_data_view', $data, TRUE);
+            } else {
+                $data = array('orders_dat' => $orders_dat);
+                $mdata['content']=$this->load->view('orders/onlineorders_data_view', $data, TRUE);
+            }
 
 
             $this->ajaxResponse($mdata, $error);
@@ -665,5 +669,21 @@ class Orders extends MY_Controller
 //        } else {
             return  $this->load->view('orders_mobile/orders_head_view',$datqs,TRUE);
 //        }
+    }
+
+    private function _prepare_mobonlineorders($brand)
+    {
+        $datl=[
+            'order_by' => 'o.order_id',
+            'direction' => 'desc',
+            'cur_page' => 0,
+            'perpage' => 250,
+            'brand' => $brand,
+        ];
+        $this->load->model('orders_model');
+        $datl['total_rec']=$this->orders_model->count_onlineorders($brand);
+        $datl['last_order']=$this->orders_model->last_order($brand);
+        $datl['last_cart']=$this->orders_model->last_attempt($brand);
+        return $this->load->view('orders_mobile/onlineorders_head_view',$datl,TRUE);
     }
 }

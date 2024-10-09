@@ -471,6 +471,11 @@
 }
 .oor-item {
     width: 14.375rem;
+    padding-left: .2rem;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .oor-amount {
     width: 6.75rem;
