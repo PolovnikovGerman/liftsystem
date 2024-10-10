@@ -55,10 +55,10 @@ class Orders extends MY_Controller
                 // Orders
                 $head['scripts'][]=array('src'=>'/js/orders_mobile/ordersview.js');
                 $content_options['ordersview'] = $this->_prepare_moborders_view($brand, $search);
-//            } elseif ($row['item_link']=='#orderlistsview') {
-//                $head['styles'][]=array('style'=>'/css/orders_mobile/orderslistview.css');
-//                $head['scripts'][]=array('src'=>'/js/orders_mobile/orderslistview.js');
-//                $content_options['orderlistsview'] = $this->_prepare_orderlist_view($brand);
+            } elseif ($row['item_link']=='#orderlistsview') {
+//                 $head['styles'][]=array('style'=>'/css/orders_mobile/orderslistview.css');
+                $head['scripts'][]=array('src'=>'/js/orders_mobile/orderslistview.js');
+                $content_options['orderlistsview'] = $this->_prepare_moborderlist_view($brand);
             } elseif ($row['item_link']=='#onlineordersview') {
 //                $head['styles'][]=array('style'=>'/css/orders_mobile/onlineorders.css');
                 $head['scripts'][]=array('src'=>'/js/orders_mobile/onlineorders.js');
@@ -299,7 +299,11 @@ class Orders extends MY_Controller
                         'data'=>$ordersdat,
                         'brand' => ifset($postdata,'brand','SB'),
                     );
-                    $content = $this->load->view('orders/orderslist_datalist_view', $options, TRUE);
+                    if (isMobile()) {
+                        $content = $this->load->view('orders_mobile/orderslist_datalist_view', $options, TRUE);
+                    } else {
+                        $content = $this->load->view('orders/orderslist_datalist_view', $options, TRUE);
+                    }
                 } else {
                     $data=array(
                         'data'=>$ordersdat,
@@ -685,5 +689,26 @@ class Orders extends MY_Controller
         $datl['last_order']=$this->orders_model->last_order($brand);
         $datl['last_cart']=$this->orders_model->last_attempt($brand);
         return $this->load->view('orders_mobile/onlineorders_head_view',$datl,TRUE);
+    }
+
+    private function _prepare_moborderlist_view($brand)
+    {
+        $datqs=[
+            'brand' => $brand,
+            'perpage' => [30, 60, 90, 120],
+            'order_by' => 'order_id',
+            'direction' => 'desc',
+            'cur_page' => 0,
+        ];
+        $options=array(
+            'order_qty'=>0,
+            'brand' => $brand,
+        );
+        $this->load->model('orders_model');
+        $datqs['total']=$this->orders_model->get_count_orders($options);
+        // Get totals by years
+        $totals=$this->orders_model->get_missed_orders($brand);
+        // $datqs['total_view']=$this->load->view('orders/orderlist_totals_view', array('totals'=>$totals),TRUE);
+        return $this->load->view('orders_mobile/orderlist_head_view',$datqs,TRUE);
     }
 }

@@ -66,6 +66,11 @@
                     <?=$ordersview?>
                 </div>
                 <?php endif; ?>
+                <?php if ($menurow['item_link']=='#orderlistsview') : ?>
+                    <div id="orderlistsview" class="orderscontentarea">
+                        <?=$orderlistsview?>
+                    </div>
+                <?php endif; ?>
                 <?php if ($menurow['item_link'] == '#onlineordersview') : ?>
                 <div id="onlineordersview" class="orderscontentarea">
                     <?=$onlineordersview?>
