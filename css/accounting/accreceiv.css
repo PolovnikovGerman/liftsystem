@@ -40,6 +40,7 @@
 .accreceiv-content-data {
     /* width: 1067px; */
     width: 1365px;
+    margin-top: 5px;
 }
 .accreceiv-totals, .accreceiv-details {
     width: 100%;
@@ -47,6 +48,8 @@
 .accreceiv-content-left {
     width: 754px;
     margin-right: 125px;
+    /*width: 823px;*/
+    /*margin-right: 55px;*/
 }
 .accreceiv-content-left.stressrelievers {
     width: 838px;
@@ -66,7 +69,8 @@
     border: 2px solid #000000;
     width: 227px;
     float: right !important;
-    margin-top: -48px;
+    /* margin-top: -48px; */
+    margin-top: -122px;
 }
 .accreceiv-totalown {
     width: 142px; /* 230px */
@@ -124,6 +128,19 @@
     position: relative;
     top: -4px;
     margin-left: 1px;
+}
+.accreceiv-export {
+    float: right!important;
+    margin-top: 23px;
+    margin-right: 7px;
+}
+.accreceiv-exportbtn {
+    background: #0d01b3;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 8px 13px;
+    border-radius: 7px;
 }
 .accreceiv-totalown-table {
     width: 100%;
@@ -184,6 +201,19 @@
     position: relative;
     top: -4px;
     margin-left: 1px;
+}
+.totalrefund-export {
+    float: right!important;
+    margin-top: 23px;
+    margin-right: 7px;
+}
+.totalrefund-exportbtn {
+    background: #0d01b3;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 8px 13px;
+    border-radius: 7px;
 }
 .accreceiv-totalrefund-table {
     width: 100%;
