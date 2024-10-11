@@ -2,9 +2,12 @@
     <div class="accreceiv-owndetails-head">
         <div class="accreceiv-owndetails-headnum">#</div>
         <div class="accreceiv-owndetails-headrunningtotal">Running Total</div>
-        <div class="accreceiv-owndetails-headdue ownsort <?=$ownsort=='batch_due' ? 'activesortsr' : ''?>" data-sort="batch_due">Due </div>
-        <div class="accreceiv-owndetails-headbalance ownsort <?=$ownsort=='balance' ? 'activesortsr' : ''?>" data-sort="balance">Balance</div>
-        <div class="accreceiv-owndetails-headorder ownsort <?=$ownsort=='order_num' ? 'activesortsr' : ''?>" data-sort="order_num">Order</div>
+        <div class="accreceiv-owndetails-headdue ownsort" data-sort="batch_due">Due </div>
+<!--        --><?php //=$ownsort=='batch_due' ? 'activesortsr' : ''?>
+        <div class="accreceiv-owndetails-headbalance ownsort " data-sort="balance">Balance</div>
+<!--        --><?php //=$ownsort=='balance' ? 'activesortsr' : ''?><!--        -->
+        <div class="accreceiv-owndetails-headorder ownsort" data-sort="order_num">Order</div>
+<!--        --><?php //=$ownsort=='order_num' ? 'activesortsr' : ''?><!--        -->
         <div class="accreceiv-owndetails-headponumber ownsort <?=$ownsort=='customer_ponum' ? 'activesortsr' : ''?>" data-sort="customer_ponum">PO #</div>
         <div class="accreceiv-owndetails-headcustomer ownsort <?=$ownsort=='customer_name' ? 'activesortsr' : ''?>" data-sort="customer_name">Customer <span></span></div>
         <div class="accreceiv-owndetails-headtype ownsort <?=$ownsort=='owntype' ? 'activesortsr' : ''?>" data-sort="owntype">Type <span></span></div>
