@@ -994,4 +994,69 @@ class Exportexcell_model extends CI_Model
 
         return ['result' => 1];
     }
+
+    public function export_owed($oweds)
+    {
+        ini_set("memory_limit",-1);
+        $namesheet = 'owed_export';
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle($namesheet);
+
+        $sheet->setCellValue('A1','Running Total');
+        $sheet->setCellValue('B1','Due');
+        $sheet->setCellValue('C1','Balance');
+        $sheet->setCellValue('D1','Order');
+        $sheet->setCellValue('E1','Customer');
+        $sheet->setCellValue('F1','Type');
+        $sheet->setCellValue('G1','Approval');
+        $sheet->setCellValue('H1','Status');
+        $j=2;
+        foreach ($oweds as $owed) {
+            $sheet->setCellValue('A'.$j, $owed['rundebt']); // MoneyOutput($owed['rundebt'],0));
+            $sheet->setCellValue('B'.$j, date('m/d/y', $owed['batch_due']));
+            $sheet->setCellValue('C'.$j, $owed['balance']); // MoneyOutput($owed['balance']));
+            $sheet->setCellValue('D'.$j, $owed['order_num']);
+            $sheet->setCellValue('E'.$j, $owed['customer_name']);
+            $sheet->setCellValue('F'.$j, $owed['type']);
+            $sheet->setCellValue('G'.$j, $owed['approved']==0 ? 'Not Approved' : 'Approved');
+            $sheet->setCellValue('H'.$j, $owed['debt_status']);
+            $j++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $report_name = 'export_owed_' . (microtime(TRUE) * 10000) . '.xlsx';
+        $filename = $this->config->item('upload_path_preload') . $report_name;
+        $writer->save($filename);    // download file
+        $url = $this->config->item('pathpreload').$report_name;
+        return $url;
+    }
+
+    public function export_refund($refunds)
+    {
+        ini_set("memory_limit",-1);
+        $namesheet = 'refund_export';
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle($namesheet);
+
+        $sheet->setCellValue('A1','Order Date');
+        $sheet->setCellValue('B1','Refund');
+        $sheet->setCellValue('C1','Order');
+        $sheet->setCellValue('D1','Customer');
+        $j=2;
+        foreach ($refunds as $refund) {
+            $sheet->setCellValue('A'.$j, date('m/d/y', $refund['order_date'])); // MoneyOutput($owed['rundebt'],0));
+            $sheet->setCellValue('B'.$j, abs($refund['balance']));
+            $sheet->setCellValue('C'.$j, $refund['order_num']);
+            $sheet->setCellValue('D'.$j, $refund['customer_name']);
+            $j++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $report_name = 'export_refund_' . (microtime(TRUE) * 10000) . '.xlsx';
+        $filename = $this->config->item('upload_path_preload') . $report_name;
+        $writer->save($filename);    // download file
+        $url = $this->config->item('pathpreload').$report_name;
+        return $url;
+    }
+
 }

@@ -289,4 +289,36 @@ function init_accreceive_content() {
             }
         },'json');
     });
+    $(".accreceiv-exportbtn").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'brand', value: $("#accreceivebrand").val()});
+        params.push({name: 'period', value: $(".accreceiv-period-select").val()});
+        params.push({name: 'ownsort', value: $("#accreciveownsort").val()});
+        params.push({name: 'owndirec', value: $("#accreciveowndir").val()});
+        params.push({name: 'exporttype', value: 'O'});
+        var url = '/accounting/accowed_export';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                window.open(response.data.url,'ownexport');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".totalrefund-exportbtn").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'brand', value: $("#accreceivebrand").val()});
+        params.push({name: 'period', value: $(".accreceiv-period-select").val()});
+        params.push({name: 'ownsort', value: $("#accreciveownsort").val()});
+        params.push({name: 'owndirec', value: $("#accreciveowndir").val()});
+        params.push({name: 'exporttype', value: 'R'});
+        var url = '/accounting/accowed_export';
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                window.open(response.data.url, 'ownexport');
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
 }

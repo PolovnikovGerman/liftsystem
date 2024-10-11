@@ -2750,6 +2750,34 @@ class Accounting extends MY_Controller
         show_404();
     }
 
+    public function accowed_export()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $period = ifset($postdata,'period', -1);
+            $brand = ifset($postdata,'brand', 'ALL');
+            if ($brand=='SG') {
+                $brand = 'ALL';
+            }
+            $exporttype = ifset($postdata, 'exporttype', 'O');
+            $ownsort = ifset($postdata,'ownsort', 'batch_due');
+            $owndirec = ifset($postdata,'owndirec', 'desc');
+            $refundsort = ifset($postdata,'refundsort','order_date');
+            $refunddirec = ifset($postdata, 'refunddirec', 'desc');
+            $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec);
+            $this->load->model('exportexcell_model');
+            if ($exporttype=='O') {
+                $mdata['url'] = $this->exportexcell_model->export_owed($res['owns']);
+            } else {
+                $mdata['url'] = $this->exportexcell_model->export_refund($res['refunds']);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     private function _prepare_profit_dateslider($brand, $showgrowth=1) {
         $yearview='';
         $numyears=0;
