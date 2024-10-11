@@ -2,6 +2,7 @@
     <input type="hidden" id="accreceivebrand" value="<?=$brand?>">
     <input type="hidden" id="accreciveownsort" value="batch_due"/>
     <input type="hidden" id="accreciveowndir" value="asc"/>
+    <input type="hidden" id="accreciveownsort2" value="ownapprove"/>
     <input type="hidden" id="accreceiverefundsort" value="order_date"/>
     <input type="hidden" id="accreceiverefunddir" value="asc"/>
     <div class="accreceive-title">

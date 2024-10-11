@@ -129,18 +129,28 @@
     top: -4px;
     margin-left: 1px;
 }
+.accreceiv-datafilter {
+    padding-top: 29px;
+    padding-left: 8px;
+}
+.ownsortselect {
+    height: 26px;
+    width: 100px;
+    padding-left: 3px;
+    font-size: 16px;
+}
 .accreceiv-export {
     float: right!important;
     margin-top: 23px;
     margin-right: 7px;
 }
 .accreceiv-exportbtn {
-    background: #0d01b3;
-    color: #FFFFFF;
+    /*background: #0d01b3;*/
+    /*color: #FFFFFF;*/
     cursor: pointer;
     font-size: 14px;
     padding: 8px 13px;
-    border-radius: 7px;
+    /*border-radius: 7px;*/
 }
 .accreceiv-totalown-table {
     width: 100%;
@@ -208,12 +218,12 @@
     margin-right: 7px;
 }
 .totalrefund-exportbtn {
-    background: #0d01b3;
-    color: #FFFFFF;
+    /*background: #0d01b3;*/
+    /*color: #FFFFFF;*/
     cursor: pointer;
     font-size: 14px;
     padding: 8px 13px;
-    border-radius: 7px;
+    /*border-radius: 7px;*/
 }
 .accreceiv-totalrefund-table {
     width: 100%;
