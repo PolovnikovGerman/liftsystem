@@ -8,11 +8,16 @@
 <!--        --><?php //=$ownsort=='balance' ? 'activesortsr' : ''?><!--        -->
         <div class="accreceiv-owndetails-headorder ownsort" data-sort="order_num">Order</div>
 <!--        --><?php //=$ownsort=='order_num' ? 'activesortsr' : ''?><!--        -->
-        <div class="accreceiv-owndetails-headponumber ownsort <?=$ownsort=='customer_ponum' ? 'activesortsr' : ''?>" data-sort="customer_ponum">PO #</div>
-        <div class="accreceiv-owndetails-headcustomer ownsort <?=$ownsort=='customer_name' ? 'activesortsr' : ''?>" data-sort="customer_name">Customer <span></span></div>
-        <div class="accreceiv-owndetails-headtype ownsort <?=$ownsort=='owntype' ? 'activesortsr' : ''?>" data-sort="owntype">Type <span></span></div>
-        <div class="accreceiv-owndetails-headapproval ownsort <?=$ownsort=='ownapprove' ? 'activesortsr' : ''?>" data-sort="ownapprove">Approval</div>
-        <div class="accreceiv-owndetails-headstatus ownsort <?=$ownsort=='debt_status' ? 'activesortsr' : ''?>" data-sort="debt_status">Status</div>
+        <div class="accreceiv-owndetails-headponumber ownsort" data-sort="customer_ponum">PO #</div>
+<!--        --><?php //=$ownsort=='customer_ponum' ? 'activesortsr' : ''?><!--        -->
+        <div class="accreceiv-owndetails-headcustomer ownsort" data-sort="customer_name">Customer <span></span></div>
+<!--        --><?php //=$ownsort=='customer_name' ? 'activesortsr' : ''?><!--        -->
+        <div class="accreceiv-owndetails-headtype ownsort" data-sort="owntype">Type <span></span></div>
+<!--        --><?php //=$ownsort=='owntype' ? 'activesortsr' : ''?><!--        -->
+        <div class="accreceiv-owndetails-headapproval ownsort" data-sort="ownapprove">Approval</div>
+<!--        --><?php //=$ownsort=='ownapprove' ? 'activesortsr' : ''?><!--        -->
+        <div class="accreceiv-owndetails-headstatus ownsort" data-sort="debt_status">Status</div>
+<!--        --><?php //=$ownsort=='debt_status' ? 'activesortsr' : ''?><!--        -->
     </div>
     <div class="accreceiv-owndetails-body">
         <?php if (count($owns)==0) { ?>
