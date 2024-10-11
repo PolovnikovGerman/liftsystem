@@ -2,15 +2,24 @@
     <div class="accreceiv-owndetails-head">
         <div class="accreceiv-owndetails-headnum">#</div>
         <div class="accreceiv-owndetails-headrunningtotal">Running Total</div>
-        <div class="accreceiv-owndetails-headdue ownsort <?=$ownsort=='batch_due' ? 'activesortsigma' : ''?>" data-sort="batch_due">Due </div>
-        <div class="accreceiv-owndetails-headbalance ownsort <?=$ownsort=='balance' ? 'activesortsigma' : ''?>" data-sort="balance">Balance</div>
-        <div class="accreceiv-owndetails-headbrand ownsort <?=$ownsort=='brand' ? 'activesortsigma' : ''?>" data-sort="brand"><span></span></div>
-        <div class="accreceiv-owndetails-headordersigma ownsort <?=$ownsort=='order_num' ? 'activesortsigma' : ''?>" data-sort="order_num">Order</div>
-        <div class="accreceiv-owndetails-headponumber ownsort <?=$ownsort=='customer_ponum' ? 'activesortsigma' : ''?>" data-sort="customer_ponum">PO #</div>
-        <div class="accreceiv-owndetails-headcustomer ownsort <?=$ownsort=='customer_name' ? 'activesortsigma' : ''?>" data-sort="customer_name">Customer <span></span></div>
-        <div class="accreceiv-owndetails-headtype ownsort <?=$ownsort=='owntype' ? 'activesortsigma' : ''?>" data-sort="owntype">Type <span></span></div>
-        <div class="accreceiv-owndetails-headapproval ownsort <?=$ownsort=='ownapprove' ? 'activesortsigma' : ''?>" data-sort="ownapprove">Approval</div>
-        <div class="accreceiv-owndetails-headstatus ownsort <?=$ownsort=='debt_status' ? 'activesortsigma' : ''?>" data-sort="debt_status">Status</div>
+        <div class="accreceiv-owndetails-headdue ownsort" data-sort="batch_due">Due </div>
+<!--        --><?php //=$ownsort=='batch_due' ? 'activesortsigma' : ''?>
+        <div class="accreceiv-owndetails-headbalance ownsort" data-sort="balance">Balance</div>
+<!--        --><?php //=$ownsort=='balance' ? 'activesortsigma' : ''?>
+        <div class="accreceiv-owndetails-headbrand ownsort" data-sort="brand"><span></span></div>
+<!--        --><?php //=$ownsort=='brand' ? 'activesortsigma' : ''?>
+        <div class="accreceiv-owndetails-headordersigma ownsort" data-sort="order_num">Order</div>
+<!--        --><?php //=$ownsort=='order_num' ? 'activesortsigma' : ''?>
+        <div class="accreceiv-owndetails-headponumber ownsort" data-sort="customer_ponum">PO #</div>
+<!--        --><?php //=$ownsort=='customer_ponum' ? 'activesortsigma' : ''?>
+        <div class="accreceiv-owndetails-headcustomer ownsort" data-sort="customer_name">Customer <span></span></div>
+<!--        --><?php //=$ownsort=='customer_name' ? 'activesortsigma' : ''?>
+        <div class="accreceiv-owndetails-headtype ownsort" data-sort="owntype">Type <span></span></div>
+<!--        --><?php //=$ownsort=='owntype' ? 'activesortsigma' : ''?>
+        <div class="accreceiv-owndetails-headapproval ownsort" data-sort="ownapprove">Approval</div>
+<!--        --><?php //=$ownsort=='ownapprove' ? 'activesortsigma' : ''?>
+        <div class="accreceiv-owndetails-headstatus ownsort" data-sort="debt_status">Status</div>
+<!--        --><?php //=$ownsort=='debt_status' ? 'activesortsigma' : ''?>
     </div>
     <div class="accreceiv-owndetails-body">
         <?php if (count($owns)==0) { ?>
