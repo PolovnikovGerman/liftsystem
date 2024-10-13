@@ -2,13 +2,20 @@
     <div class="accreceiv-owndetails-head">
         <div class="accreceiv-owndetails-headnum">#</div>
         <div class="accreceiv-owndetails-headrunningtotal">Running Total</div>
-        <div class="accreceiv-owndetails-headdue ownsort <?=$ownsort=='batch_due' ? 'activesortbt' : ''?>" data-sort="batch_due">Due </div>
-        <div class="accreceiv-owndetails-headbalance ownsort <?=$ownsort=='balance' ? 'activesortbt' : ''?>" data-sort="balance">Balance</div>
-        <div class="accreceiv-owndetails-headorder ownsort <?=$ownsort=='order_num' ? 'activesortbt' : ''?>" data-sort="order_num">Order</div>
-        <div class="accreceiv-owndetails-headcustomer ownsort <?=$ownsort=='customer_name' ? 'activesortbt' : ''?>" data-sort="customer_name">Customer <span></span></div>
-        <div class="accreceiv-owndetails-headtype ownsort <?=$ownsort=='owntype' ? 'activesortbt' : ''?>" data-sort="owntype">Type <span></span></div>
-        <div class="accreceiv-owndetails-headapproval ownsort <?=$ownsort=='ownapprove' ? 'activesortbt' : ''?>" data-sort="ownapprove">Approval</div>
-        <div class="accreceiv-owndetails-headstatus ownsort <?=$ownsort=='debt_status' ? 'activesortbt' : ''?>" data-sort="debt_status">Status</div>
+        <div class="accreceiv-owndetails-headdue ownsort" data-sort="batch_due">Due </div>
+<!--        --><?php //=$ownsort=='batch_due' ? 'activesortbt' : ''?>
+        <div class="accreceiv-owndetails-headbalance ownsort" data-sort="balance">Balance</div>
+<!--        --><?php //=$ownsort=='balance' ? 'activesortbt' : ''?><!--        -->
+        <div class="accreceiv-owndetails-headorder ownsort" data-sort="order_num">Order</div>
+<!--        --><?php //=$ownsort=='order_num' ? 'activesortbt' : ''?><!--        -->
+        <div class="accreceiv-owndetails-headcustomer ownsort" data-sort="customer_name">Customer <span></span></div>
+<!--        --><?php //=$ownsort=='customer_name' ? 'activesortbt' : ''?><!--        -->
+        <div class="accreceiv-owndetails-headtype ownsort " data-sort="owntype">Type <span></span></div>
+<!--        --><?php //=$ownsort=='owntype' ? 'activesortbt' : ''?>
+        <div class="accreceiv-owndetails-headapproval ownsort" data-sort="ownapprove">Approval</div>
+<!--        --><?php //=$ownsort=='ownapprove' ? 'activesortbt' : ''?><!--        -->
+        <div class="accreceiv-owndetails-headstatus ownsort" data-sort="debt_status">Status</div>
+<!--        --><?php //=$ownsort=='debt_status' ? 'activesortbt' : ''?><!--        -->
     </div>
     <div class="accreceiv-owndetails-body">
         <?php if (count($owns)==0) { ?>

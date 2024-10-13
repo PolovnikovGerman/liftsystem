@@ -28,8 +28,9 @@ function init_accreceive_totals() {
     var params = new Array();
     params.push({name: 'brand', value: $("#accreceivebrand").val()});
     params.push({name: 'period', value: $(".accreceiv-period-select").val()});
+    params.push({name: 'ownsort1', value: $("#accreciveownsort").val()});
+    params.push({name: 'ownsort2', value: $("#accreciveownsort2").val()});
     var url = '/accounting/accountreceiv_totals';
-
     $.post(url, params, function (response) {
         if (response.errors=='') {
             $(".accreceiv-totals").empty().html(response.data.content);
@@ -45,8 +46,9 @@ function init_accreceive_details() {
     var maxwidth = parseInt(window.innerWidth);
     params.push({name: 'brand', value: $("#accreceivebrand").val()});
     params.push({name: 'period', value: $(".accreceiv-period-select").val()});
-    params.push({name: 'ownsort', value: $("#accreciveownsort").val()});
-    params.push({name: 'owndirec', value: $("#accreciveowndir").val()});
+    params.push({name: 'ownsort1', value: $("#accreciveownsort").val()});
+    // params.push({name: 'owndirec', value: $("#accreciveowndir").val()});
+    params.push({name: 'ownsort2', value: $("#accreciveownsort2").val()});
     params.push({name: 'refundsort', value: $("#accreceiverefundsort").val()});
     params.push({name: 'refunddirec', value: $("#accreceiverefunddir").val()});
     params.push({name: 'maxwidth', value: maxwidth});
@@ -240,20 +242,20 @@ function init_accreceive_content() {
         },'json');
     })
     // Sorting own
-    $(".ownsort").unbind('click').click(function () {
-        var newsort = $(this).data('sort');
-        var oldsort = $("#accreciveownsort").val();
-        var newdir = 'asc';
-        if (newsort==oldsort) {
-            var olddir = $("#accreciveowndir").val();
-            if (olddir=='asc') {
-                newdir='desc';
-            }
-        }
-        $("#accreciveownsort").val(newsort);
-        $("#accreciveowndir").val(newdir);
-        init_accreceive_details();
-    });
+    // $(".ownsort").unbind('click').click(function () {
+    //     var newsort = $(this).data('sort');
+    //     var oldsort = $("#accreciveownsort").val();
+    //     var newdir = 'asc';
+    //     if (newsort==oldsort) {
+    //         var olddir = $("#accreciveowndir").val();
+    //         if (olddir=='asc') {
+    //             newdir='desc';
+    //         }
+    //     }
+    //     $("#accreciveownsort").val(newsort);
+    //     $("#accreciveowndir").val(newdir);
+    //     init_accreceive_details();
+    // });
     // Sorting refund
     $(".refundsort").unbind('click').click(function () {
         var newsort = $(this).data('sort');
@@ -288,5 +290,52 @@ function init_accreceive_content() {
                 show_error(response);
             }
         },'json');
+    });
+    $(".accreceiv-exportbtn").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'brand', value: $("#accreceivebrand").val()});
+        params.push({name: 'period', value: $(".accreceiv-period-select").val()});
+        params.push({name: 'ownsort1', value: $("#accreciveownsort").val()});
+        params.push({name: 'ownsort2', value: $("#accreciveownsort2").val()});
+        params.push({name: 'refundsort', value: $("#accreceiverefundsort").val()});
+        params.push({name: 'refunddirec', value: $("#accreceiverefunddir").val()});
+        params.push({name: 'exporttype', value: 'O'});
+        var url = '/accounting/accowed_export';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                window.open(response.data.url,'ownexport');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".totalrefund-exportbtn").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'brand', value: $("#accreceivebrand").val()});
+        params.push({name: 'period', value: $(".accreceiv-period-select").val()});
+        params.push({name: 'ownsort1', value: $("#accreciveownsort").val()});
+        params.push({name: 'ownsort2', value: $("#accreciveownsort2").val()});
+        params.push({name: 'refundsort', value: $("#accreceiverefundsort").val()});
+        params.push({name: 'refunddirec', value: $("#accreceiverefunddir").val()});
+        params.push({name: 'exporttype', value: 'R'});
+        var url = '/accounting/accowed_export';
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                window.open(response.data.url, 'ownexport');
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    // Change Sort fow Owed
+    $(".ownsortselect").unbind('change').change(function (){
+        var sort = $(this).data('sort');
+        var newsort = $(this).val();
+        if (sort=='ownsort1') {
+            $("#accreciveownsort").val(newsort);
+        } else if (sort=='ownsort2') {
+            $("#accreciveownsort2").val(newsort);
+        }
+        init_accreceive_details();
     });
 }
