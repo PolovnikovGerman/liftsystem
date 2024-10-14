@@ -4,6 +4,7 @@
     <input type="hidden" id="cur_month" value="<?= $cur_month ?>"/>
     <input type="hidden" id="showgrowth" value="<?= $showgrowth ?>"/>
     <input type="hidden" id="profitcalendarbrand" value="<?= $brand ?>">
+    <input type="hidden" id="showyearslider" value="0"/>
     <div class="profitdate-control">
         <div class="profitdate-bookmark">
             <?php $i = $max_year; ?>

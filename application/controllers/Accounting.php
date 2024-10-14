@@ -1347,10 +1347,11 @@ class Accounting extends MY_Controller
 
         $curyear_months=$this->orders_model->get_months($dats['cur_year'],$dats['cur_month'], $brand);
         $year_links=$this->load->view('accounting/protidate_yearlinks_view',array('lnks'=>$curyear_months,'numrec'=>count($curyear_months)),TRUE);
-        $slider=$this->_prepare_profit_dateslider($brand, 1);
-        $yearview=$slider['content'];
-        $slider_width=$slider['slider_width'];
-        $margin=$slider['margin'];
+//        $slider=$this->_prepare_profit_dateslider($brand, 1);
+//        $yearview=$slider['content'];
+//        $slider_width=$slider['slider_width'];
+//        $margin=$slider['margin'];
+        $yearview = ''; $slider_width = 0; $margin = 0;
         // Get Previous Month
         $datefiltr=new DateTime('NOW');
         $datefiltr->modify('-1 Month');

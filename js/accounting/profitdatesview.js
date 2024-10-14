@@ -21,8 +21,12 @@ function init_profitcalend_content() {
             }
         });
         show_profitcaltend_total();
-        show_curent_calend();
+        show_curent_calend()
     });
+    console.log('Slider View - '+parseInt($("#showyearslider").val()));
+    if (parseInt($("#showyearslider").val())==0) {
+        change_profitcalend_slider();
+    }
 }
 
 function show_profitcaltend_total() {
@@ -89,6 +93,10 @@ function change_profitcalend_slider() {
             $("div.profitdatatotalarea").empty().html(response.data.content);
             $("div.profitdatatotalarea").css('width',response.data.slider_width).css('margin-left', response.data.margin);
             slidermargin=parseInt($("div.profitdatatotalarea").css('margin-left'));
+            if (parseInt(slidermargin)<0) {
+                $(".profitcalend_slidermanage.left").addClass('active');
+            }
+            $("#showyearslider").val(1);
             init_profitdate_slider();
         } else {
             show_error(response);
@@ -342,3 +350,4 @@ function show_filter_months() {
         change_profitcalend_slider();
     }
 }
+
