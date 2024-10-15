@@ -10,7 +10,7 @@ class Welcome extends MY_Controller {
 
     public function index() {
         if (isMobile()) {
-            $this->_welcome_desktop();
+            $this->_welcome_mobile();
         } else {
             $this->_welcome_desktop();
         }

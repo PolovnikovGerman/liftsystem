@@ -26,7 +26,7 @@
                     </div>
                     <div class="collapse" id="user-blockinfo">
                         <div class="card card-body">
-                            <p class="nameuser"><?=$user_name?><span class="signout">[sign out]</span></p>
+                            <p class="nameuser"><?=$user_name?><span class="signout" id="signout">[sign out]</span></p>
                             <p class="dateinfo"><?=date('F j, Y')?></p>
                         </div>
                     </div>
@@ -47,51 +47,50 @@
             <div class="nav-tabs-sites">
                 <ul>
                     <?php if ($brand=='SB') : ?>
-                        <li class="tab-stressballs active">
+                        <li class="tab-stressballs tab-brandmenu active" data-brand="SB">
                             <img src="/img/page_mobile/logo-stressballs.svg">
                         </li>
                         <?php if (in_array('SR', $brands)) : ?>
-                            <li class="tab-stressrelievers">
+                            <li class="tab-stressrelievers tab-brandmenu" data-brand="SR">
                                 <img src="/img/page_mobile/logo-stressrelievers.svg">
                             </li>
                         <?php endif;?>
                         <?php if (in_array('SG', $brands)) : ?>
-                            <li class="tab-sigma">
+                            <li class="tab-sigma tab-brandmenu" data-brand="SG">
                                 <img src="/img/page_mobile/logo-sigma.png">
                             </li>
                         <?php endif; ?>
                     <?php endif; ?>
                     <?php if ($brand=='SR') : ?>
-                        <li class="tab-stressrelievers active">
+                        <li class="tab-stressrelievers active tab-brandmenu" data-brand="SR">
                             <img src="/img/page_mobile/logo-stressrelievers.svg">
                         </li>
                         <?php if (in_array('SB', $brands)) : ?>
-                            <li class="tab-stressballs">
+                            <li class="tab-stressballs tab-brandmenu"  data-brand="SB">
                                 <img src="/img/page_mobile/logo-stressballs.svg">
                             </li>
                         <?php endif;?>
                         <?php if (in_array('SG', $brands)) : ?>
-                            <li class="tab-sigma">
+                            <li class="tab-sigma tab-brandmenu" data-brand="SG">
                                 <img src="/img/page_mobile/logo-sigma.png">
                             </li>
                         <?php endif; ?>
                     <?php endif; ?>
                     <?php if ($brand=='SG') : ?>
-                        <li class="tab-sigma active">
+                        <li class="tab-sigma tab-brandmenu active" data-brand="SG">
                             <img src="/img/page_mobile/logo-sigma.png">
                         </li>
                         <?php if (in_array('SB', $brands)) : ?>
-                            <li class="tab-stressballs">
+                            <li class="tab-stressballs tab-brandmenu" data-brand="SB">
                                 <img src="/img/page_mobile/logo-stressballs.svg">
                             </li>
                         <?php endif;?>
                         <?php if (in_array('SR', $brands)) : ?>
-                            <li class="tab-stressrelievers active">
+                            <li class="tab-stressrelievers tab-brandmenu" data-brand="SR">
                                 <img src="/img/page_mobile/logo-stressrelievers.svg">
                             </li>
                         <?php endif; ?>
                     <?php endif; ?>
-
                 </ul>
             </div>
         </div>
