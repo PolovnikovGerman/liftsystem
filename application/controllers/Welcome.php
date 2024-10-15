@@ -8,7 +8,54 @@ class Welcome extends MY_Controller {
         parent::__construct();
     }
 
-    public function index()
+    public function index() {
+        if (isMobile()) {
+            $this->_welcome_desktop();
+        } else {
+            $this->_welcome_desktop();
+        }
+    }
+
+    private function _welcome_mobile()
+    {
+        $head=[];
+        $head['title']='Welcome';
+        $brand = $this->menuitems_model->get_current_brand();
+        if (empty($brand)) {
+            $brands = $this->menuitems_model->get_userbrands($this->USR_ID);
+            if (!empty($brands)) {
+                if (isset($brands['SB'])) {
+                    $brand = 'SB';
+                } else {
+                    $brand = 'SR';
+                }
+            } else {
+                $brand = 'SB';
+            }
+            usersession('currentbrand', $brand);
+        }
+        $url = $this->user_model->default_brandpage($this->USR_ID, $brand);
+        if ($url=='/welcome' || $url=='/' || empty($url)) {
+            $options = [
+                'title' => $head['title'],
+                'user_id' => $this->USR_ID,
+                'user_name' => $this->USER_NAME,
+                'activelnk' => '',
+                'brand' => $brand,
+            ];
+            $dat = $this->template->prepare_mobpagecontent($options);
+            $options=[
+                'left_menu' => $dat['left_menu'],
+                'brand' => $brand,
+            ];
+            $dat['content_view'] = $this->load->view('welcome/page_mobile_view', $options, TRUE);
+            $this->load->view('page/page_template_view', $dat);
+        } else {
+            redirect($url,'refresh');
+        }
+    }
+
+    private function _welcome_desktop()
     {
         $head=[];
         $head['title']='Welcome';
