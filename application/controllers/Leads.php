@@ -52,7 +52,61 @@ class Leads extends My_Controller {
         }
     }
 
-    function index() {
+    public function index() {
+        if (isMobile()) {
+            $this->_leads_mobile();
+        } else {
+            $this->_leads_desktop();
+        }
+    }
+
+    private function _leads_mobile()
+    {
+        $head = [];
+        $head['title'] = 'Leads';
+        $brand = $this->menuitems_model->get_current_brand();
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
+        $content_options = [];
+        $content_options['start'] = $this->input->get('start', TRUE);
+        $gmaps = 0;
+        foreach ($menu as $row) {
+            if ($row['item_link'] == '#leadsview') {
+                $head['scripts'][]=array('src'=>'/js/leads_mobile/leadsview.js');
+                $content_options['leadsview'] = $this->_prepare_mobleadsview($brand);
+                if (!empty($this->config->item('google_map_key'))) {
+                    $gmaps = 1;
+                }
+            } elseif ($row['item_link']=='#itemslistview') {
+                $head['scripts'][]=array('src'=>'/js/leads/itemslistview.js');
+                $content_options['itemslistview'] = $this->_prepare_mobitemslistview($brand);
+            }
+        }
+        $head['scripts'][] = array('src' => '/js/leads_mobile/page.js');
+        $head['styles'][] = array('style' => '/css/leads_mobile/leadspage.css');
+        $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
+        $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
+        $options = [
+            'title' => $head['title'],
+            'user_id' => $this->USR_ID,
+            'user_name' => $this->USER_NAME,
+            'activelnk' => $this->pagelink,
+            'styles' => $head['styles'],
+            'scripts' => $head['scripts'],
+        ];
+        if ($gmaps==1) {
+            $options['gmaps'] = $gmaps;
+        }
+        $dat = $this->template->prepare_mobpagecontent($options);
+        $content_options['left_menu'] = $dat['left_menu'];
+        $content_options['brand'] = $brand;
+        $content_options['menu'] = $menu;
+        $content_view = $this->load->view('leads_mobile/page_view', $content_options, TRUE);
+        $dat['content_view'] = $content_view;
+        $this->load->view('page_mobile/page_template_view', $dat);
+
+    }
+
+    private function _leads_desktop() {
         $head = [];
         $head['title'] = 'Leads';
         $brand = $this->menuitems_model->get_current_brand();
@@ -1564,6 +1618,14 @@ class Leads extends My_Controller {
         return $content;
     }
 
+    private function _prepare_mobleadsview($brand)
+    {
+        $ldat = [];
+        $ldat['brand'] = $brand;
+        $content = $this->load->view('leads_mobile/leadtab_view', $ldat,TRUE);
+        return $content;
+    }
+
     private function _prepare_itemslistview($brand) {
         $datqs=array(
             'brand' => $brand,
@@ -1585,6 +1647,15 @@ class Leads extends My_Controller {
         $datqs['cur_page']=0;
         $datqs['prices']=$this->config->item('normal_price_base');
         $content=$this->load->view('leads/itemslist_head_view',$datqs,TRUE);
+        return $content;
+    }
+
+    private function _prepare_mobitemslistview($brand)
+    {
+        $datqs=array(
+            'brand' => $brand,
+        );
+        $content=$this->load->view('leads_mobile/itemslist_head_view',$datqs,TRUE);
         return $content;
     }
 
