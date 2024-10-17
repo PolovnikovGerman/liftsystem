@@ -44,6 +44,13 @@ function init_page(objid) {
             $("#customsbformview").show();
             $("#customsbformviewtab").css('display','inline-block');
             break;
-
+        case 'checkoutattemptsview':
+            $("#checkoutattemptsview").show();
+            $("#checkoutattemptsviewtab").css('display','inline-block');
+            break;
+        case 'customorders':
+            $("#customorders").show();
+            $("#customorderstab").css('display','inline-block');
+            break;
     }
 }

@@ -62,6 +62,22 @@
                                     <?=$menurow['item_name']?>
                                 </li>
                             <?php endif; ?>
+                            <?php if ($menurow['item_link'] == '#checkoutattemptsview') : ?>
+                                <li class="whitetab" id="checkoutattemptsviewtab">
+                                    <?php if ($menurow['newver']==0) : ?>
+                                        <div class="oldvesionlabel">&nbsp;</div>
+                                    <?php endif; ?>
+                                    <?=$menurow['item_name']?>
+                                </li>
+                            <?php endif; ?>
+                            <?php if ($menurow['item_link'] == '#customorders') : ?>
+                                <li class="whitetab" id="customorderstab">
+                                    <?php if ($menurow['newver']==0) : ?>
+                                        <div class="oldvesionlabel">&nbsp;</div>
+                                    <?php endif; ?>
+                                    <?=$menurow['item_name']?>
+                                </li>
+                            <?php endif; ?>
                         <?php endforeach;?>
                         <li class="greytab">
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></a>
@@ -84,6 +100,12 @@
                                     <?php endif; ?>
                                     <?php if ($menurow['item_link'] == '#customsbform') : ?>
                                         <a class="dropdown-item" data-link="customsbformview" href="javascript:void(0)"><?=$menurow['item_name']?></a>
+                                    <?php endif; ?>
+                                    <?php if ($menurow['item_link'] == '#checkoutattemptsview') : ?>
+                                        <a class="dropdown-item" data-link="checkoutattemptsview" href="javascript:void(0)"><?=$menurow['item_name']?></a>
+                                    <?php endif; ?>
+                                    <?php if ($menurow['item_link'] == '#customorders') : ?>
+                                        <a class="dropdown-item" data-link="customorders" href="javascript:void(0)"><?=$menurow['item_name']?></a>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                             </div>
@@ -122,6 +144,16 @@
                 <?php if ($menurow['item_link'] == '#customsbform') : ?>
                     <div id="customsbformview" class="leadscontentarea">
                         <?=$customsbformview?>
+                    </div>
+                <?php endif; ?>
+                <?php if ($menurow['item_link'] == '#checkoutattemptsview') : ?>
+                    <div id="checkoutattemptsview" class="leadscontentarea">
+                        <?=$checkoutattemptsview?>
+                    </div>
+                <?php endif; ?>
+                <?php if ($menurow['item_link'] == '#customorders') : ?>
+                    <div id="customorders" class="leadscontentarea">
+                        <?=$leadordersview?>
                     </div>
                 <?php endif; ?>
             <?php endforeach; ?>

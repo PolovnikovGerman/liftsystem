@@ -91,6 +91,21 @@ class Leads extends My_Controller {
             } elseif ($row['item_link']=='#customsbform') {
                 $head['scripts'][] = array('src' => '/js/leads_mobile/customsbform.js');
                 $content_options['customsbformview'] = $this->_prepare_mobcustomsbform_view($brand); // $brand, $top_menu
+            } elseif ($row['item_link']=='#checkoutattemptsview') {
+                $head['scripts'][]=array('src'=>'/js/leads_mobile/orderattempts.js');
+                $content_options['checkoutattemptsview'] = $this->_prepare_mobattempts_view($brand); // $brand, $top_menu
+            } elseif ($row['item_link']=='#leadquotes') {
+                $head['scripts'][]=array('src'=>'/js/leads_mobile/leadquotes.js');
+                $content_options['leadquotesview'] = $this->_prepare_leadquotes_view($brand); // $brand, $top_menu
+                if (!empty($this->config->item('google_map_key'))) {
+                    $gmaps = 1;
+                }
+            } elseif ($row['item_link']=='#customorders') {
+                $head['scripts'][]=array('src'=>'/js/leads_mobile/leadcustomorders.js');
+                $content_options['leadordersview'] = $this->_prepare_mobcustomorders_view($brand); // $brand, $top_menu
+                if (!empty($this->config->item('google_map_key'))) {
+                    $gmaps = 1;
+                }
             }
         }
         $head['scripts'][] = array('src' => '/js/leads_mobile/page.js');
@@ -1757,6 +1772,14 @@ class Leads extends My_Controller {
         return $content;
     }
 
+    private function _prepare_mobattempts_view($brand) {
+        $options = [
+            'brand' => $brand,
+        ];
+        $content=$this->load->view('leads_mobile/order_attempts_view', $options,TRUE);
+        return $content;
+    }
+
     private function _prepare_customsbform_view($brand) {
         $datqs=[
             'perpage' => $this->config->item('quotes_perpage'),
@@ -1857,6 +1880,16 @@ class Leads extends My_Controller {
         $content=$this->load->view('customorders/head_view',$view_options,TRUE);
 
         return $content;
+    }
+
+    private function _prepare_mobcustomorders_view($brand) {
+        $view_options = [
+            'brand' => $brand,
+        ];
+
+        $content=$this->load->view('customorders_mobile/head_view',$view_options,TRUE);
+        return $content;
+
     }
 
     private function _prepare_customorder_bottom($brand)
