@@ -1357,6 +1357,7 @@ class Accounting extends MY_Controller
         $datefiltr->modify('-1 Month');
 
         $options=array(
+            'brand' => $brand,
             'legend'=>$legend,
             'max_year'=>$dats['max_year'],
             'month_name'=>date('F',$dats['max_date']),
