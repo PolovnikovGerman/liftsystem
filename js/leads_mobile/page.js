@@ -23,6 +23,7 @@ function init_page(objid) {
         case 'leadsview':
             $("#leadsview").show();
             $("#leadsviewtab").css('display','inline-block');
+            init_leadsview();
             break;
         case 'itemslistview':
             $("#itemslistview").show();

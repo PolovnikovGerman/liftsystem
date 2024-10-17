@@ -281,15 +281,26 @@ class Leads extends My_Controller {
 
                 $this->load->model('leads_model');
                 $leaddat=$this->leads_model->get_leads($options,$sort,$limit,$offset);
-
-                if (count($leaddat)==0) {
-                    $mdata['leadcontent']=$this->load->view('leads/leads_emptydata_view',array(),TRUE);
+                if (isMobile()) {
+                    if (count($leaddat)==0) {
+                        $mdata['leadcontent'] = $this->load->view('leads_mobile/leads_emptydata_view', array(), TRUE);
+                    } else {
+                        $options=array(
+                            'leads'=>$leaddat,
+                            'brand' => $brand,
+                        );
+                        $mdata['leadcontent']=$this->load->view('leads_mobile/leads_tabledata_view',$options, TRUE);
+                    }
                 } else {
-                    $options=array(
-                        'data'=>$leaddat,
-                        'brand' => $brand,
-                    );
-                    $mdata['leadcontent']=$this->load->view('leads/leads_tabledata_view',$options, TRUE);
+                    if (count($leaddat)==0) {
+                        $mdata['leadcontent']=$this->load->view('leads/leads_emptydata_view',array(),TRUE);
+                    } else {
+                        $options=array(
+                            'data'=>$leaddat,
+                            'brand' => $brand,
+                        );
+                        $mdata['leadcontent']=$this->load->view('leads/leads_tabledata_view',$options, TRUE);
+                    }
                 }
                 $this->ajaxResponse($mdata,$error);
             }
@@ -1649,6 +1660,44 @@ class Leads extends My_Controller {
     {
         $ldat = [];
         $ldat['brand'] = $brand;
+        $this->load->model('leads_model');
+        /* Prepare Right part */
+        $rdat=array();
+        $date=date('Y-m').'-01';
+        $dateend = strtotime(date("Y-m-d", strtotime($date)) . " +1 month");
+        $total_options=array(
+            'enddate'=>$dateend,
+            'user_id'=>$this->USR_ID,
+            'brand' => $brand,
+        );
+        $rdattop=$this->leads_model->count_closed_totals($total_options);
+        $rdat['prev']=$rdattop['prev'];
+        $rdat['next']=$rdattop['next'];
+        $rdat['data']=$rdattop['data'];
+        $rdat['dateend']=$dateend;
+        $rdat['datestart']=$rdattop['datestart'];
+        $ldat['right_content']=$this->load->view('leads_mobile/leads_closetotal_view', $rdat, TRUE);
+
+        /* Get user with reps */
+        $active = 0;
+        $ldat['replicas']=$this->user_model->get_user_leadreplicas($active);
+        $ldat['user_id']=$this->USR_ID;
+        $ldat['user_role'] = $this->USR_ROLE;
+        $user_dat=$this->user_model->get_user_data($this->USR_ID);
+        $ldat['user_name']=($user_dat['user_leadname']=='' ? $this->USR_NAME : $user_dat['user_leadname']);
+
+        $options=array(
+            'lead_type'=>1,
+            'usrrepl'=>  $this->USR_ID,
+            'brand' => $brand,
+        );
+
+        $ldat['totalrec']=$this->leads_model->get_total_leads($options);
+        $ldat['perpage']=$this->config->item('leads_perpage');
+        $ldat['curpage']=0;
+        $this->load->model('orders_model');
+        $ldat['totalorders']=$this->orders_model->orders_total_year(date('Y'));
+
         $content = $this->load->view('leads_mobile/leadtab_view', $ldat,TRUE);
         return $content;
     }

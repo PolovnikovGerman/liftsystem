@@ -18,6 +18,15 @@
 .tbl-leads-cheatt  {
     border: 1px solid #000;
 }
+.leadlist_pagination {
+    float: right;
+}
+.leadtabledatarow.closed {
+    background-color: #71a3ff;
+}
+.leadtabledatarow.dead {
+    background-color: #e947f8;
+}
 .table.tbl-leads-cheatt th {
     padding: 0!important;
     vertical-align: top;
