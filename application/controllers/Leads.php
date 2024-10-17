@@ -79,6 +79,18 @@ class Leads extends My_Controller {
             } elseif ($row['item_link']=='#itemslistview') {
                 $head['scripts'][]=array('src'=>'/js/leads/itemslistview.js');
                 $content_options['itemslistview'] = $this->_prepare_mobitemslistview($brand);
+            } elseif ($row['item_link']=='#onlinequotesview') {
+                $head['scripts'][]=array('src'=>'/js/leads_mobile/onlinequotes.js');
+                $content_options['onlinequotesview'] = $this->_prepare_mobonlinequotesview($brand); // $brand, $top_menu
+            } elseif ($row['item_link']=='#proofrequestsview') {
+                $head['scripts'][] = array('src' => '/js/art_mobile/requestlist.js');
+                $content_options['proofrequestsview'] = $this->_prepare_mobrequestlist_view($brand); // $brand, $top_menu
+            } elseif ($row['item_link']=='#questionsview') {
+                $head['scripts'][] = array('src' => '/js/leads_mobile/questionsview.js');
+                $content_options['questionsview'] = $this->_prepare_mobquestionslist_view($brand); // $brand, $top_menu
+            } elseif ($row['item_link']=='#customsbform') {
+                $head['scripts'][] = array('src' => '/js/leads_mobile/customsbform.js');
+                $content_options['customsbformview'] = $this->_prepare_mobcustomsbform_view($brand); // $brand, $top_menu
             }
         }
         $head['scripts'][] = array('src' => '/js/leads_mobile/page.js');
@@ -1674,6 +1686,15 @@ class Leads extends My_Controller {
         return $content;
     }
 
+    private function _prepare_mobonlinequotesview($brand)
+    {
+        $datqs = [
+            'brand' => $brand,
+        ];
+        $content=$this->load->view('leads_mobile/quotes_head_view',$datqs,TRUE);
+        return $content;
+    }
+
     private function _prepare_requestlist_view($brand) {
         $datqs = [
             'perpage' => $this->config->item('quotes_perpage'),
@@ -1684,13 +1705,20 @@ class Leads extends My_Controller {
             'hideart' => 0,
             'brand' => $brand,
         ];
-
         $search=array('assign'=>'','hideart'=>0, 'brand' => $brand);
         $this->load->model('artproof_model');
         $datqs['total_rec']=$this->artproof_model->get_count_proofs($search);
         $content=$this->load->view('artrequest/page_view',$datqs,TRUE);
         return $content;
+    }
 
+    private function _prepare_mobrequestlist_view($brand)
+    {
+        $datqs = [
+            'brand' => $brand,
+        ];
+        $content=$this->load->view('artrequest_mobile/page_view',$datqs,TRUE);
+        return $content;
     }
 
     private function _prepare_questionslist_view($brand) {
@@ -1709,8 +1737,17 @@ class Leads extends My_Controller {
 
         $content=$this->load->view('leads/questions_view',$datqs,TRUE);
         return $content;
-
     }
+
+    private function _prepare_mobquestionslist_view($brand)
+    {
+        $datqs=[
+            'brand' => $brand,
+        ];
+        $content=$this->load->view('leads_mobile/questions_view',$datqs,TRUE);
+        return $content;
+    }
+
 
     private function _prepare_attempts_view($brand) {
         $options = [
@@ -1735,7 +1772,19 @@ class Leads extends My_Controller {
 
         $content=$this->load->view('customsbforms/customform_view.php',$datqs,TRUE);
         return $content;
+    }
 
+    private function _prepare_mobcustomsbform_view($brand)
+    {
+        $datqs=[
+            'perpage' => $this->config->item('quotes_perpage'),
+            'order_by' => 'date_add',
+            'direction' => 'desc',
+            'cur_page' => 0,
+            'brand' => $brand,
+        ];
+        $content=$this->load->view('customsbforms_mobile/customform_view.php',$datqs,TRUE);
+        return $content;
     }
 
     private function _prepare_leadquotes_view($brand) {
