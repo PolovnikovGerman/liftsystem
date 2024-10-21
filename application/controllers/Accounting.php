@@ -2739,6 +2739,24 @@ class Accounting extends MY_Controller
         show_404();
     }
 
+    public function accown_showstatus()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Order #';
+            $postdata = $this->input->post();
+            $order_id = ifset($postdata, 'order', 0);
+            if (!empty($order_id)) {
+                $res = $this->orders_model->get_order_detail($order_id);
+                if (ifset($res, 'order_id',0)==$order_id) {
+                    $error = '';
+                    $mdata['content'] = $this->load->view('accreceiv/status_edit_view', $res, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
     public function debtstatus()
     {
         if ($this->isAjax()) {
@@ -2752,6 +2770,13 @@ class Accounting extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                    // Build content
+                    $data = $res['data'];
+                    if (empty($data['debt_status'])) {
+                        $mdata['content'] = $this->load->view('accreceiv/empty_debtstatus_view', $data, TRUE);
+                    } else {
+                        $mdata['content'] = $this->load->view('accreceiv/debet_status_view', $data, TRUE);
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);
