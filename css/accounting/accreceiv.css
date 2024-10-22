@@ -40,7 +40,7 @@
 .accreceiv-content-data {
     /* width: 1067px; */
     width: 1365px;
-    margin-top: 5px;
+    margin-top: 18px;
 }
 .accreceiv-totals, .accreceiv-details {
     width: 100%;
@@ -60,7 +60,7 @@
     margin-right: 20px;
 }
 .accreceiv-content-center {
-    width: 420px;
+    width: 317px;
 }
 .accreceiv-content-center.sigmasystem {
     width: 459px;
@@ -70,7 +70,7 @@
     width: 227px;
     float: right !important;
     /* margin-top: -48px; */
-    margin-top: -122px;
+    margin-top: -146px;
 }
 .accreceiv-totalown {
     width: 142px; /* 230px */
@@ -215,14 +215,14 @@
 .totalrefund-export {
     float: right!important;
     margin-top: 23px;
-    margin-right: 7px;
+    margin-left: 7px;
 }
 .totalrefund-exportbtn {
     /*background: #0d01b3;*/
     /*color: #FFFFFF;*/
     cursor: pointer;
     font-size: 14px;
-    padding: 8px 13px;
+    padding: 8px 0 8px 13px;
     /*border-radius: 7px;*/
 }
 .accreceiv-totalrefund-table {
@@ -338,7 +338,7 @@
 /*    font-size: 9px;*/
 /*    font-weight: normal;*/
 /*}*/
-.accreceiv-owndetails-head > div.activesortbt {
+.accreceiv-owndetails-head > div.activesortbt, .accreceiv-owndetails-head > div.activesortsb {
     background: #1849ff!important;
 }
 .accreceiv-owndetails-head > div.activesortsr {
@@ -648,7 +648,7 @@ select.debtstatus.checked {
 .refundsort {
     cursor: pointer;
 }
-.accreceiv-refunddetails-head > div.activesortbt {
+.accreceiv-refunddetails-head > div.activesortbt, .accreceiv-refunddetails-head > div.activesortsb {
     background: #1849ff!important;
 }
 .accreceiv-refunddetails-head > div.activesortsr {
@@ -664,10 +664,10 @@ select.debtstatus.checked {
 /*    font-weight: normal;*/
 /*}*/
 .accreceiv-refunddetails-headnum {
-    width: 20px;
+    width: 22px;
 }
 .accreceiv-refunddetails-headorderdate {
-    width: 58px;
+    width: 37px;
     font-size: 12px !important;
     line-height: 14px !important;
 }
@@ -680,19 +680,19 @@ select.debtstatus.checked {
     color: #000000;
 }
 .accreceiv-refunddetails-headbalance {
-    width: 67px; /* 74px; */
+    width: 72px; /* 74px; */
 }
 .accreceiv-refunddetails-headbrand {
     width: 25px;
 }
 .accreceiv-refunddetails-headorder {
-    width: 50px;
+    width: 43px;
 }
 .accreceiv-refunddetails-headordersigma {
     width: 64px;
 }
 .accreceiv-refunddetails-headcustomer {
-    width: 202px;
+    width: 141px;
 }
 .accreceiv-refunddetails-body {
     border-left: 1px solid #000000;
@@ -707,7 +707,7 @@ select.debtstatus.checked {
 .accreceiv-refunddetails-bodyrow > div {
     height: 22px;
     line-height: 22px;
-    font-size: 13px;
+    font-size: 11.5px;
 }
 .accreceiv-refunddetails-bodyrow.current_row > div {
     background: #0000ff;
@@ -720,15 +720,25 @@ select.debtstatus.checked {
     line-height: 25px!important;
     width: 100%;
 }
+.accreceiv-refunddetails-bodyrow.yeartitle {
+    color: #000000;
+    background-color: #acabab!important;
+    text-align: center;
+    height: 25px;
+    line-height: 25px!important;
+    /* width: 100%; */
+    font-size: 12px;
+    font-weight: 600;
+}
 .accreceiv-refunddetails-bodynum {
     text-align: center;
-    width: 20px;
-    border-right: 1px solid #000000;
+    width: 22px;
+    border-right: 1px solid #b0b0b0;
 }
 .accreceiv-refunddetails-bodyorderdate {
     text-align: center;
-    width: 59px;
-    border-right: 1px solid #000000;
+    width: 37px;
+    border-right: 1px solid #b0b0b0;
     font-size: 12px!important;
 }
 .accreceiv-refunddetails-bodybalance {
@@ -736,9 +746,9 @@ select.debtstatus.checked {
     padding-right: 5px;
     font-weight: bold;
     color: #ff0000;
-    border-right: 1px solid #000000;
-    width: 87px;
-    font-size: 12px;
+    border-right: 1px solid #b0b0b0;
+    width: 72px;
+    /* font-size: 12px; */
 }
 .accreceiv-refunddetails-bodybalance span {
     font-size: 9px;
@@ -747,15 +757,16 @@ select.debtstatus.checked {
     margin-left: 0.5px;
 }
 .accreceiv-refunddetails-bodyorder {
-    border-right: 1px solid #000000;
+    border-right: 1px solid #b0b0b0;
     font-weight: bold;
     color: #0000ff;
-    width: 50px;
+    width: 43px;
     cursor: pointer;
     text-align: center;
+    font-size: 12px!important;
 }
 .accreceiv-refunddetails-bodybrand {
-    border-right: 1px solid #000000;
+    border-right: 1px solid #b0b0b0;
     font-weight: bold;
     width: 25px;
     text-align: center;
@@ -783,5 +794,5 @@ select.debtstatus.checked {
     white-space: nowrap;
     padding-left: 5px;
     padding-right: 5px;
-    width: 202px;
+    width: 141px;
 }

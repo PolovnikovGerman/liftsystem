@@ -61,7 +61,7 @@
 <div class="accreceiv-content-center">
     <div class="accreceiv-refunddetails-head">
         <div class="accreceiv-refunddetails-headnum">#</div>
-        <div class="accreceiv-refunddetails-headorderdate refundsort <?=$refundsort=='order_date' ? 'activesortbt' : ''?>" data-sort="order_date">Order Date</div>
+        <div class="accreceiv-refunddetails-headorderdate refundsort <?=$refundsort=='order_date' ? 'activesort'.$brand : ''?>" data-sort="order_date">Order Date</div>
         <div class="accreceiv-refunddetails-headbalance refundsort <?=$refundsort=='balance' ? 'activesortbt' : ''?>" data-sort="balance">Refund</div>
         <div class="accreceiv-refunddetails-headorder refundsort <?=$refundsort=='order_num' ? 'activesortbt' : ''?>" data-sort="order_num">Order</div>
         <div class="accreceiv-refunddetails-headcustomer refundsort <?=$refundsort=='customer_name' ? 'activesortbt' : ''?>" data-sort="customer_name">Customer</div>
@@ -71,11 +71,16 @@
             <div class="accreceiv-refunddetails-bodyrow empty">No orders</div>
         <?php } else { ?>
             <?php $numpp=1;?>
+            <?php $startyear = 0; ?>
             <?php foreach ($refunds as $refund) { ?>
+                <?php if ($refund['yearorder']!==$startyear) : ?>
+                    <div class="accreceiv-refunddetails-bodyrow yeartitle"><?=$refund['yearorder']?></div>
+                    <?php $startyear = $refund['yearorder']; ?>
+                <?php endif; ?>
                 <div class="accreceiv-refunddetails-bodyrow <?=$numpp%2 == 0 ? 'greydatarow' : 'whitedatarow'?>">
                     <div class="accreceiv-refunddetails-bodynum"><?=$numpp?></div>
                     <div class="accreceiv-refunddetails-bodyorderdate">
-                        <?=date('m/d/y', $refund['order_date'])?>
+                        <?=date('m/d', $refund['order_date'])?>
                     </div>
                     <div class="accreceiv-refunddetails-bodybalance">(<?=TotalOutput(abs($refund['balance']))?>)</div>
                     <div class="accreceiv-refunddetails-bodyorder" data-order="<?=$refund['order_id']?>"><?=$refund['order_num']?></div>

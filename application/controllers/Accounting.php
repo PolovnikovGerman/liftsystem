@@ -2722,13 +2722,16 @@ class Accounting extends MY_Controller
             // $owndirec = ifset($postdata,'owndirec', 'desc');
             $ownsort2 = ifset($postdata,'ownsort2', 'batch_due');
             $ownsort2 = ($ownsort2=='owntype' ? 'type' : ($ownsort2=='ownapprove' ? 'approved' : $ownsort2));
-            $refundsort = ifset($postdata,'refundsort','order_date');
-            $refunddirec = ifset($postdata, 'refunddirec', 'desc');
+            // $refundsort = ifset($postdata,'refundsort','order_date');
+            $refundsort = 'order_date';
+            // $refunddirec = ifset($postdata, 'refunddirec', 'desc');
+            $refunddirec = 'desc';
+
             $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort1, $ownsort2, $refundsort, $refunddirec);
             if ($brand=='ALL') {
                 $mdata['content'] = $this->load->view('accreceiv/details_sigma_view', $res, TRUE);
-            } elseif ($brand=='SR') {
-                $mdata['content'] = $this->load->view('accreceiv/details_sr_view', $res, TRUE);
+//            } elseif ($brand=='SR') {
+//                $mdata['content'] = $this->load->view('accreceiv/details_sr_view', $res, TRUE);
             } else {
                 $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
             }

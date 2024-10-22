@@ -8290,6 +8290,7 @@ Class Orders_model extends MY_Model
 //            'owndir' => $owndirec,
             'refundsort' => $refundsort,
             'refunddir' => $refunddirec,
+            'brand' => strtolower($brand),
         );
     }
 
