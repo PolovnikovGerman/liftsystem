@@ -449,7 +449,7 @@
     text-align: right;
     padding-right: 5px;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 12px!important;
     border-right: 1px solid #b0b0b0;
     width: 74px;
 }
@@ -471,6 +471,7 @@
 .accreceiv-owndetails-bodyorder {
     border-right: 1px solid #b0b0b0;
     font-weight: bold;
+    font-size: 12px!important;
     color: #0000ff;
     width: 47px;
     cursor: pointer;
@@ -500,12 +501,14 @@
     border-right: 1px solid #b0b0b0;
     font-weight: bold;
     color: #0000ff;
+    font-size: 12px!important;
     width: 64px;
     cursor: pointer;
     text-align: center;
 }
 .accreceiv-owndetails-bodycustomer {
     border-right: 1px solid #b0b0b0;
+    font-size: 12px!important;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
