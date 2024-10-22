@@ -43,7 +43,7 @@
                             <div class="accreceiv-statusbtn active" data-order="<?=$own['order_id']?>">
                                 <i class="fa fa-file-text-o"></i>
                             </div>
-                            <div class="accreceiv-statusdate"><?=date('m/d', $own['batch_due'])?> - </div>
+                            <div class="accreceiv-statusdate"><?=date('m/d', $own['update_date'])?> - </div>
                             <div class="accreceiv-statustext"><?=$own['debt_status']?></div>
                         <?php else : ?>
                             <div class="accreceiv-statusbtn" data-order="<?=$own['order_id']?>">

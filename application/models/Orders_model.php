@@ -8054,7 +8054,7 @@ Class Orders_model extends MY_Model
         $this->db->group_by('a.order_id');
         $proofsql = $this->db->get_compiled_select();
 
-        $this->db->select('v.*, coalesce(cnt,0) approved, o.debt_status, o.order_confirmation as order_confirm, ob.customer_ponum');
+        $this->db->select('v.*, coalesce(cnt,0) approved, o.debt_status, o.order_confirmation as order_confirm, o.update_date, ob.customer_ponum');
         $this->db->from('v_order_balances v');
         $this->db->join('('.$proofsql.') p','p.order_id=v.order_id','left');
         $this->db->join('ts_orders o','o.order_id=v.order_id');
