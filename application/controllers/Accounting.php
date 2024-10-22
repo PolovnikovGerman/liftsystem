@@ -2722,13 +2722,16 @@ class Accounting extends MY_Controller
             // $owndirec = ifset($postdata,'owndirec', 'desc');
             $ownsort2 = ifset($postdata,'ownsort2', 'batch_due');
             $ownsort2 = ($ownsort2=='owntype' ? 'type' : ($ownsort2=='ownapprove' ? 'approved' : $ownsort2));
-            $refundsort = ifset($postdata,'refundsort','order_date');
-            $refunddirec = ifset($postdata, 'refunddirec', 'desc');
+            // $refundsort = ifset($postdata,'refundsort','order_date');
+            $refundsort = 'order_date';
+            // $refunddirec = ifset($postdata, 'refunddirec', 'desc');
+            $refunddirec = 'desc';
+
             $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort1, $ownsort2, $refundsort, $refunddirec);
             if ($brand=='ALL') {
                 $mdata['content'] = $this->load->view('accreceiv/details_sigma_view', $res, TRUE);
-            } elseif ($brand=='SR') {
-                $mdata['content'] = $this->load->view('accreceiv/details_sr_view', $res, TRUE);
+//            } elseif ($brand=='SR') {
+//                $mdata['content'] = $this->load->view('accreceiv/details_sr_view', $res, TRUE);
             } else {
                 $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
             }
@@ -2739,6 +2742,24 @@ class Accounting extends MY_Controller
         show_404();
     }
 
+    public function accown_showstatus()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Order #';
+            $postdata = $this->input->post();
+            $order_id = ifset($postdata, 'order', 0);
+            if (!empty($order_id)) {
+                $res = $this->orders_model->get_order_detail($order_id);
+                if (ifset($res, 'order_id',0)==$order_id) {
+                    $error = '';
+                    $mdata['content'] = $this->load->view('accreceiv/status_edit_view', $res, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
     public function debtstatus()
     {
         if ($this->isAjax()) {
@@ -2752,6 +2773,13 @@ class Accounting extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                    // Build content
+                    $data = $res['data'];
+                    if (empty($data['debt_status'])) {
+                        $mdata['content'] = $this->load->view('accreceiv/empty_debtstatus_view', $data, TRUE);
+                    } else {
+                        $mdata['content'] = $this->load->view('accreceiv/debet_status_view', $data, TRUE);
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);

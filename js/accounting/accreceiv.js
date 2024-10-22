@@ -257,40 +257,40 @@ function init_accreceive_content() {
     //     init_accreceive_details();
     // });
     // Sorting refund
-    $(".refundsort").unbind('click').click(function () {
-        var newsort = $(this).data('sort');
-        var oldsort = $("#accreceiverefundsort").val();
-        var newdir = 'asc';
-        if (newsort==oldsort) {
-            var olddir = $("#accreceiverefunddir").val();
-            if (olddir=='asc') {
-                newdir='desc';
-            }
-        }
-        $("#accreceiverefundsort").val(newsort);
-        $("#accreceiverefunddir").val(newdir);
-        init_accreceive_details();
-    })
+    // $(".refundsort").unbind('click').click(function () {
+    //     var newsort = $(this).data('sort');
+    //     var oldsort = $("#accreceiverefundsort").val();
+    //     var newdir = 'asc';
+    //     if (newsort==oldsort) {
+    //         var olddir = $("#accreceiverefunddir").val();
+    //         if (olddir=='asc') {
+    //             newdir='desc';
+    //         }
+    //     }
+    //     $("#accreceiverefundsort").val(newsort);
+    //     $("#accreceiverefunddir").val(newdir);
+    //     init_accreceive_details();
+    // })
     // Change Status
-    $("select.debtstatus").unbind('change').change(function (){
-        var newval = $(this).val();
-        var order = $(this).data('order');
-        var params = new Array();
-        params.push({name: 'order_id', value: order});
-        params.push({name: 'debt_status', value: newval});
-        var url = '/accounting/debtstatus';
-        $.post(url, params, function (response){
-            if (response.errors=='') {
-                if (newval=='') {
-                    $("select.debtstatus[data-order='"+order+"']").removeClass('checked');
-                } else {
-                    $("select.debtstatus[data-order='"+order+"']").addClass('checked');
-                }
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
+    // $("select.debtstatus").unbind('change').change(function (){
+    //     var newval = $(this).val();
+    //     var order = $(this).data('order');
+    //     var params = new Array();
+    //     params.push({name: 'order_id', value: order});
+    //     params.push({name: 'debt_status', value: newval});
+    //     var url = '/accounting/debtstatus';
+    //     $.post(url, params, function (response){
+    //         if (response.errors=='') {
+    //             if (newval=='') {
+    //                 $("select.debtstatus[data-order='"+order+"']").removeClass('checked');
+    //             } else {
+    //                 $("select.debtstatus[data-order='"+order+"']").addClass('checked');
+    //             }
+    //         } else {
+    //             show_error(response);
+    //         }
+    //     },'json');
+    // });
     $(".accreceiv-exportbtn").unbind('click').click(function (){
         var params = new Array();
         params.push({name: 'brand', value: $("#accreceivebrand").val()});
@@ -327,15 +327,61 @@ function init_accreceive_content() {
             }
         }, 'json');
     });
-    // Change Sort fow Owed
-    $(".ownsortselect").unbind('change').change(function (){
-        var sort = $(this).data('sort');
-        var newsort = $(this).val();
-        if (sort=='ownsort1') {
-            $("#accreciveownsort").val(newsort);
-        } else if (sort=='ownsort2') {
-            $("#accreciveownsort2").val(newsort);
+    // // Change Sort fow Owed
+    // $(".ownsortselect").unbind('change').change(function (){
+    //     var sort = $(this).data('sort');
+    //     var newsort = $(this).val();
+    //     if (sort=='ownsort1') {
+    //         $("#accreciveownsort").val(newsort);
+    //     } else if (sort=='ownsort2') {
+    //         $("#accreciveownsort2").val(newsort);
+    //     }
+    //     init_accreceive_details();
+    // });
+    $(".accreceiv-statusbtn").unbind('click').click(function (){
+        var order = $(this).data('order');
+        edit_ownstatus(order);
+    });
+}
+
+function edit_ownstatus(order) {
+    var params = new Array();
+    params.push({name: 'order', value: order});
+    var url = '/accounting/accown_showstatus';
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $("#loader").show();
+            $("#loaderimg").hide();
+            $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty().html(response.data.content);
+            $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").show();
+            init_accstatus_edit(order);
         }
-        init_accreceive_details();
+    },'json');
+}
+
+function init_accstatus_edit(order) {
+    $(".debtstatuscancel").unbind('click').click(function (){
+        $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty();
+        $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").hide();
+        $("#loaderimg").show();
+        $("#loader").hide();
+    });
+    $(".debtstatussave").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'order_id', value: order});
+        params.push({name: 'debt_status', value: $("input.debtstatusinpt[data-order='"+order+"']").val()});
+        var url = '/accounting/debtstatus';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty();
+                $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").hide();
+                $("#loaderimg").show();
+                $("#loader").hide();
+                $(".accreceiv-owndetails-bodystatus[data-order='"+order+"']").empty().html(response.data.content);
+                init_accreceive_content();
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
 }
