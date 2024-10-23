@@ -4048,6 +4048,7 @@ class Test extends CI_Controller
         foreach ($weeks as $week) {
             $this->db->select('if(brand=\'SR\', \'SR\', \'SB\') as brandname, count(lead_id) as cnt')->from('ts_leads')->where(['unix_timestamp(update_date) >= ', $week['datebgn'], 'unix_timestamp(update_date) < ' => $week['dateend'], 'lead_item_id' => '-3'])->group_by('brandname');
             $data = $this->db->get()->result_array();
+            echo $this->db->last_query();
             if (count($data) > 0) {
                 foreach ($data as $item) {
                     $leaddata[] = [
