@@ -4038,4 +4038,54 @@ class Test extends CI_Controller
         $writer->save($filenorm);    // download file
         echo 'File '.$filenorm.' ready'.PHP_EOL;
     }
+
+    public function customleads()
+    {
+        $leaddata = [];
+        $dbgn = strtotime('2022-10-23');
+        $this->db->select('profit_week, profit_year, datebgn, dateend')->from('netprofit')->where(['profit_month' => NULL, 'datebgn >= '=>  $dbgn]);
+        $weeks = $this->db->get()->result_array();
+        foreach ($weeks as $week) {
+            $this->db->select('if(brand=\'SR\', \'SR\', \'SB\') as brandname, count(lead_id) as cnt')->from('ts_leads')->where(['unix_timestamp(update_date) >= ', $week['datebgn'], 'unix_timestamp(update_date) < ' => $week['dateend'], 'lead_item_id' => '-3'])->group_by('brandname');
+            $data = $this->db->get()->result_array();
+            if (count($data) > 0) {
+                foreach ($data as $item) {
+                    $leaddata[] = [
+                        'week' => $week['profit_week'],
+                        'year' => $week['profit_year'],
+                        'datebgn' => date('m/d/Y', $week['datebgn']),
+                        'dateend' => date('m/d/Y', $week['dateend']),
+                        'brand' => $item['brandname'],
+                        'leads' => $item['cnt'],
+                    ];
+                }
+            }
+        }
+        // Build leads report
+        // Create file
+        $filenorm = $this->config->item('upload_path_preload').'customleads.xlsx';
+        @unlink($filenorm);
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Custom Leads');
+        $sheet->setCellValue('A1', 'Week');
+        $sheet->setCellValue('B1','Year');
+        $sheet->setCellValue('C1','Date Bgn');
+        $sheet->setCellValue('D1','Date End');
+        $sheet->setCellValue('E1','Brand');
+        $sheet->setCellValue('F1','Leads');
+        $numpp = 2;
+        foreach ($leaddata as $lead) {
+            $sheet->setCellValue('A'.$numpp, $lead['week']);
+            $sheet->setCellValue('B'.$numpp, $lead['year']);
+            $sheet->setCellValue('C'.$numpp, $lead['datebgn']);
+            $sheet->setCellValue('D'.$numpp, $lead['dateend']);
+            $sheet->setCellValue('E'.$numpp, $lead['brand']);
+            $sheet->setCellValue('F'.$numpp, $lead['leads']);
+            $numpp++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($filenorm);    // download file
+        echo 'File '.$filenorm.' ready'.PHP_EOL;
+    }
 }
