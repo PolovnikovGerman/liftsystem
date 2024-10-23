@@ -4046,7 +4046,7 @@ class Test extends CI_Controller
         $this->db->select('profit_week, profit_year, datebgn, dateend')->from('netprofit')->where(['profit_month' => NULL, 'datebgn >= '=>  $dbgn]);
         $weeks = $this->db->get()->result_array();
         foreach ($weeks as $week) {
-            $this->db->select('if(brand=\'SR\', \'SR\', \'SB\') as brandname, count(lead_id) as cnt')->from('ts_leads')->where(['unix_timestamp(update_date) >= ', $week['datebgn'], 'unix_timestamp(update_date) < ' => $week['dateend'], 'lead_item_id' => '-3'])->group_by('brandname');
+            $this->db->select('if(brand=\'SR\', \'SR\', \'SB\') as brandname, count(lead_id) as cnt')->from('ts_leads')->where(['unix_timestamp(update_date) >= ' => $week['datebgn'], 'unix_timestamp(update_date) < ' => $week['dateend'], 'lead_item_id' => '-3'])->group_by('brandname');
             $data = $this->db->get()->result_array();
             echo $this->db->last_query().PHP_EOL;
             if (count($data) > 0) {
