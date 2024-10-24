@@ -7960,7 +7960,8 @@ Class Leadorder_model extends My_Model {
             $items=$row['items'];
             foreach ($items as $irow) {
                 if ($irow['item_number']==$this->config->item('custom_itemnum')) {
-                    $item_description='Custom Shaped Stress Balls - '.$irow['item_description'];
+                    // $item_description='Custom Shaped Stress Balls - '.$irow['item_description'];
+                    $item_description=$irow['item_description'];
                 } else {
                     $item_description=$irow['item_description'].' - '.$irow['item_color'];
                 }
