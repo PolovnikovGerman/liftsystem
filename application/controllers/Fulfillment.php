@@ -65,9 +65,13 @@ class Fulfillment extends MY_Controller
                 $head['scripts'][]=array('src'=>'/js/fulfillment/postatus.js');
                 $content_options['fullfilstatusview'] = $this->_prepare_status_view($brand);
             } elseif ($row['item_link']=='#pototalsview') {
-                $head['styles'][]=array('style'=>'/css/accounting/pototals.css');
-                $head['scripts'][]=array('src'=>'/js/accounting/pototals.js');
-                $content_options['pototalsview'] = $this->_prepare_purchaseorders_view($brand);
+                // $head['styles'][]=array('style'=>'/css/accounting/pototals.css');
+                // $head['scripts'][]=array('src'=>'/js/accounting/pototals.js');
+                $head['styles'][]=array('style'=>'/css/accounting/pooverview.css');
+                $head['styles'][]=array('style'=>'/css/accounting/pohistory.css');
+                $head['scripts'][]=array('src'=>'/js/accounting/pooverview.js');
+                $content_options['pototalsview'] = $this->_prepare_pooverview($brand);
+                // $this->_prepare_purchaseorders_view($brand);
             } elseif ($row['item_link']=='#printshopinventview') {
                 // $head['styles'][]=array('style'=>'/css/fulfillment/inventory.css');
                 // $head['scripts'][]=array('src'=>'/js/fulfillment/inventory.js');
@@ -2225,6 +2229,44 @@ class Fulfillment extends MY_Controller
 
         $content = $this->load->view('printscheduler/page_view', $res, true);
         return $content;
+    }
+
+    private function _prepare_pooverview($brand)
+    {
+//        $inner = 0;
+//        $this->load->model('orders_model');
+//        $this->load->model('payments_model');
+//
+//        $totaltab = $this->orders_model->purchaseorder_totals($inner, $brand);
+//        $totals = $this->orders_model->purchase_fulltotals($brand);
+//        // Years
+//        $years = $this->payments_model->get_pototals_years($brand);
+//        $year1 = $year2 = $year3 = $years[0];
+//        if (count($years) > 1) {
+//            $year2 = $years[1];
+//        }
+//        if (count($years) > 2) {
+//            $year3 = $years[2];
+//        }
+//
+//        $poreptotals = $this->payments_model->get_poreport_totals($year1, $year2, $year3, $brand);
+//        $options=[
+//            'totaltab' => $totaltab,
+//            'totals' => $totals,
+//            'inner' => $inner,
+//            'brand' => $brand,
+//            'years' => $years,
+//            'year1' => $year1,
+//            'year2' => $year2,
+//            'year3' => $year3,
+//            'poreporttotals' => $poreptotals,
+//            'poreportperpage' => 8,
+//        ];
+        $options = [
+            'brand' => $brand,
+        ];
+        return $this->load->view('pooverview/page_view',$options,TRUE);
+
     }
 
 }
