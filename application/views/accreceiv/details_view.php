@@ -24,11 +24,17 @@
             <div class="accreceiv-owndetails-bodyrow empty">No orders</div>
         <?php } else { ?>
             <?php $numpp=1;?>
+            <?php $curtype = '' ?>
             <?php foreach ($owns as $own) { ?>
                 <div class="accreceiv-owndetails-bodyrow <?=$numpp%2 == 0 ? 'greydatarow' : 'whitedatarow'?> <?=$own['datclass']?>">
+                    <?php if ($own['type']!==$curtype) : ?>
+                        <?php $rowtype = $own['type']; $curtype = $own['type']; ?>
+                    <?php else: ?>
+                        <?php $rowtype = '----'; ?>
+                    <?php endif; ?>
                     <div class="accreceiv-owndetails-bodynum"><?=$numpp?></div>
                     <div class="accreceiv-owndetails-bodyapproval <?=$own['approved']==0 ? 'notapproved' : ''?>"><?=$own['approved']==0 ? 'Not Approved' : 'Approved'?></div>
-                    <div class="accreceiv-owndetails-bodytype <?=$own['typeclass']?>"><?=$own['type']?></div>
+                    <div class="accreceiv-owndetails-bodytype <?=$own['typeclass']?>"><?=$rowtype?></div>
                     <div class="accreceiv-owndetails-bodyrunningtotal"><?=MoneyOutput($own['rundebt'],0)?></div>
                     <div class="accreceiv-owndetails-bodydue <?=$own['dueclass']?>">
                         <?=date('m/d/y', $own['batch_due'])?>
