@@ -2,7 +2,7 @@ function init_pototals() {
     if ($(".pooverdataview").css('display', 'block')) {
         init_pooverview();
     } else {
-        // init history
+        init_pohistory()
     }
 }
 
@@ -16,9 +16,18 @@ function init_pooverview() {
             $(".pooverviewdomestictablearea").empty().html(response.data.otherview)
             $(".pooverviewcustomtablearea").empty().html(response.data.customview);
             $("#loader").hide();
+            init_pooverview_content();
         } else {
             $("#loader").hide();
             show_error(response);
         }
     },'json');
+}
+
+function init_pooverview_content() {
+    $(".pohistoryviewlink").unbind('click').click(function (){
+        $(".pooverdataview").hide();
+        $(".pohistorydataview").show();
+        init_pohistory();
+    });
 }

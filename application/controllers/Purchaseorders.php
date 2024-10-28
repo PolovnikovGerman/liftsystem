@@ -672,4 +672,44 @@ class Purchaseorders extends MY_Controller
         show_404();
     }
 
+    public function pohistoryyear()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand', '');
+            $year = ifset($postdata,'year', date('Y'));
+            if (!empty($brand)) {
+                $error = '';
+                $this->load->model('orders_model');
+                $res = $this->orders_model->get_pohistory_year($brand, $year);
+                $content = '';
+                if (count($res) > 0) {
+                    $content = $this->load->view('pooverview/pohistory_calendar_view', ['datas' => $res], TRUE);
+                }
+                $mdata['content'] = $content;
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function pohistorydetails()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand', '');
+            $dayview = ifset($postdata,'dayview', time());
+            if (!empty($brand)) {
+                $error = '';
+                $this->load->model('orders_model');
+                $res = $this->orders_model->get_pohistory_details($brand, $dayview);
+                $mdata['content'] = $this->load->view('pooverview/pohistory_details_view', $res, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
 }

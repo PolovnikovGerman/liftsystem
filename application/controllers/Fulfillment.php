@@ -70,6 +70,7 @@ class Fulfillment extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/accounting/pooverview.css');
                 $head['styles'][]=array('style'=>'/css/accounting/pohistory.css');
                 $head['scripts'][]=array('src'=>'/js/accounting/pooverview.js');
+                $head['scripts'][]=array('src'=>'/js/accounting/pohistory.js');
                 $content_options['pototalsview'] = $this->_prepare_pooverview($brand);
                 // $this->_prepare_purchaseorders_view($brand);
             } elseif ($row['item_link']=='#printshopinventview') {
@@ -2234,36 +2235,17 @@ class Fulfillment extends MY_Controller
     private function _prepare_pooverview($brand)
     {
 //        $inner = 0;
-//        $this->load->model('orders_model');
-//        $this->load->model('payments_model');
-//
-//        $totaltab = $this->orders_model->purchaseorder_totals($inner, $brand);
-//        $totals = $this->orders_model->purchase_fulltotals($brand);
-//        // Years
-//        $years = $this->payments_model->get_pototals_years($brand);
-//        $year1 = $year2 = $year3 = $years[0];
-//        if (count($years) > 1) {
-//            $year2 = $years[1];
-//        }
-//        if (count($years) > 2) {
-//            $year3 = $years[2];
-//        }
-//
-//        $poreptotals = $this->payments_model->get_poreport_totals($year1, $year2, $year3, $brand);
-//        $options=[
-//            'totaltab' => $totaltab,
-//            'totals' => $totals,
-//            'inner' => $inner,
-//            'brand' => $brand,
-//            'years' => $years,
-//            'year1' => $year1,
-//            'year2' => $year2,
-//            'year3' => $year3,
-//            'poreporttotals' => $poreptotals,
-//            'poreportperpage' => 8,
-//        ];
+        $this->load->model('orders_model');
+        // Get PO Years
+        $years = $this->orders_model->get_pohistory_years($brand);
+        $curyear = 0;
+        if (count($years) > 0) {
+            $curyear = $years[0]['year'];
+        }
         $options = [
             'brand' => $brand,
+            'years' => $years,
+            'curyear' => $curyear,
         ];
         return $this->load->view('pooverview/page_view',$options,TRUE);
 

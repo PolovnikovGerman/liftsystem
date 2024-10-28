@@ -31,7 +31,11 @@ function init_page(objid) {
         case 'pototalsview':
             $("#pototalsview").show();
             // init_purchase_orders();
-            init_pototals()
+            // Temporary
+            // $(".pooverdataview").hide();
+            // $(".pohistorydataview").show();
+            // init_pohistory();
+            init_pototals();
             document.title = 'Lift: PO Totals';
             break;
         case 'printshopinventview':

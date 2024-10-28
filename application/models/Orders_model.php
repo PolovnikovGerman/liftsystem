@@ -8929,7 +8929,6 @@ Class Orders_model extends MY_Model
         return $out;
     }
 
-
     private function _prepare_overvie_data($rawdats)
     {
         $out = [];
@@ -8972,4 +8971,140 @@ Class Orders_model extends MY_Model
         return $out;
     }
 
+    public function get_pohistory_years($brand)
+    {
+        $this->db->select('date_format(from_unixtime(oa.create_date),\'%Y\') as year, count(oa.amount_id) as cnt');
+        $this->db->from('ts_order_amounts oa');
+        if ($brand!=='ALL') {
+            $this->db->join('ts_orders o', 'o.order_id=oa.order_id');
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
+        }
+        $this->db->group_by('year');
+        $this->db->order_by('year','desc');
+        $years = $this->db->get()->result_array();
+        return $years;
+    }
+
+    public function get_pohistory_year($brand, $year)
+    {
+        $data = [];
+        $nextyear = $year+1;
+        $startdate = strtotime($year.'-01-01');
+        $enddate = strtotime($nextyear.'-01-01');
+        // Get weeks
+        $this->db->select('date_format(from_unixtime(oa.create_date),\'%v\') as week, count(oa.amount_id) as cnt, sum(oa.amount_sum) sumamnt');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->where('oa.create_date >= ', $startdate);
+        $this->db->where('oa.create_date < ', $enddate);
+        if ($brand!=='ALL') {
+            $this->db->join('ts_orders o', 'o.order_id=oa.order_id');
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
+        }
+        $this->db->group_by('week');
+        $this->db->order_by('week','desc');
+        $weeks = $this->db->get()->result_array();
+        foreach ($weeks as $week) {
+            $weekdat = getDatesByWeek($week['week'], $year);
+            $dayres = [];
+            $daybgn = $weekdat['start_week'];
+            $weektotal = [
+                'type' => 'totalweek',
+                'title' => 'Week '.$week['week'],
+                'amount' => $week['sumamnt'],
+                'orders' => $week['cnt'],
+                'custom' => 0,
+                'regular' => 0,
+            ];
+            for ($i=0; $i<7; $i++) {
+                $custom = $regular = $total = $amount = 0;
+                $dayend = strtotime("+1 day", $daybgn);
+                $this->db->select('if(o.item_id=-3, "C","R") as order_type, count(oa.amount_id) as cnt, sum(oa.amount_sum) as sumamnt');
+                $this->db->from('ts_order_amounts oa');
+                $this->db->join('ts_orders o', 'o.order_id=oa.order_id');
+                $this->db->where('oa.create_date >= ', $daybgn);
+                $this->db->where('oa.create_date < ', $dayend);
+                if ($brand!=='ALL') {
+                    if ($brand=='SR') {
+                        $this->db->where('o.brand', $brand);
+                    } else {
+                        $this->db->where_in('o.brand', ['SB','BT']);
+                    }
+                }
+                $this->db->group_by('order_type');
+                $daydats = $this->db->get()->result_array();
+                foreach ($daydats as $daydat) {
+                    if ($daydat['order_type']=='C') {
+                        $custom+=$daydat['cnt'];
+                        $weektotal['custom']+=$daydat['cnt'];
+                    } else {
+                        $regular+=$daydat['cnt'];
+                        $weektotal['regular']+=$daydat['cnt'];
+                    }
+                    $total+=$daydat['cnt'];
+                    $amount+=$daydat['sumamnt'];
+                }
+                $dayres[] = [
+                    'class' => date('N', $daybgn) > 5 ? 'weekends' : '',
+                    'date' => $daybgn,
+                    'title' => date('D - M j', $daybgn),
+                    'amount' => $amount,
+                    'orders' => $total,
+                    'custom' => $custom,
+                    'regular' => $regular,
+                ];
+                $daybgn = $dayend;
+            }
+            $data[] = [
+                'week' => [
+                    'total' => $weektotal,
+                    'days' => $dayres,
+                ],
+            ];
+        }
+        return $data;
+    }
+
+    public function get_pohistory_details($brand, $daybgn)
+    {
+        $dayend = strtotime("+1 day", $daybgn);
+        $this->db->select('oa.create_date, oa.amount_sum, v.vendor_name, o.order_id, o.order_num, i.item_id, i.item_number, i.item_name, oa.shipped');
+        $this->db->from('ts_order_amounts oa');
+        $this->db->join('ts_orders o', 'o.order_id=oa.order_id');
+        $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
+        $this->db->join('v_itemsearch i', 'i.item_id=o.item_id');
+        $this->db->where('oa.create_date >= ', $daybgn);
+        $this->db->where('oa.create_date < ', $dayend);
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
+        }
+        $details = $this->db->get()->result_array();
+        $custom = $regular = 0;
+        foreach ($details as $detail) {
+            if ($detail['item_id']==$this->config->item('custom_id')) {
+                $custom++;
+            } else {
+                $regular++;
+            }
+        }
+        $out=[
+            'date' => $daybgn,
+            'total' => ($custom+$regular),
+            'custom' => $custom,
+            'regular' => $regular,
+            'details' => $details,
+        ];
+        return $out;
+    }
 }
