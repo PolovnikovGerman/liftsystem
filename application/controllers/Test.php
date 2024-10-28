@@ -4147,14 +4147,8 @@ class Test extends CI_Controller
 
     public function updateprintdate()
     {
-        $this->db->select('o.order_id, o.shipdate')->from('ts_orders o')->join('ts_order_items oi','oi.order_id=o.order_id')->join('sb_items i','i.item_id=oi.item_id')->join('sb_vendor_items vi','vi.vendor_item_id=i.vendor_item_id');
-        $this->db->where(['o.brand' => 'SR', 'o.is_canceled' => 0, 'vi.vendor_item_vendor' => $this->config->item('inventory_vendor')]);
-        $orders = $this->db->get()->result_array();
-        foreach ($orders as $order) {
-            $this->db->where('order_id', $order['order_id']);
-            $this->db->set('print_date', $order['shipdate']);
-            $this->db->update('ts_orders');
-        }
+        $this->load->model('orders_model');
+        $this->orders_model->order_schedule_transform();
     }
 
     public function emaillist()
@@ -4222,5 +4216,57 @@ class Test extends CI_Controller
     {
         $this->load->model('orders_model');
         $this->orders_model->order_amount_transform();
+    }
+
+    public function customleads()
+    {
+        $leaddata = [];
+        $dbgn = strtotime('2022-10-23');
+        $this->db->select('profit_week, profit_year, datebgn, dateend')->from('netprofit')->where(['profit_month' => NULL, 'datebgn >= '=>  $dbgn]);
+        $weeks = $this->db->get()->result_array();
+        foreach ($weeks as $week) {
+            // $this->db->select('if(brand=\'SR\', \'SR\', \'SB\') as brandname, count(lead_id) as cnt')->from('ts_leads')->where(['unix_timestamp(update_date) >= ' => $week['datebgn'], 'unix_timestamp(update_date) < ' => $week['dateend'], 'lead_item_id' => '-3'])->group_by('brandname');
+            $this->db->select('brand as brandname, count(custom_quote_id) as cnt')->from('ts_custom_quotes')->where(['unix_timestamp(date_add) >= ' => $week['datebgn'], 'unix_timestamp(date_add) < ' => $week['dateend']])->group_by('brandname');
+            $data = $this->db->get()->result_array();
+            echo $this->db->last_query().PHP_EOL;
+            if (count($data) > 0) {
+                foreach ($data as $item) {
+                    $leaddata[] = [
+                        'week' => $week['profit_week'],
+                        'year' => $week['profit_year'],
+                        'datebgn' => date('m/d/Y', $week['datebgn']),
+                        'dateend' => date('m/d/Y', $week['dateend']),
+                        'brand' => $item['brandname'],
+                        'leads' => $item['cnt'],
+                    ];
+                }
+            }
+        }
+        // Build leads report
+        // Create file
+        $filenorm = $this->config->item('upload_path_preload').'customforms.xlsx';
+        @unlink($filenorm);
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Custom Leads');
+        $sheet->setCellValue('A1', 'Week');
+        $sheet->setCellValue('B1','Year');
+        $sheet->setCellValue('C1','Date Bgn');
+        $sheet->setCellValue('D1','Date End');
+        $sheet->setCellValue('E1','Brand');
+        $sheet->setCellValue('F1','Leads');
+        $numpp = 2;
+        foreach ($leaddata as $lead) {
+            $sheet->setCellValue('A'.$numpp, $lead['week']);
+            $sheet->setCellValue('B'.$numpp, $lead['year']);
+            $sheet->setCellValue('C'.$numpp, $lead['datebgn']);
+            $sheet->setCellValue('D'.$numpp, $lead['dateend']);
+            $sheet->setCellValue('E'.$numpp, $lead['brand']);
+            $sheet->setCellValue('F'.$numpp, $lead['leads']);
+            $numpp++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($filenorm);    // download file
+        echo 'File '.$filenorm.' ready'.PHP_EOL;
     }
 }

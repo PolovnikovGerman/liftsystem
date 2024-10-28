@@ -1,6 +1,6 @@
 <?php
 
-class Migration_alt_itemcolors extends CI_Migration {
+class Migration_alt_itemcolor extends CI_Migration {
 
     public function up() {
         $fields = array(

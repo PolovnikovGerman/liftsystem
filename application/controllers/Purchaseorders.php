@@ -640,4 +640,78 @@ class Purchaseorders extends MY_Controller
         echo $msg;
     }
 
+    public function pooverview()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand', '');
+            if (!empty($brand)) {
+                $error = '';
+                $this->load->model('orders_model');
+                $res = $this->orders_model->get_pooverview($brand);
+                // Build Other content
+                $otheroptions = [
+                    'rushs' => $res['otherrush'],
+                    'cntrush' => count($res['otherrush']),
+                    'stands' => $res['otherstand'],
+                    'cntstand' => count($res['otherstand']),
+                ];
+                $mdata['otherview'] = $this->load->view('pooverview/other_data_view', $otheroptions, TRUE);
+                // Build Custom Content
+                $otheroptions = [
+                    'rushs' => $res['custrush'],
+                    'cntrush' => count($res['custrush']),
+                    'stands' => $res['custstand'],
+                    'cntstand' => count($res['custstand']),
+                ];
+                $mdata['customview'] = $this->load->view('pooverview/custom_data_view', $otheroptions, TRUE);
+
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function pohistoryyear()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand', '');
+            $year = ifset($postdata,'year', date('Y'));
+            if (!empty($brand)) {
+                $error = '';
+                $this->load->model('orders_model');
+                $res = $this->orders_model->get_pohistory_year($brand, $year);
+                $content = '';
+                if (count($res) > 0) {
+                    $content = $this->load->view('pooverview/pohistory_calendar_view', ['datas' => $res], TRUE);
+                }
+                $mdata['content'] = $content;
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function pohistorydetails()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand', '');
+            $dayview = ifset($postdata,'dayview', time());
+            if (!empty($brand)) {
+                $error = '';
+                $this->load->model('orders_model');
+                $res = $this->orders_model->get_pohistory_details($brand, $dayview);
+                $mdata['content'] = $this->load->view('pooverview/pohistory_details_view', $res, TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
 }

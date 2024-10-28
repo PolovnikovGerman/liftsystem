@@ -1,0 +1,268 @@
+.pooverdataview {
+    padding: 5px 13px 13px 13px;
+    width: 1336px;
+}
+.pooverviewtitle {
+    height: 38px;
+    line-height: 38px!important;
+    font-size: 23px;
+    font-weight: 600;
+
+}
+.pohistoryviewlink {
+    color: #3736fe;
+    height: 38px;
+    line-height: 38px!important;
+    font-size: 16px;
+    font-style: italic;
+    float: right!important;
+    cursor: pointer;
+}
+.pohistoryviewlink span {
+    color: #0000FF;
+    font-size: 14px;
+}
+.pooverleftpart {
+    width: 570px;
+    margin-right: 50px;
+}
+.pooverrightpart {
+    width: 690px;
+}
+.pooverviewsubtitle {
+    height: 28px;
+    line-height: 28px;
+    font-size: 17px;
+    font-weight: 600;
+}
+.pooverviewdomestictabletitle {
+}
+.pooverviewdomestictabletitle div {
+    height: 24px;
+    line-height: 24px;
+    font-size: 12px;
+    text-align: center;
+}
+.pooverviewdomestictabletitle .rush {
+    margin-left: 20px;
+    width: 38px;
+}
+.pooverviewdomestictabletitle .approved {
+    width: 70px;
+}
+.pooverviewdomestictabletitle .vendor {
+    width: 64px;
+}
+.pooverviewdomestictabletitle .ordernum {
+    width: 42px;
+}
+.pooverviewdomestictabletitle .itemname {
+    width: 231px;
+}
+.pooverviewdomestictabletitle .itemqty {
+    width: 41px;
+}
+.pooverviewdomestictabletitle .remainqty {
+    width: 41px;
+}
+.pooverviewdomestictablearea {
+    border: 1px solid #ff0000;
+    width: 100%;
+    max-height: 595px;
+    overflow-y: auto;
+}
+.pooverviewdomestictablearea .sectiontitle {
+    height: 20px;
+    line-height: 20px;
+    background-color: #b1b1b2;
+    color: #000000;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    width: 100%;
+}
+.pooverviewdomestictablearea .sectiontitle.rush {
+    color: #FFFFFF;
+    background-color: #b12403;
+}
+.pooverviewdomestictablearea > .datarow > div {
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    font-size: 11px;
+}
+.pooverviewdomestictablearea .numpp {
+    width: 22px;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewdomestictablearea .rush1, .pooverviewdomestictablearea .rush3 {
+    width: 19px;
+    font-size: 14px!important;
+    color: #ff0000;
+}
+.pooverviewdomestictablearea .rush3 {
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewdomestictablearea .approved {
+    width: 70px;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewdomestictablearea .approved.notapprove {
+    background-color: #fcfdab;
+}
+.pooverviewdomestictablearea .vendor {
+    width: 64px;
+    font-size: 12px!important;
+    border-right: 1px solid #b0b0b0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pooverviewdomestictablearea .ordernum {
+    width: 42px;
+    color: #0000FF;
+    border-right: 1px solid #b0b0b0;
+    cursor: pointer;
+    font-size: 12px!important;
+    font-weight: 600;
+}
+.pooverviewdomestictablearea .itemname {
+    width: 231px;
+    font-size: 12px!important;
+    text-align: left!important;
+    padding-left: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewdomestictablearea .itemqty {
+    width: 41px;
+    font-size: 12px!important;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewdomestictablearea .remainqty {
+    width: 41px;
+    font-size: 12px!important;
+}
+.pooverviewcustomtabletitle > div {
+    height: 24px;
+    line-height: 24px;
+    font-size: 12px;
+    text-align: center;
+}
+.pooverviewcustomtabletitle .rush {
+    margin-left: 20px;
+    width: 38px;
+}
+.pooverviewcustomtabletitle .approved {
+    width: 70px;
+}
+.pooverviewcustomtabletitle .eventdate {
+    width: 80px;
+}
+.pooverviewcustomtabletitle .arrivedate {
+    width: 67px;
+}
+.pooverviewcustomtabletitle .arrivedays {
+    width: 41px;
+}
+.pooverviewcustomtabletitle .ordernum {
+    width: 41px;
+}
+.pooverviewcustomtabletitle .itemname {
+    width: 231px;
+}
+.pooverviewcustomtabletitle .itemqty {
+    width: 41px;
+}
+.pooverviewcustomtabletitle .remainqty {
+    width: 41px;
+}
+/* Table Body */
+.pooverviewcustomtablearea {
+    width: 100%;
+    max-height: 595px;
+    overflow-y: auto;
+    border: 1px solid #720101;
+}
+.pooverviewcustomtablearea .sectiontitle {
+    height: 20px;
+    line-height: 20px;
+    background-color: #b1b1b2;
+    color: #000000;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    width: 100%;
+}
+.pooverviewcustomtablearea .sectiontitle.rush {
+    color: #FFFFFF;
+    background-color: #b12403;
+}
+.pooverviewcustomtablearea > .datarow > div {
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    font-size: 12px;
+}
+.pooverviewcustomtablearea .numpp {
+    font-size: 11px!important;
+    width: 22px;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewcustomtablearea .rush1, .pooverviewcustomtablearea .rush3 {
+    width: 19px;
+    font-size: 14px!important;
+    color: #ff0000;
+}
+.pooverviewcustomtablearea .rush3 {
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewcustomtablearea .approved {
+    font-size: 11px!important;
+    width: 70px;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewcustomtablearea .approved.notapprove {
+    background-color: #fcfdab;
+}
+.pooverviewcustomtablearea .eventdate {
+    width: 80px;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewcustomtablearea .arrivedate {
+    width: 80px;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewcustomtablearea .arrivedays {
+    width: 25px;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewcustomtablearea .ordernum {
+    width: 42px;
+    color: #0000FF;
+    border-right: 1px solid #b0b0b0;
+    cursor: pointer;
+    font-size: 12px!important;
+    font-weight: 600;
+}
+.pooverviewcustomtablearea .itemname {
+    width: 231px;
+    font-size: 12px!important;
+    text-align: left!important;
+    padding-left: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewcustomtablearea .itemqty {
+    width: 41px;
+    font-size: 12px!important;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewcustomtablearea .remainqty {
+    width: 41px;
+    font-size: 12px!important;
+}

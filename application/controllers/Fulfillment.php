@@ -65,9 +65,14 @@ class Fulfillment extends MY_Controller
                 $head['scripts'][]=array('src'=>'/js/fulfillment/postatus.js');
                 $content_options['fullfilstatusview'] = $this->_prepare_status_view($brand);
             } elseif ($row['item_link']=='#pototalsview') {
-                $head['styles'][]=array('style'=>'/css/accounting/pototals.css');
-                $head['scripts'][]=array('src'=>'/js/accounting/pototals.js');
-                $content_options['pototalsview'] = $this->_prepare_purchaseorders_view($brand);
+                // $head['styles'][]=array('style'=>'/css/accounting/pototals.css');
+                // $head['scripts'][]=array('src'=>'/js/accounting/pototals.js');
+                $head['styles'][]=array('style'=>'/css/accounting/pooverview.css');
+                $head['styles'][]=array('style'=>'/css/accounting/pohistory.css');
+                $head['scripts'][]=array('src'=>'/js/accounting/pooverview.js');
+                $head['scripts'][]=array('src'=>'/js/accounting/pohistory.js');
+                $content_options['pototalsview'] = $this->_prepare_pooverview($brand);
+                // $this->_prepare_purchaseorders_view($brand);
             } elseif ($row['item_link']=='#printshopinventview') {
                 // $head['styles'][]=array('style'=>'/css/fulfillment/inventory.css');
                 // $head['scripts'][]=array('src'=>'/js/fulfillment/inventory.js');
@@ -2225,6 +2230,25 @@ class Fulfillment extends MY_Controller
 
         $content = $this->load->view('printscheduler/page_view', $res, true);
         return $content;
+    }
+
+    private function _prepare_pooverview($brand)
+    {
+//        $inner = 0;
+        $this->load->model('orders_model');
+        // Get PO Years
+        $years = $this->orders_model->get_pohistory_years($brand);
+        $curyear = 0;
+        if (count($years) > 0) {
+            $curyear = $years[0]['year'];
+        }
+        $options = [
+            'brand' => $brand,
+            'years' => $years,
+            'curyear' => $curyear,
+        ];
+        return $this->load->view('pooverview/page_view',$options,TRUE);
+
     }
 
 }
