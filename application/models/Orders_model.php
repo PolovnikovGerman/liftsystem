@@ -8230,29 +8230,36 @@ Class Orders_model extends MY_Model
         $startdue = $starttype = $starapprov = '';
         $starstatus = '0';
         $rundebt = 0;
+        $curappr = $owns[0]['approved'];
+        $curtype = $owns[0]['type'];
         foreach ($owns as $own) {
             $datclass = '';
-            if (($ownsort1=='batch_due' || $ownsort2=='batch_due') && $startdue!==$own['dueclass']) {
-                if (!empty($startdue)) {
-                    $datclass = 'separated';
-                }
-                $startdue = $own['dueclass'];
-            } elseif (($ownsort1=='type' || $ownsort2=='type') && $own['type']!==$starttype) {
-                if (!empty($starttype)) {
-                    $datclass = 'separated';
-                }
-                $starttype = $own['type'];
-            } elseif (($ownsort1=='approved' || $ownsort2=='approved')&& $own['approved']!==$starapprov) {
-                if ($starapprov!=='') {
-                    $datclass = 'separated';
-                }
-                $starapprov = $own['approved'];
-            } elseif (($ownsort1=='debt_status' || $ownsort2=='debt_status') && $own['debt_status']!==$starstatus) {
-                if ($starstatus!==0) {
-                    $datclass = 'separated';
-                }
-                $starstatus = $own['debt_status'];
+            if ($own['approved']!==$curappr || $own['type']!==$curtype) {
+                $datclass = 'separated';
+                $curtype = $own['type'];
+                $curappr = $own['approved'];
             }
+//            if (($ownsort1=='batch_due' || $ownsort2=='batch_due') && $startdue!==$own['dueclass']) {
+//                if (!empty($startdue)) {
+//                    $datclass = 'separated';
+//                }
+//                $startdue = $own['dueclass'];
+//            } elseif (($ownsort1=='type' || $ownsort2=='type') && $own['type']!==$starttype) {
+//                if (!empty($starttype)) {
+//                    $datclass = 'separated';
+//                }
+//                $starttype = $own['type'];
+//            } elseif (($ownsort1=='approved' || $ownsort2=='approved')&& $own['approved']!==$starapprov) {
+//                if ($starapprov!=='') {
+//                    $datclass = 'separated';
+//                }
+//                $starapprov = $own['approved'];
+//            } elseif (($ownsort1=='debt_status' || $ownsort2=='debt_status') && $own['debt_status']!==$starstatus) {
+//                if ($starstatus!==0) {
+//                    $datclass = 'separated';
+//                }
+//                $starstatus = $own['debt_status'];
+//            }
             $owns[$ownidx]['datclass'] = $datclass;
             $rundebt += $owns[$ownidx]['balance'];
             $owns[$ownidx]['rundebt'] = $rundebt;
