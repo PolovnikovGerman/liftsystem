@@ -8124,11 +8124,11 @@ Class Orders_model extends MY_Model
                     $owndat['sortidx'] = '03-'.$owndat['batch_due'];
                 } elseif ($owndat['type']==$this->accrec_terms) {
                     if ($days > 60) {
-                        $owndat['sortidx'] = '06-'.$owndat['batch_due'];
+                        $owndat['sortidx'] = '04-'.$owndat['batch_due'];
                     } elseif ($days > 30 && $days <= 60) {
                         $owndat['sortidx'] = '05-'.$owndat['batch_due'];
                     } elseif ($days > 1 && $days <= 30) {
-                        $owndat['sortidx'] = '04-'.$owndat['batch_due'];
+                        $owndat['sortidx'] = '06-'.$owndat['batch_due'];
                     } else {
                         $owndat['sortidx'] = '13-'.$owndat['batch_due'];
                     }
