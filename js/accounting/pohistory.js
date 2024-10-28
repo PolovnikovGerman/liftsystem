@@ -9,6 +9,9 @@ function init_pohistory() {
             $(".pohcald-tblbody").empty().html(response.data.content);
             $(".pohistinfdaytable").empty().removeClass('active');
             init_pohistory_content();
+            if (parseInt($("#pohistoryslider").val())==0) {
+                pohistory_build_slider();
+            }
             $("#loader").hide();
         } else {
             $("#loader").hide();
@@ -44,6 +47,23 @@ function view_pohistory_details(dayview) {
     params.push({name: 'brand', value: $("#pototalsbrand").val()});
     params.push({name: 'dayview', value: dayview});
     var url = '/purchaseorders/pohistorydetails';
+    $("#loader").show();
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".pohistinfdaytable").empty().html(response.data.content).addClass('active');
+            init_pohistory_content();
+            $("#loader").hide();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
+}
+
+function pohistory_build_slider() {
+    var params = new Array();
+    params.push({name: 'brand', value: $("#pototalsbrand").val()});
+    var url = '/purchaseorders/pohistoryslider';
     $("#loader").show();
     $.post(url, params, function (response){
         if (response.errors=='') {

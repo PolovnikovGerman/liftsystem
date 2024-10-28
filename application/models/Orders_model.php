@@ -9089,6 +9089,7 @@ Class Orders_model extends MY_Model
                 $this->db->where_in('o.brand', ['SB','BT']);
             }
         }
+        $this->db->order_by('oa.create_date');
         $details = $this->db->get()->result_array();
         $custom = $regular = 0;
         foreach ($details as $detail) {

@@ -215,6 +215,11 @@
     padding-left: 4px;
     border-right: 1px solid #d4d2d2;
 }
+.pohinfday-td.item, .pohinfday-td.vendor {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .pohinfday-td.qty {
     width: 42px;
     text-align: center;
