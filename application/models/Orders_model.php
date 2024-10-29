@@ -8858,7 +8858,7 @@ Class Orders_model extends MY_Model
 
     public function get_pooverview($brand)
     {
-        $out=['otherrush' => [], 'otherstand' => [], 'custrush' => [], 'custstand' => []];
+        $out=['otherrush' => [], 'otherstand' => [], 'custstand' => []]; // 'custrush' => [],
         // Domestic / other orders
         // Rush
         $this->db->select('o.order_id, o.brand, a.order_proj_status, o.order_rush, v.item_number, v.item_name, o.order_num, t.arrive_date, t.event_date, t.rush_idx, t.rush_list, v.vendor_name');
@@ -8872,6 +8872,7 @@ Class Orders_model extends MY_Model
         }
         $this->db->where('o.profit_perc', NULL);
         $this->db->where('o.item_id != ', $this->config->item('custom_id'));
+        $this->db->where('v.vendor_id != ', $this->config->item('inventory_vendor'));
         $this->db->where('o.order_rush', 1);
         $this->db->order_by('o.order_date');
         $rushothraw = $this->db->get()->result_array();
@@ -8890,6 +8891,7 @@ Class Orders_model extends MY_Model
         }
         $this->db->where('o.profit_perc', NULL);
         $this->db->where('o.item_id != ', $this->config->item('custom_id'));
+        $this->db->where('v.vendor_id != ', $this->config->item('inventory_vendor'));
         $this->db->where('o.order_rush', 0);
         $this->db->order_by('o.order_date');
         $standraw = $this->db->get()->result_array();
@@ -8898,23 +8900,23 @@ Class Orders_model extends MY_Model
         }
         // Custom Orders
         // Rush
-        $this->db->select('o.order_id, o.brand, a.order_proj_status, o.order_rush, v.item_number, v.item_name, o.order_num, t.arrive_date, t.event_date, t.rush_idx, t.rush_list, v.vendor_name');
-        $this->db->from('ts_orders o')->join('ts_order_shippings t','o.order_id = t.order_id')->join('v_itemsearch v', 'v.item_id=o.item_id')->join('v_poorders_artstage a','a.order_id=o.order_id');
-        if ($brand!=='ALL') {
-            if ($brand=='SR') {
-                $this->db->where('o.brand', $brand);
-            } else {
-                $this->db->where_in('o.brand', ['SB', 'BT']);
-            }
-        }
-        $this->db->where('o.profit_perc', NULL);
-        $this->db->where('o.item_id', $this->config->item('custom_id'));
-        $this->db->where('o.order_rush', 1);
-        $this->db->order_by('o.order_date');
-        $rushcustraw = $this->db->get()->result_array();
-        if (count($rushcustraw) > 0) {
-            $out['custrush'] = $this->_prepare_overvie_data($rushcustraw);
-        }
+//        $this->db->select('o.order_id, o.brand, a.order_proj_status, o.order_rush, v.item_number, v.item_name, o.order_num, t.arrive_date, t.event_date, t.rush_idx, t.rush_list, v.vendor_name');
+//        $this->db->from('ts_orders o')->join('ts_order_shippings t','o.order_id = t.order_id')->join('v_itemsearch v', 'v.item_id=o.item_id')->join('v_poorders_artstage a','a.order_id=o.order_id');
+//        if ($brand!=='ALL') {
+//            if ($brand=='SR') {
+//                $this->db->where('o.brand', $brand);
+//            } else {
+//                $this->db->where_in('o.brand', ['SB', 'BT']);
+//            }
+//        }
+//        $this->db->where('o.profit_perc', NULL);
+//        $this->db->where('o.item_id', $this->config->item('custom_id'));
+//        $this->db->where('o.order_rush', 1);
+//        $this->db->order_by('o.order_date');
+//        $rushcustraw = $this->db->get()->result_array();
+//        if (count($rushcustraw) > 0) {
+//            $out['custrush'] = $this->_prepare_overvie_data($rushcustraw);
+//        }
         // Standard
         $this->db->select('o.order_id, o.brand, a.order_proj_status, o.order_rush, v.item_number, v.item_name, o.order_num, t.arrive_date, t.event_date, t.rush_idx, t.rush_list, v.vendor_name');
         $this->db->from('ts_orders o')->join('ts_order_shippings t','o.order_id = t.order_id')->join('v_itemsearch v', 'v.item_id=o.item_id')->join('v_poorders_artstage a','a.order_id=o.order_id');
@@ -8927,7 +8929,7 @@ Class Orders_model extends MY_Model
         }
         $this->db->where('o.profit_perc', NULL);
         $this->db->where('o.item_id', $this->config->item('custom_id'));
-        $this->db->where('o.order_rush', 0);
+//        $this->db->where('o.order_rush', 0);
         $this->db->order_by('o.order_date');
         $standcustraw = $this->db->get()->result_array();
         if (count($standcustraw) > 0) {
@@ -8970,8 +8972,8 @@ Class Orders_model extends MY_Model
                 'itemname' => $rawdat['vendor_name'] = '' ? $rawdat['item_number'] : $rawdat['item_number'].' - '.$rawdat['item_name'],
                 'itemqty' => $qtyres['itemqty'],
                 'remainqty' => $remains,
-                'eventdate' => empty($rawdat['event_date']) ? '' : date('M j, Y',$rawdat['event_date']),
-                'arrive' => date('M j, Y', $rawdat['arrive_date']),
+                'eventdate' => empty($rawdat['event_date']) ? '' : date('M j',$rawdat['event_date']),
+                'arrive' => date('M j', $rawdat['arrive_date']),
                 'days' => 10,
             ];
         }

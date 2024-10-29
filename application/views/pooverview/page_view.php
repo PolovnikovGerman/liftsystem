@@ -10,9 +10,17 @@
     <div class="datarow">
         <div class="pooverleftpart">
             <div class="pooverviewsubtitle">Domestic / Other List to Place:</div>
+            <div class="poplacehideoldorders">
+                <span class="chkpodomestic"><i class="fa fa-check-square-o"></i></span>
+                hide > 52 weeks
+            </div>
         </div>
         <div class="pooverrightpart">
-            <div class="pooverviewsubtitle">Custom Shaped List:</div>
+            <div class="pooverviewsubtitle">Custom Shaped Orders to Place:</div>
+            <div class="poplacehideoldorders">
+                <span class="chkpocustom"><i class="fa fa-check-square-o"></i></span>
+                hide > 52 weeks
+            </div>
         </div>
     </div>
     <div class="pooverleftpart">
@@ -34,12 +42,12 @@
     <div class="pooverrightpart">
         <div class="datarow">
             <div class="pooverviewcustomtabletitle">
-                <div class="rush">Rush</div>
-                <div class="approved">Approved</div>
-                <div class="eventdate">Event Date</div>
-                <div class="arrivedate">Arrive</div>
                 <div class="arrivedays"># Days</div>
+                <div class="eventdate">Event</div>
+                <div class="arrivedate">Arrival</div>
+                <div class="approved">Proof</div>
                 <div class="ordernum">Order #</div>
+                <div class="customer">Customer</div>
                 <div class="itemname">Item</div>
                 <div class="itemqty">Qty</div>
                 <div class="remainqty">Remain</div>

@@ -659,8 +659,8 @@ class Purchaseorders extends MY_Controller
                 $mdata['otherview'] = $this->load->view('pooverview/other_data_view', $otheroptions, TRUE);
                 // Build Custom Content
                 $otheroptions = [
-                    'rushs' => $res['custrush'],
-                    'cntrush' => count($res['custrush']),
+//                    'rushs' => $res['custrush'],
+//                    'cntrush' => count($res['custrush']),
                     'stands' => $res['custstand'],
                     'cntstand' => count($res['custstand']),
                 ];
