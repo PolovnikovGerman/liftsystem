@@ -8124,11 +8124,11 @@ Class Orders_model extends MY_Model
                     $owndat['sortidx'] = '03-'.$owndat['batch_due'];
                 } elseif ($owndat['type']==$this->accrec_terms) {
                     if ($days > 60) {
-                        $owndat['sortidx'] = '06-'.$owndat['batch_due'];
+                        $owndat['sortidx'] = '04-'.$owndat['batch_due'];
                     } elseif ($days > 30 && $days <= 60) {
                         $owndat['sortidx'] = '05-'.$owndat['batch_due'];
                     } elseif ($days > 1 && $days <= 30) {
-                        $owndat['sortidx'] = '04-'.$owndat['batch_due'];
+                        $owndat['sortidx'] = '06-'.$owndat['batch_due'];
                     } else {
                         $owndat['sortidx'] = '13-'.$owndat['batch_due'];
                     }
@@ -8230,29 +8230,36 @@ Class Orders_model extends MY_Model
         $startdue = $starttype = $starapprov = '';
         $starstatus = '0';
         $rundebt = 0;
+        $curappr = $owns[0]['approved'];
+        $curtype = $owns[0]['type'];
         foreach ($owns as $own) {
             $datclass = '';
-            if (($ownsort1=='batch_due' || $ownsort2=='batch_due') && $startdue!==$own['dueclass']) {
-                if (!empty($startdue)) {
-                    $datclass = 'separated';
-                }
-                $startdue = $own['dueclass'];
-            } elseif (($ownsort1=='type' || $ownsort2=='type') && $own['type']!==$starttype) {
-                if (!empty($starttype)) {
-                    $datclass = 'separated';
-                }
-                $starttype = $own['type'];
-            } elseif (($ownsort1=='approved' || $ownsort2=='approved')&& $own['approved']!==$starapprov) {
-                if ($starapprov!=='') {
-                    $datclass = 'separated';
-                }
-                $starapprov = $own['approved'];
-            } elseif (($ownsort1=='debt_status' || $ownsort2=='debt_status') && $own['debt_status']!==$starstatus) {
-                if ($starstatus!==0) {
-                    $datclass = 'separated';
-                }
-                $starstatus = $own['debt_status'];
+            if ($own['approved']!==$curappr || $own['type']!==$curtype) {
+                $datclass = 'separated';
+                $curtype = $own['type'];
+                $curappr = $own['approved'];
             }
+//            if (($ownsort1=='batch_due' || $ownsort2=='batch_due') && $startdue!==$own['dueclass']) {
+//                if (!empty($startdue)) {
+//                    $datclass = 'separated';
+//                }
+//                $startdue = $own['dueclass'];
+//            } elseif (($ownsort1=='type' || $ownsort2=='type') && $own['type']!==$starttype) {
+//                if (!empty($starttype)) {
+//                    $datclass = 'separated';
+//                }
+//                $starttype = $own['type'];
+//            } elseif (($ownsort1=='approved' || $ownsort2=='approved')&& $own['approved']!==$starapprov) {
+//                if ($starapprov!=='') {
+//                    $datclass = 'separated';
+//                }
+//                $starapprov = $own['approved'];
+//            } elseif (($ownsort1=='debt_status' || $ownsort2=='debt_status') && $own['debt_status']!==$starstatus) {
+//                if ($starstatus!==0) {
+//                    $datclass = 'separated';
+//                }
+//                $starstatus = $own['debt_status'];
+//            }
             $owns[$ownidx]['datclass'] = $datclass;
             $rundebt += $owns[$ownidx]['balance'];
             $owns[$ownidx]['rundebt'] = $rundebt;
@@ -9089,6 +9096,7 @@ Class Orders_model extends MY_Model
                 $this->db->where_in('o.brand', ['SB','BT']);
             }
         }
+        $this->db->order_by('oa.create_date');
         $details = $this->db->get()->result_array();
         $custom = $regular = 0;
         foreach ($details as $detail) {
@@ -9106,5 +9114,55 @@ Class Orders_model extends MY_Model
             'details' => $details,
         ];
         return $out;
+    }
+
+    public function get_pohistory_vendors($brand)
+    {
+        $this->db->select('date_format(from_unixtime(oa.create_date),\'%Y\') as year, count(oa.amount_id) as cnt, sum(oa.amount_sum) sumamnt');
+        $this->db->from('ts_order_amounts oa');
+        if ($brand!=='ALL') {
+            $this->db->join('ts_orders o', 'o.order_id=oa.order_id');
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
+        }
+        $this->db->where('coalesce(oa.create_date,0) > ',0);
+        $this->db->group_by('year');
+        $this->db->order_by('year', 'desc');
+        $years = $this->db->get()->result_array();
+        $idx = 0;
+        foreach ($years as $year) {
+            $this->db->select('v.vendor_name, count(oa.amount_id) as cnt, sum(oa.amount_sum) sumamnt');
+            $this->db->from('ts_order_amounts oa');
+            $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
+            if ($brand!=='ALL') {
+                $this->db->join('ts_orders o', 'o.order_id=oa.order_id');
+                if ($brand=='SR') {
+                    $this->db->where('o.brand', $brand);
+                } else {
+                    $this->db->where_in('o.brand', ['SB','BT']);
+                }
+            }
+            $this->db->where('date_format(from_unixtime(oa.create_date),\'%Y\')', $year['year']);
+            $this->db->group_by('v.vendor_name');
+            $this->db->order_by('cnt', 'desc');
+            $vendrows = $this->db->get()->result_array();
+            $vendors = [];
+            foreach ($vendrows as $vendrow) {
+                $vendrow['proc_cnt'] = $vendrow['proc_total'] = 0;
+                if ($year['cnt'] > 0) {
+                    $vendrow['proc_cnt'] = round($vendrow['cnt']/$year['cnt']*100,1);
+                }
+                if (abs($year['sumamnt']) > 0) {
+                    $vendrow['proc_total'] = round($vendrow['sumamnt']/$year['sumamnt']*100,1);
+                }
+                $vendors[] = $vendrow;
+            }
+            $years[$idx]['vendors'] = $vendors;
+            $idx++;
+        }
+        return $years;
     }
 }

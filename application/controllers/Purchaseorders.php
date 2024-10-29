@@ -713,5 +713,37 @@ class Purchaseorders extends MY_Controller
             }
             $this->ajaxResponse($mdata, $error);
         }
+        show_404();
+    }
+
+    public function pohistoryslider()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand', '');
+            if (!empty($brand)) {
+                $error = '';
+                $this->load->model('orders_model');
+                $years = $this->orders_model->get_pohistory_vendors($brand);
+                // Calc length,  right
+                $numyears = count($years);
+                $slider_width = $numyears * 320;
+                $slider_margin = 0;
+                if ($numyears > 4) {
+                    $slider_margin = ($numyears - 4) * 320 * (-1);
+                }
+                $slider_options = [
+                    'years' => $years,
+                    'slider_width' => $slider_width,
+                    'slider_margin' => $slider_margin,
+                ];
+                $mdata['content'] = $this->load->view('pooverview/pohistory_slider_view', $slider_options, TRUE);
+                $mdata['arrowactive'] = $numyears > 4 ? 1 : 0;
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 }
