@@ -1,6 +1,7 @@
 <input type="hidden" id="pototalsbrand" value="<?=$brand?>"/>
 <input type="hidden" id="pohistoryyearview" value="<?=$curyear?>"/>
 <input type="hidden" id="pohistoryslider" value="0"/>
+<input type="hidden" id="sliderright" value="0"/>
 <div class="pooverdataview">
     <div class="datarow">
         <div class="pooverviewtitle">PO Overview</div>
@@ -73,8 +74,7 @@
         <div class="povendor-arrowleft">
             <i class="fa fa-caret-left" aria-hidden="true"></i>
         </div>
-        <div class="povendor-body">
-        </div>
+        <div class="pohistory-slider-area" style="max-width: 1260px; height: 460px; overflow-x: hidden">&nbsp;</div>
         <div class="povendor-arrowright">
             <i class="fa fa-caret-right" aria-hidden="true"></i>
         </div>

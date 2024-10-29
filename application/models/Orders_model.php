@@ -9115,4 +9115,54 @@ Class Orders_model extends MY_Model
         ];
         return $out;
     }
+
+    public function get_pohistory_vendors($brand)
+    {
+        $this->db->select('date_format(from_unixtime(oa.create_date),\'%Y\') as year, count(oa.amount_id) as cnt, sum(oa.amount_sum) sumamnt');
+        $this->db->from('ts_order_amounts oa');
+        if ($brand!=='ALL') {
+            $this->db->join('ts_orders o', 'o.order_id=oa.order_id');
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
+        }
+        $this->db->where('coalesce(oa.create_date,0) > ',0);
+        $this->db->group_by('year');
+        $this->db->order_by('year', 'desc');
+        $years = $this->db->get()->result_array();
+        $idx = 0;
+        foreach ($years as $year) {
+            $this->db->select('v.vendor_name, count(oa.amount_id) as cnt, sum(oa.amount_sum) sumamnt');
+            $this->db->from('ts_order_amounts oa');
+            $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
+            if ($brand!=='ALL') {
+                $this->db->join('ts_orders o', 'o.order_id=oa.order_id');
+                if ($brand=='SR') {
+                    $this->db->where('o.brand', $brand);
+                } else {
+                    $this->db->where_in('o.brand', ['SB','BT']);
+                }
+            }
+            $this->db->where('date_format(from_unixtime(oa.create_date),\'%Y\')', $year['year']);
+            $this->db->group_by('v.vendor_name');
+            $this->db->order_by('cnt', 'desc');
+            $vendrows = $this->db->get()->result_array();
+            $vendors = [];
+            foreach ($vendrows as $vendrow) {
+                $vendrow['proc_cnt'] = $vendrow['proc_total'] = 0;
+                if ($year['cnt'] > 0) {
+                    $vendrow['proc_cnt'] = round($vendrow['cnt']/$year['cnt']*100,1);
+                }
+                if (abs($year['sumamnt']) > 0) {
+                    $vendrow['proc_total'] = round($vendrow['sumamnt']/$year['sumamnt']*100,1);
+                }
+                $vendors[] = $vendrow;
+            }
+            $years[$idx]['vendors'] = $vendors;
+            $idx++;
+        }
+        return $years;
+    }
 }

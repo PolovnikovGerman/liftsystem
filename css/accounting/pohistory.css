@@ -250,6 +250,7 @@
 .povendor-arrowleft.active,
 .povendor-arrowright.active {
     opacity: 1;
+    cursor: pointer;
 }
 .povendor-arrowleft i,
 .povendor-arrowright i {
