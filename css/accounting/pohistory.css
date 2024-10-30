@@ -8,15 +8,28 @@
     /*width: 1348px;*/
 }
 .pooverviewlink {
-    color: #3736fe;
-    font-size: 16px;
-    font-style: italic;
+    /*color: #3736fe;*/
+    /*font-size: 16px;*/
+    /*font-style: italic;*/
+    /*cursor: pointer;*/
+    /*margin-bottom: 35px;*/
     cursor: pointer;
-    margin-bottom: 35px;
+    color: #575757;
+    font-size: 12px;
+    height: 22px;
+    line-height: 22px!important;
+    padding: 0 8px;
+    border: 1px solid #b5b5b5;
+    border-radius: 5px;
+    background-color: #c8c8c8;
+    margin-top: 8px;
 }
 .pooverviewlink span {
-    color: #0000FF;
+    /*color: #0000FF;*/
+    /*font-size: 14px;*/
+    color: #575757;
     font-size: 14px;
+    margin-right: 3px;
 }
 .pohistorytitle {
     height: 38px;
@@ -54,18 +67,18 @@
     margin-right: 8px;
 }
 .yearbox.active {
-    display: block;
-    cursor: pointer;
-    width: 54px;
-    height: 21px;
-    line-height: 20px!important;
-    text-align: center;
-    font-size: 12px;
-    font-weight: 600;
-    border: 1px solid #fff;
-    color: #000;
-    background: #fff;
-    margin-right: 8px;
+    /*display: block;*/
+    /*cursor: pointer;*/
+    /*width: 54px;*/
+    /*height: 21px;*/
+    /*line-height: 20px!important;*/
+    /*text-align: center;*/
+    /*font-size: 12px;*/
+    /*font-weight: 600;*/
+    /*border: 1px solid #fff;*/
+    /*color: #FFFFFF;*/
+    background: #b10000;
+    /*margin-right: 8px;*/
 }
 .pohcald-tblbody {
     width: 100%;
@@ -84,7 +97,9 @@
     cursor: pointer;
 }
 .pohcald-td.active {
-    background: #dbdbf6;
+    /* background: #dbdbf6; */
+    background: #b10000;
+    color: #FFFFFF;
 }
 .pohcald-td.week {
     width: 94px;
@@ -101,7 +116,9 @@
 .pohcald-date {
     font-size: 14px;
     font-weight: bold;
-    margin-top: 2px;
+    /*margin-top: 2px;*/
+    margin-top: 4px;
+    margin-bottom: 8px;
 }
 .pohcald-td.week .pohcald-date {
     font-size: 15px;
@@ -137,7 +154,8 @@
 }
 .pohinfdaytitletbl {
     width: 100%;
-    background: #dbdbf6;
+    background: #b10000;
+    color: #FFFFFF;
     height: 30px;
     line-height: 30px;
     border-bottom: 1px solid #000;
@@ -165,7 +183,7 @@
     line-height: 22px!important;
 }
 .pohinfday-tr:last-child {
-    border-bottom: 1px solid #000;
+    /* border-bottom: 1px solid #000; */
 }
 .pohinfday-td {
     height: 22px;
@@ -196,10 +214,14 @@
     left: 2px;
 }
 .pohinfday-td.vendor {
-    width: 54px;
+    /*width: 54px;*/
+    width: 86px;
     text-align: center;
     font-size: 12px;
     border-right: 1px solid #d4d2d2;
+}
+.pohinfday-td.vendor.internal {
+    font-weight: 600;
 }
 .pohinfday-td.order {
     width: 39px;
@@ -214,6 +236,9 @@
     width: 200px;
     padding-left: 4px;
     border-right: 1px solid #d4d2d2;
+}
+.pohinfday-td.item.custom {
+    font-weight: 600;
 }
 .pohinfday-td.item, .pohinfday-td.vendor {
     white-space: nowrap;
@@ -275,7 +300,7 @@
 }
 .povendortbl-body {
     height: 380px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 .povendortbl-tr {
     width: 100%;
@@ -293,7 +318,7 @@
     text-align: center;
 }
 .povendortbl-td.totalsumprice {
-    width: 104px;
+    width: 103px;
     font-size: 14px;
     text-align: center;
     border-right: 1px solid #000;
@@ -311,7 +336,7 @@
     font-weight: 600;
 }
 .povendortbl-td.total {
-    width: 72px;
+    width: 75px;
     font-size: 14px;
     text-align: right;
     padding-right: 4px;

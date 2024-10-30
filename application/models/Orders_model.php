@@ -9088,9 +9088,9 @@ Class Orders_model extends MY_Model
                 'regular' => 0,
             ];
             for ($i=0; $i<7; $i++) {
-                $custom = $regular = $total = $amount = 0;
+                $total = $amount = 0;
                 $dayend = strtotime("+1 day", $daybgn);
-                $this->db->select('if(o.item_id=-3, "C","R") as order_type, count(oa.amount_id) as cnt, sum(oa.amount_sum) as sumamnt');
+                $this->db->select('count(oa.amount_id) as cnt, sum(oa.amount_sum) as sumamnt');
                 $this->db->from('ts_order_amounts oa');
                 $this->db->join('ts_orders o', 'o.order_id=oa.order_id');
                 $this->db->where('oa.create_date >= ', $daybgn);
@@ -9102,27 +9102,15 @@ Class Orders_model extends MY_Model
                         $this->db->where_in('o.brand', ['SB','BT']);
                     }
                 }
-                $this->db->group_by('order_type');
-                $daydats = $this->db->get()->result_array();
-                foreach ($daydats as $daydat) {
-                    if ($daydat['order_type']=='C') {
-                        $custom+=$daydat['cnt'];
-                        $weektotal['custom']+=$daydat['cnt'];
-                    } else {
-                        $regular+=$daydat['cnt'];
-                        $weektotal['regular']+=$daydat['cnt'];
-                    }
-                    $total+=$daydat['cnt'];
-                    $amount+=$daydat['sumamnt'];
-                }
+                $daydat = $this->db->get()->row_array();
+                $total=$daydat['cnt'];
+                $amount=$daydat['sumamnt'];
                 $dayres[] = [
                     'class' => date('N', $daybgn) > 5 ? 'weekends' : '',
                     'date' => $daybgn,
                     'title' => date('D - M j', $daybgn),
                     'amount' => $amount,
                     'orders' => $total,
-                    'custom' => $custom,
-                    'regular' => $regular,
                 ];
                 $daybgn = $dayend;
             }
@@ -9139,11 +9127,12 @@ Class Orders_model extends MY_Model
     public function get_pohistory_details($brand, $daybgn)
     {
         $dayend = strtotime("+1 day", $daybgn);
-        $this->db->select('oa.create_date, oa.amount_sum, v.vendor_name, o.order_id, o.order_num, i.item_id, i.item_number, i.item_name, oa.shipped');
+        $this->db->select('oa.create_date, oa.amount_sum, v.vendor_name, o.order_id, o.order_num, i.item_id, i.item_number, i.item_name, oa.shipped, toi.item_description, oa.vendor_id');
         $this->db->from('ts_order_amounts oa');
         $this->db->join('ts_orders o', 'o.order_id=oa.order_id');
         $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
         $this->db->join('v_itemsearch i', 'i.item_id=o.item_id');
+        $this->db->join('ts_order_itemcolors toi', 'toi.order_itemcolor_id=oa.order_itemcolor_id','left');
         $this->db->where('oa.create_date >= ', $daybgn);
         $this->db->where('oa.create_date < ', $dayend);
         if ($brand!=='ALL') {
@@ -9156,12 +9145,28 @@ Class Orders_model extends MY_Model
         $this->db->order_by('oa.create_date');
         $details = $this->db->get()->result_array();
         $custom = $regular = 0;
+        $detailidx = 0;
         foreach ($details as $detail) {
+            $details[$detailidx]['itemclass'] = $details[$detailidx]['vendorclass'] = '';
             if ($detail['item_id']==$this->config->item('custom_id')) {
                 $custom++;
+                $details[$detailidx]['itemclass'] = 'custom';
+                if (!empty($detail['item_description'])) {
+                    $details[$detailidx]['item_name'] = $detail['item_description'];
+                }
             } else {
                 $regular++;
             }
+            if ($detail['vendor_id']==$this->config->item('inventory_vendor')) {
+                $details[$detailidx]['vendor_name'] = $detail['vendor_name'].'*';
+                $details[$detailidx]['vendorclass'] = 'internal';
+            }
+            if ($detail['item_id'] < 0) {
+                $details[$detailidx]['itemname'] = $detail['item_description'];
+            } else {
+                $details[$detailidx]['itemname'] = $detail['item_number'].' - '.$detail['item_name'];
+            }
+            $detailidx++;
         }
         $out=[
             'date' => $daybgn,
