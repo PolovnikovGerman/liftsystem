@@ -2239,6 +2239,8 @@ class Fulfillment extends MY_Controller
         // Get PO Years
         $years = $this->orders_model->get_pohistory_years($brand);
         $curyear = 0;
+        $slider_width = count($years) * 62;
+        $slider_active = count($years) > 10 ? 1 : 0;
         if (count($years) > 0) {
             $curyear = $years[0]['year'];
         }
@@ -2246,6 +2248,8 @@ class Fulfillment extends MY_Controller
             'brand' => $brand,
             'years' => $years,
             'curyear' => $curyear,
+            'slider_width' => $slider_width,
+            'slider_active' => $slider_active,
         ];
         return $this->load->view('pooverview/page_view',$options,TRUE);
 
