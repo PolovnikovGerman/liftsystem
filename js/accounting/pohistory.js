@@ -12,6 +12,9 @@ function init_pohistory() {
             if (parseInt($("#pohistoryslider").val())==0) {
                 pohistory_build_slider();
             }
+            if (parseInt($("#yearslideractive").val())==1) {
+                init_years_slider();
+            }
             $("#loader").hide();
         } else {
             $("#loader").hide();
@@ -119,6 +122,46 @@ function init_pohistory_slider() {
             }
             $(".povendor-body").css('margin-right', rmargin);
             $(".povendor-body").css('margin-left', lmargin);
+            init_pohistory_slider();
+        }
+    });
+}
+
+function init_years_slider() {
+    $(".pocalendyears-arrowright").unbind('click').click(function (){
+        if ($(this).hasClass('active')) {
+            $(".pocalendyears-arrowleft").addClass('active');
+            var rightoffet = parseInt($("#yearslideright").val()) + 1;
+            $("#yearslideright").val(rightoffet);
+            // New margin
+            var lmargin = parseInt($(".listyears").css('margin-left')) - 620;
+            $(".listyears").css('margin-left', lmargin);
+            var sliderview = parseInt($(".listyears").css('width')) + parseInt($(".listyears").css('margin-left'));
+            if (sliderview <= 620 ) {
+                $(".pocalendyears-arrowright").removeClass('active');
+            }
+            if (rmargin==0) {
+                $(".povendor-arrowright").removeClass('active');
+            }
+            init_years_slider();
+        }
+    });
+    $(".pocalendyears-arrowleft").unbind('click').click(function (){
+        if ($(this).hasClass('active')) {
+            $(".pocalendyears-arrowright").addClass('active');
+            var rightoffet = parseInt($("#yearslideright").val()) - 1;
+            if (rightoffet < 0) {
+                rightoffet = 0;
+            }
+            $("#yearslideright").val(rightoffet);
+            if (rightoffet == 0) {
+                $(".pocalendyears-arrowleft").removeClass('active');
+            }
+            var lmargin = parseInt($(".listyears").css('margin-left')) + 620;
+            if (lmargin >= 0) {
+                lmargin = 0;
+            }
+            $(".listyears").css('margin-left', lmargin);
             init_pohistory_slider();
         }
     });

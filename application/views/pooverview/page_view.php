@@ -4,6 +4,8 @@
 <input type="hidden" id="sliderright" value="0"/>
 <input type="hidden" id="domesticpoyear" value="1"/>
 <input type="hidden" id="custompoyear" value="1"/>
+<input type="hidden" id="yearslideractive" value="<?=$slider_active?>"/>
+<input type="hidden" id="yearslideright" value="0"/>
 <div class="pooverdataview">
     <div class="datarow">
         <div class="pooverviewtitle">PO Overview</div>
@@ -70,11 +72,15 @@
     <div class="datarow">
         <div class="pohistcalendartable">
             <div class="pohcalendartitletbl">
-                <div class="listyears">
-                    <?php foreach ($years as $year): ?>
-                        <div class="yearbox <?=$year['year']==$curyear ? 'active' : ''?>" data-year="<?=$year['year']?>"><?=$year['year']?></div>
-                    <?php endforeach; ?>
+                <div class="pocalendyears-arrowleft"><i class="fa fa-caret-left" aria-hidden="true"></i></div>
+                <div class="pocalendyears-slider-area" style="max-width: 620px; height: 28px; overflow-x: hidden">
+                    <div class="listyears" style="width: <?=$slider_width?>px; margin-left: 0px">
+                        <?php foreach ($years as $year): ?>
+                            <div class="yearbox <?=$year['year']==$curyear ? 'active' : ''?>" data-year="<?=$year['year']?>"><?=$year['year']?></div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
+                <div class="pocalendyears-arrowright <?=$slider_active==1 ? 'active' : ''?>"><i class="fa fa-caret-right" aria-hidden="true"></i></div>
             </div>
             <div class="pohcald-tblbody">&nbsp;</div>
         </div>

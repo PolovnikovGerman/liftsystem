@@ -9047,6 +9047,7 @@ Class Orders_model extends MY_Model
                 $this->db->where_in('o.brand', ['SB','BT']);
             }
         }
+        $this->db->where('oa.create_date is not null');
         $this->db->group_by('year');
         $this->db->order_by('year','desc');
         $years = $this->db->get()->result_array();
