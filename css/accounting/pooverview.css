@@ -24,7 +24,8 @@
 }
 .pohistoryviewlink span {
     color: #575757;
-    font-size: 11px;
+    font-size: 14px;
+    margin-left: 3px;
 }
 .pooverleftpart {
     width: 570px;

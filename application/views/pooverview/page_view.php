@@ -7,7 +7,7 @@
 <div class="pooverdataview">
     <div class="datarow">
         <div class="pooverviewtitle">PO Overview</div>
-        <div class="pohistoryviewlink">History of Placed POs <span><i class="fa fa-play" aria-hidden="true"></i></span></div>
+        <div class="pohistoryviewlink">History of Placed POs <span><i class="fa fa-caret-right" aria-hidden="true"></i></span></div>
     </div>
     <div class="datarow">
         <div class="pooverleftpart">
