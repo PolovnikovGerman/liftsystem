@@ -7,12 +7,12 @@
 <?php $numpp=0; ?>
 <?php foreach ($details as $detail):?>
     <div class="pohinfday-tr <?=$numpp%2==0 ? 'whitedatarow' : 'greydatarow'?>">
-        <div class="pohinfday-td date"><?=$numpp==0 ? date('m/d', $detail['create_date']) : '&mdash;'?></div>
+<!--        <div class="pohinfday-td date">--><?php //=$numpp==0 ? date('m/d', $detail['create_date']) : '&mdash;'?><!--</div>-->
         <div class="pohinfday-td time"><?=date('g:iA', $detail['create_date'])?></div>
         <div class="pohinfday-td price"><?=TotalOutput($detail['amount_sum'])?></div>
-        <div class="pohinfday-td vendor"><?=$detail['vendor_name']?></div>
+        <div class="pohinfday-td vendor <?=$detail['vendorclass']?>"><?=$detail['vendor_name']?></div>
         <div class="pohinfday-td order" data-order="<?=$detail['order_id']?>"><?=$detail['order_num']?></div>
-        <div class="pohinfday-td item"><?=$detail['item_number']?> - <?=$detail['item_name']?></div>
+        <div class="pohinfday-td item <?=$detail['itemclass']?>"><?=$detail['itemname']?></div>
         <div class="pohinfday-td qty"><?=$detail['shipped']?></div>
     </div>
     <?php $numpp++; ?>

@@ -62,7 +62,7 @@
 </div>
 <div class="pohistorydataview">
     <div class="datarow">
-        <div class="pooverviewlink"><span><i class="fa fa-long-arrow-left" aria-hidden="true"></i></span> PO Overview </div>
+        <div class="pooverviewlink"><span><i class="fa fa-caret-left" aria-hidden="true"></i></span> PO Overview </div>
     </div>
     <div class="datarow">
         <div class="pohistorytitle">History of POs Sent</div>
