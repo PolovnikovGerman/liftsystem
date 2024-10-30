@@ -350,6 +350,7 @@
     width: 77px;
     font-size: 14px;
     text-align: center;
+    font-weight: 600;
 }
 .povendortitletbl-grey .povendortbl-td.totalsumprice,
 .povendortitletbl-grey .povendortbl-td.totalpo {
@@ -374,6 +375,9 @@
     font-size: 12px;
     text-align: center;
     border-right: 1px solid #000;
+}
+.povendortbl-td.vendorname.inventory {
+    font-weight: 600;
 }
 .povendortbl-td.totalpriceprec {
     width: 37px;
