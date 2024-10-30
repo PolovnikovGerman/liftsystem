@@ -645,27 +645,28 @@ class Purchaseorders extends MY_Controller
             $error = 'Empty Brand';
             $postdata = $this->input->post();
             $brand = ifset($postdata,'brand', '');
+            $domesticyear = ifset($postdata, 'domesticpoyear', 1);
+            $customyear = ifset($postdata, 'custompoyear', 1);
             if (!empty($brand)) {
                 $error = '';
                 $this->load->model('orders_model');
-                $res = $this->orders_model->get_pooverview($brand);
+                $other = $this->orders_model->get_pooverview_other($brand, $domesticyear);
                 // Build Other content
                 $otheroptions = [
-                    'rushs' => $res['otherrush'],
-                    'cntrush' => count($res['otherrush']),
-                    'stands' => $res['otherstand'],
-                    'cntstand' => count($res['otherstand']),
+                    'rushs' => $other['otherrush'],
+                    'cntrush' => count($other['otherrush']),
+                    'stands' => $other['otherstand'],
+                    'cntstand' => count($other['otherstand']),
                 ];
                 $mdata['otherview'] = $this->load->view('pooverview/other_data_view', $otheroptions, TRUE);
-                // Build Custom Content
-                $otheroptions = [
-//                    'rushs' => $res['custrush'],
-//                    'cntrush' => count($res['custrush']),
-                    'stands' => $res['custstand'],
-                    'cntstand' => count($res['custstand']),
-                ];
-                $mdata['customview'] = $this->load->view('pooverview/custom_data_view', $otheroptions, TRUE);
 
+                // Build Custom Content
+                $custom = $this->orders_model->get_pooverview_custom($brand, $customyear);
+                $customoptions = [
+                    'stands' => $custom['custstand'],
+                    'cntstand' => count($custom['custstand']),
+                ];
+                $mdata['customview'] = $this->load->view('pooverview/custom_data_view', $customoptions, TRUE);
             }
             $this->ajaxResponse($mdata, $error);
         }

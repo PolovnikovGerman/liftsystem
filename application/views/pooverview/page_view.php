@@ -2,10 +2,12 @@
 <input type="hidden" id="pohistoryyearview" value="<?=$curyear?>"/>
 <input type="hidden" id="pohistoryslider" value="0"/>
 <input type="hidden" id="sliderright" value="0"/>
+<input type="hidden" id="domesticpoyear" value="1"/>
+<input type="hidden" id="custompoyear" value="1"/>
 <div class="pooverdataview">
     <div class="datarow">
         <div class="pooverviewtitle">PO Overview</div>
-        <div class="pohistoryviewlink">History of POs Sent <span><i class="fa fa-long-arrow-right" aria-hidden="true"></i></span></div>
+        <div class="pohistoryviewlink">History of Placed POs <span><i class="fa fa-play" aria-hidden="true"></i></span></div>
     </div>
     <div class="datarow">
         <div class="pooverleftpart">
@@ -32,7 +34,7 @@
                 <div class="ordernum">Order #</div>
                 <div class="itemname">Item</div>
                 <div class="itemqty">Qty</div>
-                <div class="remainqty">Remain</div>
+                <div class="remainqty">Remaining</div>
             </div>
         </div>
         <div class="datarow">
@@ -50,7 +52,7 @@
                 <div class="customer">Customer</div>
                 <div class="itemname">Item</div>
                 <div class="itemqty">Qty</div>
-                <div class="remainqty">Remain</div>
+                <div class="remainqty">Remaining</div>
             </div>
         </div>
         <div class="datarow">

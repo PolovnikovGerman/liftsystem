@@ -8856,13 +8856,24 @@ Class Orders_model extends MY_Model
         }
     }
 
-    public function get_pooverview($brand)
+    public function get_pooverview_other($brand, $domesticyear)
     {
-        $out=['otherrush' => [], 'otherstand' => [], 'custstand' => []]; // 'custrush' => [],
-        // Domestic / other orders
+        $out=['otherrush' => [], 'otherstand' => []];
+        if ($domesticyear==1) {
+            $dayend = strtotime("-1 year", time());
+        } else {
+            $dayend = strtotime('1970-01-01');
+        }
         // Rush
         $this->db->select('o.order_id, o.brand, a.order_proj_status, o.order_rush, v.item_number, v.item_name, o.order_num, t.arrive_date, t.event_date, t.rush_idx, t.rush_list, v.vendor_name');
-        $this->db->from('ts_orders o')->join('ts_order_shippings t','o.order_id = t.order_id')->join('v_itemsearch v', 'v.item_id=o.item_id')->join('v_poorders_artstage a','a.order_id=o.order_id');
+        $this->db->select('toi.item_qty as itemqty, coalesce(toa.shipped,0) as shipqty');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_shippings t','o.order_id = t.order_id');
+        $this->db->join('v_poorders_artstage a','a.order_id=o.order_id');
+        $this->db->join('ts_order_items oi','oi.order_id=o.order_id');
+        $this->db->join('ts_order_itemcolors toi', 'oi.order_item_id = toi.order_item_id');
+        $this->db->join('ts_order_amounts toa', 'toi.order_itemcolor_id = toa.order_itemcolor_id', 'left');
+        $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
         if ($brand!=='ALL') {
             if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
@@ -8870,18 +8881,26 @@ Class Orders_model extends MY_Model
                 $this->db->where_in('o.brand', ['SB', 'BT']);
             }
         }
+        $this->db->where('o.order_date >= ', $dayend);
         $this->db->where('o.profit_perc', NULL);
-        $this->db->where('o.item_id != ', $this->config->item('custom_id'));
+        $this->db->where('oi.item_id != ', $this->config->item('custom_id'));
         $this->db->where('v.vendor_id != ', $this->config->item('inventory_vendor'));
         $this->db->where('o.order_rush', 1);
         $this->db->order_by('o.order_date');
         $rushothraw = $this->db->get()->result_array();
         if (count($rushothraw) > 0) {
-            $out['otherrush'] = $this->_prepare_overvie_data($rushothraw);
+            $out['otherrush'] = $this->_prepare_overvie_otherdata($rushothraw);
         }
         // Standard
         $this->db->select('o.order_id, o.brand, a.order_proj_status, o.order_rush, v.item_number, v.item_name, o.order_num, t.arrive_date, t.event_date, t.rush_idx, t.rush_list, v.vendor_name');
-        $this->db->from('ts_orders o')->join('ts_order_shippings t','o.order_id = t.order_id')->join('v_itemsearch v', 'v.item_id=o.item_id')->join('v_poorders_artstage a','a.order_id=o.order_id');
+        $this->db->select('toi.item_qty as itemqty, coalesce(toa.shipped,0) as shipqty');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_shippings t','o.order_id = t.order_id');
+        $this->db->join('v_poorders_artstage a','a.order_id=o.order_id');
+        $this->db->join('ts_order_items oi','oi.order_id=o.order_id');
+        $this->db->join('ts_order_itemcolors toi', 'oi.order_item_id = toi.order_item_id');
+        $this->db->join('ts_order_amounts toa', 'toi.order_itemcolor_id = toa.order_itemcolor_id', 'left');
+        $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
         if ($brand!=='ALL') {
             if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
@@ -8889,93 +8908,124 @@ Class Orders_model extends MY_Model
                 $this->db->where_in('o.brand', ['SB', 'BT']);
             }
         }
+        $this->db->where('o.order_date >= ', $dayend);
         $this->db->where('o.profit_perc', NULL);
-        $this->db->where('o.item_id != ', $this->config->item('custom_id'));
+        $this->db->where('oi.item_id != ', $this->config->item('custom_id'));
         $this->db->where('v.vendor_id != ', $this->config->item('inventory_vendor'));
         $this->db->where('o.order_rush', 0);
         $this->db->order_by('o.order_date');
-        $standraw = $this->db->get()->result_array();
-        if (count($standraw) > 0) {
-            $out['otherstand'] = $this->_prepare_overvie_data($standraw);
-        }
-        // Custom Orders
-        // Rush
-//        $this->db->select('o.order_id, o.brand, a.order_proj_status, o.order_rush, v.item_number, v.item_name, o.order_num, t.arrive_date, t.event_date, t.rush_idx, t.rush_list, v.vendor_name');
-//        $this->db->from('ts_orders o')->join('ts_order_shippings t','o.order_id = t.order_id')->join('v_itemsearch v', 'v.item_id=o.item_id')->join('v_poorders_artstage a','a.order_id=o.order_id');
-//        if ($brand!=='ALL') {
-//            if ($brand=='SR') {
-//                $this->db->where('o.brand', $brand);
-//            } else {
-//                $this->db->where_in('o.brand', ['SB', 'BT']);
-//            }
-//        }
-//        $this->db->where('o.profit_perc', NULL);
-//        $this->db->where('o.item_id', $this->config->item('custom_id'));
-//        $this->db->where('o.order_rush', 1);
-//        $this->db->order_by('o.order_date');
-//        $rushcustraw = $this->db->get()->result_array();
-//        if (count($rushcustraw) > 0) {
-//            $out['custrush'] = $this->_prepare_overvie_data($rushcustraw);
-//        }
-        // Standard
-        $this->db->select('o.order_id, o.brand, a.order_proj_status, o.order_rush, v.item_number, v.item_name, o.order_num, t.arrive_date, t.event_date, t.rush_idx, t.rush_list, v.vendor_name');
-        $this->db->from('ts_orders o')->join('ts_order_shippings t','o.order_id = t.order_id')->join('v_itemsearch v', 'v.item_id=o.item_id')->join('v_poorders_artstage a','a.order_id=o.order_id');
-        if ($brand!=='ALL') {
-            if ($brand=='SR') {
-                $this->db->where('o.brand', $brand);
-            } else {
-                $this->db->where_in('o.brand', ['SB', 'BT']);
-            }
-        }
-        $this->db->where('o.profit_perc', NULL);
-        $this->db->where('o.item_id', $this->config->item('custom_id'));
-//        $this->db->where('o.order_rush', 0);
-        $this->db->order_by('o.order_date');
-        $standcustraw = $this->db->get()->result_array();
-        if (count($standcustraw) > 0) {
-            $out['custstand'] = $this->_prepare_overvie_data($standcustraw);
+        $standothraw = $this->db->get()->result_array();
+        if (count($standothraw) > 0) {
+            $out['otherstand'] = $this->_prepare_overvie_otherdata($standothraw);
         }
         return $out;
     }
 
-    private function _prepare_overvie_data($rawdats)
+    private function _prepare_overvie_otherdata($rawdats)
     {
         $out = [];
         foreach ($rawdats as $rawdat) {
-            $rush = 0;
-            if ($rawdat['order_rush']==1) {
-                $rush = 1;
-                $rushlist = unserialize($rawdat['rush_list']);
-                $lists = $rushlist['rush'];
-                foreach ($lists as $list) {
-                    if ($list['current']==1) {
-                        if ($list['rushterm']=='1 Day Rush') {
-                            $rush = 2;
+            if ($rawdat['itemqty'] > $rawdat['shipqty']) {
+                $rush = 0;
+                if ($rawdat['order_rush']==1) {
+                    $rush = 1;
+                    $rushlist = unserialize($rawdat['rush_list']);
+                    $lists = $rushlist['rush'];
+                    foreach ($lists as $list) {
+                        if ($list['current']==1) {
+                            if ($list['rushterm']=='1 Day Rush') {
+                                $rush = 2;
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
+                // Calc total and remaind
+                $remains = intval($rawdat['itemqty']) - intval($rawdat['shipqty']);
+                $out[] = [
+                    'order_id' => $rawdat['order_id'],
+                    'rushterm' => $rush,
+                    'artstage' => $rawdat['order_proj_status']==$this->JUST_APPROVED ? 'Approved' : 'Not Approved',
+                    'artclass' => $rawdat['order_proj_status']==$this->JUST_APPROVED ? '' : 'notapprove',
+                    'vendor' => $rawdat['vendor_name'],
+                    'ordernum' => $rawdat['order_num'],
+                    'itemname' => $rawdat['vendor_name'] = '' ? $rawdat['item_number'] : $rawdat['item_number'].' - '.$rawdat['item_name'],
+                    'itemqty' => $rawdat['itemqty'],
+                    'remainqty' => $remains,
+                ];
             }
-            // Calc total and remaind
-            $this->db->select('sum(toi.item_qty) as itemqty, sum(toa.shipped) as shipped, count(toa.amount_id) as shipcnt')->from('ts_order_items oi');
-            $this->db->join('ts_order_itemcolors toi', 'oi.order_item_id = toi.order_item_id')->join('ts_order_amounts toa', 'toi.order_itemcolor_id = toa.order_itemcolor_id', 'left');
-            $this->db->where('oi.order_id', $rawdat['order_id']);
-            $qtyres = $this->db->get()->row_array();
-            $remains = intval($qtyres['itemqty']) - intval($qtyres['shipped']);
-            $out[] = [
-                'order_id' => $rawdat['order_id'],
-                'rushterm' => $rush,
-                'artstage' => $rawdat['order_proj_status']==$this->JUST_APPROVED ? 'Approved' : 'Not Approved',
-                'artclass' => $rawdat['order_proj_status']==$this->JUST_APPROVED ? '' : 'notapprove',
-                'vendor' => $rawdat['vendor_name'],
-                'ordernum' => $rawdat['order_num'],
-                'itemname' => $rawdat['vendor_name'] = '' ? $rawdat['item_number'] : $rawdat['item_number'].' - '.$rawdat['item_name'],
-                'itemqty' => $qtyres['itemqty'],
-                'remainqty' => $remains,
-                'eventdate' => empty($rawdat['event_date']) ? '' : date('M j',$rawdat['event_date']),
-                'arrive' => date('M j', $rawdat['arrive_date']),
-                'days' => 10,
-            ];
+        }
+        return $out;
+    }
+
+    public function get_pooverview_custom($brand, $customyear)
+    {
+        $out = ['custstand' => []];
+        if ($customyear==1) {
+            $dayend = strtotime("-1 year", time());
+        } else {
+            $dayend = strtotime('1970-01-01');
+        }
+        $this->db->select('o.order_id, o.brand, a.order_proj_status, v.item_number, toi.item_description as item_name, o.order_num, t.arrive_date, t.event_date, o.customer_name as customer');
+        $this->db->select('toi.item_qty as itemqty, coalesce(toa.shipped,0) as shipqty');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_shippings t','o.order_id = t.order_id');
+        $this->db->join('v_poorders_artstage a','a.order_id=o.order_id');
+        $this->db->join('ts_order_items oi','oi.order_id=o.order_id');
+        $this->db->join('ts_order_itemcolors toi', 'oi.order_item_id = toi.order_item_id');
+        $this->db->join('ts_order_amounts toa', 'toi.order_itemcolor_id = toa.order_itemcolor_id', 'left');
+        $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB', 'BT']);
+            }
+        }
+        $this->db->where('o.order_date >=', $dayend);
+        $this->db->where('o.profit_perc', NULL);
+        $this->db->where('oi.item_id', $this->config->item('custom_id'));
+        $this->db->where('v.vendor_id != ', $this->config->item('inventory_vendor'));
+        $this->db->order_by('o.order_date');
+        $customraw = $this->db->get()->result_array();
+        if (count($customraw) > 0) {
+            $out['custstand'] = $this->_prepare_overvie_customdata($customraw);
+        }
+        return $out;
+    }
+
+    private function _prepare_overvie_customdata($rawdats)
+    {
+        $out = [];
+        foreach ($rawdats as $rawdat) {
+            if ($rawdat['itemqty'] > $rawdat['shipqty']) {
+                $days = 0;
+                if (!empty($rawdat['event_date'])) {
+                    $days = ceil(($rawdat['event_date'] - time()) / (24*60*60));
+                } else {
+                    $days = ceil(($rawdat['arrive_date'] - time()) / (24*60*60));
+                }
+                $remains = intval($rawdat['itemqty']) - intval($rawdat['shipqty']);
+                $out[] = [
+                    'order_id' => $rawdat['order_id'],
+                    'days' => $days,
+                    'eventdate' => empty($rawdat['event_date']) ? '' : date('M j', $rawdat['event_date']),
+                    'arrive' => empty($rawdat['arrive_date']) ? '' : date('M j', $rawdat['arrive_date']),
+                    'artstage' => $rawdat['order_proj_status']==$this->JUST_APPROVED ? 'Approved' : 'Not Approved',
+                    'artclass' => $rawdat['order_proj_status']==$this->JUST_APPROVED ? '' : 'notapprove',
+                    'ordernum' => $rawdat['order_num'],
+                    'customer' => $rawdat['customer'],
+                    'itemname' => $rawdat['item_name'],
+                    'itemqty' => $rawdat['itemqty'],
+                    'remainqty' => $remains,
+                ];
+            }
+        }
+        if (count($out)>1) {
+            // Sort by days
+            usort($out, function ($item1, $item2) {
+                return $item1['days'] <=> $item2['days'];
+            });
         }
         return $out;
     }

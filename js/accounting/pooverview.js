@@ -9,6 +9,8 @@ function init_pototals() {
 function init_pooverview() {
     var params = new Array();
     params.push({name: 'brand', value: $("#pototalsbrand").val()});
+    params.push({name: 'domesticpoyear', value: $("#domesticpoyear").val()});
+    params.push({name: 'custompoyear', value: $("#custompoyear").val()});
     var url = "/purchaseorders/pooverview";
     $("#loader").show();
     $.post(url, params, function (response){
