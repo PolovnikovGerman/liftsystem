@@ -61,6 +61,7 @@
 }
 .pocalendyears-arrowleft {
     margin-right: 5px;
+    margin-left: 4px;
 }
 .pocalendyears-arrowleft.active, .pocalendyears-arrowright.active {
     visibility: visible;
