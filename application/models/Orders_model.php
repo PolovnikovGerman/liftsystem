@@ -9197,7 +9197,7 @@ Class Orders_model extends MY_Model
         $years = $this->db->get()->result_array();
         $idx = 0;
         foreach ($years as $year) {
-            $this->db->select('v.vendor_name, count(oa.amount_id) as cnt, sum(oa.amount_sum) sumamnt');
+            $this->db->select('v.vendor_name, v.vendor_id, count(oa.amount_id) as cnt, sum(oa.amount_sum) sumamnt');
             $this->db->from('ts_order_amounts oa');
             $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
             if ($brand!=='ALL') {
@@ -9209,7 +9209,7 @@ Class Orders_model extends MY_Model
                 }
             }
             $this->db->where('date_format(from_unixtime(oa.create_date),\'%Y\')', $year['year']);
-            $this->db->group_by('v.vendor_name');
+            $this->db->group_by('v.vendor_name, v.vendor_id');
             $this->db->order_by('cnt', 'desc');
             $vendrows = $this->db->get()->result_array();
             $vendors = [];
@@ -9220,6 +9220,12 @@ Class Orders_model extends MY_Model
                 }
                 if (abs($year['sumamnt']) > 0) {
                     $vendrow['proc_total'] = round($vendrow['sumamnt']/$year['sumamnt']*100,1);
+                }
+                if ($vendrow['vendor_id']==$this->config->item('inventory_vendor')) {
+                    $vendrow['vendorclass'] = 'inventory';
+                    $vendrow['vendor_name'] = $vendrow['vendor_name'].'*';
+                } else {
+                    $vendrow['vendorclass'] = '';
                 }
                 $vendors[] = $vendrow;
             }

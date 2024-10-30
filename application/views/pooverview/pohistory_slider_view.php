@@ -18,7 +18,7 @@
                 <?php foreach ($year['vendors'] as $vendor): ?>
                     <div class="povendortbl-tr <?=$numpp%2==0 ? 'greydatarow' : 'whitedatarow'?>">
                         <div class="povendortbl-td number"><?=$numpp?></div>
-                        <div class="povendortbl-td vendorname"><?=$vendor['vendor_name']?></div>
+                        <div class="povendortbl-td vendorname <?=$vendor['vendorclass']?>"><?=$vendor['vendor_name']?></div>
                         <div class="povendortbl-td totalprice"><?=MoneyOutput($vendor['sumamnt'],0)?></div>
                         <div class="povendortbl-td totalpriceprec"><?=$vendor['proc_total']?>%</div>
                         <div class="povendortbl-td totalpo"><?=$vendor['cnt']?></div>
