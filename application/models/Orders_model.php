@@ -8865,14 +8865,13 @@ Class Orders_model extends MY_Model
             $dayend = strtotime('1970-01-01');
         }
         // Rush
-        $this->db->select('o.order_id, o.brand, a.order_proj_status, o.order_rush, v.item_number, v.item_name, o.order_num, t.arrive_date, t.event_date, t.rush_idx, t.rush_list, v.vendor_name');
-        $this->db->select('toi.item_qty as itemqty, coalesce(toa.shipped,0) as shipqty');
+        $this->db->select('o.order_id, oi.item_id, toi.order_itemcolor_id, o.brand, a.order_proj_status, o.order_rush, v.item_number, v.item_name, toi.item_description, o.order_num, t.arrive_date, t.event_date, t.rush_idx, t.rush_list, v.vendor_name');
+        $this->db->select('toi.item_qty as itemqty');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings t','o.order_id = t.order_id');
         $this->db->join('v_poorders_artstage a','a.order_id=o.order_id');
         $this->db->join('ts_order_items oi','oi.order_id=o.order_id');
         $this->db->join('ts_order_itemcolors toi', 'oi.order_item_id = toi.order_item_id');
-        $this->db->join('ts_order_amounts toa', 'toi.order_itemcolor_id = toa.order_itemcolor_id', 'left');
         $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
         if ($brand!=='ALL') {
             if ($brand=='SR') {
@@ -8892,14 +8891,13 @@ Class Orders_model extends MY_Model
             $out['otherrush'] = $this->_prepare_overvie_otherdata($rushothraw);
         }
         // Standard
-        $this->db->select('o.order_id, o.brand, a.order_proj_status, o.order_rush, v.item_number, v.item_name, o.order_num, t.arrive_date, t.event_date, t.rush_idx, t.rush_list, v.vendor_name');
-        $this->db->select('toi.item_qty as itemqty, coalesce(toa.shipped,0) as shipqty');
+        $this->db->select('o.order_id, oi.item_id, toi.order_itemcolor_id, o.brand, a.order_proj_status, o.order_rush, v.item_number, v.item_name, toi.item_description, o.order_num, t.arrive_date, t.event_date, t.rush_idx, t.rush_list, v.vendor_name');
+        $this->db->select('toi.item_qty as itemqty');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings t','o.order_id = t.order_id');
         $this->db->join('v_poorders_artstage a','a.order_id=o.order_id');
         $this->db->join('ts_order_items oi','oi.order_id=o.order_id');
         $this->db->join('ts_order_itemcolors toi', 'oi.order_item_id = toi.order_item_id');
-        $this->db->join('ts_order_amounts toa', 'toi.order_itemcolor_id = toa.order_itemcolor_id', 'left');
         $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
         if ($brand!=='ALL') {
             if ($brand=='SR') {
@@ -8925,6 +8923,13 @@ Class Orders_model extends MY_Model
     {
         $out = [];
         foreach ($rawdats as $rawdat) {
+            $this->db->select('count(amount_id) as cnt, sum(shipped) shipped')->from('ts_order_amounts')->where('order_itemcolor_id', $rawdat['order_itemcolor_id']);
+            $calcdat = $this->db->get()->row_array();
+            $shipped = 0;
+            if ($calcdat['cnt'] > 0 ) {
+                $shipped = $calcdat['shipped'];
+            }
+            $rawdat['shipqty'] = $shipped;
             if ($rawdat['itemqty'] > $rawdat['shipqty']) {
                 $rush = 0;
                 if ($rawdat['order_rush']==1) {
@@ -8949,7 +8954,7 @@ Class Orders_model extends MY_Model
                     'artclass' => $rawdat['order_proj_status']==$this->JUST_APPROVED ? '' : 'notapprove',
                     'vendor' => $rawdat['vendor_name'],
                     'ordernum' => $rawdat['order_num'],
-                    'itemname' => $rawdat['vendor_name'] = '' ? $rawdat['item_number'] : $rawdat['item_number'].' - '.$rawdat['item_name'],
+                    'itemname' => $rawdat['item_id'] < 0 ? $rawdat['item_description'] : $rawdat['item_number'].' - '.$rawdat['item_name'],
                     'itemqty' => $rawdat['itemqty'],
                     'remainqty' => $remains,
                 ];
