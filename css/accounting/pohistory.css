@@ -59,6 +59,9 @@
     line-height: 30px!important;
     cursor: pointer;
 }
+.pocalendyears-arrowleft {
+    margin-right: 5px;
+}
 .pocalendyears-arrowleft.active, .pocalendyears-arrowright.active {
     visibility: visible;
 }
