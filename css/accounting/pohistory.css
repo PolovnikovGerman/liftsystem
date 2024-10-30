@@ -117,8 +117,8 @@
 }
 .pohcald-td.active {
     /* background: #dbdbf6; */
-    background: #b10000;
-    color: #FFFFFF;
+    background: #b10000!important;
+    color: #FFFFFF!important;
 }
 .pohcald-td.week {
     width: 94px;
@@ -147,9 +147,9 @@
     line-height: 14px!important;
 }
 .pohcald-totalprice span {
-    font-size: 8px;
+    font-size: 9px;
     position: relative;
-    top: -3px;
+    top: -2px;
     left: 2px;
 }
 .pohcald-pototal {
@@ -227,10 +227,10 @@
     border-right: 1px solid #d4d2d2;
 }
 .pohinfday-td.price span {
-    font-size: 8px;
+    font-size: 9px;
     position: relative;
     top: -3px;
-    left: 2px;
+    left: 1px;
 }
 .pohinfday-td.vendor {
     /*width: 54px;*/
