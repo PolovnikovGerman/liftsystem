@@ -10,17 +10,22 @@
 
 }
 .pohistoryviewlink {
-    color: #3736fe;
-    height: 38px;
-    line-height: 38px!important;
-    font-size: 16px;
-    font-style: italic;
     float: right!important;
     cursor: pointer;
+    color: #575757;
+    font-size: 12px;
+    height: 22px;
+    line-height: 22px!important;
+    padding: 0 8px;
+    border: 1px solid #b5b5b5;
+    border-radius: 5px;
+    background-color: #c8c8c8;
+    margin-top: 8px;
 }
 .pohistoryviewlink span {
-    color: #0000FF;
+    color: #575757;
     font-size: 14px;
+    margin-left: 3px;
 }
 .pooverleftpart {
     width: 570px;
@@ -31,11 +36,23 @@
 }
 .pooverviewsubtitle {
     height: 28px;
-    line-height: 28px;
+    line-height: 28px!important;
     font-size: 17px;
     font-weight: 600;
 }
+.poplacehideoldorders {
+    height: 28px;
+    line-height: 28px!important;
+    float: right!important;
+    font-size: 13px;
+}
+.poplacehideoldorders span {
+    font-size: 14px;
+    cursor: pointer;
+}
 .pooverviewdomestictabletitle {
+    width: 100%;
+    background-color: #e6e6e6;
 }
 .pooverviewdomestictabletitle div {
     height: 24px;
@@ -51,19 +68,19 @@
     width: 70px;
 }
 .pooverviewdomestictabletitle .vendor {
-    width: 64px;
+    width: 66px;
 }
 .pooverviewdomestictabletitle .ordernum {
     width: 42px;
 }
 .pooverviewdomestictabletitle .itemname {
-    width: 231px;
+    width: 226px;
 }
 .pooverviewdomestictabletitle .itemqty {
-    width: 41px;
+    width: 47px;
 }
 .pooverviewdomestictabletitle .remainqty {
-    width: 41px;
+    width: 57px;
 }
 .pooverviewdomestictablearea {
     border: 1px solid #ff0000;
@@ -100,12 +117,18 @@
     font-size: 14px!important;
     color: #ff0000;
 }
+.pooverviewdomestictablearea .rushall {
+    width: 38px;
+    font-size: 14px!important;
+    color: #ff0000;
+    border-right: 1px solid #b0b0b0;
+}
 .pooverviewdomestictablearea .rush3 {
     border-right: 1px solid #b0b0b0;
 }
 .pooverviewdomestictablearea .approved {
     width: 70px;
-    border-right: 1px solid #b0b0b0;
+    border-right: 2px solid #b0b0b0;
 }
 .pooverviewdomestictablearea .approved.notapprove {
     background-color: #fcfdab;
@@ -127,7 +150,7 @@
     font-weight: 600;
 }
 .pooverviewdomestictablearea .itemname {
-    width: 231px;
+    width: 224px;
     font-size: 12px!important;
     text-align: left!important;
     padding-left: 5px;
@@ -137,13 +160,17 @@
     border-right: 1px solid #b0b0b0;
 }
 .pooverviewdomestictablearea .itemqty {
-    width: 41px;
+    width: 47px;
     font-size: 12px!important;
     border-right: 1px solid #b0b0b0;
 }
 .pooverviewdomestictablearea .remainqty {
-    width: 41px;
+    width: 47px;
     font-size: 12px!important;
+}
+.pooverviewcustomtabletitle {
+    width: 100%;
+    background-color: #e6e6e6;
 }
 .pooverviewcustomtabletitle > div {
     height: 24px;
@@ -151,33 +178,37 @@
     font-size: 12px;
     text-align: center;
 }
-.pooverviewcustomtabletitle .rush {
-    margin-left: 20px;
-    width: 38px;
-}
-.pooverviewcustomtabletitle .approved {
-    width: 70px;
+/*.pooverviewcustomtabletitle .rush {*/
+/*    margin-left: 20px;*/
+/*    width: 38px;*/
+/*}*/
+.pooverviewcustomtabletitle .arrivedays {
+    margin-left: 12px;
+    width: 41px;
 }
 .pooverviewcustomtabletitle .eventdate {
-    width: 80px;
+    width: 49px;
 }
 .pooverviewcustomtabletitle .arrivedate {
-    width: 67px;
+    width: 52px;
 }
-.pooverviewcustomtabletitle .arrivedays {
-    width: 41px;
+.pooverviewcustomtabletitle .approved {
+    width: 80px;
 }
 .pooverviewcustomtabletitle .ordernum {
-    width: 41px;
+    width: 52px;
+}
+.pooverviewcustomtabletitle .customer {
+    width: 120px;
 }
 .pooverviewcustomtabletitle .itemname {
-    width: 231px;
+    width: 158px;
 }
 .pooverviewcustomtabletitle .itemqty {
-    width: 41px;
+    width: 50px;
 }
 .pooverviewcustomtabletitle .remainqty {
-    width: 41px;
+    width: 50px;
 }
 /* Table Body */
 .pooverviewcustomtablearea {
@@ -221,34 +252,34 @@
 }
 .pooverviewcustomtablearea .approved {
     font-size: 11px!important;
-    width: 70px;
-    border-right: 1px solid #b0b0b0;
+    width: 81px;
+    border-right: 2px solid #b0b0b0;
 }
 .pooverviewcustomtablearea .approved.notapprove {
     background-color: #fcfdab;
 }
 .pooverviewcustomtablearea .eventdate {
-    width: 80px;
+    width: 51px;
     border-right: 1px solid #b0b0b0;
 }
 .pooverviewcustomtablearea .arrivedate {
-    width: 80px;
+    width: 51px;
     border-right: 1px solid #b0b0b0;
 }
 .pooverviewcustomtablearea .arrivedays {
-    width: 25px;
+    width: 29px;
     border-right: 1px solid #b0b0b0;
 }
 .pooverviewcustomtablearea .ordernum {
-    width: 42px;
+    width: 52px;
     color: #0000FF;
     border-right: 1px solid #b0b0b0;
     cursor: pointer;
     font-size: 12px!important;
     font-weight: 600;
 }
-.pooverviewcustomtablearea .itemname {
-    width: 231px;
+.pooverviewcustomtablearea .customer {
+    width: 119px;
     font-size: 12px!important;
     text-align: left!important;
     padding-left: 5px;
@@ -257,12 +288,22 @@
     text-overflow: ellipsis;
     border-right: 1px solid #b0b0b0;
 }
+.pooverviewcustomtablearea .itemname {
+    width: 159px;
+    font-size: 12px!important;
+    text-align: left!important;
+    padding-left: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 2px solid #b0b0b0;
+}
 .pooverviewcustomtablearea .itemqty {
-    width: 41px;
+    width: 50px;
     font-size: 12px!important;
     border-right: 1px solid #b0b0b0;
 }
 .pooverviewcustomtablearea .remainqty {
-    width: 41px;
+    width: 50px;
     font-size: 12px!important;
 }

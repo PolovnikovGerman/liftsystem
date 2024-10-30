@@ -6,10 +6,10 @@
             <div class="numpp"><?=$numpp?></div>
             <?php if ($rush['rushterm']==2) : ?>
                 <div class="rush1"><i class="fa fa-star"></i></div>
+                <div class="rush3"><i class="fa fa-star"></i></div>
             <?php else: ?>
-                <div class="rush1">&nbsp;</div>
+                <div class="rushall"><i class="fa fa-star"></i></div>
             <?php endif; ?>
-            <div class="rush3"><i class="fa fa-star"></i></div>
             <div class="approved <?=$rush['artclass']?>"><?=$rush['artstage']?></div>
             <div class="vendor"><?=$rush['vendor']?></div>
             <div class="ordernum" data-order="<?=$rush['order_id']?>"><?=$rush['ordernum']?></div>
