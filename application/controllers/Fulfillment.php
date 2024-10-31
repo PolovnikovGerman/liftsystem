@@ -54,6 +54,10 @@ class Fulfillment extends MY_Controller
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
 
         $content_options = [];
+        $gmaps = 0;
+        if (!empty($this->config->item('google_map_key'))) {
+            $gmaps = 1;
+        }
         $content_options['start'] = $this->input->get('start', TRUE);
         foreach ($menu as $row) {
             if ($row['item_link']=='#vendorsview') {
@@ -112,6 +116,15 @@ class Fulfillment extends MY_Controller
         $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
         // Scroll panel
         $head['scripts'][] = array('src' => '/js/adminpage/jquery-scrollpanel.js');
+        // Order popup
+        $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
+        $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
+        if ($gmaps==1) {
+            $head['scripts'][]=array('src'=>'/js/leads/order_address.js');
+        }
+        // Select 2
+        $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
+        $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
 
         $options = [
             'title' => $head['title'],

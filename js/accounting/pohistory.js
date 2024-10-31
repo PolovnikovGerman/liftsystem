@@ -15,6 +15,7 @@ function init_pohistory() {
             if (parseInt($("#yearslideractive").val())==1) {
                 init_years_slider();
             }
+            leftmenu_alignment();
             $("#loader").hide();
         } else {
             $("#loader").hide();
@@ -42,7 +43,11 @@ function init_pohistory_content() {
         $(".historycalendday[data-dayweek='"+dayview+"']").addClass('active');
         $(".pohistinfdaytable").empty().removeClass('active');
         view_pohistory_details(dayview);
-    })
+    });
+    $(".pohinfday-tblbody").find('div.order').unbind('click').click(function (){
+        var order = $(this).data('order');
+        poedit_order(order);
+    });
 }
 
 function view_pohistory_details(dayview) {
