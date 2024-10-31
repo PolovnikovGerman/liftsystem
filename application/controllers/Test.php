@@ -4215,7 +4215,8 @@ class Test extends CI_Controller
     public function order_amount_transform()
     {
         $this->load->model('orders_model');
-        $this->orders_model->order_amount_transform();
+        // $this->orders_model->order_amount_transform('SR');
+        $this->orders_model->order_amount_transform('SB');
     }
 
     public function customleads()
