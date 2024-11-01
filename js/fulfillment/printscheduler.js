@@ -106,12 +106,12 @@ function init_ontimeorders_content() {
         }
         if (open==0) {
             $("#printschcurrentbody").hide();
-            $(".current").removeClass('open');
+            $(".currentcalend").removeClass('open');
             $("#printschcurrentorderview").empty().html('<img class="chevron-up" src="/img/printscheduler/chevron-down-white.svg">');
             $("#printschontimeopen").val(0);
         } else {
             $("#printschcurrentbody").show();
-            $(".current").addClass('open');
+            $(".currentcalend").addClass('open');
             $("#printschcurrentorderview").empty().html('<img class="chevron-up" src="/img/printscheduler/chevron-up-white.svg">');
             $("#printschontimeopen").val(1);
         }

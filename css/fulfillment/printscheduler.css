@@ -298,14 +298,14 @@
 
 
 
-.current {
+.currentcalend {
     width: 580px;
     direction: ltr;
     padding: 0 10px 10px;
     background: #908f90;
     height: 30px;
 }
-.current.open {
+.currentcalend.open {
     height: auto;
 }
 .current-title {
