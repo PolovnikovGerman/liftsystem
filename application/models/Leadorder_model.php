@@ -4645,6 +4645,27 @@ Class Leadorder_model extends My_Model {
                 return $out;
             }
             // Save Order Items, Imprint, Imprint Details, Item color
+            $shipping=$leadorder['shipping'];
+            if ($newplaceorder == 1) {
+                // Rebuild date
+                if (ifset($shipping,'shipdate',0) > 0) {
+                    $itmidx = 0;
+                    foreach ($order_items as $order_item) {
+                        $itemcolors=$order_item['items'];
+                        $coloridx = 0;
+                        foreach ($itemcolors as $itemcolor) {
+                            $trackings = $itemcolor['trackings'];
+                            $trackidx = 0;
+                            foreach ($trackings as $tracking) {
+                                $order_items[$itmidx]['items'][$coloridx]['trackings'][$trackidx]['trackdate'] = $shipping['shipdate'];
+                                $trackidx++;
+                            }
+                            $coloridx++;
+                        }
+                        $itmidx++;
+                    }
+                }
+            }
             $itemres=$this->_save_order_items($order_items, $order_id, $user_id);
             if ($itemres['result']==$this->error_result) {
                 $out['msg']=$itemres['msg'];
@@ -4653,7 +4674,6 @@ Class Leadorder_model extends My_Model {
 
             $order_items=$itemres['order_items'];
 
-            $shipping=$leadorder['shipping'];
             $shipres=$this->_save_order_shipping($shipping, $order_id, $user_id);
             if ($shipres['result']==$this->error_result) {
                 $out['msg']=$shipres['msg'];
@@ -11003,11 +11023,11 @@ Class Leadorder_model extends My_Model {
             $newitem['qtyinput_class']='normal';
             $newitem['qtyinput_title']='';
             $newtrackidx = -1;
-//            if (isset($shipping['shipdate'])) {
-//                $trackdate = $shipping['shipdate'];
-//            } else {
+            if (isset($shipping['shipdate'])) {
+                $trackdate = $shipping['shipdate'];
+            } else {
                 $trackdate = time();
-//            }
+            }
             $trackings[] = [
                 'tracking_id' => $newtrackidx,
                 'qty' => 0,
