@@ -8054,7 +8054,7 @@ Class Orders_model extends MY_Model
         $this->db->group_by('a.order_id');
         $proofsql = $this->db->get_compiled_select();
 
-        $this->db->select('v.*, coalesce(cnt,0) approved, o.debt_status, o.order_confirmation as order_confirm, o.update_date, ob.customer_ponum');
+        $this->db->select('v.*, coalesce(cnt,0) approved, o.debt_status, o.order_confirmation as order_confirm, o.update_date, ob.customer_ponum, o.order_blank');
         $this->db->from('v_order_balances v');
         $this->db->join('('.$proofsql.') p','p.order_id=v.order_id','left');
         $this->db->join('ts_orders o','o.order_id=v.order_id');
@@ -8115,65 +8115,86 @@ Class Orders_model extends MY_Model
             $owndat['dayclass'] = $dayclass;
             // Add sorting field
             $owndat['sortidx'] = '24-'.$owndat['batch_due'];
-            if ($owndat['approved']==1) {
+            if ($owndat['order_blank']==1) {
                 if ($owndat['type']==$this->accrec_credit) {
-                    $owndat['sortidx'] = '01-'.$owndat['batch_due'];
+                    $owndat['sortidx'] = '01-99'.$owndat['batch_due'];
                 } elseif ($owndat['type']==$this->accrec_willupd) {
-                    $owndat['sortidx'] = '02-'.$owndat['batch_due'];
+                    $owndat['sortidx'] = '02-99'.$owndat['batch_due'];
                 } elseif ($owndat['type']==$this->accrec_prepay) {
-                    $owndat['sortidx'] = '03-'.$owndat['batch_due'];
+                    $owndat['sortidx'] = '03-99'.$owndat['batch_due'];
                 } elseif ($owndat['type']==$this->accrec_terms) {
                     if ($days > 60) {
-                        $owndat['sortidx'] = '04-'.$owndat['batch_due'];
+                        $owndat['sortidx'] = '04-99'.$owndat['batch_due'];
                     } elseif ($days > 30 && $days <= 60) {
-                        $owndat['sortidx'] = '05-'.$owndat['batch_due'];
+                        $owndat['sortidx'] = '05-99'.$owndat['batch_due'];
                     } elseif ($days > 1 && $days <= 30) {
-                        $owndat['sortidx'] = '06-'.$owndat['batch_due'];
+                        $owndat['sortidx'] = '06-99'.$owndat['batch_due'];
                     } else {
-                        $owndat['sortidx'] = '13-'.$owndat['batch_due'];
+                        $owndat['sortidx'] = '13-99'.$owndat['batch_due'];
                     }
                 }
+                $owndat['approved']=1;
             } else {
-                // Not Approved
-                if ($owndat['type']==$this->accrec_credit) {
-                    if ($days > 60) {
-                        $owndat['sortidx'] = '15-'.$owndat['batch_due'];
-                    } elseif ($days > 30 && $days <= 60) {
-                        $owndat['sortidx'] = '14-'.$owndat['batch_due'];
-                    } elseif ($days > 1 && $days <= 30) {
-                        $owndat['sortidx'] = '08-'.$owndat['batch_due'];
-                    } else {
-                        $owndat['sortidx'] = '07-'.$owndat['batch_due'];
+                if ($owndat['approved']==1) {
+                    if ($owndat['type']==$this->accrec_credit) {
+                        $owndat['sortidx'] = '01-'.$owndat['batch_due'];
+                    } elseif ($owndat['type']==$this->accrec_willupd) {
+                        $owndat['sortidx'] = '02-'.$owndat['batch_due'];
+                    } elseif ($owndat['type']==$this->accrec_prepay) {
+                        $owndat['sortidx'] = '03-'.$owndat['batch_due'];
+                    } elseif ($owndat['type']==$this->accrec_terms) {
+                        if ($days > 60) {
+                            $owndat['sortidx'] = '04-'.$owndat['batch_due'];
+                        } elseif ($days > 30 && $days <= 60) {
+                            $owndat['sortidx'] = '05-'.$owndat['batch_due'];
+                        } elseif ($days > 1 && $days <= 30) {
+                            $owndat['sortidx'] = '06-'.$owndat['batch_due'];
+                        } else {
+                            $owndat['sortidx'] = '13-'.$owndat['batch_due'];
+                        }
                     }
-                } elseif ($owndat['type']==$this->accrec_willupd) {
-                    if ($days > 60) {
-                        $owndat['sortidx'] = '17-'.$owndat['batch_due'];
-                    } elseif ($days > 30 && $days <= 60) {
-                        $owndat['sortidx'] = '16-'.$owndat['batch_due'];
-                    } elseif ($days > 1 && $days <= 30) {
-                        $owndat['sortidx'] = '10-'.$owndat['batch_due'];
-                    } else {
-                        $owndat['sortidx'] = '09-'.$owndat['batch_due'];
-                    }
-                } elseif ($owndat['type']==$this->accrec_prepay) {
-                    if ($days > 60) {
-                        $owndat['sortidx'] = '19-'.$owndat['batch_due'];
-                    } elseif ($days > 30 && $days <= 60) {
-                        $owndat['sortidx'] = '18-'.$owndat['batch_due'];
-                    } elseif ($days > 1 && $days <= 30) {
-                        $owndat['sortidx'] = '12-'.$owndat['batch_due'];
-                    } else {
-                        $owndat['sortidx'] = '11-'.$owndat['batch_due'];
-                    }
-                } elseif ($owndat['type']==$this->accrec_terms) {
-                    if ($days > 60) {
-                        $owndat['sortidx'] = '23-'.$owndat['batch_due'];
-                    } elseif ($days > 30 && $days <= 60) {
-                        $owndat['sortidx'] = '22-'.$owndat['batch_due'];
-                    } elseif ($days > 1 && $days <= 30) {
-                        $owndat['sortidx'] = '21-'.$owndat['batch_due'];
-                    } else {
-                        $owndat['sortidx'] = '20-'.$owndat['batch_due'];
+                } else {
+                    // Not Approved
+                    if ($owndat['type']==$this->accrec_credit) {
+                        if ($days > 60) {
+                            $owndat['sortidx'] = '15-'.$owndat['batch_due'];
+                        } elseif ($days > 30 && $days <= 60) {
+                            $owndat['sortidx'] = '14-'.$owndat['batch_due'];
+                        } elseif ($days > 1 && $days <= 30) {
+                            $owndat['sortidx'] = '08-'.$owndat['batch_due'];
+                        } else {
+                            $owndat['sortidx'] = '07-'.$owndat['batch_due'];
+                        }
+                    } elseif ($owndat['type']==$this->accrec_willupd) {
+                        if ($days > 60) {
+                            $owndat['sortidx'] = '17-'.$owndat['batch_due'];
+                        } elseif ($days > 30 && $days <= 60) {
+                            $owndat['sortidx'] = '16-'.$owndat['batch_due'];
+                        } elseif ($days > 1 && $days <= 30) {
+                            $owndat['sortidx'] = '10-'.$owndat['batch_due'];
+                        } else {
+                            $owndat['sortidx'] = '09-'.$owndat['batch_due'];
+                        }
+                    } elseif ($owndat['type']==$this->accrec_prepay) {
+                        if ($days > 60) {
+                            $owndat['sortidx'] = '19-'.$owndat['batch_due'];
+                        } elseif ($days > 30 && $days <= 60) {
+                            $owndat['sortidx'] = '18-'.$owndat['batch_due'];
+                        } elseif ($days > 1 && $days <= 30) {
+                            $owndat['sortidx'] = '12-'.$owndat['batch_due'];
+                        } else {
+                            $owndat['sortidx'] = '11-'.$owndat['batch_due'];
+                        }
+                    } elseif ($owndat['type']==$this->accrec_terms) {
+                        if ($days > 60) {
+                            $owndat['sortidx'] = '23-'.$owndat['batch_due'];
+                        } elseif ($days > 30 && $days <= 60) {
+                            $owndat['sortidx'] = '22-'.$owndat['batch_due'];
+                        } elseif ($days > 1 && $days <= 30) {
+                            $owndat['sortidx'] = '21-'.$owndat['batch_due'];
+                        } else {
+                            $owndat['sortidx'] = '20-'.$owndat['batch_due'];
+                        }
                     }
                 }
             }
