@@ -8742,10 +8742,23 @@ Class Leadorder_model extends My_Model {
                 $label.='Payment ';
             }
             $label.='- '.date('m/d/y', $prow['batch_date']);
-//            if (empty($prow['batch_transaction'])) {
-//                // $label.=' (Internal)';
-//                $label.=' (Credit Card)';
-//            }
+            if (empty($prow['batch_transaction'])) {
+                if ($prow['batch_type']=='ACH') {
+                    $label .= ' (ACH)';
+                } elseif ($prow['batch_type']=='Cash') {
+                    $label .= ' (Cash)';
+                } elseif ($prow['batch_type']=='Check') {
+                    $label .= ' (Check)';
+                } elseif ($prow['batch_type']=='Internal') {
+                    $label .= ' (Internal)';
+                } elseif ($prow['batch_type']=='Wire') {
+                    $label .= ' (Wire)';
+                } elseif ($prow['batch_type']=='WriteOFF') {
+                    $label .= ' (WriteOFF)';
+                } else {
+                    $label .= ' (Credit Card)';
+                }
+            }
             if ($type=='payment' && !empty($prow['batch_transaction'])) {
                 if ($prow['batch_type']=='ACH') {
                     $label.=' (ACH)';
