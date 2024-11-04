@@ -27,7 +27,7 @@
             </div>
             <div class="pastdue-body"></div>
         </div>
-        <div class="current open">
+        <div class="currentcalend open">
             <div class="current-title">
                 <h4>ON TIME ORDERS:</h4>
                 <div class="current-summary">

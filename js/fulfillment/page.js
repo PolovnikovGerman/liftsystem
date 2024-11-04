@@ -64,6 +64,15 @@ function init_page(objid) {
             init_printscheduler_content();
             document.title = 'Lift: Print Shop Report';
             break;
+        case 'btitems':
+            $("#btitemsview").show();
+            init_btitemslist_view();
+            document.title = 'Lift: BT items DB';
+            break;
+        case 'sritems':
+            $("#sritemsview").show();
+            init_relievers_items();
+            break;
     }
 
 }
