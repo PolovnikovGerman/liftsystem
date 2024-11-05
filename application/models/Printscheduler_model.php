@@ -912,42 +912,45 @@ class Printscheduler_model extends MY_Model
         $this->db->join('ts_order_items oi','oic.order_item_id = oi.order_item_id')->join('ts_orders o','oi.order_id = o.order_id')->where('oic.order_itemcolor_id', $order_itemcolor_id);
         $orderdata = $this->db->get()->row_array();
         if (ifset($orderdata,'order_id',0) > 0) {
-            $this->load->model('inventory_model');
-            $diff = intval($shipped) + intval($kepted) + intval($misprint);
-            $balance = $this->inventory_model->inventory_color_income($inventory_color_id)-$this->inventory_model->inventory_color_outcome($inventory_color_id);
-            $newbalance = $balance-$diff;
-            if ($newbalance < 0) {
-                $out['msg'] = 'Enter Other QTY or Increase Income, or Choose other Inventory item';
-                return $out;
-            }
-            $orderdata = $this->_prepare_amount_save($orderdata, $inventory_color_id, $shipped, $kepted, $misprint, $plates);
-            $amountres = $this->_save_amount($orderdata, $user_id);
-            $out['msg'] = $amountres['msg'];
-            if ($amountres['result']==$this->success_result) {
-                $cogflag = $this->error_result;
-                $cogres = $this->inventory_model->_update_ordercog($orderdata['order_id']);
-                if ($cogres['result']==$this->success_result) {
-                    $cogflag = $this->success_result;
-                } else {
-                    $out['msg'] = $cogres['msg'];
+            $out['msg'] = 'Empty Outcome values';
+            if (floatval($shipped) + floatval($kepted) + floatval($misprint) + floatval($plates) > 0) {
+                $this->load->model('inventory_model');
+                $diff = intval($shipped) + intval($kepted) + intval($misprint);
+                $balance = $this->inventory_model->inventory_color_income($inventory_color_id)-$this->inventory_model->inventory_color_outcome($inventory_color_id);
+                $newbalance = $balance-$diff;
+                if ($newbalance < 0) {
+                    $out['msg'] = 'Enter Other QTY or Increase Income, or Choose other Inventory item';
+                    return $out;
                 }
-                if ($cogflag==$this->success_result) {
-                    $out['result']=$this->success_result;
-                    $out['order_id']=$orderdata['order_id'];
-                    $out['printshop_income_id']=$amountres['amount_id'];
-                    $out['printdate'] = date('Y-m-d', $orderdata['print_date']);
-                    // Update print_date & print_completed
-                    $passed = $this->_completed_itemcolor($orderdata['order_id'], $inventory_color_id);
-                    $print_compl = 0;
-                    if ($passed >= $orderdata['item_qty']) {
-                        $print_compl = 1;
+                $orderdata = $this->_prepare_amount_save($orderdata, $inventory_color_id, $shipped, $kepted, $misprint, $plates);
+                $amountres = $this->_save_amount($orderdata, $user_id);
+                $out['msg'] = $amountres['msg'];
+                if ($amountres['result']==$this->success_result) {
+                    $cogflag = $this->error_result;
+                    $cogres = $this->inventory_model->_update_ordercog($orderdata['order_id']);
+                    if ($cogres['result']==$this->success_result) {
+                        $cogflag = $this->success_result;
+                    } else {
+                        $out['msg'] = $cogres['msg'];
                     }
-                    $this->db->where('order_itemcolor_id', $orderdata['order_itemcolor_id']);
-                    $this->db->set('print_completed', $print_compl);
-                    if ($orderdata['colorprint']==0) {
-                        $this->db->set('print_date', time());
+                    if ($cogflag==$this->success_result) {
+                        $out['result']=$this->success_result;
+                        $out['order_id']=$orderdata['order_id'];
+                        $out['printshop_income_id']=$amountres['amount_id'];
+                        $out['printdate'] = date('Y-m-d', $orderdata['print_date']);
+                        // Update print_date & print_completed
+                        $passed = $this->_completed_itemcolor($orderdata['order_id'], $inventory_color_id);
+                        $print_compl = 0;
+                        if ($passed >= $orderdata['item_qty']) {
+                            $print_compl = 1;
+                        }
+                        $this->db->where('order_itemcolor_id', $orderdata['order_itemcolor_id']);
+                        $this->db->set('print_completed', $print_compl);
+                        if ($orderdata['colorprint']==0) {
+                            $this->db->set('print_date', time());
+                        }
+                        $this->db->update('ts_order_itemcolors');
                     }
-                    $this->db->update('ts_order_itemcolors');
                 }
             }
         }

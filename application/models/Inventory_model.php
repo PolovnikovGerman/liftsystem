@@ -1508,8 +1508,14 @@ class Inventory_model extends MY_Model
     public function get_orderreport_counts($options=array()) {
         $this->db->select('count(oa.amount_id) as cnt');
         $this->db->from('ts_order_amounts oa');
-        $this->db->join('ts_orders o','o.order_id=oa.order_id');
         $this->db->where('oa.printshop',1);
+        $this->db->join('ts_order_itemcolors oic', 'oic.order_itemcolor_id=oa.order_itemcolor_id');
+        $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');
+        $this->db->join('ts_orders o', 'o.order_id=oi.order_id');
+//        $this->db->select('count(oa.amount_id) as cnt');
+//        $this->db->from('ts_order_amounts oa');
+//        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+//        $this->db->where('oa.printshop',1);
         // Additional Options
         if (isset($options['search'])) {
             $this->db->join('ts_inventory_colors c','c.inventory_color_id=oa.inventory_color_id');
@@ -1628,7 +1634,9 @@ class Inventory_model extends MY_Model
         $this->db->from('ts_order_amounts oa');
         $this->db->join('ts_inventory_colors c', 'c.inventory_color_id=oa.inventory_color_id');
         $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
-        $this->db->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->join('ts_order_itemcolors oic','oic.order_itemcolor_id=oa.order_itemcolor_id');
+        $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');
+        $this->db->join('ts_orders o','o.order_id=oi.order_id');
         $this->db->join('('.$incomesql.') invincom','invincom.amount_id=oa.amount_id','left');
         $this->db->where('oa.printshop',1);
         if (isset($options['search'])) {
@@ -1713,11 +1721,13 @@ class Inventory_model extends MY_Model
         if ($printshop_income_id==0) {
             $res=$this->_newprintshop_order();
         } else {
-            $this->db->select('oa.*, oa.amount_id as printshop_income_id, c.inventory_item_id, o.customer_name as customer, o.order_num, i.inventory_type_id');
+            $this->db->select('oa.*, oa.amount_id as printshop_income_id, c.inventory_item_id, c.color, i.item_num, i.item_name,  o.customer_name as customer, o.order_num, i.inventory_type_id');
             $this->db->from('ts_order_amounts oa');
             $this->db->join('ts_inventory_colors c', 'c.inventory_color_id=oa.inventory_color_id');
             $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
-            $this->db->join('ts_orders o','o.order_id=oa.order_id');
+            $this->db->join('ts_order_itemcolors oic','oic.order_itemcolor_id=oa.order_itemcolor_id');
+            $this->db->join('ts_order_items oi','oi.order_item_id=oic.order_item_id');
+            $this->db->join('ts_orders o','o.order_id=oi.order_id');
             $this->db->where('oa.amount_id', $printshop_income_id);
             $res=$this->db->get()->row_array();
             if (!isset($res['amount_id'])) {
@@ -1794,6 +1804,7 @@ class Inventory_model extends MY_Model
         $totalitemcost=$platescost+$costitem;
         $data=array(
             'printshop_income_id'=>$order['printshop_income_id'],
+            'order_itemcolor_id' => $order['order_itemcolor_id'],
             'printshop_date'=>$order['printshop_date'],
             'order_num'=>$order['order_num'],
             'customer'=>$order['customer'],
@@ -1826,6 +1837,9 @@ class Inventory_model extends MY_Model
             'newprintshop' => $order['newprintshop'],
             'color_old' => $order['color_old'],
             'type_old' => $order['type_old'],
+            'color' => $order['color'],
+            'item_num' => $order['item_num'],
+            'item_name' => $order['item_name'],
         );
         return $data;
     }
@@ -1890,8 +1904,8 @@ class Inventory_model extends MY_Model
             // $orderdata['extracost']=$costs['inv_addcost'];
         }
         $data=$this->_prinshoporder_params($orderdata);
-        $data['items']=$orderdata['items'];
-        $data['colors']=$orderdata['colors'];
+//        $data['items']=$orderdata['items'];
+//        $data['colors']=$orderdata['colors'];
         $data['session']=$orderdata['session'];
         usersession($sessionid, $data);
         $out['result']=$this->success_result;
@@ -1983,6 +1997,8 @@ class Inventory_model extends MY_Model
             $out['order_id']=$orderdata['order_id'];
             $out['printshop_income_id']=$orderdata['printshop_income_id'];
             usersession($sessionid, $orderdata);
+            // Update
+
         }
         return $out;
     }

@@ -1640,12 +1640,12 @@ class Fulfillment extends MY_Controller
                 $error = '';
                 $data=$res['data'];
                 // Get Items for dropdown
-                $items=$this->inventory_model->get_printshopitem_list();
+                // $items=$this->inventory_model->get_printshopitem_list();
                 // Get Colors of Item
-                $colors=$this->inventory_model->get_item_colors($data['inventory_item_id']);
+                // $colors=$this->inventory_model->get_item_colors($data['inventory_item_id']);
                 $sessionid='order'.uniq_link(15);
-                $data['items']=$items;
-                $data['colors']=$colors;
+                // $data['items']=$items;
+                // $data['colors']=$colors;
                 $data['session']=$sessionid;
                 $data['showorange'] = $showorange;
                 $data['title'] = $res['title'];
