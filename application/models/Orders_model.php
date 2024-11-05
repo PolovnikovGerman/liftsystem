@@ -8054,7 +8054,7 @@ Class Orders_model extends MY_Model
         $this->db->group_by('a.order_id');
         $proofsql = $this->db->get_compiled_select();
 
-        $this->db->select('v.*, coalesce(cnt,0) approved, o.debt_status, o.order_confirmation as order_confirm, o.update_date, ob.customer_ponum, o.order_blank');
+        $this->db->select('v.*, coalesce(cnt,0) approved, o.debt_status, o.order_confirmation as order_confirm, o.debtstatus_date as update_date, ob.customer_ponum, o.order_blank');
         $this->db->from('v_order_balances v');
         $this->db->join('('.$proofsql.') p','p.order_id=v.order_id','left');
         $this->db->join('ts_orders o','o.order_id=v.order_id');
@@ -8604,20 +8604,24 @@ Class Orders_model extends MY_Model
     public function update_debtstatus($order_id, $debt_status)
     {
         $out=['result' => $this->error_result,'msg' => 'Order Not Exist'];
-        $this->db->select('order_id')->from('ts_orders')->where('order_id', $order_id);
+        $this->db->select('order_id, debt_status')->from('ts_orders')->where('order_id', $order_id);
         $orddat = $this->db->get()->row_array();
         if (ifset($orddat, 'order_id',0)==$order_id) {
             $out['result'] = $this->success_result;
-            $this->db->where('order_id', $order_id);
-            if (empty($debt_status)) {
-                $this->db->set('debt_status', NULL);
-            } else {
-                $this->db->set('debt_status', $debt_status);
+            if ($orddat['debt_status']!=$debt_status) {
+                $this->db->where('order_id', $order_id);
+                if (empty($debt_status)) {
+                    $this->db->set('debt_status', NULL);
+                    $this->db->set('debtstatus_date', NULL);
+                } else {
+                    $this->db->set('debt_status', $debt_status);
+                    $this->db->set('debtstatus_date', time());
+                }
+                $this->db->set('update_date', time());
+                $this->db->update('ts_orders');
             }
-            $this->db->set('update_date', time());
-            $this->db->update('ts_orders');
             // Get new data
-            $this->db->select('*')->from('ts_orders')->where('order_id', $order_id);
+            $this->db->select('*, debtstatus_date as update_date')->from('ts_orders')->where('order_id', $order_id);
             $out['data'] = $this->db->get()->row_array();
         }
         return $out;
