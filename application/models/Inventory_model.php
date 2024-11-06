@@ -1631,6 +1631,7 @@ class Inventory_model extends MY_Model
         $this->db->select('(oa.price+oa.extracost)*oa.misprint as misprintcost');
         $this->db->select('date_format(from_unixtime(oa.printshop_date),\'%Y%m%d\') as sortdatefld',FALSE);
         $this->db->select('invincom.cnt as countincome');
+        $this->db->select('oic.shipping_ready');
         $this->db->from('ts_order_amounts oa');
         $this->db->join('ts_inventory_colors c', 'c.inventory_color_id=oa.inventory_color_id');
         $this->db->join('ts_inventory_items i','i.inventory_item_id=c.inventory_item_id');
@@ -1709,6 +1710,7 @@ class Inventory_model extends MY_Model
                 'order_id'=>$row['order_id'],
                 'countincome' => $row['countincome'],
                 'details' => $details,
+                'shipping_ready' => $row['shipping_ready'],
             );
             $startidx--;
         }
@@ -1930,6 +1932,7 @@ class Inventory_model extends MY_Model
             $out['msg']='Enter Customer';
             return $out;
         }
+
         if ($orderdata['color_old']==$orderdata['inventory_color_id']) {
             // Calc diff, compare with balance
             $diff = (intval($orderdata['shipped']) + intval($orderdata['kepted']) + intval($orderdata['misprint'])) - $orderdata['printshop_oldqty'];
@@ -1997,8 +2000,8 @@ class Inventory_model extends MY_Model
             $out['order_id']=$orderdata['order_id'];
             $out['printshop_income_id']=$orderdata['printshop_income_id'];
             usersession($sessionid, $orderdata);
-            // Update
-
+            // Update scheduler
+            $this->_update_printscheduler($orderdata['order_itemcolor_id']);
         }
         return $out;
     }
@@ -2094,6 +2097,7 @@ class Inventory_model extends MY_Model
         }
         $order_id=$chk['data']['order_id'];
         $color_id = $chk['data']['inventory_color_id'];
+        $order_color = $chk['data']['order_itemcolor_id'];
         // Get amount
         $this->db->select('shipped, kepted, misprint');
         $this->db->from('ts_order_amounts');
@@ -2131,6 +2135,7 @@ class Inventory_model extends MY_Model
         $this->db->delete('ts_order_amounts');
         // Recalc COG
         $this->_update_ordercog($order_id);
+        $this->_update_printscheduler($order_color);
         $out['result']=$this->success_result;
         return $out;
     }
@@ -2242,7 +2247,7 @@ class Inventory_model extends MY_Model
                 if ($amntres['cnt']==0) {
                     $chkqty = 0;
                     break;
-                } elseif ($color['item_qty']>=$amntres['qtytotal']) {
+                } elseif ($color['item_qty'] > $amntres['qtytotal']) {
                     $chkqty = 0;
                     break;
                 }
@@ -2660,6 +2665,30 @@ class Inventory_model extends MY_Model
             'inventory' => $outcolors,
             'onboats' => $onboats,
         ];
+    }
+
+    private function _update_printscheduler($order_itemcolor_id)
+    {
+        // Update order item color
+        $outcome = 0;
+        $this->db->select('count(amount_id) as amntcnt, sum(shipped) as amnttotal')->from('ts_order_amounts')->where(['order_itemcolor_id' => $order_itemcolor_id]);
+        $amntres = $this->db->get()->row_array();
+        if ($amntres['amntcnt'] > 0) {
+            $outcome = $amntres['amnttotal'];
+        }
+        // Get itemcolor data
+        $this->db->select('item_qty')->from('ts_order_itemcolors')->where('order_itemcolor_id', $order_itemcolor_id);
+        $colordat = $this->db->get()->row_array();
+        // Update Item color print completed
+        $this->db->where('order_itemcolor_id', $order_itemcolor_id);
+        if ($outcome >= $colordat['item_qty']) {
+            $this->db->set('print_completed', 1);
+        } else {
+            $this->db->set('print_completed', 0);
+            $this->db->set('shipping_ready', 0);
+        }
+        $this->db->update('ts_order_itemcolors');
+        return true;
     }
 
 }
