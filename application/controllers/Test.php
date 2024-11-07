@@ -4045,11 +4045,11 @@ class Test extends CI_Controller
         echo 'File '.$filenorm.' ready'.PHP_EOL;
     }
 
-    public function order_amount_transform()
+    public function order_invamount_transform()
     {
         $this->load->model('orders_model');
-        // $this->orders_model->order_amount_transform('SR');
-        $this->orders_model->order_amount_transform('SB');
+        $this->orders_model->order_invamount_transform('SR');
+        // $this->orders_model->order_invamount_transform('SB');
     }
 
     public function customleads()
