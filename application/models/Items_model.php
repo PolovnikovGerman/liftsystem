@@ -10,6 +10,7 @@ Class Items_model extends My_Model
     function __construct()
     {
         parent::__construct();
+        ini_set('memory_limit', '-1');
     }
 
     public function count_searchres($search, $brand, $vendor_id='', $itemstatus = 0) {
