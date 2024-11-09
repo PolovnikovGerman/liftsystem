@@ -184,6 +184,8 @@ class Btitemdetails_model extends MY_Model
                 $colors = [];
                 $sessiondata['colors'] = $colors;
                 $sessiondata['deleted'] = $deleted;
+            } else {
+                $sessiondata['item']['printshop_inventory_id']='';
             }
             usersession($sessionsid, $sessiondata);
             // Recalc prices and
