@@ -5519,7 +5519,8 @@ function init_addneworderitem() {
                 init_addneworderitem();
                 // Open color select
                 if (parseInt(response.data.special)==0) {
-                    if (response.data.brand == 'SR') {
+                    // if (response.data.brand == 'SR') {
+                    if (parseInt(response.data.inventoryitem) == 1) {
                         $(".items_content_addqty").empty().html(response.data.qty).css('visibility','hidden'); //
                         $(".items_content_addprice").empty().html(response.data.price).css('visibility','hidden'); //
                         // $(".items_content_sub_total2[data-orderitem='" + orderitem_id + "']").find('span.itemsubtotal').empty().html(response.data.subtotal).css('visibility','hidden');

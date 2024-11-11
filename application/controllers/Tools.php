@@ -8,6 +8,7 @@ class Tools extends CI_Controller {
 		parent::__construct();
         $this->load->config('migration');
 		$this->load->library('Database/Seeder');
+        $this->load->helper('db_helper');
 		$this->seeder =  new Seeder();
 
 		// can only be called from the command line

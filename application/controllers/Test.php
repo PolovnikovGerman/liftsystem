@@ -4358,5 +4358,18 @@ class Test extends CI_Controller
             }
             echo 'Item '.$item['item_name'].' # '.$item['item_number'].' updated '.PHP_EOL;
         }
+        $this->db->select('item_id, item_number, item_name')->from('sb_items')->where('brand','SR');
+        $sritems = $this->db->get()->result_array();
+        foreach ($sritems as $sritem) {
+            $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $sritem['item_number']);
+            $invdat = $this->db->get()->row_array();
+            if (ifset($invdat,'inventory_item_id',0) > 0) {
+                $this->db->where('item_id', $sritem['item_id']);
+                $this->db->set('printshop_inventory_id', $invdat['inventory_item_id']);
+                $this->db->update('sb_items');
+            } else {
+                echo 'Item '.$sritem['item_number'].' NOT Found';
+            }
+        }
     }
 }
