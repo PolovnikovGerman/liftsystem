@@ -3,19 +3,22 @@
 class Migration_alt_orderitems extends CI_Migration {
 
     public function up() {
-        $this->dbforge->add_field(array(
-            'id' => array(
+        $fields = array(
+            'inventory_item_id' => array(
                 'type' => 'INT',
                 'constraint' => 11,
-                'auto_increment' => TRUE
+                'null' => true,
+                'default' => null,
+                'comment' => 'Inventory item ID'
             )
-        ));
-        $this->dbforge->add_key('id', TRUE);
-        $this->dbforge->create_table('alt_orderitems');
+        );
+        $this->dbforge->add_column('ts_order_items', $fields);
+        $this->db->query(add_foreign_key('ts_order_items', 'inventory_item_id', 'ts_inventory_items(inventory_item_id)', 'SET NULL', 'CASCADE'));
     }
 
     public function down() {
-        $this->dbforge->drop_table('alt_orderitems');
+        $this->db->query(drop_foreign_key('ts_order_items', 'inventory_item_id'));
+        $this->dbforge->drop_column('ts_order_items', 'inventory_item_id');
     }
 
 }
