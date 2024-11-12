@@ -4093,91 +4093,91 @@ class Test extends CI_Controller
 
 
     public function readnewitems() {
-//        $this->load->config('shipping');
-//        $filenorm = $this->config->item('upload_path_preload').'step1_bluetrack-item-db_INTERNAL.xlsx';
-//        $reader = new PhpOffice\PhpSpreadsheet\Reader\Xlsx();
-//        $reader->setReadDataOnly(true);
-//        $spreadsheet = $reader->load($filenorm);
-//        $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
-//        $numpp = 0;
-//        $items = [];
-//        foreach ($sheetData as $itemrow) {
-//            if ($numpp > 0) {
-//                $itemdata = $this->db->select('item_id, item_name')->from('sb_items')->where('item_number',$itemrow['A'])->get()->row_array();
-//                if (ifset($itemdata,'item_id', 0)==0) {
-//                    echo 'Item '.$itemrow['A'].' Not Found'.PHP_EOL;
-//                    die();
-//                } else {
-//                    $status = (strtoupper($itemrow['C'])=='YES' ? 1 : 0);
-//                    $items[] = [
-//                        'item_id' => $itemdata['item_id'],
-//                        'item_number' => $itemrow['A'],
-//                        'item_name' => $itemrow['B'],
-//                        'item_active' => $status,
-//                        'vendor_item' => $itemrow['E'],
-//                        'vendor' => $itemrow['D'],
-//                    ];
-//                }
-//            }
-//            $numpp++;
-//        }
-//
-//        foreach ($items as $item) {
-//            if ($item['item_active']==0) {
-//                $this->db->where('item_id', $item['item_id']);
-//                $this->db->set('item_active',0);
-//                $this->db->update('sb_items');
-//            } else {
-//                // Add vendor Item
-//                if (substr($item['vendor_item'],0,1)=='S') {
-//                    $this->db->select('vendor_id, vendor_zipcode')->from('vendors')->where('vendor_name','Bella');
-//                    $vendordat = $this->db->get()->row_array();
-//                    $vendor_id = $vendordat['vendor_id'];
-//                    $vendor_zip = $vendordat['vendor_zipcode'];
-//                } else {
-//                    $vendor_id = $this->config->item('inventory_vendor');
-//                    $vendor_zip = $this->config->item('zip');
-//                }
-//                $vendor_cnt = $this->config->item('default_country');
-//                $this->db->set('vendor_item_vendor', $vendor_id);
-//                $this->db->set('vendor_item_number', $item['vendor_item']);
-//                $this->db->set('vendor_item_name', $item['item_name']);
-//                $this->db->set('vendor_item_zipcode', $vendor_zip);
-//                $this->db->set('item_shipcountry', $vendor_cnt);
-//                $this->db->insert('sb_vendor_items');
-//                $vendor_item_id = $this->db->insert_id();
-//                if (substr($item['vendor_item'],0,1)=='i') {
-//                    $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $item['vendor_item']);
-//                    $invdat = $this->db->get()->row_array();
-//                    $invent_id = $invdat['inventory_item_id'];
-//                    $this->db->select('avg(price) as price')->from('ts_inventory_colors')->where('inventory_item_id', $invent_id);
-//                    $pricedat = $this->db->get()->row_array();
-//                    $this->db->where('vendor_item_id', $vendor_item_id);
-//                    $this->db->set('vendor_item_cost', $pricedat['price']);
-//                    $this->db->update('sb_vendor_items');
-//                }
-//                $this->db->where('item_id', $item['item_id']);
-//                $this->db->set('vendor_item_id', $vendor_item_id);
-//                $this->db->set('item_active', 1);
-//                if (substr($item['vendor_item'],0,1)=='i') {
-//                    $this->db->set('printshop_inventory_id', $invent_id);
-//                }
-//                $this->db->update('sb_items');
-//                if (substr($item['vendor_item'],0,1)=='i') {
-//                    // Update colors
-//                    $colors = $this->db->select('color, inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $invent_id)->get()->result_array();
-//                    $this->db->where('item_color_itemid', $item['item_id']);
-//                    $this->db->delete('sb_item_colors');
-//                    foreach ($colors as $color) {
-//                        $this->db->set('item_color_itemid', $item['item_id']);
-//                        $this->db->set('item_color', $color['color']);
-//                        $this->db->set('printshop_color_id', $color['inventory_color_id']);
-//                        $this->db->insert('sb_item_colors');
-//                    }
-//                }
-//            }
-//            echo 'Item '.$item['item_name'].' # '.$item['item_number'].' updated '.PHP_EOL;
-//        }
+        $this->load->config('shipping');
+        $filenorm = $this->config->item('upload_path_preload').'step1_bluetrack-item-db_INTERNAL.xlsx';
+        $reader = new PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $reader->setReadDataOnly(true);
+        $spreadsheet = $reader->load($filenorm);
+        $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+        $numpp = 0;
+        $items = [];
+        foreach ($sheetData as $itemrow) {
+            if ($numpp > 0) {
+                $itemdata = $this->db->select('item_id, item_name')->from('sb_items')->where('item_number',$itemrow['A'])->get()->row_array();
+                if (ifset($itemdata,'item_id', 0)==0) {
+                    echo 'Item '.$itemrow['A'].' Not Found'.PHP_EOL;
+                    die();
+                } else {
+                    $status = (strtoupper($itemrow['C'])=='YES' ? 1 : 0);
+                    $items[] = [
+                        'item_id' => $itemdata['item_id'],
+                        'item_number' => $itemrow['A'],
+                        'item_name' => $itemrow['B'],
+                        'item_active' => $status,
+                        'vendor_item' => $itemrow['E'],
+                        'vendor' => $itemrow['D'],
+                    ];
+                }
+            }
+            $numpp++;
+        }
+
+        foreach ($items as $item) {
+            if ($item['item_active']==0) {
+                $this->db->where('item_id', $item['item_id']);
+                $this->db->set('item_active',0);
+                $this->db->update('sb_items');
+            } else {
+                // Add vendor Item
+                if (substr($item['vendor_item'],0,1)=='S') {
+                    $this->db->select('vendor_id, vendor_zipcode')->from('vendors')->where('vendor_name','Bella');
+                    $vendordat = $this->db->get()->row_array();
+                    $vendor_id = $vendordat['vendor_id'];
+                    $vendor_zip = $vendordat['vendor_zipcode'];
+                } else {
+                    $vendor_id = $this->config->item('inventory_vendor');
+                    $vendor_zip = $this->config->item('zip');
+                }
+                $vendor_cnt = $this->config->item('default_country');
+                $this->db->set('vendor_item_vendor', $vendor_id);
+                $this->db->set('vendor_item_number', $item['vendor_item']);
+                $this->db->set('vendor_item_name', $item['item_name']);
+                $this->db->set('vendor_item_zipcode', $vendor_zip);
+                $this->db->set('item_shipcountry', $vendor_cnt);
+                $this->db->insert('sb_vendor_items');
+                $vendor_item_id = $this->db->insert_id();
+                if (substr($item['vendor_item'],0,1)=='i') {
+                    $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $item['vendor_item']);
+                    $invdat = $this->db->get()->row_array();
+                    $invent_id = $invdat['inventory_item_id'];
+                    $this->db->select('avg(price) as price')->from('ts_inventory_colors')->where('inventory_item_id', $invent_id);
+                    $pricedat = $this->db->get()->row_array();
+                    $this->db->where('vendor_item_id', $vendor_item_id);
+                    $this->db->set('vendor_item_cost', $pricedat['price']);
+                    $this->db->update('sb_vendor_items');
+                }
+                $this->db->where('item_id', $item['item_id']);
+                $this->db->set('vendor_item_id', $vendor_item_id);
+                $this->db->set('item_active', 1);
+                if (substr($item['vendor_item'],0,1)=='i') {
+                    $this->db->set('printshop_inventory_id', $invent_id);
+                }
+                $this->db->update('sb_items');
+                if (substr($item['vendor_item'],0,1)=='i') {
+                    // Update colors
+                    $colors = $this->db->select('color, inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $invent_id)->get()->result_array();
+                    $this->db->where('item_color_itemid', $item['item_id']);
+                    $this->db->delete('sb_item_colors');
+                    foreach ($colors as $color) {
+                        $this->db->set('item_color_itemid', $item['item_id']);
+                        $this->db->set('item_color', $color['color']);
+                        $this->db->set('printshop_color_id', $color['inventory_color_id']);
+                        $this->db->insert('sb_item_colors');
+                    }
+                }
+            }
+            echo 'Item '.$item['item_name'].' # '.$item['item_number'].' updated '.PHP_EOL;
+        }
         $this->db->select('item_id, item_number, item_name')->from('sb_items')->where('brand','SR');
         $sritems = $this->db->get()->result_array();
         foreach ($sritems as $sritem) {
