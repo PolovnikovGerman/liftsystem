@@ -7594,6 +7594,7 @@ Class Leadorder_model extends My_Model {
                         'imprint_details'=>$newdetais,
                         'imprint_locations'=>$irow['imprint_locations'],
                         'vendor_item_id' => $irow['vendor_item_id'],
+                        'inventory_item_id' => $irow['inventory_item_id'],
                         // 'qtyinput_class' => $irow['qtyinput_class'],
                     );
                 }
@@ -11580,6 +11581,11 @@ Class Leadorder_model extends My_Model {
         $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where(['inventory_item_id' => $inventory_item_id, 'color' => $color])->get()->row_array();
         if (ifset($invdat, 'inventory_color_id', 0) > 0) {
             $outcolor = $invdat['inventory_color_id'];
+        } else {
+            $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inventory_item_id)->like('color', $color, 'after')->get()->row_array();
+            if (ifset($invdat, 'inventory_color_id', 0) > 0) {
+                $outcolor = $invdat['inventory_color_id'];
+            }
         }
         return $outcolor;
     }
