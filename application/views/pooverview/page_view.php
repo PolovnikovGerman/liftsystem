@@ -15,14 +15,14 @@
         <div class="pooverleftpart">
             <div class="pooverviewsubtitle">Domestic / Other List to Place:</div>
             <div class="poplacehideoldorders">
-                <span class="chkpodomestic"><i class="fa fa-check-square-o"></i></span>
+                <span class="chkpodomestic"><i class="fa fa-check-square"></i></span>
                 hide > 52 weeks
             </div>
         </div>
         <div class="pooverrightpart">
             <div class="pooverviewsubtitle">Custom Shaped Orders to Place:</div>
             <div class="poplacehideoldorders">
-                <span class="chkpocustom"><i class="fa fa-check-square-o"></i></span>
+                <span class="chkpocustom"><i class="fa fa-check-square"></i></span>
                 hide > 52 weeks
             </div>
         </div>
