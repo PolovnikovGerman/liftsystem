@@ -4195,7 +4195,8 @@ class Test extends CI_Controller
 
     public function updatesrorders()
     {
-        $this->db->select('oi.order_item_id, v.item_number, o.order_num')->from('ts_order_items oi')->join('v_itemsearch v','oi.item_id=v.item_id')->join('ts_orders o','oi.order_id=o.order_id')->where('o.brand' , 'SR')->where('v.item_id > 0')->order_by('o.order_num');
+        echo 'Start SR orders transform'.PHP_EOL;
+        $this->db->select('oi.order_item_id, v.item_number, o.order_num')->from('ts_order_items oi')->join('v_itemsearch v','oi.item_id=v.item_id')->join('ts_orders o','oi.order_id=o.order_id')->where('o.brand' , 'SR')->where('v.item_id > 0')->where('oi.inventory_item_id',NULL)->order_by('o.order_num');
         $orditems = $this->db->get()->result_array();
         foreach ($orditems as $orditem) {
             $invitm = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $orditem['item_number'])->get()->row_array();
@@ -4216,5 +4217,29 @@ class Test extends CI_Controller
                 }
             }
         }
+        // Quotes
+        echo 'Start SR quotes transform'.PHP_EOL;
+        $this->db->select('qi.quote_item_id, v.item_number, q.quote_number')->from('ts_quote_items qi')->join('v_itemsearch v','qi.item_id=v.item_id')->join('ts_quotes q','qi.quote_id=q.quote_id')->where('q.brand' , 'SR')->where('v.item_id > 0')->where('qi.inventory_item_id',NULL)->order_by('q.quote_number');
+        $quoteitems = $this->db->get()->result_array();
+        foreach ($quoteitems as $orditem) {
+            $invitm = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $orditem['item_number'])->get()->row_array();
+            $inv_item = $invitm['inventory_item_id'];
+            $this->db->where('quote_item_id', $orditem['quote_item_id']);
+            $this->db->set('inventory_item_id', $inv_item);
+            $this->db->update('ts_quote_items');
+            // Colors
+            $ordcolors = $this->db->select('quote_itemcolor_id, item_color')->from('ts_quote_itemcolors')->where('quote_item_id', $orditem['quote_item_id'])->get()->result_array();
+            foreach ($ordcolors as $ordcolor) {
+                $colordat = $this->db->select('color, inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inv_item)->like('color', $ordcolor['item_color'],'after')->get()->row_array();
+                if (ifset($colordat,'inventory_color_id',0) > 0) {
+                    $this->db->where('quote_itemcolor_id', $ordcolor['quote_itemcolor_id']);
+                    $this->db->set('inventory_color_id', $colordat['inventory_color_id']);
+                    $this->db->update('ts_quote_itemcolors');
+                } else {
+                    echo 'Color '.$ordcolor['item_color'].' Quote '.$orditem['quote_number'].' Item '.$orditem['item_number'].' not found '.PHP_EOL;
+                }
+            }
+        }
+
     }
 }
