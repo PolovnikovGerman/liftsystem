@@ -174,15 +174,11 @@
     background-color: #e6e6e6;
 }
 .pooverviewcustomtabletitle > div {
-    height: 24px;
-    line-height: 24px;
-    font-size: 12px;
+    height: 22px;
+    line-height: 22px;
+    font-size: 11px;
     text-align: center;
 }
-/*.pooverviewcustomtabletitle .rush {*/
-/*    margin-left: 20px;*/
-/*    width: 38px;*/
-/*}*/
 .pooverviewcustomtabletitle .arrivedays {
     margin-left: 12px;
     width: 41px;
@@ -216,7 +212,7 @@
     width: 100%;
     max-height: 595px;
     overflow-y: auto;
-    border: 1px solid #720101;
+    border: 2px solid #767676;
 }
 .pooverviewcustomtablearea .sectiontitle {
     height: 20px;
@@ -270,6 +266,8 @@
 .pooverviewcustomtablearea .arrivedays {
     width: 29px;
     border-right: 1px solid #b0b0b0;
+    font-size: 11px;
+    font-weight: 600;
 }
 .pooverviewcustomtablearea .ordernum {
     width: 52px;
