@@ -1814,10 +1814,19 @@ Class Shipping_model extends MY_Model
                 if (isset($transitres['cities'])) {
                     $candidates = $transitres['cities'];
                     foreach ($candidates as $candidate) {
-                        if ($candidate['postalCode']==$shipTo['Address']['PostalCode']) {
-                            $shipTo['Address']['StateProvinceCode'] = $candidate['stateProvince'];
-                            $shipTo['Address']['City'] = $candidate['city'];
-                            break;
+                        if (isset($candidate['postalCode'])) {
+                            if ($candidate['postalCode']==$shipTo['Address']['PostalCode']) {
+                                $shipTo['Address']['StateProvinceCode'] = $candidate['stateProvince'];
+                                $shipTo['Address']['City'] = $candidate['city'];
+                                break;
+                            }
+                        } else {
+                            if (isset($candidate['city'])) {
+                                $shipTo['Address']['City'] = $candidate['city'];
+                            }
+                            if (isset($candidate['stateProvince'])) {
+                                $shipTo['Address']['StateProvinceCode'] = $candidate['stateProvince'];
+                            }
                         }
                     }
                     $transitres = $upsservice->timeInTransit($token, $shipFrom['Address'], $shipTo['Address'], $tntweigth, $tntpacks, $package_price,  date('Y-m-d', $startdeliv), '10:00:00');
