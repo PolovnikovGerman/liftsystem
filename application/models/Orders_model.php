@@ -8977,7 +8977,7 @@ Class Orders_model extends MY_Model
         } else {
             $dayend = strtotime('1970-01-01');
         }
-        $this->db->select('o.order_id, o.brand, a.order_proj_status, v.item_number, toi.item_description as item_name, o.order_num, t.arrive_date, t.event_date, o.customer_name as customer');
+        $this->db->select('o.order_id, o.brand, a.order_proj_status, v.item_number, toi.item_description as item_name, o.order_num, o.order_date, t.arrive_date, t.event_date, o.customer_name as customer');
         $this->db->select('toi.item_qty as itemqty, coalesce(toa.shipped,0) as shipqty');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings t','o.order_id = t.order_id');
@@ -9013,8 +9013,10 @@ Class Orders_model extends MY_Model
                 $days = 0;
                 if (!empty($rawdat['event_date'])) {
                     $days = ceil(($rawdat['event_date'] - time()) / (24*60*60));
-                } else {
+                } elseif (!empty($rawdat['arrive_date'])) {
                     $days = ceil(($rawdat['arrive_date'] - time()) / (24*60*60));
+                } else {
+                    $days = ceil(($rawdat['order_date'] - time()) / (24*60*60));
                 }
                 $remains = intval($rawdat['itemqty']) - intval($rawdat['shipqty']);
                 $out[] = [

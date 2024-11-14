@@ -27,15 +27,15 @@
     <?php foreach ($stands as $stand) : ?>
         <div class="datarow <?=$numpp%2==0 ? 'greydatarow' : 'whitedatarow'?>">
             <div class="numpp"><?=$numpp?></div>
-            <div class="arrivedays"><?=$stand['days']?></div>
+            <div class="arrivedays"><?=show_negative_value($stand['days'])?></div>
             <div class="eventdate"><?=$stand['eventdate']?></div>
             <div class="arrivedate"><?=$stand['arrive']?></div>
             <div class="approved <?=$stand['artclass']?>"><?=$stand['artstage']?></div>
             <div class="ordernum" data-order="<?=$stand['order_id']?>"><?=$stand['ordernum']?></div>
             <div class="customer"><?=$stand['customer']?></div>
             <div class="itemname"><?=$stand['itemname']?></div>
-            <div class="itemqty"><?=$stand['itemqty']?></div>
-            <div class="remainqty"><?=$stand['remainqty']?></div>
+            <div class="itemqty"><?=QTYOutput($stand['itemqty'])?></div>
+            <div class="remainqty"><?=QTYOutput($stand['remainqty'])?></div>
         </div>
         <?php $numpp++;?>
     <?php endforeach; ?>

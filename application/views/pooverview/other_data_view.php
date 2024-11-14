@@ -14,8 +14,8 @@
             <div class="vendor"><?=$rush['vendor']?></div>
             <div class="ordernum" data-order="<?=$rush['order_id']?>"><?=$rush['ordernum']?></div>
             <div class="itemname"><?=$rush['itemname']?></div>
-            <div class="itemqty"><?=$rush['itemqty']?></div>
-            <div class="remainqty"><?=$rush['remainqty']?></div>
+            <div class="itemqty"><?=QTYOutput($rush['itemqty'])?></div>
+            <div class="remainqty"><?=QTYOutput($rush['remainqty'])?></div>
         </div>
         <?php $numpp++; ?>
     <?php endforeach; ?>
@@ -31,8 +31,8 @@
             <div class="vendor"><?=$stand['vendor']?></div>
             <div class="ordernum" data-order="<?=$stand['order_id']?>"><?=$stand['ordernum']?></div>
             <div class="itemname"><?=$stand['itemname']?></div>
-            <div class="itemqty"><?=$stand['itemqty']?></div>
-            <div class="remainqty"><?=$stand['remainqty']?></div>
+            <div class="itemqty"><?=QTYOutput($stand['itemqty'])?></div>
+            <div class="remainqty"><?=QTYOutput($stand['remainqty'])?></div>
         </div>
         <?php $numpp++; ?>
     <?php endforeach; ?>

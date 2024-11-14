@@ -883,4 +883,16 @@ if (!function_exists('trackcodeurl')) {
         return $url;
     }
 }
+
+if (!function_exists('show_negative_value')) {
+    function show_negative_value($value)
+    {
+        if ($value>=0) {
+            return $value;
+        } else {
+            $outval = '(<span style="color:#ff0000">'.abs($value).'</span>)';
+            return $outval;
+        }
+    }
+}
 ?>
