@@ -8,11 +8,6 @@
     /*width: 1348px;*/
 }
 .pooverviewlink {
-    /*color: #3736fe;*/
-    /*font-size: 16px;*/
-    /*font-style: italic;*/
-    /*cursor: pointer;*/
-    /*margin-bottom: 35px;*/
     cursor: pointer;
     color: #575757;
     font-size: 12px;
@@ -25,11 +20,12 @@
     margin-top: 8px;
 }
 .pooverviewlink span {
-    /*color: #0000FF;*/
-    /*font-size: 14px;*/
     color: #575757;
     font-size: 14px;
     margin-right: 3px;
+}
+.pooverviewlink:hover {
+    background-color: #b5b5b5;
 }
 .pohistorytitle {
     height: 38px;

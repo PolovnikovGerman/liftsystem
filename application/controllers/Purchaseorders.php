@@ -675,6 +675,43 @@ class Purchaseorders extends MY_Controller
         show_404();
     }
 
+    public function pooverviewcontent()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand', '');
+            $domesticyear = ifset($postdata, 'domesticpoyear', 1);
+            $customyear = ifset($postdata, 'custompoyear', 1);
+            $content = ifset($postdata,'content', 'other');
+            if (!empty($brand)) {
+                $error = '';
+                $this->load->model('orders_model');
+                if ($content == 'other') {
+                    $other = $this->orders_model->get_pooverview_other($brand, $domesticyear);
+                    // Build Other content
+                    $otheroptions = [
+                        'rushs' => $other['otherrush'],
+                        'cntrush' => count($other['otherrush']),
+                        'stands' => $other['otherstand'],
+                        'cntstand' => count($other['otherstand']),
+                    ];
+                    $mdata['content'] = $this->load->view('pooverview/other_data_view', $otheroptions, TRUE);
+                } else {
+                    $custom = $this->orders_model->get_pooverview_custom($brand, $customyear);
+                    $customoptions = [
+                        'stands' => $custom['custstand'],
+                        'cntstand' => count($custom['custstand']),
+                    ];
+                    $mdata['content'] = $this->load->view('pooverview/custom_data_view', $customoptions, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function pohistoryyear()
     {
         if ($this->isAjax()) {

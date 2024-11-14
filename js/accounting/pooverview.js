@@ -42,6 +42,72 @@ function init_pooverview_content() {
         var order = $(this).data('order');
         poedit_order(order);
     })
+    // Show full / short other type
+    $("span.chkpodomestic").unbind('click').click(function (){
+        var domesticyear = 1;
+        if (parseInt($("#domesticpoyear").val())==1) {
+            domesticyear = 0;
+        }
+        $("#domesticpoyear").val(domesticyear);
+        if (domesticyear==0) {
+            $("span.chkpodomestic").empty().html('<i class="fa fa-square-o"></i>');
+        } else {
+            $("span.chkpodomestic").empty().html('<i class="fa fa-check-square"></i>');
+        }
+        show_domestic_content()
+    });
+    $("span.chkpocustom").unbind('click').click(function (){
+        var customyear = 1;
+        if (parseInt($("#custompoyear").val())==1) {
+            customyear = 0;
+        }
+        $("#custompoyear").val(customyear);
+        if (customyear==0) {
+            $("span.chkpocustom").empty().html('<i class="fa fa-square-o"></i>');
+        } else {
+            $("span.chkpocustom").empty().html('<i class="fa fa-check-square"></i>');
+        }
+        show_custom_content();
+    });
+}
+
+function show_domestic_content() {
+    var params = new Array();
+    params.push({name: 'brand', value: $("#pototalsbrand").val()});
+    params.push({name: 'domesticpoyear', value: $("#domesticpoyear").val()});
+    params.push({name: 'content', value: 'other'});
+    var url = "/purchaseorders/pooverviewcontent";
+    $("#loader").show();
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            $(".pooverviewdomestictablearea").empty().html(response.data.content);
+            $("#loader").hide();
+            leftmenu_alignment();
+            init_pooverview_content();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function show_custom_content() {
+    var params = new Array();
+    params.push({name: 'brand', value: $("#pototalsbrand").val()});
+    params.push({name: 'custompoyear', value: $("#custompoyear").val()});
+    params.push({name: 'content', value: 'custom'});
+    var url = "/purchaseorders/pooverviewcontent";
+    $("#loader").show();
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".pooverviewcustomtablearea").empty().html(response.data.content);
+            $("#loader").hide();
+            leftmenu_alignment();
+            init_pooverview_content();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
 }
 
 function poedit_order(order) {

@@ -11,7 +11,6 @@
 }
 .pohistoryviewlink {
     float: right!important;
-    cursor: pointer;
     color: #575757;
     font-size: 12px;
     height: 22px;
@@ -21,11 +20,15 @@
     border-radius: 5px;
     background-color: #c8c8c8;
     margin-top: 8px;
+    cursor: pointer;
 }
 .pohistoryviewlink span {
     color: #575757;
     font-size: 14px;
     margin-left: 3px;
+}
+.pohistoryviewlink:hover {
+    background-color: #b5b5b5;
 }
 .pooverleftpart {
     width: 570px;
@@ -44,24 +47,25 @@
     height: 28px;
     line-height: 28px!important;
     float: right!important;
-    font-size: 13px;
+    font-size: 11px;
 }
 .poplacehideoldorders span {
     font-size: 14px;
     cursor: pointer;
+    margin-right: 5px;
 }
 .pooverviewdomestictabletitle {
     width: 100%;
     background-color: #e6e6e6;
 }
 .pooverviewdomestictabletitle div {
-    height: 24px;
-    line-height: 24px;
-    font-size: 12px;
+    height: 22px;
+    line-height: 22px;
+    font-size: 11px;
     text-align: center;
 }
 .pooverviewdomestictabletitle .rush {
-    margin-left: 20px;
+    margin-left: 22px;
     width: 38px;
 }
 .pooverviewdomestictabletitle .approved {
@@ -74,16 +78,16 @@
     width: 42px;
 }
 .pooverviewdomestictabletitle .itemname {
-    width: 226px;
+    width: 223px;
 }
 .pooverviewdomestictabletitle .itemqty {
-    width: 47px;
+    width: 45px;
 }
 .pooverviewdomestictabletitle .remainqty {
     width: 57px;
 }
 .pooverviewdomestictablearea {
-    border: 1px solid #ff0000;
+    border: 2px solid #767676;
     width: 100%;
     max-height: 595px;
     overflow-y: auto;
@@ -93,10 +97,11 @@
     line-height: 20px;
     background-color: #b1b1b2;
     color: #000000;
-    text-align: center;
+    text-align: left;
     font-size: 12px;
     font-weight: 600;
     width: 100%;
+    padding-left: 9px;
 }
 .pooverviewdomestictablearea .sectiontitle.rush {
     color: #FFFFFF;
@@ -106,7 +111,7 @@
     height: 22px;
     line-height: 22px;
     text-align: center;
-    font-size: 11px;
+    font-size: 12px;
 }
 .pooverviewdomestictablearea .numpp {
     width: 22px;
@@ -129,13 +134,13 @@
 .pooverviewdomestictablearea .approved {
     width: 70px;
     border-right: 2px solid #b0b0b0;
+    font-size: 11px!important;
 }
 .pooverviewdomestictablearea .approved.notapprove {
     background-color: #fcfdab;
 }
 .pooverviewdomestictablearea .vendor {
     width: 64px;
-    font-size: 12px!important;
     border-right: 1px solid #b0b0b0;
     white-space: nowrap;
     overflow: hidden;
@@ -146,12 +151,10 @@
     color: #0000FF;
     border-right: 1px solid #b0b0b0;
     cursor: pointer;
-    font-size: 12px!important;
     font-weight: 600;
 }
 .pooverviewdomestictablearea .itemname {
     width: 224px;
-    font-size: 12px!important;
     text-align: left!important;
     padding-left: 5px;
     white-space: nowrap;
@@ -161,12 +164,10 @@
 }
 .pooverviewdomestictablearea .itemqty {
     width: 45px;
-    font-size: 12px!important;
     border-right: 1px solid #b0b0b0;
 }
 .pooverviewdomestictablearea .remainqty {
     width: 45px;
-    font-size: 12px!important;
 }
 .pooverviewcustomtabletitle {
     width: 100%;
