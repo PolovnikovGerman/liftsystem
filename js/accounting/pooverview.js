@@ -143,6 +143,21 @@ function poedit_order(order) {
                     $("#artModal").find('div.modal-header').removeClass('cancelorder');
                 }
                 navigation_init();
+                // Open popup with PO totals
+                var cogoptions = new Array();
+                cogoptions.push({name: 'order', value: order });
+                cogoptions.push({name: 'edit', value: 0});
+                cogoptions.push({name: 'ordersession', value: $("input#ordersession").val()});
+                var cogurl = '/leadorder/podetailsedit';
+                $.post(cogurl, cogoptions, function (cogresponse){
+                    if (cogresponse.errors=='') {
+                        $(".orderamountdetailsarea").empty().html(cogresponse.data.content).show();
+                        // Init content management
+                        init_profitedit_call(0);
+                    } else {
+                        show_error(cogresponse);
+                    }
+                },'json');
             }
         } else {
             show_error(response);
