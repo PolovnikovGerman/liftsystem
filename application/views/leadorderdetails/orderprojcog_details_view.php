@@ -1,4 +1,8 @@
-<div class="ordercogdetailsviewarea project">
+<div class="ordercogdetailsviewarea <?=$data['cogclass']?>">
+    <div class="ordercogdetailsviewclose">
+        <i class="fa fa-times-circle"></i>
+    </div>
+
     <div class="projcoglabel"><?=$data['itemtype']?></div>
     <div class="revenueareaproj">
         <div class="revenuetitle">Total Revenue:</div>
@@ -19,7 +23,7 @@
             <?php } ?>
         </div>
     </div>
-    <?php foreach ($data['list'] as $item) { ?>
+    <?php foreach ($data['list'] as $item) : ?>
         <div class="itemtitle">
             <div class="labelrow">TOTAL:</div>
             <div class="valuerow">
@@ -28,46 +32,37 @@
         </div>
         <div class="tabledataarea">
             <div class="titletable">
+                <div class="actions">&nbsp;</div>
                 <div class="qty">QTY</div>
+                <div class="price">Price</div>
                 <div class="date">Date</div>
                 <div class="amnttype">Type</div>
                 <div class="vendor">Vendor</div>
                 <div class="amntpaymetod">Pay Method</div>
                 <div class="amountsum">Amount</div>
-            </div>
-            <?php $details = $item['details'];?>
-            <?php foreach ($details as $detail) : ?>
-                <div class="tabledatasection <?=$detail['printshop']==1 ? 'printdetails' : 'details'?>">
-                    <?php if ($detail['printshop']==1) : ?>
-                        <div class="openprintamnt">Open</div>
-                    <?php else : ?>
-                        <div class="editamount <?=$edit_mode==1 ? 'actionhide' : ''?>" data-amount="<?=$detail['amount_id']?>"><i class="fa fa-pencil"></i></div>
-                        <div class="delamount <?=$edit_mode==1 ? 'actionhide' : ''?>" data-amount="<?=$detail['amount_id']?>"><i class="fa fa-trash"></i></div>
-                    <?php endif; ?>
-                    <div class="qtyamnt"><?=$detail['qty']?></div>
-                    <div class="dateamnt"><?=date('m/d/y', $detail['amount_date'])?></div>
-                    <div class="typeamnt"><?=$detail['type']?></div>
-                    <div class="vendoramnt"><?=$detail['vendor']?></div>
-                    <div class="paymetodamnt"><?=$detail['payment_method']?></div>
-                    <div class="amountsum"><?=MoneyOutput($detail['amount'], 2)?></div>
-                    <div class="profitdataperc"><?=$detail['profit_perc']?>%</div>
+                <div class="inclship" title="incl. shipping">
+                    <i class="fa fa-question-circle" aria-hidden="true"></i>
                 </div>
-            <?php endforeach;?>
+            </div>
+            <div class="tabledetailsitem" data-order="<?=$item['order_itemcolor_id']?>"><?=$item['detailsview']?></div>
+            <?php if ($item['totalamnt'] !== 0) : ?>
+                <div class="tabledetailstotalamnt"><?=MoneyOutput($item['totalamnt'])?></div>
+            <?php endif; ?>
             <?php if ($edit_mode==0) { ?>
                 <div class="placepo active" data-order="<?=$item['order_itemcolor_id']?>">+ Place Outside PO</div>
             <?php } ?>
             <?php $projects = $item['projects'];?>
             <?php foreach ($projects as $project) : ?>
             <div class="tabledatasection">
+                <div class="actions">To Print:</div>
                 <div class="qty"><?=$project['qty']?></div>
-                <div class="datadevide">-</div>
-                <div class="amnttype">TO PRINT</div>
-                <div class="datadevide">-</div>
-                <div class="vendor">PRINT SHOP</div>
-                <div class="datadevide">-</div>
+                <div class="price">-</div>
                 <div class="date"><?=date('M j', $data['print_date'])?></div>
+                <div class="amnttype">-</div>
+                <div class="vendor">PRINT SHOP</div>
                 <div class="amntpaymetod">Projected:</div>
                 <div class="amountsum"><?=MoneyOutput($project['amount'], 2)?></div>
+                <div class="inclship">&nbsp;</div>
                 <div class="profitdataperc"><?=$project['profit_perc']?>%</div>
             </div>
             <?php if ($data['completed']==1) : ?>
@@ -75,7 +70,7 @@
             <?php endif; ?>
             <?php endforeach; ?>
         </div>
-    <?php } ?>
+    <?php endforeach; ?>
     <div class="totalcogprojarea">
         <div class="totalcoglabel">Total COG:</div>
         <div class="totalcogvalue"><?=MoneyOutput($data['cog_value'])?></div>
