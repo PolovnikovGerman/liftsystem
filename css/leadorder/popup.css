@@ -2179,37 +2179,43 @@ input.artrepeat {
     float: left;
     height: 23px;
     line-height: 22px;
-    width: 126px;
+    /* width: 126px; */
     border-radius: 7px;
     margin-top: 7px;
+    border: 1px solid #000000;
+    cursor: pointer;
 }
 .block_10.profitdetailsviewarea {
     cursor: pointer;
 }
 .block_10.project {
-    background: url('/img/leadorder/bacgr_6_project.png') no-repeat transparent;
+    /* background: url('/img/leadorder/bacgr_6_project.png') no-repeat transparent; */
+    background-color: #001072;
     color: #FFFFEE;
+    height: 36px;
+    line-height: 36px;
+    margin-top: 0;
 }
 .block_10.black {
-    background: url('/img/leadorder/bacgr_6_black.png') no-repeat transparent;
+    /* background: url('/img/leadorder/bacgr_6_black.png') no-repeat transparent; */
     color: #FFFFEE;
 }
 .block_10.moroon {
-    background: url('/img/leadorder/bacgr_6_maroon.png') no-repeat transparent;
+    /* background: url('/img/leadorder/bacgr_6_maroon.png') no-repeat transparent; */
     color: #FFFFEE;    
 }
 .block_10.red {
-    background: url('/img/leadorder/bacgr_6_red.png') no-repeat transparent;        
+    /* background: url('/img/leadorder/bacgr_6_red.png') no-repeat transparent; */
     color: #FFFFEE;    
 }
 .block_10.orange {
-    background: url('/img/leadorder/bacgr_6_orange.png') no-repeat transparent;        
+    /* background: url('/img/leadorder/bacgr_6_orange.png') no-repeat transparent; */
 }
 .block_10.white {
-    background: url('/img/leadorder/bacgr_6_white.png') no-repeat transparent;        
+    /* background: url('/img/leadorder/bacgr_6_white.png') no-repeat transparent; */
 }
 .block_10.green {
-    background: url('/img/leadorder/bacgr_6_green.png') no-repeat transparent;    
+    /* background: url('/img/leadorder/bacgr_6_green.png') no-repeat transparent; */
 }
 .block_10_text1 {
     float: left;
@@ -2217,16 +2223,36 @@ input.artrepeat {
     padding-right: 5px;
     width: 83px;
 }
-.block_10_text_project {
-    float: left;    
-    text-align: center;
-    width: 126px;    
-}
+/*.block_10_text_project {*/
+/*    float: left;    */
+/*    text-align: center;*/
+/*    width: 126px;    */
+/*}*/
 .block_10_text2 {
     border-left: 1px solid;
     float: left;
     text-align: center;
-    width: 35px;
+    width: 60px;
+}
+.block_10.project .block_10_text2 {
+    border-left: none;
+    width: 106px;
+}
+.block_10.project .block_10_text2 > .detailsproject {
+    width: 100%;
+    text-align: left;
+    height: 18px;
+    line-height: 18px;
+    font-size: 14px;
+    padding-left: 5px;
+}
+.block_10.project .block_10_text2 > .detailscomplet {
+    width: 100%;
+    text-align: left;
+    height: 14px;
+    line-height: 14px;
+    font-size: 11px;
+    padding-left: 5px;
 }
 .profitdetails_tooltip {
     /*width: 462px;*/
@@ -2452,8 +2478,6 @@ input.artrepeat {
 }
 .marglef {
     float: left;
-    /* margin-left: 7px; */
-    /* margin-top: 10px; */
     margin-top: 8px;
     width: 987px;
 }
@@ -2463,11 +2487,12 @@ input.artrepeat {
     width: 148px;
     display: none;
 }
-.shippingdataviewarea {
-    /* cursor: pointer; */
+.marglef .bottomfinancearea {
     float: right!important;
-    /* margin-left: 56px; */
-    /* width: 166px; */
+    margin-right: 26px;
+}
+.shippingdataviewarea {
+    float: right !important;
 }
 .totalduedataviewarea {
     float: left;

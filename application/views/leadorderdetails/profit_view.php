@@ -2,5 +2,5 @@
     <div class="block_10_text1">
         <?=MoneyOutput($profit)?>
     </div>
-    <div class="block_10_text2"><?=round($profit_perc,0)?>%</div>
+    <div class="block_10_text2"><?=round($profit_perc,1)?>%</div>
 </div>
