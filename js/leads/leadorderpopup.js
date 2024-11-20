@@ -4071,6 +4071,7 @@ function init_orderbottom_content(edit_mode) {
 function init_profitedit_call(edit_mode) {
     $(".ordercogdetailsviewclose").unbind('click').click(function(){
         $(".orderamountdetailsarea").hide().empty();
+        init_orderbottom_content(edit_mode);
     });
     $(".editamount").unbind('click').click(function(){
         var amount = $(this).data('amount');
@@ -4083,22 +4084,6 @@ function init_profitedit_call(edit_mode) {
         var url='/leadorder/pototal_edit';
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                // $(".profitprojectdetails_tooltip").qtip('hide');
-                // $("#artNextModal").find('div.modal-dialog').css('width','500px');
-                // $("#artNextModal").find('.modal-title').empty().html('Enter PO Value');
-                // $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
-                // $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
-                // $("#artNextModal").on('hidden.bs.modal', function (e) {
-                //     $(document.body).addClass('modal-open');
-                // })
-                // // Date picker
-                // $("input#podateinpt").datepicker({
-                //     autoclose: true,
-                //     todayHighlight: true,
-                // }).on("change", function() {
-                //     show_amountchangesave();
-                //     save_amntchangedetails('amount_date', $(this).val());
-                // });
                 $(".tabledatasection[data-amount='"+amount+"']").empty().html(response.data.content);
                 $("input#podateinpt").datepicker({
                     autoclose: true,
@@ -4124,6 +4109,7 @@ function init_profitedit_call(edit_mode) {
                 if (response.errors=='') {
                     // Change content
                     $(".orderamountdetailsarea").empty().html(response.data.content);
+                    $("#leadorderprofitarea").empty().html(response.data.profit);
                     // Init content management
                     init_profitedit_call(edit_mode);
                 } else {
@@ -4169,6 +4155,7 @@ function init_pochange(edit_mode) {
             if (response.errors=='') {
                 $(".orderamountdetailsarea").empty().html(response.data.content);
                 // Init content management
+                $("#leadorderprofitarea").empty().html(response.data.profit);
                 init_profitedit_call(edit_mode);
             } else {
                 show_error(response);

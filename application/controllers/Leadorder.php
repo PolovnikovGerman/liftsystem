@@ -5809,6 +5809,8 @@ class Leadorder extends MY_Controller
                         'data' => $res,
                     ];
                     $mdata['content']=$this->load->view('leadorderdetails/orderprojcog_details_view', $options, TRUE);
+                    // Profit Button
+                    $mdata['profit'] = $this->_prepare_profitbtn_view($res['profit']);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -6781,10 +6783,22 @@ class Leadorder extends MY_Controller
                         'data' => $res,
                     ];
                     $mdata['content']=$this->load->view('leadorderdetails/orderprojcog_details_view', $options, TRUE);
+                    // Profit Button
+                    $mdata['profit'] = $this->_prepare_profitbtn_view($res['profit']);
                 }
             }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    private function _prepare_profitbtn_view($profitoptions)
+    {
+        if ($profitoptions['profit_class']=='project') {
+            $profit_view = $this->load->view('leadorderdetails/profitproject_view', $profitoptions, TRUE);
+        } else {
+            $profit_view = $this->load->view('leadorderdetails/profit_view', $profitoptions, TRUE);
+        }
+        return $profit_view;
     }
 }

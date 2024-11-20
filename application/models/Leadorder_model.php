@@ -452,6 +452,10 @@ Class Leadorder_model extends My_Model {
 
         if ($res['order_cog']=='') {
             $res['profit_class']=$this->project_class;
+            // Build completed & project
+            $profitproj = $this->get_profitproj_order($order_id);
+            $res['profit_completed'] = $profitproj['completed'];
+            $res['profit_project'] = $profitproj['project'];
         } else {
             $res['profit_class']=orderProfitClass($res['profit_perc']);
         }
@@ -784,6 +788,8 @@ Class Leadorder_model extends My_Model {
             $data['showbilladdress']=1;
         }
         $data['brand'] = $brand;
+        $data['profit_completed'] = 0;
+        $data['profit_project'] = $this->config->item('default_profit');
         $out['order_system_type']=$defsystem;
         $out['order']=$data;
         $out['numtickets']=0;
@@ -9613,6 +9619,38 @@ Class Leadorder_model extends My_Model {
         $out['list'] = $list;
         $out['itemtype'] = $itemtype;
         $out['completed'] = $completed;
+        // Profit Options
+        $profoptions = [
+            'order_id'=>$order_id,
+            'bgcolor' => '#FFFFFF',
+            'hitcolor' => '#000000',
+            'profit_view'=>'',
+            'edit_mode' => 0,
+            'profit' => $orddata['profit'],
+            'profit_perc' => $orddata['profit_perc'],
+        ];
+        if (empty($orddata['profit_perc'])) {
+            $profoptions['profit_class'] = 'project';
+            $profdata = $this->get_profitproj_order($order_id);
+            $profoptions['profit_completed'] = $profdata['completed'];
+            $profoptions['profit_project'] = $profdata['project'];
+        } else {
+            $profoptions['profit_class'] = $out['cogclass'];
+//            if ($classprof=='green') {
+//                $profoptions['bgcolor']='#00e947';
+//            } elseif ($classprof=='red') {
+//                $profoptions['bgcolor']='#ff0000';
+//                $profoptions['hitcolor']='#ffffff';
+//            } elseif ($classprof=='black') {
+//                $profoptions['bgcolor']='#000000';
+//                $profoptions['hitcolor']='#ffffff';
+//            } elseif ($classprof=='orange') {
+//                $profoptions['bgcolor']='#ea8a0e';
+//            } elseif ($classprof=='moroon') {
+//                $profoptions['bgcolor']='#6d0303';
+//                $profoptions['hitcolor']='#ffffff';
+        }
+        $out['profit'] = $profoptions;
         return $out;
     }
 
@@ -10334,10 +10372,14 @@ Class Leadorder_model extends My_Model {
                 if (intval($amntdata['shipped'])==0) {
                     $amntdata['shipped_price'] = '';
                 } else {
-                    if (floatval($amntdata['shipped_price']) > 0) {
-                        $amntdata['amount_sum'] = round(intval($amntdata['shipped']) * floatval($amntdata['shipped_price']),2);
-                    } else {
+                    if ($fldname=='amount_sum') {
                         $amntdata['shipped_price'] = round(floatval($amntdata['amount_sum']) / intval($amntdata['shipped']),3);
+                    } elseif ($fldname=='shipped_price') {
+                        $amntdata['amount_sum'] = round(intval($amntdata['shipped']) * floatval($amntdata['shipped_price']),2);
+                    } elseif ($fldname=='shipped') {
+                        if (!empty($amntdata['shipped_price'])) {
+                            $amntdata['amount_sum'] = round(intval($amntdata['shipped']) * floatval($amntdata['shipped_price']),2);
+                        }
                     }
                 }
                 $out['price'] = $amntdata['shipped_price'];
@@ -11612,6 +11654,24 @@ Class Leadorder_model extends My_Model {
                     }
                 }
             }
+        }
+        return $out;
+    }
+
+    public function get_profitproj_order($order_id)
+    {
+        $out = ['completed' => 0, 'project' => $this->config->item('default_profit')];
+        $ordres = $this->db->select('revenue, profit, shipping, cc_fee')->from('ts_orders')->where('order_id', $order_id)->get()->row_array();
+        $cog = $ordres['revenue']-$ordres['profit']-$ordres['shipping']-$ordres['cc_fee'];
+        $itmres = $this->db->select('count(oic.order_itemcolor_id) as cnt, sum(oic.item_qty) itemqty, sum(oic.item_qty*oic.item_price) as itemtotal')->from('ts_order_itemcolors oic')
+            ->join('ts_order_items toi', 'oic.order_item_id = toi.order_item_id')->where('toi.order_id', $order_id)->get()->row_array();
+        $amntres = $this->db->select('count(oa.amount_id) as cnt, sum(oa.shipped) as itemqty, sum(oa.amount_sum) as itemtotal')->from('ts_order_amounts oa')->join('ts_order_itemcolors toi','oa.order_itemcolor_id = toi.order_itemcolor_id')
+        ->join('ts_order_items item', 'toi.order_item_id = item.order_item_id')->where('item.order_id', $order_id)->get()->row_array();
+        if ($amntres['cnt'] > 0 && $itmres['itemqty'] > 0) {
+            $out['completed'] = round($amntres['itemqty']/$itmres['itemqty']*100,0);
+        }
+        if ($amntres['cnt'] > 0 && $cog != 0) {
+            $out['project'] = round(($cog - $amntres['itemtotal']) / $cog * 100,2);
         }
         return $out;
     }
