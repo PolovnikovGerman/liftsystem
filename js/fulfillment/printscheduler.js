@@ -79,7 +79,7 @@ function init_pastdueorders_content() {
         });
         $("input.pastorderprintdate[data-order='"+order+"']").datepicker('show');
     });
-    $(".pdo-table-tr").unbind('click').click(function (){
+    $(".pdo-table-td-ship").unbind('click').click(function (){
         var order = $(this).data('order');
         // Get Print date and brand
         var url = '/printscheduler/pastorderdetails';
