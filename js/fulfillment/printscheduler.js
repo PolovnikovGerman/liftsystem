@@ -79,6 +79,18 @@ function init_pastdueorders_content() {
         });
         $("input.pastorderprintdate[data-order='"+order+"']").datepicker('show');
     });
+    $(".pdo-table-tr").unbind('click').click(function (){
+        var order = $(this).data('order');
+        // Get Print date and brand
+        var url = '/printscheduler/pastorderdetails';
+        $.post(url, {order_id: order}, function (pastresponse){
+            if (pastresponse.errors=='') {
+                init_pastshedule(pastresponse.data.printdate);
+            } else {
+                show_error(pastresponse);
+            }
+        },'json');
+    });
 }
 
 function pastupdate(printdate, order) {
@@ -94,6 +106,54 @@ function pastupdate(printdate, order) {
             leftmenu_alignment();
         } else {
             show_error(response);
+        }
+    },'json');
+}
+
+function init_pastshedule(printdate) {
+    var params = new Array();
+    params.push({name: 'printdate', value: printdate});
+    params.push({name: 'brand', value: $("#printschbrand").val()});
+    params.push({name: 'pastorder', value: 1});
+    var url = '/printscheduler/dayscheduler';
+    $("#loader").show();
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".right-block").empty().html(response.data.content);
+            $(".day-block-open").addClass('hide');
+            $(".day-block-open[data-orderday='"+printdate+"']").removeClass('hide').addClass('active');
+            $(".current-table").hide();
+            $(".day-name-arrow").removeClass('open').addClass('closed').empty().html('<img class="chevron-up" src="/img/printscheduler/chevron-down-white.svg">');
+            $(".day-block-open[data-orderday='"+printdate+"']").find('div.day-arrow-open').empty().html('<img class="long-arrow-right" src="/img/printscheduler/long-arrow-right-white.svg">');
+            $(".current-table[data-orderday='"+printdate+"']").show();
+            $(".day-name-arrow[data-orderday='"+printdate+"']").removeClass('closed').addClass('open').empty().html('<img class="chevron-up" src="/img/printscheduler/chevron-up-white.svg">');
+            // $("#loader").hide();
+            $(".day-block-open.hide").find('div.day-arrow-open').unbind('click');
+            $(".day-block-open.active").find('div.day-arrow-open').unbind('click').click(function (){
+                $(".right-block").empty();
+                init_printscheduler_current();
+                leftmenu_alignment();
+            })
+            // Show content
+            var dataurl = '/printscheduler/dayscheduledetails';
+            $.post(dataurl, params, function (dresponse){
+                if (dresponse.errors=='') {
+                    $("#stockordersdata").empty().html(dresponse.data.stockview);
+                    $("#platesordersdata").empty().html(dresponse.data.plateview);
+                    $(".ready-print-block").empty().html(dresponse.data.printview);
+                    $(".ready-ship-block").empty().html(dresponse.data.readyship);
+                    $(".completed-print-block").empty().html(dresponse.data.completed);
+                    $(".shipped-block").empty().html(dresponse.data.shippedview);
+                    $("#loader").hide();
+                    init_printscheduler_dayview();
+                } else {
+                    show_error(dresponse);
+                }
+            },'json');
+            init_printscheduler_dayview();
+        }  else {
+            show_error(response);
+            $("#loader").hide();
         }
     },'json');
 }
@@ -137,6 +197,7 @@ function init_ontimeorders_content() {
         var params = new Array();
         params.push({name: 'printdate', value: printdate});
         params.push({name: 'brand', value: $("#printschbrand").val()});
+        params.push({name: 'pastorder', value: 0});
         var url = '/printscheduler/dayscheduler';
         $("#loader").show();
         $.post(url, params, function (response){

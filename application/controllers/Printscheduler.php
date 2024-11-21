@@ -53,6 +53,26 @@ class Printscheduler extends MY_Controller
         show_404();
     }
 
+    public function pastorderdetails()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Order Not Found';
+            $postdata = $this->input->post();
+            $order_id = ifset($postdata,'order_id', '');
+            if (!empty($order_id)) {
+                $this->load->model('orders_model');
+                $orddat = $this->orders_model->get_order_detail($order_id);
+                if (ifset($orddat, 'order_id',0)==$order_id) {
+                    $error = '';
+                    $mdata['printdate'] = date('Y-m-d', $orddat['print_date']);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function dayscheduler()
     {
         if ($this->isAjax()) {
@@ -60,10 +80,11 @@ class Printscheduler extends MY_Controller
             $error = 'Empty Print Date';
             $postdata = $this->input->post();
             $printdate = ifset($postdata,'printdate', '');
+            $pastorder = ifset($postdata, 'pastorder', 0);
             $brand = ifset($postdata,'brand', 'SR');
             if (!empty($printdate)) {
                 $error = '';
-                $dates = $this->printscheduler_model->get_ontimedates($brand);
+                $dates = $this->printscheduler_model->get_ontimedates($brand, $pastorder);
                 $weekbgn = date('W', $dates['min']);
                 $yearbgn = date('Y', $dates['min']);
                 $startweek = getDatesByWeek($weekbgn, $yearbgn);
