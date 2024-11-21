@@ -269,6 +269,11 @@
 .pdo-table-td-art {
     width: 24px;
 }
+.pdo-table-tr.notapproved .pdo-table-td-ship, .pdo-table-tr.notapproved .pdo-table-td-order, .pdo-table-tr.notapproved .pdo-table-td-items,
+.pdo-table-tr.notapproved .pdo-table-td-imp, .pdo-table-tr.notapproved .pdo-table-td-prints, .pdo-table-tr.notapproved .pdo-table-td-itemcolor, .pdo-table-tr.notapproved .pdo-table-td-descriptions,
+.pdo-table-tr.notapproved .pdo-table-td-art {
+    opacity: 0.4;
+}
 .icon-move {
     width: 12px;
     height: 17px;
