@@ -35,7 +35,7 @@
     margin-top: 30px;
 }
 .pohistcalendartable {
-    width: 778px;
+    width: 788px;
     max-height: 567px;
     border: 1px solid #000;
 }
@@ -105,7 +105,7 @@
     border-bottom: 1px solid #4a4949;
 }
 .pohcald-td {
-    width: 95px;
+    width: 97px;
     height: 67px;
     padding-left: 4px;
     border-right: 1px solid #4a4949;
@@ -161,7 +161,7 @@
     color: #fff;
 }
 .pohistinfdaytable {
-    width: 503px;
+    width: 518px;
     float: right!important;
 }
 .pohistinfdaytable.active {
@@ -217,7 +217,7 @@
     border-right: 1px solid #d4d2d2;
 }
 .pohinfday-td.price {
-    width: 52px;
+    width: 69px;
     text-align: center;
     font-size: 12px;
     border-right: 1px solid #d4d2d2;
@@ -229,8 +229,7 @@
     left: 1px;
 }
 .pohinfday-td.vendor {
-    /*width: 54px;*/
-    width: 86px;
+    width: 97px; /* 86 */
     text-align: center;
     font-size: 12px;
     border-right: 1px solid #d4d2d2;
@@ -239,7 +238,7 @@
     font-weight: 600;
 }
 .pohinfday-td.order {
-    width: 39px;
+    width: 48px;
     font-size: 12px;
     font-weight: 600;
     color: #0000ff;
@@ -249,7 +248,7 @@
 .pohinfday-td.item {
     font-size: 12px;
     width: 200px;
-    padding-left: 4px;
+    padding-left: 6px;
     border-right: 1px solid #d4d2d2;
 }
 .pohinfday-td.item.custom {

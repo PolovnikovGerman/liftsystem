@@ -727,6 +727,14 @@ class Purchaseorders extends MY_Controller
                     $content = $this->load->view('pooverview/pohistory_calendar_view', ['datas' => $res], TRUE);
                 }
                 $mdata['content'] = $content;
+                $mdata['current'] = 0;
+                if ($year==date('Y')) {
+                    $dayview = time();
+                    $res = $this->orders_model->get_pohistory_details($brand, $dayview);
+                    $mdata['current_content'] = $this->load->view('pooverview/pohistory_details_view', $res, TRUE);
+                    $mdata['current'] = 1;
+                    $mdata['dayview'] = strtotime(date('Y-m-d'));
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }

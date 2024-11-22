@@ -8,6 +8,10 @@ function init_pohistory() {
         if (response.errors=='') {
             $(".pohcald-tblbody").empty().html(response.data.content);
             $(".pohistinfdaytable").empty().removeClass('active');
+            if (parseInt(response.data.current)==1) {
+                $(".historycalendday[data-dayweek='"+response.data.dayview+"']").addClass('active');
+                $(".pohistinfdaytable").empty().html(response.data.current_content).addClass('active');
+            }
             init_pohistory_content();
             if (parseInt($("#pohistoryslider").val())==0) {
                 pohistory_build_slider();

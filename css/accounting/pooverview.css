@@ -31,8 +31,8 @@
     background-color: #b5b5b5;
 }
 .pooverleftpart {
-    width: 570px;
-    margin-right: 50px;
+    width: 585px;
+    margin-right: 34px;
 }
 .pooverrightpart {
     width: 690px;
@@ -69,22 +69,22 @@
     width: 38px;
 }
 .pooverviewdomestictabletitle .approved {
-    width: 70px;
+    width: 78px;
 }
 .pooverviewdomestictabletitle .vendor {
     width: 66px;
 }
 .pooverviewdomestictabletitle .ordernum {
-    width: 42px;
+    width: 45px;
 }
 .pooverviewdomestictabletitle .itemname {
     width: 223px;
 }
 .pooverviewdomestictabletitle .itemqty {
-    width: 45px;
+    width: 47px;
 }
 .pooverviewdomestictabletitle .remainqty {
-    width: 57px;
+    width: 59px;
 }
 .pooverviewdomestictablearea {
     border: 2px solid #767676;
@@ -95,8 +95,8 @@
 .pooverviewdomestictablearea .sectiontitle {
     height: 20px;
     line-height: 20px;
-    background-color: #b1b1b2;
-    color: #000000;
+    background-color: #414141;
+    color: #FFFFFF;
     text-align: left;
     font-size: 12px;
     font-weight: 600;
@@ -132,7 +132,7 @@
     border-right: 1px solid #b0b0b0;
 }
 .pooverviewdomestictablearea .approved {
-    width: 70px;
+    width: 78px;
     border-right: 2px solid #b0b0b0;
     font-size: 11px!important;
 }
@@ -147,7 +147,7 @@
     text-overflow: ellipsis;
 }
 .pooverviewdomestictablearea .ordernum {
-    width: 42px;
+    width: 45px;
     color: #0000FF;
     border-right: 1px solid #b0b0b0;
     cursor: pointer;
@@ -163,11 +163,11 @@
     border-right: 1px solid #b0b0b0;
 }
 .pooverviewdomestictablearea .itemqty {
-    width: 45px;
+    width: 47px;
     border-right: 1px solid #b0b0b0;
 }
 .pooverviewdomestictablearea .remainqty {
-    width: 45px;
+    width: 47px;
 }
 .pooverviewcustomtabletitle {
     width: 100%;
@@ -264,10 +264,13 @@
     border-right: 1px solid #b0b0b0;
 }
 .pooverviewcustomtablearea .arrivedays {
-    width: 29px;
+    width: 35px;
     border-right: 1px solid #b0b0b0;
     font-size: 11px;
     font-weight: 600;
+}
+.pooverviewcustomtablearea .arrivedays.negative {
+    color: #ff0000;
 }
 .pooverviewcustomtablearea .ordernum {
     width: 52px;
