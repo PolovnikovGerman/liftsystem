@@ -451,7 +451,7 @@ Class Leadorder_model extends My_Model {
         }
 
         // if ($res['order_cog']=='') {
-        if ($res['amnt']==0) {
+        if ($res['profit_perc']==null) {
             $res['profit_class']=$this->project_class;
             // Build completed & project
             $profitproj = $this->get_profitproj_order($order_id);
