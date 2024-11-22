@@ -18,7 +18,6 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date < ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date',0);
-        $this->db->where('o.order_placed', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -30,7 +29,6 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date < ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date',0);
-        $this->db->where('o.order_placed', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -43,7 +41,6 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date < ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date',0);
-        $this->db->where('o.order_placed', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -56,7 +53,6 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date',0);
-        $this->db->where('o.order_placed', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -68,7 +64,6 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date',0);
-        $this->db->where('o.order_placed', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -81,7 +76,6 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date',0);
-        $this->db->where('o.order_placed', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -104,17 +98,15 @@ class Printscheduler_model extends MY_Model
     {
         $curdate = strtotime(date('Y-m-d'));
         // get order details
-        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, toi.order_itemcolor_id, s.order_approved');
+        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, toi.order_itemcolor_id, o.order_approved');
         $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.print_date');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
         $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
-        $this->db->join('v_order_statuses s', 's.order_id=o.order_id');
         $this->db->where('o.print_date < ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date', 0);
-        $this->db->where('o.order_placed', 0);
         // Add vendor
         $this->db->where('v.vendor_id', $this->config->item('inventory_vendor'));
         if ($brand=='SR') {
@@ -154,7 +146,6 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date', 0);
-        $this->db->where('o.order_placed', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -174,7 +165,6 @@ class Printscheduler_model extends MY_Model
             $this->db->where('o.print_date < ', $dayend);
             $this->db->where('o.is_canceled',0);
             $this->db->where('o.shipped_date', 0);
-            $this->db->where('o.order_placed', 0);
             if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
             } else {
@@ -216,7 +206,6 @@ class Printscheduler_model extends MY_Model
         }
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date', 0);
-        $this->db->where('o.order_placed', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -236,19 +225,17 @@ class Printscheduler_model extends MY_Model
         $dayend = strtotime('+1 day', $daybgn);
 
         // get order details
-        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, sh.event_date, toi.order_itemcolor_id, s.order_approved');
+        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, sh.event_date, toi.order_itemcolor_id, o.order_approved');
         $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.print_date');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
         $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
-        $this->db->join('v_order_statuses s', 's.order_id=o.order_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date', 0);
-        $this->db->where('o.order_placed', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -299,7 +286,6 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date', 0);
-        $this->db->where('o.order_placed', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -654,7 +640,6 @@ class Printscheduler_model extends MY_Model
         $this->db->where('oic.print_completed', 1);
         $this->db->where('oic.shipping_ready',0);
         $this->db->where('o.shipped_date', 0);
-        $this->db->where('o.order_placed', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -680,7 +665,6 @@ class Printscheduler_model extends MY_Model
         $this->db->where('toi.print_completed', 1);
         $this->db->where('toi.shipping_ready',0);
         $this->db->where('o.shipped_date', 0);
-        $this->db->where('o.order_placed', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -720,7 +704,6 @@ class Printscheduler_model extends MY_Model
         $this->db->where('oic.print_date > ',0);
         $this->db->where('oic.print_completed', 0);
         $this->db->where('o.shipped_date', 0);
-        $this->db->where('o.order_placed', 0);
         $this->db->where('o.print_user != ', null);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
@@ -748,7 +731,6 @@ class Printscheduler_model extends MY_Model
         $this->db->where('oic.print_date > ',0);
         $this->db->where('oic.print_completed', 0);
         $this->db->where('o.shipped_date', 0);
-        $this->db->where('o.order_placed', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -833,7 +815,6 @@ class Printscheduler_model extends MY_Model
         $this->db->where('oic.print_completed', 1);
         $this->db->where('oic.shipping_ready > ',0);
         // $this->db->where('o.shipped_date', 0);
-        $this->db->where('o.order_placed', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
@@ -859,7 +840,6 @@ class Printscheduler_model extends MY_Model
         $this->db->where('toi.print_completed', 1);
         $this->db->where('toi.shipping_ready > ',0);
         // $this->db->where('o.shipped_date', 0);
-        $this->db->where('o.order_placed', 0);
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
