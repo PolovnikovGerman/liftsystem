@@ -6698,7 +6698,8 @@ class Leadorder extends MY_Controller
                         'order_by' => 'v.vendor_name',
                         /* 'exclude' => $this->config->item('inventory_vendor'), */
                     ];
-                    $vendors=$this->vendors_model->get_vendors_list($v_options);
+                    // $vendors=$this->vendors_model->get_vendors_list($v_options);
+                    $vendors = $this->vendors_model->get_vendor_partners();
                     $methods=$this->orders_model->get_methods_edit();
                     /* Row for edit */
                     $options = [

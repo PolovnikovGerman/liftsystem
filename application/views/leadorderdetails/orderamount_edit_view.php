@@ -15,7 +15,11 @@
     <select class="orderamntvendorinpt">
         <option value=""></option>
         <?php foreach ($vendors as $vendor) : ?>
-            <option value="<?=$vendor['vendor_id']?>" <?=$amount['vendor_id']==$vendor['vendor_id'] ? 'selected="selected"' : ''?>><?=$vendor['vendor_name']?></option>
+            <?php if ($vendor['vendor_id'] < 0) : ?>
+                <option value="<?=$vendor['vendor_id']?>" disabled="disabled"><?=$vendor['vendor_name']?></option>
+            <?php else: ?>
+                <option value="<?=$vendor['vendor_id']?>" <?=$amount['vendor_id']==$vendor['vendor_id'] ? 'selected="selected"' : ''?>><?=$vendor['vendor_name']?></option>
+            <?php endif; ?>
         <?php endforeach; ?>
     </select>
 </div>

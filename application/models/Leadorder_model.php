@@ -10329,11 +10329,25 @@ Class Leadorder_model extends My_Model {
                     if ($color['item_id']==$ordercolor) {
                         $find = 1;
                         $colordata = $color;
+                        $item_id = $order_item['item_id'];
+                        $vendor_item = '';
+                        if ($item_id > 0) {
+                            $vendor_item = $order_item['vendor_item_id'];
+                        }
                         break;
                     }
                 }
             }
             if ($find==1) {
+                $vendor_id = $order['vendor_id'];
+                $vendor_cost = 0;
+                if (!empty($vendor_item)) {
+                    $venditemdat = $this->db->select('vendor_item_id, vendor_item_vendor, vendor_item_cost')->from('sb_vendor_items')->where('vendor_item_id', $vendor_item)->get()->row_array();
+                    if (ifset($venditemdat,'vendor_item_id',0)==$vendor_item) {
+                        $vendor_id = $venditemdat['vendor_item_vendor'];
+                        $vendor_cost = $venditemdat['vendor_item_cost'];
+                    }
+                }
                 $amount_data=array(
                     'amount_id'=>0,
                     'order_id'=>$order['order_id'],
@@ -10341,9 +10355,9 @@ Class Leadorder_model extends My_Model {
                     'amount_date'=>time(),
                     'amount_sum' => 0,
                     'shipped' => '',
-                    'shipped_price' => '',
+                    'shipped_price' => $vendor_cost,
                     'oldamount_sum' => 0,
-                    'vendor_id' => $order['vendor_id'],
+                    'vendor_id' => $vendor_id,
                     'method_id'=>'',
                     'is_shipping'=> $order['is_shipping'],
                     'lowprofit'=>'',
