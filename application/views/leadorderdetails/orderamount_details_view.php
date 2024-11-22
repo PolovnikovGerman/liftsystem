@@ -1,12 +1,6 @@
 <?php $numpp = 1; ?>
 <?php foreach ($details as $detail) : ?>
     <div class="tabledatasection <?=$detail['printshop']==1 ? 'printdetails' : 'details'?> <?=$numpp%2==0 ? 'whitedatarow' : 'greydatarow'?>" data-amount="<?=$detail['amount_id']?>">
-        <?php if ($detail['printshop']==1) : ?>
-            <div class="openprintamnt">Open</div>
-        <?php else : ?>
-            <div class="editamount <?=$edit_mode==1 ? 'actionhide' : ''?>" data-amount="<?=$detail['amount_id']?>"><i class="fa fa-pencil"></i></div>
-            <div class="delamount <?=$edit_mode==1 ? 'actionhide' : ''?>" data-amount="<?=$detail['amount_id']?>"><i class="fa fa-trash"></i></div>
-        <?php endif; ?>
         <div class="qtyamnt"><?=$detail['qty']?></div>
         <div class="priceamnt"><?=$detail['price']?></div>
         <div class="dateamnt"><?=date('m/d/y', $detail['amount_date'])?></div>
@@ -21,6 +15,12 @@
                 <i class="fa fa-square-o"></i>
             <?php endif; ?>
         </div>
+        <?php if ($detail['printshop']==1) : ?>
+            <div class="openprintamnt">Open</div>
+        <?php else : ?>
+            <div class="editamount <?=$edit_mode==1 ? 'actionhide' : ''?>" data-amount="<?=$detail['amount_id']?>"><i class="fa fa-pencil"></i></div>
+            <div class="delamount <?=$edit_mode==1 ? 'actionhide' : ''?>" data-amount="<?=$detail['amount_id']?>"><i class="fa fa-trash"></i></div>
+        <?php endif; ?>
         <div class="profitdataperc"><?=$detail['profit_perc']?>%</div>
     </div>
     <?php $numpp++; ?>

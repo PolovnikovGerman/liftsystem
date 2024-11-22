@@ -23,6 +23,7 @@
             <?php } ?>
         </div>
     </div>
+<!--    <div id="orderprojcogarea">        -->
     <?php foreach ($data['list'] as $item) : ?>
         <div class="itemtitle">
             <div class="labelrow">TOTAL:</div>
@@ -32,7 +33,6 @@
         </div>
         <div class="tabledataarea">
             <div class="titletable">
-                <div class="actions">&nbsp;</div>
                 <div class="qty">QTY</div>
                 <div class="price">Price</div>
                 <div class="date">Date</div>
@@ -43,6 +43,7 @@
                 <div class="inclship" title="incl. shipping">
                     <i class="fa fa-question-circle" aria-hidden="true"></i>
                 </div>
+                <div class="actions">&nbsp;</div>
             </div>
             <div class="tabledetailsitem" data-order="<?=$item['order_itemcolor_id']?>"><?=$item['detailsview']?></div>
             <?php if ($item['totalamnt'] !== 0) : ?>
@@ -54,7 +55,6 @@
             <?php $projects = $item['projects'];?>
             <?php foreach ($projects as $project) : ?>
             <div class="tabledatasection">
-                <div class="actions">To Print:</div>
                 <div class="qty"><?=$project['qty']?></div>
                 <div class="price">-</div>
                 <div class="date"><?=date('M j', $data['print_date'])?></div>
@@ -64,6 +64,7 @@
                 <div class="amountsum"><?=MoneyOutput($project['amount'], 2)?></div>
                 <div class="inclship">&nbsp;</div>
                 <div class="profitdataperc"><?=$project['profit_perc']?>%</div>
+                <div class="actions">To Print:</div>
             </div>
             <?php if ($data['completed']==1) : ?>
                 <div class="amountcompleted">100% Complete</div>
@@ -71,6 +72,8 @@
             <?php endforeach; ?>
         </div>
     <?php endforeach; ?>
+<!--    </div>-->
+
     <div class="totalcogprojarea">
         <div class="totalcoglabel">Total COG:</div>
         <div class="totalcogvalue"><?=MoneyOutput($data['cog_value'])?></div>
