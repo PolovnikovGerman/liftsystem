@@ -4149,7 +4149,7 @@ a.historydetailsview {
 }
 .ordercogdetailsviewarea {
     float: left;
-    width: 827px;
+    width: 876px; /* 827px; */
     padding: 10px!important;
     margin: 9px;
 }
@@ -6054,7 +6054,7 @@ div.trackservicelnk > input {
     font-size: 13px;
 }
 .ordercogdetailsviewarea > .tabledataarea { /* .ordercogdetailsviewarea.project > .tabledataarea */
-    width: 762px;
+    width: 811px; /* 762px */;
     margin-bottom: 21px;
 }
 .ordercogdetailsviewarea > .tabledataarea > .titletable { /* .ordercogdetailsviewarea.project > .tabledataarea > .titletable */
@@ -6104,7 +6104,7 @@ div.trackservicelnk > input {
     width: 95px;
 }
 .ordercogdetailsviewarea > .tabledataarea > .titletable > .inclship {
-    width: 35px;
+    width: 24px; /* 35px; */
 }
 .ordercogdetailsviewarea > .tabledataarea > .placepo { /* .ordercogdetailsviewarea.project > .tabledataarea > .placepo { */
     border: 1px solid #000000;
@@ -6152,18 +6152,42 @@ div.trackservicelnk > input {
     color: #252525;
     cursor: pointer;
     font-size: 18px;
-    border-right: 1px solid #000000;
+    /* border-right: 1px solid #000000; */
 }
 .ordercogdetailsviewarea > .tabledataarea > .tabledetailsitem >.tabledatasection > .saveamount {
-    width: 31px;
-    color: #00d300;
+    /*width: 31px;*/
+    /*color: #00d300;*/
+    /*cursor: pointer;*/
+    /*font-size: 18px;*/
+    background: #05a050;
+    background: linear-gradient(to top, #077239, #04c664);
+    border: 1px solid #4a4a4a;
+    border-radius: 5px;
+    width: 53px;
+    height: 18px;
+    line-height: 16px!important;
+    color: #fff;
+    font-size: 14px;
+    text-align: center;
+    margin: 0 3px;
     cursor: pointer;
-    font-size: 18px;
 }
 .ordercogdetailsviewarea > .tabledataarea > .tabledetailsitem >.tabledatasection > .cancelamount {
-    width: 32px;
-    color: #FF0000;
-    font-size: 18px;
+    /*width: 32px;*/
+    /*color: #FF0000;*/
+    /*font-size: 18px;*/
+    /*cursor: pointer;*/
+    background: #c8051a;
+    background: linear-gradient(to top, #a50418, #e7061b);
+    border: 1px solid #4a4a4a;
+    border-radius: 5px;
+    width: 57px;
+    height: 18px;
+    line-height: 16px!important;
+    color: #fff;
+    font-size: 14px;
+    text-align: center;
+    margin: 0 3px;
     cursor: pointer;
 }
 .ordercogdetailsviewarea > .tabledataarea > .tabledetailsitem >.tabledatasection > .qtyamnt {
@@ -6197,7 +6221,8 @@ div.trackservicelnk > input {
     border-right: 1px solid #000000;
 }
 .ordercogdetailsviewarea > .tabledataarea > .tabledetailsitem >.tabledatasection > .includeship {
-    width: 34px;
+    width: 24px; /* 34px; */
+    border-right: 1px solid #000000;
 }
 .ordercogdetailsviewarea > .tabledataarea > .tabledetailsitem >.tabledatasection > .profitdataperc {
     position: absolute;

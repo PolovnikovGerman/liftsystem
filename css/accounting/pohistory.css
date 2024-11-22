@@ -186,6 +186,14 @@
     float: right!important;
     margin-right: 10px;
 }
+.pohinfday-tr.subtitle {
+    background: #d4d4d4;
+    text-align: center;
+    font-weight: 600;
+}
+.pohinfday-tr.subtitle .pohinfday-td.order {
+    color: #000 !important;
+}
 .pohinfday-tblbody {
     width: 100%;
     max-height: 536px;

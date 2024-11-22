@@ -1,6 +1,4 @@
 <input type="hidden" id="amntsession" value="<?=$session?>"/>
-<div class="saveamount"><i class="fa fa-check-circle"></i></div>
-<div class="cancelamount"><i class="fa fa-times-circle"></i></div>
 <div class="qtyamnt">
     <input type="text" class="centeralign orderamntqtyinpt" value="<?=$amount['shipped']?>" placeholder="Qty"/>
 </div>
@@ -37,3 +35,6 @@
 <div class="includeship">
     <input type="checkbox" class="incudeshipcheck" value=1 <?=$amount['is_shipping']==1 ? 'checked="checked"' : ''?>>
 </div>
+<div class="saveamount">save</div>
+<div class="cancelamount">cancel</div>
+

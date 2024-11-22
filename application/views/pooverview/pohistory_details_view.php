@@ -2,6 +2,15 @@
     <div class="infday-date"><?=date('D - M j, Y', $date)?></div>
     <div class="infday-infpo"><?=$total?> POs (<?=$regular?> Regular, <?=$custom?> Custom)</div>
 </div>
+<div class="pohinfday-tr subtitle">
+    <div class="pohinfday-td time">Time</div>
+    <div class="pohinfday-td price">Total</div>
+    <div class="pohinfday-td vendor">Vendor</div>
+    <div class="pohinfday-td order">Order</div>
+    <div class="pohinfday-td item">Item</div>
+    <div class="pohinfday-td qty">Qty</div>
+</div>
+
 <?php if (count($details)>0):?>
 <div class="pohinfday-tblbody">
 <?php $numpp=0; ?>
