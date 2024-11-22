@@ -3,19 +3,17 @@
 class Migration_alt_vendor_parner extends CI_Migration {
 
     public function up() {
-        $this->dbforge->add_field(array(
-            'id' => array(
-                'type' => 'INT',
-                'constraint' => 11,
-                'auto_increment' => TRUE
-            )
-        ));
-        $this->dbforge->add_key('id', TRUE);
-        $this->dbforge->create_table('alt_vendor_parner');
+        $fields = array(
+            'partner' => array('type' => 'INT', 'constraint' => 1, 'null' => false, 'default' => 0, 'comment' => 'Flag of important vendor - 1 - important'),
+        );
+        $this->dbforge->add_column('vendors', $fields);
+        $this->db->set('partner',1);
+        $this->db->where_in('vendor_name', array('Ariel','Alpi','Mailine','Pinnacle','Hit','Bella','Asher','Bonnie','DHL','UPS','INTERNAL'));
+        $this->db->update('vendors');
     }
 
     public function down() {
-        $this->dbforge->drop_table('alt_vendor_parner');
+        $this->dbforge->drop_column('ts_order_amounts', 'partner');
     }
 
 }

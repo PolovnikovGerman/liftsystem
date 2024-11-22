@@ -1063,4 +1063,20 @@ Class Vendors_model extends My_Model
 
     }
 
+    public function get_vendor_partners() {
+        $partners = $this->db->select('vendor_id, vendor_name')->from('vendors')->where('partner', 1)->order_by('vendor_name')->get()->result_array();
+        $vendors = [];
+        foreach ($partners as $partner) {
+            $vendors[] = ['vendor_id' => $partner['vendor_id'],'vendor_name' => $partner['vendor_name']];
+        }
+        if (count($partners) > 0) {
+            $vendors[] = ['vendor_id' => -1, 'vendor_name' => '-------'];
+        }
+        $others = $this->db->select('vendor_id, vendor_name')->from('vendors')->where('partner', 0)->order_by('vendor_name')->get()->result_array();
+        foreach ($others as $partner) {
+            $vendors[] = ['vendor_id' => $partner['vendor_id'],'vendor_name' => $partner['vendor_name']];
+        }
+        return $vendors;
+    }
+
 }
