@@ -6223,6 +6223,7 @@ div.trackservicelnk > input {
 .ordercogdetailsviewarea > .tabledataarea > .tabledetailsitem >.tabledatasection > .includeship {
     width: 24px; /* 34px; */
     border-right: 1px solid #000000;
+    font-size: 15px;
 }
 .ordercogdetailsviewarea > .tabledataarea > .tabledetailsitem >.tabledatasection > .profitdataperc {
     position: absolute;
@@ -6309,7 +6310,9 @@ div.trackservicelnk > input {
 .ordercogdetailsviewarea .orderamnttotalinpt {
     width: 90px;
 }
-
+/*.ordercogdetailsviewarea .incudeshipcheck {*/
+/*    font-size: 15px;*/
+/*}*/
 .ordercogdetailsviewarea > .procentsarea { /* .ordercogdetailsviewarea.project > .procentsarea { */
     float: right!important;
     width: auto;
