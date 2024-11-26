@@ -99,7 +99,7 @@ class Fulfillment extends MY_Controller
             } elseif ($row['item_link']=='#printscheduleview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/printscheduler.css');
                 $head['scripts'][] = array('src'=>'/js/fulfillment/printscheduler.js');
-                $content_options['printschedulerview'] = $this->_prepare_printscheduler_view($brand);
+                $content_options['printschedulerview'] = $this->_prepare_printscheduler_view('ALL'); // $brand
             } elseif ($row['item_link']=='#btitems') {
                 $head['styles'][] = array('style' => '/css/database_center/btitemslist.css');
                 $head['scripts'][] = array('src' => '/js/database_center/btitemlist.js');
