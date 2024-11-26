@@ -99,7 +99,7 @@ class Fulfillment extends MY_Controller
             } elseif ($row['item_link']=='#printscheduleview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/printscheduler.css');
                 $head['scripts'][] = array('src'=>'/js/fulfillment/printscheduler.js');
-                $content_options['printschedulerview'] = $this->_prepare_printscheduler_view('ALL'); // $brand
+                $content_options['printschedulerview'] = $this->_prepare_printscheduler_view($brand);
             } elseif ($row['item_link']=='#btitems') {
                 $head['styles'][] = array('style' => '/css/database_center/btitemslist.css');
                 $head['scripts'][] = array('src' => '/js/database_center/btitemlist.js');
@@ -2255,8 +2255,8 @@ class Fulfillment extends MY_Controller
         // Prepare t
         $this->load->model('printscheduler_model');
 
-        $res = $this->printscheduler_model->get_printsheduler_totals($brand);
-
+        $res = $this->printscheduler_model->get_printsheduler_totals('ALL');
+        $res['brand'] = $brand;
         $content = $this->load->view('printscheduler/page_view', $res, true);
         return $content;
     }
