@@ -18,21 +18,24 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date < ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date',0);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
-
         $oldorderres = $this->db->get()->row_array();
         $this->db->select('sum(oi.item_qty) as totalitems')->from('ts_order_items oi')->join('ts_orders o','oi.order_id=o.order_id');
         $this->db->where('o.print_date < ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date',0);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $olditemres = $this->db->get()->row_array();
 
@@ -41,10 +44,12 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date < ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date',0);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $oldimprres = $this->db->get()->row_array();
 
@@ -53,10 +58,12 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date',0);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $neworderres = $this->db->get()->row_array();
 
@@ -64,10 +71,12 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date',0);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $newitemres = $this->db->get()->row_array();
 
@@ -76,10 +85,12 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date',0);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $newimprres = $this->db->get()->row_array();
 
@@ -90,7 +101,7 @@ class Printscheduler_model extends MY_Model
             'new_orders' => $neworderres['cntorder'],
             'new_items' => intval($newitemres['totalitems']),
             'new_prints' => intval($newimprres['totalimpr']),
-            'brand' => $brand,
+            // 'brand' => $brand,
         ];
     }
 
