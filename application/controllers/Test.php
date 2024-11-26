@@ -4429,7 +4429,7 @@ class Test extends CI_Controller
             ->where('v.item_id > 0')->where('oi.inventory_item_id',NULL)->where('print_date is not NULL')->where('shipped_date',0)->order_by('o.order_num');
         $orditems = $this->db->get()->result_array();
         foreach ($orditems as $orditem) {
-            echo 'Order # '.$orditem['order_num'];
+            echo 'Order # '.$orditem['order_num'].PHP_EOL;
 //            $invitm = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $orditem['item_number'])->get()->row_array();
 //            $inv_item = $invitm['inventory_item_id'];
             $this->db->where('order_item_id', $orditem['order_item_id']);
