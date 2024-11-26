@@ -30,7 +30,7 @@
             <div class="rpbox-table-tr <?=$displaymain==1 ? '' : 'addition'?>">
                 <?php if ($displaymain==1): ?>
                     <div class="rpbox-table-td-move">
-                        <?php if ($brand=='SR') : ?>
+                        <?php if ($order['brand']=='SR') : ?>
                             <img class="icon-move" src="/img/printscheduler/move-yellow.svg">
                         <?php else: ?>
                             <img class="icon-move" src="/img/printscheduler/move-blue.svg">

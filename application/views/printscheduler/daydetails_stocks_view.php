@@ -6,7 +6,7 @@
     <div class="stock-table-tr <?=$displaymain==1 ? '' : 'addition'?>">
         <?php if ($displaymain == 1): ?>
             <div class="stock-table-td-move" data-order="<?=$stock['order_id']?>">
-                <?php if ($brand=='SR') { ?>
+                <?php if ($stock['brand']=='SR') { ?>
                     <img class="icon-move" src="/img/printscheduler/move-yellow.svg">
                 <?php } else { ?>
                     <img class="icon-move" src="/img/printscheduler/move-blue.svg">

@@ -20,7 +20,8 @@ class Printscheduler extends MY_Controller
             $mdata = [];
             $error = 'Empty Brand';
             $postdata = $this->input->post();
-            $brand = ifset($postdata,'brand', '');
+            // $brand = ifset($postdata,'brand', '');
+            $brand = 'ALL';
             $calendar = ifset($postdata,'calendar', 'past');
             if (!empty($brand)) {
                 if ($calendar=='past') {
@@ -28,7 +29,7 @@ class Printscheduler extends MY_Controller
                     $options = [
                         'orders' => $res,
                         'numorders' => count($res),
-                        'brand' => $brand,
+                        // 'brand' => $brand,
                     ];
                     $mdata['content'] = $this->load->view('printscheduler/pastorders_view', $options, TRUE);
                     $error = '';
@@ -40,7 +41,7 @@ class Printscheduler extends MY_Controller
                         $options = [
                             'orders' => $orders,
                             'dayhead' => $datrow,
-                            'brand' => $brand,
+                            // 'brand' => $brand,
                         ];
                         $content.=$this->load->view('printscheduler/ontimeorder_day_view', $options, TRUE);
                     }
@@ -81,7 +82,8 @@ class Printscheduler extends MY_Controller
             $postdata = $this->input->post();
             $printdate = ifset($postdata,'printdate', '');
             $pastorder = ifset($postdata, 'pastorder', 0);
-            $brand = ifset($postdata,'brand', 'SR');
+            // $brand = ifset($postdata,'brand', 'SR');
+            $brand = 'ALL';
             if (!empty($printdate)) {
                 $error = '';
                 $dates = $this->printscheduler_model->get_ontimedates($brand, $pastorder);
@@ -155,7 +157,8 @@ class Printscheduler extends MY_Controller
             $error = 'Empty Print Date';
             $postdata = $this->input->post();
             $printdate = ifset($postdata,'printdate', '');
-            $brand = ifset($postdata,'brand', 'SR');
+            // $brand = ifset($postdata,'brand', 'SR');
+            $brand = 'ALL';
             if (!empty($printdate)) {
                 $error = '';
                 $orders = $this->printscheduler_model->get_dayorders($printdate, $brand);
@@ -171,7 +174,7 @@ class Printscheduler extends MY_Controller
                     'orders' => $unassignorders['totals']['orders'],
                 ];
                 $printoptions = [];
-                $printoptions['unsignview'] = $this->load->view('printscheduler/daydetails_unsigns_view', ['orders' => $unassignorders['orders'], 'total' => $unassignorders['totals'], 'users' => $userlist, 'brand' => $brand], TRUE);
+                $printoptions['unsignview'] = $this->load->view('printscheduler/daydetails_unsigns_view', ['orders' => $unassignorders['orders'], 'total' => $unassignorders['totals'], 'users' => $userlist, ], TRUE); // 'brand' => $brand
                 $printusers = $this->printscheduler_model->get_day_assignusers($printdate, $brand);
                 $assignview = '';
                 foreach ($printusers as $printuser) {
@@ -180,7 +183,7 @@ class Printscheduler extends MY_Controller
                         'user_name' => $printuser['user_name'],
                         'orders' => $assignorders['orders'],
                         'totals' => $assignorders['totals'],
-                        'brand' => $brand,
+                        /* 'brand' => $brand, */
                     ];
                     $assignview.=$this->load->view('printscheduler/daydetails_assigns_view', $usroptions, TRUE);
                     $alltotals['prints']+=$assignorders['totals']['prints'];
@@ -230,7 +233,8 @@ class Printscheduler extends MY_Controller
             $postdata = $this->input->post();
             $error = 'Empty Order';
             $order_id = ifset($postdata, 'order','');
-            $brand = ifset($postdata,'brand', 'SR');
+            // $brand = ifset($postdata,'brand', 'SR');
+            $brand = 'ALL';
             if (!empty($order_id)) {
                 // Update print_ready
                 $res = $this->printscheduler_model->stockdonecheck($order_id);
@@ -248,7 +252,7 @@ class Printscheduler extends MY_Controller
                     $userlist = $this->user_model->get_printschedul_users();
                     $unassignorders = $this->printscheduler_model->get_dayunassignorders($printdate, $brand);
                     $printoptions = [];
-                    $printoptions['unsignview'] = $this->load->view('printscheduler/daydetails_unsigns_view', ['orders' => $unassignorders['orders'], 'total' => $unassignorders['totals'], 'users' => $userlist, 'brand' => $brand], TRUE);
+                    $printoptions['unsignview'] = $this->load->view('printscheduler/daydetails_unsigns_view', ['orders' => $unassignorders['orders'], 'total' => $unassignorders['totals'], 'users' => $userlist, ], TRUE); // 'brand' => $brand
                     $alltotals = [
                         'prints' => $unassignorders['totals']['prints'],
                         'items' => $unassignorders['totals']['items'],
@@ -263,7 +267,7 @@ class Printscheduler extends MY_Controller
                             'user_name' => $printuser['user_name'],
                             'orders' => $assignorders['orders'],
                             'totals' => $assignorders['totals'],
-                            'brand' => $brand,
+                            // 'brand' => $brand,
                         ];
                         $assignview.=$this->load->view('printscheduler/daydetails_assigns_view', $usroptions, TRUE);
                         $alltotals['prints']+=$assignorders['totals']['prints'];
@@ -288,7 +292,8 @@ class Printscheduler extends MY_Controller
             $error = 'Empty Order';
             $order_id = ifset($postdata, 'order', '');
             $user_id = ifset($postdata, 'user','');
-            $brand = ifset($postdata, 'brand', 'SR');
+            // $brand = ifset($postdata, 'brand', 'SR');
+            $brand = 'ALL';
             if (!empty($order_id) && !empty($user_id)) {
                 // Assign order
                 $res = $this->printscheduler_model->assignorder($order_id, $user_id);
@@ -315,7 +320,7 @@ class Printscheduler extends MY_Controller
                             'user_name' => $printuser['user_name'],
                             'orders' => $assignorders['orders'],
                             'totals' => $assignorders['totals'],
-                            'brand' => $brand,
+                            // 'brand' => $brand,
                         ];
                         $assignview.=$this->load->view('printscheduler/daydetails_assigns_view', $usroptions, TRUE);
                         $alltotals['prints']+=$assignorders['totals']['prints'];
@@ -345,7 +350,8 @@ class Printscheduler extends MY_Controller
             $kepted = floatval(ifset($postdata,'kepted',0));
             $misprint = floatval(ifset($postdata,'misprint',0));
             $plates = floatval(ifset($postdata,'plates',0));
-            $brand = ifset($postdata,'brand','SR');
+            // $brand = ifset($postdata,'brand','SR');
+            $brand = 'ALL';
             if (!empty($order_itemcolor_id) && !empty($inventory_color_id)) {
                 $res = $this->printscheduler_model->outcomedata($order_itemcolor_id, $inventory_color_id, $shipped, $kepted, $misprint, $plates, $this->USR_ID);
                 $error = $res['msg'];
@@ -359,7 +365,7 @@ class Printscheduler extends MY_Controller
                         $printdate = $res['printdate'];
                         // Create content
                         $orders = $this->printscheduler_model->get_dayorders($printdate, $brand);
-                        $mdata['plateview'] = $this->load->view('printscheduler/daydetails_plates_view', ['plates' => $orders['plates'], 'brand' => $brand], TRUE);
+                        $mdata['plateview'] = $this->load->view('printscheduler/daydetails_plates_view', ['plates' => $orders['plates'], ], TRUE); // 'brand' => $brand
                         $this->load->model('user_model');
                         $userlist = $this->user_model->get_printschedul_users();
                         $unassignorders = $this->printscheduler_model->get_dayunassignorders($printdate, $brand);
@@ -369,7 +375,7 @@ class Printscheduler extends MY_Controller
                             'orders' => $unassignorders['totals']['orders'],
                         ];
                         $printoptions = [];
-                        $printoptions['unsignview'] = $this->load->view('printscheduler/daydetails_unsigns_view', ['orders' => $unassignorders['orders'], 'total' => $unassignorders['totals'], 'users' => $userlist, 'brand' => $brand], TRUE);
+                        $printoptions['unsignview'] = $this->load->view('printscheduler/daydetails_unsigns_view', ['orders' => $unassignorders['orders'], 'total' => $unassignorders['totals'], 'users' => $userlist, ], TRUE); // 'brand' => $brand
                         $printusers = $this->printscheduler_model->get_day_assignusers($printdate, $brand);
                         $assignview = '';
                         foreach ($printusers as $printuser) {
@@ -378,7 +384,7 @@ class Printscheduler extends MY_Controller
                                 'user_name' => $printuser['user_name'],
                                 'orders' => $assignorders['orders'],
                                 'totals' => $assignorders['totals'],
-                                'brand' => $brand,
+                                // 'brand' => $brand,
                             ];
                             $assignview.=$this->load->view('printscheduler/daydetails_assigns_view', $usroptions, TRUE);
                             $alltotals['prints']+=$assignorders['totals']['prints'];
@@ -390,7 +396,7 @@ class Printscheduler extends MY_Controller
                         $mdata['printview'] = $this->load->view('printscheduler/daydetails_printorders_view', $printoptions, TRUE);
                         // Build ready to ship
                         $shipready = $this->printscheduler_model->getreadyshiporders($printdate, $brand);
-                        $mdata['readyshipview'] = $this->load->view('printscheduler/daydetails_readyshiporders_view',['orders' => $shipready['orders'], 'totals'=> $shipready['totals'], 'brand' => $brand], TRUE);
+                        $mdata['readyshipview'] = $this->load->view('printscheduler/daydetails_readyshiporders_view',['orders' => $shipready['orders'], 'totals'=> $shipready['totals'], ], TRUE); // 'brand' => $brand
                         // Completed Printjob
                         $completed_users = $this->printscheduler_model->get_day_completedusers($printdate, $brand);
                         $totalcomlet = [
@@ -433,7 +439,8 @@ class Printscheduler extends MY_Controller
             $shipqty = ifset($postdata, 'shipqty',0);
             $shipmethod = ifset($postdata, 'shipmethod','');
             $trackcode = ifset($postdata, 'trackcode','');
-            $brand = ifset($postdata, 'brand','SR');
+            // $brand = ifset($postdata, 'brand','SR');
+            $brand = 'ALL';
             if (!empty($order_itemcolor_id)) {
                 $error = 'Empty Shipping Method';
                 if (!empty($shipmethod)) {
@@ -446,8 +453,8 @@ class Printscheduler extends MY_Controller
                             $printdate = $res['printdate'];
                             // Create content
                             $orders = $this->printscheduler_model->get_dayorders($printdate, $brand);
-                            $mdata['stockview'] = $this->load->view('printscheduler/daydetails_stocks_view', ['stocks' => $orders['stocks'], 'brand' => $brand], TRUE);
-                            $mdata['plateview'] = $this->load->view('printscheduler/daydetails_plates_view', ['plates' => $orders['plates'], 'brand' => $brand], TRUE);
+                            $mdata['stockview'] = $this->load->view('printscheduler/daydetails_stocks_view', ['stocks' => $orders['stocks'], ], TRUE); // 'brand' => $brand
+                            $mdata['plateview'] = $this->load->view('printscheduler/daydetails_plates_view', ['plates' => $orders['plates'], ], TRUE); // 'brand' => $brand
                             $this->load->model('user_model');
                             $userlist = $this->user_model->get_printschedul_users();
                             $unassignorders = $this->printscheduler_model->get_dayunassignorders($printdate, $brand);
@@ -457,7 +464,7 @@ class Printscheduler extends MY_Controller
                                 'orders' => $unassignorders['totals']['orders'],
                             ];
                             $printoptions = [];
-                            $printoptions['unsignview'] = $this->load->view('printscheduler/daydetails_unsigns_view', ['orders' => $unassignorders['orders'], 'total' => $unassignorders['totals'], 'users' => $userlist, 'brand' => $brand], TRUE);
+                            $printoptions['unsignview'] = $this->load->view('printscheduler/daydetails_unsigns_view', ['orders' => $unassignorders['orders'], 'total' => $unassignorders['totals'], 'users' => $userlist, ], TRUE); // 'brand' => $brand
                             $printusers = $this->printscheduler_model->get_day_assignusers($printdate, $brand);
                             $assignview = '';
                             foreach ($printusers as $printuser) {
@@ -466,7 +473,7 @@ class Printscheduler extends MY_Controller
                                     'user_name' => $printuser['user_name'],
                                     'orders' => $assignorders['orders'],
                                     'totals' => $assignorders['totals'],
-                                    'brand' => $brand,
+                                    // 'brand' => $brand,
                                 ];
                                 $assignview.=$this->load->view('printscheduler/daydetails_assigns_view', $usroptions, TRUE);
                                 $alltotals['prints']+=$assignorders['totals']['prints'];
@@ -478,7 +485,7 @@ class Printscheduler extends MY_Controller
                             $mdata['printview'] = $this->load->view('printscheduler/daydetails_printorders_view', $printoptions, TRUE);
                             // Build ready to ship
                             $shipready = $this->printscheduler_model->getreadyshiporders($printdate, $brand);
-                            $mdata['readyshipview'] = $this->load->view('printscheduler/daydetails_readyshiporders_view',['orders' => $shipready['orders'], 'totals'=> $shipready['totals'], 'brand' => $brand], TRUE);
+                            $mdata['readyshipview'] = $this->load->view('printscheduler/daydetails_readyshiporders_view',['orders' => $shipready['orders'], 'totals'=> $shipready['totals'], ], TRUE); // 'brand' => $brand
                             // Completed Printjob
                             $completed_users = $this->printscheduler_model->get_day_completedusers($printdate, $brand);
                             $totalcomlet = [
@@ -520,7 +527,8 @@ class Printscheduler extends MY_Controller
             $error = 'Empty Print Date';
             $postdata = $this->input->post();
             $printdate = ifset($postdata,'printdate', '');
-            $brand = ifset($postdata,'brand', 'SR');
+            // $brand = ifset($postdata,'brand', 'SR');
+            $brand = 'ALL';
             $direction = ifset($postdata,'direction', 'prev');
             if (!empty($printdate)) {
                 $dates = $this->printscheduler_model->get_ontimeorders_dates($brand);
@@ -562,7 +570,8 @@ class Printscheduler extends MY_Controller
             $mdata = [];
             $printdate = ifset($postdata,'printdate', '');
             $order = ifset($postdata,'order', '');
-            $brand = ifset($postdata,'brand', 'SR');
+            // $brand = ifset($postdata,'brand', 'SR');
+            $brand = 'ALL';
             if (!empty($printdate) && !empty($order)) {
                 $res = $this->printscheduler_model->update_printdate($printdate, $order);
                 $error = $res['msg'];

@@ -20,7 +20,7 @@
             <div class="pdo-table-tr <?=$displaymain==1 ? '' : 'addition'?> <?=$order['order_approved']==1 ? '' : 'notapproved'?>">
                 <?php if ($displaymain==1) : ?>
                     <div class="pdo-table-td-move" data-order="<?=$order['order_id']?>">
-                        <?php if ($brand=='SR') : ?>
+                        <?php if ($order['brand']=='SR') : ?>
                             <img class="icon-move" src="/img/printscheduler/move-yellow.svg">
                         <?php  else : ?>
                             <img class="icon-move" src="/img/printscheduler/move-blue.svg">
