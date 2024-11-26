@@ -99,7 +99,7 @@ class Printscheduler_model extends MY_Model
         $curdate = strtotime(date('Y-m-d'));
         // get order details
         $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, toi.order_itemcolor_id, o.order_approved');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.print_date');
+        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.print_date, toi.inventory_color_id');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
@@ -120,7 +120,7 @@ class Printscheduler_model extends MY_Model
 
         foreach ($pastorders as $pastorder) {
             // Imprints
-            $pastorder['inventory_color'] = $this->_inventory_color($pastorder['item_number'], $pastorder['item_color']);
+            // $pastorder['inventory_color'] = $this->_inventory_color($pastorder['item_number'], $pastorder['item_color']);
             $this->db->select('sum(if(i.imprint_item=1, 1, i.imprint_qty)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
             $this->db->from('ts_order_imprints i');
             $this->db->where('i.order_item_id', $pastorder['order_item_id']);
@@ -129,7 +129,7 @@ class Printscheduler_model extends MY_Model
             $pastorder['prints'] = $imprdet['imprqty']*$pastorder['item_qty'];
             $pastorder['item_name'] = $pastorder['item_number'].' - '.$pastorder['item_description'];
             $pastorder['stock_class'] = '';
-            $balance = $this->_scheduler_balance($pastorder['inventory_color']);
+            $balance = $this->_scheduler_balance($pastorder['inventory_color_id']);
             if ($balance <=0 ) {
                 $pastorder['stock_class'] = $this->emptybalance;
             }
