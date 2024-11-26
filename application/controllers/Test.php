@@ -4244,20 +4244,21 @@ class Test extends CI_Controller
 
     public function updatesborders()
     {
-        echo 'Start SR orders transform'.PHP_EOL;
-        $this->db->select('oi.order_item_id, v.item_number, o.order_num')->from('ts_order_items oi')->join('v_itemsearch v','oi.item_id=v.item_id')->join('ts_orders o','oi.order_id=o.order_id')->where_in('o.brand' , ['SB','BT'])
+        echo 'Start SB orders transform'.PHP_EOL;
+        $this->db->select('oi.order_item_id, v.item_number, v.printshop_inventory_id, o.order_num')->from('ts_order_items oi')->join('v_itemsearch v','oi.item_id=v.item_id')->join('ts_orders o','oi.order_id=o.order_id')->where_in('o.brand' , ['SB','BT'])
             ->where('v.item_id > 0')->where('oi.inventory_item_id',NULL)->where('print_date is not NULL')->where('shipped_date',0)->order_by('o.order_num');
         $orditems = $this->db->get()->result_array();
         foreach ($orditems as $orditem) {
-            $invitm = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $orditem['item_number'])->get()->row_array();
-            $inv_item = $invitm['inventory_item_id'];
+            echo 'Order # '.$orditem['order_num'];
+//            $invitm = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $orditem['item_number'])->get()->row_array();
+//            $inv_item = $invitm['inventory_item_id'];
             $this->db->where('order_item_id', $orditem['order_item_id']);
-            $this->db->set('inventory_item_id', $inv_item);
+            $this->db->set('inventory_item_id', $orditem['printshop_inventory_id']);
             $this->db->update('ts_order_items');
             // Colors
             $ordcolors = $this->db->select('order_itemcolor_id, item_color')->from('ts_order_itemcolors')->where('order_item_id', $orditem['order_item_id'])->get()->result_array();
             foreach ($ordcolors as $ordcolor) {
-                $colordat = $this->db->select('color, inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inv_item)->like('color', $ordcolor['item_color'],'after')->get()->row_array();
+                $colordat = $this->db->select('color, inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $orditem['printshop_inventory_id'])->like('color', $ordcolor['item_color'],'after')->get()->row_array();
                 if (ifset($colordat,'inventory_color_id',0) > 0) {
                     $this->db->where('order_itemcolor_id', $ordcolor['order_itemcolor_id']);
                     $this->db->set('inventory_color_id', $colordat['inventory_color_id']);
