@@ -8705,8 +8705,8 @@ Class Orders_model extends MY_Model
 
     public function order_schedule_transform()
     {
-        $brands = ['SR','SB'];
-        // $brands = ['SR'];
+        // $brands = ['SR','SB'];
+        $brands = ['SB'];
         foreach ($brands as $brand) {
             $this->db->select('o.order_id, o.order_num, o.shipdate')->from('ts_orders o')->join('ts_order_items oi','oi.order_id=o.order_id')->join('sb_items i','i.item_id=oi.item_id')->join('sb_vendor_items vi','vi.vendor_item_id=i.vendor_item_id');
             $this->db->where(['o.is_canceled' => 0, 'vi.vendor_item_vendor' => $this->config->item('inventory_vendor')]);
