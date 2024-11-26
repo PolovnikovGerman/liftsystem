@@ -6,7 +6,7 @@
     <div class="plates-table-tr <?=$displaymain==1 ? '' : 'addition'?>">
         <?php if ($displaymain==1) : ?>
             <div class="plates-table-td-move"  data-order="<?=$plate['order_id']?>">
-                <?php if ($brand=='SR') { ?>
+                <?php if ($plate['brand']=='SR') { ?>
                     <img class="icon-move" src="/img/printscheduler/move-yellow.svg">
                 <?php } else { ?>
                     <img class="icon-move" src="/img/printscheduler/move-blue.svg">

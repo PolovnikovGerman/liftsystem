@@ -99,7 +99,7 @@ class Printscheduler_model extends MY_Model
         $curdate = strtotime(date('Y-m-d'));
         // get order details
         $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, toi.order_itemcolor_id, o.order_approved');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.print_date, toi.inventory_color_id');
+        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.print_date, toi.inventory_color_id, o.brand');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
@@ -109,12 +109,14 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.shipped_date', 0);
         // Add vendor
         $this->db->where('v.vendor_id', $this->config->item('inventory_vendor'));
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
-        $this->db->order_by('o.order_rush desc, o.order_num');
+        $this->db->order_by('o.order_rush desc, o.order_id'); // $this->db->order_by('o.order_rush desc, o.order_num');
         $pastorders = $this->db->get()->result_array();
         $orders = [];
 
@@ -146,10 +148,12 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date', 0);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $this->db->group_by('printdate');
         $this->db->order_by('printdate');
@@ -165,10 +169,12 @@ class Printscheduler_model extends MY_Model
             $this->db->where('o.print_date < ', $dayend);
             $this->db->where('o.is_canceled',0);
             $this->db->where('o.shipped_date', 0);
-            if ($brand=='SR') {
-                $this->db->where('o.brand', $brand);
-            } else {
-                $this->db->where_in('o.brand', ['SB','BT']);
+            if ($brand!=='ALL') {
+                if ($brand=='SR') {
+                    $this->db->where('o.brand', $brand);
+                } else {
+                    $this->db->where_in('o.brand', ['SB','BT']);
+                }
             }
             $itemdat = $this->db->get()->row_array();
             $this->db->select('sum(imp.imprint_qty) as totalimpr');
@@ -179,10 +185,12 @@ class Printscheduler_model extends MY_Model
             $this->db->where('o.print_date < ', $dayend);
             $this->db->where('o.is_canceled',0);
             $this->db->where('o.print_finish',0);
-            if ($brand=='SR') {
-                $this->db->where('o.brand', $brand);
-            } else {
-                $this->db->where_in('o.brand', ['SB','BT']);
+            if ($brand !== 'ALL') {
+                if ($brand=='SR') {
+                    $this->db->where('o.brand', $brand);
+                } else {
+                    $this->db->where_in('o.brand', ['SB','BT']);
+                }
             }
             $this->db->where('imp.imprint_item',1);
             $imprdat = $this->db->get()->row_array();
@@ -206,10 +214,12 @@ class Printscheduler_model extends MY_Model
         }
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date', 0);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $res = $this->db->get()->row_array();
         if ($res['cntorder']>0) {
@@ -226,7 +236,7 @@ class Printscheduler_model extends MY_Model
 
         // get order details
         $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, sh.event_date, toi.order_itemcolor_id, o.order_approved');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.print_date');
+        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.print_date, toi.inventory_color_id, o.brand');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
@@ -236,18 +246,21 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date', 0);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
-        $this->db->order_by('o.order_rush desc, o.order_num');
+        $this->db->order_by('o.order_rush desc, o.order_id'); // $this->db->order_by('o.order_rush desc, o.order_num');
         $currorders = $this->db->get()->result_array();
         $orders = [];
 
         foreach ($currorders as $currorder) {
             // Imprints
-            $currorder['inventory_color'] = $this->_inventory_color($currorder['item_number'], $currorder['item_color']);
+            // $currorder['inventory_color'] = $this->_inventory_color($currorder['item_number'], $currorder['item_color']);
+            $currorder['inventory_color'] = $currorder['inventory_color_id'];
             $this->db->select('sum(if(i.imprint_item=1, 1, i.imprint_qty)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
             $this->db->from('ts_order_imprints i');
             $this->db->where('i.order_item_id', $currorder['order_item_id']);
@@ -277,7 +290,7 @@ class Printscheduler_model extends MY_Model
         $order_idx = [];
         // get order details
         $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, toi.order_itemcolor_id');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty');
+        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.brand, toi.inventory_color_id');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
@@ -286,17 +299,20 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date', 0);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
-        $this->db->order_by('o.order_rush desc, o.order_num');
+        $this->db->order_by('o.order_rush desc, o.order_id'); // $this->db->order_by('o.order_rush desc, o.order_num');
         $orders = $this->db->get()->result_array();
         foreach ($orders as $order) {
             $order['item_name'] = $order['item_number'].' - '.$order['item_description'];
             $stocks[] = $order;
-            $invcolor = $this->_inventory_color($order['item_number'], $order['item_color']);
+            // $invcolor = $this->_inventory_color($order['item_number'], $order['item_color']);
+            $invcolor = $order['inventory_color_id'];
             // Get plates
             if ($invcolor) {
                 $this->db->select('count(amount_id) as platescnt,  sum(blueplate+orangeplate+beigeplate) as platessum')->from('ts_order_amounts')->where(['order_id' => $order['order_id'],'inventory_color_id'=>$invcolor]);
@@ -309,6 +325,7 @@ class Printscheduler_model extends MY_Model
                         'plates_qty' => $platedet['platessum'],
                         'item_name' => $order['item_name'],
                         'item_color' => $order['item_color'],
+                        'brand' => $order['brand'],
                     ];
                 }
             }
@@ -382,12 +399,13 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_finish',0);
         $this->db->where('o.print_ready > ', 0);
         $this->db->where('o.shipping_ready',0);
+
         if ($brand=='SR') {
             $this->db->where('o.brand', $brand);
         } else {
             $this->db->where_in('o.brand', ['SB','BT']);
         }
-        $this->db->order_by('o.print_user, o.order_rush desc, o.order_num');
+        $this->db->order_by('o.order_rush desc, o.order_id'); // $this->db->order_by('o.print_user, o.order_rush desc, o.order_num');
         $orders = $this->db->get()->result_array();
         $unassign = $assign = [];
         $totals = [];
@@ -445,15 +463,17 @@ class Printscheduler_model extends MY_Model
         $this->db->where('oic.print_completed', 0);
         $this->db->where('o.shipping_ready',0);
         $this->db->where('o.print_user', null);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $ordercnt = $this->db->get()->row_array();
         // get order details
         $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, sh.event_date, toi.order_itemcolor_id');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty');
+        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, toi.inventory_color_id, o.brand');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
@@ -466,12 +486,14 @@ class Printscheduler_model extends MY_Model
         $this->db->where('toi.print_completed', 0);
         $this->db->where('o.shipping_ready',0);
         $this->db->where('o.print_user', null);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
-        $this->db->order_by('o.order_rush desc, o.order_num');
+        $this->db->order_by('o.order_rush desc, o.order_id'); // $this->db->order_by('o.order_rush desc, o.order_num');
         $orders = $this->db->get()->result_array();
         $unassign = [];
         $totals = [
@@ -480,7 +502,8 @@ class Printscheduler_model extends MY_Model
             'orders' => $ordercnt['cnt'],
         ];
         foreach ($orders as $order) {
-            $order['inventory_color'] = $this->_inventory_color($order['item_number'], $order['item_color']);
+            // $order['inventory_color'] = $this->_inventory_color($order['item_number'], $order['item_color']);
+            $order['inventory_color'] = $order['inventory_color_id'];
             $passed = $this->_completed_itemcolor($order['order_id'], $order['inventory_color']);
             $order['qtyclass'] = '';
             if ($passed > 0) {
@@ -530,15 +553,17 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.shipping_ready',0);
         $this->db->where('oic.print_completed', 0);
         $this->db->where('o.print_user', $user_id);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $ordercnt = $this->db->get()->row_array();
         // get order details
         $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, sh.event_date, toi.order_itemcolor_id');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty');
+        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, toi.inventory_color_id, o.brand');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
@@ -551,12 +576,14 @@ class Printscheduler_model extends MY_Model
         $this->db->where('toi.print_completed', 0);
         $this->db->where('o.shipping_ready',0);
         $this->db->where('o.print_user', $user_id);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
-        $this->db->order_by('o.order_rush desc, o.order_num');
+        $this->db->order_by('o.order_rush desc, o.order_id'); // $this->db->order_by('o.order_rush desc, o.order_num');
         $orders = $this->db->get()->result_array();
         $assign = [];
         $totals = [
@@ -565,7 +592,8 @@ class Printscheduler_model extends MY_Model
             'orders' => $ordercnt['cnt'],
         ];
         foreach ($orders as $order) {
-            $order['inventory_color'] = $this->_inventory_color($order['item_number'], $order['item_color']);
+            // $order['inventory_color'] = $this->_inventory_color($order['item_number'], $order['item_color']);
+            $order['inventory_color'] = $order['inventory_color_id'];
             $passed = $this->_completed_itemcolor($order['order_id'], $order['inventory_color']);
             $order['qtyclass'] = '';
             if ($passed > 0) {
@@ -613,10 +641,12 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_ready > ', 0);
         $this->db->where('o.shipping_ready',0);
         $this->db->where('o.print_user != ', null);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $this->db->group_by('o.print_user, u.first_name');
         $users = $this->db->get()->result_array();
@@ -640,10 +670,12 @@ class Printscheduler_model extends MY_Model
         $this->db->where('oic.print_completed', 1);
         $this->db->where('oic.shipping_ready',0);
         $this->db->where('o.shipped_date', 0);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $ordercnt = $this->db->get()->row_array();
         $totals = [
@@ -652,7 +684,7 @@ class Printscheduler_model extends MY_Model
         ];
         // get order details
         $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, sh.event_date, toi.order_itemcolor_id');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty');
+        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, toi.inventory_color_id, o.brand');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
@@ -665,12 +697,14 @@ class Printscheduler_model extends MY_Model
         $this->db->where('toi.print_completed', 1);
         $this->db->where('toi.shipping_ready',0);
         $this->db->where('o.shipped_date', 0);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
-        $this->db->order_by('o.order_rush desc, o.order_num');
+        $this->db->order_by('o.order_rush desc, o.order_id'); // $this->db->order_by('o.order_rush desc, o.order_num');
         $orders = $this->db->get()->result_array();
         $ships = [];
         foreach ($orders as $order) {
@@ -705,10 +739,12 @@ class Printscheduler_model extends MY_Model
         $this->db->where('oic.print_completed', 0);
         $this->db->where('o.shipped_date', 0);
         $this->db->where('o.print_user != ', null);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $this->db->group_by('o.print_user, u.first_name');
         $users = $this->db->get()->result_array();
@@ -731,10 +767,12 @@ class Printscheduler_model extends MY_Model
         $this->db->where('oic.print_date > ',0);
         $this->db->where('oic.print_completed', 0);
         $this->db->where('o.shipped_date', 0);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $ordercnt = $this->db->get()->row_array();
         $totals = [
@@ -744,7 +782,7 @@ class Printscheduler_model extends MY_Model
         ];
         // get order details
         $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, sh.event_date, toi.order_itemcolor_id');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty');
+        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, toi.inventory_color_id, o.brand');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
@@ -756,16 +794,19 @@ class Printscheduler_model extends MY_Model
         // $this->db->where('o.print_finish > ',0);
         $this->db->where('toi.print_date > ',0);
         $this->db->where('toi.print_completed', 0);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
-        $this->db->order_by('o.order_rush desc, o.order_num');
+        $this->db->order_by('o.order_rush desc, o.order_id'); // $this->db->order_by('o.order_rush desc, o.order_num');
         $orders = $this->db->get()->result_array();
         $ships = [];
         foreach ($orders as $order) {
-            $order['inventory_color'] = $this->_inventory_color($order['item_number'], $order['item_color']);
+            // $order['inventory_color'] = $this->_inventory_color($order['item_number'], $order['item_color']);
+            $order['inventory_color'] = $order['inventory_color_id'];
             $passed = $this->_completed_itemcolor($order['order_id'], $order['inventory_color']);
             $order['qtyclass'] = '';
             if ($passed > 0) {
@@ -815,10 +856,12 @@ class Printscheduler_model extends MY_Model
         $this->db->where('oic.print_completed', 1);
         $this->db->where('oic.shipping_ready > ',0);
         // $this->db->where('o.shipped_date', 0);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
         $ordercnt = $this->db->get()->row_array();
         $totals = [
@@ -827,7 +870,7 @@ class Printscheduler_model extends MY_Model
         ];
         // get order details
         $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, sh.event_date, toi.order_itemcolor_id');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty');
+        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.brand, toi.inventory_color_id');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
@@ -840,12 +883,14 @@ class Printscheduler_model extends MY_Model
         $this->db->where('toi.print_completed', 1);
         $this->db->where('toi.shipping_ready > ',0);
         // $this->db->where('o.shipped_date', 0);
-        if ($brand=='SR') {
-            $this->db->where('o.brand', $brand);
-        } else {
-            $this->db->where_in('o.brand', ['SB','BT']);
+        if ($brand !== 'ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
         }
-        $this->db->order_by('o.order_rush desc, o.order_num');
+        $this->db->order_by('o.order_rush desc, o.order_id'); // $this->db->order_by('o.order_rush desc, o.order_num');
         $orders = $this->db->get()->result_array();
         $ships = [];
         foreach ($orders as $order) {
