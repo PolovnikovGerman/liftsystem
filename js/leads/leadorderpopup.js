@@ -4186,10 +4186,10 @@ function init_pochange(edit_mode) {
         var url = "/leadorder/poamountchange";
         $.post(url, params, function(response){
             if (response.errors=='') {
-                if (parseInt(response.data.finchange)==1) {
-                    $("input.orderamntpriceinpt").val(response.data.price);
-                    $("input.orderamnttotalinpt").val(response.data.total);
-                }
+                // if (parseInt(response.data.finchange)==1) {
+                //     $("input.orderamntpriceinpt").val(response.data.price);
+                //     $("input.orderamnttotalinpt").val(response.data.total);
+                // }
             } else {
                 show_error(response);
             }
@@ -4203,10 +4203,10 @@ function init_pochange(edit_mode) {
         var url = "/leadorder/poamountchange";
         $.post(url, params, function(response){
             if (response.errors=='') {
-                if (parseInt(response.data.finchange)==1) {
-                    $("input.orderamntpriceinpt").val(response.data.price);
-                    $("input.orderamnttotalinpt").val(response.data.total);
-                }
+                // if (parseInt(response.data.finchange)==1) {
+                //     $("input.orderamntpriceinpt").val(response.data.price);
+                //     $("input.orderamnttotalinpt").val(response.data.total);
+                // }
             } else {
                 show_error(response);
             }
@@ -4259,10 +4259,10 @@ function init_pochange(edit_mode) {
         var url = "/leadorder/poamountchange";
         $.post(url, params, function(response){
             if (response.errors=='') {
-                if (parseInt(response.data.finchange)==1) {
-                    $("input.orderamntpriceinpt").val(response.data.price);
-                    $("input.orderamnttotalinpt").val(response.data.total);
-                }
+                // if (parseInt(response.data.finchange)==1) {
+                //     $("input.orderamntpriceinpt").val(response.data.price);
+                //     $("input.orderamnttotalinpt").val(response.data.total);
+                // }
             } else {
                 show_error(response);
             }

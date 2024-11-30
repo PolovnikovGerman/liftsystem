@@ -729,7 +729,7 @@ class Purchaseorders extends MY_Controller
                 $mdata['content'] = $content;
                 $mdata['current'] = 0;
                 if ($year==date('Y')) {
-                    $dayview = time();
+                    $dayview = strtotime(date('Y-m-d'));
                     $res = $this->orders_model->get_pohistory_details($brand, $dayview);
                     $mdata['current_content'] = $this->load->view('pooverview/pohistory_details_view', $res, TRUE);
                     $mdata['current'] = 1;

@@ -8873,6 +8873,7 @@ Class Orders_model extends MY_Model
         // Rush
         $this->db->select('o.order_id, oi.item_id, toi.order_itemcolor_id, o.brand, a.order_proj_status, o.order_rush, v.item_number, v.item_name, toi.item_description, o.order_num, t.arrive_date, t.event_date, t.rush_idx, t.rush_list, v.vendor_name');
         $this->db->select('toi.item_qty as itemqty');
+        $this->db->select('if(a.order_proj_status=\'01_notplaced\',1,0) as approve');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings t','o.order_id = t.order_id');
         $this->db->join('v_poorders_artstage a','a.order_id=o.order_id');
@@ -8891,7 +8892,7 @@ Class Orders_model extends MY_Model
         $this->db->where('oi.item_id != ', $this->config->item('custom_id'));
         $this->db->where('v.vendor_id != ', $this->config->item('inventory_vendor'));
         $this->db->where('o.order_rush', 1);
-        $this->db->order_by('o.order_date');
+        $this->db->order_by('approve desc, o.order_date');
         $rushothraw = $this->db->get()->result_array();
         if (count($rushothraw) > 0) {
             $out['otherrush'] = $this->_prepare_overvie_otherdata($rushothraw);
@@ -8899,6 +8900,7 @@ Class Orders_model extends MY_Model
         // Standard
         $this->db->select('o.order_id, oi.item_id, toi.order_itemcolor_id, o.brand, a.order_proj_status, o.order_rush, v.item_number, v.item_name, toi.item_description, o.order_num, t.arrive_date, t.event_date, t.rush_idx, t.rush_list, v.vendor_name');
         $this->db->select('toi.item_qty as itemqty');
+        $this->db->select('if(a.order_proj_status=\'01_notplaced\',1,0) as approve');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings t','o.order_id = t.order_id');
         $this->db->join('v_poorders_artstage a','a.order_id=o.order_id');
@@ -8917,7 +8919,7 @@ Class Orders_model extends MY_Model
         $this->db->where('oi.item_id != ', $this->config->item('custom_id'));
         $this->db->where('v.vendor_id != ', $this->config->item('inventory_vendor'));
         $this->db->where('o.order_rush', 0);
-        $this->db->order_by('o.order_date');
+        $this->db->order_by('approve desc, o.order_date');
         $standothraw = $this->db->get()->result_array();
         if (count($standothraw) > 0) {
             $out['otherstand'] = $this->_prepare_overvie_otherdata($standothraw);
@@ -8979,6 +8981,7 @@ Class Orders_model extends MY_Model
         }
         $this->db->select('o.order_id, o.brand, a.order_proj_status, v.item_number, toi.item_description as item_name, o.order_num, o.order_date, t.arrive_date, t.event_date, o.customer_name as customer');
         $this->db->select('toi.item_qty as itemqty, coalesce(toa.shipped,0) as shipqty');
+        // $this->db->select('if(a.order_proj_status=\'01_notplaced\',1,0) as approve');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings t','o.order_id = t.order_id');
         $this->db->join('v_poorders_artstage a','a.order_id=o.order_id');
@@ -8997,7 +9000,7 @@ Class Orders_model extends MY_Model
         $this->db->where('o.profit_perc', NULL);
         $this->db->where('oi.item_id', $this->config->item('custom_id'));
         $this->db->where('v.vendor_id != ', $this->config->item('inventory_vendor'));
-        $this->db->order_by('o.order_date');
+        $this->db->order_by('o.order_date'); // approve desc,
         $customraw = $this->db->get()->result_array();
         if (count($customraw) > 0) {
             $out['custstand'] = $this->_prepare_overvie_customdata($customraw);
@@ -9069,7 +9072,7 @@ Class Orders_model extends MY_Model
         $startdate = strtotime($year.'-01-01');
         $enddate = strtotime($nextyear.'-01-01');
         // Get weeks
-        $this->db->select('date_format(from_unixtime(oa.create_date),\'%v\') as week, count(oa.amount_id) as cnt, sum(oa.amount_sum) sumamnt');
+        $this->db->select('date_format(from_unixtime(oa.amount_date),\'%v\') as week, count(oa.amount_id) as cnt, sum(oa.amount_sum) sumamnt');
         $this->db->from('ts_order_amounts oa');
         $this->db->where('oa.create_date >= ', $startdate);
         $this->db->where('oa.create_date < ', $enddate);
@@ -9102,8 +9105,8 @@ Class Orders_model extends MY_Model
                 $this->db->select('count(oa.amount_id) as cnt, sum(oa.amount_sum) as sumamnt');
                 $this->db->from('ts_order_amounts oa');
                 $this->db->join('ts_orders o', 'o.order_id=oa.order_id');
-                $this->db->where('oa.create_date >= ', $daybgn);
-                $this->db->where('oa.create_date < ', $dayend);
+                $this->db->where('oa.amount_date >= ', $daybgn);
+                $this->db->where('oa.amount_date < ', $dayend);
                 if ($brand!=='ALL') {
                     if ($brand=='SR') {
                         $this->db->where('o.brand', $brand);
@@ -9142,8 +9145,8 @@ Class Orders_model extends MY_Model
         $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
         $this->db->join('v_itemsearch i', 'i.item_id=o.item_id');
         $this->db->join('ts_order_itemcolors toi', 'toi.order_itemcolor_id=oa.order_itemcolor_id','left');
-        $this->db->where('oa.create_date >= ', $daybgn);
-        $this->db->where('oa.create_date < ', $dayend);
+        $this->db->where('oa.amount_date >= ', $daybgn);
+        $this->db->where('oa.amount_date < ', $dayend);
         if ($brand!=='ALL') {
             if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
@@ -9189,7 +9192,7 @@ Class Orders_model extends MY_Model
 
     public function get_pohistory_vendors($brand)
     {
-        $this->db->select('date_format(from_unixtime(oa.create_date),\'%Y\') as year, count(oa.amount_id) as cnt, sum(oa.amount_sum) sumamnt');
+        $this->db->select('date_format(from_unixtime(oa.amount_date),\'%Y\') as year, count(oa.amount_id) as cnt, sum(oa.amount_sum) sumamnt');
         $this->db->from('ts_order_amounts oa');
         if ($brand!=='ALL') {
             $this->db->join('ts_orders o', 'o.order_id=oa.order_id');
@@ -9199,7 +9202,7 @@ Class Orders_model extends MY_Model
                 $this->db->where_in('o.brand', ['SB','BT']);
             }
         }
-        $this->db->where('coalesce(oa.create_date,0) > ',0);
+        $this->db->where('coalesce(oa.amount_date,0) > ',0);
         $this->db->group_by('year');
         $this->db->order_by('year', 'desc');
         $years = $this->db->get()->result_array();
@@ -9216,7 +9219,7 @@ Class Orders_model extends MY_Model
                     $this->db->where_in('o.brand', ['SB','BT']);
                 }
             }
-            $this->db->where('date_format(from_unixtime(oa.create_date),\'%Y\')', $year['year']);
+            $this->db->where('date_format(from_unixtime(oa.amount_date),\'%Y\')', $year['year']);
             $this->db->group_by('v.vendor_name, v.vendor_id');
             $this->db->order_by('cnt', 'desc');
             $vendrows = $this->db->get()->result_array();

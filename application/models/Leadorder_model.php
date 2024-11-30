@@ -10381,26 +10381,26 @@ Class Leadorder_model extends My_Model {
             }
             $amntdata[$fldname] = $fldval;
             $out['result'] = $this->success_result;
-            $finchange = 0;
-            if ($fldname=='shipped' || $fldname=='shipped_price' || $fldname=='amount_sum') {
-                $finchange = 1;
-                if (intval($amntdata['shipped'])==0) {
-                    $amntdata['shipped_price'] = '';
-                } else {
-                    if ($fldname=='amount_sum') {
-                        $amntdata['shipped_price'] = round(floatval($amntdata['amount_sum']) / intval($amntdata['shipped']),3);
-                    } elseif ($fldname=='shipped_price') {
-                        $amntdata['amount_sum'] = round(intval($amntdata['shipped']) * floatval($amntdata['shipped_price']),2);
-                    } elseif ($fldname=='shipped') {
-                        if (!empty($amntdata['shipped_price'])) {
-                            $amntdata['amount_sum'] = round(intval($amntdata['shipped']) * floatval($amntdata['shipped_price']),2);
-                        }
-                    }
-                }
-                $out['price'] = $amntdata['shipped_price'];
-                $out['total'] = $amntdata['amount_sum'];
-            }
-            $out['finchange'] = $finchange;
+//            $finchange = 0;
+//            if ($fldname=='shipped' || $fldname=='shipped_price' || $fldname=='amount_sum') {
+//                $finchange = 1;
+//                if (intval($amntdata['shipped'])==0) {
+//                    $amntdata['shipped_price'] = '';
+//                } else {
+//                    if ($fldname=='amount_sum') {
+//                        $amntdata['shipped_price'] = round(floatval($amntdata['amount_sum']) / intval($amntdata['shipped']),3);
+//                    } elseif ($fldname=='shipped_price') {
+//                        $amntdata['amount_sum'] = round(intval($amntdata['shipped']) * floatval($amntdata['shipped_price']),2);
+//                    } elseif ($fldname=='shipped') {
+//                        if (!empty($amntdata['shipped_price'])) {
+//                            $amntdata['amount_sum'] = round(intval($amntdata['shipped']) * floatval($amntdata['shipped_price']),2);
+//                        }
+//                    }
+//                }
+//                $out['price'] = $amntdata['shipped_price'];
+//                $out['total'] = $amntdata['amount_sum'];
+//            }
+//            $out['finchange'] = $finchange;
             usersession($session, $amntdata);
         }
         return $out;

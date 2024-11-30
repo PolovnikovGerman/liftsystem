@@ -40,8 +40,12 @@
                 <div class="vendor">Vendor</div>
                 <div class="amntpaymetod">Pay Method</div>
                 <div class="amountsum">Amount</div>
-                <div class="inclship" title="incl. shipping">
-                    <i class="fa fa-question-circle" aria-hidden="true"></i>
+                <div class="inclship">
+                    Incl Shipping
+                    <i class="fa fa-question-circle" data-event="hover" data-css="coghelpballonbox" data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="up" data-textcolor="#000"
+                                     data-balloon="When this is checked profit is calculated using the shipping from the order.  When this is is unchecked it means you should add a PO that covers the shipping cost.  The checkbox is PER order so unchecking will uncheck on all POs for this order"
+                       data-timer="8000" data-delay="1000" aria-hidden="true">
+                    </i>
                 </div>
                 <div class="actions">&nbsp;</div>
             </div>
