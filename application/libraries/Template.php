@@ -498,7 +498,8 @@ class Template
                     $imprintview=$this->CI->load->view('leadorderdetails/imprint_data_edit', $ioptions, TRUE);
                 }
                 $showinvent = 0;
-                if ($ord_data['brand']=='SR' && $irow['item_id']>0) {
+                // if ($ord_data['brand']=='SR' && $irow['item_id']>0) {
+                if (!empty($irow['inventory_item_id'])) {
                     $showinvent = 1;
                 }
                 $item_options=array(
