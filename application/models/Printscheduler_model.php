@@ -115,6 +115,7 @@ class Printscheduler_model extends MY_Model
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
         $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
         $this->db->where('o.print_date < ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date', 0);
@@ -156,6 +157,9 @@ class Printscheduler_model extends MY_Model
         $curdate = strtotime(date('Y-m-d'));
         $this->db->select('date_format(from_unixtime(o.print_date), \'%Y-%m-%d\') as printdate, count(o.order_id) as cntorder');
         $this->db->from('ts_orders o');
+        $this->db->join('ts_order_items oi','oi.order_id=o.order_id');
+        $this->db->join('ts_order_itemcolors toi','toi.order_item_id=oi.order_item_id');
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
         $this->db->where('o.print_date >= ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date', 0);
@@ -218,6 +222,9 @@ class Printscheduler_model extends MY_Model
         $curdate = strtotime(date('Y-m-d'));
         $this->db->select('min(o.print_date) as mindate, max(o.print_date) as maxdate, count(o.order_id) as cntorder');
         $this->db->from('ts_orders o');
+        $this->db->join('ts_order_items oi','oi.order_id=o.order_id');
+        $this->db->join('ts_order_itemcolors toi','toi.order_item_id=oi.order_item_id');
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
         if ($pastorder==1) {
             $this->db->where('o.print_date < ', $curdate);
         } else {
@@ -253,6 +260,7 @@ class Printscheduler_model extends MY_Model
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
         $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
@@ -468,6 +476,7 @@ class Printscheduler_model extends MY_Model
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi', 'oi.order_id=o.order_id');
         $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id=oi.order_item_id');
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=oic.inventory_color_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
@@ -490,6 +499,7 @@ class Printscheduler_model extends MY_Model
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
         $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
@@ -558,6 +568,7 @@ class Printscheduler_model extends MY_Model
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi', 'oi.order_id=o.order_id');
         $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id=oi.order_item_id');
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=oic.inventory_color_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
@@ -580,6 +591,7 @@ class Printscheduler_model extends MY_Model
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
         $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
@@ -674,7 +686,8 @@ class Printscheduler_model extends MY_Model
         $this->db->select('count(distinct(o.order_id)) as cnt');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi', 'o.order_id=oi.order_id');
-        $this->db->join('ts_order_itemcolors oic', 'oi.order_item_id=oi.order_item_id');
+        $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id=oi.order_item_id');
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=oic.inventory_color_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
@@ -701,6 +714,7 @@ class Printscheduler_model extends MY_Model
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
         $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
@@ -743,6 +757,7 @@ class Printscheduler_model extends MY_Model
         $this->db->join('users u','u.user_id=o.print_user');
         $this->db->join('ts_order_items oi', 'o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors oic', 'oi.order_item_id=oic.order_item_id');
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=oic.inventory_color_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
@@ -771,7 +786,8 @@ class Printscheduler_model extends MY_Model
         $this->db->select('count(distinct(o.order_id)) as cnt');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi', 'o.order_id=oi.order_id');
-        $this->db->join('ts_order_itemcolors oic', 'oi.order_item_id=oi.order_item_id');
+        $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id=oi.order_item_id');
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=oic.inventory_color_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
@@ -799,6 +815,7 @@ class Printscheduler_model extends MY_Model
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
         $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
@@ -860,7 +877,8 @@ class Printscheduler_model extends MY_Model
         $this->db->select('count(distinct(o.order_id)) as cnt');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi', 'o.order_id=oi.order_id');
-        $this->db->join('ts_order_itemcolors oic', 'oi.order_item_id=oi.order_item_id');
+        $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id=oi.order_item_id');
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=oic.inventory_color_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
@@ -887,6 +905,7 @@ class Printscheduler_model extends MY_Model
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
         $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
