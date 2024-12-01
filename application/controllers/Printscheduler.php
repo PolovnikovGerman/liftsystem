@@ -63,9 +63,10 @@ class Printscheduler extends MY_Controller
             $order_id = ifset($postdata,'order_id', '');
             if (!empty($order_id)) {
                 $this->load->model('orders_model');
-                $orddat = $this->orders_model->get_order_detail($order_id);
-                if (ifset($orddat, 'order_id',0)==$order_id) {
+                $res = $this->orders_model->get_pastorder($order_id);
+                if ($res['result']==$this->success_result) {
                     $error = '';
+                    $orddat = $res['data'];
                     $mdata['printdate'] = date('Y-m-d', $orddat['print_date']);
                 }
             }

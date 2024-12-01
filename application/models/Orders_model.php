@@ -9245,4 +9245,15 @@ Class Orders_model extends MY_Model
         }
         return $years;
     }
+
+    public function get_pastorder($order_id)
+    {
+        $out=['result' => $this->error_result,'msg' => 'Order Not Found'];
+        $order = $this->db->select('*')->from('ts_orders')->where('order_id', $order_id)->get()->row_array();
+        if (ifset($order,'order_id',0)==$order_id) {
+            $out['result'] = $this->success_result;
+            $out['data'] = $order;
+        }
+        return $out;
+    }
 }
