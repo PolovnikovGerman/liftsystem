@@ -306,6 +306,7 @@ class Printscheduler_model extends MY_Model
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
         $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
