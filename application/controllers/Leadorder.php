@@ -1152,7 +1152,8 @@ class Leadorder extends MY_Controller
                                 'price' => $item['base_price'],
                             ];
                             if ($special==0) {
-                                if ($res['brand']=='SR') {
+                                // if ($res['brand']=='SR') {
+                                if ($res['inventoryitem']==1) {
                                     $mdata['outcolors'] = $this->load->view('leadorderdetails/sradditem_color_view', $options, true);
                                 } else {
                                     $mdata['outcolors'] = $this->load->view('leadorderdetails/item_color_choice', $options, true);
@@ -1164,6 +1165,7 @@ class Leadorder extends MY_Controller
                             $mdata['price'] = $this->load->view('leadorderdetails/additem_price_view', $options, TRUE); // $item['base_price']
                             $mdata['subtotal'] = MoneyOutput($item['item_subtotal']);
                             $mdata['brand'] = $res['brand'];
+                            $mdata['inventoryitem'] = $res['inventoryitem'];
                         }
                     }
                 }
@@ -1253,7 +1255,8 @@ class Leadorder extends MY_Controller
                             'qty' => $res['item_qty'],
                             'price' => $res['base_price'],
                         ];
-                        if ($res['brand']=='SR') {
+                        // if ($res['brand']=='SR') {
+                        if ($res['inventory']==1) {
                             $mdata['outcolors'] = $this->load->view('leadorderdetails/sradditem_color_view', $options, true);
                         } else {
                             $mdata['outcolors'] = $this->load->view('leadorderdetails/item_color_choice', $options, true);
@@ -1262,6 +1265,7 @@ class Leadorder extends MY_Controller
                         $mdata['price'] = $this->load->view('leadorderdetails/additem_price_view', $options, TRUE); // $item['base_price']
                         $mdata['subtotal'] = MoneyOutput($res['item_subtotal']);
                         $mdata['brand'] = $res['brand'];
+                        $mdata['inventory'] = $res['inventory'];
                     }
                 }
             }
@@ -1456,7 +1460,8 @@ class Leadorder extends MY_Controller
                                 );
                                 $imprintview=$this->load->view('leadorderdetails/imprint_data_edit', $imprint_options, TRUE);
                                 $showinvent = 0;
-                                if ($order['brand']=='SR' && $irow['item_id']>0) {
+                                // if ($order['brand']=='SR' && $irow['item_id']>0) {
+                                if (!empty($irow['inventory_item_id'])) {
                                     $showinvent = 1;
                                 }
                                 $item_options=array(
@@ -2354,7 +2359,8 @@ class Leadorder extends MY_Controller
                     $imprints=$order_items['imprints'];
                     $imprintview=$this->load->view('leadorderdetails/imprint_data_edit', array('imprints'=>$imprints), TRUE);
                     $showinvent = 0;
-                    if ($res['order']['brand']=='SR' && $order_items['item_id']>0) {
+                    // if ($res['order']['brand']=='SR' && $order_items['item_id']>0) {
+                    if (!empty($order_items['inventory_item_id'])) {
                         $showinvent = 1;
                     }
                     $item_options=array(

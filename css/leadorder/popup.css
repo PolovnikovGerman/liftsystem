@@ -446,6 +446,9 @@ input.order_itemqty_input {
 .items_content_item2.short {
     width: 57px;
 }
+.items_content_item2.shortinvent {
+    width: 68px;
+}
 .items_content_item2.text_green {
     cursor: pointer;
 }

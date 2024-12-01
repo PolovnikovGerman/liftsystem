@@ -6561,20 +6561,27 @@ Class Orders_model extends MY_Model
             $this->db->set('item_price', $item['item_price']);
             $this->db->set('setup_price', $item['setup_price']);
             $this->db->set('imprint_price', $item['imprint_price']);
+            if (!empty($item['printshop_inventory_id'])) {
+                $this->db->set('inventory_item_id', $item['printshop_inventory_id']);
+            }
             $this->db->insert('ts_order_items');
             $item_id = $this->db->insert_id();
             if ($item_id > 0) {
                 // Add colors
                 $colordat = $item['colors'];
                 foreach ($colordat as $crow) {
+                    $invcolor = '';
+                    if (!empty($item['printshop_inventory_id'])) {
+                        $invcolor = $this->_inventory_color($item['printshop_inventory_id'], $crow['order_color_itemcolor']);
+                    }
                     $this->db->set('order_item_id', $item_id);
                     $this->db->set('item_description', $item['item_name']);
                     $this->db->set('item_price', $item['item_price']);
                     $this->db->set('item_qty', $crow['order_color_qty']);
                     $this->db->set('item_color', $crow['order_color_itemcolor']);
-//                    if (!empty($item['printshop_inventory_id'])) {
-//                        $this->db->set('printshop_item_id', $item['printshop_inventory_id']);
-//                    }
+                    if (!empty($invcolor)) {
+                        $this->db->set('inventory_color_id', $invcolor);
+                    }
                     $this->db->insert('ts_order_itemcolors');
                     $itemcolorid = $this->db->insert_id();
                     $this->db->set('created_at', time());
@@ -8702,6 +8709,22 @@ Class Orders_model extends MY_Model
         $res=$this->email->send();
         $this->email->clear(TRUE);
     }
+
+    private function _inventory_color($inventory_item_id, $color)
+    {
+        $outcolor = '';
+        $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where(['inventory_item_id' => $inventory_item_id, 'color' => $color])->get()->row_array();
+        if (ifset($invdat, 'inventory_color_id', 0) > 0) {
+            $outcolor = $invdat['inventory_color_id'];
+        } else {
+            $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inventory_item_id)->like('color', $color, 'after')->get()->row_array();
+            if (ifset($invdat, 'inventory_color_id', 0) > 0) {
+                $outcolor = $invdat['inventory_color_id'];
+            }
+        }
+        return $outcolor;
+    }
+
 
     public function order_schedule_transform()
     {

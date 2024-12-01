@@ -740,6 +740,8 @@ Class Sritems_model extends My_Model
                 $colors = [];
                 $sessiondata['colors'] = $colors;
                 $sessiondata['deleted'] = $deleted;
+            } else {
+                $sessiondata['item']['printshop_inventory_id']='';
             }
             usersession($sessionsid, $sessiondata);
             // Recalc prices and
