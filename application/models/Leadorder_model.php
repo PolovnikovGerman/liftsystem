@@ -7479,6 +7479,17 @@ Class Leadorder_model extends My_Model {
                 $order_items=$leadorder['order_items'];
                 $idx=1;
                 foreach ($order_items as $irow) {
+                    if ($irow['item_id'] > 0 ) {
+                        // check an item
+                        $sbitemdat = $this->db->select('item_id, printshop_inventory_id')->from('sb_items')->where('item_id', $irow['item_id'])->get()->row_array();
+                        if (ifset($sbitemdat,'item_id',0)==$irow['item_id']) {
+                            if (!empty($sbitemdat['printshop_inventory_id'])) {
+                                $irow['inventory_item_id'] = $sbitemdat['printshop_inventory_id'];
+                            } else {
+                                $irow['inventory_item_id'] = NULL;
+                            }
+                        }
+                    }
                     $items=$irow['items'];
                     $itmid=1;
                     $newitems=array();
@@ -7493,8 +7504,11 @@ Class Leadorder_model extends My_Model {
                         // if ($order['brand']=='SR') {
                         if (!empty($irow['inventory_item_id'])) {
                             $out_colors=$this->load->view('leadorderdetails/sradditem_color_view', $coloroptions, TRUE);
+                            // Get inventory color
+                             $pitem['inventory_color_id'] = $this->_inventory_color($irow['inventory_item_id'], $pitem['item_color']);
                         } else {
                             $out_colors=$this->load->view('leadorderdetails/item_color_choice', $coloroptions, TRUE);
+                            $pitem['inventory_color_id'] = NULL;
                         }
                         $newtrackidx = -1;
                         $trackdate = time();
