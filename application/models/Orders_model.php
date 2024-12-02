@@ -8731,13 +8731,14 @@ Class Orders_model extends MY_Model
         // $brands = ['SR','SB'];
         $brands = ['SB'];
         foreach ($brands as $brand) {
-            $this->db->select('o.order_id, o.order_num, o.shipdate')->from('ts_orders o')->join('ts_order_items oi','oi.order_id=o.order_id')->join('sb_items i','i.item_id=oi.item_id')->join('sb_vendor_items vi','vi.vendor_item_id=i.vendor_item_id');
-            $this->db->where(['o.is_canceled' => 0, 'vi.vendor_item_vendor' => $this->config->item('inventory_vendor')]);
-            if ($brand=='SR') {
-                $this->db->where('o.brand', $brand);
-            } else {
-                $this->db->where_in('o.brand',['BT','SB']);
-            }
+            $this->db->select('o.order_id, o.order_num, o.shipdate')->from('ts_orders o')->join('ts_order_items oi','oi.order_id=o.order_id');
+            $this->db->where('o.is_canceled', 0);
+            $this->db->where('oi.inventory_item_id is not null');
+//            if ($brand=='SR') {
+//                $this->db->where('o.brand', $brand);
+//            } else {
+//                $this->db->where_in('o.brand',['BT','SB']);
+//            }
             $orders = $this->db->get()->result_array();
             foreach ($orders as $order) {
                 echo 'Order '.$order['order_num'].' Schedule '.date('Y-m-d', $order['shipdate']);
@@ -8779,110 +8780,13 @@ Class Orders_model extends MY_Model
                 } else {
                     echo PHP_EOL;
                 }
-
             }
         }
     }
 
     public function order_invamount_transform($brand)
     {
-        // Remove previous attempt
-//        $this->db->select('order_id, order_num')->from('ts_orders');
-//        if ($brand=='SR') {
-//            $this->db->where('brand', $brand);
-//        } else {
-//            $this->db->where_in('brand',['SB','BT']);
-//        }
-//        $this->db->where(['is_canceled' => 0,  'profit_perc is not null','order_system' => 'new']);
-//        $orders = $this->db->get()->result_array();
-//        foreach ($orders as $order) {
-//            $this->db->where('order_id', $order['order_id']);
-//            $this->db->set('order_itemcolor_id', NULL);
-//            $this->db->update('ts_order_amounts');
-//        }
-//        echo 'Orders amounts clear'. PHP_EOL;
-        // Get a single item colors
-//        $this->db->select('o.order_num, o.order_id, count(oa.amount_id) as amntcnt, sum(oa.shipped) as shiptotal')->from('ts_order_amounts oa')->join('ts_orders o','o.order_id=oa.order_id');
-//        if ($brand=='SR') {
-//            $this->db->where('o.brand',$brand);
-//        } else {
-//            $this->db->where_in('o.brand',['SB','BT']);
-//        }
-//        $this->db->where(['o.is_canceled' => 0, 'o.order_system' => 'new', 'oa.order_itemcolor_id' => NULL]);
-//        $this->db->group_by('o.order_num, o.order_id');
-//        $amnts = $this->db->get()->result_array();
-//        foreach ($amnts as $amnt) {
-//            $this->db->select('count(oic.order_itemcolor_id) as cnt, max(oic.order_itemcolor_id) as maxid')->from('ts_order_itemcolors oic')->join('ts_order_items oi','oi.order_item_id=oic.order_item_id')->where('oi.order_id', $amnt['order_id']);
-//            $colordat = $this->db->get()->row_array();
-//            if ($colordat['cnt']==1) {
-//                $this->db->where('order_id', $amnt['order_id']);
-//                $this->db->set('order_itemcolor_id', $colordat['maxid']);
-//                $this->db->update('ts_order_amounts');
-//                echo 'Order '.$amnt['order_num'].' success build relation '.PHP_EOL;
-//            } else {
-//                echo 'Order '.$amnt['order_num'].' has '.$colordat['cnt'].' colors'.PHP_EOL;
-//            }
-//        }
 
-        // Check inventory
-        $this->db->select('o.order_num, o.order_id, c.color, i.item_num, oa.amount_id, oa.shipped')->from('ts_order_amounts oa')->join('ts_orders o','o.order_id=oa.order_id');
-        $this->db->join('ts_inventory_colors c','oa.inventory_color_id = c.inventory_color_id');
-        $this->db->join('ts_inventory_items i','c.inventory_item_id = i.inventory_item_id');
-        if ($brand=='SR') {
-            $this->db->where('o.brand',$brand);
-        } else {
-            $this->db->where_in('o.brand',['SB','BT']);
-        }
-        $this->db->where(['o.is_canceled' => 0, 'o.order_system' => 'new', 'oa.order_itemcolor_id' => NULL]);
-        $amnts = $this->db->get()->result_array();
-        foreach ($amnts as $amnt) {
-            // Check color
-            $this->db->select('toi.order_itemcolor_id, toi.item_color, toi.item_qty')->from('ts_order_items oi')->join('ts_order_itemcolors toi','oi.order_item_id = toi.order_item_id');
-            $this->db->where('oi.order_id', $amnt['order_id']);
-            $this->db->like('toi.item_color', $amnt['color'],'BOTH');
-            $cntres = $this->db->get()->row_array();
-            if (ifset($cntres,'order_itemcolor_id', 0) > 0) {
-                $this->db->select('count(amount_id) as cnt')->from('ts_order_amounts')->where(['order_id' => $amnt['order_id'],'order_itemcolor_id' => $cntres['order_itemcolor_id']]);
-                $chkres = $this->db->get()->row_array();
-                if ($chkres['cnt']==0) {
-                    $this->db->where('amount_id', $amnt['amount_id']);
-                    $this->db->set('order_itemcolor_id', $cntres['order_itemcolor_id']);
-                    $this->db->update('ts_order_amounts');
-                } else {
-                    echo 'Order # '.$amnt['order_num'].' ID '.$amnt['order_id'].' Color '.$amnt['color'].' Duplicate '.PHP_EOL;
-                }
-            } else {
-                $this->db->select('toi.order_itemcolor_id, toi.item_description, toi.item_qty')->from('ts_order_items oi')->join('ts_order_itemcolors toi','oi.order_item_id = toi.order_item_id');
-                $this->db->where('oi.order_id', $amnt['order_id']);
-                $this->db->like('toi.item_description', $amnt['color'],'BOTH');
-                $cntres = $this->db->get()->row_array();
-                if (ifset($cntres,'order_itemcolor_id', 0) > 0) {
-                    $this->db->select('count(amount_id) as cnt')->from('ts_order_amounts')->where(['order_id' => $amnt['order_id'],'order_itemcolor_id' => $cntres['order_itemcolor_id']]);
-                    $chkres = $this->db->get()->row_array();
-                    if ($chkres['cnt']==0) {
-                        $this->db->where('amount_id', $amnt['amount_id']);
-                        $this->db->set('order_itemcolor_id', $cntres['order_itemcolor_id']);
-                        $this->db->update('ts_order_amounts');
-                    } else {
-                        echo 'Order # '.$amnt['order_num'].' ID '.$amnt['order_id'].' Color '.$amnt['color'].' Duplicate '.PHP_EOL;
-                    }
-                } else {
-                    $this->db->select('toi.order_itemcolor_id, toi.item_description, toi.item_qty')->from('ts_order_items oi')->join('ts_order_itemcolors toi','oi.order_item_id = toi.order_item_id');
-                    $this->db->where('oi.order_id', $amnt['order_id']);
-                    $this->db->like('toi.item_description', $amnt['item_num'],'BOTH');
-                    $cntres = $this->db->get()->row_array();
-                    $this->db->select('count(amount_id) as cnt')->from('ts_order_amounts')->where(['order_id' => $amnt['order_id'],'order_itemcolor_id' => $cntres['order_itemcolor_id']]);
-                    $chkres = $this->db->get()->row_array();
-                    if ($chkres['cnt']==0) {
-                        $this->db->where('amount_id', $amnt['amount_id']);
-                        $this->db->set('order_itemcolor_id', $cntres['order_itemcolor_id']);
-                        $this->db->update('ts_order_amounts');
-                    } else {
-                        echo 'Order # '.$amnt['order_num'].' ID '.$amnt['order_id'].' Color '.$amnt['color'].' Not Found '.$amnt['item_num'].PHP_EOL;
-                    }
-                }
-            }
-        }
     }
 
     public function get_pooverview_other($brand, $domesticyear)

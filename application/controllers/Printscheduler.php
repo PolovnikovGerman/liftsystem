@@ -93,6 +93,9 @@ class Printscheduler extends MY_Controller
                 $startweek = getDatesByWeek($weekbgn, $yearbgn);
                 $weekend = date('W', $dates['max']);
                 $yearend = date('Y', $dates['max']);
+                if ($weekend < $weekbgn) {
+                    $yearend += 1;
+                }
                 $endweek = getDatesByWeek($weekend, $yearend);
                 $periodbgn = $startweek['start_week'];
                 $periodend = $startweek['end_week'];
