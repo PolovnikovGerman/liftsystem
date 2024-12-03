@@ -23,7 +23,7 @@
             <?php } ?>
         </div>
     </div>
-<!--    <div id="orderprojcogarea">        -->
+    <div id="orderprojcogarea" style="max-height: 460px; overflow-y: auto;">
     <?php foreach ($data['list'] as $item) : ?>
         <div class="itemtitle">
             <div class="labelrow">TOTAL:</div>
@@ -76,7 +76,7 @@
             <?php endforeach; ?>
         </div>
     <?php endforeach; ?>
-<!--    </div>-->
+    </div>
 
     <div class="totalcogprojarea">
         <div class="totalcoglabel">Total COG:</div>

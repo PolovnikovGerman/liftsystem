@@ -8784,9 +8784,48 @@ Class Orders_model extends MY_Model
         }
     }
 
-    public function order_invamount_transform($brand)
+    public function order_invamount_srtransform()
     {
-
+//        $this->db->select('o.order_id, o.order_num, count(toi.order_itemcolor_id) as cnt, max(toi.order_itemcolor_id) as itemcolor')->from('ts_orders o')->join('ts_order_items oi','o.order_id = oi.order_id')->join('ts_order_itemcolors toi','oi.order_item_id = toi.order_item_id');
+//        $this->db->where(['o.brand' => 'SR',  'o.is_canceled' => 0])->where('o.order_cog is not null')->group_by('o.order_id, o.order_num')->having('cnt',1);
+//        $orders = $this->db->get()->result_array();
+//        foreach ($orders as $order) {
+//            $this->db->where('order_id', $order['order_id']);
+//            $this->db->set('order_itemcolor_id', $order['itemcolor']);
+//            $this->db->update('ts_order_amounts');
+//        }
+        // Get AMOUNTS
+        $this->db->select('oa.amount_id, oa.inventory_color_id, oa.order_id, o.order_num')->from('ts_order_amounts oa')->join('ts_orders o','o.order_id=oa.order_id')->where('o.brand','SR');
+        $this->db->where('oa.order_itemcolor_id', NULL);
+        $amounts = $this->db->get()->result_array();
+        foreach ($amounts as $amount) {
+            if (!empty($amount['inventory_color_id'])) {
+                $this->db->select('toi.order_itemcolor_id')->from('ts_order_itemcolors toi')->join('ts_order_items oi','toi.order_item_id=oi.order_item_id');
+                $this->db->where(['toi.inventory_color_id'=>$amount['inventory_color_id'],'oi.order_id' => $amount['order_id']]);
+                $amntcolor = $this->db->get()->row_array();
+                if (ifset($amntcolor,'order_itemcolor_id',0) > 0) {
+                    $this->db->where('amount_id', $amount['amount_id']);
+                    $this->db->set('order_itemcolor_id', $amntcolor['order_itemcolor_id']);
+                    $this->db->update('ts_order_amounts');
+                    echo 'Order '.$amount['order_num'].' updated'.PHP_EOL;
+                } else {
+                    // Select color name
+                    $colordat = $this->db->select('color')->from('ts_inventory_colors')->where('inventory_color_id', $amount['inventory_color_id'])->get()->row_array();
+                    $itemcolor = $colordat['color'];
+                    $this->db->select('toi.order_itemcolor_id, toi.item_description, toi.item_color')->from('ts_order_itemcolors toi')->join('ts_order_items oi','toi.order_item_id=oi.order_item_id')->where('oi.order_id', $amount['order_id']);
+                    $ordercolors = $this->db->get()->result_array();
+                    foreach ($ordercolors as $ordercolor) {
+                        if (strpos($ordercolor['item_description'], $itemcolor)!==false) {
+                            $this->db->where('amount_id', $amount['amount_id']);
+                            $this->db->set('order_itemcolor_id', $ordercolor['order_itemcolor_id']);
+                            $this->db->update('ts_order_amounts');
+                            echo 'Order '.$amount['order_num'].' updated'.PHP_EOL;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public function get_pooverview_other($brand, $domesticyear)

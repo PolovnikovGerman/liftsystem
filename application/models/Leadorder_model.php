@@ -6026,7 +6026,6 @@ Class Leadorder_model extends My_Model {
             $this->db->from('sb_item_colors');
             $this->db->where('item_color_itemid', $item_id);
             $colors=$this->db->get()->result_array();
-                $colors=$this->db->get()->result_array();
             $itmres['num_colors']=count($colors);
             if (count($colors)>0) {
                 $newcolor=array();
