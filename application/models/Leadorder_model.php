@@ -10821,6 +10821,7 @@ Class Leadorder_model extends My_Model {
                 $orditem['inventory_item_id'] = $itemdata['printshop_item_id'];
             }
             // Prepare firt item (as itemcolors)
+            $out['inventoryitem'] = 0;
             $newitem=array(
                 'order_item_id'=> $order_item_id, // $newid*(-1),
                 'item_id'=>-1,
