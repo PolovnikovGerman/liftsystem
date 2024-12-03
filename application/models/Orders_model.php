@@ -8786,14 +8786,29 @@ Class Orders_model extends MY_Model
 
     public function order_invamount_srtransform()
     {
-//        $this->db->select('o.order_id, o.order_num, count(toi.order_itemcolor_id) as cnt, max(toi.order_itemcolor_id) as itemcolor')->from('ts_orders o')->join('ts_order_items oi','o.order_id = oi.order_id')->join('ts_order_itemcolors toi','oi.order_item_id = toi.order_item_id');
-//        $this->db->where(['o.brand' => 'SR',  'o.is_canceled' => 0])->where('o.order_cog is not null')->group_by('o.order_id, o.order_num')->having('cnt',1);
-//        $orders = $this->db->get()->result_array();
-//        foreach ($orders as $order) {
-//            $this->db->where('order_id', $order['order_id']);
-//            $this->db->set('order_itemcolor_id', $order['itemcolor']);
-//            $this->db->update('ts_order_amounts');
-//        }
+        $this->db->select('o.order_id, o.order_num, count(toi.order_itemcolor_id) as cnt, max(toi.order_itemcolor_id) as itemcolor')->from('ts_orders o')->join('ts_order_items oi','o.order_id = oi.order_id')->join('ts_order_itemcolors toi','oi.order_item_id = toi.order_item_id');
+        $this->db->where(['o.brand' => 'SR',  'o.is_canceled' => 0])->where('o.order_cog is not null')->group_by('o.order_id, o.order_num')->having('cnt',1);
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            $dat = $this->db->select('item_qty')->from('ts_order_itemcolors')->where('order_itemcolor_id', $order['itemcolor'])->get()->row_array();
+            $shipqty = $dat['item_qty'];
+            $amounts = $this->db->select('*')->from('ts_order_amounts')->where('order_id', $order['order_id'])->get()->result_array();
+            foreach ($amounts as $amount) {
+                $this->db->where('amount_id', $amount['amount_id']);
+                if (!empty($amount['inventory_color_id'])) {
+                    $shipqty-=$amount['shipped'];
+                    if ($shipqty < 0) {
+                        $shipqty = 0;
+                    }
+                } else {
+                    $this->db->set('shipped', $shipqty);
+                    $shipqty = 0;
+                }
+                $this->db->set('order_itemcolor_id', $order['itemcolor']);
+                $this->db->update('ts_order_amounts');
+            }
+            echo 'Order # '.$order['order_num'].' updated '.PHP_EOL;
+        }
         // Get AMOUNTS
         $this->db->select('oa.amount_id, oa.inventory_color_id, oa.order_id, o.order_num')->from('ts_order_amounts oa')->join('ts_orders o','o.order_id=oa.order_id')->where('o.brand','SR');
         $this->db->where('oa.order_itemcolor_id', NULL);
