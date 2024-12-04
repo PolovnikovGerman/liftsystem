@@ -4215,8 +4215,8 @@ class Test extends CI_Controller
     public function order_invamount_transform()
     {
         $this->load->model('orders_model');
-        $this->orders_model->order_invamount_srtransform();
-        // $this->orders_model->order_invamount_transform('SB');
+        // $this->orders_model->order_invamount_srtransform();
+        $this->orders_model->order_invamount_sbtransform();
     }
 
     public function customleads()
