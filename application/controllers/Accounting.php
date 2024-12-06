@@ -3228,15 +3228,26 @@ class Accounting extends MY_Controller
         );
         $yearview.=$this->load->view('accounting/reminder_data_view', $roptions, TRUE);
         // Calc total length
+        $slideryears = $dats['cur_year']-$dats['min_year'];
         if ($showgrowth==1) {
-            $slider_width=($dats['cur_year']-$dats['min_year'])*246+547;
+            $slider_width=($dats['cur_year']-$dats['min_year'])*246+125+547; // 547;
+            // $slider_width=($dats['cur_year']-$dats['min_year'])*246+572; // 547;
+            if ($slideryears < 2) {
+                $margin=(1018-$slider_width);
+            } else {
+                $margin=(1100-$slider_width); // 918
+            }
         } else {
-            $slider_width=($dats['cur_year']-$dats['min_year']+1)*132+364; // +363;
+            $slider_width=($dats['cur_year']-$dats['min_year']+1)*132+364+24; // +363;
+            if ($slideryears < 2) {
+                $margin=(964-$slider_width);
+            } else {
+                $margin=(927-$slider_width);
+            }
+
         }
         // $slider_width=$numyears*172+83;
-        $margin=(918-$slider_width);
-        /*  margin-left: -1164px;
-            width: 2064px; */
+        //
         $out=array(
             'content'=>$yearview,
             'slider_width'=>$slider_width,
