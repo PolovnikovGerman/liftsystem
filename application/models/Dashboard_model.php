@@ -57,6 +57,13 @@ Class Dashboard_model extends MY_Model
             $this->db->where('order_date < ', $dates['end_week']);
             $this->db->where('is_canceled',0);
             $res = $this->db->get()->row_array();
+            $visitors = 0;
+            if ($this->config->item('test_server')==1) {
+                $dates['end_week'] = strtotime('05/18/2024');
+                $dates['start_week'] = strtotime('05/11/2024');
+                $visitors = ceil(rand(15000, 35000));
+            }
+            $leads = $this->db->select('count(lead_id) as leadcnt')->from('ts_leads')->where('lead_date >= ', $dates['start_week'])->where('lead_date < ', $dates['end_week'])->get()->row_array();
 //            if ($res['cnt']==0) {
 //                $options = [
 //                    'conversions' => 204,
@@ -76,6 +83,8 @@ Class Dashboard_model extends MY_Model
                     'prev_navig' => $prvnavig,
                     'next_week' => $nxtweek,
                     'next_navig' => $nxtnavig,
+                    'leads' => $leads['leadcnt'],
+                    'visitors' => $visitors,
                 ];
 //            }
         }
@@ -213,5 +222,111 @@ Class Dashboard_model extends MY_Model
         }
     }
 
+    public function get_leadvisits_week($curweek)
+    {
+        $weeknum = date('W', $curweek);
+        $year = date('Y', $curweek);
+        $dates = getDatesByWeek($weeknum, $year);
+        // Temporary
+        if ($this->config->item('test_server')==1) {
+            $dates['start_week'] = strtotime('2024-05-11');
+            $dates['end_week'] = strtotime('2024-05-18');
+        }
+        $srleads = [
+            '0' => 0,
+            '1' => 0,
+            '2' => 0,
+            '3' => 0,
+            '4' => 0,
+            '5' => 0,
+            '6' => 0,
+        ];
+        $srleadtotal = 0;
+        $btleads = [
+            '0' => 0,
+            '1' => 0,
+            '2' => 0,
+            '3' => 0,
+            '4' => 0,
+            '5' => 0,
+            '6' => 0,
+        ];
+        $btleadtotal = 0;
+        $leaddats = [
+            '0' => 0,
+            '1' => 0,
+            '2' => 0,
+            '3' => 0,
+            '4' => 0,
+            '5' => 0,
+            '6' => 0,
+        ];
+        $this->db->select('brand, date_format(from_unixtime(lead_date),\'%w\') as dayweek, count(lead_id) as cnt')->from('ts_leads')->where('lead_date >= ', $dates['start_week'])->where('lead_date <= ', $dates['end_week'])->group_by('brand, dayweek');
+        $leads = $this->db->get()->result_array();
+        foreach ($leads as $lead) {
+            if ($lead['brand']=='SR') {
+                $srleadtotal+=$lead['cnt'];
+                $srleads[$lead['dayweek']]+=$lead['cnt'];
+            } else {
+                $btleadtotal+=$lead['cnt'];
+                $btleads[$lead['dayweek']]+=$lead['cnt'];
+            }
+            $leaddats[$lead['dayweek']]+=$lead['cnt'];
+        }
+        $srvisittotal = 0;
+        $srvisits = [
+            '0' => 0,
+            '1' => 0,
+            '2' => 0,
+            '3' => 0,
+            '4' => 0,
+            '5' => 0,
+            '6' => 0,
+        ];
+        $btvisittotal = 0;
+        $btvisits = [
+            '0' => 0,
+            '1' => 0,
+            '2' => 0,
+            '3' => 0,
+            '4' => 0,
+            '5' => 0,
+            '6' => 0,
+        ];
+        $visitors = [
+            '0' => 0,
+            '1' => 0,
+            '2' => 0,
+            '3' => 0,
+            '4' => 0,
+            '5' => 0,
+            '6' => 0,
+        ];
+        if ($this->config->item('test_server')==1) {
+            for ($i=0; $i<7; $i++) {
+                $btvisits[$i] = ceil(rand(500,2000));
+                $btvisittotal+=$btvisits[$i];
+                $srvisits[$i] = ceil(rand(500,2000));
+                $srvisittotal+=$srvisits[$i];
+                $visitors[$i]+=$srvisits[$i]+$btvisits[$i];
+            }
+        }
+        $out = [
+            'btleads' => $btleads,
+            'btleadtotal' => $btleadtotal,
+            'srleads' => $srleads,
+            'srleadtotal' => $srleadtotal,
+            'leadtotal' => $btleadtotal+$srleadtotal,
+            'leads' => $leaddats,
+            'btvisits' => $btvisits,
+            'btvisittotal' => $btvisittotal,
+            'srvisits' => $srvisits,
+            'srvisittotal' => $srvisittotal,
+            'visittotal' => $btvisittotal+$srvisittotal,
+            'visitors' => $visitors,
+
+        ];
+        return $out;
+    }
 }
 ?>
