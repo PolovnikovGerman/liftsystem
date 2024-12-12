@@ -12,10 +12,10 @@
          data-position="down"
          data-balloon="{ajax} /welcome/weektotalvisitors/<?= $data['currweek'] ?>">
         <div class="leadsection visitors">
-            <div class="param_value"><?= $data['visitors'] ?></div>
+            <div class="param_value"><?=QTYOutput($data['visitors'])?></div>
         </div>
         <div class="leadsection leads">
-            <div class="param_value"><?= $data['leads'] ?></div>
+            <div class="param_value"><?=QTYOutput($data['leads'])?></div>
         </div>
     </div>
 </div>

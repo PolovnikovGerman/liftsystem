@@ -57,6 +57,12 @@ Class Dashboard_model extends MY_Model
             $this->db->where('order_date < ', $dates['end_week']);
             $this->db->where('is_canceled',0);
             $res = $this->db->get()->row_array();
+            $visitors = 0;
+            if ($this->config->item('test_server')==1) {
+                $dates['end_week'] = strtotime('05/18/2024');
+                $dates['start_week'] = strtotime('05/11/2024');
+                $visitors = ceil(rand(15000, 35000));
+            }
             $leads = $this->db->select('count(lead_id) as leadcnt')->from('ts_leads')->where('lead_date >= ', $dates['start_week'])->where('lead_date < ', $dates['end_week'])->get()->row_array();
 //            if ($res['cnt']==0) {
 //                $options = [
@@ -78,7 +84,7 @@ Class Dashboard_model extends MY_Model
                     'next_week' => $nxtweek,
                     'next_navig' => $nxtnavig,
                     'leads' => $leads['leadcnt'],
-                    'visitors' => 0,
+                    'visitors' => $visitors,
                 ];
 //            }
         }
