@@ -54,7 +54,7 @@
         <div class="dayvalue total weekenddat"><?=QTYOutput($visitors[0])?></div>
     </div>
     <!-- Leads -->
-    <div class="datarow">
+    <div class="datarow leaddetailsarea">
         <div class="detail_parameter_name leads">LEADS</div>
         <div class="detailstitle leads weekdata">For Week</div>
         <div class="detailstitle leads daydata">Mon</div>
