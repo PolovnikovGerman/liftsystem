@@ -1392,7 +1392,7 @@ div.oldvesionlabel {
     border: 1px solid #9b9b9b;
     height: 18px;
     color: #ffffff;
-    margin: -14px 0px 0 344px;
+    margin: -14px 0px 0 355px; /* 344 */
     cursor: pointer;
     padding: 0 6px;
     line-height: 18px !important;
