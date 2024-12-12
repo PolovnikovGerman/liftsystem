@@ -229,4 +229,11 @@ class Welcome extends MY_Controller {
         show_404();
     }
 
+    public function weektotalvisitors($curweek)
+    {
+        $this->load->model('dashboard_model');
+        $totals = $this->dashboard_model->get_leadvisits_week($curweek);
+        $msg = $this->load->view('page/dashboard_leadvisitors_view', $totals, TRUE);
+        echo $msg;
+    }
 }
