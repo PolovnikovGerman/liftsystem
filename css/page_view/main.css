@@ -1646,6 +1646,9 @@ div.oldvesionlabel {
 .visitordetailarea .leads {
     color: #01beb8;
 }
+.visitordetailarea .leaddetailsarea {
+    margin-top: 10px;
+}
 /* Portrait notepads */
 @media (min-width: 992px) and (max-width: 1199px) {
     .testsitelabel {
