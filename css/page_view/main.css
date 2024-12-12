@@ -1511,6 +1511,141 @@ div.oldvesionlabel {
     font-size: 12px;
     font-weight: 600;
 }
+/* Header - Leads & Visitors */
+.period_lead_info {
+    border: 1px solid #9b9b9b;
+    /* width: 124px; */
+    margin-top: 3px;
+    margin-right: 7px;
+}
+.period_lead_info .leadsection {
+    width: 59px;
+}
+.period_lead_info .leadsection .period_name {
+    width: 100%;
+    text-align: center;
+    font-family: Arial;
+    font-weight: bold;
+    font-size: 14px;
+    color: #55aeff;
+    line-height: 16px;
+    margin-top: 3px;
+    height: 16px;
+}
+.period_lead_info .leadsection .param_value {
+    width: 100%;
+    font-family: Arial;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    color: #FFFFFF;
+    /*height: 18px;*/
+    /*line-height: 18px;*/
+    height: 21px;
+    line-height: 21px;
+}
+/* Leads & Visitors popup */
+.visitordetailarea {
+    width: 602px;
+    height: 211px;
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: normal;
+    padding: 13px 13px 0 10px;
+}
+.visitordetailarea div {
+    float: left;
+}
+.visitordetailarea .detail_parameter_name {
+    width: 120px;
+    height: 21px;
+    line-height: 21px;
+    font-family: Arial;
+    font-size: 15px;
+    font-weight: bold;
+    background: #ffffff;
+    text-align: center;
+}
+.visitordetailarea .detail_parameter_name.visitors {
+    border: 1px solid #4ca4ee;
+    color: #000000!important;
+}
+.visitordetailarea .detail_parameter_name.leads {
+    border: 1px solid #01beb8;
+    color: #000000!important;
+}
+.visitordetailarea .detailstitle {
+    height: 21px;
+    line-height: 21px;
+    text-align: center;
+}
+.visitordetailarea .visitors {
+    color: #4ca4ee;
+}
+.visitordetailarea .detailstitle.weekdata {
+    width: 84px;
+    margin-right: 14px;
+}
+.visitordetailarea .detailstitle.daydata {
+    width: 51px;
+}
+.visitordetailarea .weekenddat {
+    background: #383838;
+}
+.visitordetailarea .detailsleftpart {
+    width: 207px;
+    margin-right: 12px;
+}
+.visitordetailarea .detail_brand_name {
+    width: 120px;
+    text-align: right;
+    height: 22px;
+    line-height: 22px;
+    font-size: 15px;
+    font-weight: 600;
+}
+.visitordetailarea .weekdatavalue {
+    width: 84px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+.visitordetailarea .detail_brand_name.total {
+    border-top: 1px solid #ffffff;
+}
+.visitordetailarea .totalweek {
+    border-top: 1px solid #ffffff;
+    width: 84px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+.visitordetailarea .detailsrightpart {
+    width: 359px;
+}
+.visitordetailarea .weekdataarea {
+    border: 1px solid #ffffff;
+    width: 100%;
+}
+.visitordetailarea .dayvalue {
+    width: 51px;
+    height: 22px;
+    line-height: 22px;
+    font-size: 15px;
+    text-align: center;
+}
+.visitordetailarea .dayvalue.total {
+    font-size: 16px;
+}
+.visitordetailarea .leads {
+    color: #01beb8;
+}
 /* Portrait notepads */
 @media (min-width: 992px) and (max-width: 1199px) {
     .testsitelabel {
