@@ -222,7 +222,7 @@ class Welcome extends MY_Controller {
                 $weeknum = date('W', $weekdate);
                 $year = date('Y', $weekdate);
                 $total_options = $this->dashboard_model->get_totals('week', $weeknum, $year);
-                $mdata['content'] = $this->load->view('page/dashboard_total_view', $total_options, TRUE);
+                $mdata['content'] = $this->load->view('page/dashboard_ordertotal_view', $total_options, TRUE);
             }
             $this->ajaxResponse($mdata, $error);
         }
