@@ -721,7 +721,7 @@ function init_onlineleadorder_edit() {
         var url="/leadorder/paymentadd";
         $.post(url, params, function(response){
             if (response.errors=='') {
-                $("#artNextModal").find('div.modal-dialog').css('width','356px');
+                $("#artNextModal").find('div.modal-dialog').css('width','409px');
                 $("#artNextModal").find('.modal-title').empty().html('New Manual Payment');
                 $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
                 $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
