@@ -3738,26 +3738,41 @@ input.shipaddrqty {
 /* newpayment_bg.png */
 
 .manualpayment {
-    background: url('/img/leadorder/newpayment_bg.png') no-repeat transparent;
+/*    background: url('/img/leadorder/newpayment_bg.png') no-repeat transparent;
     height: 130px;
-    width: 331px;    
+    width: 331px;
+ */
+    height: 130px;
+    width: 372px;
+    background-color: #bcbfff;
+    border-radius: 7px;
+    border: 2px solid #000;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 }
 .manualpayment div {
     font-size: 11px;
     color: #000000;
     float: left;
 }
+.manualpaymenthead {
+    font-size: 14px!important;
+    font-weight: 600;
+    height: 21px;
+    line-height: 21px;
+    width: 100%;
+    text-align: center;
+}
 .manualpayment > .paymentdata {        
     height: 85px;
-    margin: 30px 16px 0 15px;
-    width: 293px;
+    margin: 7px 16px 0 15px;
+    width: 338px; /* 293px; */
 }
 .manualpayment > .paymentdata > .paytype {
     background-color: #f3f3f3;
     font-weight: bold;
     height: 23px;
     line-height: 23px;
-    margin-left: 73px;
+    margin-left: 101px;
     width: 150px;
 }
 .manualpayment > .paymentdata > .paytype > .paytypevalue {
@@ -3778,10 +3793,10 @@ input.shipaddrqty {
     width: 45px;
 }
 .manualpayment > .paymentdata > .paymentdetails > .date {
-    width: 50px;
+    width: 71px;
 }
 .manualpayment > .paymentdata > .paymentdetails > .paytipe {
-    width: 61px;
+    width: 83px;
 }
 .manualpayment > .paymentdata > .paymentdetails > .paynum {
     width: 78px;
@@ -3793,7 +3808,7 @@ input.shipaddrqty {
     background: transparent url("/img/leadorder/save_payment_btn.png") no-repeat scroll 0 0;
     cursor: pointer;
     height: 27px;
-    margin-left: 243px;
+    margin: 6px 0 0 243px;
     width: 60px;
 }
 input.paydatadetails {
@@ -3808,13 +3823,13 @@ input.paydatadetails.payrepl {
 }
 input.paydatadetails.paydate {
     text-align: center;
-    width: 42px;
+    width: 68px;
 }
 select.paydatadetails.paymenttype {
     color: #000000;
     font-size: 11px;
     height: 18px;
-    width: 54px
+    width: 80px
 }
 input.paydatadetails.paynum {
     width: 72px;
