@@ -1526,7 +1526,7 @@ div.oldvesionlabel {
     text-align: center;
     font-family: Arial;
     font-size: 13px;
-    /* font-weight: bold; */
+    font-weight: bold;
     color: #55aeff;
     line-height: 16px;
     margin-top: 3px;
@@ -1536,7 +1536,7 @@ div.oldvesionlabel {
     width: 100%;
     font-family: Arial;
     font-size: 13px;
-    /* font-weight: 600; */
+    font-weight: 600;
     text-align: center;
     cursor: pointer;
     color: #FFFFFF;
