@@ -1282,4 +1282,10 @@ Class Cronjob extends CI_Controller
         }
     }
 
+    public function update_calendars() {
+        $this->load->model('calendars_model');
+        $this->calendars_model->update_calendars();
+    }
+
+
 }
