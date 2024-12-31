@@ -27,6 +27,9 @@ Class Dashboard_model extends MY_Model
                 $label = 'ALL BRANDS THIS WEEK';
                 $weeknum = date('W');
                 $year = date('Y');
+                if (intval(date('m'))==12 && intval($weeknum)==1) {
+                    $year = $year + 1;
+                }
                 $dates = getDatesByWeek($weeknum, $year);
                 $nxtweek = 0;
                 $nxtnavig = 0;
