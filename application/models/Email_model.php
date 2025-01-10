@@ -1446,6 +1446,7 @@ class Email_model extends My_Model
             $sendmail = 0;
             $options = array(
                 'email_id' => $email_id,
+                'brand' => 'ALL',
             );
             $mails_array = $this->get_emails($options, 'email_id', 'asc', 1, 0);
         } else {
