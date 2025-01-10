@@ -1510,8 +1510,8 @@ class Email_model extends My_Model
                         $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
                     }
                     // $mail['imgpath']=$this->config->item('img_path');
-                    $mail['imgpath']=$this->config->item('item_quote_images').'/img/';
-                    $mail['itemimgpath']=$this->config->item('item_quote_images');
+                    $mail['imgpath'] = base_url().'/img/'; // $this->config->item('item_quote_images').'/img/';
+                    $mail['itemimgpath'] = base_url(); // $this->config->item('item_quote_images');
                     log_message('error', 'img path '.$mail['imgpath']);
                     log_message('error', 'item img path '.$mail['itemimgpath']);
                     $item_id = get_json_param($mail['email_other_info'], 'item_id', 0);
