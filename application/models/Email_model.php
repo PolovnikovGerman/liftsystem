@@ -1437,16 +1437,25 @@ class Email_model extends My_Model
         }
     }
 
-    public function generate_quota() {
+    public function generate_quota($email_id=0) {
         $this->load->model('itemimages_model');
         $this->load->model('items_model');
         $this->load->helper(array('dompdf', 'file'));
-        $options = array(
-            'email_type' => 'Leads',
-            'email_quota_link' => NULL,
-            'brand' => 'ALL',
-        );
-        $mails_array = $this->get_emails($options, 'email_id', 'asc', 1, 0);
+        $sendmail = 1;
+        if ($email_id!=0) {
+            $sendmail = 0;
+            $options = array(
+                'email_id' => $email_id,
+            );
+            $mails_array = $this->get_emails($options, 'email_id', 'asc', 1, 0);
+        } else {
+            $options = array(
+                'email_type' => 'Leads',
+                'email_quota_link' => NULL,
+                'brand' => 'ALL',
+            );
+            $mails_array = $this->get_emails($options, 'email_id', 'asc', 1, 0);
+        }
 
         /* Send message to user */
         foreach ($mails_array as $row) {
@@ -1499,8 +1508,11 @@ class Email_model extends My_Model
                         $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
                         $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
                     }
-                    $mail['imgpath']=$this->config->item('img_path');
+                    // $mail['imgpath']=$this->config->item('img_path');
+                    $mail['imgpath']=$this->config->item('item_quote_images').'/img/';
                     $mail['itemimgpath']=$this->config->item('item_quote_images');
+                    log_message('error', 'img path '.$mail['imgpath']);
+                    log_message('error', 'item img path '.$mail['itemimgpath']);
                     $item_id = get_json_param($mail['email_other_info'], 'item_id', 0);
 
                     if ($item_id != 0) {
@@ -1555,8 +1567,10 @@ class Email_model extends My_Model
                             'message'=>$msgbody,
                             'fileattach'=>$file_out,
                         );
-                        if ($_SERVER['SERVER_NAME']!=='lift_stressballs.local') {
-                            $this->send_quota($mail_options);
+                        if ($sendmail==1) {
+                            if ($_SERVER['SERVER_NAME']!=='lift_stressballs.local') {
+                                $this->send_quota($mail_options);
+                            }
                         }
                     }
                 }

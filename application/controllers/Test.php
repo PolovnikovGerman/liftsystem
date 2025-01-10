@@ -4293,4 +4293,10 @@ class Test extends CI_Controller
         }
     }
 
+    public function testquote()
+    {
+        $this->load->model('email_model');
+        $this->email_model->generate_quota(26468);
+
+    }
 }
