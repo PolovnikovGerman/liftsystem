@@ -78,7 +78,7 @@ body div {
 }
 .content_tab_header.stressballs {
     background: #3537fc;
-    height: 51px;
+    height: 59px; /* 51px; */
 }
 .content_tab_header.stressballs.active {
     background: #3736fe;
@@ -92,7 +92,7 @@ body div {
 }
 .content_tab_header.relievers {
     background: rgba(253, 255, 68, 0.4);
-    height: 51px;
+    height: 59px; /* 51px; */
 }
 .content_tab_header.active.relievers {
     background: rgba(253, 255, 68, 1);
@@ -107,7 +107,7 @@ body div {
 .content_tab_header.sigmasystem {
     background: #595959;
     width: 54px;
-    height: 51px;
+    height: 59px; /* 51px; */
 }
 .sigma_logo {
     margin: 16px 16px 0 16px;
@@ -120,6 +120,7 @@ body div {
 }
 .mainsiteheader {
     /* width: calc(100% - 432px); */
+    margin-bottom: 2px;
 }
 .period_analitic_info {
     border: 1px solid #9b9b9b;
@@ -209,6 +210,7 @@ body div {
     position: relative;
     /* Compensation for magnif.icon */
     /* margin-right: -16px; */
+    max-width: 106px;
 }
 .publicsearch > select.publicsearch_type {
     height: 29px;
@@ -280,6 +282,7 @@ body div {
     margin: 0.25rem 0px 0 9px;
     cursor: pointer;
     padding: 0 6px;
+    min-width: 99px;
 }
 .inforeports:hover {
     background: #000080;
@@ -1390,12 +1393,12 @@ div.oldvesionlabel {
 .period_debt_info {
     clear: both;
     border: 1px solid #9b9b9b;
-    height: 18px;
+/*    height: 18px; */
     color: #ffffff;
-    margin: -14px 0px 0 355px; /* 344 */
+/*    margin: -14px 0px 0 355px; */
     cursor: pointer;
     padding: 0 6px;
-    line-height: 18px !important;
+/*    line-height: 18px !important; */
     position: relative;
     top: -1px;
     left: -2px;
@@ -1410,8 +1413,8 @@ div.oldvesionlabel {
     font-size: 12px;
     color: #55aeff;
     text-transform: uppercase;
+    margin-top: 0;
     line-height: 16px;
-    margin-top: 0px;
     height: 16px;
 }
 .period_debt_info .debtinfo_value {
@@ -1526,7 +1529,7 @@ div.oldvesionlabel {
     text-align: center;
     font-family: Arial;
     font-size: 13px;
-    /* font-weight: bold; */
+    font-weight: bold;
     color: #55aeff;
     line-height: 16px;
     margin-top: 3px;
@@ -1536,7 +1539,7 @@ div.oldvesionlabel {
     width: 100%;
     font-family: Arial;
     font-size: 13px;
-    /* font-weight: 600; */
+    font-weight: 600;
     text-align: center;
     cursor: pointer;
     color: #FFFFFF;
