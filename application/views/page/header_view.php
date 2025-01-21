@@ -69,14 +69,12 @@
                     <?=$total_view?>
                 <?php } ?>
                 <div class="publicsearch">
-<!--                    <div class="datarow">-->
                         <input type="text" class="publicsearch_template" id="publicsearch_template" placeholder="Find Orders"/>
                         <div class="publicsearch_btn">
                             <img src="/img/page_view/search_icon_blue.png"/>
                         </div>
-<!--                    </div>-->
                     <?php if ($debtpermiss) { ?>
-                        <div style="clear: both;width: 100%;margin-left: 2px;margin-top: 3px;">
+                        <div class="infodeptreport">
                             <div class="period_debt_info" id="debttotalview" data-event="click" data-css="weekbrandtotals" data-bgcolor="#000000"
                                  data-bordercolor="#adadad" data-textcolor="#FFFFFF" data-position="down" data-balloon="{ajax} /welcome/viewbalance">
                                 <div class="debtinfo_label">AR:</div>

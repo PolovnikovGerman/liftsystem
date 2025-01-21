@@ -120,15 +120,15 @@ body div {
 }
 .mainsiteheader {
     /* width: calc(100% - 432px); */
-    margin-bottom: 2px;
+    /*margin-bottom: 2px;*/
 }
 .period_analitic_info {
     border: 1px solid #9b9b9b;
     width: 217px;
 }
 .period_analitic_info div {
-    height: 18px;
-    line-height: 18px;
+    height: 29px;
+    line-height: 26px;
     color: #ffffff;
 }
 .period_analitic_info .period_name {
@@ -137,18 +137,18 @@ body div {
     font-family: Arial;
     font-weight: bold;
     font-size: 14px;
+    margin-top: 3px;
     color: #55aeff;
     text-transform: uppercase;
-    line-height: 16px;
-    margin-top: 3px;
-    height: 16px;
+    line-height: 21px;
+    height: 21px;
 }
 .period_analitic_info .totalsalesprev, .period_analitic_info .totalsalesnext {
     width: 20px;
     text-align: center;
     font-size: 19px;
-    height: 20px;
-    line-height: 20px;
+    height: 28px;
+    line-height: 26px;
     opacity: 0.6;
 }
 .period_analitic_info .totalsalesnext {
@@ -161,8 +161,8 @@ body div {
 .period_analitic_info .period_results {
     width: calc(100% - 40px);
     text-align: center;
-    margin-bottom: 2px;
-    margin-top: 2px;
+    /*margin-bottom: 2px;*/
+    /*margin-top: 2px;*/
 }
 .period_analitic_info .param_value,.period_analitic_info  .param_value_label,.period_analitic_info  .param_value.money {
     float: none;
@@ -878,10 +878,7 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     float: right!important;
     /* width: 30%; */
 }
-.userinfo,
-.brands-logos,
-.period_analitic_info,
-.publicsearch {
+.userinfo, .brands-logos, .period_analitic_info, .publicsearch, .period_lead_info, .infodeptreport {
     margin-top: 0.25rem;
 }
 /* New Menu */
@@ -1390,43 +1387,53 @@ div.oldvesionlabel {
     -webkit-animation-timing-function: cubic-bezier(.5, 0, 1, 1);
     -webkit-animation-duration: 1.7s;
 }
+.infodeptreport {
+    clear: both;
+    width: 100%;
+    margin-left: 2px;
+}
 .period_debt_info {
     clear: both;
     border: 1px solid #9b9b9b;
-/*    height: 18px; */
     color: #ffffff;
-/*    margin: -14px 0px 0 355px; */
     cursor: pointer;
     padding: 0 6px;
-/*    line-height: 18px !important; */
     position: relative;
     top: -1px;
     left: -2px;
+    width: 107px;
 }
 .period_debt_info:hover {
     background: #000080;
 }
+.period_debt_info > div {
+    line-height: 26px;
+    height: 26px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: Arial;
+}
 .period_debt_info .debtinfo_label {
     text-align: center;
-    font-family: Arial;
-    font-weight: bold;
-    font-size: 12px;
+    /*font-family: Arial;*/
+    /*font-weight: bold;*/
+    /*font-size: 12px;*/
     color: #55aeff;
     text-transform: uppercase;
     margin-top: 0;
-    line-height: 16px;
-    height: 16px;
+    /*line-height: 16px; */
+    /*height: 16px;*/
 }
 .period_debt_info .debtinfo_value {
     min-width: 26px;
-    font-family: Arial;
-    font-size: 12px;
-    font-weight: 600;
+    /*font-family: Arial;*/
+    /*font-size: 12px;*/
+    /*font-weight: 600;*/
     text-align: right;
     padding-right: 3px;
     padding-left: 5px;
-    height: 16px;
-    line-height: 16px;
+    /*height: 16px;*/
+    /*line-height: 16px;*/
     color: #ffffff;
     margin-top: 0px;
 }
@@ -1517,8 +1524,6 @@ div.oldvesionlabel {
 /* Header - Leads & Visitors */
 .period_lead_info {
     border: 1px solid #9b9b9b;
-    /* width: 124px; */
-    margin-top: 3px;
     margin-right: 7px;
 }
 .period_lead_info .leadsection {
@@ -1531,9 +1536,9 @@ div.oldvesionlabel {
     font-size: 13px;
     font-weight: bold;
     color: #55aeff;
-    line-height: 16px;
-    margin-top: 3px;
-    height: 16px;
+    line-height: 26px;
+    /*margin-top: 3px;*/
+    height: 26px;
 }
 .period_lead_info .leadsection .param_value {
     width: 100%;
@@ -1545,8 +1550,8 @@ div.oldvesionlabel {
     color: #FFFFFF;
     /*height: 18px;*/
     /*line-height: 18px;*/
-    height: 21px;
-    line-height: 21px;
+    height: 27px;
+    line-height: 27px;
 }
 /* Leads & Visitors popup */
 .visitordetailarea {
