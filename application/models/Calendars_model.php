@@ -703,4 +703,45 @@ Class Calendars_model extends MY_Model
         return $lead_times;
     }
 
+    public function update_calendars()
+    {
+        // $curyear = intval(date('Y'));
+        $curyear = 2025;
+        $nxtyear = $curyear + 1;
+        // lets go
+        $memorialday = strtotime("last mon of May {$curyear}");
+        $laborday = strtotime("first mon of Sep {$curyear}");
+        $thanksday = strtotime("last thursday of november {$curyear}");
+        $independ = strtotime("{$curyear}-07-04");
+        $christmday = strtotime("{$curyear}-12-25");
+        $newyearday = strtotime("{$nxtyear}-01-01");
+        $calendars = $this->db->select('calendar_id')->from('calendars')->get()->result_array();
+        foreach ($calendars as $calendar) {
+            $this->db->set('calendar_id', $calendar['calendar_id']);
+            $this->db->set('line_date', $memorialday);
+            $this->db->insert('calendar_lines'); // Memorial day
+
+            $this->db->set('calendar_id', $calendar['calendar_id']);
+            $this->db->set('line_date', $independ);
+            $this->db->insert('calendar_lines'); // Independense day
+
+            $this->db->set('calendar_id', $calendar['calendar_id']);
+            $this->db->set('line_date', $laborday);
+            $this->db->insert('calendar_lines'); // Labour day
+
+            $this->db->set('calendar_id', $calendar['calendar_id']);
+            $this->db->set('line_date', $thanksday);
+            $this->db->insert('calendar_lines'); // Thanksgiving day
+
+            $this->db->set('calendar_id', $calendar['calendar_id']);
+            $this->db->set('line_date', $christmday);
+            $this->db->insert('calendar_lines'); // Christmas day
+
+            $this->db->set('calendar_id', $calendar['calendar_id']);
+            $this->db->set('line_date', $newyearday);
+            $this->db->insert('calendar_lines'); // New Year day
+
+        }
+    }
+
 }

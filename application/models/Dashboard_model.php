@@ -27,6 +27,9 @@ Class Dashboard_model extends MY_Model
                 $label = 'ALL BRANDS THIS WEEK';
                 $weeknum = date('W');
                 $year = date('Y');
+                if (intval(date('m'))==12 && intval($weeknum)==1) {
+                    $year = $year + 1;
+                }
                 $dates = getDatesByWeek($weeknum, $year);
                 $nxtweek = 0;
                 $nxtnavig = 0;
@@ -63,7 +66,7 @@ Class Dashboard_model extends MY_Model
                 $dates['start_week'] = strtotime('05/11/2024');
                 $visitors = ceil(rand(15000, 35000));
             }
-            $leads = $this->db->select('count(lead_id) as leadcnt')->from('ts_leads')->where('lead_date >= ', $dates['start_week'])->where('lead_date < ', $dates['end_week'])->get()->row_array();
+            $leads = $this->db->select('count(lead_id) as leadcnt')->from('ts_leads')->where('unix_timestamp(update_date) >= ', $dates['start_week'])->where('unix_timestamp(update_date) < ', $dates['end_week'])->get()->row_array();
 //            if ($res['cnt']==0) {
 //                $options = [
 //                    'conversions' => 204,
@@ -261,7 +264,7 @@ Class Dashboard_model extends MY_Model
             '5' => 0,
             '6' => 0,
         ];
-        $this->db->select('brand, date_format(from_unixtime(lead_date),\'%w\') as dayweek, count(lead_id) as cnt')->from('ts_leads')->where('lead_date >= ', $dates['start_week'])->where('lead_date <= ', $dates['end_week'])->group_by('brand, dayweek');
+        $this->db->select('brand, date_format(update_date,\'%w\') as dayweek, count(lead_id) as cnt')->from('ts_leads')->where('unix_timestamp(update_date) >= ', $dates['start_week'])->where('unix_timestamp(update_date) <= ', $dates['end_week'])->group_by('brand, dayweek');
         $leads = $this->db->get()->result_array();
         foreach ($leads as $lead) {
             if ($lead['brand']=='SR') {

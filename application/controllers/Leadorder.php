@@ -5042,7 +5042,7 @@ class Leadorder extends MY_Controller
                 $newpay=array(
                     'type'=>'payment',
                     'replica'=>$this->USER_REPLICA,
-                    'date'=>'',
+                    'date'=> time(),
                     'paytype'=>'',
                     'paynum'=>'',
                     'amount'=>0,
