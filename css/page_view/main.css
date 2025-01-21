@@ -127,8 +127,8 @@ body div {
     width: 217px;
 }
 .period_analitic_info div {
-    height: 29px;
-    line-height: 26px;
+    height: 23px;
+    line-height: 23px;
     color: #ffffff;
 }
 .period_analitic_info .period_name {
@@ -140,15 +140,15 @@ body div {
     margin-top: 3px;
     color: #55aeff;
     text-transform: uppercase;
-    line-height: 21px;
-    height: 21px;
+    line-height: 22px;
+    height: 22px;
 }
 .period_analitic_info .totalsalesprev, .period_analitic_info .totalsalesnext {
     width: 20px;
     text-align: center;
     font-size: 19px;
-    height: 28px;
-    line-height: 26px;
+    height: 23px;
+    line-height: 23px;
     opacity: 0.6;
 }
 .period_analitic_info .totalsalesnext {
@@ -161,8 +161,6 @@ body div {
 .period_analitic_info .period_results {
     width: calc(100% - 40px);
     text-align: center;
-    /*margin-bottom: 2px;*/
-    /*margin-top: 2px;*/
 }
 .period_analitic_info .param_value,.period_analitic_info  .param_value_label,.period_analitic_info  .param_value.money {
     float: none;
@@ -175,7 +173,6 @@ body div {
     font-weight: 600;
     width: 68px;
     text-align: left;
-    /* cursor: pointer; */
 }
 .period_analitic_info .param_value_label span {
     position: relative;
@@ -221,8 +218,8 @@ body div {
 }
 .publicsearch > input.publicsearch_template {
     border: 1px solid #088aff;
-    height: 26px;
-    line-height: 26px;
+    height: 23px;
+    line-height: 23px;
     font-size: 14px;
     font-family: Arial;
     padding-left: 6px;
@@ -232,15 +229,10 @@ body div {
     text-align: left;
 }
 .publicsearch > .publicsearch_btn {
-    /*position: relative;*/
-    /*float: right;*/
-    /*left: -21px;*/
-    /*top: 4px;*/
-    /*cursor: pointer;*/
     position: absolute;
     left: auto;
     right: 5px;
-    top: 4px;
+    top: 3px;
     cursor: pointer;
 }
 .userinfo {
@@ -276,9 +268,8 @@ body div {
 }
 .inforeports {
     border: 1px solid #9b9b9b;
-    height: 26px;
+    height: 23px;
     color: #ffffff;
-    /* width: 105px; */
     margin: 0.25rem 0px 0 9px;
     cursor: pointer;
     padding: 0 6px;
@@ -292,7 +283,7 @@ body div {
 }
 .inforeports .icon {
     width: 15px;
-    padding-top: 4px;
+    padding-top: 3px;
     /* margin-left: 12px; */
 }
 .inforeports.oldver .icon {
@@ -306,19 +297,17 @@ body div {
     padding-left: 7px;
     font-family: Helvetica-BoldOblique;
     font-size: 14px;
-    height: 26px;
-    line-height: 26px!important;
+    height: 23px;
+    line-height: 23px!important;
 }
 .infoalerts {
     border: 1px solid #9b9b9b;
-    height: 26px;
+    height: 23px;
     color: #ffffff;
-    /* width: 90px; */
     margin-left: 8px;
     float: right!important;
     cursor: pointer;
     padding: 0 6px;
-    margin-top: 2.5px;
 }
 .infoalerts:hover {
     background: #000080;
@@ -339,7 +328,7 @@ body div {
     margin-left: -3px;
 }
 .infoalerts .alerticon.admin {
-    padding-top: 5px;
+    padding-top: 3px;
 }
 .infoalerts .alerticon img {
     width: 100%;
@@ -878,7 +867,7 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     float: right!important;
     /* width: 30%; */
 }
-.userinfo, .brands-logos, .period_analitic_info, .publicsearch, .period_lead_info, .infodeptreport {
+.userinfo, .brands-logos, .period_analitic_info, .publicsearch, .period_lead_info, .infodeptreport, .infoalerts {
     margin-top: 0.25rem;
 }
 /* New Menu */
@@ -1407,17 +1396,14 @@ div.oldvesionlabel {
     background: #000080;
 }
 .period_debt_info > div {
-    line-height: 26px;
-    height: 26px;
+    line-height: 23px;
+    height: 23px;
     font-size: 14px;
     font-weight: 600;
     font-family: Arial;
 }
 .period_debt_info .debtinfo_label {
     text-align: center;
-    /*font-family: Arial;*/
-    /*font-weight: bold;*/
-    /*font-size: 12px;*/
     color: #55aeff;
     text-transform: uppercase;
     margin-top: 0;
@@ -1536,9 +1522,9 @@ div.oldvesionlabel {
     font-size: 13px;
     font-weight: bold;
     color: #55aeff;
-    line-height: 26px;
-    /*margin-top: 3px;*/
-    height: 26px;
+    margin-top: 3px;
+    line-height: 22px;
+    height: 22px;
 }
 .period_lead_info .leadsection .param_value {
     width: 100%;
@@ -1550,8 +1536,8 @@ div.oldvesionlabel {
     color: #FFFFFF;
     /*height: 18px;*/
     /*line-height: 18px;*/
-    height: 27px;
-    line-height: 27px;
+    height: 23px;
+    line-height: 23px;
 }
 /* Leads & Visitors popup */
 .visitordetailarea {
