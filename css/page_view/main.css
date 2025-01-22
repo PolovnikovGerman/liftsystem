@@ -867,7 +867,7 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     float: right!important;
     /* width: 30%; */
 }
-.userinfo, .brands-logos, .period_analitic_info, .publicsearch, .period_lead_info, .infodeptreport, .infoalerts {
+.userinfo, .brands-logos, .period_analitic_info, .publicsearch, .period_lead_info, .infodeptreport, .infoalerts, .period_review_info {
     margin-top: 0.25rem;
 }
 /* New Menu */
@@ -1508,7 +1508,7 @@ div.oldvesionlabel {
     font-weight: 600;
 }
 /* Header - Leads & Visitors */
-.period_lead_info {
+.period_lead_info, .period_review_info {
     border: 1px solid #9b9b9b;
     margin-right: 7px;
 }
@@ -1643,6 +1643,35 @@ div.oldvesionlabel {
 .visitordetailarea .leaddetailsarea {
     margin-top: 10px;
 }
+/* Header Reviews */
+.period_review_info .reviewsection {
+    width: 59px;
+}
+.period_review_info .reviewsection .period_name {
+    width: 100%;
+    text-align: center;
+    font-family: Arial;
+    font-size: 13px;
+    font-weight: bold;
+    color: #55aeff;
+    margin-top: 3px;
+    line-height: 22px;
+    height: 22px;
+}
+.period_review_info .reviewsection .param_value {
+    width: 100%;
+    font-family: Arial;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    color: #FFFFFF;
+    /*height: 18px;*/
+    /*line-height: 18px;*/
+    height: 23px;
+    line-height: 23px;
+}
+/* Header Reviews End */
 /* Portrait notepads */
 @media (min-width: 992px) and (max-width: 1199px) {
     .testsitelabel {
