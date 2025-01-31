@@ -11407,6 +11407,241 @@ Class Leadorder_model extends My_Model {
         }
         return $outcolor;
     }
+
+    public function leadorders_list($options)
+    {
+        $this->db->select('o.order_id, o.order_date, o.order_num,  o.order_confirmation, o.customer_name, o.order_qty');
+        $this->db->select('o.item_id, o.order_itemnumber, itm.item_name, itm.item_number, o.order_items,  o.revenue');
+        // balance
+        $this->db->select('o.order_usr_repic, o.weborder');
+        // shipclass
+        $this->db->select('o.profit, o.profit_perc, o.is_canceled, o.reason');
+        $this->db->select('o.order_system, o.order_cog, o.shipdate as ord_ship');
+        $this->db->from('ts_orders o');
+        $this->db->join('v_itemsearch as itm', 'itm.item_id=o.item_id');
+        if (isset($options['unassigned'])) {
+            $this->db->where('o.order_usr_repic is null');
+        }
+        if (isset($options['weborder'])) {
+            $this->db->where('o.weborder', $options['weborder']);
+        }
+        if (isset($options['order_usr_repic'])) {
+            $this->db->where('o.order_usr_repic',$options['order_usr_repic']);
+        }
+        if (isset($options['search'])) {
+            // $this->db->join('('.$itemdatesql.') itemdata','itemdata.order_id=o.order_id','left');
+            // $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',coalesce(o.order_confirmation,''),' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.order_items,''),' ',coalesce(o.revenue,''),' ',coalesce(bil.customer_ponum,'')))",strtoupper($options['search']));
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            if ($options['brand']=='SR') {
+                $this->db->where('o.brand', $options['brand']);
+            } else {
+                $this->db->where_in('o.brand', ['BT','SB']);
+            }
+        }
+        if (isset($options['limit'])) {
+            if (isset($options['offset'])) {
+                $this->db->limit($options['limit'],$options['offset']);
+            } else {
+                $this->db->limit($options['limit']);
+            }
+        }
+        if (isset($options['order_by'])) {
+            if (isset($options['direct'])) {
+                $this->db->order_by($options['order_by'],$options['direct']);
+            } else {
+                $this->db->order_by($options['order_by']);
+            }
+        }
+
+        $res=$this->db->get()->result_array();
+        /* Summary */
+        $out_array=array();
+        if (isset($options['offset'])) {
+            $numpp=$options['offset']+1;
+        } else {
+            $numpp=1;
+        }
+        $ordnxt = '';
+        if (count($res)>0) {
+            $ordnxt=$res[0]['order_num'];
+        }
+        $curdat='';
+        $ordidx=1;
+        foreach ($res as $row) {
+            $row['rowclass']='';
+            $row['scrdate']=$row['order_date'];
+            $orddate=date('m/d/y',$row['order_date']);
+            if ($orddate!=$curdat) {
+                $curdat=$orddate;
+                if ($ordidx>1) {
+                    $row['rowclass']='underline';
+                }
+                $row['order_date']=($row['order_date']=='' ? '' : date('m/d/y',$row['order_date']));
+            } else {
+                $row['order_date']='&mdash;';
+            }
+            $ordidx++;
+            if ($row['order_num']!=$ordnxt) {
+                $row['rowclass']='underline';
+            }
+            // Art Stage
+            $this->db->select('order_proj_status as artstage')->from('v_order_artstage')->where('order_id', $row['order_id']);
+            $art = $this->db->get()->row_array();
+            $artstage = ifset($art,'artstage','');
+            // Convert to correct name
+            if (!empty($artstage)) {
+                foreach ($this->art_statuses as $stagerow) {
+                    if ($stagerow['key']==$artstage) {
+                        $artstage=$stagerow['value'];
+                        break;
+                    }
+                }
+            }
+            $row['artstage'] = $artstage;
+            // Order colors
+            $this->db->select('group_concat(distinct(c.item_color)) as item_color')->from('ts_order_items i')->join('ts_order_itemcolors c','c.order_item_id=i.order_item_id');
+            $this->db->where('i.order_id', $row['order_id']);
+            $colordat = $this->db->get()->row_array();
+            $row['itemcolor'] = ifset($colordat, 'item_color', '');
+            $row['itemcolorclass']='';
+            if (strlen($row['itemcolor'])>9) {
+                $row['itemcolorclass']='wide';
+            }
+            // Order Num Class
+            $row['ordernum_class']='';
+            if ($row['order_system']=='new') {
+            } else {
+                $row['ordernum_class']='quckbook';
+            }
+            // Order Confirmation
+            $row['order_confirmclass']='';
+            if (empty($row['order_confirmation'])) {
+                $row['out_confirm']='historical';
+                $row['order_confirmclass']='historical';
+            } else {
+                $row['out_confirm']=$row['order_confirmation'];
+            }
+            $row['order_confirmation']=(empty($row['order_confirmation']) ? 'historical' : $row['order_confirmation']);
+            $ordnxt=intval($row['order_num'])-1;
+            $row['numpp']=$numpp;
+            // Profit display
+            $row['profit_class']='';
+            $row['proftitleclass']='';
+            $row['proftitle']='';
+            $row['points']=round($row['profit']*$this->config->item('profitpts'),0).' pts';
+            $row['points_val']=round($row['profit']*$this->config->item('profitpts'),0);
+            $row['profit']='$'.number_format($row['profit'],2,'.',',');
+            if ($row['order_cog']=='') {
+                $row['order_cog']='project';
+                $row['cog_class']='projectcog';
+                $row['profit_class']=$this->project_class;
+                $row['profit_perc']=$this->project_name;
+            } else {
+                $row['cog_class']='';
+                $row['profit_class']=orderProfitClass($row['profit_perc']);
+                if ($row['profit_perc']<$this->config->item('minimal_profitperc') && !empty($row['reason'])) {
+                    $row['proftitleclass']='lowprofittitle';
+                    $row['proftitle']='title="'.$row['reason'].'"';
+                }
+                $row['profit_perc']=number_format($row['profit_perc'],1,'.',',').'%';
+                $row['order_cog']='$'.number_format($row['order_cog'],2,'.',',');
+            }
+            // Custom Order
+            $row['custom_order']=($row['item_id']==$this->config->item('custom_id') ? 1 : 0);
+            // Order Replica
+            $row['user_replic']='&nbsp;';
+            $row['usrreplclass']='user';
+            if ($row['order_usr_repic']>0) {
+                $usrdat = $this->db->select('user_leadname, user_name')->from('users')->where('user_id', $row['order_usr_repic'])->get()->row_array();
+                $leadname = ifset($usrdat, 'user_leadname', '');
+                $usrname = ifset($usrdat, 'user_name', '');
+                $row['user_replic']=($leadname=='' ? $usrname : $leadname);
+            } else {
+                if ($row['weborder']==1) {
+                    $row['user_replic']='Website';
+                    $row['usrreplclass']='website';
+                }
+            }
+            // Order class
+            $row['order_class']=$this->vendor_class;
+            if ($row['custom_order']==1) {
+                $row['order_class']=$this->custom_class;
+            } else {
+                if (substr($row['item_number'],0,2)=='23') {
+                    $row['order_class'] = $this->other_class;
+                } else {
+                    $stockdat = $this->db->select('stock_item_id')->from('ts_stock_items')->where('item_id', $row['item_id'])->get()->row_array();
+                    $stockitem = ifset($stockdat, 'stock_item_id', '');
+                    if (!empty($stockitem)) {
+                        $row['order_class']=$this->common_class;
+                    }
+                }
+            }
+            // Payments
+            $balance_class='';
+            $balance_view='-';
+            if ($row['is_canceled']==1) {
+            } elseif ($row['scrdate']<$this->config->item('netprofit_start')) {
+            } else {
+                $paydat = $this->db->select('count(batch_id) batchcnt, sum(batch_amount) batchsum')->from('ts_order_batches')->where(['order_id'=>$row['order_id'], 'batch_term' => 0])->get()->row_array();
+                $batchcnt = ifset($paydat,'batchcnt',0);
+                $balance = floatval($row['revenue']);
+                if ($batchcnt > 0) {
+                    $batchsum = floatval(ifset($paydat,'batchsum',0));
+                    $balance = floatval($row['revenue']) - $batchsum;
+                }
+                if ($balance == 0) {
+                    $balance_view = 'PAID';
+                    $balance_class = 'balancepaid';
+                } elseif ($balance > 0) {
+                    $balance_view = MoneyOutput($balance);
+                    $balance_class = 'balancepositive';
+                } elseif ($balance < 0 ) {
+                    $balance_view = MoneyOutput(abs($balance));
+                    $balance_class = 'balancenegative';
+                }
+            }
+            $row['balance'] = $balance_view;
+            $row['balance_class'] = $balance_class;
+            // Out Items
+            $row['out_item']='&nbsp;';
+            if ($row['order_items']) {
+                if (!empty($row['item_number'])) {
+                    $row['out_item']=$row['item_number'].' - '.$row['order_items'];
+                } else {
+                    $row['out_item']=$row['order_items'];
+                }
+            } elseif ($row['item_name']) {
+                $row['out_item']=$row['item_name'];
+            }
+            // Project status
+            $row['order_status']='&nbsp;';
+            $row['order_status_class']='';
+            $order_proj_status='';
+            if ($row['is_canceled']==1) {
+                $row['order_status']='canceled';
+                $row['order_status_class']='canceled';
+                $row['order_status_perc'] = '';
+            } else {
+                // Get Shipping
+                $shipdat = $this->db->select('shipdate')->from('ts_order_shippings')->where('order_id', $row['order_id'])->get()->row_array();
+                $row['shipdate'] = ifset($shipdat,'shipdate', 0);
+                $this->db->select('count(t.tracking_id) as trackcnt, sum(t.qty) as trackqty')->from('ts_order_items toi')->join('ts_order_itemcolors itemcolor','toi.order_item_id = itemcolor.order_item_id');
+                $this->db->join('ts_order_trackings t','t.order_itemcolor_id=itemcolor.order_itemcolor_id')->where('toi.order_id', $row['order_id']);
+                $this->db->where('t.trackcode != \'\'');
+                $trakdat = $this->db->get()->row_array();
+                $row['trackqty'] = ifset($trakdat,'trackqty',0);
+                $statusship=$this->_leadorder_shipping_status($row);
+                $row['order_status'] = $statusship['label'];
+                $row['order_status_class'] = $statusship['class'];
+                $row['order_status_perc'] = $statusship['percent'];
+            }
+            $out_array[]=$row;
+            $numpp++;
+        }
+        return $out_array;
+    }
 }
 /* End of file leadorder_model.php */
 /* Location: ./application/models/leadorder_model.php */
