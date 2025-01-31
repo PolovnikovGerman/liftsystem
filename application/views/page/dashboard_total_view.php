@@ -19,6 +19,19 @@
         </div>
     </div>
 </div>
+<div class="period_review_info">
+    <div class="datarow">
+        <div class="reviewsection">
+            <div class="period_name">Reviews:</div>
+        </div>
+    </div>
+    <div class="datarow" style="cursor: pointer">
+        <div class="reviewsection">
+            <div class="param_value"><?=QTYOutput($data['reviews'])?></div>
+        </div>
+
+    </div>
+</div>
 <div class="period_analitic_info">
     <div class="period_name"><?= $data['label'] ?></div>
     <div class="totalsalesprev <?= $data['prev_navig'] == 1 ? 'active' : '' ?>" data-week="<?= $data['prev_week'] ?>">

@@ -231,6 +231,57 @@ class Orders extends MY_Controller
         show_404();
     }
 
+    public function leadorderslist()
+    {
+        if ($this->isAjax()) {
+            $this->load->model('leadorder_model');
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $pagenum=ifset($postdata, 'offset', 0);
+            $limit=ifset($postdata, 'limit',  100);
+
+            $offset=$pagenum*$limit;
+            // $search='';
+            $order_by = 'order_num';
+            $direct = 'desc';
+
+            $options=array(
+                'offset' => $offset,
+                'limit' => $limit,
+                'order_by' => $order_by,
+                'direct' => $direct,
+            );
+
+            if (isset($postdata['search']) && !empty($postdata['search'])) {
+                $options['search']=strtoupper($postdata['search']);
+            }
+
+            if (isset($postdata['brand'])) {
+                $options['brand']=$postdata['brand'];
+            }
+            $ordersdat=$this->leadorder_model->leadorders_list($options);
+            if (count($ordersdat)==0) {
+                $content = $this->load->view('orders/orders_emptylist_view', array(), TRUE);
+            } else {
+                $brand = ifset($postdata,'brand','SB');
+                $data=array(
+                    'data'=>$ordersdat,
+                    'role'=>'user',
+                    'brand' => ifset($postdata,'brand','SB'),
+                );
+                if ($brand=='SR') {
+                    $content = $this->load->view('orders/srorders_datalist_view', $data, TRUE);
+                } else {
+                    $content = $this->load->view('orders/orders_datalist_view', $data, TRUE);
+                }
+            }
+            $mdata['content']=$content;
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function leadorder_qtysave() {
         if ($this->isAjax()) {
             $mdata=array();

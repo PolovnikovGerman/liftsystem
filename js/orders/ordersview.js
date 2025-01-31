@@ -83,7 +83,7 @@ function pageLeadorderCallback(page_index) {
     params.push({name:'user_replic', value: $("select.usrreplica").val()});
     params.push({name:'search', value: $("input.leadord_searchdata").val()});
     params.push({name: 'brand', value: $("input#ordersviewbrand").val()});
-    var url="/orders/leadorder_data";
+    var url="/orders/leadorderslist"; // leadorder_data
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
