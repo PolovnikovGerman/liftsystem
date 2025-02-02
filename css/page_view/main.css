@@ -78,7 +78,7 @@ body div {
 }
 .content_tab_header.stressballs {
     background: #3537fc;
-    height: 49px;
+    height: 59px; /* 51px; */
 }
 .content_tab_header.stressballs.active {
     background: #3736fe;
@@ -92,11 +92,11 @@ body div {
 }
 .content_tab_header.relievers {
     background: rgba(253, 255, 68, 0.4);
-    height: 49px;
+    height: 59px; /* 51px; */
 }
 .content_tab_header.active.relievers {
     background: rgba(253, 255, 68, 1);
-    height: auto;
+    /* height: auto; */
 }
 .relievers_logo {
     margin: 5px 20.5px 0 20.5px;
@@ -107,7 +107,7 @@ body div {
 .content_tab_header.sigmasystem {
     background: #595959;
     width: 54px;
-    height: 49px;
+    height: 59px; /* 51px; */
 }
 .sigma_logo {
     margin: 16px 16px 0 16px;
@@ -119,44 +119,78 @@ body div {
     margin: 17px 20px 0 20px;
 }
 .mainsiteheader {
-    width: calc(100% - 432px);
+    /* width: calc(100% - 432px); */
+    /*margin-bottom: 2px;*/
 }
 .period_analitic_info {
     border: 1px solid #9b9b9b;
+    width: 217px;
 }
 .period_analitic_info div {
-    height: 24px;
-    line-height: 24px;
+    height: 23px;
+    line-height: 23px;
     color: #ffffff;
 }
 .period_analitic_info .period_name {
-    width: 86px;
+    width: 100%;
     text-align: center;
     font-family: Arial;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 14px;
+    margin-top: 3px;
     color: #55aeff;
     text-transform: uppercase;
+    line-height: 22px;
+    height: 22px;
 }
-.period_analitic_info .param_value_label {
-    text-align: right;
-    padding-right: 7px;
-    text-transform: uppercase;
-    font-family: Helvetica CE;
-    font-size: 12px;
+.period_analitic_info .totalsalesprev, .period_analitic_info .totalsalesnext {
+    width: 20px;
+    text-align: center;
+    font-size: 19px;
+    height: 23px;
+    line-height: 23px;
+    opacity: 0.6;
+}
+.period_analitic_info .totalsalesnext {
+    float: right!important;
+}
+.period_analitic_info .totalsalesprev.active, .period_analitic_info .totalsalesnext.active {
+    opacity: 1;
     cursor: pointer;
 }
+.period_analitic_info .period_results {
+    width: calc(100% - 40px);
+    text-align: center;
+}
+.period_analitic_info .param_value,.period_analitic_info  .param_value_label,.period_analitic_info  .param_value.money {
+    float: none;
+    display: inline-block;
+}
+.period_analitic_info .param_value_label {
+    font-family: Arial;
+    font-size: 14px;
+    color: #979797;
+    font-weight: 600;
+    width: 68px;
+    text-align: left;
+}
+.period_analitic_info .param_value_label span {
+    position: relative;
+    top: -2px;
+}
 .period_analitic_info .param_value {
-    min-width: 26px;
-    font-family: Helvetica-Bold;
-    font-size: 18px;
-    padding-right: 7px;
+    min-width: 23px;
+    font-family: Arial;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: right;
+    padding-right: 3px;
     cursor: pointer;
 }
 .period_analitic_info .param_value.money {
     min-width: 45px;
-    padding-left: 7px;
     cursor: pointer;
+    text-align: left;
 }
 .period_analitic_info .allbrandstotalweek {
     border-left: 1px solid #9b9b9b;
@@ -169,9 +203,11 @@ body div {
     cursor: pointer;
 }
 .publicsearch {
-    margin-left: 5px;
+    margin-left: 9px;
+    position: relative;
     /* Compensation for magnif.icon */
-    margin-right: -16px;
+    /* margin-right: -16px; */
+    max-width: 106px;
 }
 .publicsearch > select.publicsearch_type {
     height: 29px;
@@ -182,22 +218,21 @@ body div {
 }
 .publicsearch > input.publicsearch_template {
     border: 1px solid #088aff;
-    height: 26px;
-    line-height: 26px;
+    height: 23px;
+    line-height: 23px;
     font-size: 14px;
     font-family: Arial;
     padding-left: 6px;
-    text-align: left;
-    width: 111px;
+    width: 107px;
 }
 .publicsearch > input.publicsearch_template::placeholder {
     text-align: left;
 }
 .publicsearch > .publicsearch_btn {
-    position: relative;
-    float: right;
-    left: -21px;
-    top: 4px;
+    position: absolute;
+    left: auto;
+    right: 5px;
+    top: 3px;
     cursor: pointer;
 }
 .userinfo {
@@ -207,21 +242,20 @@ body div {
 }
 .userinfo .signout {
     color: #82f8ff;
-    font-family: Helvetica-Oblique;
+    font-family: Helvetica;
     font-size: 12px;
-    font-style: italic;
-    width: 50px;
-    padding-top: 1px;
+    /* width: 50px;*/
+    /* padding-top: 1px; */
     float: right!important;
     cursor: pointer;
+    margin-right: 8px;
 }
 .userinfo .usersigninfo {
     float: right!important;
     padding-right: 7px;
     text-align: right;
     color: #ffffff;
-    font-family: Helvetica-Oblique;
-    font-style: italic;
+    font-family: Helvetica;
     font-size: 14px;
 }
 .userinfo .dateinfo {
@@ -234,12 +268,12 @@ body div {
 }
 .inforeports {
     border: 1px solid #9b9b9b;
-    height: 26px;
+    height: 23px;
     color: #ffffff;
-    /* width: 105px; */
-    margin: 0.25rem 4px 0 4px;
+    margin: 0.25rem 0px 0 9px;
     cursor: pointer;
     padding: 0 6px;
+    min-width: 99px;
 }
 .inforeports:hover {
     background: #000080;
@@ -249,7 +283,7 @@ body div {
 }
 .inforeports .icon {
     width: 15px;
-    padding-top: 4px;
+    padding-top: 3px;
     /* margin-left: 12px; */
 }
 .inforeports.oldver .icon {
@@ -263,19 +297,17 @@ body div {
     padding-left: 7px;
     font-family: Helvetica-BoldOblique;
     font-size: 14px;
-    height: 26px;
-    line-height: 26px!important;
+    height: 23px;
+    line-height: 23px!important;
 }
 .infoalerts {
     border: 1px solid #9b9b9b;
-    height: 26px;
+    height: 23px;
     color: #ffffff;
-    /* width: 90px; */
-    margin-right: 4px;
+    margin-left: 8px;
     float: right!important;
     cursor: pointer;
     padding: 0 6px;
-    margin-top: 2.5px;
 }
 .infoalerts:hover {
     background: #000080;
@@ -296,7 +328,7 @@ body div {
     margin-left: -3px;
 }
 .infoalerts .alerticon.admin {
-    padding-top: 5px;
+    padding-top: 3px;
 }
 .infoalerts .alerticon img {
     width: 100%;
@@ -582,7 +614,8 @@ ul.mainmenu #collapsed.dropdown-menu li {
     /* height: 35px; */
     height: 25px;
 }
-.brandmenuitemactive.relievers {
+.brandmenuitemactive.relievers,
+.brandmenuitemactive.sigmasystem {
     border-top: 1px solid #000000;
     border-left: 1px solid #000000;
     border-bottom: 1px solid #000000;
@@ -679,7 +712,6 @@ ul.mainmenu #collapsed.dropdown-menu li {
 }
 .maincontentmenu_item {
     background: #5a5aff;
-    margin-top: 5px;
     height: 23px;
     line-height: 23px!important;
     text-align: center;
@@ -702,7 +734,7 @@ ul.mainmenu #collapsed.dropdown-menu li {
     color: #2E2E2E;
 }
 .maincontentmenu_item.oldver {
-    padding: 0 13px 0 1px;
+    /* padding: 0 13px 0 1px; */
 }
 .maincontentmenu_item.active {
     color: #000;
@@ -723,7 +755,8 @@ ul.mainmenu #collapsed.dropdown-menu li {
     min-height: 598px;
     margin-top: -1px;
 }
-.relieverstab .maincontent_view {
+.relieverstab .maincontent_view,
+.sigmasystem .maincontent_view {
     border: 1px solid #000000;
 }
 .databrands {
@@ -834,10 +867,7 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     float: right!important;
     /* width: 30%; */
 }
-.userinfo,
-.brands-logos,
-.period_analitic_info,
-.publicsearch {
+.userinfo, .brands-logos, .period_analitic_info, .publicsearch, .period_lead_info, .infodeptreport, .infoalerts, .period_review_info {
     margin-top: 0.25rem;
 }
 /* New Menu */
@@ -858,15 +888,15 @@ li.mainmenulasttab > a:hover, li.mainmenulasttab > a:focus {
     padding: 0 16px;
 }
 .menuitem.oldver {
-    padding: 0 16px 0 4px!important;
+    /* padding: 0 16px 0 4px!important; */
 }
 div.oldvesionlabel {
     opacity: 0.6;
-    position: relative;
+    position: absolute;
     left: 47%;
     background-color: #b53535;
     width: 12px;
-    margin-top: 0px;
+    /* margin-top: 0px; */
     height: 23px;
 }
 .menuitem.activelink, .menuitem.activelink:hover {
@@ -1325,6 +1355,404 @@ div.oldvesionlabel {
     color: #ffffff;
     border: 1px solid #ffffff;
 }
-.typeahead.dropdown-menu img {
-    max-height: 25px;
+.submenuitem.sigma {
+    background-color: #ebebeb;
+    color: #000000;
+    border: 1px solid #bdbdbd;
+}
+.submenuitem.sigma:hover {
+    background-color: #00004c;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
+/* Flash */
+@-webkit-keyframes blinker {
+    from { opacity: 1.0; }
+    to { opacity: 0.0; }
+}
+.flashed {
+    -webkit-animation-name: blinker;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: cubic-bezier(.5, 0, 1, 1);
+    -webkit-animation-duration: 1.7s;
+}
+.infodeptreport {
+    clear: both;
+    width: 100%;
+    margin-left: 2px;
+}
+.period_debt_info {
+    clear: both;
+    border: 1px solid #9b9b9b;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 0 6px;
+    position: relative;
+    top: -1px;
+    left: -2px;
+    width: 107px;
+}
+.period_debt_info:hover {
+    background: #000080;
+}
+.period_debt_info > div {
+    line-height: 23px;
+    height: 23px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: Arial;
+}
+.period_debt_info .debtinfo_label {
+    text-align: center;
+    color: #55aeff;
+    text-transform: uppercase;
+    margin-top: 0;
+    /*line-height: 16px; */
+    /*height: 16px;*/
+}
+.period_debt_info .debtinfo_value {
+    min-width: 26px;
+    /*font-family: Arial;*/
+    /*font-size: 12px;*/
+    /*font-weight: 600;*/
+    text-align: right;
+    padding-right: 3px;
+    padding-left: 5px;
+    /*height: 16px;*/
+    /*line-height: 16px;*/
+    color: #ffffff;
+    margin-top: 0px;
+}
+.brantotalmoneyarea {
+    display: inline-table;
+    background: #000000;
+    padding: 7px;
+    width: 544px;
+}
+.brantotalmoneyarea div {
+    float: left;
+}
+.revenuelabel, .paidtotallabel, .unpaidtotallabel {
+    font-size: 12px;
+    height: 18px;
+    line-height: 18px!important;
+}
+.revenuelabel {
+    color: #4ca4ee;
+    margin-left: 149px;
+}
+.paidtotallabel {
+    color: #00d1ca;
+    margin-left: 108px;
+}
+.unpaidtotallabel {
+    color: #00d1ca;
+    margin-left: 95px;
+}
+.totalrevenuesection {
+    width: 259px;
+}
+.totalrevenuesection .datarow > div {
+    height: 22px;
+    line-height: 22px!important;
+}
+.brantotalmoneyarea .totalrowlabel {
+    width: 130px;
+    padding-right: 7px;
+    text-align: right;
+    color: #4ca4ee;
+    font-size: 15px;
+    font-weight: 600;
+}
+.brantotalmoneyarea .totalrowvalue {
+    padding-left: 10px;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: right;
+    width: 82px;
+}
+.brantotalmoneyarea .totalrowvalue.revenuetotal, .brantotalmoneyarea .totalrowpercent.revenuetotal {
+    border-top: 1px solid #ffffff;
+}
+.brantotalmoneyarea .totalrowpercent {
+    width: 47px;
+    text-align: center;
+    color: #4ca4ee;
+    font-size: 12px;
+    font-weight: 600;
+}
+.brantotalmoneyarea .totalpaymentsection {
+    margin-left: 12px;
+}
+.brantotalmoneyarea .totalpaymentdatasection {
+    border: 1px solid #ffffff;
+}
+.brantotalmoneyarea .totalpaymentsection .datarow > div {
+    height: 22px;
+    line-height: 22px!important;
+}
+.brantotalmoneyarea .totalpaymentvalue, .brantotalmoneyarea .totalunpaidvalue {
+    padding-left: 10px;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: right;
+    width: 80px;
+}
+.brantotalmoneyarea .totalpaymentperentvalue {
+    width: 48px;
+    text-align: center;
+    color: #00d1ca;
+    font-size: 12px;
+    font-weight: 600;
+}
+/* Header - Leads & Visitors */
+.period_lead_info, .period_review_info {
+    border: 1px solid #9b9b9b;
+    margin-right: 7px;
+}
+.period_lead_info .leadsection {
+    width: 59px;
+}
+.period_lead_info .leadsection .period_name {
+    width: 100%;
+    text-align: center;
+    font-family: Arial;
+    font-size: 13px;
+    font-weight: bold;
+    color: #55aeff;
+    margin-top: 3px;
+    line-height: 22px;
+    height: 22px;
+}
+.period_lead_info .leadsection .param_value {
+    width: 100%;
+    font-family: Arial;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    color: #FFFFFF;
+    /*height: 18px;*/
+    /*line-height: 18px;*/
+    height: 23px;
+    line-height: 23px;
+}
+/* Leads & Visitors popup */
+.visitordetailarea {
+    width: 602px;
+    height: 211px;
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: normal;
+    padding: 13px 13px 0 10px;
+}
+.visitordetailarea div {
+    float: left;
+}
+.visitordetailarea .detail_parameter_name {
+    width: 120px;
+    height: 21px;
+    line-height: 21px;
+    font-family: Arial;
+    font-size: 15px;
+    font-weight: bold;
+    background: #ffffff;
+    text-align: center;
+}
+.visitordetailarea .detail_parameter_name.visitors {
+    border: 1px solid #4ca4ee;
+    color: #000000!important;
+}
+.visitordetailarea .detail_parameter_name.leads {
+    border: 1px solid #01beb8;
+    color: #000000!important;
+}
+.visitordetailarea .detailstitle {
+    height: 21px;
+    line-height: 21px;
+    text-align: center;
+}
+.visitordetailarea .visitors {
+    color: #4ca4ee;
+}
+.visitordetailarea .detailstitle.weekdata {
+    width: 84px;
+    margin-right: 14px;
+}
+.visitordetailarea .detailstitle.daydata {
+    width: 51px;
+}
+.visitordetailarea .weekenddat {
+    background: #383838;
+}
+.visitordetailarea .detailsleftpart {
+    width: 207px;
+    margin-right: 12px;
+}
+.visitordetailarea .detail_brand_name {
+    width: 120px;
+    text-align: right;
+    height: 22px;
+    line-height: 22px;
+    font-size: 15px;
+    font-weight: 600;
+}
+.visitordetailarea .weekdatavalue {
+    width: 84px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+.visitordetailarea .detail_brand_name.total {
+    border-top: 1px solid #ffffff;
+}
+.visitordetailarea .totalweek {
+    border-top: 1px solid #ffffff;
+    width: 84px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+.visitordetailarea .detailsrightpart {
+    width: 359px;
+}
+.visitordetailarea .weekdataarea {
+    border: 1px solid #ffffff;
+    width: 100%;
+}
+.visitordetailarea .dayvalue {
+    width: 51px;
+    height: 22px;
+    line-height: 22px;
+    font-size: 15px;
+    text-align: center;
+}
+.visitordetailarea .dayvalue.total {
+    font-size: 16px;
+}
+.visitordetailarea .leads {
+    color: #01beb8;
+}
+.visitordetailarea .leaddetailsarea {
+    margin-top: 10px;
+}
+/* Header Reviews */
+.period_review_info .reviewsection {
+    width: 59px;
+}
+.period_review_info .reviewsection .period_name {
+    width: 100%;
+    text-align: center;
+    font-family: Arial;
+    font-size: 13px;
+    font-weight: bold;
+    color: #55aeff;
+    margin-top: 3px;
+    line-height: 22px;
+    height: 22px;
+}
+.period_review_info .reviewsection .param_value {
+    width: 100%;
+    font-family: Arial;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    color: #FFFFFF;
+    /*height: 18px;*/
+    /*line-height: 18px;*/
+    height: 23px;
+    line-height: 23px;
+}
+/* Header Reviews End */
+/* Portrait notepads */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .testsitelabel {
+        display: none;
+    }
+    .relievers_logo > img {
+        width: 127px;
+    }
+    .relievers_logo {
+        margin: 7px 11.5px 0px 11.5px;
+    }
+    .relievers_logo.active > img {
+        width: 135px;
+    }
+    .relievers_logo.active {
+        margin: 5px 8.5px 9px 8.5px;
+    }
+    .stressballs_logo > img {
+        width: 110px;
+    }
+    .stressballs_logo.active > img {
+        width: 134px;
+    }
+    .stressballs_logo {
+        margin: 13px 14.5px 0 14.5px;
+    }
+    .content_tab_header {
+        width: 155px;
+    }
+    .content_tab_header.sigmasystem {
+        width: 43px;
+    }
+    .mainsiteheader {
+        /* width: calc(100% - 353px); */
+    }
+    .period_analitic_info .period_name {
+        font-size: 13px;
+    }
+    .userinfo {
+        width: unset;
+        margin-right: unset;
+    }
+    .userinfo .signout {
+        font-size: 11px;
+    }
+    .userinfo .usersigninfo {
+        font-size: 13px;
+    }
+    .userinfo .dateinfo {
+        font-size: 12px;
+    }
+    .sigmasystemsubtitle {
+        margin-left: 7px;
+    }
+    .sigma_logo.active {
+        margin: 17px 15px 0 15px;
+    }
+    /* Tabs, menu */
+    .maincontentmenu > .title {
+        margin-left: 5px;
+        margin-right: 8px;
+        font-size: 16px;
+        height: 24px;
+        line-height: 24px !important;
+        margin-top: 7px;
+    }
+    .maincontentmenu_item {
+        height: 21px;
+        line-height: 21px!important;
+        padding: 0 4px;
+        font-size: 12px;
+        margin-right: 3px;
+        cursor: pointer;
+        margin-top: 11px;
+    }
+    div.oldvesionlabel {
+        height: 21px;
+    }
+    .maincontentmenu_item.active {
+        line-height: 24px !important;
+        height: 24px;
+        margin-top: 9px;
+    }
 }

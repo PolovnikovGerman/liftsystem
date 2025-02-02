@@ -9,7 +9,8 @@ class Orders extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink);
+        $brand = $this->menuitems_model->get_current_brand();
+        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink,0, $brand);
         if ($pagedat['result'] == $this->error_result) {
             show_404();
         }
@@ -362,7 +363,7 @@ class Orders extends MY_Controller
                 'order_id'=>$order_id,
             );*/
             $this->load->model('orders_model');
-            $data=$this->orders_model->orderonline_details($order_id);
+            $data=$this->orders_model->orderonline_details($order_id, $this->USER_PAYMENT);
             $error = $data['msg'];
             if ($data['result']==$this->success_result) {
                 $error = '';
@@ -418,6 +419,29 @@ class Orders extends MY_Controller
                 'content' => $this->load->view('leadorder/order_brands_view',['brands' => $brands], TRUE),
             ];
             $this->ajaxResponse($mdata, '');
+        }
+        show_404();
+    }
+
+    public function unlockonlinepayments()
+    {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $error = 'Empty Verify Code';
+            $code = ifset($postdata,'code','');
+            $order_id = $postdata['order_id'];
+            if (!empty($code) && !empty($order_id)) {
+                $this->load->model('orders_model');
+                $res = $this->orders_model->online_payment_view($code, $order_id, $this->USR_ID);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['cardnum'] = $res['cardnum'];
+                    $mdata['cardcode'] = $res['cardcode'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }

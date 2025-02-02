@@ -39,9 +39,10 @@
 }
 .searchipaddres_dataconatiner {
     clear: both;
-    max-width: 996px;
+    /* max-width: 996px; */
+    width: 1005px;
     margin-top: 10px;
-    overflow-x: auto;
+    /* overflow-x: auto; */
 }
 /*Table */
 .table-01-umber {
@@ -66,4 +67,74 @@
     background-repeat: no-repeat;
     width: 43px;
     height: 25px;
+}
+/* New View */
+.search_ipaddress_header {}
+.search_ipaddress_headarea {
+    margin-right: 10px;
+}
+.search_ipaddress_headarea div {
+    text-align: center;
+    background: #533206;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    height: 34px;
+    line-height: 34px;
+}
+.search_ipaddress_head_rank {
+    border-top-left-radius: 7px;
+    width: 44px;
+}
+.search_ipaddress_head_ipadrs {
+    width: 109px;
+}
+.search_ipaddress_head_result {
+    width: 70px;
+}
+.search_ipaddress_head_location {
+    border-top-right-radius: 7px;
+    width: 162px;
+}
+
+
+.search_ipaddress_dataarea {
+    max-height: 508px;
+    overflow-y: auto;
+    width: 1189px;
+}
+.search_ipaddress_datarow {
+    margin-right: 10px;
+}
+.search_ipaddress_datarow.lastrow {
+    margin-right: 0!important;
+}
+.search_ipaddress_datarow div {
+    height: 25px;
+    line-height: 25px;
+    font-size: 13px;
+    text-align: center;
+}
+.search_ipaddress_data_rank {
+    background: #533206;
+    color: #ffffff;
+    font-weight: 600;
+    width: 44px;
+}
+.search_ipaddress_data_ipadrs {
+    width: 109px;
+    border-right: 1px solid #000000;
+}
+.search_ipaddress_data_result {
+    width: 70px;
+    border-right: 1px solid #000000;
+}
+.search_ipaddress_data_location {
+    width: 162px;
+    text-align: left !important;
+    padding-left: 7px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 1px solid #000000;
 }

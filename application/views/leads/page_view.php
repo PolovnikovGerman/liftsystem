@@ -39,6 +39,9 @@
             <?php if (isset($leadquotesview)) { ?>
                 <div class="leadscontentarea" id="leadquotesview" style="display: none;"><?=$leadquotesview?></div>
             <?php } ?>
+            <?php if (isset($leadordersview)) { ?>
+                <div class="leadscontentarea" id="customorders" style="display: none;"><?=$leadordersview?></div>
+            <?php } ?>
         </div>
     </div>
 </div>

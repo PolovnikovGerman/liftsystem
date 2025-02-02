@@ -1,6 +1,7 @@
 <div class="mainimage_area">
     <div class="content-row">
         <div class="imagetitle">Main:</div>
+        <div class="imgsrcsize">(800x800)</div>
         <?php if (!empty($item['main_image'])) { ?>
             <div class="replaceimage mainimage" id="replaceimagemain"></div>
         <?php } ?>
@@ -26,6 +27,7 @@
 <div class="categoryimage_area">
     <div class="content-row">
         <div class="imagetitle">Category Page:</div>
+        <div class="imgsrcsize">(1200x600)</div>
         <?php if (!empty($item['category_image'])) { ?>
             <div class="replaceimage categoryimage" id="replaceimagecategory"></div>
         <?php } ?>
@@ -48,6 +50,7 @@
 <div class="topbannerimage_area">
     <div class="content-row">
         <div class="imagetitle">Special Top Banner:</div>
+        <div class="imgsrcsize">(1880x420)</div>
         <?php if (!empty($item['top_banner'])) { ?>
             <div class="replaceimage topbannerimage" id="replaceimagetopbanner"></div>
         <?php } ?>

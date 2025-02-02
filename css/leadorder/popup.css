@@ -58,7 +58,11 @@
 .leadorderdetailspopup input.leftalign::-moz-placeholder     {text-align: left;} 
 .leadorderdetailspopup input.leftalign:-moz-placeholder      {text-align: left;} 
 .leadorderdetailspopup input.leftalign:-ms-input-placeholder {text-align: left;} 
-.leadorderdetailspopup input.leftalign::-webkit-input-placeholder {text-align: left;} 
+.leadorderdetailspopup input.leftalign::-webkit-input-placeholder {text-align: left;}
+.leadorderdetailspopup input.centeralign::-moz-placeholder     {color:#bfbfbf; text-align: center;}
+.leadorderdetailspopup input.centeralign:-moz-placeholder      {color:#bfbfbf; text-align: center;}
+.leadorderdetailspopup input.centeralign:-ms-input-placeholder {color:#bfbfbf; text-align: center;}
+.leadorderdetailspopup input.centeralign::-webkit-input-placeholder {color:#bfbfbf; text-align: center;}
 
 .leadorderdetailspopup input[readonly="readonly"] {
     font-size: 11px;    
@@ -334,6 +338,7 @@ input.calendarinpt[readonly="readonly"] {
 .contact_content_email {
     float: left;
     width: 205px;
+    max-height: 20px;
 }
 .contact_content_art,
 .contact_content_inv,
@@ -359,6 +364,19 @@ input.calendarinpt[readonly="readonly"] {
 }
 .contact_email_input {
     width: 195px;
+}
+.contactemail_clone {
+    float: right;
+    position: relative;
+    left: -8px;
+    top: -17px;
+    background: #000;
+    color: #fff;
+    font-size: 9px;
+    height: 14.9px;
+    width: 16px;
+    text-align: center;
+    cursor: pointer;
 }
 .contact_art_input,
 .contact_inv_input,
@@ -418,8 +436,18 @@ input.order_itemqty_input {
     text-align: right;
     width: 73px;
 }
+.iteminventoryshow {
+    width: 16px;
+    float: left;
+    font-size: 14px;
+    cursor: pointer;
+    color: #a5a0a0;
+}
 .items_content_item2.short {
     width: 57px;
+}
+.items_content_item2.shortinvent {
+    width: 68px;
 }
 .items_content_item2.text_green {
     cursor: pointer;
@@ -494,11 +522,14 @@ input.order_itemqty_input {
     text-align: right;
     width: 65px;
 }
+.items_content_sub_total2.newitemcoloradd {
+    width: 70px;
+}
 .items_content_subtotal_view {
     float: left;
     padding-right: 5px;
     text-align: right;
-    width: 80px;
+    width: 82px;
 }
 .items_content_trash {
     float: left;
@@ -529,8 +560,8 @@ input.order_itemqty_input {
 }
 .bl_items_content_table{
     float: left;
-    width: 536px;
-    height: 162px;
+    width: 531px;
+    height: 159px;
     /* overflow-y: scroll; */
     overflow-y: auto;
     overflow-x: hidden;
@@ -543,8 +574,194 @@ input.order_itemqty_input {
 .items_table_line{
     float: left;
     line-height: 20px;
-    width: 520px;
+    width: 532px;
+    overflow-x: hidden;
+    /* width: 100%; */
 }
+/* Add new item */
+.items_content_add {
+    float: left;
+    width: 258px;
+}
+select.addnewitem {
+    width: 255px;
+}
+.items_content_add span.select2-selection--single {
+    height: 20px!important;
+}
+.items_content_add .select2-selection__rendered {
+    line-height: 19px!important;
+}
+.items_content_add .select2-selection__arrow {
+    height: 18px!important;
+}
+li.select2-results__option {
+    font-size: 12px;
+}
+.itemcolor_adddata {
+    float: left;
+    padding-left: 2px;
+    width: 91px;
+}
+.itemcolor_adddata span.addnewcolor {
+    cursor: pointer;
+}
+.items_content_addqty {
+    float: left;
+    padding-right: 2px;
+    text-align: right;
+    width: 53px
+}
+.items_content_addprice {
+    float: left;
+    width: 41px;
+}
+.items_content_addprint {
+    float: left;
+    color: #ffffff;
+    font-size: 10px;
+    cursor: pointer;
+    visibility: hidden;
+    background: #008000;
+    height: 18px;
+    border-radius: 4px;
+    padding: 0 5px;
+    line-height: 18px;
+    margin-top: 1px;
+}
+.items_content_cancel {
+    float: left;
+    text-align: center;
+    font-size: 14px;
+    width: 14px;
+    cursor: pointer;
+}
+input.orderitemadd_input {
+    height: 19px;
+    margin: 0 2px;
+}
+
+/* End Add New */
+/* Invertory popup */
+.orderitem_inventoryview {
+    display: none;
+    position: absolute;
+    position: absolute;
+    left: 289px;
+    top: 148px;
+    z-index: 1052;
+}
+.orderitem_inventoryview div {
+    float: left;
+}
+.orderitem_inventoryview_head {
+    background: #707070;
+    color: #FFFFFF;
+    height: 18px;
+    font-size: 11px;
+}
+.orderitem_inventoryview_head div {
+    line-height: 18px;
+    text-align: center;
+}
+.orderitem_inventoryview_head .inventorycolor {
+    width: 99px;
+    margin-right: 10px;
+}
+.orderitem_inventoryview_head .inventorypercent {
+    width: 36px;
+}
+.orderitem_inventoryview_head .inventoryinstock {
+    width: 52px; /* 44px; */
+}
+.orderitem_inventoryview_head .inventoryreserv {
+    width: 42px;
+}
+.orderitem_inventoryview_head .inventoryavailable {
+    width: 52px; /* 44px; */
+    margin-right: 10px;
+}
+.orderitem_inventoryview_head .inventoryonboat {
+    width: 66px;
+}
+.orderitem_inventoryview_body {
+    clear: both;
+    background: #707070;
+    /* color: #FFFFFF; */
+    font-size: 12px;
+    border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+.orderitem_inventoryview_body div {
+    line-height: 18px;
+    height: 18px;
+    text-align: center;
+    color: #000000;
+}
+.orderitem_inventoryview_body .datarow {
+    clear: both;
+    cursor: pointer;
+}
+.inventorydataempty {
+    width: 10px;
+    background: #707070;
+}
+.orderitem_inventoryview_body .inventorycolor {
+    width: 99px;
+    text-align: right;
+    font-size: 13px;
+    padding-right: 7px;
+}
+.orderitem_inventoryview_body .inventorycolor.selected {
+    background: #000000;
+    color: #FFFFFF;
+}
+.orderitem_inventoryview_body .inventorypercent {
+    width: 36px;
+    color: #7d7d7d;
+    border-right: 1px solid #000000;
+}
+.orderitem_inventoryview_body .inventorypercent.severevalstock,
+.orderitem_inventoryview_body .inventoryinstock.severevalstock
+{
+    background: #f77777;
+    /* color: #ffffff; */
+}
+.orderitem_inventoryview_body .inventorypercent.lowinstock,
+.orderitem_inventoryview_body .inventoryinstock.lowinstock {
+    background: #ffcc7f;
+    /* color: #000000; */
+}
+.orderitem_inventoryview_body .inventorydatacell.selected {
+    border-top: 2px #000000 solid;
+    border-bottom: 2px #000000 solid;
+    line-height: 14px;
+}
+.orderitem_inventoryview_body .inventoryinstock {
+    width: 52px; /* 44px */
+    border-right: 1px solid #000000;
+}
+.orderitem_inventoryview_body .inventoryreserv {
+    width: 42px;
+    border-right: 1px solid #000000;
+}
+.orderitem_inventoryview_body .inventoryavailable {
+    width: 52px; /* 44px */
+}
+.orderitem_inventoryview_body .inventoryonboat {
+    width: 66px;
+    border-right: 1px solid #000000;
+}
+.orderitem_inventoryview_close {
+    position: relative;
+    top: -13px;
+    left: -7px;
+    z-index: 1055;
+    font-size: 15px;
+    cursor: pointer;
+    height: 14px;
+}
+/* End Inventory Popup */
 .items_table_text {
     font-size: 11px;
     color: #535050;
@@ -943,8 +1160,6 @@ input.ship_tax_textareainpt {
     border-bottom: 1px dotted #858585!important;
     height: 16px;
     font-size: 11px;
-    /* margin-left: 6px; */
-    /* margin-bottom: 1px;*/
     width: 100%;
 }
 .ship_tax_cont_bl1 {
@@ -1005,8 +1220,11 @@ input.ship_tax_textareainpt {
     height: 17px;
     line-height: 17px;
     margin-top: 33px;
-    width: 244px;
-    margin-left: 67px;
+    /*width: 244px;*/
+    /*margin-left: 67px;*/
+    width: 266px;
+    margin-left: 40px;
+    text-align: right;
 }
 .taxlabel {
     color: #000d6e;
@@ -1014,7 +1232,8 @@ input.ship_tax_textareainpt {
     font-size: 12px;
     font-weight: bold;
     text-align: center;
-    width: 75px;
+    /* width: 75px; */
+    width: 96px;
 }
 .taxexcept {
     float: left;
@@ -1334,7 +1553,8 @@ span.taxemptyview {
 .pay_method_input2 {
     height: 15px;
     margin: 0 0 0 3px;
-    width: 119px;
+    /* width: 119px; */
+    width: 132px;
 }
 .pay_method_input3 {
     height: 15px;
@@ -1362,6 +1582,15 @@ span.taxemptyview {
     width: 243px;
     height: 15px;
     margin: 0 0 0 3px;
+}
+/* Lock method */
+.paymentdetails_unlock {
+    float: left;
+    width: 19px;
+    height: 16px;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
 }
 .pay_method_add {
     float: left;
@@ -1501,7 +1730,8 @@ span.taxemptyview {
     border-radius: 5px;
     background-color: #ffffff;
     width: 154px;
-    height: 726px;
+    /* height: 726px; */
+    height: 654px;
     /* margin-left: -2px; */
     box-shadow: 0.3em 0.3em 6px rgb(0 0 0 / 50%);
 }
@@ -1528,13 +1758,15 @@ span.taxemptyview {
     margin-left: 5px;
 }
 .block_6_historytext {
-    height: 357px;
+    /* height: 357px; */
+    height: 278px;
     margin-left: 5px;
     overflow-y: auto;
     width: 143px;
 }
 .block_6_historytext.previewmode {
-    height: 527px;
+    /* height: 527px; */
+    height: 453px;
 }
 .history_day {
     height: 18px;
@@ -1570,7 +1802,8 @@ span.taxemptyview {
     border-radius: 5px;
     width: 253px;
     box-shadow: 0.3em 0.3em 6px rgb(0 0 0 / 50%);
-    height: 761px;
+    /* height: 761px; */
+    height: 654px;
     margin-left: -2px;
 }
 .block_7_artwork {
@@ -1627,8 +1860,11 @@ span.taxemptyview {
     resize: none;
     overflow-y: auto;
     width: 237px;
-    height: 108px;
+    height: 69px;
     margin-left: 2px;
+}
+.block_7_textarea:read-only {
+    height: 103px;
 }
 .block_7_art {
     float: left;
@@ -1639,7 +1875,8 @@ span.taxemptyview {
     float: left;
     overflow-y: auto;
     width: 239px;
-    height: 120px;
+    /* height: 120px; */
+    height: 102px;
     margin-left: 2px;
 }
 .blankorderlogos {
@@ -1793,12 +2030,13 @@ input.artrepeat {
 .block_7_proofs1 {
     float: left;
     width: 239px;
-    height: 155px;
+    /* height: 155px; */
     margin-left: 2px;
 }
 .block_7_proofs1_scrool {
-    border-bottom: 1px solid rgb(62, 62, 62);
-    height: 154px;
+    /* border-bottom: 1px solid rgb(62, 62, 62); */
+    /* height: 154px; */
+    height: 139px;
     overflow-x: auto;
 }
 .proofs_line1 {
@@ -1831,14 +2069,16 @@ input.artrepeat {
 }
 .proofs_content {
     float: left;
-    height: 112px;
+    /* height: 112px; */
+    height: 99px;
     width: 142px;
     border-right: 1px solid rgb(62, 62, 62);
 }
 .proofs_line2 {
     float: left;
     font-size: 10px;
-    line-height: 20px;
+    /* line-height: 20px; */
+    line-height: 18px;
 }
 .proofs_line2_text1 {
     float: left;
@@ -1943,37 +2183,43 @@ input.artrepeat {
     float: left;
     height: 23px;
     line-height: 22px;
-    /* margin: 0 15px; */
-    margin: 0 15px 0 37px;
-    width: 126px;
+    /* width: 126px; */
+    border-radius: 7px;
+    margin-top: 7px;
+    border: 1px solid #000000;
+    cursor: pointer;
 }
 .block_10.profitdetailsviewarea {
     cursor: pointer;
 }
 .block_10.project {
-    background: url('/img/leadorder/bacgr_6_project.png') no-repeat transparent;
+    /* background: url('/img/leadorder/bacgr_6_project.png') no-repeat transparent; */
+    background-color: #001072;
     color: #FFFFEE;
+    height: 36px;
+    line-height: 36px;
+    margin-top: 0;
 }
 .block_10.black {
-    background: url('/img/leadorder/bacgr_6_black.png') no-repeat transparent;
+    /* background: url('/img/leadorder/bacgr_6_black.png') no-repeat transparent; */
     color: #FFFFEE;
 }
 .block_10.moroon {
-    background: url('/img/leadorder/bacgr_6_maroon.png') no-repeat transparent;
+    /* background: url('/img/leadorder/bacgr_6_maroon.png') no-repeat transparent; */
     color: #FFFFEE;    
 }
 .block_10.red {
-    background: url('/img/leadorder/bacgr_6_red.png') no-repeat transparent;        
+    /* background: url('/img/leadorder/bacgr_6_red.png') no-repeat transparent; */
     color: #FFFFEE;    
 }
 .block_10.orange {
-    background: url('/img/leadorder/bacgr_6_orange.png') no-repeat transparent;        
+    /* background: url('/img/leadorder/bacgr_6_orange.png') no-repeat transparent; */
 }
 .block_10.white {
-    background: url('/img/leadorder/bacgr_6_white.png') no-repeat transparent;        
+    /* background: url('/img/leadorder/bacgr_6_white.png') no-repeat transparent; */
 }
 .block_10.green {
-    background: url('/img/leadorder/bacgr_6_green.png') no-repeat transparent;    
+    /* background: url('/img/leadorder/bacgr_6_green.png') no-repeat transparent; */
 }
 .block_10_text1 {
     float: left;
@@ -1981,22 +2227,46 @@ input.artrepeat {
     padding-right: 5px;
     width: 83px;
 }
-.block_10_text_project {
-    float: left;    
-    text-align: center;
-    width: 126px;    
-}
+/*.block_10_text_project {*/
+/*    float: left;    */
+/*    text-align: center;*/
+/*    width: 126px;    */
+/*}*/
 .block_10_text2 {
     border-left: 1px solid;
     float: left;
     text-align: center;
-    width: 35px;
+    width: 60px;
+}
+.block_10.project .block_10_text2 {
+    border-left: none;
+    width: 106px;
+}
+.block_10.project .block_10_text2 > .detailsproject {
+    width: 100%;
+    text-align: left;
+    height: 18px;
+    line-height: 18px;
+    font-size: 14px;
+    padding-left: 5px;
+}
+.block_10.project .block_10_text2 > .detailscomplet {
+    width: 100%;
+    text-align: left;
+    height: 14px;
+    line-height: 14px;
+    font-size: 11px;
+    padding-left: 5px;
 }
 .profitdetails_tooltip {
-    /* width: 465px;/* 398px; */
-    /* max-width: 465px!important; /* 398px!important; */
-    width: 462px;
-    max-width: 462px!important;
+    /*width: 462px;*/
+    /*max-width: 462px!important;*/
+    width: 626px;
+    max-width: 626px!important;
+}
+.profitprojectdetails_tooltip {
+    width: 626px;
+    max-width: 626px!important;
 }
 .button_save {
     float: left;
@@ -2197,40 +2467,41 @@ input.artrepeat {
     width: 16px;
 }
 .icon_glass {
-/*
     background-image: url(/img/leadorder/icon_glass.png);
     background-repeat: no-repeat;
-*/
-    width: 21px;
-    height: 21px;
+    width: 13px;
+    height: 13px;
     float: left;
-    /*margin-top: 2px;
-    margin-left: 4px;
-     */
-    text-align: center;
+    margin-top: 2px;
+    /* margin-left: 4px;*/
+    margin-left: -19px;
+    position: absolute;
 }
 .icon_glass.active {
     cursor: pointer;
 }
 .marglef {
     float: left;
-    margin-left: 7px;
-    margin-top: 10px;
+    margin-top: 8px;
+    width: 987px;
 }
 .ticketdataviewarea {
     cursor: pointer;
     float: left;    
-    width: 148px;    
+    width: 148px;
+    display: none;
+}
+.marglef .bottomfinancearea {
+    float: right!important;
+    margin-right: 26px;
 }
 .shippingdataviewarea {
-    cursor: pointer;
-    float: left;
-    margin-left: 56px;
-    width: 166px;
+    float: right !important;
 }
 .totalduedataviewarea {
     float: left;
     width: 155px;
+    margin-top: 6px;
 }
 /* System Switcher */
 .orderssystemswitch {
@@ -2371,9 +2642,18 @@ input.artrepeat {
     float: left;
     padding-left: 2px;
     width: 180px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.itemdescription_data_view.customitemdescript {
+    width: 273px;
 }
 .itemdescription_data.long {
     width: 198px;
+}
+.itemdescription_data.long.customitemdescript {
+    width: 289px;
 }
 .itemcolor_head {
     float: left;
@@ -2383,6 +2663,14 @@ input.artrepeat {
     float: left;
     padding-left: 2px;
     width: 91px;
+}
+.itemcolor_data.inventcolors {
+    border: 1px solid #b5b5b5;
+    height: 19px;
+    line-height: 19px;
+}
+.itemcolor_data span.addnewcolor {
+    cursor: pointer;
 }
 .itemcolor_data_view {
     float: left;
@@ -2396,7 +2684,8 @@ input.artrepeat {
 }
 .inprint_content_description {
     float: left;
-    padding-left: 2px;
+    /* padding-left: 2px; */
+    padding-left: 8px;
     width: 273px;
 }
 select.orderitemcolors {
@@ -2405,14 +2694,19 @@ select.orderitemcolors {
     width: 87px;
 }
 input.orderitem_input {
-    height: 16px;
-    margin: 2px 2px;
+/*    height: 16px;
+    margin: 2px 2px;*/
+    height: 19px;
+    margin: 0 2px;
 }
 input.orderitem_description {
    width: 168px; 
 }
 input.orderitem_description_long {
    width: 190px; 
+}
+input.orderitem_description_long.customitemdescript {
+    width: 282px;
 }
 input.orderitem_description_short {
    width: 161px; 
@@ -2431,12 +2725,9 @@ input.orderitem_price {
     width: 100%;
 }
 .itemcoloradd {
-/*    clear: both;*/
     cursor: pointer;
     float: left;
-/*  padding-top: 4px;
-   margin-left: 335px;
-    margin-top: -5px;*/
+    margin-left: 195px;
 }
 /*  */
 .imprintdataarea {
@@ -2734,13 +3025,11 @@ select.imprintlocationchoice {
 }
 .imprinttabledata > .locationsamplerow > .locattempl {
     float: left;
-    /* margin-left: 3px; */
-    width: 21px;
-    height: 21px;
-    text-align: center;
+    margin-left: 3px;
+    width: 18px;
 }
 .imprinttabledata > .locationsamplerow > .locattempl.active {
-    /* background: url('/img/leadorder/icon_glass.png') no-repeat transparent; */
+    background: url('/img/leadorder/icon_glass.png') no-repeat transparent;
 }
 .saveimprintdetailsarea {
     clear: both;
@@ -3016,9 +3305,9 @@ span.orderconfirm {
 .shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow > .trackcodeinptarea {
     width: 169px;
 }
-input.trackcodeinpt {
+/*input.trackcodeinpt {
     width: 160px;
-}
+}*/
 .shiptrackdata > .shiptrackaddresarea > .shiptrackadrpacks > .shiptrackpackrow > .edit {
     width: 15px;
 }
@@ -3254,10 +3543,19 @@ textarea.proofrequestnotes {
     padding: 0 13px 0 12px;
     width: 598px;
 }
-.multishippopuparea input {
+.multishippopuparea input, .multishippopuparea select {
+    float: left;
+    font-size: 11px;
     padding-left: 3px;
+    background-color: #FFFFFF;
 }
-.multishippopuparea input[readonly="readonly"] {    
+/*.multishippopuparea input {*/
+/*    padding-left: 3px;*/
+/*}*/
+/*.multishippopuparea input.ship_tax_input1, .multishippopuparea input.ship_tax_textareainpt {*/
+/*    padding-left: unset;*/
+/*}*/
+.multishippopuparea input[readonly="readonly"] {
     font-weight: bold;
     background-color: #aeaeae;
     border: 1px solid #949494 !important;
@@ -3296,19 +3594,20 @@ textarea.proofrequestnotes {
 .multishipsubtitle {
     border-bottom: 2px solid #000000;
     color: #010101;
-    height: 27px;
-    line-height: 27px;    
     font-size: 12px;
     width: 573px;    
 }
+.multishipsubtitle  div {
+    height: 27px;
+    line-height: 27px;
+}
 .multishipsubtitle > .eventdate {
-    width: 130px;
+    width: 107px;
     margin-right: 7px;
     text-align: right;    
 }
 .multishipsubtitle > .eventdatevalue {
-    /* padding-top: 4px; */
-    width: 59px;
+    /* width: 59px; */
 }
 .multishipsubtitle > .rushselectarea {
     margin-left: 6px;
@@ -3319,8 +3618,11 @@ textarea.proofrequestnotes {
     width: 152px;
 }
 .multishipsubtitle > .rushpricevalue {
-    /* padding-top: 4px; */
-    width: 67px;
+     padding-top: 4px;
+     width: 67px;
+}
+.multishippopuparea input.salesarrivedate {
+    width: 63px;
 }
 .multishipadressarea {
     border-bottom: 2px solid #000000;
@@ -3332,7 +3634,7 @@ textarea.proofrequestnotes {
 /* Multiship Address rows */
 .multishipadressdatarow {
     margin-top: 8px;
-    width: 558px;    
+    width: 100%;
 }
 .multishipadressdata {
     color: #000000;
@@ -3352,29 +3654,58 @@ textarea.proofrequestnotes {
     width: 45px;
 }
 input.shipaddrqty {
+    height: 18px;
     width: 37px;
 }
 .multishipadressdata > .orderitemqty {
     color: #535050;
     font-size: 11px;
-    /* width: 46px; */
+    height: 18px;
+    margin-top: 4px;
+    line-height: 18px;
 }
 .multishipadressdata > .shipadrtrash {
     font-size: 14px;
-    padding-top: 4px;
     text-align: center;
     width: 22px;
 }
 .multishipadressdata > .shipadrtrash i {
     cursor: pointer;
 }
+/* Ship address area */
+.multishipadressdatarow .ship_tax_cont_bl1 {
+    width: 170px;
+    margin-right: 6px;
+}
 /* Price Container */
 .multishipadressdatarow .ship_tax_container2 {
-    left: 256px;
+    position: relative!important;
+    left: 248px;
+    top: -103px;
 }
 .multishipadressdatarow .bl_ship_tax_content {
     height: 154px;
-    width: 549px;    
+    width: 100%;
+}
+.multishipadressdatarow .ship_tax_cont_bl3 {
+    margin-top: -9px;
+    margin-left: 229px;
+}
+.multishipadressdatarow .shipdetailsarea {
+    margin-top: -124px;
+    margin-left: 255px;
+}
+.multishipadressdatarow .shipdetailsarea > .labeltax {
+    margin-top: 6px;
+}
+.multishipadressdatarow .shipdetailsarea > .labelarrival {
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    width: 70px;
+    color: #000;
+    padding-left: 0!important;
+    margin-top: 6px;
 }
 .multishipadressdatarow > .multishipadressadd {
     background: url('/img/leadorder/add_shipaddress_btn.png') no-repeat transparent;
@@ -3382,6 +3713,7 @@ input.shipaddrqty {
     margin-left: 18px;
     height: 24px;
     width: 83px;
+    display: none;
 }
 /* add_shipaddress_btn.png */
 /* Multiship Totals */
@@ -3439,26 +3771,41 @@ input.shipaddrqty {
 /* newpayment_bg.png */
 
 .manualpayment {
-    background: url('/img/leadorder/newpayment_bg.png') no-repeat transparent;
+/*    background: url('/img/leadorder/newpayment_bg.png') no-repeat transparent;
     height: 130px;
-    width: 331px;    
+    width: 331px;
+ */
+    height: 130px;
+    width: 372px;
+    background-color: #bcbfff;
+    border-radius: 7px;
+    border: 2px solid #000;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 }
 .manualpayment div {
     font-size: 11px;
     color: #000000;
     float: left;
 }
+.manualpaymenthead {
+    font-size: 14px!important;
+    font-weight: 600;
+    height: 21px;
+    line-height: 21px;
+    width: 100%;
+    text-align: center;
+}
 .manualpayment > .paymentdata {        
     height: 85px;
-    margin: 30px 16px 0 15px;
-    width: 293px;
+    margin: 7px 16px 0 15px;
+    width: 338px; /* 293px; */
 }
 .manualpayment > .paymentdata > .paytype {
     background-color: #f3f3f3;
     font-weight: bold;
     height: 23px;
     line-height: 23px;
-    margin-left: 73px;
+    margin-left: 101px;
     width: 150px;
 }
 .manualpayment > .paymentdata > .paytype > .paytypevalue {
@@ -3479,10 +3826,10 @@ input.shipaddrqty {
     width: 45px;
 }
 .manualpayment > .paymentdata > .paymentdetails > .date {
-    width: 50px;
+    width: 71px;
 }
 .manualpayment > .paymentdata > .paymentdetails > .paytipe {
-    width: 61px;
+    width: 83px;
 }
 .manualpayment > .paymentdata > .paymentdetails > .paynum {
     width: 78px;
@@ -3494,7 +3841,7 @@ input.shipaddrqty {
     background: transparent url("/img/leadorder/save_payment_btn.png") no-repeat scroll 0 0;
     cursor: pointer;
     height: 27px;
-    margin-left: 243px;
+    margin: 6px 0 0 243px;
     width: 60px;
 }
 input.paydatadetails {
@@ -3509,13 +3856,13 @@ input.paydatadetails.payrepl {
 }
 input.paydatadetails.paydate {
     text-align: center;
-    width: 42px;
+    width: 68px;
 }
 select.paydatadetails.paymenttype {
     color: #000000;
     font-size: 11px;
     height: 18px;
-    width: 54px
+    width: 80px
 }
 input.paydatadetails.paynum {
     width: 72px;
@@ -3635,7 +3982,7 @@ textarea.proofnotes {
     margin-top: 9px;
     margin-bottom: 15px;
     width: 320px;
-    height: 46px;
+    height: 82px; /* 46px;*/
 }
 a.historydetailsview {
     text-decoration: none;
@@ -3806,18 +4153,24 @@ a.historydetailsview {
     color: #008000;
 }
 /* COG Details Popup */
+.orderamountdetailsarea {
+    position: absolute;
+    left: 15px;
+    bottom: 20px;
+    display: none;
+    background-color: #505050;
+    border: 1px solid #303030;
+    z-index: 3;
+}
 .ordercogdetailsviewarea {
-    /*-moz-border-radius: 10px;*/
-    /*-webkit-border-radius: 10px;*/
-    /*-khtml-border-radius: 10px; !* for old Konqueror browsers *!    */
-    /*border-radius: 10px; !* future proofing *!*/
-    /*border: 1px solid;*/
     float: left;
-    padding: 10px 3px 10px 10px;
-    width: 460px;
-    margin-left: -8px;
-    margin-top: -4px;
-    margin-bottom: -4px;
+    width: 895px; /* 876px; */
+    padding: 10px!important;
+    margin: 9px;
+}
+.ordercogdetailsviewarea.project {
+    background-color: #001072;
+    color: #ffffff;
 }
 .ordercogdetailsviewarea.black {
     background-color: #000000;
@@ -3840,11 +4193,38 @@ a.historydetailsview {
     color: #000000;
 }
 .ordercogdetailsviewarea.green {
-    background-color: #86FF80;
+    background-color: #00e947;
     color: #000000;    
+}
+.ordercogdetailsviewclose {
+    position: absolute;
+    right: -10px;
+    top: -12px;
+    border: 1px solid #2a2a2a;
+    background: #e20000;
+    background: linear-gradient(to top, #c60000, #ff0000);
+    color: #fff;
+    font-weight: 900;
+    width: 29px;
+    height: 29px;
+    line-height: 25px;
+    font-size: 17px;
+    text-align: center;
+    border-radius: 15px;
+    cursor: pointer;
+}
+.ordercogdetailsviewclose svg {
+    width: 14px;
+    height: 14px;
+    position: relative;
+    top: 2.5px;
+    fill: #fff;
 }
 .ordercogdetailsviewarea div {
     float: left;
+}
+.ordercogdetailsviewarea > .datarow {
+    width: 856px;
 }
 .ordercogdetailsviewarea > .revenuearea {
     margin-left: 241px;
@@ -3993,7 +4373,8 @@ a.historydetailsview {
     font-weight: normal;
 }
 .ordercogdetailsviewarea > .profitarea {
-    margin-left: 265px;
+    /* margin-left: 265px;*/
+    margin-left: 403px;
     border: 1px solid #000000;
     background: #FFFFFF;
 }
@@ -4017,7 +4398,7 @@ a.historydetailsview {
 .ordercogdetailsviewarea > .profitperc {
     height: 20px;
     line-height: 20px;
-    width: 42px;
+    width: 48px; /* 42px; */
     font-size: 11px;
     text-align: right;
 }
@@ -5010,14 +5391,26 @@ input.ticket_date {
     height: 28.8px;
     line-height: 28.8px;
 }
+.poeditlabel.labelqty {
+    width: 45px;
+}
+.poeditlabel.labelprice {
+    width: 45px;
+}
 .poeditinput {
     width: 173px;
     height: 28.8px;
     line-height: 28.8px;
 }
+.poeditinput.itemqty, .poeditinput.itemprice {
+    width: 68px;
+}
 .poeditinput span {
     float: left;
     margin-right: 6px;
+}
+.amountqtyinpt, .amountpriceinpt {
+    width: 64px;
 }
 .poamntdateinpt, .amountvalueinpt, .ordernuminpt {
     width: 78px;
@@ -5099,7 +5492,8 @@ input.ticket_date {
     margin-left: 8px;
     float: left;
     width: 238px;
-    margin-top: 20px;
+    /* margin-top: 20px; */
+    margin-top: 5px;
 }
 .artclaypreviewarea div {
     float: left;
@@ -5145,7 +5539,8 @@ input.ticket_date {
 }
 .artclaypreviewarea .claypreviewtable .claypreviewtableleft, .artclaypreviewarea .claypreviewtable .claypreviewtableright {
     padding-left: 5px;
-    min-height: 68px;
+    /* min-height: 68px; */
+    min-height: 51px;
     width: 115px;
 }
 .artclaypreviewarea .claypreviewtable .claypreviewtableleft {
@@ -5231,7 +5626,8 @@ input.ticket_date {
 }
 .artpreviewpreviewarea .previewpreviewtable .previewpreviewtableleft, .artpreviewpreviewarea .previewpreviewtable .previewpreviewtableright {
     padding-left: 5px;
-    min-height: 68px;
+    /* min-height: 68px; */
+    min-height: 51px;
     width: 115px;
 }
 .artpreviewpreviewarea .previewpreviewtable .previewpreviewtableleft {
@@ -5276,4 +5672,740 @@ input.ticket_date {
     top: 37px;
     max-width: 244px;
     margin-left: 66px;
+}
+/* Unlock content */
+#unlockContentModal .modal-dialog {
+    width: 300px;
+    margin-left: 381px;
+    margin-top: 223px;
+}
+#unlockContentModal .modal-header {
+    background: #000066;
+    color: #ffffff;
+}
+#unlockContentModal .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+}
+#unlockContentModal .modal-title {
+    font-weight: 600;
+}
+
+.autocompleter,
+.autocompleter-closed {
+    top: 37px;
+    max-width: 244px;
+    margin-left: 66px;
+}
+
+/* Tracking Info */
+.trackingdataarea {
+    background: #FFFFFF;
+    width: 412px;
+    height: 150px;
+    margin-top: -120px;
+    border-radius: 7px;
+}
+.trackingdataarea div {
+    float: left;
+}
+.trackingdataheader, .trackingdatafooter {
+    background: #000000;
+    height: 24px;
+    line-height: 24px;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 600;
+    padding-left: 16px;
+    width: 100%;
+}
+.trackingdataheader.completed {
+    background: #c59e51;
+    color: #000000;
+}
+.trackingdataheader {
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;;
+}
+.trackingdataheader.middlehead {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+/* Add button */
+.trackingdataarea .addnewtrack {
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 5px;
+    font-style: italic;
+    color: #0000FF;
+}
+.trackingdatafooter {
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+.trackingdatafooter.completed {
+    background: #c59e51;
+    color: #000000;
+    border-top: 1px solid #000;
+}
+.trackingdatafooter .trackshippeddata {
+    position: relative;
+    top: -24px;
+    color: #6e6c6c;
+    font-size: 12px;
+    font-weight: normal;
+    font-style: italic;
+    width: 100%;
+    margin-bottom: -24px;
+}
+.trackingdatafooter .trackshippeddata.completed {
+    color: #000000;
+}
+.trackingdatafooter .nontracked {
+    /* float: left; */
+}
+.trackingdatafooter .shipdate {
+    float: right!important;
+    margin-right: 16px;
+}
+.trackingdatafooter .completedfull {
+    text-align: center;
+    font-size: 14px;
+    width: 100%;
+}
+.trackingdatabody {
+    background: #FFFFFF;
+    padding: 5px;
+    width: 100%;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    height: 102px;
+}
+.trackingdatabodyarea {
+    width: 100%;
+    max-height: 82px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+.trackingdatabody.completed {
+    background: #c59e51;
+}
+.trackingdatabody .trackdatarow {
+    border: 1px solid #000000;
+    margin-bottom: 3px;
+    clear: both;
+    float: left;
+}
+.trackingdatabody .trackdatarow.editmode {
+    border: none!important;
+}
+.trackingdatabody .trackdatarow.completed {
+    background: #f0d091;
+}
+.trackingdatabody .trackdatarow > div {
+    float: left;
+    height: 17px;
+    line-height: 17px;
+    font-size: 12px;
+    color: #000000;
+}
+.trackingdatabody .trackqty {
+    width: 49px;
+    padding-right: 5px;
+    text-align: right;
+    border-right: 1px solid #000000;
+}
+.trackingdatabody .trackqty.editmode {
+    border-right: none;
+}
+.trackingdatabody .trackdate {
+    width: 70px;
+    text-align: center;
+    border-right: 1px solid #000000;
+}
+.trackingdatabody .trackdate.editmode {
+    border-right: none;
+}
+.trackingdatabody .trackservice {
+    width: 62px;
+    padding-left: 7px;
+    border-right: 1px solid #000000;
+}
+.trackingdatabody .trackservice.editmode {
+    border-right: none;
+}
+.trackingdatabody .trackcode {
+    width: 142px;
+    padding-left: 7px;
+    color: #0000FF!important;
+}
+.trackingdatabody .trackcodecopy {
+    background: #979797;
+    color: #000000!important;
+    cursor: pointer;
+    float: left;
+    font-size: 11px;
+    height: 17px;
+    text-align: center;
+    width: 17px;
+}
+.trackingdatabody .trackcodecopy.emptycopy {
+    display: none;
+}
+.trackingdatabody .trackcoderemove {
+    background: #000000;
+    color: #ffffff!important;
+    cursor: pointer;
+    float: left;
+    font-size: 11px;
+    height: 17px;
+    text-align: center;
+    width: 17px;
+    margin-left: 3px;
+}
+.trackingdatabody input, .trackingdatabody select {
+    height: 17px;
+    border: 1px solid #4d4d4d;
+    color: #000000;
+}
+.trackqtyinpt {
+    width: 46px;
+}
+.trackdateinpt {
+    width: 68px;
+}
+.trackserviceinpt {
+    width: 60px;
+}
+.trackcodeinpt {
+    width: 133px;
+}
+/* Multi item tracks */
+.multitrackbodyarea {
+    max-height: 126px;
+    overflow-y: auto;
+}
+.multitrackdatabody {
+    min-height: 39px;
+    background: #FFFFFF;
+    padding: 5px;
+    width: 100%;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+}
+.multitrackdatabody.completed {
+    background: #c59e51;
+}
+.multitrackdatabody .multitrackshipped {
+    color: #6e6c6c;
+    font-size: 12px;
+    font-weight: normal;
+    font-style: italic;
+    width: 100%;
+    margin-bottom: 3px;
+}
+.multitrackdatabody .multitrackshipped.completed {
+    color: #000000;
+}
+.multitrackdatabody .trackdatarow {
+    border: 1px solid #000000;
+    margin-bottom: 3px;
+    clear: both;
+    float: left;
+}
+.multitrackdatabody .trackdatarow.editmode {
+    border: none!important;
+}
+.multitrackdatabody .trackdatarow.completed {
+    background: #f0d091;
+}
+.multitrackdatabody .trackdatarow > div {
+    float: left;
+    height: 17px;
+    line-height: 17px;
+    font-size: 12px;
+    color: #000000;
+}
+.multitrackdatabody .trackqty {
+    width: 49px;
+    padding-right: 5px;
+    text-align: right;
+    border-right: 1px solid #000000;
+}
+.multitrackdatabody .trackqty.editmode {
+    border-right: none;
+}
+.multitrackdatabody .trackdate {
+    width: 70px;
+    text-align: center;
+    border-right: 1px solid #000000;
+}
+.multitrackdatabody .trackdate.editmode {
+    border-right: none;
+}
+.multitrackdatabody .trackservice {
+    width: 62px;
+    padding-left: 7px;
+    border-right: 1px solid #000000;
+}
+.multitrackdatabody .trackservice.editmode {
+    border-right: none;
+}
+.multitrackdatabody .trackcode {
+    width: 142px;
+    padding-left: 7px;
+}
+.multitrackdatabody .trackcodecopy {
+    background: #979797;
+    color: #000000!important;
+    cursor: pointer;
+    float: left;
+    font-size: 11px;
+    height: 17px;
+    text-align: center;
+    width: 17px;
+}
+.multitrackdatabody .trackcodecopy.emptycopy {
+    display: none;
+}
+.multitrackdatabody .trackcoderemove {
+    background: #000000;
+    color: #ffffff!important;
+    cursor: pointer;
+    float: left;
+    font-size: 11px;
+    height: 17px;
+    text-align: center;
+    width: 17px;
+    margin-left: 3px;
+}
+.multitrackdatabody input, .multitrackdatabody select {
+    height: 17px;
+    border: 1px solid #4d4d4d;
+    color: #000000;
+}
+div.trackservicelnk > input {
+    color: #0000FF!important;
+    /* text-decoration: none; */
+    cursor: pointer;
+    border: none!important;
+    background: transparent!important;
+}
+/*a.trackservicelnk:hover, a.trackservicelnk:focus {*/
+/*    text-decoration: none;*/
+/*    cursor: pointer;*/
+/*}*/
+/* Project COG */
+.projcoglabel {
+    font-size: 14px;
+    font-weight: 600;
+}
+.revenueareaproj {
+    font-weight: 600;
+    font-size: 13px;
+    float: right!important;
+    /* margin-right: 52px; */
+    margin-right: 73px;
+}
+.revenueareaproj > .revenuetitle {
+    width: 97px;
+    height: 18px;
+    line-height: 18px;
+}
+.revenueareaproj > .revenueval {
+    text-align: right;
+    width: 62px;
+    height: 18px;
+    line-height: 18px;
+}
+.costsareaproj {
+    border: 1px solid #000000;
+    background: #FFFFFF;
+    margin-right: 9px;
+    float: right!important;
+}
+.costsareaproj > .datarow > div {
+    height: 18px;
+    line-height: 18px;
+    color: #f90505;
+    text-align: right;
+}
+.costsareaproj .costlabel {
+    width: 94px;
+    font-size: 12px;
+}
+.costsareaproj .costvalue {
+    width: 62px;
+    font-size: 13px;
+    padding-right: 4px;
+}
+.costspercareaproj {
+    float: right!important;
+}
+.costspercareaproj > div {
+    height: 18px;
+    line-height: 18px;
+    width: 42px;
+    text-align: right;
+    font-size: 11px;
+}
+.ordercogdetailsviewarea .itemtitle { /* .ordercogdetailsviewarea.project .itemtitle */
+    margin-top: 7px;
+    margin-bottom: 4px;
+}
+.ordercogdetailsviewarea .itemtitle > .labelrow { /* .ordercogdetailsviewarea.project .itemtitle > .labelrow */
+    font-weight: 600;
+    margin-right: 23px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 13px;
+}
+.ordercogdetailsviewarea .itemtitle > .valuerow > div { /* .ordercogdetailsviewarea.project .itemtitle > .valuerow > div */
+    height: 20px;
+    line-height: 20px;
+    font-size: 13px;
+}
+.ordercogdetailsviewarea .tabledataarea { /* .ordercogdetailsviewarea.project > .tabledataarea */
+    width: 811px; /* 762px */;
+    margin-bottom: 21px;
+}
+.ordercogdetailsviewarea .tabledataarea > .titletable { /* .ordercogdetailsviewarea.project > .tabledataarea > .titletable */
+    width: 100%;
+    border: 1px solid #ffffff;
+    background-color: #000044;
+    color: #ffffff;
+    font-size: 12px;
+}
+.ordercogdetailsviewarea .tabledataarea > .titletable.green {
+    border: 1px solid #000000;
+    background-color: #154024!important;
+    color: #ffffff!important;
+}
+.ordercogdetailsviewarea .tabledataarea > .titletable > div { /* .ordercogdetailsviewarea.project > .tabledataarea > .titletable > div */
+    height: 21px;
+    line-height: 21px;
+    text-align: center;
+    font-size: 13px; /* 14px */
+    font-weight: 600;
+    color: #ffffff;
+}
+.ordercogdetailsviewarea .tabledataarea > .titletable > .actions {
+    /* width: 61px; */
+}
+.ordercogdetailsviewarea .tabledataarea > .titletable > .qty { /* .ordercogdetailsviewarea.project > .tabledataarea > .titletable > .qty */
+    /* margin-left: 66px; */
+    width: 65px;
+}
+.ordercogdetailsviewarea .tabledataarea > .titletable > .price {
+    width: 64px;
+}
+.ordercogdetailsviewarea .tabledataarea > .titletable > .date { /* .ordercogdetailsviewarea.project > .tabledataarea > .titletable > .date */
+    width: 74px
+}
+.ordercogdetailsviewarea .tabledataarea > .titletable > .amnttype { /* .ordercogdetailsviewarea.project > .tabledataarea > .titletable > .amnttype */
+    width: 90px;
+    /* width: 33px; */
+}
+.ordercogdetailsviewarea .tabledataarea > .titletable > .vendor { /* .ordercogdetailsviewarea.project > .tabledataarea > .titletable > .vendor { */
+    width: 165px;
+}
+.ordercogdetailsviewarea .tabledataarea > .titletable > .amntpaymetod { /* .ordercogdetailsviewarea.project > .tabledataarea > .titletable > .amntpaymetod { */
+    width: 110px;
+}
+.ordercogdetailsviewarea .tabledataarea > .titletable > .amountsum { /* .ordercogdetailsviewarea.project > .tabledataarea > .titletable > .amountsum { */
+    width: 95px;
+}
+.ordercogdetailsviewarea .tabledataarea > .titletable > .inclship {
+    width: 101px; /* 35px; */
+}
+/* Ship popup */
+.coghelpballonbox {
+    font-size: 14px;
+    max-width: 400px;
+}
+
+.ordercogdetailsviewarea .tabledataarea > .tabledetailsitem {
+    width: 100%;
+}
+.ordercogdetailsviewarea .tabledataarea > .placepo { /* .ordercogdetailsviewarea.project > .tabledataarea > .placepo { */
+    border: 1px solid #000000;
+    background: #ffffff;
+    color: #000000;
+    font-size: 12px;
+    font-style: italic;
+    text-align: center;
+    height: 19px;
+    line-height: 19px;
+    margin: 5px 0;
+    width: 100%;
+}
+.ordercogdetailsviewarea .tabledataarea > .placepo.active { /* .ordercogdetailsviewarea.project > .tabledataarea > .placepo.active { */
+    cursor: pointer;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection { */
+    border: 1px solid #ffffff;
+    font-size: 12px;
+    width: 100%;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledatasection.printdetails { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection.printdetails { */
+    background: #6e6e6e;
+    color: #FFFFFF;
+    border: 1px solid #000000;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledatasection.details { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection.details { */
+    background: #c4c4c4;
+    color: #252525;
+    border: 1px solid #000000;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection > div { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > div { */
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection > .editamount {
+    width: 31px;
+    color: #252525;
+    cursor: pointer;
+    font-size: 18px;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection > .delamount {
+    width: 32px;
+    color: #252525;
+    cursor: pointer;
+    font-size: 18px;
+    /* border-right: 1px solid #000000; */
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection > .saveamount {
+    /*width: 31px;*/
+    /*color: #00d300;*/
+    /*cursor: pointer;*/
+    /*font-size: 18px;*/
+    background: #05a050;
+    background: linear-gradient(to top, #077239, #04c664);
+    border: 1px solid #4a4a4a;
+    border-radius: 5px;
+    width: 53px;
+    height: 18px;
+    line-height: 16px!important;
+    color: #fff;
+    font-size: 14px;
+    text-align: center;
+    margin: 0 3px;
+    cursor: pointer;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection > .cancelamount {
+    /*width: 32px;*/
+    /*color: #FF0000;*/
+    /*font-size: 18px;*/
+    /*cursor: pointer;*/
+    background: #c8051a;
+    background: linear-gradient(to top, #a50418, #e7061b);
+    border: 1px solid #4a4a4a;
+    border-radius: 5px;
+    width: 57px;
+    height: 18px;
+    line-height: 16px!important;
+    color: #fff;
+    font-size: 14px;
+    text-align: center;
+    margin: 0 3px;
+    cursor: pointer;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection > .qtyamnt {
+    width: 65px;
+    border-right: 1px solid #000000;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection > .priceamnt {
+    width: 64px;
+    border-right: 1px solid #000000;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection > .dateamnt {
+    width: 74px;
+    border-right: 1px solid #000000;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection > .typeamnt {
+    width: 90px;
+    border-right: 1px solid #000000;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection > .vendoramnt {
+    width: 165px;
+    border-right: 1px solid #000000;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection > .paymetodamnt {
+    width: 110px;
+    border-right: 1px solid #000000;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection > .amountsum {
+    width: 95px;
+    text-align: right;
+    padding-right: 5px;
+    border-right: 1px solid #000000;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection > .includeship {
+    width: 24px; /* 34px; */
+    border-right: 1px solid #000000;
+    font-size: 15px;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection > .profitdataperc {
+    /*position: absolute;*/
+    /*right: 13px;*/
+    position: relative;
+    left: 101px;
+    color: #ffffff;
+}
+.ordercogdetailsviewarea.green .tabledataarea > .tabledetailsitem >.tabledatasection > .profitdataperc,
+.ordercogdetailsviewarea.white .tabledataarea > .tabledetailsitem >.tabledatasection > .profitdataperc {
+    color: #000000;
+}
+/* Project */
+.ordercogdetailsviewarea .tabledataarea > .tabledatasection > div { /* .ordercogdetailsviewarea.project > .tabledataarea > .tabledatasection > div { */
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledatasection > .actions {
+    width: 61px;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledatasection > .qty {
+    width: 65px;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledatasection > .price {
+    width: 64px;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledatasection > .date {
+    width: 74px;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledatasection > .amnttype {
+    width: 90px;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledatasection > .vendor {
+    width: 165px;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledatasection > .amntpaymetod {
+    width: 110px;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledatasection > .amountsum {
+    width: 95px;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledatasection > .inclship {
+    width: 34px;
+}
+.ordercogdetailsviewarea .tabledataarea > .tabledatasection > .profitdataperc {
+    position: absolute;
+    right: 15px;
+    color: #fff;
+    font-size: 12px;
+}
+/* Black color */
+.ordercogdetailsviewarea.green .tabledataarea > .tabledatasection > .profitdataperc,
+.ordercogdetailsviewarea.white .tabledataarea > .tabledatasection > .profitdataperc {
+    color: #000000;
+}
+    /* Totals */
+.ordercogdetailsviewarea .tabledataarea > .tabledetailstotalamnt {
+    width: 100%;
+    text-align: right;
+    font-size: 16px;
+    font-weight: 600;
+}
+/* Inputs */
+.ordercogdetailsviewarea input, .ordercogdetailsviewarea select {
+    margin: auto 3px;
+    height: 20px;
+    font-size: 12px;
+}
+.ordercogdetailsviewarea .orderamntqtyinpt {
+    width: 55px;
+    text-align: right;
+    padding-right: 2px;
+}
+.ordercogdetailsviewarea .orderamntpriceinpt {
+    width: 55px;
+    text-align: right;
+    padding-right: 2px;
+}
+.ordercogdetailsviewarea .orderamntdateinpt {
+    width: 67px;
+    text-align: center;
+}
+.ordercogdetailsviewarea .orderamntvendorinpt {
+    width: 157px;
+}
+.ordercogdetailsviewarea .orderamntmethodinpt {
+    width: 103px;
+}
+.ordercogdetailsviewarea .orderamnttotalinpt {
+    width: 90px;
+    text-align: right;
+    padding-right: 2px;
+}
+/*.ordercogdetailsviewarea .incudeshipcheck {*/
+/*    font-size: 15px;*/
+/*}*/
+.ordercogdetailsviewarea > .procentsarea { /* .ordercogdetailsviewarea.project > .procentsarea { */
+    float: right!important;
+    width: auto;
+    margin: 56px 0 0 0;
+}
+.totalcogprojarea {
+    font-weight: 600;
+    font-size: 15px;
+    float: right!important;
+    margin-right: 46px;
+}
+.totalcogprojarea > .totalcoglabel {
+    width: 97px;
+    height: 21px;
+    line-height: 21px;
+}
+.totalcogprojarea > .totalcogvalue {
+    text-align: right;
+    width: 79px;
+    height: 21px;
+    line-height: 21px;
+}
+.profitprojarea {
+    /* margin-right: 17px; */
+    border: 1px solid #000000;
+    background: #FFFFFF;
+    float: right!important;
+    color: #000000;
+}
+.profitprojarea > div {
+    height: 20px;
+    line-height: 20px;
+    font-weight: 600;
+    text-align: right;
+}
+.profitprojarea > .profitlabel {
+    font-size: 14px;
+    width: 50px;
+}
+.profitprojarea > .profitvalue {
+    font-size: 15px;
+    width: 83px;
+    padding-right: 4px;
+    color: #000000;
+}
+.ordercogdetailsviewarea .profitperc { /* .project*/
+    float: right !important;
+    height: 20px;
+    line-height: 20px;
+    width: 45px;
+    text-align: right;
+    font-size: 12px;
+}
+
+/*a.trackservicelnk:hover, a.trackservicelnk:focus {*/
+/*    text-decoration: none;*/
+/*    cursor: pointer;*/
+/*}*/
+.profitdetails_tooltip .qtip-content {
+    padding: 0!important;
 }

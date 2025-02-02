@@ -51,6 +51,7 @@
             <div id="quoteitemtabledata"><?=$itemsview?></div>
             <?php if ($edit_mode==1) { ?>
                 <div class="datarow"><div class="addquoteitem">+ add item</div></div>
+                <div class="quoteitem_inventoryview">&nbsp;</div>
             <?php } ?>
         </div>
     </div>
@@ -120,7 +121,7 @@
                     </div>
                     <input class="quoteadrinpt quoteshipadrother" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_address2"
                            placeholder="Address Line 2" value="<?=$data['shipping_address2']?>" autocomplete="new-password"/>
-                        <input class="quoteadrinpt quotetown" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_city"
+                        <input class="quoteadrinpt quoteshiptown" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_city"
                                placeholder="City" value="<?=$data['shipping_city']?>"/>
                         <div class="quoteshipaddresdistrict"><?=$shipstate?></div>
                         <input class="quoteadrinpt quotepostal" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_zip"
@@ -184,7 +185,7 @@
                 </div>
             <?php  } ?>
             <div class="quotebilladdressother <?=$data['billingsame']==1 ? 'billingsame' : ''?>">
-                <div class="quoteaddressarea">
+                <div class="quotebilladdressarea">
                     <input class="quoteadrinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_contact"
                            placeholder="Contact Name" value="<?=$data['billing_contact']?>">
                     <input class="quoteadrinpt quotebilladdrother" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_company"

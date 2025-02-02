@@ -202,7 +202,7 @@ Class Menuitems_model extends MY_Model
         return $out;
     }
 
-    public function get_menuitem($lnk='', $menu_id=0) {
+    public function get_menuitem($lnk='', $menu_id=0, $brand='') {
         $out=['result'=>$this->error_result,'msg'=>'Menu Item Not Found'];
         $this->db->select('*');
         $this->db->from('menu_items');
@@ -211,6 +211,9 @@ Class Menuitems_model extends MY_Model
         }
         if (!empty($menu_id)) {
             $this->db->where('menu_item_id', $menu_id);
+        }
+        if (!empty($brand)) {
+            $this->db->where('brand', $brand);
         }
         $res = $this->db->get()->row_array();
         if (!empty($res) && array_key_exists('menu_item_id', $res)) {
@@ -905,36 +908,80 @@ Class Menuitems_model extends MY_Model
         return $result;
     }
 
-    public function get_webpages() {
-        // Get list of main branches
-        $this->db->select('*');
-        $this->db->from('menu_items');
-        $this->db->where('parent_id is null');
-        $this->db->where('item_link is not null');
-        $this->db->order_by('menu_order');
+    public function get_webpages($brand)
+    {
+        $out=[];
+        $this->db->select('*')->from('menu_items')->where('brand', $brand)->where('parent_id is null')->where('item_link is not null')->order_by('menu_order');
         $main=$this->db->get()->result_array();
-        $out=array();
         foreach ($main as $mrow) {
-            $out[]=array(
-                'key'=>$mrow['menu_item_id'],
-                'label'=>$mrow['item_name'],
+            $out[] = array(
+                'key' => $mrow['menu_item_id'],
+                'label' => $mrow['item_name'],
             );
             // Get subpages
             $this->db->select('*');
             $this->db->from('menu_items');
+            $this->db->where('brand', $brand);
             $this->db->where('parent_id', $mrow['menu_item_id']);
             $this->db->where('item_link is not null');
             $this->db->order_by('menu_order');
             $pages=$this->db->get()->result_array();
             foreach ($pages as $row) {
                 $out[]=array(
-                    'key'=>$row['menu_item_id'],
-                    'label'=>' &ndash; '.$row['item_name'],
+                    'key'=> $row['menu_item_id'],
+                    'label'=> ' &ndash; '.$row['item_name'],
                 );
             }
         }
         return $out;
-
+    }
+    public function _get_webpages() {
+        // Get list of main branches
+        // $this->db->select('brand, count(menu_item_id) as cnt')->from('menu_items')->where('brand != ','UNKN')->group_by('brand');
+        // $brands = $this->db->get()->result_array();
+        $brands = [
+            "NONE", "SB", "SR", "SG",
+        ];
+        $out=[];
+        foreach ($brands as $brand) {
+            if ($brand=='NONE') {
+                $prefix = ' ';
+            } elseif ($brand=='SB') {
+                $prefix = 'BT ';
+            } elseif ($brand=='SR') {
+                $prefix = 'SR ';
+            } elseif ($brand=='SG') {
+                $prefix = 'Sigma ';
+            }
+            $this->db->select('*');
+            $this->db->from('menu_items');
+            $this->db->where('brand', $brand);
+            $this->db->where('parent_id is null');
+            $this->db->where('item_link is not null');
+            $this->db->order_by('menu_order');
+            $main=$this->db->get()->result_array();
+            foreach ($main as $mrow) {
+                $out[]=array(
+                    'key'=> $mrow['menu_item_id'],
+                    'label'=> $prefix.$mrow['item_name'],
+                );
+                // Get subpages
+                $this->db->select('*');
+                $this->db->from('menu_items');
+                $this->db->where('brand', $brand);
+                $this->db->where('parent_id', $mrow['menu_item_id']);
+                $this->db->where('item_link is not null');
+                $this->db->order_by('menu_order');
+                $pages=$this->db->get()->result_array();
+                foreach ($pages as $row) {
+                    $out[]=array(
+                        'key'=> $row['menu_item_id'],
+                        'label'=> $prefix.' &ndash; '.$row['item_name'],
+                    );
+                }
+            }
+        }
+        return $out;
     }
 
     public function get_submenu($user_id, $root_lnk) {
@@ -1032,23 +1079,31 @@ Class Menuitems_model extends MY_Model
         $brand =  usersession('currentbrand');
         if (!empty($brand)) {
             usersession('currentbrand', $brand);
+            $this->_brandcookie($brand);
         } else {
-            $user = $this->user_model->current_user();
-            $userdata = ifset($user,'data',[]);
-            $userid = ifset($userdata,'id',0);
-            $this->db->select('count(i.menu_item_id) as cnt');
-            $this->db->from('menu_items i');
-            $this->db->join('user_permissions u','i.menu_item_id = u.menu_item_id');
-            $this->db->where('u.user_id', $userid);
-            $this->db->where('u.permission_type > ',0);
-            $this->db->where('i.brand = ','SB');
-            $dats = $this->db->get()->row_array();
-            if ($dats['cnt'] > 0) {
-                $brand = 'SB';
+            $brand = get_cookie('brandtoken');
+            if ($brand) {
+                usersession('currentbrand', $brand);
+                $this->_brandcookie($brand);
             } else {
-                $brand = 'SR';
+                $user = $this->user_model->current_user();
+                $userdata = ifset($user,'data',[]);
+                $userid = ifset($userdata,'id',0);
+                $this->db->select('count(i.menu_item_id) as cnt');
+                $this->db->from('menu_items i');
+                $this->db->join('user_permissions u','i.menu_item_id = u.menu_item_id');
+                $this->db->where('u.user_id', $userid);
+                $this->db->where('u.permission_type > ',0);
+                $this->db->where('i.brand = ','SB');
+                $dats = $this->db->get()->row_array();
+                if ($dats['cnt'] > 0) {
+                    $brand = 'SB';
+                } else {
+                    $brand = 'SR';
+                }
+                usersession('currentbrand', $brand);
+                $this->_brandcookie($brand);
             }
-            usersession('currentbrand', $brand);
         }
         return $brand;
     }
@@ -1079,6 +1134,21 @@ Class Menuitems_model extends MY_Model
         $this->db->group_by('m.menu_item_id');
         $this->db->order_by('m.menu_order, m.menu_section');
         return $this->db->get()->result_array();
+    }
+
+    private function _brandcookie($brand)
+    {
+        $server=$this->input->server('SERVER_NAME');
+        $cookienew = array(
+            'name'   => 'brandtoken',
+            'value'  => $brand,
+            'expire' => '86500',
+            'domain' => $server,
+            'path'   => '/; SameSite=Strict',
+            'secure' => TRUE,
+            'httponly' => TRUE,
+        );
+        set_cookie($cookienew);
     }
 
 }

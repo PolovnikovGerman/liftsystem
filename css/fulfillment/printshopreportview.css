@@ -447,6 +447,10 @@ i.addnewprintshopincome {
     font-size: 12px;
     width: 21px;
 }
+.printshopcontent > .orderreporttablebody .datarow > .lockdelete {
+    border-right: 1px solid #000000;
+    width: 21px;
+}
 .printshopcontent > .orderreporttablebody .datarow > .orderdate {
     border-right: 1px solid #000000;
     font-weight: bold;
@@ -612,7 +616,7 @@ i.canceleditorderdata {
 }
 .printshopcontent > .orderreporttablebody .datarow input.psplateqty {
     text-align: center;
-    width: 23px;
+    width: 25px;
 }
 .orderreportprofitview {
     clear: both;

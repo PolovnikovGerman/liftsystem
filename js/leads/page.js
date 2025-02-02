@@ -50,6 +50,10 @@ function init_page(objid) {
             $("#leadquotesview").show();
             init_leadquotes();
             break;
+        case 'customorders':
+            $("#customorders").show();
+            init_leadcustomorders();
+            break;
     }
 }
 

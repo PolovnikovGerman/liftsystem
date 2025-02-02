@@ -52,12 +52,14 @@ function placeParse(place, address_type) {
         postcode = `${component.long_name}${postcode}`;
         break;
       }
-      case "postal_code_suffix": {
-        postcode = `${postcode}-${component.long_name}`;
-        break;
-      }
+      // case "postal_code_suffix": {
+      //   postcode = `${postcode}-${component.long_name}`;
+      //   break;
+      // }
       case "locality": {
-        city = component.long_name;
+        if (city=='') {
+          city = component.long_name;
+        }
         break;
       }
       case "administrative_area_level_1": {
@@ -66,6 +68,18 @@ function placeParse(place, address_type) {
       }
       case "country": {
         country = component.long_name;
+        break;
+      }
+      case "postal_town": {
+        if (city=='') {
+          city = component.long_name;
+        }
+        break;
+      }
+      case "sublocality_level_1": {
+        if (city=='') {
+          city = component.long_name;
+        }
         break;
       }
     }

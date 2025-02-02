@@ -149,6 +149,9 @@ a.find_customformbnt {
     background: #0000FF;
     color: #ffffff;
 }
+.customform_tabledat .content-row.underlined {
+    border-top: 2px solid #000000;
+}
 .customform_tabledat .content-row > div {
     height: 24px;
     line-height: 24px;

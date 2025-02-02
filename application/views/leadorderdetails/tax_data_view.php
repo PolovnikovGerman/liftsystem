@@ -1,4 +1,4 @@
-<div class="taxlabel">NJ 7% Tax</div>
+<div class="taxlabel">NJ <?=$this->config->item('outsalestax')?>% Tax</div>
 <div class="taxexcept">
     <input type="checkbox" class="excepttax" disabled="disabled" <?=($tax_exempt==1 ? 'checked="checked"' : 0)?> />
     Exempt

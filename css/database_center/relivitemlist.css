@@ -274,6 +274,22 @@
 }
 .reliversitemdataview .tabledataarea .tabrow .missinfo.missing {
     color: #FF0000;
+    padding-left: 10px;
+}
+.missing_info_details {
+    background-color: #ff78f1;
+    border: 1px solid #000;
+    font-size: 9px!important;
+    font-weight: 600;
+    height: 18px!important;
+    line-height: 16px!important;
+    padding: 0 3px;
+    margin-top: 3px;
+    margin-right: 5px;
+    display: inline-block;
+}
+.missing_info_details.unvisible {
+    visibility: hidden;
 }
 .reliversitemdataview .tabledataarea .tabrow .emptydataview {
     color: #FF0000;
@@ -281,3 +297,94 @@
     text-align: center;
 }
 /*  */
+/* Add new item */
+.sritemnewaddarea {
+    border: 2px solid #4a4a4a;
+    border-radius: 5px;
+    background: #d7d7d7;
+    display: none;
+    font-family: Helvetica;
+    /* height: 210px; */
+    height: 178px;
+    padding: 4px 7px 7px 13px;
+    position: absolute;
+    top: 244px;
+    left: 277px;
+    z-index: 120;
+    width: 514px;
+}
+.sritemnewaddarea .content-row {
+    clear: both;
+    width: 100%;
+    max-width: 1300px;
+}
+.sritemnewaddarea .pagetitleadd {
+    font-size: 18px;
+    height: 28px;
+    line-height: 28px;
+    font-weight: 600;
+}
+.sritemnewaddarea .canceladd {
+    float: right!important;
+    color: #ff0000;
+    height: 20px;
+    line-height: 20px;
+    cursor: pointer;
+}
+.sritemnewaddarea .canceladd span {
+    font-size: 13px;
+    /* font-weight: bold; */
+}
+.sritemnewaddarea .canceladd i {
+    font-size: 14px;
+    margin-left: 7px;
+}
+.sritemnewaddarea .itemaddform {
+    margin-top: 12px;
+}
+.sritemnewaddarea .itemaddform-label {
+    height: 36px;
+    line-height: 36px!important;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000040;
+    text-align: right;
+    padding-right: 4px;
+    width: 102px;
+}
+.sritemnewaddarea .itemaddform-value {
+    height: 36px;
+    line-height: 36px!important;
+}
+.sritemnewaddarea select.addnewitemoption {
+    height: 28px;
+    font-size: 14px;
+    line-height: 28px;
+    padding-left: 6px;
+    width: 200px;
+}
+.sritemnewaddarea input.addnewiteminput {
+    height: 28px;
+    line-height: 28px;
+    padding-left: 6px;
+    font-size: 14px;
+    /* font-weight: 600; */
+    width: 380px;
+    font-family: Helvetica-Bold!important;
+}
+.sritemnewaddarea .procedaddnewitem {
+    background-color: #00009c;
+    border-radius: 7px;
+    color: #ffffff;
+    cursor: pointer;
+    float: right!important;
+    font-size: 14px;
+    /* font-weight: 600; */
+    height: 28px;
+    line-height: 28px!important;
+    padding: 0 11px;
+    box-shadow: -0.4em 0.4em 5px rgba(122,122,122,0.5);
+    margin-right: 9px;
+    margin-top: 11px;
+    font-family: Helvetica-Bold!important;
+}

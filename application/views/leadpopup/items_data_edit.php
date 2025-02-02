@@ -1,4 +1,5 @@
 <?php $nrow=0;?>
+<div class="quoteitemsarea" data-quoteitem="<?=$quote_item_id?>">
 <?php foreach ($items as $row) { ?>
     <div class="quoteitemtabledatarow <?=($nrow%2==0 ? 'whitedatarow' : 'greydatarow')?>">
         <div class="itemnumber"><?=$row['item_number']?></div>
@@ -18,7 +19,7 @@
             <input type="text" class="quoteitem_price  quouteitem_input input_border_gray <?=$row['qtyinput_class']?>" title="<?=$row['qtyinput_title']?>"
                    data-field="item_price" data-item="<?=$row['item_id']?>" data-quoteitem="<?= $quote_item_id ?>" value="<?=PriceOutput($row['item_price'])?>" />
         </div>
-        <div class="quoteitemrowsubtotal" data-item="<?=$row['item_id']?>" data-quoteitem="<?= $quote_item_id ?>"><?=$row['item_subtotal']?></div>
+        <div class="quoteitemrowsubtotal" data-item="<?=$row['item_id']?>" data-quoteitem="<?= $quote_item_id ?>"><?=MoneyOutput($row['item_subtotal'])?></div>
         <div class="quoteitemremove">
             <?php if ($row['item_row']==1) { ?>
                 <i class="fa fa-trash" data-quoteitem="<?= $quote_item_id ?>" data-item="<?=$row['item_description']?>"></i>
@@ -30,3 +31,4 @@
     <?php $nrow++;?>
 <?php } ?>
 <?=$imprintview?>
+</div>

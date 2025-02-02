@@ -1,4 +1,5 @@
 <input type="hidden" id="optionsimages" value="<?=$item['option_images']?>"/>
+<input type="hidden" id="inventory" value="<?=$item['printshop_inventory_id']?>"/>
 <div class="content-row">
     <div class="imagetitle">Options:</div>
     <div class="itemoptionsvalue">
@@ -18,10 +19,6 @@
         <?php } ?>
     </div>
     <div class="itemoptionchecklabel">Require Images</div>
-    <div id="addoptiontxt" style="<?=$item['option_images']==0 ? '' : 'display: none;'?>">
-        <i class="fa fa-plus"></i> Add Option
-    </div>
-    <div id="addoptionimage" style="<?=$item['option_images']==1 ? '' : 'display: none;'?>"></div>
 </div>
 <div class="colorimages-slider">
     <?=$slider?>

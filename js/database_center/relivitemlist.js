@@ -112,11 +112,67 @@ function init_relieveritems_content() {
         edit_reliever_item(item);
     });
     $("#addnewrelievers").unbind('click').click(function () {
-        var item = 0;
-        edit_reliever_item(item);
+        // var item = 0;
+        // edit_reliever_item(item);
+        prepare_newsritem();
     })
 }
 
+function prepare_newsritem() {
+    var params = new Array();
+    params.push({name: 'brand', value: 'SR'});
+    var url="/dbitems/addnewitemform";
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".sritemnewaddarea").empty().html(response.data.content).show();
+            init_addnewsritem();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function init_addnewsritem() {
+    $(".sritemnewaddarea").find('div.canceladd').click(function () {
+        $(".sritemnewaddarea").empty();
+        $(".sritemnewaddarea").hide();
+    });
+    $(".sritemnewaddarea").find('div.procedaddnewitem').unbind('click').click(function () {
+        var params = new Array();
+        var category = $("#itemnewcategory").val();
+        params.push({name: 'category', value: category});
+        params.push({name: 'itemname', value: $("#itemnewname").val()});
+        params.push({name: 'brand', value: 'SR'});
+        var url = "/dbitems/addnewitem";
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                $(".sritemnewaddarea").empty().hide();
+                // $(".btcategorybtn").removeClass('active');
+                // $(".btcategorybtn[data-category='" + category + "']").removeClass('locked').addClass('active');
+                // $(".itemcategoryfilter option[data-categ='" + category + "']").prop('disabled', false);
+                // $(".itemcategoryfilter").val(category);
+                var item = response.data.newitem;
+                var itmparams = new Array();
+                itmparams.push({name: 'item_id', value: item});
+                itmparams.push({name: 'editmode', value: 1});
+                itmparams.push({name: 'brand', value: 'SR'});
+                var url = '/dbitems/relieve_item_edit';
+                $.post(url, itmparams, function (response) {
+                    if (response.errors == '') {
+                        $("#itemDetailsModalLabel").empty().html(response.data.header);
+                        $("#itemDetailsModal").find('div.modal-body').empty().html(response.data.content);
+                        $("#itemDetailsModal").modal({backdrop: 'static', keyboard: false, show: true});
+                        init_relievitemdetails_edit();
+                    } else {
+                        show_error(response);
+                    }
+                }, 'json');
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+}
 function relieveritem_search() {
     var params = prepare_relieveritem_filters();
     var url = '/dbitems/relieve_itemsearch';
@@ -145,7 +201,6 @@ function edit_reliever_item(item) {
         if (response.errors=='') {
             $("#itemDetailsModalLabel").empty().html(response.data.header);
             $("#itemDetailsModal").find('div.modal-body').empty().html(response.data.content);
-            // $("#pageModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
             $("#itemDetailsModal").modal({backdrop: 'static', keyboard: false, show: true});
             if (parseInt(response.data.editmode)==1) {
                 // image_slider_init();

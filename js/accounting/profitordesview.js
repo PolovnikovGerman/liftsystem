@@ -556,6 +556,7 @@ function add_leadorder(brand) {
                     initBillOrderAutocomplete();
                 }
             }
+            setTimeout(leadordernewitem, 500);
         } else {
             show_error(response);
         }

@@ -1,12 +1,14 @@
 <?php $numpp=0;?>
-<?php foreach ($imgoptions as $imgoption) { ?>
+<?php foreach ($colors as $color) { ?>
     <?php if ($numpp%2==0) { ?>
         <div class="content-row">
     <?php } ?>
-    <div class="itemoptionimagesrc">
-        <img class="img-responsive" src="<?=$imgoption['item_img_name']?>"/>
-    </div>
-    <div class="itemoptionimagelabel"><?=$imgoption['item_img_label']?></div>
+   <?php if ($item['option_images']==1) { ?>
+        <div class="itemoptionimagesrc">
+            <img class="img-responsive" src="<?=$color['item_color_image']?>"/>
+        </div>
+    <?php } ?>
+    <div class="itemoptionimagelabel"><?=$color['item_color']?></div>
     <?php $numpp++;?>
     <?php if ($numpp%2==0) { ?>
         </div>

@@ -2517,14 +2517,14 @@ Class Printshop_model extends MY_Model
     }
 
     public function get_invenory_level($printshop_income_id) {
-        $this->db->select('oa.printshop_color_id, oa.printshop_date, oa.shipped, oa.kepted, oa.misprint');
+        $this->db->select('oa.inventory_color_id as printshop_color_id, oa.printshop_date, oa.shipped, oa.kepted, oa.misprint');
         $this->db->from('ts_order_amounts oa');
         $this->db->where('oa.amount_id', $printshop_income_id);
         $amtdata=$this->db->get()->row_array();
         // Get Prv
-        $this->db->select('sum(v.instock_amnt) as total');
-        $this->db->from('v_printshop_instock v');
-        $this->db->where('v.printshop_color_id', $amtdata['printshop_color_id']);
+        $this->db->select('sum(v.instock_qty) as total');
+        $this->db->from('v_inventory_instock v');
+        $this->db->where('v.color_id', $amtdata['printshop_color_id']);
         $this->db->where('v.instock_date < ', $amtdata['printshop_date']);
         $strockres=$this->db->get()->row_array();
         $instock=intval($strockres['total']);

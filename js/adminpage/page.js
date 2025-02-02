@@ -28,6 +28,8 @@ $(document).ready(function () {
     $(".brandmenuitem").find('div.brandmenuicon').hover(
         function () {
             $(".brandsubmenu[data-brand='SB']").hide();
+            $(".brandsubmenu[data-brand='SR']").hide();
+            $(".brandsubmenu[data-brand='SG']").hide();
             var dataid = $(this).data('item');
             var position = $(this).position();
             var brand = $(this).data('brand');
@@ -43,7 +45,6 @@ $(document).ready(function () {
                     show_error(response);
                 }
             },'json');
-
         },
         function () {
             // $(".brandsubmenu[data-brand='SB']").hide();
@@ -90,7 +91,7 @@ $(document).ready(function () {
             var url='/welcome/brandshow';
             $.post(url, params, function (response) {
                 if (response.errors=='') {
-                    window.location.href='/';
+                    window.location.href=response.data.url;
                 } else {
                     show_error(response);
                 }
@@ -210,6 +211,8 @@ $(document).ready(function () {
     // Create timer
     timerId = setTimeout('ordertotalsparse()', timeLapse);
     jQuery.balloon.init();
+    // Init Header Totals
+    init_totalinfo_content();
 });
 
 function init_submenu(brand) {
@@ -308,7 +311,7 @@ function matchStart(params, data) {
     // `data.text` is the text that is displayed for the data object
     if (data.text.toUpperCase().indexOf(params.term.toUpperCase()) > -1) {
         var modifiedData = $.extend({}, data, true);
-        modifiedData.text += ' (matched)';
+        // modifiedData.text += ' (matched)';
 
         // You can return modified objects from here
         // This includes matching the `children` how you want in nested data sets
@@ -397,4 +400,34 @@ function liftsite_inventory(item) {
 
 function initAutocomplete() {
 
+}
+
+/* Scroll to previous week results */
+function init_totalinfo_content() {
+    $(".totalsalesprev.active").unbind('click').click(function (){
+        var params=new Array();
+        params.push({name: 'weekdate', value: $(this).data('week')});
+        var url = '/welcome/salestotals';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".period_analitic_info").empty().html(response.data.content);
+                init_totalinfo_content();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".totalsalesnext.active").unbind('click').click(function (){
+        var params=new Array();
+        params.push({name: 'weekdate', value: $(this).data('week')});
+        var url = '/welcome/salestotals';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".period_analitic_info").empty().html(response.data.content);
+                init_totalinfo_content();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }

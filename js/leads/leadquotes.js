@@ -59,7 +59,7 @@ function pageLeadQuotesCallback(page_index) {
 
 function init_leadquotes_list() {
     // Search
-    $("#leadquotessearch").keypress(function(event){
+    $("#leadquotessearch").unbind('keypress').keypress(function(event){
         if (event.which == 13) {
             search_leadquotes();
         }

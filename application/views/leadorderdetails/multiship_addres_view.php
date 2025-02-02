@@ -65,6 +65,10 @@
                 <div class="dataarea">
                     <input type="text" class="salestaxcost input_border_black" value="<?= $shipadr['sales_tax'] == 0 ? '' : MoneyOutput($shipadr['sales_tax']) ?>" readonly="readonly"/>
                 </div>
+                <div class="labelarrival">Arrival Date:</div>
+                <div class="dataarea">
+                    <input type="text" class="salesarrivedate input_border_black " value="<?=empty($shipadr['arrive_date']) ? '' : date('m/d/Y', $shipadr['arrive_date'])?>"  readonly="readonly"/>
+                </div>
             </div>
         </div>
     </div>

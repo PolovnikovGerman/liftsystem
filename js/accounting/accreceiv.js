@@ -28,8 +28,9 @@ function init_accreceive_totals() {
     var params = new Array();
     params.push({name: 'brand', value: $("#accreceivebrand").val()});
     params.push({name: 'period', value: $(".accreceiv-period-select").val()});
+    params.push({name: 'ownsort1', value: $("#accreciveownsort").val()});
+    params.push({name: 'ownsort2', value: $("#accreciveownsort2").val()});
     var url = '/accounting/accountreceiv_totals';
-
     $.post(url, params, function (response) {
         if (response.errors=='') {
             $(".accreceiv-totals").empty().html(response.data.content);
@@ -45,8 +46,9 @@ function init_accreceive_details() {
     var maxwidth = parseInt(window.innerWidth);
     params.push({name: 'brand', value: $("#accreceivebrand").val()});
     params.push({name: 'period', value: $(".accreceiv-period-select").val()});
-    params.push({name: 'ownsort', value: $("#accreciveownsort").val()});
-    params.push({name: 'owndirec', value: $("#accreciveowndir").val()});
+    params.push({name: 'ownsort1', value: $("#accreciveownsort").val()});
+    // params.push({name: 'owndirec', value: $("#accreciveowndir").val()});
+    params.push({name: 'ownsort2', value: $("#accreciveownsort2").val()});
     params.push({name: 'refundsort', value: $("#accreceiverefundsort").val()});
     params.push({name: 'refunddirec', value: $("#accreceiverefunddir").val()});
     params.push({name: 'maxwidth', value: maxwidth});
@@ -86,6 +88,45 @@ function init_accreceive_content() {
         var order = $(this).data('order');
         var callpage = 'accrecive';
         var brand = $("#accreceivebrand").val();
+        var url="/leadorder/leadorder_change";
+        var params = new Array();
+        params.push({name: 'order', value: order});
+        params.push({name: 'page', value: callpage});
+        params.push({name: 'edit', value: 0});
+        params.push({name: 'brand', value: brand});
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("#artModalLabel").empty().html(response.data.header);
+                $("#artModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artModal").find('div.modal-dialog').css('width','1004px');
+                $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
+                $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
+                if (parseInt(order)==0) {
+                    init_onlineleadorder_edit();
+                    if (parseInt($("#ordermapuse").val())==1) {
+                        // Init simple Shipping address
+                        initShipOrderAutocomplete();
+                        if ($("#billorder_line1").length > 0) {
+                            initBillOrderAutocomplete();
+                        }
+                    }
+                } else {
+                    if (parseInt(response.data.cancelorder)===1) {
+                        $("#artModal").find('div.modal-header').addClass('cancelorder');
+                    } else {
+                        $("#artModal").find('div.modal-header').removeClass('cancelorder');
+                    }
+                    navigation_init();
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+    $(".accreceiv-owndetails-bodyordersigma").unbind('click').click(function () {
+        var order = $(this).data('order');
+        var callpage = 'accrecive';
+        var brand = $(this).data('brand');
         var url="/leadorder/leadorder_change";
         var params = new Array();
         params.push({name: 'order', value: order});
@@ -161,35 +202,186 @@ function init_accreceive_content() {
             }
         },'json');
     })
-    // Sorting own
-    $(".ownsort").unbind('click').click(function () {
-        var newsort = $(this).data('sort');
-        var oldsort = $("#accreciveownsort").val();
-        var newdir = 'desc';
-        if (newsort==oldsort) {
-            var olddir = $("#accreciveowndir").val();
-            if (olddir=='desc') {
-                newdir='asc';
+    $(".accreceiv-refunddetails-bodyordersigma").unbind('click').click(function () {
+        var order = $(this).data('order');
+        var callpage = 'accrecive';
+        var brand = $(this).data('brand');
+        var url="/leadorder/leadorder_change";
+        var params = new Array();
+        params.push({name: 'order', value: order});
+        params.push({name: 'page', value: callpage});
+        params.push({name: 'edit', value: 0});
+        params.push({name: 'brand', value: brand});
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("#artModalLabel").empty().html(response.data.header);
+                $("#artModal").find('div.modal-body').empty().html(response.data.content);
+                $("#artModal").find('div.modal-dialog').css('width','1004px');
+                $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
+                $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
+                if (parseInt(order)==0) {
+                    init_onlineleadorder_edit();
+                    if (parseInt($("#ordermapuse").val())==1) {
+                        // Init simple Shipping address
+                        initShipOrderAutocomplete();
+                        if ($("#billorder_line1").length > 0) {
+                            initBillOrderAutocomplete();
+                        }
+                    }
+                } else {
+                    if (parseInt(response.data.cancelorder)===1) {
+                        $("#artModal").find('div.modal-header').addClass('cancelorder');
+                    } else {
+                        $("#artModal").find('div.modal-header').removeClass('cancelorder');
+                    }
+                    navigation_init();
+                }
+            } else {
+                show_error(response);
             }
-        }
-        $("#accreciveownsort").val(newsort);
-        $("#accreciveowndir").val(newdir);
-        init_accreceive_details();
-    });
-    // Sorting refund
-    $(".refundsort").unbind('click').click(function () {
-        var newsort = $(this).data('sort');
-        var oldsort = $("#accreceiverefundsort").val();
-        var newdir = 'desc';
-        if (newsort==oldsort) {
-            var olddir = $("#accreceiverefunddir").val();
-            if (olddir=='desc') {
-                newdir='asc';
-            }
-        }
-        $("#accreceiverefundsort").val(newsort);
-        $("#accreceiverefunddir").val(newdir);
-        init_accreceive_details();
+        },'json');
     })
-    
+    // Sorting own
+    // $(".ownsort").unbind('click').click(function () {
+    //     var newsort = $(this).data('sort');
+    //     var oldsort = $("#accreciveownsort").val();
+    //     var newdir = 'asc';
+    //     if (newsort==oldsort) {
+    //         var olddir = $("#accreciveowndir").val();
+    //         if (olddir=='asc') {
+    //             newdir='desc';
+    //         }
+    //     }
+    //     $("#accreciveownsort").val(newsort);
+    //     $("#accreciveowndir").val(newdir);
+    //     init_accreceive_details();
+    // });
+    // Sorting refund
+    // $(".refundsort").unbind('click').click(function () {
+    //     var newsort = $(this).data('sort');
+    //     var oldsort = $("#accreceiverefundsort").val();
+    //     var newdir = 'asc';
+    //     if (newsort==oldsort) {
+    //         var olddir = $("#accreceiverefunddir").val();
+    //         if (olddir=='asc') {
+    //             newdir='desc';
+    //         }
+    //     }
+    //     $("#accreceiverefundsort").val(newsort);
+    //     $("#accreceiverefunddir").val(newdir);
+    //     init_accreceive_details();
+    // })
+    // Change Status
+    // $("select.debtstatus").unbind('change').change(function (){
+    //     var newval = $(this).val();
+    //     var order = $(this).data('order');
+    //     var params = new Array();
+    //     params.push({name: 'order_id', value: order});
+    //     params.push({name: 'debt_status', value: newval});
+    //     var url = '/accounting/debtstatus';
+    //     $.post(url, params, function (response){
+    //         if (response.errors=='') {
+    //             if (newval=='') {
+    //                 $("select.debtstatus[data-order='"+order+"']").removeClass('checked');
+    //             } else {
+    //                 $("select.debtstatus[data-order='"+order+"']").addClass('checked');
+    //             }
+    //         } else {
+    //             show_error(response);
+    //         }
+    //     },'json');
+    // });
+    $(".accreceiv-exportbtn").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'brand', value: $("#accreceivebrand").val()});
+        params.push({name: 'period', value: $(".accreceiv-period-select").val()});
+        params.push({name: 'ownsort1', value: $("#accreciveownsort").val()});
+        params.push({name: 'ownsort2', value: $("#accreciveownsort2").val()});
+        params.push({name: 'refundsort', value: $("#accreceiverefundsort").val()});
+        params.push({name: 'refunddirec', value: $("#accreceiverefunddir").val()});
+        params.push({name: 'exporttype', value: 'O'});
+        var url = '/accounting/accowed_export';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                window.open(response.data.url,'ownexport');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".totalrefund-exportbtn").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'brand', value: $("#accreceivebrand").val()});
+        params.push({name: 'period', value: $(".accreceiv-period-select").val()});
+        params.push({name: 'ownsort1', value: $("#accreciveownsort").val()});
+        params.push({name: 'ownsort2', value: $("#accreciveownsort2").val()});
+        params.push({name: 'refundsort', value: $("#accreceiverefundsort").val()});
+        params.push({name: 'refunddirec', value: $("#accreceiverefunddir").val()});
+        params.push({name: 'exporttype', value: 'R'});
+        var url = '/accounting/accowed_export';
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                window.open(response.data.url, 'ownexport');
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    // // Change Sort fow Owed
+    // $(".ownsortselect").unbind('change').change(function (){
+    //     var sort = $(this).data('sort');
+    //     var newsort = $(this).val();
+    //     if (sort=='ownsort1') {
+    //         $("#accreciveownsort").val(newsort);
+    //     } else if (sort=='ownsort2') {
+    //         $("#accreciveownsort2").val(newsort);
+    //     }
+    //     init_accreceive_details();
+    // });
+    $(".accreceiv-statusbtn").unbind('click').click(function (){
+        var order = $(this).data('order');
+        edit_ownstatus(order);
+    });
+}
+
+function edit_ownstatus(order) {
+    var params = new Array();
+    params.push({name: 'order', value: order});
+    var url = '/accounting/accown_showstatus';
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $("#loader").show();
+            $("#loaderimg").hide();
+            $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty().html(response.data.content);
+            $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").show();
+            init_accstatus_edit(order);
+        }
+    },'json');
+}
+
+function init_accstatus_edit(order) {
+    $(".debtstatuscancel").unbind('click').click(function (){
+        $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty();
+        $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").hide();
+        $("#loaderimg").show();
+        $("#loader").hide();
+    });
+    $(".debtstatussave").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'order_id', value: order});
+        params.push({name: 'debt_status', value: $("input.debtstatusinpt[data-order='"+order+"']").val()});
+        var url = '/accounting/debtstatus';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty();
+                $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").hide();
+                $("#loaderimg").show();
+                $("#loader").hide();
+                $(".accreceiv-owndetails-bodystatus[data-order='"+order+"']").empty().html(response.data.content);
+                init_accreceive_content();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }

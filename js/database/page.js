@@ -23,6 +23,7 @@ $(document).ready(function(){
 
 
 function init_page(objid) {
+    console.log('Obj '+objid);
     $(".dbcontentarea").hide();
     $(".maincontentmenu_item").removeClass('active');
     $(".maincontentmenu_item[data-link='"+objid+"']").addClass('active');
@@ -121,6 +122,7 @@ function init_page(objid) {
             break;
         case 'srsettings':
             $("#settingsview").show();
+            init_shipping('SR');
             break;
     }
 }

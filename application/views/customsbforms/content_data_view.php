@@ -1,7 +1,12 @@
 <?php $numpp=0;?>
 <div class="customform_tabledat">
+<?php $curdate = '';?>
+<?php $curweek = $data[0]['weeknum'];?>
 <?php foreach ($data as $dat) { ?>
-    <div class="content-row <?=$numpp%2==0 ? 'greydatarow' : 'whitedatarow'?>" data-form="<?=$dat['custom_quote_id']?>">
+    <div class="content-row <?=$numpp%2==0 ? 'greydatarow' : 'whitedatarow'?> <?=$dat['weeknum']==$curweek ? '' : 'underlined'?>" data-form="<?=$dat['custom_quote_id']?>">
+        <?php if ($curweek!==$dat['weeknum']) { ?>
+            <?php $curweek = $dat['weeknum'];?>
+        <?php } ?>
         <div class="numrec showformdetails"><?=$dat['numpp']?></div>
         <div class="numinorder showformdetails"><?=$dat['numorder']?></div>
         <div class="websys <?=$dat['active']==1 ? 'active' : 'removed'?>" data-form="<?=$dat['custom_quote_id']?>">
@@ -19,7 +24,7 @@
                 L<?=$dat['lead_number']?>
             <?php } ?>
         </div>
-        <div class="date  showformdetails"><?=date('m/d/y', strtotime($dat['date_add']))?></div>
+        <div class="date  showformdetails"><?=date('m/d/y', strtotime($dat['date_add']))==$curdate ? '&mdash;' : date('m/d/y', strtotime($dat['date_add']))?></div>
         <div class="customname  showformdetails"><?=$dat['customer_name']?></div>
         <div class="custommail showformdetails"><?=$dat['customer_email']?></div>
         <div class="customphone showformdetails"><?=$dat['customer_phone']?></div>
@@ -30,5 +35,6 @@
         <div class="eventdate showformdetails <?=$expand==1 ? 'expand' : ''?>"><?=$dat['event_date']?></div>
     </div>
     <?php $numpp++?>
+    <?php $curdate = date('m/d/y', strtotime($dat['date_add']))?>
 <?php } ?>
 </div>

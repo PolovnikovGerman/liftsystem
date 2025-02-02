@@ -6,6 +6,9 @@ function init_searchtime_content() {
     $("#timesearchmonth").unbind('click').click(function(){
         show_timesearchthismonth();
     })
+    $("#timesearchyear").unbind('click').click(function(){
+        show_timesearchyear();
+    });
     $("#timesearchcustom").unbind('click').click(function(){
         timesearch_customrange();
     })
@@ -143,6 +146,24 @@ function show_timesearchweek() {
     }, 'json');
 }
 
+function show_timesearchyear() {
+    $("#datarangeview").css('visibility','hidden');
+    var url='/marketing/searchtimedata';
+    var params = new Array();
+    params.push({name: 'period', value: 'year'});
+    params.push({name: 'brand', value: $("#searchtimebrand").val()});
+    $("#loader").show();
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#timesearchresultcontent").empty().html(response.data.content);
+            $("#loader").hide();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    }, 'json');
+
+}
 // function show_alltime() {
 //     $("#f_btn1").attr("disabled",'disabled');
 //     $("#f_btn2").attr('disabled','disabled');

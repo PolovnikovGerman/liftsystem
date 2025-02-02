@@ -1,4 +1,4 @@
-<div class="taxlabel">NJ 7% Tax</div>
+<div class="taxlabel">NJ <?=$this->config->item('outsalestax')?>% Tax</div>
 <div class="taxexcept">
     <input type="checkbox" class="excepttax"  <?=($tax_exempt==1 ? 'checked="checked"' : '')?> data-shipadr="<?=$order_shipaddr_id?>"/>
     Exempt

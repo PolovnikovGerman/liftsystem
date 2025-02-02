@@ -2365,6 +2365,13 @@ Class Leads_model extends MY_Model
         return $out;
     }
 
+    public function update_lead($lead_id)
+    {
+        $this->db->where('lead_id', $lead_id);
+        $this->db->set('update_date', date('Y-m-d H:i:s'));
+        $this->db->update('ts_leads');
+    }
+
 
 }
 /* End of file leads_model.php */
