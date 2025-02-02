@@ -29,7 +29,7 @@
         </div>
         <div class="currentcalend open">
             <div class="current-title">
-                <h4>ON TIME ORDERS:</h4>
+                <h4>ALL ORDERS:</h4>
                 <div class="current-summary">
                     <span id="printschcurrentprints"><?=$new_prints?></span> prints,
                     <span id="printschcurrentitems"><?=$new_items?></span> items,
