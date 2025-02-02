@@ -55,7 +55,8 @@ class Printscheduler_model extends MY_Model
 
         $this->db->select('count(o.order_id) as cntorder');
         $this->db->from('ts_orders o');
-        $this->db->where('o.print_date >= ', $curdate);
+        // $this->db->where('o.print_date >= ', $curdate);
+        $this->db->where('o.print_date > ', 0);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date',0);
         if ($brand !== 'ALL') {
@@ -68,7 +69,8 @@ class Printscheduler_model extends MY_Model
         $neworderres = $this->db->get()->row_array();
 
         $this->db->select('sum(oi.item_qty) as totalitems')->from('ts_order_items oi')->join('ts_orders o','oi.order_id=o.order_id');
-        $this->db->where('o.print_date >= ', $curdate);
+        // $this->db->where('o.print_date >= ', $curdate);
+        $this->db->where('o.print_date > ', 0);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date',0);
         if ($brand !== 'ALL') {
@@ -82,7 +84,8 @@ class Printscheduler_model extends MY_Model
 
         $this->db->select('sum(imp.imprint_qty) as totalimpr')->from('ts_order_imprints imp')->join('ts_order_items oi','imp.order_item_id=oi.order_item_id')->join('ts_orders o','o.order_id=oi.order_id');
         $this->db->where('imp.imprint_item',1);
-        $this->db->where('o.print_date >= ', $curdate);
+        // $this->db->where('o.print_date >= ', $curdate);
+        $this->db->where('o.print_date > ', 0);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date',0);
         if ($brand !== 'ALL') {
@@ -160,7 +163,8 @@ class Printscheduler_model extends MY_Model
         $this->db->join('ts_order_items oi','oi.order_id=o.order_id');
         $this->db->join('ts_order_itemcolors toi','toi.order_item_id=oi.order_item_id');
         $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
-        $this->db->where('o.print_date >= ', $curdate);
+        // $this->db->where('o.print_date >= ', $curdate);
+        $this->db->where('o.print_date > ', 0);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date', 0);
         if ($brand !== 'ALL') {
@@ -228,7 +232,8 @@ class Printscheduler_model extends MY_Model
         if ($pastorder==1) {
             $this->db->where('o.print_date < ', $curdate);
         } else {
-            $this->db->where('o.print_date >= ', $curdate);
+            // $this->db->where('o.print_date >= ', $curdate);
+            $this->db->where('o.print_date > ', 0);
         }
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date', 0);

@@ -137,16 +137,20 @@
 .pastdue-table {
     width: 546px;
 }
-.pdo-table-header {
+.pdo-table-header > div {
     background: #dbdbdb;
     font-size: 11px!important;
     margin-bottom: 3px!important;
-    font-weight: bold;
+    /* font-weight: bold; */
+    height: 18px!important;
+    line-height: 18px!important;
     text-align: center;
+    font-weight: normal!important;
+    color: #333!important;
 }
 .pdo-table-header .pdo-table-td-order {
-    color: #000;
-    font-size: 11px;
+    /*color: #000;*/
+    /*font-size: 11px;*/
 }
 .pdo-table-tr {
     width: 546px;
@@ -440,16 +444,20 @@
     width: 546px;
     margin-top: 8px;
 }
-.itm-table-header {
+.itm-table-header > div {
     background: #dbdbdb;
     font-size: 11px!important;
     margin-bottom: 3px!important;
-    font-weight: bold;
+    /* font-weight: bold; */
     text-align: center;
+    height: 18px!important;
+    line-height: 18px!important;
+    color: #333!important;
+    font-weight: normal!important;
 }
 .itm-table-header .itm-table-td-order {
-    color: #000;
-    font-size: 11px;
+    /*color: #000;*/
+    /*font-size: 11px;*/
 }
 .itm-table-tr {
     width: 546px;
@@ -709,13 +717,15 @@
     /* border-left: none; */
     margin-top: -2px;
 }
-.stock-table-header {
+.stock-table-header > div {
     background: #5e5d5d;
     color: #fff;
     font-size: 11px !important;
     margin-bottom: 3px !important;
-    font-weight: bold;
+    font-weight: normal!important;
     text-align: center;
+    height: 18px!important;
+    line-height: 18px!important;
 }
 .stock-table-td-move {
     width: 12px;
@@ -802,13 +812,15 @@
     border-top: none;
     margin-top: -2px;
 }
-.plates-table-header {
+.plates-table-header > div {
     background: #5e5d5d;
     color: #fff;
     font-size: 11px !important;
     margin-bottom: 3px !important;
-    font-weight: bold;
+    font-weight: normal!important;
     text-align: center;
+    height: 18px!important;
+    line-height: 18px!important;
 }
 .plates-table-td-move {
     width: 12px;
@@ -1005,8 +1017,9 @@
     color: #000;
     font-size: 11px !important;
     line-height: 18px!important;
+    height: 18px !important;
     margin-bottom: 3px !important;
-    font-weight: bold;
+    font-weight: normal!important;
     text-align: center;
 }
 .rpbox-table-td-move {
@@ -1115,6 +1128,7 @@
     font-size: 11px;
     position: relative;
     left: -3px;
+    font-weight: normal!important;
 }
 .rpbox-table-td-print {
     position: relative;
@@ -1355,13 +1369,14 @@
     margin-top: -2px;
     border-top: none;
 }
-.rsbox-table-header {
+.rsbox-table-header > div {
     background: #7fa9d2;
     color: #000;
     font-size: 11px !important;
+    height: 18px !important;
     line-height: 18px!important;
     margin-bottom: 3px !important;
-    font-weight: bold;
+    font-weight: normal!important;
     text-align: center;
 }
 .rsbox-table-td-move {
