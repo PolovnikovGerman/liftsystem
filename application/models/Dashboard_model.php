@@ -14,6 +14,7 @@ Class Dashboard_model extends MY_Model
                 'conversions' => 45,
                 'sales' => 16,
                 'revenue' => 5448,
+                'reviews' => 450,
             ];
             $label = date('l, F j, Y');
         } else {
@@ -61,19 +62,14 @@ Class Dashboard_model extends MY_Model
             $this->db->where('is_canceled',0);
             $res = $this->db->get()->row_array();
             $visitors = 0;
+            $reviews = 0;
             if ($this->config->item('test_server')==1) {
                 $dates['end_week'] = strtotime('05/18/2024');
                 $dates['start_week'] = strtotime('05/11/2024');
                 $visitors = ceil(rand(15000, 35000));
+                $reviews = ceil(rand(120, 350));
             }
             $leads = $this->db->select('count(lead_id) as leadcnt')->from('ts_leads')->where('unix_timestamp(update_date) >= ', $dates['start_week'])->where('unix_timestamp(update_date) < ', $dates['end_week'])->get()->row_array();
-//            if ($res['cnt']==0) {
-//                $options = [
-//                    'conversions' => 204,
-//                    'sales' => 0,
-//                    'revenue' => 0,
-//                ];
-//            } else {
                 $options = [
                     'conversions' => 204,
                     'sales' => $res['cnt'],
@@ -88,6 +84,7 @@ Class Dashboard_model extends MY_Model
                     'next_navig' => $nxtnavig,
                     'leads' => $leads['leadcnt'],
                     'visitors' => $visitors,
+                    'reviews' => $reviews,
                 ];
 //            }
         }
