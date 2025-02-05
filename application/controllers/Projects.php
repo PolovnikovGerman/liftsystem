@@ -9,7 +9,8 @@ class Projects extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink);
+        $brand = $this->menuitems_model->get_current_brand();
+        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink,0, $brand);
         if ($pagedat['result'] == $this->error_result) {
             show_404();
         }
@@ -28,16 +29,23 @@ class Projects extends MY_Controller
     public function index() {
         $head = [];
         $head['styles'] = $head['scripts'] = [];
-        $head['title'] = 'Accounting';
-        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink);
+        $head['title'] = 'Projects';
+        $brand = $this->menuitems_model->get_current_brand();
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
 
         $content_options = [];
+        $content_options['start'] = $this->input->get('start', TRUE);
         foreach ($menu as $row) {
-
+            if ($row['item_link']=='#projectsview') {
+                // $head['styles'][] = array('style' => '/css/projects/projects.css');
+                // $head['scripts'][] = array('src' => '/js/projects/projects.js');
+                $content_options['projectsview'] = $this->_prepare_projects_view();
+            }
         }
         $content_options['menu'] = $menu;
-        $content_view = '';
         // Add main page management
+        $head['scripts'][] = array('src' => '/js/projects/page.js');
+        $head['styles'][] = array('style' => '/css/projects/page.css');
 
         $options = [
             'title' => $head['title'],
@@ -46,11 +54,24 @@ class Projects extends MY_Controller
             'activelnk' => $this->pagelink,
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
+            'brand' => $brand,
         ];
 
         $dat = $this->template->prepare_pagecontent($options);
+        $content_options['left_menu'] = $dat['left_menu'];
+        $content_options['brand'] = $brand;
+        $content_view = $this->load->view('projects/page_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $this->load->view('page/page_template_view', $dat);
+    }
 
+    private function _prepare_projects_view() {
+        $options = [
+            'liftlink' => getenv('LIFTTEST'),
+            'bluelink' => getenv('BLUETRACKTEST'),
+            'relivlink' => getenv('RELIVERSTEST'),
+        ];
+        $content = $this->load->view('projects/projects_view', $options, TRUE);
+        return $content;
     }
 }

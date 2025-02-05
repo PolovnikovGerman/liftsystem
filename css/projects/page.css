@@ -1,0 +1,60 @@
+/*-------------------- LIFT Test sites 2 ---------------------*/
+.buttons-testsites {
+    margin-top: 15px;
+    margin-left: 15px;
+}
+.buttons-testsites p {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+.ts-button {
+    width: 324px;
+    height: 92px;
+    margin-right: 25px;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+.ts-button:last-child {
+    margin-right: 0;
+}
+.logo-company {
+    position: relative;
+    margin: 7px 16px;
+}
+.logo-company img {
+    width: 286px;
+    height: auto;
+}
+img.bluetrackcompany {
+    position: relative;
+    top: -12px;
+    width: 174px;
+    height: auto;
+}
+.ts-button.stressballsbluetrack {
+    background: #0000ff;
+}
+.ts-button.stressrelievers {
+    background: #fff600;
+}
+.ts-button.stressballs {
+    background: #00167b;
+}
+.ts-button.lift {
+    background: linear-gradient(-78deg, #fff600 53%, #0000ff 47%);
+}
+.logo-lift {
+    width: 286px;
+    text-align: center;
+    font-size: 54px;
+    font-weight: bold;
+    font-style: italic;
+    color: #fff;
+    letter-spacing: 5px;
+    line-height: 82px;
+}
+.logo-lift span {
+    color: #000;
+}
