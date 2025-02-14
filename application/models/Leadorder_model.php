@@ -11410,96 +11410,27 @@ Class Leadorder_model extends My_Model {
 
     public function leadorders_list($options)
     {
-        $item_dbtable='sb_items';
-        $this->db->select('i.order_id, group_concat(toi.item_description) as itemdescr');
-        $this->db->from('ts_order_items i');
-        $this->db->join('ts_order_itemcolors toi','i.order_item_id = toi.order_item_id');
-        $this->db->group_by('i.order_id');
-        $itemdatesql = $this->db->get_compiled_select();
-
-//        $this->db->select('order_id, count(amount_id) as cnt'); // , sum(amount_sum) as cnt_amnt
-//        $this->db->from('ts_order_amounts');
-//        $this->db->where('amount_sum  > ',0);
-//        $this->db->group_by('order_id');
-//        $amountsql = $this->db->get_compiled_select();
-
-        $this->db->select('i.order_id, group_concat(distinct(c.item_color)) as item_color');
-        $this->db->from('ts_order_items i');
-        $this->db->join('ts_order_itemcolors c','c.order_item_id=i.order_item_id');
-        $this->db->group_by('i.order_id');
-        $colorsql = $this->db->get_compiled_select();
-
-        $this->db->select('s.order_id, count(p.order_shippack_id) as cnt');
-        $this->db->from('ts_order_shippacks p');
-        $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
-        $this->db->group_by('s.order_id');
-        $totalpack = $this->db->get_compiled_select();
-
-//        $this->db->select('s.order_id, count(p.order_shippack_id) as cnt, max(s.arrive_date) as delivdate, max(p.send_date) as packsenddate');
-//        $this->db->select('max(p.track_date) as packtrackdate');
-//        $this->db->from('ts_order_shippacks p');
-//        $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
-//        $this->db->where("coalesce(p.track_code,'') != ''");
-//        $this->db->group_by('s.order_id');
-//        $sendpack = $this->db->get_compiled_select();
-
-//        $this->db->select('s.order_id, count(p.order_shippack_id) as cnt');
-//        $this->db->from('ts_order_shippacks p');
-//        $this->db->join('ts_order_shipaddres s','s.order_shipaddr_id=p.order_shipaddr_id');
-//        $this->db->where('p.delivered',1);
-//        $this->db->group_by('s.order_id');
-//        $delivpack = $this->db->get_compiled_select();
-
-        $this->db->select('order_id, count(batch_id) batchcnt, sum(batch_amount) batchsum');
-        $this->db->from('ts_order_batches');
-        $this->db->where('batch_term',0);
-        $this->db->group_by('order_id');
-        $balancesql = $this->db->get_compiled_select();
-
-        // Traking results
-        $this->db->select('o.order_id, count(t.tracking_id) as trackcnt, sum(t.qty) as trackqty');
-        $this->db->from('ts_orders o');
-        $this->db->join('ts_order_items toi', 'o.order_id = toi.order_id');
-        $this->db->join('ts_order_itemcolors itemcolor', 'toi.order_item_id = itemcolor.order_item_id');
-        $this->db->join('ts_order_trackings t', 't.order_itemcolor_id=itemcolor.order_itemcolor_id');
-        $this->db->where('t.trackcode != ','');
-        $this->db->group_by('o.order_id');
-        $tracksql = $this->db->get_compiled_select();
-
+        $starttime = microtime(true);
         $this->db->select('o.order_id, o.create_usr, o.order_date, o.brand_id, o.order_num, o.customer_name');
         $this->db->select('o.customer_email, o.revenue, o.shipping, o.is_shipping, o.tax, o.cc_fee, o.order_cog');
         $this->db->select('o.profit, o.profit_perc, o.is_canceled, o.reason,  o.item_id, o.invoice_doc, o.invoice_send');
         $this->db->select('o.order_confirmation, o.order_items, o.order_usr_repic, o.weborder, o.order_qty, o.shipdate as ord_ship');
         $this->db->select('o.is_invoiced, o.order_system, o.order_arthide, o.order_itemnumber, o.deliverydate');
-        $this->db->select('colordat.item_color as itemcolor'); // oa.cnt as cnt_amnt,
-        // ART Stages
+        $this->db->select('orderitems_colors(o.order_id) as itemcolor');
         $this->db->select('o.order_art, o.order_redrawn, o.order_proofed, o.order_vectorized, o.order_approved, o.is_canceled');
-        $this->db->select('itm.item_name, itm.item_number');
-
+        $this->db->select('order_artstage(o.order_id) as artstage');
+        // $this->db->select('itm.item_name, itm.item_number');
         $this->db->select('u.user_leadname, u.user_name, bil.customer_ponum');
-        $this->db->select('coalesce(st.item_id, 0) as stok_item', FALSE);
-//        $this->db->select('vo.order_proj_status as artstage');
+        // , coalesce(st.item_id, 0) as stok_item');
         $this->db->select('s.order_shipping_id, s.shipdate');
-//        $this->db->select('totalpack.cnt as totalpacks, sendpack.cnt as sendpacks, sendpack.delivdate, sendpack.packsenddate');
-//        $this->db->select('sendpack.packtrackdate, delivpack.cnt as delivpacks');
-        $this->db->select('p.batchcnt, p.batchsum, coalesce(o.revenue,0) - coalesce(p.batchsum,0) as balance ');
-        $this->db->select('totalpack.cnt as totalpacks, track.trackcnt, track.trackqty');
+        $this->db->select('orderbatch_qty(o.order_id) as batchcnt, orderbatch_total(o.order_id) as batchsum');
+        $this->db->select('order_totalpack(o.order_id) as totalpacks, order_shippack_count(o.order_id) as trackcnt, order_shippack_qty(o.order_id) as trackqty');
         $this->db->from('ts_orders o');
-        $this->db->join("{$item_dbtable} as itm",'itm.item_id=o.item_id ','left');
+        // $this->db->join("sb_items as itm",'itm.item_id=o.item_id ','left');
         $this->db->join('users u','u.user_id=o.order_usr_repic','left');
         $this->db->join('ts_stock_items st','st.item_id=o.item_id','left');
         $this->db->join('ts_order_billings bil','bil.order_id=o.order_id');
         $this->db->join('ts_order_shippings s','s.order_id=o.order_id');
-//        $this->db->join("({$amountsql}) oa",'oa.order_id=o.order_id','left');
-        $this->db->join("({$colorsql}) as colordat",'colordat.order_id=o.order_id','left');
-        $this->db->join("({$totalpack}) as totalpack",'totalpack.order_id=o.order_id','left');
-//        $this->db->join("({$sendpack}) as sendpack",'sendpack.order_id=o.order_id','left');
-//        $this->db->join("({$delivpack}) as delivpack",'delivpack.order_id=o.order_id','left');
-        $this->db->join("({$balancesql}) as p",'p.order_id=o.order_id','left');
-        $this->db->join("({$tracksql}) as track", 'track.order_id=o.order_id','left');
-
-        // $this->db->where('o.is_canceled',0);
-//        $this->db->join('v_order_artstage vo','vo.order_id=o.order_id','left');
         if (isset($options['unassigned'])) {
             $this->db->where('o.order_usr_repic is null');
         }
@@ -11510,8 +11441,8 @@ Class Leadorder_model extends My_Model {
             $this->db->where('o.order_usr_repic',$options['order_usr_repic']);
         }
         if (isset($options['search'])) {
-            $this->db->join('('.$itemdatesql.') itemdata','itemdata.order_id=o.order_id','left');
-            $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',coalesce(o.order_confirmation,''),' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.order_items,''),' ',coalesce(o.revenue,''),' ',coalesce(bil.customer_ponum,'')))",strtoupper($options['search']));
+//            $this->db->join('('.$itemdatesql.') itemdata','itemdata.order_id=o.order_id','left');
+//            $this->db->like("ucase(concat(coalesce(o.customer_name,''),' ',coalesce(o.customer_email,''),' ',o.order_num,' ',coalesce(o.order_confirmation,''),' ',coalesce(itemdata.itemdescr,''),' ',coalesce(o.order_itemnumber,''),' ',coalesce(o.order_items,''),' ',coalesce(o.revenue,''),' ',coalesce(bil.customer_ponum,'')))",strtoupper($options['search']));
         }
         if (isset($options['begin'])) {
             $this->db->where('o.order_date >= ',$options['begin']);
@@ -11545,7 +11476,10 @@ Class Leadorder_model extends My_Model {
             }
         }
         $res=$this->db->get()->result_array();
-        /* Summary */
+        $endtime = microtime(true);
+        $exectime = $endtime - $starttime;
+        log_message('error','Query Exec Time '.$exectime);
+        // Prepare for content
         $out_array=array();
         if (isset($options['offset'])) {
             $numpp=$options['offset']+1;
@@ -11559,6 +11493,8 @@ Class Leadorder_model extends My_Model {
         $curdat='';
         $ordidx=1;
         foreach ($res as $row) {
+            $row['item_name'] = $row['item_number'] = '';
+            $row['stok_item'] = 0;
             $row['rowclass']='';
             $row['scrdate']=$row['order_date'];
             $orddate=date('m/d/y',$row['order_date']);
@@ -11576,9 +11512,7 @@ Class Leadorder_model extends My_Model {
                 $row['rowclass']='underline';
             }
             // Art Stage
-            $this->db->select('order_proj_status as artstage')->from('v_order_artstage')->where('order_id', $row['order_id']);
-            $art = $this->db->get()->row_array();
-            $artstage = ifset($art,'artstage','');
+            $artstage = $row['artstage'];
             // Convert to correct name
             if (!empty($artstage)) {
                 foreach ($this->art_statuses as $stagerow) {
@@ -11589,11 +11523,6 @@ Class Leadorder_model extends My_Model {
                 }
             }
             $row['artstage'] = $artstage;
-            // Order colors
-//            $this->db->select('group_concat(distinct(c.item_color)) as item_color')->from('ts_order_items i')->join('ts_order_itemcolors c','c.order_item_id=i.order_item_id');
-//            $this->db->where('i.order_id', $row['order_id']);
-//            $colordat = $this->db->get()->row_array();
-//            $row['itemcolor'] = ifset($colordat, 'item_color', '');
             $row['itemcolorclass']='';
             if (strlen($row['itemcolor'])>9) {
                 $row['itemcolorclass']='wide';
@@ -11643,9 +11572,6 @@ Class Leadorder_model extends My_Model {
             $row['user_replic']='&nbsp;';
             $row['usrreplclass']='user';
             if ($row['order_usr_repic']>0) {
-//                $usrdat = $this->db->select('user_leadname, user_name')->from('users')->where('user_id', $row['order_usr_repic'])->get()->row_array();
-//                $leadname = ifset($usrdat, 'user_leadname', '');
-//                $usrname = ifset($usrdat, 'user_name', '');
                 $row['user_replic']=($row['user_leadname']=='' ? $row['user_name'] : $row['user_leadname']);
             } else {
                 if ($row['weborder']==1) {
@@ -11661,26 +11587,18 @@ Class Leadorder_model extends My_Model {
                 if (substr($row['item_number'],0,2)=='23') {
                     $row['order_class'] = $this->other_class;
                 } else {
-//                    $stockdat = $this->db->select('stock_item_id')->from('ts_stock_items')->where('item_id', $row['item_id'])->get()->row_array();
-//                    $stockitem = ifset($stockdat, 'stock_item_id', '');
                     if (!empty($row['stok_item'])) {
                         $row['order_class']=$this->common_class;
                     }
                 }
             }
             // Payments
+            $row['balance'] = floatval($row['revenue']) - floatval($row['batchsum']);
             $balance_class='';
             $balance_view='-';
             if ($row['is_canceled']==1) {
             } elseif ($row['scrdate']<$this->config->item('netprofit_start')) {
             } else {
-//                $paydat = $this->db->select('count(batch_id) batchcnt, sum(batch_amount) batchsum')->from('ts_order_batches')->where(['order_id'=>$row['order_id'], 'batch_term' => 0])->get()->row_array();
-//                $batchcnt = ifset($paydat,'batchcnt',0);
-//                $balance = floatval($row['revenue']);
-//                if ($batchcnt > 0) {
-//                    $batchsum = floatval(ifset($paydat,'batchsum',0));
-//                    $balance = floatval($row['revenue']) - $batchsum;
-//                }
                 if ($row['balance'] == 0) {
                     $balance_view = 'PAID';
                     $balance_class = 'balancepaid';
@@ -11715,13 +11633,6 @@ Class Leadorder_model extends My_Model {
                 $row['order_status_perc'] = '';
             } else {
                 // Get Shipping
-//                $shipdat = $this->db->select('shipdate')->from('ts_order_shippings')->where('order_id', $row['order_id'])->get()->row_array();
-//                $row['shipdate'] = ifset($shipdat,'shipdate', 0);
-//                $this->db->select('count(t.tracking_id) as trackcnt, sum(t.qty) as trackqty')->from('ts_order_items toi')->join('ts_order_itemcolors itemcolor','toi.order_item_id = itemcolor.order_item_id');
-//                $this->db->join('ts_order_trackings t','t.order_itemcolor_id=itemcolor.order_itemcolor_id')->where('toi.order_id', $row['order_id']);
-//                $this->db->where('t.trackcode != \'\'');
-//                $trakdat = $this->db->get()->row_array();
-//                $row['trackqty'] = ifset($trakdat,'trackqty',0);
                 $statusship=$this->_leadorder_shipping_status($row);
                 $row['order_status'] = $statusship['label'];
                 $row['order_status_class'] = $statusship['class'];
@@ -11731,6 +11642,7 @@ Class Leadorder_model extends My_Model {
             $numpp++;
         }
         return $out_array;
+
     }
 
 //    public function leadorders_list($options)
