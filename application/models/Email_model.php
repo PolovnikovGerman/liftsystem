@@ -1484,10 +1484,10 @@ class Email_model extends My_Model
                     $itemcolors = get_json_param($mail['email_other_info'], 'itemcolors', []);
                     $colorstr = '';
                     foreach ($itemcolors as $itemcolor) {
-                        $colorstr.=$itemcolor.',';
+                        $colorstr.=$itemcolor.', ';
                     }
                     if (count($itemcolors)>0) {
-                        $colorstr=substr($colorstr,0,-1);
+                        $colorstr=substr($colorstr,0,-2);
                     }
                     $mail['colors'] = $colorstr;
                         // $mail['colors'] = get_json_param($mail['email_other_info'], 'colors', 0);
@@ -1542,7 +1542,8 @@ class Email_model extends My_Model
 
                     $html = $this->load->view('quote/quote_mail_dompdf_view', $mail, TRUE);
                     /* Create UNIQUE file name */
-                    $file_name = 'BLUETRACK_Quote_'.date('ymd').$mail_id.'.pdf';
+                    // $file_name = 'BLUETRACK_Quote_'.date('ymd').$mail_id.'.pdf';
+                    $file_name = 'STRESSBALLS.com_Quote_'.date('ymd').$mail_id.'.pdf';
                     $file_out = $this->config->item('quotes') . $file_name;
                     pdf_create($html, $file_out, true);
                     if (file_exists($file_out)) {
