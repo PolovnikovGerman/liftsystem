@@ -1,0 +1,70 @@
+.buttons-testsites {
+    margin-top: 15px;
+    margin-left: 15px;
+}
+.ts-button {
+    width: 324px;
+    height: 130px;
+    margin-right: 20px;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+.ts-button:last-child {
+    margin-right: 0;
+}
+.ts-button a {
+    text-decoration: none;
+    color: unset;
+}
+.ts-button p {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 7px;
+    margin-bottom: 10px;
+}
+.ts-button.lift p span {
+    color: #000;
+}
+.logo-company {
+    position: relative;
+    margin: 0 16px;
+}
+.logo-company img {
+    width: 286px;
+    height: auto;
+}
+img.bluetrackcompany {
+    position: relative;
+    top: -12px;
+    width: 174px;
+    height: auto;
+}
+.ts-button.stressballsbluetrack {
+    background: #0000ff;
+    color: #fff;
+}
+.ts-button.stressrelievers {
+    background: #fff600;
+    color: #000;
+}
+.ts-button.stressballs {
+    background: #00167b;
+    color: #fff;
+}
+.ts-button.lift {
+    background: linear-gradient(-78deg, #fff600 52%, #0000ff 48%);
+    color: #fff;
+}
+.logo-lift {
+    width: 286px;
+    text-align: center;
+    font-size: 54px;
+    font-weight: bold;
+    font-style: italic;
+    color: #fff;
+    letter-spacing: 5px;
+}
+.logo-lift span {
+    color: #000;
+}

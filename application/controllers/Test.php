@@ -4475,34 +4475,36 @@ class Test extends CI_Controller
 
     public function testquote()
     {
-        $this->load->config('uploader');
-        $pathsh = $this->config->item('itemimages_relative');
-        $pathfl = $this->config->item('itemimages');
-        $items = $this->db->select('item_id, item_number, item_name, main_image')->from('sb_items')->where(['brand' => 'BT', 'item_active' => 1])->order_by('item_number')->get()->result_array();
-        foreach ($items as $item) {
-            if (!empty($item['main_image'])) {
-                $image = str_replace($pathsh, $pathfl, $item['main_image']);
-                if (file_exists($image)) {
-                    list($width, $height) = getimagesize($image);
-                    if (round($width,-1) !== round($height,-1)) {
-                        echo 'Item # '.$item['item_number'].' '.$item['item_name'].' Main Image issue W '.$width.' H '.$height.PHP_EOL;
-                    }
-                }
-            }
-            // Get image images
-            $lists = $this->db->select('item_img_id, item_img_name, item_img_order')->from('sb_item_images')->where('item_img_item_id', $item['item_id'])->get()->result_array();
-            foreach ($lists as $list) {
-                if ($list['item_img_order'] > 1) {
-                    $image = str_replace($pathsh, $pathfl, $list['item_img_name']);
-                    if (file_exists($image)) {
-                        list($width, $height) = getimagesize($image);
-                        if (round($width,-1) !== round($height,-1)) {
-                            echo 'Item # '.$item['item_number'].' '.$item['item_name'].' Image # '.$list['item_img_order'].' issue W '.$width.' H '.$height.PHP_EOL;
-                        }
-                    }
-                }
-            }
-        }
-        echo 'That is All, folk '.PHP_EOL;
+//        $this->load->config('uploader');
+//        $pathsh = $this->config->item('itemimages_relative');
+//        $pathfl = $this->config->item('itemimages');
+//        $items = $this->db->select('item_id, item_number, item_name, main_image')->from('sb_items')->where(['brand' => 'BT', 'item_active' => 1])->order_by('item_number')->get()->result_array();
+//        foreach ($items as $item) {
+//            if (!empty($item['main_image'])) {
+//                $image = str_replace($pathsh, $pathfl, $item['main_image']);
+//                if (file_exists($image)) {
+//                    list($width, $height) = getimagesize($image);
+//                    if (round($width,-1) !== round($height,-1)) {
+//                        echo 'Item # '.$item['item_number'].' '.$item['item_name'].' Main Image issue W '.$width.' H '.$height.PHP_EOL;
+//                    }
+//                }
+//            }
+//            // Get image images
+//            $lists = $this->db->select('item_img_id, item_img_name, item_img_order')->from('sb_item_images')->where('item_img_item_id', $item['item_id'])->get()->result_array();
+//            foreach ($lists as $list) {
+//                if ($list['item_img_order'] > 1) {
+//                    $image = str_replace($pathsh, $pathfl, $list['item_img_name']);
+//                    if (file_exists($image)) {
+//                        list($width, $height) = getimagesize($image);
+//                        if (round($width,-1) !== round($height,-1)) {
+//                            echo 'Item # '.$item['item_number'].' '.$item['item_name'].' Image # '.$list['item_img_order'].' issue W '.$width.' H '.$height.PHP_EOL;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        echo 'That is All, folk '.PHP_EOL;
+        $this->load->model('email_model');
+        $this->email_model->generate_quota(26662); // 26662
     }
 }
