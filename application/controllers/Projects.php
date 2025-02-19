@@ -70,6 +70,7 @@ class Projects extends MY_Controller
             'liftlink' => getenv('LIFTTEST'),
             'bluelink' => getenv('BLUETRACKTEST'),
             'relivlink' => getenv('RELIVERSTEST'),
+            'designlink' => getenv('DESIGSTEST'),
         ];
         $content = $this->load->view('projects/projects_view', $options, TRUE);
         return $content;

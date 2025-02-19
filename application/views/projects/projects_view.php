@@ -17,10 +17,12 @@
         </a>
     </div>
     <div class="ts-button stressballs">
+        <a href="<?=$designlink?>" target="_blank">
         <p>Test Site</p>
         <div class="logo-company">
             <img src="/img/projects/logo-stressballs-white.svg">
         </div>
+        </a>
     </div>
     <div class="ts-button lift">
         <a href="<?=$liftlink?>" target="_blank">

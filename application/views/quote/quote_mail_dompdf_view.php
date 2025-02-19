@@ -21,7 +21,8 @@
             /* Header */
             #headerenlarged {
                 /* background: url("<?=$imgpath?>/quote/quote_head.png") no-repeat scroll left top transparent; */
-                background: url("<?=$imgpath?>quote/quote_head.jpg") no-repeat scroll left top transparent;
+                /* background: url("<?=$imgpath?>quote/quote_head.jpg") no-repeat scroll left top transparent; */
+                background: url("<?=$imgpath?>quote/quote_head-upd.jpg") no-repeat scroll left top transparent;
                 clear: both;
                 float: left;
                 height: 135px;
@@ -924,12 +925,12 @@
                 </table>
                 <table>
                     <tr>
-                        <td class="hidden-fees_h3" style="padding-left: 40px;padding-right: 40px;">Order Online, by calling 1-800-790-6090, or by returning this form by fax to 201-604-2688 or by email to sales@bluetrack.com.</td>
+                        <td class="hidden-fees_h3" style="padding-left: 40px;padding-right: 40px;">Order Online, by calling 1-800-790-6090, or by returning this form by fax to 201-604-2688 or by email to sales@stressballs.com.</td>
                     </tr>
                 </table>
                 <table>
                     <tr>
-                        <td class="details-footer">BLUETRACK, Inc. - 855 Bloomfield Ave - Clifton, NJ 07012 - USA</td>
+                        <td class="details-footer">STRESSBALLS.com, Inc. - 855 Bloomfield Ave - Clifton, NJ 07012 - USA</td>
                     </tr>
                 </table>
             </div>
