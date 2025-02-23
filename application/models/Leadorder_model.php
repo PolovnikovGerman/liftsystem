@@ -5095,6 +5095,30 @@ Class Leadorder_model extends My_Model {
                 return $res;
             }
         }
+        // Check order items
+        $orderitems = $leadorder['order_items'];
+        if (count($orderitems)==0) {
+            $res['msg'] = 'Order Items empty';
+            return $res;
+        }
+        foreach ($orderitems as $orderitem) {
+            $items = $orderitem['items'];
+            if (count($items)==0) {
+                $res['msg'] = 'Item '.$orderitem['item_name'].' no data on color usage';
+                return $res;
+            }
+            $imprcnt = 0;
+            $imprints = $orderitem['imprints'];
+            foreach ($imprints as $imprint) {
+                if (intval($imprint['delflag'])==0) {
+                    $imprcnt++;
+                }
+            }
+            if ($imprcnt==0) {
+                $res['msg'] = 'Item '.$orderitem['item_name'].' no data about Imprint';
+                return $res;
+            }
+        }
         $res['result']=$this->success_result;
         return $res;
     }
