@@ -1287,5 +1287,9 @@ Class Cronjob extends CI_Controller
         $this->calendars_model->update_calendars();
     }
 
-
+    public function merchantcenter_items()
+    {
+        $this->load->model('items_model');
+        $this->items_model->merchantcenter_items('BT');
+    }
 }
