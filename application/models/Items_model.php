@@ -1597,13 +1597,12 @@ Class Items_model extends My_Model
             $category_id = $catdat['category_id'];
             // Build list of items
             $this->db->select('i.*')->from('sb_items i')->join('sb_item_categories ic','ic.item_categories_itemid=i.item_id')
-            ->where(['ic.item_categories_categoryid' => $category_id, 'i.brand' => $brand, 'i.item_active' =>1])->order_by('i.item_number', 'asc');
+            ->where(['ic.item_categories_categoryid' => $category_id, 'i.brand' => $brand, 'i.item_active' =>1])->order_by('i.item_sequence', 'asc');
             $items = $this->db->get()->result_array();
             $itemspop = $this->_prepare_xmlitems($items);
             foreach ($items as $item) {
                 array_push($populkeys, $item['item_id']);
             }
-            echo 'Popular '.count($items).PHP_EOL;
         }
         // Select all other items
         $this->db->select('i.*')->from('sb_items i')->where(['i.brand' => $brand, 'i.item_active' =>1])->order_by('i.item_number', 'asc');
@@ -1615,7 +1614,10 @@ Class Items_model extends My_Model
             }
         }
         $itemsdat = $this->_prepare_xmlitems($items);
-        $allitems = array_merge($itemspop, $itemsdat);
+        $allitems = $itemspop;
+        foreach ($itemsdat as $item) {
+            $allitems[] = $item;
+        }
         if (count($allitems) > 0 ) {
             $this->_prepare_xmldoc($allitems);
         }
