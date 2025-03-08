@@ -342,7 +342,7 @@ Class Leadorder_model extends My_Model {
             $row['order_class']=$this->vendor_class;
             if ($row['item_id']==$this->config->item('custom_id')) {
                 $row['order_class']=$this->custom_class;
-            } elseif (substr($row['item_number'],0,2)=='23') {
+            } elseif (!empty($row['item_number']) && substr($row['item_number'],0,2)=='23') {
                 $row['order_class']=$this->other_class;
             } elseif ($row['stok_item']>0) {
                 $row['order_class']=$this->common_class;
