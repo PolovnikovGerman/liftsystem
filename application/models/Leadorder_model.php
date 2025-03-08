@@ -258,7 +258,7 @@ Class Leadorder_model extends My_Model {
             $art = $this->db->get()->row_array();
             $row['artstage'] = ifset($art,'artstage','');
             $row['itemcolorclass']='';
-            if (strlen($row['itemcolor'])>9) {
+            if (!empty($row['itemcolor']) && strlen($row['itemcolor'])>9) {
                 $row['itemcolorclass']='wide';
             }
             $row['cnt_amnt']=intval($row['cnt_amnt']);
