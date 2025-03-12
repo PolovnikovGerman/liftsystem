@@ -4507,4 +4507,28 @@ class Test extends CI_Controller
         $this->load->model('email_model');
         $this->email_model->generate_quota(26662); // 26662
     }
+
+    public function rebuild_item_titles()
+    {
+        $this->db->select('item_id, item_number, item_name, item_number, item_meta_title')->from('sb_items')->where('brand','BT');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            if (empty($item['item_name'])) {
+                echo 'Item ID '.$item['item_id'].' Empty Name'.PHP_EOL;die();
+            } else {
+                $metanew = str_replace(['Vesrion A'],'', $item['item_name']);
+                $verpos = strpos($metanew,'Version');
+                if ($verpos > 0) {
+                    $version = substr($metanew, $verpos+8);
+                    $metanew = substr($metanew, 0, $verpos-2).'- STRESSBALLS.com&reg; - Custom Printed - Ver '.$version;
+                    echo $item['item_number'].' Meta '.$metanew.PHP_EOL;
+                } else {
+                    $metanew.=' - STRESSBALLS.com&reg; - Custom Printed';
+                }
+                $this->db->where('item_id', $item['item_id']);
+                $this->db->set('item_meta_title', $metanew);
+                $this->db->update('sb_items');
+            }
+        }
+    }
 }
