@@ -8729,11 +8729,12 @@ Class Orders_model extends MY_Model
     public function order_schedule_transform()
     {
         // $brands = ['SR','SB'];
+        $starttime = strtotime('2025-03-11');
         $brands = ['SB'];
         foreach ($brands as $brand) {
             $this->db->select('o.order_id, o.order_num, o.shipdate')->from('ts_orders o')->join('ts_order_items oi','oi.order_id=o.order_id');
-            $this->db->where('o.is_canceled', 0);
-            $this->db->where('oi.inventory_item_id is not null');
+            $this->db->join('ts_order_shippings tos','tos.order_id = o.order_id')->where('o.is_canceled', 0);
+            $this->db->where('oi.inventory_item_id is not null')->where('tos.arrive_date >= ', $starttime);
 //            if ($brand=='SR') {
 //                $this->db->where('o.brand', $brand);
 //            } else {
