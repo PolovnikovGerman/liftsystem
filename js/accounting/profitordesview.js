@@ -95,6 +95,9 @@ function init_profit_orders() {
     $(".selectordertypesdat").unbind('change').change(function(){
         search_profit_data();
     })
+    $(".selectorderitemtypedat").unbind('change').change(function (){
+        search_profit_data();
+    })
     $("#profitdatetypechoise2").unbind('click').click(function(){
         $(".selectorderyeardat").prop('disabled',true).removeClass('active');
         $(".selectordermonthdat").prop('disabled',true).removeClass('active');
@@ -813,6 +816,7 @@ function profile_filter_get() {
         params.push({name: 'shipping_state', value: 0 });
     }
     params.push({name: 'order_type',value: $(".selectordertypesdat").val()});
+    params.push({name: 'item_type', value: $(".selectorderitemtypedat").val()});
     params.push({name: 'brand', value: $("#profitordersbrand").val()});
     return params;
 }
@@ -859,6 +863,7 @@ function init_prepare_export() {
         params.push({name: 'shipping_state', value: 0 });
     }
     params.push({name: 'order_type',value: $(".selectordertypesdat").val()});
+    params.push({name: 'item_type', value: $(".selectorderitemtypedat").val()});
     params.push({name: 'brand', value: $("#profitordersbrand").val()});
     params.push({name: 'exclude_quickbook', value: $("#quickbookexclude").val()});
     var url='/accounting/orderprofit_export';
