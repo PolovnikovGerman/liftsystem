@@ -183,6 +183,9 @@ class Accounting extends MY_Controller
             if (isset($postdata['order_type']) && !empty($postdata['order_type'])) {
                 $options['order_type']=$postdata['order_type'];
             }
+            if (isset($postdata['item_type']) && !empty($postdata['item_type'])) {
+                $options['item_type'] = $postdata['item_type'];
+            }
             $options['exclude_quickbook'] = ifset($postdata,'exclude_quickbook',0);
             /* count number of orders */
             $options['admin_mode']=0;
@@ -208,6 +211,7 @@ class Accounting extends MY_Controller
                     'new_perc' => $totalord['numorders_detail_newperc'],
                     'repeat_perc' => $totalord['numorders_detail_repeatperc'],
                     'blank_perc'=> $totalord['numorders_detail_blankperc'],
+                    'total' => $totalord['numorders'],
                 ];
                 $order_tooltip = $this->load->view('orderprofit/total_tooltip_view', $order_tool_options, TRUE);
                 $qty_tool_options = [
@@ -219,6 +223,7 @@ class Accounting extends MY_Controller
                     'new_perc' => $totalord['qty_detail_newperc'],
                     'repeat_perc' => $totalord['qty_detail_repeatperc'],
                     'blank_perc'=> $totalord['qty_detail_blankperc'],
+                    'total' => $totalord['qty'],
                 ];
                 $qty_tooltip = $this->load->view('orderprofit/total_tooltip_view', $qty_tool_options, TRUE);
                 $revenue_tool_options = [
@@ -230,6 +235,7 @@ class Accounting extends MY_Controller
                     'new_perc' => $totalord['revenue_detail_newproc'],
                     'repeat_perc' => $totalord['revenue_detail_repeatproc'],
                     'blank_perc'=> $totalord['revenue_detail_blankproc'],
+                    'total' => $totalord['revenue'],
                 ];
                 $revenue_tooltip = $this->load->view('orderprofit/total_tooltip_view', $revenue_tool_options, TRUE);
                 // Balance
@@ -242,6 +248,7 @@ class Accounting extends MY_Controller
                     'new_perc' => $totalord['balance_detail_newproc'],
                     'repeat_perc' => $totalord['balance_detail_repeatproc'],
                     'blank_perc'=> $totalord['balance_detail_blankproc'],
+                    'total' => $totalord['balance'],
                 ];
                 $balance_tooltip = $this->load->view('orderprofit/total_tooltip_view', $balance_tool_options, TRUE);
 
@@ -254,6 +261,7 @@ class Accounting extends MY_Controller
                     'new_perc' => $totalord['shipping_detail_newperc'],
                     'repeat_perc' => $totalord['shipping_detail_repeatperc'],
                     'blank_perc'=> $totalord['shipping_detail_blankperc'],
+                    'total' => $totalord['shipping'],
                 ];
                 $shipping_tooltip = $this->load->view('orderprofit/total_tooltip_view', $shipping_tool_options, TRUE);
                 $tax_tool_options = [
@@ -265,6 +273,7 @@ class Accounting extends MY_Controller
                     'new_perc' => $totalord['tax_detail_newperc'],
                     'repeat_perc' => $totalord['tax_detail_repeatperc'],
                     'blank_perc'=> $totalord['tax_detail_blankperc'],
+                    'total' => $totalord['tax'],
                 ];
                 $tax_tooltip = $this->load->view('orderprofit/total_tooltip_view', $tax_tool_options, TRUE);
                 $cog_tool_options = [
@@ -276,6 +285,7 @@ class Accounting extends MY_Controller
                     'new_perc' => $totalord['cog_detail_newperc'],
                     'repeat_perc' => $totalord['cog_detail_repeatperc'],
                     'blank_perc'=> $totalord['cog_detail_blankperc'],
+                    'total' => $totalord['cog'],
                 ];
                 $cog_tooltip = $this->load->view('orderprofit/total_tooltip_view', $cog_tool_options, TRUE);
                 $profit_tool_options = [
@@ -287,6 +297,7 @@ class Accounting extends MY_Controller
                     'new_perc' => $totalord['profit_detail_newperc'],
                     'repeat_perc' => $totalord['profit_detail_repeatperc'],
                     'blank_perc'=> $totalord['profit_detail_blankperc'],
+                    'total' => $totalord['profit'],
                 ];
                 $profi_tooltip = $this->load->view('orderprofit/total_tooltip_view', $profit_tool_options, TRUE);
                 $total_options = [
@@ -303,9 +314,8 @@ class Accounting extends MY_Controller
                 ];
                 $mdata['total_row']=$this->load->view('orderprofit/total_profitall_view',$total_options,TRUE);
                 $mdata['totals_head']=$this->load->view('orderprofit/total_allprofittitle_view',['brand' => ifset($postdata,'brand','SB'),],TRUE);
-                // $mdata['total_row']=$this->load->view('orderprofit/total_profit_view',$totalord,TRUE);
             } else {
-                $mdata['totals_head']=$this->load->view('orderprofit/total_profittitle_view',[],TRUE);
+                $mdata['totals_head']=$this->load->view('orderprofit/total_profittitle_view',['brand' => ifset($postdata,'brand','SB'),],TRUE);
                 $mdata['total_row']=$this->load->view('orderprofit/total_profit_view',$totalord,TRUE);
             }
             $this->ajaxResponse($mdata, $error);
@@ -323,6 +333,7 @@ class Accounting extends MY_Controller
             'repeat_perc' => $postdata['rp'],
             'blank_val' => $postdata['bv'],
             'blank_perc' => $postdata['bp'],
+            'total' => $postdata['total'],
         ];
         $content = $this->load->view('orderprofit/total_tooltipdetails_view', $options, TRUE);
         echo $content;
@@ -400,6 +411,9 @@ class Accounting extends MY_Controller
             }
             if (isset($postdata['order_type']) && !empty($postdata['order_type'])) {
                 $search['order_type']=$postdata['order_type'];
+            }
+            if (isset($postdata['item_type']) && !empty($postdata['item_type'])) {
+                $search['item_type'] = $postdata['item_type'];
             }
 
             /* Fetch data about prices */
