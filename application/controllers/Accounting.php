@@ -183,6 +183,9 @@ class Accounting extends MY_Controller
             if (isset($postdata['order_type']) && !empty($postdata['order_type'])) {
                 $options['order_type']=$postdata['order_type'];
             }
+            if (isset($postdata['item_type']) && !empty($postdata['item_type'])) {
+                $options['item_type'] = $postdata['item_type'];
+            }
             $options['exclude_quickbook'] = ifset($postdata,'exclude_quickbook',0);
             /* count number of orders */
             $options['admin_mode']=0;
@@ -303,9 +306,8 @@ class Accounting extends MY_Controller
                 ];
                 $mdata['total_row']=$this->load->view('orderprofit/total_profitall_view',$total_options,TRUE);
                 $mdata['totals_head']=$this->load->view('orderprofit/total_allprofittitle_view',['brand' => ifset($postdata,'brand','SB'),],TRUE);
-                // $mdata['total_row']=$this->load->view('orderprofit/total_profit_view',$totalord,TRUE);
             } else {
-                $mdata['totals_head']=$this->load->view('orderprofit/total_profittitle_view',[],TRUE);
+                $mdata['totals_head']=$this->load->view('orderprofit/total_profittitle_view',['brand' => ifset($postdata,'brand','SB'),],TRUE);
                 $mdata['total_row']=$this->load->view('orderprofit/total_profit_view',$totalord,TRUE);
             }
             $this->ajaxResponse($mdata, $error);
@@ -400,6 +402,9 @@ class Accounting extends MY_Controller
             }
             if (isset($postdata['order_type']) && !empty($postdata['order_type'])) {
                 $search['order_type']=$postdata['order_type'];
+            }
+            if (isset($postdata['item_type']) && !empty($postdata['item_type'])) {
+                $search['item_type'] = $postdata['item_type'];
             }
 
             /* Fetch data about prices */
