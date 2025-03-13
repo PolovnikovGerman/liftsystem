@@ -180,6 +180,13 @@ Class Orders_model extends MY_Model
             $this->db->where('o.order_blank',0);
             $this->db->where('o.arttype', $filtr['order_type']);
         }
+        if (isset($filtr['item_type'])) {
+            if ($filtr['item_type']=='custom') {
+                $this->db->where('o.item_id', $this->config->item('custom_id'));
+            } else {
+                $this->db->where('o.item_id != ', $this->config->item('custom_id'));
+            }
+        }
         if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
             if ($filtr['brand']=='SR') {
                 $this->db->where('o.brand', $filtr['brand']);
@@ -2464,6 +2471,13 @@ Class Orders_model extends MY_Model
                 $this->db->where('o.order_blank',0);
                 $this->db->where('o.arttype', $filtr['order_type']);
             }
+            if (isset($filtr['item_type'])) {
+                if ($filtr['item_type']=='custom') {
+                    $this->db->where('o.item_id',$this->config->item('custom_id'));
+                } else {
+                    $this->db->where('o.item_id != ',$this->config->item('custom_id'));
+                }
+            }
             if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
                 if ($filtr['brand']=='SR') {
                     $this->db->where('o.brand', $filtr['brand']);
@@ -2692,6 +2706,13 @@ Class Orders_model extends MY_Model
                 $this->db->where('o.order_blank',0);
                 $this->db->where('o.arttype', $addtype);
             }
+            if (isset($filtr['item_type'])) {
+                if ($filtr['item_type']=='custom') {
+                    $this->db->where('o.item_id',$this->config->item('custom_id'));
+                } else {
+                    $this->db->where('o.item_id != ',$this->config->item('custom_id'));
+                }
+            }
             if (ifset($filtr,'custom_orders',0)==1) {
                 $this->db->where_in('o.item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id'),
             }
@@ -2791,6 +2812,13 @@ Class Orders_model extends MY_Model
             if (isset($filtr['order_type'])) {
                 $this->db->where('o.order_blank',0);
                 $this->db->where('o.arttype', $filtr['order_type']);
+            }
+            if (isset($filtr['item_type'])) {
+                if ($filtr['item_type']=='custom') {
+                    $this->db->where('o.item_id', $this->config->item('custom_id'));
+                } else {
+                    $this->db->where('o.item_id != ', $this->config->item('custom_id'));
+                }
             }
             if (isset($filtr['brand']) && $filtr['brand']!=='ALL') {
                 if ($filtr['brand']=='SR') {
@@ -3008,6 +3036,9 @@ Class Orders_model extends MY_Model
             if (isset($postdata['order_type']) && !empty($postdata['order_type'])) {
                 $search['order_type']=$postdata['order_type'];
             }
+            if (isset($postdata['item_type']) && !empty($postdata['item_type'])) {
+                $search['item_type'] = $postdata['item_type'];
+            }
 
 
             $select_flds=[];
@@ -3079,6 +3110,13 @@ Class Orders_model extends MY_Model
                 if (isset($search['order_type'])) {
                     $this->db->where('o.order_blank',0);
                     $this->db->where('o.arttype', $search['order_type']);
+                }
+                if (isset($search['item_type'])) {
+                    if ($search['item_type']=='custom') {
+                        $this->db->where('o.item_id', $this->config->item('custom_id'));
+                    } else {
+                        $this->db->where('o.item_id != ', $this->config->item('custom_id'));
+                    }
                 }
             }
             if (isset($postdata['brand']) && $postdata['brand']!=='ALL') {
@@ -7451,6 +7489,13 @@ Class Orders_model extends MY_Model
             if (isset($filtr['order_type'])) {
                 $this->db->where('o.order_blank',0);
                 $this->db->where('o.arttype', $filtr['order_type']);
+            }
+            if (isset($filtr['item_type'])) {
+                if ($filtr['item_type']=='custom') {
+                    $this->db->where('o.item_id', $this->config->item('custom_id'));
+                } else {
+                    $this->db->where('o.item_id != ', $this->config->item('custom_id'));
+                }
             }
             if (ifset($filtr,'brand','ALL')!=='ALL') {
                 if ($filtr['brand']=='SR') {
