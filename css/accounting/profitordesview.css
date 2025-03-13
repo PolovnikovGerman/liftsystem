@@ -868,6 +868,9 @@ select.profitorder-filtrer {
 .profit_tooltip_content > .profit_tooltip_row {
     width: 100%;
 }
+.profit_tooltip_content > .profit_tooltip_row.totals {
+    border-top: 1px dashed #000;
+}
 .profit_tooltip_content > .profit_tooltip_row > div {
     height: 22px;
     line-height: 22px;
