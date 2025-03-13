@@ -79,9 +79,16 @@
                 </select>
             </div>
             <div class="selectstatelocation">&nbsp;</div>
+            <div class="selectorderitemtype">
+                <select class="selectorderitemtypedat">
+                    <option value="">All Orders</option>
+                    <option value="regular">Regular Orders</option>
+                    <option value="custom">Custom Shaped</option>
+                </select>
+            </div>
             <div class="selectordertypes">
                 <select class="selectordertypesdat">
-                    <option value="">All Orders</option>
+                    <option value="">New & Repeat Orders</option>
                     <option value="new">New Only</option>
                     <option value="repeat">Repeat Only</option>
                 </select>
