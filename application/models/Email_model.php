@@ -1570,7 +1570,7 @@ class Email_model extends My_Model
                             'fileattach'=>$file_out,
                         );
                         if ($sendmail==1) {
-                            if ($_SERVER['SERVER_NAME']!=='lift_stressballs.local') {
+                            if (!in_array($_SERVER['SERVER_NAME'], $this->config->item('localserver'))) { // !=='lift_stressballs.local'
                                 $this->send_quota($mail_options);
                             }
                         }
