@@ -6452,7 +6452,8 @@ Class Orders_model extends MY_Model
             $cc_fee = round(($item['total'] * $this->default_ccfee) / 100, 2);
             $profit = round(($item['total'] * $this->default_profit_perc) / 100, 2);
             $rushval = (($item['production_term'] == 'Standard' || $item['production_term'] == '') ? 0 : 1 );
-            if (!empty(trim($orddata['customer_company']))) {
+            // if (!empty(trim($orddata['customer_company']))) {
+            if (ifset($orddata,'customer_company', '')!='') {
                 $brown_customer = trim($orddata['customer_company']);
             } else {
                 $brown_customer = $orddata['contact_first_name'] . ' ' . $orddata['contact_last_name'];
