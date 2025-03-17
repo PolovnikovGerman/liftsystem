@@ -1783,19 +1783,21 @@ Class Artlead_model extends MY_Model
         $headers = array(
             'Authorization: Basic '.$authtoken,
         );
-        $fp = fopen($localfile, "w+");
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($curl, CURLOPT_FILE, $fp);
-        curl_setopt($curl, CURLOPT_URL, $remote_url);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_exec ($curl);
-        curl_close($curl);
-        fclose($fp);
-        if (file_exists($localfile)) {
-            return true;
-        } else {
-            return false;
+        $fp = @fopen($localfile, "w+");
+        if ($fp) {
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+            curl_setopt($curl, CURLOPT_FILE, $fp);
+            curl_setopt($curl, CURLOPT_URL, $remote_url);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+            curl_exec ($curl);
+            curl_close($curl);
+            fclose($fp);
+            if (file_exists($localfile)) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
