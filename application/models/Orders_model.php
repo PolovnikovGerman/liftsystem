@@ -5660,6 +5660,7 @@ Class Orders_model extends MY_Model
                 $note.='Contact:'.addslashes($contactres['contact_name']);
             }
             if (!empty($note)) {
+                $note = preg_replace('/[\x{200B}-\x{200D}\x{FEFF}]/u', '', $note);
                 $postdata['contact_info']=$note;
                 echo 'Order # '.$row['order_num'].' ('.$row['order_id'].')'.PHP_EOL;
                 echo 'Contact '.$note.'!'.PHP_EOL;
