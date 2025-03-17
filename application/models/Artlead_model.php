@@ -1706,6 +1706,7 @@ Class Artlead_model extends MY_Model
         if (createPath($shrtpath)) {
             $doc_link = str_replace(['../docs/','../../system/docs/'],'http://bluetrack.net/system/docs/', $export['doc_link']);
             $newfile = $fullpath.str_replace([' ','%','"'],'_',$export['doc_name']);
+            echo 'New Clay '.$newfile.'!'.PHP_EOL;
 //            $opts = array(
 //                'http'=>array(
 //                    'method'=>"GET",
