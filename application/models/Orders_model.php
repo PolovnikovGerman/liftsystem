@@ -5661,6 +5661,8 @@ Class Orders_model extends MY_Model
             }
             if (!empty($note)) {
                 $postdata['contact_info']=$note;
+                echo 'Order # '.$row['order_num'].' ('.$row['order_id'].')'.PHP_EOL;
+                echo 'Contact '.$note.'!'.PHP_EOL;
             }
             // Email: xxxxxxxx@xxxxxxxxxx.com   Tel: xxx-xxx-xxxx xxxx  Contact:
             if (!empty($row['customer'])) {
@@ -5699,6 +5701,7 @@ Class Orders_model extends MY_Model
             if(!$res) {
                 $error = curl_error($curl).'('.curl_errno($curl).')';
                 echo $error;
+                die();
             } else {
                 $array = json_decode($res, true);
 
@@ -5712,6 +5715,7 @@ Class Orders_model extends MY_Model
                     echo 'Export '.$row['order_num'].' Error '.PHP_EOL;
                     // echo 'Error '.$array['error'].PHP_EOL;
                     echo 'Error '.$res.PHP_EOL;
+                    die();
                 }
             }
             curl_close($curl);
