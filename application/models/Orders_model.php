@@ -6656,7 +6656,10 @@ Class Orders_model extends MY_Model
                     foreach ($art as $arow) {
                         // Calc a number of colors
                         $numcolors = 1;
-                        $colorsarray = explode(',', $arow['order_artwork_colors']);
+                        $colorsarray = [];
+                        if (!empty($arow['order_artwork_colors'])) {
+                            $colorsarray = explode(',', $arow['order_artwork_colors']);
+                        }
                         if (count($colorsarray) > 1) {
                             $numcolors = 2;
                         }

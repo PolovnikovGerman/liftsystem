@@ -5297,7 +5297,10 @@ Class Leadorder_model extends My_Model {
         $first_email=$art_contact=$art_email='';
         $default_email=$default_contact='';
         foreach ($contacts as $row) {
-            $phone=  str_replace('-', '', $row['contact_phone']);
+            $phone = $row['contact_phone'];
+            if (!empty($phone)) {
+                $phone = str_replace('-', '', $row['contact_phone']);
+            }
             if (!empty($phone)) {
                 $phone=formatPhoneNumber($phone,1);
             }
