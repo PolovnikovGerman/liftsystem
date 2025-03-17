@@ -4,12 +4,15 @@
 if (!function_exists('MoneyOutput')) {
     function MoneyOutput($total, $decimal = 2, $thousdelim = ',')
     {
-        if ($total < 0) {
-            $output = '-$';
-        } else {
-            $output = '$';
+        $output = $total;
+        if (abs(floatval($total))>0) {
+            if ($total < 0) {
+                $output = '-$';
+            } else {
+                $output = '$';
+            }
+            $output .= number_format(abs($total), $decimal, '.', $thousdelim);
         }
-        $output .= number_format(abs($total), $decimal, '.', $thousdelim);
         return $output;
     }
 }
