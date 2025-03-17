@@ -1600,7 +1600,11 @@ class Email_model extends My_Model
         // $res = $this->email->send();
         // log_message('error','Email Send '.intval($res).'!');
         $this->email->send(FALSE);
-        $this->email->print_debugger(array('headers'));
+        $headers = $this->email->print_debugger(array('headers'));
+        if (is_array($headers)) {
+            $headers = json_encode($headers);
+        }
+        log_message('error','Email Headers '.$headers.'!');
         $this->email->clear(TRUE);
         return true;
     }
