@@ -1686,9 +1686,9 @@ Class Artlead_model extends MY_Model
                 }
             } else {
                 echo 'Order '.$export['order_number'].' Not Added'.PHP_EOL;
-                // $this->db->where('id', $export['id']);
-                // $this->db->set('managed',2);
-                // $this->db->update('lift_exports');
+                $this->db->where('id', $export['id']);
+                $this->db->set('managed',2);
+                $this->db->update('lift_exports');
             }
             $numpp++;
         }
