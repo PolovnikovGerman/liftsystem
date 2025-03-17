@@ -49,22 +49,25 @@ if (!function_exists('TotalOutput')) {
 if (!function_exists('QTYOutput')) {
     function QTYOutput($qty, $decimal = 0, $thousdelim = ',', $show_positiv = 0)
     {
-        if ($qty < 0) {
-            $output = '-';
-        } else {
-            $output = '';
-            if ($show_positiv == 1) {
-                $output = '+';
+        $output = $qty;
+        if (abs(intval($qty))>0) {
+            if ($qty < 0) {
+                $output = '-';
+            } else {
+                $output = '';
+                if ($show_positiv == 1) {
+                    $output = '+';
+                }
             }
-        }
-        if (abs($qty) >= 10000) {
-            $output .= number_format(abs($qty), $decimal, '.', $thousdelim);
-        } else {
-            if ($decimal > 0 && fmod(abs($qty), 1) == 0) {
-                $decimal = 0;
-            }
-            $output .= number_format(abs($qty), $decimal, '.', '');
+            if (abs($qty) >= 10000) {
+                $output .= number_format(abs($qty), $decimal, '.', $thousdelim);
+            } else {
+                if ($decimal > 0 && fmod(abs($qty), 1) == 0) {
+                    $decimal = 0;
+                }
+                $output .= number_format(abs($qty), $decimal, '.', '');
 
+            }
         }
         return $output;
     }
