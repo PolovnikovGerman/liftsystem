@@ -2043,10 +2043,16 @@ Class Artwork_model extends MY_Model
             $this->db->from('ts_orders');
             $this->db->where('order_id',$data['order_id']);
             $statres=$this->db->get()->row_array();
-            $this->db->where('order_id',$data['order_id']);
-            $this->db->set('order_artview', $statres['aprrovview']);
-            $this->db->set('order_placed', $statres['placeord']);
-            $this->db->update('ts_orders');
+            if (isset($statres['aprrovview']) && !empty($statres['aprrovview'])) {
+                $this->db->where('order_id',$data['order_id']);
+                $this->db->set('order_artview', $statres['aprrovview']);
+                $this->db->update('ts_orders');
+            }
+            if (isset($statres['placeord']) && !empty($statres['placeord'])) {
+                $this->db->where('order_id',$data['order_id']);
+                $this->db->set('order_placed', $statres['placeord']);
+                $this->db->update('ts_orders');
+            }
         }
     }
 
