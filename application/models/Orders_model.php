@@ -5727,6 +5727,7 @@ Class Orders_model extends MY_Model
         $this->db->from('ts_artdoc_sync s');
         $this->db->join('ts_orders o','o.order_id=s.order_id');
         $this->db->where('s.sended',0);
+        $this->db->where('o.brand != ','SR');
         $this->db->order_by('s.artdoc_sync_id');
         $sdoc=$this->db->get()->result_array();
         foreach ($sdoc as $docrow) {
