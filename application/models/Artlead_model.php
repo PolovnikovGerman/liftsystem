@@ -1734,10 +1734,10 @@ Class Artlead_model extends MY_Model
                 $this->db->set('clay_link', $shrtpath.str_replace([' ','%','"'],'_',$export['doc_name']));
                 $this->db->set('clay_source', $export['doc_name']);
                 $this->db->insert('ts_artwork_clays');
-                $this->db->where('id', $export['id']);
-                $this->db->set('managed', 1);
-                $this->db->update('lift_exports');
             }
+            $this->db->where('id', $export['id']);
+            $this->db->set('managed', 1);
+            $this->db->update('lift_exports');
         }
         return true;
     }
