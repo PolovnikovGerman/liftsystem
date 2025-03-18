@@ -1597,13 +1597,13 @@ class Email_model extends My_Model
         $this->email->message($mail_options['message']);
         $this->email->attach($mail_options['fileattach']);
         log_message('error', 'To '.$mail_options['touser'].' From '.$mail_options['fromuser'].' File '.$mail_options['fileattach']);
-        $res = $this->email->send(FALSE);
-        // log_message('error','Email Send '.intval($res).'!');
-        $headers = $this->email->print_debugger(array('headers'));
-        if (is_array($headers)) {
-            $headers = json_encode($headers);
-        }
-        log_message('error', 'Email Header '.$headers);
+        $res = $this->email->send();
+        log_message('error','Email Send '.intval($res).'!');
+//        $headers = $this->email->print_debugger(array('headers'));
+//        if (is_array($headers)) {
+//            $headers = json_encode($headers);
+//        }
+//        log_message('error', 'Email Header '.$headers);
         $this->email->clear(TRUE);
         return true;
     }
