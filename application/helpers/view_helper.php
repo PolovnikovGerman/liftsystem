@@ -381,10 +381,23 @@ if (!function_exists('openfile')) {
         // It will be called downloaded.pdf
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         // The PDF source is in original.pdf
-        readfile($url);
+        // readfile($url);
+        echo curl_get_file_contents($url);
     }
 }
 
+if (!function_exists('curl_get_file_contents')) {
+    function curl_get_file_contents($url)
+    {
+        $c = curl_init();
+        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($c, CURLOPT_URL, $url);
+        $contents = curl_exec($c);
+        curl_close($c);
+        if ($contents) return $contents;
+        else return FALSE;
+    }
+}
 if (!function_exists('orderProfitClass')) {
     function orderProfitClass($profit_perc) {
         $profit_class='';
