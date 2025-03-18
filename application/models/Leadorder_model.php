@@ -326,8 +326,9 @@ Class Leadorder_model extends My_Model {
                     $row['proftitleclass']='lowprofittitle';
                     $row['proftitle']='title="'.$row['reason'].'"';
                 }
-                $row['profit_perc']=number_format($row['profit_perc'],1,'.',',').'%';
-                $row['order_cog']='$'.number_format($row['order_cog'],2,'.',',');
+                $row['profit_perc'] = $row['profit_perc']==null ? '' : number_format($row['profit_perc'],1,'.',',').'%';
+                $row['order_cog'] = MoneyOutput($row['order_cog']);
+                // '$.number_format($row['order_cog'],2,'.',',');
             }
             $row['user_replic']='&nbsp;';
             $row['usrreplclass']='user';
