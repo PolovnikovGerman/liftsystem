@@ -774,12 +774,14 @@ class Leadmanagement extends MY_Controller
                 $error='';
                 foreach ($postdata as $key=>$val) {
                     $usr=$this->user_model->get_user_data($val);
-                    $lead=array(
-                        'user_id'=>$val,
-                        'user_leadname'=>$usr['user_leadname'],
-                        'value'=>1,
-                    );
-                    $lead_usr[]=$lead;
+                    if (ifset($usr,'user_id',0) > 0) {
+                        $lead=array(
+                            'user_id'=>$val,
+                            'user_leadname'=>$usr['user_leadname'],
+                            'value'=>1,
+                        );
+                        $lead_usr[]=$lead;
+                    }
                 }
                 usersession($session_id, $lead_usr);
                 // Build New content
