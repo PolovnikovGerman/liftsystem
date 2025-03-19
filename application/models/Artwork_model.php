@@ -1920,7 +1920,7 @@ Class Artwork_model extends MY_Model
     }
 
     public function change_artstage($data, $newstage, $user_id) {
-        if ($data['order_id']==0) {
+        if (empty($data['order_id'])) {
             $this->db->set('proof_updated',time());
             $this->db->where('email_id',$data['proof_id']);
             /* Analyse STAGE */
