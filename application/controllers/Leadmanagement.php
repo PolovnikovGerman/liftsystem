@@ -803,8 +803,10 @@ class Leadmanagement extends MY_Controller
             $lead_replic=usersession($session_id);
 
             $lead_usr=array();
-            foreach ($lead_replic as $row) {
-                array_push($lead_usr, $row['user_id']);
+            if (is_array($lead_replic) && count($lead_replic)>0) {
+                foreach ($lead_replic as $row) {
+                    array_push($lead_usr, $row['user_id']);
+                }
             }
             $usr_id=$this->USR_ID;
             $res=$this->leads_model->save_leads($lead_usr,$lead_tasks,$leadpost,$usr_id);
