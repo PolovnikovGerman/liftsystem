@@ -1512,8 +1512,6 @@ class Email_model extends My_Model
                     // $mail['imgpath']=$this->config->item('img_path');
                     $mail['imgpath'] = base_url().'img/'; // $this->config->item('item_quote_images').'/img/';
                     $mail['itemimgpath'] = base_url(); // $this->config->item('item_quote_images');
-                    log_message('error', 'img path '.$mail['imgpath']);
-                    log_message('error', 'item img path '.$mail['itemimgpath']);
                     $item_id = get_json_param($mail['email_other_info'], 'item_id', 0);
 
                     if ($item_id != 0) {
@@ -1561,18 +1559,19 @@ class Email_model extends My_Model
                         $content=$this->load->view('messages/quote_message_view',$msg_options,TRUE);
                         $msgbody=($content);
                         /* Send message to user */
+                        $this->load->config('notifications');
                         $mail_options=array(
                             'touser'=>$mail['email_sendermail'],
-                            'fromuser'=>$this->config->item('email_notification_sender'),
+                            'fromuser'=>($mail['brand']=='SR' ?  $this->config->item('sr_quote_user') : $this->config->item('sb_quote_user')), // $this->config->item('email_notification_sender'),
                             'subject'=>intval($mail['email_qty']).' '.$mail['email_item_name'] . ' Quote',
                             /* 'message'=>'Hi ! Here is the qoute you requested.',*/
                             'message'=>$msgbody,
                             'fileattach'=>$file_out,
                         );
                         if ($sendmail==1) {
-                            if (!in_array($_SERVER['SERVER_NAME'], $this->config->item('localserver'))) { // !=='lift_stressballs.local'
+                            // if (!in_array($_SERVER['SERVER_NAME'], $this->config->item('localserver'))) { // !=='lift_stressballs.local'
                                 $this->send_quota($mail_options);
-                            }
+                            // }
                         }
                     }
                 }
@@ -1581,15 +1580,31 @@ class Email_model extends My_Model
     }
 
     public function send_quota($mail_options) {
+        $this->load->config('notifications');
         $this->load->library('email');
-
-        $email_conf = array(
-            'protocol'=>'sendmail',
-            'charset'=>'utf-8',
-            'mailtype'=>'html',
-            'wordwrap'=>TRUE,
-            'mailpath' => '/usr/sbin/sendmail',
-        );
+        $sendsmtp = intval($this->config->item('sb_quote_smtp'));
+        if ($sendsmtp==1) {
+            $email_conf = array(
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'smtp_user' => $this->config->item('sb_quote_user'),
+                'smtp_pass' => $this->config->item('sb_quote_pass'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+            );
+        } else {
+            $email_conf = array(
+                'protocol'=>'sendmail',
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'mailpath' => '/usr/sbin/sendmail',
+            );
+        }
         $this->email->initialize($email_conf);
         $this->email->to($mail_options['touser']);
         $this->email->from($mail_options['fromuser']);
@@ -1599,6 +1614,7 @@ class Email_model extends My_Model
         log_message('error', 'To '.$mail_options['touser'].' From '.$mail_options['fromuser'].' File '.$mail_options['fileattach']);
         $res = $this->email->send();
         log_message('error','Email Send '.intval($res).'!');
+//        $res = $this->email->send(FALSE);
 //        $headers = $this->email->print_debugger(array('headers'));
 //        if (is_array($headers)) {
 //            $headers = json_encode($headers);
