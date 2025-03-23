@@ -46,9 +46,9 @@ Class User_model extends MY_Model
                             'value'  => $cookie,
                             'expire' => '86500',
                             'domain' => $server,
-                            'path'   => '/; SameSite=Strict',
-                            'secure' => TRUE,
-                            'httponly' => TRUE,
+//                            'path'   => '/; SameSite=Strict',
+//                            'secure' => TRUE,
+//                            'httponly' => TRUE,
                         );
                         set_cookie($cookienew);
                     }
@@ -199,10 +199,10 @@ Class User_model extends MY_Model
                                 'value'  => $res['token'],
                                 'expire' => '86500',
                                 'domain' => $server,
-                                'path'   => '/; SameSite=Strict',
-                                'prefix' => '',
-                                'secure' => FALSE,
-                                'httponly' => FALSE,
+//                                'path'   => '/; SameSite=Strict',
+//                                'prefix' => '',
+//                                'secure' => FALSE,
+//                                'httponly' => FALSE,
                             );
                             set_cookie($cookie);
                             usersession('currentbrand',null);
