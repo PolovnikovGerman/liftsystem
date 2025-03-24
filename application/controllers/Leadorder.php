@@ -6461,9 +6461,9 @@ class Leadorder extends MY_Controller
                     $totaltrack = 0;
                     $totaloldtrack = 0;
                     foreach ($itemcolor['trackings'] as $tracking) {
-                        $totaltrack+=$tracking['qty'];
+                        $totaltrack+=intval($tracking['qty']);
                         if ($tracking['tracking_id']>0) {
-                            $totaloldtrack+=$tracking['qty'];
+                            $totaloldtrack+=intval($tracking['qty']);
                         }
                     }
                     $resttrack = intval($itemcolor['item_qty'])-$totaltrack;
