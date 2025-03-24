@@ -1649,6 +1649,7 @@ class Leadquote extends MY_Controller
                 'quote_item_id' => $postdata['item'],
                 'item_id' => $item_id,
                 'itemstatus' => $itemstatus,
+                'brand' => $quote['brand'],
             );
             usersession($imptintid, $imprintdetails);
         }
