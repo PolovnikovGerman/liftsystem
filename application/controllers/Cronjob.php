@@ -1071,11 +1071,11 @@ Class Cronjob extends CI_Controller
                 ];
             }
         }
-        if (count($ordererror)==0) {
-            $mail_body = 'All PO orders '.count($orderlists).' math is OK';
-        } else {
-            $mail_body = $this->load->view('messages/orderamout_maths_view', ['data' => $ordererror], TRUE);
-        }
+        // if (count($ordererror)==0) {
+        //     $mail_body = 'All PO orders '.count($orderlists).' math is OK';
+        // } else {
+            $mail_body = $this->load->view('messages/orderamout_maths_view', ['data' => $ordererror, 'orderlists' => $orderlists], TRUE);
+        // }
         $this->load->library('email');
         $config['charset'] = 'utf-8';
         $config['mailtype']='html';

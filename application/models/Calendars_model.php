@@ -599,14 +599,15 @@ Class Calendars_model extends MY_Model
         // Get a dates of resting during year
         // Select calendar for check bussiness day
         if (!empty($item_id)) {
-            $this->db->select('item_id, c.calendar_id as calendar_id',FALSE);
+            $this->db->select('item_id, c.calendar_id as calendar_id');
             $this->db->from('sb_items i');
             $this->db->join('sb_vendor_items vi','vi.vendor_item_id=i.vendor_item_id');
             $this->db->join("vendors v","v.vendor_id=vi.vendor_item_vendor");
             $this->db->join("calendars c","c.calendar_id=v.calendar_id");
             $this->db->where('i.item_id',$item_id);
             $cal = $this->db->get()->row_array();
-            $calendar_id=($cal['calendar_id']==NULL ? '0' : $cal['calendar_id']);
+            $calendar_id = ifset($cal,'calendar_id',$this->config->item('bank_calendar'));
+            // $calendar_id=($cal['calendar_id']==NULL ? '0' : $cal['calendar_id']);
         } else {
             $calendar_id = $this->config->item('bank_calendar');
         }

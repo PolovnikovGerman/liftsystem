@@ -326,8 +326,9 @@ Class Leadorder_model extends My_Model {
                     $row['proftitleclass']='lowprofittitle';
                     $row['proftitle']='title="'.$row['reason'].'"';
                 }
-                $row['profit_perc']=number_format($row['profit_perc'],1,'.',',').'%';
-                $row['order_cog']='$'.number_format($row['order_cog'],2,'.',',');
+                $row['profit_perc'] = $row['profit_perc']==null ? '' : number_format($row['profit_perc'],1,'.',',').'%';
+                $row['order_cog'] = MoneyOutput($row['order_cog']);
+                // '$.number_format($row['order_cog'],2,'.',',');
             }
             $row['user_replic']='&nbsp;';
             $row['usrreplclass']='user';
@@ -5305,7 +5306,10 @@ Class Leadorder_model extends My_Model {
         $first_email=$art_contact=$art_email='';
         $default_email=$default_contact='';
         foreach ($contacts as $row) {
-            $phone=  str_replace('-', '', $row['contact_phone']);
+            $phone = $row['contact_phone'];
+            if (!empty($phone)) {
+                $phone = str_replace('-', '', $row['contact_phone']);
+            }
             if (!empty($phone)) {
                 $phone=formatPhoneNumber($phone,1);
             }
