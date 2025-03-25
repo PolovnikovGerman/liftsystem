@@ -1594,7 +1594,7 @@ class Email_model extends My_Model
                 'charset'=>'utf-8',
                 'mailtype'=>'html',
                 'wordwrap'=>TRUE,
-                // 'newline' => "\r\n",
+                'newline' => "\r\n",
             );
         } else {
             $email_conf = array(
