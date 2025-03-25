@@ -2382,6 +2382,7 @@ class Database extends MY_Controller
         $boathead_view='';
         $boatlinks_view = '';
         foreach ($onboats as $onboat) {
+            $onboat['edit_mode'] = 0;
             $boathead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $onboat, TRUE);
             $boatlinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $onboat, TRUE);
         }
@@ -2410,6 +2411,7 @@ class Database extends MY_Controller
         $expresshead_view = '';
         $expresslinks_view = '';
         foreach ($expresses as $express) {
+            $express['edit_mode'] = 0;
             $expresshead_view.=$this->load->view('masterinvent/onboat_containerhead_view', $express, TRUE);
             $expresslinks_view.=$this->load->view('masterinvent/onboat_containerlinks_view', $express, TRUE);
         }

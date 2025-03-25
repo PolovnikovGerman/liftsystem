@@ -75,9 +75,9 @@ Class Items_model extends My_Model
             } else {
                 $result['shipping_info']='Information Missing';
             }
-            foreach ($this->config->item('item_specialchars') as $row) {
-                $result[$row]=  htmlspecialchars($result[$row]);
-            }
+//            foreach ($this->config->item('item_specialchars') as $row) {
+//                $result[$row]=  htmlspecialchars($result[$row]);
+//            }
             $out['result']=$this->success_result;
             $out['data']=$result;
         }

@@ -1272,7 +1272,23 @@ Class Leads_model extends MY_Model
         }
         $this->db->order_by('item_name');
         $result=$this->db->get()->result_array();
-        return $result;
+        $out = [];
+        foreach ($result as $row) {
+            if ($row['item_id']>1) {
+                $row['item_list']=$row['item_name'].' / '.$row['item_number'];
+            } else {
+                $row['item_list']=$row['item_name'];
+            }
+            $out[]=array(
+                'item_id'=>$row['item_id'],
+                'item_name'=>$row['item_list'],
+                'item_number' => $row['item_number'],
+                'itemnumber'=>$row['item_number'],
+                'itemname'=>$row['item_name'],
+            );
+
+        }
+        return $out;
     }
 
     public function search_itemid($item_id) {

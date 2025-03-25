@@ -1686,9 +1686,9 @@ Class Artlead_model extends MY_Model
                 }
             } else {
                 echo 'Order '.$export['order_number'].' Not Added'.PHP_EOL;
-                // $this->db->where('id', $export['id']);
-                // $this->db->set('managed',2);
-                // $this->db->update('lift_exports');
+                $this->db->where('id', $export['id']);
+                $this->db->set('managed',2);
+                $this->db->update('lift_exports');
             }
             $numpp++;
         }
@@ -1706,6 +1706,7 @@ Class Artlead_model extends MY_Model
         if (createPath($shrtpath)) {
             $doc_link = str_replace(['../docs/','../../system/docs/'],'http://bluetrack.net/system/docs/', $export['doc_link']);
             $newfile = $fullpath.str_replace([' ','%','"'],'_',$export['doc_name']);
+            echo 'New Clay '.$newfile.'!'.PHP_EOL;
 //            $opts = array(
 //                'http'=>array(
 //                    'method'=>"GET",
@@ -1733,10 +1734,10 @@ Class Artlead_model extends MY_Model
                 $this->db->set('clay_link', $shrtpath.str_replace([' ','%','"'],'_',$export['doc_name']));
                 $this->db->set('clay_source', $export['doc_name']);
                 $this->db->insert('ts_artwork_clays');
-                $this->db->where('id', $export['id']);
-                $this->db->set('managed', 1);
-                $this->db->update('lift_exports');
             }
+            $this->db->where('id', $export['id']);
+            $this->db->set('managed', 1);
+            $this->db->update('lift_exports');
         }
         return true;
     }
@@ -1750,6 +1751,7 @@ Class Artlead_model extends MY_Model
         if (createPath($shrtpath)) {
             $doc_link = str_replace(['../docs/','../../system/docs/'],'http://bluetrack.net/system/docs/', $export['doc_link']);
             $newfile = $fullpath.str_replace([' ','%','"'],'_',$export['doc_name']);
+            echo 'Preview '.$newfile.'!'.PHP_EOL;
             if ($this->_save_remotefile($doc_link, $newfile)) {
                 // Select max numpp
                 $this->db->select('count(artwork_preview_id) as cnt, max(numpp) as maxnum');
@@ -1768,10 +1770,10 @@ Class Artlead_model extends MY_Model
                 $this->db->set('preview_link', $shrtpath.str_replace([' ','%','"'],'_',$export['doc_name']));
                 $this->db->set('preview_source', $export['doc_name']);
                 $this->db->insert('ts_artwork_previews');
-                $this->db->where('id', $export['id']);
-                $this->db->set('managed', 1);
-                $this->db->update('lift_exports');
             }
+            $this->db->where('id', $export['id']);
+            $this->db->set('managed', 1);
+            $this->db->update('lift_exports');
         }
         return true;
     }
@@ -1783,19 +1785,21 @@ Class Artlead_model extends MY_Model
         $headers = array(
             'Authorization: Basic '.$authtoken,
         );
-        $fp = fopen($localfile, "w+");
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($curl, CURLOPT_FILE, $fp);
-        curl_setopt($curl, CURLOPT_URL, $remote_url);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_exec ($curl);
-        curl_close($curl);
-        fclose($fp);
-        if (file_exists($localfile)) {
-            return true;
-        } else {
-            return false;
+        $fp = @fopen($localfile, "w+");
+        if ($fp) {
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+            curl_setopt($curl, CURLOPT_FILE, $fp);
+            curl_setopt($curl, CURLOPT_URL, $remote_url);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+            curl_exec ($curl);
+            curl_close($curl);
+            fclose($fp);
+            if (file_exists($localfile)) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
