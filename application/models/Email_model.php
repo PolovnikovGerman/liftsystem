@@ -1605,6 +1605,7 @@ class Email_model extends My_Model
                 'mailpath' => '/usr/sbin/sendmail',
             );
         }
+        log_message('error','Email Settings '.json_encode($email_conf));
         $this->email->initialize($email_conf);
         $this->email->to($mail_options['touser']);
         $this->email->from($mail_options['fromuser']);
