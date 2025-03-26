@@ -19,7 +19,7 @@ class Tools extends CI_Controller {
 		$this->load->dbforge();
 
 		// initiate faker
-		$this->faker = Faker\Factory::create();
+		// $this->faker = Faker\Factory::create();
 	}
 
 	public function message($to = 'World') {
