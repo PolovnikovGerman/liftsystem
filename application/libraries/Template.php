@@ -210,7 +210,7 @@ class Template
         $this->CI->load->model('orders_model');
         $this->CI->load->model('leadorder_model');
         $this->CI->load->model('user_model');
-        log_message('error','User ID');
+        log_message('error','User ID '.$user_id);
         $usrdat=$this->CI->user_model->get_user_data($user_id);
         log_message('error','User Data'.json_encode($usrdat));
         $ord_data=$res['order'];
