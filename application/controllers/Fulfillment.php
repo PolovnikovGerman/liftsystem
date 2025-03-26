@@ -54,6 +54,10 @@ class Fulfillment extends MY_Controller
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
 
         $content_options = [];
+        $gmaps = 0;
+        if (!empty($this->config->item('google_map_key'))) {
+            $gmaps = 1;
+        }
         $content_options['start'] = $this->input->get('start', TRUE);
         foreach ($menu as $row) {
             if ($row['item_link']=='#vendorsview') {
@@ -65,9 +69,14 @@ class Fulfillment extends MY_Controller
                 $head['scripts'][]=array('src'=>'/js/fulfillment/postatus.js');
                 $content_options['fullfilstatusview'] = $this->_prepare_status_view($brand);
             } elseif ($row['item_link']=='#pototalsview') {
-                $head['styles'][]=array('style'=>'/css/accounting/pototals.css');
-                $head['scripts'][]=array('src'=>'/js/accounting/pototals.js');
-                $content_options['pototalsview'] = $this->_prepare_purchaseorders_view($brand);
+                // $head['styles'][]=array('style'=>'/css/accounting/pototals.css');
+                // $head['scripts'][]=array('src'=>'/js/accounting/pototals.js');
+                $head['styles'][]=array('style'=>'/css/accounting/pooverview.css');
+                $head['styles'][]=array('style'=>'/css/accounting/pohistory.css');
+                $head['scripts'][]=array('src'=>'/js/accounting/pooverview.js');
+                $head['scripts'][]=array('src'=>'/js/accounting/pohistory.js');
+                $content_options['pototalsview'] = $this->_prepare_pooverview($brand);
+                // $this->_prepare_purchaseorders_view($brand);
             } elseif ($row['item_link']=='#printshopinventview') {
                 // $head['styles'][]=array('style'=>'/css/fulfillment/inventory.css');
                 // $head['scripts'][]=array('src'=>'/js/fulfillment/inventory.js');
@@ -87,6 +96,26 @@ class Fulfillment extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/fulfillment/printshopreportview.css');
                 $head['scripts'][] = array('src'=>'/js/fulfillment/printshopreportview.js');
                 $content_options['printshopreportview'] = $this->_prepare_printshop_report($brand);
+            } elseif ($row['item_link']=='#printscheduleview') {
+                $head['styles'][]=array('style'=>'/css/fulfillment/printscheduler.css');
+                $head['scripts'][] = array('src'=>'/js/fulfillment/printscheduler.js');
+                $content_options['printschedulerview'] = $this->_prepare_printscheduler_view($brand);
+            } elseif ($row['item_link']=='#btitems') {
+                $head['styles'][] = array('style' => '/css/database_center/btitemslist.css');
+                $head['scripts'][] = array('src' => '/js/database_center/btitemlist.js');
+                $head['styles'][] = array('style' => '/css/database_center/btitemdetails.css');
+                $head['scripts'][] = array('src' => '/js/database_center/btitemdetails.js');
+                $head['styles'][] = array('style' => '/css/page_view/popover.css');
+                $head['scripts'][] = array('src' => '/js/adminpage/popover.js');
+                $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
+                $content_options['btitemsview'] = $this->_prepare_btitemdata_view();
+            } elseif ($row['item_link']=='#sritems') {
+                $head['styles'][]=array('style'=>'/css/database_center/relivitemlist.css');
+                $head['scripts'][]=array('src'=>'/js/database_center/relivitemlist.js');
+                $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
+                $head['styles'][] = array('style' => '/css/database_center/relieveitemdetails.css');
+                $head['scripts'][]=array('src' => '/js/database_center/relieveitemdetails.js');
+                $content_options['sritemsview'] = $this->_prepare_sritems_content();
             }
         }
         $content_options['menu'] = $menu;
@@ -103,6 +132,15 @@ class Fulfillment extends MY_Controller
         $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
         // Scroll panel
         $head['scripts'][] = array('src' => '/js/adminpage/jquery-scrollpanel.js');
+        // Order popup
+        $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
+        $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
+        if ($gmaps==1) {
+            $head['scripts'][]=array('src'=>'/js/leads/order_address.js');
+        }
+        // Select 2
+        $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
+        $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
 
         $options = [
             'title' => $head['title'],
@@ -1602,12 +1640,12 @@ class Fulfillment extends MY_Controller
                 $error = '';
                 $data=$res['data'];
                 // Get Items for dropdown
-                $items=$this->inventory_model->get_printshopitem_list();
+                // $items=$this->inventory_model->get_printshopitem_list();
                 // Get Colors of Item
-                $colors=$this->inventory_model->get_item_colors($data['inventory_item_id']);
+                // $colors=$this->inventory_model->get_item_colors($data['inventory_item_id']);
                 $sessionid='order'.uniq_link(15);
-                $data['items']=$items;
-                $data['colors']=$colors;
+                // $data['items']=$items;
+                // $data['colors']=$colors;
                 $data['session']=$sessionid;
                 $data['showorange'] = $showorange;
                 $data['title'] = $res['title'];
@@ -2211,6 +2249,109 @@ class Fulfillment extends MY_Controller
             'express_leftview' => $express_leftview,
         ];
         $content = $this->load->view('masterinvent/page_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_printscheduler_view($brand)
+    {
+        // Prepare t
+        $this->load->model('printscheduler_model');
+
+        $res = $this->printscheduler_model->get_printsheduler_totals('ALL');
+        $res['brand'] = $brand;
+        $content = $this->load->view('printscheduler/page_view', $res, true);
+        return $content;
+    }
+
+    private function _prepare_pooverview($brand)
+    {
+//        $inner = 0;
+        $this->load->model('orders_model');
+        // Get PO Years
+        $years = $this->orders_model->get_pohistory_years($brand);
+        $curyear = 0;
+        $slider_width = count($years) * 62;
+        $slider_active = count($years) > 10 ? 1 : 0;
+        if (count($years) > 0) {
+            $curyear = $years[0]['year'];
+        }
+        $options = [
+            'brand' => $brand,
+            'years' => $years,
+            'curyear' => $curyear,
+            'slider_width' => $slider_width,
+            'slider_active' => $slider_active,
+        ];
+        return $this->load->view('pooverview/page_view',$options,TRUE);
+
+    }
+
+    private function _prepare_btitemdata_view() {
+        $brand = 'BT';
+        $this->load->model('items_model');
+        $this->load->model('vendors_model');
+        $this->load->model('categories_model');
+        $categories = $this->categories_model->get_reliver_categories(['brand'=>'BT']);
+        // Check items
+        $idx=0;
+        foreach ($categories as $category) {
+            if ($category['category_active']==0) {
+                $cntitems = $this->items_model->get_items_count(['brand' => 'BT', 'category_id' => $category['category_id']]);
+                if ($cntitems > 0) {
+                    $categories[$idx]['category_active'] = 1;
+                    // Update categories
+                    $this->categories_model->activate_reliver_categories($category['category_id']);
+                }
+            }
+        }
+        $activcategory = 0;
+        foreach ($categories as $category) {
+            if ($category['category_active']==1) {
+                $activcategory = $category['category_id'];
+                $activcategory_label = $category['category_code'].' - '.$category['category_name'];
+                break;
+            }
+        }
+        if ($activcategory == 0) {
+            $activcategory = $categories[0]['category_id'];
+            $activcategory_label = $categories[0]['category_code'].' - '.$categories[0]['category_name'];
+        }
+        $brandtotal = $this->items_model->get_items_count(['brand' => 'BT']);
+        $cntitems = $this->items_model->get_items_count(['brand' => 'BT', 'category_id' => $activcategory]);
+
+        $options = [
+            'perpage' => 250,
+            'order' => 'item_number',
+            'direct' => 'asc',
+            'totals' =>  $cntitems,
+            'brand' => $brand,
+            'vendors' => $this->vendors_model->get_vendors(),
+            'categories' => $categories,
+            'category_id' => $activcategory,
+            'category_label' => $activcategory_label,
+            'brandtotal' => $brandtotal,
+        ];
+        $content = $this->load->view('btitems/itemslist_view', $options, TRUE);
+        return $content;
+    }
+
+    private function _prepare_sritems_content() {
+        $this->load->model('categories_model');
+        $this->load->model('items_model');
+        $this->load->model('vendors_model');
+        $categories = $this->categories_model->get_reliver_categories(['brand'=>'SR']);
+        $activcategory = $categories[0]['category_id'];
+        $activcategory_label = $categories[0]['category_code'].' - '.$categories[0]['category_name'];
+        $cntitems = $this->items_model->get_items_count(['brand' => 'SR', 'category_id' => $activcategory]);
+        $vendors = $this->vendors_model->get_vendors();
+        $options = [
+            'categories' => $categories,
+            'totals' => $cntitems,
+            'category_id' => $activcategory,
+            'category_label' => $activcategory_label,
+            'vendors' => $vendors,
+        ];
+        $content = $this->load->view('relieveritems/page_view', $options,TRUE);
         return $content;
     }
 

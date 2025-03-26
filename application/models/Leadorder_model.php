@@ -451,8 +451,13 @@ Class Leadorder_model extends My_Model {
             return $out;
         }
 
-        if ($res['order_cog']=='') {
+        // if ($res['order_cog']=='') {
+        if ($res['profit_perc']==null) {
             $res['profit_class']=$this->project_class;
+            // Build completed & project
+            $profitproj = $this->get_profitproj_order($order_id);
+            $res['profit_completed'] = $profitproj['completed'];
+            $res['profit_project'] = $profitproj['project'];
         } else {
             $res['profit_class']=orderProfitClass($res['profit_perc']);
         }
@@ -785,6 +790,8 @@ Class Leadorder_model extends My_Model {
             $data['showbilladdress']=1;
         }
         $data['brand'] = $brand;
+        $data['profit_completed'] = 0;
+        $data['profit_project'] = $this->config->item('default_profit');
         $out['order_system_type']=$defsystem;
         $out['order']=$data;
         $out['numtickets']=0;
@@ -5207,6 +5214,7 @@ Class Leadorder_model extends My_Model {
             $this->db->set('create_date',time());
             $this->db->set('brand', $data['brand']);
 //            $this->db->set('customer_code',new_customer_code());
+            $this->db->set('print_date', $data['shipdate']);
             $this->db->insert('ts_orders');
             if ($this->db->insert_id()==0) {
                 $res['msg']='Error during save order data';
@@ -9516,6 +9524,184 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 
+    public function get_leadorder_projamounts($order_id)
+    {
+        $this->db->select('revenue, shipping, tax, order_cog, profit, profit_perc, cc_fee, shipdate, print_date, order_qty, is_shipping');
+        $this->db->from('ts_orders');
+        $this->db->where('order_id', $order_id);
+        $orddata = $this->db->get()->row_array();
+        $out=[];
+        $out['revenue'] = $orddata['revenue'];
+        if ($orddata['profit_perc']===NULL) {
+            $out['cogclass'] = 'project';
+        } else {
+            $out['cogclass'] = orderProfitClass($orddata['profit_perc']);
+        }
+        $expens = [];
+        if (!empty(floatval($orddata['shipping']))) {
+            $expens[] = [
+                'label' => 'Shipping',
+                'value' => $orddata['shipping'],
+                'proc' => round($orddata['shipping']/$orddata['revenue']*100,2),
+            ];
+        }
+        if (!empty(floatval($orddata['tax']))) {
+            $expens[] = [
+                'label' => $this->config->item('salesnewtax').'% Tax',
+                'value' => $orddata['tax'],
+                'proc' => round($orddata['tax']/$orddata['revenue']*100,2),
+            ];
+        }
+        if (!empty(floatval($orddata['cc_fee']))) {
+            $this->db->select('sum(batch_amount) as b_amnt, sum(batch_vmd) b_vmd, sum(batch_amex) as b_amex, count(batch_id) cnt');
+            $this->db->from('ts_order_batches');
+            $this->db->where('order_id', $order_id);
+            $this->db->where('(batch_vmd > 0 or batch_amex > 0)');
+            $batchres = $this->db->get()->row_array();
+            $label = '2.11% CC Fee';
+            if ($batchres['cnt'] > 0 && $batchres['b_amnt'] != 0) {
+                $percent = round(($batchres['b_amnt'] - $batchres['b_vmd'] - $batchres['b_amex'])/$batchres['b_amnt']*100,2);
+                if ($percent > 2.12 && $percent < 3.25) {
+                    $label = '2.2% CC Fee';
+                } elseif($percent >=3.25) {
+                    $label = '3.25% CC Fee';
+                }
+            } else {
+                $percent = round($orddata['cc_fee']/$orddata['revenue']*100,2);
+                if ($percent > 2.12 && $percent < 3.25) {
+                    $label = '2.2% CC Fee';
+                } elseif ($percent >= 3.25) {
+                    $label = '3.25% CC Fee';
+                }
+            }
+
+            $expens[] = [
+                'label' => $label,
+                'value' => $orddata['cc_fee'],
+                'proc' => round($orddata['cc_fee']/$orddata['revenue']*100,2),
+            ];
+        }
+        $out['costs'] = $expens;
+        $out['cog_value'] = $orddata['revenue'] - $orddata['profit'];
+        $out['cog_proc'] = round($out['cog_value'] / $orddata['revenue'] * 100,2);
+        $out['profit_value'] = $orddata['profit'];
+        $out['profit_proc'] = round($orddata['profit'] / $orddata['revenue'] * 100,2);
+        $out['order_id'] = $order_id;
+        $out['print_date'] = (empty($orddata['print_date'])? $orddata['shipdate'] : $orddata['print_date']);
+        $out['order_qty'] = $orddata['order_qty'];
+        $out['amount_sum'] = $orddata['revenue'] - $orddata['profit'] - $orddata['shipping'] - $orddata['cc_fee'] - $orddata['tax'];
+        $this->db->select('ic.order_itemcolor_id, ic.item_description, ic.item_color, ic.item_qty, ic.item_price, i.vendor_id, i.item_id');
+        $this->db->from('ts_order_itemcolors ic');
+        $this->db->join('ts_order_items oi','ic.order_item_id=oi.order_item_id');
+        $this->db->join('v_itemsearch i','i.item_id=oi.item_id');
+        $this->db->where('oi.order_id', $order_id);
+        $amnts=$this->db->get()->result_array();
+        $restqty = $orddata['order_qty'];
+        $itemtype = '';
+        $completed = 0;
+        $list = [];
+        foreach ($amnts as $amnt) {
+            $restlistqty = $amnt['item_qty'];
+            if ($itemtype=='') {
+                if ($amnt['item_id']==$this->config->item('custom_id')) {
+                    $itemtype = 'CUSTOM';
+                } elseif ($amnt['vendor_id']==$this->config->item('inventory_vendor')) {
+                    $itemtype = 'INTERNAL';
+                } else {
+                    $itemtype = 'DROPSHIP';
+                }
+            }
+            $listprofit = round($amnt['item_qty']*$amnt['item_price']*$this->config->item('default_profit')/100,2);
+            $this->db->select('oa.amount_id, oa.amount_date, oa.printshop, v.vendor_name, oa.amount_sum, oa.shipped, oa.price, p.method_name');
+            $this->db->from('ts_order_amounts oa');
+            $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
+            $this->db->join('purchase_methods p','p.method_id=oa.method_id','left');
+            $this->db->where('oa.order_itemcolor_id', $amnt['order_itemcolor_id']);
+            $this->db->order_by('oa.amount_date');
+            $listdats=$this->db->get()->result_array();
+            $listamnts = [];
+            $listproject = [];
+            $totalamnt = 0;
+            foreach ($listdats as $listdat) {
+                $listamnts[] = [
+                    'amount_id' => $listdat['amount_id'],
+                    'qty' => $listdat['shipped'],
+                    'price' => $listdat['price'],
+                    'amount_date' => $listdat['amount_date'],
+                    'type' => $listdat['printshop']==1 ? 'Print Shop' : ($listdat['shipped']==0 ? 'Other' : 'Item PO'),
+                    'vendor' => $listdat['vendor_name'],
+                    'payment_method' => $listdat['method_name'],
+                    'amount' => $listdat['amount_sum'],
+                    'profit_perc' => round($listdat['amount_sum']/$orddata['revenue']*100,2),
+                    'printshop' => $listdat['printshop'],
+                    'is_shipping' => $orddata['is_shipping'],
+                ];
+                $restlistqty-=$listdat['shipped'];
+                $listprofit-=$listdat['amount_sum'];
+                $restqty-=$listdat['shipped'];
+                $totalamnt+=$listdat['amount_sum'];
+            }
+
+            if ($restlistqty > 0) {
+                if ($itemtype=='INTERNAL') {
+                    $listproject[] = [
+                        'amount_id' => '',
+                        'qty' => $restlistqty,
+                        'amount_date' => '',
+                        'type' => 'PRINT SHOP',
+                        'vendor' => '',
+                        'payment_method' => 'Projected:',
+                        'amount' => $listprofit,
+                        'profit_perc' => round($listprofit/$orddata['revenue']*100,2),
+                    ];
+                }
+            }
+            if ($restlistqty <= 0) {
+                $completed = 1;
+            }
+            $amnt['details'] = $listamnts;
+            $amnt['projects'] = $listproject;
+            $amnt['totalamnt'] = $totalamnt;
+            $list[] = $amnt;
+        }
+        $out['list'] = $list;
+        $out['itemtype'] = $itemtype;
+        $out['completed'] = $completed;
+        // Profit Options
+        $profoptions = [
+            'order_id'=>$order_id,
+            'bgcolor' => '#FFFFFF',
+            'hitcolor' => '#000000',
+            'profit_view'=>'',
+            'edit_mode' => 0,
+            'profit' => $orddata['profit'],
+            'profit_perc' => $orddata['profit_perc'],
+        ];
+        if (empty($orddata['profit_perc'])) {
+            $profoptions['profit_class'] = 'project';
+            $profdata = $this->get_profitproj_order($order_id);
+            $profoptions['profit_completed'] = $profdata['completed'];
+            $profoptions['profit_project'] = $profdata['project'];
+        } else {
+            $profoptions['profit_class'] = $out['cogclass'];
+//            if ($classprof=='green') {
+//                $profoptions['bgcolor']='#00e947';
+//            } elseif ($classprof=='red') {
+//                $profoptions['bgcolor']='#ff0000';
+//                $profoptions['hitcolor']='#ffffff';
+//            } elseif ($classprof=='black') {
+//                $profoptions['bgcolor']='#000000';
+//                $profoptions['hitcolor']='#ffffff';
+//            } elseif ($classprof=='orange') {
+//                $profoptions['bgcolor']='#ea8a0e';
+//            } elseif ($classprof=='moroon') {
+//                $profoptions['bgcolor']='#6d0303';
+//                $profoptions['hitcolor']='#ffffff';
+        }
+        $out['profit'] = $profoptions;
+        return $out;
+    }
+
     private function _emptyzip_notification($leadorder, $user_id) {
         $this->load->library('email');
         $this->db->select('user_name');
@@ -10143,15 +10329,145 @@ Class Leadorder_model extends My_Model {
             $out['msg'] = $res['msg'];
             if ($res['result']==$this->success_result) {
                 $out['result'] = $this->success_result;
-                $out['amount'] = $res['data'];
-                $this->load->model('orders_model');
-                $out['order'] = $this->orders_model->get_order_detail($order['order_id']);
+                $amount = $res['data'];
+                $amount['type'] = $amount['printshop']==1 ? 'Print Shop' : ($amount['shipped']==0 ? 'Other' : 'Item PO');
+                $out['amount'] = $amount;
+//                $colorid = $res['data']['order_itemcolor_id'];
+//                $order_items = $leadorder['order_items'];
+//                // search
+//                $find = 0;
+//                foreach ($order_items as $order_item) {
+//                    $colors = $order_item['items'];
+//                    foreach ($colors as $color) {
+//                        if ($color['item_id']==$colorid) {
+//                            $find = 1;
+//                            $colordata = $color;
+//                            break;
+//                        }
+//                    }
+//                }
+//                if ($find==1) {
+//                    $this->load->model('orders_model');
+//                    $out['order'] = $this->orders_model->get_order_detail($order['order_id']);
+//                    $out['itemcolor'] = $colordata;
+//                } else {
+//                    $out['result'] = $this->error_result;
+//                }
             }
             usersession($ordersession, $leadorder);
         }
         return $out;
     }
 
+    public function add_amount($ordercolor, $user_id, $editmode, $leadorder, $ordersession)
+    {
+        $out=array('result'=>$this->error_result, 'msg'=>'');
+        if ($editmode==0) {
+            $order = $leadorder['order'];
+            $order_items = $leadorder['order_items'];
+            $find = 0;
+            foreach ($order_items as $order_item) {
+                $colors = $order_item['items'];
+                foreach ($colors as $color) {
+                    if ($color['item_id']==$ordercolor) {
+                        $find = 1;
+                        $colordata = $color;
+                        $item_id = $order_item['item_id'];
+                        $vendor_item = '';
+                        if ($item_id > 0) {
+                            $vendor_item = $order_item['vendor_item_id'];
+                        }
+                        break;
+                    }
+                }
+            }
+            if ($find==1) {
+                $vendor_id = $order['vendor_id'];
+                $vendor_cost = 0;
+                if (!empty($vendor_item)) {
+                    $venditemdat = $this->db->select('vendor_item_id, vendor_item_vendor, vendor_item_cost')->from('sb_vendor_items')->where('vendor_item_id', $vendor_item)->get()->row_array();
+                    if (ifset($venditemdat,'vendor_item_id',0)==$vendor_item) {
+                        $vendor_id = $venditemdat['vendor_item_vendor'];
+                        $vendor_cost = $venditemdat['vendor_item_cost'];
+                    }
+                }
+                $amount_data=array(
+                    'amount_id'=>0,
+                    'order_id'=>$order['order_id'],
+                    'order_itemcolor_id' => $ordercolor,
+                    'amount_date'=>time(),
+                    'amount_sum' => 0,
+                    'shipped' => '',
+                    'shipped_price' => $vendor_cost,
+                    'oldamount_sum' => 0,
+                    'vendor_id' => $vendor_id,
+                    'method_id'=>'',
+                    'is_shipping'=> $order['is_shipping'],
+                    'lowprofit'=>'',
+                    'reason'=>'',
+                    'type' => '',
+                );
+                $out['result'] = $this->success_result;
+                $out['amount'] = $amount_data;
+                $out['order'] = $order;
+                $out['itemcolor'] = $colordata;
+            }
+        }
+        usersession($ordersession, $leadorder);
+        return $out;
+    }
+
+    public function poamountchange($amntdata, $session, $fldname, $fldval)
+    {
+        $out=['result'=>$this->error_result, 'msg'=>'Unknown Field'];
+        if (array_key_exists($fldname, $amntdata)) {
+            if ($fldname=='amount_date') {
+                if (!empty($fldval)) {
+                    $fldval = strtotime($fldval);
+                }
+            }
+            $amntdata[$fldname] = $fldval;
+            $out['result'] = $this->success_result;
+//            $finchange = 0;
+//            if ($fldname=='shipped' || $fldname=='shipped_price' || $fldname=='amount_sum') {
+//                $finchange = 1;
+//                if (intval($amntdata['shipped'])==0) {
+//                    $amntdata['shipped_price'] = '';
+//                } else {
+//                    if ($fldname=='amount_sum') {
+//                        $amntdata['shipped_price'] = round(floatval($amntdata['amount_sum']) / intval($amntdata['shipped']),3);
+//                    } elseif ($fldname=='shipped_price') {
+//                        $amntdata['amount_sum'] = round(intval($amntdata['shipped']) * floatval($amntdata['shipped_price']),2);
+//                    } elseif ($fldname=='shipped') {
+//                        if (!empty($amntdata['shipped_price'])) {
+//                            $amntdata['amount_sum'] = round(intval($amntdata['shipped']) * floatval($amntdata['shipped_price']),2);
+//                        }
+//                    }
+//                }
+//                $out['price'] = $amntdata['shipped_price'];
+//                $out['total'] = $amntdata['amount_sum'];
+//            }
+//            $out['finchange'] = $finchange;
+            usersession($session, $amntdata);
+        }
+        return $out;
+    }
+
+    public function save_poamount($sessiondata, $session, $user_id)
+    {
+        $out=array('result'=>$this->error_result, 'msg'=>'');
+        $this->load->model('payments_model');
+        $res = $this->payments_model->save_purchase_order($sessiondata, $user_id);
+        $out['msg'] = $res['msg'];
+        if ($res['result']==$this->success_result) {
+            $out['result'] = $this->success_result;
+            $out['order_id'] = $sessiondata['order_id'];
+            usersession($session, NULL);
+        }
+        return $out;
+    }
+
+    // Old save amount
     public function amount_save($amntdata, $user_id, $editmode, $leadorder, $ordersession) {
         $out=array('result'=>$this->error_result, 'msg'=>'');
         if ($editmode==0) {
@@ -10182,6 +10498,7 @@ Class Leadorder_model extends My_Model {
         }
         return $out;
     }
+
     public function change_order_rushpast($leadorder, $newval, $ordersession) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message, 'fin'=>0);
         $this->load->model('shipping_model');
@@ -11434,6 +11751,24 @@ Class Leadorder_model extends My_Model {
             }
         }
         return $outcolor;
+    }
+
+    public function get_profitproj_order($order_id)
+    {
+        $out = ['completed' => 0, 'project' => $this->config->item('default_profit')];
+        $ordres = $this->db->select('revenue, profit, shipping, cc_fee')->from('ts_orders')->where('order_id', $order_id)->get()->row_array();
+        $cog = $ordres['revenue']-$ordres['profit']-$ordres['shipping']-$ordres['cc_fee'];
+        $itmres = $this->db->select('count(oic.order_itemcolor_id) as cnt, sum(oic.item_qty) itemqty, sum(oic.item_qty*oic.item_price) as itemtotal')->from('ts_order_itemcolors oic')
+            ->join('ts_order_items toi', 'oic.order_item_id = toi.order_item_id')->where('toi.order_id', $order_id)->get()->row_array();
+        $amntres = $this->db->select('count(oa.amount_id) as cnt, sum(oa.shipped) as itemqty, sum(oa.amount_sum) as itemtotal')->from('ts_order_amounts oa')->join('ts_order_itemcolors toi','oa.order_itemcolor_id = toi.order_itemcolor_id')
+        ->join('ts_order_items item', 'toi.order_item_id = item.order_item_id')->where('item.order_id', $order_id)->get()->row_array();
+        if ($amntres['cnt'] > 0 && $itmres['itemqty'] > 0) {
+            $out['completed'] = round($amntres['itemqty']/$itmres['itemqty']*100,0);
+        }
+        if ($amntres['cnt'] > 0 && $cog != 0) {
+            $out['project'] = round(($cog - $amntres['itemtotal']) / $cog * 100,2);
+        }
+        return $out;
     }
 }
 /* End of file leadorder_model.php */

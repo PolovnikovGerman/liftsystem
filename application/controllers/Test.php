@@ -3978,6 +3978,12 @@ class Test extends CI_Controller
         }
     }
 
+    public function updateprintdate()
+    {
+        $this->load->model('orders_model');
+        $this->orders_model->order_schedule_transform();
+    }
+
     public function emaillist()
     {
         $orders = $leads = $signup = [];
@@ -4037,6 +4043,13 @@ class Test extends CI_Controller
         $writer = new Xlsx($spreadsheet); // instantiate Xlsx
         $writer->save($filenorm);    // download file
         echo 'File '.$filenorm.' ready'.PHP_EOL;
+    }
+
+    public function order_invamount_transform()
+    {
+        $this->load->model('orders_model');
+        // $this->orders_model->order_invamount_srtransform();
+        $this->orders_model->order_invamount_sbtransform();
     }
 
     public function customleads()

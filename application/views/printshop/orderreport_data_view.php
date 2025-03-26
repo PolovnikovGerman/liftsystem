@@ -2,9 +2,13 @@
 <?php foreach ($orders as $row) { ?>
 <div class="datarow <?=$numpp%2==0 ? 'greydatarow' : 'whitedatarow'?> <?=$row['orderclass']?>" data-report="<?=$row['printshop_income_id']?>">
     <div class="numpp"><?=$row['numpp']?></div>
-    <div class="delrecord" data-reportnum="<?=$row['order_num']?>" data-report="<?=$row['printshop_income_id']?>">
-    <i class="fa fa-trash" aria-hidden="true"></i>
-    </div>
+    <?php if ($row['shipping_ready'] > 0) : ?>
+        <div class="lockdelete">&nbsp;</div>
+    <?php else: ?>
+        <div class="delrecord" data-reportnum="<?=$row['order_num']?>" data-report="<?=$row['printshop_income_id']?>">
+            <i class="fa fa-trash" aria-hidden="true"></i>
+        </div>
+    <?php endif; ?>
     <div class="orderdate"><?=$row['order_date']?></div>
     <div class="ordernum editorderreport" data-report="<?=$row['printshop_income_id']?>" data-profitview="/fulfillment/ordereport_profit?d=<?=$row['order_id']?>&amnt=<?=$row['printshop_income_id']?>">
         <?=$row['order_num']?>

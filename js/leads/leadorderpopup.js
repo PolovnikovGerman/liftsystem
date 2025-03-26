@@ -55,6 +55,9 @@ function navigation_init() {
                 } else {
                     init_accounts_receivable();
                 }
+            } else if (callpage=='pooverview') {
+                // PO Overview
+                init_pooverview();
             }
         }
         $('.modal-backdrop').hide();
@@ -470,6 +473,9 @@ function init_onlineleadorder_edit() {
 /*            } else {
             var curpage=$("input#leadorderpage").val();
             pageLeadorderCallback(curpage); */
+        } else if (callpage == 'pooverview') {
+            // PO Overview
+            init_pooverview();
         }
     });
     // Calendar call
@@ -3970,70 +3976,103 @@ function init_orderbottom_content(edit_mode) {
             }            
         },'json');
     });    
-    // $("div.shippingdataviewarea").unbind('click').click(function(){
-    //     var url="/leadorder/shiptracks_show";
-    //     var params=new Array();
-    //     params.push({name: 'ordersession', value: $("input#ordersession").val()});
-    //     $.post(url, params, function(response){
-    //         if (response.errors=='') {
-    //             $("#artNextModal").find('div.modal-dialog').css('width','925px');
-    //             $("#artNextModal").find('.modal-title').empty().html('Shipping Track Codes');
-    //             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
-    //             $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
-    //             $("#artNextModal").on('hidden.bs.modal', function (e) {
-    //                 $(document.body).addClass('modal-open');
-    //             })
-    //             init_orderstatus_change(edit_mode);
-    //             $("input#loctimeout").val(response.data.loctime);
-    //             init_onlineleadorder_edit();
-    //         } else {
-    //             show_error(response);
-    //         }
-    //     },'json');
-    // });
     // Profit
-    $("div.profitdetailsviewarea").qtip({
-        content : {
-            text: function(event, api) {
-                $.ajax({
-                    // url: href // Use href attribute as URL
-                    // url: api.elements.target.data('viewsrc') // Use href attribute as URL
-                    url: $(this).data('viewsrc')
-                }).then(function(content) {
-                    // Set the tooltip content upon successful retrieval
-                    api.set('content.text', content);
-                    init_profitedit_call(edit_mode);
-                }, function(xhr, status, error) {
-                    // Upon failure... set the tooltip content to error
-                    api.set('content.text', status + ': ' + error);
-                });
-                return 'Loading...'; // Set some initial text
+    // $("div.profitdetailsviewarea").qtip({
+    //     content : {
+    //         text: function(event, api) {
+    //             $.ajax({
+    //                 url: $(this).data('viewsrc')
+    //             }).then(function(content) {
+    //                 // Set the tooltip content upon successful retrieval
+    //                 api.set('content.text', content);
+    //                 init_profitedit_call(edit_mode);
+    //             }, function(xhr, status, error) {
+    //                 // Upon failure... set the tooltip content to error
+    //                 api.set('content.text', status + ': ' + error);
+    //             });
+    //             return 'Loading...'; // Set some initial text
+    //         }
+    //     },
+    //     position: {
+    //         my: 'bottom left',
+    //         at: 'top right',
+    //     },
+    //     style: {
+    //         classes: 'qtip-dark profitdetails_tooltip'
+    //     },
+    //     show: 'click',
+    //     hide: 'unfocus'
+    // });
+    $("div.profitdetailsviewarea").unbind('click').click(function (){
+        var order = $(this).data('order');
+        var edit_mode = $(this).data('editmode');
+        var cogoptions = new Array();
+        cogoptions.push({name: 'order', value: order });
+        cogoptions.push({name: 'edit', value: edit_mode});
+        cogoptions.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var cogurl = '/leadorder/podetailsedit';
+        $.post(cogurl, cogoptions, function (cogresponse){
+            if (cogresponse.errors=='') {
+                $(".orderamountdetailsarea").empty().html(cogresponse.data.content).show();
+                // Init content management
+                init_profitedit_call(edit_mode);
+            } else {
+                show_error(cogresponse);
             }
-        },
-        position: {
-            // my: 'bottom right',
-            // at: 'middle left',
-            my: 'bottom left',
-            at: 'top right',
-        },
-        style: {
-            classes: 'qtip-dark profitdetails_tooltip'
-        },
-        // show: {
-            // effect: function() { $(this).fadeIn(250); }
-        // },
-        show: 'click',
-        // hide: {
-        //    delay: 200,
-        //     fixed: true, // <--- add this
-        //    effect: function() { $(this).fadeOut(250); }
-        // },
-        hide: 'unfocus'
+        },'json');
     });
-
+    // Profit
+    // $("div.profitprojectdetailsviewarea").qtip({
+    //     content : {
+    //         text: function(event, api) {
+    //             $.ajax({
+    //                 url: $(this).data('viewsrc')
+    //             }).then(function(content) {
+    //                 // Set the tooltip content upon successful retrieval
+    //                 api.set('content.text', content);
+    //                 init_profitedit_call(edit_mode);
+    //             }, function(xhr, status, error) {
+    //                 // Upon failure... set the tooltip content to error
+    //                 api.set('content.text', status + ': ' + error);
+    //             });
+    //             return 'Loading...'; // Set some initial text
+    //         }
+    //     },
+    //     position: {
+    //         my: 'bottom left',
+    //         at: 'top left',
+    //     },
+    //     style: {
+    //         classes: 'qtip-dark profitprojectdetails_tooltip'
+    //     },
+    //     show: 'click',
+    //     hide: 'unfocus'
+    // });
+    $("div.profitprojectdetailsviewarea").unbind('click').click(function (){
+        var order = $(this).data('order');
+        var edit_mode = $(this).data('editmode');
+        var cogoptions = new Array();
+        cogoptions.push({name: 'order', value: order });
+        cogoptions.push({name: 'edit', value: edit_mode});
+        cogoptions.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var cogurl = '/leadorder/podetailsedit';
+        $.post(cogurl, cogoptions, function (cogresponse){
+            if (cogresponse.errors=='') {
+                $(".orderamountdetailsarea").empty().html(cogresponse.data.content).show();
+                // Init content management
+                init_profitedit_call(edit_mode);
+            } else {
+                show_error(cogresponse);
+            }
+        },'json');
+    });
 }
 
 function init_profitedit_call(edit_mode) {
+    $(".ordercogdetailsviewclose").unbind('click').click(function(){
+        $(".orderamountdetailsarea").hide().empty();
+        init_orderbottom_content(edit_mode);
+    });
     $(".editamount").unbind('click').click(function(){
         var amount = $(this).data('amount');
         // Edit amount
@@ -4045,20 +4084,10 @@ function init_profitedit_call(edit_mode) {
         var url='/leadorder/pototal_edit';
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                $("#artNextModal").find('div.modal-dialog').css('width','500px');
-                $("#artNextModal").find('.modal-title').empty().html('Enter PO Value');
-                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
-                $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
-                $("#artNextModal").on('hidden.bs.modal', function (e) {
-                    $(document.body).addClass('modal-open');
-                })
-                // Date picker
+                $(".tabledatasection[data-amount='"+amount+"']").empty().html(response.data.content);
                 $("input#podateinpt").datepicker({
                     autoclose: true,
                     todayHighlight: true,
-                }).on("change", function() {
-                    show_amountchangesave();
-                    save_amntchangedetails('amount_date', $(this).val());
                 });
                 init_pochange(edit_mode);
             } else {
@@ -4067,7 +4096,7 @@ function init_profitedit_call(edit_mode) {
         },'json');
     });
     $(".delamount").unbind('click').click(function(){
-        $(".profitdetails_tooltip").hide();
+        // $(".profitdetails_tooltip").hide();
         if (confirm('Delete PO Total?')==true) {
             var amount = $(this).data('amount');
             // Delete amount
@@ -4079,55 +4108,219 @@ function init_profitedit_call(edit_mode) {
             $.post(url, params, function (response){
                 if (response.errors=='') {
                     // Change content
-                    $("#leadorderprofitarea").empty().html(response.data.content);
-                    init_orderbottom_content(edit_mode);
+                    $(".orderamountdetailsarea").empty().html(response.data.content);
+                    $("#leadorderprofitarea").empty().html(response.data.profit);
+                    // Init content management
+                    init_profitedit_call(edit_mode);
+                } else {
+                    show_error(response);
                 }
             },'json')
         }
-    })
+    });
+    $(".placepo.active").unbind('click').click(function(){
+        var color = $(this).data('order');
+        // $(".profitdetails_tooltip").hide();
+        var params = new Array();
+        params.push({name: 'ordercolor', value: color});
+        params.push({name: 'editmode', value: edit_mode});
+        params.push({name:'ordersession', value: $("input#ordersession").val()});
+        var url='/leadorder/pototal_add';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                // Date picker
+                $(".tabledetailsitem[data-order='"+color+"']").append(response.data.content);
+                $("input#podateinpt").datepicker({
+                    autoclose: true,
+                    todayHighlight: true,
+                });
+                $(".placepo[data-order='"+color+"']").hide();
+                init_pochange(edit_mode);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 /* Common Edit INIT */
 function init_pochange(edit_mode) {
-    // Change Ship Check
-    // Add Order Data
-    $("input.amountvalueinpt").unbind('change').change(function () {
-        var newval = $(this).val();
-        show_amountchangesave();
-        save_amntchangedetails('amount_sum', newval);
+    $(".saveamount").unbind('click').click(function(){
+        var params = new Array();
+        params.push({name: 'session', value: $("#amntsession").val()});
+        params.push({name: 'action', value: 'save'});
+        params.push({name: 'edit_mode', value: edit_mode});
+        var url = "/leadorder/poamountaction";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".orderamountdetailsarea").empty().html(response.data.content);
+                // Init content management
+                $("#leadorderprofitarea").empty().html(response.data.profit);
+                init_profitedit_call(edit_mode);
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
-    $("input.po_shipping").unbind('click').click(function () {
-        var value = 0;
-        if ($(this).prop('checked') == true) {
-            value = 1;
-        }
-        show_amountchangesave();
-        save_amntchangedetails('is_shipping', value);
+    $(".cancelamount").unbind('click').click(function(){
+        var params = new Array();
+        params.push({name: 'session', value: $("#amntsession").val()});
+        params.push({name: 'action', value: 'cancel'});
+        params.push({name: 'edit_mode', value: edit_mode});
+        var url = "/leadorder/poamountaction";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".orderamountdetailsarea").empty().html(response.data.content);
+                // Init content management
+                init_profitedit_call(edit_mode);
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
-    $("select.amountvendorselect").unbind('change').change(function () {
-        var newval = $(this).val();
-        show_amountchangesave();
-        save_amntchangedetails('vendor_id', newval);
-    })
-    $("select.amountmethodselect").unbind('change').change(function () {
-        var newval = $(this).val();
-        show_amountchangesave();
-        save_amntchangedetails('method_id', newval);
+    $("input.orderamntqtyinpt").unbind('change').change(function (){
+        var params = new Array();
+        params.push({name: 'session', value: $("#amntsession").val()});
+        params.push({name: 'fldname', value: 'shipped'});
+        params.push({name: 'fldval', value: $("input.orderamntqtyinpt").val()});
+        var url = "/leadorder/poamountchange";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                // if (parseInt(response.data.finchange)==1) {
+                //     $("input.orderamntpriceinpt").val(response.data.price);
+                //     $("input.orderamnttotalinpt").val(response.data.total);
+                // }
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
-    $("textarea#change_comment").unbind('change').change(function () {
-        var newval = $(this).val();
-        show_amountchangesave();
-        save_amntchangedetails('comment', newval);
+    $("input.orderamntpriceinpt").unbind('change').change(function (){
+        var params = new Array();
+        params.push({name: 'session', value: $("#amntsession").val()});
+        params.push({name: 'fldname', value: 'shipped_price'});
+        params.push({name: 'fldval', value: $("input.orderamntpriceinpt").val()});
+        var url = "/leadorder/poamountchange";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                // if (parseInt(response.data.finchange)==1) {
+                //     $("input.orderamntpriceinpt").val(response.data.price);
+                //     $("input.orderamnttotalinpt").val(response.data.total);
+                // }
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
-    $("textarea#po_comment").unbind('change').change(function () {
-        var newval = $(this).val();
-        show_amountchangesave();
-        save_amntchangedetails('low_profit', newval);
+    $("input.orderamntdateinpt").unbind('change').change(function (){
+        var params = new Array();
+        params.push({name: 'session', value: $("#amntsession").val()});
+        params.push({name: 'fldname', value: 'amount_date'});
+        params.push({name: 'fldval', value: $("input.orderamntdateinpt").val()});
+        var url = "/leadorder/poamountchange";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
-    $("div.poamount-save").find('img').unbind('click').click(function () {
-        save_amountchange(edit_mode);
+    $("select.orderamntvendorinpt").unbind('change').change(function (){
+        var params = new Array();
+        params.push({name: 'session', value: $("#amntsession").val()});
+        params.push({name: 'fldname', value: 'vendor_id'});
+        params.push({name: 'fldval', value: $("select.orderamntvendorinpt").val()});
+        var url = "/leadorder/poamountchange";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
+    $("select.orderamntmethodinpt").unbind('change').change(function (){
+        var params = new Array();
+        params.push({name: 'session', value: $("#amntsession").val()});
+        params.push({name: 'fldname', value: 'method_id'});
+        params.push({name: 'fldval', value: $("select.orderamntmethodinpt").val()});
+        var url = "/leadorder/poamountchange";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("input.orderamnttotalinpt").unbind('change').change(function (){
+        var params = new Array();
+        params.push({name: 'session', value: $("#amntsession").val()});
+        params.push({name: 'fldname', value: 'amount_sum'});
+        params.push({name: 'fldval', value: $("input.orderamnttotalinpt").val()});
+        var url = "/leadorder/poamountchange";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                // if (parseInt(response.data.finchange)==1) {
+                //     $("input.orderamntpriceinpt").val(response.data.price);
+                //     $("input.orderamnttotalinpt").val(response.data.total);
+                // }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+
+
+
+    // // Change Ship Check
+    // $("input.amountqtyinpt").unbind('change').change(function () {
+    //     var newval = $(this).val();
+    //     show_amountchangesave();
+    //     save_amntchangedetails('shipped', newval);
+    // });
+    // $("input.amountpriceinpt").unbind('change').change(function () {
+    //     var newval = $(this).val();
+    //     show_amountchangesave();
+    //     save_amntchangedetails('shipped_price', newval);
+    // });
+    // // Add Order Data
+    // $("input.amountvalueinpt").unbind('change').change(function () {
+    //     var newval = $(this).val();
+    //     show_amountchangesave();
+    //     save_amntchangedetails('amount_sum', newval);
+    // });
+    // $("input.po_shipping").unbind('click').click(function () {
+    //     var value = 0;
+    //     if ($(this).prop('checked') == true) {
+    //         value = 1;
+    //     }
+    //     show_amountchangesave();
+    //     save_amntchangedetails('is_shipping', value);
+    // });
+    // $("select.amountvendorselect").unbind('change').change(function () {
+    //     var newval = $(this).val();
+    //     show_amountchangesave();
+    //     save_amntchangedetails('vendor_id', newval);
+    // })
+    // $("select.amountmethodselect").unbind('change').change(function () {
+    //     var newval = $(this).val();
+    //     show_amountchangesave();
+    //     save_amntchangedetails('method_id', newval);
+    // });
+    // $("textarea#change_comment").unbind('change').change(function () {
+    //     var newval = $(this).val();
+    //     show_amountchangesave();
+    //     save_amntchangedetails('comment', newval);
+    // });
+    // $("textarea#po_comment").unbind('change').change(function () {
+    //     var newval = $(this).val();
+    //     show_amountchangesave();
+    //     save_amntchangedetails('low_profit', newval);
+    // });
+    // $("div.poamount-save").find('img').unbind('click').click(function () {
+    //     save_amountchange(edit_mode);
+    // });
 }
+
 
 /* Save in session AMOUNT DETAILS */
 function save_amntchangedetails(fldname, newval) {
@@ -4144,6 +4337,9 @@ function save_amntchangedetails(fldname, newval) {
             if (response.data.profit) {
                 $("div.amountprofitval").empty().html(response.data.profit);
             }
+            $("input.amountqtyinpt").val(response.data.qty);
+            $("input.amountpriceinpt").val(response.data.price);
+            $("input.amountvalueinpt").val(response.data.amount);
             $("div#lowprofitpercreasonarea").empty().html(response.data.reason);
             $("textarea#po_comment").unbind('change').change(function(){
                 var newval=$(this).val();
