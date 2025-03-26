@@ -8942,7 +8942,7 @@ Class Orders_model extends MY_Model
 //            }
 //            echo 'Order # '.$order['order_num'].' updated '.PHP_EOL;
 //        }
-        $this->db->select('oa.amount_id, oa.inventory_color_id, oa.order_id, o.order_num')->from('ts_order_amounts oa')->join('ts_orders o','o.order_id=oa.order_id')->where_in('o.brand',['SB','BT']);
+        $this->db->select('oa.amount_id, oa.inventory_color_id, oa.order_id, o.order_num')->from('ts_order_amounts oa')->join('ts_orders o','o.order_id=oa.order_id');// ->where_in('o.brand',['SB','BT']);
         $this->db->where('oa.order_itemcolor_id', NULL);
         $amounts = $this->db->get()->result_array();
         foreach ($amounts as $amount) {
