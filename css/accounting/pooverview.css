@@ -1,0 +1,311 @@
+.pooverdataview {
+    padding: 5px 13px 13px 13px;
+    width: 1336px;
+}
+.pooverviewtitle {
+    height: 38px;
+    line-height: 38px!important;
+    font-size: 23px;
+    font-weight: 600;
+
+}
+.pohistoryviewlink {
+    float: right!important;
+    color: #575757;
+    font-size: 12px;
+    height: 22px;
+    line-height: 22px!important;
+    padding: 0 8px;
+    border: 1px solid #b5b5b5;
+    border-radius: 5px;
+    background-color: #c8c8c8;
+    margin-top: 8px;
+    cursor: pointer;
+}
+.pohistoryviewlink span {
+    color: #575757;
+    font-size: 14px;
+    margin-left: 3px;
+}
+.pohistoryviewlink:hover {
+    background-color: #b5b5b5;
+}
+.pooverleftpart {
+    width: 585px;
+    margin-right: 34px;
+}
+.pooverrightpart {
+    width: 690px;
+}
+.pooverviewsubtitle {
+    height: 28px;
+    line-height: 28px!important;
+    font-size: 17px;
+    font-weight: 600;
+}
+.poplacehideoldorders {
+    height: 28px;
+    line-height: 28px!important;
+    float: right!important;
+    font-size: 11px;
+}
+.poplacehideoldorders span {
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+.pooverviewdomestictabletitle {
+    width: 100%;
+    background-color: #e6e6e6;
+}
+.pooverviewdomestictabletitle div {
+    height: 22px;
+    line-height: 22px;
+    font-size: 11px;
+    text-align: center;
+}
+.pooverviewdomestictabletitle .rush {
+    margin-left: 22px;
+    width: 38px;
+}
+.pooverviewdomestictabletitle .approved {
+    width: 78px;
+}
+.pooverviewdomestictabletitle .vendor {
+    width: 66px;
+}
+.pooverviewdomestictabletitle .ordernum {
+    width: 45px;
+}
+.pooverviewdomestictabletitle .itemname {
+    width: 223px;
+}
+.pooverviewdomestictabletitle .itemqty {
+    width: 47px;
+}
+.pooverviewdomestictabletitle .remainqty {
+    width: 59px;
+}
+.pooverviewdomestictablearea {
+    border: 2px solid #767676;
+    width: 100%;
+    max-height: 595px;
+    overflow-y: auto;
+}
+.pooverviewdomestictablearea .sectiontitle {
+    height: 20px;
+    line-height: 20px;
+    background-color: #414141;
+    color: #FFFFFF;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    width: 100%;
+    padding-left: 9px;
+}
+.pooverviewdomestictablearea .sectiontitle.rush {
+    color: #FFFFFF;
+    background-color: #b12403;
+}
+.pooverviewdomestictablearea > .datarow > div {
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    font-size: 12px;
+}
+.pooverviewdomestictablearea .numpp {
+    width: 22px;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewdomestictablearea .rush1, .pooverviewdomestictablearea .rush3 {
+    width: 19px;
+    font-size: 14px!important;
+    color: #ff0000;
+}
+.pooverviewdomestictablearea .rushall {
+    width: 38px;
+    font-size: 14px!important;
+    color: #ff0000;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewdomestictablearea .rush3 {
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewdomestictablearea .approved {
+    width: 78px;
+    border-right: 2px solid #b0b0b0;
+    font-size: 11px!important;
+}
+.pooverviewdomestictablearea .approved.notapprove {
+    background-color: #fcfdab;
+}
+.pooverviewdomestictablearea .vendor {
+    width: 64px;
+    border-right: 1px solid #b0b0b0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pooverviewdomestictablearea .ordernum {
+    width: 45px;
+    color: #0000FF;
+    border-right: 1px solid #b0b0b0;
+    cursor: pointer;
+    font-weight: 600;
+}
+.pooverviewdomestictablearea .itemname {
+    width: 224px;
+    text-align: left!important;
+    padding-left: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewdomestictablearea .itemqty {
+    width: 47px;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewdomestictablearea .remainqty {
+    width: 47px;
+}
+.pooverviewcustomtabletitle {
+    width: 100%;
+    background-color: #e6e6e6;
+}
+.pooverviewcustomtabletitle > div {
+    height: 22px;
+    line-height: 22px;
+    font-size: 11px;
+    text-align: center;
+}
+.pooverviewcustomtabletitle .arrivedays {
+    margin-left: 12px;
+    width: 41px;
+}
+.pooverviewcustomtabletitle .eventdate {
+    width: 49px;
+}
+.pooverviewcustomtabletitle .arrivedate {
+    width: 52px;
+}
+.pooverviewcustomtabletitle .approved {
+    width: 80px;
+}
+.pooverviewcustomtabletitle .ordernum {
+    width: 52px;
+}
+.pooverviewcustomtabletitle .customer {
+    width: 120px;
+}
+.pooverviewcustomtabletitle .itemname {
+    width: 158px;
+}
+.pooverviewcustomtabletitle .itemqty {
+    width: 50px;
+}
+.pooverviewcustomtabletitle .remainqty {
+    width: 50px;
+}
+/* Table Body */
+.pooverviewcustomtablearea {
+    width: 100%;
+    max-height: 595px;
+    overflow-y: auto;
+    border: 2px solid #767676;
+}
+.pooverviewcustomtablearea .sectiontitle {
+    height: 20px;
+    line-height: 20px;
+    background-color: #b1b1b2;
+    color: #000000;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    width: 100%;
+}
+.pooverviewcustomtablearea .sectiontitle.rush {
+    color: #FFFFFF;
+    background-color: #b12403;
+}
+.pooverviewcustomtablearea > .datarow > div {
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    font-size: 12px;
+}
+.pooverviewcustomtablearea .numpp {
+    font-size: 11px!important;
+    width: 22px;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewcustomtablearea .rush1, .pooverviewcustomtablearea .rush3 {
+    width: 19px;
+    font-size: 14px!important;
+    color: #ff0000;
+}
+.pooverviewcustomtablearea .rush3 {
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewcustomtablearea .approved {
+    font-size: 11px!important;
+    width: 81px;
+    border-right: 2px solid #b0b0b0;
+}
+.pooverviewcustomtablearea .approved.notapprove {
+    background-color: #fcfdab;
+}
+.pooverviewcustomtablearea .eventdate {
+    width: 51px;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewcustomtablearea .arrivedate {
+    width: 51px;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewcustomtablearea .arrivedays {
+    width: 35px;
+    border-right: 1px solid #b0b0b0;
+    font-size: 11px;
+    font-weight: 600;
+}
+.pooverviewcustomtablearea .arrivedays.negative {
+    color: #ff0000;
+}
+.pooverviewcustomtablearea .ordernum {
+    width: 52px;
+    color: #0000FF;
+    border-right: 1px solid #b0b0b0;
+    cursor: pointer;
+    font-size: 12px!important;
+    font-weight: 600;
+}
+.pooverviewcustomtablearea .customer {
+    width: 119px;
+    font-size: 12px!important;
+    text-align: left!important;
+    padding-left: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewcustomtablearea .itemname {
+    width: 159px;
+    font-size: 12px!important;
+    text-align: left!important;
+    padding-left: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 2px solid #b0b0b0;
+}
+.pooverviewcustomtablearea .itemqty {
+    width: 50px;
+    font-size: 12px!important;
+    border-right: 1px solid #b0b0b0;
+}
+.pooverviewcustomtablearea .remainqty {
+    width: 50px;
+    font-size: 12px!important;
+}

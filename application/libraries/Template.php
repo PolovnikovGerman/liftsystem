@@ -205,7 +205,7 @@ class Template
         return $dat;
     }
 
-    public function _prepare_leadorder_view($res,$user_id, $user_role='manager', $user_payment=0, $edit=0) {
+    public function _prepare_leadorder_view($res, $user_id, $user_role='manager', $user_payment=0, $edit=0) {
         $this->CI->load->model('shipping_model');
         $this->CI->load->model('orders_model');
         $this->CI->load->model('leadorder_model');
@@ -437,6 +437,10 @@ class Template
                 $profoptions['bgcolor']='#6d0303';
                 $profoptions['hitcolor']='#ffffff';
             }
+        } else {
+            $profoptions['profit_class'] = 'project';
+            $profoptions['profit_completed'] = $orddata['profit_completed'];
+            $profoptions['profit_project'] = $orddata['profit_project'];
         }
         if ($usrdat['profit_view']=='Points') {
             $profoptions['profit']=round(floatval($orddata['profit'])*$this->CI->config->item('profitpts'),0).' pts';
