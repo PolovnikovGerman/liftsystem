@@ -1596,6 +1596,8 @@ class Email_model extends My_Model
                 'wordwrap'=>TRUE,
                 'newline' => "\r\n",
             );
+            echo 'SMTP SETTINGS '.PHP_EOL;
+            print_r($email_conf);
         } else {
             $email_conf = array(
                 'protocol'=>'sendmail',
