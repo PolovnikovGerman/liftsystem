@@ -9374,4 +9374,24 @@ Class Orders_model extends MY_Model
         }
         return $out;
     }
+
+    public function order_invamount()
+    {
+//        $brands = ['SB','SR'];
+//        foreach ($brands as $brand)
+        $this->db->select('oa.amount_id, o.order_id, o.order_num, o.order_date')->from('ts_order_amounts oa')->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->where('oa.order_itemcolor_id',null)->where('o.order_system','new')->order_by('oa.amount_id','desc');
+        $amounts = $this->db->get()->result_array();
+        foreach ($amounts as $amount) {
+            $this->db->select('count(toi.order_itemcolor_id) as cnt, max(toi.order_itemcolor_id) as itemcolor')->from('ts_orders o')->join('ts_order_items oi','o.order_id = oi.order_id')->join('ts_order_itemcolors toi','oi.order_item_id = toi.order_item_id');
+            $this->db->where('o.order_id', $amount['order_id']);
+            $chkres = $this->db->get()->row_array();
+            if ($chkres['cnt']==1) {
+                echo 'Order '.$amount['order_num'].' - '.date('d.m.Y', $amount['order_date']).PHP_EOL;
+                $this->db->where('amount_id', $amount['amount_id']);
+                $this->db->set('order_itemcolor_id', $chkres['itemcolor']);
+                $this->db->update('ts_order_amounts');
+            }
+        }
+    }
 }
