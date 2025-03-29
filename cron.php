@@ -31,8 +31,7 @@ if ($argc > 1 && isset($argv[1])) {
 }
 //$_SERVER['SERVER_NAME'] = 'tdbeta.com';
 //$_SERVER['SERVER_ADDR'] = '212.150.184.62';
-
 set_time_limit(0);
 require_once('index.php');
-
+$_SERVER['SERVER_NAME'] = getenv('server_name');
 ?>
