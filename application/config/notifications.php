@@ -9,3 +9,10 @@ $config['sb_quote_pass'] = getenv('SB_QUOTE_PASS');
 $config['ponotification_smtp'] = getenv('PONTOITION_SMTP');
 $config['ponotification_user'] = getenv('PONTOITION_USER');
 $config['ponotification_pass'] = getenv('PONTOITION_PASS');
+/* Artproof Notification */
+$config['sb_artproof_smtp'] = getenv('SB_ARTPROOF_SMTP');
+$config['sb_artproof_user'] = getenv('SB_ARTPROOF_USER');
+$config['sb_artproof_pass'] = getenv('SB_ARTPROOF_PASS');
+$config['sr_artproof_smtp'] = getenv('SB_ARTPROOF_SMTP');
+$config['sr_artproof_user'] = getenv('SB_ARTPROOF_USER');
+$config['sr_artproof_pass'] = getenv('SB_ARTPROOF_PASS');

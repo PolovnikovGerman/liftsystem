@@ -602,8 +602,8 @@ Class Cronjob extends CI_Controller
         $dateend=strtotime(date('Y-m-d'));
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
         // Select total
-        $brands = ['SB','SR'];
-        // $brands = ['SB'];
+        // $brands = ['SB','SR'];
+        $brands = ['SB'];
         $this->load->model('reports_model');
         foreach ($brands as $brand) {
             $data = $this->reports_model->artproof_daily_report($datestart, $dateend, $brand);
@@ -629,11 +629,46 @@ Class Cronjob extends CI_Controller
                 ];
                 $body= $this->load->view('messages/artproof_report_view', $repoptions, TRUE);
                 $this->load->library('email');
-                $config['charset'] = 'utf-8';
-                $config['mailtype']='html';
-                $config['wordwrap'] = TRUE;
-                $this->email->initialize($config);
-                $email_from=$this->config->item('email_notification_sender');
+                $sendsmtp = ($brand=='SR' ? $this->config->item('sr_artproof_smtp') : $this->config->item('sb_artproof_smtp'));
+                if ($sendsmtp==1) {
+                    if ($brand=='SR') {
+                        $email_conf = array(
+                            'protocol'=>'smtp',
+                            'smtp_host' => $this->config->item('sr_smtp_host'),
+                            'smtp_port' => $this->config->item('sr_smtp_port'),
+                            'smtp_crypto' => $this->config->item('sr_smtp_crypto'),
+                            'smtp_user' => $this->config->item('sr_artproof_user'),
+                            'smtp_pass' => $this->config->item('sr_artproof_pass'),
+                            'charset'=>'utf-8',
+                            'mailtype'=>'html',
+                            'wordwrap'=>TRUE,
+                            'newline' => "\r\n",
+                        );
+                        $email_from = $this->config->item('sr_artproof_user');
+                    } else {
+                        $email_conf = array(
+                            'protocol'=>'smtp',
+                            'smtp_host' => $this->config->item('sb_smtp_host'),
+                            'smtp_port' => $this->config->item('sb_smtp_port'),
+                            'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                            'smtp_user' => $this->config->item('sb_artproof_user'),
+                            'smtp_pass' => $this->config->item('sb_artproof_pass'),
+                            'charset'=>'utf-8',
+                            'mailtype'=>'html',
+                            'wordwrap'=>TRUE,
+                            'newline' => "\r\n",
+                        );
+                        $email_from = $this->config->item('sr_artproof_user');
+                    }
+                } else {
+                    $email_conf = [
+                        'charset' => 'utf-8',
+                        'mailtype' => 'html',
+                        'wordwrap'=>TRUE,
+                    ];
+                    $email_from = $this->config->item('email_notification_sender');
+                }
+                $this->email->initialize($email_conf);
                 $email_to=$this->config->item('sean_email');
                 $email_cc=array(
                     $this->config->item('sage_email'),
