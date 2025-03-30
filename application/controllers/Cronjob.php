@@ -1039,8 +1039,8 @@ Class Cronjob extends CI_Controller
     }
 
     public function unpaid_orders() {
-        $brands = ['SB', 'SR'];
-        // $brands = ['SB'];
+        // $brands = ['SB', 'SR'];
+        $brands = ['SB'];
         $yearbgn = intval(date('Y'))-1;
         $datebgn = strtotime($yearbgn.'-01-01');
         $this->load->model('orders_model');
@@ -1052,23 +1052,45 @@ Class Cronjob extends CI_Controller
             } else {
                 $mail_body=$this->load->view('messages/notpaidorders_list_view',array('data'=>$dat,'totals'=>$totals),TRUE);
             }
-
+            $sendsmtp = ($brand=='SR' ? $this->config->item('sr_unpaid_smtp') : $this->config->item('sb_unpaid_smtp'));
+            if ($sendsmtp==1) {
+                $email_conf = [
+                    'protocol'=>'smtp',
+                    'smtp_host' => $this->config->item('sb_smtp_host'),
+                    'smtp_port' => $this->config->item('sb_smtp_port'),
+                    'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                    'charset'=>'utf-8',
+                    'mailtype'=>'html',
+                    'wordwrap'=>TRUE,
+                    'newline' => "\r\n",
+                ];
+                if ($brand=='SR') {
+                    $email_conf['smtp_user'] = $this->config->item('sr_unpaid_user');
+                    $email_conf['smtp_pass'] = $this->config->item('sr_unpaid_pass');
+                    $email_from = $this->config->item('sr_unpaid_user');
+                } else {
+                    $email_conf['smtp_user'] = $this->config->item('sb_unpaid_user');
+                    $email_conf['smtp_pass'] = $this->config->item('sb_unpaid_pass');
+                    $email_from = $this->config->item('sb_unpaid_user');
+                }
+            } else {
+                $email_conf = array(
+                    'protocol'=>'sendmail',
+                    'charset'=>'utf-8',
+                    'wordwrap'=>TRUE,
+                    'mailtype'=>'html',
+                );
+                $email_from = $this->config->item('email_notification_sender');
+            }
             $this->load->library('email');
-            $email_conf = array(
-                'protocol'=>'sendmail',
-                'charset'=>'utf-8',
-                'wordwrap'=>TRUE,
-                'mailtype'=>'html',
-            );
             $this->email->initialize($email_conf);
-            // $mail_to=array($this->config->item('sean_email'),$this->config->item('sage_email'));
             $mail_to=array($this->config->item('sage_email'));
             $mail_cc=array($this->config->item('developer_email'));
 
             $this->email->to($mail_to);
             $this->email->cc($mail_cc);
+            $this->email->from($email_from);
 
-            $this->email->from('no-replay@bluetrack.com');
             $title = 'Report about Unpaid Orders '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)');
             $this->email->subject($title);
             $this->email->message($mail_body);
