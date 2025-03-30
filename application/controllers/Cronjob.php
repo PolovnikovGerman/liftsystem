@@ -303,8 +303,7 @@ Class Cronjob extends CI_Controller
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
         $this->_ckeckpototals($datestart, $dateend);
         
-        // $brands = ['SB','SR'];
-        $brands = ['SB'];
+        $brands = ['SB','SR'];
         $msgbody='';
         foreach ($brands as $brand) {
             // Get users list
@@ -1094,11 +1093,25 @@ Class Cronjob extends CI_Controller
             $mail_body = $this->load->view('messages/orderamout_maths_view', ['data' => $ordererror, 'orderlists' => $orderlists], TRUE);
         // }
         $this->load->library('email');
-        $config['charset'] = 'utf-8';
-        $config['mailtype']='html';
-        $config['wordwrap'] = TRUE;
-        $this->email->initialize($config);
-        $email_from=$this->config->item('email_notification_sender');
+//        $config['charset'] = 'utf-8';
+//        $config['mailtype']='html';
+//        $config['wordwrap'] = TRUE;
+        $email_conf = array(
+            'protocol'=>'smtp',
+            'smtp_host' => $this->config->item('sb_smtp_host'),
+            'smtp_port' => $this->config->item('sb_smtp_port'),
+            'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+            'smtp_user' => $this->config->item('sb_quote_user'),
+            'smtp_pass' => $this->config->item('sb_quote_pass'),
+            'charset'=>'utf-8',
+            'mailtype'=>'html',
+            'wordwrap'=>TRUE,
+            'newline' => "\r\n",
+        );
+
+        $this->email->initialize($email_conf);
+        // $email_from=$this->config->item('email_notification_sender');
+        $email_from = $this->config->item('sb_quote_user');
         $email_to='to_german@yahoo.com';
         $this->email->from($email_from);
         $this->email->to($email_to);
