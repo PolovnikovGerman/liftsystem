@@ -9378,7 +9378,7 @@ Class Orders_model extends MY_Model
     public function order_invamount()
     {
         $this->db->select('oa.amount_id, oa.inventory_color_id, o.order_id, o.order_num, o.order_date')->from('ts_order_amounts oa')->join('ts_orders o','o.order_id=oa.order_id');
-        $this->db->where('oa.order_itemcolor_id',null)->where('o.order_system','new')->where('o.brand','SR')->order_by('oa.amount_id','desc');
+        $this->db->where('oa.order_itemcolor_id',null)->where('o.order_system','new')->where_in('o.brand',['SB','BT'])->order_by('oa.amount_id','desc');
         $amounts = $this->db->get()->result_array();
         foreach ($amounts as $amount) {
             if (!empty($amount['inventory_color_id'])) {
