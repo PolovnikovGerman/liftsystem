@@ -303,7 +303,8 @@ Class Cronjob extends CI_Controller
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
         $this->_ckeckpototals($datestart, $dateend);
         
-        $brands = ['SB','SR'];
+        // $brands = ['SB','SR'];
+        $brands = ['SB'];
         $msgbody='';
         foreach ($brands as $brand) {
             // Get users list
@@ -489,25 +490,39 @@ Class Cronjob extends CI_Controller
                 }
             }
         }
+        $sendsmtp = intval($this->config->item('ponotification_smtp'));
+        if ($sendsmtp==1) {
+            $email_conf = array(
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'smtp_user' => $this->config->item('ponotification_user'),
+                'smtp_pass' => $this->config->item('ponotification_pass'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+            );
+            $mailfrom = $this->config->item('ponotification_user');
+        } else {
+            $email_conf = [
+                'charset' => 'utf-8',
+                'mailtype' => 'html',
+                'wordwrap' => TRUE,
+            ];
+            $mailfrom = $this->config->item('email_notification_sender');
+        }
         $this->load->library('email');
-        $config['charset'] = 'utf-8';
-        $config['mailtype']='html';
-        $config['wordwrap'] = TRUE;
-        $this->email->initialize($config);
-        $email_from=$this->config->item('email_notification_sender');
+        $this->email->initialize($email_conf);
         $email_to=$this->config->item('sean_email');
         $email_cc=array($this->config->item('sage_email'));
-        $this->email->from($email_from);
+        $this->email->from($mailfrom);
         $this->email->to($email_to);
         $this->email->cc($email_cc);
         // Temporary ADD for check
         // $this->email->bcc([$this->config->item('developer_email')]);
         $title=date('D - M d, Y', $datestart).' - POs added';
-//        if ($brand=='SB') {
-//            $title.='Bluetrack/Stressballs';
-//        } elseif ($brand=='SR') {
-//            $title.='StressRelievers.com';
-//        }
         $this->email->subject($title);
         if ($msgbody=='') {
             $body='<span style="font-weight: bold">'.$title.'</span>';
@@ -516,7 +531,9 @@ Class Cronjob extends CI_Controller
             $body=$this->load->view('messages/amount_note_view', array('content'=>$msgbody),TRUE);
             $this->email->message($body);
         }
-        $this->email->send();
+        log_message('error','PO Notification Settings '.json_encode($email_conf));
+        $res = $this->email->send();
+        log_message('error','PO Notification Send '.intval($res).'!');
         $this->email->clear(TRUE);
     }
 
