@@ -9377,32 +9377,33 @@ Class Orders_model extends MY_Model
 
     public function order_invamount()
     {
-//        $this->db->select('oa.amount_id, o.order_id, o.order_num, o.order_date')->from('ts_order_amounts oa')->join('ts_orders o','o.order_id=oa.order_id');
-//        $this->db->where('oa.order_itemcolor_id',null)->where('o.order_system','new')->order_by('oa.amount_id','desc');
-//        $amounts = $this->db->get()->result_array();
-//        foreach ($amounts as $amount) {
-//            $this->db->select('count(toi.order_itemcolor_id) as cnt, max(toi.order_itemcolor_id) as itemcolor')->from('ts_orders o')->join('ts_order_items oi','o.order_id = oi.order_id')->join('ts_order_itemcolors toi','oi.order_item_id = toi.order_item_id');
-//            $this->db->where('o.order_id', $amount['order_id']);
-//            $chkres = $this->db->get()->row_array();
-//            if ($chkres['cnt']==1) {
-//                echo 'Order '.$amount['order_num'].' - '.date('d.m.Y', $amount['order_date']).PHP_EOL;
-//                $this->db->where('amount_id', $amount['amount_id']);
-//                $this->db->set('order_itemcolor_id', $chkres['itemcolor']);
-//                $this->db->update('ts_order_amounts');
-//            }
-//        }
-        $this->db->select('toi.order_itemcolor_id, toi.item_qty, sum(toa.shipped) as qty, count(toa.amount_id) as cnt')->from('ts_order_itemcolors toi');
-        $this->db->join('ts_order_amounts toa', 'toa.order_itemcolor_id = toi.order_itemcolor_id')->group_by('toi.order_itemcolor_id, toi.item_qty');
-        $this->db->having('qty', 0);
+        $this->db->select('oa.amount_id, oa.inventory_color_id, o.order_id, o.order_num, o.order_date')->from('ts_order_amounts oa')->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->where('oa.order_itemcolor_id',null)->where('o.order_system','new')->where('o.brand','SR')->order_by('oa.amount_id','desc');
         $amounts = $this->db->get()->result_array();
         foreach ($amounts as $amount) {
-            $this->db->select('max(amount_id) as amnt_id')->from('ts_order_amounts')->where('order_itemcolor_id', $amount['order_itemcolor_id']);
-            $dat = $this->db->get()->row_array();
-            if ($dat['amnt_id']) {
-                $this->db->where('amount_id', $dat['amnt_id']);
-                $this->db->set('shipped', $amount['item_qty']);
-                $this->db->update('ts_order_amounts');
-                echo 'Amount '.$dat['amnt_id'].' updated'.PHP_EOL;
+            if (!empty($amount['inventory_color_id'])) {
+                $this->db->select('toi.order_itemcolor_id')->from('ts_order_itemcolors toi')->join('ts_order_items oi','oi.order_item_id = toi.order_item_id');
+                $this->db->where(['oi.order_id' => $amount['order_id'], 'toi.inventory_color_id' => $amount['inventory_color_id']]);
+                $itemres = $this->db->get()->result_array();
+                if (count($itemres)==1) {
+                    $order_itemcolor_id = $itemres[0]['order_itemcolor_id'];
+                    $this->db->where('amount_id', $amount['amount_id']);
+                    $this->db->set('order_itemcolor_id', $order_itemcolor_id);
+                    $this->db->update('ts_order_amounts');
+                    echo 'Find Invent color for amount '.$amount['amount_id'].PHP_EOL;
+                }
+            } else {
+                // Empty
+                $this->db->select('min(toi.order_itemcolor_id) as order_itemcolor_id')->from('ts_order_itemcolors toi')->join('ts_order_items oi','oi.order_item_id = toi.order_item_id');
+                $this->db->where('oi.order_id', $amount['order_id']);
+                $itemres = $this->db->get()->row_array();
+                if (ifset($itemres, 'order_itemcolor_id',0) > 0) {
+                    $order_itemcolor_id = $itemres['order_itemcolor_id'];
+                    $this->db->where('amount_id', $amount['amount_id']);
+                    $this->db->set('order_itemcolor_id', $order_itemcolor_id);
+                    $this->db->update('ts_order_amounts');
+                    echo 'Add empty color for amount '.$amount['amount_id'].PHP_EOL;
+                }
             }
         }
     }
