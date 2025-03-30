@@ -6,6 +6,6 @@ $config['sb_quote_smtp'] = getenv('SB_QUOTE_SMTP');
 $config['sb_quote_user'] = getenv('SB_QUOTE_USER');
 $config['sb_quote_pass'] = getenv('SB_QUOTE_PASS');
 /*PO Notification */
-$config['ponotification_smtp'] = getenv('SB_PONTOITION_SMTP');
-$config['ponotification_user'] = getenv('SB_PONTOITION_USER');
-$config['ponotification_pass'] = getenv('SB_PONTOITION_PASS');
+$config['ponotification_smtp'] = getenv('PONTOITION_SMTP');
+$config['ponotification_user'] = getenv('PONTOITION_USER');
+$config['ponotification_pass'] = getenv('PONTOITION_PASS');
