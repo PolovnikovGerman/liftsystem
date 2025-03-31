@@ -439,9 +439,9 @@ class Template
             }
         } else {
             $profoptions['profit_class'] = 'project';
-            $profoptions['profit_completed'] = ifset($orddata, 'profit_completed','');
-            $profoptions['profit_project'] = ifset($orddata, 'profit_project','');
         }
+        $profoptions['profit_completed'] = ifset($orddata, 'profit_completed','');
+        $profoptions['profit_project'] = ifset($orddata, 'profit_project','');
         if ($usrdat['profit_view']=='Points') {
             $profoptions['profit']=round(floatval($orddata['profit'])*$this->CI->config->item('profitpts'),0).' pts';
             $profoptions['profit_view']='points';
