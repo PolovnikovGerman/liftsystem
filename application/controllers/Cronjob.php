@@ -629,7 +629,7 @@ Class Cronjob extends CI_Controller
                 ];
                 $body= $this->load->view('messages/artproof_report_view', $repoptions, TRUE);
                 $this->load->library('email');
-                $sendsmtp = ($brand=='SR' ? $this->config->item('sr_artproof_smtp') : $this->config->item('sb_artproof_smtp'));
+                $sendsmtp = intval($brand=='SR' ? $this->config->item('sr_artproof_smtp') : $this->config->item('sb_artproof_smtp'));
                 if ($sendsmtp==1) {
                     if ($brand=='SR') {
                         $email_conf = array(
@@ -746,21 +746,45 @@ Class Cronjob extends CI_Controller
     public function bonus_report() {
         $user_id=23; // Shanequa Hall
         $this->load->model('orders_model');
-        $brands = ['SB','SR'];
-        // $brands = ['SB'];
+        // $brands = ['SB','SR'];
+        $brands = ['SB'];
         foreach ($brands as $brand) {
             $results=$this->orders_model->user_weekproof_reportdata($user_id, $brand);
             $out=$results['out'];
             $total=$results['totals'];
             $dateend=strtotime(date('m/d/Y'));
             $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
-
+            $sendsmtp = intval($brand=='SR' ? $this->config->item('sr_bonusreport_smtp') : $this->config->item('sb_bonusreport_smtp'));
+            if ($sendsmtp==1) {
+                $config = [
+                    'protocol'=>'smtp',
+                    'smtp_host' => $this->config->item('sb_smtp_host'),
+                    'smtp_port' => $this->config->item('sb_smtp_port'),
+                    'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                    'charset'=>'utf-8',
+                    'mailtype'=>'html',
+                    'wordwrap'=>TRUE,
+                    'newline' => "\r\n",
+                ];
+                if ($brand=='SR') {
+                    $config['smtp_user'] = $this->config->item('sr_bonusreport_user');
+                    $config['smtp_pass'] = $this->config->item('sr_bonusreport_pass');
+                    $email_from = $this->config->item('sr_bonusreport_user');
+                } else {
+                    $config['smtp_user'] = $this->config->item('sb_bonusreport_user');
+                    $config['smtp_pass'] = $this->config->item('sb_bonusreport_pass');
+                    $email_from = $this->config->item('sb_bonusreport_user');
+                }
+            } else {
+                $config = [
+                    'mailtype' => 'html',
+                    'charset' => 'utf-8',
+                    'wordwrap' => TRUE,
+                ];
+                $email_from = $this->config->item('email_notification_sender');
+            }
             $this->load->library('email');
-            $config['charset'] = 'utf-8';
-            $config['mailtype']='html';
-            $config['wordwrap'] = TRUE;
             $this->email->initialize($config);
-            $email_from=$this->config->item('email_notification_sender');
             $email_to=$this->config->item('sean_email');
             $email_cc=$this->config->item('sage_email');
             $this->email->from($email_from);
@@ -790,7 +814,6 @@ Class Cronjob extends CI_Controller
             // Send report to user
             $this->email->from($email_from);
             $this->email->to('shanequa.hall@bluetrack.com');
-            // $this->email->to('to_german@yahoo.com');
             $title=date('D - M d, Y', $datestart).' - Sales Report (Shanequa Hall) ';
             if ($brand=='BT') {
                 $title.='(Bluetrack/Stressballs)';
@@ -1052,7 +1075,7 @@ Class Cronjob extends CI_Controller
             } else {
                 $mail_body=$this->load->view('messages/notpaidorders_list_view',array('data'=>$dat,'totals'=>$totals),TRUE);
             }
-            $sendsmtp = ($brand=='SR' ? $this->config->item('sr_unpaid_smtp') : $this->config->item('sb_unpaid_smtp'));
+            $sendsmtp = intval($brand=='SR' ? $this->config->item('sr_unpaid_smtp') : $this->config->item('sb_unpaid_smtp'));
             if ($sendsmtp==1) {
                 $email_conf = [
                     'protocol'=>'smtp',
