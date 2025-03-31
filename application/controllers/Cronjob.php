@@ -700,7 +700,7 @@ Class Cronjob extends CI_Controller
             'weekbgn'=>$monday,
             'weekend'=>$sunday,
         ];
-
+        
         $this->load->model('orders_model');
         $brands = ['SB','SR'];
         // $brands = ['SB'];
@@ -724,11 +724,6 @@ Class Cronjob extends CI_Controller
                 $config['wordwrap'] = TRUE;
                 $this->email->initialize($config);
                 $email_from=$this->config->item('email_notification_sender');
-                // $email_to=$this->config->item('sean_email');
-                // $email_cc=array(
-                // $this->config->item('sage_email'),
-                // $this->config->item('taisenkatakura_email'),
-                // );
                 $email_to=$this->config->item('sean_email');
                 $email_cc=$this->config->item('developer_email');
                 $this->email->from($email_from);
