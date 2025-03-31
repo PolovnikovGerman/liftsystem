@@ -23,3 +23,7 @@ $config['sr_unpaid_pass'] = getenv('SR_UNPAID_PASS');
 $config['sb_unpaid_smtp'] = getenv('SB_UNPAID_SMTP');
 $config['sb_unpaid_user'] = getenv('SB_UNPAID_USER');
 $config['sb_unpaid_pass'] = getenv('SB_UNPAID_PASS');
+// Attempts report
+$config['sb_attemptrep_smtp'] = getenv('SB_ATTEMPTREP_SMTP');
+$config['sb_attemptrep_user'] = getenv('SB_ATTEMPTREP_USER');
+$config['sb_attemptrep_pass'] = getenv('SB_ATTEMPTREP_PASS');
