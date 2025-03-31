@@ -7988,8 +7988,8 @@ Class Orders_model extends MY_Model
 
         $out = [];
         foreach ($res as $row) {
-            if (round($row['revenue'],2)!==round($row['paysum'],2)) {
-                $notpaid = $row['revenue'] - $row['paysum'];
+            if (round(floatval($row['revenue']),2)!==round(floatval($row['paysum']),2)) {
+                $notpaid = floatval($row['revenue']) - floatval($row['paysum']);
                 // Get contacts
                 $contact = $this->db->select('contact_phone, contact_emal as contact_email')->from('ts_order_contacts')->where('order_id', $row['order_id'])->get()->row_array();
                 $this->db->select('date_format(from_unixtime(h.created_time),\'%m/%d/%y\') as created_date');
@@ -8003,8 +8003,8 @@ Class Orders_model extends MY_Model
                     'order_num' => $row['order_num'],
                     'order_confirmation' => $row['order_confirmation'],
                     'customer_name' => $row['customer_name'],
-                    'revenue' => MoneyOutput($row['revenue']),
-                    'paysum' => MoneyOutput($row['paysum']),
+                    'revenue' => MoneyOutput(floatval($row['revenue'])),
+                    'paysum' => MoneyOutput(floatval($row['paysum'])),
                     'notpaid' =>MoneyOutput($notpaid),
                     'email' => ifset($contact,'contact_email',''),
                     'phone' => ifset($contact, 'contact_phone', ''),
