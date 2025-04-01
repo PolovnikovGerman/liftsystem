@@ -1662,7 +1662,7 @@ class Leads extends My_Controller {
         $this->load->model('customform_model');
         $datqs['total_rec']=$this->customform_model->get_count_forms($search);
 
-        $content=$this->load->view('customsbforms/customform_view.php',$datqs,TRUE);
+        $content=$this->load->view('customsbforms/customform_view',$datqs,TRUE);
         return $content;
 
     }
@@ -1783,4 +1783,23 @@ class Leads extends My_Controller {
         return $voption;
     }
 
+    public function customformstotals()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'ALL');
+            //
+            $this->load->model('customform_model');
+            $data = $this->customform_model->get_customform_totals($brand);
+            if (count($data)==0) {
+                $mdata['content'] = $this->load->view('customsbforms/totals_empty_view',[],TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('customsbforms/totals_data_view',['totals' => $data,], TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }
