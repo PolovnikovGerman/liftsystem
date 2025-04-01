@@ -1596,8 +1596,6 @@ class Email_model extends My_Model
                 'wordwrap'=>TRUE,
                 'newline' => "\r\n",
             );
-            echo 'SMTP SETTINGS '.PHP_EOL;
-            print_r($email_conf);
         } else {
             $email_conf = array(
                 'protocol'=>'sendmail',
@@ -1607,6 +1605,7 @@ class Email_model extends My_Model
                 'mailpath' => '/usr/sbin/sendmail',
             );
         }
+        log_message('error','Email Settings '.json_encode($email_conf));
         $this->email->initialize($email_conf);
         $this->email->to($mail_options['touser']);
         $this->email->from($mail_options['fromuser']);
@@ -1614,14 +1613,14 @@ class Email_model extends My_Model
         $this->email->message($mail_options['message']);
         $this->email->attach($mail_options['fileattach']);
         log_message('error', 'To '.$mail_options['touser'].' From '.$mail_options['fromuser'].' File '.$mail_options['fileattach']);
-//        $res = $this->email->send();
-//        log_message('error','Email Send '.intval($res).'!');
-        $res = $this->email->send(FALSE);
-        $headers = $this->email->print_debugger(array('headers'));
-        if (is_array($headers)) {
-            $headers = json_encode($headers);
-        }
-        log_message('error', 'Email Header '.$headers);
+        $res = $this->email->send();
+        log_message('error','Email Send '.intval($res).'!');
+//        $res = $this->email->send(FALSE);
+//        $headers = $this->email->print_debugger(array('headers'));
+//        if (is_array($headers)) {
+//            $headers = json_encode($headers);
+//        }
+//        log_message('error', 'Email Header '.$headers);
         $this->email->clear(TRUE);
         return true;
     }

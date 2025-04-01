@@ -489,25 +489,39 @@ Class Cronjob extends CI_Controller
                 }
             }
         }
+        $sendsmtp = intval($this->config->item('ponotification_smtp'));
+        if ($sendsmtp==1) {
+            $email_conf = array(
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'smtp_user' => $this->config->item('ponotification_user'),
+                'smtp_pass' => $this->config->item('ponotification_pass'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+            );
+            $mailfrom = $this->config->item('ponotification_user');
+        } else {
+            $email_conf = [
+                'charset' => 'utf-8',
+                'mailtype' => 'html',
+                'wordwrap' => TRUE,
+            ];
+            $mailfrom = $this->config->item('email_notification_sender');
+        }
         $this->load->library('email');
-        $config['charset'] = 'utf-8';
-        $config['mailtype']='html';
-        $config['wordwrap'] = TRUE;
-        $this->email->initialize($config);
-        $email_from=$this->config->item('email_notification_sender');
+        $this->email->initialize($email_conf);
         $email_to=$this->config->item('sean_email');
         $email_cc=array($this->config->item('sage_email'));
-        $this->email->from($email_from);
+        $this->email->from($mailfrom);
         $this->email->to($email_to);
         $this->email->cc($email_cc);
         // Temporary ADD for check
         // $this->email->bcc([$this->config->item('developer_email')]);
         $title=date('D - M d, Y', $datestart).' - POs added';
-//        if ($brand=='SB') {
-//            $title.='Bluetrack/Stressballs';
-//        } elseif ($brand=='SR') {
-//            $title.='StressRelievers.com';
-//        }
         $this->email->subject($title);
         if ($msgbody=='') {
             $body='<span style="font-weight: bold">'.$title.'</span>';
@@ -516,7 +530,9 @@ Class Cronjob extends CI_Controller
             $body=$this->load->view('messages/amount_note_view', array('content'=>$msgbody),TRUE);
             $this->email->message($body);
         }
-        $this->email->send();
+        log_message('error','PO Notification Settings '.json_encode($email_conf));
+        $res = $this->email->send();
+        log_message('error','PO Notification Send '.intval($res).'!');
         $this->email->clear(TRUE);
     }
 
@@ -586,8 +602,8 @@ Class Cronjob extends CI_Controller
         $dateend=strtotime(date('Y-m-d'));
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
         // Select total
-        $brands = ['SB','SR'];
-        // $brands = ['SB'];
+        // $brands = ['SB','SR'];
+        $brands = ['SB'];
         $this->load->model('reports_model');
         foreach ($brands as $brand) {
             $data = $this->reports_model->artproof_daily_report($datestart, $dateend, $brand);
@@ -613,11 +629,46 @@ Class Cronjob extends CI_Controller
                 ];
                 $body= $this->load->view('messages/artproof_report_view', $repoptions, TRUE);
                 $this->load->library('email');
-                $config['charset'] = 'utf-8';
-                $config['mailtype']='html';
-                $config['wordwrap'] = TRUE;
-                $this->email->initialize($config);
-                $email_from=$this->config->item('email_notification_sender');
+                $sendsmtp = intval($brand=='SR' ? $this->config->item('sr_artproof_smtp') : $this->config->item('sb_artproof_smtp'));
+                if ($sendsmtp==1) {
+                    if ($brand=='SR') {
+                        $email_conf = array(
+                            'protocol'=>'smtp',
+                            'smtp_host' => $this->config->item('sr_smtp_host'),
+                            'smtp_port' => $this->config->item('sr_smtp_port'),
+                            'smtp_crypto' => $this->config->item('sr_smtp_crypto'),
+                            'smtp_user' => $this->config->item('sr_artproof_user'),
+                            'smtp_pass' => $this->config->item('sr_artproof_pass'),
+                            'charset'=>'utf-8',
+                            'mailtype'=>'html',
+                            'wordwrap'=>TRUE,
+                            'newline' => "\r\n",
+                        );
+                        $email_from = $this->config->item('sr_artproof_user');
+                    } else {
+                        $email_conf = array(
+                            'protocol'=>'smtp',
+                            'smtp_host' => $this->config->item('sb_smtp_host'),
+                            'smtp_port' => $this->config->item('sb_smtp_port'),
+                            'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                            'smtp_user' => $this->config->item('sb_artproof_user'),
+                            'smtp_pass' => $this->config->item('sb_artproof_pass'),
+                            'charset'=>'utf-8',
+                            'mailtype'=>'html',
+                            'wordwrap'=>TRUE,
+                            'newline' => "\r\n",
+                        );
+                        $email_from = $this->config->item('sr_artproof_user');
+                    }
+                } else {
+                    $email_conf = [
+                        'charset' => 'utf-8',
+                        'mailtype' => 'html',
+                        'wordwrap'=>TRUE,
+                    ];
+                    $email_from = $this->config->item('email_notification_sender');
+                }
+                $this->email->initialize($email_conf);
                 $email_to=$this->config->item('sean_email');
                 $email_cc=array(
                     $this->config->item('sage_email'),
@@ -649,7 +700,7 @@ Class Cronjob extends CI_Controller
             'weekbgn'=>$monday,
             'weekend'=>$sunday,
         ];
-
+        
         $this->load->model('orders_model');
         $brands = ['SB','SR'];
         // $brands = ['SB'];
@@ -673,11 +724,6 @@ Class Cronjob extends CI_Controller
                 $config['wordwrap'] = TRUE;
                 $this->email->initialize($config);
                 $email_from=$this->config->item('email_notification_sender');
-                // $email_to=$this->config->item('sean_email');
-                // $email_cc=array(
-                // $this->config->item('sage_email'),
-                // $this->config->item('taisenkatakura_email'),
-                // );
                 $email_to=$this->config->item('sean_email');
                 $email_cc=$this->config->item('developer_email');
                 $this->email->from($email_from);
@@ -695,21 +741,45 @@ Class Cronjob extends CI_Controller
     public function bonus_report() {
         $user_id=23; // Shanequa Hall
         $this->load->model('orders_model');
-        $brands = ['SB','SR'];
-        // $brands = ['SB'];
+        // $brands = ['SB','SR'];
+        $brands = ['SB'];
         foreach ($brands as $brand) {
             $results=$this->orders_model->user_weekproof_reportdata($user_id, $brand);
             $out=$results['out'];
             $total=$results['totals'];
             $dateend=strtotime(date('m/d/Y'));
             $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
-
+            $sendsmtp = intval($brand=='SR' ? $this->config->item('sr_bonusreport_smtp') : $this->config->item('sb_bonusreport_smtp'));
+            if ($sendsmtp==1) {
+                $config = [
+                    'protocol'=>'smtp',
+                    'smtp_host' => $this->config->item('sb_smtp_host'),
+                    'smtp_port' => $this->config->item('sb_smtp_port'),
+                    'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                    'charset'=>'utf-8',
+                    'mailtype'=>'html',
+                    'wordwrap'=>TRUE,
+                    'newline' => "\r\n",
+                ];
+                if ($brand=='SR') {
+                    $config['smtp_user'] = $this->config->item('sr_bonusreport_user');
+                    $config['smtp_pass'] = $this->config->item('sr_bonusreport_pass');
+                    $email_from = $this->config->item('sr_bonusreport_user');
+                } else {
+                    $config['smtp_user'] = $this->config->item('sb_bonusreport_user');
+                    $config['smtp_pass'] = $this->config->item('sb_bonusreport_pass');
+                    $email_from = $this->config->item('sb_bonusreport_user');
+                }
+            } else {
+                $config = [
+                    'mailtype' => 'html',
+                    'charset' => 'utf-8',
+                    'wordwrap' => TRUE,
+                ];
+                $email_from = $this->config->item('email_notification_sender');
+            }
             $this->load->library('email');
-            $config['charset'] = 'utf-8';
-            $config['mailtype']='html';
-            $config['wordwrap'] = TRUE;
             $this->email->initialize($config);
-            $email_from=$this->config->item('email_notification_sender');
             $email_to=$this->config->item('sean_email');
             $email_cc=$this->config->item('sage_email');
             $this->email->from($email_from);
@@ -739,7 +809,6 @@ Class Cronjob extends CI_Controller
             // Send report to user
             $this->email->from($email_from);
             $this->email->to('shanequa.hall@bluetrack.com');
-            // $this->email->to('to_german@yahoo.com');
             $title=date('D - M d, Y', $datestart).' - Sales Report (Shanequa Hall) ';
             if ($brand=='BT') {
                 $title.='(Bluetrack/Stressballs)';
@@ -769,7 +838,19 @@ Class Cronjob extends CI_Controller
         $dateend=strtotime(date('Y-m-d'));
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
         $brands = ['SB','SR'];
-        // $brands = ['SB'];
+        $email_conf = array(
+            'protocol'=>'smtp',
+            'smtp_host' => $this->config->item('sb_smtp_host'),
+            'smtp_port' => $this->config->item('sb_smtp_port'),
+            'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+            'smtp_user' => $this->config->item('sb_quote_user'),
+            'smtp_pass' => $this->config->item('sb_quote_pass'),
+            'charset'=>'utf-8',
+            'mailtype'=>'html',
+            'wordwrap'=>TRUE,
+            'newline' => "\r\n",
+        );
+        $email_from = $this->config->item('sb_quote_user');
         foreach ($brands as $brand) {
             $this->db->select('*');
             $this->db->from('ts_orders');
@@ -823,11 +904,7 @@ Class Cronjob extends CI_Controller
                     $mail_body = $this->load->view('messages/order_maths_view', ['data'=>$out], TRUE);
                 }
                 $this->load->library('email');
-                $config['charset'] = 'utf-8';
-                $config['mailtype']='html';
-                $config['wordwrap'] = TRUE;
-                $this->email->initialize($config);
-                $email_from=$this->config->item('email_notification_sender');
+                $this->email->initialize($email_conf);
                 $email_to='to_german@yahoo.com';
                 $this->email->from($email_from);
                 $this->email->to($email_to);
@@ -988,8 +1065,8 @@ Class Cronjob extends CI_Controller
     }
 
     public function unpaid_orders() {
-        $brands = ['SB', 'SR'];
-        // $brands = ['SB'];
+        // $brands = ['SB', 'SR'];
+        $brands = ['SB'];
         $yearbgn = intval(date('Y'))-1;
         $datebgn = strtotime($yearbgn.'-01-01');
         $this->load->model('orders_model');
@@ -1001,23 +1078,45 @@ Class Cronjob extends CI_Controller
             } else {
                 $mail_body=$this->load->view('messages/notpaidorders_list_view',array('data'=>$dat,'totals'=>$totals),TRUE);
             }
-
+            $sendsmtp = intval($brand=='SR' ? $this->config->item('sr_unpaid_smtp') : $this->config->item('sb_unpaid_smtp'));
+            if ($sendsmtp==1) {
+                $email_conf = [
+                    'protocol'=>'smtp',
+                    'smtp_host' => $this->config->item('sb_smtp_host'),
+                    'smtp_port' => $this->config->item('sb_smtp_port'),
+                    'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                    'charset'=>'utf-8',
+                    'mailtype'=>'html',
+                    'wordwrap'=>TRUE,
+                    'newline' => "\r\n",
+                ];
+                if ($brand=='SR') {
+                    $email_conf['smtp_user'] = $this->config->item('sr_unpaid_user');
+                    $email_conf['smtp_pass'] = $this->config->item('sr_unpaid_pass');
+                    $email_from = $this->config->item('sr_unpaid_user');
+                } else {
+                    $email_conf['smtp_user'] = $this->config->item('sb_unpaid_user');
+                    $email_conf['smtp_pass'] = $this->config->item('sb_unpaid_pass');
+                    $email_from = $this->config->item('sb_unpaid_user');
+                }
+            } else {
+                $email_conf = array(
+                    'protocol'=>'sendmail',
+                    'charset'=>'utf-8',
+                    'wordwrap'=>TRUE,
+                    'mailtype'=>'html',
+                );
+                $email_from = $this->config->item('email_notification_sender');
+            }
             $this->load->library('email');
-            $email_conf = array(
-                'protocol'=>'sendmail',
-                'charset'=>'utf-8',
-                'wordwrap'=>TRUE,
-                'mailtype'=>'html',
-            );
             $this->email->initialize($email_conf);
-            // $mail_to=array($this->config->item('sean_email'),$this->config->item('sage_email'));
             $mail_to=array($this->config->item('sage_email'));
             $mail_cc=array($this->config->item('developer_email'));
 
             $this->email->to($mail_to);
             $this->email->cc($mail_cc);
+            $this->email->from($email_from);
 
-            $this->email->from('no-replay@bluetrack.com');
             $title = 'Report about Unpaid Orders '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)');
             $this->email->subject($title);
             $this->email->message($mail_body);
@@ -1077,11 +1176,25 @@ Class Cronjob extends CI_Controller
             $mail_body = $this->load->view('messages/orderamout_maths_view', ['data' => $ordererror, 'orderlists' => $orderlists], TRUE);
         // }
         $this->load->library('email');
-        $config['charset'] = 'utf-8';
-        $config['mailtype']='html';
-        $config['wordwrap'] = TRUE;
-        $this->email->initialize($config);
-        $email_from=$this->config->item('email_notification_sender');
+//        $config['charset'] = 'utf-8';
+//        $config['mailtype']='html';
+//        $config['wordwrap'] = TRUE;
+        $email_conf = array(
+            'protocol'=>'smtp',
+            'smtp_host' => $this->config->item('sb_smtp_host'),
+            'smtp_port' => $this->config->item('sb_smtp_port'),
+            'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+            'smtp_user' => $this->config->item('sb_quote_user'),
+            'smtp_pass' => $this->config->item('sb_quote_pass'),
+            'charset'=>'utf-8',
+            'mailtype'=>'html',
+            'wordwrap'=>TRUE,
+            'newline' => "\r\n",
+        );
+
+        $this->email->initialize($email_conf);
+        // $email_from=$this->config->item('email_notification_sender');
+        $email_from = $this->config->item('sb_quote_user');
         $email_to='to_german@yahoo.com';
         $this->email->from($email_from);
         $this->email->to($email_to);

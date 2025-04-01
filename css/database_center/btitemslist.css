@@ -357,7 +357,7 @@
 .tabledatapaginator {
     float: right!important;
 }
-.pagination a {
+.itemlistview .pagination a {
     color: #ffffff!important;
 }
 /* Add new item */

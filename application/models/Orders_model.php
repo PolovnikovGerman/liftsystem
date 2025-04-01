@@ -7988,8 +7988,8 @@ Class Orders_model extends MY_Model
 
         $out = [];
         foreach ($res as $row) {
-            if (round($row['revenue'],2)!==round($row['paysum'],2)) {
-                $notpaid = $row['revenue'] - $row['paysum'];
+            if (round(floatval($row['revenue']),2)!==round(floatval($row['paysum']),2)) {
+                $notpaid = floatval($row['revenue']) - floatval($row['paysum']);
                 // Get contacts
                 $contact = $this->db->select('contact_phone, contact_emal as contact_email')->from('ts_order_contacts')->where('order_id', $row['order_id'])->get()->row_array();
                 $this->db->select('date_format(from_unixtime(h.created_time),\'%m/%d/%y\') as created_date');
@@ -8003,8 +8003,8 @@ Class Orders_model extends MY_Model
                     'order_num' => $row['order_num'],
                     'order_confirmation' => $row['order_confirmation'],
                     'customer_name' => $row['customer_name'],
-                    'revenue' => MoneyOutput($row['revenue']),
-                    'paysum' => MoneyOutput($row['paysum']),
+                    'revenue' => MoneyOutput(floatval($row['revenue'])),
+                    'paysum' => MoneyOutput(floatval($row['paysum'])),
                     'notpaid' =>MoneyOutput($notpaid),
                     'email' => ifset($contact,'contact_email',''),
                     'phone' => ifset($contact, 'contact_phone', ''),
@@ -8919,30 +8919,30 @@ Class Orders_model extends MY_Model
 
     public function order_invamount_sbtransform()
     {
-        $this->db->select('o.order_id, o.order_num, count(toi.order_itemcolor_id) as cnt, max(toi.order_itemcolor_id) as itemcolor')->from('ts_orders o')->join('ts_order_items oi','o.order_id = oi.order_id')->join('ts_order_itemcolors toi','oi.order_item_id = toi.order_item_id');
-        $this->db->where_in('o.brand', ['SB','BT'])->where('o.is_canceled', 0)->where('o.order_cog is not null')->group_by('o.order_id, o.order_num')->having('cnt',1);
-        $orders = $this->db->get()->result_array();
-        foreach ($orders as $order) {
-            $dat = $this->db->select('item_qty')->from('ts_order_itemcolors')->where('order_itemcolor_id', $order['itemcolor'])->get()->row_array();
-            $shipqty = $dat['item_qty'];
-            $amounts = $this->db->select('*')->from('ts_order_amounts')->where('order_id', $order['order_id'])->get()->result_array();
-            foreach ($amounts as $amount) {
-                $this->db->where('amount_id', $amount['amount_id']);
-                if (!empty($amount['inventory_color_id'])) {
-                    $shipqty-=$amount['shipped'];
-                    if ($shipqty < 0) {
-                        $shipqty = 0;
-                    }
-                } else {
-                    $this->db->set('shipped', $shipqty);
-                    $shipqty = 0;
-                }
-                $this->db->set('order_itemcolor_id', $order['itemcolor']);
-                $this->db->update('ts_order_amounts');
-            }
-            echo 'Order # '.$order['order_num'].' updated '.PHP_EOL;
-        }
-        $this->db->select('oa.amount_id, oa.inventory_color_id, oa.order_id, o.order_num')->from('ts_order_amounts oa')->join('ts_orders o','o.order_id=oa.order_id')->where_in('o.brand',['SB','BT']);
+//        $this->db->select('o.order_id, o.order_num, count(toi.order_itemcolor_id) as cnt, max(toi.order_itemcolor_id) as itemcolor')->from('ts_orders o')->join('ts_order_items oi','o.order_id = oi.order_id')->join('ts_order_itemcolors toi','oi.order_item_id = toi.order_item_id');
+//        $this->db->where('o.is_canceled', 0)->where('o.order_cog is not null')->where('o.print_date is not null')->group_by('o.order_id, o.order_num')->having('cnt',1); // where_in('o.brand', ['SB','BT'])
+//        $orders = $this->db->get()->result_array();
+//        foreach ($orders as $order) {
+//            $dat = $this->db->select('item_qty')->from('ts_order_itemcolors')->where('order_itemcolor_id', $order['itemcolor'])->get()->row_array();
+//            $shipqty = $dat['item_qty'];
+//            $amounts = $this->db->select('*')->from('ts_order_amounts')->where('order_id', $order['order_id'])->get()->result_array();
+//            foreach ($amounts as $amount) {
+//                $this->db->where('amount_id', $amount['amount_id']);
+//                if (!empty($amount['inventory_color_id'])) {
+//                    $shipqty-=$amount['shipped'];
+//                    if ($shipqty < 0) {
+//                        $shipqty = 0;
+//                    }
+//                } else {
+//                    $this->db->set('shipped', $shipqty);
+//                    $shipqty = 0;
+//                }
+//                $this->db->set('order_itemcolor_id', $order['itemcolor']);
+//                $this->db->update('ts_order_amounts');
+//            }
+//            echo 'Order # '.$order['order_num'].' updated '.PHP_EOL;
+//        }
+        $this->db->select('oa.amount_id, oa.inventory_color_id, oa.order_id, o.order_num')->from('ts_order_amounts oa')->join('ts_orders o','o.order_id=oa.order_id');// ->where_in('o.brand',['SB','BT']);
         $this->db->where('oa.order_itemcolor_id', NULL);
         $amounts = $this->db->get()->result_array();
         foreach ($amounts as $amount) {
@@ -8955,26 +8955,26 @@ Class Orders_model extends MY_Model
                     $this->db->set('order_itemcolor_id', $amntcolor['order_itemcolor_id']);
                     $this->db->update('ts_order_amounts');
                     echo 'Order '.$amount['order_num'].' updated'.PHP_EOL;
-                } else {
-                    $colordat = $this->db->select('color')->from('ts_inventory_colors')->where('inventory_color_id', $amount['inventory_color_id'])->get()->row_array();
-                    $itemcolor = $colordat['color'];
-                    $this->db->select('toi.order_itemcolor_id, toi.item_description, toi.item_color')->from('ts_order_itemcolors toi')->join('ts_order_items oi','toi.order_item_id=oi.order_item_id')->where('oi.order_id', $amount['order_id']);
-                    $ordercolors = $this->db->get()->result_array();
-                    foreach ($ordercolors as $ordercolor) {
-                        if (strpos($ordercolor['item_description'], $itemcolor)!==false) {
-                            $this->db->where('amount_id', $amount['amount_id']);
-                            $this->db->set('order_itemcolor_id', $ordercolor['order_itemcolor_id']);
-                            $this->db->update('ts_order_amounts');
-                            echo 'Order '.$amount['order_num'].' updated'.PHP_EOL;
-                            break;
-                        } elseif (strpos($ordercolor['item_color'], $itemcolor)!==false) {
-                            $this->db->where('amount_id', $amount['amount_id']);
-                            $this->db->set('order_itemcolor_id', $ordercolor['order_itemcolor_id']);
-                            $this->db->update('ts_order_amounts');
-                            echo 'Order '.$amount['order_num'].' updated'.PHP_EOL;
-                            break;
-                        }
-                    }
+//                } else {
+//                    $colordat = $this->db->select('color')->from('ts_inventory_colors')->where('inventory_color_id', $amount['inventory_color_id'])->get()->row_array();
+//                    $itemcolor = $colordat['color'];
+//                    $this->db->select('toi.order_itemcolor_id, toi.item_description, toi.item_color')->from('ts_order_itemcolors toi')->join('ts_order_items oi','toi.order_item_id=oi.order_item_id')->where('oi.order_id', $amount['order_id']);
+//                    $ordercolors = $this->db->get()->result_array();
+//                    foreach ($ordercolors as $ordercolor) {
+//                        if (strpos($ordercolor['item_description'], $itemcolor)!==false) {
+//                            $this->db->where('amount_id', $amount['amount_id']);
+//                            $this->db->set('order_itemcolor_id', $ordercolor['order_itemcolor_id']);
+//                            $this->db->update('ts_order_amounts');
+//                            echo 'Order '.$amount['order_num'].' updated'.PHP_EOL;
+//                            break;
+//                        } elseif (strpos($ordercolor['item_color'], $itemcolor)!==false) {
+//                            $this->db->where('amount_id', $amount['amount_id']);
+//                            $this->db->set('order_itemcolor_id', $ordercolor['order_itemcolor_id']);
+//                            $this->db->update('ts_order_amounts');
+//                            echo 'Order '.$amount['order_num'].' updated'.PHP_EOL;
+//                            break;
+//                        }
+//                    }
                 }
             }
         }
@@ -9377,20 +9377,34 @@ Class Orders_model extends MY_Model
 
     public function order_invamount()
     {
-//        $brands = ['SB','SR'];
-//        foreach ($brands as $brand)
-        $this->db->select('oa.amount_id, o.order_id, o.order_num, o.order_date')->from('ts_order_amounts oa')->join('ts_orders o','o.order_id=oa.order_id');
-        $this->db->where('oa.order_itemcolor_id',null)->where('o.order_system','new')->order_by('oa.amount_id','desc');
+        $this->db->select('oa.amount_id, oa.inventory_color_id, o.order_id, o.order_num, o.order_date')->from('ts_order_amounts oa')->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->where('oa.order_itemcolor_id',null)->where('o.order_system','new')->where('o.brand','SR')->order_by('oa.amount_id','desc');
+        // where_in('o.brand',['SB','BT'])
         $amounts = $this->db->get()->result_array();
         foreach ($amounts as $amount) {
-            $this->db->select('count(toi.order_itemcolor_id) as cnt, max(toi.order_itemcolor_id) as itemcolor')->from('ts_orders o')->join('ts_order_items oi','o.order_id = oi.order_id')->join('ts_order_itemcolors toi','oi.order_item_id = toi.order_item_id');
-            $this->db->where('o.order_id', $amount['order_id']);
-            $chkres = $this->db->get()->row_array();
-            if ($chkres['cnt']==1) {
-                echo 'Order '.$amount['order_num'].' - '.date('d.m.Y', $amount['order_date']).PHP_EOL;
-                $this->db->where('amount_id', $amount['amount_id']);
-                $this->db->set('order_itemcolor_id', $chkres['itemcolor']);
-                $this->db->update('ts_order_amounts');
+            if (!empty($amount['inventory_color_id'])) {
+                $this->db->select('toi.order_itemcolor_id')->from('ts_order_itemcolors toi')->join('ts_order_items oi','oi.order_item_id = toi.order_item_id');
+                $this->db->where(['oi.order_id' => $amount['order_id'], 'toi.inventory_color_id' => $amount['inventory_color_id']]);
+                $itemres = $this->db->get()->result_array();
+                if (count($itemres)==1) {
+                    $order_itemcolor_id = $itemres[0]['order_itemcolor_id'];
+                    $this->db->where('amount_id', $amount['amount_id']);
+                    $this->db->set('order_itemcolor_id', $order_itemcolor_id);
+                    $this->db->update('ts_order_amounts');
+                    echo 'Find Invent color for amount '.$amount['amount_id'].PHP_EOL;
+                }
+            } else {
+                // Empty
+                $this->db->select('min(toi.order_itemcolor_id) as order_itemcolor_id')->from('ts_order_itemcolors toi')->join('ts_order_items oi','oi.order_item_id = toi.order_item_id');
+                $this->db->where('oi.order_id', $amount['order_id']);
+                $itemres = $this->db->get()->row_array();
+                if (ifset($itemres, 'order_itemcolor_id',0) > 0) {
+                    $order_itemcolor_id = $itemres['order_itemcolor_id'];
+                    $this->db->where('amount_id', $amount['amount_id']);
+                    $this->db->set('order_itemcolor_id', $order_itemcolor_id);
+                    $this->db->update('ts_order_amounts');
+                    echo 'Add empty color for amount '.$amount['amount_id'].PHP_EOL;
+                }
             }
         }
     }

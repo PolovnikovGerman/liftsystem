@@ -5369,7 +5369,7 @@ class Leadorder extends MY_Controller
                         $orddata=$res['order'];
 
                         // Build View
-                        $data=$this->template->_prepare_leadorder_view($res, $ordersession, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 0);
+                        $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 0);
 
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
@@ -5586,6 +5586,8 @@ class Leadorder extends MY_Controller
                 $options['hitcolor']='#ffffff';
             }
         }
+        $options['profit_completed'] = ifset($order, 'profit_completed','');
+        $options['profit_project'] = ifset($order, 'profit_project','');
         if ($usrdat['profit_view']=='Points') {
             $options['profit']=round($order['profit']*$this->config->item('profitpts'),0).' pts';
             $options['profit_view']='points';
@@ -6801,6 +6803,12 @@ class Leadorder extends MY_Controller
 
     private function _prepare_profitbtn_view($profitoptions)
     {
+        if (!isset($profitoptions['profit_project'])) {
+            $profitoptions['profit_project'] = '';
+        }
+        if (!isset($profitoptions['profit_completed'])) {
+            $profitoptions['profit_completed'] = '';
+        }
         if ($profitoptions['profit_class']=='project') {
             $profit_view = $this->load->view('leadorderdetails/profitproject_view', $profitoptions, TRUE);
         } else {

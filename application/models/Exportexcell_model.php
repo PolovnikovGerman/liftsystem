@@ -213,6 +213,31 @@ class Exportexcell_model extends CI_Model
     // Export Attempts Report
     public function expot_attemptreport($data, $attach, $start) {
         $this->load->library('email');
+        $sendsmtp = intval($this->config->item('sb_attemptrep_smtp'));
+        if ($sendsmtp==1) {
+            $email_conf = [
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'smtp_user' => $this->config->item('sb_attemptrep_user'),
+                'smtp_pass' => $this->config->item('sb_attemptrep_pass'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+            ];
+            $mail_from = $this->config->item('sb_attemptrep_user');
+        } else {
+            $email_conf = [
+                'protocol'=>'sendmail',
+                'charset'=>'utf-8',
+                'wordwrap'=>TRUE,
+                'mailtype'=>'html',
+            ];
+            $mail_from = 'no-replay@bluetrack.com';
+        }
+
         if (count($data)>0) {
             $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
             $sheet = $spreadsheet->getActiveSheet();
@@ -288,18 +313,10 @@ class Exportexcell_model extends CI_Model
             $mail_to=$this->config->item('mail_research');
             $mail_cc=array('sage@bluetrack.com','shanequa.hall@bluetrack.com', $this->config->item('developer_email'));
 
-
-            $email_conf = array(
-                'protocol'=>'sendmail',
-                'charset'=>'utf-8',
-                'wordwrap'=>TRUE,
-                'mailtype'=>'html',
-            );
-
             $this->email->initialize($email_conf);
             $this->email->to($mail_to);
             $this->email->cc($mail_cc);
-            $this->email->from('no-replay@bluetrack.com');
+            $this->email->from($mail_from);
             $this->email->subject('Dayly report about unended checkouts ('.date('m/d/Y',$start).')');
             $mail_body='Report in attachment';
             $this->email->attach($filename);
@@ -313,32 +330,22 @@ class Exportexcell_model extends CI_Model
             }
             $this->email->message($mail_body);
             $this->email->send();
-            // echo $ci->email->print_debugger();
             $this->email->clear(TRUE);
-            // unlink($filename);
+            unlink($filename);
         } else {
             $mail_to=$this->config->item('mail_research');
 
-            $this->load->library('email');
-
-            $email_conf = array(
-                'protocol'=>'sendmail',
-                'charset'=>'utf-8',
-                'wordwrap'=>TRUE,
-                'mailtype'=>'html',
-            );
-
             $this->email->initialize($email_conf);
             $this->email->to($mail_to);
-            $this->email->from('no-replay@bluetrack.com');
+            $this->email->from($mail_from);
             $this->email->subject('Dayly report about unended checkouts ('.date('m/d/Y',$start).')');
             $mail_body='All checkouts ended successfully';
             $this->email->message($mail_body);
             $this->email->send();
+            $this->email->clear(TRUE);
         }
-        $this->email->clear();
         $this->email->to('to_german@yahoo.com');
-        $this->email->from('no-replay@bluetrack.com');
+        $this->email->from($mail_from);
         $this->email->subject('Dayly report about unended checkouts ('.date('m/d/Y',$start).')');
         $mail_body='Report sends successfully';
         $this->email->message($mail_body);
