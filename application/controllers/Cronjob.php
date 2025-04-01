@@ -732,7 +732,7 @@ Class Cronjob extends CI_Controller
                 $title='Quotes, Proof Requests, Orders ('.date('m/d/Y', $monday).' - '.date('m/d/Y', $sunday-1).')';
                 if ($brand=='SB') {
                     $title.=' Bluetrack/Stressballs';
-                } elseif ($brand=='SB') {
+                } elseif ($brand=='SR') {
                     $title.=' StressRelievers';
                 }
                 $params['lists']=$res['data'];
