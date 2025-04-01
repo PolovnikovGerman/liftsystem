@@ -700,10 +700,31 @@ Class Cronjob extends CI_Controller
             'weekbgn'=>$monday,
             'weekend'=>$sunday,
         ];
-        
+        $sendsmtp = intval($this->config->item('quoteweek_smtp'));
+        if ($sendsmtp==1) {
+            $config = [
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'smtp_user' => $this->config->item('quoteweek_user'),
+                'smtp_pass' => $this->config->item('quoteweek_pass'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+            ];
+            $email_from = $this->config->item('quoteweek_user');
+        } else {
+            $config = [
+                'charset' => 'utf-8',
+                'mailtype' => 'html',
+                'wordwrap' => TRUE,
+            ];
+            $email_from=$this->config->item('email_notification_sender');
+        }
         $this->load->model('orders_model');
         $brands = ['SB','SR'];
-        // $brands = ['SB'];
         foreach ($brands as $brand) {
             $options['brand']=$brand;
             $res=$this->orders_model->get_week_quotes($options);
@@ -719,11 +740,7 @@ Class Cronjob extends CI_Controller
                 // Prepare email
                 $body= $this->load->view('messages/quotesweek_report_view', $params, TRUE);
                 $this->load->library('email');
-                $config['charset'] = 'utf-8';
-                $config['mailtype']='html';
-                $config['wordwrap'] = TRUE;
                 $this->email->initialize($config);
-                $email_from=$this->config->item('email_notification_sender');
                 $email_to=$this->config->item('sean_email');
                 $email_cc=$this->config->item('developer_email');
                 $this->email->from($email_from);
@@ -731,7 +748,6 @@ Class Cronjob extends CI_Controller
                 $this->email->cc($email_cc);
                 $this->email->subject($title);
                 $this->email->message($body);
-
                 $this->email->send();
                 $this->email->clear(TRUE);
             }

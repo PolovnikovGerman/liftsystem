@@ -34,3 +34,7 @@ $config['sb_bonusreport_pass'] = getenv('SB_BONUSREPORT_PASS');
 $config['sr_bonusreport_smtp'] = getenv('SR_BONUSREPORT_SMTP');
 $config['sr_bonusreport_user'] = getenv('SR_BONUSREPORT_USER');
 $config['sr_bonusreport_pass'] = getenv('SR_BONUSREPORT_PASS');
+// Week Orders, Quotes, Leads
+$config['quoteweek_smtp'] = getenv('QUOTEWEEK_SMTP');
+$config['quoteweek_user'] = getenv('QUOTEWEEK_USER');
+$config['quoteweek_pass'] = getenv('QUOTEWEEK_PASS');
