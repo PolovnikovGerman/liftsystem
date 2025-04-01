@@ -42,3 +42,7 @@ $config['quoteweek_pass'] = getenv('QUOTEWEEK_PASS');
 $config['itemprice_smtp'] = getenv('ITEMPRICE_SMTP');
 $config['itemprice_user'] = getenv('ITEMPRICE_USER');
 $config['itemprice_pass'] = getenv('ITEMPRICE_PASS');
+// Weekly search report
+$config['searchreport_smtp'] = getenv('SEARCHREP_SMTP');
+$config['searchreport_user'] = getenv('SEARCHREP_USER');
+$config['searchreport_pass'] = getenv('SEARCHREP_PASS');

@@ -1038,45 +1038,46 @@ Class Cronjob extends CI_Controller
         // $brands = ['SB'];
         $dat_mon = strtotime('last week Monday');
         $dat_sun = strtotime(date('Y-m-d', strtotime('last week Sunday')).' 23:59:59');
-        foreach ($brands as $brand) {
-            $this->db->select('search_text, count(search_result_id) as cnt');
-            $this->db->from('sb_search_results');
-            $this->db->where('search_result',0);
-            $this->db->where('unix_timestamp(search_time) >= ', $dat_mon);
-            $this->db->where('unix_timestamp(search_time) <= ', $dat_sun);
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['SB','BT']);
-            } else {
-                $this->db->where('brand', $brand);
-            }
-            $this->db->group_by('search_text');
-            $this->db->order_by('cnt desc, search_text asc');
-            $res = $this->db->get()->result_array();
-
-            $mail_body=$this->load->view('marketing/weekreport_view',array('start_date'=>$dat_mon,'end_date'=>$dat_sun,'data'=>$res),TRUE);
-
-            $this->load->library('email');
+        $sendsmtp = intval($this->config->item('searchreport_smtp'));
+        if ($sendsmtp==1) {
+            $email_conf = [
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'smtp_user' => $this->config->item('searchreport_user'),
+                'smtp_pass' => $this->config->item('searchreport_pass'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+            ];
+            $mail_from = $this->config->item('searchreport_user');
+        } else {
             $email_conf = array(
                 'protocol'=>'sendmail',
                 'charset'=>'utf-8',
                 'wordwrap'=>TRUE,
                 'mailtype'=>'html',
             );
+            $mail_from = 'no-replay@bluetrack.com';
+        }
+        $this->load->model('searchresults_model');
+        $this->load->library('email');
+        $mail_to=array('sean@bluetrack.com');
+        $mail_cc=array('sage@bluetrack.com', $this->config->item('developer_email'));
+        foreach ($brands as $brand) {
+            $res = $this->searchresults_model->get_searchweekreport($dat_mon, $dat_sun, $brand);
+            $mail_body=$this->load->view('marketing/weekreport_view',array('start_date'=>$dat_mon,'end_date'=>$dat_sun,'data'=>$res),TRUE);
             $this->email->initialize($email_conf);
-            $mail_to=array('sean@bluetrack.com');
-            $mail_cc=array('sage@bluetrack.com', $this->config->item('developer_email'));
-
             $this->email->to($mail_to);
             $this->email->cc($mail_cc);
-
-            $this->email->from('no-replay@bluetrack.com');
+            $this->email->from($mail_from);
             $title = 'Weekly Report about Unsuccessful Searches '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)');
             $this->email->subject($title);
             $this->email->message($mail_body);
             $res=$this->email->send();
-
             $this->email->clear(TRUE);
-
         }
     }
 
