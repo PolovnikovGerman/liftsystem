@@ -38,3 +38,17 @@
     </div>
     <div id="customform_tabledat"></div>
 </div>
+<div class="customform_total_content">
+    <div class="customform_total_header">
+        <div class="total_weeknum">Week of</div>
+        <div class="total_day">Mo</div>
+        <div class="total_day">Tu</div>
+        <div class="total_day">We</div>
+        <div class="total_day">Th</div>
+        <div class="total_day">Fr</div>
+        <div class="total_day">Sa</div>
+        <div class="total_day">Su</div>
+        <div class="total_totals">Total</div>
+    </div>
+    <div class="customform_total_tabledat"></div>
+</div>

@@ -37,6 +37,8 @@ function init_customforms() {
         });
         search_customforms();
     });
+    // Init totals
+    initCustomFormTotals();
 }
 
 function search_customforms() {
@@ -253,5 +255,17 @@ function init_assignform_modal(formid) {
             }
         }, 'json');
     })
+}
 
+function initCustomFormTotals() {
+    var params = new Array();
+    params.push({name:'brand',value:$("#customformviewbrand").val()});
+    var url= '/leads/customformstotals';
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".customform_total_tabledat").empty().html(response.data.content);
+        } else {
+            show_error(response);
+        }
+    },'json');
 }
