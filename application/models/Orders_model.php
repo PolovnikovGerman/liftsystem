@@ -8754,21 +8754,36 @@ Class Orders_model extends MY_Model
     private function orderitems_price_email($brand, $items, $date)
     {
         $this->load->library('email');
-        $email_conf = array(
-            'protocol'=>'sendmail',
-            'charset'=>'utf-8',
-            'wordwrap'=>TRUE,
-            'mailtype'=>'html',
-        );
-        $this->email->initialize($email_conf);
-
+        $sendsmtp = intval($this->config->item('itemprice_smtp'));
+        if ($sendsmtp==1) {
+            $config = [
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'smtp_user' => $this->config->item('itemprice_user'),
+                'smtp_pass' => $this->config->item('itemprice_pass'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+            ];
+            $email_from = $this->config->item('itemprice_user');
+        } else {
+            $config = array(
+                'protocol'=>'sendmail',
+                'charset'=>'utf-8',
+                'wordwrap'=>TRUE,
+                'mailtype'=>'html',
+            );
+            $email_from = 'no-replay@bluetrack.com';
+        }
+        $this->email->initialize($config);
         $mail_to=array($this->config->item('sage_email'), $this->config->item('sean_email'));
         $mail_cc=array('to_german@yahoo.com');
-
         $this->email->to($mail_to);
         $this->email->cc($mail_cc);
-
-        $this->email->from('no-replay@bluetrack.com');
+        $this->email->from($email_from);
         $title = 'Report about Low Orders Prices '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)').' ('.date('m/d/Y', $date).')';
         $this->email->subject($title);
         $mail_body = $this->load->view('messages/orderitems_price_view',['items' => $items], TRUE);

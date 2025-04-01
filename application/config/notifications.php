@@ -38,3 +38,7 @@ $config['sr_bonusreport_pass'] = getenv('SR_BONUSREPORT_PASS');
 $config['quoteweek_smtp'] = getenv('QUOTEWEEK_SMTP');
 $config['quoteweek_user'] = getenv('QUOTEWEEK_USER');
 $config['quoteweek_pass'] = getenv('QUOTEWEEK_PASS');
+// Order Items Price
+$config['itemprice_smtp'] = getenv('ITEMPRICE_SMTP');
+$config['itemprice_user'] = getenv('ITEMPRICE_USER');
+$config['itemprice_pass'] = getenv('ITEMPRICE_PASS');
