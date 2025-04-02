@@ -1,7 +1,7 @@
 .customform_content {
     clear: both;
-    /* width: 994px; */
-    width: 1041px;
+    width: 976px;
+    /* width: 1041px; */
     margin-left: 10px;
     margin-right: 17px;
 }
@@ -55,7 +55,8 @@ a.find_customformbnt {
 }
 .customform_tabtitle {
     clear: both;
-    width: 1040px;
+    /* width: 1040px; */
+    width: 100%;
     margin-top: 10px;
     border: 1.5px solid #000000;
 }
@@ -74,10 +75,10 @@ a.find_customformbnt {
     /* border-right: 1px solid #2F2F2F; */
 }
 .customform_tabtitle > .numinorder {
-    width: 60px;
+    width: 30px;
 }
 .customform_tabtitle > .websys {
-    width: 76px;
+    width: 40px;
 }
 .customform_tabtitle > .websys select.customformhideincl {
     float: left;
@@ -87,7 +88,7 @@ a.find_customformbnt {
     background: transparent;
     border: none;
     margin-top: 7px;
-    width: 76px;
+    width: 40px;
 }
 
 .customform_tabtitle > .status {
@@ -116,7 +117,8 @@ a.find_customformbnt {
 }
 .customform_tabledat {
     clear: both;
-    width: 1040px;
+    /* width: 1040px; */
+    width: 100%;
     border-left: 1.5px solid #000000;
     border-bottom: 1.5px solid #000000;
     border-right: 1.5px solid #000000;
@@ -165,11 +167,11 @@ a.find_customformbnt {
     border-right: 1px solid #000000;
 }
 .customform_tabledat .content-row > .numinorder {
-    width: 60px;
+    width: 30px;
     border-right: 1px solid #000000;
 }
 .customform_tabledat .content-row > .websys {
-    width: 76px;
+    width: 40px;
     border-right: 1px solid #000000;
     font-size: 15px;
 }
