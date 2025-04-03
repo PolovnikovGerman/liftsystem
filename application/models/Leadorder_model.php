@@ -10428,7 +10428,7 @@ Class Leadorder_model extends My_Model {
             }
             $amntdata[$fldname] = $fldval;
             $out['result'] = $this->success_result;
-//            $finchange = 0;
+            $finchange = 0;
 //            if ($fldname=='shipped' || $fldname=='shipped_price' || $fldname=='amount_sum') {
 //                $finchange = 1;
 //                if (intval($amntdata['shipped'])==0) {
@@ -10447,7 +10447,7 @@ Class Leadorder_model extends My_Model {
 //                $out['price'] = $amntdata['shipped_price'];
 //                $out['total'] = $amntdata['amount_sum'];
 //            }
-//            $out['finchange'] = $finchange;
+            $out['finchange'] = $finchange;
             usersession($session, $amntdata);
         }
         return $out;
