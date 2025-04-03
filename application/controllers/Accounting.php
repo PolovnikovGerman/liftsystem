@@ -155,7 +155,7 @@ class Accounting extends MY_Controller
             if ($postdata['show_year']==1) {
                 if ($postdata['year']>0) {
                     $nxtyear = $postdata['year']+1;
-                    if ($postdata['month']==0) {
+                    if (intval($postdata['month'])==0) {
                         $options['date_bgn']=strtotime($postdata['year'].'-01-01');
                         $options['date_end']=strtotime($nxtyear.'-01-01');
                     } else {
@@ -382,7 +382,7 @@ class Accounting extends MY_Controller
             if ($postdata['show_year']==1) {
                 if ($postdata['year']>0) {
                     $nxtyear = $postdata['year']+1;
-                    if ($postdata['month']==0) {
+                    if (intval($postdata['month'])==0) {
                         $search['start_date']=strtotime($postdata['year'].'-01-01');
                         $search['end_date']=strtotime($nxtyear.'-01-01');
                     } else {
