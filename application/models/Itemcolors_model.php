@@ -14,6 +14,7 @@ class Itemcolors_model extends My_Model
         $this->db->select('ci.*');
         $this->db->from('sb_item_colors ci');
         $this->db->where('ci.item_color_itemid',$item_id);
+        $this->db->order_by('ci.item_color_order');
         $result = $this->db->get()->result_array();
         return $result;
     }
@@ -25,6 +26,7 @@ class Itemcolors_model extends My_Model
             $this->db->join('ts_inventory_colors c','c.inventory_color_id=ci.printshop_color_id');
             $this->db->where('ci.item_color_itemid', $item_id);
             $this->db->where('ci.item_color != ','');
+            $this->db->order_by('c.suggeststock','desc');
             $result = $this->db->get()->result_array();
         } else {
             $this->db->select('ci.*, c.color, c.color_image, c.color_order, c.inventory_color_id');
@@ -32,6 +34,7 @@ class Itemcolors_model extends My_Model
             $this->db->join('sb_item_colors ci','ci.item_color_itemid=i.item_id');
             $this->db->join('ts_inventory_colors c','c.inventory_color_id=ci.printshop_color_id','left');
             $this->db->where('i.item_id',$item_id);
+            $this->db->order_by('c.suggeststock','desc');
             $colors = $this->db->get()->result_array();
             $result = [];
             $numpp=1;

@@ -413,11 +413,11 @@ Class Sritems_model extends My_Model
                     $numpp++;
                 }
             } else {
-                if ($editmode==0) {
-                    $colorsrc = $this->itemcolors_model->get_invent_itemcolors($item_id, $editmode);
-                } else {
-                    $colorsrc = $this->itemcolors_model->get_invent_itemcolors($item_id, $editmode);
-                }
+                $colorsrc = $this->itemcolors_model->get_invent_itemcolors($item_id, $editmode);
+//                if ($editmode==0) {
+//                } else {
+//                    $colorsrc = $this->itemcolors_model->get_invent_itemcolors($item_id, $editmode);
+//                }
                 foreach ($colorsrc as $itmcolor) {
                     $colors[] = [
                         'item_color_id' => $itmcolor['item_color_id'],

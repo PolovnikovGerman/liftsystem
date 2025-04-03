@@ -220,11 +220,11 @@ class Dbitems extends MY_Controller
                     ];
                     $itemprices = $this->load->view('btitems/itemprices_edit', $price_options,TRUE);
                     $otherimages = $this->load->view('btitems/otherimages_view',['images' => $data['images'], 'imgcnt' => count($data['images'])],TRUE);
-                    if (empty($data['item']['printshop_inventory_id'])) {
+//                    if (empty($data['item']['printshop_inventory_id'])) {
                         $optionsimg = $this->load->view('btitems/optionimages_view',['colors' => $data['colors'],'item' => $data['item']],TRUE);
-                    } else {
-                        $optionsimg = $this->load->view('btitems/printshopcolors_view',['colors' => $data['colors'],'item' => $data['item']],TRUE);
-                    }
+//                    } else {
+//                        $optionsimg = $this->load->view('btitems/printshopcolors_view',['colors' => $data['colors'],'item' => $data['item']],TRUE);
+//                    }
                     $imagesoptions = [
                         'otherimages' => $otherimages,
                         'optionsimg' => $optionsimg,

@@ -1,3 +1,4 @@
+<input id="popupmanagemode" type="hidden" value="<?=$mode?>"/>
 <div class="popupimages_section itemimagesection <?=$mode=='view' ? 'viewmode' : ''?>">
     <?=$main_view?>
 </div>

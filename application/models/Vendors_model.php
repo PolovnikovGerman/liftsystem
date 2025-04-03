@@ -31,7 +31,9 @@ Class Vendors_model extends My_Model
             $this->db->from('vendors');
             $this->db->where('vendor_name',$vrow);
             $vres=$this->db->get()->row_array();
-            $out[]=$vres;
+            if (isset($vres['vendor_id'])) {
+                $out[]=$vres;
+            }
         }
         $out[]=[
             'vendor_id' => -1,

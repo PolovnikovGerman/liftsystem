@@ -29,23 +29,20 @@
                 </div>
             </div>
             <div class="content-row">
-                <div class="imageorder">
-                    <select class="optimageorderinpt" data-image="<?=$color['item_color_id']?>">
-                        <?php for ($i=1; $i<=$cntimages; $i++) { ?>
-                            <option value="<?=$i?>" <?=$i==$color['item_color_order'] ? 'selected="selected"' : ''?>><?=$i?></option>
-                        <?php } ?>
-                    </select>
-                </div>
-                <div class="imagecaption">
-                    <?php if (empty($inventory)) { ?>
-                        <input class="itemimagecaption optimage" data-image="<?=$color['item_color_id']?>" value="<?=$color['item_color']?>" placeholder="Enter Caption..."/>
-                    <?php } else { ?>
-                        <select class="itemimagecaptionselect optimage" data-image="<?=$color['item_color_id']?>">
-                            <option value="" <?=$color['item_color']=='' ? 'selected="selected"' : ''?>></option>
-                            <option value="<?=$color['item_color_source']?>" <?=$color['item_color']==$color['item_color_source'] ? 'selected="selected"' : ''?>><?=$color['item_color_source']?></option>
+                <?php if (!empty($inventory)) : ?>
+                    <div class="imagecaption view"><?=$color['item_color']?></div>
+                <?php else : ?>
+                    <div class="imageorder">
+                        <select class="optimageorderinpt" data-image="<?=$color['item_color_id']?>">
+                            <?php for ($i=1; $i<=$cntimages; $i++) { ?>
+                                <option value="<?=$i?>" <?=$i==$color['item_color_order'] ? 'selected="selected"' : ''?>><?=$i?></option>
+                            <?php } ?>
                         </select>
-                    <?php } ?>
-                </div>
+                    </div>
+                    <div class="imagecaption">
+                        <input class="itemimagecaption optimage" data-image="<?=$color['item_color_id']?>" value="<?=$color['item_color']?>" placeholder="Enter Caption..."/>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
         <?php $numpp++;?>

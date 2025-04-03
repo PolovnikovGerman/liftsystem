@@ -4365,4 +4365,29 @@ class Test extends CI_Controller
             }
         }
     }
+
+    public function updatesrcolors()
+    {
+        $this->db->select('item_id, printshop_inventory_id, item_number')->from('sb_items')->where('brand','SR');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            // Get colors
+            $this->db->select('*')->from('sb_item_colors')->where('item_color_itemid', $item['item_id']);
+            $colors = $this->db->get()->result_array();
+            foreach ($colors as $color) {
+                if (empty($color['printshop_color_id'])) {
+                    // Check Item
+                    $this->db->select('*')->from('ts_inventory_colors')->where(['inventory_item_id'=>$item['printshop_inventory_id'],'color' => $color['item_color']]);
+                    $invcolor = $this->db->get()->row_array();
+                    if (isset($invcolor['inventory_color_id'])) {
+                        $this->db->where('item_color_id', $color['item_color_id']);
+                        $this->db->set('printshop_color_id', $invcolor['inventory_color_id']);
+                        $this->db->update('sb_item_colors');
+                    } else {
+                        echo 'Item '.$item['item_number'].' Color '.$color['item_color'].' not found '.PHP_EOL;
+                    }
+                }
+            }
+        }
+    }
 }

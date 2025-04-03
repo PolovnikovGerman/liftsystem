@@ -538,22 +538,43 @@ class Btitemdetails extends MY_Controller
             $error = 'Session data empty';
             $postdata = $this->input->post();
             $session = ifset($postdata, 'session', 'unkn');
+            $mode = ifset($postdata, 'mode', 'view');
             $sessiondata = usersession($session);
             if (!empty($sessiondata)) {
-                $res = $this->btitemdetails_model->item_images_rebuild($sessiondata, $session);
-                $error = $res['msg'];
-                if ($res['result']==$this->success_result) {
+                if ($mode=='edit') {
+                    $res = $this->btitemdetails_model->item_images_rebuild($sessiondata, $session);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $sessiondata = usersession($session);
+                        $item = $sessiondata['item'];
+                        $images = $sessiondata['images'];
+                        $colors = $sessiondata['colors'];
+                        $otherimages = $this->load->view('btitems/otherimages_view',['images' => $images, 'imgcnt' => count($images)],TRUE);
+                        $optionsimg = $this->load->view('btitems/optionimages_view',['colors' => $colors,'item' => $item],TRUE);
+//                        if (empty($item['printshop_inventory_id'])) {
+//                            $optionsimg = $this->load->view('btitems/optionimages_view',['colors' => $colors,'item' => $item],TRUE);
+//                        } else {
+//                            $optionsimg = $this->load->view('btitems/printshopcolors_view',['colors' => $colors,'item' => $item],TRUE);
+//                        }
+                        $imagesoptions = [
+                            'otherimages' => $otherimages,
+                            'optionsimg' => $optionsimg,
+                            'item' => $item,
+                            'missinfo' => $res['missinfo'],
+                        ];
+                        $mdata['content'] = $this->load->view('btitems/images_view',$imagesoptions, TRUE);
+                    }
+                } else {
                     $error = '';
-                    $sessiondata = usersession($session);
                     $item = $sessiondata['item'];
                     $images = $sessiondata['images'];
                     $colors = $sessiondata['colors'];
                     $otherimages = $this->load->view('btitems/otherimages_view',['images' => $images, 'imgcnt' => count($images)],TRUE);
-                    if (empty($data['item']['printshop_inventory_id'])) {
-                        $optionsimg = $this->load->view('btitems/optionimages_view',['colors' => $colors,'item' => $item],TRUE);
-                    } else {
-                        $optionsimg = $this->load->view('btitems/printshopcolors_view',['colors' => $colors,'item' => $item],TRUE);
-                    }
+                    $optionsimg = $this->load->view('btitems/optionimages_view',['colors' => $colors,'item' => $item],TRUE);
+                    $this->db->select('imagescolors')->from('v_sbitem_missinginfo')->where('item_id', $item['item_id']);
+                    $res = $this->db->get()->row_array();
+                    $res['missinfo'] = ifset($res,'imagescolors',1);
                     $imagesoptions = [
                         'otherimages' => $otherimages,
                         'optionsimg' => $optionsimg,

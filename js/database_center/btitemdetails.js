@@ -667,6 +667,7 @@ function init_btitemimages_edit() {
     $("#itemImagesModal").find("button.close").unbind('click').click(function () {
         var params = new Array();
         params.push({name: 'session', value: $("#dbdetailsession").val()});
+        params.push({name: 'mode', value: $("#popupmanagemode").val()});
         var url="/btitemdetails/item_images_rebuild";
         $.post(url, params, function(response) {
             if (response.errors=='') {

@@ -1269,7 +1269,8 @@ select.itemdetailsoptions.missing_info {
     font-weight: 600;
     height: 20px;
     line-height: 20px;
-    width: 61px;
+    /* width: 61px; */
+    width: 89px;
     padding-left: 4px;
     white-space: nowrap;
     overflow: hidden;
@@ -1288,7 +1289,8 @@ select.printshopcolor {
     background-color: #ffffff;
     height: 20px;
     line-height: 20px;
-    width: 57px;
+    /* width: 57px; */
+    width: 85px;
 }
 /* Imprint */
 .relievers_customisation {
