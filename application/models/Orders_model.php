@@ -6256,7 +6256,10 @@ Class Orders_model extends MY_Model
                         $artloc = $order_item['artworks'];
 
                         foreach ($artloc as $artrow) {
-                            $colors_array = explode(',', $artrow['order_artwork_colors']);
+                            $colors_array = [];
+                            if (!empty($artrow['order_artwork_colors'])) {
+                                $colors_array = explode(',', $artrow['order_artwork_colors']);
+                            }
                             $color_nums = count($colors_array);
                             $color_1 = $color_2 = $color_3 = $color_4 = '';
                             switch ($color_nums) {
