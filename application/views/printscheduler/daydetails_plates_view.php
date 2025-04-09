@@ -13,7 +13,7 @@
                 <?php } ?>
             </div>
             <div class="plates-table-td-done" data-order="<?=$plate['order_id']?>">
-                <?php if ($plate['print_ready']==0) : ?>
+                <?php if ($plate['plates_ready']==0) : ?>
                     <i class="fa fa-square-o" data-order="<?=$plate['order_id']?>"></i>
                 <?php else : ?>
                     <i class="fa fa-check-square-o" data-order="<?=$plate['order_id']?>"></i>
