@@ -5471,9 +5471,26 @@ Class Leadorder_model extends My_Model {
                         $this->db->insert('ts_order_trackings');
                     }
                 }
-
+                // Item colors - set shipped time
+                $this->db->select('shipping_ready, item_qty')->from('ts_order_itemcolors')->where('order_itemcolor_id', $colorid);
+                $itemcolres = $this->db->get()->row_array();
+                // Total tracks
+                $this->db->select('count(tracking_id) as cnt, sum(qty) as tracked, max(trackdate) as trackdate')->from('ts_order_trackings')->where('order_itemcolor_id', $colorid);
+                $trackres = $this->db->get()->row_array();
+                if ($trackres['cnt'] > 0 && $trackres['tracked'] >= $itemcolres['item_qty']) {
+                    if ($itemcolres['shipping_ready']==0) {
+                        $this->db->where('order_itemcolor_id', $colorid);
+                        $this->db->set('shipping_ready', $trackres['trackdate']);
+                        $this->db->update('ts_order_itemcolors');
+                    }
+                } else {
+                    if ($itemcolres['shipping_ready']!=0) {
+                        $this->db->where('order_itemcolor_id', $colorid);
+                        $this->db->set('shipping_ready', 0);
+                        $this->db->update('ts_order_itemcolors');
+                    }
+                }
             }
-
             $imprints=$row['imprints'];
             foreach ($imprints as $prow) {
                 if ($prow['delflag']==1) {
@@ -5553,6 +5570,24 @@ Class Leadorder_model extends My_Model {
         $this->db->set('order_qty', $totalqty);
         $this->db->where('order_id', $order_id);
         $this->db->update('ts_orders');
+        // Check item colors shipping ready
+        $orderdata = $this->db->select('shipped_date')->from('ts_orders')->where('order_id', $order_id)->get()->row_array();
+        $this->db->select('count(oic.order_itemcolor_id) as cnt')->from('ts_order_itemcolors oic')->join('ts_order_items oi', 'oic.order_item_id=oi.order_item_id')->join('ts_orders o', 'o.order_id=oi.order_id');
+        $this->db->where(['o.order_id' => $order_id,'oic.shipping_ready' => 0]);
+        $chkres = $this->db->get()->row_array();
+        if ($chkres['cnt']==0) {
+            if ($orderdata['shipped_date']==0) {
+                $this->db->where('order_id', $order_id);
+                $this->db->set('shipped_date', time());
+                $this->db->update('ts_orders');
+            }
+        } else {
+            if ($orderdata['shipped_date']!=0) {
+                $this->db->where('order_id', $order_id);
+                $this->db->set('shipped_date', 0);
+                $this->db->update('ts_orders');
+            }
+        }
         $res['result']=$this->success_result;
         $res['order_items']=$order_items;
         return $res;
