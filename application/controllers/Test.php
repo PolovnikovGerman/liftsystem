@@ -4365,4 +4365,10 @@ class Test extends CI_Controller
             }
         }
     }
+
+    public function update_shippedorders()
+    {
+        $this->load->model('orders_model');
+        $this->orders_model->update_shipped_orders();
+    }
 }

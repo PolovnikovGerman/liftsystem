@@ -9426,4 +9426,53 @@ Class Orders_model extends MY_Model
             }
         }
     }
+
+    public function update_shipped_orders()
+    {
+        $this->db->select('order_id, order_num, order_date, shipped_date')->from('ts_orders')->where(['is_canceled' => 0, 'order_system'=>'new'])->order_by('order_id','desc');
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            $items = $this->db->select('order_item_id')->from('ts_order_items')->where('order_id', $order['order_id'])->get()->result_array();
+            foreach ($items as $item) {
+                $colors = $this->db->select('order_itemcolor_id, item_qty, shipping_ready')->from('ts_order_itemcolors')->where('order_item_id', $item['order_item_id'])->get()->result_array();
+                foreach ($colors as $color) {
+                    $this->db->select('count(tracking_id) as cnt, sum(qty) as tracked, max(trackdate) as trackdate')->from('ts_order_trackings')->where('order_itemcolor_id', $color['order_itemcolor_id']);
+                    $trackres = $this->db->get()->row_array();
+                    if ($trackres['cnt'] > 0) {
+                        if ($trackres['cnt']>=$color['item_qty']) {
+                            if ($color['shipping_ready']==0) {
+                                $this->db->where('order_itemcolor_id', $color['order_itemcolor_id']);
+                                $this->db->set('shipping_ready', $trackres['trackdate']);
+                                $this->db->update('ts_order_itemcolors');
+                            }
+                        } else {
+                            if ($color['shipping_ready']!=0) {
+                                $this->db->where('order_itemcolor_id', $color['order_itemcolor_id']);
+                                $this->db->set('shipping_ready', 0);
+                                $this->db->update('ts_order_itemcolors');
+                            }
+                        }
+                    }
+                }
+            }
+            // Update order
+            $this->db->select('count(oic.order_itemcolor_id) as cnt, max(oic.shipping_ready) as shipdate')->from('ts_order_itemcolors oic')->join('ts_order_items oi', 'oic.order_item_id=oi.order_item_id')->join('ts_orders o', 'o.order_id=oi.order_id');
+            $this->db->where(['o.order_id' => $order['order_id'],'oic.shipping_ready' => 0]);
+            $chkres = $this->db->get()->row_array();
+            if ($chkres['cnt']==0) {
+                if ($order['shipped_date']==0) {
+                    $this->db->where('order_id', $order['order_id']);
+                    $this->db->set('shipped_date', $chkres['shipdate']);
+                    $this->db->update('ts_orders');
+                }
+            } else {
+                if ($order['shipped_date']!=0) {
+                    $this->db->where('order_id', $order['order_id']);
+                    $this->db->set('shipped_date', 0);
+                    $this->db->update('ts_orders');
+                }
+            }
+            echo 'Order # '.$order['order_num'].' '.date('d.m.y', $order['order_date']).' Checked'.PHP_EOL;
+        }
+    }
 }
