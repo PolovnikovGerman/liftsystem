@@ -289,9 +289,8 @@ function init_printscheduler_dayview() {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $(".ready-print-block").empty().html(response.data.content);
-                // Update plates
-                $(".stock-table-td-done[data-order='"+order+"']").empty().html(response.data.orderchk);
-                // $(".plates-table-td-done[data-order='"+order+"']").empty().html(response.data.orderchk);
+                // Update stocks
+                $("#stockordersdata").empty().html(response.data.daycontent);
                 $("#loader").hide();
                 init_printscheduler_dayview();
             } else {
@@ -311,8 +310,8 @@ function init_printscheduler_dayview() {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $(".ready-print-block").empty().html(response.data.content);
-                // $(".stock-table-td-done[data-order='"+order+"']").empty().html(response.data.orderchk);
-                $(".plates-table-td-done[data-order='"+order+"']").empty().html(response.data.orderchk);
+                // Update plates
+                $("#platesordersdata").empty().html(response.data.daycontent);
                 $("#loader").hide();
                 init_printscheduler_dayview();
             } else {

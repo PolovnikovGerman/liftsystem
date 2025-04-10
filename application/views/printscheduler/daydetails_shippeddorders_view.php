@@ -14,7 +14,8 @@
             <div class="rsbox-table-td-itemcolor">Color/s</div>
             <div class="rsbox-table-td-descriptions">Item /Description</div>
             <div class="rsbox-table-td-items">#Items</div>
-            <div class="rsbox-table-td-shipqty">Sh Date Qty</div>
+            <div class="rsbox-table-td-shipdate" style="width: 42px;">Sh Date</div>
+            <div class="rsbox-table-td-qty" style="width: 38px">Qty</div>
             <div class="rsbox-table-td-method">Method</div>
             <div class="rsbox-table-td-tracking">Enter Tracking #s</div>
             <div class="rsbox-table-td-btnsave">&nbsp;</div>
@@ -38,8 +39,8 @@
                 <div class="rsbox-table-td-itemcolor"><?=$order['item_color']?></div>
                 <div class="rsbox-table-td-descriptions"><?=$order['item_name']?></div>
                 <div class="rsbox-table-td-items"><?=$order['item_qty']?></div>
-                <div class="rsbox-table-td-shipqty">
-                    <div class="date-shipqty <?=$order['shipclass']?>"><?=date('m/d', $order['shipdate'])?></div>
+                <div class="rsbox-table-td-shipdate <?=$order['shipclass']?>"><?=date('m/d', $order['shipdate'])?></div>
+                <div class="rsbox-table-td-qty">
                     <input class="inp-shipqty" type="text" readonly="readonly" placeholder="1200" value="<?=$order['shipqty']?>"/>
                 </div>
                 <div class="rsbox-table-td-method">

@@ -710,6 +710,9 @@
     border: 1px solid #888888;
     margin-bottom: 2px;
 }
+.stock-table-tr.inwork {
+    opacity: 0.3;
+}
 .stock-table-tr.addition {
     margin-left: 79px;
     width: 291px;
@@ -805,6 +808,9 @@
     line-height: 18px !important;
     border: 1px solid #888888;
     margin-bottom: 2px;
+}
+.plates-table-tr.inwork {
+    opacity: 0.3;
 }
 .plates-table-tr.addition {
     width: 235px;
@@ -1421,17 +1427,28 @@
     font-size: 12px;
     text-align: center;
 }
-.rsbox-table-td-shipqty {
-    width: 80px;
+/*.rsbox-table-td-shipqty {*/
+/*    width: 80px;*/
+/*    font-size: 11px;*/
+/*    border-right: 1px solid #d4d2d2;*/
+/*}*/
+.rsbox-table-td-shipdate {
+    width: 45px;
+    font-size: 11px;
+    /* border-right: 1px solid #d4d2d2; */
+    text-align: center;
+}
+.rsbox-table-td-qty {
     font-size: 11px;
     border-right: 1px solid #d4d2d2;
+    width: 45px;
 }
 .rsbox-table-td-method {
     width: 69px;
     border-right: 1px solid #d4d2d2;
 }
 .rsbox-table-td-tracking {
-    width: 190px;
+    width: 181px;
 }
 .rsbox-table-td-btnsave {
     width: 36px;
@@ -1439,7 +1456,7 @@
 .rsbox-table-header .rsbox-table-td-order,
 .rsbox-table-header .rsbox-table-td-descriptions,
 .rsbox-table-header .rsbox-table-td-items,
-.rsbox-table-header .rsbox-table-td-shipqty,
+.rsbox-table-header .rsbox-table-td-qty,
 .rsbox-table-header .rsbox-table-td-method {
     border-right: 1px solid #7fa9d2;
 }
@@ -1458,7 +1475,7 @@
     text-align: center;
     line-height: 17px !important;
 }
-.rsbox-table-td-shipqty input.inp-shipqty {
+.rsbox-table-td-qty input.inp-shipqty {
     float: right;
     height: 14px;
     width: 38px;
@@ -1471,7 +1488,7 @@
 .rsbox-table-td-tracking input.inp-tracking {
     float: left;
     height: 14px;
-    width: 185px;
+    width: 177px;
     border: 1px solid #888888;
     margin-left: 3px;
     margin-top: 1px;
