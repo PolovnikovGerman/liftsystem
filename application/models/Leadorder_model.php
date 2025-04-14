@@ -1886,6 +1886,7 @@ Class Leadorder_model extends My_Model {
         $order = $leadorder['order'];
         $idx=0;
         $found=0;
+        log_message('error','Add Itemcolor ID '.$order_item_id);
         foreach ($order_items as $row) {
             if ($row['order_item_id']==$order_item_id) {
                 $found=1;
