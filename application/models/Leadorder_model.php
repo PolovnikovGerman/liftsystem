@@ -1971,6 +1971,7 @@ Class Leadorder_model extends My_Model {
         ];
         $newitem['trackings'] = $trackings;
         $items[]=$newitem;
+        log_message('error','Add Color '.json_encode($newitem));
         // Save
         $order_items[$idx]['items']=$items;
         $leadorder['order_items']=$order_items;
