@@ -1893,6 +1893,9 @@ Class Leadorder_model extends My_Model {
             } else {
                 $idx++;
             }
+            if ($found==1) {
+                break;
+            }
         }
         if ($found==0) {
             $out['msg']='Order Item Record Not Found';
