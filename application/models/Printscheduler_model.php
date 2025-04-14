@@ -1074,20 +1074,13 @@ class Printscheduler_model extends MY_Model
     public function shiporder($order_itemcolor_id, $shipqty, $shipmethod, $trackcode, $user_id)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Order not found'];
-        $this->db->select('oic.order_itemcolor_id, oic.item_qty, o.order_id, o.order_num, o.print_date')->from('ts_order_itemcolors oic');
+        $this->db->select('oic.order_itemcolor_id, oic.item_qty, oic.shipping_ready, o.order_id, o.order_num, o.print_date')->from('ts_order_itemcolors oic');
         $this->db->join('ts_order_items oi','oic.order_item_id = oi.order_item_id')->join('ts_orders o','oi.order_id = o.order_id')->where('oic.order_itemcolor_id', $order_itemcolor_id);
         $orderdata = $this->db->get()->row_array();
         if (ifset($orderdata, 'order_id',0) > 0) {
             // Order found
-            $shippingqty = intval($shipqty);
-//            if ($shippingqty == 0) {
-//                $shippingqty = $orderdata['item_qty'];
-//            }
-            // Select tracking, related with item color
-//            $this->db->select('*')->from('ts_order_trackings')->where('order_itemcolor_id', $order_itemcolor_id);
-//            $trackres = $this->db->get()->result_array();
-//            $track_id = 0;
-//            if (count($trackres)==0) {
+            if (empty($orderdata['shipping_ready'])) {
+                $shippingqty = intval($shipqty);
                 // Add new tracking
                 $this->db->set('created_at', date('Y-m-d H:i:s'));
                 $this->db->set('created_by', $user_id);
@@ -1099,38 +1092,28 @@ class Printscheduler_model extends MY_Model
                 $this->db->set('trackcode', $trackcode);
                 $this->db->insert('ts_order_trackings');
                 $track_id = $this->db->insert_id();
-//            } elseif (count($trackres)==1) {
-//                $tracdata = $trackres[0];
-//                $track_id = $tracdata['tracking_id'];
-//                $this->db->where('tracking_id', $track_id);
-//                $this->db->set('updated_by', $user_id);
-//                $this->db->set('trackdate', time());
-//                $this->db->set('trackservice', $shipmethod);
-//                $this->db->set('trackcode', $trackcode);
-//                $this->db->set('qty', $shippingqty);
-//                $this->db->update('ts_order_trackings');
-//            } else {
-//                // ???
-//                $out['msg'] = 'Order tracking records too much for update';
-//            }
-            if ($track_id > 0) {
+                if ($track_id > 0) {
+                    $out['result'] = $this->success_result;
+                    $out['printdate'] = date('Y-m-d', $orderdata['print_date']);
+                    $tracked = $this->_shipped_itemcolor($order_itemcolor_id);
+                    if ($tracked >= $orderdata['item_qty']) {
+                        $this->db->where('order_itemcolor_id', $order_itemcolor_id);
+                        $this->db->set('shipping_ready', time());
+                        $this->db->update('ts_order_itemcolors');
+                    }
+                    // Count shipping parts
+                    $this->db->select('count(oic.order_itemcolor_id) as cnt')->from('ts_order_itemcolors oic')->join('ts_order_items oi', 'oic.order_item_id=oi.order_item_id')->join('ts_orders o', 'o.order_id=oi.order_id');
+                    $this->db->where(['o.order_id' => $orderdata['order_id'],'oic.shipping_ready' => 0]);
+                    $chkres = $this->db->get()->row_array();
+                    if ($chkres['cnt']==0) {
+                        $this->db->where('order_id', $orderdata['order_id']);
+                        $this->db->set('shipped_date', time());
+                        $this->db->update('ts_orders');
+                    }
+                }
+            } else {
                 $out['result'] = $this->success_result;
                 $out['printdate'] = date('Y-m-d', $orderdata['print_date']);
-                $tracked = $this->_shipped_itemcolor($order_itemcolor_id);
-                if ($tracked >= $orderdata['item_qty']) {
-                    $this->db->where('order_itemcolor_id', $order_itemcolor_id);
-                    $this->db->set('shipping_ready', time());
-                    $this->db->update('ts_order_itemcolors');
-                }
-                // Count shipping parts
-                $this->db->select('count(oic.order_itemcolor_id) as cnt')->from('ts_order_itemcolors oic')->join('ts_order_items oi', 'oic.order_item_id=oi.order_item_id')->join('ts_orders o', 'o.order_id=oi.order_id');
-                $this->db->where(['o.order_id' => $orderdata['order_id'],'oic.shipping_ready' => 0]);
-                $chkres = $this->db->get()->row_array();
-                if ($chkres['cnt']==0) {
-                    $this->db->where('order_id', $orderdata['order_id']);
-                    $this->db->set('shipped_date', time());
-                    $this->db->update('ts_orders');
-                }
             }
         }
         return $out;
