@@ -1886,7 +1886,6 @@ Class Leadorder_model extends My_Model {
         $order = $leadorder['order'];
         $idx=0;
         $found=0;
-        log_message('error','Add Itemcolor ID '.$order_item_id);
         foreach ($order_items as $row) {
             if ($row['order_item_id']==$order_item_id) {
                 $found=1;
@@ -1975,7 +1974,6 @@ Class Leadorder_model extends My_Model {
         ];
         $newitem['trackings'] = $trackings;
         $items[]=$newitem;
-        log_message('error','Add Color '.json_encode($newitem));
         // Save
         $order_items[$idx]['items']=$items;
         $leadorder['order_items']=$order_items;
@@ -4798,7 +4796,6 @@ Class Leadorder_model extends My_Model {
         $artsyncdoc=$res['artsyncdoc'];
         // Clay save
         if (!isset($leadorder['claydocs'])) {
-            log_message('ERROR', 'Order '.$order_id.' Artwork '.$artwork_id.' without clays');
             $leadorder['claydocs'] = [];
         }
         $claydocs = $leadorder['claydocs'];
@@ -4807,7 +4804,6 @@ Class Leadorder_model extends My_Model {
         }
         // Preview save
         if (!isset($leadorder['previewdocs'])) {
-            log_message('ERROR', 'Order '.$order_id.' Artwork '.$artwork_id.' without previews');
             $leadorder['previewdocs'] = [];
         }
         $previewdocs = $leadorder['previewdocs'];
@@ -7093,10 +7089,6 @@ Class Leadorder_model extends My_Model {
                     'APISubject' => '', 						// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
                     'APIVersion' => $this->config->item('APIVersion')		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
                 );
-            }
-            log_message('ERROR', 'Server Config '.$realconfig);
-            foreach ($config as $key=> $val) {
-                log_message('ERROR', $key . ' - '.$val);
             }
             // Show Errors
             if (empty($config['APIUsername']) || empty($config['APIPassword']) || empty($config['APISignature'])) {
