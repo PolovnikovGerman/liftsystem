@@ -9789,4 +9789,56 @@ Class Orders_model extends MY_Model
         $this->email->send();
         $this->email->clear(TRUE);
     }
+
+    public function check_ordermath($brand,$datestart, $dateend)
+    {
+        $out=[];
+        $this->db->select('*');
+        $this->db->from('ts_orders');
+        $this->db->where('order_date >= ', $datestart);
+        $this->db->where('order_date < ', $dateend);
+        $this->db->where('is_canceled',0);
+        if ($brand=='SB') {
+            $this->db->where_in('brand', ['SB','BT']);
+        } else {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->order_by('order_num');
+        $res = $this->db->get()->result_array();
+        if (count($res)>0) {
+            foreach ($res as $row) {
+                $this->db->select('sum(ic.item_qty*ic.item_price) as item_total');
+                $this->db->from('ts_order_items i');
+                $this->db->join('ts_order_itemcolors ic', 'ic.order_item_id=i.order_item_id');
+                $this->db->where('i.order_id', $row['order_id']);
+                $itm = $this->db->get()->row_array();
+                $this->db->select('sum(p.imprint_qty*p.imprint_price) as print_sum');
+                $this->db->from('ts_order_items i');
+                $this->db->join('ts_order_imprints p', 'p.order_item_id=i.order_item_id');
+                $this->db->where('i.order_id', $row['order_id']);
+                $print = $this->db->get()->row_array();
+                $this->db->select('rush_price');
+                $this->db->from('ts_order_shippings');
+                $this->db->where('order_id', $row['order_id']);
+                $ship = $this->db->get()->row_array();
+                $order_total = $itm['item_total'] + $print['print_sum'] + $row['shipping'] + $row['tax'] + $row['mischrg_val1'] + $row['mischrg_val2'] + $ship['rush_price'] - $row['discount_val'];
+                if (round($row['revenue'], 2) != round($order_total, 2)) {
+                    $out[] = [
+                        'order_num' => $row['order_num'],
+                        'itemcost' => $itm['item_total'],
+                        'imprint' => $print['print_sum'],
+                        'shipping' => $row['shipping'],
+                        'tax' => $row['tax'],
+                        'mischarge' => ($row['mischrg_val1'] + $row['mischrg_val2']),
+                        'rush' => $ship['rush_price'],
+                        'discount' => $row['discount_val'],
+                        'calcrevenue' => $order_total,
+                        'revenue' => $row['revenue'],
+                        'diff' => $order_total - $row['revenue'],
+                    ];
+                }
+            }
+        }
+        return ['data' => $out, 'orders' => count($res)];
+    }
 }
