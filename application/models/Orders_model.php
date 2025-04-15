@@ -2945,7 +2945,7 @@ Class Orders_model extends MY_Model
                         $row['proftitleclass']='lowprofittitle';
                         $row['proftitle']='data-content="'.$row['reason'].'"';
                     }
-                    $row['profit_perc']=number_format($row['profit_perc'],1,'.',',').'%';
+                    $row['profit_perc']=$row['profit_perc']=='' ? '&nbsp;' : number_format($row['profit_perc'],1,'.',',').'%';
                     if ($admin_mode==0) {
                         $row['add']=(floatval($row['cnt_amnt'])==floatval($row['order_cog']) ? '' : '<a href="javascript:void(0);" class="editcoglnk" id="add'.$row['order_id'].'">*</a>' );
                     } else {

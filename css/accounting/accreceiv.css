@@ -395,6 +395,9 @@
 .accreceiv-owndetails-headstatus {
     width: 258px;
 }
+.accreceiv-owndetails-headsrstatus {
+    width: 175px;
+}
 .accreceiv-owndetails-body {
     border-left: 1px solid #000000;
     border-bottom: 1px solid #000000;
@@ -543,7 +546,12 @@
     width: 258px;
     /* padding-left: 5px; */
 }
-.accreceiv-owndetails-bodystatus > div {
+.accreceiv-owndetails-bodysrstatus {
+    width: 173px;
+    /* padding-left: 5px; */
+}
+.accreceiv-owndetails-bodystatus > div,
+.accreceiv-owndetails-bodysrstatus > div {
     height: 22px;
     line-height: 22px!important;
 }
