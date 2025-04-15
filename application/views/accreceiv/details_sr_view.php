@@ -9,7 +9,7 @@
         <div class="accreceiv-owndetails-headbalance ownsort" data-sort="balance">Balance</div>
         <div class="accreceiv-owndetails-headorder ownsort" data-sort="order_num">Order</div>
         <div class="accreceiv-owndetails-headconfirm ownsort" data-sort="order_num"># conf</div>
-        <div class="accreceiv-owndetails-headponumber ownsort" data-sort="customer_ponum">PO #</div>
+        <div class="accreceiv-owndetails-headponumber ownsort" data-sort="customer_ponum">Cust PO#</div>
         <div class="accreceiv-owndetails-headcustomer ownsort" data-sort="customer_name">Customer <span></span></div>
         <div class="accreceiv-owndetails-headsrstatus ownsort" data-sort="debt_status">Status</div>
     </div>

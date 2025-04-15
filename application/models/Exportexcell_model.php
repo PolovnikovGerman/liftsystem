@@ -1002,7 +1002,7 @@ class Exportexcell_model extends CI_Model
         return ['result' => 1];
     }
 
-    public function export_owed($oweds)
+    public function export_owed($oweds, $brand='ALL')
     {
         ini_set("memory_limit",-1);
         $namesheet = 'owed_export';
@@ -1014,20 +1014,36 @@ class Exportexcell_model extends CI_Model
         $sheet->setCellValue('B1','Due');
         $sheet->setCellValue('C1','Balance');
         $sheet->setCellValue('D1','Order');
-        $sheet->setCellValue('E1','Customer');
-        $sheet->setCellValue('F1','Type');
-        $sheet->setCellValue('G1','Approval');
-        $sheet->setCellValue('H1','Status');
+        if ($brand=='SR') {
+            $sheet->setCellValue('E1','Customer PO #');
+            $sheet->setCellValue('F1','Customer');
+            $sheet->setCellValue('G1','Type');
+            $sheet->setCellValue('H1','Approval');
+            $sheet->setCellValue('I1','Status');
+        } else {
+            $sheet->setCellValue('E1','Customer');
+            $sheet->setCellValue('F1','Type');
+            $sheet->setCellValue('G1','Approval');
+            $sheet->setCellValue('H1','Status');
+        }
         $j=2;
         foreach ($oweds as $owed) {
             $sheet->setCellValue('A'.$j, $owed['rundebt']); // MoneyOutput($owed['rundebt'],0));
             $sheet->setCellValue('B'.$j, date('m/d/y', $owed['batch_due']));
             $sheet->setCellValue('C'.$j, $owed['balance']); // MoneyOutput($owed['balance']));
             $sheet->setCellValue('D'.$j, $owed['order_num']);
-            $sheet->setCellValue('E'.$j, $owed['customer_name']);
-            $sheet->setCellValue('F'.$j, $owed['type']);
-            $sheet->setCellValue('G'.$j, $owed['approved']==0 ? 'Not Approved' : 'Approved');
-            $sheet->setCellValue('H'.$j, $owed['debt_status']);
+            if ($brand=='SR') {
+                $sheet->setCellValue('E'.$j, $owed['customer_ponum']);
+                $sheet->setCellValue('F'.$j, $owed['customer_name']);
+                $sheet->setCellValue('F'.$j, $owed['type']);
+                $sheet->setCellValue('G'.$j, $owed['approved']==0 ? 'Not Approved' : 'Approved');
+                $sheet->setCellValue('H'.$j, $owed['debt_status']);
+            } else {
+                $sheet->setCellValue('E'.$j, $owed['customer_name']);
+                $sheet->setCellValue('F'.$j, $owed['type']);
+                $sheet->setCellValue('G'.$j, $owed['approved']==0 ? 'Not Approved' : 'Approved');
+                $sheet->setCellValue('H'.$j, $owed['debt_status']);
+            }
             $j++;
         }
         $writer = new Xlsx($spreadsheet); // instantiate Xlsx

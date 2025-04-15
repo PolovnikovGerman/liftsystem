@@ -2822,7 +2822,7 @@ class Accounting extends MY_Controller
             $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort1, $ownsort2, $refundsort, $refunddirec);
             $this->load->model('exportexcell_model');
             if ($exporttype=='O') {
-                $mdata['url'] = $this->exportexcell_model->export_owed($res['owns']);
+                $mdata['url'] = $this->exportexcell_model->export_owed($res['owns'], $brand);
             } else {
                 $mdata['url'] = $this->exportexcell_model->export_refund($res['refunds']);
             }
