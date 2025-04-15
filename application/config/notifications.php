@@ -13,9 +13,9 @@ $config['ponotification_pass'] = getenv('PONTOITION_PASS');
 $config['sb_artproof_smtp'] = getenv('SB_ARTPROOF_SMTP');
 $config['sb_artproof_user'] = getenv('SB_ARTPROOF_USER');
 $config['sb_artproof_pass'] = getenv('SB_ARTPROOF_PASS');
-$config['sr_artproof_smtp'] = getenv('SB_ARTPROOF_SMTP');
-$config['sr_artproof_user'] = getenv('SB_ARTPROOF_USER');
-$config['sr_artproof_pass'] = getenv('SB_ARTPROOF_PASS');
+$config['sr_artproof_smtp'] = getenv('SR_ARTPROOF_SMTP');
+$config['sr_artproof_user'] = getenv('SR_ARTPROOF_USER');
+$config['sr_artproof_pass'] = getenv('SR_ARTPROOF_PASS');
 // Unpaid Orders notification
 $config['sr_unpaid_smtp'] = getenv('SR_UNPAID_SMTP');
 $config['sr_unpaid_user'] = getenv('SR_UNPAID_USER');
