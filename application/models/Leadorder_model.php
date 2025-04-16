@@ -2559,6 +2559,7 @@ Class Leadorder_model extends My_Model {
                         } else {
                             $repqty+=1;
                             $reptotal+=floatval($row[$setupindx]);
+                            $imprint_total+=floatval($row[$setupindx]);
                         }
                         $imprints[]=array(
                             'order_imprint_id'=>(-1)*$newidx,
