@@ -4216,7 +4216,8 @@ class Test extends CI_Controller
     {
         $this->load->model('orders_model');
         // $this->orders_model->order_invamount_srtransform();
-        $this->orders_model->order_invamount_sbtransform();
+        // $this->orders_model->order_invamount_sbtransform();
+        $this->orders_model->order_invamount();
     }
 
     public function customleads()
@@ -4530,5 +4531,11 @@ class Test extends CI_Controller
                 $this->db->update('sb_items');
             }
         }
+    }
+
+    public function update_shippedorders()
+    {
+        $this->load->model('orders_model');
+        $this->orders_model->update_shipped_orders();
     }
 }

@@ -283,14 +283,14 @@ function init_printscheduler_dayview() {
         var params = new Array();
         params.push({name: 'order', value: order});
         params.push({name: 'brand', value: $("#printschbrand").val()});
+        params.push({name: 'type', value: 'stock'});
         var url = '/printscheduler/stockdonecheck';
         $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $(".ready-print-block").empty().html(response.data.content);
-                // Update plates
-                $(".stock-table-td-done[data-order='"+order+"']").empty().html(response.data.orderchk);
-                $(".plates-table-td-done[data-order='"+order+"']").empty().html(response.data.orderchk);
+                // Update stocks
+                $("#stockordersdata").empty().html(response.data.daycontent);
                 $("#loader").hide();
                 init_printscheduler_dayview();
             } else {
@@ -304,13 +304,14 @@ function init_printscheduler_dayview() {
         var params = new Array();
         params.push({name: 'order', value: order});
         params.push({name: 'brand', value: $("#printschbrand").val()});
+        params.push({name: 'type', value: 'plates'});
         var url = '/printscheduler/stockdonecheck';
         $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $(".ready-print-block").empty().html(response.data.content);
-                $(".stock-table-td-done[data-order='"+order+"']").empty().html(response.data.orderchk);
-                $(".plates-table-td-done[data-order='"+order+"']").empty().html(response.data.orderchk);
+                // Update plates
+                $("#platesordersdata").empty().html(response.data.daycontent);
                 $("#loader").hide();
                 init_printscheduler_dayview();
             } else {
@@ -501,7 +502,7 @@ function init_assignprint(order) {
 }
 
 function show_scheduler_date(printdate) {
-    init_printscheduler_current();
+    // init_printscheduler_current();
     // leftmenu_alignment();
     var params = new Array();
     params.push({name: 'printdate', value: printdate});
@@ -532,7 +533,8 @@ function show_scheduler_date(printdate) {
                 $(".right-block").empty();
                 init_printscheduler_current();
                 leftmenu_alignment();
-            })
+            });
+            init_printscheduler_dayview();
         }  else {
             show_error(response);
             $("#loader").hide();

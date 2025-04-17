@@ -862,14 +862,32 @@ Class User_model extends MY_Model
     {
         // Init Mail
         $this->load->library('email');
-        $email_conf = array(
-            'protocol' => 'sendmail',
-            'charset' => 'utf-8',
-            'wordwrap' => TRUE,
-            'mailtype' => 'html',
-        );
+        $send_smtp = intval($this->config->item('usercode_smtp'));
+        if ($send_smtp==1) {
+            $email_conf = [
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+                'smtp_user' => $this->config->item('usercode_user'),
+                'smtp_pass' => $this->config->item('usercode_pass'),
+            ];
+            $email_from = $email_conf['smtp_user'];
+        } else {
+            $email_conf = array(
+                'protocol' => 'sendmail',
+                'charset' => 'utf-8',
+                'wordwrap' => TRUE,
+                'mailtype' => 'html',
+            );
+            $email_from = 'admin@bluetrack.com';
+
+        }
         $this->email->initialize($email_conf);
-        $email_from = 'admin@bluetrack.com';
         // Init GA
         $this->load->library('GoogleAuthenticator');
         $ga = new GoogleAuthenticator();
@@ -889,9 +907,14 @@ Class User_model extends MY_Model
             'manual_url' => 'https://support.google.com/accounts/answer/1066447?hl=en',
         ];
         $message_body = $this->load->view('messages/secret_update_view', $options, TRUE);
+        $mail_cc= [
+            $this->config->item('sean_email'),
+            $this->config->item('sage_email'),
+        ];
         $this->email->to($user['user_email']);
         $this->email->from($email_from);
-        $mail_subj = 'Update account security';
+        $this->email->cc($mail_cc);
+        $mail_subj = 'Update account security - user '.$user['user_name'];
         $this->email->subject($mail_subj);
         $this->email->message($message_body);
         $this->email->send();

@@ -6253,10 +6253,8 @@ div.trackservicelnk > input {
     font-size: 15px;
 }
 .ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection > .profitdataperc {
-    /*position: absolute;*/
-    /*right: 13px;*/
     position: relative;
-    left: 101px;
+    left: 83px; /* 101px; */
     color: #ffffff;
 }
 .ordercogdetailsviewarea.green .tabledataarea > .tabledetailsitem >.tabledatasection > .profitdataperc,

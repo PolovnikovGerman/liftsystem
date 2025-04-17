@@ -1238,7 +1238,7 @@ class Leads extends My_Controller {
             if ($postdata['show_year']==1) {
                 if ($postdata['year']>0) {
                     $nxtyear = $postdata['year']+1;
-                    if ($postdata['month']==0) {
+                    if (intval($postdata['month'])==0) {
                         $options['date_bgn']=strtotime($postdata['year'].'-01-01');
                         $options['date_end']=strtotime($nxtyear.'-01-01');
                     } else {
@@ -1267,9 +1267,11 @@ class Leads extends My_Controller {
                 $options['order_type']=$postdata['order_type'];
             }
             $options['exclude_quickbook'] = ifset($postdata,'exclude_quickbook',0);
+            $options['item_type'] = 'custom';
             /* count number of orders */
             $options['admin_mode']=0;
-            if ($this->USR_ROLE=='masteradmin') {
+            // if ($this->USR_ROLE=='masteradmin') {
+            if ($this->USER_ORDER_EXPORT==1) {
                 $options['admin_mode']=1;
             }
             if (isset($postdata['brand']) && !empty($postdata['brand'])) {
@@ -1290,6 +1292,7 @@ class Leads extends My_Controller {
                     'new_perc' => $totalord['numorders_detail_newperc'],
                     'repeat_perc' => $totalord['numorders_detail_repeatperc'],
                     'blank_perc'=> $totalord['numorders_detail_blankperc'],
+                    'total' => $totalord['numorders'],
                 ];
                 $order_tooltip = $this->load->view('orderprofit/total_tooltip_view', $order_tool_options, TRUE);
                 $qty_tool_options = [
@@ -1301,6 +1304,7 @@ class Leads extends My_Controller {
                     'new_perc' => $totalord['qty_detail_newperc'],
                     'repeat_perc' => $totalord['qty_detail_repeatperc'],
                     'blank_perc'=> $totalord['qty_detail_blankperc'],
+                    'total' => $totalord['qty'],
                 ];
                 $qty_tooltip = $this->load->view('orderprofit/total_tooltip_view', $qty_tool_options, TRUE);
                 $revenue_tool_options = [
@@ -1312,6 +1316,7 @@ class Leads extends My_Controller {
                     'new_perc' => $totalord['revenue_detail_newproc'],
                     'repeat_perc' => $totalord['revenue_detail_repeatproc'],
                     'blank_perc'=> $totalord['revenue_detail_blankproc'],
+                    'total' => $totalord['revenue'],
                 ];
                 $revenue_tooltip = $this->load->view('orderprofit/total_tooltip_view', $revenue_tool_options, TRUE);
                 // Balance
@@ -1324,6 +1329,7 @@ class Leads extends My_Controller {
                     'new_perc' => $totalord['balance_detail_newproc'],
                     'repeat_perc' => $totalord['balance_detail_repeatproc'],
                     'blank_perc'=> $totalord['balance_detail_blankproc'],
+                    'total' => $totalord['balance'],
                 ];
                 $balance_tooltip = $this->load->view('orderprofit/total_tooltip_view', $balance_tool_options, TRUE);
 
@@ -1336,6 +1342,7 @@ class Leads extends My_Controller {
                     'new_perc' => $totalord['shipping_detail_newperc'],
                     'repeat_perc' => $totalord['shipping_detail_repeatperc'],
                     'blank_perc'=> $totalord['shipping_detail_blankperc'],
+                    'total' => $totalord['shipping'],
                 ];
                 $shipping_tooltip = $this->load->view('orderprofit/total_tooltip_view', $shipping_tool_options, TRUE);
                 $tax_tool_options = [
@@ -1347,6 +1354,7 @@ class Leads extends My_Controller {
                     'new_perc' => $totalord['tax_detail_newperc'],
                     'repeat_perc' => $totalord['tax_detail_repeatperc'],
                     'blank_perc'=> $totalord['tax_detail_blankperc'],
+                    'total' => $totalord['tax'],
                 ];
                 $tax_tooltip = $this->load->view('orderprofit/total_tooltip_view', $tax_tool_options, TRUE);
                 $cog_tool_options = [
@@ -1358,6 +1366,7 @@ class Leads extends My_Controller {
                     'new_perc' => $totalord['cog_detail_newperc'],
                     'repeat_perc' => $totalord['cog_detail_repeatperc'],
                     'blank_perc'=> $totalord['cog_detail_blankperc'],
+                    'total' => $totalord['cog'],
                 ];
                 $cog_tooltip = $this->load->view('orderprofit/total_tooltip_view', $cog_tool_options, TRUE);
                 $profit_tool_options = [
@@ -1369,6 +1378,7 @@ class Leads extends My_Controller {
                     'new_perc' => $totalord['profit_detail_newperc'],
                     'repeat_perc' => $totalord['profit_detail_repeatperc'],
                     'blank_perc'=> $totalord['profit_detail_blankperc'],
+                    'total' => $totalord['profit'],
                 ];
                 $profi_tooltip = $this->load->view('orderprofit/total_tooltip_view', $profit_tool_options, TRUE);
                 $total_options = [
@@ -1385,9 +1395,8 @@ class Leads extends My_Controller {
                 ];
                 $mdata['total_row']=$this->load->view('orderprofit/total_profitall_view',$total_options,TRUE);
                 $mdata['totals_head']=$this->load->view('orderprofit/total_allprofittitle_view',['brand' => ifset($postdata,'brand','SB'),],TRUE);
-                // $mdata['total_row']=$this->load->view('orderprofit/total_profit_view',$totalord,TRUE);
             } else {
-                $mdata['totals_head']=$this->load->view('orderprofit/total_profittitle_view',[],TRUE);
+                $mdata['totals_head']=$this->load->view('orderprofit/total_profittitle_view',['brand' => ifset($postdata,'brand','SB'),],TRUE);
                 $mdata['total_row']=$this->load->view('orderprofit/total_profit_view',$totalord,TRUE);
             }
             $this->ajaxResponse($mdata, $error);
@@ -1662,7 +1671,7 @@ class Leads extends My_Controller {
         $this->load->model('customform_model');
         $datqs['total_rec']=$this->customform_model->get_count_forms($search);
 
-        $content=$this->load->view('customsbforms/customform_view.php',$datqs,TRUE);
+        $content=$this->load->view('customsbforms/customform_view',$datqs,TRUE);
         return $content;
 
     }
@@ -1783,4 +1792,23 @@ class Leads extends My_Controller {
         return $voption;
     }
 
+    public function customformstotals()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'ALL');
+            //
+            $this->load->model('customform_model');
+            $data = $this->customform_model->get_customform_totals($brand);
+            if (count($data)==0) {
+                $mdata['content'] = $this->load->view('customsbforms/totals_empty_view',[],TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('customsbforms/totals_data_view',['totals' => $data,], TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }

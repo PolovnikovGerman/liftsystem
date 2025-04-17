@@ -1179,22 +1179,26 @@ class Btitemdetails_model extends MY_Model
             $itemimg_fl = $this->config->item('itemimages').$item_id.'/';
             // Create Path to new Images
             if (createPath($itemimg_sh)) {
-                if (stripos($item['main_image'], $preload_sh)!==FALSE) {
-                    $mainimg_src = str_replace($preload_sh,'', $item['main_image']);
-                    $cpres = @copy($preload_fl.$mainimg_src, $itemimg_fl.$mainimg_src);
-                    if ($cpres) {
-                        $this->db->set('main_image', $itemimg_sh.$mainimg_src);
-                        $this->db->where('item_id', $item_id);
-                        $this->db->update('sb_items');
+                if (!empty($item['main_image'])) {
+                    if (stripos($item['main_image'], $preload_sh)!==FALSE) {
+                        $mainimg_src = str_replace($preload_sh,'', $item['main_image']);
+                        $cpres = @copy($preload_fl.$mainimg_src, $itemimg_fl.$mainimg_src);
+                        if ($cpres) {
+                            $this->db->set('main_image', $itemimg_sh.$mainimg_src);
+                            $this->db->where('item_id', $item_id);
+                            $this->db->update('sb_items');
+                        }
                     }
                 }
-                if (stripos($item['top_banner'], $preload_sh)!==FALSE) {
-                    $topbanner_src = str_replace($preload_sh, '', $item['top_banner']);
-                    $cpres = @copy($preload_fl.$topbanner_src, $itemimg_fl.$topbanner_src);
-                    if ($cpres) {
-                        $this->db->set('top_banner', $itemimg_sh.$topbanner_src);
-                        $this->db->where('item_id', $item_id);
-                        $this->db->update('sb_items');
+                if (!empty($item['top_banner'])) {
+                    if (stripos($item['top_banner'], $preload_sh)!==FALSE) {
+                        $topbanner_src = str_replace($preload_sh, '', $item['top_banner']);
+                        $cpres = @copy($preload_fl.$topbanner_src, $itemimg_fl.$topbanner_src);
+                        if ($cpres) {
+                            $this->db->set('top_banner', $itemimg_sh.$topbanner_src);
+                            $this->db->where('item_id', $item_id);
+                            $this->db->update('sb_items');
+                        }
                     }
                 }
             }

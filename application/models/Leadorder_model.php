@@ -1892,6 +1892,9 @@ Class Leadorder_model extends My_Model {
             } else {
                 $idx++;
             }
+            if ($found==1) {
+                break;
+            }
         }
         if ($found==0) {
             $out['msg']='Order Item Record Not Found';
@@ -2468,7 +2471,7 @@ Class Leadorder_model extends My_Model {
             if (count($shipaddress)==1) {
                 $itemorder_qty = 0;
                 foreach ($order_items as $orderitem) {
-                    $itemorder_qty+=$orderitem['item_qty'];
+                    $itemorder_qty+=intval($orderitem['item_qty']);
                 }
                 $shipaddress[0]['item_qty'] = $itemorder_qty;
             }
@@ -2556,6 +2559,7 @@ Class Leadorder_model extends My_Model {
                         } else {
                             $repqty+=1;
                             $reptotal+=floatval($row[$setupindx]);
+                            $imprint_total+=floatval($row[$setupindx]);
                         }
                         $imprints[]=array(
                             'order_imprint_id'=>(-1)*$newidx,
@@ -4793,7 +4797,6 @@ Class Leadorder_model extends My_Model {
         $artsyncdoc=$res['artsyncdoc'];
         // Clay save
         if (!isset($leadorder['claydocs'])) {
-            log_message('ERROR', 'Order '.$order_id.' Artwork '.$artwork_id.' without clays');
             $leadorder['claydocs'] = [];
         }
         $claydocs = $leadorder['claydocs'];
@@ -4802,7 +4805,6 @@ Class Leadorder_model extends My_Model {
         }
         // Preview save
         if (!isset($leadorder['previewdocs'])) {
-            log_message('ERROR', 'Order '.$order_id.' Artwork '.$artwork_id.' without previews');
             $leadorder['previewdocs'] = [];
         }
         $previewdocs = $leadorder['previewdocs'];
@@ -5471,9 +5473,26 @@ Class Leadorder_model extends My_Model {
                         $this->db->insert('ts_order_trackings');
                     }
                 }
-
+                // Item colors - set shipped time
+                $this->db->select('shipping_ready, item_qty')->from('ts_order_itemcolors')->where('order_itemcolor_id', $colorid);
+                $itemcolres = $this->db->get()->row_array();
+                // Total tracks
+                $this->db->select('count(tracking_id) as cnt, sum(qty) as tracked, max(trackdate) as trackdate')->from('ts_order_trackings')->where('order_itemcolor_id', $colorid);
+                $trackres = $this->db->get()->row_array();
+                if ($trackres['cnt'] > 0 && $trackres['tracked'] >= $itemcolres['item_qty']) {
+                    if ($itemcolres['shipping_ready']==0) {
+                        $this->db->where('order_itemcolor_id', $colorid);
+                        $this->db->set('shipping_ready', $trackres['trackdate']);
+                        $this->db->update('ts_order_itemcolors');
+                    }
+                } else {
+                    if ($itemcolres['shipping_ready']!=0) {
+                        $this->db->where('order_itemcolor_id', $colorid);
+                        $this->db->set('shipping_ready', 0);
+                        $this->db->update('ts_order_itemcolors');
+                    }
+                }
             }
-
             $imprints=$row['imprints'];
             foreach ($imprints as $prow) {
                 if ($prow['delflag']==1) {
@@ -5553,6 +5572,24 @@ Class Leadorder_model extends My_Model {
         $this->db->set('order_qty', $totalqty);
         $this->db->where('order_id', $order_id);
         $this->db->update('ts_orders');
+        // Check item colors shipping ready
+        $orderdata = $this->db->select('shipped_date')->from('ts_orders')->where('order_id', $order_id)->get()->row_array();
+        $this->db->select('count(oic.order_itemcolor_id) as cnt')->from('ts_order_itemcolors oic')->join('ts_order_items oi', 'oic.order_item_id=oi.order_item_id')->join('ts_orders o', 'o.order_id=oi.order_id');
+        $this->db->where(['o.order_id' => $order_id,'oic.shipping_ready' => 0]);
+        $chkres = $this->db->get()->row_array();
+        if ($chkres['cnt']==0) {
+            if ($orderdata['shipped_date']==0) {
+                $this->db->where('order_id', $order_id);
+                $this->db->set('shipped_date', time());
+                $this->db->update('ts_orders');
+            }
+        } else {
+            if ($orderdata['shipped_date']!=0) {
+                $this->db->where('order_id', $order_id);
+                $this->db->set('shipped_date', 0);
+                $this->db->update('ts_orders');
+            }
+        }
         $res['result']=$this->success_result;
         $res['order_items']=$order_items;
         return $res;
@@ -7053,10 +7090,6 @@ Class Leadorder_model extends My_Model {
                     'APISubject' => '', 						// PayPal API subject (email address of 3rd party user that has granted API permission for your app)
                     'APIVersion' => $this->config->item('APIVersion')		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
                 );
-            }
-            log_message('ERROR', 'Server Config '.$realconfig);
-            foreach ($config as $key=> $val) {
-                log_message('ERROR', $key . ' - '.$val);
             }
             // Show Errors
             if (empty($config['APIUsername']) || empty($config['APIPassword']) || empty($config['APISignature'])) {
@@ -10428,7 +10461,7 @@ Class Leadorder_model extends My_Model {
             }
             $amntdata[$fldname] = $fldval;
             $out['result'] = $this->success_result;
-//            $finchange = 0;
+            $finchange = 0;
 //            if ($fldname=='shipped' || $fldname=='shipped_price' || $fldname=='amount_sum') {
 //                $finchange = 1;
 //                if (intval($amntdata['shipped'])==0) {
@@ -10447,7 +10480,7 @@ Class Leadorder_model extends My_Model {
 //                $out['price'] = $amntdata['shipped_price'];
 //                $out['total'] = $amntdata['amount_sum'];
 //            }
-//            $out['finchange'] = $finchange;
+            $out['finchange'] = $finchange;
             usersession($session, $amntdata);
         }
         return $out;

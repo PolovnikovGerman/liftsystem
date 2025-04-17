@@ -18,13 +18,13 @@
             <div class="leaddate"><?=$lead_date?></div>
             <div class="leadcustomer"><?=$lead_customer?></div>
             <div class="leadcustommail"><?=$lead_mail?></div>
+            <div class="savequeststatus">
+                <div class="savequest"><img src="/img/art/saveticket.png" alt="Save"></div>
+            </div>
         </div>
         <div class="question_details">
             <div class="leadnew_label">Or create new Lead</div>
             <div class="leads_addnew"><img alt="New Leads" src="/img/art/new_lead.png"></div>
-        </div>
-        <div class="savequeststatus">
-            <a class="savequest" href="javascript:void(0);"><img src="/img/art/saveticket.png" alt="Save"></a>
         </div>
     </div>
 </form>

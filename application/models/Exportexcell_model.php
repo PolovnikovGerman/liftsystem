@@ -213,6 +213,31 @@ class Exportexcell_model extends CI_Model
     // Export Attempts Report
     public function expot_attemptreport($data, $attach, $start) {
         $this->load->library('email');
+        $sendsmtp = intval($this->config->item('sb_attemptrep_smtp'));
+        if ($sendsmtp==1) {
+            $email_conf = [
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'smtp_user' => $this->config->item('sb_attemptrep_user'),
+                'smtp_pass' => $this->config->item('sb_attemptrep_pass'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+            ];
+            $mail_from = $this->config->item('sb_attemptrep_user');
+        } else {
+            $email_conf = [
+                'protocol'=>'sendmail',
+                'charset'=>'utf-8',
+                'wordwrap'=>TRUE,
+                'mailtype'=>'html',
+            ];
+            $mail_from = 'no-replay@bluetrack.com';
+        }
+
         if (count($data)>0) {
             $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
             $sheet = $spreadsheet->getActiveSheet();
@@ -288,18 +313,10 @@ class Exportexcell_model extends CI_Model
             $mail_to=$this->config->item('mail_research');
             $mail_cc=array('sage@bluetrack.com','shanequa.hall@bluetrack.com', $this->config->item('developer_email'));
 
-
-            $email_conf = array(
-                'protocol'=>'sendmail',
-                'charset'=>'utf-8',
-                'wordwrap'=>TRUE,
-                'mailtype'=>'html',
-            );
-
             $this->email->initialize($email_conf);
             $this->email->to($mail_to);
             $this->email->cc($mail_cc);
-            $this->email->from('no-replay@bluetrack.com');
+            $this->email->from($mail_from);
             $this->email->subject('Dayly report about unended checkouts ('.date('m/d/Y',$start).')');
             $mail_body='Report in attachment';
             $this->email->attach($filename);
@@ -313,32 +330,22 @@ class Exportexcell_model extends CI_Model
             }
             $this->email->message($mail_body);
             $this->email->send();
-            // echo $ci->email->print_debugger();
             $this->email->clear(TRUE);
-            // unlink($filename);
+            unlink($filename);
         } else {
             $mail_to=$this->config->item('mail_research');
 
-            $this->load->library('email');
-
-            $email_conf = array(
-                'protocol'=>'sendmail',
-                'charset'=>'utf-8',
-                'wordwrap'=>TRUE,
-                'mailtype'=>'html',
-            );
-
             $this->email->initialize($email_conf);
             $this->email->to($mail_to);
-            $this->email->from('no-replay@bluetrack.com');
+            $this->email->from($mail_from);
             $this->email->subject('Dayly report about unended checkouts ('.date('m/d/Y',$start).')');
             $mail_body='All checkouts ended successfully';
             $this->email->message($mail_body);
             $this->email->send();
+            $this->email->clear(TRUE);
         }
-        $this->email->clear();
         $this->email->to('to_german@yahoo.com');
-        $this->email->from('no-replay@bluetrack.com');
+        $this->email->from($mail_from);
         $this->email->subject('Dayly report about unended checkouts ('.date('m/d/Y',$start).')');
         $mail_body='Report sends successfully';
         $this->email->message($mail_body);
@@ -995,7 +1002,7 @@ class Exportexcell_model extends CI_Model
         return ['result' => 1];
     }
 
-    public function export_owed($oweds)
+    public function export_owed($oweds, $brand='ALL')
     {
         ini_set("memory_limit",-1);
         $namesheet = 'owed_export';
@@ -1007,20 +1014,36 @@ class Exportexcell_model extends CI_Model
         $sheet->setCellValue('B1','Due');
         $sheet->setCellValue('C1','Balance');
         $sheet->setCellValue('D1','Order');
-        $sheet->setCellValue('E1','Customer');
-        $sheet->setCellValue('F1','Type');
-        $sheet->setCellValue('G1','Approval');
-        $sheet->setCellValue('H1','Status');
+        if ($brand=='SR') {
+            $sheet->setCellValue('E1','Customer PO #');
+            $sheet->setCellValue('F1','Customer');
+            $sheet->setCellValue('G1','Type');
+            $sheet->setCellValue('H1','Approval');
+            $sheet->setCellValue('I1','Status');
+        } else {
+            $sheet->setCellValue('E1','Customer');
+            $sheet->setCellValue('F1','Type');
+            $sheet->setCellValue('G1','Approval');
+            $sheet->setCellValue('H1','Status');
+        }
         $j=2;
         foreach ($oweds as $owed) {
             $sheet->setCellValue('A'.$j, $owed['rundebt']); // MoneyOutput($owed['rundebt'],0));
             $sheet->setCellValue('B'.$j, date('m/d/y', $owed['batch_due']));
             $sheet->setCellValue('C'.$j, $owed['balance']); // MoneyOutput($owed['balance']));
             $sheet->setCellValue('D'.$j, $owed['order_num']);
-            $sheet->setCellValue('E'.$j, $owed['customer_name']);
-            $sheet->setCellValue('F'.$j, $owed['type']);
-            $sheet->setCellValue('G'.$j, $owed['approved']==0 ? 'Not Approved' : 'Approved');
-            $sheet->setCellValue('H'.$j, $owed['debt_status']);
+            if ($brand=='SR') {
+                $sheet->setCellValue('E'.$j, $owed['customer_ponum']);
+                $sheet->setCellValue('F'.$j, $owed['customer_name']);
+                $sheet->setCellValue('F'.$j, $owed['type']);
+                $sheet->setCellValue('G'.$j, $owed['approved']==0 ? 'Not Approved' : 'Approved');
+                $sheet->setCellValue('H'.$j, $owed['debt_status']);
+            } else {
+                $sheet->setCellValue('E'.$j, $owed['customer_name']);
+                $sheet->setCellValue('F'.$j, $owed['type']);
+                $sheet->setCellValue('G'.$j, $owed['approved']==0 ? 'Not Approved' : 'Approved');
+                $sheet->setCellValue('H'.$j, $owed['debt_status']);
+            }
             $j++;
         }
         $writer = new Xlsx($spreadsheet); // instantiate Xlsx

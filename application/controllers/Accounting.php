@@ -155,7 +155,7 @@ class Accounting extends MY_Controller
             if ($postdata['show_year']==1) {
                 if ($postdata['year']>0) {
                     $nxtyear = $postdata['year']+1;
-                    if ($postdata['month']==0) {
+                    if (intval($postdata['month'])==0) {
                         $options['date_bgn']=strtotime($postdata['year'].'-01-01');
                         $options['date_end']=strtotime($nxtyear.'-01-01');
                     } else {
@@ -382,7 +382,7 @@ class Accounting extends MY_Controller
             if ($postdata['show_year']==1) {
                 if ($postdata['year']>0) {
                     $nxtyear = $postdata['year']+1;
-                    if ($postdata['month']==0) {
+                    if (intval($postdata['month'])==0) {
                         $search['start_date']=strtotime($postdata['year'].'-01-01');
                         $search['end_date']=strtotime($nxtyear.'-01-01');
                     } else {
@@ -2744,8 +2744,8 @@ class Accounting extends MY_Controller
             $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort1, $ownsort2, $refundsort, $refunddirec);
             if ($brand=='ALL') {
                 $mdata['content'] = $this->load->view('accreceiv/details_sigma_view', $res, TRUE);
-//            } elseif ($brand=='SR') {
-//                $mdata['content'] = $this->load->view('accreceiv/details_sr_view', $res, TRUE);
+            } elseif ($brand=='SR') {
+                $mdata['content'] = $this->load->view('accreceiv/details_sr_view', $res, TRUE);
             } else {
                 $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
             }
@@ -2822,7 +2822,7 @@ class Accounting extends MY_Controller
             $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort1, $ownsort2, $refundsort, $refunddirec);
             $this->load->model('exportexcell_model');
             if ($exporttype=='O') {
-                $mdata['url'] = $this->exportexcell_model->export_owed($res['owns']);
+                $mdata['url'] = $this->exportexcell_model->export_owed($res['owns'], $brand);
             } else {
                 $mdata['url'] = $this->exportexcell_model->export_refund($res['refunds']);
             }

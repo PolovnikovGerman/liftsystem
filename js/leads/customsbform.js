@@ -37,6 +37,8 @@ function init_customforms() {
         });
         search_customforms();
     });
+    // Init totals
+    initCustomFormTotals();
 }
 
 function search_customforms() {
@@ -211,6 +213,8 @@ function init_assignform_modal(formid) {
                     $("div.modal-body div.leaddate").empty().html(response.data.lead_date);
                     $("div.modal-body div.leadcustomer").empty().html(response.data.lead_customer);
                     $("div.modal-body div.leadcustommail").empty().html(response.data.lead_mail);
+                    $("div.modal-body div.savequest").addClass('active');
+                    init_assignform_modal(formid);
                 } else {
                     show_error(response);
                 }
@@ -219,9 +223,11 @@ function init_assignform_modal(formid) {
             $("div.modal-body div.leaddate").empty();
             $("div.modal-body div.leadcustomer").empty();
             $("div.modal-body div.leadcustommail").empty();
+            $("div.modal-body div.savequest").removeClass('active');
+            init_assignform_modal(formid);
         }
     })
-    $("a.savequest").click(function(){
+    $(".savequest.active").unbind('click').click(function(){
         var url="/leads/savecustomformstatus";
         var params = new Array();
         params.push({name: 'customform', value: formid});
@@ -253,5 +259,17 @@ function init_assignform_modal(formid) {
             }
         }, 'json');
     })
+}
 
+function initCustomFormTotals() {
+    var params = new Array();
+    params.push({name:'brand',value:$("#customformviewbrand").val()});
+    var url= '/leads/customformstotals';
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".customform_total_tabledat").empty().html(response.data.content);
+        } else {
+            show_error(response);
+        }
+    },'json');
 }

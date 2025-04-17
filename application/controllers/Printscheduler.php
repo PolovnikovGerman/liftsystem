@@ -237,21 +237,29 @@ class Printscheduler extends MY_Controller
             $postdata = $this->input->post();
             $error = 'Empty Order';
             $order_id = ifset($postdata, 'order','');
+            $type = ifset($postdata,'type','');
             // $brand = ifset($postdata,'brand', 'SR');
             $brand = 'ALL';
-            if (!empty($order_id)) {
+            if (!empty($order_id) && !empty($type)) {
                 // Update print_ready
-                $res = $this->printscheduler_model->stockdonecheck($order_id);
+                $res = $this->printscheduler_model->stockdonecheck($order_id, $type);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
-                    $mdata['checked'] = $res['checked'];
-                    if ($res['checked']==0) {
-                        $mdata['orderchk'] = '<i class="fa fa-square-o" data-order="'.$order_id.'"></i>';
-                    } else {
-                        $mdata['orderchk'] = '<i class="fa fa-check-square-o" data-order="'.$order_id.'"></i>';
-                    }
+//                    $mdata['checked'] = $res['checked'];
+//                    if ($res['checked']==0) {
+//                        $mdata['orderchk'] = '<i class="fa fa-square-o" data-order="'.$order_id.'"></i>';
+//                    } else {
+//                        $mdata['orderchk'] = '<i class="fa fa-check-square-o" data-order="'.$order_id.'"></i>';
+//                    }
                     $printdate = $res['printdate'];
+                    if ($type=='stock') {
+                        $orders = $this->printscheduler_model->get_daystocks($printdate, $brand);
+                        $mdata['daycontent'] = $this->load->view('printscheduler/daydetails_stocks_view', ['stocks' => $orders, 'brand' => $brand], TRUE);
+                    } else {
+                        $orders = $this->printscheduler_model->get_dayplates($printdate, $brand);
+                        $mdata['daycontent'] = $this->load->view('printscheduler/daydetails_plates_view', ['plates' => $orders, 'brand' => $brand], TRUE);
+                    }
                     $this->load->model('user_model');
                     $userlist = $this->user_model->get_printschedul_users();
                     $unassignorders = $this->printscheduler_model->get_dayunassignorders($printdate, $brand);
@@ -450,71 +458,73 @@ class Printscheduler extends MY_Controller
                 if (!empty($shipmethod)) {
                     $error = 'Empty Tracking Code';
                     if (!empty($trackcode)) {
-                        $res = $this->printscheduler_model->shiporder($order_itemcolor_id, $shipqty, $shipmethod, $trackcode, $this->USR_ID);
-                        $error = $res['msg'];
-                        if ($res['result']==$this->success_result) {
-                            $error = '';
-                            $printdate = $res['printdate'];
-                            // Create content
-                            $orders = $this->printscheduler_model->get_dayorders($printdate, $brand);
-                            $mdata['stockview'] = $this->load->view('printscheduler/daydetails_stocks_view', ['stocks' => $orders['stocks'], ], TRUE); // 'brand' => $brand
-                            $mdata['plateview'] = $this->load->view('printscheduler/daydetails_plates_view', ['plates' => $orders['plates'], ], TRUE); // 'brand' => $brand
-                            $this->load->model('user_model');
-                            $userlist = $this->user_model->get_printschedul_users();
-                            $unassignorders = $this->printscheduler_model->get_dayunassignorders($printdate, $brand);
-                            $alltotals = [
-                                'prints' => $unassignorders['totals']['prints'],
-                                'items' => $unassignorders['totals']['items'],
-                                'orders' => $unassignorders['totals']['orders'],
-                            ];
-                            $printoptions = [];
-                            $printoptions['unsignview'] = $this->load->view('printscheduler/daydetails_unsigns_view', ['orders' => $unassignorders['orders'], 'total' => $unassignorders['totals'], 'users' => $userlist, ], TRUE); // 'brand' => $brand
-                            $printusers = $this->printscheduler_model->get_day_assignusers($printdate, $brand);
-                            $assignview = '';
-                            foreach ($printusers as $printuser) {
-                                $assignorders = $this->printscheduler_model->get_dayassignorders($printdate, $printuser['user_id'], $brand);
-                                $usroptions = [
-                                    'user_name' => $printuser['user_name'],
-                                    'orders' => $assignorders['orders'],
-                                    'totals' => $assignorders['totals'],
-                                    // 'brand' => $brand,
+                        $error = 'Empty Tracking Value';
+                        if (intval($shipqty) > 0) {
+                            $res = $this->printscheduler_model->shiporder($order_itemcolor_id, $shipqty, $shipmethod, $trackcode, $this->USR_ID);
+                            $error = $res['msg'];
+                            if ($res['result']==$this->success_result) {
+                                $error = '';
+                                $printdate = $res['printdate'];
+                                // Create content
+                                $orders = $this->printscheduler_model->get_dayorders($printdate, $brand);
+                                $mdata['stockview'] = $this->load->view('printscheduler/daydetails_stocks_view', ['stocks' => $orders['stocks'], ], TRUE); // 'brand' => $brand
+                                $mdata['plateview'] = $this->load->view('printscheduler/daydetails_plates_view', ['plates' => $orders['plates'], ], TRUE); // 'brand' => $brand
+                                $this->load->model('user_model');
+                                $userlist = $this->user_model->get_printschedul_users();
+                                $unassignorders = $this->printscheduler_model->get_dayunassignorders($printdate, $brand);
+                                $alltotals = [
+                                    'prints' => $unassignorders['totals']['prints'],
+                                    'items' => $unassignorders['totals']['items'],
+                                    'orders' => $unassignorders['totals']['orders'],
                                 ];
-                                $assignview.=$this->load->view('printscheduler/daydetails_assigns_view', $usroptions, TRUE);
-                                $alltotals['prints']+=$assignorders['totals']['prints'];
-                                $alltotals['items']+=$assignorders['totals']['items'];
-                                $alltotals['orders']+=$assignorders['totals']['orders'];
-                            }
-                            $printoptions['assignview'] = $assignview;
-                            $printoptions['totals'] = $alltotals;
-                            $mdata['printview'] = $this->load->view('printscheduler/daydetails_printorders_view', $printoptions, TRUE);
-                            // Build ready to ship
-                            $shipready = $this->printscheduler_model->getreadyshiporders($printdate, $brand);
-                            $mdata['readyshipview'] = $this->load->view('printscheduler/daydetails_readyshiporders_view',['orders' => $shipready['orders'], 'totals'=> $shipready['totals'], ], TRUE); // 'brand' => $brand
-                            // Completed Printjob
-                            $completed_users = $this->printscheduler_model->get_day_completedusers($printdate, $brand);
-                            $totalcomlet = [
-                                'orders' => 0,
-                                'prints' => 0,
-                                'items' => 0,
-                            ];
-                            $completedview = '';
-                            foreach ($completed_users as $completeduser) {
-                                $compljob = $this->printscheduler_model->getcompleteprintorders($printdate, $completeduser['user_id'], $brand);
-                                $comploptions = [
-                                    'user_name' => $completeduser['user_name'],
-                                    'totals' => $compljob['totals'],
-                                    'orders' => $compljob['orders'],
+                                $printoptions = [];
+                                $printoptions['unsignview'] = $this->load->view('printscheduler/daydetails_unsigns_view', ['orders' => $unassignorders['orders'], 'total' => $unassignorders['totals'], 'users' => $userlist, ], TRUE); // 'brand' => $brand
+                                $printusers = $this->printscheduler_model->get_day_assignusers($printdate, $brand);
+                                $assignview = '';
+                                foreach ($printusers as $printuser) {
+                                    $assignorders = $this->printscheduler_model->get_dayassignorders($printdate, $printuser['user_id'], $brand);
+                                    $usroptions = [
+                                        'user_name' => $printuser['user_name'],
+                                        'orders' => $assignorders['orders'],
+                                        'totals' => $assignorders['totals'],
+                                        // 'brand' => $brand,
+                                    ];
+                                    $assignview.=$this->load->view('printscheduler/daydetails_assigns_view', $usroptions, TRUE);
+                                    $alltotals['prints']+=$assignorders['totals']['prints'];
+                                    $alltotals['items']+=$assignorders['totals']['items'];
+                                    $alltotals['orders']+=$assignorders['totals']['orders'];
+                                }
+                                $printoptions['assignview'] = $assignview;
+                                $printoptions['totals'] = $alltotals;
+                                $mdata['printview'] = $this->load->view('printscheduler/daydetails_printorders_view', $printoptions, TRUE);
+                                // Build ready to ship
+                                $shipready = $this->printscheduler_model->getreadyshiporders($printdate, $brand);
+                                $mdata['readyshipview'] = $this->load->view('printscheduler/daydetails_readyshiporders_view',['orders' => $shipready['orders'], 'totals'=> $shipready['totals'], ], TRUE); // 'brand' => $brand
+                                // Completed Printjob
+                                $completed_users = $this->printscheduler_model->get_day_completedusers($printdate, $brand);
+                                $totalcomlet = [
+                                    'orders' => 0,
+                                    'prints' => 0,
+                                    'items' => 0,
                                 ];
-                                $completedview.=$this->load->view('printscheduler/daydetails_completed_users_view', $comploptions, TRUE);
-                                $totalcomlet['orders']+=$compljob['totals']['orders'];
-                                $totalcomlet['items']+=$compljob['totals']['items'];
-                                $totalcomlet['prints']+=$compljob['totals']['prints'];
+                                $completedview = '';
+                                foreach ($completed_users as $completeduser) {
+                                    $compljob = $this->printscheduler_model->getcompleteprintorders($printdate, $completeduser['user_id'], $brand);
+                                    $comploptions = [
+                                        'user_name' => $completeduser['user_name'],
+                                        'totals' => $compljob['totals'],
+                                        'orders' => $compljob['orders'],
+                                    ];
+                                    $completedview.=$this->load->view('printscheduler/daydetails_completed_users_view', $comploptions, TRUE);
+                                    $totalcomlet['orders']+=$compljob['totals']['orders'];
+                                    $totalcomlet['items']+=$compljob['totals']['items'];
+                                    $totalcomlet['prints']+=$compljob['totals']['prints'];
+                                }
+                                $mdata['complljobview'] = $this->load->view('printscheduler/daydetails_completedorders_view',['totals' => $totalcomlet, 'content' => $completedview], TRUE);
+                                // Shipped
+                                $shipres = $this->printscheduler_model->getshippedorders($printdate, $brand);
+                                $mdata['shippedview'] = $this->load->view('printscheduler/daydetails_shippeddorders_view',['totals' => $shipres['totals'], 'orders' => $shipres['orders']], TRUE);
                             }
-                            $mdata['complljobview'] = $this->load->view('printscheduler/daydetails_completedorders_view',['totals' => $totalcomlet, 'content' => $completedview], TRUE);
-                            // Shipped
-                            $shipres = $this->printscheduler_model->getshippedorders($printdate, $brand);
-                            $mdata['shippedview'] = $this->load->view('printscheduler/daydetails_shippeddorders_view',['totals' => $shipres['totals'], 'orders' => $shipres['orders']], TRUE);
-
                         }
                     }
                 }

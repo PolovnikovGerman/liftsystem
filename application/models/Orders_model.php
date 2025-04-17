@@ -2945,7 +2945,7 @@ Class Orders_model extends MY_Model
                         $row['proftitleclass']='lowprofittitle';
                         $row['proftitle']='data-content="'.$row['reason'].'"';
                     }
-                    $row['profit_perc']=number_format($row['profit_perc'],1,'.',',').'%';
+                    $row['profit_perc']=$row['profit_perc']=='' ? '&nbsp;' : number_format($row['profit_perc'],1,'.',',').'%';
                     if ($admin_mode==0) {
                         $row['add']=(floatval($row['cnt_amnt'])==floatval($row['order_cog']) ? '' : '<a href="javascript:void(0);" class="editcoglnk" id="add'.$row['order_id'].'">*</a>' );
                     } else {
@@ -6256,7 +6256,10 @@ Class Orders_model extends MY_Model
                         $artloc = $order_item['artworks'];
 
                         foreach ($artloc as $artrow) {
-                            $colors_array = explode(',', $artrow['order_artwork_colors']);
+                            $colors_array = [];
+                            if (!empty($artrow['order_artwork_colors'])) {
+                                $colors_array = explode(',', $artrow['order_artwork_colors']);
+                            }
                             $color_nums = count($colors_array);
                             $color_1 = $color_2 = $color_3 = $color_4 = '';
                             switch ($color_nums) {
@@ -7988,8 +7991,8 @@ Class Orders_model extends MY_Model
 
         $out = [];
         foreach ($res as $row) {
-            if (round($row['revenue'],2)!==round($row['paysum'],2)) {
-                $notpaid = $row['revenue'] - $row['paysum'];
+            if (round(floatval($row['revenue']),2)!==round(floatval($row['paysum']),2)) {
+                $notpaid = floatval($row['revenue']) - floatval($row['paysum']);
                 // Get contacts
                 $contact = $this->db->select('contact_phone, contact_emal as contact_email')->from('ts_order_contacts')->where('order_id', $row['order_id'])->get()->row_array();
                 $this->db->select('date_format(from_unixtime(h.created_time),\'%m/%d/%y\') as created_date');
@@ -8003,8 +8006,8 @@ Class Orders_model extends MY_Model
                     'order_num' => $row['order_num'],
                     'order_confirmation' => $row['order_confirmation'],
                     'customer_name' => $row['customer_name'],
-                    'revenue' => MoneyOutput($row['revenue']),
-                    'paysum' => MoneyOutput($row['paysum']),
+                    'revenue' => MoneyOutput(floatval($row['revenue'])),
+                    'paysum' => MoneyOutput(floatval($row['paysum'])),
                     'notpaid' =>MoneyOutput($notpaid),
                     'email' => ifset($contact,'contact_email',''),
                     'phone' => ifset($contact, 'contact_phone', ''),
@@ -8754,21 +8757,36 @@ Class Orders_model extends MY_Model
     private function orderitems_price_email($brand, $items, $date)
     {
         $this->load->library('email');
-        $email_conf = array(
-            'protocol'=>'sendmail',
-            'charset'=>'utf-8',
-            'wordwrap'=>TRUE,
-            'mailtype'=>'html',
-        );
-        $this->email->initialize($email_conf);
-
+        $sendsmtp = intval($this->config->item('itemprice_smtp'));
+        if ($sendsmtp==1) {
+            $config = [
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'smtp_user' => $this->config->item('itemprice_user'),
+                'smtp_pass' => $this->config->item('itemprice_pass'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+            ];
+            $email_from = $this->config->item('itemprice_user');
+        } else {
+            $config = array(
+                'protocol'=>'sendmail',
+                'charset'=>'utf-8',
+                'wordwrap'=>TRUE,
+                'mailtype'=>'html',
+            );
+            $email_from = 'no-replay@bluetrack.com';
+        }
+        $this->email->initialize($config);
         $mail_to=array($this->config->item('sage_email'), $this->config->item('sean_email'));
         $mail_cc=array('to_german@yahoo.com');
-
         $this->email->to($mail_to);
         $this->email->cc($mail_cc);
-
-        $this->email->from('no-replay@bluetrack.com');
+        $this->email->from($email_from);
         $title = 'Report about Low Orders Prices '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)').' ('.date('m/d/Y', $date).')';
         $this->email->subject($title);
         $mail_body = $this->load->view('messages/orderitems_price_view',['items' => $items], TRUE);
@@ -8919,30 +8937,30 @@ Class Orders_model extends MY_Model
 
     public function order_invamount_sbtransform()
     {
-        $this->db->select('o.order_id, o.order_num, count(toi.order_itemcolor_id) as cnt, max(toi.order_itemcolor_id) as itemcolor')->from('ts_orders o')->join('ts_order_items oi','o.order_id = oi.order_id')->join('ts_order_itemcolors toi','oi.order_item_id = toi.order_item_id');
-        $this->db->where_in('o.brand', ['SB','BT'])->where('o.is_canceled', 0)->where('o.order_cog is not null')->group_by('o.order_id, o.order_num')->having('cnt',1);
-        $orders = $this->db->get()->result_array();
-        foreach ($orders as $order) {
-            $dat = $this->db->select('item_qty')->from('ts_order_itemcolors')->where('order_itemcolor_id', $order['itemcolor'])->get()->row_array();
-            $shipqty = $dat['item_qty'];
-            $amounts = $this->db->select('*')->from('ts_order_amounts')->where('order_id', $order['order_id'])->get()->result_array();
-            foreach ($amounts as $amount) {
-                $this->db->where('amount_id', $amount['amount_id']);
-                if (!empty($amount['inventory_color_id'])) {
-                    $shipqty-=$amount['shipped'];
-                    if ($shipqty < 0) {
-                        $shipqty = 0;
-                    }
-                } else {
-                    $this->db->set('shipped', $shipqty);
-                    $shipqty = 0;
-                }
-                $this->db->set('order_itemcolor_id', $order['itemcolor']);
-                $this->db->update('ts_order_amounts');
-            }
-            echo 'Order # '.$order['order_num'].' updated '.PHP_EOL;
-        }
-        $this->db->select('oa.amount_id, oa.inventory_color_id, oa.order_id, o.order_num')->from('ts_order_amounts oa')->join('ts_orders o','o.order_id=oa.order_id')->where_in('o.brand',['SB','BT']);
+//        $this->db->select('o.order_id, o.order_num, count(toi.order_itemcolor_id) as cnt, max(toi.order_itemcolor_id) as itemcolor')->from('ts_orders o')->join('ts_order_items oi','o.order_id = oi.order_id')->join('ts_order_itemcolors toi','oi.order_item_id = toi.order_item_id');
+//        $this->db->where('o.is_canceled', 0)->where('o.order_cog is not null')->where('o.print_date is not null')->group_by('o.order_id, o.order_num')->having('cnt',1); // where_in('o.brand', ['SB','BT'])
+//        $orders = $this->db->get()->result_array();
+//        foreach ($orders as $order) {
+//            $dat = $this->db->select('item_qty')->from('ts_order_itemcolors')->where('order_itemcolor_id', $order['itemcolor'])->get()->row_array();
+//            $shipqty = $dat['item_qty'];
+//            $amounts = $this->db->select('*')->from('ts_order_amounts')->where('order_id', $order['order_id'])->get()->result_array();
+//            foreach ($amounts as $amount) {
+//                $this->db->where('amount_id', $amount['amount_id']);
+//                if (!empty($amount['inventory_color_id'])) {
+//                    $shipqty-=$amount['shipped'];
+//                    if ($shipqty < 0) {
+//                        $shipqty = 0;
+//                    }
+//                } else {
+//                    $this->db->set('shipped', $shipqty);
+//                    $shipqty = 0;
+//                }
+//                $this->db->set('order_itemcolor_id', $order['itemcolor']);
+//                $this->db->update('ts_order_amounts');
+//            }
+//            echo 'Order # '.$order['order_num'].' updated '.PHP_EOL;
+//        }
+        $this->db->select('oa.amount_id, oa.inventory_color_id, oa.order_id, o.order_num')->from('ts_order_amounts oa')->join('ts_orders o','o.order_id=oa.order_id');// ->where_in('o.brand',['SB','BT']);
         $this->db->where('oa.order_itemcolor_id', NULL);
         $amounts = $this->db->get()->result_array();
         foreach ($amounts as $amount) {
@@ -8955,26 +8973,26 @@ Class Orders_model extends MY_Model
                     $this->db->set('order_itemcolor_id', $amntcolor['order_itemcolor_id']);
                     $this->db->update('ts_order_amounts');
                     echo 'Order '.$amount['order_num'].' updated'.PHP_EOL;
-                } else {
-                    $colordat = $this->db->select('color')->from('ts_inventory_colors')->where('inventory_color_id', $amount['inventory_color_id'])->get()->row_array();
-                    $itemcolor = $colordat['color'];
-                    $this->db->select('toi.order_itemcolor_id, toi.item_description, toi.item_color')->from('ts_order_itemcolors toi')->join('ts_order_items oi','toi.order_item_id=oi.order_item_id')->where('oi.order_id', $amount['order_id']);
-                    $ordercolors = $this->db->get()->result_array();
-                    foreach ($ordercolors as $ordercolor) {
-                        if (strpos($ordercolor['item_description'], $itemcolor)!==false) {
-                            $this->db->where('amount_id', $amount['amount_id']);
-                            $this->db->set('order_itemcolor_id', $ordercolor['order_itemcolor_id']);
-                            $this->db->update('ts_order_amounts');
-                            echo 'Order '.$amount['order_num'].' updated'.PHP_EOL;
-                            break;
-                        } elseif (strpos($ordercolor['item_color'], $itemcolor)!==false) {
-                            $this->db->where('amount_id', $amount['amount_id']);
-                            $this->db->set('order_itemcolor_id', $ordercolor['order_itemcolor_id']);
-                            $this->db->update('ts_order_amounts');
-                            echo 'Order '.$amount['order_num'].' updated'.PHP_EOL;
-                            break;
-                        }
-                    }
+//                } else {
+//                    $colordat = $this->db->select('color')->from('ts_inventory_colors')->where('inventory_color_id', $amount['inventory_color_id'])->get()->row_array();
+//                    $itemcolor = $colordat['color'];
+//                    $this->db->select('toi.order_itemcolor_id, toi.item_description, toi.item_color')->from('ts_order_itemcolors toi')->join('ts_order_items oi','toi.order_item_id=oi.order_item_id')->where('oi.order_id', $amount['order_id']);
+//                    $ordercolors = $this->db->get()->result_array();
+//                    foreach ($ordercolors as $ordercolor) {
+//                        if (strpos($ordercolor['item_description'], $itemcolor)!==false) {
+//                            $this->db->where('amount_id', $amount['amount_id']);
+//                            $this->db->set('order_itemcolor_id', $ordercolor['order_itemcolor_id']);
+//                            $this->db->update('ts_order_amounts');
+//                            echo 'Order '.$amount['order_num'].' updated'.PHP_EOL;
+//                            break;
+//                        } elseif (strpos($ordercolor['item_color'], $itemcolor)!==false) {
+//                            $this->db->where('amount_id', $amount['amount_id']);
+//                            $this->db->set('order_itemcolor_id', $ordercolor['order_itemcolor_id']);
+//                            $this->db->update('ts_order_amounts');
+//                            echo 'Order '.$amount['order_num'].' updated'.PHP_EOL;
+//                            break;
+//                        }
+//                    }
                 }
             }
         }
@@ -9373,5 +9391,454 @@ Class Orders_model extends MY_Model
             $out['data'] = $order;
         }
         return $out;
+    }
+
+    public function order_invamount()
+    {
+        $this->db->select('oa.amount_id, oa.inventory_color_id, o.order_id, o.order_num, o.order_date')->from('ts_order_amounts oa')->join('ts_orders o','o.order_id=oa.order_id');
+        $this->db->where('oa.order_itemcolor_id',null)->where('o.order_system','new')->where('o.brand','SR')->order_by('oa.amount_id','desc');
+        // where_in('o.brand',['SB','BT'])
+        $amounts = $this->db->get()->result_array();
+        foreach ($amounts as $amount) {
+            if (!empty($amount['inventory_color_id'])) {
+                $this->db->select('toi.order_itemcolor_id')->from('ts_order_itemcolors toi')->join('ts_order_items oi','oi.order_item_id = toi.order_item_id');
+                $this->db->where(['oi.order_id' => $amount['order_id'], 'toi.inventory_color_id' => $amount['inventory_color_id']]);
+                $itemres = $this->db->get()->result_array();
+                if (count($itemres)==1) {
+                    $order_itemcolor_id = $itemres[0]['order_itemcolor_id'];
+                    $this->db->where('amount_id', $amount['amount_id']);
+                    $this->db->set('order_itemcolor_id', $order_itemcolor_id);
+                    $this->db->update('ts_order_amounts');
+                    echo 'Find Invent color for amount '.$amount['amount_id'].PHP_EOL;
+                }
+            } else {
+                // Empty
+                $this->db->select('min(toi.order_itemcolor_id) as order_itemcolor_id')->from('ts_order_itemcolors toi')->join('ts_order_items oi','oi.order_item_id = toi.order_item_id');
+                $this->db->where('oi.order_id', $amount['order_id']);
+                $itemres = $this->db->get()->row_array();
+                if (ifset($itemres, 'order_itemcolor_id',0) > 0) {
+                    $order_itemcolor_id = $itemres['order_itemcolor_id'];
+                    $this->db->where('amount_id', $amount['amount_id']);
+                    $this->db->set('order_itemcolor_id', $order_itemcolor_id);
+                    $this->db->update('ts_order_amounts');
+                    echo 'Add empty color for amount '.$amount['amount_id'].PHP_EOL;
+                }
+            }
+        }
+    }
+
+    public function update_shipped_orders()
+    {
+        $this->db->select('order_id, order_num, order_date, shipped_date')->from('ts_orders')->where(['is_canceled' => 0, 'order_system'=>'new'])->order_by('order_id','desc');
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            $items = $this->db->select('order_item_id')->from('ts_order_items')->where('order_id', $order['order_id'])->get()->result_array();
+            foreach ($items as $item) {
+                $colors = $this->db->select('order_itemcolor_id, item_qty, shipping_ready')->from('ts_order_itemcolors')->where('order_item_id', $item['order_item_id'])->get()->result_array();
+                foreach ($colors as $color) {
+                    $this->db->select('count(tracking_id) as cnt, sum(qty) as tracked, max(trackdate) as trackdate')->from('ts_order_trackings')->where('order_itemcolor_id', $color['order_itemcolor_id']);
+                    $trackres = $this->db->get()->row_array();
+                    if ($trackres['cnt'] > 0) {
+                        if ($trackres['cnt']>=$color['item_qty']) {
+                            if ($color['shipping_ready']==0) {
+                                $this->db->where('order_itemcolor_id', $color['order_itemcolor_id']);
+                                $this->db->set('shipping_ready', $trackres['trackdate']);
+                                $this->db->update('ts_order_itemcolors');
+                            }
+                        } else {
+                            if ($color['shipping_ready']!=0) {
+                                $this->db->where('order_itemcolor_id', $color['order_itemcolor_id']);
+                                $this->db->set('shipping_ready', 0);
+                                $this->db->update('ts_order_itemcolors');
+                            }
+                        }
+                    }
+                }
+            }
+            // Update order
+            $this->db->select('count(oic.order_itemcolor_id) as cnt, max(oic.shipping_ready) as shipdate')->from('ts_order_itemcolors oic')->join('ts_order_items oi', 'oic.order_item_id=oi.order_item_id')->join('ts_orders o', 'o.order_id=oi.order_id');
+            $this->db->where(['o.order_id' => $order['order_id'],'oic.shipping_ready' => 0]);
+            $chkres = $this->db->get()->row_array();
+            if ($chkres['cnt']==0) {
+                if ($order['shipped_date']==0) {
+                    $this->db->where('order_id', $order['order_id']);
+                    $this->db->set('shipped_date', $chkres['shipdate']);
+                    $this->db->update('ts_orders');
+                }
+            } else {
+                if ($order['shipped_date']!=0) {
+                    $this->db->where('order_id', $order['order_id']);
+                    $this->db->set('shipped_date', 0);
+                    $this->db->update('ts_orders');
+                }
+            }
+            echo 'Order # '.$order['order_num'].' '.date('d.m.y', $order['order_date']).' Checked'.PHP_EOL;
+        }
+    }
+
+    public function pochange_notification($datestart, $dateend)
+    {
+        $brands = ['SB','SR'];
+        $msgbody='';
+        foreach ($brands as $brand) {
+            // Get users list
+            $this->db->select('oa.create_user, u.user_name, count(oa.amount_id) as cnt');
+            $this->db->from('ts_order_amounts oa');
+            $this->db->join('ts_orders o','o.order_id=oa.order_id');
+            $this->db->join('users u','u.user_id=oa.create_user');
+            $this->db->where('oa.create_date >=', $datestart);
+            $this->db->where('oa.create_date < ', $dateend);
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
+            $this->db->group_by('oa.create_user, u.user_name');
+            $crres=$this->db->get()->result_array();
+            $usrids=array();
+            $user_data=array();
+            foreach ($crres as $row) {
+                array_push($usrids, $row['create_user']);
+                $user_data[]=array(
+                    'user_id'=>$row['create_user'],
+                    'user_name'=>$row['user_name'],
+                );
+            }
+            $this->db->select('oa.update_user, u.user_name, count(oa.amount_id) as cnt');
+            $this->db->from('ts_order_amounts oa');
+            $this->db->join('ts_orders o','o.order_id=oa.order_id');
+            $this->db->join('users u','u.user_id=oa.update_user');
+            $this->db->where('oa.update_date >=', $datestart);
+            $this->db->where('oa.update_date < ', $dateend);
+            if ($brand=='SB') {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            } else {
+                $this->db->where('o.brand', $brand);
+            }
+            $this->db->group_by('oa.update_user, u.user_name');
+            $upres=$this->db->get()->result_array();
+            foreach ($upres as $row) {
+                if (!in_array($row['update_user'], $usrids)) {
+                    array_push($usrids, $row['update_user']);
+                    $user_data[]=array(
+                        'user_id'=>$row['update_user'],
+                        'user_name'=>$row['user_name'],
+                    );
+                }
+            }
+
+            if (count($usrids)!=0) {
+                $title = 'POs added to ';
+                if ($brand=='SB') {
+                    $title.='Bluetrack/Stressballs';
+                } elseif ($brand=='SR') {
+                    $title.='StressRelievers.com';
+                }
+                $msgbody.='<span style="font-weight: bold">'.$title.'</span><br/>';
+                foreach ($user_data as $row) {
+                    // Get data about Added Amounts
+                    // profit $  % - PO # - Amount - Vendor - Items
+                    $this->db->select('o.profit as profit_sum, o.profit_perc, o.order_num , o.order_items as items, oa.amount_sum as amount, v.vendor_name as vendor, o.reason');
+                    $this->db->from('ts_orders o');
+                    $this->db->join('ts_order_amounts oa','oa.order_id=o.order_id');
+                    $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
+                    $this->db->where('oa.create_user', $row['user_id']);
+                    $this->db->where("o.is_canceled",0);
+                    $this->db->where('oa.create_date >=', $datestart);
+                    $this->db->where('oa.create_date < ', $dateend);
+                    if ($brand=='SB') {
+                        $this->db->where_in('o.brand', ['SB','BT']);
+                    } else {
+                        $this->db->where('o.brand', $brand);
+                    }
+                    $usrcr=$this->db->get()->result_array();
+                    $list=array();
+                    if (count($usrcr)>0) {
+                        foreach ($usrcr as $drow) {
+                            $rclass='';
+                            $rstyle='';
+                            $drow['lowprofit']='';
+                            $drow['profit_perc']=round(floatval($drow['profit_perc']));
+                            if ($drow['profit_perc']<=0) {
+                                $rclass='black';
+                                $rstyle='style="text-align: right; padding-right:3px; background-color: #000000; color: #FFFFFF;"';
+                            } elseif ($drow['profit_perc']>0 && $drow['profit_perc']<10) {
+                                $rclass='maroon';
+                                $rstyle='style="text-align: right; padding-right:3px; background-color: #6D0303; color: #FFFFFF;"';
+                            } elseif ($drow['profit_perc']>=10 && $drow['profit_perc']<20) {
+                                $rclass='red';
+                                $rstyle='style="text-align: right; padding-right:3px; text-align: right; padding-right:3px; background-color: #FF0000;color: #FFFFFF;"';
+                            } elseif ($drow['profit_perc']>=20 && $drow['profit_perc']<30) {
+                                $rclass='orange';
+                                $rstyle='style="text-align: right; padding-right:3px; background-color: #EA8A0E;color: #000000;"';
+                            } elseif ($drow['profit_perc']>=30 && $drow['profit_perc']<40) {
+                                $rclass='white';
+                                $rstyle='style="text-align: right; padding-right:3px; background-color: #FFFFFF; color: #000000;"';
+                            } elseif ($drow['profit_perc']>=40) {
+                                $rclass='green';
+                                $rstyle='style="text-align: right; padding-right:3px; background-color: #00E947; color: #000000;"';
+                            }
+                            $drow['row_class']=$rclass;
+                            $drow['rstyle']=$rstyle;
+                            if ($drow['profit_sum']<0) {
+                                $drow['out_profit']='($'.number_format(abs($drow['profit_sum']),2,'.',',').')';
+                            } else {
+                                $drow['out_profit']='$'.number_format($drow['profit_sum'],2,'.',',');
+                            }
+                            $drow['out_amount']='$'.number_format($drow['amount'],2,'.',',');
+                            if ($drow['profit_perc']<$this->config->item('minimal_profitperc') && !empty($drow['reason'])) {
+                                $drow['lowprofit']=$drow['reason'];
+
+                            }
+                            $list[]=$drow;
+                        }
+                        $opt=array(
+                            'title'=>date('D - M d, Y', $datestart).' - '.$row['user_name'],
+                            'subtitle'=>'Newly Added POs:',
+                            'lists'=>$list,
+                            'type'=>'new',
+                        );
+                        $msgbody.=$this->load->view('messages/amount_notedata_view', $opt, TRUE);
+                    }
+                    $this->db->select('o.profit as profit_sum, o.profit_perc, o.order_num , o.order_items as items, oa.amount_sum as amount, v.vendor_name as vendor, oa.reason, o.reason as lreason');
+                    $this->db->from('ts_orders o');
+                    $this->db->join('ts_order_amounts oa','oa.order_id=o.order_id');
+                    $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
+                    $this->db->where('oa.update_user', $row['user_id']);
+                    $this->db->where('oa.update_date >=', $datestart);
+                    $this->db->where('oa.update_date < ', $dateend);
+                    $this->db->where('oa.create_date <', $datestart);
+                    if ($brand=='SB') {
+                        $this->db->where_in('o.brand', ['SB','BT']);
+                    } else {
+                        $this->db->where('o.brand', $brand);
+                    }
+                    $usrupd=$this->db->get()->result_array();
+                    $list=array();
+                    if (count($usrupd)) {
+                        foreach ($usrupd as $drow) {
+                            $rclass='';
+                            $rstyle='';
+                            $drow['lowprofit']='';
+                            $drow['profit_perc']=round(floatval($drow['profit_perc']));
+                            if ($drow['profit_perc']<$this->config->item('minimal_profitperc') && !empty($drow['lreason'])) {
+                                $drow['lowprofit']=$drow['lreason'];
+                            }
+                            if ($drow['profit_perc']<=0) {
+                                $rclass='black';
+                                $rstyle='style="text-align: right; padding-right:3px; background-color: #000000; color: #FFFFFF;"';
+                            } elseif ($drow['profit_perc']>0 && $drow['profit_perc']<10) {
+                                $rclass='maroon';
+                                $rstyle='style="text-align: right; padding-right:3px; background-color: #6D0303; color: #FFFFFF;"';
+                            } elseif ($drow['profit_perc']>=10 && $drow['profit_perc']<20) {
+                                $rclass='red';
+                                $rstyle='style="text-align: right; padding-right:3px; background-color: #FF0000;color: #FFFFFF;"';
+                            } elseif ($drow['profit_perc']>=20 && $drow['profit_perc']<30) {
+                                $rclass='orange';
+                                $rstyle='style="text-align: right; padding-right:3px; background-color: #EA8A0E;color: #000000;"';
+                            } elseif ($drow['profit_perc']>=30 && $drow['profit_perc']<40) {
+                                $rclass='white';
+                                $rstyle='style="text-align: right; padding-right:3px; background-color: #FFFFFF; color: #000000;"';
+                            } elseif ($drow['profit_perc']>=40) {
+                                $rclass='green';
+                                $rstyle='style="text-align: right; padding-right:3px; background-color: #00E947; color: #000000;"';
+                            }
+                            $drow['row_class']=$rclass;
+                            $drow['rstyle']=$rstyle;
+                            if ($drow['profit_sum']<0) {
+                                $drow['out_profit']='($'.number_format(abs($drow['profit_sum']),2,'.',',').')';
+                            } else {
+                                $drow['out_profit']='$'.number_format(abs($drow['profit_sum']),2,'.',',');
+                            }
+                            $drow['out_amount']= '$'.number_format($drow['amount'],2,'.',',');
+                            $list[]=$drow;
+                        }
+                        $opt=array(
+                            'title'=>date('D - M d, Y', $datestart).' - '.$row['user_name'],
+                            'subtitle'=>'Revised POs:',
+                            'lists'=>$list,
+                            'type'=>'edit',
+                        );
+                        $msgbody.=$this->load->view('messages/amount_notedata_view', $opt, TRUE);
+                    }
+                }
+            }
+        }
+        $sendsmtp = intval($this->config->item('ponotification_smtp'));
+        if ($sendsmtp==1) {
+            $email_conf = array(
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'smtp_user' => $this->config->item('ponotification_user'),
+                'smtp_pass' => $this->config->item('ponotification_pass'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+            );
+            $mailfrom = $this->config->item('ponotification_user');
+        } else {
+            $email_conf = [
+                'charset' => 'utf-8',
+                'mailtype' => 'html',
+                'wordwrap' => TRUE,
+            ];
+            $mailfrom = $this->config->item('email_notification_sender');
+        }
+        $this->load->library('email');
+        $this->email->initialize($email_conf);
+        $email_to=$this->config->item('sean_email');
+        $email_cc=array($this->config->item('sage_email'));
+        $this->email->from($mailfrom);
+        $this->email->to($email_to);
+        $this->email->cc($email_cc);
+        // Temporary ADD for check
+        // $this->email->bcc([$this->config->item('developer_email')]);
+        $title=date('D - M d, Y', $datestart).' - POs added';
+        $this->email->subject($title);
+        if ($msgbody=='') {
+            $body='<span style="font-weight: bold">'.$title.'</span>';
+            $this->email->message($body);
+        } else {
+            $body=$this->load->view('messages/amount_note_view', array('content'=>$msgbody),TRUE);
+            $this->email->message($body);
+        }
+        $res = $this->email->send();
+        $this->email->clear(TRUE);
+    }
+
+    public function ckeckpototals($datestart, $dateend)
+    {
+        // Get list of orders
+        $this->db->select('o.order_num, o.order_id');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_amounts oa','oa.order_id=o.order_id');
+        $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
+        $this->db->where("o.is_canceled",0);
+        $this->db->where('oa.create_date >=', $datestart);
+        $this->db->where('oa.create_date < ', $dateend);
+        $newordlist = $this->db->get()->result_array();
+
+        $this->db->select('o.order_num, o.order_id');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_amounts oa','oa.order_id=o.order_id');
+        $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
+        $this->db->where('oa.update_date >=', $datestart);
+        $this->db->where('oa.update_date < ', $dateend);
+        $this->db->where('oa.create_date <', $datestart);
+        $updordlist = $this->db->get()->result_array();
+
+        $orderlists = array_merge($newordlist, $updordlist);
+        $ordererror = [];
+        foreach ($orderlists as $orderlist) {
+            // Order Data
+            $this->db->select('o.profit as profit_sum, o.profit_perc, o.order_cog, o.brand');
+            $this->db->from('ts_orders o');
+            $this->db->where('o.order_id', $orderlist['order_id']);
+            $ordres = $this->db->get()->row_array();
+            $order_cog = round(floatval($ordres['order_cog']),2);
+            // Total amounts
+            $this->db->select('count(amount_id) as cnt, sum(amount_sum) as amount');
+            $this->db->from('ts_order_amounts');
+            $this->db->where('order_id', $orderlist['order_id']);
+            $pores = $this->db->get()->row_array();
+            $amount_cog = round(floatval($pores['amount']),2);
+            if ($amount_cog!==$order_cog) {
+                $ordererror[] = [
+                    'order_id' => $orderlist['order_id'],
+                    'order_num' => $orderlist['order_num'],
+                    'order_cog' => $order_cog,
+                    'amount_cog' => $amount_cog,
+                    'diff' => $amount_cog - $order_cog,
+                ];
+            }
+        }
+        // if (count($ordererror)==0) {
+        //     $mail_body = 'All PO orders '.count($orderlists).' math is OK';
+        // } else {
+        $mail_body = $this->load->view('messages/orderamout_maths_view', ['data' => $ordererror, 'orderlists' => $orderlists], TRUE);
+        // }
+        $this->load->library('email');
+//        $config['charset'] = 'utf-8';
+//        $config['mailtype']='html';
+//        $config['wordwrap'] = TRUE;
+        $email_conf = array(
+            'protocol'=>'smtp',
+            'smtp_host' => $this->config->item('sb_smtp_host'),
+            'smtp_port' => $this->config->item('sb_smtp_port'),
+            'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+            'smtp_user' => $this->config->item('sb_quote_user'),
+            'smtp_pass' => $this->config->item('sb_quote_pass'),
+            'charset'=>'utf-8',
+            'mailtype'=>'html',
+            'wordwrap'=>TRUE,
+            'newline' => "\r\n",
+        );
+
+        $this->email->initialize($email_conf);
+        // $email_from=$this->config->item('email_notification_sender');
+        $email_from = $this->config->item('sb_quote_user');
+        $email_to='to_german@yahoo.com';
+        $this->email->from($email_from);
+        $this->email->to($email_to);
+        $title=date('D - M d, Y', $datestart).' - Check Order Amounts Maths ';
+        $this->email->subject($title);
+        $this->email->message($mail_body);
+        $this->email->send();
+        $this->email->clear(TRUE);
+    }
+
+    public function check_ordermath($brand,$datestart, $dateend)
+    {
+        $out=[];
+        $this->db->select('*');
+        $this->db->from('ts_orders');
+        $this->db->where('order_date >= ', $datestart);
+        $this->db->where('order_date < ', $dateend);
+        $this->db->where('is_canceled',0);
+        if ($brand=='SB') {
+            $this->db->where_in('brand', ['SB','BT']);
+        } else {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->order_by('order_num');
+        $res = $this->db->get()->result_array();
+        if (count($res)>0) {
+            foreach ($res as $row) {
+                $this->db->select('sum(ic.item_qty*ic.item_price) as item_total');
+                $this->db->from('ts_order_items i');
+                $this->db->join('ts_order_itemcolors ic', 'ic.order_item_id=i.order_item_id');
+                $this->db->where('i.order_id', $row['order_id']);
+                $itm = $this->db->get()->row_array();
+                $this->db->select('sum(p.imprint_qty*p.imprint_price) as print_sum');
+                $this->db->from('ts_order_items i');
+                $this->db->join('ts_order_imprints p', 'p.order_item_id=i.order_item_id');
+                $this->db->where('i.order_id', $row['order_id']);
+                $print = $this->db->get()->row_array();
+                $this->db->select('rush_price');
+                $this->db->from('ts_order_shippings');
+                $this->db->where('order_id', $row['order_id']);
+                $ship = $this->db->get()->row_array();
+                $order_total = $itm['item_total'] + $print['print_sum'] + $row['shipping'] + $row['tax'] + $row['mischrg_val1'] + $row['mischrg_val2'] + $ship['rush_price'] - $row['discount_val'];
+                if (round($row['revenue'], 2) != round($order_total, 2)) {
+                    $out[] = [
+                        'order_num' => $row['order_num'],
+                        'itemcost' => $itm['item_total'],
+                        'imprint' => $print['print_sum'],
+                        'shipping' => $row['shipping'],
+                        'tax' => $row['tax'],
+                        'mischarge' => ($row['mischrg_val1'] + $row['mischrg_val2']),
+                        'rush' => $ship['rush_price'],
+                        'discount' => $row['discount_val'],
+                        'calcrevenue' => $order_total,
+                        'revenue' => $row['revenue'],
+                        'diff' => $order_total - $row['revenue'],
+                    ];
+                }
+            }
+        }
+        return ['data' => $out, 'orders' => count($res)];
     }
 }
