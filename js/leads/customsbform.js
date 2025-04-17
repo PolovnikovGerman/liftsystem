@@ -213,6 +213,8 @@ function init_assignform_modal(formid) {
                     $("div.modal-body div.leaddate").empty().html(response.data.lead_date);
                     $("div.modal-body div.leadcustomer").empty().html(response.data.lead_customer);
                     $("div.modal-body div.leadcustommail").empty().html(response.data.lead_mail);
+                    $("div.modal-body div.savequest").addClass('active');
+                    init_assignform_modal(formid);
                 } else {
                     show_error(response);
                 }
@@ -221,9 +223,11 @@ function init_assignform_modal(formid) {
             $("div.modal-body div.leaddate").empty();
             $("div.modal-body div.leadcustomer").empty();
             $("div.modal-body div.leadcustommail").empty();
+            $("div.modal-body div.savequest").removeClass('active');
+            init_assignform_modal(formid);
         }
     })
-    $("a.savequest").click(function(){
+    $(".savequest.active").unbind('click').click(function(){
         var url="/leads/savecustomformstatus";
         var params = new Array();
         params.push({name: 'customform', value: formid});

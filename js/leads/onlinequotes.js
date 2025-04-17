@@ -174,14 +174,9 @@ function change_quotereplic(quote_id) {
             });
             /* Change Lead data */
             $("select#lead_id").change(function(){
-                change_leaddata();
+                change_quteleaddat();
             })
-            $("a.savequest").click(function(){
-                update_quotestatus();
-            })
-            $("div.updatequest_status").find("div.leads_addnew").click(function(){
-                create_leadquote();
-            })
+            init_quotelead_content();
         } else {
             show_error(response);
         }
@@ -189,6 +184,38 @@ function change_quotereplic(quote_id) {
     return false;
 }
 
+function init_quotelead_content() {
+    $(".savequest.active").click(function(){
+        update_quotestatus();
+    })
+    $("div.updatequest_status").find("div.leads_addnew").click(function(){
+        create_leadquote();
+    })
+}
+
+function change_quteleaddat() {
+    var lead_id=$("#lead_id").val();
+    if (lead_id!=='') {
+        var url="/leads/change_leadrelation";
+        $.post(url, {'lead_id':lead_id}, function(response){
+            if (response.errors=='') {
+                $("div#pageModal div.leaddate").empty().html(response.data.lead_date);
+                $("div#pageModal div.leadcustomer").empty().html(response.data.lead_customer);
+                $("div#pageModal div.leadcustommail").empty().html(response.data.lead_mail);
+                $("div#pageModal div.savequest").addClass('active');
+                init_quotelead_content();
+            } else {
+                show_error(response);
+            }
+        }, 'json')
+    } else {
+        $("div#pageModal div.leaddate").empty();
+        $("div#pageModal div.leadcustomer").empty();
+        $("div#pageModal div.leadcustommail").empty();
+        $("div#pageModal div.savequest").removeClass('active');
+        init_quotelead_content();
+    }
+}
 function update_quotestatus() {
     var url="/leads/savequeststatus";
     var dat=$("form#msgstatus").serializeArray();
