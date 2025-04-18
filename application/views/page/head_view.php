@@ -30,3 +30,9 @@
 <?php if ($gmaps==1) { ?>
     <script src="https://maps.googleapis.com/maps/api/js?key=<?=$this->config->item('google_map_key')?>&libraries=places&v=weekly&callback=initAutocomplete" async></script>
 <?php } ?>
+<?php if (isset($outscripts)) { ?>
+    <?php foreach($outscripts as $row) {?>
+        <script type="text/javascript" src="<?=$row['src']?>"></script>
+    <?php } ?>
+<?php } ?>
+

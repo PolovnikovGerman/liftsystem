@@ -193,4 +193,36 @@ class Customform_model extends MY_Model
         return $weeks;
     }
 
+    public function get_customform_totalchart($brand)
+    {
+        $date_string = date('Y-m-d');
+        $weekdat = explode('-',date("W-Y", strtotime($date_string)));
+        $dats = getDatesByWeek($weekdat[0], $weekdat[1]);
+        $monday = $dats['start_week'];
+        $sunday = $dats['end_week'];
+        $maxdat = $sunday;
+        $mindat = strtotime('-52 weeks', $monday);
+        $this->db->select('date_format(date_add, "%X-%V") as dayw, count(custom_quote_id) as cnt')->from('ts_custom_quotes');
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB','BT']);
+            }
+        }
+        $this->db->where('unix_timestamp(date_add) >=', $mindat);
+        $this->db->where('unix_timestamp(date_add) <=', $maxdat);
+        $this->db->group_by('dayw');
+        $results = $this->db->get()->result_array();
+        $data = [];
+        $labels = [];
+        foreach ($results as $result) {
+            $days = explode('-', $result['dayw']);
+            $labels[] = $days[1].'/'.$days[0];
+            // $labels[] = $result['dayw'];
+            $data[] = $result['cnt'];
+        }
+        return ['labels'=>$labels,'data'=>$data];
+    }
+
 }
