@@ -161,6 +161,9 @@ class Template
             'gmaps' => $gmaps,
             'googlefont' => ifset($options,'googlefont', 0),
         ];
+        if (isset($options['outscripts'])) {
+            $head_options['outscripts'] = $options['outscripts'];
+        }
         if (ifset($options,'adaptive',0)==1) {
             $head_options['menu'] = $mobpermissions;
             $head_options['activelnk'] = (isset($options['activelnk']) ? $options['activelnk'] : '');

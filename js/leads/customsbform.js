@@ -37,8 +37,26 @@ function init_customforms() {
         });
         search_customforms();
     });
+    // Change Totals view
+    $(".customform_total_switcher").unbind('click').click(function(){
+        var newview = 'table';
+        if ($("#customformviewtype").val()=='table') {
+            newview = 'chart';
+        }
+        $("#customformviewtype").val(newview);
+        if (newview=='table') {
+            $("#customformtotal_chartview").hide();
+            $("#customformtotal_tableview").show();
+            $(".customform_total_switcher").empty().html('Chart');
+        } else {
+            $("#customformtotal_tableview").hide();
+            $("#customformtotal_chartview").empty().show().html('<canvas id="myChart"></canvas>');
+            $(".customform_total_switcher").empty().html('Table');
+        }
+        initCustomFormTotals(newview);
+    });
     // Init totals
-    initCustomFormTotals();
+    initCustomFormTotals('table');
 }
 
 function search_customforms() {
@@ -261,13 +279,36 @@ function init_assignform_modal(formid) {
     })
 }
 
-function initCustomFormTotals() {
+function initCustomFormTotals(viewtype) {
     var params = new Array();
-    params.push({name:'brand',value:$("#customformviewbrand").val()});
+    params.push({name: 'brand',value:$("#customformviewbrand").val()});
+    params.push({name: 'viewtype', value: viewtype});
     var url= '/leads/customformstotals';
     $.post(url, params, function (response){
         if (response.errors=='') {
-            $(".customform_total_tabledat").empty().html(response.data.content);
+            if (viewtype=='chart') {
+                const ctx = document.getElementById('myChart');
+                const myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: response.data.labels,
+                        datasets: [{
+                            label: '# of Custom Forms',
+                            data: response.data.data,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            } else {
+                $(".customform_total_tabledat").empty().html(response.data.content);
+            }
         } else {
             show_error(response);
         }

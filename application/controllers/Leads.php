@@ -90,6 +90,7 @@ class Leads extends My_Controller {
             } elseif ($row['item_link']=='#customsbform') {
                 $head['styles'][] = array('style' => '/css/leads/customsbform.css');
                 $head['scripts'][] = array('src' => '/js/leads/customsbform.js');
+                $head['outscripts'][] = array('src' => 'https://cdn.jsdelivr.net/npm/chart.js');
                 $content_options['customsbformview'] = $this->_prepare_customsbform_view($brand); // $brand, $top_menu
             } elseif ($row['item_link']=='#checkoutattemptsview') {
                 $head['styles'][]=array('style'=>'/css/leads/orderattempts.css');
@@ -160,6 +161,9 @@ class Leads extends My_Controller {
             'scripts' => $head['scripts'],
             'gmaps' => $gmaps,
         ];
+        if (isset($head['outscripts'])) {
+            $options['outscripts'] = $head['outscripts'];
+        }
         $dat = $this->template->prepare_pagecontent($options);
         $content_options['left_menu'] = $dat['left_menu'];
         $content_options['brand'] = $brand;
@@ -1799,13 +1803,20 @@ class Leads extends My_Controller {
             $error = '';
             $postdata = $this->input->post();
             $brand = ifset($postdata, 'brand', 'ALL');
+            $viewtype = ifset($postdata, 'viewtype', 'table');
             //
             $this->load->model('customform_model');
-            $data = $this->customform_model->get_customform_totals($brand);
-            if (count($data)==0) {
-                $mdata['content'] = $this->load->view('customsbforms/totals_empty_view',[],TRUE);
+            if ($viewtype=='table') {
+                $data = $this->customform_model->get_customform_totals($brand);
+                if (count($data)==0) {
+                    $mdata['content'] = $this->load->view('customsbforms/totals_empty_view',[],TRUE);
+                } else {
+                    $mdata['content'] = $this->load->view('customsbforms/totals_data_view',['totals' => $data,], TRUE);
+                }
             } else {
-                $mdata['content'] = $this->load->view('customsbforms/totals_data_view',['totals' => $data,], TRUE);
+                $res = $this->customform_model->get_customform_totalchart($brand);
+                $mdata['data'] = $res['data'];
+                $mdata['labels'] = $res['labels'];
             }
             $this->ajaxResponse($mdata, $error);
         }
