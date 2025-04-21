@@ -218,7 +218,9 @@ class Customform_model extends MY_Model
         $labels = [];
         foreach ($results as $result) {
             $days = explode('-', $result['dayw']);
-            $labels[] = $days[1].'/'.$days[0];
+            $dates = getDatesByWeek($days[1], $days[0]);
+            $labels[] = date('M`y', $dates['start_week']);
+            // $labels[] = $days[1].'/'.$days[0];
             // $labels[] = $result['dayw'];
             $data[] = $result['cnt'];
         }
