@@ -56,7 +56,7 @@
                     <div class="rpbox-table-td-ship <?=$order['shipclass']?>"><?=date('m/d', $order['shipdate'])?></div>
                     <div class="rpbox-table-td-order"><?=$order['order_num']?></div>
                     <div class="rpbox-table-td-print">
-                        <div class="ic-purpul-print"><img class="img-icon-print" src="/img/printscheduler/icon-print-white.svg"></div>
+                        <div class="ic-purpul-print" data-order="<?=$order['order_id']?>"><img class="img-icon-print" src="/img/printscheduler/icon-print-white.svg"></div>
                     </div>
                 <?php endif; ?>
                 <div class="rpbox-table-td-items <?=$order['qtyclass']?>"><?=$order['item_qty']?></div>

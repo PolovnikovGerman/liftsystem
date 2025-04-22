@@ -473,6 +473,25 @@ function init_printscheduler_dayview() {
             show_scheduler_date(printdate);
         }
     });
+    // Purple print icon click
+    $(".ic-purpul-print").unbind('click').click(function (){
+        var order = $(this).data('order');
+        var url = '/printscheduler/printorder';
+        $.post(url,{'order_id': order}, function (response){
+            if (response.errors=='') {
+                $("#pageModal").find('div.modal-dialog').css('width','305px');
+                $("#pageModalLabel").empty().html('Approved Proofs');
+                $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+                $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $(".uploadproofdoc").unbind('click').click(function (){
+                    var docurl = $(this).data('proofdoc');
+                    window.open(docurl,"ProofSource","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+                });
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
 }
 
 function init_assignprint(order) {

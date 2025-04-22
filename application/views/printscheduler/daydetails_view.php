@@ -1,6 +1,7 @@
 <?= $dateview ?>
 <div class="dateblock">
     <div class="stock-plates-box">
+        <div class=""></div>
         <div class="stock-box">
             <h4>STOCK TO GET:</h4>
             <div class="stock-table">

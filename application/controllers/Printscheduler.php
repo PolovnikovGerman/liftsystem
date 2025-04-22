@@ -597,4 +597,21 @@ class Printscheduler extends MY_Controller
         }
         show_404();
     }
+
+    public function printorder()
+    {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $error = 'Empty Order';
+            $mdata = [];
+            $order_id = ifset($postdata, 'order_id', '');
+            if (!empty($order_id)) {
+                $error = '';
+                $data = $this->printscheduler_model->get_approved_proofs($order_id);
+                $mdata['content'] = $this->load->view('printscheduler/approveproofs_view', ['proofs' => $data], TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }

@@ -1526,3 +1526,30 @@ input.inp-tracking::placeholder {
 .icon-check {
     margin: 1px 12px;
 }
+/* Proof Approved */
+.print_approved_proofsdata {
+    width: 160px;
+}
+.print_approved_proofsdata div {
+    float: left;
+}
+.print_approved_proofsdata span {
+    font-size: 16px;
+    color: #ff0000;
+}
+.printproofs_starapproved {
+    width: 22px;
+    text-align: center;
+    height: 22px;
+    line-height: 22px;
+}
+.printproofs_starapproved img {
+    width: 18px;
+    height: auto;
+}
+.print_proofs_name {
+    height: 22px;
+    line-height: 22px;
+    font-size: 14px;
+    cursor: pointer;
+}
