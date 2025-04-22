@@ -997,6 +997,9 @@ Class Leadorder_model extends My_Model {
                 $data['order_itemnumber']=$srchres['item_number'];
                 $data['order_items']=$srchres['item_name'];
             }
+            if ($fldname=='mischrg_val1' || $fldname=='mischrg_val2' || $fldname=='discount_val') {
+                $newval = floatval($newval);
+            }
             $data[$fldname]=$newval;
             if ($fldname=='balance_manage' && $entity=='order') {
                 if ($newval==3) {
