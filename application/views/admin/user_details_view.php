@@ -63,6 +63,10 @@
                     <div class="inputval chkbox">
                         <input type="checkbox" class="userpersdatachk" data-name="user_payuser" id="user_payuser" value="1" <?=($user['user_payuser']==1 ? 'checked="checked"' : '')?> />
                     </div>
+                    <div class="labeltxt">Print Schedule:</div>
+                    <div class="inputval chkbox">
+                        <input type="checkbox" class="userpersdatachk" data-name="print_scheduler" id="print_scheduler" value="1" <?=($user['print_scheduler']==1 ? 'checked="checked"' : '')?> />
+                    </div>
                 </div>
                 <div class="input_row">
                     <div class="labeltxt">Leads rep name</div>

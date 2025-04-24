@@ -361,6 +361,7 @@ Class User_model extends MY_Model
             'user_payuser' => 0,
             'default_brand' => 'SB',
             'user_order_export' => 0,
+            'print_scheduler' => 0,
         ];
         return $data;
     }
@@ -526,6 +527,7 @@ Class User_model extends MY_Model
             $this->db->set('user_page', ifset($user,'user_page',NULL));
             $this->db->set('user_order_export', ifset($user,'user_order_export',0));
             $this->db->set('user_payuser', $user['user_payuser']);
+            $this->db->set('print_scheduler', $user['print_scheduler']);
             $this->db->set('default_brand', $user['default_brand']);
             if ($user['user_id']==0) {
                 $this->db->set('created_at', date('Y-m-d H:i:s'));
