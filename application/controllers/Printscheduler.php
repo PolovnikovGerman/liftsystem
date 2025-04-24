@@ -166,8 +166,9 @@ class Printscheduler extends MY_Controller
             if (!empty($printdate)) {
                 $error = '';
                 $orders = $this->printscheduler_model->get_dayorders($printdate, $brand);
-                $mdata['stockview'] = $this->load->view('printscheduler/daydetails_stocks_view', ['stocks' => $orders['stocks'], 'brand' => $brand], TRUE);
-                $mdata['plateview'] = $this->load->view('printscheduler/daydetails_plates_view', ['plates' => $orders['plates'], 'brand' => $brand], TRUE);
+                // $mdata['stockview'] = $this->load->view('printscheduler/daydetails_stocks_view', ['stocks' => $orders['stocks'], 'brand' => $brand], TRUE);
+                // $mdata['plateview'] = $this->load->view('printscheduler/daydetails_plates_view', ['plates' => $orders['plates'], 'brand' => $brand], TRUE);
+                $mdata['stockplatesview'] = $this->load->view('printscheduler/daydetails_stockplates_view', ['stocks' => $orders, 'brand' => $brand], TRUE);
                 // Print orders
                 $this->load->model('user_model');
                 $userlist = $this->user_model->get_printschedul_users();
@@ -253,13 +254,15 @@ class Printscheduler extends MY_Controller
 //                        $mdata['orderchk'] = '<i class="fa fa-check-square-o" data-order="'.$order_id.'"></i>';
 //                    }
                     $printdate = $res['printdate'];
-                    if ($type=='stock') {
-                        $orders = $this->printscheduler_model->get_daystocks($printdate, $brand);
-                        $mdata['daycontent'] = $this->load->view('printscheduler/daydetails_stocks_view', ['stocks' => $orders, 'brand' => $brand], TRUE);
-                    } else {
-                        $orders = $this->printscheduler_model->get_dayplates($printdate, $brand);
-                        $mdata['daycontent'] = $this->load->view('printscheduler/daydetails_plates_view', ['plates' => $orders, 'brand' => $brand], TRUE);
-                    }
+                    $orders = $this->printscheduler_model->get_dayorders($printdate, $brand);
+                    $mdata['daycontent'] = $this->load->view('printscheduler/daydetails_stockplates_view', ['stocks' => $orders, 'brand' => $brand], TRUE);
+//                    if ($type=='stock') {
+//                        $orders = $this->printscheduler_model->get_daystocks($printdate, $brand);
+//                        $mdata['daycontent'] = $this->load->view('printscheduler/daydetails_stocks_view', ['stocks' => $orders, 'brand' => $brand], TRUE);
+//                    } else {
+//                        $orders = $this->printscheduler_model->get_dayplates($printdate, $brand);
+//                        $mdata['daycontent'] = $this->load->view('printscheduler/daydetails_plates_view', ['plates' => $orders, 'brand' => $brand], TRUE);
+//                    }
                     $this->load->model('user_model');
                     $userlist = $this->user_model->get_printschedul_users();
                     $unassignorders = $this->printscheduler_model->get_dayunassignorders($printdate, $brand);

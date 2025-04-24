@@ -317,6 +317,7 @@ class Printscheduler_model extends MY_Model
         // get order details
         $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, o.plates_ready, oi.order_item_id, toi.order_itemcolor_id');
         $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.brand, toi.inventory_color_id');
+        $this->db->select('case when (o.print_ready >0 and o.plates_ready > 0) then 1 ELSE 0 END as orderchk');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
@@ -333,44 +334,57 @@ class Printscheduler_model extends MY_Model
                 $this->db->where_in('o.brand', ['SB','BT']);
             }
         }
-        $this->db->order_by('o.print_ready asc, o.order_rush desc, o.order_id asc'); // $this->db->order_by('o.order_rush desc, o.order_num');
+        $this->db->order_by('orderchk asc, o.order_rush desc, o.order_id asc'); // $this->db->order_by('o.order_rush desc, o.order_num');
         $orders = $this->db->get()->result_array();
         foreach ($orders as $order) {
             $order['item_name'] = $order['item_number'].' - '.$order['item_description'];
-            $order['order_class'] = ($order['print_ready'] == 0) ? '' : 'inwork';
+            $order['order_class'] = ($order['orderchk'] == 0) ? '' : 'inwork';
+            $order['imprints'] = $order['plates'] = '';
+            if (!empty($order['order_item_id'])) {
+                $this->db->select('substr(imprint_description,1,6) as locnum, count(*) as cnt')->from('ts_order_imprints')->where(['order_item_id' => $order['order_item_id'],'imprint_item' => 1]);
+                $this->db->group_by('locnum')->order_by('locnum');
+                $imprres = $this->db->get()->result_array();
+                $loctxt = ''; $plates = 0;
+                foreach ($imprres as $impr) {
+                    $loctxt .= $impr['cnt'].' + ';
+                    $plates += $impr['cnt'];
+                }
+                $order['imprints'] = substr($loctxt, 0, -3);
+                $order['plates'] = $plates;
+            }
             $stocks[] = $order;
         }
         // Get stocks
-        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, o.plates_ready, o.brand,toi.imprint_description , toi.imprint_qty');
-        $this->db->from('ts_orders o');
-        $this->db->join('ts_order_items oi','oi.order_id = o.order_id');
-        $this->db->join('ts_order_imprints toi','toi.order_item_id = oi.order_item_id');
-        $this->db->where('o.print_date >= ', $daybgn);
-        $this->db->where('o.print_date < ', $dayend);
-        $this->db->where('o.is_canceled',0);
-        $this->db->where('o.shipped_date',0);
-        if ($brand !== 'ALL') {
-            if ($brand=='SR') {
-                $this->db->where('o.brand', $brand);
-            } else {
-                $this->db->where_in('o.brand', ['SB','BT']);
-            }
-        }
-        $this->db->order_by('o.plates_ready asc, o.order_rush desc, o.order_id asc'); // $this->db->order_by('o.order_rush desc, o.order_num');
-        $amnts = $this->db->get()->result_array();
-        foreach ($amnts as $amnt) {
-            $amnt['order_class'] = ($amnt['plates_ready'] == 0) ? '' : 'inwork';
-            $plates[] = [
-                'order_id' => $amnt['order_id'],
-                'plates_ready' => $amnt['plates_ready'],
-                'order_num' => $amnt['order_num'],
-                'plates_qty' => intval($amnt['imprint_qty']),
-                'item_name' => $amnt['imprint_description'],
-                'item_color' => '', // $amnt['item_color'],
-                'order_class' => $amnt['order_class'],
-                'brand' => $amnt['brand'],
-            ];
-        }
+//        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, o.plates_ready, o.brand,toi.imprint_description , toi.imprint_qty');
+//        $this->db->from('ts_orders o');
+//        $this->db->join('ts_order_items oi','oi.order_id = o.order_id');
+//        $this->db->join('ts_order_imprints toi','toi.order_item_id = oi.order_item_id');
+//        $this->db->where('o.print_date >= ', $daybgn);
+//        $this->db->where('o.print_date < ', $dayend);
+//        $this->db->where('o.is_canceled',0);
+//        $this->db->where('o.shipped_date',0);
+//        if ($brand !== 'ALL') {
+//            if ($brand=='SR') {
+//                $this->db->where('o.brand', $brand);
+//            } else {
+//                $this->db->where_in('o.brand', ['SB','BT']);
+//            }
+//        }
+//        $this->db->order_by('o.plates_ready asc, o.order_rush desc, o.order_id asc'); // $this->db->order_by('o.order_rush desc, o.order_num');
+//        $amnts = $this->db->get()->result_array();
+//        foreach ($amnts as $amnt) {
+//            $amnt['order_class'] = ($amnt['plates_ready'] == 0) ? '' : 'inwork';
+//            $plates[] = [
+//                'order_id' => $amnt['order_id'],
+//                'plates_ready' => $amnt['plates_ready'],
+//                'order_num' => $amnt['order_num'],
+//                'plates_qty' => intval($amnt['imprint_qty']),
+//                'item_name' => $amnt['imprint_description'],
+//                'item_color' => '', // $amnt['item_color'],
+//                'order_class' => $amnt['order_class'],
+//                'brand' => $amnt['brand'],
+//            ];
+//        }
 //        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, o.plates_ready, oi.order_item_id, toi.order_itemcolor_id');
 //        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.brand, toi.inventory_color_id');
 //        $this->db->from('ts_orders o');
@@ -410,10 +424,11 @@ class Printscheduler_model extends MY_Model
 //            ];
 //        }
 
-        return [
-            'stocks' => $stocks,
-            'plates' => $plates,
-        ];
+//        return [
+//            'stocks' => $stocks,
+//            'plates' => $plates,
+//        ];
+        return $stocks;
     }
 
     public function get_dayprintorders($printdate, $brand)
