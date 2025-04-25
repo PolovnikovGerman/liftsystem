@@ -3406,6 +3406,14 @@ class Leadquote_model extends MY_Model
                     }
                     // check that current color exist
                 }
+                if (!empty($quoteitem['inventory_item_id']) && empty($quotecolor['inventory_color_id'])) {
+                    // Check inventory_color_id
+                    $this->db->select('*')->from('ts_inventory_colors')->where(['inventory_item_id' => $quoteitem['inventory_item_id'], 'color' => $quotecolor['item_color']]);
+                    $invcolordat = $this->db->get()->row_array();
+                    if (ifset($invcolordat, 'inventory_color_id', 0) > 0) {
+                        $quotecolor['inventory_color_id'] = $invcolordat['inventory_color_id'];
+                    }
+                }
                 $itemsubtotal+=$quotecolor['item_qty']*$quotecolor['item_price'];
                 $newtrackidx = -1;
                 $trackdate = time();
