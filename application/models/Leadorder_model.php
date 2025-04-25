@@ -7918,6 +7918,7 @@ Class Leadorder_model extends My_Model {
                 'out_arrivedate'=>'',
                 'arriveclass'=>'',
             );
+            $neworder['shipdate'] = $shipping['shipdate'];
         }
 
         $shipaddress=$leadorder['shipping_address'];
