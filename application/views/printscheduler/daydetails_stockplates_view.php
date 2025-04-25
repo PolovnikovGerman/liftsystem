@@ -1,4 +1,4 @@
-<?php $ordernum = ''; $displaymain = 0; $order_item=0; $displayplat = 0; ?>
+<?php $ordernum = ''; $displaymain = 0; $itemname = ''; $order_item=0; $displayplat = 0; ?>
 <?php foreach ($stocks as $stock): ?>
     <?php if ($stock['order_num'] != $ordernum): ?>
         <?php $displaymain = 1; $ordernum = $stock['order_num'];?>
@@ -8,19 +8,25 @@
     <?php endif; ?>
     <div class="stock-table-tr <?=$stock['order_class']?>">
         <?php if ($displaymain == 1): ?>
-        <div class="stock-table-td-move" data-order="<?=$stock['order_id']?>">
-            <?php if ($stock['brand']=='SR') { ?>
-                <img class="icon-move" src="/img/printscheduler/move-yellow.svg">
-            <?php } else { ?>
-                <img class="icon-move" src="/img/printscheduler/move-blue.svg">
-            <?php } ?>
-        </div>
-        <div class="stock-table-td-order"><?=$stock['order_num']?></div>
-        <div class="stock-table-td-item"><?=$stock['item_name']?></div>
-        <?php $displaymain = 0; ?>
+            <div class="stock-table-td-move" data-order="<?=$stock['order_id']?>">
+                <?php if ($stock['brand']=='SR') { ?>
+                    <img class="icon-move" src="/img/printscheduler/move-yellow.svg">
+                <?php } else { ?>
+                    <img class="icon-move" src="/img/printscheduler/move-blue.svg">
+                <?php } ?>
+            </div>
+            <div class="stock-table-td-order"><?=$stock['order_num']?></div>
+            <div class="stock-table-td-item"><?=$stock['item_name']?></div>
+            <?php $displaymain = 0; ?>
+            <?php $itemname = $stock['item_name']; ?>
         <?php else: ?>
             <div class="stock-table-td-orderempty">&nbsp;</div>
-            <div class="stock-table-td-itemempty">&nbsp;</div>
+            <?php if ($itemname != $stock['item_name']) :?>
+                 <div class="stock-table-td-item" style="border-left: 1px solid #888888"><?=$stock['item_name']?></div>
+                 <?php $itemname = $stock['item_name']; ?>
+            <?php else : ?>
+                <div class="stock-table-td-itemempty">&nbsp;</div>
+            <?php endif; ?>
         <?php endif; ?>
         <div class="stock-empty_space">&nbsp;</div>
         <div class="stock-table-td-itemcolor"><?=$stock['item_color']?></div>
