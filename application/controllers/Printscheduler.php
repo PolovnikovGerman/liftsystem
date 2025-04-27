@@ -161,7 +161,6 @@ class Printscheduler extends MY_Controller
             $error = 'Empty Print Date';
             $postdata = $this->input->post();
             $printdate = ifset($postdata,'printdate', '');
-            // $brand = ifset($postdata,'brand', 'SR');
             $brand = 'ALL';
             if (!empty($printdate)) {
                 $error = '';

@@ -6,7 +6,7 @@
     <?php if ($stock['order_item_id'] != $order_item): ?>
         <?php $order_item = $stock['order_item_id']; $displayplat = 1; ?>
     <?php endif; ?>
-    <div class="stock-table-tr <?=$stock['order_class']?>">
+    <div class="stock-table-tr <?=$displaymain==1 ? 'mainorderrow' : ''?>">
         <?php if ($displaymain == 1): ?>
             <div class="stock-table-td-move" data-order="<?=$stock['order_id']?>">
                 <?php if ($stock['brand']=='SR') { ?>
@@ -29,9 +29,9 @@
             <?php endif; ?>
         <?php endif; ?>
         <div class="stock-empty_space">&nbsp;</div>
-        <div class="stock-table-td-itemcolor"><?=$stock['item_color']?></div>
-        <div class="stock-table-td-itemqty"><?=$stock['item_qty']?></div>
-        <div class="stock-table-td-orderchk" data-order="<?=$stock['order_id']?>">
+        <div class="stock-table-td-itemcolor <?=$stock['stock_class']?>"><?=$stock['color']?></div>
+        <div class="stock-table-td-itemqty <?=$stock['stock_class']?>"><?=$stock['item_qty']?></div>
+        <div class="stock-table-td-orderchk <?=$stock['stock_class']?>" data-order="<?=$stock['order_id']?>">
             <?php if ($stock['print_ready']==0) : ?>
                 <i class="fa fa-square-o" data-order="<?=$stock['order_id']?>"></i>
             <?php else : ?>
@@ -40,9 +40,9 @@
         </div>
         <div class="stock-empty_space">&nbsp;</div>
         <?php if ($displayplat == 1): ?>
-            <div class="stock-table-td-imprints"><?=$stock['imprints']?></div>
-            <div class="stock-table-td-plates"><?=$stock['plates']?></div>
-            <div class="stock-table-td-platescheck" data-order="<?=$stock['order_id']?>">
+            <div class="stock-table-td-imprints <?=$stock['plate_class']?>"><?=$stock['imprints']?></div>
+            <div class="stock-table-td-plates  <?=$stock['plate_class']?>"><?=$stock['plates']?></div>
+            <div class="stock-table-td-platescheck  <?=$stock['plate_class']?>" data-order="<?=$stock['order_id']?>">
                 <?php if ($stock['plates_ready']==0) : ?>
                     <i class="fa fa-square-o" data-order="<?=$stock['order_id']?>"></i>
                 <?php else : ?>

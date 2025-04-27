@@ -694,11 +694,11 @@
     color: #0E0E0E;
     font-size: 18px;
     font-weight: bold;
-    width: 140px;
+    width: 236px;
 }
 .stock-blocktitle {
     margin-left: 10px;
-    width: 180px;
+    width: 134px;
 }
 .plates-blocktitle {
     margin-left: 10px;
@@ -719,7 +719,7 @@
     background: #5d5d5d;
     color: #fff;
     font-size: 11px !important;
-    margin-bottom: 3px !important;
+    /* margin-bottom: 3px !important; */
     font-weight: normal!important;
     text-align: center;
     height: 18px!important;
@@ -738,10 +738,10 @@
     width: 145px;
 }
 .stock-table > div {
-    background: #7c7c7c;
+    background: #a4a4a4; /*#7c7c7c*/;
     color: #fff;
     font-size: 11px;
-    margin-bottom: 3px!important;
+    /* margin-bottom: 3px!important; */
     font-weight: normal!important;
     text-align: center;
     height: 18px!important;
@@ -766,7 +766,7 @@
     background: #a4a4a4;
     color: #fff;
     font-size: 11px;
-    margin-bottom: 3px!important;
+    /* margin-bottom: 3px!important; */
     font-weight: normal!important;
     text-align: center;
     height: 18px!important;
@@ -783,7 +783,10 @@
 /* Content */
 .stock-table-tr {
     width: 100%;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
+}
+.stock-table-tr.mainorderrow {
+    margin-top: 3px;
 }
 .stock-table-tr > div {
     border-top: 1px solid #888888;
@@ -792,8 +795,8 @@
     text-align: center;
     height: 17px;
 }
-.stock-table-tr.inwork {
-    opacity: .5;
+.stock-table-tr > div.inwork {
+    opacity: .25;
 }
 .stock-table-tr.addition {
     width: 100%;

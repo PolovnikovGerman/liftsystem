@@ -60,7 +60,7 @@
                     <div class="itm-table-td-ship <?=$order['shipclass']?>"><?=date('m/d', $order['shipdate'])?></div>
                     <div class="itm-table-td-order"><?=$order['order_num']?></div>
                 <?php endif; ?>
-                <div class="itm-table-td-items"><?=$order['order_qty']?></div>
+                <div class="itm-table-td-items"><?=$order['item_qty']?></div>
                 <div class="itm-table-td-imp"><?=$order['imprints']?></div>
                 <div class="itm-table-td-prints"><?=$order['prints']?></div>
                 <div class="itm-table-td-itemcolor"><?=$order['item_color']?></div>
