@@ -278,6 +278,9 @@ class Printscheduler extends MY_Controller
                     $printoptions['assignview'] = $assignview;
                     $printoptions['totals'] = $alltotals;
                     $mdata['content'] = $this->load->view('printscheduler/daydetails_printorders_view', $printoptions, TRUE);
+                    // Build ready to ship
+                    $shipready = $this->printscheduler_model->getreadyshiporders($printdate, $brand);
+                    $mdata['readyship'] = $this->load->view('printscheduler/daydetails_readyshiporders_view',['orders' => $shipready['orders'], 'totals'=> $shipready['totals'], 'brand' => $brand], TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);

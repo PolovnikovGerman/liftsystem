@@ -317,7 +317,7 @@ class Printscheduler_model extends MY_Model
         $order_idx = [];
         // get order details
         $this->db->select('o.order_id, o.order_num, ii.item_num, ii.item_name, ic.color, o.shipdate, o.order_qty, o.order_rush, toi.print_ready');
-        $this->db->select('oi.plates_ready, oi.order_item_id, toi.order_itemcolor_id, toi.item_qty, o.brand, toi.inventory_color_id');
+        $this->db->select('oi.plates_ready, oi.order_item_id, toi.order_itemcolor_id, toi.item_qty, o.brand, o.order_blank, toi.inventory_color_id');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
@@ -338,19 +338,27 @@ class Printscheduler_model extends MY_Model
         foreach ($orders as $order) {
             $order['item_name'] = $order['item_num'].' - '.$order['item_name'];
             $order['stock_class'] = ($order['print_ready'] == 0) ? '' : 'inwork';
-            $order['plate_class'] = ($order['plates_ready'] == 0) ? '' : 'inwork';
+            if ($order['order_blank']==1) {
+                $order['plate_class'] = ($order['print_ready'] == 0 ? '': 'inwork');
+            } else {
+                $order['plate_class'] = ($order['plates_ready'] == 0) ? '' : 'inwork';
+            }
             $order['imprints'] = $order['plates'] = '';
-            if (!empty($order['order_item_id'])) {
-                $this->db->select('substr(imprint_description,1,6) as locnum, count(*) as cnt')->from('ts_order_imprints')->where(['order_item_id' => $order['order_item_id'],'imprint_item' => 1]);
-                $this->db->group_by('locnum')->order_by('locnum');
-                $imprres = $this->db->get()->result_array();
-                $loctxt = ''; $plates = 0;
-                foreach ($imprres as $impr) {
-                    $loctxt .= $impr['cnt'].' + ';
-                    $plates += $impr['cnt'];
+            if ($order['order_blank'] == 1) {
+                $order['imprints'] = 'blank order';
+            } else {
+                if (!empty($order['order_item_id'])) {
+                    $this->db->select('substr(imprint_description,1,6) as locnum, count(*) as cnt')->from('ts_order_imprints')->where(['order_item_id' => $order['order_item_id'],'imprint_item' => 1]);
+                    $this->db->group_by('locnum')->order_by('locnum');
+                    $imprres = $this->db->get()->result_array();
+                    $loctxt = ''; $plates = 0;
+                    foreach ($imprres as $impr) {
+                        $loctxt .= $impr['cnt'].' + ';
+                        $plates += $impr['cnt'];
+                    }
+                    $order['imprints'] = substr($loctxt, 0, -3);
+                    $order['plates'] = $plates;
                 }
-                $order['imprints'] = substr($loctxt, 0, -3);
-                $order['plates'] = $plates;
             }
             $stocks[] = $order;
         }
@@ -923,7 +931,7 @@ class Printscheduler_model extends MY_Model
     {
         $out = ['result' => $this->error_result, 'msg' => 'Order Not Found'];
         if ($updtype=='stock') {
-            $this->db->select('oic.order_itemcolor_id as order_id, oic.print_ready, o.print_date')->from('ts_order_itemcolors oic');
+            $this->db->select('oic.order_itemcolor_id as order_id, oic.print_ready, o.print_date, o.order_blank')->from('ts_order_itemcolors oic');
             $this->db->join('ts_order_items oi','oi.order_item_id=oic.order_item_id')->join('ts_orders o','o.order_id=oi.order_id');
             $this->db->where('oic.order_itemcolor_id', $order_id);
         } else {
@@ -938,9 +946,17 @@ class Printscheduler_model extends MY_Model
                 $this->db->where('order_itemcolor_id', $order_id);
                 if ($orderres['print_ready']==0) {
                     $this->db->set('print_ready',time());
+                    if ($orderres['order_blank']==1) {
+                        $this->db->set('print_completed', 1);
+                        $this->db->set('print_date', time());
+                    }
                     $out['checked'] = 1;
                 } else {
                     $this->db->set('print_ready',0);
+                    if ($orderres['order_blank']==1) {
+                        $this->db->set('print_completed', 0);
+                        $this->db->set('print_date', 0);
+                    }
                     $out['checked'] = 0;
                 }
                 $this->db->update('ts_order_itemcolors');

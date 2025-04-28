@@ -48,10 +48,14 @@
             <div class="stock-table-td-imprints <?=$stock['plate_class']?>"><?=$stock['imprints']?></div>
             <div class="stock-table-td-plates  <?=$stock['plate_class']?>"><?=$stock['plates']?></div>
             <div class="stock-table-td-platescheck  <?=$stock['plate_class']?>" data-order="<?=$stock['order_id']?>">
-                <?php if ($stock['plates_ready']==0) : ?>
-                    <i class="fa fa-square-o" data-order="<?=$stock['order_item_id']?>"></i>
+                <?php if ($stock['order_blank']==1) : ?>
+                    &nbsp;
                 <?php else : ?>
-                    <i class="fa fa-check-square-o" data-order="<?=$stock['order_item_id']?>"></i>
+                    <?php if ($stock['plates_ready']==0) : ?>
+                        <i class="fa fa-square-o" data-order="<?=$stock['order_item_id']?>"></i>
+                    <?php else : ?>
+                        <i class="fa fa-check-square-o" data-order="<?=$stock['order_item_id']?>"></i>
+                    <?php endif; ?>
                 <?php endif; ?>
             </div>
         <?php else: ?>

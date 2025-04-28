@@ -295,6 +295,7 @@ function init_printscheduler_dayview() {
                 // Update stocks
                 // $("#stockordersdata").empty().html(response.data.daycontent);
                 $("#stockplatestabledata").empty().html(response.data.daycontent);
+                $(".ready-ship-block").empty().html(response.data.readyship);
                 $("#loader").hide();
                 init_printscheduler_dayview();
             } else {
@@ -317,6 +318,7 @@ function init_printscheduler_dayview() {
                 // Update plates
 //                $("#platesordersdata").empty().html(response.data.daycontent);
                 $("#stockplatestabledata").empty().html(response.data.daycontent);
+                $(".ready-ship-block").empty().html(response.data.readyship);
                 $("#loader").hide();
                 init_printscheduler_dayview();
             } else {
