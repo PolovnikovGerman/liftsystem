@@ -77,7 +77,7 @@
                 <div class="rpbox-table-td-items <?=$order['qtyclass']?>"><?=$order['item_qty']?></div>
                 <div class="rpbox-table-td-imp"><?=$order['imprints']?></div>
                 <div class="rpbox-table-td-prints"><?=$order['prints']?></div>
-                <div class="rpbox-table-td-itemcolor"><?=$order['item_color']?></div>
+                <div class="rpbox-table-td-itemcolor"><?=$order['color']?></div>
                 <div class="rpbox-table-td-descriptions"><?=$order['item_name']?></div>
                 <div class="rpbox-table-td-inputs">
                     <input class="rpbox-inp-good" type="text" data-order="<?=$order['order_itemcolor_id']?>" data-color="<?=$order['inventory_color']?>"/>

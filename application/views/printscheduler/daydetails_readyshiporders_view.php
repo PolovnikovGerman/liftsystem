@@ -37,7 +37,7 @@
                 </div>
                 <div class="rsbox-table-td-order"><?=$order['order_num']?></div>
             <?php endif ?>
-            <div class="rsbox-table-td-itemcolor"><?=$order['item_color']?></div>
+            <div class="rsbox-table-td-itemcolor"><?=$order['color']?></div>
             <div class="rsbox-table-td-descriptions"><?=$order['item_name']?></div>
             <div class="rsbox-table-td-items"><?=$order['item_qty']?></div>
 <!--            <div class="rsbox-table-td-shipqty">-->
