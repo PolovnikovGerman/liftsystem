@@ -63,7 +63,7 @@
                 <div class="itm-table-td-items"><?=$order['item_qty']?></div>
                 <div class="itm-table-td-imp"><?=$order['imprints']?></div>
                 <div class="itm-table-td-prints"><?=$order['prints']?></div>
-                <div class="itm-table-td-itemcolor"><?=$order['item_color']?></div>
+                <div class="itm-table-td-itemcolor"><?=$order['color']?></div>
                 <div class="itm-table-td-descriptions"><?=$order['item_name']?></div>
                 <div class="itm-table-td-art">
                     <div class="ic-green-art" data-order="<?=$order['order_itemcolor_id']?>">

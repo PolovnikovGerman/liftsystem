@@ -362,7 +362,8 @@ function init_printscheduler_dayview() {
         $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
-                $("#platesordersdata").empty().html(response.data.plateview);
+                $("#stockplatestabledata").empty().html(response.data.stockplatesview);
+                // $("#platesordersdata").empty().html(response.data.plateview);
                 $(".ready-print-block").empty().html(response.data.printview);
                 $(".ready-ship-block").empty().html(response.data.readyshipview);
                 $(".completed-print-block").empty().html(response.data.complljobview);

@@ -15,7 +15,7 @@
             <div class="rsbox-table-td-descriptions">Item /Description</div>
             <div class="rsbox-table-td-items">#Items</div>
             <div class="rsbox-table-td-shipdate" style="width: 42px;">Sh Date</div>
-            <div class="rsbox-table-td-qty" style="width: 38px">Qty</div>
+            <div class="rsbox-table-td-qty" style="width: 48px">Qty</div>
             <div class="rsbox-table-td-method">Method</div>
             <div class="rsbox-table-td-tracking">Enter Tracking #s</div>
             <div class="rsbox-table-td-btnsave">&nbsp;</div>

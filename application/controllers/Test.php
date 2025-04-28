@@ -4372,86 +4372,23 @@ class Test extends CI_Controller
         $this->orders_model->update_shipped_orders();
     }
 
-    public function srorders2024()
-    {
-        // Select Items
-        $this->db->select('*')->from('sb_items')->where('brand','SR')->order_by('item_number');
+    public function updateprintready() {
+        $this->db->select('oic.order_itemcolor_id, o.order_num, o.print_ready')->from('ts_order_itemcolors oic')->join('ts_order_items oi','oi.order_item_id=oic.order_item_id');
+        $this->db->join('ts_orders o','o.order_id=oi.order_id')->where('o.print_ready > ',0);
         $items = $this->db->get()->result_array();
-        $itemdat = [];
         foreach ($items as $item) {
-            $itemdat[] = [
-                'item_id' => $item['item_id'],
-                'item_name' => $item['item_number'].' - '.$item['item_name'],
-                '150' => 0,
-                '250' => 0,
-                '500' => 0,
-                '1000' => 0,
-                '2500' => 0,
-                '5000' => 0,
-            ];
+            $this->db->where('order_itemcolor_id', $item['order_itemcolor_id']);
+            $this->db->set('print_ready', $item['print_ready']);
+            $this->db->update('ts_order_itemcolors');
+            echo 'Order '.$item['order_num'].' Updated '.PHP_EOL;
         }
-        $itemdat[] = [
-            'item_id' => -3,
-            'item_name' => 'Custom Item',
-            '150' => 0,
-            '250' => 0,
-            '500' => 0,
-            '1000' => 0,
-            '2500' => 0,
-            '5000' => 0,
-        ];
-        $itemdat[] = [
-            'item_id' => -1,
-            'item_name' => 'Other Item',
-            '150' => 0,
-            '250' => 0,
-            '500' => 0,
-            '1000' => 0,
-            '2500' => 0,
-            '5000' => 0,
-        ];
-
-        $this->db->select('o.order_id, o.order_num, oi.item_id, item_qty')->from('ts_orders o')->join('ts_order_items oi','oi.order_id=o.order_id')->where(['o.brand'=>'SR','o.is_canceled'=>0]);
-        $this->db->where('o.order_date >= ', strtotime('2024-01-01'))->where('o.order_date < ', strtotime('2025-01-01'));
-        $orders = $this->db->get()->result_array();
-        foreach ($orders as $order) {
-            $idx = 0;
-            $found = 0;
-            foreach ($itemdat as $item) {
-                if ($item['item_id'] == $order['item_id']) {
-                    $found = 1;
-                    break;
-                } else {
-                    $idx++;
-                }
-            }
-            if ($found == 0) {
-                // echo 'Order # '.$order['order_num'].' Item '.$order['item_id'].' not found'.PHP_EOL;
-                // die();
-                $idx = count($itemdat)-1;
-            }
-            if ($order['item_qty'] < 150) {
-                $itemdat[$idx]['150']+=$order['item_qty'];
-            } elseif ($order['item_qty'] < 250) {
-                $itemdat[$idx]['250']+=$order['item_qty'];
-            } elseif ($order['item_qty'] < 500) {
-                $itemdat[$idx]['500']+=$order['item_qty'];
-            } elseif ($order['item_qty'] < 1000) {
-                $itemdat[$idx]['1000']+=$order['item_qty'];
-            } elseif ($order['item_qty'] < 2500) {
-                $itemdat[$idx]['2500']+=$order['item_qty'];
-            } else {
-                $itemdat[$idx]['5000']+=$order['item_qty'];
-            }
+        $this->db->select('oi.order_item_id, o.order_num, o.plates_ready')->from('ts_order_items oi')->join('ts_orders o','o.order_id=oi.order_id')->where('o.plates_ready > ',0);
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $this->db->where('order_item_id', $item['order_item_id']);
+            $this->db->set('plates_ready', $item['plates_ready']);
+            $this->db->update('ts_order_items');
+            echo 'Order '.$item['order_num'].' Updated '.PHP_EOL;
         }
-        $file=$this->config->item('upload_path_preload').'sr_ordersqty_2024.csv';
-        $fp = fopen($file, 'w');
-        $msg = 'Item ID, Item Name, 0-149, 150-249, 250-499, 500-999, 1000-2500, 2500+'.PHP_EOL;
-        fwrite($fp, $msg);
-        foreach ($itemdat as $item) {
-            fputcsv($fp, $item);
-        }
-        fclose($fp);
-        echo 'File '.$file.' created'.PHP_EOL;
     }
 }

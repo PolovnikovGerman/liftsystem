@@ -26,16 +26,16 @@
                  <?php $itemname = $stock['item_name']; ?>
             <?php else : ?>
                 <div class="stock-table-td-itemempty">&nbsp;</div>
+                <div class="stock-empty_space">&nbsp;</div>
             <?php endif; ?>
         <?php endif; ?>
-        <div class="stock-empty_space">&nbsp;</div>
         <div class="stock-table-td-itemcolor <?=$stock['stock_class']?>"><?=$stock['color']?></div>
         <div class="stock-table-td-itemqty <?=$stock['stock_class']?>"><?=$stock['item_qty']?></div>
         <div class="stock-table-td-orderchk <?=$stock['stock_class']?>" data-order="<?=$stock['order_id']?>">
             <?php if ($stock['print_ready']==0) : ?>
-                <i class="fa fa-square-o" data-order="<?=$stock['order_id']?>"></i>
+                <i class="fa fa-square-o" data-order="<?=$stock['order_itemcolor_id']?>"></i>
             <?php else : ?>
-                <i class="fa fa-check-square-o" data-order="<?=$stock['order_id']?>"></i>
+                <i class="fa fa-check-square-o" data-order="<?=$stock['order_itemcolor_id']?>"></i>
             <?php endif; ?>
         </div>
         <div class="stock-empty_space">&nbsp;</div>
@@ -44,9 +44,9 @@
             <div class="stock-table-td-plates  <?=$stock['plate_class']?>"><?=$stock['plates']?></div>
             <div class="stock-table-td-platescheck  <?=$stock['plate_class']?>" data-order="<?=$stock['order_id']?>">
                 <?php if ($stock['plates_ready']==0) : ?>
-                    <i class="fa fa-square-o" data-order="<?=$stock['order_id']?>"></i>
+                    <i class="fa fa-square-o" data-order="<?=$stock['order_item_id']?>"></i>
                 <?php else : ?>
-                    <i class="fa fa-check-square-o" data-order="<?=$stock['order_id']?>"></i>
+                    <i class="fa fa-check-square-o" data-order="<?=$stock['order_item_id']?>"></i>
                 <?php endif; ?>
             </div>
         <?php else: ?>
