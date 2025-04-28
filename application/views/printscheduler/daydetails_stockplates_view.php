@@ -16,18 +16,23 @@
                 <?php } ?>
             </div>
             <div class="stock-table-td-order"><?=$stock['order_num']?></div>
-            <div class="stock-table-td-item"><?=$stock['item_name']?></div>
+            <div class="stock-table-td-item">
+                <div class="stock-table-td-iteminfo"><?=$stock['item_name']?></div>
+            </div>
+            <div class="stock-empty_space">&nbsp;</div>
             <?php $displaymain = 0; ?>
             <?php $itemname = $stock['item_name']; ?>
         <?php else: ?>
             <div class="stock-table-td-orderempty">&nbsp;</div>
             <?php if ($itemname != $stock['item_name']) :?>
-                 <div class="stock-table-td-item" style="border-left: 1px solid #888888"><?=$stock['item_name']?></div>
+                 <div class="stock-table-td-item" style="border-left: 1px solid #888888">
+                     <div class="stock-table-td-iteminfo"><?=$stock['item_name']?></div>
+                 </div>
                  <?php $itemname = $stock['item_name']; ?>
             <?php else : ?>
                 <div class="stock-table-td-itemempty">&nbsp;</div>
-                <div class="stock-empty_space">&nbsp;</div>
             <?php endif; ?>
+            <div class="stock-empty_space">&nbsp;</div>
         <?php endif; ?>
         <div class="stock-table-td-itemcolor <?=$stock['stock_class']?>"><?=$stock['color']?></div>
         <div class="stock-table-td-itemqty <?=$stock['stock_class']?>"><?=$stock['item_qty']?></div>
