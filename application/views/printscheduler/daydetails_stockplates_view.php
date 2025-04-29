@@ -30,7 +30,7 @@
             <div class="stock-table-td-item">
                 <div class="stock-table-td-iteminfo"><?=$stock['item_name']?></div>
             </div>
-            <div class="stock-empty_space">&nbsp;</div>
+            <div class="stock-table-td-itemend"><img src="/img/icons/stock-table-td-item-end.svg" alt="Item Name End"/></div>
             <?php $displaymain = 0; ?>
             <?php $itemname = $stock['item_name']; ?>
         <?php else: ?>
@@ -39,11 +39,12 @@
                  <div class="stock-table-td-item" style="border-left: 1px solid #888888">
                      <div class="stock-table-td-iteminfo"><?=$stock['item_name']?></div>
                  </div>
+                 <div class="stock-table-td-itemend"><img src="/img/icons/stock-table-td-item-end.svg" alt="Item Name End"/></div>
                  <?php $itemname = $stock['item_name']; ?>
             <?php else : ?>
                 <div class="stock-table-td-itemempty">&nbsp;</div>
+                <div class="stock-empty_space">&nbsp;</div>
             <?php endif; ?>
-            <div class="stock-empty_space">&nbsp;</div>
         <?php endif; ?>
         <div class="stock-table-td-itemcolor <?=$stock['stock_class']?>"><?=$stock['color']?></div>
         <div class="stock-table-td-itemqty <?=$stock['stock_class']?>"><?=$stock['item_qty']?></div>
