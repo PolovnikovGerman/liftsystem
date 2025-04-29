@@ -8,6 +8,7 @@
         </div>
         <div class="stock-orders-table">
             <div class="stock-table-move">&nbsp;</div>
+            <div class="stock-table-icons">&nbsp;</div>
             <div class="stock-table-order">Order#</div>
             <div class="stock-table-descriptions">Item / Description</div>
         </div>
