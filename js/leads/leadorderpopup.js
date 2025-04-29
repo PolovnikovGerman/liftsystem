@@ -57,7 +57,10 @@ function navigation_init() {
                 }
             } else if (callpage=='pooverview') {
                 // PO Overview
-                init_pooverview();
+                if (parseInt(updorders)==0) {
+                } else {
+                    init_pooverview();
+                }
             }
         }
         $('.modal-backdrop').hide();
