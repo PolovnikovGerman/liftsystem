@@ -694,14 +694,15 @@
     color: #0E0E0E;
     font-size: 18px;
     font-weight: bold;
-    width: 236px;
+    width: 299px;
 }
 .stock-blocktitle {
     margin-left: 10px;
-    width: 134px;
+    width: 148px;
 }
 .plates-blocktitle {
     margin-left: 10px;
+    width: 173px;
 }
 .stock-plates-headtitle h4 {
     margin-top: 0;
@@ -710,10 +711,11 @@
     line-height: 18px!important;
     margin-bottom: 4px;
     color: #0E0E0E;
+    text-align: center;
 }
 /* parts */
 .stock-orders-table {
-    width: 245px;
+    width: 308px;
 }
 .stock-orders-table > div {
     background: #5d5d5d;
@@ -728,14 +730,17 @@
 .stock-table-move {
     width: 12px;
 }
+.stock-table-icons {
+    width: 38px;
+}
 .stock-table-order {
     width: 49px;
 }
 .stock-table-descriptions {
-    width: 175px;
+    width: 200px;
 }
 .stock-table {
-    width: 145px;
+    width: 159px;
 }
 .stock-table > div {
     background: #a4a4a4; /*#7c7c7c*/;
@@ -748,7 +753,7 @@
     line-height: 18px!important;
 }
 .stock-table-itemcolor {
-    width: 71px;
+    width: 85px;
     border-right: 1px solid #d4d2d2;
 }
 .stock-table-qty {
@@ -783,17 +788,21 @@
 /* Content */
 .stock-table-tr {
     width: 100%;
-    margin-bottom: 1px;
 }
 .stock-table-tr.mainorderrow {
     margin-top: 3px;
 }
 .stock-table-tr > div {
-    border-top: 1px solid #888888;
     border-bottom: 1px solid #888888;
-    line-height: 17px!important;
+    /* line-height: 17px!important; */
     text-align: center;
     height: 17px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.stock-table-tr.mainorderrow > div {
+    border-top: 1px solid #888888;
 }
 .stock-table-tr > div.inwork {
     opacity: .25;
@@ -814,18 +823,18 @@
     border-right: 1px solid #888888;
 }
 .stock-table-td-orderempty {
-    width: 61px;
+    width: 99px;
     border-top: none !important;
     border-bottom: none !important;
 }
 .stock-table-td-item {
     border-right: 1px solid #888888;
-    width: 175px;
+    width: 200px;
     position: relative;
     background: #fff;
 }
 .stock-table-td-iteminfo {
-    width: 173px;
+    width: 198px;
     font-size: 12px;
     padding-left: 5px;
     font-weight: bold;
@@ -852,7 +861,7 @@
     margin-bottom: -10px;
 }
 .stock-table-td-itemempty {
-    width: 175px;
+    width: 200px;
     border-top: none !important;
     border-bottom: none !important;
 }
@@ -863,7 +872,7 @@
     /* border-right: 1px solid #d4d2d2!important; */
 }
 .stock-table-td-itemcolor {
-    width: 71px;
+    width: 85px;
     border-left: 1px solid #888888;
     border-right: 1px solid #888888;
     font-size: 11px;
@@ -876,8 +885,6 @@
     width: 41px;
     border-right: 1px solid #d4d2d2;
     font-size: 12px;
-    text-align: center;
-    line-height: 17px !important;
 }
 .stock-table-td-orderchk, .stock-table-td-platescheck {
     width: 22px;

@@ -15,6 +15,17 @@
                     <img class="icon-move" src="/img/printscheduler/move-blue.svg">
                 <?php } ?>
             </div>
+            <div class="itm-table-td-icons">
+                <div class="ic-skull <?=$stock['balance_class']?>"><img class="img-skull" src="/img/printscheduler/icon-skull.svg"></div>
+                <div class="ic-rush">
+                    <?php if ($stock['order_rush']==1 ): ?>
+                        <img class="img-rush" src="/img/printscheduler/icon-rush.svg"/>
+                    <?php else : ?>
+                        &nbsp;
+                    <?php endif;?>
+                </div>
+            </div>
+
             <div class="stock-table-td-order"><?=$stock['order_num']?></div>
             <div class="stock-table-td-item">
                 <div class="stock-table-td-iteminfo"><?=$stock['item_name']?></div>
@@ -43,8 +54,8 @@
                 <i class="fa fa-check-square-o" data-order="<?=$stock['order_itemcolor_id']?>"></i>
             <?php endif; ?>
         </div>
-        <div class="stock-empty_space">&nbsp;</div>
         <?php if ($displayplat == 1): ?>
+            <div class="stock-empty_space">&plus;</div>
             <div class="stock-table-td-imprints <?=$stock['plate_class']?>"><?=$stock['imprints']?></div>
             <div class="stock-table-td-plates  <?=$stock['plate_class']?>"><?=$stock['plates']?></div>
             <div class="stock-table-td-platescheck  <?=$stock['plate_class']?>" data-order="<?=$stock['order_id']?>">
@@ -59,6 +70,7 @@
                 <?php endif; ?>
             </div>
         <?php else: ?>
+            <div class="stock-empty_space">&nbsp;</div>
         <?php endif; ?>
         <?php $displayplat = 0; ?>
     </div>

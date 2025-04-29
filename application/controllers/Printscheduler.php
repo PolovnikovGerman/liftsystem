@@ -129,13 +129,6 @@ class Printscheduler extends MY_Controller
                 if ($totalweeks <= $weeknum + 1) {
                     $rightactive = 0;
                 }
-//                if ($dates[0]['printdate']==$printdate) {
-//                    $leftactive = 0;
-//                }
-//                $datesidx = count($dates)-1;
-//                if ($dates[$datesidx]['printdate']==$printdate) {
-//                    $rightactive = 0;
-//                }
                 $totalwidth = 77 * count($datetabs);
                 $datoptions = [
                     'dates' => $datetabs,

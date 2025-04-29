@@ -317,7 +317,7 @@ class Printscheduler_model extends MY_Model
         $order_idx = [];
         // get order details
         $this->db->select('o.order_id, o.order_num, ii.item_num, ii.item_name, ic.color, o.shipdate, o.order_qty, o.order_rush, toi.print_ready');
-        $this->db->select('oi.plates_ready, oi.order_item_id, toi.order_itemcolor_id, toi.item_qty, o.brand, o.order_blank, toi.inventory_color_id');
+        $this->db->select('oi.plates_ready, oi.order_item_id, toi.order_itemcolor_id, toi.item_qty, o.order_rush, o.brand, o.order_blank, toi.inventory_color_id');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
@@ -333,7 +333,7 @@ class Printscheduler_model extends MY_Model
                 $this->db->where_in('o.brand', ['SB','BT']);
             }
         }
-        $this->db->order_by('o.order_rush desc, ii.item_num, ic.suggeststock desc');
+        $this->db->order_by('o.order_rush desc, ii.item_num, ic.suggeststock desc, ic.color');
         $orders = $this->db->get()->result_array();
         foreach ($orders as $order) {
             $order['item_name'] = $order['item_num'].' - '.$order['item_name'];
@@ -342,6 +342,12 @@ class Printscheduler_model extends MY_Model
                 $order['plate_class'] = ($order['print_ready'] == 0 ? '': 'inwork');
             } else {
                 $order['plate_class'] = ($order['plates_ready'] == 0) ? '' : 'inwork';
+            }
+            // Balance
+            $order['balance_class'] = '';
+            $balance = $this->_scheduler_balance($order['inventory_color_id']);
+            if ($balance <=0 ) {
+                $order['balance_class'] = $this->emptybalance;
             }
             $order['imprints'] = $order['plates'] = '';
             if ($order['order_blank'] == 1) {
