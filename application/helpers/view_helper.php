@@ -40,9 +40,14 @@ if (!function_exists('ProfitOutput')) {
 }
 
 if (!function_exists('TotalOutput')) {
-    function TotalOutput($total) {
+    function TotalOutput($total, $totals = 0) {
         $fraction = str_pad(round(($total-intval($total))*100,0),2,'0',STR_PAD_LEFT);
-        $total_str=MoneyOutput(intval($total),0).'<span>'.$fraction.'</span>';
+        if ($totals==1) {
+            $total_str='$'.number_format(intval($total),0,'','').'<span>'.$fraction.'</span>';
+        } else {
+            $total_str=MoneyOutput(intval($total),0).'<span>'.$fraction.'</span>';
+        }
+
         return $total_str;
     }
 }
