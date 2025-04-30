@@ -43,7 +43,7 @@
                  <?php $itemname = $stock['item_name']; ?>
             <?php else : ?>
                 <div class="stock-table-td-itemempty">&nbsp;</div>
-                <div class="stock-empty_space">&nbsp;</div>
+                <div class="stock-empty_spaceitem">&nbsp;</div>
             <?php endif; ?>
         <?php endif; ?>
         <div class="stock-table-td-itemcolor <?=$stock['stock_class']?>"><?=$stock['color']?></div>

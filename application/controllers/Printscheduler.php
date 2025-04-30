@@ -592,9 +592,10 @@ class Printscheduler extends MY_Controller
             $error = 'Empty Order';
             $mdata = [];
             $order_id = ifset($postdata, 'order_id', '');
-            if (!empty($order_id)) {
+            $type = ifset($postdata, 'type', '');
+            if (!empty($order_id) && !empty($type)) {
                 $error = '';
-                $data = $this->printscheduler_model->get_approved_proofs($order_id);
+                $data = $this->printscheduler_model->get_approved_proofs($order_id, $type);
                 $mdata['content'] = $this->load->view('printscheduler/approveproofs_view', ['proofs' => $data], TRUE);
             }
             $this->ajaxResponse($mdata, $error);
