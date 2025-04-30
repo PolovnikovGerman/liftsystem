@@ -86,14 +86,6 @@
 .pastdue.open {
     height: auto;
 }
-/*.pastdue-open {*/
-/*    width: 561px;*/
-/*    direction: ltr;*/
-/*    padding: 0 10px 10px;*/
-/*    background: #fb0404;*/
-/*    */
-/*    margin-bottom: 10px;*/
-/*}*/
 .pastdue-title {
     width: 555px;
     margin-left: 5px;
@@ -141,7 +133,6 @@
     background: #dbdbdb;
     font-size: 11px!important;
     margin-bottom: 3px!important;
-    /* font-weight: bold; */
     height: 18px!important;
     line-height: 18px!important;
     text-align: center;
@@ -149,8 +140,6 @@
     color: #333!important;
 }
 .pdo-table-header .pdo-table-td-order {
-    /*color: #000;*/
-    /*font-size: 11px;*/
 }
 .pdo-table-tr {
     width: 546px;
@@ -163,7 +152,6 @@
     margin-left: 138px;
     width: 408px;
     border-top: none;
-    /* border-left: none; */
     margin-top: -2px;
 }
 .pdo-table-td-move {
@@ -363,7 +351,6 @@
     left: -1px;
     background: #fff;
     padding: 8px 5px;
-/*    width: 550px; */
     margin-bottom: 10px;
     border: 2px solid #00004c;
 }
@@ -448,7 +435,6 @@
     background: #dbdbdb;
     font-size: 11px!important;
     margin-bottom: 3px!important;
-    /* font-weight: bold; */
     text-align: center;
     height: 18px!important;
     line-height: 18px!important;
@@ -456,8 +442,6 @@
     font-weight: normal!important;
 }
 .itm-table-header .itm-table-td-order {
-    /*color: #000;*/
-    /*font-size: 11px;*/
 }
 .itm-table-tr {
     width: 546px;
@@ -560,9 +544,6 @@
 .itm-table-td-art {
     width: 24px;
 }
-/*.disapproved {
-	opacity: .3;
-}*/
 .disapproved .itm-table-td-ship,
 .disapproved .itm-table-td-order,
 .disapproved .itm-table-td-items,
@@ -629,7 +610,6 @@
     border-top: 1px solid #00004c;
     border-radius: 4px 4px 0 0;
     line-height: 28px !important;
-    /*font-size: 14.5px;*/
     font-size: 11.5px;
     text-align: center;
     font-style: italic;
@@ -697,11 +677,11 @@
     width: 299px;
 }
 .stock-blocktitle {
-    margin-left: 10px;
+    margin-left: 14px;
     width: 148px;
 }
 .plates-blocktitle {
-    margin-left: 10px;
+    margin-left: 16px;
     width: 173px;
 }
 .stock-plates-headtitle h4 {
@@ -715,13 +695,12 @@
 }
 /* parts */
 .stock-orders-table {
-    width: 308px;
+    width: 312px;
 }
 .stock-orders-table > div {
     background: #5d5d5d;
     color: #fff;
     font-size: 11px !important;
-    /* margin-bottom: 3px !important; */
     font-weight: normal!important;
     text-align: center;
     height: 18px!important;
@@ -740,13 +719,12 @@
     width: 200px;
 }
 .stock-table {
-    width: 159px;
+    width: 164px;
 }
 .stock-table > div {
-    background: #a4a4a4; /*#7c7c7c*/;
+    background: #a4a4a4;
     color: #fff;
     font-size: 11px;
-    /* margin-bottom: 3px!important; */
     font-weight: normal!important;
     text-align: center;
     height: 18px!important;
@@ -771,7 +749,6 @@
     background: #a4a4a4;
     color: #fff;
     font-size: 11px;
-    /* margin-bottom: 3px!important; */
     font-weight: normal!important;
     text-align: center;
     height: 18px!important;
@@ -790,11 +767,10 @@
     width: 100%;
 }
 .stock-table-tr.mainorderrow {
-    margin-top: 3px;
+    margin-top: 5px;
 }
 .stock-table-tr > div {
     border-bottom: 1px solid #888888;
-    /* line-height: 17px!important; */
     text-align: center;
     height: 17px;
     display: flex;
@@ -828,7 +804,6 @@
     border-bottom: none !important;
 }
 .stock-table-td-item {
-    /* border-right: 1px solid #888888; */
     width: 200px;
     position: relative;
     background: #fff;
@@ -843,27 +818,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-/*.stock-table-td-item:after, .stock-table-td-item:before {*/
-/*    content: "";*/
-/*    border: solid transparent;*/
-/*    position: absolute;*/
-/*    left: 100%;*/
-/*    bottom: 8px;*/
-/*}*/
-/*.stock-table-td-item:after {*/
-/*    border-left-color: #fff;*/
-/*    border-width: 8px;*/
-/*    margin-bottom: -9px;*/
-/*}*/
-/*.stock-table-td-item:before {*/
-/*    border-left-color: #888888;*/
-/*    border-width: 9px;*/
-/*    margin-bottom: -10px;*/
-/*}*/
 .stock-table-td-itemend {
     width: 10px;
     border-top: none !important;
     border-bottom: none !important;
+    margin-right: 4px;
 }
 .stock-table-td-itemempty {
     width: 200px;
@@ -871,10 +830,14 @@
     border-bottom: none !important;
 }
 .stock-empty_space {
-    width: 10px;
+    width: 16px;
     border-top: none!important;
     border-bottom: none!important;
-    /* border-right: 1px solid #d4d2d2!important; */
+}
+.stock-empty_spaceitem {
+    width: 14px;
+    border-top: none!important;
+    border-bottom: none!important;
 }
 .stock-table-td-itemcolor {
     width: 85px;
@@ -971,7 +934,6 @@
 }
 .rpbox-printer-header {
     width: 694px;
-    /* line-height: 20px!important; */
 }
 .rpbox-printer-header h4 {
     float: left;
@@ -1076,23 +1038,12 @@
     position: absolute;
     top: 20px;
     left: -20px;
-    /* width: 53px; */
     background: #fff;
     border: 1px solid #000;
     z-index: 10;
     display: none;
     padding: 0 7px;
 }
-/*.assign-popup:before {
-	content: "";
-	border: solid transparent;
-	position: absolute;
-	left: 20px;
-	bottom: 100%;
-	border-bottom-color: #fff;
-	border-width: 7px;
-	margin-left: 0;
-} */
 .assign-popup:after, .assign-popup:before {
     content: "";
     border: solid transparent;
@@ -1445,15 +1396,9 @@
     font-size: 12px;
     text-align: center;
 }
-/*.rsbox-table-td-shipqty {*/
-/*    width: 80px;*/
-/*    font-size: 11px;*/
-/*    border-right: 1px solid #d4d2d2;*/
-/*}*/
 .rsbox-table-td-shipdate {
     width: 45px;
     font-size: 11px;
-    /* border-right: 1px solid #d4d2d2; */
     text-align: center;
 }
 .rsbox-table-td-qty {

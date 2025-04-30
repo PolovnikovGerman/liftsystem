@@ -631,11 +631,14 @@ class Printscheduler_model extends MY_Model
         $this->db->select('o.print_user as user_id, u.first_name as user_name, count(o.order_id) as cnt');
         $this->db->from('ts_orders o');
         $this->db->join('users u','u.user_id=o.print_user');
+        $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
+        $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.print_finish',0);
-        $this->db->where('o.print_ready > ', 0);
+        $this->db->where('oic.print_ready > ', 0);
+        $this->db->where('oi.plates_ready > ', 0);
         $this->db->where('o.shipping_ready',0);
         $this->db->where('o.print_user != ', null);
         if ($brand !== 'ALL') {
@@ -1338,10 +1341,12 @@ class Printscheduler_model extends MY_Model
 //        return $plates;
 //    }
 
-    public function get_approved_proofs($order_id)
+    public function get_approved_proofs($order_id, $type)
     {
-        $this->db->select('ap.*')->from('ts_artwork_proofs ap')->join('ts_artworks ta','ta.artwork_id = ap.artwork_id');
-        $this->db->where('ta.order_id', $order_id)->where('ap.approved_time > 0');
+        if ($type=='order') {
+            $this->db->select('ap.*')->from('ts_artwork_proofs ap')->join('ts_artworks ta','ta.artwork_id = ap.artwork_id');
+            $this->db->where('ta.order_id', $order_id)->where('ap.approved_time > 0');
+        }
         $proofs = $this->db->get()->result_array();
         $out = [];
         $approvenum=1;
