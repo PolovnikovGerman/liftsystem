@@ -40,7 +40,7 @@
                         <?=date('m/d/y', $own['batch_due'])?>
                     </div>
                     <div class="accreceiv-owndetails-bodydays <?=$own['dayclass']?>"><?=$own['daysshow']?></div>
-                    <div class="accreceiv-owndetails-bodybalance"><?=TotalOutput($own['balance'])?></div>
+                    <div class="accreceiv-owndetails-bodybalance"><?=TotalOutput($own['balance'], 1)?></div>
                     <div class="accreceiv-owndetails-bodyorder" data-order="<?=$own['order_id']?>"><?=$own['order_num']?></div>
                     <div class="accreceiv-owndetails-bodyconfirm"><?=$own['order_confirm']?></div>
                     <div class="accreceiv-owndetails-bodycustomer"><?=$own['customer_name']?></div>
@@ -88,7 +88,7 @@
                     <div class="accreceiv-refunddetails-bodyorderdate">
                         <?=date('m/d', $refund['order_date'])?>
                     </div>
-                    <div class="accreceiv-refunddetails-bodybalance">(<?=TotalOutput(abs($refund['balance']))?>)</div>
+                    <div class="accreceiv-refunddetails-bodybalance">(<?=TotalOutput(abs($refund['balance']),1)?>)</div>
                     <div class="accreceiv-refunddetails-bodyorder" data-order="<?=$refund['order_id']?>"><?=$refund['order_num']?></div>
                     <div class="accreceiv-refunddetails-bodycustomer"><?=$refund['customer_name']?></div>
 <!--                    <div class="accreceiv-refunddetails-bodytype --><?//=$refund['typeclass']?><!--">--><?//=$refund['type']?><!--</div>-->
