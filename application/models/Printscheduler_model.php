@@ -1346,6 +1346,10 @@ class Printscheduler_model extends MY_Model
         if ($type=='order') {
             $this->db->select('ap.*')->from('ts_artwork_proofs ap')->join('ts_artworks ta','ta.artwork_id = ap.artwork_id');
             $this->db->where('ta.order_id', $order_id)->where('ap.approved_time > 0');
+        } else {
+            $this->db->select('ap.*')->from('ts_artwork_proofs ap')->join('ts_artworks ta','ta.artwork_id = ap.artwork_id');
+            $this->db->join('ts_order_items oi','oi.order_id = ta.order_id')->join('ts_order_itemcolors oic','oic.order_item_id = oi.order_item_id');
+            $this->db->where('oic.order_itemcolor_id', $order_id)->where('ap.approved_time > 0');
         }
         $proofs = $this->db->get()->result_array();
         $out = [];
