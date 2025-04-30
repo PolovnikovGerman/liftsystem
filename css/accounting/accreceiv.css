@@ -760,7 +760,7 @@ select.debtstatus.checked {
     color: #ff0000;
     border-right: 1px solid #b0b0b0;
     width: 72px;
-    /* font-size: 12px; */
+    font-size: 10.5px!important;
 }
 .accreceiv-refunddetails-bodybalance span {
     font-size: 9px;
