@@ -91,6 +91,24 @@ function init_pastdueorders_content() {
             }
         },'json');
     });
+    $(".ic-green-art").unbind('click').click(function (){
+        var order = $(this).data('order');
+        var url = '/printscheduler/printorder';
+        $.post(url,{'order_id': order, 'type': 'itemcolor'}, function (response){
+            if (response.errors=='') {
+                $("#pageModal").find('div.modal-dialog').css('width','305px');
+                $("#pageModalLabel").empty().html('Approved Proofs');
+                $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+                $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $(".uploadproofdoc").unbind('click').click(function (){
+                    var docurl = $(this).data('proofdoc');
+                    window.open(docurl,"ProofSource","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+                });
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 function pastupdate(printdate, order) {
@@ -259,6 +277,24 @@ function init_ontimeorders_content() {
             $(".itm-table-td-printdate[data-order='"+order+"']").hide();
         });
         $("input.intimeorderprintdate[data-order='"+order+"']").datepicker('show');
+    });
+    $(".ic-green-art").unbind('click').click(function (){
+        var order = $(this).data('order');
+        var url = '/printscheduler/printorder';
+        $.post(url,{'order_id': order, 'type': 'itemcolor'}, function (response){
+            if (response.errors=='') {
+                $("#pageModal").find('div.modal-dialog').css('width','305px');
+                $("#pageModalLabel").empty().html('Approved Proofs');
+                $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+                $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $(".uploadproofdoc").unbind('click').click(function (){
+                    var docurl = $(this).data('proofdoc');
+                    window.open(docurl,"ProofSource","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+                });
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
 }
 
