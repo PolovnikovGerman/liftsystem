@@ -25,8 +25,7 @@
                     <?php endif;?>
                 </div>
             </div>
-
-            <div class="stock-table-td-order"><?=$stock['order_num']?></div>
+            <div class="stock-table-td-order" data-order="<?=$stock['order_id']?>"><?=$stock['order_num']?></div>
             <div class="stock-table-td-item">
                 <div class="stock-table-td-iteminfo"><?=$stock['item_name']?></div>
             </div>

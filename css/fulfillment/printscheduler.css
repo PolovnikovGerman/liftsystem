@@ -154,6 +154,9 @@
     border-top: none;
     margin-top: -2px;
 }
+.pastordersdatarow > .pdo-table-td-order {
+    cursor: pointer;
+}
 .pdo-table-td-move {
     width: 12px;
 }
@@ -455,6 +458,9 @@
     width: 408px;
     border-top: none;
     margin-top: -2px;
+}
+.currentordersdatarow > .itm-table-td-order {
+    cursor: pointer;
 }
 .itm-table-td-move {
     width: 12px;
@@ -797,6 +803,7 @@
     color: #0000ff;
     font-weight: bold;
     border-right: 1px solid #888888;
+    cursor: pointer;
 }
 .stock-table-td-orderempty {
     width: 99px;
@@ -985,6 +992,15 @@
 }
 .rpbox-table-tr > div, .rsbox-table-tr > div {
     line-height: 17px!important;
+}
+.unassignordersdatarow > .rpbox-table-td-order {
+    cursor: pointer;
+}
+.assignordersdatarow > .rpbox-table-td-order {
+    cursor: pointer;
+}
+.completorderdatarow > .rpbox-table-td-order {
+    cursor: pointer;
 }
 .rpbox-table-tr.addition {
     width: 523px;
@@ -1334,6 +1350,9 @@
     height: 18px;
     border: 1px solid #888888;
     margin-bottom: 2px;
+}
+.readyshiporderdata > .rsbox-table-td-order {
+    cursor: pointer;
 }
 .rsbox-table-tr.addition {
     height: 18px;

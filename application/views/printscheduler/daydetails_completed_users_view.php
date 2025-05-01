@@ -27,7 +27,7 @@
             <?php if ($order['order_num']!==$ordernum): ?>
                 <?php $ordernum = $order['order_num']; $displaymain = 1;?>
             <?php endif; ?>
-            <div class="rpbox-table-tr <?=$displaymain==1 ? '' : 'addition'?>">
+            <div class="rpbox-table-tr completorderdatarow <?=$displaymain==1 ? '' : 'addition'?>">
                 <?php if ($displaymain==1): ?>
                     <div class="rpbox-table-td-move">
                         <?php if ($order['brand']=='SR') : ?>
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                     <div class="rpbox-table-td-ship <?=$order['shipclass']?>"><?=date('m/d', $order['shipdate'])?></div>
-                    <div class="rpbox-table-td-order"><?=$order['order_num']?></div>
+                    <div class="rpbox-table-td-order" data-order="<?=$order['order_id']?>"><?=$order['order_num']?></div>
                     <div class="rpbox-table-td-print">
                         <div class="ic-purpul-print" data-order="<?=$order['order_id']?>"><img class="img-icon-print" src="/img/printscheduler/icon-print-white.svg"></div>
                     </div>
