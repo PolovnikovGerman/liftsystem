@@ -62,7 +62,7 @@
                     <div class="rpbox-table-td-ship <?=$order['shipclass']?>"><?=date('m/d', $order['shipdate'])?></div>
                     <div class="rpbox-table-td-order"><?=$order['order_num']?></div>
                     <div class="rpbox-table-td-print">
-                        <div class="ic-purpul-print">
+                        <div class="ic-purpul-print" data-order="<?=$order['order_id']?>">
                             <img class="img-icon-print" src="/img/printscheduler/icon-print-white.svg">
                         </div>
                     </div>
@@ -70,7 +70,7 @@
                 <div class="rpbox-table-td-items <?=$order['qtyclass']?>"><?=$order['item_qty']?></div>
                 <div class="rpbox-table-td-imp"><?=$order['imprints']?></div>
                 <div class="rpbox-table-td-prints"><?=$order['prints']?></div>
-                <div class="rpbox-table-td-itemcolor"><?=$order['item_color']?></div>
+                <div class="rpbox-table-td-itemcolor"><?=$order['color']?></div>
                 <div class="rpbox-table-td-descriptions"><?=$order['item_name']?></div>
                 <div class="rpbox-table-td-inputs">
                     <input class="rpbox-inp-good" type="text" data-order="<?=$order['order_itemcolor_id']?>" data-color="<?=$order['inventory_color']?>"/>

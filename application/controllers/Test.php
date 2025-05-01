@@ -4371,4 +4371,24 @@ class Test extends CI_Controller
         $this->load->model('orders_model');
         $this->orders_model->update_shipped_orders();
     }
+
+    public function updateprintready() {
+        $this->db->select('oic.order_itemcolor_id, o.order_num, o.print_ready')->from('ts_order_itemcolors oic')->join('ts_order_items oi','oi.order_item_id=oic.order_item_id');
+        $this->db->join('ts_orders o','o.order_id=oi.order_id')->where('o.print_ready > ',0);
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $this->db->where('order_itemcolor_id', $item['order_itemcolor_id']);
+            $this->db->set('print_ready', $item['print_ready']);
+            $this->db->update('ts_order_itemcolors');
+            echo 'Order '.$item['order_num'].' Updated '.PHP_EOL;
+        }
+        $this->db->select('oi.order_item_id, o.order_num, o.plates_ready')->from('ts_order_items oi')->join('ts_orders o','o.order_id=oi.order_id')->where('o.plates_ready > ',0);
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $this->db->where('order_item_id', $item['order_item_id']);
+            $this->db->set('plates_ready', $item['plates_ready']);
+            $this->db->update('ts_order_items');
+            echo 'Order '.$item['order_num'].' Updated '.PHP_EOL;
+        }
+    }
 }

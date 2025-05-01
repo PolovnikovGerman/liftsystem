@@ -86,14 +86,6 @@
 .pastdue.open {
     height: auto;
 }
-/*.pastdue-open {*/
-/*    width: 561px;*/
-/*    direction: ltr;*/
-/*    padding: 0 10px 10px;*/
-/*    background: #fb0404;*/
-/*    */
-/*    margin-bottom: 10px;*/
-/*}*/
 .pastdue-title {
     width: 555px;
     margin-left: 5px;
@@ -141,7 +133,6 @@
     background: #dbdbdb;
     font-size: 11px!important;
     margin-bottom: 3px!important;
-    /* font-weight: bold; */
     height: 18px!important;
     line-height: 18px!important;
     text-align: center;
@@ -149,8 +140,6 @@
     color: #333!important;
 }
 .pdo-table-header .pdo-table-td-order {
-    /*color: #000;*/
-    /*font-size: 11px;*/
 }
 .pdo-table-tr {
     width: 546px;
@@ -163,7 +152,6 @@
     margin-left: 138px;
     width: 408px;
     border-top: none;
-    /* border-left: none; */
     margin-top: -2px;
 }
 .pdo-table-td-move {
@@ -363,7 +351,6 @@
     left: -1px;
     background: #fff;
     padding: 8px 5px;
-/*    width: 550px; */
     margin-bottom: 10px;
     border: 2px solid #00004c;
 }
@@ -448,7 +435,6 @@
     background: #dbdbdb;
     font-size: 11px!important;
     margin-bottom: 3px!important;
-    /* font-weight: bold; */
     text-align: center;
     height: 18px!important;
     line-height: 18px!important;
@@ -456,8 +442,6 @@
     font-weight: normal!important;
 }
 .itm-table-header .itm-table-td-order {
-    /*color: #000;*/
-    /*font-size: 11px;*/
 }
 .itm-table-tr {
     width: 546px;
@@ -560,9 +544,6 @@
 .itm-table-td-art {
     width: 24px;
 }
-/*.disapproved {
-	opacity: .3;
-}*/
 .disapproved .itm-table-td-ship,
 .disapproved .itm-table-td-order,
 .disapproved .itm-table-td-items,
@@ -629,7 +610,6 @@
     border-top: 1px solid #00004c;
     border-radius: 4px 4px 0 0;
     line-height: 28px !important;
-    /*font-size: 14.5px;*/
     font-size: 11.5px;
     text-align: center;
     font-style: italic;
@@ -685,213 +665,214 @@
     background: #fff;
     padding: 5px 5px 7px;
 }
-.stock-box {
-    width: 370px;
-    margin-right: 10px;
+.stock-plates-headtitle {
+    width: 100%;
 }
-.plates-box {
-    width: 315px;
+.stock-plates-blocktitle {
+    height: 20px;
+    line-height: 20px !important;
+    color: #0E0E0E;
+    font-size: 18px;
+    font-weight: bold;
+    width: 299px;
 }
-.stock-plates-box h4 {
+.stock-blocktitle {
+    margin-left: 14px;
+    width: 148px;
+}
+.plates-blocktitle {
+    margin-left: 16px;
+    width: 173px;
+}
+.stock-plates-headtitle h4 {
     margin-top: 0;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
     line-height: 18px!important;
     margin-bottom: 4px;
+    color: #0E0E0E;
+    text-align: center;
 }
-
-.stock-table {
-    width: 375px;
+/* parts */
+.stock-orders-table {
+    width: 312px;
 }
-.stock-table-tr {
-    width: 370px;
-    height: 18px;
-    line-height: 18px !important;
-    border: 1px solid #888888;
-    margin-bottom: 2px;
-}
-.stock-table-tr.inwork {
-    opacity: 0.3;
-}
-.stock-table-tr.addition {
-    margin-left: 79px;
-    width: 291px;
-    border-top: none;
-    /* border-left: none; */
-    margin-top: -2px;
-}
-.stock-table-header > div {
-    background: #5e5d5d;
+.stock-orders-table > div {
+    background: #5d5d5d;
     color: #fff;
     font-size: 11px !important;
-    margin-bottom: 3px !important;
     font-weight: normal!important;
     text-align: center;
     height: 18px!important;
     line-height: 18px!important;
 }
-.stock-table-td-move {
+.stock-table-move {
     width: 12px;
 }
-.stock-table-td-done {
-    width: 18px;
-    border-right: 1px solid #d4d2d2;
-    line-height: 17px !important;
-    height: 17px;
-    text-align: center;
+.stock-table-icons {
+    width: 38px;
 }
-.stock-table-td-done i {
-    cursor: pointer;
+.stock-table-order {
+    width: 49px;
+}
+.stock-table-descriptions {
+    width: 200px;
+}
+.stock-table {
+    width: 164px;
+}
+.stock-table > div {
+    background: #a4a4a4;
+    color: #fff;
+    font-size: 11px;
+    font-weight: normal!important;
+    text-align: center;
+    height: 18px!important;
+    line-height: 18px!important;
+}
+.stock-table-itemcolor {
+    width: 85px;
+    border-right: 1px solid #d4d2d2;
+}
+.stock-table-qty {
+    width: 41px;
+    border-right: 1px solid #d4d2d2;
+}
+.plates-table-check {
+    width: 23px;
+    font-size: 14px;
+}
+.plates-table {
+    width: 175px;
+}
+.plates-table > div {
+    background: #a4a4a4;
+    color: #fff;
+    font-size: 11px;
+    font-weight: normal!important;
+    text-align: center;
+    height: 18px!important;
+    line-height: 18px!important;
+}
+.plates-table-platescount {
+    width: 91px;
+    border-right: 1px solid #d4d2d2;
+}
+.plates-table-plates {
+    width: 59px;
+    border-right: 1px solid #d4d2d2;
+}
+/* Content */
+.stock-table-tr {
+    width: 100%;
+}
+.stock-table-tr.mainorderrow {
+    margin-top: 5px;
+}
+.stock-table-tr > div {
+    border-bottom: 1px solid #888888;
+    text-align: center;
+    height: 17px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.stock-table-tr.mainorderrow > div {
+    border-top: 1px solid #888888;
+}
+.stock-table-tr > div.inwork {
+    opacity: .25;
+}
+.stock-table-tr.addition {
+    width: 100%;
+    height: 18px;
+}
+.stock-table-td-move {
+    width: 12px;
+    border-left: 1px solid #888888;
 }
 .stock-table-td-order {
     width: 49px;
-    border-right: 1px solid #d4d2d2;
     font-size: 12px;
     color: #0000ff;
     font-weight: bold;
-    text-align: center;
-    line-height: 17px !important;
+    border-right: 1px solid #888888;
 }
-.stock-table-header .stock-table-td-order {
-    color: #fff;
+.stock-table-td-orderempty {
+    width: 99px;
+    border-top: none !important;
+    border-bottom: none !important;
+}
+.stock-table-td-item {
+    width: 200px;
+    position: relative;
+    background: #fff;
+}
+.stock-table-td-iteminfo {
+    width: 198px;
+    font-size: 12px;
+    padding-left: 5px;
+    font-weight: bold;
+    text-align: left!important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.stock-table-td-itemend {
+    width: 10px;
+    border-top: none !important;
+    border-bottom: none !important;
+    margin-right: 4px;
+}
+.stock-table-td-itemempty {
+    width: 200px;
+    border-top: none !important;
+    border-bottom: none !important;
+}
+.stock-empty_space {
+    width: 16px;
+    border-top: none!important;
+    border-bottom: none!important;
+}
+.stock-empty_spaceitem {
+    width: 14px;
+    border-top: none!important;
+    border-bottom: none!important;
+}
+.stock-table-td-itemcolor {
+    width: 85px;
+    border-left: 1px solid #888888;
+    border-right: 1px solid #888888;
     font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-.stock-table-td-qty {
+.stock-table-td-itemqty {
     position: relative;
     width: 41px;
     border-right: 1px solid #d4d2d2;
     font-size: 12px;
-    text-align: center;
-    line-height: 17px !important;
 }
-.stock-table-td-itemcolor {
-    width: 71px;
-    border-right: 1px solid #d4d2d2;
-    font-size: 11px;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 17px !important;
-}
-.stock-table-td-descriptions {
-    width: 175px;
-    font-size: 12px;
-    padding-left: 5px;
-    font-weight: bold;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 17px !important;
-}
-.stock-table-header .stock-table-td-order,
-.stock-table-header .stock-table-td-done,
-.stock-table-header .stock-table-td-qty,
-.stock-table-header .stock-table-td-itemcolor {
-    border-right: 1px solid #5e5d5d;
-}
-.stock-table-td-done input {
-    border: 1px solid #818191;
-    width: 12px;
-    height: 12px;
-    margin: 0;
-    position: relative;
-    top: 1.5px;
-    left: 2px;
-}
-.plates-table {
-    width: 315px;
-}
-.plates-table-tr {
-    width: 315px;
-    height: 18px;
-    line-height: 18px !important;
-    border: 1px solid #888888;
-    margin-bottom: 2px;
-}
-.plates-table-tr.inwork {
-    opacity: 0.3;
-}
-.plates-table-tr.addition {
-    width: 235px;
-    margin-left: 80px;
-    border-top: none;
-    margin-top: -2px;
-}
-.plates-table-header > div {
-    background: #5e5d5d;
-    color: #fff;
-    font-size: 11px !important;
-    margin-bottom: 3px !important;
-    font-weight: normal!important;
-    text-align: center;
-    height: 18px!important;
-    line-height: 18px!important;
-}
-.plates-table-td-move {
-    width: 12px;
-}
-.plates-table-td-done {
-    width: 18px;
-    border-right: 1px solid #d4d2d2;
-    text-align: center;
-    line-height: 17px !important;
-    height: 17px;
-}
-.plates-table-td-done i {
+.stock-table-td-orderchk, .stock-table-td-platescheck {
+    width: 22px;
+    border-right: 1px solid #888888;
     cursor: pointer;
 }
-.plates-table-td-order {
-    width: 49px;
-    border-right: 1px solid #d4d2d2;
-    font-size: 12px;
-    color: #0000ff;
-    font-weight: bold;
-    text-align: center;
-    line-height: 17px !important;
-}
-.plates-table-header .plates-table-td-order {
-    color: #fff;
+.stock-table-td-imprints {
+    width: 91px;
+    border-left: 1px solid #888888;
+    border-right: 1px solid #888888;
     font-size: 11px;
 }
-.plates-table-td-plates {
-    position: relative;
-    width: 48px;
+.stock-table-td-plates {
+    width: 59px;
     border-right: 1px solid #d4d2d2;
-    font-size: 12px;
+    font-size: 11px;
     text-align: center;
     line-height: 17px !important;
 }
-.plates-table-td-descriptions {
-    width: 185px;
-    font-size: 12px;
-    padding-left: 5px;
-    font-weight: bold;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 17px !important;
-}
-.plates-table-header .plates-table-td-order,
-.plates-table-header .plates-table-td-done,
-.plates-table-header .plates-table-td-plates {
-    border-right: 1px solid #5e5d5d;
-}
-.plates-table-td-done input {
-    border: 1px solid #818191;
-    width: 12px;
-    height: 12px;
-    margin: 0;
-    position: relative;
-    top: 1.5px;
-    left: 2px;
-}
-.number-plates {
-    width: 23px;
-    text-align: center;
-    line-height: 17px !important;
-    margin-left: 2px;
-}
+/* End Content */
 .btn-plates {
     float: right !important;
 }
@@ -953,7 +934,6 @@
 }
 .rpbox-printer-header {
     width: 694px;
-    /* line-height: 20px!important; */
 }
 .rpbox-printer-header h4 {
     float: left;
@@ -1058,23 +1038,12 @@
     position: absolute;
     top: 20px;
     left: -20px;
-    /* width: 53px; */
     background: #fff;
     border: 1px solid #000;
     z-index: 10;
     display: none;
     padding: 0 7px;
 }
-/*.assign-popup:before {
-	content: "";
-	border: solid transparent;
-	position: absolute;
-	left: 20px;
-	bottom: 100%;
-	border-bottom-color: #fff;
-	border-width: 7px;
-	margin-left: 0;
-} */
 .assign-popup:after, .assign-popup:before {
     content: "";
     border: solid transparent;
@@ -1427,15 +1396,9 @@
     font-size: 12px;
     text-align: center;
 }
-/*.rsbox-table-td-shipqty {*/
-/*    width: 80px;*/
-/*    font-size: 11px;*/
-/*    border-right: 1px solid #d4d2d2;*/
-/*}*/
 .rsbox-table-td-shipdate {
     width: 45px;
     font-size: 11px;
-    /* border-right: 1px solid #d4d2d2; */
     text-align: center;
 }
 .rsbox-table-td-qty {
@@ -1525,4 +1488,31 @@ input.inp-tracking::placeholder {
 }
 .icon-check {
     margin: 1px 12px;
+}
+/* Proof Approved */
+.print_approved_proofsdata {
+    width: 160px;
+}
+.print_approved_proofsdata div {
+    float: left;
+}
+.print_approved_proofsdata span {
+    font-size: 16px;
+    color: #ff0000;
+}
+.printproofs_starapproved {
+    width: 22px;
+    text-align: center;
+    height: 22px;
+    line-height: 22px;
+}
+.printproofs_starapproved img {
+    width: 18px;
+    height: auto;
+}
+.print_proofs_name {
+    height: 22px;
+    line-height: 22px;
+    font-size: 14px;
+    cursor: pointer;
 }
