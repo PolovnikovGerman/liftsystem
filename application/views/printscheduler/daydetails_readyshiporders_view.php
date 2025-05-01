@@ -26,7 +26,7 @@
         <?php if ($order['order_num'] != $ordernum): ?>
             <?php $ordernum = $order['order_num']; $displaymain = 1; ?>
         <?php endif;?>
-        <div class="rsbox-table-tr <?=$displaymain==1 ? '' : 'addition'?>">
+        <div class="rsbox-table-tr readyshiporderdata <?=$displaymain==1 ? '' : 'addition'?>">
             <?php if ($displaymain==1) : ?>
                 <div class="rsbox-table-td-move">
                     <?php if($order['brand']=='SR'): ?>
@@ -35,7 +35,7 @@
                     <img class="icon-move" src="/img/printscheduler/move-blue.svg">
                     <?php endif; ?>
                 </div>
-                <div class="rsbox-table-td-order"><?=$order['order_num']?></div>
+                <div class="rsbox-table-td-order" data-order="<?=$order['order_id']?>"><?=$order['order_num']?></div>
             <?php endif ?>
             <div class="rsbox-table-td-itemcolor"><?=$order['color']?></div>
             <div class="rsbox-table-td-descriptions"><?=$order['item_name']?></div>

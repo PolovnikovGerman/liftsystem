@@ -91,6 +91,7 @@ function init_pastdueorders_content() {
             }
         },'json');
     });
+    // Open Approved Proofs
     $(".ic-green-art").unbind('click').click(function (){
         var order = $(this).data('order');
         var url = '/printscheduler/printorder';
@@ -108,6 +109,11 @@ function init_pastdueorders_content() {
                 show_error(response);
             }
         },'json');
+    });
+    // Open Order view
+    $(".pastordersdatarow").find("div.pdo-table-td-order").unbind('click').click(function (){
+        var order = $(this).data('order');
+        show_printschedule_order(order);
     });
 }
 
@@ -278,6 +284,7 @@ function init_ontimeorders_content() {
         });
         $("input.intimeorderprintdate[data-order='"+order+"']").datepicker('show');
     });
+    // Art Button click
     $(".ic-green-art").unbind('click').click(function (){
         var order = $(this).data('order');
         var url = '/printscheduler/printorder';
@@ -296,6 +303,11 @@ function init_ontimeorders_content() {
             }
         },'json');
     });
+    // Order click
+    $(".currentordersdatarow").find("div.itm-table-td-order").unbind('click').click(function (){
+        var order = $(this).data('order');
+        show_printschedule_order(order);
+    })
 }
 
 function intimeupdate(printdate, order) {
@@ -537,6 +549,7 @@ function init_printscheduler_dayview() {
             }
         },'json');
     });
+    // Show art
     $(".ic-green-art").unbind('click').click(function (){
         var order = $(this).data('order');
         var url = '/printscheduler/printorder';
@@ -555,6 +568,31 @@ function init_printscheduler_dayview() {
             }
         },'json');
     });
+    // Stock plates section
+    $(".stock-table-td-order").unbind('click').click(function (){
+        var order = $(this).data('order');
+        show_printschedule_order(order);
+    })
+    $(".unassignordersdatarow").find('div.rpbox-table-td-order').unbind('click').click(function (){
+        var order = $(this).data('order');
+        show_printschedule_order(order);
+    });
+    $(".assignordersdatarow").find('div.rpbox-table-td-order').unbind('click').click(function (){
+        var order = $(this).data('order');
+        show_printschedule_order(order);
+    });
+    $(".readyshiporderdata").find("div.rsbox-table-td-order").unbind('click').click(function (){
+        var order = $(this).data('order');
+        show_printschedule_order(order);
+    });
+    $(".shiporderdatarow").find("div.rsbox-table-td-order").unbind('click').click(function (){
+        var order = $(this).data('order');
+        show_printschedule_order(order);
+    });
+    $(".completorderdatarow").find("div.rpbox-table-td-order").unbind('click').click(function (){
+        var order = $(this).data('order');
+        show_printschedule_order(order);
+    })
 }
 
 function init_assignprint(order) {
@@ -623,4 +661,40 @@ function show_scheduler_date(printdate) {
             $("#loader").hide();
         }
     },'json');
+}
+
+function show_printschedule_order(order) {
+    var callpage = 'printscheduler';
+    var brand = $("#printschbrand").val();
+    var params = new Array();
+    params.push({name: 'order', value: order});
+    params.push({name: 'page', value: callpage});
+    params.push({name: 'edit', value: 0});
+    params.push({name: 'brand', value: brand});
+    var url="/leadorder/leadorder_change";
+    var params = new Array();
+    params.push({name: 'order', value: order});
+    params.push({name: 'page', value: callpage});
+    params.push({name: 'edit', value: 0});
+    params.push({name: 'brand', value: brand});
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#artModalLabel").empty().html(response.data.header);
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artModal").find('div.modal-dialog').css('width','1004px');
+            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
+            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
+            if (parseInt(response.data.cancelorder)===1) {
+                $("#artModal").find('div.modal-header').addClass('cancelorder');
+            } else {
+                $("#artModal").find('div.modal-header').removeClass('cancelorder');
+            }
+            $("#editbuttonarea").css('visibility','hidden');
+            $(".block_4").css('visibility','hidden');
+            navigation_init();
+        } else {
+            show_error(response);
+        }
+    },'json');
+
 }

@@ -17,7 +17,7 @@
             <?php if ($order['order_num']!==$ordernum) : ?>
                 <?php $ordernum = $order['order_num']; $displaymain = 1; ?>
             <?php endif; ?>
-            <div class="pdo-table-tr <?=$displaymain==1 ? '' : 'addition'?> <?=$order['order_approved']==1 ? '' : 'notapproved'?>">
+            <div class="pdo-table-tr pastordersdatarow <?=$displaymain==1 ? '' : 'addition'?> <?=$order['order_approved']==1 ? '' : 'notapproved'?>">
                 <?php if ($displaymain==1) : ?>
                     <div class="pdo-table-td-move" data-order="<?=$order['order_id']?>">
                         <?php if ($order['brand']=='SR') : ?>
@@ -42,7 +42,7 @@
                         </div>
                     </div>
                     <div class="pdo-table-td-ship overdue-ship" data-order="<?=$order['order_id']?>"><?=date('m/d', $order['shipdate'])?></div>
-                    <div class="pdo-table-td-order"><?=$order['order_num']?></div>
+                    <div class="pdo-table-td-order" data-order="<?=$order['order_id']?>"><?=$order['order_num']?></div>
                 <?php endif; ?>
                 <div class="pdo-table-td-items"><?=$order['item_qty']?></div>
                 <div class="pdo-table-td-imp"><?=$order['imprints']?></div>

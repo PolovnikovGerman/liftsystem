@@ -33,7 +33,7 @@
             <?php if ($order['order_num']!==$ordernum): ?>
                 <?php $ordernum = $order['order_num']; $displaymain = 1; ?>
             <?php endif; ?>
-            <div class="itm-table-tr <?=$displaymain==1 ? '' : 'addition'?> <?=$order['order_approved']==1 ? '' : 'disapproved'?>">
+            <div class="itm-table-tr currentordersdatarow <?=$displaymain==1 ? '' : 'addition'?> <?=$order['order_approved']==1 ? '' : 'disapproved'?>">
                 <?php if ($displaymain==1): ?>
                     <div class="itm-table-td-move" data-order="<?=$order['order_id']?>">
                         <?php if ($order['brand']=='SR') { ?>
@@ -58,7 +58,7 @@
                         </div>
                     </div>
                     <div class="itm-table-td-ship <?=$order['shipclass']?>"><?=date('m/d', $order['shipdate'])?></div>
-                    <div class="itm-table-td-order"><?=$order['order_num']?></div>
+                    <div class="itm-table-td-order" data-order="<?=$order['order_id']?>"><?=$order['order_num']?></div>
                 <?php endif; ?>
                 <div class="itm-table-td-items"><?=$order['item_qty']?></div>
                 <div class="itm-table-td-imp"><?=$order['imprints']?></div>
