@@ -587,7 +587,7 @@
 
 
 .dateblock {
-    width: 787px;
+    width: 809px;
     height: 720px;
     background: #00004c;
     padding: 10px;
@@ -942,7 +942,7 @@
     display: none;
 }
 .ready-print-header, .completed-print-header {
-    width: 705px;
+    width: 766px;
     height: 26px;
 }
 .ready-print-header h4, .completed-print-header h4 {
@@ -963,12 +963,12 @@
     font-weight: bold;
 }
 .ready-print-box, .completed-print-box {
-    width: 705px;
+    width: 773px;
     background: #fff;
     padding: 7px 5px 7px;
 }
 .rpbox-printer {
-    width: 696px;
+    width: 738px;
     margin-top: 10px;
 }
 .rpbox-printer:first-child {
@@ -1016,11 +1016,11 @@
     top: 8px;
 }
 .rpbox-printer-table {
-    width: 694px;
+    width: 762px;
     margin-top: 4px;
 }
 .rpbox-table-tr {
-    width: 694px;
+    width: 762px;
     height: 18px;
     border: 1px solid #888888;
     margin-bottom: 2px;
@@ -1046,7 +1046,7 @@
     border-right: 1px solid #888888;
     border-top: none;
     border-left: none;
-    margin-left: 171px;
+    margin-left: 239px;
     border-bottom: 1px solid #888888;
 }
 .rpbox-table-header {
@@ -1135,6 +1135,18 @@
 .rpbox-table-header .rpbox-table-td-assign {
     position: relative;
     left: -17px;
+}
+.rpbox-table-td-approval {
+    width: 68px;
+    border-right: 1px solid #d4d2d2;
+    font-size: 11px;
+    text-align: center;
+}
+.unassignordersdatarow > .rbox-table-td-approval, .assignordersdatarow > .rbox-table-td-approval, .completorderdatarow > .rbox-table-td-approval {
+    font-size: 10.5px;
+}
+.rbox-table-td-approval.notapproved {
+    background: #fcfdab;
 }
 .rpbox-table-td-ship {
     width: 34px;
@@ -1342,7 +1354,7 @@
     display: none;
 }
 .ready-ship-header, .shipped-header {
-    width: 705px;
+    width: 766px;
     height: 26px;
 }
 .ready-ship-header h4, .shipped-header h4 {
@@ -1373,15 +1385,15 @@
     top: 8px;
 }
 .ready-ship-box {
-    width: 705px;
+    width: 771px;
     background: #fff;
     padding: 7px 5px 7px;
 }
 .rsbox-table {
-    width: 694px;
+    width: 762px;
 }
 .rsbox-table-tr {
-    width: 694px;
+    width: 762px;
     height: 18px;
     border: 1px solid #888888;
     margin-bottom: 2px;
@@ -1393,7 +1405,7 @@
     height: 18px;
     border: 1px solid #888888;
     margin-bottom: 2px;
-    margin-left: 64px;
+    margin-left: 132px;
     width: 630px;
     margin-top: -2px;
     border-top: none;
@@ -1410,6 +1422,16 @@
 }
 .rsbox-table-td-move {
     width: 12px;
+}
+.rsbox-table-td-approval {
+    width: 68px;
+    font-size: 10.5px;
+    border-right: 1px solid #d4d2d2;
+    text-align: center;
+    line-height: 17px !important;
+}
+.rsbox-table-td-approval.notapproved {
+    background: #fcfdab;
 }
 .rsbox-table-header .rsbox-table-td-order {
     color: #000;

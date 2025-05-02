@@ -10,6 +10,7 @@
     <div class="rsbox-table">
         <div class="rsbox-table-tr rsbox-table-header">
             <div class="rsbox-table-td-move">&nbsp;</div>
+            <div class="rsbox-table-td-approval">Approval</div>
             <div class="rsbox-table-td-order">Order#</div>
             <div class="rsbox-table-td-itemcolor">Color/s</div>
             <div class="rsbox-table-td-descriptions">Item /Description</div>
@@ -33,6 +34,9 @@
                         <?php else: ?>
                         <img class="icon-move" src="/img/printscheduler/move-blue.svg">
                         <?php endif; ?>
+                    </div>
+                    <div class="rsbox-table-td-approval <?=$order['order_blank']==1 ? '' : ($order['approved']==0 ? 'notapproved' : '')?>">
+                        <?=$order['order_blank']==1 ? 'Blank' : ($order['approved']==0 ? 'Not Approved' : 'Approved')?>
                     </div>
                     <div class="rsbox-table-td-order" data-order="<?=$order['order_id']?>"><?=$order['order_num']?></div>
                 <?php endif; ?>
