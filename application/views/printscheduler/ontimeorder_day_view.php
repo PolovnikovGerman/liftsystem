@@ -19,6 +19,7 @@
         <div class="itm-table-tr itm-table-header">
             <div class="itm-table-td-move">&nbsp;</div>
             <div class="itm-table-td-icons">&nbsp;</div>
+            <div class="itm-table-td-approved">Approval</div>
             <div class="itm-table-td-ship">Ship</div>
             <div class="itm-table-td-order">Order#</div>
             <div class="itm-table-td-items">#Items</div>
@@ -57,6 +58,8 @@
                         <?php } ?>
                         </div>
                     </div>
+                    <div class="itm-table-td-approved <?=$order['order_blank']==1 ? '' : ($order['approved']==0 ? 'notapproved' : '')?>">
+                        <?=$order['order_blank']==1 ? 'Blank' : ($order['approved']==0 ? 'Not Approved' : 'Approved')?></div>
                     <div class="itm-table-td-ship <?=$order['shipclass']?>"><?=date('m/d', $order['shipdate'])?></div>
                     <div class="itm-table-td-order" data-order="<?=$order['order_id']?>"><?=$order['order_num']?></div>
                 <?php endif; ?>

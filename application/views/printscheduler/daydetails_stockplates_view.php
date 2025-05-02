@@ -25,6 +25,8 @@
                     <?php endif;?>
                 </div>
             </div>
+            <div class="stock-table-td-approval <?=$stock['order_blank']==1 ? '' : ($stock['approved']==0 ? 'notapproved' : '')?>">
+                <?=$stock['order_blank']==1 ? 'Blank' : ($stock['approved']==0 ? 'Not Approved' : 'Approved')?></div>
             <div class="stock-table-td-order" data-order="<?=$stock['order_id']?>"><?=$stock['order_num']?></div>
             <div class="stock-table-td-item">
                 <div class="stock-table-td-iteminfo"><?=$stock['item_name']?></div>
