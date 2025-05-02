@@ -8,7 +8,7 @@
     margin-bottom: 7px;
 }
 .left-block {
-    width: 598px;
+    width: 666px;
     height: 720px;
     margin-right: 10px;
     overflow-y: auto;
@@ -76,7 +76,7 @@
     width: auto;
 }
 .pastdue {
-    width: 580px;
+    width: 648px;
     direction: ltr;
     padding: 0 10px 10px;
     background: #fb0404;
@@ -87,7 +87,7 @@
     height: auto;
 }
 .pastdue-title {
-    width: 555px;
+    width: 623px;
     margin-left: 5px;
     height: 30px;
 }
@@ -121,13 +121,13 @@
 .pastdue-body {
     background: #fff;
     padding: 8px 5px;
-    width: 558px;
+    width: 626px;
     max-height: 250px;
     overflow-y: auto;
     overflow-x: hidden;
 }
 .pastdue-table {
-    width: 546px;
+    width: 614px;
 }
 .pdo-table-header > div {
     background: #dbdbdb;
@@ -142,14 +142,14 @@
 .pdo-table-header .pdo-table-td-order {
 }
 .pdo-table-tr {
-    width: 546px;
+    width: 614px;
     height: 18px;
     line-height: 18px!important;
     border: 1px solid #888888;
     margin-bottom: 2px;
 }
 .pdo-table-tr.addition {
-    margin-left: 138px;
+    margin-left: 206px;
     width: 408px;
     border-top: none;
     margin-top: -2px;
@@ -164,6 +164,16 @@
     position: relative;
     width: 38px;
     border-right: 1px solid #d4d2d2;
+}
+.pdo-table-td-approved {
+    width: 68px;
+    border-right: 1px solid #d4d2d2;
+    font-size: 10.5px;
+    text-align: center;
+    line-height: 17px !important;
+}
+.pdo-table-td-approved.notapproved {
+    background: #fcfdab;
 }
 .pdo-table-td-icons span {
     margin: 0 2px;
@@ -299,7 +309,7 @@
 
 
 .currentcalend {
-    width: 580px;
+    width: 648px;
     direction: ltr;
     padding: 0 10px 10px;
     background: #908f90;
@@ -309,7 +319,7 @@
     height: auto;
 }
 .current-title {
-    width: 553px;
+    width: 621px;
     margin-left: 5px;
     height: 30px;
 }
@@ -339,7 +349,7 @@
 .day-block-open {
     background: #fff;
     padding: 8px 5px;
-    width: 558px;
+    width: 626px;
     margin-bottom: 10px;
 }
 .day-block-open:last-child {
@@ -358,7 +368,7 @@
     border: 2px solid #00004c;
 }
 .day-block-header {
-    width: 546px;
+    width: 614px;
 }
 .day-name {
     width: 186px;
@@ -431,7 +441,7 @@
 
 
 .current-table {
-    width: 546px;
+    width: 614px;
     margin-top: 8px;
 }
 .itm-table-header > div {
@@ -447,14 +457,14 @@
 .itm-table-header .itm-table-td-order {
 }
 .itm-table-tr {
-    width: 546px;
+    width: 614px;
     height: 18px;
     line-height: 18px!important;
     border: 1px solid #888888;
     margin-bottom: 2px;
 }
 .itm-table-tr.addition {
-    margin-left: 138px;
+    margin-left: 206px;
     width: 408px;
     border-top: none;
     margin-top: -2px;
@@ -485,6 +495,20 @@
     position: relative;
     float: right!important;
     right: 4px;
+}
+.itm-table-td-approved {
+    width: 68px;
+    border-right: 1px solid #d4d2d2;
+    font-size: 11px;
+    text-align: center;
+    line-height: 17px !important;
+}
+.itm-table-td-approved.notapproved {
+    background: #fcfdab;
+    line-height: 16px !important;
+}
+.currentordersdatarow > .itm-table-td-approved {
+    font-size: 10.5px;
 }
 .itm-table-td-ship {
     width: 35px;
@@ -563,7 +587,7 @@
 
 
 .dateblock {
-    width: 745px;
+    width: 809px;
     height: 720px;
     background: #00004c;
     padding: 10px;
@@ -571,7 +595,7 @@
 }
 .dates-block {
     height: 25px;
-    width: 745px;
+    width: 787px;
 }
 .list-dates-tabs {
     width: 590px;
@@ -667,7 +691,7 @@
     top: 0px;
 }
 .stock-plates-box {
-    width: 705px;
+    width: 747px;
     background: #fff;
     padding: 5px 5px 7px;
 }
@@ -680,7 +704,7 @@
     color: #0E0E0E;
     font-size: 18px;
     font-weight: bold;
-    width: 299px;
+    width: 367px;
 }
 .stock-blocktitle {
     margin-left: 14px;
@@ -701,7 +725,7 @@
 }
 /* parts */
 .stock-orders-table {
-    width: 312px;
+    width: 380px;
 }
 .stock-orders-table > div {
     background: #5d5d5d;
@@ -717,6 +741,9 @@
 }
 .stock-table-icons {
     width: 38px;
+}
+.stock-table-approval {
+    width: 68px;
 }
 .stock-table-order {
     width: 49px;
@@ -797,6 +824,14 @@
     width: 12px;
     border-left: 1px solid #888888;
 }
+.stock-table-td-approval {
+    width: 68px;
+    border-right: 1px solid #888888;
+    font-size: 10.5px;
+}
+.stock-table-td-approval.notapproved {
+    background: #fcfdab;
+}
 .stock-table-td-order {
     width: 49px;
     font-size: 12px;
@@ -806,7 +841,7 @@
     cursor: pointer;
 }
 .stock-table-td-orderempty {
-    width: 99px;
+    width: 167px;
     border-top: none !important;
     border-bottom: none !important;
 }
@@ -907,7 +942,7 @@
     display: none;
 }
 .ready-print-header, .completed-print-header {
-    width: 705px;
+    width: 766px;
     height: 26px;
 }
 .ready-print-header h4, .completed-print-header h4 {
@@ -928,12 +963,12 @@
     font-weight: bold;
 }
 .ready-print-box, .completed-print-box {
-    width: 705px;
+    width: 773px;
     background: #fff;
     padding: 7px 5px 7px;
 }
 .rpbox-printer {
-    width: 696px;
+    width: 738px;
     margin-top: 10px;
 }
 .rpbox-printer:first-child {
@@ -981,11 +1016,11 @@
     top: 8px;
 }
 .rpbox-printer-table {
-    width: 694px;
+    width: 762px;
     margin-top: 4px;
 }
 .rpbox-table-tr {
-    width: 694px;
+    width: 762px;
     height: 18px;
     border: 1px solid #888888;
     margin-bottom: 2px;
@@ -1011,7 +1046,7 @@
     border-right: 1px solid #888888;
     border-top: none;
     border-left: none;
-    margin-left: 171px;
+    margin-left: 239px;
     border-bottom: 1px solid #888888;
 }
 .rpbox-table-header {
@@ -1100,6 +1135,18 @@
 .rpbox-table-header .rpbox-table-td-assign {
     position: relative;
     left: -17px;
+}
+.rpbox-table-td-approval {
+    width: 68px;
+    border-right: 1px solid #d4d2d2;
+    font-size: 11px;
+    text-align: center;
+}
+.unassignordersdatarow > .rbox-table-td-approval, .assignordersdatarow > .rbox-table-td-approval, .completorderdatarow > .rbox-table-td-approval {
+    font-size: 10.5px;
+}
+.rbox-table-td-approval.notapproved {
+    background: #fcfdab;
 }
 .rpbox-table-td-ship {
     width: 34px;
@@ -1307,7 +1354,7 @@
     display: none;
 }
 .ready-ship-header, .shipped-header {
-    width: 705px;
+    width: 766px;
     height: 26px;
 }
 .ready-ship-header h4, .shipped-header h4 {
@@ -1338,15 +1385,15 @@
     top: 8px;
 }
 .ready-ship-box {
-    width: 705px;
+    width: 771px;
     background: #fff;
     padding: 7px 5px 7px;
 }
 .rsbox-table {
-    width: 694px;
+    width: 762px;
 }
 .rsbox-table-tr {
-    width: 694px;
+    width: 762px;
     height: 18px;
     border: 1px solid #888888;
     margin-bottom: 2px;
@@ -1358,7 +1405,7 @@
     height: 18px;
     border: 1px solid #888888;
     margin-bottom: 2px;
-    margin-left: 64px;
+    margin-left: 132px;
     width: 630px;
     margin-top: -2px;
     border-top: none;
@@ -1375,6 +1422,16 @@
 }
 .rsbox-table-td-move {
     width: 12px;
+}
+.rsbox-table-td-approval {
+    width: 68px;
+    font-size: 10.5px;
+    border-right: 1px solid #d4d2d2;
+    text-align: center;
+    line-height: 17px !important;
+}
+.rsbox-table-td-approval.notapproved {
+    background: #fcfdab;
 }
 .rsbox-table-header .rsbox-table-td-order {
     color: #000;

@@ -158,8 +158,6 @@ class Printscheduler extends MY_Controller
             if (!empty($printdate)) {
                 $error = '';
                 $orders = $this->printscheduler_model->get_dayorders($printdate, $brand);
-                // $mdata['stockview'] = $this->load->view('printscheduler/daydetails_stocks_view', ['stocks' => $orders['stocks'], 'brand' => $brand], TRUE);
-                // $mdata['plateview'] = $this->load->view('printscheduler/daydetails_plates_view', ['plates' => $orders['plates'], 'brand' => $brand], TRUE);
                 $mdata['stockplatesview'] = $this->load->view('printscheduler/daydetails_stockplates_view', ['stocks' => $orders, 'brand' => $brand], TRUE);
                 // Print orders
                 $this->load->model('user_model');
