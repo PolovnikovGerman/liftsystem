@@ -607,6 +607,9 @@ function init_assignprint(order) {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $(".ready-print-block").empty().html(response.data.content);
+                $(".ready-ship-block").empty().html(response.data.readyship);
+                $(".completed-print-block").empty().html(response.data.completed);
+                $(".shipped-block").empty().html(response.data.shippedview);
                 $("#loader").hide();
                 init_printscheduler_dayview();
             } else {

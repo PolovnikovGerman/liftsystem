@@ -325,6 +325,34 @@ class Printscheduler extends MY_Controller
                     $printoptions['assignview'] = $assignview;
                     $printoptions['totals'] = $alltotals;
                     $mdata['content'] = $this->load->view('printscheduler/daydetails_printorders_view', $printoptions, TRUE);
+                    // Build ready to ship
+                    $shipready = $this->printscheduler_model->getreadyshiporders($printdate, $brand);
+                    $mdata['readyship'] = $this->load->view('printscheduler/daydetails_readyshiporders_view',['orders' => $shipready['orders'], 'totals'=> $shipready['totals'], 'brand' => $brand], TRUE);
+                    // Completed Printjob
+                    $completed_users = $this->printscheduler_model->get_day_completedusers($printdate, $brand);
+                    $totalcomlet = [
+                        'orders' => 0,
+                        'prints' => 0,
+                        'items' => 0,
+                    ];
+                    $completedview = '';
+                    foreach ($completed_users as $completeduser) {
+                        $compljob = $this->printscheduler_model->getcompleteprintorders($printdate, $completeduser['user_id'], $brand);
+                        $comploptions = [
+                            'user_name' => $completeduser['user_name'],
+                            'totals' => $compljob['totals'],
+                            'orders' => $compljob['orders'],
+                        ];
+                        $completedview.=$this->load->view('printscheduler/daydetails_completed_users_view', $comploptions, TRUE);
+                        $totalcomlet['orders']+=$compljob['totals']['orders'];
+                        $totalcomlet['items']+=$compljob['totals']['items'];
+                        $totalcomlet['prints']+=$compljob['totals']['prints'];
+                    }
+                    $mdata['completed'] = $this->load->view('printscheduler/daydetails_completedorders_view',['totals' => $totalcomlet, 'content' => $completedview], TRUE);
+                    // Shipped
+                    $shipres = $this->printscheduler_model->getshippedorders($printdate, $brand);
+                    $mdata['shippedview'] = $this->load->view('printscheduler/daydetails_shippeddorders_view',['totals' => $shipres['totals'], 'orders' => $shipres['orders']], TRUE);
+
                 }
             }
             $this->ajaxResponse($mdata, $error);

@@ -1425,10 +1425,16 @@
 }
 .rsbox-table-td-approval {
     width: 68px;
-    font-size: 10.5px;
+    font-size: 11px;
     border-right: 1px solid #d4d2d2;
     text-align: center;
     line-height: 17px !important;
+}
+.shiporderdatarow > .rsbox-table-td-approval {
+    font-size: 10.5px!important;
+}
+.shiporderdatarow > .rsbox-table-td-order {
+    cursor: pointer;
 }
 .rsbox-table-td-approval.notapproved {
     background: #fcfdab;
