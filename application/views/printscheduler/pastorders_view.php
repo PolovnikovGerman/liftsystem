@@ -3,6 +3,7 @@
         <div class="pdo-table-tr pdo-table-header">
             <div class="pdo-table-td-move">&nbsp;</div>
             <div class="pdo-table-td-icons">&nbsp;</div>
+            <div class="pdo-table-td-approved">Approval</div>
             <div class="pdo-table-td-ship">Ship</div>
             <div class="pdo-table-td-order">Order#</div>
             <div class="pdo-table-td-items">#Items</div>
@@ -40,6 +41,9 @@
                                 &nbsp;
                             <?php endif; ?>
                         </div>
+                    </div>
+                    <div class="pdo-table-td-approved <?=$order['order_blank']==1 ? '' : ($order['approved']==0 ? 'notapproved' : '')?>">
+                        <?=$order['order_blank']==1 ? 'Blank' : ($order['approved']==0 ? 'Not Approved' : 'Approved')?>
                     </div>
                     <div class="pdo-table-td-ship overdue-ship" data-order="<?=$order['order_id']?>"><?=date('m/d', $order['shipdate'])?></div>
                     <div class="pdo-table-td-order" data-order="<?=$order['order_id']?>"><?=$order['order_num']?></div>

@@ -11,6 +11,7 @@
             <div class="rpbox-table-td-move">&nbsp;</div>
             <div class="rpbox-table-td-icons">&nbsp;</div>
             <div class="rpbox-table-td-assign">Assign</div>
+            <div class="rpbox-table-td-approval">Approval</div>
             <div class="rpbox-table-td-ship">Ship</div>
             <div class="rpbox-table-td-order">Order#</div>
             <div class="rpbox-table-td-print">Print</div>
@@ -58,6 +59,9 @@
                                 <?php endforeach;?>
                             </ul>
                         </div>
+                    </div>
+                    <div class="rpbox-table-td-approval <?=$order['order_blank']==1 ? '' : ($order['approved']==0 ? 'notapproved' : '')?>">
+                        <?=$order['order_blank']==1 ? 'Blank' : ($order['approved']==0 ? 'Not Approved' : 'Approved')?>
                     </div>
                     <div class="rpbox-table-td-ship <?=$order['shipclass']?>"><?=date('m/d', $order['shipdate'])?></div>
                     <div class="rpbox-table-td-order" data-order="<?=$order['order_id']?>"><?=$order['order_num']?></div>
