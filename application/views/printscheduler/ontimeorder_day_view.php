@@ -25,6 +25,7 @@
             <div class="itm-table-td-items">#Items</div>
             <div class="itm-table-td-imp">Imp</div>
             <div class="itm-table-td-prints">#Prints</div>
+            <div class="itm-table-td-printcolors">Print Color/s</div>
             <div class="itm-table-td-descriptions">Item / Description</div>
             <div class="itm-table-td-itemcolor">Item Color/s</div>
             <div class="pdo-table-td-art">Art</div>
@@ -66,6 +67,7 @@
                 <div class="itm-table-td-items"><?=$order['item_qty']?></div>
                 <div class="itm-table-td-imp"><?=$order['imprints']?></div>
                 <div class="itm-table-td-prints"><?=$order['prints']?></div>
+                <div class="itm-table-td-printcolors">&nbsp;</div>
                 <div class="itm-table-td-descriptions"><?=$order['item_name']?></div>
                 <div class="itm-table-td-itemcolor"><?=$order['color']?></div>
                 <div class="itm-table-td-art">
