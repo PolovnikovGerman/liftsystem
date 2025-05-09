@@ -8,7 +8,7 @@
     margin-bottom: 7px;
 }
 .left-block {
-    width: 666px;
+    width: 728px;
     height: 720px;
     margin-right: 10px;
     overflow-y: auto;
@@ -76,7 +76,7 @@
     width: auto;
 }
 .pastdue {
-    width: 648px;
+    width: 710px;
     direction: ltr;
     padding: 0 10px 10px;
     background: #fb0404;
@@ -87,7 +87,7 @@
     height: auto;
 }
 .pastdue-title {
-    width: 623px;
+    width: 685px;
     margin-left: 5px;
     height: 30px;
 }
@@ -121,13 +121,13 @@
 .pastdue-body {
     background: #fff;
     padding: 8px 5px;
-    width: 626px;
+    width: 688px;
     max-height: 250px;
     overflow-y: auto;
     overflow-x: hidden;
 }
 .pastdue-table {
-    width: 614px;
+    width: 676px;
 }
 .pdo-table-header > div {
     background: #dbdbdb;
@@ -142,7 +142,7 @@
 .pdo-table-header .pdo-table-td-order {
 }
 .pdo-table-tr {
-    width: 614px;
+    width: 678px;
     height: 18px;
     line-height: 18px!important;
     border: 1px solid #888888;
@@ -150,7 +150,7 @@
 }
 .pdo-table-tr.addition {
     margin-left: 206px;
-    width: 408px;
+    width: 472px;
     border-top: none;
     margin-top: -2px;
 }
@@ -250,6 +250,13 @@
     text-align: center;
     line-height: 17px !important;
 }
+.pdo-table-td-printcolors {
+    width: 64px;
+    border-right: 1px solid #d4d2d2;
+    font-size: 12px;
+    text-align: center;
+    line-height: 17px !important;
+}
 .pdo-table-td-itemcolor {
     width: 79px;
     border-right: 1px solid #d4d2d2;
@@ -309,7 +316,7 @@
 
 
 .currentcalend {
-    width: 648px;
+    width: 710px;
     direction: ltr;
     padding: 0 10px 10px;
     background: #908f90;
@@ -319,7 +326,7 @@
     height: auto;
 }
 .current-title {
-    width: 621px;
+    width: 683px;
     margin-left: 5px;
     height: 30px;
 }
@@ -349,7 +356,7 @@
 .day-block-open {
     background: #fff;
     padding: 8px 5px;
-    width: 626px;
+    width: 688px;
     margin-bottom: 10px;
 }
 .day-block-open:last-child {
@@ -368,7 +375,7 @@
     border: 2px solid #00004c;
 }
 .day-block-header {
-    width: 614px;
+    width: 676px;
 }
 .day-name {
     width: 186px;
@@ -441,7 +448,7 @@
 
 
 .current-table {
-    width: 614px;
+    width: 676px;
     margin-top: 8px;
 }
 .itm-table-header > div {
@@ -457,7 +464,7 @@
 .itm-table-header .itm-table-td-order {
 }
 .itm-table-tr {
-    width: 614px;
+    width: 676px;
     height: 18px;
     line-height: 18px!important;
     border: 1px solid #888888;
@@ -465,7 +472,7 @@
 }
 .itm-table-tr.addition {
     margin-left: 206px;
-    width: 408px;
+    width: 470px;
     border-top: none;
     margin-top: -2px;
 }
@@ -545,6 +552,13 @@
 }
 .itm-table-td-prints {
     width: 42px;
+    border-right: 1px solid #d4d2d2;
+    font-size: 12px;
+    text-align: center;
+    line-height: 17px !important;
+}
+.itm-table-td-printcolors {
+    width: 62px;
     border-right: 1px solid #d4d2d2;
     font-size: 12px;
     text-align: center;
