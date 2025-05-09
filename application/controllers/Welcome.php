@@ -79,7 +79,7 @@ class Welcome extends MY_Controller {
     }
 
     public function testtabs() {
-        $this->load->view('test/test',[]);
+        $this->load->view('test/test_tabs',[]);
     }
 
     public function restore_main_menu() {
