@@ -97,8 +97,8 @@ body div {
     margin: 8px 12px;
 }
 .sigma_logo {
-    width: 20px;
-    margin: 9px 12px;
+    width: 15px;
+    margin: 13px 15px;
 }
 .content_tab_header.sigmasystem {
     background: #595959;
@@ -108,9 +108,7 @@ body div {
     background: #aaa9a9;
 }
 .content_tab_header img {
-    /*width: 90%;*/
-    /*text-align: center;*/
-    opacity: 0.5;
+    opacity: 0.3;
 }
 .content_tab_header.active img {
     opacity: 1;
@@ -189,8 +187,8 @@ body div {
 .contentsubmenu_item {
     background: #e3e3e3;
     cursor: pointer;
-    height: 21px;
-    line-height: 21px !important;
+    height: 22px;
+    line-height: 22px !important;
     margin-right: 7px;
     border-left: 1px solid #969696;
     border-right: 1px solid #969696;

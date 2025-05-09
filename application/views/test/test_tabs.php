@@ -39,7 +39,7 @@
                 </div>
                 <div class="content_tab_header sigmasystem" data-brand="SG">
                     <div class="sigma_logo">
-                        <img src="/img/page_view/sigma-logo-white.svg" alt="Sigma">
+                        <img src="/img/page_view/sigma-logo-black.svg" alt="Sigma">
                     </div>
                 </div>
             </div>
