@@ -9,7 +9,7 @@
     <link href="/css/page_view/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="/css/page_view/font-awesome.min.css">
 <!--    <link rel="stylesheet" href="/css/page_view/main.css?v=2.02450">-->
-    <link rel="stylesheet" href="/css/page.css?v=2.02450" type="text/css">
+    <link rel="stylesheet" href="/css/page.css?v=<?=getsitecssversion()?>" type="text/css">
     <link rel="stylesheet" href="/css/jsflash/flash.css">
     <link rel="stylesheet" href="/css/mb_ballons/mb.balloon.css">
 <!--    <link rel="stylesheet" href="/css/page_view/testsite_view.css?v=2.02450">-->
