@@ -122,9 +122,8 @@ body div {
 .maincontent {
     width: 100%;
     float: left;
-    /*min-height: 650px;*/
     background: #252525;
-    padding-top: 10px;
+    padding-top: 5px;
 }
 .maincontent div {
     float: left;
@@ -138,23 +137,26 @@ body div {
 .maincontentmenu_item {
     cursor: pointer;
     width: 140px;
-    height: 21px;
-    line-height: 21px !important;
+    height: 24px;
+    line-height: 24px !important;
     margin-right: 10px;
     border-left: 1px solid #000000;
     border-right: 1px solid #000000;
     border-top: 1px solid #000000;
-    margin-top: 10px;
+    margin-top: 6px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .maincontentmenu_item.relievers {
     background: #f9faa8;
 }
 .maincontentmenu_item.active {
     background: #d7d7d7;
-    height: 32px;
-    line-height: 32px !important;
+    height: 30px;
+    line-height: 30px !important;
     font-size: 17px;
     color: #000000;
     z-index: 10;
