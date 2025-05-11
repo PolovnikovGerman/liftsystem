@@ -99,7 +99,7 @@
             <div class="right-box">
                 <div class="userinfo">
                     <div class="signout">[exit]</div>
-                    <div class="usersigninfo">Sean</div>
+                    <div class="usersigninfo">Shanequa</div>
                 </div>
             </div>
         </div>
