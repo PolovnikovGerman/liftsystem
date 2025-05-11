@@ -84,12 +84,12 @@
                     </div>
                     <div class="infotext">Inventory</div>
                 </div>
-                <div class="inforeports" id="reports">
-                    <div class="icon">
-                        <img src="/img/icons/chart-line-white.svg" alt="Reports" class="img-responsive"/>
-                    </div>
-                    <div class="infotext">Reports</div>
-                </div>
+<!--                <div class="inforeports" id="reports">-->
+<!--                    <div class="icon">-->
+<!--                        <img src="/img/icons/chart-line-white.svg" alt="Reports" class="img-responsive"/>-->
+<!--                    </div>-->
+<!--                    <div class="infotext">Reports</div>-->
+<!--                </div>-->
                 <div class="infoalerts" title="Admin">
                     <div class="alerticon admin">
                         <img src="/img/icons/cog_white.svg" alt="Admin" class="img-responsive"/>
