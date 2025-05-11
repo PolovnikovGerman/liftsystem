@@ -98,7 +98,12 @@
                     </div>
                 </div>
             </div>
-            <div class="right-box">&nbsp;</div>
+            <div class="right-box">
+                <div class="userinfo">
+                    <div class="signout">[exit]</div>
+                    <div class="usersigninfo">Sean</div>
+                </div>
+            </div>
         </div>
     </header>
     <container class="container-fluid">
