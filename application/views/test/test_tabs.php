@@ -43,7 +43,61 @@
                     </div>
                 </div>
             </div>
-            <div class="mainsiteheader">&nbsp;</div>
+            <div class="mainsiteheader">
+                <div class="period_lead_info">
+                    <div class="leadsection visitors">
+                        <div class="period_name">Visitors:</div>
+                        <div class="param_value">28,319</div>
+                    </div>
+                    <div class="leadsection leads">
+                        <div class="period_name">Leads:</div>
+                        <div class="param_value">319</div>
+                    </div>
+                </div>
+                <div class="period_review_info">
+                    <!-- <div class="reviewsection"> -->
+                        <div class="period_name">Reviews:</div>
+                        <div class="param_value">122</div>
+                    <!-- </div> -->
+                </div>
+                <div class="period_analitic_info">
+                    <div class="period_name">ALL BRANDS THIS WEEK:</div>
+                    <div class="totalsalesprev active">
+                        <i class="fa fa-caret-left"></i>
+                    </div>
+                    <div class="period_results">
+                        <div class="param_value">166</div>
+                        <div class="param_value_label">Orders <span>@</span></div>
+                        <div class="param_value money">$60,104</div>
+                    </div>
+                    <div class="totalsalesnext">
+                        <i class="fa fa-caret-right"></i>
+                    </div>
+                </div>
+                <div class="infodeptreport">
+                    <!-- <div class="period_debt_info"> -->
+                        <div class="debtinfo_label">AR:</div>
+                        <div class="debtinfo_value">$299,609</div>
+                    <!-- </div> -->
+                </div>
+                <div class="inforeports" id="inventory">
+                    <div class="icon">
+                        <img src="/img/icons/inventory-white2.svg" class="img-responsive" alt="Inventory"/>
+                    </div>
+                    <div class="infotext">Inventory</div>
+                </div>
+                <div class="inforeports" id="reports">
+                    <div class="icon">
+                        <img src="/img/icons/chart-line-white.svg" alt="Reports" class="img-responsive"/>
+                    </div>
+                    <div class="infotext">Reports</div>
+                </div>
+                <div class="infoalerts" title="Admin">
+                    <div class="alerticon admin">
+                        <img src="/img/icons/cog_white.svg" alt="Admin" class="img-responsive"/>
+                    </div>
+                </div>
+            </div>
             <div class="right-box">&nbsp;</div>
         </div>
     </header>
@@ -58,43 +112,43 @@
                 </div>
                 <div class="maincontentmenu_item relievers">
                     <div class="maincontentmenu_item_icon">
-                        <img src="/img/page_view/noun-filter-grey.svg" alt="Leads">
+                        <img src="/img/page_view/noun-filter-grey-2.svg" alt="Leads">
                     </div>
                     <div class="maincontentmenu_item_title">Leads</div>
                 </div>
                 <div class="maincontentmenu_item relievers">
                     <div class="maincontentmenu_item_icon">
-                        <img src="/img/page_view/noun-tick-grey.svg" alt="Orders">
+                        <img src="/img/page_view/noun-tick-grey-2.svg" alt="Orders">
                     </div>
                     <div class="maincontentmenu_item_title">Orders</div>
                 </div>
                 <div class="maincontentmenu_item relievers">
                     <div class="maincontentmenu_item_icon">
-                        <img src="/img/page_view/noun-palette-grey.svg" alt="Art">
+                        <img src="/img/page_view/noun-palette-grey-2.svg" alt="Art">
                     </div>
                     <div class="maincontentmenu_item_title">Art</div>
                 </div>
                 <div class="maincontentmenu_item relievers">
                     <div class="maincontentmenu_item_icon">
-                        <img src="/img/page_view/noun-delivery-grey.svg" alt="Fulfillment">
+                        <img src="/img/page_view/noun-delivery-grey-2.svg" alt="Fulfillment">
                     </div>
                     <div class="maincontentmenu_item_title">Fulfillment</div>
                 </div>
                 <div class="maincontentmenu_item relievers">
                     <div class="maincontentmenu_item_icon">
-                        <img src="/img/page_view/icon-calculate-grey.svg" alt="Accounting">
+                        <img src="/img/page_view/icon-calculate-grey-2.svg" alt="Accounting">
                     </div>
                     <div class="maincontentmenu_item_title">Accounting</div>
                 </div>
                 <div class="maincontentmenu_item relievers">
                     <div class="maincontentmenu_item_icon">
-                        <img src="/img/page_view/noun-list-grey.svg" alt="Database">
+                        <img src="/img/page_view/noun-list-grey-2.svg" alt="Database">
                     </div>
                     <div class="maincontentmenu_item_title">Database</div>
                 </div>
                 <div class="maincontentmenu_item relievers">
                     <div class="maincontentmenu_item_icon">
-                        <img src="/img/page_view/icon-projects-grey.svg" alt="Projects">
+                        <img src="/img/page_view/icon-projects-grey-2.svg" alt="Projects">
                     </div>
                     <div class="maincontentmenu_item_title">Projects</div>
                 </div>

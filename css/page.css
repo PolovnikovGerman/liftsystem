@@ -1,3 +1,6 @@
+/*SR - fdff44*/
+/*SB - 3736fe*/
+/*Sigma - 606060*/
 html {
     background-color: #252525;
     font-family: arial, verdana, sans-serif;
@@ -71,6 +74,9 @@ body div {
     float: left;
     line-height: initial;
 }
+.content_tabs_headers {
+    margin-right: 15px;
+}
 .content_tab_header {
     cursor: pointer;
     /* width: 157px; */
@@ -113,6 +119,128 @@ body div {
 .content_tab_header.active img {
     opacity: 1;
 }
+/* Header menu */
+.mainsiteheader {
+    margin-top: 9px;
+}
+.mainsiteheader .period_name, .mainsiteheader .debtinfo_label {
+    color: #55aeff;
+}
+.mainsiteheader .param_value, .mainsiteheader .debtinfo_value {
+    color: #FFFFFF;
+}
+.period_lead_info, .period_review_info, .period_analitic_info, .infodeptreport, .inforeports, .infoalerts {
+    border: 1px solid #9b9b9b;
+}
+.period_lead_info div, .period_review_info div, .period_analitic_info div, .infodeptreport div, .inforeports div {
+    height: 22px;
+    line-height: 22px!important;
+    font-size: 14px;
+    font-weight: 600;
+}
+.period_lead_info {
+    margin-right: 7px;
+}
+.period_lead_info .leadsection.visitors {
+    padding-left: 4px;
+    width: 117px;
+}
+.period_lead_info .leadsection.visitors .period_name {
+    width: 66px;
+}
+.period_lead_info .leadsection.visitors .param_value {
+    width: 46px;
+}
+.period_lead_info .leadsection.leads {
+    width: 85px;
+}
+.period_lead_info .leadsection.leads .period_name {
+    width: 49px;
+}
+.period_lead_info .leadsection.leads .param_value {
+    width: 27px;
+}
+.period_review_info {
+    margin-right: 35px;
+}
+.period_review_info .period_name {
+    padding-left: 4px;
+    width: 69px;
+}
+.period_review_info .param_value {
+    width: 30px;
+}
+.period_analitic_info {
+    margin-right: 34px;
+}
+.period_analitic_info .period_name {
+    padding-left: 8px;
+    width: 187px;
+}
+.period_analitic_info .totalsalesprev, .period_analitic_info .totalsalesnext {
+    width: 20px;
+    text-align: center;
+    font-size: 19px;
+    opacity: 0.6;
+    color: #FFFFFF;
+    padding-top: 2px;
+}
+.period_analitic_info .totalsalesnext {
+    float: right!important;
+}
+.period_analitic_info .totalsalesprev.active, .period_analitic_info .totalsalesnext.active {
+    opacity: 1;
+    cursor: pointer;
+}
+.period_analitic_info .param_value_label {
+    font-family: Arial;
+    color: #979797;
+    width: 68px;
+    text-align: left;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.period_analitic_info .param_value_label span {
+    position: relative;
+    top: -2px;
+}
+.infodeptreport {
+    margin-right: 7px;
+}
+.infodeptreport .debtinfo_label {
+    margin-left: 4px;
+    width: 30px;
+}
+.infodeptreport .debtinfo_value {
+    margin-right: 9px;
+}
+.inforeports {
+    margin-right: 4px;
+    cursor: pointer;
+    padding: 0 6px;
+    min-width: 99px;
+}
+.inforeports .icon {
+    width: 15px;
+    padding-top: 3px;
+    margin-right: 4px;
+}
+.inforeports .infotext {
+    color: #FFFFFF;
+}
+.infoalerts {
+    cursor: pointer;
+    padding: 0 6px;
+}
+.infoalerts .alerticon {
+    width: 15px;
+    padding-top: 4px;
+    height: 22px;
+}
+.right-box {
+    float: right!important;
+}
+/* Main content */
 .container-fluid {
     padding-left: 0 !important;
     padding-right: 0 !important;
@@ -126,8 +254,14 @@ body div {
 .maincontent div {
     float: left;
 }
+.maincontent.stressballs {
+    background: #3736fe;
+}
 .maincontent.relievers {
     background: #fdff44;
+}
+.maincontent.sigmasystem {
+    background: #606060;
 }
 .maincontentmenu {
     margin-left: 8px
@@ -199,7 +333,7 @@ body div {
     font-size: 14px;
     color: #000000;
     opacity: 0.6;
-    margin-top: 3px;
+    margin-top: 2px;
 }
 .contentsubmenu_item.active {
     background: #FFFFFF;
