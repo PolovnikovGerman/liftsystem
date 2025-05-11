@@ -55,13 +55,11 @@
                     </div>
                 </div>
                 <div class="period_review_info">
-                    <!-- <div class="reviewsection"> -->
-                        <div class="period_name">Reviews:</div>
-                        <div class="param_value">122</div>
-                    <!-- </div> -->
+                    <div class="period_name">Reviews:</div>
+                    <div class="param_value">122</div>
                 </div>
                 <div class="period_analitic_info">
-                    <div class="period_name">ALL BRANDS THIS WEEK:</div>
+                    <div class="period_name">APR/MAY 28-4, 2025:</div>
                     <div class="totalsalesprev active">
                         <i class="fa fa-caret-left"></i>
                     </div>
@@ -101,7 +99,7 @@
             <div class="right-box">
                 <div class="userinfo">
                     <div class="signout">[exit]</div>
-                    <div class="usersigninfo">Sean</div>
+                    <div class="usersigninfo">Shanequa</div>
                 </div>
             </div>
         </div>

@@ -142,40 +142,48 @@ body div {
     margin-right: 7px;
 }
 .period_lead_info .leadsection.visitors {
-    padding-left: 4px;
-    width: 117px;
+    padding-left: 5px;
+    /* width: 117px; */
 }
 .period_lead_info .leadsection.visitors .period_name {
-    width: 66px;
+    /* width: 66px; */
+    padding-right: 5px;
 }
 .period_lead_info .leadsection.visitors .param_value {
-    width: 46px;
+    padding-right: 5px
+    /* width: 46px; */
 }
 .period_lead_info .leadsection.leads {
-    width: 85px;
+    /* width: 85px; */
+    padding-left: 5px;
 }
 .period_lead_info .leadsection.leads .period_name {
-    width: 49px;
+    /* width: 49px; */
+    padding-right: 5px;
 }
 .period_lead_info .leadsection.leads .param_value {
-    width: 27px;
+    /* width: 27px; */
+    padding-right: 5px;
 }
 .period_review_info {
     margin-right: 15px;
 }
 .period_review_info .period_name {
-    padding-left: 4px;
-    width: 69px;
+    padding-left: 5px;
+    /* width: 69px; */
 }
 .period_review_info .param_value {
-    width: 30px;
+    padding-left: 5px;
+    padding-right: 5px;
+    /* width: 30px; */
 }
 .period_analitic_info {
     margin-right: 15px;
 }
 .period_analitic_info .period_name {
-    padding-left: 8px;
-    width: 187px;
+    padding-left: 5px;
+    padding-right: 5px;
+    /* width: 187px; */
 }
 .period_analitic_info .totalsalesprev, .period_analitic_info .totalsalesnext {
     width: 20px;
@@ -195,7 +203,7 @@ body div {
 .period_analitic_info .param_value_label {
     font-family: Arial;
     color: #979797;
-    width: 68px;
+    /* width: 68px; */
     text-align: left;
     margin-left: 5px;
     margin-right: 5px;
@@ -208,17 +216,18 @@ body div {
     margin-right: 7px;
 }
 .infodeptreport .debtinfo_label {
-    margin-left: 4px;
-    width: 30px;
+    margin-left: 5px;
+    margin-right: 5px;
+    /*width: 30px;*/
 }
 .infodeptreport .debtinfo_value {
-    margin-right: 9px;
+    margin-right: 5px;
 }
 .inforeports {
     margin-right: 4px;
     cursor: pointer;
     padding: 0 6px;
-    min-width: 99px;
+    /* min-width: 99px; */
 }
 .inforeports .icon {
     width: 15px;
@@ -227,6 +236,7 @@ body div {
 }
 .inforeports .infotext {
     color: #FFFFFF;
+    padding-right: 5px;
 }
 .infoalerts {
     cursor: pointer;
@@ -253,6 +263,7 @@ body div {
     float: right !important;
     cursor: pointer;
     margin-right: 8px;
+    margin-top: 1px;
 }
 .userinfo .usersigninfo {
     float: right !important;
