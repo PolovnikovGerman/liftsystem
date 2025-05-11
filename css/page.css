@@ -161,7 +161,7 @@ body div {
     width: 27px;
 }
 .period_review_info {
-    margin-right: 20px;
+    margin-right: 15px;
 }
 .period_review_info .period_name {
     padding-left: 4px;
@@ -171,7 +171,7 @@ body div {
     width: 30px;
 }
 .period_analitic_info {
-    margin-right: 20px;
+    margin-right: 15px;
 }
 .period_analitic_info .period_name {
     padding-left: 8px;
@@ -243,7 +243,7 @@ body div {
 }
 .userinfo {
     float: right !important;
-    width: 187px;
+    width: 197px;
     margin-right: 7px;
 }
 .userinfo .signout {
