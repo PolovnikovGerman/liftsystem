@@ -107,6 +107,12 @@
     <container class="container-fluid">
         <div class="maincontent relievers">
             <div class="maincontentmenu">
+                <div class="maincontentmenu_item relievers">
+                    <div class="maincontentmenu_item_icon">
+                        <img src="/img/icons/chart-line.svg" alt="Reports" class="img-responsive"/>
+                    </div>
+                    <div class="maincontentmenu_item_title">Reports</div>
+                </div>
                 <div class="maincontentmenu_item active relievers">
                     <div class="maincontentmenu_item_icon">
                         <img src="/img/page_view/noun-megaphone-black.svg" alt="Marketing">
