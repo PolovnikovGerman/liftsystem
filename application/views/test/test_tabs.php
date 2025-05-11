@@ -109,7 +109,7 @@
             <div class="maincontentmenu">
                 <div class="maincontentmenu_item relievers">
                     <div class="maincontentmenu_item_icon">
-                        <img src="/img/icons/chart-line.svg" alt="Reports" class="img-responsive"/>
+                        <img src="/img/page_view/chart-line-grey.svg" alt="Reports" class="img-responsive"/>
                     </div>
                     <div class="maincontentmenu_item_title">Reports</div>
                 </div>
