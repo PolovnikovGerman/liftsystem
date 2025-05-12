@@ -35,10 +35,10 @@
         <div class="maincontentmenu_item <?=$brandclass?> <?=$activelnk==$menu['item_link'] ? 'active' : ''?>" data-url="<?=$menu['item_link']?>" data-brand="<?=$brand?>">
             <div class="maincontentmenu_item_icon">
                 <?php if ($activelnk == $menu['item_link']) : ?>
-                    <img src="/img/page_view/noun-filter-black.svg" alt="Leads">
+                    <img src="/img/page_view/noun-filter-black2.svg" alt="Leads">
                 <?php else: ?>
                     <?php if ($brand=='SR') : ?>
-                        <img src="/img/page_view/noun-filter-grey-2.svg" alt="Leads">
+                        <img src="/img/page_view/noun-filter-grey2.svg" alt="Leads">
                     <?php else: ?>
                         <img src="/img/page_view/noun-filter-white2.svg" alt="Leads">
                     <?php endif; ?>
@@ -99,10 +99,10 @@
         <div class="maincontentmenu_item <?=$brandclass?> <?=$activelnk==$menu['item_link'] ? 'active' : ''?>" data-url="<?=$menu['item_link']?>" data-brand="<?=$brand?>">
             <div class="maincontentmenu_item_icon">
                 <?php if ($activelnk == $menu['item_link']) : ?>
-                    <img src="/img/page_view/icon-calculate-black.svg" alt="Accounting">
+                    <img src="/img/page_view/icon-calculate-black2.svg" alt="Accounting">
                 <?php else: ?>
                     <?php if ($brand=='SR') : ?>
-                        <img src="/img/page_view/icon-calculate-grey-2.svg" alt="Accounting">
+                        <img src="/img/page_view/icon-calculate-grey2.svg" alt="Accounting">
                     <?php else: ?>
                         <img src="/img/page_view/icon-calculate-white2.svg" alt="Accounting">
                     <?php endif; ?>
