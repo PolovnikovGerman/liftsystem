@@ -56,7 +56,7 @@ class Admin extends MY_Controller
             }
         }
 
-        $content_options['menu']=$menu;
+        // $content_options['menu']=$menu;
         // Add main page management
         $head['scripts'][]=array('src'=>'/js/admin/page.js');
         $head['styles'][] = array('style'=> '/css/admin/page.css');
@@ -77,15 +77,15 @@ class Admin extends MY_Controller
             'activelnk' => $this->pagelink,
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
+            'brand' => $brand,
         ];
         $dat = $this->template->prepare_pagecontent($options);
-        $content_options['left_menu'] = $dat['left_menu'];
         $content_options['brand'] = $brand;
-
-        $content_view = $this->load->view('admin/page_view', $content_options, TRUE);
+        $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => '' ], TRUE);
+        $content_view = $this->load->view('admin/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
 
-        $this->load->view('page/page_template_view', $dat);
+        $this->load->view('page_modern/page_template_view', $dat);
     }
 
     public function usersdata() {

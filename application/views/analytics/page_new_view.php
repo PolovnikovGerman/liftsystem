@@ -1,0 +1,27 @@
+<?=$menu_view?>
+<div class="contentdata_view">
+    <?php if (isset($reportsalestypeview)) { ?>
+        <div class="analyticcontentarea" id="reportsalestypeview" style="display: none;"><?=$reportsalestypeview?></div>
+    <?php } ?>
+    <?php if (isset($reportitemsoldyearview)) { ?>
+        <div class="analyticcontentarea" id="reportitemsoldyearview" style="display: none;"><?=$reportitemsoldyearview?></div>
+    <?php } ?>
+    <?php if (isset($reportitemsoldmonthview)) { ?>
+        <div class="analyticcontentarea" id="reportitemsoldmonthview" style="display: none;"><?=$reportitemsoldmonthview?></div>
+    <?php } ?>
+    <?php if (isset($checkoutreportview)) { ?>
+        <div class="analyticcontentarea" id="checkoutreportview" style="display: none;"><?=$checkoutreportview?></div>
+    <?php } ?>
+</div>
+<div class="modal fade" id="pageModal" tabindex="-1" role="dialog" aria-labelledby="pageModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="pageModalLabel">New message</h4>
+            </div>
+            <div class="modal-body" style="float: left;"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>

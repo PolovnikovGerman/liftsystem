@@ -1,8 +1,8 @@
 $(document).ready(function(){
     // Find first item
-    var start = $(".maincontentmenu_item:first").data('link');
+    start = $(".contentsubmenu_item:first").data('link');
     init_page(start);
-    $(".maincontentmenu_item").unbind('click').click(function () {
+    $(".contentsubmenu_item").unbind('click').click(function () {
         var objid = $(this).data('link');
         init_page(objid);
     })
@@ -10,8 +10,8 @@ $(document).ready(function(){
 
 function init_page(objid) {
     $(".admincontentarea").hide();
-    $(".maincontentmenu_item").removeClass('active');
-    $(".maincontentmenu_item[data-link='"+objid+"']").addClass('active');
+    $(".contentsubmenu_item").removeClass('active');
+    $(".contentsubmenu_item[data-link='"+objid+"']").addClass('active');
     switch (objid) {
         case 'usersview':
             $("#usersview").show();

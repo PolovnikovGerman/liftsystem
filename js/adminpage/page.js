@@ -5,51 +5,51 @@ $(document).ready(function () {
     // Calc
     rebuild_market_offset();
     leftmenu_alignment();
-    $(".brandmenuitem.relievers").hover(
-        function () {
-            var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-black.','-white.');
-            $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
-        },
-        function () {
-            var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-white.', '-black.');
-            $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
-        }
-    );
-    $(".brandmenuitem.sigmasystem").hover(
-        function () {
-            var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-black.','-white.');
-            $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
-        },
-        function () {
-            var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-white.', '-black.');
-            $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
-        }
-    );
-    $(".brandmenuitem").find('div.brandmenuicon').hover(
-        function () {
-            $(".brandsubmenu[data-brand='SB']").hide();
-            $(".brandsubmenu[data-brand='SR']").hide();
-            $(".brandsubmenu[data-brand='SG']").hide();
-            var dataid = $(this).data('item');
-            var position = $(this).position();
-            var brand = $(this).data('brand');
-            var loctop = parseInt(position.top)+25;
-            var params = new Array();
-            params.push({name: 'menu', value: dataid});
-            params.push({name: 'brand', value: brand});
-            $.post('/welcome/submenus', params, function (response){
-                if (response.errors=='') {
-                    $(".brandsubmenu[data-brand='"+brand+"']").empty().html(response.data.content).show().css('top',loctop);
-                    init_submenu(brand);
-                } else {
-                    show_error(response);
-                }
-            },'json');
-        },
-        function () {
-            // $(".brandsubmenu[data-brand='SB']").hide();
-        }
-    );
+    // $(".brandmenuitem.relievers").hover(
+    //     function () {
+    //         var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-black.','-white.');
+    //         $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
+    //     },
+    //     function () {
+    //         var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-white.', '-black.');
+    //         $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
+    //     }
+    // );
+    // $(".brandmenuitem.sigmasystem").hover(
+    //     function () {
+    //         var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-black.','-white.');
+    //         $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
+    //     },
+    //     function () {
+    //         var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-white.', '-black.');
+    //         $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
+    //     }
+    // );
+    // $(".brandmenuitem").find('div.brandmenuicon').hover(
+    //     function () {
+    //         $(".brandsubmenu[data-brand='SB']").hide();
+    //         $(".brandsubmenu[data-brand='SR']").hide();
+    //         $(".brandsubmenu[data-brand='SG']").hide();
+    //         var dataid = $(this).data('item');
+    //         var position = $(this).position();
+    //         var brand = $(this).data('brand');
+    //         var loctop = parseInt(position.top)+25;
+    //         var params = new Array();
+    //         params.push({name: 'menu', value: dataid});
+    //         params.push({name: 'brand', value: brand});
+    //         $.post('/welcome/submenus', params, function (response){
+    //             if (response.errors=='') {
+    //                 $(".brandsubmenu[data-brand='"+brand+"']").empty().html(response.data.content).show().css('top',loctop);
+    //                 init_submenu(brand);
+    //             } else {
+    //                 show_error(response);
+    //             }
+    //         },'json');
+    //     },
+    //     function () {
+    //         // $(".brandsubmenu[data-brand='SB']").hide();
+    //     }
+    // );
     $("div.rowdata").hover(
         function(){
             rowid=$(this).data('orderid');
@@ -70,7 +70,7 @@ $(document).ready(function () {
     //     var url=$(this).data('menulink');
     //     window.location.href=url;
     // });
-    $(".brandmenuitem").unbind('click').click(function () {
+    $(".maincontentmenu_item").unbind('click').click(function () {
         var params = new Array();
         params.push({name: 'url', value: $(this).data('url')});
         params.push({name: 'brand', value: $(this).data('brand')});
