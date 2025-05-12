@@ -317,8 +317,8 @@ class Database extends MY_Controller
         $content_options['brandmenu'] = $brandmenu;
         $content_options['mastersection'] = $mastersection;
         $content_view = $this->load->view('database_center/modern_database_view', $content_options, TRUE);
-
         $dat['content_view'] = $content_view;
+        $dat['modal_view'] = $this->load->view('database_center/modal_view', [], TRUE);
         $this->load->view('page_modern/page_template_view', $dat);
     }
 

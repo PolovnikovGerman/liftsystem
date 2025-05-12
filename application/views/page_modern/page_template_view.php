@@ -41,7 +41,9 @@
         </div>
     </div>
 </div>
-
+<?php if (isset($modal_view)) : ?>
+    <?=$modal_view?>
+<?php endif; ?>
 </body>
 </html>
 

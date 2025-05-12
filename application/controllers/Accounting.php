@@ -133,6 +133,7 @@ class Accounting extends MY_Controller
         $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start ], TRUE);
         $content_view = $this->load->view('accounting/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
+        $dat['modal_view'] = $this->load->view('accounting/modal_view',[], TRUE);
         $this->load->view('page_modern/page_template_view', $dat);
     }
 
