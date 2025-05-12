@@ -32,11 +32,13 @@ class Leads extends My_Controller {
     private $restore_orderdata_error='Connection Lost. Please, recall form';
 
     private $pagelink = '/leads';
+    public $current_brand;
+
 
     function __construct() {
         parent::__construct();
-        $brand = $this->menuitems_model->get_current_brand();
-        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink,0, $brand);
+        $this->current_brand = $this->menuitems_model->get_current_brand();
+        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink,0, $this->current_brand);
         if ($pagedat['result'] == $this->error_result) {
             show_404();
         }
@@ -55,10 +57,10 @@ class Leads extends My_Controller {
     function index() {
         $head = [];
         $head['title'] = 'Leads';
-        $brand = $this->menuitems_model->get_current_brand();
+        $brand = $this->current_brand;
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
         $content_options = [];
-        $content_options['start'] = $this->input->get('start', TRUE);
+        $start = $this->input->get('start', TRUE);
         $content_options['menu'] = $menu;
         $gmaps = 0;
         foreach ($menu as $row) {
@@ -160,16 +162,18 @@ class Leads extends My_Controller {
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
             'gmaps' => $gmaps,
+            'brand' => $brand,
         ];
         if (isset($head['outscripts'])) {
             $options['outscripts'] = $head['outscripts'];
         }
         $dat = $this->template->prepare_pagecontent($options);
-        $content_options['left_menu'] = $dat['left_menu'];
+//        $content_options['left_menu'] = $dat['left_menu'];
         $content_options['brand'] = $brand;
-        $content_view = $this->load->view('leads/page_view', $content_options, TRUE);
+        $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start ], TRUE);
+        $content_view = $this->load->view('leads/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
-        $this->load->view('page/page_template_view', $dat);
+        $this->load->view('page_modern/page_template_view', $dat);
     }
 
     public function leadpage_data() {
