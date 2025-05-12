@@ -101,6 +101,7 @@ class Marketing extends MY_Controller
         $content_options['brand'] = $brand;
         $content_view = $this->load->view('marketing/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
+        $dat['modal_view'] = $this->load->view('marketing/modal_view', [], TRUE);
         $this->load->view('page_modern/page_template_view', $dat);
     }
 
