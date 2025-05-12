@@ -327,7 +327,7 @@ body div {
 .maincontentmenu_item.sigmasystem {
     color: #FFFFFF;
     background: #7f7f7f;
-    opacity: 0.7;
+    /* opacity: 0.7; */
 }
 .maincontentmenu_item.active {
     color: #000000;
