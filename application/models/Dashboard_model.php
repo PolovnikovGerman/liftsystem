@@ -25,7 +25,8 @@ Class Dashboard_model extends MY_Model
                 $year = 0;
             }
             if ($weeknum==0) {
-                $label = 'ALL BRANDS THIS WEEK';
+                // $label = 'ALL BRANDS THIS WEEK';
+                $label = 'THIS WEEK';
                 $weeknum = date('W');
                 $year = date('Y');
                 if (intval(date('m'))==12 && intval($weeknum)==1) {
@@ -73,7 +74,7 @@ Class Dashboard_model extends MY_Model
                 $options = [
                     'conversions' => 204,
                     'sales' => $res['cnt'],
-                    'revenue' => $res['revenue'],
+                    'revenue' => empty($res['revenue']) ? 0 : $res['revenue'],
                     'start_week' => $dates['start_week'],
                     'end_week' => $dates['end_week'],
                     'label' => $label,
