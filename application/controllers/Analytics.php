@@ -84,7 +84,6 @@ class Analytics extends MY_Controller
         ];
 
         $dat = $this->template->prepare_pagecontent($options);
-        // $content_options['left_menu'] = $dat['left_menu'];
         $content_options['brand'] = $brand;
         $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start ], TRUE);
         $content_view = $this->load->view('analytics/page_new_view', $content_options, TRUE);

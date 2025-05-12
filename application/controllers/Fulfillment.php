@@ -26,11 +26,13 @@ class Fulfillment extends MY_Controller
         'psd' => 'image/vnd.adobe.photoshop',
     ];
 
+    public $current_brand;
+
     public function __construct()
     {
         parent::__construct();
-        $brand = $this->menuitems_model->get_current_brand();
-        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink,0, $brand);
+        $this->current_brand = $this->menuitems_model->get_current_brand();
+        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink,0, $this->current_brand);
         if ($pagedat['result'] == $this->error_result) {
             show_404();
         }
@@ -50,7 +52,7 @@ class Fulfillment extends MY_Controller
     {
         $head = [];
         $head['title'] = 'Fulfillment';
-        $brand = $this->menuitems_model->get_current_brand();
+        $brand = $this->current_brand;
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
 
         $content_options = [];
@@ -58,7 +60,7 @@ class Fulfillment extends MY_Controller
         if (!empty($this->config->item('google_map_key'))) {
             $gmaps = 1;
         }
-        $content_options['start'] = $this->input->get('start', TRUE);
+        $start = $this->input->get('start', TRUE);
         foreach ($menu as $row) {
             if ($row['item_link']=='#vendorsview') {
                 $head['styles'][]=array('style'=>'/css/fulfillment/vendorsview.css');
@@ -152,11 +154,11 @@ class Fulfillment extends MY_Controller
             'brand' => $brand,
         ];
         $dat = $this->template->prepare_pagecontent($options);
-        $content_options['left_menu'] = $dat['left_menu'];
         $content_options['brand'] = $brand;
-        $content_view = $this->load->view('fulfillment/page_view', $content_options, TRUE);
+        $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start ], TRUE);
+        $content_view = $this->load->view('fulfillment/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
-        $this->load->view('page/page_template_view', $dat);
+        $this->load->view('page_modern/page_template_view', $dat);
     }
 
     public function vendordata() {

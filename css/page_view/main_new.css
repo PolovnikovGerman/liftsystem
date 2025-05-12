@@ -398,3 +398,255 @@ body div {
     min-height: 650px;
     margin-top: -1px;
 }
+/* Colors rows */
+.whitedatarow {
+    background-color: #ffffff;
+    color: #333333;
+}
+.greydatarow {
+    background-color: #ededed;
+    color: #333333;
+}
+.truncateoverflowtext {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.clearfix {
+    clear: both;
+}
+/* Flash */
+@-webkit-keyframes blinker {
+    from { opacity: 1.0; }
+    to { opacity: 0.0; }
+}
+.flashed {
+    -webkit-animation-name: blinker;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: cubic-bezier(.5, 0, 1, 1);
+    -webkit-animation-duration: 1.7s;
+}
+/* Leads & Visitors popup */
+.visitordetailarea {
+    width: 602px;
+    height: 211px;
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: normal;
+    padding: 13px 13px 0 10px;
+}
+.visitordetailarea div {
+    float: left;
+}
+.visitordetailarea .detail_parameter_name {
+    width: 120px;
+    height: 21px;
+    line-height: 21px;
+    font-family: Arial;
+    font-size: 15px;
+    font-weight: bold;
+    background: #ffffff;
+    text-align: center;
+}
+.visitordetailarea .detail_parameter_name.visitors {
+    border: 1px solid #4ca4ee;
+    color: #000000!important;
+}
+.visitordetailarea .detail_parameter_name.leads {
+    border: 1px solid #01beb8;
+    color: #000000!important;
+}
+.visitordetailarea .detailstitle {
+    height: 21px;
+    line-height: 21px;
+    text-align: center;
+}
+.visitordetailarea .visitors {
+    color: #4ca4ee;
+}
+.visitordetailarea .detailstitle.weekdata {
+    width: 84px;
+    margin-right: 14px;
+}
+.visitordetailarea .detailstitle.daydata {
+    width: 51px;
+}
+.visitordetailarea .weekenddat {
+    background: #383838;
+}
+.visitordetailarea .detailsleftpart {
+    width: 207px;
+    margin-right: 12px;
+}
+.visitordetailarea .detail_brand_name {
+    width: 120px;
+    text-align: right;
+    height: 22px;
+    line-height: 22px;
+    font-size: 15px;
+    font-weight: 600;
+}
+.visitordetailarea .weekdatavalue {
+    width: 84px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+.visitordetailarea .detail_brand_name.total {
+    border-top: 1px solid #ffffff;
+}
+.visitordetailarea .totalweek {
+    border-top: 1px solid #ffffff;
+    width: 84px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+.visitordetailarea .detailsrightpart {
+    width: 359px;
+}
+.visitordetailarea .weekdataarea {
+    border: 1px solid #ffffff;
+    width: 100%;
+}
+.visitordetailarea .dayvalue {
+    width: 51px;
+    height: 22px;
+    line-height: 22px;
+    font-size: 15px;
+    text-align: center;
+}
+.visitordetailarea .dayvalue.total {
+    font-size: 16px;
+}
+.visitordetailarea .leads {
+    color: #01beb8;
+}
+.visitordetailarea .leaddetailsarea {
+    margin-top: 10px;
+}
+/* Week totals popup */
+.weekbrandtotals {
+    padding: 0!important
+}
+.brantotalarea {
+    display: inline-table;
+    width: 240px;
+    background: #000000;
+    /*border: 1px solid #adadad; */
+    padding: 7px;
+    /* margin-top: -10px;
+    margin-left: -16px;
+    margin-right: -16px;
+    margin-bottom: -11px; */
+}
+.brantotalarea div {
+    float: left;
+}
+.brantotalarea .datarow > div {
+    height: 22px;
+    line-height: 22px!important;
+}
+.brantotalarea .totalrowlabel {
+    width: 130px;
+    padding-right: 7px;
+    text-align: right;
+    color: #4ca4ee;
+    font-size: 15px;
+    font-weight: 600;
+}
+.brantotalarea .totalrowvalue {
+    padding-left: 10px;
+    color: #FFFFFF;
+    font-size: 17px;
+    font-weight: 600;
+}
+.totalrevenuesection {
+    width: 259px;
+}
+.totalrevenuesection .datarow > div {
+    height: 22px;
+    line-height: 22px!important;
+}
+.brantotalmoneyarea {
+    display: inline-table;
+    background: #000000;
+    padding: 7px;
+    width: 544px;
+}
+.brantotalmoneyarea div {
+    float: left;
+}
+.revenuelabel, .paidtotallabel, .unpaidtotallabel {
+    font-size: 12px;
+    height: 18px;
+    line-height: 18px!important;
+}
+.revenuelabel {
+    color: #4ca4ee;
+    margin-left: 149px;
+}
+.paidtotallabel {
+    color: #00d1ca;
+    margin-left: 108px;
+}
+.unpaidtotallabel {
+    color: #00d1ca;
+    margin-left: 95px;
+}
+.brantotalmoneyarea .totalrowlabel {
+    width: 130px;
+    padding-right: 7px;
+    text-align: right;
+    color: #4ca4ee;
+    font-size: 15px;
+    font-weight: 600;
+}
+.brantotalmoneyarea .totalrowvalue {
+    padding-left: 10px;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: right;
+    width: 82px;
+}
+.brantotalmoneyarea .totalrowvalue.revenuetotal, .brantotalmoneyarea .totalrowpercent.revenuetotal {
+    border-top: 1px solid #ffffff;
+}
+.brantotalmoneyarea .totalrowpercent {
+    width: 47px;
+    text-align: center;
+    color: #4ca4ee;
+    font-size: 12px;
+    font-weight: 600;
+}
+.brantotalmoneyarea .totalpaymentsection {
+    margin-left: 12px;
+}
+.brantotalmoneyarea .totalpaymentdatasection {
+    border: 1px solid #ffffff;
+}
+.brantotalmoneyarea .totalpaymentsection .datarow > div {
+    height: 22px;
+    line-height: 22px!important;
+}
+.brantotalmoneyarea .totalpaymentvalue, .brantotalmoneyarea .totalunpaidvalue {
+    padding-left: 10px;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: right;
+    width: 80px;
+}
+.brantotalmoneyarea .totalpaymentperentvalue {
+    width: 48px;
+    text-align: center;
+    color: #00d1ca;
+    font-size: 12px;
+    font-weight: 600;
+}
