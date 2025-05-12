@@ -40,7 +40,7 @@
                     <?php if ($brand=='SR') : ?>
                         <img src="/img/page_view/noun-filter-grey-2.svg" alt="Leads">
                     <?php else: ?>
-                        <img src="/img/page_view/noun-filter-white.svg" alt="Leads">
+                        <img src="/img/page_view/noun-filter-white2.svg" alt="Leads">
                     <?php endif; ?>
                 <?php endif;?>
             </div>
@@ -104,7 +104,7 @@
                     <?php if ($brand=='SR') : ?>
                         <img src="/img/page_view/icon-calculate-grey-2.svg" alt="Accounting">
                     <?php else: ?>
-                        <img src="/img/page_view/icon-calculate-white.svg" alt="Accounting">
+                        <img src="/img/page_view/icon-calculate-white2.svg" alt="Accounting">
                     <?php endif; ?>
                 <?php endif;?>
             </div>
