@@ -400,7 +400,7 @@ body div {
 }
 .contentdata_view {
     border-top: 1px solid #000000;
-    padding: 15px;
+    padding: 0 15px;
     width: 100%;
     background: #FFFFFF;
     min-height: 650px;
