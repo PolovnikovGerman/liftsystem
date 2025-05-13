@@ -8,7 +8,7 @@
 <?php foreach ($permissions as $menu) : ?>
     <?php if ($menu['item_link']=='/analytics') : ?>
         <div class="maincontentmenu_item <?=$brandclass?> <?=$activelnk==$menu['item_link'] ? 'active' : ''?>" data-url="<?=$menu['item_link']?>" data-brand="<?=$brand?>">
-            <div class="maincontentmenu_item_icon">
+            <div class="maincontentmenu_item_icon <?=$activelnk == $menu['item_link'] ? 'active' : 'current'?>" data-brand="<?=$brand?>" data-item="<?=$menu['menu_item_id']?>">
                 <?php if ($activelnk == $menu['item_link']) : ?>
                     <img src="/img/page_view/chart-line.svg" alt="Reports" class="img-responsive"/>
                 <?php else: ?>
@@ -24,7 +24,7 @@
     <?php endif; ?>
     <?php if ($menu['item_link']=='/marketing') : ?>
         <div class="maincontentmenu_item <?=$brandclass?> <?=$activelnk==$menu['item_link'] ? 'active' : ''?>" data-url="<?=$menu['item_link']?>" data-brand="<?=$brand?>">
-            <div class="maincontentmenu_item_icon">
+            <div class="maincontentmenu_item_icon <?=$activelnk == $menu['item_link'] ? 'active' : 'current'?>" data-brand="<?=$brand?>" data-item="<?=$menu['menu_item_id']?>">
                 <?php if ($activelnk == $menu['item_link']) : ?>
                     <img src="/img/page_view/noun-megaphone-black.svg" alt="Marketing">
                 <?php else: ?>
@@ -40,7 +40,7 @@
     <?php endif; ?>
     <?php if ($menu['item_link']=='/leads') : ?>
         <div class="maincontentmenu_item <?=$brandclass?> <?=$activelnk==$menu['item_link'] ? 'active' : ''?>" data-url="<?=$menu['item_link']?>" data-brand="<?=$brand?>">
-            <div class="maincontentmenu_item_icon">
+            <div class="maincontentmenu_item_icon <?=$activelnk == $menu['item_link'] ? 'active' : 'current'?>" data-brand="<?=$brand?>" data-item="<?=$menu['menu_item_id']?>">
                 <?php if ($activelnk == $menu['item_link']) : ?>
                     <img src="/img/page_view/noun-filter-black2.svg" alt="Leads">
                 <?php else: ?>
@@ -56,7 +56,7 @@
     <?php endif; ?>
     <?php if ($menu['item_link']=='/orders') : ?>
         <div class="maincontentmenu_item <?=$brandclass?> <?=$activelnk==$menu['item_link'] ? 'active' : ''?>" data-url="<?=$menu['item_link']?>" data-brand="<?=$brand?>">
-            <div class="maincontentmenu_item_icon">
+            <div class="maincontentmenu_item_icon <?=$activelnk == $menu['item_link'] ? 'active' : 'current'?>" data-brand="<?=$brand?>" data-item="<?=$menu['menu_item_id']?>">
                 <?php if ($activelnk == $menu['item_link']) : ?>
                     <img src="/img/page_view/noun-tick-black.svg" alt="Orders">
                 <?php else: ?>
@@ -72,7 +72,7 @@
     <?php endif; ?>
     <?php if ($menu['item_link']=='/art') : ?>
         <div class="maincontentmenu_item <?=$brandclass?> <?=$activelnk==$menu['item_link'] ? 'active' : ''?>" data-url="<?=$menu['item_link']?>" data-brand="<?=$brand?>">
-            <div class="maincontentmenu_item_icon">
+            <div class="maincontentmenu_item_icon <?=$activelnk == $menu['item_link'] ? 'active' : 'current'?>" data-brand="<?=$brand?>" data-item="<?=$menu['menu_item_id']?>">
                 <?php if ($activelnk == $menu['item_link']) : ?>
                     <img src="/img/page_view/noun-palette-black.svg" alt="Art">
                 <?php else: ?>
@@ -88,7 +88,7 @@
     <?php endif; ?>
     <?php if ($menu['item_link']=='/fulfillment') : ?>
         <div class="maincontentmenu_item <?=$brandclass?> <?=$activelnk==$menu['item_link'] ? 'active' : ''?>" data-url="<?=$menu['item_link']?>" data-brand="<?=$brand?>">
-            <div class="maincontentmenu_item_icon">
+            <div class="maincontentmenu_item_icon <?=$activelnk == $menu['item_link'] ? 'active' : 'current'?>" data-brand="<?=$brand?>" data-item="<?=$menu['menu_item_id']?>">
                 <?php if ($activelnk == $menu['item_link']) : ?>
                     <img src="/img/page_view/noun-delivery-black.svg" alt="Fulfillment">
                 <?php else: ?>
@@ -104,7 +104,7 @@
     <?php endif; ?>
     <?php if ($menu['item_link']=='/accounting') : ?>
         <div class="maincontentmenu_item <?=$brandclass?> <?=$activelnk==$menu['item_link'] ? 'active' : ''?>" data-url="<?=$menu['item_link']?>" data-brand="<?=$brand?>">
-            <div class="maincontentmenu_item_icon">
+            <div class="maincontentmenu_item_icon <?=$activelnk == $menu['item_link'] ? 'active' : 'current'?>" data-brand="<?=$brand?>" data-item="<?=$menu['menu_item_id']?>">
                 <?php if ($activelnk == $menu['item_link']) : ?>
                     <img src="/img/page_view/icon-calculate-black2.svg" alt="Accounting">
                 <?php else: ?>
@@ -120,7 +120,7 @@
     <?php endif; ?>
     <?php if ($menu['item_link']=='/database') : ?>
         <div class="maincontentmenu_item <?=$brandclass?> <?=$activelnk==$menu['item_link'] ? 'active' : ''?>" data-url="<?=$menu['item_link']?>" data-brand="<?=$brand?>">
-            <div class="maincontentmenu_item_icon">
+            <div class="maincontentmenu_item_icon <?=$activelnk == $menu['item_link'] ? 'active' : 'current'?>" data-brand="<?=$brand?>" data-item="<?=$menu['menu_item_id']?>">
                 <?php if ($activelnk == $menu['item_link']) : ?>
                     <img src="/img/page_view/noun-list-black.svg" alt="Database">
                 <?php else : ?>
@@ -136,7 +136,7 @@
     <?php endif; ?>
     <?php if ($menu['item_link']=='/projects') : ?>
         <div class="maincontentmenu_item <?=$brandclass?> <?=$activelnk==$menu['item_link'] ? 'active' : ''?>" data-url="<?=$menu['item_link']?>" data-brand="<?=$brand?>">
-            <div class="maincontentmenu_item_icon">
+            <div class="maincontentmenu_item_icon <?=$activelnk == $menu['item_link'] ? 'active' : 'current'?>" data-brand="<?=$brand?>" data-item="<?=$menu['menu_item_id']?>">
                 <?php if ($activelnk == $menu['item_link']) : ?>
                     <img src="/img/page_view/icon-projects-black.svg" alt="Projects">
                 <?php else: ?>
@@ -151,3 +151,6 @@
         </div>
     <?php endif; ?>
 <?php endforeach; ?>
+<div class="brandsubmenu bluetrack" data-brand="SB">&nbsp;</div>
+<div class="brandsubmenu relievers" data-brand="SR">&nbsp;</div>
+<div class="brandsubmenu sigmasystem" data-brand="SG">&nbsp;</div>
