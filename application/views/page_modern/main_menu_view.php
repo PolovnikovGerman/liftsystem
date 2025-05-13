@@ -1,3 +1,10 @@
+<div class="publicsearch">
+    <input type="text" class="publicsearch_template" id="publicsearch_template" placeholder="Find Orders"/>
+    <div class="publicsearch_btn">
+        <img src="/img/page_view/search_icon_blue.png"/>
+    </div>
+</div>
+
 <?php foreach ($permissions as $menu) : ?>
     <?php if ($menu['item_link']=='/analytics') : ?>
         <div class="maincontentmenu_item <?=$brandclass?> <?=$activelnk==$menu['item_link'] ? 'active' : ''?>" data-url="<?=$menu['item_link']?>" data-brand="<?=$brand?>">

@@ -659,3 +659,28 @@ body div {
     font-size: 12px;
     font-weight: 600;
 }
+/* Search */
+.publicsearch {
+    position: relative;
+    /*max-width: 106px;*/
+    margin: 7px 10px 0 6px;
+}
+.publicsearch > input.publicsearch_template {
+    border: 1px solid #088aff;
+    height: 23px;
+    line-height: 23px;
+    font-size: 14px;
+    font-family: Arial;
+    padding-left: 6px;
+    width: 107px;
+}
+.publicsearch > input.publicsearch_template::placeholder {
+    text-align: left;
+}
+.publicsearch > .publicsearch_btn {
+    position: absolute;
+    left: auto;
+    right: 5px;
+    top: 3px;
+    cursor: pointer;
+}
