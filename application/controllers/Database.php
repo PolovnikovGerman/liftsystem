@@ -16,12 +16,13 @@ class Database extends MY_Controller
 
     private $container_type = 'C';
     private $express_type = 'E';
+    public $current_brand;
 
     public function __construct()
     {
         parent::__construct();
-        $brand = $this->menuitems_model->get_current_brand();
-        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink,0, $brand);
+        $this->current_brand = $this->menuitems_model->get_current_brand();
+        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink,0, $this->current_brand);
         if ($pagedat['result'] == $this->error_result) {
             show_404();
         }
@@ -41,9 +42,8 @@ class Database extends MY_Controller
         $head = [];
         // $head['title'] = 'Database';
         $getdata = $this->input->get();
-        $start = ifset($getdata,'start','');
-        $brand = $this->menuitems_model->get_current_brand();
-        $content_options['start'] = $start;
+        $content_options['start'] = ifset($getdata,'start','');
+        $brand = $this->current_brand;
         $mainmenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
         $mastersection = 0;
         foreach ($mainmenu as $row) {
@@ -251,9 +251,6 @@ class Database extends MY_Controller
             $mastermenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $pagelnk, $brand);
             foreach ($mastermenu as $row) {
                 if ($row['item_link']=='#mastervendors') {  // vendorsview
-//                $head['styles'][]=array('style'=>'/css/database/vendorsview.css');
-//                $head['scripts'][]=array('src'=>'/js/database/vendorsview.js');
-//                $content_options['vendorsview'] = $this->_prepare_vendors_view();
                     $head['styles'][]=array('style'=>'/css/database_center/vendorsview.css');
                     $head['styles'][]=array('style'=>'/css/database_center/vendordetails.css');
                     $head['scripts'][]=array('src'=>'/js/database_center/vendorsview.js');
@@ -311,17 +308,18 @@ class Database extends MY_Controller
             'activelnk' => $this->pagelink,
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
+            'brand' => $brand,
         ];
         $dat = $this->template->prepare_pagecontent($options);
-        $content_options['left_menu'] = $dat['left_menu'];
+        // $content_options['left_menu'] = $dat['left_menu'];
         $content_options['brand'] = $brand;
         $content_options['mastermenu'] = $mastermenu;
         $content_options['brandmenu'] = $brandmenu;
         $content_options['mastersection'] = $mastersection;
-        $content_view = $this->load->view('database_center/brand_database_view', $content_options, TRUE);
-
+        $content_view = $this->load->view('database_center/modern_database_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
-        $this->load->view('page/page_template_view', $dat);
+        $dat['modal_view'] = $this->load->view('database_center/modal_view', [], TRUE);
+        $this->load->view('page_modern/page_template_view', $dat);
     }
 
 //    public function oldindex() {

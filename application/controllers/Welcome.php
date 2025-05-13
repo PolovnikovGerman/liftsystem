@@ -37,11 +37,11 @@ class Welcome extends MY_Controller {
             ];
             $dat = $this->template->prepare_pagecontent($options);
             $options=[
-                'left_menu' => $dat['left_menu'],
+                // 'left_menu' => $dat['left_menu'],
                 'brand' => $brand,
             ];
-            $dat['content_view'] = $this->load->view('welcome/page_view', $options, TRUE);
-            $this->load->view('page/page_template_view', $dat);
+            $dat['content_view'] = $this->load->view('welcome/page_new_view', $options, TRUE);
+            $this->load->view('page_modern/page_template_view', $dat);
         } else {
             redirect($url,'refresh');
         }
@@ -79,7 +79,7 @@ class Welcome extends MY_Controller {
     }
 
     public function testtabs() {
-        $this->load->view('test/test',[]);
+        $this->load->view('test/test_tabs',[]);
     }
 
     public function restore_main_menu() {
