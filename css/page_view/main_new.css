@@ -673,6 +673,8 @@ body div {
     font-family: Arial;
     padding-left: 6px;
     width: 107px;
+    position: relative;
+    top: -2px;
 }
 .publicsearch > input.publicsearch_template::placeholder {
     text-align: left;
@@ -681,7 +683,7 @@ body div {
     position: absolute;
     left: auto;
     right: 5px;
-    top: 1px;
+    top: -1px;
     cursor: pointer;
 }
 /* Submenu */
