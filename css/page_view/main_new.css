@@ -351,13 +351,13 @@ body div {
     top: -2px;
 }
 .maincontentmenu_item_title {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     line-height: 16px;
 }
 .maincontentmenu_item.active .maincontentmenu_item_title {
     /* color: #000000; */
-    font-size: 17px;
+    font-size: 16px;
 }
 .maincontent_view {
     width: 100%;
@@ -381,7 +381,7 @@ body div {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     padding: 0 18px;
-    font-size: 14px;
+    font-size: 13px;
     color: #000000;
     opacity: 0.6;
     margin-top: 2px;
@@ -391,7 +391,7 @@ body div {
     border-left: 1px solid #000000;
     border-right: 1px solid #000000;
     border-top: 1px solid #000000;
-    font-size: 15px;
+    font-size: 14px;
     opacity: 1;
     position: relative;
     z-index: 10;

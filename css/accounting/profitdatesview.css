@@ -347,9 +347,7 @@ and open the template in the editor.
 .cell-weekinfo {
     float: left;
     width: 141px;
-    /* height: 62px; */
-    height: 54px;
-    /* background: #e2e2e2; */
+    height: 63px;
     border: 1px solid #5e5e5e;
 }
 .cell-weekinfo-profitperc {
@@ -391,7 +389,7 @@ and open the template in the editor.
 /* Cells for Day INFO */
 .cell-dayinfo {
     width: 112px;
-    height: 54px;
+    height: 63px;
     border: 1px solid #5e5e5e;
 }
 .cell-dayinfo:hover {
@@ -608,7 +606,7 @@ and open the template in the editor.
 .profitdatatotalarea {
     clear: both;
     float: left;
-    height: 131px;
+    height: 138px;
     position: relative;
 }
 .profitordertotalarea {
