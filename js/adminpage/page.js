@@ -25,31 +25,32 @@ $(document).ready(function () {
     //         $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
     //     }
     // );
-    // $(".brandmenuitem").find('div.brandmenuicon').hover(
-    //     function () {
-    //         $(".brandsubmenu[data-brand='SB']").hide();
-    //         $(".brandsubmenu[data-brand='SR']").hide();
-    //         $(".brandsubmenu[data-brand='SG']").hide();
-    //         var dataid = $(this).data('item');
-    //         var position = $(this).position();
-    //         var brand = $(this).data('brand');
-    //         var loctop = parseInt(position.top)+25;
-    //         var params = new Array();
-    //         params.push({name: 'menu', value: dataid});
-    //         params.push({name: 'brand', value: brand});
-    //         $.post('/welcome/submenus', params, function (response){
-    //             if (response.errors=='') {
-    //                 $(".brandsubmenu[data-brand='"+brand+"']").empty().html(response.data.content).show().css('top',loctop);
-    //                 init_submenu(brand);
-    //             } else {
-    //                 show_error(response);
-    //             }
-    //         },'json');
-    //     },
-    //     function () {
-    //         // $(".brandsubmenu[data-brand='SB']").hide();
-    //     }
-    // );
+    $(".maincontentmenu_item_icon.current").hover(
+        function () {
+            $(".brandsubmenu[data-brand='SB']").hide();
+            $(".brandsubmenu[data-brand='SR']").hide();
+            $(".brandsubmenu[data-brand='SG']").hide();
+            var dataid = $(this).data('item');
+            var position = $(this).position();
+//            console.log('Position '+position.top+' Left '+position.left);
+            var brand = $(this).data('brand');
+            var loctop = parseInt(position.top)+25;
+            var params = new Array();
+            params.push({name: 'menu', value: dataid});
+            params.push({name: 'brand', value: brand});
+            $.post('/welcome/submenus', params, function (response){
+                if (response.errors=='') {
+                    $(".brandsubmenu[data-brand='"+brand+"']").empty().html(response.data.content).show().css('top',loctop).css('left',position.left);
+                    init_submenu(brand);
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        },
+        function () {
+            // $(".brandsubmenu[data-brand='SB']").hide();
+        }
+    );
     $("div.rowdata").hover(
         function(){
             rowid=$(this).data('orderid');
