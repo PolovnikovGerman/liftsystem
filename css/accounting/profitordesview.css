@@ -595,7 +595,7 @@ select.profitorder-filtrer {
     line-height: 32px;
     margin-left: 10px;
     text-align: center;
-    width: 977px;
+    /* width: 977px; */
 }
 .profitordertotalsarea {
     margin-bottom: 15px;
