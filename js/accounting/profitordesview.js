@@ -208,8 +208,8 @@ function search_profit_data() {
                     }
                 },
                 position: {
-                    my: 'bottom right',
-                    at: 'middle left',
+                    my: 'bottom left',
+                    at: 'middle right',
                 },
                 style: {
                     classes: 'qtip-dark curpoints_tooltip'
