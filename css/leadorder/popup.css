@@ -5674,6 +5674,9 @@ input.ticket_date {
     margin-left: 66px;
 }
 /* Unlock content */
+#unlockContentModal {
+    z-index: 1100;
+}
 #unlockContentModal .modal-dialog {
     width: 300px;
     margin-left: 381px;
