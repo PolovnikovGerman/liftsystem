@@ -1,5 +1,5 @@
 <div class="publicsearch">
-    <input type="text" class="publicsearch_template" id="publicsearch_template" placeholder="Find Orders"/>
+    <input type="text" class="publicsearch_template" id="publicsearch_template" autocomplete="off" placeholder="Find Orders"/>
     <div class="publicsearch_btn">
         <img src="/img/page_view/search_icon_blue.png"/>
     </div>
