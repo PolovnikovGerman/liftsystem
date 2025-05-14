@@ -1,5 +1,4 @@
 function init_profit_orders() {
-    // initProfitOrderPagination();
     search_profit_data();
     totalyears();
     $(".profitorder_dateinpt").datepicker({

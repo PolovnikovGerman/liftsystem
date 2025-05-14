@@ -8418,7 +8418,8 @@ Class Orders_model extends MY_Model
         }
         if ($inner==1) {
             $this->db->join('v_itemsearch vi', 'vi.item_id = o.item_id');
-            $this->db->where_not_in('vi.vendor_name', array('BLUETRACK Internal', 'Stressballs.com Internal'));
+            // $this->db->where_not_in('vi.vendor_name', array('BLUETRACK Internal', 'Stressballs.com Internal'));
+            $this->db->where('vi.vendor_id != ', $this->config->item('inventory_vendor'));
         }
         $totals = $this->db->get()->result_array();
         $totaltab = [];
@@ -8467,7 +8468,7 @@ Class Orders_model extends MY_Model
         }
         $resall = $this->db->get()->row_array();
 
-        $this->db->select('count(o.order_id) as totalqty, sum(o.revenue-o.profit) as totalsum');
+        $this->db->select('a.order_proj_status, count(o.order_id) as totalqty, sum(o.revenue-o.profit) as totalsum');
         $this->db->from('ts_orders o');
         $this->db->join('v_poorders_artstage a','a.order_id=o.order_id');
         if ($brand!=='ALL') {
@@ -8479,31 +8480,44 @@ Class Orders_model extends MY_Model
         }
         $this->db->join('v_itemsearch vi', 'vi.item_id = o.item_id');
         $this->db->where('a.order_approved_view',0);
-        $this->db->where_not_in('vi.vendor_name', array('BLUETRACK Internal', 'Stressballs.com Internal'));
+        // $this->db->where_not_in('vi.vendor_name', array('BLUETRACK Internal', 'Stressballs.com Internal'));
+        $this->db->where('vi.vendor_id != ', $this->config->item('inventory_vendor'));
         $this->db->where('o.profit_perc is null');
-        $this->db->where_in('a.order_proj_status', array($this->JUST_APPROVED, $this->NEED_APPROVAL, $this->TO_PROOF, $this->NO_ART));
-        $rest = $this->db->get()->row_array();
+        $this->db->group_by('a.order_proj_status');
+        $rests = $this->db->get()->result_array();
+        $rest=[];
+        $rest['totalqty'] = $rest['totalsum'] = 0;
+        foreach ($rests as $row) {
+            if ($row['order_proj_status']!==$this->JUST_APPROVED && $row['order_proj_status']!==$this->NEED_APPROVAL
+            && $row['order_proj_status']!==$this->TO_PROOF && $row['order_proj_status']!==$this->NO_ART) {
+                $rest['totalqty']+=$row['totalqty'];
+                $rest['totalsum']+=$row['totalsum'];
+            }
+        }
         return [
             'total' => $resall['totalsum'],
             'totalfree' => $rest['totalsum'],
         ];
     }
 
-    public function purchaseorder_details($stage, $inner, $brand) {
+    public function purchaseorder_details($inner, $brand) {
         // Get Not placed
-        if ($stage=='unsign') {
-            $stagesrc = [$this->JUST_APPROVED];
-        } elseif ($stage == 'approved') {
-            $stagesrc = [$this->NEED_APPROVAL];
-        } else {
-            $stagesrc = [$this->NO_ART, $this->TO_PROOF];
-        }
+//        if ($stage=='unsign') {
+//            $stagesrc = [$this->JUST_APPROVED];
+//        } elseif ($stage == 'approved') {
+//            $stagesrc = [$this->NEED_APPROVAL];
+//        } else {
+//            $stagesrc = [$this->NO_ART, $this->TO_PROOF];
+//        }
+        $unsign_filtrs = [$this->JUST_APPROVED];
+        $approv_filter = [$this->NEED_APPROVAL];
+        $proof_filter = [$this->NO_ART, $this->TO_PROOF];
+
         $this->db->select('a.order_rush, a.specialdiff, o.order_id, o.order_num, o.order_itemnumber, o.item_id, o.order_items, vi.vendor_name, (o.revenue - o.profit) as estpo');
-        $this->db->select('o.customer_name as customer');
+        $this->db->select('o.customer_name as customer, a.order_proj_status');
         $this->db->from('ts_orders o');
         $this->db->join('v_poorders_artstage a','a.order_id=o.order_id'); 
         $this->db->join('v_itemsearch vi','vi.item_id=o.item_id');
-        $this->db->where_in('a.order_proj_status',$stagesrc);
         $this->db->where('o.profit_perc is null');
         $this->db->where('a.order_approved_view',0);
         if ($brand!=='ALL') {
@@ -8514,18 +8528,30 @@ Class Orders_model extends MY_Model
             }
         }
         if ($inner==1) {
-            $this->db->where_not_in('vi.vendor_name', array('BLUETRACK Internal', 'Stressballs.com Internal'));
+            // $this->db->where_not_in('vi.vendor_name', array('BLUETRACK Internal', 'Stressballs.com Internal'));
+            $this->db->where('vi.vendor_id != ', $this->config->item('inventory_vendor'));
         }
         $details = $this->db->get()->result_array();
-        $out = [];
+        $unsign = $approv = $proof = [];
         $daytime = 24*60*60;
         foreach ($details as $detail) {
             $detail['item_name'] = str_replace(['Stress Balls','Stressballs'],'SB', $detail['order_items']);
             $detail['customitem'] = ($detail['item_id'] > 0 ? '' : 'customitem');
             $detail['vendorname'] = (empty($detail['vendor_name']) ? 'OTHER' : $detail['vendor_name']);
             $detail['order_late'] = ($detail['specialdiff'] > $daytime ? 1 : 0);
-            $out[] = $detail;
+            if (in_array($detail['order_proj_status'], $unsign_filtrs)) {
+                $unsign[] = $detail;
+            } elseif (in_array($detail['order_proj_status'], $approv_filter)) {
+                $approv[] = $detail;
+            } elseif (in_array($detail['order_proj_status'], $proof_filter)) {
+                $proof[] = $detail;
+            }
         }
+        $out = [
+            'unsign' => $unsign,
+            'approv' => $approv,
+            'proof' => $proof,
+        ];
         return $out;
     }
 

@@ -142,18 +142,14 @@ and open the template in the editor.
     z-index: 18;
 }
 .caledardatas {
-    /*
-    background: url(/img/profit_date/calendar_bg.png) no-repeat transparent;
-    height: 619px;
-    margin: -18px 0 10px 16px;
-    width: 963px;
-     */
-    background: url(/img/profit_date/calendar_bg.png) no-repeat transparent;
-    height: 619px;
     margin: -7px 0 10px 16px;
     width: 963px;
     z-index: 10;
     position: relative;
+    background: #9a9a9a;
+    background: linear-gradient(to top, #9b9b9b 70%, #7f7f7f 80%);
+    box-shadow: inset 0 0 15px;
+    border-radius: 0 7px 10px 10px;
 }
 .profitdate_months {
     float: left;
@@ -606,8 +602,9 @@ and open the template in the editor.
 .profitdatatotalarea {
     clear: both;
     float: left;
-    height: 138px;
+    height: 142px;
     position: relative;
+    margin-bottom: 10px;
 }
 .profitordertotalarea {
     clear: both;
@@ -640,8 +637,9 @@ and open the template in the editor.
 .year-totaldataarea {
     border: 1px solid #000000;
     float: left;
-    height: 101px;
+/*!*    height: 101px;*/
     width: 123px;
+    padding-bottom: 2px;
 }
 .year-totaldata {
     clear: both;
@@ -672,14 +670,14 @@ and open the template in the editor.
     background: #c9c9c9 none repeat scroll 0 0;
     border: 1px solid #000000;
     float: left;
-    height: 101px;
+    /*height: 101px;*/
     width: 98px;
 }
 .year-growthdata {
     float: left;
     font-size: 11px;
-    height: 16px;
-    line-height: 16px;
+    height: 19px;
+    line-height: 19px;
     margin-left: 5px;
     margin-right: 3px;
 }

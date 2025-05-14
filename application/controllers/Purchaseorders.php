@@ -540,9 +540,13 @@ class Purchaseorders extends MY_Controller
             $brand = ifset($postdata,'brand','ALL');
             $inner = ifset($postdata,'inner', 0);
             $this->load->model('orders_model');
-            $unsign = $this->orders_model->purchaseorder_details('unsign', $inner, $brand);
-            $approv = $this->orders_model->purchaseorder_details('approved', $inner, $brand);
-            $proof = $this->orders_model->purchaseorder_details('proof', $inner, $brand);
+            $details = $this->orders_model->purchaseorder_details( $inner, $brand);
+            $unsign = $details['unsign'];
+            $approv = $details['approv'];
+            $proof = $details['proof'];
+//            $unsign = $this->orders_model->purchaseorder_details('unsign', $inner, $brand);
+//            $approv = $this->orders_model->purchaseorder_details('approved', $inner, $brand);
+//            $proof = $this->orders_model->purchaseorder_details('proof', $inner, $brand);
             $event = 'hover';
             if (isMobile()) {
                 if (!isTablet()) {
@@ -788,6 +792,31 @@ class Purchaseorders extends MY_Controller
                 $mdata['content'] = $this->load->view('pooverview/pohistory_slider_view', $slider_options, TRUE);
                 $mdata['arrowactive'] = $numyears > 4 ? 1 : 0;
             }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function pototals_data()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand','ALL');
+            $inner = ifset($postdata,'inner', 0);
+            $this->load->model('orders_model');
+            $this->load->model('payments_model');
+            $totaltab = $this->orders_model->purchaseorder_totals($inner, $brand);
+            $mdata['toplace_qty'] = QTYOutput($totaltab['toplace']['qty']).' TO PLACE';
+            $mdata['toplace_sum'] = MoneyOutput($totaltab['toplace']['total'],0);
+            $mdata['toapprove_qty'] = QTYOutput($totaltab['toapprove']['qty']).' TO APPROVE';
+            $mdata['toapprove_sum'] = MoneyOutput($totaltab['toapprove']['total'],0);
+            $mdata['toproof_qty'] = QTYOutput($totaltab['toproof']['qty']).' TO PROOF';
+            $mdata['toproof_sum'] = MoneyOutput($totaltab['toproof']['total'],0);
+            $totals = $this->orders_model->purchase_fulltotals($brand);
+            $mdata['purchasetotalall'] = MoneyOutput($totals['total'],0);
+            $mdata['purchasetotalfree'] = MoneyOutput($totals['totalfree'],0);
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
