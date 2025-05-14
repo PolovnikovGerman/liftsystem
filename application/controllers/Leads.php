@@ -1116,6 +1116,10 @@ class Leads extends My_Controller {
             if (ifset($postdata, 'brand', '')!=='') {
                 $options['brand'] = $postdata['brand'];
             }
+            if (isset($postdata['assign'])) {
+                $options['assign'] = $postdata['assign'];
+            }
+            $options['hideincl'] = ifset($postdata,'hideincl',0);
             $this->load->model('customform_model');
             $mdata['totals'] = $this->customform_model->get_count_forms($options);
             $this->ajaxResponse($mdata, $error);
