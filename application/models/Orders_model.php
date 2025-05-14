@@ -8418,7 +8418,8 @@ Class Orders_model extends MY_Model
         }
         if ($inner==1) {
             $this->db->join('v_itemsearch vi', 'vi.item_id = o.item_id');
-            $this->db->where_not_in('vi.vendor_name', array('BLUETRACK Internal', 'Stressballs.com Internal'));
+            // $this->db->where_not_in('vi.vendor_name', array('BLUETRACK Internal', 'Stressballs.com Internal'));
+            $this->db->where('vi.vendor_id != ', $this->config->item('inventory_vendor'));
         }
         $totals = $this->db->get()->result_array();
         $totaltab = [];
@@ -8508,12 +8509,15 @@ Class Orders_model extends MY_Model
 //        } else {
 //            $stagesrc = [$this->NO_ART, $this->TO_PROOF];
 //        }
+        $unsign_filtrs = [$this->JUST_APPROVED];
+        $approv_filter = [$this->NEED_APPROVAL];
+        $proof_filter = [$this->NO_ART, $this->TO_PROOF];
+
         $this->db->select('a.order_rush, a.specialdiff, o.order_id, o.order_num, o.order_itemnumber, o.item_id, o.order_items, vi.vendor_name, (o.revenue - o.profit) as estpo');
-        $this->db->select('o.customer_name as customer');
+        $this->db->select('o.customer_name as customer, a.order_proj_status');
         $this->db->from('ts_orders o');
         $this->db->join('v_poorders_artstage a','a.order_id=o.order_id'); 
         $this->db->join('v_itemsearch vi','vi.item_id=o.item_id');
-//        $this->db->where_in('a.order_proj_status',$stagesrc);
         $this->db->where('o.profit_perc is null');
         $this->db->where('a.order_approved_view',0);
         if ($brand!=='ALL') {
@@ -8528,15 +8532,26 @@ Class Orders_model extends MY_Model
             $this->db->where('vi.vendor_id != ', $this->config->item('inventory_vendor'));
         }
         $details = $this->db->get()->result_array();
-        $out = [];
+        $unsign = $approv = $proof = [];
         $daytime = 24*60*60;
         foreach ($details as $detail) {
             $detail['item_name'] = str_replace(['Stress Balls','Stressballs'],'SB', $detail['order_items']);
             $detail['customitem'] = ($detail['item_id'] > 0 ? '' : 'customitem');
             $detail['vendorname'] = (empty($detail['vendor_name']) ? 'OTHER' : $detail['vendor_name']);
             $detail['order_late'] = ($detail['specialdiff'] > $daytime ? 1 : 0);
-            $out[] = $detail;
+            if (in_array($detail['order_proj_status'], $unsign_filtrs)) {
+                $unsign[] = $detail;
+            } elseif (in_array($detail['order_proj_status'], $approv_filter)) {
+                $approv[] = $detail;
+            } elseif (in_array($detail['order_proj_status'], $proof_filter)) {
+                $proof[] = $detail;
+            }
         }
+        $out = [
+            'unsign' => $unsign,
+            'approv' => $approv,
+            'proof' => $proof,
+        ];
         return $out;
     }
 

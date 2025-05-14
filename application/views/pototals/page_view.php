@@ -17,8 +17,8 @@
                 hide internal
             </div>
             <div class="pototals-placeresult">
-                <div class="pototals-placeresult-data"><span><?=MoneyOutput($totals['total'],0)?></span> Est Value</div>
-                <div class="pototals-placeresult-data"><span><?=MoneyOutput($totals['totalfree'],0)?></span> w/o Internal</div>
+                <div class="pototals-placeresult-data" id="purchasetotalall"><span><?=MoneyOutput($totals['total'],0)?></span> Est Value</div>
+                <div class="pototals-placeresult-data" id="purchasetotalfree"><span><?=MoneyOutput($totals['totalfree'],0)?></span> w/o Internal</div>
             </div>
         </div>
         <div class="datarow">
@@ -35,7 +35,7 @@
             <div class="addnonlistedpo">Add Unlisted PO</div>
         </div>
 
-        <?php if ($totaltab['toplace']['qty'] > 0) { ?>
+        <?php // if ($totaltab['toplace']['qty'] > 0) { ?>
             <div class="datarow pototalsrow">
                 <div class="pototals-unsign-tolalqty"><?=QTYOutput($totaltab['toplace']['qty'])?> TO PLACE</div>
                 <div class="pototals-unsign-tolalsum"><?=MoneyOutput($totaltab['toplace']['total'],0)?></div>
@@ -43,8 +43,8 @@
             <div class="datarow">
                 <div class="poplace-unsigntablebody"></div>
             </div>
-        <?php } ?>
-        <?php if ($totaltab['toapprove']['qty'] > 0 ) { ?>
+        <?php // } ?>
+        <?php // if ($totaltab['toapprove']['qty'] > 0 ) { ?>
             <div class="datarow pototalsrow">
                 <div class="pototals-approved-tolalqty"><?=QTYOutput($totaltab['toapprove']['qty'])?> TO APPROVE</div>
                 <div class="pototals-approved-tolalsum"><?=MoneyOutput($totaltab['toapprove']['total'],0)?></div>
@@ -52,8 +52,8 @@
             <div class="datarow">
                 <div class="poplace-approvtablebody"></div>
             </div>
-        <?php } ?>
-        <?php if ($totaltab['toproof']['qty'] > 0 ) { ?>
+        <?php // } ?>
+        <?php // if ($totaltab['toproof']['qty'] > 0 ) { ?>
             <div class="datarow pototalsrow">
                 <div class="pototals-proof-tolalqty"><?=QTYOutput($totaltab['toproof']['qty'])?> TO PROOF</div>
                 <div class="pototals-proof-tolalsum"><?=MoneyOutput($totaltab['toproof']['total'],0)?></div>
@@ -61,7 +61,7 @@
             <div class="datarow">
                 <div class="poplace-prooftablebody"></div>
             </div>
-        <?php } ?>
+        <?php // } ?>
     </div>
     <!-- PO Reports: -->
     <div class="pototals-poreports">
