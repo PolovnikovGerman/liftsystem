@@ -11,6 +11,8 @@ class Leads extends My_Controller {
         '100','150','200','250'
     );
 
+    protected $PERPAGE_SBFORM = 100;
+
     protected $vendor_prices = array(
         array('base'=>25,'label'=>'25'),
         array('base'=>75,'label'=>'75'),
@@ -1131,9 +1133,9 @@ class Leads extends My_Controller {
             $mdata['totals'] = count($data);
             $event = 'hover'; // click
             $expand = 0;
-            if (count($data) > 21) {
-                $expand = 1;
-            }
+//            if (count($data) > 21) {
+//                $expand = 1;
+//            }
             if (count($data)==0) {
                 $mdata['content'] = $this->load->view('customsbforms/content_empty_view',[],TRUE);
             } else {
@@ -1669,7 +1671,8 @@ class Leads extends My_Controller {
 
     private function _prepare_customsbform_view($brand) {
         $datqs=[
-            'perpage' => $this->config->item('quotes_perpage'),
+            // 'perpage' => $this->config->item('quotes_perpage'),
+            'perpage' => $this->PERPAGE_SBFORM,
             'order_by' => 'date_add',
             'direction' => 'desc',
             'cur_page' => 0,

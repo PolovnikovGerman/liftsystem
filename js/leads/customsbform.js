@@ -74,7 +74,11 @@ function search_customforms() {
 function initCustomFormPagination() {
     // count entries inside the hidden content
     var num_entries = parseInt($('#totalcustomform').val());
+    var assign = parseInt($("#customform_status").val());
     var perpage = parseInt($("#perpagecustomform").val());
+    if (assign==1) {
+        perpage = num_entries+1;
+    }
     if (num_entries < perpage) {
         $("div#customformpagination").empty();
         $("#curpagecustomform").val(0);
@@ -106,8 +110,12 @@ function getCustomformParams() {
 }
 
 function pageCustomFormsCallback(pageidx) {
-    var perpage = $("#perpagecustomform").val();
-    var maxval = $('#totalcustomform').val();
+    var assign = parseInt($("#customform_status").val());
+    var perpage = parseInt($("#perpagecustomform").val());
+    var maxval = parseInt($('#totalcustomform').val());
+    if (assign==1) {
+        perpage = maxval+1;
+    }
     var params=getCustomformParams();
     params.push({name:'offset', value: pageidx});
     params.push({name:'limit', value:perpage});
@@ -119,14 +127,15 @@ function pageCustomFormsCallback(pageidx) {
     $.post(url,params,function(response){
         if (response.errors=='') {
             $("#customform_tabledat").empty().html(response.data.content);
+
             $("#curpagecustomform").val(pageidx);
             /* change size */
-            if (parseInt(response.data.totals) > 21) {
-                $(".customform_tabledat").scrollpanel({
-                    'prefix' : 'sp-'
-                });
-            }
-            jQuery.balloon.init();
+            // if (parseInt(response.data.totals) > 21) {
+            //     $(".customform_tabledat").scrollpanel({
+            //         'prefix' : 'sp-'
+            //     });
+            // }
+            // jQuery.balloon.init();
             init_customform_content();
             leftmenu_alignment();
             $("#loader").hide();

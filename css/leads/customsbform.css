@@ -1,7 +1,6 @@
 .customform_content {
     clear: both;
     width: 976px;
-    /* width: 1041px; */
     margin-left: 10px;
     margin-right: 17px;
 }
@@ -12,7 +11,6 @@
     margin-top: 14px;
     margin-bottom: 0px;
     position: relative;
-    /* z-index: 7; */
 }
 .customform_header > .label {
     width: 50px;
@@ -117,15 +115,14 @@ a.find_customformbnt {
 }
 .customform_tabledat {
     clear: both;
-    /* width: 1040px; */
     width: 100%;
     border-left: 1.5px solid #000000;
     border-bottom: 1.5px solid #000000;
     border-right: 1.5px solid #000000;
-    /*overflow-x: hidden;
-    overflow-y: auto;*/
+    overflow-x: hidden;
+    overflow-y: auto;
     margin-bottom: 15px;
-    max-height: 536px;
+    /*max-height: 536px;*/
 }
 /* Scroll */
 .customform_tabledat .sp-scrollbar {
@@ -233,7 +230,9 @@ a.find_customformbnt {
     width: 72px;
 }
 .customform_tabledat .content-row > .eventdate.expand {
-    width: 62px;
+    /*width: 53px;*/
+    width: auto;
+    padding-left: 6px;
 }
 .customform_popmessage {
     background-color: #ffffff!important;
