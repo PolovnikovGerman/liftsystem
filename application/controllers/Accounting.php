@@ -3715,8 +3715,27 @@ class Accounting extends MY_Controller
         $this->load->model('orders_model');
         $this->load->model('payments_model');
 
-        $totaltab = $this->orders_model->purchaseorder_totals($inner, $brand);
-        $totals = $this->orders_model->purchase_fulltotals($brand);
+        // $totaltab = $this->orders_model->purchaseorder_totals($inner, $brand);
+        $totaltab = [];
+        $totaltab['toplace'] = [
+            'qty' => 0,
+            'total' => 0,
+        ];
+        $totaltab['toapprove'] = [
+            'qty' => 0,
+            'total' => 0,
+        ];
+        $totaltab['toproof'] = [
+            'qty' => 0,
+            'total' => 0,
+        ];
+
+        // $totals = $this->orders_model->purchase_fulltotals($brand);
+        $totals = [
+            'total' => 0,
+            'totalfree' => 0,
+        ];
+
         // Years
         $years = $this->payments_model->get_pototals_years($brand);
         $year1 = $year2 = $year3 = $years[0];
