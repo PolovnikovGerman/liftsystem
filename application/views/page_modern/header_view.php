@@ -67,6 +67,7 @@
             </div>
         </div>
         <?php endif; ?>
+
     </div>
     <div class="right-box">
         <div class="userinfo">

@@ -6,6 +6,7 @@
     </div>
 </div>
 <?php endif; ?>
+
 <?php foreach ($permissions as $menu) : ?>
     <?php if ($menu['item_link']=='/analytics') : ?>
         <div class="maincontentmenu_item <?=$brandclass?> <?=$activelnk==$menu['item_link'] ? 'active' : ''?>" data-url="<?=$menu['item_link']?>" data-brand="<?=$brand?>">
