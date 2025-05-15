@@ -301,7 +301,7 @@ body div {
 }
 .maincontentmenu_item {
     cursor: pointer;
-    width: 140px;
+    /*width: 140px;*/
     height: 24px;
     line-height: 24px !important;
     margin-right: 10px;
@@ -314,6 +314,7 @@ body div {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0 10px;
 }
 .maincontentmenu_item.stressballs {
     background: #3736fe;

@@ -106,6 +106,18 @@ class Template
                 $inventory_permissions = 1;
             }
         }
+        // Reports
+        $reports_permissions = 0;
+        // $reports_old = 1;
+        $reportchk = $this->CI->menuitems_model->get_menuitem('/analytics',0, $brand);
+        if ($reportchk['result']==$this->success_result) {
+            $report_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $reportchk['menuitem']['menu_item_id']);
+            if ($report_permissionchk['result']==$this->success_result && $report_permissionchk['permission']>0) {
+                $reports_permissions = 1;
+                // $reports_old = $reportchk['menuitem']['newver'];
+            }
+        }
+
         // Balance
         $debt_permissions = 0;
         $debt_total = 0;
@@ -151,6 +163,7 @@ class Template
             'adminold' => $admin_old,
             'inventorychk' => $inventory_permissions,
             'inventoryold' => $inventory_old,
+            'reportchk' => $reportchk,
             'test_server' => $this->CI->config->item('test_server'),
             'brand' => $brand,
             'brands' => $brands,
