@@ -6432,7 +6432,8 @@ Class Orders_model extends MY_Model
         $out = array('order_id' => 0, 'order_num' => '');
         $paymethod = 'PAYPAL';
         // $orddata=$this->order_data($order_id);
-        $quickord=0;
+        $printdate = strtotime($orddata['order_date']);
+        $printsched = 0;
         $art = $item['artworks'];
         $blank = 0;
         // if ($orddata['imprinting'] == 0) {
@@ -6557,6 +6558,7 @@ Class Orders_model extends MY_Model
             // RUSH!!!!
             if ($item['shipping_date']) {
                 $this->db->set('shipdate', $item['shipping_date']);
+                $printdate = $item['shipping_date'];
             }
             $this->db->set('rush_list', serialize($rushlist));
             $this->db->set('rush_idx', $rushidx);
@@ -6641,6 +6643,7 @@ Class Orders_model extends MY_Model
                     $this->db->set('item_color', $crow['order_color_itemcolor']);
                     if (!empty($invcolor)) {
                         $this->db->set('inventory_color_id', $invcolor);
+                        $printsched = 1;
                     }
                     $this->db->insert('ts_order_itemcolors');
                     $itemcolorid = $this->db->insert_id();
@@ -6862,6 +6865,11 @@ Class Orders_model extends MY_Model
             $this->db->set('autopay', 1);
             $this->db->set('payment_save',1);
             $this->db->insert('ts_order_payments');
+            if ($printsched==1) {
+                $this->db->where('order_id', $neword);
+                $this->db->set('print_date', $printdate);
+                $this->db->update('ts_orders');
+            }
         }
         return $out;
     }
