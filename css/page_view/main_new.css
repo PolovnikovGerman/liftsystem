@@ -345,6 +345,9 @@ body div {
 /*    background: #d7d7d7;*/
 /*    color: #000000;*/
 /*}*/
+.maincontentmenu_devider {
+    width: 20px;
+}
 .maincontentmenu_item_icon {
     width: 15px;
     margin-right: 9px;
