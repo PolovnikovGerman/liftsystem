@@ -7,22 +7,22 @@
 </div>
 <?php endif; ?>
 <?php foreach ($permissions as $menu) : ?>
-    <?php if ($menu['item_link']=='/analytics') : ?>
-        <div class="maincontentmenu_item <?=$brandclass?> <?=$activelnk==$menu['item_link'] ? 'active' : ''?>" data-url="<?=$menu['item_link']?>" data-brand="<?=$brand?>">
-            <div class="maincontentmenu_item_icon <?=$activelnk == $menu['item_link'] ? 'active' : 'current'?>" data-brand="<?=$brand?>" data-item="<?=$menu['menu_item_id']?>">
-                <?php if ($activelnk == $menu['item_link']) : ?>
-                    <img src="/img/page_view/chart-line.svg" alt="Reports" class="img-responsive"/>
-                <?php else: ?>
-                    <?php if ($brand=='SR') : ?>
-                        <img src="/img/page_view/chart-line-grey.svg" alt="Reports" class="img-responsive"/>
-                    <?php else : ?>
-                        <img src="/img/page_view/chart-line-white.svg" alt="Reports" class="img-responsive"/>
-                    <?php endif;?>
-                <?php endif ?>
-            </div>
-            <div class="maincontentmenu_item_title">Reports</div>
-        </div>
-    <?php endif; ?>
+<!--    --><?php //if ($menu['item_link']=='/analytics') : ?>
+<!--        <div class="maincontentmenu_item --><?php //=$brandclass?><!-- --><?php //=$activelnk==$menu['item_link'] ? 'active' : ''?><!--" data-url="--><?php //=$menu['item_link']?><!--" data-brand="--><?php //=$brand?><!--">-->
+<!--            <div class="maincontentmenu_item_icon --><?php //=$activelnk == $menu['item_link'] ? 'active' : 'current'?><!--" data-brand="--><?php //=$brand?><!--" data-item="--><?php //=$menu['menu_item_id']?><!--">-->
+<!--                --><?php //if ($activelnk == $menu['item_link']) : ?>
+<!--                    <img src="/img/page_view/chart-line.svg" alt="Reports" class="img-responsive"/>-->
+<!--                --><?php //else: ?>
+<!--                    --><?php //if ($brand=='SR') : ?>
+<!--                        <img src="/img/page_view/chart-line-grey.svg" alt="Reports" class="img-responsive"/>-->
+<!--                    --><?php //else : ?>
+<!--                        <img src="/img/page_view/chart-line-white.svg" alt="Reports" class="img-responsive"/>-->
+<!--                    --><?php //endif;?>
+<!--                --><?php //endif ?>
+<!--            </div>-->
+<!--            <div class="maincontentmenu_item_title">Reports</div>-->
+<!--        </div>-->
+<!--    --><?php //endif; ?>
     <?php if ($menu['item_link']=='/marketing') : ?>
         <div class="maincontentmenu_item <?=$brandclass?> <?=$activelnk==$menu['item_link'] ? 'active' : ''?>" data-url="<?=$menu['item_link']?>" data-brand="<?=$brand?>">
             <div class="maincontentmenu_item_icon <?=$activelnk == $menu['item_link'] ? 'active' : 'current'?>" data-brand="<?=$brand?>" data-item="<?=$menu['menu_item_id']?>">
