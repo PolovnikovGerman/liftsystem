@@ -253,7 +253,7 @@ body div {
 }
 .userinfo {
     float: right !important;
-    /* width: 197px; */
+    /*width: 197px;*/
     margin-right: 7px;
 }
 .userinfo .signout {
@@ -314,7 +314,6 @@ body div {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 10px;
 }
 .maincontentmenu_item.stressballs {
     background: #3736fe;
@@ -346,7 +345,7 @@ body div {
 /*    color: #000000;*/
 /*}*/
 .maincontentmenu_item_icon {
-    width: 16px;
+    width: 15px;
     margin-right: 9px;
     position: relative;
     top: -2px;
