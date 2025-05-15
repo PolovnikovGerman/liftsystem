@@ -392,6 +392,7 @@ body div {
     border-right: 1px solid #000000;
     border-top: 1px solid #000000;
     font-size: 13px;
+    font-weight: 600;
     opacity: 1;
     position: relative;
     z-index: 10;
