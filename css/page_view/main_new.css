@@ -253,7 +253,7 @@ body div {
 }
 .userinfo {
     float: right !important;
-    width: 197px;
+    /* width: 197px; */
     margin-right: 7px;
 }
 .userinfo .signout {
