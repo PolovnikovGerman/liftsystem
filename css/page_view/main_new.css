@@ -253,7 +253,7 @@ body div {
 }
 .userinfo {
     float: right !important;
-    width: 197px;
+    /*width: 197px;*/
     margin-right: 7px;
 }
 .userinfo .signout {
@@ -301,7 +301,7 @@ body div {
 }
 .maincontentmenu_item {
     cursor: pointer;
-    width: 140px;
+    /*width: 140px;*/
     height: 24px;
     line-height: 24px !important;
     margin-right: 10px;
@@ -345,7 +345,7 @@ body div {
 /*    color: #000000;*/
 /*}*/
 .maincontentmenu_item_icon {
-    width: 16px;
+    width: 15px;
     margin-right: 9px;
     position: relative;
     top: -2px;
