@@ -60,15 +60,6 @@
             <div class="infotext">Inventory</div>
         </div>
         <?php endif; ?>
-        <?php if ($reportchk) : ?>
-            <div class="inforeports" id="reports">
-                <div class="icon" title="Reports">
-                    <img src="/img/icons/chart-line-white.svg" class="img-responsive"/>
-                </div>
-                <div class="infotext" style="">Reports</div>
-                <!-- padding-right: 4px; -->
-            </div>
-        <?php endif; ?>
         <?php if ($adminchk) : ?>
         <div class="infoalerts" title="Admin">
             <div class="alerticon admin" id="admin">
