@@ -72,7 +72,7 @@
     <div class="right-box">
         <div class="userinfo">
             <div class="signout" id="signout">[exit]</div>
-            <div class="usersigninfo"><?php // $user_name?>Shanequa</div>
+            <div class="usersigninfo"><?=$user_name?></div>
         </div>
     </div>
 </div>
