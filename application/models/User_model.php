@@ -339,6 +339,7 @@ Class User_model extends MY_Model
         $data = [
             'user_id' => 0,
             'user_email' =>'',
+            'userlogin' => '',
             'user_name'=>'',
             'first_name' => '',
             'last_name' => '',
@@ -510,6 +511,7 @@ Class User_model extends MY_Model
             }
             // Update
             $this->db->set('user_email', $user['user_email']);
+            $this->db->set('userlogin', $user['userlogin']);
             $this->db->set('user_name', $usrname);
             $this->db->set('first_name', $user['first_name']);
             $this->db->set('last_name', $user['last_name']);
@@ -719,48 +721,50 @@ Class User_model extends MY_Model
     }
 
     private function _checkuserdata($userdat) {
-        $out=['result'=>$this->error_result, 'msg' => 'User Login non unique'];
-        // select count # of user with login
-        $this->db->select('count(user_id) as cnt');
-        $this->db->from('users');
-        $this->db->where('user_email',$userdat['user_email']);
-        $this->db->where('user_id !=',$userdat['user_id']);
-        $res=$this->db->get()->row_array();
-        $numrec=$res['cnt'];
-        if ($numrec==0) {
-            $out['msg'] = 'For new user password required parameter';
-            if ($userdat['user_id']<=0 && empty($userdat['user_passwd_txt1'])) {
-                return $out;
+        $out=['result'=>$this->error_result, 'msg' => 'User Email Empty'];
+        // Check User email and userlogin not empty
+        if (!empty($userdat['user_email'])) {
+            $out['msg'] = 'User Log in Name Empty';
+            if (!empty($userdat['userlogin'])) {
+                $out['msg'] = 'User Email Not Unique';
+                $this->db->select('count(user_id) as cnt');
+                $this->db->from('users');
+                $this->db->where('user_email',$userdat['user_email']);
+                $this->db->where('user_id !=',$userdat['user_id']);
+                $res=$this->db->get()->row_array();
+                $numrec=$res['cnt'];
+                if ($numrec==0) {
+                    $out['msg'] = 'User Log in Name Not Unique';
+                    $this->db->select('count(user_id) as cnt');
+                    $this->db->from('users');
+                    $this->db->where('userlogin',$userdat['userlogin']);
+                    $this->db->where('user_id !=',$userdat['user_id']);
+                    $res=$this->db->get()->row_array();
+                    $numrec=$res['cnt'];
+                    if ($numrec==0) {
+                        $out['msg'] = 'For new user password required parameter';
+                        if ($userdat['user_id']<=0 && empty($userdat['user_passwd_txt1'])) {
+                            return $out;
+                        }
+                        $out['msg'] = 'Enter Leads repl name';
+                        if ($userdat['user_leadrep']==1 && empty($userdat['user_leadname'])) {
+                            return $out;
+                        }
+                        /* Check password */
+                        $out['msg']='Please re-type password';
+                        if (!empty($userdat['user_passwd_txt1']) && ($userdat['user_passwd_txt1']!=$userdat['user_passwd_txt2'])) {
+                            return $out;
+                        }
+//                        $out['msg']='User email (login) is required parameter';
+//                        if (empty($userdat['user_email'])) {
+//                            return $out;
+//                        }
+                        $out['result'] = $this->success_result;
+                    }
+                }
             }
-            $out['msg'] = 'Enter Leads repl name';
-            if ($userdat['user_leadrep']==1 && empty($userdat['user_leadname'])) {
-                return $out;
-            }
-            /* Check password */
-            $out['msg']='Please re-type password';
-            if (!empty($userdat['user_passwd_txt1']) && ($userdat['user_passwd_txt1']!=$userdat['user_passwd_txt2'])) {
-                return $out;
-            }
-            $out['msg']='User email (login) is required parameter';
-            if (empty($userdat['user_email'])) {
-                return $out;
-            }
-            $out['result'] = $this->success_result;
-            // Check default page
-//            if ($userdat['user_page']!='') {
-//                $found=0;
-//                foreach ($permissions as $row) {
-//                    if ($userdat['user_page']==$row) {
-//                        $found=1;
-//                    }
-//                }
-//                if ($found==0) {
-//                    $outres['id']=  User_model::ERR_FLAG;
-//                    $outres['msg']='User do not have permission to the Default Page';
-//                }
-//            }
-
         }
+        // select count # of user with login
         return $out;
     }
 
