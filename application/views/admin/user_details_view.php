@@ -6,6 +6,14 @@
                 <legend>User Personal Data</legend>
                 <div class="clearfix"></div>
                 <div class="input_row">
+                    <div class="labeltxt">User Name (login):</div>
+                    <div class="inputval">
+                        <div class="inputval">
+                            <input type="text" class="large userpersdata" data-name="userlogin" id="userlogin" value="<?=$user['userlogin']?>"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="input_row">
                     <div class="labeltxt">Email:</div>
                     <div class="inputval">
                         <input type="text" class="large userpersdata" data-name="user_email" id="user_email" value="<?=$user['user_email']?>"/>
@@ -30,14 +38,6 @@
                             <option value="1" <?=($user['user_status']==1 ? 'selected="selected"' : '')?>>ACTIVE</option>
                             <option value="2" <?=($user['user_status']==2 ? 'selected="selected"' : '')?>>SUSPEND</option>
                         </select>
-                    </div>
-                </div>
-                <div class="input_row">
-                    <div class="labeltxt">User Name (login):</div>
-                    <div class="inputval">
-                        <div class="inputval">
-                            <input type="text" class="large userpersdata" data-name="userlogin" id="userlogin" value="<?=$user['userlogin']?>"/>
-                        </div>
                     </div>
                 </div>
                 <div class="input_row userpasswd">
