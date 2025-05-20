@@ -116,25 +116,25 @@ Class User_model extends MY_Model
                 $out['msg'] = 'Enter correct User Name / Password';
                 $login=$data['username'];
                 $passwd=md5($data['passwd']);
+//                $this->db->select('u.*, r.role_short');
+//                $this->db->from('users u');
+//                $this->db->join('roles r','r.role_id=u.role_id','left');
+//                $this->db->where('u.user_email', $login);
+//                $this->db->where('u.user_passwd', $passwd);
+//                $res = $this->db->get()->row_array();
+//                if (isset($res['user_id'])) {
+//                    $out['result'] = $this->success_result;
+//                } else {
                 $this->db->select('u.*, r.role_short');
                 $this->db->from('users u');
                 $this->db->join('roles r','r.role_id=u.role_id','left');
-                $this->db->where('u.user_email', $login);
+                $this->db->where('u.userlogin', $login);
                 $this->db->where('u.user_passwd', $passwd);
                 $res = $this->db->get()->row_array();
                 if (isset($res['user_id'])) {
                     $out['result'] = $this->success_result;
-                } else {
-                    $this->db->select('u.*, r.role_short');
-                    $this->db->from('users u');
-                    $this->db->join('roles r','r.role_id=u.role_id','left');
-                    $this->db->where('u.userlogin', $login);
-                    $this->db->where('u.user_passwd', $passwd);
-                    $res = $this->db->get()->row_array();
-                    if (isset($res['user_id'])) {
-                        $out['result'] = $this->success_result;
-                    }
                 }
+                // }
 
                 if ($out['result'] == $this->success_result) {
                     /* Check Additional restricts - BY IP & Time */
