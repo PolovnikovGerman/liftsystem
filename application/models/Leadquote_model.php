@@ -3372,7 +3372,9 @@ class Leadquote_model extends MY_Model
             if (empty($item_id)) {
                 $item_id = $quoteitem['item_id'];
             }
-
+            if (ifset($itemdata,'printshop_item_id',0) > 0) {
+                $quoteitem['inventory_item_id'] = $itemdata['printshop_item_id'];
+            }
             $itemsubtotal = $itemimprint = 0;
             // Get color items
             $coloritems = [];
