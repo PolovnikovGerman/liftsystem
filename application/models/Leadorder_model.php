@@ -12058,13 +12058,16 @@ Class Leadorder_model extends My_Model {
             if ($row['custom_order']==1) {
                 $row['order_class']=$this->custom_class;
             } else {
-                if (substr($row['item_number'],0,2)=='23') {
-                    $row['order_class'] = $this->other_class;
-                } else {
+                $row['order_class']=$this->common_class;
+                if (!empty($row['item_number'])) {
+                    if (substr($row['item_number'],0,2)=='23') {
+                        $row['order_class'] = $this->other_class;
+                    } else {
 //                    $stockdat = $this->db->select('stock_item_id')->from('ts_stock_items')->where('item_id', $row['item_id'])->get()->row_array();
 //                    $stockitem = ifset($stockdat, 'stock_item_id', '');
-                    if (!empty($row['stok_item'])) {
-                        $row['order_class']=$this->common_class;
+                        if (!empty($row['stok_item'])) {
+                            $row['order_class']=$this->common_class;
+                        }
                     }
                 }
             }
