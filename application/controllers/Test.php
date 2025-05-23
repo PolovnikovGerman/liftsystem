@@ -4391,4 +4391,29 @@ class Test extends CI_Controller
             echo 'Order '.$item['order_num'].' Updated '.PHP_EOL;
         }
     }
+
+    public function testcolors()
+    {
+        $this->db->select('i.item_id, i.printshop_inventory_id, i.item_number, i.item_name')->from('sb_items i');
+        $this->db->where('i.brand','BT')->where('i.printshop_inventory_id is not null');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $colors = $this->db->select('*')->from('sb_item_colors')->where('item_color_itemid', $item['item_id'])->get()->result_array();
+            foreach ($colors as $color) {
+                if (empty($color['printshop_color_id'])) {
+                    //
+                    echo 'Item '.$item['item_number'].'-'.$item['item_name'].' cant dind color '.$color['item_color'].PHP_EOL;
+                }
+            }
+            $imcolors = $this->db->select('*')->from('ts_inventory_colors')->where('inventory_item_id', $item['printshop_inventory_id'])->get()->result_array();
+            foreach ($imcolors as $imcolor) {
+                $chcolor = $this->db->select('*')->from('sb_item_colors')->where(['item_color_itemid' => $item['item_id'], 'printshop_color_id' => $imcolor['inventory_color_id']])->get()->row_array();
+                if (ifset($chcolor,'item_color_id',0)==0) {
+                    echo 'Item '.$item['item_number'].'-'.$item['item_name'].' cant dind color '.$imcolor['color'].'('.$imcolor['inventory_color_id'].')'.PHP_EOL;
+                    die();
+                }
+            }
+        }
+        echo 'Check Finished '.PHP_EOL;
+    }
 }
