@@ -324,6 +324,9 @@ body div {
     background: #f9faa8;
     color: #515151;
     opacity: 0.8;
+    border-left: 1px solid #515151;
+    border-right: 1px solid #515151;
+    border-top: 1px solid #515151;
 }
 .maincontentmenu_item.sigmasystem {
     color: #FFFFFF;
@@ -347,10 +350,9 @@ body div {
 .maincontentmenu_item.active.stressballs {
     background: #a3aefe;
 }
-/*.maincontentmenu_item.relievers.active {*/
-/*    background: #d7d7d7;*/
-/*    color: #000000;*/
-/*}*/
+.maincontentmenu_item.relievers.active {
+    background: #fcfcd1;
+}
 .maincontentmenu_devider {
     width: 20px;
 }
