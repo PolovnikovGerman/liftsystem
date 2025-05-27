@@ -388,33 +388,33 @@ body div {
     margin-left: 10px;
 }
 .contentsubmenu_item {
-    background: #e3e3e3;
+    background: #ffffff;
     cursor: pointer;
     height: 22px;
     line-height: 22px !important;
     margin-right: 7px;
-    border-left: 1px solid #969696;
-    border-right: 1px solid #969696;
-    border-top: 1px solid #969696;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     padding: 0 18px;
     font-size: 12px;
     color: #000000;
-    opacity: 0.8;
+    opacity: 0.4;
     margin-top: 2px;
 }
 .contentsubmenu_item.stressballs {
-    background: #a3aefe;
+    /*background: #a3aefe;*/
 }
 .contentsubmenu_item.relievers {
-    background: #fbfcc8;
+    /*background: #fbfcc8;*/
 }
 .contentsubmenu_item.active {
     background: #FFFFFF;
-    border-left: 1px solid #000000;
-    border-right: 1px solid #000000;
-    border-top: 1px solid #000000;
+    /*border-left: 1px solid #000000;*/
+    /*border-right: 1px solid #000000;*/
+    /*border-top: 1px solid #000000;*/
     font-size: 13px;
     font-weight: 600;
     opacity: 1;
