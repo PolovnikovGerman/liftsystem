@@ -301,11 +301,10 @@ body div {
 }
 .maincontentmenu_item {
     cursor: pointer;
-    /*width: 140px;*/
-    height: 24px;
-    line-height: 24px !important;
+    height: 22px;
+    line-height: 22px !important;
     margin-right: 10px;
-    margin-top: 6px;
+    margin-top: 7px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     display: flex;
@@ -359,7 +358,7 @@ body div {
     width: 15px;
     margin-right: 9px;
     position: relative;
-    top: -2px;
+    top: -1px;
 }
 .maincontentmenu_item_title {
     font-size: 13px;
