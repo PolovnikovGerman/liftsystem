@@ -301,14 +301,10 @@ body div {
 }
 .maincontentmenu_item {
     cursor: pointer;
-    /*width: 140px;*/
-    height: 24px;
-    line-height: 24px !important;
+    height: 22px;
+    line-height: 22px !important;
     margin-right: 10px;
-    border-left: 1px solid #000000;
-    border-right: 1px solid #000000;
-    border-top: 1px solid #000000;
-    margin-top: 6px;
+    margin-top: 7px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     display: flex;
@@ -317,13 +313,20 @@ body div {
     padding: 0 15px;
 }
 .maincontentmenu_item.stressballs {
-    background: #3736fe;
+    background: #5856ff;
     color: #FFFFFF;
-    opacity: 0.7;
+    opacity: 0.8;
+    border-left: 1px solid #383790;
+    border-right: 1px solid #383790;
+    border-top: 1px solid #383790;
 }
 .maincontentmenu_item.relievers {
     background: #f9faa8;
     color: #515151;
+    opacity: 0.8;
+    border-left: 1px solid #515151;
+    border-right: 1px solid #515151;
+    border-top: 1px solid #515151;
 }
 .maincontentmenu_item.sigmasystem {
     color: #FFFFFF;
@@ -340,11 +343,16 @@ body div {
     position: relative;
     margin-top: 0;
     opacity: 1;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
 }
-/*.maincontentmenu_item.relievers.active {*/
-/*    background: #d7d7d7;*/
-/*    color: #000000;*/
-/*}*/
+.maincontentmenu_item.active.stressballs {
+    background: #a3aefe;
+}
+.maincontentmenu_item.relievers.active {
+    background: #fcfcd1;
+}
 .maincontentmenu_devider {
     width: 20px;
 }
@@ -352,7 +360,7 @@ body div {
     width: 15px;
     margin-right: 9px;
     position: relative;
-    top: -2px;
+    top: -1px;
 }
 .maincontentmenu_item_title {
     font-size: 13px;
@@ -370,31 +378,43 @@ body div {
     margin-top: -1px;
     padding-top: 7px;
 }
+.maincontent_view.stressballs {
+    background: #a3aefe;
+}
+.maincontent_view.relievers {
+    background: #fbfcc8;
+}
 .contentsubmenu {
     margin-left: 10px;
 }
 .contentsubmenu_item {
-    background: #e3e3e3;
+    background: #ffffff;
     cursor: pointer;
     height: 22px;
     line-height: 22px !important;
     margin-right: 7px;
-    border-left: 1px solid #969696;
-    border-right: 1px solid #969696;
-    border-top: 1px solid #969696;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     padding: 0 18px;
     font-size: 12px;
     color: #000000;
-    opacity: 0.6;
+    opacity: 0.4;
     margin-top: 2px;
+}
+.contentsubmenu_item.stressballs {
+    /*background: #a3aefe;*/
+}
+.contentsubmenu_item.relievers {
+    /*background: #fbfcc8;*/
 }
 .contentsubmenu_item.active {
     background: #FFFFFF;
-    border-left: 1px solid #000000;
-    border-right: 1px solid #000000;
-    border-top: 1px solid #000000;
+    /*border-left: 1px solid #000000;*/
+    /*border-right: 1px solid #000000;*/
+    /*border-top: 1px solid #000000;*/
     font-size: 13px;
     font-weight: 600;
     opacity: 1;

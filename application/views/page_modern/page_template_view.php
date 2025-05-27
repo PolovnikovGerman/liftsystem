@@ -10,7 +10,7 @@
         <div class="maincontentmenu">
             <?=$main_menu?>
         </div>
-        <div class="maincontent_view">
+        <div class="maincontent_view <?=$brandclass?>">
             <?=$content_view?>
         </div>
     </div>
