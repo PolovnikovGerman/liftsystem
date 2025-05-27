@@ -4539,23 +4539,48 @@ class Test extends CI_Controller
         $this->orders_model->update_shipped_orders();
     }
 
-    public function updateprintready() {
-        $this->db->select('oic.order_itemcolor_id, o.order_num, o.print_ready')->from('ts_order_itemcolors oic')->join('ts_order_items oi','oi.order_item_id=oic.order_item_id');
-        $this->db->join('ts_orders o','o.order_id=oi.order_id')->where('o.print_ready > ',0);
+//    public function updateprintready() {
+//        $this->db->select('oic.order_itemcolor_id, o.order_num, o.print_ready')->from('ts_order_itemcolors oic')->join('ts_order_items oi','oi.order_item_id=oic.order_item_id');
+//        $this->db->join('ts_orders o','o.order_id=oi.order_id')->where('o.print_ready > ',0);
+//        $items = $this->db->get()->result_array();
+//        foreach ($items as $item) {
+//            $this->db->where('order_itemcolor_id', $item['order_itemcolor_id']);
+//            $this->db->set('print_ready', $item['print_ready']);
+//            $this->db->update('ts_order_itemcolors');
+//            echo 'Order '.$item['order_num'].' Updated '.PHP_EOL;
+//        }
+//        $this->db->select('oi.order_item_id, o.order_num, o.plates_ready')->from('ts_order_items oi')->join('ts_orders o','o.order_id=oi.order_id')->where('o.plates_ready > ',0);
+//        $items = $this->db->get()->result_array();
+//        foreach ($items as $item) {
+//            $this->db->where('order_item_id', $item['order_item_id']);
+//            $this->db->set('plates_ready', $item['plates_ready']);
+//            $this->db->update('ts_order_items');
+//            echo 'Order '.$item['order_num'].' Updated '.PHP_EOL;
+//        }
+//    }
+
+    public function testcolors()
+    {
+        $this->db->select('i.item_id, i.printshop_inventory_id, i.item_number, i.item_name')->from('sb_items i');
+        $this->db->where('i.brand','BT')->where('i.printshop_inventory_id is not null');
         $items = $this->db->get()->result_array();
         foreach ($items as $item) {
-            $this->db->where('order_itemcolor_id', $item['order_itemcolor_id']);
-            $this->db->set('print_ready', $item['print_ready']);
-            $this->db->update('ts_order_itemcolors');
-            echo 'Order '.$item['order_num'].' Updated '.PHP_EOL;
+            $colors = $this->db->select('*')->from('sb_item_colors')->where('item_color_itemid', $item['item_id'])->get()->result_array();
+            foreach ($colors as $color) {
+                if (empty($color['printshop_color_id'])) {
+                    //
+                    echo 'Item '.$item['item_number'].'-'.$item['item_name'].' cant dind color '.$color['item_color'].PHP_EOL;
+                }
+            }
+            $imcolors = $this->db->select('*')->from('ts_inventory_colors')->where('inventory_item_id', $item['printshop_inventory_id'])->get()->result_array();
+            foreach ($imcolors as $imcolor) {
+                $chcolor = $this->db->select('*')->from('sb_item_colors')->where(['item_color_itemid' => $item['item_id'], 'printshop_color_id' => $imcolor['inventory_color_id']])->get()->row_array();
+                if (ifset($chcolor,'item_color_id',0)==0) {
+                    echo 'Item '.$item['item_number'].'-'.$item['item_name'].' cant dind color '.$imcolor['color'].'('.$imcolor['inventory_color_id'].')'.PHP_EOL;
+                    die();
+                }
+            }
         }
-        $this->db->select('oi.order_item_id, o.order_num, o.plates_ready')->from('ts_order_items oi')->join('ts_orders o','o.order_id=oi.order_id')->where('o.plates_ready > ',0);
-        $items = $this->db->get()->result_array();
-        foreach ($items as $item) {
-            $this->db->where('order_item_id', $item['order_item_id']);
-            $this->db->set('plates_ready', $item['plates_ready']);
-            $this->db->update('ts_order_items');
-            echo 'Order '.$item['order_num'].' Updated '.PHP_EOL;
-        }
+        echo 'Check Finished '.PHP_EOL;
     }
 }

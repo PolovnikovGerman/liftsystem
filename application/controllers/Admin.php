@@ -81,7 +81,8 @@ class Admin extends MY_Controller
         ];
         $dat = $this->template->prepare_pagecontent($options);
         $content_options['brand'] = $brand;
-        $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => '' ], TRUE);
+        $brandclass = ($brand=='SR' ? 'relievers' : ($brand=='SG' ? '' : 'stressballs'));
+        $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass ], TRUE);
         $content_view = $this->load->view('admin/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $dat['modal_view'] = $this->load->view('admin/modal_view',[], TRUE);

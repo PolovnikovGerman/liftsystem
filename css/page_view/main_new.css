@@ -319,11 +319,12 @@ body div {
 .maincontentmenu_item.stressballs {
     background: #3736fe;
     color: #FFFFFF;
-    opacity: 0.7;
+    opacity: 0.8;
 }
 .maincontentmenu_item.relievers {
     background: #f9faa8;
     color: #515151;
+    opacity: 0.8;
 }
 .maincontentmenu_item.sigmasystem {
     color: #FFFFFF;
@@ -370,6 +371,12 @@ body div {
     margin-top: -1px;
     padding-top: 7px;
 }
+.maincontent_view.stressballs {
+    background: #a3aefe;
+}
+.maincontent_view.relievers {
+    background: #fbfcc8;
+}
 .contentsubmenu {
     margin-left: 10px;
 }
@@ -387,8 +394,14 @@ body div {
     padding: 0 18px;
     font-size: 12px;
     color: #000000;
-    opacity: 0.6;
+    opacity: 0.8;
     margin-top: 2px;
+}
+.contentsubmenu_item.stressballs {
+    background: #a3aefe;
+}
+.contentsubmenu_item.relievers {
+    background: #fbfcc8;
 }
 .contentsubmenu_item.active {
     background: #FFFFFF;
