@@ -4561,26 +4561,49 @@ class Test extends CI_Controller
 
     public function testcolors()
     {
-        $this->db->select('i.item_id, i.printshop_inventory_id, i.item_number, i.item_name')->from('sb_items i');
-        $this->db->where('i.brand','BT')->where('i.printshop_inventory_id is not null');
-        $items = $this->db->get()->result_array();
-        foreach ($items as $item) {
-            $colors = $this->db->select('*')->from('sb_item_colors')->where('item_color_itemid', $item['item_id'])->get()->result_array();
-            foreach ($colors as $color) {
-                if (empty($color['printshop_color_id'])) {
-                    //
-                    echo 'Item '.$item['item_number'].'-'.$item['item_name'].' cant dind color '.$color['item_color'].PHP_EOL;
-                }
+        $startdate = strtotime('2025-03-17');
+        $this->db->select('o.order_num, o.order_date, o.brand, ii.inventory_item_id, ii.item_num, ii.item_name, oic.item_color, oic.order_itemcolor_id');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_items oi','oi.order_id = o.order_id');
+        $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
+        $this->db->join('ts_inventory_items ii', 'ii.inventory_item_id = oi.inventory_item_id');
+        $this->db->where('o.order_date >= ', $startdate);
+        $this->db->where('oi.inventory_item_id is not null');
+        $this->db->where('oic.inventory_color_id',null);
+        $this->db->order_by('o.order_id');
+        $orders = $this->db->get()->result_array();
+
+        foreach ($orders as $order) {
+            $newcolor = $this->_inventory_color($order['inventory_item_id'], $order['item_color']);
+            if (!empty($newcolor)) {
+                $this->db->where('order_itemcolor_id', $order['order_itemcolor_id']);
+                $this->db->set('inventory_color_id', $newcolor);
+                $this->db->update('ts_order_itemcolors');
+            } else {
+                echo 'Order # '.$order['order_num'].' ('.$order['brand'].')'.' '.$order['item_num'].'-'.$order['item_name'].' '.$order['item_color'].PHP_EOL;
             }
-            $imcolors = $this->db->select('*')->from('ts_inventory_colors')->where('inventory_item_id', $item['printshop_inventory_id'])->get()->result_array();
-            foreach ($imcolors as $imcolor) {
-                $chcolor = $this->db->select('*')->from('sb_item_colors')->where(['item_color_itemid' => $item['item_id'], 'printshop_color_id' => $imcolor['inventory_color_id']])->get()->row_array();
-                if (ifset($chcolor,'item_color_id',0)==0) {
-                    echo 'Item '.$item['item_number'].'-'.$item['item_name'].' cant dind color '.$imcolor['color'].'('.$imcolor['inventory_color_id'].')'.PHP_EOL;
-                    die();
+        }
+    }
+
+    private function _inventory_color($inventory_item_id, $color)
+    {
+        $outcolor = '';
+        $colordat = $this->db->select('max(inventory_color_id) as color_id, count(inventory_color_id) as cnt')->from('ts_inventory_colors')->where('inventory_item_id', $inventory_item_id)->get()->row_array();
+        if ($colordat['cnt']==1) {
+            // Only one color
+            $outcolor = $colordat['color_id'];
+        } else {
+            $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where(['inventory_item_id' => $inventory_item_id, 'color' => $color])->get()->row_array();
+            if (ifset($invdat, 'inventory_color_id', 0) > 0) {
+                $outcolor = $invdat['inventory_color_id'];
+            } else {
+                $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inventory_item_id)->like('color', $color, 'after')->get()->row_array();
+                if (ifset($invdat, 'inventory_color_id', 0) > 0) {
+                    $outcolor = $invdat['inventory_color_id'];
                 }
             }
         }
-        echo 'Check Finished '.PHP_EOL;
+        return $outcolor;
     }
+
 }
