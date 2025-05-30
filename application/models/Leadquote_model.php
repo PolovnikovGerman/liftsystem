@@ -3400,7 +3400,7 @@ class Leadquote_model extends MY_Model
                         $quotecolor['item_color'] = $newinvcolor['color'];
                     } else {
                         $item_error = $itemid * (-1);
-                        $item_error_msg = 'The name of color option "'.$quotecolor['item_color'].'" may have changed since last order.\n  Please select color from current list';
+                        $item_error_msg = 'The name of color option ~'.$quotecolor['item_color'].'~ may have changed since last order.\n  Please select color from current list';
                     }
                 }
                 $options=array(
