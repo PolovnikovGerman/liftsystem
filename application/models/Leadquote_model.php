@@ -3378,6 +3378,9 @@ class Leadquote_model extends MY_Model
             $itemsubtotal = $itemimprint = 0;
             // Get color items
             $coloritems = [];
+            $item_error = '';
+            $item_error_msg = '';
+
             $this->db->select('*');
             $this->db->from('ts_quote_itemcolors');
             $this->db->where('quote_item_id', $quoteitem['quote_item_id']);
@@ -3389,7 +3392,17 @@ class Leadquote_model extends MY_Model
                 if ($colorid==$qutecolorcnt && count($itemdata['colors']) > 1) {
                     $addcolor = 1;
                 }
-
+                if (!empty($quoteitem['inventory_item_id']) && empty($quotecolor['inventory_color_id'])) {
+                    // Check inventory_color_id
+                    $quotecolor['inventory_color_id'] = $this->_inventory_color($quoteitem['inventory_item_id'], $quotecolor['item_color']);
+                    if (!empty($quotecolor['inventory_color_id'])) {
+                        $newinvcolor = $this->db->select('color')->from('ts_inventory_colors')->where('inventory_color_id', $quotecolor['inventory_color_id'])->get()->row_array();
+                        $quotecolor['item_color'] = $newinvcolor['color'];
+                    } else {
+                        $item_error = $itemid * (-1);
+                        $item_error_msg = 'The name of color option ~'.$quotecolor['item_color'].'~ may have changed since last order.  Please select color from current list';
+                    }
+                }
                 $options=array(
                     'order_item_id'=> $itemid*(-1),
                     'item_id'=> $colorid*(-1),
@@ -3407,14 +3420,6 @@ class Leadquote_model extends MY_Model
                         $out_colors=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
                     }
                     // check that current color exist
-                }
-                if (!empty($quoteitem['inventory_item_id']) && empty($quotecolor['inventory_color_id'])) {
-                    // Check inventory_color_id
-                    $this->db->select('*')->from('ts_inventory_colors')->where(['inventory_item_id' => $quoteitem['inventory_item_id'], 'color' => $quotecolor['item_color']]);
-                    $invcolordat = $this->db->get()->row_array();
-                    if (ifset($invcolordat, 'inventory_color_id', 0) > 0) {
-                        $quotecolor['inventory_color_id'] = $invcolordat['inventory_color_id'];
-                    }
                 }
                 $itemsubtotal+=$quotecolor['item_qty']*$quotecolor['item_price'];
                 $newtrackidx = -1;
@@ -3728,6 +3733,8 @@ class Leadquote_model extends MY_Model
         $out['order_system_type']=$defsystem;
         $out['order']=$data;
         $out['order_items'] = $order_items;
+        $out['item_error'] = $item_error;
+        $out['item_error_msg'] = $item_error_msg;
         $out['result'] = $this->success_result;
         return $out;
     }
