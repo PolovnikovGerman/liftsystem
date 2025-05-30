@@ -7320,6 +7320,8 @@ Class Leadorder_model extends My_Model {
         $out['claydocs'] = [];
         $out['previewdocs'] = [];
         $out['extendview'] = 1;
+        $out['item_error'] = $new_data['item_error'];
+        $out['item_error_msg'] = $new_data['item_error_msg'];
         if ($new_data['order']['brand']=='SR') {
             $out['extendview'] = 0;
             $items = $new_data['order_items'];
@@ -7535,6 +7537,8 @@ Class Leadorder_model extends My_Model {
         }
         // Order Items
         $neworder_items=array();
+        $item_error = '';
+        $item_error_msg = '';
         if ($order_type=='new') {
             if ($order['brand']=='SR') {
                 $neworder_items = $this->_create_empty_orderitems();
@@ -7560,15 +7564,23 @@ Class Leadorder_model extends My_Model {
                         $coloroptions=array(
                             'order_item_id'=>(-1)*$idx,
                             'item_id'=>(-1)*($itmid),
-                            'colors'=>$pitem['colors'],
+                            'colors'=>$irow['colors'],
                             'item_color'=>$pitem['item_color'],
                             'brand' => $order['brand'],
                         );
                         // if ($order['brand']=='SR') {
                         if (!empty($irow['inventory_item_id'])) {
-                            $out_colors=$this->load->view('leadorderdetails/sradditem_color_view', $coloroptions, TRUE);
                             // Get inventory color
                              $pitem['inventory_color_id'] = $this->_inventory_color($irow['inventory_item_id'], $pitem['item_color']);
+                             if (!empty($pitem['inventory_color_id'])) {
+                                 $newinvcolor = $this->db->select('color')->from('ts_inventory_colors')->where('inventory_color_id', $pitem['inventory_color_id'])->get()->row_array();
+                                 $pitem['item_color'] = $newinvcolor['color'];
+                                 $coloroptions['item_color'] = $newinvcolor['color'];
+                             } else {
+                                 $item_error = (-1)*$idx;
+                                 $item_error_msg = 'The name of color option ~'.$pitem['item_color'].'~ may have changed since last order. Please select color from current list';
+                             }
+                            $out_colors=$this->load->view('leadorderdetails/sradditem_color_view', $coloroptions, TRUE);
                         } else {
                             $out_colors=$this->load->view('leadorderdetails/item_color_choice', $coloroptions, TRUE);
                             $pitem['inventory_color_id'] = NULL;
@@ -8058,6 +8070,8 @@ Class Leadorder_model extends My_Model {
         }
         // Recalc totals for new order
         $out=$this->_dublicate_order_totals($neworder,$contacts,$neworder_items, $newartw,$newshipping,$newshipaddr,$newbilling,$message,$countries,$newcharge,$artlocations);
+        $out['item_error'] = $item_error;
+        $out['item_error_msg'] = $item_error_msg;
         return $out;
     }
 //
@@ -11778,13 +11792,19 @@ Class Leadorder_model extends My_Model {
     private function _inventory_color($inventory_item_id, $color)
     {
         $outcolor = '';
-        $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where(['inventory_item_id' => $inventory_item_id, 'color' => $color])->get()->row_array();
-        if (ifset($invdat, 'inventory_color_id', 0) > 0) {
-            $outcolor = $invdat['inventory_color_id'];
+        $colordat = $this->db->select('max(inventory_color_id) as color_id, count(inventory_color_id) as cnt')->from('ts_inventory_colors')->where('inventory_item_id', $inventory_item_id)->get()->row_array();
+        if ($colordat['cnt']==1) {
+            // Only one color
+            $outcolor = $colordat['color_id'];
         } else {
-            $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inventory_item_id)->like('color', $color, 'after')->get()->row_array();
+            $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where(['inventory_item_id' => $inventory_item_id, 'color' => $color])->get()->row_array();
             if (ifset($invdat, 'inventory_color_id', 0) > 0) {
                 $outcolor = $invdat['inventory_color_id'];
+            } else {
+                $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inventory_item_id)->like('color', $color, 'after')->get()->row_array();
+                if (ifset($invdat, 'inventory_color_id', 0) > 0) {
+                    $outcolor = $invdat['inventory_color_id'];
+                }
             }
         }
         return $outcolor;
