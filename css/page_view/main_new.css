@@ -734,17 +734,22 @@ body div {
     height: 23px;
     line-height: 23px !important;
     padding-left: 7px;
-    font-size: 14px;
+    font-size: 13px;
     margin-bottom: 5px;
     cursor: pointer;
 }
 .submenuitem.bluetrack {
-    background-color: #3736fe;
+    /*background-color: #3736fe;*/
+    background: #5856ff;
+    opacity: 0.8;
     color: #ffffff;
-    border: 1px solid #ffffff;
+    /* border: 1px solid #ffffff*/;
+    border:  1px solid #000000;
 }
 .submenuitem.bluetrack:hover {
-    background-color: #0100aa;
+    background-color: #0000FF;
+    color: #FFFFFF;
+    border:  1px solid #ffffff;
 }
 .submenuitem.relievers {
     background-color: #ebebeb;
