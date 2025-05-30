@@ -7578,7 +7578,7 @@ Class Leadorder_model extends My_Model {
                                  $coloroptions['item_color'] = $newinvcolor['color'];
                              } else {
                                  $item_error = (-1)*$idx;
-                                 $item_error_msg = 'The name of color option ~'.$pitem['item_color'].'~ may have changed since last order.\n Please select color from current list';
+                                 $item_error_msg = 'The name of color option ~'.$pitem['item_color'].'~ may have changed since last order.<br> Please select color from current list';
                              }
                             $out_colors=$this->load->view('leadorderdetails/sradditem_color_view', $coloroptions, TRUE);
                         } else {
