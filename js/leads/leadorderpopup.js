@@ -151,6 +151,13 @@ function navigation_init() {
                         }
                     }
                     $("#loader").hide();
+                    // Show error
+                    if ($("#duplerroritemmsg").length > 0) {
+                        var errmsg = $("#duplerroritemmsg").val();
+                        alert(errmsg);
+                        var errfld = $("#duplerroritem").val();
+                        $("span.addnewcolor[data-item='"+errfld+"']").trigger('click');
+                    }
                 } else {
                     $("#loader").hide();
                     show_error(response);
