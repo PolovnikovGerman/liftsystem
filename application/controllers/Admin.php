@@ -32,7 +32,7 @@ class Admin extends MY_Controller
         $head['title']='Admin';
         $brand = $this->menuitems_model->get_current_brand();
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink,'');
-
+        $start = '';
         $content_options = [];
         foreach ($menu as $row) {
             if ($row['item_link']=='#usersview') {
