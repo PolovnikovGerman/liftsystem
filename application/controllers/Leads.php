@@ -65,6 +65,7 @@ class Leads extends My_Controller {
         $start = $this->input->get('start', TRUE);
         $content_options['menu'] = $menu;
         $gmaps = 0;
+        $newcustomforms = 0;
         foreach ($menu as $row) {
             if ($row['item_link'] == '#leadsview') {
                 $head['styles'][]=array('style'=>'/css/leads/leadsview.css');
@@ -96,6 +97,9 @@ class Leads extends My_Controller {
                 $head['scripts'][] = array('src' => '/js/leads/customsbform.js');
                 $head['outscripts'][] = array('src' => 'https://cdn.jsdelivr.net/npm/chart.js');
                 $content_options['customsbformview'] = $this->_prepare_customsbform_view($brand); // $brand, $top_menu
+                $search=array('assign'=>1, 'hideincl' => 1, 'brand'=>$brand);
+                $this->load->model('customform_model');
+                $newcustomforms = $this->customform_model->get_count_forms($search);
             } elseif ($row['item_link']=='#checkoutattemptsview') {
                 $head['styles'][]=array('style'=>'/css/leads/orderattempts.css');
                 $head['scripts'][]=array('src'=>'/js/leads/orderattempts.js');
@@ -170,10 +174,9 @@ class Leads extends My_Controller {
             $options['outscripts'] = $head['outscripts'];
         }
         $dat = $this->template->prepare_pagecontent($options);
-//        $content_options['left_menu'] = $dat['left_menu'];
         $content_options['brand'] = $brand;
         $brandclass = ($brand=='SR' ? 'relievers' : ($brand=='SG' ? '' : 'stressballs'));
-        $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass ], TRUE);
+        $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass, 'customforms' => $newcustomforms ], TRUE);
         $content_view = $this->load->view('leads/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $dat['modal_view'] = $this->load->view('leads/modal_view', [], TRUE);
@@ -778,6 +781,8 @@ class Leads extends My_Controller {
                                 if ($dat['result']==$this->success_result) {
                                     $error = '';
                                     $mdata['leadid'] = $dat['lead_id'];
+                                    $search=array('assign'=>1, 'hideincl' => 1, 'brand'=>$postdata['brand']);
+                                    $mdata['totalnew'] = $this->customform_model->get_count_forms($search);
                                 }
                             }
                         }
@@ -1100,6 +1105,8 @@ class Leads extends My_Controller {
                     $error = $res['msg'];
                     if ($res['result']==$this->success_result) {
                         $error = '';
+                        $search=array('assign'=>1, 'hideincl' => 1, 'brand'=>$postdata['brand']);
+                        $mdata['totalnew'] = $this->customform_model->get_count_forms($search);
                     }
                 }
             }
@@ -1138,9 +1145,6 @@ class Leads extends My_Controller {
             $mdata['totals'] = count($data);
             $event = 'hover'; // click
             $expand = 0;
-//            if (count($data) > 21) {
-//                $expand = 1;
-//            }
             if (count($data)==0) {
                 $mdata['content'] = $this->load->view('customsbforms/content_empty_view',[],TRUE);
             } else {
@@ -1171,6 +1175,7 @@ class Leads extends My_Controller {
             $mdata=[];
             $error = 'Empty Custom Form';
             $postdata = $this->input->post();
+            $this->load->model('leads_model');
             $this->load->model('customform_model');
             if (ifset($postdata,'form_id',0) > 0) {
                 $res = $this->customform_model->get_customform_details($postdata['form_id']);
@@ -1185,7 +1190,16 @@ class Leads extends My_Controller {
                         'data' => $res['data'],
                         'attach' => $attachm_view,
                     ];
+                    // Build Select
+                    $leadoptions=array(
+                        'orderby'=>'lead_number',
+                        'direction'=>'desc',
+                        'brand' => $res['data']['brand'],
+                    );
+                    $leaddat=$this->leads_model->get_lead_list($leadoptions);
+                    $leadlist = $this->leads_model->prepare_assign_list($leaddat);
                     $mdata['content'] = $this->load->view('customsbforms/details_view', $options, TRUE);
+                    $mdata['footer'] = $this->load->view('customsbforms/footer_view', ['custom_quote_id' => $postdata['form_id'], 'leads' => $leadlist], TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
