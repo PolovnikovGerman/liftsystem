@@ -781,9 +781,10 @@ Class Leads_model extends MY_Model
 //    }
 //
     public function get_lead_list($options=array()) {
-        $this->db->select('lead_id, concat("L" , lead_number ) as lead_number, lead_customer, lead_item');
-        $this->db->from('ts_leads');
-        $this->db->where_in('lead_type',array(1,2,6));
+        $this->db->select('l.lead_id, concat("L" , l.lead_number ) as lead_number, l.lead_customer, l.lead_item, l.lead_item_id, l.lead_company, i.item_number');
+        $this->db->from('ts_leads l');
+        $this->db->join('sb_items i','i.item_id=l.lead_item_id','left');
+        $this->db->where_in('l.lead_type',array(1,2,6));
         if (isset($options['orderby'])) {
             if (isset($options['direction'])) {
                 $this->db->order_by($options['orderby'],$options['direction']);
@@ -791,14 +792,14 @@ Class Leads_model extends MY_Model
                 $this->db->order_by($options['orderby']);
             }
         } else {
-            $this->db->order_by('lead_number');
+            $this->db->order_by('l.lead_number');
         }
         if (isset($options['brand'])) {
             if ($options['brand']!='ALL') {
                 if ($options['brand']=='SR') {
-                    $this->db->where('brand', $options['brand']);
+                    $this->db->where('l.brand', $options['brand']);
                 } else {
-                    $this->db->where_in('brand', ['BT','SB']);
+                    $this->db->where_in('l.brand', ['BT','SB']);
                 }
             }
         }
@@ -2388,6 +2389,30 @@ Class Leads_model extends MY_Model
         $this->db->update('ts_leads');
     }
 
+    public function prepare_assign_list($leads)
+    {
+        $out = [];
+        foreach ($leads as $lead)
+        {
+            $leadval = $lead['lead_number'].' - ';
+            if (!empty($lead['lead_company'])) {
+                $leadval.=$lead['lead_company'].' - ';
+            }
+            if ($lead['lead_item_id']<0) {
+                $leadval.='CUSTOM - ';
+            } elseif (!empty($lead['item_number'])) {
+                $leadval.=$lead['item_number'].' - ';
+            }
+            if (!empty($lead['lead_item'])) {
+                $leadval.=$lead['lead_item'];
+            }
+            $out[] = [
+                'id' => $lead['lead_id'],
+                'value' => $leadval,
+            ];
+        }
+        return $out;
+    }
 
 }
 /* End of file leads_model.php */
