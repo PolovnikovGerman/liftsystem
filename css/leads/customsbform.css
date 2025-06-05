@@ -465,6 +465,22 @@ csf-group-1 p, .csf-group-2 p {
     font-weight: normal;
     width: 332px!important;
 }
+.customform_lead_select .select2-container--default .select2-selection--single .select2-selection__rendered {
+    text-align: left;
+    font-size: 12px;
+    height: 20px;
+    line-height: 20px;
+}
+.customform_lead_select .select2-container--default .select2-selection--single {
+    height: 20px;
+    opacity: 1;
+}
+.customform_lead_select .select2-selection__arrow {
+    height: 18px!important;
+}
+.select2-container--default.select2-container--disabled .select2-selection--single {
+    opacity: .6;
+}
 .customform_lead_assign {
     display: none;
     background: -webkit-linear-gradient(top, #777eff, #4647ff);
@@ -487,8 +503,9 @@ csf-group-1 p, .csf-group-2 p {
     display: block;
 }
 .sbcustomformfooter_right {
-    float: right!important;
-    margin-top: 16px;
+    float: right !important;
+    margin-top: 20px;
+    margin-right: 16px;
 }
 .sbcustomform_newlead {
     background: -webkit-linear-gradient(top, #777eff, #4647ff);
