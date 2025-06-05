@@ -405,16 +405,21 @@ body div {
     margin-top: 2px;
 }
 .contentsubmenu_item.stressballs {
-    /*background: #a3aefe;*/
+    opacity: 1;
+    background: #c8cefe;
+    border-left: 1px solid #626898;
+    border-right: 1px solid #626898;
+    border-top: 1px solid #626898;
+    color: #626898;
 }
 .contentsubmenu_item.relievers {
     /*background: #fbfcc8;*/
 }
 .contentsubmenu_item.active {
     background: #FFFFFF;
-    /*border-left: 1px solid #000000;*/
-    /*border-right: 1px solid #000000;*/
-    /*border-top: 1px solid #000000;*/
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
     font-size: 13px;
     font-weight: 600;
     opacity: 1;
@@ -423,6 +428,7 @@ body div {
     height: 25px;
     line-height: 25px !important;
     margin-top: 0;
+    color: #000000;
 }
 .contentdata_view {
     border-top: 1px solid #000000;
@@ -770,4 +776,18 @@ body div {
     background-color: #00004c;
     color: #ffffff;
     border: 1px solid #ffffff;
+}
+.newcustomformsinfo {
+    position: relative;
+    left: -25px;
+    top: -6px;
+    width: 21px;
+    height: 21px;
+    border: 1px solid #000000;
+    line-height: 21px;
+    font-size: 11px;
+    border-radius: 10px;
+    text-align: center;
+    background: #efefef;
+    margin-right: -25px;
 }

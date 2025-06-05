@@ -17,9 +17,9 @@
                 <i class="fa fa-undo" aria-hidden="true"></i>
             <?php } ?>
         </div>
-        <div class="status <?=empty($dat['lead_id']) ? 'assignform' : ''?>">
+        <div class="status">
             <?php if (empty($dat['lead_number'])) { ?>
-                <img src="/img/art/assign_lead_btn.png"/>
+                <div class="sbformnew">New</div>
             <?php } else { ?>
                 L<?=$dat['lead_number']?>
             <?php } ?>
