@@ -781,10 +781,13 @@ Class Leads_model extends MY_Model
 //    }
 //
     public function get_lead_list($options=array()) {
+        $date_limit = strtotime(date('Y-m-d',time()) . ' -6 months');
         $this->db->select('l.lead_id, concat("L" , l.lead_number ) as lead_number, l.lead_customer, l.lead_item, l.lead_item_id, l.lead_company, i.item_number');
         $this->db->from('ts_leads l');
         $this->db->join('sb_items i','i.item_id=l.lead_item_id','left');
         $this->db->where_in('l.lead_type',array(1,2,6));
+        // Limit 6 months
+        $this->db->where('l.lead_date >= ', $date_limit);
         if (isset($options['orderby'])) {
             if (isset($options['direction'])) {
                 $this->db->order_by($options['orderby'],$options['direction']);
