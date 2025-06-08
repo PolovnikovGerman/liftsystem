@@ -10020,9 +10020,9 @@ Class Leadorder_model extends My_Model {
             $logoHeight = 22.855;
             $logoYPos = 5;
         } else {
-            $logoFile = FCPATH."/img/invoice/logos-2.eps";
-            $logoWidth = 105.655;
-            $logoHeight = 12.855;
+            $logoFile = FCPATH."/img/invoice/logos-2-upd6.eps";
+            $logoWidth = 86.4;
+            $logoHeight = 20;
             $logoYPos = 10;
         }
         $logoXPos = 5;
@@ -10132,12 +10132,11 @@ Class Leadorder_model extends My_Model {
             // $pdf->Text(5,45.88,'www.stressrelievers.com'); // , 'http://www.bluetrack.com');
         } else {
             $pdf->SetFont('','',12.046857);
-            $pdf->Text(5, 27.88, '855 Bloomfield Ave');
-            $pdf->Text(5, 33.88, 'Clifton, NJ 07012');
-            $pdf->Text(5,39.88, 'Call Us at');
+            $pdf->Text(5, 35.88, '855 Bloomfield Ave');
+            $pdf->Text(5, 42.88, 'Clifton, NJ 07012');
             $pdf->SetTextColor(0,0,255);
-            $pdf->Text(23,39.88, '1-800-790-6090');
-            $pdf->Text(5,45.88,'www.bluetrack.com'); // , 'http://www.bluetrack.com');
+            $pdf->Text(5, 48.88, '1-800-790-6090');
+            $pdf->Text(42, 48.88,'www.stressballs.com'); // , 'www.bluetrack.com');
         }
         $pdf->SetTextColor(65, 65, 65);
         $pdf->ImageEps($dateImage, $dateXPos, $dateYPos, $dateWidth, $dateHeight);
