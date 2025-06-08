@@ -437,6 +437,8 @@ Class User_model extends MY_Model
         if ($active==1) {
             // $this->db->where('user_status <',3);
             $this->db->where('user_status ',1);
+        } elseif ($active==0) {
+            $this->db->order_by('user_status');
         }
         $res=$this->db->get()->result_array();
         return $res;
