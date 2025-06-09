@@ -1881,11 +1881,12 @@ Class Orders_model extends MY_Model
                     'email' => $orddat['contact_email'],
                     'phone' => $orddat['contact_phone'],
                     'item_color' => ifset($orddat, 'item_color',''),
-                    'customer_location' => '&nbsp;',
+                    'customer_location' => $orddat['customer_location'],
                     'cc_details' => $cc_card,
                     'last_field' => '&nbsp;',
                     'row_class' => 'orderdat',
                     'artsubm' => '&nbsp;',
+                    'customer_ip' => $orddat['customer_ip'],
                 );
             } elseif ($row['attempt']==1) {
                 $attdat = $this->attempt_data($row['order_id']);
@@ -1904,6 +1905,7 @@ Class Orders_model extends MY_Model
                     'last_field' => $attdat['last_field'],
                     'row_class' => '',
                     'artsubm' => $attdat['artsubm'],
+                    'customer_ip' => $attdat['customer_ip'],
                 );
             } else {
                 // Basket
@@ -1923,6 +1925,7 @@ Class Orders_model extends MY_Model
                     'last_field' => $basket['last_field'],
                     'row_class' => '',
                     'artsubm' => $basket['artsubm'],
+                    'customer_ip' => $basket['customer_ip'],
                 );
             }
             $outarr[] = $datrow;
@@ -1946,6 +1949,16 @@ Class Orders_model extends MY_Model
             $res['item'] = $newitem['item'];
             $res['item_qty'] = $newitem['item_qty'];
             $res['item_color'] = $newitem['item_color'];
+            $location = '';
+            $addrres = $this->db->select('*')->from('sb_geoips')->where('user_ip', $res['customer_ip'])->get()->row_array();
+            if (ifset($addrres,'geoip_id',0) > 0) {
+                $location = $addrres['city_name'].' ';
+                if (!empty($addrres['region_code'])) {
+                    $location.=$addrres['region_code'].' ';
+                }
+                $location.=$addrres['country_code'];
+            }
+            $res['customer_location'] = $location;
         }
         return $res;
     }
@@ -1970,6 +1983,7 @@ Class Orders_model extends MY_Model
             'cc_details' => '&nbsp;',
             'last_field' => '&nbsp;',
             'artsubm' => '&nbsp;',
+            'customer_ip' => '&nbsp;',
         );
         if (!empty($cartdat)) {
             $data = unserialize($cartdat);
@@ -2066,8 +2080,9 @@ Class Orders_model extends MY_Model
             'cc_details' => '&nbsp;',
             'last_field' => '&nbsp;',
             'artsubm' => '&nbsp;',
+            'customer_ip' => '&nbsp;',
         ];
-        $this->db->select('basket_id, contact_name, contact_phone, contact_person, contact_company, contact_email, order_total, user_ip');
+        $this->db->select('basket_id, contact_name, contact_phone, contact_person, contact_company, contact_email, order_total, user_ip as customer_ip');
         $this->db->select('credit_card_system, credit_card_number, credit_card_month, credit_card_year');
         $this->db->from('sb_baskets');
         $this->db->where('basket_id', $basket_id);
@@ -2082,7 +2097,7 @@ Class Orders_model extends MY_Model
             } else {
                 $out['customer'] = $dat['contact_person'];
             }
-            $geodat = $this->shipping_model->ipdata_exist($dat['user_ip']);
+            $geodat = $this->shipping_model->ipdata_exist($dat['customer_ip']);
             if ($geodat['result']==TRUE) {
                 $locat = $geodat['city_name'];
                 if (!empty($geodat['region_code'])) {
@@ -2111,6 +2126,7 @@ Class Orders_model extends MY_Model
             $out['item'] = $itemdat['item'];
             $out['item_qty'] = $itemdat['item_qty'];
             $out['item_color'] = $itemdat['item_color'];
+            $out['customer_ip'] = $dat['customer_ip'];
         }
         return $out;
     }
