@@ -16,11 +16,11 @@
                         <option value="">All Sales Reps</option>
                         <?php $curstatus = $replicas[0]['user_status'];?>
                         <?php foreach ($replicas as $row) {?>
-                            <option value="<?=$row['user_id']?>" <?=($row['user_id']==$user_id ? 'selected="selected"' : '')?> ><?=$row['user_name']?></option>
                             <?php if ($row['user_status']!==$curstatus) : ?>
                                 <option disabled>-----------</option>
                                 <?php $curstatus=$row['user_status'];?>
                             <?php endif; ?>
+                            <option value="<?=$row['user_id']?>" <?=($row['user_id']==$user_id ? 'selected="selected"' : '')?> ><?=$row['user_name']?></option>
                         <?php } ?>
                     <?php } else { ?>
                         <?php foreach ($replicas as $row) {?>
