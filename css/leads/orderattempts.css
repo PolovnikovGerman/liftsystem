@@ -206,7 +206,7 @@ input.attparams {
 .attemptdue_tablerow {
     clear: both;
     float: left;
-    width: 1199px;
+    /* width: 1199px; */
     color: #000000;
 }
 .attemptdue_tablerow > div {
