@@ -220,7 +220,7 @@ class Leadquote_model extends MY_Model
                     $items[$idx]['charge_pereach']=ifset($itemdata, 'charge_pereach', 0);
                 }
                 // Get colors
-                $this->db->select('quote_itemcolor_id as item_id, quote_item_id, item_description, item_color, item_qty, item_price');
+                $this->db->select('quote_itemcolor_id as item_id, quote_item_id, item_description, item_color, item_qty, item_price, inventory_color_id');
                 $this->db->select('(item_qty * item_price) as item_subtotal');
                 $this->db->from('ts_quote_itemcolors');
                 $this->db->where('quote_item_id', $item['quote_item_id']);
@@ -241,14 +241,14 @@ class Leadquote_model extends MY_Model
                             'colors'=>$itemdata['colors'],
                             'item_color'=>$color['item_color'],
                         );
-                        if ($quote['brand']=='SR') {
+                        // if ($quote['brand']=='SR') {
+                        if (!empty($item['inventory_item_id'])) {
                             $colors[$coloridx]['out_colors']=$this->load->view('leadpopup/quotesritem_color_choice', $options, TRUE);
                         } else {
                             $colors[$coloridx]['out_colors']=$this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
                         }
-
                     }
-                    $colors[$coloridx]['printshop_item_id'] = ifset($itemdata, 'printshop_item_id', 0);
+                    // $colors[$coloridx]['printshop_item_id'] = ifset($itemdata, 'printshop_item_id', 0);
                     $colors[$coloridx]['qtyinput_class'] = 'normal';
                     $colors[$coloridx]['qtyinput_title'] = '';
                     $colors[$coloridx]['item_color_add'] = 0;
@@ -444,6 +444,7 @@ class Leadquote_model extends MY_Model
             'vendor_zipcode'=>$this->default_zip,
             'charge_perorder'=>0,
             'charge_peritem'=>0,
+            'inventory_item_id' => '',
         ];
         $newprice=0;
         if ($item_id>0) {
@@ -466,6 +467,7 @@ class Leadquote_model extends MY_Model
             $quoteitem['charge_perorder']=$itemdata['charge_perorder'];
             $quoteitem['charge_pereach']=$itemdata['charge_pereach'];
             $quoteitem['item_subtotal']=$defqty*$newprice;
+            $quoteitem['inventory_item_id'] = $itemdata['printshop_item_id'];
         } elseif ($item_id==$this->config->item('custom_id')) {
             $newprice = $this->config->item('custom_itemprice');
             $quoteitem['item_price'] = $newprice;
@@ -483,17 +485,17 @@ class Leadquote_model extends MY_Model
                 $quoteitem['setup_price'] = $this->other_setupsb_price;
             }
         }
-       //
+        //
         // Prepare first item (as itemcolors)
         $newitem=array(
             'quote_item_id'=>$newid,
             'item_id'=>-1,
             'item_row'=>1,
-            'item_number'=>$itemdata['item_number'],
-            'item_color'=>$itmcolor,
-            'colors'=>$colors,
-            'num_colors'=>$itemdata['num_colors'],
-            'item_description'=>$quoteitem['item_name']
+            'item_number'=> $itemdata['item_number'],
+            'item_color'=> $itmcolor,
+            'colors'=> $colors,
+            'num_colors'=> $itemdata['num_colors'],
+            'item_description'=> $quoteitem['item_name']
         );
         //
         if ($itemdata['num_colors']==0) {
@@ -505,8 +507,10 @@ class Leadquote_model extends MY_Model
                 'colors'=>$newitem['colors'],
                 'item_color'=>$newitem['item_color'],
             );
-            if ($brand=='SR') {
+            // if ($brand=='SR') {
+            if (!empty($quoteitem['inventory_item_id'])) {
                 $newitem['out_colors']=$this->load->view('leadpopup/quotesritem_color_choice', $options, TRUE);
+                $newitem['inventory_color_id'] = $this->_inventory_color($quoteitem['inventory_item_id'], $itmcolor);
             } else {
                 $newitem['out_colors']=$this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
             }
@@ -520,9 +524,10 @@ class Leadquote_model extends MY_Model
         $newitem['item_qty']=$defqty;
         $newitem['item_price']=$newprice;
         $newitem['item_subtotal']=$defqty*$newprice;
-        $newitem['printshop_item_id']=(isset($itemdata['printshop_item_id']) ? $itemdata['printshop_item_id']  : '');
+        // $newitem['printshop_item_id']=(isset($itemdata['printshop_item_id']) ? $itemdata['printshop_item_id']  : '');
         $newitem['qtyinput_class']='normal';
         $newitem['qtyinput_title']='';
+        $newitem['inventory_color_id'] = '';
         $items[]=$newitem;
 
         $quoteitem['items']=$items;
@@ -885,12 +890,13 @@ class Leadquote_model extends MY_Model
                             'colors'=> $items[$itemidx]['items'][$itemcoloridx]['colors'],
                             'item_color'=> $data['newval'],
                         );
-                        if ($quote['brand'] == 'SR') {
+                        // if ($quote['brand'] == 'SR') {
+                        if (!empty($item['inventory_item_id'])) {
                             $items[$itemidx]['items'][$itemcoloridx]['out_colors'] = $this->load->view('leadpopup/quotesritem_color_choice', $coloropt, true);
+                            $items[$itemidx]['items'][$itemcoloridx]['inventory_color_id'] = $this->_inventory_color($item['inventory_item_id'], $data['newval']);
                         } else {
                             $items[$itemidx]['items'][$itemcoloridx]['out_colors'] = $this->load->view('leadpopup/quoteitem_color_choice', $coloropt, true);
                         }
-                        // $items[$itemidx]['items'][$itemcoloridx]['out_colors']=$this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
                     }
                     $subtotal = intval($items[$itemidx]['items'][$itemcoloridx]['item_qty']) * floatval($items[$itemidx]['items'][$itemcoloridx]['item_price']);
                     $items[$itemidx]['items'][$itemcoloridx]['item_subtotal'] = MoneyOutput($subtotal);
@@ -944,6 +950,7 @@ class Leadquote_model extends MY_Model
                         'printshop_item_id' => '',
                         'qtyinput_class' => 'normal',
                         'qtyinput_title' => '',
+                        'inventory_color_id' => '',
                     ];
                     $options=array(
                         'quote_item_id'=>$newitemcolor['quote_item_id'],
@@ -951,8 +958,10 @@ class Leadquote_model extends MY_Model
                         'colors'=>$newitemcolor['colors'],
                         'item_color'=>$newitemcolor['item_color'],
                     );
-                    if ($quote['brand']=='SR') {
+                    // if ($quote['brand']=='SR') {
+                    if (!empty($item['inventory_item_id'])) {
                         $newitemcolor['out_colors']=$this->load->view('leadpopup/quotesritem_color_choice', $options, TRUE);
+                        $newitemcolor['inventory_color_id'] = $this->_inventory_color($item['inventory_item_id'], $itemcolor);
                     } else {
                         $newitemcolor['out_colors']=$this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
                     }
@@ -1736,6 +1745,9 @@ class Leadquote_model extends MY_Model
                     $this->db->set('cartoon_depth', intval($item['cartoon_depth']));
                     $this->db->set('template', $item['template']);
                     $this->db->set('base_price', floatval($item['base_price']));
+                    if (!empty($item['inventory_item_id'])) {
+                        $this->db->set('inventory_item_id', $item['inventory_item_id']);
+                    }
                     if ($item['quote_item_id'] > 0) {
                         $this->db->where('quote_item_id', $item['quote_item_id']);
                         $this->db->update('ts_quote_items');
@@ -1751,6 +1763,9 @@ class Leadquote_model extends MY_Model
                         $this->db->set('item_color', $color['item_color']);
                         $this->db->set('item_qty', intval($color['item_qty']));
                         $this->db->set('item_price', floatval($color['item_price']));
+                        if (!empty($color['inventory_color_id'])) {
+                            $this->db->set('inventory_color_id', $color['inventory_color_id']);
+                        }
                         if ($color['item_id'] > 0) {
                             $this->db->where('quote_itemcolor_id', $color['item_id']);
                             $this->db->update('ts_quote_itemcolors');
@@ -1921,7 +1936,11 @@ class Leadquote_model extends MY_Model
                             'colors'=>$itemcolor['colors'],
                             'item_color'=>$itemcolor['item_color'],
                         );
-                        $out_colors = $this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
+                        if (!empty($item['inventory_item_id'])) {
+                            $out_colors = $this->load->view('leadpopup/quotesritem_color_choice', $options, TRUE);
+                        } else {
+                            $out_colors = $this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
+                        }
                     }
                     $itemcolor['out_colors'] = $out_colors;
                     $itemcolor['item_color_add'] = 0;
@@ -2626,9 +2645,9 @@ class Leadquote_model extends MY_Model
         $this->load->library('fpdf/fpdfeps');
         // Logo
         // $logoFile = FCPATH."/img/leadquote/logo-bluetrack-stressballs-2.eps";
-        $logoFile = FCPATH."/img/invoice/logos-2.eps";
-        $logoWidth = 119;
-        $logoHeight = 15;
+        $logoFile = FCPATH."/img/invoice/logos-2-upd6.eps";
+        $logoWidth = 86.4;
+        $logoHeight = 20;
         $logoYPos = 15;
         $logoXPos = 16;
         // Table Columns X
@@ -2656,16 +2675,16 @@ class Leadquote_model extends MY_Model
         }
         // Our Address
         $pdf->SetFont('','',12.046857);
-        $ourAddressY = 33.68;
+        $ourAddressY = 39.68;
         $pdf->Text($startPageX, $ourAddressY, '855 Bloomfield Ave');
         $ourAddressY += 5.8;
         $pdf->Text($startPageX, $ourAddressY, 'Clifton, NJ 07012');
         $ourAddressY += 5.8;
-        $pdf->Text($startPageX,$ourAddressY, 'Call Us at');
+        // $pdf->Text($startPageX,$ourAddressY, 'Call Us at');
         $pdf->SetTextColor(0,0,255);
-        $pdf->Text(34,$ourAddressY, '1-800-790-6090');
-        $ourAddressY += 5.8;
-        $pdf->Text($startPageX,$ourAddressY,'www.stressballs.com'); // , 'www.bluetrack.com');
+        $pdf->Text($startPageX, $ourAddressY, '1-800-790-6090');
+        // $ourAddressY += 5.8;
+        $pdf->Text(48,$ourAddressY,'www.stressballs.com'); // , 'www.bluetrack.com');
         // Quote Title
         $pdf->SetXY(156, 29);
         $pdf->SetFont('','',12.5);
@@ -3353,10 +3372,15 @@ class Leadquote_model extends MY_Model
             if (empty($item_id)) {
                 $item_id = $quoteitem['item_id'];
             }
-
+            if (ifset($itemdata,'printshop_item_id',0) > 0) {
+                $quoteitem['inventory_item_id'] = $itemdata['printshop_item_id'];
+            }
             $itemsubtotal = $itemimprint = 0;
             // Get color items
             $coloritems = [];
+            $item_error = '';
+            $item_error_msg = '';
+
             $this->db->select('*');
             $this->db->from('ts_quote_itemcolors');
             $this->db->where('quote_item_id', $quoteitem['quote_item_id']);
@@ -3368,7 +3392,17 @@ class Leadquote_model extends MY_Model
                 if ($colorid==$qutecolorcnt && count($itemdata['colors']) > 1) {
                     $addcolor = 1;
                 }
-
+                if (!empty($quoteitem['inventory_item_id']) && empty($quotecolor['inventory_color_id'])) {
+                    // Check inventory_color_id
+                    $quotecolor['inventory_color_id'] = $this->_inventory_color($quoteitem['inventory_item_id'], $quotecolor['item_color']);
+                    if (!empty($quotecolor['inventory_color_id'])) {
+                        $newinvcolor = $this->db->select('color')->from('ts_inventory_colors')->where('inventory_color_id', $quotecolor['inventory_color_id'])->get()->row_array();
+                        $quotecolor['item_color'] = $newinvcolor['color'];
+                    } else {
+                        $item_error = $itemid * (-1);
+                        $item_error_msg = 'The name of color option ~'.$quotecolor['item_color'].'~ may have changed since last order.  Please select color from current list';
+                    }
+                }
                 $options=array(
                     'order_item_id'=> $itemid*(-1),
                     'item_id'=> $colorid*(-1),
@@ -3379,7 +3413,8 @@ class Leadquote_model extends MY_Model
                     $out_colors=$this->empty_htmlcontent;
                     // $out_colors=$this->load->view('leadorderdetails/item_color_input', $options, TRUE);
                 } else {
-                    if ($quote['brand']=='SR') {
+                    // if ($quote['brand']=='SR') {
+                    if (!empty($quoteitem['inventory_item_id'])) {
                         $out_colors = $this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
                     } else {
                         $out_colors=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
@@ -3414,6 +3449,7 @@ class Leadquote_model extends MY_Model
                     'printshop_item_id' => ifset($itemdata, 'printshop_item_id',''),
                     'qtyinput_class' => '',
                     'qtyinput_title' => '',
+                    'inventory_color_id' => $quotecolor['inventory_color_id'],
                     'trackings' => $trackings,
                 ];
                 $colorid++;
@@ -3500,6 +3536,7 @@ class Leadquote_model extends MY_Model
                 'imprints' => $imprints,
                 'imprint_details' => $imprdetails,
                 'vendor_item_id' => ifset($itemdata, 'vendor_item_id', ''),
+                'inventory_item_id' => $quoteitem['inventory_item_id'],
             ];
             $itemid++;
         }
@@ -3696,6 +3733,8 @@ class Leadquote_model extends MY_Model
         $out['order_system_type']=$defsystem;
         $out['order']=$data;
         $out['order_items'] = $order_items;
+        $out['item_error'] = $item_error;
+        $out['item_error_msg'] = $item_error_msg;
         $out['result'] = $this->success_result;
         return $out;
     }
@@ -4036,6 +4075,7 @@ class Leadquote_model extends MY_Model
                 'vendor_zipcode' => $this->default_zip,
                 'charge_perorder' => 0,
                 'charge_peritem' => 0,
+                'inventory_item_id' => '',
             ];
             $newprice = 0;
             if ($item_id > 0) {
@@ -4057,6 +4097,7 @@ class Leadquote_model extends MY_Model
                 $quoteitem['charge_perorder'] = $itemdata['charge_perorder'];
                 $quoteitem['charge_pereach'] = $itemdata['charge_pereach'];
                 $quoteitem['item_subtotal'] = $defqty * $newprice;
+                $quoteitem['inventory_item_id'] = $itemdata['printshop_item_id'];
             } elseif ($item_id == $this->config->item('custom_id')) {
                 $newprice = $this->config->item('custom_itemprice');
                 $quoteitem['base_price'] = $newprice;
@@ -4082,6 +4123,7 @@ class Leadquote_model extends MY_Model
                 'num_colors'=>$itemdata['num_colors'],
                 'item_description'=>$quoteitem['item_name'],
                 'item_color_add' => $addcolor,
+                'inventory_color_id' => '',
             );
             //
             if ($itemdata['num_colors']==0) {
@@ -4093,8 +4135,11 @@ class Leadquote_model extends MY_Model
                     'colors'=>$newitem['colors'],
                     'item_color'=> '', //$newitem['item_color'],
                 );
-                if ($quote['brand']=='SR') {
+                // if ($quote['brand']=='SR') {
+                if (!empty($quoteitem['inventory_item_id'])) {
+                    $options['item_color'] = $itmcolor;
                     $newitem['out_colors']=$this->load->view('leadpopup/quotesritem_color_choice', $options, TRUE);
+                    $newitem['inventory_color_id'] = $this->_inventory_color($quoteitem['inventory_item_id'], $itmcolor);
                 } else {
                     $newitem['out_colors']=$this->load->view('leadpopup/quoteitem_color_choice', $options, TRUE);
                 }
@@ -4102,7 +4147,7 @@ class Leadquote_model extends MY_Model
             $newitem['item_qty']=$defqty;
             $newitem['item_price']=$newprice;
             $newitem['item_subtotal']=$defqty*$newprice;
-            $newitem['printshop_item_id']=(isset($itemdata['printshop_item_id']) ? $itemdata['printshop_item_id']  : '');
+            // $newitem['printshop_item_id']=(isset($itemdata['printshop_item_id']) ? $itemdata['printshop_item_id']  : '');
             $newitem['qtyinput_class']='normal';
             $newitem['qtyinput_title']='';
             $items[]=$newitem;
@@ -4153,13 +4198,11 @@ class Leadquote_model extends MY_Model
             $idx++;
         }
         if ($found==1) {
-            $item_number = $quote_items[$idx]['item_number'];
-            $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $item_number);
-            $invres = $this->db->get()->row_array();
-            if (ifset($invres,'inventory_item_id',0)>0) {
+            $inventory_item = $quote_items[$idx]['inventory_item_id'];
+            if (!empty($inventory_item)) {
                 $out['result'] = $this->success_result;
                 $this->load->model('inventory_model');
-                $res = $this->inventory_model->orderitem_inventory($invres['inventory_item_id']);
+                $res = $this->inventory_model->orderitem_inventory($inventory_item);
                 $out['onboats'] = $res['onboats'];
                 $out['invents'] = $res['inventory'];
                 usersession($session_id, $quotesession);
@@ -4346,4 +4389,20 @@ class Leadquote_model extends MY_Model
         }
         return $out;
     }
+
+    private function _inventory_color($inventory_item_id, $color)
+    {
+        $outcolor = '';
+        $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where(['inventory_item_id' => $inventory_item_id, 'color' => $color])->get()->row_array();
+        if (ifset($invdat, 'inventory_color_id', 0) > 0) {
+            $outcolor = $invdat['inventory_color_id'];
+        } else {
+            $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inventory_item_id)->like('color', $color, 'after')->get()->row_array();
+            if (ifset($invdat, 'inventory_color_id', 0) > 0) {
+                $outcolor = $invdat['inventory_color_id'];
+            }
+        }
+        return $outcolor;
+    }
+
 }

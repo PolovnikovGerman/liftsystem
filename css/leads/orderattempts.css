@@ -171,7 +171,7 @@ input.attparams {
 .attempts_duedate {
     clear: both;
     float: left;
-    width: 1235px;
+    width: 1330px;
     padding: 10px;
     background: none #e8e8e8;
 }
@@ -206,7 +206,7 @@ input.attparams {
 .attemptdue_tablerow {
     clear: both;
     float: left;
-    width: 1199px;
+    /* width: 1199px; */
     color: #000000;
 }
 .attemptdue_tablerow > div {
@@ -247,6 +247,10 @@ input.attparams {
 }
 .attemptdue_phone {
     width: 70px;
+    cursor: pointer;
+}
+.attemptdue_userip {
+    width: 104px;
     cursor: pointer;
 }
 .attemptdue_location {

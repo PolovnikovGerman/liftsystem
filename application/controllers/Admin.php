@@ -32,7 +32,7 @@ class Admin extends MY_Controller
         $head['title']='Admin';
         $brand = $this->menuitems_model->get_current_brand();
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink,'');
-
+        $start = '';
         $content_options = [];
         foreach ($menu as $row) {
             if ($row['item_link']=='#usersview') {
@@ -56,7 +56,7 @@ class Admin extends MY_Controller
             }
         }
 
-        $content_options['menu']=$menu;
+        // $content_options['menu']=$menu;
         // Add main page management
         $head['scripts'][]=array('src'=>'/js/admin/page.js');
         $head['styles'][] = array('style'=> '/css/admin/page.css');
@@ -77,15 +77,16 @@ class Admin extends MY_Controller
             'activelnk' => $this->pagelink,
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
+            'brand' => $brand,
         ];
         $dat = $this->template->prepare_pagecontent($options);
-        $content_options['left_menu'] = $dat['left_menu'];
         $content_options['brand'] = $brand;
-
-        $content_view = $this->load->view('admin/page_view', $content_options, TRUE);
+        $brandclass = ($brand=='SR' ? 'relievers' : ($brand=='SG' ? '' : 'stressballs'));
+        $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass ], TRUE);
+        $content_view = $this->load->view('admin/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
-
-        $this->load->view('page/page_template_view', $dat);
+        $dat['modal_view'] = $this->load->view('admin/modal_view',[], TRUE);
+        $this->load->view('page_modern/page_template_view', $dat);
     }
 
     public function usersdata() {

@@ -301,12 +301,7 @@ function prooflead(mailid) {
             $("select#lead_id").change(function(){
                 change_leaddata();
             })
-            $("a.savequest").click(function(){
-                update_queststatus();
-            })
-            $("div.leads_addnew").click(function(){
-                create_leadproof();
-            })
+            init_prooflead_content();
         } else {
             show_error(response);
         }
@@ -314,18 +309,36 @@ function prooflead(mailid) {
     return false;
 }
 
+function init_prooflead_content(){
+    $(".savequest.active").click(function(){
+        update_queststatus();
+    })
+    $("div.leads_addnew").click(function(){
+        create_leadproof();
+    })
+}
 function change_leaddata() {
     var lead_id=$("#lead_id").val();
-    var url=main_proofurl+"/change_leadrelation";
-    $.post(url, {'lead_id':lead_id}, function(response){
-        if (response.errors=='') {
-            $("div#artModal div.leaddate").empty().html(response.data.lead_date);
-            $("div#artModal div.leadcustomer").empty().html(response.data.lead_customer);
-            $("div#artModal div.leadcustommail").empty().html(response.data.lead_mail);
-        } else {
-            show_error(response);
-        }
-    }, 'json')
+    if (lead_id!=='') {
+        var url=main_proofurl+"/change_leadrelation";
+        $.post(url, {'lead_id':lead_id}, function(response){
+            if (response.errors=='') {
+                $("div#artModal div.leaddate").empty().html(response.data.lead_date);
+                $("div#artModal div.leadcustomer").empty().html(response.data.lead_customer);
+                $("div#artModal div.leadcustommail").empty().html(response.data.lead_mail);
+                $("div#artModal div.savequest").addClass('active');
+                init_prooflead_content();
+            } else {
+                show_error(response);
+            }
+        }, 'json')
+    } else {
+        $("div#artModal div.leaddate").empty();
+        $("div#artModal div.leadcustomer").empty();
+        $("div#artModal div.leadcustommail").empty();
+        $("div#artModal div.savequest").removeClass('active');
+        init_prooflead_content();
+    }
 }
 
 function update_queststatus() {

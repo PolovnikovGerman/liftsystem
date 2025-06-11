@@ -14,6 +14,7 @@ Class Dashboard_model extends MY_Model
                 'conversions' => 45,
                 'sales' => 16,
                 'revenue' => 5448,
+                'reviews' => 450,
             ];
             $label = date('l, F j, Y');
         } else {
@@ -24,9 +25,13 @@ Class Dashboard_model extends MY_Model
                 $year = 0;
             }
             if ($weeknum==0) {
-                $label = 'ALL BRANDS THIS WEEK';
+                // $label = 'ALL BRANDS THIS WEEK';
+                $label = 'THIS WEEK';
                 $weeknum = date('W');
                 $year = date('Y');
+                if (intval(date('m'))==12 && intval($weeknum)==1) {
+                    $year = $year + 1;
+                }
                 $dates = getDatesByWeek($weeknum, $year);
                 $nxtweek = 0;
                 $nxtnavig = 0;
@@ -57,17 +62,19 @@ Class Dashboard_model extends MY_Model
             $this->db->where('order_date < ', $dates['end_week']);
             $this->db->where('is_canceled',0);
             $res = $this->db->get()->row_array();
-//            if ($res['cnt']==0) {
-//                $options = [
-//                    'conversions' => 204,
-//                    'sales' => 0,
-//                    'revenue' => 0,
-//                ];
-//            } else {
+            $visitors = 0;
+            $reviews = 0;
+            if ($this->config->item('test_server')==1) {
+                $dates['end_week'] = strtotime('05/18/2024');
+                $dates['start_week'] = strtotime('05/11/2024');
+                $visitors = ceil(rand(15000, 35000));
+                $reviews = ceil(rand(120, 350));
+            }
+            $leads = $this->db->select('count(lead_id) as leadcnt')->from('ts_leads')->where('unix_timestamp(update_date) >= ', $dates['start_week'])->where('unix_timestamp(update_date) < ', $dates['end_week'])->get()->row_array();
                 $options = [
                     'conversions' => 204,
                     'sales' => $res['cnt'],
-                    'revenue' => $res['revenue'],
+                    'revenue' => empty($res['revenue']) ? 0 : $res['revenue'],
                     'start_week' => $dates['start_week'],
                     'end_week' => $dates['end_week'],
                     'label' => $label,
@@ -76,6 +83,9 @@ Class Dashboard_model extends MY_Model
                     'prev_navig' => $prvnavig,
                     'next_week' => $nxtweek,
                     'next_navig' => $nxtnavig,
+                    'leads' => $leads['leadcnt'],
+                    'visitors' => $visitors,
+                    'reviews' => $reviews,
                 ];
 //            }
         }
@@ -213,5 +223,111 @@ Class Dashboard_model extends MY_Model
         }
     }
 
+    public function get_leadvisits_week($curweek)
+    {
+        $weeknum = date('W', $curweek);
+        $year = date('Y', $curweek);
+        $dates = getDatesByWeek($weeknum, $year);
+        // Temporary
+        if ($this->config->item('test_server')==1) {
+            $dates['start_week'] = strtotime('2024-05-11');
+            $dates['end_week'] = strtotime('2024-05-18');
+        }
+        $srleads = [
+            '0' => 0,
+            '1' => 0,
+            '2' => 0,
+            '3' => 0,
+            '4' => 0,
+            '5' => 0,
+            '6' => 0,
+        ];
+        $srleadtotal = 0;
+        $btleads = [
+            '0' => 0,
+            '1' => 0,
+            '2' => 0,
+            '3' => 0,
+            '4' => 0,
+            '5' => 0,
+            '6' => 0,
+        ];
+        $btleadtotal = 0;
+        $leaddats = [
+            '0' => 0,
+            '1' => 0,
+            '2' => 0,
+            '3' => 0,
+            '4' => 0,
+            '5' => 0,
+            '6' => 0,
+        ];
+        $this->db->select('brand, date_format(update_date,\'%w\') as dayweek, count(lead_id) as cnt')->from('ts_leads')->where('unix_timestamp(update_date) >= ', $dates['start_week'])->where('unix_timestamp(update_date) <= ', $dates['end_week'])->group_by('brand, dayweek');
+        $leads = $this->db->get()->result_array();
+        foreach ($leads as $lead) {
+            if ($lead['brand']=='SR') {
+                $srleadtotal+=$lead['cnt'];
+                $srleads[$lead['dayweek']]+=$lead['cnt'];
+            } else {
+                $btleadtotal+=$lead['cnt'];
+                $btleads[$lead['dayweek']]+=$lead['cnt'];
+            }
+            $leaddats[$lead['dayweek']]+=$lead['cnt'];
+        }
+        $srvisittotal = 0;
+        $srvisits = [
+            '0' => 0,
+            '1' => 0,
+            '2' => 0,
+            '3' => 0,
+            '4' => 0,
+            '5' => 0,
+            '6' => 0,
+        ];
+        $btvisittotal = 0;
+        $btvisits = [
+            '0' => 0,
+            '1' => 0,
+            '2' => 0,
+            '3' => 0,
+            '4' => 0,
+            '5' => 0,
+            '6' => 0,
+        ];
+        $visitors = [
+            '0' => 0,
+            '1' => 0,
+            '2' => 0,
+            '3' => 0,
+            '4' => 0,
+            '5' => 0,
+            '6' => 0,
+        ];
+        if ($this->config->item('test_server')==1) {
+            for ($i=0; $i<7; $i++) {
+                $btvisits[$i] = ceil(rand(500,2000));
+                $btvisittotal+=$btvisits[$i];
+                $srvisits[$i] = ceil(rand(500,2000));
+                $srvisittotal+=$srvisits[$i];
+                $visitors[$i]+=$srvisits[$i]+$btvisits[$i];
+            }
+        }
+        $out = [
+            'btleads' => $btleads,
+            'btleadtotal' => $btleadtotal,
+            'srleads' => $srleads,
+            'srleadtotal' => $srleadtotal,
+            'leadtotal' => $btleadtotal+$srleadtotal,
+            'leads' => $leaddats,
+            'btvisits' => $btvisits,
+            'btvisittotal' => $btvisittotal,
+            'srvisits' => $srvisits,
+            'srvisittotal' => $srvisittotal,
+            'visittotal' => $btvisittotal+$srvisittotal,
+            'visitors' => $visitors,
+
+        ];
+        return $out;
+    }
 }
 ?>

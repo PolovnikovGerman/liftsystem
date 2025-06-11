@@ -4,12 +4,15 @@
 if (!function_exists('MoneyOutput')) {
     function MoneyOutput($total, $decimal = 2, $thousdelim = ',')
     {
-        if ($total < 0) {
-            $output = '-$';
-        } else {
-            $output = '$';
+        $output = $total;
+        if (abs(floatval($total))>0) {
+            if ($total < 0) {
+                $output = '-$';
+            } else {
+                $output = '$';
+            }
+            $output .= number_format(abs($total), $decimal, '.', $thousdelim);
         }
-        $output .= number_format(abs($total), $decimal, '.', $thousdelim);
         return $output;
     }
 }
@@ -37,31 +40,39 @@ if (!function_exists('ProfitOutput')) {
 }
 
 if (!function_exists('TotalOutput')) {
-    function TotalOutput($total) {
+    function TotalOutput($total, $totals = 0) {
         $fraction = str_pad(round(($total-intval($total))*100,0),2,'0',STR_PAD_LEFT);
-        $total_str=MoneyOutput(intval($total),0).'<span>'.$fraction.'</span>';
+        if ($totals==1) {
+            $total_str='$'.number_format(intval($total),0,'','').'<span>'.$fraction.'</span>';
+        } else {
+            $total_str=MoneyOutput(intval($total),0).'<span>'.$fraction.'</span>';
+        }
+
         return $total_str;
     }
 }
 if (!function_exists('QTYOutput')) {
     function QTYOutput($qty, $decimal = 0, $thousdelim = ',', $show_positiv = 0)
     {
-        if ($qty < 0) {
-            $output = '-';
-        } else {
-            $output = '';
-            if ($show_positiv == 1) {
-                $output = '+';
+        $output = $qty;
+        if (abs(intval($qty))>0) {
+            if ($qty < 0) {
+                $output = '-';
+            } else {
+                $output = '';
+                if ($show_positiv == 1) {
+                    $output = '+';
+                }
             }
-        }
-        if (abs($qty) >= 10000) {
-            $output .= number_format(abs($qty), $decimal, '.', $thousdelim);
-        } else {
-            if ($decimal > 0 && fmod(abs($qty), 1) == 0) {
-                $decimal = 0;
-            }
-            $output .= number_format(abs($qty), $decimal, '.', '');
+            if (abs($qty) >= 10000) {
+                $output .= number_format(abs($qty), $decimal, '.', $thousdelim);
+            } else {
+                if ($decimal > 0 && fmod(abs($qty), 1) == 0) {
+                    $decimal = 0;
+                }
+                $output .= number_format(abs($qty), $decimal, '.', '');
 
+            }
         }
         return $output;
     }
@@ -240,14 +251,16 @@ if (!function_exists('getDatesByWeek')) {
 if (!function_exists('get_json_param')) {
     function get_json_param($json_string, $param_name, $default=false )
     {
-        $json_string = (array) json_decode($json_string);
-        //  $this->quick_log($json_string[ $param_name ]);
-
-        if( isset($json_string[ $param_name ])  && $json_string[ $param_name ])
-            return $json_string[$param_name];
-        else
+        if ($json_string!=null) {
+            $json_string = (array) json_decode($json_string);
+            //  $this->quick_log($json_string[ $param_name ]);
+            if( isset($json_string[ $param_name ])  && $json_string[ $param_name ])
+                return $json_string[$param_name];
+            else
+                return $default;
+        } else {
             return $default;
-
+        }
     }
 }
 
@@ -373,25 +386,40 @@ if (!function_exists('openfile')) {
         // It will be called downloaded.pdf
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         // The PDF source is in original.pdf
-        readfile($url);
+        // readfile($url);
+        echo curl_get_file_contents($url);
     }
 }
 
+if (!function_exists('curl_get_file_contents')) {
+    function curl_get_file_contents($url)
+    {
+        $c = curl_init();
+        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($c, CURLOPT_URL, $url);
+        $contents = curl_exec($c);
+        curl_close($c);
+        if ($contents) return $contents;
+        else return FALSE;
+    }
+}
 if (!function_exists('orderProfitClass')) {
     function orderProfitClass($profit_perc) {
         $profit_class='';
-        if (round($profit_perc,0)<=0) {
-            $profit_class='black';
-        } elseif ($profit_perc>0 && $profit_perc<10) {
-            $profit_class='moroon';
-        } elseif ($profit_perc>=10 && $profit_perc<20) {
-            $profit_class='red';
-        } elseif ($profit_perc>=20 && $profit_perc<30) {
-            $profit_class='orange';
-        } elseif ($profit_perc>=30 && $profit_perc<40) {
-            $profit_class='white';
-        } elseif ($profit_perc>=40) {
-            $profit_class='green';
+        if ($profit_perc!=null) {
+            if (round($profit_perc,0)<=0) {
+                $profit_class='black';
+            } elseif ($profit_perc>0 && $profit_perc<10) {
+                $profit_class='moroon';
+            } elseif ($profit_perc>=10 && $profit_perc<20) {
+                $profit_class='red';
+            } elseif ($profit_perc>=20 && $profit_perc<30) {
+                $profit_class='orange';
+            } elseif ($profit_perc>=30 && $profit_perc<40) {
+                $profit_class='white';
+            } elseif ($profit_perc>=40) {
+                $profit_class='green';
+            }
         }
         return $profit_class;
     }
@@ -657,9 +685,13 @@ if ( ! function_exists('show_403'))
 if (!function_exists('PriceOutput')) {
     function PriceOutput($total, $decimal = 3, $thousdelim = ',')
     {
-        $output = number_format($total, $decimal);
-        if (substr($output,-1)=='0') {
-            $output = substr($output,0,-1);
+        $output = $total;
+        if ($total!=null) {
+            $output = number_format($total, $decimal);
+            if (substr($output,-1)=='0') {
+                $output = substr($output,0,-1);
+            }
+
         }
         return $output;
     }
@@ -881,6 +913,18 @@ if (!function_exists('trackcodeurl')) {
             }
         }
         return $url;
+    }
+}
+
+if (!function_exists('show_negative_value')) {
+    function show_negative_value($value)
+    {
+        if ($value>=0) {
+            return $value;
+        } else {
+            $outval = '(<span style="color:#ff0000">'.abs($value).'</span>)';
+            return $outval;
+        }
     }
 }
 ?>

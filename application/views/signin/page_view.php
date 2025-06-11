@@ -17,7 +17,7 @@
                 <form id="signinform">
                 <div class="col-10 col-sm-10 col-md-10 col-lg-10">
                     <div class="form-group">
-                        <input id="email" type="text" class="form-control signinformelement" placeholder="email address"/>
+                        <input id="email" type="text" class="form-control signinformelement" placeholder="Username"/>
                     </div>
 
                     <div class="form-group">

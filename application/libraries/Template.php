@@ -53,8 +53,128 @@ class Template
         return $dat;
 
     }
+    public function prepare_pagecontent($options = []) {
+        $dat = [];
+        $this->CI->load->model('dashboard_model');
+        $this->CI->load->model('menuitems_model');
+        $this->CI->load->model('user_model');
+        $total_view = '';
+        $userchk = $this->CI->user_model->current_user();
+        if ($userchk['result']==1) {
+            $userdat = $userchk['data'];
+            if ($userdat['user_logged_in']=='masteradmin') {
+                $total_options = $this->CI->dashboard_model->get_totals('week');
+                $total_view = $this->CI->load->view('page_modern/dashboard_total_view', $total_options, TRUE);
+            }
+        }
+        $brands = $this->CI->menuitems_model->get_userbrands($userdat['id']);
+        $styles=[];
+        if (isset($options['styles'])) {
+            $styles=$options['styles'];
+        }
+        if ($this->CI->config->item('test_server')) {
+            $styles[]=array('style'=>'/css/page_view/testsite_view.css');
+        }
+        $scripts=[];
+        if (isset($options['scripts'])) {
+            $scripts=$options['scripts'];
+        }
+        if (isset($options['brand'])) {
+            $brand = $options['brand'];
+        } else {
+            $brand  = $this->CI->menuitems_model->get_current_brand();
+        }
+        $mobpermissions = $this->CI->menuitems_model->get_user_mobpermissions($options['user_id']);
+        $admin_permission = 0;
+        $adminchk = $this->CI->menuitems_model->get_menuitem('/admin');
+        $admin_old = 1;
+        if ($adminchk['result']==$this->success_result) {
+            $admin_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $adminchk['menuitem']['menu_item_id']);
+            if ($admin_permissionchk['result']==$this->success_result && $admin_permissionchk['permission']>0) {
+                $admin_permission = 1;
+                $admin_old = $adminchk['menuitem']['newver'];
+            }
+        }
+        // Inventory
+        $inventory_permissions = 0;
+        $inventory_old = 1;
+        $inventorychk = $this->CI->menuitems_model->get_menuitem('#printshopinventview',0, $brand);
+        if ($inventorychk['result']==$this->success_result) {
+            $inventorypermischk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $inventorychk['menuitem']['menu_item_id']);
+            if ($inventorypermischk['result']==$this->success_result && $inventorypermischk['permission']>0) {
+                $inventory_old = $inventorychk['menuitem']['newver'];
+                $inventory_permissions = 1;
+            }
+        }
+        // Balance
+        $debt_permissions = 0;
+        $debt_total = 0;
+        $debtviewchk = $this->CI->menuitems_model->get_menuitem('#accreceiv',0, $brand);
+        if ($debtviewchk['result']==$this->success_result) {
+            $debtpermischk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $debtviewchk['menuitem']['menu_item_id']);
+            if ($debtpermischk['result']==$this->success_result && $debtpermischk['permission']>0) {
+                $debt_permissions = 1;
+                $this->CI->load->model('dashboard_model');
+                $debt_total = $this->CI->dashboard_model->get_debt_totals();
+            }
+        }
 
-    public function prepare_pagecontent($options=[]) {
+        $pagetitle = (isset($options['title']) ? '::'.$options['title'] : '');
+        $gmaps = 0;
+        if (!empty($this->CI->config->item('google_map_key'))) {
+            $gmaps = ifset($options, 'gmaps', 0);
+        }
+        $head_options=[
+            'styles'=>$styles,
+            'scripts'=>$scripts,
+            'title' => ($this->CI->config->item('system_name').$pagetitle),
+            'gmaps' => $gmaps,
+            'googlefont' => ifset($options,'googlefont', 0),
+        ];
+        if (isset($options['outscripts'])) {
+            $head_options['outscripts'] = $options['outscripts'];
+        }
+//        if (ifset($options,'adaptive',0)==1) {
+//            $head_options['menu'] = $mobpermissions;
+//            $head_options['activelnk'] = (isset($options['activelnk']) ? $options['activelnk'] : '');
+//            $dat['head_view'] = $this->CI->load->view('page/head_adaptive_view', $head_options, TRUE);
+//        } else {
+            $dat['head_view'] = $this->CI->load->view('page_modern/head_view', $head_options, TRUE);
+//        }
+
+
+        $topmenu_options = [
+            'user_name' => $userdat['first_name'],
+            'activelnk' => (isset($options['activelnk']) ? $options['activelnk'] : ''),
+            'total_view' => $total_view,
+            'adminchk' => $admin_permission,
+            'adminold' => $admin_old,
+            'inventorychk' => $inventory_permissions,
+            'inventoryold' => $inventory_old,
+            'test_server' => $this->CI->config->item('test_server'),
+            'brand' => $brand,
+            'brands' => $brands,
+            'usrrole' => $userdat['user_logged_in'],
+            'debtpermiss' => $debt_permissions,
+            'debttotal' => $debt_total,
+        ];
+//        if (ifset($options,'adaptive',0)==1) {
+//            $dat['header_view'] = $this->CI->load->view('page/header_adaptive_view', $topmenu_options, TRUE);
+//        } else {
+            $dat['header_view'] = $this->CI->load->view('page_modern/header_view', $topmenu_options, TRUE);
+//        }
+        $brandclass = ($brand=='SB' ? 'stressballs' : ($brand=='SR' ? 'relievers' : 'sigmasystem'));
+        $leftoptions = [
+            'brand' => $brand,
+            'brandclass' => $brandclass,
+            'activelnk'=>(isset($options['activelnk']) ? $options['activelnk'] : ''),
+            'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id'], $brand),
+        ];
+        $dat['main_menu'] = $this->CI->load->view('page_modern/main_menu_view', $leftoptions, TRUE);
+        $dat['brandclass'] = $brandclass;
+        return $dat;
+    }
+    public function prepare_pagecontent_old($options=[]) {
         $dat = array();
         $this->CI->load->model('dashboard_model');
         $this->CI->load->model('menuitems_model');
@@ -161,6 +281,9 @@ class Template
             'gmaps' => $gmaps,
             'googlefont' => ifset($options,'googlefont', 0),
         ];
+        if (isset($options['outscripts'])) {
+            $head_options['outscripts'] = $options['outscripts'];
+        }
         if (ifset($options,'adaptive',0)==1) {
             $head_options['menu'] = $mobpermissions;
             $head_options['activelnk'] = (isset($options['activelnk']) ? $options['activelnk'] : '');
@@ -205,7 +328,7 @@ class Template
         return $dat;
     }
 
-    public function _prepare_leadorder_view($res,$user_id, $user_role='manager', $user_payment=0, $edit=0) {
+    public function _prepare_leadorder_view($res, $user_id, $user_role='manager', $user_payment=0, $edit=0) {
         $this->CI->load->model('shipping_model');
         $this->CI->load->model('orders_model');
         $this->CI->load->model('leadorder_model');
@@ -437,7 +560,11 @@ class Template
                 $profoptions['bgcolor']='#6d0303';
                 $profoptions['hitcolor']='#ffffff';
             }
+        } else {
+            $profoptions['profit_class'] = 'project';
         }
+        $profoptions['profit_completed'] = ifset($orddata, 'profit_completed','');
+        $profoptions['profit_project'] = ifset($orddata, 'profit_project','');
         if ($usrdat['profit_view']=='Points') {
             $profoptions['profit']=round(floatval($orddata['profit'])*$this->CI->config->item('profitpts'),0).' pts';
             $profoptions['profit_view']='points';
@@ -498,7 +625,8 @@ class Template
                     $imprintview=$this->CI->load->view('leadorderdetails/imprint_data_edit', $ioptions, TRUE);
                 }
                 $showinvent = 0;
-                if ($ord_data['brand']=='SR' && $irow['item_id']>0) {
+                // if ($ord_data['brand']=='SR' && $irow['item_id']>0) {
+                if (!empty($irow['inventory_item_id'])) {
                     $showinvent = 1;
                 }
                 $item_options=array(

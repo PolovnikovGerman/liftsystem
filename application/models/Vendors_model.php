@@ -228,6 +228,13 @@ Class Vendors_model extends My_Model
         if (ifset($options,'vtype','')!=='') {
             $this->db->where('vendor_type', $options['vtype']);
         }
+        if (isset($options['exclude'])) {
+            if (is_array($options['exclude'])) {
+                $this->db->where_not_in('vendor_id', $options['exclude']);
+            } else {
+                $this->db->where('vendor_id != ', $options['exclude']);
+            }
+        }
         if (isset($options['limit'])) {
             if (isset($options['offset'])) {
                 $this->db->limit($options['limit'], $options['offset']);
@@ -1054,6 +1061,22 @@ Class Vendors_model extends My_Model
         $results=$this->db->get()->result_array();
         return $results;
 
+    }
+
+    public function get_vendor_partners() {
+        $partners = $this->db->select('vendor_id, vendor_name')->from('vendors')->where('partner', 1)->order_by('vendor_name')->get()->result_array();
+        $vendors = [];
+        foreach ($partners as $partner) {
+            $vendors[] = ['vendor_id' => $partner['vendor_id'],'vendor_name' => $partner['vendor_name']];
+        }
+        if (count($partners) > 0) {
+            $vendors[] = ['vendor_id' => -1, 'vendor_name' => '-------'];
+        }
+        $others = $this->db->select('vendor_id, vendor_name')->from('vendors')->where('partner', 0)->order_by('vendor_name')->get()->result_array();
+        foreach ($others as $partner) {
+            $vendors[] = ['vendor_id' => $partner['vendor_id'],'vendor_name' => $partner['vendor_name']];
+        }
+        return $vendors;
     }
 
 }

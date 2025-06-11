@@ -66,43 +66,51 @@
         <div class="datarow">
             <div class="left-box">
                 <?php if ($usrrole=='masteradmin') { ?>
-                    <div class="period_analitic_info"><?=$total_view?></div>
+                    <?=$total_view?>
                 <?php } ?>
                 <div class="publicsearch">
-                    <input type="text" class="publicsearch_template" id="publicsearch_template" placeholder="Find Orders"/>
-                    <div class="publicsearch_btn">
-                        <img src="/img/page_view/search_icon_blue.png"/>
-                    </div>
+                        <input type="text" class="publicsearch_template" id="publicsearch_template" placeholder="Find Orders"/>
+                        <div class="publicsearch_btn">
+                            <img src="/img/page_view/search_icon_blue.png"/>
+                        </div>
+                    <?php if ($debtpermiss) { ?>
+                        <div class="infodeptreport">
+                            <div class="period_debt_info" id="debttotalview" data-event="click" data-css="weekbrandtotals" data-bgcolor="#000000"
+                                 data-bordercolor="#adadad" data-textcolor="#FFFFFF" data-position="down" data-balloon="{ajax} /welcome/viewbalance">
+                                <div class="debtinfo_label">AR:</div>
+                                <div class="debtinfo_value"><?=MoneyOutput($debttotal,0)?></div>
+                            </div>
+                        </div>
+                    <?php } ?>
                 </div>
-                <?php if ($reportchk) { ?>
-                    <div class="inforeports" id="reports">
-                        <div class="icon" title="Reports">
-                            <img src="/img/icons/chart-line-white.svg" class="img-responsive"/>
+                <div class="inventreportsection">
+                    <?php if ($inventorychk) { ?>
+                        <div class="datarow">
+                            <div class="inforeports" id="inventory">
+                                <div class="icon" title="Inventory">
+                                    <img src="/img/icons/inventory-white2.svg" class="img-responsive"/>
+                                </div>
+                                <div class="infotext">Inventory</div>
+                            </div>
                         </div>
-                        <div class="infotext" style="padding-right: 4px;">Reports</div>
-                    </div>
-                <?php } ?>
-                <?php if ($inventorychk) { ?>
-                    <div class="inforeports" id="inventory">
-                        <div class="icon" title="Inventory">
-                            <img src="/img/icons/inventory-white2.svg" class="img-responsive"/>
+                    <?php } ?>
+                    <?php if ($reportchk) { ?>
+                        <div class="datarow">
+                            <div class="inforeports" id="reports">
+                                <div class="icon" title="Reports">
+                                    <img src="/img/icons/chart-line-white.svg" class="img-responsive"/>
+                                </div>
+                                <div class="infotext" style="padding-right: 4px;">Reports</div>
+                            </div>
                         </div>
-                        <div class="infotext">Inventory</div>
-                    </div>
-                <?php } ?>
+                    <?php } ?>
+                </div>
                 <?php if ($adminchk) { ?>
                     <div class="infoalerts" id="admin">
                         <div class="alerticon admin" title="Admin">
                             <img src="/img/icons/cog_white.svg" class="img-responsive"/>
                         </div>
                         <!--                    <div class="alerttext">Admin</div>-->
-                    </div>
-                <?php } ?>
-                <?php if ($debtpermiss) { ?>
-                    <div class="period_debt_info" id="debttotalview" data-event="click" data-css="weekbrandtotals" data-bgcolor="#000000"
-                         data-bordercolor="#adadad" data-textcolor="#FFFFFF" data-position="down" data-balloon="{ajax} /welcome/viewbalance">
-                        <div class="debtinfo_label">AR:</div>
-                        <div class="debtinfo_value"><?=MoneyOutput($debttotal,0)?></div>
                     </div>
                 <?php } ?>
             </div>

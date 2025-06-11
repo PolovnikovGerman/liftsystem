@@ -14,7 +14,12 @@
                 <select class="leads_sortselect leads_replica"  id="leads_replica">
                     <?php if ($user_role=='masteradmin') { ?>
                         <option value="">All Sales Reps</option>
+                        <?php $curstatus = $replicas[0]['user_status'];?>
                         <?php foreach ($replicas as $row) {?>
+                            <?php if ($row['user_status']!==$curstatus) : ?>
+                                <option disabled>-----------</option>
+                                <?php $curstatus=$row['user_status'];?>
+                            <?php endif; ?>
                             <option value="<?=$row['user_id']?>" <?=($row['user_id']==$user_id ? 'selected="selected"' : '')?> ><?=$row['user_name']?></option>
                         <?php } ?>
                     <?php } else { ?>

@@ -3978,6 +3978,12 @@ class Test extends CI_Controller
         }
     }
 
+    public function updateprintdate()
+    {
+        $this->load->model('orders_model');
+        $this->orders_model->order_schedule_transform();
+    }
+
     public function emaillist()
     {
         $orders = $leads = $signup = [];
@@ -4038,4 +4044,399 @@ class Test extends CI_Controller
         $writer->save($filenorm);    // download file
         echo 'File '.$filenorm.' ready'.PHP_EOL;
     }
+
+    public function order_invamount_transform()
+    {
+        $this->load->model('orders_model');
+        // $this->orders_model->order_invamount_srtransform();
+        // $this->orders_model->order_invamount_sbtransform();
+        $this->orders_model->order_invamount();
+    }
+
+    public function customleads()
+    {
+        $leaddata = [];
+        $dbgn = strtotime('2022-10-23');
+        $this->db->select('profit_week, profit_year, datebgn, dateend')->from('netprofit')->where(['profit_month' => NULL, 'datebgn >= '=>  $dbgn]);
+        $weeks = $this->db->get()->result_array();
+        foreach ($weeks as $week) {
+            // $this->db->select('if(brand=\'SR\', \'SR\', \'SB\') as brandname, count(lead_id) as cnt')->from('ts_leads')->where(['unix_timestamp(update_date) >= ' => $week['datebgn'], 'unix_timestamp(update_date) < ' => $week['dateend'], 'lead_item_id' => '-3'])->group_by('brandname');
+            $this->db->select('brand as brandname, count(custom_quote_id) as cnt')->from('ts_custom_quotes')->where(['unix_timestamp(date_add) >= ' => $week['datebgn'], 'unix_timestamp(date_add) < ' => $week['dateend']])->group_by('brandname');
+            $data = $this->db->get()->result_array();
+            echo $this->db->last_query().PHP_EOL;
+            if (count($data) > 0) {
+                foreach ($data as $item) {
+                    $leaddata[] = [
+                        'week' => $week['profit_week'],
+                        'year' => $week['profit_year'],
+                        'datebgn' => date('m/d/Y', $week['datebgn']),
+                        'dateend' => date('m/d/Y', $week['dateend']),
+                        'brand' => $item['brandname'],
+                        'leads' => $item['cnt'],
+                    ];
+                }
+            }
+        }
+        // Build leads report
+        // Create file
+        $filenorm = $this->config->item('upload_path_preload').'customforms.xlsx';
+        @unlink($filenorm);
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Custom Leads');
+        $sheet->setCellValue('A1', 'Week');
+        $sheet->setCellValue('B1','Year');
+        $sheet->setCellValue('C1','Date Bgn');
+        $sheet->setCellValue('D1','Date End');
+        $sheet->setCellValue('E1','Brand');
+        $sheet->setCellValue('F1','Leads');
+        $numpp = 2;
+        foreach ($leaddata as $lead) {
+            $sheet->setCellValue('A'.$numpp, $lead['week']);
+            $sheet->setCellValue('B'.$numpp, $lead['year']);
+            $sheet->setCellValue('C'.$numpp, $lead['datebgn']);
+            $sheet->setCellValue('D'.$numpp, $lead['dateend']);
+            $sheet->setCellValue('E'.$numpp, $lead['brand']);
+            $sheet->setCellValue('F'.$numpp, $lead['leads']);
+            $numpp++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($filenorm);    // download file
+        echo 'File '.$filenorm.' ready'.PHP_EOL;
+    }
+
+
+    public function readnewitems() {
+        $this->load->config('shipping');
+        $filenorm = $this->config->item('upload_path_preload').'step1_bluetrack-item-db_INTERNAL.xlsx';
+        $reader = new PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $reader->setReadDataOnly(true);
+        $spreadsheet = $reader->load($filenorm);
+        $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+        $numpp = 0;
+        $items = [];
+        foreach ($sheetData as $itemrow) {
+            if ($numpp > 0) {
+                $itemdata = $this->db->select('item_id, item_name')->from('sb_items')->where('item_number',$itemrow['A'])->get()->row_array();
+                if (ifset($itemdata,'item_id', 0)==0) {
+                    echo 'Item '.$itemrow['A'].' Not Found'.PHP_EOL;
+                    die();
+                } else {
+                    $status = (strtoupper($itemrow['C'])=='YES' ? 1 : 0);
+                    $items[] = [
+                        'item_id' => $itemdata['item_id'],
+                        'item_number' => $itemrow['A'],
+                        'item_name' => $itemrow['B'],
+                        'item_active' => $status,
+                        'vendor_item' => $itemrow['E'],
+                        'vendor' => $itemrow['D'],
+                    ];
+                }
+            }
+            $numpp++;
+        }
+
+        foreach ($items as $item) {
+            if ($item['item_active']==0) {
+                $this->db->where('item_id', $item['item_id']);
+                $this->db->set('item_active',0);
+                $this->db->update('sb_items');
+            } else {
+                // Add vendor Item
+                if (substr($item['vendor_item'],0,1)=='S') {
+                    $this->db->select('vendor_id, vendor_zipcode')->from('vendors')->where('vendor_name','Bella');
+                    $vendordat = $this->db->get()->row_array();
+                    $vendor_id = $vendordat['vendor_id'];
+                    $vendor_zip = $vendordat['vendor_zipcode'];
+                } else {
+                    $vendor_id = $this->config->item('inventory_vendor');
+                    $vendor_zip = $this->config->item('zip');
+                }
+                $vendor_cnt = $this->config->item('default_country');
+                $this->db->set('vendor_item_vendor', $vendor_id);
+                $this->db->set('vendor_item_number', $item['vendor_item']);
+                $this->db->set('vendor_item_name', $item['item_name']);
+                $this->db->set('vendor_item_zipcode', $vendor_zip);
+                $this->db->set('item_shipcountry', $vendor_cnt);
+                $this->db->insert('sb_vendor_items');
+                $vendor_item_id = $this->db->insert_id();
+                if (substr($item['vendor_item'],0,1)=='i') {
+                    $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $item['vendor_item']);
+                    $invdat = $this->db->get()->row_array();
+                    $invent_id = $invdat['inventory_item_id'];
+                    $this->db->select('avg(price) as price')->from('ts_inventory_colors')->where('inventory_item_id', $invent_id);
+                    $pricedat = $this->db->get()->row_array();
+                    $this->db->where('vendor_item_id', $vendor_item_id);
+                    $this->db->set('vendor_item_cost', $pricedat['price']);
+                    $this->db->update('sb_vendor_items');
+                }
+                $this->db->where('item_id', $item['item_id']);
+                $this->db->set('vendor_item_id', $vendor_item_id);
+                $this->db->set('item_active', 1);
+                if (substr($item['vendor_item'],0,1)=='i') {
+                    $this->db->set('printshop_inventory_id', $invent_id);
+                }
+                $this->db->update('sb_items');
+                if (substr($item['vendor_item'],0,1)=='i') {
+                    // Update colors
+                    $colors = $this->db->select('color, inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $invent_id)->get()->result_array();
+                    $this->db->where('item_color_itemid', $item['item_id']);
+                    $this->db->delete('sb_item_colors');
+                    foreach ($colors as $color) {
+                        $this->db->set('item_color_itemid', $item['item_id']);
+                        $this->db->set('item_color', $color['color']);
+                        $this->db->set('printshop_color_id', $color['inventory_color_id']);
+                        $this->db->insert('sb_item_colors');
+                    }
+                }
+            }
+            echo 'Item '.$item['item_name'].' # '.$item['item_number'].' updated '.PHP_EOL;
+        }
+        $this->db->select('item_id, item_number, item_name')->from('sb_items')->where('brand','SR');
+        $sritems = $this->db->get()->result_array();
+        foreach ($sritems as $sritem) {
+            $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $sritem['item_number']);
+            $invdat = $this->db->get()->row_array();
+            if (ifset($invdat,'inventory_item_id',0) > 0) {
+                $this->db->where('item_id', $sritem['item_id']);
+                $this->db->set('printshop_inventory_id', $invdat['inventory_item_id']);
+                $this->db->update('sb_items');
+            } else {
+                echo 'Item '.$sritem['item_number'].' NOT Found';
+            }
+        }
+    }
+
+    public function updatesrorders()
+    {
+        echo 'Start SR orders transform'.PHP_EOL;
+        $this->db->select('oi.order_item_id, v.item_number, o.order_num')->from('ts_order_items oi')->join('v_itemsearch v','oi.item_id=v.item_id')->join('ts_orders o','oi.order_id=o.order_id')->where('o.brand' , 'SR')->where('v.item_id > 0')->where('oi.inventory_item_id',NULL)->order_by('o.order_num');
+        $orditems = $this->db->get()->result_array();
+        foreach ($orditems as $orditem) {
+            $invitm = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $orditem['item_number'])->get()->row_array();
+            $inv_item = $invitm['inventory_item_id'];
+            $this->db->where('order_item_id', $orditem['order_item_id']);
+            $this->db->set('inventory_item_id', $inv_item);
+            $this->db->update('ts_order_items');
+            // Colors
+            $ordcolors = $this->db->select('order_itemcolor_id, item_color')->from('ts_order_itemcolors')->where('order_item_id', $orditem['order_item_id'])->get()->result_array();
+            foreach ($ordcolors as $ordcolor) {
+                $colordat = $this->db->select('color, inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inv_item)->like('color', $ordcolor['item_color'],'after')->get()->row_array();
+                if (ifset($colordat,'inventory_color_id',0) > 0) {
+                    $this->db->where('order_itemcolor_id', $ordcolor['order_itemcolor_id']);
+                    $this->db->set('inventory_color_id', $colordat['inventory_color_id']);
+                    $this->db->update('ts_order_itemcolors');
+                } else {
+                    echo 'Color '.$ordcolor['item_color'].' Order '.$orditem['order_num'].' Item '.$orditem['item_number'].' not found '.PHP_EOL;
+                }
+            }
+        }
+        // Quotes
+        echo 'Start SR quotes transform'.PHP_EOL;
+        $this->db->select('qi.quote_item_id, v.item_number, q.quote_number')->from('ts_quote_items qi')->join('v_itemsearch v','qi.item_id=v.item_id')->join('ts_quotes q','qi.quote_id=q.quote_id')->where('q.brand' , 'SR')->where('v.item_id > 0')->where('qi.inventory_item_id',NULL)->order_by('q.quote_number');
+        $quoteitems = $this->db->get()->result_array();
+        foreach ($quoteitems as $orditem) {
+            $invitm = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $orditem['item_number'])->get()->row_array();
+            $inv_item = $invitm['inventory_item_id'];
+            $this->db->where('quote_item_id', $orditem['quote_item_id']);
+            $this->db->set('inventory_item_id', $inv_item);
+            $this->db->update('ts_quote_items');
+            // Colors
+            $ordcolors = $this->db->select('quote_itemcolor_id, item_color')->from('ts_quote_itemcolors')->where('quote_item_id', $orditem['quote_item_id'])->get()->result_array();
+            foreach ($ordcolors as $ordcolor) {
+                $colordat = $this->db->select('color, inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inv_item)->like('color', $ordcolor['item_color'],'after')->get()->row_array();
+                if (ifset($colordat,'inventory_color_id',0) > 0) {
+                    $this->db->where('quote_itemcolor_id', $ordcolor['quote_itemcolor_id']);
+                    $this->db->set('inventory_color_id', $colordat['inventory_color_id']);
+                    $this->db->update('ts_quote_itemcolors');
+                } else {
+                    echo 'Color '.$ordcolor['item_color'].' Quote '.$orditem['quote_number'].' Item '.$orditem['item_number'].' not found '.PHP_EOL;
+                }
+            }
+        }
+    }
+
+    public function updatesborders()
+    {
+        echo 'Start SB orders transform'.PHP_EOL;
+//        $this->db->select('oi.order_item_id, v.item_number, v.printshop_inventory_id, o.order_num')->from('ts_order_items oi')->join('v_itemsearch v','oi.item_id=v.item_id')->join('ts_orders o','oi.order_id=o.order_id')->where_in('o.brand' , ['SB','BT'])
+//            ->where('v.item_id > 0')->where('oi.inventory_item_id is not NULL')->where('print_date is not NULL')->where('shipped_date',0)->order_by('o.order_num');
+//        $orditems = $this->db->get()->result_array();
+//        foreach ($orditems as $orditem) {
+//            echo 'Order # '.$orditem['order_num'].PHP_EOL;
+//            $invitm = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $orditem['item_number'])->get()->row_array();
+//            $inv_item = $invitm['inventory_item_id'];
+//            $this->db->where('order_item_id', $orditem['order_item_id']);
+//            $this->db->set('inventory_item_id', $orditem['printshop_inventory_id']);
+//            $this->db->update('ts_order_items');
+            // Colors
+//            $ordcolors = $this->db->select('order_itemcolor_id, item_color')->from('ts_order_itemcolors')->where('order_item_id', $orditem['order_item_id'])->get()->result_array();
+//            foreach ($ordcolors as $ordcolor) {
+//                $colordat = $this->db->select('color, inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $orditem['printshop_inventory_id'])->like('color', $ordcolor['item_color'],'after')->get()->row_array();
+//                if (ifset($colordat,'inventory_color_id',0) > 0) {
+//                    $this->db->where('order_itemcolor_id', $ordcolor['order_itemcolor_id']);
+//                    $this->db->set('inventory_color_id', $colordat['inventory_color_id']);
+//                    $this->db->update('ts_order_itemcolors');
+//                } else {
+//                    echo 'Color '.$ordcolor['item_color'].' Order '.$orditem['order_num'].' Item '.$orditem['item_number'].' not found '.PHP_EOL;
+//                }
+//            }
+//        }
+        // Quotes
+        echo 'Start SB quotes transform'.PHP_EOL;
+        $this->db->select('qi.quote_item_id, v.item_number, q.quote_number')->from('ts_quote_items qi')->join('v_itemsearch v','qi.item_id=v.item_id')->join('ts_quotes q','qi.quote_id=q.quote_id')->where('q.brand' , 'SR')->where('v.item_id > 0')->where('qi.inventory_item_id',NULL)->order_by('q.quote_number');
+        $quoteitems = $this->db->get()->result_array();
+        foreach ($quoteitems as $orditem) {
+            $invitm = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $orditem['item_number'])->get()->row_array();
+            $inv_item = $invitm['inventory_item_id'];
+            $this->db->where('quote_item_id', $orditem['quote_item_id']);
+            $this->db->set('inventory_item_id', $inv_item);
+            $this->db->update('ts_quote_items');
+            // Colors
+            $ordcolors = $this->db->select('quote_itemcolor_id, item_color')->from('ts_quote_itemcolors')->where('quote_item_id', $orditem['quote_item_id'])->get()->result_array();
+            foreach ($ordcolors as $ordcolor) {
+                $colordat = $this->db->select('color, inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inv_item)->like('color', $ordcolor['item_color'],'after')->get()->row_array();
+                if (ifset($colordat,'inventory_color_id',0) > 0) {
+                    $this->db->where('quote_itemcolor_id', $ordcolor['quote_itemcolor_id']);
+                    $this->db->set('inventory_color_id', $colordat['inventory_color_id']);
+                    $this->db->update('ts_quote_itemcolors');
+                } else {
+                    echo 'Color '.$ordcolor['item_color'].' Quote '.$orditem['quote_number'].' Item '.$orditem['item_number'].' not found '.PHP_EOL;
+                }
+            }
+        }
+    }
+
+    public function testquote()
+    {
+//        $this->load->config('uploader');
+//        $pathsh = $this->config->item('itemimages_relative');
+//        $pathfl = $this->config->item('itemimages');
+//        $items = $this->db->select('item_id, item_number, item_name, main_image')->from('sb_items')->where(['brand' => 'BT', 'item_active' => 1])->order_by('item_number')->get()->result_array();
+//        foreach ($items as $item) {
+//            if (!empty($item['main_image'])) {
+//                $image = str_replace($pathsh, $pathfl, $item['main_image']);
+//                if (file_exists($image)) {
+//                    list($width, $height) = getimagesize($image);
+//                    if (round($width,-1) !== round($height,-1)) {
+//                        echo 'Item # '.$item['item_number'].' '.$item['item_name'].' Main Image issue W '.$width.' H '.$height.PHP_EOL;
+//                    }
+//                }
+//            }
+//            // Get image images
+//            $lists = $this->db->select('item_img_id, item_img_name, item_img_order')->from('sb_item_images')->where('item_img_item_id', $item['item_id'])->get()->result_array();
+//            foreach ($lists as $list) {
+//                if ($list['item_img_order'] > 1) {
+//                    $image = str_replace($pathsh, $pathfl, $list['item_img_name']);
+//                    if (file_exists($image)) {
+//                        list($width, $height) = getimagesize($image);
+//                        if (round($width,-1) !== round($height,-1)) {
+//                            echo 'Item # '.$item['item_number'].' '.$item['item_name'].' Image # '.$list['item_img_order'].' issue W '.$width.' H '.$height.PHP_EOL;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        echo 'That is All, folk '.PHP_EOL;
+        $this->load->model('email_model');
+        $this->email_model->generate_quota(26662); // 26662
+    }
+
+    public function rebuild_item_titles()
+    {
+        $this->db->select('item_id, item_number, item_name, item_number, item_meta_title')->from('sb_items')->where('brand','BT');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            if (empty($item['item_name'])) {
+                echo 'Item ID '.$item['item_id'].' Empty Name'.PHP_EOL;die();
+            } else {
+                $metanew = str_replace(['Vesrion A'],'', $item['item_name']);
+                $verpos = strpos($metanew,'Version');
+                if ($verpos > 0) {
+                    $version = substr($metanew, $verpos+8);
+                    $metanew = substr($metanew, 0, $verpos-2).'- STRESSBALLS.com&reg; - Custom Printed - Ver '.$version;
+                    echo $item['item_number'].' Meta '.$metanew.PHP_EOL;
+                } else {
+                    $metanew.=' - STRESSBALLS.com&reg; - Custom Printed';
+                }
+                $this->db->where('item_id', $item['item_id']);
+                $this->db->set('item_meta_title', $metanew);
+                $this->db->update('sb_items');
+            }
+        }
+    }
+
+    public function update_shippedorders()
+    {
+        $this->load->model('orders_model');
+        $this->orders_model->update_shipped_orders();
+    }
+
+//    public function updateprintready() {
+//        $this->db->select('oic.order_itemcolor_id, o.order_num, o.print_ready')->from('ts_order_itemcolors oic')->join('ts_order_items oi','oi.order_item_id=oic.order_item_id');
+//        $this->db->join('ts_orders o','o.order_id=oi.order_id')->where('o.print_ready > ',0);
+//        $items = $this->db->get()->result_array();
+//        foreach ($items as $item) {
+//            $this->db->where('order_itemcolor_id', $item['order_itemcolor_id']);
+//            $this->db->set('print_ready', $item['print_ready']);
+//            $this->db->update('ts_order_itemcolors');
+//            echo 'Order '.$item['order_num'].' Updated '.PHP_EOL;
+//        }
+//        $this->db->select('oi.order_item_id, o.order_num, o.plates_ready')->from('ts_order_items oi')->join('ts_orders o','o.order_id=oi.order_id')->where('o.plates_ready > ',0);
+//        $items = $this->db->get()->result_array();
+//        foreach ($items as $item) {
+//            $this->db->where('order_item_id', $item['order_item_id']);
+//            $this->db->set('plates_ready', $item['plates_ready']);
+//            $this->db->update('ts_order_items');
+//            echo 'Order '.$item['order_num'].' Updated '.PHP_EOL;
+//        }
+//    }
+
+    public function testcolors()
+    {
+        $startdate = strtotime('2025-03-17');
+        $this->db->select('o.order_num, o.order_date, o.brand, ii.inventory_item_id, ii.item_num, ii.item_name, oic.item_color, oic.order_itemcolor_id');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_items oi','oi.order_id = o.order_id');
+        $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
+        $this->db->join('ts_inventory_items ii', 'ii.inventory_item_id = oi.inventory_item_id');
+        $this->db->where('o.order_date >= ', $startdate);
+        $this->db->where('oi.inventory_item_id is not null');
+        $this->db->where('oic.inventory_color_id',null);
+        $this->db->order_by('o.order_id');
+        $orders = $this->db->get()->result_array();
+
+        foreach ($orders as $order) {
+            $newcolor = $this->_inventory_color($order['inventory_item_id'], $order['item_color']);
+            if (!empty($newcolor)) {
+                $this->db->where('order_itemcolor_id', $order['order_itemcolor_id']);
+                $this->db->set('inventory_color_id', $newcolor);
+                $this->db->update('ts_order_itemcolors');
+            } else {
+                echo 'Order # '.$order['order_num'].' ('.$order['brand'].')'.' '.$order['item_num'].'-'.$order['item_name'].' '.$order['item_color'].PHP_EOL;
+            }
+        }
+    }
+
+    private function _inventory_color($inventory_item_id, $color)
+    {
+        $outcolor = '';
+        $colordat = $this->db->select('max(inventory_color_id) as color_id, count(inventory_color_id) as cnt')->from('ts_inventory_colors')->where('inventory_item_id', $inventory_item_id)->get()->row_array();
+        if ($colordat['cnt']==1) {
+            // Only one color
+            $outcolor = $colordat['color_id'];
+        } else {
+            $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where(['inventory_item_id' => $inventory_item_id, 'color' => $color])->get()->row_array();
+            if (ifset($invdat, 'inventory_color_id', 0) > 0) {
+                $outcolor = $invdat['inventory_color_id'];
+            } else {
+                $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inventory_item_id)->like('color', $color, 'after')->get()->row_array();
+                if (ifset($invdat, 'inventory_color_id', 0) > 0) {
+                    $outcolor = $invdat['inventory_color_id'];
+                }
+            }
+        }
+        return $outcolor;
+    }
+
 }

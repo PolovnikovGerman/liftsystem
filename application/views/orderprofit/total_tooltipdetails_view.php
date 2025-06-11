@@ -12,4 +12,8 @@
         <div class="profit_paramname ordertypeblank">Blank:</div>
         <div class="profit_paramvalue"><?=($type=='qty' ? QTYOutput($blank_val) : MoneyOutput($blank_val,0))?> (<?=$blank_perc?>%)</div>
     </div>
+    <div class="profit_tooltip_row totals">
+        <div class="profit_paramname ordertypetotal">TOTAL:</div>
+        <div class="profit_paramvalue"><?=$total?> (100%)</div>
+    </div>
 </div>

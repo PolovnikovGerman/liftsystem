@@ -84,11 +84,11 @@ class Welcome extends MY_Controller {
             ];
             $dat = $this->template->prepare_pagecontent($options);
             $options=[
-                'left_menu' => $dat['left_menu'],
+                // 'left_menu' => $dat['left_menu'],
                 'brand' => $brand,
             ];
-            $dat['content_view'] = $this->load->view('welcome/page_view', $options, TRUE);
-            $this->load->view('page/page_template_view', $dat);
+            $dat['content_view'] = $this->load->view('welcome/page_new_view', $options, TRUE);
+            $this->load->view('page_modern/page_template_view', $dat);
         } else {
             redirect($url,'refresh');
         }
@@ -126,7 +126,7 @@ class Welcome extends MY_Controller {
     }
 
     public function testtabs() {
-        $this->load->view('test/test',[]);
+        $this->load->view('test/test_tabs',[]);
     }
 
     public function restore_main_menu() {
@@ -269,11 +269,18 @@ class Welcome extends MY_Controller {
                 $weeknum = date('W', $weekdate);
                 $year = date('Y', $weekdate);
                 $total_options = $this->dashboard_model->get_totals('week', $weeknum, $year);
-                $mdata['content'] = $this->load->view('page/dashboard_total_view', $total_options, TRUE);
+                $mdata['content'] = $this->load->view('page/dashboard_ordertotal_view', $total_options, TRUE);
             }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
 
+    public function weektotalvisitors($curweek)
+    {
+        $this->load->model('dashboard_model');
+        $totals = $this->dashboard_model->get_leadvisits_week($curweek);
+        $msg = $this->load->view('page/dashboard_leadvisitors_view', $totals, TRUE);
+        echo $msg;
+    }
 }
