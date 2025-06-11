@@ -26,14 +26,14 @@ select.profitorder-filtrer {
     width: 154px;
 }
 .profit_filterdate_area {
-    /* width: 351px; */
     height: 22px;
     float: right!important;
-    width: 1000px;
+    /*width: 1000px;*/
+    width: 1052px;
 }
 .profit_filterdate_area.adminview {
     /* width: 740px; */
-    width: 1000px;
+    width: 1126px;
     float: left!important;
 }
 .profit_filterdate_area div {
@@ -107,10 +107,15 @@ select.profitorder-filtrer {
 .profit_filterdate_area .selectordertypes {
     margin-left: 5px;
 }
+.profit_filterdate_area .selectorderitemtypedat {
+    font-size: 11px;
+    height: 23px;
+    width: 84px;
+}
 .profit_filterdate_area select.selectordertypesdat {
     height: 23px;
     font-size: 11px;
-    width: 82px;
+    width: 135px;/* 82px; */
     border: 1px solid #000000;
 }
 .profit_filterdate_area .dateslabel {
@@ -590,7 +595,7 @@ select.profitorder-filtrer {
     line-height: 32px;
     margin-left: 10px;
     text-align: center;
-    width: 977px;
+    /* width: 977px; */
 }
 .profitordertotalsarea {
     margin-bottom: 15px;
@@ -862,6 +867,9 @@ select.profitorder-filtrer {
 }
 .profit_tooltip_content > .profit_tooltip_row {
     width: 100%;
+}
+.profit_tooltip_content > .profit_tooltip_row.totals {
+    border-top: 1px dashed #000;
 }
 .profit_tooltip_content > .profit_tooltip_row > div {
     height: 22px;

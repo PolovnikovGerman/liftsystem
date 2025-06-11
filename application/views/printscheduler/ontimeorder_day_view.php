@@ -19,13 +19,15 @@
         <div class="itm-table-tr itm-table-header">
             <div class="itm-table-td-move">&nbsp;</div>
             <div class="itm-table-td-icons">&nbsp;</div>
+            <div class="itm-table-td-approved">Approval</div>
             <div class="itm-table-td-ship">Ship</div>
             <div class="itm-table-td-order">Order#</div>
             <div class="itm-table-td-items">#Items</div>
             <div class="itm-table-td-imp">Imp</div>
             <div class="itm-table-td-prints">#Prints</div>
-            <div class="itm-table-td-itemcolor">Item Color/s</div>
+            <div class="itm-table-td-printcolors">Print Color/s</div>
             <div class="itm-table-td-descriptions">Item / Description</div>
+            <div class="itm-table-td-itemcolor">Item Color/s</div>
             <div class="pdo-table-td-art">Art</div>
         </div>
         <?php $ordernum = ''; $displaymain = 0;?>
@@ -33,7 +35,7 @@
             <?php if ($order['order_num']!==$ordernum): ?>
                 <?php $ordernum = $order['order_num']; $displaymain = 1; ?>
             <?php endif; ?>
-            <div class="itm-table-tr <?=$displaymain==1 ? '' : 'addition'?> <?=$order['order_approved']==1 ? '' : 'disapproved'?>">
+            <div class="itm-table-tr currentordersdatarow <?=$displaymain==1 ? '' : 'addition'?> <?=$order['order_approved']==1 ? '' : 'disapproved'?>">
                 <?php if ($displaymain==1): ?>
                     <div class="itm-table-td-move" data-order="<?=$order['order_id']?>">
                         <?php if ($order['brand']=='SR') { ?>
@@ -57,14 +59,17 @@
                         <?php } ?>
                         </div>
                     </div>
+                    <div class="itm-table-td-approved <?=$order['order_blank']==1 ? '' : ($order['approved']==0 ? 'notapproved' : '')?>">
+                        <?=$order['order_blank']==1 ? 'Blank' : ($order['approved']==0 ? 'Not Approved' : 'Approved')?></div>
                     <div class="itm-table-td-ship <?=$order['shipclass']?>"><?=date('m/d', $order['shipdate'])?></div>
-                    <div class="itm-table-td-order"><?=$order['order_num']?></div>
+                    <div class="itm-table-td-order" data-order="<?=$order['order_id']?>"><?=$order['order_num']?></div>
                 <?php endif; ?>
-                <div class="itm-table-td-items"><?=$order['order_qty']?></div>
+                <div class="itm-table-td-items"><?=$order['item_qty']?></div>
                 <div class="itm-table-td-imp"><?=$order['imprints']?></div>
                 <div class="itm-table-td-prints"><?=$order['prints']?></div>
-                <div class="itm-table-td-itemcolor"><?=$order['item_color']?></div>
+                <div class="itm-table-td-printcolors">&nbsp;</div>
                 <div class="itm-table-td-descriptions"><?=$order['item_name']?></div>
+                <div class="itm-table-td-itemcolor"><?=$order['color']?></div>
                 <div class="itm-table-td-art">
                     <div class="ic-green-art" data-order="<?=$order['order_itemcolor_id']?>">
                         <img class="img-magnifier-white" src="/img/printscheduler/magnifier-white.svg">

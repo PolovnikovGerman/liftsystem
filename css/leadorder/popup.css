@@ -5674,6 +5674,9 @@ input.ticket_date {
     margin-left: 66px;
 }
 /* Unlock content */
+#unlockContentModal {
+    z-index: 1100;
+}
 #unlockContentModal .modal-dialog {
     width: 300px;
     margin-left: 381px;
@@ -6253,10 +6256,8 @@ div.trackservicelnk > input {
     font-size: 15px;
 }
 .ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection > .profitdataperc {
-    /*position: absolute;*/
-    /*right: 13px;*/
     position: relative;
-    left: 101px;
+    left: 83px; /* 101px; */
     color: #ffffff;
 }
 .ordercogdetailsviewarea.green .tabledataarea > .tabledetailsitem >.tabledatasection > .profitdataperc,

@@ -2645,9 +2645,9 @@ class Leadquote_model extends MY_Model
         $this->load->library('fpdf/fpdfeps');
         // Logo
         // $logoFile = FCPATH."/img/leadquote/logo-bluetrack-stressballs-2.eps";
-        $logoFile = FCPATH."/img/invoice/logos-2.eps";
-        $logoWidth = 119;
-        $logoHeight = 15;
+        $logoFile = FCPATH."/img/invoice/logos-2-upd6.eps";
+        $logoWidth = 86.4;
+        $logoHeight = 20;
         $logoYPos = 15;
         $logoXPos = 16;
         // Table Columns X
@@ -2675,16 +2675,16 @@ class Leadquote_model extends MY_Model
         }
         // Our Address
         $pdf->SetFont('','',12.046857);
-        $ourAddressY = 33.68;
+        $ourAddressY = 39.68;
         $pdf->Text($startPageX, $ourAddressY, '855 Bloomfield Ave');
         $ourAddressY += 5.8;
         $pdf->Text($startPageX, $ourAddressY, 'Clifton, NJ 07012');
         $ourAddressY += 5.8;
-        $pdf->Text($startPageX,$ourAddressY, 'Call Us at');
+        // $pdf->Text($startPageX,$ourAddressY, 'Call Us at');
         $pdf->SetTextColor(0,0,255);
-        $pdf->Text(34,$ourAddressY, '1-800-790-6090');
-        $ourAddressY += 5.8;
-        $pdf->Text($startPageX,$ourAddressY,'www.stressballs.com'); // , 'www.bluetrack.com');
+        $pdf->Text($startPageX, $ourAddressY, '1-800-790-6090');
+        // $ourAddressY += 5.8;
+        $pdf->Text(48,$ourAddressY,'www.stressballs.com'); // , 'www.bluetrack.com');
         // Quote Title
         $pdf->SetXY(156, 29);
         $pdf->SetFont('','',12.5);
@@ -3372,10 +3372,15 @@ class Leadquote_model extends MY_Model
             if (empty($item_id)) {
                 $item_id = $quoteitem['item_id'];
             }
-
+            if (ifset($itemdata,'printshop_item_id',0) > 0) {
+                $quoteitem['inventory_item_id'] = $itemdata['printshop_item_id'];
+            }
             $itemsubtotal = $itemimprint = 0;
             // Get color items
             $coloritems = [];
+            $item_error = '';
+            $item_error_msg = '';
+
             $this->db->select('*');
             $this->db->from('ts_quote_itemcolors');
             $this->db->where('quote_item_id', $quoteitem['quote_item_id']);
@@ -3387,7 +3392,17 @@ class Leadquote_model extends MY_Model
                 if ($colorid==$qutecolorcnt && count($itemdata['colors']) > 1) {
                     $addcolor = 1;
                 }
-
+                if (!empty($quoteitem['inventory_item_id']) && empty($quotecolor['inventory_color_id'])) {
+                    // Check inventory_color_id
+                    $quotecolor['inventory_color_id'] = $this->_inventory_color($quoteitem['inventory_item_id'], $quotecolor['item_color']);
+                    if (!empty($quotecolor['inventory_color_id'])) {
+                        $newinvcolor = $this->db->select('color')->from('ts_inventory_colors')->where('inventory_color_id', $quotecolor['inventory_color_id'])->get()->row_array();
+                        $quotecolor['item_color'] = $newinvcolor['color'];
+                    } else {
+                        $item_error = $itemid * (-1);
+                        $item_error_msg = 'The name of color option ~'.$quotecolor['item_color'].'~ may have changed since last order.  Please select color from current list';
+                    }
+                }
                 $options=array(
                     'order_item_id'=> $itemid*(-1),
                     'item_id'=> $colorid*(-1),
@@ -3718,6 +3733,8 @@ class Leadquote_model extends MY_Model
         $out['order_system_type']=$defsystem;
         $out['order']=$data;
         $out['order_items'] = $order_items;
+        $out['item_error'] = $item_error;
+        $out['item_error_msg'] = $item_error_msg;
         $out['result'] = $this->success_result;
         return $out;
     }

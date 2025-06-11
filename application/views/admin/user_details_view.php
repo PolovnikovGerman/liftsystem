@@ -6,7 +6,15 @@
                 <legend>User Personal Data</legend>
                 <div class="clearfix"></div>
                 <div class="input_row">
-                    <div class="labeltxt">Email (login):</div>
+                    <div class="labeltxt">User Name (login):</div>
+                    <div class="inputval">
+                        <div class="inputval">
+                            <input type="text" class="large userpersdata" data-name="userlogin" id="userlogin" value="<?=$user['userlogin']?>"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="input_row">
+                    <div class="labeltxt">Email:</div>
                     <div class="inputval">
                         <input type="text" class="large userpersdata" data-name="user_email" id="user_email" value="<?=$user['user_email']?>"/>
                     </div>
@@ -62,6 +70,10 @@
                     <div class="labeltxt">Payment User:</div>
                     <div class="inputval chkbox">
                         <input type="checkbox" class="userpersdatachk" data-name="user_payuser" id="user_payuser" value="1" <?=($user['user_payuser']==1 ? 'checked="checked"' : '')?> />
+                    </div>
+                    <div class="labeltxt">Print Schedule:</div>
+                    <div class="inputval chkbox">
+                        <input type="checkbox" class="userpersdatachk" data-name="print_scheduler" id="print_scheduler" value="1" <?=($user['print_scheduler']==1 ? 'checked="checked"' : '')?> />
                     </div>
                 </div>
                 <div class="input_row">

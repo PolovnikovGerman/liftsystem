@@ -388,7 +388,6 @@ class Leadorder extends MY_Controller
                     $options['order_head']=$this->load->view('leadorderdetails/head_order_view', $orddata,TRUE);
                     // Build View
                     $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 1);
-
                     $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                     // Build Content
                     $options['order_data']=$order_data;
@@ -396,6 +395,10 @@ class Leadorder extends MY_Controller
                     $options['leadsession']=$ordersession;
                     $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
                     $options['current_page']=ifset($postdata,'current_page','orders');
+                    if (!empty($res['item_error'])) {
+                        $options['item_error'] = $res['item_error'];
+                        $options['item_error_msg'] = $res['item_error_msg'];
+                    }
                     $content=$this->load->view('leadorderdetails/placeorder_menu_edit',$options, TRUE);
                     $mdata['content']=$content;
                     $head_options = [
@@ -5272,7 +5275,7 @@ class Leadorder extends MY_Controller
         $out=array('result'=>$this->error_result, 'msg'=>$this->locktimeout);
         if (!isset($leadorder['locrecid'])) {
             $out['result']=$this->success_result;
-        } elseif ($leadorder['locrecid']==0) {
+        } elseif (intval($leadorder['locrecid'])==0) {
             $out['result']=$this->success_result;
         } else {
             $locrecid=$leadorder['locrecid'];
@@ -5374,7 +5377,7 @@ class Leadorder extends MY_Controller
                         $orddata=$res['order'];
 
                         // Build View
-                        $data=$this->template->_prepare_leadorder_view($res, $ordersession, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 0);
+                        $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 0);
 
                         $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                         // Build Content
@@ -5592,6 +5595,8 @@ class Leadorder extends MY_Controller
                 $options['hitcolor']='#ffffff';
             }
         }
+        $options['profit_completed'] = ifset($order, 'profit_completed','');
+        $options['profit_project'] = ifset($order, 'profit_project','');
         if ($usrdat['profit_view']=='Points') {
             $options['profit']=round($order['profit']*$this->config->item('profitpts'),0).' pts';
             $options['profit_view']='points';
@@ -6566,9 +6571,9 @@ class Leadorder extends MY_Controller
                     $totaltrack = 0;
                     $totaloldtrack = 0;
                     foreach ($itemcolor['trackings'] as $tracking) {
-                        $totaltrack+=$tracking['qty'];
+                        $totaltrack+=intval($tracking['qty']);
                         if ($tracking['tracking_id']>0) {
-                            $totaloldtrack+=$tracking['qty'];
+                            $totaloldtrack+=intval($tracking['qty']);
                         }
                     }
                     $resttrack = intval($itemcolor['item_qty'])-$totaltrack;
@@ -6807,6 +6812,12 @@ class Leadorder extends MY_Controller
 
     private function _prepare_profitbtn_view($profitoptions)
     {
+        if (!isset($profitoptions['profit_project'])) {
+            $profitoptions['profit_project'] = '';
+        }
+        if (!isset($profitoptions['profit_completed'])) {
+            $profitoptions['profit_completed'] = '';
+        }
         if ($profitoptions['profit_class']=='project') {
             $profit_view = $this->load->view('leadorderdetails/profitproject_view', $profitoptions, TRUE);
         } else {

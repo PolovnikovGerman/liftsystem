@@ -75,9 +75,9 @@ Class Items_model extends My_Model
             } else {
                 $result['shipping_info']='Information Missing';
             }
-            foreach ($this->config->item('item_specialchars') as $row) {
-                $result[$row]=  htmlspecialchars($result[$row]);
-            }
+//            foreach ($this->config->item('item_specialchars') as $row) {
+//                $result[$row]=  htmlspecialchars($result[$row]);
+//            }
             $out['result']=$this->success_result;
             $out['data']=$result;
         }
@@ -1585,5 +1585,110 @@ Class Items_model extends My_Model
             $idx++;
         }
         return $prices;
+    }
+
+    public function merchantcenter_items($brand)
+    {
+        $url = 'most-popular-stress-balls.html';
+        $itemspop = [];
+        $populkeys = [];
+        $catdat = $this->db->select('category_id')->from('sb_categories')->where(['category_url' => $url, 'parent_id' => NULL])->get()->row_array();
+        if (ifset($catdat,'category_id',0)>0) {
+            $category_id = $catdat['category_id'];
+            // Build list of items
+            $this->db->select('i.*')->from('sb_items i')->join('sb_item_categories ic','ic.item_categories_itemid=i.item_id')
+            ->where(['ic.item_categories_categoryid' => $category_id, 'i.brand' => $brand, 'i.item_active' =>1])->order_by('i.item_sequence', 'asc');
+            $items = $this->db->get()->result_array();
+            $itemspop = $this->_prepare_xmlitems($items);
+            foreach ($items as $item) {
+                array_push($populkeys, $item['item_id']);
+            }
+        }
+        // Select all other items
+        $this->db->select('i.*')->from('sb_items i')->where(['i.brand' => $brand, 'i.item_active' =>1])->order_by('i.item_number', 'asc');
+        $itemraw = $this->db->get()->result_array();
+        $items = [];
+        foreach ($itemraw as $item) {
+            if (!in_array($item['item_id'], $populkeys)) {
+                $items[] = $item;
+            }
+        }
+        $itemsdat = $this->_prepare_xmlitems($items);
+        $allitems = $itemspop;
+        foreach ($itemsdat as $item) {
+            $allitems[] = $item;
+        }
+        if (count($allitems) > 0 ) {
+            $this->_prepare_xmldoc($allitems);
+        }
+
+    }
+
+    private function _prepare_xmlitems($items)
+    {
+        $out = [];
+        $urlprefix = 'https://www.stressballs.com';
+        foreach ($items as $item) {
+            if (empty($item['main_image'])) {
+                $this->db->select('item_img_item_id ,item_img_name')->from('sb_item_images')->where(['item_img_item_id' => $item['item_id']])->order_by('item_img_order', 'asc');
+                $imgdata = $this->db->get()->row_array();
+                $image = '';
+                if (ifset($imgdata, 'item_img_item_id',0) > 0) {
+                    $image =  $urlprefix.$imgdata['item_img_name'];
+                }
+            } else {
+                $image = $urlprefix.$item['main_image'];
+            }
+            // Min Price
+            $this->db->select('count(promo_price_id) as cnt, min(price) as price, min(sale_price) as saleprice');
+            $this->db->from('sb_promo_price');
+            $this->db->where('item_id',$item['item_id']);
+            $pricedat = $this->db->get()->row_array();
+            $price = 0;
+            if ($pricedat['cnt']>0) {
+                $price = $pricedat['saleprice'];
+            }
+            $out[] = [
+                'id' => $item['item_number'],
+                'title' => $item['item_name'],
+                'description' => $item['item_metadescription'],
+                'link' => $urlprefix.'/shop/'.$item['item_url'],
+                'image_link' => $image,
+                'condition' => 'new',
+                'availability' => 'in stock',
+                'price' => number_format($price,2,'.','').' '.($price>0 ? 'USD' : ''),
+            ];
+        }
+        return $out;
+    }
+
+    private function _prepare_xmldoc($items)
+    {
+        $filename = 'merchantcenter_sbitems_'.date('Ymd').'.xml';
+        $fullpath = $this->config->item('upload_path_preload').$filename;
+        @unlink($fullpath);
+        $fh = fopen($fullpath, 'w+');
+        if ($fh) {
+            $rows = [];
+            $rows[] = '<?xml version="1.0"?>'.PHP_EOL;
+            $rows[] = '<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">'.PHP_EOL;
+            $rows[] = '<channel>'.PHP_EOL;
+            foreach ($items as $item) {
+                $rows[] = '<item>'.PHP_EOL;
+                foreach ($item as $key => $value) {
+                    $rows[] = '<g:'.$key.'>'.$value.'</g:'.$key.'>'.PHP_EOL;
+                }
+                $rows[] = '</item>'.PHP_EOL;
+            }
+            $rows[] = '</channel>'.PHP_EOL;
+            $rows[] = '</rss>';
+            foreach ($rows as $row) {
+                fwrite($fh, $row);
+            }
+            fclose($fh);
+            echo 'File '.$this->config->item('pathpreload').$filename.' ready'.PHP_EOL;
+        } else {
+            echo 'Error '.PHP_EOL;
+        }
     }
 }

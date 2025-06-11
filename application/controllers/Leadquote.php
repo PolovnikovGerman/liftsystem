@@ -1524,6 +1524,10 @@ class Leadquote extends MY_Controller
                     $options['order_data'] = $order_data;
                     $options['leadsession'] = $leadsession;
                     $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
+                    if (!empty($res['item_error'])) {
+                        $options['item_error'] = $res['item_error'];
+                        $options['item_error_msg'] = $res['item_error_msg'];
+                    }
                     $content = $this->load->view('leadorderdetails/placeorder_menu_edit', $options, TRUE);
                     // $mdata['content']=$content;
                     $head_options = [
@@ -1649,6 +1653,7 @@ class Leadquote extends MY_Controller
                 'quote_item_id' => $postdata['item'],
                 'item_id' => $item_id,
                 'itemstatus' => $itemstatus,
+                'brand' => $quote['brand'],
             );
             usersession($imptintid, $imprintdetails);
         }

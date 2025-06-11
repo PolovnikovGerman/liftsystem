@@ -110,15 +110,26 @@ class Printscheduler_model extends MY_Model
 
     public function get_pastorders($brand)
     {
+        // Prepare Approved view
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+
         $curdate = strtotime(date('Y-m-d'));
         // get order details
-        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, toi.order_itemcolor_id, o.order_approved');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.print_date, toi.inventory_color_id, o.brand');
+        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, toi.order_itemcolor_id');
+        $this->db->select('o.order_approved, ii.item_num, ii.item_name, ic.color, toi.item_qty, o.print_date, toi.inventory_color_id, o.brand');
+        $this->db->select('o.order_blank, coalesce(p.cnt,0) approved');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
-        $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
         $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
+        $this->db->join('ts_inventory_items ii','ii.inventory_item_id=ic.inventory_item_id');
+        $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
+        $this->db->join('('.$proofsql.') p','p.order_id=o.order_id','left');
         $this->db->where('o.print_date < ', $curdate);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.shipped_date', 0);
@@ -137,14 +148,13 @@ class Printscheduler_model extends MY_Model
 
         foreach ($pastorders as $pastorder) {
             // Imprints
-            // $pastorder['inventory_color'] = $this->_inventory_color($pastorder['item_number'], $pastorder['item_color']);
-            $this->db->select('sum(if(i.imprint_item=1, 1, i.imprint_qty)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
+            $this->db->select('sum(if(i.imprint_item=1, 1, 0)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
             $this->db->from('ts_order_imprints i');
             $this->db->where('i.order_item_id', $pastorder['order_item_id']);
             $imprdet = $this->db->get()->row_array();
             $pastorder['imprints'] = $imprdet['imprints'];
             $pastorder['prints'] = $imprdet['imprqty']*$pastorder['item_qty'];
-            $pastorder['item_name'] = $pastorder['item_number'].' - '.$pastorder['item_description'];
+            $pastorder['item_name'] = $pastorder['item_num'].' - '.$pastorder['item_name'];
             $pastorder['stock_class'] = '';
             $balance = $this->_scheduler_balance($pastorder['inventory_color_id']);
             if ($balance <=0 ) {
@@ -256,16 +266,25 @@ class Printscheduler_model extends MY_Model
     {
         $daybgn = strtotime($printdate);
         $dayend = strtotime('+1 day', $daybgn);
+        /* Prepare Approved view */
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
 
         // get order details
         $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, sh.event_date, toi.order_itemcolor_id, o.order_approved');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.print_date, toi.inventory_color_id, o.brand');
+        $this->db->select('ii.item_num, ii.item_name, ic.color, toi.item_qty, o.print_date, toi.inventory_color_id, o.brand');
+        $this->db->select('o.order_blank, coalesce(p.cnt,0) as approved');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
-        $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
         $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
+        $this->db->join('ts_inventory_items ii','ii.inventory_item_id=ic.inventory_item_id');
+        $this->db->join('('.$proofsql.') p','p.order_id=o.order_id','left');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
@@ -285,7 +304,8 @@ class Printscheduler_model extends MY_Model
             // Imprints
             // $currorder['inventory_color'] = $this->_inventory_color($currorder['item_number'], $currorder['item_color']);
             $currorder['inventory_color'] = $currorder['inventory_color_id'];
-            $this->db->select('sum(if(i.imprint_item=1, 1, i.imprint_qty)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
+            // $this->db->select('sum(if(i.imprint_item=1, 1, i.imprint_qty)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
+            $this->db->select('sum(if(i.imprint_item=1, 1, 0)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
             $this->db->from('ts_order_imprints i');
             $this->db->where('i.order_item_id', $currorder['order_item_id']);
             $imprdet = $this->db->get()->row_array();
@@ -295,7 +315,7 @@ class Printscheduler_model extends MY_Model
             }
             $currorder['imprints'] = $imprdet['imprints'];
             $currorder['prints'] = $imprdet['imprqty']*$currorder['item_qty'];
-            $currorder['item_name'] = $currorder['item_number'].' - '.$currorder['item_description'];
+            $currorder['item_name'] = $currorder['item_num'].' - '.$currorder['item_name'];
             $currorder['stock_class'] = '';
             $balance = $this->_scheduler_balance($currorder['inventory_color']);
             if ($balance <=0 ) {
@@ -312,18 +332,27 @@ class Printscheduler_model extends MY_Model
         $dayend = strtotime('+1 day', $daybgn);
         $stocks = $plates = [];
         $order_idx = [];
+        /* Prepare Approved view */
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+
         // get order details
-        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, toi.order_itemcolor_id');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.brand, toi.inventory_color_id');
+        $this->db->select('o.order_id, o.order_num, ii.item_num, ii.item_name, ic.color, o.shipdate, o.order_qty, o.order_rush, toi.print_ready');
+        $this->db->select('oi.plates_ready, oi.order_item_id, toi.order_itemcolor_id, toi.item_qty, o.order_rush, o.brand, toi.inventory_color_id');
+        $this->db->select('o.order_blank, coalesce(p.cnt,0) as approved');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
-        $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
         $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
-        $this->db->where('o.print_date >= ', $daybgn);
+        $this->db->join('ts_inventory_items ii','ii.inventory_item_id=ic.inventory_item_id');
+        $this->db->join('('.$proofsql.') p','p.order_id=o.order_id','left');
+        $this->db->where('o.print_date >=', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
-        $this->db->where('o.is_canceled',0);
-        $this->db->where('o.shipped_date', 0);
+        $this->db->where(['o.is_canceled'=>0, 'o.shipped_date' => 0]);
         if ($brand !== 'ALL') {
             if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
@@ -331,81 +360,42 @@ class Printscheduler_model extends MY_Model
                 $this->db->where_in('o.brand', ['SB','BT']);
             }
         }
-        $this->db->order_by('o.order_rush desc, o.order_id'); // $this->db->order_by('o.order_rush desc, o.order_num');
+        $this->db->order_by('o.order_rush desc, ii.item_num, ic.suggeststock desc, ic.color');
         $orders = $this->db->get()->result_array();
         foreach ($orders as $order) {
-            $order['item_name'] = $order['item_number'].' - '.$order['item_description'];
-            $stocks[] = $order;
-            // $invcolor = $this->_inventory_color($order['item_number'], $order['item_color']);
-            $invcolor = $order['inventory_color_id'];
-            // Get plates
-            if ($invcolor) {
-                $this->db->select('count(amount_id) as platescnt,  sum(blueplate+orangeplate+beigeplate) as platessum')->from('ts_order_amounts')->where(['order_id' => $order['order_id'],'inventory_color_id'=>$invcolor]);
-                $platedet = $this->db->get()->row_array();
-                if ($platedet['platescnt'] > 0 && $platedet['platessum'] > 0) {
-                    $plates[] = [
-                        'order_id' => $order['order_id'],
-                        'print_ready' => $order['print_ready'],
-                        'order_num' => $order['order_num'],
-                        'plates_qty' => $platedet['platessum'],
-                        'item_name' => $order['item_name'],
-                        'item_color' => $order['item_color'],
-                        'brand' => $order['brand'],
-                    ];
+            $order['item_name'] = $order['item_num'].' - '.$order['item_name'];
+            $order['stock_class'] = ($order['print_ready'] == 0) ? '' : 'inwork';
+            if ($order['order_blank']==1) {
+                $order['plate_class'] = ($order['print_ready'] == 0 ? '': 'inwork');
+            } else {
+                $order['plate_class'] = ($order['plates_ready'] == 0) ? '' : 'inwork';
+            }
+            // Balance
+            $order['balance_class'] = '';
+            $balance = $this->_scheduler_balance($order['inventory_color_id']);
+            if ($balance <=0 ) {
+                $order['balance_class'] = $this->emptybalance;
+            }
+            $order['imprints'] = $order['plates'] = '';
+            if ($order['order_blank'] == 1) {
+                $order['imprints'] = 'blank order';
+            } else {
+                if (!empty($order['order_item_id'])) {
+                    $this->db->select('substr(imprint_description,1,6) as locnum, count(*) as cnt')->from('ts_order_imprints')->where(['order_item_id' => $order['order_item_id'],'imprint_item' => 1]);
+                    $this->db->group_by('locnum')->order_by('locnum');
+                    $imprres = $this->db->get()->result_array();
+                    $loctxt = ''; $plates = 0;
+                    foreach ($imprres as $impr) {
+                        $loctxt .= $impr['cnt'].' + ';
+                        $plates += $impr['cnt'];
+                    }
+                    $order['imprints'] = substr($loctxt, 0, -3);
+                    $order['plates'] = $plates;
                 }
             }
+            $stocks[] = $order;
         }
-//        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready');
-//        $this->db->from('ts_orders o');
-//        $this->db->where('o.print_date >= ', $daybgn);
-//        $this->db->where('o.print_date < ', $dayend);
-//        $this->db->where('o.shipping_ready',0);
-//        $this->db->where('o.is_canceled',0);
-//        $this->db->where('o.print_finish',0);
-//        if ($brand=='SR') {
-//            $this->db->where('o.brand', $brand);
-//        } else {
-//            $this->db->where_in('o.brand', ['SB','BT']);
-//        }
-//        $this->db->order_by('o.order_rush desc, o.order_num');
-//        $orders = $this->db->get()->result_array();
-//        $stocks = $plates = [];
-//        foreach ($orders as $order) {
-//            $this->db->select('group_concat(v.item_number,\'-\', toi.item_description) as itemdescr, group_concat(toi.item_color) as itemcolor');
-//            $this->db->from('ts_order_items i');
-//            $this->db->join('ts_order_itemcolors toi','i.order_item_id = toi.order_item_id');
-//            $this->db->join('v_itemsearch v', 'v.item_id=i.item_id');
-//            $this->db->where('i.order_id', $order['order_id']);
-//            $itemdet = $this->db->get()->row_array();
-//            // Imprints
-//            $this->db->select('sum(if(i.imprint_item=1, 1, i.imprint_qty)) as imprint, sum(if(i.imprint_item=1, i.imprint_qty, 0)) as imprqty');
-//            $this->db->from('ts_order_imprints i');
-//            $this->db->join('ts_order_items toi','i.order_item_id = toi.order_item_id');
-//            $this->db->where('toi.order_id', $order['order_id']);
-//            $imprdet = $this->db->get()->row_array();
-//            $order['item_name'] = $itemdet['itemdescr'];
-//            $order['item_color'] = $itemdet['itemcolor'];
-//            $order['imprint'] = intval($imprdet['imprint']);
-//            $order['imprint_qty'] = intval($imprdet['imprqty']);
-//            $stocks[] = $order;
-//            // Get plates
-//            $this->db->select('count(amount_id) as platescnt,  sum(blueplate+orangeplate+beigeplate) as platessum')->from('ts_order_amounts')->where('order_id', $order['order_id']);
-//            $platedet = $this->db->get()->row_array();
-//            if ($platedet['platescnt'] > 0) {
-//                $plates[] = [
-//                    'order_id' => $order['order_id'],
-//                    'print_ready' => $order['print_ready'],
-//                    'order_num' => $order['order_num'],
-//                    'plates_qty' => $platedet['platessum'],
-//                    'item_name' => $itemdet['itemdescr'],
-//                    'item_color' => $itemdet['itemcolor'],
-//                ];
-//            }
-//        }
-        return [
-            'stocks' => $stocks,
-            'plates' => $plates,
-        ];
+        return $stocks;
     }
 
     public function get_dayprintorders($printdate, $brand)
@@ -485,7 +475,8 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_ready > ', 0);
+        $this->db->where('oic.print_ready > ', 0);
+        $this->db->where('oi.plates_ready > ',0);
         $this->db->where('oic.print_completed', 0);
         $this->db->where('o.shipping_ready',0);
         $this->db->where('o.print_user', null);
@@ -497,19 +488,30 @@ class Printscheduler_model extends MY_Model
             }
         }
         $ordercnt = $this->db->get()->row_array();
+        /* Prepare Approved view */
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+
         // get order details
-        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, sh.event_date, toi.order_itemcolor_id');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, toi.inventory_color_id, o.brand');
+        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, toi.print_ready, oi.plates_ready, oi.order_item_id, sh.event_date, toi.order_itemcolor_id');
+        $this->db->select('ii.item_num, ii.item_name, ic.color, toi.item_qty, toi.inventory_color_id, o.brand');
+        $this->db->select('o.order_blank, coalesce(p.cnt,0) as approved');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
         $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
-        $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
+        $this->db->join('ts_inventory_items ii','ii.inventory_item_id=ic.inventory_item_id');
+        $this->db->join('('.$proofsql.') p','p.order_id=o.order_id','left');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_ready > ', 0);
+        $this->db->where('toi.print_ready > ', 0);
+        $this->db->where('oi.plates_ready > ',0);
         $this->db->where('toi.print_completed', 0);
         $this->db->where('o.shipping_ready',0);
         $this->db->where('o.print_user', null);
@@ -538,7 +540,8 @@ class Printscheduler_model extends MY_Model
                 $order['item_qty'] = $order['item_qty'] - $passed;
             }
             // Imprints
-            $this->db->select('sum(if(i.imprint_item=1, 1, i.imprint_qty)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
+            // $this->db->select('sum(if(i.imprint_item=1, 1, i.imprint_qty)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
+            $this->db->select('sum(if(i.imprint_item=1, 1, 0)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
             $this->db->from('ts_order_imprints i');
             $this->db->where('i.order_item_id', $order['order_item_id']);
             $imprdet = $this->db->get()->row_array();
@@ -546,7 +549,7 @@ class Printscheduler_model extends MY_Model
             $totals['items']+=$order['item_qty'];
             $order['prints'] = $imprdet['imprqty']*$order['item_qty'];
             $totals['prints']+=$imprdet['imprqty']*$order['item_qty'];
-            $order['item_name'] = $order['item_number'].' - '.$order['item_description'];
+            $order['item_name'] = $order['item_num'].' - '.$order['item_name'];
             $order['shipclass'] = '';
             if (!empty($order['event_date'])) {
                 $order['shipclass'] = $this->mustship;
@@ -577,7 +580,8 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_ready > ', 0);
+        $this->db->where('oic.print_ready > ', 0);
+        $this->db->where('oi.plates_ready > ', 0);
         $this->db->where('o.shipping_ready',0);
         $this->db->where('oic.print_completed', 0);
         $this->db->where('o.print_user', $user_id);
@@ -590,18 +594,29 @@ class Printscheduler_model extends MY_Model
         }
         $ordercnt = $this->db->get()->row_array();
         // get order details
-        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, sh.event_date, toi.order_itemcolor_id');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, toi.inventory_color_id, o.brand');
+        /* Prepare Approved view */
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+
+        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, o.plates_ready, oi.order_item_id');
+        $this->db->select('sh.event_date, toi.order_itemcolor_id, ii.item_num, ii.item_name, ic.color, toi.item_qty, toi.inventory_color_id, o.brand');
+        $this->db->select('o.order_blank, coalesce(p.cnt,0) as approved');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
         $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
-        $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
+        $this->db->join('ts_inventory_items ii','ii.inventory_item_id=ic.inventory_item_id');
+        $this->db->join('('.$proofsql.') p','p.order_id=o.order_id','left');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
-        $this->db->where('o.print_ready > ', 0);
+        $this->db->where('toi.print_ready > ', 0);
+        $this->db->where('oi.plates_ready > ', 0);
         $this->db->where('toi.print_completed', 0);
         $this->db->where('o.shipping_ready',0);
         $this->db->where('o.print_user', $user_id);
@@ -631,14 +646,14 @@ class Printscheduler_model extends MY_Model
             }
             $totals['items']+=$order['item_qty'];
             // Imprints
-            $this->db->select('sum(if(i.imprint_item=1, 1, i.imprint_qty)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
+            $this->db->select('sum(if(i.imprint_item=1, 1, 0)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
             $this->db->from('ts_order_imprints i');
             $this->db->where('i.order_item_id', $order['order_item_id']);
             $imprdet = $this->db->get()->row_array();
             $order['imprints'] = $imprdet['imprints'];
             $order['prints'] = $imprdet['imprqty']*$order['item_qty'];
             $totals['prints']+=$imprdet['imprqty']*$order['item_qty'];
-            $order['item_name'] = $order['item_number'].' - '.$order['item_description'];
+            $order['item_name'] = $order['item_num'].' - '.$order['item_name'];
             $order['shipclass'] = '';
             if (!empty($order['event_date'])) {
                 $order['shipclass'] = $this->mustship;
@@ -663,11 +678,14 @@ class Printscheduler_model extends MY_Model
         $this->db->select('o.print_user as user_id, u.first_name as user_name, count(o.order_id) as cnt');
         $this->db->from('ts_orders o');
         $this->db->join('users u','u.user_id=o.print_user');
+        $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
+        $this->db->join('ts_order_itemcolors oic','oi.order_item_id=oic.order_item_id');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
         $this->db->where('o.print_finish',0);
-        $this->db->where('o.print_ready > ', 0);
+        $this->db->where('oic.print_ready > ', 0);
+        $this->db->where('oi.plates_ready > ', 0);
         $this->db->where('o.shipping_ready',0);
         $this->db->where('o.print_user != ', null);
         if ($brand !== 'ALL') {
@@ -712,15 +730,25 @@ class Printscheduler_model extends MY_Model
             'items' => 0,
             'orders' => $ordercnt['cnt'],
         ];
+        /* Prepare Approved view */
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+
         // get order details
         $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, sh.event_date, toi.order_itemcolor_id');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, toi.inventory_color_id, o.brand');
+        $this->db->select('ii.item_num, ii.item_name, ic.color, toi.item_qty, toi.inventory_color_id, o.brand');
+        $this->db->select('o.order_blank, coalesce(p.cnt,0) as approved');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
         $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
-        $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
+        $this->db->join('ts_inventory_items ii','ii.inventory_item_id=ic.inventory_item_id');
+        $this->db->join('('.$proofsql.') p','p.order_id=o.order_id','left');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
@@ -739,8 +767,11 @@ class Printscheduler_model extends MY_Model
         $orders = $this->db->get()->result_array();
         $ships = [];
         foreach ($orders as $order) {
+            // Check a prev send
+            $sendqty =  $this->_shipped_itemcolor($order['order_itemcolor_id']);
+            $order['item_qty'] = $order['item_qty'] - $sendqty;
             $totals['items']+=$order['item_qty'];
-            $order['item_name'] = $order['item_number'].' - '.$order['item_description'];
+            $order['item_name'] = $order['item_num'].' - '.$order['item_name'];
             $order['shipclass'] = '';
             if (!empty($order['event_date'])) {
                 $order['shipclass'] = $this->mustship;
@@ -768,7 +799,7 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.is_canceled',0);
         // $this->db->where('o.print_finish > ',0);
         $this->db->where('oic.print_date > ',0);
-        $this->db->where('oic.print_completed', 0);
+        $this->db->where('oic.print_completed', 1); // 0
         $this->db->where('o.shipped_date', 0);
         $this->db->where('o.print_user != ', null);
         if ($brand !== 'ALL') {
@@ -798,7 +829,7 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.is_canceled',0);
         // $this->db->where('o.print_finish > ',0);
         $this->db->where('oic.print_date > ',0);
-        $this->db->where('oic.print_completed', 0);
+        $this->db->where('oic.print_completed', 1); // 0
         $this->db->where('o.shipped_date', 0);
         if ($brand !== 'ALL') {
             if ($brand=='SR') {
@@ -813,21 +844,32 @@ class Printscheduler_model extends MY_Model
             'items' => 0,
             'orders' => $ordercnt['cnt'],
         ];
+        /* Prepare Approved view */
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+
         // get order details
         $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, sh.event_date, toi.order_itemcolor_id');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, toi.inventory_color_id, o.brand');
+        $this->db->select('ii.item_num, ii.item_name, ic.color, toi.item_qty, toi.inventory_color_id, o.brand');
+        $this->db->select('o.order_blank, coalesce(p.cnt,0) as approved');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
         $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
-        $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
+        $this->db->join('ts_inventory_items ii','ii.inventory_item_id=ic.inventory_item_id');
+        $this->db->join('('.$proofsql.') p','p.order_id=o.order_id','left');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
         // $this->db->where('o.print_finish > ',0);
         $this->db->where('toi.print_date > ',0);
-        $this->db->where('toi.print_completed', 0);
+        $this->db->where('toi.print_completed', 1); // 0
+        $this->db->where('o.print_user', $user_id);
         if ($brand !== 'ALL') {
             if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
@@ -849,14 +891,15 @@ class Printscheduler_model extends MY_Model
             }
             $totals['items']+=$order['item_qty'];
             // Imprints
-            $this->db->select('sum(if(i.imprint_item=1, 1, i.imprint_qty)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
+            // $this->db->select('sum(if(i.imprint_item=1, 1, i.imprint_qty)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
+            $this->db->select('sum(if(i.imprint_item=1, 1, 0)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
             $this->db->from('ts_order_imprints i');
             $this->db->where('i.order_item_id', $order['order_item_id']);
             $imprdet = $this->db->get()->row_array();
             $order['imprints'] = $imprdet['imprints'];
             $order['prints'] = $imprdet['imprqty']*$order['item_qty'];
             $totals['prints']+=$imprdet['imprqty']*$order['item_qty'];
-            $order['item_name'] = $order['item_number'].' - '.$order['item_description'];
+            $order['item_name'] = $order['item_num'].' - '.$order['item_name'];
             $order['shipclass'] = '';
             if (!empty($order['event_date'])) {
                 $order['shipclass'] = $this->mustship;
@@ -903,15 +946,25 @@ class Printscheduler_model extends MY_Model
             'items' => 0,
             'orders' => $ordercnt['cnt'],
         ];
+        /* Prepare Approved view */
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+
         // get order details
         $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, oi.order_item_id, sh.event_date, toi.order_itemcolor_id');
-        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.brand, toi.inventory_color_id');
+        $this->db->select('ii.item_num, ii.item_name, ic.color, toi.item_qty, o.brand, toi.inventory_color_id');
+        $this->db->select('o.order_blank, coalesce(p.cnt,0) as approved');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_shippings sh','o.order_id=sh.order_id');
         $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
         $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
         $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
-        $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
+        $this->db->join('ts_inventory_items ii','ii.inventory_item_id=ic.inventory_item_id');
+        $this->db->join('('.$proofsql.') p','p.order_id=o.order_id','left');
         $this->db->where('o.print_date >= ', $daybgn);
         $this->db->where('o.print_date < ', $dayend);
         $this->db->where('o.is_canceled',0);
@@ -931,21 +984,32 @@ class Printscheduler_model extends MY_Model
         $ships = [];
         foreach ($orders as $order) {
             $totals['items']+=$order['item_qty'];
-            $order['item_name'] = $order['item_number'].' - '.$order['item_description'];
+            $order['item_name'] = $order['item_num'].' - '.$order['item_name'];
             $order['shipclass'] = '';
             if (!empty($order['event_date'])) {
                 $order['shipclass'] = $this->mustship;
             }
             // Get Track codes
             $this->db->select('*')->from('ts_order_trackings')->where('order_itemcolor_id', $order['order_itemcolor_id']);
-            $track = $this->db->get()->row_array();
-            $order['shipqty'] = $order['shipmethod'] = $order['trackcode'] = '';
-            if (ifset($track, 'tracking_id', 0) > 0) {
-                $order['shipqty'] = $track['qty'];
-                $order['shipmethod'] = $track['trackservice'];
-                $order['trackcode'] = $track['trackcode'];
+            $tracks = $this->db->get()->result_array();
+            foreach ($tracks as $track) {
+                $ships[] = [
+                    'order_id' => $order['order_id'],
+                    'order_num' => $order['order_num'],
+                    'order_blank' => $order['order_blank'],
+                    'approved' => $order['approved'],
+                    'item_color' => $order['color'],
+                    'item_name' => $order['item_name'],
+                    'item_qty' => $order['item_qty'],
+                    'shipclass' => $order['shipclass'],
+                    'shipdate' => $track['trackdate'],
+                    'shipqty' => $track['qty'],
+                    'shipmethod' => $track['trackservice'],
+                    'trackcode' => $track['trackcode'],
+                    'brand' => $order['brand'],
+                ];
             }
-            $ships[] = $order;
+
         }
         return [
             'orders' => $ships,
@@ -953,23 +1017,50 @@ class Printscheduler_model extends MY_Model
         ];
     }
 
-    public function stockdonecheck($order_id)
+    public function stockdonecheck($order_id, $updtype)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Order Not Found'];
-        $this->db->select('order_id, print_ready, print_date')->from('ts_orders')->where('order_id', $order_id);
+        if ($updtype=='stock') {
+            $this->db->select('oic.order_itemcolor_id as order_id, oic.print_ready, o.print_date, o.order_blank')->from('ts_order_itemcolors oic');
+            $this->db->join('ts_order_items oi','oi.order_item_id=oic.order_item_id')->join('ts_orders o','o.order_id=oi.order_id');
+            $this->db->where('oic.order_itemcolor_id', $order_id);
+        } else {
+            $this->db->select('oi.order_item_id as order_id, oi.plates_ready, o.print_date')->from('ts_order_items oi');
+            $this->db->join('ts_orders o','o.order_id=oi.order_id')->where('oi.order_item_id', $order_id);
+        }
         $orderres = $this->db->get()->row_array();
         if (ifset($orderres,'order_id',0)==$order_id) {
             $out['result'] = $this->success_result;
             $out['printdate'] = date('Y-m-d',$orderres['print_date']);
-            $this->db->where('order_id', $order_id);
-            if ($orderres['print_ready']==0) {
-                $this->db->set('print_ready',time());
-                $out['checked'] = 1;
+            if ($updtype=='stock') {
+                $this->db->where('order_itemcolor_id', $order_id);
+                if ($orderres['print_ready']==0) {
+                    $this->db->set('print_ready',time());
+                    if ($orderres['order_blank']==1) {
+                        $this->db->set('print_completed', 1);
+                        $this->db->set('print_date', time());
+                    }
+                    $out['checked'] = 1;
+                } else {
+                    $this->db->set('print_ready',0);
+                    if ($orderres['order_blank']==1) {
+                        $this->db->set('print_completed', 0);
+                        $this->db->set('print_date', 0);
+                    }
+                    $out['checked'] = 0;
+                }
+                $this->db->update('ts_order_itemcolors');
             } else {
-                $this->db->set('print_ready',0);
-                $out['checked'] = 0;
+                $this->db->where('order_item_id', $order_id);
+                if ($orderres['plates_ready']==0) {
+                    $this->db->set('plates_ready',time());
+                    $out['checked'] = 1;
+                } else {
+                    $this->db->set('plates_ready',0);
+                    $out['checked'] = 1;
+                }
+                $this->db->update('ts_order_items');
             }
-            $this->db->update('ts_orders');
         }
         return $out;
     }
@@ -1059,60 +1150,60 @@ class Printscheduler_model extends MY_Model
     public function shiporder($order_itemcolor_id, $shipqty, $shipmethod, $trackcode, $user_id)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Order not found'];
-        $this->db->select('oic.order_itemcolor_id, oic.item_qty, o.order_id, o.order_num, o.print_date')->from('ts_order_itemcolors oic');
+        $this->db->select('oic.order_itemcolor_id, oic.item_qty, oic.shipping_ready, o.order_id, o.order_num, o.print_date')->from('ts_order_itemcolors oic');
         $this->db->join('ts_order_items oi','oic.order_item_id = oi.order_item_id')->join('ts_orders o','oi.order_id = o.order_id')->where('oic.order_itemcolor_id', $order_itemcolor_id);
         $orderdata = $this->db->get()->row_array();
         if (ifset($orderdata, 'order_id',0) > 0) {
             // Order found
-            $shippingqty = intval($shipqty);
-            if ($shippingqty == 0) {
-                $shippingqty = $orderdata['item_qty'];
-            }
-            // Select tracking, related with item color
-            $this->db->select('*')->from('ts_order_trackings')->where('order_itemcolor_id', $order_itemcolor_id);
-            $trackres = $this->db->get()->result_array();
-            $track_id = 0;
-            if (count($trackres)==0) {
-                // Add new tracking
-                $this->db->set('created_at', date('Y-m-d H:i:s'));
-                $this->db->set('created_by', $user_id);
-                $this->db->set('updated_by', $user_id);
-                $this->db->set('order_itemcolor_id', $order_itemcolor_id);
-                $this->db->set('qty', $shippingqty);
-                $this->db->set('trackdate', time());
-                $this->db->set('trackservice', $shipmethod);
-                $this->db->set('trackcode', $trackcode);
-                $this->db->insert('ts_order_trackings');
-                $track_id = $this->db->insert_id();
-            } elseif (count($trackres)==1) {
-                $tracdata = $trackres[0];
-                $track_id = $tracdata['tracking_id'];
-                $this->db->where('tracking_id', $track_id);
-                $this->db->set('updated_by', $user_id);
-                $this->db->set('trackdate', time());
-                $this->db->set('trackservice', $shipmethod);
-                $this->db->set('trackcode', $trackcode);
-                $this->db->set('qty', $shippingqty);
-                $this->db->update('ts_order_trackings');
+            if (empty($orderdata['shipping_ready'])) {
+                $shippingqty = intval($shipqty);
+                // Check empty tracking
+                $this->db->select('*')->from('ts_order_trackings')->where(['order_itemcolor_id' => $order_itemcolor_id,'qty'=>0]);
+                $trackraw = $this->db->get()->row_array();
+                if (ifset($trackraw, 'tracking_id',0) > 0) {
+                    $this->db->where('tracking_id', $trackraw['tracking_id']);
+                    $this->db->set('updated_by', $user_id);
+                    $this->db->set('qty', $shippingqty);
+                    $this->db->set('trackdate', time());
+                    $this->db->set('trackservice', $shipmethod);
+                    $this->db->set('trackcode', $trackcode);
+                    $this->db->update('ts_order_trackings');
+                    $track_id = $trackraw['tracking_id'];
+                } else {
+                    // Add new tracking
+                    $this->db->set('created_at', date('Y-m-d H:i:s'));
+                    $this->db->set('created_by', $user_id);
+                    $this->db->set('updated_by', $user_id);
+                    $this->db->set('order_itemcolor_id', $order_itemcolor_id);
+                    $this->db->set('qty', $shippingqty);
+                    $this->db->set('trackdate', time());
+                    $this->db->set('trackservice', $shipmethod);
+                    $this->db->set('trackcode', $trackcode);
+                    $this->db->insert('ts_order_trackings');
+                    $track_id = $this->db->insert_id();
+                }
+                if ($track_id > 0) {
+                    $out['result'] = $this->success_result;
+                    $out['printdate'] = date('Y-m-d', $orderdata['print_date']);
+                    $tracked = $this->_shipped_itemcolor($order_itemcolor_id);
+                    if ($tracked >= $orderdata['item_qty']) {
+                        $this->db->where('order_itemcolor_id', $order_itemcolor_id);
+                        $this->db->set('shipping_ready', time());
+                        $this->db->update('ts_order_itemcolors');
+                    }
+                    // Count shipping parts
+                    $this->db->select('count(oic.order_itemcolor_id) as cnt')->from('ts_order_itemcolors oic')->join('ts_order_items oi', 'oic.order_item_id=oi.order_item_id')->join('ts_orders o', 'o.order_id=oi.order_id');
+                    $this->db->where(['o.order_id' => $orderdata['order_id'],'oic.shipping_ready' => 0]);
+                    $chkres = $this->db->get()->row_array();
+                    if ($chkres['cnt']==0) {
+                        $this->db->where('order_id', $orderdata['order_id']);
+                        $this->db->set('shipped_date', time());
+                        $this->db->update('ts_orders');
+                    }
+                }
             } else {
-                // ???
-                $out['msg'] = 'Order tracking records too much for update';
-            }
-            if ($track_id > 0) {
                 $out['result'] = $this->success_result;
                 $out['printdate'] = date('Y-m-d', $orderdata['print_date']);
-                $this->db->where('order_itemcolor_id', $order_itemcolor_id);
-                $this->db->set('shipping_ready', time());
-                $this->db->update('ts_order_itemcolors');
-                // Count shipping parts
-                $this->db->select('count(oic.order_itemcolor_id) as cnt')->from('ts_order_itemcolors oic')->join('ts_order_items oi', 'oic.order_item_id=oi.order_item_id')->join('ts_orders o', 'o.order_id=oi.order_id');
-                $this->db->where(['o.order_id' => $orderdata['order_id'],'oic.shipping_ready' => 0]);
-                $chkres = $this->db->get()->row_array();
-                if ($chkres['cnt']==0) {
-                    $this->db->where('order_id', $orderdata['order_id']);
-                    $this->db->set('shipped_date', time());
-                    $this->db->update('ts_orders');
-                }
             }
         }
         return $out;
@@ -1152,6 +1243,17 @@ class Printscheduler_model extends MY_Model
         $amntres = $this->db->get()->row_array();
         if ($amntres['amntcnt'] > 0) {
             $outcome = $amntres['amnttotal'];
+        }
+        return $outcome;
+    }
+
+    private function _shipped_itemcolor($order_itemcolor_id)
+    {
+        $outcome = 0;
+        $this->db->select('count(tracking_id) as cnt, sum(qty) as tracked')->from('ts_order_trackings')->where('order_itemcolor_id', $order_itemcolor_id);
+        $trackres = $this->db->get()->row_array();
+        if ($trackres['cnt']>0) {
+            $outcome = $trackres['tracked'];
         }
         return $outcome;
     }
@@ -1235,6 +1337,112 @@ class Printscheduler_model extends MY_Model
             $this->db->where('order_id', $order);
             $this->db->set('print_date', $print_date);
             $this->db->update('ts_orders');
+        }
+        return $out;
+    }
+
+//    public function get_daystocks($printdate, $brand)
+//    {
+//        $daybgn = strtotime($printdate);
+//        $dayend = strtotime('+1 day', $daybgn);
+//        $stocks = [];
+//        // get order details
+//        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, o.plates_ready, oi.order_item_id, toi.order_itemcolor_id');
+//        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.brand, toi.inventory_color_id');
+//        $this->db->from('ts_orders o');
+//        $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
+//        $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
+//        $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
+//        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
+//        $this->db->where('o.print_date >= ', $daybgn);
+//        $this->db->where('o.print_date < ', $dayend);
+//        $this->db->where('o.is_canceled',0);
+//        $this->db->where('o.shipped_date',0);
+//        if ($brand !== 'ALL') {
+//            if ($brand=='SR') {
+//                $this->db->where('o.brand', $brand);
+//            } else {
+//                $this->db->where_in('o.brand', ['SB','BT']);
+//            }
+//        }
+//        $this->db->order_by('o.print_ready asc, o.order_rush desc, o.order_id asc'); // $this->db->order_by('o.order_rush desc, o.order_num');
+//        $orders = $this->db->get()->result_array();
+//        foreach ($orders as $order) {
+//            $order['item_name'] = $order['item_number'].' - '.$order['item_description'];
+//            $order['order_class'] = ($order['print_ready'] == 0) ? '' : 'inwork';
+//            $stocks[] = $order;
+//        }
+//        return $stocks;
+//    }
+
+//    public function get_dayplates($printdate, $brand)
+//    {
+//        $daybgn = strtotime($printdate);
+//        $dayend = strtotime('+1 day', $daybgn);
+//        $plates = [];
+//        // Get Plates
+//        $this->db->select('o.order_id, o.order_num, o.shipdate, o.order_qty, o.order_rush, o.print_ready, o.plates_ready, oi.order_item_id, toi.order_itemcolor_id');
+//        $this->db->select('v.item_number, toi.item_description, toi.item_color, toi.item_qty, o.brand, toi.inventory_color_id');
+//        $this->db->from('ts_orders o');
+//        $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
+//        $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
+//        $this->db->join('v_itemsearch v', 'v.item_id=oi.item_id');
+//        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=toi.inventory_color_id');
+//        $this->db->where('o.print_date >= ', $daybgn);
+//        $this->db->where('o.print_date < ', $dayend);
+//        $this->db->where('o.is_canceled',0);
+//        $this->db->where('o.shipped_date',0);
+//        if ($brand !== 'ALL') {
+//            if ($brand=='SR') {
+//                $this->db->where('o.brand', $brand);
+//            } else {
+//                $this->db->where_in('o.brand', ['SB','BT']);
+//            }
+//        }
+//        $this->db->order_by('o.plates_ready asc, o.order_rush desc, o.order_id asc'); // $this->db->order_by('o.order_rush desc, o.order_num');
+//        $amnts = $this->db->get()->result_array();
+//        foreach ($amnts as $amnt) {
+//            $this->db->select('sum(if(i.imprint_item=1, 1, 0)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
+//            $this->db->from('ts_order_imprints i');
+//            $this->db->where('i.order_item_id', $amnt['order_item_id']);
+//            $imprdet = $this->db->get()->row_array();
+//            $amnt['item_name'] = $amnt['item_number'].' - '.$amnt['item_description'];
+//            $amnt['order_class'] = ($amnt['plates_ready'] == 0) ? '' : 'inwork';
+//            $plates[] = [
+//                'order_id' => $amnt['order_id'],
+//                'plates_ready' => $amnt['plates_ready'],
+//                'order_num' => $amnt['order_num'],
+//                'plates_qty' => intval($imprdet['imprints']),
+//                'item_name' => $amnt['item_name'],
+//                'item_color' => $amnt['item_color'],
+//                'order_class' => $amnt['order_class'],
+//                'brand' => $amnt['brand'],
+//            ];
+//        }
+//        return $plates;
+//    }
+
+    public function get_approved_proofs($order_id, $type)
+    {
+        if ($type=='order') {
+            $this->db->select('ap.*')->from('ts_artwork_proofs ap')->join('ts_artworks ta','ta.artwork_id = ap.artwork_id');
+            $this->db->where('ta.order_id', $order_id)->where('ap.approved_time > 0');
+        } else {
+            $this->db->select('ap.*')->from('ts_artwork_proofs ap')->join('ts_artworks ta','ta.artwork_id = ap.artwork_id');
+            $this->db->join('ts_order_items oi','oi.order_id = ta.order_id')->join('ts_order_itemcolors oic','oic.order_item_id = oi.order_item_id');
+            $this->db->where('oic.order_itemcolor_id', $order_id)->where('ap.approved_time > 0');
+        }
+        $proofs = $this->db->get()->result_array();
+        $out = [];
+        $approvenum=1;
+        foreach ($proofs as $proof) {
+            $out[] = [
+                'src' => $proof['proof_name'],
+                'out_apprname' => 'approved_'.str_pad($approvenum, 2, '0', STR_PAD_LEFT),
+                'approve_class' => 'proofapproved',
+                'out_approved' => '<img src="/img/art/artpopup_greenstar.png" alt="proof"/>',
+            ];
+            $approvenum++;
         }
         return $out;
     }

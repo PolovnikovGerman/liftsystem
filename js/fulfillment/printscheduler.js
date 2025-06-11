@@ -91,6 +91,30 @@ function init_pastdueorders_content() {
             }
         },'json');
     });
+    // Open Approved Proofs
+    $(".ic-green-art").unbind('click').click(function (){
+        var order = $(this).data('order');
+        var url = '/printscheduler/printorder';
+        $.post(url,{'order_id': order, 'type': 'itemcolor'}, function (response){
+            if (response.errors=='') {
+                $("#pageModal").find('div.modal-dialog').css('width','305px');
+                $("#pageModalLabel").empty().html('Approved Proofs');
+                $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+                $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $(".uploadproofdoc").unbind('click').click(function (){
+                    var docurl = $(this).data('proofdoc');
+                    window.open(docurl,"ProofSource","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+                });
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Open Order view
+    $(".pastordersdatarow").find("div.pdo-table-td-order").unbind('click').click(function (){
+        var order = $(this).data('order');
+        show_printschedule_order(order);
+    });
 }
 
 function pastupdate(printdate, order) {
@@ -138,8 +162,9 @@ function init_pastshedule(printdate) {
             var dataurl = '/printscheduler/dayscheduledetails';
             $.post(dataurl, params, function (dresponse){
                 if (dresponse.errors=='') {
-                    $("#stockordersdata").empty().html(dresponse.data.stockview);
-                    $("#platesordersdata").empty().html(dresponse.data.plateview);
+                    // $("#stockordersdata").empty().html(dresponse.data.stockview);
+                    // $("#platesordersdata").empty().html(dresponse.data.plateview);
+                    $("#stockplatestabledata").empty().html(dresponse.data.stockplatesview);
                     $(".ready-print-block").empty().html(dresponse.data.printview);
                     $(".ready-ship-block").empty().html(dresponse.data.readyship);
                     $(".completed-print-block").empty().html(dresponse.data.completed);
@@ -221,8 +246,9 @@ function init_ontimeorders_content() {
                var dataurl = '/printscheduler/dayscheduledetails';
                $.post(dataurl, params, function (dresponse){
                    if (dresponse.errors=='') {
-                       $("#stockordersdata").empty().html(dresponse.data.stockview);
-                       $("#platesordersdata").empty().html(dresponse.data.plateview);
+                       // $("#stockordersdata").empty().html(dresponse.data.stockview);
+                       // $("#platesordersdata").empty().html(dresponse.data.plateview);
+                       $("#stockplatestabledata").empty().html(dresponse.data.stockplatesview);
                        $(".ready-print-block").empty().html(dresponse.data.printview);
                        $(".ready-ship-block").empty().html(dresponse.data.readyship);
                        $(".completed-print-block").empty().html(dresponse.data.completed);
@@ -258,6 +284,30 @@ function init_ontimeorders_content() {
         });
         $("input.intimeorderprintdate[data-order='"+order+"']").datepicker('show');
     });
+    // Art Button click
+    $(".ic-green-art").unbind('click').click(function (){
+        var order = $(this).data('order');
+        var url = '/printscheduler/printorder';
+        $.post(url,{'order_id': order, 'type': 'itemcolor'}, function (response){
+            if (response.errors=='') {
+                $("#pageModal").find('div.modal-dialog').css('width','305px');
+                $("#pageModalLabel").empty().html('Approved Proofs');
+                $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+                $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $(".uploadproofdoc").unbind('click').click(function (){
+                    var docurl = $(this).data('proofdoc');
+                    window.open(docurl,"ProofSource","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+                });
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Order click
+    $(".currentordersdatarow").find("div.itm-table-td-order").unbind('click').click(function (){
+        var order = $(this).data('order');
+        show_printschedule_order(order);
+    })
 }
 
 function intimeupdate(printdate, order) {
@@ -278,19 +328,22 @@ function intimeupdate(printdate, order) {
 
 function init_printscheduler_dayview() {
     // $(".stock-done-checkbox").unbind('change').change(function (){
-    $(".stock-table-td-done").find('i').unbind('click').click(function (){
+    // $(".stock-table-td-done").find('i').unbind('click').click(function (){
+    $(".stock-table-td-orderchk").find('i').unbind('click').click(function (){
         var order = $(this).data('order');
         var params = new Array();
         params.push({name: 'order', value: order});
         params.push({name: 'brand', value: $("#printschbrand").val()});
+        params.push({name: 'type', value: 'stock'});
         var url = '/printscheduler/stockdonecheck';
         $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $(".ready-print-block").empty().html(response.data.content);
-                // Update plates
-                $(".stock-table-td-done[data-order='"+order+"']").empty().html(response.data.orderchk);
-                $(".plates-table-td-done[data-order='"+order+"']").empty().html(response.data.orderchk);
+                // Update stocks
+                // $("#stockordersdata").empty().html(response.data.daycontent);
+                $("#stockplatestabledata").empty().html(response.data.daycontent);
+                $(".ready-ship-block").empty().html(response.data.readyship);
                 $("#loader").hide();
                 init_printscheduler_dayview();
             } else {
@@ -299,18 +352,21 @@ function init_printscheduler_dayview() {
             }
         },'json');
     });
-    $(".plates-table-td-done").find('i').unbind('click').click(function (){
+    $(".stock-table-td-platescheck").find('i').unbind('click').click(function (){
         var order = $(this).data('order');
         var params = new Array();
         params.push({name: 'order', value: order});
         params.push({name: 'brand', value: $("#printschbrand").val()});
+        params.push({name: 'type', value: 'plates'});
         var url = '/printscheduler/stockdonecheck';
         $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $(".ready-print-block").empty().html(response.data.content);
-                $(".stock-table-td-done[data-order='"+order+"']").empty().html(response.data.orderchk);
-                $(".plates-table-td-done[data-order='"+order+"']").empty().html(response.data.orderchk);
+                // Update plates
+//                $("#platesordersdata").empty().html(response.data.daycontent);
+                $("#stockplatestabledata").empty().html(response.data.daycontent);
+                $(".ready-ship-block").empty().html(response.data.readyship);
                 $("#loader").hide();
                 init_printscheduler_dayview();
             } else {
@@ -356,7 +412,8 @@ function init_printscheduler_dayview() {
         $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
-                $("#platesordersdata").empty().html(response.data.plateview);
+                $("#stockplatestabledata").empty().html(response.data.stockplatesview);
+                // $("#platesordersdata").empty().html(response.data.plateview);
                 $(".ready-print-block").empty().html(response.data.printview);
                 $(".ready-ship-block").empty().html(response.data.readyshipview);
                 $(".completed-print-block").empty().html(response.data.complljobview);
@@ -418,8 +475,9 @@ function init_printscheduler_dayview() {
         $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
-                $("#stockordersdata").empty().html(response.data.stockview);
-                $("#platesordersdata").empty().html(response.data.plateview);
+                // $("#stockordersdata").empty().html(response.data.stockview);
+                // $("#platesordersdata").empty().html(response.data.plateview);
+                $("#stockplatestabledata").empty().html(response.data.stockplatesview);
                 $(".ready-print-block").empty().html(response.data.printview);
                 $(".ready-ship-block").empty().html(response.data.readyshipview);
                 $(".completed-print-block").empty().html(response.data.complljobview);
@@ -472,6 +530,69 @@ function init_printscheduler_dayview() {
             show_scheduler_date(printdate);
         }
     });
+    // Purple print icon click
+    $(".ic-purpul-print").unbind('click').click(function (){
+        var order = $(this).data('order');
+        var url = '/printscheduler/printorder';
+        $.post(url,{'order_id': order, 'type': 'order'}, function (response){
+            if (response.errors=='') {
+                $("#pageModal").find('div.modal-dialog').css('width','305px');
+                $("#pageModalLabel").empty().html('Approved Proofs');
+                $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+                $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $(".uploadproofdoc").unbind('click').click(function (){
+                    var docurl = $(this).data('proofdoc');
+                    window.open(docurl,"ProofSource","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+                });
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Show art
+    $(".ic-green-art").unbind('click').click(function (){
+        var order = $(this).data('order');
+        var url = '/printscheduler/printorder';
+        $.post(url,{'order_id': order, 'type': 'itemcolor'}, function (response){
+            if (response.errors=='') {
+                $("#pageModal").find('div.modal-dialog').css('width','305px');
+                $("#pageModalLabel").empty().html('Approved Proofs');
+                $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+                $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $(".uploadproofdoc").unbind('click').click(function (){
+                    var docurl = $(this).data('proofdoc');
+                    window.open(docurl,"ProofSource","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+                });
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Stock plates section
+    $(".stock-table-td-order").unbind('click').click(function (){
+        var order = $(this).data('order');
+        show_printschedule_order(order);
+    })
+    $(".unassignordersdatarow").find('div.rpbox-table-td-order').unbind('click').click(function (){
+        var order = $(this).data('order');
+        show_printschedule_order(order);
+    });
+    $(".assignordersdatarow").find('div.rpbox-table-td-order').unbind('click').click(function (){
+        var order = $(this).data('order');
+        show_printschedule_order(order);
+    });
+    $(".readyshiporderdata").find("div.rsbox-table-td-order").unbind('click').click(function (){
+        var order = $(this).data('order');
+        show_printschedule_order(order);
+    });
+    $(".shiporderdatarow").find("div.rsbox-table-td-order").unbind('click').click(function (){
+        var order = $(this).data('order');
+        show_printschedule_order(order);
+    });
+    $(".completorderdatarow").find("div.rpbox-table-td-order").unbind('click').click(function (){
+        var order = $(this).data('order');
+        show_printschedule_order(order);
+    })
 }
 
 function init_assignprint(order) {
@@ -501,7 +622,7 @@ function init_assignprint(order) {
 }
 
 function show_scheduler_date(printdate) {
-    init_printscheduler_current();
+    // init_printscheduler_current();
     // leftmenu_alignment();
     var params = new Array();
     params.push({name: 'printdate', value: printdate});
@@ -513,8 +634,9 @@ function show_scheduler_date(printdate) {
             // Remove old Active
             $(".tab-date").removeClass('active-date');
             $(".tab-date[data-printdate='"+printdate+"']").addClass('active-date');
-            $("#stockordersdata").empty().html(response.data.stockview);
-            $("#platesordersdata").empty().html(response.data.plateview);
+            // $("#stockordersdata").empty().html(response.data.stockview);
+            // $("#platesordersdata").empty().html(response.data.plateview);
+            $("#stockplatestabledata").empty().html(response.data.stockplatesview);
             $(".ready-print-block").empty().html(response.data.printview);
             $(".ready-ship-block").empty().html(response.data.readyship);
             $(".completed-print-block").empty().html(response.data.completed);
@@ -532,10 +654,47 @@ function show_scheduler_date(printdate) {
                 $(".right-block").empty();
                 init_printscheduler_current();
                 leftmenu_alignment();
-            })
+            });
+            init_printscheduler_dayview();
         }  else {
             show_error(response);
             $("#loader").hide();
         }
     },'json');
+}
+
+function show_printschedule_order(order) {
+    var callpage = 'printscheduler';
+    var brand = $("#printschbrand").val();
+    var params = new Array();
+    params.push({name: 'order', value: order});
+    params.push({name: 'page', value: callpage});
+    params.push({name: 'edit', value: 0});
+    params.push({name: 'brand', value: brand});
+    var url="/leadorder/leadorder_change";
+    var params = new Array();
+    params.push({name: 'order', value: order});
+    params.push({name: 'page', value: callpage});
+    params.push({name: 'edit', value: 0});
+    params.push({name: 'brand', value: brand});
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#artModalLabel").empty().html(response.data.header);
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artModal").find('div.modal-dialog').css('width','1004px');
+            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
+            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
+            if (parseInt(response.data.cancelorder)===1) {
+                $("#artModal").find('div.modal-header').addClass('cancelorder');
+            } else {
+                $("#artModal").find('div.modal-header').removeClass('cancelorder');
+            }
+            $("#editbuttonarea").css('visibility','hidden');
+            $(".block_4").css('visibility','hidden');
+            navigation_init();
+        } else {
+            show_error(response);
+        }
+    },'json');
+
 }

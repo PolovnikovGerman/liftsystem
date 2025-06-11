@@ -12,6 +12,7 @@
             <div class="rpbox-table-td-move">&nbsp;</div>
             <div class="rpbox-table-td-icons">&nbsp;</div>
             <div class="rpbox-table-td-assign">Assign</div>
+            <div class="rpbox-table-td-approval">Approval</div>
             <div class="rpbox-table-td-ship">Ship</div>
             <div class="rpbox-table-td-order">Order#</div>
             <div class="rpbox-table-td-print">Print</div>
@@ -27,7 +28,7 @@
             <?php if ($order['order_num']!==$ordernum): ?>
                 <?php $ordernum = $order['order_num']; $displaymain = 1;?>
             <?php endif; ?>
-            <div class="rpbox-table-tr <?=$displaymain==1 ? '' : 'addition'?>">
+            <div class="rpbox-table-tr completorderdatarow <?=$displaymain==1 ? '' : 'addition'?>">
                 <?php if ($displaymain==1): ?>
                     <div class="rpbox-table-td-move">
                         <?php if ($order['brand']=='SR') : ?>
@@ -53,16 +54,19 @@
                             <img class="img-icon-user" src="/img/printscheduler/icon-user-white.svg">
                         </div>
                     </div>
+                    <div class="rpbox-table-td-approval <?=$order['order_blank']==1 ? '' : ($order['approved']==0 ? 'notapproved' : '')?>">
+                        <?=$order['order_blank']==1 ? 'Blank' : ($order['approved']==0 ? 'Not Approved' : 'Approved')?>
+                    </div>
                     <div class="rpbox-table-td-ship <?=$order['shipclass']?>"><?=date('m/d', $order['shipdate'])?></div>
-                    <div class="rpbox-table-td-order"><?=$order['order_num']?></div>
+                    <div class="rpbox-table-td-order" data-order="<?=$order['order_id']?>"><?=$order['order_num']?></div>
                     <div class="rpbox-table-td-print">
-                        <div class="ic-purpul-print"><img class="img-icon-print" src="/img/printscheduler/icon-print-white.svg"></div>
+                        <div class="ic-purpul-print" data-order="<?=$order['order_id']?>"><img class="img-icon-print" src="/img/printscheduler/icon-print-white.svg"></div>
                     </div>
                 <?php endif; ?>
                 <div class="rpbox-table-td-items <?=$order['qtyclass']?>"><?=$order['item_qty']?></div>
                 <div class="rpbox-table-td-imp"><?=$order['imprints']?></div>
                 <div class="rpbox-table-td-prints"><?=$order['prints']?></div>
-                <div class="rpbox-table-td-itemcolor"><?=$order['item_color']?></div>
+                <div class="rpbox-table-td-itemcolor"><?=$order['color']?></div>
                 <div class="rpbox-table-td-descriptions"><?=$order['item_name']?></div>
                 <div class="rpbox-table-td-inputs">
                     <input class="rdbox-inp-good" type="text" data-order="<?=$order['order_itemcolor_id']?>" data-color="<?=$order['inventory_color']?>">

@@ -33,3 +33,10 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=<?=$this->config->item('google_map_key')?>&libraries=places&v=weekly&callback=initAutocomplete" async></script>
 <?php } ?>
 <script src="/js/mb_balloons/jquery.mb.balloon.js"></script>
+
+<?php if (isset($outscripts)) { ?>
+    <?php foreach($outscripts as $row) {?>
+        <script type="text/javascript" src="<?=$row['src']?>"></script>
+    <?php } ?>
+<?php } ?>
+

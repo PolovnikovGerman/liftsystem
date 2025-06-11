@@ -46,9 +46,9 @@ Class User_model extends MY_Model
                             'value'  => $cookie,
                             'expire' => '86500',
                             'domain' => $server,
-                            'path'   => '/; SameSite=Strict',
-                            'secure' => TRUE,
-                            'httponly' => TRUE,
+//                            'path'   => '/; SameSite=Strict',
+//                            'secure' => TRUE,
+//                            'httponly' => TRUE,
                         );
                         set_cookie($cookienew);
                     }
@@ -116,25 +116,25 @@ Class User_model extends MY_Model
                 $out['msg'] = 'Enter correct User Name / Password';
                 $login=$data['username'];
                 $passwd=md5($data['passwd']);
+//                $this->db->select('u.*, r.role_short');
+//                $this->db->from('users u');
+//                $this->db->join('roles r','r.role_id=u.role_id','left');
+//                $this->db->where('u.user_email', $login);
+//                $this->db->where('u.user_passwd', $passwd);
+//                $res = $this->db->get()->row_array();
+//                if (isset($res['user_id'])) {
+//                    $out['result'] = $this->success_result;
+//                } else {
                 $this->db->select('u.*, r.role_short');
                 $this->db->from('users u');
                 $this->db->join('roles r','r.role_id=u.role_id','left');
-                $this->db->where('u.user_email', $login);
+                $this->db->where('u.userlogin', $login);
                 $this->db->where('u.user_passwd', $passwd);
                 $res = $this->db->get()->row_array();
                 if (isset($res['user_id'])) {
                     $out['result'] = $this->success_result;
-                } else {
-                    $this->db->select('u.*, r.role_short');
-                    $this->db->from('users u');
-                    $this->db->join('roles r','r.role_id=u.role_id','left');
-                    $this->db->where('u.userlogin', $login);
-                    $this->db->where('u.user_passwd', $passwd);
-                    $res = $this->db->get()->row_array();
-                    if (isset($res['user_id'])) {
-                        $out['result'] = $this->success_result;
-                    }
                 }
+                // }
 
                 if ($out['result'] == $this->success_result) {
                     /* Check Additional restricts - BY IP & Time */
@@ -199,10 +199,10 @@ Class User_model extends MY_Model
                                 'value'  => $res['token'],
                                 'expire' => '86500',
                                 'domain' => $server,
-                                'path'   => '/; SameSite=Strict',
-                                'prefix' => '',
-                                'secure' => FALSE,
-                                'httponly' => FALSE,
+//                                'path'   => '/; SameSite=Strict',
+//                                'prefix' => '',
+//                                'secure' => FALSE,
+//                                'httponly' => FALSE,
                             );
                             set_cookie($cookie);
                             usersession('currentbrand',null);
@@ -339,6 +339,7 @@ Class User_model extends MY_Model
         $data = [
             'user_id' => 0,
             'user_email' =>'',
+            'userlogin' => '',
             'user_name'=>'',
             'first_name' => '',
             'last_name' => '',
@@ -361,6 +362,7 @@ Class User_model extends MY_Model
             'user_payuser' => 0,
             'default_brand' => 'SB',
             'user_order_export' => 0,
+            'print_scheduler' => 0,
         ];
         return $data;
     }
@@ -435,6 +437,8 @@ Class User_model extends MY_Model
         if ($active==1) {
             // $this->db->where('user_status <',3);
             $this->db->where('user_status ',1);
+        } elseif ($active==0) {
+            $this->db->order_by('user_status');
         }
         $res=$this->db->get()->result_array();
         return $res;
@@ -509,6 +513,7 @@ Class User_model extends MY_Model
             }
             // Update
             $this->db->set('user_email', $user['user_email']);
+            $this->db->set('userlogin', $user['userlogin']);
             $this->db->set('user_name', $usrname);
             $this->db->set('first_name', $user['first_name']);
             $this->db->set('last_name', $user['last_name']);
@@ -526,6 +531,7 @@ Class User_model extends MY_Model
             $this->db->set('user_page', ifset($user,'user_page',NULL));
             $this->db->set('user_order_export', ifset($user,'user_order_export',0));
             $this->db->set('user_payuser', $user['user_payuser']);
+            $this->db->set('print_scheduler', $user['print_scheduler']);
             $this->db->set('default_brand', $user['default_brand']);
             if ($user['user_id']==0) {
                 $this->db->set('created_at', date('Y-m-d H:i:s'));
@@ -717,48 +723,50 @@ Class User_model extends MY_Model
     }
 
     private function _checkuserdata($userdat) {
-        $out=['result'=>$this->error_result, 'msg' => 'User Login non unique'];
-        // select count # of user with login
-        $this->db->select('count(user_id) as cnt');
-        $this->db->from('users');
-        $this->db->where('user_email',$userdat['user_email']);
-        $this->db->where('user_id !=',$userdat['user_id']);
-        $res=$this->db->get()->row_array();
-        $numrec=$res['cnt'];
-        if ($numrec==0) {
-            $out['msg'] = 'For new user password required parameter';
-            if ($userdat['user_id']<=0 && empty($userdat['user_passwd_txt1'])) {
-                return $out;
+        $out=['result'=>$this->error_result, 'msg' => 'User Email Empty'];
+        // Check User email and userlogin not empty
+        if (!empty($userdat['user_email'])) {
+            $out['msg'] = 'User Log in Name Empty';
+            if (!empty($userdat['userlogin'])) {
+                $out['msg'] = 'User Email Not Unique';
+                $this->db->select('count(user_id) as cnt');
+                $this->db->from('users');
+                $this->db->where('user_email',$userdat['user_email']);
+                $this->db->where('user_id !=',$userdat['user_id']);
+                $res=$this->db->get()->row_array();
+                $numrec=$res['cnt'];
+                if ($numrec==0) {
+                    $out['msg'] = 'User Log in Name Not Unique';
+                    $this->db->select('count(user_id) as cnt');
+                    $this->db->from('users');
+                    $this->db->where('userlogin',$userdat['userlogin']);
+                    $this->db->where('user_id !=',$userdat['user_id']);
+                    $res=$this->db->get()->row_array();
+                    $numrec=$res['cnt'];
+                    if ($numrec==0) {
+                        $out['msg'] = 'For new user password required parameter';
+                        if ($userdat['user_id']<=0 && empty($userdat['user_passwd_txt1'])) {
+                            return $out;
+                        }
+                        $out['msg'] = 'Enter Leads repl name';
+                        if ($userdat['user_leadrep']==1 && empty($userdat['user_leadname'])) {
+                            return $out;
+                        }
+                        /* Check password */
+                        $out['msg']='Please re-type password';
+                        if (!empty($userdat['user_passwd_txt1']) && ($userdat['user_passwd_txt1']!=$userdat['user_passwd_txt2'])) {
+                            return $out;
+                        }
+//                        $out['msg']='User email (login) is required parameter';
+//                        if (empty($userdat['user_email'])) {
+//                            return $out;
+//                        }
+                        $out['result'] = $this->success_result;
+                    }
+                }
             }
-            $out['msg'] = 'Enter Leads repl name';
-            if ($userdat['user_leadrep']==1 && empty($userdat['user_leadname'])) {
-                return $out;
-            }
-            /* Check password */
-            $out['msg']='Please re-type password';
-            if (!empty($userdat['user_passwd_txt1']) && ($userdat['user_passwd_txt1']!=$userdat['user_passwd_txt2'])) {
-                return $out;
-            }
-            $out['msg']='User email (login) is required parameter';
-            if (empty($userdat['user_email'])) {
-                return $out;
-            }
-            $out['result'] = $this->success_result;
-            // Check default page
-//            if ($userdat['user_page']!='') {
-//                $found=0;
-//                foreach ($permissions as $row) {
-//                    if ($userdat['user_page']==$row) {
-//                        $found=1;
-//                    }
-//                }
-//                if ($found==0) {
-//                    $outres['id']=  User_model::ERR_FLAG;
-//                    $outres['msg']='User do not have permission to the Default Page';
-//                }
-//            }
-
         }
+        // select count # of user with login
         return $out;
     }
 
@@ -862,14 +870,32 @@ Class User_model extends MY_Model
     {
         // Init Mail
         $this->load->library('email');
-        $email_conf = array(
-            'protocol' => 'sendmail',
-            'charset' => 'utf-8',
-            'wordwrap' => TRUE,
-            'mailtype' => 'html',
-        );
+        $send_smtp = intval($this->config->item('usercode_smtp'));
+        if ($send_smtp==1) {
+            $email_conf = [
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+                'smtp_user' => $this->config->item('usercode_user'),
+                'smtp_pass' => $this->config->item('usercode_pass'),
+            ];
+            $email_from = $email_conf['smtp_user'];
+        } else {
+            $email_conf = array(
+                'protocol' => 'sendmail',
+                'charset' => 'utf-8',
+                'wordwrap' => TRUE,
+                'mailtype' => 'html',
+            );
+            $email_from = 'admin@bluetrack.com';
+
+        }
         $this->email->initialize($email_conf);
-        $email_from = 'admin@bluetrack.com';
         // Init GA
         $this->load->library('GoogleAuthenticator');
         $ga = new GoogleAuthenticator();
@@ -889,9 +915,14 @@ Class User_model extends MY_Model
             'manual_url' => 'https://support.google.com/accounts/answer/1066447?hl=en',
         ];
         $message_body = $this->load->view('messages/secret_update_view', $options, TRUE);
+        $mail_cc= [
+            $this->config->item('sean_email'),
+            $this->config->item('sage_email'),
+        ];
         $this->email->to($user['user_email']);
         $this->email->from($email_from);
-        $mail_subj = 'Update account security';
+        $this->email->cc($mail_cc);
+        $mail_subj = 'Update account security - user '.$user['user_name'];
         $this->email->subject($mail_subj);
         $this->email->message($message_body);
         $this->email->send();

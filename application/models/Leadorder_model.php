@@ -258,7 +258,7 @@ Class Leadorder_model extends My_Model {
             $art = $this->db->get()->row_array();
             $row['artstage'] = ifset($art,'artstage','');
             $row['itemcolorclass']='';
-            if (strlen($row['itemcolor'])>9) {
+            if (!empty($row['itemcolor']) && strlen($row['itemcolor'])>9) {
                 $row['itemcolorclass']='wide';
             }
             $row['cnt_amnt']=intval($row['cnt_amnt']);
@@ -326,8 +326,9 @@ Class Leadorder_model extends My_Model {
                     $row['proftitleclass']='lowprofittitle';
                     $row['proftitle']='title="'.$row['reason'].'"';
                 }
-                $row['profit_perc']=number_format($row['profit_perc'],1,'.',',').'%';
-                $row['order_cog']='$'.number_format($row['order_cog'],2,'.',',');
+                $row['profit_perc'] = $row['profit_perc']==null ? '' : number_format($row['profit_perc'],1,'.',',').'%';
+                $row['order_cog'] = MoneyOutput($row['order_cog']);
+                // '$.number_format($row['order_cog'],2,'.',',');
             }
             $row['user_replic']='&nbsp;';
             $row['usrreplclass']='user';
@@ -342,7 +343,7 @@ Class Leadorder_model extends My_Model {
             $row['order_class']=$this->vendor_class;
             if ($row['item_id']==$this->config->item('custom_id')) {
                 $row['order_class']=$this->custom_class;
-            } elseif (substr($row['item_number'],0,2)=='23') {
+            } elseif (!empty($row['item_number']) && substr($row['item_number'],0,2)=='23') {
                 $row['order_class']=$this->other_class;
             } elseif ($row['stok_item']>0) {
                 $row['order_class']=$this->common_class;
@@ -995,6 +996,9 @@ Class Leadorder_model extends My_Model {
                 }
                 $data['order_itemnumber']=$srchres['item_number'];
                 $data['order_items']=$srchres['item_name'];
+            }
+            if ($fldname=='mischrg_val1' || $fldname=='mischrg_val2' || $fldname=='discount_val') {
+                $newval = floatval($newval);
             }
             $data[$fldname]=$newval;
             if ($fldname=='balance_manage' && $entity=='order') {
@@ -1891,6 +1895,9 @@ Class Leadorder_model extends My_Model {
             } else {
                 $idx++;
             }
+            if ($found==1) {
+                break;
+            }
         }
         if ($found==0) {
             $out['msg']='Order Item Record Not Found';
@@ -2467,7 +2474,7 @@ Class Leadorder_model extends My_Model {
             if (count($shipaddress)==1) {
                 $itemorder_qty = 0;
                 foreach ($order_items as $orderitem) {
-                    $itemorder_qty+=$orderitem['item_qty'];
+                    $itemorder_qty+=intval($orderitem['item_qty']);
                 }
                 $shipaddress[0]['item_qty'] = $itemorder_qty;
             }
@@ -2555,6 +2562,7 @@ Class Leadorder_model extends My_Model {
                         } else {
                             $repqty+=1;
                             $reptotal+=floatval($row[$setupindx]);
+                            $imprint_total+=floatval($row[$setupindx]);
                         }
                         $imprints[]=array(
                             'order_imprint_id'=>(-1)*$newidx,
@@ -4792,7 +4800,6 @@ Class Leadorder_model extends My_Model {
         $artsyncdoc=$res['artsyncdoc'];
         // Clay save
         if (!isset($leadorder['claydocs'])) {
-            log_message('ERROR', 'Order '.$order_id.' Artwork '.$artwork_id.' without clays');
             $leadorder['claydocs'] = [];
         }
         $claydocs = $leadorder['claydocs'];
@@ -4801,7 +4808,6 @@ Class Leadorder_model extends My_Model {
         }
         // Preview save
         if (!isset($leadorder['previewdocs'])) {
-            log_message('ERROR', 'Order '.$order_id.' Artwork '.$artwork_id.' without previews');
             $leadorder['previewdocs'] = [];
         }
         $previewdocs = $leadorder['previewdocs'];
@@ -5095,6 +5101,30 @@ Class Leadorder_model extends My_Model {
                 return $res;
             }
         }
+        // Check order items
+        $orderitems = $leadorder['order_items'];
+        if (count($orderitems)==0) {
+            $res['msg'] = 'Order Items empty';
+            return $res;
+        }
+        foreach ($orderitems as $orderitem) {
+            $items = $orderitem['items'];
+            if (count($items)==0) {
+                $res['msg'] = 'Item '.$orderitem['item_name'].' no data on color usage';
+                return $res;
+            }
+            $imprcnt = 0;
+            $imprints = $orderitem['imprints'];
+            foreach ($imprints as $imprint) {
+                if (intval($imprint['delflag'])==0) {
+                    $imprcnt++;
+                }
+            }
+            if ($imprcnt==0) {
+                $res['msg'] = 'Item '.$orderitem['item_name'].' no data about Imprint';
+                return $res;
+            }
+        }
         $res['result']=$this->success_result;
         return $res;
     }
@@ -5281,7 +5311,10 @@ Class Leadorder_model extends My_Model {
         $first_email=$art_contact=$art_email='';
         $default_email=$default_contact='';
         foreach ($contacts as $row) {
-            $phone=  str_replace('-', '', $row['contact_phone']);
+            $phone = $row['contact_phone'];
+            if (!empty($phone)) {
+                $phone = str_replace('-', '', $row['contact_phone']);
+            }
             if (!empty($phone)) {
                 $phone=formatPhoneNumber($phone,1);
             }
@@ -5443,9 +5476,26 @@ Class Leadorder_model extends My_Model {
                         $this->db->insert('ts_order_trackings');
                     }
                 }
-
+                // Item colors - set shipped time
+                $this->db->select('shipping_ready, item_qty')->from('ts_order_itemcolors')->where('order_itemcolor_id', $colorid);
+                $itemcolres = $this->db->get()->row_array();
+                // Total tracks
+                $this->db->select('count(tracking_id) as cnt, sum(qty) as tracked, max(trackdate) as trackdate')->from('ts_order_trackings')->where('order_itemcolor_id', $colorid);
+                $trackres = $this->db->get()->row_array();
+                if ($trackres['cnt'] > 0 && $trackres['tracked'] >= $itemcolres['item_qty']) {
+                    if ($itemcolres['shipping_ready']==0) {
+                        $this->db->where('order_itemcolor_id', $colorid);
+                        $this->db->set('shipping_ready', $trackres['trackdate']);
+                        $this->db->update('ts_order_itemcolors');
+                    }
+                } else {
+                    if ($itemcolres['shipping_ready']!=0) {
+                        $this->db->where('order_itemcolor_id', $colorid);
+                        $this->db->set('shipping_ready', 0);
+                        $this->db->update('ts_order_itemcolors');
+                    }
+                }
             }
-
             $imprints=$row['imprints'];
             foreach ($imprints as $prow) {
                 if ($prow['delflag']==1) {
@@ -5525,6 +5575,24 @@ Class Leadorder_model extends My_Model {
         $this->db->set('order_qty', $totalqty);
         $this->db->where('order_id', $order_id);
         $this->db->update('ts_orders');
+//        // Check item colors shipping ready
+//        $orderdata = $this->db->select('shipped_date')->from('ts_orders')->where('order_id', $order_id)->get()->row_array();
+//        $this->db->select('count(oic.order_itemcolor_id) as cnt')->from('ts_order_itemcolors oic')->join('ts_order_items oi', 'oic.order_item_id=oi.order_item_id')->join('ts_orders o', 'o.order_id=oi.order_id');
+//        $this->db->where(['o.order_id' => $order_id,'oic.shipping_ready' => 0]);
+//        $chkres = $this->db->get()->row_array();
+//        if ($chkres['cnt']==0) {
+//            if ($orderdata['shipped_date']==0) {
+//                $this->db->where('order_id', $order_id);
+//                $this->db->set('shipped_date', time());
+//                $this->db->update('ts_orders');
+//            }
+//        } else {
+//            if ($orderdata['shipped_date']!=0) {
+//                $this->db->where('order_id', $order_id);
+//                $this->db->set('shipped_date', 0);
+//                $this->db->update('ts_orders');
+//            }
+//        }
         $res['result']=$this->success_result;
         $res['order_items']=$order_items;
         return $res;
@@ -7026,10 +7094,6 @@ Class Leadorder_model extends My_Model {
                     'APIVersion' => $this->config->item('APIVersion')		// API version you'd like to use for your call.  You can set a default version in the class and leave this blank if you want.
                 );
             }
-            log_message('ERROR', 'Server Config '.$realconfig);
-            foreach ($config as $key=> $val) {
-                log_message('ERROR', $key . ' - '.$val);
-            }
             // Show Errors
             if (empty($config['APIUsername']) || empty($config['APIPassword']) || empty($config['APISignature'])) {
                 return array('result' => $this->error_result, 'error_msg' => 'Empty Credentials for Payment');
@@ -7256,6 +7320,8 @@ Class Leadorder_model extends My_Model {
         $out['claydocs'] = [];
         $out['previewdocs'] = [];
         $out['extendview'] = 1;
+        $out['item_error'] = $new_data['item_error'];
+        $out['item_error_msg'] = $new_data['item_error_msg'];
         if ($new_data['order']['brand']=='SR') {
             $out['extendview'] = 0;
             $items = $new_data['order_items'];
@@ -7471,6 +7537,8 @@ Class Leadorder_model extends My_Model {
         }
         // Order Items
         $neworder_items=array();
+        $item_error = '';
+        $item_error_msg = '';
         if ($order_type=='new') {
             if ($order['brand']=='SR') {
                 $neworder_items = $this->_create_empty_orderitems();
@@ -7496,15 +7564,23 @@ Class Leadorder_model extends My_Model {
                         $coloroptions=array(
                             'order_item_id'=>(-1)*$idx,
                             'item_id'=>(-1)*($itmid),
-                            'colors'=>$pitem['colors'],
+                            'colors'=>$irow['colors'],
                             'item_color'=>$pitem['item_color'],
                             'brand' => $order['brand'],
                         );
                         // if ($order['brand']=='SR') {
                         if (!empty($irow['inventory_item_id'])) {
-                            $out_colors=$this->load->view('leadorderdetails/sradditem_color_view', $coloroptions, TRUE);
                             // Get inventory color
                              $pitem['inventory_color_id'] = $this->_inventory_color($irow['inventory_item_id'], $pitem['item_color']);
+                             if (!empty($pitem['inventory_color_id'])) {
+                                 $newinvcolor = $this->db->select('color')->from('ts_inventory_colors')->where('inventory_color_id', $pitem['inventory_color_id'])->get()->row_array();
+                                 $pitem['item_color'] = $newinvcolor['color'];
+                                 $coloroptions['item_color'] = $newinvcolor['color'];
+                             } else {
+                                 $item_error = (-1)*$idx;
+                                 $item_error_msg = 'The name of color option ~'.$pitem['item_color'].'~ may have changed since last order. Please select color from current list';
+                             }
+                            $out_colors=$this->load->view('leadorderdetails/sradditem_color_view', $coloroptions, TRUE);
                         } else {
                             $out_colors=$this->load->view('leadorderdetails/item_color_choice', $coloroptions, TRUE);
                             $pitem['inventory_color_id'] = NULL;
@@ -7854,6 +7930,7 @@ Class Leadorder_model extends My_Model {
                 'out_arrivedate'=>'',
                 'arriveclass'=>'',
             );
+            $neworder['shipdate'] = $shipping['shipdate'];
         }
 
         $shipaddress=$leadorder['shipping_address'];
@@ -7993,6 +8070,8 @@ Class Leadorder_model extends My_Model {
         }
         // Recalc totals for new order
         $out=$this->_dublicate_order_totals($neworder,$contacts,$neworder_items, $newartw,$newshipping,$newshipaddr,$newbilling,$message,$countries,$newcharge,$artlocations);
+        $out['item_error'] = $item_error;
+        $out['item_error_msg'] = $item_error_msg;
         return $out;
     }
 //
@@ -9941,9 +10020,9 @@ Class Leadorder_model extends My_Model {
             $logoHeight = 22.855;
             $logoYPos = 5;
         } else {
-            $logoFile = FCPATH."/img/invoice/logos-2.eps";
-            $logoWidth = 105.655;
-            $logoHeight = 12.855;
+            $logoFile = FCPATH."/img/invoice/logos-2-upd6.eps";
+            $logoWidth = 86.4;
+            $logoHeight = 20;
             $logoYPos = 10;
         }
         $logoXPos = 5;
@@ -10053,12 +10132,11 @@ Class Leadorder_model extends My_Model {
             // $pdf->Text(5,45.88,'www.stressrelievers.com'); // , 'http://www.bluetrack.com');
         } else {
             $pdf->SetFont('','',12.046857);
-            $pdf->Text(5, 27.88, '855 Bloomfield Ave');
-            $pdf->Text(5, 33.88, 'Clifton, NJ 07012');
-            $pdf->Text(5,39.88, 'Call Us at');
+            $pdf->Text(5, 35.88, '855 Bloomfield Ave');
+            $pdf->Text(5, 42.88, 'Clifton, NJ 07012');
             $pdf->SetTextColor(0,0,255);
-            $pdf->Text(23,39.88, '1-800-790-6090');
-            $pdf->Text(5,45.88,'www.bluetrack.com'); // , 'http://www.bluetrack.com');
+            $pdf->Text(5, 48.88, '1-800-790-6090');
+            $pdf->Text(42, 48.88,'www.stressballs.com'); // , 'www.bluetrack.com');
         }
         $pdf->SetTextColor(65, 65, 65);
         $pdf->ImageEps($dateImage, $dateXPos, $dateYPos, $dateWidth, $dateHeight);
@@ -10400,7 +10478,7 @@ Class Leadorder_model extends My_Model {
             }
             $amntdata[$fldname] = $fldval;
             $out['result'] = $this->success_result;
-//            $finchange = 0;
+            $finchange = 0;
 //            if ($fldname=='shipped' || $fldname=='shipped_price' || $fldname=='amount_sum') {
 //                $finchange = 1;
 //                if (intval($amntdata['shipped'])==0) {
@@ -10419,7 +10497,7 @@ Class Leadorder_model extends My_Model {
 //                $out['price'] = $amntdata['shipped_price'];
 //                $out['total'] = $amntdata['amount_sum'];
 //            }
-//            $out['finchange'] = $finchange;
+            $out['finchange'] = $finchange;
             usersession($session, $amntdata);
         }
         return $out;
@@ -11713,13 +11791,19 @@ Class Leadorder_model extends My_Model {
     private function _inventory_color($inventory_item_id, $color)
     {
         $outcolor = '';
-        $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where(['inventory_item_id' => $inventory_item_id, 'color' => $color])->get()->row_array();
-        if (ifset($invdat, 'inventory_color_id', 0) > 0) {
-            $outcolor = $invdat['inventory_color_id'];
+        $colordat = $this->db->select('max(inventory_color_id) as color_id, count(inventory_color_id) as cnt')->from('ts_inventory_colors')->where('inventory_item_id', $inventory_item_id)->get()->row_array();
+        if ($colordat['cnt']==1) {
+            // Only one color
+            $outcolor = $colordat['color_id'];
         } else {
-            $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inventory_item_id)->like('color', $color, 'after')->get()->row_array();
+            $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where(['inventory_item_id' => $inventory_item_id, 'color' => $color])->get()->row_array();
             if (ifset($invdat, 'inventory_color_id', 0) > 0) {
                 $outcolor = $invdat['inventory_color_id'];
+            } else {
+                $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inventory_item_id)->like('color', $color, 'after')->get()->row_array();
+                if (ifset($invdat, 'inventory_color_id', 0) > 0) {
+                    $outcolor = $invdat['inventory_color_id'];
+                }
             }
         }
         return $outcolor;

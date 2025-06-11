@@ -168,17 +168,21 @@ function change_questreplic(quest_id) {
             $("select#lead_id").change(function(){
                 change_leaddata();
             })
-            $("a.savequest").click(function(){
-                update_queststatus();
-            })
-            $("div.updatequest_status").find("div.leads_addnew").unbind('click').click(function(){
-                create_leadquest();
-            })
+            init_questionstatus_content();
         } else {
             show_error(response);
         }
     }, 'json');
-    return false;
+    // return false;
+}
+
+function init_questionstatus_content() {
+    $(".savequest.active").unbind('click').click(function(){
+        update_queststatus();
+    })
+    $("div.updatequest_status").find("div.leads_addnew").unbind('click').click(function(){
+        create_leadquest();
+    })
 }
 
 function change_leaddata() {
@@ -187,14 +191,21 @@ function change_leaddata() {
         var url="/leads/change_leadrelation";
         $.post(url, {'lead_id':lead_id}, function(response){
             if (response.errors=='') {
-                $("div#pop_content div.leaddate").empty().html(response.data.lead_date);
-                $("div#pop_content div.leadcustomer").empty().html(response.data.lead_customer);
-                $("div#pop_content div.leadcustommail").empty().html(response.data.lead_mail);
+                $("div#artModal div.leaddate").empty().html(response.data.lead_date);
+                $("div#artModal div.leadcustomer").empty().html(response.data.lead_customer);
+                $("div#artModal div.leadcustommail").empty().html(response.data.lead_mail);
+                $("div#artModal div.savequest").addClass("active");
+                init_questionstatus_content();
             } else {
                 show_error(response);
             }
         }, 'json')
-
+    } else {
+        $("div#artModal div.leaddate").empty();
+        $("div#artModal div.leadcustomer").empty();
+        $("div#artModal div.leadcustommail").empty();
+        $("div#artModal div.savequest").removeClass("active");
+        init_questionstatus_content();
     }
 }
 

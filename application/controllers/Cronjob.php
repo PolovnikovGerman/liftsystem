@@ -301,223 +301,9 @@ Class Cronjob extends CI_Controller
     public function pochange_notification() {
         $dateend=strtotime(date('m/d/Y'));
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
-        $this->_ckeckpototals($datestart, $dateend);
-        
-        $brands = ['SB','SR'];
-        $msgbody='';
-        foreach ($brands as $brand) {
-            // Get users list
-            $this->db->select('oa.create_user, u.user_name, count(oa.amount_id) as cnt');
-            $this->db->from('ts_order_amounts oa');
-            $this->db->join('ts_orders o','o.order_id=oa.order_id');
-            $this->db->join('users u','u.user_id=oa.create_user');
-            $this->db->where('oa.create_date >=', $datestart);
-            $this->db->where('oa.create_date < ', $dateend);
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['SB','BT']);
-            } else {
-                $this->db->where('o.brand', $brand);
-            }
-            $this->db->group_by('oa.create_user, u.user_name');
-            $crres=$this->db->get()->result_array();
-            $usrids=array();
-            $user_data=array();
-            foreach ($crres as $row) {
-                array_push($usrids, $row['create_user']);
-                $user_data[]=array(
-                    'user_id'=>$row['create_user'],
-                    'user_name'=>$row['user_name'],
-                );
-            }
-            $this->db->select('oa.update_user, u.user_name, count(oa.amount_id) as cnt');
-            $this->db->from('ts_order_amounts oa');
-            $this->db->join('ts_orders o','o.order_id=oa.order_id');
-            $this->db->join('users u','u.user_id=oa.update_user');
-            $this->db->where('oa.update_date >=', $datestart);
-            $this->db->where('oa.update_date < ', $dateend);
-            if ($brand=='SB') {
-                $this->db->where_in('o.brand', ['SB','BT']);
-            } else {
-                $this->db->where('o.brand', $brand);
-            }
-            $this->db->group_by('oa.update_user, u.user_name');
-            $upres=$this->db->get()->result_array();
-            foreach ($upres as $row) {
-                if (!in_array($row['update_user'], $usrids)) {
-                    array_push($usrids, $row['update_user']);
-                    $user_data[]=array(
-                        'user_id'=>$row['update_user'],
-                        'user_name'=>$row['user_name'],
-                    );
-                }
-            }
-
-            if (count($usrids)!=0) {
-                $title = 'POs added to ';
-                if ($brand=='SB') {
-                    $title.='Bluetrack/Stressballs';
-                } elseif ($brand=='SR') {
-                    $title.='StressRelievers.com';
-                }
-                $msgbody.='<span style="font-weight: bold">'.$title.'</span><br/>';
-                foreach ($user_data as $row) {
-                    // Get data about Added Amounts
-                    // profit $  % - PO # - Amount - Vendor - Items
-                    $this->db->select('o.profit as profit_sum, o.profit_perc, o.order_num , o.order_items as items, oa.amount_sum as amount, v.vendor_name as vendor, o.reason');
-                    $this->db->from('ts_orders o');
-                    $this->db->join('ts_order_amounts oa','oa.order_id=o.order_id');
-                    $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
-                    $this->db->where('oa.create_user', $row['user_id']);
-                    $this->db->where("o.is_canceled",0);
-                    $this->db->where('oa.create_date >=', $datestart);
-                    $this->db->where('oa.create_date < ', $dateend);
-                    if ($brand=='SB') {
-                        $this->db->where_in('o.brand', ['SB','BT']);
-                    } else {
-                        $this->db->where('o.brand', $brand);
-                    }
-                    $usrcr=$this->db->get()->result_array();
-                    $list=array();
-                    if (count($usrcr)>0) {
-                        foreach ($usrcr as $drow) {
-                            $rclass='';
-                            $rstyle='';
-                            $drow['lowprofit']='';
-                            $drow['profit_perc']=round(floatval($drow['profit_perc']));
-                            if ($drow['profit_perc']<=0) {
-                                $rclass='black';
-                                $rstyle='style="text-align: right; padding-right:3px; background-color: #000000; color: #FFFFFF;"';
-                            } elseif ($drow['profit_perc']>0 && $drow['profit_perc']<10) {
-                                $rclass='maroon';
-                                $rstyle='style="text-align: right; padding-right:3px; background-color: #6D0303; color: #FFFFFF;"';
-                            } elseif ($drow['profit_perc']>=10 && $drow['profit_perc']<20) {
-                                $rclass='red';
-                                $rstyle='style="text-align: right; padding-right:3px; text-align: right; padding-right:3px; background-color: #FF0000;color: #FFFFFF;"';
-                            } elseif ($drow['profit_perc']>=20 && $drow['profit_perc']<30) {
-                                $rclass='orange';
-                                $rstyle='style="text-align: right; padding-right:3px; background-color: #EA8A0E;color: #000000;"';
-                            } elseif ($drow['profit_perc']>=30 && $drow['profit_perc']<40) {
-                                $rclass='white';
-                                $rstyle='style="text-align: right; padding-right:3px; background-color: #FFFFFF; color: #000000;"';
-                            } elseif ($drow['profit_perc']>=40) {
-                                $rclass='green';
-                                $rstyle='style="text-align: right; padding-right:3px; background-color: #00E947; color: #000000;"';
-                            }
-                            $drow['row_class']=$rclass;
-                            $drow['rstyle']=$rstyle;
-                            if ($drow['profit_sum']<0) {
-                                $drow['out_profit']='($'.number_format(abs($drow['profit_sum']),2,'.',',').')';
-                            } else {
-                                $drow['out_profit']='$'.number_format($drow['profit_sum'],2,'.',',');
-                            }
-                            $drow['out_amount']='$'.number_format($drow['amount'],2,'.',',');
-                            if ($drow['profit_perc']<$this->config->item('minimal_profitperc') && !empty($drow['reason'])) {
-                                $drow['lowprofit']=$drow['reason'];
-
-                            }
-                            $list[]=$drow;
-                        }
-                        $opt=array(
-                            'title'=>date('D - M d, Y', $datestart).' - '.$row['user_name'],
-                            'subtitle'=>'Newly Added POs:',
-                            'lists'=>$list,
-                            'type'=>'new',
-                        );
-                        $msgbody.=$this->load->view('messages/amount_notedata_view', $opt, TRUE);
-                    }
-                    $this->db->select('o.profit as profit_sum, o.profit_perc, o.order_num , o.order_items as items, oa.amount_sum as amount, v.vendor_name as vendor, oa.reason, o.reason as lreason');
-                    $this->db->from('ts_orders o');
-                    $this->db->join('ts_order_amounts oa','oa.order_id=o.order_id');
-                    $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
-                    $this->db->where('oa.update_user', $row['user_id']);
-                    $this->db->where('oa.update_date >=', $datestart);
-                    $this->db->where('oa.update_date < ', $dateend);
-                    $this->db->where('oa.create_date <', $datestart);
-                    if ($brand=='SB') {
-                        $this->db->where_in('o.brand', ['SB','BT']);
-                    } else {
-                        $this->db->where('o.brand', $brand);
-                    }
-                    $usrupd=$this->db->get()->result_array();
-                    $list=array();
-                    if (count($usrupd)) {
-                        foreach ($usrupd as $drow) {
-                            $rclass='';
-                            $rstyle='';
-                            $drow['lowprofit']='';
-                            $drow['profit_perc']=round(floatval($drow['profit_perc']));
-                            if ($drow['profit_perc']<$this->config->item('minimal_profitperc') && !empty($drow['lreason'])) {
-                                $drow['lowprofit']=$drow['lreason'];
-                            }
-                            if ($drow['profit_perc']<=0) {
-                                $rclass='black';
-                                $rstyle='style="text-align: right; padding-right:3px; background-color: #000000; color: #FFFFFF;"';
-                            } elseif ($drow['profit_perc']>0 && $drow['profit_perc']<10) {
-                                $rclass='maroon';
-                                $rstyle='style="text-align: right; padding-right:3px; background-color: #6D0303; color: #FFFFFF;"';
-                            } elseif ($drow['profit_perc']>=10 && $drow['profit_perc']<20) {
-                                $rclass='red';
-                                $rstyle='style="text-align: right; padding-right:3px; background-color: #FF0000;color: #FFFFFF;"';
-                            } elseif ($drow['profit_perc']>=20 && $drow['profit_perc']<30) {
-                                $rclass='orange';
-                                $rstyle='style="text-align: right; padding-right:3px; background-color: #EA8A0E;color: #000000;"';
-                            } elseif ($drow['profit_perc']>=30 && $drow['profit_perc']<40) {
-                                $rclass='white';
-                                $rstyle='style="text-align: right; padding-right:3px; background-color: #FFFFFF; color: #000000;"';
-                            } elseif ($drow['profit_perc']>=40) {
-                                $rclass='green';
-                                $rstyle='style="text-align: right; padding-right:3px; background-color: #00E947; color: #000000;"';
-                            }
-                            $drow['row_class']=$rclass;
-                            $drow['rstyle']=$rstyle;
-                            if ($drow['profit_sum']<0) {
-                                $drow['out_profit']='($'.number_format(abs($drow['profit_sum']),2,'.',',').')';
-                            } else {
-                                $drow['out_profit']='$'.number_format(abs($drow['profit_sum']),2,'.',',');
-                            }
-                            $drow['out_amount']= '$'.number_format($drow['amount'],2,'.',',');
-                            $list[]=$drow;
-                        }
-                        $opt=array(
-                            'title'=>date('D - M d, Y', $datestart).' - '.$row['user_name'],
-                            'subtitle'=>'Revised POs:',
-                            'lists'=>$list,
-                            'type'=>'edit',
-                        );
-                        $msgbody.=$this->load->view('messages/amount_notedata_view', $opt, TRUE);
-                    }
-                }
-            }
-        }
-        $this->load->library('email');
-        $config['charset'] = 'utf-8';
-        $config['mailtype']='html';
-        $config['wordwrap'] = TRUE;
-        $this->email->initialize($config);
-        $email_from=$this->config->item('email_notification_sender');
-        $email_to=$this->config->item('sean_email');
-        $email_cc=array($this->config->item('sage_email'));
-        $this->email->from($email_from);
-        $this->email->to($email_to);
-        $this->email->cc($email_cc);
-        // Temporary ADD for check
-        // $this->email->bcc([$this->config->item('developer_email')]);
-        $title=date('D - M d, Y', $datestart).' - POs added';
-//        if ($brand=='SB') {
-//            $title.='Bluetrack/Stressballs';
-//        } elseif ($brand=='SR') {
-//            $title.='StressRelievers.com';
-//        }
-        $this->email->subject($title);
-        if ($msgbody=='') {
-            $body='<span style="font-weight: bold">'.$title.'</span>';
-            $this->email->message($body);
-        } else {
-            $body=$this->load->view('messages/amount_note_view', array('content'=>$msgbody),TRUE);
-            $this->email->message($body);
-        }
-        $this->email->send();
-        $this->email->clear(TRUE);
+        $this->load->model('orders_model');
+        $this->orders_model->ckeckpototals($datestart, $dateend);
+        $this->orders_model->pochange_notification($datestart, $dateend);
     }
 
     public function tickets_report() {
@@ -586,8 +372,8 @@ Class Cronjob extends CI_Controller
         $dateend=strtotime(date('Y-m-d'));
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
         // Select total
-        $brands = ['SB','SR'];
-        // $brands = ['SB'];
+        // $brands = ['SB','SR'];
+        $brands = ['SB'];
         $this->load->model('reports_model');
         foreach ($brands as $brand) {
             $data = $this->reports_model->artproof_daily_report($datestart, $dateend, $brand);
@@ -613,11 +399,46 @@ Class Cronjob extends CI_Controller
                 ];
                 $body= $this->load->view('messages/artproof_report_view', $repoptions, TRUE);
                 $this->load->library('email');
-                $config['charset'] = 'utf-8';
-                $config['mailtype']='html';
-                $config['wordwrap'] = TRUE;
-                $this->email->initialize($config);
-                $email_from=$this->config->item('email_notification_sender');
+                $sendsmtp = intval($brand=='SR' ? $this->config->item('sr_artproof_smtp') : $this->config->item('sb_artproof_smtp'));
+                if ($sendsmtp==1) {
+                    if ($brand=='SR') {
+                        $email_conf = array(
+                            'protocol'=>'smtp',
+                            'smtp_host' => $this->config->item('sr_smtp_host'),
+                            'smtp_port' => $this->config->item('sr_smtp_port'),
+                            'smtp_crypto' => $this->config->item('sr_smtp_crypto'),
+                            'smtp_user' => $this->config->item('sr_artproof_user'),
+                            'smtp_pass' => $this->config->item('sr_artproof_pass'),
+                            'charset'=>'utf-8',
+                            'mailtype'=>'html',
+                            'wordwrap'=>TRUE,
+                            'newline' => "\r\n",
+                        );
+                        $email_from = $this->config->item('sr_artproof_user');
+                    } else {
+                        $email_conf = array(
+                            'protocol'=>'smtp',
+                            'smtp_host' => $this->config->item('sb_smtp_host'),
+                            'smtp_port' => $this->config->item('sb_smtp_port'),
+                            'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                            'smtp_user' => $this->config->item('sb_artproof_user'),
+                            'smtp_pass' => $this->config->item('sb_artproof_pass'),
+                            'charset'=>'utf-8',
+                            'mailtype'=>'html',
+                            'wordwrap'=>TRUE,
+                            'newline' => "\r\n",
+                        );
+                        $email_from = $this->config->item('sr_artproof_user');
+                    }
+                } else {
+                    $email_conf = [
+                        'charset' => 'utf-8',
+                        'mailtype' => 'html',
+                        'wordwrap'=>TRUE,
+                    ];
+                    $email_from = $this->config->item('email_notification_sender');
+                }
+                $this->email->initialize($email_conf);
                 $email_to=$this->config->item('sean_email');
                 $email_cc=array(
                     $this->config->item('sage_email'),
@@ -649,10 +470,31 @@ Class Cronjob extends CI_Controller
             'weekbgn'=>$monday,
             'weekend'=>$sunday,
         ];
-
+        $sendsmtp = intval($this->config->item('quoteweek_smtp'));
+        if ($sendsmtp==1) {
+            $config = [
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'smtp_user' => $this->config->item('quoteweek_user'),
+                'smtp_pass' => $this->config->item('quoteweek_pass'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+            ];
+            $email_from = $this->config->item('quoteweek_user');
+        } else {
+            $config = [
+                'charset' => 'utf-8',
+                'mailtype' => 'html',
+                'wordwrap' => TRUE,
+            ];
+            $email_from=$this->config->item('email_notification_sender');
+        }
         $this->load->model('orders_model');
         $brands = ['SB','SR'];
-        // $brands = ['SB'];
         foreach ($brands as $brand) {
             $options['brand']=$brand;
             $res=$this->orders_model->get_week_quotes($options);
@@ -660,7 +502,7 @@ Class Cronjob extends CI_Controller
                 $title='Quotes, Proof Requests, Orders ('.date('m/d/Y', $monday).' - '.date('m/d/Y', $sunday-1).')';
                 if ($brand=='SB') {
                     $title.=' Bluetrack/Stressballs';
-                } elseif ($brand=='SB') {
+                } elseif ($brand=='SR') {
                     $title.=' StressRelievers';
                 }
                 $params['lists']=$res['data'];
@@ -668,16 +510,7 @@ Class Cronjob extends CI_Controller
                 // Prepare email
                 $body= $this->load->view('messages/quotesweek_report_view', $params, TRUE);
                 $this->load->library('email');
-                $config['charset'] = 'utf-8';
-                $config['mailtype']='html';
-                $config['wordwrap'] = TRUE;
                 $this->email->initialize($config);
-                $email_from=$this->config->item('email_notification_sender');
-                // $email_to=$this->config->item('sean_email');
-                // $email_cc=array(
-                // $this->config->item('sage_email'),
-                // $this->config->item('taisenkatakura_email'),
-                // );
                 $email_to=$this->config->item('sean_email');
                 $email_cc=$this->config->item('developer_email');
                 $this->email->from($email_from);
@@ -685,7 +518,6 @@ Class Cronjob extends CI_Controller
                 $this->email->cc($email_cc);
                 $this->email->subject($title);
                 $this->email->message($body);
-
                 $this->email->send();
                 $this->email->clear(TRUE);
             }
@@ -696,20 +528,43 @@ Class Cronjob extends CI_Controller
         $user_id=23; // Shanequa Hall
         $this->load->model('orders_model');
         $brands = ['SB','SR'];
-        // $brands = ['SB'];
         foreach ($brands as $brand) {
             $results=$this->orders_model->user_weekproof_reportdata($user_id, $brand);
             $out=$results['out'];
             $total=$results['totals'];
             $dateend=strtotime(date('m/d/Y'));
             $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
-
+            $sendsmtp = intval($brand=='SR' ? $this->config->item('sr_bonusreport_smtp') : $this->config->item('sb_bonusreport_smtp'));
+            if ($sendsmtp==1) {
+                $config = [
+                    'protocol'=>'smtp',
+                    'smtp_host' => $this->config->item('sb_smtp_host'),
+                    'smtp_port' => $this->config->item('sb_smtp_port'),
+                    'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                    'charset'=>'utf-8',
+                    'mailtype'=>'html',
+                    'wordwrap'=>TRUE,
+                    'newline' => "\r\n",
+                ];
+                if ($brand=='SR') {
+                    $config['smtp_user'] = $this->config->item('sr_bonusreport_user');
+                    $config['smtp_pass'] = $this->config->item('sr_bonusreport_pass');
+                    $email_from = $this->config->item('sr_bonusreport_user');
+                } else {
+                    $config['smtp_user'] = $this->config->item('sb_bonusreport_user');
+                    $config['smtp_pass'] = $this->config->item('sb_bonusreport_pass');
+                    $email_from = $this->config->item('sb_bonusreport_user');
+                }
+            } else {
+                $config = [
+                    'mailtype' => 'html',
+                    'charset' => 'utf-8',
+                    'wordwrap' => TRUE,
+                ];
+                $email_from = $this->config->item('email_notification_sender');
+            }
             $this->load->library('email');
-            $config['charset'] = 'utf-8';
-            $config['mailtype']='html';
-            $config['wordwrap'] = TRUE;
             $this->email->initialize($config);
-            $email_from=$this->config->item('email_notification_sender');
             $email_to=$this->config->item('sean_email');
             $email_cc=$this->config->item('sage_email');
             $this->email->from($email_from);
@@ -739,7 +594,6 @@ Class Cronjob extends CI_Controller
             // Send report to user
             $this->email->from($email_from);
             $this->email->to('shanequa.hall@bluetrack.com');
-            // $this->email->to('to_german@yahoo.com');
             $title=date('D - M d, Y', $datestart).' - Sales Report (Shanequa Hall) ';
             if ($brand=='BT') {
                 $title.='(Bluetrack/Stressballs)';
@@ -769,66 +623,33 @@ Class Cronjob extends CI_Controller
         $dateend=strtotime(date('Y-m-d'));
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
         $brands = ['SB','SR'];
-        // $brands = ['SB'];
+        $email_conf = array(
+            'protocol'=>'smtp',
+            'smtp_host' => $this->config->item('sb_smtp_host'),
+            'smtp_port' => $this->config->item('sb_smtp_port'),
+            'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+            'smtp_user' => $this->config->item('sb_quote_user'),
+            'smtp_pass' => $this->config->item('sb_quote_pass'),
+            'charset'=>'utf-8',
+            'mailtype'=>'html',
+            'wordwrap'=>TRUE,
+            'newline' => "\r\n",
+        );
+        $email_from = $this->config->item('sb_quote_user');
+        $email_to='to_german@yahoo.com';
+        $this->load->model('orders_model');
+        $this->load->library('email');
         foreach ($brands as $brand) {
-            $this->db->select('*');
-            $this->db->from('ts_orders');
-            $this->db->where('order_date >= ', $datestart);
-            $this->db->where('order_date < ', $dateend);
-            $this->db->where('is_canceled',0);
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['SB','BT']);
-            } else {
-                $this->db->where('brand', $brand);
-            }
-            $this->db->order_by('order_num');
-            $res = $this->db->get()->result_array();
-            if (count($res)>0) {
-                $out=[];
-                foreach ($res as $row) {
-                    $this->db->select('sum(ic.item_qty*ic.item_price) as item_total');
-                    $this->db->from('ts_order_items i');
-                    $this->db->join('ts_order_itemcolors ic','ic.order_item_id=i.order_item_id');
-                    $this->db->where('i.order_id', $row['order_id']);
-                    $itm=$this->db->get()->row_array();
-                    $this->db->select('sum(p.imprint_qty*p.imprint_price) as print_sum');
-                    $this->db->from('ts_order_items i');
-                    $this->db->join('ts_order_imprints p','p.order_item_id=i.order_item_id');
-                    $this->db->where('i.order_id', $row['order_id']);
-                    $print = $this->db->get()->row_array();
-                    $this->db->select('rush_price');
-                    $this->db->from('ts_order_shippings');
-                    $this->db->where('order_id', $row['order_id']);
-                    $ship = $this->db->get()->row_array();
-                    $order_total = $itm['item_total']+$print['print_sum']+$row['shipping']+$row['tax']+$row['mischrg_val1']+$row['mischrg_val2']+$ship['rush_price']-$row['discount_val'];
-                    if (round($row['revenue'],2)!=round($order_total,2)) {
-                        $out[]=[
-                            'order_num' => $row['order_num'],
-                            'itemcost' => $itm['item_total'],
-                            'imprint' => $print['print_sum'],
-                            'shipping' => $row['shipping'],
-                            'tax'=> $row['tax'],
-                            'mischarge' => ($row['mischrg_val1']+$row['mischrg_val2']),
-                            'rush' => $ship['rush_price'],
-                            'discount' => $row['discount_val'],
-                            'calcrevenue' => $order_total,
-                            'revenue' => $row['revenue'],
-                            'diff' => $order_total - $row['revenue'],
-                        ];
-                    }
-                }
+            $data = $this->orders_model->check_ordermath($brand,$datestart, $dateend);
+            $out = $data['data'];
+            $orders = $data['orders'];
+            if ($orders > 0) {
                 if (count($out)==0) {
-                    $mail_body = 'All orders '.count($res).' math is OK';
+                    $mail_body = 'All orders '.$orders.' math is OK';
                 } else {
                     $mail_body = $this->load->view('messages/order_maths_view', ['data'=>$out], TRUE);
                 }
-                $this->load->library('email');
-                $config['charset'] = 'utf-8';
-                $config['mailtype']='html';
-                $config['wordwrap'] = TRUE;
-                $this->email->initialize($config);
-                $email_from=$this->config->item('email_notification_sender');
-                $email_to='to_german@yahoo.com';
+                $this->email->initialize($email_conf);
                 $this->email->from($email_from);
                 $this->email->to($email_to);
 
@@ -945,51 +766,51 @@ Class Cronjob extends CI_Controller
         // $brands = ['SB'];
         $dat_mon = strtotime('last week Monday');
         $dat_sun = strtotime(date('Y-m-d', strtotime('last week Sunday')).' 23:59:59');
-        foreach ($brands as $brand) {
-            $this->db->select('search_text, count(search_result_id) as cnt');
-            $this->db->from('sb_search_results');
-            $this->db->where('search_result',0);
-            $this->db->where('unix_timestamp(search_time) >= ', $dat_mon);
-            $this->db->where('unix_timestamp(search_time) <= ', $dat_sun);
-            if ($brand=='SB') {
-                $this->db->where_in('brand', ['SB','BT']);
-            } else {
-                $this->db->where('brand', $brand);
-            }
-            $this->db->group_by('search_text');
-            $this->db->order_by('cnt desc, search_text asc');
-            $res = $this->db->get()->result_array();
-
-            $mail_body=$this->load->view('marketing/weekreport_view',array('start_date'=>$dat_mon,'end_date'=>$dat_sun,'data'=>$res),TRUE);
-
-            $this->load->library('email');
+        $sendsmtp = intval($this->config->item('searchreport_smtp'));
+        if ($sendsmtp==1) {
+            $email_conf = [
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'smtp_user' => $this->config->item('searchreport_user'),
+                'smtp_pass' => $this->config->item('searchreport_pass'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+            ];
+            $mail_from = $this->config->item('searchreport_user');
+        } else {
             $email_conf = array(
                 'protocol'=>'sendmail',
                 'charset'=>'utf-8',
                 'wordwrap'=>TRUE,
                 'mailtype'=>'html',
             );
+            $mail_from = 'no-replay@bluetrack.com';
+        }
+        $this->load->model('searchresults_model');
+        $this->load->library('email');
+        $mail_to=array('sean@bluetrack.com');
+        $mail_cc=array('sage@bluetrack.com', $this->config->item('developer_email'));
+        foreach ($brands as $brand) {
+            $res = $this->searchresults_model->get_searchweekreport($dat_mon, $dat_sun, $brand);
+            $mail_body=$this->load->view('marketing/weekreport_view',array('start_date'=>$dat_mon,'end_date'=>$dat_sun,'data'=>$res),TRUE);
             $this->email->initialize($email_conf);
-            $mail_to=array('sean@bluetrack.com');
-            $mail_cc=array('sage@bluetrack.com', $this->config->item('developer_email'));
-
             $this->email->to($mail_to);
             $this->email->cc($mail_cc);
-
-            $this->email->from('no-replay@bluetrack.com');
+            $this->email->from($mail_from);
             $title = 'Weekly Report about Unsuccessful Searches '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)');
             $this->email->subject($title);
             $this->email->message($mail_body);
             $res=$this->email->send();
-
             $this->email->clear(TRUE);
-
         }
     }
 
     public function unpaid_orders() {
         $brands = ['SB', 'SR'];
-        // $brands = ['SB'];
         $yearbgn = intval(date('Y'))-1;
         $datebgn = strtotime($yearbgn.'-01-01');
         $this->load->model('orders_model');
@@ -1001,23 +822,45 @@ Class Cronjob extends CI_Controller
             } else {
                 $mail_body=$this->load->view('messages/notpaidorders_list_view',array('data'=>$dat,'totals'=>$totals),TRUE);
             }
-
+            $sendsmtp = intval($brand=='SR' ? $this->config->item('sr_unpaid_smtp') : $this->config->item('sb_unpaid_smtp'));
+            if ($sendsmtp==1) {
+                $email_conf = [
+                    'protocol'=>'smtp',
+                    'smtp_host' => $this->config->item('sb_smtp_host'),
+                    'smtp_port' => $this->config->item('sb_smtp_port'),
+                    'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                    'charset'=>'utf-8',
+                    'mailtype'=>'html',
+                    'wordwrap'=>TRUE,
+                    'newline' => "\r\n",
+                ];
+                if ($brand=='SR') {
+                    $email_conf['smtp_user'] = $this->config->item('sr_unpaid_user');
+                    $email_conf['smtp_pass'] = $this->config->item('sr_unpaid_pass');
+                    $email_from = $this->config->item('sr_unpaid_user');
+                } else {
+                    $email_conf['smtp_user'] = $this->config->item('sb_unpaid_user');
+                    $email_conf['smtp_pass'] = $this->config->item('sb_unpaid_pass');
+                    $email_from = $this->config->item('sb_unpaid_user');
+                }
+            } else {
+                $email_conf = array(
+                    'protocol'=>'sendmail',
+                    'charset'=>'utf-8',
+                    'wordwrap'=>TRUE,
+                    'mailtype'=>'html',
+                );
+                $email_from = $this->config->item('email_notification_sender');
+            }
             $this->load->library('email');
-            $email_conf = array(
-                'protocol'=>'sendmail',
-                'charset'=>'utf-8',
-                'wordwrap'=>TRUE,
-                'mailtype'=>'html',
-            );
             $this->email->initialize($email_conf);
-            // $mail_to=array($this->config->item('sean_email'),$this->config->item('sage_email'));
             $mail_to=array($this->config->item('sage_email'));
             $mail_cc=array($this->config->item('developer_email'));
 
             $this->email->to($mail_to);
             $this->email->cc($mail_cc);
+            $this->email->from($email_from);
 
-            $this->email->from('no-replay@bluetrack.com');
             $title = 'Report about Unpaid Orders '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)');
             $this->email->subject($title);
             $this->email->message($mail_body);
@@ -1026,71 +869,6 @@ Class Cronjob extends CI_Controller
         }
     }
 
-    private function  _ckeckpototals($datestart, $dateend) {
-        // Get list of orders
-        $this->db->select('o.order_num, o.order_id');
-        $this->db->from('ts_orders o');
-        $this->db->join('ts_order_amounts oa','oa.order_id=o.order_id');
-        $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
-        $this->db->where("o.is_canceled",0);
-        $this->db->where('oa.create_date >=', $datestart);
-        $this->db->where('oa.create_date < ', $dateend);
-        $newordlist = $this->db->get()->result_array();
-
-        $this->db->select('o.order_num, o.order_id');
-        $this->db->from('ts_orders o');
-        $this->db->join('ts_order_amounts oa','oa.order_id=o.order_id');
-        $this->db->join('vendors v','v.vendor_id=oa.vendor_id');
-        $this->db->where('oa.update_date >=', $datestart);
-        $this->db->where('oa.update_date < ', $dateend);
-        $this->db->where('oa.create_date <', $datestart);
-        $updordlist = $this->db->get()->result_array();
-
-        $orderlists = array_merge($newordlist, $updordlist);
-        $ordererror = [];
-        foreach ($orderlists as $orderlist) {
-            // Order Data
-            $this->db->select('o.profit as profit_sum, o.profit_perc, o.order_cog, o.brand');
-            $this->db->from('ts_orders o');
-            $this->db->where('o.order_id', $orderlist['order_id']);
-            $ordres = $this->db->get()->row_array();
-            $order_cog = round(floatval($ordres['order_cog']),2);
-            // Total amounts
-            $this->db->select('count(amount_id) as cnt, sum(amount_sum) as amount');
-            $this->db->from('ts_order_amounts');
-            $this->db->where('order_id', $orderlist['order_id']);
-            $pores = $this->db->get()->row_array();
-            $amount_cog = round(floatval($pores['amount']),2);
-            if ($amount_cog!==$order_cog) {
-                $ordererror[] = [
-                    'order_id' => $orderlist['order_id'],
-                    'order_num' => $orderlist['order_num'],
-                    'order_cog' => $order_cog,
-                    'amount_cog' => $amount_cog,
-                    'diff' => $amount_cog - $order_cog,
-                ];
-            }
-        }
-        if (count($ordererror)==0) {
-            $mail_body = 'All PO orders '.count($orderlists).' math is OK';
-        } else {
-            $mail_body = $this->load->view('messages/orderamout_maths_view', ['data' => $ordererror], TRUE);
-        }
-        $this->load->library('email');
-        $config['charset'] = 'utf-8';
-        $config['mailtype']='html';
-        $config['wordwrap'] = TRUE;
-        $this->email->initialize($config);
-        $email_from=$this->config->item('email_notification_sender');
-        $email_to='to_german@yahoo.com';
-        $this->email->from($email_from);
-        $this->email->to($email_to);
-        $title=date('D - M d, Y', $datestart).' - Check Order Amounts Maths ';
-        $this->email->subject($title);
-        $this->email->message($mail_body);
-        $this->email->send();
-        $this->email->clear(TRUE);
-    }
 
     public function export_parse() {
         $this->load->model('artlead_model');
@@ -1287,5 +1065,9 @@ Class Cronjob extends CI_Controller
         $this->calendars_model->update_calendars();
     }
 
-
+    public function merchantcenter_items()
+    {
+        $this->load->model('items_model');
+        $this->items_model->merchantcenter_items('BT');
+    }
 }

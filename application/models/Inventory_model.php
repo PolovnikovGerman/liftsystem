@@ -1993,7 +1993,6 @@ class Inventory_model extends MY_Model
             }
         } else {
             $cogflag = $this->success_result;
-            log_message('ERROR', 'Order '.$orderdata['order_id'].' exclude from update COG');
         }
         if ($cogflag==$this->success_result) {
             $out['result']=$this->success_result;
@@ -2268,7 +2267,6 @@ class Inventory_model extends MY_Model
                     $new_order_cog=NULL;
                     $new_profit_pc=NULL;
                     $new_profit=round((floatval($revenue))*$this->config->item('default_profit')/100,2);
-                    log_message('ERROR','Empty order COG, Order ID '.$order_id.'!');
                 } else {
                     $new_order_cog=floatval($cogres['cog']);
                     $new_profit=$revenue-($shipping*$is_shipping)-$tax-$cc_fee-$new_order_cog;
@@ -2287,7 +2285,6 @@ class Inventory_model extends MY_Model
                     if (floatval($orderchk['order_cog'])==$new_order_cog) {
                         $out['result'] = $this->success_result;
                     } else {
-                        log_message('ERROR','Order COG update unsuccess, Order ID '.$order_id.'!');
                         $out['msg'] = 'Order COG update unsuccess';
                     }
                 } else {

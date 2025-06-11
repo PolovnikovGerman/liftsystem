@@ -4049,7 +4049,8 @@ class Test extends CI_Controller
     {
         $this->load->model('orders_model');
         // $this->orders_model->order_invamount_srtransform();
-        $this->orders_model->order_invamount_sbtransform();
+        // $this->orders_model->order_invamount_sbtransform();
+        $this->orders_model->order_invamount();
     }
 
     public function customleads()
@@ -4308,34 +4309,134 @@ class Test extends CI_Controller
 
     public function testquote()
     {
-        $this->load->config('uploader');
-        $pathsh = $this->config->item('itemimages_relative');
-        $pathfl = $this->config->item('itemimages');
-        $items = $this->db->select('item_id, item_number, item_name, main_image')->from('sb_items')->where(['brand' => 'BT', 'item_active' => 1])->order_by('item_number')->get()->result_array();
+//        $this->load->config('uploader');
+//        $pathsh = $this->config->item('itemimages_relative');
+//        $pathfl = $this->config->item('itemimages');
+//        $items = $this->db->select('item_id, item_number, item_name, main_image')->from('sb_items')->where(['brand' => 'BT', 'item_active' => 1])->order_by('item_number')->get()->result_array();
+//        foreach ($items as $item) {
+//            if (!empty($item['main_image'])) {
+//                $image = str_replace($pathsh, $pathfl, $item['main_image']);
+//                if (file_exists($image)) {
+//                    list($width, $height) = getimagesize($image);
+//                    if (round($width,-1) !== round($height,-1)) {
+//                        echo 'Item # '.$item['item_number'].' '.$item['item_name'].' Main Image issue W '.$width.' H '.$height.PHP_EOL;
+//                    }
+//                }
+//            }
+//            // Get image images
+//            $lists = $this->db->select('item_img_id, item_img_name, item_img_order')->from('sb_item_images')->where('item_img_item_id', $item['item_id'])->get()->result_array();
+//            foreach ($lists as $list) {
+//                if ($list['item_img_order'] > 1) {
+//                    $image = str_replace($pathsh, $pathfl, $list['item_img_name']);
+//                    if (file_exists($image)) {
+//                        list($width, $height) = getimagesize($image);
+//                        if (round($width,-1) !== round($height,-1)) {
+//                            echo 'Item # '.$item['item_number'].' '.$item['item_name'].' Image # '.$list['item_img_order'].' issue W '.$width.' H '.$height.PHP_EOL;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        echo 'That is All, folk '.PHP_EOL;
+        $this->load->model('email_model');
+        $this->email_model->generate_quota(26662); // 26662
+    }
+
+    public function rebuild_item_titles()
+    {
+        $this->db->select('item_id, item_number, item_name, item_number, item_meta_title')->from('sb_items')->where('brand','BT');
+        $items = $this->db->get()->result_array();
         foreach ($items as $item) {
-            if (!empty($item['main_image'])) {
-                $image = str_replace($pathsh, $pathfl, $item['main_image']);
-                if (file_exists($image)) {
-                    list($width, $height) = getimagesize($image);
-                    if (round($width,-1) !== round($height,-1)) {
-                        echo 'Item # '.$item['item_number'].' '.$item['item_name'].' Main Image issue W '.$width.' H '.$height.PHP_EOL;
-                    }
+            if (empty($item['item_name'])) {
+                echo 'Item ID '.$item['item_id'].' Empty Name'.PHP_EOL;die();
+            } else {
+                $metanew = str_replace(['Vesrion A'],'', $item['item_name']);
+                $verpos = strpos($metanew,'Version');
+                if ($verpos > 0) {
+                    $version = substr($metanew, $verpos+8);
+                    $metanew = substr($metanew, 0, $verpos-2).'- STRESSBALLS.com&reg; - Custom Printed - Ver '.$version;
+                    echo $item['item_number'].' Meta '.$metanew.PHP_EOL;
+                } else {
+                    $metanew.=' - STRESSBALLS.com&reg; - Custom Printed';
                 }
+                $this->db->where('item_id', $item['item_id']);
+                $this->db->set('item_meta_title', $metanew);
+                $this->db->update('sb_items');
             }
-            // Get image images
-            $lists = $this->db->select('item_img_id, item_img_name, item_img_order')->from('sb_item_images')->where('item_img_item_id', $item['item_id'])->get()->result_array();
-            foreach ($lists as $list) {
-                if ($list['item_img_order'] > 1) {
-                    $image = str_replace($pathsh, $pathfl, $list['item_img_name']);
-                    if (file_exists($image)) {
-                        list($width, $height) = getimagesize($image);
-                        if (round($width,-1) !== round($height,-1)) {
-                            echo 'Item # '.$item['item_number'].' '.$item['item_name'].' Image # '.$list['item_img_order'].' issue W '.$width.' H '.$height.PHP_EOL;
-                        }
-                    }
+        }
+    }
+
+    public function update_shippedorders()
+    {
+        $this->load->model('orders_model');
+        $this->orders_model->update_shipped_orders();
+    }
+
+//    public function updateprintready() {
+//        $this->db->select('oic.order_itemcolor_id, o.order_num, o.print_ready')->from('ts_order_itemcolors oic')->join('ts_order_items oi','oi.order_item_id=oic.order_item_id');
+//        $this->db->join('ts_orders o','o.order_id=oi.order_id')->where('o.print_ready > ',0);
+//        $items = $this->db->get()->result_array();
+//        foreach ($items as $item) {
+//            $this->db->where('order_itemcolor_id', $item['order_itemcolor_id']);
+//            $this->db->set('print_ready', $item['print_ready']);
+//            $this->db->update('ts_order_itemcolors');
+//            echo 'Order '.$item['order_num'].' Updated '.PHP_EOL;
+//        }
+//        $this->db->select('oi.order_item_id, o.order_num, o.plates_ready')->from('ts_order_items oi')->join('ts_orders o','o.order_id=oi.order_id')->where('o.plates_ready > ',0);
+//        $items = $this->db->get()->result_array();
+//        foreach ($items as $item) {
+//            $this->db->where('order_item_id', $item['order_item_id']);
+//            $this->db->set('plates_ready', $item['plates_ready']);
+//            $this->db->update('ts_order_items');
+//            echo 'Order '.$item['order_num'].' Updated '.PHP_EOL;
+//        }
+//    }
+
+    public function testcolors()
+    {
+        $startdate = strtotime('2025-03-17');
+        $this->db->select('o.order_num, o.order_date, o.brand, ii.inventory_item_id, ii.item_num, ii.item_name, oic.item_color, oic.order_itemcolor_id');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_items oi','oi.order_id = o.order_id');
+        $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
+        $this->db->join('ts_inventory_items ii', 'ii.inventory_item_id = oi.inventory_item_id');
+        $this->db->where('o.order_date >= ', $startdate);
+        $this->db->where('oi.inventory_item_id is not null');
+        $this->db->where('oic.inventory_color_id',null);
+        $this->db->order_by('o.order_id');
+        $orders = $this->db->get()->result_array();
+
+        foreach ($orders as $order) {
+            $newcolor = $this->_inventory_color($order['inventory_item_id'], $order['item_color']);
+            if (!empty($newcolor)) {
+                $this->db->where('order_itemcolor_id', $order['order_itemcolor_id']);
+                $this->db->set('inventory_color_id', $newcolor);
+                $this->db->update('ts_order_itemcolors');
+            } else {
+                echo 'Order # '.$order['order_num'].' ('.$order['brand'].')'.' '.$order['item_num'].'-'.$order['item_name'].' '.$order['item_color'].PHP_EOL;
+            }
+        }
+    }
+
+    private function _inventory_color($inventory_item_id, $color)
+    {
+        $outcolor = '';
+        $colordat = $this->db->select('max(inventory_color_id) as color_id, count(inventory_color_id) as cnt')->from('ts_inventory_colors')->where('inventory_item_id', $inventory_item_id)->get()->row_array();
+        if ($colordat['cnt']==1) {
+            // Only one color
+            $outcolor = $colordat['color_id'];
+        } else {
+            $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where(['inventory_item_id' => $inventory_item_id, 'color' => $color])->get()->row_array();
+            if (ifset($invdat, 'inventory_color_id', 0) > 0) {
+                $outcolor = $invdat['inventory_color_id'];
+            } else {
+                $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inventory_item_id)->like('color', $color, 'after')->get()->row_array();
+                if (ifset($invdat, 'inventory_color_id', 0) > 0) {
+                    $outcolor = $invdat['inventory_color_id'];
                 }
             }
         }
-        echo 'That is All, folk '.PHP_EOL;
+        return $outcolor;
     }
+
 }

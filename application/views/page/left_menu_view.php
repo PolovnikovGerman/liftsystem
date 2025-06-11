@@ -108,6 +108,19 @@
                     </div>
                 <?php } ?>
             <?php } ?>
+            <?php if ($menu['item_link']=='/projects') : ?>
+                <?php if ($activelnk == $menu['item_link']) : ?>
+                    <div class="brandmenuitemactive" data-url="<?=$menu['item_link']?>" data-brand="SB">
+                        <div class="brandmenuicon active"><img src="/img/page_view/icon-projects-black.svg"/></div>
+                        <div class="brandmenutitle active">Projects</div>
+                    </div>
+                <?php  else: ?>
+                    <div class="brandmenuitem" data-url="<?=$menu['item_link']?>" data-brand="SB">
+                        <div class="brandmenuicon" data-brand="SB" data-item="<?=$menu['menu_item_id']?>"><img src="/img/page_view/icon-projects-white.svg"/></div>
+                        <div class="brandmenutitle">Projects</div>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
         <?php } ?>
         <div class="brandsubmenu bluetrack" data-brand="SB">&nbsp;</div>
     </div>
@@ -222,6 +235,19 @@
                     </div>
                 <?php } ?>
             <?php } ?>
+            <?php if ($menu['item_link']=='/projects') : ?>
+                <?php if ($activelnk == $menu['item_link']) : ?>
+                    <div class="brandmenuitemactive relievers" data-url="<?=$menu['item_link']?>" data-brand="SR">
+                        <div class="brandmenuicon active"><img src="/img/page_view/icon-projects-black.svg"/></div>
+                        <div class="brandmenutitle active">Projects</div>
+                    </div>
+                <?php  else: ?>
+                    <div class="brandmenuitem relievers" data-url="<?=$menu['item_link']?>" data-brand="SR">
+                        <div class="brandmenuicon" data-brand="SB" data-item="<?=$menu['menu_item_id']?>"><img src="/img/page_view/icon-projects-black.svg"/></div>
+                        <div class="brandmenutitle">Projects</div>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
         <?php } ?>
         <div class="brandsubmenu relievers" data-brand="SR">&nbsp;</div>
     </div>

@@ -553,4 +553,22 @@ class Searchresults_model extends My_Model
             'd_end' => strtotime(date('Y-m-d', $res['max_time']).' 23:59:59'),
         ];
     }
+
+    public function get_searchweekreport($dat_mon, $dat_sun, $brand)
+    {
+        $this->db->select('search_text, count(search_result_id) as cnt');
+        $this->db->from('sb_search_results');
+        $this->db->where('search_result',0);
+        $this->db->where('unix_timestamp(search_time) >= ', $dat_mon);
+        $this->db->where('unix_timestamp(search_time) <= ', $dat_sun);
+        if ($brand=='SB') {
+            $this->db->where_in('brand', ['SB','BT']);
+        } else {
+            $this->db->where('brand', $brand);
+        }
+        $this->db->group_by('search_text');
+        $this->db->order_by('cnt desc, search_text asc');
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
 }

@@ -57,7 +57,10 @@ function navigation_init() {
                 }
             } else if (callpage=='pooverview') {
                 // PO Overview
-                init_pooverview();
+                if (parseInt(updorders)==0) {
+                } else {
+                    init_pooverview();
+                }
             }
         }
         $('.modal-backdrop').hide();
@@ -148,6 +151,13 @@ function navigation_init() {
                         }
                     }
                     $("#loader").hide();
+                    // Show error
+                    if ($("#duplerroritemmsg").length > 0) {
+                        var errmsg = $("#duplerroritemmsg").val();
+                        alert(errmsg);
+                        var errfld = $("#duplerroritem").val();
+                        $("span.addnewcolor[data-item='"+errfld+"']").trigger('click');
+                    }
                 } else {
                     $("#loader").hide();
                     show_error(response);
@@ -780,7 +790,7 @@ function init_onlineleadorder_edit() {
         element: document.getElementById('uploadproofdoc'),
         action: '/artproofrequest/proofattach',
         uploadButtonText: '',
-        multiple: false,
+        multiple: true,
         debug: false,
         template: upload_templ,
         params: {

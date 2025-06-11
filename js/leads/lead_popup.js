@@ -178,7 +178,7 @@ function init_leadpopupedit() {
             action: '/utils/save_leadattach',
             template: qq_template,
             uploadButtonText: '',
-            multiple: false,
+            multiple: true,
             debug: false,
             allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG','pdf','PDF','ai','AI','psd','PSD','eps','EPS'],
             onComplete: function(id, fileName, responseJSON){

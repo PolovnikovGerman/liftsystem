@@ -3,13 +3,15 @@
         <div class="pdo-table-tr pdo-table-header">
             <div class="pdo-table-td-move">&nbsp;</div>
             <div class="pdo-table-td-icons">&nbsp;</div>
+            <div class="pdo-table-td-approved">Approval</div>
             <div class="pdo-table-td-ship">Ship</div>
             <div class="pdo-table-td-order">Order#</div>
             <div class="pdo-table-td-items">#Items</div>
             <div class="pdo-table-td-imp">Imp</div>
             <div class="pdo-table-td-prints">#Prints</div>
-            <div class="pdo-table-td-itemcolor">Item Color/s</div>
+            <div class="pdo-table-td-printcolors">Print Color/s</div>
             <div class="pdo-table-td-descriptions">Item / Description</div>
+            <div class="pdo-table-td-itemcolor">Item Color/s</div>
             <div class="pdo-table-td-art">Art</div>
         </div>
         <?php $ordernum = ''; $displaymain = 0; ?>
@@ -17,7 +19,7 @@
             <?php if ($order['order_num']!==$ordernum) : ?>
                 <?php $ordernum = $order['order_num']; $displaymain = 1; ?>
             <?php endif; ?>
-            <div class="pdo-table-tr <?=$displaymain==1 ? '' : 'addition'?> <?=$order['order_approved']==1 ? '' : 'notapproved'?>">
+            <div class="pdo-table-tr pastordersdatarow <?=$displaymain==1 ? '' : 'addition'?> <?=$order['order_approved']==1 ? '' : 'notapproved'?>">
                 <?php if ($displaymain==1) : ?>
                     <div class="pdo-table-td-move" data-order="<?=$order['order_id']?>">
                         <?php if ($order['brand']=='SR') : ?>
@@ -41,14 +43,18 @@
                             <?php endif; ?>
                         </div>
                     </div>
+                    <div class="pdo-table-td-approved <?=$order['order_blank']==1 ? '' : ($order['approved']==0 ? 'notapproved' : '')?>">
+                        <?=$order['order_blank']==1 ? 'Blank' : ($order['approved']==0 ? 'Not Approved' : 'Approved')?>
+                    </div>
                     <div class="pdo-table-td-ship overdue-ship" data-order="<?=$order['order_id']?>"><?=date('m/d', $order['shipdate'])?></div>
-                    <div class="pdo-table-td-order"><?=$order['order_num']?></div>
+                    <div class="pdo-table-td-order" data-order="<?=$order['order_id']?>"><?=$order['order_num']?></div>
                 <?php endif; ?>
                 <div class="pdo-table-td-items"><?=$order['item_qty']?></div>
                 <div class="pdo-table-td-imp"><?=$order['imprints']?></div>
                 <div class="pdo-table-td-prints"><?=$order['prints']?></div>
-                <div class="pdo-table-td-itemcolor"><?=$order['item_color']?></div>
+                <div class="pdo-table-td-printcolors">&nbsp;</div>
                 <div class="pdo-table-td-descriptions"><?=$order['item_name']?></div>
+                <div class="pdo-table-td-itemcolor"><?=$order['color']?></div>
                 <div class="pdo-table-td-art">
                     <div class="ic-green-art" data-order="<?=$order['order_itemcolor_id']?>">
                         <img class="img-magnifier-white" src="/img/printscheduler/magnifier-white.svg">

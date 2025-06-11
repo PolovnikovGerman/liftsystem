@@ -1,9 +1,31 @@
 function init_purchase_orders() {
-    init_potables_content();
+    init_purchase_totaldata();
+    // init_potables_content();
     init_poreport_Pagination();
     init_poorders_content();
 }
 
+function init_purchase_totaldata() {
+    var params = new Array();
+    params.push({name: 'brand', value: $("#pototalsbrand").val()});
+    params.push({name: 'inner', value: $("#pototalsinner").val()});
+    var url = '/purchaseorders/pototals_data';
+    $.post(url, params, function (response) {
+        if (response.errors =='' ) {
+            $(".pototals-unsign-tolalqty").empty().html(response.data.toplace_qty);
+            $(".pototals-unsign-tolalsum").empty().html(response.data.toplace_sum);
+            $(".pototals-approved-tolalqty").empty().html(response.data.toapprove_qty);
+            $(".pototals-approved-tolalsum").empty().html(response.data.toapprove_sum);
+            $(".pototals-proof-tolalqty").empty().html(response.data.toproof_qty);
+            $(".pototals-proof-tolalsum").empty().html(response.data.toproof_sum);
+            $("#purchasetotalall").empty().html(response.data.purchasetotalall);
+            $("#purchasetotalfree").empty().html(response.data.purchasetotalfree);
+            init_potables_content();
+        } else {
+            show_error(response);
+        }
+    },'json')
+}
 function init_potables_content() {
     var params = new Array();
     params.push({name: 'brand', value: $("#pototalsbrand").val()});
