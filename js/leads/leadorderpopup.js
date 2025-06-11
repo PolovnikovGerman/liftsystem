@@ -790,7 +790,7 @@ function init_onlineleadorder_edit() {
         element: document.getElementById('uploadproofdoc'),
         action: '/artproofrequest/proofattach',
         uploadButtonText: '',
-        multiple: false,
+        multiple: true,
         debug: false,
         template: upload_templ,
         params: {
