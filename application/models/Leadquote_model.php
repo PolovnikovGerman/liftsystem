@@ -2645,9 +2645,9 @@ class Leadquote_model extends MY_Model
         $this->load->library('fpdf/fpdfeps');
         // Logo
         // $logoFile = FCPATH."/img/leadquote/logo-bluetrack-stressballs-2.eps";
-        $logoFile = FCPATH."/img/invoice/logos-2.eps";
-        $logoWidth = 119;
-        $logoHeight = 15;
+        $logoFile = FCPATH."/img/invoice/logos-2-upd6.eps";
+        $logoWidth = 86.4;
+        $logoHeight = 20;
         $logoYPos = 15;
         $logoXPos = 16;
         // Table Columns X
@@ -2675,16 +2675,16 @@ class Leadquote_model extends MY_Model
         }
         // Our Address
         $pdf->SetFont('','',12.046857);
-        $ourAddressY = 33.68;
+        $ourAddressY = 39.68;
         $pdf->Text($startPageX, $ourAddressY, '855 Bloomfield Ave');
         $ourAddressY += 5.8;
         $pdf->Text($startPageX, $ourAddressY, 'Clifton, NJ 07012');
         $ourAddressY += 5.8;
-        $pdf->Text($startPageX,$ourAddressY, 'Call Us at');
+        // $pdf->Text($startPageX,$ourAddressY, 'Call Us at');
         $pdf->SetTextColor(0,0,255);
-        $pdf->Text(34,$ourAddressY, '1-800-790-6090');
-        $ourAddressY += 5.8;
-        $pdf->Text($startPageX,$ourAddressY,'www.stressballs.com'); // , 'www.bluetrack.com');
+        $pdf->Text($startPageX, $ourAddressY, '1-800-790-6090');
+        // $ourAddressY += 5.8;
+        $pdf->Text(48,$ourAddressY,'www.stressballs.com'); // , 'www.bluetrack.com');
         // Quote Title
         $pdf->SetXY(156, 29);
         $pdf->SetFont('','',12.5);

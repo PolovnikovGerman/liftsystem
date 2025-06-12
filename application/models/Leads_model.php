@@ -127,38 +127,43 @@ Class Leads_model extends MY_Model
         $numpp=0;
 
         foreach ($result as $row) {
+//            if ($sort==1) {
+//                $weekday=date('w',strtotime($row['update_date']));
+//                $compdat=date('m/d',strtotime($row['update_date']));
+//            } else {
+//                $weekday=date('w',$row['lead_date']);
+//                $compdat=date('m/d',$row['lead_date']);
+//            }
+//            switch ($weekday) {
+//                case '0':
+//                    $compdate='Su '.$compdat;
+//                    break;
+//                case '1':
+//                    $compdate='Md '.$compdat;
+//                    break;
+//                case '2':
+//                    $compdate='Tu '.$compdat;
+//                    break;
+//                case '3':
+//                    $compdate='Wd '.$compdat;
+//                    break;
+//                case '4':
+//                    $compdate='Th '.$compdat;
+//                    break;
+//                case '5':
+//                    $compdate='Fr '.$compdat;
+//                    break;
+//                case '6':
+//                    $compdate='St '.$compdat;
+//                    break;
+//                default :
+//                    $compdate=$compdat;
+//                    break;
+//            }
             if ($sort==1) {
-                $weekday=date('w',strtotime($row['update_date']));
-                $compdat=date('m/d',strtotime($row['update_date']));
+                $compdate = date('D - M j',strtotime($row['update_date']));
             } else {
-                $weekday=date('w',$row['lead_date']);
-                $compdat=date('m/d',$row['lead_date']);
-            }
-            switch ($weekday) {
-                case '0':
-                    $compdate='Su '.$compdat;
-                    break;
-                case '1':
-                    $compdate='Md '.$compdat;
-                    break;
-                case '2':
-                    $compdate='Tu '.$compdat;
-                    break;
-                case '3':
-                    $compdate='Wd '.$compdat;
-                    break;
-                case '4':
-                    $compdate='Th '.$compdat;
-                    break;
-                case '5':
-                    $compdate='Fr '.$compdat;
-                    break;
-                case '6':
-                    $compdate='St '.$compdat;
-                    break;
-                default :
-                    $compdate=$compdat;
-                    break;
+                $compdate = date('D - M j', $row['lead_date']);
             }
             $row['out_date']='---';
             $row['dateclass']='';

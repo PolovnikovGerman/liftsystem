@@ -9,6 +9,7 @@
         <div class="attemptdue_sum">Amount</div>
         <div class="attemptdue_email">Email</div>
         <div class="attemptdue_phone">Phone</div>
+        <div class="attemptdue_userip">IP address</div>
         <div class="attemptdue_location">GeoIP locator</div>
         <div class="attemptdue_ccdetails">Credit Card</div>
         <div class="attemptdue_artsubmit">Art</div>
@@ -28,6 +29,7 @@
                     <div class="attemptdue_sum"><?=$row['amount']?></div>
                     <div class="attemptdue_email truncateoverflowtext" data-content="<?=$row['email']?>"><?=$row['email']?></div>
                     <div class="attemptdue_phone truncateoverflowtext" data-content="<?=$row['phone']?>"><?=$row['phone']?></div>
+                    <div class="attemptdue_userip"><?=$row['customer_ip']?></div>
                     <div class="attemptdue_location truncateoverflowtext" data-content="<?=$row['customer_location']?>"><?=$row['customer_location']?></div>
                     <div class="attemptdue_ccdetails truncateoverflowtext" data-content="<?=$row['cc_details']?>"><?=$row['cc_details']?></div>
                     <div class="attemptdue_artsubmit"><?=$row['artsubm']?></div>
