@@ -3,6 +3,10 @@ $(document).ready(function (){
         $(".categories-dropdown").show();
         init_categories_content();
     });
+    $(".dropdown-item").unbind('click').click(function(){
+        var url = $(this).data('link');
+        window.location.href = url;
+    });
 })
 
 function init_categories_content() {

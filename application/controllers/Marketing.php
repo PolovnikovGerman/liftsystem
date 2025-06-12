@@ -30,6 +30,62 @@ class Marketing extends MY_Controller
 
     public function index()
     {
+        if (isMobile()) {
+            $this->_prepare_marketing_mobile();
+        } else {
+            $this->_prepare_marketing_desktop();
+        }
+    }
+
+    private function _prepare_marketing_mobile()
+    {
+        $head['title'] = 'Marketing';
+        $brand = $this->current_brand;
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
+        $content_options = [];
+        $start = $this->input->get('start', TRUE);
+        if (empty($start)) {
+            $start = str_replace('#','', $menu[0]['item_link']);
+        }
+        $active_label = '';
+        foreach ($menu as $row) {
+            if ($row['item_link']=='#searchestimeview') {
+                $content_options['searchestimeview'] = $this->_prepare_searchbytime_mobile($brand, $start);
+            } elseif ($row['item_link']=='#searcheswordview') {
+                $content_options['searcheswordview'] = $this->_prepare_searchbywords_mobile($brand, $start);
+            } elseif ($row['item_link']=='#searchesipadrview') {
+                $content_options['searchesipadrview'] = $this->_prepare_searckipaddress_mobile($brand, $start);
+            } elseif ($row['item_link']=='#signupview') {
+                $content_options['signupview'] = $this->_prepare_signup_mobile($brand, $start);
+            } elseif ($row['item_link']=='#couponsview') {
+                $content_options['couponsview'] = $this->_prepare_couponsview_mobile($brand, $start);
+            } elseif ($row['item_link']=='#searchesview') {
+                $content_options['searchesview'] = $this->_prepare_search_mobile($brand, $start);
+            }
+        }
+        $options = [
+            'title' => $head['title'],
+            'user_id' => $this->USR_ID,
+            'user_name' => $this->USER_NAME,
+            'activelnk' => $this->pagelink,
+            // 'styles' => $head['styles'],
+            // 'scripts' => $head['scripts'],
+            'brand' => $brand,
+        ];
+        $dat = $this->template->prepare_modern_mobpagecontent($options);
+        $brandclass = ($brand=='SR' ? 'relievers' : ($brand=='SG' ? '' : 'stressballs'));
+        $content_options['menu_view'] = $this->load->view('mobile_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass ], TRUE);
+
+        $options = [
+            'submenu' => '',
+            'activelink' => '',
+        ];
+        $dat['content_view'] = $this->load->view('mobile_modern/welcome_view', $options, TRUE);
+        $this->load->view('mobile_modern/page_template_view', $dat);
+    }
+
+    private function _prepare_marketing_desktop()
+    {
         $head = [];
         $head['title'] = 'Marketing';
         $brand = $this->current_brand;
@@ -833,5 +889,59 @@ class Marketing extends MY_Controller
             'months' => $dates['months'],
         ];
         return $this->load->view('marketing/searches_view', $options,TRUE);
+    }
+
+    private function _prepare_searchbytime_mobile($brand, $start)
+    {
+        $options = [
+            'brand' => $brand,
+            'active' => ($start == 'searchestimeview' ? 1 : 0),
+        ];
+        return $this->load->view('marketing_mobile/search_time_view', $options,TRUE);
+    }
+
+    private function _prepare_searchbywords_mobile($brand, $start)
+    {
+        $options = [
+            'brand' => $brand,
+            'active' => ($start == 'searchestimeview' ? 1 : 0),
+        ];
+        return $this->load->view('marketing_mobile/search_keyword_view', $options,TRUE);
+    }
+
+    private function _prepare_searckipaddress_mobile($brand, $start)
+    {
+        $options = [
+            'brand' => $brand,
+            'active' => ($start == 'searchesipadrview' ? 1 : 0),
+        ];
+        return $this->load->view('marketing_mobile/search_ipaddress_view', $options,TRUE);
+    }
+
+    private function _prepare_signup_mobile($brand, $start)
+    {
+        $options = [
+            'brand' => $brand,
+            'active' => ($start == 'signupview' ? 1 : 0),
+        ];
+        return $this->load->view('marketing_mobile/signups_head_view', $options,TRUE);
+    }
+
+    private function _prepare_couponsview_mobile($brand, $start)
+    {
+        $options = [
+            'brand' => $brand,
+            'active' => ($start == 'couponsview' ? 1 : 0),
+        ];
+        return $this->load->view('marketing_mobile/coupons_view', $options,TRUE);
+    }
+
+    private function _prepare_search_mobile($brand, $start)
+    {
+        $options = [
+            'brand' => $brand,
+            'active' => ($start == 'searchesview' ? 1 : 0),
+        ];
+        return $this->load->view('marketing_mobile/searches_view', $options,TRUE);
     }
 }
