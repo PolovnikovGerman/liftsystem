@@ -156,7 +156,7 @@ a {
     position: absolute;
     top: 36px;
     width: auto;
-    right: 102px;
+    right: 85px;
 }
 #other-btns .card-body {
     background: #9b9b9b;
@@ -274,7 +274,7 @@ a {
 
 .maincontent {
     width: 100%;
-    margin-top: -1px;
+    margin-top: -2px;
 }
 .maincontent.stressballs {
     background: #3736fe;
