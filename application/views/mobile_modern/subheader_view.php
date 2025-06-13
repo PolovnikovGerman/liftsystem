@@ -2,12 +2,14 @@
     <div class="row">
         <div class="col-6 d-flex align-items-end pr-0">
             <div class="deptitemmenu">
-                <?php if (!empty($active_link)) : ?>
+                <?php if (!empty($activelnk)) : ?>
                 <div class="deptitem-active">
                     <div class="deptitem-icon">
-                        <img src="/img/mobile_modern/noun-delivery-black.svg">
+                        <?php if (!empty($active_icon)) : ?>
+                        <img src="<?=$active_icon?>">
+                        <?php endif; ?>
                     </div>
-                    <div class="deptitem-name"><?=$active_link?></div>
+                    <div class="deptitem-name"><?=$active_label?></div>
                 </div>
                 <?php endif; ?>
                 <div class="deptitem-dropdown dropdown">

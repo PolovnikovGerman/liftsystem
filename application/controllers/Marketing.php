@@ -74,13 +74,21 @@ class Marketing extends MY_Controller
         ];
         $dat = $this->template->prepare_modern_mobpagecontent($options);
         $brandclass = ($brand=='SR' ? 'relievers' : ($brand=='SG' ? '' : 'stressballs'));
-        $content_options['menu_view'] = $this->load->view('mobile_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass ], TRUE);
-
+        $menu_view = $this->load->view('mobile_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass ], TRUE);
+        $active_label = '';
+        foreach ($menu as $item) {
+            if (str_replace('#','',$item['item_link'])==$start) {
+                $active_label = $item['item_name'];
+            }
+        }
         $options = [
-            'submenu' => '',
-            'activelink' => '',
+            'submenu' => $menu_view,
+            'activelink' => $start,
+            'brandclass' => $brandclass,
+            'content_views' => $content_options,
+            'active_label' => $active_label,
         ];
-        $dat['content_view'] = $this->load->view('mobile_modern/welcome_view', $options, TRUE);
+        $dat['content_view'] = $this->load->view('marketing_mobile/page_view', $options, TRUE);
         $this->load->view('mobile_modern/page_template_view', $dat);
     }
 

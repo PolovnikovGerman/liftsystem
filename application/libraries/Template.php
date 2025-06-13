@@ -1245,18 +1245,56 @@ class Template
         ];
         $dat['header_view'] = $this->CI->load->view('mobile_modern/header_view', $topmenu_options, TRUE);
         $dat['brands_view'] = $this->CI->load->view('mobile_modern/brands_view', $topmenu_options, TRUE);
+        $permissions = $this->CI->menuitems_model->get_user_permissions($options['user_id'], $brand);
         $leftoptions = [
             'brand' => $brand,
             'activelnk'=>(isset($options['activelnk']) ? $options['activelnk'] : ''),
-            'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id'], $brand),
+            'permissions' => $permissions,
         ];
-
         $main_menu = $this->CI->load->view('mobile_modern/main_menu_view', $leftoptions, TRUE);
+        // Active Link
+        $active_label = $active_icon = '';
+        if (isset($options['activelnk']) && !empty($options['activelnk'])) {
+            foreach ($permissions as $permission) {
+                if ($permission['item_link']==$options['activelnk']) {
+                    $active_label = $permission['item_name'];
+                    $active_icon = $this->_mobile_icon($options['activelnk']);
+                    break;
+                }
+            }
+
+        }
         $suboptions = [
             'main_menu' => $main_menu,
             'activelnk'=>(isset($options['activelnk']) ? $options['activelnk'] : ''),
+            'active_label' => $active_label,
+            'active_icon' => $active_icon,
         ];
         $dat['subheader_view'] = $this->CI->load->view('mobile_modern/subheader_view', $suboptions, TRUE);
         return $dat;
+    }
+
+    private function _mobile_icon($link, $brand='SB') {
+        $icon = '';
+        if ($link=='/marketing') {
+            $icon = '/img/page_view/noun-megaphone-black.svg';
+        } elseif ($link=='/leads') {
+            $icon = '/img/page_view/noun-filter-black2.svg';
+        } elseif ($link == '/orders') {
+            $icon = '/img/page_view/noun-tick-black.svg';
+        } elseif ($link=='/art') {
+            $icon = '/img/page_view/noun-palette-black.svg';
+        } elseif ($link=='/fulfillment') {
+            $icon = '/img/page_view/noun-delivery-black.svg';
+        } elseif ($link=='/accounting') {
+            $icon = '/img/page_view/icon-calculate-black2.svg';
+        } elseif ($link=='/analytics') {
+            $icon = '/img/page_view/chart-line.svg';
+        } elseif ($link=='/database') {
+            $icon = '/img/page_view/noun-list-black.svg';
+        } elseif ($link=='/projects') {
+            $icon = '/img/page_view/icon-projects-black.svg';
+        }
+        return $icon;
     }
 }
