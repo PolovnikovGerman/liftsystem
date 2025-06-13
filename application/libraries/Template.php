@@ -1004,4 +1004,310 @@ class Template
         $dat['head'] = $this->CI->load->view('duplcate_orders/head_view', $head_options, TRUE);
         return $dat;
     }
+
+    public function prepare_mobpagecontent($options=[])
+    {
+        $dat = [];
+        $this->CI->load->model('dashboard_model');
+        $this->CI->load->model('menuitems_model');
+        $this->CI->load->model('user_model');
+        $total_view = '';
+        $userchk = $this->CI->user_model->current_user();
+        if ($userchk['result']==1) {
+            $userdat = $userchk['data'];
+            if ($userdat['user_logged_in']=='masteradmin') {
+                $total_options = $this->CI->dashboard_model->get_totals('week');
+                $total_view = $this->CI->load->view('page_mobile/dashboard_total_view', $total_options, TRUE);
+            }
+        }
+        $brands = $this->CI->menuitems_model->get_userbrands($userdat['id']);
+        $styles=[];
+        if (isset($options['styles'])) {
+            $styles=$options['styles'];
+        }
+        if ($this->CI->config->item('test_server')) {
+            $styles[]=array('style'=>'/css/page_view/testsite_view.css');
+        }
+        $scripts=[];
+        if (isset($options['scripts'])) {
+            $scripts=$options['scripts'];
+        }
+        $brand  = $this->CI->menuitems_model->get_current_brand();
+        // Build left menu
+        // Mobile menu
+        $mobpermissions = $this->CI->menuitems_model->get_user_mobpermissions($options['user_id']);
+        // Admin and Alerts
+        $admin_permission = 0;
+        $adminchk = $this->CI->menuitems_model->get_menuitem('/admin');
+        $admin_old = 1;
+        if ($adminchk['result']==$this->success_result) {
+            $admin_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $adminchk['menuitem']['menu_item_id']);
+            if ($admin_permissionchk['result']==$this->success_result && $admin_permissionchk['permission']>0) {
+                $admin_permission = 1;
+                $admin_old = $adminchk['menuitem']['newver'];
+            }
+        }
+        // Reports
+        $reports_permissions = 0;
+        $reports_old = 1;
+        $reportchk = $this->CI->menuitems_model->get_menuitem('/analytics',0, $brand);
+
+        if ($reportchk['result']==$this->success_result) {
+            $report_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $reportchk['menuitem']['menu_item_id']);
+            if ($report_permissionchk['result']==$this->success_result && $report_permissionchk['permission']>0) {
+                $reports_permissions = 1;
+                $reports_old = $reportchk['menuitem']['newver'];
+            }
+        }
+        // Resources
+        $resource_permissions = 0;
+        $resource_old = 1;
+        $resourcechk = $this->CI->menuitems_model->get_menuitem('/resources',0, $brand);
+
+        if ($resourcechk['result']==$this->success_result) {
+            $resource_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $resourcechk['menuitem']['menu_item_id']);
+            if ($resource_permissionchk['result']==$this->success_result && $resource_permissionchk['permission']>0) {
+                $resource_permissions = 1;
+                $resource_old = $resourcechk['menuitem']['newver'];
+            }
+        }
+
+        // Inventory
+        $inventory_permissions = 0;
+        $inventory_old = 1;
+        $inventorychk = $this->CI->menuitems_model->get_menuitem('#printshopinventview',0, $brand);
+        if ($inventorychk['result']==$this->success_result) {
+            $inventorypermischk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $inventorychk['menuitem']['menu_item_id']);
+            if ($inventorypermischk['result']==$this->success_result && $inventorypermischk['permission']>0) {
+                $inventory_old = $inventorychk['menuitem']['newver'];
+                $inventory_permissions = 1;
+            }
+        }
+        $pagetitle = (isset($options['title']) ? '::'.$options['title'] : '');
+        $gmaps = 0;
+        if (!empty($this->CI->config->item('google_map_key'))) {
+            $gmaps = ifset($options, 'gmaps', 0);
+        }
+
+        $head_options=[
+            'styles'=>$styles,
+            'scripts'=>$scripts,
+            'title' => ($this->CI->config->item('system_name').$pagetitle),
+            'gmaps' => $gmaps,
+            'googlefont' => ifset($options,'googlefont', 0),
+        ];
+        $head_options['menu'] = $mobpermissions;
+        $head_options['activelnk'] = (isset($options['activelnk']) ? $options['activelnk'] : '');
+        $dat['head_view'] = $this->CI->load->view('page_mobile/head_view', $head_options, TRUE);
+        $topmenu_options = [
+            'user_name' => $userdat['first_name'],
+            'activelnk' => (isset($options['activelnk']) ? $options['activelnk'] : ''),
+            'total_view' => $total_view,
+            // 'menu_view' => $menu_view,
+            'adminchk' => $admin_permission,
+            'adminold' => $admin_old,
+            'reportchk' => $reports_permissions,
+            'reportsold' => $reports_old,
+            'resourcechk' => $resource_permissions,
+            'resourceold' => $resource_old,
+            'inventorychk' => $inventory_permissions,
+            'inventoryold' => $inventory_old,
+            'test_server' => $this->CI->config->item('test_server'),
+            'brand' => $brand,
+            'brands' => $brands,
+            'usrrole' => $userdat['user_logged_in'],
+            // 'debtpermiss' => $debt_permissions,
+            // 'debttotal' => $debt_total,
+        ];
+        $dat['header_view'] = $this->CI->load->view('page_mobile/header_view', $topmenu_options, TRUE);
+        $leftoptions = [
+            'brand' => $brand,
+            'activelnk'=>(isset($options['activelnk']) ? $options['activelnk'] : ''),
+            'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id'], $brand),
+        ];
+        $dat['left_menu'] = $this->CI->load->view('page_mobile/left_menu_view', $leftoptions, TRUE);
+
+        return $dat;
+    }
+
+    public function prepare_modern_mobpagecontent($options)
+    {
+        $dat = [];
+        $this->CI->load->model('dashboard_model');
+        $this->CI->load->model('menuitems_model');
+        $this->CI->load->model('user_model');
+        $total_view = '';
+        $userchk = $this->CI->user_model->current_user();
+        if ($userchk['result']==1) {
+            $userdat = $userchk['data'];
+            if ($userdat['user_logged_in']=='masteradmin') {
+                $total_options = $this->CI->dashboard_model->get_totals('week');
+                $total_view = $this->CI->load->view('mobile_modern/dashboard_total_view', $total_options, TRUE);
+            }
+        }
+        $brands = $this->CI->menuitems_model->get_userbrands($userdat['id']);
+        $styles=[];
+        if (isset($options['styles'])) {
+            $styles=$options['styles'];
+        }
+        if ($this->CI->config->item('test_server')) {
+            $styles[]=array('style'=>'/css/page_view/testsite_view.css');
+        }
+        $scripts=[];
+        if (isset($options['scripts'])) {
+            $scripts=$options['scripts'];
+        }
+        $brand  = $this->CI->menuitems_model->get_current_brand();
+        // Build left menu
+        // Mobile menu
+        $mobpermissions = $this->CI->menuitems_model->get_user_mobpermissions($options['user_id']);
+        // Admin and Alerts
+        $admin_permission = 0;
+        $adminchk = $this->CI->menuitems_model->get_menuitem('/admin');
+        $admin_old = 1;
+        if ($adminchk['result']==$this->success_result) {
+            $admin_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $adminchk['menuitem']['menu_item_id']);
+            if ($admin_permissionchk['result']==$this->success_result && $admin_permissionchk['permission']>0) {
+                $admin_permission = 1;
+                $admin_old = $adminchk['menuitem']['newver'];
+            }
+        }
+        // Reports
+        $reports_permissions = 0;
+        $reports_old = 1;
+        $reportchk = $this->CI->menuitems_model->get_menuitem('/analytics',0, $brand);
+
+        if ($reportchk['result']==$this->success_result) {
+            $report_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $reportchk['menuitem']['menu_item_id']);
+            if ($report_permissionchk['result']==$this->success_result && $report_permissionchk['permission']>0) {
+                $reports_permissions = 1;
+                $reports_old = $reportchk['menuitem']['newver'];
+            }
+        }
+        // Resources
+        $resource_permissions = 0;
+        $resource_old = 1;
+        $resourcechk = $this->CI->menuitems_model->get_menuitem('/resources',0, $brand);
+
+        if ($resourcechk['result']==$this->success_result) {
+            $resource_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $resourcechk['menuitem']['menu_item_id']);
+            if ($resource_permissionchk['result']==$this->success_result && $resource_permissionchk['permission']>0) {
+                $resource_permissions = 1;
+                $resource_old = $resourcechk['menuitem']['newver'];
+            }
+        }
+
+        // Inventory
+        $inventory_permissions = 0;
+        $inventory_old = 1;
+        $inventorychk = $this->CI->menuitems_model->get_menuitem('#printshopinventview',0, $brand);
+        if ($inventorychk['result']==$this->success_result) {
+            $inventorypermischk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $inventorychk['menuitem']['menu_item_id']);
+            if ($inventorypermischk['result']==$this->success_result && $inventorypermischk['permission']>0) {
+                $inventory_old = $inventorychk['menuitem']['newver'];
+                $inventory_permissions = 1;
+            }
+        }
+        // Debt
+        $debt_permissions = 0;
+        $debt_total = 0;
+        $debtviewchk = $this->CI->menuitems_model->get_menuitem('#accreceiv',0, $brand);
+        if ($debtviewchk['result']==$this->success_result) {
+            $debtpermischk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $debtviewchk['menuitem']['menu_item_id']);
+            if ($debtpermischk['result']==$this->success_result && $debtpermischk['permission']>0) {
+                $debt_permissions = 1;
+                $this->CI->load->model('dashboard_model');
+                $debt_total = $this->CI->dashboard_model->get_debt_totals();
+            }
+        }
+
+        $pagetitle = (isset($options['title']) ? '::'.$options['title'] : '');
+        $gmaps = 0;
+        if (!empty($this->CI->config->item('google_map_key'))) {
+            $gmaps = ifset($options, 'gmaps', 0);
+        }
+
+        $head_options=[
+            'styles'=>$styles,
+            'scripts'=>$scripts,
+            'title' => ($this->CI->config->item('system_name').$pagetitle),
+            'gmaps' => $gmaps,
+            'googlefont' => ifset($options,'googlefont', 0),
+        ];
+        $head_options['menu'] = $mobpermissions;
+        $head_options['activelnk'] = (isset($options['activelnk']) ? $options['activelnk'] : '');
+        $dat['head_view'] = $this->CI->load->view('mobile_modern/head_view', $head_options, TRUE);
+        $topmenu_options = [
+            'user_name' => $userdat['first_name'],
+            'activelnk' => (isset($options['activelnk']) ? $options['activelnk'] : ''),
+            'total_view' => $total_view,
+            'adminchk' => $admin_permission,
+            'adminold' => $admin_old,
+            'reportchk' => $reports_permissions,
+            'reportsold' => $reports_old,
+            'resourcechk' => $resource_permissions,
+            'resourceold' => $resource_old,
+            'inventorychk' => $inventory_permissions,
+            'inventoryold' => $inventory_old,
+            'test_server' => $this->CI->config->item('test_server'),
+            'brand' => $brand,
+            'brands' => $brands,
+            'usrrole' => $userdat['user_logged_in'],
+            'debt_permissions' => $debt_permissions,
+            'debt_total' => $debt_total,
+        ];
+        $dat['header_view'] = $this->CI->load->view('mobile_modern/header_view', $topmenu_options, TRUE);
+        $dat['brands_view'] = $this->CI->load->view('mobile_modern/brands_view', $topmenu_options, TRUE);
+        $permissions = $this->CI->menuitems_model->get_user_permissions($options['user_id'], $brand);
+        $leftoptions = [
+            'brand' => $brand,
+            'activelnk'=>(isset($options['activelnk']) ? $options['activelnk'] : ''),
+            'permissions' => $permissions,
+        ];
+        $main_menu = $this->CI->load->view('mobile_modern/main_menu_view', $leftoptions, TRUE);
+        // Active Link
+        $active_label = $active_icon = '';
+        if (isset($options['activelnk']) && !empty($options['activelnk'])) {
+            foreach ($permissions as $permission) {
+                if ($permission['item_link']==$options['activelnk']) {
+                    $active_label = $permission['item_name'];
+                    $active_icon = $this->_mobile_icon($options['activelnk']);
+                    break;
+                }
+            }
+
+        }
+        $suboptions = [
+            'main_menu' => $main_menu,
+            'activelnk'=>(isset($options['activelnk']) ? $options['activelnk'] : ''),
+            'active_label' => $active_label,
+            'active_icon' => $active_icon,
+        ];
+        $dat['subheader_view'] = $this->CI->load->view('mobile_modern/subheader_view', $suboptions, TRUE);
+        return $dat;
+    }
+
+    private function _mobile_icon($link, $brand='SB') {
+        $icon = '';
+        if ($link=='/marketing') {
+            $icon = '/img/page_view/noun-megaphone-black.svg';
+        } elseif ($link=='/leads') {
+            $icon = '/img/page_view/noun-filter-black2.svg';
+        } elseif ($link == '/orders') {
+            $icon = '/img/page_view/noun-tick-black.svg';
+        } elseif ($link=='/art') {
+            $icon = '/img/page_view/noun-palette-black.svg';
+        } elseif ($link=='/fulfillment') {
+            $icon = '/img/page_view/noun-delivery-black.svg';
+        } elseif ($link=='/accounting') {
+            $icon = '/img/page_view/icon-calculate-black2.svg';
+        } elseif ($link=='/analytics') {
+            $icon = '/img/page_view/chart-line.svg';
+        } elseif ($link=='/database') {
+            $icon = '/img/page_view/noun-list-black.svg';
+        } elseif ($link=='/projects') {
+            $icon = '/img/page_view/icon-projects-black.svg';
+        }
+        return $icon;
+    }
 }
