@@ -84,7 +84,6 @@
             <div class="lead_listdata_head">
                 <div class="leadnumber">Lead #</div>
                 <div class="leaddate">Date</div>
-                <div class="leadvalue">Value</div>
                 <div class="leadcustomer">Customer</div>
                 <div class="leadqty">QTY</div>
                 <div class="leaditem">Item</div>
