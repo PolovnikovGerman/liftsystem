@@ -36,6 +36,15 @@ class Accounting extends MY_Controller
 
     public function index()
     {
+        if (isMobile()) {
+            $this->_prepare_accounting_mobile();
+        } else {
+            $this->_prepare_accounting_desktop();
+        }
+    }
+
+    private function _prepare_accounting_desktop()
+    {
         $head = [];
         $head['title'] = 'Accounting';
         $brand = $this->current_brand;
@@ -136,6 +145,67 @@ class Accounting extends MY_Controller
         $dat['content_view'] = $content_view;
         $dat['modal_view'] = $this->load->view('accounting/modal_view',[], TRUE);
         $this->load->view('page_modern/page_template_view', $dat);
+    }
+
+    private function _prepare_accounting_mobile()
+    {
+        $head['title'] = 'Accounting';
+        $brand = $this->current_brand;
+        $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
+        $content_options = [];
+        $start = $this->input->get('start', TRUE);
+        if (empty($start)) {
+            $start = str_replace('#','', $menu[0]['item_link']);
+        }
+        foreach ($menu as $row) {
+            if ($row['item_link']=='#profitordesview') {
+                $content_options['profitordesview'] = $this->_prepare_orderprofit_mobile($brand, $start);
+            } elseif ($row['item_link']=='#profitdatesview') {
+                $content_options['profitdatesview'] = $this->_prepare_profitcalend_mobile($brand, $start);
+            } elseif ($row['item_link']=='#purchaseordersview') {
+                $content_options['purchaseordersview'] = $this->_prepare_purchaseorders_mobile($brand, $start);
+            } elseif ($row['item_link']=='#openinvoicesview') {
+                $content_options['openinvoicesview'] = $this->_prepare_openinvoice_mobile($brand, $start);
+            } elseif ($row['item_link']=='#financebatchesview') {
+                $content_options['financebatchesview'] = $this->_prepare_batches_mobile($brand, $start);
+            } elseif ($row['item_link']=='#netprofitview') {
+                $content_options['netprofitview'] = $this->_prepare_netprofit_mobile($brand, $start);
+            } elseif ($row['item_link']=='#ownertaxesview') {
+                $content_options['ownertaxesview'] = $this->_prepare_ownerstaxes_mobile($brand, $start);
+            } elseif ($row['item_link']=='#expensesview') {
+                $content_options['expensesview'] = $this->_prepare_expensives_mobile($brand, $start);
+            } elseif ($row['item_link']=='#accreceiv') {
+                $content_options['accreceivview'] = $this->_prepare_accreceiv_mobile($brand, $start);
+            }
+        }
+        $options = [
+            'title' => $head['title'],
+            'user_id' => $this->USR_ID,
+            'user_name' => $this->USER_NAME,
+            'activelnk' => $this->pagelink,
+            // 'styles' => $head['styles'],
+            // 'scripts' => $head['scripts'],
+            'brand' => $brand,
+        ];
+        $dat = $this->template->prepare_modern_mobpagecontent($options);
+        $brandclass = ($brand=='SR' ? 'relievers' : ($brand=='SG' ? '' : 'stressballs'));
+        $menu_view = $this->load->view('mobile_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass ], TRUE);
+        $active_label = '';
+        foreach ($menu as $item) {
+            if (str_replace('#','',$item['item_link'])==$start) {
+                $active_label = $item['item_name'];
+            }
+        }
+        $options = [
+            'submenu' => $menu_view,
+            'activelink' => $start,
+            'brandclass' => $brandclass,
+            'content_views' => $content_options,
+            'active_label' => $active_label,
+        ];
+        $dat['content_view'] = $this->load->view('accounting_mobile/page_view', $options, TRUE);
+        $this->load->view('mobile_modern/page_template_view', $dat);
+
     }
 
     /* Calculate qty of Orders */
@@ -3768,6 +3838,87 @@ class Accounting extends MY_Controller
             'brand' => $brand,
         ];
         return $this->load->view('accreceiv/page_view',$options, TRUE);
+    }
+
+    private function _prepare_orderprofit_mobile($brand, $start)
+    {
+        $options = [
+            'brand' => $brand,
+            'active' => ($start == 'profitordesview' ? 1 : 0),
+        ];
+        return $this->load->view('orderprofit_mobile/page_view', $options, TRUE);
+    }
+
+    private function _prepare_profitcalend_mobile($brand, $start)
+    {
+        $options = [
+            'brand' => $brand,
+            'active' => ($start == 'profitdatesview' ? 1 : 0),
+        ];
+        return $this->load->view('profitcalendar_mobile/page_view', $options, TRUE);
+    }
+
+    private function _prepare_purchaseorders_mobile($brand, $start)
+    {
+        $options = [
+            'brand' => $brand,
+            'active' => ($start == 'purchaseordersview' ? 1 : 0),
+        ];
+        return $this->load->view('pototals_mobile/page_view',$options, TRUE);
+    }
+
+    private function _prepare_openinvoice_mobile($brand, $start)
+    {
+        $options = [
+            'brand' => $brand,
+            'active' => ($start == 'openinvoicesview' ? 1 : 0),
+        ];
+        return $this->load->view('openivoice_mobile/page_view',$options, TRUE);
+    }
+
+    private function _prepare_batches_mobile($brand, $start)
+    {
+        $options = [
+            'brand' => $brand,
+            'active' => ($start == 'financebatchesview' ? 1 : 0),
+        ];
+        return $this->load->view('batch_mobile/page_view',$options, TRUE);
+    }
+
+    private function _prepare_netprofit_mobile($brand, $start)
+    {
+        $options = [
+            'brand' => $brand,
+            'active' => ($start == 'netprofitview' ? 1 : 0),
+        ];
+        return $this->load->view('netprofit_mobile/page_view',$options, TRUE);
+    }
+
+    private function _prepare_ownerstaxes_mobile($brand, $start)
+    {
+        $options = [
+            'brand' => $brand,
+            'active' => ($start == 'ownertaxesview' ? 1 : 0),
+        ];
+        return $this->load->view('ownertaxes_mobile/page_view',$options, TRUE);
+    }
+
+    private function _prepare_expensives_mobile($brand, $start)
+    {
+        $options = [
+            'brand' => $brand,
+            'active' => ($start == 'expensesview' ? 1 : 0),
+        ];
+        return $this->load->view('expensives_mobile/page_view', $options, TRUE);
+    }
+
+    private function _prepare_accreceiv_mobile($brand, $start)
+    {
+        $options = [
+            'brand' => $brand,
+            'active' => ($start == 'accreceiv' ? 1 : 0),
+        ];
+        return $this->load->view('accreceiv_mobile/page_view',$options, TRUE);
     }
 
 }
