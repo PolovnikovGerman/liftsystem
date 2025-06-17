@@ -6,6 +6,7 @@ Class Leads_model extends MY_Model
     private $INIT_ERRMSG = 'Unknown error. Try later';
     private $init_number = 10000;
     private $init_lead_type = 2;
+    private $empty_content = '&nbsp;';
 
     function __construct()
     {
@@ -121,128 +122,97 @@ Class Leads_model extends MY_Model
         }
         $this->db->limit($limit,$offset);
         $result=$this->db->get()->result_array();
-        $out=array();
-        $cur_date='';
-        $fl_show=0;
-        $numpp=0;
-
-        foreach ($result as $row) {
+        $out = $this->_prepare_leads_view($result, $sort, $options['brand']);
+// Old Version
+//        $out=[];
+//        $cur_date='';
+//        $fl_show=0;
+//        $numpp=0;
+//
+//        foreach ($result as $row) {
 //            if ($sort==1) {
-//                $weekday=date('w',strtotime($row['update_date']));
-//                $compdat=date('m/d',strtotime($row['update_date']));
+//                $compdate = date('D - M j',strtotime($row['update_date']));
 //            } else {
-//                $weekday=date('w',$row['lead_date']);
-//                $compdat=date('m/d',$row['lead_date']);
+//                $compdate = date('D - M j', $row['lead_date']);
 //            }
-//            switch ($weekday) {
-//                case '0':
-//                    $compdate='Su '.$compdat;
+//            $row['out_date']='---';
+//            $row['dateclass']='';
+//            $row['separate']='';
+//            if ($cur_date!=$compdate) {
+//                $cur_date=$compdate;
+//                $row['out_date']=$compdate;
+//                $row['dateclass']='leadnewdat';
+//                if ($numpp>0) {
+//                    $row['separate']='separate';
+//                }
+//            }
+//            $row['itemshow_class']='normal';
+//            if ($row['lead_item_id']==-3) {
+//                $row['itemshow_class']='custom';
+//            }
+//            $row['lead_priority_icon']='&nbsp;';
+//            if ($row['lead_type']==1) {
+//                $row['lead_priority_icon']='<img src="/img/leads/goldstar.png" alt="Priority"/>';
+//            } elseif($row['lead_type']==6) {
+//                $row['lead_priority_icon']='<img src="/img/leads/ordersoon.gif" alt="Soon"/>';
+//            }
+//            $row['out_value']=(floatval($row['lead_value'])==0 ? '?' : round($row['lead_value']*$this->config->item('leadpts'),0).'pts');
+//            $row['contact']=($row['lead_company']=='' ? ($row['lead_customer']=='' ? $row['lead_mail'] : $row['lead_customer']) : $row['lead_company']);
+//            if (empty($row['contact'])) {
+//                $row['contact']='&nbsp;';
+//            }
+//            $row['contact']=($row['contact']=='' ? '&nbsp;' : $row['contact']);
+//            $row['lead_needby']=($row['lead_needby']=='' ? '&nbsp;' : $row['lead_needby']);
+//            $row['lead_customer']=($row['lead_customer']=='' ? '&nbsp;' : $row['lead_customer']);
+//            $row['lead_itemqty']=($row['lead_itemqty']=='' ? '&nbsp;' : $row['lead_itemqty']);
+//            switch ($row['lead_item']) {
+//                case '':
+//                    $row['out_lead_item']='&nbsp;';
 //                    break;
-//                case '1':
-//                    $compdate='Md '.$compdat;
-//                    break;
-//                case '2':
-//                    $compdate='Tu '.$compdat;
-//                    break;
-//                case '3':
-//                    $compdate='Wd '.$compdat;
-//                    break;
-//                case '4':
-//                    $compdate='Th '.$compdat;
-//                    break;
-//                case '5':
-//                    $compdate='Fr '.$compdat;
-//                    break;
-//                case '6':
-//                    $compdate='St '.$compdat;
+//                case 'Other':
+//                case 'Multiple':
+//                case 'Custom Shaped Stress Balls':
+//                    if ($row['other_item_name']=='') {
+//                        $row['out_lead_item']=$row['lead_item'];
+//                    } else {
+//                        $row['out_lead_item']=$row['other_item_name'];
+//                    }
 //                    break;
 //                default :
-//                    $compdate=$compdat;
+//                    $row['out_lead_item']=$row['lead_item'];
+//                    break;
+//
+//            }
+//            $row['lead_item']=($row['lead_item']=='' ? '&nbsp;' : $row['lead_item']);
+//            $row['lead_needby']=($row['lead_needby']=='' ? '&nbsp;' : $row['lead_needby']);
+//            $row['leadrow_class']='';
+//            switch ($row['lead_type']) {
+//                case '3':
+//                    $row['leadrow_class']='dead';
+//                    break;
+//                case '4':
+//                    $row['leadrow_class']='closed';
 //                    break;
 //            }
-            if ($sort==1) {
-                $compdate = date('D - M j',strtotime($row['update_date']));
-            } else {
-                $compdate = date('D - M j', $row['lead_date']);
-            }
-            $row['out_date']='---';
-            $row['dateclass']='';
-            $row['separate']='';
-            if ($cur_date!=$compdate) {
-                $cur_date=$compdate;
-                $row['out_date']=$compdate;
-                $row['dateclass']='leadnewdat';
-                if ($numpp>0) {
-                    $row['separate']='separate';
-                }
-            }
-            $row['itemshow_class']='normal';
-            if ($row['lead_item_id']==-3) {
-                $row['itemshow_class']='custom';
-            }
-            $row['lead_priority_icon']='&nbsp;';
-            if ($row['lead_type']==1) {
-                $row['lead_priority_icon']='<img src="/img/leads/goldstar.png" alt="Priority"/>';
-            } elseif($row['lead_type']==6) {
-                $row['lead_priority_icon']='<img src="/img/leads/ordersoon.gif" alt="Soon"/>';
-            }
-            $row['out_value']=(floatval($row['lead_value'])==0 ? '?' : round($row['lead_value']*$this->config->item('leadpts'),0).'pts');
-            $row['contact']=($row['lead_company']=='' ? ($row['lead_customer']=='' ? $row['lead_mail'] : $row['lead_customer']) : $row['lead_company']);
-            if (empty($row['contact'])) {
-                $row['contact']='&nbsp;';
-            }
-            $row['contact']=($row['contact']=='' ? '&nbsp;' : $row['contact']);
-            $row['lead_needby']=($row['lead_needby']=='' ? '&nbsp;' : $row['lead_needby']);
-            $row['lead_customer']=($row['lead_customer']=='' ? '&nbsp;' : $row['lead_customer']);
-            $row['lead_itemqty']=($row['lead_itemqty']=='' ? '&nbsp;' : $row['lead_itemqty']);
-            switch ($row['lead_item']) {
-                case '':
-                    $row['out_lead_item']='&nbsp;';
-                    break;
-                case 'Other':
-                case 'Multiple':
-                case 'Custom Shaped Stress Balls':
-                    if ($row['other_item_name']=='') {
-                        $row['out_lead_item']=$row['lead_item'];
-                    } else {
-                        $row['out_lead_item']=$row['other_item_name'];
-                    }
-                    break;
-                default :
-                    $row['out_lead_item']=$row['lead_item'];
-                    break;
-
-            }
-            $row['lead_item']=($row['lead_item']=='' ? '&nbsp;' : $row['lead_item']);
-            $row['lead_needby']=($row['lead_needby']=='' ? '&nbsp;' : $row['lead_needby']);
-            $row['leadrow_class']='';
-            switch ($row['lead_type']) {
-                case '3':
-                    $row['leadrow_class']='dead';
-                    break;
-                case '4':
-                    $row['leadrow_class']='closed';
-                    break;
-            }
-            $this->db->select('u.user_initials');
-            $this->db->from('users u');
-            $this->db->join('ts_lead_users lu','lu.user_id=u.user_id');
-            $this->db->where('lu.lead_id',$row['lead_id']);
-            $usr=$this->db->get()->result_array();
-            $lusr='';
-            $nusr=0;
-            foreach ($usr as $urow) {
-                if ($nusr==2) {
-                    $lusr=substr($lusr,0,-1).'+';
-                    break;
-                }
-                $lusr.=$urow['user_initials'].' ';
-                $nusr++;
-            }
-            $row['usr_data']=($lusr=='' ? '&nbsp;' : $lusr);
-            $out[]=$row;
-            $numpp++;
-        }
+//            $this->db->select('u.user_initials');
+//            $this->db->from('users u');
+//            $this->db->join('ts_lead_users lu','lu.user_id=u.user_id');
+//            $this->db->where('lu.lead_id',$row['lead_id']);
+//            $usr=$this->db->get()->result_array();
+//            $lusr='';
+//            $nusr=0;
+//            foreach ($usr as $urow) {
+//                if ($nusr==2) {
+//                    $lusr=substr($lusr,0,-1).'+';
+//                    break;
+//                }
+//                $lusr.=$urow['user_initials'].' ';
+//                $nusr++;
+//            }
+//            $row['usr_data']=($lusr=='' ? '&nbsp;' : $lusr);
+//            $out[]=$row;
+//            $numpp++;
+//        }
         return $out;
     }
 
@@ -2418,6 +2388,92 @@ Class Leads_model extends MY_Model
                 'id' => $lead['lead_id'],
                 'value' => $leadval,
             ];
+        }
+        return $out;
+    }
+
+    private function _prepare_leads_view($leads, $sort, $brand)
+    {
+        $out=[];
+        $cur_date='';
+        $fl_show=0;
+        $numpp=0;
+        foreach ($leads as $lead) {
+            $row = [];
+            if ($sort==1) {
+                $compdate = date('D - M j',strtotime($lead['update_date']));
+            } else {
+                $compdate = date('D - M j', $lead['lead_date']);
+            }
+            if ($compdate != $cur_date) {
+                $row['dateclass'] = 'outdate';
+                $row['date'] = $compdate;
+                $out[] = $row;
+                $cur_date = $compdate;
+            }
+            $row['dateclass'] = '';
+            $row['leadnum'] = ($brand=='SR' ? 'D' : 'L').str_pad($lead['lead_number'],5,'0',STR_PAD_LEFT);
+            $row['itemshow_class']='normal';
+            if ($lead['lead_item_id']==-3) {
+                $row['itemshow_class']='custom';
+            }
+            $row['lead_priority'] = 0;
+            if ($lead['lead_type']==1 || $lead['lead_type']==6) {
+                $row['lead_priority']=1;
+            }
+
+            $row['contact']=($lead['lead_company']=='' ? ($lead['lead_customer']=='' ? $lead['lead_mail'] : $lead['lead_customer']) : $lead['lead_company']);
+            if (empty($row['contact'])) {
+                $row['contact']=$this->empty_content;
+            }
+            $row['lead_itemqty']=($lead['lead_itemqty']=='' ? '&nbsp;' : $lead['lead_itemqty']);
+            switch ($lead['lead_item']) {
+                case '':
+                    $row['out_lead_item']=$this->empty_content;
+                    break;
+                case 'Other':
+                case 'Multiple':
+                case 'Custom Shaped Stress Balls':
+                    if ($lead['other_item_name']=='') {
+                        $row['out_lead_item']=$lead['lead_item'];
+                    } else {
+                        $row['out_lead_item']=$lead['other_item_name'];
+                    }
+                    break;
+                default :
+                    $row['out_lead_item']=$lead['lead_item'];
+                    break;
+            }
+            $row['leadrow_class']='';
+            switch ($lead['lead_type']) {
+                case '3':
+                    $row['leadrow_class']='dead';
+                    break;
+                case '4':
+                    $row['leadrow_class']='closed';
+                    break;
+            }
+            // Replicas
+            $this->db->select('u.user_initials');
+            $this->db->from('users u');
+            $this->db->join('ts_lead_users lu','lu.user_id=u.user_id');
+            $this->db->where('lu.lead_id',$lead['lead_id']);
+            $usr=$this->db->get()->result_array();
+            $row['usr_data'] = $this->empty_content;
+            $row['usrpopupus'] = '';
+            if (count($usr)>0) {
+                if (count($usr)==1) {
+                    $row['usr_data'] = $usr[0]['user_initials'];
+                } else {
+                    $row['usr_data'] = count($usr);
+                    $lusr='';
+                    foreach ($usr as $urow) {
+                        $lusr.=$urow['user_initials'].' ';
+                    }
+                    $row['usrpopupus'] = $lusr;
+                }
+            }
+            $out[]=$row;
         }
         return $out;
     }

@@ -68,8 +68,8 @@ class Leads extends My_Controller {
         $newcustomforms = 0;
         foreach ($menu as $row) {
             if ($row['item_link'] == '#leadsview') {
-                $head['styles'][]=array('style'=>'/css/leads/leadsview.css');
-                $head['scripts'][]=array('src'=>'/js/leads/leadsview.js');
+                $head['styles'][]=array('style'=>'/css/leads/leadsview_new.css');
+                $head['scripts'][]=array('src'=>'/js/leads/leadsview_new.js');
                 // $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
                 $content_options['leadsview'] = $this->_prepare_leadsview($brand); // $brand, $top_menu
                 if (!empty($this->config->item('google_map_key'))) {
@@ -183,6 +183,53 @@ class Leads extends My_Controller {
         $this->load->view('page_modern/page_template_view', $dat);
     }
 
+    public function leadview_data()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $pagenum=ifset($postdata, 'offset',0);
+                $limit=ifset($postdata, 'limit', 250);
+                $offset=$pagenum*$limit;
+                $options=[
+                    'brand' => $brand,
+                ];
+                $search=ifset($postdata,'search');
+                if (!empty($search)) {
+                    $options['search']=$search;
+                }
+                $usrrepl=ifset($postdata, 'usrrepl');
+                if (!empty($usrrepl)) {
+                    $options['usrrepl']=$usrrepl;
+                }
+                $leadtype=ifset($postdata, 'leadtype');
+                if (!empty($leadtype)) {
+                    $options['lead_type']=$leadtype;
+                }
+                // Temporary - by update time
+                $sort = 1;
+                $this->load->model('leads_model');
+                $leaddat=$this->leads_model->get_leads($options,$sort,$limit,$offset);
+
+                if (count($leaddat)==0) {
+                    $mdata['leadcontent']=$this->load->view('leads/leads_emptydata_view',array(),TRUE);
+                } else {
+                    $options=array(
+                        'leads'=>$leaddat,
+                        'brand' => $brand,
+                    );
+                    $mdata['content']=$this->load->view('leadsview/leads_data_view',$options, TRUE);
+                }
+                $this->ajaxResponse($mdata,$error);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
     public function leadpage_data() {
         if ($this->isAjax()) {
             $mdata=array();
@@ -1558,26 +1605,10 @@ class Leads extends My_Controller {
         $this->ajaxResponse($mdata, $error);
     }
 
-    private function _prepare_leadsview($brand) {
-        $ldat=array();
+    private function _prepare_leadsview_old($brand)
+    {
+        $ldat = [];
         $this->load->model('leads_model');
-        /* Prepare Right part */
-        $rdat=array();
-        $date=date('Y-m').'-01';
-        $dateend = strtotime(date("Y-m-d", strtotime($date)) . " +1 month");
-        $total_options=array(
-            'enddate'=>$dateend,
-            'user_id'=>$this->USR_ID,
-            'brand' => $brand,
-        );
-        $rdattop=$this->leads_model->count_closed_totals($total_options);
-        $rdat['prev']=$rdattop['prev'];
-        $rdat['next']=$rdattop['next'];
-        $rdat['data']=$rdattop['data'];
-        $rdat['dateend']=$dateend;
-        $rdat['datestart']=$rdattop['datestart'];
-        $ldat['right_content']=$this->load->view('leads/leads_closetotal_view', $rdat, TRUE);
-
         /* Get user with reps */
         $active = 0;
         $ldat['replicas']=$this->user_model->get_user_leadreplicas($active);
@@ -1595,11 +1626,32 @@ class Leads extends My_Controller {
         $ldat['totalrec']=$this->leads_model->get_total_leads($options);
         $ldat['perpage']=$this->config->item('leads_perpage');
         $ldat['curpage']=0;
-        $this->load->model('orders_model');
-        $ldat['totalorders']=$this->orders_model->orders_total_year(date('Y'));
         $ldat['brand'] = $brand;
         // $ldat['top_menu'] = $top_menu;
-        $content=$this->load->view('leads/leadtab_view',$ldat,TRUE);
+        $content=$this->load->view('leadsview/leadtab_view',$ldat,TRUE);
+        return $content;
+    }
+
+    private function _prepare_leadsview($brand) {
+        $ldat = [];
+        $this->load->model('leads_model');
+        $active = 0;
+        $ldat['replicas']=$this->user_model->get_user_leadreplicas($active);
+        $options=array(
+            'lead_type'=>1,
+            'usrrepl'=>  $this->USR_ID,
+            'brand' => $brand,
+        );
+        $ldat['totalrec']=$this->leads_model->get_total_leads($options);
+
+        $ldat['perpage']=$this->config->item('leads_perpage');
+        $ldat['curpage']=0;
+        $ldat['brand'] = $brand;
+        $ldat['user_id']=$this->USR_ID;
+        $ldat['user_role'] = $this->USR_ROLE;
+        $user_dat=$this->user_model->get_user_data($this->USR_ID);
+        $ldat['user_name']=($user_dat['user_leadname']=='' ? $this->USER_NAME : $user_dat['user_leadname']);
+        $content=$this->load->view('leadsview/page_view',$ldat,TRUE);
         return $content;
     }
 
