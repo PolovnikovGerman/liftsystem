@@ -4,6 +4,9 @@
 <input type="hidden" id="leadviewcurpage" value="<?=$curpage?>"/>
 <input type="hidden" id="leadviewuser" value="<?=$user_id?>"/>
 <input type="hidden" id="leadviewtotalrec" value="<?=$totalrec?>"/>
+<input type="hidden" id="leaddatasort" value="1"/>
+<input type="hidden" id="leadpriorsort" value="1"/>
+<input type="hidden" id="leadtasksort" value="1"/>
 <div class="leads_content">
     <div class="leads_headarea">
         <div class="leads_headrow">
@@ -41,7 +44,6 @@
                 <div class="leads_viewclosedfilter">
                     <div class="leads_viewclosedflag">
                         <i class="fa fa-square-o" aria-hidden="true"></i>
-                        <!-- <i class="fa fa-check-square-o" aria-hidden="true"></i> -->
                     </div>
                     <div class="leads_viewclosedlabel">View Closed & Dead</div>
                 </div>
@@ -49,13 +51,13 @@
         </div>
         <div class="leads_headrow">
             <div class="leads_left_partarea">
-                <div class="pagination" id="mainleadpagination"></div>
+                <div class="paginationview" id="mainleadpagination"></div>
             </div>
             <div class="leads_center_partarea">
-                <div class="pagination" id="priorityleadpagination"></div>
+                <div class="paginationview" id="priorityleadpagination"></div>
             </div>
             <div class="leads_right_partarea">
-                <div class="pagination" id="taskleadpagination"></div>
+                <div class="paginationview" id="taskleadpagination"></div>
             </div>
         </div>
         <div class="leads_headrow">
@@ -85,6 +87,60 @@
                     <div class="leadrepl_head">Rep</div>
                 </div>
                 <div class="leaddataarea leads" id="leadslistdata"></div>
+            </div>
+            <div class="leads_center_partarea">
+                <div class="leaddata_header priority">
+                    <div class="leaddata_label">Priority:</div>
+                    <div class="leadsdata_sorting_area">
+                        <div class="leadsdata_sorting">
+                            <div class="leadsort_updatedate priority">
+                                <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                            </div>
+                            <div class="leadsort_label">Last Updated</div>
+                        </div>
+                        <div class="leadsdata_sorting">
+                            <div class="leadsort_createdate priority">
+                                <i class="fa fa-circle-thin" aria-hidden="true"></i>
+                            </div>
+                            <div class="leadsort_label">Date Created</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="leaddata_subheader">
+                    <div class="leadnumber_head">Lead #</div>
+                    <div class="leadcustomer_head">Customer</div>
+                    <div class="leadqty_head">QTY</div>
+                    <div class="leaditem_head">Item</div>
+                    <div class="leadrepl_head">Rep</div>
+                </div>
+                <div class="leaddataarea leads" id="leadsprioritydata"></div>
+            </div>
+            <div class="leads_right_partarea">
+                <div class="leaddata_header tasks">
+                    <div class="leaddata_label">Tasks:</div>
+                    <div class="leadsdata_sorting_area">
+                        <div class="leadsdata_sorting">
+                            <div class="leadsort_updatedate tasks">
+                                <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                            </div>
+                            <div class="leadsort_label">Last Updated</div>
+                        </div>
+                        <div class="leadsdata_sorting">
+                            <div class="leadsort_createdate tasks">
+                                <i class="fa fa-circle-thin" aria-hidden="true"></i>
+                            </div>
+                            <div class="leadsort_label">Date Created</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="leaddata_subheader">
+                    <div class="leadnumber_head">Lead #</div>
+                    <div class="leadcustomer_head">Customer</div>
+                    <div class="leadqty_head">QTY</div>
+                    <div class="leaditem_head">Item</div>
+                    <div class="leadrepl_head">Rep</div>
+                </div>
+                <div class="leaddataarea leads" id="leadstasksdata"></div>
             </div>
         </div>
     </div>

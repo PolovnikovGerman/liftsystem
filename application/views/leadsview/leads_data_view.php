@@ -3,7 +3,7 @@
     <?php if ($lead['dateclass']=='outdate') : ?>
     <div class="dateout"><?=$lead['date']?></div>
     <?php else: ?>
-    <div class="datarow <?=empty($lead['leadrow_class']) ? ($numpp%2==0 ? 'whitedatarow' : 'greydatarow') : $lead['leadrow_class']?>">
+    <div class="datarow <?=empty($lead['leadrow_class']) ? ($numpp%2==0 ? 'whitedatarow' : 'greydatarow') : $lead['leadrow_class']?>" data-lead="<?=$lead['lead_id']?>">
         <div class="leadnum <?=$lead['lead_priority'] ? 'leadpriority' : ''?>"><?=$lead['leadnum']?></div>
         <div class="leadcustomer"><?=$lead['contact']?></div>
         <div class="leadqty"><?=$lead['lead_itemqty']?></div>

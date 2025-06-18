@@ -102,6 +102,9 @@ input.lead_searchinput {
     margin-left: 4px;
 }
 /* Lead data table - header */
+.paginationview {
+    float: right!important;
+}
 .leaddata_header {
     width: 100%;
     height: 32px;
@@ -113,6 +116,12 @@ input.lead_searchinput {
 }
 .leaddata_header.leads {
     background: #d3d3d3;
+}
+.leaddata_header.priority {
+    background: #fcb906;
+}
+.leaddata_header.tasks {
+    background: #00d24f;
 }
 .leaddata_header div {
     line-height: 32px;
@@ -132,6 +141,10 @@ input.lead_searchinput {
 .leaddata_header .leadsort_updatedate, .leaddata_header .leadsort_createdate {
     width: 14px;
     margin-right: 6px;
+}
+.leaddata_header .leadsort_updatedate i, .leaddata_header .leadsort_createdate i {
+    font-size: 14px;
+    cursor: pointer;
 }
 .leaddata_header .leadsort_label {
     font-size: 12px;
@@ -169,7 +182,7 @@ input.lead_searchinput {
     width: 100%;
     border: 1px solid #000000;
     height: 1066px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 .leaddataarea > .dateout {
     background: #000000;
@@ -186,6 +199,12 @@ input.lead_searchinput {
     line-height: 21px;
     font-size: 13px;
     text-align: center;
+}
+.datarow.closed {
+    opacity: 0.4;
+}
+.datarow.dead {
+    color: #ff0000;
 }
 .leaddataarea .leadnum {
     width: 50px;
@@ -206,7 +225,11 @@ input.lead_searchinput {
 }
 .leaddataarea .leadqty {
     width: 52px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     border-right: 1px solid #000000;
+    padding: 0 3px;
 }
 .leaddataarea .leaditem {
     width: 173px;

@@ -192,31 +192,26 @@ class Leads extends My_Controller {
             $brand = ifset($postdata,'brand');
             if (!empty($brand)) {
                 $error = '';
-                $pagenum=ifset($postdata, 'offset',0);
-                $limit=ifset($postdata, 'limit', 250);
-                $offset=$pagenum*$limit;
+                $pagenum = ifset($postdata, 'offset',0);
+                $limit = ifset($postdata, 'limit', 250);
+                $offset = $pagenum*$limit;
                 $options=[
                     'brand' => $brand,
                 ];
-                $search=ifset($postdata,'search');
+                $search = ifset($postdata,'search');
                 if (!empty($search)) {
                     $options['search']=$search;
                 }
-                $usrrepl=ifset($postdata, 'usrrepl');
+                $usrrepl = ifset($postdata, 'userrepl');
                 if (!empty($usrrepl)) {
                     $options['usrrepl']=$usrrepl;
                 }
-                $leadtype=ifset($postdata, 'leadtype');
-                if (!empty($leadtype)) {
-                    $options['lead_type']=$leadtype;
-                }
-                // Temporary - by update time
-                $sort = 1;
+                $options['showcloded'] = ifset($postdata, 'showcloded',0);
+                $sort = ifset($postdata,'sorttime',1);
                 $this->load->model('leads_model');
                 $leaddat=$this->leads_model->get_leads($options,$sort,$limit,$offset);
-
                 if (count($leaddat)==0) {
-                    $mdata['leadcontent']=$this->load->view('leads/leads_emptydata_view',array(),TRUE);
+                    $mdata['content'] = $this->load->view('leads/leads_emptydata_view',[],TRUE);
                 } else {
                     $options=array(
                         'leads'=>$leaddat,
@@ -224,7 +219,72 @@ class Leads extends My_Controller {
                     );
                     $mdata['content']=$this->load->view('leadsview/leads_data_view',$options, TRUE);
                 }
-                $this->ajaxResponse($mdata,$error);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function leadview_priority()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $options=[
+                    'brand' => $brand,
+                ];
+                $search = ifset($postdata,'search');
+                if (!empty($search)) {
+                    $options['search']=$search;
+                }
+                $usrrepl = ifset($postdata, 'userrepl');
+                if (!empty($usrrepl)) {
+                    $options['usrrepl']=$usrrepl;
+                }
+                // Temporary - by update time
+                $sort = ifset($postdata,'sorttime',1);
+                $this->load->model('leads_model');
+                $leaddat=$this->leads_model->get_priority_leads($options,$sort);
+                if (count($leaddat)==0) {
+                    $mdata['content'] = $this->load->view('leads/leads_emptydata_view',[],TRUE);
+                } else {
+                    $options=array(
+                        'leads'=>$leaddat,
+                        'brand' => $brand,
+                    );
+                    $mdata['content']=$this->load->view('leadsview/leads_data_view',$options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function leadview_tasks()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                // $sort = ifset($postdata,'sorttime',1);
+                $tasks = [];
+                if (count($tasks)==0) {
+                    // $mdata['content'] = $this->load->view('leads/leads_emptydata_view', [], TRUE);
+                    $mdata['content'] = '';
+                } else {
+                    $options=array(
+                        'leads'=>$tasks,
+                        'brand' => $brand,
+                    );
+                    $mdata['content']=$this->load->view('leadsview/leads_data_view',$options, TRUE);
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -302,6 +362,7 @@ class Leads extends My_Controller {
                 if (!empty($leadtype)) {
                     $options['lead_type']=$leadtype;
                 }
+                $options['showclosed'] = ifset($postdata,'showclosed',0);
                 $this->load->model('leads_model');
                 $mdata['totalrec']=$this->leads_model->get_total_leads($options);
             }
@@ -1638,9 +1699,10 @@ class Leads extends My_Controller {
         $active = 0;
         $ldat['replicas']=$this->user_model->get_user_leadreplicas($active);
         $options=array(
-            'lead_type'=>1,
+            // 'lead_type'=>1,
             'usrrepl'=>  $this->USR_ID,
             'brand' => $brand,
+            'showclosed' => 0,
         );
         $ldat['totalrec']=$this->leads_model->get_total_leads($options);
 
