@@ -303,7 +303,7 @@ Class Cronjob extends CI_Controller
         $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
         $this->load->model('orders_model');
         $this->orders_model->ckeckpototals($datestart, $dateend);
-        $this->orders_model->pochange_notification($datestart, $dateend);
+        // $this->orders_model->pochange_notification($datestart, $dateend);
     }
 
     public function tickets_report() {
