@@ -36,7 +36,7 @@
                     <?php if ($user_role=='masteradmin') { ?>
                         <div class="leadgreybtn leadsearchall">Search All</div>
                     <?php } ?>
-                    <div class="leadgreybtn leadsearchusr"><?=$user_name?>&apos;s</div>
+                    <div class="leadgreybtn leadsearchusr" data-user="<?=$user_id?>"><?=$user_name?>&apos;s</div>
                     <div class="leadgreybtn leadsearchclear">Clear</div>
                 </div>
             </div>
@@ -113,7 +113,7 @@
                     <div class="leaditem_head">Item</div>
                     <div class="leadrepl_head">Rep</div>
                 </div>
-                <div class="leaddataarea leads" id="leadsprioritydata"></div>
+                <div class="leaddataarea priority" id="leadsprioritydata"></div>
             </div>
             <div class="leads_right_partarea">
                 <div class="leaddata_header tasks">
@@ -140,7 +140,7 @@
                     <div class="leaditem_head">Item</div>
                     <div class="leadrepl_head">Rep</div>
                 </div>
-                <div class="leaddataarea leads" id="leadstasksdata"></div>
+                <div class="leaddataarea tasks" id="leadstasksdata"></div>
             </div>
         </div>
     </div>

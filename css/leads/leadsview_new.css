@@ -194,6 +194,15 @@ input.lead_searchinput {
     font-weight: 600;
     width: 100%;
 }
+.leaddataarea.leads .datarow.current_row {
+    background: #e3e1e1;
+}
+.leaddataarea.priority .datarow.current_row {
+    background: #fff5da;
+}
+.leaddataarea.tasks .datarow.current_row {
+    background: #e1fdec;
+}
 .leaddataarea .datarow div {
     height: 21px;
     line-height: 21px;
