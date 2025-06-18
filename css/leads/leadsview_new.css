@@ -1,0 +1,258 @@
+.leads_content {
+    clear: both;
+    width: 1460px;
+}
+.leads_headarea {
+    clear: both;
+    color: #353535;
+    font-family: Arial,Helvetica;
+    float: left;
+    font-size: 12px;
+    margin: 10px 0 0 10px;
+    /* width: 1001px; */
+}
+.leads_headrow {
+    width: 100%;
+}
+.leads_left_partarea, .leads_center_partarea, .leads_right_partarea {
+    width: 466px;
+    margin-right: 17px;
+}
+.leads_right_partarea {
+    margin-right: 0!important;
+}
+.leads_add {
+    background: #5957fe;
+    background: linear-gradient(to top, #6866fe, #4948fe);
+    border-radius: 5px;
+    cursor: pointer;
+    height: 27px;
+    line-height: 27px;
+    font-size: 13px;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    width: 76px;
+}
+.leads_selectreplarea {
+    float: right!important;
+}
+.leads_selectreplarea label {
+    height: 27px;
+    line-height: 27px;
+    font-size: 11px;
+    margin-right: 4px;
+    font-weight: normal;
+    margin-bottom: 0;
+}
+.leads_selectreplarea select {
+    height: 20px;
+    line-height: 20px;
+    width: 122px;
+    margin-top: 3px;
+    font-size: 14px;
+}
+.lead_datasearch {
+    float: right!important;
+}
+.lead_datasearch img {
+    float: left;
+    margin-top: 5px;
+    width: 20px;
+}
+input.lead_searchinput {
+    background: none repeat scroll 0 0 #ffffff;
+    border: 1px solid;
+    float: left;
+    font-size: 12px;
+    height: 21px;
+    margin-left: 5px;
+    margin-top: 2px;
+    width: 175px;
+    margin-right: 7px;
+}
+.leadgreybtn {
+    background: #c6c6bd;
+    background: linear-gradient(to top, #e0e0de, #a5a5a5);
+    cursor: pointer;
+    height: 21px;
+    line-height: 21px;
+    font-size: 12px;
+    color: #000;
+    text-align: center;
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 0 7px;
+    margin-right: 5px;
+    margin-top: 2px;
+}
+.leads_viewclosedfilter {
+    float: right!important;
+    margin-top: -4px;
+}
+.leads_viewclosedflag {
+    width: 13px;
+    cursor: pointer;
+}
+.leads_viewclosedflag i {
+    font-size: 14px;
+}
+.leads_viewclosedlabel {
+    font-size: 11px;
+    margin-left: 4px;
+}
+/* Lead data table - header */
+.paginationview {
+    float: right!important;
+}
+.leaddata_header {
+    width: 100%;
+    height: 32px;
+    border-left: 1px solid #9b9b9b;
+    border-top: 1px solid #9b9b9b;
+    border-right: 1px solid #9b9b9b;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+.leaddata_header.leads {
+    background: #d3d3d3;
+}
+.leaddata_header.priority {
+    background: #fcb906;
+}
+.leaddata_header.tasks {
+    background: #00d24f;
+}
+.leaddata_header div {
+    line-height: 32px;
+}
+.leaddata_header .leaddata_label {
+    font-size: 16px;
+    font-weight: 600;
+    margin-left: 12px;
+}
+.leaddata_header .leadsdata_sorting_area {
+    float: right!important;
+    margin-right: 14px;
+}
+.leaddata_header .leadsdata_sorting {
+    margin-left: 11px;
+}
+.leaddata_header .leadsort_updatedate, .leaddata_header .leadsort_createdate {
+    width: 14px;
+    margin-right: 6px;
+}
+.leaddata_header .leadsort_updatedate i, .leaddata_header .leadsort_createdate i {
+    font-size: 14px;
+    cursor: pointer;
+}
+.leaddata_header .leadsort_label {
+    font-size: 12px;
+}
+.leaddata_subheader {
+    width: 100%;
+    background: #949494;
+    color: #fff;
+    border-left: 1px solid #000000;
+    border-top: 1px solid #000000;
+    border-right: 1px solid #000000;
+}
+.leaddata_subheader div {
+    height: 22px;
+    line-height: 22px;
+    font-size: 13px;
+    text-align: center;
+}
+.leadnumber_head {
+    width: 50px;
+}
+.leadcustomer_head {
+    width: 147px;
+}
+.leadqty_head {
+    width: 52px;
+}
+.leaditem_head {
+    width: 176px;
+}
+.leadrepl_head {
+    width: 30px;
+}
+.leaddataarea {
+    width: 100%;
+    border: 1px solid #000000;
+    height: 1066px;
+    overflow-y: auto;
+}
+.leaddataarea > .dateout {
+    background: #000000;
+    color: #ffffff;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    width: 100%;
+}
+.leaddataarea.leads .datarow.current_row {
+    background: #e3e1e1;
+}
+.leaddataarea.priority .datarow.current_row {
+    background: #fff5da;
+}
+.leaddataarea.tasks .datarow.current_row {
+    background: #e1fdec;
+}
+.leaddataarea .datarow div {
+    height: 21px;
+    line-height: 21px;
+    font-size: 13px;
+    text-align: center;
+}
+.datarow.closed {
+    opacity: 0.4;
+}
+.datarow.dead {
+    color: #ff0000;
+}
+.leaddataarea .leadnum {
+    width: 50px;
+    border-right: 1px solid #000000;
+}
+.leaddataarea .leadnum.leadpriority {
+    background: #fdb900;
+}
+.leaddataarea .leadcustomer {
+    width: 147px;
+    text-align: left!important;
+    padding-left: 5px;
+    padding-right: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 1px solid #000000;
+}
+.leaddataarea .leadqty {
+    width: 52px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 1px solid #000000;
+    padding: 0 3px;
+}
+.leaddataarea .leaditem {
+    width: 173px;
+    text-align: left!important;
+    padding-left: 5px;
+    padding-right: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 1px solid #000000;
+}
+.leaddataarea .leaditem.custom {
+    font-weight: 600;
+}
+.leaddataarea .leadreplica {
+    width: 27px;
+}
