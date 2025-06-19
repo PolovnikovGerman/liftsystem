@@ -1169,7 +1169,7 @@ function init_leadorder_artmanage() {
                 $("#artNextModal").on('hidden.bs.modal', function (e) {
                     $(document.body).addClass('modal-open');
                 })
-                init_imagelogoupload();
+                init_imagelogoupload(loctype);
                 $("div.artlogouploadsave_data").unbind('click').click(function(){
                     save_newleadlogoartloc(loctype);
                 });
@@ -5097,34 +5097,49 @@ function show_chargeattempts(order) {
 
 }
 
-function init_imagelogoupload() {
+function init_imagelogoupload(loctype) {
     var uploader = new qq.FileUploader({
         element: document.getElementById('file-uploader'),
         allowedExtensions: ['jpg','gif', 'jpeg', 'pdf', 'ai', 'eps','doc', 'docx', 'png'],
         action: '/artproofrequest/art_redrawattach',
-        multiple: false,
+        multiple: true,
         debug: false,
         uploadButtonText:'',
         onComplete: function(id, fileName, responseJSON){
             if (responseJSON.success) {
-                var url="/artproofrequest/art_newartupload";
-                $("ul.qq-upload-list").css('display','none');
-                // $.post(url, {'filename':responseJSON.filename,'doc_name':fileName}, function(response){
-                $.post(url, {'filename':responseJSON.uplsource, 'doc_name':fileName}, function(response){
+                // var url="/artproofrequest/art_newartupload";
+                // $("ul.qq-upload-list").css('display','none');
+                // // $.post(url, {'filename':responseJSON.filename,'doc_name':fileName}, function(response){
+                // $.post(url, {'filename':responseJSON.uplsource, 'doc_name':fileName}, function(response){
+                //     if (response.errors=='') {
+                //         $("#orderattachlists").empty().html(response.data.content);
+                //         $(".qq-uploader").hide();
+                //         $("div.artlogouploadsave_data").show();
+                //         $("div.delvectofile").click(function(){
+                //             $("#orderattachlists").empty();
+                //             $(".qq-uploader").show();
+                //             $("div.artlogouploadsave_data").hide();
+                //         })
+                //     } else {
+                //         alert(response.errors);
+                //         if(response.data.url !== undefined) {
+                //             window.location.href=response.data.url;
+                //         }
+                //     }
+                // }, 'json');
+                var params=new Array();
+                params.push({name: 'logo', value: responseJSON.uplsource});
+                params.push({name: 'loctype', value: loctype});
+                params.push({name: 'ordersession', value: $("input#ordersession").val()});
+                var url="/leadorder/artnewlocation_save";
+                $.post(url, params, function(response){
                     if (response.errors=='') {
-                        $("#orderattachlists").empty().html(response.data.content);
-                        $(".qq-uploader").hide();
-                        $("div.artlogouploadsave_data").show();
-                        $("div.delvectofile").click(function(){
-                            $("#orderattachlists").empty();
-                            $(".qq-uploader").show();
-                            $("div.artlogouploadsave_data").hide();
-                        })
+                        $("#artNextModal").modal('hide');
+                        $("div#artlocationsarea").empty().html(response.data.content);
+                        $("input#loctimeout").val(response.data.loctime);
+                        init_onlineleadorder_edit();
                     } else {
-                        alert(response.errors);
-                        if(response.data.url !== undefined) {
-                            window.location.href=response.data.url;
-                        }
+                        show_error(response);
                     }
                 }, 'json');
             }

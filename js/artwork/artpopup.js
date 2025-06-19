@@ -709,7 +709,7 @@ function add_location(artwork,art_type) {
                 $("#artNextModal").on('hidden.bs.modal', function (e) {
                     $(document.body).addClass('modal-open');
                 })
-                init_artlogoupload();
+                init_logoupload();
                 $("div.artlogouploadsave_data").click(function(){
                     save_newlogoartloc(art_type);
                 });
@@ -784,6 +784,35 @@ function init_referenceslogo_manage() {
     })
 }
 
+function init_logoupload() {
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('file-uploader'),
+        allowedExtensions: ['jpg','gif', 'jpeg', 'pdf', 'ai', 'eps','doc', 'docx', 'png'],
+        action: '/artproofrequest/art_redrawattach',
+        multiple: true,
+        debug: false,
+        uploadButtonText:'',
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success) {
+                var params=new Array();
+                params.push({name: 'artsession', value: $("input#artsession").val()});
+                params.push({name: 'artwork_id', value: $("input#newartid").val()});
+                params.push({name:'art_type', value: $("#newlogotype").val()});
+                params.push({name: 'logo', value: responseJSON.uplsource});
+                var url = '/artproofrequest/art_addlocation';
+                $.post(url, params, function(response) {
+                    if (response.errors=='') {
+                        $("div.artpopup_locations").append(response.data.content);
+                        $("#artNextModal").modal('hide');
+                        init_locations();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            }
+        }
+    });
+}
 /* Uploader for Logo files */
 function init_artlogoupload() {
 
