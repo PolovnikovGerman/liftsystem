@@ -1705,8 +1705,8 @@ class Leads extends My_Controller {
         );
         $ldat['totalrec']=$this->leads_model->get_total_leads($options);
 
-        $ldat['perpage']=$this->config->item('leads_perpage');
-        $ldat['curpage']=0;
+        $ldat['perpage'] = $this->config->item('leads_perpage');
+        $ldat['curpage'] = 0;
         $ldat['brand'] = $brand;
         $ldat['user_id']=$this->USR_ID;
         $ldat['user_role'] = $this->USR_ROLE;
