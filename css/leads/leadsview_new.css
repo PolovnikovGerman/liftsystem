@@ -182,9 +182,10 @@ input.lead_searchinput {
 .leaddataarea {
     width: 100%;
     border: 1px solid #000000;
-    max-height: 1066px;
+    max-height: 1059px;
     overflow-y: auto;
-    margin-bottom: 15px;
+    overflow-x: hidden;
+    /* margin-bottom: 15px; */
 }
 .leaddataarea > .dateout {
     background: #000000;
@@ -196,13 +197,13 @@ input.lead_searchinput {
     font-weight: 600;
     width: 100%;
 }
-.leaddataarea.leads .datarow.current_row {
+.leaddataarea.leads .leadsrow.current_row {
     background: #e3e1e1;
 }
-.leaddataarea.priority .datarow.current_row {
+.leaddataarea.priority .leadsrow.current_row {
     background: #fff5da;
 }
-.leaddataarea.tasks .datarow.current_row {
+.leaddataarea.tasks .leadsrow.current_row {
     background: #e1fdec;
 }
 .leaddataarea .datarow div {
@@ -212,10 +213,11 @@ input.lead_searchinput {
     text-align: center;
 }
 .datarow.closed {
-    opacity: 0.4;
+    background: #90D5FF;
+    color: #808080;
 }
 .datarow.dead {
-    color: #ff0000;
+    opacity: 0.3;
 }
 .leaddataarea .leadnum {
     width: 50px;

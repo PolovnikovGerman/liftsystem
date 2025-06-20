@@ -51,17 +51,6 @@
         </div>
         <div class="leads_headrow">
             <div class="leads_left_partarea">
-                <div class="paginationview" id="mainleadpagination"></div>
-            </div>
-            <div class="leads_center_partarea">
-                <div class="paginationview" id="priorityleadpagination"></div>
-            </div>
-            <div class="leads_right_partarea">
-                <div class="paginationview" id="taskleadpagination"></div>
-            </div>
-        </div>
-        <div class="leads_headrow">
-            <div class="leads_left_partarea">
                 <div class="leaddata_header leads">
                     <div class="leaddata_label">Leads:</div>
                     <div class="leadsdata_sorting_area">
@@ -141,6 +130,17 @@
                     <div class="leadrepl_head">Rep</div>
                 </div>
                 <div class="leaddataarea tasks" id="leadstasksdata"></div>
+            </div>
+        </div>
+        <div class="leads_headrow">
+            <div class="leads_left_partarea">
+                <div class="paginationview" id="mainleadpagination"></div>
+            </div>
+            <div class="leads_center_partarea">
+                <div class="paginationview" id="priorityleadpagination"></div>
+            </div>
+            <div class="leads_right_partarea">
+                <div class="paginationview" id="taskleadpagination"></div>
             </div>
         </div>
     </div>
