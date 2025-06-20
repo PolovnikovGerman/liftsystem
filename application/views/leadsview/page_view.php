@@ -9,6 +9,25 @@
 <input type="hidden" id="leadtasksort" value="1"/>
 <div class="leads_content">
     <div class="leads_headarea">
+        <div class="leads_headrow mainleadheader">
+            <div class="leads_left_partarea">
+                <div class="leads_add">New Lead</div>
+                <div class="leads_selectreplarea">
+                    <label for="leads_replica">View Leads of:</label>
+                    <select class="leads_sortselect leads_replica"  id="leads_replica">
+                        <?php if ($user_role=='masteradmin') : ?>
+                            <option value="">All Sales Reps</option>
+                        <?php endif; ?>
+                        <?php $curstatus = $replicas[0]['user_status'];?>
+                        <?php foreach ($replicas as $row) :?>
+                            <?php if ($row['user_status']!==$curstatus) : ?>
+                                <option disabled>-----------</option>
+                                <?php $curstatus=$row['user_status'];?>
+                            <?php endif; ?>
+                            <option value="<?=$row['user_id']?>" <?=($row['user_id']==$user_id ? 'selected="selected"' : '')?> ><?=$row['user_name']?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
         <div class="leads_headrow">
             <div class="leads_add">New Lead</div>
             <div class="leads_selectreplarea">
