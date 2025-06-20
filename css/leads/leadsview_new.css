@@ -427,3 +427,7 @@ input.lead_searchinput {
 .leaddataarea .leadreplica {
     width: 27px;
 }
+.paginationview {
+    float: right!important;
+    min-height: 22px;
+}

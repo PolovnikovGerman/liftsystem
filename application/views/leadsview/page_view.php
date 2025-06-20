@@ -119,5 +119,13 @@
                 <div class="leaddataarea leads" id="leadslistdata"></div>
             </div>
         </div>
+        <div class="leads_headrow">
+            <div class="leads_section_area">&nbsp;</div>
+            <div class="leads_section_area">&nbsp;</div>
+            <div class="leads_section_area">&nbsp;</div>
+            <div class="leads_section_area lastsection">
+                <div class="paginationview" id="mainleadpagination"></div>
+            </div>
+        </div>
     </div>
 </div>
