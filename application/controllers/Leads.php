@@ -69,7 +69,7 @@ class Leads extends My_Controller {
         foreach ($menu as $row) {
             if ($row['item_link'] == '#leadsview') {
                 $head['styles'][]=array('style'=>'/css/leads/leadsview_new.css');
-                $head['scripts'][]=array('src'=>'/js/leads/leadsview_new.js');
+                // $head['scripts'][]=array('src'=>'/js/leads/leadsview_new.js');
                 // $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
                 $content_options['leadsview'] = $this->_prepare_leadsview($brand); // $brand, $top_menu
                 if (!empty($this->config->item('google_map_key'))) {
