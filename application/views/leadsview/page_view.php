@@ -9,7 +9,7 @@
 <input type="hidden" id="leadtasksort" value="1"/>
 <div class="leads_content">
     <div class="leads_headarea">
-        <div class="leads_headrow">
+        <div class="leads_headrow mainleadheader">
             <div class="leads_left_partarea">
                 <div class="leads_add">New Lead</div>
                 <div class="leads_selectreplarea">
@@ -80,20 +80,20 @@
             <div class="leads_center_partarea">
                 <div class="leaddata_header priority">
                     <div class="leaddata_label">Priority:</div>
-                    <div class="leadsdata_sorting_area">
-                        <div class="leadsdata_sorting">
-                            <div class="leadsort_updatedate priority">
-                                <i class="fa fa-check-circle-o" aria-hidden="true"></i>
-                            </div>
-                            <div class="leadsort_label">Last Updated</div>
-                        </div>
-                        <div class="leadsdata_sorting">
-                            <div class="leadsort_createdate priority">
-                                <i class="fa fa-circle-thin" aria-hidden="true"></i>
-                            </div>
-                            <div class="leadsort_label">Date Created</div>
-                        </div>
-                    </div>
+<!--                    <div class="leadsdata_sorting_area">-->
+<!--                        <div class="leadsdata_sorting">-->
+<!--                            <div class="leadsort_updatedate priority">-->
+<!--                                <i class="fa fa-check-circle-o" aria-hidden="true"></i>-->
+<!--                            </div>-->
+<!--                            <div class="leadsort_label">Last Updated</div>-->
+<!--                        </div>-->
+<!--                        <div class="leadsdata_sorting">-->
+<!--                            <div class="leadsort_createdate priority">-->
+<!--                                <i class="fa fa-circle-thin" aria-hidden="true"></i>-->
+<!--                            </div>-->
+<!--                            <div class="leadsort_label">Date Created</div>-->
+<!--                        </div>-->
+<!--                    </div>-->
                 </div>
                 <div class="leaddata_subheader">
                     <div class="leadnumber_head">Lead #</div>
@@ -107,20 +107,20 @@
             <div class="leads_right_partarea">
                 <div class="leaddata_header tasks">
                     <div class="leaddata_label">Tasks:</div>
-                    <div class="leadsdata_sorting_area">
-                        <div class="leadsdata_sorting">
-                            <div class="leadsort_updatedate tasks">
-                                <i class="fa fa-check-circle-o" aria-hidden="true"></i>
-                            </div>
-                            <div class="leadsort_label">Last Updated</div>
-                        </div>
-                        <div class="leadsdata_sorting">
-                            <div class="leadsort_createdate tasks">
-                                <i class="fa fa-circle-thin" aria-hidden="true"></i>
-                            </div>
-                            <div class="leadsort_label">Date Created</div>
-                        </div>
-                    </div>
+<!--                    <div class="leadsdata_sorting_area">-->
+<!--                        <div class="leadsdata_sorting">-->
+<!--                            <div class="leadsort_updatedate tasks">-->
+<!--                                <i class="fa fa-check-circle-o" aria-hidden="true"></i>-->
+<!--                            </div>-->
+<!--                            <div class="leadsort_label">Last Updated</div>-->
+<!--                        </div>-->
+<!--                        <div class="leadsdata_sorting">-->
+<!--                            <div class="leadsort_createdate tasks">-->
+<!--                                <i class="fa fa-circle-thin" aria-hidden="true"></i>-->
+<!--                            </div>-->
+<!--                            <div class="leadsort_label">Date Created</div>-->
+<!--                        </div>-->
+<!--                    </div>-->
                 </div>
                 <div class="leaddata_subheader">
                     <div class="leadnumber_head">Lead #</div>
