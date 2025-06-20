@@ -11,6 +11,15 @@
     <div class="leads_headarea">
         <div class="leads_headrow mainleadheader">
             <div class="leads_add">New Lead</div>
+            <div class="lead_datasearch">
+                <img src="/img/icons/magnifier.png"/>
+                <input type="text" class="lead_searchinput" name="leadsearchtemplate" value="" placeholder="Enter Lead #, customer, item ..."/>
+                <?php if ($user_role=='masteradmin') { ?>
+                    <div class="leadgreybtn leadsearchall">Search All</div>
+                <?php } ?>
+                <div class="leadgreybtn leadsearchusr" data-user="<?=$user_id?>"><?=$user_name?>&apos;s</div>
+                <div class="leadgreybtn leadsearchclear">Clear</div>
+            </div>
             <div class="leads_selectreplarea">
                 <label for="leads_replica">View Leads of:</label>
                 <select class="leads_sortselect leads_replica"  id="leads_replica">
@@ -26,15 +35,6 @@
                         <option value="<?=$row['user_id']?>" <?=($row['user_id']==$user_id ? 'selected="selected"' : '')?> ><?=$row['user_name']?></option>
                     <?php endforeach; ?>
                 </select>
-            </div>
-            <div class="lead_datasearch">
-                <img src="/img/icons/magnifier.png"/>
-                <input type="text" class="lead_searchinput" name="leadsearchtemplate" value="" placeholder="Enter Lead #, customer, item ..."/>
-                <?php if ($user_role=='masteradmin') { ?>
-                    <div class="leadgreybtn leadsearchall">Search All</div>
-                <?php } ?>
-                <div class="leadgreybtn leadsearchusr" data-user="<?=$user_id?>"><?=$user_name?>&apos;s</div>
-                <div class="leadgreybtn leadsearchclear">Clear</div>
             </div>
             <div class="leads_viewclosedfilter">
                 <div class="leads_viewclosedflag">
