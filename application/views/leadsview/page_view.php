@@ -10,7 +10,6 @@
 <div class="leads_content">
     <div class="leads_headarea">
         <div class="leads_headrow mainleadheader">
-
             <div class="leads_add">New Lead</div>
             <div class="leads_selectreplarea">
                 <label for="leads_replica">View Leads of:</label>
@@ -60,20 +59,6 @@
             <div class="leads_section_area">
                 <div class="leaddata_header tasks">
                     <div class="leaddata_label">Tasks:</div>
-                    <div class="leadsdata_sorting_area">
-                        <div class="leadsdata_sorting">
-                            <div class="leadsort_updatedate tasks">
-                                <i class="fa fa-check-circle-o" aria-hidden="true"></i>
-                            </div>
-                            <div class="leadsort_label">Last Updated</div>
-                        </div>
-                        <div class="leadsdata_sorting">
-                            <div class="leadsort_createdate tasks">
-                                <i class="fa fa-circle-thin" aria-hidden="true"></i>
-                            </div>
-                            <div class="leadsort_label">Date Created</div>
-                        </div>
-                    </div>
                 </div>
                 <div class="leaddata_subheader">
                     <div class="leadnumber_head">Lead #</div>
@@ -104,7 +89,6 @@
                     <div class="leaditem_head">Item</div>
                 </div>
                 <div class="leaddataarea ordermissinfo" id="ordermissinfodata"></div>
-
             </div>
             <div class="leads_section_area lastsection">
                 <div class="leaddata_header leads">
