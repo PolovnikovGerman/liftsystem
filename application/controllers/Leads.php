@@ -69,7 +69,7 @@ class Leads extends My_Controller {
         foreach ($menu as $row) {
             if ($row['item_link'] == '#leadsview') {
                 $head['styles'][]=array('style'=>'/css/leads/leadsview_new.css');
-                // $head['scripts'][]=array('src'=>'/js/leads/leadsview_new.js');
+                $head['scripts'][]=array('src'=>'/js/leads/leadsview_new.js');
                 // $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
                 $content_options['leadsview'] = $this->_prepare_leadsview($brand); // $brand, $top_menu
                 if (!empty($this->config->item('google_map_key'))) {
@@ -289,6 +289,59 @@ class Leads extends My_Controller {
         }
         show_404();
     }
+
+    public function leadview_newleads()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                // $sort = ifset($postdata,'sorttime',1);
+                $newleads = [];
+                if (count($newleads)==0) {
+                    $mdata['content'] = $this->load->view('leads/leads_emptydata_view', [], TRUE);
+                } else {
+                    $options=array(
+                        'leads'=>$newleads,
+                        'brand' => $brand,
+                    );
+                    $mdata['content']=$this->load->view('leadsview/leads_data_view',$options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function orders_missinfo()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                // $sort = ifset($postdata,'sorttime',1);
+                $orders = [];
+                if (count($orders)==0) {
+                    $mdata['content'] = $this->load->view('leads/leads_emptydata_view', [], TRUE);
+                } else {
+                    $options=array(
+                        'leads'=>$orders,
+                        'brand' => $brand,
+                    );
+                    $mdata['content']=$this->load->view('leadsview/leads_data_view',$options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function leadpage_data() {
         if ($this->isAjax()) {
             $mdata=array();

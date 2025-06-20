@@ -7,6 +7,8 @@
 <input type="hidden" id="leaddatasort" value="1"/>
 <input type="hidden" id="leadpriorsort" value="1"/>
 <input type="hidden" id="leadtasksort" value="1"/>
+<input type="hidden" id="leadnewleadsort" value="1"/>
+<input type="hidden" id="ordermissinfosort" value="1"/>
 <div class="leads_content">
     <div class="leads_headarea">
         <div class="leads_headrow mainleadheader">

@@ -340,6 +340,10 @@ input.lead_searchinput {
     overflow-x: hidden;
     /* margin-bottom: 15px; */
 }
+.leaddataarea.priority {
+    max-height: 550px;
+    margin-bottom: 5px;
+}
 .leaddataarea > .dateout {
     background: #000000;
     color: #ffffff;
@@ -380,7 +384,7 @@ input.lead_searchinput {
     opacity: 0.3;
 }
 .leaddataarea .leadnum {
-    width: 50px;
+    width: 46px;
     border-right: 1px solid #000000;
     font-size: 11px!important;
 }
@@ -388,7 +392,7 @@ input.lead_searchinput {
     background: #fdb900;
 }
 .leaddataarea .leadcustomer {
-    width: 147px;
+    width: 134px;
     text-align: left!important;
     padding-left: 5px;
     padding-right: 5px;
@@ -398,7 +402,7 @@ input.lead_searchinput {
     border-right: 1px solid #000000;
 }
 .leaddataarea .leadqty {
-    width: 52px;
+    width: 46px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -407,14 +411,15 @@ input.lead_searchinput {
     font-size: 13px!important;
 }
 .leaddataarea .leaditem {
-    width: 173px;
+    /* max-width: 160px; */
+    max-width: 147px;
     text-align: left!important;
     padding-left: 5px;
     padding-right: 5px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    border-right: 1px solid #000000;
+    /* border-right: 1px solid #000000; */
 }
 .leaddataarea .leaditem.custom {
     font-weight: 600;
