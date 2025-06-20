@@ -23,7 +23,7 @@
 }
 .leads_add {
     background: #5957fe;
-    background: linear-gradient(to top, #6866fe, #4948fe);
+    background: linear-gradient(to top, #4948fe, #6866fe);
     border-radius: 5px;
     cursor: pointer;
     height: 27px;
@@ -46,10 +46,10 @@
     margin-bottom: 0;
 }
 .leads_selectreplarea select {
-    height: 20px;
-    line-height: 20px;
+    height: 22px;
+    line-height: 22px;
     width: 122px;
-    margin-top: 3px;
+    margin-top: 2px;
     font-size: 14px;
 }
 .lead_datasearch {
@@ -73,7 +73,7 @@ input.lead_searchinput {
 }
 .leadgreybtn {
     background: #c6c6bd;
-    background: linear-gradient(to top, #e0e0de, #a5a5a5);
+    background: linear-gradient(to top, #a5a5a5, #e0e0de );
     cursor: pointer;
     height: 21px;
     line-height: 21px;
@@ -104,6 +104,7 @@ input.lead_searchinput {
 /* Lead data table - header */
 .paginationview {
     float: right!important;
+    min-height: 22px;
 }
 .leaddata_header {
     width: 100%;
@@ -160,7 +161,7 @@ input.lead_searchinput {
 .leaddata_subheader div {
     height: 22px;
     line-height: 22px;
-    font-size: 13px;
+    font-size: 11px;
     text-align: center;
 }
 .leadnumber_head {
@@ -181,8 +182,9 @@ input.lead_searchinput {
 .leaddataarea {
     width: 100%;
     border: 1px solid #000000;
-    height: 1066px;
+    max-height: 1066px;
     overflow-y: auto;
+    margin-bottom: 15px;
 }
 .leaddataarea > .dateout {
     background: #000000;
@@ -206,7 +208,7 @@ input.lead_searchinput {
 .leaddataarea .datarow div {
     height: 21px;
     line-height: 21px;
-    font-size: 13px;
+    font-size: 12px;
     text-align: center;
 }
 .datarow.closed {
@@ -239,6 +241,7 @@ input.lead_searchinput {
     text-overflow: ellipsis;
     border-right: 1px solid #000000;
     padding: 0 3px;
+    font-size: 13px!important;
 }
 .leaddataarea .leaditem {
     width: 173px;

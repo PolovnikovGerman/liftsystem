@@ -2292,9 +2292,9 @@ Class Leads_model extends MY_Model
             $row = [];
             $row['lead_id'] = $lead['lead_id'];
             if ($sort==1) {
-                $compdate = date('D - M j',strtotime($lead['update_date']));
+                $compdate = date('D - M j Y',strtotime($lead['update_date']));
             } else {
-                $compdate = date('D - M j', $lead['lead_date']);
+                $compdate = date('D - M j Y', $lead['lead_date']);
             }
             if ($compdate != $cur_date) {
                 $row['dateclass'] = 'outdate';

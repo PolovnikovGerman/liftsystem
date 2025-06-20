@@ -276,8 +276,7 @@ class Leads extends My_Controller {
                 // $sort = ifset($postdata,'sorttime',1);
                 $tasks = [];
                 if (count($tasks)==0) {
-                    // $mdata['content'] = $this->load->view('leads/leads_emptydata_view', [], TRUE);
-                    $mdata['content'] = '';
+                    $mdata['content'] = $this->load->view('leads/leads_emptydata_view', [], TRUE);
                 } else {
                     $options=array(
                         'leads'=>$tasks,
