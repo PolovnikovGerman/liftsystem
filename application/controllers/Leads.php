@@ -353,7 +353,7 @@ class Leads extends My_Controller {
                 if (!empty($search)) {
                     $options['search']=$search;
                 }
-                $usrrepl = ifset($postdata,'usrrepl');
+                $usrrepl = ifset($postdata,'userrepl');
                 if (!empty($usrrepl)) {
                     $options['usrrepl']=$usrrepl;
                 }
