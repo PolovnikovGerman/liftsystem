@@ -8,12 +8,12 @@
         <div class="leadcustomer"><?=$lead['contact']?></div>
         <div class="leadqty"><?=$lead['lead_itemqty']?></div>
         <div class="leaditem <?=$lead['itemshow_class']?>"><?=$lead['out_lead_item']?></div>
-        <?php if (empty($lead['usrpopupus'])) : ?>
-            <div class="leadreplica"><?=$lead['usr_data']?></div>
-        <?php else: ?>
-            <div class="leadreplica" data-event="hover" data-css="itemdetailsballonbox" data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="up" data-textcolor="#000"
-                 data-balloon="<?=$lead['usrpopupus']?>" data-timer="4000" data-delay="1000"><?=$lead['usr_data']?></div>
-        <?php endif; ?>
+<!--        --><?php //if (empty($lead['usrpopupus'])) : ?>
+<!--            <div class="leadreplica">--><?php //=$lead['usr_data']?><!--</div>-->
+<!--        --><?php //else: ?>
+<!--            <div class="leadreplica" data-event="hover" data-css="itemdetailsballonbox" data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="up" data-textcolor="#000"-->
+<!--                 data-balloon="--><?php //=$lead['usrpopupus']?><!--" data-timer="4000" data-delay="1000">--><?php //=$lead['usr_data']?><!--</div>-->
+<!--        --><?php //endif; ?>
     </div>
     <?php $numpp++ ?>
     <?php endif ?>

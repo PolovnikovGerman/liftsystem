@@ -2,6 +2,8 @@ function init_leadsview() {
     initLeaddataPagination();
     show_leadpriority();
     show_leadtasks();
+    show_newleads();
+    show_ordermissinfo();
     init_leadmanage_content();
 }
 
@@ -90,6 +92,8 @@ function init_leadmanage_content() {
         search_leadsdata();
         show_leadpriority();
         show_leadtasks();
+        show_newleads();
+        show_ordermissinfo();
     });
     // Search all
     $("div.leadsearchall").unbind('click').click(function(){
@@ -97,6 +101,8 @@ function init_leadmanage_content() {
         search_leadsdata();
         show_leadpriority();
         show_leadtasks();
+        show_newleads();
+        show_ordermissinfo();
     });
     $("div.leadsearchusr").unbind('click').click(function(){
         var usr = $(this).data('user');
@@ -104,6 +110,8 @@ function init_leadmanage_content() {
         search_leadsdata();
         show_leadpriority();
         show_leadtasks();
+        show_newleads();
+        show_ordermissinfo();
     })
     // Clean
     $("div.leadsearchclear").unbind('click').click(function(){
@@ -111,6 +119,8 @@ function init_leadmanage_content() {
         search_leadsdata();
         show_leadpriority();
         show_leadtasks();
+        show_newleads();
+        show_ordermissinfo();
     });
     // Input search
     $("input.lead_searchinput").keypress(function(event){
@@ -118,6 +128,8 @@ function init_leadmanage_content() {
             search_leadsdata();
             show_leadpriority();
             show_leadtasks();
+            show_newleads();
+            show_ordermissinfo();
         }
     });
     // Add New Lead
@@ -229,6 +241,40 @@ function show_leadtasks() {
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("#leadstasksdata").empty().html(response.data.content);
+            init_leaddata_manage();
+            $("#loader").hide();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
+}
+
+function show_newleads() {
+    var params = leadpaginationparams(0);
+    params.push({name: 'sorttime', value: $("#leadnewleadsort").val()});
+    var url = 'leads/leadview_newleads';
+    $("#loader").show();
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#newleadslistdata").empty().html(response.data.content);
+            init_leaddata_manage();
+            $("#loader").hide();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
+}
+
+function show_ordermissinfo() {
+    var params = leadpaginationparams(0);
+    params.push({name: 'sorttime', value: $("#ordermissinfosort").val()});
+    var url = 'leads/orders_missinfo';
+    $("#loader").show();
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#ordermissinfodata").empty().html(response.data.content);
             init_leaddata_manage();
             $("#loader").hide();
         } else {
