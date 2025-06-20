@@ -1,6 +1,6 @@
 .leads_content {
     clear: both;
-    width: 1460px;
+    width: 1450px;
 }
 .leads_headarea {
     clear: both;
@@ -9,7 +9,7 @@
     float: left;
     font-size: 12px;
     margin: 10px 0 0 10px;
-    /* width: 1001px; */
+    width: 100%;
 }
 .leads_headrow {
     width: 100%;
@@ -38,7 +38,7 @@
     width: 76px;
 }
 .leads_selectreplarea {
-    float: right!important;
+    margin-left: 203px;
 }
 .leads_selectreplarea label {
     height: 27px;
@@ -56,7 +56,7 @@
     font-size: 13px;
 }
 .lead_datasearch {
-    float: right!important;
+    margin-left: 30px;
 }
 .lead_datasearch img {
     float: left;
@@ -92,6 +92,7 @@ input.lead_searchinput {
 .leads_viewclosedfilter {
     float: right!important;
     margin-top: -4px;
+    margin-right: 25px;
 }
 .leads_viewclosedflag {
     width: 13px;

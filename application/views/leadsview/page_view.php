@@ -10,43 +10,37 @@
 <div class="leads_content">
     <div class="leads_headarea">
         <div class="leads_headrow mainleadheader">
-            <div class="leads_left_partarea">
-                <div class="leads_add">New Lead</div>
-                <div class="leads_selectreplarea">
-                    <label for="leads_replica">View Leads of:</label>
-                    <select class="leads_sortselect leads_replica"  id="leads_replica">
-                        <?php if ($user_role=='masteradmin') : ?>
-                            <option value="">All Sales Reps</option>
+            <div class="leads_add">New Lead</div>
+            <div class="lead_datasearch">
+                <img src="/img/icons/magnifier.png"/>
+                <input type="text" class="lead_searchinput" name="leadsearchtemplate" value="" placeholder="Enter Lead #, customer, item ..."/>
+                <?php if ($user_role=='masteradmin') { ?>
+                    <div class="leadgreybtn leadsearchall">Search All</div>
+                <?php } ?>
+                <div class="leadgreybtn leadsearchusr" data-user="<?=$user_id?>"><?=$user_name?>&apos;s</div>
+                <div class="leadgreybtn leadsearchclear">Clear</div>
+            </div>
+            <div class="leads_selectreplarea">
+                <label for="leads_replica">View Leads of:</label>
+                <select class="leads_sortselect leads_replica"  id="leads_replica">
+                    <?php if ($user_role=='masteradmin') : ?>
+                        <option value="">All Sales Reps</option>
+                    <?php endif; ?>
+                    <?php $curstatus = $replicas[0]['user_status'];?>
+                    <?php foreach ($replicas as $row) :?>
+                        <?php if ($row['user_status']!==$curstatus) : ?>
+                            <option disabled>-----------</option>
+                            <?php $curstatus=$row['user_status'];?>
                         <?php endif; ?>
-                        <?php $curstatus = $replicas[0]['user_status'];?>
-                        <?php foreach ($replicas as $row) :?>
-                            <?php if ($row['user_status']!==$curstatus) : ?>
-                                <option disabled>-----------</option>
-                                <?php $curstatus=$row['user_status'];?>
-                            <?php endif; ?>
-                            <option value="<?=$row['user_id']?>" <?=($row['user_id']==$user_id ? 'selected="selected"' : '')?> ><?=$row['user_name']?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
+                        <option value="<?=$row['user_id']?>" <?=($row['user_id']==$user_id ? 'selected="selected"' : '')?> ><?=$row['user_name']?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
-            <div class="leads_center_partarea">
-                <div class="lead_datasearch">
-                    <img src="/img/icons/magnifier.png"/>
-                    <input type="text" class="lead_searchinput" name="leadsearchtemplate" value="" placeholder="Enter Lead #, customer, item ..."/>
-                    <?php if ($user_role=='masteradmin') { ?>
-                        <div class="leadgreybtn leadsearchall">Search All</div>
-                    <?php } ?>
-                    <div class="leadgreybtn leadsearchusr" data-user="<?=$user_id?>"><?=$user_name?>&apos;s</div>
-                    <div class="leadgreybtn leadsearchclear">Clear</div>
+            <div class="leads_viewclosedfilter">
+                <div class="leads_viewclosedflag">
+                    <i class="fa fa-square-o" aria-hidden="true"></i>
                 </div>
-            </div>
-            <div class="leads_right_partarea">
-                <div class="leads_viewclosedfilter">
-                    <div class="leads_viewclosedflag">
-                        <i class="fa fa-square-o" aria-hidden="true"></i>
-                    </div>
-                    <div class="leads_viewclosedlabel">View Closed & Dead</div>
-                </div>
+                <div class="leads_viewclosedlabel">View Closed & Dead</div>
             </div>
         </div>
         <div class="leads_headrow">
