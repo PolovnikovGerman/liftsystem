@@ -7,6 +7,8 @@
 <input type="hidden" id="leaddatasort" value="1"/>
 <input type="hidden" id="leadpriorsort" value="1"/>
 <input type="hidden" id="leadtasksort" value="1"/>
+<input type="hidden" id="leadnewleadsort" value="1"/>
+<input type="hidden" id="ordermissinfosort" value="1"/>
 <div class="leads_content">
     <div class="leads_headarea">
         <div class="leads_headrow mainleadheader">
@@ -44,7 +46,31 @@
             </div>
         </div>
         <div class="leads_headrow">
-            <div class="leads_left_partarea">
+            <div class="leads_section_area">
+                <div class="leaddata_header newleads">
+                    <div class="leaddata_label">New Leads:</div>
+                </div>
+                <div class="leaddata_subheader">
+                    <div class="leadnumber_head">Lead #</div>
+                    <div class="leadcustomer_head">Customer</div>
+                    <div class="leadqty_head">QTY</div>
+                    <div class="leaditem_head">Item</div>
+                </div>
+                <div class="leaddataarea newleads" id="newleadslistdata"></div>
+            </div>
+            <div class="leads_section_area">
+                <div class="leaddata_header tasks">
+                    <div class="leaddata_label">Tasks:</div>
+                </div>
+                <div class="leaddata_subheader">
+                    <div class="leadnumber_head">Lead #</div>
+                    <div class="leadcustomer_head">Customer</div>
+                    <div class="leadqty_head">QTY</div>
+                    <div class="leaditem_head">Item</div>
+                </div>
+                <div class="leaddataarea tasks" id="leadstasksdata"></div>
+            </div>
+            <div class="leads_section_area">
                 <div class="leaddata_header leads">
                     <div class="leaddata_label">Leads:</div>
                     <div class="leadsdata_sorting_area">
@@ -67,75 +93,39 @@
                     <div class="leadcustomer_head">Customer</div>
                     <div class="leadqty_head">QTY</div>
                     <div class="leaditem_head">Item</div>
-                    <div class="leadrepl_head">Rep</div>
                 </div>
                 <div class="leaddataarea leads" id="leadslistdata"></div>
             </div>
-            <div class="leads_center_partarea">
+            <div class="leads_section_area lastsection">
                 <div class="leaddata_header priority">
                     <div class="leaddata_label">Priority:</div>
-<!--                    <div class="leadsdata_sorting_area">-->
-<!--                        <div class="leadsdata_sorting">-->
-<!--                            <div class="leadsort_updatedate priority">-->
-<!--                                <i class="fa fa-check-circle-o" aria-hidden="true"></i>-->
-<!--                            </div>-->
-<!--                            <div class="leadsort_label">Last Updated</div>-->
-<!--                        </div>-->
-<!--                        <div class="leadsdata_sorting">-->
-<!--                            <div class="leadsort_createdate priority">-->
-<!--                                <i class="fa fa-circle-thin" aria-hidden="true"></i>-->
-<!--                            </div>-->
-<!--                            <div class="leadsort_label">Date Created</div>-->
-<!--                        </div>-->
-<!--                    </div>-->
                 </div>
                 <div class="leaddata_subheader">
                     <div class="leadnumber_head">Lead #</div>
                     <div class="leadcustomer_head">Customer</div>
                     <div class="leadqty_head">QTY</div>
                     <div class="leaditem_head">Item</div>
-                    <div class="leadrepl_head">Rep</div>
                 </div>
                 <div class="leaddataarea priority" id="leadsprioritydata"></div>
-            </div>
-            <div class="leads_right_partarea">
-                <div class="leaddata_header tasks">
-                    <div class="leaddata_label">Tasks:</div>
-<!--                    <div class="leadsdata_sorting_area">-->
-<!--                        <div class="leadsdata_sorting">-->
-<!--                            <div class="leadsort_updatedate tasks">-->
-<!--                                <i class="fa fa-check-circle-o" aria-hidden="true"></i>-->
-<!--                            </div>-->
-<!--                            <div class="leadsort_label">Last Updated</div>-->
-<!--                        </div>-->
-<!--                        <div class="leadsdata_sorting">-->
-<!--                            <div class="leadsort_createdate tasks">-->
-<!--                                <i class="fa fa-circle-thin" aria-hidden="true"></i>-->
-<!--                            </div>-->
-<!--                            <div class="leadsort_label">Date Created</div>-->
-<!--                        </div>-->
-<!--                    </div>-->
+                <div class="leaddata_header ordermissinfo">
+                    <div class="leaddata_label">Orders with Missing Info:</div>
                 </div>
                 <div class="leaddata_subheader">
                     <div class="leadnumber_head">Lead #</div>
                     <div class="leadcustomer_head">Customer</div>
                     <div class="leadqty_head">QTY</div>
                     <div class="leaditem_head">Item</div>
-                    <div class="leadrepl_head">Rep</div>
                 </div>
-                <div class="leaddataarea tasks" id="leadstasksdata"></div>
+                <div class="leaddataarea ordermissinfo" id="ordermissinfodata"></div>
             </div>
         </div>
         <div class="leads_headrow">
-            <div class="leads_left_partarea">
+            <div class="leads_section_area">&nbsp;</div>
+            <div class="leads_section_area">&nbsp;</div>
+            <div class="leads_section_area">
                 <div class="paginationview" id="mainleadpagination"></div>
             </div>
-            <div class="leads_center_partarea">
-                <div class="paginationview" id="priorityleadpagination"></div>
-            </div>
-            <div class="leads_right_partarea">
-                <div class="paginationview" id="taskleadpagination"></div>
-            </div>
+            <div class="leads_section_area lastsection">&nbsp;</div>
         </div>
     </div>
 </div>
