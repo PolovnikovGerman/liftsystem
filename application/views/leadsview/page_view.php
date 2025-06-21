@@ -71,28 +71,6 @@
                 <div class="leaddataarea tasks" id="leadstasksdata"></div>
             </div>
             <div class="leads_section_area">
-                <div class="leaddata_header priority">
-                    <div class="leaddata_label">Priority:</div>
-                </div>
-                <div class="leaddata_subheader">
-                    <div class="leadnumber_head">Lead #</div>
-                    <div class="leadcustomer_head">Customer</div>
-                    <div class="leadqty_head">QTY</div>
-                    <div class="leaditem_head">Item</div>
-                </div>
-                <div class="leaddataarea priority" id="leadsprioritydata"></div>
-                <div class="leaddata_header ordermissinfo">
-                    <div class="leaddata_label">Orders Missing Info:</div>
-                </div>
-                <div class="leaddata_subheader">
-                    <div class="leadnumber_head">Lead #</div>
-                    <div class="leadcustomer_head">Customer</div>
-                    <div class="leadqty_head">QTY</div>
-                    <div class="leaditem_head">Item</div>
-                </div>
-                <div class="leaddataarea ordermissinfo" id="ordermissinfodata"></div>
-            </div>
-            <div class="leads_section_area lastsection">
                 <div class="leaddata_header leads">
                     <div class="leaddata_label">Leads:</div>
                     <div class="leadsdata_sorting_area">
@@ -118,14 +96,36 @@
                 </div>
                 <div class="leaddataarea leads" id="leadslistdata"></div>
             </div>
+            <div class="leads_section_area lastsection">
+                <div class="leaddata_header priority">
+                    <div class="leaddata_label">Priority:</div>
+                </div>
+                <div class="leaddata_subheader">
+                    <div class="leadnumber_head">Lead #</div>
+                    <div class="leadcustomer_head">Customer</div>
+                    <div class="leadqty_head">QTY</div>
+                    <div class="leaditem_head">Item</div>
+                </div>
+                <div class="leaddataarea priority" id="leadsprioritydata"></div>
+                <div class="leaddata_header ordermissinfo">
+                    <div class="leaddata_label">Orders with Missing Info:</div>
+                </div>
+                <div class="leaddata_subheader">
+                    <div class="leadnumber_head">Lead #</div>
+                    <div class="leadcustomer_head">Customer</div>
+                    <div class="leadqty_head">QTY</div>
+                    <div class="leaditem_head">Item</div>
+                </div>
+                <div class="leaddataarea ordermissinfo" id="ordermissinfodata"></div>
+            </div>
         </div>
         <div class="leads_headrow">
             <div class="leads_section_area">&nbsp;</div>
             <div class="leads_section_area">&nbsp;</div>
-            <div class="leads_section_area">&nbsp;</div>
-            <div class="leads_section_area lastsection">
+            <div class="leads_section_area">
                 <div class="paginationview" id="mainleadpagination"></div>
             </div>
+            <div class="leads_section_area lastsection">&nbsp;</div>
         </div>
     </div>
 </div>
