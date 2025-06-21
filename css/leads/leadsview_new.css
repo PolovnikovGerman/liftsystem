@@ -266,16 +266,16 @@ input.lead_searchinput {
     border-top-right-radius: 5px;
 }
 .leaddata_header.newleads {
-    background: #2ef8b8;
+    background: #00d24f;
 }
 .leaddata_header.leads {
     background: #d3d3d3;
 }
 .leaddata_header.priority {
-    background: #fcb906;
+    background: #fff77e;
 }
 .leaddata_header.tasks {
-    background: #00d24f;
+    background: #2ef8b8;
 }
 .leaddata_header.ordermissinfo {
     background: #d3d3d3;
@@ -341,7 +341,7 @@ input.lead_searchinput {
     /* margin-bottom: 15px; */
 }
 .leaddataarea.priority {
-    max-height: 550px;
+    max-height: 422px;
     margin-bottom: 5px;
 }
 .leaddataarea > .dateout {
@@ -375,6 +375,7 @@ input.lead_searchinput {
     line-height: 21px;
     font-size: 12px;
     text-align: center;
+    cursor: pointer;
 }
 .datarow.closed {
     background: #90D5FF;
@@ -389,7 +390,7 @@ input.lead_searchinput {
     font-size: 11px!important;
 }
 .leaddataarea .leadnum.leadpriority {
-    background: #fdb900;
+    background: #fff77e;
 }
 .leaddataarea .leadcustomer {
     width: 134px;
