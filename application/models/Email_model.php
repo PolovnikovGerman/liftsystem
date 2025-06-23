@@ -1439,16 +1439,26 @@ class Email_model extends My_Model
         }
     }
 
-    public function generate_quota() {
+    public function generate_quota($email_id=0) {
         $this->load->model('itemimages_model');
         $this->load->model('items_model');
         $this->load->helper(array('dompdf', 'file'));
-        $options = array(
-            'email_type' => 'Leads',
-            'email_quota_link' => NULL,
-            'brand' => 'ALL',
-        );
-        $mails_array = $this->get_emails($options, 'email_id', 'asc', 1, 0);
+        $sendmail = 1;
+        if ($email_id!=0) {
+            $sendmail = 0;
+            $options = array(
+                'email_id' => $email_id,
+                'brand' => 'ALL',
+            );
+            $mails_array = $this->get_emails($options, 'email_id', 'asc', 1, 0);
+        } else {
+            $options = array(
+                'email_type' => 'Leads',
+                'email_quota_link' => NULL,
+                'brand' => 'ALL',
+            );
+            $mails_array = $this->get_emails($options, 'email_id', 'asc', 1, 0);
+        }
 
         /* Send message to user */
         $this->load->model('leads_model');
@@ -1510,52 +1520,56 @@ class Email_model extends My_Model
         $mail_id = $row['email_id'];
         $mail = $this->get_email_details($mail_id);
 
-        $mail['colorprint'] = get_json_param($mail['email_other_info'], 'colorprint', 0);
-        $mail['item_id']=get_json_param($mail['email_other_info'],'item_id',0);
-        $mail['item_number']='';
-        if (intval($mail['item_id'])!=0) {
-            $itemdat=$this->items_model->get_item($mail['item_id']);
-            if ($itemdat['result']==$this->success_result) {
-                $item_det = $itemdat['data'];
-                $mail['item_number']=$item_det['item_number'];
-                if ($mail['colorprint'] == 1) {
-                    $mail['colorprint'] = '1 Color Imprinting';
-                } elseif ($mail['colorprint'] == 2) {
-                    $mail['colorprint'] = '2 Color Imprinting';
-                } else {
-                    $mail['colorprint'] = 'Blank, No Imprinting';
-                }
-                $mail['setup'] = get_json_param($mail['email_other_info'], 'setup', 0);
-                $mail['imprint'] = get_json_param($mail['email_other_info'], 'imprint', 0);
-                $mail['itemcost'] = get_json_param($mail['email_other_info'], 'itemcost', 0);
-                $itemcolors = get_json_param($mail['email_other_info'], 'itemcolors', []);
-                $colorstr = '';
-                foreach ($itemcolors as $itemcolor) {
-                    $colorstr.=$itemcolor.',';
-                }
-                if (count($itemcolors)>0) {
-                    $colorstr=substr($colorstr,0,-1);
-                }
-                $mail['colors'] = $colorstr;
-                // $mail['colors'] = get_json_param($mail['email_other_info'],'colors','');
-                $mail['total'] = get_json_param($mail['email_other_info'], 'total', 0);
-                $mail['ship_rate'] = get_json_param($mail['email_other_info'], 'ship_rate', 0);
-                $mail['ship_method_name'] = get_json_param($mail['email_other_info'],'ship_method_name','');
-                $mail['tax'] = get_json_param($mail['email_other_info'], 'tax', 0);
-                $mail['rush'] = get_json_param($mail['email_other_info'], 'rush', 0);
-                $mail['rush_days'] = get_json_param($mail['email_other_info'], 'rush_days', 0);
-                if ($mail['brand']=='SB') {
-                    $mail['saleprice'] = floatval(get_json_param($mail['email_other_info'],'sale_price',0));
-                    $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
-                    $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
-                } else {
-                    $mail['saleprice'] = floatval(get_json_param($mail['email_other_info'],'sale_price',0));
-                    $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
-                    $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
-                }
-                $mail['imgpath']=$this->config->item('img_path');
-                $mail['itemimgpath']=$this->config->item('item_quote_images');
-                $item_id = get_json_param($mail['email_other_info'], 'item_id', 0);
+            $mail['colorprint'] = get_json_param($mail['email_other_info'], 'colorprint', 0);
+            $mail['item_id']=get_json_param($mail['email_other_info'],'item_id',0);
+            $mail['item_number']='';
+            if (intval($mail['item_id'])!=0) {
+                $itemdat=$this->items_model->get_item($mail['item_id']);
+                if ($itemdat['result']==$this->success_result) {
+                    $item_det = $itemdat['data'];
+                    $mail['item_number']=$item_det['item_number'];
+                    if ($mail['colorprint'] == 1) {
+                        $mail['colorprint'] = '1 Color Imprinting';
+                    } elseif ($mail['colorprint'] == 2) {
+                        $mail['colorprint'] = '2 Color Imprinting';
+                    } else {
+                        $mail['colorprint'] = 'Blank, No Imprinting';
+                    }
+                    $mail['setup'] = get_json_param($mail['email_other_info'], 'setup', 0);
+                    $mail['imprint'] = get_json_param($mail['email_other_info'], 'imprint', 0);
+                    $mail['itemcost'] = get_json_param($mail['email_other_info'], 'itemcost', 0);
+                    $itemcolors = get_json_param($mail['email_other_info'], 'itemcolors', []);
+                    $colorstr = '';
+                    foreach ($itemcolors as $itemcolor) {
+                        $colorstr.=$itemcolor.', ';
+                    }
+                    if (count($itemcolors)>0) {
+                        $colorstr=substr($colorstr,0,-2);
+                    }
+                    $mail['colors'] = $colorstr;
+                        // $mail['colors'] = get_json_param($mail['email_other_info'], 'colors', 0);
+                    $mail['total'] = get_json_param($mail['email_other_info'], 'total', 0);
+                    $mail['ship_rate'] = get_json_param($mail['email_other_info'], 'ship_rate', 0);
+                    $mail['ship_method_name'] = get_json_param($mail['email_other_info'],'ship_method_name','');
+                    $mail['tax'] = get_json_param($mail['email_other_info'], 'tax', 0);
+                    $mail['rush'] = get_json_param($mail['email_other_info'], 'rush', 0);
+                    $mail['rush_days'] = get_json_param($mail['email_other_info'], 'rush_days', 0);
+                    if ($mail['brand']=='SB') {
+                        $mail['saleprice'] = floatval(get_json_param($mail['email_other_info'],'sale_price',0));
+                        $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
+                        $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
+                    } else {
+//                        $mail['saleprice'] = round($mail['itemcost'] / intval($mail['email_qty']), 2);
+//                        $mail['price'] = round(($mail['itemcost'] + $mail['saved']) / intval($mail['email_qty']), 2);
+//                        $mail['saved'] = get_json_param($mail['email_other_info'], 'saved', 0);
+                        $mail['saleprice'] = floatval(get_json_param($mail['email_other_info'],'sale_price',0));
+                        $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
+                        $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
+                    }
+                    // $mail['imgpath']=$this->config->item('img_path');
+                    $mail['imgpath'] = base_url().'img/'; // $this->config->item('item_quote_images').'/img/';
+                    $mail['itemimgpath'] = base_url(); // $this->config->item('item_quote_images');
+                    $item_id = get_json_param($mail['email_other_info'], 'item_id', 0);
 
                 if ($item_id != 0) {
                     /* Get Main Picture */
@@ -1616,5 +1630,85 @@ class Email_model extends My_Model
             }
         }
     }
+}
+                    $html = $this->load->view('quote/quote_mail_dompdf_view', $mail, TRUE);
+                    /* Create UNIQUE file name */
+                    // $file_name = 'BLUETRACK_Quote_'.date('ymd').$mail_id.'.pdf';
+                    $file_name = 'STRESSBALLS.com_Quote_'.date('ymd').$mail_id.'.pdf';
+                    $file_out = $this->config->item('quotes') . $file_name;
+                    pdf_create($html, $file_out, true);
+                    if (file_exists($file_out)) {
+                        /* Update email */
+                        $upddata = array(
+                            'email_id' => $mail_id,
+                            'email_quota_link' => $this->config->item('quotes_relative') . $file_name,
+                        );
+                        $this->email_update($upddata);
+                        /* Prepare Message for send */
+                        $msg_options=array(
+                            'item_name'=>$mail['email_item_name'],
+                            'item_qty'=>intval($mail['email_qty']),
+                        );
+                        $content=$this->load->view('messages/quote_message_view',$msg_options,TRUE);
+                        $msgbody=($content);
+                        /* Send message to user */
+                        $this->load->config('notifications');
+                        $mail_options=array(
+                            'touser'=>$mail['email_sendermail'],
+                            'fromuser'=>($mail['brand']=='SR' ?  $this->config->item('sr_quote_user') : $this->config->item('sb_quote_user')), // $this->config->item('email_notification_sender'),
+                            'subject'=>intval($mail['email_qty']).' '.$mail['email_item_name'] . ' Quote',
+                            /* 'message'=>'Hi ! Here is the qoute you requested.',*/
+                            'message'=>$msgbody,
+                            'fileattach'=>$file_out,
+                        );
+                        if ($sendmail==1) {
+                            // if (!in_array($_SERVER['SERVER_NAME'], $this->config->item('localserver'))) { // !=='lift_stressballs.local'
+                                $this->send_quota($mail_options);
+                            // }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public function send_quota($mail_options) {
+        $this->load->config('notifications');
+        $this->load->library('email');
+        $sendsmtp = intval($this->config->item('sb_quote_smtp'));
+        if ($sendsmtp==1) {
+            $email_conf = array(
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'smtp_user' => $this->config->item('sb_quote_user'),
+                'smtp_pass' => $this->config->item('sb_quote_pass'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+            );
+        } else {
+            $email_conf = array(
+                'protocol'=>'sendmail',
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'mailpath' => '/usr/sbin/sendmail',
+            );
+        }
+        $this->email->initialize($email_conf);
+        $this->email->to($mail_options['touser']);
+        $this->email->from($mail_options['fromuser']);
+        $this->email->subject($mail_options['subject']);
+        $this->email->message($mail_options['message']);
+        $this->email->attach($mail_options['fileattach']);
+        $res = $this->email->send();
+        $this->email->clear(TRUE);
+        return true;
+    }
+
+
 }
 

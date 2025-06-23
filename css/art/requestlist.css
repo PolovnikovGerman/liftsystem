@@ -614,10 +614,18 @@ select.leadopenlist {
 }
 .savequeststatus {
     clear: both;
-    float: left;
-    width: 110px;
+    float: right;
+    width: 94px;
     margin-top: 10px;
-    padding-left: 435px;
+    /* padding-left: 435px; */
+}
+.savequest {
+    cursor: default;
+    opacity: 0.4;
+}
+.savequest.active {
+    opacity: 1;
+    cursor: pointer;
 }
 .proof_pagination {
     float: right!important;

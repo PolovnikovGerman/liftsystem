@@ -1,3 +1,14 @@
+<html>
+<head>
+    <style type="text/css">
+        body {
+            font-family: Verdana, sans-serif;
+            font-size: 0.8em;
+            color:#484848;
+        }
+    </style
+</head>
+<body>
 <div style="clear: both; float: left; font-size: 14px; font-weight: bold; text-align: center; width: 100%;"><?=$title;?></div>
 <div style="clear: both; float: left; font-size: 12px; font-weight: normal; text-align: center; width: 100%;"><?=$subtitle;?></div>
 <div style="clear: both; float: left; font-size: 12px; font-weight: normal; text-align: center; width: 100%;">
@@ -36,3 +47,5 @@
 </div>
 <br/>
 <div style="clear: both; float: left; width: 100%; height: 15px;">&nbsp;</div>
+</body>
+</html>

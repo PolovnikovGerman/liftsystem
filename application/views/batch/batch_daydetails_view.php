@@ -5,7 +5,7 @@
     <div class="batchdetailtitle_results"><?=$totals['day_results']?></div>
 </div>
 <div class="batchdetailtable">
-    <div class="batchdetailtable_title">
+    <div class="batchdetailtable_title <?=$brand=='SR' ? 'stressrelivers' : ''?>">
         <div class="batchpaytable_email">E</div>
         <div class="batchpaytable_actions">&nbsp;</div>
         <div class="batchpaytable_ordernum">Order #</div>

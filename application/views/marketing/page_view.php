@@ -30,6 +30,9 @@
             <?php if (isset($couponsview)) { ?>
                 <div class="marketingcontentarea" id="couponsview" style="display: none"><?=$couponsview?></div>
             <?php } ?>
+            <?php if (isset($searchesview)) { ?>
+                <div class="marketingcontentarea" id="searchesview" style="display: none"><?=$searchesview?></div>
+            <?php } ?>
         </div>
     </div>
 </div>

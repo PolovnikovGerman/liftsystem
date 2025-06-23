@@ -47,7 +47,7 @@ function init_attempts_details() {
         $.post(url, params, function(response){
             if (response.errors=='') {
                 $("#pageModalLabel").empty().html('Online Checkouts');
-                $("#pageModal").find('div.modal-dialog').css('width','1267px');
+                $("#pageModal").find('div.modal-dialog').css('width','1362px');
                 $("#pageModal").find('div.modal-body').empty().html(response.data.content);
                 $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
                 $("div.artsubmitlog").qtip({

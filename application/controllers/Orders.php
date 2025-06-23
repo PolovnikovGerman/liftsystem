@@ -5,11 +5,13 @@ class Orders extends MY_Controller
 {
 
     private $pagelink = '/orders';
+    public $current_brand;
 
     public function __construct()
     {
         parent::__construct();
-        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink);
+        $this->current_brand = $this->menuitems_model->get_current_brand();
+        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink,0, $this->current_brand);
         if ($pagedat['result'] == $this->error_result) {
             show_404();
         }
@@ -29,10 +31,10 @@ class Orders extends MY_Controller
     {
         $head = [];
         $head['title'] = 'Orders';
-        $brand = $this->menuitems_model->get_current_brand();
+        $brand = $this->current_brand;
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
         $content_options = [];
-        $content_options['start'] = $this->input->get('start', TRUE);
+        $start = $this->input->get('start', TRUE);
         $search = usersession('liftsearch');
         usersession('liftsearch', NULL);
         $gmaps = 0;
@@ -64,6 +66,9 @@ class Orders extends MY_Controller
         // Order popup
         $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
         $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
+        // Customer autocomplete
+        $head['scripts'][] = array('src'=> '/js/adminpage/jquery.autocompleter.js');
+        $head['styles'][] = array('style' => '/css/page_view/jquery.autocompleter.css');
         // Uploader
         $head['scripts'][]=array('src'=>'/js/adminpage/fileuploader.js');
         $head['styles'][]=array('style'=>'/css/page_view/fileuploader.css');
@@ -90,16 +95,19 @@ class Orders extends MY_Controller
             'activelnk' => $this->pagelink,
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
+            'brand' => $brand,
         ];
         if ($gmaps==1) {
             $options['gmaps'] = $gmaps;
         }
         $dat = $this->template->prepare_pagecontent($options);
-        $content_options['left_menu'] = $dat['left_menu'];
         $content_options['brand'] = $brand;
-        $content_view = $this->load->view('orders/page_view', $content_options, TRUE);
+        $brandclass = ($brand=='SR' ? 'relievers' : ($brand=='SG' ? '' : 'stressballs'));
+        $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass ], TRUE);
+        $content_view = $this->load->view('orders/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
-        $this->load->view('page/page_template_view', $dat);
+        $dat['modal_view'] = $this->load->view('orders/modal_view', [], TRUE);
+        $this->load->view('page_modern/page_template_view', $dat);
     }
 
     // Orders view
@@ -359,7 +367,7 @@ class Orders extends MY_Controller
                 'order_id'=>$order_id,
             );*/
             $this->load->model('orders_model');
-            $data=$this->orders_model->orderonline_details($order_id);
+            $data=$this->orders_model->orderonline_details($order_id, $this->USER_PAYMENT);
             $error = $data['msg'];
             if ($data['result']==$this->success_result) {
                 $error = '';
@@ -415,6 +423,29 @@ class Orders extends MY_Controller
                 'content' => $this->load->view('leadorder/order_brands_view',['brands' => $brands], TRUE),
             ];
             $this->ajaxResponse($mdata, '');
+        }
+        show_404();
+    }
+
+    public function unlockonlinepayments()
+    {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $error = 'Empty Verify Code';
+            $code = ifset($postdata,'code','');
+            $order_id = $postdata['order_id'];
+            if (!empty($code) && !empty($order_id)) {
+                $this->load->model('orders_model');
+                $res = $this->orders_model->online_payment_view($code, $order_id, $this->USR_ID);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['cardnum'] = $res['cardnum'];
+                    $mdata['cardcode'] = $res['cardcode'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }

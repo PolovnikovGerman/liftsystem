@@ -1,9 +1,12 @@
-<div class="orders-profittotal-row">
-    <div class="profitorder_total">Totals of Search:</div>
+<div class="orders-profitalltotal-row">
+<!--    <div class="profitorder_total">Totals of Search:</div>-->
     <div class="profitorder_totaldata">
-        <div class="orders"><?= $numorders ?></div>
+        <div class="orders"><?=$numorders ?></div>
+        <div class="orders-new">&nbsp;</div>
+        <div class="orders-repeat">&nbsp;</div>
+        <div class="orders-blank <?=$brand=='SR' ? 'relievers' : ''?>">&nbsp;</div>
         <div class="qty"><?= $qty ?></div>
-        <div class="itemcolors">&nbsp;</div>
+        <div class="totals-emptyspace">&nbsp;</div>
         <div class="revenue" title="<?= $revenue ?>"><?= $show_revenue ?></div>
         <div class="balance" title="<?= $balance ?>"><?= $show_balance ?></div>
         <div class="shipping" title="<?= $shipping ?>"><?= $show_shipping ?></div>

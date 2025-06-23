@@ -1,13 +1,13 @@
 $(document).ready(function(){
     // Find first item
     var start = '';
-    if ($(".maincontentmenu_item.active").length > 0 ) {
-        start = $(".maincontentmenu_item.active").data('link');
+    if ($(".contentsubmenu_item.active").length > 0 ) {
+        start = $(".contentsubmenu_item.active").data('link');
     } else {
-        start = $(".maincontentmenu_item:first").data('link');
+        start = $(".contentsubmenu_item:first").data('link');
     }
     init_page(start);
-    $(".maincontentmenu_item").unbind('click').click(function () {
+    $(".contentsubmenu_item").unbind('click').click(function () {
         var objid = $(this).data('link');
         init_page(objid);
     })
@@ -15,8 +15,8 @@ $(document).ready(function(){
 
 function init_page(objid) {
     $(".fulfillcontentarea").hide();
-    $(".maincontentmenu_item").removeClass('active');
-    $(".maincontentmenu_item[data-link='"+objid+"']").addClass('active');
+    $(".contentsubmenu_item").removeClass('active');
+    $(".contentsubmenu_item[data-link='"+objid+"']").addClass('active');
     switch (objid) {
         case 'vendorsview':
             $("#vendorsview").show();
@@ -30,7 +30,12 @@ function init_page(objid) {
             break;
         case 'pototalsview':
             $("#pototalsview").show();
-            init_purchase_orders();
+            // init_purchase_orders();
+            // Temporary
+            // $(".pooverdataview").hide();
+            // $(".pohistorydataview").show();
+            // init_pohistory();
+            init_pototals();
             document.title = 'Lift: PO Totals';
             break;
         case 'printshopinventview':
@@ -53,6 +58,20 @@ function init_page(objid) {
             $("#printshopreportview").show();
             init_orderreport_content();
             document.title = 'Lift: Print Shop Report';
+            break;
+        case 'printscheduleview':
+            $("#printschedulerview").show();
+            init_printscheduler_content();
+            document.title = 'Lift: Print Shop Report';
+            break;
+        case 'btitems':
+            $("#btitemsview").show();
+            init_btitemslist_view();
+            document.title = 'Lift: BT items DB';
+            break;
+        case 'sritems':
+            $("#sritemsview").show();
+            init_relievers_items();
             break;
     }
 

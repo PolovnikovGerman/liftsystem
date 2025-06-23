@@ -1,0 +1,407 @@
+.pohistorydataview {
+    padding: 15px;
+    display: none;
+    width: 1374px;
+}
+.pohistory {
+    /*padding: 15px;*/
+    /*width: 1348px;*/
+}
+.pooverviewlink {
+    cursor: pointer;
+    color: #575757;
+    font-size: 12px;
+    height: 22px;
+    line-height: 22px!important;
+    padding: 0 8px;
+    border: 1px solid #b5b5b5;
+    border-radius: 5px;
+    background-color: #c8c8c8;
+    margin-top: 8px;
+}
+.pooverviewlink span {
+    color: #575757;
+    font-size: 14px;
+    margin-right: 3px;
+}
+.pooverviewlink:hover {
+    background-color: #b5b5b5;
+}
+.pohistorytitle {
+    height: 38px;
+    line-height: 38px!important;
+    font-size: 23px;
+    font-weight: 600;
+    margin-top: 15px; /* 30px; */
+}
+.pohistcalendartable {
+    width: 792px;
+    max-height: 567px;
+    border: 1px solid #000;
+}
+.pohcalendartitletbl {
+    width: 100%;
+    background: #545454;
+    height: 30px;
+    line-height: 30px;
+    border-bottom: 1px solid #000;
+}
+.pocalendyears-arrowleft, .pocalendyears-arrowright {
+    width: 15px;
+    text-align: center;
+    font-size: 21px;
+    color: #FFFFFF;
+    visibility: hidden;
+    height: 30px;
+    line-height: 30px!important;
+    cursor: pointer;
+}
+.pocalendyears-arrowleft {
+    margin-right: 5px;
+    margin-left: 4px;
+}
+.pocalendyears-arrowleft.active, .pocalendyears-arrowright.active {
+    visibility: visible;
+}
+.listyears {
+    /* margin-left: 10px; */
+    margin-top: 3px;
+    position: relative;
+}
+.yearbox {
+    display: block;
+    cursor: pointer;
+    width: 54px;
+    height: 21px;
+    line-height: 20px!important;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid #b9b9b9;
+    color: #b9b9b9;
+    margin-right: 8px;
+}
+.yearbox.active {
+    /*display: block;*/
+    /*cursor: pointer;*/
+    /*width: 54px;*/
+    /*height: 21px;*/
+    /*line-height: 20px!important;*/
+    /*text-align: center;*/
+    /*font-size: 12px;*/
+    /*font-weight: 600;*/
+    /*border: 1px solid #fff;*/
+    color: #FFFFFF;
+    background: #b10000;
+    border: 1px solid #ffffff;
+    /*margin-right: 8px;*/
+}
+.pohcald-tblbody {
+    width: 100%;
+    max-height: 536px;
+    overflow-y: auto;
+}
+.pohcald-tr {
+    width: 100%;
+    border-bottom: 1px solid #4a4949;
+}
+.pohcald-td {
+    width: 97px;
+    height: 67px;
+    padding-left: 4px;
+    border-right: 1px solid #4a4949;
+    cursor: pointer;
+}
+.pohcald-td.active {
+    /* background: #dbdbf6; */
+    background: #b10000!important;
+    color: #FFFFFF!important;
+}
+.pohcald-td.week {
+    width: 94px;
+    background: #757575;
+    color: #fff;
+    border-right: 2px solid #000;
+}
+.pohcald-td.weekends {
+    background: #dcdada;
+}
+.pohcald-td:last-child {
+    border-right: none;
+}
+.pohcald-date {
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
+.pohcald-td.week .pohcald-date {
+    font-size: 15px;
+}
+.pohcald-totalprice {
+    font-size: 13px;
+    line-height: 16px!important;
+}
+.pohcald-totalprice span {
+    font-size: 9px;
+    position: relative;
+    top: -2px;
+    left: 2px;
+}
+.pohcald-pototal {
+    font-size: 13px;
+    line-height: 14px!important;
+}
+.pohcald-pototalinf {
+    font-size: 11px;
+    line-height: 14px!important;
+    color: #757575;
+}
+.pohcald-td.week .pohcald-pototalinf {
+    color: #fff;
+}
+.pohistinfdaytable {
+    width: 518px;
+    float: right!important;
+}
+.pohistinfdaytable.active {
+    border: 1px solid #000;
+}
+.pohinfdaytitletbl {
+    width: 100%;
+    background: #b10000;
+    color: #FFFFFF;
+    height: 30px;
+    line-height: 30px;
+    border-bottom: 1px solid #000;
+}
+.infday-date {
+    margin-left: 10px;
+    font-size: 14px;
+    line-height: 30px!important;
+    font-weight: 600;
+}
+.infday-infpo {
+    font-size: 13px;
+    line-height: 30px!important;
+    float: right!important;
+    margin-right: 10px;
+}
+.pohinfday-tr.subtitle {
+    background: #d4d4d4;
+    text-align: center;
+    font-weight: 600;
+}
+.pohinfday-tr.subtitle .pohinfday-td.order {
+    color: #000 !important;
+}
+.pohinfday-tblbody {
+    width: 100%;
+    max-height: 536px;
+    overflow-y: auto;
+}
+.pohinfday-tr {
+    width: 100%;
+    height: 22px;
+    line-height: 22px!important;
+}
+.pohinfday-tr:last-child {
+    /* border-bottom: 1px solid #000; */
+}
+.pohinfday-td {
+    height: 22px;
+    line-height: 22px!important;
+}
+.pohinfday-td.date {
+    width: 32px;
+    font-size: 11px;
+    padding-left: 4px;
+}
+.pohinfday-td.time {
+    width: 46px;
+    padding-right: 6px;
+    font-size: 11px;
+    text-align: right;
+    border-right: 1px solid #d4d2d2;
+}
+.pohinfday-td.price {
+    width: 69px;
+    text-align: center;
+    font-size: 12px;
+    border-right: 1px solid #d4d2d2;
+}
+.pohinfday-td.price span {
+    font-size: 9px;
+    position: relative;
+    top: -3px;
+    left: 1px;
+}
+.pohinfday-td.vendor {
+    width: 97px; /* 86 */
+    text-align: center;
+    font-size: 12px;
+    border-right: 1px solid #d4d2d2;
+}
+.pohinfday-td.vendor.internal {
+    font-weight: 600;
+}
+.pohinfday-td.order {
+    width: 48px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #0000ff;
+    text-align: center;
+    border-right: 1px solid #d4d2d2;
+}
+.pohinfday-td.item {
+    font-size: 12px;
+    width: 200px;
+    padding-left: 6px;
+    border-right: 1px solid #d4d2d2;
+}
+.pohinfday-td.item.custom {
+    font-weight: 600;
+}
+.pohinfday-td.item, .pohinfday-td.vendor {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pohinfday-td.qty {
+    width: 42px;
+    text-align: center;
+    font-size: 12px;
+}
+.povendorallyears {
+    margin-top: 50px;
+}
+.povendorbox {
+    width: 300px;
+    margin-right: 20px;
+}
+.povendorbox:last-child {
+    margin-right: 0;
+}
+.povendorbox h4 {
+    font-size: 17px;
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+.povendor-arrowleft,
+.povendor-arrowright  {
+    margin-top: 200px;
+    margin-left: 10px;
+    margin-right: 10px;
+    opacity: .2;
+}
+.povendor-arrowleft.active,
+.povendor-arrowright.active {
+    opacity: 1;
+    cursor: pointer;
+}
+.povendor-arrowleft i,
+.povendor-arrowright i {
+    font-size: 60px;
+}
+.povendor-table {
+    border: 1px solid #000;
+}
+.povendortitletbl {
+    height: 25px;
+    line-height: 25px;
+    background: #545454;
+    color: #fff;
+    border-bottom: 1px solid #000;
+}
+.povendortitletbl-grey {
+    height: 25px;
+    line-height: 25px;
+    background: #d4d4d4;
+    color: #000;
+    border-bottom: 1px solid #000;
+}
+.povendortbl-body {
+    height: 380px;
+    overflow-y: auto;
+}
+.povendortbl-tr {
+    width: 100%;
+    height: 22px;
+    line-height: 22px!important;
+}
+.povendortbl-td {
+    height: 22px;
+    line-height: 22px!important;
+}
+.povendortbl-td.vendor {
+    width: 76px;
+    font-size: 14px;
+    margin-left: 22px;
+    text-align: center;
+}
+.povendortbl-td.totalsumprice {
+    width: 103px;
+    font-size: 14px;
+    text-align: center;
+    border-right: 1px solid #000;
+}
+.povendortitletbl .povendortbl-td.totalsumprice {
+    border-right: none;
+}
+.povendortbl-td.totalsumpo {
+    width: 77px;
+    font-size: 14px;
+    text-align: center;
+    font-weight: 600;
+}
+.povendortitletbl-grey .povendortbl-td.totalsumprice,
+.povendortitletbl-grey .povendortbl-td.totalpo {
+    font-weight: 600;
+}
+.povendortbl-td.total {
+    width: 75px;
+    font-size: 14px;
+    text-align: right;
+    padding-right: 4px;
+    margin-left: 22px;
+    border-right: 1px solid #000;
+}
+.povendortbl-td.number {
+    width: 22px;
+    font-size: 12px;
+    text-align: center;
+    border-right: 1px solid #d4d2d2;
+}
+.povendortbl-td.vendorname {
+    width: 75px;
+    font-size: 12px;
+    text-align: center;
+    border-right: 1px solid #000;
+}
+.povendortbl-td.vendorname.inventory {
+    font-weight: 600;
+}
+.povendortbl-td.totalpriceprec {
+    width: 37px;
+    font-size: 12px;
+    text-align: center;
+    border-right: 1px solid #000;
+}
+.povendortbl-td.totalprice {
+    width: 66px;
+    font-size: 12px;
+    text-align: center;
+    border-right: 1px solid #d4d2d2;
+}
+.povendortbl-td.totalpo {
+    width: 38px;
+    font-size: 12px;
+    text-align: center;
+    border-right: 1px solid #d4d2d2;
+}
+.povendortbl-td.totalpoprec {
+    width: 38px;
+    font-size: 12px;
+    text-align: center;
+}

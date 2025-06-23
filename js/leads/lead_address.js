@@ -123,6 +123,10 @@ function updateAddress(address_type, address1, city, state, postcode, country) {
                     $(".quotebilladdresdistrict").empty();
                 }
                 $("#billingcompileaddress").val(response.data.billaddress);
+                $(".quotebilladdrother[data-item='billing_address2']").focus().addClass('flashed');
+                setTimeout(function() {
+                    $(".quotebilladdrother[data-item='billing_address2']").removeClass('flashed');
+                }, 5000);
             } else {
                 $("input[data-item='shipping_address1']").val(response.data.address_1);
                 $("select[data-item='shipping_country']").val(response.data.country);
@@ -134,6 +138,10 @@ function updateAddress(address_type, address1, city, state, postcode, country) {
                     $(".quoteshipaddresdistrict").empty(); // .val(response.data.state);
                 }
                 $("#shipingcompileaddress").val(response.data.shipaddress);
+                $(".quoteshipadrother[data-item='shipping_address2']").focus().addClass('flashed');
+                setTimeout(function() {
+                    $(".quoteshipadrother[data-item='shipping_address2']").removeClass('flashed');
+                }, 5000);
             }
             if (parseInt(response.data.ship)==1) {
                 // Update shipping cost

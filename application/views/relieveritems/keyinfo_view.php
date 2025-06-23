@@ -1,6 +1,10 @@
 <div class="relievers_keyinfo">
     <div class="sectionlabel">Key Info:</div>
-    <div class="sectionbody">
+    <div class="sectionbody keyinfosection <?=$missinfo==0 ? '' : 'missinginfo'?>">
+        <div class="content-row">
+            <div class="itemparamlabel itemname">Item Name:</div>
+            <div class="itemparamvalue itemname"><?=$item['item_name']?></div>
+        </div>
         <div class="content-row">
             <div class="itemparamlabel itemactive">Active:</div>
             <div class="itemparamvalue itemactive">

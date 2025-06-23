@@ -107,9 +107,14 @@
             <div class="paymentinfo-cc">
                 <div class="paymentinfo-cc-title">CC:</div>
                 <div class="paymentinfo-cc-input">
-                    <input type="text" style="width:175px;" readonly="readonly" name="payment_card_number"
+                    <input type="text" style="width:152px;" readonly="readonly" name="payment_card_number"
                            id="payment_card_number" value="<?= $order['payment_card_number'] ?>"/>
                 </div>
+                <?php if ($order['payment_lock']==1) { ?>
+                    <div class="onlinepayment_lock" data-order="<?=$order['order_id']?>">
+                        <i class="fa fa-lock"></i>
+                    </div>
+                <?php } ?>
             </div>
             <div class="paymentinfo-exp-cvc">
                 <div class="paymentinfo-exp-title">EXP:</div>

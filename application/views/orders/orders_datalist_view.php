@@ -16,6 +16,7 @@
         <?php } ?>
         <div class="item <?=($row['custom_order']==1 ? 'customorder' : '')?>"><?=$row['out_item']?></div>
         <div class="revenue"><?=$row['revenue']?></div>
+        <div class="balance <?=$row['balance_class']?>"><?=$row['balance']?></div>
         <div class="usrrepl <?=$row['usrreplclass']?>">
             <?php if ($role=='user') { ?>
                 <?=$row['user_replic']?>
@@ -37,6 +38,7 @@
         <div class="artstage"><?=$row['artstage']?></div>
         <div class="points <?=$row['profit_class']?>"><?=$row['points']?></div>
         <div class="pointsdevider">&nbsp;</div>
+        <div class="ordstatuspercent <?=$row['order_status_class']?>"><?=$row['order_status_perc']?></div>
         <div class="ordstatus <?=$row['order_status_class']?>"><?=$row['order_status']?></div>
     </div>
     <?php $nrow++;?>

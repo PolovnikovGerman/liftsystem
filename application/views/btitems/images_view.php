@@ -1,6 +1,6 @@
 <div class="relievers_itemimages">
     <div class="sectionlabel">IMAGES & OPTIONS:</div>
-    <div class="sectionbody">
+    <div class="sectionbody <?=$missinfo==0 ? '' : 'missinginfo'?>">
         <div class="content-row">
             <div class="itemmainimagearea">
                 <div class="itemmainimagetitle">Main Image:</div>
@@ -12,7 +12,7 @@
             </div>
             <div class="itemcategoryimagearea">
                 <div class="itemcategoryimagetitle">Category Page:</div>
-                <div class="itemcategoryimagesrc">
+                <div class="itemcategoryimagesrc <?=empty($item['category_image']) ? 'emptycatimage' : ''?>">
                     <?php if (!empty($item['category_image'])) {?>
                         <img class="img-responsive" src="<?=$item['category_image']?>" alt="Category Image"/>
                     <?php } ?>

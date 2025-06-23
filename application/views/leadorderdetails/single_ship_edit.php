@@ -15,7 +15,7 @@
                     <div class="label">Ships on:</div>
                     <div class="rushdataselect" id="rushdatalistarea"><?=$rushview?></div>
                 </div>
-                <input type="text" class="shiprushcost input_text_right input_border_black" value="<?=number_format($shipping['rush_price'],2) ?>"/>
+                <input type="text" class="shiprushcost input_text_right input_border_black" value="<?=number_format(floatval($shipping['rush_price']),2) ?>"/>
             </div>
         </div>
     </div>

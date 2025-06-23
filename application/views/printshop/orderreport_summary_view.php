@@ -1,5 +1,6 @@
 <div class="numpp">
-    <i class="fa fa-plus-circle addnewprintshopincome" aria-hidden="true"></i>
+    &nbsp;
+<!--    <i class="fa fa-plus-circle addnewprintshopincome" aria-hidden="true"></i>-->
 </div>
 <div class="summarylabel">Totals:</div>
 <div class="ordernum">&nbsp;</div>

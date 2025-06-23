@@ -1,13 +1,13 @@
 $(document).ready(function(){
     // Find first item
     var start = '';
-    if ($(".maincontentmenu_item.active").length > 0 ) {
-        start = $(".maincontentmenu_item.active").data('link');
+    if ($(".contentsubmenu_item.active").length > 0 ) {
+        start = $(".contentsubmenu_item.active").data('link');
     } else {
-        start = $(".maincontentmenu_item:first").data('link');
+        start = $(".contentsubmenu_item:first").data('link');
     }
     init_page(start);
-    $(".maincontentmenu_item").unbind('click').click(function () {
+    $(".contentsubmenu_item").unbind('click').click(function () {
         var objid = $(this).data('link');
         init_page(objid);
     });
@@ -15,8 +15,8 @@ $(document).ready(function(){
 
 function init_page(objid) {
     $(".marketingcontentarea").hide();
-    $(".maincontentmenu_item").removeClass('active');
-    $(".maincontentmenu_item[data-link='"+objid+"']").addClass('active');
+    $(".contentsubmenu_item").removeClass('active');
+    $(".contentsubmenu_item[data-link='"+objid+"']").addClass('active');
     switch (objid) {
         case 'searchestimeview':
             $("#searchestimeview").show();
@@ -24,11 +24,11 @@ function init_page(objid) {
             break;
         case 'searcheswordview':
             $("#searcheswordview").show();
-            init_searchkeyword_content();
+            show_keywords_result();
             break;
         case 'searchesipadrview':
             $("#searchesipadrview").show();
-            init_searchipaddres_content();
+            show_ipaddress_result();
             break
         case 'signupview':
             $("#signupview").show();
@@ -37,6 +37,10 @@ function init_page(objid) {
         case 'couponsview':
             $("#couponsview").show();
             init_coupon_view();
+            break;
+        case 'searchesview':
+            $("#searchesview").show();
+            init_searches_view();
             break;
     }
 

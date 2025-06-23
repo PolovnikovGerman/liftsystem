@@ -90,6 +90,7 @@ class Customform_model extends MY_Model
             } else {
                 $dat['event_date'] = date('m/d/y', $dat['ship_date']);
             }
+            $dat['weeknum'] = date('Y-W', strtotime($dat['date_add']));
             $out[] = $dat;
         }
         return $out;
@@ -132,6 +133,98 @@ class Customform_model extends MY_Model
         $this->db->set('active', ifset($options,'activity', 0));
         $this->db->update('ts_custom_quotes');
         return true;
+    }
+
+    public function get_customform_totals($brand)
+    {
+        $date_string = date('Y-m-d');
+        $weekdat = explode('-',date("W-Y", strtotime($date_string)));
+        $dats = getDatesByWeek($weekdat[0], $weekdat[1]);
+        $monday = $dats['start_week'];
+        $sunday = $dats['end_week'];
+        $weeks = [];
+        for ($i=0; $i<52; $i++) {
+            $startd = strtotime("-".$i." week", $monday);
+            $finishd = strtotime("-".$i." week", $sunday);
+            $curweek = [
+                'week' => date('M j', $startd),
+                'mon' => 0,
+                'tue' => 0,
+                'wed' => 0,
+                'thu' => 0,
+                'fri' => 0,
+                'sat' => 0,
+                'sun' => 0,
+                'total' => 0
+            ];
+            // Get data
+            $this->db->select('date_format(date_add, "%w") as dayw, count(custom_quote_id) as cnt')->from('ts_custom_quotes');
+            if ($brand!=='ALL') {
+                if ($brand=='SR') {
+                    $this->db->where('brand', $brand);
+                } else {
+                    $this->db->where_in('brand', ['SB','BT']);
+                }
+            }
+            $this->db->where('unix_timestamp(date_add) >=', $startd);
+            $this->db->where('unix_timestamp(date_add) <=', $finishd);
+            $this->db->group_by('dayw');
+            $quotes = $this->db->get()->result_array();
+            foreach ($quotes as $quote) {
+                if ($quote['dayw']==0) {
+                    $curweek['sun']+=$quote['cnt'];
+                } elseif ($quote['dayw']==1) {
+                    $curweek['mon']+=$quote['cnt'];
+                } elseif ($quote['dayw']==2) {
+                    $curweek['tue']+=$quote['cnt'];
+                } elseif ($quote['dayw']==3) {
+                    $curweek['wed']+=$quote['cnt'];
+                } elseif ($quote['dayw']==4) {
+                    $curweek['thu']+=$quote['cnt'];
+                } elseif ($quote['dayw']==5) {
+                    $curweek['fri']+=$quote['cnt'];
+                } elseif ($quote['dayw']==6) {
+                    $curweek['sat']+=$quote['cnt'];
+                }
+                $curweek['total']+=$quote['cnt'];
+            }
+            $weeks[] = $curweek;
+        }
+        return $weeks;
+    }
+
+    public function get_customform_totalchart($brand)
+    {
+        $date_string = date('Y-m-d');
+        $weekdat = explode('-',date("W-Y", strtotime($date_string)));
+        $dats = getDatesByWeek($weekdat[0], $weekdat[1]);
+        $monday = $dats['start_week'];
+        $sunday = $dats['end_week'];
+        $maxdat = $sunday;
+        $mindat = strtotime('-52 weeks', $monday);
+        $this->db->select('date_format(date_add, "%X-%V") as dayw, count(custom_quote_id) as cnt')->from('ts_custom_quotes');
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB','BT']);
+            }
+        }
+        $this->db->where('unix_timestamp(date_add) >=', $mindat);
+        $this->db->where('unix_timestamp(date_add) <=', $maxdat);
+        $this->db->group_by('dayw');
+        $results = $this->db->get()->result_array();
+        $data = [];
+        $labels = [];
+        foreach ($results as $result) {
+            $days = explode('-', $result['dayw']);
+            $dates = getDatesByWeek($days[1], $days[0]);
+            $labels[] = date('M`y', $dates['start_week']);
+            // $labels[] = $days[1].'/'.$days[0];
+            // $labels[] = $result['dayw'];
+            $data[] = $result['cnt'];
+        }
+        return ['labels'=>$labels,'data'=>$data];
     }
 
 }

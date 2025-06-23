@@ -1,6 +1,7 @@
 <div class="artlogoupload_container">
     <div class="artlogoupload_data">
         <input type="hidden" id="newartid" value="<?=$artwork_id?>"/>
+        <input type="hidden" id="newlogotype" value="Logo"/>
         <div class="artlogoupload_title">Upload Logo</div>
         <div id="orderattachlists" class="artlogouploads">&nbsp;</div>
         <div class="clear"></div>

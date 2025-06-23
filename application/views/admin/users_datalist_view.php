@@ -1,12 +1,10 @@
 <?php $numpp=1;?>
 <?php foreach ($data as $row) { ?>
-<div class="userdatarow <?=$numpp%2==0 ? 'greydatarow' : 'whitedatarow'?>">
+<div class="userdatarow <?=$numpp%2==0 ? 'greydatarow' : 'whitedatarow'?> <?=$row['user_status']==1 ? '' : 'nonactive'?>">
+    <div class="userid">U<?=str_pad($row['user_id'],3,'0', STR_PAD_LEFT)?></div>
     <div class="actions">
         <div class="edituser" data-user="<?=$row['user_id']?>" title="Edit">
             <i class="fa fa-pencil" aria-hidden="true"></i>
-        </div>
-        <div class="deleteuser" data-user="<?=$row['user_id']?>" title="Remove">
-            <i class="fa fa-trash-o" aria-hidden="true"></i>
         </div>
         <div class="userstatus" data-user="<?=$row['user_id']?>">
             <input type="hidden" class="userstatusval" value="<?=$row['user_status']?>"/>
@@ -15,6 +13,9 @@
             <?php } else { ?>
                 <i class="fa fa-play-circle-o" aria-hidden="true"></i>
             <?php } ?>
+        </div>
+        <div class="deleteuser" data-user="<?=$row['user_id']?>" title="Remove">
+            <i class="fa fa-trash-o" aria-hidden="true"></i>
         </div>
     </div>
     <div class="username truncateoverflowtext"><?=$row['userlogin']?></div>

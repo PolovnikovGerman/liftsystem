@@ -2,9 +2,13 @@
 <?php foreach ($orders as $row) { ?>
 <div class="datarow <?=$numpp%2==0 ? 'greydatarow' : 'whitedatarow'?> <?=$row['orderclass']?>" data-report="<?=$row['printshop_income_id']?>">
     <div class="numpp"><?=$row['numpp']?></div>
-    <div class="delrecord" data-reportnum="<?=$row['order_num']?>" data-report="<?=$row['printshop_income_id']?>">
-    <i class="fa fa-trash" aria-hidden="true"></i>
-    </div>
+    <?php if ($row['shipping_ready'] > 0) : ?>
+        <div class="lockdelete">&nbsp;</div>
+    <?php else: ?>
+        <div class="delrecord" data-reportnum="<?=$row['order_num']?>" data-report="<?=$row['printshop_income_id']?>">
+            <i class="fa fa-trash" aria-hidden="true"></i>
+        </div>
+    <?php endif; ?>
     <div class="orderdate"><?=$row['order_date']?></div>
     <div class="ordernum editorderreport" data-report="<?=$row['printshop_income_id']?>" data-profitview="/fulfillment/ordereport_profit?d=<?=$row['order_id']?>&amnt=<?=$row['printshop_income_id']?>">
         <?=$row['order_num']?>
@@ -27,10 +31,10 @@
     <div class="totalea"><?=number_format($row['totalea'],3)?></div>
     <div class="totaladdlcost"><?=MoneyOutput($row['extraitem'])?></div>
     <div class="itemscost"><?=MoneyOutput($row['costitem'])?></div>
-    <div class="oranplate"><?=QTYOutput($row['oranplate'],1)?></div>
-    <div class="blueplate"><?=QTYOutput($row['blueplate'],1)?></div>
-    <div class="beigeplate"><?=QTYOutput($row['beigeplate'],1)?></div>
-    <div class="totalplate"><?=QTYOutput($row['totalplates'],1)?></div>
+    <div class="oranplate"><?=QTYOutput($row['oranplate'],2)?></div>
+    <div class="blueplate"><?=QTYOutput($row['blueplate'],2)?></div>
+    <div class="beigeplate"><?=QTYOutput($row['beigeplate'],2)?></div>
+    <div class="totalplate"><?=QTYOutput($row['totalplates'],2)?></div>
     <div class="platecost"><?=MoneyOutput($row['platescost'])?></div>
     <div class="totalcost"><?=MoneyOutput($row['itemstotalcost'])?></div>
     <div class="misprintcost"><?=  MoneyOutput($row['misprintcost'])?></div>

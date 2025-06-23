@@ -1,4 +1,4 @@
-var sliderwidth=183;
+var sliderwidth= 243; // 183;
 
 function init_master_inventory() {
     init_master_inventoryhead();
@@ -47,6 +47,7 @@ function init_master_inventorydata() {
     params.push({name: 'inventory_type', value: $("#active_invtype").val()});
     params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
     params.push({name: 'showmax', value: $("#invshowmax").val()});
+    params.push({name: 'sortby', value: $(".inventcolorsort").val()});
     var url="/masterinventory/get_inventory_list";
     $("#loader").show();
     $.post(url, params, function (response) {
@@ -160,6 +161,7 @@ function init_master_inventorycontent() {
         params.push({name: 'onboat_type', value: onboattype});
         params.push({name: 'inventory_type', value: $("#active_invtype").val()});
         params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
+        params.push({name: 'sortby', value: $(".inventcolorsort").val()});
         $.post(url, params, function (response){
             if (response.errors=='') {
                 // Lock add / edit elements
@@ -219,6 +221,7 @@ function init_master_inventorycontent() {
         params.push({name: 'inventory_type', value: $("#active_invtype").val()});
         params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
         params.push({name: 'onboat_type', value: 'C'})
+        params.push({name: 'sortby', value: $(".inventcolorsort").val()});
         $.post(url, params, function (response){
             if (response.errors=='') {
                 // Lock add / edit elements
@@ -260,6 +263,7 @@ function init_master_inventorycontent() {
         params.push({name: 'container', value: container});
         params.push({name: 'inventory_type', value: $("#active_invtype").val()});
         params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
+        params.push({name: 'sortby', value: $(".inventcolorsort").val()});
         params.push({name: 'onboat_type', value: 'E'})
         $.post(url, params, function (response){
             if (response.errors=='') {
@@ -328,6 +332,10 @@ function init_master_inventorycontent() {
                 show_error(response);
             }
         },'json');
+    });
+    // Change Sort
+    $("select.inventcolorsort").unbind('change').change(function(){
+        init_master_inventorydata();
     });
 }
 
@@ -424,6 +432,7 @@ function init_edit_inventcontainer(container, onboat_type) {
         params.push({name: 'inventory_type', value: $("#active_invtype").val()});
         params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
         params.push({name: 'onboat_type', value: onboat_type});
+        params.push({name: 'sortby', value: $(".inventcolorsort").val()});
         $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
@@ -452,6 +461,7 @@ function init_edit_inventcontainer(container, onboat_type) {
         params.push({name: 'session', value: $("#container_session").val()});
         params.push({name: 'inventory_type', value: $("#active_invtype").val()});
         params.push({name: 'inventory_filter', value: $(".inventfilterselect").val()});
+        params.push({name: 'sortby', value: $(".inventcolorsort").val()});
         $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
@@ -639,6 +649,7 @@ function init_master_inventorytabledat() {
         var params=new Array();
         params.push({name: 'inventory_type', value: $("#active_invtype").val()});
         params.push({name: 'inventory_label', value: $(".mastinvent_left_section.active").data('invlabel')});
+        params.push({name: 'sortby', value: $(".inventcolorsort").val()});
         var url = '/masterinventory/export_inventory';
         $.post(url, params, function (response) {
             if (response.errors=='') {

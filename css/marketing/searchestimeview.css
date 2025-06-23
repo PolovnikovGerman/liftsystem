@@ -66,6 +66,8 @@
 .searchtime_dataconatiner .datacontainer_content {
     border-bottom: 2px solid #000000;
     margin-bottom: 15px;
+    max-height: 508px;
+    overflow-y: auto;
 }
 .searchtime_dataconatiner .datacontainer_content .datarow {
     clear: both;

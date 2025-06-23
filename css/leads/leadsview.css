@@ -2,7 +2,7 @@
 .leads_content {
     clear: both;
     float: left;
-    width: 1016px;
+    width: 1048px;
 }
 .leads_headarea {
     clear: both;
@@ -19,7 +19,8 @@
     height: 27px;
     line-height: 25px;
     margin-bottom: 3px;
-    width: 999px;
+    /* width: 999px; */
+    width: 1017px;
 }
 .leads_add {
     background: url('/img/leads/newlead_btn.png') no-repeat transparent;
@@ -45,7 +46,7 @@
     width: 70px;
 }
 .lead_legmapimg {
-    margin-top: 5px;
+    /*margin-top: 5px;*/
     width: 20px;
 }
 .lead_legend_text {
@@ -122,12 +123,13 @@ input.lead_searchinput {
 /* DATA */
 .lead_dataareas {
     clear: both;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     margin-left: 9px;
-    width: 1002px;
+    /* width: 1002px; */
 }
 .lead_dataarealeft {
-    width: 554px;
+    /* width: 554px; */
+    width: 587px;
 }
 .lead_listdata_head {
     background: none #d0d0d0;
@@ -148,7 +150,8 @@ input.lead_searchinput {
 }
 .lead_listdata_head > .leaddate {
     border-right: 1px solid #000000;
-    width: 58px;
+    /* width: 58px; */
+    width: 81px;
 }
 .lead_listdata_head > .leadvalue {
     border-right: 1px solid #000000;
@@ -156,11 +159,11 @@ input.lead_searchinput {
 }
 .lead_listdata_head > .leadcustomer {
     border-right: 1px solid #000000;
-    width: 123px;
+    width: 148px;
 }
 .lead_listdata_head > .leadqty {
     border-right: 1px solid #000000;
-    width: 35px;
+    width: 53px;
 }
 .lead_listdata_head > .leaditem {
     border-right: 1px solid #000000;
@@ -173,10 +176,9 @@ input.lead_searchinput {
     border-bottom: 1px solid #000000;
     border-left: 1px solid #000000;
     clear: both;
-    /* height: 565px; */
-    height: 492px;
+    height: 1066px;
     overflow-y: scroll;
-    width: 557px;
+    width: 100%;
 }
 /* List Data View */
 .lead_datarow {
@@ -184,7 +186,8 @@ input.lead_searchinput {
     color: #000000;
     font-family: Arial,Helvetica;
     font-size: 12px;
-    width: 541px;
+    /* width: 541px; */
+    width: 100%;
 }
 .lead_datarow > div {
     height: 21px;
@@ -216,7 +219,8 @@ input.lead_searchinput {
 .lead_datarow > .leaddate {
     border-right: 1px solid;
     float: left;
-    width: 58px;
+    /* width: 58px; */
+    width: 81px;
 }
 .lead_datarow > .leadvalue {
     border-right: 1px solid;
@@ -232,7 +236,7 @@ input.lead_searchinput {
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: left;
-    width: 123px;
+    width: 148px;
 }
 .lead_datarow > .leadqty {
     border-right: 1px solid;
@@ -240,7 +244,7 @@ input.lead_searchinput {
     overflow: hidden;
     text-overflow: ellipsis;
     float: left;
-    width: 35px;
+    width: 53px;
 }
 .lead_datarow > .leaditem {
     border-right: 1px solid;
@@ -260,7 +264,8 @@ input.lead_searchinput {
     float: left;
     white-space: nowrap;
     overflow: hidden;
-    width: 24px;
+    /* width: 24px; */
+    width: 46px;
 }
 /* Right part */
 .lead_dataarearight {
@@ -424,8 +429,8 @@ input.lead_searchinput {
     overflow-x: hidden!important;
 }
 .leadclosedreportdataweeks {
-    /* height: 471px; */
-    height: 399px;
+    /* height: 399px; */
+    height: 957px;
     overflow-y: auto;
     width: 419px;
     overflow-x: hidden;

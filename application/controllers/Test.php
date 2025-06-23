@@ -1460,8 +1460,85 @@ class Test extends CI_Controller
 
     // Transform BT items to new format
     public function transformbtitems() {
-        $this->load->config('siteart_config');
-        $pricetypes = $this->config->item('price_types');
+//        $this->load->config('siteart_config');
+//        $pricetypes = $this->config->item('price_types');
+//        $this->db->select('item_id, item_number, item_template, vendor_item_id, main_image, cartoon_width, cartoon_heigh, cartoon_depth,cartoon_qty');
+//        $this->db->from('sb_items');
+//        $this->db->where('brand','BT');
+//        $this->db->order_by('item_number');
+//        $items = $this->db->get()->result_array();
+//        foreach ($items as $item) {
+//            $item_id = $item['item_id'];
+//            echo "Item ".$item['item_number'];
+//            // Similar
+//            $this->db->where('item_similar_item', $item_id);
+//            $this->db->delete('sb_item_similars');
+//            $this->db->select('*');
+//            $this->db->from('sb_simulars');
+//            $this->db->where('item_id', $item_id);
+//            $simres = $this->db->get()->row_array();
+//            if (!empty($simres['sim_1'])) {
+//                $this->db->set('item_similar_item', $item_id);
+//                $this->db->set('item_similar_similar', $simres['sim_1']);
+//                $this->db->insert('sb_item_similars');
+//            }
+//            if (!empty($simres['sim_2'])) {
+//                $this->db->set('item_similar_item', $item_id);
+//                $this->db->set('item_similar_similar', $simres['sim_2']);
+//                $this->db->insert('sb_item_similars');
+//            }
+//            if (!empty($simres['sim_3'])) {
+//                $this->db->set('item_similar_item', $item_id);
+//                $this->db->set('item_similar_similar', $simres['sim_3']);
+//                $this->db->insert('sb_item_similars');
+//            }
+//            echo ' Similar OK';
+//            // Images
+//            if (empty($item['main_image'])) {
+//                $this->db->select('*');
+//                $this->db->from('sb_item_images');
+//                $this->db->where('item_img_item_id', $item_id);
+//                $imgs = $this->db->get()->result_array();
+//                if (count($imgs)>0) {
+//                    $this->db->set('main_image', $imgs[0]['item_img_name']);
+//                    $this->db->where('item_id', $item_id);
+//                    $this->db->update('sb_items');
+//                    // Delete first image
+//                    // $this->db->where('item_img_id', $imgs[0]['item_img_id']);
+//                    // $this->db->delete('sb_item_images');
+//                }
+//            }
+//            echo ' Images OK';
+//            // Prices
+//            if ($item['item_template']=='Stressball') {
+//                $this->db->select('*');
+//                $this->db->from('sb_item_prices');
+//                $this->db->where('item_price_itemid', $item_id);
+//                $itmprice = $this->db->get()->row_array();
+//                if (ifset($itmprice,'item_price_id',0) > 0) {
+//                    $this->db->where('item_id', $item_id);
+//                    $this->db->delete('sb_promo_price');
+//                    foreach ($pricetypes as $pricetype) {
+//                        $this->db->set('item_id', $item_id);
+//                        $this->db->set('item_qty', $pricetype['base']);
+//                        $this->db->set('price', (empty($itmprice['item_price_'.$pricetype['type']]) ? null :  $itmprice['item_price_'.$pricetype['type']]));
+//                        $this->db->set('sale_price', (empty($itmprice['item_sale_'.$pricetype['type']]) ? null :  $itmprice['item_sale_'.$pricetype['type']]));
+//                        $this->db->set('profit', $itmprice['profit_'.$pricetype['type']]);
+//                        $this->db->insert('sb_promo_price');
+//                    }
+//                }
+//            }
+//            echo ' Prices OK'.PHP_EOL;
+//            // Add box
+//            $this->db->where('item_id', $item['item_id']);
+//            $this->db->delete('sb_item_shipping');
+//            $this->db->set('item_id', $item['item_id']);
+//            $this->db->set('box_qty', $item['cartoon_qty']);
+//            $this->db->set('box_width', $item['cartoon_width']);
+//            $this->db->set('box_length', $item['cartoon_depth']);
+//            $this->db->set('box_height', $item['cartoon_heigh']);
+//            $this->db->insert('sb_item_shipping');
+//        }
         $this->db->select('item_id, item_number, item_template, vendor_item_id, main_image, cartoon_width, cartoon_heigh, cartoon_depth,cartoon_qty');
         $this->db->from('sb_items');
         $this->db->where('brand','BT');
@@ -1469,75 +1546,17 @@ class Test extends CI_Controller
         $items = $this->db->get()->result_array();
         foreach ($items as $item) {
             $item_id = $item['item_id'];
-            echo "Item ".$item['item_number'];
-            // Similar
-            $this->db->where('item_similar_item', $item_id);
-            $this->db->delete('sb_item_similars');
+            echo 'Item # '.$item['item_number'].PHP_EOL;
             $this->db->select('*');
-            $this->db->from('sb_simulars');
-            $this->db->where('item_id', $item_id);
-            $simres = $this->db->get()->row_array();
-            if (!empty($simres['sim_1'])) {
-                $this->db->set('item_similar_item', $item_id);
-                $this->db->set('item_similar_similar', $simres['sim_1']);
-                $this->db->insert('sb_item_similars');
+            $this->db->from('sb_item_images');
+            $this->db->where('item_img_item_id', $item_id);
+            $this->db->order_by('item_img_order');
+            $imgs = $this->db->get()->result_array();
+            if (count($imgs)>0) {
+                $this->db->set('main_image', $imgs[0]['item_img_name']);
+                $this->db->where('item_id', $item_id);
+                $this->db->update('sb_items');
             }
-            if (!empty($simres['sim_2'])) {
-                $this->db->set('item_similar_item', $item_id);
-                $this->db->set('item_similar_similar', $simres['sim_2']);
-                $this->db->insert('sb_item_similars');
-            }
-            if (!empty($simres['sim_3'])) {
-                $this->db->set('item_similar_item', $item_id);
-                $this->db->set('item_similar_similar', $simres['sim_3']);
-                $this->db->insert('sb_item_similars');
-            }
-            echo 'Similar OK';
-            // Images
-            if (empty($item['main_image'])) {
-                $this->db->select('*');
-                $this->db->from('sb_item_images');
-                $this->db->where('item_img_item_id', $item_id);
-                $imgs = $this->db->get()->result_array();
-                if (count($imgs)>0) {
-                    $this->db->set('main_image', $imgs[0]['item_img_name']);
-                    $this->db->where('item_id', $item_id);
-                    $this->db->update('sb_items');
-                    // Delete first image
-                    // $this->db->where('item_img_id', $imgs[0]['item_img_id']);
-                    // $this->db->delete('sb_item_images');
-                }
-            }
-            echo 'Images OK';
-            // Prices
-            if ($item['item_template']=='Stressball') {
-                $this->db->select('*');
-                $this->db->from('sb_item_prices');
-                $this->db->where('item_price_itemid', $item_id);
-                $itmprice = $this->db->get()->row_array();
-                if (ifset($itmprice,'item_price_id',0) > 0) {
-                    $this->db->where('item_id', $item_id);
-                    $this->db->delete('sb_promo_price');
-                    foreach ($pricetypes as $pricetype) {
-                        $this->db->set('item_id', $item_id);
-                        $this->db->set('item_qty', $pricetype['base']);
-                        $this->db->set('price', (empty($itmprice['item_price_'.$pricetype['type']]) ? null :  $itmprice['item_price_'.$pricetype['type']]));
-                        $this->db->set('sale_price', (empty($itmprice['item_sale_'.$pricetype['type']]) ? null :  $itmprice['item_sale_'.$pricetype['type']]));
-                        $this->db->set('profit', $itmprice['profit_'.$pricetype['type']]);
-                        $this->db->insert('sb_promo_price');
-                    }
-                }
-            }
-            echo 'Prices OK'.PHP_EOL;
-            // Add box
-            $this->db->where('item_id', $item['item_id']);
-            $this->db->delete('sb_item_shipping');
-            $this->db->set('item_id', $item['item_id']);
-            $this->db->set('box_qty', $item['cartoon_qty']);
-            $this->db->set('box_width', $item['cartoon_width']);
-            $this->db->set('box_length', $item['cartoon_depth']);
-            $this->db->set('box_height', $item['cartoon_heigh']);
-            $this->db->insert('sb_item_shipping');
         }
         echo 'Convert finished'.PHP_EOL;
     }
@@ -1882,8 +1901,8 @@ class Test extends CI_Controller
         $this->db->select('b.*, o.order_num, o.customer_name');
         $this->db->from('ts_order_batches b');
         $this->db->join('ts_orders o','o.order_id=b.order_id');
-        $this->db->where('b.batch_date >= ', strtotime('2021-01-01'));
-        $this->db->where('b.batch_date < ', strtotime('2022-01-01'));
+        $this->db->where('b.batch_date >= ', strtotime('2024-01-01'));
+        $this->db->where('b.batch_date < ', strtotime('2024-09-01'));
         $batchs = $this->db->get()->result_array();
         $out = [];
         foreach ($batchs as $batch) {
@@ -1919,7 +1938,7 @@ class Test extends CI_Controller
         }
         echo count($out).' Batches '.PHP_EOL;
         $this->load->config('uploader');
-        $file_name = $this->config->item('upload_path_preload').'payment_report_2021_new.csv';
+        $file_name = $this->config->item('upload_path_preload').'payment_report_2024_new.csv';
         @unlink($file_name);
         $fh = fopen($file_name, FOPEN_WRITE_CREATE);
         if ($fh) {
@@ -2245,6 +2264,340 @@ class Test extends CI_Controller
             $this->db->set('art_preview',1);
             $this->db->update('ts_orders');
         }
+    }
+
+    public function duplicate_vendor_items() {
+        $this->db->select('vendor_item_id, count(*) as cnt');
+        $this->db->from('sb_items');
+        $this->db->group_by('vendor_item_id');
+        $this->db->having('cnt > 1');
+        $vresults = $this->db->get()->result_array();
+        foreach ($vresults as $vresult) {
+            $this->db->select('*');
+            $this->db->from('sb_vendor_items');
+            $this->db->where('vendor_item_id', $vresult['vendor_item_id']);
+            $vitem = $this->db->get()->row_array();
+            $this->db->select('*');
+            $this->db->from('sb_vendor_prices');
+            $this->db->where('vendor_item_id', $vresult['vendor_item_id']);
+            $vprices = $this->db->get()->result_array();
+            $this->db->select('item_id, item_number, item_name');
+            $this->db->from('sb_items i');
+            $this->db->where('vendor_item_id', $vresult['vendor_item_id']);
+            $this->db->order_by('item_id');
+            $items = $this->db->get()->result_array();
+            echo 'Vendor Item '.$vitem['vendor_item_number'].' Prices '.count($vprices).PHP_EOL;
+            $itemnum=1;
+            foreach ($items as $item) {
+                if ($itemnum > 1) {
+                    $this->db->set('vendor_item_vendor', $vitem['vendor_item_vendor']);
+                    $this->db->set('vendor_item_number', $vitem['vendor_item_number']);
+                    $this->db->set('vendor_item_name', $vitem['vendor_item_name']);
+                    $this->db->set('vendor_item_blankcost', $vitem['vendor_item_blankcost']);
+                    $this->db->set('vendor_item_cost', $vitem['vendor_item_cost']);
+                    $this->db->set('vendor_item_exprint', $vitem['vendor_item_exprint']);
+                    $this->db->set('vendor_item_setup', $vitem['vendor_item_setup']);
+                    $this->db->set('vendor_item_repeat', $vitem['vendor_item_repeat']);
+                    $this->db->set('vendor_item_notes', $vitem['vendor_item_notes']);
+                    $this->db->set('vendor_item_zipcode', $vitem['vendor_item_zipcode']);
+                    $this->db->set('printshop_item_id', $vitem['printshop_item_id']);
+                    $this->db->set('stand_days', $vitem['stand_days']);
+                    $this->db->set('rush1_days', $vitem['rush1_days']);
+                    $this->db->set('rush2_days', $vitem['rush2_days']);
+                    $this->db->set('rush1_price', $vitem['rush1_price']);
+                    $this->db->set('rush2_price', $vitem['rush2_price']);
+                    $this->db->set('pantone_match', $vitem['pantone_match']);
+                    $this->db->insert('sb_vendor_items');
+                    $newid = $this->db->insert_id();
+                    $this->db->where('item_id', $item['item_id']);
+                    $this->db->set('vendor_item_id', $newid);
+                    $this->db->update('sb_items');
+                    if (count($vprices) > 0) {
+                        foreach ($vprices as $vprice) {
+                            $this->db->set('vendorprice_qty', $vprice['vendorprice_qty']);
+                            $this->db->set('vendorprice_val', $vprice['vendorprice_val']);
+                            $this->db->set('vendorprice_color', $vprice['vendorprice_color']);
+                            $this->db->set('vendor_item_id', $newid);
+                            $this->db->insert('sb_vendor_prices');
+                        }
+                    }
+                }
+                echo 'Item # '.$item['item_number'].' - '.$item['item_name'].PHP_EOL;
+                $itemnum++;
+            }
+        }
+    }
+
+    public function update_vendoritem_ship() {
+        $this->db->select('vi.vendor_item_id, vi.vendor_item_zipcode, v.shipaddr_city, v.shipaddr_state, v.shipaddr_country, v.vendor_zipcode');
+        $this->db->from('sb_vendor_items vi');
+        $this->db->join('vendors v','v.vendor_id = vi.vendor_item_vendor');
+        $vaddrs = $this->db->get()->result_array();
+        foreach ($vaddrs as $vaddr) {
+            if (!empty($vaddr['vendor_item_zipcode'])) {
+                $this->db->where('vendor_item_id', $vaddr['vendor_item_id']);
+                $this->db->set('item_shipcountry', 223);
+                $this->db->update('sb_vendor_items');
+            } else {
+                $this->db->where('vendor_item_id', $vaddr['vendor_item_id']);
+                $this->db->set('vendor_item_zipcode', $vaddr['vendor_zipcode']);
+                if (!empty($vaddr['shipaddr_country'])) {
+                    $this->db->set('item_shipcountry', 223);
+                    $this->db->set('item_shipstate', $vaddr['shipaddr_state']);
+                    $this->db->set('item_shipcity', $vaddr['shipaddr_city']);
+                }
+                $this->db->update('sb_vendor_items');
+            }
+        }
+        $this->db->select('vi.vendor_item_zipcode, vi.item_shipcountry, count(vi.vendor_item_id) as cnt');
+        $this->db->from('sb_vendor_items vi');
+        $this->db->where('vi.item_shipcity',null);
+        $this->db->group_by('vi.vendor_item_zipcode, vi.item_shipcountry');
+        $vaddrs = $this->db->get()->result_array();
+        $this->load->model('shipping_model');
+        foreach ($vaddrs as $vaddr) {
+            // Get shipping data
+            $shipres = $this->shipping_model->get_zip_address($vaddr['item_shipcountry'], $vaddr['vendor_item_zipcode']);
+            if ($shipres['result']==1) {
+                $this->db->where('vendor_item_zipcode', $vaddr['vendor_item_zipcode']);
+                $this->db->where('item_shipcountry', $vaddr['item_shipcountry']);
+                $this->db->set('item_shipstate', $shipres['state']);
+                $this->db->set('item_shipcity', $shipres['city']);
+                $this->db->update('sb_vendor_items');
+            }
+        }
+    }
+
+    public function internal_item_transform() {
+        $this->load->model('inventory_model');
+        $this->db->select('i.item_id, i.item_number, i.item_name, i.printshop_inventory_id');
+        $this->db->select('v.vendor_item_number, v.vendor_item_id');
+        $this->db->from('sb_items i');
+        $this->db->join('sb_vendor_items v','v.vendor_item_id=i.vendor_item_id');
+        $this->db->where('v.vendor_item_vendor', $this->config->item('inventory_vendor'));
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            echo $item['item_number'].' '.$item['item_name'].' INV '.$item['printshop_inventory_id'].PHP_EOL;
+            if (empty($item['printshop_inventory_id'])) {
+                $this->db->select('*');
+                $this->db->from('ts_inventory_items');
+                $this->db->where('item_num', $item['vendor_item_number']);
+                $invres = $this->db->get()->row_array();
+                if (ifset($invres,'inventory_item_id',0)>0) {
+                    $this->db->where('item_id', $item['item_id']);
+                    $this->db->set('printshop_inventory_id', $invres['inventory_item_id']);
+                    $this->db->update('sb_items');
+                    $res = $this->inventory_model->get_inventory_item($invres['inventory_item_id']);
+                    if ($res['result']==1) {
+                        $invdata = $res['data'];
+                        $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                        $this->db->set('vendor_item_cost', $invdata['avg_price']);
+                        $this->db->set('vendor_item_blankcost', $invdata['avg_price']);
+                        $this->db->update('sb_vendor_items');
+                    }
+                    $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                    $this->db->set('vendor_item_number', $invres['item_num']);
+                    $this->db->set('vendor_item_name', $invres['item_name']);
+                    $this->db->update('sb_vendor_items');
+                    // Delete vendor prices
+                    $this->db->where('vendor_item_id', $item['vendor_item_id']);
+                    $this->db->delete('sb_vendor_prices');
+                    $this->db->where('item_color_itemid', $item['item_id']);
+                    $this->db->delete('sb_item_colors');
+                    $this->db->select('*');
+                    $this->db->from('ts_inventory_colors');
+                    $this->db->where('inventory_item_id', $invres['inventory_item_id']);
+                    $colors = $this->db->get()->result_array();
+                    foreach ($colors as $color) {
+                        $this->db->set('item_color_itemid', $item['item_id']);
+                        $this->db->set('item_color', $color['color']);
+                        $this->db->set('item_color_order', $color['color_order']);
+                        $this->db->set('printshop_color_id', $color['inventory_color_id']);
+                        $this->db->insert('sb_item_colors');
+                    }
+                    echo 'Transform '.$invres['item_num'].' '.$invres['item_name'].PHP_EOL;
+                }
+            }
+        }
+    }
+    public function getUpsRates() {
+        $this->load->config('shipping');
+        $this->load->library('UPS_service');
+        $upsservice = new UPS_service();
+        $shipFrom = array(
+            "Name" => "BLUETRACK Internal",
+            "Address" => array(
+                "City" => "Clifton",
+                "StateProvinceCode" => "NJ",
+                "PostalCode" => "07012",
+                "CountryCode" => "US"
+            )
+        );
+        /*
+        $shipTo = array(
+            "Name" => "Test Company",
+            "Address" => array(
+                "AddressLine" => array(
+                    "106 960 Yankee valley Blvd SE",
+                ),
+                "City" => "Toronto",
+                "StateProvinceCode" => "ON",
+                "PostalCode" => "M8Y1H8",
+                "CountryCode" => "CA"
+            )
+        );
+        */
+        $shipTo = [
+            "Name" => "Test Company",
+            "Address" => [
+                "AddressLine" => [
+                    "106 960 Yankee valley Blvd SE",
+                ],
+                "City" => "CINCINNATI",
+                "StateProvinceCode" => "OH",
+                "PostalCode" => "45202",
+                "CountryCode" => "US"
+            ],
+        ];
+        $packWeight = 7.2;
+        $packDimens = [];
+        $packDimens[] = [
+            "PackagingType" => array(
+                "Code" => "02",
+                "Description" => "Packaging"
+            ),
+            "Dimensions" => array(
+                "UnitOfMeasurement" => array(
+                    "Code" => "IN",
+                    "Description" => "Inches"
+                ),
+                "Length" => "15",
+                "Width" => "15",
+                "Height" => "15"
+            ),
+            "PackageWeight" => array(
+                "UnitOfMeasurement" => array(
+                    "Code" => "LBS",
+                    "Description" => "Pounds"
+                ),
+                "Weight" => "7.2"
+            )
+        ];
+
+        $tokenres = $this->getUpsToken();
+        if ($tokenres['result']==0) {
+            echo 'Rates request break on stage Token Generation, reason - '.$tokenres['msg'];
+        } else {
+            $token = $tokenres['token'];
+            // Time in transit
+            $res = $upsservice->getRates($token, $shipTo, $shipFrom, 1,  $packDimens, $packWeight);
+            if ($res['error'] > 0) {
+                echo 'Error, code '.$res['msg'];
+            } else {
+                if (isset($res['errors'])) {
+                    $error = $res['errors'][0];
+                    echo 'Error, code '.$error['code'].' - '.$error['message'].PHP_EOL;
+                } else {
+                    echo 'SUCCESS'.PHP_EOL;
+                    var_dump($res['rates']);
+                }
+            }
+        }
+    }
+
+    public function getTimeinTransit() {
+        $this->load->config('shipping');
+        $this->load->library('UPS_service');
+        $upsservice = new UPS_service();
+        $shipFrom = array(
+            "Name" => "BLUETRACK Internal",
+            "Address" => array(
+                "City" => "Clifton",
+                "StateProvinceCode" => "NJ",
+                "PostalCode" => "07012",
+                "CountryCode" => "US"
+            )
+        );
+//        $shipTo = array(
+//            "Name" => "Test Company",
+//            "Address" => array(
+//                "AddressLine" => array(
+//                    "The Landing",
+//                ),
+//                "City" => "Trafford Park",
+//                "StateProvinceCode" => "",
+//                "PostalCode" => "M502ST",
+//                "CountryCode" => "GB"
+//            )
+//        );
+        $shipTo = [
+            "Name" => "Test Company",
+            "Address" => [
+                "AddressLine" => [
+                    "106 960 Yankee valley Blvd SE",
+                ],
+                "City" => "CINCINNATI",
+                "StateProvinceCode" => "OH",
+                "PostalCode" => "45202",
+                "CountryCode" => "US"
+            ],
+        ];
+
+        $weight = "7.2";
+        $shipdate = "2023-07-31";
+        $shiptime = "10:00:00";
+        $tokenres = $this->getUpsToken();
+        if ($tokenres['result']==1) {
+            $token = $tokenres['token'];
+            $tntres = $upsservice->timeInTransit($token, $shipFrom['Address'], $shipTo['Address'], $weight, 1, 100.5, $shipdate, $shiptime);
+            if ($tntres['error']==0) {
+                $services = $tntres['services'];
+                var_dump($services);
+            }
+        }
+    }
+
+    public function getUpsToken()  {
+        $out = ['result' => 0, 'msg' => 'Error during Token generation'];
+        $this->load->library('UPS_service');
+        $upsservice = new UPS_service();
+        $sessionId =  uniq_link();
+        echo 'Session ID '.$sessionId.PHP_EOL;
+        $tokenresult = $upsservice->generateToken($sessionId);
+        if ($tokenresult['error']==1) {
+
+        } else {
+            if (isset($tokenresult['errors'])) {
+                $errors = $tokenresult['errors'][0];
+                $out['msg'] = 'Error Code '.$errors['code'].' - '.$errors['message'];
+            } else {
+                $out['result'] = 1;
+                $out['token'] = $tokenresult['access_token'];
+                $out['session'] = $sessionId;
+                // echo 'Success Token Type '.$tokenresult['token_type'].' Issued '.$tokenresult['issued_at'].'('.date('Y-m-d H:i:s', $tokenresult['issued_at']).' Expired '.(intval($tokenresult['expires_in'])/60).' min';
+            }
+        }
+        return $out;
+    }
+
+    public function clean_schema() {
+        $this->db->select('TABLE_NAME, TABLE_TYPE');
+        $this->db->from('information_schema.TABLES');
+        $this->db->where('TABLE_SCHEMA', 'lift_test');
+        $items = $this->db->get()->result_array();
+        echo 'Find '.count($items).' objects'.PHP_EOL;
+        $filename = $this->config->item('upload_path_preload').'cleanobj.sql';
+        @unlink($filename);
+        $fh = fopen($filename, FOPEN_READ_WRITE_CREATE);
+        foreach ($items as $item) {
+            if ($item['TABLE_TYPE']=='BASE TABLE') {
+                $msg='DROP TABLE IF EXISTS '.$item['TABLE_NAME'].';'.PHP_EOL;
+            } else {
+                $msg='DROP VIEW IF EXISTS '.$item['TABLE_NAME'].';'.PHP_EOL;
+            }
+            fwrite($fh, $msg);
+        }
+        fclose($fh);
     }
 
     public function export_dbitems() {
@@ -2897,4 +3250,1308 @@ class Test extends CI_Controller
         fclose($fh);
         echo 'Report '.$file.' READY '.PHP_EOL;
     }
+
+    public function export_sritems()
+    {
+        $this->load->model('exportexcell_model');
+        $res = $this->exportexcell_model->export_sritems();
+    }
+
+    public function convert_sritems()
+    {
+        $this->load->model('sritems_model');
+        // $res = $this->sritems_model->convert_sritems();
+        $res = $this->sritems_model->convert_srspecial();
+    }
+
+    public function sritems_images()
+    {
+        $this->load->model('sritems_model');
+        // $res = $this->sritems_model->sritems_images();
+        $res = $this->sritems_model->srspecial_images();
+    }
+
+    public function fixarrive()
+    {
+        $this->db->select('o.order_id, o.order_num, o.update_usr, o.item_id, s.order_shipping_id, t.order_shipaddr_id, c.arrive_date');
+        $this->db->from('ts_orders o')->join('ts_order_shippings s','s.order_id=o.order_id')->join('ts_order_shipaddres t','o.order_id = t.order_id');
+        $this->db->join('ts_order_shipcosts c','c.order_shipaddr_id=t.order_shipaddr_id')->where('s.arrive_date',0)->where('c.current',1)->where('o.is_canceled',0);
+        $this->db->order_by('o.order_id','desc');
+        $dats = $this->db->get()->result_array();
+        foreach ($dats as $dat) {
+            echo 'Order '.$dat['order_num'].' Date '.date('Y-m-d', $dat['arrive_date']).PHP_EOL;
+            // $this->db->where('order_shipping_id', $dat['order_shipping_id']);
+            // $this->db->set('arrive_date', $dat['arrive_date']);
+            // $this->db->update('ts_order_shippings');
+            // $this->db->where('order_shipaddr_id', $dat['order_shipaddr_id']);
+            // $this->db->set('arrive_date', $dat['arrive_date']);
+            // $this->db->update('ts_order_shipaddres');
+        }
+//        $this->db->select('o.order_num, p.arrive_date, p.order_shipping_id, s.order_shipaddr_id');
+//        $this->db->from('ts_orders o');
+//        $this->db->join('ts_order_shippings p','p.order_id=o.order_id');
+//        $this->db->join('ts_order_shipaddres s','s.order_id=o.order_id');
+//        $this->db->where('s.arrive_date',0);
+//        $this->db->where('p.arrive_date > ',0);
+//        $this->db->order_by('o.order_id','desc');
+//        $datas = $this->db->get()->result_array();
+//        foreach ($datas as $data) {
+//            $this->db->where('order_shipaddr_id',$data['order_shipaddr_id']);
+//            $this->db->set('arrive_date', $data['arrive_date']);
+//            $this->db->update('ts_order_shipaddres');
+//            echo 'Order '.$data['order_num'].' Arrive '.date('Y-m-d', $data['arrive_date']).PHP_EOL;
+//        }
+    }
+
+    public function customorderslist()
+    {
+        $this->db->select('o.order_id, o.order_num, o.order_date, o.customer_name, o.revenue, t.shipdate, t.arrive_date, t.event_date');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_shippings t','o.order_id = t.order_id');
+        $this->db->where('o.item_id', $this->config->item('custom_id'));
+        $this->db->where('o.order_num >= ',63000);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.brand != ','SR');
+        $orders = $this->db->get()->result_array();
+        $filename = $this->config->item('upload_path_preload').'custom_orders.csv';
+        @unlink($filename);
+        $fh = fopen($filename, FOPEN_READ_WRITE_CREATE);
+        if ($fh) {
+            $msg = 'Order #;Order Date;Customer;Revenue;Ship Date;Arrival Date;Event Date;'.PHP_EOL;
+            fwrite($fh, $msg);
+            foreach ($orders as $order) {
+                $msg=$order['order_num'].';'.date('m/d/Y', $order['order_date']).';"'.$order['customer_name'].'";'.$order['revenue'].';';
+                $msg.=date('m/d/Y', $order['shipdate']).';'.date('m/d/Y', $order['arrive_date']).';';
+                if (!empty($order['event_date'])) {
+                    $msg.=date('m/d/Y', $order['event_date']);
+                } else {
+                    $msg.="";
+                }
+                $msg.=';'.PHP_EOL;
+                fwrite($fh,$msg);
+            }
+            fclose($fh);
+            echo 'Report '.$filename.' READY'.PHP_EOL;
+        } else {
+            echo 'Error create file'.PHP_EOL;
+        }
+
+    }
+
+    public function prepare_customercode() {
+        $this->db->select('order_id');
+        $this->db->from('ts_orders');
+        $this->db->where('order_date >=', strtotime('2020-01-01'));
+        $this->db->where('is_canceled',0);
+        $this->db->where('customer_code',NULL);
+        $this->db->order_by('order_id', 'desc');
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            $custcode = uniq_link('3','chars').'-'.uniq_link('10','digits');
+            $this->db->where('order_id', $order['order_id']);
+            $this->db->set('customer_code', $custcode);
+            $this->db->update('ts_orders');
+        }
+        echo 'Orders Ready '.PHP_EOL;
+        $this->db->select('quote_id');
+        $this->db->from('ts_quotes');
+        $this->db->where('customer_code', NULL);
+        $this->db->order_by('quote_id','desc');
+        $quotes = $this->db->get()->result_array();
+        foreach ($quotes as $quote) {
+            $custcode = uniq_link('3','chars').'-'.uniq_link('10','digits');
+            $this->db->where('quote_id', $quote['quote_id']);
+            $this->db->set('customer_code', $custcode);
+            $this->db->update('ts_quotes');
+        }
+        echo 'All Ready '.PHP_EOL;
+    }
+
+    public function update_customers() {
+        $this->db->select('order_id, customer_name');
+        $this->db->from('ts_orders');
+        $this->db->where('brand','SR');
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            $this->db->select('*');
+            $this->db->from('ts_customers');
+            $this->db->where('customer_name', $order['customer_name']);
+            $customer = $this->db->get()->row_array();
+            if (ifset($customer,'customer_id','')!=='') {
+                $this->db->where('order_id', $order['order_id']);
+                $this->db->set('customer_id', $customer['customer_id']);
+                $this->db->update('ts_orders');
+            }
+        }
+        echo 'All Ready '.PHP_EOL;
+    }
+
+    public function sbitems_list()
+    {
+        ini_set('memory_limit', '-1');
+        $this->db->select('i.*, vi.vendor_item_number, vi.vendor_item_name, vi.vendor_item_cost, vi.vendor_item_exprint, vi.vendor_item_setup, v.vendor_name')
+            ->select('ip.item_price_print as price_print , ip.item_price_setup as price_setup , ip.item_sale_print as sale_print , ip.item_sale_setup as sale_setup')
+            ->from('sb_items i')->join("sb_vendor_items vi","vi.vendor_item_id=i.vendor_item_id","left")
+            ->join("vendors v","v.vendor_id=vi.vendor_item_vendor","left")->join('sb_item_prices ip','ip.item_price_itemid=i.item_id','left')
+            ->where('i.brand','BT')->order_by('item_number');
+        $items = $this->db->get()->result_array();
+        $heads = [
+            'Item #', 'Item name', "Item active?", "Item new?", "Item Template", "Lead A", "Lead B", "Lead C", "Material", "Weight (in lbs)", "Item Size (in)",
+            "Internal Keywords", "Page URL", 'Meta Title', 'Meta description', 'Meta Keywords', 'Item attribute - row 1', 'Item attribute - row 2',
+            'Item Page - bottom Text', 'Type of options (color, size, etc)', 'Colors', 'Number of Items in Cartoon', 'Cartoon Width (in)', 'Cartoon Height (in)',
+            'Cartoon Depth (in)', 'Special charges (shipping) per each Item', 'Special charges (shipping) per order', 'Special offer', 'Vendor Item #',
+            'Vendor Item Name', 'Vendor Item Cost', 'Vendor Item Exprint Cost', 'Vendor Item Setup Cost', 'Vendor Name', 'Qty Price 1', 'Price 1', 'Sale Price 1',
+            'Qty Price 2', 'Price 2', 'Sale Price 2', 'Qty Price 3', 'Price 3', 'Sale Price 3', 'Qty Price 4', 'Price 4', 'Sale Price 4', 'Qty Price 5',
+            'Price 5', 'Sale Price 5', 'Qty Price 6', 'Price 6', 'Sale Price 6', 'Qty Price 7', 'Price 7', 'Sale Price 7', 'Qty Price 8', 'Price 8', 'Sale Price 8',
+            'Qty Price 9', 'Price 9', 'Sale Price 9', 'Qty Price 10', 'Price 10', 'Sale Price 10',
+            'Exprint Price', 'Exprint Sale Price', 'Setup Price','Setup Sale Price'
+        ];
+        for ($i=1; $i<13; $i++) {
+            array_push($heads,'Imprit Location '.$i);
+            array_push($heads,'Imprit Size '.$i);
+        }
+        $filename = $this->config->item('upload_path_preload').'bt_items_list.xlsx';
+//        @unlink($filename);
+//        $fh = fopen($filename, FOPEN_WRITE_CREATE);
+//        $msg = implode($heads,';');
+//        fwrite($fh, $msg.PHP_EOL);
+        $itemidx = 0;
+        foreach ($items as $item) {
+            // colors
+            $this->db->select('group_concat(item_color) as color')->from('sb_item_colors')->where('item_color_itemid', $item['item_id']);
+            $coldat = $this->db->get()->row_array();
+            $color = $coldat['color'];
+            // Prices
+            $prices = [];
+            if ($item['item_template']=='Stressball') {
+                $this->db->select('*')->from('sb_item_prices')->where('item_price_itemid', $item['item_id']);
+                $pricedat = $this->db->get()->row_array();
+                $bases = $this->config->item('price_types');
+                foreach ($bases as $based) {
+                    if (!empty($pricedat['item_price_'.$based['base']]) || !empty($pricedat['item_sale_'.$based['base']])) {
+                        $prices[] = [
+                            'qty' => $based['base'],
+                            'price' => $pricedat['item_price_'.$based['base']],
+                            'sale' => $pricedat['item_sale_'.$based['base']],
+                        ];
+                    }
+                }
+            } else {
+                $this->db->select('*')->from('sb_promo_price')->where('item_id', $item['item_id'])->order_by('item_qty');
+                $promodats = $this->db->get()->result_array();
+                foreach ($promodats as $promodat) {
+                    $prices[] = [
+                        'qty' => $promodat['item_qty'],
+                        'price' => $promodat['price'],
+                        'sale' => $promodat['sale_price'],
+                    ];
+                }
+            }
+            if (count($prices)<10) {
+                for ($j=count($prices); $j<10; $j++) {
+                    $prices[] = [
+                        'qty' => '',
+                        'price' => '',
+                        'sale' => '',
+                    ];
+                }
+            }
+//            if ($item['item_number']=='23-PP002') {
+//                var_dump($prices);
+//                die();
+//            }
+            // Imprints
+            $this->db->select('item_inprint_location, item_inprint_size')->from('sb_item_inprints')->where('item_inprint_item',$item['item_id']);
+            $impritems = $this->db->get()->result_array();
+            $imprints = [];
+            foreach ($impritems as $impritem) {
+                $imprints[] = [
+                    'location' => $impritem['item_inprint_location'],
+                    'size' => $impritem['item_inprint_size'],
+                ];
+            }
+            if (count($imprints)<12) {
+                for ($j=count($imprints); $j<12; $j++) {
+                    $imprints[] = [
+                        'location' => '',
+                        'size' => '',
+                    ];
+                }
+            }
+            $items[$itemidx]['prices'] = $prices;
+            $items[$itemidx]['colors'] = $color;
+            $items[$itemidx]['imprints'] = $imprints;
+            $itemidx++;
+        }
+        $this->load->model('exportexcell_model');
+        $res = $this->exportexcell_model->fullitems_list($filename, $heads, $items);
+        if ($res['result']==1) {
+            echo 'File '.$filename.' READY'.PHP_EOL;
+        }
+//        fclose($fh);
+    }
+
+    public function hide_payments()
+    {
+        // $this->db->select('*')->from('ts_order_payments')->where('order_id > ', 42941); // 42941
+        $this->db->select('*')->from('ts_order_payments')->order_by('order_payment_id', 'desc')->limit(400); // 42941
+        $payments = $this->db->get()->result_array();
+        foreach ($payments as $payment) {
+            // echo 'Order ' . $payment['order_id'] . ' CC # ' . $payment['cardnum'] . PHP_EOL;
+            $cardnum = $payment['cardnum'];
+            if (!empty($payment['cardnum'])) {
+                $newcc = hide_cardnumber($cardnum);
+                $newcvv = str_repeat('X',strlen($payment['cardcode']));
+                $this->db->set('cardnum',$newcc);
+                $this->db->set('cardcode',$newcvv);
+                $this->db->where('order_payment_id', $payment['order_payment_id']);
+                $this->db->update('ts_order_payments');
+            }
+        }
+        echo 'Change log '.PHP_EOL;
+        $this->db->select('*')->from('ts_order_paymentlog')->order_by('order_paymentlog_id','desc');
+        $paylogs = $this->db->get()->result_array();
+        foreach ($paylogs as $paylog) {
+            if (!empty($paylog['card_num'])) {
+                $newcardn = hide_cardnumber($paylog['card_num']);
+                $this->db->where('order_paymentlog_id', $paylog['order_paymentlog_id']);
+                $this->db->set('card_num', $newcardn);
+                $this->db->update('ts_order_paymentlog');
+            }
+        }
+    }
+
+    public function generate_secret()
+    {
+        // GA init
+        $this->load->library('GoogleAuthenticator');
+        $ga = new GoogleAuthenticator();
+        // Email init
+        $this->load->library('email');
+        $email_conf = array(
+            'protocol' => 'sendmail',
+            'charset' => 'utf-8',
+            'wordwrap' => TRUE,
+            'mailtype' => 'html',
+        );
+        $this->email->initialize($email_conf);
+        $email_from = 'admin@bluetrack.com';
+        $email_cc = 'to_german@yahoo.com';
+        $this->db->select('*')->from('users')->where('user_status',1)->where('user_status',1);
+        $users = $this->db->get()->result_array();
+        foreach ($users as $user) {
+            $secret = $ga->generateSecret();
+            $this->db->where('user_id', $user['user_id']);
+            $this->db->set('user_secret', $secret);
+            $this->db->update('users');
+//            // URL
+//            $usrlogin = $user['userlogin'];
+//            if (empty($usrlogin)) {
+//                $usrlogin = $user['user_email'];
+//            }
+//            $url = $ga->getUrl($usrlogin, 'lift.bluetrack.com', $secret);
+            echo 'Email '.$user['user_email'].' Secret '.$secret.PHP_EOL;
+//            echo 'URL '.$url.PHP_EOL;
+//            $options = [
+//                'user_name' => $user['user_name'],
+//                'secret' => $secret,
+//                'url' => $url,
+//                'manual_url' => 'https://support.google.com/accounts/answer/1066447?hl=en',
+//            ];
+//            $message_body = $this->load->view('messages/secret_update_view', $options, TRUE);
+//            $this->email->to($user['user_email']);
+//            $this->email->cc($email_cc);
+//            // $this->email->bcc($this->config->item('developer_email'));
+//            $this->email->from($email_from);
+//            $mail_subj = 'Update account security';
+//            $this->email->subject($mail_subj);
+//            $this->email->message($message_body);
+//            $this->email->send();
+//            $this->email->clear(TRUE);
+//            echo 'Email Send'.PHP_EOL;
+        }
+    }
+
+    public function updatechecklist()
+    {
+        $inputFileType = 'Xlsx';
+        $this->load->config('uploader');
+        $inputFileName = $this->config->item('upload_path_preload').'list_customers-paidbycheck.xlsx';
+        $outFileName = $this->config->item('upload_path_preload').'list_customers-paidbycheck_finale.xlsx';
+        @unlink($outFileName);
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($inputFileName);
+        $worksheet = $spreadsheet->getSheetByName('Final Data');
+
+        $dataArray = $worksheet->toArray();
+
+        $outdata = [];
+
+        $idx = 0;
+        foreach ($dataArray as $row) {
+            if (!empty($row['0']) && $row[0]!=='Year') {
+                $outdata[] = [
+                    'idx' => $idx,
+                    'order_num' => $row['1'],
+                    'order_id' => 0,
+                    'email' => '',
+                    'billing_address' => '',
+                ];
+            } else {
+                $outdata[] = [
+                    'idx' => $idx,
+                    'order_num' => '',
+                ];
+            }
+            $idx++;
+        }
+        // Check orders
+        $idx = 0;
+        foreach ($outdata as $item) {
+            if (!empty($item['order_num'])) {
+                $this->db->select('*')->from('ts_orders')->where('order_num', $item['order_num']);
+                $order = $this->db->get()->row_array();
+                if (ifset($order,'order_id',0) > 0) {
+                    $outdata[$idx]['order_id'] = $order['order_id'];
+                    $outdata[$idx]['email'] = $order['customer_email'];
+                    if (!empty($order['order_system']) && $order['order_system']=='new') {
+                        // echo 'New Order '.$order['order_num'].PHP_EOL;
+                        $outdata[$idx]['billing_address'] = $this->_order_biladdress($order['order_id']);
+                    }
+                }
+            }
+            $idx++;
+        }
+        // write date to xls file
+        foreach ($outdata as $item) {
+            if (!empty($item['order_id'])) {
+                $coordY = $item['idx']+1;
+                $worksheet->setCellValue('G'.$coordY,$item['email']);
+                $worksheet->setCellValue('H'.$coordY,$item['billing_address']);
+            }
+        }
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+        // $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        // $writer->setIncludeCharts(true);
+        $writer->save($outFileName);
+
+        echo 'Ended '.PHP_EOL;
+    }
+
+    private function _order_biladdress($order_id)
+    {
+        $billaddr = '';
+        $this->db->select('b.order_billing_id, b.company, b.customer_name, b.address_1, b.address_2, b.city, b.zip, tc.country_iso_code_2 as cntcode, coalesce(t.state_code) as stcode');
+        $this->db->from('ts_order_billings b');
+        $this->db->join('ts_countries tc', 'b.country_id = tc.country_id');
+        $this->db->join('ts_states t', 'b.state_id = t.state_id', 'left');
+        $this->db->where('b.order_id', $order_id);
+        $bildat = $this->db->get()->row_array();
+        if (ifset($bildat, 'order_billing_id',0) > 0) {
+            if ($order_id==42663) {
+                echo 'Bill Address 42663'.PHP_EOL;
+            }
+            if (!empty($bildat['company'])) {
+                $billaddr.=$bildat['company'].PHP_EOL;
+            }
+            if (!empty($bildat['customer_name'])) {
+                $billaddr.=$bildat['customer_name'].PHP_EOL;
+            }
+            $billaddr.=$bildat['address_1'].PHP_EOL;
+            if (!empty($bildat['address_2'])) {
+                $billaddr.=$bildat['address_2'].PHP_EOL;
+            }
+            $billaddr.=$bildat['city'];
+            if (!empty($bildat['stcode'])) {
+                $billaddr.=' '.$bildat['stcode'];
+            }
+            $billaddr.=' '.$bildat['zip'];
+            if ($order_id==42663) {
+                echo $billaddr;
+            }
+        }
+        return $billaddr;
+    }
+
+    public function inventory_rest()
+    {
+        $daterest = strtotime('2022-01-01');
+        $invents = [];
+
+        $this->db->select('inventory_item_id, item_num, item_name')->from('ts_inventory_items')->order_by('item_num');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $this->db->select('inventory_color_id, color')->from('ts_inventory_colors')->where('inventory_item_id',$item['inventory_item_id'])->order_by('color_order');
+            $colors = $this->db->get()->result_array();
+            foreach ($colors as $color) {
+                $avgprice = 0;
+                $this->db->select('count(inventory_income_id) as cnt, sum(income_qty) as rest, sum(income_qty*income_price) as totalinc')->from('ts_inventory_incomes')->where(['inventory_color_id' => $color['inventory_color_id'],'income_date < ' => $daterest]);
+                $restincome = $this->db->get()->row_array();
+                if ($restincome['cnt']!==0) {
+                    $restqty = $restincome['rest'];
+                    $resttotal = $restincome['totalinc'];
+                    if ($restqty !=0) {
+                        $avgprice = round($resttotal/$restqty,3);
+                    } else {
+                        echo 'Item '.$item['item_num'].' Color '.$color['color'].PHP_EOL;
+                    }
+
+                }
+                $this->db->select('count(inventory_outcome_id) as cnt, sum(outcome_qty) as outcom')->from('ts_inventory_outcomes')->where(['inventory_color_id' => $color['inventory_color_id'],'outcome_date < ' => $daterest]);
+                $restoutcome = $this->db->get()->row_array();
+                if ($restoutcome['cnt']!==0) {
+                    $restqty = $restqty - $restoutcome['outcom'];
+                    $resttotal = $restqty * $avgprice;
+                }
+                if ($restqty != 0) {
+                    $out[] = [
+                        'item_num' => $item['item_num'],
+                        'item_name' => $item['item_name'],
+                        'color' => $color['color'],
+                        'rest' => $restqty,
+                        'price' => $avgprice,
+                        'total' => $resttotal,
+                    ];
+                }
+            }
+        }
+        if (count($out) > 0) {
+            $this->load->config('uploader');
+            $filename = $this->config->item('upload_path_preload').'inventory_rest_2021.csv';
+            @unlink($filename);
+            $fh = fopen($filename,'a+');
+            $msg='Item #;Item;Color;QTY;Price;Total;'.PHP_EOL;
+            fwrite($fh, $msg);
+            foreach ($out as $row) {
+                $msg = $row['item_num'].';"'.$row['item_name'].'";'.$row['color'].';'.$row['rest'].';'.$row['price'].';'.$row['total'].';'.PHP_EOL;
+                fwrite($fh, $msg);
+            }
+            fclose($fh);
+            echo 'File '.$filename.' ready'.PHP_EOL;
+        }
+    }
+
+    public function inventory_rest_fix()
+    {
+        // Get Items
+        $this->db->select('*')->from('ts_inventory_items')->order_by('item_num');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            $this->db->select('*')->from('ts_inventory_colors')->where('inventory_item_id', $item['inventory_item_id'])->order_by('color');
+            $colors = $this->db->get()->result_array();
+            foreach ($colors as $color) {
+                // Get total income
+                $this->db->select('count(*) as cnt, sum(income_qty) as total_income, sum(income_expense) as total_exp')->from('ts_inventory_incomes')->where('inventory_color_id', $color['inventory_color_id']);
+                $incomeres = $this->db->get()->row_array();
+                if ($incomeres['cnt']>0) {
+                    // Count outcome
+                    $this->db->select('count(*) as cnt, sum(outcome_qty) as total_outcome')->from('ts_inventory_outcomes')->where('inventory_color_id', $color['inventory_color_id']);
+                    $outcomeres = $this->db->get()->row_array();
+                    if ($outcomeres['total_outcome']!=$incomeres['total_exp'] && $outcomeres['cnt']>0) {
+                        $diff = $incomeres['total_exp'] - $outcomeres['total_outcome'];
+                        echo 'Item '.$item['item_num'].' - '.$item['item_name'].' Color '.$color['color'].' Balance Diff '.$diff.' Outcome '.$outcomeres['total_outcome'].' Expense '.$incomeres['total_exp'].PHP_EOL;
+                        $this->_inventory_expand_fix($color['inventory_color_id']);
+                    }
+                }
+            }
+
+        }
+    }
+
+    private function _inventory_expand_fix($inventory_color_id)
+    {
+        $this->db->select('*')->from('ts_inventory_incomes')->where('inventory_color_id', $inventory_color_id)->order_by('income_date','asc');
+        $incomes = $this->db->get()->result_array();
+        // Set expand = 0
+        foreach ($incomes as $income) {
+            $this->db->where('inventory_income_id', $income['inventory_income_id']);
+            $this->db->set('income_expense',0);
+            $this->db->update('ts_inventory_incomes');
+        }
+        // Get Outcome
+        $this->db->select('*')->from('ts_inventory_outcomes')->where('inventory_color_id', $inventory_color_id)->order_by('outcome_date','asc');
+        $outcomes = $this->db->get()->result_array();
+        foreach ($outcomes as $outcome) {
+            $qtyout = $outcome['outcome_qty'];
+            $this->db->select('inventory_income_id, (income_qty - income_expense) as leftqty, income_qty, income_expense');
+            $this->db->from('ts_inventory_incomes');
+            $this->db->where('inventory_color_id', $inventory_color_id);
+            $this->db->having('leftqty > 0');
+            $this->db->order_by('income_date');
+            $candidats = $this->db->get()->result_array();
+            foreach ($candidats as $candidat) {
+                if ($qtyout > $candidat['leftqty']) {
+                    $newexp = $candidat['income_expense'] + $candidat['leftqty'];
+                    $ordinv = $candidat['leftqty'];
+                } else {
+                    $newexp = $candidat['income_expense'] + $qtyout;
+                    $ordinv = $qtyout;
+                }
+                // echo 'QTY '.$qtyout.' New Expens '.$newexp.' Get INV '.$ordinv.PHP_EOL;
+                $this->db->where('inventory_income_id', $candidat['inventory_income_id']);
+                $this->db->set('income_expense', $newexp);
+                $this->db->update('ts_inventory_incomes');
+                // Insert to order inventory
+//                $this->db->set('order_id', $outcome['order_id']);
+//                $this->db->set('inventory_income_id', $candidat['inventory_income_id']);
+//                $this->db->set('qty',$ordinv);
+//                $this->db->insert('ts_order_inventory');
+                $qtyout= $qtyout - $candidat['leftqty'];
+                if ($qtyout <= 0 ) {
+                    break;
+                }
+            }
+        }
+        return true;
+    }
+    public function fix_printreport_prices()
+    {
+        ini_set('memory_limit', '-1');
+        $brands = ['SR', 'SB'];
+        $changes = [];
+        foreach ($brands as $brand) {
+            $this->db->select('oa.*, o.order_num');
+            $this->db->from('ts_order_amounts oa');
+            $this->db->join('ts_orders o','o.order_id=oa.order_id');
+            $this->db->where('oa.printshop',1);
+            $this->db->where('(oa.shipped+oa.kepted+oa.misprint) > ',0);
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand',['SB','BT']);
+            }
+            $this->db->order_by('oa.printshop_date');
+            $amnts = $this->db->get()->result_array();
+
+            foreach ($amnts as $amnt) {
+                echo 'Order # '.$amnt['order_num'].PHP_EOL;
+                $this->db->select('sum(oi.qty*i.income_price) as totalrev, sum(oi.qty) as totalqty, count(oi.order_inventory_id) as cnt');
+                $this->db->from('ts_order_inventory oi');
+                $this->db->join('ts_inventory_incomes i', 'i.inventory_income_id=oi.inventory_income_id');
+                $this->db->where('oi.amount_id', $amnt['amount_id']);
+                $baseprice = $this->db->get()->row_array();
+                if ($baseprice['cnt']>0) {
+                    // Calc new price
+                    $newprice = round($baseprice['totalrev']/$baseprice['totalqty'],3);
+                    if (round($amnt['price'],3)!==$newprice) {
+                        // echo 'Calc Price '.$newprice.' Rep Price '.$amnt['price'].PHP_EOL;
+                        $newtotal = ($amnt['shipped']+$amnt['kepted']+$amnt['misprint'])*($newprice+$amnt['extracost']);
+                        $newtotal+=($amnt['orangeplate']*$amnt['orangeplate_price']);
+                        $newtotal+=($amnt['blueplate']*$amnt['blueplate_price']);
+                        $newtotal+=($amnt['beigeplate']*$amnt['beigeplate_price']);
+                        $changes[] = [
+                            'order_num' => $amnt['order_num'],
+                            'date' => date('m/d/Y', $amnt['printshop_date']),
+                            'oldprice' => round($amnt['price'],3),
+                            'oldtotal' => $amnt['printshop_total'],
+                            'newprice' => $newprice,
+                            'newtotal' => $newtotal,
+                            'diff' => ($newtotal-$amnt['printshop_total']),
+                            'amount' => $amnt['amount_id'],
+                        ];
+                    }
+                }
+            }
+        }
+        if (count($changes)>0) {
+            $this->load->config('uploader');
+            $file = $this->config->item('upload_path_preload').'fix_printreport.csv';
+            @unlink($file);
+            $fh = fopen($file, FOPEN_WRITE_CREATE);
+            $head = 'Order #;Date,Old Price;Old Total;New Price;New Total;Diff;'.PHP_EOL;
+            fwrite($fh, $head);
+            foreach ($changes as $change) {
+                $msg=$change['order_num'].';'.$change['date'].';'.$change['oldprice'].';'.$change['oldtotal'].';';
+                $msg.=$change['newprice'].';'.$change['newtotal'].';'.$change['diff'].';'.PHP_EOL;
+                fwrite($fh, $msg);
+            }
+            fclose($fh);
+            echo 'File '.$file.' ready'.PHP_EOL;
+        }
+
+    }
+
+    public function transform_trackpackages()
+    {
+        ini_set("memory_limit","-1");
+        $this->db->select('sp.track_code, ic.item_qty, o.order_num, ic.order_itemcolor_id, o.shipdate, sp.deliver_service'); // sa.item_qty
+        $this->db->from('ts_order_shippacks sp');
+        $this->db->join('ts_order_shipaddres sa', 'sp.order_shipaddr_id=sa.order_shipaddr_id');
+        $this->db->join('ts_orders o', 'o.order_id=sa.order_id');
+        $this->db->join('ts_order_items oi', 'o.order_id=oi.order_id');
+        $this->db->join('ts_order_itemcolors ic','ic.order_item_id=oi.order_item_id');
+        $this->db->where("coalesce(sp.track_code,'') != ''");
+        $packs = $this->db->get()->result_array();
+        foreach ($packs as $pack) {
+            $this->db->set('created_at', date('Y-m-d H:i:s'));
+            $this->db->set('created_by', 1);
+            $this->db->set('updated_by', 1);
+            $this->db->set('order_itemcolor_id', $pack['order_itemcolor_id']);
+            $this->db->set('qty', $pack['item_qty']);
+            $this->db->set('trackdate', $pack['shipdate']);
+            $this->db->set('trackservice', $pack['deliver_service']);
+            $this->db->set('trackcode', $pack['track_code']);
+            $this->db->insert('ts_order_trackings');
+            echo 'Order # '.$pack['order_num'].' add Track'.PHP_EOL;
+        }
+        // Add empty tracks
+        $this->db->select('o.order_num, o.order_id, o.shipdate, ic.order_itemcolor_id')->from('ts_orders o')->join('ts_order_items oi','o.order_id=oi.order_id')->join('ts_order_itemcolors ic','ic.order_item_id=oi.order_item_id')->where(['o.is_canceled'=>0, 'o.order_system'=> 'new'])->order_by('order_id','desc');
+        $orderitms = $this->db->get()->result_array();
+        foreach ($orderitms as $orderitm) {
+            $this->db->select('count(tracking_id) as cnt')->from('ts_order_trackings')->where('order_itemcolor_id', $orderitm['order_itemcolor_id']);
+            $trackres = $this->db->get()->row_array();
+            if ($trackres['cnt']==0) {
+                $this->db->set('created_at', date('Y-m-d H:i:s'));
+                $this->db->set('created_by', 1);
+                $this->db->set('updated_by', 1);
+                $this->db->set('order_itemcolor_id', $orderitm['order_itemcolor_id']);
+                $this->db->set('qty', 0);
+                $this->db->set('trackdate', null);
+                $this->db->set('trackservice', 'UPS');
+                $this->db->set('trackcode', '');
+                $this->db->insert('ts_order_trackings');
+                echo 'Order # '.$orderitm['order_num'].' add Track Template'.PHP_EOL;
+            }
+        }
+    }
+
+
+    public function customitemsreport()
+    {
+        $years = [2019,2022,2023,2024];
+        $this->load->config('uploader');
+        foreach ($years as $year) {
+            $datbgn = strtotime($year.'-01-01');
+            $nxtyear = intval($year)+1;
+            $datend = strtotime($nxtyear.'-01-01');
+            $this->db->select('*')->from('ts_orders')->where(['item_id' => -3, 'order_date >= ' => $datbgn, 'order_date < ' => $datend])->order_by('order_date');
+            $orders = $this->db->get()->result_array();
+            $outs = [];
+            foreach ($orders as $order) {
+                $this->db->select('group_concat(i.item_description) as itmname')->from('ts_order_itemcolors i')->join('ts_order_items o','o.order_item_id=i.order_item_id')->where('o.order_id', $order['order_id']);
+                $itmres = $this->db->get()->row_array();
+                $itemname = ifset($itmres,'itmname','Custom Item');
+                $outs[] = [
+                    'date' => date('m/d/Y', $order['order_date']),
+                    'order_num' => $order['order_num'],
+                    'canceled' => $order['is_canceled']==1 ? 'YES' : 'NO',
+                    'revenue' => $order['revenue'],
+                    'profit' => $order['profit'],
+                    'profit_perc' => $order['profit_perc']==null ? 'Proj' : $order['profit_perc'],
+                    'qty' => $order['order_qty'],
+                    'item_description' => $itemname,
+                    'customer' => $order['customer_name'],
+                    'ship_amount' => $order['shipping'],
+                ];
+            }
+            $filenorm = $this->config->item('upload_path_preload').'customitem_orders_'.$year.'.xlsx';
+            @unlink($filenorm);
+            $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->setTitle('Custom Item Orders '.$year);
+            $sheet->setCellValue('A1', 'Date');
+            $sheet->setCellValue('B1','Order #');
+            $sheet->setCellValue('C1','Cancelled');
+            $sheet->setCellValue('D1', 'Revenue');
+            $sheet->setCellValue('E1', 'Profit');
+            $sheet->setCellValue('F1', 'Profit %');
+            $sheet->setCellValue('G1', 'Quantity');
+            $sheet->setCellValue('H1', 'Item Description');
+            $sheet->setCellValue('I1', 'Customer');
+            $sheet->setCellValue('J1', 'Shipping Amount');
+            $nrow = 2;
+            foreach ($outs as $out) {
+                $sheet->setCellValue('A'.$nrow, $out['date']);
+                $sheet->setCellValue('B'.$nrow,$out['order_num']);
+                $sheet->setCellValue('C'.$nrow,$out['canceled']);
+                $sheet->setCellValue('D'.$nrow, $out['revenue']);
+                $sheet->setCellValue('E'.$nrow, $out['profit']);
+                $sheet->setCellValue('F'.$nrow, $out['profit_perc']);
+                $sheet->setCellValue('G'.$nrow, $out['qty']);
+                $sheet->setCellValue('H'.$nrow, $out['item_description']);
+                $sheet->setCellValue('I'.$nrow, $out['customer']);
+                $sheet->setCellValue('J'.$nrow, $out['ship_amount']);
+                $nrow++;
+            }
+            $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+            $writer->save($filenorm);    // download file
+            echo 'File '.$filenorm.' ready'.PHP_EOL;
+        }
+    }
+
+    public function updateprintdate()
+    {
+        $this->load->model('orders_model');
+        $this->orders_model->order_schedule_transform();
+    }
+
+    public function emaillist()
+    {
+        $orders = $leads = $signup = [];
+        $datebgn = strtotime(date('2019-08-23'));
+        // Orders
+        $this->db->select('toc.contact_emal as email')->from('ts_orders o')->join('ts_order_contacts toc','o.order_id = toc.order_id');
+        $this->db->where('o.order_date >= ', $datebgn);
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('coalesce(toc.contact_emal,\'\') != ','');
+        $this->db->where_in('brand',['SB','BT']);
+        $lists = $this->db->get()->result_array();
+        foreach ($lists as $list) {
+            if (array_key_exists($list['email'], $orders)===FALSE) {
+                array_push($orders, $list['email']);
+            }
+        }
+        // Leads
+        $this->db->select('lead_mail as email')->from('ts_leads')->where('update_date >= ','2019-08-23')->where_in('brand',['SB','BT'])->where('coalesce(lead_mail,\'\') != ','');
+        $lists = $this->db->get()->result_array();
+        foreach ($lists as $list) {
+            if (array_key_exists($list['email'], $leads)===FALSE) {
+                array_push($leads, $list['email']);
+            }
+        }
+        // signup
+        $this->db->select('email_sendermail as email')->from('ts_emails')->where('email_date >= ','2019-08-23')->where('email_type','Signups')->where_in('brand',['SB','BT']);
+        $lists = $this->db->get()->result_array();
+        foreach ($lists as $list) {
+            if (array_key_exists($list['email'], $signup)===FALSE) {
+                array_push($signup, $list['email']);
+            }
+        }
+        // Create file
+        $filenorm = $this->config->item('upload_path_preload').'emails_list.xlsx';
+        @unlink($filenorm);
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Email Lists');
+        $sheet->setCellValue('A1', 'Orders');
+        $sheet->setCellValue('B1','Leads');
+        $sheet->setCellValue('C1','Sign Up');
+        $numpp = 2;
+        foreach ($orders as $order) {
+            $sheet->setCellValue('A'.$numpp, $order);
+            $numpp++;
+        }
+        $numpp = 2;
+        foreach ($leads as $lead) {
+            $sheet->setCellValue('B'.$numpp, $lead);
+            $numpp++;
+        }
+        $numpp = 2;
+        foreach ($signup as $list) {
+            $sheet->setCellValue('C'.$numpp, $list);
+            $numpp++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($filenorm);    // download file
+        echo 'File '.$filenorm.' ready'.PHP_EOL;
+    }
+
+    public function order_invamount_transform()
+    {
+        $this->load->model('orders_model');
+        // $this->orders_model->order_invamount_srtransform();
+        // $this->orders_model->order_invamount_sbtransform();
+        $this->orders_model->order_invamount();
+    }
+
+    public function customleads()
+    {
+        $leaddata = [];
+        $dbgn = strtotime('2022-10-23');
+        $this->db->select('profit_week, profit_year, datebgn, dateend')->from('netprofit')->where(['profit_month' => NULL, 'datebgn >= '=>  $dbgn]);
+        $weeks = $this->db->get()->result_array();
+        foreach ($weeks as $week) {
+            // $this->db->select('if(brand=\'SR\', \'SR\', \'SB\') as brandname, count(lead_id) as cnt')->from('ts_leads')->where(['unix_timestamp(update_date) >= ' => $week['datebgn'], 'unix_timestamp(update_date) < ' => $week['dateend'], 'lead_item_id' => '-3'])->group_by('brandname');
+            $this->db->select('brand as brandname, count(custom_quote_id) as cnt')->from('ts_custom_quotes')->where(['unix_timestamp(date_add) >= ' => $week['datebgn'], 'unix_timestamp(date_add) < ' => $week['dateend']])->group_by('brandname');
+            $data = $this->db->get()->result_array();
+            echo $this->db->last_query().PHP_EOL;
+            if (count($data) > 0) {
+                foreach ($data as $item) {
+                    $leaddata[] = [
+                        'week' => $week['profit_week'],
+                        'year' => $week['profit_year'],
+                        'datebgn' => date('m/d/Y', $week['datebgn']),
+                        'dateend' => date('m/d/Y', $week['dateend']),
+                        'brand' => $item['brandname'],
+                        'leads' => $item['cnt'],
+                    ];
+                }
+            }
+        }
+        // Build leads report
+        // Create file
+        $filenorm = $this->config->item('upload_path_preload').'customforms.xlsx';
+        @unlink($filenorm);
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Custom Leads');
+        $sheet->setCellValue('A1', 'Week');
+        $sheet->setCellValue('B1','Year');
+        $sheet->setCellValue('C1','Date Bgn');
+        $sheet->setCellValue('D1','Date End');
+        $sheet->setCellValue('E1','Brand');
+        $sheet->setCellValue('F1','Leads');
+        $numpp = 2;
+        foreach ($leaddata as $lead) {
+            $sheet->setCellValue('A'.$numpp, $lead['week']);
+            $sheet->setCellValue('B'.$numpp, $lead['year']);
+            $sheet->setCellValue('C'.$numpp, $lead['datebgn']);
+            $sheet->setCellValue('D'.$numpp, $lead['dateend']);
+            $sheet->setCellValue('E'.$numpp, $lead['brand']);
+            $sheet->setCellValue('F'.$numpp, $lead['leads']);
+            $numpp++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($filenorm);    // download file
+        echo 'File '.$filenorm.' ready'.PHP_EOL;
+    }
+
+
+    public function readnewitems() {
+        $this->load->config('shipping');
+        $filenorm = $this->config->item('upload_path_preload').'step1_bluetrack-item-db_INTERNAL.xlsx';
+        $reader = new PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $reader->setReadDataOnly(true);
+        $spreadsheet = $reader->load($filenorm);
+        $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+        $numpp = 0;
+        $items = [];
+        foreach ($sheetData as $itemrow) {
+            if ($numpp > 0) {
+                $itemdata = $this->db->select('item_id, item_name')->from('sb_items')->where('item_number',$itemrow['A'])->get()->row_array();
+                if (ifset($itemdata,'item_id', 0)==0) {
+                    echo 'Item '.$itemrow['A'].' Not Found'.PHP_EOL;
+                    die();
+                } else {
+                    $status = (strtoupper($itemrow['C'])=='YES' ? 1 : 0);
+                    $items[] = [
+                        'item_id' => $itemdata['item_id'],
+                        'item_number' => $itemrow['A'],
+                        'item_name' => $itemrow['B'],
+                        'item_active' => $status,
+                        'vendor_item' => $itemrow['E'],
+                        'vendor' => $itemrow['D'],
+                    ];
+                }
+            }
+            $numpp++;
+        }
+
+        foreach ($items as $item) {
+            if ($item['item_active']==0) {
+                $this->db->where('item_id', $item['item_id']);
+                $this->db->set('item_active',0);
+                $this->db->update('sb_items');
+            } else {
+                // Add vendor Item
+                if (substr($item['vendor_item'],0,1)=='S') {
+                    $this->db->select('vendor_id, vendor_zipcode')->from('vendors')->where('vendor_name','Bella');
+                    $vendordat = $this->db->get()->row_array();
+                    $vendor_id = $vendordat['vendor_id'];
+                    $vendor_zip = $vendordat['vendor_zipcode'];
+                } else {
+                    $vendor_id = $this->config->item('inventory_vendor');
+                    $vendor_zip = $this->config->item('zip');
+                }
+                $vendor_cnt = $this->config->item('default_country');
+                $this->db->set('vendor_item_vendor', $vendor_id);
+                $this->db->set('vendor_item_number', $item['vendor_item']);
+                $this->db->set('vendor_item_name', $item['item_name']);
+                $this->db->set('vendor_item_zipcode', $vendor_zip);
+                $this->db->set('item_shipcountry', $vendor_cnt);
+                $this->db->insert('sb_vendor_items');
+                $vendor_item_id = $this->db->insert_id();
+                if (substr($item['vendor_item'],0,1)=='i') {
+                    $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $item['vendor_item']);
+                    $invdat = $this->db->get()->row_array();
+                    $invent_id = $invdat['inventory_item_id'];
+                    $this->db->select('avg(price) as price')->from('ts_inventory_colors')->where('inventory_item_id', $invent_id);
+                    $pricedat = $this->db->get()->row_array();
+                    $this->db->where('vendor_item_id', $vendor_item_id);
+                    $this->db->set('vendor_item_cost', $pricedat['price']);
+                    $this->db->update('sb_vendor_items');
+                }
+                $this->db->where('item_id', $item['item_id']);
+                $this->db->set('vendor_item_id', $vendor_item_id);
+                $this->db->set('item_active', 1);
+                if (substr($item['vendor_item'],0,1)=='i') {
+                    $this->db->set('printshop_inventory_id', $invent_id);
+                }
+                $this->db->update('sb_items');
+                if (substr($item['vendor_item'],0,1)=='i') {
+                    // Update colors
+                    $colors = $this->db->select('color, inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $invent_id)->get()->result_array();
+                    $this->db->where('item_color_itemid', $item['item_id']);
+                    $this->db->delete('sb_item_colors');
+                    foreach ($colors as $color) {
+                        $this->db->set('item_color_itemid', $item['item_id']);
+                        $this->db->set('item_color', $color['color']);
+                        $this->db->set('printshop_color_id', $color['inventory_color_id']);
+                        $this->db->insert('sb_item_colors');
+                    }
+                }
+            }
+            echo 'Item '.$item['item_name'].' # '.$item['item_number'].' updated '.PHP_EOL;
+        }
+        $this->db->select('item_id, item_number, item_name')->from('sb_items')->where('brand','SR');
+        $sritems = $this->db->get()->result_array();
+        foreach ($sritems as $sritem) {
+            $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $sritem['item_number']);
+            $invdat = $this->db->get()->row_array();
+            if (ifset($invdat,'inventory_item_id',0) > 0) {
+                $this->db->where('item_id', $sritem['item_id']);
+                $this->db->set('printshop_inventory_id', $invdat['inventory_item_id']);
+                $this->db->update('sb_items');
+            } else {
+                echo 'Item '.$sritem['item_number'].' NOT Found';
+            }
+        }
+    }
+
+    public function updatesrorders()
+    {
+        echo 'Start SR orders transform'.PHP_EOL;
+        $this->db->select('oi.order_item_id, v.item_number, o.order_num')->from('ts_order_items oi')->join('v_itemsearch v','oi.item_id=v.item_id')->join('ts_orders o','oi.order_id=o.order_id')->where('o.brand' , 'SR')->where('v.item_id > 0')->where('oi.inventory_item_id',NULL)->order_by('o.order_num');
+        $orditems = $this->db->get()->result_array();
+        foreach ($orditems as $orditem) {
+            $invitm = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $orditem['item_number'])->get()->row_array();
+            $inv_item = $invitm['inventory_item_id'];
+            $this->db->where('order_item_id', $orditem['order_item_id']);
+            $this->db->set('inventory_item_id', $inv_item);
+            $this->db->update('ts_order_items');
+            // Colors
+            $ordcolors = $this->db->select('order_itemcolor_id, item_color')->from('ts_order_itemcolors')->where('order_item_id', $orditem['order_item_id'])->get()->result_array();
+            foreach ($ordcolors as $ordcolor) {
+                $colordat = $this->db->select('color, inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inv_item)->like('color', $ordcolor['item_color'],'after')->get()->row_array();
+                if (ifset($colordat,'inventory_color_id',0) > 0) {
+                    $this->db->where('order_itemcolor_id', $ordcolor['order_itemcolor_id']);
+                    $this->db->set('inventory_color_id', $colordat['inventory_color_id']);
+                    $this->db->update('ts_order_itemcolors');
+                } else {
+                    echo 'Color '.$ordcolor['item_color'].' Order '.$orditem['order_num'].' Item '.$orditem['item_number'].' not found '.PHP_EOL;
+                }
+            }
+        }
+        // Quotes
+        echo 'Start SR quotes transform'.PHP_EOL;
+        $this->db->select('qi.quote_item_id, v.item_number, q.quote_number')->from('ts_quote_items qi')->join('v_itemsearch v','qi.item_id=v.item_id')->join('ts_quotes q','qi.quote_id=q.quote_id')->where('q.brand' , 'SR')->where('v.item_id > 0')->where('qi.inventory_item_id',NULL)->order_by('q.quote_number');
+        $quoteitems = $this->db->get()->result_array();
+        foreach ($quoteitems as $orditem) {
+            $invitm = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $orditem['item_number'])->get()->row_array();
+            $inv_item = $invitm['inventory_item_id'];
+            $this->db->where('quote_item_id', $orditem['quote_item_id']);
+            $this->db->set('inventory_item_id', $inv_item);
+            $this->db->update('ts_quote_items');
+            // Colors
+            $ordcolors = $this->db->select('quote_itemcolor_id, item_color')->from('ts_quote_itemcolors')->where('quote_item_id', $orditem['quote_item_id'])->get()->result_array();
+            foreach ($ordcolors as $ordcolor) {
+                $colordat = $this->db->select('color, inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inv_item)->like('color', $ordcolor['item_color'],'after')->get()->row_array();
+                if (ifset($colordat,'inventory_color_id',0) > 0) {
+                    $this->db->where('quote_itemcolor_id', $ordcolor['quote_itemcolor_id']);
+                    $this->db->set('inventory_color_id', $colordat['inventory_color_id']);
+                    $this->db->update('ts_quote_itemcolors');
+                } else {
+                    echo 'Color '.$ordcolor['item_color'].' Quote '.$orditem['quote_number'].' Item '.$orditem['item_number'].' not found '.PHP_EOL;
+                }
+            }
+        }
+    }
+
+    public function updatesborders()
+    {
+        echo 'Start SB orders transform'.PHP_EOL;
+//        $this->db->select('oi.order_item_id, v.item_number, v.printshop_inventory_id, o.order_num')->from('ts_order_items oi')->join('v_itemsearch v','oi.item_id=v.item_id')->join('ts_orders o','oi.order_id=o.order_id')->where_in('o.brand' , ['SB','BT'])
+//            ->where('v.item_id > 0')->where('oi.inventory_item_id is not NULL')->where('print_date is not NULL')->where('shipped_date',0)->order_by('o.order_num');
+//        $orditems = $this->db->get()->result_array();
+//        foreach ($orditems as $orditem) {
+//            echo 'Order # '.$orditem['order_num'].PHP_EOL;
+//            $invitm = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $orditem['item_number'])->get()->row_array();
+//            $inv_item = $invitm['inventory_item_id'];
+//            $this->db->where('order_item_id', $orditem['order_item_id']);
+//            $this->db->set('inventory_item_id', $orditem['printshop_inventory_id']);
+//            $this->db->update('ts_order_items');
+            // Colors
+//            $ordcolors = $this->db->select('order_itemcolor_id, item_color')->from('ts_order_itemcolors')->where('order_item_id', $orditem['order_item_id'])->get()->result_array();
+//            foreach ($ordcolors as $ordcolor) {
+//                $colordat = $this->db->select('color, inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $orditem['printshop_inventory_id'])->like('color', $ordcolor['item_color'],'after')->get()->row_array();
+//                if (ifset($colordat,'inventory_color_id',0) > 0) {
+//                    $this->db->where('order_itemcolor_id', $ordcolor['order_itemcolor_id']);
+//                    $this->db->set('inventory_color_id', $colordat['inventory_color_id']);
+//                    $this->db->update('ts_order_itemcolors');
+//                } else {
+//                    echo 'Color '.$ordcolor['item_color'].' Order '.$orditem['order_num'].' Item '.$orditem['item_number'].' not found '.PHP_EOL;
+//                }
+//            }
+//        }
+        // Quotes
+        echo 'Start SB quotes transform'.PHP_EOL;
+        $this->db->select('qi.quote_item_id, v.item_number, q.quote_number')->from('ts_quote_items qi')->join('v_itemsearch v','qi.item_id=v.item_id')->join('ts_quotes q','qi.quote_id=q.quote_id')->where('q.brand' , 'SR')->where('v.item_id > 0')->where('qi.inventory_item_id',NULL)->order_by('q.quote_number');
+        $quoteitems = $this->db->get()->result_array();
+        foreach ($quoteitems as $orditem) {
+            $invitm = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $orditem['item_number'])->get()->row_array();
+            $inv_item = $invitm['inventory_item_id'];
+            $this->db->where('quote_item_id', $orditem['quote_item_id']);
+            $this->db->set('inventory_item_id', $inv_item);
+            $this->db->update('ts_quote_items');
+            // Colors
+            $ordcolors = $this->db->select('quote_itemcolor_id, item_color')->from('ts_quote_itemcolors')->where('quote_item_id', $orditem['quote_item_id'])->get()->result_array();
+            foreach ($ordcolors as $ordcolor) {
+                $colordat = $this->db->select('color, inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inv_item)->like('color', $ordcolor['item_color'],'after')->get()->row_array();
+                if (ifset($colordat,'inventory_color_id',0) > 0) {
+                    $this->db->where('quote_itemcolor_id', $ordcolor['quote_itemcolor_id']);
+                    $this->db->set('inventory_color_id', $colordat['inventory_color_id']);
+                    $this->db->update('ts_quote_itemcolors');
+                } else {
+                    echo 'Color '.$ordcolor['item_color'].' Quote '.$orditem['quote_number'].' Item '.$orditem['item_number'].' not found '.PHP_EOL;
+                }
+            }
+        }
+    }
+
+    public function testquote()
+    {
+//        $this->load->config('uploader');
+//        $pathsh = $this->config->item('itemimages_relative');
+//        $pathfl = $this->config->item('itemimages');
+//        $items = $this->db->select('item_id, item_number, item_name, main_image')->from('sb_items')->where(['brand' => 'BT', 'item_active' => 1])->order_by('item_number')->get()->result_array();
+//        foreach ($items as $item) {
+//            if (!empty($item['main_image'])) {
+//                $image = str_replace($pathsh, $pathfl, $item['main_image']);
+//                if (file_exists($image)) {
+//                    list($width, $height) = getimagesize($image);
+//                    if (round($width,-1) !== round($height,-1)) {
+//                        echo 'Item # '.$item['item_number'].' '.$item['item_name'].' Main Image issue W '.$width.' H '.$height.PHP_EOL;
+//                    }
+//                }
+//            }
+//            // Get image images
+//            $lists = $this->db->select('item_img_id, item_img_name, item_img_order')->from('sb_item_images')->where('item_img_item_id', $item['item_id'])->get()->result_array();
+//            foreach ($lists as $list) {
+//                if ($list['item_img_order'] > 1) {
+//                    $image = str_replace($pathsh, $pathfl, $list['item_img_name']);
+//                    if (file_exists($image)) {
+//                        list($width, $height) = getimagesize($image);
+//                        if (round($width,-1) !== round($height,-1)) {
+//                            echo 'Item # '.$item['item_number'].' '.$item['item_name'].' Image # '.$list['item_img_order'].' issue W '.$width.' H '.$height.PHP_EOL;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        echo 'That is All, folk '.PHP_EOL;
+        $this->load->model('email_model');
+        $this->email_model->generate_quota(26662); // 26662
+    }
+
+    public function rebuild_item_titles()
+    {
+        $this->db->select('item_id, item_number, item_name, item_number, item_meta_title')->from('sb_items')->where('brand','BT');
+        $items = $this->db->get()->result_array();
+        foreach ($items as $item) {
+            if (empty($item['item_name'])) {
+                echo 'Item ID '.$item['item_id'].' Empty Name'.PHP_EOL;die();
+            } else {
+                $metanew = str_replace(['Vesrion A'],'', $item['item_name']);
+                $verpos = strpos($metanew,'Version');
+                if ($verpos > 0) {
+                    $version = substr($metanew, $verpos+8);
+                    $metanew = substr($metanew, 0, $verpos-2).'- STRESSBALLS.com&reg; - Custom Printed - Ver '.$version;
+                    echo $item['item_number'].' Meta '.$metanew.PHP_EOL;
+                } else {
+                    $metanew.=' - STRESSBALLS.com&reg; - Custom Printed';
+                }
+                $this->db->where('item_id', $item['item_id']);
+                $this->db->set('item_meta_title', $metanew);
+                $this->db->update('sb_items');
+            }
+        }
+    }
+
+    public function update_shippedorders()
+    {
+        $this->load->model('orders_model');
+        $this->orders_model->update_shipped_orders();
+    }
+
+//    public function updateprintready() {
+//        $this->db->select('oic.order_itemcolor_id, o.order_num, o.print_ready')->from('ts_order_itemcolors oic')->join('ts_order_items oi','oi.order_item_id=oic.order_item_id');
+//        $this->db->join('ts_orders o','o.order_id=oi.order_id')->where('o.print_ready > ',0);
+//        $items = $this->db->get()->result_array();
+//        foreach ($items as $item) {
+//            $this->db->where('order_itemcolor_id', $item['order_itemcolor_id']);
+//            $this->db->set('print_ready', $item['print_ready']);
+//            $this->db->update('ts_order_itemcolors');
+//            echo 'Order '.$item['order_num'].' Updated '.PHP_EOL;
+//        }
+//        $this->db->select('oi.order_item_id, o.order_num, o.plates_ready')->from('ts_order_items oi')->join('ts_orders o','o.order_id=oi.order_id')->where('o.plates_ready > ',0);
+//        $items = $this->db->get()->result_array();
+//        foreach ($items as $item) {
+//            $this->db->where('order_item_id', $item['order_item_id']);
+//            $this->db->set('plates_ready', $item['plates_ready']);
+//            $this->db->update('ts_order_items');
+//            echo 'Order '.$item['order_num'].' Updated '.PHP_EOL;
+//        }
+//    }
+
+    public function testcolors()
+    {
+        $startdate = strtotime('2025-03-17');
+        $this->db->select('o.order_num, o.order_date, o.brand, ii.inventory_item_id, ii.item_num, ii.item_name, oic.item_color, oic.order_itemcolor_id');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_items oi','oi.order_id = o.order_id');
+        $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
+        $this->db->join('ts_inventory_items ii', 'ii.inventory_item_id = oi.inventory_item_id');
+        $this->db->where('o.order_date >= ', $startdate);
+        $this->db->where('oi.inventory_item_id is not null');
+        $this->db->where('oic.inventory_color_id',null);
+        $this->db->order_by('o.order_id');
+        $orders = $this->db->get()->result_array();
+
+        foreach ($orders as $order) {
+            $newcolor = $this->_inventory_color($order['inventory_item_id'], $order['item_color']);
+            if (!empty($newcolor)) {
+                $this->db->where('order_itemcolor_id', $order['order_itemcolor_id']);
+                $this->db->set('inventory_color_id', $newcolor);
+                $this->db->update('ts_order_itemcolors');
+            } else {
+                echo 'Order # '.$order['order_num'].' ('.$order['brand'].')'.' '.$order['item_num'].'-'.$order['item_name'].' '.$order['item_color'].PHP_EOL;
+            }
+        }
+    }
+
+    private function _inventory_color($inventory_item_id, $color)
+    {
+        $outcolor = '';
+        $colordat = $this->db->select('max(inventory_color_id) as color_id, count(inventory_color_id) as cnt')->from('ts_inventory_colors')->where('inventory_item_id', $inventory_item_id)->get()->row_array();
+        if ($colordat['cnt']==1) {
+            // Only one color
+            $outcolor = $colordat['color_id'];
+        } else {
+            $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where(['inventory_item_id' => $inventory_item_id, 'color' => $color])->get()->row_array();
+            if (ifset($invdat, 'inventory_color_id', 0) > 0) {
+                $outcolor = $invdat['inventory_color_id'];
+            } else {
+                $invdat = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where('inventory_item_id', $inventory_item_id)->like('color', $color, 'after')->get()->row_array();
+                if (ifset($invdat, 'inventory_color_id', 0) > 0) {
+                    $outcolor = $invdat['inventory_color_id'];
+                }
+            }
+        }
+        return $outcolor;
+    }
+
+    public function filledorders() {
+        $brands = [
+            'SB', 'SR',
+        ];
+        $startdate = strtotime('2024-01-01');
+        $enddate = strtotime('2025-06-18');
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+
+        foreach ($brands as $brand) {
+            $this->db->select('o.order_id, o.order_date, o.order_num, o.customer_name, coalesce(p.cnt,0) approved, o.revenue, o.balance_manage, o.balance_term');
+            $this->db->from('ts_orders o');
+            $this->db->join('('.$proofsql.') p','p.order_id=o.order_id','left');
+            $this->db->where('o.order_date >=', $startdate);
+            $this->db->where('o.order_date < ', $enddate);
+            $this->db->where('o.is_canceled',0);
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
+            $this->db->order_by('o.order_num');
+            $results = $this->db->get()->result_array();
+            $orders = [];
+            foreach ($results as $result) {
+                if ($result['approved'] > 0) {
+                    $result['approved'] = 'Approved';
+                } else {
+                    $result['approved'] = 'Not Approved';
+                }
+                $result['fulfilled'] = $result['shipped'] = '';
+                // Items
+                $this->db->select('GROUP_CONCAT(v.item_number) as item_number, GROUP_CONCAT(v.item_name) as item_name, sum(oi.item_qty) as item_qty');
+                $this->db->from('ts_order_items oi')->join('v_itemsearch v','v.item_id=oi.item_id')->where('oi.order_id', $result['order_id']);
+                $itemdat = $this->db->get()->row_array();
+                $result['item_number'] = $itemdat['item_number'];
+                $result['item_name'] = $itemdat['item_name'];
+                $result['item_qty'] = $itemdat['item_qty'];
+                // Fullfillment
+                $this->db->select('count(amount_id) as cnt, sum(shipped) as shipped')->from('ts_order_amounts')->where('order_id', $result['order_id']);
+                $fulfil = $this->db->get()->row_array();
+                if ($fulfil['cnt'] > 0) {
+                    $fulfill = intval($fulfil['shipped']);
+                    if ($fulfill >= intval($result['item_qty'])) {
+                        $result['fulfilled'] = '100%';
+                    } else {
+                        $result['fulfilled'] = round($fulfill/$result['item_qty']*100,1).'%';
+                    }
+                }
+                // Shipping
+                $this->db->select('count(ot.tracking_id) as cnt, sum(ot.qty) as shipqty')->from('ts_order_trackings ot')->join('ts_order_itemcolors oic','ot.order_itemcolor_id = oic.order_itemcolor_id')
+                ->join('ts_order_items oi','oi.order_item_id = oic.order_item_id')->where('oi.order_id', $result['order_id']);
+                $shipdat = $this->db->get()->row_array();
+                if ($shipdat['cnt'] > 0) {
+                    $shipqty = $shipdat['shipqty'];
+                    if ($shipqty >= intval($result['item_qty'])) {
+                        $result['shipped'] = '100%';
+                    } else {
+                        $result['shipped'] = round($shipqty/$result['item_qty']*100,1).'%';
+                    }
+                }
+                // Balance Owed
+                if (intval($result['balance_manage'])==1) {
+                    $result['balance'] = 'Paid';
+                } else {
+                    $result['balance'] = 'Balance Owed';
+                }
+                $orders[] = $result;
+            }
+            // Build XLS
+            $this->load->config('uploader');
+            $filenorm = $this->config->item('upload_path_preload').$brand.'_orders.xlsx';
+            @unlink($filenorm);
+            $titles = ['Date','Order #','Customer','Qty','Item #','Item Name','Approved?','% Fulfilled','% Shipping','Paid?'];
+            $numpp = 1;
+            $ncel = 1;
+            $cols=[];
+            $cellname = '';
+            foreach ($titles as $title) {
+                $newcell = $cellname.chr(64 + $numpp);
+                array_push($cols, $newcell);
+                $numpp++;
+            }
+            $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->setTitle($brand.' Orders');
+            $ncol = 0;
+            foreach ($titles as $title) {
+                $sheet->setCellValue($cols[$ncol].'1', $title);
+                $ncol++;
+            }
+            $numpp = 2;
+            foreach ($orders as $order) {
+                $sheet->setCellValue('A'.$numpp, date('m/d/y', $order['order_date']));
+                $sheet->setCellValue('B'.$numpp, $order['order_num']);
+                $sheet->setCellValue('C'.$numpp, $order['customer_name']);
+                $sheet->setCellValue('D'.$numpp, $order['item_qty']);
+                $sheet->setCellValue('E'.$numpp, $order['item_number']);
+                $sheet->setCellValue('F'.$numpp, $order['item_name']);
+                $sheet->setCellValue('G'.$numpp, $order['approved']);
+                $sheet->setCellValue('H'.$numpp, $order['fulfilled']);
+                $sheet->setCellValue('I'.$numpp, $order['shipped']);
+                $sheet->setCellValue('J'.$numpp, $order['balance']);
+                $numpp++;
+            }
+            $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+            $writer->save($filenorm);    // download file
+            echo 'File '.$filenorm.' ready'.PHP_EOL;
+        }
+    }
+
 }

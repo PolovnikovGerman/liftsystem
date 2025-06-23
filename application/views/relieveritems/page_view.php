@@ -75,6 +75,7 @@
             <div class="itemname sortable" data-sortcell="item_name">Item Name</div>
             <div class="missinfo">Complete or Missing Info</div>
         </div>
+        <div class="sritemnewaddarea"></div>
         <div id="relieversitemdata">
         </div>
     </div>

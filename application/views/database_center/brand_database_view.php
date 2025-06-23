@@ -194,3 +194,5 @@
         </div>
     </div>
 </div>
+<div style="position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; text-align: center; z-index: 1050; display: none;
+background-color: #000012F2; opacity: 0.75" id="imageoptionsbackground">&nbsp;</div>

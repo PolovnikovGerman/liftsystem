@@ -90,6 +90,13 @@
                     </div>
                     <div class="datarow">
                         <div class="masterinventtotals">
+                            <div class="inventcolorsortarea">
+                                <select class="inventcolorsort">
+                                    <option value="suggeststock">Max QTY</option>
+                                    <option value="color">Alphabetical</option>
+                                    <option value="color_order">Create Date</option>
+                                </select>
+                            </div>
                             <div class="inventtotalmaxshow">[Show Max]</div>
                             <div class="masterinventpercent">%</div>
                             <div class="masterinventorymaximum">Maximum</div>

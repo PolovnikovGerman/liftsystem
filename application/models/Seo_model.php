@@ -23,25 +23,37 @@ Class Seo_model extends My_Model {
         if (!$d) {
             return $out; // Failed to open connection
         } else {
-            $result = json_decode($d);
+            $data = json_decode($d,TRUE);
+            if (isset($data['error'])) {
+                return $out;
+            }
+            // Build data
+            $result = [];
+            $result['country_code2'] = ifset($data,'country_code','');
+            $result['country_name'] = ifset($data,'country_name','');
+            $result['city'] = ifset($data,'city_name','');
+            $result['state_prov'] = ifset($data,'region_name','');
+            $result['latitude'] = ifset($data,'latitude','');
+            $result['longitude'] = ifset($data,'longitude','');
+            $result['zipcode'] = ifset($data,'zip_code','');
             $country_id='';
             $this->load->model('shipping_model');
-            if ($result->country_code2) {
-                $cntr=$this->shipping_model->get_country_bycode2($result->country_code2);
+            if (ifset($result,'country_code2','')!=='') {
+                $cntr=$this->shipping_model->get_country_bycode2($result['country_code2']);
                 if (isset($cntr['country_id']) && $cntr['country_id']) {
                     $country_id=$cntr['country_id'];
                 }
             }
             $out_array = array(
                 'ip' => $user_ip,
-                'country_code' => $result->country_code2,
-                'country_name' => $result->country_name,
-                'city_name' => $result->city,
-                'region_name' => $result->state_prov,
-                'latitude' => $result->latitude,
-                'longitude' => $result->longitude,
+                'country_code' => $result['country_code2'],
+                'country_name' => $result['country_name'],
+                'city_name' => $result['city'],
+                'region_name' => $result['state_prov'],
+                'latitude' => $result['latitude'],
+                'longitude' => $result['longitude'],
                 'country_id' => $country_id,
-                'zipcode' => $result->zipcode,
+                'zipcode' => $result['zipcode'],
             );
             $out['geodata'] = $out_array;
             $out['result'] = $this->success_result;
@@ -50,7 +62,8 @@ Class Seo_model extends My_Model {
     }
 
     public function get_geolocation2api($apiKey, $ip, $lang = "en", $fields = "*", $excludes = "") {
-        $url = "https://api.ipgeolocation.io/ipgeo?apiKey=".$apiKey."&ip=".$ip."&lang=".$lang."&fields=".$fields."&excludes=".$excludes;
+        // $url = "https://api.ipgeolocation.io/ipgeo?apiKey=".$apiKey."&ip=".$ip."&lang=".$lang."&fields=".$fields."&excludes=".$excludes;
+        $url = "https://api.ip2location.io/?key={$apiKey}&ip=".$ip;
         $cURL = curl_init();
 
         curl_setopt($cURL, CURLOPT_URL, $url);

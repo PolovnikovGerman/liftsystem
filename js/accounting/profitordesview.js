@@ -1,5 +1,4 @@
 function init_profit_orders() {
-    // initProfitOrderPagination();
     search_profit_data();
     totalyears();
     $(".profitorder_dateinpt").datepicker({
@@ -93,6 +92,9 @@ function init_profit_orders() {
         }
     });
     $(".selectordertypesdat").unbind('change').change(function(){
+        search_profit_data();
+    })
+    $(".selectorderitemtypedat").unbind('change').change(function (){
         search_profit_data();
     })
     $("#profitdatetypechoise2").unbind('click').click(function(){
@@ -205,8 +207,8 @@ function search_profit_data() {
                     }
                 },
                 position: {
-                    my: 'bottom right',
-                    at: 'middle left',
+                    my: 'bottom left',
+                    at: 'middle right',
                 },
                 style: {
                     classes: 'qtip-dark curpoints_tooltip'
@@ -556,6 +558,7 @@ function add_leadorder(brand) {
                     initBillOrderAutocomplete();
                 }
             }
+            setTimeout(leadordernewitem, 500);
         } else {
             show_error(response);
         }
@@ -812,6 +815,7 @@ function profile_filter_get() {
         params.push({name: 'shipping_state', value: 0 });
     }
     params.push({name: 'order_type',value: $(".selectordertypesdat").val()});
+    params.push({name: 'item_type', value: $(".selectorderitemtypedat").val()});
     params.push({name: 'brand', value: $("#profitordersbrand").val()});
     return params;
 }
@@ -858,6 +862,7 @@ function init_prepare_export() {
         params.push({name: 'shipping_state', value: 0 });
     }
     params.push({name: 'order_type',value: $(".selectordertypesdat").val()});
+    params.push({name: 'item_type', value: $(".selectorderitemtypedat").val()});
     params.push({name: 'brand', value: $("#profitordersbrand").val()});
     params.push({name: 'exclude_quickbook', value: $("#quickbookexclude").val()});
     var url='/accounting/orderprofit_export';

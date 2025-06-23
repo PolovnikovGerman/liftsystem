@@ -13,7 +13,9 @@
     <?php $weekday=0; $numpp=0;?>
     <div class="batchcalendar_data">
     <?php foreach ($data as $row) {?>
-        <div class="batchcalend_dateinfo <?=$row['out_daytype']?> <?=($curdate==$row['batch_date'] ? 'curday' : '')?>" id="batch<?=$row['batch_date']?>" href="/finance/batchdue/?day=<?=$row['batch_date']?>">
+        <div class="batchcalend_dateinfo <?=$row['out_daytype']?> <?=($curdate==$row['batch_date'] ? 'curday' : '')?>" id="batch<?=$row['batch_date']?>"
+             data-event="click" data-css="weekbrandtotals" data-bgcolor="#ffffff" data-bordercolor="#adadad" data-textcolor="#000000"
+             data-position="left" data-balloon="{ajax} /accounting/batchdue/?day=<?=$row['batch_date']?>">
             <div class="batchcalendar_daytitle"><?=$row['out_date']?></div>
             <div class="batchcalendar_sums <?=$row['out_vmdclass']?>"><?=$row['out_vmd']?></div>
             <div class="batchcalendar_sums <?=$row['out_amexclass']?>"><?=$row['out_amex']?></div>

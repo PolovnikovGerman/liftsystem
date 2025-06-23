@@ -228,6 +228,13 @@ Class Vendors_model extends My_Model
         if (ifset($options,'vtype','')!=='') {
             $this->db->where('vendor_type', $options['vtype']);
         }
+        if (isset($options['exclude'])) {
+            if (is_array($options['exclude'])) {
+                $this->db->where_not_in('vendor_id', $options['exclude']);
+            } else {
+                $this->db->where('vendor_id != ', $options['exclude']);
+            }
+        }
         if (isset($options['limit'])) {
             if (isset($options['offset'])) {
                 $this->db->limit($options['limit'], $options['offset']);
@@ -1005,13 +1012,23 @@ Class Vendors_model extends My_Model
     }
 
     // Get Vendor for new edit
-    public function get_item_vendor($vendor_item_id) {
+    public function get_item_vendor($vendor_item_id, $inventory_item_id=0) {
         $this->db->select('vi.*');
-        $this->db->select('v.vendor_name, v.vendor_zipcode');
+        $this->db->select('v.vendor_name, cnt.country_iso_code_3 as item_shipcountry_name, cnt.country_iso_code_2 as item_shipcountry_code');
         $this->db->from('sb_vendor_items vi');
         $this->db->join('vendors v','v.vendor_id=vi.vendor_item_vendor');
+        $this->db->join('ts_countries cnt','cnt.country_id=vi.item_shipcountry','left');
         $this->db->where('vendor_item_id', $vendor_item_id);
         $vitem = $this->db->get()->row_array();
+        if (!empty($inventory_item_id)) {
+            $this->load->model('inventory_model');
+            $res = $this->inventory_model->get_inventory_item($inventory_item_id);
+            if ($res['result']==$this->success_result) {
+                $invdata = $res['data'];
+                $vitem['vendor_item_cost'] = $invdata['avg_price'];
+                $vitem['vendor_item_blankcost'] = $invdata['avg_price'];
+            }
+        }
         return $vitem;
     }
 
@@ -1044,6 +1061,22 @@ Class Vendors_model extends My_Model
         $results=$this->db->get()->result_array();
         return $results;
 
+    }
+
+    public function get_vendor_partners() {
+        $partners = $this->db->select('vendor_id, vendor_name')->from('vendors')->where('partner', 1)->order_by('vendor_name')->get()->result_array();
+        $vendors = [];
+        foreach ($partners as $partner) {
+            $vendors[] = ['vendor_id' => $partner['vendor_id'],'vendor_name' => $partner['vendor_name']];
+        }
+        if (count($partners) > 0) {
+            $vendors[] = ['vendor_id' => -1, 'vendor_name' => '-------'];
+        }
+        $others = $this->db->select('vendor_id, vendor_name')->from('vendors')->where('partner', 0)->order_by('vendor_name')->get()->result_array();
+        foreach ($others as $partner) {
+            $vendors[] = ['vendor_id' => $partner['vendor_id'],'vendor_name' => $partner['vendor_name']];
+        }
+        return $vendors;
     }
 
 }

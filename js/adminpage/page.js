@@ -5,33 +5,34 @@ $(document).ready(function () {
     // Calc
     rebuild_market_offset();
     leftmenu_alignment();
-    $(".brandmenuitem.relievers").hover(
-        function () {
-            var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-black.','-white.');
-            $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
-        },
-        function () {
-            var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-white.', '-black.');
-            $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
-        }
-    );
-    $(".brandmenuitem.sigmasystem").hover(
-        function () {
-            var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-black.','-white.');
-            $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
-        },
-        function () {
-            var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-white.', '-black.');
-            $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
-        }
-    );
-    $(".brandmenuitem").find('div.brandmenuicon').hover(
+    // $(".brandmenuitem.relievers").hover(
+    //     function () {
+    //         var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-black.','-white.');
+    //         $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
+    //     },
+    //     function () {
+    //         var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-white.', '-black.');
+    //         $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
+    //     }
+    // );
+    // $(".brandmenuitem.sigmasystem").hover(
+    //     function () {
+    //         var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-black.','-white.');
+    //         $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
+    //     },
+    //     function () {
+    //         var iconsrc = $(this).find('div.brandmenuicon').children('img').prop('src').replace('-white.', '-black.');
+    //         $(this).find('div.brandmenuicon').children('img').prop('src', iconsrc);
+    //     }
+    // );
+    $(".maincontentmenu_item_icon.current").hover(
         function () {
             $(".brandsubmenu[data-brand='SB']").hide();
             $(".brandsubmenu[data-brand='SR']").hide();
             $(".brandsubmenu[data-brand='SG']").hide();
             var dataid = $(this).data('item');
             var position = $(this).position();
+//            console.log('Position '+position.top+' Left '+position.left);
             var brand = $(this).data('brand');
             var loctop = parseInt(position.top)+25;
             var params = new Array();
@@ -39,7 +40,7 @@ $(document).ready(function () {
             params.push({name: 'brand', value: brand});
             $.post('/welcome/submenus', params, function (response){
                 if (response.errors=='') {
-                    $(".brandsubmenu[data-brand='"+brand+"']").empty().html(response.data.content).show().css('top',loctop);
+                    $(".brandsubmenu[data-brand='"+brand+"']").empty().html(response.data.content).show().css('top',loctop).css('left',position.left);
                     init_submenu(brand);
                 } else {
                     show_error(response);
@@ -70,7 +71,7 @@ $(document).ready(function () {
     //     var url=$(this).data('menulink');
     //     window.location.href=url;
     // });
-    $(".brandmenuitem").unbind('click').click(function () {
+    $(".maincontentmenu_item").unbind('click').click(function () {
         var params = new Array();
         params.push({name: 'url', value: $(this).data('url')});
         params.push({name: 'brand', value: $(this).data('brand')});
@@ -91,7 +92,7 @@ $(document).ready(function () {
             var url='/welcome/brandshow';
             $.post(url, params, function (response) {
                 if (response.errors=='') {
-                    window.location.href='/';
+                    window.location.href=response.data.url;
                 } else {
                     show_error(response);
                 }
@@ -165,6 +166,8 @@ $(document).ready(function () {
     // Create timer
     timerId = setTimeout('ordertotalsparse()', timeLapse);
     jQuery.balloon.init();
+    // Init Header Totals
+    init_totalinfo_content();
 });
 
 function init_submenu(brand) {
@@ -263,7 +266,7 @@ function matchStart(params, data) {
     // `data.text` is the text that is displayed for the data object
     if (data.text.toUpperCase().indexOf(params.term.toUpperCase()) > -1) {
         var modifiedData = $.extend({}, data, true);
-        modifiedData.text += ' (matched)';
+        // modifiedData.text += ' (matched)';
 
         // You can return modified objects from here
         // This includes matching the `children` how you want in nested data sets
@@ -314,4 +317,34 @@ function leftmenu_alignment() {
 
 function initAutocomplete() {
 
+}
+
+/* Scroll to previous week results */
+function init_totalinfo_content() {
+    $(".totalsalesprev.active").unbind('click').click(function (){
+        var params=new Array();
+        params.push({name: 'weekdate', value: $(this).data('week')});
+        var url = '/welcome/salestotals';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".period_analitic_info").empty().html(response.data.content);
+                init_totalinfo_content();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".totalsalesnext.active").unbind('click').click(function (){
+        var params=new Array();
+        params.push({name: 'weekdate', value: $(this).data('week')});
+        var url = '/welcome/salestotals';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".period_analitic_info").empty().html(response.data.content);
+                init_totalinfo_content();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }

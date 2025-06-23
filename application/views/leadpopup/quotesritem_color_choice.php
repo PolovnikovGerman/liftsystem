@@ -1,0 +1,1 @@
+<span class="addnewquotecolor" data-quoteitem="<?=$quote_item_id?>" data-item="<?=$item_id?>"><?=$item_color?></span>

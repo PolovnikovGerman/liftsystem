@@ -7,11 +7,13 @@ class Analytics extends MY_Controller
     private $pagelink = '/analytics';
     private $PERPAGE = 100;
     private $perpage_options = [50, 100, 250, 500];
+    public $current_brand;
 
     public function __construct()
     {
         parent::__construct();
-        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink);
+        $this->current_brand = $this->menuitems_model->get_current_brand();
+        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink,0, $this->current_brand);
         if ($pagedat['result'] == $this->error_result) {
             show_404();
         }
@@ -32,39 +34,19 @@ class Analytics extends MY_Controller
     {
         $head = [];
         $head['title'] = 'Analytics';
-        $brand = $this->menuitems_model->get_current_brand();
+        $brand = $this->current_brand;
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
         $content_options = [];
-        $content_options['start'] = $this->input->get('start', TRUE);
+        $start = $this->input->get('start', TRUE);
         foreach ($menu as $row) {
             if ($row['item_link']=='#reportsalestypeview') {
                 // Taks View
                 $head['styles'][] = ['style' => '/css/analytics/salestypes.css'];
                 $head['scripts'][] = ['src' => '/js/analytics/salestypes.js'];
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['reportsalestypeview'] = $this->_prepare_salestype_view($brand);
             } elseif ($row['item_link']=='#reportitemsoldyearview') {
                 $head['styles'][]=['style'=>'/css/analytics/itemsales.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/itemsales.js'];
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $options=[
                     'brand' => $brand,
                 ];
@@ -72,30 +54,10 @@ class Analytics extends MY_Controller
             } elseif ($row['item_link']=='#reportitemsoldmonthview') {
                 $head['styles'][]=['style'=>'/css/analytics/itemmonth.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/itemmonth.js'];
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['reportitemsoldmonthview'] = $this->_prepare_monthsales($brand);
             } elseif ($row['item_link']=='#checkoutreportview') {
                 $head['styles'][]=['style'=>'/css/analytics/orderreports.css'];
                 $head['scripts'][]=['src'=>'/js/analytics/ordersreports.js'];
-//                $brands = $this->menuitems_model->get_brand_pagepermisions($row['brand_access'], $row['brand']);
-//                if (count($brands)==0) {
-//                    redirect('/');
-//                }
-//                $brand = $brands[0]['brand'];
-//                $top_options = [
-//                    'brands' => $brands,
-//                    'active' => $brand,
-//                ];
-//                $top_menu = $this->load->view('page/top_menu_view', $top_options, TRUE);
                 $content_options['checkoutreportview']=$this->_prepare_checkout_report($brand);
             }
         }
@@ -111,13 +73,24 @@ class Analytics extends MY_Controller
         $head['scripts'][]=array('src'=>"https://www.gstatic.com/charts/loader.js");
         // $head['scripts'][]=['src'=>'https://www.google.com/jsapi'];
 
-        $options = ['title' => $head['title'], 'user_id' => $this->USR_ID, 'user_name' => $this->USER_NAME, 'activelnk' => $this->pagelink, 'styles' => $head['styles'], 'scripts' => $head['scripts'],];
+        $options = [
+            'title' => $head['title'],
+            'user_id' => $this->USR_ID,
+            'user_name' => $this->USER_NAME,
+            'activelnk' => $this->pagelink,
+            'styles' => $head['styles'],
+            'scripts' => $head['scripts'],
+            'brand' => $brand,
+        ];
+
         $dat = $this->template->prepare_pagecontent($options);
-        $content_options['left_menu'] = $dat['left_menu'];
         $content_options['brand'] = $brand;
-        $content_view = $this->load->view('analytics/page_view', $content_options, TRUE);
+        $brandclass = ($brand=='SR' ? 'relievers' : ($brand=='SG' ? '' : 'stressballs'));
+        $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass ], TRUE);
+        $content_view = $this->load->view('analytics/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
-        $this->load->view('page/page_template_view', $dat);
+        $dat['modal_view'] = $this->load->view('analytics/modal_view',[], TRUE);
+        $this->load->view('page_modern/page_template_view', $dat);
     }
 
 //    public function salestypebrand() {
@@ -1102,9 +1075,12 @@ class Analytics extends MY_Controller
 
 
     private function _prepare_salestype_view($brand) {
+        if ($brand=='SG') {
+            $brand = 'ALL';
+        }
         $this->load->model('permissions_model');
         $usrdat=$this->user_model->get_user_data($this->USR_ID);
-        $reppermis=$this->permissions_model->get_subitems($this->USR_ID, 'salestypebtn');
+        $reppermis=$this->permissions_model->get_subitems($this->USR_ID, 'salestypebtn', $brand);
         $profitview=$this->permissions_model->get_pageprofit_view($this->USR_ID, 'salestypebtn');
         $usr_profitview = $usrdat['profit_view'];
         $olddata=$this->reports_model->get_old_salestypes($reppermis, $profitview, $usr_profitview, $brand);

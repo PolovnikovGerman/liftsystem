@@ -1,6 +1,10 @@
 <?php
-$config['js_version'] = '2.02204';
-$config['css_version']= '2.02204';
+$config['js_version'] = getenv('JS_VERSION');
+$config['css_version']= getenv('CSS_VERSION');
+/* SET EMPTY SERVER NAME */
+if (!isset($_SERVER['SERVER_NAME'])) {
+    $_SERVER['SERVER_NAME'] = getenv('server_name');
+}
 /* Default Profit percent */
 $config['default_profit']=40;
 $config['default_brand']=1;
@@ -37,39 +41,21 @@ $config['custom_proof_time'] = 30;
 $config['other_proof_time'] = 7;
 $config['custom_itemnum']='00-ZZ000';
 $config['minimal_profitperc']=20;
-switch($_SERVER['SERVER_NAME']){
-    case 'tempsys.net':
-    case 'tempsys.golden-team.org':
-    case 'lifttest.stressballs.com':
-        $config['sean_email']='polovnikov.g@gmail.com';
-        $config['sage_email']='to_german@yahoo.com';
-        $config['taisen_email']='polovnikov.german@gmail.com';
-        $config['email_notification_sender']='support@golden-team.org';
-        $config['redraw_email']='redraw@golden-team.org';
-        $config['art_dept_email']="art@golden-team.org";
-        $config['art_srdept_email']="art-sr@golden-team.org";
-        $config['taisenkatakura_email']='taisen@test.ru';
-        $config['customer_notification_sender']='sales@bluetrack.com';
-        $config['customer_notification_relievers'] = 'sales@stressrelievers.com';
-        $config['developer_email']='polovnikov.g@gmail.com';
-        $config['newprooflnk']='http://test.bluetrack.com/proofview/?doc=';
-        break;
-    default :
-        $config['sean_email']='sean@bluetrack.com';
-        $config['sage_email']='sage@bluetrack.com';
-        $config['taisen_email']='taisen@bluetrack.com';
-        $config['email_notification_sender']='sales@bluetrack.com';
-        $config['redraw_email']='redraw@bluetrack.com';
-        $config['art_dept_email']="art@bluetrack.com";
-        $config['art_srdept_email']="art@stressrelievers.com";
-        $config['customer_notification_sender']='sales@bluetrack.com';
-        $config['customer_notification_relievers'] = 'sales@stressrelievers.com';
-        $config['taisenkatakura_email']='taisenkatakura321@yahoo.com';
-        // $config['developer_email']='polovnikov.g@gmail.com';
-        $config['developer_email']='german.polovnikov@bluetrack.com';
-        $config['newprooflnk']='https://www.bluetrack.com/proofview/?doc=';
-        break;
-}
+// EMAIL ADDRESSES
+$config['sean_email']=getenv('SEAN_EMAIL'); // 'sean@bluetrack.com';
+$config['sage_email']=getenv('SAGE_EMAIL'); // 'sage@bluetrack.com';
+$config['taisen_email']=getenv('TAISEN_EMAIL'); //'taisen@bluetrack.com';
+$config['email_notification_sender']=getenv('NOTIFICATION_EMAIL'); // 'sales@bluetrack.com';
+$config['quote_sender']=getenv('QUOTE_EMAIL'); // 'sales@bluetrack.com';
+$config['redraw_email']=getenv('REDRAW_EMAIL'); //'redraw@bluetrack.com';
+$config['art_dept_email']=getenv('ARTDEPT_EMAIL'); // "art@bluetrack.com";
+$config['art_srdept_email']=getenv('ARTDEPT_SR_EMAIL'); // "art@stressrelievers.com";
+$config['customer_notification_sender']=getenv('CUSTOMER_BT_EMAIL'); // 'sales@bluetrack.com';
+$config['customer_notification_relievers']=getenv('CUSTOMER_SR_EMAIL'); // 'sales@stressrelievers.com';
+$config['taisenkatakura_email']=getenv('TAISEN_PERSON_EMAIL'); //'taisenkatakura321@yahoo.com';
+$config['developer_email']=getenv('DEVELOPER_EMAIL'); //'german.polovnikov@bluetrack.com';
+$config['newprooflnk']=getenv('NEWPROOF_URL');//'https://www.bluetrack.com/proofview/?doc=';
+
 $config['netexportsecure']=getenv('netexportsecure');
 $config['netexportdata']=getenv('netexportdata');
 $config['clayexportdata'] = getenv('clayexportdata');
@@ -133,7 +119,7 @@ $config['defqty_custom']=1000;
 // Minimal timeout of lock - 20 min
 $config['max_lock_time']=180;
 // Timeout for edit - 10 min - JS - X 1000
-$config['loctimeout']=130;
+$config['loctimeout']=130; // 130
 $config['loctimeout_local']=6000; //1200;
 // Default Inventory Vendor && Payment Method
 $config['inventory_vendor']=getenv('INVENTORY_VENDOR');
@@ -251,8 +237,7 @@ $config['notification_systems'] = [
     'Emails - Proof Requests',
     'Researcher Report',
 ];
-// $config['img_path']=BASEPATH.'../img/';
-$config['img_path']='http://'.$_SERVER['SERVER_NAME'].'/img/';
+$config['img_path']=BASEPATH.'../img/';
 $config['item_quote_images'] = 'http://'.$_SERVER['SERVER_NAME'];
 if ($_SERVER['SERVER_NAME']=='bluetrack.com' || $_SERVER['SERVER_NAME']=='www.bluetrack.com') {
     $config['item_quote_images'] = 'https://'.$_SERVER['SERVER_NAME'];
@@ -294,5 +279,9 @@ $config['debug_mode'] = (getenv('TEST_SERVER')==1 ? '1' : 0);
 $config['default_country'] = 223;
 $config['google_map_key'] = getenv('GOOGLEMAPAPI_KEY');
 $config['srrepeat_cost'] = 12;
+$config['custom_quote_note'] = '4-5 Week Lead Time'.PHP_EOL.'Add\'l Print Locations: $0.12 ea & $30 setup'.PHP_EOL.PHP_EOL;
+$config['custom_mischrg_label'] = 'Custom Design Charge';
+$config['custom_mischrg_value'] = 150;
+$config['custom_itemprice'] = 3.00;
 $config['contactnote_relievers'] = 'Please call us at 1-800-790-6090 or email sales@stressrelievers.com with questions';
 $config['contactnote_bluetrack'] = 'Please call us at 1-800-790-6090 or email sales@bluetrack.com with questions';

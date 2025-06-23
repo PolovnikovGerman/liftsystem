@@ -7,29 +7,15 @@
     <input type="text" class="psorderdate psorderinput" data-fldname="printshop_date" value="<?=($printshop_date==0 ? '' : date('m/d/Y', $printshop_date))?>"/>
 </div>
 <div class="ordernum editform">
-   <?php if ($printshop_income_id<=0) { ?>
-        <input type="text" class="psordernum psorderinput" data-fldname="order_num" value="<?=$order_num?>"/>
-   <?php } else { ?>
+<!--   --><?php //if ($printshop_income_id<=0) { ?>
+<!--        <input type="text" class="psordernum psorderinput" data-fldname="order_num" value="--><?php //=$order_num?><!--"/>-->
+<!--   --><?php //} else { ?>
         <?=$order_num?>
-    <?php } ?>
+<!--    --><?php //} ?>
 </div>
 <div class="customer editform"><?=(empty($customer) ? '&nbsp;' : $customer)?></div>
-<div class="itemname editform">
-    <select class="psprintitem psorderselect" data-fldname="inventory_item_id">
-        <option value="" <?=($inventory_item_id=='' ? 'selected="selected"' : '')?> >...</option>
-        <?php foreach ($items as $irow) { ?>
-        <option value="<?=$irow['inventory_item_id']?>" <?=($irow['inventory_item_id']==$inventory_item_id ? 'selected="selected"' : '')?>><?=$irow['item_name']?></option>
-        <?php } ?>
-    </select>
-</div>
-<div class="itemcolor editform">
-    <select class="psprintcolor psorderselect" data-fldname="inventory_color_id">
-        <option value="" <?=($inventory_color_id=='' ? 'selected="selected"' : '')?>>...</option>
-        <?php foreach ($colors as $crow) { ?>
-        <option value="<?=$crow['inventory_color_id']?>" <?=($crow['inventory_color_id']==$inventory_color_id ? 'selected="selected"' : '')?>><?=$crow['color']?></option>
-        <?php } ?>
-    </select>
-</div>
+<div class="itemname editform" title="<?=$item_name?> - <?=$item_num?>"><?=$item_name?> - <?=$item_num?></div>
+<div class="itemcolor editform"><?=$color?></div>
 <div class="shipped editform">
     <input type="text" class="psshipped psorderinput" data-fldname="shipped" value="<?=$shipped?>" title="<?=$title?>"/>
 </div>

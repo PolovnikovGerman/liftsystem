@@ -10,12 +10,13 @@
         <div class="masterinventseq itemedit" data-item="<?=$list['id']?>">
             <i class="fa fa-pencil"></i>
         </div>
-        <div class="masterinventnumber"><?=$list['item_code']?></div>
+        <div class="masterinventnumber itemnumberplace"><?=$list['item_code']?></div>
         <div class="masterinventdescrip">
             <?=$list['description']?>
             <span class="addmasterinventory" data-item="<?=$list['id']?>"><i class="fa fa-plus"></i></span>
         </div>
     <?php } else { ?>
+        <div class="masterinventseq"><?=$list['item_seq_total']?></div>
         <div class="masterinventseq"><?=$list['item_seq']?></div>
         <div class="masterinventnumber colordata" data-color="<?=$list['id']?>"><i class="fa fa-pencil"></i></div>
         <div class="masterinventdescrip">

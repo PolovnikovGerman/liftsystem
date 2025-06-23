@@ -15,6 +15,7 @@ Class User_model extends MY_Model
         $this->load->helper('cookie');
         $out = ['result' =>$this->error_result,];
         $user=usersession('usr_data');
+        // $user = [];
         $cookie=get_cookie('acctoken');
         if (empty($user)) {
             if ($cookie) {
@@ -24,16 +25,34 @@ Class User_model extends MY_Model
                 }
             }
         }
-        if (is_array($user)) {
+        if (ifset($user,'id',0)>0) {
             /* Try to check Cooikie */
-            $this->db->select('user_status');
+            $this->db->select('user_status, user_secret, last_verified');
             $this->db->from('users');
             $this->db->where('user_id', $user['id']);
             $chkres=$this->db->get()->row_array();
-            if ($chkres['user_status']==1) {
-                $out['result'] = $this->success_result;
-                $out['data'] = $user;
-                usersession('usr_data', $user);
+            if (!empty($chkres['user_secret']) && empty($chkres['last_verified'])) {
+                usersession('usr_data', null);
+            } else {
+                if ($chkres['user_status']==1) {
+                    $out['result'] = $this->success_result;
+                    $out['data'] = $user;
+                    usersession('usr_data', $user);
+                    // If empty cookie
+                    if ($cookie) {
+                        $server=$this->input->server('SERVER_NAME');
+                        $cookienew = array(
+                            'name'   => 'acctoken',
+                            'value'  => $cookie,
+                            'expire' => '86500',
+                            'domain' => $server,
+//                            'path'   => '/; SameSite=Strict',
+//                            'secure' => TRUE,
+//                            'httponly' => TRUE,
+                        );
+                        set_cookie($cookienew);
+                    }
+                }
             }
         }
         return $out;
@@ -57,6 +76,11 @@ Class User_model extends MY_Model
                     'user_name'=>$user['user_name'],
                     'user_replica'=>(!empty($user['user_leadname']) ? $user['user_leadname'] : $user['first_name']),
                     'user_logo' => (empty($user['user_logo']) ? $this->config->item('empty_profile') : $user['user_logo']),
+                    'user_order_export' => $user['user_order_export'],
+                    'user_secret' => $user['user_secret'],
+                    'user_payuser' => $user['user_payuser'],
+                    'finuser' => $user['finuser'],
+                    'first_name' => $user['first_name'],
                 ];
                 $out['result']=$this->success_result;
             }
@@ -92,25 +116,25 @@ Class User_model extends MY_Model
                 $out['msg'] = 'Enter correct User Name / Password';
                 $login=$data['username'];
                 $passwd=md5($data['passwd']);
+//                $this->db->select('u.*, r.role_short');
+//                $this->db->from('users u');
+//                $this->db->join('roles r','r.role_id=u.role_id','left');
+//                $this->db->where('u.user_email', $login);
+//                $this->db->where('u.user_passwd', $passwd);
+//                $res = $this->db->get()->row_array();
+//                if (isset($res['user_id'])) {
+//                    $out['result'] = $this->success_result;
+//                } else {
                 $this->db->select('u.*, r.role_short');
                 $this->db->from('users u');
                 $this->db->join('roles r','r.role_id=u.role_id','left');
-                $this->db->where('u.user_email', $login);
+                $this->db->where('u.userlogin', $login);
                 $this->db->where('u.user_passwd', $passwd);
                 $res = $this->db->get()->row_array();
                 if (isset($res['user_id'])) {
                     $out['result'] = $this->success_result;
-                } else {
-                    $this->db->select('u.*, r.role_short');
-                    $this->db->from('users u');
-                    $this->db->join('roles r','r.role_id=u.role_id','left');
-                    $this->db->where('u.userlogin', $login);
-                    $this->db->where('u.user_passwd', $passwd);
-                    $res = $this->db->get()->row_array();
-                    if (isset($res['user_id'])) {
-                        $out['result'] = $this->success_result;
-                    }
                 }
+                // }
 
                 if ($out['result'] == $this->success_result) {
                     /* Check Additional restricts - BY IP & Time */
@@ -134,7 +158,7 @@ Class User_model extends MY_Model
                             /* Chk User time restrict */
                             $chktime = 1;
                         } else {
-                            $times = get_timerestrict($res['user_timerestrict']);
+                            $times = get_timerestrict($res['time_restrict']);
                             $curtime = time();
                             if ($curtime >= $times['begin'] && $curtime <= $times['end']) {
                                 $chktime = 1;
@@ -154,6 +178,11 @@ Class User_model extends MY_Model
                                 'user_name'=>$res['user_name'],
                                 'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
                                 'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
+                                'user_order_export' => $res['user_order_export'],
+                                'finuser' => $res['finuser'],
+                                'user_secret' => $res['user_secret'],
+                                'user_payuser' => $res['user_payuser'],
+                                'first_name' => $res['first_name'],
                             );
                             usersession('usr_data', $usr_data);
                             // Create access token
@@ -169,11 +198,14 @@ Class User_model extends MY_Model
                                 'name'   => 'acctoken',
                                 'value'  => $res['token'],
                                 'expire' => '86500',
-                                'domain' => '.'.$server,
-                                'path'   => '/',
-                                'secure' => FALSE,
+                                'domain' => $server,
+//                                'path'   => '/; SameSite=Strict',
+//                                'prefix' => '',
+//                                'secure' => FALSE,
+//                                'httponly' => FALSE,
                             );
                             set_cookie($cookie);
+                            usersession('currentbrand',null);
                         }
                     }
                 }
@@ -254,6 +286,13 @@ Class User_model extends MY_Model
                 $this->db->order_by($options['sort']);
             }
         }
+        if (isset($options['sort2'])) {
+            if (isset($options['sort_direct2'])) {
+                $this->db->order_by($options['sort2'], $options['sort_direct2']);
+            } else {
+                $this->db->order_by($options['sort2']);
+            }
+        }
         $res=$this->db->get()->result_array();
 
         $data = [];
@@ -262,7 +301,7 @@ Class User_model extends MY_Model
             $row['numpp']=$numpp;
             $row['last_activity']= 'n/a';
             if (!empty($row['lastactivity'])) {
-                $row['last_activity']=substr(date('D', $row['lastactivity']),0,1).' - '.date('M j, Y H:i', $row['lastactivity']);
+                $row['last_activity']=date('D', $row['lastactivity']).' - '.date('M j, Y H:i', $row['lastactivity']);
             }
             // $row['last_activity']=(empty($row['lastactivity']) ? 'n/a' : substr(date('D', $row['lastactivity']),0,1).' - '.date('M j, Y H:i', $row['lastactivity']));
             if ($row['user_status']==$this->user_active) {
@@ -300,7 +339,10 @@ Class User_model extends MY_Model
         $data = [
             'user_id' => 0,
             'user_email' =>'',
+            'userlogin' => '',
             'user_name'=>'',
+            'first_name' => '',
+            'last_name' => '',
             'user_status'=>'1',
             'user_id'=>0,
             'user_leadrep'=>0,
@@ -317,6 +359,10 @@ Class User_model extends MY_Model
             'user_passwd_txt1' => '',
             'user_passwd_txt2' => '',
             'profit_view'=>'Points',
+            'user_payuser' => 0,
+            'default_brand' => 'SB',
+            'user_order_export' => 0,
+            'print_scheduler' => 0,
         ];
         return $data;
     }
@@ -373,6 +419,11 @@ Class User_model extends MY_Model
             'user_name'=>$res['user_name'],
             'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
             'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
+            'user_order_export' => $res['user_order_export'],
+            'finuser' => $res['finuser'],
+            'user_secret' => $res['user_secret'],
+            'user_payuser' => $res['user_payuser'],
+            'first_name' => $res['first_name'],
         );
         usersession('usr_data', $usr_data);
         return TRUE;
@@ -386,6 +437,8 @@ Class User_model extends MY_Model
         if ($active==1) {
             // $this->db->where('user_status <',3);
             $this->db->where('user_status ',1);
+        } elseif ($active==0) {
+            $this->db->order_by('user_status');
         }
         $res=$this->db->get()->result_array();
         return $res;
@@ -401,6 +454,9 @@ Class User_model extends MY_Model
             $this->db->update('users');
             $out['result'] = $this->success_result;
             $this->userlog($executor_id,'Delete User '.$user_id, 1);
+            // Delete access tokens
+            $this->db->where('user_id', $user_id);
+            $this->db->delete('ts_acces_tokens');
         }
         return $out;
     }
@@ -426,6 +482,9 @@ Class User_model extends MY_Model
                 $out['user_status'] = $this->user_active;
                 $out['status_txt'] = 'Active';
             }
+            // Delete access tokens
+            $this->db->where('user_id', $user_id);
+            $this->db->delete('ts_acces_tokens');
         }
         return $out;
     }
@@ -438,7 +497,7 @@ Class User_model extends MY_Model
         return $res;
     }
 
-    public function update_userdata($session_data, $session_id) {
+    public function update_userdata($session_data, $session_id, $updusr) {
         $out = ['result' => $this->error_result, 'msg' => 'Error during update user'];
         $user = $session_data['user'];
         $userip = $session_data['userip'];
@@ -448,9 +507,16 @@ Class User_model extends MY_Model
         $chkusrdat = $this->_checkuserdata($user);
         $out['msg'] = $chkusrdat['msg'];
         if ($chkusrdat['result']==$this->success_result) {
+            $usrname = $user['first_name'];
+            if (!empty($user['last_name'])) {
+                $usrname.=' '.$user['last_name'];
+            }
             // Update
             $this->db->set('user_email', $user['user_email']);
-            $this->db->set('user_name', $user['user_name']);
+            $this->db->set('userlogin', $user['userlogin']);
+            $this->db->set('user_name', $usrname);
+            $this->db->set('first_name', $user['first_name']);
+            $this->db->set('last_name', $user['last_name']);
             $this->db->set('user_status', $user['user_status']);
             $this->db->set('user_leadrep', $user['user_leadrep']);
             $this->db->set('finuser', $user['finuser']);
@@ -463,10 +529,21 @@ Class User_model extends MY_Model
             $this->db->set('contactnote_relievers', $user['contactnote_relievers']);
             $this->db->set('profit_view', $user['profit_view']);
             $this->db->set('user_page', ifset($user,'user_page',NULL));
+            $this->db->set('user_order_export', ifset($user,'user_order_export',0));
+            $this->db->set('user_payuser', $user['user_payuser']);
+            $this->db->set('print_scheduler', $user['print_scheduler']);
+            $this->db->set('default_brand', $user['default_brand']);
             if ($user['user_id']==0) {
+                $this->db->set('created_at', date('Y-m-d H:i:s'));
+                $this->db->set('created_by', $updusr);
+                $this->db->set('updated_by', $updusr);
                 $this->db->insert('users');
                 $user_id = $this->db->insert_id();
+                $user['user_name'] = $usrname;
+                // Generate secret
+                $this->_secret_code($user, $user_id);
             } else {
+                $this->db->set('updated_by', $updusr);
                 $this->db->where('user_id', $user['user_id']);
                 $this->db->update('users');
                 $user_id = $user['user_id'];
@@ -477,19 +554,83 @@ Class User_model extends MY_Model
                 if (!empty($user['user_passwd_txt1'])) {
                     $this->db->set('user_passwd', md5($user['user_passwd_txt1']));
                     $this->db->set('user_passwd_txt', $user['user_passwd_txt1']);
+                    $this->db->set('last_verified', 0);
                     $this->db->where('user_id', $user_id);
                     $this->db->update('users');
+                    // Delete access tokens
+                    $this->db->where('user_id', $user_id);
+                    $this->db->delete('ts_acces_tokens');
                 }
                 // Update restrict
                 $this->update_iprestrict($userip, $user_id);
                 // Update page permissions
                 $this->load->model('menuitems_model');
                 $this->menuitems_model->save_userpermissions($webpages, $user_id);
+                // Update default pages
+                $this->db->select('*')->from('user_default_page')->where(['user_id'=> $user_id, 'brand'=> 'SB']);
+                $chksb = $this->db->get()->row_array();
+                if (ifset($chksb, 'user_page_id', 0)==0) {
+                    if (!empty($session_data['defsbpage'])) {
+                        $this->db->set('user_id', $user_id);
+                        $this->db->set('brand', 'SB');
+                        $this->db->set('page_id', $session_data['defsbpage']);
+                        $this->db->insert('user_default_page');
+                    }
+                } else {
+                    if (!empty($session_data['defsbpage'])) {
+                        $this->db->where('user_page_id', $chksb['user_page_id']);
+                        $this->db->set('page_id', $session_data['defsbpage']);
+                        $this->db->update('user_default_page');
+                    } else {
+                        $this->db->where('user_page_id', $chksb['user_page_id']);
+                        $this->db->delete('user_default_page');
+                    }
+                }
+                $this->db->select('*')->from('user_default_page')->where(['user_id'=> $user_id, 'brand'=> 'SR']);
+                $chksr = $this->db->get()->row_array();
+                if (ifset($chksr, 'user_page_id', 0)==0) {
+                    if (!empty($session_data['defsrpage'])) {
+                        $this->db->set('user_id', $user_id);
+                        $this->db->set('brand', 'SR');
+                        $this->db->set('page_id', $session_data['defsrpage']);
+                        $this->db->insert('user_default_page');
+                    }
+                } else {
+                    if (!empty($session_data['defsrpage'])) {
+                        $this->db->where('user_page_id', $chksr['user_page_id']);
+                        $this->db->set('page_id', $session_data['defsrpage']);
+                        $this->db->update('user_default_page');
+                    } else {
+                        $this->db->where('user_page_id', $chksr['user_page_id']);
+                        $this->db->delete('user_default_page');
+                    }
+                }
+                $this->db->select('*')->from('user_default_page')->where(['user_id'=> $user_id, 'brand'=> 'SG']);
+                $chksg = $this->db->get()->row_array();
+                if (ifset($chksg, 'user_page_id', 0)==0) {
+                    if (!empty($session_data['defsgpage'])) {
+                        $this->db->set('user_id', $user_id);
+                        $this->db->set('brand', 'SG');
+                        $this->db->set('page_id', $session_data['defsgpage']);
+                        $this->db->insert('user_default_page');
+                    }
+                } else {
+                    if (!empty($session_data['defsgpage'])) {
+                        $this->db->where('user_page_id', $chksg['user_page_id']);
+                        $this->db->set('page_id', $session_data['defsgpage']);
+                        $this->db->update('user_default_page');
+                    } else {
+                        $this->db->where('user_page_id', $chksg['user_page_id']);
+                        $this->db->delete('user_default_page');
+                    }
+                }
+                // Delete not used parameters
                 foreach ($deleted as $row) {
                     $this->db->where('user_restriction_id', $row);
                     $this->db->delete('user_restrictions');
                 }
                 $out['result']=$this->success_result;
+                $out['user_id'] = $user_id;
                 usersession($session_id, NULL);
             }
         }
@@ -582,48 +723,50 @@ Class User_model extends MY_Model
     }
 
     private function _checkuserdata($userdat) {
-        $out=['result'=>$this->error_result, 'msg' => 'User Login non unique'];
-        // select count # of user with login
-        $this->db->select('count(user_id) as cnt');
-        $this->db->from('users');
-        $this->db->where('user_email',$userdat['user_email']);
-        $this->db->where('user_id !=',$userdat['user_id']);
-        $res=$this->db->get()->row_array();
-        $numrec=$res['cnt'];
-        if ($numrec==0) {
-            $out['msg'] = 'For new user password required parameter';
-            if ($userdat['user_id']<=0 && empty($userdat['user_passwd_txt1'])) {
-                return $out;
+        $out=['result'=>$this->error_result, 'msg' => 'User Email Empty'];
+        // Check User email and userlogin not empty
+        if (!empty($userdat['user_email'])) {
+            $out['msg'] = 'User Log in Name Empty';
+            if (!empty($userdat['userlogin'])) {
+                $out['msg'] = 'User Email Not Unique';
+                $this->db->select('count(user_id) as cnt');
+                $this->db->from('users');
+                $this->db->where('user_email',$userdat['user_email']);
+                $this->db->where('user_id !=',$userdat['user_id']);
+                $res=$this->db->get()->row_array();
+                $numrec=$res['cnt'];
+                if ($numrec==0) {
+                    $out['msg'] = 'User Log in Name Not Unique';
+                    $this->db->select('count(user_id) as cnt');
+                    $this->db->from('users');
+                    $this->db->where('userlogin',$userdat['userlogin']);
+                    $this->db->where('user_id !=',$userdat['user_id']);
+                    $res=$this->db->get()->row_array();
+                    $numrec=$res['cnt'];
+                    if ($numrec==0) {
+                        $out['msg'] = 'For new user password required parameter';
+                        if ($userdat['user_id']<=0 && empty($userdat['user_passwd_txt1'])) {
+                            return $out;
+                        }
+                        $out['msg'] = 'Enter Leads repl name';
+                        if ($userdat['user_leadrep']==1 && empty($userdat['user_leadname'])) {
+                            return $out;
+                        }
+                        /* Check password */
+                        $out['msg']='Please re-type password';
+                        if (!empty($userdat['user_passwd_txt1']) && ($userdat['user_passwd_txt1']!=$userdat['user_passwd_txt2'])) {
+                            return $out;
+                        }
+//                        $out['msg']='User email (login) is required parameter';
+//                        if (empty($userdat['user_email'])) {
+//                            return $out;
+//                        }
+                        $out['result'] = $this->success_result;
+                    }
+                }
             }
-            $out['msg'] = 'Enter Leads repl name';
-            if ($userdat['user_leadrep']==1 && empty($userdat['user_leadname'])) {
-                return $out;
-            }
-            /* Check password */
-            $out['msg']='Please re-type password';
-            if (!empty($userdat['user_passwd_txt1']) && ($userdat['user_passwd_txt1']!=$userdat['user_passwd_txt2'])) {
-                return $out;
-            }
-            $out['msg']='User email (login) is required parameter';
-            if (empty($userdat['user_email'])) {
-                return $out;
-            }
-            $out['result'] = $this->success_result;
-            // Check default page
-//            if ($userdat['user_page']!='') {
-//                $found=0;
-//                foreach ($permissions as $row) {
-//                    if ($userdat['user_page']==$row) {
-//                        $found=1;
-//                    }
-//                }
-//                if ($found==0) {
-//                    $outres['id']=  User_model::ERR_FLAG;
-//                    $outres['msg']='User do not have permission to the Default Page';
-//                }
-//            }
-
         }
+        // select count # of user with login
         return $out;
     }
 
@@ -644,25 +787,209 @@ Class User_model extends MY_Model
         return $res;
     }
 
-    public function default_page($user_page) {
-        $this->db->select('menu_item_id, parent_id, item_link, brand');
-        $this->db->from('menu_items');
-        $this->db->where('menu_item_id', $user_page);
+    public function default_page($user_id) {
+        $this->db->select('default_brand as brand')->from('users')->where('user_id', $user_id);
+        $brdat = $this->db->get()->row_array();
+        $brand = ifset($brdat,'brand', 'SB');
+        usersession('currentbrand', $brand);
+        // Get default url for brand
+        $this->db->select('menu_item_id, parent_id, item_link');
+        $this->db->from('menu_items mi');
+        $this->db->join('user_default_page usrp', 'usrp.page_id=mi.menu_item_id');
+        $this->db->where('usrp.user_id', $user_id);
+        $this->db->where('usrp.brand', $brand);
         $res = $this->db->get()->row_array();
         if (ifset($res, 'menu_item_id', 0)==0) {
-            return 'welcome';
+            return '/welcome';
+        } else {
+            if (empty($res['parent_id'])) {
+                return $res['item_link'];
+            } else {
+                $this->db->select('menu_item_id, item_link');
+                $this->db->from('menu_items');
+                $this->db->where('menu_item_id', $res['parent_id']);
+                $main = $this->db->get()->row_array();
+                return $main['item_link'].'/?start='.str_replace('#', '', $res['item_link']);
+            }
         }
-        if (!empty($res['brand']) && $res['brand']!=='NONE') {
-            usersession('currentbrand', $res['brand']);
+    }
+
+    public function rebuild_currentuser($user_id)
+    {
+        $this->db->select('u.*, r.role_short');
+        $this->db->from('users u');
+        $this->db->join('roles r','r.role_id=u.role_id','left');
+        $this->db->where('u.user_id', $user_id);
+        $res = $this->db->get()->row_array();
+        $usr_data = array(
+            'id' => $res['user_id'],
+            'user_logged_in'=> $res['role_short'],
+            'user_email' => $res['user_email'],
+            'user_name'=>$res['user_name'],
+            'user_replica'=>(!empty($res['user_leadname']) ? $res['user_leadname'] : $res['first_name']),
+            'user_logo' => (empty($res['user_logo']) ? $this->config->item('empty_profile') : $res['user_logo']),
+            'user_order_export' => $res['user_order_export'],
+            'finuser' => $res['finuser'],
+            'user_secret' => $res['user_secret'],
+            'user_payuser' => $res['user_payuser'],
+            'first_name' => $res['first_name'],
+        );
+        usersession('usr_data', $usr_data);
+        return TRUE;
+    }
+
+    public function verify_user_code($code)
+    {
+        $out = ['result' => $this->error_result,'msg' => 'Sign in failed'];
+        $user = usersession('usr_data');
+        $this->load->library('GoogleAuthenticator');
+        if (ifset($user,'id',0) > 0) {
+            $out['msg'] = 'Empty User Secret Key';
+            $secret = ifset($user,'user_secret','');
+            if (!empty($secret)) {
+                $out['msg'] = 'Invalid Verification code';
+                $ga=new GoogleAuthenticator();
+                $chkcode=$ga->getCode($secret);
+                if ($chkcode == $code) {
+                    $this->db->where('user_id',$user['id']);
+                    $this->db->set('last_verified', time());
+                    $this->db->update('users');
+                    $out['result'] = $this->success_result;
+                    // Get default Page
+                    $this->db->select('user_page')->from('users')->where('user_id',$user['id']);
+                    $pagedat = $this->db->get()->row_array();
+                    $out['user_page'] = $pagedat['user_page'];
+                    $out['user_id'] = $user['id'];
+                }
+            }
         }
-        if (empty($res['parent_id'])) {
-            return $res['item_link'];
+        return $out;
+    }
+
+    private function _secret_code($user, $user_id)
+    {
+        // Init Mail
+        $this->load->library('email');
+        $send_smtp = intval($this->config->item('usercode_smtp'));
+        if ($send_smtp==1) {
+            $email_conf = [
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+                'smtp_user' => $this->config->item('usercode_user'),
+                'smtp_pass' => $this->config->item('usercode_pass'),
+            ];
+            $email_from = $email_conf['smtp_user'];
+        } else {
+            $email_conf = array(
+                'protocol' => 'sendmail',
+                'charset' => 'utf-8',
+                'wordwrap' => TRUE,
+                'mailtype' => 'html',
+            );
+            $email_from = 'admin@bluetrack.com';
+
         }
-        $this->db->select('menu_item_id, item_link');
-        $this->db->from('menu_items');
-        $this->db->where('menu_item_id', $res['parent_id']);
-        $main = $this->db->get()->row_array();
-        return $main['item_link'].'/?start='.str_replace('#', '', $res['item_link']);
+        $this->email->initialize($email_conf);
+        // Init GA
+        $this->load->library('GoogleAuthenticator');
+        $ga = new GoogleAuthenticator();
+        $secret = $ga->generateSecret();
+        $this->db->where('user_id', $user_id);
+        $this->db->set('user_secret', $secret);
+        $this->db->update('users');
+        $usrlogin = ifset($user, 'userlogin','');
+        if (empty($usrlogin)) {
+            $usrlogin = $user['user_email'];
+        }
+        $url = $ga->getUrl($usrlogin, 'lift.bluetrack.com', $secret);
+        $options = [
+            'user_name' => $user['user_name'],
+            'secret' => $secret,
+            'url' => $url,
+            'manual_url' => 'https://support.google.com/accounts/answer/1066447?hl=en',
+        ];
+        $message_body = $this->load->view('messages/secret_update_view', $options, TRUE);
+        $mail_cc= [
+            $this->config->item('sean_email'),
+            $this->config->item('sage_email'),
+        ];
+        $this->email->to($user['user_email']);
+        $this->email->from($email_from);
+        $this->email->cc($mail_cc);
+        $mail_subj = 'Update account security - user '.$user['user_name'];
+        $this->email->subject($mail_subj);
+        $this->email->message($message_body);
+        $this->email->send();
+        $this->email->clear(TRUE);
+        return TRUE;
+    }
+
+    public function clean_verification()
+    {
+        $this->db->where('user_status',1);
+        $this->db->set('last_verified',0);
+        $this->db->update('users');
+        return true;
+    }
+
+    public function get_user_defaultpages($user_id)
+    {
+        $this->db->select('*')->from('user_default_page')->where('user_id',$user_id);
+        $res = $this->db->get()->result_array();
+        return $res;
+    }
+
+    public function userpage_edit($item, $newval, $brand, $session_data, $session_id)
+    {
+        $out=['result' => $this->error_result, 'msg' => 'Select Brand'];
+        if (!empty($brand)) {
+            if ($brand=='SB') {
+                $session_data['defsbpage'] = $newval;
+            } elseif ($brand=='SR') {
+                $session_data['defsrpage'] = $newval;
+            } else {
+                $session_data['defsgpage'] = $newval;
+            }
+            $out['result'] = $this->success_result;
+            usersession($session_id, $session_data);
+        }
+        return $out;
+    }
+
+    public function default_brandpage($user_id, $brand)
+    {
+        $this->db->select('menu_item_id, parent_id, item_link');
+        $this->db->from('menu_items mi');
+        $this->db->join('user_default_page usrp', 'usrp.page_id=mi.menu_item_id');
+        $this->db->where('usrp.user_id', $user_id);
+        $this->db->where('usrp.brand', $brand);
+        $res = $this->db->get()->row_array();
+        if (ifset($res, 'menu_item_id', 0)==0) {
+            return '/welcome';
+        } else {
+            if (empty($res['parent_id'])) {
+                return $res['item_link'];
+            } else {
+                $this->db->select('menu_item_id, item_link');
+                $this->db->from('menu_items');
+                $this->db->where('menu_item_id', $res['parent_id']);
+                $main = $this->db->get()->row_array();
+                return $main['item_link'].'/?start='.str_replace('#', '', $res['item_link']);
+            }
+        }
+    }
+
+    public function get_printschedul_users()
+    {
+        $this->db->select('user_id, first_name')->from('users')->where(['print_scheduler' =>1,'user_status' => $this->user_active])->order_by('first_name');
+        $users = $this->db->get()->result_array();
+        return $users;
     }
 
 }

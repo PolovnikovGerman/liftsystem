@@ -11,6 +11,8 @@ class Leads extends My_Controller {
         '100','150','200','250'
     );
 
+    protected $PERPAGE_SBFORM = 100;
+
     protected $vendor_prices = array(
         array('base'=>25,'label'=>'25'),
         array('base'=>75,'label'=>'75'),
@@ -32,10 +34,13 @@ class Leads extends My_Controller {
     private $restore_orderdata_error='Connection Lost. Please, recall form';
 
     private $pagelink = '/leads';
+    public $current_brand;
+
 
     function __construct() {
         parent::__construct();
-        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink);
+        $this->current_brand = $this->menuitems_model->get_current_brand();
+        $pagedat = $this->menuitems_model->get_menuitem($this->pagelink,0, $this->current_brand);
         if ($pagedat['result'] == $this->error_result) {
             show_404();
         }
@@ -54,17 +59,18 @@ class Leads extends My_Controller {
     function index() {
         $head = [];
         $head['title'] = 'Leads';
-        $brand = $this->menuitems_model->get_current_brand();
+        $brand = $this->current_brand;
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
         $content_options = [];
-        $content_options['start'] = $this->input->get('start', TRUE);
+        $start = $this->input->get('start', TRUE);
         $content_options['menu'] = $menu;
         $gmaps = 0;
+        $newcustomforms = 0;
         foreach ($menu as $row) {
             if ($row['item_link'] == '#leadsview') {
-                $head['styles'][]=array('style'=>'/css/leads/leadsview.css');
-                $head['scripts'][]=array('src'=>'/js/leads/leadsview.js');
-                $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
+                $head['styles'][]=array('style'=>'/css/leads/leadsview_new.css');
+                $head['scripts'][]=array('src'=>'/js/leads/leadsview_new.js');
+                // $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
                 $content_options['leadsview'] = $this->_prepare_leadsview($brand); // $brand, $top_menu
                 if (!empty($this->config->item('google_map_key'))) {
                     $gmaps = 1;
@@ -89,7 +95,11 @@ class Leads extends My_Controller {
             } elseif ($row['item_link']=='#customsbform') {
                 $head['styles'][] = array('style' => '/css/leads/customsbform.css');
                 $head['scripts'][] = array('src' => '/js/leads/customsbform.js');
+                $head['outscripts'][] = array('src' => 'https://cdn.jsdelivr.net/npm/chart.js');
                 $content_options['customsbformview'] = $this->_prepare_customsbform_view($brand); // $brand, $top_menu
+                $search=array('assign'=>1, 'hideincl' => 1, 'brand'=>$brand);
+                $this->load->model('customform_model');
+                $newcustomforms = $this->customform_model->get_count_forms($search);
             } elseif ($row['item_link']=='#checkoutattemptsview') {
                 $head['styles'][]=array('style'=>'/css/leads/orderattempts.css');
                 $head['scripts'][]=array('src'=>'/js/leads/orderattempts.js');
@@ -98,6 +108,14 @@ class Leads extends My_Controller {
                 $head['styles'][]=array('style'=>'/css/leads/leadquotes.css');
                 $head['scripts'][]=array('src'=>'/js/leads/leadquotes.js');
                 $content_options['leadquotesview'] = $this->_prepare_leadquotes_view($brand); // $brand, $top_menu
+                if (!empty($this->config->item('google_map_key'))) {
+                    $gmaps = 1;
+                }
+            } elseif ($row['item_link']=='#customorders') {
+                $head['styles'][]=array('style'=>'/css/leads/leadcustomorders.css');
+                $head['styles'][]=array('style'=>'/css/accounting/profitordesview.css');
+                $head['scripts'][]=array('src'=>'/js/leads/leadcustomorders.js');
+                $content_options['leadordersview'] = $this->_prepare_customorders_view($brand); // $brand, $top_menu
                 if (!empty($this->config->item('google_map_key'))) {
                     $gmaps = 1;
                 }
@@ -150,13 +168,178 @@ class Leads extends My_Controller {
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
             'gmaps' => $gmaps,
+            'brand' => $brand,
         ];
+        if (isset($head['outscripts'])) {
+            $options['outscripts'] = $head['outscripts'];
+        }
         $dat = $this->template->prepare_pagecontent($options);
-        $content_options['left_menu'] = $dat['left_menu'];
         $content_options['brand'] = $brand;
-        $content_view = $this->load->view('leads/page_view', $content_options, TRUE);
+        $brandclass = ($brand=='SR' ? 'relievers' : ($brand=='SG' ? '' : 'stressballs'));
+        $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass, 'customforms' => $newcustomforms ], TRUE);
+        $content_view = $this->load->view('leads/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
-        $this->load->view('page/page_template_view', $dat);
+        $dat['modal_view'] = $this->load->view('leads/modal_view', [], TRUE);
+        $this->load->view('page_modern/page_template_view', $dat);
+    }
+
+    public function leadview_data()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $pagenum = ifset($postdata, 'offset',0);
+                $limit = ifset($postdata, 'limit', 250);
+                $offset = $pagenum*$limit;
+                $options=[
+                    'brand' => $brand,
+                ];
+                $search = ifset($postdata,'search');
+                if (!empty($search)) {
+                    $options['search']=$search;
+                }
+                $usrrepl = ifset($postdata, 'userrepl');
+                if (!empty($usrrepl)) {
+                    $options['usrrepl']=$usrrepl;
+                }
+                $options['showcloded'] = ifset($postdata, 'showcloded',0);
+                $sort = ifset($postdata,'sorttime',1);
+                $this->load->model('leads_model');
+                $leaddat=$this->leads_model->get_leads($options,$sort,$limit,$offset);
+                if (count($leaddat)==0) {
+                    $mdata['content'] = $this->load->view('leads/leads_emptydata_view',[],TRUE);
+                } else {
+                    $options=array(
+                        'leads'=>$leaddat,
+                        'brand' => $brand,
+                    );
+                    $mdata['content']=$this->load->view('leadsview/leads_data_view',$options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function leadview_priority()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $options=[
+                    'brand' => $brand,
+                ];
+                $search = ifset($postdata,'search');
+                if (!empty($search)) {
+                    $options['search']=$search;
+                }
+                $usrrepl = ifset($postdata, 'userrepl');
+                if (!empty($usrrepl)) {
+                    $options['usrrepl']=$usrrepl;
+                }
+                // Temporary - by update time
+                $sort = ifset($postdata,'sorttime',1);
+                $this->load->model('leads_model');
+                $leaddat=$this->leads_model->get_priority_leads($options,$sort);
+                if (count($leaddat)==0) {
+                    $mdata['content'] = $this->load->view('leads/leads_emptydata_view',[],TRUE);
+                } else {
+                    $options=array(
+                        'leads'=>$leaddat,
+                        'brand' => $brand,
+                    );
+                    $mdata['content']=$this->load->view('leadsview/leads_data_view',$options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function leadview_tasks()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                // $sort = ifset($postdata,'sorttime',1);
+                $tasks = [];
+                if (count($tasks)==0) {
+                    $mdata['content'] = $this->load->view('leads/leads_emptydata_view', [], TRUE);
+                } else {
+                    $options=array(
+                        'leads'=>$tasks,
+                        'brand' => $brand,
+                    );
+                    $mdata['content']=$this->load->view('leadsview/leads_data_view',$options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function leadview_newleads()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                // $sort = ifset($postdata,'sorttime',1);
+                $newleads = [];
+                if (count($newleads)==0) {
+                    $mdata['content'] = $this->load->view('leads/leads_emptydata_view', [], TRUE);
+                } else {
+                    $options=array(
+                        'leads'=>$newleads,
+                        'brand' => $brand,
+                    );
+                    $mdata['content']=$this->load->view('leadsview/leads_data_view',$options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function orders_missinfo()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                // $sort = ifset($postdata,'sorttime',1);
+                $orders = [];
+                if (count($orders)==0) {
+                    $mdata['content'] = $this->load->view('leads/leads_emptydata_view', [], TRUE);
+                } else {
+                    $options=array(
+                        'leads'=>$orders,
+                        'brand' => $brand,
+                    );
+                    $mdata['content']=$this->load->view('leadsview/leads_data_view',$options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 
     public function leadpage_data() {
@@ -223,7 +406,7 @@ class Leads extends My_Controller {
                 if (!empty($search)) {
                     $options['search']=$search;
                 }
-                $usrrepl = ifset($postdata,'usrrepl');
+                $usrrepl = ifset($postdata,'userrepl');
                 if (!empty($usrrepl)) {
                     $options['usrrepl']=$usrrepl;
                 }
@@ -231,6 +414,7 @@ class Leads extends My_Controller {
                 if (!empty($leadtype)) {
                     $options['lead_type']=$leadtype;
                 }
+                $options['showclosed'] = ifset($postdata,'showclosed',0);
                 $this->load->model('leads_model');
                 $mdata['totalrec']=$this->leads_model->get_total_leads($options);
             }
@@ -757,6 +941,8 @@ class Leads extends My_Controller {
                                 if ($dat['result']==$this->success_result) {
                                     $error = '';
                                     $mdata['leadid'] = $dat['lead_id'];
+                                    $search=array('assign'=>1, 'hideincl' => 1, 'brand'=>$postdata['brand']);
+                                    $mdata['totalnew'] = $this->customform_model->get_count_forms($search);
                                 }
                             }
                         }
@@ -1079,6 +1265,8 @@ class Leads extends My_Controller {
                     $error = $res['msg'];
                     if ($res['result']==$this->success_result) {
                         $error = '';
+                        $search=array('assign'=>1, 'hideincl' => 1, 'brand'=>$postdata['brand']);
+                        $mdata['totalnew'] = $this->customform_model->get_count_forms($search);
                     }
                 }
             }
@@ -1096,6 +1284,10 @@ class Leads extends My_Controller {
             if (ifset($postdata, 'brand', '')!=='') {
                 $options['brand'] = $postdata['brand'];
             }
+            if (isset($postdata['assign'])) {
+                $options['assign'] = $postdata['assign'];
+            }
+            $options['hideincl'] = ifset($postdata,'hideincl',0);
             $this->load->model('customform_model');
             $mdata['totals'] = $this->customform_model->get_count_forms($options);
             $this->ajaxResponse($mdata, $error);
@@ -1113,9 +1305,6 @@ class Leads extends My_Controller {
             $mdata['totals'] = count($data);
             $event = 'hover'; // click
             $expand = 0;
-            if (count($data) > 21) {
-                $expand = 1;
-            }
             if (count($data)==0) {
                 $mdata['content'] = $this->load->view('customsbforms/content_empty_view',[],TRUE);
             } else {
@@ -1146,6 +1335,7 @@ class Leads extends My_Controller {
             $mdata=[];
             $error = 'Empty Custom Form';
             $postdata = $this->input->post();
+            $this->load->model('leads_model');
             $this->load->model('customform_model');
             if (ifset($postdata,'form_id',0) > 0) {
                 $res = $this->customform_model->get_customform_details($postdata['form_id']);
@@ -1160,7 +1350,16 @@ class Leads extends My_Controller {
                         'data' => $res['data'],
                         'attach' => $attachm_view,
                     ];
+                    // Build Select
+                    $leadoptions=array(
+                        'orderby'=>'lead_number',
+                        'direction'=>'desc',
+                        'brand' => $res['data']['brand'],
+                    );
+                    $leaddat=$this->leads_model->get_lead_list($leadoptions);
+                    $leadlist = $this->leads_model->prepare_assign_list($leaddat);
                     $mdata['content'] = $this->load->view('customsbforms/details_view', $options, TRUE);
+                    $mdata['footer'] = $this->load->view('customsbforms/footer_view', ['custom_quote_id' => $postdata['form_id'], 'leads' => $leadlist], TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -1209,34 +1408,327 @@ class Leads extends My_Controller {
         show_404();
     }
 
+    public function search_custom_orders()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $this->load->model('orders_model');
+            $postdata=$this->input->post();
+            $options=array();
+            if (isset($postdata['search'])) {
+                $options['search']=$postdata['search'];
+            }
+            if (isset($postdata['filter'])) {
+                $options['filter']=$postdata['filter'];
+            }
+            if (isset($postdata['add_filter'])) {
+                $options['add_filtr']=$postdata['add_filter'];
+            }
+            if ($postdata['show_year']==1) {
+                if ($postdata['year']>0) {
+                    $nxtyear = $postdata['year']+1;
+                    if (intval($postdata['month'])==0) {
+                        $options['date_bgn']=strtotime($postdata['year'].'-01-01');
+                        $options['date_end']=strtotime($nxtyear.'-01-01');
+                    } else {
+                        $start = $postdata['year'].'-'.str_pad($postdata['month'],2,'0',STR_PAD_LEFT).'-01';
+                        $options['date_bgn']=strtotime($start);
+                        $finish = date('Y-m-d', strtotime($start. ' + 1 month'));
+                        $options['date_end']=strtotime($finish);
+                    }
+                }
+            } else {
+                if ($postdata['date_bgn']) {
+                    $options['date_bgn']=strtotime($postdata['date_bgn']);
+                }
+                if ($postdata['date_end']) {
+                    $d_finish = date('Y-m-d',strtotime($postdata['date_end']));
+                    $options['date_end'] = date(strtotime("+1 day", strtotime($d_finish)));
+                }
+            }
+            if (isset($postdata['shipping_country']) && intval($postdata['shipping_country'])!==0) {
+                $options['shipping_country']=$postdata['shipping_country'];
+                if (isset($postdata['shipping_state']) && intval($postdata['shipping_state'])>0) {
+                    $options['shipping_state'] = $postdata['shipping_state'];
+                }
+            }
+            if (isset($postdata['order_type']) && !empty($postdata['order_type'])) {
+                $options['order_type']=$postdata['order_type'];
+            }
+            $options['exclude_quickbook'] = ifset($postdata,'exclude_quickbook',0);
+            $options['item_type'] = 'custom';
+            /* count number of orders */
+            $options['admin_mode']=0;
+            // if ($this->USR_ROLE=='masteradmin') {
+            if ($this->USER_ORDER_EXPORT==1) {
+                $options['admin_mode']=1;
+            }
+            if (isset($postdata['brand']) && !empty($postdata['brand'])) {
+                $options['brand'] = $postdata['brand'];
+            }
+            $options['custom_orders'] = 1;
+            $mdata['totals']=$this->orders_model->get_count_orders($options);
+            /* Total of sums */
+            $totalord=$this->orders_model->orders_profit_tolals($options);
+            if (!isset($options['order_type'])) {
+                // Prepare tooltip
+                $order_tool_options = [
+                    'title' => 'Orders',
+                    'type' => 'qty',
+                    'new_val' => $totalord['numorders_detail_new'],
+                    'repeat_val' => $totalord['numorders_detail_repeat'],
+                    'blank_val' => $totalord['numorders_detail_blank'],
+                    'new_perc' => $totalord['numorders_detail_newperc'],
+                    'repeat_perc' => $totalord['numorders_detail_repeatperc'],
+                    'blank_perc'=> $totalord['numorders_detail_blankperc'],
+                    'total' => $totalord['numorders'],
+                ];
+                $order_tooltip = $this->load->view('orderprofit/total_tooltip_view', $order_tool_options, TRUE);
+                $qty_tool_options = [
+                    'title' => 'QTY',
+                    'type' => 'qty',
+                    'new_val' => $totalord['qty_detail_new'],
+                    'repeat_val' => $totalord['qty_detail_repeat'],
+                    'blank_val' => $totalord['qty_detail_blank'],
+                    'new_perc' => $totalord['qty_detail_newperc'],
+                    'repeat_perc' => $totalord['qty_detail_repeatperc'],
+                    'blank_perc'=> $totalord['qty_detail_blankperc'],
+                    'total' => $totalord['qty'],
+                ];
+                $qty_tooltip = $this->load->view('orderprofit/total_tooltip_view', $qty_tool_options, TRUE);
+                $revenue_tool_options = [
+                    'title' => 'Revenue',
+                    'type' => 'money',
+                    'new_val' => $totalord['revenue_detail_new'],
+                    'repeat_val' => $totalord['revenue_detail_repeat'],
+                    'blank_val' => $totalord['revenue_detail_blank'],
+                    'new_perc' => $totalord['revenue_detail_newproc'],
+                    'repeat_perc' => $totalord['revenue_detail_repeatproc'],
+                    'blank_perc'=> $totalord['revenue_detail_blankproc'],
+                    'total' => $totalord['revenue'],
+                ];
+                $revenue_tooltip = $this->load->view('orderprofit/total_tooltip_view', $revenue_tool_options, TRUE);
+                // Balance
+                $balance_tool_options = [
+                    'title' => 'Balance',
+                    'type' => 'money',
+                    'new_val' => $totalord['balance_detail_new'],
+                    'repeat_val' => $totalord['balance_detail_repeat'],
+                    'blank_val' => $totalord['balance_detail_blank'],
+                    'new_perc' => $totalord['balance_detail_newproc'],
+                    'repeat_perc' => $totalord['balance_detail_repeatproc'],
+                    'blank_perc'=> $totalord['balance_detail_blankproc'],
+                    'total' => $totalord['balance'],
+                ];
+                $balance_tooltip = $this->load->view('orderprofit/total_tooltip_view', $balance_tool_options, TRUE);
 
-    private function _prepare_leadsview($brand) {
-        $ldat=array();
+                $shipping_tool_options = [
+                    'title' => 'Shipping',
+                    'type' => 'money',
+                    'new_val' => $totalord['shipping_detail_new'],
+                    'repeat_val' => $totalord['shipping_detail_repeat'],
+                    'blank_val' => $totalord['shipping_detail_blank'],
+                    'new_perc' => $totalord['shipping_detail_newperc'],
+                    'repeat_perc' => $totalord['shipping_detail_repeatperc'],
+                    'blank_perc'=> $totalord['shipping_detail_blankperc'],
+                    'total' => $totalord['shipping'],
+                ];
+                $shipping_tooltip = $this->load->view('orderprofit/total_tooltip_view', $shipping_tool_options, TRUE);
+                $tax_tool_options = [
+                    'title' => 'Tax',
+                    'type' => 'money',
+                    'new_val' => $totalord['tax_detail_new'],
+                    'repeat_val' => $totalord['tax_detail_repeat'],
+                    'blank_val' => $totalord['tax_detail_blank'],
+                    'new_perc' => $totalord['tax_detail_newperc'],
+                    'repeat_perc' => $totalord['tax_detail_repeatperc'],
+                    'blank_perc'=> $totalord['tax_detail_blankperc'],
+                    'total' => $totalord['tax'],
+                ];
+                $tax_tooltip = $this->load->view('orderprofit/total_tooltip_view', $tax_tool_options, TRUE);
+                $cog_tool_options = [
+                    'title' => 'COG',
+                    'type' => 'money',
+                    'new_val' => $totalord['cog_detail_new'],
+                    'repeat_val' => $totalord['cog_detail_repeat'],
+                    'blank_val' => $totalord['cog_detail_blank'],
+                    'new_perc' => $totalord['cog_detail_newperc'],
+                    'repeat_perc' => $totalord['cog_detail_repeatperc'],
+                    'blank_perc'=> $totalord['cog_detail_blankperc'],
+                    'total' => $totalord['cog'],
+                ];
+                $cog_tooltip = $this->load->view('orderprofit/total_tooltip_view', $cog_tool_options, TRUE);
+                $profit_tool_options = [
+                    'title' => 'Profit',
+                    'type' => 'money',
+                    'new_val' => $totalord['profit_detail_new'],
+                    'repeat_val' => $totalord['profit_detail_repeat'],
+                    'blank_val' => $totalord['profit_detail_blank'],
+                    'new_perc' => $totalord['profit_detail_newperc'],
+                    'repeat_perc' => $totalord['profit_detail_repeatperc'],
+                    'blank_perc'=> $totalord['profit_detail_blankperc'],
+                    'total' => $totalord['profit'],
+                ];
+                $profi_tooltip = $this->load->view('orderprofit/total_tooltip_view', $profit_tool_options, TRUE);
+                $total_options = [
+                    'data' => $totalord,
+                    'order_tooltip' => $order_tooltip,
+                    'qty_tooltip' => $qty_tooltip,
+                    'revenue_tooltip' => $revenue_tooltip,
+                    'shipping_tooltip' => $shipping_tooltip,
+                    'tax_tooltip' => $tax_tooltip,
+                    'cog_tooltip' => $cog_tooltip,
+                    'profit_tooltip' => $profi_tooltip,
+                    'balance_tooltip' => $balance_tooltip,
+                    'brand' => ifset($postdata,'brand','SB'),
+                ];
+                $mdata['total_row']=$this->load->view('orderprofit/total_profitall_view',$total_options,TRUE);
+                $mdata['totals_head']=$this->load->view('orderprofit/total_allprofittitle_view',['brand' => ifset($postdata,'brand','SB'),],TRUE);
+            } else {
+                $mdata['totals_head']=$this->load->view('orderprofit/total_profittitle_view',['brand' => ifset($postdata,'brand','SB'),],TRUE);
+                $mdata['total_row']=$this->load->view('orderprofit/total_profit_view',$totalord,TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function customordersdat()
+    {
+        if ($this->isAjax()) {
+            $mdata=array('content'=>'','totals'=>'');
+            $error='';
+            $this->load->model('orders_model');
+            $postdata = $this->input->post();
+            $offset=0; $limit=10; $order_by='order_num';
+            $direct = 'asc';
+            if (isset($postdata['limit'])) {
+                $limit=$postdata['limit'];
+            }
+            if (isset($postdata['offset'])) {
+                $offset=$postdata['offset']*$limit;
+            }
+            if (isset($postdata['order_by'])) {
+                $order_by=$postdata['order_by'];
+            }
+            if (isset($postdata['direction'])) {
+                $direct=$postdata['direction'];
+            }
+            $search=array();
+            if (isset($postdata['search'])) {
+                $search['search']=$postdata['search'];
+            }
+            if (isset($postdata['filter'])) {
+                $search['filter']=$postdata['filter'];
+            }
+            if (isset($postdata['add_filter'])) {
+                $search['add_filtr']=$postdata['add_filter'];
+            }
+            if ($postdata['show_year']==1) {
+                if ($postdata['year']>0) {
+                    $nxtyear = $postdata['year']+1;
+                    if ($postdata['month']==0) {
+                        $search['start_date']=strtotime($postdata['year'].'-01-01');
+                        $search['end_date']=strtotime($nxtyear.'-01-01');
+                    } else {
+                        $start = $postdata['year'].'-'.str_pad($postdata['month'],2,'0',STR_PAD_LEFT).'-01';
+                        $search['start_date']=strtotime($start);
+                        $finish = date('Y-m-d', strtotime($start. ' + 1 month'));
+                        $search['end_date']=strtotime($finish);
+                    }
+                }
+            } else {
+                if ($postdata['date_bgn']) {
+                    $search['start_date']=strtotime($postdata['date_bgn']);
+                }
+                if ($postdata['date_end']) {
+                    // $search['end_date']=strtotime($postdata['date_end']);
+                    $d_finish = date('Y-m-d',strtotime($postdata['date_end']));
+                    $search['end_date'] = date(strtotime("+1 day", strtotime($d_finish)));
+                }
+            }
+            if (isset($postdata['shipping_country']) && intval($postdata['shipping_country'])!==0) {
+                $search['shipping_country']=$postdata['shipping_country'];
+                if (isset($postdata['shipping_state']) && intval($postdata['shipping_state'])>0) {
+                    $search['shipping_state'] = $postdata['shipping_state'];
+                }
+            }
+            if (isset($postdata['order_type']) && !empty($postdata['order_type'])) {
+                $search['order_type']=$postdata['order_type'];
+            }
+
+            /* Fetch data about prices */
+            if ($this->USR_ROLE=='masteradmin') {
+                $admin_mode=1;
+            } else {
+                $admin_mode=0;
+            }
+            if (isset($postdata['brand']) && !empty($postdata['brand'])) {
+                $search['brand'] = $postdata['brand'];
+            }
+            $search['exclude_quickbook'] = ifset($postdata,'exclude_quickbook',0);
+            $search['custom_orders'] = 1;
+            $ordersdat=$this->orders_model->get_profit_orders($search,$order_by,$direct,$limit,$offset, $admin_mode, $this->USR_ID);
+
+            if (count($ordersdat)==0) {
+                $content=$this->load->view('orderprofit/empty_view',array(),TRUE);
+            } else {
+                $data=array(
+                    'orders'=>$ordersdat,
+                    'brand' => ifset($postdata,'brand','SB'),
+                );
+                $content = $this->load->view('customorders/table_data_view',$data, TRUE);
+            }
+            $mdata['content']=$content;
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function customordercnt_total()
+    {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Brand';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata,'brand');
+            if (!empty($brand)) {
+                $error = '';
+                $out=$this->_prepare_customorder_bottom($brand);
+                $mdata['content']=$out['content'];
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+    }
+
+    public function customorder_export()
+    {
+        $mdata=[];
+        $error='';
+        $postdata=$this->input->post();
+        $postdata['custom_orders'] = 1;
+        $this->load->model('orders_model');
+        $res = $this->orders_model->profit_export($postdata);
+        $error=$res['msg'];
+        if ($res['result']==$this->success_result) {
+            $error='';
+            $mdata['url']=$res['url'];
+        }
+        $this->ajaxResponse($mdata, $error);
+    }
+
+    private function _prepare_leadsview_old($brand)
+    {
+        $ldat = [];
         $this->load->model('leads_model');
-        /* Prepare Right part */
-        $rdat=array();
-        $date=date('Y-m').'-01';
-        $dateend = strtotime(date("Y-m-d", strtotime($date)) . " +1 month");
-        $total_options=array(
-            'enddate'=>$dateend,
-            'user_id'=>$this->USR_ID,
-            'brand' => $brand,
-        );
-        $rdattop=$this->leads_model->count_closed_totals($total_options);
-        $rdat['prev']=$rdattop['prev'];
-        $rdat['next']=$rdattop['next'];
-        $rdat['data']=$rdattop['data'];
-        $rdat['dateend']=$dateend;
-        $rdat['datestart']=$rdattop['datestart'];
-        $ldat['right_content']=$this->load->view('leads/leads_closetotal_view', $rdat, TRUE);
-
         /* Get user with reps */
         $active = 0;
         $ldat['replicas']=$this->user_model->get_user_leadreplicas($active);
         $ldat['user_id']=$this->USR_ID;
         $ldat['user_role'] = $this->USR_ROLE;
         $user_dat=$this->user_model->get_user_data($this->USR_ID);
-        $ldat['user_name']=($user_dat['user_leadname']=='' ? $this->USR_NAME : $user_dat['user_leadname']);
+        $ldat['user_name']=($user_dat['user_leadname']=='' ? $this->USER_NAME : $user_dat['user_leadname']);
 
         $options=array(
             'lead_type'=>1,
@@ -1247,11 +1739,33 @@ class Leads extends My_Controller {
         $ldat['totalrec']=$this->leads_model->get_total_leads($options);
         $ldat['perpage']=$this->config->item('leads_perpage');
         $ldat['curpage']=0;
-        $this->load->model('orders_model');
-        $ldat['totalorders']=$this->orders_model->orders_total_year(date('Y'));
         $ldat['brand'] = $brand;
         // $ldat['top_menu'] = $top_menu;
-        $content=$this->load->view('leads/leadtab_view',$ldat,TRUE);
+        $content=$this->load->view('leadsview/leadtab_view',$ldat,TRUE);
+        return $content;
+    }
+
+    private function _prepare_leadsview($brand) {
+        $ldat = [];
+        $this->load->model('leads_model');
+        $active = 0;
+        $ldat['replicas']=$this->user_model->get_user_leadreplicas($active);
+        $options=array(
+            // 'lead_type'=>1,
+            'usrrepl'=>  $this->USR_ID,
+            'brand' => $brand,
+            'showclosed' => 0,
+        );
+        $ldat['totalrec']=$this->leads_model->get_total_leads($options);
+
+        $ldat['perpage'] = $this->config->item('leads_perpage');
+        $ldat['curpage'] = 0;
+        $ldat['brand'] = $brand;
+        $ldat['user_id']=$this->USR_ID;
+        $ldat['user_role'] = $this->USR_ROLE;
+        $user_dat=$this->user_model->get_user_data($this->USR_ID);
+        $ldat['user_name']=($user_dat['user_leadname']=='' ? $this->USER_NAME : $user_dat['user_leadname']);
+        $content=$this->load->view('leadsview/page_view',$ldat,TRUE);
         return $content;
     }
 
@@ -1342,7 +1856,8 @@ class Leads extends My_Controller {
 
     private function _prepare_customsbform_view($brand) {
         $datqs=[
-            'perpage' => $this->config->item('quotes_perpage'),
+            // 'perpage' => $this->config->item('quotes_perpage'),
+            'perpage' => $this->PERPAGE_SBFORM,
             'order_by' => 'date_add',
             'direction' => 'desc',
             'cur_page' => 0,
@@ -1353,7 +1868,7 @@ class Leads extends My_Controller {
         $this->load->model('customform_model');
         $datqs['total_rec']=$this->customform_model->get_count_forms($search);
 
-        $content=$this->load->view('customsbforms/customform_view.php',$datqs,TRUE);
+        $content=$this->load->view('customsbforms/customform_view',$datqs,TRUE);
         return $content;
 
     }
@@ -1382,7 +1897,122 @@ class Leads extends My_Controller {
         $datqs['replicas'] = $replicas;
         $content=$this->load->view('leadquotes/page_view',$datqs,TRUE);
         return $content;
-
     }
 
+    private function _prepare_customorders_view($brand) {
+        $this->load->model('orders_model');
+        $legend=$this->load->view('accounting/profit_legend_view',[],TRUE);
+        $options = [
+            'custom_orders' => 1,
+            'exclude_quickbook' => 1,
+            'brand' => $brand,
+        ];
+        $totals = $this->orders_model->get_count_orders($options);
+        $perpage_data=array(
+            'fieldname'=>'perpage_profitorders',
+            'default_value'=> $this->PERPAGE_LEADS,
+            'numrecs'=>$this->PERPAGE_ORDERS,
+        );
+        $perpage_view=$this->load->view('page/number_records', $perpage_data, TRUE);
+        $view_options = [
+            'total'=>$totals,
+            'order'=>'o.order_num',
+            'direc'=>'desc',
+            'perpage_view'=>$perpage_view,
+            'curpage'=>0,
+            'legend'=>$legend,
+            'total_row'=>'', // $totalrow,
+            'adminview' => $this->USR_ROLE=='masteradmin' ? 1 : 0,
+            'brand' => $brand,
+        ];
+        $years=$this->orders_model->get_orders_dates($options);
+        $orders_cnttotal='';
+        $years_options=[];
+        $years_options[]=['key'=>0, 'label'=>'All time'];
+        $select_year=$years['max_year'];
+        for ($i=0; $i<100; $i++) {
+            $years_options[]=['key'=>$select_year,'label'=>$select_year];
+            $select_year=intval($select_year)-1;
+            if ($select_year<$years['min_year']) {
+                break;
+            }
+        }
+        $view_options['years']=$years_options;
+        $view_options['bottom_view']=$this->load->view('accounting/admin_bottom_view',array('year'=>$years,'orders_cnttotal'=>$orders_cnttotal),TRUE);
+
+        $content=$this->load->view('customorders/head_view',$view_options,TRUE);
+
+        return $content;
+    }
+
+    private function _prepare_customorder_bottom($brand)
+    {
+        $this->load->model('orders_model');
+        $yearview='';
+        $dats=$this->orders_model->get_profit_limitdates($brand, 1);
+        if (isset($dats['max_year'])) {
+            if (date('Y-m',time())!=$dats['max_year'].'-'.$dats['max_month']) {
+                $dats['cur_month']=$dats['max_month'];
+                $dats['cur_year']=$dats['max_year'];
+            } else {
+                $dats['cur_month']=date('m');
+                $dats['cur_year']=date('Y');
+            }
+        } else {
+            $dats['max_month']=date('m');
+            $dats['max_year']=date('Y');
+            $dats['max_date']=time();
+            $dats['cur_month']=date('m');
+            $dats['cur_year']=date('Y');
+        }
+        $year=$dats['cur_year'];
+        $i=0;
+        while ($i<5) {
+            $out = $this->orders_model->calendar_orders($year, $brand, 1);
+            $voptions = array('title' => $year);
+            foreach ($out as $k => $v) {
+                $voptions[$k] = $out[$k];
+            }
+            if ($i==4) {
+                $voptions['lastrow']='lastrow';
+            } else {
+                $voptions['lastrow']='';
+            }
+            $yearview .= $this->load->view('accounting/admin_ordercnt_view', $voptions, TRUE);
+            $year--;
+            $i++;
+        }
+
+        $voption=array(
+            'content'=>$yearview,
+        );
+        return $voption;
+    }
+
+    public function customformstotals()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'ALL');
+            $viewtype = ifset($postdata, 'viewtype', 'table');
+            //
+            $this->load->model('customform_model');
+            if ($viewtype=='table') {
+                $data = $this->customform_model->get_customform_totals($brand);
+                if (count($data)==0) {
+                    $mdata['content'] = $this->load->view('customsbforms/totals_empty_view',[],TRUE);
+                } else {
+                    $mdata['content'] = $this->load->view('customsbforms/totals_data_view',['totals' => $data,], TRUE);
+                }
+            } else {
+                $res = $this->customform_model->get_customform_totalchart($brand);
+                $mdata['data'] = $res['data'];
+                $mdata['labels'] = $res['labels'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }

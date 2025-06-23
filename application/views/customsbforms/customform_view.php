@@ -4,7 +4,7 @@
 <input type="hidden" id="sortcustomform" value="<?=$order_by?>"/>
 <input type="hidden" id="sortdircustomform" value="<?=$direction?>"/>
 <input type="hidden" id="customformviewbrand" value="<?=$brand?>"/>
-
+<input type="hidden" id="customformviewtype" value="table"/>
 <div class="customform_content">
     <div class="customform_header">
         <div class="label">Display:</div>
@@ -37,4 +37,26 @@
         <div class="eventdate">Event</div>
     </div>
     <div id="customform_tabledat"></div>
+</div>
+<div class="customform_total_content">
+    <div class="datarow">
+        <div class="customform_total_switcher">Chart</div>
+    </div>
+    <div id="customformtotal_tableview">
+        <div class="customform_total_header">
+            <div class="total_weeknum">Week of</div>
+            <div class="total_day">Mo</div>
+            <div class="total_day">Tu</div>
+            <div class="total_day">We</div>
+            <div class="total_day">Th</div>
+            <div class="total_day">Fr</div>
+            <div class="total_day">Sa</div>
+            <div class="total_day">Su</div>
+            <div class="total_totals">Total</div>
+        </div>
+        <div class="customform_total_tabledat"></div>
+    </div>
+    <div id="customformtotal_chartview" class="customformtotal_chartview">
+        <canvas id="myChart"></canvas>
+    </div>
 </div>
