@@ -1492,29 +1492,7 @@ class Email_model extends My_Model
             }
         }
     }
-
-    public function send_quota($mail_options) {
-        $this->load->library('email');
-
-        $email_conf = array(
-            'protocol'=>'sendmail',
-            'charset'=>'utf-8',
-            'mailtype'=>'html',
-            'wordwrap'=>TRUE,
-        );
-        $this->email->initialize($email_conf);
-
-        $this->email->to($mail_options['touser']);
-        $this->email->from($mail_options['fromuser']);
-        $this->email->subject($mail_options['subject']);
-        $this->email->message($mail_options['message']);
-        $this->email->attach($mail_options['fileattach']);
-        $this->email->send();
-
-        $this->email->clear(TRUE);
-        return true;
-    }
-
+    
     private function _sendquote($row)
     {
         $mail_id = $row['email_id'];
@@ -1625,47 +1603,6 @@ class Email_model extends My_Model
                     );
                     if ($_SERVER['SERVER_NAME']!=='lift_stressballs.local') {
                         $this->send_quota($mail_options);
-                    }
-                }
-            }
-        }
-    }
-}
-                    $html = $this->load->view('quote/quote_mail_dompdf_view', $mail, TRUE);
-                    /* Create UNIQUE file name */
-                    // $file_name = 'BLUETRACK_Quote_'.date('ymd').$mail_id.'.pdf';
-                    $file_name = 'STRESSBALLS.com_Quote_'.date('ymd').$mail_id.'.pdf';
-                    $file_out = $this->config->item('quotes') . $file_name;
-                    pdf_create($html, $file_out, true);
-                    if (file_exists($file_out)) {
-                        /* Update email */
-                        $upddata = array(
-                            'email_id' => $mail_id,
-                            'email_quota_link' => $this->config->item('quotes_relative') . $file_name,
-                        );
-                        $this->email_update($upddata);
-                        /* Prepare Message for send */
-                        $msg_options=array(
-                            'item_name'=>$mail['email_item_name'],
-                            'item_qty'=>intval($mail['email_qty']),
-                        );
-                        $content=$this->load->view('messages/quote_message_view',$msg_options,TRUE);
-                        $msgbody=($content);
-                        /* Send message to user */
-                        $this->load->config('notifications');
-                        $mail_options=array(
-                            'touser'=>$mail['email_sendermail'],
-                            'fromuser'=>($mail['brand']=='SR' ?  $this->config->item('sr_quote_user') : $this->config->item('sb_quote_user')), // $this->config->item('email_notification_sender'),
-                            'subject'=>intval($mail['email_qty']).' '.$mail['email_item_name'] . ' Quote',
-                            /* 'message'=>'Hi ! Here is the qoute you requested.',*/
-                            'message'=>$msgbody,
-                            'fileattach'=>$file_out,
-                        );
-                        if ($sendmail==1) {
-                            // if (!in_array($_SERVER['SERVER_NAME'], $this->config->item('localserver'))) { // !=='lift_stressballs.local'
-                                $this->send_quota($mail_options);
-                            // }
-                        }
                     }
                 }
             }
