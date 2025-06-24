@@ -488,13 +488,13 @@ input.order_itemqty_input {
     float: left;
     padding-right: 2px;
     text-align: right;
-    width: 53px;
+    width: 49px; /* 53px; */
 }
 .items_content_qty_view {
     float: left;
     padding-right: 2px;
     text-align: right;
-    width: 53px;
+    width: 49px; /* 53px */
 }
 .items_content_each {
     float: left;
@@ -520,7 +520,8 @@ input.order_itemqty_input {
     float: left;
     padding-right: 2px;
     text-align: right;
-    width: 65px;
+    /* width: 65px; */
+    width: 60px;
 }
 .items_content_sub_total2.newitemcoloradd {
     width: 70px;
@@ -2662,7 +2663,7 @@ input.artrepeat {
 .itemcolor_data {
     float: left;
     padding-left: 2px;
-    width: 91px;
+    width: 87px;
 }
 .itemcolor_data.inventcolors {
     border: 1px solid #b5b5b5;
@@ -2676,6 +2677,9 @@ input.artrepeat {
     float: left;
     padding-left: 2px;
     width: 93px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 .items_content_description3 {
     float: left;
@@ -2715,7 +2719,7 @@ input.orderitem_colorinpt {
     width: 83px;
 }
 input.orderitem_qty {
-   width: 49px;
+   width: 44px; /* 49px; */
 }
 input.orderitem_price {
     width: 37px;
