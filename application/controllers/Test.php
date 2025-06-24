@@ -4556,7 +4556,7 @@ class Test extends CI_Controller
 
     public function generate_quote()
     {
-        $mail_id = 27424; // 27415;
+        $mail_id = 27425; // 27415;
         $this->load->model('email_model');
         // $this->email_model->generate_quota($mail_id);
         $res = $this->email_model->newquote_generate($mail_id);

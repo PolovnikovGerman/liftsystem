@@ -220,12 +220,6 @@ function ImageEps ($file, $x, $y, $w=0, $h=0, $link='', $useBoundingBox=true){
 		$this->_out($s);
 	}
 
-	function StrikethroughText($x, $y, $text, $width) {
-		$this->SetXY($x, $y);
-		$this->Cell(0, 10, $text);
-		$this->Line($x, $y + 5, $x + $width, $y + 5); // Draw a line through the text
-	}
-
 }# END CLASS
 
 ?>

@@ -1743,15 +1743,15 @@ class Email_model extends My_Model
 
         $pdf->Image($logoFile, $logoXPos, $logoYPos, $logoWidth, $logoHeight);
         $pdf->SetXY($strartX, 36);
-        $pdf->SetFont('Times','I',9.035143);
+        $pdf->SetFont('Times','I', 12); // 9.035143
         $pdf->SetTextColor(84, 84, 84);
-        $pdf->MultiCell(32,4.5,'Over 1200 Stress Shapes Available!',0,'L');
+        $pdf->MultiCell(36,4.5,'Over 1200 Stress Shapes Available!',0,'L');
         $tableY = $pdf->GetY()+1;
         $pdf->SetXY(64,35);
         $pdf->SetFont('Times','B',17);
         $pdf->SetTextColor(0, 0, 0);
         $pdf->Cell(80,10,'Official Website Quote',0,0,'C');
-        $pdf->SetXY(64+80,36);
+        $pdf->SetXY(64+87,38);
         $pdf->SetFont('Times','',13);
         $pdf->Cell(47,7, $mail['email_date_show'], 0,0,'R');
         // Quote Table Head
@@ -1807,10 +1807,10 @@ class Email_model extends My_Model
         // Current price
         $pdf->SetXY($priceX, $priceY+2);
         $pdf->SetTextColor(0,0,255);
-        $pdf->SetFont('Times','B',17);
+        $pdf->SetFont('Times','B',16);
         $pdf->Cell(27,8, 'Sale:',0,0,'C',0);
         $pdf->SetXY($priceX, $priceY+10);
-        $pdf->SetFont('Times','B',19);
+        $pdf->SetFont('Times','B',18);
         $pdf->Cell(27,8, MoneyOutput($mail['saleprice']),0,0,'C',0);
         // Price
         if ($mail['price']!==0) {
@@ -1820,7 +1820,7 @@ class Email_model extends My_Model
             $pdf->SetXY($priceX, $priceY);
             $pdf->Cell(27,8, 'Price:',0,0,'C',0);
             $pdf->SetXY($priceX, $priceY+8);
-            $pdf->SetFont('Times','B',19);
+            $pdf->SetFont('Times','B',16);
             $pdf->Cell(27,8, MoneyOutput($mail['price']),0,0,'C',0);
             // Draw line
             $pdf->SetDrawColor(200, 200, 200);
@@ -1836,8 +1836,133 @@ class Email_model extends My_Model
         }
         $pdf->SetXY($totalX, $totalY);
         $pdf->SetTextColor(44,44,44);
-        $pdf->SetFont('Times','B',20);
+        $pdf->SetFont('Times','B',18);
         $pdf->Cell(28,37, MoneyOutput($mail['itemcost']),'BR',0,'C',0);
+        $curY = $pdf->GetY()+38;
+        $pdf->SetXY($strartX, $curY);
+        $pdf->SetFont('Times','I',13);
+        $pdf->Cell(120,5,'Lowest price guaranteed. If you find it for less we will beat it.',0,0,'L',0);
+        // Image
+        $pdf->Image(FCPATH.'img/quote/larger.jpg', $strartX, $curY+7,52,20);
+        $totalsX = 136;
+        $pdf->SetXY($totalsX, $curY);
+        $pdf->SetFont('Times','B',14.5);
+        $pdf->SetTextColor(100,99,99);
+        $pdf->Cell(34, 6, 'Rush Option:',0,0,'R',0);
+        $pdf->SetTextColor(54,54,54);
+        $pdf->Cell(28,6, number_format(floatval($mail['rush']),2,'.',''),0,0,'R',0);
+        $curY+=6.5;
+        $pdf->SetXY($totalsX, $curY);
+        $pdf->SetTextColor(100,99,99);
+        $pdf->Cell(34, 6, 'Imprints/Setup:',0,0,'R',0);
+        $pdf->SetTextColor(54,54,54);
+        $pdf->Cell(28,6, number_format((floatval($mail['setup'])+floatval($mail['imprint'])),2,'.',''),0,0,'R',0);
+        $curY+=6.5;
+        $pdf->SetXY($totalsX, $curY);
+        $pdf->SetTextColor(100,99,99);
+        $pdf->Cell(34, 6, 'NJ Sales Tax:',0,0,'R',0);
+        $pdf->SetTextColor(54,54,54);
+        $pdf->Cell(28,6, number_format(floatval($mail['tax']),2,'.',''),0,0,'R',0);
+        $curY+=6.5;
+        $pdf->SetXY($totalsX, $curY);
+        $pdf->SetTextColor(100,99,99);
+        $pdf->Cell(34, 6, 'Shipping:',0,0,'R',0);
+        $pdf->SetTextColor(54,54,54);
+        if (empty($mail['ship_rate'])) {
+            $pdf->Cell(28,6, 'Call us',0,0,'R',0);
+        } else {
+            $pdf->Cell(28,6, number_format(floatval($mail['ship_rate']),2,'.',''),0,0,'R',0);
+        }
+        $curY+=6.5;
+        $pdf->SetXY($totalsX, $curY);
+        $pdf->SetTextColor(200,200,200);
+        $pdf->SetDrawColor(200,200,200);
+        $pdf->SetLineWidth(0.4);
+        $pdf->Cell(34, 6, 'Regular Price:',0,0,'R',0);
+        $pdf->Line($totalsX, $curY + 2.8, $totalsX + 34, $curY + 2.8); // Draw a line through the text
+        $pdf->Cell(28,6, number_format($mail['total']+$mail['saved'], 2, '.',''),0,0,'R',0);
+        $pdf->Line($totalsX+42, $curY + 2.8, $totalsX + 62, $curY + 2.8); // Draw a line through the text
+        $pdf->SetDrawColor(0,0,0);
+        $pdf->SetLineWidth(0.2);
+        $curY+=6.5;
+        $pdf->SetXY($totalsX, $curY);
+        $pdf->SetTextColor(0,0,255);
+        $pdf->Cell(34, 6, 'Current Price:',0,0,'R',0);
+        $pdf->Cell(28,6, number_format(floatval($mail['total']),2,'.',''),0,0,'R',0);
+        $curY+=6.5;
+        // Total saved
+        if (!empty($mail['saved'])) {
+            $pdf->SetXY($strartX, $curY);
+            $pdf->Cell(190,6,'You Save '.MoneyOutput($mail['saved']).'!',0, 0, 'C',0);
+            $curY+=6.5;
+        }
+        $pdf->SetTextColor(14,3,123);
+        $pdf->SetXY($strartX, $curY);
+        $pdf->Cell(190,6,'Best Price Guaranteed. No Hidden Fees.',0, 0, 'C',0);
+        $curY+=6.5;
+        $pdf->SetXY($strartX, $curY);
+        $pdf->SetFont('Times','',14.5);
+        $pdf->Cell(48,6,'Quick Order Form:',0,0,'C',0);
+        $pdf->SetTextColor(76,76,76);
+        $pdf->SetFont('Times','',12);
+        $pdf->Cell(120,6,'All imprinted orders receive a free proof to approve prior to printing.',0,0,'L',0);
+        $curY+=6.5;
+        // Quick order
+        $pdf->SetDash(1,1);
+        $pdf->Line($strartX,$curY,197, $curY);
+        $pdf->Line($strartX, $curY, $strartX, $curY+81);
+        $pdf->Line(197,$curY,197, $curY+81);
+        $pdf->Line($strartX, $curY+81, 197, $curY+81);
+        $pdf->SetDash();
+        // Quick order content
+        $quickY = $curY + 3.5;
+        $quickX = $strartX + 4;
+        $pdf->SetXY($quickX, $quickY);
+        $pdf->SetFont('Times','B',13);
+        $pdf->Cell(63,5, 'Billing Address:',0,0,'L',0);
+        $pdf->Cell(70,5, 'Contact Info:',0,0,'L',0);
+        $pdf->Cell(50,5, 'Comments:',0,0,'L',0);
+        $pdf->Image(FCPATH.'img/quote/text-area-bg-new.jpg', $quickX, $quickY+5.2, 60, 32);
+        $pdf->SetXY($quickX+63, $quickY+5.2);
+        $pdf->Cell(20,9,'Name:',0,0,'R',0);
+        $pdf->Image(FCPATH.'img/quote/input-name-new.jpg',$quickX+85,$quickY+5.2, 46, 9);
+        $pdf->SetXY($quickX+63, $quickY+16.4);
+        $pdf->Cell(20,9,'Email:',0,0,'R',0);
+        $pdf->Image(FCPATH.'img/quote/input-name-new.jpg',$quickX+85,$quickY+16.4, 46, 9);
+        $pdf->SetXY($quickX+63, $quickY+27.6);
+        $pdf->Cell(20,9,'Phone:',0,0,'R',0);
+        $pdf->Image(FCPATH.'img/quote/input-name-new.jpg',$quickX+85,$quickY+27.6, 46, 9);
+        $pdf->Image(FCPATH.'img/quote/input-comments-new.jpg', $quickX+134, $quickY+5.2, 44, 32);
+        $quickY+=38;
+        $pdf->SetXY($quickX, $quickY);
+        $pdf->Cell(63,5, 'Shipping Address:',0,0,'L',0);
+        $pdf->Cell(70,5, 'Payment Info:',0,0,'L',0);
+        $pdf->Cell(50,5, 'Optional:',0,0,'L',0);
+        $pdf->Image(FCPATH.'img/quote/text-area-bg-new.jpg', $quickX, $quickY+5.2, 60, 32);
+        $pdf->SetXY($quickX+63, $quickY+6.2);
+        $pdf->Cell(60,5,'Credit Card #:',0,0,'C',0);
+        $pdf->Image(FCPATH.'img/quote/creadit-card-new.jpg',$quickX+65, $quickY+12.2, 60, 8.5);
+        $pdf->SetXY($quickX+63, $quickY+24.6);
+        $pdf->Cell(32,5,'Exp. Date:',0,0,'R',0);
+        $pdf->Image(FCPATH.'img/quote/input-date.jpg',$quickX+97,$quickY+22.6, 25, 8.5);
+        $pdf->SetXY($quickX+63, $quickY+32);
+        $pdf->Cell(22,5,'Signature:',0,0,'L',0);
+        $pdf->SetLineWidth(0.6);
+        $pdf->Line($quickX+87, $quickY+36, $quickX+120, $quickY+36);
+        $pdf->SetLineWidth(0.2);
+        $pdf->SetXY($quickX+134, $quickY+6.2);
+        $pdf->Cell(20, 5, 'P.O. #', 0,0,'R',0);
+        $pdf->Image(FCPATH.'img/quote/input-date.jpg', $quickX+155, $quickY+4.7, 25, 8.5);
+        $pdf->Image(FCPATH.'img/quote/bbb_logo_quote.jpg', $quickX+140, $quickY+16.2, 40, 15);
+        $pdf->SetXY($strartX, $curY+83);
+        $pdf->SetTextColor(4,0,161);
+        $pdf->SetFont('Times','BI',19);
+        $pdf->MultiCell(187, 6, 'Order Online, by calling 1-800-790-6090, or by returning this form by fax to 201-604-2688 or by email to sales@stressballs.com.',0, 'C',0);
+        $pdf->SetXY($strartX, $curY+97);
+        $pdf->SetTextColor(255,255,255);
+        $pdf->SetFillColor(26,26,255);
+        $pdf->SetFont('Times','B',15);
+        $pdf->Cell(187, 12, 'STRESSBALLS.com, Inc. - 855 Bloomfield Ave - Clifton, NJ 07012 - USA',0, 0,'C',1);
         // Prepare save
         $file_name = 'STRESSBALLS.com_Quote_'.date('ymd').$mail['email_id'].'.pdf';
         $file_out = $this->config->item('quotes') . $file_name;
