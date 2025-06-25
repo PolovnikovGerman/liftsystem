@@ -1724,7 +1724,6 @@ class Email_model extends My_Model
                             'touser'=>$mail['email_sendermail'],
                             'fromuser'=>($mail['brand']=='SR' ?  $this->config->item('sr_quote_user') : $this->config->item('sb_quote_user')), // $this->config->item('email_notification_sender'),
                             'subject'=>intval($mail['email_qty']).' '.$mail['email_item_name'] . ' Quote',
-                            /* 'message'=>'Hi ! Here is the qoute you requested.',*/
                             'message'=>$msgbody,
                             'fileattach'=>$res['docurl'],
                         );
@@ -1980,7 +1979,7 @@ class Email_model extends My_Model
         // Prepare save
         $file_name = 'STRESSBALLS.com_Quote_'.date('ymd').$mail['email_id'].'.pdf';
         $file_out = $this->config->item('quotes') . $file_name;
-        $file_short = $this->config->item('quotes_relative') . $file_out;
+        $file_short = $this->config->item('quotes_relative') . $file_name;
         $pdf->Output('F', $file_out);
         $out['result'] = $this->success_result;
         $out['docurl'] = $file_out;
