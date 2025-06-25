@@ -4439,4 +4439,127 @@ class Test extends CI_Controller
         return $outcolor;
     }
 
+    public function filledorders() {
+        $brands = [
+            'SB', 'SR',
+        ];
+        $startdate = strtotime('2024-01-01');
+        $enddate = strtotime('2025-06-18');
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+
+        foreach ($brands as $brand) {
+            $this->db->select('o.order_id, o.order_date, o.order_num, o.customer_name, coalesce(p.cnt,0) approved, o.revenue, o.balance_manage, o.balance_term');
+            $this->db->from('ts_orders o');
+            $this->db->join('('.$proofsql.') p','p.order_id=o.order_id','left');
+            $this->db->where('o.order_date >=', $startdate);
+            $this->db->where('o.order_date < ', $enddate);
+            $this->db->where('o.is_canceled',0);
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand', ['SB','BT']);
+            }
+            $this->db->order_by('o.order_num');
+            $results = $this->db->get()->result_array();
+            $orders = [];
+            foreach ($results as $result) {
+                if ($result['approved'] > 0) {
+                    $result['approved'] = 'Approved';
+                } else {
+                    $result['approved'] = 'Not Approved';
+                }
+                $result['fulfilled'] = $result['shipped'] = '';
+                // Items
+                $this->db->select('GROUP_CONCAT(v.item_number) as item_number, GROUP_CONCAT(v.item_name) as item_name, sum(oi.item_qty) as item_qty');
+                $this->db->from('ts_order_items oi')->join('v_itemsearch v','v.item_id=oi.item_id')->where('oi.order_id', $result['order_id']);
+                $itemdat = $this->db->get()->row_array();
+                $result['item_number'] = $itemdat['item_number'];
+                $result['item_name'] = $itemdat['item_name'];
+                $result['item_qty'] = $itemdat['item_qty'];
+                // Fullfillment
+                $this->db->select('count(amount_id) as cnt, sum(shipped) as shipped')->from('ts_order_amounts')->where('order_id', $result['order_id']);
+                $fulfil = $this->db->get()->row_array();
+                if ($fulfil['cnt'] > 0) {
+                    $fulfill = intval($fulfil['shipped']);
+                    if ($fulfill >= intval($result['item_qty'])) {
+                        $result['fulfilled'] = '100%';
+                    } else {
+                        $result['fulfilled'] = round($fulfill/$result['item_qty']*100,1).'%';
+                    }
+                }
+                // Shipping
+                $this->db->select('count(ot.tracking_id) as cnt, sum(ot.qty) as shipqty')->from('ts_order_trackings ot')->join('ts_order_itemcolors oic','ot.order_itemcolor_id = oic.order_itemcolor_id')
+                ->join('ts_order_items oi','oi.order_item_id = oic.order_item_id')->where('oi.order_id', $result['order_id']);
+                $shipdat = $this->db->get()->row_array();
+                if ($shipdat['cnt'] > 0) {
+                    $shipqty = $shipdat['shipqty'];
+                    if ($shipqty >= intval($result['item_qty'])) {
+                        $result['shipped'] = '100%';
+                    } else {
+                        $result['shipped'] = round($shipqty/$result['item_qty']*100,1).'%';
+                    }
+                }
+                // Balance Owed
+                if (intval($result['balance_manage'])==1) {
+                    $result['balance'] = 'Paid';
+                } else {
+                    $result['balance'] = 'Balance Owed';
+                }
+                $orders[] = $result;
+            }
+            // Build XLS
+            $this->load->config('uploader');
+            $filenorm = $this->config->item('upload_path_preload').$brand.'_orders.xlsx';
+            @unlink($filenorm);
+            $titles = ['Date','Order #','Customer','Qty','Item #','Item Name','Approved?','% Fulfilled','% Shipping','Paid?'];
+            $numpp = 1;
+            $ncel = 1;
+            $cols=[];
+            $cellname = '';
+            foreach ($titles as $title) {
+                $newcell = $cellname.chr(64 + $numpp);
+                array_push($cols, $newcell);
+                $numpp++;
+            }
+            $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->setTitle($brand.' Orders');
+            $ncol = 0;
+            foreach ($titles as $title) {
+                $sheet->setCellValue($cols[$ncol].'1', $title);
+                $ncol++;
+            }
+            $numpp = 2;
+            foreach ($orders as $order) {
+                $sheet->setCellValue('A'.$numpp, date('m/d/y', $order['order_date']));
+                $sheet->setCellValue('B'.$numpp, $order['order_num']);
+                $sheet->setCellValue('C'.$numpp, $order['customer_name']);
+                $sheet->setCellValue('D'.$numpp, $order['item_qty']);
+                $sheet->setCellValue('E'.$numpp, $order['item_number']);
+                $sheet->setCellValue('F'.$numpp, $order['item_name']);
+                $sheet->setCellValue('G'.$numpp, $order['approved']);
+                $sheet->setCellValue('H'.$numpp, $order['fulfilled']);
+                $sheet->setCellValue('I'.$numpp, $order['shipped']);
+                $sheet->setCellValue('J'.$numpp, $order['balance']);
+                $numpp++;
+            }
+            $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+            $writer->save($filenorm);    // download file
+            echo 'File '.$filenorm.' ready'.PHP_EOL;
+        }
+    }
+
+    public function generate_quote()
+    {
+        $mail_id = 27425; // 27415;
+        $this->load->model('email_model');
+        // $this->email_model->generate_quota($mail_id);
+        $res = $this->email_model->newquote_generate($mail_id);
+    }
+
 }
