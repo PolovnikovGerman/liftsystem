@@ -50,9 +50,20 @@
                     <div class="leads_map_label">Closed</div>
                 </div>
             </div>
-
         </div>
         <div class="leads_headrow">
+            <div class="leads_section_area">
+                <div class="leaddata_header newleads">
+                    <div class="leaddata_label">New / Unassigned Leads:</div>
+                </div>
+                <div class="leaddata_subheader">
+                    <div class="leadnumber_head">Lead #</div>
+                    <div class="leadcustomer_head">Customer</div>
+                    <div class="leadqty_head">QTY</div>
+                    <div class="leaditem_head">Item</div>
+                </div>
+                <div class="leaddataarea newleads" id="newleadslistdata"></div>
+            </div>
             <div class="leads_section_area">
                 <div class="leaddata_header leads">
                     <div class="leaddata_label">All Leads:</div>
@@ -78,18 +89,6 @@
                     <div class="leaditem_head">Item</div>
                 </div>
                 <div class="leaddataarea leads" id="leadslistdata"></div>
-            </div>
-            <div class="leads_section_area">
-                <div class="leaddata_header newleads">
-                    <div class="leaddata_label">New / Unassigned Leads:</div>
-                </div>
-                <div class="leaddata_subheader">
-                    <div class="leadnumber_head">Lead #</div>
-                    <div class="leadcustomer_head">Customer</div>
-                    <div class="leadqty_head">QTY</div>
-                    <div class="leaditem_head">Item</div>
-                </div>
-                <div class="leaddataarea newleads" id="newleadslistdata"></div>
             </div>
             <div class="leads_section_area">
                 <div class="leaddata_header tasks">
@@ -129,10 +128,10 @@
             </div>
         </div>
         <div class="leads_headrow">
+            <div class="leads_section_area">&nbsp;</div>
             <div class="leads_section_area">
                 <div class="paginationview" id="mainleadpagination"></div>
             </div>
-            <div class="leads_section_area">&nbsp;</div>
             <div class="leads_section_area">&nbsp;</div>
             <div class="leads_section_area lastsection">&nbsp;</div>
         </div>

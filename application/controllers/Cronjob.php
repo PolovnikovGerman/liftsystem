@@ -714,7 +714,8 @@ Class Cronjob extends CI_Controller
 
     public function generate_quota() {
         $this->load->model('email_model');
-        $this->email_model->generate_quota();
+        // $this->email_model->generate_quota();
+        $this->email_model->newquote_generate();
     }
 
     public function hide_credit_cards() {
