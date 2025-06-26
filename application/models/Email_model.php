@@ -1481,15 +1481,21 @@ class Email_model extends My_Model
                     $mail['setup'] = get_json_param($mail['email_other_info'], 'setup', 0);
                     $mail['imprint'] = get_json_param($mail['email_other_info'], 'imprint', 0);
                     $mail['itemcost'] = get_json_param($mail['email_other_info'], 'itemcost', 0);
-                    $itemcolors = get_json_param($mail['email_other_info'], 'itemcolors', []);
-                    $colorstr = '';
-                    foreach ($itemcolors as $itemcolor) {
-                        $colorstr.=$itemcolor.', ';
+                    $itemcolors = get_json_param($mail['email_other_info'], 'colors', '');
+                    if (empty($itemcolors)) {
+                        $itemcolors = get_json_param($mail['email_other_info'], 'itemcolors', []);
+                        $colorstr = '';
+                        foreach ($itemcolors as $itemcolor) {
+                            $colorstr.=$itemcolor.', ';
+                        }
+                        if (count($itemcolors)>0) {
+                            $colorstr=substr($colorstr,0,-2);
+                        }
+                        $mail['colors'] = $colorstr;
+                    } else {
+                        $mail['colors'] = $itemcolors;
                     }
-                    if (count($itemcolors)>0) {
-                        $colorstr=substr($colorstr,0,-2);
-                    }
-                    $mail['colors'] = $colorstr;
+
                         // $mail['colors'] = get_json_param($mail['email_other_info'], 'colors', 0);
                     $mail['total'] = get_json_param($mail['email_other_info'], 'total', 0);
                     $mail['ship_rate'] = get_json_param($mail['email_other_info'], 'ship_rate', 0);
@@ -1543,6 +1549,7 @@ class Email_model extends My_Model
                     // $file_name = 'BLUETRACK_Quote_'.date('ymd').$mail_id.'.pdf';
                     $file_name = 'STRESSBALLS.com_Quote_'.date('ymd').$mail_id.'.pdf';
                     $file_out = $this->config->item('quotes') . $file_name;
+
                     pdf_create($html, $file_out, true);
                     if (file_exists($file_out)) {
                         /* Update email */
@@ -1616,6 +1623,368 @@ class Email_model extends My_Model
         return true;
     }
 
+    public function newquote_generate($email_id=0)
+    {
+        $this->load->model('itemimages_model');
+        $this->load->model('items_model');
+        $sendmail = 1;
+        if ($email_id!=0) {
+            $sendmail = 0;
+            $options = array(
+                'email_id' => $email_id,
+                'brand' => 'ALL',
+            );
+            $mails_array = $this->get_emails($options, 'email_id', 'asc', 1, 0);
+        } else {
+            $options = array(
+                'email_type' => 'Leads',
+                'email_quota_link' => NULL,
+                'brand' => 'ALL',
+            );
+            $mails_array = $this->get_emails($options, 'email_id', 'asc', 1, 0);
+        }
+        foreach ($mails_array as $row) {
+            $mail_id = $row['email_id'];
+            $mail = $this->get_email_details($mail_id);
+            $mail['colorprint'] = get_json_param($mail['email_other_info'], 'colorprint', 0);
+            $mail['item_id']=get_json_param($mail['email_other_info'],'item_id',0);
+            $mail['item_number']='';
+            if (intval($mail['item_id'])!=0) {
+                $itemdat=$this->items_model->get_item($mail['item_id']);
+                if ($itemdat['result']==$this->success_result) {
+                    $item_det = $itemdat['data'];
+                    $mail['item_number']=$item_det['item_number'];
+                    if ($mail['colorprint'] == 1) {
+                        $mail['colorprint'] = '1 Color Imprinting';
+                    } elseif ($mail['colorprint'] == 2) {
+                        $mail['colorprint'] = '2 Color Imprinting';
+                    } else {
+                        $mail['colorprint'] = 'Blank, No Imprinting';
+                    }
+                    $mail['setup'] = get_json_param($mail['email_other_info'], 'setup', 0);
+                    $mail['imprint'] = get_json_param($mail['email_other_info'], 'imprint', 0);
+                    $mail['itemcost'] = get_json_param($mail['email_other_info'], 'itemcost', 0);
+                    $itemcolors = get_json_param($mail['email_other_info'], 'colors', '');
+                    if (empty($itemcolors)) {
+                        $itemcolors = get_json_param($mail['email_other_info'], 'itemcolors', []);
+                        $colorstr = '';
+                        foreach ($itemcolors as $itemcolor) {
+                            $colorstr.=$itemcolor.', ';
+                        }
+                        if (count($itemcolors)>0) {
+                            $colorstr=substr($colorstr,0,-2);
+                        }
+                        $mail['colors'] = $colorstr;
+                    } else {
+                        $mail['colors'] = $itemcolors;
+                    }
+                    $mail['total'] = get_json_param($mail['email_other_info'], 'total', 0);
+                    $mail['ship_rate'] = get_json_param($mail['email_other_info'], 'ship_rate', 0);
+                    $mail['ship_method_name'] = get_json_param($mail['email_other_info'],'ship_method_name','');
+                    $mail['tax'] = get_json_param($mail['email_other_info'], 'tax', 0);
+                    $mail['rush'] = get_json_param($mail['email_other_info'], 'rush', 0);
+                    $mail['rush_days'] = get_json_param($mail['email_other_info'], 'rush_days', 0);
+                    if ($mail['brand']=='SB') {
+                        $mail['saleprice'] = floatval(get_json_param($mail['email_other_info'],'sale_price',0));
+                        $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
+                        $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
+                    } else {
+                        $mail['saleprice'] = floatval(get_json_param($mail['email_other_info'],'sale_price',0));
+                        $mail['price'] = floatval(get_json_param($mail['email_other_info'],'reg_price',0));
+                        $mail['saved'] = (-1) * get_json_param($mail['email_other_info'], 'saved', 0);
+                    }
+                    $mail['imgpath'] = base_url().'img/'; // $this->config->item('item_quote_images').'/img/';
+                    $mail['itemimgpath'] = base_url(); // $this->config->item('item_quote_images');
+                    $item_id = get_json_param($mail['email_other_info'], 'item_id', 0);
+                    if ($item_id != 0) {
+                        /* Get Main Picture */
+                        $img = $this->itemimages_model->get_item_images($item_id);
+                        $mail['mainimg'] = '';
+                        if (is_array($img)) {
+                            $mail['mainimg'] = $img[0]['item_img_name'];
+                        }
+                    }
+                    $res = $this->_prepare_quote_doc($mail);
+                    if ($res['result']==$this->success_result) {
+                        // Update Email
+                        $upddata = array(
+                            'email_id' => $mail_id,
+                            'email_quota_link' => $res['docshort'],
+                        );
+                        $this->email_update($upddata);
+                        $msg_options=array(
+                            'item_name'=>$mail['email_item_name'],
+                            'item_qty'=>intval($mail['email_qty']),
+                        );
+                        $content=$this->load->view('messages/quote_message_view',$msg_options,TRUE);
+                        $msgbody=($content);
+                        /* Send message to user */
+                        $this->load->config('notifications');
+                        $mail_options=array(
+                            'touser'=>$mail['email_sendermail'],
+                            'fromuser'=>($mail['brand']=='SR' ?  $this->config->item('sr_quote_user') : $this->config->item('sb_quote_user')), // $this->config->item('email_notification_sender'),
+                            'subject'=>intval($mail['email_qty']).' '.$mail['email_item_name'] . ' Quote',
+                            'message'=>$msgbody,
+                            'fileattach'=>$res['docurl'],
+                        );
+                        if ($sendmail==1) {
+                            // if (!in_array($_SERVER['SERVER_NAME'], $this->config->item('localserver'))) { // !=='lift_stressballs.local'
+                            $this->send_quota($mail_options);
+                            // }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
+    private function _prepare_quote_doc($mail)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Error during create PDF doc'];
+        define('FPDF_FONTPATH', FCPATH.'font');
+        $this->load->library('fpdf/fpdfeps');
+        $pdf = new FPDFEPS('P','mm','A4');
+        $pdf->AddPage();
+        // Head Image
+        $pdf->SetDrawColor(0,0,0);
+        $strartX = 10;
+        $logoFile = FCPATH."/img/quote/quote_head-upd.jpg";
+        $logoWidth = 187.844;
+        $logoHeight = 30;
+        $logoYPos = 5;
+        $logoXPos = 10;
+
+        $pdf->Image($logoFile, $logoXPos, $logoYPos, $logoWidth, $logoHeight);
+        $pdf->SetXY($strartX, 36);
+        $pdf->SetFont('Times','I', 12); // 9.035143
+        $pdf->SetTextColor(84, 84, 84);
+        $pdf->MultiCell(36,4.5,'Over 1200 Stress Shapes Available!',0,'L');
+        $tableY = $pdf->GetY()+1;
+        $pdf->SetXY(64,35);
+        $pdf->SetFont('Times','B',17);
+        $pdf->SetTextColor(0, 0, 0);
+        $pdf->Cell(80,10,'Official Website Quote',0,0,'C');
+        $pdf->SetXY(64+87,38);
+        $pdf->SetFont('Times','',13);
+        $pdf->Cell(47,7, $mail['email_date_show'], 0,0,'R');
+        // Quote Table Head
+        $pdf->SetXY($strartX, $tableY);
+        $pdf->SetFont('Times','B',15);
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->SetFillColor(0,0,255);
+        $pdf->Cell(30,7,'Image:',0,0,'C',1);
+        $pdf->Cell(85,7,'Item:',0,0,'C',1);
+        $pdf->Cell(18,7, 'Qty:',0,0,'C',1);
+        $pdf->Cell(27,7,'Price Each:',0,0,'C',1);
+        $pdf->Cell(28,7,'Subtotal:',0,0,'C',1);
+        // Quote Table content
+        $pdf->SetXY($strartX, $tableY+7);
+        $pdf->Cell(30,37,'','LB',0,'C',0);
+        if ($mail['mainimg']) {
+            $mainImage = FCPATH.$mail['mainimg'];
+            $mainImageWidth = 30;
+            $mainImageHeight = 30;
+            $mainImageX = $strartX+2;
+            $mainImageY = $tableY+9;
+            $pdf->Image($mainImage, $mainImageX, $mainImageY, $mainImageWidth, $mainImageHeight);
+        }
+        $itemX = $pdf->GetX()+2;
+        $itemY = $pdf->GetY()+2;
+        $pdf->Cell(85,37,'','BR',0,'C',0);
+        $qtyX = $pdf->GetX();
+        $qtyY = $pdf->GetY();
+        // Item Cell
+        $pdf->SetXY($itemX, $itemY);
+        $pdf->SetTextColor(70, 69, 69);
+        $pdf->SetFont('Times','B',17);
+        $pdf->Cell(82,6, $mail['email_item_name'], 0,0,'L',0);
+        $itemX+=4;
+        $pdf->SetXY($itemX, $itemY+7);
+        $pdf->SetTextColor(84, 84, 84);
+        $pdf->SetFont('Times','I',15);
+        $pdf->Cell(82,6, '- Item # '.$mail['email_item_number'],0,0,'L',0);
+        $pdf->SetXY($itemX, $itemY+14);
+        $pdf->Cell(82,6, '- Color: '.$mail['colors']);
+        $pdf->SetXY($itemX, $itemY+21);
+        $pdf->Cell(82,6, '- '.$mail['colorprint'],0,0,'L',0);
+        $pdf->SetXY($itemX, $itemY+28);
+        $pdf->Cell(82,6, '- '.($mail['rush'] == 0 ? '' : '$' . $mail['rush']).' '.$mail['rush_days'],0,0,'L',0);
+        // Item QTY
+        $pdf->SetXY($qtyX, $qtyY);
+        $pdf->Cell(18,37,QTYOutput($mail['email_qty'],0),'BR',0,'C',0);
+        $priceX = $pdf->GetX();
+        $priceY = $pdf->GetY();
+        $pdf->Cell(27, 37,'','BR',0,'C',0);
+        $totalX = $pdf->GetX();
+        $totalY = $pdf->GetY();
+        // Current price
+        $pdf->SetXY($priceX, $priceY+2);
+        $pdf->SetTextColor(0,0,255);
+        $pdf->SetFont('Times','B',16);
+        $pdf->Cell(27,8, 'Sale:',0,0,'C',0);
+        $pdf->SetXY($priceX, $priceY+10);
+        $pdf->SetFont('Times','B',18);
+        $pdf->Cell(27,8, MoneyOutput($mail['saleprice']),0,0,'C',0);
+        // Price
+        if ($mail['price']!==0) {
+            $pdf->SetTextColor(200, 200, 200);
+            $pdf->SetFont('Times','B',17);
+            $priceY+=18;
+            $pdf->SetXY($priceX, $priceY);
+            $pdf->Cell(27,8, 'Price:',0,0,'C',0);
+            $pdf->SetXY($priceX, $priceY+8);
+            $pdf->SetFont('Times','B',16);
+            $pdf->Cell(27,8, MoneyOutput($mail['price']),0,0,'C',0);
+            // Draw line
+            $pdf->SetDrawColor(200, 200, 200);
+            $pdf->SetLineWidth(0.6);
+            $x1 = $priceX+2;
+            $y1 = $priceY;
+            $x2 = $priceX+24;
+            $y2 = $priceY+14;
+            // Draw the line
+            $pdf->Line($x1, $y1, $x2, $y2);
+            $pdf->SetDrawColor(0,0,0);
+            $pdf->SetLineWidth(0.2);
+        }
+        $pdf->SetXY($totalX, $totalY);
+        $pdf->SetTextColor(44,44,44);
+        $pdf->SetFont('Times','B',18);
+        $pdf->Cell(28,37, MoneyOutput($mail['itemcost']),'BR',0,'C',0);
+        $curY = $pdf->GetY()+38;
+        $pdf->SetXY($strartX, $curY);
+        $pdf->SetFont('Times','I',13);
+        $pdf->Cell(120,5,'Lowest price guaranteed. If you find it for less we will beat it.',0,0,'L',0);
+        // Image
+        $pdf->Image(FCPATH.'img/quote/larger.jpg', $strartX, $curY+7,52,20);
+        $totalsX = 136;
+        $pdf->SetXY($totalsX, $curY);
+        $pdf->SetFont('Times','B',14.5);
+        $pdf->SetTextColor(100,99,99);
+        $pdf->Cell(34, 6, 'Rush Option:',0,0,'R',0);
+        $pdf->SetTextColor(54,54,54);
+        $pdf->Cell(28,6, number_format(floatval($mail['rush']),2,'.',''),0,0,'R',0);
+        $curY+=6.5;
+        $pdf->SetXY($totalsX, $curY);
+        $pdf->SetTextColor(100,99,99);
+        $pdf->Cell(34, 6, 'Imprints/Setup:',0,0,'R',0);
+        $pdf->SetTextColor(54,54,54);
+        $pdf->Cell(28,6, number_format((floatval($mail['setup'])+floatval($mail['imprint'])),2,'.',''),0,0,'R',0);
+        $curY+=6.5;
+        $pdf->SetXY($totalsX, $curY);
+        $pdf->SetTextColor(100,99,99);
+        $pdf->Cell(34, 6, 'NJ Sales Tax:',0,0,'R',0);
+        $pdf->SetTextColor(54,54,54);
+        $pdf->Cell(28,6, number_format(floatval($mail['tax']),2,'.',''),0,0,'R',0);
+        $curY+=6.5;
+        $pdf->SetXY($totalsX, $curY);
+        $pdf->SetTextColor(100,99,99);
+        $pdf->Cell(34, 6, 'Shipping:',0,0,'R',0);
+        $pdf->SetTextColor(54,54,54);
+        if (empty($mail['ship_rate'])) {
+            $pdf->Cell(28,6, 'Call us',0,0,'R',0);
+        } else {
+            $pdf->Cell(28,6, number_format(floatval($mail['ship_rate']),2,'.',''),0,0,'R',0);
+        }
+        $curY+=6.5;
+        $pdf->SetXY($totalsX, $curY);
+        $pdf->SetTextColor(200,200,200);
+        $pdf->SetDrawColor(200,200,200);
+        $pdf->SetLineWidth(0.4);
+        $pdf->Cell(34, 6, 'Regular Price:',0,0,'R',0);
+        $pdf->Line($totalsX, $curY + 2.8, $totalsX + 34, $curY + 2.8); // Draw a line through the text
+        $pdf->Cell(28,6, number_format($mail['total']+$mail['saved'], 2, '.',''),0,0,'R',0);
+        $pdf->Line($totalsX+42, $curY + 2.8, $totalsX + 62, $curY + 2.8); // Draw a line through the text
+        $pdf->SetDrawColor(0,0,0);
+        $pdf->SetLineWidth(0.2);
+        $curY+=6.5;
+        $pdf->SetXY($totalsX, $curY);
+        $pdf->SetTextColor(0,0,255);
+        $pdf->Cell(34, 6, 'Current Price:',0,0,'R',0);
+        $pdf->Cell(28,6, number_format(floatval($mail['total']),2,'.',''),0,0,'R',0);
+        $curY+=6.5;
+        // Total saved
+        if (!empty($mail['saved'])) {
+            $pdf->SetXY($strartX, $curY);
+            $pdf->Cell(190,6,'You Save '.MoneyOutput($mail['saved']).'!',0, 0, 'C',0);
+            $curY+=6.5;
+        }
+        $pdf->SetTextColor(14,3,123);
+        $pdf->SetXY($strartX, $curY);
+        $pdf->Cell(190,6,'Best Price Guaranteed. No Hidden Fees.',0, 0, 'C',0);
+        $curY+=6.5;
+        $pdf->SetXY($strartX, $curY);
+        $pdf->SetFont('Times','',14.5);
+        $pdf->Cell(48,6,'Quick Order Form:',0,0,'C',0);
+        $pdf->SetTextColor(76,76,76);
+        $pdf->SetFont('Times','',12);
+        $pdf->Cell(120,6,'All imprinted orders receive a free proof to approve prior to printing.',0,0,'L',0);
+        $curY+=6.5;
+        // Quick order
+        $pdf->SetDash(1,1);
+        $pdf->Line($strartX,$curY,197, $curY);
+        $pdf->Line($strartX, $curY, $strartX, $curY+81);
+        $pdf->Line(197,$curY,197, $curY+81);
+        $pdf->Line($strartX, $curY+81, 197, $curY+81);
+        $pdf->SetDash();
+        // Quick order content
+        $quickY = $curY + 3.5;
+        $quickX = $strartX + 4;
+        $pdf->SetXY($quickX, $quickY);
+        $pdf->SetFont('Times','B',13);
+        $pdf->Cell(63,5, 'Billing Address:',0,0,'L',0);
+        $pdf->Cell(70,5, 'Contact Info:',0,0,'L',0);
+        $pdf->Cell(50,5, 'Comments:',0,0,'L',0);
+        $pdf->Image(FCPATH.'img/quote/text-area-bg-new.jpg', $quickX, $quickY+5.2, 60, 32);
+        $pdf->SetXY($quickX+63, $quickY+5.2);
+        $pdf->Cell(20,9,'Name:',0,0,'R',0);
+        $pdf->Image(FCPATH.'img/quote/input-name-new.jpg',$quickX+85,$quickY+5.2, 46, 9);
+        $pdf->SetXY($quickX+63, $quickY+16.4);
+        $pdf->Cell(20,9,'Email:',0,0,'R',0);
+        $pdf->Image(FCPATH.'img/quote/input-name-new.jpg',$quickX+85,$quickY+16.4, 46, 9);
+        $pdf->SetXY($quickX+63, $quickY+27.6);
+        $pdf->Cell(20,9,'Phone:',0,0,'R',0);
+        $pdf->Image(FCPATH.'img/quote/input-name-new.jpg',$quickX+85,$quickY+27.6, 46, 9);
+        $pdf->Image(FCPATH.'img/quote/input-comments-new.jpg', $quickX+134, $quickY+5.2, 44, 32);
+        $quickY+=38;
+        $pdf->SetXY($quickX, $quickY);
+        $pdf->Cell(63,5, 'Shipping Address:',0,0,'L',0);
+        $pdf->Cell(70,5, 'Payment Info:',0,0,'L',0);
+        $pdf->Cell(50,5, 'Optional:',0,0,'L',0);
+        $pdf->Image(FCPATH.'img/quote/text-area-bg-new.jpg', $quickX, $quickY+5.2, 60, 32);
+        $pdf->SetXY($quickX+63, $quickY+6.2);
+        $pdf->Cell(60,5,'Credit Card #:',0,0,'C',0);
+        $pdf->Image(FCPATH.'img/quote/creadit-card-new.jpg',$quickX+65, $quickY+12.2, 60, 8.5);
+        $pdf->SetXY($quickX+63, $quickY+24.6);
+        $pdf->Cell(32,5,'Exp. Date:',0,0,'R',0);
+        $pdf->Image(FCPATH.'img/quote/input-date.jpg',$quickX+97,$quickY+22.6, 25, 8.5);
+        $pdf->SetXY($quickX+63, $quickY+32);
+        $pdf->Cell(22,5,'Signature:',0,0,'L',0);
+        $pdf->SetLineWidth(0.6);
+        $pdf->Line($quickX+87, $quickY+36, $quickX+120, $quickY+36);
+        $pdf->SetLineWidth(0.2);
+        $pdf->SetXY($quickX+134, $quickY+6.2);
+        $pdf->Cell(20, 5, 'P.O. #', 0,0,'R',0);
+        $pdf->Image(FCPATH.'img/quote/input-date.jpg', $quickX+155, $quickY+4.7, 25, 8.5);
+        $pdf->Image(FCPATH.'img/quote/bbb_logo_quote.jpg', $quickX+140, $quickY+16.2, 40, 15);
+        $pdf->SetXY($strartX, $curY+83);
+        $pdf->SetTextColor(4,0,161);
+        $pdf->SetFont('Times','BI',19);
+        $pdf->MultiCell(187, 6, 'Order Online, by calling 1-800-790-6090, or by returning this form by fax to 201-604-2688 or by email to sales@stressballs.com.',0, 'C',0);
+        $pdf->SetXY($strartX, $curY+97);
+        $pdf->SetTextColor(255,255,255);
+        $pdf->SetFillColor(26,26,255);
+        $pdf->SetFont('Times','B',15);
+        $pdf->Cell(187, 12, 'STRESSBALLS.com, Inc. - 855 Bloomfield Ave - Clifton, NJ 07012 - USA',0, 0,'C',1);
+        // Prepare save
+        $file_name = 'STRESSBALLS.com_Quote_'.date('ymd').$mail['email_id'].'.pdf';
+        $file_out = $this->config->item('quotes') . $file_name;
+        $file_short = $this->config->item('quotes_relative') . $file_name;
+        $pdf->Output('F', $file_out);
+        $out['result'] = $this->success_result;
+        $out['docurl'] = $file_out;
+        $out['docshort'] = $file_short;
+        return $out;
+    }
 }
 
