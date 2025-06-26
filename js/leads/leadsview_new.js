@@ -98,6 +98,8 @@ function init_leadmanage_content() {
     // Search all
     $("div.leadsearchall").unbind('click').click(function(){
         $("#leadviewuser").val('');
+        $("#leadviewshowclosed").val(1);
+        $(".leads_viewclosedflag").empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>');
         search_leadsdata();
         show_leadpriority();
         show_leadtasks();
@@ -116,6 +118,8 @@ function init_leadmanage_content() {
     // Clean
     $("div.leadsearchclear").unbind('click').click(function(){
         $("input.lead_searchinput").val('');
+        var usr = $(".leadsearchusr").data('user');
+        $("#leadviewuser").val(usr);
         search_leadsdata();
         show_leadpriority();
         show_leadtasks();
@@ -125,6 +129,9 @@ function init_leadmanage_content() {
     // Input search
     $("input.lead_searchinput").keypress(function(event){
         if (event.which == 13) {
+            $("#leadviewuser").val('');
+            $("#leadviewshowclosed").val(1);
+            $(".leads_viewclosedflag").empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>');
             search_leadsdata();
             show_leadpriority();
             show_leadtasks();
