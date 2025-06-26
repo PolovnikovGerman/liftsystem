@@ -3805,5 +3805,84 @@ Class Artwork_model extends MY_Model
         return TRUE;
     }
 
+    public function artproof_report($datebgn, $dateend)
+    {
+        $results = [
+            'sb_orders' => 0,
+            'sb_proofs' => 0,
+            'sb_total' => 0,
+            'sr_orders' => 0,
+            'sr_proofs' => 0,
+            'sr_total' => 0,
+            'total' => 0,
+            'report_date' => date('m/d/Y', $datebgn),
+        ];
+        // Art Proof
+        $this->db->select('e.brand, count(ap.artwork_proof_id) as cnt');
+        $this->db->from('ts_artwork_proofs ap');
+        $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
+        $this->db->join('ts_emails e','e.email_id=a.mail_id');
+        $this->db->where('unix_timestamp(ap.created_time) >= ', $datebgn);
+        $this->db->where('unix_timestamp(ap.created_time) < ', $dateend);
+        $this->db->group_by('e.brand');
+        $mailres = $this->db->get()->result_array();
+        foreach ($mailres as $item) {
+            if ($item['brand']=='SR') {
+                $results['sr_proofs']+=$item['cnt'];
+                $results['sr_total']+=$item['cnt'];
+                $results['total']+=$item['cnt'];
+            } else {
+                $results['sb_proofs']+=$item['cnt'];
+                $results['sb_total']+=$item['cnt'];
+                $results['total']+=$item['cnt'];
+            }
+        }
+        // Orders
+        $this->db->select('o.brand, count(ap.artwork_proof_id) as cnt');
+        $this->db->from('ts_artwork_proofs ap');
+        $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
+        $this->db->join('ts_orders o','o.order_id=a.order_id');
+        $this->db->where('unix_timestamp(ap.created_time) >= ', $datebgn);
+        $this->db->where('unix_timestamp(ap.created_time) < ', $dateend);
+        $this->db->group_by('o.brand');
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $item) {
+            if ($item['brand']=='SR') {
+                $results['sr_orders']+=$item['cnt'];
+                $results['sr_total']+=$item['cnt'];
+                $results['total']+=$item['cnt'];
+            } else {
+                $results['sb_orders']+=$item['cnt'];
+                $results['sb_total']+=$item['cnt'];
+                $results['total']+=$item['cnt'];
+            }
+        }
+        $brands = ['SB','SR'];
+        $email_conf = array(
+            'protocol'=>'smtp',
+            'smtp_host' => $this->config->item('sb_smtp_host'),
+            'smtp_port' => $this->config->item('sb_smtp_port'),
+            'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+            'smtp_user' => $this->config->item('sb_quote_user'),
+            'smtp_pass' => $this->config->item('sb_quote_pass'),
+            'charset'=>'utf-8',
+            'mailtype'=>'html',
+            'wordwrap'=>TRUE,
+            'newline' => "\r\n",
+        );
+        $email_from = $this->config->item('sb_quote_user');
+        $email_to='to_german@yahoo.com';
+        $mail_body = $this->load->view('messages/artupload_report_view', $results, TRUE);
+        $this->load->library('email');
+        $this->email->initialize($email_conf);
+        $this->email->from($email_from);
+        $this->email->to($email_to);
 
+        $title=date('D - M d, Y', $datebgn).' - Art Proof Uploads';
+        $this->email->subject($title);
+        $this->email->message($mail_body);
+        $this->email->send();
+        $this->email->clear(TRUE);
+
+    }
 }
