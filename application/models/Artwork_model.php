@@ -3871,7 +3871,8 @@ Class Artwork_model extends MY_Model
             'newline' => "\r\n",
         );
         $email_from = $this->config->item('sb_quote_user');
-        $email_to='to_german@yahoo.com';
+        // $email_to='to_german@yahoo.com';
+        $email_to = $this->config->item('sage_email');
         $mail_body = $this->load->view('messages/artupload_report_view', $results, TRUE);
         $this->load->library('email');
         $this->email->initialize($email_conf);
