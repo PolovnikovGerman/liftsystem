@@ -118,6 +118,8 @@ function init_leadmanage_content() {
     // Clean
     $("div.leadsearchclear").unbind('click').click(function(){
         $("input.lead_searchinput").val('');
+        var usr = $(".leadsearchusr").data('user');
+        $("#leadviewuser").val(usr);
         search_leadsdata();
         show_leadpriority();
         show_leadtasks();
