@@ -4554,12 +4554,49 @@ class Test extends CI_Controller
         }
     }
 
-    public function generate_quote()
+    public function leadsreport()
     {
-        $mail_id = 27425; // 27415;
-        $this->load->model('email_model');
-        // $this->email_model->generate_quota($mail_id);
-        $res = $this->email_model->newquote_generate($mail_id);
+        $startdate = strtotime('2025-06-23');
+        $enddate = strtotime('+7 day', $startdate)-1;
+        $out=[];
+        while (1==1) {
+            $this->db->select('count(lead_id) as cnt')->from('ts_leads')->where('unix_timestamp(create_date) >= ', $startdate)->where('unix_timestamp(create_date) <= ', $enddate);
+            $crdat = $this->db->get()->row_array();
+            $this->db->select('count(lead_id) as cnt')->from('ts_leads')->where('unix_timestamp(update_date) >= ', $startdate)->where('unix_timestamp(update_date) <= ', $enddate);
+            $updat = $this->db->get()->row_array();
+            $out[] = [
+                'period' => date('m/d/Y', $startdate).' - '.date('m/d/Y', $enddate),
+                'newleads' => $crdat['cnt'],
+                'updleads' => $updat['cnt'],
+            ];
+            // new dates
+            $enddate = $startdate - 1;
+            $startdate = strtotime('-7 day', $startdate);
+            // echo 'Start '.date('d.m.Y H:i:s', $startdate).' - End '.date('d.m.Y H:i:s', $enddate).PHP_EOL;
+            if ($enddate <= strtotime('2018-01-01')) {
+                break;
+            }
+        }
+        echo count($out).PHP_EOL;
+        // Build XLS
+        $this->load->config('uploader');
+        $filenorm = $this->config->item('upload_path_preload').'leads_perweek.xlsx';
+        @unlink($filenorm);
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Leads');
+        $sheet->setCellValue('A1', 'Period');
+        $sheet->setCellValue('B1','New Leads');
+        $sheet->setCellValue('C1','Updated Leads');
+        $numpp = 2;
+        foreach ($out as $item) {
+            $sheet->setCellValue('A'.$numpp, $item['period']);
+            $sheet->setCellValue('B'.$numpp, $item['newleads']);
+            $sheet->setCellValue('C'.$numpp, $item['updleads']);
+            $numpp++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($filenorm);    // download file
+        echo 'File '.$filenorm.' ready'.PHP_EOL;
     }
-
 }
