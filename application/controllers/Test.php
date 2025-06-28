@@ -4560,10 +4560,12 @@ class Test extends CI_Controller
         $enddate = strtotime('+7 day', $startdate)-1;
         $out=[];
         while (1==1) {
+            echo 'Start '.date('d.m.Y H:i:s', $startdate).' - End '.date('d.m.Y H:i:s', $enddate).PHP_EOL;
             $this->db->select('u.user_leadname as username, count(l.lead_id) as cnt');
             $this->db->from('ts_lead_users tlu');
             $this->db->join('users u','on u.user_id = tlu.user_id');
             $this->db->join('ts_leads l','l.lead_id=tlu.lead_id');
+            $this->db->where('unix_timestamp(create_date) >= ', $startdate)->where('unix_timestamp(create_date) <= ', $enddate);
             $this->db->group_by('u.user_leadname');
             $crdat = $this->db->get()->result_array();
             $repl = '';
@@ -4581,7 +4583,7 @@ class Test extends CI_Controller
             // new dates
             $enddate = $startdate - 1;
             $startdate = strtotime('-7 day', $startdate);
-            // echo 'Start '.date('d.m.Y H:i:s', $startdate).' - End '.date('d.m.Y H:i:s', $enddate).PHP_EOL;
+
             if ($enddate <= strtotime('2018-01-01')) {
                 break;
             }
