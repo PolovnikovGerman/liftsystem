@@ -4560,13 +4560,22 @@ class Test extends CI_Controller
         $enddate = strtotime('+7 day', $startdate)-1;
         $out=[];
         while (1==1) {
-            $this->db->select('count(lead_id) as cnt')->from('ts_leads')->where('unix_timestamp(create_date) >= ', $startdate)->where('unix_timestamp(create_date) <= ', $enddate);
-            $crdat = $this->db->get()->row_array();
+            $this->db->select('u.user_leadname as username, count(l.lead_id) as cnt');
+            $this->db->from('ts_lead_users tlu');
+            $this->db->join('users u','on u.user_id = tlu.user_id');
+            $this->db->join('ts_leads l','l.lead_id=tlu.lead_id');
+            $this->db->group_by('u.user_leadname');
+            $crdat = $this->db->get()->result_array();
+            $repl = '';
+            foreach ($crdat as $item) {
+                $repl.=$item['username'].', ';
+            }
+            $repl = substr($repl,0,-2);
             $this->db->select('count(lead_id) as cnt')->from('ts_leads')->where('unix_timestamp(update_date) >= ', $startdate)->where('unix_timestamp(update_date) <= ', $enddate);
             $updat = $this->db->get()->row_array();
             $out[] = [
                 'period' => date('m/d/Y', $startdate).' - '.date('m/d/Y', $enddate),
-                'newleads' => $crdat['cnt'],
+                'newleads' => $repl,
                 'updleads' => $updat['cnt'],
             ];
             // new dates
@@ -4586,8 +4595,8 @@ class Test extends CI_Controller
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Leads');
         $sheet->setCellValue('A1', 'Period');
-        $sheet->setCellValue('B1','New Leads');
-        $sheet->setCellValue('C1','Updated Leads');
+        $sheet->setCellValue('B1','Sales Repl');
+        $sheet->setCellValue('C1','# of worked leads');
         $numpp = 2;
         foreach ($out as $item) {
             $sheet->setCellValue('A'.$numpp, $item['period']);
