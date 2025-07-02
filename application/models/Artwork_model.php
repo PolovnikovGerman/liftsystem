@@ -3857,7 +3857,6 @@ Class Artwork_model extends MY_Model
                 $results['total']+=$item['cnt'];
             }
         }
-        // date_default_timezone_set('Europe/Kiev');
         // Week results
         $weekstart = strtotime(date('Y-m-d', $datebgn).'-7 days');
         $this->db->select('date_format(ap.created_time, "%Y-%m-%d") as upldat, count(ap.artwork_proof_id) as cnt');
@@ -4011,8 +4010,8 @@ Class Artwork_model extends MY_Model
             'newline' => "\r\n",
         );
         $email_from = $this->config->item('sb_quote_user');
-        $email_to='to_german@yahoo.com';
-        // $email_to = $this->config->item('sage_email');
+        // $email_to='to_german@yahoo.com';
+        $email_to = $this->config->item('sage_email');
         $mail_body = $this->load->view('messages/artupload_report_view', ['data' => $results, 'weekview' => $week_view, 'yearview' => $year_view], TRUE);
         $this->load->library('email');
         $this->email->initialize($email_conf);
