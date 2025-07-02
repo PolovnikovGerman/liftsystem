@@ -3857,7 +3857,147 @@ Class Artwork_model extends MY_Model
                 $results['total']+=$item['cnt'];
             }
         }
-        $brands = ['SB','SR'];
+        // date_default_timezone_set('Europe/Kiev');
+        // Week results
+        $weekstart = strtotime(date('Y-m-d', $datebgn).'-7 days');
+        $this->db->select('date_format(ap.created_time, "%Y-%m-%d") as upldat, count(ap.artwork_proof_id) as cnt');
+        $this->db->from('ts_artwork_proofs ap');
+        $this->db->where('unix_timestamp(ap.created_time) >= ', $weekstart);
+        $this->db->where('unix_timestamp(ap.created_time) < ', $dateend);
+        $this->db->having('cnt > ',0);
+        $weeks = $this->db->get()->result_array();
+        echo $this->db->last_query().PHP_EOL;
+        $weekdat = [];
+        foreach ($weeks as $week) {
+            $daybgn = strtotime($week['upldat']);
+            $dayend = strtotime($week['upldat'] .' 23:59:59');
+            $dayresults = [
+                'sb_orders' => 0,
+                'sb_proofs' => 0,
+                'sb_total' => 0,
+                'sr_orders' => 0,
+                'sr_proofs' => 0,
+                'sr_total' => 0,
+                'total' => 0,
+                'report_date' => date('D m/d/Y', $daybgn),
+            ];
+            $this->db->select('e.brand, count(ap.artwork_proof_id) as cnt');
+            $this->db->from('ts_artwork_proofs ap');
+            $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
+            $this->db->join('ts_emails e','e.email_id=a.mail_id');
+            $this->db->where('unix_timestamp(ap.created_time) >= ', $daybgn);
+            $this->db->where('unix_timestamp(ap.created_time) <= ', $dayend);
+            $this->db->group_by('e.brand');
+            $mailres = $this->db->get()->result_array();
+            foreach ($mailres as $row) {
+                if ($row['brand']=='SR') {
+                    $dayresults['sr_proofs']+=$row['cnt'];
+                    $dayresults['sr_total']+=$row['cnt'];
+                    $dayresults['total']+=$row['cnt'];
+                } else {
+                    $dayresults['sb_proofs']+=$row['cnt'];
+                    $dayresults['sb_total']+=$row['cnt'];
+                    $dayresults['total']+=$row['cnt'];
+                }
+            }
+            // Orders
+            $this->db->select('o.brand, count(ap.artwork_proof_id) as cnt');
+            $this->db->from('ts_artwork_proofs ap');
+            $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
+            $this->db->join('ts_orders o','o.order_id=a.order_id');
+            $this->db->where('unix_timestamp(ap.created_time) >= ', $daybgn);
+            $this->db->where('unix_timestamp(ap.created_time) <= ', $dayend);
+            $this->db->group_by('o.brand');
+            $orders = $this->db->get()->result_array();
+            foreach ($orders as $row) {
+                if ($row['brand']=='SR') {
+                    $dayresults['sr_orders']+=$row['cnt'];
+                    $dayresults['sr_total']+=$row['cnt'];
+                    $dayresults['total']+=$row['cnt'];
+                } else {
+                    $dayresults['sb_orders']+=$row['cnt'];
+                    $dayresults['sb_total']+=$row['cnt'];
+                    $dayresults['total']+=$row['cnt'];
+                }
+            }
+            $weekdat[] = $dayresults;
+        }
+        $options = [
+            'datebgn' => $weekstart,
+            'dateend' => $dateend,
+            'lists' => $weekdat,
+        ];
+        $week_view = $this->load->view('messages/artupload_history_view', $options, TRUE);
+        // Years result
+        $datestart = strtotime(date('Y',$datebgn).'-01-01');
+        $this->db->select('date_format(ap.created_time, "%Y-%m-%d") as upldat, count(ap.artwork_proof_id) as cnt');
+        $this->db->from('ts_artwork_proofs ap');
+        $this->db->where('unix_timestamp(ap.created_time) >= ', $datestart);
+        $this->db->where('unix_timestamp(ap.created_time) < ', $dateend);
+        $this->db->group_by('upldat');
+        $this->db->order_by('ap.created_time','desc');
+        $lists = $this->db->get()->result_array();
+        $yearres = [];
+        foreach ($lists as $item) {
+            $daybgn = strtotime($item['upldat']);
+            $dayend = strtotime($item['upldat'] .' 23:59:59');
+            $dayresults = [
+                'sb_orders' => 0,
+                'sb_proofs' => 0,
+                'sb_total' => 0,
+                'sr_orders' => 0,
+                'sr_proofs' => 0,
+                'sr_total' => 0,
+                'total' => 0,
+                'report_date' => date('D m/d/Y', $dayend),
+            ];
+            $this->db->select('e.brand, count(ap.artwork_proof_id) as cnt');
+            $this->db->from('ts_artwork_proofs ap');
+            $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
+            $this->db->join('ts_emails e','e.email_id=a.mail_id');
+            $this->db->where('unix_timestamp(ap.created_time) >= ', $daybgn);
+            $this->db->where('unix_timestamp(ap.created_time) <= ', $dayend);
+            $this->db->group_by('e.brand');
+            $mailres = $this->db->get()->result_array();
+            foreach ($mailres as $row) {
+                if ($row['brand']=='SR') {
+                    $dayresults['sr_proofs']+=$row['cnt'];
+                    $dayresults['sr_total']+=$row['cnt'];
+                    $dayresults['total']+=$row['cnt'];
+                } else {
+                    $dayresults['sb_proofs']+=$row['cnt'];
+                    $dayresults['sb_total']+=$row['cnt'];
+                    $dayresults['total']+=$row['cnt'];
+                }
+            }
+            // Orders
+            $this->db->select('o.brand, count(ap.artwork_proof_id) as cnt');
+            $this->db->from('ts_artwork_proofs ap');
+            $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
+            $this->db->join('ts_orders o','o.order_id=a.order_id');
+            $this->db->where('unix_timestamp(ap.created_time) >= ', $daybgn);
+            $this->db->where('unix_timestamp(ap.created_time) <= ', $dayend);
+            $this->db->group_by('o.brand');
+            $orders = $this->db->get()->result_array();
+            foreach ($orders as $row) {
+                if ($row['brand']=='SR') {
+                    $dayresults['sr_orders']+=$row['cnt'];
+                    $dayresults['sr_total']+=$row['cnt'];
+                    $dayresults['total']+=$row['cnt'];
+                } else {
+                    $dayresults['sb_orders']+=$row['cnt'];
+                    $dayresults['sb_total']+=$row['cnt'];
+                    $dayresults['total']+=$row['cnt'];
+                }
+            }
+            $yearres[] = $dayresults;
+        }
+        $options = [
+            'lists' => $yearres,
+            'datebgn' => $datestart,
+            'dateend' => $dateend,
+        ];
+        $year_view = $this->load->view('messages/artupload_history_view', $options, TRUE);
         $email_conf = array(
             'protocol'=>'smtp',
             'smtp_host' => $this->config->item('sb_smtp_host'),
@@ -3871,9 +4011,9 @@ Class Artwork_model extends MY_Model
             'newline' => "\r\n",
         );
         $email_from = $this->config->item('sb_quote_user');
-        // $email_to='to_german@yahoo.com';
-        $email_to = $this->config->item('sage_email');
-        $mail_body = $this->load->view('messages/artupload_report_view', $results, TRUE);
+        $email_to='to_german@yahoo.com';
+        // $email_to = $this->config->item('sage_email');
+        $mail_body = $this->load->view('messages/artupload_report_view', ['data' => $results, 'weekview' => $week_view, 'yearview' => $year_view], TRUE);
         $this->load->library('email');
         $this->email->initialize($email_conf);
         $this->email->from($email_from);

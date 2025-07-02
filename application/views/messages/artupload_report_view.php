@@ -46,7 +46,7 @@
             <td colspan="4" style="text-align: center; font-size: 14px; font-weight: bold">Art Proofs Uploaded to Lift</td>
         </tr>
         <tr>
-            <td colspan="4" style="text-align: center; font-size: 13px; font-weight: bold"><?=$report_date?> Grand Total - <?=$total?></td>
+            <td colspan="4" style="text-align: center; font-size: 13px; font-weight: bold"><?=$data['report_date']?> Grand Total - <?=$data['total']?></td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: center; font-size: 13px; font-weight: bold">SB</td>
@@ -54,22 +54,26 @@
         </tr>
         <tr>
             <td>Orders:</td>
-            <td><?=$sb_orders?></td>
+            <td><?=$data['sb_orders']?></td>
             <td>Orders:</td>
-            <td><?=$sr_orders?></td>
+            <td><?=$data['sr_orders']?></td>
         </tr>
         <tr>
             <td>Leads:</td>
-            <td><?=$sb_proofs?></td>
+            <td><?=$data['sb_proofs']?></td>
             <td>Leads:</td>
-            <td><?=$sr_proofs?></td>
+            <td><?=$data['sr_proofs']?></td>
         </tr>
         <tr>
             <td style="font-weight: 600">Total</td>
-            <td style="font-weight: 600"><?=$sb_total?></td>
+            <td style="font-weight: 600"><?=$data['sb_total']?></td>
             <td style="font-weight: 600">Total</td>
-            <td style="font-weight: 600"><?=$sr_total?></td>
+            <td style="font-weight: 600"><?=$data['sr_total']?></td>
         </tr>
     </table>
+    <br>
+    <?=$weekview?>
+    <br>
+    <?=$yearview?>
 </body>
 <html>
