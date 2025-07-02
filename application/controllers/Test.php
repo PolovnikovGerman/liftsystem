@@ -4475,13 +4475,15 @@ class Test extends CI_Controller
                 }
                 $result['fulfilled'] = $result['shipped'] = '';
                 // Items
-                $this->db->select('GROUP_CONCAT(v.item_number) as item_number, GROUP_CONCAT(v.item_name) as item_name, sum(oi.item_qty) as item_qty, GROUP_CONCAT(oic.item_color) as itemcolor');
-                $this->db->from('ts_order_items oi')->join('v_itemsearch v','v.item_id=oi.item_id')->join('ts_order_itemcolors oic','oic.order_item_id = oi.order_item_id')->where('oi.order_id', $result['order_id']);
+                $this->db->select('GROUP_CONCAT(v.item_number) as item_number, GROUP_CONCAT(v.item_name) as item_name, sum(oi.item_qty) as item_qty');
+                $this->db->from('ts_order_items oi')->join('v_itemsearch v','v.item_id=oi.item_id')->where('oi.order_id', $result['order_id']);
                 $itemdat = $this->db->get()->row_array();
                 $result['item_number'] = $itemdat['item_number'];
                 $result['item_name'] = $itemdat['item_name'];
                 $result['item_qty'] = $itemdat['item_qty'];
-                $result['item_color'] = $itemdat['itemcolor'];
+                $this->db->select('GROUP_CONCAT(oic.item_color) as itemcolor')->from('ts_order_items oi')->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
+                $colordat = $this->db->where('oi.order_id', $result['order_id'])->get()->row_array();
+                $result['item_color'] = $colordat['itemcolor'];
                 // Fullfillment
                 $this->db->select('count(amount_id) as cnt, sum(shipped) as shipped')->from('ts_order_amounts')->where('order_id', $result['order_id']);
                 $fulfil = $this->db->get()->row_array();
