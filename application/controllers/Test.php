@@ -4475,12 +4475,13 @@ class Test extends CI_Controller
                 }
                 $result['fulfilled'] = $result['shipped'] = '';
                 // Items
-                $this->db->select('GROUP_CONCAT(v.item_number) as item_number, GROUP_CONCAT(v.item_name) as item_name, sum(oi.item_qty) as item_qty');
-                $this->db->from('ts_order_items oi')->join('v_itemsearch v','v.item_id=oi.item_id')->where('oi.order_id', $result['order_id']);
+                $this->db->select('GROUP_CONCAT(v.item_number) as item_number, GROUP_CONCAT(v.item_name) as item_name, sum(oi.item_qty) as item_qty, GROUP_CONCAT(oic.item_color) as itemcolor');
+                $this->db->from('ts_order_items oi')->join('v_itemsearch v','v.item_id=oi.item_id')->join('ts_order_itemcolors oic','oic.order_item_id = oi.order_item_id')->where('oi.order_id', $result['order_id']);
                 $itemdat = $this->db->get()->row_array();
                 $result['item_number'] = $itemdat['item_number'];
                 $result['item_name'] = $itemdat['item_name'];
                 $result['item_qty'] = $itemdat['item_qty'];
+                $result['item_color'] = $itemdat['itemcolor'];
                 // Fullfillment
                 $this->db->select('count(amount_id) as cnt, sum(shipped) as shipped')->from('ts_order_amounts')->where('order_id', $result['order_id']);
                 $fulfil = $this->db->get()->row_array();
@@ -4516,7 +4517,7 @@ class Test extends CI_Controller
             $this->load->config('uploader');
             $filenorm = $this->config->item('upload_path_preload').$brand.'_orders.xlsx';
             @unlink($filenorm);
-            $titles = ['Date','Order #','Customer','Qty','Item #','Item Name','Approved?','% Fulfilled','% Shipping','Paid?'];
+            $titles = ['Date','Order #','Customer','Qty','Item #','Item Name','Item Color','Approved?','% Fulfilled','% Shipping','Paid?'];
             $numpp = 1;
             $ncel = 1;
             $cols=[];
@@ -4542,10 +4543,11 @@ class Test extends CI_Controller
                 $sheet->setCellValue('D'.$numpp, $order['item_qty']);
                 $sheet->setCellValue('E'.$numpp, $order['item_number']);
                 $sheet->setCellValue('F'.$numpp, $order['item_name']);
-                $sheet->setCellValue('G'.$numpp, $order['approved']);
-                $sheet->setCellValue('H'.$numpp, $order['fulfilled']);
-                $sheet->setCellValue('I'.$numpp, $order['shipped']);
-                $sheet->setCellValue('J'.$numpp, $order['balance']);
+                $sheet->setCellValue('G'.$numpp, $order['item_color']);
+                $sheet->setCellValue('H'.$numpp, $order['approved']);
+                $sheet->setCellValue('I'.$numpp, $order['fulfilled']);
+                $sheet->setCellValue('J'.$numpp, $order['shipped']);
+                $sheet->setCellValue('K'.$numpp, $order['balance']);
                 $numpp++;
             }
             $writer = new Xlsx($spreadsheet); // instantiate Xlsx
