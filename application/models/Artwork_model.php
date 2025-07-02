@@ -3864,9 +3864,9 @@ Class Artwork_model extends MY_Model
         $this->db->from('ts_artwork_proofs ap');
         $this->db->where('unix_timestamp(ap.created_time) >= ', $weekstart);
         $this->db->where('unix_timestamp(ap.created_time) < ', $dateend);
-        $this->db->having('cnt > ',0);
+        $this->db->group_by('upldat');
+        $this->db->order_by('ap.created_time','desc');
         $weeks = $this->db->get()->result_array();
-        echo $this->db->last_query().PHP_EOL;
         $weekdat = [];
         foreach ($weeks as $week) {
             $daybgn = strtotime($week['upldat']);
