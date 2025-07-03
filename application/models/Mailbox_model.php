@@ -91,7 +91,6 @@ class Mailbox_model extends MY_Model
         $imapdat = $this->_create_imap_client($postbox);
         $out['msg'] = $imapdat['msg'];
         if ($imapdat['result']==$this->success_result) {
-            $out['result'] = $this->success_result;
             $imap = $imapdat['imap'];
             $imap->selectFolder($folder['folder_name']);
             $overallMessages = $imap->countMessages();
@@ -103,7 +102,10 @@ class Mailbox_model extends MY_Model
             // $out['unread'] = $unreadMessages;
             $briefinfos = $imap->getBriefInfoMessages();
             foreach ($briefinfos as $briefinfo) {
+                echo 'Brief Info '.$briefinfo['id'].PHP_EOL;
                 $message = $imap->getMessage($briefinfo['id']);
+                var_dump($message);
+                return $out;
                 echo 'Manage msg '.$briefinfo['id'].' Messaage ID '.$message->header->message_id.PHP_EOL;
                 // echo 'UDate '.$message->header->udate.PHP_EOL;
                 $postmsgid = $message->header->message_id;
@@ -165,6 +167,7 @@ class Mailbox_model extends MY_Model
                     $this->db->update('postbox_messages');
                 }
             }
+            $out['result'] = $this->success_result;
         }
         return $out;
     }
