@@ -104,8 +104,6 @@ class Mailbox_model extends MY_Model
             foreach ($briefinfos as $briefinfo) {
                 echo 'Brief Info '.$briefinfo['id'].PHP_EOL;
                 $message = $imap->getMessage($briefinfo['id']);
-                var_dump($message);
-                return $out;
                 echo 'Manage msg '.$briefinfo['id'].' Messaage ID '.$message->header->message_id.PHP_EOL;
                 // echo 'UDate '.$message->header->udate.PHP_EOL;
                 $postmsgid = $message->header->message_id;
