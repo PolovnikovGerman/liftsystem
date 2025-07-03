@@ -163,6 +163,9 @@ $(document).ready(function () {
         var url = $(this).data('menulink');
         window.location.href=url;
     })
+    $("#mailbox").unbind('click').click(function(){
+        window.location.href='/mailbox';
+    });
     // Create timer
     timerId = setTimeout('ordertotalsparse()', timeLapse);
     jQuery.balloon.init();

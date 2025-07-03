@@ -60,12 +60,19 @@
             <div class="infotext">Inventory</div>
         </div>
         <?php endif; ?>
-        <?php if ($adminchk) : ?>
-        <div class="infoalerts" title="Admin">
-            <div class="alerticon admin" id="admin">
-                <img src="/img/icons/cog_white.svg" alt="Admin" class="img-responsive"/>
+        <?php if ($mailboxchk) : ?>
+            <div class="infoalerts" title="PostBox">
+                <div class="alerticon mailbox" id="mailbox">
+                    <i class="fa fa-envelope"></i>
+                </div>
             </div>
-        </div>
+        <?php endif; ?>
+        <?php if ($adminchk) : ?>
+            <div class="infoalerts" title="Admin">
+                <div class="alerticon admin" id="admin">
+                    <img src="/img/icons/cog_white.svg" alt="Admin" class="img-responsive"/>
+                </div>
+            </div>
         <?php endif; ?>
 
     </div>
