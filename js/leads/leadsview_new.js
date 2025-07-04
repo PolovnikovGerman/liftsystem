@@ -120,6 +120,8 @@ function init_leadmanage_content() {
         $("input.lead_searchinput").val('');
         var usr = $(".leadsearchusr").data('user');
         $("#leadviewuser").val(usr);
+        $("#leadviewshowclosed").val(0);
+        $(".leads_viewclosedflag").empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>');
         search_leadsdata();
         show_leadpriority();
         show_leadtasks();
