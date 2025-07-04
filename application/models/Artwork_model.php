@@ -3809,50 +3809,66 @@ Class Artwork_model extends MY_Model
     {
         $results = [
             'sb_orders' => 0,
+            'sb_order_custom' => 0,
             'sb_proofs' => 0,
+            'sb_proofs_custom' => 0,
             'sb_total' => 0,
             'sr_orders' => 0,
+            'sr_order_custom' => 0,
             'sr_proofs' => 0,
+            'sr_proofs_custom' => 0,
             'sr_total' => 0,
             'total' => 0,
             'report_date' => date('m/d/Y', $datebgn),
         ];
         // Art Proof
-        $this->db->select('e.brand, count(ap.artwork_proof_id) as cnt');
+        $this->db->select('e.brand, a.item_id, count(ap.artwork_proof_id) as cnt');
         $this->db->from('ts_artwork_proofs ap');
         $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
         $this->db->join('ts_emails e','e.email_id=a.mail_id');
         $this->db->where('unix_timestamp(ap.created_time) >= ', $datebgn);
         $this->db->where('unix_timestamp(ap.created_time) < ', $dateend);
-        $this->db->group_by('e.brand');
+        $this->db->group_by('e.brand, a.item_id');
         $mailres = $this->db->get()->result_array();
         foreach ($mailres as $item) {
             if ($item['brand']=='SR') {
                 $results['sr_proofs']+=$item['cnt'];
+                if ($item['item_id']==$this->config->item('custom_id')) {
+                    $results['sr_proofs_custom']+=$item['cnt'];
+                }
                 $results['sr_total']+=$item['cnt'];
                 $results['total']+=$item['cnt'];
             } else {
                 $results['sb_proofs']+=$item['cnt'];
+                if ($item['item_id']==$this->config->item('custom_id')) {
+                    $results['sb_proofs_custom']+=$item['cnt'];
+                }
                 $results['sb_total']+=$item['cnt'];
                 $results['total']+=$item['cnt'];
             }
         }
         // Orders
-        $this->db->select('o.brand, count(ap.artwork_proof_id) as cnt');
+        $this->db->select('o.brand, o.item_id, count(ap.artwork_proof_id) as cnt');
         $this->db->from('ts_artwork_proofs ap');
         $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
         $this->db->join('ts_orders o','o.order_id=a.order_id');
         $this->db->where('unix_timestamp(ap.created_time) >= ', $datebgn);
         $this->db->where('unix_timestamp(ap.created_time) < ', $dateend);
-        $this->db->group_by('o.brand');
+        $this->db->group_by('o.brand, o.item_id');
         $orders = $this->db->get()->result_array();
         foreach ($orders as $item) {
             if ($item['brand']=='SR') {
                 $results['sr_orders']+=$item['cnt'];
+                if ($item['item_id']==$this->config->item('custom_id')) {
+                    $results['sr_order_custom']+=$item['cnt'];
+                }
                 $results['sr_total']+=$item['cnt'];
                 $results['total']+=$item['cnt'];
             } else {
                 $results['sb_orders']+=$item['cnt'];
+                if ($item['item_id']==$this->config->item('custom_id')) {
+                    $results['sb_order_custom']+=$item['cnt'];
+                }
                 $results['sb_total']+=$item['cnt'];
                 $results['total']+=$item['cnt'];
             }
@@ -3872,49 +3888,65 @@ Class Artwork_model extends MY_Model
             $dayend = strtotime($week['upldat'] .' 23:59:59');
             $dayresults = [
                 'sb_orders' => 0,
+                'sb_order_custom' => 0,
                 'sb_proofs' => 0,
+                'sb_proofs_custom' => 0,
                 'sb_total' => 0,
                 'sr_orders' => 0,
+                'sr_order_custom' => 0,
                 'sr_proofs' => 0,
+                'sr_proofs_custom' => 0,
                 'sr_total' => 0,
                 'total' => 0,
                 'report_date' => date('D m/d/Y', $daybgn),
             ];
-            $this->db->select('e.brand, count(ap.artwork_proof_id) as cnt');
+            $this->db->select('e.brand, a.item_id, count(ap.artwork_proof_id) as cnt');
             $this->db->from('ts_artwork_proofs ap');
             $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
             $this->db->join('ts_emails e','e.email_id=a.mail_id');
             $this->db->where('unix_timestamp(ap.created_time) >= ', $daybgn);
             $this->db->where('unix_timestamp(ap.created_time) <= ', $dayend);
-            $this->db->group_by('e.brand');
+            $this->db->group_by('e.brand, a.item_id');
             $mailres = $this->db->get()->result_array();
             foreach ($mailres as $row) {
                 if ($row['brand']=='SR') {
                     $dayresults['sr_proofs']+=$row['cnt'];
+                    if ($row['item_id']==$this->config->item('custom_id')) {
+                        $dayresults['sr_proofs_custom']+=$row['cnt'];
+                    }
                     $dayresults['sr_total']+=$row['cnt'];
                     $dayresults['total']+=$row['cnt'];
                 } else {
                     $dayresults['sb_proofs']+=$row['cnt'];
+                    if ($row['item_id']==$this->config->item('custom_id')) {
+                        $dayresults['sb_proofs_custom']+=$row['cnt'];
+                    }
                     $dayresults['sb_total']+=$row['cnt'];
                     $dayresults['total']+=$row['cnt'];
                 }
             }
             // Orders
-            $this->db->select('o.brand, count(ap.artwork_proof_id) as cnt');
+            $this->db->select('o.brand, o.item_id, count(ap.artwork_proof_id) as cnt');
             $this->db->from('ts_artwork_proofs ap');
             $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
             $this->db->join('ts_orders o','o.order_id=a.order_id');
             $this->db->where('unix_timestamp(ap.created_time) >= ', $daybgn);
             $this->db->where('unix_timestamp(ap.created_time) <= ', $dayend);
-            $this->db->group_by('o.brand');
+            $this->db->group_by('o.brand, o.item_id');
             $orders = $this->db->get()->result_array();
             foreach ($orders as $row) {
                 if ($row['brand']=='SR') {
                     $dayresults['sr_orders']+=$row['cnt'];
+                    if ($row['item_id']==$this->config->item('custom_id')) {
+                        $dayresults['sr_order_custom']+=$row['cnt'];
+                    }
                     $dayresults['sr_total']+=$row['cnt'];
                     $dayresults['total']+=$row['cnt'];
                 } else {
                     $dayresults['sb_orders']+=$row['cnt'];
+                    if ($row['item_id']==$this->config->item('custom_id')) {
+                        $dayresults['sb_order_custom']+=$row['cnt'];
+                    }
                     $dayresults['sb_total']+=$row['cnt'];
                     $dayresults['total']+=$row['cnt'];
                 }
@@ -3942,49 +3974,65 @@ Class Artwork_model extends MY_Model
             $dayend = strtotime($item['upldat'] .' 23:59:59');
             $dayresults = [
                 'sb_orders' => 0,
+                'sb_order_custom' => 0,
                 'sb_proofs' => 0,
+                'sb_proofs_custom' => 0,
                 'sb_total' => 0,
                 'sr_orders' => 0,
+                'sr_order_custom' => 0,
                 'sr_proofs' => 0,
+                'sr_proofs_custom' => 0,
                 'sr_total' => 0,
                 'total' => 0,
                 'report_date' => date('D m/d/Y', $dayend),
             ];
-            $this->db->select('e.brand, count(ap.artwork_proof_id) as cnt');
+            $this->db->select('e.brand, a.item_id, count(ap.artwork_proof_id) as cnt');
             $this->db->from('ts_artwork_proofs ap');
             $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
             $this->db->join('ts_emails e','e.email_id=a.mail_id');
             $this->db->where('unix_timestamp(ap.created_time) >= ', $daybgn);
             $this->db->where('unix_timestamp(ap.created_time) <= ', $dayend);
-            $this->db->group_by('e.brand');
+            $this->db->group_by('e.brand, a.item_id');
             $mailres = $this->db->get()->result_array();
             foreach ($mailres as $row) {
                 if ($row['brand']=='SR') {
                     $dayresults['sr_proofs']+=$row['cnt'];
+                    if ($row['item_id']==$this->config->item('custom_id')) {
+                        $dayresults['sr_proofs_custom']+=$row['cnt'];
+                    }
                     $dayresults['sr_total']+=$row['cnt'];
                     $dayresults['total']+=$row['cnt'];
                 } else {
                     $dayresults['sb_proofs']+=$row['cnt'];
+                    if ($row['item_id']==$this->config->item('custom_id')) {
+                        $dayresults['sb_proofs_custom']+=$row['cnt'];
+                    }
                     $dayresults['sb_total']+=$row['cnt'];
                     $dayresults['total']+=$row['cnt'];
                 }
             }
             // Orders
-            $this->db->select('o.brand, count(ap.artwork_proof_id) as cnt');
+            $this->db->select('o.brand, o.item_id, count(ap.artwork_proof_id) as cnt');
             $this->db->from('ts_artwork_proofs ap');
             $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
             $this->db->join('ts_orders o','o.order_id=a.order_id');
             $this->db->where('unix_timestamp(ap.created_time) >= ', $daybgn);
             $this->db->where('unix_timestamp(ap.created_time) <= ', $dayend);
-            $this->db->group_by('o.brand');
+            $this->db->group_by('o.brand, o.item_id');
             $orders = $this->db->get()->result_array();
             foreach ($orders as $row) {
                 if ($row['brand']=='SR') {
                     $dayresults['sr_orders']+=$row['cnt'];
+                    if ($row['item_id']==$this->config->item('custom_id')) {
+                        $dayresults['sr_order_custom']+=$row['cnt'];
+                    }
                     $dayresults['sr_total']+=$row['cnt'];
                     $dayresults['total']+=$row['cnt'];
                 } else {
                     $dayresults['sb_orders']+=$row['cnt'];
+                    if ($row['item_id']==$this->config->item('custom_id')) {
+                        $dayresults['sb_order_custom']+=$row['cnt'];
+                    }
                     $dayresults['sb_total']+=$row['cnt'];
                     $dayresults['total']+=$row['cnt'];
                 }
@@ -4010,8 +4058,8 @@ Class Artwork_model extends MY_Model
             'newline' => "\r\n",
         );
         $email_from = $this->config->item('sb_quote_user');
-        // $email_to='to_german@yahoo.com';
-        $email_to = $this->config->item('sage_email');
+        $email_to = 'to_german@yahoo.com';
+        // $email_to = $this->config->item('sage_email');
         $mail_body = $this->load->view('messages/artupload_report_view', ['data' => $results, 'weekview' => $week_view, 'yearview' => $year_view], TRUE);
         $this->load->library('email');
         $this->email->initialize($email_conf);
