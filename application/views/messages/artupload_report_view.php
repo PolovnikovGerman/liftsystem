@@ -38,6 +38,10 @@
             height: 24px;
             line-height: 24px;
         }
+        table.historyupl td {
+            border-collapse: collapse;
+            border: 1px solid #000000;
+        }
     </style>
 </head>
 <body>
@@ -59,10 +63,22 @@
             <td><?=$data['sr_orders']?></td>
         </tr>
         <tr>
+            <td>Incl Custom:</td>
+            <td><?=$data['sb_order_custom']?></td>
+            <td>Incl Custom:</td>
+            <td><?=$data['sr_order_custom']?></td>
+        </tr>
+        <tr>
             <td>Leads:</td>
             <td><?=$data['sb_proofs']?></td>
             <td>Leads:</td>
             <td><?=$data['sr_proofs']?></td>
+        </tr>
+        <tr>
+            <td>Incl Custom:</td>
+            <td><?=$data['sb_proofs_custom']?></td>
+            <td>Incl Custom:</td>
+            <td><?=$data['sr_proofs_custom']?></td>
         </tr>
         <tr>
             <td style="font-weight: 600">Total</td>
