@@ -4648,6 +4648,9 @@ class Test extends CI_Controller
                 $result['item_number'] = $itemdat['item_number'];
                 $result['item_name'] = $itemdat['item_name'];
                 $result['item_qty'] = $itemdat['item_qty'];
+                $this->db->select('GROUP_CONCAT(oic.item_color) as itemcolor')->from('ts_order_items oi')->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
+                $colordat = $this->db->where('oi.order_id', $result['order_id'])->get()->row_array();
+                $result['item_color'] = $colordat['itemcolor'];
                 // Fullfillment
                 $this->db->select('count(amount_id) as cnt, sum(shipped) as shipped')->from('ts_order_amounts')->where('order_id', $result['order_id']);
                 $fulfil = $this->db->get()->row_array();
@@ -4683,7 +4686,7 @@ class Test extends CI_Controller
             $this->load->config('uploader');
             $filenorm = $this->config->item('upload_path_preload').$brand.'_orders.xlsx';
             @unlink($filenorm);
-            $titles = ['Date','Order #','Customer','Qty','Item #','Item Name','Approved?','% Fulfilled','% Shipping','Paid?'];
+            $titles = ['Date','Order #','Customer','Qty','Item #','Item Name','Item Color','Approved?','% Fulfilled','% Shipping','Paid?'];
             $numpp = 1;
             $ncel = 1;
             $cols=[];
@@ -4709,10 +4712,11 @@ class Test extends CI_Controller
                 $sheet->setCellValue('D'.$numpp, $order['item_qty']);
                 $sheet->setCellValue('E'.$numpp, $order['item_number']);
                 $sheet->setCellValue('F'.$numpp, $order['item_name']);
-                $sheet->setCellValue('G'.$numpp, $order['approved']);
-                $sheet->setCellValue('H'.$numpp, $order['fulfilled']);
-                $sheet->setCellValue('I'.$numpp, $order['shipped']);
-                $sheet->setCellValue('J'.$numpp, $order['balance']);
+                $sheet->setCellValue('G'.$numpp, $order['item_color']);
+                $sheet->setCellValue('H'.$numpp, $order['approved']);
+                $sheet->setCellValue('I'.$numpp, $order['fulfilled']);
+                $sheet->setCellValue('J'.$numpp, $order['shipped']);
+                $sheet->setCellValue('K'.$numpp, $order['balance']);
                 $numpp++;
             }
             $writer = new Xlsx($spreadsheet); // instantiate Xlsx
@@ -4721,12 +4725,124 @@ class Test extends CI_Controller
         }
     }
 
-    public function generate_quote()
+    public function leadsreport()
     {
-        $mail_id = 27425; // 27415;
-        $this->load->model('email_model');
-        // $this->email_model->generate_quota($mail_id);
-        $res = $this->email_model->newquote_generate($mail_id);
-    }
+        $reportbgn = strtotime('2018-01-01');
+        $this->db->select('lu.user_id, u.user_leadname, count(l.lead_id) as cnt');
+        $this->db->from('ts_lead_users lu');
+        $this->db->join('users u','u.user_id = lu.user_id');
+        $this->db->join('ts_leads l','l.lead_id=lu.lead_id');
+        $this->db->where('unix_timestamp(l.update_date) >= ', $reportbgn);
+        $this->db->group_by('lu.user_id, u.user_leadname');
+        $leadusers = $this->db->get()->result_array();
+        $startdate = strtotime('2025-06-23');
+        $enddate = strtotime('+7 day', $startdate)-1;
+        $out=[];
+        while (1==1) {
+            // echo 'Start '.date('d.m.Y H:i:s', $startdate).' - End '.date('d.m.Y H:i:s', $enddate).PHP_EOL;
+            $this->db->select('u.user_leadname as username, count(l.lead_id) as cnt');
+            $this->db->from('ts_lead_users tlu');
+            $this->db->join('users u','on u.user_id = tlu.user_id');
+            $this->db->join('ts_leads l','l.lead_id=tlu.lead_id');
+            $this->db->where('unix_timestamp(create_date) >= ', $startdate)->where('unix_timestamp(create_date) <= ', $enddate);
+            $this->db->group_by('u.user_leadname');
+            $crdat = $this->db->get()->result_array();
+            $repl = '';
+            foreach ($crdat as $item) {
+                $repl.=$item['username'].', ';
+            }
+            $repl = substr($repl,0,-2);
+            $this->db->select('count(lead_id) as cnt')->from('ts_leads')->where('unix_timestamp(create_date) >= ', $startdate)->where('unix_timestamp(create_date) <= ', $enddate);
+            $newdat = $this->db->get()->row_array();
+            $this->db->select('count(lead_id) as cnt')->from('ts_leads')->where('unix_timestamp(update_date) >= ', $startdate)->where('unix_timestamp(update_date) <= ', $enddate);
+            $updat = $this->db->get()->row_array();
+            $out[] = [
+                'period' => date('m/d/Y', $startdate).' - '.date('m/d/Y', $enddate),
+                'replica' => $repl,
+                'updleads' => $updat['cnt'],
+                'newleads' => $newdat['cnt'],
+            ];
+            // new dates
+            $enddate = $startdate - 1;
+            $startdate = strtotime('-7 day', $startdate);
 
+            if ($enddate <= strtotime('2018-01-01')) {
+                break;
+            }
+        }
+        echo count($out).PHP_EOL;
+        // Build XLS
+        $this->load->config('uploader');
+        $filenorm = $this->config->item('upload_path_preload').'leads_perweek.xlsx';
+        @unlink($filenorm);
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Leads');
+        $sheet->setCellValue('A1', 'Period');
+        $sheet->setCellValue('B1','Sales Repl');
+        $sheet->setCellValue('C1','# of worked leads');
+        $sheet->setCellValue('D1','New Leads');
+        $numpp = 2;
+        foreach ($out as $item) {
+            $sheet->setCellValue('A'.$numpp, $item['period']);
+            $sheet->setCellValue('B'.$numpp, $item['replica']);
+            $sheet->setCellValue('C'.$numpp, $item['updleads']);
+            $sheet->setCellValue('D'.$numpp, $item['newleads']);
+            $numpp++;
+        }
+        // Userss
+        $i=1;
+        foreach ($leadusers as $user) {
+            $startdate = strtotime('2025-06-23');
+            $enddate = strtotime('+7 day', $startdate)-1;
+            $out=[];
+            while (1==1) {
+                // echo 'Start ' . date('d.m.Y H:i:s', $startdate) . ' - End ' . date('d.m.Y H:i:s', $enddate) . PHP_EOL;
+                $this->db->select('count(l.lead_id) as cnt')->from('ts_leads l');
+                $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
+                $this->db->where('unix_timestamp(l.create_date) >= ', $startdate)->where('unix_timestamp(l.create_date) <= ', $enddate);
+                $this->db->where('lu.user_id', $user['user_id']);
+                $newdat = $this->db->get()->row_array();
+                $this->db->select('count(l.lead_id) as cnt')->from('ts_leads l');
+                $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
+                $this->db->where('unix_timestamp(l.update_date) >= ', $startdate)->where('unix_timestamp(l.update_date) <= ', $enddate);
+                $this->db->where('lu.user_id', $user['user_id']);
+                $updat = $this->db->get()->row_array();
+                if ($newdat['cnt']+$updat['cnt'] > 0) {
+                    $out[] = [
+                        'period' => date('m/d/Y', $startdate) . ' - ' . date('m/d/Y', $enddate),
+                        'updleads' => $updat['cnt'],
+                        'newleads' => $newdat['cnt'],
+                    ];
+                }
+                // new dates
+                $enddate = $startdate - 1;
+                $startdate = strtotime('-7 day', $startdate);
+                if ($enddate <= strtotime('2018-01-01')) {
+                    break;
+                }
+            }
+            echo $user['user_leadname'].' found '.count($out).PHP_EOL;
+            // Add Tab
+            $spreadsheet->createSheet();
+            $sheet = $spreadsheet->setActiveSheetIndex($i);
+            echo 'Sheet ACTIVE '.$i.PHP_EOL;
+            $sheet->setTitle($user['user_leadname'].' Leads');
+            $sheet->setCellValue('A1', 'Period');
+            $sheet->setCellValue('B1','# of worked leads');
+            $sheet->setCellValue('C1','New Leads');
+            $numpp = 2;
+            foreach ($out as $item) {
+                $sheet->setCellValue('A'.$numpp, $item['period']);
+                $sheet->setCellValue('B'.$numpp, $item['updleads']);
+                $sheet->setCellValue('C'.$numpp, $item['newleads']);
+                $numpp++;
+            }
+            $i++;
+        }
+        $sheet = $spreadsheet->setActiveSheetIndex(0);
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($filenorm);    // download file
+        echo 'File '.$filenorm.' ready'.PHP_EOL;
+    }
 }

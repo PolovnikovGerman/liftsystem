@@ -1071,4 +1071,13 @@ Class Cronjob extends CI_Controller
         $this->load->model('items_model');
         $this->items_model->merchantcenter_items('BT');
     }
+
+    public function artuploadreport()
+    {
+        $start = strtotime(date('Y-m-d') . ' - 1 day');
+        $datebgn = strtotime(date('Y-m-d',$start));
+        $dateend = strtotime(date('Y-m-d'));
+        $this->load->model('artwork_model');
+        $this->artwork_model->artproof_report($datebgn, $dateend);
+    }
 }

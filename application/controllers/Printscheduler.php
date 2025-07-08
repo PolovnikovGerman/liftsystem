@@ -233,7 +233,7 @@ class Printscheduler extends MY_Controller
             $brand = 'ALL';
             if (!empty($order_id) && !empty($type)) {
                 // Update print_ready
-                $res = $this->printscheduler_model->stockdonecheck($order_id, $type);
+                $res = $this->printscheduler_model->stockdonecheck($order_id, $type, $this->USR_ID);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
