@@ -3268,7 +3268,7 @@ Class Orders_model extends MY_Model
                     $this->db->where('order_id', $row['order_id']);
                     $owndat = $this->db->get()->row_array();
                     if (in_array('balance', $fields)) {
-                        $row['balance']=$owndat['balance'];
+                        $row['balance']=ifset($owndat,'balance','');
                     }
                     if (in_array('payment_system', $fields)) {
                         $stype = '';
