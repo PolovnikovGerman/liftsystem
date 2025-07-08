@@ -4684,21 +4684,33 @@ class Test extends CI_Controller
         $this->load->model('mailbox_model');
         $postboxes = $this->mailbox_model->get_mailboxes();
         foreach ($postboxes as $postbox) {
-            // Get folders
-            $folddat = $this->mailbox_model->get_postbox_folders($postbox);
-            $errormsg = $folddat['msg'];
-            if ($folddat['result']==1) {
-                $errormsg = '';
-                $folders = $folddat['folders'];
-                // Read messages from folder
-                foreach ($folders as $folder) {
-                    echo 'Read messages from '.$folder['folder_name'].PHP_EOL;
-                    $msgdat = $this->mailbox_model->read_folders_msgs($postbox, $folder);
+            if ($postbox['postbox_passwd']) {
+                // Get folders
+                $folddat = $this->mailbox_model->get_postbox_folders($postbox);
+                $errormsg = $folddat['msg'];
+                if ($folddat['result']==1) {
+                    $errormsg = '';
+                    $folders = $folddat['folders'];
+                    // Read messages from folder
+                    foreach ($folders as $folder) {
+                        echo 'Read messages from '.$folder['folder_name'].PHP_EOL;
+                        $msgdat = $this->mailbox_model->read_folders_msgs($postbox, $folder);
+                    }
+                } else {
+                    echo $errormsg; die();
                 }
-            } else {
-                echo $errormsg; die();
             }
         }
+    }
+
+    public function testpostmessage()
+    {
+        $message_id = 12;
+        $folder_id = 70;
+        $postbox_id = 1;
+        $this->load->model('mailbox_model');
+        $this->mailbox_model->message_details($postbox_id, $folder_id, $message_id);
+        // $this->mailbox_model->messages_textdetails($postbox_id); // , $folder_id, $message_id);
     }
 
 }

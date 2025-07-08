@@ -11,8 +11,8 @@ class Mailbox_model extends MY_Model
     var $mainfolders = [
         'Inbox',
         'Unread',
-        'Starred',
         'Draft',
+//        'Starred',
         'Sent',
         'Bulk',
         'Archive',
@@ -103,7 +103,7 @@ class Mailbox_model extends MY_Model
             $briefinfos = $imap->getBriefInfoMessages();
             foreach ($briefinfos as $briefinfo) {
                 echo 'Brief Info '.$briefinfo['id'].PHP_EOL;
-                $message = $imap->getMessage($briefinfo['id']);
+                $message = @$imap->getMessage($briefinfo['id']);
                 echo 'Manage msg '.$briefinfo['id'].' Messaage ID '.$message->header->message_id.PHP_EOL;
                 // echo 'UDate '.$message->header->udate.PHP_EOL;
                 $postmsgid = $message->header->message_id;
@@ -111,8 +111,22 @@ class Mailbox_model extends MY_Model
                 $this->db->select('count(message_id) as cnt, max(message_id) as msgid')->from('postbox_messages')->where('postmessage_id', $postmsgid);
                 $msgchk = $this->db->get()->row_array();
                 if ($msgchk['cnt']==0) {
+
+//                    $info = $message->message->info;
+//                    if (count($info)>0) {
+//
+//                        echo 'Part 0 - '.$info[0]->structure->subtype.PHP_EOL;
+//                        // var_dump($info[0]->body);
+//                        if (count($info)>1) {
+//                            echo 'Part 1 - '.$info[1]->structure->subtype.PHP_EOL;
+//                            // var_dump($info[1]->body);
+//                        }
+//                        echo 'Subject '.$message->header->subject.PHP_EOL;
+//                    }
+
                     // New Message
                     $this->db->set('folder_id', $folder['folder_id']);
+                    $this->db->set('message_msgno', $message->header->msgno);
                     $this->db->set('message_subject', $message->header->subject);
                     $this->db->set('message_from', str_replace('"','',$message->header->from));
                     $this->db->set('message_to', $message->header->to);
@@ -126,11 +140,8 @@ class Mailbox_model extends MY_Model
                     $this->db->set('message_seen', $message->header->seen);
                     $this->db->set('message_draft', $message->header->draft);
                     $this->db->set('message_udate', $message->header->udate);
-                    if (isset($message->message->info[1]->body)) {
-                        $this->db->set('message_text', $message->message->info[1]->body);
-                    } else {
-                        $this->db->set('message_text', $message->message->info[0]->body);
-                    }
+                    $this->db->set('message_body', $message->message->html);
+                    $this->db->set('message_text', $message->message->plain);
                     $this->db->insert('postbox_messages');
                     $msgid = $this->db->insert_id();
                     $attachments = $message->attachments;
@@ -284,12 +295,38 @@ class Mailbox_model extends MY_Model
         return $out;
     }
     // Output functions
-    public function get_user_mailboxes($usr_id, $brand='ALL')
+    public function get_user_mailboxes($usr_id, $user_role, $brand='ALL')
     {
-        $this->db->select('*')->from('user_postboxes')->where('user_id', $usr_id);
+        $this->db->select('*')->from('user_postboxes');
+        if ($user_role=='masteradmin') {
+        } else {
+            $this->db->where('user_id', $usr_id);
+        }
+        if ($brand!='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB','BT']);
+            }
+        }
         // Add select by brand
         $results = $this->db->get()->result_array();
         $out = [];
+        if ($user_role=='masteradmin') {
+            foreach ($results as $result) {
+                if ($result['user_id']==$usr_id) {
+                    $out[] = $result;
+                    break;
+                }
+            }
+            foreach ($results as $result) {
+                if ($result['user_id']!=$usr_id) {
+                    $out[] = $result;
+                }
+            }
+            $results = $out;
+            $out = [];
+        }
         foreach ($results as $result) {
             $mailtitle = explode('@',$result['postbox_user']);
             $result['postbox_title'] = $mailtitle[0].'@';
@@ -324,6 +361,7 @@ class Mailbox_model extends MY_Model
                             'active' => $active,
                             'empty' => $folder['cnt']==0 ? 1 : 0,
                             'cnt' => short_number($folder['cnt'],1),
+                            'class' => 'btn-'.strtolower($folder['folder_name']),
                         ];
                         if ($active==1) {
                             $active_folder = $folder['folder_id'];
@@ -344,6 +382,7 @@ class Mailbox_model extends MY_Model
                         'active' => $active==1 ? 'active' : '',
                         'empty' => $folder['cnt']==0 ? 1 : 0,
                         'cnt' => short_number($folder['cnt'],1),
+                        'class' => 'btn-'.strtolower($folder['folder_name']),
                     ];
                 }
             }
@@ -419,7 +458,6 @@ class Mailbox_model extends MY_Model
                             }
                             $out['folders'] = $newfolders;
                         }
-
                     }
                 }
             }
@@ -819,6 +857,38 @@ class Mailbox_model extends MY_Model
                         }
                     }
                     $out['result'] = $this->success_result;
+                    $folders = $this->_folders_statistic($postbox_id);
+                    $newfolders = [];
+                    foreach ($this->mainfolders as $keyfold) {
+                        foreach ($folders as $folder) {
+                            if ($folder['folder_name']==$keyfold) {
+                                $newfolders[] = [
+                                    'folder_id' => $folder['folder_id'],
+                                    'folder_name' => $folder['folder_name'],
+                                    'main' => 1,
+                                    'active' => ($folder['folder_id']==$folder_id ? 1 : 0),
+                                    'empty' => $folder['cnt']==0 ? 1 : 0,
+                                    'cnt' => short_number($folder['cnt'],1),
+                                    'class' => 'btn-'.strtolower($folder['folder_name']),
+                                ];
+                                break;
+                            }
+                        }
+                    }
+                    foreach ($folders as $folder) {
+                        if (!in_array($folder['folder_name'], $this->mainfolders)) {
+                            $newfolders[] = [
+                                'folder_id' => $folder['folder_id'],
+                                'folder_name' => $folder['folder_name'],
+                                'main' => 0,
+                                'active' => ($folder['folder_id']==$folder_id ? 1 : 0),
+                                'empty' => $folder['cnt']==0 ? 1 : 0,
+                                'cnt' => short_number($folder['cnt'],1),
+                                'class' => 'btn-'.strtolower($folder['folder_name']),
+                            ];
+                        }
+                    }
+                    $out['folders'] = $newfolders;
                 }
             }
         }
@@ -845,19 +915,19 @@ class Mailbox_model extends MY_Model
         $this->db->select('count(m.message_id) as cnt')->from('postbox_messages m')->join('postbox_folders f', 'f.folder_id=m.folder_id')->where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_seen'=>0,'m.message_deleted' => 0]);
         $newmsg = $this->db->get()->row_array();
         // Calc stared
-        $this->db->select('count(m.message_id) as cnt')->from('postbox_messages m')->join('postbox_folders f', 'f.folder_id=m.folder_id')->where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_flagged'=>1,'m.message_deleted' => 0]);
-        $starmsg = $this->db->get()->row_array();
+//        $this->db->select('count(m.message_id) as cnt')->from('postbox_messages m')->join('postbox_folders f', 'f.folder_id=m.folder_id')->where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_flagged'=>1,'m.message_deleted' => 0]);
+//        $starmsg = $this->db->get()->row_array();
 
         $folders[] = [
             'folder_id' => 'new',
             'folder_name' => 'Unread',
             'cnt' => $newmsg['cnt'],
         ];
-        $folders[] = [
-            'folder_id' => 'flagged',
-            'folder_name' => 'Starred',
-            'cnt' => $starmsg['cnt'],
-        ];
+//        $folders[] = [
+//            'folder_id' => 'flagged',
+//            'folder_name' => 'Starred',
+//            'cnt' => $starmsg['cnt'],
+//        ];
         return $folders;
     }
 
@@ -929,5 +999,67 @@ class Mailbox_model extends MY_Model
             }
         }
         return $out;
+    }
+
+    function message_details($postbox_id, $folder_id, $message_id)
+    {
+        $this->db->select('pf.folder_name, up.mailbox , up.postbox_user , up.postbox_passwd')->from('postbox_folders pf')->join('user_postboxes up','up.postbox_id = pf.postbox_id');
+        $this->db->where('pf.folder_id', $folder_id);
+        $postbox = $this->db->get()->row_array();
+        $res = $this->_create_imap_client($postbox);
+        if ($res['result']==$this->success_result) {
+            $imap = $res['imap'];
+            $imap->selectFolder($postbox['folder_name']);
+            $message = @$imap->getMessage($message_id);
+            echo 'Manage Messaage ID '.$message->header->message_id.PHP_EOL;
+            // echo 'Html Body';
+            var_dump($message); die();
+            echo 'Text Body';
+            $info = $message->message->info;
+            echo 'Info CNT '.count($info).PHP_EOL;
+            if (count($info)>0) {
+                echo 'Part 0 - '.$info[0]->structure->subtype.PHP_EOL;
+                // var_dump($info[0]->body);
+                if (count($info)>1) {
+                    echo 'Part 1 - '.$info[1]->structure->subtype.PHP_EOL;
+                    // var_dump($info[1]->body);
+                }
+                echo 'Subject '.$message->header->subject.PHP_EOL;
+            }
+            // }
+            // var_dump();
+            // echo 'Uid '.$message->header->uid.PHP_EOL;
+        }
+    }
+
+    public function messages_textdetails($postbox_id)
+    {
+        $this->db->select('up.mailbox , up.postbox_user , up.postbox_passwd')->from('user_postboxes up')->where('up.postbox_id', $postbox_id);
+        $postbox = $this->db->get()->row_array();
+        $res = $this->_create_imap_client($postbox);
+        if ($res['result']==$this->success_result) {
+            $imap = $res['imap'];
+            // Get messages
+            $this->db->select('pm.pm.message_id, pf.folder_name')->from('postbox_messages pm')->join('postbox_folders pf','pm.folder_id = pf.folder_id')->where('pf.postbox_id', $postbox_id)->order_by('pf.folder_id');
+            $messages = $this->db->get()->result_array();
+            $folder_name = '';
+            foreach ($messages as $message) {
+                if ($folder_name != $message['folder_name']) {
+                    $imap->selectFolder($postbox['folder_name']);
+                    $folder_name = $message['folder_name'];
+                }
+                $incomeMessage = @$imap->getMessage($message['message_id']);
+                if ($incomeMessage) {
+                    echo 'Manage Messaage ID '.$incomeMessage->header->message_id.PHP_EOL;
+                    $info = $incomeMessage->message->info;
+                    $msgtxt = '';
+                    $msgbody = '';
+                    if (count($info)>0) {
+
+                    }
+                }
+            }
+
+        }
     }
 }

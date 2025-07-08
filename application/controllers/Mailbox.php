@@ -27,15 +27,21 @@ class Mailbox extends MY_Controller
                 redirect('/');
             }
         }
+        $this->load->model('mailbox_model');
     }
 
     public function index() {
         $head = [];
         $head['title'] = 'Postbox';
         $brand = $this->current_brand;
-        // $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
-        // $head['scripts'][] = array('src' => '/js/accounting/page.js');
+        $head['scripts'][] = array('src' => '/js/postbox/page.js');
         $head['styles'][] = array('style' => '/css/postbox/page.css');
+        $postboxes = $this->mailbox_model->get_user_mailboxes($this->USR_ID, $this->USR_ROLE, $brand);
+        $postbox = '';
+        if (count($postboxes) > 0) {
+            $postbox = $postboxes[0]['postbox_id'];
+        }
+        $menu_view = $this->load->view('postbox/postboxes_view', ['postboxes' => $postboxes], TRUE);
 
         $options = [
             'title' => $head['title'],
@@ -43,20 +49,126 @@ class Mailbox extends MY_Controller
             'user_name' => $this->USER_NAME,
             'activelnk' => $this->pagelink,
             'styles' => $head['styles'],
-//            'scripts' => $head['scripts'],
+            'scripts' => $head['scripts'],
             'brand' => $brand,
         ];
-//        if ($gmaps==1) {
-//            $options['gmaps'] = $gmaps;
-//        }
         $dat = $this->template->prepare_pagecontent($options);
-        $content_options['brand'] = $brand;
         $brandclass = ($brand=='SR' ? 'relievers' : ($brand=='SG' ? '' : 'stressballs'));
-        $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => [], 'start' => '', 'brandclass' => $brandclass ], TRUE);
+        $content_options = [
+            'brand' => $brand,
+            'brandclass' => $brandclass,
+            'menu_view' => $menu_view,
+            'postbox' => $postbox,
+        ];
         $content_view = $this->load->view('postbox/page_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $dat['modal_view'] = ''; // $this->load->view('accounting/modal_view',[], TRUE);
         $this->load->view('page_modern/page_template_view', $dat);
+    }
 
+    public function postbox_details()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Postbox Parameter';
+            $postdata = $this->input->post();
+            $postbox = ifset($postdata,'postbox',0);
+            if (!empty($postbox)) {
+                $res = $this->mailbox_model->get_postbox_details($postbox);
+                $error = $res['msg'];
+                if ($res['result'] == $this->success_result) {
+                    $error = '';
+                    $mdata['folder'] = $res['active_folder'];
+                    $mdata['folder_name'] = $res['folder_name'];
+                    $mdata['folders_main'] = $this->load->view('postbox/folders_main_view',['folders' => $res['folders'], 'activefolder' => $res['active_folder']], TRUE);
+                    $mdata['folders_other'] = $this->load->view('postbox/folders_other_view',['folders' => $res['folders']], TRUE);
+                    $mdata['messages'] = $this->load->view('postbox/messages_list_view',['messages' => $res['messages']], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function view_folder()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $folder = ifset($postdata,'folder', '');
+            $postbox = ifset($postdata,'postbox', '');
+            $postsort = ifset($postdata,'postsort','date_desc');
+            $res = $this->mailbox_model->postbox_viewfolder($postbox, $folder, $postsort);
+            $error = $res['msg'];
+            if ($res['result'] == $this->success_result) {
+                $error = '';
+                $folder = $res['folder'];
+                $mdata['folder_name'] = $folder['folder_name'];
+                $mdata['folder'] = $folder['folder_id'];
+                $mdata['messages'] = $this->load->view('postbox/messages_list_view',['messages' => $res['messages']], TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function postbox_addfolder()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $postbox = ifset($postdata, 'postbox');
+            $folder = ifset($postdata,'folder', '');
+            $res = $this->mailbox_model->postbox_addfolder($postbox, $folder);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['content'] = $this->load->view('postbox/folders_other_view',['folders' => $res['folders']], TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function messages_delete() {
+        if ($this->isAjax()) {
+            $error = 'Empty Postbox Details';
+            $mdata = [];
+            $postdata = $this->input->post();
+            $postbox = ifset($postdata, 'postbox', '');
+            $folder = ifset($postdata,'folder', '');
+            $msgsrc = ifset($postdata, 'messages','');
+            $postsort = ifset($postdata,'postsort','date_desc');
+            if (!empty($postbox) && !empty($folder) && !empty($msgsrc)) {
+                $messages = explode(',', $msgsrc);
+                $res = $this->mailbox_model->messages_delete($messages, $postbox, $folder);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $resfld = $this->mailbox_model->postbox_viewfolder($postbox, $folder, $postsort);
+                    $error = $resfld['msg'];
+                    if ($resfld['result']==$this->success_result) {
+                        $error = '';
+                        $mdata['folders_main'] = $this->load->view('postbox/folders_main_view',['folders' => $res['folders'], 'activefolder' => $folder], TRUE);
+                        $mdata['folders_other'] = $this->load->view('postbox/folders_other_view',['folders' => $res['folders'], $folder], TRUE);
+                        $mdata['messages'] = $this->load->view('postbox/messages_list_view',['messages' => $resfld['messages']], TRUE);
+
+//                        $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
+//                        $folder = $resfld['folder'];
+//                        $messages = $resfld['messages'];
+//                        if (count($messages)==0) {
+//                            $header_view = $this->load->view('mailbox/folder_header_empty',['folder'=>$folder['folder_name']], true);
+//                        } else {
+//                            $header_view = $this->load->view('mailbox/folder_header_view',['folder'=>$folder['folder_id']], true);
+//                        }
+//                        $mdata['header'] = $header_view;
+//                        $mdata['messages'] = $this->_prepare_messages_view($messages, $postsort);
+//                        // Count # of messages in folder
+//                        $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 }
