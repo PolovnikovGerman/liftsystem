@@ -1326,6 +1326,7 @@ class Printscheduler_model extends MY_Model
         $outcome = 0;
         $this->db->select('count(amount_id) as amntcnt, sum(shipped) as amnttotal')->from('ts_order_amounts')->where(['order_itemcolor_id' => $itemcolor_id]);
         $amntres = $this->db->get()->row_array();
+        log_message('error', 'Completed Order '.$this->db->last_query());
         if ($amntres['amntcnt'] > 0) {
             $outcome = $amntres['amnttotal'];
         }
