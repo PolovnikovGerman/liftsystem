@@ -1326,7 +1326,6 @@ class Printscheduler_model extends MY_Model
         $outcome = 0;
         $this->db->select('count(amount_id) as amntcnt, sum(shipped) as amnttotal')->from('ts_order_amounts')->where(['order_itemcolor_id' => $itemcolor_id]);
         $amntres = $this->db->get()->row_array();
-        log_message('error', 'Completed Order '.$this->db->last_query());
         if ($amntres['amntcnt'] > 0) {
             $outcome = $amntres['amnttotal'];
         }
@@ -1576,7 +1575,12 @@ class Printscheduler_model extends MY_Model
                         $out['printshop_income_id']=$amountres['amount_id'];
                         $out['printdate'] = date('Y-m-d', $orderdata['print_date']);
                         // Update print_date & print_completed
-                        $passed = $this->_completed_itemcolor($orderdata['order_id'], $inventory_color_id);
+                        $passed = 0;
+                        $this->db->select('count(amount_id) as amntcnt, sum(shipped) as amnttotal')->from('ts_order_amounts')->where(['order_itemcolor_id' => $order_itemcolor_id]);
+                        $amntres = $this->db->get()->row_array();
+                        if ($amntres['amntcnt'] > 0) {
+                            $passed = $amntres['amnttotal'];
+                        }
                         $print_compl = 0;
                         if (intval($passed) >= intval($orderdata['item_qty'])) {
                             $print_compl = 1;

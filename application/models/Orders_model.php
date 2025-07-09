@@ -3023,7 +3023,7 @@ Class Orders_model extends MY_Model
             if ($postdata['show_year']==1) {
                 if ($postdata['year']>0) {
                     $nxtyear = $postdata['year']+1;
-                    if ($postdata['month']==0) {
+                    if (intval($postdata['month'])==0) {
                         $search['start_date']=strtotime($postdata['year'].'-01-01');
                         $search['end_date']=strtotime($nxtyear.'-01-01');
                     } else {
@@ -3268,7 +3268,7 @@ Class Orders_model extends MY_Model
                     $this->db->where('order_id', $row['order_id']);
                     $owndat = $this->db->get()->row_array();
                     if (in_array('balance', $fields)) {
-                        $row['balance']=$owndat['balance'];
+                        $row['balance']=ifset($owndat,'balance','');
                     }
                     if (in_array('payment_system', $fields)) {
                         $stype = '';
