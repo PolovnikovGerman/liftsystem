@@ -1042,14 +1042,18 @@ class Printscheduler_model extends MY_Model
         if (ifset($orderres,'order_id',0)==$order_id) {
             // Check - empty movement of order
             $out['msg'] = 'Order in work';
-            if ($updtype=='stock') {
-                $this->db->select('count(amount_id) as cnt, sum(shipped) as shipped')->from('ts_order_amounts')->where('order_itemcolor_id', $order_id);
-            } else {
-                $this->db->select('count(toa.amount_id) as cnt, sum(toa.shipped) as shipped')->from('ts_order_amounts toa')->join('ts_order_itemcolors toi','toi.order_itemcolor_id = toa.order_itemcolor_id');
-                $this->db->where('toi.order_item_id', $order_id);
+            $chkamnt = 0;
+            if ($orderres['order_blank']==1) {
+                if ($updtype=='stock') {
+                    $this->db->select('count(amount_id) as cnt, sum(shipped) as shipped')->from('ts_order_amounts')->where('order_itemcolor_id', $order_id);
+                } else {
+                    $this->db->select('count(toa.amount_id) as cnt, sum(toa.shipped) as shipped')->from('ts_order_amounts toa')->join('ts_order_itemcolors toi','toi.order_itemcolor_id = toa.order_itemcolor_id');
+                    $this->db->where('toi.order_item_id', $order_id);
+                }
+                $chkres = $this->db->get()->row_array();
+                $chkamnt = $chkres['cnt'];
             }
-            $chkres = $this->db->get()->row_array();
-            if ($chkres['cnt']==0) {
+            if ($chkamnt==0) {
                 $out['result'] = $this->success_result;
                 $out['printdate'] = date('Y-m-d',$orderres['print_date']);
                 $outupdate = 0;
@@ -1584,8 +1588,6 @@ class Printscheduler_model extends MY_Model
                         $print_compl = 0;
                         if (intval($passed) >= intval($orderdata['item_qty'])) {
                             $print_compl = 1;
-                        } else {
-                            log_message('error','Item Color '.$orderdata['order_itemcolor_id'].' QTY '.$orderdata['item_qty'].' In Amount '.$passed);
                         }
                         $this->db->where('order_itemcolor_id', $orderdata['order_itemcolor_id']);
                         $this->db->set('print_completed', $print_compl);
@@ -1595,9 +1597,7 @@ class Printscheduler_model extends MY_Model
                         $this->db->update('ts_order_itemcolors');
                     }
                 }
-
             }
-
         }
         return $out;
     }
