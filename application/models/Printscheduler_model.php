@@ -1516,8 +1516,6 @@ class Printscheduler_model extends MY_Model
                         $print_compl = 0;
                         if (intval($passed) >= intval($orderdata['item_qty'])) {
                             $print_compl = 1;
-                        } else {
-                            log_message('error','Item Color '.$orderdata['order_itemcolor_id'].' QTY '.$orderdata['item_qty'].' In Amount '.$passed);
                         }
                         $this->db->where('order_itemcolor_id', $orderdata['order_itemcolor_id']);
                         $this->db->set('print_completed', $print_compl);
@@ -1527,9 +1525,7 @@ class Printscheduler_model extends MY_Model
                         $this->db->update('ts_order_itemcolors');
                     }
                 }
-
             }
-
         }
         return $out;
     }
