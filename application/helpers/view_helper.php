@@ -927,4 +927,16 @@ if (!function_exists('show_negative_value')) {
         }
     }
 }
+
+if (!function_exists('show_filesize')) {
+    function show_filesize($filesize) {
+        $file_size = $filesize / 1024;
+        if ($file_size < 1) {
+            $outsize = $filesize . ' B';
+        } else {
+            $outsize = number_format($filesize,0,'.'.','). ' KB';
+        }
+        return $outsize;
+    }
+}
 ?>

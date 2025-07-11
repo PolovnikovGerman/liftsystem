@@ -12,13 +12,21 @@ class Mailbox_model extends MY_Model
         'Inbox',
         'Unread',
         'Draft',
-//        'Starred',
+        'Starred',
         'Sent',
         'Bulk',
         'Archive',
         'Spam',
         'Trash',
     ];
+
+    var $imgtypes = ['BMP','GIF','JPEG','JPG','PNG'];
+    var $xlstype = ['VND.MS-EXCEL','VND.OPENXMLFORMATS-OFFICEDOCUMENT.SPREADSHEETML.SHEET'];
+    var $pdftype = ['OCTET-STREAM','PDF'];
+    var $archtype = ['ZIP'];
+    var $writter = ['MSWORD'];
+
+
     function __construct()
     {
         parent::__construct();
@@ -265,6 +273,7 @@ class Mailbox_model extends MY_Model
                                 $this->db->set('attachment_name', $attachment->name);
                                 $this->db->set('attachment_link', $shrtpath . $newattachname);
                                 $this->db->set('attachment_type', $attachment->info->structure->subtype);
+                                $this->db->set('attachment_size', $attachment->info->structure->bytes);
                                 $this->db->insert('postbox_attachments');
                             }
                         }
@@ -686,6 +695,27 @@ class Mailbox_model extends MY_Model
                 // Get attached
                 $this->db->select('*')->from('postbox_attachments')->where('message_id', $message_id);
                 $attachs = $this->db->get()->result_array();
+                if (count($attachs)>0) {
+                    // Add attach preview
+                    $newdata = [];
+                    foreach ($attachs as $attach) {
+                        if (in_array($attach['attachment_type'], $this->imgtypes)) {
+                            $attach['thumb'] = '<img src="'.$attach['attachment_url'].'" class="filebox-img" alt="Attachment"/>';
+                        } elseif (in_array($attach['attachment_type'], $this->xlstype)) {
+                            $attach['thumb'] = '<i class="fa fa-file-excel-o" aria-hidden="true"></i>';
+                        } elseif (in_array($attach['attachment_type'], $this->pdftype)) {
+                            $attach['thumb'] = '<i class="fa fa-file-pdf-o" aria-hidden="true"></i>';
+                        } elseif (in_array($attach['attachment_type'], $this->archtype)) {
+                            $attach['thumb'] = '<i class="fa fa-file-archive-o" aria-hidden="true"></i>';
+                        } elseif (in_array($attach['attachment_type'], $this->writter)) {
+                            $attach['thumb'] = '<i class="fa fa-file-word-o" aria-hidden="true"></i>';
+                        } else {
+                            $attach['thumb'] = '<i class="fa fa-file-o" aria-hidden="true"></i>';
+                        }
+                        $newdata[] = $attach;
+                    }
+                    $attachs = $newdata;
+                }
                 // Get CC
                 $this->db->select('*')->from('postmessage_address')->where(['message_id' => $message_id, 'address_type' => 'CC']);
                 $adrcc = $this->db->get()->result_array();

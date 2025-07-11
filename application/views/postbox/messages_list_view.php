@@ -12,7 +12,7 @@
         <div class="emltbl-td td-select">
             <input type="checkbox" name="selectemail" data-message="<?=$message['message_id']?>"/>
         </div>
-        <div class="emltbl-td td-folder">
+        <div class="emltbl-td td-folder" data-message="<?=$message['message_id']?>">
             <i class="fa fa-folder-o" aria-hidden="true"></i>
         </div>
         <div class="emltbl-td td-reply" data-message="<?=$message['message_id']?>">
@@ -24,7 +24,7 @@
                 &nbsp;
             <?php endif; ?>
         </div>
-        <div class="emltbl-td td-namesender"><?=$message['message_from']?></div>
+        <div class="emltbl-td td-namesender" data-message="<?=$message['message_id']?>"><?=$message['message_from']?></div>
         <div class="emltbl-td td-favorites" data-message="<?=$message['message_id']?>">
             <?php if ($message['message_flagged']) : ?>
                 <i class="fa fa-star" aria-hidden="true"></i>

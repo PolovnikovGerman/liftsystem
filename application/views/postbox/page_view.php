@@ -1,5 +1,6 @@
 <input type="hidden" id="currentpostbox" value="<?=$postbox?>"/>
 <input type="hidden" id="currentpostfolder" value=""/>
+<input type="hidden" id="postboxsort" value="date_desc"/>
 <div class="emlcontant">
     <div class="emailer-header datarow">
         <div class="btn-compose"><span class="btn-compose-icon"><i class="fa fa-pencil" aria-hidden="true"></i></span>Compose</div>
@@ -89,10 +90,10 @@
                     </div>
                 </div>
             </div>
-            <div class="eml-table datarow" id="eml-table-messages">
-            </div>
+            <div class="eml-table datarow" id="eml-table-messages"></div>
         </div>
     </div>
+    <div class="emaildetails"></div>
 </div>
 
 <!-- </div> -->

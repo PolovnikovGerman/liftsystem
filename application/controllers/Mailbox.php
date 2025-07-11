@@ -36,6 +36,7 @@ class Mailbox extends MY_Controller
         $brand = $this->current_brand;
         $head['scripts'][] = array('src' => '/js/postbox/page.js');
         $head['styles'][] = array('style' => '/css/postbox/page.css');
+        $head['styles'][] = array('style' => '/css/postbox/message.css');
         $postboxes = $this->mailbox_model->get_user_mailboxes($this->USR_ID, $this->USR_ROLE, $brand);
         $postbox = '';
         if (count($postboxes) > 0) {
@@ -149,7 +150,7 @@ class Mailbox extends MY_Controller
                     if ($resfld['result']==$this->success_result) {
                         $error = '';
                         $mdata['folders_main'] = $this->load->view('postbox/folders_main_view',['folders' => $res['folders'], 'activefolder' => $folder], TRUE);
-                        $mdata['folders_other'] = $this->load->view('postbox/folders_other_view',['folders' => $res['folders'], $folder], TRUE);
+                        $mdata['folders_other'] = $this->load->view('postbox/folders_other_view',['folders' => $res['folders'], 'activefolder' => $folder], TRUE);
                         $mdata['messages'] = $this->load->view('postbox/messages_list_view',['messages' => $resfld['messages']], TRUE);
 
 //                        $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
@@ -165,6 +166,265 @@ class Mailbox extends MY_Controller
 //                        // Count # of messages in folder
 //                        $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
                     }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function view_message()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Postbox Parameter';
+            $postdata = $this->input->post();
+            $postbox = ifset($postdata,'postbox', '');
+            $folder = ifset($postdata,'folder', '');
+            $message = ifset($postdata,'message_id','');
+            $postsort = ifset($postdata,'postsort','date_desc');
+            if (!empty($postbox) && !empty($folder) && !empty($message)) {
+                $res = $this->mailbox_model->view_message($message, $postbox);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $msgnavig = $this->mailbox_model->count_messages($postbox, $folder, $message, $postsort);
+                    $fromuser = $frommail = '';
+                    $fromaddr = explode('<', $res['message']['message_from']);
+                    if (count($fromaddr) > 0) {
+                        if (count($fromaddr) > 1) {
+                            $fromuser = $fromaddr[0];
+                            $frommail = str_replace(['<', '>',], '', $fromaddr[1]);
+                        } else {
+                            $fromuser = $fromaddr[0];
+                            $frommail = $fromaddr[0];
+                        }
+                    }
+                    $touser = $tomail = '';
+                    $toaddr = explode('<', $res['message']['message_to']);
+                    if (count($toaddr) > 0) {
+                        if (count($toaddr) > 1) {
+                            $touser = $toaddr[0];
+                            $tomail = str_replace(['<', '>',], '', $toaddr[1]);
+                        } else {
+                            $tomail = $toaddr[0];
+                        }
+                    }
+                    $adrcc_view = '';
+                    if (!empty($res['adrcc'])) {
+                        $adresses = [];
+                        foreach ($res['adrcc'] as $adr) {
+                            $addrarray = explode('<', $adr['address']);
+                            $username = $usermail = '';
+                            if (count($addrarray) > 0) {
+                                if (count($addrarray) > 1) {
+                                    $usermail = $addrarray[0];
+                                    $usermail = str_replace(['<', '>',], '', $addrarray[1]);
+                                } else {
+                                    $usermail = $addrarray[0];
+                                }
+                            }
+                            $adresses[] = [
+                                'username' => $username,
+                                'usermail' => $usermail,
+                            ];
+                        }
+                        // $address = implode(',', $adresses);
+                        $adrcc_view = $this->load->view('postbox/message_addresscopy_view',['type'=>'Cc', 'address' => $adresses], TRUE);
+                    }
+                    $adrbcc_view = '';
+                    if (!empty($res['adrbcc'])) {
+                        $adresses = [];
+                        foreach ($res['adrbcc'] as $adr) {
+                            $addrarray = explode('<', $adr['address']);
+                            $username = $usermail = '';
+                            if (count($addrarray) > 0) {
+                                if (count($addrarray) > 1) {
+                                    $usermail = $addrarray[0];
+                                    $usermail = str_replace(['<', '>',], '', $addrarray[1]);
+                                } else {
+                                    $usermail = $addrarray[0];
+                                }
+                            }
+                            $adresses[] = [
+                                'username' => $username,
+                                'usermail' => $usermail,
+                            ];
+                        }
+
+                        $adrbcc_view = $this->load->view('postbox/message_addresscopy_view',['type'=>'Bcc', 'address' => $adresses], TRUE);
+                    }
+                    $folder_name = $res['folder'];
+                    if ($folder=='new') {
+                        $folder_name = 'Unread';
+                    } elseif ($folder=='flagged') {
+                        $folder_name = 'Starred';
+                    }
+                    $attachment_view = '';
+                    if (count($res['attachments'])>0) {
+
+                        $attachment_view = $this->load->view('postbox/message_attachments_view',['attachments' => $res['attachments'],'imgview' => ['BMP','GIF','JPEG','JPG','PNG']], TRUE);
+                    }
+                    $options = [
+                        'message' => $res['message'],
+                        'attachments' => $attachment_view,
+                        'folder' => $folder,
+                        'folder_name' => $folder_name,
+                        'adrcc' => $adrcc_view,
+                        'adrbcc' => $adrbcc_view,
+                        'prvcnt' => $msgnavig['prvcnt'],
+                        'prvid' => $msgnavig['prvid'],
+                        'nxtcnt' => $msgnavig['nxtcnt'],
+                        'nxtid' => $msgnavig['nxtid'],
+                        'fromuser' => $fromuser,
+                        'frommail' => $frommail,
+                        'touser' => $touser,
+                        'tomail' => $tomail,
+                    ];
+                    $mdata['content'] = $this->load->view('postbox/message_details_view',$options, TRUE);
+                    $mdata['body'] = $res['message']['message_text'];
+                    $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
+                    $mdata['seen'] = $res['seen'];
+
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function message_remove()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $postbox = ifset($postdata,'postbox', '');
+            $folder = ifset($postdata,'folder', '');
+            $message = ifset($postdata,'message_id','');
+            $postsort = ifset($postdata,'postsort','date_desc');
+
+            $messages = [];
+            array_push($messages, $message);
+            $res = $this->mailbox_model->messages_delete($messages, $postbox, $folder);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $mdata['redirect'] = 0;
+                $mdata['folders_main'] = $this->load->view('postbox/folders_main_view',['folders' => $res['folders'], 'activefolder' => $folder], TRUE);
+                $mdata['folders_other'] = $this->load->view('postbox/folders_other_view',['folders' => $res['folders'], 'activefolder' => $folder], TRUE);
+                // Get next msg
+                $msgnavig = $this->mailbox_model->count_messages($postbox, $folder, $message, $postsort);
+                if ($msgnavig['nxtcnt']==0) {
+                    if ($msgnavig['prvcnt']==0) {
+                        $mdata['redirect'] = 1;
+                        $error = '';
+                        $this->ajaxResponse($mdata, $error);
+                        return true;
+                    } else {
+                        $message_id = $msgnavig['prvid'];
+                    }
+                } else {
+                    $message_id = $msgnavig['nxtid'];
+                }
+                // Get new message content
+                $resmsg = $this->mailbox_model->view_message($message_id, $postbox);
+                $error = $resmsg['msg'];
+                if ($resmsg['result']==$this->success_result) {
+                    $error = '';
+                    $msgnavig = $this->mailbox_model->count_messages($postbox, $folder, $message_id, $postsort);
+                    $fromuser = $frommail = '';
+                    $fromaddr = explode('<', $resmsg['message']['message_from']);
+                    if (count($fromaddr) > 0) {
+                        if (count($fromaddr) > 1) {
+                            $fromuser = $fromaddr[0];
+                            $frommail = str_replace(['<', '>',], '', $fromaddr[1]);
+                        } else {
+                            $fromuser = $fromaddr[0];
+                            $frommail = $fromaddr[0];
+                        }
+                    }
+                    $touser = $tomail = '';
+                    $toaddr = explode('<', $resmsg['message']['message_to']);
+                    if (count($toaddr) > 0) {
+                        if (count($toaddr) > 1) {
+                            $touser = $toaddr[0];
+                            $tomail = str_replace(['<', '>',], '', $toaddr[1]);
+                        } else {
+                            $tomail = $toaddr[0];
+                        }
+                    }
+                    $adrcc_view = '';
+                    if (!empty($resmsg['adrcc'])) {
+                        $adresses = [];
+                        foreach ($resmsg['adrcc'] as $adr) {
+                            $addrarray = explode('<', $adr['address']);
+                            $username = $usermail = '';
+                            if (count($addrarray) > 0) {
+                                if (count($addrarray) > 1) {
+                                    $usermail = $addrarray[0];
+                                    $usermail = str_replace(['<', '>',], '', $addrarray[1]);
+                                } else {
+                                    $usermail = $addrarray[0];
+                                }
+                            }
+                            $adresses[] = [
+                                'username' => $username,
+                                'usermail' => $usermail,
+                            ];
+                        }
+                        // $address = implode(',', $adresses);
+                        $adrcc_view = $this->load->view('postbox/message_addresscopy_view', ['type' => 'Cc', 'address' => $adresses], TRUE);
+                    }
+                    $adrbcc_view = '';
+                    if (!empty($resmsg['adrbcc'])) {
+                        $adresses = [];
+                        foreach ($res['adrbcc'] as $adr) {
+                            $addrarray = explode('<', $adr['address']);
+                            $username = $usermail = '';
+                            if (count($addrarray) > 0) {
+                                if (count($addrarray) > 1) {
+                                    $usermail = $addrarray[0];
+                                    $usermail = str_replace(['<', '>',], '', $addrarray[1]);
+                                } else {
+                                    $usermail = $addrarray[0];
+                                }
+                            }
+                            $adresses[] = [
+                                'username' => $username,
+                                'usermail' => $usermail,
+                            ];
+                        }
+                        $adrbcc_view = $this->load->view('postbox/message_addresscopy_view', ['type' => 'Bcc', 'address' => $adresses], TRUE);
+                    }
+                    $folder_name = $resmsg['folder'];
+                    if ($folder == 'new') {
+                        $folder_name = 'Unread';
+                    } elseif ($folder == 'flagged') {
+                        $folder_name = 'Starred';
+                    }
+                    $attachment_view = '';
+                    if (count($resmsg['attachments']) > 0) {
+                        $attachment_view = $this->load->view('postbox/message_attachments_view', ['attachments' => $res['attachments'], 'imgview' => ['BMP', 'GIF', 'JPEG', 'JPG', 'PNG']], TRUE);
+                    }
+                    $options = [
+                        'message' => $resmsg['message'],
+                        'attachments' => $attachment_view,
+                        'folder' => $folder,
+                        'folder_name' => $folder_name,
+                        'adrcc' => $adrcc_view,
+                        'adrbcc' => $adrbcc_view,
+                        'prvcnt' => $msgnavig['prvcnt'],
+                        'prvid' => $msgnavig['prvid'],
+                        'nxtcnt' => $msgnavig['nxtcnt'],
+                        'nxtid' => $msgnavig['nxtid'],
+                        'fromuser' => $fromuser,
+                        'frommail' => $frommail,
+                        'touser' => $touser,
+                        'tomail' => $tomail,
+                    ];
+                    $mdata['content'] = $this->load->view('postbox/message_details_view', $options, TRUE);
+                    $mdata['body'] = $resmsg['message']['message_text'];
+                    // $mdata['folders'] = $this->mailbox_model->count_folders_messages($postbox);
+                    $mdata['seen'] = $resmsg['seen'];
                 }
             }
             $this->ajaxResponse($mdata, $error);

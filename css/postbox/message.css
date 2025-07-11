@@ -1,0 +1,298 @@
+/*---------------------------Email---------------------------------*/
+.emaildetails {
+    display: none;
+    background: #FFFFFF;
+}
+.emlhead-left {
+    margin-left: 15px;
+}
+.eml-bnt-back {
+    color: #606060;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 7px;
+}
+.eml-bntback-icon {
+    margin-right: 5px;
+    position: relative;
+    top: 0; /* 4px; */
+}
+.eml-bntback-icon img {
+    width: 16px;
+    height: auto;
+}
+.eml-greyline {
+    height: 25px;
+    width: 1px;
+    background: #9ea3ac;
+    margin-top: 5px;
+    margin-right: 7px;
+}
+.eml-bntwhite {
+    height: 22px;
+    line-height: 20px !important;
+    background: #fff;
+    border: 1px solid #858585;
+    color: #606060;
+    font-size: 13px;
+    border-radius: 3px;
+    padding: 0 6px;
+    margin-top: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 7px;
+}
+.eml-bnticon {
+    color: #606060;
+    font-size: 13px;
+}
+.emlhead-left span {
+    margin-left: 4px;
+}
+.emlhead-right {
+    float: right !important;
+    margin-right: 15px;
+}
+.eml-bnt-movefrom span {
+    color: #000;
+}
+.eml-bnt-close {
+    cursor: pointer;
+}
+.eml-bnt-close img {
+    width: 10px;
+    height: auto;
+}
+.emailnav span {
+    margin-right: 3px;
+}
+.emlnav-bnticon img{
+    width: 12px;
+    height: auto;
+    position: relative;
+    top: -1px; /* 2px; */
+
+}
+.otheremls img {
+    width: 13px;
+    height: auto;
+    position: relative;
+    top: -2px;
+}
+.othereml-prev,
+.othereml-next {
+    cursor: pointer;
+    margin-right: 10px;
+    margin-left: 3px;
+}
+.eml-emailbody {
+    position: relative;
+    height: 530px;
+    border: 1px solid #333333;
+}
+.emailbody {
+    width: 100%;
+    height: 325px;
+    overflow-y: scroll;
+    padding-right: 9px;
+}
+.emailblock {
+    /*width: 1412px;*/
+    width: 1392px;
+    margin: 0 10px;
+}
+.attachedfiles {
+    width: 100%;
+    position: relative;
+    bottom: 0;
+    height: 205px;
+    border-top: 1px solid #9ea3ac;
+}
+.attach-info {
+    width: 100%;
+    margin: 12px 0 9px;
+}
+.numberfiles {
+    font-size: 14px;
+    font-weight: 600;
+    margin-right: 10px;
+}
+.emlbtn-downloadall {
+    color: #8c8c8c;
+    font-size: 12px;
+    cursor: pointer;
+}
+.downloadall-icn {
+    color: #8c8c8c;
+    font-size: 13px;
+}
+.fileslist {
+    width: 100%;
+}
+.fileslist ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.fileslist ul li {
+    float: left;
+    margin-right: 15px;
+}
+.fileslist ul li:last-child {
+    margin-right: 0;
+}
+.filebox {
+    position: relative;
+    width: 176px;
+    height: 119px;
+    overflow: hidden;
+}
+.filebox-img {
+    height: 100%;
+    width: auto;
+}
+.filebox-info {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 164px;
+    height: 105px;
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    display: none;
+    padding: 7px;
+}
+.filebox:hover .filebox-info {
+    display: block;
+}
+.filename {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 600;
+}
+.filesize {
+    margin-top: 5px;
+    margin-bottom: 0;
+    font-size: 10px;
+}
+.emlbtn-download {
+    position: absolute;
+    bottom: 5px;
+    right: 12px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+}
+.emailnav-grey {
+    margin-top: 5px;
+}
+.eml-bntgrey {
+    height: 22px;
+    line-height: 20px !important;
+    background: #e2e2e3;
+    border: 1px solid #858585;
+    color: #606060;
+    font-size: 13px;
+    border-radius: 3px;
+    padding: 0 6px;
+    margin-top: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 7px;
+}
+.email-subject {
+    height: 38px;
+    line-height: 38px;
+    border-bottom: 1px solid #9ea3ac;
+    width: 100%;
+}
+.eml-subjicn {
+    color: #e0e4e9;
+    font-size: 12px;
+    margin-right: 15px;
+}
+.eml-subject {
+    font-size: 15px;
+    font-weight: 600;
+}
+.emlsub-foldfavor {
+    float: right !important;
+    color: #a8aeb7;
+}
+.emlsub-folder {
+    color: #a8aeb7;
+    font-size: 14px;
+    margin-right: 7px;
+    text-align: right;
+    font-weight: 600;
+}
+.emlsub-favorite {
+    color: #a8aeb7;
+    font-size: 14px;
+}
+.email-infobox {
+    width: 100%;
+    margin-top: 7px;
+}
+.imlinf-photo {
+    width: 40px;
+    height: 40px;
+    background: #a6acb3;
+    overflow: hidden;
+    border-radius: 18px;
+}
+.imlinf-photo img {
+    width: 100%;
+    height: auto;
+}
+.imlinfo {
+    margin-left: 15px;
+}
+.imlinfo-from,
+.imlinfo-to {
+    line-height: 20px;
+}
+.imlinfo-title {
+    color: #8c8c8c;
+    font-size: 14px;
+    margin-right: 4px;
+}
+.imlinfo-fromnameuser {
+    font-weight: 600;
+    font-size: 14px;
+    margin-right: 4px;
+}
+.imlinfo-tonameuser {
+    font-size: 14px;
+    margin-right: 4px;
+}
+.imlinfo-emladdress {
+    color: #8c8c8c;
+    font-size: 13px;
+}
+.imlinfo-right {
+    float: right !important;
+    margin-right: 10px;
+}
+.imlinfo-date {
+    font-size: 14px;
+    color: #8c8c8c;
+    margin-right: 10px;
+}
+.imlinfo-print {
+    cursor: pointer;
+}
+.imlinfo-print img {
+    width: 14px;
+    height: auto;
+}
+.contentemail {
+    max-width: 1120px;
+    margin-top: 10px;
+}
+.contentemail p {
+    font-size: 14px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}

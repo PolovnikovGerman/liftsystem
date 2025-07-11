@@ -4703,14 +4703,22 @@ class Test extends CI_Controller
         }
     }
 
-    public function testpostmessage()
+    public function changeattachs()
     {
-        $message_id = 12;
-        $folder_id = 70;
-        $postbox_id = 1;
-        $this->load->model('mailbox_model');
-        $this->mailbox_model->message_details($postbox_id, $folder_id, $message_id);
-        // $this->mailbox_model->messages_textdetails($postbox_id); // , $folder_id, $message_id);
+        $this->db->select('*')->from('postbox_attachments')->order_by('attachment_id','desc');
+        $attachs = $this->db->get()->result_array();
+        $name_sh = $this->config->item('mailbox_attachments_relative');
+        $namefl = $this->config->item('mailbox_attachments');
+        foreach ($attachs as $attach) {
+            $filename = str_replace($name_sh, $namefl, $attach['attachment_link']);
+            $size = @filesize($filename);
+            if ($size) {
+                $this->db->where('attachment_id', $attach['attachment_id']);
+                $this->db->set('attachment_size', $size);
+                $this->db->update('postbox_attachments');
+            }
+        }
+        echo 'All OK '.PHP_EOL;
     }
 
 }
