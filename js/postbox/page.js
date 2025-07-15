@@ -375,6 +375,7 @@ function view_message(message) {
     $("#loader").show();
     $.post(url, params, function (response){
         if (response.errors=='') {
+            $(".eml-moremenu").hide();
             var folders = response.data.folders;
             for(index = 0; index < folders.length; ++index) {
                 $(".mainbtn[data-folder='"+folders[index]['folder_id']+"']").find('span.mainbtn-number').empty().html(folders[index]['cnt']);
