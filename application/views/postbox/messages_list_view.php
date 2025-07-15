@@ -15,6 +15,7 @@
         <div class="emltbl-td td-folder" data-message="<?=$message['message_id']?>">
             <i class="fa fa-folder-o" aria-hidden="true"></i>
         </div>
+        <div class="emlfolders-menu" data-message="<?=$message['message_id']?>"></div>
         <div class="emltbl-td td-reply" data-message="<?=$message['message_id']?>">
             <?php if ($message['message_answered']) : ?>
                 <i class="fa fa-reply" aria-hidden="true"></i>
@@ -32,17 +33,17 @@
                 <i class="fa fa-star-o" aria-hidden="true"></i>
             <?php endif; ?>
         </div>
-        <div class="emltbl-td td-email">
+        <div class="emltbl-td td-email" data-message="<?=$message['message_id']?>">
             <span class="eml-subject"><?=$message['message_subject']?></span>
             <span class="eml-contant"><?=$message['message_text']?></span>
         </div>
-        <div class="emltbl-td td-files">
+        <div class="emltbl-td td-files" data-message="<?=$message['message_id']?>">
             <?php if ($message['numattach'] > 0) : ?>
                 <i class="fa fa-paperclip paperclip" aria-hidden="true"></i>
             <?php else : ?>
                 &nbsp;
             <?php endif; ?>
         </div>
-        <div class="emltbl-td td-time"><?=date('g:i A', $message['message_udate'])?></div>
+        <div class="emltbl-td td-time" data-message="<?=$message['message_id']?>"><?=date('g:i A', $message['message_udate'])?></div>
     </div>
 <?php endforeach; ?>

@@ -36,12 +36,13 @@
                     </select>
                 </div>
                 <div class="emlheader-menu">
-                    <div class="emlmenu-item">
+                    <div class="emlmenu-item movemsglist">
                         <div class="emlmenu-icon">
                             <img src="/img/postbox/icon-move.svg" alt="Move">
                         </div>
                         <div class="emlmenu-text">Move</div>
                     </div>
+                    <div class="emlfolders-menu" id="msglistfolders"></div>
                     <div class="emlmenu-item deletemsglist">
                         <div class="emlmenu-icon">
                             <img src="/img/postbox/icon-delete.svg" alt="Delete">
@@ -63,7 +64,7 @@
                     <div class="eml-moremenu">
                         <ul>
                             <li>
-                                <div class="esmitem">
+                                <div class="esmitem" id="msglistunread">
                                     <div class="esmitem-icon icn-unread">
                                         <img src="/img/postbox/icon-unread.svg" alt="Unread">
                                     </div>
@@ -71,7 +72,7 @@
                                 </div>
                             </li>
                             <li>
-                                <div class="esmitem">
+                                <div class="esmitem" id="msglistarchive">
                                     <div class="esmitem-icon">
                                         <img src="/img/postbox/icon-archive.svg" alt="Archive">
                                     </div>
@@ -79,7 +80,7 @@
                                 </div>
                             </li>
                             <li>
-                                <div class="esmitem">
+                                <div class="esmitem" id="msglistignore">
                                     <div class="esmitem-icon">
                                         <i class="fa fa-bell-slash" aria-hidden="true"></i>
                                     </div>

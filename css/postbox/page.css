@@ -252,7 +252,7 @@
     border: 1px solid #8f8e8e;
     padding: 5px 7px;
     z-index: 20;
-    width: 123px;
+    width: 132px;
 }
 .eml-moremenu ul {
     list-style: none;
@@ -340,14 +340,20 @@
 
 .emlfolders-menu {
     display: none;
-    position: absolute;
-    left: 32px;
+    position: relative; /*absolute;*/
+    left: -3px; /* 32px; */
     top: 0;
     background: #fff;
     border: 1px solid #8f8e8e;
     padding: 5px 7px;
     z-index: 20;
-    width: 427px;
+    max-width: 427px;
+}
+.emlfolders-menu-close {
+    width: 9px;
+    float: right !important;
+    margin-right: 3px;
+    cursor: pointer;
 }
 .efm-item {
     cursor: pointer;

@@ -208,9 +208,14 @@
     width: 100%;
 }
 .eml-subjicn {
-    color: #e0e4e9;
     font-size: 12px;
     margin-right: 15px;
+}
+.eml-subjicn.readed {
+    color: #e0e4e9;
+}
+.eml-subjicn.unread {
+    color: #0f69ff;
 }
 .eml-subject {
     font-size: 15px;

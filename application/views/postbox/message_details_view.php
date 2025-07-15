@@ -13,7 +13,7 @@
         <div class="emlhead-right">
             <div class="emailnav">
                 <div class="eml-bntwhite emailnav-print" data-message="<?=$message['message_id']?>"><span class="emlnav-bnticon"><img src="/img/postbox/printer.svg"></span> Print</div>
-                <div class="eml-bntwhite emailnav-unread" data-message="<?=$message['message_id']?>"><span class="emlnav-bnticon"><img src="/img/postbox/icon-unread.svg"></span> Mark Unread</div>
+                <div class="eml-bntwhite emailnav-readsatus" data-message="<?=$message['message_id']?>"><span class="emlnav-bnticon"><img src="/img/postbox/icon-unread.svg"></span> <?=$seen==1 ? 'Mark Read' : 'Mark Unread'?></div>
                 <div class="eml-bntwhite emailnav-spam" data-message="<?=$message['message_id']?>"><span class="emlnav-bnticon"><img src="/img/postbox/icon-spam.svg"></span> Spam</div>
                 <div class="eml-bntwhite emailnav-delete" data-message="<?=$message['message_id']?>"><span class="emlnav-bnticon"><img src="/img/postbox/icon-delete.svg"></span> Delete</div>
             </div>
@@ -40,7 +40,7 @@
         <div class="emailblock">
             <div class="emailbody datarow">
                 <div class="email-subject datarow">
-                    <div class="eml-subjicn">
+                    <div class="eml-subjicn <?=$seen==0 ? 'readed' : 'unread'?>">
                         <i class="fa fa-circle" aria-hidden="true"></i>
                     </div>
                     <div class="eml-subject"><?=$message['message_subject']?></div>

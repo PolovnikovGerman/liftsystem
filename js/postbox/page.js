@@ -130,8 +130,138 @@ function init_postbox_content() {
             },'json');
         }
     });
+    // Move to other folder
+    $(".movemsglist").unbind('click').click(function (){
+        var chklist = $("input[name='selectemail']:checked").length;
+        if (parseInt(chklist)>0) {
+            var msgs = new Array();
+            $("input[name='selectemail']:checked").each(function (e){
+                msgs.push($(this).data('message'));
+            });
+            var params = new Array();
+            params.push({name: 'postbox', value: $("#currentpostbox").val()});
+            params.push({name: 'folder', value: $("#currentpostfolder").val()});
+            var url = '/mailbox/message_move_folders';
+            $.post(url, params, function (response) {
+                $("#msglistfolders").empty().html(response.data.content);
+                $("#msglistfolders").show();
+                init_messages_move(msgs);
+            },'json');
+        }
+    })
+    // More
+    $(".emlmenu-more").unbind('click').click(function (){
+        if ($(".eml-moremenu").css('display')=='none') {
+            $(".eml-moremenu").show();
+        } else {
+            $(".eml-moremenu").hide();
+        }
+    });
+    // More - Unread option
+    $("#msglistunread").unbind('click').click(function (){
+        var chklist = $("input[name='selectemail']:checked").length;
+        if (parseInt(chklist)>0) {
+            var msgs = new Array();
+            $("input[name='selectemail']:checked").each(function (e){
+                msgs.push($(this).data('message'));
+            });
+            var params = new Array();
+            params.push({name: 'postbox', value: $("#currentpostbox").val()});
+            params.push({name: 'folder', value: $("#currentpostfolder").val()});
+            params.push({name: 'messages', value: msgs});
+            params.push({name: 'postsort', value: $("#postboxsort").val()});
+            params.push({name: 'readstatus', value: 0});
+            var url = '/mailbox/messages_read_status';
+            $("#loader").show();
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $("#eml-table-messages").empty().html(response.data.messages);
+                    var folders = response.data.folders;
+                    for(index = 0; index < folders.length; ++index) {
+                        $(".mainbtn[data-folder='"+folders[index]['folder_id']+"']").find('span.mainbtn-number').empty().html(folders[index]['cnt']);
+                    }
+                    $(".eml-moremenu").hide();
+                    $("#loader").hide();
+                    init_postbox_content();
+                    init_messages_management();
+                } else {
+                    $("#loader").hide();
+                    show_error(response);
+                }
+            },'json');
+        } else {
+            $(".eml-moremenu").hide();
+        }
+    })
+    $("#msglistarchive").unbind('click').click(function (){
+        var chklist = $("input[name='selectemail']:checked").length;
+        if (parseInt(chklist)>0) {
+            var msgs = new Array();
+            $("input[name='selectemail']:checked").each(function (e){
+                msgs.push($(this).data('message'));
+            });
+            var params = new Array();
+            params.push({name: 'postbox', value: $("#currentpostbox").val()});
+            params.push({name: 'folder', value: $("#currentpostfolder").val()});
+            params.push({name: 'messages', value: msgs});
+            params.push({name: 'postsort', value: $("#postboxsort").val()});
+            var url = '/mailbox/messages_archive';
+            $("#loader").show();
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $("#eml-table-messages").empty().html(response.data.messages);
+                    var folders = response.data.folders;
+                    for(index = 0; index < folders.length; ++index) {
+                        $(".mainbtn[data-folder='"+folders[index]['folder_id']+"']").find('span.mainbtn-number').empty().html(folders[index]['cnt']);
+                    }
+                    $(".eml-moremenu").hide();
+                    $("#loader").hide();
+                    init_postbox_content();
+                    init_messages_management();
+                } else {
+                    $("#loader").hide();
+                    show_error(response);
+                }
+            },'json');
+        } else {
+            $(".eml-moremenu").hide();
+        }
+    });
 }
 
+function init_messages_move(messages) {
+    $(".emlfolders-menu-close").unbind('click').click(function (){
+        $("#msglistfolders").hide();
+    });
+    $(".efm-item").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'message_id', value: messages});
+        params.push({name: 'postbox', value: $("#currentpostbox").val()});
+        params.push({name: 'folder', value: $("#currentpostfolder").val()});
+        params.push({name: 'postsort', value: $("#postboxsort").val()});
+        params.push({name: 'newfolder', value: $(this).data('folder')});
+        params.push({name: 'msgtype', value: 'multi'});
+        var url = '/mailbox/message_move';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#msglistfolders").hide();
+                $("#eml-table-messages").empty().html(response.data.messages);
+                var folders = response.data.folders;
+                for(index = 0; index < folders.length; ++index) {
+                    $(".mainbtn[data-folder='"+folders[index]['folder_id']+"']").find('span.mainbtn-number').empty().html(folders[index]['cnt']);
+                }
+                init_postbox_content();
+                init_messages_management();
+                $("#loader").hide();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    })
+
+}
 function add_newfolder() {
     $(".cancel-folder").unbind('click').click(function (){
         $(".btn-newfolder").empty().html('+ New Folder');
@@ -172,6 +302,67 @@ function init_messages_management() {
         var message = $(this).data('message');
         view_message(message);
     });
+    $(".td-email").unbind('click').click(function (){
+        var message = $(this).data('message');
+        view_message(message);
+    });
+    $(".td-time").unbind('click').click(function (){
+        var message = $(this).data('message');
+        view_message(message);
+    });
+    $(".td-favorites").unbind('click').click(function (){
+        var message = $(this).data('message');
+        flagmessage(message);
+    });
+    $(".td-folder").unbind('click').click(function (){
+        var message = $(this).data('message');
+        var params = new Array();
+        params.push({name: 'postbox', value: $("#currentpostbox").val()});
+        params.push({name: 'folder', value: $("#currentpostfolder").val()});
+        var url = '/mailbox/message_move_folders';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".emlfolders-menu[data-message='"+message+"']").empty().html(response.data.content).show();
+                init_message_move(message);
+                // return true;
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+}
+
+function init_message_move(message) {
+    $(".emlfolders-menu-close").unbind('click').click(function (){
+        $(".emlfolders-menu[data-message='"+message+"']").hide();
+    });
+    $(".efm-item").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'message_id', value: message});
+        params.push({name: 'postbox', value: $("#currentpostbox").val()});
+        params.push({name: 'folder', value: $("#currentpostfolder").val()});
+        params.push({name: 'postsort', value: $("#postboxsort").val()});
+        params.push({name: 'newfolder', value: $(this).data('folder')});
+        params.push({name: 'msgtype', value: 'once'});
+        var url = '/mailbox/message_move';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                // $(".emlfolders-menu").hide();
+                $("#eml-table-messages").empty().html(response.data.messages);
+                var folders = response.data.folders;
+                for(index = 0; index < folders.length; ++index) {
+                    $(".mainbtn[data-folder='"+folders[index]['folder_id']+"']").find('span.mainbtn-number').empty().html(folders[index]['cnt']);
+                }
+                init_postbox_content();
+                init_messages_management();
+                $("#loader").hide();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    })
 }
 
 function view_message(message) {
@@ -184,6 +375,10 @@ function view_message(message) {
     $("#loader").show();
     $.post(url, params, function (response){
         if (response.errors=='') {
+            var folders = response.data.folders;
+            for(index = 0; index < folders.length; ++index) {
+                $(".mainbtn[data-folder='"+folders[index]['folder_id']+"']").find('span.mainbtn-number').empty().html(folders[index]['cnt']);
+            }
             $(".emailer-body").hide();
             $("#eml-table-messages").empty();
             $(".emaildetails").empty().html(response.data.content);
@@ -197,6 +392,26 @@ function view_message(message) {
     },'json')
 }
 
+function flagmessage(message) {
+    var params = new Array();
+    params.push({name: 'message_id', value: message});
+    params.push({name: 'postbox', value: $("#currentpostbox").val()});
+    var url = '/mailbox/flag_message';
+    $("#loader").show();
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            var folders = response.data.folders;
+            for(index = 0; index < folders.length; ++index) {
+                $(".mainbtn[data-folder='"+folders[index]['folder_id']+"']").find('span.mainbtn-number').empty().html(folders[index]['cnt']);
+            }
+            $(".td-favorites[data-message='"+message+"']").empty().html(response.data.content);
+            $("#loader").hide();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
+}
 function init_message_management() {
     // Back button
     $(".eml-bnt-back").unbind('click').click(function (){
@@ -220,8 +435,10 @@ function init_message_management() {
                 if (parseInt(response.data.redirect)==1) {
                     back_folder_view();
                 }
-                $(".eml-mainbtns").empty().html(response.data.folders_main);
-                $(".eml-folders").empty().html(response.data.folders_other);
+                var folders = response.data.folders;
+                for(index = 0; index < folders.length; ++index) {
+                    $(".mainbtn[data-folder='"+folders[index]['folder_id']+"']").find('span.mainbtn-number').empty().html(folders[index]['cnt']);
+                }
                 $(".emaildetails").empty().html(response.data.content);
                 $("#loader").hide();
                 init_postbox_content();
@@ -232,7 +449,46 @@ function init_message_management() {
             }
         },'json');
     });
-
+    // Unread
+    $(".emailnav-readsatus").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'message_id', value: $(this).data('message')});
+        params.push({name: 'postbox', value: $("#currentpostbox").val()});
+        var url = '/mailbox/message_read_status';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".emailnav-readsatus").empty().html(response.data.content);
+                if (parseInt(response.data.unread)==1) {
+                    $(".eml-subjicn").removeClass('unread').addClass('readed');
+                } else {
+                    $(".eml-subjicn").removeClass('readed').addClass('unread');
+                }
+                var folders = response.data.folders;
+                for(index = 0; index < folders.length; ++index) {
+                    $(".mainbtn[data-folder='"+folders[index]['folder_id']+"']").find('span.mainbtn-number').empty().html(folders[index]['cnt']);
+                }
+                $("#loader").hide();
+                init_message_management();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json')
+    });
+    // Move Prev / Next
+    $(".othereml-prev").unbind('click').click(function (){
+        if ($(this).hasClass('active')) {
+            var message_id = $(this).data('prev');
+            view_message(message_id);
+        }
+    });
+    $(".othereml-next").unbind('click').click(function (){
+        if ($(this).hasClass('active')) {
+            var message_id = $(this).data('next');
+            view_message(message_id);
+        }
+    });
 }
 
 function back_folder_view() {
