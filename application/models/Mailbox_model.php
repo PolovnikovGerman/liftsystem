@@ -119,19 +119,6 @@ class Mailbox_model extends MY_Model
                 $this->db->select('count(message_id) as cnt, max(message_id) as msgid')->from('postbox_messages')->where('postmessage_id', $postmsgid);
                 $msgchk = $this->db->get()->row_array();
                 if ($msgchk['cnt']==0) {
-
-//                    $info = $message->message->info;
-//                    if (count($info)>0) {
-//
-//                        echo 'Part 0 - '.$info[0]->structure->subtype.PHP_EOL;
-//                        // var_dump($info[0]->body);
-//                        if (count($info)>1) {
-//                            echo 'Part 1 - '.$info[1]->structure->subtype.PHP_EOL;
-//                            // var_dump($info[1]->body);
-//                        }
-//                        echo 'Subject '.$message->header->subject.PHP_EOL;
-//                    }
-
                     // New Message
                     $this->db->set('folder_id', $folder['folder_id']);
                     $this->db->set('message_msgno', $message->header->msgno);
@@ -1091,6 +1078,48 @@ class Mailbox_model extends MY_Model
                 }
             }
 
+        }
+    }
+
+    public function updatepostbox($postbox)
+    {
+        $postres = $this->db->select('*')->from('user_postboxes')->where('postbox_id', $postbox)->get()->row_array();
+        if (ifset($postres, 'postbox_id',0) > 0) {
+            // Get last date
+            $this->db->select('max(m.message_udate) as mdate')->from('postbox_messages m')->join('postbox_folders f','f.folder_id=m.folder_id')->where('f.postbox_id', $postbox);
+            $msgdat = $this->db->get()->row_array();
+            if (!empty($msgdat['mdate'])) {
+                // echo 'Date '.$msgdat['mdate'].' - '.date('j F Y', $msgdat['mdate']).PHP_EOL;
+                $res = $this->_create_imap_client($postres);
+                if ($res['result']==$this->success_result) {
+                    $imap = $res['imap'];
+                    $imap->selectFolder($this->inbox_name);
+                    $folderdat = $this->db->select('folder_id')->from('postbox_folders')->where(['postbox_id' => $postbox, 'folder_name' => $this->inbox_name])->get()->row_array();
+                    $folder_id = $folderdat['folder_id'];
+                    if (!empty($folderdat['folder_id'])) {
+                        $datsrch = date('j F Y', $msgdat['mdate']);
+                        while (1 == 1) {
+                            echo 'Date ' . $datsrch . PHP_EOL;
+                            // $criteria = "SINCE '{$datsrch}' BEFORE ''";
+                            $criteria = 'ON 07-Jul-2025';
+                            try {
+                                $msgdat = @$imap->getMessagesByCriteria($criteria);
+                            } catch (exception $e) {
+                                echo $e->getMessage();
+                                die();
+                            }
+
+                            if (count($msgdat)>0) {
+                                echo 'Find '.count($msgdat).PHP_EOL;
+                                foreach ($msgdat as $msg) {
+
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
         }
     }
 }

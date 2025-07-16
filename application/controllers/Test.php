@@ -4721,4 +4721,11 @@ class Test extends CI_Controller
         echo 'All OK '.PHP_EOL;
     }
 
+    public function updatepostbox()
+    {
+        $postbox = 1;
+        $this->load->model('mailbox_model');
+        $this->mailbox_model->updatepostbox($postbox);
+    }
+
 }
