@@ -1963,9 +1963,9 @@ class Leadorder extends MY_Controller
                     } else {
                         $mdata['arttype']='logo';
                         if ($doctype=='source') {
-                            $mdata['artlocurl']=$location['logo_src'];
+                            $mdata['artlocurl']=str_replace('//','/',$location['logo_src']);
                         } else {
-                            $mdata['artlocurl']=$location['logo_vectorized'];
+                            $mdata['artlocurl']=str_replace('//','/',$location['logo_vectorized']);
                         }
                     }
                 }
