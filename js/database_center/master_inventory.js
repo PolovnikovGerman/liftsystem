@@ -580,6 +580,13 @@ function init_master_inventorytabledat() {
                 // Show History window
                 $("#modalEditInventHistoryLabel").empty().html(response.data.wintitle);
                 $("#modalEditInventHistory").find('div.modal-body').empty().html(response.data.winbody);
+                // var objDiv = document.getElementById("inventorydetails_table_body");
+                // objDiv.scrollTop = objDiv.scrollHeight;
+                // console.log('Height '+objDiv.scrollHeight);
+                setTimeout(() => {
+                    var mydiv = $("#inventorydetails_table_body");
+                    mydiv.scrollTop(mydiv.prop("scrollHeight"));
+                }, "300");
                 $("#modalEditInventHistory").modal({keyboard: false, show: true});
                 // $('body').addClass('modal-open');
                 init_colorhistory_popup();

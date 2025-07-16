@@ -11,7 +11,7 @@
         <div class="instock_amount">Amnt</div>
         <div class="instock_balance">Balance</div>
     </div>
-    <div class="inventorydetails_table_body">
+    <div class="inventorydetails_table_body" id="inventorydetails_table_body">
         <?php $numrow = 0; ?>
         <?php foreach ($lists as $list) { ?>
             <div class="inventorydetails_table_row <?= $numrow % 2 == 0 ? 'greydatarow' : 'whitedatarow' ?>">
