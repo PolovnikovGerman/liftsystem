@@ -393,7 +393,8 @@ class Inventory_model extends MY_Model
             $this->db->select('*');
             $this->db->from('v_inventory_instock');
             $this->db->where('color_id', $inventory_color_id);
-            $this->db->order_by('instock_date','desc');
+            // $this->db->order_by('instock_date','desc');
+            $this->db->order_by('instock_date');
             $stocks = $this->db->get()->result_array();
             $lists = [];
             foreach ($stocks as $stock) {
@@ -407,7 +408,7 @@ class Inventory_model extends MY_Model
                     } else {
                         $descrip.=$this->bt_label;
                     }
-                    $stock['instock_record'] = ($stock['brand']=='SR' ? 'SR' : 'BT').$stock['instock_record'];
+                    $stock['instock_record'] = ($stock['brand']=='SR' ? 'SR' : 'BT').'-'.$stock['instock_record'];
                 }
                 if ($stock['instock_type']=='S') {
                     $rectype = 'income';
@@ -431,9 +432,17 @@ class Inventory_model extends MY_Model
                 ];
             }
             // Calc balance
-            $listcnt = count($lists) - 1;
+            $listcnt = count($lists); // - 1;
             $balance = 0;
-            for ($i=$listcnt; $i>=0; $i--) {
+//            for ($i=$listcnt; $i>=0; $i--) {
+//                if ($lists[$i]['type']=='O') {
+//                    $balance-=$lists[$i]['amount'];
+//                } else {
+//                    $balance+=$lists[$i]['amount'];
+//                }
+//                $lists[$i]['balance']=$balance;
+//            }
+            for ($i=0; $i < $listcnt; $i++) {
                 if ($lists[$i]['type']=='O') {
                     $balance-=$lists[$i]['amount'];
                 } else {
@@ -442,6 +451,7 @@ class Inventory_model extends MY_Model
                 $lists[$i]['balance']=$balance;
             }
             $out['lists'] = $lists;
+            $out['balance'] = $balance;
         }
         return $out;
     }
@@ -972,8 +982,11 @@ class Inventory_model extends MY_Model
                     $out['result'] = $this->success_result;
                     $out['lists'] = $res['lists'];
                     $out['itemdata'] = $res['itemdata'];
+                    $out['balance'] = $res['balance'];
                 }
             }
+        } else {
+            $out['result'] = $this->error_result;
         }
         return $out;
     }

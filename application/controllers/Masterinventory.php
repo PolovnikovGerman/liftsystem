@@ -219,12 +219,15 @@ class Masterinventory extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
-                    $mdata['wintitle'] = $this->load->view('masterinvent/history_head_view', $res['itemdata'],TRUE);
+                    // $mdata['wintitle'] = $this->load->view('masterinvent/history_head_view', $res['itemdata'],TRUE);
+                    $mdata['wintitle'] = $this->load->view('masterinvent/invdetails_head_view', $res['itemdata'],TRUE);
                     $options = [
                         'lists' => $res['lists'],
                         'item' => $res['itemdata'],
+                        'balance' => $res['balance'],
                     ];
-                    $mdata['winbody'] = $this->load->view('masterinvent/history_body_view', $options, TRUE);
+                    // $mdata['winbody'] = $this->load->view('masterinvent/history_body_view', $options, TRUE);
+                    $mdata['winbody'] = $this->load->view('masterinvent/invdetails_body_view', $options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata,$error);
@@ -329,8 +332,9 @@ class Masterinventory extends MY_Controller
                 $options = [
                     'lists' => $res['lists'],
                     'item' => $res['itemdata'],
+                    'balance' => $res['balance'],
                 ];
-                $mdata['content'] = $this->load->view('masterinvent/history_body_view', $options, TRUE);
+                $mdata['content'] = $this->load->view('masterinvent/invdetails_body_view', $options, TRUE);
             }
             $this->ajaxResponse($mdata,$error);
         }
