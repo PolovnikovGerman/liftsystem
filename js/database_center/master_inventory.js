@@ -882,7 +882,8 @@ function init_colorhistory_popup() {
         var url = '/masterinventory/add_color_outcome';
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                $(".inventoryhistory_table_body").prepend(response.data.content);
+                // $(".inventoryhistory_table_body").prepend(response.data.content);
+                $(".inventorydetails_table_body").prepend(response.data.content);
                 init_manualoutcome_manage();
             } else {
                 show_error(response);

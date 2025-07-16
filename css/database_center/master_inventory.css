@@ -911,28 +911,33 @@ span.saveinventincome {
 }
 /* History view */
 #modalEditInventHistory .modal-dialog {
-    width: 520px;
-    max-width: 520px;
+    /* width: 520px;
+    max-width: 520px; */
+    width: 815px;
+    max-width: 815px;
 }
 #modalEditInventHistory .modal-header {
     color: #ffffff;
-    background: #2635ff;
+    /* background: #2635ff; */
+    background: #5c5c5c;
     height: 32px;
     padding: 0 0.4rem!important;
     border-bottom: none!important;
 }
 #modalEditInventHistory .modal-header h4 {
     line-height: 32px;
-    color: #868eff;
-    font-size: 15px;
+    color: #c1c1c1; /* #868eff */;
+    font-size: 19px; /* 15px; */
     font-weight: 600;
     float: left;
     padding-left: 6px;
-    max-width: 93%;
+    /* max-width: 93%; */
+    width: 95%;
+    text-align: center;
 }
 #modalEditInventHistory .modal-header h4 span.priceitemdata {
     color: #ffffff;
-    font-size: 15px;
+    font-size: 19px; /* 15px; */
     font-weight: 600;
     line-height: 32px;
 }
@@ -944,12 +949,168 @@ span.saveinventincome {
     margin: 3px 8px 8px 8px;
 }
 #modalEditInventHistory .modal-body {
-    background: #2635ff;
+    /* background: #2635ff; */
+    background: #5c5c5c;
     padding: 0 12px 12px 12px;
 }
 #modalEditInventHistory .modal-body div {
     float: left;
 }
+.inventorydetails_table_title {
+    color: #c1c1c1;
+    font-size: 16px;
+    font-weight: 600;
+    height: 20px;
+    line-height: 20px;
+}
+.inventorydetails_table_head {
+    clear: both;
+    width: 492px;
+    background: #c1c1c1;
+    border: 1px solid;
+}
+.inventorydetails_table_head > div {
+    height: 27px;
+    line-height: 27px;
+    font-size: 13px;
+    text-align: center;
+}
+.inventorydetails_table_head .instock_date {
+    width: 71px;
+    text-align: left;
+}
+.inventorydetails_table_head .instock_date span {
+    color: #797979;
+    font-size: 14px;
+    margin-left: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+.inventorydetails_table_head .instock_recnum {
+    width: 62px;
+}
+.inventorydetails_table_head .instock_descript {
+    width: 183px;
+}
+.inventorydetails_table_head .instock_amount {
+    width: 72px;
+}
+.inventorydetails_table_head .instock_balance {
+    width: 77px;
+}
+.inventorydetails_table_body {
+    width: 492px;
+    /* max-height: 229px; */
+    max-height: 233px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-right: 1px solid #000000;
+    border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+.inventorydetails_table_row {
+    width: 100%;
+}
+.inventorydetails_table_row > div {
+    height: 23px;
+    line-height: 23px;
+    font-size: 13px;
+    text-align: center;
+}
+.inventorydetails_table_row .instock_date {
+    width: 71px;
+    text-align: right;
+    padding-right: 5px;
+    border-right: 1px solid #000000;
+}
+.inventorydetails_table_row .instock_recnum {
+    width: 62px;
+    border-right: 1px solid #000000;
+    color: #0000FF;
+    cursor: pointer;
+}
+.inventorydetails_table_row .instock_descript {
+    width: 183px;
+    border-right: 1px solid #000000;
+}
+.inventorydetails_table_row .instock_descript span {
+    color: #8e8e8e;
+}
+.inventorydetails_table_row .instock_amount {
+    width: 72px;
+    border-right: 1px solid #000000;
+}
+.inventorydetails_table_row .instock_amount.negative {
+    background: #FF0000;
+    color: #ffffff;
+}
+.inventorydetails_table_row .instock_balance {
+    width: 77px;
+}
+.inventorydetails_table_row .instock_balance.negative {
+    color: #FF0000;
+}
+.inventorydetails_total {
+    height: 30px;
+    line-height: 30px;
+    color: #c1c1c1;
+    font-size: 16px;
+    font-weight: 600;
+    margin-left: 316px;
+    width: 72px;
+    text-align: center;
+}
+.inventorydetails_total_stock {
+    height: 30px;
+    line-height: 30px;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    width: 77px;
+    text-align: center;
+}
+.inventorydetails_reseved_title {
+    color: #c1c1c1;
+    font-size: 16px;
+    font-weight: 600;
+    height: 20px;
+    line-height: 20px;
+    margin-top: 21px;
+}
+.inventorydetails_reseved_head {
+    width: 760px;
+    background: #c1c1c1;
+    border: 1px solid;
+}
+.inventorydetails_reseved_body {
+    width: 760px;
+    background: #ffffff;
+    border: 1px solid;
+    height: 250px;
+}
+.inventorydetails_reserved {
+    height: 30px;
+    line-height: 30px;
+    color: #c1c1c1;
+    font-size: 16px;
+    font-weight: 600;
+    margin-left: 316px;
+    width: 72px;
+    text-align: center;
+}
+.inventorydetails_total_reserved {
+    height: 30px;
+    line-height: 30px;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    width: 77px;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+
+
 .inventoryhistory_body_content {
     background: #ffffff;
     width: 100%;
