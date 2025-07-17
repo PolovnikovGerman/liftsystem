@@ -32,9 +32,10 @@ function init_calc() {
             $("#expanse-quoter-total").empty().html(response.data.total_week);
             // $("div.calc-totalquart").empty().html(response.data.total_quart);
             $("#expanse-year-total").empty().html(response.data.total_year);
-            $(".expensivesviewtable").scrollpanel({
-                'prefix' : 'sp-'
-            });
+            var scrollElement = new SimpleBar(document.getElementById('expensivesviewtable'), { autoHide: false });
+            // $(".expensivesviewtable").scrollpanel({
+            //     'prefix' : 'sp-'
+            // });
             $("#loader").hide();
             leftmenu_alignment();
             init_calc_management();

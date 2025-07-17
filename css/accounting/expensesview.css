@@ -91,7 +91,11 @@
 /* Datarow */
 .expensivesviewtable {
     border-left: 1px solid #000000;
-    height: 528px;
+    max-height: 528px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    width: 955px;
 }
 /* Scrollbar */
 .expensivesviewtable .sp-scrollbar {
