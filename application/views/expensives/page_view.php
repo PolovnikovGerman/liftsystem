@@ -34,7 +34,7 @@
             <div class="expensive-percent">%</div>
         </div>
     </div>
-    <div id="expensivesviewtable"></div>
+    <div id="expensivesviewtable" class="expensivesviewtable"></div>
     <div class="datarow">
         <div class="expensivesviewfooter">
             <div class="expensive-grandtotal">Grand Total:</div>

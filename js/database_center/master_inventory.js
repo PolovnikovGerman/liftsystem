@@ -582,8 +582,6 @@ function init_master_inventorytabledat() {
                 $("#modalEditInventHistory").find('div.modal-body').empty().html(response.data.winbody);
                 var scrollElement = new SimpleBar(document.getElementById('inventorydetails_table_body'), { autoHide: false });
                 setTimeout(() => {
-                    // var mydiv = $("#inventorydetails_table_body");
-                    // mydiv.scrollTop(mydiv.prop("scrollHeight"));
                     scrollElement.getScrollElement().scrollTop = scrollElement.getScrollElement().scrollHeight;
                 }, "300");
                 $("#modalEditInventHistory").modal({keyboard: false, show: true});
