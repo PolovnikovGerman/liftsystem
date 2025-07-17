@@ -229,11 +229,15 @@
 }
 #netprofitviewdata {
     max-height: 336px;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 .netprofitviewdata {
     border-right: 1px solid #000000;
     max-height: 336px;
+    width: 1238px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
 }
 /* Scrollbar */
 .netprofitviewdata .sp-scrollbar {
