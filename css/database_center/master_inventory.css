@@ -1008,7 +1008,7 @@ span.saveinventincome {
     border-left: 1px solid #000000;
     border-bottom: 1px solid #000000;
     /* overflow-y: scroll; */
-    scrollbar-width: auto;
+    scrollbar-width: none;
 }
 .inventorydetails_table_row {
     width: 100%;

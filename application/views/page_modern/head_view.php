@@ -14,6 +14,8 @@
 <?php } ?>
 <link rel="stylesheet" href="/css/page_view/jquery.qtip.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/page_view/simplebar.min.css"/>
+
 <script src="/js/jquery.min.js"></script>
 <script src="https://code.jquery.com/jquery-migrate-1.2.1.js"></script>
 
@@ -25,6 +27,7 @@
     <script src="<?=$row['src']?>?v=<?=getsitejsversion()?>"></script>
 <?php } ?>
 <script src="/js/adminpage/jquery.qtip.js?v=<?=getsitejsversion()?>"></script>
+<script type="text/javascript" src="/js/adminpage/simplebar.min.js"></script>
 <?php if ($gmaps==1) { ?>
     <script src="https://maps.googleapis.com/maps/api/js?key=<?=$this->config->item('google_map_key')?>&libraries=places&v=weekly&callback=initAutocomplete" async></script>
 <?php } ?>
