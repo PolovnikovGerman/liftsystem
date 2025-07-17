@@ -390,37 +390,24 @@ select.profitorder-filtrer {
     overflow-x: hidden;
     overflow-y: scroll;
     width: 1095px;/* 1027px; */
+    scrollbar-width: none;
 }
 .orderprofitcontent-table.relievers {
     width: 1160px;/* 1091px; */
 }
-/* Scrollbar */
-/*.orderprofitcontent-table .sp-scrollbar {*/
-/*    width: 10px;*/
-/*    background-color: #f1f1f1;*/
-/*    cursor: pointer;*/
-/*}*/
-/*.orderprofitcontent-table .sp-scrollbar .sp-thumb {*/
-/*    background-color: #aaa;*/
-/*    transition: height 0.2s ease-in-out;*/
-/*}*/
-/*.orderprofitcontent-table .sp-scrollbar.active .sp-thumb {*/
-/*    background-color: #c1c1c1;*/
-/*}*/
-/* End Scrollbar */
 .orderprofitcontent-table > .tr {
     border-left: 1px solid #919191;
     border-right: 1px solid #919191;
     clear: both;
     width: 1086px;  /* remove*/
 }
-.orderprofitcontent-table > .tr.relievers {
+.orderprofitcontent-table .tr.relievers {
     width: 1150px;
 }
-.orderprofitcontent-table > .tr.topseparate {
+.orderprofitcontent-table .tr.topseparate {
     border-top: 2px solid #000000;
 }
-.orderprofitcontent-table > .tr > div {
+.orderprofitcontent-table .tr > div {
     color: #000000;
     font-size: 12px;
     height: 24px;
@@ -581,8 +568,8 @@ select.profitorder-filtrer {
     width: 68px;
 }
 .profitorder_profitperc_data {
-    /* width: 40px; */
-    width: 35px;
+    width: 40px;
+    /* width: 35px; */
 }
 /* FOOTER */
 .orders_totals_table {

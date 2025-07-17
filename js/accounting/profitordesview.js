@@ -273,6 +273,7 @@ function pageProfitOrederCallback(page_index) {
             } catch (e) {
                 console.log('Ballone not init');
             }
+            var scrollElement = new SimpleBar(document.getElementById('tableinfotab1'), { autoHide: false });
             init_profitorder_manage();
         } else {
             show_error(response);
