@@ -8,7 +8,7 @@
         </div>
         <div class="instock_recnum">Record #</div>
         <div class="instock_descript">Description</div>
-        <div class="instock_amount">Amnt</div>
+        <div class="instock_amount">QTY</div>
         <div class="instock_balance">Balance</div>
     </div>
     <div class="inventorydetails_table_body" id="inventorydetails_table_body">
@@ -30,6 +30,8 @@
             <?php $numrow++; ?>
         <?php } ?>
     </div>
+    <div class="inventory_oldestdetails">oldest</div>
+    <div class="inventory_mostrecent">most recent</div>
     <div class="datarow">
         <div class="inventorydetails_total">In Stock:</div>
         <div class="inventorydetails_total_stock"><?=QTYOutput($balance)?></div>
@@ -38,14 +40,38 @@
         <div class="inventorydetails_reseved_title">Reserved:</div>
     </div>
     <div class="datarow">
-        <div class="inventorydetails_reseved_head">&nbsp;</div>
+        <div class="inventorydetails_reseved_head">
+            <div class="shipdate">Ship Date</div>
+            <div class="ordernumber">Order #</div>
+            <div class="customername">Customer</div>
+            <div class="amntval">QTY</div>
+            <div class="forecastbal">Forecasted Bal.</div>
+            <div class="artapprov">Artwork Approved</div>
+            <div class="fullfiledperc">% Fulfilled</div>
+            <div class="shippedperc">% Shipped</div>
+        </div>
     </div>
     <div class="datarow">
-        <div class="inventorydetails_reseved_body">&nbsp;</div>
+        <div class="inventorydetails_reseved_body" id="inventorydetails_reseved_body">
+            <?php $nrow = 0; ?>
+            <?php foreach ($reserved as $reserv) : ?>
+                <div class="inventoryreseved_table_row <?= $nrow % 2 == 0 ? 'greydatarow' : 'whitedatarow' ?>">
+                    <div class="shipdate <?=$reserv['shipdateclass']?>"><?=$reserv['shipdate']?></div>
+                    <div class="ordernumber" data-order="<?=$reserv['order_id']?>"><?=$reserv['order']?></div>
+                    <div class="customername"><?=$reserv['customer_name']?></div>
+                    <div class="amntval"><?=QTYOutput($reserv['item_qty'])?></div>
+                    <div class="forecastbal"><?=QTYOutput($reserv['forecastbal'])?></div>
+                    <div class="artapprov <?=$reserv['approvedclass']?>"><?=$reserv['approved']?></div>
+                    <div class="fullfiledperc <?=$reserv['fullfillclass']?>"><?=$reserv['fullfill']?></div>
+                    <div class="shippedperc <?=$reserv['shipclass']?>"><?=$reserv['ship']?></div>
+                </div>
+                <?php $nrow++; ?>
+            <?php endforeach; ?>
+        </div>
     </div>
     <div class="datarow">
         <div class="inventorydetails_reserved">Available:</div>
-        <div class="inventorydetails_total_reserved"><?=QTYOutput($balance)?></div>
+        <div class="inventorydetails_total_reserved"><?=QTYOutput($reservtotal)?></div>
     </div>
 
 </div>
