@@ -183,7 +183,7 @@
                 </div>
             </div>
             <div class="datarow">
-                <div id="masterinventtablebody"></div>
+                <div id="masterinventtablebody" class="masterinventtablebody"></div>
             </div>
             <div class="datarow">
                 <div class="mastinvent_footlink_left">&nbsp;</div>

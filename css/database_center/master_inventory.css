@@ -412,6 +412,7 @@ input.inventadd {
     border-left: 1px solid #000000;
     border-right: 1px solid #000000;
     border-bottom: 1px solid #000000;
+    scrollbar-width: none;
 }
 /* Scrollbar */
 .masterinventtablebody::-webkit-scrollbar {
@@ -421,6 +422,13 @@ input.inventadd {
 }
 .masterinventtablebody::-webkit-scrollbar-thumb {
     background: #000;
+}
+.masterinventtablebody .simplebar-track.simplebar-vertical {
+    background-color: #aaa; /* or add it to the track */
+}
+.masterinventtablebody .simplebar-scrollbar {
+    background: #000;
+    height: 49px!important;
 }
 /* Scrollbar end */
 .masterinventtablebody .mastinvent_body_left {

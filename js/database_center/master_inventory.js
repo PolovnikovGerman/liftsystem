@@ -62,6 +62,7 @@ function init_master_inventorydata() {
             // $(".inventtotalavailable").empty().html(response.data.available);
             // $(".inventtotalmaximum").empty().html(response.data.maximum);
             jQuery.balloon.init();
+            new SimpleBar(document.getElementById('masterinventtablebody'), { autoHide: false });
             init_master_inventorytabledat();
             leftmenu_alignment();
         } else {
@@ -737,6 +738,11 @@ function init_itemcolor_popup() {
                 // Show History window
                 $("#modalEditInventHistoryLabel").empty().html(response.data.wintitle);
                 $("#modalEditInventHistory").find('div.modal-body').empty().html(response.data.winbody);
+                var scrollElement = new SimpleBar(document.getElementById('inventorydetails_table_body'), { autoHide: false });
+                setTimeout(() => {
+                    scrollElement.getScrollElement().scrollTop = scrollElement.getScrollElement().scrollHeight;
+                }, "300");
+                new SimpleBar(document.getElementById('inventorydetails_reseved_body'), { autoHide: false });
                 $("#modalEditInventHistory").modal({keyboard: false, show: true});
                 // $('body').addClass('modal-open');
                 init_colorhistory_popup();
@@ -968,6 +974,11 @@ function init_manualoutcome_manage() {
             if (response.errors=='') {
                 $("#modalEditInventHistory").find('div.modal-body').empty().html(response.data.content);
                 $("#invenorynewhistoryadd").val(1);
+                var scrollElement = new SimpleBar(document.getElementById('inventorydetails_table_body'), { autoHide: false });
+                setTimeout(() => {
+                    scrollElement.getScrollElement().scrollTop = scrollElement.getScrollElement().scrollHeight;
+                }, "300");
+                new SimpleBar(document.getElementById('inventorydetails_reseved_body'), { autoHide: false });
                 init_colorhistory_popup();
             } else {
                 show_error(response);
