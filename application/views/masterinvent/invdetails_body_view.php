@@ -38,6 +38,23 @@
     </div>
     <div class="datarow">
         <div class="inventorydetails_reseved_title">Reserved:</div>
+        <div class="inventorydetails_reserved_legend">
+            <div class="datarow">
+                <div class="reserved_legend_title">Investigate:</div>
+            </div>
+            <div class="datarow">
+                <div class="reserved_legend_title">
+                    <span class="legendicon"><img src="/img/masterinvent/red_square.png" alt="Late"/></span>
+                    Over 30 Days Late
+                </div>
+            </div>
+            <div class="datarow">
+                <div class="reserved_legend_title">
+                    <span class="legendicon"><img src="/img/masterinvent/violet_square.png" alt="Shipped"/></span>
+                    % Fulfilled = Shipped
+                </div>
+            </div>
+        </div>
     </div>
     <div class="datarow">
         <div class="inventorydetails_reseved_head">
