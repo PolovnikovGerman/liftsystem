@@ -584,6 +584,7 @@ function init_master_inventorytabledat() {
                 setTimeout(() => {
                     scrollElement.getScrollElement().scrollTop = scrollElement.getScrollElement().scrollHeight;
                 }, "300");
+                new SimpleBar(document.getElementById('inventorydetails_reseved_body'), { autoHide: false });
                 $("#modalEditInventHistory").modal({keyboard: false, show: true});
                 init_colorhistory_popup();
             } else {
@@ -894,6 +895,10 @@ function init_colorhistory_popup() {
         },'json');
     });
     $(".instock_recnum[data-rectype='order']").unbind('click').click(function () {
+        var order = $(this).data('order');
+        inventory_order_edit(order);
+    })
+    $(".inventoryreseved_table_row").find("div.ordernumber").unbind('click').click(function () {
         var order = $(this).data('order');
         inventory_order_edit(order);
     })
