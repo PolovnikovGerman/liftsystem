@@ -1102,6 +1102,16 @@ span.saveinventincome {
     margin-top: 21px;
     margin-bottom: 7px;
 }
+.inventorydetails_reserved_legend {
+    float: right!important;
+    margin-right: 42px;
+    margin-top: -14px;
+    font-size: 14px;
+    color: #ffffff;
+}
+span.legendicon {
+    margin-right: 4px;
+}
 .inventorydetails_reseved_head {
     width: 760px;
     background: #c1c1c1;
