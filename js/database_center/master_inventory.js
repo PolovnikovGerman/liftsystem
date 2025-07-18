@@ -62,6 +62,7 @@ function init_master_inventorydata() {
             // $(".inventtotalavailable").empty().html(response.data.available);
             // $(".inventtotalmaximum").empty().html(response.data.maximum);
             jQuery.balloon.init();
+            new SimpleBar(document.getElementById('masterinventtablebody'), { autoHide: false });
             init_master_inventorytabledat();
             leftmenu_alignment();
         } else {
