@@ -76,7 +76,7 @@
                     <div class="shipdate <?=$reserv['shipdateclass']?>"><?=$reserv['shipdate']?></div>
                     <div class="ordernumber" data-order="<?=$reserv['order_id']?>"><?=$reserv['order']?></div>
                     <div class="customername"><?=$reserv['customer_name']?></div>
-                    <div class="amntval"><?=QTYOutput($reserv['item_qty'])?></div>
+                    <div class="amntval"><?=QTYOutput($reserv['reserved'])?></div>
                     <div class="forecastbal"><?=QTYOutput($reserv['forecastbal'])?></div>
                     <div class="artapprov <?=$reserv['approvedclass']?>"><?=$reserv['approved']?></div>
                     <div class="fullfiledperc <?=$reserv['fullfillclass']?>"><?=$reserv['fullfill']?></div>
