@@ -1082,7 +1082,7 @@ class Inventory_model extends MY_Model
 
         $instock=$income-$outcome;
 
-        $available=$instock-$reserved;
+        $available=$instock; // -$reserved;
 
         $stockperc=$this->empty_html_content;
         if ($maxval!=0) {
