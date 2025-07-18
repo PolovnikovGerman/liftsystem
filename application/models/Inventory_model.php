@@ -1055,6 +1055,9 @@ class Inventory_model extends MY_Model
                     $out['lists'] = $res['lists'];
                     $out['itemdata'] = $res['itemdata'];
                     $out['balance'] = $res['balance'];
+                    $out['reserved'] = $res['reserved'];
+                    $out['reservtotal'] = $res['reservtotal'];
+                    $out['available'] = $res['available'];
                 }
             }
         } else {
