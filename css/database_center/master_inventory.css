@@ -1124,7 +1124,7 @@ span.legendicon {
     text-align: center;
 }
 .inventorydetails_reseved_head .shipdate {
-    width: 67px;
+    width: 80px;
 }
 .inventorydetails_reseved_head .ordernumber {
     width: 67px;
@@ -1145,7 +1145,7 @@ span.legendicon {
     width: 63px;
 }
 .inventorydetails_reseved_head .shippedperc {
-    width: 120px;
+    width: 107px;
 }
 .inventorydetails_reseved_body {
     width: 760px;
@@ -1165,7 +1165,7 @@ span.legendicon {
     text-align: center;
 }
 .inventoryreseved_table_row .shipdate {
-    width: 67px;
+    width: 80px;
     border-right: 1px solid #000000;
 }
 .inventoryreseved_table_row .shipdate.late {
@@ -1214,7 +1214,7 @@ span.legendicon {
     background: #ff00f6;
 }
 .inventoryreseved_table_row .shippedperc {
-    width: 120px;
+    width: 107px;
 }
 .inventoryreseved_table_row .shippedperc.shipped {
     background: #ff00f6;

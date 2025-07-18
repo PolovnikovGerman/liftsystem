@@ -476,9 +476,11 @@ class Inventory_model extends MY_Model
             $this->db->join('('.$proofsql.') p','p.order_id=o.order_id','left');
             $this->db->join('('.$shipsql.') shp','shp.order_itemcolor_id=v.order_itemcolor_id','left');
             $this->db->where('v.inventory_color_id', $inventory_color_id);
+            $this->db->order_by('o.order_date');
             $results = $this->db->get()->result_array();
             $reserved = [];
             $totalreserv = 0;
+            $forecastbal = $balance;
             foreach ($results as $result) {
                 if ($result['daydiff'] < -30) {
                     $result['shipdate'] = $result['daydiff'].' days';
@@ -497,28 +499,31 @@ class Inventory_model extends MY_Model
                 $result['approved'] = $result['approv']==0 ? 'Not Approved' : 'Approved';
                 $result['approvedclass'] = $result['approv']==0 ? 'notapproved' : '';
                 $result['fullfill'] = '-';
-                $result['fullfillclass'] = 'fullfill';
+                $result['fullfillclass'] = '';
                 if ($result['shipped'] > 0) {
                     $result['fullfill'] = round($result['shipped'] / $result['item_qty'] * 100,0).'%';
-                    $result['fullfillclass'] = '';
                 }
                 $result['ship'] = '-';
                 $result['shipclass'] = '';
                 if ($result['shipqty'] > 0) {
                     if ($result['shipqty'] >= $result['item_qty']) {
                         $result['ship'] = '100%';
-                        $result['shipclass'] = 'shipped';
                     } else {
                         $result['ship'] = round($result['shipqty'] / $result['item_qty'] * 100,0).'%';
-                        $result['shipclass'] = 'shippart';
                     }
                 }
-                $result['forecastbal'] = $balance - $result['reserved'];
+                if ($result['ship']!=$result['fullfill']) {
+                    $result['fullfillclass'] = 'fullfill';
+                    $result['shipclass'] = 'shipped';
+                }
+                $forecastbal-=$result['reserved'];
+                $result['forecastbal'] = $forecastbal;
                 $reserved[] = $result;
                 $totalreserv+=$result['reserved'];
             }
             $out['reserved'] = $reserved;
             $out['reservtotal'] = $totalreserv;
+            $out['available'] = intval($balance) - intval($totalreserv);
         }
         return $out;
     }

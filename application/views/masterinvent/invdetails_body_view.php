@@ -37,7 +37,7 @@
         <div class="inventorydetails_total_stock"><?=QTYOutput($balance)?></div>
     </div>
     <div class="datarow">
-        <div class="inventorydetails_reseved_title">Reserved:</div>
+        <div class="inventorydetails_reseved_title">Reserved: <?=QTYOutput($reservtotal)?></div>
         <div class="inventorydetails_reserved_legend">
             <div class="datarow">
                 <div class="reserved_legend_title">Investigate:</div>
@@ -88,7 +88,7 @@
     </div>
     <div class="datarow">
         <div class="inventorydetails_reserved">Available:</div>
-        <div class="inventorydetails_total_reserved"><?=QTYOutput($reservtotal)?></div>
+        <div class="inventorydetails_total_reserved"><?=QTYOutput($available)?></div>
     </div>
 
 </div>

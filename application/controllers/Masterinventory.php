@@ -227,6 +227,7 @@ class Masterinventory extends MY_Controller
                         'balance' => $res['balance'],
                         'reserved' => $res['reserved'],
                         'reservtotal' => $res['reservtotal'],
+                        'available' => $res['available'],
                     ];
                     // $mdata['winbody'] = $this->load->view('masterinvent/history_body_view', $options, TRUE);
                     $mdata['winbody'] = $this->load->view('masterinvent/invdetails_body_view', $options, TRUE);
