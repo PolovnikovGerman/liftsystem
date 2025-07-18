@@ -107,7 +107,7 @@ class Inventory_model extends MY_Model
                     $reserved = $this->inventory_color_reserved($color['inventory_color_id']);
                     $instock=$income-$outcome;
                     $sum_instock = $sum_instock + $instock;
-                    $available=$instock-$reserved;
+                    $available=$instock; // -$reserved;
                     $total_invent+=($available*$color['avg_price']);
                     $sum_available = $sum_available + $available;
                     $sum_reserved = $sum_reserved + $reserved;
