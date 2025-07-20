@@ -107,7 +107,7 @@ class Inventory_model extends MY_Model
                     $reserved = $this->inventory_color_reserved($color['inventory_color_id']);
                     $instock=$income-$outcome;
                     $sum_instock = $sum_instock + $instock;
-                    $available=$instock; // -$reserved;
+                    $available=$instock-$reserved;
                     $total_invent+=($available*$color['avg_price']);
                     $sum_available = $sum_available + $available;
                     $sum_reserved = $sum_reserved + $reserved;
@@ -234,30 +234,12 @@ class Inventory_model extends MY_Model
 
     public function inventory_color_reserved($inventory_color_id) {
         // Params $printshop_item_id, $color, $brand
-//        return 0;
-//        $this->db->select('sum(i.item_qty) as reserved, count(i.order_itemcolor_id) as cnt');
-//        $this->db->from('ts_order_itemcolors i');
-//        $this->db->join('ts_order_items im','im.order_item_id=i.order_item_id');
-//        $this->db->join('ts_orders o','o.order_id=im.order_id');
-//        $this->db->join('ts_printshop_colors c','c.printshop_item_id=i.printshop_item_id');
-//        $this->db->where('o.order_cog', null);
-//        if ($printshop_item_id>0) {
-//            $this->db->where('i.printshop_item_id', $printshop_item_id);
-//            $this->db->where('i.item_color', $color);
-//        }
-//        if ($brand!=='ALL') {
-//            $this->db->where('o.brand', $brand);
-//        }
-//        $reserv=$this->db->get()->row_array();
         $reserved = 0;
-//        if ($reserv['cnt']>0) {
-//            $reserved = intval($reserv['reserved']);
+//        $this->db->select('count(*) as cnt, sum(reserved) as reserved')->from('v_inventory_reserved')->where('inventory_color_id', $inventory_color_id);
+//        $resdat = $this->db->get()->row_array();
+//        if ($resdat['cnt']>0) {
+//            $reserved = $resdat['reserved'];
 //        }
-        $this->db->select('count(*) as cnt, sum(reserved) as reserved')->from('v_inventory_reserved')->where('inventory_color_id', $inventory_color_id);
-        $resdat = $this->db->get()->row_array();
-        if ($resdat['cnt']>0) {
-            $reserved = $resdat['reserved'];
-        }
         return $reserved;
     }
 
@@ -457,32 +439,80 @@ class Inventory_model extends MY_Model
             }
             $out['lists'] = $lists;
             $out['balance'] = $balance;
-            // Get reserved
-            $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt');
-            $this->db->from('ts_artworks a');
-            $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
-            $this->db->where('p.approved > ',0);
-            $this->db->group_by('a.order_id');
-            $proofsql = $this->db->get_compiled_select();
+        }
+        return $out;
+    }
 
-            $this->db->select('order_itemcolor_id, sum(qty) as shipqty')->from('ts_order_trackings')->group_by('order_itemcolor_id');
-            $shipsql = $this->db->get_compiled_select();
+    public function get_masterinventory_colorreserv($inventory_color_id, $hidelate=0, $hideproof=0, $hidefullfil=0)
+    {
+        $out=['reserved' => [], 'reservtotal' => 0, 'available' => 0];
+        $balance = 0;
+        $stocks = $this->db->select('*')->from('v_inventory_instock')->where('color_id', $inventory_color_id)->get()->result_array();
+        foreach ($stocks as $stock) {
+            if ($stock['instock_type']=='O') {
+                $balance-=$stock['instock_qty'];
+            } else {
+                $balance+=$stock['instock_qty'];
+            }
+        }
+        // Get reserved
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
 
-            $this->db->select('v.*, o.order_num, o.order_id, o.customer_name, o.brand, o.shipdate, coalesce(p.cnt,0) approv, coalesce(shp.shipqty,0) shipqty');
-            $this->db->select('timestampdiff(DAY, now(), DATE_FORMAT(FROM_UNIXTIME(o.shipdate),\'%Y-%m-%d\')) as daydiff');
-            $this->db->from('v_inventory_reserved v');
-            $this->db->join('ts_order_items oi','oi.order_item_id=v.order_item_id');
-            $this->db->join('ts_orders o','o.order_id=oi.order_id');
-            $this->db->join('('.$proofsql.') p','p.order_id=o.order_id','left');
-            $this->db->join('('.$shipsql.') shp','shp.order_itemcolor_id=v.order_itemcolor_id','left');
-            $this->db->where('v.inventory_color_id', $inventory_color_id);
-            $this->db->order_by('o.order_date');
-            $results = $this->db->get()->result_array();
-            $reserved = [];
-            $totalreserv = 0;
-            $forecastbal = $balance;
-            foreach ($results as $result) {
-                if ($result['daydiff'] < -30) {
+        $this->db->select('order_itemcolor_id, sum(qty) as shipqty')->from('ts_order_trackings')->group_by('order_itemcolor_id');
+        $shipsql = $this->db->get_compiled_select();
+
+        $this->db->select('v.*, o.order_num, o.order_id, o.customer_name, o.brand, o.shipdate, coalesce(p.cnt,0) approv, coalesce(shp.shipqty,0) shipqty');
+        $this->db->select('timestampdiff(DAY, now(), DATE_FORMAT(FROM_UNIXTIME(o.shipdate),\'%Y-%m-%d\')) as daydiff');
+        $this->db->from('v_inventory_reserved v');
+        $this->db->join('ts_order_items oi','oi.order_item_id=v.order_item_id');
+        $this->db->join('ts_orders o','o.order_id=oi.order_id');
+        $this->db->join('('.$proofsql.') p','p.order_id=o.order_id','left');
+        $this->db->join('('.$shipsql.') shp','shp.order_itemcolor_id=v.order_itemcolor_id','left');
+        $this->db->where('v.inventory_color_id', $inventory_color_id);
+        if ($hidelate==1) {
+            $this->db->having('daydiff >= ',0);
+        }
+        if ($hideproof==1) {
+            $this->db->where('coalesce(p.cnt,0) > ',0);
+        }
+        $this->db->order_by('o.shipdate');
+        $results = $this->db->get()->result_array();
+        $reserved = [];
+        $totalreserv = 0;
+        $forecastbal = $balance;
+        foreach ($results as $result) {
+            $manage = 1;
+            $result['fullfill'] = '-';
+            $result['fullfillclass'] = '';
+            if ($result['shipped'] > 0) {
+                $result['fullfill'] = round($result['shipped'] / $result['item_qty'] * 100,0).'%';
+            }
+            $result['ship'] = '-';
+            $result['shipclass'] = '';
+            if ($result['shipqty'] > 0) {
+                if ($result['shipqty'] >= $result['item_qty']) {
+                    $result['ship'] = '100%';
+                } else {
+                    $result['ship'] = round($result['shipqty'] / $result['item_qty'] * 100,0).'%';
+                }
+            }
+            if ($hidefullfil==1) {
+                if ($result['ship']==$result['fullfill']) {
+                    $manage = 0;
+                }
+            } else {
+                if ($result['ship']!=$result['fullfill']) {
+                    $result['fullfillclass'] = 'fullfill';
+                    $result['shipclass'] = 'shipped';
+                }
+            }
+            if ($manage==1) {
+                if ($result['daydiff'] <= -60) {
                     $result['shipdate'] = $result['daydiff'].' days';
                     $result['shipdateclass'] = 'late';
                 } elseif ($result['daydiff'] < 0) {
@@ -492,39 +522,21 @@ class Inventory_model extends MY_Model
                     $result['shipdate'] = 'TODAY';
                     $result['shipdateclass'] = '';
                 } else {
-                    $result['shipdate'] = date('M j, Y', $result['shipdate']);
+                    $result['shipdate'] = '+'.$result['daydiff'].' days'; // date('M j, Y', $result['shipdate']);
                     $result['shipdateclass'] = '';
                 }
                 $result['order'] = ($result['brand']=='SR' ? 'SR' : 'BT').'-'.$result['order_num'];
                 $result['approved'] = $result['approv']==0 ? 'Not Approved' : 'Approved';
                 $result['approvedclass'] = $result['approv']==0 ? 'notapproved' : '';
-                $result['fullfill'] = '-';
-                $result['fullfillclass'] = '';
-                if ($result['shipped'] > 0) {
-                    $result['fullfill'] = round($result['shipped'] / $result['item_qty'] * 100,0).'%';
-                }
-                $result['ship'] = '-';
-                $result['shipclass'] = '';
-                if ($result['shipqty'] > 0) {
-                    if ($result['shipqty'] >= $result['item_qty']) {
-                        $result['ship'] = '100%';
-                    } else {
-                        $result['ship'] = round($result['shipqty'] / $result['item_qty'] * 100,0).'%';
-                    }
-                }
-                if ($result['ship']!=$result['fullfill']) {
-                    $result['fullfillclass'] = 'fullfill';
-                    $result['shipclass'] = 'shipped';
-                }
                 $forecastbal-=$result['reserved'];
                 $result['forecastbal'] = $forecastbal;
                 $reserved[] = $result;
                 $totalreserv+=$result['reserved'];
             }
-            $out['reserved'] = $reserved;
-            $out['reservtotal'] = $totalreserv;
-            $out['available'] = intval($balance) - intval($totalreserv);
         }
+        $out['reserved'] = $reserved;
+        $out['reservtotal'] = $totalreserv;
+        $out['available'] = intval($balance) - intval($totalreserv);
         return $out;
     }
 
@@ -1055,9 +1067,6 @@ class Inventory_model extends MY_Model
                     $out['lists'] = $res['lists'];
                     $out['itemdata'] = $res['itemdata'];
                     $out['balance'] = $res['balance'];
-                    $out['reserved'] = $res['reserved'];
-                    $out['reservtotal'] = $res['reservtotal'];
-                    $out['available'] = $res['available'];
                 }
             }
         } else {
@@ -1090,7 +1099,7 @@ class Inventory_model extends MY_Model
 
         $instock=$income-$outcome;
 
-        $available=$instock; // -$reserved;
+        $available=$instock - $reserved;
 
         $stockperc=$this->empty_html_content;
         if ($maxval!=0) {
@@ -1145,7 +1154,7 @@ class Inventory_model extends MY_Model
     }
 
     public function inventory_reserved($inventory_type_id, $itemstatus = 0) {
-//        return 0;
+        return 0;
 //        $this->db->select('sum(i.item_qty) as reserved, count(i.order_itemcolor_id) as cnt');
 //        $this->db->from('ts_order_itemcolors i');
 //        $this->db->join('ts_order_items im','im.order_item_id=i.order_item_id');

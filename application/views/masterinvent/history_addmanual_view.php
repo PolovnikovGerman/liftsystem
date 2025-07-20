@@ -1,4 +1,4 @@
-<div class="inventoryhistory_table_row manualoutcomerow">
+<div class="inventorydetails_table_row manualoutcomerow" style="background: #ffffff">
     <input type="hidden" value="<?=$color?>" id="colorinventory"/>
     <div class="instock_date">
         <input class="inventoryoutcomedateinpt" value="<?=date('m/d/Y')?>"/>
