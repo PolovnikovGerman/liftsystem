@@ -1,5 +1,8 @@
 <div class="inventorydetails_body_content">
     <input type="hidden" id="invenorynewhistoryadd" value="0"/>
+    <input type="hidden" id="hidelate" value="<?=$hidelate?>"/>
+    <input type="hidden" id="hideproof" value="<?=$hideproof?>"/>
+    <input type="hidden" id="hidefullfil" value="<?=$hidefullfil?>"/>
     <div class="inventorydetails_table_title">Inventory Used:</div>
     <div class="inventorydetails_table_head">
         <div class="instock_date">
@@ -37,21 +40,52 @@
         <div class="inventorydetails_total_stock"><?=QTYOutput($balance)?></div>
     </div>
     <div class="datarow">
-        <div class="inventorydetails_reseved_title">Reserved:</div>
+        <div class="inventorydetails_reseved_title">Reserved: <span><?=QTYOutput($reservtotal)?></span></div>
         <div class="inventorydetails_reserved_legend">
             <div class="datarow">
-                <div class="reserved_legend_title">Investigate:</div>
-            </div>
-            <div class="datarow">
-                <div class="reserved_legend_title">
-                    <span class="legendicon"><img src="/img/masterinvent/red_square.png" alt="Late"/></span>
-                    Over 30 Days Late
+                <div class="inventory_reserv_view latetime">
+                    <span class="inventory_reserv_check" data-item="<?=$item['inventory_color_id']?>">
+                        <?php if ($hidelate==0) : ?>
+                            <i class="fa fa-square"></i>
+                        <?php else: ?>
+                            <i class="fa fa-check-square"></i>
+                        <?php endif; ?>
+                    </span>
+                    Hide
+                </div>
+                <div class="inventory_reserv_view artproof">
+                    <span class="inventory_reserv_check" data-item="<?=$item['inventory_color_id']?>">
+                        <?php if ($hideproof==0) : ?>
+                            <i class="fa fa-square"></i>
+                        <?php else: ?>
+                            <i class="fa fa-check-square"></i>
+                        <?php endif; ?>
+                    </span>
+                    Hide
+                </div>
+                <div class="inventory_reserv_view fulfillmnt">
+                    <span class="inventory_reserv_check" data-item="<?=$item['inventory_color_id']?>">
+                        <?php if ($hidefullfil==0) : ?>
+                            <i class="fa fa-square"></i>
+                        <?php else: ?>
+                            <i class="fa fa-check-square"></i>
+                        <?php endif; ?>
+                    </span>
+                    Hide
                 </div>
             </div>
             <div class="datarow">
                 <div class="reserved_legend_title">
-                    <span class="legendicon"><img src="/img/masterinvent/violet_square.png" alt="Shipped"/></span>
-                    % Fulfilled = Shipped
+                    <span class="legendicon"><img src="/img/masterinvent/red_square.png" alt="Late"/></span>
+                    Over 60 Days Late
+                </div>
+                <div class="reserved_legend_title">
+                    <span class="legendicon"><img src="/img/masterinvent/yellow_square.png" alt="Proof"/></span>
+                    Proof Not Approved
+                </div>
+                <div class="reserved_legend_title">
+                    <span class="legendicon"><img src="/img/masterinvent/violet_square.png" alt="Fulfillment"/></span>
+                    % Fulfilled # Shipped
                 </div>
             </div>
         </div>
@@ -63,32 +97,17 @@
             <div class="customername">Customer</div>
             <div class="amntval">QTY</div>
             <div class="forecastbal">Forecasted Bal.</div>
-            <div class="artapprov">Artwork Approved</div>
+            <div class="artapprov">Art Approved</div>
             <div class="fullfiledperc">% Fulfilled</div>
             <div class="shippedperc">% Shipped</div>
         </div>
     </div>
     <div class="datarow">
-        <div class="inventorydetails_reseved_body" id="inventorydetails_reseved_body">
-            <?php $nrow = 0; ?>
-            <?php foreach ($reserved as $reserv) : ?>
-                <div class="inventoryreseved_table_row <?= $nrow % 2 == 0 ? 'greydatarow' : 'whitedatarow' ?>">
-                    <div class="shipdate <?=$reserv['shipdateclass']?>"><?=$reserv['shipdate']?></div>
-                    <div class="ordernumber" data-order="<?=$reserv['order_id']?>"><?=$reserv['order']?></div>
-                    <div class="customername"><?=$reserv['customer_name']?></div>
-                    <div class="amntval"><?=QTYOutput($reserv['item_qty'])?></div>
-                    <div class="forecastbal"><?=QTYOutput($reserv['forecastbal'])?></div>
-                    <div class="artapprov <?=$reserv['approvedclass']?>"><?=$reserv['approved']?></div>
-                    <div class="fullfiledperc <?=$reserv['fullfillclass']?>"><?=$reserv['fullfill']?></div>
-                    <div class="shippedperc <?=$reserv['shipclass']?>"><?=$reserv['ship']?></div>
-                </div>
-                <?php $nrow++; ?>
-            <?php endforeach; ?>
-        </div>
+        <div class="inventorydetails_reseved_body" id="inventorydetails_reseved_body"><?=$reservview?></div>
     </div>
     <div class="datarow">
         <div class="inventorydetails_reserved">Available:</div>
-        <div class="inventorydetails_total_reserved"><?=QTYOutput($reservtotal)?></div>
+        <div class="inventorydetails_total_reserved"><?=QTYOutput($available)?></div>
     </div>
 
 </div>
