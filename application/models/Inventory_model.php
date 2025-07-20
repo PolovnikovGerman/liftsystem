@@ -502,7 +502,7 @@ class Inventory_model extends MY_Model
                 }
             }
             if ($hidefullfil==1) {
-                if ($result['ship']==$result['fullfill']) {
+                if ($result['ship']!=$result['fullfill']) {
                     $manage = 0;
                 }
             } else {
