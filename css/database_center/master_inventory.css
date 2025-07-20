@@ -1094,13 +1094,16 @@ span.saveinventincome {
     font-weight: normal;
 }
 .inventorydetails_reseved_title {
-    color: #ffffff;
+    color: #c1c1c1;
     font-size: 16px;
     font-weight: 600;
     height: 20px;
     line-height: 20px;
     margin-top: 21px;
     margin-bottom: 7px;
+}
+.inventorydetails_reseved_title span {
+    color: #ffffff;
 }
 .inventorydetails_reserved_legend {
     float: right!important;
