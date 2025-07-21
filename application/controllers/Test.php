@@ -3852,50 +3852,6 @@ class Test extends CI_Controller
         }
     }
 
-    public function init_postboxes()
-    {
-        $this->load->model('mailbox_model');
-        $postboxes = $this->mailbox_model->get_mailboxes();
-        foreach ($postboxes as $postbox) {
-            // Get folders
-            $folddat = $this->mailbox_model->get_postbox_folders($postbox);
-            $errormsg = $folddat['msg'];
-            if ($folddat['result']==1) {
-                $errormsg = '';
-                $folders = $folddat['folders'];
-                // Read messages from folder
-                foreach ($folders as $folder) {
-                    echo 'Read messages from '.$folder['folder_name'].PHP_EOL;
-                    $msgdat = $this->mailbox_model->read_folders_msgs($postbox, $folder);
-                }
-            } else {
-                echo $errormsg; die();
-            }
-        }
-    }
-
-    public function update_postboxes()
-    {
-        $this->load->model('mailbox_model');
-        $postboxes = $this->mailbox_model->get_mailboxes();
-        foreach ($postboxes as $postbox) {
-            $folddat = $this->mailbox_model->get_postbox_folders($postbox);
-            $errormsg = $folddat['msg'];
-            if ($folddat['result']==1) {
-                $errormsg = '';
-                $folders = $folddat['folders'];
-                // Read messages from folder
-                foreach ($folders as $folder) {
-                    echo 'Update messages from '.$folder['folder_name'].PHP_EOL;
-                    $msgdat = $this->mailbox_model->update_folders_msgs($postbox, $folder);
-
-                }
-            } else {
-                echo $errormsg; die();
-            }
-        }
-    }
-
 
     public function inventory_rest_fix()
     {
