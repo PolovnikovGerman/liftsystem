@@ -84,7 +84,7 @@ class Template
         } else {
             $brand  = $this->CI->menuitems_model->get_current_brand();
         }
-        $mobpermissions = $this->CI->menuitems_model->get_user_mobpermissions($options['user_id']);
+        // $mobpermissions = $this->CI->menuitems_model->get_user_mobpermissions($options['user_id']);
         $admin_permission = 0;
         $adminchk = $this->CI->menuitems_model->get_menuitem('/admin');
         $admin_old = 1;
@@ -130,6 +130,15 @@ class Template
                 $debt_total = $this->CI->dashboard_model->get_debt_totals();
             }
         }
+        // Mailer permission
+        $mailbox_permission = 0;
+        $mailchk = $this->CI->menuitems_model->get_menuitem('/mailbox');
+        if ($mailchk['result']==$this->success_result) {
+            $mail_permissionchk = $this->CI->menuitems_model->get_menuitem_userpermisiion($options['user_id'], $mailchk['menuitem']['menu_item_id']);
+            if ($mail_permissionchk['result']==$this->success_result && $mail_permissionchk['permission']>0) {
+                $mailbox_permission = 1;
+            }
+        }
 
         $pagetitle = (isset($options['title']) ? '::'.$options['title'] : '');
         $gmaps = 0;
@@ -170,6 +179,7 @@ class Template
             'usrrole' => $userdat['user_logged_in'],
             'debtpermiss' => $debt_permissions,
             'debttotal' => $debt_total,
+            'mailboxchk' => $mailbox_permission,
         ];
 //        if (ifset($options,'adaptive',0)==1) {
 //            $dat['header_view'] = $this->CI->load->view('page/header_adaptive_view', $topmenu_options, TRUE);

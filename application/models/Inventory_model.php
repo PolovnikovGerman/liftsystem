@@ -475,7 +475,7 @@ class Inventory_model extends MY_Model
         $this->db->join('('.$shipsql.') shp','shp.order_itemcolor_id=v.order_itemcolor_id','left');
         $this->db->where('v.inventory_color_id', $inventory_color_id);
         if ($hidelate==1) {
-            $this->db->having('daydiff >= ',0);
+            $this->db->having('daydiff > ',-60);
         }
         if ($hideproof==1) {
             $this->db->where('coalesce(p.cnt,0) > ',0);
@@ -502,7 +502,7 @@ class Inventory_model extends MY_Model
                 }
             }
             if ($hidefullfil==1) {
-                if ($result['ship']==$result['fullfill']) {
+                if ($result['ship']!=$result['fullfill']) {
                     $manage = 0;
                 }
             } else {

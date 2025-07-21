@@ -4845,4 +4845,54 @@ class Test extends CI_Controller
         $writer->save($filenorm);    // download file
         echo 'File '.$filenorm.' ready'.PHP_EOL;
     }
+
+    public function init_postboxes()
+    {
+        $this->load->model('mailbox_model');
+        $postboxes = $this->mailbox_model->get_mailboxes();
+        foreach ($postboxes as $postbox) {
+            if ($postbox['postbox_passwd']) {
+                // Get folders
+                $folddat = $this->mailbox_model->get_postbox_folders($postbox);
+                $errormsg = $folddat['msg'];
+                if ($folddat['result']==1) {
+                    $errormsg = '';
+                    $folders = $folddat['folders'];
+                    // Read messages from folder
+                    foreach ($folders as $folder) {
+                        echo 'Read messages from '.$folder['folder_name'].PHP_EOL;
+                        $msgdat = $this->mailbox_model->read_folders_msgs($postbox, $folder);
+                    }
+                } else {
+                    echo $errormsg; die();
+                }
+            }
+        }
+    }
+
+    public function changeattachs()
+    {
+        $this->db->select('*')->from('postbox_attachments')->order_by('attachment_id','desc');
+        $attachs = $this->db->get()->result_array();
+        $name_sh = $this->config->item('mailbox_attachments_relative');
+        $namefl = $this->config->item('mailbox_attachments');
+        foreach ($attachs as $attach) {
+            $filename = str_replace($name_sh, $namefl, $attach['attachment_link']);
+            $size = @filesize($filename);
+            if ($size) {
+                $this->db->where('attachment_id', $attach['attachment_id']);
+                $this->db->set('attachment_size', $size);
+                $this->db->update('postbox_attachments');
+            }
+        }
+        echo 'All OK '.PHP_EOL;
+    }
+
+    public function updatepostbox()
+    {
+        $postbox = 1;
+        $this->load->model('mailbox_model');
+        $this->mailbox_model->updatepostbox($postbox);
+    }
+
 }

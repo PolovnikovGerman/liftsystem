@@ -53,6 +53,7 @@
  * @property Sritems_model sritems_model
  * @property Mailbox_model mailbox_model
  * @property Printscheduler_model printscheduler_model
+ * @property Mailbox_model mailbox_model
  */
 
 class MY_Model extends CI_Model

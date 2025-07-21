@@ -11,14 +11,22 @@ class Mailbox_model extends MY_Model
     var $mainfolders = [
         'Inbox',
         'Unread',
-        'Starred',
         'Draft',
+        'Starred',
         'Sent',
         'Bulk',
         'Archive',
         'Spam',
         'Trash',
     ];
+
+    var $imgtypes = ['BMP','GIF','JPEG','JPG','PNG'];
+    var $xlstype = ['VND.MS-EXCEL','VND.OPENXMLFORMATS-OFFICEDOCUMENT.SPREADSHEETML.SHEET'];
+    var $pdftype = ['OCTET-STREAM','PDF'];
+    var $archtype = ['ZIP'];
+    var $writter = ['MSWORD'];
+
+
     function __construct()
     {
         parent::__construct();
@@ -91,7 +99,6 @@ class Mailbox_model extends MY_Model
         $imapdat = $this->_create_imap_client($postbox);
         $out['msg'] = $imapdat['msg'];
         if ($imapdat['result']==$this->success_result) {
-            $out['result'] = $this->success_result;
             $imap = $imapdat['imap'];
             $imap->selectFolder($folder['folder_name']);
             $overallMessages = $imap->countMessages();
@@ -103,7 +110,8 @@ class Mailbox_model extends MY_Model
             // $out['unread'] = $unreadMessages;
             $briefinfos = $imap->getBriefInfoMessages();
             foreach ($briefinfos as $briefinfo) {
-                $message = $imap->getMessage($briefinfo['id']);
+                echo 'Brief Info '.$briefinfo['id'].PHP_EOL;
+                $message = @$imap->getMessage($briefinfo['id']);
                 echo 'Manage msg '.$briefinfo['id'].' Messaage ID '.$message->header->message_id.PHP_EOL;
                 // echo 'UDate '.$message->header->udate.PHP_EOL;
                 $postmsgid = $message->header->message_id;
@@ -113,6 +121,7 @@ class Mailbox_model extends MY_Model
                 if ($msgchk['cnt']==0) {
                     // New Message
                     $this->db->set('folder_id', $folder['folder_id']);
+                    $this->db->set('message_msgno', $message->header->msgno);
                     $this->db->set('message_subject', $message->header->subject);
                     $this->db->set('message_from', str_replace('"','',$message->header->from));
                     $this->db->set('message_to', $message->header->to);
@@ -126,11 +135,8 @@ class Mailbox_model extends MY_Model
                     $this->db->set('message_seen', $message->header->seen);
                     $this->db->set('message_draft', $message->header->draft);
                     $this->db->set('message_udate', $message->header->udate);
-                    if (isset($message->message->info[1]->body)) {
-                        $this->db->set('message_text', $message->message->info[1]->body);
-                    } else {
-                        $this->db->set('message_text', $message->message->info[0]->body);
-                    }
+                    $this->db->set('message_body', $message->message->html);
+                    $this->db->set('message_text', $message->message->plain);
                     $this->db->insert('postbox_messages');
                     $msgid = $this->db->insert_id();
                     $attachments = $message->attachments;
@@ -165,6 +171,7 @@ class Mailbox_model extends MY_Model
                     $this->db->update('postbox_messages');
                 }
             }
+            $out['result'] = $this->success_result;
         }
         return $out;
     }
@@ -253,6 +260,7 @@ class Mailbox_model extends MY_Model
                                 $this->db->set('attachment_name', $attachment->name);
                                 $this->db->set('attachment_link', $shrtpath . $newattachname);
                                 $this->db->set('attachment_type', $attachment->info->structure->subtype);
+                                $this->db->set('attachment_size', $attachment->info->structure->bytes);
                                 $this->db->insert('postbox_attachments');
                             }
                         }
@@ -283,12 +291,38 @@ class Mailbox_model extends MY_Model
         return $out;
     }
     // Output functions
-    public function get_user_mailboxes($usr_id, $brand='ALL')
+    public function get_user_mailboxes($usr_id, $user_role, $brand='ALL')
     {
-        $this->db->select('*')->from('user_postboxes')->where('user_id', $usr_id);
+        $this->db->select('*')->from('user_postboxes');
+        if ($user_role=='masteradmin') {
+        } else {
+            $this->db->where('user_id', $usr_id);
+        }
+        if ($brand!='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB','BT']);
+            }
+        }
         // Add select by brand
         $results = $this->db->get()->result_array();
         $out = [];
+        if ($user_role=='masteradmin') {
+            foreach ($results as $result) {
+                if ($result['user_id']==$usr_id) {
+                    $out[] = $result;
+                    break;
+                }
+            }
+            foreach ($results as $result) {
+                if ($result['user_id']!=$usr_id) {
+                    $out[] = $result;
+                }
+            }
+            $results = $out;
+            $out = [];
+        }
         foreach ($results as $result) {
             $mailtitle = explode('@',$result['postbox_user']);
             $result['postbox_title'] = $mailtitle[0].'@';
@@ -323,6 +357,7 @@ class Mailbox_model extends MY_Model
                             'active' => $active,
                             'empty' => $folder['cnt']==0 ? 1 : 0,
                             'cnt' => short_number($folder['cnt'],1),
+                            'class' => 'btn-'.strtolower($folder['folder_name']),
                         ];
                         if ($active==1) {
                             $active_folder = $folder['folder_id'];
@@ -343,6 +378,7 @@ class Mailbox_model extends MY_Model
                         'active' => $active==1 ? 'active' : '',
                         'empty' => $folder['cnt']==0 ? 1 : 0,
                         'cnt' => short_number($folder['cnt'],1),
+                        'class' => 'btn-'.strtolower($folder['folder_name']),
                     ];
                 }
             }
@@ -430,19 +466,28 @@ class Mailbox_model extends MY_Model
     {
         $out=['result' => $this->error_result, 'msg' => 'Empty Folder id'];
         ini_set('memory_limit',-1);
-        if ($postsort=='date_desc') {
-            $sortby = 'm.message_udate';
-            $sortorder = 'desc';
-        } elseif ('date_asc') {
+        $sortby = 'm.message_udate';
+        $sortorder = 'desc';
+        if ($postsort=='date_asc') {
             $sortby = 'm.message_udate';
             $sortorder = 'asc';
-        } elseif ('unread_asc') {
+        } elseif ($postsort=='unread_asc') {
             $sortby = 'm.message_seen';
             $sortorder = 'asc';
-        } elseif ('flagged_first') {
+        } elseif ($postsort=='starred_asc') {
             $sortby = 'm.message_flagged';
             $sortorder = 'desc';
+        } elseif ($postsort=='sender_asc') {
+            $sortby = 'm.message_from';
+            $sortorder = 'asc';
+        } elseif ($postsort=='subject_asc') {
+            $sortby = 'm.message_subject';
+            $sortorder = 'asc';
+        } elseif ($postsort=='attach_asc') {
+            $sortby = 'numattach';
+            $sortorder = 'desc';
         }
+
         if (!empty($folder_id)) {
             $this->db->select('message_id, count(attachment_id) as cnt')->from('postbox_attachments')->group_by('message_id');
             $attachssql = $this->db->get_compiled_select();
@@ -529,6 +574,58 @@ class Mailbox_model extends MY_Model
         return $out;
     }
 
+    public function update_messages_readstatus($postbox_id, $messages, $flagread)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Postbox Not Found'];
+        $this->db->select('*')->from('user_postboxes')->where('postbox_id', $postbox_id);
+        $postbox = $this->db->get()->row_array();
+        if (ifset($postbox, 'postbox_id', 0) == $postbox_id) {
+            // $msgdat = explode(',', $messages);
+            $this->db->select('message_id, message_uid')->from('postbox_messages')->where_in('message_id', $messages);
+//            if ($flagread==0) {
+//                $this->db->where('message_seen', 1);
+//            } else {
+//                $this->db->where('message_seen', 0);
+//            }
+            $candres = $this->db->get()->result_array();
+//            if (ifset($candres, 'uid', '')!=='') {
+                // Prepare imap
+                $imapres = $this->_create_imap_client($postbox);
+                $out['msg'] = $imapres['msg'];
+                if ($imapres['result']==$this->success_result) {
+                    $imap = $imapres['imap'];
+                    foreach ($candres as $message) {
+                        $id = $imap->getId($message['message_uid']);
+                        if ($flagread==1) {
+                            try {
+                                $imap->setSeenMessage($id);
+                            } catch (ImapClientException $error) {
+                                $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
+                                return $out;
+                            }
+                        } else {
+                            try {
+                                $imap->setUnseenMessage($id);
+                            } catch (ImapClientException $error) {
+                                $out['msg'] = $error->getMessage(); // You know the rule, no errors in production ...
+                                return $out;
+                            }
+                        }
+                        $this->db->where('message_id', $message['message_id']);
+                        if ($flagread==1) {
+                            $this->db->set('message_seen', 1);
+                        } else {
+                            $this->db->set('message_seen', 0);
+                        }
+                        $this->db->update('postbox_messages');
+                    }
+                    $out['result'] = $this->success_result;
+                }
+            }
+//        }
+        return $out;
+    }
+
     public function update_message_flagged($message_id, $postbox_id)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Postbox Not Found'];
@@ -587,6 +684,27 @@ class Mailbox_model extends MY_Model
                 // Get attached
                 $this->db->select('*')->from('postbox_attachments')->where('message_id', $message_id);
                 $attachs = $this->db->get()->result_array();
+                if (count($attachs)>0) {
+                    // Add attach preview
+                    $newdata = [];
+                    foreach ($attachs as $attach) {
+                        if (in_array($attach['attachment_type'], $this->imgtypes)) {
+                            $attach['thumb'] = '<img src="'.$attach['attachment_link'].'" class="filebox-img" alt="Attachment"/>';
+                        } elseif (in_array($attach['attachment_type'], $this->xlstype)) {
+                            $attach['thumb'] = '<i class="fa fa-file-excel-o" aria-hidden="true"></i>';
+                        } elseif (in_array($attach['attachment_type'], $this->pdftype)) {
+                            $attach['thumb'] = '<i class="fa fa-file-pdf-o" aria-hidden="true"></i>';
+                        } elseif (in_array($attach['attachment_type'], $this->archtype)) {
+                            $attach['thumb'] = '<i class="fa fa-file-archive-o" aria-hidden="true"></i>';
+                        } elseif (in_array($attach['attachment_type'], $this->writter)) {
+                            $attach['thumb'] = '<i class="fa fa-file-word-o" aria-hidden="true"></i>';
+                        } else {
+                            $attach['thumb'] = '<i class="fa fa-file-o" aria-hidden="true"></i>';
+                        }
+                        $newdata[] = $attach;
+                    }
+                    $attachs = $newdata;
+                }
                 // Get CC
                 $this->db->select('*')->from('postmessage_address')->where(['message_id' => $message_id, 'address_type' => 'CC']);
                 $adrcc = $this->db->get()->result_array();
@@ -616,6 +734,7 @@ class Mailbox_model extends MY_Model
                 $out['adrcc'] = $adrcc;
                 $out['adrbcc'] = $adrbcc;
                 $out['folder'] = $folderdat['folder_name'];
+                $out['seen'] = ($message['message_seen']==0 ? 1 : 0);
             }
         }
         return $out;
@@ -757,6 +876,38 @@ class Mailbox_model extends MY_Model
                         }
                     }
                     $out['result'] = $this->success_result;
+                    $folders = $this->_folders_statistic($postbox_id);
+                    $newfolders = [];
+                    foreach ($this->mainfolders as $keyfold) {
+                        foreach ($folders as $folder) {
+                            if ($folder['folder_name']==$keyfold) {
+                                $newfolders[] = [
+                                    'folder_id' => $folder['folder_id'],
+                                    'folder_name' => $folder['folder_name'],
+                                    'main' => 1,
+                                    'active' => ($folder['folder_id']==$folder_id ? 1 : 0),
+                                    'empty' => $folder['cnt']==0 ? 1 : 0,
+                                    'cnt' => short_number($folder['cnt'],1),
+                                    'class' => 'btn-'.strtolower($folder['folder_name']),
+                                ];
+                                break;
+                            }
+                        }
+                    }
+                    foreach ($folders as $folder) {
+                        if (!in_array($folder['folder_name'], $this->mainfolders)) {
+                            $newfolders[] = [
+                                'folder_id' => $folder['folder_id'],
+                                'folder_name' => $folder['folder_name'],
+                                'main' => 0,
+                                'active' => ($folder['folder_id']==$folder_id ? 1 : 0),
+                                'empty' => $folder['cnt']==0 ? 1 : 0,
+                                'cnt' => short_number($folder['cnt'],1),
+                                'class' => 'btn-'.strtolower($folder['folder_name']),
+                            ];
+                        }
+                    }
+                    $out['folders'] = $newfolders;
                 }
             }
         }
@@ -797,5 +948,179 @@ class Mailbox_model extends MY_Model
             'cnt' => $starmsg['cnt'],
         ];
         return $folders;
+    }
+
+    // count messages
+    public function count_messages($postbox_id, $folder_id, $message_id, $postsort)
+    {
+        $out=['prvcnt' => 0, 'prvid' => 0, 'nxtcnt' => 0, 'nxtid' => 0];
+        ini_set('memory_limit',-1);
+        $sortby = 'm.message_udate';
+        $sortorder = 'desc';
+        if ($postsort=='date_asc') {
+            $sortby = 'm.message_udate';
+            $sortorder = 'asc';
+        } elseif ($postsort=='unread_asc') {
+            $sortby = 'm.message_seen';
+            $sortorder = 'asc';
+        } elseif ($postsort=='starred_asc') {
+            $sortby = 'm.message_flagged';
+            $sortorder = 'desc';
+        } elseif ($postsort=='sender_asc') {
+            $sortby = 'm.message_from';
+            $sortorder = 'asc';
+        } elseif ($postsort=='subject_asc') {
+            $sortby = 'm.message_subject';
+            $sortorder = 'asc';
+        } elseif ($postsort=='attach_asc') {
+            $sortby = 'numattach';
+            $sortorder = 'desc';
+        }
+
+        $this->db->select('message_id, count(attachment_id) as cnt')->from('postbox_attachments')->group_by('message_id');
+        $attachssql = $this->db->get_compiled_select();
+        if ($folder_id=='new' || $folder_id=='flagged') {
+            if ($folder_id=='new') {
+                $this->db->select('m.*, coalesce(atchs.cnt,0) as numattach')->from('postbox_messages m')->
+                join('postbox_folders f', 'f.folder_id=m.folder_id')->join("({$attachssql}) as atchs",'m.message_id=atchs.message_id', 'left')->
+                where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_seen' => 0,'m.message_deleted' => 0])->order_by($sortby, $sortorder);
+            } else {
+                $this->db->select('m.*, coalesce(atchs.cnt,0) as numattach')->from('postbox_messages m')->
+                join('postbox_folders f', 'f.folder_id=m.folder_id')->join("({$attachssql}) as atchs",'m.message_id=atchs.message_id', 'left')->
+                where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_flagged'=>1,'m.message_deleted' => 0])->order_by($sortby, $sortorder);
+            }
+            $messages = $this->db->get()->result_array();
+        } else {
+            $this->db->select('m.*, coalesce(atchs.cnt,0) as numattach')->from('postbox_messages m')->
+            join("({$attachssql}) as atchs", 'm.message_id=atchs.message_id', 'left')->where(['folder_id' => $folder_id, 'm.message_deleted' => 0])->order_by($sortby, $sortorder);
+            $messages = $this->db->get()->result_array();
+        }
+        //
+        $prvcnt = $prvid = 0;
+        $idx=0;
+        foreach ($messages as $message) {
+            if ($message['message_id']==$message_id) {
+                break;
+            }
+            $prvcnt++;
+            $prvid = $message['message_id'];
+            $idx++;
+        }
+        $out['prvcnt'] = $prvcnt;
+        $out['prvid'] = $prvid;
+        if ($idx < count($messages)-1) {
+            for ($i=$idx; $i < count($messages); $i++) {
+                if ($messages[$i]['message_id']!=$message_id) {
+                    $out['nxtcnt']=1;
+                    $out['nxtid'] = $messages[$i]['message_id'];
+                    break;
+                }
+            }
+        }
+        return $out;
+    }
+
+    function message_details($postbox_id, $folder_id, $message_id)
+    {
+        $this->db->select('pf.folder_name, up.mailbox , up.postbox_user , up.postbox_passwd')->from('postbox_folders pf')->join('user_postboxes up','up.postbox_id = pf.postbox_id');
+        $this->db->where('pf.folder_id', $folder_id);
+        $postbox = $this->db->get()->row_array();
+        $res = $this->_create_imap_client($postbox);
+        if ($res['result']==$this->success_result) {
+            $imap = $res['imap'];
+            $imap->selectFolder($postbox['folder_name']);
+            $message = @$imap->getMessage($message_id);
+            echo 'Manage Messaage ID '.$message->header->message_id.PHP_EOL;
+            // echo 'Html Body';
+            var_dump($message); die();
+            echo 'Text Body';
+            $info = $message->message->info;
+            echo 'Info CNT '.count($info).PHP_EOL;
+            if (count($info)>0) {
+                echo 'Part 0 - '.$info[0]->structure->subtype.PHP_EOL;
+                // var_dump($info[0]->body);
+                if (count($info)>1) {
+                    echo 'Part 1 - '.$info[1]->structure->subtype.PHP_EOL;
+                    // var_dump($info[1]->body);
+                }
+                echo 'Subject '.$message->header->subject.PHP_EOL;
+            }
+            // }
+            // var_dump();
+            // echo 'Uid '.$message->header->uid.PHP_EOL;
+        }
+    }
+
+    public function messages_textdetails($postbox_id)
+    {
+        $this->db->select('up.mailbox , up.postbox_user , up.postbox_passwd')->from('user_postboxes up')->where('up.postbox_id', $postbox_id);
+        $postbox = $this->db->get()->row_array();
+        $res = $this->_create_imap_client($postbox);
+        if ($res['result']==$this->success_result) {
+            $imap = $res['imap'];
+            // Get messages
+            $this->db->select('pm.pm.message_id, pf.folder_name')->from('postbox_messages pm')->join('postbox_folders pf','pm.folder_id = pf.folder_id')->where('pf.postbox_id', $postbox_id)->order_by('pf.folder_id');
+            $messages = $this->db->get()->result_array();
+            $folder_name = '';
+            foreach ($messages as $message) {
+                if ($folder_name != $message['folder_name']) {
+                    $imap->selectFolder($postbox['folder_name']);
+                    $folder_name = $message['folder_name'];
+                }
+                $incomeMessage = @$imap->getMessage($message['message_id']);
+                if ($incomeMessage) {
+                    echo 'Manage Messaage ID '.$incomeMessage->header->message_id.PHP_EOL;
+                    $info = $incomeMessage->message->info;
+                    $msgtxt = '';
+                    $msgbody = '';
+                    if (count($info)>0) {
+
+                    }
+                }
+            }
+
+        }
+    }
+
+    public function updatepostbox($postbox)
+    {
+        $postres = $this->db->select('*')->from('user_postboxes')->where('postbox_id', $postbox)->get()->row_array();
+        if (ifset($postres, 'postbox_id',0) > 0) {
+            // Get last date
+            $this->db->select('max(m.message_udate) as mdate')->from('postbox_messages m')->join('postbox_folders f','f.folder_id=m.folder_id')->where('f.postbox_id', $postbox);
+            $msgdat = $this->db->get()->row_array();
+            if (!empty($msgdat['mdate'])) {
+                // echo 'Date '.$msgdat['mdate'].' - '.date('j F Y', $msgdat['mdate']).PHP_EOL;
+                $res = $this->_create_imap_client($postres);
+                if ($res['result']==$this->success_result) {
+                    $imap = $res['imap'];
+                    $imap->selectFolder($this->inbox_name);
+                    $folderdat = $this->db->select('folder_id')->from('postbox_folders')->where(['postbox_id' => $postbox, 'folder_name' => $this->inbox_name])->get()->row_array();
+                    $folder_id = $folderdat['folder_id'];
+                    if (!empty($folderdat['folder_id'])) {
+                        $datsrch = date('j F Y', $msgdat['mdate']);
+                        while (1 == 1) {
+                            echo 'Date ' . $datsrch . PHP_EOL;
+                            // $criteria = "SINCE '{$datsrch}' BEFORE ''";
+                            $criteria = 'ON 07-Jul-2025';
+                            try {
+                                $msgdat = @$imap->getMessagesByCriteria($criteria);
+                            } catch (exception $e) {
+                                echo $e->getMessage();
+                                die();
+                            }
+
+                            if (count($msgdat)>0) {
+                                echo 'Find '.count($msgdat).PHP_EOL;
+                                foreach ($msgdat as $msg) {
+
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
     }
 }
