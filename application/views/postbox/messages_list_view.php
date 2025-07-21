@@ -34,7 +34,7 @@
             <?php endif; ?>
         </div>
         <div class="emltbl-td td-email" data-message="<?=$message['message_id']?>">
-            <span class="eml-subject"><?=$message['message_subject']?></span>
+            <span class="eml-subjectlist"><?=$message['message_subject']?></span>
             <span class="eml-contant"><?=$message['message_text']?></span>
         </div>
         <div class="emltbl-td td-files" data-message="<?=$message['message_id']?>">
