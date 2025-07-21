@@ -1110,7 +1110,8 @@ span.saveinventincome {
     margin-right: 30px;
     font-size: 13px;
     color: #ffffff;
-    width: 500px;
+    width: 440px;
+    margin-top: 10px;
 }
 .inventory_reserv_view {
     width: 33%;
