@@ -1194,7 +1194,8 @@ span.legendicon {
     color: #ffffff;
 }
 .inventoryreseved_table_row .shipdate.dedline {
-    color: #8e0000;
+    color: #ff0000;
+    font-weight: 600;
 }
 .inventoryreseved_table_row .ordernumber {
     width: 67px;
