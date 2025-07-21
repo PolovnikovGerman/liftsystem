@@ -62,6 +62,7 @@ function init_master_inventorydata() {
             // $(".inventtotalavailable").empty().html(response.data.available);
             // $(".inventtotalmaximum").empty().html(response.data.maximum);
             jQuery.balloon.init();
+            new SimpleBar(document.getElementById('masterinventtablebody'), { autoHide: false });
             init_master_inventorytabledat();
             leftmenu_alignment();
         } else {
@@ -584,6 +585,7 @@ function init_master_inventorytabledat() {
                 setTimeout(() => {
                     scrollElement.getScrollElement().scrollTop = scrollElement.getScrollElement().scrollHeight;
                 }, "300");
+                new SimpleBar(document.getElementById('inventorydetails_reseved_body'), { autoHide: false });
                 $("#modalEditInventHistory").modal({keyboard: false, show: true});
                 init_colorhistory_popup();
             } else {
@@ -736,6 +738,11 @@ function init_itemcolor_popup() {
                 // Show History window
                 $("#modalEditInventHistoryLabel").empty().html(response.data.wintitle);
                 $("#modalEditInventHistory").find('div.modal-body').empty().html(response.data.winbody);
+                var scrollElement = new SimpleBar(document.getElementById('inventorydetails_table_body'), { autoHide: false });
+                setTimeout(() => {
+                    scrollElement.getScrollElement().scrollTop = scrollElement.getScrollElement().scrollHeight;
+                }, "300");
+                new SimpleBar(document.getElementById('inventorydetails_reseved_body'), { autoHide: false });
                 $("#modalEditInventHistory").modal({keyboard: false, show: true});
                 // $('body').addClass('modal-open');
                 init_colorhistory_popup();
@@ -886,7 +893,12 @@ function init_colorhistory_popup() {
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 // $(".inventoryhistory_table_body").prepend(response.data.content);
-                $(".inventorydetails_table_body").prepend(response.data.content);
+                // $(".inventorydetails_table_body").prepend(response.data.content);
+                $(".inventorydetails_table_body").find('div.simplebar-content').append(response.data.content);
+                var scrollElement = new SimpleBar(document.getElementById('inventorydetails_table_body'), { autoHide: false });
+                setTimeout(() => {
+                    scrollElement.getScrollElement().scrollTop = scrollElement.getScrollElement().scrollHeight;
+                }, "200");
                 init_manualoutcome_manage();
             } else {
                 show_error(response);
@@ -896,6 +908,94 @@ function init_colorhistory_popup() {
     $(".instock_recnum[data-rectype='order']").unbind('click').click(function () {
         var order = $(this).data('order');
         inventory_order_edit(order);
+    })
+    $(".inventoryreseved_table_row").find("div.ordernumber").unbind('click').click(function () {
+        var order = $(this).data('order');
+        inventory_order_edit(order);
+    });
+    $(".inventory_reserv_view.latetime").find('span.inventory_reserv_check').unbind('click').click(function (){
+        var filterval = $("#hidelate").val();
+        var newval = 0;
+        if (parseInt(filterval)==0) {
+            newval = 1;
+        }
+        var params = new Array();
+        params.push({name: 'coloritem', value: $(this).data('item')});
+        params.push({name: 'hidelate', value: newval});
+        params.push({name: 'hideproof', value: $("#hideproof").val()});
+        params.push({name: 'hidefullfil', value: $("#hidefullfil").val()});
+        var url = '/masterinventory/get_inventory_reserved';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#inventorydetails_reseved_body").empty().html(response.data.content);
+                $(".inventorydetails_reseved_title").find('span').empty().html(response.data.reservtotal);
+                $(".inventorydetails_total_reserved").empty().html(response.data.available);
+                $("#hidelate").val(newval);
+                if (parseInt(newval)==0) {
+                    $(".inventory_reserv_view.latetime").find('span.inventory_reserv_check').empty().html('<i class="fa fa-square"></i>');
+                } else {
+                    $(".inventory_reserv_view.latetime").find('span.inventory_reserv_check').empty().html('<i class="fa fa-check-square"></i>');
+                }
+            } else {
+                show_error(response)
+            }
+        },'json');
+    })
+    $(".inventory_reserv_view.artproof").find('span.inventory_reserv_check').unbind('click').click(function (){
+        var filterval = $("#hideproof").val();
+        var newval = 0;
+        if (parseInt(filterval)==0) {
+            newval = 1;
+        }
+        var params = new Array();
+        params.push({name: 'coloritem', value: $(this).data('item')});
+        params.push({name: 'hidelate', value: $("#hidelate").val()});
+        params.push({name: 'hideproof', value: newval});
+        params.push({name: 'hidefullfil', value: $("#hidefullfil").val()});
+        var url = '/masterinventory/get_inventory_reserved';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#inventorydetails_reseved_body").empty().html(response.data.content);
+                $(".inventorydetails_reseved_title").find('span').empty().html(response.data.reservtotal);
+                $(".inventorydetails_total_reserved").empty().html(response.data.available);
+                $("#hideproof").val(newval);
+                if (parseInt(newval)==0) {
+                    $(".inventory_reserv_view.artproof").find('span.inventory_reserv_check').empty().html('<i class="fa fa-square"></i>');
+                } else {
+                    $(".inventory_reserv_view.artproof").find('span.inventory_reserv_check').empty().html('<i class="fa fa-check-square"></i>');
+                }
+            } else {
+                show_error(response)
+            }
+        },'json');
+    })
+    $(".inventory_reserv_view.fulfillmnt").find('span.inventory_reserv_check').unbind('click').click(function (){
+        var filterval = $("#hidefullfil").val();
+        var newval = 0;
+        if (parseInt(filterval)==0) {
+            newval = 1;
+        }
+        var params = new Array();
+        params.push({name: 'coloritem', value: $(this).data('item')});
+        params.push({name: 'hidelate', value: $("#hidelate").val()});
+        params.push({name: 'hideproof', value: $("#hideproof").val()});
+        params.push({name: 'hidefullfil', value: newval});
+        var url = '/masterinventory/get_inventory_reserved';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#inventorydetails_reseved_body").empty().html(response.data.content);
+                $(".inventorydetails_reseved_title").find('span').empty().html(response.data.reservtotal);
+                $(".inventorydetails_total_reserved").empty().html(response.data.available);
+                $("#hidefullfil").val(newval);
+                if (parseInt(newval)==0) {
+                    $(".inventory_reserv_view.fulfillmnt").find('span.inventory_reserv_check').empty().html('<i class="fa fa-square"></i>');
+                } else {
+                    $(".inventory_reserv_view.fulfillmnt").find('span.inventory_reserv_check').empty().html('<i class="fa fa-check-square"></i>');
+                }
+            } else {
+                show_error(response)
+            }
+        },'json');
     })
 }
 
@@ -958,11 +1058,19 @@ function init_manualoutcome_manage() {
         params.push({name: 'outcome_recnum', value: $("input.inventoutcomerecnum").val()});
         params.push({name: 'outcome_descript', value: $("input.inventoutcomedescripinpt").val()});
         params.push({name: 'outcome_qty', value: $("input.inventoutcomeqtyinpt").val()});
+        params.push({name: 'hidelate', value: $("#hidelate").val()});
+        params.push({name: 'hideproof', value: $("#hideproof").val()});
+        params.push({name: 'hidefullfil', value: $("#hidefullfil").val()});
         var url = '/masterinventory/save_color_outcome';
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 $("#modalEditInventHistory").find('div.modal-body').empty().html(response.data.content);
                 $("#invenorynewhistoryadd").val(1);
+                var scrollElement = new SimpleBar(document.getElementById('inventorydetails_table_body'), { autoHide: false });
+                setTimeout(() => {
+                    scrollElement.getScrollElement().scrollTop = scrollElement.getScrollElement().scrollHeight;
+                }, "300");
+                new SimpleBar(document.getElementById('inventorydetails_reseved_body'), { autoHide: false });
                 init_colorhistory_popup();
             } else {
                 show_error(response);

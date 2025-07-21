@@ -412,6 +412,7 @@ input.inventadd {
     border-left: 1px solid #000000;
     border-right: 1px solid #000000;
     border-bottom: 1px solid #000000;
+    scrollbar-width: none;
 }
 /* Scrollbar */
 .masterinventtablebody::-webkit-scrollbar {
@@ -421,6 +422,13 @@ input.inventadd {
 }
 .masterinventtablebody::-webkit-scrollbar-thumb {
     background: #000;
+}
+.masterinventtablebody .simplebar-track.simplebar-vertical {
+    background-color: #aaa; /* or add it to the track */
+}
+.masterinventtablebody .simplebar-scrollbar {
+    background: #000;
+    height: 49px!important;
 }
 /* Scrollbar end */
 .masterinventtablebody .mastinvent_body_left {
@@ -957,22 +965,23 @@ span.saveinventincome {
     float: left;
 }
 .inventorydetails_table_title {
-    color: #c1c1c1;
+    color: #ffffff;
     font-size: 16px;
     font-weight: 600;
     height: 20px;
     line-height: 20px;
+    margin-bottom: 7px;
 }
 .inventorydetails_table_head {
     clear: both;
-    width: 492px;
+    width: 499px;
     background: #c1c1c1;
     border: 1px solid;
 }
 .inventorydetails_table_head > div {
-    height: 27px;
-    line-height: 27px;
-    font-size: 13px;
+    height: 21px;
+    line-height: 21px;
+    font-size: 12px;
     text-align: center;
 }
 .inventorydetails_table_head .instock_date {
@@ -987,7 +996,7 @@ span.saveinventincome {
     cursor: pointer;
 }
 .inventorydetails_table_head .instock_recnum {
-    width: 62px;
+    width: 69px;
 }
 .inventorydetails_table_head .instock_descript {
     width: 183px;
@@ -999,7 +1008,7 @@ span.saveinventincome {
     width: 77px;
 }
 .inventorydetails_table_body {
-    width: 492px;
+    width: 499px;
     /* max-height: 229px; */
     max-height: 233px;
     overflow-y: auto;
@@ -1026,7 +1035,7 @@ span.saveinventincome {
     border-right: 1px solid #000000;
 }
 .inventorydetails_table_row .instock_recnum {
-    width: 62px;
+    width: 69px;
     border-right: 1px solid #000000;
     color: #0000FF;
     cursor: pointer;
@@ -1071,6 +1080,19 @@ span.saveinventincome {
     width: 77px;
     text-align: center;
 }
+.inventory_oldestdetails {
+    margin-left: 7px;
+    color: #adadad;
+    font-size: 12px;
+    font-weight: normal;
+}
+.inventory_mostrecent {
+    margin-left: -29px;
+    margin-top: 213px;
+    color: #adadad;
+    font-size: 12px;
+    font-weight: normal;
+}
 .inventorydetails_reseved_title {
     color: #c1c1c1;
     font-size: 16px;
@@ -1078,17 +1100,145 @@ span.saveinventincome {
     height: 20px;
     line-height: 20px;
     margin-top: 21px;
+    margin-bottom: 7px;
+}
+.inventorydetails_reseved_title span {
+    color: #ffffff;
+}
+.inventorydetails_reserved_legend {
+    float: right!important;
+    margin-right: 30px;
+    font-size: 13px;
+    color: #ffffff;
+    width: 500px;
+}
+.inventory_reserv_view {
+    width: 33%;
+    text-align: center;
+}
+span.inventory_reserv_check {
+    margin-right: 4px;
+    cursor: pointer;
+}
+span.inventory_reserv_check i {
+    color: #ffffff;
+    border: #000000;
+}
+.reserved_legend_title {
+    width: 33%;
+    text-align: center;
+}
+span.legendicon {
+    margin-right: 4px;
 }
 .inventorydetails_reseved_head {
     width: 760px;
     background: #c1c1c1;
     border: 1px solid;
 }
+.inventorydetails_reseved_head div {
+    height: 21px;
+    line-height: 21px;
+    font-size: 12px;
+    text-align: center;
+}
+.inventorydetails_reseved_head .shipdate {
+    width: 80px;
+}
+.inventorydetails_reseved_head .ordernumber {
+    width: 67px;
+}
+.inventorydetails_reseved_head .customername {
+    width: 224px;
+}
+.inventorydetails_reseved_head .amntval {
+    width: 67px;
+}
+.inventorydetails_reseved_head .forecastbal {
+    width: 92px;
+}
+.inventorydetails_reseved_head .artapprov {
+    width: 96px;
+}
+.inventorydetails_reseved_head .fullfiledperc {
+    width: 63px;
+}
+.inventorydetails_reseved_head .shippedperc {
+    width: 63px;
+}
 .inventorydetails_reseved_body {
     width: 760px;
     background: #ffffff;
     border: 1px solid;
     height: 250px;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+.inventoryreseved_table_row {
+    width: 100%;
+}
+.inventoryreseved_table_row div {
+    height: 23px;
+    line-height: 23px;
+    font-size: 13px;
+    text-align: center;
+}
+.inventoryreseved_table_row .shipdate {
+    width: 80px;
+    font-size: 12px;
+    border-right: 1px solid #000000;
+}
+.inventoryreseved_table_row .shipdate.late {
+    background: #8e0000;
+    color: #ffffff;
+}
+.inventoryreseved_table_row .shipdate.dedline {
+    color: #8e0000;
+}
+.inventoryreseved_table_row .ordernumber {
+    width: 67px;
+    border-right: 1px solid #000000;
+    color: #0000FF;
+    cursor: pointer;
+}
+.inventoryreseved_table_row .customername {
+    width: 224px;
+    text-align: left;
+    border-right: 1px solid #000000;
+    padding-left: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.inventoryreseved_table_row .amntval{
+    color: #ff0000;
+    width: 67px;
+    border-right: 1px solid #000000;
+}
+.inventoryreseved_table_row .forecastbal {
+    width: 92px;
+    border-right: 1px solid #000000;
+}
+.inventoryreseved_table_row .artapprov {
+    width: 96px;
+    font-size: 12px;
+    border-right: 1px solid #000000;
+}
+.inventoryreseved_table_row .artapprov.notapproved {
+    background: #fffc00;
+}
+.inventoryreseved_table_row .fullfiledperc {
+    width: 63px;
+    border-right: 1px solid #000000;
+}
+.inventoryreseved_table_row .fullfiledperc.fullfill {
+    background: #ff00f6;
+}
+.inventoryreseved_table_row .shippedperc {
+    width: 63px;
+}
+.inventoryreseved_table_row .shippedperc.shipped {
+    background: #ff00f6;
 }
 .inventorydetails_reserved {
     height: 30px;
@@ -1096,9 +1246,7 @@ span.saveinventincome {
     color: #c1c1c1;
     font-size: 16px;
     font-weight: 600;
-    margin-left: 316px;
-    width: 72px;
-    text-align: center;
+    margin-left: 362px;
 }
 .inventorydetails_total_reserved {
     height: 30px;
@@ -1106,7 +1254,7 @@ span.saveinventincome {
     color: #ffffff;
     font-size: 16px;
     font-weight: 600;
-    width: 77px;
+    width: 92px;
     text-align: center;
     margin-bottom: 8px;
 }
