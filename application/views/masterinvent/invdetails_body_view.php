@@ -85,7 +85,7 @@
                 </div>
                 <div class="reserved_legend_title">
                     <span class="legendicon"><img src="/img/masterinvent/violet_square.png" alt="Fulfillment"/></span>
-                    % Fulfilled # Shipped
+                    % Fulfilled ≠ Shipped
                 </div>
             </div>
         </div>
