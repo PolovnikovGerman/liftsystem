@@ -152,6 +152,11 @@ function pagePaymonitCallback(page_index) {
             $("div.total_notinvoiced_qty").empty().html('Qty Not Invoiced ' + response.data.qty_inv);
             $("div.total_notpaid_qty").empty().html('Qty Partial Paid ' + response.data.qty_paid);
             $("#curpagetab4").val(page_index);
+            var height = parseInt($('#tableinfotab4').css('height'));
+            var limheight = parseInt($('#tableinfotab4').css('max-height'));
+            if (height >= limheight) {
+                var scrollElement = new SimpleBar(document.getElementById('tableinfotab4'), { autoHide: false });
+            }
             $("#loader").hide();
             profit_init();
         } else {

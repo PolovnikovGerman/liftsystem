@@ -38,6 +38,7 @@ select.batchviewyearselect {
     max-height: 602px;
     overflow-y: auto;
     width: 506px;
+    /* scrollbar-width: none; */
 }
 .batchdaydata {
     clear: both;

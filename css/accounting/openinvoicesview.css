@@ -161,42 +161,43 @@ input.monitorsearch_input_active {
     float: left;
     overflow-y: scroll;
     overflow-x: hidden;
-    height: 553px;
+    max-height: 553px;
     margin-bottom: 10px;
     width: 961px;
     border-left: 1px solid #919191;
     border-bottom: 1px solid #919191;
+    scrollbar-width: none;
 }
-.content-paymonutortable > .tr {
+.content-paymonutortable .tr {
     border-left: 1px solid #919191;
     border-right: 1px solid #919191;
     clear: both;
     color: #000000;
     width: 959px;
 }
-.content-paymonutortable > .tr > div {
+.content-paymonutortable .tr > div {
     font-size: 12px;
     height: 24px;
     line-height: 24px;
     text-align: center;
 }
-.content-paymonutortable > .tr > .paymonitor-approved-dat {
+.content-paymonutortable .tr > .paymonitor-approved-dat {
     width: 18px;
 }
-.content-paymonutortable > .tr > .paymonitor-approved-dat img {
+.content-paymonutortable .tr > .paymonitor-approved-dat img {
     width: 16px;
     height: 16px;
 }
-.content-paymonutortable > .tr > .paymonitor-numorder-dat {
+.content-paymonutortable .tr > .paymonitor-numorder-dat {
     color: #0000ff;
     cursor: pointer;
     font-weight: bold;
     width: 72px;
 }
-.content-paymonutortable > .tr > .paymonitor-orderdate-dat {
+.content-paymonutortable .tr > .paymonitor-orderdate-dat {
     width: 54px;
 }
-.content-paymonutortable > .tr > .paymonitor-customer-dat {
+.content-paymonutortable .tr > .paymonitor-customer-dat {
     padding-left: 5px;
     padding-right: 5px;
     text-align: left!important;
@@ -205,17 +206,17 @@ input.monitorsearch_input_active {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.content-paymonutortable > .tr > .paymonitor_ccfee_dat {
+.content-paymonutortable .tr > .paymonitor_ccfee_dat {
     width: 28px;
 }
-.content-paymonutortable > .tr > .paymonitor_ccfee_dat img {
+.content-paymonutortable .tr > .paymonitor_ccfee_dat img {
     width: 24px;
     height: 24px;
 }
-.content-paymonutortable > .tr > .paymonitor-revenue-dat {
+.content-paymonutortable .tr > .paymonitor-revenue-dat {
     width: 118px;
 }
-.content-paymonutortable > .tr > .paymonitor-inv-dat {
+.content-paymonutortable .tr > .paymonitor-inv-dat {
     width: 30px;
 }
 

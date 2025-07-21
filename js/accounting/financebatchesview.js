@@ -59,6 +59,7 @@ function init_batches() {
         if (response.errors=='') {
             $("div.batchcalendar").empty().html(response.data.calendar_view);
             $("div#batchdetailsview").empty().html(response.data.details);
+            // var scrollElement = new SimpleBar(document.getElementById('batchdetailsview'), { autoHide: false });
             var destination = $("div.curday").offset().top;
             destination=parseInt(destination)-162;
             $("#calendar_date").animate({scrollTop: destination}, 1100 );
