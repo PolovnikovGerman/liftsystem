@@ -110,7 +110,7 @@
             <div class="netprofit-running"></div>
         </div>
     </div>
-    <div id="netprofitviewdata"></div>
+    <div id="netprofitviewdata" class="netprofitviewdata"></div>
     <div class="datarow"><div class="bottomnetprofitdata">&nbsp;</div></div>
     <div class="expandnetprofittableview">+ Expand to 26 weeks</div>
     <div class="collapsenetprofittableview">- Collapse to 16 weeks</div>

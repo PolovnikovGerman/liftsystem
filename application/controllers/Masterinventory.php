@@ -219,16 +219,47 @@ class Masterinventory extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                    $hidelate = $hideproof = $hidefullfil = 0;
+                    $reserv = $this->inventory_model->get_masterinventory_colorreserv($coloritem, $hidelate, $hideproof, $hidefullfil);
                     // $mdata['wintitle'] = $this->load->view('masterinvent/history_head_view', $res['itemdata'],TRUE);
                     $mdata['wintitle'] = $this->load->view('masterinvent/invdetails_head_view', $res['itemdata'],TRUE);
+                    $reservview = $this->load->view('masterinvent/invdetails_reserved_view',['reserved' => $reserv['reserved']],true);
                     $options = [
                         'lists' => $res['lists'],
                         'item' => $res['itemdata'],
                         'balance' => $res['balance'],
+                        'reservtotal' => $reserv['reservtotal'],
+                        'available' => $reserv['available'],
+                        'reservview' => $reservview,
+                        'hidelate' => $hidelate,
+                        'hideproof' => $hideproof,
+                        'hidefullfil' => $hidefullfil,
                     ];
                     // $mdata['winbody'] = $this->load->view('masterinvent/history_body_view', $options, TRUE);
                     $mdata['winbody'] = $this->load->view('masterinvent/invdetails_body_view', $options, TRUE);
                 }
+            }
+            $this->ajaxResponse($mdata,$error);
+        }
+        show_404();
+    }
+
+    public function get_inventory_reserved()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Non exist Item / Color';
+            $postdata = $this->input->post();
+            $coloritem = ifset($postdata,'coloritem', 0);
+            $hidelate = ifset($postdata,'hidelate', 0);
+            $hideproof = ifset($postdata,'hideproof', 0);
+            $hidefullfil = ifset($postdata,'hidefullfil', 0);
+            if (!empty($coloritem)) {
+                $error = '';
+                $reserv = $this->inventory_model->get_masterinventory_colorreserv($coloritem, $hidelate, $hideproof, $hidefullfil);
+                $mdata['content'] = $this->load->view('masterinvent/invdetails_reserved_view',['reserved' => $reserv['reserved']],true);
+                $mdata['reservtotal'] = QTYOutput($reserv['reservtotal']);
+                $mdata['available'] = QTYOutput($reserv['available']);
             }
             $this->ajaxResponse($mdata,$error);
         }
@@ -329,10 +360,23 @@ class Masterinventory extends MY_Controller
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';
+                $hidelate = ifset($postdata,'hidelate', 0);
+                $hideproof = ifset($postdata,'hideproof', 0);
+                $hidefullfil = ifset($postdata,'hidefullfil', 0);
+                $reserv = $this->inventory_model->get_masterinventory_colorreserv($coloritem, $hidelate, $hideproof, $hidefullfil);
+                $reservview = $this->load->view('masterinvent/invdetails_reserved_view',['reserved' => $reserv['reserved']],true);
+
                 $options = [
                     'lists' => $res['lists'],
                     'item' => $res['itemdata'],
                     'balance' => $res['balance'],
+                    // 'reserved' => $res['reserved'],
+                    'reservtotal' => $reserv['reservtotal'],
+                    'available' => $reserv['available'],
+                    'reservview' => $reservview,
+                    'hidelate' => $hidelate,
+                    'hideproof' => $hideproof,
+                    'hidefullfil' => $hidefullfil,
                 ];
                 $mdata['content'] = $this->load->view('masterinvent/invdetails_body_view', $options, TRUE);
             }
