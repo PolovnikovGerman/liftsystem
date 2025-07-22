@@ -481,7 +481,7 @@
     font-size: 12px;
 }
 .emailsmenu-body {
-    float: left;
+    margin-left: 5px;
 }
 .emailsmenu-tab {
     color: #6262ff;
@@ -520,6 +520,7 @@
     font-size: 14px;
     padding: 0 14px;
     margin-right: 6px;
+    cursor: pointer;
 }
 .domainmenu-tab.sb-tab {
     background: #2f31a8;

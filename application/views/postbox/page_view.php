@@ -1,3 +1,4 @@
+<input type="hidden" id="currentbrand" value="<?=$brand?>"/>
 <input type="hidden" id="currentpostbox" value="<?=$postbox?>"/>
 <input type="hidden" id="currentpostfolder" value=""/>
 <input type="hidden" id="postboxsort" value="date_desc"/>
@@ -102,13 +103,13 @@
     <div class="emailer-footer">
         <div class="emails-menu datarow">
             <div class="rowemailname">Email:</div>
-            <?=$menu_view?>
+            <div id="postboxesmenu"><?=$menu_view?></div>
         </div>
         <div class="domain-menu datarow">
             <div class="rowemailname">Domain:</div>
             <div class="domainmenu-body">
-                <div class="domainmenu-tab sb-tab <?=$brand=='SB' ? 'active' : ''?>">stressball.com</div>
-                <div class="domainmenu-tab sr-tab <?=$brand=='SR' ? 'active' : ''?>">stressreliever.com</div>
+                <div class="domainmenu-tab sb-tab <?=$brand=='SB' ? 'active' : ''?>" data-brand="SB">stressball.com</div>
+                <div class="domainmenu-tab sr-tab <?=$brand=='SR' ? 'active' : ''?>" data-brand="SR">stressreliever.com</div>
             </div>
         </div>
     </div>

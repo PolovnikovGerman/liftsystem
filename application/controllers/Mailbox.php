@@ -602,4 +602,27 @@ class Mailbox extends MY_Controller
         }
         show_404();
     }
+
+    public function postbox_brand()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $brand  = ifset($postdata, 'brand','');
+            if (!empty($brand)) {
+                $error = '';
+                $postboxes = $this->mailbox_model->get_user_mailboxes($this->USR_ID, $this->USR_ROLE, $brand);
+                $postbox = '';
+                if (count($postboxes) > 0) {
+                    $postbox = $postboxes[0]['postbox_id'];
+                }
+                $mdata['postbox'] = $postbox;
+                $mdata['menu_view'] = $this->load->view('postbox/postboxes_view', ['postboxes' => $postboxes], TRUE);
+                $mdata['brandclass'] = ($brand=='SR' ? 'relievers' : ($brand=='SG' ? '' : 'stressballs'));
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }

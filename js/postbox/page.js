@@ -4,8 +4,46 @@ $(document).ready(function (){
         $(".emailsmenu-tab[data-postbox='"+postbox+"']").addClass('active');
         init_mailbox_content();
     }
+    $(".domainmenu-tab").unbind('click').click(function () {
+        var newbrand = $(this).data('brand');
+        if (newbrand!=$("#currentbrand").val()) {
+            init_postbox_brand(newbrand);
+        }
+    });
+    init_postbox_menu()
 });
 
+function init_postbox_menu() {
+    $(".emailsmenu-tab").unbind('click').click(function (){
+        var postbox = $(this).data('postbox');
+        $("#currentpostbox").val(postbox);
+        $(".emailsmenu-tab").removeClass('active');
+        $(".emailsmenu-tab[data-postbox='"+postbox+"']").addClass('active');
+        init_mailbox_content();
+    });
+}
+function init_postbox_brand(newbrand) {
+    var params = new Array();
+    params.push({name: 'brand', value: newbrand});
+    var url = '/mailbox/postbox_brand';
+    $("#loader").show();
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".domainmenu-tab").removeClass('active');
+            $(".domainmenu-tab[data-brand='"+newbrand+"']").addClass('active');
+            $(".maincontent_view").removeClass('stressballs').removeClass('relievers').addClass(response.data.brandclass);
+            $("#currentbrand").val(newbrand);
+            $("#currentpostbox").val(response.data.postbox);
+            $("#eml-table-messages").empty();
+            $("#postboxesmenu").empty().html(response.data.menu_view);
+            init_postbox_menu();
+            init_mailbox_content();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
+}
 function init_mailbox_content() {
     var postbox = $("#currentpostbox").val();
     var params = new Array();
@@ -19,6 +57,9 @@ function init_mailbox_content() {
             $(".emlsblock-name").empty().html(response.data.folder_name);
             $("#currentpostfolder").val(response.data.folder);
             $("#eml-table-messages").empty().html(response.data.messages);
+            if ($(".emailsmenu-tab.active").length == 0) {
+                $(".emailsmenu-tab[data-postbox='"+postbox+"']").addClass('active');
+            }
             $("#loader").hide();
             init_messages_management();
             init_postbox_content();
