@@ -216,6 +216,7 @@
     line-height: 22px;
     border-bottom: 1px solid #e0e4e9;
     margin: 0 15px;
+    position: relative;
 }
 .emltbl-tr:hover {
     background: #daebfb;
@@ -346,8 +347,8 @@
 
 .emlfolders-menu {
     display: none;
-    position: relative; /*absolute;*/
-    left: -3px; /* 32px; */
+    position: absolute;
+    left: 60px;
     top: 0;
     background: #fff;
     border: 1px solid #8f8e8e;
@@ -508,6 +509,9 @@
     margin-bottom: 3px;
     margin-top: 0 !important;
     border: none;
+    border-top: 2px solid #fff;
+    position: relative;
+    top: -2px;
 }
 .emailsmenu-tabdevider {
     width: 20px;
