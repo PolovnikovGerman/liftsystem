@@ -913,11 +913,23 @@ class Mailbox_model extends MY_Model
         return $out;
     }
 
-    public function get_postbox_folderslist($postbox_id)
+    public function get_postbox_folderslist($postbox_id, $userfolders = 0)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Issue with Connection'];
         $this->db->select('*')->from('postbox_folders')->where('postbox_id', $postbox_id)->order_by('folder_id','asc');
         $folders = $this->db->get()->result_array();
+        // Only additional folders
+        $newfolders = [];
+        foreach ($folders as $folder) {
+            if ($userfolders==1) {
+                if (!in_array($folder['folder_name'], $this->mainfolders)) {
+                    $newfolders[] = $folder;
+                }
+            } else {
+                $newfolders[] = $folder;
+            }
+        }
+        $folders = $newfolders;
         if (count($folders) > 0) {
             $out['result'] = $this->success_result;
             $out['folders'] = $folders;
@@ -1121,5 +1133,17 @@ class Mailbox_model extends MY_Model
                 }
             }
         }
+    }
+
+    public function get_message_data($message_id)
+    {
+        $out  = ['result'=>false,'msg' => 'Message Not Found'];
+        $this->db->select('*')->from('postbox_messages')->where('message_id', $message_id);
+        $message = $this->db->get()->row_array();
+        if (ifset($message, 'message_id',0) == $message_id) {
+            $out['result'] = $this->success_result;
+            $out['message'] = $message;
+        }
+        return $out;
     }
 }

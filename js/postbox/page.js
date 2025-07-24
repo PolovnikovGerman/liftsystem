@@ -359,23 +359,106 @@ function init_messages_management() {
         var message = $(this).data('message');
         var params = new Array();
         params.push({name: 'postbox', value: $("#currentpostbox").val()});
+        params.push({name: 'message', value: message});
+        var url = '/mailbox/message_management';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".emlselected-menu[data-message='"+message+"']").empty().html(response.data.content);
+                $(".emlselected-menu[data-message='"+message+"']").show();
+                $(".td-folder").unbind('click');
+                init_message_actions();
+            } else {
+                show_error(response);
+            }
+        },'json');
+
+    })
+}
+
+function init_message_actions() {
+    $(".emlaction-menu-close").unbind('click').click(function (){
+        $(".emlselected-menu").hide();
+        init_messages_management();
+    });
+    $(".esmitem.movemessage").unbind('click').click(function (){
+        var message = $(this).data('message');
+        var params = new Array();
+        params.push({name: 'postbox', value: $("#currentpostbox").val()});
         params.push({name: 'folder', value: $("#currentpostfolder").val()});
         var url = '/mailbox/message_move_folders';
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $(".emlfolders-menu[data-message='"+message+"']").empty().html(response.data.content).show();
                 init_message_move(message);
-                // return true;
             } else {
                 show_error(response);
             }
         },'json');
+    });
+    $(".esmitem.deletemessage").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'message_id', value: $(this).data('message')});
+        params.push({name: 'folder', value: $("#currentpostfolder").val()});
+        params.push({name: 'postbox', value: $("#currentpostbox").val()});
+        params.push({name: 'postsort', value: $("#postboxsort").val()});
+        var url = '/mailbox/message_remove';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                back_folder_view();
+                $("#loader").hide();
+                var folders = response.data.folders;
+                for(index = 0; index < folders.length; ++index) {
+                    $(".mainbtn[data-folder='"+folders[index]['folder_id']+"']").find('span.mainbtn-number').empty().html(folders[index]['cnt']);
+                }
+                init_postbox_content();
+                init_message_management();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".esmitem.unreadmessage").unbind('click').click(function (){
+        // // Unread
+        var params = new Array();
+        params.push({name: 'message_id', value: $(this).data('message')});
+        params.push({name: 'postbox', value: $("#currentpostbox").val()});
+        var url = '/mailbox/message_read_status';
+        $("#loader").show();
+        $.post(url, params, function (response){
+
+        },'json');
+
+        // $(".emailnav-readsatus").unbind('click').click(function (){
+        //     $.post(url, params, function (response){
+        //         if (response.errors=='') {
+        //             $(".emailnav-readsatus").empty().html(response.data.content);
+        //             if (parseInt(response.data.unread)==1) {
+        //                 $(".eml-subjicn").removeClass('unread').addClass('readed');
+        //             } else {
+        //                 $(".eml-subjicn").removeClass('readed').addClass('unread');
+        //             }
+        //             var folders = response.data.folders;
+        //             for(index = 0; index < folders.length; ++index) {
+        //                 $(".mainbtn[data-folder='"+folders[index]['folder_id']+"']").find('span.mainbtn-number').empty().html(folders[index]['cnt']);
+        //             }
+        //             $("#loader").hide();
+        //             init_message_management();
+        //         } else {
+        //             $("#loader").hide();
+        //             show_error(response);
+        //         }
+        //     },'json')
+        // });
+
     })
 }
 
 function init_message_move(message) {
     $(".emlfolders-menu-close").unbind('click').click(function (){
         $(".emlfolders-menu[data-message='"+message+"']").hide();
+        init_messages_management();
     });
     $(".efm-item").unbind('click').click(function (){
         var params = new Array();

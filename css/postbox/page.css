@@ -340,7 +340,12 @@
 .esmitem-txt {
     font-size: 13px;
 }
-
+.emlaction-menu-close {
+    width: 8px;
+    height: auto;
+    float: right!important;
+    cursor: pointer;
+}
 
 
 

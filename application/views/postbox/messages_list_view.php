@@ -12,6 +12,7 @@
         <div class="emltbl-td td-select">
             <input type="checkbox" name="selectemail" data-message="<?=$message['message_id']?>"/>
         </div>
+        <div class="emlselected-menu" data-message="<?=$message['message_id']?>"></div>
         <div class="emltbl-td td-folder" data-message="<?=$message['message_id']?>">
             <i class="fa fa-folder-o" aria-hidden="true"></i>
         </div>
