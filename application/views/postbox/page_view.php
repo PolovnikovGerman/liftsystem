@@ -50,12 +50,12 @@
                         </div>
                         <div class="emlmenu-text">Delete</div>
                     </div>
-                    <div class="emlmenu-item">
-                        <div class="emlmenu-icon">
-                            <img src="/img/postbox/icon-spam.svg" alt="Spam">
-                        </div>
-                        <div class="emlmenu-text">Spam</div>
-                    </div>
+<!--                    <div class="emlmenu-item">-->
+<!--                        <div class="emlmenu-icon">-->
+<!--                            <img src="/img/postbox/icon-spam.svg" alt="Spam">-->
+<!--                        </div>-->
+<!--                        <div class="emlmenu-text">Spam</div>-->
+<!--                    </div>-->
                     <div class="emlmenu-item">
                         <div class="emlmenu-icon emlmenu-more">
                             <img src="/img/postbox/icon-more.svg" alt="More">
