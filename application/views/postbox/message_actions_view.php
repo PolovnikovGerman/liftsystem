@@ -26,14 +26,14 @@
 <!--    </li>-->
     <li>
         <?php if ($message['message_seen']==1) : ?>
-            <div class="esmitem unreadmessage" data-message="<?=$message['message_id']?>">
+            <div class="esmitem messagereadstatus" data-message="<?=$message['message_id']?>">
                 <div class="esmitem-icon icn-unread">
                     <img src="/img/postbox/icon-unread.svg">
                 </div>
                 <div class="esmitem-txt">Mark as unread</div>
             </div>
         <?php else: ?>
-            <div class="esmitem readmessage" data-message="<?=$message['message_id']?>">
+            <div class="esmitem messagereadstatus" data-message="<?=$message['message_id']?>">
                 <div class="esmitem-icon">
                     <img src="/img/postbox/icon-unread.svg">
                 </div>
