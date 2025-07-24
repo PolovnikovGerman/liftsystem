@@ -176,6 +176,28 @@ class Mailbox extends MY_Controller
         show_404();
     }
 
+    public function message_management()
+    {
+        if ($this->isAjax()) {
+            $error = 'Empty Postbox Details';
+            $mdata = [];
+            $postdata = $this->input->post();
+            $postbox = ifset($postdata,'postbox','');
+            $message = ifset($postdata,'message','');
+            // $folder = ifset($postdata,'folder','');
+            if (!empty($postbox) && !empty($message)) {
+                $res = $this->mailbox_model->get_message_data($message);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $message = $res['message'];
+                    $mdata['content'] = $this->load->view('postbox/message_actions_view',['message' => $message], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
     public function messages_read_status()
     {
         if ($this->isAjax()) {
@@ -385,7 +407,7 @@ class Mailbox extends MY_Controller
             $postdata = $this->input->post();
             $postbox = ifset($postdata, 'postbox','');
             $folder = ifset($postdata, 'folder','');
-            $res = $this->mailbox_model->get_postbox_folderslist($postbox);
+            $res = $this->mailbox_model->get_postbox_folderslist($postbox, 1);
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';
