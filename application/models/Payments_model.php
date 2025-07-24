@@ -1576,18 +1576,18 @@ Class Payments_model extends MY_Model {
             $res['result'] = $this->success_result;
             /* Update order */
             $updatord = 1;
-            $this->db->select('oic.order_itemcolor_id, oic.item_qty')->from('ts_order_itemcolors oic')->join('ts_order_items oi','oi.order_item_id=oic.order_item_id')->where('oi.order_id', $order_id);
-            $itmcolors = $this->db->get()->result_array();
-            foreach ($itmcolors as $itmcolor) {
-                $amntres = $this->db->select('count(amount_id) as cnt, sum(shipped) as itmqty')->from('ts_order_amounts')->where('order_itemcolor_id', $itmcolor['order_itemcolor_id'])->get()->row_array();
-                if ($amntres['cnt']==0) {
-                    $updatord = 0;
-                    break;
-                } elseif ($amntres['itmqty'] < $itmcolor['item_qty']) {
-                    $updatord = 0;
-                    break;
-                }
-            }
+//            $this->db->select('oic.order_itemcolor_id, oic.item_qty')->from('ts_order_itemcolors oic')->join('ts_order_items oi','oi.order_item_id=oic.order_item_id')->where('oi.order_id', $order_id);
+//            $itmcolors = $this->db->get()->result_array();
+//            foreach ($itmcolors as $itmcolor) {
+//                $amntres = $this->db->select('count(amount_id) as cnt, sum(shipped) as itmqty')->from('ts_order_amounts')->where('order_itemcolor_id', $itmcolor['order_itemcolor_id'])->get()->row_array();
+//                if ($amntres['cnt']==0) {
+//                    $updatord = 0;
+//                    break;
+//                } elseif ($amntres['itmqty'] < $itmcolor['item_qty']) {
+//                    $updatord = 0;
+//                    break;
+//                }
+//            }
 
             if ($updatord==1) {
                 $this->db->select('sum(amount_sum) as sumcog, count(amount_id) cnt, sum(shipped) as qty')->from('ts_order_amounts')->where('order_id', $order_id);
