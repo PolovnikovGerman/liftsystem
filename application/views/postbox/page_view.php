@@ -7,6 +7,13 @@
         <div class="btn-compose"><span class="btn-compose-icon"><i class="fa fa-pencil" aria-hidden="true"></i></span>Compose</div>
         <div class="eml-mainbtns"></div>
         <div class="btn-newfolder">+ New Folder</div>
+        <div class="eml-newfolderinpt">
+            <div class="emlfolder-close"><img src="/img/postbox/close.svg" alt="Close"/></div>
+            <div class="datarow">
+                <input type="text" id="newfoldername" placeholder="New folder name">
+            </div>
+            <span class="save-newfolder"><img src="/img/postbox/long-arrow-right-white.svg"/></span>
+        </div>
         <div class="eml-folders">
         </div>
     </div>
