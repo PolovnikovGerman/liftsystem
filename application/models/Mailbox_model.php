@@ -95,6 +95,7 @@ class Mailbox_model extends MY_Model
 
     public function read_folders_msgs($postbox, $folder)
     {
+        set_time_limit(0);
         $out = ['result' => $this->error_result, 'msg' => 'Error with connection'];
         $imapdat = $this->_create_imap_client($postbox);
         $out['msg'] = $imapdat['msg'];
@@ -108,11 +109,13 @@ class Mailbox_model extends MY_Model
             $this->db->update('postbox_folders');
             // $out['totalmsg'] = $overallMessages;
             // $out['unread'] = $unreadMessages;
+            echo 'Found '.$overallMessages.' messages'.PHP_EOL;
             $briefinfos = $imap->getBriefInfoMessages();
+            $numpp = 0;
             foreach ($briefinfos as $briefinfo) {
-                echo 'Brief Info '.$briefinfo['id'].PHP_EOL;
+                // echo 'Brief Info '.$briefinfo['id'].PHP_EOL;
                 $message = @$imap->getMessage($briefinfo['id']);
-                echo 'Manage msg '.$briefinfo['id'].' Messaage ID '.$message->header->message_id.PHP_EOL;
+                // echo 'Manage msg '.$briefinfo['id'].' Messaage ID '.$message->header->message_id.PHP_EOL;
                 // echo 'UDate '.$message->header->udate.PHP_EOL;
                 $postmsgid = $message->header->message_id;
                 // Check - if such msg exist
@@ -120,6 +123,13 @@ class Mailbox_model extends MY_Model
                 $msgchk = $this->db->get()->row_array();
                 if ($msgchk['cnt']==0) {
                     // New Message
+                    $plaintxt = $htmltxt = '';
+                    if (isset($message->message->plain)) {
+                        $plaintxt = $message->message->plain;
+                    }
+                    if (isset($message->message->html)) {
+                        $htmltxt = $message->message->html;
+                    }
                     $this->db->set('folder_id', $folder['folder_id']);
                     $this->db->set('message_msgno', $message->header->msgno);
                     $this->db->set('message_subject', $message->header->subject);
@@ -135,8 +145,8 @@ class Mailbox_model extends MY_Model
                     $this->db->set('message_seen', $message->header->seen);
                     $this->db->set('message_draft', $message->header->draft);
                     $this->db->set('message_udate', $message->header->udate);
-                    $this->db->set('message_body', $message->message->html);
-                    $this->db->set('message_text', $message->message->plain);
+                    $this->db->set('message_body', $htmltxt);
+                    $this->db->set('message_text', $plaintxt);
                     $this->db->insert('postbox_messages');
                     $msgid = $this->db->insert_id();
                     $attachments = $message->attachments;
@@ -169,6 +179,10 @@ class Mailbox_model extends MY_Model
                     $this->db->set('message_draft', $message->header->draft);
                     $this->db->set('message_udate', $message->header->udate);
                     $this->db->update('postbox_messages');
+                }
+                $numpp++;
+                if ($numpp>250) {
+                    break;
                 }
             }
             $out['result'] = $this->success_result;
@@ -1095,6 +1109,7 @@ class Mailbox_model extends MY_Model
 
     public function updatepostbox($postbox)
     {
+        set_time_limit(0);
         $postres = $this->db->select('*')->from('user_postboxes')->where('postbox_id', $postbox)->get()->row_array();
         if (ifset($postres, 'postbox_id',0) > 0) {
             // Get last date
@@ -1109,11 +1124,11 @@ class Mailbox_model extends MY_Model
                     $folderdat = $this->db->select('folder_id')->from('postbox_folders')->where(['postbox_id' => $postbox, 'folder_name' => $this->inbox_name])->get()->row_array();
                     $folder_id = $folderdat['folder_id'];
                     if (!empty($folderdat['folder_id'])) {
-                        $datsrch = date('j F Y', $msgdat['mdate']);
+                        $datsrch = date('j-F-Y', $msgdat['mdate']);
                         while (1 == 1) {
                             echo 'Date ' . $datsrch . PHP_EOL;
                             // $criteria = "SINCE '{$datsrch}' BEFORE ''";
-                            $criteria = 'ON 07-Jul-2025';
+                            $criteria = 'ON '.$datsrch;
                             try {
                                 $msgdat = @$imap->getMessagesByCriteria($criteria);
                             } catch (exception $e) {
@@ -1123,12 +1138,63 @@ class Mailbox_model extends MY_Model
 
                             if (count($msgdat)>0) {
                                 echo 'Find '.count($msgdat).PHP_EOL;
-                                foreach ($msgdat as $msg) {
-
+                                foreach ($msgdat as $message) {
+                                    $postmsgid = $message->header->uid;
+                                    // Check - if such msg exist
+                                    $this->db->select('count(message_id) as cnt, max(message_id) as msgid')->from('postbox_messages')->where('message_uid', $postmsgid);
+                                    $msgchk = $this->db->get()->row_array();
+                                    if ($msgchk['cnt']==0) {
+                                        // New message
+                                        $this->db->set('folder_id', $folder_id);
+                                        $this->db->set('message_msgno', $message->header->msgno);
+                                        $this->db->set('message_subject', $message->header->subject);
+                                        $this->db->set('message_from', str_replace('"','',$message->header->from));
+                                        $this->db->set('message_to', $message->header->to);
+                                        $this->db->set('message_date', $message->header->date);
+                                        $this->db->set('postmessage_id', $message->header->message_id);
+                                        $this->db->set('message_uid', $message->header->uid);
+                                        $this->db->set('message_recent', $message->header->recent);
+                                        $this->db->set('message_flagged', $message->header->flagged);
+                                        $this->db->set('message_answered', $message->header->answered);
+                                        $this->db->set('message_deleted', $message->header->deleted);
+                                        $this->db->set('message_seen', $message->header->seen);
+                                        $this->db->set('message_draft', $message->header->draft);
+                                        $this->db->set('message_udate', $message->header->udate);
+                                        $this->db->set('message_body', $message->message->html);
+                                        $this->db->set('message_text', $message->message->plain);
+                                        $this->db->insert('postbox_messages');
+                                        $msgid = $this->db->insert_id();
+                                        $attachments = $message->attachments;
+                                        if (count($attachments) > 0) {
+                                            $this->_save_attachment($msgid, $attachments);
+                                        }
+                                        if (isset($message->header->details->cc)) {
+                                            foreach ($message->header->details->cc as $ccaddres) {
+                                                $this->db->set('message_id', $msgid);
+                                                $this->db->set('address_type','CC');
+                                                $this->db->set('address', $ccaddres->mailbox.'@'.$ccaddres->host);
+                                                $this->db->insert('postmessage_address');
+                                            }
+                                        }
+                                        if (isset($message->header->details->bcc)) {
+                                            foreach ($message->header->details->bcc as $ccaddres) {
+                                                $this->db->set('message_id', $msgid);
+                                                $this->db->set('address_type','BCC');
+                                                $this->db->set('address', $ccaddres->mailbox.'@'.$ccaddres->host);
+                                                $this->db->insert('postmessage_address');
+                                            }
+                                        }
+                                    }
                                 }
                             }
+                            // Add 1 day
+                            $newdate = strtotime('+1 day', strtotime($datsrch));
+                            if ($newdate >= time()) {
+                                echo 'Search Break '.date('Y-m-d', $newdate).PHP_EOL;
+                                break;
+                            }
+                            $datsrch = date('j-F-Y', $newdate);
                         }
-
                     }
                 }
             }

@@ -124,10 +124,7 @@ function init_postbox_content() {
     });
     // Add folder
     $(".btn-newfolder").unbind('click').click(function(){
-        $(".btn-newfolder").empty().html('<span class="cancel-folder"><i class="fa fa-times" aria-hidden="true"></i></span>\n' +
-            '        <input type="text" class="newfoldername" placeholder="" value=""/>\n' +
-            '        <span class="save-newfolder"><img src="/img/postbox/long-arrow-right-white.svg"/></span>');
-        $(".btn-newfolder").unbind('click');
+        $(".eml-newfolderinpt").show();
         add_newfolder();
     });
     $("input[name='allemls']").unbind('change').change(function (){
@@ -304,17 +301,18 @@ function init_messages_move(messages) {
 
 }
 function add_newfolder() {
-    $(".cancel-folder").unbind('click').click(function (){
-        $(".btn-newfolder").empty().html('+ New Folder');
+    $(".emlfolder-close").unbind('click').click(function (){
+        $("#newfoldername").val('');
+        $(".eml-newfolderinpt").hide();
         init_postbox_content();
     });
-    $(".newfoldername").keypress(function (event) {
+    $("#newfoldername").keypress(function (event) {
         if (event.which == 13) {
-            add_postbox_folder($(".newfoldername").val());
+            add_postbox_folder($("#newfoldername").val());
         }
     });
     $(".save-newfolder").unbind('click').click(function (){
-        add_postbox_folder($(".newfoldername").val());
+        add_postbox_folder($("#newfoldername").val());
     });
 }
 
@@ -326,8 +324,9 @@ function add_postbox_folder(folder_name) {
     $("#loader").show();
     $.post(url, params, function (response){
         if (response.errors=='') {
-            $(".list-newfolder").empty().html('+ New Folder');
             $(".eml-folders").empty().html(response.data.content);
+            $("#newfoldername").val('');
+            $(".eml-newfolderinpt").hide();
             init_postbox_content();
             $("#loader").hide();
         } else {

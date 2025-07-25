@@ -4703,6 +4703,16 @@ class Test extends CI_Controller
         }
     }
 
+    public function salesbox() {
+        $postbox_id = 3;
+        $postbox = $this->db->select('*')->from('user_postboxes')->where('postbox_id', $postbox_id)->get()->row_array();
+        $this->load->model('mailbox_model');
+        $folder = $this->db->select('*')->from('postbox_folders')->where(['postbox_id' => $postbox['postbox_id'], 'folder_name' => 'Voicemails'])->get()->row_array();
+        echo 'Read Inbox'.PHP_EOL;
+        $msgdat = $this->mailbox_model->read_folders_msgs($postbox, $folder);
+        echo 'Finish Read Messages'.PHP_EOL;
+    }
+
     public function changeattachs()
     {
         $this->db->select('*')->from('postbox_attachments')->order_by('attachment_id','desc');
@@ -4723,7 +4733,7 @@ class Test extends CI_Controller
 
     public function updatepostbox()
     {
-        $postbox = 1;
+        $postbox = 3;
         $this->load->model('mailbox_model');
         $this->mailbox_model->updatepostbox($postbox);
     }
