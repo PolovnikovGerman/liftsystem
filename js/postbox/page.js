@@ -10,7 +10,10 @@ $(document).ready(function (){
             init_postbox_brand(newbrand);
         }
     });
-    init_postbox_menu()
+    init_postbox_menu();
+    var tableHeight = parseInt(document.documentElement.clientHeight)-219;
+    $("#eml-table-messages").css('height', tableHeight);
+    console.log('Table Height '+tableHeight);
 });
 
 function init_postbox_menu() {
