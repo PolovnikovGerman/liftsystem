@@ -29,7 +29,7 @@
     margin-right: 6px;
 }
 .eml-mainbtns {
-    width: 290px; /* 247px; */
+    width: 247px;
     margin-left: 7px;
 }
 .mainbtn {
@@ -42,7 +42,7 @@
     margin-bottom: 3px;
     background: #e2e2e3;
     cursor: pointer;
-    width: 90px;
+    width: 60px;
     padding: 0 7px;
 }
 .mainbtn.active,
@@ -51,18 +51,19 @@
     border: 1px solid #040649;
     color: #fff;
 }
-/*.btn-inbox,*/
-/*.btn-unread {*/
-/*    width: 83px;*/
-/*    padding: 0 7px;*/
-/*}*/
-/*.btn-sent,*/
-/*.btn-draft,*/
-/*.btn-trash,*/
-/*.btn-archive {*/
-/*    width: 63px;*/
-/*    text-align: center;*/
-/*}*/
+.btn-inbox,
+.btn-unread {
+    width: 90px;
+    padding: 0 7px;
+}
+.btn-sent,
+.btn-draft,
+.btn-trash,
+.btn-starred,
+.btn-archive {
+    width: 63px;
+    text-align: center;
+}
 .btn-draft,
 .btn-archive {
     opacity: .6;

@@ -361,13 +361,13 @@ class Mailbox_model extends MY_Model
             $active_folder = 0;
             $active_cnt = 0;
             $folder_name = '';
-            foreach ($this->mainfolders as $keyfold) {
+            // foreach ($this->mainfolders as $keyfold) {
                 foreach ($folders as $folder) {
-                    if ($folder['folder_name']==$keyfold) {
+                    //if ($folder['folder_name']==$keyfold) {
                         $newfolders[] = [
                             'folder_id' => $folder['folder_id'],
                             'folder_name' => $folder['folder_name'],
-                            'main' => 1,
+                            'main' => $folder['main'],
                             'active' => $active,
                             'empty' => $folder['cnt']==0 ? 1 : 0,
                             'cnt' => short_number($folder['cnt'],1),
@@ -379,23 +379,23 @@ class Mailbox_model extends MY_Model
                             $folder_name = $folder['folder_name'];
                             $active = 0;
                         }
-                        break;
-                    }
+                        // break;
+                    // }
                 }
-            }
-            foreach ($folders as $folder) {
-                if (!in_array($folder['folder_name'], $this->mainfolders)) {
-                    $newfolders[] = [
-                        'folder_id' => $folder['folder_id'],
-                        'folder_name' => $folder['folder_name'],
-                        'main' => 0,
-                        'active' => $active==1 ? 'active' : '',
-                        'empty' => $folder['cnt']==0 ? 1 : 0,
-                        'cnt' => short_number($folder['cnt'],1),
-                        'class' => 'btn-'.strtolower($folder['folder_name']),
-                    ];
-                }
-            }
+            // }
+//            foreach ($folders as $folder) {
+//                if (!in_array($folder['folder_name'], $this->mainfolders)) {
+//                    $newfolders[] = [
+//                        'folder_id' => $folder['folder_id'],
+//                        'folder_name' => $folder['folder_name'],
+//                        'main' => 0,
+//                        'active' => $active==1 ? 'active' : '',
+//                        'empty' => $folder['cnt']==0 ? 1 : 0,
+//                        'cnt' => short_number($folder['cnt'],1),
+//                        'class' => 'btn-'.strtolower($folder['folder_name']),
+//                    ];
+//                }
+//            }
             // Attachments
             $this->db->select('message_id, count(attachment_id) as cnt')->from('postbox_attachments')->group_by('message_id');
             $attachssql = $this->db->get_compiled_select();
@@ -953,26 +953,63 @@ class Mailbox_model extends MY_Model
 
     private function _folders_statistic($postbox_id)
     {
-        $this->db->select('f.folder_id, f.folder_name, count(m.message_id) as cnt')->from('postbox_folders f')->join('postbox_messages m','f.folder_id=m.folder_id','left')->where(['f.postbox_id'=>$postbox_id,'m.message_deleted' => 0])->group_by('folder_id, f.folder_name');
-        $folders = $this->db->get()->result_array();
+        $this->db->select('f.folder_id, f.folder_name, count(m.message_id) as cnt')->from('postbox_folders f')->join('postbox_messages m','f.folder_id=m.folder_id','left')->where(['f.postbox_id'=>$postbox_id, 'm.message_deleted' => 0, 'f.folder_main' => 1])->group_by('folder_id, f.folder_name')->order_by('f.folder_sort');
+        $mainfolders = $this->db->get()->result_array();
+        $this->db->select('f.folder_id, f.folder_name, count(m.message_id) as cnt')->from('postbox_folders f')->join('postbox_messages m','f.folder_id=m.folder_id','left')->where(['f.postbox_id'=>$postbox_id, 'm.message_deleted' => 0, 'f.folder_main' => 0])->group_by('folder_id, f.folder_name');
+        $usrfolders = $this->db->get()->result_array();
         // Calc unread messages
         $this->db->select('count(m.message_id) as cnt')->from('postbox_messages m')->join('postbox_folders f', 'f.folder_id=m.folder_id')->where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_seen'=>0,'m.message_deleted' => 0]);
         $newmsg = $this->db->get()->row_array();
         // Calc stared
         $this->db->select('count(m.message_id) as cnt')->from('postbox_messages m')->join('postbox_folders f', 'f.folder_id=m.folder_id')->where(['f.postbox_id'=>$postbox_id,'f.folder_name'=> $this->inbox_name,'m.message_flagged'=>1,'m.message_deleted' => 0]);
         $starmsg = $this->db->get()->row_array();
-
-        $folders[] = [
-            'folder_id' => 'new',
-            'folder_name' => 'Unread',
-            'cnt' => $newmsg['cnt'],
-        ];
-        $folders[] = [
-            'folder_id' => 'flagged',
-            'folder_name' => 'Starred',
-            'cnt' => $starmsg['cnt'],
-        ];
-        return $folders;
+        $newfolders = [];
+        $idx = 1;
+        $newfolderuse = 0;
+        foreach ($mainfolders as $folder) {
+            if ($idx==4) {
+                $newfolders[] = [
+                    'folder_id' => 'new',
+                    'folder_name' => 'Unread',
+                    'cnt' => $newmsg['cnt'],
+                    'main' => 1,
+                ];
+                $idx++;
+                $newfolderuse = 1;
+            }
+            $newfolders[] = [
+                'folder_id' => $folder['folder_id'],
+                'folder_name' => $folder['folder_name'],
+                'cnt' => $folder['folder_name']==$this->inbox_name ? $folder['cnt'] : 0,
+                'main' => 1,
+            ];
+            $idx++;
+        }
+        if ($newfolderuse==0) {
+            $newfolders[] = [
+                'folder_id' => 'new',
+                'folder_name' => 'Unread',
+                'cnt' => $newmsg['cnt'],
+                'main' => 1,
+            ];
+        }
+        // if ($starmsg['cnt']>0) {
+            $newfolders[] = [
+                'folder_id' => 'flagged',
+                'folder_name' => 'Starred',
+                'cnt' => 0, // $starmsg['cnt'],
+                'main' => 1,
+            ];
+        // }
+        foreach ($usrfolders as $folder) {
+            $newfolders[] = [
+                'folder_id' => $folder['folder_id'],
+                'folder_name' => $folder['folder_name'],
+                'cnt' => 0,
+                'main' => 0,
+            ];
+        }
+        return $newfolders;
     }
 
     // count messages
