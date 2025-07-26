@@ -4678,4 +4678,78 @@ class Test extends CI_Controller
         $writer->save($filenorm);    // download file
         echo 'File '.$filenorm.' ready'.PHP_EOL;
     }
+
+    public function inventsalesreport()
+    {
+        $years = [2024, 2025];
+
+        foreach ($years as $year) {
+            $datstart = strtotime($year.'-01-01');
+            $datfinish = strtotime(($year+1).'-01-01');
+            $this->db->select('ii.item_num, ii.item_name, ic.color, ic.inventory_color_id')->from('ts_inventory_items ii')->join('ts_inventory_colors ic','ic.inventory_item_id = ii.inventory_item_id')->order_by('ii.item_num , ic.color_order');
+            $invcolors = $this->db->get()->result_array();
+            $items = [];
+            $itemkey = [];
+            foreach ($invcolors as $invcolor) {
+                $items[] = [
+                    'item_num' => $invcolor['item_num'],
+                    'item_name' => $invcolor['item_name'],
+                    'color' => $invcolor['color'],
+                    'orders_bt' => 0,
+                    'qty_bt' => 0,
+                    'orders_sr' => 0,
+                    'qty_sr' => 0,
+                ];
+                array_push($itemkey, $invcolor['inventory_color_id']);
+            }
+            // Get Orders results
+            $this->db->select('o.brand, oic.inventory_color_id, count(oi.order_id) as orders, sum(oic.item_qty) as items');
+            $this->db->from('ts_orders o');
+            $this->db->join('ts_order_items oi','oi.order_id = o.order_id');
+            $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
+            $this->db->where('o.order_date >= ', $datstart)->where('o.order_date < ',$datfinish)->where('o.is_canceled', 0)->where('oic.inventory_color_id is not null');
+            $this->db->group_by('o.brand, oic.inventory_color_id');
+            $orders = $this->db->get()->result_array();
+            foreach ($orders as $order) {
+                $key = array_search($order['inventory_color_id'], $itemkey);
+                if ($order['brand']=='SR') {
+                    $items[$key]['orders_sr']+=$order['orders'];
+                    $items[$key]['qty_sr']+=$order['items'];
+                } else {
+                    $items[$key]['orders_bt']+=$order['orders'];
+                    $items[$key]['qty_bt']+=$order['items'];
+                }
+            }
+            $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->setTitle('Items Sales '.$year);
+            $sheet->setCellValue('A1', 'Item #');
+            $sheet->setCellValue('B1', 'Item Name');
+            $sheet->setCellValue('C1','Color');
+            $sheet->setCellValue('D1', '# orders Bluetrack brand');
+            $sheet->setCellValue('E1', 'Qty sold Bluetrack brand');
+            $sheet->setCellValue('F1', '# orders StressRelievers brand');
+            $sheet->setCellValue('G1', 'Qty sold StressRelievers brand');
+            $numrow = 2;
+            foreach ($items as $item) {
+                if ($item['orders_sr']+$item['qty_sr']+$item['orders_bt']+$item['qty_bt'] > 0) {
+                    $sheet->setCellValue('A'.$numrow, $item['item_num']);
+                    $sheet->setCellValue('B'.$numrow, $item['item_name']);
+                    $sheet->setCellValue('C'.$numrow, $item['color']);
+                    $sheet->setCellValue('D'.$numrow, $item['orders_bt']);
+                    $sheet->setCellValue('E'.$numrow, $item['qty_bt']);
+                    $sheet->setCellValue('F'.$numrow, $item['orders_sr']);
+                    $sheet->setCellValue('G'.$numrow, $item['qty_sr']);
+                    $numrow++;
+                }
+            }
+            $this->load->config('uploader');
+            $filenorm = $this->config->item('upload_path_preload').'invenory_sales_'.$year.'.xlsx';
+            @unlink($filenorm);
+            $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+            $writer->save($filenorm);    // download file
+            echo 'File '.$filenorm.' ready'.PHP_EOL;
+        }
+        echo 'ALL REPORTS READY'.PHP_EOL;
+    }
 }
