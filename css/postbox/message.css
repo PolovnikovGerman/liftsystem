@@ -155,8 +155,10 @@
 }
 .filebox {
     position: relative;
-    width: 176px;
-    height: 119px;
+    /*width: 176px;*/
+    /*height: 119px;*/
+    width: 164px;
+    height: 105px;
     overflow: hidden;
     border: 1px solid #e5e5e5;
 }
