@@ -103,21 +103,21 @@
         </div>
     </div>
     <div class="emaildetails"></div>
-</div>
-
-<!-- </div> -->
-<div class="datarow">
-    <div class="emailer-footer">
-        <div class="emails-menu datarow">
-            <div class="rowemailname">Email:</div>
-            <div id="postboxesmenu"><?=$menu_view?></div>
-        </div>
-        <div class="domain-menu datarow">
-            <div class="rowemailname">Domain:</div>
-            <div class="domainmenu-body">
-                <div class="domainmenu-tab sb-tab <?=$brand=='SB' ? 'active' : ''?>" data-brand="SB">stressball.com</div>
-                <div class="domainmenu-tab sr-tab <?=$brand=='SR' ? 'active' : ''?>" data-brand="SR">stressreliever.com</div>
+    <div class="datarow">
+        <div class="emailer-footer">
+            <div class="emails-menu datarow">
+                <div class="rowemailname">Email:</div>
+                <div id="postboxesmenu"><?=$menu_view?></div>
+            </div>
+            <div class="domain-menu datarow">
+                <div class="rowemailname">Domain:</div>
+                <div class="domainmenu-body">
+                    <div class="domainmenu-tab sb-tab <?=$brand=='SB' ? 'active' : ''?>" data-brand="SB">stressball.com</div>
+                    <div class="domainmenu-tab sr-tab <?=$brand=='SR' ? 'active' : ''?>" data-brand="SR">stressreliever.com</div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- </div> -->
