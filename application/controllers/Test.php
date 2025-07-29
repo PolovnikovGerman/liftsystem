@@ -4738,4 +4738,15 @@ class Test extends CI_Controller
         $this->mailbox_model->updatepostbox($postbox);
     }
 
+    public function update_msgbody()
+    {
+        $postbox = 3;
+        $folder_id = 23;
+        $this->load->model('mailbox_model');
+        $this->db->select('*')->from('postbox_messages')->where(['folder_id' => 23, 'message_text' => NULL, 'message_body' => NULL])->order_by('message_id','desc');
+        $res = $this->db->get()->row_array();
+        echo 'Subj '.$res['message_subject'].' ID '.$res['message_id'].'!'.PHP_EOL;
+        $msgdat = $this->mailbox_model->message_details($postbox, $folder_id, $res['message_id']);
+    }
+
 }
