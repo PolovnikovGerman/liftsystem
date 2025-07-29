@@ -8,13 +8,14 @@
             <div class="eml-bntwhite eml-bnt-forward">Forward<span class="eml-bnticon"><i class="fa fa-share" aria-hidden="true"></i></span></div>
             <div class="eml-greyline">&nbsp;</div>
             <div class="eml-bntwhite eml-bnt-assign">Assign</div>
-            <div class="eml-bntwhite eml-bnt-movefrom">Move from: <span><?=$folder_name?></span></div>
+            <div class="eml-bntwhite eml-bnt-movefrom" data-message="<?=$message['message_id']?>">Move from: <span><?=$folder_name?></span></div>
+            <div class="msgdetfolders-menu" id="msgdetailsfolders"></div>
         </div>
         <div class="emlhead-right">
             <div class="emailnav">
                 <div class="eml-bntwhite emailnav-print" data-message="<?=$message['message_id']?>"><span class="emlnav-bnticon"><img src="/img/postbox/printer.svg"></span> Print</div>
                 <div class="eml-bntwhite emailnav-readsatus" data-message="<?=$message['message_id']?>"><span class="emlnav-bnticon"><img src="/img/postbox/icon-unread.svg"></span> <?=$seen==1 ? 'Mark Read' : 'Mark Unread'?></div>
-                <div class="eml-bntwhite emailnav-spam" data-message="<?=$message['message_id']?>"><span class="emlnav-bnticon"><img src="/img/postbox/icon-spam.svg"></span> Spam</div>
+<!--                <div class="eml-bntwhite emailnav-spam" data-message="--><?php //=$message['message_id']?><!--"><span class="emlnav-bnticon"><img src="/img/postbox/icon-spam.svg"></span> Spam</div>-->
                 <div class="eml-bntwhite emailnav-delete" data-message="<?=$message['message_id']?>"><span class="emlnav-bnticon"><img src="/img/postbox/icon-delete.svg"></span> Delete</div>
             </div>
             <div class="otheremls">
@@ -75,7 +76,7 @@
                     </div>
                 </div>
                 <div class="contentemail datarow">
-                    <?=$message['message_body']?>
+                    <?=empty($message['message_body']) ? $message['message_text'] : $message['message_body']?>
                 </div>
             </div>
             <div class="attachedfiles datarow">

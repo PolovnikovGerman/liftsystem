@@ -931,14 +931,18 @@ class Mailbox_model extends MY_Model
     public function get_postbox_folderslist($postbox_id, $userfolders = 0)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Issue with Connection'];
-        $this->db->select('*')->from('postbox_folders')->where('postbox_id', $postbox_id)->order_by('folder_id','asc');
+        $this->db->select('*')->from('postbox_folders')->where('postbox_id', $postbox_id)->order_by('folder_main','desc');
         $folders = $this->db->get()->result_array();
         // Only additional folders
         $newfolders = [];
         foreach ($folders as $folder) {
             if ($userfolders==1) {
-                if (!in_array($folder['folder_name'], $this->mainfolders)) {
+                if ($folder['folder_name']==$this->inbox_name) {
                     $newfolders[] = $folder;
+                } else {
+                    if (!in_array($folder['folder_name'], $this->mainfolders)) {
+                        $newfolders[] = $folder;
+                    }
                 }
             } else {
                 $newfolders[] = $folder;
@@ -1083,7 +1087,7 @@ class Mailbox_model extends MY_Model
         return $out;
     }
 
-    function message_details($postbox_id, $folder_id, $message_id)
+    public function message_details($postbox_id, $folder_id, $message_id)
     {
         $this->db->select('pf.folder_name, up.mailbox , up.postbox_user , up.postbox_passwd')->from('postbox_folders pf')->join('user_postboxes up','up.postbox_id = pf.postbox_id');
         $this->db->where('pf.folder_id', $folder_id);
@@ -1092,7 +1096,8 @@ class Mailbox_model extends MY_Model
         if ($res['result']==$this->success_result) {
             $imap = $res['imap'];
             $imap->selectFolder($postbox['folder_name']);
-            $message = @$imap->getMessage($message_id);
+            echo 'Check Message ID '.$message_id.'!'.PHP_EOL;
+            $message = @$imap->getMessage(intval($message_id));
             echo 'Manage Messaage ID '.$message->header->message_id.PHP_EOL;
             // echo 'Html Body';
             var_dump($message); die();
@@ -1151,7 +1156,9 @@ class Mailbox_model extends MY_Model
         $postres = $this->db->select('*')->from('user_postboxes')->where('postbox_id', $postbox)->get()->row_array();
         if (ifset($postres, 'postbox_id',0) > 0) {
             // Get last date
+            $folderdat = $this->db->select('folder_id')->from('postbox_folders')->where(['postbox_id' => $postbox, 'folder_name' => $this->inbox_name])->get()->row_array();
             $this->db->select('max(m.message_udate) as mdate')->from('postbox_messages m')->join('postbox_folders f','f.folder_id=m.folder_id')->where('f.postbox_id', $postbox);
+            $this->db->where('m.folder_id', $folderdat['folder_id']);
             $msgdat = $this->db->get()->row_array();
             if (!empty($msgdat['mdate'])) {
                 // echo 'Date '.$msgdat['mdate'].' - '.date('j F Y', $msgdat['mdate']).PHP_EOL;
@@ -1159,7 +1166,6 @@ class Mailbox_model extends MY_Model
                 if ($res['result']==$this->success_result) {
                     $imap = $res['imap'];
                     $imap->selectFolder($this->inbox_name);
-                    $folderdat = $this->db->select('folder_id')->from('postbox_folders')->where(['postbox_id' => $postbox, 'folder_name' => $this->inbox_name])->get()->row_array();
                     $folder_id = $folderdat['folder_id'];
                     if (!empty($folderdat['folder_id'])) {
                         $datsrch = date('j-F-Y', $msgdat['mdate']);
@@ -1170,8 +1176,9 @@ class Mailbox_model extends MY_Model
                             try {
                                 $msgdat = @$imap->getMessagesByCriteria($criteria);
                             } catch (exception $e) {
-                                echo $e->getMessage();
-                                die();
+                                echo $e->getMessage().PHP_EOL;
+                                // die();
+                                $msgdat = [];
                             }
 
                             if (count($msgdat)>0) {
@@ -1183,6 +1190,14 @@ class Mailbox_model extends MY_Model
                                     $msgchk = $this->db->get()->row_array();
                                     if ($msgchk['cnt']==0) {
                                         // New message
+                                        $plaintxt = $htmltxt = '';
+                                        if (isset($message->message->plain)) {
+                                            $plaintxt = $message->message->plain;
+                                        }
+                                        if (isset($message->message->html)) {
+                                            $htmltxt = $message->message->html;
+                                        }
+
                                         $this->db->set('folder_id', $folder_id);
                                         $this->db->set('message_msgno', $message->header->msgno);
                                         $this->db->set('message_subject', $message->header->subject);
@@ -1198,8 +1213,8 @@ class Mailbox_model extends MY_Model
                                         $this->db->set('message_seen', $message->header->seen);
                                         $this->db->set('message_draft', $message->header->draft);
                                         $this->db->set('message_udate', $message->header->udate);
-                                        $this->db->set('message_body', $message->message->html);
-                                        $this->db->set('message_text', $message->message->plain);
+                                        $this->db->set('message_body', $htmltxt);
+                                        $this->db->set('message_text', $plaintxt);
                                         $this->db->insert('postbox_messages');
                                         $msgid = $this->db->insert_id();
                                         $attachments = $message->attachments;

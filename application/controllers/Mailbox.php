@@ -38,6 +38,7 @@ class Mailbox extends MY_Controller
         $head['title'] = 'Postbox';
         $brand = $this->current_brand;
         $head['scripts'][] = array('src' => '/js/postbox/page.js');
+        $head['scripts'][] = array('src' => '/js/postbox/message.js');
         $head['styles'][] = array('style' => '/css/postbox/page.css');
         $head['styles'][] = array('style' => '/css/postbox/message.css');
         $postboxes = $this->mailbox_model->get_user_mailboxes($this->USR_ID, $this->USR_ROLE, $brand);
