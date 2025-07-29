@@ -1,9 +1,10 @@
 .maincontent_view.stressballs, .maincontent_view.relievers {
     background: #FFFFFF!important;
-    position: relative!important;
+    /* position: relative!important; */
 }
 .emlcontant {
     padding: 7px 10px;
+    /* height: calc(100% - 65px);*/
 }
 .emailer-header {}
 .btn-compose {
@@ -522,6 +523,7 @@
     width: 100%;
     color: #fff;
     height: 65px;
+    margin-left: -15px;
 }
 .emails-menu {
     background: #0018cc;

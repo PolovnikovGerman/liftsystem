@@ -11,7 +11,7 @@ $(document).ready(function (){
         }
     });
     init_postbox_menu();
-    var tableHeight = parseInt(document.documentElement.clientHeight)-219;
+    var tableHeight = parseInt(document.documentElement.clientHeight)-255;
     $("#eml-table-messages").css('height', tableHeight);
 });
 
