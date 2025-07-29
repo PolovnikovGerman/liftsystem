@@ -1,5 +1,6 @@
 .maincontent_view.stressballs, .maincontent_view.relievers {
     background: #FFFFFF!important;
+    position: relative!important;
 }
 .emlcontant {
     padding: 7px 10px;
