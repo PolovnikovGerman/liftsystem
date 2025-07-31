@@ -4678,4 +4678,38 @@ class Test extends CI_Controller
         $writer->save($filenorm);    // download file
         echo 'File '.$filenorm.' ready'.PHP_EOL;
     }
+
+    public function itemprices() {
+        $items = $this->db->select('item_id, item_number, item_name')->from('sb_items')->where('brand','SR')->order_by('item_number')->get()->result_array();
+        $this->load->config('uploader');
+        $filenorm = $this->config->item('upload_path_preload').'sr_items.xlsx';
+        @unlink($filenorm);
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('SR Items');
+        $sheet->setCellValue('A1', 'Item #');
+        $sheet->setCellValue('B1','Item Name');
+        $sheet->setCellValue('C1', 'Qty/Prices');
+        $numrow = 2;
+        foreach ($items as $item) {
+            $sheet->setCellValue('A'.$numrow, $item['item_number']);
+            $sheet->setCellValue('B'.$numrow, $item['item_name']);
+            // Prices
+            $prices = $this->db->select('item_qty, sale_price')->from('sb_promo_price')->where('item_id', $item['item_id'])->where('sale_price != ',0)->order_by('item_qty')->get()->result_array();
+            $cellnum = 67;
+            foreach ($prices as $price) {
+                $cellname = chr($cellnum).$numrow;
+                $sheet->setCellValue($cellname, $price['item_qty']);
+                $cellnum++;
+                $cellname = chr($cellnum).$numrow;
+                $sheet->setCellValue($cellname, $price['sale_price']);
+                $cellnum++;
+            }
+            $numrow++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($filenorm);    // download file
+        echo 'File '.$filenorm.' ready'.PHP_EOL;
+
+    }
 }
