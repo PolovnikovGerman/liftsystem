@@ -4754,4 +4754,46 @@ class Test extends CI_Controller
         $writer->save($filenorm);    // download file
         echo 'File '.$filenorm.' ready'.PHP_EOL;
     }
+
+    public function update_srprice2025()
+    {
+        $qtys = [
+            150, 250, 500, 1000, 2500
+        ];
+        $items = $this->db->select('*')->from('sr_prices')->get()->result_array();
+        foreach ($items as $item) {
+            $sritem = $this->db->select('item_id')->from('sb_items')->where(['item_number'=>$item['item_number'],'brand'=>'SR'])->get()->row_array();
+            if (ifset($sritem, 'item_id', 0) > 0) {
+                $this->db->where('id', $item['id']);
+                $this->db->set('item_id', $sritem['item_id']);
+                $this->db->update('sr_prices');
+                foreach ($qtys as $i) {
+                    if (!empty($item['price_'.$i])) {
+                        $newval = floatval(str_replace('$', '', $item['price_'.$i]));
+                        $price = $this->db->select('*')->from('sb_promo_price')->where(['item_id' => $sritem['item_id'], 'item_qty' => $i])->get()->row_array();
+                        if (ifset($price, 'promo_price_id', 0) > 0) {
+                            $this->db->where('promo_price_id', $price['promo_price_id']);
+                            $this->db->set('sale_price', $newval);
+                            $this->db->update('sb_promo_price');
+                        } else {
+                            echo 'QTY '.$i.' Item '.$sritem['item_number'].' Price Not Found'.PHP_EOL;
+                        }
+                    }
+                    if (!empty($item['sale_'.$i])) {
+                        $newval = floatval(str_replace('$', '', $item['sale_'.$i]));
+                        $price = $this->db->select('*')->from('sb_promo_price')->where(['item_id' => $sritem['item_id'], 'item_qty' => $i])->get()->row_array();
+                        if (ifset($price, 'promo_price_id', 0) > 0) {
+                            $this->db->where('promo_price_id', $price['promo_price_id']);
+                            $this->db->set('price', $newval);
+                            $this->db->update('sb_promo_price');
+                        } else {
+                            echo 'QTY '.$i.' Item '.$sritem['item_number'].' Price Not Found'.PHP_EOL;
+                        }
+                    }
+                }
+            } else {
+                echo 'Item '.$item['item_number'].' not found'.PHP_EOL;
+            }
+        }
+    }
 }
