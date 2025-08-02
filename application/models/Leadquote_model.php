@@ -3264,8 +3264,8 @@ class Leadquote_model extends MY_Model
                         'history'=>$newart_history,
                         'update'=>'',
                     );
-
-
+                    $out['item_error'] = $orderres['item_error'];
+                    $out['item_error_msg'] = $orderres['item_error_msg'];
                 }
             }
         }

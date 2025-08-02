@@ -84,7 +84,7 @@
                 <div class="emailnav-grey">
                     <div class="eml-bntgrey emailnav-print"><span class="emlnav-bnticon"><img src="/img/postbox/printer.svg"></span> Print</div>
                     <div class="eml-bntgrey emailnav-print"><span class="emlnav-bnticon"><img src="/img/postbox/icon-unread.svg"></span> Mark Unread</div>
-                    <div class="eml-bntgrey emailnav-print"><span class="emlnav-bnticon"><img src="/img/postbox/icon-spam.svg"></span> Spam</div>
+<!--                    <div class="eml-bntgrey emailnav-print"><span class="emlnav-bnticon"><img src="/img/postbox/icon-spam.svg"></span> Spam</div>-->
                     <div class="eml-bntgrey emailnav-print"><span class="emlnav-bnticon"><img src="/img/postbox/icon-delete.svg"></span> Delete</div>
                 </div>
             </div>
