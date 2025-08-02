@@ -4679,6 +4679,124 @@ class Test extends CI_Controller
         echo 'File '.$filenorm.' ready'.PHP_EOL;
     }
 
+    public function itemprices() {
+//        $items = $this->db->select('item_id, item_number, item_name')->from('sb_items')->where('brand','SR')->order_by('item_number')->get()->result_array();
+//        $this->load->config('uploader');
+//        $filenorm = $this->config->item('upload_path_preload').'sr_items.xlsx';
+//        @unlink($filenorm);
+//        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+//        $sheet = $spreadsheet->getActiveSheet();
+//        $sheet->setTitle('SR Items');
+//        $sheet->setCellValue('A1', 'Item #');
+//        $sheet->setCellValue('B1','Item Name');
+//        $sheet->setCellValue('C1', 'Qty/Prices');
+//        $numrow = 2;
+//        foreach ($items as $item) {
+//            $sheet->setCellValue('A'.$numrow, $item['item_number']);
+//            $sheet->setCellValue('B'.$numrow, $item['item_name']);
+//            // Prices
+//            $prices = $this->db->select('item_qty, sale_price')->from('sb_promo_price')->where('item_id', $item['item_id'])->where('sale_price != ',0)->order_by('item_qty')->get()->result_array();
+//            $cellnum = 67;
+//            foreach ($prices as $price) {
+//                $cellname = chr($cellnum).$numrow;
+//                $sheet->setCellValue($cellname, $price['item_qty']);
+//                $cellnum++;
+//                $cellname = chr($cellnum).$numrow;
+//                $sheet->setCellValue($cellname, $price['sale_price']);
+//                $cellnum++;
+//            }
+//            $numrow++;
+//        }
+//        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+//        $writer->save($filenorm);    // download file
+//        echo 'File '.$filenorm.' ready'.PHP_EOL;
+        $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active, v.vendor_name');
+        $this->db->from('sb_items i');
+        $this->db->join('sb_vendor_items svi','svi.vendor_item_id = i.vendor_item_id');
+        $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor');
+        $this->db->where('i.brand', 'BT');
+        $this->db->order_by('i.item_number');
+        $items = $this->db->get()->result_array();
+
+        // $items = $this->db->select('item_id, item_number, item_name, ')->from('sb_items')->where('brand','SR')->order_by('item_number')->get()->result_array();
+        $this->load->config('uploader');
+        $filenorm = $this->config->item('upload_path_preload').'bt_items.xlsx';
+        @unlink($filenorm);
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('BT Items');
+        $sheet->setCellValue('A1', 'Item #');
+        $sheet->setCellValue('B1','Item Name');
+        $sheet->setCellValue('C1', 'Active?');
+        $sheet->setCellValue('D1','Vendor');
+        $sheet->setCellValue('E1', 'Qty/Prices');
+        // $sheet->setCellValue('C1', 'Qty/Prices');
+        $numrow = 2;
+        foreach ($items as $item) {
+            $sheet->setCellValue('A'.$numrow, $item['item_number']);
+            $sheet->setCellValue('B'.$numrow, $item['item_name']);
+            $sheet->setCellValue('C'.$numrow, $item['item_active']==1 ? 'YES' : 'NO');
+            $sheet->setCellValue('D'.$numrow,$item['vendor_name']);
+            // Prices
+            $prices = $this->db->select('item_qty, sale_price')->from('sb_promo_price')->where('item_id', $item['item_id'])->where('sale_price != ',0)->order_by('item_qty')->get()->result_array();
+            $cellnum = 69; // 67;
+            foreach ($prices as $price) {
+                $cellname = chr($cellnum).$numrow;
+                $sheet->setCellValue($cellname, $price['item_qty']);
+                $cellnum++;
+                $cellname = chr($cellnum).$numrow;
+                $sheet->setCellValue($cellname, $price['sale_price']);
+                $cellnum++;
+            }
+            $numrow++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($filenorm);    // download file
+        echo 'File '.$filenorm.' ready'.PHP_EOL;
+    }
+
+    public function update_srprice2025()
+    {
+        $qtys = [
+            150, 250, 500, 1000, 2500
+        ];
+        $items = $this->db->select('*')->from('sr_prices')->get()->result_array();
+        foreach ($items as $item) {
+            $sritem = $this->db->select('item_id')->from('sb_items')->where(['item_number'=>$item['item_number'],'brand'=>'SR'])->get()->row_array();
+            if (ifset($sritem, 'item_id', 0) > 0) {
+                $this->db->where('id', $item['id']);
+                $this->db->set('item_id', $sritem['item_id']);
+                $this->db->update('sr_prices');
+                foreach ($qtys as $i) {
+                    if (!empty($item['price_'.$i])) {
+                        $newval = floatval(str_replace('$', '', $item['price_'.$i]));
+                        $price = $this->db->select('*')->from('sb_promo_price')->where(['item_id' => $sritem['item_id'], 'item_qty' => $i])->get()->row_array();
+                        if (ifset($price, 'promo_price_id', 0) > 0) {
+                            $this->db->where('promo_price_id', $price['promo_price_id']);
+                            $this->db->set('sale_price', $newval);
+                            $this->db->update('sb_promo_price');
+                        } else {
+                            echo 'QTY '.$i.' Item '.$sritem['item_number'].' Price Not Found'.PHP_EOL;
+                        }
+                    }
+                    if (!empty($item['sale_'.$i])) {
+                        $newval = floatval(str_replace('$', '', $item['sale_'.$i]));
+                        $price = $this->db->select('*')->from('sb_promo_price')->where(['item_id' => $sritem['item_id'], 'item_qty' => $i])->get()->row_array();
+                        if (ifset($price, 'promo_price_id', 0) > 0) {
+                            $this->db->where('promo_price_id', $price['promo_price_id']);
+                            $this->db->set('price', $newval);
+                            $this->db->update('sb_promo_price');
+                        } else {
+                            echo 'QTY '.$i.' Item '.$sritem['item_number'].' Price Not Found'.PHP_EOL;
+                        }
+                    }
+                }
+            } else {
+                echo 'Item '.$item['item_number'].' not found'.PHP_EOL;
+            }
+        }
+    }
+
     public function init_postboxes()
     {
         $this->load->model('mailbox_model');

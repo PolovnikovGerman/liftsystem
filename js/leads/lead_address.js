@@ -50,7 +50,10 @@ function placeParse(place, address_type) {
     let state = "";
     let country = "";
     for (const component of place.address_components) {
-        const componentType = component.types[0];
+        var componentType = component.types[0];
+        if (component.types.length > 1 && componentType=='political') {
+            componentType = component.types[1];
+        }
         switch (componentType) {
             case "street_number": {
                 address1 = `${component.long_name} ${address1}`;
