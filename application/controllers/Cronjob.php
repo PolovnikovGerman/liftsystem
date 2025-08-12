@@ -1080,4 +1080,12 @@ Class Cronjob extends CI_Controller
         $this->load->model('artwork_model');
         $this->artwork_model->artproof_report($datebgn, $dateend);
     }
+
+    public function trackreport()
+    {
+        $start = strtotime(date('Y-m-d') . ' - 1 day');
+        $datebgn = strtotime(date('Y-m-d',$start));
+        $dateend = strtotime(date('Y-m-d'));
+
+    }
 }
