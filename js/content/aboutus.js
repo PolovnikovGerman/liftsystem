@@ -82,7 +82,7 @@ function init_aboutpage_editcontent(brand) {
     });
     // Cancel Edit
     $(".cancel_button[data-page='about']").unbind('click').click(function () {
-        init_contentpage('about',brand);
+        init_contentpage('about_us',brand);
     });
     // Save
     $(".save_button[data-page='about']").unbind('click').click(function () {
@@ -92,7 +92,7 @@ function init_aboutpage_editcontent(brand) {
         var url="/content/save_aboutpagecontent";
         $.post(url, params, function (response) {
             if (response.errors=='') {
-                init_contentpage('about', brand);
+                init_contentpage('about_us', brand);
             } else {
                 show_error(response);
             }

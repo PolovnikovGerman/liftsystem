@@ -85,7 +85,7 @@ class Database extends MY_Controller
                     $submenu = [];
                     $submenu[] = ['item_link' => '#sbhomeview', 'item_name' => 'Home Page']; //*
                     $submenu[] = ['item_link' => '#sbcustomshappedview', 'item_name' => 'Custom Shaped']; //*
-                    $submenu[] = ['item_link' => '#sbproductsview', 'item_name' => 'Products']; //*
+                    $submenu[] = ['item_link' => '#sbproductsview', 'item_name' => 'Categories']; //*
                     $submenu[] = ['item_link' => '#sbaboutusview', 'item_name' => 'About Us']; // *
                     $submenu[] = ['item_link' => '#sbfaqview', 'item_name' => 'FAQ']; // *
                     $submenu[] = ['item_link' => '#sbcontactusview', 'item_name' => 'Contact Us']; //*
