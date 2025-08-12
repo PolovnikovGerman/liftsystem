@@ -1168,6 +1168,7 @@ class Content extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                    usersession($session_id, null);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -1357,7 +1358,13 @@ class Content extends MY_Controller
                     $session_data = ['data' => $data,];
                     usersession($session, $session_data);
                 }
-
+            } else {
+                if ($edit_mode==1) {
+                    $page_options = [
+                        'session' => $session,
+                    ];
+                    $content = $this->load->view('content/homepage_edit', $page_options, TRUE);
+                }
             }
         }
         return $content;
