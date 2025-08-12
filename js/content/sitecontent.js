@@ -219,31 +219,67 @@ function init_homepage_edit(brand) {
                 $(".submenu_manage[data-link='btcustomshappedview']").find('div.submenu_label').empty().html('Edit Mode');
                 $(".submenu_manage[data-link='btcustomshappedview']").find('div.buttons').empty().html(response.data.buttons);
             } else if (brand=='SB'){
-                $("#sbcustomshappedview").empty().html(response.data.content);
-                $(".submenu_manage[data-link='sbcustomshappedview']").find('div.submenu_label').empty().html('Edit Mode');
-                $(".submenu_manage[data-link='sbcustomshappedview']").find('div.buttons').empty().html(response.data.buttons);
+                $("#sbhomeview").empty().html(response.data.content);
+                $(".submenu_manage[data-link='sbhomeview']").find('div.submenu_label').empty().html('Edit Mode');
+                $(".submenu_manage[data-link='sbhomeview']").find('div.buttons').empty().html(response.data.buttons);
+                $("input.metatitle").focus();
+                $("input.metatitle").select()
+                init_sbhomepage_editcontent();
             } else if (brand=='SR') {
                 $("#srhomeview").show().empty().html(response.data.content);
                 $(".submenu_manage[data-link='srhomeview']").find('div.submenu_label').empty().html('Edit Mode');
                 $(".submenu_manage[data-link='srhomeview']").find('div.buttons').empty().html(response.data.buttons);
                 init_srhomepage_editcontent();
             }
-            // $(".content_preview").on('click',function () {
-            //     var url=$("#custom_previewurl").val();
-            //     $.fancybox.open({
-            //         src  : url,
-            //         type : 'iframe',
-            //         opts : {
-            //             afterShow : function( instance, current ) {
-            //                 console.info( 'done!' );
-            //             }
-            //         }
-            //     });
-            // });
-
         } else {
             show_error(response);
         }
     },'json');
+}
 
+function init_sbhomepage_editcontent() {
+    $(".cancel_button[data-page='home']").unbind('click').click(function () {
+        init_contentpage('home', 'SB');
+    });
+    $(".save_button[data-page='home']").unbind('click').click(function () {
+        var params=new Array();
+        params.push({name: 'session', value: $("#homepage_session").val()});
+        params.push({name:'brand', value: 'SB'});
+        var url="/content/save_homecontent";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                init_contentpage('home', 'SB');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("input[data-content='meta']").unbind('change').change(function(){
+        var params=new Array();
+        params.push({name: 'session', value: $("#homepage_session").val()});
+        params.push({name: 'type', value: 'meta'});
+        params.push({name: 'field', value: $(this).data('field')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/content/change_homepageparam";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("textarea[data-content='meta']").unbind('change').change(function(){
+        var params=new Array();
+        params.push({name: 'session', value: $("#homepage_session").val()});
+        params.push({name: 'type', value: 'meta'});
+        params.push({name: 'field', value: $(this).data('field')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/content/change_homepageparam";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
