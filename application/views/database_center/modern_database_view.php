@@ -1,5 +1,5 @@
 <div class="contentsubmenu" style="width: calc(100% - 20px)">
-    <div class="brandsubmenu">
+    <div class="brandmenusection">
         <?php foreach ($brandmenu as $item) : ?>
             <div class="contentsubmenu_item <?=str_replace('#','', $item['item_link'])?>lnk <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?> " data-link="<?=str_replace('#','', $item['item_link'])?>">
                 <?=$item['item_name']?>

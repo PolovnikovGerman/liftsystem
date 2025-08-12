@@ -13,7 +13,11 @@ Class Staticpages_model extends MY_Model
         $this->db->select('page_name, page_id');
         $this->db->from('sb_static_pages');
         $this->db->where('page_name',$page_name);
-        $this->db->where('brand', $brand);
+        if ($brand=='SR') {
+            $this->db->where('brand', $brand);
+        } else {
+            $this->db->where_in('brand', ['SB','BT']);
+        }
         $res = $this->db->get()->row_array();
         if (empty($res) || !array_key_exists('meta_title',$res)) {
             $result=array(

@@ -23,7 +23,6 @@ $(document).ready(function(){
 
 
 function init_page(objid) {
-    console.log('Obj '+objid);
     $(".dbcontentarea").hide();
     $(".contentsubmenu_item").removeClass('active');
     $(".contentsubmenu_item[data-link='"+objid+"']").addClass('active');
