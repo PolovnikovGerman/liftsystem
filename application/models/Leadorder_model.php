@@ -5456,24 +5456,36 @@ Class Leadorder_model extends My_Model {
                 // Tracking codes
                 $trackings = $irow['trackings'];
                 foreach ($trackings as $tracking) {
-                    if (!empty($tracking['qty']) || !empty($tracking['trackcode'])) {
-                        if (empty($tracking['trackdate'])) {
-                            $tracking['trackdate'] = time();
-                        }
-                    }
-                    $this->db->set('updated_by', $user_id);
-                    $this->db->set('order_itemcolor_id', $colorid);
-                    $this->db->set('qty', intval($tracking['qty']));
-                    $this->db->set('trackdate', $tracking['trackdate']);
-                    $this->db->set('trackservice', $tracking['trackservice']);
-                    $this->db->set('trackcode', $tracking['trackcode']);
                     if ($tracking['tracking_id']>0) {
-                        $this->db->where('tracking_id', $tracking['tracking_id']);
-                        $this->db->update('ts_order_trackings');
+                        $updtrack = 0;
+                        $this->db->select('qty, trackdate, trackservice, trackcode')->from('ts_order_trackings')->where('tracking_id', $tracking['tracking_id']);
+                        $oldtrack = $this->db->get()->row_array();
+                        if ($tracking['qty']!=$oldtrack['qty'] || $tracking['trackdate']!=$oldtrack['trackdate'] || $tracking['trackservice']!=$oldtrack['trackservice'] || $tracking['trackcode']!=$oldtrack['trackcode']) {
+                            $updtrack = 1;
+                        }
                     } else {
-                        $this->db->set('created_at', date('Y-m-d H:i:s'));
-                        $this->db->set('created_by', $user_id);
-                        $this->db->insert('ts_order_trackings');
+                        $updtrack = 1;
+                    }
+                    if ($updtrack==1) {
+                        if (!empty($tracking['qty']) || !empty($tracking['trackcode'])) {
+                            if (empty($tracking['trackdate'])) {
+                                $tracking['trackdate'] = time();
+                            }
+                        }
+                        $this->db->set('updated_by', $user_id);
+                        $this->db->set('order_itemcolor_id', $colorid);
+                        $this->db->set('qty', intval($tracking['qty']));
+                        $this->db->set('trackdate', $tracking['trackdate']);
+                        $this->db->set('trackservice', $tracking['trackservice']);
+                        $this->db->set('trackcode', $tracking['trackcode']);
+                        if ($tracking['tracking_id']>0) {
+                            $this->db->where('tracking_id', $tracking['tracking_id']);
+                            $this->db->update('ts_order_trackings');
+                        } else {
+                            $this->db->set('created_at', date('Y-m-d H:i:s'));
+                            $this->db->set('created_by', $user_id);
+                            $this->db->insert('ts_order_trackings');
+                        }
                     }
                 }
                 // Item colors - set shipped time
