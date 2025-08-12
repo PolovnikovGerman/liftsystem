@@ -71,7 +71,7 @@ function init_sitecontent_page(objid, brand) {
             leftmenu_alignment();
             break;
         case 'sbaboutusview':
-            init_contentpage('about','SB');
+            init_contentpage('about_us','SB');
             leftmenu_alignment();
             break;
         case 'btcontactusview':
@@ -152,7 +152,7 @@ function init_contentpage(page_name, brand) {
                     $(".submenu_manage[data-link='sbtermsview']").find('div.buttons').empty().html(response.data.buttons);
                 }
                 init_terms_view(brand);
-            } else if (page_name=='about') {
+            } else if (page_name=='about_us') {
                 if (brand=='BT') {
                     $("#btaboutusview").show().empty().html(response.data.content);
                     $(".submenu_manage[data-link='btaboutusview']").find('div.submenu_label').empty().html('View Mode');

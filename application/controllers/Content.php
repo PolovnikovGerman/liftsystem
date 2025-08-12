@@ -49,7 +49,7 @@ class Content extends MY_Controller
                     $page_name_full = 'Terms & Polices';
                     $pagelink = 'termsview';
                     $special_content = $this->_prepare_custom_content($page_name, $brand);
-                } elseif ($page_name == 'about') {
+                } elseif ($page_name == 'about_us') {
                     $page_name_full = 'About Us';
                     $pagelink = 'aboutusview';
                     $special_content = $this->_prepare_custom_content($page_name, $brand);
@@ -491,7 +491,7 @@ class Content extends MY_Controller
             $error = 'Empty Brand';
             if (!empty($brand)) {
                 $error = '';
-                $page_name = 'about';
+                $page_name = 'about_us';
                 $page_name_full = 'About Us';
                 $session_id = uniq_link(15);
                 $meta = $this->staticpages_model->get_metadata($page_name,$brand);
@@ -1292,7 +1292,7 @@ class Content extends MY_Controller
                 $session_data = ['data' => $data, 'terms' => $terms];
                 usersession($session, $session_data);
             }
-        } elseif ($page_name=='about') {
+        } elseif ($page_name=='about_us') {
             $address = $this->staticpages_model->get_page_inner_content('address', $brand);
             $page_options = [
                 'data' => $data,
