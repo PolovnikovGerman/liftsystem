@@ -2625,4 +2625,55 @@ Class Shipping_model extends MY_Model
         return $billaddress;
     }
 
+    public function trackpackage_report($datebgn, $dateend)
+    {
+        $this->db->select('o.order_num, o.customer_name, itm.item_number, oic.item_description as item_name,tr.qty, tr.trackservice, tr.trackcode');
+        $this->db->from('ts_order_trackings tr');
+        $this->db->join('ts_order_itemcolors oic','oic.order_itemcolor_id = tr.order_itemcolor_id');
+        $this->db->join('ts_order_items oi','oi.order_item_id = oic.order_item_id');
+        $this->db->join('ts_orders o','o.order_id = oi.order_id');
+        $this->db->join('v_item_search itm','itm.item_id = oi.item_id');
+        $this->db->where('unix_timestamp(tr.updated_at) >= ', $datebgn);
+        $this->db->where('unix_timestamp(tr.updated_at) < ', $dateend);
+        $this->db->where('tr.trackcode is not null');
+        $this->db->where('tr.qty > ',0);
+        $tracks = $this->db->get()->result_array();
+        if (count($tracks) > 0) {
+            $options = [
+                'datebgn' => $datebgn,
+                'dateend' => $dateend,
+                'tracks' => $tracks,
+            ];
+            $mail_body = $this->load->view('messages/trackpackage_report_view', $options, TRUE);
+            $email_conf = array(
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'smtp_user' => $this->config->item('sb_quote_user'),
+                'smtp_pass' => $this->config->item('sb_quote_pass'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+            );
+            $email_from = $this->config->item('sb_quote_user');
+            $email_to = 'to_german@yahoo.com';
+            // $email_to = [$this->config->item('sage_email'),$this->config->item('sean_email')];
+            // $email_cc = ['roma@stressrelievers.com','chad.medina@bluetrack.com'];
+            $this->load->library('email');
+            $this->email->initialize($email_conf);
+            $this->email->from($email_from);
+            $this->email->to($email_to);
+            if (isset($email_cc)) {
+                $this->email->cc($email_cc);
+            }
+
+            $title=date('D - M d, Y', $datebgn).' - Tracking # Added';
+            $this->email->subject($title);
+            $this->email->message($mail_body);
+            $this->email->send();
+            $this->email->clear(TRUE);
+        }
+    }
 }
