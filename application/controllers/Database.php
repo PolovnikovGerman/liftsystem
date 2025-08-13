@@ -82,14 +82,17 @@ class Database extends MY_Controller
                     $bt_options['sbfaqview'] = $this->load->view('content/template_view',['link'=>'sbfaqview'], TRUE);
                     $bt_options['sbcontactusview'] = $this->load->view('content/template_view',['link'=>'sbcontactusview'], TRUE);
                     $bt_options['sbtermsview'] = $this->load->view('content/template_view',['link'=>'sbtermsview'], TRUE);
+                    $bt_options['sbproductsview'] = $this->load->view('content/template_view',['link'=>'sbproductsview'], TRUE);
+                    $bt_options['sitemapview'] = $this->load->view('content/template_view',['link'=>'sbsitemapview'], TRUE);
                     $submenu = [];
-                    $submenu[] = ['item_link' => '#sbhomeview', 'item_name' => 'Home Page'];
-                    $submenu[] = ['item_link' => '#sbcustomshappedview', 'item_name' => 'Custom Shaped'];
-                    $submenu[] = ['item_link' => '#sbserviceview', 'item_name' => 'Services'];
-                    $submenu[] = ['item_link' => '#sbaboutusview', 'item_name' => 'About Us'];
-                    $submenu[] = ['item_link' => '#sbfaqview', 'item_name' => 'FAQ'];
-                    $submenu[] = ['item_link' => '#sbcontactusview', 'item_name' => 'Contact Us'];
-                    $submenu[] = ['item_link' => '#sbtermsview', 'item_name' => 'Terms'];
+                    $submenu[] = ['item_link' => '#sbhomeview', 'item_name' => 'Home Page']; //*
+                    $submenu[] = ['item_link' => '#sbcustomshappedview', 'item_name' => 'Custom Shaped']; //*
+                    $submenu[] = ['item_link' => '#sbproductsview', 'item_name' => 'Categories']; //*
+                    $submenu[] = ['item_link' => '#sbaboutusview', 'item_name' => 'About Us']; // *
+                    $submenu[] = ['item_link' => '#sbfaqview', 'item_name' => 'FAQ']; // *
+                    $submenu[] = ['item_link' => '#sbcontactusview', 'item_name' => 'Contact Us']; //*
+                    $submenu[] = ['item_link' => '#sbtermsview', 'item_name' => 'Terms']; //*
+                    $submenu[] = ['item_link' => '#sbsitemapview', 'item_name' => 'Site Map']; //*
                     $submenu_options = [
                         'menus' => $submenu,
                         'brand' => 'SB',

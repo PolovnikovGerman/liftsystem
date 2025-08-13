@@ -71,7 +71,7 @@ function init_sitecontent_page(objid, brand) {
             leftmenu_alignment();
             break;
         case 'sbaboutusview':
-            init_contentpage('about','SB');
+            init_contentpage('about_us','SB');
             leftmenu_alignment();
             break;
         case 'btcontactusview':
@@ -92,6 +92,14 @@ function init_sitecontent_page(objid, brand) {
             break;
         case 'srhomeview':
             init_contentpage('home','SR');
+            leftmenu_alignment();
+            break;
+        case 'sbproductsview':
+            init_contentpage('products','SB');
+            leftmenu_alignment();
+            break;
+        case 'sbsitemapview':
+            init_contentpage('sitemap','SB');
             leftmenu_alignment();
             break;
     }
@@ -152,7 +160,7 @@ function init_contentpage(page_name, brand) {
                     $(".submenu_manage[data-link='sbtermsview']").find('div.buttons').empty().html(response.data.buttons);
                 }
                 init_terms_view(brand);
-            } else if (page_name=='about') {
+            } else if (page_name=='about_us') {
                 if (brand=='BT') {
                     $("#btaboutusview").show().empty().html(response.data.content);
                     $(".submenu_manage[data-link='btaboutusview']").find('div.submenu_label').empty().html('View Mode');
@@ -186,6 +194,28 @@ function init_contentpage(page_name, brand) {
 
                 }
                 init_service_page(brand);
+            } else if (page_name=='products') {
+                if (brand=='BT') {
+                    $("#btproductsview").show().empty().html(response.data.content);
+                    $(".submenu_manage[data-link='sbproductsview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='sbproductsview']").find('div.buttons').empty().html(response.data.buttons);
+                } else {
+                    $("#sbproductsview").show().empty().html(response.data.content);
+                    $(".submenu_manage[data-link='sbproductsview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='sbproductsview']").find('div.buttons').empty().html(response.data.buttons);
+                }
+                init_products_page(brand);
+            } else if (page_name=='sitemap') {
+                if (brand=='BT') {
+                    // $("#btproductsview").show().empty().html(response.data.content);
+                    // $(".submenu_manage[data-link='sbproductsview']").find('div.submenu_label').empty().html('View Mode');
+                    // $(".submenu_manage[data-link='sbproductsview']").find('div.buttons').empty().html(response.data.buttons);
+                } else {
+                    $("#sbsitemapview").show().empty().html(response.data.content);
+                    $(".submenu_manage[data-link='sbsitemapview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='sbsitemapview']").find('div.buttons').empty().html(response.data.buttons);
+                }
+                init_sitemap_page(brand);
             }
         } else {
             show_error(response);
@@ -219,31 +249,231 @@ function init_homepage_edit(brand) {
                 $(".submenu_manage[data-link='btcustomshappedview']").find('div.submenu_label').empty().html('Edit Mode');
                 $(".submenu_manage[data-link='btcustomshappedview']").find('div.buttons').empty().html(response.data.buttons);
             } else if (brand=='SB'){
-                $("#sbcustomshappedview").empty().html(response.data.content);
-                $(".submenu_manage[data-link='sbcustomshappedview']").find('div.submenu_label').empty().html('Edit Mode');
-                $(".submenu_manage[data-link='sbcustomshappedview']").find('div.buttons').empty().html(response.data.buttons);
+                $("#sbhomeview").empty().html(response.data.content);
+                $(".submenu_manage[data-link='sbhomeview']").find('div.submenu_label').empty().html('Edit Mode');
+                $(".submenu_manage[data-link='sbhomeview']").find('div.buttons').empty().html(response.data.buttons);
+                $("input.metatitle").focus();
+                $("input.metatitle").select()
+                init_sbhomepage_editcontent();
             } else if (brand=='SR') {
                 $("#srhomeview").show().empty().html(response.data.content);
                 $(".submenu_manage[data-link='srhomeview']").find('div.submenu_label').empty().html('Edit Mode');
                 $(".submenu_manage[data-link='srhomeview']").find('div.buttons').empty().html(response.data.buttons);
                 init_srhomepage_editcontent();
             }
-            // $(".content_preview").on('click',function () {
-            //     var url=$("#custom_previewurl").val();
-            //     $.fancybox.open({
-            //         src  : url,
-            //         type : 'iframe',
-            //         opts : {
-            //             afterShow : function( instance, current ) {
-            //                 console.info( 'done!' );
-            //             }
-            //         }
-            //     });
-            // });
-
         } else {
             show_error(response);
         }
     },'json');
+}
 
+function init_sbhomepage_editcontent() {
+    $(".cancel_button[data-page='home']").unbind('click').click(function () {
+        init_contentpage('home', 'SB');
+    });
+    $(".save_button[data-page='home']").unbind('click').click(function () {
+        var params=new Array();
+        params.push({name: 'session', value: $("#homepage_session").val()});
+        params.push({name:'brand', value: 'SB'});
+        var url="/content/save_homecontent";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                init_contentpage('home', 'SB');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("input[data-content='meta']").unbind('change').change(function(){
+        var params=new Array();
+        params.push({name: 'session', value: $("#homepage_session").val()});
+        params.push({name: 'type', value: 'meta'});
+        params.push({name: 'field', value: $(this).data('field')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/content/change_homepageparam";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("textarea[data-content='meta']").unbind('change').change(function(){
+        var params=new Array();
+        params.push({name: 'session', value: $("#homepage_session").val()});
+        params.push({name: 'type', value: 'meta'});
+        params.push({name: 'field', value: $(this).data('field')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/content/change_homepageparam";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+}
+
+function init_products_page(brand) {
+    $(".edit_button[data-link='productsview']").unbind('click').click(function () {
+        init_products_edit(brand);
+    });
+}
+
+function init_products_edit(brand) {
+    var url = "/content/edit_productcontent";
+    var params = new Array();
+    params.push({name:'brand', value: brand});
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            if (brand=='BT') {
+                // $("#btcustomshappedview").empty().html(response.data.content);
+                // $(".submenu_manage[data-link='btcustomshappedview']").find('div.submenu_label').empty().html('Edit Mode');
+                // $(".submenu_manage[data-link='btcustomshappedview']").find('div.buttons').empty().html(response.data.buttons);
+            } else if (brand=='SB'){
+                $("#sbproductsview").empty().html(response.data.content);
+                $(".submenu_manage[data-link='sbproductsview']").find('div.submenu_label').empty().html('Edit Mode');
+                $(".submenu_manage[data-link='sbproductsview']").find('div.buttons').empty().html(response.data.buttons);
+                $("input.metatitle").focus();
+                $("input.metatitle").select()
+                init_products_editcontent();
+            } else if (brand=='SR') {
+                // $("#srhomeview").show().empty().html(response.data.content);
+                // $(".submenu_manage[data-link='srhomeview']").find('div.submenu_label').empty().html('Edit Mode');
+                // $(".submenu_manage[data-link='srhomeview']").find('div.buttons').empty().html(response.data.buttons);
+                // init_srhomepage_editcontent();
+            }
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function init_products_editcontent() {
+    $(".cancel_button[data-page='products']").unbind('click').click(function () {
+        init_contentpage('products', 'SB');
+    });
+    $(".save_button[data-page='products']").unbind('click').click(function () {
+        var params=new Array();
+        params.push({name: 'session', value: $("#products_session").val()});
+        params.push({name:'brand', value: 'SB'});
+        var url="/content/save_productscontent";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                init_contentpage('products', 'SB');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("input[data-content='meta']").unbind('change').change(function(){
+        var params=new Array();
+        params.push({name: 'session', value: $("#products_session").val()});
+        params.push({name: 'type', value: 'meta'});
+        params.push({name: 'field', value: $(this).data('field')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/content/change_productspageparam";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("textarea[data-content='meta']").unbind('change').change(function(){
+        var params=new Array();
+        params.push({name: 'session', value: $("#products_session").val()});
+        params.push({name: 'type', value: 'meta'});
+        params.push({name: 'field', value: $(this).data('field')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/content/change_productspageparam";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+}
+
+function init_sitemap_page(brand) {
+    $(".edit_button[data-link='sitemapview']").unbind('click').click(function () {
+        init_sitemap_edit(brand);
+    });
+}
+
+function init_sitemap_edit(brand) {
+    var url = "/content/edit_sitemapcontent";
+    var params = new Array();
+    params.push({name:'brand', value: brand});
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            if (brand=='BT') {
+                // $("#btcustomshappedview").empty().html(response.data.content);
+                // $(".submenu_manage[data-link='btcustomshappedview']").find('div.submenu_label').empty().html('Edit Mode');
+                // $(".submenu_manage[data-link='btcustomshappedview']").find('div.buttons').empty().html(response.data.buttons);
+            } else if (brand=='SB'){
+                $("#sbsitemapview").empty().html(response.data.content);
+                $(".submenu_manage[data-link='sbsitemapview']").find('div.submenu_label').empty().html('Edit Mode');
+                $(".submenu_manage[data-link='sbsitemapview']").find('div.buttons').empty().html(response.data.buttons);
+                $("input.metatitle").focus();
+                $("input.metatitle").select()
+                init_sitemap_editcontent();
+            } else if (brand=='SR') {
+                // $("#srhomeview").show().empty().html(response.data.content);
+                // $(".submenu_manage[data-link='srhomeview']").find('div.submenu_label').empty().html('Edit Mode');
+                // $(".submenu_manage[data-link='srhomeview']").find('div.buttons').empty().html(response.data.buttons);
+                // init_srhomepage_editcontent();
+            }
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function init_sitemap_editcontent() {
+    $(".cancel_button[data-page='sitemap']").unbind('click').click(function () {
+        init_contentpage('sitemap', 'SB');
+    });
+    $(".save_button[data-page='sitemap']").unbind('click').click(function () {
+        var params=new Array();
+        params.push({name: 'session', value: $("#sitemap_session").val()});
+        params.push({name:'brand', value: 'SB'});
+        var url="/content/save_sitemapcontent";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                init_contentpage('sitemap', 'SB');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("input[data-content='meta']").unbind('change').change(function(){
+        var params=new Array();
+        params.push({name: 'session', value: $("#sitemap_session").val()});
+        params.push({name: 'type', value: 'meta'});
+        params.push({name: 'field', value: $(this).data('field')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/content/change_sitemappageparam";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("textarea[data-content='meta']").unbind('change').change(function(){
+        var params=new Array();
+        params.push({name: 'session', value: $("#sitemap_session").val()});
+        params.push({name: 'type', value: 'meta'});
+        params.push({name: 'field', value: $(this).data('field')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/content/change_sitemappageparam";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }

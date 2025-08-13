@@ -25,3 +25,9 @@
 <?php if (isset($srhomeview)) { ?>
     <?=$srhomeview?>
 <?php } ?>
+<?php if (isset($sbproductsview)) { ?>
+    <?=$sbproductsview?>
+<?php } ?>
+<?php if (isset($sitemapview)) { ?>
+    <?=$sitemapview?>
+<?php } ?>

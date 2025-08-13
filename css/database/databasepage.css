@@ -191,7 +191,7 @@
     width: 123px;
 }
 .statcipage_content div.metadescription {
-    width: 87px;
+    /* width: 87px; */
 }
 .statcipage_content input.metatitle {
     width: 448px;
@@ -199,7 +199,7 @@
 }
 .statcipage_content textarea.metakeywords {
     margin-top: 10px;
-    height: 82px;
+    height: 216px; /* 82px; */
     width: 406px;
 }
 .statcipage_content textarea.internalkeywords {
