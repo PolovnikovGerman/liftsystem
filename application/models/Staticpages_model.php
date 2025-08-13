@@ -1455,4 +1455,72 @@ Class Staticpages_model extends MY_Model
         return $out;
     }
 
+    public function update_products_param($session_data, $postdata, $session_id, $user)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Not all params send'];
+        if (isset($postdata['type'])) {
+            if ($postdata['type'] == 'meta') {
+                $data = $session_data['meta'];
+                $data[$postdata['field']] = $postdata['newval'];
+                $session_data['meta'] = $data;
+                usersession($session_id, $session_data);
+                $out['result'] = $this->success_result;
+            } elseif ($postdata['type'] == 'data') {
+                $data = $session_data['data'];
+                $data[$postdata['field']] = $postdata['newval'];
+                $session_data['data'] = $data;
+                usersession($session_id, $session_data);
+                $out['result'] = $this->success_result;
+            }
+        }
+        return $out;
+    }
+
+    public function save_productspage($session_data,  $session_id, $brand, $user_id)
+    {
+        $out=['result' => $this->error_result, 'msg' => 'Not all params send'];
+        $meta=$session_data['meta'];
+        $data = ifset($session_data, 'data',[]);
+        $this->_save_page_metadata($meta, $brand);
+        if (!empty($data)) {
+            // Add save other parameters
+        }
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
+    public function update_sitemap_param($session_data, $postdata, $session_id, $user)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Not all params send'];
+        if (isset($postdata['type'])) {
+            if ($postdata['type'] == 'meta') {
+                $data = $session_data['meta'];
+                $data[$postdata['field']] = $postdata['newval'];
+                $session_data['meta'] = $data;
+                usersession($session_id, $session_data);
+                $out['result'] = $this->success_result;
+            } elseif ($postdata['type'] == 'data') {
+                $data = $session_data['data'];
+                $data[$postdata['field']] = $postdata['newval'];
+                $session_data['data'] = $data;
+                usersession($session_id, $session_data);
+                $out['result'] = $this->success_result;
+            }
+        }
+        return $out;
+    }
+
+    public function save_sitemappage($session_data,  $session_id, $brand, $user_id)
+    {
+        $out=['result' => $this->error_result, 'msg' => 'Not all params send'];
+        $meta=$session_data['meta'];
+        $data = ifset($session_data, 'data',[]);
+        $this->_save_page_metadata($meta, $brand);
+        if (!empty($data)) {
+            // Add save other parameters
+        }
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
 }

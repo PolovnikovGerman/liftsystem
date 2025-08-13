@@ -28,3 +28,6 @@
 <?php if (isset($sbproductsview)) { ?>
     <?=$sbproductsview?>
 <?php } ?>
+<?php if (isset($sitemapview)) { ?>
+    <?=$sitemapview?>
+<?php } ?>

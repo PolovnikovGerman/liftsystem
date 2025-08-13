@@ -1,1 +1,1 @@
-<?php
+<input type="hidden" id="sitemap_session" value="<?=$session?>"/>
