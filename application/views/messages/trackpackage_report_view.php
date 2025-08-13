@@ -45,9 +45,9 @@
     </style>
 </head>
 <body>
-<table style="width: 580px; font-size: 14px; border-collapse: collapse;">
+<table style="width: 720px; font-size: 13px; border-collapse: collapse;border: 1px solid black;">
     <tr>
-        <td colspan="4" style="text-align: center; font-size: 14px; font-weight: bold"><?=date('m/d/Y')?> - Tracking # Added</td>
+        <td colspan="7" style="text-align: center; font-size: 14px; font-weight: bold"><?=date('m/d/Y')?> - Tracking # Added</td>
     </tr>
     <tr>
         <td>Order #</td>
