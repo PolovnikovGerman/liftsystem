@@ -64,6 +64,10 @@ class Content extends MY_Controller
                     $page_name_full = 'Services';
                     $pagelink = 'serviceview';
                     $special_content = $this->_prepare_custom_content($page_name, $brand);
+                } elseif ($page_name=='products') {
+                    $page_name_full = 'Items Categories';
+                    $pagelink = 'productsview';
+                    $special_content = $this->_prepare_custom_content($page_name, $brand);
                 }
                 $button_options = ['page' => $pagelink, 'content_name' => $page_name_full, 'brand' => $brand];
                 $buttons_view = $this->load->view('content/content_viewbuttons_view', $button_options, TRUE);
@@ -1174,7 +1178,58 @@ class Content extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
 
+    public function edit_productcontent()
+    {
+        $postdata=$this->input->post();
+        $brand=ifset($postdata,'brand');
+        $mdata = [];
+        $error = 'Empty Brand';
+        if (!empty($brand)) {
+            $error = '';
+            $page_name = 'products';
+            $page_name_full = 'Items Categories';
+            $session_id = uniq_link(15);
+            $meta = $this->staticpages_model->get_metadata($page_name, $brand);
+            $meta_view = $this->load->view('content/metadata_edit', $meta, TRUE);
+            $special_content = $this->_prepare_custom_content($page_name, $brand, 1, $session_id);
+            $session_data = usersession($session_id);
+            $session_data['meta'] = $meta;
+            $session_data['deleted'] = []; // type , id
+            usersession($session_id, $session_data);
+            $button_options = ['page'=>'products', 'content_name' => $page_name_full, 'session'=> $session_id];
+            $buttons_view = $this->load->view('content/content_editbuttons_view',$button_options, TRUE);
+            $options = [
+                'meta_view' => $meta_view,
+                'special_content' => $special_content,
+            ];
+            $mdata['content'] = $this->load->view('content/staticpage_view',$options, TRUE);
+            $mdata['buttons'] = $buttons_view;
+        }
+        $this->ajaxResponse($mdata, $error);
+    }
+
+    public function save_productscontent()
+    {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $error = 'Edit session lost. Please, reload page';
+            $postdata = $this->input->post();
+            $session_id = (isset($postdata['session']) ? $postdata['session'] : 'service');
+            $session_data = usersession($session_id);
+            $brand = ifset($postdata,'brand');
+            if (!empty($session_data) && !empty($brand)) {
+                $res = $this->staticpages_model->save_productspage($session_data,  $session_id, $brand, $this->USR_ID);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    usersession($session_id, null);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 
     private function _prepare_custom_content($page_name, $brand, $edit_mode=0, $session ='') {
@@ -1338,7 +1393,6 @@ class Content extends MY_Controller
                 $session_data = ['data' => $data,];
                 usersession($session, $session_data);
             }
-
         } elseif ($page_name=='home') {
             if (!empty($data)) {
                 $page_options = [
@@ -1365,6 +1419,20 @@ class Content extends MY_Controller
                     ];
                     $content = $this->load->view('content/homepage_edit', $page_options, TRUE);
                 }
+            }
+        } elseif ($page_name=='products') {
+            $page_options = [
+                'data' => $data,
+            ];
+            if ($edit_mode==1) {
+                $page_options['session'] = $session;
+            }
+            if ($edit_mode==0) {
+                // $content = $this->load->view('content/extraservices_custom_view', $page_options, TRUE);
+            } else {
+                $content = $this->load->view('content/products_custom_edit', $page_options, TRUE);
+                $session_data = ['data' => $data,];
+                usersession($session, $session_data);
             }
         }
         return $content;

@@ -94,6 +94,11 @@ function init_sitecontent_page(objid, brand) {
             init_contentpage('home','SR');
             leftmenu_alignment();
             break;
+        case 'sbproductsview':
+            init_contentpage('products','SB');
+            leftmenu_alignment();
+            break;
+
     }
 }
 
@@ -186,6 +191,17 @@ function init_contentpage(page_name, brand) {
 
                 }
                 init_service_page(brand);
+            } else if (page_name=='products') {
+                if (brand=='BT') {
+                    $("#btproductsview").show().empty().html(response.data.content);
+                    $(".submenu_manage[data-link='sbproductsview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='sbproductsview']").find('div.buttons').empty().html(response.data.buttons);
+                } else {
+                    $("#sbproductsview").show().empty().html(response.data.content);
+                    $(".submenu_manage[data-link='sbproductsview']").find('div.submenu_label').empty().html('View Mode');
+                    $(".submenu_manage[data-link='sbproductsview']").find('div.buttons').empty().html(response.data.buttons);
+                }
+                init_products_page(brand);
             }
         } else {
             show_error(response);
@@ -275,6 +291,88 @@ function init_sbhomepage_editcontent() {
         params.push({name: 'field', value: $(this).data('field')});
         params.push({name: 'newval', value: $(this).val()});
         var url="/content/change_homepageparam";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+}
+
+function init_products_page(brand) {
+    $(".edit_button[data-link='productsview']").unbind('click').click(function () {
+        init_products_edit(brand);
+    });
+}
+
+function init_products_edit(brand) {
+    var url = "/content/edit_productcontent";
+    var params = new Array();
+    params.push({name:'brand', value: brand});
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            if (brand=='BT') {
+                // $("#btcustomshappedview").empty().html(response.data.content);
+                // $(".submenu_manage[data-link='btcustomshappedview']").find('div.submenu_label').empty().html('Edit Mode');
+                // $(".submenu_manage[data-link='btcustomshappedview']").find('div.buttons').empty().html(response.data.buttons);
+            } else if (brand=='SB'){
+                $("#sbproductsview").empty().html(response.data.content);
+                $(".submenu_manage[data-link='sbproductsview']").find('div.submenu_label').empty().html('Edit Mode');
+                $(".submenu_manage[data-link='sbproductsview']").find('div.buttons').empty().html(response.data.buttons);
+                $("input.metatitle").focus();
+                $("input.metatitle").select()
+                init_products_editcontent();
+            } else if (brand=='SR') {
+                // $("#srhomeview").show().empty().html(response.data.content);
+                // $(".submenu_manage[data-link='srhomeview']").find('div.submenu_label').empty().html('Edit Mode');
+                // $(".submenu_manage[data-link='srhomeview']").find('div.buttons').empty().html(response.data.buttons);
+                // init_srhomepage_editcontent();
+            }
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function init_products_editcontent() {
+    $(".cancel_button[data-page='products']").unbind('click').click(function () {
+        init_contentpage('products', 'SB');
+    });
+    $(".save_button[data-page='products']").unbind('click').click(function () {
+        var params=new Array();
+        params.push({name: 'session', value: $("#products_session").val()});
+        params.push({name:'brand', value: 'SB'});
+        var url="/content/save_productscontent";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                init_contentpage('products', 'SB');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("input[data-content='meta']").unbind('change').change(function(){
+        var params=new Array();
+        params.push({name: 'session', value: $("#products_session").val()});
+        params.push({name: 'type', value: 'meta'});
+        params.push({name: 'field', value: $(this).data('field')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/content/change_productspageparam";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("textarea[data-content='meta']").unbind('change').change(function(){
+        var params=new Array();
+        params.push({name: 'session', value: $("#products_session").val()});
+        params.push({name: 'type', value: 'meta'});
+        params.push({name: 'field', value: $(this).data('field')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/content/change_productspageparam";
         $.post(url, params, function (response) {
             if (response.errors=='') {
             } else {

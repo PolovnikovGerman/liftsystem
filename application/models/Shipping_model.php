@@ -2658,9 +2658,9 @@ Class Shipping_model extends MY_Model
                 'newline' => "\r\n",
             );
             $email_from = $this->config->item('sb_quote_user');
-            $email_to = 'to_german@yahoo.com';
-            // $email_to = [$this->config->item('sage_email'),$this->config->item('sean_email')];
-            // $email_cc = ['roma@stressrelievers.com','chad.medina@bluetrack.com'];
+            // $email_to = 'to_german@yahoo.com';
+            $email_to = [$this->config->item('sage_email'),$this->config->item('sean_email')];
+            $email_cc = ['roma@stressrelievers.com','chad.medina@bluetrack.com'];
             $this->load->library('email');
             $this->email->initialize($email_conf);
             $this->email->from($email_from);
@@ -2668,7 +2668,6 @@ Class Shipping_model extends MY_Model
             if (isset($email_cc)) {
                 $this->email->cc($email_cc);
             }
-
             $title=date('D - M d, Y', $datebgn).' - Tracking # Added';
             $this->email->subject($title);
             $this->email->message($mail_body);

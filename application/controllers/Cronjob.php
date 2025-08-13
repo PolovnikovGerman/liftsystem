@@ -1086,6 +1086,7 @@ Class Cronjob extends CI_Controller
         $start = strtotime(date('Y-m-d') . ' - 1 day');
         $datebgn = strtotime(date('Y-m-d',$start));
         $dateend = strtotime(date('Y-m-d'));
-
+        $this->load->model('shipping_model');
+        $this->shipping_model->trackpackage_report($datebgn, $dateend);
     }
 }
