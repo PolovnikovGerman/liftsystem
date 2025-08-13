@@ -34,18 +34,15 @@
             font-size: 12px;
             /* font-weight: normal; */
         }
-        tr {
-            height: 24px;
-            line-height: 24px;
-        }
-        table.historyupl td {
+        table, th, td {
+            border: 1px solid black;
             border-collapse: collapse;
-            border: 1px solid #000000;
+            font-size: 13px;
         }
     </style>
 </head>
 <body>
-<table style="width: 720px; font-size: 13px; border-collapse: collapse;border: 1px solid black;">
+<table style="width: 820px;">
     <tr>
         <td colspan="7" style="text-align: center; font-size: 14px; font-weight: bold"><?=date('m/d/Y')?> - Tracking # Added</td>
     </tr>
