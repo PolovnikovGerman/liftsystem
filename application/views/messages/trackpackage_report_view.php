@@ -18,20 +18,9 @@
             background: #ccc;
             border: 0;
         }
-        .footer {
-            font-size: 0.8em;
-            font-style: italic;
-        }
-        .maintitle, .subtitle {
-            clear: both;
-            float: left;
-            font-size: 14px;
+        td.subtitle {
             font-weight: bold;
             text-align: center;
-            width: 100%;
-        }
-        .subtitle {
-            font-size: 12px;
             /* font-weight: normal; */
         }
         table, th, td {
@@ -44,16 +33,16 @@
 <body>
 <table style="width: 820px;">
     <tr>
-        <td colspan="7" style="text-align: center; font-size: 14px; font-weight: bold"><?=date('m/d/Y')?> - Tracking # Added</td>
+        <td colspan="7" style="text-align: center; font-size: 14px; font-weight: bold"><?=date('m/d/Y', $datebgn)?> - Tracking # Added</td>
     </tr>
     <tr>
-        <td>Order #</td>
-        <td>Customer</td>
-        <td>Item #</td>
-        <td>Item Name</td>
-        <td>QTY</td>
-        <td>Service</td>
-        <td>Track #</td>
+        <td class="subtitle">Order #</td>
+        <td class="subtitle">Customer</td>
+        <td class="subtitle">Item #</td>
+        <td class="subtitle">Item Name</td>
+        <td class="subtitle">QTY</td>
+        <td class="subtitle">Service</td>
+        <td class="subtitle">Track #</td>
     </tr>
     <?php foreach ($tracks as $track) : ?>
     <tr>
