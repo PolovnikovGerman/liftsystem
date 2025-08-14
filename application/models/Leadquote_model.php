@@ -162,7 +162,11 @@ class Leadquote_model extends MY_Model
                     if ($lead_data['lead_item_id']==$this->config->item('custom_id')) {
                         $quotedat['quote_repcontact'] = $this->config->item('custom_quote_note').$quotedat['quote_repcontact'];
                         $quotedat['mischrg_label1'] = $this->config->item('custom_mischrg_label');
-                        $quotedat['mischrg_value1'] = $this->config->item('custom_mischrg_value');
+                        if ($lead_data['brand']=='SR') {
+                            $quotedat['mischrg_value1'] = $this->config->item('custom_mischrg_srvalue');
+                        } else {
+                            $quotedat['mischrg_value1'] = $this->config->item('custom_mischrg_value');
+                        }
                     }
                 }
             } else {
@@ -561,7 +565,8 @@ class Leadquote_model extends MY_Model
                         $newloc[$row]='NEW';
                         break;
                     case 'num_colors':
-                        if ($i==1 && $item_id==$this->config->item('custom_id')) {
+                        // if ($i==1 && $item_id==$this->config->item('custom_id')) {
+                        if ($item_id==$this->config->item('custom_id')) {
                             $newloc[$row]=5;
                         } else {
                             $newloc[$row]=1;
@@ -4171,7 +4176,11 @@ class Leadquote_model extends MY_Model
                 }
                 if ($quote['mischrg_label1']!==$this->config->item('custom_mischrg_label')) {
                     $quote['mischrg_label1'] = $this->config->item('custom_mischrg_label');
-                    $quote['mischrg_value1'] = $this->config->item('custom_mischrg_value');
+                    if ($quote['brand']=='SR') {
+                        $quote['mischrg_value1'] = $this->config->item('custom_mischrg_srvalue');
+                    } else {
+                        $quote['mischrg_value1'] = $this->config->item('custom_mischrg_value');
+                    }
                 }
                 $quotesession['quote'] = $quote;
             }
@@ -4307,7 +4316,11 @@ class Leadquote_model extends MY_Model
                             $newloc[$row]='NEW';
                             break;
                         case 'num_colors':
-                            $newloc[$row]=1;
+                            if ($quote_items[$idx]['item_id']==$this->config->item('custom_id')) {
+                                $newloc[$row]=5;
+                            } else {
+                                $newloc[$row]=1;
+                            }
                             break;
                         default :
                             $newloc[$row]='';

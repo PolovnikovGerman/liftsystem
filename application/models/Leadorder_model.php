@@ -11319,7 +11319,11 @@ Class Leadorder_model extends My_Model {
                             $newloc[$row]='NEW';
                             break;
                         case 'num_colors':
-                            $newloc[$row]=1;
+                            if ($item_id==$this->config->item('custom_id')) {
+                                $newloc[$row] = 5;
+                            } else {
+                                $newloc[$row] = 1;
+                            }
                             break;
                         default :
                             $newloc[$row]='';
@@ -11373,6 +11377,16 @@ Class Leadorder_model extends My_Model {
             $out['result'] = $this->success_result;
             $out['item'] = $orditem;
             $out['brand'] = $order['brand'];
+            if ($item_id==$this->config->item('custom_id')) {
+                $order['mischrg_label1'] = $this->config->item('custom_mischrg_label');
+                if ($order['brand']=='SR') {
+                    $order['mischrg_val1'] = $this->config->item('custom_mischrg_srvalue');
+                } else {
+                    $order['mischrg_val1'] = $this->config->item('custom_mischrg_value');
+                }
+            }
+            $out['mischrg_label1'] = $order['mischrg_label1'];
+            $out['mischrg_value1'] = $order['mischrg_val1'];
             $leadorder['order_items']=$order_items;
             $leadorder['order']=$order;
             usersession($ordersession, $leadorder);

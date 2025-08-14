@@ -922,9 +922,14 @@ function activate_quoteprint_details(details, newval) {
         $("input.imprintprice[data-details='"+details+"']").prop('disabled',true);
         // Lock print prices
         var colors=$("select.imprintcolorschoice[data-details='"+details+"']").val();
-        for (i=1; i<=colors; i++) {
-            $("input.imprintprice[data-details='"+details+"'][data-fldname='print_"+i+"']").prop('disabled',false);
-            $("input.imprintprice[data-details='"+details+"'][data-fldname='setup_"+i+"']").prop('disabled',false);
+        if (colors==5) {
+            $("input.imprintprice[data-details='"+details+"'][data-fldname='print_1']").prop('disabled',false);
+            $("input.imprintprice[data-details='"+details+"'][data-fldname='setup_1']").prop('disabled',false);
+        } else {
+            for (i=1; i<=colors; i++) {
+                $("input.imprintprice[data-details='"+details+"'][data-fldname='print_"+i+"']").prop('disabled',false);
+                $("input.imprintprice[data-details='"+details+"'][data-fldname='setup_"+i+"']").prop('disabled',false);
+            }
         }
         $("select.imprintlocationchoice[data-details='"+details+"']").prop('disabled',false);
         $("input.imprintprice[data-details='"+details+"'][data-fldname='extra_cost']").prop('disabled',false);
