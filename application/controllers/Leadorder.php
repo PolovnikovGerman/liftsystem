@@ -1169,6 +1169,8 @@ class Leadorder extends MY_Controller
                             $mdata['subtotal'] = MoneyOutput($item['item_subtotal']);
                             $mdata['brand'] = $res['brand'];
                             $mdata['inventoryitem'] = $res['inventoryitem'];
+                            $mdata['mischrg_label1'] = $res['mischrg_label1'];
+                            $mdata['mischrg_value1'] = $res['mischrg_value1'];
                         }
                     }
                 }
