@@ -281,5 +281,6 @@ $config['google_map_key'] = getenv('GOOGLEMAPAPI_KEY');
 $config['srrepeat_cost'] = 12;
 $config['custom_quote_note'] = '4-5 Week Lead Time'.PHP_EOL.'Add\'l Print Locations: $0.12 ea & $30 setup'.PHP_EOL.PHP_EOL;
 $config['custom_mischrg_label'] = 'Custom Design Charge';
-$config['custom_mischrg_value'] = 150;
+$config['custom_mischrg_value'] = 200;
+$config['custom_mischrg_srvalue'] = 160;
 $config['custom_itemprice'] = 3.00;
