@@ -63,7 +63,7 @@
             <div class="customer blackcel">Customer</div>
             <div class="itemname blackcel">Shape</div>
             <div class="itemcolor blackcel">Color</div>    
-            <div class="shipped greycel">Shipped</div>
+            <div class="shipped greycel">Printed</div>
             <div class="kepted greycel">We Kept</div>
             <div class="misprints greycel">Misprnt</div>
             <div class="misprintproc greycel">&percnt;</div>
