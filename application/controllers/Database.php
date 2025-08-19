@@ -265,6 +265,8 @@ class Database extends MY_Controller
                     $head['styles'][]=array('style'=>'/css/database_center/master_inventory.css');
                     // $head['scripts'][]=array('src'=>'/js/database_center/inventory_adaptive.js');
                     $head['scripts'][]=array('src'=>'/js/database_center/master_inventory.js');
+                    $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
+                    $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
                     $content_options['inventoryview'] = $this->_prepare_inventory_view();
                 } elseif ($row['item_link']=='#mastersettings') {
                     $head['scripts'][] = array('src' => '/js/database_center/master_settings.js');
