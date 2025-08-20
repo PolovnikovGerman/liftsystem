@@ -4718,13 +4718,13 @@ class Test extends CI_Controller
         $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor');
         // Prices
         $this->db->join('sb_item_prices p','p.item_price_itemid = i.item_id');
-        $this->db->where('i.brand', 'BT');
+        $this->db->where('i.brand', 'SR');
         $this->db->order_by('i.item_number');
         $items = $this->db->get()->result_array();
 
         // $items = $this->db->select('item_id, item_number, item_name, ')->from('sb_items')->where('brand','SR')->order_by('item_number')->get()->result_array();
         $this->load->config('uploader');
-        $filenorm = $this->config->item('upload_path_preload').'bt_items.xlsx';
+        $filenorm = $this->config->item('upload_path_preload').'sr_items.xlsx';
         @unlink($filenorm);
         $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
         $sheet = $spreadsheet->getActiveSheet();
