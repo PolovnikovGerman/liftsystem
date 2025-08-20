@@ -13,6 +13,14 @@
 #artModal .modal-header.cancelorder .leadorderlockdetails {
     color: #ffffff;
 }
+#artModal .modal-header > .leadorderclose  {
+    cursor: pointer;
+    float: right !important;
+    position: relative;
+    z-index: 7;
+    right: -28px;
+    top: -28px;
+}
 .leadorderdetailspopup {
     /* background: url(/img/leadorder/backgr_content.png) no-repeat transparent; */
     background: #c59e51;
@@ -33,7 +41,8 @@
     float: left;
     font-size: 13px;
     width: 972px;
-    margin-top: -5px;
+    /* margin-top: -5px; */
+    margin-top: -28px;
     margin-left: -15px;
 }
 .leadorderdetailspopup input, .leadorderdetailspopup select,

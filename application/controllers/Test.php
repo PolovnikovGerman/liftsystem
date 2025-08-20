@@ -4834,16 +4834,20 @@ class Test extends CI_Controller
 //        $writer->save($filenorm);    // download file
 //        echo 'File '.$filenorm.' ready'.PHP_EOL;
         $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active, v.vendor_name');
+        // Extra Prices
+        $this->db->select('p.item_price_setup, p.item_sale_setup, p.item_price_print, p.item_sale_print');
         $this->db->from('sb_items i');
         $this->db->join('sb_vendor_items svi','svi.vendor_item_id = i.vendor_item_id');
         $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor');
-        $this->db->where('i.brand', 'BT');
+        // Prices
+        $this->db->join('sb_item_prices p','p.item_price_itemid = i.item_id');
+        $this->db->where('i.brand', 'SR');
         $this->db->order_by('i.item_number');
         $items = $this->db->get()->result_array();
 
         // $items = $this->db->select('item_id, item_number, item_name, ')->from('sb_items')->where('brand','SR')->order_by('item_number')->get()->result_array();
         $this->load->config('uploader');
-        $filenorm = $this->config->item('upload_path_preload').'bt_items.xlsx';
+        $filenorm = $this->config->item('upload_path_preload').'sr_items.xlsx';
         @unlink($filenorm);
         $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
         $sheet = $spreadsheet->getActiveSheet();
@@ -4852,7 +4856,9 @@ class Test extends CI_Controller
         $sheet->setCellValue('B1','Item Name');
         $sheet->setCellValue('C1', 'Active?');
         $sheet->setCellValue('D1','Vendor');
-        $sheet->setCellValue('E1', 'Qty/Prices');
+        $sheet->setCellValue('E1','Print Cost');
+        $sheet->setCellValue('F1','Setup Cost');
+        $sheet->setCellValue('G1', 'Qty/Prices');
         // $sheet->setCellValue('C1', 'Qty/Prices');
         $numrow = 2;
         foreach ($items as $item) {
@@ -4860,9 +4866,19 @@ class Test extends CI_Controller
             $sheet->setCellValue('B'.$numrow, $item['item_name']);
             $sheet->setCellValue('C'.$numrow, $item['item_active']==1 ? 'YES' : 'NO');
             $sheet->setCellValue('D'.$numrow,$item['vendor_name']);
+            if (!empty($item['item_sale_print'])) {
+                $sheet->setCellValue('E'.$numrow, $item['item_sale_print']);
+            } else {
+                $sheet->setCellValue('E'.$numrow, $item['item_price_print']);
+            }
+            if (!empty($item['item_sale_setup'])) {
+                $sheet->setCellValue('F'.$numrow, $item['item_sale_setup']);
+            } else {
+                $sheet->setCellValue('F'.$numrow, $item['item_price_setup']);
+            }
             // Prices
             $prices = $this->db->select('item_qty, sale_price')->from('sb_promo_price')->where('item_id', $item['item_id'])->where('sale_price != ',0)->order_by('item_qty')->get()->result_array();
-            $cellnum = 69; // 67;
+            $cellnum = 71; // 67;
             foreach ($prices as $price) {
                 $cellname = chr($cellnum).$numrow;
                 $sheet->setCellValue($cellname, $price['item_qty']);

@@ -1837,7 +1837,11 @@ input.colorvendorpriceinpt {
     width: 1004px;
     max-width: 1004px;
 }
-/* Express */
+#artModal .leadorderdetailspopupheader {
+    margin-top: -5px;
+    margin-bottom: -23px;
+}
+    /* Express */
 .mastinvent_header_express {
     /* width: 283px; */
     width: 223px;

@@ -709,11 +709,12 @@ function profit_init() {
 function edit_paymonitororder(order) {
     var callpage = 'paymonitor';
     var url="/leadorder/leadorder_change";
+    var brand = $("#paymentmonitorbrand").val();
     var params = new Array();
     params.push({name: 'order', value: order});
     params.push({name: 'page', value: callpage});
     params.push({name: 'edit', value: 0});
-    params.push({name: 'brand', value: $("#profitordersbrand").val()});
+    params.push({name: 'brand', value: brand});
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("#artModalLabel").empty().html(response.data.header);

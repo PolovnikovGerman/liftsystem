@@ -20,7 +20,7 @@ function navigation_init() {
     $("div.button_edit_text").unbind('click').click(function(){
         edit_currentorder();
     });
-    $("#artModal").find('button.close').unbind('click').click(function () {
+    $("#artModal").find('div.leadorderclose').unbind('click').click(function () {
         // Check - may be we close edit content
         $("#artModal").find('div.modal-body').empty();
         $("#artModal").modal('hide');
@@ -402,7 +402,7 @@ function init_onlineleadorder_edit() {
         place_neworder();
     })
     // Cancel
-    $("#artModal").find('button.close').unbind('click').click(function(){
+    $("#artModal").find('div.leadorderclose').unbind('click').click(function(){
         clearTimeout(timerId);
         var callpage=$("input#root_call_page").val();
         // Check - may be we close edit content
