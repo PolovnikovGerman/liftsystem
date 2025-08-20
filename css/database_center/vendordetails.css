@@ -35,7 +35,7 @@
     top: -3px;
 }
 /* Adaptive */
-.modal-title {
+#vendorDetailsModal .modal-title {
     width: 100%;
 }
 #vendorDetailsModal .modal-body {

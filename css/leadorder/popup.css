@@ -16,10 +16,10 @@
 #artModal .modal-header > .leadorderclose  {
     cursor: pointer;
     float: right !important;
-    position: relative;
+    position: absolute;
     z-index: 7;
-    right: -28px;
-    top: -28px;
+    right: -11px;
+    top: -14px;
 }
 .leadorderdetailspopup {
     /* background: url(/img/leadorder/backgr_content.png) no-repeat transparent; */
@@ -42,8 +42,8 @@
     font-size: 13px;
     width: 972px;
     /* margin-top: -5px; */
-    margin-top: -28px;
-    margin-left: -15px;
+    /*margin-top: -28px;*/
+    /*margin-left: -15px;*/
 }
 .leadorderdetailspopup input, .leadorderdetailspopup select,
 .leadorderdetailspopupheader input, .leadorderdetailspopupheader select {
