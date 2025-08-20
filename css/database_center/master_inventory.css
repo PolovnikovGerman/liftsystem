@@ -1838,8 +1838,8 @@ input.colorvendorpriceinpt {
     max-width: 1004px;
 }
 #artModal .leadorderdetailspopupheader {
-    margin-top: -5px;
-    margin-bottom: -23px;
+    /*margin-top: -5px;*/
+    /*margin-bottom: -23px;*/
 }
     /* Express */
 .mastinvent_header_express {
