@@ -502,8 +502,16 @@ class Inventory_model extends MY_Model
                 }
             }
             if ($hidefullfil==1) {
-                if ($result['ship']!=$result['fullfill']) {
+                if ($result['shipqty'] >= $result['item_qty']) {
                     $manage = 0;
+                } else {
+//                    if ($result['ship']!=$result['fullfill']) {
+//                        $manage = 0;
+//                    } else {
+                        if ($result['shipqty'] >= $result['shipped']) {
+                            $result['reserved']-=($result['shipqty'] - $result['shipped']);
+                        }
+//                    }
                 }
             } else {
                 if ($result['ship']!=$result['fullfill']) {
