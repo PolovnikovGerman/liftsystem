@@ -83,7 +83,8 @@
                     <span class="legendicon"><img src="/img/masterinvent/yellow_square.png" alt="Proof"/></span>
                     Proof Not Approved
                 </div>
-                <div class="reserved_legend_title">
+                <div class="reserved_legend_title" data-event="hover" data-css="itemdetailsballonarea" data-bgcolor="#FFFFFF"
+                     data-bordercolor="#000" data-position="left" data-textcolor="#000" data-balloon="Hides % shipped - % fulfilled" data-timer="6000" data-delay="1000">
                     <span class="legendicon"><img src="/img/masterinvent/violet_square.png" alt="Fulfillment"/></span>
                     % Fulfilled ≠ Shipped
                 </div>
@@ -95,7 +96,7 @@
             <div class="shipdate">Ship Date</div>
             <div class="ordernumber">Order #</div>
             <div class="customername">Customer</div>
-            <div class="amntval">QTY</div>
+            <div class="amntval">Qty to Fulfill</div>
             <div class="forecastbal">Forecasted Bal.</div>
             <div class="artapprov">Art Approved</div>
             <div class="fullfiledperc">% Fulfilled</div>
