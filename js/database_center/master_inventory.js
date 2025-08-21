@@ -936,6 +936,7 @@ function init_colorhistory_popup() {
                 } else {
                     $(".inventory_reserv_view.latetime").find('span.inventory_reserv_check').empty().html('<i class="fa fa-check-square"></i>');
                 }
+                init_colorhistory_popup();
             } else {
                 show_error(response)
             }
@@ -964,6 +965,7 @@ function init_colorhistory_popup() {
                 } else {
                     $(".inventory_reserv_view.artproof").find('span.inventory_reserv_check').empty().html('<i class="fa fa-check-square"></i>');
                 }
+                init_colorhistory_popup();
             } else {
                 show_error(response)
             }
@@ -992,6 +994,7 @@ function init_colorhistory_popup() {
                 } else {
                     $(".inventory_reserv_view.fulfillmnt").find('span.inventory_reserv_check').empty().html('<i class="fa fa-check-square"></i>');
                 }
+                init_colorhistory_popup();
             } else {
                 show_error(response)
             }
