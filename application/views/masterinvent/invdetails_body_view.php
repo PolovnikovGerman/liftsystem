@@ -84,7 +84,7 @@
                     Proof Not Approved
                 </div>
                 <div class="reserved_legend_title" data-event="hover" data-css="itemdetailsballonarea" data-bgcolor="#FFFFFF"
-                     data-bordercolor="#000" data-position="left" data-textcolor="#000" data-balloon="Hides % shipped - % fulfilled" data-timer="6000" data-delay="1000">
+                     data-bordercolor="#000" data-position="left" data-textcolor="#000" data-balloon="Hides the % Fulfilled minus % Shipped" data-timer="6000" data-delay="1000">
                     <span class="legendicon"><img src="/img/masterinvent/violet_square.png" alt="Fulfillment"/></span>
                     % Fulfilled ≠ Shipped
                 </div>
