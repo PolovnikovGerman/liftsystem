@@ -118,6 +118,10 @@ class Fulfillment extends MY_Controller
                 $head['styles'][] = array('style' => '/css/database_center/relieveitemdetails.css');
                 $head['scripts'][]=array('src' => '/js/database_center/relieveitemdetails.js');
                 $content_options['sritemsview'] = $this->_prepare_sritems_content();
+            } elseif ($row['item_link']=='#printcalendar') {
+                $head['styles'][]=array('style'=>'/css/printcalendar/printcalendar.css');
+                $head['scripts'][]=array('src' => '/js/printcalendar/printcalendar.js');
+                $content_options['printcalendarview'] = $this->_prepare_printcalendar();
             }
         }
         $content_options['menu'] = $menu;
@@ -2356,6 +2360,12 @@ class Fulfillment extends MY_Controller
             'vendors' => $vendors,
         ];
         $content = $this->load->view('relieveritems/page_view', $options,TRUE);
+        return $content;
+    }
+
+    private function _prepare_printcalendar()
+    {
+        $content = $this->load->view('printcalendar/page_view',[], TRUE);
         return $content;
     }
 

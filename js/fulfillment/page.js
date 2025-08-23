@@ -73,6 +73,9 @@ function init_page(objid) {
             $("#sritemsview").show();
             init_relievers_items();
             break;
+        case 'printcalendar':
+            $("#printcalendarview").show();
+            break;
     }
 
 }
