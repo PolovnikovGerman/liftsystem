@@ -9922,7 +9922,7 @@ Class Orders_model extends MY_Model
                 $this->db->where_in('o.brand',['SB','BT']);
             }
             $this->db->where('fullfill < oic.item_qty');
-            $this->db->order_by('s.shipdate asc, urgent asc, s.event_date desc, i.item_name asc');
+            $this->db->order_by('s.shipdate desc, urgent asc, s.event_date desc, i.item_name asc');
             $this->db->limit(500);
             $prints = $this->db->get()->result_array();
             if (count($prints) > 0) {
