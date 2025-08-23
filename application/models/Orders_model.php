@@ -1,5 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 Class Orders_model extends MY_Model
 {
     const START_ORDNUM=22000;
@@ -9890,5 +9893,119 @@ Class Orders_model extends MY_Model
             }
         }
         return ['data' => $out, 'orders' => count($res)];
+    }
+
+    public function daily_orders_report()
+    {
+        $brands = ['SB', 'SR'];
+        foreach ($brands as $brand) {
+            // Get Orders
+            $this->db->select('order_itemcolor_id, sum(shipped) as fullfill')->from('ts_order_amounts')->group_by('order_itemcolor_id');
+            $amntsql = $this->db->get_compiled_select();
+            $this->db->select('order_item_id, count(order_imprint_id) as cntprint, sum(imprint_qty) as imprintqty')->from('ts_order_imprints')->where('imprint_item', 1)->group_by('order_item_id');
+            $printsql = $this->db->get_compiled_select();
+            $this->db->select('o.order_id, oic.order_itemcolor_id, o.order_num, concat(i.item_number,\' \',i.item_name) as item, oic.item_color, oic.item_qty, o.order_blank');
+            $this->db->select('s.shipdate , s.arrive_date , s.event_date');
+            $this->db->select('IF(o.order_rush = 1, 1 , if(coalesce(s.event_date,0)>0 ,1, 2)) as urgent, COALESCE(oa.fullfill,0) as fullfill');
+            $this->db->select('coalesce(pt.cntprint,0) as cntprint, pt.imprintqty');
+            $this->db->from('ts_orders o');
+            $this->db->join('ts_order_items oi','oi.order_id = o.order_id');
+            $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
+            $this->db->join('v_item_search i', 'i.item_id = oi.item_id');
+            $this->db->join('ts_order_shippings s', 's.order_id = o.order_id');
+            $this->db->join('('.$amntsql.') oa','oa.order_itemcolor_id = oic.order_itemcolor_id','left');
+            $this->db->join('('.$printsql.') pt','pt.order_item_id = oi.order_item_id','left');
+            $this->db->where('o.is_canceled',0);
+            if ($brand=='SR') {
+                $this->db->where('o.brand', $brand);
+            } else {
+                $this->db->where_in('o.brand',['SB','BT']);
+            }
+            $this->db->where('fullfill < oic.item_qty');
+            $this->db->order_by('s.shipdate asc, urgent asc, s.event_date desc, i.item_name asc');
+            $this->db->limit(500);
+            $prints = $this->db->get()->result_array();
+            if (count($prints) > 0) {
+                $orders = [];
+                $startorder = 0;
+                foreach ($prints as $print) {
+                    $neword = 0;
+                    if ($startorder!=$print['order_id']) {
+                        $neword = 1;
+                        $startorder = $print['order_id'];
+                    }
+                    if ($neword==1) {
+                        $orders[] = [
+                            'order_num' => $print['order_num'],
+                            'item' => $print['item'],
+                            'color' => $print['item_color'],
+                            'ink_color' => '',
+                            'qty' => $print['item_qty'],
+                            'prints' => $print['order_blank']==1 ? 0 : $print['cntprint'],
+                            'tprints' => $print['order_blank']==1 ? 0 : $print['cntprint']*$print['item_qty'], // $print['imprintqty'],
+                            'shipdate' => date('m/d/Y', $print['shipdate']),
+                            'delivery' => date('m/d/Y', $print['arrive_date']),
+                            'event' => empty($print['event_date']) ? '' : date('m/d/Y', $print['event_date']),
+                            'notes' => '',
+                            'urgency' => $print['urgent'],
+                        ];
+                    } else {
+                        $orders[] = [
+                            'order_num' => '',
+                            'item' => '',
+                            'color' => $print['item_color'],
+                            'ink_color' => '',
+                            'qty' => $print['item_qty'],
+                            'prints' => $print['order_blank']==1 ? 0 : $print['cntprint'],
+                            'tprints' => $print['order_blank']==1 ? 0 : $print['cntprint']*$print['item_qty'], // $print['imprintqty'], 
+                            'shipdate' => '',
+                            'delivery' => '',
+                            'event' => '',
+                            'notes' => '',
+                            'urgency' => $print['urgent'],
+                        ];
+                    }
+                }
+                echo 'Cnt '.count($orders).PHP_EOL;
+                $this->load->config('uploader');
+                $filenorm = $this->config->item('upload_path_preload').$brand.'_print_schedule_report.xlsx';
+                @unlink($filenorm);
+                $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+                $sheet = $spreadsheet->getActiveSheet();
+                $sheet->setTitle($brand.' Print Schedule Report');
+                $sheet->setCellValue('A1', 'Order #');
+                $sheet->setCellValue('B1', 'Item');
+                $sheet->setCellValue('C1', 'Color');
+                $sheet->setCellValue('D1', 'Ink Color');
+                $sheet->setCellValue('E1', 'QTY');
+                $sheet->setCellValue('F1', 'Prints');
+                $sheet->setCellValue('G1', 'T Prints');
+                $sheet->setCellValue('H1', 'Ship Date');
+                $sheet->setCellValue('I1', 'Delivery');
+                $sheet->setCellValue('J1', 'Event');
+                $sheet->setCellValue('K1', 'Notes');
+                $sheet->setCellValue('L1', 'Urgency');
+                $numrow = 2;
+                foreach ($orders as $order) {
+                    $sheet->setCellValue('A'.$numrow, $order['order_num']);
+                    $sheet->setCellValue('B'.$numrow, $order['item']);
+                    $sheet->setCellValue('C'.$numrow, $order['color']);
+                    $sheet->setCellValue('D'.$numrow, $order['ink_color']);
+                    $sheet->setCellValue('E'.$numrow, $order['qty']);
+                    $sheet->setCellValue('F'.$numrow, $order['prints']);
+                    $sheet->setCellValue('G'.$numrow, $order['tprints']);
+                    $sheet->setCellValue('H'.$numrow, $order['shipdate']);
+                    $sheet->setCellValue('I'.$numrow, $order['delivery']);
+                    $sheet->setCellValue('J'.$numrow, $order['event']);
+                    $sheet->setCellValue('K'.$numrow, $order['notes']);
+                    $sheet->setCellValue('L'.$numrow, $order['urgency']);
+                    $numrow++;
+                }
+                $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+                $writer->save($filenorm);    // download file
+                echo 'File '.$filenorm.' ready'.PHP_EOL;
+            }
+
+        }
     }
 }

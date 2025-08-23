@@ -1089,4 +1089,11 @@ Class Cronjob extends CI_Controller
         $this->load->model('shipping_model');
         $this->shipping_model->trackpackage_report($datebgn, $dateend);
     }
+
+    public function ordersreport()
+    {
+        $this->load->model('orders_model');
+        $this->orders_model->daily_orders_report();
+        return true;
+    }
 }
