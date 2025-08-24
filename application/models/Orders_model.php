@@ -9906,7 +9906,7 @@ Class Orders_model extends MY_Model
             $amntsql = $this->db->get_compiled_select();
             $this->db->select('order_item_id, count(order_imprint_id) as cntprint, sum(imprint_qty) as imprintqty')->from('ts_order_imprints')->where('imprint_item', 1)->group_by('order_item_id');
             $printsql = $this->db->get_compiled_select();
-            $this->db->select('o.order_id, oic.order_itemcolor_id, o.order_num, concat(i.item_number,\' \',i.item_name) as item, oic.item_color, oic.item_qty, o.order_blank');
+            $this->db->select('o.order_id, oic.order_itemcolor_id, o.order_num, i.item_name as item, oic.item_color, oic.item_qty, o.order_blank');
             $this->db->select('s.shipdate , s.arrive_date , s.event_date');
             $this->db->select('IF(o.order_rush = 1, 1 , if(coalesce(s.event_date,0)>0 ,1, 2)) as urgent, COALESCE(oa.fullfill,0) as fullfill');
             $this->db->select('coalesce(pt.cntprint,0) as cntprint, pt.imprintqty, oi.item_id');
