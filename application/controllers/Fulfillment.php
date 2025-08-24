@@ -2365,7 +2365,13 @@ class Fulfillment extends MY_Controller
 
     private function _prepare_printcalendar()
     {
-        $content = $this->load->view('printcalendar/page_view',[], TRUE);
+        $this->load->model('printcalendar_model');
+        $years = $this->printcalendar_model->get_printshops_years();
+        $options = [
+            'years' => $years,
+            'yearprint' => $years[0]['yearprint'],
+        ];
+        $content = $this->load->view('printcalendar/page_view', $options, TRUE);
         return $content;
     }
 

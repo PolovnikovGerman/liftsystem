@@ -75,6 +75,7 @@ function init_page(objid) {
             break;
         case 'printcalendar':
             $("#printcalendarview").show();
+            init_printcalendar_content();
             break;
     }
 
