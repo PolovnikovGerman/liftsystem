@@ -9897,6 +9897,8 @@ Class Orders_model extends MY_Model
 
     public function daily_orders_report()
     {
+        $this->load->library('email');
+        $sendsmtp = intval($this->config->item('itemprice_smtp'));
         $brands = ['SB', 'SR'];
         foreach ($brands as $brand) {
             // Get Orders
@@ -9907,7 +9909,7 @@ Class Orders_model extends MY_Model
             $this->db->select('o.order_id, oic.order_itemcolor_id, o.order_num, concat(i.item_number,\' \',i.item_name) as item, oic.item_color, oic.item_qty, o.order_blank');
             $this->db->select('s.shipdate , s.arrive_date , s.event_date');
             $this->db->select('IF(o.order_rush = 1, 1 , if(coalesce(s.event_date,0)>0 ,1, 2)) as urgent, COALESCE(oa.fullfill,0) as fullfill');
-            $this->db->select('coalesce(pt.cntprint,0) as cntprint, pt.imprintqty');
+            $this->db->select('coalesce(pt.cntprint,0) as cntprint, pt.imprintqty, oi.item_id');
             $this->db->from('ts_orders o');
             $this->db->join('ts_order_items oi','oi.order_id = o.order_id');
             $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
@@ -9916,6 +9918,7 @@ Class Orders_model extends MY_Model
             $this->db->join('('.$amntsql.') oa','oa.order_itemcolor_id = oic.order_itemcolor_id','left');
             $this->db->join('('.$printsql.') pt','pt.order_item_id = oi.order_item_id','left');
             $this->db->where('o.is_canceled',0);
+            $this->db->where('oic.inventory_color_id is not null');
             if ($brand=='SR') {
                 $this->db->where('o.brand', $brand);
             } else {
@@ -9928,11 +9931,18 @@ Class Orders_model extends MY_Model
             if (count($prints) > 0) {
                 $orders = [];
                 $startorder = 0;
+                $startitem = 0;
                 foreach ($prints as $print) {
                     $neword = 0;
+                    $newitem = 0;
                     if ($startorder!=$print['order_id']) {
                         $neword = 1;
+                        $startitem = 0;
                         $startorder = $print['order_id'];
+                    }
+                    if ($startitem!=$print['item_id']) {
+                        $newitem = 1;
+                        $startitem = $print['item_id'];
                     }
                     if ($neword==1) {
                         $orders[] = [
@@ -9952,7 +9962,7 @@ Class Orders_model extends MY_Model
                     } else {
                         $orders[] = [
                             'order_num' => '',
-                            'item' => '',
+                            'item' => ($newitem==0) ? '' : $print['item'],
                             'color' => $print['item_color'],
                             'ink_color' => '',
                             'qty' => $print['item_qty'],
@@ -10004,8 +10014,45 @@ Class Orders_model extends MY_Model
                 $writer = new Xlsx($spreadsheet); // instantiate Xlsx
                 $writer->save($filenorm);    // download file
                 echo 'File '.$filenorm.' ready'.PHP_EOL;
+                if ($sendsmtp==1) {
+                    $config = [
+                        'protocol'=>'smtp',
+                        'smtp_host' => $this->config->item('sb_smtp_host'),
+                        'smtp_port' => $this->config->item('sb_smtp_port'),
+                        'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                        'smtp_user' => $brand=='SR' ? $this->config->item('sr_unpaid_user') : $this->config->item('sb_unpaid_user'),
+                        'smtp_pass' => $brand=='SR' ? $this->config->item('sr_unpaid_pass') : $this->config->item('sb_unpaid_pass'),
+                        'charset'=>'utf-8',
+                        'mailtype'=>'html',
+                        'wordwrap'=>TRUE,
+                        'newline' => "\r\n",
+                    ];
+                    $email_from = $config['smtp_user'];
+                } else {
+                    $config = array(
+                        'protocol'=>'sendmail',
+                        'charset'=>'utf-8',
+                        'wordwrap'=>TRUE,
+                        'mailtype'=>'html',
+                    );
+                    $email_from = 'no-replay@bluetrack.com';
+                }
+                $this->email->initialize($config);
+                // $mail_to=array($this->config->item('sage_email'), $this->config->item('sean_email'));
+                $mail_to=array('to_german@yahoo.com');
+                $this->email->to($mail_to);
+                if (isset($mail_cc)) {
+                    $this->email->cc($mail_cc);
+                }
+                $this->email->from($email_from);
+                $title = 'Print Schedule Daily Report '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)').' ('.date('m/d/Y').')';
+                $this->email->subject($title);
+                $mail_body = 'Report in attachment';
+                $this->email->message($mail_body);
+                $this->email->attach($filenorm);
+                $res=$this->email->send();
+                $this->email->clear(TRUE);
             }
-
         }
     }
 }
