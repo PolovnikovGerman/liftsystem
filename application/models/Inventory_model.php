@@ -508,7 +508,7 @@ class Inventory_model extends MY_Model
 //                    if ($result['ship']!=$result['fullfill']) {
 //                        $manage = 0;
 //                    } else {
-                        if ($result['shipqty'] >= $result['shipped']) {
+                        if ($result['shipqty'] > $result['shipped']) {
                             $result['reserved']-=($result['shipqty'] - $result['shipped']);
                         }
 //                    }

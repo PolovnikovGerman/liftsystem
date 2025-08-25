@@ -30,4 +30,7 @@
     <?php if (isset($sritemsview)) { ?>
         <div class="fulfillcontentarea" id="sritemsview" style="display: none;"><?=$sritemsview?></div>
     <?php } ?>
+    <?php if (isset($printcalendarview)) { ?>
+        <div class="fulfillcontentarea" id="printcalendarview" style="display: none;"><?=$printcalendarview?></div>
+    <?php } ?>
 </div>

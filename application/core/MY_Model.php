@@ -51,8 +51,8 @@
  * @property Inventory_model inventory_model
  * @property Btitemdetails_model btitemdetails_model
  * @property Sritems_model sritems_model
- * @property Mailbox_model mailbox_model
  * @property Printscheduler_model printscheduler_model
+ * @property Printcalendar_model printcalendar_model
  * @property Mailbox_model mailbox_model
  */
 
