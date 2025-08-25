@@ -28,8 +28,24 @@
                     </div>
                 <?php endif; ?>
             </div>
-
         </div>
     <?php endforeach; ?>
+        <!-- Week results -->
+        <div class="psctable-td">
+            <div class="psctable-totalbox">
+                <div class="totalbox-printed">
+                    <div class="totalboxtprinted-name">Printed:</div>
+                    <div class="totalboxtprinted-numbers"><?=$calendar['total_printed']==0 ? '-' : QTYOutput($calendar['total_printed'])?></div>
+                </div>
+                <div class="totalbox-orders">
+                    <div class="totalboxorders-name">Orders:</div>
+                    <div class="totalboxorders-numbers"><?=$calendar['total_orders']==0 ? '-' : QTYOutput($calendar['total_orders'])?></div>
+                </div>
+                <div class="totalbox-toprint">
+                    <div class="totalboxtoprint-name">To Print:</div>
+                    <div class="totalboxtoprint-numbers"><?=$calendar['total_toprint']==0 ? '-' : QTYOutput($calendar['total_toprint'])?></div>
+                </div>
+            </div>
+        </div>
     </div>
 <?php endforeach; ?>

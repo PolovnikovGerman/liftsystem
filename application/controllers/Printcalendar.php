@@ -28,4 +28,27 @@ class Printcalendar extends MY_Controller
         show_404();
     }
 
+    public function yearstatic()
+    {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $year = ifset($postdata, 'year',0);
+            $mdata = [];
+            $error = 'Empty Year';
+            if (!empty($year)) {
+                $error = '';
+                $res = $this->printcalendar_model->year_statistic($year);
+                $lates = $res['late'];
+                $lateoptions = [
+                    'orders' => $lates['ordercnt'],
+                    'prints' => $lates['printqty'],
+                ];
+                $mdata['latecontent'] = $this->load->view('printcalendar/lateresult_view', $lateoptions, true);
+                $mdata['statistic'] = $this->load->view('printcalendar/statist_year_view', $res, true);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 }

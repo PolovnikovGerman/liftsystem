@@ -39,15 +39,13 @@
         <div class="datarow">
             <div class="lateorders">
                 <div class="lateorders-name">Late Orders</div>
-                <div class="lateorders-box">
-                </div>
+                <div class="lateorders-box"></div>
             </div>
         </div>
         <div class="datarow">
             <div class="statisticsblok">
                 <div class="statisticsblok-name">Statistics:</div>
-                <div class="statistics-boxes">
-                </div>
+                <div class="statistics-boxes"></div>
                 <div class="statisticsblok-checkbox">
                     <input type="checkbox" name="">
                     <label>Hide orders where % Fulfilled ≠ % Shipped</label>
