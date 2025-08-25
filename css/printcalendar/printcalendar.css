@@ -380,7 +380,7 @@
 }
 .statistics-boxes {}
 .statisticsbox {
-    width: 174px;
+    width: 198px;
     margin-right: 10px;
 }
 .statisticsboxtitle {
@@ -388,7 +388,7 @@
     width: 100%;
 }
 .statistics-box {
-    width: 171px;
+    width: 198px;
     height: 46px;
     padding: 8px 3px;
     border: 1px solid #000;
@@ -398,10 +398,10 @@
     width: 44px;
 }
 .statisticsbox-items {
-    width: 58px;
+    width: 72px;
 }
 .statisticsbox-prints {
-    width: 60px;
+    width: 72px;
 }
 .statisticsbox-name {
     width: 100%;
