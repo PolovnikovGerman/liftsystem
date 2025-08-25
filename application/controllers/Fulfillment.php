@@ -120,6 +120,7 @@ class Fulfillment extends MY_Controller
                 $content_options['sritemsview'] = $this->_prepare_sritems_content();
             } elseif ($row['item_link']=='#printcalendar') {
                 $head['styles'][]=array('style'=>'/css/printcalendar/printcalendar.css');
+                $head['styles'][]=array('style'=>'/css/printcalendar/printdetails.css');
                 $head['scripts'][]=array('src' => '/js/printcalendar/printcalendar.js');
                 $content_options['printcalendarview'] = $this->_prepare_printcalendar();
             }

@@ -1,4 +1,4 @@
-<input type="hidden" id="printcaledyear" value="<?=$yearprint?>"/>
+<input type="hidden" id="printcaledyear" value="<?= $yearprint ?>"/>
 <div class="printschedular_body">
     <div class="pschedular-calendar">
         <div class="datarow">
@@ -7,7 +7,10 @@
                 <div class="pscheader-years">
                     <ul>
                         <?php foreach ($years as $year): ?>
-                            <li><div class="pscheader-yearbox <?=$year['yearprint']==$yearprint ? 'active' : ''?>" data-yearprint="<?=$year['yearprint']?>"><?=$year['yearprint']?></div></li>
+                            <li>
+                                <div class="pscheader-yearbox <?= $year['yearprint'] == $yearprint ? 'active' : '' ?>"
+                                     data-yearprint="<?= $year['yearprint'] ?>"><?= $year['yearprint'] ?></div>
+                            </li>
                         <?php endforeach; ?>
                     </ul>
                 </div>
@@ -29,6 +32,28 @@
             </div>
         </div>
     </div>
+    <!-- week calendar -->
+    <div class="pscalendar">
+        <div class="pscalendar-arrows">
+            <div class="pscalendar-arrowsleft">
+                <i class="fa fa-caret-left" aria-hidden="true"></i>
+            </div>
+            <div class="pscalendar-arrowsright">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+            </div>
+        </div>
+        <div class="pscalendar-days">
+            <div class="pscalendar-td">Monday</div>
+            <div class="pscalendar-td">Tuesday</div>
+            <div class="pscalendar-td">Wednesday</div>
+            <div class="pscalendar-td">Thursday</div>
+            <div class="pscalendar-td">Friday</div>
+            <div class="pscalendar-td">Saturday</div>
+            <div class="pscalendar-td">Sunday</div>
+        </div>
+        <div class="pscalendar-week"></div>
+    </div>
+
     <div class="pschedular-rightside">
         <div class="datarow">
             <div class="btn-reschedular">
@@ -53,4 +78,6 @@
             </div>
         </div>
     </div>
+
+
 </div>

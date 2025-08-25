@@ -31,8 +31,7 @@
     padding: 14px 0;
 }
 .pschedular-calendar {
-    /*width: 925px;*/
-    width: 990px;
+    width: 905px;
     margin-left: 10px;
 }
 .psc-header {
@@ -83,9 +82,7 @@
     margin: auto 2px;
 }
 .psctable-td {
-    /*width: 108px;*/
-    width: 118px;
-
+    width: 108px;
 }
 .psctable-td.weeklytotal {
     width: 132px;
@@ -94,8 +91,7 @@
     border: 1px solid #000;
     background: #eeeeee;
     height: 540px;
-    /* overflow-y: scroll; */
-    width: 987px;
+    width: 903px;
     padding-top: 2px;
 }
 .psctable-body .psctable-td {}
@@ -107,8 +103,7 @@
 }
 .psctable-daybox {
     border: 1px solid #303030;
-    /*width: 108px;*/
-    width: 112px;
+    width: 108px;
     height: 39px;
     background: #fff;
     opacity: 1;
@@ -117,6 +112,7 @@
     z-index: 1;
     margin-bottom: 4px;
     cursor: pointer;
+    margin-left: -1px;
 }
 .psctable-daybox.dayoff {
     border: 1px solid #303030;
@@ -150,6 +146,7 @@
     text-align: center;
     font-size: 11px;
     color: #000;
+    line-height: 14px;
 }
 .dayboxdate-date {
     width: 100%;
@@ -157,6 +154,7 @@
     font-size: 18px;
     font-weight: 600;
     color: #000;
+    line-height: 18px;
 }
 .dayoff .dayboxdate-date {
     color: #676767;
@@ -207,17 +205,18 @@
     font-size: 10px;
     line-height: 10px;
     font-style: italic;
-    color: #000;
+    color: #000000;
 }
 .dayboxitemsprinted-numbers {
     width: 100%;
     text-align: center;
     font-size: 13px;
+    line-height: 14px;
     font-weight: 600;
     color: #000;
 }
 .daybox-printsprinted {
-    width: 45px;
+    width: 38px;
     margin-top: 2px;
 }
 .dayboxprintsprinted-name {
@@ -234,6 +233,7 @@
     font-size: 13px;
     font-weight: 600;
     color: #000;
+    line-height: 14px;
 }
 .pastday .daybox-date,
 .pastday .daybox-itemsprinted,
@@ -252,7 +252,7 @@
     border: 1px solid #afafaf;
 }
 .totalbox-printed {
-    width: 42px;
+    width: 38px;
     margin-top: 5px;
 }
 .totalboxtprinted-name {
@@ -261,6 +261,7 @@
     font-size: 10px;
     font-style: italic;
     color: #646464;
+    line-height: 10px;
 }
 .totalboxtprinted-numbers {
     width: 100%;
@@ -268,9 +269,10 @@
     font-size: 13px;
     font-weight: 600;
     color: #646464;
+    line-height: 14px;
 }
 .totalbox-orders {
-    width: 42px;
+    width: 38px;
     margin-top: 5px;
 }
 .totalbox-toprint {
@@ -284,6 +286,7 @@
     font-size: 10px;
     font-style: italic;
     color: #a4a4a4;
+    line-height: 10px;
 }
 .totalboxorders-numbers,
 .totalboxtoprint-numbers {
