@@ -299,7 +299,7 @@
 .pschedular-rightside {
     float: right !important;
     margin-right: 10px;
-    width: calc(100% - 1015px);
+    width: calc(100% - 930px);
 }
 .btn-reschedular {
     float: right !important;
@@ -341,8 +341,8 @@
     margin-bottom: 5px;
 }
 .lateorders-box {
-    width: 124px;
-    height: 28px;
+    width: 134px;
+    height: 46px;
     background: #ff8080;
     border: 1px solid #000;
     padding: 9px 5px;
@@ -359,6 +359,7 @@
     font-size: 11px;
     font-style: italic;
     color: #a50303;
+    line-height: 11px;
 }
 .latebox-numbers {
     width: 100%;
@@ -387,17 +388,17 @@
     width: 100%;
 }
 .statistics-box {
-    width: 161px;
-    height: 30px;
-    padding: 8px 5px;
+    width: 171px;
+    height: 46px;
+    padding: 8px 3px;
     border: 1px solid #000;
     margin-top: 5px;
 }
 .statisticsbox-orders {
-    width: 42px;
+    width: 44px;
 }
 .statisticsbox-items {
-    width: 55px;
+    width: 58px;
 }
 .statisticsbox-prints {
     width: 60px;
@@ -408,6 +409,7 @@
     font-size: 11px;
     font-style: italic;
     color: #525252;
+    line-height: 11px;
 }
 .statisticsbox-numbers {
     width: 100%;
@@ -420,4 +422,9 @@
 }
 .statisticsblok-checkbox label {
     font-size: 13px;
+}
+.statisticsblok-checkbox input[type=checkbox] {
+    margin: 0;
+    position: relative;
+    top: 2px;
 }
