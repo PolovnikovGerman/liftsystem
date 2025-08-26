@@ -18,6 +18,7 @@ function init_printcalendar(year) {
                 scrollElement.getScrollElement().scrollTop = scrollElement.getScrollElement().scrollHeight;
             }, "300");
             // Init Calendar
+            init_fullcalendar();
             $("#loader").hide();
         } else {
             $("#loader").hide();
@@ -34,6 +35,40 @@ function init_printstatistic(year) {
         if (response.errors=='') {
             $(".lateorders-box").empty().html(response.data.latecontent);
             $(".statistics-boxes").empty().html(response.data.statistic);
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function init_fullcalendar() {
+    $(".psctable-td").unbind('click').click(function (){
+        var printdate = $(this).data('printdate');
+        var params = new Array();
+        params.push({name: 'printdate', value: printdate});
+        var url = '/printcalendar/weekcalendar';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".pscalendar-week").empty().html(response.data.content);
+                $(".pscalendar-daybox[data-printdate='"+printdate+"']").addClass('today');
+                init_printdate_details(printdate);
+                $("#printcalendarfullview").hide();
+                $("#printcalendardetailsview").show();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+}
+
+function init_printdate_details(printdate) {
+    var params = new Array();
+    params.push({name: 'printdate', value: printdate});
+    var url = '/printcalendar/daylidetails';
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".maingreyblock.fullinfo").empty().html(response.data.content);
+            init_dailydetails_manage()
         } else {
             show_error(response);
         }

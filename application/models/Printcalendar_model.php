@@ -86,7 +86,7 @@ class Printcalendar_model extends MY_Model
                 $idx = 0;
                 foreach ($week as $w) {
                     if ($w['date'] == $result['print_date']) {
-                        $week[$idx]['ordercnt'] = $result['ordercnt'];
+                        $week[$idx]['orders'] = $result['ordercnt'];
                         $week[$idx]['prints'] = $result['printqty'];
                         $week[$idx]['printed'] = $result['fullfill'];
                         break;
@@ -162,6 +162,89 @@ class Printcalendar_model extends MY_Model
             'leave_prints' => $statres['printqty'] - $readyres['printqty'],
             'year' => $year,
         ];
+    }
 
+    public function week_calendar($weeknumber, $year)
+    {
+        // Date Bgn / end
+        $this->db->select('order_itemcolor_id, sum(shipped) as fullfill')->from('ts_order_amounts')->group_by('order_itemcolor_id');
+        $amntsql = $this->db->get_compiled_select();
+        $this->db->select('order_item_id, count(order_imprint_id) as cntprint, sum(imprint_qty) as imprintqty')->from('ts_order_imprints')->where('imprint_item', 1)->group_by('order_item_id');
+        $printsql = $this->db->get_compiled_select();
+        $dates = getDatesByWeek($weeknumber, $year);
+        $date = new DateTime(date('Y-m-d',$dates['start_week']));
+        $newdate = $date;
+        $weestart = $newdate->getTimestamp();
+        for ($i=0; $i<=6; $i++) {
+            $active = 0;
+            if ($newdate->getTimestamp() >= strtotime(date('Y-m-d'))) {
+                $active = 1;
+            }
+            $week[] = [
+                'date' => $newdate->getTimestamp(),
+                'month' => $newdate->format('M'),
+                'day' => $newdate->format('j'),
+                'orders' => 0,
+                'prints' => 0,
+                'printed' => 0,
+                'weekend' => ($newdate->format('w') > 0 && $newdate->format('w') < 6) ? 0 : 1,
+                'active' => $active,
+            ];
+            $newdate = $date->modify('+1 day');
+        }
+        $weekfinish = $newdate->getTimestamp();
+        $this->db->select('o.print_date, count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(COALESCE(impr.cntprint,0)*oic.item_qty) as printqty');
+        $this->db->select('sum(amnt.fullfill) as fullfill');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_items oi', 'oi.order_id=o.order_id');
+        $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
+        $this->db->join('('.$amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
+        $this->db->join('('.$printsql.') impr','impr.order_item_id = oi.order_item_id','left');
+        $this->db->where('o.is_canceled', 0);
+        $this->db->where('o.print_date >= ', $weestart);
+        $this->db->where('o.print_date < ', $weekfinish);
+        $this->db->group_by('o.print_date');
+        $results = $this->db->get()->result_array();
+        foreach ($results as $result) {
+            $idx = 0;
+            foreach ($week as $w) {
+                if ($w['date'] == $result['print_date']) {
+                    $week[$idx]['orders'] = $result['ordercnt'];
+                    $week[$idx]['prints'] = $result['printqty'];
+                    $week[$idx]['printed'] = $result['fullfill'];
+                    break;
+                } else {
+                    $idx++;
+                }
+            }
+        }
+        return [
+            'weeks' => $week,
+            'week_num' => $weeknumber,
+            'year' => $year,
+        ];
+    }
+
+    public function daydetails($printdate)
+    {
+        $daytitle = date('D - M, j, Y', $printdate);
+        $this->db->select('order_item_id, count(order_imprint_id) as cntprint, sum(imprint_qty) as imprintqty')->from('ts_order_imprints')->where('imprint_item', 1)->group_by('order_item_id');
+        $printsql = $this->db->get_compiled_select();
+        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(COALESCE(impr.cntprint,0)*oic.item_qty) as printqty');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_items oi', 'oi.order_id=o.order_id');
+        $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
+        $this->db->join('('.$printsql.') impr','impr.order_item_id = oi.order_item_id','left');
+        $this->db->where('o.is_canceled', 0);
+        $this->db->where('o.print_date', $printdate);
+        $results = $this->db->get()->row_array();
+        // Warnings
+
+        return [
+            'orders' => $results['ordercnt'],
+            'items' => $results['itemscnt'],
+            'prints' => $results['printqty'],
+            'title' => $daytitle,
+        ];
     }
 }

@@ -168,7 +168,7 @@ class Printscheduler_model extends MY_Model
     public function get_ontimeorders_dates($brand)
     {
         $curdate = strtotime(date('Y-m-d'));
-        $this->db->select('date_format(from_unixtime(o.print_date), \'%Y-%m-%d\') as printdate, count(o.order_id) as cntorder');
+        $this->db->select('date_format(from_unixtime(o.print_date), \'%Y-%m-%d\') as printdate, count(distinct(o.order_id)) as cntorder');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi','oi.order_id=o.order_id');
         $this->db->join('ts_order_itemcolors toi','toi.order_item_id=oi.order_item_id');
@@ -193,6 +193,7 @@ class Printscheduler_model extends MY_Model
             $dayend = strtotime('+1 day', $daybgn);
             $this->db->select('sum(oi.item_qty) as totalitem');
             $this->db->from('ts_order_items oi');
+            $this->db->join('ts_inventory_items ii','ii.inventory_item_id=oi.inventory_item_id');
             $this->db->join('ts_orders o','oi.order_id=o.order_id');
             $this->db->where('o.print_date >= ', $daybgn);
             $this->db->where('o.print_date < ', $dayend);
@@ -206,9 +207,11 @@ class Printscheduler_model extends MY_Model
                 }
             }
             $itemdat = $this->db->get()->row_array();
+            // Precompile
             $this->db->select('sum(imp.imprint_qty) as totalimpr');
             $this->db->from('ts_order_imprints imp');
             $this->db->join('ts_order_items oi','imp.order_item_id=oi.order_item_id');
+            $this->db->join('ts_inventory_items ii','ii.inventory_item_id=oi.inventory_item_id');
             $this->db->join('ts_orders o','oi.order_id=o.order_id');
             $this->db->where('o.print_date >= ', $daybgn);
             $this->db->where('o.print_date < ', $dayend);
