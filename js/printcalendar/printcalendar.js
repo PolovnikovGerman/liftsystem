@@ -44,8 +44,10 @@ function init_printstatistic(year) {
 function init_fullcalendar() {
     $(".psctable-td").unbind('click').click(function (){
         var printdate = $(this).data('printdate');
+        var printweek = $(this).data('printweek');
         var params = new Array();
         params.push({name: 'printdate', value: printdate});
+        params.push({name: 'printweek', value: printweek});
         var url = '/printcalendar/weekcalendar';
         $.post(url, params, function (response){
             if (response.errors=='') {

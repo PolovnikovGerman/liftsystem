@@ -57,11 +57,10 @@ class Printcalendar extends MY_Controller
             $mdata = [];
             $error = 'Empty Date';
             $postdata = $this->input->post();
-            $printdate = ifset($postdata, 'printdate',0);
-            if (!empty($printdate)) {
+            $printweek = ifset($postdata, 'printweek','');
+            if (!empty($printweek)) {
                 $error = '';
-                $week = date("W-Y", $printdate);
-                $weekdat = explode("-", $week);
+                $weekdat = explode("-", $printweek);
                 $res = $this->printcalendar_model->week_calendar($weekdat[0], $weekdat[1]);
                 $mdata['content'] = $this->load->view('printcalendar/week_calendar_view', $res, true);
             }
@@ -80,7 +79,33 @@ class Printcalendar extends MY_Controller
             if (!empty($printdate)) {
                 $error = '';
                 $res = $this->printcalendar_model->daydetails($printdate);
-                $mdata['content'] = $this->load->view('printcalendar/daydetails_view', $res, true);
+                $header_view = $this->load->view('printcalendar/daydetails_header_view', $res, true);
+                $warnings = $res['warnings'];
+                $warnings_view = '';
+                if (count($warnings) > 0) {
+                    $warnings_view = $this->load->view('printcalendar/daydetails_warnings_view', ['lists' => $warnings], true);
+                }
+                $regular_view = '';
+                if (count($res['unsign'])+count($res['assign']) > 0) {
+                    $unassign_view = '';
+                    if (count($res['unsign']) > 0) {
+                        $unassign_view = $this->load->view('printcalendar/daydetails_unsign_view', ['total'=> $res['unsigntotal'], 'lists' => $res['unsign']], true);
+                    }
+                    $assign_view = '';
+                    if (count($res['assign']) > 0) {
+                    }
+                    $regoptions = [
+                        'unsign_view' => $unassign_view,
+                        'assign_view' => $assign_view,
+                    ];
+                    $regular_view = $this->load->view('printcalendar/daydetails_regular_view', $regoptions, true);
+                }
+                $options = [
+                    'header_view' => $header_view,
+                    'warnings_view' => $warnings_view,
+                    'regular_view' => $regular_view,
+                ];
+                $mdata['content'] = $this->load->view('printcalendar/daydetails_view', $options, true);
             }
             $this->ajaxResponse($mdata, $error);
         }
