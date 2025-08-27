@@ -100,10 +100,15 @@ class Printcalendar extends MY_Controller
                     ];
                     $regular_view = $this->load->view('printcalendar/daydetails_regular_view', $regoptions, true);
                 }
+                $history_view = '';
+                if (count($res['history']) > 0) {
+                    $history_view = $this->load->view('printcalendar/daydetails_history_view', ['totals' => $res['history_total'], 'lists' => $res['history']], true);
+                }
                 $options = [
                     'header_view' => $header_view,
                     'warnings_view' => $warnings_view,
                     'regular_view' => $regular_view,
+                    'history_view' => $history_view,
                 ];
                 $mdata['content'] = $this->load->view('printcalendar/daydetails_view', $options, true);
             }
