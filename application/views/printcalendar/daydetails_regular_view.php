@@ -38,6 +38,6 @@
             <div class="regltabl-td regltabl-tracking">Tracking#s</div>
         </div>
     </div>
-    <?=$unsign_view?>
-    <?=$assign_view?>
+    <div id="printdateunassignarea"><?=$unsign_view?></div>
+    <div id="printdateassignarea"><?=$assign_view?></div>
 </div>
