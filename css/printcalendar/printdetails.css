@@ -2,7 +2,6 @@
     position: relative;
     width: 745px;
     margin-left: 10px;
-    display: none;
 }
 .pscalendar-days {
     width: 766px;
@@ -361,6 +360,9 @@
     text-align: left !important;
     padding-left: 5px;
     font-weight: 600;
+    white-space: nowrap; /* Prevents text from wrapping to the next line */
+    overflow: hidden;    /* Hides any content that overflows the container */
+    text-overflow: ellipsis;
 }
 .warntabl-inkcolor {
     width: 76px;
@@ -624,6 +626,9 @@
     text-align: left !important;
     padding-left: 5px;
     font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .regltabl-inkcolor {
     width: 76px;
@@ -650,7 +655,7 @@
     background: #dbdbdb !important;
 }
 .regltabl-prepstock {
-    background: url(img/prepared-stock.svg) no-repeat;
+    background: url('/img/printscheduler/prepared-stock.svg') no-repeat;
     height: 16px;
     width: 44px;
     font-size: 10.5px;
@@ -659,7 +664,7 @@
     text-align: center;
 }
 .regltabl-prepplate {
-    background: url(img/prepared-plate.svg) no-repeat;
+    background: url('/img/printscheduler/prepared-plate.svg') no-repeat;
     height: 16px;
     width: 45px;
     font-size: 10.5px;
@@ -669,7 +674,7 @@
     text-align: center;
 }
 .regltabl-prepink {
-    background: url(img/prepared-ink.svg) no-repeat;
+    background: url('/img/printscheduler/prepared-ink.svg') no-repeat;
     height: 16px;
     width: 42px;
     font-size: 10.5px;
@@ -679,7 +684,7 @@
     text-align: center;
 }
 .regltabl-prepstock.grey {
-    background: url(img/prepared-stock-grey.svg) no-repeat;
+    background: url('/img/printscheduler/prepared-stock-grey.svg') no-repeat;
     height: 16px;
     width: 44px;
     font-size: 10.5px;
@@ -689,7 +694,7 @@
     color: #fff;
 }
 .regltabl-prepplate.grey {
-    background: url(img/prepared-plate-grey.svg) no-repeat;
+    background: url('/img/printscheduler/prepared-plate-grey.svg') no-repeat;
     height: 16px;
     width: 45px;
     font-size: 10.5px;
@@ -700,7 +705,7 @@
     color: #fff;
 }
 .regltabl-prepink.grey {
-    background: url(img/prepared-ink-grey.svg) no-repeat;
+    background: url('/img/printscheduler/prepared-ink-grey.svg') no-repeat;
     height: 16px;
     width: 42px;
     font-size: 10.5px;

@@ -60,26 +60,40 @@
     </div>
     <div id="printcalendardetailsview" style="display: none">
         <!-- week calendar -->
-        <div class="pscalendar">
-            <div class="pscalendar-arrows">
-                <div class="pscalendar-arrowsleft">
-                    <i class="fa fa-caret-left" aria-hidden="true"></i>
+        <div class="datarow">
+            <div class="pscalendar">
+                <div class="pscalendar-arrows">
+                    <div class="pscalendar-arrowsleft">
+                        <i class="fa fa-caret-left" aria-hidden="true"></i>
+                    </div>
+                    <div class="pscalendar-arrowsright">
+                        <i class="fa fa-caret-right" aria-hidden="true"></i>
+                    </div>
                 </div>
-                <div class="pscalendar-arrowsright">
-                    <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <div class="pscalendar-days">
+                    <div class="pscalendar-td">Monday</div>
+                    <div class="pscalendar-td">Tuesday</div>
+                    <div class="pscalendar-td">Wednesday</div>
+                    <div class="pscalendar-td">Thursday</div>
+                    <div class="pscalendar-td">Friday</div>
+                    <div class="pscalendar-td">Saturday</div>
+                    <div class="pscalendar-td">Sunday</div>
+                </div>
+                <div class="pscalendar-week"></div>
+            </div>
+            <!-- end week -->
+            <div class="rightside">
+                <div class="datarow">
+                    <div class="btn-reschedular">
+                        <div class="btnreschedular-txt">Reschedule Orders</div>
+                        <div class="btnreschedular-btn"><i class="fa fa-caret-down" aria-hidden="true"></i></div>
+                    </div>
                 </div>
             </div>
-            <div class="pscalendar-days">
-                <div class="pscalendar-td">Monday</div>
-                <div class="pscalendar-td">Tuesday</div>
-                <div class="pscalendar-td">Wednesday</div>
-                <div class="pscalendar-td">Thursday</div>
-                <div class="pscalendar-td">Friday</div>
-                <div class="pscalendar-td">Saturday</div>
-                <div class="pscalendar-td">Sunday</div>
-            </div>
-            <div class="pscalendar-week"></div>
         </div>
-        <!-- end week -->
+        <div class="datarow">
+            <div class="maingreyblock fullinfo"></div>
+            <div class="history-section"></div>
+        </div>
     </div>
 </div>

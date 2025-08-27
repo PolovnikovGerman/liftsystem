@@ -122,6 +122,7 @@ class Fulfillment extends MY_Controller
                 $head['styles'][]=array('style'=>'/css/printcalendar/printcalendar.css');
                 $head['styles'][]=array('style'=>'/css/printcalendar/printdetails.css');
                 $head['scripts'][]=array('src' => '/js/printcalendar/printcalendar.js');
+                $head['scripts'][]=array('src' => '/js/printcalendar/printdaily.js');
                 $content_options['printcalendarview'] = $this->_prepare_printcalendar();
             }
         }
