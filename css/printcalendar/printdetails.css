@@ -970,11 +970,13 @@
     width: 77px;
 }
 .histrtabl-description {
-    /*width: 189px;*/
     width: 169px;
     text-align: left !important;
     padding-left: 5px;
     font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .histrtabl-inkcolor {
     width: 92px;
@@ -1012,16 +1014,25 @@
     font-weight: 600;
 }
 .histrtabl-method {
-    width: 78px;
+    /* width: 78px; */
+    width: 62px;
 }
 .histrtabl-tracking {
     position: relative;
-    width: 132px;
+    /* width: 132px; */
+    width: 152px;
 }
-.histrtabl-tracking span {
+/*.histrtabl-tracking span {*/
+/*    color: #030ffa;*/
+/*    font-size: 11px;*/
+/*    font-weight: 600;*/
+/*}*/
+.histrtabl-tracking input {
     color: #030ffa;
     font-size: 11px;
     font-weight: 600;
+    width: 130px;
+    height: 21px;
 }
 .trackbtn {
     width: 20px;
