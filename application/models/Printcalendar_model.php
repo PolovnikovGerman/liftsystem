@@ -347,7 +347,7 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$printsql.') impr', 'impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$shipsql.') ship','ship.order_itemcolor_id = oic.order_itemcolor_id');
         $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
-        $this->db->where('o.print_date >= ', $daybgn)->where('o.print_date <= ', $dayend)->where(['o.is_canceled' => 0, 'o.shipped_date' => 0, 'o.print_user'=> NULL]);
+        $this->db->where('o.print_date >= ', $daybgn)->where('o.print_date < ', $dayend)->where(['o.is_canceled' => 0, 'o.shipped_date' => 0, 'o.print_user'=> NULL]);
         $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
         $unsigntotal = $this->db->get()->row_array();
 
