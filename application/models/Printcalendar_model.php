@@ -343,7 +343,7 @@ class Printcalendar_model extends MY_Model
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi', 'oi.order_id=o.order_id');
         $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
-        $this->db->join('('.$amntsql.') amnt', 'amnt.order_itemcolor_id = oic.order_itemcolor_id');
+        $this->db->join('('.$amntsql.') amnt', 'amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
         $this->db->join('('.$printsql.') impr', 'impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$shipsql.') ship','ship.order_itemcolor_id = oic.order_itemcolor_id');
         $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
