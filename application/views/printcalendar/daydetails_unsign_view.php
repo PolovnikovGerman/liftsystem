@@ -57,7 +57,7 @@
             <div class="regltabl-td regltabl-flfmisprt">
                 <input type="text" name="">
             </div>
-            <div class="regltabl-td regltabl-flftotal">99999</div>
+            <div class="regltabl-td regltabl-flftotal"><?=empty($list['amount_sum']) ? '&nbsp;' : round($list['amount_sum'],0)?></div>
             <div class="regltabl-td regltabl-flfplates">
                 <input type="text" name="">
             </div>
@@ -76,9 +76,15 @@
             </div>
             <div class="regltabl-td regltabl-method">
                 <select>
-                    <option></option>
-                    <option>FedEx</option>
-                    <option>UPS</option>
+                    <option value=""></option>
+                    <option value="UPS">UPS</option>
+                    <option value="FedEx">FedEx</option>
+                    <option value="DHL">DHL</option>
+                    <option value="USPS">USPS</option>
+                    <option value="Van">Van</option>
+                    <option value="Pickup">Pickup</option>
+                    <option value="Courier">Courier</option>
+                    <option value="Other">Other</option>
                 </select>
             </div>
             <div class="regltabl-td regltabl-tracking">
