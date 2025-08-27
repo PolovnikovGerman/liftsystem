@@ -108,9 +108,9 @@ class Printcalendar extends MY_Controller
                     'header_view' => $header_view,
                     'warnings_view' => $warnings_view,
                     'regular_view' => $regular_view,
-                    'history_view' => $history_view,
                 ];
                 $mdata['content'] = $this->load->view('printcalendar/daydetails_view', $options, true);
+                $mdata['historyview'] = $history_view;
             }
             $this->ajaxResponse($mdata, $error);
         }

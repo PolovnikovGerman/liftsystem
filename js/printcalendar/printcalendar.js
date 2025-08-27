@@ -70,6 +70,7 @@ function init_printdate_details(printdate) {
     $.post(url, params, function (response){
         if (response.errors=='') {
             $(".maingreyblock.fullinfo").empty().html(response.data.content);
+            $(".history-section").empty().html(response.data.historyview);
             init_dailydetails_manage()
         } else {
             show_error(response);
