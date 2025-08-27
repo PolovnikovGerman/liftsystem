@@ -1,4 +1,8 @@
 <div class="regular-table">
+    <div class="regularsection-subtitle">
+        <div class="reglsection-subtitle-1">Fulfillment / Printing </div>
+        <div class="reglsection-subtitle-2">Shipping</div>
+    </div>
     <div class="regltabl-tr regltabl-header">
         <div class="regltabl-apprblock">
             <div class="regltabl-td regltabl-prcful">%Ful</div>

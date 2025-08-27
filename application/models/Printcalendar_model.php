@@ -484,6 +484,22 @@ class Printcalendar_model extends MY_Model
         $this->db->where('coalesce(amnt.fullfill,0) >= oic.item_qty');
         $this->db->group_by('o.print_user, u.first_name');
         $history_total = $this->db->get()->result_array();
+        $idx = 0;
+        $orders = $prints = $items = 0;
+        foreach ($history_total as $uns) {
+            $orders+= $uns['ordercnt'];
+            $items+= $uns['itemscnt'];
+            $prints+= $uns['printqty'];
+            $history_total[$idx]['class'] = 'normal';
+            $idx++;
+        }
+        $history_total[] = [
+            'class' => 'total',
+            'user_name' => 'Total',
+            'ordercnt' => $orders,
+            'itemscnt' => $items,
+            'printqty' => $prints,
+        ];
         return [
             'total' => $history_total,
             'data' => $history,
