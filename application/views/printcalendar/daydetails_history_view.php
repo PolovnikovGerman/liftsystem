@@ -77,9 +77,9 @@
                 </div>
                 <div class="histrtabl-shipblock">
                     <div class="histrtabl-td histrtabl-shipped"><?=empty($list['shipped']) ? '-' : QTYOutput($list['shipped'])?></div>
-                    <div class="histrtabl-td histrtabl-method">FedEx</div>
+                    <div class="histrtabl-td histrtabl-method"><?=$list['trackservice']?></div>
                     <div class="histrtabl-td histrtabl-tracking">
-                        <span>1Z01YA030364117842</span>
+                        <input name="trackcode" type="text" readonly="readonly" value="<?=$list['trackcode']?>"/>
                         <div class="trackbtn"><i class="fa fa-files-o" aria-hidden="true"></i></div>
                     </div>
                 </div>

@@ -465,6 +465,11 @@ class Printcalendar_model extends MY_Model
             $unsign[$idx]['shippedprc'] = round($uns['shipped']/$uns['item_qty']*100,0);
             $history[$idx]['notfulfill'] = $uns['item_qty'] - $uns['fulfill'];
             $history[$idx]['notshipp'] = $uns['item_qty'] - $uns['shipped'];
+            // Get method track #
+            $this->db->select('trackservice, trackcode')->from('ts_order_trackings')->where('order_itemcolor_id', $uns['order_itemcolor_id'])->where('qty > 0')->order_by('tracking_id','desc');
+            $tracking = $this->db->get()->row_array();
+            $history[$idx]['trackcode'] = $tracking['trackcode'];
+            $history[$idx]['trackservice'] = $tracking['trackservice'];
             $idx++;
         }
 
