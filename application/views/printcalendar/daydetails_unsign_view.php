@@ -5,8 +5,8 @@
 <?php foreach ($lists as $list) : ?>
     <div class="regltabl-tr">
         <div class="regltabl-apprblock">
-            <div class="regltabl-td regltabl-prcful peach"><?=$list['fulfillprc']?>%</div>
-            <div class="regltabl-td regltabl-prcship peach"><?=$list['shippedprc']?>%</div>
+            <div class="regltabl-td regltabl-prcful <?=$list['class']=='normal' ? '' : 'peach'?>"><?=$list['fulfillprc']?>%</div>
+            <div class="regltabl-td regltabl-prcship <?=$list['class']=='normal' ? '' : 'peach'?>"><?=$list['shippedprc']?>%</div>
             <div class="regltabl-td regltabl-approval <?=$list['approv']==0 ? 'notapprv' : ''?>">
                 <?=$list['approv']==0 ? 'Not Approved' : 'Approved'?>
                 <?php if ($list['approv'] > 0) : ?>
@@ -17,6 +17,13 @@
         <div class="regltabl-td regltabl-userprinter">
             <div class="userprinter">
                 <img src="/img/printscheduler/user-printer.svg">
+                <div class="assign-popup" data-order="<?=$list['order_itemcolor_id']?>">
+                    <ul>
+                        <?php foreach ($users as $user) : ?>
+                            <li class="assignusr" data-user="<?=$user['user_id']?>"><?=$user['first_name']?></li>
+                        <?php endforeach;?>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="regltabl-mainblock">

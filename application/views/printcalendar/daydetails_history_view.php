@@ -71,8 +71,8 @@
                     <div class="histrtabl-td histrtabl-printed"><?=empty($list['fulfill']) ? '-' : QTYOutput($list['fulfill'])?></div>
                     <div class="histrtabl-td histrtabl-flfkept"><?=empty($list['kepted']) ? '-' : QTYOutput($list['kepted'])?></div>
                     <div class="histrtabl-td histrtabl-flfmisprt"><?=empty($list['misprint']) ? '-' : QTYOutput($list['misprint'])?></div>
-                    <div class="histrtabl-td histrtabl-flfproc">99.9%</div>
-                    <div class="histrtabl-td histrtabl-flftotal">99999</div>
+                    <div class="histrtabl-td histrtabl-flfproc"><?=round($list['misprintprc'],1)?>%</div>
+                    <div class="histrtabl-td histrtabl-flftotal"><?=round($list['amount_sum'],0)?></div>
                     <div class="histrtabl-td histrtabl-flfplates"><?=empty($list['plates']) ? '-' : QTYOutput($list['plates'])?></div>
                 </div>
                 <div class="histrtabl-shipblock">
