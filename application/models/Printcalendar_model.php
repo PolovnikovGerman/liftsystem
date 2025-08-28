@@ -383,6 +383,7 @@ class Printcalendar_model extends MY_Model
                 $unsign[$idx]['shippedprc'] = round($uns['shipped']/$uns['item_qty']*100,0);
                 $unsign[$idx]['notfulfill'] = $uns['item_qty'] - $uns['fulfill'];
                 $unsign[$idx]['notshipp'] = $uns['item_qty'] - $uns['shipped'];
+                $unsign[$idx]['class'] = ($unsign[$idx]['fulfillprc']>$unsign[$idx]['shippedprc'] ? 'critical' : 'normal');
                 $idx++;
             }
         }
@@ -427,7 +428,7 @@ class Printcalendar_model extends MY_Model
         $daybgn = $printdate;
         $dayend = strtotime('+1 day', $daybgn);
         // Precompiled SQL
-        $this->db->select('order_itemcolor_id, sum(shipped) as fullfill, max(amount_date) as amount_date, sum(amount_sum) as amount_sum, sum(misprint) as misprint , sum(kepted) as kepted, sum(orangeplate+blueplate+beigeplate) as plates')->from('ts_order_amounts')->group_by('order_itemcolor_id');
+        $this->db->select('order_itemcolor_id, sum(shipped) as fullfill, max(amount_date) as amount_date, sum(amount_sum) as amount_sum, sum(misprint) as misprint , sum(kepted) as kepted, sum(orangeplate+blueplate+beigeplate) as plates, sum(printshop_total) as printshop_total')->from('ts_order_amounts')->group_by('order_itemcolor_id');
         $amntsql = $this->db->get_compiled_select();
         $this->db->select('order_item_id, count(order_imprint_id) as cntprint, sum(imprint_qty) as imprintqty')->from('ts_order_imprints')->where('imprint_item', 1)->group_by('order_item_id');
         $printsql = $this->db->get_compiled_select();
@@ -439,7 +440,7 @@ class Printcalendar_model extends MY_Model
         $printsql = $this->db->get_compiled_select();
         // List data
         $this->db->select('oic.order_itemcolor_id, ship.shipped, COALESCE(amnt.fullfill,0) as fulfill, COALESCE(approv.cnt,0) as approv, o.order_rush');
-        $this->db->select('o.order_num , oic.item_qty, impr.cntprint, impr.imprintqty as prints');
+        $this->db->select('o.order_num , oic.item_qty, impr.cntprint, impr.imprintqty as prints, amnt.printshop_total');
         $this->db->select('ic.color , concat(ii.item_num , \' - \', ii.item_name) as item');
         $this->db->select('ship.shipped, o.brand, o.order_id, oic.print_ready, oi.plates_ready, amnt.amount_date, amnt.amount_sum, amnt.misprint, amnt.kepted, amnt.plates');
         $this->db->select('o.print_user as user_id, u.first_name as user_name');
@@ -465,6 +466,7 @@ class Printcalendar_model extends MY_Model
             $unsign[$idx]['shippedprc'] = round($uns['shipped']/$uns['item_qty']*100,0);
             $history[$idx]['notfulfill'] = $uns['item_qty'] - $uns['fulfill'];
             $history[$idx]['notshipp'] = $uns['item_qty'] - $uns['shipped'];
+            $history[$idx]['misprintprc'] = $uns['fulfill']==0 ? 0 : $uns['misprint']/$uns['fulfill']*100;
             // Get method track #
             $this->db->select('trackservice, trackcode')->from('ts_order_trackings')->where('order_itemcolor_id', $uns['order_itemcolor_id'])->where('qty > 0')->order_by('tracking_id','desc');
             $tracking = $this->db->get()->row_array();

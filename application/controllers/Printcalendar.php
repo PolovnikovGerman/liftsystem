@@ -89,7 +89,9 @@ class Printcalendar extends MY_Controller
                 if (count($res['unsign'])+count($res['assign']) > 0) {
                     $unassign_view = '';
                     if (count($res['unsign']) > 0) {
-                        $unassign_view = $this->load->view('printcalendar/daydetails_unsign_view', ['total'=> $res['unsigntotal'], 'lists' => $res['unsign']], true);
+                        $this->load->model('user_model');
+                        $userlist = $this->user_model->get_printschedul_users();
+                        $unassign_view = $this->load->view('printcalendar/daydetails_unsign_view', ['total'=> $res['unsigntotal'], 'lists' => $res['unsign'], 'users' => $userlist], true);
                     }
                     $assign_view = '';
                     if (count($res['assign']) > 0) {
