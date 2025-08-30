@@ -56,6 +56,7 @@ function init_fullcalendar() {
                 init_printdate_details(printdate);
                 $("#printcalendarfullview").hide();
                 $("#printcalendardetailsview").show();
+                $("#calendarprintdate").val(printdate);
             } else {
                 show_error(response);
             }

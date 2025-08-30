@@ -121,8 +121,10 @@ class Fulfillment extends MY_Controller
             } elseif ($row['item_link']=='#printcalendar') {
                 $head['styles'][]=array('style'=>'/css/printcalendar/printcalendar.css');
                 $head['styles'][]=array('style'=>'/css/printcalendar/printdetails.css');
+                $head['styles'][]=array('style' => '/css/printcalendar/printreshedule.css');
                 $head['scripts'][]=array('src' => '/js/printcalendar/printcalendar.js');
                 $head['scripts'][]=array('src' => '/js/printcalendar/printdaily.js');
+                $head['scripts'][]=array('src' => '/js/printcalendar/printreshedule.js');
                 $content_options['printcalendarview'] = $this->_prepare_printcalendar();
             }
         }

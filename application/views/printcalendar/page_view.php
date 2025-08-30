@@ -1,4 +1,5 @@
 <input type="hidden" id="printcaledyear" value="<?= $yearprint ?>"/>
+<input type="hidden" id="calendarprintdate" value="0"/>
 <div class="printschedular_body">
     <div id="printcalendarfullview">
         <div class="pschedular-calendar">
@@ -88,6 +89,10 @@
                         <div class="btnreschedular-txt">Reschedule Orders</div>
                         <div class="btnreschedular-btn"><i class="fa fa-caret-down" aria-hidden="true"></i></div>
                     </div>
+                    <div class="btn-reschedular-open">
+                        <div class="btnreschedular-btn"><i class="fa fa-times" aria-hidden="true"></i></div>
+                        <div class="btnreschedular-txt">Reschedule Orders</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -95,5 +100,21 @@
             <div class="maingreyblock fullinfo"></div>
             <div class="history-section"></div>
         </div>
+        <div class="datarow">
+            <div class="pschedul-leftside">
+                <div class="maingreyblock-small"></div>
+                <div class="history-section-small"></div>
+            </div>
+            <div class="pschedul-rightside">
+                <div class="reschedular-block">
+                    <div class="reschedulartabs">
+                        <div class="reschdl-tab active">By Print Date</div>
+                        <div class="reschdl-tab">By Item</div>
+                    </div>
+                    <div class="reschedularbody"></div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
