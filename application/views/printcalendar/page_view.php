@@ -108,8 +108,8 @@
             <div class="pschedul-rightside">
                 <div class="reschedular-block">
                     <div class="reschedulartabs">
-                        <div class="reschdl-tab active">By Print Date</div>
-                        <div class="reschdl-tab">By Item</div>
+                        <div class="reschdl-tab active" data-sortfld="print_date">By Print Date</div>
+                        <div class="reschdl-tab" data-sortfld="item_id">By Item</div>
                     </div>
                     <div class="reschedularbody"></div>
                 </div>

@@ -199,4 +199,34 @@ class Printcalendar extends MY_Controller
         }
         show_404();
     }
+
+    public function reschedulechangeview()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Sorting Parameter';
+            $postdata = $this->input->post();
+            $sortfld = ifset($postdata,'sortfld','');
+            if (!empty($sortfld)) {
+                $error = '';
+                $calendview = '';
+                if ($sortfld == 'print_date') {
+                    $calend = $this->printcalendar_model->get_reschedule_printdate();
+                    if ($calend['lates']+$calend['ontime'] > 0) {
+                        $calendoptions = [
+                            'lates' => $calend['lates'],
+                            'ontime' => $calend['ontime'],
+                            'calendars' => $calend['calendar'],
+                        ];
+                        $calendview = $this->load->view('printcalendar/rescheduler_dates_view', $calendoptions, true);
+                    }
+                } else {
+                    $calend = $this->printcalendar_model->get_reschedule_items();
+                    $calendview = $this->load->view('printcalendar/rescheduler_items_view', ['calendars' => $calend], true);
+                }
+                $mdata['calendarview'] = $calendview;
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
 }

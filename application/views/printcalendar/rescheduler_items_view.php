@@ -1,0 +1,57 @@
+<div class="reschditms-table">
+    <div class="reschditms-tr reschditms-header">
+        <div class="reschditms-apprblock">
+            <div class="reschditms-td reschditms-prcful">%Ful</div>
+            <div class="reschditms-td reschditms-prcship">%Ship</div>
+            <div class="reschditms-td reschditms-approval">Approval</div>
+        </div>
+        <div class="reschditms-mainblock">
+            <div class="reschditms-td reschditms-brand">&nbsp;</div>
+            <div class="reschditms-td reschditms-rush">&nbsp;</div>
+            <div class="reschditms-td reschditms-order">Order#</div>
+            <div class="reschditms-td reschditms-date">Date</div>
+            <div class="reschditms-td reschditms-items">#Items</div>
+            <div class="reschditms-td reschditms-imp">Imp</div>
+            <div class="reschditms-td reschditms-prints">#Prints</div>
+            <div class="reschditms-td reschditms-itmcolor">Item Color/s</div>
+            <div class="reschditms-td reschditms-inkcolor">Ink Color/s</div>
+        </div>
+    </div>
+    <div class="reschditms-body">
+        <?php foreach ($calendars as $calendar) : ?>
+            <div class="reschditms-itemline"><?=$calendar['item']?></div>
+            <?php $lists = $calendar['data']; ?>
+            <?php foreach ($lists as $list) : ?>
+                <div class="reschditms-tr">
+                    <div class="reschditms-apprblock">
+                        <div class="reschditms-td reschditms-prcful <?=$list['class']=='normal' ? '' : 'peach'?>"><?=$list['fulfillprc']?>%</div>
+                        <div class="reschditms-td reschditms-prcship <?=$list['class']=='normal' ? '' : 'peach'?>"><?=$list['shippedprc']?>%</div>
+                        <div class="reschditms-td reschditms-approval <?=$list['approv']==0 ? 'notapprv' : ''?>">
+                            <?=$list['approv']==0 ? 'Not Approved' : 'Approved'?>
+                            <?php if ($list['approv'] > 0) : ?>
+                            <span class="iconart"><i class="fa fa-search" aria-hidden="true"></i></span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="reschditms-mainblock">
+                        <div class="reschditms-td reschditms-brand">
+                            <?php if ($list['brand']=='SR') : ?>
+                                <div class="icon-move"><img src="/img/printscheduler/move-yellow.svg"></div>
+                            <?php else: ?>
+                                <div class="icon-move"><img src="/img/printscheduler/move-blue.svg"></div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="reschditms-td reschditms-rush <?=$list['order_rush']==1 ? 'redrush' : ''?>"><?=$list['order_rush']==1 ? 'RUSH' : '&nbsp;'?></div>
+                        <div class="reschditms-td reschditms-order"><?=$list['order_num']?></div>
+                        <div class="reschditms-td reschditms-date <?=$list['dateclass']?>"><?=date('m/d/Y', $list['print_date'])?></div>
+                        <div class="reschditms-td reschditms-items"><?=QTYOutput($list['item_qty'])?></div>
+                        <div class="reschditms-td reschditms-imp"><?=$list['cntprint']?></div>
+                        <div class="reschditms-td reschditms-prints"><?=QTYOutput($list['prints'])?></div>
+                        <div class="reschditms-td reschditms-itmcolor"><?=$list['color']?></div>
+                        <div class="reschditms-td reschditms-inkcolor">&nbsp;</div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php endforeach; ?>
+    </div>
+</div>
