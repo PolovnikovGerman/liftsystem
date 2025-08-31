@@ -1,5 +1,8 @@
 <div class="warning-section">
-    <div class="warning-title"><span>WARNING:</span> For these orders, more items shipped (% Shipped) than were printed (% Fulfilled). This indicates a problem that must be resolved before they can be worked on.</div>
+    <div class="warning-title">
+        <div class="warning-title1">WARNING:</div>
+        <div class="warning-title2">For these orders, more items shipped (% Shipped) than were printed (% Fulfilled). This indicates a problem that must be resolved before they can be worked on.</div>
+    </div>
     <div class="warning-table">
         <div class="warntabl-tr warntabl-header">
             <div class="warntabl-apprblock">

@@ -39,6 +39,24 @@
 /*    width: 100%;*/
 /*    height: 35px;*/
 /*}*/
+.maingreyblock-small .warning-title {
+    margin: 7px 0 7px 10px;
+}
+.warning-title1 {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 28px;
+    width: 74px;
+}
+.warning-title2 {
+    width: 634px;
+    font-size: 12px;
+    margin-left: 7px;
+    line-height: 14px;
+}
+.warning-table {
+    margin-left: 14px;
+}
 .maingrey-title {
     color: #fff;
     font-size: 18px;
