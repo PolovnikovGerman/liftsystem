@@ -69,6 +69,25 @@ class Printcalendar extends MY_Controller
         show_404();
     }
 
+    public function weekcalendarmove()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Date';
+            $postdata = $this->input->post();
+            $week = ifset($postdata, 'week','');
+            $direct = ifset($postdata, 'direct','');
+            if (!empty($week) && !empty($direct)) {
+                $error = '';
+                $weekdat = $this->printcalendar_model->weekdates($week, $direct);
+                $res = $this->printcalendar_model->week_calendar($weekdat['week'], $weekdat['year']);
+                $mdata['content'] = $this->load->view('printcalendar/week_calendar_view', $res, true);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function daylidetails()
     {
         if ($this->isAjax()) {

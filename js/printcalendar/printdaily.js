@@ -43,4 +43,43 @@ function init_dailydetails_manage() {
             }
         },'json');
     })
+    $(".pscalendar-arrowsleft").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'week', value: $("#printcalendarcurweek").val()})
+        params.push({name: 'direct', value: 'prev'});
+        var url = '/printcalendar/weekcalendarmove';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".pscalendar-week").empty().html(response.data.content);
+                init_dailydetails_manage();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".pscalendar-arrowsright").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'week', value: $("#printcalendarcurweek").val()})
+        params.push({name: 'direct', value: 'next'});
+        var url = '/printcalendar/weekcalendarmove';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".pscalendar-week").empty().html(response.data.content);
+                init_dailydetails_manage();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".userprinter").unbind('click').click(function (){
+        var order = $(this).find('div.assign-popup').data('order');
+        console.log('Order '+order);
+        $(".assign-popup").hide();
+        $(".assign-popup[data-order='"+order+"']").show();
+        init_printer_assign(order);
+    });
+}
+
+function init_printer_assign(order) {
+    
 }
