@@ -14,7 +14,28 @@ function init_reschedule_management() {
         init_printdate_details(printdate);
         $("#loader").hide();
     });
-
+    $(".reschdl-tab").unbind('click').click(function(){
+        if ($(this).hasClass('active')) {
+        } else {
+            var sortfld = $(this).data('sortfld');
+            $(".reschdl-tab").removeClass('active');
+            $(".reschdl-tab[data-sortfld='"+sortfld+"']").addClass('active');
+            var params = new Array();
+            params.push({name: 'sortfld', value: sortfld});
+            var url = '/printcalendar/reschedulechangeview';
+            $("#loader").show();
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $(".reschedularbody").empty().html(response.data.calendarview);
+                    init_reschedule_management();
+                    $("#loader").hide();
+                } else {
+                    $("#loader").hide();
+                    show_error(response);
+                }
+            },'json');
+        }
+    })
 }
 
 function dragstartHandler(ev) {
