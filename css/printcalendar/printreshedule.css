@@ -16,6 +16,8 @@
     text-align: center;
     cursor: pointer;
     float: right !important;
+    z-index: 15;
+    position: relative;
 }
 .btn-reschedular-open .btnreschedular-txt {
     float: right !important;
@@ -83,6 +85,8 @@
 .reschedular-block {
     width: 100%;
     margin-top: 0;
+    position: relative;
+    z-index: 5;
 }
 .reschedulartabs {
     /* width: 100%; */
