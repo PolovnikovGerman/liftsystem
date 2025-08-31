@@ -81,5 +81,22 @@ function init_dailydetails_manage() {
 }
 
 function init_printer_assign(order) {
-    
+    $("li.assignusr").unbind('click').click(function (){
+        var user = $(this).data('user');
+        var params = new Array();
+        params.push({name: 'order', value: order});
+        params.push({name: 'user', value: user});
+        var url = '/printcalendar/assignprintorder';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".ready-print-block").empty().html(response.data.content);
+                $("#loader").hide();
+                init_printscheduler_dayview();
+            } else {
+                show_error(response);
+                $("#loader").hide();
+            }
+        },'json');
+    });
 }

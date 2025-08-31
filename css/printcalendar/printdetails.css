@@ -1109,7 +1109,7 @@
     border: 1px solid #000;
     z-index: 10;
     display: none;
-    padding: 0 7px;
+    /* padding: 0 7px; */
 }
 .assign-popup:after, .assign-popup:before {
     content: "";
@@ -1134,11 +1134,12 @@
     list-style: none;
 }
 .assign-popup ul li {
-    height: 15px;
-    line-height: 15px!important;
+    /*height: 15px;*/
+    line-height: 15px !important;
     font-size: 11px;
     text-align: center;
     border-bottom: 1px solid #9a9999;
+    padding: 3px 15px;
 }
 .assign-popup ul li:last-child {
     border-bottom: none;
