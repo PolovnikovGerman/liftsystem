@@ -1,4 +1,4 @@
-<input type="hidden" id="printcalendarcurweek" value="<?=$week_num.'-'.$year?>'?>"/>
+<input type="hidden" id="printcalendarcurweek" value="<?=$week_num.'-'.$year?>"/>
 <?php foreach ($weeks as $week): ?>
     <div class="pscalendar-daybox <?=$week['weekend']==0 ? '' : 'dayoff'?>" data-printdate="<?=$week['date']?>">
         <div class="daybox-date">
