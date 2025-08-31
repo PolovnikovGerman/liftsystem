@@ -672,4 +672,22 @@ class Printcalendar_model extends MY_Model
         $this->db->update('ts_orders');
         return true;
     }
+
+    public function weekdates($week, $direct)
+    {
+        $weekdats = explode('-', $week);
+        $weeknum = $weekdats[0];
+        $year = $weekdats[1];
+        $weekdats = getDatesByWeek($weeknum, $year);
+        if ($direct=='prev') {
+            $mondaydate = strtotime('-1 week', $weekdats['start_week']);
+        } else {
+            $mondaydate = strtotime('+1 week', $weekdats['start_week']);
+        }
+        $newweek = explode('-', date('W-Y', $mondaydate));
+        return [
+            'week' => $newweek[0],
+            'year' => $newweek[1],
+        ];
+    }
 }
