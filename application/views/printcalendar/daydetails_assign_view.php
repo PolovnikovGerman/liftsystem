@@ -48,8 +48,8 @@
         </div>
         <div class="regltabl-prepblock">
             <div class="regltabl-td regltabl-prepared">
-                <div class="regltabl-prepstock <?=$list['print_ready']==0 ? '' : 'grey'?>">Stock</div>
-                <div class="regltabl-prepplate <?=$list['plates_ready']==0 ? '' : 'grey'?>">Plate</div>
+                <div class="regltabl-prepstock <?=$list['print_ready']==0 ? 'grey' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Stock</div>
+                <div class="regltabl-prepplate <?=$list['plates_ready']==0 ? 'grey' : ''?>" data-orderitem="<?=$list['order_item_id']?>">Plate</div>
                 <div class="regltabl-prepink grey">Ink</div>
             </div>
         </div>

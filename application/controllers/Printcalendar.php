@@ -313,4 +313,41 @@ class Printcalendar extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
     }
+
+    public function stockupdate()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Order Color';
+            $postdata = $this->input->post();
+            $order_itemcolor_id = ifset($postdata, 'order_color',0);
+            if (!empty($order_itemcolor_id)) {
+                $res = $this->printcalendar_model->stockupdate($order_itemcolor_id);
+                $error = $res['msg'];
+                if ($res['result'] == $this->success_result) {
+                    $error = '';
+                    $mdata['newval'] = $res['newval'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function platesupdate()
+    {
+        $mdata = [];
+        $error = 'Empty Order Item';
+        $postdata = $this->input->post();
+        $order_item_id = ifset($postdata, 'order_item',0);
+        if (!empty($order_item_id)) {
+            $res = $this->printcalendar_model->plateupdate($order_item_id);
+            $error = $res['msg'];
+            if ($res['result'] == $this->success_result) {
+                $error = '';
+                $mdata['newval'] = $res['newval'];
+            }
+        }
+        $this->ajaxResponse($mdata, $error);
+    }
 }

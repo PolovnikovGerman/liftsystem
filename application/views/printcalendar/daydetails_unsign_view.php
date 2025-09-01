@@ -48,8 +48,8 @@
         </div>
         <div class="regltabl-prepblock">
             <div class="regltabl-td regltabl-prepared">
-                <div class="regltabl-prepstock <?=$list['print_ready']==0 ? '' : 'grey'?>">Stock</div>
-                <div class="regltabl-prepplate <?=$list['plates_ready']==0 ? '' : 'grey'?>">Plate</div>
+                <div class="regltabl-prepstock <?=$list['print_ready']==0 ? 'grey' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Stock</div>
+                <div class="regltabl-prepplate <?=$list['plates_ready']==0 ? 'grey' : ''?>" data-orderitem="<?=$list['order_item_id']?>">Plate</div>
                 <div class="regltabl-prepink grey">Ink</div>
             </div>
         </div>
@@ -57,20 +57,20 @@
             <div class="regltabl-td regltabl-done"><?=QTYOutput($list['fulfill'])?></div>
             <div class="regltabl-td regltabl-flfremain"><?=QTYOutput($list['notfulfill'])?></div>
             <div class="regltabl-td regltabl-flfprint">
-                <input type="text" name="">
+                <input type="text" name="printval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
             </div>
             <div class="regltabl-td regltabl-flfkept">
-                <input type="text" name="">
+                <input type="text" name="keptval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
             </div>
             <div class="regltabl-td regltabl-flfmisprt">
-                <input type="text" name="">
+                <input type="text" name="misprintval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
             </div>
             <div class="regltabl-td regltabl-flftotal"><?=empty($list['amount_sum']) ? '&nbsp;' : round($list['amount_sum'],0)?></div>
             <div class="regltabl-td regltabl-flfplates">
-                <input type="text" name="">
+                <input type="text" name="platesval" data-ordercolor="<?=$list['order_itemcolor_id']?>">
             </div>
             <div class="regltabl-td regltabl-save">
-                <div class="btnsave">Save</div>
+                <div class="btnsave fulfblock" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
             </div>
         </div>
         <div class="regltabl-shipblock">

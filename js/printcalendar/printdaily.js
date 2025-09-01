@@ -88,6 +88,48 @@ function init_dailydetails_manage() {
             init_printer_assign(order, curusr);
         }
     });
+    $(".regltabl-prepstock").unbind('click').click(function (){
+        var ordercolor = $(this).data('ordercolor');
+        var params = new Array();
+        params.push({name: 'order_color', value: ordercolor});
+        var url = '/printcalendar/stockupdate';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (parseInt(response.data.newval)==1) {
+                    $(".regltabl-prepstock[data-ordercolor='"+ordercolor+"']").removeClass('grey');
+                } else {
+                    $(".regltabl-prepstock[data-ordercolor='"+ordercolor+"']").addClass('grey');
+                }
+            } else {
+                show_error(response)
+            }
+        },'json');
+    });
+    $(".regltabl-prepplate").unbind('click').click(function (){
+        var orderitem = $(this).data('orderitem');
+        var params = new Array();
+        params.push({name: 'order_item', value: orderitem});
+        var url = '/printcalendar/platesupdate';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (parseInt(response.data.newval)==1) {
+                    $(".regltabl-prepplate[data-orderitem='"+orderitem+"']").removeClass('grey');
+                } else {
+                    $(".regltabl-prepplate[data-orderitem='"+orderitem+"']").addClass('grey');
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+    $(".btnsave.fulfblock").unbind('click').click(function(){
+        var ordercolor = $(this).data('ordercolor');
+        var print = $("input[name='printval'][data-ordercolor='"+ordercolor+"']").val();
+        var kept = $("input[name='keptval'][data-ordercolor='"+ordercolor+"']").val();
+        var misprint = $("input[name='misprintval'][data-ordercolor='"+ordercolor+"']").val();
+        var plates = $("input[name='platesval'][data-ordercolor='"+ordercolor+"']").val();
+        console.log('Color '+ordercolor+' Print '+parseInt(print)+' Kept '+parseInt(kept)+' Misprint '+parseInt(misprint)+' Plates '+parseInt(plates));
+    })
 }
 
 function init_printer_assign(order, curuser) {
