@@ -1,9 +1,9 @@
-<div class="regltabl-tr printerline">
-    <div class="regltabl-printername">Unassigned</div>
-    <div class="regltabl-printerinfo"><span><?=QTYOutput($total['printqty'])?></span> prints - <span><?=QTYOutput($total['itemscnt'])?></span> items - <span><?=$total['ordercnt']?></span> orders</div>
+<div class="regltabl-tr printerline" data-user="<?=$user_id?>">
+    <div class="regltabl-printername"><?=$user?></div>
+    <div class="regltabl-printerinfo"><span><?=$prints?></span> prints - <span><?=$items?></span> items - <span><?=$orders?></span> orders</div>
 </div>
-<?php foreach ($lists as $list) : ?>
-    <div class="regltabl-tr">
+<?php foreach ($lists as $list)  :?>
+    <div class="regltabl-tr" data-order="<?=$list['order_itemcolor_id']?>">
         <div class="regltabl-apprblock">
             <div class="regltabl-td regltabl-prcful <?=$list['class']=='normal' ? '' : 'peach'?>"><?=$list['fulfillprc']?>%</div>
             <div class="regltabl-td regltabl-prcship <?=$list['class']=='normal' ? '' : 'peach'?>"><?=$list['shippedprc']?>%</div>
@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="regltabl-td regltabl-userprinter">
-            <div class="userprinter" data-order="<?=$list['order_id']?>" data-user="0">
+            <div class="userprinter" data-order="<?=$list['order_id']?>" data-user="<?=$user_id?>">
                 <img src="/img/printscheduler/user-printer.svg">
             </div>
             <div class="assign-popup" data-order="<?=$list['order_id']?>">
@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div class="regltabl-td regltabl-rush <?=$list['order_rush']==0 ? '' : 'redrush'?>"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
-            <div class="regltabl-td regltabl-order" data-order="<?=$list['order_id']?>"><?=$list['order_num']?></div>
+            <div class="regltabl-td regltabl-order"><?=$list['order_num']?></div>
             <div class="regltabl-td regltabl-items"><?=QTYOutput($list['item_qty'])?></div>
             <div class="regltabl-td regltabl-imp"><?=$list['cntprint']?></div>
             <div class="regltabl-td regltabl-prints"><?=QTYOutput($list['prints'])?></div>
@@ -73,7 +73,7 @@
                 <div class="btnsave">Save</div>
             </div>
         </div>
-        <div class="regltabl-shipblock">
+        <div class="regltabl-shipblock closedblock">
             <div class="regltabl-td regltabl-sent"><?=QTYOutput($list['shipped'])?></div>
             <div class="regltabl-td regltabl-shipremain"><?=QTYOutput($list['notshipp'])?></div>
             <div class="regltabl-td regltabl-qty">

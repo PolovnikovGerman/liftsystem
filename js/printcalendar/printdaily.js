@@ -72,31 +72,37 @@ function init_dailydetails_manage() {
         },'json');
     });
     $(".userprinter").unbind('click').click(function (){
-        var order = $(this).find('div.assign-popup').data('order');
-        console.log('Order '+order);
+        var order = $(this).data('order');
+        var curusr = $(this).data('user');
         $(".assign-popup").hide();
         $(".assign-popup[data-order='"+order+"']").show();
-        init_printer_assign(order);
+        init_printer_assign(order, curusr);
     });
 }
 
-function init_printer_assign(order) {
+function init_printer_assign(order, curuser) {
     $("li.assignusr").unbind('click').click(function (){
         var user = $(this).data('user');
-        var params = new Array();
-        params.push({name: 'order', value: order});
-        params.push({name: 'user', value: user});
-        var url = '/printcalendar/assignprintorder';
-        $("#loader").show();
-        $.post(url, params, function (response){
-            if (response.errors=='') {
-                $(".ready-print-block").empty().html(response.data.content);
-                $("#loader").hide();
-                init_printscheduler_dayview();
-            } else {
-                show_error(response);
-                $("#loader").hide();
-            }
-        },'json');
+        if (parseInt(curuser)==0 && parseInt(user)==0) {
+            $(".assign-popup[data-order='"+order+"']").hide();
+        } else if (parseInt(curuser)==parseInt(user)){
+            $(".assign-popup[data-order='"+order+"']").hide();
+        } else {
+            var params = new Array();
+            params.push({name: 'order', value: order});
+            params.push({name: 'user', value: user});
+            var url = '/printcalendar/assignprintorder';
+            $("#loader").show();
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $(".maingreyblock.fullinfo").empty().html(response.data.content);
+                    $("#loader").hide();
+                    init_dailydetails_manage();
+                } else {
+                    show_error(response);
+                    $("#loader").hide();
+                }
+            },'json');
+        }
     });
 }
