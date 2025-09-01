@@ -107,13 +107,27 @@ class Printcalendar extends MY_Controller
                 $regular_view = '';
                 if (count($res['unsign'])+count($res['assign']) > 0) {
                     $unassign_view = '';
+                    $this->load->model('user_model');
+                    $userlist = $this->user_model->get_printschedul_users();
                     if (count($res['unsign']) > 0) {
-                        $this->load->model('user_model');
-                        $userlist = $this->user_model->get_printschedul_users();
                         $unassign_view = $this->load->view('printcalendar/daydetails_unsign_view', ['total'=> $res['unsigntotal'], 'lists' => $res['unsign'], 'users' => $userlist], true);
                     }
                     $assign_view = '';
                     if (count($res['assign']) > 0) {
+                        $assigns = $res['assign'];
+                        foreach ($assigns as $assign) {
+                            $usrassgn = $this->printcalendar_model->get_printdate_usrassigned($printdate, $assign['user_id']);
+                            $assign_options = [
+                                'user_id' => $assign['user_id'],
+                                'user' => $assign['user_name'],
+                                'users' => $userlist,
+                                'orders' => $assign['ordercnt'],
+                                'items' => $assign['itemscnt'],
+                                'prints' => $assign['printqty'],
+                                'lists' => $usrassgn,
+                            ];
+                            $assign_view.= $this->load->view('printcalendar/daydetails_assign_view', $assign_options, true);
+                        }
                     }
                     $regoptions = [
                         'unsign_view' => $unassign_view,
@@ -132,6 +146,57 @@ class Printcalendar extends MY_Controller
                 ];
                 $mdata['content'] = $this->load->view('printcalendar/daydetails_view', $options, true);
                 $mdata['historyview'] = $history_view;
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function assignprintorder()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty User/Order';
+            $postdata = $this->input->post();
+            $order_id = ifset($postdata, 'order', '');
+            $user_id = ifset($postdata, 'user',0);
+            if (!empty($order_id)) {
+                $res = $this->printcalendar_model->assignorder($order_id, $user_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $printdate = $res['printdate'];
+                    $this->load->model('user_model');
+                    $userlist = $this->user_model->get_printschedul_users();
+                    $unassign_view = $assign_view = '';
+                    $unsigdata = $this->printcalendar_model->get_printdate_unsigned($printdate);
+                    if (count($unsigdata['data'])>0) {
+                        $unassign_view = $this->load->view('printcalendar/daydetails_unsign_view', ['total'=> $unsigdata['total'], 'lists' => $unsigdata['data'], 'users' => $userlist], true);
+                    }
+                    // Get list of printers
+                    $usrs = $this->printcalendar_model->get_printdate_assigned($printdate);
+                    if (count($usrs)>0) {
+                        foreach ($usrs as $usr) {
+                            $assigndat = $this->printcalendar_model->get_printdate_usrassigned($printdate, $usr['user_id']);
+                            $assign_options = [
+                                'user_id' => $usr['user_id'],
+                                'user' => $usr['user_name'],
+                                'users' => $userlist,
+                                'orders' => $usr['ordercnt'],
+                                'items' => $usr['itemscnt'],
+                                'prints' => $usr['printqty'],
+                                'lists' => $assigndat,
+                            ];
+                            $assign_view.= $this->load->view('printcalendar/daydetails_assign_view', $assign_options, true);
+                        }
+                    }
+                    $regoptions = [
+                        'unsign_view' => $unassign_view,
+                        'assign_view' => $assign_view,
+                    ];
+                    $regular_view = $this->load->view('printcalendar/daydetails_regular_view', $regoptions, true);
+                    $mdata['content'] = $regular_view;
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }
