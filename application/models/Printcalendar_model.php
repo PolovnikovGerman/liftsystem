@@ -758,15 +758,15 @@ class Printcalendar_model extends MY_Model
         ];
     }
 
-    public function assignorder($order_id, $user_id)
+    public function assignorder($order_itemcolor_id, $user_id)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Order Not Found'];
-        $this->db->select('order_id, print_date')->from('ts_orders')->where('order_id', $order_id);
+        $this->db->select('o.order_id, o.print_date')->from('ts_orders o')->join('ts_order_items oi','oi.order_id=o.order_id')->join('ts_order_itemcolors oic', 'oic.order_item_id=oi.order_item_id')->where('oic.order_itemcolor_id', $order_itemcolor_id);
         $orderres = $this->db->get()->row_array();
-        if (ifset($orderres,'order_id',0)==$order_id) {
+        if (ifset($orderres,'order_id',0)>0) {
             $out['result'] = $this->success_result;
             $out['printdate'] = $orderres['print_date'];
-            $this->db->where('order_id', $order_id);
+            $this->db->where('order_id', $orderres['order_id']);
             if (intval($user_id)==0) {
                 $this->db->set('print_user', NULL);
             } else {
