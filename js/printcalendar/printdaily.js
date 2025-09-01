@@ -73,10 +73,20 @@ function init_dailydetails_manage() {
     });
     $(".userprinter").unbind('click').click(function (){
         var order = $(this).data('order');
-        var curusr = $(this).data('user');
-        $(".assign-popup").hide();
-        $(".assign-popup[data-order='"+order+"']").show();
-        init_printer_assign(order, curusr);
+        if ($(this).hasClass('openassign')) {
+            $(this).empty().html('<img src="/img/printscheduler/user-printer.svg">');
+            $(".assign-popup[data-order='"+order+"']").hide();
+            $(this).removeClass('openassign');
+        } else {
+            var curusr = $(this).data('user');
+            $(".assign-popup").hide();
+            $(".userprinter").empty().html('<img src="/img/printscheduler/user-printer.svg">');
+            $(".userprinter").removeClass('openassign');
+            $(this).empty().html('<img src="/img/printscheduler/user-printer-white.svg">');
+            $(this).addClass('openassign');
+            $(".assign-popup[data-order='"+order+"']").show();
+            init_printer_assign(order, curusr);
+        }
     });
 }
 
@@ -85,8 +95,12 @@ function init_printer_assign(order, curuser) {
         var user = $(this).data('user');
         if (parseInt(curuser)==0 && parseInt(user)==0) {
             $(".assign-popup[data-order='"+order+"']").hide();
+            $(".userprinter[data-order='"+order+"'][data-user='"+curuser+"']").empty().html('<img src="/img/printscheduler/user-printer.svg">')
+            $(".userprinter[data-order='"+order+"'][data-user='"+curuser+"']").removeClass('openassign');
         } else if (parseInt(curuser)==parseInt(user)){
             $(".assign-popup[data-order='"+order+"']").hide();
+            $(".userprinter[data-order='"+order+"'][data-user='"+curuser+"']").empty().html('<img src="/img/printscheduler/user-printer.svg">')
+            $(".userprinter[data-order='"+order+"'][data-user='"+curuser+"']").removeClass('openassign');
         } else {
             var params = new Array();
             params.push({name: 'order', value: order});
@@ -105,4 +119,5 @@ function init_printer_assign(order, curuser) {
             },'json');
         }
     });
+    // Click on opens assign
 }
