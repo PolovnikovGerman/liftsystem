@@ -158,10 +158,10 @@ class Printcalendar extends MY_Controller
             $mdata = [];
             $error = 'Empty User/Order';
             $postdata = $this->input->post();
-            $order_id = ifset($postdata, 'order', '');
+            $order_itemcolor_id = ifset($postdata, 'order', '');
             $user_id = ifset($postdata, 'user',0);
-            if (!empty($order_id)) {
-                $res = $this->printcalendar_model->assignorder($order_id, $user_id);
+            if (!empty($order_itemcolor_id)) {
+                $res = $this->printcalendar_model->assignorder($order_itemcolor_id, $user_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';

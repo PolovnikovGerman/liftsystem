@@ -15,10 +15,10 @@
             </div>
         </div>
         <div class="regltabl-td regltabl-userprinter">
-            <div class="userprinter" data-order="<?=$list['order_id']?>" data-user="<?=$user_id?>">
+            <div class="userprinter" data-order="<?=$list['order_itemcolor_id']?>" data-user="<?=$user_id?>">
                 <img src="/img/printscheduler/user-printer.svg">
             </div>
-            <div class="assign-popup" data-order="<?=$list['order_id']?>">
+            <div class="assign-popup" data-order="<?=$list['order_itemcolor_id']?>">
                 <ul>
                     <li class="assignusr" data-user="0">Unassign</li>
                     <?php foreach ($users as $user) : ?>
