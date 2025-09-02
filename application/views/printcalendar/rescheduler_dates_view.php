@@ -67,8 +67,8 @@
                 <div class="ontimesection-title">ON TIME ORDERS:</div>
                 <?php foreach ($calendars as $calendar) : ?>
                     <?php if ($calendar['class'] == 'ontime') : ?>
-                        <div class="ontimesection-date"><?=date('D - M, j, Y', $calendar['print_date']);?></div>
-                        <div id="printday_<?=$calendar['print_date']?>" ondrop="dropHandler(event)" ondragover="dragoverHandler(event)">
+                        <div class="ontimesection-date" id="printday_<?=$calendar['print_date']?>" ondrop="dropHandler(event)" ondragover="dragoverHandler(event)"><?=date('D - M, j, Y', $calendar['print_date']);?></div>
+                        <div data-printdata="<?=$calendar['print_date']?>">
                             <?php foreach ($calendar['data'] as $list) : ?>
                                 <div class="reschdltabl-tr" id="printord_<?=$list['order_itemcolor_id']?>" draggable="true" ondragstart="dragstartHandler(event)">
                                     <div class="reschdltabl-apprblock">
