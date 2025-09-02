@@ -461,6 +461,12 @@
     width: 100%;
     height: auto;
 }
+.icon-move.stressball {
+    background: url('/img/printscheduler/move-blue.svg');
+}
+.icon-move.relievers {
+    background: url('/img/printscheduler/move-yellow.svg');
+}
 .btnsave {
     width: 34px;
     height: 15px;

@@ -35,11 +35,7 @@
                     </div>
                     <div class="reschditms-mainblock">
                         <div class="reschditms-td reschditms-brand">
-                            <?php if ($list['brand']=='SR') : ?>
-                                <div class="icon-move"><img src="/img/printscheduler/move-yellow.svg"></div>
-                            <?php else: ?>
-                                <div class="icon-move"><img src="/img/printscheduler/move-blue.svg"></div>
-                            <?php endif; ?>
+                            <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
                         </div>
                         <div class="reschditms-td reschditms-rush <?=$list['order_rush']==1 ? 'redrush' : ''?>"><?=$list['order_rush']==1 ? 'RUSH' : '&nbsp;'?></div>
                         <div class="reschditms-td reschditms-order"><?=$list['order_num']?></div>

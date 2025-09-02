@@ -37,13 +37,7 @@
                 <div class="histrtabl-td histrtabl-printer"><?=empty($list['user_name']) ? 'Unsign' : $list['user_name']?></div>
                 <div class="histrtabl-mainblock">
                     <div class="histrtabl-td histrtabl-brand">
-                        <div class="icon-move">
-                            <?php if ($list['brand']=='SR') : ?>
-                                <img src="/img/printscheduler/move-yellow.svg">
-                            <?php else: ?>
-                                <img src="/img/printscheduler/move-blue.svg">
-                            <?php endif; ?>
-                        </div>
+                        <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
                     </div>
                     <div class="histrtabl-td histrtabl-rush"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
                     <div class="histrtabl-td histrtabl-order"><?=$list['order_num']?></div>
