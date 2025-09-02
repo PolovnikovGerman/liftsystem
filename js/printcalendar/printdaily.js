@@ -1,4 +1,9 @@
 function init_dailydetails_manage() {
+    $("input[name='shipdate']").datepicker({
+        // format : 'mm/dd/yy',
+        autoclose : true,
+        todayHighlight: true
+    });
     $(".maingrey-close").unbind('click').click(function (){
         var year = $("#printcaledyear").val();
         init_printcalendar(year);
@@ -124,12 +129,58 @@ function init_dailydetails_manage() {
     })
     $(".btnsave.fulfblock").unbind('click').click(function(){
         var ordercolor = $(this).data('ordercolor');
-        var print = $("input[name='printval'][data-ordercolor='"+ordercolor+"']").val();
-        var kept = $("input[name='keptval'][data-ordercolor='"+ordercolor+"']").val();
-        var misprint = $("input[name='misprintval'][data-ordercolor='"+ordercolor+"']").val();
-        var plates = $("input[name='platesval'][data-ordercolor='"+ordercolor+"']").val();
-        console.log('Color '+ordercolor+' Print '+parseInt(print)+' Kept '+parseInt(kept)+' Misprint '+parseInt(misprint)+' Plates '+parseInt(plates));
-    })
+        var params = new Array();
+        params.push({name: 'itemcolor', value: ordercolor});
+        params.push({name: 'shipped', value: $("input[name='printval'][data-ordercolor='"+ordercolor+"']").val()});
+        params.push({name: 'kepted', value: $("input[name='keptval'][data-ordercolor='"+ordercolor+"']").val()});
+        params.push({name: 'misprint', value: $("input[name='misprintval'][data-ordercolor='"+ordercolor+"']").val()});
+        params.push({name: 'plates', value: $("input[name='platesval'][data-ordercolor='"+ordercolor+"']").val()});
+        var url = '/printcalendar/outcomesave';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (parseInt(response.data.refreshinfo)==1) {
+                    $(".warning-table").empty().html(response.data.warningview)
+                    $(".maingreyblock.fullinfo").empty().html(response.data.regularview);
+                    $(".history-section").empty().html(response.data.historyview);
+                } else {
+                    $(".regltabl-tr[data-ordercolor='"+ordercolor+"']").empty().html(response.data.content);
+                }
+                $("#loader").hide();
+                init_dailydetails_manage();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".btnsave.shipblock").unbind('click').click(function (){
+        var ordercolor = $(this).data('ordercolor');
+        var params = new Array();
+        params.push({name: 'itemcolor', value: ordercolor});
+        params.push({name: 'shipqty', value: $("input[name='shipqty'][data-ordercolor='"+ordercolor+"']").val()});
+        params.push({name: 'shipdate', value: $("input[name='shipdate'][data-ordercolor='"+ordercolor+"']").val()});
+        params.push({name: 'shipmethod', value: $("select[name='shipmethod'][data-ordercolor='"+ordercolor+"']").val()});
+        params.push({name: 'trackcode', value: $("input[name='shiptrackcode'][data-ordercolor='"+ordercolor+"']").val()});
+        var url='/printcalendar/shiporder';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (parseInt(response.data.refreshinfo)==1) {
+                    $(".warning-table").empty().html(response.data.warningview)
+                    $(".maingreyblock.fullinfo").empty().html(response.data.regularview);
+                    $(".history-section").empty().html(response.data.historyview);
+                } else {
+                    $(".regltabl-tr[data-ordercolor='"+ordercolor+"']").empty().html(response.data.content);
+                }
+                $("#loader").hide();
+                init_dailydetails_manage();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 function init_printer_assign(order, curuser) {

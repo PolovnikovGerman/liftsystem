@@ -3,7 +3,7 @@
     <div class="regltabl-printerinfo"><span><?=QTYOutput($total['printqty'])?></span> prints - <span><?=QTYOutput($total['itemscnt'])?></span> items - <span><?=$total['ordercnt']?></span> orders</div>
 </div>
 <?php foreach ($lists as $list) : ?>
-    <div class="regltabl-tr">
+    <div class="regltabl-tr" data-ordercolor="<?=$list['order_itemcolor_id']?>">
         <div class="regltabl-apprblock">
             <div class="regltabl-td regltabl-prcful <?=$list['class']=='normal' ? '' : 'peach'?>"><?=$list['fulfillprc']?>%</div>
             <div class="regltabl-td regltabl-prcship <?=$list['class']=='normal' ? '' : 'peach'?>"><?=$list['shippedprc']?>%</div>
@@ -77,13 +77,13 @@
             <div class="regltabl-td regltabl-sent"><?=QTYOutput($list['shipped'])?></div>
             <div class="regltabl-td regltabl-shipremain"><?=QTYOutput($list['notshipp'])?></div>
             <div class="regltabl-td regltabl-qty">
-                <input type="text" name="">
+                <input type="text" name="shipqty" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
             </div>
             <div class="regltabl-td regltabl-shipdate">
-                <input type="text" name="">
+                <input type="text" name="shipdate" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
             </div>
             <div class="regltabl-td regltabl-method">
-                <select>
+                <select name="shipmethod" data-ordercolor="<?=$list['order_itemcolor_id']?>">
                     <option value=""></option>
                     <option value="UPS">UPS</option>
                     <option value="FedEx">FedEx</option>
@@ -96,10 +96,10 @@
                 </select>
             </div>
             <div class="regltabl-td regltabl-tracking">
-                <input type="text" name="">
+                <input type="text" name="shiptrackcode" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
             </div>
             <div class="regltabl-td regltabl-save">
-                <div class="btnsave">Save</div>
+                <div class="btnsave shipblock" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
             </div>
         </div>
     </div>
