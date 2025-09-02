@@ -126,7 +126,24 @@ function init_dailydetails_manage() {
                 show_error(response);
             }
         },'json');
-    })
+    });
+    $(".regltabl-prepink").unbind('click').click(function (){
+        var ordercolor = $(this).data('ordercolor');
+        var params = new Array();
+        params.push({name: 'order_color', value: ordercolor});
+        var url = '/printcalendar/inkupdate';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (parseInt(response.data.newval)==1) {
+                    $(".regltabl-prepink[data-ordercolor='"+ordercolor+"']").removeClass('grey');
+                } else {
+                    $(".regltabl-prepink[data-ordercolor='"+ordercolor+"']").addClass('grey');
+                }
+            } else {
+                show_error(response)
+            }
+        },'json');
+    });
     $(".btnsave.fulfblock").unbind('click').click(function(){
         var ordercolor = $(this).data('ordercolor');
         var params = new Array();

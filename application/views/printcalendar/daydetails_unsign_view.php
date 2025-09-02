@@ -50,10 +50,10 @@
             <div class="regltabl-td regltabl-prepared">
                 <div class="regltabl-prepstock <?=$list['print_ready']==0 ? 'grey' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Stock</div>
                 <div class="regltabl-prepplate <?=$list['plates_ready']==0 ? 'grey' : ''?>" data-orderitem="<?=$list['order_item_id']?>">Plate</div>
-                <div class="regltabl-prepink grey">Ink</div>
+                <div class="regltabl-prepink <?=$list['ink_ready']==0 ? 'grey' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Ink</div>
             </div>
         </div>
-        <div class="regltabl-fulfblock">
+        <div class="regltabl-fulfblock <?=$list['fulfillprc']>=100 ? 'closedblock' : ''?>">
             <div class="regltabl-td regltabl-done"><?=QTYOutput($list['fulfill'])?></div>
             <div class="regltabl-td regltabl-flfremain"><?=QTYOutput($list['notfulfill'])?></div>
             <div class="regltabl-td regltabl-flfprint">
@@ -73,7 +73,7 @@
                 <div class="btnsave fulfblock" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
             </div>
         </div>
-        <div class="regltabl-shipblock">
+        <div class="regltabl-shipblock <?=$list['shippedprc']>=100 ? 'closedblock' : ''?>">
             <div class="regltabl-td regltabl-sent"><?=QTYOutput($list['shipped'])?></div>
             <div class="regltabl-td regltabl-shipremain"><?=QTYOutput($list['notshipp'])?></div>
             <div class="regltabl-td regltabl-qty">
