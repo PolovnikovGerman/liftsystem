@@ -631,8 +631,9 @@ class Printcalendar_model extends MY_Model
 
     public function updateorder_printdate($order_id, $printdate)
     {
-        $this->db->set('print_date', $printdate);
         $this->db->where('order_id', $order_id);
+        $this->db->set('print_date', $printdate);
+        $this->db->set('print_user', NULL);
         $this->db->update('ts_orders');
         return true;
     }
