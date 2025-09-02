@@ -178,6 +178,7 @@ class Printcalendar_model extends MY_Model
     public function week_calendar($weeknumber, $year)
     {
         // Date Bgn / end
+        $curdate = strtotime(date('Y-m-d'));
         $dates = getDatesByWeek($weeknumber, $year);
         $date = new DateTime(date('Y-m-d',$dates['start_week']));
         $newdate = $date;
@@ -196,7 +197,7 @@ class Printcalendar_model extends MY_Model
                 'printed' => 0,
                 'weekend' => ($newdate->format('w') > 0 && $newdate->format('w') < 6) ? 0 : 1,
                 'active' => $active,
-                'late' => 0,
+                'late' => ($newdate->getTimestamp() >= $curdate ? 0 : 1),
             ];
             $newdate = $date->modify('+1 day');
         }
