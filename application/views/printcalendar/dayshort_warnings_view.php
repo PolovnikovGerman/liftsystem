@@ -34,13 +34,7 @@
                 </div>
                 <div class="warntabl-mainblock">
                     <div class="warntabl-td warntabl-brand">
-                        <div class="icon-move">
-                            <?php if ($list['brand']=='SR') : ?>
-                                <img src="/img/printscheduler/move-yellow.svg">
-                            <?php else : ?>
-                                <img src="/img/printscheduler/move-blue.svg">
-                            <?php endif; ?>
-                        </div>
+                        <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
                     </div>
                     <div class="warntabl-td warntabl-rush <?=$list['order_rush']==0 ? '' : 'redrush'?>"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
                     <div class="warntabl-td warntabl-order" data-order="<?=$list['order_id']?>"><?=$list['order_num']?></div>
