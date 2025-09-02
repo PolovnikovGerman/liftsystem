@@ -9,7 +9,7 @@ class Printcalendar_model extends MY_Model
 
     function __construct() {
         parent::__construct();
-        $this->db->select('order_itemcolor_id, sum(shipped) as fullfill, max(amount_date) as amount_date, sum(amount_sum) as amount_sum')->from('ts_order_amounts')->group_by('order_itemcolor_id');
+        $this->db->select('order_itemcolor_id, sum(shipped) as fullfill, max(amount_date) as amount_date, sum(amount_sum) as amount_sum, sum(misprint) as misprint , sum(kepted) as kepted, sum(orangeplate+blueplate+beigeplate) as plates, sum(printshop_total) as printshop_total')->from('ts_order_amounts')->group_by('order_itemcolor_id');
         $this->amntsql = $this->db->get_compiled_select();
         $this->db->select('order_item_id, count(order_imprint_id) as cntprint, sum(imprint_qty) as imprintqty')->from('ts_order_imprints')->where('imprint_item', 1)->group_by('order_item_id');
         $this->printsql = $this->db->get_compiled_select();
@@ -267,6 +267,7 @@ class Printcalendar_model extends MY_Model
             'assign' => $assign,
             'history' => $history['data'],
             'history_total' => $history['total'],
+            'late' => 0,
         ];
     }
 
@@ -964,8 +965,94 @@ class Printcalendar_model extends MY_Model
         return $outcome;
     }
 
-    public function daylatedetails()
+    public function daylatedetails($printdate)
     {
+        $daytitle = date('D - M, j, Y', $printdate);
+        $daybgn = $printdate;
+        $dayend = strtotime('+1 day', $daybgn);
+        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(impr.imprintqty) as printqty');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_items oi', 'oi.order_id=o.order_id');
+        $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
+        $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
+        $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
+        $this->db->where('o.is_canceled', 0)->where('o.print_date >= ', $daybgn)->where('o.print_date < ', $dayend);
+        $totalday = $this->db->get()->row_array();
 
+        // List data
+        $this->db->select('oic.order_itemcolor_id, ship.shipped, COALESCE(amnt.fullfill,0) as fulfill, COALESCE(approv.cnt,0) as approv, o.order_rush');
+        $this->db->select('o.order_num , oic.item_qty, impr.cntprint, impr.imprintqty as prints, amnt.printshop_total');
+        $this->db->select('ic.color , concat(ii.item_num , \' - \', ii.item_name) as item');
+        $this->db->select('ship.shipped, o.brand, o.order_id, oi.order_item_id, oic.print_ready, oi.plates_ready, amnt.amount_date, coalesce(amnt.amount_sum,0) as amount_sum, amnt.misprint, amnt.kepted, amnt.plates');
+        $this->db->select('o.print_user as user_id, u.first_name as user_name');
+        $this->db->from('ts_order_itemcolors oic');
+        $this->db->join('ts_order_items oi', 'oi.order_item_id = oic.order_item_id');
+        $this->db->join('ts_orders o', 'o.order_id = oi.order_id');
+        $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id = oic.inventory_color_id');
+        $this->db->join('ts_inventory_items ii', 'ii.inventory_item_id = ic.inventory_item_id');
+        $this->db->join('('.$this->shipsql.') ship','ship.order_itemcolor_id = oic.order_itemcolor_id');
+        $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
+        $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
+        $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
+        $this->db->join('users u', 'u.user_id = o.print_user','left');
+        $this->db->where('o.print_date >= ', $daybgn)->where('o.print_date < ', $dayend)->where(['o.is_canceled' => 0,  ]); //'o.shipped_date' => 0
+        $this->db->order_by('o.order_rush desc', 'order_id asc');
+        $history = $this->db->get()->result_array();
+        $idx = 0;
+        foreach ($history as $uns) {
+            $history[$idx]['fulfillprc'] = round($uns['fulfill']/$uns['item_qty']*100,0);
+            $unsign[$idx]['shippedprc'] = round($uns['shipped']/$uns['item_qty']*100,0);
+            $history[$idx]['notfulfill'] = $uns['item_qty'] - $uns['fulfill'];
+            $history[$idx]['notshipp'] = $uns['item_qty'] - $uns['shipped'];
+            $history[$idx]['misprintprc'] = $uns['fulfill']==0 ? 0 : $uns['misprint']/$uns['fulfill']*100;
+            // Get method track #
+            $this->db->select('trackservice, trackcode')->from('ts_order_trackings')->where('order_itemcolor_id', $uns['order_itemcolor_id'])->where('qty > 0')->order_by('tracking_id','desc');
+            $tracking = $this->db->get()->row_array();
+            $history[$idx]['trackcode'] = ifset($tracking, 'trackcode','&nbsp;');
+            $history[$idx]['trackservice'] = ifset($tracking, 'trackservice','&nbsp;');
+            $idx++;
+        }
+
+        // Get History totals
+        $this->db->select('o.print_user as user_id, u.first_name as user_name, count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(impr.imprintqty) as printqty, sum(amnt.fullfill) as fullfill');
+        $this->db->from('ts_order_itemcolors oic');
+        $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
+        $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');
+        $this->db->join('ts_orders o','o.order_id = oi.order_id');
+        $this->db->join('('.$this->amntsql.') amnt', 'amnt.order_itemcolor_id = oic.order_itemcolor_id');
+        $this->db->join('('.$this->printsql.') impr', 'impr.order_item_id = oi.order_item_id','left');
+        $this->db->join('('.$this->shipsql.') ship','ship.order_itemcolor_id = oic.order_itemcolor_id');
+        $this->db->join('users u', 'u.user_id = o.print_user','left');
+        $this->db->where('o.print_date >= ', $daybgn)->where('o.print_date < ', $dayend)->where(['o.is_canceled' => 0, ]); // 'o.shipped_date' => 0
+        $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
+        $this->db->where('ship.shipped >= oic.item_qty');
+        $this->db->where('coalesce(amnt.fullfill,0) >= oic.item_qty');
+        $this->db->group_by('o.print_user, u.first_name');
+        $history_total = $this->db->get()->result_array();
+        $idx = 0;
+        $orders = $prints = $items = 0;
+        foreach ($history_total as $uns) {
+            $orders+= $uns['ordercnt'];
+            $items+= $uns['itemscnt'];
+            $prints+= $uns['printqty'];
+            $history_total[$idx]['class'] = 'normal';
+            $idx++;
+        }
+        $history_total[] = [
+            'class' => 'total',
+            'user_name' => 'Total',
+            'ordercnt' => $orders,
+            'itemscnt' => $items,
+            'printqty' => $prints,
+        ];
+        return [
+            'total' => $history_total,
+            'data' => $history,
+            'title' => $daytitle,
+            'orders' => $totalday['ordercnt'],
+            'items' => $totalday['itemscnt'],
+            'prints' => $totalday['printqty'],
+            'late' => 1,
+        ];
     }
 }

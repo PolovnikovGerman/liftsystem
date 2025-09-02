@@ -1,4 +1,4 @@
-<div class="maingrey-title">TODAY - <?=$title?></div>
+<div class="maingrey-title"><?=$late==0 ? 'TODAY - ' : ''?><?=$title?></div>
 <div class="maingrey-infobox">
     <div class="maingreyinfo-prints"><span><?=$prints==0 ? '-' : QTYOutput($prints)?></span> prints</div>
     <div class="maingreyinfo-items"><span><?=$items==0 ? '-' : QTYOutput($items)?></span> items</div>
