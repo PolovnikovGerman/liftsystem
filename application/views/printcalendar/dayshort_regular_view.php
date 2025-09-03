@@ -1,8 +1,4 @@
 <div class="regular-table">
-    <!--    <div class="regularsection-subtitle">-->
-    <!--        <div class="reglsection-subtitle-1">Fulfillment / Printing </div>-->
-    <!--        <div class="reglsection-subtitle-2">Shipping</div>-->
-    <!--    </div>-->
     <div class="regltabl-tr regltabl-header">
         <div class="regltabl-apprblock">
             <div class="regltabl-td regltabl-prcful">%Ful</div>
@@ -22,6 +18,6 @@
             <div class="regltabl-td regltabl-inkcolor">Ink Color/s</div>
         </div>
     </div>
-    <div id="printdateunassignarea"><?=$unsign_view?></div>
-    <div id="printdateassignarea"><?=$assign_view?></div>
+    <div id="printshortunassignarea"><?=$unsign_view?></div>
+    <div id="printshortassignarea"><?=$assign_view?></div>
 </div>
