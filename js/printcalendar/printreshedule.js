@@ -90,7 +90,8 @@ function dropHandler(ev) {
              } else {
                  if (incomeblock=='right') {
                      $(".dayschedulearea[data-printdata='"+response.data.incomedate+"']").empty().html(response.data.income);
-                     $("#printshortunassignarea").empty().html(response.data.outcome);
+                     $("#printshortunassignarea").empty().html(response.data.unassign);
+                     $("#printshortassignarea").empty().html(response.data.assign);
                      console.log('Add To Right');
                  } else {
                      $("#printshortunassignarea").empty().html(response.data.income);
