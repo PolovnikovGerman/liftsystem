@@ -39,7 +39,7 @@
                     <div class="histrtabl-td histrtabl-brand">
                         <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
                     </div>
-                    <div class="histrtabl-td histrtabl-rush"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
+                    <div class="histrtabl-td histrtabl-rush <?=$list['order_rush']==0 ? '' : 'redrush'?>"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
                     <div class="histrtabl-td histrtabl-order"><?=$list['order_num']?></div>
                     <div class="histrtabl-td histrtabl-items"><?=empty($list['item_qty']) ? '-' : QTYOutput($list['item_qty'])?></div>
                     <div class="histrtabl-td histrtabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
