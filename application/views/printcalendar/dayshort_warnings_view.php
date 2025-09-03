@@ -24,13 +24,15 @@
         </div>
         <?php foreach ($lists as $list)  : ?>
             <div class="warntabl-tr">
-                <div class="warntabl-td warntabl-prcful pink"><?=$list['fulfillprc']?>%</div>
-                <div class="warntabl-td warntabl-prcship pink"><?=$list['shippedprc']?>%</div>
-                <div class="warntabl-td warntabl-approval <?=$list['approv']==0 ? 'notapprv' : ''?>">
-                    <?=$list['approv']==0 ? 'Not Approved' : 'Approved'?>
-                    <?php if ($list['approv'] > 0) : ?>
-                        <span class="iconart"><i class="fa fa-search" aria-hidden="true"></i></span>
-                    <?php endif; ?>
+                <div class="warntabl-apprblock">
+                    <div class="warntabl-td warntabl-prcful pink"><?=$list['fulfillprc']?>%</div>
+                    <div class="warntabl-td warntabl-prcship pink"><?=$list['shippedprc']?>%</div>
+                    <div class="warntabl-td warntabl-approval <?=$list['approv']==0 ? 'notapprv' : ''?>">
+                        <?=$list['approv']==0 ? 'Not Approved' : 'Approved'?>
+                        <?php if ($list['approv'] > 0) : ?>
+                            <span class="iconart"><i class="fa fa-search" aria-hidden="true"></i></span>
+                        <?php endif; ?>
+                    </div>
                 </div>
                 <div class="warntabl-mainblock">
                     <div class="warntabl-td warntabl-brand">
