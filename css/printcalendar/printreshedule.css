@@ -23,10 +23,10 @@
     float: right !important;
 }
 .pschedul-leftside {
-    /*width: 743px;*/
     display: none;
     width: 760px;
     overflow-y: auto;
+    overflow-x: hidden;
     max-height: 640px;
     margin-top: 12px;
     margin-left: 10px;

@@ -61,9 +61,61 @@ function init_fullcalendar() {
                 show_error(response);
             }
         },'json');
-    })
+    });
+    $(".btnreschedular-btn").unbind('click').click(function (){
+        var url = '/printcalendar/rescheduletoday';
+        $("#loader").show();
+        $.post(url, {}, function (response){
+            // show week caledar
+            var printdate = response.data.printdate;
+            $(".pscalendar-week").empty().html(response.data.weekcalend);
+            $(".pscalendar-daybox[data-printdate='"+printdate+"']").addClass('today');
+            $("#printcalendarfullview").hide();
+            $("#printcalendardetailsview").show();
+            $("#calendarprintdate").val(printdate);
+            // Call reschedule
+            $(".btn-reschedular").hide();
+            $(".btn-reschedular-open").show();
+            $(".maingreyblock.fullinfo").hide();
+            $(".history-section").hide();
+            $(".maingreyblock-small").empty().html(response.data.content);
+            $(".history-section-small").empty().html(response.data.historyview);
+            $(".reschedularbody").empty().html(response.data.calendarview);
+            $(".pschedul-leftside").show();
+            $(".pschedul-rightside").show();
+            init_reschedule_management();
+            $("#loader").hide();
+        },'json')
+    });
 }
 
+function init_current_reschedule() {
+    var printdate = $("#calendarprintdate").val();
+    var params = new Array();
+    params.push({name: 'printdate', value: printdate});
+    var url = '/printcalendar/rescheduleview';
+    $("#loader").show();
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".btn-reschedular").hide();
+            $(".btn-reschedular-open").show();
+            $(".maingreyblock.fullinfo").hide();
+            $(".history-section").hide();
+            $(".maingreyblock-small").empty().html(response.data.content);
+            $(".history-section-small").empty().html(response.data.historyview);
+            $(".reschedularbody").empty().html(response.data.calendarview);
+            $(".pschedul-leftside").show();
+            $(".pschedul-rightside").show();
+            init_reschedule_management();
+            $("#loader").hide();
+            // $(".history-section").hide();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
+
+}
 function init_printdate_details(printdate) {
     var params = new Array();
     params.push({name: 'printdate', value: printdate});
