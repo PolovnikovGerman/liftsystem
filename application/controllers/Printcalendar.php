@@ -324,9 +324,31 @@ class Printcalendar extends MY_Controller
                             $mdata['outcome'] = $this->load->view('printcalendar/day_schedule_view', ['lists' => $schedul], true);
                         } else {
                             $unsign = $this->printcalendar_model->get_printdate_unsigned($olddate);
+                            $unassign_view = '';
+                            if (count($unsign['data']) > 0) {
+                                $unassign_view = $this->load->view('printcalendar/dayshort_unsign_view', ['total'=> $unsign['total'], 'lists' => $unsign['data'], 'users' => $userlist], true);
+                            }
+                            $assignusrs = $this->printcalendar_model->get_printdate_assigned($olddate);
+                            $assign_view = '';
+                            if (count($assignusrs)>0) {
+                                foreach ($assignusrs as $assign) {
+                                    $usrassgn = $this->printcalendar_model->get_printdate_usrassigned($olddate, $assign['user_id']);
+                                    $assign_options = [
+                                        'user_id' => $assign['user_id'],
+                                        'user' => $assign['user_name'],
+                                        'users' => $userlist,
+                                        'orders' => $assign['ordercnt'],
+                                        'items' => $assign['itemscnt'],
+                                        'prints' => $assign['printqty'],
+                                        'lists' => $usrassgn,
+                                    ];
+                                    $assign_view.= $this->load->view('printcalendar/dayshort_assign_view', $assign_options, true);
+                                }
+                            }
                             $schedul = $this->printcalendar_model->get_reschedule_data($printdate);
                             $mdata['income'] = $this->load->view('printcalendar/day_schedule_view', ['lists' => $schedul], true);
-                            $mdata['outcome'] = $this->load->view('printcalendar/dayshort_unsign_view', ['total'=> $unsign['total'], 'lists' => $unsign['data'], 'users' => $userlist], true);
+                            $mdata['unassign'] = $unassign_view;
+                            $mdata['assign'] = $assign_view;
                         }
                         $mdata['outdate'] = $olddate;
                         $mdata['incomedate'] = $printdate;
