@@ -5411,6 +5411,8 @@ Class Leadorder_model extends My_Model {
         $this->db->update('ts_orders');
         $totalqty=0;
         $itmidx=0;
+        $orddat = $this->db->select('print_date')->from('ts_orders')->where('order_id', $order_id)->get()->row_array();
+        $printdate = $orddat['print_date'];
         foreach ($order_items as $row) {
             $rowprice=($row['item_qty']==0 ? 0 : $row['item_subtotal']/$row['item_qty']);
             $this->db->set('item_id', $row['item_id']);
@@ -5422,6 +5424,7 @@ Class Leadorder_model extends My_Model {
             $this->db->set('inventory_item_id', empty($row['inventory_item_id']) ? NULL : $row['inventory_item_id']);
             if ($row['order_item_id']<0) {
                 $this->db->set('order_id', $order_id);
+                $this->db->set('print_date', $printdate);
                 $this->db->insert('ts_order_items');
                 if (!$this->db->insert_id()) {
                     $res['msg']='Error During Insert data into Order Items';
