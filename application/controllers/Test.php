@@ -4812,4 +4812,15 @@ class Test extends CI_Controller
             }
         }
     }
+
+    public function printdate_orderitems() {
+        $this->db->select('order_id, order_num, print_date')->from('ts_orders')->where('print_date > ',0);
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            $this->db->where('order_id', $order['order_id']);
+            $this->db->set('print_date', $order['print_date']);
+            $this->db->update('ts_order_items');
+            echo 'Order # '.$order['order_num'].' updated'.PHP_EOL;
+        }
+    }
 }
