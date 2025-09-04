@@ -6888,6 +6888,9 @@ Class Orders_model extends MY_Model
                 $this->db->where('order_id', $neword);
                 $this->db->set('print_date', $printdate);
                 $this->db->update('ts_orders');
+                $this->db->where('order_id', $neword);
+                $this->db->set('print_date', $printdate);
+                $this->db->update('ts_order_items');
             }
         }
         return $out;
