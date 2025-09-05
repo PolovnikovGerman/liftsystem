@@ -158,8 +158,9 @@ class Printcalendar extends MY_Controller
                     ];
                     $mdata['content'] = $this->load->view('printcalendar/latedetails_view', $options, true);
                     $history_view = '';
-                    if (count($res['data']) > 0) {
-                        $history_view = $this->load->view('printcalendar/daydetails_history_view', ['totals' => $res['total'], 'lists' => $res['data']], true);
+                    $historyres = $this->printcalendar_model->get_printdate_history($printdate);
+                    if (count($historyres['data']) > 0) {
+                        $history_view = $this->load->view('printcalendar/daydetails_history_view', ['totals' => $historyres['total'], 'lists' => $historyres['data']], true);
                     }
                     $mdata['historyview'] = $history_view;
                 }
