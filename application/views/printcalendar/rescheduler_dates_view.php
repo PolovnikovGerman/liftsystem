@@ -26,7 +26,7 @@
                     <div class="latesection-date" id="printday_<?=$calendar['print_date']?>" ondrop="dropHandler(event)" ondragover="dragoverHandler(event)"><?=date('D - M, j, Y', $calendar['print_date']);?></div>
                     <div class="dayschedulearea" data-printdata="<?=$calendar['print_date']?>">
                         <?php foreach ($calendar['data'] as $list) : ?>
-                        <div class="reschdltabl-tr" id="shedulord_<?=$list['order_id']?>" draggable="true" ondragstart="dragstartHandler(event)">
+                        <div class="reschdltabl-tr" id="shedulord_<?=$list['order_item_id']?>" draggable="true" ondragstart="dragstartHandler(event)">
                             <div class="reschdltabl-apprblock">
                                 <div class="reschdltabl-td reschdltabl-prcful <?=$list['class']=='critical' ? 'peach' : ''?>"><?=$list['fulfillprc']?>%</div>
                                 <div class="reschdltabl-td reschdltabl-prcship <?=$list['class']=='critical' ? 'peach' : ''?>"><?=$list['shippedprc']?>%</div>
@@ -64,7 +64,7 @@
                         <div class="ontimesection-date" id="printday_<?=$calendar['print_date']?>" ondrop="dropHandler(event)" ondragover="dragoverHandler(event)"><?=date('D - M, j, Y', $calendar['print_date']);?></div>
                         <div class="dayschedulearea" data-printdata="<?=$calendar['print_date']?>">
                             <?php foreach ($calendar['data'] as $list) : ?>
-                                <div class="reschdltabl-tr" id="shedulord_<?=$list['order_itemcolor_id']?>" draggable="true" ondragstart="dragstartHandler(event)">
+                                <div class="reschdltabl-tr" id="shedulord_<?=$list['order_item_id']?>" draggable="true" ondragstart="dragstartHandler(event)">
                                     <div class="reschdltabl-apprblock">
                                         <div class="reschdltabl-td reschdltabl-prcful <?=$list['class']=='critical' ? 'peach' : ''?>"><?=$list['fulfillprc']?>%</div>
                                         <div class="reschdltabl-td reschdltabl-prcship <?=$list['class']=='critical' ? 'peach' : ''?>"><?=$list['shippedprc']?>%</div>
