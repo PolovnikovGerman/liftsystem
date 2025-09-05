@@ -76,7 +76,7 @@ class Printcalendar_model extends MY_Model
             }
             $weekfinish = $newdate->getTimestamp();
             // Get data
-            $this->db->select('oi.print_date, count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(impr.imprintqty) as printqty');
+            $this->db->select('oi.print_date, count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as printqty');
             $this->db->select('sum(amnt.fullfill) as fullfill');
             $this->db->from('ts_orders o');
             $this->db->join('ts_order_items oi', 'oi.order_id=o.order_id');
@@ -128,7 +128,7 @@ class Printcalendar_model extends MY_Model
         $start_year = strtotime($year.'-01-01');
         $end_year = strtotime(($year+1).'-01-01');
         $curdate = new DateTime(date('Y-m-d'));
-        $this->db->select('count(distinct(o.order_id)) as ordercnt, COALESCE(sum(impr.imprintqty)) as printqty');
+        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as printqty');
         $this->db->from('ts_order_itemcolors oic');
         $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
         $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');
@@ -140,7 +140,7 @@ class Printcalendar_model extends MY_Model
         $this->db->where('o.shipped_date',0);
         $lateres = $this->db->get()->row_array();
         // Year schedule
-        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as printqty, sum(impr.imprintqty) as imprintqty');
+        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as printqty, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as imprintqty');
         $this->db->from('ts_order_itemcolors oic');
         $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
         $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');
@@ -151,7 +151,7 @@ class Printcalendar_model extends MY_Model
         $this->db->where('oi.print_date < ', $end_year);
         $statres = $this->db->get()->row_array();
         // Year printed
-        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as printqty, sum(impr.imprintqty) as imprintqty');
+        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as printqty, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as imprintqty');
         $this->db->from('ts_order_itemcolors oic');
         $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
         $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');
@@ -203,7 +203,7 @@ class Printcalendar_model extends MY_Model
             $newdate = $date->modify('+1 day');
         }
         $weekfinish = $newdate->getTimestamp();
-        $this->db->select('oi.print_date, count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(impr.imprintqty) as printqty');
+        $this->db->select('oi.print_date, count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as printqty');
         $this->db->select('sum(amnt.fullfill) as fullfill');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi', 'oi.order_id=o.order_id');
@@ -242,7 +242,7 @@ class Printcalendar_model extends MY_Model
         $dayend = strtotime('+1 day', $daybgn);
         $daytitle = date('D - M, j, Y', $printdate);
         // Precompiled SQL
-        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(impr.imprintqty) as printqty');
+        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as printqty');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi', 'oi.order_id=o.order_id');
         $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
@@ -279,7 +279,7 @@ class Printcalendar_model extends MY_Model
         $daybgn = $printdate;
         $dayend = strtotime('+1 day', $daybgn);
         // Precompiled SQL
-        $this->db->select('oic.order_itemcolor_id, COALESCE(approv.cnt,0) as approv, o.order_rush, o.order_num , oic.item_qty, impr.cntprint, impr.imprintqty as prints');
+        $this->db->select('oic.order_itemcolor_id, COALESCE(approv.cnt,0) as approv, o.order_rush, o.order_num , oic.item_qty, impr.cntprint, coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0) as prints');
         $this->db->select('ic.color,concat(ii.item_num, \' - \', ii.item_name) as item, coalesce(amnt.fullfill,0) as fulfill');
         $this->db->select('ship.shipped, o.brand, o.order_id, oi.order_item_id, amnt.amount_date, amnt.amount_sum');
         $this->db->from('ts_order_itemcolors oic');
@@ -312,7 +312,7 @@ class Printcalendar_model extends MY_Model
         $daybgn = $printdate;
         $dayend = strtotime('+1 day', $daybgn);
         // Precompiled SQL
-        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(impr.imprintqty) as printqty, sum(amnt.fullfill) as fullfill');
+        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as printqty, sum(amnt.fullfill) as fullfill');
         $this->db->from('ts_order_itemcolors oic');
         $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');
         $this->db->join('ts_orders o','o.order_id=oi.order_id');
@@ -328,7 +328,7 @@ class Printcalendar_model extends MY_Model
         $unsign = [];
         if ($unsigntotal['ordercnt'] > 0) {
             $this->db->select('oic.order_itemcolor_id, oi.order_item_id, COALESCE(amnt.fullfill,0) as fulfill, COALESCE(approv.cnt,0) as approv, o.order_rush');
-            $this->db->select('o.order_num , oic.item_qty, impr.cntprint, impr.imprintqty as prints,');
+            $this->db->select('o.order_num , oic.item_qty, impr.cntprint, coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0) as prints,');
             $this->db->select('ic.color , concat(ii.item_num , \' - \', ii.item_name) as item');
             $this->db->select('ship.shipped, o.brand, o.order_id, o.order_blank, oi.order_item_id, oic.print_ready, oi.plates_ready, oic.ink_ready, amnt.amount_date, amnt.amount_sum');
             $this->db->from('ts_order_itemcolors oic');
@@ -366,7 +366,7 @@ class Printcalendar_model extends MY_Model
         $daybgn = $printdate;
         $dayend = strtotime('+1 day', $daybgn);
         // Precompiled SQL
-        $this->db->select('o.print_user as user_id, u.first_name as user_name, count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(impr.imprintqty) as printqty, sum(amnt.fullfill) as fullfill');
+        $this->db->select('o.print_user as user_id, u.first_name as user_name, count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as printqty, sum(amnt.fullfill) as fullfill');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi', 'oi.order_id=o.order_id');
         $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
@@ -390,7 +390,7 @@ class Printcalendar_model extends MY_Model
         $dayend = strtotime('+1 day', $daybgn);
         // Precompiled SQL
         $this->db->select('oic.order_itemcolor_id, COALESCE(amnt.fullfill,0) as fulfill, COALESCE(approv.cnt,0) as approv, o.order_rush');
-        $this->db->select('o.order_num , oic.item_qty, impr.cntprint, impr.imprintqty as prints');
+        $this->db->select('o.order_num , oic.item_qty, impr.cntprint, coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0) as printqty as prints');
         $this->db->select('ic.color , concat(ii.item_num , \' - \', ii.item_name) as item');
         $this->db->select('ship.shipped, o.brand, o.order_id,  oi.order_item_id, oic.print_ready, oi.plates_ready, oic.ink_ready, amnt.amount_date, amnt.amount_sum');
         $this->db->from('ts_order_itemcolors oic');
@@ -548,7 +548,7 @@ class Printcalendar_model extends MY_Model
             $idx++;
         }
         // Totals ???
-        $this->db->select('o.print_user as user_id, u.first_name as user_name, count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(impr.imprintqty) as printqty, sum(oa.shipped) as fullfill');
+        $this->db->select('o.print_user as user_id, u.first_name as user_name, count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as printqty, sum(oa.shipped) as fullfill');
         $this->db->from('ts_order_itemcolors oic');
         $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
         $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');
@@ -586,7 +586,7 @@ class Printcalendar_model extends MY_Model
 
     public function get_reschedule_printdate()
     {
-        $this->db->select('o.print_date, count(oic.order_itemcolor_id) as cnt');
+        $this->db->select('oi.print_date, count(oic.order_itemcolor_id) as cnt');
         $this->db->from('ts_order_itemcolors oic');
         $this->db->join('ts_order_items oi', 'oi.order_item_id = oic.order_item_id');
         $this->db->join('ts_orders o', 'o.order_id = oi.order_id');
@@ -600,8 +600,8 @@ class Printcalendar_model extends MY_Model
         $this->db->where(['o.is_canceled' => 0, 'o.shipped_date' => 0,]);
         $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) <= oic.item_qty)');
-        $this->db->group_by('o.print_date');
-        $this->db->order_by('o.print_date');
+        $this->db->group_by('oi.print_date');
+        $this->db->order_by('oi.print_date');
         $sheduls = $this->db->get()->result_array();
         $idx = 0;
         $lates = $ontime = 0;
@@ -615,7 +615,7 @@ class Printcalendar_model extends MY_Model
                 $ontime++;
             }
             $this->db->select('oic.order_itemcolor_id, COALESCE(amnt.fullfill,0) as fulfill, COALESCE(approv.cnt,0) as approv, o.order_rush');
-            $this->db->select('o.order_num , oic.item_qty, coalesce(impr.cntprint,0) as cntprint, coalesce(impr.imprintqty,0) as prints');
+            $this->db->select('o.order_num , oic.item_qty, coalesce(impr.cntprint,0) as cntprint, coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0) as prints');
             $this->db->select('ic.color , concat(ii.item_num , \' - \', ii.item_name) as item');
             $this->db->select('ship.shipped, o.brand, o.order_id, oi.order_item_id, oic.print_ready, oi.plates_ready, amnt.amount_date, amnt.amount_sum');
             $this->db->from('ts_order_itemcolors oic');
@@ -668,7 +668,7 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
-        $this->db->where('o.print_date > ', 0);
+        $this->db->where('oi.print_date > ', 0);
         $this->db->where(['o.is_canceled' => 0, 'o.shipped_date' => 0,]);
         $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
@@ -679,7 +679,7 @@ class Printcalendar_model extends MY_Model
         $curdate = strtotime(date('Y-m-d'));
         foreach ($sheduls as $shedul) {
             $this->db->select('oic.order_itemcolor_id, COALESCE(amnt.fullfill,0) as fulfill, COALESCE(approv.cnt,0) as approv, o.order_rush');
-            $this->db->select('o.order_num , oic.item_qty, coalesce(impr.cntprint,0) as cntprint, coalesce(impr.imprintqty,0) as prints');
+            $this->db->select('o.order_num , oic.item_qty, coalesce(impr.cntprint,0) as cntprint, coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0) as prints');
             $this->db->select('ic.color , concat(ii.item_num , \' - \', ii.item_name) as item');
             $this->db->select('ship.shipped, o.brand, o.order_id, oi.order_item_id, oic.print_ready, oi.plates_ready, amnt.amount_date, amnt.amount_sum, o.print_date');
             $this->db->from('ts_order_itemcolors oic');
@@ -694,7 +694,8 @@ class Printcalendar_model extends MY_Model
             $this->db->where(['ii.inventory_item_id' => $shedul['inventory_item_id'],'o.is_canceled' => 0, 'o.shipped_date' => 0]);
             $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
             $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
-            $this->db->order_by('o.order_rush desc', 'order_id asc');
+            $this->db->order_by('o.order_rush desc');
+            $this->db->order_by('o.order_id asc');
             $dats = $this->db->get()->result_array();
             $didx = 0;
             foreach ($dats as $uns) {
@@ -748,7 +749,7 @@ class Printcalendar_model extends MY_Model
     public function assignorder($order_itemcolor_id, $user_id)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Order Not Found'];
-        $this->db->select('o.order_id, o.print_date')->from('ts_orders o')->join('ts_order_items oi','oi.order_id=o.order_id')->join('ts_order_itemcolors oic', 'oic.order_item_id=oi.order_item_id')->where('oic.order_itemcolor_id', $order_itemcolor_id);
+        $this->db->select('o.order_id, oi.print_date')->from('ts_orders o')->join('ts_order_items oi','oi.order_id=o.order_id')->join('ts_order_itemcolors oic', 'oic.order_item_id=oi.order_item_id')->where('oic.order_itemcolor_id', $order_itemcolor_id);
         $orderres = $this->db->get()->row_array();
         if (ifset($orderres,'order_id',0)>0) {
             $out['result'] = $this->success_result;
@@ -964,7 +965,7 @@ class Printcalendar_model extends MY_Model
     {
         // Precompiled SQL
         $this->db->select('oic.order_itemcolor_id, COALESCE(amnt.fullfill,0) as fulfill, COALESCE(approv.cnt,0) as approv, o.order_rush');
-        $this->db->select('o.order_num , oic.item_qty, impr.cntprint, impr.imprintqty as prints');
+        $this->db->select('o.order_num , oic.item_qty, impr.cntprint, coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0) as prints');
         $this->db->select('ic.color , concat(ii.item_num , \' - \', ii.item_name) as item');
         $this->db->select('ship.shipped, o.brand, o.order_id, oi.order_item_id, oic.print_ready, oi.plates_ready, oic.ink_ready, amnt.amount_date, amnt.amount_sum');
         $this->db->from('ts_order_itemcolors oic');
@@ -1061,7 +1062,7 @@ class Printcalendar_model extends MY_Model
         $daytitle = date('D - M, j, Y', $printdate);
         $daybgn = $printdate;
         $dayend = strtotime('+1 day', $daybgn);
-        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(impr.imprintqty) as printqty');
+        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as printqty');
         $this->db->from('ts_orders o');
         $this->db->join('ts_order_items oi', 'oi.order_id=o.order_id');
         $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
@@ -1085,7 +1086,7 @@ class Printcalendar_model extends MY_Model
         $daybgn = $print_date;
         $dayend = strtotime('+1 day', $daybgn);
         $this->db->select('oic.order_itemcolor_id, COALESCE(amnt.fullfill,0) as fulfill, COALESCE(approv.cnt,0) as approv, o.order_rush');
-        $this->db->select('o.order_num , oic.item_qty, coalesce(impr.cntprint,0) as cntprint, coalesce(impr.imprintqty,0) as prints');
+        $this->db->select('o.order_num , oic.item_qty, coalesce(impr.cntprint,0) as cntprint, coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0) as prints');
         $this->db->select('ic.color , concat(ii.item_num , \' - \', ii.item_name) as item');
         $this->db->select('ship.shipped, o.brand, o.order_id, oi.order_item_id, oic.print_ready, oi.plates_ready, amnt.amount_date, amnt.amount_sum');
         $this->db->from('ts_order_itemcolors oic');
