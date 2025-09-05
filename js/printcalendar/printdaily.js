@@ -198,6 +198,12 @@ function init_dailydetails_manage() {
             }
         },'json');
     });
+    $("div.trackbtn").unbind('click').click(function (){
+        var copydat = $(this).data('track');
+        var element = document.querySelector("input[name='trackcode'][data-track='"+copydat+"']");
+        copyElementToClipboard(element);
+        // $(element).show();
+    });
 }
 
 function init_printer_assign(order, curuser) {
@@ -230,4 +236,18 @@ function init_printer_assign(order, curuser) {
         }
     });
     // Click on opens assign
+}
+
+function copyElementToClipboard(element) {
+    // $(element).show();
+    $(element).focus();
+    $(element).select();
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        console.log('Msg '+msg);
+    } catch (err) {
+        console.log('Oops, unable to copy');
+    }
+    // $(element).hide();
 }
