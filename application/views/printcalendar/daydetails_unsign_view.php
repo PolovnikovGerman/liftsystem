@@ -61,7 +61,7 @@
             </div>
             <div class="regltabl-td regltabl-flftotal"><?=empty($list['amount_sum']) ? '&nbsp;' : round($list['amount_sum'],0)?></div>
             <div class="regltabl-td regltabl-flfplates">
-                <input type="text" name="platesval" data-ordercolor="<?=$list['order_itemcolor_id']?>">
+                <input type="text" name="platesval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
             </div>
             <div class="regltabl-td regltabl-save">
                 <div class="btnsave fulfblock" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>

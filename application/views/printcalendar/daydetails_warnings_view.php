@@ -38,7 +38,7 @@
             </div>
         </div>
         <?php foreach ($lists as $list) : ?>
-            <div class="warntabl-tr">
+            <div class="warntabl-tr" data-ordercolor="<?=$list['order_itemcolor_id']?>">
                 <div class="warntabl-apprblock">
                     <div class="warntabl-td warntabl-prcful pink"><?=$list['fulfillprc']?>%</div>
                     <div class="warntabl-td warntabl-prcship pink"><?=$list['shippedprc']?>%</div>
@@ -67,33 +67,33 @@
                     <div class="warntabl-td warntabl-flfremain"><?=$list['notfulfill']?></div>
                     <div class="warntabl-td warntabl-flfdate"><?=empty($list['amount_date']) ? '&nbsp;' : date('m/d', $list['amount_date'])?></div>
                     <div class="warntabl-td warntabl-flfprint">
-                        <input type="text" name="">
+                        <input type="text" name="printval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
                     </div>
                     <div class="warntabl-td warntabl-flfkept">
-                        <input type="text" name="">
+                        <input type="text" name="keptval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
                     </div>
                     <div class="warntabl-td warntabl-flfmisprt">
-                        <input type="text" name="">
+                        <input type="text" name="misprintval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
                     </div>
                     <div class="warntabl-td warntabl-flftotal"><?=empty($list['amount_sum']) ? '&nbsp;' : round($list['amount_sum'],0)?></div>
                     <div class="warntabl-td warntabl-flfplates">
-                        <input type="text" name="">
+                        <input type="text" name="platesval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
                     </div>
                     <div class="warntabl-td warntabl-save">
-                        <div class="btnsave" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
+                        <div class="btnsave fulfblock" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
                     </div>
                 </div>
                 <div class="warntabl-shipblock">
                     <div class="warntabl-td warntabl-sent"><?=$list['shipped']?></div>
                     <div class="warntabl-td warntabl-shipremain"><?=$list['notshipp']<=0 ? '&nbsp;' : round($list['notshipp'],0)?></div>
                     <div class="warntabl-td warntabl-qty">
-                        <input type="text" name="">
+                        <input type="text" name="shipqty" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
                     </div>
                     <div class="warntabl-td warntabl-shipdate">
-                        <input type="text" name="">
+                        <input type="text" name="shipdate" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
                     </div>
                     <div class="warntabl-td warntabl-method">
-                        <select>
+                        <select name="shipmethod" data-ordercolor="<?=$list['order_itemcolor_id']?>">
                             <option value=""></option>
                             <option value="UPS">UPS</option>
                             <option value="FedEx">FedEx</option>
@@ -106,10 +106,10 @@
                         </select>
                     </div>
                     <div class="warntabl-td warntabl-tracking">
-                        <input type="text" name="">
+                        <input type="text" name="shiptrackcode" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
                     </div>
                     <div class="warntabl-td warntabl-save">
-                        <div class="btnsave" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
+                        <div class="btnsave shipblock" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
                     </div>
                 </div>
             </div>
