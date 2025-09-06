@@ -95,6 +95,7 @@ class Printcalendar extends MY_Controller
             $error = 'Empty Date';
             $postdata = $this->input->post();
             $printdate = ifset($postdata, 'printdate',0);
+            $smallview = ifset($postdata, 'smallview',0);
             if (!empty($printdate)) {
                 $error = '';
                 $curdate = strtotime(date("Y-m-d"));
@@ -105,7 +106,11 @@ class Printcalendar extends MY_Controller
                     $warnings = $res['warnings'];
                     $warnings_view = '';
                     if (count($warnings) > 0) {
-                        $warnings_view = $this->load->view('printcalendar/daydetails_warnings_view', ['lists' => $warnings], true);
+                        if ($smallview == 1) {
+                            $warnings_view = $this->load->view('printcalendar/dayshort_warnings_view', ['lists' => $warnings], true);
+                        } else {
+                            $warnings_view = $this->load->view('printcalendar/daydetails_warnings_view', ['lists' => $warnings], true);
+                        }
                     }
                     $this->load->model('user_model');
                     $userlist = $this->user_model->get_printschedul_users();
@@ -113,7 +118,11 @@ class Printcalendar extends MY_Controller
                     if (count($res['unsign'])+count($res['assign']) > 0) {
                         $unassign_view = '';
                         if (count($res['unsign']) > 0) {
-                            $unassign_view = $this->load->view('printcalendar/daydetails_unsign_view', ['total'=> $res['unsigntotal'], 'lists' => $res['unsign'], 'users' => $userlist], true);
+                            if ($smallview == 1) {
+                                $unassign_view = $this->load->view('printcalendar/dayshort_unsign_view', ['total'=> $res['unsigntotal'], 'lists' => $res['unsign'], 'users' => $userlist], true);
+                            } else {
+                                $unassign_view = $this->load->view('printcalendar/daydetails_unsign_view', ['total'=> $res['unsigntotal'], 'lists' => $res['unsign'], 'users' => $userlist], true);
+                            }
                         }
                         $assign_view = '';
                         if (count($res['assign']) > 0) {
@@ -129,18 +138,30 @@ class Printcalendar extends MY_Controller
                                     'prints' => $assign['printqty'],
                                     'lists' => $usrassgn,
                                 ];
-                                $assign_view.= $this->load->view('printcalendar/daydetails_assign_view', $assign_options, true);
+                                if ($smallview == 1) {
+                                    $assign_view.= $this->load->view('printcalendar/dayshort_assign_view', $assign_options, true);
+                                } else {
+                                    $assign_view.= $this->load->view('printcalendar/daydetails_assign_view', $assign_options, true);
+                                }
                             }
                         }
                         $regoptions = [
                             'unsign_view' => $unassign_view,
                             'assign_view' => $assign_view,
                         ];
-                        $regular_view = $this->load->view('printcalendar/daydetails_regular_view', $regoptions, true);
+                        if ($smallview == 1) {
+                            $regular_view = $this->load->view('printcalendar/dayshort_regular_view', $regoptions, true);
+                        } else {
+                            $regular_view = $this->load->view('printcalendar/daydetails_regular_view', $regoptions, true);
+                        }
                     }
                     $history_view = '';
                     if (count($res['history']) > 0) {
-                        $history_view = $this->load->view('printcalendar/daydetails_history_view', ['totals' => $res['history_total'], 'lists' => $res['history']], true);
+                        if ($smallview == 1) {
+                            $history_view = $this->load->view('printcalendar/dayshort_history_view', ['totals' => $res['history_total'], 'lists' => $res['history']], true);
+                        } else {
+                            $history_view = $this->load->view('printcalendar/daydetails_history_view', ['totals' => $res['history_total'], 'lists' => $res['history']], true);
+                        }
                     }
                     $options = [
                         'header_view' => $header_view,
@@ -160,7 +181,11 @@ class Printcalendar extends MY_Controller
                     $history_view = '';
                     $historyres = $this->printcalendar_model->get_printdate_history($printdate);
                     if (count($historyres['data']) > 0) {
-                        $history_view = $this->load->view('printcalendar/daydetails_history_view', ['totals' => $historyres['total'], 'lists' => $historyres['data']], true);
+                        if ($smallview == 1) {
+                            $history_view = $this->load->view('printcalendar/dayshort_history_view', ['totals' => $historyres['total'], 'lists' => $historyres['data']], true);
+                        } else {
+                            $history_view = $this->load->view('printcalendar/daydetails_history_view', ['totals' => $historyres['total'], 'lists' => $historyres['data']], true);
+                        }
                     }
                     $mdata['historyview'] = $history_view;
                 }

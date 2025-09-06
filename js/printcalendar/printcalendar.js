@@ -117,13 +117,23 @@ function init_current_reschedule() {
 
 }
 function init_printdate_details(printdate) {
+    var smallview = 0;
+    if ($(".pschedul-leftside").css('display')=='block') {
+        smallview = 1;
+    }
     var params = new Array();
     params.push({name: 'printdate', value: printdate});
+    params.push({name: 'smallview', value: smallview});
     var url = '/printcalendar/daylidetails';
     $.post(url, params, function (response){
         if (response.errors=='') {
-            $(".maingreyblock.fullinfo").empty().html(response.data.content);
-            $(".history-section").empty().html(response.data.historyview);
+            if (parseInt(smallview)==1) {
+                $(".maingreyblock-small").empty().html(response.data.content);
+                $(".history-section-small").empty().html(response.data.historyview);
+            } else {
+                $(".maingreyblock.fullinfo").empty().html(response.data.content);
+                $(".history-section").empty().html(response.data.historyview);
+            }
             init_dailydetails_manage()
         } else {
             show_error(response);
