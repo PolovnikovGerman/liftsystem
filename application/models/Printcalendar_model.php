@@ -867,7 +867,6 @@ class Printcalendar_model extends MY_Model
                         $out['result']=$this->success_result;
                         $out['order_id']=$orderdata['order_id'];
                         $out['printshop_income_id']=$amountres['amount_id'];
-                        $out['printdate'] = date('Y-m-d', $orderdata['print_date']);
                         // Update print_date & print_completed
                         $passed = $this->_completed_itemcolor($order_itemcolor_id);
                         $print_compl = 0;
@@ -995,7 +994,7 @@ class Printcalendar_model extends MY_Model
     public function shiporder($order_itemcolor_id, $shippingqty, $shipmethod, $trackcode, $shipdate)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Order not found'];
-        $this->db->select('oic.order_itemcolor_id, oic.item_qty, oic.shipping_ready, o.order_id, o.order_num, o.print_date')->from('ts_order_itemcolors oic');
+        $this->db->select('oic.order_itemcolor_id, oic.item_qty, oic.shipping_ready, o.order_id, o.order_num, oi.print_date')->from('ts_order_itemcolors oic');
         $this->db->join('ts_order_items oi','oic.order_item_id = oi.order_item_id')->join('ts_orders o','oi.order_id = o.order_id')->where('oic.order_itemcolor_id', $order_itemcolor_id);
         $orderdata = $this->db->get()->row_array();
         if (ifset($orderdata, 'order_id',0) > 0) {
@@ -1034,13 +1033,24 @@ class Printcalendar_model extends MY_Model
                         $this->db->update('ts_order_itemcolors');
                     }
                     // Count shipping parts
-                    $this->db->select('count(oic.order_itemcolor_id) as cnt')->from('ts_order_itemcolors oic')->join('ts_order_items oi', 'oic.order_item_id=oi.order_item_id')->join('ts_orders o', 'o.order_id=oi.order_id');
-                    $this->db->where(['o.order_id' => $orderdata['order_id'],'oic.shipping_ready' => 0]);
-                    $chkres = $this->db->get()->row_array();
-                    if ($chkres['cnt']==0) {
-                        $this->db->where('order_id', $orderdata['order_id']);
-                        $this->db->set('shipped_date', time());
-                        $this->db->update('ts_orders');
+                    $this->db->select('count(oa.amount_id) as amntcnt, sum(oa.shipped) as amnttotal, sum(oic.item_qty) totalqty');
+                    $this->db->from('ts_order_amounts oa');
+                    $this->db->join('ts_order_itemcolors oic', 'oic.order_itemcolor_id = oa.order_itemcolor_id');
+                    $this->db->join('ts_order_items oi', 'oi.order_item_id = oic.order_item_id');
+                    $this->db->join('ts_orders o', 'o.order_id = oi.order_id');
+                    $this->db->where('o.order_id', $orderdata['order_id']);
+                    $printed = $this->db->get()->row_array();
+                    if ($printed['amntcnt'] > 0) {
+                        if ($printed['amnttotal'] >= $printed['totalqty']) {
+                            $this->db->select('count(oic.order_itemcolor_id) as cnt')->from('ts_order_itemcolors oic')->join('ts_order_items oi', 'oic.order_item_id=oi.order_item_id')->join('ts_orders o', 'o.order_id=oi.order_id');
+                            $this->db->where(['o.order_id' => $orderdata['order_id'],'oic.shipping_ready' => 0]);
+                            $chkres = $this->db->get()->row_array();
+                            if ($chkres['cnt']==0) {
+                                $this->db->where('order_id', $orderdata['order_id']);
+                                $this->db->set('shipped_date', time());
+                                $this->db->update('ts_orders');
+                            }
+                        }
                     }
                 }
             } else {

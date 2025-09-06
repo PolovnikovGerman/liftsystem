@@ -468,21 +468,27 @@ class Printcalendar extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result'] == $this->success_result) {
                     $error = '';
-                    $this->load->model('user_model');
-                    $userlist = $this->user_model->get_printschedul_users();
-                    $itemcolor = $this->printcalendar_model->get_itemcolor_details($order_itemcolor_id);
-                    $mdata['refreshinfo'] = 0;
-                    if ($itemcolor['fulfillprc']>=100 && $itemcolor['shippedprc']>=100) {
-                        $mdata['refreshinfo'] = 1;
-                        // Build new day
-                        $printdate = $res['printdate'];
-                        $views = $this->_prepare_daydetails_parts($printdate);
-                        $mdata['warningview'] = $views['warningview'];
-                        $mdata['regularview'] = $views['regularview'];
-                        $mdata['historyview'] = $views['historyview'];
-                    } else {
-                        $mdata['content'] = $this->load->view('printcalendar/printcolor_data_view', ['list' => $itemcolor, 'users' => $userlist], true);
-                    }
+                    $mdata['refreshinfo'] = 1;
+                    $printdate = $res['printdate'];
+                    $views = $this->_prepare_daydetails_parts($printdate);
+                    $mdata['warningview'] = $views['warningview'];
+                    $mdata['regularview'] = $views['regularview'];
+                    $mdata['historyview'] = $views['historyview'];
+//                    $this->load->model('user_model');
+//                    $userlist = $this->user_model->get_printschedul_users();
+//                    $itemcolor = $this->printcalendar_model->get_itemcolor_details($order_itemcolor_id);
+//                    $mdata['refreshinfo'] = 0;
+//                    if (($itemcolor['fulfillprc']>=100 && $itemcolor['shippedprc']>=100) || ($itemcolor['fulfill']<$itemcolor['shipped']))  {
+//                        $mdata['refreshinfo'] = 1;
+//                        // Build new day
+//                        $printdate = $res['printdate'];
+//                        $views = $this->_prepare_daydetails_parts($printdate);
+//                        $mdata['warningview'] = $views['warningview'];
+//                        $mdata['regularview'] = $views['regularview'];
+//                        $mdata['historyview'] = $views['historyview'];
+//                    } else {
+//                        $mdata['content'] = $this->load->view('printcalendar/printcolor_data_view', ['list' => $itemcolor, 'users' => $userlist], true);
+//                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -512,21 +518,28 @@ class Printcalendar extends MY_Controller
                             $error = $res['msg'];
                             if ($res['result'] == $this->success_result) {
                                 $error = '';
-                                $this->load->model('user_model');
-                                $userlist = $this->user_model->get_printschedul_users();
-                                $itemcolor = $this->printcalendar_model->get_itemcolor_details($order_itemcolor_id);
-                                $mdata['refreshinfo'] = 0;
-                                if ($itemcolor['fulfillprc']>=100 && $itemcolor['shippedprc']>=100) {
-                                    $mdata['refreshinfo'] = 1;
-                                    // Build new day
-                                    $printdate = $res['printdate'];
-                                    $views = $this->_prepare_daydetails_parts($printdate);
-                                    $mdata['warningview'] = $views['warningview'];
-                                    $mdata['regularview'] = $views['regularview'];
-                                    $mdata['historyview'] = $views['historyview'];
-                                } else {
-                                    $mdata['content'] = $this->load->view('printcalendar/printcolor_data_view', ['list' => $itemcolor, 'users' => $userlist], true);
-                                }
+                                $mdata['refreshinfo'] = 1;
+                                // Build new day
+                                $printdate = $res['printdate'];
+                                $views = $this->_prepare_daydetails_parts($printdate);
+                                $mdata['warningview'] = $views['warningview'];
+                                $mdata['regularview'] = $views['regularview'];
+                                $mdata['historyview'] = $views['historyview'];
+//                                $this->load->model('user_model');
+//                                $userlist = $this->user_model->get_printschedul_users();
+//                                $itemcolor = $this->printcalendar_model->get_itemcolor_details($order_itemcolor_id);
+//                                $mdata['refreshinfo'] = 0;
+//                                if ($itemcolor['fulfillprc']>=100 && $itemcolor['shippedprc']>=100) {
+//                                    $mdata['refreshinfo'] = 1;
+//                                    // Build new day
+//                                    $printdate = $res['printdate'];
+//                                    $views = $this->_prepare_daydetails_parts($printdate);
+//                                    $mdata['warningview'] = $views['warningview'];
+//                                    $mdata['regularview'] = $views['regularview'];
+//                                    $mdata['historyview'] = $views['historyview'];
+//                                } else {
+//                                    $mdata['content'] = $this->load->view('printcalendar/printcolor_data_view', ['list' => $itemcolor, 'users' => $userlist], true);
+//                                }
                             }
                         }
                     }
