@@ -41,7 +41,7 @@
                     <div class="warntabl-td warntabl-rush <?=$list['order_rush']==0 ? '' : 'redrush'?>"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
                     <div class="warntabl-td warntabl-order" data-order="<?=$list['order_id']?>"><?=$list['order_num']?></div>
                     <div class="warntabl-td warntabl-items"><?=QTYOutput($list['item_qty'])?></div>
-                    <div class="warntabl-td warntabl-imp"><?=$list['cntprint']?></div>
+                    <div class="warntabl-td warntabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                     <div class="warntabl-td warntabl-prints"><?=QTYOutput($list['prints'])?></div>
                     <div class="warntabl-td warntabl-itmcolor"><?=$list['color']?></div>
                     <div class="warntabl-td warntabl-description"><?=$list['item']?></div>
