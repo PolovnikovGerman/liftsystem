@@ -41,7 +41,7 @@
                         <div class="reschditms-td reschditms-order"><?=$list['order_num']?></div>
                         <div class="reschditms-td reschditms-date <?=$list['dateclass']?>"><?=date('m/d/Y', $list['print_date'])?></div>
                         <div class="reschditms-td reschditms-items"><?=QTYOutput($list['item_qty'])?></div>
-                        <div class="reschditms-td reschditms-imp"><?=$list['cntprint']?></div>
+                        <div class="reschditms-td reschditms-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                         <div class="reschditms-td reschditms-prints"><?=QTYOutput($list['prints'])?></div>
                         <div class="reschditms-td reschditms-itmcolor"><?=$list['color']?></div>
                         <div class="reschditms-td reschditms-inkcolor">&nbsp;</div>

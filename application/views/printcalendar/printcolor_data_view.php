@@ -28,7 +28,7 @@
     <div class="regltabl-td regltabl-rush <?=$list['order_rush']==0 ? '' : 'redrush'?>"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
     <div class="regltabl-td regltabl-order" data-order="<?=$list['order_id']?>"><?=$list['order_num']?></div>
     <div class="regltabl-td regltabl-items"><?=QTYOutput($list['item_qty'])?></div>
-    <div class="regltabl-td regltabl-imp"><?=$list['cntprint']?></div>
+    <div class="regltabl-td regltabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
     <div class="regltabl-td regltabl-prints"><?=QTYOutput($list['prints'])?></div>
     <div class="regltabl-td regltabl-itmcolor"><?=$list['color']?></div>
     <div class="regltabl-td regltabl-description"><?=$list['item']?></div>
