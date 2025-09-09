@@ -64,7 +64,7 @@
                 <input type="text" name="platesval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
             </div>
             <div class="regltabl-td regltabl-save">
-                <div class="btnsave fulfblock" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
+                <div class="btnsave fulfblock <?=$list['fulfillprc']>=100 ? 'closedblock' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
             </div>
         </div>
         <div class="regltabl-shipblock <?=$list['shippedprc']>=100 ? 'closedblock' : ''?>">
@@ -93,7 +93,7 @@
                 <input type="text" name="shiptrackcode" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
             </div>
             <div class="regltabl-td regltabl-save">
-                <div class="btnsave shipblock" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
+                <div class="btnsave shipblock <?=$list['fulfillprc']>=100 ? 'closedblock' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
             </div>
         </div>
     </div>
