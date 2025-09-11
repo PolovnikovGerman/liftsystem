@@ -282,7 +282,10 @@
 }
 .reschdltabl-body {
     max-height: 620px;
-    overflow-y: scroll;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    width: calc(100% - 12px);
 }
 .late-section {
     background: #fb0404;
