@@ -1120,33 +1120,40 @@
 }
 /* Assign user popup */
 .assign-popup {
-    /* position: absolute; */
     position: relative;
-    top: 20px;
-    left: -20px;
+    top: -65px;
+    left: 25px;
     background: #fff;
     border: 1px solid #000;
     z-index: 10;
     display: none;
-    /* padding: 0 7px; */
 }
-.assign-popup:after, .assign-popup:before {
-    content: "";
-    border: solid transparent;
-    position: absolute;
-    left: 20px;
-    bottom: 100%;
-}
-.assign-popup:after {
-    border-bottom-color: #fff;
-    border-width: 6px;
-    margin-left: 0;
-}
-.assign-popup:before {
-    border-bottom-color: #000;
-    border-width: 7px;
-    margin-left: -1px;
-}
+/*.assign-popup {*/
+/*    position: relative;*/
+/*    top: 20px;*/
+/*    left: -20px;*/
+/*    background: #fff;*/
+/*    border: 1px solid #000;*/
+/*    z-index: 10;*/
+/*    display: none;*/
+/*}*/
+/*.assign-popup:after, .assign-popup:before {*/
+/*    content: "";*/
+/*    border: solid transparent;*/
+/*    position: absolute;*/
+/*    left: 20px;*/
+/*    bottom: 100%;*/
+/*}*/
+/*.assign-popup:after {*/
+/*    border-bottom-color: #fff;*/
+/*    border-width: 6px;*/
+/*    margin-left: 0;*/
+/*}*/
+/*.assign-popup:before {*/
+/*    border-bottom-color: #000;*/
+/*    border-width: 7px;*/
+/*    margin-left: -1px;*/
+/*}*/
 .assign-popup ul {
     margin: 0;
     padding: 0;
