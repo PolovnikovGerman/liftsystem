@@ -2,17 +2,7 @@ var orderid = '';
 
 function init_reschedule_management() {
     $(".btnreschedular-btn").unbind('click').click(function (){
-        var printdate = $("#calendarprintdate").val();
-        $("#loader").show();
-        $(".btn-reschedular-open").hide();
-        $(".btn-reschedular").show();
-        $(".pschedul-leftside").hide();
-        $(".pschedul-rightside").hide();
-
-        $(".maingreyblock.fullinfo").show();
-        $(".history-section").show();
-        init_printdate_details(printdate);
-        $("#loader").hide();
+        close_reschedule();
     });
     $(".reschdl-tab").unbind('click').click(function(){
         if ($(this).hasClass('active')) {
