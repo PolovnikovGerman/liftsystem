@@ -17,7 +17,7 @@
             <div class="reschdltabl-td reschdltabl-inkcolor">Ink Color/s</div>
         </div>
     </div>
-    <div class="reschdltabl-body">
+    <div class="reschdltabl-body" id="reschdltabl-body">
         <?php if ($lates > 0) : ?>
         <div class="late-section">
             <div class="latesection-title">LATE ORDERS:</div>

@@ -11,6 +11,12 @@ function init_dailydetails_manage() {
         $("#printcalendardetailsview").hide();
         $("#printcalendarfullview").show();
         $("#calendarprintdate").val(0);
+        $(".btn-reschedular-open").hide();
+        $(".btn-reschedular").show();
+        $(".pschedul-leftside").hide();
+        $(".pschedul-rightside").hide();
+        $(".maingreyblock.fullinfo").show();
+        $(".history-section").show();
     });
     $(".pscalendar-daybox").unbind('click').click(function (){
         if ($(this).hasClass('today')) {
@@ -257,6 +263,7 @@ function open_reschedule() {
             $(".pschedul-leftside").show();
             $(".pschedul-rightside").show();
             init_reschedule_management();
+            new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
             $("#loader").hide();
             // $(".history-section").hide();
         } else {
