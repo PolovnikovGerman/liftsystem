@@ -18,7 +18,7 @@
                 <div class="warntabl-td warntabl-imp">Imp</div>
                 <div class="warntabl-td warntabl-prints">#Prints</div>
                 <div class="warntabl-td warntabl-itmcolor">Item Color/s</div>
-                <div class="warntabl-td warntabl-description">Item / Description</div>
+                <div class="warntabl-td warntabl-description shortresched">Item / Description</div>
                 <div class="warntabl-td warntabl-inkcolor">Ink Color/s</div>
             </div>
         </div>
@@ -44,7 +44,7 @@
                     <div class="warntabl-td warntabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                     <div class="warntabl-td warntabl-prints"><?=QTYOutput($list['prints'])?></div>
                     <div class="warntabl-td warntabl-itmcolor"><?=$list['color']?></div>
-                    <div class="warntabl-td warntabl-description"><?=$list['item']?></div>
+                    <div class="warntabl-td warntabl-description shortresched"><?=$list['item']?></div>
                     <div class="warntabl-td warntabl-inkcolor">&nbsp;</div>
                 </div>
             </div>

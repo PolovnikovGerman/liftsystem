@@ -14,7 +14,7 @@
             <div class="regltabl-td regltabl-imp">Imp</div>
             <div class="regltabl-td regltabl-prints">#Prints</div>
             <div class="regltabl-td regltabl-itmcolor">Item Color/s</div>
-            <div class="regltabl-td regltabl-description">Item / Description</div>
+            <div class="regltabl-td regltabl-description shortresched">Item / Description</div>
             <div class="regltabl-td regltabl-inkcolor">Ink Color/s</div>
         </div>
     </div>
