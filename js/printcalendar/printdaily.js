@@ -212,13 +212,22 @@ function init_printer_assign(order, curuser) {
             $(".userprinter[data-order='"+order+"'][data-user='"+curuser+"']").removeClass('openassign');
         } else {
             var params = new Array();
+            var smallview = 0;
+            if ($(".pschedul-leftside").css('display')=='block') {
+                smallview = 1;
+            }
             params.push({name: 'order', value: order});
             params.push({name: 'user', value: user});
+            params.push({name: 'smallview', value: smallview});
             var url = '/printcalendar/assignprintorder';
             $("#loader").show();
             $.post(url, params, function (response){
                 if (response.errors=='') {
-                    $(".maingreyblock.fullinfo").empty().html(response.data.content);
+                    if (parseInt(smallview)==0) {
+                        $(".maingreyblock.fullinfo").find('div.regular-section').empty().html(response.data.content);
+                    } else {
+                        $(".maingreyblock-small").find("div.regular-section").empty().html(response.data.content);
+                    }
                     $("#loader").hide();
                     init_dailydetails_manage();
                 } else {
@@ -263,6 +272,7 @@ function open_reschedule() {
             $(".pschedul-leftside").show();
             $(".pschedul-rightside").show();
             init_reschedule_management();
+            init_dailydetails_manage();
             new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
             $("#loader").hide();
             // $(".history-section").hide();

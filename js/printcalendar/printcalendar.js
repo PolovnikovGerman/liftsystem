@@ -84,6 +84,7 @@ function init_fullcalendar() {
             $(".pschedul-leftside").show();
             $(".pschedul-rightside").show();
             init_reschedule_management();
+            init_dailydetails_manage();
             $("#loader").hide();
         },'json')
     });
@@ -107,6 +108,7 @@ function init_current_reschedule() {
             $(".pschedul-leftside").show();
             $(".pschedul-rightside").show();
             init_reschedule_management();
+            init_dailydetails_manage();
             $("#loader").hide();
             // $(".history-section").hide();
         } else {

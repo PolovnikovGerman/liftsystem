@@ -203,6 +203,7 @@ class Printcalendar extends MY_Controller
             $postdata = $this->input->post();
             $order_itemcolor_id = ifset($postdata, 'order', '');
             $user_id = ifset($postdata, 'user',0);
+            $smallview = ifset($postdata, 'smallview', 0);
             if (!empty($order_itemcolor_id)) {
                 $res = $this->printcalendar_model->assignorder($order_itemcolor_id, $user_id);
                 $error = $res['msg'];
@@ -214,7 +215,11 @@ class Printcalendar extends MY_Controller
                     $unassign_view = $assign_view = '';
                     $unsigdata = $this->printcalendar_model->get_printdate_unsigned($printdate);
                     if (count($unsigdata['data'])>0) {
-                        $unassign_view = $this->load->view('printcalendar/daydetails_unsign_view', ['total'=> $unsigdata['total'], 'lists' => $unsigdata['data'], 'users' => $userlist], true);
+                        if ($smallview == 1) {
+                            $unassign_view = $this->load->view('printcalendar/dayshort_unsign_view', ['total'=> $unsigdata['total'], 'lists' => $unsigdata['data'], 'users' => $userlist], true);
+                        } else {
+                            $unassign_view = $this->load->view('printcalendar/daydetails_unsign_view', ['total'=> $unsigdata['total'], 'lists' => $unsigdata['data'], 'users' => $userlist], true);
+                        }
                     }
                     // Get list of printers
                     $usrs = $this->printcalendar_model->get_printdate_assigned($printdate);
@@ -230,14 +235,22 @@ class Printcalendar extends MY_Controller
                                 'prints' => $usr['printqty'],
                                 'lists' => $assigndat,
                             ];
-                            $assign_view.= $this->load->view('printcalendar/daydetails_assign_view', $assign_options, true);
+                            if ($smallview == 1) {
+                                $assign_view.= $this->load->view('printcalendar/dayshort_assign_view', $assign_options, true);
+                            } else {
+                                $assign_view.= $this->load->view('printcalendar/daydetails_assign_view', $assign_options, true);
+                            }
                         }
                     }
                     $regoptions = [
                         'unsign_view' => $unassign_view,
                         'assign_view' => $assign_view,
                     ];
-                    $regular_view = $this->load->view('printcalendar/daydetails_regular_view', $regoptions, true);
+                    if ($smallview == 1) {
+                        $regular_view = $this->load->view('printcalendar/dayshort_regular_view', $regoptions, true);
+                    } else {
+                        $regular_view = $this->load->view('printcalendar/daydetails_regular_view', $regoptions, true);
+                    }
                     $mdata['content'] = $regular_view;
                 }
             }
