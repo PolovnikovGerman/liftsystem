@@ -35,6 +35,12 @@
     background: #969595;
     width: 100%;
 }
+.history-section-small {
+    width: 100%;
+}
+.pschedul-leftside .historyblock {
+    width: calc(100% - 10px);
+}
 /*.maingrey-header {*/
 /*    width: 100%;*/
 /*    height: 35px;*/
@@ -54,8 +60,9 @@
     margin-left: 7px;
     line-height: 14px;
 }
-.warning-table {
+.pschedul-leftside .warning-table {
     margin-left: 14px;
+    width: calc(100% - 14px);
 }
 .maingrey-title {
     color: #fff;
@@ -118,7 +125,7 @@
     font-size: 13px;
     font-weight: 600;
     border-radius: 5px 5px 0 0;
-    margin-top: 4px;
+    margin-top: 5px;
     margin-right: 7px;
     cursor: pointer;
 }

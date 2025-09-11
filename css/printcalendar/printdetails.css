@@ -221,6 +221,7 @@
     background: #000;
     width: 100%;
     padding-bottom: 12px;
+    margin-bottom: 50px;
 }
 .warning-title {
     color: #fff;
@@ -364,6 +365,9 @@
     overflow: hidden;    /* Hides any content that overflows the container */
     text-overflow: ellipsis;
 }
+.warntabl-description.shortresched {
+    width: 220px;
+}
 .warntabl-inkcolor {
     width: 76px;
     text-align: left !important;
@@ -506,10 +510,9 @@
 .regular-section {
     width: 100%;
     padding-bottom: 12px;
-    margin-top: 50px;
 }
 .regular-table {
-    width: 100%;
+    width: calc(100% - 10px);
     margin-left: 10px;
 }
 .regularsection-subtitle {
@@ -648,6 +651,9 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.regltabl-description.shortresched {
+    width: 220px;
 }
 .regltabl-inkcolor {
     width: 76px;
@@ -854,6 +860,7 @@
 
 .history-section {
     margin-top: 26px;
+    width: 1499px;
 }
 .history-title  {
     color: #000;
@@ -870,7 +877,7 @@
     padding-bottom: 15px;
     margin-left: 10px;
     margin-right: 10px;
-    width: 1499px;
+    width: 100%; /* calc(100% - 10px); -  1499px; */
 }
 .history-table {
     margin-left: 10px;
@@ -986,6 +993,9 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.histrtabl-description.shortresched {
+    width: 220px;
 }
 .histrtabl-inkcolor {
     width: 92px;

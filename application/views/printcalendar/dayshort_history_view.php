@@ -17,7 +17,7 @@
                 <div class="histrtabl-td histrtabl-imp">Imp</div>
                 <div class="histrtabl-td histrtabl-prints">#Prints</div>
                 <div class="histrtabl-td histrtabl-itmcolor">Item Color/s</div>
-                <div class="histrtabl-td histrtabl-description">Item / Description</div>
+                <div class="histrtabl-td histrtabl-description shortresched">Item / Description</div>
                 <div class="histrtabl-td histrtabl-inkcolor">Ink Color/s</div>
             </div>
         </div>
@@ -45,7 +45,7 @@
                     <div class="histrtabl-td histrtabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                     <div class="histrtabl-td histrtabl-prints"><?=empty($list['prints']) ? '-' : QTYOutput($list['prints'])?></div>
                     <div class="histrtabl-td histrtabl-itmcolor"><?=$list['color']?></div>
-                    <div class="histrtabl-td histrtabl-description"><?=$list['item']?></div>
+                    <div class="histrtabl-td histrtabl-description shortresched"><?=$list['item']?></div>
                     <div class="histrtabl-td histrtabl-inkcolor">&nbsp;</div>
                 </div>
             </div>
