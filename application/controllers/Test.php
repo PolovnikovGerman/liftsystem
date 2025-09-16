@@ -2357,13 +2357,15 @@ class Test extends CI_Controller
         $this->load->model('shipping_model');
         foreach ($vaddrs as $vaddr) {
             // Get shipping data
-            $shipres = $this->shipping_model->get_zip_address($vaddr['item_shipcountry'], $vaddr['vendor_item_zipcode']);
-            if ($shipres['result']==1) {
-                $this->db->where('vendor_item_zipcode', $vaddr['vendor_item_zipcode']);
-                $this->db->where('item_shipcountry', $vaddr['item_shipcountry']);
-                $this->db->set('item_shipstate', $shipres['state']);
-                $this->db->set('item_shipcity', $shipres['city']);
-                $this->db->update('sb_vendor_items');
+            if (!empty($vaddr['item_shipcountry']) && !empty($vaddr['vendor_item_zipcode'])) {
+                $shipres = $this->shipping_model->get_zip_address($vaddr['item_shipcountry'], $vaddr['vendor_item_zipcode']);
+                if ($shipres['result']==1) {
+                    $this->db->where('vendor_item_zipcode', $vaddr['vendor_item_zipcode']);
+                    $this->db->where('item_shipcountry', $vaddr['item_shipcountry']);
+                    $this->db->set('item_shipstate', $shipres['state']);
+                    $this->db->set('item_shipcity', $shipres['city']);
+                    $this->db->update('sb_vendor_items');
+                }
             }
         }
     }
