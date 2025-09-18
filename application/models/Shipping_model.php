@@ -555,9 +555,6 @@ Class Shipping_model extends MY_Model
                         "CountryCode" => empty($vendordat['item_shipcountry_code']) ? 'US' : $vendordat['item_shipcountry_code']
                     ],
                 ];
-                if ($shipaddr['zip']=='47405') {
-                    log_message('error','ShipFrom '.json_encode($shipFrom));
-                }
             } else {
                 $shipboxes=[];
                 $shipboxes[] = [
@@ -576,14 +573,11 @@ Class Shipping_model extends MY_Model
                 "Name" => !empty($shipaddr['ship_company']) ? $shipaddr['ship_company'] : "Test Company",
                 "Address" => [
                     "City" => $shipaddr['city'],
-                    "StateProvinceCode" => $ship_state,
+                    "StateProvinceCode" => trim($ship_state),
                     "PostalCode" => $shipaddr['zip'],
                     "CountryCode" => $shipaddr['out_country']
                 ]
             ];
-            if ($shipaddr['zip']=='47405') {
-                log_message('error','ShipTo '.json_encode($shipTo));
-            }
             $cnt_code = $shipaddr['out_country'];
             $package_price = $item['item_subtotal'];
             $itemqty = ceil($item['item_qty']*$kf);
