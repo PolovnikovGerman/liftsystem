@@ -22,5 +22,5 @@
 <?php } ?>
 <script src="/js/adminpage/jquery.qtip.js"></script>
 <?php if ($gmaps==1) { ?>
-    <script src="https://maps.googleapis.com/maps/api/js?key=<?=$this->config->item('google_map_key')?>&libraries=places&v=weekly&callback=initAutocomplete" async></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=<?=$this->config->item('google_map_key')?>&libraries=places&language=en&v=weekly&callback=initAutocomplete" async></script>
 <?php } ?>
