@@ -10821,6 +10821,7 @@ Class Leadorder_model extends My_Model {
                         if (ifset($data, 'country','')!=='') {
                             $ships[$idx]['country_id'] = ifset($cntres,'country_id','');
                         }
+                        $ships[$idx]['out_zip'] = $data['state'].' '.$newzip;
                         $leadorder['shipping_address'] = $ships;
                         $out['address_full'] = $ships[$idx];
                         $out['result'] = $this->success_result;
