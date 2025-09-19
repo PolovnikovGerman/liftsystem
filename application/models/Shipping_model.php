@@ -573,7 +573,7 @@ Class Shipping_model extends MY_Model
                 "Name" => !empty($shipaddr['ship_company']) ? $shipaddr['ship_company'] : "Test Company",
                 "Address" => [
                     "City" => $shipaddr['city'],
-                    "StateProvinceCode" => $ship_state,
+                    "StateProvinceCode" => trim($ship_state),
                     "PostalCode" => $shipaddr['zip'],
                     "CountryCode" => $shipaddr['out_country']
                 ]
