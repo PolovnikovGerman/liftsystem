@@ -286,13 +286,13 @@
 .pdo-table-tr.notapproved .pdo-table-td-art {
     opacity: 0.25;
 }
-.icon-move {
-    width: 12px;
-    height: 17px;
-    position: relative;
-    top: -1px;
-    left: -1px;
-}
+/*.icon-move {*/
+/*    width: 12px;*/
+/*    height: 17px;*/
+/*    position: relative;*/
+/*    top: -1px;*/
+/*    left: -1px;*/
+/*}*/
 .ic-green-art {
     width: 14px;
     height: 14px;

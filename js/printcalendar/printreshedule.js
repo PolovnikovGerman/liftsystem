@@ -1,7 +1,8 @@
 var orderid = '';
 
 function init_reschedule_management() {
-    $(".btnreschedular-btn").unbind('click').click(function (){
+    // $(".btnreschedular-btn")
+    $(".btn-reschedular-open").unbind('click').click(function (){
         close_reschedule();
     });
     $(".reschdl-tab").unbind('click').click(function(){

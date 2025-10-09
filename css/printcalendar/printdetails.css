@@ -35,7 +35,7 @@
     width: 104px;
     height: 39px;
     background: #d9d9d9;
-    padding: 0 3px;
+    padding: 0 2px;
 }
 .pscalendar-daybox:hover,
 .pscalendar-daybox.today {
@@ -43,18 +43,18 @@
     background: #e2ebfc;
     z-index: 2;
 }
-.daybox-date {
-    width: 23px;
+.pscalendar-daybox .daybox-date {
+    width: 24px;
     margin-top: 4px;
 }
-.dayboxdate-month {
+.pscalendar-daybox .dayboxdate-month {
     width: 100%;
     text-align: center;
     font-size: 11px;
     line-height: 12px;
     color: #000;
 }
-.dayboxdate-date {
+.pscalendar-daybox .dayboxdate-date {
     width: 100%;
     text-align: center;
     font-size: 18px;
@@ -65,43 +65,43 @@
 .dayoff .dayboxdate-date {
     color: #676767;
 }
-.daybox-orders {
+.pscalendar-daybox .daybox-orders {
     width: 32px;
-    margin-top: 5px;
+    margin-top: 3px;
 }
-.dayboxorders-name {
+.pscalendar-daybox .dayboxorders-name {
     width: 100%;
     text-align: center;
     font-size: 10px;
-    line-height: 10px;
+    /* line-height: 10px; */
     font-style: italic;
     color: #a4a4a4;
 }
-.dayboxorders-numbers {
+.pscalendar-daybox .dayboxorders-numbers {
     width: 100%;
     text-align: center;
     font-size: 13px;
-    line-height: 13px;
+    /* line-height: 13px; */
     font-weight: 600;
     color: #1000a7;
 }
-.daybox-prints {
-    width: 40px;
-    margin-top: 5px;
+.pscalendar-daybox .daybox-prints {
+    width: 42px;
+    margin-top: 3px;
 }
-.dayboxprints-name {
+.pscalendar-daybox .dayboxprints-name {
     width: 100%;
     text-align: center;
     font-size: 10px;
-    line-height: 10px;
+    /* line-height: 10px; */
     font-style: italic;
     color: #a4a4a4;
 }
-.dayboxprints-numbers {
+.pscalendar-daybox .dayboxprints-numbers {
     width: 100%;
     text-align: center;
     font-size: 13px;
-    line-height: 13px;
+    /* line-height: 13px; */
     font-weight: 600;
     color: #1000a7;
 }
@@ -197,8 +197,8 @@
 .maingreyinfo-orders {
     width: 85px;
     text-align: center;
-    font-size: 13px;
-    line-height: 19px;
+    font-size: 12px; /* 13px; */
+    line-height: 21px; /* 19px; */
 }
 .maingreyinfo-prints span,
 .maingreyinfo-items span,
@@ -459,7 +459,7 @@
 .icon-move {
     width: 13px;
     height: 20px;
-    margin-top: -1px;
+    /* margin-top: -1px; */
 }
 .icon-move img {
     width: 100%;
@@ -1166,6 +1166,7 @@
     text-align: center;
     border-bottom: 1px solid #9a9999;
     padding: 3px 15px;
+    cursor: pointer;
 }
 .assign-popup ul li:last-child {
     border-bottom: none;

@@ -62,7 +62,8 @@ function init_fullcalendar() {
             }
         },'json');
     });
-    $(".btnreschedular-btn").unbind('click').click(function (){
+    // $(".btnreschedular-btn")
+    $(".btn-reschedular").unbind('click').click(function (){
         var url = '/printcalendar/rescheduletoday';
         $("#loader").show();
         $.post(url, {}, function (response){
