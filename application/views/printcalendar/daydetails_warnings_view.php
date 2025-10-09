@@ -79,9 +79,9 @@
                     <div class="warntabl-td warntabl-flfplates">
                         <input type="text" name="platesval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
                     </div>
-                    <div class="warntabl-td warntabl-save">
+                    <!-- <div class="warntabl-td warntabl-save"> -->
                         <div class="btnsave fulfblock" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
-                    </div>
+                    <!-- </div> -->
                 </div>
                 <div class="warntabl-shipblock">
                     <div class="warntabl-td warntabl-sent"><?=$list['shipped']?></div>
@@ -108,9 +108,9 @@
                     <div class="warntabl-td warntabl-tracking">
                         <input type="text" name="shiptrackcode" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
                     </div>
-                    <div class="warntabl-td warntabl-save">
+                    <!-- <div class="warntabl-td warntabl-save"> -->
                         <div class="btnsave shipblock" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
-                    </div>
+                    <!-- </div> -->
                 </div>
             </div>
         <?php endforeach; ?>

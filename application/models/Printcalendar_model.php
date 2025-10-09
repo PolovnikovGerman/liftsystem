@@ -352,6 +352,7 @@ class Printcalendar_model extends MY_Model
                 $unsign[$idx]['notfulfill'] = $uns['item_qty'] - $uns['fulfill'];
                 $unsign[$idx]['notshipp'] = $uns['item_qty'] - $uns['shipped'];
                 $unsign[$idx]['class'] = ($unsign[$idx]['fulfillprc']>$unsign[$idx]['shippedprc'] ? 'critical' : 'normal');
+                $unsign[$idx]['platedocs'] = 0;
                 $idx++;
             }
         }
@@ -392,7 +393,7 @@ class Printcalendar_model extends MY_Model
         $this->db->select('oic.order_itemcolor_id, COALESCE(amnt.fullfill,0) as fulfill, COALESCE(approv.cnt,0) as approv, o.order_rush');
         $this->db->select('o.order_num , oic.item_qty, impr.cntprint, coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0) as prints');
         $this->db->select('ic.color , concat(ii.item_num , \' - \', ii.item_name) as item');
-        $this->db->select('ship.shipped, o.brand, o.order_id,  oi.order_item_id, oic.print_ready, oi.plates_ready, oic.ink_ready, amnt.amount_date, amnt.amount_sum');
+        $this->db->select('ship.shipped, o.brand, o.order_id, o.order_blank, oi.order_item_id, oic.print_ready, oi.plates_ready, oic.ink_ready, amnt.amount_date, amnt.amount_sum');
         $this->db->from('ts_order_itemcolors oic');
         $this->db->join('ts_order_items oi', 'oi.order_item_id = oic.order_item_id');
         $this->db->join('ts_orders o', 'o.order_id = oi.order_id');
@@ -414,6 +415,7 @@ class Printcalendar_model extends MY_Model
             $assigns[$idx]['notfulfill'] = $uns['item_qty'] - $uns['fulfill'];
             $assigns[$idx]['notshipp'] = $uns['item_qty'] - $uns['shipped'];
             $assigns[$idx]['class'] = ($assigns[$idx]['fulfillprc']>$assigns[$idx]['shippedprc'] ? 'critical' : 'normal');
+            $assigns[$idx]['platedocs'] = 0;
             $idx++;
         }
         return $assigns;
