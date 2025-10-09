@@ -165,7 +165,6 @@
 }
 .reschdltabl-td {
     background: #eeeded;
-    /* font-size: 12px; */
     text-align: center;
     border-right: 1px solid #d3d1d1;
 }
@@ -243,6 +242,9 @@
 }
 .reschdltabl-itmcolor {
     width: 78px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .reschdltabl-description {
     /*width: 183px;*/
