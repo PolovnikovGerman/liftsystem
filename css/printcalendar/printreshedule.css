@@ -268,10 +268,10 @@
 .reschdltabl-header .reschdltabl-inkcolor {
     text-align: center !important;
 }
-.printerline {
-    height: 26px;
-    line-height: 26px;
-}
+/*.printerline {*/
+/*    height: 26px;*/
+/*    line-height: 26px;*/
+/*}*/
 .reschdltabl-printername {
     font-size: 13px;
     line-height: 22px;

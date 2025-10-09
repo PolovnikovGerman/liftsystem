@@ -1,4 +1,4 @@
-<div class="regltabl-tr printerline">
+<div class="regltabl-tr printerline unassignedtotal">
     <div class="regltabl-printername">Unassigned</div>
     <div class="regltabl-printerinfo"><span><?=QTYOutput($total['printqty'])?></span> prints - <span><?=QTYOutput($total['itemscnt'])?></span> items - <span><?=$total['ordercnt']?></span> orders</div>
 </div>

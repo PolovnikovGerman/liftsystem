@@ -171,7 +171,7 @@
 }
 .fullinfo {
     /*width: 1550px;*/
-    width: 1499px;
+    width: 1515px; /* 1499px; */
 }
 .maingrey-header {
     width: 100%;
@@ -472,18 +472,30 @@
     background: url('/img/printscheduler/move-yellow.svg');
 }
 .btnsave {
-    width: 34px;
-    height: 15px;
+    height: 20px;
+    line-height: 20px;
     border: 1px solid #888888;
-    border-radius: 3px;
-    background: #0ca417;
-    color: #fff;
-    font-size: 9px;
-    text-align: center;
-    line-height: 11px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background: #93fc9b;
+    color: #000000;
+    font-size: 10px;
     font-weight: 600;
     cursor: pointer;
-    margin: 3px 3px 2px;
+    text-align: center;
+    width: 40px;
+    /*width: 34px;*/
+    /*height: 15px;*/
+    /*border: 1px solid #888888;*/
+    /*border-radius: 3px;*/
+    /*background: #0ca417;*/
+    /*color: #fff;*/
+    /*font-size: 9px;*/
+    /*text-align: center;*/
+    /*line-height: 11px;*/
+    /*font-weight: 600;*/
+    /*cursor: pointer;*/
+    /*margin: 3px 3px 2px;*/
 }
 .warntabl-td input {
     border: 1px solid #888888;
@@ -668,7 +680,7 @@
     text-align: center !important;
 }
 .regltabl-prepared {
-    width: 128px;
+    width: 142px; /* 128px; */
     background: transparent;
     border-right: 1px solid transparent;
 }
@@ -680,7 +692,7 @@
     background: #dbdbdb !important;
 }
 .regltabl-prepstock {
-    background: url('/img/printscheduler/prepared-stock.svg') no-repeat;
+    background: url('/img/printscheduler/prepared-stock-green.svg') no-repeat;
     height: 16px;
     width: 44px;
     font-size: 10.5px;
@@ -690,9 +702,9 @@
     cursor: pointer;
 }
 .regltabl-prepplate {
-    background: url('/img/printscheduler/prepared-plate.svg') no-repeat;
+    background: url('/img/printscheduler/prepared-plateupd-green.svg') no-repeat;
     height: 16px;
-    width: 45px;
+    width: 57px;
     font-size: 10.5px;
     line-height: 14px;
     margin-left: -2px;
@@ -700,8 +712,20 @@
     text-align: center;
     cursor: pointer;
 }
+.prepplate-docview {
+    border-right: 1px solid #000000;
+    height: 13px;
+    margin-top: 1px;
+    width: 20px;
+}
+.regltabl-prepplate.grey .prepplate-docview {
+    border-right: 1px solid #ffffff;
+}
+.prepplate-label {
+    width: 37px;
+}
 .regltabl-prepink {
-    background: url('/img/printscheduler/prepared-ink.svg') no-repeat;
+    background: url('/img/printscheduler/prepared-ink-green.svg') no-repeat;
     height: 16px;
     width: 42px;
     font-size: 10.5px;
@@ -710,6 +734,13 @@
     margin-top: 2px;
     text-align: center;
     cursor: pointer;
+}
+.regltabl-blankorder {
+    width: 94px;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    text-align: center;
+    font-size: 10.5px;
 }
 .regltabl-prepstock.grey {
     background: url('/img/printscheduler/prepared-stock-grey.svg') no-repeat;
@@ -722,9 +753,9 @@
     color: #fff;
 }
 .regltabl-prepplate.grey {
-    background: url('/img/printscheduler/prepared-plate-grey.svg') no-repeat;
+    background: url('/img/printscheduler/prepared-plateupd-grey.svg') no-repeat;
     height: 16px;
-    width: 45px;
+    width: 57px;
     font-size: 10.5px;
     line-height: 14px;
     margin-left: -2px;
@@ -752,6 +783,16 @@
 }
 .regltabl-flfprint {
     width: 44px;
+}
+.rectabl-blankfullfill {
+    width: 127px;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    text-align: center;
+    font-size: 12px;
+    font-style: italic;
+    height: 20px;
+    line-height: 20px;
 }
 .regltabl-flfprint input {
     width: 38px;
@@ -832,20 +873,30 @@
     top: -1px;
 }
 .printerline {
-    width: 100%;
-    height: 26px;
-    line-height: 26px;
+    width: 320px; /* 100%; */
+    height: 19px; /* 26px; */
+    line-height: 19px; /* 26px; */
+    margin: 4px 0 4px 10px;
+    padding-left: 7px;
+    background: #acabab;
+}
+.printerline.unassignedtotal {
+    background: #93fc9b;
 }
 .regltabl-printername {
     font-size: 13px;
-    line-height: 22px;
+    /* line-height: 22px; */
     font-style: italic;
+    font-weight: 600;
 }
 .regltabl-printerinfo {
     color: #e0e0e0;
     font-size: 13px;
-    line-height: 22px;
+    /* line-height: 22px; */
     margin-left: 17px;
+}
+.unassignedtotal .regltabl-printerinfo {
+    color: #000000;
 }
 .regltabl-printerinfo span {
     font-weight: 600;

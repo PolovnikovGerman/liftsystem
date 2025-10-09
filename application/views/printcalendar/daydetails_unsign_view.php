@@ -1,4 +1,4 @@
-<div class="regltabl-tr printerline">
+<div class="printerline unassignedtotal"> <!-- regltabl-tr -->
     <div class="regltabl-printername">Unassigned</div>
     <div class="regltabl-printerinfo"><span><?=QTYOutput($total['printqty'])?></span> prints - <span><?=QTYOutput($total['itemscnt'])?></span> items - <span><?=$total['ordercnt']?></span> orders</div>
 </div>
@@ -43,8 +43,15 @@
         <div class="regltabl-prepblock">
             <div class="regltabl-td regltabl-prepared">
                 <div class="regltabl-prepstock <?=$list['print_ready']==0 ? 'grey' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Stock</div>
-                <div class="regltabl-prepplate <?=$list['plates_ready']==0 ? 'grey' : ''?>" data-orderitem="<?=$list['order_item_id']?>">Plate</div>
+                <?php if ($list['order_blank']==0) : ?>
+                <div class="regltabl-prepplate <?=$list['plates_ready']==0 ? 'grey' : ''?>" data-orderitem="<?=$list['order_item_id']?>">
+                    <div class="prepplate-docview">&nbsp;</div>
+                    <div class="prepplate-label">Plate</div>
+                </div>
                 <div class="regltabl-prepink <?=$list['ink_ready']==0 ? 'grey' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Ink</div>
+                <?php else : ?>
+                    <div class="regltabl-blankorder">Blank Order</div>
+                <?php endif; ?>
             </div>
         </div>
         <div class="regltabl-fulfblock <?=$list['fulfillprc']>=100 ? 'closedblock' : ''?>">
@@ -53,6 +60,7 @@
             <div class="regltabl-td regltabl-flfprint">
                 <input type="text" name="printval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
             </div>
+            <?php if ($list['order_blank']==0) : ?>
             <div class="regltabl-td regltabl-flfkept">
                 <input type="text" name="keptval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
             </div>
@@ -63,9 +71,12 @@
             <div class="regltabl-td regltabl-flfplates">
                 <input type="text" name="platesval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
             </div>
-            <div class="regltabl-td regltabl-save">
+            <?php else : ?>
+                <div class="rectabl-blankfullfill">Blank Order</div>
+            <?php endif; ?>
+            <!-- <div class="regltabl-td regltabl-save"> -->
                 <div class="btnsave fulfblock <?=$list['fulfillprc']>=100 ? 'closedblock' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
-            </div>
+            <!-- </div> -->
         </div>
         <div class="regltabl-shipblock <?=$list['shippedprc']>=100 ? 'closedblock' : ''?>">
             <div class="regltabl-td regltabl-sent"><?=QTYOutput($list['shipped'])?></div>
@@ -92,9 +103,9 @@
             <div class="regltabl-td regltabl-tracking">
                 <input type="text" name="shiptrackcode" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
             </div>
-            <div class="regltabl-td regltabl-save">
+            <!-- <div class="regltabl-td regltabl-save"> -->
                 <div class="btnsave shipblock <?=$list['fulfillprc']>=100 ? 'closedblock' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
-            </div>
+            <!-- </div> -->
         </div>
     </div>
 <?php endforeach; ?>
