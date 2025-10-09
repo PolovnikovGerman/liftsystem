@@ -42,13 +42,19 @@
         </div>
         <div class="regltabl-prepblock">
             <div class="regltabl-td regltabl-prepared">
-                <div class="regltabl-prepstock <?=$list['print_ready']==0 ? 'grey' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Stock</div>
+                <div class="regltabl-prepstock <?=$list['print_ready']==0 ? '' : 'grey'?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Stock</div>
                 <?php if ($list['order_blank']==0) : ?>
-                <div class="regltabl-prepplate <?=$list['plates_ready']==0 ? 'grey' : ''?>" data-orderitem="<?=$list['order_item_id']?>">
-                    <div class="prepplate-docview">&nbsp;</div>
+                <div class="regltabl-prepplate <?=$list['plates_ready']==0 ? '' : 'grey'?>" data-orderitem="<?=$list['order_item_id']?>">
+                    <div class="prepplate-docview">
+                        <?php if ($list['platedocs']==0) : ?>
+                        &nbsp;
+                        <?php else : ?>
+                        <img src="/img/printscheduler/view-files.svg" alt="View files"/>
+                        <?php endif; ?>
+                    </div>
                     <div class="prepplate-label">Plate</div>
                 </div>
-                <div class="regltabl-prepink <?=$list['ink_ready']==0 ? 'grey' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Ink</div>
+                <div class="regltabl-prepink <?=$list['ink_ready']==0 ? '' : 'grey'?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Ink</div>
                 <?php else : ?>
                     <div class="regltabl-blankorder">Blank Order</div>
                 <?php endif; ?>

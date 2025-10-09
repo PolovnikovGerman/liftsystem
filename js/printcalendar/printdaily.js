@@ -88,9 +88,9 @@ function init_dailydetails_manage() {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 if (parseInt(response.data.newval)==1) {
-                    $(".regltabl-prepstock[data-ordercolor='"+ordercolor+"']").removeClass('grey');
-                } else {
                     $(".regltabl-prepstock[data-ordercolor='"+ordercolor+"']").addClass('grey');
+                } else {
+                    $(".regltabl-prepstock[data-ordercolor='"+ordercolor+"']").removeClass('grey');
                 }
             } else {
                 show_error(response)
@@ -105,9 +105,9 @@ function init_dailydetails_manage() {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 if (parseInt(response.data.newval)==1) {
-                    $(".regltabl-prepplate[data-orderitem='"+orderitem+"']").removeClass('grey');
-                } else {
                     $(".regltabl-prepplate[data-orderitem='"+orderitem+"']").addClass('grey');
+                } else {
+                    $(".regltabl-prepplate[data-orderitem='"+orderitem+"']").removeClass('grey');
                 }
             } else {
                 show_error(response);
@@ -122,9 +122,9 @@ function init_dailydetails_manage() {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 if (parseInt(response.data.newval)==1) {
-                    $(".regltabl-prepink[data-ordercolor='"+ordercolor+"']").removeClass('grey');
-                } else {
                     $(".regltabl-prepink[data-ordercolor='"+ordercolor+"']").addClass('grey');
+                } else {
+                    $(".regltabl-prepink[data-ordercolor='"+ordercolor+"']").removeClass('grey');
                 }
             } else {
                 show_error(response)
