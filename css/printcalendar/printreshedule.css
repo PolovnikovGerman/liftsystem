@@ -5,6 +5,9 @@
     height: 50px;
     background: url(/img/printscheduler/btnreschedular-open2.svg) no-repeat;
     margin-top: 1px;
+    cursor: pointer;
+    position: relative;
+    z-index: 10;
 }
 .btn-reschedular-open .btnreschedular-btn {
     width: 40px;
@@ -14,7 +17,7 @@
     color: #fff;
     font-size: 20px;
     text-align: center;
-    cursor: pointer;
+    /* cursor: pointer; */
     float: right !important;
     z-index: 15;
     position: relative;
@@ -65,34 +68,34 @@
     margin-left: 14px;
     width: calc(100% - 14px);
 }
-.maingrey-title {
-    color: #fff;
-    font-size: 18px;
-    line-height: 35px;
-    font-weight: 600;
-    margin-left: 15px;
-}
-.maingrey-infobox {
-    width: 258px;
-    height: 22px;
-    background: #fff;
-    border: 1px solid #000;
-    margin-top: 6px;
-    margin-left: 15px;
-}
-.maingreyinfo-prints,
-.maingreyinfo-items,
-.maingreyinfo-orders {
-    width: 85px;
-    text-align: center;
-    font-size: 13px;
-    line-height: 19px;
-}
-.maingreyinfo-prints span,
-.maingreyinfo-items span,
-.maingreyinfo-orders span {
-    font-weight: 600;
-}
+/*.maingrey-title {*/
+/*    color: #fff;*/
+/*    font-size: 18px;*/
+/*    line-height: 35px;*/
+/*    font-weight: 600;*/
+/*    margin-left: 15px;*/
+/*}*/
+/*.maingrey-infobox {*/
+/*    width: 258px;*/
+/*    height: 22px;*/
+/*    background: #fff;*/
+/*    border: 1px solid #000;*/
+/*    margin-top: 6px;*/
+/*    margin-left: 15px;*/
+/*}*/
+/*.maingreyinfo-prints,*/
+/*.maingreyinfo-items,*/
+/*.maingreyinfo-orders {*/
+/*    width: 85px;*/
+/*    text-align: center;*/
+/*    font-size: 13px;*/
+/*    line-height: 19px;*/
+/*}*/
+/*.maingreyinfo-prints span,*/
+/*.maingreyinfo-items span,*/
+/*.maingreyinfo-orders span {*/
+/*    font-weight: 600;*/
+/*}*/
 .maingrey-close {
     float: right !important;
     color: #fff;
@@ -106,7 +109,7 @@
     float: right !important;
     margin-right: 10px;
     width: calc(100% - 790px);
-    margin-top: -46px;
+    margin-top: -47px; /* -46px; */
 }
 .reschedular-block {
     width: 100%;
@@ -117,12 +120,13 @@
 .reschedulartabs {
     /* width: 100%; */
     width: 790px;
+    margin-bottom: -1px;
 }
 .reschdl-tab {
     padding: 0 10px;
-    background: #888888;
+    background: #b0afaf; /* #888888; */
     padding: 5px 14px;
-    color: #d4d4d4;
+    color: #dad9d9; /* #d4d4d4; */
     font-size: 13px;
     font-weight: 600;
     border-radius: 5px 5px 0 0;
@@ -161,7 +165,7 @@
 }
 .reschdltabl-td {
     background: #eeeded;
-    font-size: 12px;
+    /* font-size: 12px; */
     text-align: center;
     border-right: 1px solid #d3d1d1;
 }

@@ -20,7 +20,7 @@
             </div>
             <div class="assign-popup" data-order="<?=$list['order_itemcolor_id']?>">
                 <ul>
-                    <li class="assignusr" data-user="0">Unassign</li>
+                    <li class="assignusr" data-user="0">Unassigned</li>
                     <?php foreach ($users as $user) : ?>
                         <li class="assignusr" data-user="<?=$user['user_id']?>"><?=$user['first_name']?></li>
                     <?php endforeach;?>
