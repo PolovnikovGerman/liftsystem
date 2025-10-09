@@ -486,18 +486,6 @@
     width: 40px;
     position: relative;
     top: -1px;
-    /*width: 34px;*/
-    /*height: 15px;*/
-    /*border: 1px solid #888888;*/
-    /*border-radius: 3px;*/
-    /*background: #0ca417;*/
-    /*color: #fff;*/
-    /*font-size: 9px;*/
-    /*text-align: center;*/
-    /*line-height: 11px;*/
-    /*font-weight: 600;*/
-    /*cursor: pointer;*/
-    /*margin: 3px 3px 2px;*/
 }
 .warntabl-td input {
     border: 1px solid #888888;
@@ -739,8 +727,8 @@
 }
 .regltabl-blankorder {
     width: 94px;
-    border: 1px solid #ffffff;
-    color: #ffffff;
+    border: 1px solid #bcbbbb;
+    color: #dad8d8;
     text-align: center;
     font-size: 10.5px;
 }
@@ -788,8 +776,8 @@
 }
 .rectabl-blankfullfill {
     width: 127px;
-    border: 1px solid #ffffff;
-    color: #ffffff;
+    border: 1px solid #bcbbbb;
+    color: #dad8d8;
     text-align: center;
     font-size: 12px;
     font-style: italic;
