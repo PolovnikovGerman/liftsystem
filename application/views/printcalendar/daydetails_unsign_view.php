@@ -1,6 +1,10 @@
-<div class="printerline unassignedtotal"> <!-- regltabl-tr -->
-    <div class="regltabl-printername">Unassigned</div>
-    <div class="regltabl-printerinfo"><span><?=QTYOutput($total['printqty'])?></span> prints - <span><?=QTYOutput($total['itemscnt'])?></span> items - <span><?=$total['ordercnt']?></span> orders</div>
+<div class="printerline">
+    <div class="regltabl-printername unassignedtotal">Unassigned</div>
+    <div class="regltabl-printerinfo unassignedtotal">
+        <div class="regltabl-printerinfo-data">
+            <span><?=QTYOutput($total['printqty'])?></span> prints - <span><?=QTYOutput($total['itemscnt'])?></span> items - <span><?=$total['ordercnt']?></span> orders
+        </div>
+    </div>
 </div>
 <?php foreach ($lists as $list) : ?>
     <div class="regltabl-tr" data-ordercolor="<?=$list['order_itemcolor_id']?>">

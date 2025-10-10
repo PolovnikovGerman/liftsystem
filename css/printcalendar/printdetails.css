@@ -535,9 +535,11 @@
     height: 20px;
     line-height: 20px;
     margin-bottom: 3px;
+    margin-left: 10px;
 }
 .regltabl-header {
     margin-bottom: 4px;
+    margin-left: 0px;
 }
 .regltabl-td {
     background: #eeeded;
@@ -574,7 +576,7 @@
 }
 .regltabl-shipblock {
     border: 1px solid #888888;
-    min-width: 327px;
+    min-width: 317px;
 }
 .regltabl-header .regltabl-shipblock {
     margin-right: 40px;
@@ -842,10 +844,10 @@
     width: 50px;
 }
 .regltabl-tracking {
-    width: 112px;
+    width: 102px;
 }
 .regltabl-tracking input {
-    width: 106px;
+    width: 96px;
 }
 .regltabl-save {
     width: 40px;
@@ -868,34 +870,55 @@
     top: -1px;
 }
 .printerline {
-    width: 320px; /* 100%; */
+    width: calc(100% - 12px);
     height: 19px; /* 26px; */
     line-height: 19px; /* 26px; */
-    margin: 4px 0 4px 10px;
-    padding-left: 7px;
-    background: #acabab;
+    margin: 4px 0 4px 0px; /* 10px */
 }
 .printerline.unassignedtotal {
-    background: #93fc9b;
+    /* background: #93fc9b; */
 }
 .regltabl-printername {
     font-size: 13px;
     /* line-height: 22px; */
     font-style: italic;
     font-weight: 600;
+    color: #000000;
+    background: #FFFFFF;
+    width: 96px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+}
+.regltabl-printername.unassignedtotal {
+    background: #93fc9b;
 }
 .regltabl-printerinfo {
-    color: #e0e0e0;
-    font-size: 13px;
-    /* line-height: 22px; */
-    margin-left: 17px;
+    background: #FFFFFF;
+    width: calc(100% - 97px);
+    height: 20px;
 }
-.unassignedtotal .regltabl-printerinfo {
-    color: #000000;
+.regltabl-printerinfo.unassignedtotal {
+    background: #93fc9b;
 }
-.regltabl-printerinfo span {
-    font-weight: 600;
+.regltabl-printerinfo-data {
+    background: #969595;
+    color: #EFEFEF;
+    font-size: 11px;
+    height: 17px;
+    line-height: 17px;
+    width: 100%;
+    padding-left: 10px;
 }
+/*.unassignedtotal .regltabl-printerinfo {*/
+/*    color: #000000;*/
+/*}*/
+/*.regltabl-printerinfo span {*/
+/*    font-weight: 600;*/
+/*}*/
 .closedblock {
     opacity: .3;
 }

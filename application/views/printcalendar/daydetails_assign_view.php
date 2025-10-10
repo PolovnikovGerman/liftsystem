@@ -1,6 +1,10 @@
-<div class="regltabl-tr printerline" data-user="<?=$user_id?>">
+<div class="printerline" data-user="<?=$user_id?>">
     <div class="regltabl-printername"><?=$user?></div>
-    <div class="regltabl-printerinfo"><span><?=$prints?></span> prints - <span><?=$items?></span> items - <span><?=$orders?></span> orders</div>
+    <div class="regltabl-printerinfo">
+        <div class="regltabl-printerinfo-data">
+            <span><?=QTYOutput($total['printqty'])?></span> prints - <span><?=QTYOutput($total['itemscnt'])?></span> items - <span><?=$total['ordercnt']?></span> orders
+        </div>
+    </div>
 </div>
 <?php foreach ($lists as $list)  :?>
     <div class="regltabl-tr"  data-ordercolor="<?=$list['order_itemcolor_id']?>">
