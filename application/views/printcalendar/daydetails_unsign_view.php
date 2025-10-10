@@ -64,18 +64,18 @@
             <div class="regltabl-td regltabl-done"><?=QTYOutput($list['fulfill'])?></div>
             <div class="regltabl-td regltabl-flfremain"><?=QTYOutput($list['notfulfill'])?></div>
             <div class="regltabl-td regltabl-flfprint">
-                <input type="text" name="printval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
+                <input type="text" name="printval" data-ordercolor="<?=$list['order_itemcolor_id']?>" autocomplete="new-password"/>
             </div>
             <?php if ($list['order_blank']==0) : ?>
             <div class="regltabl-td regltabl-flfkept">
-                <input type="text" name="keptval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
+                <input type="text" name="keptval" data-ordercolor="<?=$list['order_itemcolor_id']?>" autocomplete="new-password"/>
             </div>
             <div class="regltabl-td regltabl-flfmisprt">
-                <input type="text" name="misprintval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
+                <input type="text" name="misprintval" data-ordercolor="<?=$list['order_itemcolor_id']?>" autocomplete="new-password"/>
             </div>
             <div class="regltabl-td regltabl-flftotal"><?=empty($list['amount_sum']) ? '&nbsp;' : round($list['amount_sum'],0)?></div>
             <div class="regltabl-td regltabl-flfplates">
-                <input type="text" name="platesval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
+                <input type="text" name="platesval" data-ordercolor="<?=$list['order_itemcolor_id']?>" autocomplete="new-password"/>
             </div>
             <?php else : ?>
                 <div class="rectabl-blankfullfill">Blank Order</div>
@@ -91,7 +91,7 @@
             <div class="regltabl-td regltabl-sent"><?=QTYOutput($list['shipped'])?></div>
             <div class="regltabl-td regltabl-shipremain"><?=QTYOutput($list['notshipp'])?></div>
             <div class="regltabl-td regltabl-qty">
-                <input type="text" name="shipqty" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
+                <input type="text" name="shipqty" data-ordercolor="<?=$list['order_itemcolor_id']?>" autocomplete="new-password"/>
             </div>
             <div class="regltabl-td regltabl-shipdate">
                 <input type="text" name="shipdate" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
@@ -110,7 +110,7 @@
                 </select>
             </div>
             <div class="regltabl-td regltabl-tracking">
-                <input type="text" name="shiptrackcode" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
+                <input type="text" name="shiptrackcode" data-ordercolor="<?=$list['order_itemcolor_id']?>" autocomplete="new-password"/>
             </div>
             <!-- <div class="regltabl-td regltabl-save"> -->
                 <div class="btnsave shipblock <?=$list['shippedprc']>=100 ? 'closedblock' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
