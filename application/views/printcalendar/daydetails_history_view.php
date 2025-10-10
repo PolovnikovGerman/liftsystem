@@ -47,7 +47,7 @@
                         <?php endif; ?>
                     </div>
                 </div>
-                <div class="histrtabl-td histrtabl-printer"><?=empty($list['user_name']) ? 'Unsign' : $list['user_name']?></div>
+                <div class="histrtabl-td histrtabl-printer"><?=empty($list['user_name']) ? 'Unknown' : $list['user_name']?></div>
                 <div class="histrtabl-mainblock">
                     <div class="histrtabl-td histrtabl-brand">
                         <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
@@ -95,7 +95,7 @@
             </div>
             <?php foreach ($totals as $total) : ?>
                 <div class="totalboxtab-tr <?=$total['class']=='total' ? 'totalboxtab-footer' : ''?>">
-                    <div class="totalboxtab-td totalboxtab-printers"><?=empty($total['user_name']) ? 'Unsign' : $total['user_name']?></div>
+                    <div class="totalboxtab-td totalboxtab-printers"><?=empty($total['user_name']) ? 'Unknown' : $total['user_name']?></div>
                     <div class="totalboxtab-td totalboxtab-prints"><?=empty($total['printqty']) ? '-' : QTYOutput($total['printqty'])?></div>
                     <div class="totalboxtab-td totalboxtab-items"><?=empty($total['itemscnt']) ? '-' : QTYOutput($total['itemscnt'])?></div>
                     <div class="totalboxtab-td totalboxtab-orders"><?=empty($total['ordercnt']) ? '-' : QTYOutput($total['ordercnt'])?></div>
