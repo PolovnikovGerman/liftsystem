@@ -80,11 +80,14 @@
             <?php else : ?>
                 <div class="rectabl-blankfullfill">Blank Order</div>
             <?php endif; ?>
-            <div class="regltabl-td regltabl-save">
+            <!-- <div class="regltabl-td regltabl-save"> -->
                 <div class="btnsave fulfblock <?=$list['fulfillprc']>=100 ? 'closedblock' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
-            </div>
+            <!-- </div> -->
         </div>
         <div class="regltabl-shipblock <?=$list['shippedprc']>=100 ? 'closedblock' : ''?>">
+            <?php if (empty($list['fulfill'])) : ?>
+            &nbsp;
+            <?php else : ?>
             <div class="regltabl-td regltabl-sent"><?=QTYOutput($list['shipped'])?></div>
             <div class="regltabl-td regltabl-shipremain"><?=QTYOutput($list['notshipp'])?></div>
             <div class="regltabl-td regltabl-qty">
@@ -109,9 +112,10 @@
             <div class="regltabl-td regltabl-tracking">
                 <input type="text" name="shiptrackcode" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
             </div>
-            <div class="regltabl-td regltabl-save">
-                <div class="btnsave shipblock <?=$list['fulfillprc']>=100 ? 'closedblock' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
-            </div>
+            <!-- <div class="regltabl-td regltabl-save"> -->
+                <div class="btnsave shipblock <?=$list['shippedprc']>=100 ? 'closedblock' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
+            <!-- </div> -->
+            <?php endif; ?>
         </div>
     </div>
 <?php endforeach; ?>
