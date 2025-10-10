@@ -1082,4 +1082,43 @@ class Exportexcell_model extends CI_Model
         return $url;
     }
 
+    public function fullfill_orders($orders, $brand)
+    {
+        ini_set("memory_limit",-1);
+        $namesheet = $brand.' orders';
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle($namesheet);
+
+        $sheet->setCellValue('A1','Brand');
+        $sheet->setCellValue('B1','Order #');
+        $sheet->setCellValue('C1','Order Date');
+        $sheet->setCellValue('D1','Customer');
+        $sheet->setCellValue('E1','Revenue');
+        $sheet->setCellValue('F1','Item Number');
+        $sheet->setCellValue('G1','Item Name');
+        $sheet->setCellValue('H1','Qty');
+        $sheet->setCellValue('I1','%Ful');
+        $sheet->setCellValue('J1','%Ship');
+        $j=2;
+        foreach ($orders as $order) {
+            $sheet->setCellValue('A'.$j, $order['brand']);
+            $sheet->setCellValue('B'.$j, $order['order_num']);
+            $sheet->setCellValue('C'.$j, $order['order_date']);
+            $sheet->setCellValue('D'.$j, $order['customer']);
+            $sheet->setCellValue('E'.$j, $order['revenue']);
+            $sheet->setCellValue('F'.$j, $order['item_number']);
+            $sheet->setCellValue('G'.$j, $order['item']);
+            $sheet->setCellValue('H'.$j, $order['qty']);
+            $sheet->setCellValue('I'.$j, $order['fullfill']);
+            $sheet->setCellValue('J'.$j, $order['shipped']);
+            $j++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $report_name = $brand.'_orders' . (microtime(TRUE) * 10000) . '.xlsx';
+        $filename = $this->config->item('upload_path_preload') . $report_name;
+        $writer->save($filename);    // download file
+        return $filename;
+    }
+
 }

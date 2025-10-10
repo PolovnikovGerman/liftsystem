@@ -5019,4 +5019,68 @@ class Test extends CI_Controller
             echo 'Order # '.$order['order_num'].' updated'.PHP_EOL;
         }
     }
+
+    public function checktrackdata()
+    {
+        $brands = ['SB', 'SR']; // 'SB',
+        foreach ($brands as $brand) {
+            $this->db->select('order_id, order_num, order_date, order_qty, customer_name, revenue, order_itemnumber, order_items')->from('ts_orders')->where(['is_canceled'=>0, 'order_system'=>'new']);
+            if ($brand=='SB') {
+                $this->db->where_in('brand',['SB','BT']);
+            } else {
+                $this->db->where('brand', $brand);
+            }
+            $this->db->order_by('order_id');
+            $orders = $this->db->get()->result_array();
+            // Analise
+            $errorders = [];
+            foreach ($orders as $order) {
+                // Get amounts
+                $this->db->select('count(amount_id) as cnt, sum(shipped) as outqty')->from('ts_order_amounts')->where('order_id', $order['order_id']);
+                $amnt = $this->db->get()->row_array();
+                // Get shipped
+                $this->db->select('count(t.tracking_id) as trackcnt, sum(t.qty) as trackqty')->from('ts_order_trackings t');
+                $this->db->join('ts_order_itemcolors oic','oic.order_itemcolor_id = t.order_itemcolor_id');
+                $this->db->join('ts_order_items oi','oi.order_item_id = oic.order_item_id');
+                $this->db->where('oi.order_id', $order['order_id']);
+                $track = $this->db->get()->row_array();
+                if ($amnt['cnt']>0 && $amnt['outqty']>$order['order_qty'] && $track['trackcnt']>0 && $track['trackqty']>$order['order_qty']) {
+                    // echo 'Order '.$order['order_num'].' success'.PHP_EOL;
+                } else {
+                    $fulfil = $ship = 0;
+                    if ($amnt['cnt']>0) {
+                        if ($amnt['outqty']>=$order['order_qty']) {
+                            $fulfil = 100;
+                        } else {
+                            $fulfil = round($amnt['outqty']/$order['order_qty']*100,1);
+                        }
+                    }
+                    if ($track['trackcnt']>0) {
+                        if ($track['trackqty']>=$order['order_qty']) {
+                            $ship = 100;
+                        } else {
+                            $ship = round($track['trackqty']/$order['order_qty']*100,1);
+                        }
+                    }
+                    if ($fulfil!=$ship) {
+                        $errorders[] = [
+                            'brand' => $brand,
+                            'order_num' => $order['order_num'],
+                            'order_date' => date('m/d/y', $order['order_date']),
+                            'customer' => $order['customer_name'],
+                            'revenue' => $order['revenue'],
+                            'item_number' => $order['order_itemnumber'],
+                            'item' => $order['order_items'],
+                            'qty' => $order['order_qty'],
+                            'fullfill' => $fulfil,
+                            'shipped' => $ship,
+                        ];
+                    }
+                }
+            }
+            $this->load->model('exportexcell_model');
+            $res = $this->exportexcell_model->fullfill_orders($errorders, $brand);
+            echo 'Report '.$res.' builded'.PHP_EOL;
+        }
+    }
 }
