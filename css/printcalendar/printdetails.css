@@ -689,7 +689,8 @@
     font-size: 10.5px;
     line-height: 14px;
     margin-top: 2px;
-    text-align: center;
+    text-align: left;
+    padding-left: 6px;
     cursor: pointer;
 }
 .regltabl-prepplate {
@@ -714,6 +715,8 @@
 }
 .prepplate-label {
     width: 37px;
+    text-align: left;
+    padding-left: 4px;
 }
 .regltabl-prepink {
     background: url('/img/printscheduler/prepared-ink-green.svg') no-repeat;
@@ -723,7 +726,8 @@
     line-height: 14px;
     margin-left: -2px;
     margin-top: 2px;
-    text-align: center;
+    text-align: left;
+    padding-left: 12px;
     cursor: pointer;
 }
 .regltabl-blankorder {
@@ -735,12 +739,12 @@
 }
 .regltabl-prepstock.grey {
     background: url('/img/printscheduler/prepared-stock-grey.svg') no-repeat;
-    height: 16px;
-    width: 44px;
-    font-size: 10.5px;
-    line-height: 14px;
-    margin-top: 2px;
-    text-align: center;
+    /*height: 16px;*/
+    /*width: 44px;*/
+    /*font-size: 10.5px;*/
+    /*line-height: 14px;*/
+    /*margin-top: 2px;*/
+    /*text-align: center;*/
     color: #fff;
 }
 .regltabl-prepplate.grey {
@@ -756,13 +760,13 @@
 }
 .regltabl-prepink.grey {
     background: url('/img/printscheduler/prepared-ink-grey.svg') no-repeat;
-    height: 16px;
-    width: 42px;
-    font-size: 10.5px;
-    line-height: 14px;
-    margin-left: -2px;
-    margin-top: 2px;
-    text-align: center;
+    /*height: 16px;*/
+    /*width: 42px;*/
+    /*font-size: 10.5px;*/
+    /*line-height: 14px;*/
+    /*margin-left: -2px;*/
+    /*margin-top: 2px;*/
+    /*text-align: center;*/
     color: #fff;
 }
 .regltabl-done {
