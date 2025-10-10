@@ -96,13 +96,13 @@
 /*.maingreyinfo-orders span {*/
 /*    font-weight: 600;*/
 /*}*/
-.maingrey-close {
-    float: right !important;
-    color: #fff;
-    font-size: 16px;
-    margin: 5px 10px;
-    cursor: pointer;
-}
+/*.maingrey-close {*/
+/*    float: right !important;*/
+/*    color: #fff;*/
+/*    font-size: 16px;*/
+/*    margin: 5px 10px;*/
+/*    cursor: pointer;*/
+/*}*/
 
 .pschedul-rightside {
     display: none;

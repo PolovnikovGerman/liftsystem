@@ -67,17 +67,17 @@
                     <div class="warntabl-td warntabl-flfremain"><?=$list['notfulfill']?></div>
                     <div class="warntabl-td warntabl-flfdate"><?=empty($list['amount_date']) ? '&nbsp;' : date('m/d', $list['amount_date'])?></div>
                     <div class="warntabl-td warntabl-flfprint">
-                        <input type="text" name="printval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
+                        <input type="text" name="printval" data-ordercolor="<?=$list['order_itemcolor_id']?>" autocomplete="new-password"/>
                     </div>
                     <div class="warntabl-td warntabl-flfkept">
-                        <input type="text" name="keptval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
+                        <input type="text" name="keptval" data-ordercolor="<?=$list['order_itemcolor_id']?>" autocomplete="new-password"/>
                     </div>
                     <div class="warntabl-td warntabl-flfmisprt">
-                        <input type="text" name="misprintval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
+                        <input type="text" name="misprintval" data-ordercolor="<?=$list['order_itemcolor_id']?>" autocomplete="new-password"/>
                     </div>
                     <div class="warntabl-td warntabl-flftotal"><?=empty($list['amount_sum']) ? '&nbsp;' : round($list['amount_sum'],0)?></div>
                     <div class="warntabl-td warntabl-flfplates">
-                        <input type="text" name="platesval" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
+                        <input type="text" name="platesval" data-ordercolor="<?=$list['order_itemcolor_id']?>" autocomplete="new-password"/>
                     </div>
                     <!-- <div class="warntabl-td warntabl-save"> -->
                         <div class="btnsave fulfblock" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
@@ -87,7 +87,7 @@
                     <div class="warntabl-td warntabl-sent"><?=$list['shipped']?></div>
                     <div class="warntabl-td warntabl-shipremain"><?=$list['notshipp']<=0 ? '&nbsp;' : round($list['notshipp'],0)?></div>
                     <div class="warntabl-td warntabl-qty">
-                        <input type="text" name="shipqty" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
+                        <input type="text" name="shipqty" data-ordercolor="<?=$list['order_itemcolor_id']?>" autocomplete="new-password"/>
                     </div>
                     <div class="warntabl-td warntabl-shipdate">
                         <input type="text" name="shipdate" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
@@ -106,7 +106,7 @@
                         </select>
                     </div>
                     <div class="warntabl-td warntabl-tracking">
-                        <input type="text" name="shiptrackcode" data-ordercolor="<?=$list['order_itemcolor_id']?>"/>
+                        <input type="text" name="shiptrackcode" data-ordercolor="<?=$list['order_itemcolor_id']?>" autocomplete="new-password"/>
                     </div>
                     <!-- <div class="warntabl-td warntabl-save"> -->
                         <div class="btnsave shipblock" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
