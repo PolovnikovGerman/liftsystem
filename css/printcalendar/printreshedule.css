@@ -360,7 +360,7 @@
     text-align: center;
 }
 .reschditms-itemline .imprintitemname {
-    width: 200px;
+    width: 273px;
     color: #fff;
     font-weight: 600;
     font-size: 12px;
@@ -370,7 +370,6 @@
     width: 50px;
 }
 .reschditms-itemline .imprintitemqty {
-    margin-left: 73px;
     width: 44px;
 }
 .reschditms-itemline .imprintprintsqty {

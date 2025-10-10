@@ -8,8 +8,8 @@
         <div class="reschditms-mainblock">
             <div class="reschditms-td reschditms-brand">&nbsp;</div>
             <div class="reschditms-td reschditms-rush">&nbsp;</div>
-            <div class="reschditms-td reschditms-order">Order#</div>
             <div class="reschditms-td reschditms-date">Date</div>
+            <div class="reschditms-td reschditms-order">Order#</div>
             <div class="reschditms-td reschditms-items">#Items</div>
             <div class="reschditms-td reschditms-imp">Imp</div>
             <div class="reschditms-td reschditms-prints">#Prints</div>
@@ -43,8 +43,8 @@
                             <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
                         </div>
                         <div class="reschditms-td reschditms-rush <?=$list['order_rush']==1 ? 'redrush' : ''?>"><?=$list['order_rush']==1 ? 'RUSH' : '&nbsp;'?></div>
-                        <div class="reschditms-td reschditms-order"><?=$list['order_num']?></div>
                         <div class="reschditms-td reschditms-date <?=$list['dateclass']?>"><?=date('m/d/Y', $list['print_date'])?></div>
+                        <div class="reschditms-td reschditms-order"><?=$list['order_num']?></div>
                         <div class="reschditms-td reschditms-items"><?=QTYOutput($list['item_qty'])?></div>
                         <div class="reschditms-td reschditms-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                         <div class="reschditms-td reschditms-prints"><?=QTYOutput($list['prints'])?></div>
