@@ -19,7 +19,12 @@
     </div>
     <div class="reschditms-body">
         <?php foreach ($calendars as $calendar) : ?>
-            <div class="reschditms-itemline"><?=$calendar['item']?></div>
+            <div class="reschditms-itemline">
+                <div class="imprintitemname"><?=$calendar['item']?></div>
+                <div class="imprintorders"><?=$calendar['orders']?> orders</div>
+                <div class="imprintitemqty"><?=$calendar['items']?></div>
+                <div class="imprintprintsqty"><?=$calendar['prints']?></div>
+            </div>
             <?php $lists = $calendar['data']; ?>
             <?php foreach ($lists as $list) : ?>
                 <div class="reschditms-tr">

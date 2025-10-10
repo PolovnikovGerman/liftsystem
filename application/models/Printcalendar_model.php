@@ -660,7 +660,7 @@ class Printcalendar_model extends MY_Model
 
     public function get_reschedule_items()
     {
-        $this->db->select('ii.inventory_item_id, concat(ii.item_num , \' - \', ii.item_name) as item, count(oic.order_itemcolor_id) as cnt');
+        $this->db->select('ii.inventory_item_id, concat(ii.item_num , \' - \', ii.item_name) as item, count(oic.order_itemcolor_id) as cnt, count(distinct(o.order_id)) as orders');
         $this->db->from('ts_order_itemcolors oic');
         $this->db->join('ts_order_items oi', 'oi.order_item_id = oic.order_item_id');
         $this->db->join('ts_orders o', 'o.order_id = oi.order_id');
@@ -700,6 +700,7 @@ class Printcalendar_model extends MY_Model
             $this->db->order_by('o.order_id asc');
             $dats = $this->db->get()->result_array();
             $didx = 0;
+            $items = $prints = 0;
             foreach ($dats as $uns) {
                 $dats[$didx]['fulfillprc'] = round($uns['fulfill']/$uns['item_qty']*100,0);
                 $dats[$didx]['shippedprc'] = round($uns['shipped']/$uns['item_qty']*100,0);
@@ -707,8 +708,12 @@ class Printcalendar_model extends MY_Model
                 $dats[$didx]['notshipp'] = $uns['item_qty'] - $uns['shipped'];
                 $dats[$didx]['class'] = ($dats[$didx]['fulfillprc']>$dats[$didx]['shippedprc'] ? 'critical' : 'normal');
                 $dats[$didx]['dateclass'] = ($uns['print_date']<$curdate ? 'latedate' : 'ontimedate');
+                $items+=$uns['item_qty'];
+                $prints+=$uns['prints'];
                 $didx++;
             }
+            $sheduls[$idx]['items'] = $items;
+            $sheduls[$idx]['prints'] = $prints;
             $sheduls[$idx]['data'] = $dats;
             $idx++;
         }
