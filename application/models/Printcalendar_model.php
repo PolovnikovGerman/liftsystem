@@ -715,6 +715,7 @@ class Printcalendar_model extends MY_Model
             $sheduls[$idx]['items'] = $items;
             $sheduls[$idx]['prints'] = $prints;
             $sheduls[$idx]['data'] = $dats;
+            $sheduls[$idx]['item'] = str_replace('Stress Balls','', $sheduls[$idx]['item']);
             $idx++;
         }
         return $sheduls;
