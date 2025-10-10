@@ -167,6 +167,7 @@
     background: #eeeded;
     text-align: center;
     border-right: 1px solid #d3d1d1;
+    font-size: 12px;
 }
 .reschdltabl-header .reschdltabl-td {
     border-right: 1px solid #dbdbdb !important;
@@ -257,7 +258,7 @@
     text-overflow: ellipsis;
 }
 .reschdltabl-inkcolor {
-    width: 94px;
+    width: 76px;
     text-align: left !important;
     padding-left: 5px;
     white-space: nowrap;
@@ -348,12 +349,33 @@
     overflow-y: scroll;
 }
 .reschditms-itemline {
-    color: #fff;
-    font-size: 13px;
-    line-height: 20px;
-    font-weight: 600;
     width: 680px;
     margin-left: 8px;
+}
+.reschditms-itemline > div {
+    line-height: 20px;
+    height: 20px;
+    font-size: 11px;
+    color: #afafaf;
+    text-align: center;
+}
+.reschditms-itemline .imprintitemname {
+    width: 200px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 12px;
+    text-align: left;
+}
+.reschditms-itemline .imprintorders {
+    width: 50px;
+}
+.reschditms-itemline .imprintitemqty {
+    margin-left: 73px;
+    width: 44px;
+}
+.reschditms-itemline .imprintprintsqty {
+    margin-left: 28px;
+    width: 44px;
 }
 .reschditms-tr {
     height: 20px;
