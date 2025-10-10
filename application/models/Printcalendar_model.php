@@ -537,9 +537,9 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->proofsql.') approv', 'approv.order_id=o.order_id','left');
         $this->db->join('('.$this->printsql.') impr', 'impr.order_item_id = oi.order_item_id','left');
         $this->db->join('users u', 'u.user_id = o.print_user', 'left');
-        $this->db->where('oic.shipping_ready > ', 0);
-        $this->db->where('oic.print_completed > ', 0);
-        $this->db->where('(COALESCE(oa.amount_id,0) > 0 or COALESCE(tr.tracking_id,0) > 0)');
+        // $this->db->where('oic.shipping_ready > ', 0);
+        // $this->db->where('oic.print_completed > ', 0);
+        $this->db->where('(COALESCE(oa.amount_id,0) > 0 or COALESCE(tr.qty,0) > 0)');
         $this->db->order_by('o.order_rush', 'desc');
         $this->db->order_by('order_id', 'asc');
         $history = $this->db->get()->result_array();
@@ -558,7 +558,7 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$ordamnt.') oa','oa.order_itemcolor_id = oic.order_itemcolor_id');
         $this->db->join('users u', 'u.user_id = o.print_user', 'left');
-        $this->db->where('oic.shipping_ready > ', 0);
+        // $this->db->where('oic.shipping_ready > ', 0);
         $this->db->group_by('o.print_user, u.first_name');
         $history_total = $this->db->get()->result_array();
         $idx = 0;
