@@ -514,11 +514,12 @@
 
 .regular-section {
     width: 100%;
-    padding-bottom: 12px;
+    /*padding-bottom: 12px;*/
 }
 .regular-table {
     width: calc(100% - 10px);
     margin-left: 10px;
+    margin-bottom: 12px;
 }
 .regularsection-subtitle {
     font-size: 12px;
@@ -1028,11 +1029,17 @@
     background: transparent !important;
     font-style: normal;
 }
+/*.history-section-small .histrtabl-header .histrtabl-printer {*/
+/*    width: 58px;*/
+/*}*/
 .histrtabl-printer {
     width: 53px;
     background: transparent !important;
     font-style: italic;
     font-size: 12px;
+}
+.history-section-small .histrtabl-printer {
+    width: 58px;
 }
 .histrtabl-brand {
     width: 13px;
@@ -1079,7 +1086,7 @@
     text-overflow: ellipsis;
 }
 .histrtabl-description.shortresched {
-    width: 227px;
+    width: 222px;
 }
 .histrtabl-inkcolor {
     width: 92px;
