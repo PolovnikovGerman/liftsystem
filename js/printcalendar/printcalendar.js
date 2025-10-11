@@ -86,7 +86,9 @@ function init_fullcalendar() {
             $(".pschedul-rightside").show();
             init_reschedule_management();
             init_dailydetails_manage();
-            new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
+            if ($("#reschdltabl-body").length > 0) {
+                new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
+            }
             $("#loader").hide();
         },'json')
     });
@@ -111,7 +113,9 @@ function init_current_reschedule() {
             $(".pschedul-rightside").show();
             init_reschedule_management();
             init_dailydetails_manage();
-            new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
+            if ($("#reschdltabl-body").length > 0) {
+                new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
+            }
             $("#loader").hide();
             // $(".history-section").hide();
         } else {
