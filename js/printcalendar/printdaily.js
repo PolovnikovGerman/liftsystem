@@ -28,7 +28,7 @@ function init_dailydetails_manage() {
             $("#calendarprintdate").val(printdate);
         }
     });
-    $(".btnreschedular-btn").unbind('click').click(function(){
+    $(".btn-reschedular-open").unbind('click').click(function(){
         if ($(".pschedul-leftside").css('display')=='block') {
             close_reschedule();
         } else {

@@ -346,6 +346,7 @@ class Printcalendar extends MY_Controller
                         'lates' => $calend['lates'],
                         'ontime' => $calend['ontime'],
                         'calendars' => $calend['calendar'],
+                        'lateorders' => $calend['lateorders'],
                     ];
                     $calendview = $this->load->view('printcalendar/rescheduler_dates_view', $calendoptions, true);
                 }
@@ -436,6 +437,7 @@ class Printcalendar extends MY_Controller
                             'lates' => $calend['lates'],
                             'ontime' => $calend['ontime'],
                             'calendars' => $calend['calendar'],
+                            'lateorders' => $calend['lateorders'],
                         ];
                         $calendview = $this->load->view('printcalendar/rescheduler_dates_view', $calendoptions, true);
                     }
@@ -727,6 +729,7 @@ class Printcalendar extends MY_Controller
                     'lates' => $calend['lates'],
                     'ontime' => $calend['ontime'],
                     'calendars' => $calend['calendar'],
+                    'lateorders' => $calend['lateorders'],
                 ];
                 $calendview = $this->load->view('printcalendar/rescheduler_dates_view', $calendoptions, true);
             }
