@@ -955,6 +955,9 @@
     margin-right: 10px;
     width: 100%; /* calc(100% - 10px); -  1499px; */
 }
+.history-section-small .historyblock {
+    
+}
 .history-table {
     margin-left: 10px;
     width: 1250px;
