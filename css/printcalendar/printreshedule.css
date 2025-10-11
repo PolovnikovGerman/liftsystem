@@ -41,6 +41,7 @@
 }
 .history-section-small {
     width: 100%;
+    margin-top: 27px;
 }
 .pschedul-leftside .historyblock {
     width: calc(100% - 10px);
@@ -376,11 +377,11 @@
     font-size: 11px;
     color: #afafaf;
     text-align: center;
+    font-weight: 600;
 }
 .reschditms-itemline .imprintitemname {
     width: 273px;
     color: #fff;
-    font-weight: 600;
     font-size: 12px;
     text-align: left;
 }
@@ -388,7 +389,7 @@
     width: 50px;
 }
 .reschditms-itemline .imprintorders span {
-    font-weight: 600;
+    font-weight: normal;
 }
 .reschditms-itemline .imprintitemqty {
     width: 44px;

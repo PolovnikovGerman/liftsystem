@@ -937,13 +937,14 @@
     margin-top: 26px;
     width: 1499px;
 }
-.history-title  {
+.history-title {
     color: #000;
     font-size: 14px;
     font-weight: 600;
-    line-height: 28px;
+    line-height: 16px;
     font-style: italic;
-    margin-left: 10px;
+    margin-left: 5px;
+    margin-bottom: 5px;
 }
 .historyblock {
     margin-top: 2px;
