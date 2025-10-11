@@ -943,7 +943,7 @@
     font-weight: 600;
     line-height: 16px;
     font-style: italic;
-    margin-left: 5px;
+    margin-left: 15px;
     margin-bottom: 5px;
 }
 .historyblock {
@@ -1077,7 +1077,7 @@
     text-overflow: ellipsis;
 }
 .histrtabl-description.shortresched {
-    width: 220px;
+    width: 227px;
 }
 .histrtabl-inkcolor {
     width: 92px;
