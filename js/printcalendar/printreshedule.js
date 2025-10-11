@@ -19,6 +19,7 @@ function init_reschedule_management() {
                 if (response.errors=='') {
                     $(".reschedularbody").empty().html(response.data.calendarview);
                     init_reschedule_management();
+                    new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
                     $("#loader").hide();
                 } else {
                     $("#loader").hide();
