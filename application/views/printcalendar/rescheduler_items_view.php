@@ -21,7 +21,7 @@
         <?php foreach ($calendars as $calendar) : ?>
             <div class="reschditms-itemline">
                 <div class="imprintitemname"><?=$calendar['item']?></div>
-                <div class="imprintorders"><span><?=$calendar['orders']?></span> orders</div>
+                <div class="imprintorders"><?=$calendar['orders']?> <span>orders</span></div>
                 <div class="imprintitemqty"><?=$calendar['items']?></div>
                 <div class="imprintprintsqty"><?=$calendar['prints']?></div>
             </div>
