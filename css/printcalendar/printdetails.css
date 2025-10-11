@@ -32,7 +32,7 @@
 }
 .pscalendar-daybox.dayoff {
     border: 1px solid #303030;
-    width: 104px;
+    width: 106px;
     height: 39px;
     background: #d9d9d9;
     padding: 0 2px;
@@ -58,7 +58,7 @@
     width: 100%;
     text-align: center;
     font-size: 18px;
-    line-height: 18px;
+    line-height: 20px;
     font-weight: 600;
     color: #000;
 }
@@ -67,13 +67,14 @@
 }
 .pscalendar-daybox .daybox-orders {
     width: 32px;
-    margin-top: 3px;
+    margin-top: 5px;
+    margin-left: 2px;
 }
 .pscalendar-daybox .dayboxorders-name {
     width: 100%;
     text-align: center;
     font-size: 10px;
-    /* line-height: 10px; */
+    line-height: 12px;
     font-style: italic;
     color: #a4a4a4;
 }
@@ -81,19 +82,19 @@
     width: 100%;
     text-align: center;
     font-size: 13px;
-    /* line-height: 13px; */
+    line-height: 16px;
     font-weight: 600;
     color: #1000a7;
 }
 .pscalendar-daybox .daybox-prints {
     width: 42px;
-    margin-top: 3px;
+    margin-top: 5px;
 }
 .pscalendar-daybox .dayboxprints-name {
     width: 100%;
     text-align: center;
     font-size: 10px;
-    /* line-height: 10px; */
+    line-height: 12px;
     font-style: italic;
     color: #a4a4a4;
 }
@@ -101,7 +102,7 @@
     width: 100%;
     text-align: center;
     font-size: 13px;
-    /* line-height: 13px; */
+    line-height: 16px;
     font-weight: 600;
     color: #1000a7;
 }
@@ -170,8 +171,8 @@
     margin-right: 10px;
 }
 .fullinfo {
-    /*width: 1550px;*/
-    width: 1515px; /* 1499px; */
+    /* width: 1550px; */
+    width: 1500px;
 }
 .maingrey-header {
     width: 100%;
@@ -324,7 +325,7 @@
 }
 .redrush {
     color: #ff0000;
-    font-size: 11px;
+    font-size: 11px !important;
     font-weight: 600;
 }
 .warntabl-order {
@@ -678,29 +679,29 @@
     border-right: 1px solid transparent;
 }
 .regltabl-prepblock {
-    margin-right: 10px;
+    margin-right: 5px;
     border: 1px solid transparent !important;
 }
 .regltabl-header .regltabl-td.regltabl-prepared {
     background: #dbdbdb !important;
 }
 .regltabl-prepstock {
-    background: url('/img/printscheduler/prepared-stock-green.svg') no-repeat;
+    background: url(/img/printscheduler/prepared-stock-green.svg) no-repeat;
     height: 16px;
     width: 44px;
     font-size: 10.5px;
-    line-height: 14px;
+    line-height: 17px;
     margin-top: 2px;
     text-align: left;
-    padding-left: 6px;
+    padding-left: 7px;
     cursor: pointer;
 }
 .regltabl-prepplate {
-    background: url('/img/printscheduler/prepared-plateupd-green.svg') no-repeat;
+    background: url(/img/printscheduler/prepared-plateupd-green.svg) no-repeat;
     height: 16px;
     width: 57px;
     font-size: 10.5px;
-    line-height: 14px;
+    line-height: 17px;
     margin-left: -2px;
     margin-top: 2px;
     text-align: center;
@@ -721,15 +722,15 @@
     padding-left: 4px;
 }
 .regltabl-prepink {
-    background: url('/img/printscheduler/prepared-ink-green.svg') no-repeat;
+    background: url(/img/printscheduler/prepared-ink-green.svg) no-repeat;
     height: 16px;
     width: 42px;
     font-size: 10.5px;
-    line-height: 14px;
+    line-height: 17px;
     margin-left: -2px;
     margin-top: 2px;
     text-align: left;
-    padding-left: 12px;
+    padding-left: 14px;
     cursor: pointer;
 }
 .regltabl-blankorder {
@@ -858,7 +859,7 @@
     line-height: 15px;
     font-size: 11px !important;
     position: relative;
-    top: -2px;
+    top: -1px;
 }
 .regltabl-td select {
     border: 1px solid #888888;
