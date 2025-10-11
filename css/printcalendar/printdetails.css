@@ -309,7 +309,7 @@
     color: #000;
     font-size: 10px;
     display: inline-block;
-    line-height: 13px !important;
+    line-height: 14px !important;
     cursor: pointer;
     position: relative;
     top: -1px;
@@ -526,7 +526,7 @@
     margin-bottom: 2px;
 }
 .reglsection-subtitle-1 {
-    margin-left: 832px;
+    margin-left: 845px;
 }
 .reglsection-subtitle-2 {
     margin-left: 183px;
@@ -540,7 +540,7 @@
 }
 .regltabl-header {
     margin-bottom: 4px;
-    margin-left: 0px;
+    margin-left: 10px;
 }
 .regltabl-td {
     background: #eeeded;
@@ -565,7 +565,7 @@
     border: 1px solid #888888;
 }
 .regltabl-header .regltabl-prepblock {
-    margin-right: 10px;
+    margin-right: 7px;
     border: 1px solid #888888;
 }
 .regltabl-fulfblock {
@@ -734,11 +734,12 @@
     cursor: pointer;
 }
 .regltabl-blankorder {
-    width: 94px;
+    width: 90px;
     border: 1px solid #bcbbbb;
     color: #dad8d8;
     text-align: center;
     font-size: 10.5px;
+    margin-left: 5px;
 }
 .regltabl-prepstock.grey {
     background: url('/img/printscheduler/prepared-stock-grey.svg') no-repeat;
