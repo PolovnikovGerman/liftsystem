@@ -956,7 +956,10 @@
     width: 100%; /* calc(100% - 10px); -  1499px; */
 }
 .history-section-small .historyblock {
-    
+    margin-left: 0;
+}
+.history-section-small .history-title {
+    margin-left: 5px;
 }
 .history-table {
     margin-left: 10px;
