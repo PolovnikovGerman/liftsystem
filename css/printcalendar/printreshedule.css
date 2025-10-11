@@ -367,6 +367,8 @@
 .reschditms-itemline {
     width: 680px;
     margin-left: 8px;
+    margin-top: 3px;
+    margin-bottom: 2px;
 }
 .reschditms-itemline > div {
     line-height: 20px;
