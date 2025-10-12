@@ -1218,6 +1218,9 @@ class Printcalendar_model extends MY_Model
         $this->db->select('o.order_num , oic.item_qty, coalesce(impr.cntprint,0) as cntprint, coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0) as prints');
         $this->db->select('ic.color , concat(ii.item_num , \' - \', ii.item_name) as item');
         $this->db->select('ship.shipped, o.brand, o.order_id, oi.order_item_id, oic.print_ready, oi.plates_ready, amnt.amount_date, amnt.amount_sum');
+        if ($late==1) {
+            $this->db->select('timestampdiff(DAY,  from_unixtime(o.print_date),  now()) as diffdays');
+        }
         $this->db->from('ts_order_itemcolors oic');
         $this->db->join('ts_order_items oi', 'oi.order_item_id = oic.order_item_id');
         $this->db->join('ts_orders o', 'o.order_id = oi.order_id');

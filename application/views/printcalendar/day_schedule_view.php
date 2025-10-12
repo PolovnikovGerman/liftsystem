@@ -1,5 +1,8 @@
 <?php foreach ($lists as $list) : ?>
     <div class="reschdltabl-tr" id="shedulord_<?=$list['order_item_id']?>" draggable="true" ondragstart="dragstartHandler(event)">
+        <?php if ($late==1) : ?>
+            <div class="reschdltabl-daylatedata"><?=$list['diffdays']?> d</div>
+        <?php endif; ?>
         <div class="reschdltabl-apprblock">
             <div class="reschdltabl-td reschdltabl-prcful <?=$list['class']=='critical' ? 'peach' : ''?>"><?=$list['fulfillprc']?>%</div>
             <div class="reschdltabl-td reschdltabl-prcship <?=$list['class']=='critical' ? 'peach' : ''?>"><?=$list['shippedprc']?>%</div>
