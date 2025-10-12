@@ -386,7 +386,8 @@ class Printcalendar extends MY_Controller
                             $unsign = $this->printcalendar_model->get_printdate_unsigned($printdate);
                             $schedul = $this->printcalendar_model->get_reschedule_data($olddate);
                             $mdata['income'] = $this->load->view('printcalendar/dayshort_unsign_view', ['total'=> $unsign['total'], 'lists' => $unsign['data'], 'users' => $userlist], true);
-                            $mdata['outcome'] = $this->load->view('printcalendar/day_schedule_view', ['lists' => $schedul], true);
+                            $mdata['late'] = $schedul['late'];
+                            $mdata['outcome'] = $this->load->view('printcalendar/day_schedule_view', ['lists' => $schedul['data'], 'late' => $schedul['late']], true);
                         } else {
                             $unsign = $this->printcalendar_model->get_printdate_unsigned($olddate);
                             $unassign_view = '';
@@ -411,7 +412,8 @@ class Printcalendar extends MY_Controller
                                 }
                             }
                             $schedul = $this->printcalendar_model->get_reschedule_data($printdate);
-                            $mdata['income'] = $this->load->view('printcalendar/day_schedule_view', ['lists' => $schedul], true);
+                            $mdata['late'] = $schedul['late'];
+                            $mdata['income'] = $this->load->view('printcalendar/day_schedule_view', ['lists' => $schedul['data'], 'late' => $schedul['late']], true);
                             $mdata['unassign'] = $unassign_view;
                             $mdata['assign'] = $assign_view;
                         }

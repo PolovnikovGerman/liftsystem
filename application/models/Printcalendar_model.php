@@ -1204,8 +1204,16 @@ class Printcalendar_model extends MY_Model
 
     public function get_reschedule_data($print_date)
     {
-        $daybgn = $print_date;
-        $dayend = strtotime('+1 day', $daybgn);
+        $curdate = strtotime(date('Y-m-d'));
+        if ($print_date < $curdate) {
+            $late = 1;
+            $daybgn = strtotime('2001-01-01');
+            $dayend = $curdate;
+        } else {
+            $late = 0;
+            $daybgn = $print_date;
+            $dayend = strtotime('+1 day', $daybgn);
+        }
         $this->db->select('oic.order_itemcolor_id, COALESCE(amnt.fullfill,0) as fulfill, COALESCE(approv.cnt,0) as approv, o.order_rush');
         $this->db->select('o.order_num , oic.item_qty, coalesce(impr.cntprint,0) as cntprint, coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0) as prints');
         $this->db->select('ic.color , concat(ii.item_num , \' - \', ii.item_name) as item');
@@ -1233,6 +1241,6 @@ class Printcalendar_model extends MY_Model
             $dats[$didx]['class'] = ($dats[$didx]['fulfillprc']>$dats[$didx]['shippedprc'] ? 'critical' : 'normal');
             $didx++;
         }
-        return $dats;
+        return ['data' => $dats, 'late' => $late];
     }
 }

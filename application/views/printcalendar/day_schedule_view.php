@@ -19,7 +19,7 @@
             <div class="reschdltabl-td reschdltabl-imp"><?=$list['cntprint']?></div>
             <div class="reschdltabl-td reschdltabl-prints"><?=QTYOutput($list['prints'])?></div>
             <div class="reschdltabl-td reschdltabl-itmcolor"><?=$list['color']?></div>
-            <div class="reschdltabl-td reschdltabl-description"><?=$list['item']?></div>
+            <div class="reschdltabl-td reschdltabl-description <?=$late==1 ? '' : 'ontimedescription'?>"><?=$list['item']?></div>
             <div class="reschdltabl-td reschdltabl-inkcolor">&nbsp;</div>
         </div>
     </div>
