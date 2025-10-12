@@ -37,7 +37,6 @@ function init_reschedule_management() {
 
 function dragstartHandler(ev) {
     ev.dataTransfer.setData("text", ev.target.id);
-    console.log('Star ID '+ev.target.id);
     orderid = ev.target.id;
 }
 
@@ -59,8 +58,6 @@ function dropHandler(ev) {
         newdate = ev.target.id.replace('printdate_','')
         incomeblock = 'left';
     }
-    console.log('Date '+newdate);
-    console.log('Block '+incomeblock);
     var moveorder = '';
     var outcomeblock = '';
     if (orderid.substring(0,10)=='shedulord_') {
@@ -70,9 +67,7 @@ function dropHandler(ev) {
         outcomeblock = 'left';
         moveorder = orderid.replace('printord_','');
     }
-    console.log('Order '+moveorder+' From '+outcomeblock);
     // Send changes to Scheduler
-
     var params = new Array();
     params.push({name: 'print_date', value: newdate});
     params.push({name: 'order_id', value: moveorder});
@@ -83,7 +78,6 @@ function dropHandler(ev) {
          if (response.errors=='') {
              if (incomeblock==outcomeblock) {
                  $("div[data-printdata='"+newdate+"']").append(document.getElementById(data))
-                 console.log('Reshedule Same Block');
              } else {
                  if (incomeblock=='right') {
                      if (parseInt(response.data.late)==1) {
@@ -93,7 +87,8 @@ function dropHandler(ev) {
                      }
                      $("#printshortunassignarea").empty().html(response.data.unassign);
                      $("#printshortassignarea").empty().html(response.data.assign);
-                     console.log('Add To Right');
+                     $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
+                     $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
                  } else {
                      $("#printshortunassignarea").empty().html(response.data.income);
                      if (parseInt(response.data.late)==1) {
@@ -101,7 +96,9 @@ function dropHandler(ev) {
                      } else {
                          $(".dayschedulearea[data-printdata='"+response.data.outdate+"']").empty().html(response.data.outcome);
                      }
-                     console.log('Add To left');
+                     // Update Calendar
+                     $(".pscalendar-daybox[data-printdate='"+newdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
+                     $(".pscalendar-daybox[data-printdate='"+newdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
                      orderid='';
                  }
              }

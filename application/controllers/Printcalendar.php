@@ -383,12 +383,14 @@ class Printcalendar extends MY_Controller
                         $userlist = $this->user_model->get_printschedul_users();
                         $olddate = $res['olddate'];
                         if ($incomeblock=='left') {
+                            $totals = $this->printcalendar_model->daylatedetails($printdate);
                             $unsign = $this->printcalendar_model->get_printdate_unsigned($printdate);
                             $schedul = $this->printcalendar_model->get_reschedule_data($olddate);
                             $mdata['income'] = $this->load->view('printcalendar/dayshort_unsign_view', ['total'=> $unsign['total'], 'lists' => $unsign['data'], 'users' => $userlist], true);
                             $mdata['late'] = $schedul['late'];
                             $mdata['outcome'] = $this->load->view('printcalendar/day_schedule_view', ['lists' => $schedul['data'], 'late' => $schedul['late']], true);
                         } else {
+                            $totals = $this->printcalendar_model->daylatedetails($olddate);
                             $unsign = $this->printcalendar_model->get_printdate_unsigned($olddate);
                             $unassign_view = '';
                             if (count($unsign['data']) > 0) {
@@ -419,6 +421,9 @@ class Printcalendar extends MY_Controller
                         }
                         $mdata['outdate'] = $olddate;
                         $mdata['incomedate'] = $printdate;
+                        $mdata['orders'] = QTYOutput($totals['orders']);
+                        $mdata['items'] = QTYOutput($totals['items']);
+                        $mdata['prints'] = QTYOutput($totals['prints']);
                     }
                 }
             }
