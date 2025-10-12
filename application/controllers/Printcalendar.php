@@ -424,6 +424,7 @@ class Printcalendar extends MY_Controller
                         $mdata['orders'] = QTYOutput($totals['orders']);
                         $mdata['items'] = QTYOutput($totals['items']);
                         $mdata['prints'] = QTYOutput($totals['prints']);
+                        $mdata['todaytemplate'] = $this->load->view('printcalendar/today_template_view', [], true);
                     }
                 }
             }

@@ -90,6 +90,9 @@ function dropHandler(ev) {
                      $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
                      $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
                  } else {
+                     if ($("#printshortunassignarea").length==0) {
+                         $(".regular-section").html(response.data.todaytemplate);
+                     }
                      $("#printshortunassignarea").empty().html(response.data.income);
                      if (parseInt(response.data.late)==1) {
                          $(".dayschedulearea[data-printdata='lateorders']").empty().html(response.data.outcome);
