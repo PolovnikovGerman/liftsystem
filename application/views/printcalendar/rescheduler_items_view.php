@@ -1,21 +1,17 @@
 <div class="reschditms-table">
     <div class="reschditms-tr reschditms-header">
-        <div class="reschditms-apprblock">
-            <div class="reschditms-td reschditms-prcful">%Ful</div>
-            <div class="reschditms-td reschditms-prcship">%Ship</div>
-            <div class="reschditms-td reschditms-approval">Approval</div>
-        </div>
-        <div class="reschditms-mainblock">
-            <div class="reschditms-td reschditms-brand">&nbsp;</div>
-            <div class="reschditms-td reschditms-rush">&nbsp;</div>
-            <div class="reschditms-td reschditms-date">Date</div>
-            <div class="reschditms-td reschditms-order">Order#</div>
-            <div class="reschditms-td reschditms-items">#Items</div>
-            <div class="reschditms-td reschditms-imp">Imp</div>
-            <div class="reschditms-td reschditms-prints">#Prints</div>
-            <div class="reschditms-td reschditms-itmcolor">Item Color/s</div>
-            <div class="reschditms-td reschditms-inkcolor">Ink Color/s</div>
-        </div>
+        <div class="reschditms-td reschditms-prcful">%Ful</div>
+        <div class="reschditms-td reschditms-prcship">%Ship</div>
+        <div class="reschditms-td reschditms-approval">Approval</div>
+        <div class="reschditms-td reschditms-brand">&nbsp;</div>
+        <div class="reschditms-td reschditms-rush">&nbsp;</div>
+        <div class="reschditms-td reschditms-date">Date</div>
+        <div class="reschditms-td reschditms-order">Order#</div>
+        <div class="reschditms-td reschditms-items">#Items</div>
+        <div class="reschditms-td reschditms-imp">Imp</div>
+        <div class="reschditms-td reschditms-prints">#Prints</div>
+        <div class="reschditms-td reschditms-itmcolor">Item Color/s</div>
+        <div class="reschditms-td reschditms-inkcolor">Ink Color/s</div>
     </div>
     <div class="reschditms-body" id="reschditms-body">
         <?php foreach ($calendars as $calendar) : ?>

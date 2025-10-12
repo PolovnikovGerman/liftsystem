@@ -424,6 +424,9 @@
     font-weight: 600;
     line-height: 20px;
 }
+.reschditms-header .reschditms-brand {
+    padding-left: 34px;
+}
 .reschditms-apprblock {
     border: 1px solid #888888;
     margin-right: 19px;
