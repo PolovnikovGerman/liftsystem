@@ -28,13 +28,12 @@ function init_dailydetails_manage() {
             $("#calendarprintdate").val(printdate);
         }
     });
+    $(".btn-reschedular").unbind('click').click(function(){
+        open_reschedule();
+    });
     $(".btn-reschedular-open").unbind('click').click(function(){
-        if ($(".pschedul-leftside").css('display')=='block') {
-            close_reschedule();
-        } else {
-            open_reschedule();
-        }
-    })
+        close_reschedule();
+    });
     $(".pscalendar-arrowsleft").unbind('click').click(function (){
         var params = new Array();
         params.push({name: 'week', value: $("#printcalendarcurweek").val()})
@@ -258,6 +257,11 @@ function open_reschedule() {
     var printdate = $("#calendarprintdate").val();
     var params = new Array();
     params.push({name: 'printdate', value: printdate});
+    var sortfld = 'print_date';
+    if ($(".reschdl-tab.active").length > 0) {
+        sortfld = $(".reschdl-tab.active").data('sortfld');
+    }
+    params.push({name: 'sortfld', value: sortfld});
     var url = '/printcalendar/rescheduleview';
     $("#loader").show();
     $.post(url, params, function (response){
@@ -275,6 +279,9 @@ function open_reschedule() {
             init_dailydetails_manage();
             if ($("#reschdltabl-body").length > 0) {
                 new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
+            }
+            if ($("#reschditms-body").length > 0) {
+                new SimpleBar(document.getElementById('reschditms-body'), { autoHide: false });
             }
             $("#loader").hide();
             // $(".history-section").hide();

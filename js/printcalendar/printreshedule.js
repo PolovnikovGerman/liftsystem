@@ -22,6 +22,9 @@ function init_reschedule_management() {
                     if ($("#reschdltabl-body").length > 0) {
                         new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
                     }
+                    if ($("#reschditms-body").length > 0) {
+                        new SimpleBar(document.getElementById('reschditms-body'), { autoHide: false });
+                    }
                     $("#loader").hide();
                 } else {
                     $("#loader").hide();

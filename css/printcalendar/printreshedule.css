@@ -363,6 +363,8 @@
 .reschditms-body {
     max-height: 620px;
     overflow-y: scroll;
+    scrollbar-width: none;
+    width: 700px;
 }
 .reschditms-itemline {
     width: 680px;
