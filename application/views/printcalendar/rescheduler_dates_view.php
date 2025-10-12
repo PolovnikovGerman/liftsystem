@@ -18,7 +18,7 @@
                 <div class="reschdltabl-td reschdltabl-description">Item / Description</div>
                 <div class="reschdltabl-td reschdltabl-inkcolor">Ink Color/s</div>
             </div>
-            <div class="dayschedulearea">
+            <div class="dayschedulearea" data-printdata="lateorders">
                 <?php foreach ($lateorders as $list) : ?>
                     <div class="reschdltabl-tr" id="shedulord_<?=$list['order_item_id']?>" draggable="true" ondragstart="dragstartHandler(event)">
                         <div class="reschdltabl-daylatedata"><?=$list['diffdays']?> d</div>

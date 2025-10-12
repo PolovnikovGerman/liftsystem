@@ -86,13 +86,21 @@ function dropHandler(ev) {
                  console.log('Reshedule Same Block');
              } else {
                  if (incomeblock=='right') {
-                     $(".dayschedulearea[data-printdata='"+response.data.incomedate+"']").empty().html(response.data.income);
+                     if (parseInt(response.data.late)==1) {
+                         $(".dayschedulearea[data-printdata='lateorders']").empty().html(response.data.income);
+                     } else {
+                         $(".dayschedulearea[data-printdata='"+response.data.incomedate+"']").empty().html(response.data.income);
+                     }
                      $("#printshortunassignarea").empty().html(response.data.unassign);
                      $("#printshortassignarea").empty().html(response.data.assign);
                      console.log('Add To Right');
                  } else {
                      $("#printshortunassignarea").empty().html(response.data.income);
-                     $(".dayschedulearea[data-printdata='"+response.data.outdate+"']").empty().html(response.data.outcome);
+                     if (parseInt(response.data.late)==1) {
+                         $(".dayschedulearea[data-printdata='lateorders']").empty().html(response.data.outcome);
+                     } else {
+                         $(".dayschedulearea[data-printdata='"+response.data.outdate+"']").empty().html(response.data.outcome);
+                     }
                      console.log('Add To left');
                      orderid='';
                  }
