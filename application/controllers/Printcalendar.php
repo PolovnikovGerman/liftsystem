@@ -338,17 +338,22 @@ class Printcalendar extends MY_Controller
                     $mdata['historyview'] = $history_view;
                 }
                 // Get calendar
-
-                $calend = $this->printcalendar_model->get_reschedule_printdate();
+                $sortfld = ifset($postdata, 'sortfld', 'print_date');
                 $calendview = '';
-                if ($calend['lates']+$calend['ontime'] > 0) {
-                    $calendoptions = [
-                        'lates' => $calend['lates'],
-                        'ontime' => $calend['ontime'],
-                        'calendars' => $calend['calendar'],
-                        'lateorders' => $calend['lateorders'],
-                    ];
-                    $calendview = $this->load->view('printcalendar/rescheduler_dates_view', $calendoptions, true);
+                if ($sortfld == 'print_date') {
+                    $calend = $this->printcalendar_model->get_reschedule_printdate();
+                    if ($calend['lates']+$calend['ontime'] > 0) {
+                        $calendoptions = [
+                            'lates' => $calend['lates'],
+                            'ontime' => $calend['ontime'],
+                            'calendars' => $calend['calendar'],
+                            'lateorders' => $calend['lateorders'],
+                        ];
+                        $calendview = $this->load->view('printcalendar/rescheduler_dates_view', $calendoptions, true);
+                    }
+                } else {
+                    $calend = $this->printcalendar_model->get_reschedule_items();
+                    $calendview = $this->load->view('printcalendar/rescheduler_items_view', ['calendars' => $calend], true);
                 }
                 $mdata['calendarview'] = $calendview;
             }
@@ -664,6 +669,7 @@ class Printcalendar extends MY_Controller
         if ($this->isAjax()) {
             $mdata = [];
             $error = '';
+            $postdata = $this->input->post();
             $printdate = strtotime(date('Y-m-d'));
             $printweek = date('W-Y', $printdate);
             $weekdat = explode("-", $printweek);
@@ -721,17 +727,22 @@ class Printcalendar extends MY_Controller
             $mdata['content'] = $this->load->view('printcalendar/daydetails_view', $options, true);
             $mdata['historyview'] = $history_view;
             // Get calendar
-
-            $calend = $this->printcalendar_model->get_reschedule_printdate();
+            $sortfld = ifset($postdata, 'sortfld', 'print_date');
             $calendview = '';
-            if ($calend['lates']+$calend['ontime'] > 0) {
-                $calendoptions = [
-                    'lates' => $calend['lates'],
-                    'ontime' => $calend['ontime'],
-                    'calendars' => $calend['calendar'],
-                    'lateorders' => $calend['lateorders'],
-                ];
-                $calendview = $this->load->view('printcalendar/rescheduler_dates_view', $calendoptions, true);
+            if ($sortfld == 'print_date') {
+                $calend = $this->printcalendar_model->get_reschedule_printdate();
+                if ($calend['lates']+$calend['ontime'] > 0) {
+                    $calendoptions = [
+                        'lates' => $calend['lates'],
+                        'ontime' => $calend['ontime'],
+                        'calendars' => $calend['calendar'],
+                        'lateorders' => $calend['lateorders'],
+                    ];
+                    $calendview = $this->load->view('printcalendar/rescheduler_dates_view', $calendoptions, true);
+                }
+            } else {
+                $calend = $this->printcalendar_model->get_reschedule_items();
+                $calendview = $this->load->view('printcalendar/rescheduler_items_view', ['calendars' => $calend], true);
             }
             $mdata['calendarview'] = $calendview;
 

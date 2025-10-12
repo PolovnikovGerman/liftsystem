@@ -17,7 +17,7 @@
             <div class="reschditms-td reschditms-inkcolor">Ink Color/s</div>
         </div>
     </div>
-    <div class="reschditms-body">
+    <div class="reschditms-body" id="reschditms-body">
         <?php foreach ($calendars as $calendar) : ?>
             <div class="reschditms-itemline">
                 <div class="imprintitemname"><?=$calendar['item']?></div>

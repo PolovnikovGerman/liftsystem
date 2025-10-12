@@ -65,8 +65,14 @@ function init_fullcalendar() {
     // $(".btnreschedular-btn")
     $(".btn-reschedular").unbind('click').click(function (){
         var url = '/printcalendar/rescheduletoday';
+        var params = new Array();
+        var sortfld = 'print_date';
+        if ($(".reschdl-tab.active").length > 0) {
+            sortfld = $(".reschdl-tab.active").data('sortfld');
+        }
+        params.push({name: 'sortfld', value: sortfld});
         $("#loader").show();
-        $.post(url, {}, function (response){
+        $.post(url, params, function (response){
             // show week caledar
             var printdate = response.data.printdate;
             $(".pscalendar-week").empty().html(response.data.weekcalend);
@@ -88,6 +94,9 @@ function init_fullcalendar() {
             init_dailydetails_manage();
             if ($("#reschdltabl-body").length > 0) {
                 new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
+            }
+            if ($("#reschditms-body").length > 0) {
+                new SimpleBar(document.getElementById('reschditms-body'), { autoHide: false });
             }
             $("#loader").hide();
         },'json')
@@ -115,6 +124,9 @@ function init_current_reschedule() {
             init_dailydetails_manage();
             if ($("#reschdltabl-body").length > 0) {
                 new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
+            }
+            if ($("#reschditms-body").length > 0) {
+                new SimpleBar(document.getElementById('reschditms-body'), { autoHide: false });
             }
             $("#loader").hide();
             // $(".history-section").hide();
