@@ -514,7 +514,8 @@ class Printcalendar_model extends MY_Model
         $daybgn = $printdate;
         $dayend = strtotime('+1 day', $daybgn);
         // Precompile SQL
-        $this->db->select('amount_id, order_itemcolor_id, amount_date, shipped, amount_sum, misprint, kepted, (orangeplate+blueplate+beigeplate) as plates');
+        // $this->db->select('amount_id, order_itemcolor_id, amount_date, shipped, amount_sum, misprint, kepted, (orangeplate+blueplate+beigeplate) as plates');
+        $this->db->select('amount_id, order_itemcolor_id, amount_date, shipped, (shipped+misprint+kepted) as amount_sum, misprint, kepted, (orangeplate+blueplate+beigeplate) as plates');
         $this->db->from('ts_order_amounts');
         $this->db->where('amount_date >= ', $daybgn);
         $this->db->where('amount_date < ', $dayend);
