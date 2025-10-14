@@ -13,9 +13,9 @@
             <div class="regltabl-td regltabl-items">#Items</div>
             <div class="regltabl-td regltabl-imp">Imp</div>
             <div class="regltabl-td regltabl-prints">#Prints</div>
-            <div class="regltabl-td regltabl-itmcolor">Item Color/s</div>
+            <div class="regltabl-td regltabl-itmcolor shortresched">Item Color/s</div>
             <div class="regltabl-td regltabl-description shortresched">Item / Description</div>
-            <div class="regltabl-td regltabl-inkcolor">Ink Color/s</div>
+            <div class="regltabl-td regltabl-inkcolor shortresched">Ink Color/s</div>
         </div>
     </div>
     <div id="printshortunassignarea"><?=$unsign_view?></div>

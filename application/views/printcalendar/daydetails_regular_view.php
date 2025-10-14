@@ -27,6 +27,7 @@
         <div class="regltabl-fulfblock">
             <div class="regltabl-td regltabl-done">Done</div>
             <div class="regltabl-td regltabl-flfremain">Remain</div>
+            <div class="regltabl-td regltabl-flfdate">Date</div>
             <div class="regltabl-td regltabl-flfprint">Printed</div>
             <div class="regltabl-td regltabl-flfkept">Kept</div>
             <div class="regltabl-td regltabl-flfmisprt">Misprt</div>
