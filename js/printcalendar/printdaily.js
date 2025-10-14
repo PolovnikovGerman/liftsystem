@@ -151,6 +151,11 @@ function init_dailydetails_manage() {
                     } else {
                         $(".regltabl-tr[data-ordercolor='"+ordercolor+"']").empty().html(response.data.content);
                     }
+                    if (parseInt(response.data.warningcnt)==0) {
+                        $(".warning-section").hide();
+                    } else {
+                        $(".warning-section").show();
+                    }
                     $("#loader").hide();
                     init_dailydetails_manage();
                 } else {
@@ -180,6 +185,11 @@ function init_dailydetails_manage() {
                         $(".history-section").empty().html(response.data.historyview);
                     } else {
                         $(".regltabl-tr[data-ordercolor='"+ordercolor+"']").empty().html(response.data.content);
+                    }
+                    if (parseInt(response.data.warningcnt)==0) {
+                        $(".warning-section").hide();
+                    } else {
+                        $(".warning-section").show();
                     }
                     $("#loader").hide();
                     init_dailydetails_manage();

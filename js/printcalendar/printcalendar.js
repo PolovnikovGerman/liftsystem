@@ -155,6 +155,11 @@ function init_printdate_details(printdate) {
                 $(".maingreyblock.fullinfo").empty().html(response.data.content);
                 $(".history-section").empty().html(response.data.historyview);
             }
+            if (parseInt(response.data.warningcnt)==0) {
+                $(".warning-section").hide();
+            } else {
+                $(".warning-section").show();
+            }
             init_dailydetails_manage()
         } else {
             show_error(response);

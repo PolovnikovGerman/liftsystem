@@ -352,7 +352,7 @@ class Printcalendar_model extends MY_Model
                 $unsign[$idx]['fulfillprc'] = round($uns['fulfill']/$uns['item_qty']*100,0);
                 $unsign[$idx]['shippedprc'] = round($uns['shipped']/$uns['item_qty']*100,0);
                 $unsign[$idx]['notfulfill'] = $uns['item_qty'] - $uns['fulfill'];
-                $unsign[$idx]['notshipp'] = $uns['item_qty'] - $uns['shipped'];
+                $unsign[$idx]['notshipp'] = $uns['fulfill'] - $uns['shipped']; // $uns['item_qty'] - $uns['shipped'];
                 $unsign[$idx]['class'] = ($unsign[$idx]['fulfillprc']>$unsign[$idx]['shippedprc'] ? 'critical' : 'normal');
                 $unsign[$idx]['platedocs'] = 0;
                 $idx++;
@@ -416,7 +416,7 @@ class Printcalendar_model extends MY_Model
             $assigns[$idx]['fulfillprc'] = round($uns['fulfill']/$uns['item_qty']*100,0);
             $assigns[$idx]['shippedprc'] = round($uns['shipped']/$uns['item_qty']*100,0);
             $assigns[$idx]['notfulfill'] = $uns['item_qty'] - $uns['fulfill'];
-            $assigns[$idx]['notshipp'] = $uns['item_qty'] - $uns['shipped'];
+            $assigns[$idx]['notshipp'] = $uns['fulfill'] - $uns['shipped']; // $uns['item_qty'] - $uns['shipped'];
             $assigns[$idx]['class'] = ($assigns[$idx]['fulfillprc']>$assigns[$idx]['shippedprc'] ? 'critical' : 'normal');
             $assigns[$idx]['platedocs'] = 0;
             $idx++;
