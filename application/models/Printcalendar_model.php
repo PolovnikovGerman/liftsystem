@@ -11,7 +11,7 @@ class Printcalendar_model extends MY_Model
     function __construct() {
         parent::__construct();
         // $this->db->select('order_itemcolor_id, sum(shipped) as fullfill, max(amount_date) as amount_date, sum(amount_sum) as amount_sum, sum(misprint) as misprint , sum(kepted) as kepted, sum(orangeplate+blueplate+beigeplate) as plates, sum(printshop_total) as printshop_total')->from('ts_order_amounts')->group_by('order_itemcolor_id');
-        $this->db->select('order_itemcolor_id, sum(shipped) as fullfill, max(amount_date) as amount_date, sum(amount_sum) as amount_sum, sum(misprint) as misprint , sum(kepted) as kepted, sum(orangeplate+blueplate+beigeplate) as plates, sum(shipped+misprint+kepted) as printshop_total')->from('ts_order_amounts')->group_by('order_itemcolor_id');
+        $this->db->select('order_itemcolor_id, sum(shipped) as fullfill, max(amount_date) as amount_date, sum(shipped+misprint+kepted) as amount_sum, sum(misprint) as misprint , sum(kepted) as kepted, sum(orangeplate+blueplate+beigeplate) as plates, sum(shipped+misprint+kepted) as printshop_total')->from('ts_order_amounts')->group_by('order_itemcolor_id');
         $this->amntsql = $this->db->get_compiled_select();
         $this->db->select('order_item_id, count(order_imprint_id) as cntprint, sum(imprint_qty) as imprintqty')->from('ts_order_imprints')->where('imprint_item', 1)->group_by('order_item_id');
         $this->printsql = $this->db->get_compiled_select();
@@ -293,6 +293,7 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
         $this->db->where('oi.print_date >= ', $daybgn)->where('oi.print_date <= ', $dayend)->where(['o.is_canceled' => 0, 'o.shipped_date' => 0]);
+        $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
         $this->db->where('ship.shipped > COALESCE(amnt.fullfill,0)');
         $warnings = $this->db->get()->result_array();
         if (count($warnings) > 0) {
