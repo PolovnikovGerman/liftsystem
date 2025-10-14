@@ -651,10 +651,16 @@
     color: #949292 !important;
 }
 .regltabl-itmcolor {
+    width: 68px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.regltabl-itmcolor.shortresched {
     width: 78px;
 }
 .regltabl-description {
-    width: 156px;
+    width: 136px;
     text-align: left !important;
     padding-left: 5px;
     font-weight: 600;
@@ -666,12 +672,15 @@
     width: 220px;
 }
 .regltabl-inkcolor {
-    width: 76px;
+    width: 66px;
     text-align: left !important;
     padding-left: 5px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.regltabl-inkcolor.shortresched {
+    width: 76px;
 }
 .regltabl-header .regltabl-description,
 .regltabl-header .regltabl-inkcolor {
@@ -747,12 +756,6 @@
 }
 .regltabl-prepstock.grey {
     background: url('/img/printscheduler/prepared-stock-grey.svg') no-repeat;
-    /*height: 16px;*/
-    /*width: 44px;*/
-    /*font-size: 10.5px;*/
-    /*line-height: 14px;*/
-    /*margin-top: 2px;*/
-    /*text-align: center;*/
     color: #fff;
 }
 .regltabl-prepplate.grey {
@@ -768,13 +771,6 @@
 }
 .regltabl-prepink.grey {
     background: url('/img/printscheduler/prepared-ink-grey.svg') no-repeat;
-    /*height: 16px;*/
-    /*width: 42px;*/
-    /*font-size: 10.5px;*/
-    /*line-height: 14px;*/
-    /*margin-left: -2px;*/
-    /*margin-top: 2px;*/
-    /*text-align: center;*/
     color: #fff;
 }
 .regltabl-done {
@@ -783,6 +779,12 @@
 .regltabl-flfremain {
     width: 38px;
     font-weight: 600;
+}
+.regltabl-flfdate {
+    width: 33px;
+}
+.regltabl-flfdate input {
+    width: 33px;
 }
 .regltabl-flfprint {
     width: 44px;

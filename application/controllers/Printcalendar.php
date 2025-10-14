@@ -538,8 +538,10 @@ class Printcalendar extends MY_Controller
             $kepted = floatval(ifset($postdata,'kepted',0));
             $misprint = floatval(ifset($postdata,'misprint',0));
             $plates = floatval(ifset($postdata,'plates',0));
+            $podateval = ifset($postdata,'podate',date('m/d/Y'));
+            $podate = strtotime($podateval);
             if (!empty($order_itemcolor_id)) {
-                $res = $this->printcalendar_model->outcomesave($order_itemcolor_id,$shipped,$kepted,$misprint,$plates);
+                $res = $this->printcalendar_model->outcomesave($order_itemcolor_id,$shipped,$kepted,$misprint,$plates, $podate);
                 $error = $res['msg'];
                 if ($res['result'] == $this->success_result) {
                     $error = '';

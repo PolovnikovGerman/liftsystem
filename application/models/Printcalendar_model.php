@@ -940,7 +940,7 @@ class Printcalendar_model extends MY_Model
         return $out;
     }
 
-    public function outcomesave($order_itemcolor_id,$shipped,$kepted,$misprint,$plates)
+    public function outcomesave($order_itemcolor_id,$shipped,$kepted,$misprint,$plates, $podate)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Order not found'];
         // Get order
@@ -962,7 +962,7 @@ class Printcalendar_model extends MY_Model
                     $out['msg'] = 'Enter Other QTY or Increase Income, or Choose other Inventory item';
                     return $out;
                 }
-                $orderdata = $this->_prepare_amount_save($orderdata, $inventory_color_id, $shipped, $kepted, $misprint, $plates);
+                $orderdata = $this->_prepare_amount_save($orderdata, $inventory_color_id, $shipped, $kepted, $misprint, $plates, $podate);
                 $amountres = $this->_save_amount($orderdata, $this->USR_ID);
                 $out['msg'] = $amountres['msg'];
                 if ($amountres['result']==$this->success_result) {
@@ -996,7 +996,7 @@ class Printcalendar_model extends MY_Model
         }
     }
 
-    private function _prepare_amount_save($orderdata, $inventory_color_id, $shipped, $kepted, $misprint, $plates)
+    private function _prepare_amount_save($orderdata, $inventory_color_id, $shipped, $kepted, $misprint, $plates, $podate)
     {
         // Prices
         $this->db->select('c.price, c.avg_price, t.type_addcost')->from('ts_inventory_colors c')->join('ts_inventory_items i','c.inventory_item_id = i.inventory_item_id');
@@ -1020,6 +1020,7 @@ class Printcalendar_model extends MY_Model
         $totalitemcost = $platescost+$costitem;
         $orderdata['price'] = $pricedat['avg_price'];
         $orderdata['itemstotalcost'] = $totalitemcost;
+        $orderdata['amount_date'] = $podate;
         return $orderdata;
     }
 
@@ -1049,7 +1050,7 @@ class Printcalendar_model extends MY_Model
         // $this->db->set('beigeplate_price', floatval($orderdata['beigeplate_price']));
         $this->db->set('vendor_id', $this->config->item('inventory_vendor'));
         $this->db->set('method_id', $this->config->item('inventory_paymethod'));
-        $this->db->set('amount_date', time());
+        $this->db->set('amount_date', $orderdata['amount_date']);// time());
         $this->db->set('create_date', time());
         $this->db->set('create_user', $user_id);
         $this->db->set('update_date', time());

@@ -4,6 +4,11 @@ function init_dailydetails_manage() {
         autoclose : true,
         todayHighlight: true
     });
+    $("input[name='printdate']").datepicker({
+        // format : 'mm/dd/yy',
+        autoclose : true,
+        todayHighlight: true
+    });
     $(".maingrey-close").unbind('click').click(function (){
         var year = $("#printcaledyear").val();
         init_printcalendar(year);
@@ -136,6 +141,7 @@ function init_dailydetails_manage() {
             var ordercolor = $(this).data('ordercolor');
             var params = new Array();
             params.push({name: 'itemcolor', value: ordercolor});
+            params.push({name: 'podate', value: $("input[name='printdate'][data-ordercolor='"+ordercolor+"']").val()});
             params.push({name: 'shipped', value: $("input[name='printval'][data-ordercolor='"+ordercolor+"']").val()});
             params.push({name: 'kepted', value: $("input[name='keptval'][data-ordercolor='"+ordercolor+"']").val()});
             params.push({name: 'misprint', value: $("input[name='misprintval'][data-ordercolor='"+ordercolor+"']").val()});
