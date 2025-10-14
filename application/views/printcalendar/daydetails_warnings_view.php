@@ -67,7 +67,12 @@
             <div class="warntabl-fulfblock">
                 <div class="warntabl-td warntabl-done"><?= $list['fulfill'] ?></div>
                 <div class="warntabl-td warntabl-flfremain"><?= $list['notfulfill'] ?></div>
-                <div class="warntabl-td warntabl-flfdate"><?= empty($list['amount_date']) ? '&nbsp;' : date('m/d', $list['amount_date']) ?></div>
+<!--                <div class="warntabl-td warntabl-flfdate">-->
+<!--                    --><?php //= empty($list['amount_date']) ? '&nbsp;' : date('m/d', $list['amount_date']) ?>
+<!--                </div>-->
+                <div class="warntabl-td warntabl-flfdate">
+                    <input type="text" name="printdate" data-ordercolor="<?=$list['order_itemcolor_id']?>" value="<?=date('m/d/Y')?>" autocomplete="new-password"/>
+                </div>
                 <div class="warntabl-td warntabl-flfprint">
                     <input type="text" name="printval" data-ordercolor="<?= $list['order_itemcolor_id'] ?>"
                            autocomplete="new-password"/>
