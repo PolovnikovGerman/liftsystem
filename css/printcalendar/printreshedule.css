@@ -165,9 +165,11 @@
     text-align: center;
     border-right: 1px solid #d3d1d1;
     font-size: 12px;
+    cursor: pointer;
 }
 .reschdltabl-header .reschdltabl-td {
     border-right: 1px solid #dbdbdb !important;
+    cursor: auto!important;
 }
 .reschdltabl-header .reschdltabl-td {
     background: #dbdbdb;
