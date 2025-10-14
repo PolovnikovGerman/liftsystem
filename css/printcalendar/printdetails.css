@@ -655,6 +655,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding: 0 3px;
 }
 .regltabl-itmcolor.shortresched {
     width: 78px;
