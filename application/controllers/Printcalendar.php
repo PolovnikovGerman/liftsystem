@@ -105,7 +105,9 @@ class Printcalendar extends MY_Controller
                     $header_view = $this->load->view('printcalendar/daydetails_header_view', $res, true);
                     $warnings = $res['warnings'];
                     $warnings_view = '';
+                    $mdata['warningcnt'] = 0;
                     if (count($warnings) > 0) {
+                        $mdata['warningcnt'] = 1;
                         if ($smallview == 1) {
                             $warnings_view = $this->load->view('printcalendar/dayshort_warnings_view', ['lists' => $warnings], true);
                         } else {
@@ -173,6 +175,7 @@ class Printcalendar extends MY_Controller
                 } else {
                     $res = $this->printcalendar_model->daylatedetails($printdate);
                     $mdata['late'] = 1;
+                    $mdata['warningcnt'] = 0;
                     $header_view = $this->load->view('printcalendar/daydetails_header_view', $res, true);
                     $options = [
                         'header_view' => $header_view,
@@ -546,6 +549,7 @@ class Printcalendar extends MY_Controller
                     $mdata['warningview'] = $views['warningview'];
                     $mdata['regularview'] = $views['regularview'];
                     $mdata['historyview'] = $views['historyview'];
+                    $mdata['warningcnt'] = $views['warningcnt'];
 //                    $this->load->model('user_model');
 //                    $userlist = $this->user_model->get_printschedul_users();
 //                    $itemcolor = $this->printcalendar_model->get_itemcolor_details($order_itemcolor_id);
@@ -597,6 +601,7 @@ class Printcalendar extends MY_Controller
                                 $mdata['warningview'] = $views['warningview'];
                                 $mdata['regularview'] = $views['regularview'];
                                 $mdata['historyview'] = $views['historyview'];
+                                $mdata['warningcnt'] = $views['warningcnt'];
 //                                $this->load->model('user_model');
 //                                $userlist = $this->user_model->get_printschedul_users();
 //                                $itemcolor = $this->printcalendar_model->get_itemcolor_details($order_itemcolor_id);
@@ -669,6 +674,7 @@ class Printcalendar extends MY_Controller
             'warningview' => $warnings_view,
             'regularview' => $regular_view,
             'historyview' => $history_view,
+            'warningcnt' => count($warnings),
         ];
     }
 
