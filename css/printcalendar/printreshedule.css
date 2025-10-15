@@ -164,7 +164,7 @@
     background: #eeeded;
     text-align: center;
     border-right: 1px solid #d3d1d1;
-    font-size: 12px;
+    font-size: 11px;
     cursor: pointer;
 }
 .reschdltabl-header .reschdltabl-td {
@@ -204,11 +204,9 @@
 }
 .reschdltabl-prcful {
     width: 33px;
-    font-size: 11px;
 }
 .reschdltabl-prcship {
     width: 36px;
-    font-size: 11px;
 }
 .reschdltabl-prcful.peach,
 .reschdltabl-prcship.peach {
@@ -230,7 +228,7 @@
 .reschdltabl-order {
     width: 41px;
     color: #0000ff;
-    font-size: 12px;
+    /*font-size: 12px;*/
     font-weight: 600;
 }
 .reschdltabl-header .reschdltabl-order {
@@ -239,7 +237,7 @@
 .reschdltabl-items {
     width: 41px;
     font-weight: 600;
-    font-size: 12px;
+    /*font-size: 12px;*/
 }
 .reschdltabl-imp {
     width: 23px;
@@ -288,7 +286,7 @@
     width: calc(100% - 12px);
     height: 19px;
     line-height: 19px;
-    margin: 13px 0 6px 0px;
+    margin: 13px 0 6px 0;
 }
 .reschdltabl-printername {
     font-size: 13px;
@@ -414,7 +412,7 @@
 }
 .reschditms-td {
     background: #eeeded;
-    font-size: 12px;
+    font-size: 11px;
     text-align: center;
     border-right: 1px solid #d3d1d1;
 }
@@ -447,11 +445,11 @@
 }
 .reschditms-prcful {
     width: 33px;
-    font-size: 11px;
+    /*font-size: 11px;*/
 }
 .reschditms-prcship {
     width: 36px;
-    font-size: 11px;
+    /*font-size: 11px;*/
 }
 .reschditms-prcful.peach,
 .reschditms-prcship.peach {
@@ -470,7 +468,7 @@
 .reschditms-order {
     width: 50px;
     color: #0000ff;
-    font-size: 12px;
+    /*font-size: 12px;*/
     font-weight: 600;
 }
 .reschditms-date {
@@ -487,7 +485,7 @@
 .reschditms-items {
     width: 44px;
     font-weight: 600;
-    font-size: 12px;
+    /*font-size: 12px;*/
 }
 .reschditms-imp {
     width: 28px;

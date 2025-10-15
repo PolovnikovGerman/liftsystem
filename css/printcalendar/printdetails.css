@@ -252,15 +252,15 @@
     margin-bottom: 4px;
 }
 .warntabl-td {
-    background: #edecec;
-    font-size: 12px;
+    background: #ffffff; /* #edecec */;
+    font-size: 11px;
     text-align: center;
     border-right: 1px solid #d3d1d1;
 }
+/*.warntabl-header .warntabl-td {*/
+/*}*/
 .warntabl-header .warntabl-td {
     border-right: 1px solid #f98bfd !important;
-}
-.warntabl-header .warntabl-td {
     background: #f98bfd;
     font-size: 10px;
     font-weight: 600;
@@ -276,24 +276,22 @@
 }
 .warntabl-fulfblock {
     margin-right: 12px;
-    border: 1px solid #888888;
+    /*border: 1px solid #888888;*/
 }
 .warntabl-header .warntabl-fulfblock {
     margin-right: 52px;
 }
 .warntabl-shipblock {
-    border: 1px solid #888888;
+    /*border: 1px solid #888888;*/
 }
 .warntabl-header .warntabl-shipblock {
     margin-right: 40px;
 }
 .warntabl-prcful {
     width: 33px;
-    font-size: 11px;
 }
 .warntabl-prcship {
     width: 36px;
-    font-size: 11px;
 }
 .warntabl-prcful.pink,
 .warntabl-prcship.pink {
@@ -334,7 +332,6 @@
 .warntabl-order {
     width: 41px;
     color: #0000ff;
-    font-size: 12px;
     font-weight: 600;
 }
 .warntabl-header .warntabl-order {
@@ -343,7 +340,6 @@
 .warntabl-items {
     width: 41px;
     font-weight: 600;
-    font-size: 12px;
 }
 .warntabl-imp {
     width: 21px;
@@ -353,8 +349,7 @@
     width: 41px;
     color: #b8b7b7;
 }
-.warntabl-header .warntabl-imp,
-.warntabl-header .warntabl-prints {
+.warntabl-header .warntabl-imp, .warntabl-header .warntabl-prints {
     color: #949292 !important;
 }
 .warntabl-itmcolor {
@@ -380,68 +375,78 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.warntabl-header .warntabl-description,
-.warntabl-header .warntabl-inkcolor {
+.warntabl-header .warntabl-description, .warntabl-header .warntabl-inkcolor {
     text-align: center !important;
 }
 .warntabl-done {
+    background: #eeeded;
     width: 38px;
 }
 .warntabl-flfremain {
+    background: #eeeded;
     width: 38px;
     font-weight: 600;
 }
 .warntabl-flfdate {
+    background: #eeeded;
     width: 34px;
     font-weight: 600;
-    font-size: 11px;
 }
 .warntabl-flfdate input {
     width: 33px;
 }
 .warntabl-flfprint {
+    background: #eeeded;
     width: 44px;
 }
 .warntabl-flfprint input {
     width: 38px;
 }
 .warntabl-flfkept {
+    background: #eeeded;
     width: 25px;
 }
 .warntabl-flfkept input {
     width: 20px;
 }
 .warntabl-flfmisprt {
+    background: #eeeded;
     width: 35px;
 }
 .warntabl-flfmisprt input {
     width: 30px;
 }
 .warntabl-flftotal {
+    background: #eeeded;
     width: 37px;
     font-weight: 600;
 }
 .warntabl-flfplates {
+    background: #eeeded;
     width: 30px;
 }
 .warntabl-flfplates input {
     width: 20px;
 }
 .warntabl-sent {
+    background: #eeeded;
     width: 43px;
     font-weight: 600;
 }
 .warntabl-shipremain {
+    background: #eeeded;
     width: 39px;
     font-weight: 600;
 }
 .warntabl-qty {
+    background: #eeeded;
     width: 42px;
 }
 .warntabl-qty input {
     width: 37px;
 }
 .warntabl-shipdate {
+    background: #eeeded;
     width: 38px;
     font-size: 11px;
 }
@@ -449,12 +454,14 @@
     width: 33px;
 }
 .warntabl-method {
+    background: #eeeded;
     width: 51px;
 }
 .warntabl-method select {
     width: 50px;
 }
 .warntabl-tracking {
+    background: #eeeded;
     width: 112px;
 }
 .warntabl-tracking input {
