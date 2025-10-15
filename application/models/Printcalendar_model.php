@@ -862,6 +862,8 @@ class Printcalendar_model extends MY_Model
             $this->db->where('order_item_id', $order_id);
             $this->db->set('print_date', $printdate);
             $this->db->update('ts_order_items');
+            $orddat = $this->db->select('order_num')->from('ts_orders')->where('order_id', $order['order_id'])->get()->row_array();
+            $out['order_num'] = $orddat['order_num'];
         }
         return $out;
     }

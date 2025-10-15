@@ -381,6 +381,7 @@ class Printcalendar extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                    $mdata['message'] = 'Order '.$res['order_num'].' is assigned for '.date('D - M, j, Y', $printdate);
                     if ($incomeblock!=$outcomeblock) {
                         $this->load->model('user_model');
                         $userlist = $this->user_model->get_printschedul_users();
