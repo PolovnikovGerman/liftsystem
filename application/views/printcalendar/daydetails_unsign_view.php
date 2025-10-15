@@ -6,6 +6,7 @@
         </div>
     </div>
 </div>
+<?php $order_id = 0;  ?>
 <?php foreach ($lists as $list) : ?>
     <div class="regltabl-tr" data-ordercolor="<?=$list['order_itemcolor_id']?>">
         <div class="regltabl-apprblock">
@@ -36,7 +37,14 @@
                 <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
             </div>
             <div class="regltabl-td regltabl-rush <?=$list['order_rush']==0 ? '' : 'redrush'?>"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
-            <div class="regltabl-td regltabl-order" data-order="<?=$list['order_id']?>"><?=$list['order_num']?></div>
+            <div class="regltabl-td regltabl-order" data-order="<?=$list['order_id']?>">
+                <?php if ($list['order_id']==$order_id) : ?>
+                    --
+                <?php else : ?>
+                    <?=$list['order_num']?>
+                    <?php $order_id=$list['order_id'];?>
+                <?php endif; ?>
+            </div>
             <div class="regltabl-td regltabl-items"><?=QTYOutput($list['item_qty'])?></div>
             <div class="regltabl-td regltabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
             <div class="regltabl-td regltabl-prints"><?=QTYOutput($list['prints'])?></div>

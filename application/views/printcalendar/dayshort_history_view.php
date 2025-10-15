@@ -21,6 +21,7 @@
                 <div class="histrtabl-td histrtabl-inkcolor">Ink Color/s</div>
             </div>
         </div>
+        <?php $order_id = 0; ?>
         <?php foreach ($lists as $list) :?>
             <div class="histrtabl-tr">
                 <div class="histrtabl-td histrtabl-edit">
@@ -40,7 +41,14 @@
                         <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
                     </div>
                     <div class="histrtabl-td histrtabl-rush <?=$list['order_rush']==0 ? '' : 'redrush'?>"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
-                    <div class="histrtabl-td histrtabl-order"><?=$list['order_num']?></div>
+                    <div class="histrtabl-td histrtabl-order">
+                        <?php if ($list['order_id']==$order_id) : ?>
+                            --
+                        <?php else : ?>
+                            <?=$list['order_num']?>
+                            <?php $order_id=$list['order_id'];?>
+                        <?php endif; ?>
+                    </div>
                     <div class="histrtabl-td histrtabl-items"><?=empty($list['item_qty']) ? '-' : QTYOutput($list['item_qty'])?></div>
                     <div class="histrtabl-td histrtabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                     <div class="histrtabl-td histrtabl-prints"><?=empty($list['prints']) ? '-' : QTYOutput($list['prints'])?></div>
