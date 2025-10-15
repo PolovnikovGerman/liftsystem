@@ -698,9 +698,11 @@ class Printcalendar extends MY_Controller
             $header_view = $this->load->view('printcalendar/daydetails_header_view', $res, true);
             $warnings = $res['warnings'];
             $warnings_view = '';
+            $mdata['warningcnt'] = 0;
             $this->load->model('user_model');
             $userlist = $this->user_model->get_printschedul_users();
             if (count($warnings) > 0) {
+                $mdata['warningcnt'] = 1;
                 $warnings_view = $this->load->view('printcalendar/dayshort_warnings_view', ['lists' => $warnings], true);
             }
             $regular_view = '';

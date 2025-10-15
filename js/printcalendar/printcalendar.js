@@ -98,6 +98,9 @@ function init_fullcalendar() {
             if ($("#reschditms-body").length > 0) {
                 new SimpleBar(document.getElementById('reschditms-body'), { autoHide: false });
             }
+            if (parseInt(response.data.warningcnt) > 0) {
+                $(".warning-section").show();
+            }
             $("#loader").hide();
         },'json')
     });
