@@ -327,8 +327,8 @@
     width: 38px;
 }
 .redrush {
-    color: #ff0000;
-    font-size: 11px !important;
+    color: #ff0000!important;
+    font-size: 11px!important;
     font-weight: 600;
 }
 .warntabl-order {
@@ -999,12 +999,14 @@
 }
 .histrtabl-header {
     margin-bottom: 4px;
+    color: #4f4e4e;
 }
 .histrtabl-td {
     background: #edecec;
-    font-size: 11px; /* 12px */
+    font-size: 11px;
     text-align: center;
     border-right: 1px solid #d3d1d1;
+    color: #787777;
 }
 .histrtabl-header .histrtabl-td {
     border-right: 1px solid #adacac !important;
@@ -1046,6 +1048,7 @@
 .histrtabl-approval {
     width: 68px;
     font-size: 10px;
+    color: #6d6c6c;
 }
 .histrtabl-header .histrtabl-printer {
     width: 53px;
@@ -1077,7 +1080,7 @@
     font-weight: 600;
 }
 .histrtabl-header .histrtabl-order {
-    color: #000 !important;
+    color: #4f4e4e !important;
 }
 .histrtabl-items {
     width: 42px;
