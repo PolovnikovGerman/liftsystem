@@ -111,6 +111,7 @@ function dropHandler(ev) {
                         orderid='';
                     }
                 }
+                $.flash(response.data.message, {timeout: 5000});
             } else {
                 // Show error
             }
