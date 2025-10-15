@@ -295,6 +295,7 @@ class Printcalendar_model extends MY_Model
         $this->db->where('oi.print_date >= ', $daybgn)->where('oi.print_date <= ', $dayend)->where(['o.is_canceled' => 0, 'o.shipped_date' => 0]);
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
         $this->db->where('ship.shipped > COALESCE(amnt.fullfill,0)');
+        $this->db->order_by('o.order_rush desc','o.order_num asc','item asc', 'ic.ic.color asc');
         $warnings = $this->db->get()->result_array();
         if (count($warnings) > 0) {
             $idx = 0;
@@ -345,7 +346,8 @@ class Printcalendar_model extends MY_Model
             $this->db->where('oi.print_date >= ', $daybgn)->where('oi.print_date < ', $dayend)->where(['o.is_canceled' => 0, 'o.shipped_date' => 0, 'o.print_user'=> NULL]);
             $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
             $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
-            $this->db->order_by('o.order_rush desc', 'order_id asc');
+            // $this->db->order_by('o.order_rush desc', 'order_id asc');
+            $this->db->order_by('o.order_rush desc','o.order_num asc','item asc', 'ic.ic.color asc');
             $unsign = $this->db->get()->result_array();
             $idx = 0;
             foreach ($unsign as $uns) {
@@ -409,7 +411,8 @@ class Printcalendar_model extends MY_Model
         $this->db->where('o.print_date >= ', $daybgn)->where('o.print_date < ', $dayend)->where(['o.is_canceled' => 0, 'o.shipped_date' => 0, 'o.print_user'=> $user]);
         $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
-        $this->db->order_by('o.order_rush desc', 'order_id asc');
+        // $this->db->order_by('o.order_rush desc', 'order_id asc');
+        $this->db->order_by('o.order_rush desc','o.order_num asc','item asc', 'ic.ic.color asc');
         $assigns = $this->db->get()->result_array();
         $idx = 0;
         foreach ($assigns as $uns) {
@@ -544,8 +547,9 @@ class Printcalendar_model extends MY_Model
         // $this->db->where('oic.shipping_ready > ', 0);
         // $this->db->where('oic.print_completed > ', 0);
         $this->db->where('(COALESCE(oa.amount_id,0) > 0 or COALESCE(tr.qty,0) > 0)');
-        $this->db->order_by('o.order_rush', 'desc');
-        $this->db->order_by('order_id', 'asc');
+//        $this->db->order_by('o.order_rush', 'desc');
+//        $this->db->order_by('order_id', 'asc');
+        $this->db->order_by('o.order_rush desc','o.order_num asc','item asc', 'ic.ic.color asc');
         $history = $this->db->get()->result_array();
         $idx = 0;
         foreach ($history as $uns) {
