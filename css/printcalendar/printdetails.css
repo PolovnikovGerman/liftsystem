@@ -550,8 +550,9 @@
     margin-left: 10px;
 }
 .regltabl-td {
-    background: #eeeded;
-    font-size: 12px;
+    /* background: #eeeded; */
+    background: #FFFFFF;
+    font-size: 11px;
     text-align: center;
     border-right: 1px solid #d3d1d1;
 }
@@ -630,7 +631,7 @@
 .regltabl-order {
     width: 41px;
     color: #0000ff;
-    font-size: 12px;
+/*    font-size: 12px; */
     font-weight: 600;
 }
 .regltabl-header .regltabl-order {
@@ -639,7 +640,7 @@
 .regltabl-items {
     width: 41px;
     font-weight: 600;
-    font-size: 12px;
+    /* font-size: 12px; */
 }
 .regltabl-imp {
     width: 21px;
@@ -779,21 +780,26 @@
 }
 .regltabl-done {
     width: 38px;
+    background: #eeeded;
 }
 .regltabl-flfremain {
     width: 38px;
     font-weight: 600;
+    background: #eeeded;
 }
 .regltabl-flfdate {
     width: 33px;
+    background: #eeeded;
 }
 .regltabl-flfdate input {
     width: 33px;
 }
 .regltabl-flfprint {
     width: 44px;
+    background: #eeeded;
 }
 .rectabl-blankfullfill {
+    background: #eeeded;
     width: 127px;
     border: 1px solid #bcbbbb;
     color: #dad8d8;
@@ -807,42 +813,50 @@
     width: 38px;
 }
 .regltabl-flfkept {
+    background: #eeeded;
     width: 25px;
 }
 .regltabl-flfkept input {
     width: 20px;
 }
 .regltabl-flfmisprt {
+    background: #eeeded;
     width: 35px;
 }
 .regltabl-flfmisprt input {
     width: 30px;
 }
 .regltabl-flftotal {
+    background: #eeeded;
     width: 37px;
     font-weight: 600;
 }
 .regltabl-flfplates {
+    background: #eeeded;
     width: 30px;
 }
 .regltabl-flfplates input {
     width: 20px;
 }
 .regltabl-sent {
+    background: #eeeded;
     width: 43px;
     font-weight: 600;
 }
 .regltabl-shipremain {
+    background: #eeeded;
     width: 39px;
     font-weight: 600;
 }
 .regltabl-qty {
+    background: #eeeded;
     width: 42px;
 }
 .regltabl-qty input {
     width: 37px;
 }
 .regltabl-shipdate {
+    background: #eeeded;
     width: 38px;
     font-size: 11px;
 }
@@ -850,12 +864,14 @@
     width: 33px;
 }
 .regltabl-method {
+    background: #eeeded;
     width: 51px;
 }
 .regltabl-method select {
     width: 50px;
 }
 .regltabl-tracking {
+    background: #eeeded;
     width: 102px;
 }
 .regltabl-tracking input {
@@ -986,7 +1002,7 @@
 }
 .histrtabl-td {
     background: #edecec;
-    font-size: 12px;
+    font-size: 11px; /* 12px */
     text-align: center;
     border-right: 1px solid #d3d1d1;
 }
@@ -1057,7 +1073,7 @@
 .histrtabl-order {
     width: 44px;
     color: #0000ff;
-    font-size: 12px;
+    /* font-size: 12px; */
     font-weight: 600;
 }
 .histrtabl-header .histrtabl-order {
