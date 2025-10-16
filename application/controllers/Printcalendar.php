@@ -101,7 +101,11 @@ class Printcalendar extends MY_Controller
                 $curdate = strtotime(date("Y-m-d"));
                 if ($printdate >= $curdate) {
                     $mdata['late'] = 0;
-                    $res = $this->printcalendar_model->daydetails($printdate);
+                    if ($smallview == 1) {
+                        $res = $this->printcalendar_model->dayshortdetails($printdate);
+                    } else {
+                        $res = $this->printcalendar_model->daydetails($printdate);
+                    }
                     $header_view = $this->load->view('printcalendar/daydetails_header_view', $res, true);
                     $warnings = $res['warnings'];
                     $warnings_view = '';
@@ -114,46 +118,41 @@ class Printcalendar extends MY_Controller
                             $warnings_view = $this->load->view('printcalendar/daydetails_warnings_view', ['lists' => $warnings], true);
                         }
                     }
-                    $this->load->model('user_model');
-                    $userlist = $this->user_model->get_printschedul_users();
-                    $regular_view = '';
-                    if (count($res['unsign'])+count($res['assign']) > 0) {
-                        $unassign_view = '';
-                        if (count($res['unsign']) > 0) {
-                            if ($smallview == 1) {
-                                $unassign_view = $this->load->view('printcalendar/dayshort_unsign_view', ['total'=> $res['unsigntotal'], 'lists' => $res['unsign'], 'users' => $userlist], true);
-                            } else {
+                    if ($smallview == 1) {
+                        $regular_view = '';
+                        if (count($res['regular']) > 0) {
+                            $regular_view = $this->load->view('printcalendar/dayshort_regular_view', ['total'=> $res['regulartotal'], 'lists' => $res['regular'], ], true);
+                        }
+                    } else {
+                        $this->load->model('user_model');
+                        $userlist = $this->user_model->get_printschedul_users();
+                        $regular_view = '';
+                        if (count($res['unsign'])+count($res['assign']) > 0) {
+                            $unassign_view = '';
+                            if (count($res['unsign']) > 0) {
                                 $unassign_view = $this->load->view('printcalendar/daydetails_unsign_view', ['total'=> $res['unsigntotal'], 'lists' => $res['unsign'], 'users' => $userlist], true);
                             }
-                        }
-                        $assign_view = '';
-                        if (count($res['assign']) > 0) {
-                            $assigns = $res['assign'];
-                            foreach ($assigns as $assign) {
-                                $usrassgn = $this->printcalendar_model->get_printdate_usrassigned($printdate, $assign['user_id']);
-                                $assign_options = [
-                                    'user_id' => $assign['user_id'],
-                                    'user' => $assign['user_name'],
-                                    'users' => $userlist,
-                                    'orders' => $assign['ordercnt'],
-                                    'items' => $assign['itemscnt'],
-                                    'prints' => $assign['printqty'],
-                                    'lists' => $usrassgn,
-                                ];
-                                if ($smallview == 1) {
-                                    $assign_view.= $this->load->view('printcalendar/dayshort_assign_view', $assign_options, true);
-                                } else {
+                            $assign_view = '';
+                            if (count($res['assign']) > 0) {
+                                $assigns = $res['assign'];
+                                foreach ($assigns as $assign) {
+                                    $usrassgn = $this->printcalendar_model->get_printdate_usrassigned($printdate, $assign['user_id']);
+                                    $assign_options = [
+                                        'user_id' => $assign['user_id'],
+                                        'user' => $assign['user_name'],
+                                        'users' => $userlist,
+                                        'orders' => $assign['ordercnt'],
+                                        'items' => $assign['itemscnt'],
+                                        'prints' => $assign['printqty'],
+                                        'lists' => $usrassgn,
+                                    ];
                                     $assign_view.= $this->load->view('printcalendar/daydetails_assign_view', $assign_options, true);
                                 }
                             }
-                        }
-                        $regoptions = [
-                            'unsign_view' => $unassign_view,
-                            'assign_view' => $assign_view,
-                        ];
-                        if ($smallview == 1) {
-                            $regular_view = $this->load->view('printcalendar/dayshort_regular_view', $regoptions, true);
-                        } else {
+                            $regoptions = [
+                                'unsign_view' => $unassign_view,
+                                'assign_view' => $assign_view,
+                            ];
                             $regular_view = $this->load->view('printcalendar/daydetails_regular_view', $regoptions, true);
                         }
                     }
@@ -277,7 +276,7 @@ class Printcalendar extends MY_Controller
                 $mdata['warningcnt'] = 0;
                 if ($printdate >= $curdate) {
                     $mdata['late'] = 0;
-                    $res = $this->printcalendar_model->daydetails($printdate);
+                    $res = $this->printcalendar_model->dayshortdetails($printdate);
                     $header_view = $this->load->view('printcalendar/daydetails_header_view', $res, true);
                     $warnings = $res['warnings'];
                     $warnings_view = '';
@@ -285,36 +284,11 @@ class Printcalendar extends MY_Controller
                         $mdata['warningcnt'] = 1;
                         $warnings_view = $this->load->view('printcalendar/dayshort_warnings_view', ['lists' => $warnings], true);
                     }
-                    $this->load->model('user_model');
-                    $userlist = $this->user_model->get_printschedul_users();
+//                    $this->load->model('user_model');
+//                    $userlist = $this->user_model->get_printschedul_users();
                     $regular_view = '';
-                    if (count($res['unsign'])+count($res['assign']) > 0) {
-                        $unassign_view = '';
-                        if (count($res['unsign']) > 0) {
-                            $unassign_view = $this->load->view('printcalendar/dayshort_unsign_view', ['total'=> $res['unsigntotal'], 'lists' => $res['unsign'], 'users' => $userlist], true);
-                        }
-                        $assign_view = '';
-                        if (count($res['assign']) > 0) {
-                            $assigns = $res['assign'];
-                            foreach ($assigns as $assign) {
-                                $usrassgn = $this->printcalendar_model->get_printdate_usrassigned($printdate, $assign['user_id']);
-                                $assign_options = [
-                                    'user_id' => $assign['user_id'],
-                                    'user' => $assign['user_name'],
-                                    'users' => $userlist,
-                                    'orders' => $assign['ordercnt'],
-                                    'items' => $assign['itemscnt'],
-                                    'prints' => $assign['printqty'],
-                                    'lists' => $usrassgn,
-                                ];
-                                $assign_view.= $this->load->view('printcalendar/dayshort_assign_view', $assign_options, true);
-                            }
-                        }
-                        $regoptions = [
-                            'unsign_view' => $unassign_view,
-                            'assign_view' => $assign_view,
-                        ];
-                        $regular_view = $this->load->view('printcalendar/dayshort_regular_view', $regoptions, true);
+                    if (count($res['regular']) > 0) {
+                        $regular_view = $this->load->view('printcalendar/dayshort_regular_view', ['totals' => $res['regulartotal'], 'lists' => $res['regular']], true);
                     }
                     $history_view = '';
                     if (count($res['history']) > 0) {
@@ -383,16 +357,24 @@ class Printcalendar extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
-                    $mdata['message'] = 'Order '.$res['order_num'].' is assigned for '.date('D - M, j, Y', $printdate);
+                    $mdata['message'] = 'Order '.$res['order_num'].' was rescheduled from '.date('D - M, j, Y', $res['olddate']).' to '.date('D - M, j, Y', $printdate);
                     if ($incomeblock!=$outcomeblock) {
                         $this->load->model('user_model');
                         $userlist = $this->user_model->get_printschedul_users();
                         $olddate = $res['olddate'];
                         if ($incomeblock=='left') {
                             $totals = $this->printcalendar_model->daylatedetails($printdate);
-                            $unsign = $this->printcalendar_model->get_printdate_unsigned($printdate);
+                            // Warnings
+                            $warnings = $this->printcalendar_model->get_printdate_warnings($printdate);
+                            $regul = $this->printcalendar_model->get_printdate_regulars($printdate);
                             $schedul = $this->printcalendar_model->get_reschedule_data($olddate);
-                            $mdata['income'] = $this->load->view('printcalendar/dayshort_unsign_view', ['total'=> $unsign['total'], 'lists' => $unsign['data'], 'users' => $userlist], true);
+                            $mdata['warningscnt'] = count($warnings) > 0 ? 1 : 0;
+                            $warnings_view = '';
+                            if ($mdata['warningscnt']>0) {
+                                $warnings_view = $this->load->view('printcalendar/dayshort_warnings_view', ['lists' => $warnings], true);
+                            }
+                            $mdata['warnings'] = $warnings_view;
+                            $mdata['income'] = $this->load->view('printcalendar/dayshort_regular_view', ['total'=> $regul['total'], 'lists' => $regul['data'], ], true);
                             $mdata['late'] = $schedul['late'];
                             $mdata['outcome'] = $this->load->view('printcalendar/day_schedule_view', ['lists' => $schedul['data'], 'late' => $schedul['late']], true);
                         } else {
@@ -696,45 +678,18 @@ class Printcalendar extends MY_Controller
             $mdata['weekcalend'] = $this->load->view('printcalendar/week_calendar_view', $res, true);
             $mdata['printdate'] = $printdate;
             // Day Details
-            $res = $this->printcalendar_model->daydetails($printdate);
+            $res = $this->printcalendar_model->dayshortdetails($printdate);
             $header_view = $this->load->view('printcalendar/daydetails_header_view', $res, true);
             $warnings = $res['warnings'];
             $warnings_view = '';
             $mdata['warningcnt'] = 0;
-            $this->load->model('user_model');
-            $userlist = $this->user_model->get_printschedul_users();
             if (count($warnings) > 0) {
                 $mdata['warningcnt'] = 1;
                 $warnings_view = $this->load->view('printcalendar/dayshort_warnings_view', ['lists' => $warnings], true);
             }
             $regular_view = '';
-            if (count($res['unsign'])+count($res['assign']) > 0) {
-                $unassign_view = '';
-                if (count($res['unsign']) > 0) {
-                    $unassign_view = $this->load->view('printcalendar/dayshort_unsign_view', ['total'=> $res['unsigntotal'], 'lists' => $res['unsign'], 'users' => $userlist], true);
-                }
-                $assign_view = '';
-                if (count($res['assign']) > 0) {
-                    $assigns = $res['assign'];
-                    foreach ($assigns as $assign) {
-                        $usrassgn = $this->printcalendar_model->get_printdate_usrassigned($printdate, $assign['user_id']);
-                        $assign_options = [
-                            'user_id' => $assign['user_id'],
-                            'user' => $assign['user_name'],
-                            'users' => $userlist,
-                            'orders' => $assign['ordercnt'],
-                            'items' => $assign['itemscnt'],
-                            'prints' => $assign['printqty'],
-                            'lists' => $usrassgn,
-                        ];
-                        $assign_view.= $this->load->view('printcalendar/dayshort_assign_view', $assign_options, true);
-                    }
-                }
-                $regoptions = [
-                    'unsign_view' => $unassign_view,
-                    'assign_view' => $assign_view,
-                ];
-                $regular_view = $this->load->view('printcalendar/dayshort_regular_view', $regoptions, true);
+            if (count($res['regular']) > 0) {
+                $regular_view = $this->load->view('printcalendar/dayshort_regular_view', ['totals' => $res['regulartotal'], 'lists' => $res['regular']], true);
             }
             $history_view = '';
             if (count($res['history']) > 0) {
@@ -766,7 +721,6 @@ class Printcalendar extends MY_Controller
                 $calendview = $this->load->view('printcalendar/rescheduler_items_view', ['calendars' => $calend], true);
             }
             $mdata['calendarview'] = $calendview;
-
             $this->ajaxResponse($mdata, $error);
         }
         show_404();

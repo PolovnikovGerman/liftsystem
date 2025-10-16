@@ -96,10 +96,18 @@ function dropHandler(ev) {
                         $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
                         $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
                     } else {
-                        if ($("#printshortunassignarea").length==0) {
-                            $(".regular-section").html(response.data.todaytemplate);
+                        // if ($("#printshortregularviewarea").length==0) {
+                        //    $(".regular-section").html(response.data.todaytemplate);
+                        // }
+                        $(".warning-section").empty().html(response.data.warnings);
+                        if (parseInt(response.data.warningscnt)==0) {
+                            $(".warning-section").hide();
+                            $(".maingrey-close").show();
+                        } else {
+                            $(".warning-section").show();
+                            $(".maingrey-close").hide();
                         }
-                        $("#printshortunassignarea").empty().html(response.data.income);
+                        $(".regular-section").empty().html(response.data.income);
                         if (parseInt(response.data.late)==1) {
                             $(".dayschedulearea[data-printdata='lateorders']").empty().html(response.data.outcome);
                         } else {

@@ -283,6 +283,44 @@ class Printcalendar_model extends MY_Model
         ];
     }
 
+    public function dayshortdetails($printdate)
+    {
+        $daybgn = $printdate;
+        $dayend = strtotime('+1 day', $daybgn);
+        $daytitle = date('D - M, j, Y', $printdate);
+        // Precompiled SQL
+        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as printqty');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_items oi', 'oi.order_id=o.order_id');
+        $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
+        $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
+        $this->db->join('('.$this->shipsql.') ship','ship.order_itemcolor_id = oic.order_itemcolor_id');
+        $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
+        $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
+        $this->db->where('o.is_canceled', 0)->where('oi.print_date >= ', $daybgn)->where('oi.print_date < ', $dayend);
+        $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
+        $results = $this->db->get()->row_array();
+        // Warnings
+        $warnings = $this->get_printdate_warnings($printdate);
+        // Regular
+        $regulars = $this->get_printdate_regulars($printdate);
+        // Get History
+        $history = $this->get_printdate_history($printdate);
+        return [
+            'orders' => $results['ordercnt'],
+            'items' => $results['itemscnt'],
+            'prints' => $results['printqty'],
+            'title' => $daytitle,
+            'warnings' => $warnings,
+            'regulartotal' => $regulars['total'],
+            'regular' => $regulars['data'],
+            'history' => $history['data'],
+            'history_total' => $history['total'],
+            'late' => 0,
+            'printdate' => $printdate,
+        ];
+    }
+
     public function get_printdate_warnings($printdate)
     {
         $daybgn = $printdate;
@@ -377,6 +415,64 @@ class Printcalendar_model extends MY_Model
         return [
             'total' => $unsigntotal,
             'data' => $unsign,
+        ];
+    }
+
+    public function get_printdate_regulars($printdate)
+    {
+        $daybgn = $printdate;
+        $dayend = strtotime('+1 day', $daybgn);
+        // Precompiled SQL
+        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as printqty, sum(amnt.fullfill) as fullfill');
+        $this->db->from('ts_order_itemcolors oic');
+        $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');
+        $this->db->join('ts_orders o','o.order_id=oi.order_id');
+        $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
+        $this->db->join('('.$this->amntsql.') amnt', 'amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
+        $this->db->join('('.$this->printsql.') impr', 'impr.order_item_id = oi.order_item_id','left');
+        $this->db->join('('.$this->shipsql.') ship','ship.order_itemcolor_id = oic.order_itemcolor_id');
+        $this->db->where('oi.print_date >= ', $daybgn)->where('oi.print_date < ', $dayend)->where(['o.is_canceled' => 0,]);
+        $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
+        $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
+        $total = $this->db->get()->row_array();
+
+        $data = [];
+        if ($total['ordercnt'] > 0) {
+            $this->db->select('oic.order_itemcolor_id, oi.order_item_id, COALESCE(amnt.fullfill,0) as fulfill, COALESCE(approv.cnt,0) as approv, o.order_rush');
+            $this->db->select('o.order_num , oic.item_qty, impr.cntprint, coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0) as prints,');
+            $this->db->select('ic.color , concat(ii.item_num , \' - \', ii.item_name) as item');
+            $this->db->select('ship.shipped, o.brand, o.order_id, o.order_blank, oi.order_item_id, oic.print_ready, oi.plates_ready, oic.ink_ready, amnt.amount_date, amnt.amount_sum');
+            $this->db->from('ts_order_itemcolors oic');
+            $this->db->join('ts_order_items oi', 'oi.order_item_id = oic.order_item_id');
+            $this->db->join('ts_orders o', 'o.order_id = oi.order_id');
+            $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id = oic.inventory_color_id');
+            $this->db->join('ts_inventory_items ii', 'ii.inventory_item_id = ic.inventory_item_id');
+            $this->db->join('('.$this->shipsql.') ship','ship.order_itemcolor_id = oic.order_itemcolor_id');
+            $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
+            $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
+            $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
+            $this->db->where('oi.print_date >= ', $daybgn)->where('oi.print_date < ', $dayend)->where(['o.is_canceled' => 0,]);
+            $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
+            $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
+            $this->db->order_by('o.order_rush desc');
+            $this->db->order_by('o.order_id asc');
+            $this->db->order_by('item asc');
+            $this->db->order_by('ic.color asc');
+            $data = $this->db->get()->result_array();
+            $idx = 0;
+            foreach ($data as $uns) {
+                $data[$idx]['fulfillprc'] = round($uns['fulfill']/$uns['item_qty']*100,0);
+                $data[$idx]['shippedprc'] = round($uns['shipped']/$uns['item_qty']*100,0);
+                $data[$idx]['notfulfill'] = $uns['item_qty'] - $uns['fulfill'];
+                $data[$idx]['notshipp'] = $uns['fulfill'] - $uns['shipped']; // $uns['item_qty'] - $uns['shipped'];
+                $data[$idx]['class'] = ($data[$idx]['fulfillprc']>$data[$idx]['shippedprc'] ? 'critical' : 'normal');
+                $data[$idx]['platedocs'] = 0;
+                $idx++;
+            }
+        }
+        return [
+            'total' => $total,
+            'data' => $data,
         ];
     }
 
