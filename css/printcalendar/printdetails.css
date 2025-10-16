@@ -224,7 +224,8 @@
     background: #000;
     width: 100%;
     padding-bottom: 12px;
-    margin-bottom: 50px;
+    /*margin-bottom: 50px;*/
+    margin-bottom: 15px;
     display: none;
 }
 .warning-title {
@@ -237,6 +238,15 @@
 .warning-title span {
     font-weight: 600;
     font-size: 14px;
+}
+.warning-close {
+    float: right !important;
+    color: #fff;
+    font-size: 22px;
+    margin: 5px 10px;
+    cursor: pointer;
+    position: relative;
+    top: -3px;
 }
 .warning-table {
     width: 100%;
@@ -486,9 +496,10 @@
     background: url('/img/printscheduler/move-yellow.svg');
 }
 .btnsave {
-    height: 22px;
+    height: 20px;
     line-height: 22px;
     border: 1px solid #888888;
+    outline: 1px solid #888888;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     background: #93fc9b;
@@ -499,7 +510,10 @@
     text-align: center;
     width: 40px;
     position: relative;
-    top: -1px;
+    /*top: -1px;*/
+}
+.btnsave:hover {
+    background: #5ee268;
 }
 .warntabl-td input {
     border: 1px solid #888888;
@@ -507,7 +521,7 @@
     line-height: 15px;
     font-size: 11px !important;
     position: relative;
-    top: -2px;
+    top: -1px;
 }
 .warntabl-td select {
     border: 1px solid #888888;

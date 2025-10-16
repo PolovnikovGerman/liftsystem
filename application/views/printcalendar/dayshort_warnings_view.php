@@ -3,6 +3,7 @@
         <div class="warning-title1">WARNING:</div>
         <div class="warning-title2">For these orders, more items shipped (% Shipped) than were printed (% Fulfilled). This indicates a problem that must be resolved before they can be worked on.</div>
     </div>
+    <div class="warning-close"><i class="fa fa-times" aria-hidden="true"></i></div>
     <div class="warning-table">
         <div class="warntabl-tr warntabl-header">
             <div class="warntabl-apprblock">
