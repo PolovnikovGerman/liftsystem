@@ -23,6 +23,7 @@
                 <div class="warntabl-td warntabl-inkcolor">Ink Color/s</div>
             </div>
         </div>
+        <?php $order_id=0;?>
         <?php foreach ($lists as $list)  : ?>
             <div class="warntabl-tr">
                 <div class="warntabl-apprblock">
@@ -40,7 +41,14 @@
                         <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
                     </div>
                     <div class="warntabl-td warntabl-rush <?=$list['order_rush']==0 ? '' : 'redrush'?>"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
-                    <div class="warntabl-td warntabl-order" data-order="<?=$list['order_id']?>"><?=$list['order_num']?></div>
+                    <div class="warntabl-td warntabl-order" data-order="<?=$list['order_id']?>">
+                        <?php if ($order_id!==$list['order_id']) : ?>
+                            <?= $list['order_num'] ?>
+                            <?php $order_id = $list['order_id']; ?>
+                        <?php else: ?>
+                            --
+                        <?php endif; ?>
+                    </div>
                     <div class="warntabl-td warntabl-items"><?=QTYOutput($list['item_qty'])?></div>
                     <div class="warntabl-td warntabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                     <div class="warntabl-td warntabl-prints"><?=QTYOutput($list['prints'])?></div>
