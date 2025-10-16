@@ -602,6 +602,9 @@
     margin-right: 10px;
     border: 1px solid #888888;
 }
+.regltabl-mainblock.shortresched {
+    margin-left: 10px;
+}
 .regltabl-header .regltabl-prepblock {
     margin-right: 7px;
     border: 1px solid #888888;
@@ -692,7 +695,7 @@
     padding: 0 3px;
 }
 .regltabl-itmcolor.shortresched {
-    width: 78px;
+    width: 83px;
 }
 .regltabl-description {
     width: 136px;
