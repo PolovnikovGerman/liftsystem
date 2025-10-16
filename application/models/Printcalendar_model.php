@@ -26,7 +26,7 @@ class Printcalendar_model extends MY_Model
         $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.print_date),\'%Y\') as yearprint, count(o.order_id)');
         $this->db->from('ts_orders o');
         $this->db->where('o.is_canceled', 0);
-        $this->db->where('o.print_date is not null');
+        $this->db->where('coalesce(o.print_date,0) > 0');
         $this->db->group_by('yearprint');
         $this->db->order_by('yearprint', 'desc');
         $this->db->limit($limit);
@@ -83,11 +83,14 @@ class Printcalendar_model extends MY_Model
             $this->db->join('ts_order_items oi', 'oi.order_id=o.order_id');
             $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
             $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
+            $this->db->join('ts_inventory_items ii','ii.inventory_item_id=oi.inventory_item_id');
             $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
-            $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id'); // ,'left'
+            $this->db->join('('.$this->shipsql.') ship','ship.order_itemcolor_id = oic.order_itemcolor_id');
+            $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
             $this->db->where('o.is_canceled', 0);
             $this->db->where('oi.print_date >= ', $weestart);
             $this->db->where('oi.print_date < ', $weekfinish);
+            $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
             $this->db->group_by('oi.print_date');
             $results = $this->db->get()->result_array();
             foreach ($results as $result) {
@@ -211,10 +214,12 @@ class Printcalendar_model extends MY_Model
         $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
         $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
+        $this->db->join('('.$this->shipsql.') ship','ship.order_itemcolor_id = oic.order_itemcolor_id');
         $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
         $this->db->where('o.is_canceled', 0);
         $this->db->where('oi.print_date >= ', $weestart);
         $this->db->where('oi.print_date < ', $weekfinish);
+        $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
         $this->db->group_by('oi.print_date');
         $results = $this->db->get()->result_array();
         foreach ($results as $result) {
@@ -248,8 +253,11 @@ class Printcalendar_model extends MY_Model
         $this->db->join('ts_order_items oi', 'oi.order_id=o.order_id');
         $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
+        $this->db->join('('.$this->shipsql.') ship','ship.order_itemcolor_id = oic.order_itemcolor_id');
+        $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
         $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
         $this->db->where('o.is_canceled', 0)->where('oi.print_date >= ', $daybgn)->where('oi.print_date < ', $dayend);
+        $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
         $results = $this->db->get()->row_array();
         // Warnings
         $warnings = $this->get_printdate_warnings($printdate);
@@ -292,7 +300,7 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
-        $this->db->where('oi.print_date >= ', $daybgn)->where('oi.print_date <= ', $dayend)->where(['o.is_canceled' => 0, 'o.shipped_date' => 0]);
+        $this->db->where('oi.print_date >= ', $daybgn)->where('oi.print_date < ', $dayend)->where(['o.is_canceled' => 0, ]); // 'o.shipped_date' => 0
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
         $this->db->where('ship.shipped > COALESCE(amnt.fullfill,0)');
         $this->db->order_by('o.order_rush desc');
@@ -326,7 +334,7 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->amntsql.') amnt', 'amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
         $this->db->join('('.$this->printsql.') impr', 'impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$this->shipsql.') ship','ship.order_itemcolor_id = oic.order_itemcolor_id');
-        $this->db->where('oi.print_date >= ', $daybgn)->where('oi.print_date < ', $dayend)->where(['o.is_canceled' => 0, 'o.shipped_date' => 0, 'o.print_user'=> NULL]);
+        $this->db->where('oi.print_date >= ', $daybgn)->where('oi.print_date < ', $dayend)->where(['o.is_canceled' => 0, 'o.print_user'=> NULL]); // 'o.shipped_date' => 0
         $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
         $unsigntotal = $this->db->get()->row_array();
@@ -346,7 +354,7 @@ class Printcalendar_model extends MY_Model
             $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
             $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
             $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
-            $this->db->where('oi.print_date >= ', $daybgn)->where('oi.print_date < ', $dayend)->where(['o.is_canceled' => 0, 'o.shipped_date' => 0, 'o.print_user'=> NULL]);
+            $this->db->where('oi.print_date >= ', $daybgn)->where('oi.print_date < ', $dayend)->where(['o.is_canceled' => 0, 'o.print_user'=> NULL]); // 'o.shipped_date' => 0
             $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
             $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
             // $this->db->order_by('o.order_rush desc', 'order_id asc');
@@ -386,7 +394,7 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->shipsql.') ship','ship.order_itemcolor_id = oic.order_itemcolor_id');
         $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
         $this->db->join('users u', 'u.user_id = o.print_user');
-        $this->db->where('oi.print_date >= ', $daybgn)->where('oi.print_date < ', $dayend)->where(['o.is_canceled' => 0, 'o.shipped_date' => 0]);
+        $this->db->where('oi.print_date >= ', $daybgn)->where('oi.print_date < ', $dayend)->where(['o.is_canceled' => 0, ]); // 'o.shipped_date' => 0
         $this->db->where('o.print_user IS NOT NULL');
         $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
@@ -414,7 +422,7 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
-        $this->db->where('o.print_date >= ', $daybgn)->where('o.print_date < ', $dayend)->where(['o.is_canceled' => 0, 'o.shipped_date' => 0, 'o.print_user'=> $user]);
+        $this->db->where('o.print_date >= ', $daybgn)->where('o.print_date < ', $dayend)->where(['o.is_canceled' => 0,  'o.print_user'=> $user]); // 'o.shipped_date' => 0,
         $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
         // $this->db->order_by('o.order_rush desc', 'order_id asc');
@@ -553,11 +561,7 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->proofsql.') approv', 'approv.order_id=o.order_id','left');
         $this->db->join('('.$this->printsql.') impr', 'impr.order_item_id = oi.order_item_id','left');
         $this->db->join('users u', 'u.user_id = o.print_user', 'left');
-        // $this->db->where('oic.shipping_ready > ', 0);
-        // $this->db->where('oic.print_completed > ', 0);
         $this->db->where('(COALESCE(oa.amount_id,0) > 0 or COALESCE(tr.qty,0) > 0)');
-//        $this->db->order_by('o.order_rush', 'desc');
-//        $this->db->order_by('order_id', 'asc');
         $this->db->order_by('o.order_rush desc');
         $this->db->order_by('o.order_id asc');
         $this->db->order_by('item asc');
@@ -622,7 +626,7 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
-        $this->db->where('o.print_date < ', $curdate)->where(['o.is_canceled' => 0, 'o.shipped_date' => 0]);
+        $this->db->where('o.print_date < ', $curdate)->where(['o.is_canceled' => 0, ]); // 'o.shipped_date' => 0
         // $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
         $this->db->order_by('o.order_rush desc');
@@ -653,7 +657,7 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
         $this->db->where('oi.print_date >= ', $curdate);
-        $this->db->where(['o.is_canceled' => 0, 'o.shipped_date' => 0,]);
+        $this->db->where(['o.is_canceled' => 0, ]); // 'o.shipped_date' => 0,
         $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
         $this->db->group_by('oi.print_date');
@@ -678,7 +682,7 @@ class Printcalendar_model extends MY_Model
             $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
             $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
             $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
-            $this->db->where('o.print_date >= ', $daybgn)->where('o.print_date < ', $dayend)->where(['o.is_canceled' => 0, 'o.shipped_date' => 0]);
+            $this->db->where('o.print_date >= ', $daybgn)->where('o.print_date < ', $dayend)->where(['o.is_canceled' => 0, ]); // 'o.shipped_date' => 0
             $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
             $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
             $this->db->order_by('o.order_rush desc');
@@ -724,7 +728,7 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
         $this->db->where('oi.print_date > ', 0);
-        $this->db->where(['o.is_canceled' => 0, 'o.shipped_date' => 0,]);
+        $this->db->where(['o.is_canceled' => 0, ]); // 'o.shipped_date' => 0,
         $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
         $this->db->group_by('oi.print_date');
@@ -754,7 +758,7 @@ class Printcalendar_model extends MY_Model
             $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
             $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
             $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
-            $this->db->where('o.print_date >= ', $daybgn)->where('o.print_date < ', $dayend)->where(['o.is_canceled' => 0, 'o.shipped_date' => 0]);
+            $this->db->where('o.print_date >= ', $daybgn)->where('o.print_date < ', $dayend)->where(['o.is_canceled' => 0,]);  // 'o.shipped_date' => 0
             $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
             $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
             $this->db->order_by('o.order_rush desc', 'order_id asc');
@@ -796,7 +800,7 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
         $this->db->where('oi.print_date > ', 0);
-        $this->db->where(['o.is_canceled' => 0, 'o.shipped_date' => 0,]);
+        $this->db->where(['o.is_canceled' => 0, ]); // 'o.shipped_date' => 0,
         $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
         $this->db->group_by('ii.inventory_item_id, item');
@@ -818,7 +822,7 @@ class Printcalendar_model extends MY_Model
             $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
             $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
             $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
-            $this->db->where(['ii.inventory_item_id' => $shedul['inventory_item_id'],'o.is_canceled' => 0, 'o.shipped_date' => 0]);
+            $this->db->where(['ii.inventory_item_id' => $shedul['inventory_item_id'],'o.is_canceled' => 0, ]); // 'o.shipped_date' => 0
             $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
             $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
             $this->db->order_by('o.order_rush desc');
@@ -1218,8 +1222,11 @@ class Printcalendar_model extends MY_Model
         $this->db->join('ts_order_items oi', 'oi.order_id=o.order_id');
         $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
+        $this->db->join('('.$this->shipsql.') ship','ship.order_itemcolor_id = oic.order_itemcolor_id');
+        $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
         $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
         $this->db->where('o.is_canceled', 0)->where('oi.print_date >= ', $daybgn)->where('oi.print_date < ', $dayend);
+        $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
         $totalday = $this->db->get()->row_array();
 
         return [
@@ -1260,7 +1267,7 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
-        $this->db->where('oi.print_date >= ', $daybgn)->where('oi.print_date < ', $dayend)->where(['o.is_canceled' => 0, 'o.shipped_date' => 0]);
+        $this->db->where('oi.print_date >= ', $daybgn)->where('oi.print_date < ', $dayend)->where(['o.is_canceled' => 0, ]); // 'o.shipped_date' => 0
         $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
         $this->db->order_by('o.order_rush desc');

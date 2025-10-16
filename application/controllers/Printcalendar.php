@@ -274,6 +274,7 @@ class Printcalendar extends MY_Controller
                 $mdata['printdate'] = $printdate;
                 $res = $this->printcalendar_model->daydetails($printdate);
                 $curdate = strtotime(date("Y-m-d"));
+                $mdata['warningcnt'] = 0;
                 if ($printdate >= $curdate) {
                     $mdata['late'] = 0;
                     $res = $this->printcalendar_model->daydetails($printdate);
@@ -281,6 +282,7 @@ class Printcalendar extends MY_Controller
                     $warnings = $res['warnings'];
                     $warnings_view = '';
                     if (count($warnings) > 0) {
+                        $mdata['warningcnt'] = 1;
                         $warnings_view = $this->load->view('printcalendar/dayshort_warnings_view', ['lists' => $warnings], true);
                     }
                     $this->load->model('user_model');

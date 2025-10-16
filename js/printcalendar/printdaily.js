@@ -23,6 +23,20 @@ function init_dailydetails_manage() {
         $(".maingreyblock.fullinfo").show();
         $(".history-section").show();
     });
+    $(".warning-close").unbind('click').click(function (){
+        var year = $("#printcaledyear").val();
+        init_printcalendar(year);
+        init_printstatistic(year);
+        $("#printcalendardetailsview").hide();
+        $("#printcalendarfullview").show();
+        $("#calendarprintdate").val(0);
+        $(".btn-reschedular-open").hide();
+        $(".btn-reschedular").show();
+        $(".pschedul-leftside").hide();
+        $(".pschedul-rightside").hide();
+        $(".maingreyblock.fullinfo").show();
+        $(".history-section").show();
+    });
     $(".pscalendar-daybox").unbind('click').click(function (){
         if ($(this).hasClass('today')) {
         } else {
@@ -159,8 +173,10 @@ function init_dailydetails_manage() {
                     }
                     if (parseInt(response.data.warningcnt)==0) {
                         $(".warning-section").hide();
+                        $(".maingrey-close").show();
                     } else {
                         $(".warning-section").show();
+                        $(".maingrey-close").hide();
                     }
                     $("#loader").hide();
                     init_dailydetails_manage();
@@ -194,8 +210,10 @@ function init_dailydetails_manage() {
                     }
                     if (parseInt(response.data.warningcnt)==0) {
                         $(".warning-section").hide();
+                        $(".maingrey-close").show();
                     } else {
                         $(".warning-section").show();
+                        $(".maingrey-close").hide();
                     }
                     $("#loader").hide();
                     init_dailydetails_manage();
@@ -291,6 +309,13 @@ function open_reschedule() {
             $(".reschedularbody").empty().html(response.data.calendarview);
             $(".pschedul-leftside").show();
             $(".pschedul-rightside").show();
+            if (parseInt(response.data.warningcnt)==0) {
+                $(".warning-section").hide();
+                $(".maingrey-close").show();
+            } else {
+                $(".warning-section").show();
+                $(".maingrey-close").hide();
+            }
             init_reschedule_management();
             init_dailydetails_manage();
             if ($("#reschdltabl-body").length > 0) {

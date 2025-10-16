@@ -3,6 +3,16 @@ function init_printcalendar_content() {
     init_printcalendar(year);
     init_printstatistic(year);
     // Statistic
+    $(".pscheader-yearbox").unbind('click').click(function (){
+        if ($(this).hasClass('active')) {
+        } else {
+            var newyear = $(this).data('yearprint');
+            $(".pscheader-yearbox").removeClass('active');
+            $(".pscheader-yearbox[data-yearprint='"+newyear+"']").addClass('active');
+            $("#printcaledyear").val(newyear);
+            init_printcalendar_content();
+        }
+    });
 }
 
 function init_printcalendar(year) {
@@ -100,6 +110,10 @@ function init_fullcalendar() {
             }
             if (parseInt(response.data.warningcnt) > 0) {
                 $(".warning-section").show();
+                $(".maingrey-close").hide();
+            } else {
+                $(".warning-section").hide();
+                $(".maingrey-close").show();
             }
             $("#loader").hide();
         },'json')
@@ -123,6 +137,13 @@ function init_current_reschedule() {
             $(".reschedularbody").empty().html(response.data.calendarview);
             $(".pschedul-leftside").show();
             $(".pschedul-rightside").show();
+            if (parseInt(response.data.warningcnt)==0) {
+                $(".warning-section").hide();
+                $(".maingrey-close").show();
+            } else {
+                $(".warning-section").show();
+                $(".maingrey-close").hide();
+            }
             init_reschedule_management();
             init_dailydetails_manage();
             if ($("#reschdltabl-body").length > 0) {
@@ -160,8 +181,10 @@ function init_printdate_details(printdate) {
             }
             if (parseInt(response.data.warningcnt)==0) {
                 $(".warning-section").hide();
+                $(".maingrey-close").show();
             } else {
                 $(".warning-section").show();
+                $(".maingrey-close").hide();
             }
             init_dailydetails_manage()
         } else {
