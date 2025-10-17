@@ -23,7 +23,7 @@
             <?php } ?>
         </div>
     </div>
-    <div id="orderprojcogarea" style="max-height: 460px; overflow-y: auto;">
+    <div id="orderprojcogarea" style="max-height: 460px; overflow-y: auto; overflow-x: hidden;">
     <?php foreach ($data['list'] as $item) : ?>
         <div class="itemtitle">
             <div class="labelrow">TOTAL:</div>

@@ -6270,7 +6270,7 @@ div.trackservicelnk > input {
 }
 .ordercogdetailsviewarea .tabledataarea > .tabledetailsitem >.tabledatasection > .profitdataperc {
     position: relative;
-    left: 83px; /* 101px; */
+    left: 92px; /* 83px; 101px; */
     color: #ffffff;
 }
 .ordercogdetailsviewarea.green .tabledataarea > .tabledetailsitem >.tabledatasection > .profitdataperc,
