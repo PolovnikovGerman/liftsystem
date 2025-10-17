@@ -20,11 +20,11 @@
                 <?php else : ?>
                     <div class="daybox-itemsprinted">
                         <div class="dayboxitemsprinted-name">Items Printed:</div>
-                        <div class="dayboxitemsprinted-numbers"><?=$week['prints']==0 ? '-' : QTYOutput($week['prints'])?></div>
+                        <div class="dayboxitemsprinted-numbers"><?=$week['printed']==0 ? '-' : QTYOutput($week['printed'])?></div>
                     </div>
                     <div class="daybox-printsprinted">
                         <div class="dayboxprintsprinted-name">Prints Printed:</div>
-                        <div class="dayboxprintsprinted-numbers"><?=$week['printed']==0 ? '-' : QTYOutput($week['printed'])?></div>
+                        <div class="dayboxprintsprinted-numbers"><?=$week['prints']==0 ? '-' : QTYOutput($week['prints'])?></div>
                     </div>
                 <?php endif; ?>
             </div>
