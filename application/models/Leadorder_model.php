@@ -9709,7 +9709,7 @@ Class Leadorder_model extends My_Model {
                 $listamnts[] = [
                     'amount_id' => $listdat['amount_id'],
                     'qty' => $listdat['shipped'],
-                    'price' => $listdat['price'],
+                    'price' => $listdat['printshop']==1 ? '&nbsp;' : $listdat['price'],
                     'amount_date' => $listdat['amount_date'],
                     'type' => $listdat['printshop']==1 ? 'Print Shop' : ($listdat['shipped']==0 ? 'Other' : 'Item PO'),
                     'vendor' => $listdat['vendor_name'],
