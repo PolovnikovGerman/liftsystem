@@ -2,9 +2,13 @@
     <div class="block_7_artwork_line">
         <div class="block_7_header">Artwork</div>
         <div class="block_7_artwork1">
-            <div class="block_7_artwork2">
-                <input type="checkbox" class="input_checkbox chkboxleadorddata" <?=($artwork_blank==0 ? '' : 'checked="checked"')?> 
-                <?=($edit==0 ? 'disabled="disabled"' : 'data-entity="artwork" data-field="artwork_blank"')?>/> blank
+            <div class="block_7_artwork2 blankorderarea">
+                <?php if ($artwork_blank==0) : ?>
+                    <i class="fa fa-square-o"></i>
+                <?php else : ?>
+                    <i class="fa fa-check-square"></i>
+                <?php endif; ?>
+                <span>blank</span>
             </div>
             <div class="block_7_artwork2">
                 <input type="checkbox" class="input_checkbox chkboxleadorddata" <?=$artwork_rush==0 ? '' : 'checked="checked"'?>

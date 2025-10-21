@@ -636,10 +636,12 @@ function init_onlineleadorder_edit() {
                         $("div.blankorderlogos").show();
                         $("div#newartbuttonareaview").hide();
                         $("div.imprintdataarea").find("div.items_table_line:first").find('div.items_content_description3').empty().html('blank, no imprinting');
+                        $("#artlocationsarea").find('div.art_line1').hide();
                     } else {
                         $("div.blankorderlogos").hide();
                         $("div#newartbuttonareaview").show();
                         $("div.imprintdataarea").find("div.items_table_line:first").find('div.items_content_description3').empty();
+                        $("#artlocationsarea").find('div.art_line1').show();
                     }
                 }
                 init_onlineleadorder_edit();
@@ -2392,13 +2394,17 @@ function save_imprint_details() {
             $("div.bl_items_sub-total2").empty().html(response.data.item_subtotal);
             $(".totalduedataviewarea").empty().html(response.data.total_due);
             if (parseInt(response.data.order_blank)===1) {
-                $("input.chkboxleadorddata[data-field='artwork_blank']").prop('checked',true);
+                // $("input.chkboxleadorddata[data-field='artwork_blank']").prop('checked',true);
+                $(".blankorderarea").empty().html('<i class="fa fa-check-square"></i><span>blank</span>')
                 $("div#newartbuttonareaview").hide();
-                $("div.blankorderlogos").show();                
+                $("div.blankorderlogos").show();
+                $("#artlocationsarea").find('div.art_line1').hide();
             } else {
-                $("input.chkboxleadorddata[data-field='artwork_blank']").prop('checked',false);
+                // $("input.chkboxleadorddata[data-field='artwork_blank']").prop('checked',false);
+                $(".blankorderarea").empty().html('<i class="fa fa-square-o"></i><span>blank</span>')
                 $("div#newartbuttonareaview").show();
                 $("div.blankorderlogos").hide();
+                $("#artlocationsarea").find('div.art_line1').show();
             }
             $("div#leadorderprofitarea").empty().html(response.data.profit_content);
             // Rush view
