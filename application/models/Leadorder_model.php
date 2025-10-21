@@ -2414,6 +2414,18 @@ Class Leadorder_model extends My_Model {
             $out['msg']='Order Item Not Found';
             return $out;
         }
+        if ($order_blank==0) {
+            $activerow = 0;
+            foreach ($imprint_details as $row) {
+                if ($row['active']==1) {
+                    $activerow++;
+                }
+            }
+            if ($activerow==0) {
+                $out['msg'] = 'Active location not marked';
+                return $out;
+            }
+        }
         // Check Details
         foreach ($imprint_details as $row) {
             if ($row['active']==1 && $row['imprint_type']=='REPEAT' && empty($row['repeat_note'])) {
