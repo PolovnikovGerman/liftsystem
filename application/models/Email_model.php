@@ -1698,10 +1698,14 @@ class Email_model extends My_Model
                     $item_id = get_json_param($mail['email_other_info'], 'item_id', 0);
                     if ($item_id != 0) {
                         /* Get Main Picture */
-                        $img = $this->itemimages_model->get_item_images($item_id);
-                        $mail['mainimg'] = '';
-                        if (is_array($img)) {
-                            $mail['mainimg'] = $img[0]['item_img_name'];
+                        if ($mail['brand']=='SR') {
+                            $mail['mainimg'] = $item_det['main_image'];
+                        } else {
+                            $img = $this->itemimages_model->get_item_images($item_id);
+                            $mail['mainimg'] = '';
+                            if (is_array($img)) {
+                                $mail['mainimg'] = $img[0]['item_img_name'];
+                            }
                         }
                     }
                     $res = $this->_prepare_quote_doc($mail);
@@ -1727,6 +1731,7 @@ class Email_model extends My_Model
                             'message'=>$msgbody,
                             'fileattach'=>$res['docurl'],
                         );
+                        echo 'Document '.$res['docurl'];
                         if ($sendmail==1) {
                             // if (!in_array($_SERVER['SERVER_NAME'], $this->config->item('localserver'))) { // !=='lift_stressballs.local'
                             $this->send_quota($mail_options);
@@ -1970,14 +1975,26 @@ class Email_model extends My_Model
         $pdf->SetXY($strartX, $curY+83);
         $pdf->SetTextColor(4,0,161);
         $pdf->SetFont('Times','BI',19);
-        $pdf->MultiCell(187, 6, 'Order Online, by calling 1-800-790-6090, or by returning this form by fax to 201-604-2688 or by email to sales@stressballs.com.',0, 'C',0);
+        if ($mail['brand']=='SR') {
+            $pdf->MultiCell(187, 6, 'Order Online, by calling 1-800-790-6090, or by returning this form by fax to 201-604-2688 or by email to sales@stressrelievers.com.',0, 'C',0);
+        } else {
+            $pdf->MultiCell(187, 6, 'Order Online, by calling 1-800-790-6090, or by returning this form by fax to 201-604-2688 or by email to sales@stressballs.com.',0, 'C',0);
+        }
         $pdf->SetXY($strartX, $curY+97);
         $pdf->SetTextColor(255,255,255);
         $pdf->SetFillColor(26,26,255);
         $pdf->SetFont('Times','B',15);
-        $pdf->Cell(187, 12, 'STRESSBALLS.com, Inc. - 855 Bloomfield Ave - Clifton, NJ 07012 - USA',0, 0,'C',1);
+        if ($mail['brand']=='SR') {
+            $pdf->Cell(187, 12, 'STRESSRELIEVERS.com, Inc. - 855 Bloomfield Ave - Clifton, NJ 07012 - USA',0, 0,'C',1);
+        } else {
+            $pdf->Cell(187, 12, 'STRESSBALLS.com, Inc. - 855 Bloomfield Ave - Clifton, NJ 07012 - USA',0, 0,'C',1);
+        }
         // Prepare save
-        $file_name = 'STRESSBALLS.com_Quote_'.date('ymd').$mail['email_id'].'.pdf';
+        if ($mail['brand']=='SR') {
+            $file_name = 'STRESSRELIEVERS.COM_Quote_'.date('ymd').$mail['email_id'].'.pdf';
+        } else {
+            $file_name = 'STRESSBALLS.com_Quote_'.date('ymd').$mail['email_id'].'.pdf';
+        }
         $file_out = $this->config->item('quotes') . $file_name;
         $file_short = $this->config->item('quotes_relative') . $file_name;
         $pdf->Output('F', $file_out);
