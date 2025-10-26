@@ -1730,7 +1730,7 @@ class Email_model extends My_Model
                             'fileattach'=>$res['docurl'],
                         );
                         if ($sendmail==1) {
-                            // $this->send_quota($mail_options);
+                            $this->send_quota($mail_options);
                             // Add Lead
                             $this->load->model('leads_model');
                             $leadpost=array(
