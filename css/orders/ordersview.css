@@ -113,6 +113,9 @@ select.leadord_filterselect {
 .lead_orderlegendlabel.long {
     width: 65px;
 }
+.leadord_headdataarea {
+    margin-left: 10px;
+}
 /* Table Head */
 .leadorder_datahead {
     background: none #0808ff;
@@ -234,8 +237,9 @@ select.leadord_filterselect {
     float: left;
     height: 538px;
     margin-bottom: 10px;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-width: none;
     /* width: 1015px; */
     /* width: 1145px; */
     width: 1151px;
@@ -248,13 +252,13 @@ select.leadord_filterselect {
     clear: both;
     float: left;
     overflow-x: hidden;
-    /* width: 1004px; */
     /*width: 1135px;*/
-    width: 1141px;
+    /*width: 1141px;*/
+    width: 100%;
 }
 .leadorder_datarow.relievers {
     /*width: 1139px;*/
-    width: 1145px;
+    /* width: 1145px; */
 }
 .leadorder_datarow.error {
     text-align: center;
@@ -478,6 +482,7 @@ select.leadord_filterselect {
     color: #000000;
 }
 .leadorder_datarow > .ordstatus {
+    border-right: 1px solid #000000;
     float: left;
     font-size: 11px;
     color: #252525;
@@ -486,7 +491,8 @@ select.leadord_filterselect {
     text-align: center;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 85px;
+    /*width: 85px;*/
+    width: 94px;
 }
 /*
 .leadorder_datarow.relievers > .ordstatus {

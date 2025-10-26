@@ -65,7 +65,7 @@
         <div class="leadorder_pagination"></div>
     </div>
 </div>
-<div class="leadord_headdataarea" style="margin-left: 10px;">
+<div class="leadord_headdataarea">
     <div class="leadorder_datahead <?=$brand=='SR' ? 'relievers' : ''?>">
         <div class="date">Date</div>
         <div class="ordernum">Order #</div>
@@ -86,7 +86,7 @@
         <div class="ordstatus">Fulfilled</div>
         <!-- Status -->
     </div>
-    <div class="leadorder_dataarea <?=$brand=='SR' ? 'relievers' : ''?>">&nbsp;</div>
+    <div class="leadorder_dataarea <?=$brand=='SR' ? 'relievers' : ''?>" id="leadorder_dataarea">&nbsp;</div>
 </div>
 <div class="ordertraciknglegend">
     <div class="datarow">

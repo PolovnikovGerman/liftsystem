@@ -275,9 +275,6 @@ function pageProfitOrederCallback(page_index) {
             }
             // Scroll
             var scrollElement = new SimpleBar(document.getElementById('tableinfotab1'), { autoHide: false });
-            // setTimeout(() => {
-            //     scrollElement.getScrollElement().scrollTop = scrollElement.getScrollElement().scrollHeight;
-            // }, "300");
             init_profitorder_manage();
         } else {
             show_error(response);
