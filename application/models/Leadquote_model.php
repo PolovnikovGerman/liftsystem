@@ -3108,7 +3108,7 @@ class Leadquote_model extends MY_Model
 
         $this->db->select('q.quote_id, q.lead_id, q.quote_date, q.brand, q.quote_number, q.quote_total, l.lead_company, l.lead_customer, u.user_name, u.user_initials');
         $this->db->from('ts_quotes q');
-        $this->db->join('users u','u.user_id=q.create_user');
+        $this->db->join('users u','u.user_id=q.create_user','left');
         $this->db->join('ts_leads l','l.lead_id=q.lead_id');
         // $this->db->join('ts_leadquote_orders o','q.quote_id = o.quote_id','left');
         $this->db->join("({$item_qry}) qitem",'qitem.quote_id=q.quote_id');
