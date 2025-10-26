@@ -88,6 +88,8 @@ function pageLeadorderCallback(page_index) {
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("div.leadorder_dataarea").empty().html(response.data.content);
+            // Scroll
+            var scrollElement = new SimpleBar(document.getElementById('leadorder_dataarea'), { autoHide: false });
             // Init new content manage
             init_leadorder_content();
             $("#leadorderpage").val(page_index);
