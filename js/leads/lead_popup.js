@@ -524,7 +524,12 @@ function save_lead() {
    $.post(url, dat, function(response){
        if (response.errors=='') {
            initLeaddataPagination();
-           initProofPagination();
+           // initProofPagination();
+           show_leadpriority();
+           show_leadtasks();
+           show_newleads();
+           show_ordermissinfo();
+           init_leadmanage_content();
            $("#loader").hide();
            $("#leadformModal").modal('hide');
            $('.modal-backdrop').hide();

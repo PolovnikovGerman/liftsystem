@@ -76,6 +76,8 @@ Class Leads_model extends MY_Model
         if (isset($options['usrrepl'])) {
             $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
             $this->db->where('lu.user_id',$options['usrrepl']);
+        } else {
+            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
         }
         if ($options['showcloded']==0) {
             // Open - 1, 2 - priority, 6 - Soon
@@ -306,9 +308,9 @@ Class Leads_model extends MY_Model
             $oldlead=$this->get_lead($leadpost['lead_id']);
         }
         /* Check incoming */
-        if (count($lead_usr)==0) {
-            $out['msg']='Assign Lead executor';
-        } else {
+//        if (count($lead_usr)==0) {
+//            $out['msg']='Assign Lead executor';
+//        } else {
             /* Save Lead main data */
             $newhistory='';
             $newval=(floatval($leadpost['lead_value']));
@@ -453,7 +455,7 @@ Class Leads_model extends MY_Model
                 $out['msg']='';
                 $out['result']=$leadpost['lead_id'];
             }
-        }
+//        }
         return $out;
     }
 
@@ -2467,6 +2469,55 @@ Class Leads_model extends MY_Model
             $out[] = $row;
         }
         return $out;
+    }
+
+    public function get_unsignleads($options,$sort,$limit,$offset)
+    {
+        $this->db->select('lead_id, count(leaduser_id) as cnt')->from('ts_lead_users')->group_by('lead_id');
+        $historysql = $this->db->get_compiled_select();
+        $date = new DateTime();
+        $date->modify('-10 years');
+        $limitdate = $date->getTimestamp(); // Output: 2023-10-27
+        // $limitdate = strtotime('-10 years');
+        $this->db->select('l.*');
+        $this->db->from('ts_leads l');
+        $this->db->join('('.$historysql.') as h', 'h.lead_id=l.lead_id','left');
+//        if (isset($options['usrrepl'])) {
+//            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
+//            $this->db->where('lu.user_id',$options['usrrepl']);
+//        } else {
+//            $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
+//        }
+        $this->db->where('coalesce(h.cnt,0)',0);
+        $this->db->where('lead_date >= ', $limitdate);
+        if ($options['showcloded']==0) {
+            // Open - 1, 2 - priority, 6 - Soon
+            $this->db->where_in('lead_type',array(1,2,6));
+        }
+        if (isset($options['search'])) {
+            $search='%'.strtoupper($options['search']).'%';
+            $searchdata="(CONCAT_WS('',l.lead_item,l.other_item_name,l.lead_customer,l.lead_company,l.lead_mail,l.lead_phone)  LIKE '{$search}' or concat('L',l.lead_number) like '{$search}')";
+            $this->db->where("{$searchdata}");
+        }
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            if ($options['brand']=='SR') {
+                $this->db->where('l.brand', $options['brand']);
+            } else {
+                $this->db->where_in('l.brand', ['SB','BT']);
+            }
+        }
+        if ($sort) {
+            if ($sort==2) {
+                $this->db->order_by('lead_date','desc');
+            } elseif($sort==1) {
+                $this->db->order_by('update_date','desc');
+            }
+        }
+        $this->db->limit($limit,$offset);
+        $result=$this->db->get()->result_array();
+        $out = $this->_prepare_leads_view($result, $sort, $options['brand']);
+        return $out;
+
     }
 
 }

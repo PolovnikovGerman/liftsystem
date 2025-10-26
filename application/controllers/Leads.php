@@ -299,8 +299,26 @@ class Leads extends My_Controller {
             $brand = ifset($postdata,'brand');
             if (!empty($brand)) {
                 $error = '';
-                // $sort = ifset($postdata,'sorttime',1);
-                $newleads = [];
+                $pagenum = ifset($postdata, 'offset',0);
+                $limit = ifset($postdata, 'limit', 250);
+                $offset = $pagenum*$limit;
+                $options=[
+                    'brand' => $brand,
+                ];
+                $search = ifset($postdata,'search');
+                if (!empty($search)) {
+                    $options['search']=$search;
+                }
+//                $usrrepl = ifset($postdata, 'userrepl');
+//                if (!empty($usrrepl)) {
+//                    $options['usrrepl']=$usrrepl;
+//                }
+                $options['showcloded'] = ifset($postdata, 'showcloded',0);
+                $sort = ifset($postdata,'sorttime',1);
+                $this->load->model('leads_model');
+                $newleads = $this->leads_model->get_unsignleads($options,$sort,$limit,$offset);
+
+                // $newleads = [];
                 if (count($newleads)==0) {
                     $mdata['content'] = $this->load->view('leads/leads_emptydata_view', [], TRUE);
                 } else {
