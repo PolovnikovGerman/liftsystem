@@ -2757,6 +2757,9 @@ Class Orders_model extends MY_Model
         $this->db->group_by('i.order_id');
         $itemdatesql = $this->db->get_compiled_select();
 
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt')->from('ts_artworks a')->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id')->where('p.approved > ',0)->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+
         $this->db->select('o.order_id, o.create_usr, o.order_date, o.brand, o.order_num, o.customer_name, o.customer_email, o.revenue,
             o.shipping,o.is_shipping, o.tax, o.cc_fee, o.order_cog, o.profit, o.profit_perc, o.is_canceled,
             o.reason, itm.item_name, o.item_id, o.order_items, finance_order_amountsum(o.order_id) as cnt_amnt',FALSE);
@@ -2764,11 +2767,13 @@ Class Orders_model extends MY_Model
         $this->db->select('o.order_qty, o.shipdate, o.order_confirmation');
         $this->db->select('p.batchcnt, p.batchsum, coalesce(o.revenue,0) - coalesce(p.batchsum,0) as balance ');
         $this->db->select('bil.customer_ponum');
+        $this->db->select('coalesce(proof.cnt,0) as proofdocs');
         $this->db->from('ts_orders o');
         // $this->db->join('brands b','b.brand_id=o.brand_id','left');
         $this->db->join("{$item_dbtable} as  itm",'itm.item_id=o.item_id','left');
         $this->db->join('('.$balancesql.') p','p.order_id=o.order_id', 'left');
         $this->db->join('ts_order_billings bil','bil.order_id=o.order_id', 'left');
+        $this->db->join('('.$proofsql.') as proof', 'proof.order_id=o.order_id','left');
         if ($admin_mode==0) {
             $this->db->where('o.is_canceled',0);
         }
@@ -2982,6 +2987,12 @@ Class Orders_model extends MY_Model
                 } else {
                     $row['preview_link'] = '';
                 }
+            }
+            $row['proofclass'] = 'notapproved';
+            $row['proofstage'] = 'Not approved';
+            if (!empty($row['proofdocs'])) {
+                $row['proofclass'] = 'approved';
+                $row['proofstage'] = 'Approved';
             }
             $out_array[]=$row;
         }
