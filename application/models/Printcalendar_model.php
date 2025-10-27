@@ -25,6 +25,9 @@ class Printcalendar_model extends MY_Model
     public function get_printshops_years($limit=10) {
         $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.print_date),\'%Y\') as yearprint, count(o.order_id)');
         $this->db->from('ts_orders o');
+        $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
+        $this->db->join('ts_order_itemcolors oic','oic.order_item_id=oi.order_item_id');
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=oic.inventory_color_id');
         $this->db->where('o.is_canceled', 0);
         $this->db->where('coalesce(o.print_date,0) > 0');
         $this->db->group_by('yearprint');
@@ -36,7 +39,12 @@ class Printcalendar_model extends MY_Model
     public function build_calendar($start_year, $year)
     {
         if ($year==date('Y')) {
-            $this->db->select('max(o.print_date) as printdate')->from('ts_orders o')->where('o.is_canceled', 0)->where('o.print_date is not null');
+            $yearlimit = strtotime($year.'-12-31');
+            $this->db->select('max(o.print_date) as printdate')->from('ts_orders o');
+            $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
+            $this->db->join('ts_order_itemcolors oic','oic.order_item_id=oi.order_item_id');
+            $this->db->join('ts_inventory_colors ic','ic.inventory_color_id=oic.inventory_color_id');
+            $this->db->where('o.is_canceled', 0)->where('o.print_date is not null')->where('o.print_date <=', $yearlimit);
             $res = $this->db->get()->row_array();
             $finish_year = $res['printdate'];
         } else {
