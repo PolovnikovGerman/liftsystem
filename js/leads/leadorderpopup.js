@@ -2381,6 +2381,7 @@ function save_imprint_details() {
     var params=new Array();
     params.push({name: 'ordersession', value: $("input#ordersession").val()});
     params.push({name:'imprintsession', value: $("input#imprintsession").val()});
+    $("#loader").show();
     $.post(url, params , function(response){
         if (response.errors=='') {
             $("#artNextModal").modal('hide');
@@ -2411,6 +2412,7 @@ function save_imprint_details() {
             if (response.data.shiprebuild==1) {
                 $("#rushdatalistarea").empty().html(response.data.rushview);
                 $("input.shiprushcost").val(response.data.rush_price);
+                $("div.shippingdatesarea").empty().html(response.data.shipdatesview);
             }
             // Art Location
             if (response.data.artlocchange==1) {
@@ -2429,8 +2431,10 @@ function save_imprint_details() {
             }
             $("input#loctimeout").val(response.data.loctime);
             $(".addleadorderitem").show();
+            $("#loader").hide();
             init_onlineleadorder_edit();
         } else {
+            $("#loader").hide();
             show_error(response);
         }
     },'json');

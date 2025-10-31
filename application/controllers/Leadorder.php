@@ -2882,6 +2882,11 @@ class Leadorder extends MY_Controller
                             'shipdate'=>$shipping['shipdate'],
                         );
                         $mdata['rushview']=$this->load->view('leadorderdetails/rushlist_view', $rushopt, TRUE);
+                        $dateoptions=array(
+                            'shipping'=>$shipping,
+                            'user_role' => $this->USR_ROLE,
+                        );
+                        $mdata['shipdatesview']=$this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
                     }
                     // Art Locations
                     $mdata['artlocchange']=$res['artlocchange'];
