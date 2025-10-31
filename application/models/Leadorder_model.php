@@ -2496,6 +2496,8 @@ Class Leadorder_model extends My_Model {
         }
         if ($order_blank!=$order['order_blank']) {
             $out['shiprebuild']=1;
+            // Recalc Shipping dates
+            $recalshipcost = 1;
             // Rebuild shipping
             $this->load->model('shipping_model');
             $shipping=$leadorder['shipping'];
