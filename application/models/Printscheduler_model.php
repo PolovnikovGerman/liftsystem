@@ -536,14 +536,11 @@ class Printscheduler_model extends MY_Model
         foreach ($orders as $order) {
             // $order['inventory_color'] = $this->_inventory_color($order['item_number'], $order['item_color']);
             $order['inventory_color'] = $order['inventory_color_id'];
-            $passed = $this->_completed_itemcolor($order['order_itemcolor_id']); // , $order['inventory_color']);
+            $passed = $this->_completed_itemcolor($order['order_id'], $order['inventory_color']);
             $order['qtyclass'] = '';
             if ($passed > 0) {
                 $order['qtyclass'] = $this->partial_completed;
                 $order['item_qty'] = $order['item_qty'] - $passed;
-                if ($order['item_qty'] < 0) {
-                    $order['item_qty'] = 0;
-                }
             }
             // Imprints
             // $this->db->select('sum(if(i.imprint_item=1, 1, i.imprint_qty)) as imprints, sum(if(i.imprint_item=1, 1, 0)) as imprqty');
@@ -644,14 +641,11 @@ class Printscheduler_model extends MY_Model
         foreach ($orders as $order) {
             // $order['inventory_color'] = $this->_inventory_color($order['item_number'], $order['item_color']);
             $order['inventory_color'] = $order['inventory_color_id'];
-            $passed = $this->_completed_itemcolor($order['order_itemcolor_id']); // , $order['inventory_color']);
+            $passed = $this->_completed_itemcolor($order['order_id'], $order['inventory_color']);
             $order['qtyclass'] = '';
             if ($passed > 0) {
                 $order['qtyclass'] = $this->partial_completed;
                 $order['item_qty'] = $order['item_qty'] - $passed;
-                if ($order['item_qty'] < 0) {
-                    $order['item_qty'] = 0;
-                }
             }
             $totals['items']+=$order['item_qty'];
             // Imprints
@@ -695,7 +689,6 @@ class Printscheduler_model extends MY_Model
         $this->db->where('o.print_finish',0);
         $this->db->where('oic.print_ready > ', 0);
         $this->db->where('oi.plates_ready > ', 0);
-        $this->db->where('oic.print_completed', 0);
         $this->db->where('o.shipping_ready',0);
         $this->db->where('o.print_user != ', null);
         if ($brand !== 'ALL') {
@@ -893,14 +886,11 @@ class Printscheduler_model extends MY_Model
         foreach ($orders as $order) {
             // $order['inventory_color'] = $this->_inventory_color($order['item_number'], $order['item_color']);
             $order['inventory_color'] = $order['inventory_color_id'];
-            $passed = $this->_completed_itemcolor($order['order_itemcolor_id']); // , $order['inventory_color']);
+            $passed = $this->_completed_itemcolor($order['order_id'], $order['inventory_color']);
             $order['qtyclass'] = '';
             if ($passed > 0) {
                 $order['qtyclass'] = $this->partial_completed;
                 $order['item_qty'] = $order['item_qty'] - $passed;
-                if ($order['item_qty'] < 0) {
-                    $order['item_qty'] = 0;
-                }
             }
             $totals['items']+=$order['item_qty'];
             // Imprints
@@ -1030,70 +1020,57 @@ class Printscheduler_model extends MY_Model
         ];
     }
 
-    public function stockdonecheck($order_id, $updtype, $user_id)
+    public function stockdonecheck($order_id, $updtype)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Order Not Found'];
         if ($updtype=='stock') {
-            $this->db->select('oic.order_itemcolor_id as order_id, oic.print_ready, o.print_date, o.order_blank, o.order_id as id')->from('ts_order_itemcolors oic');
+            $this->db->select('oic.order_itemcolor_id as order_id, oi.order_item_id, oic.print_ready, o.print_date, o.order_blank')->from('ts_order_itemcolors oic');
             $this->db->join('ts_order_items oi','oi.order_item_id=oic.order_item_id')->join('ts_orders o','o.order_id=oi.order_id');
             $this->db->where('oic.order_itemcolor_id', $order_id);
         } else {
-            $this->db->select('oi.order_item_id as order_id, oi.plates_ready, o.print_date, o.order_id as id')->from('ts_order_items oi');
+            $this->db->select('oi.order_item_id as order_id, oi.plates_ready, o.print_date')->from('ts_order_items oi');
             $this->db->join('ts_orders o','o.order_id=oi.order_id')->where('oi.order_item_id', $order_id);
         }
         $orderres = $this->db->get()->row_array();
         if (ifset($orderres,'order_id',0)==$order_id) {
-            // Check - empty movement of order
-            $out['msg'] = 'Order in work';
-            $chkamnt = 0;
-            if ($orderres['order_blank']==1) {
-                if ($updtype=='stock') {
-                    $this->db->select('count(amount_id) as cnt, sum(shipped) as shipped')->from('ts_order_amounts')->where('order_itemcolor_id', $order_id);
-                } else {
-                    $this->db->select('count(toa.amount_id) as cnt, sum(toa.shipped) as shipped')->from('ts_order_amounts toa')->join('ts_order_itemcolors toi','toi.order_itemcolor_id = toa.order_itemcolor_id');
-                    $this->db->where('toi.order_item_id', $order_id);
-                }
-                $chkres = $this->db->get()->row_array();
-                $chkamnt = $chkres['cnt'];
-            }
-            if ($chkamnt==0) {
-                $out['result'] = $this->success_result;
-                $out['printdate'] = date('Y-m-d',$orderres['print_date']);
-                $outupdate = 0;
-                if ($updtype=='stock') {
-                    $this->db->where('order_itemcolor_id', $order_id);
-                    if ($orderres['print_ready']==0) {
-                        $this->db->set('print_ready',time());
-                        if ($orderres['order_blank']==1) {
-                            $this->db->set('print_completed', 1);
-                            $this->db->set('print_date', time());
-                            $outupdate = 1;
-                        }
-                        $out['checked'] = 1;
-                    } else {
-                        $this->db->set('print_ready',0);
-                        if ($orderres['order_blank']==1) {
-                            $this->db->set('print_completed', 0);
-                            $this->db->set('print_date', 0);
-                        }
-                        $out['checked'] = 0;
-                    }
+            $out['result'] = $this->success_result;
+            $out['printdate'] = date('Y-m-d',$orderres['print_date']);
+            if ($updtype=='stock') {
+                $this->db->where('order_itemcolor_id', $order_id);
+                if ($orderres['print_ready']==0) {
+                    $this->db->set('print_ready',time());
                     $this->db->update('ts_order_itemcolors');
-                } else {
-                    $this->db->where('order_item_id', $order_id);
-                    if ($orderres['plates_ready']==0) {
-                        $this->db->set('plates_ready',time());
-                        $out['checked'] = 1;
-                    } else {
-                        $this->db->set('plates_ready',0);
-                        $out['checked'] = 1;
+                    if ($orderres['order_blank']==1) {
+//                        $this->db->set('print_completed', 1);
+//                        $this->db->set('print_date', time());
+                        $this->db->where('order_item_id', $orderres['order_item_id']);
+                        $this->db->set('plates_ready', time());
+                        $this->db->update('ts_order_items');
                     }
-                    $this->db->update('ts_order_items');
+                    $out['checked'] = 1;
+                } else {
+                    $this->db->set('print_ready',0);
+                    $this->db->update('ts_order_itemcolors');
+                    if ($orderres['order_blank']==1) {
+//                        $this->db->set('print_completed', 0);
+//                        $this->db->set('print_date', 0);
+                        $this->db->where('order_item_id', $orderres['order_item_id']);
+                        $this->db->set('plates_ready', 0);
+                        $this->db->update('ts_order_items');
+                    }
+                    $out['checked'] = 0;
                 }
-                // Update outcome - for blank order
-                if ($outupdate==1) {
-                    $updres = $this->_inventory_blank_outcome($order_id, $user_id);
+//                $this->db->update('ts_order_itemcolors');
+            } else {
+                $this->db->where('order_item_id', $order_id);
+                if ($orderres['plates_ready']==0) {
+                    $this->db->set('plates_ready',time());
+                    $out['checked'] = 1;
+                } else {
+                    $this->db->set('plates_ready',0);
+                    $out['checked'] = 1;
                 }
+                $this->db->update('ts_order_items');
             }
         }
         return $out;
@@ -1110,52 +1087,6 @@ class Printscheduler_model extends MY_Model
             $this->db->where('order_id', $order_id);
             $this->db->set('print_user', $user_id);
             $this->db->update('ts_orders');
-            // Update PO and track code
-            // Prepare POs
-            $this->db->select('order_itemcolor_id, count(amount_id) as amntcnt, sum(shipped) as amnttotal')->from('ts_order_amounts')->group_by('order_itemcolor_id');
-            $posql = $this->db->get_compiled_select();
-            $this->db->reset_query();
-            $this->db->select('order_itemcolor_id, count(tracking_id) as cnt, sum(qty) as tracked, max(trackdate) as trackdate')->from('ts_order_trackings')->group_by('order_itemcolor_id');
-            $tracksql = $this->db->get_compiled_select();
-            $this->db->reset_query();
-            $daybgn = strtotime($out['printdate']);
-            $dayend = strtotime('+1 day', $daybgn);
-            $this->db->select('o.order_id, oi.order_item_id, toi.order_itemcolor_id, toi.item_qty, o.order_blank, po.amnttotal, track.tracked, track.trackdate');
-            $this->db->from('ts_orders o');
-            $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
-            $this->db->join('ts_order_itemcolors toi','oi.order_item_id=toi.order_item_id');
-            $this->db->join("({$posql}) as po",'po.order_itemcolor_id=toi.order_itemcolor_id','left');
-            $this->db->join("({$tracksql}) as track",'track.order_itemcolor_id=toi.order_itemcolor_id','left');
-            $this->db->where('o.print_date >= ', $daybgn);
-            $this->db->where('o.print_date < ', $dayend);
-            $this->db->where('o.is_canceled',0);
-            $this->db->where('toi.print_ready > ', 0);
-            $this->db->where('oi.plates_ready > ', 0);
-            $this->db->where('toi.print_completed', 0);
-            $this->db->where('o.shipping_ready',0);
-            $this->db->where('o.print_user != ', null);
-            $chkorders = $this->db->get()->result_array();
-
-            foreach ($chkorders as $chkorder) {
-                // PO filled
-                if (intval($chkorder['amnttotal'])>=$chkorder['item_qty']) {
-                    // Print item color completed
-                    $this->db->where('order_itemcolor_id', $chkorder['order_itemcolor_id']);
-                    $this->db->set('print_completed', 1);
-                    $this->db->set('print_date', time());
-                    $this->db->update('ts_order_itemcolors');
-                }
-                // Tracked filled
-                if (intval($chkorder['tracked'])>=$chkorder['item_qty']) {
-                    $upddat = time();
-                    if (!empty($chkorder['trackdate'])) {
-                        $upddat = $chkorder['trackdate'];
-                    }
-                    $this->db->where('order_itemcolor_id', $chkorder['order_itemcolor_id']);
-                    $this->db->set('shipping_ready', $upddat);
-                    $this->db->update('ts_order_itemcolors');
-                }
-            }
         }
         return $out;
     }
@@ -1195,7 +1126,7 @@ class Printscheduler_model extends MY_Model
                         $out['printshop_income_id']=$amountres['amount_id'];
                         $out['printdate'] = date('Y-m-d', $orderdata['print_date']);
                         // Update print_date & print_completed
-                        $passed = $this->_completed_itemcolor($orderdata['order_itemcolor_id']); // , $inventory_color_id);
+                        $passed = $this->_completed_itemcolor($orderdata['order_id'], $inventory_color_id);
                         $print_compl = 0;
                         if ($passed >= $orderdata['item_qty']) {
                             $print_compl = 1;
@@ -1206,18 +1137,6 @@ class Printscheduler_model extends MY_Model
                             $this->db->set('print_date', time());
                         }
                         $this->db->update('ts_order_itemcolors');
-                        // Checked Track codes
-                        $this->db->select('count(tracking_id) as cnt, sum(qty) as tracked, max(trackdate) as trackdate')->from('ts_order_trackings')->where('order_itemcolor_id', $orderdata['order_itemcolor_id']);
-                        $trackres = $this->db->get()->row_array();
-                        if (intval($trackres['cnt'])>0 && intval($trackres['tracked'])>=$orderdata['item_qty']) {
-                            $upddat = time();
-                            if (!empty($trackres['trackdate'])) {
-                                $upddat = $trackres['trackdate'];
-                            }
-                            $this->db->where('order_itemcolor_id', $orderdata['order_itemcolor_id']);
-                            $this->db->set('shipping_ready', $upddat);
-                            $this->db->update('ts_order_itemcolors');
-                        }
                     }
                 }
             }
@@ -1328,10 +1247,10 @@ class Printscheduler_model extends MY_Model
         return $color_id;
     }
 
-    private function _completed_itemcolor($itemcolor_id)
+    private function _completed_itemcolor($order_id, $inventory_color)
     {
         $outcome = 0;
-        $this->db->select('count(amount_id) as amntcnt, sum(shipped) as amnttotal')->from('ts_order_amounts')->where(['order_itemcolor_id' => $itemcolor_id]);
+        $this->db->select('count(amount_id) as amntcnt, sum(shipped) as amnttotal')->from('ts_order_amounts')->where(['order_id' => $order_id, 'inventory_color_id' => $inventory_color]);
         $amntres = $this->db->get()->row_array();
         if ($amntres['amntcnt'] > 0) {
             $outcome = $amntres['amnttotal'];
@@ -1538,71 +1457,4 @@ class Printscheduler_model extends MY_Model
         }
         return $out;
     }
-
-    private function _inventory_blank_outcome($order_itemcolor_id, $user_id)
-    {
-        $out = ['result' => $this->error_result, 'msg' => 'Error during Save Amount'];
-        $this->db->select('*')->from('ts_order_itemcolors')->where('order_itemcolor_id', $order_itemcolor_id);
-        $itemcolor = $this->db->get()->row_array();
-        if (!empty($itemcolor['inventory_color_id'])) {
-            $this->db->select('oic.order_itemcolor_id, oic.print_date colorprint, oic.print_completed, oic.item_qty, o.order_id, o.order_num, o.order_date, o.customer_name, o.print_date')->from('ts_order_itemcolors oic');
-            $this->db->join('ts_order_items oi','oic.order_item_id = oi.order_item_id')->join('ts_orders o','oi.order_id = o.order_id')->where('oic.order_itemcolor_id', $order_itemcolor_id);
-            $orderdata = $this->db->get()->row_array();
-            $inventory_color_id = $itemcolor['inventory_color_id'];
-            $shipped = $itemcolor['item_qty'];
-            $kepted = $misprint = $plates = 0;
-            $this->db->select('count(amount_id) as cnt, sum(shipped) as shipped')->from('ts_order_amounts')->where('order_itemcolor_id', $order_itemcolor_id);
-            $amnt = $this->db->get()->row_array();
-            if ($amnt['cnt']>0) {
-                $shipped = $shipped - $amnt['shipped'];
-            }
-            if ($shipped > 0) {
-                $this->load->model('inventory_model');
-                $diff = intval($shipped) + intval($kepted) + intval($misprint);
-                $balance = $this->inventory_model->inventory_color_income($inventory_color_id)-$this->inventory_model->inventory_color_outcome($inventory_color_id);
-                $newbalance = $balance-$diff;
-                if ($newbalance < 0) {
-                    $out['msg'] = 'Enter Other QTY or Increase Income, or Choose other Inventory item';
-                    return $out;
-                }
-                $orderdata = $this->_prepare_amount_save($orderdata, $inventory_color_id, $shipped, $kepted, $misprint, $plates);
-                $amountres = $this->_save_amount($orderdata, $user_id);
-                $out['msg'] = $amountres['msg'];
-                if ($amountres['result']==$this->success_result) {
-                    $cogflag = $this->error_result;
-                    $cogres = $this->inventory_model->_update_ordercog($orderdata['order_id']);
-                    if ($cogres['result']==$this->success_result) {
-                        $cogflag = $this->success_result;
-                    } else {
-                        $out['msg'] = $cogres['msg'];
-                    }
-                    if ($cogflag==$this->success_result) {
-                        $out['result']=$this->success_result;
-                        $out['order_id']=$orderdata['order_id'];
-                        $out['printshop_income_id']=$amountres['amount_id'];
-                        $out['printdate'] = date('Y-m-d', $orderdata['print_date']);
-                        // Update print_date & print_completed
-                        $passed = 0;
-                        $this->db->select('count(amount_id) as amntcnt, sum(shipped) as amnttotal')->from('ts_order_amounts')->where(['order_itemcolor_id' => $order_itemcolor_id]);
-                        $amntres = $this->db->get()->row_array();
-                        if ($amntres['amntcnt'] > 0) {
-                            $passed = $amntres['amnttotal'];
-                        }
-                        $print_compl = 0;
-                        if (intval($passed) >= intval($orderdata['item_qty'])) {
-                            $print_compl = 1;
-                        }
-                        $this->db->where('order_itemcolor_id', $orderdata['order_itemcolor_id']);
-                        $this->db->set('print_completed', $print_compl);
-                        if ($orderdata['colorprint']==0) {
-                            $this->db->set('print_date', time());
-                        }
-                        $this->db->update('ts_order_itemcolors');
-                    }
-                }
-            }
-        }
-        return $out;
-    }
-
 }
