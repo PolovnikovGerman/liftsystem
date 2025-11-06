@@ -162,6 +162,10 @@ Class Leadorder_model extends My_Model {
         $this->db->group_by('o.order_id');
         $tracksql = $this->db->get_compiled_select();
 
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt')->from('ts_artworks a')->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id')->where('p.approved > ',0)->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+
+
         $this->db->select('o.order_id, o.create_usr, o.order_date, o.brand_id, o.order_num, o.customer_name');
         $this->db->select('o.customer_email, o.revenue, o.shipping, o.is_shipping, o.tax, o.cc_fee, o.order_cog');
         $this->db->select('o.profit, o.profit_perc, o.is_canceled, o.reason,  o.item_id, o.invoice_doc, o.invoice_send');
@@ -180,6 +184,7 @@ Class Leadorder_model extends My_Model {
         $this->db->select('sendpack.packtrackdate, delivpack.cnt as delivpacks');
         $this->db->select('p.batchcnt, p.batchsum, coalesce(o.revenue,0) - coalesce(p.batchsum,0) as balance ');
         $this->db->select('track.trackcnt, track.trackqty');
+        $this->db->select('proof.cnt as proofdocs');
         $this->db->from('ts_orders o');
         $this->db->join("{$item_dbtable} as itm",'itm.item_id=o.item_id ','left');
         $this->db->join('users u','u.user_id=o.order_usr_repic','left');
@@ -193,7 +198,7 @@ Class Leadorder_model extends My_Model {
         $this->db->join("({$delivpack}) as delivpack",'delivpack.order_id=o.order_id','left');
         $this->db->join("({$balancesql}) as p",'p.order_id=o.order_id','left');
         $this->db->join("({$tracksql}) as track", 'track.order_id=o.order_id','left');
-
+        $this->db->join("({$proofsql}) as proof",'proof.order_id=o.order_id','left');
         // $this->db->where('o.is_canceled',0);
         // $this->db->join('v_order_artstage vo','vo.order_id=o.order_id','left');
         if (isset($options['unassigned'])) {
@@ -254,9 +259,15 @@ Class Leadorder_model extends My_Model {
         $curdat='';
         $ordidx=1;
         foreach ($res as $row) {
-            $this->db->select('order_proj_status as artstage')->from('v_order_artstage')->where('order_id', $row['order_id']);
-            $art = $this->db->get()->row_array();
-            $row['artstage'] = ifset($art,'artstage','');
+//            $this->db->select('order_proj_status as artstage')->from('v_order_artstage')->where('order_id', $row['order_id']);
+//            $art = $this->db->get()->row_array();
+//            $row['artstage'] = ifset($art,'artstage','');
+            $row['proofclass'] = 'notapproved';
+            $row['proofstage'] = 'Not Approved';
+            if (!empty($row['proofdocs'])) {
+                $row['proofclass'] = 'approved';
+                $row['proofstage'] = 'Approved';
+            }
             $row['itemcolorclass']='';
             if (!empty($row['itemcolor']) && strlen($row['itemcolor'])>9) {
                 $row['itemcolorclass']='wide';

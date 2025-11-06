@@ -35,7 +35,7 @@
             <?php } ?>
         </div>
         <div class="ordclass"><?=$row['order_class']?></div>
-        <div class="artstage"><?=$row['artstage']?></div>
+        <div class="artstage <?=$row['proofclass']?>"><?=$row['proofstage']?></div>
         <div class="points <?=$row['profit_class']?>"><?=$row['points']?></div>
         <div class="pointsdevider">&nbsp;</div>
         <div class="ordstatuspercent <?=$row['order_status_class']?>"><?=$row['order_status_perc']?></div>
