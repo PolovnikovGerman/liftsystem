@@ -438,7 +438,8 @@ select.leadord_filterselect {
 .leadorder_datarow > .artstage {
     border-right: 1px solid #000000;
     float: left;
-    padding-left: 3px;
+    /*padding-left: 3px;*/
+    text-align: center;
     /*width: 73px;*/
     width: 79px;
 }
