@@ -263,7 +263,7 @@ function pageProfitOrederCallback(page_index) {
     var url='/accounting/adminprofitorderdat';
     $("#loader").show();
     $.post(url,params,function(response){
-        $("#loader").css('display','none');
+        $("#loader").hide();
         if (response.errors=='') {
             $("#curpagetab1").val(page_index);
             leftmenu_alignment();
@@ -273,6 +273,8 @@ function pageProfitOrederCallback(page_index) {
             } catch (e) {
                 console.log('Ballone not init');
             }
+            // Scroll
+            var scrollElement = new SimpleBar(document.getElementById('tableinfotab1'), { autoHide: false });
             init_profitorder_manage();
         } else {
             show_error(response);
