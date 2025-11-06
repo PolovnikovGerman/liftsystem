@@ -38,6 +38,7 @@
         <div class="profitorder_profitperc_data <?=$row['profit_class']?> <?=$row['proftitleclass']?>" <?=$row['proftitle']?>>
             <?=$row['profit_perc']?>
         </div>
+        <div class="profitorder_artstage <?=$row['proofclass']?>"><?=$row['proofstage']?></div>
         <?php $drow++?>
         <?php $delivclass = ''?>
     </div>
