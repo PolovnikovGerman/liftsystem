@@ -1021,7 +1021,7 @@ class Printscheduler_model extends MY_Model
     {
         $out = ['result' => $this->error_result, 'msg' => 'Order Not Found'];
         if ($updtype=='stock') {
-            $this->db->select('oic.order_itemcolor_id as order_id, oic.print_ready, o.print_date, o.order_blank')->from('ts_order_itemcolors oic');
+            $this->db->select('oic.order_itemcolor_id as order_id, oi.order_item_id, oic.print_ready, o.print_date, o.order_blank')->from('ts_order_itemcolors oic');
             $this->db->join('ts_order_items oi','oi.order_item_id=oic.order_item_id')->join('ts_orders o','o.order_id=oi.order_id');
             $this->db->where('oic.order_itemcolor_id', $order_id);
         } else {
@@ -1036,20 +1036,28 @@ class Printscheduler_model extends MY_Model
                 $this->db->where('order_itemcolor_id', $order_id);
                 if ($orderres['print_ready']==0) {
                     $this->db->set('print_ready',time());
+                    $this->db->update('ts_order_itemcolors');
                     if ($orderres['order_blank']==1) {
-                        $this->db->set('print_completed', 1);
-                        $this->db->set('print_date', time());
+//                        $this->db->set('print_completed', 1);
+//                        $this->db->set('print_date', time());
+                        $this->db->where('order_item_id', $orderres['order_item_id']);
+                        $this->db->set('plates_ready', time());
+                        $this->db->update('ts_order_items');
                     }
                     $out['checked'] = 1;
                 } else {
                     $this->db->set('print_ready',0);
+                    $this->db->update('ts_order_itemcolors');
                     if ($orderres['order_blank']==1) {
-                        $this->db->set('print_completed', 0);
-                        $this->db->set('print_date', 0);
+//                        $this->db->set('print_completed', 0);
+//                        $this->db->set('print_date', 0);
+                        $this->db->where('order_item_id', $orderres['order_item_id']);
+                        $this->db->set('plates_ready', 0);
+                        $this->db->update('ts_order_items');
                     }
                     $out['checked'] = 0;
                 }
-                $this->db->update('ts_order_itemcolors');
+//                $this->db->update('ts_order_itemcolors');
             } else {
                 $this->db->where('order_item_id', $order_id);
                 if ($orderres['plates_ready']==0) {
