@@ -4889,22 +4889,4 @@ class Test extends CI_Controller
             echo 'Report '.$res.' builded'.PHP_EOL;
         }
     }
-
-    public function check_printedorders()
-    {
-        $this->db->select('order_itemcolor_id, count(amount_id) as cnt')->from('ts_order_amounts')->group_by('order_itemcolor_id');
-        $amntsql = $this->db->get_compiled_select();
-
-        $this->db->select('o.order_num, oic.order_itemcolor_id, o.order_blank, oic.print_ready, oi.order_item_id')->from('ts_orders o');
-        $this->db->join('ts_order_items oi', 'oi.order_id=o.order_id');
-        $this->db->join('ts_order_itemcolors oic', 'oic.order_item_id = oi.order_item_id');
-        $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id = oic.inventory_color_id');
-        $this->db->join('('.$amntsql.') as amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
-        $this->db->where(['oic.print_completed' => 1, 'COALESCE(amnt.cnt,0)' => 0]);
-        $this->db->order_by('o.order_num');
-        $lists = $this->db->get()->result_array();
-        foreach ($lists as $list) {
-            echo $list['order_num'].'|'.$list['order_item_id'].'|'.$list['print_ready'].'|'.$list['order_itemcolor_id'].'|'.$list['order_blank'].'|'.PHP_EOL;
-        }
-    }
 }
