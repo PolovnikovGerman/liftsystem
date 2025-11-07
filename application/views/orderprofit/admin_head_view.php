@@ -129,6 +129,7 @@
         <div class="profitorder_cog">COG</div>
         <div class="profitorder_profit">PROFIT</div>
         <div class="profitorder_profitperc">%</div>
+        <div class="artstage">Approved</div>
     </div>
     <div class="orderprofitcontent-table <?=$brand=='SR' ? 'relievers' : ''?>" id="tableinfotab1"></div>
     <!-- FOOTER - Admin AREA -->
