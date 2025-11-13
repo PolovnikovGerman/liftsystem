@@ -6500,7 +6500,7 @@ Class Orders_model extends MY_Model
         if ($neword != 0) {
             $out['order_id'] = $neword;
             $out['order_num'] = $ordnum;
-            echo $confirmation.PHP_EOL;
+//            echo $confirmation.PHP_EOL;
             $cc_fee = round(($item['total'] * $this->default_ccfee) / 100, 2);
             $profit = round(($item['total'] * $this->default_profit_perc) / 100, 2);
             $rushval = (($item['production_term'] == 'Standard' || $item['production_term'] == '') ? 0 : 1 );
@@ -6632,18 +6632,37 @@ Class Orders_model extends MY_Model
             $adrid = $this->db->insert_id();
             // Shipping Cost
             if ($adrid > 0) {
-                $this->db->set('order_shipaddr_id', $adrid);
-                $this->db->set('shipping_method', $item['shipping_method']);
-                if (empty($item['shipping_cost'])) {
-                    $this->db->set('shipping_cost', 0.01);
+                $shipcalend = json_decode($item['shipping_calendar'], TRUE);
+                if (isset($shipcalend['arrive'])) {
+                    $arrives = $shipcalend['arrive'];
+                    foreach ($arrives as $arrive) {
+                        $this->db->set('order_shipaddr_id', $adrid);
+                        $this->db->set('shipping_method', $arrive['label']);
+                        if (empty($arrive['price'])) {
+                            $this->db->set('shipping_cost', 0.01);
+                        } else {
+                            $this->db->set('shipping_cost', $arrive['price']);
+                        }
+                        if (!empty($arrive['date'])) {
+                            $this->db->set('arrive_date', $arrive['date']);
+                        }
+                        $this->db->set('current', $arrive['current']);
+                        $this->db->insert('ts_order_shipcosts');
+                    }
                 } else {
-                    $this->db->set('shipping_cost', $item['shipping_cost']);
+                    $this->db->set('order_shipaddr_id', $adrid);
+                    $this->db->set('shipping_method', $item['shipping_method']);
+                    if (empty($item['shipping_cost'])) {
+                        $this->db->set('shipping_cost', 0.01);
+                    } else {
+                        $this->db->set('shipping_cost', $item['shipping_cost']);
+                    }
+                    if (!empty($item['arrive_date'])) {
+                        $this->db->set('arrive_date', $item['arrive_date']);
+                    }
+                    $this->db->set('current', 1);
+                    $this->db->insert('ts_order_shipcosts');
                 }
-                if (!empty($item['arrive_date'])) {
-                    $this->db->set('arrive_date', $item['arrive_date']);
-                }
-                $this->db->set('current', 1);
-                $this->db->insert('ts_order_shipcosts');
             }
             // Items
             $this->db->set('order_id', $neword);
