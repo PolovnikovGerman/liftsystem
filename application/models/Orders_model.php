@@ -8174,7 +8174,147 @@ Class Orders_model extends MY_Model
         );
     }
 
-    public function accountreceiv_details($period, $brand, $ownsort1, $ownsort2, $refundsort, $refunddirec) // $period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec
+    public function accountreceiv_details($period, $brand, $ownsort1, $ownsort2, $refundsort, $refunddirec)
+    {
+        $daystart = strtotime(date('Y-m-d'));
+        $cur_year = intval(date('Y'));
+        $limit_year = 0;
+        if ($period > 0) {
+            $limit_year = $cur_year - intval($period) + 1;
+        }
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+        $this->db->select('v.*, coalesce(cnt,0) approved, o.debt_status, o.order_confirmation as order_confirm, o.debtstatus_date as update_date, ob.customer_ponum, o.order_blank');
+        $this->db->from('v_order_balances v');
+        $this->db->join('('.$proofsql.') p','p.order_id=v.order_id','left');
+        $this->db->join('ts_orders o','o.order_id=v.order_id');
+        $this->db->join('ts_order_billings ob','ob.order_id=v.order_id');
+        $this->db->where('v.balance > 0');
+        if ($limit_year!==0) {
+            $this->db->where('v.yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('v.brand', $brand);
+            } else {
+                $this->db->where_in('v.brand', ['BT','SB']);
+            }
+        }
+        $owndats = $this->db->get()->result_array();
+        $owns=[];
+
+        foreach ($owndats as $owndat) {
+            $sclass = '';
+            if ($owndat['balance_manage'] == 3) {
+                $stype = $this->accrec_terms;
+            } elseif ($owndat['balance_manage'] == 2) {
+                $stype = $this->accrec_prepay;
+            } elseif ($owndat['balance_manage'] == 1) {
+                $stype = $this->accrec_willupd;
+                if (!empty($owndat['cntcard'])) {
+                    $stype = $this->accrec_credit;
+                    $sclass = 'creditcard';
+                }
+            }
+            $owndat['type'] = $stype;
+            $owndat['typeclass'] = $sclass;
+            $owndat['dueclass'] = 'current';
+            if ($owndat['batch_due'] < $daystart) {
+                $owndat['dueclass'] = 'pastdue';
+            }
+            $owndat['approved'] = ($owndat['approved'] == 0 ? 0 : 1);
+            $days = round((time() - intval($owndat['batch_due'])) / (24 * 60 * 60), 0);
+            $owndat['days'] = $days;
+            $dayclass = '';
+            if ($days > 60) {
+                $dayclass = 'pastdue';
+            }
+            $daysshow = '-';
+            $dayindex = '999';
+            if ($days > 60) {
+                $daysshow = '60+';
+                $dayindex = '000';
+            } elseif ($days > 30 && $days <= 60) {
+                $daysshow = '<60';
+                $dayindex = '100';
+            } elseif ($days > 1 && $days <= 30) {
+                $daysshow = '<30';
+                $dayindex = '200';
+            }
+            $owndat['daysshow'] = $daysshow;
+            $owndat['dayclass'] = $dayclass;
+            $owndat['sortidx'] = $dayindex;
+            if ($owndat['order_blank']==1) {
+                $owndat['approved']=1;
+            }
+            $owns[]=$owndat;
+        }
+        $sort = [];
+        $ownsort1 = 'sortidx'; $ownsort2 = 'balance';
+        foreach($owns as $k=>$v) {
+            $sort[$ownsort1][$k] = $v[$ownsort1];
+            $sort[$ownsort2][$k] = $v[$ownsort2];
+        }
+        # sort by event_type desc and then title asc
+        array_multisort($sort[$ownsort1], SORT_ASC, $sort[$ownsort2], SORT_DESC, $owns);
+        $ownidx = 0;
+//        $startdue = $starttype = $starapprov = '';
+//        $starstatus = '0';
+        $rundebt = 0;
+//        $curappr = $owns[0]['approved'];
+//        $curtype = $owns[0]['type'];
+        foreach ($owns as $own) {
+            $datclass = '';
+//            if ($own['approved']!==$curappr || $own['type']!==$curtype) {
+//                $datclass = 'separated';
+//                $curtype = $own['type'];
+//                $curappr = $own['approved'];
+//            }
+            $owns[$ownidx]['datclass'] = $datclass;
+            $rundebt += $owns[$ownidx]['balance'];
+            $owns[$ownidx]['rundebt'] = $rundebt;
+            $ownidx++;
+        }
+        // Refund
+        if ($refundsort=='balance') {
+            if ($refunddirec=='asc') {
+                $refunddir='desc';
+            } else {
+                $refunddir='asc';
+            }
+        } else {
+            $refunddir = $refunddirec;
+        }
+        $this->db->select('*');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance < 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
+            }
+        }
+        $this->db->order_by($refundsort, $refunddir);
+        $refunds = $this->db->get()->result_array();
+        return array(
+            'owns' => $owns,
+            'refunds' => $refunds,
+            'daystart' => $daystart,
+            'refundsort' => $refundsort,
+            'refunddir' => $refunddirec,
+            'brand' => strtolower($brand),
+        );
+    }
+
+    public function __accountreceiv_details($period, $brand, $ownsort1, $ownsort2, $refundsort, $refunddirec) // $period, $brand, $ownsort, $owndirec, $refundsort, $refunddirec
     {
         // $this->db->select('')
         $daystart = strtotime(date('Y-m-d'));
