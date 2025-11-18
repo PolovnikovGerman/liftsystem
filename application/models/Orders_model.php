@@ -8155,7 +8155,7 @@ Class Orders_model extends MY_Model
         );
     }
 
-    public function accountreceiv_details($period, $brand, $ownsort1, $ownsort2, $refundsort, $refunddirec)
+    public function accountreceiv_details($period, $brand, $ownsort, $refundsort, $refunddirec)
     {
         $daystart = strtotime(date('Y-m-d'));
         $cur_year = intval(date('Y'));
@@ -8169,6 +8169,7 @@ Class Orders_model extends MY_Model
         $this->db->where('p.approved > ',0);
         $this->db->group_by('a.order_id');
         $proofsql = $this->db->get_compiled_select();
+
         $this->db->select('v.*, coalesce(cnt,0) approved, o.debt_status, o.order_confirmation as order_confirm, o.debtstatus_date as update_date, ob.customer_ponum, o.order_blank');
         $this->db->from('v_order_balances v');
         $this->db->join('('.$proofsql.') p','p.order_id=v.order_id','left');
@@ -8234,27 +8235,31 @@ Class Orders_model extends MY_Model
             }
             $owns[]=$owndat;
         }
-        $sort = [];
-        $ownsort1 = 'sortidx'; $ownsort2 = 'balance';
-        foreach($owns as $k=>$v) {
-            $sort[$ownsort1][$k] = $v[$ownsort1];
-            $sort[$ownsort2][$k] = $v[$ownsort2];
+        if ($ownsort=='owntype') {
+            usort($owns, function ($item1, $item2) {
+                return $item1['type'] <=> $item2['type'];
+            });
+        } elseif ($ownsort=='batch_due') {
+            usort($owns, function ($item1, $item2) {
+                return $item1['batch_due'] <=> $item2['batch_due'];
+            });
+        } else {
+            usort($owns, function ($item1, $item2) {
+                return $item2['balance'] <=> $item1['balance'];
+            });
         }
-        # sort by event_type desc and then title asc
-        array_multisort($sort[$ownsort1], SORT_ASC, $sort[$ownsort2], SORT_DESC, $owns);
         $ownidx = 0;
-//        $startdue = $starttype = $starapprov = '';
-//        $starstatus = '0';
         $rundebt = 0;
-//        $curappr = $owns[0]['approved'];
-//        $curtype = $owns[0]['type'];
+        $curtype = $owns[0]['type'];
         foreach ($owns as $own) {
             $datclass = '';
-//            if ($own['approved']!==$curappr || $own['type']!==$curtype) {
-//                $datclass = 'separated';
-//                $curtype = $own['type'];
+            if ($ownsort=='owntype') {
+                if ($own['type']!==$curtype) {
+                    $datclass = 'separated';
+                    $curtype = $own['type'];
 //                $curappr = $own['approved'];
-//            }
+                }
+            }
             $owns[$ownidx]['datclass'] = $datclass;
             $rundebt += $owns[$ownidx]['balance'];
             $owns[$ownidx]['rundebt'] = $rundebt;
