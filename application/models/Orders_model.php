@@ -10257,7 +10257,7 @@ Class Orders_model extends MY_Model
             }
             $this->email->initialize($config);
             $mail_to=array($this->config->item('sage_email'), $this->config->item('sean_email'));
-            // $mail_cc=array('to_german@yahoo.com');
+            $mail_cc=array('to_german@yahoo.com');
             $this->email->to($mail_to);
             if (isset($mail_cc)) {
                 $this->email->cc($mail_cc);
