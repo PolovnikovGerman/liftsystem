@@ -1579,7 +1579,8 @@ class Inventory_model extends MY_Model
         $this->db->where('b.onboat_container', $onboat_container);
         $this->db->where('b.onboat_type', $onboat_type);
         // $this->db->group_by('i.item_num, i.item_name, c.color, c.price');
-        $this->db->order_by('i.item_num, c.color');
+        // $this->db->order_by('i.item_num, c.color');
+        $this->db->order_by('i.item_num asc, c.suggeststock desc');
         $res=$this->db->get()->result_array();
         if (count($res)>0) {
             $onboat_date=$res[0]['onboat_date'];
