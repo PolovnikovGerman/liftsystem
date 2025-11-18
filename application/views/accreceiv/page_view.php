@@ -1,8 +1,8 @@
 <div class="accreceiv-content">
     <input type="hidden" id="accreceivebrand" value="<?=$brand?>">
-    <input type="hidden" id="accreciveownsort" value="batch_due"/>
-    <input type="hidden" id="accreciveowndir" value="asc"/>
-    <input type="hidden" id="accreciveownsort2" value="ownapprove"/>
+<!--    <input type="hidden" id="accreciveownsort" value="batch_due"/>-->
+<!--    <input type="hidden" id="accreciveowndir" value="asc"/>-->
+<!--    <input type="hidden" id="accreciveownsort2" value="ownapprove"/>-->
     <input type="hidden" id="accreceiverefundsort" value="order_date"/>
     <input type="hidden" id="accreceiverefunddir" value="asc"/>
     <div class="accreceive-title">
@@ -13,6 +13,14 @@
                 <option value="3">Last 3 Years</option>
                 <option value="5">Last 5 Years</option>
                 <option value="-1">All Years</option>
+            </select>
+        </div>
+        <div class="accreceiv-period">
+            <span>Sort: </span>
+            <select class="accreceiv-sort-select">
+                <option value="owntype">Type</option>
+                <option value="batch_due">Date Due</option>
+                <option value="balance">Balance Owed</option>
             </select>
         </div>
     </div>

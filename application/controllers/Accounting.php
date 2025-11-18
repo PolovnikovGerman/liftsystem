@@ -2733,17 +2733,17 @@ class Accounting extends MY_Controller
             if ($brand=='SG') {
                 $brand = 'ALL';
             }
-            $ownsort1 = ifset($postdata,'ownsort1', 'batch_due');
-            $ownsort1 = ($ownsort1=='owntype' ? 'type' : ($ownsort1=='ownapprove' ? 'approved' : $ownsort1));
+            $ownsort = ifset($postdata,'ownsort', 'batch_due');
+            // $ownsort1 = ($ownsort1=='owntype' ? 'type' : ($ownsort1=='ownapprove' ? 'approved' : $ownsort1));
             // $owndirec = ifset($postdata,'owndirec', 'desc');
-            $ownsort2 = ifset($postdata,'ownsort2', 'batch_due');
-            $ownsort2 = ($ownsort2=='owntype' ? 'type' : ($ownsort2=='ownapprove' ? 'approved' : $ownsort2));
+            // $ownsort2 = ifset($postdata,'ownsort2', 'batch_due');
+            // $ownsort2 = ($ownsort2=='owntype' ? 'type' : ($ownsort2=='ownapprove' ? 'approved' : $ownsort2));
             // $refundsort = ifset($postdata,'refundsort','order_date');
             $refundsort = 'order_date';
             // $refunddirec = ifset($postdata, 'refunddirec', 'desc');
             $refunddirec = 'desc';
 
-            $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort1, $ownsort2, $refundsort, $refunddirec);
+            $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $refundsort, $refunddirec);
             if ($brand=='ALL') {
                 $mdata['content'] = $this->load->view('accreceiv/details_sigma_view', $res, TRUE);
             } elseif ($brand=='SR') {

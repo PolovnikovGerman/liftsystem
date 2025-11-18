@@ -5,6 +5,9 @@ function init_accounts_receivable() {
          init_accreceive_totals();
          init_accreceive_details();
     });
+    $(".accreceiv-sort-select").unbind('change').change(function(){
+        init_accreceive_details();
+    });
     // Change Brand
     $("#accreceivebrandmenu").find("div.brandchoseval").unbind('click').click(function(){
         var brand = $(this).data('brand');
@@ -46,9 +49,10 @@ function init_accreceive_details() {
     var maxwidth = parseInt(window.innerWidth);
     params.push({name: 'brand', value: $("#accreceivebrand").val()});
     params.push({name: 'period', value: $(".accreceiv-period-select").val()});
-    params.push({name: 'ownsort1', value: $("#accreciveownsort").val()});
+    // params.push({name: 'ownsort1', value: $("#accreciveownsort").val()});
     // params.push({name: 'owndirec', value: $("#accreciveowndir").val()});
-    params.push({name: 'ownsort2', value: $("#accreciveownsort2").val()});
+    // params.push({name: 'ownsort2', value: $("#accreciveownsort2").val()});
+    params.push({name: 'ownsort', value: $("select.accreceiv-sort-select").val()});
     params.push({name: 'refundsort', value: $("#accreceiverefundsort").val()});
     params.push({name: 'refunddirec', value: $("#accreceiverefunddir").val()});
     params.push({name: 'maxwidth', value: maxwidth});
