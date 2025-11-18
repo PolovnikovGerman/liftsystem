@@ -20,9 +20,11 @@
     font-weight: bold;
 }
 .accreceiv-period {
-    width: 204px; /* 209 */
-    /* float: right!important; */
+    width: 195px;
     text-align: right;
+    position: relative;
+    top: 29px;
+    left: 24px;
 }
 .accreceiv-period span {
     font-size: 14px;

@@ -8297,6 +8297,8 @@ Class Orders_model extends MY_Model
             'refundsort' => $refundsort,
             'refunddir' => $refunddirec,
             'brand' => strtolower($brand),
+            'ownsort' => $ownsort,
+            'refundsort' => $refundsort,
         );
     }
 
