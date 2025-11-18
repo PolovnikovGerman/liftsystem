@@ -28,12 +28,12 @@ $config['sb_attemptrep_smtp'] = getenv('SB_ATTEMPTREP_SMTP');
 $config['sb_attemptrep_user'] = getenv('SB_ATTEMPTREP_USER');
 $config['sb_attemptrep_pass'] = getenv('SB_ATTEMPTREP_PASS');
 // Bonus Report
-$config['sb_bonusreport_smtp'] = getenv('SB_BONUSREPORT_SMTP');
-$config['sb_bonusreport_user'] = getenv('SB_BONUSREPORT_USER');
-$config['sb_bonusreport_pass'] = getenv('SB_BONUSREPORT_PASS');
-$config['sr_bonusreport_smtp'] = getenv('SR_BONUSREPORT_SMTP');
-$config['sr_bonusreport_user'] = getenv('SR_BONUSREPORT_USER');
-$config['sr_bonusreport_pass'] = getenv('SR_BONUSREPORT_PASS');
+$config['bonusreport_smtp'] = getenv('BONUSREPORT_SMTP');
+$config['bonusreport_user'] = getenv('BONUSREPORT_USER');
+$config['bonusreport_pass'] = getenv('BONUSREPORT_PASS');
+//$config['sr_bonusreport_smtp'] = getenv('SR_BONUSREPORT_SMTP');
+//$config['sr_bonusreport_user'] = getenv('SR_BONUSREPORT_USER');
+//$config['sr_bonusreport_pass'] = getenv('SR_BONUSREPORT_PASS');
 // Week Orders, Quotes, Leads
 $config['quoteweek_smtp'] = getenv('QUOTEWEEK_SMTP');
 $config['quoteweek_user'] = getenv('QUOTEWEEK_USER');
