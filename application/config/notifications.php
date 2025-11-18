@@ -47,6 +47,7 @@ $config['searchreport_smtp'] = getenv('SEARCHREP_SMTP');
 $config['searchreport_user'] = getenv('SEARCHREP_USER');
 $config['searchreport_pass'] = getenv('SEARCHREP_PASS');
 // User add code
-$config['usercode_smtp'] = getenv('USERCODE_SMTP');
-$config['usercode_user'] = getenv('USERCODE_USER');
-$config['usercode_pass'] = getenv('USERCODE_PASS');
+$config['printschedule_smtp'] = getenv('PRINTSCHEDULE_SMTP');
+$config['printschedule_user'] = getenv('PRINTSCHEDULE_USER');
+$config['printschedule_pass'] = getenv('PRINTSCHEDULE_PASS');
+//
