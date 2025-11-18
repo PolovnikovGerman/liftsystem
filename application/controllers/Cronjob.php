@@ -525,16 +525,43 @@ Class Cronjob extends CI_Controller
     }
 
     public function bonus_report() {
-        $user_id=23; // Shanequa Hall
+        $user_id = 23; // Shanequa Hall
         $this->load->model('orders_model');
         $brands = ['SB','SR'];
+        $sbadminview = $sradminview = $sbuserview = $sruserview = '';
+        $sendreport = 0;
         foreach ($brands as $brand) {
             $results=$this->orders_model->user_weekproof_reportdata($user_id, $brand);
-            $out=$results['out'];
-            $total=$results['totals'];
+            $out = $results['out'];
+            $total = $results['totals'];
+            if (count($out) > 0) {
+                $sendreport = 1;
+            }
+            $body_options=[
+                'data'=>$out,
+                'total'=>$total,
+                'admin'=>1,
+                'price_500'=>$this->config->item('bonus_500'),
+                'price_1000'=>$this->config->item('bonus_1000'),
+                'price_1200'=>$this->config->item('bonus_1200'),
+                'bonus_price'=>$this->config->item('bonus_price'),
+                'brand' => $brand,
+            ];
+            if ($brand=='SB') {
+                $sbadminview = $this->load->view('messages/sales_report_view', $body_options,TRUE);
+                $body_options['admin'] = 0;
+                $sbuserview = $this->load->view('messages/sales_report_view', $body_options,TRUE);
+            } elseif ($brand=='SR') {
+                $sradminview = $this->load->view('messages/sales_report_view', $body_options,TRUE);
+                $body_options['admin'] = 0;
+                $sruserview = $this->load->view('messages/sales_report_view', $body_options,TRUE);
+            }
+        }
+        if ($sendreport==1) {
             $dateend=strtotime(date('m/d/Y'));
             $datestart = strtotime(date("Y-m-d",$dateend) . " -1 day");
-            $sendsmtp = intval($brand=='SR' ? $this->config->item('sr_bonusreport_smtp') : $this->config->item('sb_bonusreport_smtp'));
+            // $sendsmtp = intval($brand=='SR' ? $this->config->item('sr_bonusreport_smtp') : $this->config->item('sb_bonusreport_smtp'));
+            $sendsmtp = intval($this->config->item('bonusreport_smtp'));
             if ($sendsmtp==1) {
                 $config = [
                     'protocol'=>'smtp',
@@ -546,15 +573,15 @@ Class Cronjob extends CI_Controller
                     'wordwrap'=>TRUE,
                     'newline' => "\r\n",
                 ];
-                if ($brand=='SR') {
-                    $config['smtp_user'] = $this->config->item('sr_bonusreport_user');
-                    $config['smtp_pass'] = $this->config->item('sr_bonusreport_pass');
-                    $email_from = $this->config->item('sr_bonusreport_user');
-                } else {
-                    $config['smtp_user'] = $this->config->item('sb_bonusreport_user');
-                    $config['smtp_pass'] = $this->config->item('sb_bonusreport_pass');
-                    $email_from = $this->config->item('sb_bonusreport_user');
-                }
+//                if ($brand=='SR') {
+                $config['smtp_user'] = $this->config->item('bonusreport_user');
+                $config['smtp_pass'] = $this->config->item('bonusreport_pass');
+                $email_from = $this->config->item('bonusreport_user');
+//                } else {
+//                    $config['smtp_user'] = $this->config->item('sb_bonusreport_user');
+//                    $config['smtp_pass'] = $this->config->item('sb_bonusreport_pass');
+//                    $email_from = $this->config->item('sb_bonusreport_user');
+//                }
             } else {
                 $config = [
                     'mailtype' => 'html',
@@ -570,51 +597,24 @@ Class Cronjob extends CI_Controller
             $this->email->from($email_from);
             $this->email->to($email_to);
             $this->email->cc($email_cc);
-            $this->email->bcc($this->config->item('developer_email'));
+            $this->email->bcc(array('to_german@yahoo.com'));
             $title=date('D - M d, Y', $datestart).' - Sales Report (Shanequa Hall) (Owners version) ';
-            if ($brand=='SB') {
-                $title.='(Bluetrack/Stressballs)';
-            } elseif ($brand=='SR') {
-                $title.='(StressRelievers)';
-            }
             $this->email->subject($title);
-            $body_options=[
-                'data'=>$out,
-                'total'=>$total,
-                'admin'=>1,
-                'price_500'=>$this->config->item('bonus_500'),
-                'price_1000'=>$this->config->item('bonus_1000'),
-                'price_1200'=>$this->config->item('bonus_1200'),
-                'bonus_price'=>$this->config->item('bonus_price'),
-            ];
-            $body=$this->load->view('messages/sales_report_view', $body_options,TRUE);
+            // Admin body
+            $body=$this->load->view('messages/sales_email_view', ['btview' => $sbadminview, 'srview' => $sradminview],TRUE);
             $this->email->message($body);
             $this->email->send();
             $this->email->clear(TRUE);
-            // Send report to user
+            // Executor view
             $this->email->from($email_from);
             $this->email->to('shanequa.hall@bluetrack.com');
             $title=date('D - M d, Y', $datestart).' - Sales Report (Shanequa Hall) ';
-            if ($brand=='BT') {
-                $title.='(Bluetrack/Stressballs)';
-            } elseif ($brand=='SB') {
-                $title.='(StressRelievers)';
-            }
             $this->email->subject($title);
-            $body_options=[
-                'data'=>$out,
-                'total'=>$total,
-                'admin'=>0,
-                'price_500'=>$this->config->item('bonus_500'),
-                'price_1000'=>$this->config->item('bonus_1000'),
-                'price_1200'=>$this->config->item('bonus_1200'),
-                'bonus_price'=>$this->config->item('bonus_price'),
-            ];
-            $body=$this->load->view('messages/sales_report_view', $body_options,TRUE);
+            // User body
+            $body=$this->load->view('messages/sales_email_view', ['btview' => $sbuserview, 'srview' => $sruserview],TRUE);
             $this->email->message($body);
             $this->email->send();
             $this->email->clear(TRUE);
-            echo $brand.' Report was send succesfully '.PHP_EOL;
         }
     }
 
