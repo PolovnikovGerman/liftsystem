@@ -10281,7 +10281,7 @@ Class Orders_model extends MY_Model
                 $this->email->attach($srfile);
             }
             $res=$this->email->send();
-            echo 'SEND REPORT RES '.$res.'!'.PHP_EOL;
+            echo 'SEND REPORT RES '.intval($res).'!'.PHP_EOL;
             $this->email->clear(TRUE);
         }
     }
