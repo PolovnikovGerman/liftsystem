@@ -4933,8 +4933,12 @@ class Test extends CI_Controller
             $this->email->attach($srfile);
             echo 'Attach CID '. $this->email->attachment_cid($srfile).PHP_EOL;
         }
-        $res=$this->email->send();
-        echo 'SEND REPORT RES '.(bool)$res.'!'.PHP_EOL;
+        // $res=$this->email->send();
+        if ( ! $this->email->send())
+        {
+            // Generate error
+            echo 'ERROR '.error_get_last().PHP_EOL;
+        }
         $this->email->clear(TRUE);
     }
 }
