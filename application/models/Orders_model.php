@@ -10268,7 +10268,7 @@ Class Orders_model extends MY_Model
                 $this->email->cc($mail_cc);
             }
             $this->email->from($email_from);
-            $title = 'Print Schedule Daily Report '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)').' ('.date('m/d/Y').')';
+            $title = 'Print Schedule Daily Report ('.date('m/d/Y').')';
             $this->email->subject($title);
             $mail_body = 'Report in attachment';
             $this->email->message($mail_body);
