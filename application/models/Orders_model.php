@@ -10231,6 +10231,8 @@ Class Orders_model extends MY_Model
                 }
             }
         }
+        echo 'SEND REPORT '.$sendreport.PHP_EOL;
+        echo 'USE SENDSMTP '.$sendsmtp.PHP_EOL;
         if ($sendreport == 1) {
             if ($sendsmtp==1) {
                 $config = [
@@ -10248,6 +10250,7 @@ Class Orders_model extends MY_Model
                     'newline' => "\r\n",
                 ];
                 $email_from = $config['smtp_user'];
+                echo 'CONFIG '.$config['smtp_user'].' - Pass '.$config['smtp_pass'].PHP_EOL;
             } else {
                 $config = array(
                     'protocol'=>'sendmail',
@@ -10276,6 +10279,7 @@ Class Orders_model extends MY_Model
                 $this->email->attach($srfile);
             }
             $res=$this->email->send();
+            echo 'SEND REPORT RES '.$res.PHP_EOL;
             $this->email->clear(TRUE);
         }
     }
