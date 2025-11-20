@@ -10273,13 +10273,15 @@ Class Orders_model extends MY_Model
             $mail_body = 'Report in attachment';
             $this->email->message($mail_body);
             if (!empty($sbfile)) {
+                echo 'SB attach'.$sbfile.PHP_EOL;
                 $this->email->attach($sbfile);
             }
             if (!empty($srfile)) {
+                echo 'SR attach'.$srfile.PHP_EOL;
                 $this->email->attach($srfile);
             }
             $res=$this->email->send();
-            echo 'SEND REPORT RES '.$res.PHP_EOL;
+            echo 'SEND REPORT RES '.$res.'!'.PHP_EOL;
             $this->email->clear(TRUE);
         }
     }
