@@ -4921,8 +4921,8 @@ class Test extends CI_Controller
         $this->email->subject($title);
         $mail_body = 'Report in attachment';
         $this->email->message($mail_body);
-        $sbfile = '/home/bluetrack/lift/system/../uploads/preload/SB_print_schedule_report.xlsx';
-        $srfile = '/home/bluetrack/lift/system/../uploads/preload/SR_print_schedule_report.xlsx';
+        $sbfile = '/home/bluetrack/lift/uploads/preload/SB_print_schedule_report.xlsx';
+        $srfile = '/home/bluetrack/lift/uploads/preload/SR_print_schedule_report.xlsx';
         if (!empty($sbfile)) {
             echo 'SB attach'.$sbfile.PHP_EOL;
             $this->email->attach($sbfile);
