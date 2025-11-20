@@ -4924,15 +4924,17 @@ class Test extends CI_Controller
         $sbfile = '/home/bluetrack/lift/uploads/preload/SB_print_schedule_report.xlsx';
         $srfile = '/home/bluetrack/lift/uploads/preload/SR_print_schedule_report.xlsx';
         if (!empty($sbfile)) {
-            echo 'SB attach'.$sbfile.PHP_EOL;
+            echo 'SB attach '.$sbfile.PHP_EOL;
             $this->email->attach($sbfile);
+            echo 'Attach CID '. $this->email->attachment_cid($sbfile).PHP_EOL;
         }
         if (!empty($srfile)) {
-            echo 'SR attach'.$srfile.PHP_EOL;
+            echo 'SR attach '.$srfile.PHP_EOL;
             $this->email->attach($srfile);
+            echo 'Attach CID '. $this->email->attachment_cid($srfile).PHP_EOL;
         }
         $res=$this->email->send();
-        echo 'SEND REPORT RES '.intval($res).'!'.PHP_EOL;
+        echo 'SEND REPORT RES '.(bool)$res.'!'.PHP_EOL;
         $this->email->clear(TRUE);
     }
 }
