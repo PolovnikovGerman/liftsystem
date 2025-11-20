@@ -4938,6 +4938,7 @@ class Test extends CI_Controller
         {
             // Generate error
             echo 'ERROR '.error_get_last().PHP_EOL;
+            echo $this->email->print_debugger();
         }
         $this->email->clear(TRUE);
     }
