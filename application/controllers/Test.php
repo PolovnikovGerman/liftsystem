@@ -4889,4 +4889,50 @@ class Test extends CI_Controller
             echo 'Report '.$res.' builded'.PHP_EOL;
         }
     }
+
+    public function sendtest()
+    {
+        $config = [
+            'protocol'=>'smtp',
+            'smtp_host' => $this->config->item('sb_smtp_host'),
+            'smtp_port' => $this->config->item('sb_smtp_port'),
+            'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+//                    'smtp_user' => $brand=='SR' ? $this->config->item('sr_unpaid_user') : $this->config->item('sb_unpaid_user'),
+//                    'smtp_pass' => $brand=='SR' ? $this->config->item('sr_unpaid_pass') : $this->config->item('sb_unpaid_pass'),
+            'smtp_user' => $this->config->item('sb_unpaid_user'),
+            'smtp_pass' => $this->config->item('sr_unpaid_pass'),
+            'charset'=>'utf-8',
+            'mailtype'=>'html',
+            'wordwrap'=>TRUE,
+            'newline' => "\r\n",
+        ];
+        $email_from = $config['smtp_user'];
+        echo 'CONFIG '.$config['smtp_user'].' - Pass '.$config['smtp_pass'].PHP_EOL;
+        $this->load->library('email');
+        $this->email->initialize($config);
+        // $mail_to=array($this->config->item('sage_email'), $this->config->item('sean_email'));
+        $mail_to=array('to_german@yahoo.com');
+        $this->email->to($mail_to);
+        if (isset($mail_cc)) {
+            $this->email->cc($mail_cc);
+        }
+        $this->email->from($email_from);
+        $title = 'Print Schedule Daily Report '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)').' ('.date('m/d/Y').')';
+        $this->email->subject($title);
+        $mail_body = 'Report in attachment';
+        $this->email->message($mail_body);
+        $sbfile = '/home/bluetrack/lift/system/../uploads/preload/SB_print_schedule_report.xlsx';
+        $srfile = '/home/bluetrack/lift/system/../uploads/preload/SR_print_schedule_report.xlsx';
+        if (!empty($sbfile)) {
+            echo 'SB attach'.$sbfile.PHP_EOL;
+            $this->email->attach($sbfile);
+        }
+        if (!empty($srfile)) {
+            echo 'SR attach'.$srfile.PHP_EOL;
+            $this->email->attach($srfile);
+        }
+        $res=$this->email->send();
+        echo 'SEND REPORT RES '.intval($res).'!'.PHP_EOL;
+        $this->email->clear(TRUE);
+    }
 }
