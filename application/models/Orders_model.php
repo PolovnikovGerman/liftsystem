@@ -10186,7 +10186,6 @@ Class Orders_model extends MY_Model
                         ];
                     }
                 }
-                echo 'Cnt '.count($orders).PHP_EOL;
                 $this->load->config('uploader');
                 $filenorm = $this->config->item('upload_path_preload').$brand.'_print_schedule_report.xlsx';
                 @unlink($filenorm);
@@ -10223,7 +10222,6 @@ Class Orders_model extends MY_Model
                 }
                 $writer = new Xlsx($spreadsheet); // instantiate Xlsx
                 $writer->save($filenorm);    // download file
-                echo 'File '.$filenorm.' ready'.PHP_EOL;
                 if ($brand=='SR') {
                     $srfile = $filenorm;
                 } else {
@@ -10231,8 +10229,6 @@ Class Orders_model extends MY_Model
                 }
             }
         }
-        echo 'SEND REPORT '.$sendreport.PHP_EOL;
-        echo 'USE SENDSMTP '.$sendsmtp.PHP_EOL;
         if ($sendreport == 1) {
             if ($sendsmtp==1) {
                 $config = [
@@ -10250,7 +10246,6 @@ Class Orders_model extends MY_Model
                     'newline' => "\r\n",
                 ];
                 $email_from = $config['smtp_user'];
-                echo 'CONFIG '.$config['smtp_user'].' - Pass '.$config['smtp_pass'].PHP_EOL;
             } else {
                 $config = array(
                     'protocol'=>'sendmail',
@@ -10274,15 +10269,12 @@ Class Orders_model extends MY_Model
             $mail_body = 'Report in attachment';
             $this->email->message($mail_body);
             if (!empty($sbfile)) {
-                echo 'SB attach'.$sbfile.PHP_EOL;
                 $this->email->attach($sbfile);
             }
             if (!empty($srfile)) {
-                echo 'SR attach'.$srfile.PHP_EOL;
                 $this->email->attach($srfile);
             }
             $res=$this->email->send();
-            echo 'SEND REPORT RES '.intval($res).'!'.PHP_EOL;
             $this->email->clear(TRUE);
         }
     }
