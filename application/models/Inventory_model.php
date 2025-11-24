@@ -67,6 +67,8 @@ class Inventory_model extends MY_Model
                     'available' => 0,
                     'unit' => $item['item_unit'],
                     'onorder' => 0,
+                    'boxsize' => '',
+                    'location' => '',
                     'price' => 0,
                     'avg_price' => '',
                     'total' => 0,
@@ -157,6 +159,8 @@ class Inventory_model extends MY_Model
                         'available' => $outavail,
                         'unit' => $color['color_unit'],
                         'onorder' => 0, // ????
+                        'boxsize' => $color['boxsize'],
+                        'location' => $color['location'],
                         'price' => $color['price'],
                         'avg_price' => $color['avg_price'],
                         'total' => $available*$color['avg_price'],
