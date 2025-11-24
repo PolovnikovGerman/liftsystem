@@ -1637,7 +1637,7 @@ select.itemdataunit {
     background: #ffffff;
     border: 1px solid #000000;
     padding: 0 10px 10px 10px;
-    height: 383px;
+    height: 456px;
     width: 100%;
 }
 .statusradiobtn {
@@ -1714,6 +1714,12 @@ textarea.colorpantonesinpt {
 }
 .colorparamvalue.colormaxvalue, .colorparamvalue.mfgprice {
     width: 90px;
+}
+.colorparamvalue.colorboxside, .colorparamvalue.colorlocation {
+    width: 320px;
+}
+input.invcolorboxsize, input.invcolorlocation {
+    width: 320px;
 }
 input.colormaxvalueinpt {
     width: 90px;
