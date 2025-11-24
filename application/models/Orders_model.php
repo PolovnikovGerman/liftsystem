@@ -8316,6 +8316,8 @@ Class Orders_model extends MY_Model
             'refundsort' => $refundsort,
             'refunddir' => $refunddirec,
             'brand' => strtolower($brand),
+            'ownsort' => $ownsort,
+            'refundsort' => $refundsort,
         );
     }
 
@@ -10122,8 +10124,10 @@ Class Orders_model extends MY_Model
     public function daily_orders_report()
     {
         $this->load->library('email');
-        $sendsmtp = intval($this->config->item('itemprice_smtp'));
+        $sendsmtp = intval($this->config->item('printschedule_smtp'));
         $brands = ['SB', 'SR'];
+        $sbfile = $srfile = '';
+        $sendreport = 0;
         foreach ($brands as $brand) {
             // Get Orders
             $this->db->select('order_itemcolor_id, sum(shipped) as fullfill')->from('ts_order_amounts')->group_by('order_itemcolor_id');
@@ -10153,6 +10157,7 @@ Class Orders_model extends MY_Model
             $this->db->limit(500);
             $prints = $this->db->get()->result_array();
             if (count($prints) > 0) {
+                $sendreport = 1;
                 $orders = [];
                 $startorder = 0;
                 $startitem = 0;
@@ -10200,7 +10205,6 @@ Class Orders_model extends MY_Model
                         ];
                     }
                 }
-                echo 'Cnt '.count($orders).PHP_EOL;
                 $this->load->config('uploader');
                 $filenorm = $this->config->item('upload_path_preload').$brand.'_print_schedule_report.xlsx';
                 @unlink($filenorm);
@@ -10237,46 +10241,60 @@ Class Orders_model extends MY_Model
                 }
                 $writer = new Xlsx($spreadsheet); // instantiate Xlsx
                 $writer->save($filenorm);    // download file
-                echo 'File '.$filenorm.' ready'.PHP_EOL;
-                if ($sendsmtp==1) {
-                    $config = [
-                        'protocol'=>'smtp',
-                        'smtp_host' => $this->config->item('sb_smtp_host'),
-                        'smtp_port' => $this->config->item('sb_smtp_port'),
-                        'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
-                        'smtp_user' => $brand=='SR' ? $this->config->item('sr_unpaid_user') : $this->config->item('sb_unpaid_user'),
-                        'smtp_pass' => $brand=='SR' ? $this->config->item('sr_unpaid_pass') : $this->config->item('sb_unpaid_pass'),
-                        'charset'=>'utf-8',
-                        'mailtype'=>'html',
-                        'wordwrap'=>TRUE,
-                        'newline' => "\r\n",
-                    ];
-                    $email_from = $config['smtp_user'];
+                if ($brand=='SR') {
+                    $srfile = $filenorm;
                 } else {
-                    $config = array(
-                        'protocol'=>'sendmail',
-                        'charset'=>'utf-8',
-                        'wordwrap'=>TRUE,
-                        'mailtype'=>'html',
-                    );
-                    $email_from = 'no-replay@bluetrack.com';
+                    $sbfile = $filenorm;
                 }
-                $this->email->initialize($config);
-                $mail_to=array($this->config->item('sage_email'), $this->config->item('sean_email'));
-                $mail_cc=array('to_german@yahoo.com');
-                $this->email->to($mail_to);
-                if (isset($mail_cc)) {
-                    $this->email->cc($mail_cc);
-                }
-                $this->email->from($email_from);
-                $title = 'Print Schedule Daily Report '.($brand=='SB' ? '(Bluetrack/Stressballs)' : '(StressRelievers)').' ('.date('m/d/Y').')';
-                $this->email->subject($title);
-                $mail_body = 'Report in attachment';
-                $this->email->message($mail_body);
-                $this->email->attach($filenorm);
-                $res=$this->email->send();
-                $this->email->clear(TRUE);
             }
+        }
+        if ($sendreport == 1) {
+            if ($sendsmtp==1) {
+                $config = [
+                    'protocol'=>'smtp',
+                    'smtp_host' => $this->config->item('sb_smtp_host'),
+                    'smtp_port' => $this->config->item('sb_smtp_port'),
+                    'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+//                    'smtp_user' => $brand=='SR' ? $this->config->item('sr_unpaid_user') : $this->config->item('sb_unpaid_user'),
+//                    'smtp_pass' => $brand=='SR' ? $this->config->item('sr_unpaid_pass') : $this->config->item('sb_unpaid_pass'),
+                    'smtp_user' => $this->config->item('printschedule_user'),
+                    'smtp_pass' => $this->config->item('printschedule_pass'),
+                    'charset'=>'utf-8',
+                    'mailtype'=>'html',
+                    'wordwrap'=>TRUE,
+                    'newline' => "\r\n",
+                ];
+                $email_from = $config['smtp_user'];
+            } else {
+                $config = array(
+                    'protocol'=>'sendmail',
+                    'charset'=>'utf-8',
+                    'wordwrap'=>TRUE,
+                    'mailtype'=>'html',
+                );
+                $email_from = 'no-replay@bluetrack.com';
+            }
+            $this->email->initialize($config);
+            // $mail_to=array($this->config->item('sage_email'), $this->config->item('sean_email'));
+            $mail_to=array($this->config->item('sage_email'));
+            $mail_cc=array('to_german@yahoo.com');
+            $this->email->to($mail_to);
+            if (isset($mail_cc)) {
+                $this->email->cc($mail_cc);
+            }
+            $this->email->from($email_from);
+            $title = 'Print Schedule Daily Report ('.date('m/d/Y').')';
+            $this->email->subject($title);
+            $mail_body = 'Report in attachment';
+            $this->email->message($mail_body);
+            if (!empty($sbfile)) {
+                $this->email->attach($sbfile);
+            }
+            if (!empty($srfile)) {
+                $this->email->attach($srfile);
+            }
+            $res=$this->email->send();
+            $this->email->clear(TRUE);
         }
     }
 }

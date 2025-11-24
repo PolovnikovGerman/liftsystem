@@ -21,10 +21,14 @@
             <?php $curtype = '' ?>
             <?php foreach ($owns as $own) { ?>
                 <div class="accreceiv-owndetails-bodyrow <?=$numpp%2 == 0 ? 'greydatarow' : 'whitedatarow'?> <?=$own['datclass']?>">
-                    <?php if ($own['type']!==$curtype) : ?>
-                        <?php $rowtype = $own['type']; $curtype = $own['type']; ?>
-                    <?php else: ?>
-                        <?php $rowtype = '----'; ?>
+                    <?php if ($ownsort=='owntype') : ?>
+                        <?php if ($own['type']!==$curtype) : ?>
+                            <?php $rowtype = $own['type']; $curtype = $own['type']; ?>
+                        <?php else: ?>
+                            <?php $rowtype = '----'; ?>
+                        <?php endif; ?>
+                    <?php else : ?>
+                        <?php $rowtype = $own['type']; ?>
                     <?php endif; ?>
                     <div class="accreceiv-owndetails-bodynum"><?=$numpp?></div>
                     <div class="accreceiv-owndetails-bodyapproval <?=$own['order_blank']==1 ? '' : ($own['approved']==0 ? 'notapproved' : '')?>"><?=$own['order_blank']==1 ? 'Blank' : ($own['approved']==0 ? 'Not Approved' : 'Approved')?></div>
@@ -33,7 +37,13 @@
                     <div class="accreceiv-owndetails-bodydue <?=$own['dueclass']?>">
                         <?=date('m/d/y', $own['batch_due'])?>
                     </div>
-                    <div class="accreceiv-owndetails-bodydays <?=$own['dayclass']?>"><?=$own['daysshow']?></div>
+                    <div class="accreceiv-owndetails-bodydays <?=$own['dayclass']?>">
+                        <?php if ($ownsort=='owntype') : ?>
+                            <?=$own['daysshow']?>
+                        <?php else : ?>
+                            <?=$own['days']?>
+                        <?php endif; ?>
+                    </div>
                     <div class="accreceiv-owndetails-bodybalance"><?=TotalOutput($own['balance'],1)?></div>
                     <div class="accreceiv-owndetails-bodyorder" data-order="<?=$own['order_id']?>"><?=$own['order_num']?></div>
                     <div class="accreceiv-owndetails-bodyconfirm"><?=$own['order_confirm']?></div>

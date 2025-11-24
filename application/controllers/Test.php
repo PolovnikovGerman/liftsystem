@@ -5083,4 +5083,86 @@ class Test extends CI_Controller
             echo 'Report '.$res.' builded'.PHP_EOL;
         }
     }
+
+    public function sendtest()
+    {
+        $config = [
+            'protocol'=>'smtp',
+            'smtp_host' => $this->config->item('sb_smtp_host'),
+            'smtp_port' => $this->config->item('sb_smtp_port'),
+            'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+//                    'smtp_user' => $brand=='SR' ? $this->config->item('sr_unpaid_user') : $this->config->item('sb_unpaid_user'),
+//                    'smtp_pass' => $brand=='SR' ? $this->config->item('sr_unpaid_pass') : $this->config->item('sb_unpaid_pass'),
+            'smtp_user' => $this->config->item('printschedule_user'),
+            'smtp_pass' => $this->config->item('printschedule_pass'),
+            'charset'=>'utf-8',
+            'mailtype'=>'html',
+            'wordwrap'=>TRUE,
+            'newline' => "\r\n",
+        ];
+        $email_from = $config['smtp_user'];
+        echo 'CONFIG '.$config['smtp_user'].' - Pass '.$config['smtp_pass'].PHP_EOL;
+        $this->load->library('email');
+        $this->email->initialize($config);
+        // $mail_to=array($this->config->item('sage_email'), $this->config->item('sean_email'));
+        $mail_to=array('to_german@yahoo.com');
+        $this->email->to($mail_to);
+        if (isset($mail_cc)) {
+            $this->email->cc($mail_cc);
+        }
+        $this->email->from($email_from);
+        $title = 'Print Schedule Daily Report ('.date('m/d/Y').')';
+        $this->email->subject($title);
+        $mail_body = 'Report in attachment';
+        $this->email->message($mail_body);
+        $sbfile = '/home/bluetrack/lift/uploads/preload/SB_print_schedule_report.xlsx';
+        $srfile = '/home/bluetrack/lift/uploads/preload/SR_print_schedule_report.xlsx';
+        if (!empty($sbfile)) {
+            echo 'SB attach '.$sbfile.PHP_EOL;
+            $this->email->attach($sbfile);
+            echo 'Attach CID '. $this->email->attachment_cid($sbfile).PHP_EOL;
+        }
+        if (!empty($srfile)) {
+            echo 'SR attach '.$srfile.PHP_EOL;
+            $this->email->attach($srfile);
+            echo 'Attach CID '. $this->email->attachment_cid($srfile).PHP_EOL;
+        }
+        // $res=$this->email->send();
+        if ( ! $this->email->send())
+        {
+            // Generate error
+            echo 'ERROR '.error_get_last().PHP_EOL;
+            echo $this->email->print_debugger();
+        }
+        $this->email->clear(TRUE);
+    }
+
+    public function altinventcolors()
+    {
+        $colors = $this->db->select('*')->from('altinvent_colors')->get()->result_array();
+        foreach ($colors as $color) {
+            $invitem = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $color['item_num'])->get()->row_array();
+            if (ifset($invitem, 'inventory_item_id', 0)==0) {
+                echo 'Item Not Found '.$color['item_num'].PHP_EOL;
+            } else {
+                // Search color
+                $invcolor = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where(['inventory_item_id' => $invitem['inventory_item_id'], 'color' => $color['color']])->get()->row_array();
+                if (ifset($invcolor, 'inventory_color_id', 0)==0) {
+                    echo 'Item '.$color['item_num'].' Color '.$color['color'].' Not Found'.PHP_EOL;
+                } else {
+                    $this->db->where('id', $color['id']);
+                    $this->db->set('inventory_color_id', $invcolor['inventory_color_id']);
+                    $this->db->update('altinvent_colors');
+                }
+            }
+        }
+        $colors = $this->db->select('*')->from('altinvent_colors')->where('inventory_color_id > ',0)->get()->result_array();
+        foreach ($colors as $color) {
+            $this->db->where('inventory_color_id', $color['inventory_color_id']);
+            $this->db->set('suggeststock', $color['new_max']);
+            $this->db->set('boxsize', $color['boxsize']);
+            $this->db->set('location', $color['location']);
+            $this->db->update('ts_inventory_colors');
+        }
+    }
 }

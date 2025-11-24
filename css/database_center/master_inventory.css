@@ -176,7 +176,7 @@
 }
 .mastinvent_databody {
     background: #252525;
-    width: 1355px;
+    width: 1590px; /* 1509px; */
     padding-left: 12px;
     padding-bottom: 12px;
     padding-right: 6px;
@@ -390,6 +390,13 @@ input.inventadd {
 .masterinventtablehead .masterinvemptyspace {
     width: 54px;
 }
+.masterinventtablehead .masterinventboxsize {
+    width: 66px;
+}
+.masterinventtablehead .masterinventlocation {
+    width: 151px;
+    margin-right: 15px;
+}
 .masterinventtablehead .masterinventavgprice, .masterinventtablehead .masterinventcontactprice {
     /* width: 66px; */
     width: 55px;
@@ -405,7 +412,7 @@ input.inventadd {
     background: #252525;
     color: #000000;
     /* width: 1336px; */
-    width: 1340px;
+    width: 1549px;/* 1340px; */
     max-height: 977px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -451,8 +458,10 @@ input.inventadd {
 }
 .masterinventtablebody .mastinvent_body_right {
     /* width: 207px; */
-    width: 204px;
-    margin-left: 39px;
+    /*width: 204px;*/
+    /*margin-left: 39px;*/
+    width: 436px;
+    margin-left: 22px;
 }
 .masterinventtablebody .mastinvent_body_right.showmax {
     margin-left: 0px;
@@ -657,6 +666,18 @@ input.inventadd {
 }
 .inventorydatarow .masterinvemptyspace {
     width: 43px;
+}
+.inventorydatarow .masterinventboxsize {
+    border-right: 1px solid #000000;
+    width: 66px;
+}
+.inventorydatarow .masterinventlocation {
+    border-right: 1px solid #000000;
+    width: 151px;
+}
+.inventorydatarow .masterinventlocempty {
+    width: 15px;
+    background: #252525;
 }
 .inventorydatarow .masterinventavgprice {
     width: 55px;
@@ -1897,7 +1918,7 @@ input.colorvendorpriceinpt {
     cursor: pointer;
 }
 .mastinvent_container_slide {
-    width: 43px;
+    width: 30px;
 }
 .mastinvent_container_slideleft {
     padding-top: 34px;
@@ -1983,7 +2004,7 @@ input.colorvendorpriceinpt {
 }
 /* Body containers */
 .mastinvent_body_container .left_arrow_empty, .mastinvent_body_container .right_arrow_empty {
-    width: 43px;
+    width: 30px;
 }
 .mastinvent_body_express .left_arrow_empty, .mastinvent_body_express .right_arrow_empty {
     width: 34px;
@@ -2084,7 +2105,7 @@ i.cancelboatcontainer {
     margin-left: -8px;
 }
 .mastinvent_footlink_container .left_arrow_empty, .mastinvent_footlink_container .right_arrow_empty {
-    width: 43px;
+    width: 30px;
 }
 .mastinvent_footlink_container .onboatdataareas {
     width: 240px;
@@ -2122,15 +2143,14 @@ i.cancelboatcontainer {
     margin-right: 52px;
 }
 .containertotals {
-    /* margin-left: 73px; */
-    /* margin-left: 81px; */
-    margin-left: 55px;
+    margin-left: 41px;
 }
 .containertotals.showmax {
     margin-left: 60px;
 }
 .mastinvent_header_right {
-    width: 258px;
+    /* width: 258px; */
+    width: 490px;
 }
 .mastinvent_header_right.showmax {
     width: 205px;

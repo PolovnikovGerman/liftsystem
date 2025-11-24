@@ -67,6 +67,8 @@ class Inventory_model extends MY_Model
                     'available' => 0,
                     'unit' => $item['item_unit'],
                     'onorder' => 0,
+                    'boxsize' => '',
+                    'location' => '',
                     'price' => 0,
                     'avg_price' => '',
                     'total' => 0,
@@ -157,6 +159,8 @@ class Inventory_model extends MY_Model
                         'available' => $outavail,
                         'unit' => $color['color_unit'],
                         'onorder' => 0, // ????
+                        'boxsize' => $color['boxsize'],
+                        'location' => $color['location'],
                         'price' => $color['price'],
                         'avg_price' => $color['avg_price'],
                         'total' => $available*$color['avg_price'],
@@ -1579,7 +1583,8 @@ class Inventory_model extends MY_Model
         $this->db->where('b.onboat_container', $onboat_container);
         $this->db->where('b.onboat_type', $onboat_type);
         // $this->db->group_by('i.item_num, i.item_name, c.color, c.price');
-        $this->db->order_by('i.item_num, c.color');
+        // $this->db->order_by('i.item_num, c.color');
+        $this->db->order_by('i.item_num asc, c.suggeststock desc');
         $res=$this->db->get()->result_array();
         if (count($res)>0) {
             $onboat_date=$res[0]['onboat_date'];
