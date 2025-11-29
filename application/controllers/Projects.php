@@ -47,7 +47,8 @@ class Projects extends MY_Controller
         // Add main page management
         $head['scripts'][] = array('src' => '/js/projects/page.js');
         $head['styles'][] = array('style' => '/css/projects/page.css');
-
+        // Add Order Dual Orders
+        $head['styles'][] = array('style' => '/css/projects/dualorders_view.css');
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
@@ -65,6 +66,10 @@ class Projects extends MY_Controller
         $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass ], TRUE);
         $content_view = $this->load->view('projects/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
+        $modal_options = [
+            'doubleorder' => $this->load->view('dualorders/page_view', ['brandclass' => $brandclass], true),
+        ];
+        $dat['modal_view'] = $this->load->view('projects/modal_view', $modal_options, TRUE);
         $this->load->view('page_modern/page_template_view', $dat);
     }
 
@@ -75,6 +80,7 @@ class Projects extends MY_Controller
             'relivlink' => getenv('RELIVERSTEST'),
             'designlink' => getenv('DESIGSTEST'),
         ];
+        // $options['doubleorder'] = $this->load->view('dualorders/page_view',[], true);
         $content = $this->load->view('projects/projects_view', $options, TRUE);
         return $content;
     }
