@@ -21,6 +21,13 @@ function init_page(objid) {
     switch (objid) {
         case 'projectsview':
             $("#projectsview").show();
+            init_projects_content();
             break;
     }
+}
+
+function init_projects_content() {
+    $(".doupleorders").unbind('click').click(function () {
+        $("#dualOrderspopup").modal({keyboard: false, show: true});
+    })
 }
