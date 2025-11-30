@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 <div class="datarow">
-                    <div class="custinfo-box hidetitle">
+                    <div class="custinfo-box hidetitle" id="dualordspecialtags">
                         <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-down" aria-hidden="true"></i></span> Special Tags & Notes:</div>
                         <div class="custinfo-boxbody">
                             <div class="custinfo-tags">

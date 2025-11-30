@@ -49,6 +49,7 @@ class Projects extends MY_Controller
         $head['styles'][] = array('style' => '/css/projects/page.css');
         // Add Order Dual Orders
         $head['styles'][] = array('style' => '/css/projects/dualorders_view.css');
+        $head['scripts'][] = array('src' => '/js/projects/dualorders_view.js');
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
