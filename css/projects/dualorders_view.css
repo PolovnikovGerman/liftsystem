@@ -8,8 +8,11 @@
 }
 #dualOrderspopup .modal-content {
     position: relative;
-    background-color: transparent;
-    border: transparent;
+    background-color: #fff;
+    background-clip: padding-box;
+    border-radius: 6px;
+    outline: 0;
+    box-shadow: none !important;
 }
 #dualOrderspopup .modal-footer {
     padding: 15px;
@@ -550,7 +553,7 @@ li.inactive .paymethod-exp {
 
 /*-----------ORDERS-----------*/
 .ordertopline {
-    width: calc(100% - 10px);
+    width: 100%;
     padding: 0 5px;
     padding-top: 6px;
     padding-bottom: 5px;
@@ -907,9 +910,8 @@ ul.keyslist li:last-child {
     height: 100%;
 }
 .boxsection-contant {
-    width: calc(100% - 10px);
+    width: 100%;
     padding: 5px 5px 0;
-
 }
 .nb-notes {
     width: 98px;
@@ -925,7 +927,7 @@ ul.keyslist li:last-child {
     font-size: 8px;
 }
 .nb-history {
-    width: 235px;
+    width: 238px;
     margin-left: 9px;
 }
 .nb-history-title {
@@ -937,7 +939,7 @@ ul.keyslist li:last-child {
     background: #fff;
     border: 1px solid #dddddd;
     height: 28px;
-    width: 235px;
+    width: 238px;
     overflow-y: auto;
 }
 .historytable-tr {
@@ -970,7 +972,7 @@ ul.keyslist li:last-child {
     font-size: 8px;
 }
 .httd-txt {
-    width: 169px;
+    width: 152px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1038,7 +1040,7 @@ ul.nb-taskslist li {
     padding-left: 5px;
 }
 .cb-phone {
-    width: 105px;
+    width: 102px;
     margin-right: 9px;
     height: 16px;
     line-height: 16px;
@@ -1047,7 +1049,7 @@ ul.nb-taskslist li {
     padding-left: 5px;
 }
 .cb-email {
-    width: 145px;
+    width: 152px;
     margin-right: 9px;
     height: 16px;
     line-height: 16px;
@@ -1056,6 +1058,9 @@ ul.nb-taskslist li {
     padding-left: 5px;
     color: #0278fc;
     position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .cb-email-icon {
     height: 16px;
@@ -1103,6 +1108,7 @@ ul.nb-taskslist li {
     height: 17px;
     line-height: 17px;
     border-bottom: 1px solid #dddddd;
+    width: 100%;
 }
 .itemtabl-tr:last-child {
     border-bottom: none;
@@ -1131,20 +1137,22 @@ ul.nb-taskslist li {
     text-align: center;
 }
 .itemtabl-qty {
-    width: 51px;
+    width: 56px;
     padding: 0 3px;
+    text-align: center;
 }
 .itemtabl-each {
-    width: 37px;
+    width: 44px;
     padding: 0 3px;
+    text-align: center;
 }
 .itemtabl-subtotal {
-    width: 72px;
+    width: 80px;
     padding: 0 3px;
     text-align: right;
 }
 .itemtabl-info {
-    width: 379px;
+    width: 377px;
     padding-left: 5px;
 }
 .itemtabl-trtitle {
@@ -1640,7 +1648,7 @@ span.itemtabl-setups {
     font-size: 9px;
     line-height: 11px;
     padding: 1px 0;
-    height: 23px;
+    height: 25px;
     background: #f7f7f7;
     color: #616161;
     font-weight: 600;
@@ -1685,7 +1693,7 @@ span.itemtabl-setups {
     font-size: 9px;
     line-height: 11px;
     padding: 1px 0;
-    height: 23px;
+    height: 25px;
     text-align: center;
     font-weight: 600;
 }
@@ -1728,7 +1736,7 @@ span.itemtabl-setups {
     line-height: 11px;
     text-align: center;
     padding: 2px 0;
-    height: 21px;
+    height: 25px;
     font-weight: 600;
 }
 .step-preview02 {
@@ -1812,6 +1820,7 @@ span.itemtabl-setups {
     border: 1px solid #dddddd;
     font-size: 11px;
     padding: 0 4px;
+    margin-bottom: 2px;
 }
 .fulf-td-qty {
     width: 20px;
@@ -1834,7 +1843,7 @@ span.itemtabl-setups {
     height: auto;
 }
 .scheduling-box {
-    width: 60px;
+    width: 65px;
     height: 19px;
     border-radius: 4px;
     position: relative;
