@@ -8,6 +8,7 @@
     margin-right: 20px;
     border: 1px solid #000;
     cursor: pointer;
+    margin-top: 10px;
 }
 .ts-button:last-child {
     margin-right: 0;
