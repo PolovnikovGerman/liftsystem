@@ -28,7 +28,6 @@ function init_page(objid) {
 
 function init_projects_content() {
     $(".doupleorders").unbind('click').click(function () {
-        console.log('Double order Popup Open');
         $("#dualOrderspopup").modal({keyboard: false, show: true});
     });
 }

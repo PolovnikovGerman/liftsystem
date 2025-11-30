@@ -2,34 +2,50 @@
 #dualOrderspopup .modal-dialog {
     width: 1310px
 }
+#dualOrderspopup .modal-header {
+    padding: 0;
+    border-bottom: none;
+}
+#dualOrderspopup .modal-content {
+    position: relative;
+    background-color: transparent;
+    border: transparent;
+}
+#dualOrderspopup .modal-footer {
+    padding: 15px;
+    text-align: right;
+    border-top: transparent;
+}
+#dualOrderspopup .modal-body {
+    position: relative;
+    padding: 0;
+    border: 1px solid #000;
+    border-radius: 5px;
+}
 #dualOrderspopup button.close {
     position: absolute;
-    top: 3px;
-    right: 3px;
+    top: -5px;
+    right: 25px;
     width: 18px;
     height: 18px;
-    line-height: 16px;
     border-radius: 9px;
     border: 1px solid #000;
     background: #ff0000;
     text-align: center;
     cursor: pointer;
     opacity: 1;
+    z-index: 1;
 }
 #dualOrderspopup button.close i {
     color: #fff;
-    font-size: 14px;
+    font-size: 13px;
+    position: relative;
+    top: -6px;
 }
 
 /*--------------Dual Orders------------------*/
 .dual-orders {
-    /*position: relative;*/
-    margin: 15px 10px 10px;
     height: 834px;
-    /* width: 1275px; */
-    width: 1285px;
-    border-radius: 5px;
-    border: 1px solid #000;
     clear: both;
     float: left;
 }
@@ -62,11 +78,12 @@
 }
 .section-orders {
     width: 1050px;
-    height: calc(100% - 9px);
+    height: 100%;
     background: #0d1a68;
     border-radius: 0 7px 7px 0;
     overflow: hidden;
     padding-top: 9px;
+    padding-bottom: 7px;
 }
 
 
@@ -77,7 +94,7 @@
     position: relative;
     padding: 0 5px;
     border-bottom: 1px solid #9b9300;
-    width: calc(100% - 20px);
+    width: 100%;
     padding: 10px 10px 5px;
     background: #fff200;
 }
@@ -129,7 +146,7 @@
 
 .infodetelies {
     padding: 0 5px;
-    width: calc(100% - 10px);
+    width: 100%;
 }
 .custinfo-member {
     width: 100%;
@@ -141,7 +158,7 @@
     font-weight: 600;
 }
 .custinfo-member input {
-    width: calc(100% - 10px);
+    width: 100%;
     padding: 0 5px;
     height: 23px;
     line-height: 23px;
@@ -181,7 +198,7 @@
 .custinfo-boxbody {
     position: relative;
     top: -1px;
-    width: calc(100% - 10px);
+    width: 100%;
     border: 1px solid #cdc640;
     border-radius: 0 3px 3px 3px;
     padding: 2px 5px 0;
@@ -200,7 +217,7 @@
     background: #fff980;
     padding: 0 4px;
     font-weight: 600;
-    width: calc(100% - 8px);
+    width: 100%;
 }
 .hidetitle  .custinfo-boxbody {
     display: none;
@@ -517,7 +534,7 @@ li.inactive .paymethod-exp {
     font-size: 16px;
 }
 .shipaccount-box {
-    width: 100px;
+    width: 114px;
     height: 18px;
     line-height: 18px;
     background: #fdfce1;
@@ -654,7 +671,7 @@ ul.orderbuttons-list li:last-child {
 .ordertwoline {
     background: url(/img/doubleorders/ordertwoline-bg.png) no-repeat;
     height: 36px;
-    width: calc(100% - 10px);
+    width: 100%;
     padding: 0 5px;
 }
 .orderinfo {
@@ -675,7 +692,7 @@ ul.orderbuttons-list li:last-child {
     margin-left: 7px;
 }
 .orderpoinfo-title {
-    font-size: 10px;
+    font-size: 9px;
     line-height: 10px;
     margin-right: 4px;
     text-align: right;
@@ -689,7 +706,7 @@ ul.orderbuttons-list li:last-child {
     border-radius: 4px;
     text-align: center;
     font-size: 13px;
-    line-height: 21px;
+    line-height: 19px;
     box-shadow: 1px 1px 5px rgba(122,122,122,0.5);
 }
 .orderstates {
@@ -739,7 +756,9 @@ ul.orderbuttons-list li:last-child {
     font-weight: 600;
     color: #3f3f3f;
     line-height: 12px;
-    margin: -1px 22px 0;
+    margin: 0 21px;
+    position: relative;
+    top: -2px;
 }
 .totalpaid span {
     font-size: 7px;
@@ -761,7 +780,7 @@ ul.orderbuttons-list li:last-child {
     margin-left: 10px;
 }
 .tabsline {
-    width: calc(100% - 10px);
+    width: 100%;
     padding: 0 5px;
     background: #8c8c8c;
     border-bottom: 1px solid #3f3f3f;
@@ -793,6 +812,8 @@ ul.tabslist li:last-child {
     font-size: 11px;
     background: #999999;
     border-radius: 3px 3px 0 0;
+    position: relative;
+    top: 2px;
 }
 .tabbox.active {
     height: 19px;
@@ -807,7 +828,7 @@ ul.tabslist li:last-child {
     font-weight: 600;
     background: #e4e3e3;
     position: relative;
-    top: 1px;
+    top: 2px;
     border-radius: 3px 3px 0 0;
 }
 ul.keyslist {
@@ -845,9 +866,9 @@ ul.keyslist li:last-child {
 
 
 .sectionline {
-    width: calc(100% - 10px);
     padding: 0 5px;
     margin-top: 10px;
+    width: 100%;
 }
 .boxsection {
     background: #fff;
@@ -891,13 +912,13 @@ ul.keyslist li:last-child {
 
 }
 .nb-notes {
-    width: 106px;
+    width: 98px;
 }
 .nb-notes textarea {
     border: 1px solid #dddddd;
     background: #fff;
-    height: 27px;
-    width: calc(100% - 10px);
+    height: 38px;
+    width: 100%;
     padding: 5px;
     resize: none;
     margin-bottom: 3px;
