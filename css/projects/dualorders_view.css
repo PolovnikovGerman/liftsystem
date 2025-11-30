@@ -8,11 +8,12 @@
 }
 #dualOrderspopup .modal-content {
     position: relative;
-    background-color: #fff;
+    background-color: transparent;
     background-clip: padding-box;
     border-radius: 6px;
     outline: 0;
     box-shadow: none !important;
+    border: none !important;
 }
 #dualOrderspopup .modal-footer {
     padding: 15px;
