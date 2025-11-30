@@ -283,6 +283,8 @@ span.tagslist-tagicon {
     width: 12px;
     height: 12px;
     margin-right: 3px;
+    position: relative;
+    top: -2px;
 }
 span.tagslist-tagicon img {
     width: 100%;
