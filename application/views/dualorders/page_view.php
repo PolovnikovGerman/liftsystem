@@ -1,7 +1,7 @@
 <div class="dual-orders <?=$brandclass?>">
     <div class="section-customer">
         <div class="datarow">
-            <div class="custom-info">
+            <div class="custom-info" id="dualordcustomlabel">
                 <div class="datarow">
                     <div class="custom-info-txt">Custom:</div>
                     <div class="custom-info-number">#C000-000</div>
@@ -53,8 +53,8 @@
                     </div>
                 </div>
                 <div class="datarow">
-                    <div class="custinfo-box">
-                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-down" aria-hidden="true"></i></span> Credit: <span class="subtitlebox">$999,999   YES - Net 30</span></div>
+                    <div class="custinfo-box" id="dualordcredits">
+                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Credit: <span class="subtitlebox">$999,999   YES - Net 30</span></div>
                         <div class="custinfo-boxbody">
                             <div class="credit-box">YES - Approved - Net 30</div>
                             <div class="credit-info">
@@ -69,8 +69,8 @@
                     </div>
                 </div>
                 <div class="datarow">
-                    <div class="custinfo-box">
-                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-down" aria-hidden="true"></i></span> Pay Methods: <span class="subtitlebox">2 active (1 inactive)</span></div>
+                    <div class="custinfo-box" id="dualordpaymethods">
+                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Pay Methods: <span class="subtitlebox">2 active (1 inactive)</span></div>
                         <div class="custinfo-boxbody">
                             <div class="pay-methods-list">
                                 <ul>
@@ -107,8 +107,8 @@
                     </div>
                 </div>
                 <div class="datarow">
-                    <div class="custinfo-box">
-                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-down" aria-hidden="true"></i></span> Ship Accounts: <span class="subtitlebox">2</span></div>
+                    <div class="custinfo-box" id="dualordshipaccounts">
+                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Ship Accounts: <span class="subtitlebox">2</span></div>
                         <div class="custinfo-boxbody">
                             <div class="ship-accounts-list">
                                 <ul>
@@ -130,8 +130,8 @@
                     </div>
                 </div>
                 <div class="datarow">
-                    <div class="custinfo-box">
-                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-down" aria-hidden="true"></i></span> Contacts: <span class="subtitlebox">3</span></div>
+                    <div class="custinfo-box" id="dualordcontacts">
+                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Contacts: <span class="subtitlebox">3</span></div>
                         <div class="custinfo-boxbody">
                             <div class="contacts-box">
                                 <ul class="contacts-list">
@@ -156,8 +156,8 @@
                     </div>
                 </div>
                 <div class="datarow">
-                    <div class="custinfo-box">
-                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-down" aria-hidden="true"></i></span> Orders: <span class="subtitlebox">17</span></div>
+                    <div class="custinfo-box" id="dualordorderslist">
+                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Orders: <span class="subtitlebox">17</span></div>
                         <div class="custinfo-boxbody">
                             <div class="orderslist-box">
                                 <div class="orders-table">
@@ -224,8 +224,8 @@
                     </div>
                 </div>
                 <div class="datarow">
-                    <div class="custinfo-box">
-                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-down" aria-hidden="true"></i></span> Quotes: <span class="subtitlebox">22</span></div>
+                    <div class="custinfo-box" id="dualordquotes">
+                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Quotes: <span class="subtitlebox">22</span></div>
                         <div class="custinfo-boxbody">
                             <div class="qouteslist-box">table</div>
                         </div>

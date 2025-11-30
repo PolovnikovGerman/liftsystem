@@ -119,8 +119,8 @@
     padding: 0 4px;
     height: 23px;
     line-height: 23px;
-    background: #fff;
-    border: 1px solid #9b9300;
+    /*background: #fff;*/
+    /*border: 1px solid #9b9300;*/
     margin-top: 2px;
 }
 .custom-info-hide {
@@ -259,6 +259,9 @@ ul.tagslist-two li {
 }
 .tagslist-tag {
     font-size: 11px;
+}
+.custinfo-notes {
+    width: 100%;
 }
 .custinfo-notes textarea {
     border: 1px solid #9b9300;
