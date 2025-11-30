@@ -119,8 +119,8 @@
     padding: 0 4px;
     height: 23px;
     line-height: 23px;
-    /*background: #fff;*/
-    /*border: 1px solid #9b9300;*/
+    background: #fff;
+    border: 1px solid #9b9300;
     margin-top: 2px;
 }
 .custom-info-hide {
@@ -2030,7 +2030,6 @@ span.itemtabl-setups {
     color: #fff;
 }
 .stressballs .custom-info-name {
-    background: #fff;
     border: 1px solid #a2a1fc;
 }
 .stressballs .section-customer {
