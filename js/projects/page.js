@@ -14,7 +14,6 @@ $(document).ready(function(){
 });
 
 function init_page(objid) {
-    console.log(objid);
     $(".projcontentarea").hide();
     $(".contentsubmenu_item").removeClass('active');
     $(".contentsubmenu_item[data-link='"+objid+"']").addClass('active');
@@ -29,5 +28,6 @@ function init_page(objid) {
 function init_projects_content() {
     $(".doupleorders").unbind('click').click(function () {
         $("#dualOrderspopup").modal({keyboard: false, show: true});
+        init_doubleorders();
     });
 }
