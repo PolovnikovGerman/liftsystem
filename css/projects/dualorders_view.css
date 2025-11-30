@@ -235,10 +235,9 @@
 ul.tagslist-one {
     float: left;
     list-style: none;
-    margin: 0;
+    margin: 0 3px 0 0;
     padding-left: 0;
     width: 110px;
-    margin-right: 5px;
 }
 ul.tagslist-one li {
     width: 100%;
@@ -260,6 +259,9 @@ ul.tagslist-two li {
 .tagslist-tag {
     font-size: 11px;
 }
+.stressballs .tagslist-tag {
+    color: #fff;
+}
 .custinfo-notes {
     width: 100%;
 }
@@ -271,6 +273,10 @@ ul.tagslist-two li {
     padding: 5px;
     resize: none;
     margin-bottom: 3px;
+}
+.stressballs .custinfo-notes textarea {
+    border: 1px solid #a2a1fc;
+    background: #e4e3fd;
 }
 span.tagslist-tagicon {
     float: left;
