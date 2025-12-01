@@ -358,26 +358,24 @@ span.tagslist-tagicon img {
     margin-top: 4px;
     margin-bottom: 5px;
 }
-.contacts-list {
+ul.contacts-list {
+    list-style: decimal;
+    margin: 0;
+    padding-left: 15px;
+    color: #000;
+    font-size: 11px;
+}
+ul.contacts-list li {
     width: calc(100% - 10px);
     padding: 0 5px;
     border-bottom: 1px solid #cdc640;
     line-height: 13px;
     padding-bottom: 3px;
 }
-.contacts-list div {
+ul.contacts-list li span {
     font-size: 11px;
 }
-.contact-number {
-    width: 12px;
-}
-.contact-email {
-    width: calc(100% - 12px);
-}
-.contact-name {
-    clear: both;
-}
-.contact-phone {
+ul.contacts-list li span.contact-phone {
     margin-left: 5px;
 }
 

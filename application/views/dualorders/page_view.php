@@ -27,21 +27,21 @@
                             <div class="custinfo-tags">
                                 <ul class="tagslist-one">
                                     <li>
-                                        <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="<?=$brand=='SB' ? '/img/doubleorders/icon-01-sb.svg' : '/img/doubleorders/icon-01.svg'?>"></span>Freq / High Profit</div>
+                                        <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-01.svg"></span>Freq / High Profit</div>
                                     </li>
                                     <li>
-                                        <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="<?=$brand=='SB' ? '/img/doubleorders/icon-02-sb.svg' : '/img/doubleorders/icon-02.svg'?>"></span>Annoyed Customer</div>
+                                        <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-02.svg"></span>Annoyed Customer</div>
                                     </li>
                                     <li>
-                                        <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="<?=$brand=='SB' ? '/img/doubleorders/icon-03-sb.svg' : '/img/doubleorders/icon-03.svg'?>"></span>Red Flag / Warning</div>
+                                        <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-03.svg"></span>Red Flag / Warning</div>
                                     </li>
                                 </ul>
                                 <ul class="tagslist-two">
                                     <li>
-                                        <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="<?=$brand=='SB' ? '/img/doubleorders/icon-04-sb.svg' : '/img/doubleorders/icon-04.svg'?>"></span>Friend / Family</div>
+                                        <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-04.svg"></span>Friend / Family</div>
                                     </li>
                                     <li>
-                                        <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="<?=$brand=='SB' ? '/img/doubleorders/icon-05-sb.svg' : '/img/doubleorders/icon-05.svg'?>"></span>BLOCKED</div>
+                                        <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-05.svg"></span>BLOCKED</div>
                                     </li>
                                 </ul>
                             </div>
@@ -134,24 +134,23 @@
                         <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Contacts: <span class="subtitlebox">3</span></div>
                         <div class="custinfo-boxbody">
                             <div class="contacts-box">
-                                <div class="contacts-list">
-                                    <div class="contact-number">1.</div>
-                                    <div class="contact-email">whaston@xactly.net</div>
-                                    <div class="contact-name">Wayne Haston</div>
-                                    <div class="contact-phone">(087)798-1980</div><br>
-                                </div>
-                                <div class="contacts-list">
-                                    <div class="contact-number">2.</div>
-                                    <div class="contact-email">whaston@xactly.net</div>
-                                    <div class="contact-name">Wayne Haston</div>
-                                    <div class="contact-phone">(087)798-1980</div><br>
-                                </div>
-                                <div class="contacts-list">
-                                    <div class="contact-number">3.</div>
-                                    <div class="contact-email">whaston@xactly.net</div>
-                                    <div class="contact-name">Wayne Haston</div>
-                                    <div class="contact-phone">(087)798-1980</div><br>
-                                </div>
+                                <ul class="contacts-list">
+                                    <li>
+                                        <span class="contact-email">whaston@xactly.net</span>
+                                        <span class="contact-name">Wayne Haston</span>
+                                        <span class="contact-phone">(087)798-1980</span><br>
+                                    </li>
+                                    <li>
+                                        <span class="contact-email">whaston@xactly.net</span>
+                                        <span class="contact-name">Adam Winston</span>
+                                        <span class="contact-phone">(087)798-1980</span><br>
+                                    </li>
+                                    <li>
+                                        <span class="contact-email">whaston@xactly.net</span>
+                                        <span class="contact-name">Wayne Haston</span>
+                                        <span class="contact-phone">(087)798-1980</span><br>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
