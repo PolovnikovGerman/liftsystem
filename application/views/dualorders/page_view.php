@@ -3,8 +3,8 @@
         <div class="datarow">
             <div class="custom-info" id="dualordcustomlabel">
                 <div class="datarow">
-                    <div class="custom-info-txt">Custom:</div>
-                    <div class="custom-info-number">#C000-000</div>
+                    <div class="custom-info-txt">Customer:</div>
+                    <div class="custom-info-number"># C000-000</div>
                 </div>
                 <div class="datarow">
                     <div class="custom-info-name">ABC Company - Jersey City Branch</div>
@@ -53,15 +53,16 @@
                 </div>
                 <div class="datarow">
                     <div class="custinfo-box" id="dualordcredits">
-                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Credit: <span class="subtitlebox">$999,999   YES - Net 30</span></div>
+                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Credit:
+                            <span class="subtitlebox">YES - Net 30 ($999,999)</span></div>
                         <div class="custinfo-boxbody">
                             <div class="credit-box">YES - Approved - Net 30</div>
                             <div class="credit-info">
-                                <div class="credit-infotitle">Open Balances:</div>
+                                <div class="credit-infotitle">Open Balance:</div>
                                 <div class="credit-openbalance">$999,999 <span>- 4 orders</span></div>
                             </div>
                             <div class="credit-info">
-                                <div class="credit-infotitle">Late Balances:</div>
+                                <div class="credit-infotitle">Late Balance:</div>
                                 <div class="credit-latebalance">$999,999 <span>- 2 orders</span></div>
                             </div>
                         </div>
@@ -133,23 +134,24 @@
                         <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Contacts: <span class="subtitlebox">3</span></div>
                         <div class="custinfo-boxbody">
                             <div class="contacts-box">
-                                <ul class="contacts-list">
-                                    <li>
-                                        <span class="contact-name">Wayne Haston</span>
-                                        <span class="contact-phone">(087)798-1980</span><br>
-                                        <span class="contact-email">whaston@xactly.net</span>
-                                    </li>
-                                    <li>
-                                        <span class="contact-name">Adam Winston</span>
-                                        <span class="contact-phone">(087)798-1980</span><br>
-                                        <span class="contact-email">whaston@xactly.net</span>
-                                    </li>
-                                    <li>
-                                        <span class="contact-name">Wayne Haston</span>
-                                        <span class="contact-phone">(087)798-1980</span><br>
-                                        <span class="contact-email">whaston@xactly.net</span>
-                                    </li>
-                                </ul>
+                                <div class="contacts-list">
+                                    <div class="contact-number">1.</div>
+                                    <div class="contact-email">whaston@xactly.net</div>
+                                    <div class="contact-name">Wayne Haston</div>
+                                    <div class="contact-phone">(087)798-1980</div><br>
+                                </div>
+                                <div class="contacts-list">
+                                    <div class="contact-number">2.</div>
+                                    <div class="contact-email">whaston@xactly.net</div>
+                                    <div class="contact-name">Wayne Haston</div>
+                                    <div class="contact-phone">(087)798-1980</div><br>
+                                </div>
+                                <div class="contacts-list">
+                                    <div class="contact-number">3.</div>
+                                    <div class="contact-email">whaston@xactly.net</div>
+                                    <div class="contact-name">Wayne Haston</div>
+                                    <div class="contact-phone">(087)798-1980</div><br>
+                                </div>
                             </div>
                         </div>
                     </div>
