@@ -114,7 +114,7 @@
     font-weight: 600;
 }
 .custom-info-name {
-    font-size: 11px;
+    font-size: 10.5px;
     /*width: calc(100% - 8px);*/
     width: 100%;
     padding: 0 4px;
@@ -123,6 +123,9 @@
     background: #fff;
     border: 1px solid #9b9300;
     margin-top: 2px;
+    white-space: nowrap; /* Prevents text from wrapping to the next line */
+    overflow: hidden; /* Hides any overflowing content */
+    text-overflow: ellipsis;
 }
 .custom-info-hide {
     position: absolute;
@@ -156,6 +159,7 @@
 .custinfo-member {
     width: 100%;
     margin-bottom: 5px;
+    padding: 0 5px;
 }
 .custinfo-member label {
     font-size: 12px;
@@ -261,7 +265,7 @@ ul.tagslist-two li {
     font-size: 11px;
 }
 .stressballs .tagslist-tag {
-    color: #fff;
+    color: #000;
 }
 .custinfo-notes {
     width: 100%;
@@ -354,27 +358,28 @@ span.tagslist-tagicon img {
     margin-top: 4px;
     margin-bottom: 5px;
 }
-ul.contacts-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-ul.contacts-list li {
+.contacts-list {
     width: calc(100% - 10px);
     padding: 0 5px;
     border-bottom: 1px solid #cdc640;
     line-height: 13px;
     padding-bottom: 3px;
 }
-ul.contacts-list li span {
+.contacts-list div {
     font-size: 11px;
 }
-ul.contacts-list li span.contact-phone {
+.contact-number {
+    width: 12px;
+}
+.contact-email {
+    width: calc(100% - 12px);
+}
+.contact-name {
+    clear: both;
+}
+.contact-phone {
     margin-left: 5px;
 }
-
-
-
 
 
 .orderslist-box {
