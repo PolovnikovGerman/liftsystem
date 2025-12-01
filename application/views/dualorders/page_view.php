@@ -9,11 +9,6 @@
                 <div class="datarow">
                     <div class="custom-info-name">ABC Company - Jersey City Branch</div>
                 </div>
-                <div class="custom-info-hide">Hide <span class="ci-hideicon"><i class="fa fa-chevron-up" aria-hidden="true"></i></span></div>
-            </div>
-        </div>
-        <div class="datarow">
-            <div class="infodetelies">
                 <div class="datarow">
                     <div class="custinfo-member">
                         <label>Member of</label>
@@ -21,30 +16,39 @@
                     </div>
                 </div>
                 <div class="datarow">
+                    <div class="tagslist-title">Special Tags: <span>5</span></div>
+                    <div class="custinfo-tags">
+                        <ul class="tagslist-one">
+                            <li>
+                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-01.svg"></span>Freq / High Profit</div>
+                            </li>
+                            <li>
+                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-02.svg"></span>Annoyed Customer</div>
+                            </li>
+                            <li>
+                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-03.svg"></span>Red Flag / Warning</div>
+                            </li>
+                        </ul>
+                        <ul class="tagslist-two">
+                            <li>
+                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-04.svg"></span>Friend / Family</div>
+                            </li>
+                            <li>
+                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-05.svg"></span>BLOCKED</div>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="custom-info-hide">Hide <span class="ci-hideicon"><i class="fa fa-chevron-up" aria-hidden="true"></i></span></div>
+            </div>
+        </div>
+        <div class="datarow">
+            <div class="infodetelies">
+                <div class="datarow">
                     <div class="custinfo-box" id="dualordspecialtags">
-                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Special Tags & Notes:</div>
+                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Special Notes:</div>
                         <div class="custinfo-boxbody">
-                            <div class="custinfo-tags">
-                                <ul class="tagslist-one">
-                                    <li>
-                                        <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-01.svg"></span>Freq / High Profit</div>
-                                    </li>
-                                    <li>
-                                        <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-02.svg"></span>Annoyed Customer</div>
-                                    </li>
-                                    <li>
-                                        <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-03.svg"></span>Red Flag / Warning</div>
-                                    </li>
-                                </ul>
-                                <ul class="tagslist-two">
-                                    <li>
-                                        <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-04.svg"></span>Friend / Family</div>
-                                    </li>
-                                    <li>
-                                        <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-05.svg"></span>BLOCKED</div>
-                                    </li>
-                                </ul>
-                            </div>
                             <div class="custinfo-notes">
                                 <textarea></textarea>
                             </div>
