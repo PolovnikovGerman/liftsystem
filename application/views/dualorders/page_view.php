@@ -528,7 +528,7 @@
                 <div class="sectionline">
                     <div class="boxsection payments-block">
                         <div class="boxsection-title">
-                            <div class="boxsection-titletxt">Payments</div>
+                            <div class="boxsection-titletxt">Payment</div>
                         </div>
                         <div class="boxsection-body">
                             <div class="boxsection-contant">
@@ -1026,7 +1026,7 @@
                 <div class="sectionline">
                     <div class="boxsection payments-block">
                         <div class="boxsection-title">
-                            <div class="boxsection-titletxt">Payments</div>
+                            <div class="boxsection-titletxt">Payment</div>
                         </div>
                         <div class="boxsection-body">
                             <div class="boxsection-contant">
