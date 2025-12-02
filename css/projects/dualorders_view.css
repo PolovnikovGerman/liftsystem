@@ -186,6 +186,8 @@
     font-size: 12px;
     color: #9b9300;
     font-weight: 600;
+    margin-bottom: 0;
+    margin-top: 5px;
 }
 .custinfo-member input {
     width: 100%;
@@ -416,9 +418,9 @@ ul.contacts-list li span.contact-phone {
 
 
 .orderslist-box {
-    background: #fdfce1;
+    /*background: #fdfce1;*/
+    background: transparent;
     border: 1px solid #9b9300;
-    /*height: 109px;*/
     height: 91px;
     width: 100%;
     overflow-y: auto;
@@ -426,7 +428,7 @@ ul.contacts-list li span.contact-phone {
     margin-bottom: 5px;
 }
 .stressballs .orderslist-box {
-    background: #5f5efe;
+    /*background: #5f5efe;*/
 }
 .orders-table {
     width: 100%;
@@ -2129,11 +2131,13 @@ span.itemtabl-setups {
 .stressballs .credit-box,
 .stressballs .paymethod-box,
 .stressballs .shipaccount-box,
-.stressballs .contacts-box,
 .stressballs .orderslist-box,
 .stressballs .qouteslist-box {
     border: 1px solid #a2a1fc;
     background: #e4e3fd;
+}
+.stressballs .contacts-box {
+    border: 1px solid #a2a1fc;
 }
 .stressballs .custinfo-titlebox {
     border-top: 1px solid #a2a1fc;
