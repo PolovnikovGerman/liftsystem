@@ -112,6 +112,7 @@
     font-size: 12px;
     line-height: 15px;
     font-weight: 600;
+    margin-top: 4px;
 }
 .custom-info-name {
     font-size: 10.5px;
@@ -172,6 +173,9 @@
 .infodetelies {
     padding: 0 5px;
     width: 100%;
+    margin-top: 5px;
+}
+.infodetelies.hideinfo {
     margin-top: 17px;
 }
 .custinfo-member {
@@ -362,6 +366,7 @@ span.tagslist-tagicon img {
     font-size: 11px;
     font-weight: 600;
     margin-left: 4px;
+    line-height: 14px;
 }
 .credit-latebalance span {
     font-size: 10px;
