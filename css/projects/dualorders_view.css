@@ -485,16 +485,16 @@ ul.contacts-list li span.contact-phone {
 .orderbox span.orderbox-item {
     margin-left: 4px;
 }
-.orderslist-box {
-    background: #fff980;
-    border: 1px solid #9b9300;
-    /*height: 109px;*/
-    height: 91px;
-    width: 100%;
-    overflow-y: auto;
-    margin-top: 4px;
-    margin-bottom: 5px;
-}
+/*.orderslist-box {*/
+/*    background: #fff980;*/
+/*    border: 1px solid #9b9300;*/
+/*    !*height: 109px;*!*/
+/*    height: 91px;*/
+/*    width: 100%;*/
+/*    overflow-y: auto;*/
+/*    margin-top: 4px;*/
+/*    margin-bottom: 5px;*/
+/*}*/
 .orderbox.activeline {
     background: #0d0088;
 }
@@ -2157,6 +2157,9 @@ span.itemtabl-setups {
 }
 .stressballs .subtitlebox {
     color: #a2a1fc;
+}
+.stressballs ul.contacts-list {
+    color: #fff;
 }
 .stressballs ul.contacts-list li {
     border-bottom: 1px solid #a2a1fc;
