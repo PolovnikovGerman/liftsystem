@@ -374,7 +374,8 @@ span.tagslist-tagicon img {
 
 
 .contacts-box {
-    background: #fdfce1;
+    /* background: #fdfce1; */
+    background: transparent;
     border: 1px solid #9b9300;
     height: 38px;
     width: 100%;
@@ -390,14 +391,19 @@ ul.contacts-list {
     font-size: 11px;
 }
 ul.contacts-list li {
-    width: calc(100% - 10px);
-    padding: 0 5px;
-    border-bottom: 1px solid #cdc640;
-    line-height: 13px;
-    padding-bottom: 3px;
+    /*width: calc(100% - 10px);*/
+    /*padding: 0 5px;*/
+    /*border-bottom: 1px solid #cdc640;*/
+    /*line-height: 13px;*/
+    /*padding-bottom: 3px;*/
+    border: 1px solid #a2a1fc;
+    background: #e4e3fd;
+    border-radius: 3px;
+    margin-bottom: 3px;
 }
 ul.contacts-list li span {
     font-size: 11px;
+    color: #000;
 }
 ul.contacts-list li span.contact-phone {
     margin-left: 5px;
