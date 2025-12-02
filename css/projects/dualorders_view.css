@@ -171,6 +171,7 @@
 .infodetelies {
     padding: 0 5px;
     width: 100%;
+    margin-top: 5px;
 }
 .custinfo-member {
     width: 100%;
@@ -209,8 +210,14 @@
     background: #fff980;
     padding: 0 4px;
     z-index: 2;
-    top: -1;
+    /*top: -1;*/
     font-weight: 600;
+}
+.custinfo-tags {
+    margin-top: 2px;
+}
+ul.tagslist-one li:last-child {
+    margin-bottom: 0;
 }
 .subtitlebox {
     font-weight: 400;
