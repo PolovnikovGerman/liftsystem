@@ -1,17 +1,17 @@
 function init_doubleorders() {
-    $("#dualordspecialtags").find('span.titlebox-arrow').unbind('click').click(function () {
-        var blockhide = 0;
-        if ($("#dualordspecialtags").hasClass("hidetitle")) {
-            blockhide = 1;
-        }
-        if (blockhide == 1) {
-            $("#dualordspecialtags").removeClass("hidetitle");
-            $("#dualordspecialtags").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
-        } else {
-            $("#dualordspecialtags").addClass("hidetitle");
-            $("#dualordspecialtags").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
-        }
-    });
+    // $("#dualordspecialtags").find('span.titlebox-arrow').unbind('click').click(function () {
+    //     var blockhide = 0;
+    //     if ($("#dualordspecialtags").hasClass("hidetitle")) {
+    //         blockhide = 1;
+    //     }
+    //     if (blockhide == 1) {
+    //         $("#dualordspecialtags").removeClass("hidetitle");
+    //         $("#dualordspecialtags").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
+    //     } else {
+    //         $("#dualordspecialtags").addClass("hidetitle");
+    //         $("#dualordspecialtags").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
+    //     }
+    // });
     $("#dualordcredits").find('span.titlebox-arrow').unbind('click').click(function () {
         var blockhide = 0;
         if ($("#dualordcredits").hasClass("hidetitle")) {
@@ -90,17 +90,23 @@ function init_doubleorders() {
             $("#dualordquotes").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
         }
     });
-    $("#dualordcustomlabel").find('span.ci-hideicon').unbind('click').click(function () {
+    $("#dualordcustomlabel").find('div.custom-info-hide').unbind('click').click(function () {
         var blockhide = 0;
         if ($("#dualordcustomlabel").hasClass("hidetitle")) {
             blockhide = 1;
         }
         if (blockhide == 1) {
-            $("#dualordcustomlabel").find('div.custom-info-name').show();
+            // $("#dualordcustomlabel").find('div.custom-info-name').show();
+            $(".tagslist-title").show();
+            $(".custinfo-tags").show();
+            $(".custinfo-member").show();
             $("#dualordcustomlabel").find('div.custom-info-hide').empty().html('Hide <span class="ci-hideicon"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>');
             $("#dualordcustomlabel").removeClass("hidetitle");
         } else {
-            $("#dualordcustomlabel").find('div.custom-info-name').hide();
+            // $("#dualordcustomlabel").find('div.custom-info-name').hide();
+            $(".tagslist-title").hide();
+            $(".custinfo-tags").hide();
+            $(".custinfo-member").hide();
             $("#dualordcustomlabel").find('div.custom-info-hide').empty().html('Show <span class="ci-hideicon"><i class="fa fa-chevron-down" aria-hidden="true"></i></span>');
             $("#dualordcustomlabel").addClass("hidetitle");
         }

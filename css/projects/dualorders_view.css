@@ -142,6 +142,7 @@
     height: 15px;
     line-height: 15px;
     cursor: pointer;
+    z-index: 10;
 }
 .ci-hideicon {
     font-size: 10px;
