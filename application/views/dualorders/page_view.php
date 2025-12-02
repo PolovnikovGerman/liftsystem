@@ -169,61 +169,83 @@
                                         <div class="totalsbox-year">2025</div>
                                         <div class="totalsbox-orders">3 Orders</div>
                                     </div>
-                                    <div class="orderstable-tr orderbox">
-                          <span class="orderbox-deteils">
-                            <i class="fa fa-search" aria-hidden="true"></i>
-                          </span>
-                                        <span class="orderbox-order">22238</span>
-                                        <span class="orderbox-item">- 5000 Apple Stress Balls</span>
+                                    <div class="orderstable-tr orderbox whitedatarow">
+                                        <div class="orderbox-line">
+                                            <span class="orderbox-date">Oct 17 -</span>
+                                            <span class="orderbox-order">22238</span>
+                                            <span class="orderbox-price">- $1475.45</span>
+                                        </div>
+                                        <div class="orderbox-line">
+                                            <span class="orderbox-item">5000 Apple Stress Balls</span>
+                                        </div>
                                     </div>
-                                    <div class="orderstable-tr orderbox greyline">
-                          <span class="orderbox-deteils">
-                            <i class="fa fa-search" aria-hidden="true"></i>
-                          </span>
-                                        <span class="orderbox-order">22000</span>
-                                        <span class="orderbox-item">- 1000 Custom Monk Stress Balls</span>
+                                    <div class="orderstable-tr orderbox greydatarow">
+                                        <div class="orderbox-line">
+                                            <span class="orderbox-date">Sep 21 -</span>
+                                            <span class="orderbox-order">22000</span>
+                                            <span class="orderbox-price">- $2341.20</span>
+                                        </div>
+                                        <div class="orderbox-line">
+                                            <span class="orderbox-item">1000 Custom Monk Stress Balls</span>
+                                        </div>
                                     </div>
                                     <div class="orderstable-tr orderbox activeline">
-                          <span class="orderbox-deteils">
-                            <i class="fa fa-search" aria-hidden="true"></i>
-                          </span>
-                                        <span class="orderbox-order">22000</span>
-                                        <span class="orderbox-item">- 1000 Custom Monk Stress Balls</span>
+                                        <div class="orderbox-line">
+                                            <span class="orderbox-date">May 21 -</span>
+                                            <span class="orderbox-order">22023</span>
+                                            <span class="orderbox-price">- $3545.45</span>
+                                        </div>
+                                        <div class="orderbox-line">
+                                            <span class="orderbox-item">1500 Custom Monk Stress Balls</span>
+                                        </div>
                                     </div>
                                     <div class="orderstable-tr totalsbox">
                                         <div class="totalsbox-year">2024</div>
                                         <div class="totalsbox-orders">4 Orders</div>
                                     </div>
-                                    <div class="orderstable-tr orderbox">
-                          <span class="orderbox-deteils">
-                            <i class="fa fa-search" aria-hidden="true"></i>
-                          </span>
-                                        <span class="orderbox-order">22238</span>
-                                        <span class="orderbox-item">- 5000 Apple Stress Balls</span>
+                                    <div class="orderstable-tr orderbox whitedatarow">
+                                        <div class="orderbox-line">
+                                            <span class="orderbox-date">Dec 10 -</span>
+                                            <span class="orderbox-order">22238</span>
+                                            <span class="orderbox-price">- $2341.20</span>
+                                        </div>
+                                        <div class="orderbox-line">
+                                            <span class="orderbox-item">5000 Apple Stress Balls</span>
+                                        </div>
                                     </div>
-                                    <div class="orderstable-tr orderbox greyline">
-                          <span class="orderbox-deteils">
-                            <i class="fa fa-search" aria-hidden="true"></i>
-                          </span>
-                                        <span class="orderbox-order">22000</span>
-                                        <span class="orderbox-item">- 1000 Custom Monk Stress Balls</span>
+                                    <div class="orderstable-tr orderbox greydatarow">
+                                        <div class="orderbox-line">
+                                            <span class="orderbox-date">Oct 17 -</span>
+                                            <span class="orderbox-order">22238</span>
+                                            <span class="orderbox-price">- $1475.45</span>
+                                        </div>
+                                        <div class="orderbox-line">
+                                            <span class="orderbox-item">1000 Custom Monk Stress Balls</span>
+                                        </div>
                                     </div>
-                                    <div class="orderstable-tr orderbox">
-                          <span class="orderbox-deteils">
-                            <i class="fa fa-search" aria-hidden="true"></i>
-                          </span>
-                                        <span class="orderbox-order">22238</span>
-                                        <span class="orderbox-item">- 5000 Apple Stress Balls</span>
+                                    <div class="orderstable-tr orderbox whitedatarow">
+                                        <div class="orderbox-line">
+                                            <span class="orderbox-date">Sep 21 -</span>
+                                            <span class="orderbox-order">22000</span>
+                                            <span class="orderbox-price">- $2341.20</span>
+                                        </div>
+                                        <div class="orderbox-line">
+                                            <span class="orderbox-item">5000 Apple Stress Balls</span>
+                                        </div>
                                     </div>
-                                    <div class="orderstable-tr orderbox greyline">
-                          <span class="orderbox-deteils">
-                            <i class="fa fa-search" aria-hidden="true"></i>
-                          </span>
-                                        <span class="orderbox-order">22000</span>
-                                        <span class="orderbox-item">- 1000 Custom Monk Stress Balls</span>
+                                    <div class="orderstable-tr orderbox greydatarow">
+                                        <div class="orderbox-line">
+                                            <span class="orderbox-date">May 21 -</span>
+                                            <span class="orderbox-order">22023</span>
+                                            <span class="orderbox-price">- $3545.45</span>
+                                        </div>
+                                        <div class="orderbox-line">
+                                            <span class="orderbox-item">1000 Custom Monk Stress Balls</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>

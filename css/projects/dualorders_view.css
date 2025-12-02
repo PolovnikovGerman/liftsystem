@@ -420,57 +420,24 @@ ul.contacts-list li span.contact-phone {
     margin-top: 4px;
     margin-bottom: 5px;
 }
+.stressballs .orderslist-box {
+    background: #5f5efe;
+}
 .orders-table {
     width: 100%;
 }
+.orderbox-line {
+    width: 100%;
+    line-height: 14px;
+    height: 14px;
+}
 .orderstable-tr {
     width: 100%;
-    height: 18px;
-}
-.orderbox {
-    background: #fff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.orderbox.greyline {
-    background: #ededed;
-}
-.orderbox.activeline {
-    background: #0d0088;
-}
-.orderbox.activeline span {
-    color: #fff !important;
-}
-.orderbox span {
-    font-size: 11px;
-    position: relative;
-    top: -2px;
-}
-.orderbox span.orderbox-order {
-    font-size: 11px;
-    color: #0000ff;
-    font-weight: 600;
-}
-.orderbox span.orderbox-item {}
-.orderbox span.orderbox-deteils {
-    width: 12px;
-    height: 12px;
-    line-height: 12px;
-    display: inline-block;
-    position: relative;
-    top: -3px;
-    margin-left: 3px;
-}
-.orderbox span.orderbox-deteils i {
-    font-size: 11px;
-    line-height: 11px;
-    color: #000;
-}
-.orderbox.activeline span.orderbox-deteils i {
-    color: #fff;
+    height: 30px;
+    padding-top: 2px;
 }
 .totalsbox {
+    height: 18px;
     line-height: 18px;
 }
 .totalsbox-year {
@@ -484,6 +451,82 @@ ul.contacts-list li span.contact-phone {
     color: #646464;
     margin-right: 5px;
 }
+.orderbox span {
+    font-size: 11px;
+    position: relative;
+    top: -2px;
+}
+.orderbox span.orderbox-order {
+    font-size: 11px;
+    color: #0000ff;
+    font-weight: 600;
+}
+.orderbox span.orderbox-date {
+    font-size: 11px;
+    margin-left: 4px;
+}
+.orderbox span.orderbox-price {
+    font-size: 11px;
+}
+.orderbox span.orderbox-item {
+    margin-left: 4px;
+}
+.orderslist-box {
+    background: #fff980;
+    border: 1px solid #9b9300;
+    /*height: 109px;*/
+    height: 91px;
+    width: 100%;
+    overflow-y: auto;
+    margin-top: 4px;
+    margin-bottom: 5px;
+}
+.orderbox.activeline {
+    background: #0d0088;
+}
+.orderbox.activeline span {
+    color: #fff !important;
+}
+
+/*.orderstable-tr {*/
+/*    width: 100%;*/
+/*    height: 18px;*/
+/*}*/
+/*.orderbox {*/
+/*    background: #fff;*/
+/*    white-space: nowrap;*/
+/*    overflow: hidden;*/
+/*    text-overflow: ellipsis;*/
+/*}*/
+/*.orderbox.greydatarow {*/
+/*    background: #ededed;*/
+/*}*/
+/*.orderbox span.orderbox-order {*/
+/*    font-size: 11px;*/
+/*    color: #0000ff;*/
+/*    font-weight: 600;*/
+/*}*/
+/*.orderbox span.orderbox-item {}*/
+/*.orderbox span.orderbox-deteils {*/
+/*    width: 12px;*/
+/*    height: 12px;*/
+/*    line-height: 12px;*/
+/*    display: inline-block;*/
+/*    position: relative;*/
+/*    top: -3px;*/
+/*    margin-left: 3px;*/
+/*}*/
+/*.orderbox span.orderbox-deteils i {*/
+/*    font-size: 11px;*/
+/*    line-height: 11px;*/
+/*    color: #000;*/
+/*}*/
+/*.orderbox.activeline span.orderbox-deteils i {*/
+/*    color: #fff;*/
+/*}*/
+/*.totalsbox {*/
+/*    line-height: 18px;*/
+/*}*/
 
 
 
