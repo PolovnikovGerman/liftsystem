@@ -173,7 +173,7 @@ Class Leadorder_model extends My_Model {
         $this->db->select('o.is_invoiced, o.order_system, o.order_arthide, o.order_itemnumber, o.deliverydate');
         $this->db->select('oa.cnt as cnt_amnt, colordat.item_color as itemcolor');
         // ART Stages
-        $this->db->select('o.order_art, o.order_redrawn, o.order_proofed, o.order_vectorized, o.order_approved, o.is_canceled');
+        $this->db->select('o.order_art, o.order_redrawn, o.order_proofed, o.order_vectorized, o.order_approved, o.order_blank');
         $this->db->select('itm.item_name');
         // $this->db->select("coalesce(oa.cnt_amnt,0)  as cnt_amnt",FALSE);
         $this->db->select('u.user_leadname, u.user_name, bil.customer_ponum');
@@ -264,9 +264,14 @@ Class Leadorder_model extends My_Model {
 //            $row['artstage'] = ifset($art,'artstage','');
             $row['proofclass'] = 'notapproved';
             $row['proofstage'] = 'Not Approved';
-            if (!empty($row['proofdocs'])) {
+            if ($row['order_blank']==1) {
                 $row['proofclass'] = 'approved';
                 $row['proofstage'] = 'Approved';
+            } else {
+                if (!empty($row['proofdocs'])) {
+                    $row['proofclass'] = 'approved';
+                    $row['proofstage'] = 'Approved';
+                }
             }
             $row['itemcolorclass']='';
             if (!empty($row['itemcolor']) && strlen($row['itemcolor'])>9) {
