@@ -2990,9 +2990,14 @@ Class Orders_model extends MY_Model
             }
             $row['proofclass'] = 'notapproved';
             $row['proofstage'] = 'Not approved';
-            if (!empty($row['proofdocs'])) {
+            if ($row['order_blank']==1) {
                 $row['proofclass'] = 'approved';
                 $row['proofstage'] = 'Approved';
+            } else {
+                if (!empty($row['proofdocs'])) {
+                    $row['proofclass'] = 'approved';
+                    $row['proofstage'] = 'Approved';
+                }
             }
             $out_array[]=$row;
         }
