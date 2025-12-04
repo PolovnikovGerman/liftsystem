@@ -186,6 +186,7 @@
     float: left;
     line-height: 23px;
     margin-right: 6px;
+    margin-bottom: 0;
 }
 .stressballs .custinfo-member label {
     color: #a2a1fc;
@@ -224,6 +225,9 @@
 .custinfo-tags {
     margin-top: 2px;
 }
+.stressballs  .custinfo-tags {
+    border: 1px solid #a2a1fc;
+}
 ul.tagslist-one li:last-child {
     margin-bottom: 0;
 }
@@ -232,7 +236,9 @@ ul.tagslist-one li:last-child {
     margin-bottom: 3px;
 }
 .tagslist-tagicon {
-    margin-right: 3px;
+    margin-right: 4px;
+    position: relative;
+    top: -3px;
 }
 .tagslist-tagicon img {
     width: 12px;
@@ -244,6 +250,9 @@ ul.tagslist-one li:last-child {
 }
 .tagslist-tagtxt {
     font-size: 11px;
+}
+.stressballs .tagslist-tagtxt {
+    color: #fff;
 }
 .tagslist-tagleft {
     width: 100px;
@@ -2098,7 +2107,6 @@ span.itemtabl-setups {
 }
 .stressballs .custom-info-txt,
 .stressballs .custom-info-number,
-.stressballs .custinfo-member label,
 .stressballs .titlebox-arrow,
 .stressballs .credit-openbalance {
     color: #fff;
