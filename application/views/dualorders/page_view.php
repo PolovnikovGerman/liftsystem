@@ -18,26 +18,25 @@
                 <div class="datarow">
 <!--                    <div class="tagslist-title">Special Tags: <span>5</span></div>-->
                     <div class="custinfo-tags">
-                        <ul class="tagslist-one">
-                            <li>
-                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-01.svg"></span>Frequent / Profit</div>
-                            </li>
-                            <li>
-                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-02.svg"></span>Annoyed</div>
-                            </li>
-                            <li>
-                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-03.svg"></span>Red Flag</div>
-                            </li>
-                        </ul>
-                        <ul class="tagslist-two">
-                            <li>
-                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-04.svg"></span>Friend / Fam</div>
-                            </li>
-<!--                            <li>-->
-<!--                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-05.svg"></span>BLOCKED</div>-->
-<!--                            </li>-->
-
-                        </ul>
+                        <div class="tagslist">
+                            <div class="tagslist-tagleft">
+                                <div class="tagslist-tagicon"><img src="/img/doubleorders/icon-01.svg"></div>
+                                <div class="tagslist-tagtxt">Frequent / Profit</div>
+                            </div>
+                            <div class="tagslist-tagright">
+                                <div class="tagslist-tagicon"><img src="/img/doubleorders/icon-04.svg"></div>
+                                <div class="tagslist-tagtxt">Friend / Fam</div>
+                            </div>
+                            <div class="tagslist-tagleft">
+                                <div class="tagslist-tagicon"><img src="/img/doubleorders/icon-02.svg"></div>
+                                <div class="tagslist-tagtxt">Annoyed</div>
+                            </div>
+                            <div class="tagslist-tagright">
+                                <div class="tagslist-tagicon"><img src="/img/doubleorders/icon-03.svg"></div>
+                                <div class="tagslist-tagtxt">Red Flag</div>
+                            </div>
+                        </div>
+                    </div>
                     </div>
                 </div>
                 <div class="datarow">
