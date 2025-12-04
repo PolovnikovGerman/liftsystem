@@ -227,6 +227,36 @@
 ul.tagslist-one li:last-child {
     margin-bottom: 0;
 }
+.tagslist {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+.tagslist-tagicon {
+    margin-right: 3px;
+}
+.tagslist-tagicon img {
+    width: 12px;
+    height: auto;
+}
+.custinfo-tags {
+    margin-top: 5px;
+    border: 1px solid #9b9300;
+}
+.tagslist-tagtxt {
+    font-size: 11px;
+}
+.tagslist-tagleft {
+    width: 100px;
+    margin-left: 4px;
+    height: 16px;
+    line-height: 16px;
+}
+.tagslist-tagright {
+    width: 90px;
+    margin-left: 4px;
+    height: 16px;
+    line-height: 16px;
+}
 .subtitlebox {
     font-weight: 400;
     color: #cdc640;
