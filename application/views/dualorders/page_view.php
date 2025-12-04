@@ -56,22 +56,33 @@
                             <div class="contacts-box">
                                 <ul class="contacts-list">
                                     <li>
-                                        <span class="contact-email">whaston@xactly.net</span><br/>
-                                        <span class="contact-name">Adam Winston</span>
-                                        <span class="contact-phone">(087)798-1980</span><br>
+                                        <div class="contc-line lineemail">
+                                            <div class="contact-email">whaston@xactly.net</div>
+                                        </div>
+                                        <div class="contc-line">
+                                            <div class="contact-name">Wayne Haston</div>
+                                            <div class="contact-phone">(087)798-1980</div>
+                                        </div>
                                     </li>
                                     <li>
-                                        <span class="contact-email">whaston@xactly.net</span><br/>
-                                        <span class="contact-name">Adam Winston</span>
-                                        <span class="contact-phone">(087)798-1980</span><br>
+                                        <div class="contc-line lineemail">
+                                            <div class="contact-email">adam_wston@xactly.net</div>
+                                        </div>
+                                        <div class="contc-line">
+                                            <div class="contact-name">Adam Winston</div>
+                                            <div class="contact-phone">(087)798-1980</div>
+                                        </div>
                                     </li>
                                     <li>
-                                        <span class="contact-email">whaston@xactly.net</span><br/>
-                                        <span class="contact-name">Adam Winston</span>
-                                        <span class="contact-phone">(087)798-1980</span><br>
+                                        <div class="contc-line lineemail">
+                                            <div class="contact-email">whaston@xactly.net</div>
+                                        </div>
+                                        <div class="contc-line">
+                                            <div class="contact-name">Wayne Haston</div>
+                                            <div class="contact-phone">(087)798-1980</div>
+                                        </div>
                                     </li>
-                                </ul>
-                            </div>
+                                </ul>                            </div>
                         </div>
                     </div>
                 </div>
