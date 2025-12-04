@@ -5,9 +5,7 @@
                 <h4 class="modal-title" id="dualOrderspopupLabel"></h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times" aria-hidden="true"></i></button>
             </div>
-            <div class="modal-body" style="float: left;">
-                <?=$doubleorder?>
-            </div>
+            <div class="modal-body" style="float: left;"></div>
             <div class="modal-footer"></div>
         </div>
     </div>

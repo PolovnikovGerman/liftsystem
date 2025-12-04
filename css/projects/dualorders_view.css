@@ -2295,7 +2295,7 @@ span.itemtabl-setups {
     border-top: 1px solid #646363;
     border-left: 1px solid #646363;
     border-right: 1px solid #646363;
-    color: #fff;
+    color: #bcbbbb;
     background: #292929;
 }
 .blockedcustomer .custinfo-boxbody {
@@ -2332,4 +2332,7 @@ span.itemtabl-setups {
 }
 .blockedcustomer .lineemail {
     background: #e4e3e3;
+}
+.blockedcustomer .titlebox-arrow {
+    color: #bcbbbb;
 }
