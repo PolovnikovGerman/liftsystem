@@ -35,4 +35,7 @@
     <div class="ts-button doupleorders">
         <p>Test Orders</p>
     </div>
+    <div class="ts-button lockedorders">
+        <p>Test Orders BLOCKED</p>
+    </div>
 </div>
