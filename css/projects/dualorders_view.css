@@ -271,7 +271,7 @@ ul.tagslist-one li:last-child {
 }
 .stressballs .tagslist-tagleft,
 .stressballs .tagslist-tagright {
-    border: 1px solid #a2a1fc;
+    border: 1px solid #bcbbbb;
 }
 .stressballs .tagslist-tagtxt {
     color: #fff;
@@ -2221,7 +2221,7 @@ span.itemtabl-setups {
 
 /* Blocked */
 .blockedcustomer .section-customer {
-    background: #111111;
+    background: #292929;
 }
 .blockedcustomer .statuscustomer {
     display: flex;
@@ -2250,9 +2250,74 @@ span.itemtabl-setups {
     border-bottom: 1px solid #9b9300;
     background: #111111;
 }
-.blockedcustomer .custom-info-txt,
-.blockedcustomer .custom-info-number,
-.blockedcustomer .titlebox-arrow,
-.blockedcustomer .credit-openbalance {
+.blocked-icon {
+    margin-right: 5px;
+    position: relative;
+    top: -4px;
+}
+.blockedcustomer  .custom-info {
+    border-bottom: 1px solid #646363;
+    background: #111111;
+}
+.blockedcustomer .custom-info-hide {
+    background: #111111;
+    border-left: 1px solid #646363;
+    border-right: 1px solid #646363;
+    border-bottom: 1px solid #646363;
+    color: #bcbbbb;
+}
+.blockedcustomer .custom-info-number {
     color: #fff;
+}
+.blockedcustomer .custom-info-txt {
+    color: #fff;
+}
+.blockedcustomer .custinfo-member label {
+    color: #bcbbbb;
+}
+.blockedcustomer .custinfo-notes label {
+    color: #bcbbbb;
+}
+
+.blockedcustomer .custinfo-member input,
+.blockedcustomer .credit-box,
+.blockedcustomer .paymethod-box,
+.blockedcustomer .shipaccount-box,
+.blockedcustomer .qouteslist-box  {
+    border: 1px solid #bcbbbb;
+    background: #f0f0f0;
+}
+.blockedcustomer .custinfo-notes textarea {
+  border: 1px solid #bcbbbb;
+  background: #f0f0f0;
+}
+.blockedcustomer .custinfo-titlebox {
+    border-top: 1px solid #646363;
+    border-left: 1px solid #646363;
+    border-right: 1px solid #646363;
+    color: #fff;
+    background: #292929;
+}
+.blockedcustomer .custinfo-boxbody {
+    border: 1px solid #646363;
+    background: #292929;
+}
+.blockedcustomer .subtitlebox {
+    color: #bcbbbb;
+}
+.blockedcustomer .credit-infotitle {
+    color: #bcbbbb;
+}
+.blockedcustomer .credit-latebalance {
+    color: #646363;
+}
+.blockedcustomer .shipaccount-favorites i,
+.blockedcustomer .paymethod-favorites i {
+    color: #bcbbbb;
+}
+.blockedcustomer .orderslist-box {
+    border: 1px solid #646363;
+}
+.blockedcustomer  .totalsbox-orders {
+    color: #646363;
 }
