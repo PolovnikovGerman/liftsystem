@@ -7,7 +7,7 @@
                     <div class="custom-info-number"># C000-000</div>
                 </div>
                 <div class="datarow">
-                    <div class="custom-info-name">ABC Company - Jersey City Branch</div>
+                    <div class="custom-info-name truncateoverflowtext">ABC Company - Jersey City Branch</div>
                 </div>
                 <div class="datarow">
                     <div class="custinfo-member">
@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div class="datarow">
-                    <div class="tagslist-title">Special Tags: <span>5</span></div>
+<!--                    <div class="tagslist-title">Special Tags: <span>5</span></div>-->
                     <div class="custinfo-tags">
                         <ul class="tagslist-one">
                             <li>
@@ -40,20 +40,19 @@
                         </ul>
                     </div>
                 </div>
-                <div class="custom-info-hide">Hide <span class="ci-hideicon"><i class="fa fa-chevron-up" aria-hidden="true"></i></span></div>
+                <div class="datarow">
+                    <div class="custinfo-notes">
+                        <label>Note:</label>
+                        <textarea></textarea>
+                    </div>
+                </div>
+                <div class="custom-info-hide">Hide All <span class="ci-hideicon"><i class="fa fa-chevron-up" aria-hidden="true"></i></span></div>
             </div>
         </div>
         <div class="datarow">
             <div class="infodetelies">
                 <div class="datarow">
-                    <div class="custinfo-box" id="dualordspecialtags">
-                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Special Notes:</div>
-                        <div class="custinfo-boxbody">
-                            <div class="custinfo-notes">
-                                <textarea></textarea>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Notes -->
                 </div>
                 <div class="datarow">
                     <div class="custinfo-box" id="dualordcredits">
@@ -362,7 +361,7 @@
                                                     </div>
                                                     <div class="historytable-td httd-date">02/14/25 - SK</div>
                                                 </div>
-                                                <div class="historytable-td httd-txt">Tracking for Mailine items returned:.. </div>
+                                                <div class="historytable-td httd-txt truncateoverflowtext">Tracking for Mailine items returned:.. </div>
                                             </div>
                                             <div class="historytable-tr grey">
                                                 <div class="historytable-td httd-details">
@@ -371,7 +370,7 @@
                                                     </div>
                                                     <div class="historytable-td httd-date">02/10/25 - SG</div>
                                                 </div>
-                                                <div class="historytable-td httd-txt">ML po total entry in previous note was from</div>
+                                                <div class="historytable-td httd-txt truncateoverflowtext">ML po total entry in previous note was from</div>
                                             </div>
                                             <div class="historytable-tr">
                                                 <div class="historytable-td httd-details">
@@ -380,7 +379,7 @@
                                                     </div>
                                                     <div class="historytable-td httd-date">02/14/25 - SK</div>
                                                 </div>
-                                                <div class="historytable-td httd-txt">Tracking for Mailine items returned:.. </div>
+                                                <div class="historytable-td httd-txt truncateoverflowtext">Tracking for Mailine items returned:.. </div>
                                             </div>
                                             <div class="historytable-tr grey">
                                                 <div class="historytable-td httd-details">
@@ -389,7 +388,7 @@
                                                     </div>
                                                     <div class="historytable-td httd-date">02/10/25 - SG</div>
                                                 </div>
-                                                <div class="historytable-td httd-txt">ML po total entry in previous note was from 2/1/24.</div>
+                                                <div class="historytable-td httd-txt truncateoverflowtext">ML po total entry in previous note was from 2/1/24.</div>
                                             </div>
                                         </div>
                                     </div>
@@ -424,7 +423,7 @@
                                 <div class="cb-contactline">
                                     <div class="cb-name">Wayne Haston</div>
                                     <div class="cb-phone">(817) 798-1980</div>
-                                    <div class="cb-email">whaston@xactly.net <span class="cb-email-icon"><i class="fa fa-clone" aria-hidden="true"></i></span></div>
+                                    <div class="cb-email truncateoverflowtext">whaston@xactly.net <span class="cb-email-icon"><i class="fa fa-clone" aria-hidden="true"></i></span></div>
                                     <div class="cb-buttons">
                                         <div class="cb-btnbox active">Art</div>
                                         <div class="cb-btnbox active">Inv</div>
@@ -434,7 +433,7 @@
                                 <div class="cb-contactline">
                                     <div class="cb-name">Adam Winston</div>
                                     <div class="cb-phone">(817) 573-1745</div>
-                                    <div class="cb-email">adam_winston@xactly.net<span class="cb-email-icon"><i class="fa fa-clone" aria-hidden="true"></i></span></div>
+                                    <div class="cb-email truncateoverflowtext">adam_winston@xactly.net<span class="cb-email-icon"><i class="fa fa-clone" aria-hidden="true"></i></span></div>
                                     <div class="cb-buttons">
                                         <div class="cb-btnbox">Art</div>
                                         <div class="cb-btnbox">Inv</div>
@@ -463,7 +462,7 @@
                                     </div>
                                     <div class="itemtabl-tr">
                                         <div class="itemtabl-td itemtabl-item">00-ZZ000</div>
-                                        <div class="itemtabl-td itemtabl-description">Custom Cargo Van Vehicle Stress Balls</div>
+                                        <div class="itemtabl-td itemtabl-description truncateoverflowtext">Custom Cargo Van Vehicle Stress Balls</div>
                                         <div class="itemtabl-td itemtabl-color">&nbsp;</div>
                                         <div class="itemtabl-td itemtabl-qty">9,999,999</div>
                                         <div class="itemtabl-td itemtabl-each">999.99</div>
@@ -860,7 +859,7 @@
                                                     </div>
                                                     <div class="historytable-td httd-date">02/14/25 - SK</div>
                                                 </div>
-                                                <div class="historytable-td httd-txt">Tracking for Mailine items returned:.. </div>
+                                                <div class="historytable-td httd-txt truncateoverflowtext">Tracking for Mailine items returned:.. </div>
                                             </div>
                                             <div class="historytable-tr grey">
                                                 <div class="historytable-td httd-details">
@@ -869,7 +868,7 @@
                                                     </div>
                                                     <div class="historytable-td httd-date">02/10/25 - SG</div>
                                                 </div>
-                                                <div class="historytable-td httd-txt">ML po total entry in previous note was from</div>
+                                                <div class="historytable-td httd-txt truncateoverflowtext">ML po total entry in previous note was from</div>
                                             </div>
                                             <div class="historytable-tr">
                                                 <div class="historytable-td httd-details">
@@ -878,7 +877,7 @@
                                                     </div>
                                                     <div class="historytable-td httd-date">02/14/25 - SK</div>
                                                 </div>
-                                                <div class="historytable-td httd-txt">Tracking for Mailine items returned:.. </div>
+                                                <div class="historytable-td httd-txt truncateoverflowtext">Tracking for Mailine items returned:.. </div>
                                             </div>
                                             <div class="historytable-tr grey">
                                                 <div class="historytable-td httd-details">
@@ -887,7 +886,7 @@
                                                     </div>
                                                     <div class="historytable-td httd-date">02/10/25 - SG</div>
                                                 </div>
-                                                <div class="historytable-td httd-txt">ML po total entry in previous note was from 2/1/24.</div>
+                                                <div class="historytable-td httd-txt truncateoverflowtext">ML po total entry in previous note was from 2/1/24.</div>
                                             </div>
                                         </div>
                                     </div>
@@ -922,7 +921,7 @@
                                 <div class="cb-contactline">
                                     <div class="cb-name">Wayne Haston</div>
                                     <div class="cb-phone">(817) 798-1980</div>
-                                    <div class="cb-email">whaston@xactly.net <span class="cb-email-icon"><i class="fa fa-clone" aria-hidden="true"></i></span></div>
+                                    <div class="cb-email truncateoverflowtext">whaston@xactly.net <span class="cb-email-icon"><i class="fa fa-clone" aria-hidden="true"></i></span></div>
                                     <div class="cb-buttons">
                                         <div class="cb-btnbox active">Art</div>
                                         <div class="cb-btnbox active">Inv</div>
@@ -932,7 +931,7 @@
                                 <div class="cb-contactline">
                                     <div class="cb-name">Adam Winston</div>
                                     <div class="cb-phone">(817) 573-1745</div>
-                                    <div class="cb-email">adam_winston@xactly.net<span class="cb-email-icon"><i class="fa fa-clone" aria-hidden="true"></i></span></div>
+                                    <div class="cb-email truncateoverflowtext">adam_winston@xactly.net<span class="cb-email-icon"><i class="fa fa-clone" aria-hidden="true"></i></span></div>
                                     <div class="cb-buttons">
                                         <div class="cb-btnbox">Art</div>
                                         <div class="cb-btnbox">Inv</div>
@@ -961,7 +960,7 @@
                                     </div>
                                     <div class="itemtabl-tr">
                                         <div class="itemtabl-td itemtabl-item">00-ZZ000</div>
-                                        <div class="itemtabl-td itemtabl-description">Custom Cargo Van Vehicle Stress Balls</div>
+                                        <div class="itemtabl-td itemtabl-description truncateoverflowtext">Custom Cargo Van Vehicle Stress Balls</div>
                                         <div class="itemtabl-td itemtabl-color">&nbsp;</div>
                                         <div class="itemtabl-td itemtabl-qty">9,999,999</div>
                                         <div class="itemtabl-td itemtabl-each">999.99</div>
