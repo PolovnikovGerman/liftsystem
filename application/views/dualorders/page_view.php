@@ -20,19 +20,19 @@
                     <div class="custinfo-tags">
                         <div class="tagslist">
                             <div class="tagslist-tagleft">
-                                <div class="tagslist-tagicon"><img src="/img/doubleorders/icon-01.svg"></div>
+                                <div class="tagslist-tagicon"><img src="/img/doubleorders/<?=$brand=='SB' ? 'icon-01-yellow.svg' : 'icon-01.svg'?>"></div>
                                 <div class="tagslist-tagtxt">Frequent / Profit</div>
                             </div>
                             <div class="tagslist-tagright">
-                                <div class="tagslist-tagicon"><img src="/img/doubleorders/icon-04.svg"></div>
+                                <div class="tagslist-tagicon"><img src="/img/doubleorders/<?=$brand=='SB' ? 'icon-04-yellow.svg' : 'icon-04.svg'?>"></div>
                                 <div class="tagslist-tagtxt">Friend / Fam</div>
                             </div>
                             <div class="tagslist-tagleft">
-                                <div class="tagslist-tagicon"><img src="/img/doubleorders/icon-02.svg"></div>
+                                <div class="tagslist-tagicon"><img src="/img/doubleorders/<?=$brand=='SB' ? 'icon-02-yellow.svg' : 'icon-02.svg'?>"></div>
                                 <div class="tagslist-tagtxt">Annoyed</div>
                             </div>
                             <div class="tagslist-tagright">
-                                <div class="tagslist-tagicon"><img src="/img/doubleorders/icon-03.svg"></div>
+                                <div class="tagslist-tagicon"><img src="/img/doubleorders/<?=$brand=='SB' ? 'icon-03-yellow.svg' : 'icon-03.svg'?>"></div>
                                 <div class="tagslist-tagtxt">Red Flag</div>
                             </div>
                         </div>
@@ -48,10 +48,33 @@
             </div>
         </div>
         <div class="datarow">
-            <div class="infodetelies">
-                <div class="datarow">
-                    <!-- Notes -->
+            <div class="custinfo-box" id="dualordcontacts">
+                <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Emails - Contacts: <span class="subtitlebox">3</span></div>
+                <div class="custinfo-boxbody">
+                    <div class="contacts-box">
+                        <ul class="contacts-list">
+                            <li>
+                                <span class="contact-email">whaston@xactly.net</span><br/>
+                                <span class="contact-name">Adam Winston</span>
+                                <span class="contact-phone">(087)798-1980</span><br>
+                            </li>
+                            <li>
+                                <span class="contact-email">whaston@xactly.net</span><br/>
+                                <span class="contact-name">Adam Winston</span>
+                                <span class="contact-phone">(087)798-1980</span><br>
+                            </li>
+                            <li>
+                                <span class="contact-email">whaston@xactly.net</span><br/>
+                                <span class="contact-name">Adam Winston</span>
+                                <span class="contact-phone">(087)798-1980</span><br>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
+            </div>
+        </div>
+        <div class="datarow">
+            <div class="infodetelies">
                 <div class="datarow">
                     <div class="custinfo-box" id="dualordcredits">
                         <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Credit:
@@ -124,32 +147,6 @@
                                             <div class="shipaccount-favorites">&nbsp;</div>
                                             <div class="shipaccount-box">FedEx - 012345678</div>
                                         </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="datarow">
-                    <div class="custinfo-box" id="dualordcontacts">
-                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Contacts: <span class="subtitlebox">3</span></div>
-                        <div class="custinfo-boxbody">
-                            <div class="contacts-box">
-                                <ul class="contacts-list">
-                                    <li>
-                                        <span class="contact-email">whaston@xactly.net</span><br/>
-                                        <span class="contact-name">Adam Winston</span>
-                                        <span class="contact-phone">(087)798-1980</span><br>
-                                    </li>
-                                    <li>
-                                        <span class="contact-email">whaston@xactly.net</span><br/>
-                                        <span class="contact-name">Adam Winston</span>
-                                        <span class="contact-phone">(087)798-1980</span><br>
-                                    </li>
-                                    <li>
-                                        <span class="contact-email">whaston@xactly.net</span><br/>
-                                        <span class="contact-name">Adam Winston</span>
-                                        <span class="contact-phone">(087)798-1980</span><br>
                                     </li>
                                 </ul>
                             </div>
