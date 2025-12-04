@@ -53,7 +53,7 @@
                     <div class="custinfo-box" id="dualordcontacts">
                         <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Emails - Contacts: <span class="subtitlebox">3</span></div>
                         <div class="custinfo-boxbody">
-                            <div class="contacts-box">
+                            <div class="contacts-box" id="contacts-box">
                                 <ul class="contacts-list">
                                     <li>
                                         <div class="contc-line lineemail">
@@ -107,7 +107,7 @@
                     <div class="custinfo-box" id="dualordpaymethods">
                         <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Pay Methods: <span class="subtitlebox">2 active (1 inactive)</span></div>
                         <div class="custinfo-boxbody">
-                            <div class="pay-methods-list">
+                            <div class="pay-methods-list" id="pay-methods-list">
                                 <ul>
                                     <li>
                                         <div class="paymethod">
@@ -168,7 +168,7 @@
                     <div class="custinfo-box" id="dualordorderslist">
                         <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Orders: <span class="subtitlebox">17</span></div>
                         <div class="custinfo-boxbody">
-                            <div class="orderslist-box">
+                            <div class="orderslist-box" id="orderslist-box">
                                 <div class="orders-table">
                                     <div class="orderstable-tr totalsbox">
                                         <div class="totalsbox-year">2025</div>

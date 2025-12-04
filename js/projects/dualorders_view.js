@@ -1,4 +1,7 @@
 function init_doubleorders() {
+    var SimpContacts = new SimpleBar(document.getElementById('contacts-box'), { autoHide: false });
+    var SimplPay = new SimpleBar(document.getElementById('pay-methods-list'), { autoHide: false });
+    var SimplOrder = new SimpleBar(document.getElementById('orderslist-box'), { autoHide: false });
     $("#dualordspecialtags").find('span.titlebox-arrow').unbind('click').click(function () {
         var blockhide = 0;
         if ($("#dualordspecialtags").hasClass("hidetitle")) {
