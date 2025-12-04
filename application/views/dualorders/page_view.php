@@ -37,7 +37,6 @@
                             </div>
                         </div>
                     </div>
-                    </div>
                 </div>
                 <div class="datarow">
                     <div class="custinfo-notes">
