@@ -1,5 +1,13 @@
-<div class="dual-orders <?=$brandclass?>">
+<div class="dual-orders <?=$blocked==0 ? $brandclass : 'blockedcustomer'?>">
     <div class="section-customer">
+        <div class="datarow">
+            <div class="statuscustomer">
+                <div class="statuscust-blocked">
+                    <div class="blocked-icon"><img src="/img/doubleorders/icon-05-white.svg"></div>
+                    <div class="blocked-txt">BLOCKED</div>
+                </div>
+            </div>
+        </div>
         <div class="datarow">
             <div class="custom-info" id="dualordcustomlabel">
                 <div class="datarow">
