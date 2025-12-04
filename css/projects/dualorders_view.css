@@ -432,16 +432,6 @@ span.tagslist-tagicon img {
 
 
 
-.contacts-box {
-    /* background: #fdfce1; */
-    background: transparent;
-    border: 1px solid #9b9300;
-    height: 38px;
-    width: 100%;
-    overflow-y: auto;
-    margin-top: 4px;
-    margin-bottom: 5px;
-}
 ul.contacts-list {
     list-style: decimal;
     margin: 0;
@@ -474,7 +464,6 @@ ul.contacts-list li {
     background: #fdfce1;
     border-radius: 3px;
     margin-bottom: 2px;
-    padding-left: 5px;
     float: left;
 }
 .contact-email {
@@ -488,6 +477,8 @@ ul.contacts-list li {
     line-height: 15px;
     height: 15px;
     background: #fff;
+    color: #000;
+    padding-left: 5px;
 }
 .lineemail {
     background: #fdfce1;
@@ -497,7 +488,7 @@ ul.contacts-list li {
 }
 .contacts-box {
     background: transparent;
-    border: 1px solid #9b9300;
+    /*border: 1px solid #9b9300;*/
     /*height: 38px;*/
     height: 67px;
     width: 100%;
@@ -614,14 +605,14 @@ ul.contacts-list li {
 }
 .paymethod {}
 .paymethod-favorites {
-    width: 16px;
+    width: 14px;
     margin-right: 5px;
     position: relative;
     top: 1px;
 }
 .paymethod-favorites i {
     color: #9b9300;
-    font-size: 16px;
+    font-size: 14px;
 }
 .paymethod-box {
     width: 126px;
@@ -667,14 +658,14 @@ li.inactive .paymethod-exp {
     margin-bottom: 0;
 }
 .shipaccount-favorites {
-    width: 16px;
+    width: 14px;
     margin-right: 5px;
     position: relative;
     top: 1px;
 }
 .shipaccount-favorites i {
     color: #9b9300;
-    font-size: 16px;
+    font-size: 14px;
 }
 .shipaccount-box {
     width: 114px;
@@ -2162,7 +2153,7 @@ span.itemtabl-setups {
     background: #e4e3fd;
 }
 .stressballs .contacts-box {
-    border: 1px solid #a2a1fc;
+    /*border: 1px solid #a2a1fc;*/
 }
 .stressballs .orderslist-box {
     border: 1px solid #a2a1fc;
@@ -2190,7 +2181,8 @@ span.itemtabl-setups {
     color: #fff;
 }
 .stressballs ul.contacts-list li {
-    border-bottom: 1px solid #a2a1fc;
+    /*border-bottom: 1px solid #a2a1fc;*/
+    border: 1px solid #a2a1fc;
 }
 .stressballs .shipaccount-favorites i,
 .stressballs .paymethod-favorites i {
@@ -2198,11 +2190,11 @@ span.itemtabl-setups {
 }
 .stressballs li.inactive .paymethod-box {
     background: #6766fc;
-    border: 1px solid #c1c0fb;
+    border: 1px solid #7d7cfd;
 }
 .stressballs li.inactive .paymethod-card,
 .stressballs li.inactive .paymethod-exp {
-    color: #a2a1fc;
+    color: #908ffc;
 }
 .stressballs .credit-infotitle {
     color: #c1c0fb;
