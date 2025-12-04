@@ -20,19 +20,19 @@
                     <div class="custinfo-tags">
                         <div class="tagslist">
                             <div class="tagslist-tagleft">
-                                <div class="tagslist-tagicon"><img src="/img/doubleorders/<?=$brand=='SB' ? 'icon-01-yellow.svg' : 'icon-01-sr.svg'?>"></div>
+                                <div class="tagslist-tagicon"><img src="/img/doubleorders/<?=$brand=='SB' ? 'icon-01-sb.svg' : 'icon-01-sr.svg'?>"></div>
                                 <div class="tagslist-tagtxt">Frequent / Profit</div>
                             </div>
                             <div class="tagslist-tagright">
-                                <div class="tagslist-tagicon"><img src="/img/doubleorders/<?=$brand=='SB' ? 'icon-04-yellow.svg' : 'icon-04-sr.svg'?>"></div>
+                                <div class="tagslist-tagicon"><img src="/img/doubleorders/<?=$brand=='SB' ? 'icon-04-sb.svg' : 'icon-04-sr.svg'?>"></div>
                                 <div class="tagslist-tagtxt">Friend / Fam</div>
                             </div>
                             <div class="tagslist-tagleft">
-                                <div class="tagslist-tagicon"><img src="/img/doubleorders/<?=$brand=='SB' ? 'icon-02-yellow.svg' : 'icon-02-sr.svg'?>"></div>
+                                <div class="tagslist-tagicon"><img src="/img/doubleorders/<?=$brand=='SB' ? 'icon-02-sb.svg' : 'icon-02-sr.svg'?>"></div>
                                 <div class="tagslist-tagtxt">Annoyed</div>
                             </div>
                             <div class="tagslist-tagright">
-                                <div class="tagslist-tagicon"><img src="/img/doubleorders/<?=$brand=='SB' ? 'icon-03-yellow.svg' : 'icon-03-sr.svg'?>"></div>
+                                <div class="tagslist-tagicon"><img src="/img/doubleorders/<?=$brand=='SB' ? 'icon-03-sb.svg' : 'icon-03-sr.svg'?>"></div>
                                 <div class="tagslist-tagtxt">Red Flag</div>
                             </div>
                         </div>
