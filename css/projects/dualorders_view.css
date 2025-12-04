@@ -115,8 +115,7 @@
     margin-top: 4px;
 }
 .custom-info-name {
-    font-size: 10.5px;
-    /*width: calc(100% - 8px);*/
+    font-size: 11px;
     width: 100%;
     padding: 0 4px;
     height: 23px;
@@ -124,9 +123,7 @@
     background: #fff;
     border: 1px solid #9b9300;
     margin-top: 2px;
-    white-space: nowrap; /* Prevents text from wrapping to the next line */
-    overflow: hidden; /* Hides any overflowing content */
-    text-overflow: ellipsis;
+    font-weight: 600;
 }
 .custom-info-hide {
     position: absolute;
@@ -180,22 +177,24 @@
 }
 .custinfo-member {
     width: 100%;
-    margin-bottom: 5px;
+    margin-top: 5px;
 }
 .custinfo-member label {
     font-size: 12px;
     color: #9b9300;
     font-weight: 600;
-    margin-bottom: 0;
-    margin-top: 5px;
+    float: left;
+    line-height: 23px;
+    margin-right: 6px;
 }
 .custinfo-member input {
-    width: 100%;
+    width: 136px;
     padding: 0 5px;
     height: 23px;
     line-height: 23px;
     border: 1px solid #9b9300;
     background: #fdfce1;
+    float: right;
 }
 .custinfo-box {
     position: relative;
@@ -298,15 +297,27 @@ ul.tagslist-two li {
 }
 .custinfo-notes {
     width: 100%;
+    margin-top: 5px;
+}
+.custinfo-notes label {
+    font-size: 12px;
+    color: #9b9300;
+    font-weight: 600;
+    float: left;
+    margin-right: 6px;
+}
+.stressballs .custinfo-notes label {
+    color: #a2a1fc;
 }
 .custinfo-notes textarea {
     border: 1px solid #9b9300;
     background: #fdfce1;
     height: 40px;
-    width: 100%;
+    width: 159px;
     padding: 5px;
     resize: none;
-    margin-top: 3px;
+    margin-bottom: 3px;
+    float: right;
 }
 .stressballs .custinfo-notes textarea {
     border: 1px solid #a2a1fc;
@@ -1024,9 +1035,6 @@ ul.keyslist li:last-child {
 }
 .httd-txt {
     width: 152px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     font-size: 8px;
 }
 .nb-tasks {
@@ -1109,9 +1117,6 @@ ul.nb-taskslist li {
     padding-left: 5px;
     color: #0278fc;
     position: relative;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 .cb-email-icon {
     height: 16px;
@@ -1179,9 +1184,6 @@ ul.nb-taskslist li {
 .itemtabl-description {
     /*width: 174px;*/
     width: 162px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     padding-left: 4px;
 }
 .itemtabl-color {
