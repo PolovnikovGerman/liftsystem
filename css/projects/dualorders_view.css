@@ -2303,7 +2303,7 @@ span.itemtabl-setups {
     background: #292929;
 }
 .blockedcustomer .subtitlebox {
-    color: #bcbbbb;
+    color: #646363;
 }
 .blockedcustomer .credit-infotitle {
     color: #bcbbbb;
@@ -2320,4 +2320,16 @@ span.itemtabl-setups {
 }
 .blockedcustomer  .totalsbox-orders {
     color: #646363;
+}
+.blockedcustomer .ci-hideicon {
+    color: #bcbbbb;
+}
+.blockedcustomer .custom-info-name {
+    border: 1px solid #bcbbbb;
+}
+.blockedcustomer ul.contacts-list li {
+    border: 1px solid #bcbbbb;
+}
+.blockedcustomer .lineemail {
+    background: #e4e3e3;
 }
