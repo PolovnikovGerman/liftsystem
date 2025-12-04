@@ -237,7 +237,7 @@ ul.tagslist-one li:last-child {
 .tagslist-tagicon {
     margin-right: 4px;
     position: relative;
-    top: -3px;
+    top: -2px;
 }
 .tagslist-tagicon img {
     width: 12px;
@@ -245,25 +245,29 @@ ul.tagslist-one li:last-child {
 }
 .custinfo-tags {
     margin-top: 5px;
-    border: 1px solid #9b9300;
+    /*border: 1px solid #9b9300;*/
 }
 .tagslist-tagtxt {
     font-size: 11px;
-}
-.stressballs .tagslist-tagtxt {
-    color: #fef200;
+    line-height: 19px;
 }
 .tagslist-tagleft {
-    width: 100px;
-    margin-left: 4px;
-    height: 16px;
-    line-height: 16px;
+    width: 108px;
+    height: 20px;
+    border: 1px solid #cdc640;
+    margin-bottom: 3px;
+    padding: 0 4px;
+    border-radius: 3px;
 }
 .tagslist-tagright {
     width: 90px;
     margin-left: 4px;
-    height: 16px;
-    line-height: 16px;
+    height: 20px;
+    border: 1px solid #cdc640;
+    margin-bottom: 3px;
+    float: right !important;
+    padding: 0 4px;
+    border-radius: 3px;
 }
 .stressballs .tagslist-tagleft,
 .stressballs .tagslist-tagright {
