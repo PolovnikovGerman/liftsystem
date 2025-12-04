@@ -2218,3 +2218,41 @@ span.itemtabl-setups {
 .stressballs .credit-latebalance {
     color: #9a99fe;
 }
+
+/* Blocked */
+.blockedcustomer .section-customer {
+    background: #111111;
+}
+.blockedcustomer .statuscustomer {
+    display: flex;
+}
+.statuscustomer {
+    display: none;
+    width: 100%;
+    justify-content: center;
+}
+.blocked-icon {
+    margin-right: 4px;
+    position: relative;
+    top: -1px;
+}
+.blocked-icon img {
+    width: 12px;
+    height: auto;
+}
+.blocked-txt {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 16px;
+    color: #fff;
+}
+.blockedcustomer  .custom-info {
+    border-bottom: 1px solid #9b9300;
+    background: #111111;
+}
+.blockedcustomer .custom-info-txt,
+.blockedcustomer .custom-info-number,
+.blockedcustomer .titlebox-arrow,
+.blockedcustomer .credit-openbalance {
+    color: #fff;
+}
