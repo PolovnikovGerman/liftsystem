@@ -252,7 +252,7 @@ ul.tagslist-one li:last-child {
     font-size: 11px;
 }
 .stressballs .tagslist-tagtxt {
-    color: #fff;
+    color: #fef200;
 }
 .tagslist-tagleft {
     width: 100px;
@@ -449,26 +449,62 @@ ul.contacts-list {
     color: #000;
     font-size: 11px;
 }
+/*ul.contacts-list li {*/
+/*    width: 100%;*/
+/*    border: 1px solid #cdc640;*/
+/*    background: #fdfce1;*/
+/*    border-radius: 3px;*/
+/*    margin-bottom: 3px;*/
+/*    padding-left: 5px;*/
+/*}*/
+/*.stressballs  ul.contacts-list li {*/
+/*    border: 1px solid #a2a1fc;*/
+/*    background: #e4e3fd;*/
+/*}*/
+/*ul.contacts-list li span {*/
+/*    font-size: 11px;*/
+/*    color: #000;*/
+/*}*/
+/*ul.contacts-list li span.contact-phone {*/
+/*    margin-left: 5px;*/
+/*}*/
 ul.contacts-list li {
     width: 100%;
     border: 1px solid #cdc640;
     background: #fdfce1;
     border-radius: 3px;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
     padding-left: 5px;
+    float: left;
 }
-.stressballs  ul.contacts-list li {
-    border: 1px solid #a2a1fc;
+.contact-email {
+    font-weight: 600;
+}
+.contact-name {
+    margin-right: 4px;
+}
+.contc-line {
+    width: 100%;
+    line-height: 15px;
+    height: 15px;
+    background: #fff;
+}
+.lineemail {
+    background: #fdfce1;
+}
+.stressballs .lineemail {
     background: #e4e3fd;
 }
-ul.contacts-list li span {
-    font-size: 11px;
-    color: #000;
+.contacts-box {
+    background: transparent;
+    border: 1px solid #9b9300;
+    /*height: 38px;*/
+    height: 67px;
+    width: 100%;
+    overflow-y: auto;
+    margin-top: 4px;
+    margin-bottom: 5px;
 }
-ul.contacts-list li span.contact-phone {
-    margin-left: 5px;
-}
-
 
 .orderslist-box {
     /*background: #fdfce1;*/
