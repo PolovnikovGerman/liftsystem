@@ -20,22 +20,22 @@
                     <div class="custinfo-tags">
                         <ul class="tagslist-one">
                             <li>
-                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-01.svg"></span>Freq / High Profit</div>
+                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-01.svg"></span>Frequent / Profit</div>
                             </li>
                             <li>
-                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-02.svg"></span>Annoyed Customer</div>
+                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-02.svg"></span>Annoyed</div>
                             </li>
                             <li>
-                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-03.svg"></span>Red Flag / Warning</div>
+                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-03.svg"></span>Red Flag</div>
                             </li>
                         </ul>
                         <ul class="tagslist-two">
                             <li>
-                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-04.svg"></span>Friend / Family</div>
+                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-04.svg"></span>Friend / Fam</div>
                             </li>
-                            <li>
-                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-05.svg"></span>BLOCKED</div>
-                            </li>
+<!--                            <li>-->
+<!--                                <div class="tagslist-tag"><span class="tagslist-tagicon"><img src="/img/doubleorders/icon-05.svg"></span>BLOCKED</div>-->
+<!--                            </li>-->
 
                         </ul>
                     </div>
