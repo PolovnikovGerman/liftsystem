@@ -1,15 +1,17 @@
-<div class="dual-orders <?=$blocked==0 ? $brandclass : 'blockedcustomer'?>">
+<div class="dual-orders <?=$blocked==1 ? 'blockedcustomer' : '' ?> <?=$brandclass?>">
     <div class="section-customer">
         <div class="datarow">
-            <div class="statuscustomer">
-                <div class="statuscust-blocked">
-                    <div class="blocked-icon"><img src="/img/doubleorders/icon-05-white.svg"></div>
-                    <div class="blocked-txt">BLOCKED</div>
-                </div>
-            </div>
-        </div>
-        <div class="datarow">
             <div class="custom-info" id="dualordcustomlabel">
+                <?php if ($blocked==1) : ?>
+                <div class="datarow">
+                    <div class="statuscustomer">
+                        <div class="statuscust-blocked">
+                            <div class="blocked-icon"><img src="/img/doubleorders/icon-05-white.svg"></div>
+                            <div class="blocked-txt">BLOCKED</div>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
                 <div class="datarow">
                     <div class="custom-info-txt">Customer:</div>
                     <div class="custom-info-number"># C000-000</div>

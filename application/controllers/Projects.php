@@ -67,8 +67,13 @@ class Projects extends MY_Controller
         $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass ], TRUE);
         $content_view = $this->load->view('projects/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
+        $orderoptions = [
+            'brandclass' => $brandclass,
+            'brand' => $brand,
+            'blocked' => 1,
+        ];
         $modal_options = [
-            'doubleorder' => $this->load->view('dualorders/page_view', ['brandclass' => $brandclass, 'brand' => $brand, 'blocked' => 1], true),
+            'doubleorder' => $this->load->view('dualorders/page_view', $orderoptions, true),
         ];
         $dat['modal_view'] = $this->load->view('projects/modal_view', $modal_options, TRUE);
         $this->load->view('page_modern/page_template_view', $dat);
