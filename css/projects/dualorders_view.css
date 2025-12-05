@@ -115,8 +115,7 @@
     margin-top: 4px;
 }
 .custom-info-name {
-    font-size: 10.5px;
-    /*width: calc(100% - 8px);*/
+    font-size: 11px;
     width: 100%;
     padding: 0 4px;
     height: 23px;
@@ -124,9 +123,7 @@
     background: #fff;
     border: 1px solid #9b9300;
     margin-top: 2px;
-    white-space: nowrap; /* Prevents text from wrapping to the next line */
-    overflow: hidden; /* Hides any overflowing content */
-    text-overflow: ellipsis;
+    font-weight: 600;
 }
 .custom-info-hide {
     position: absolute;
@@ -180,22 +177,28 @@
 }
 .custinfo-member {
     width: 100%;
-    margin-bottom: 5px;
+    margin-top: 5px;
 }
 .custinfo-member label {
     font-size: 12px;
-    color: #9b9300;
+    color: #6a6509;
     font-weight: 600;
+    float: left;
+    line-height: 23px;
+    margin-right: 6px;
     margin-bottom: 0;
-    margin-top: 5px;
+}
+.stressballs .custinfo-member label {
+    color: #a2a1fc;
 }
 .custinfo-member input {
-    width: 100%;
+    width: 136px;
     padding: 0 5px;
     height: 23px;
     line-height: 23px;
     border: 1px solid #9b9300;
     background: #fdfce1;
+    float: right;
 }
 .custinfo-box {
     position: relative;
@@ -211,19 +214,67 @@
     border-right: 1px solid #cdc640;
     border-radius: 3px 3px 0 0;
     font-size: 12px;
-    color: #9b9300;
+    color: #6a6509;
     height: 18px;
     background: #fff980;
     padding: 0 4px;
     z-index: 2;
-    /*top: -1;*/
     font-weight: 600;
 }
 .custinfo-tags {
-    margin-top: 2px;
+    margin-top: 5px;
+}
+.stressballs  .custinfo-tags {
+    /* border: 1px solid #a2a1fc; */
 }
 ul.tagslist-one li:last-child {
     margin-bottom: 0;
+}
+.tagslist {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+.tagslist-tagicon {
+    margin-right: 4px;
+    position: relative;
+    top: -2px;
+}
+.tagslist-tagicon img {
+    width: 12px;
+    height: auto;
+}
+.custinfo-tags {
+    margin-top: 5px;
+    /*border: 1px solid #9b9300;*/
+}
+.tagslist-tagtxt {
+    font-size: 11px;
+    line-height: 19px;
+}
+.tagslist-tagleft {
+    width: 108px;
+    height: 20px;
+    border: 1px solid #cdc640;
+    margin-bottom: 3px;
+    padding: 0 4px;
+    border-radius: 3px;
+}
+.tagslist-tagright {
+    width: 90px;
+    margin-left: 4px;
+    height: 20px;
+    border: 1px solid #cdc640;
+    margin-bottom: 3px;
+    float: right !important;
+    padding: 0 4px;
+    border-radius: 3px;
+}
+.stressballs .tagslist-tagleft,
+.stressballs .tagslist-tagright {
+    border: 1px solid #bcbbbb;
+}
+.stressballs .tagslist-tagtxt {
+    color: #fff;
 }
 .subtitlebox {
     font-weight: 400;
@@ -231,7 +282,7 @@ ul.tagslist-one li:last-child {
 }
 .titlebox-arrow {
     font-size: 12px;
-    color: #9b9300;
+    color: #6a6509;
     cursor: pointer;
 }
 .custinfo-boxbody {
@@ -298,15 +349,27 @@ ul.tagslist-two li {
 }
 .custinfo-notes {
     width: 100%;
+    margin-top: 5px;
+}
+.custinfo-notes label {
+    font-size: 12px;
+    color: #6a6509;
+    font-weight: 600;
+    float: left;
+    margin-right: 2px;
+}
+.stressballs .custinfo-notes label {
+    color: #a2a1fc;
 }
 .custinfo-notes textarea {
     border: 1px solid #9b9300;
     background: #fdfce1;
     height: 40px;
-    width: 100%;
+    width: 170px;
     padding: 5px;
     resize: none;
-    margin-top: 3px;
+    margin-bottom: 3px;
+    float: right;
 }
 .stressballs .custinfo-notes textarea {
     border: 1px solid #a2a1fc;
@@ -379,16 +442,6 @@ span.tagslist-tagicon img {
 
 
 
-.contacts-box {
-    /* background: #fdfce1; */
-    background: transparent;
-    border: 1px solid #9b9300;
-    height: 38px;
-    width: 100%;
-    overflow-y: auto;
-    margin-top: 4px;
-    margin-bottom: 5px;
-}
 ul.contacts-list {
     list-style: decimal;
     margin: 0;
@@ -396,26 +449,64 @@ ul.contacts-list {
     color: #000;
     font-size: 11px;
 }
+/*ul.contacts-list li {*/
+/*    width: 100%;*/
+/*    border: 1px solid #cdc640;*/
+/*    background: #fdfce1;*/
+/*    border-radius: 3px;*/
+/*    margin-bottom: 3px;*/
+/*    padding-left: 5px;*/
+/*}*/
+/*.stressballs  ul.contacts-list li {*/
+/*    border: 1px solid #a2a1fc;*/
+/*    background: #e4e3fd;*/
+/*}*/
+/*ul.contacts-list li span {*/
+/*    font-size: 11px;*/
+/*    color: #000;*/
+/*}*/
+/*ul.contacts-list li span.contact-phone {*/
+/*    margin-left: 5px;*/
+/*}*/
 ul.contacts-list li {
     width: 100%;
     border: 1px solid #cdc640;
     background: #fdfce1;
     border-radius: 3px;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
+    float: left;
+}
+.contact-email {
+    font-weight: 600;
+}
+.contact-name {
+    margin-right: 4px;
+}
+.contc-line {
+    width: 100%;
+    line-height: 15px;
+    height: 15px;
+    background: #fff;
+    color: #000;
     padding-left: 5px;
 }
-.stressballs  ul.contacts-list li {
-    border: 1px solid #a2a1fc;
+.lineemail {
+    background: #fdfce1;
+}
+.stressballs .lineemail {
     background: #e4e3fd;
 }
-ul.contacts-list li span {
-    font-size: 11px;
-    color: #000;
+.contacts-box {
+    background: transparent;
+    /*border: 1px solid #9b9300;*/
+    /*height: 38px;*/
+    height: 67px;
+    width: 100%;
+    overflow-y: auto;
+    margin-top: 4px;
+    margin-bottom: 5px;
+    scrollbar-width: none;
 }
-ul.contacts-list li span.contact-phone {
-    margin-left: 5px;
-}
-
 
 .orderslist-box {
     /*background: #fdfce1;*/
@@ -426,9 +517,7 @@ ul.contacts-list li span.contact-phone {
     overflow-y: auto;
     margin-top: 4px;
     margin-bottom: 5px;
-}
-.stressballs .orderslist-box {
-    /*background: #5f5efe;*/
+    scrollbar-width: none;
 }
 .orders-table {
     width: 100%;
@@ -508,7 +597,13 @@ ul.contacts-list li span.contact-phone {
 
 
 
-.pay-methods-list {}
+.pay-methods-list {
+    width: 100%;
+    overflow-y: auto;
+    height: 45px;
+    margin-bottom: 5px;
+    scrollbar-width: none;
+}
 .pay-methods-list ul {
     float: left;
     list-style: none;
@@ -525,14 +620,14 @@ ul.contacts-list li span.contact-phone {
 }
 .paymethod {}
 .paymethod-favorites {
-    width: 16px;
+    width: 14px;
     margin-right: 5px;
     position: relative;
     top: 1px;
 }
 .paymethod-favorites i {
     color: #9b9300;
-    font-size: 16px;
+    font-size: 14px;
 }
 .paymethod-box {
     width: 126px;
@@ -578,14 +673,14 @@ li.inactive .paymethod-exp {
     margin-bottom: 0;
 }
 .shipaccount-favorites {
-    width: 16px;
+    width: 14px;
     margin-right: 5px;
     position: relative;
     top: 1px;
 }
 .shipaccount-favorites i {
     color: #9b9300;
-    font-size: 16px;
+    font-size: 14px;
 }
 .shipaccount-box {
     width: 114px;
@@ -657,7 +752,7 @@ ul.orderbuttons-list li:last-child {
     color: #3f3f3f;
     font-size: 11px;
     font-weight: 600;
-    padding: 0 4px;
+    padding: 0 9.5px;
     background: #c4c2c2;
     background: linear-gradient(to top, #aca9a9, #e2e1e1);
     cursor: pointer;
@@ -708,6 +803,7 @@ ul.orderbuttons-list li:last-child {
     font-weight: 600;
     color: #3f3f3f;
     line-height: 23px;
+    display: none;
 }
 .btnlock-icon {
     width: 12px;
@@ -750,7 +846,6 @@ ul.orderbuttons-list li:last-child {
     line-height: 10px;
     margin-right: 4px;
     text-align: right;
-    margin-top: 1px;
 }
 .orderpoinfo-box {
     width: 91px;
@@ -1024,9 +1119,6 @@ ul.keyslist li:last-child {
 }
 .httd-txt {
     width: 152px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     font-size: 8px;
 }
 .nb-tasks {
@@ -1109,9 +1201,6 @@ ul.nb-taskslist li {
     padding-left: 5px;
     color: #0278fc;
     position: relative;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 .cb-email-icon {
     height: 16px;
@@ -1179,9 +1268,6 @@ ul.nb-taskslist li {
 .itemtabl-description {
     /*width: 174px;*/
     width: 162px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     padding-left: 4px;
 }
 .itemtabl-color {
@@ -2063,7 +2149,6 @@ span.itemtabl-setups {
 }
 .stressballs .custom-info-txt,
 .stressballs .custom-info-number,
-.stressballs .custinfo-member label,
 .stressballs .titlebox-arrow,
 .stressballs .credit-openbalance {
     color: #fff;
@@ -2083,9 +2168,10 @@ span.itemtabl-setups {
     background: #e4e3fd;
 }
 .stressballs .contacts-box {
-    border: 1px solid #a2a1fc;
+    /*border: 1px solid #a2a1fc;*/
 }
 .stressballs .orderslist-box {
+    /* background: #5f5efe; */
     border: 1px solid #a2a1fc;
 }
 .stressballs .custinfo-titlebox {
@@ -2111,7 +2197,8 @@ span.itemtabl-setups {
     color: #fff;
 }
 .stressballs ul.contacts-list li {
-    border-bottom: 1px solid #a2a1fc;
+    /*border-bottom: 1px solid #a2a1fc;*/
+    border: 1px solid #a2a1fc;
 }
 .stressballs .shipaccount-favorites i,
 .stressballs .paymethod-favorites i {
@@ -2119,15 +2206,133 @@ span.itemtabl-setups {
 }
 .stressballs li.inactive .paymethod-box {
     background: #6766fc;
-    border: 1px solid #c1c0fb;
+    border: 1px solid #7d7cfd;
 }
 .stressballs li.inactive .paymethod-card,
 .stressballs li.inactive .paymethod-exp {
-    color: #a2a1fc;
+    color: #908ffc;
 }
 .stressballs .credit-infotitle {
     color: #c1c0fb;
 }
 .stressballs .credit-latebalance {
     color: #9a99fe;
+}
+
+/* Blocked */
+.blockedcustomer .section-customer {
+    background: #292929;
+}
+.blockedcustomer .statuscustomer {
+    display: flex;
+}
+.statuscustomer {
+    display: none;
+    width: 100%;
+    justify-content: center;
+}
+.blocked-icon {
+    margin-right: 4px;
+    position: relative;
+    top: -1px;
+}
+.blocked-icon img {
+    width: 12px;
+    height: auto;
+}
+.blocked-txt {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 16px;
+    color: #fff;
+}
+.blockedcustomer  .custom-info {
+    border-bottom: 1px solid #9b9300;
+    background: #111111;
+}
+.blocked-icon {
+    margin-right: 5px;
+    position: relative;
+    top: -4px;
+}
+.blockedcustomer  .custom-info {
+    border-bottom: 1px solid #646363;
+    background: #111111;
+}
+.blockedcustomer .custom-info-hide {
+    background: #111111;
+    border-left: 1px solid #646363;
+    border-right: 1px solid #646363;
+    border-bottom: 1px solid #646363;
+    color: #bcbbbb;
+}
+.blockedcustomer .custom-info-number {
+    color: #fff;
+}
+.blockedcustomer .custom-info-txt {
+    color: #fff;
+}
+.blockedcustomer .custinfo-member label {
+    color: #bcbbbb;
+}
+.blockedcustomer .custinfo-notes label {
+    color: #bcbbbb;
+}
+
+.blockedcustomer .custinfo-member input,
+.blockedcustomer .credit-box,
+.blockedcustomer .paymethod-box,
+.blockedcustomer .shipaccount-box,
+.blockedcustomer .qouteslist-box  {
+    border: 1px solid #bcbbbb;
+    background: #f0f0f0;
+}
+.blockedcustomer .custinfo-notes textarea {
+  border: 1px solid #bcbbbb;
+  background: #f0f0f0;
+}
+.blockedcustomer .custinfo-titlebox {
+    border-top: 1px solid #646363;
+    border-left: 1px solid #646363;
+    border-right: 1px solid #646363;
+    color: #bcbbbb;
+    background: #292929;
+}
+.blockedcustomer .custinfo-boxbody {
+    border: 1px solid #646363;
+    background: #292929;
+}
+.blockedcustomer .subtitlebox {
+    color: #646363;
+}
+.blockedcustomer .credit-infotitle {
+    color: #bcbbbb;
+}
+.blockedcustomer .credit-latebalance {
+    color: #646363;
+}
+.blockedcustomer .shipaccount-favorites i,
+.blockedcustomer .paymethod-favorites i {
+    color: #bcbbbb;
+}
+.blockedcustomer .orderslist-box {
+    border: 1px solid #646363;
+}
+.blockedcustomer  .totalsbox-orders {
+    color: #646363;
+}
+.blockedcustomer .ci-hideicon {
+    color: #bcbbbb;
+}
+.blockedcustomer .custom-info-name {
+    border: 1px solid #bcbbbb;
+}
+.blockedcustomer ul.contacts-list li {
+    border: 1px solid #bcbbbb;
+}
+.blockedcustomer .lineemail {
+    background: #e4e3e3;
+}
+.blockedcustomer .titlebox-arrow {
+    color: #bcbbbb;
 }

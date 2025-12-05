@@ -1,4 +1,7 @@
 function init_doubleorders() {
+    var SimpContacts = new SimpleBar(document.getElementById('contacts-box'), { autoHide: false });
+    var SimplPay = new SimpleBar(document.getElementById('pay-methods-list'), { autoHide: false });
+    var SimplOrder = new SimpleBar(document.getElementById('orderslist-box'), { autoHide: false });
     $("#dualordspecialtags").find('span.titlebox-arrow').unbind('click').click(function () {
         var blockhide = 0;
         if ($("#dualordspecialtags").hasClass("hidetitle")) {
@@ -101,7 +104,7 @@ function init_doubleorders() {
             $(".tagslist-title").show();
             $(".custinfo-tags").show();
             $(".custinfo-member").show();
-            $("#dualordcustomlabel").find('div.custom-info-hide').empty().html('Hide <span class="ci-hideicon"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>');
+            $("#dualordcustomlabel").find('div.custom-info-hide').empty().html('Hide All <span class="ci-hideicon"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>');
             $("#dualordcustomlabel").removeClass("hidetitle");
             // Other Blocks
             $("#dualordcredits").removeClass("hidetitle");
@@ -119,11 +122,12 @@ function init_doubleorders() {
             $("#dualordspecialtags").removeClass("hidetitle");
             $("#dualordspecialtags").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
             $(".infodetelies").removeClass("hideinfo");
+            $(".custinfo-notes").show();
         } else {
             $(".tagslist-title").hide();
             $(".custinfo-tags").hide();
             $(".custinfo-member").hide();
-            $("#dualordcustomlabel").find('div.custom-info-hide').empty().html('Show <span class="ci-hideicon"><i class="fa fa-chevron-down" aria-hidden="true"></i></span>');
+            $("#dualordcustomlabel").find('div.custom-info-hide').empty().html('Show All <span class="ci-hideicon"><i class="fa fa-chevron-down" aria-hidden="true"></i></span>');
             $("#dualordcustomlabel").addClass("hidetitle");
             // Other Blocks
             $("#dualordcredits").addClass("hidetitle");
@@ -141,6 +145,7 @@ function init_doubleorders() {
             $("#dualordspecialtags").addClass("hidetitle");
             $("#dualordspecialtags").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
             $(".infodetelies").addClass("hideinfo");
+            $(".custinfo-notes").hide();
         }
         init_doubleorders();
     });
