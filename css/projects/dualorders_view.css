@@ -115,7 +115,7 @@
     margin-top: 4px;
 }
 .custom-info-name {
-    font-size: 11px;
+    font-size: 12px;
     width: 100%;
     padding: 0 4px;
     height: 23px;
@@ -199,6 +199,7 @@
     border: 1px solid #9b9300;
     background: #fdfce1;
     float: right;
+    font-size: 10px;
 }
 .custinfo-box {
     position: relative;
@@ -481,6 +482,9 @@ ul.contacts-list li {
 }
 .contact-name {
     margin-right: 4px;
+}
+.contact-phone {
+    cursor: pointer;
 }
 .contc-line {
     width: 100%;

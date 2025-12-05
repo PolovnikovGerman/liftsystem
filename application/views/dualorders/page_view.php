@@ -19,42 +19,7 @@
                 <div class="datarow">
                     <div class="custom-info-name truncateoverflowtext">ABC Company - Jersey City Branch</div>
                 </div>
-                <div class="datarow">
-                    <div class="custinfo-member">
-                        <label>Member of</label>
-                        <input type="text" name="ci-member">
-                    </div>
-                </div>
-                <div class="datarow">
-<!--                    <div class="tagslist-title">Special Tags: <span>5</span></div>-->
-                    <div class="custinfo-tags">
-                        <div class="tagslist">
-                            <div class="tagslist-tagleft">
-                                <div class="tagslist-tagicon"><img src="/img/doubleorders/<?=$brand=='SB' ? 'icon-01-sb.svg' : 'icon-01-sr.svg'?>"></div>
-                                <div class="tagslist-tagtxt">Frequent / Profit</div>
-                            </div>
-                            <div class="tagslist-tagright">
-                                <div class="tagslist-tagicon"><img src="/img/doubleorders/<?=$brand=='SB' ? 'icon-04-sb.svg' : 'icon-04-sr.svg'?>"></div>
-                                <div class="tagslist-tagtxt">Friend / Fam</div>
-                            </div>
-                            <div class="tagslist-tagleft">
-                                <div class="tagslist-tagicon"><img src="/img/doubleorders/<?=$brand=='SB' ? 'icon-02-sb.svg' : 'icon-02-sr.svg'?>"></div>
-                                <div class="tagslist-tagtxt">Annoyed</div>
-                            </div>
-                            <div class="tagslist-tagright">
-                                <div class="tagslist-tagicon"><img src="/img/doubleorders/<?=$brand=='SB' ? 'icon-03-sb.svg' : 'icon-03-sr.svg'?>"></div>
-                                <div class="tagslist-tagtxt">Red Flag</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="datarow">
-                    <div class="custinfo-notes">
-                        <label>Note:</label>
-                        <textarea></textarea>
-                    </div>
-                </div>
-                <div class="custom-info-hide">Hide All <span class="ci-hideicon"><i class="fa fa-chevron-up" aria-hidden="true"></i></span></div>
+                <div class="custom-info-hide">Collapse All <span class="ci-hideicon"><i class="fa fa-chevron-up" aria-hidden="true"></i></span></div>
             </div>
         </div>
         <div class="datarow">
@@ -71,7 +36,7 @@
                                         </div>
                                         <div class="contc-line">
                                             <div class="contact-name">Wayne Haston</div>
-                                            <div class="contact-phone">(087)798-1980</div>
+                                            <div class="contact-phone" title="(087)798-1980"><i class="fa fa-phone" aria-hidden="true"></i></div>
                                         </div>
                                     </li>
                                     <li>
@@ -80,7 +45,7 @@
                                         </div>
                                         <div class="contc-line">
                                             <div class="contact-name">Adam Winston</div>
-                                            <div class="contact-phone">(087)798-1980</div>
+                                            <div class="contact-phone" title="(087)798-1980"><i class="fa fa-phone" aria-hidden="true"></i></div>
                                         </div>
                                     </li>
                                     <li>
@@ -89,10 +54,50 @@
                                         </div>
                                         <div class="contc-line">
                                             <div class="contact-name">Wayne Haston</div>
-                                            <div class="contact-phone">(087)798-1980</div>
+                                            <div class="contact-phone" title="(087)798-1980"><i class="fa fa-phone" aria-hidden="true"></i></div>
                                         </div>
                                     </li>
-                                </ul>                            </div>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="datarow">
+                    <div class="custinfo-box" id="dualordcontacts">
+                        <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Add’l Info: </div>
+                        <div class="custinfo-boxbody">
+                            <div class="custinfo-tags">
+                                <div class="tagslist">
+                                    <div class="tagslist-tagleft">
+                                        <div class="tagslist-tagicon"><img src="/img/doubleorders/icon-01.svg"></div>
+                                        <div class="tagslist-tagtxt">Frequent / Profit</div>
+                                    </div>
+                                    <div class="tagslist-tagright">
+                                        <div class="tagslist-tagicon"><img src="/img/doubleorders/icon-02-white.svg"></div>
+                                        <div class="tagslist-tagtxt">Annoyed</div>
+                                    </div>
+                                    <div class="tagslist-tagleft">
+                                        <div class="tagslist-tagicon"><img src="/img/doubleorders/icon-04.svg"></div>
+                                        <div class="tagslist-tagtxt">Friend / Fam</div>
+                                    </div>
+                                    <div class="tagslist-tagright">
+                                        <div class="tagslist-tagicon"><img src="/img/doubleorders/icon-03-white.svg"></div>
+                                        <div class="tagslist-tagtxt">Suspicious</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="datarow">
+                                <div class="custinfo-member">
+                                    <label>Member of</label>
+                                    <input type="text" name="ci-member">
+                                </div>
+                            </div>
+                            <div class="datarow">
+                                <div class="custinfo-notes">
+                                    <label>Note:</label>
+                                    <textarea></textarea>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -121,28 +126,28 @@
                                 <ul>
                                     <li>
                                         <div class="paymethod">
-                                            <div class="paymethod-favorites"><i class="fa fa-star" aria-hidden="true"></i></div>
                                             <div class="paymethod-box">
+                                                <div class="paymethod-favorites"><i class="fa fa-star" aria-hidden="true"></i></div>
                                                 <div class="paymethod-card">Visa - 2581</div>
-                                                <div class="paymethod-exp">exp 05/26</div>
+<!--                                                <div class="paymethod-exp">exp 05/26</div>-->
                                             </div>
                                         </div>
                                     </li>
                                     <li>
                                         <div class="paymethod">
-                                            <div class="paymethod-favorites">&nbsp;</div>
                                             <div class="paymethod-box">
+                                                <div class="paymethod-favorites">&nbsp;</div>
                                                 <div class="paymethod-card">Amex - 2631</div>
-                                                <div class="paymethod-exp">exp 10/27</div>
+<!--                                                <div class="paymethod-exp">exp 10/27</div>-->
                                             </div>
                                         </div>
                                     </li>
                                     <li class="inactive">
                                         <div class="paymethod">
-                                            <div class="paymethod-favorites">&nbsp;</div>
                                             <div class="paymethod-box">
+                                                <div class="paymethod-favorites">&nbsp;</div>
                                                 <div class="paymethod-card">MC - 2277</div>
-                                                <div class="paymethod-exp">EXPIRED</div>
+<!--                                                <div class="paymethod-exp">EXPIRED</div>-->
                                             </div>
                                         </div>
                                     </li>
@@ -159,14 +164,20 @@
                                 <ul>
                                     <li>
                                         <div class="shipaccount">
-                                            <div class="shipaccount-favorites"><i class="fa fa-star" aria-hidden="true"></i></div>
-                                            <div class="shipaccount-box">UPS - 08YR7</div>
+                                            <div class="shipaccount-box">
+                                                <div class="shipaccount-favorites"><i class="fa fa-star" aria-hidden="true"></i></div>
+                                                <div class="shipaccount-name">UPS</div>
+                                                <div class="shipaccount-code">08YR7</div>
+                                            </div>
                                         </div>
                                     </li>
                                     <li>
                                         <div class="shipaccount">
-                                            <div class="shipaccount-favorites">&nbsp;</div>
-                                            <div class="shipaccount-box">FedEx - 012345678</div>
+                                            <div class="shipaccount-box">
+                                                <div class="shipaccount-favorites">&nbsp;</div>
+                                                <div class="shipaccount-name">FedEx</div>
+                                                <div class="shipaccount-code">012345678</div>
+                                            </div>
                                         </div>
                                     </li>
                                 </ul>
