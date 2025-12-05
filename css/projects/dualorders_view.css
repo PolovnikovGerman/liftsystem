@@ -483,6 +483,9 @@ ul.contacts-list li {
 .contact-name {
     margin-right: 4px;
 }
+.contact-phone {
+    cursor: pointer;
+}
 .contc-line {
     width: 100%;
     line-height: 15px;
