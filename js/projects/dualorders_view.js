@@ -120,7 +120,6 @@ function init_doubleorders() {
             $("#dualordspecialtags").removeClass("hidetitle");
             $("#dualordspecialtags").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
             $(".infodetelies").removeClass("hideinfo");
-            $(".custinfo-notes").show();
             $("#dualordaddinfo").removeClass("hidetitle");
             $("#dualordaddinfo").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
         } else {
@@ -145,7 +144,6 @@ function init_doubleorders() {
             $("#dualordspecialtags").addClass("hidetitle");
             $("#dualordspecialtags").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
             $(".infodetelies").addClass("hideinfo");
-            $(".custinfo-notes").hide();
             $("#dualordaddinfo").addClass("hidetitle");
             $("#dualordaddinfo").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
         }
