@@ -609,7 +609,7 @@ ul.contacts-list li {
 .paymethod {}
 .paymethod-favorites {
     width: 14px;
-    margin-right: 5px;
+    margin-right: 3px;
     position: relative;
     top: -1px;
 }
