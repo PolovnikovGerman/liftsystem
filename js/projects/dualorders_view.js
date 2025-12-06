@@ -2,19 +2,17 @@ function init_doubleorders() {
     var SimpContacts = new SimpleBar(document.getElementById('contacts-box'), { autoHide: false });
     // var SimplPay = new SimpleBar(document.getElementById('pay-methods-list'), { autoHide: false });
     var SimplOrder = new SimpleBar(document.getElementById('orderslist-box'), { autoHide: false });
-    $("#dualordspecialtags").find('span.titlebox-arrow').unbind('click').click(function () {
+    $("#dualordaddinfo").find('span.titlebox-arrow').unbind('click').click(function () {
         var blockhide = 0;
-        if ($("#dualordspecialtags").hasClass("hidetitle")) {
+        if ($("#dualordaddinfo").hasClass("hidetitle")) {
             blockhide = 1;
         }
         if (blockhide == 1) {
-            $("#dualordspecialtags").removeClass("hidetitle");
-            $("#dualordspecialtags").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
-            $(".infodetelies").removeClass("hideinfo");
+            $("#dualordaddinfo").removeClass("hidetitle");
+            $("#dualordaddinfo").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
         } else {
-            $("#dualordspecialtags").addClass("hidetitle");
-            $("#dualordspecialtags").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
-            $(".infodetelies").addClass("hideinfo");
+            $("#dualordaddinfo").addClass("hidetitle");
+            $("#dualordaddinfo").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
         }
     });
     $("#dualordcredits").find('span.titlebox-arrow').unbind('click').click(function () {
@@ -101,9 +99,9 @@ function init_doubleorders() {
             blockhide = 1;
         }
         if (blockhide == 1) {
-            $(".tagslist-title").show();
-            $(".custinfo-tags").show();
-            $(".custinfo-member").show();
+            // $(".tagslist-title").show();
+            // $(".custinfo-tags").show();
+            // $(".custinfo-member").show();
             $("#dualordcustomlabel").find('div.custom-info-hide').empty().html('Collapse All <span class="ci-hideicon"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>');
             $("#dualordcustomlabel").removeClass("hidetitle");
             // Other Blocks
@@ -123,10 +121,12 @@ function init_doubleorders() {
             $("#dualordspecialtags").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
             $(".infodetelies").removeClass("hideinfo");
             $(".custinfo-notes").show();
+            $("#dualordaddinfo").removeClass("hidetitle");
+            $("#dualordaddinfo").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
         } else {
-            $(".tagslist-title").hide();
-            $(".custinfo-tags").hide();
-            $(".custinfo-member").hide();
+            // $(".tagslist-title").hide();
+            // $(".custinfo-tags").hide();
+            // $(".custinfo-member").hide();
             $("#dualordcustomlabel").find('div.custom-info-hide').empty().html('Expand All <span class="ci-hideicon"><i class="fa fa-chevron-down" aria-hidden="true"></i></span>');
             $("#dualordcustomlabel").addClass("hidetitle");
             // Other Blocks
@@ -146,6 +146,8 @@ function init_doubleorders() {
             $("#dualordspecialtags").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
             $(".infodetelies").addClass("hideinfo");
             $(".custinfo-notes").hide();
+            $("#dualordaddinfo").addClass("hidetitle");
+            $("#dualordaddinfo").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
         }
         init_doubleorders();
     });
