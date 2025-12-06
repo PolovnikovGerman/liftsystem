@@ -166,7 +166,7 @@
     width: 100%;
 }
 .infodetelies.hideinfo {
-    margin-top: 17px;
+    margin-top: 0px;
 }
 .custinfo-member {
     width: 100%;
@@ -2231,8 +2231,7 @@ span.itemtabl-setups {
     line-height: 16px;
     color: #fff;
 }
-.blockedcustomer  .custom-info {
-    border-bottom: 1px solid #9b9300;
+.blockedcustomer .custom-info {
     background: #111111;
 }
 .blocked-icon {
