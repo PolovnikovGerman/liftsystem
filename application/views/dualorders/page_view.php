@@ -63,7 +63,7 @@
                     </div>
                 </div>
                 <div class="datarow">
-                    <div class="custinfo-box" id="dualordcontacts">
+                    <div class="custinfo-box" id="dualordaddinfo">
                         <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Add’l Info: </div>
                         <div class="custinfo-boxbody">
                             <div class="custinfo-tags">
