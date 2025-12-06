@@ -76,7 +76,7 @@
 .section-customer {
     width: 224px;
     height: 100%;
-    background: #fff980;
+    background: #fef200;
     border-radius: 7px 0 0 7px;
     overflow: hidden;
 }
@@ -96,10 +96,8 @@
 
 .custom-info {
     position: relative;
-    padding: 0 5px;
-    border-bottom: 1px solid #9b9300;
     width: 100%;
-    padding: 10px 10px 5px;
+    padding: 10px 10px 0;
     background: #fff200;
 }
 .custom-info-txt {
@@ -126,21 +124,17 @@
     font-weight: 600;
 }
 .custom-info-hide {
-    position: absolute;
-    bottom: -15px;
-    right: 5px;
     background: #fff200;
     padding: 0 7px;
-    border-left: 1px solid #9b9300;
-    border-right: 1px solid #9b9300;
-    border-bottom: 1px solid #9b9300;
-    border-radius: 0 0 3px 3px;
+    border: 1px solid #9b9300;
+    border-radius: 3px;
     font-size: 10px;
     color: #9b9300;
-    height: 15px;
-    line-height: 15px;
+    height: 16px;
+    line-height: 16px;
     cursor: pointer;
-    z-index: 10;
+    margin-top: 5px;
+    float: right !important;
 }
 .ci-hideicon {
     font-size: 10px;
@@ -177,15 +171,15 @@
 }
 .custinfo-member {
     width: 100%;
-    margin-top: 5px;
+    margin-top: 0;
 }
 .custinfo-member label {
     font-size: 12px;
     color: #6a6509;
     font-weight: 600;
     float: left;
-    line-height: 23px;
-    margin-right: 6px;
+    line-height: 19px;
+    margin-right: 4px;
     margin-bottom: 0;
 }
 .stressballs .custinfo-member label {
@@ -194,8 +188,8 @@
 .custinfo-member input {
     width: 136px;
     padding: 0 5px;
-    height: 23px;
-    line-height: 23px;
+    height: 19px;
+    line-height: 19px;
     border: 1px solid #9b9300;
     background: #fdfce1;
     float: right;
@@ -223,7 +217,7 @@
     font-weight: 600;
 }
 .custinfo-tags {
-    margin-top: 5px;
+    margin-top: 1px;
 }
 .stressballs  .custinfo-tags {
     /* border: 1px solid #a2a1fc; */
@@ -255,20 +249,24 @@ ul.tagslist-one li:last-child {
 .tagslist-tagleft {
     width: 108px;
     height: 20px;
-    border: 1px solid #cdc640;
+    border: 1px solid #05cb38;
     margin-bottom: 3px;
     padding: 0 4px;
     border-radius: 3px;
+    background: #05e63f;
+    color: #000;
 }
 .tagslist-tagright {
     width: 90px;
     margin-left: 4px;
     height: 20px;
-    border: 1px solid #cdc640;
+    border: 1px solid #d20421;
     margin-bottom: 3px;
     float: right !important;
     padding: 0 4px;
     border-radius: 3px;
+    background: #fd0326;
+    color: #fff;
 }
 .stressballs .tagslist-tagleft,
 .stressballs .tagslist-tagright {
@@ -351,6 +349,7 @@ ul.tagslist-two li {
 .custinfo-notes {
     width: 100%;
     margin-top: 5px;
+    margin-bottom: 3px;
 }
 .custinfo-notes label {
     font-size: 12px;
@@ -366,7 +365,7 @@ ul.tagslist-two li {
     border: 1px solid #9b9300;
     background: #fdfce1;
     height: 40px;
-    width: 170px;
+    width: 167px;
     padding: 5px;
     resize: none;
     margin-bottom: 3px;
@@ -444,37 +443,18 @@ span.tagslist-tagicon img {
 
 
 ul.contacts-list {
-    list-style: decimal;
+    list-style: none;
     margin: 0;
-    padding-left: 15px;
+    padding-left: 0;
     color: #000;
     font-size: 11px;
 }
-/*ul.contacts-list li {*/
-/*    width: 100%;*/
-/*    border: 1px solid #cdc640;*/
-/*    background: #fdfce1;*/
-/*    border-radius: 3px;*/
-/*    margin-bottom: 3px;*/
-/*    padding-left: 5px;*/
-/*}*/
-/*.stressballs  ul.contacts-list li {*/
-/*    border: 1px solid #a2a1fc;*/
-/*    background: #e4e3fd;*/
-/*}*/
-/*ul.contacts-list li span {*/
-/*    font-size: 11px;*/
-/*    color: #000;*/
-/*}*/
-/*ul.contacts-list li span.contact-phone {*/
-/*    margin-left: 5px;*/
-/*}*/
 ul.contacts-list li {
     width: 100%;
     border: 1px solid #cdc640;
     background: #fdfce1;
-    border-radius: 3px;
-    margin-bottom: 2px;
+    border-radius: 4px;
+    margin-bottom: 3px;
     float: left;
 }
 .contact-email {
@@ -485,6 +465,10 @@ ul.contacts-list li {
 }
 .contact-phone {
     cursor: pointer;
+    width: 13px;
+    float: right !important;
+    margin-right: 7px;
+    font-size: 12px;
 }
 .contc-line {
     width: 100%;
@@ -602,11 +586,11 @@ ul.contacts-list li {
 
 
 .pay-methods-list {
-    width: 100%;
-    overflow-y: auto;
-    height: 45px;
+    /* width: 100%; */
+    overflow-x: scroll;
+    height: 22px;
     margin-bottom: 5px;
-    scrollbar-width: none;
+    /*scrollbar-width: none;*/
 }
 .pay-methods-list ul {
     float: left;
@@ -617,7 +601,7 @@ ul.contacts-list li {
 }
 .pay-methods-list ul li {
     float: left;
-    margin-bottom: 3px;
+    margin-right: 5px;
 }
 .pay-methods-list ul li:last-child {
     margin-bottom: 0;
@@ -625,16 +609,15 @@ ul.contacts-list li {
 .paymethod {}
 .paymethod-favorites {
     width: 14px;
-    margin-right: 5px;
+    margin-right: 3px;
     position: relative;
-    top: 1px;
+    top: -1px;
 }
 .paymethod-favorites i {
     color: #9b9300;
-    font-size: 14px;
+    font-size: 12px;
 }
 .paymethod-box {
-    width: 126px;
     height: 18px;
     line-height: 18px;
     background: #fdfce1;
@@ -671,7 +654,7 @@ li.inactive .paymethod-exp {
 }
 .ship-accounts-list ul li {
     float: left;
-    margin-bottom: 3px;
+    margin-right: 5px;
 }
 .ship-accounts-list ul li:last-child {
     margin-bottom: 0;
@@ -679,22 +662,37 @@ li.inactive .paymethod-exp {
 .shipaccount-favorites {
     width: 14px;
     margin-right: 5px;
-    position: relative;
-    top: 1px;
+    position: absolute;
+    top: 7px;
+    left: 10px;
 }
 .shipaccount-favorites i {
     color: #9b9300;
-    font-size: 14px;
+    font-size: 13px;
 }
 .shipaccount-box {
-    width: 114px;
-    height: 18px;
-    line-height: 18px;
+    width: 58px;
+    height: 28px;
     background: #fdfce1;
     border: 1px solid #9b9300;
     border-radius: 3px;
     padding: 0 5px;
     font-size: 11px;
+}
+.shipaccount-name {
+    width: 100%;
+    padding-right: 4px;
+    text-align: right;
+    font-size: 11px;
+    line-height: 12px;
+    margin-top: 2px;
+}
+.shipaccount-code {
+    width: 100%;
+    padding-right: 4px;
+    text-align: right;
+    font-size: 9px;
+    line-height: 12px;
 }
 
 

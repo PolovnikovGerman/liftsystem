@@ -136,7 +136,6 @@
                                     <li>
                                         <div class="paymethod">
                                             <div class="paymethod-box">
-                                                <div class="paymethod-favorites">&nbsp;</div>
                                                 <div class="paymethod-card">Amex - 2631</div>
 <!--                                                <div class="paymethod-exp">exp 10/27</div>-->
                                             </div>
@@ -145,7 +144,6 @@
                                     <li class="inactive">
                                         <div class="paymethod">
                                             <div class="paymethod-box">
-                                                <div class="paymethod-favorites">&nbsp;</div>
                                                 <div class="paymethod-card">MC - 2277</div>
 <!--                                                <div class="paymethod-exp">EXPIRED</div>-->
                                             </div>
