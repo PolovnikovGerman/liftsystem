@@ -119,7 +119,7 @@
     height: 23px;
     line-height: 23px;
     background: #fff;
-    border: 1px solid #9b9300;
+    border: 1px solid #cdc640;
     margin-top: 2px;
     font-weight: 600;
 }
@@ -164,7 +164,6 @@
 .infodetelies {
     padding: 0 5px;
     width: 100%;
-    margin-top: 5px;
 }
 .infodetelies.hideinfo {
     margin-top: 17px;
@@ -190,7 +189,7 @@
     padding: 0 5px;
     height: 19px;
     line-height: 19px;
-    border: 1px solid #9b9300;
+    border: 1px solid #cdc640;
     background: #fdfce1;
     float: right;
     font-size: 10px;
@@ -199,8 +198,8 @@
     position: relative;
     width: 100%;
     border-radius: 3px;
-    margin-top: 3px;
-    margin-bottom: 3px;
+    margin-top: 7px;
+    margin-bottom: 7px;
 }
 .custinfo-titlebox {
     position: relative;
@@ -268,13 +267,13 @@ ul.tagslist-one li:last-child {
     background: #fd0326;
     color: #fff;
 }
-.stressballs .tagslist-tagleft,
-.stressballs .tagslist-tagright {
-    border: 1px solid #bcbbbb;
-}
-.stressballs .tagslist-tagtxt {
-    color: #fff;
-}
+/*.stressballs .tagslist-tagleft,*/
+/*.stressballs .tagslist-tagright {*/
+/*    border: 1px solid #bcbbbb;*/
+/*}*/
+/*.stressballs .tagslist-tagtxt {*/
+/*    color: #fff;*/
+/*}*/
 .subtitlebox {
     font-weight: 400;
     color: #cdc640;
@@ -362,7 +361,7 @@ ul.tagslist-two li {
     color: #a2a1fc;
 }
 .custinfo-notes textarea {
-    border: 1px solid #9b9300;
+    border: 1px solid #cdc640;
     background: #fdfce1;
     height: 40px;
     width: 167px;
@@ -399,7 +398,7 @@ span.tagslist-tagicon img {
     padding: 0 5px;
     line-height: 25px;
     background: #fdfce1;
-    border: 1px solid #9b9300;
+    border: 1px solid #cdc640;
     text-align: center;
     font-weight: 600;
     font-size: 12px;
@@ -497,9 +496,8 @@ ul.contacts-list li {
 }
 
 .orderslist-box {
-    /*background: #fdfce1;*/
     background: transparent;
-    border: 1px solid #9b9300;
+    border: 1px solid #cdc640;
     height: 91px;
     width: 100%;
     overflow-y: auto;
@@ -572,7 +570,7 @@ ul.contacts-list li {
 
 .qouteslist-box {
     background: #fdfce1;
-    border: 1px solid #9b9300;
+    border: 1px solid #cdc640;
     height: 48px;
     width: 100%;
     overflow-y: auto;
@@ -621,7 +619,7 @@ ul.contacts-list li {
     height: 18px;
     line-height: 18px;
     background: #fdfce1;
-    border: 1px solid #9b9300;
+    border: 1px solid #cdc640;
     border-radius: 3px;
     padding: 0 5px;
 }
@@ -663,8 +661,8 @@ li.inactive .paymethod-exp {
     width: 14px;
     margin-right: 5px;
     position: absolute;
-    top: 7px;
-    left: 10px;
+    top: 6px;
+    left: 8px;
 }
 .shipaccount-favorites i {
     color: #9b9300;
@@ -674,14 +672,13 @@ li.inactive .paymethod-exp {
     width: 58px;
     height: 28px;
     background: #fdfce1;
-    border: 1px solid #9b9300;
+    border: 1px solid #cdc640;
     border-radius: 3px;
     padding: 0 5px;
     font-size: 11px;
 }
 .shipaccount-name {
     width: 100%;
-    padding-right: 4px;
     text-align: right;
     font-size: 11px;
     line-height: 12px;
@@ -689,7 +686,6 @@ li.inactive .paymethod-exp {
 }
 .shipaccount-code {
     width: 100%;
-    padding-right: 4px;
     text-align: right;
     font-size: 9px;
     line-height: 12px;
@@ -702,9 +698,7 @@ li.inactive .paymethod-exp {
 /*-----------ORDERS-----------*/
 .ordertopline {
     width: 100%;
-    padding: 0 5px;
-    padding-top: 6px;
-    padding-bottom: 5px;
+    padding: 6px 5px 5px 5px;
 }
 .ordernumber-title {
     font-size: 16px;
@@ -932,10 +926,9 @@ ul.orderbuttons-list li:last-child {
 }
 .tabsline {
     width: 100%;
-    padding: 0 5px;
+    padding: 8px 5px 0 5px;
     background: #8c8c8c;
     border-bottom: 1px solid #3f3f3f;
-    padding-top: 8px;
 }
 ul.tabslist {
     float: left;
@@ -1156,7 +1149,7 @@ ul.nb-taskslist li {
 .nb-taskbox {
     width: 80px;
     height: 18px;
-    border: 1px solod #000;
+    border: 1px solid #000;
     background: #f605ff;
     border-radius: 3px;
 }
@@ -1725,7 +1718,6 @@ span.itemtabl-setups {
     line-height: 25px;
     background: #f7f7f7;
     color: #616161;
-    font-weight: 600;
 }
 .step-art02 .artstep-txt {
     width: 52px;
@@ -1791,7 +1783,6 @@ span.itemtabl-setups {
     height: 25px;
     background: #f7f7f7;
     color: #616161;
-    font-weight: 600;
 }
 .step-proof05 .artstep-txt {
     width: 52px;
@@ -1859,7 +1850,6 @@ span.itemtabl-setups {
     height: 23px;
     background: #f7f7f7;
     color: #616161;
-    font-weight: 600;
 }
 .step-clay05 .artstep-txt {
     width: 52px;
@@ -1927,7 +1917,6 @@ span.itemtabl-setups {
     height: 21px;
     background: #f7f7f7;
     color: #616161;
-    font-weight: 600;
 }
 .step-preview05 .artstep-txt {
     width: 52px;
@@ -2007,7 +1996,6 @@ span.itemtabl-setups {
     line-height: 19px;
     background: #f7f7f7;
     color: #616161;
-    font-weight: 600;
 }
 .step-scheduling02 .scheduling-txt {
     width: 50px;
@@ -2038,8 +2026,6 @@ span.itemtabl-setups {
     line-height: 19px;
     background: #f7f7f7;
     color: #616161;
-    font-weight: 600;
-    position: relative;
     z-index: 2;
 }
 .shipped-txt {
@@ -2136,14 +2122,11 @@ span.itemtabl-setups {
 
 /*-----------------Stressballs-----------------*/
 .stressballs .custom-info {
-    border-bottom: 1px solid #3231d0;
     background: #3736fe;
 }
 .stressballs .custom-info-hide {
     background: #3736fe;
-    border-left: 1px solid #3231d0;
-    border-right: 1px solid #3231d0;
-    border-bottom: 1px solid #3231d0;
+    border: 1px solid #a2a1fc;
     color: #c1c0fb;
 }
 .stressballs .ci-hideicon {
@@ -2159,7 +2142,7 @@ span.itemtabl-setups {
     border: 1px solid #a2a1fc;
 }
 .stressballs .section-customer {
-    background: #5f5efe;
+    background: #3736fe;
 }
 .stressballs .custinfo-member input,
 .stressballs .credit-box,
@@ -2204,7 +2187,7 @@ span.itemtabl-setups {
 }
 .stressballs .shipaccount-favorites i,
 .stressballs .paymethod-favorites i {
-    color: #c1c0fb;
+    color: #a2a1fc;
 }
 .stressballs li.inactive .paymethod-box {
     background: #6766fc;
@@ -2223,7 +2206,7 @@ span.itemtabl-setups {
 
 /* Blocked */
 .blockedcustomer .section-customer {
-    background: #292929;
+    background: #111;
 }
 .blockedcustomer .statuscustomer {
     display: flex;
@@ -2257,15 +2240,9 @@ span.itemtabl-setups {
     position: relative;
     top: -4px;
 }
-.blockedcustomer  .custom-info {
-    border-bottom: 1px solid #646363;
-    background: #111111;
-}
 .blockedcustomer .custom-info-hide {
     background: #111111;
-    border-left: 1px solid #646363;
-    border-right: 1px solid #646363;
-    border-bottom: 1px solid #646363;
+    border: 1px solid #646363;
     color: #bcbbbb;
 }
 .blockedcustomer .custom-info-number {
@@ -2337,4 +2314,7 @@ span.itemtabl-setups {
 }
 .blockedcustomer .titlebox-arrow {
     color: #bcbbbb;
+}
+.statuscust-blocked {
+    height: 16px;
 }
