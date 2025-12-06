@@ -584,22 +584,24 @@ ul.contacts-list li {
 
 
 .pay-methods-list {
-    /* width: 100%; */
-    overflow-x: scroll;
-    height: 22px;
+    width: 100%;
     margin-bottom: 5px;
-    /*scrollbar-width: none;*/
 }
 .pay-methods-list ul {
     float: left;
     list-style: none;
     margin-top: 2px;
-    margin-bottom: 5px;
+    margin-bottom: 0;
     padding: 0;
+    overflow: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
 }
 .pay-methods-list ul li {
-    float: left;
     margin-right: 5px;
+    vertical-align: top;
+    display: inline-block;
 }
 .pay-methods-list ul li:last-child {
     margin-bottom: 0;
