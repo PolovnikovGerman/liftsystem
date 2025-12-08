@@ -460,6 +460,7 @@ ul.contacts-list li {
     float: left;
 }
 .contact-email {
+    font-size: 12px;
     font-weight: 600;
 }
 .contact-name {
@@ -674,7 +675,7 @@ li.inactive .paymethod-exp {
     font-size: 13px;
 }
 .shipaccount-box {
-    width: 58px;
+    width: 69px;
     height: 28px;
     background: #fdfce1;
     border: 1px solid #cdc640;
@@ -684,14 +685,14 @@ li.inactive .paymethod-exp {
 }
 .shipaccount-name {
     width: 100%;
-    text-align: right;
+    text-align: center;
     font-size: 11px;
     line-height: 12px;
     margin-top: 2px;
 }
 .shipaccount-code {
     width: 100%;
-    text-align: right;
+    text-align: center;
     font-size: 9px;
     line-height: 12px;
 }
