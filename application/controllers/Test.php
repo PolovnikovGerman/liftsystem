@@ -4654,7 +4654,7 @@ class Test extends CI_Controller
                 // new dates
                 $enddate = $startdate - 1;
                 $startdate = strtotime('-7 day', $startdate);
-                if ($enddate <= strtotime('2018-01-01')) {
+                if ($enddate <= $reportbgn) {
                     break;
                 }
             }
