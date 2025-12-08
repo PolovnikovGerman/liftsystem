@@ -603,6 +603,7 @@ ul.contacts-list li {
     margin-right: 5px;
     vertical-align: top;
     display: inline-block;
+    margin-bottom: 4px;
 }
 .pay-methods-list ul li:last-child {
     margin-bottom: 0;
@@ -646,6 +647,10 @@ li.inactive .paymethod-exp {
 
 
 
+.ship-accounts-list {
+    width: 100%;
+    margin-bottom: 5px;
+}
 .ship-accounts-list ul {
     /*float: left;*/
     /*list-style: none;*/
@@ -668,6 +673,7 @@ li.inactive .paymethod-exp {
     margin-right: 5px;
     vertical-align: top;
     display: inline-block;
+    margin-bottom: 4px;
 }
 .ship-accounts-list ul li:last-child {
     margin-bottom: 0;
