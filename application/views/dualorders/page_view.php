@@ -178,6 +178,42 @@
                                             </div>
                                         </div>
                                     </li>
+                                    <li>
+                                        <div class="shipaccount">
+                                            <div class="shipaccount-box">
+                                                <div class="shipaccount-favorites">&nbsp;</div>
+                                                <div class="shipaccount-name">FedEx</div>
+                                                <div class="shipaccount-code">260424580</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="shipaccount">
+                                            <div class="shipaccount-box">
+                                                <div class="shipaccount-favorites">&nbsp;</div>
+                                                <div class="shipaccount-name">FedEx</div>
+                                                <div class="shipaccount-code">207796640</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="shipaccount">
+                                            <div class="shipaccount-box">
+                                                <div class="shipaccount-favorites">&nbsp;</div>
+                                                <div class="shipaccount-name">USPS</div>
+                                                <div class="shipaccount-code">094788678</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="shipaccount">
+                                            <div class="shipaccount-box">
+                                                <div class="shipaccount-favorites">&nbsp;</div>
+                                                <div class="shipaccount-name">Ocean</div>
+                                                <div class="shipaccount-code">012378</div>
+                                            </div>
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
