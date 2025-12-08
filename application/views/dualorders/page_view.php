@@ -122,7 +122,7 @@
                     <div class="custinfo-box" id="dualordpaymethods">
                         <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Pay Methods: <span class="subtitlebox">2 active (1 inactive)</span></div>
                         <div class="custinfo-boxbody">
-                            <div class="pay-methods-list" id="pay-methods-list">
+                            <div class="pay-methods-list">
                                 <ul>
                                     <li>
                                         <div class="paymethod">
