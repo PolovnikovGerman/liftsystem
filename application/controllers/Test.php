@@ -4562,7 +4562,8 @@ class Test extends CI_Controller
 
     public function leadsreport()
     {
-        $reportbgn = strtotime('2018-01-01');
+        $reportbgn = strtotime('2025-06-23');
+        $reportstart = '2025-12-01';
         $this->db->select('lu.user_id, u.user_leadname, count(l.lead_id) as cnt');
         $this->db->from('ts_lead_users lu');
         $this->db->join('users u','u.user_id = lu.user_id');
@@ -4570,7 +4571,7 @@ class Test extends CI_Controller
         $this->db->where('unix_timestamp(l.update_date) >= ', $reportbgn);
         $this->db->group_by('lu.user_id, u.user_leadname');
         $leadusers = $this->db->get()->result_array();
-        $startdate = strtotime('2025-06-23');
+        $startdate = strtotime($reportstart);
         $enddate = strtotime('+7 day', $startdate)-1;
         $out=[];
         while (1==1) {
@@ -4628,7 +4629,7 @@ class Test extends CI_Controller
         // Userss
         $i=1;
         foreach ($leadusers as $user) {
-            $startdate = strtotime('2025-06-23');
+            $startdate = strtotime($reportstart);
             $enddate = strtotime('+7 day', $startdate)-1;
             $out=[];
             while (1==1) {
