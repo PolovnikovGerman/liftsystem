@@ -1,7 +1,6 @@
 /* POPUP */
 #dualOrderspopup .modal-dialog {
-    /*width: 1310px*/
-    width: 1256px;
+    width: 1310px;
 }
 #dualOrderspopup .modal-header {
     padding: 0;
@@ -30,8 +29,7 @@
 #dualOrderspopup button.close {
     position: absolute;
     top: -5px;
-    /*right: 25px;*/
-    right: -10px;
+    right: 25px;
     width: 20px;
     height: 20px;
     border-radius: 10px;
@@ -83,8 +81,7 @@
     overflow: hidden;
 }
 .section-orders {
-    /*width: 1050px;*/
-    width: 1028px;
+    width: 1050px;
     height: 100%;
     background: #0d1a68;
     border-radius: 0 7px 7px 0;
@@ -923,8 +920,7 @@ ul.orderbuttons-list li:last-child {
 
 .orderblock {
     position: relative;
-    /*width: 504px;*/
-    width: 494px;
+    width: 504px;
     height: 815px;
     border: 1px solid #3f3f3f;
     background: #e4e3e3;
@@ -1017,8 +1013,7 @@ ul.keyslist li:last-child {
 
 
 .sectionline {
-    padding: 0;
-    /*padding: 0 5px;*/
+    padding: 0 5px;
     margin-top: 10px;
     width: 100%;
 }
@@ -1026,7 +1021,7 @@ ul.keyslist li:last-child {
     background: #fff;
     border: 1px solid #585858;
     width: 100%;
-    /*border-radius: 4px;*/
+    border-radius: 4px;
 }
 .boxsection-title {
     width: 18px;
