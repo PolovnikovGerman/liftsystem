@@ -129,7 +129,6 @@
                                             <div class="paymethod-box">
                                                 <div class="paymethod-favorites"><i class="fa fa-star" aria-hidden="true"></i></div>
                                                 <div class="paymethod-card">Visa - 2581</div>
-<!--                                                <div class="paymethod-exp">exp 05/26</div>-->
                                             </div>
                                         </div>
                                     </li>
@@ -137,7 +136,6 @@
                                         <div class="paymethod">
                                             <div class="paymethod-box">
                                                 <div class="paymethod-card">Amex - 2631</div>
-<!--                                                <div class="paymethod-exp">exp 10/27</div>-->
                                             </div>
                                         </div>
                                     </li>
@@ -145,7 +143,6 @@
                                         <div class="paymethod">
                                             <div class="paymethod-box">
                                                 <div class="paymethod-card">MC - 2277</div>
-<!--                                                <div class="paymethod-exp">EXPIRED</div>-->
                                             </div>
                                         </div>
                                     </li>
@@ -159,7 +156,7 @@
                         <div class="custinfo-titlebox"><span class="titlebox-arrow"><i class="fa fa-chevron-up" aria-hidden="true"></i></span> Ship Accounts: <span class="subtitlebox">2</span></div>
                         <div class="custinfo-boxbody">
                             <div class="ship-accounts-list">
-                                <ul>
+                                <ul id="ship-accounts-list">
                                     <li>
                                         <div class="shipaccount">
                                             <div class="shipaccount-box">
