@@ -2478,7 +2478,7 @@ Class Shipping_model extends MY_Model
             $email_from = $this->config->item('sb_quote_user');
             // $email_to = 'to_german@yahoo.com';
             $email_to = [$this->config->item('sage_email'),$this->config->item('sean_email')];
-            $email_cc = ['roma@stressrelievers.com','chad.medina@bluetrack.com', 'to_german@yahoo.com'];
+            $email_cc = ['roma@stressrelievers.com','chad.medina@bluetrack.com'];
             $this->load->library('email');
             $this->email->initialize($email_conf);
             $this->email->from($email_from);
