@@ -32,10 +32,17 @@
         </div>
         </a>
     </div>
+    <?php if ($this->config->item(test_server)==1) : ?>
     <div class="ts-button doupleorders">
         <p>Test Orders</p>
     </div>
     <div class="ts-button lockedorders">
         <p>Test Orders BLOCKED</p>
     </div>
+    <?php else : ?>
+        <div class="ts-button testorders">
+            <a href="<?=$testorderlink?>" target="_blank">
+            <p>Test Orders</p>
+        </div>
+    <?php endif; ?>
 </div>

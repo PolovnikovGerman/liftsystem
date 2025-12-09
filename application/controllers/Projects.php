@@ -97,6 +97,7 @@ class Projects extends MY_Controller
             'bluelink' => getenv('BLUETRACKTEST'),
             'relivlink' => getenv('RELIVERSTEST'),
             'designlink' => getenv('DESIGSTEST'),
+            'testorderlink' => getenv('TESTORDERLINK'),
         ];
         // $options['doubleorder'] = $this->load->view('dualorders/page_view',[], true);
         $content = $this->load->view('projects/projects_view', $options, TRUE);
