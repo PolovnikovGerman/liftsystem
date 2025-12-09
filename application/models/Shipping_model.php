@@ -2456,6 +2456,7 @@ Class Shipping_model extends MY_Model
         $this->db->where('tr.trackcode is not null');
         $this->db->where('tr.qty > ',0);
         $tracks = $this->db->get()->result_array();
+        echo 'Tracks '.count($tracks).PHP_EOL; die();
         if (count($tracks) > 0) {
             $options = [
                 'datebgn' => $datebgn,
