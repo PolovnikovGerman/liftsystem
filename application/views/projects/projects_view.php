@@ -46,6 +46,7 @@
             <a href="<?=$testorderlink?>" target="_blank">
             <p>Test Orders</p>
             <div class="logo-company">&nbsp;</div>
+            </a>
         </div>
     <?php endif; ?>
 </div>
