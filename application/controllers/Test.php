@@ -4943,4 +4943,14 @@ class Test extends CI_Controller
         }
         $this->email->clear(TRUE);
     }
+
+
+    public function trackreport()
+    {
+        $datebgn = strtotime('2025-12-09');
+        $dateend = strtotime('2025-12-10');
+        $this->load->model('shipping_model');
+        $this->shipping_model->trackpackage_report($datebgn, $dateend);
+    }
+
 }
