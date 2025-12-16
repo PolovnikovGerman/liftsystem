@@ -4944,6 +4944,35 @@ class Test extends CI_Controller
         $this->email->clear(TRUE);
     }
 
+    public function altinventcolors()
+    {
+        $colors = $this->db->select('*')->from('altinvent_colors')->get()->result_array();
+        foreach ($colors as $color) {
+            $invitem = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $color['item_num'])->get()->row_array();
+            if (ifset($invitem, 'inventory_item_id', 0)==0) {
+                echo 'Item Not Found '.$color['item_num'].PHP_EOL;
+            } else {
+                // Search color
+                $invcolor = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where(['inventory_item_id' => $invitem['inventory_item_id'], 'color' => $color['color']])->get()->row_array();
+                if (ifset($invcolor, 'inventory_color_id', 0)==0) {
+                    echo 'Item '.$color['item_num'].' Color '.$color['color'].' Not Found'.PHP_EOL;
+                } else {
+                    $this->db->where('id', $color['id']);
+                    $this->db->set('inventory_color_id', $invcolor['inventory_color_id']);
+                    $this->db->update('altinvent_colors');
+                }
+            }
+        }
+        $colors = $this->db->select('*')->from('altinvent_colors')->where('inventory_color_id > ',0)->get()->result_array();
+        foreach ($colors as $color) {
+            $this->db->where('inventory_color_id', $color['inventory_color_id']);
+            $this->db->set('suggeststock', $color['new_max']);
+            $this->db->set('boxsize', $color['boxsize']);
+            $this->db->set('location', $color['location']);
+            $this->db->update('ts_inventory_colors');
+        }
+    }
+
 
     public function trackreport()
     {

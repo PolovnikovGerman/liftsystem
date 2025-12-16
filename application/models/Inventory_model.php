@@ -67,6 +67,8 @@ class Inventory_model extends MY_Model
                     'available' => 0,
                     'unit' => $item['item_unit'],
                     'onorder' => 0,
+                    'boxsize' => '',
+                    'location' => '',
                     'price' => 0,
                     'avg_price' => '',
                     'total' => 0,
@@ -157,6 +159,8 @@ class Inventory_model extends MY_Model
                         'available' => $outavail,
                         'unit' => $color['color_unit'],
                         'onorder' => 0, // ????
+                        'boxsize' => $color['boxsize'],
+                        'location' => $color['location'],
                         'price' => $color['price'],
                         'avg_price' => $color['avg_price'],
                         'total' => $available*$color['avg_price'],
@@ -390,8 +394,8 @@ class Inventory_model extends MY_Model
                     $descrip='<span>Order - </span>';
                     if ($stock['brand']=='SR') {
                         $descrip.=$this->sr_label;
-                    // } elseif ($stock['brand']=='SB') {
-                    //     $descrip.=$this->sb_label;
+                        // } elseif ($stock['brand']=='SB') {
+                        //     $descrip.=$this->sb_label;
                     } else {
                         $descrip.=$this->bt_label;
                     }
@@ -508,9 +512,9 @@ class Inventory_model extends MY_Model
 //                    if ($result['ship']!=$result['fullfill']) {
 //                        $manage = 0;
 //                    } else {
-                        if ($result['shipqty'] > $result['shipped']) {
-                            $result['reserved']-=($result['shipqty'] - $result['shipped']);
-                        }
+                    if ($result['shipqty'] > $result['shipped']) {
+                        $result['reserved']-=($result['shipqty'] - $result['shipped']);
+                    }
 //                    }
                 }
             } else {
@@ -771,6 +775,8 @@ class Inventory_model extends MY_Model
                     'pantones' => '',
                     'color_image' => '',
                     'color_image_source' => '',
+                    'boxsize' => '',
+                    'location' => '',
                 ];
                 $vidx = 1;
                 $vendors = [];
@@ -876,6 +882,8 @@ class Inventory_model extends MY_Model
             $this->db->set('suggeststock', $colordat['suggeststock']);
             $this->db->set('pantones', $colordat['pantones']);
             $this->db->set('price', $colordat['price']);
+            $this->db->set('boxsize', $colordat['boxsize']);
+            $this->db->set('location', $colordat['location']);
             if ($colordat['inventory_color_id'] < 0 ) {
                 $this->db->insert('ts_inventory_colors');
                 $newid = $this->db->insert_id();
@@ -1318,17 +1326,17 @@ class Inventory_model extends MY_Model
             $rowqty = 0;
             $inventory_onboat_id = 0;
             $vprice = 0;
-                if ($color['color_id']!=0 && $inventory_onboat_id==0) {
-                    $inventory_onboat_id = $onboardidx;
-                    $onboardidx = $onboardidx - 1;
-                }
-                $container[] = [
-                    'inventory_onboat_id' => $inventory_onboat_id,
-                    'inventory_item_id' => $color['item_id'],
-                    'inventory_color_id' => $color['color_id'],
-                    'onroutestock' => $rowqty,
-                    'vendor_price' => $vprice==0 ? ifset($color, 'vendor_price',0) : $vprice,
-                ];
+            if ($color['color_id']!=0 && $inventory_onboat_id==0) {
+                $inventory_onboat_id = $onboardidx;
+                $onboardidx = $onboardidx - 1;
+            }
+            $container[] = [
+                'inventory_onboat_id' => $inventory_onboat_id,
+                'inventory_item_id' => $color['item_id'],
+                'inventory_color_id' => $color['color_id'],
+                'onroutestock' => $rowqty,
+                'vendor_price' => $vprice==0 ? ifset($color, 'vendor_price',0) : $vprice,
+            ];
         }
         return $container;
     }
