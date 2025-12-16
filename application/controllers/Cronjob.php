@@ -597,7 +597,7 @@ Class Cronjob extends CI_Controller
             $this->email->from($email_from);
             $this->email->to($email_to);
             $this->email->cc($email_cc);
-            $this->email->bcc(array('to_german@yahoo.com'));
+//            $this->email->bcc(array('to_german@yahoo.com'));
             $title=date('D - M d, Y', $datestart).' - Sales Report (Shanequa Hall) (Owners version) ';
             $this->email->subject($title);
             // Admin body

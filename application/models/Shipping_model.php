@@ -2450,7 +2450,7 @@ Class Shipping_model extends MY_Model
         $this->db->join('ts_order_itemcolors oic','oic.order_itemcolor_id = tr.order_itemcolor_id');
         $this->db->join('ts_order_items oi','oi.order_item_id = oic.order_item_id');
         $this->db->join('ts_orders o','o.order_id = oi.order_id');
-        $this->db->join('v_item_search itm','itm.item_id = oi.item_id');
+        $this->db->join('v_itemsearch itm','itm.item_id = oi.item_id');
         $this->db->where('unix_timestamp(tr.updated_at) >= ', $datebgn);
         $this->db->where('unix_timestamp(tr.updated_at) < ', $dateend);
         $this->db->where('tr.trackcode is not null');

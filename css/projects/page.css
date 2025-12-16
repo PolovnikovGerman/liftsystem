@@ -8,6 +8,7 @@
     margin-right: 20px;
     border: 1px solid #000;
     cursor: pointer;
+    margin-top: 10px;
 }
 .ts-button:last-child {
     margin-right: 0;
@@ -29,6 +30,11 @@
 .logo-company {
     position: relative;
     margin: 0 16px;
+}
+.logo-company-empty {
+    position: relative;
+    width: 322px;
+    height: 77px;
 }
 .logo-company img {
     width: 286px;
