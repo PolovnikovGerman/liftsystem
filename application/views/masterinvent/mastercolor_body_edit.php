@@ -42,7 +42,7 @@
             </div>
         </div>
         <div class="datarow">
-            <div class="colorparamlabel mfgprice">Mfg Cost (Made in USA by BLUETRACK):</div>
+            <div class="colorparamlabel mfgprice">China Cost (before import):</div>
             <div class="colordatainput mfgprice">
                 <input type="text" class="colorpriceinpt invcolor" data-item="price" value="<?=$color['price']?>" placeholder="Price"/>
             </div>
