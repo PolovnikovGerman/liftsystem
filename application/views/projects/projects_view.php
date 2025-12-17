@@ -45,7 +45,7 @@
         <div class="ts-button testorders">
             <a href="<?=$testorderlink?>" target="_blank">
             <p>Test Orders</p>
-            <div class="logo-company">&nbsp;</div>
+            <div class="logo-company-empty">&nbsp;</div>
             </a>
         </div>
     <?php endif; ?>
