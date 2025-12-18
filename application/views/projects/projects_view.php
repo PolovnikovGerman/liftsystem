@@ -35,12 +35,15 @@
     </div>
     <?php endif; ?>
     <?php if ($this->config->item('test_server')==1) : ?>
-    <div class="ts-button doupleorders">
-        <p>Test Orders</p>
-    </div>
-    <div class="ts-button lockedorders">
-        <p>Test Orders BLOCKED</p>
-    </div>
+        <div class="ts-button dualorders">
+            <p>Dual Orders Popup</p>
+        </div>
+        <div class="ts-button leadsview">
+            <p>Lead Popup</p>
+        </div>
+        <div class="ts-button orderleadsview">
+            <p>Orders & Leads Popup</p>
+        </div>
     <?php else : ?>
         <div class="ts-button testorders">
             <a href="<?=$testorderlink?>" target="_blank">
