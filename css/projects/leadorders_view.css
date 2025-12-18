@@ -31,10 +31,10 @@
 }
 #modal-dualorders button.close {
     position: absolute;
-    top: -9px;
-    right: -9px;
-    width: 20px;
-    height: 20px;
+    top: -8px;
+    right: -8px;
+    width: 18px;
+    height: 18px;
     border-radius: 10px;
     border: 1px solid #000;
     background: #ff0000;
@@ -43,8 +43,8 @@
     cursor: pointer;
     opacity: 1;
     z-index: 1;
-    font-size: 17px;
-    line-height: 18px;
+    font-size: 15px;
+    line-height: 16px;
     text-shadow: 0 1px 0 rgba(0, 0, 0, .3);
 }
 #modal-dualorders .modal-body {
@@ -93,7 +93,8 @@
 }
 .cust-maininfo {
     position: relative;
-    padding: 7px 5px 0 3px;
+    padding: 7px 5px 0 5px;
+    width: 100%;
 }
 .custom-info-txt {
     font-size: 15px;
@@ -141,6 +142,9 @@
 .left-panel {
     margin-top: -15px;
     width: 100%;
+}
+.left-panel.hidetitle {
+    margin-top: 5px;
 }
 .custinfo-box {
     position: relative;
@@ -314,7 +318,7 @@ ul.contacts-list li {
     margin-bottom: 3px;
 }
 .custinfo-notes label {
-    font-size: 12px;
+    font-size: 11px;
     line-height: 12px;
     color: #a2a1fc;
     font-weight: 600;
@@ -352,8 +356,8 @@ ul.contacts-list li {
     text-align: center;
 }
 .credit-info {
-    width: 124px;
-    margin-left: 4px;
+    width: 126px;
+    margin-left: 3px;
     margin-top: 3px;
 }
 .credit-infoline {
@@ -548,7 +552,7 @@ li.inactive .paymethod-card {
 
 
 .address-block {
-    height: 46px;
+    height: 43px;
     width: 100%;
     overflow-y: auto;
     margin-top: 4px;
@@ -592,7 +596,7 @@ ul.address-list li {
     scrollbar-width: none;
 }
 .orders-table {
-    width: 100%;
+    width: 200px;
 }
 .orderstable-tr {
     width: 100%;
@@ -662,7 +666,7 @@ ul.address-list li {
     scrollbar-width: none;
 }
 .leads-table {
-    width: 100%;
+    width: 200px;
 }
 .leadstable-tr {
     width: 100%;
@@ -719,7 +723,19 @@ ul.address-list li {
     font-size: 11px;
 }
 
-
+.custinfo-titlebox.hidetitle {
+    position: relative;
+    border: 1px solid #a2a1fc;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #fff;
+    height: 23px;
+    background: #5f5efe;
+    padding: 0 4px;
+    font-weight: 600;
+    width: 100%;
+    line-height: 23px;
+}
 
 
 
@@ -758,8 +774,8 @@ ul.address-list li {
     border: 1px solid #3f3f3f;
     background: #e4e3e3;
     border-radius: 5px;
-    margin-left: 10px;
-    margin-right: 5px;
+    margin-left: 7px;
+    margin-right: 7px;
 }
 .btnclose {
     position: absolute;
@@ -2290,10 +2306,11 @@ span.itemtabl-setups {
     border: 1px solid #7f7f7f;
     background: #fff;
     margin-top: 8px;
-    padding: 3px 4px;
+    padding: 4px 4px;
 }
 .profitkey {
     margin-right: 7px;
+    height: 12px;
 }
 .profitkey:last-child {
     margin-right: 0;
@@ -2306,6 +2323,7 @@ span.itemtabl-setups {
 }
 .profitkey-txt {
     font-size: 10px;
+    line-height: 13px;
 }
 .profitkey-box.black {
     background: #000;
@@ -2373,25 +2391,26 @@ span.itemtabl-setups {
     font-size: 9px;
 }
 .olporders-order {
-    width: 35px;
+    width: 36px;
     text-align: center;
     color: #2626ff;
+    font-weight: 600;
 }
 .olporderstabl-header .olporders-order {
     color: #fff !important;
 }
 .olporders-qty {
     text-align: center;
-    width: 41px;
+    width: 43px;
 }
 .olporders-descr {
-    width: 146px;
+    width: 148px;
     text-align: left;
     padding: 0 4px;
 }
 .olporders-revenue {
     text-align: center;
-    width: 50px;
+    width: 52px;
 }
 .olporders-profit {
     text-align: center;
@@ -2399,7 +2418,7 @@ span.itemtabl-setups {
 }
 .olporders-percent {
     text-align: center;
-    width: 31px;
+    width: 33px;
 }
 .olporders-balance {
     text-align: center;
@@ -2511,7 +2530,7 @@ span.itemtabl-setups {
     text-align: center;
 }
 .olpleads-salesrep {
-    width: 74px;
+    width: 76px;
     text-align: center;
 }
 .olpleads-salesrep.unassigned {
@@ -2519,7 +2538,7 @@ span.itemtabl-setups {
     font-size: 10px;
 }
 .olpleads-descr {
-    width: 187px;
+    width: 193px;
     text-align: left;
     padding-left: 4px;
 }
@@ -2547,7 +2566,7 @@ span.itemtabl-setups {
     background: #fff;
     text-align: center;
     line-height: 13px;
-    margin: 0 3px;
+    margin: 0 4px;
 }
 /*------------------- LEAD Popup------------------*/
 .leadblock {
@@ -3029,20 +3048,20 @@ input.qtybox-qty {
     opacity: 0.3;
 }
 .quotesform-prints {
-    margin-left: 5px;
+    margin-left: 3px;
 }
 .quotesform-prints input {
     width: 29px;
 }
 .quotesform-setup {
-    margin-left: 5px;
+    margin-left: 3px;
 }
 .quotesform-setup input {
     width: 29px;
 }
 .quotesform-design {
     float: right !important;
-    margin-left: 5px;
+    margin-left: 3px;
 }
 .quotesform-design input {
     width: 34px;
@@ -3323,7 +3342,7 @@ input.discount-exp {
 .list-quests {
     width: 100%;
     margin-left: 4px;
-    margin-top: 1px;
+    margin-top: 3px;
 }
 .questionbox {
     width: 100%;

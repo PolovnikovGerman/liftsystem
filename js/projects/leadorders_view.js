@@ -13,6 +13,7 @@ function init_manageproj_content() {
             $(".custom-info-hide").empty().html('Hide <span class="ci-hideicon"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>');
             $(".custom-info-hide").removeClass('hidetitle');
             // Contacts List
+            $(".left-panel").removeClass('hidetitle');
             $(".custinfo-titlebox[data-section='emailcontacts']").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
             $(".custinfo-titlebox[data-section='emailcontacts']").removeClass('hidetitle');
             $("#customercontactslist").show();
@@ -48,6 +49,7 @@ function init_manageproj_content() {
             $(".custom-info-hide").empty().html('Show <span class="ci-hideicon"><i class="fa fa-chevron-down" aria-hidden="true"></i></span>');
             $(".custom-info-hide").addClass('hidetitle');
             // Contacts List
+            $(".left-panel").addClass('hidetitle');
             $(".custinfo-titlebox[data-section='emailcontacts']").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>')
             $(".custinfo-titlebox[data-section='emailcontacts']").addClass('hidetitle');
             $("#customercontactslist").hide();
@@ -57,7 +59,7 @@ function init_manageproj_content() {
             $("#customeradditinfo").hide();
             // Credits
             $(".custinfo-titlebox[data-section='customercreditlist']").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
-            $(".custinfo-titlebox[data-section='customercreditlist']").removeClass('hidetitle');
+            $(".custinfo-titlebox[data-section='customercreditlist']").addClass('hidetitle');
             $("#customercreditlist").hide();
             // Orders
             $(".custinfo-titlebox[data-section='customerorderslist']").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
@@ -88,10 +90,12 @@ function init_manageproj_content() {
             blockhide = 1;
         }
         if (blockhide == 1) {
+            $(".left-panel").removeClass('hidetitle');
             $(".custinfo-titlebox[data-section='emailcontacts']").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
             $(".custinfo-titlebox[data-section='emailcontacts']").removeClass('hidetitle');
             $("#customercontactslist").show();
         } else {
+            $(".left-panel").addClass('hidetitle');
             $(".custinfo-titlebox[data-section='emailcontacts']").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>')
             $(".custinfo-titlebox[data-section='emailcontacts']").addClass('hidetitle');
             $("#customercontactslist").hide();
@@ -125,7 +129,7 @@ function init_manageproj_content() {
             $("#customercreditlist").show();
         } else {
             $(".custinfo-titlebox[data-section='customercreditlist']").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
-            $(".custinfo-titlebox[data-section='customercreditlist']").removeClass('hidetitle');
+            $(".custinfo-titlebox[data-section='customercreditlist']").addClass('hidetitle');
             $("#customercreditlist").hide();
         }
     })
