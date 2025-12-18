@@ -210,3 +210,8 @@ function init_manageproj_content() {
         }
     });
 }
+
+function init_leadsorders_content() {
+    var SimpleLeads = new SimpleBar(document.getElementById('olpleadstabl-body'), { autoHide: false });
+    var SimplOrder = new SimpleBar(document.getElementById('olporderstabl-body'), { autoHide: false });
+}
