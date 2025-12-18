@@ -215,3 +215,8 @@ function init_leadsorders_content() {
     var SimpleLeads = new SimpleBar(document.getElementById('olpleadstabl-body'), { autoHide: false });
     var SimplOrder = new SimpleBar(document.getElementById('olporderstabl-body'), { autoHide: false });
 }
+
+function init_leadquote_content() {
+    var SimpleLeadquote = new SimpleBar(document.getElementById('leadquotetable'), { autoHide: false });
+    var SimpleProofreq = new SimpleBar(document.getElementById('list-proofreqbox'), { autoHide: false });
+}

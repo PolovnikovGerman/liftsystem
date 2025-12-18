@@ -77,6 +77,7 @@ function init_projects_content() {
                 $("#modal-dualorders").modal({keyboard: false, show: true});
                 // Manage content
                 init_manageproj_content();
+                init_leadquote_content();
             }
         },'json');
     })

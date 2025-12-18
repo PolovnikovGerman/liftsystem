@@ -1,8 +1,8 @@
 <div class="contant-popup">
-    <div class="section-customer">
+    <div class="section-customer <?=$blocked==0 ? $brandclass : 'blockedcustomer';?>">
         <?=$customer_view?>
     </div>
-    <div class="section-content">
+    <div class="section-content <?=$blocked==0 ? $brandclass : 'blockedcustomer';?>">
         <div class="olp-body">
             <div class="olp-ordersblock">
                 <div class="datarow">
