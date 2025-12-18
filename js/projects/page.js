@@ -26,29 +26,75 @@ function init_page(objid) {
 }
 
 function init_projects_content() {
-    $(".doupleorders").unbind('click').click(function () {
+    // $(".doupleorders").unbind('click').click(function () {
+    //     var params = new Array();
+    //     params.push({name: 'blocked', value: 0});
+    //     var url = '/projects/vieworders';
+    //     $.post(url, params, function (response) {
+    //         if (response.errors=='') {
+    //             $("#dualOrderspopup").find('div.modal-body').empty().html(response.data.content);
+    //             $("#dualOrderspopup").modal({keyboard: false, show: true});
+    //             init_doubleorders();
+    //         }
+    //     },'json');
+    // });
+    // $(".lockedorders").unbind('click').click(function () {
+    //     var params = new Array();
+    //     params.push({name: 'blocked', value: 1});
+    //     var url = '/projects/vieworders';
+    //     $.post(url, params, function (response) {
+    //         if (response.errors=='') {
+    //             $("#dualOrderspopup").find('div.modal-body').empty().html(response.data.content);
+    //             $("#dualOrderspopup").modal({keyboard: false, show: true});
+    //             init_doubleorders();
+    //         }
+    //     },'json');
+    // });
+    $(".dualorders").unbind('click').click(function (){
         var params = new Array();
         params.push({name: 'blocked', value: 0});
-        var url = '/projects/vieworders';
-        $.post(url, params, function (response) {
+        params.push({name: 'content', value: 'dualorders'});
+        var url = '/projects/viewcontent';
+        $.post(url, params, function (response){
             if (response.errors=='') {
-                $("#dualOrderspopup").find('div.modal-body').empty().html(response.data.content);
-                $("#dualOrderspopup").modal({keyboard: false, show: true});
-                init_doubleorders();
+                $("#modal-dualorders").find('div.modal-dialog').css('width',response.data.modalwidth);
+                $("#modal-dualorders").find('div.modal-body').empty().html(response.data.content);
+                $("#modal-dualorders").modal({keyboard: false, show: true});
+                // Manage content
+                init_manageproj_content();
             }
         },'json');
     });
-    $(".lockedorders").unbind('click').click(function () {
+    $(".leadsview").unbind('click').click(function (){
         var params = new Array();
-        params.push({name: 'blocked', value: 1});
-        var url = '/projects/vieworders';
-        $.post(url, params, function (response) {
+        params.push({name: 'blocked', value: 0});
+        params.push({name: 'content', value: 'leadsview'});
+        var url = '/projects/viewcontent';
+        $.post(url, params, function (response){
             if (response.errors=='') {
-                $("#dualOrderspopup").find('div.modal-body').empty().html(response.data.content);
-                $("#dualOrderspopup").modal({keyboard: false, show: true});
-                init_doubleorders();
+                $("#modal-dualorders").find('div.modal-dialog').css('width',response.data.modalwidth);
+                $("#modal-dualorders").find('div.modal-body').empty().html(response.data.content);
+                $("#modal-dualorders").modal({keyboard: false, show: true});
+                // Manage content
+                init_manageproj_content();
+                init_leadquote_content();
             }
         },'json');
-    });
-
+    })
+    $(".orderleadsview").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'blocked', value: 0});
+        params.push({name: 'content', value: 'orderleadview'});
+        var url = '/projects/viewcontent';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#modal-dualorders").find('div.modal-dialog').css('width',response.data.modalwidth);
+                $("#modal-dualorders").find('div.modal-body').empty().html(response.data.content);
+                $("#modal-dualorders").modal({keyboard: false, show: true});
+                // Manage content
+                init_manageproj_content();
+                init_leadsorders_content();
+            }
+        },'json');
+    })
 }
