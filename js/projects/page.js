@@ -83,7 +83,7 @@ function init_projects_content() {
     })
     $(".orderleadsview").unbind('click').click(function (){
         var params = new Array();
-        params.push({name: 'blocked', value: 0});
+        params.push({name: 'blocked', value: 1});
         params.push({name: 'content', value: 'orderleadview'});
         var url = '/projects/viewcontent';
         $.post(url, params, function (response){
