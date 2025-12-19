@@ -3496,6 +3496,7 @@ input.discount-exp {
     display: none;
     width: 100%;
     justify-content: center;
+    margin-top: 5px;
 }
 .statuscust-blocked {
     height: 16px;
@@ -3514,6 +3515,9 @@ input.discount-exp {
     font-weight: 600;
     line-height: 16px;
     color: #fff;
+}
+.blockedcustomer .cust-maininfo {
+    padding: 0 5px 0 5px;
 }
 
 
