@@ -1,3 +1,13 @@
+<?php if ($blocked==1) : ?>
+    <div class="datarow">
+        <div class="statuscustomer">
+            <div class="statuscust-blocked">
+                <div class="blocked-icon"><img src="/img/doubleorders/skull-white.svg"></div>
+                <div class="blocked-txt">BLOCKED</div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
 <div class="cust-maininfo">
     <div class="datarow">
         <div class="custom-info-txt">Customer:</div>
