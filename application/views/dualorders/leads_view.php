@@ -9,10 +9,8 @@
                 <div class="leadnumber">Lead: <span>#L41134</span></div>
                 <div class="leadtopstatus">
                     <label>Status:</label>
-                    <select>
-                        <option data-img-src="/img/doubleorders/icon-01.svg">
-                            Priority
-                        </option>
+                    <select class="leadtopstatusselect" data-width="131px;">
+                        <option data-content="<span class='leadtopstatus-star'><i class='fa fa-star' aria-hidden='true'></i></span>Priority">Priority</option>
                         <option>Option 2</option>
                     </select>
                 </div>

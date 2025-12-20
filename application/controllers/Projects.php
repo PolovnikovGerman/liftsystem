@@ -49,7 +49,9 @@ class Projects extends MY_Controller
         $head['scripts'][] = array('src' => '/js/projects/page.js');
         $head['styles'][] = array('style' => '/css/projects/page.css');
         // Add Order Dual Orders
+        $head['styles'][] = array('style' => 'https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css');
         $head['styles'][] = array('style' => '/css/projects/leadorders_view.css');
+        $head['scripts'][] = array('src' => 'https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js');
         $head['scripts'][] = array('src' => '/js/projects/leadorders_view.js');
         $options = [
             'title' => $head['title'],

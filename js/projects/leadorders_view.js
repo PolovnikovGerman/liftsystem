@@ -223,4 +223,5 @@ function init_leadsorders_content() {
 function init_leadquote_content() {
     var SimpleLeadquote = new SimpleBar(document.getElementById('leadquotetable'), { autoHide: false });
     var SimpleProofreq = new SimpleBar(document.getElementById('list-proofreqbox'), { autoHide: false });
+    $(".leadtopstatusselect").selectpicker();
 }
