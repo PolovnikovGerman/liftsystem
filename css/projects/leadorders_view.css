@@ -2622,15 +2622,24 @@ span.itemtabl-setups {
     font-weight: 600;
     line-height: 21px;
 }
-.leadtopstatus select {
-    width: 131px;
-    height: 21px;
+div.leadtopstatusselect {
+    width: 131px!important;
+    height: 21px!important;
     border: 1px solid #585858;
     background: #fff;
     border-radius: 4px;
     line-height: 21px;
     font-size: 13px;
 }
+/*.leadtopstatus select {*/
+/*    width: 131px;*/
+/*    height: 21px;*/
+/*    border: 1px solid #585858;*/
+/*    background: #fff;*/
+/*    border-radius: 4px;*/
+/*    line-height: 21px;*/
+/*    font-size: 13px;*/
+/*}*/
 .leadtopstatus-star {
     color: #fff200;
     font-size: 12px;
