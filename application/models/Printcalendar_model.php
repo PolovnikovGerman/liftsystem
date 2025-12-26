@@ -38,7 +38,7 @@ class Printcalendar_model extends MY_Model
 
     public function build_calendar($start_year, $year)
     {
-        if ($year==date('Y')) {
+        if ($year>=date('Y')) {
             $yearlimit = strtotime($year.'-12-31');
             $this->db->select('max(o.print_date) as printdate')->from('ts_orders o');
             $this->db->join('ts_order_items oi','o.order_id=oi.order_id');
