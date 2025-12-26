@@ -31,12 +31,15 @@ function init_accreceive_totals() {
     var params = new Array();
     params.push({name: 'brand', value: $("#accreceivebrand").val()});
     params.push({name: 'period', value: $(".accreceiv-period-select").val()});
-    params.push({name: 'ownsort1', value: $("#accreciveownsort").val()});
-    params.push({name: 'ownsort2', value: $("#accreciveownsort2").val()});
+    // params.push({name: 'ownsort1', value: $("#accreciveownsort").val()});
+    // params.push({name: 'ownsort2', value: $("#accreciveownsort2").val()});
     var url = '/accounting/accountreceiv_totals';
     $.post(url, params, function (response) {
         if (response.errors=='') {
-            $(".accreceiv-totals").empty().html(response.data.content);
+            // $(".accreceiv-totals").empty().html(response.data.content);
+            $(".accreceiv-totalown").empty().html(response.data.total_owed);
+            $(".accreceiv-totalpast").empty().html(response.data.total_past);
+            $(".accreceiv-totalrefund").empty().html(response.data.total_refund);
             $(".accreceiv-content-right").empty().html(response.data.totals);
         } else {
             show_error(response);
@@ -299,8 +302,9 @@ function init_accreceive_content() {
         var params = new Array();
         params.push({name: 'brand', value: $("#accreceivebrand").val()});
         params.push({name: 'period', value: $(".accreceiv-period-select").val()});
-        params.push({name: 'ownsort1', value: $("#accreciveownsort").val()});
-        params.push({name: 'ownsort2', value: $("#accreciveownsort2").val()});
+        // params.push({name: 'ownsort1', value: $("#accreciveownsort").val()});
+        // params.push({name: 'ownsort2', value: $("#accreciveownsort2").val()});
+        params.push({name: 'ownsort', value: $("select.accreceiv-sort-select").val()});
         params.push({name: 'refundsort', value: $("#accreceiverefundsort").val()});
         params.push({name: 'refunddirec', value: $("#accreceiverefunddir").val()});
         params.push({name: 'exporttype', value: 'O'});
@@ -317,8 +321,9 @@ function init_accreceive_content() {
         var params = new Array();
         params.push({name: 'brand', value: $("#accreceivebrand").val()});
         params.push({name: 'period', value: $(".accreceiv-period-select").val()});
-        params.push({name: 'ownsort1', value: $("#accreciveownsort").val()});
-        params.push({name: 'ownsort2', value: $("#accreciveownsort2").val()});
+        // params.push({name: 'ownsort1', value: $("#accreciveownsort").val()});
+        // params.push({name: 'ownsort2', value: $("#accreciveownsort2").val()});
+        params.push({name: 'ownsort', value: $("select.accreceiv-sort-select").val()});
         params.push({name: 'refundsort', value: $("#accreceiverefundsort").val()});
         params.push({name: 'refunddirec', value: $("#accreceiverefunddir").val()});
         params.push({name: 'exporttype', value: 'R'});

@@ -42,9 +42,21 @@
             </div>
         </div>
         <div class="datarow">
-            <div class="colorparamlabel mfgprice">Mfg Cost (Made in USA by BLUETRACK):</div>
+            <div class="colorparamlabel mfgprice">China Cost (before import):</div>
             <div class="colordatainput mfgprice">
                 <input type="text" class="colorpriceinpt invcolor" data-item="price" value="<?=$color['price']?>" placeholder="Price"/>
+            </div>
+        </div>
+        <div class="datarow">
+            <div class="colorparamlabel">Box Side:</div>
+            <div class="colordatainput colorboxside">
+                <input type="text" class="invcolorboxsize invcolor" data-item="boxsize" value="<?=$color['boxsize']?>" placeholder="Box Size"/>
+            </div>
+        </div>
+        <div class="datarow">
+            <div class="colorparamlabel">Location:</div>
+            <div class="colordatainput colorlocation">
+                <input type="text" class="invcolorlocation invcolor" data-item="location" value="<?=$color['location']?>" placeholder="Location"/>
             </div>
         </div>
         <div class="colordatadevide">&nbsp;</div>

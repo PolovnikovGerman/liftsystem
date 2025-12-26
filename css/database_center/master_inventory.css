@@ -176,7 +176,8 @@
 }
 .mastinvent_databody {
     background: #252525;
-    width: 1355px;
+    /*width: 1564px;*/
+    width: 1342px; /* Hidden Express */
     padding-left: 12px;
     padding-bottom: 12px;
     padding-right: 6px;
@@ -390,8 +391,14 @@ input.inventadd {
 .masterinventtablehead .masterinvemptyspace {
     width: 54px;
 }
+.masterinventtablehead .masterinventboxsize {
+    width: 50px;
+}
+.masterinventtablehead .masterinventlocation {
+    width: 150px;
+    margin-right: 10px;
+}
 .masterinventtablehead .masterinventavgprice, .masterinventtablehead .masterinventcontactprice {
-    /* width: 66px; */
     width: 55px;
 }
 .masterinventtablehead .masterinventtotalval {
@@ -404,8 +411,8 @@ input.inventadd {
 .masterinventtablebody {
     background: #252525;
     color: #000000;
-    /* width: 1336px; */
-    width: 1340px;
+    /*width: 1542px;*/
+    width: 1322px; /* Hidden Express */
     max-height: 977px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -438,8 +445,8 @@ input.inventadd {
     width: 562px;
 }
 .masterinventtablebody .mastinvent_body_express {
-    /* width: 283px;*/
     width: 223px;
+    display: none;
 }
 .masterinventtablebody .mastinvent_body_container {
     /* width: 283px; */
@@ -451,7 +458,7 @@ input.inventadd {
 }
 .masterinventtablebody .mastinvent_body_right {
     /* width: 207px; */
-    width: 204px;
+    width: 412px; /* 204px; */
     margin-left: 39px;
 }
 .masterinventtablebody .mastinvent_body_right.showmax {
@@ -657,6 +664,17 @@ input.inventadd {
 }
 .inventorydatarow .masterinvemptyspace {
     width: 43px;
+}
+.inventorydatarow .masterinventboxsize {
+    border-right: 1px solid #000000;
+    width: 50px;
+}
+.inventorydatarow .masterinventlocation {
+    width: 150px;
+}
+.inventorydatarow .masterinventlocempty {
+    width: 10px;
+    background: #252525;
 }
 .inventorydatarow .masterinventavgprice {
     width: 55px;
@@ -1620,7 +1638,7 @@ select.itemdataunit {
     background: #ffffff;
     border: 1px solid #000000;
     padding: 0 10px 10px 10px;
-    height: 383px;
+    height: 456px;
     width: 100%;
 }
 .statusradiobtn {
@@ -1697,6 +1715,12 @@ textarea.colorpantonesinpt {
 }
 .colorparamvalue.colormaxvalue, .colorparamvalue.mfgprice {
     width: 90px;
+}
+.colorparamvalue.colorboxside, .colorparamvalue.colorlocation {
+    width: 320px;
+}
+input.invcolorboxsize, input.invcolorlocation {
+    width: 320px;
 }
 input.colormaxvalueinpt {
     width: 90px;
@@ -1841,10 +1865,10 @@ input.colorvendorpriceinpt {
     /*margin-top: -5px;*/
     /*margin-bottom: -23px;*/
 }
-    /* Express */
+/* Express */
 .mastinvent_header_express {
-    /* width: 283px; */
     width: 223px;
+    display: none;
 }
 .mastinvent_header_express .mastinvent_express_manage {
     width: 100%;
@@ -2068,6 +2092,7 @@ i.cancelboatcontainer {
 }
 .mastinvent_footlink_express {
     width: 283px;
+    display: none;
 }
 .mastinvent_footlink_express .left_arrow_empty, .mastinvent_footlink_express .right_arrow_empty {
     width: 34px;
@@ -2110,6 +2135,7 @@ i.cancelboatcontainer {
     width: 120px;
     margin-right: 43px;
     overflow-x: hidden;
+    display: none;
 }
 .containertotals {
     width: 240px;
@@ -2117,7 +2143,6 @@ i.cancelboatcontainer {
     overflow-x: hidden;
 }
 .expresstotals {
-    /* margin-left: 34px; */
     margin-left: 49px;
     margin-right: 52px;
 }
@@ -2127,13 +2152,13 @@ i.cancelboatcontainer {
     margin-left: 55px;
 }
 .containertotals.showmax {
-    margin-left: 60px;
+    margin-left: 33px; /* 60px; */
 }
 .mastinvent_header_right {
-    width: 258px;
+    width: 468px;
 }
 .mastinvent_header_right.showmax {
-    width: 205px;
+    width: 418px;
 }
 .mastinvent_header_right.showmax > .masterinventtablehead {
     margin-left: 15px;

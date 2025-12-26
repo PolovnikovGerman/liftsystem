@@ -19,10 +19,6 @@
                 </div>
             </div>
         </div>
-<!--        <div class="invtypebutton --><?php //=$eventtype=='purchasing' ? 'active' : ''?><!-- oldver" data-itemtype="purchasing">-->
-<!--            <span>Purchasing</span>-->
-<!--            <div class="oldvesionlabel">&nbsp;</div>-->
-<!--        </div>-->
         <div class="invtypebutton <?=$eventtype=='manufacturing' ? 'active' : ''?> oldver" data-itemtype="manufacturing">
             <span>Manufacturing</span>
             <div class="oldvesionlabel">&nbsp;</div>
@@ -79,7 +75,7 @@
                 <div class="mastinvent_header_left">
                     <div class="datarow">
                         <div class="labeltxt">Max Value:</div>
-                        <div class="valuedata" id="maximuminvent"><?=$maxtotal?></div> <!-- <?// echo MoneyOutput($maxsum)?> -->
+                        <div class="valuedata" id="maximuminvent"><?=$maxtotal?></div>
                     </div>
                     <div class="datarow">
                         <div class="addlabeltxt">Add’l Amnt:</div>
@@ -175,6 +171,8 @@
                 <div class="mastinvent_header_right">
                     <div class="masterinventtablehead">
                         <div class="masterinvemptyspace">&nbsp;</div>
+                        <div class="masterinventboxsize">Box Size</div>
+                        <div class="masterinventlocation">Location</div>
                         <div class="masterinventavgprice">Contract</div>
                         <div class="masterinventavgprice">Avg Price</div>
                         <div class="masterinventhistory">&nbsp;</div>

@@ -1,4 +1,5 @@
 <div class="buttons-testsites">
+    <?php if ($this->config->item('test_server')==0) : ?>
     <div class="ts-button stressballsbluetrack">
         <a href="<?=$bluelink?>" target="_blank">
             <p>Test Site</p>
@@ -32,4 +33,20 @@
         </div>
         </a>
     </div>
+    <?php endif; ?>
+    <?php if ($this->config->item('test_server')==1) : ?>
+    <div class="ts-button doupleorders">
+        <p>Test Orders</p>
+    </div>
+    <div class="ts-button lockedorders">
+        <p>Test Orders BLOCKED</p>
+    </div>
+    <?php else : ?>
+        <div class="ts-button testorders">
+            <a href="<?=$testorderlink?>" target="_blank">
+            <p>Test Orders</p>
+            <div class="logo-company-empty">&nbsp;</div>
+            </a>
+        </div>
+    <?php endif; ?>
 </div>

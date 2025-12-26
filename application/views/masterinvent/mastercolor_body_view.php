@@ -21,8 +21,16 @@
             <div class="colorparamvalue colormaxvalue"><?=empty($color['suggeststock']) ? '&nbsp;' : QTYOutput($color['suggeststock'])?></div>
         </div>
         <div class="datarow">
-            <div class="colorparamlabel  mfgprice">Mfg Cost  (Made in USA by BLUETRACK):</div>
+            <div class="colorparamlabel  mfgprice">China Cost (before import):</div>
             <div class="colorparamvalue mfgprice"><?=empty($color['price']) ? '&nbsp;' : MoneyOutput($color['price'],3)?></div>
+        </div>
+        <div class="datarow">
+            <div class="colorparamlabel">Box Side:</div>
+            <div class="colorparamvalue colorboxside"><?=empty($color['boxsize']) ? '&nbsp;' : $color['boxsize']?></div>
+        </div>
+        <div class="datarow">
+            <div class="colorparamlabel">Location:</div>
+            <div class="colorparamvalue colorlocation"><?=empty($color['location']) ? '&nbsp;' : $color['location']?></div>
         </div>
         <div class="colordatadevide">&nbsp;</div>
         <div class="datarow">

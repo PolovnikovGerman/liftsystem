@@ -129,7 +129,7 @@ class Leadquote_model extends MY_Model
                     $quotedat['shipping_city'] = $customquote['ship_city'];
                     $quotedat['shipping_address1'] = $customquote['ship_address1'];
                     $quotedat['shipping_address2'] = $customquote['ship_address2'];
-                    $quotedat['shipping_state'] = $customquote['ship_state'];
+                    $quotedat['shipping_state'] = strtoupper($customquote['ship_state']);
                     $quotedat['shipping_contact'] = $customquote['customer_name'];
                     $quotedat['shipping_company'] = $customquote['customer_company'];
                     if ($quotedat['shipping_state'] == $this->tax_state) {
