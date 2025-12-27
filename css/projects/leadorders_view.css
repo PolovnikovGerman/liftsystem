@@ -2642,8 +2642,18 @@ div.leadtopstatusselect {
     border: 1px solid #585858;
     background: #fff;
     border-radius: 4px;
-    line-height: 21px;
     font-size: 13px;
+}
+div.leadtopstatusselect .btn-default {
+    color: #333;
+    background-color: #fff;
+    padding: 0 4px;
+    border: 1px solid transparent;
+}
+div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: transparent;
 }
 /*.leadtopstatus select {*/
 /*    width: 131px;*/
