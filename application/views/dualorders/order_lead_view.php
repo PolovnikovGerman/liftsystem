@@ -173,7 +173,7 @@
                                     <div class="olpleadstabl-td olpleads-date">09/14/25</div>
                                     <div class="olpleadstabl-td olpleads-salesrep">
                                         <div class="salesrep-box">Sean</div>
-                                        <span>+ 2</span>
+                                        <span>+2</span>
                                     </div>
                                     <div class="olpleadstabl-td olpleads-descr truncateoverflowtext">00-ZZ124 Apple Stress Balls</div>
                                     <div class="olpleadstabl-td olpleads-quotes">14</div>
@@ -185,7 +185,7 @@
                                     <div class="olpleadstabl-td olpleads-date">11/28/25</div>
                                     <div class="olpleadstabl-td olpleads-salesrep">
                                         <div class="salesrep-box">Sean</div>
-                                        <span>+ 1</span>
+                                        <span>+1</span>
                                     </div>
                                     <div class="olpleadstabl-td olpleads-descr truncateoverflowtext">22-ZZ478 Round Stress Balls</div>
                                     <div class="olpleadstabl-td olpleads-quotes">8</div>
@@ -219,7 +219,7 @@
                                     <div class="olpleadstabl-td olpleads-date">09/14/25</div>
                                     <div class="olpleadstabl-td olpleads-salesrep">
                                         <div class="salesrep-box">Sean</div>
-                                        <span>+ 1</span>
+                                        <span>+1</span>
                                     </div>
                                     <div class="olpleadstabl-td olpleads-descr truncateoverflowtext">00-ZZ124 Apple Stress Balls</div>
                                     <div class="olpleadstabl-td olpleads-quotes">14</div>
@@ -231,7 +231,7 @@
                                     <div class="olpleadstabl-td olpleads-date">11/28/25</div>
                                     <div class="olpleadstabl-td olpleads-salesrep">
                                         <div class="salesrep-box">Shanequa</div>
-                                        <span>+ 1</span>
+                                        <span>+1</span>
                                     </div>
                                     <div class="olpleadstabl-td olpleads-descr truncateoverflowtext">22-ZZ478 Round Stress Balls</div>
                                     <div class="olpleadstabl-td olpleads-quotes">8</div>
