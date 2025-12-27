@@ -2227,6 +2227,7 @@ span.itemtabl-setups {
     background: #1dac21;
     background: linear-gradient(to top, #1b9424, #1fc11e);
     border: 1px solid #15801c;
+    margin: 3px 0;
 }
 .btn-neworder:hover, .btn-newlead:hover {
     background: linear-gradient(to top, #1b9424, #1caa22);
@@ -2482,6 +2483,7 @@ span.itemtabl-setups {
     background: #1dac21;
     background: linear-gradient(to top, #1b9424, #1fc11e);
     border: 1px solid #15801c;
+    margin: 3px 0;
 }
 .olp-leadbody {
     width: 100%;
@@ -2539,7 +2541,7 @@ span.itemtabl-setups {
 }
 .olpleads-salesrep {
     width: 76px;
-    text-align: center;
+    /*text-align: center;*/
 }
 .olpleads-salesrep.unassigned {
     color: #000;

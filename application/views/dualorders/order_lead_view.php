@@ -125,7 +125,7 @@
                     <div class="olp-titleblock">LEADS:</div>
                 </div>
                 <div class="datarow">
-                    <div class="btn-newlead">New Leadr</div>
+                    <div class="btn-newlead">New Lead</div>
                 </div>
                 <div class="datarow">
                     <div class="olp-leadbody">
