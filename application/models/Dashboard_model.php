@@ -96,9 +96,15 @@ Class Dashboard_model extends MY_Model
         if ($curweek==0) {
             $weeknum = date('W');
             $year = date('Y');
+            if (intval(date('m'))==12 && intval($weeknum)==1) {
+                $year = $year + 1;
+            }
         } else {
             $weeknum = date('W', $curweek);
             $year = date('Y', $curweek);
+            if (intval(date('m',$curweek))==12 && intval($weeknum)==1) {
+                $year = $year + 1;
+            }
         }
         $dates = getDatesByWeek($weeknum, $year);
         // $label = 'M '.date('M j', $dates['start_week']).' - S '.date('M j', $dates['end_week']).' '.$year;
