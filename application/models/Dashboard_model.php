@@ -107,7 +107,6 @@ Class Dashboard_model extends MY_Model
             }
         }
         $dates = getDatesByWeek($weeknum, $year);
-        // $label = 'M '.date('M j', $dates['start_week']).' - S '.date('M j', $dates['end_week']).' '.$year;
         // Batches sql
         $this->db->select('order_id, count(batch_id) cnt, sum(batch_amount) paysum');
         $this->db->from('ts_order_batches');
