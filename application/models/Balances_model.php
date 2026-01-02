@@ -2466,7 +2466,10 @@ class Balances_model extends My_Model
                 // Income by current year
                 foreach ($ordersres as $row) {
                     if ($row['orddat'] == $end_year) {
-                        $salespace = round($row['cnt'] / $paceperc, 0);
+                        $salespace = 0;
+                        if (floatval($paceperc)!==0) {
+                            $salespace = round($row['cnt'] / $paceperc, 0);
+                        }
                         $revenuepace = 0;
                         // if (date('m')=='01') {
                             $revenuepace = round($row['revenue'] / $paceperc, 2);
@@ -2715,7 +2718,7 @@ class Balances_model extends My_Model
             }
             $totalrevenue += floatval($monthdat['revenue']);
             $perc = 0;
-            if (floatval($revenuepace)>0) {
+            if (floatval($revenuepace)!=0) {
                 $perc = round($totalrevenue/$revenuepace,5);
             }
             $monthdate = strtotime('2013-'.$i.'-01');
