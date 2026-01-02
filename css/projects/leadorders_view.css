@@ -2544,9 +2544,9 @@ span.itemtabl-setups {
     text-align: center;
 }
 .olpleads-salesrep.unassigned {
-    color: #000;
+    color: #fff;
     font-size: 10px;
-    background: #f6ff02;
+    background: #b404fd;
 }
 .olpleads-descr {
     width: 193px;
@@ -3123,16 +3123,17 @@ input.discount-exp {
 }
 .btn-createquote {
     float: right !important;
-    width: 80px;
+    width: 84px;
     height: 19px;
-    line-height: 18px;
-    background: #ff6df0;
-    background: linear-gradient(to top, #ff51f0, #ff85f0);
+    line-height: 19px;
+    background: #5b5afe;
+    background: linear-gradient(to top, #4c4bfe, #6664fe);
     text-align: center;
     font-size: 11px;
-    border: 1px solid #000;
+    /* border: 1px solid #000; */
     border-radius: 4px;
     cursor: pointer;
+    color: #fff;
 }
 
 
