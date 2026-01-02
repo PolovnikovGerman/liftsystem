@@ -2467,7 +2467,7 @@ class Balances_model extends My_Model
                 foreach ($ordersres as $row) {
                     if ($row['orddat'] == $end_year) {
                         $salespace = 0;
-                        if (floatval($paceperc)!==0) {
+                        if (floatval($paceperc)!=0) {
                             $salespace = round($row['cnt'] / $paceperc, 0);
                         }
                         $revenuepace = 0;
