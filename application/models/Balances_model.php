@@ -2714,7 +2714,10 @@ class Balances_model extends My_Model
                 $monthdat = $this->db->get()->row_array();
             }
             $totalrevenue += floatval($monthdat['revenue']);
-            $perc = round($totalrevenue/$revenuepace,5);
+            $perc = 0;
+            if (floatval($revenuepace)>0) {
+                $perc = round($totalrevenue/$revenuepace,5);
+            }
             $monthdate = strtotime('2013-'.$i.'-01');
             $details[] = [
                 'month' => $i,
