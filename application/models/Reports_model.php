@@ -3628,8 +3628,12 @@ Class Reports_model extends My_Model
 
     // Add New Week
     public function _check_current_week($user_id) {
-        $curweek=date('W');
-        $curyear=date('Y');
+        $curweek=intval(date('W'));
+        $curyear=intval(date('Y'));
+        $curmonth = intval(date('m'));
+        if ($curweek==1 && $curmonth==12) {
+            $curyear=$curyear+1;
+        }
         $dats=getDatesByWeek($curweek,$curyear);
         $this->db->select('count(rolerpt_week_id) as cnt');
         $this->db->from('ts_rolerpt_weeks');
