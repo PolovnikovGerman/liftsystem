@@ -2467,12 +2467,18 @@ class Balances_model extends My_Model
                 foreach ($ordersres as $row) {
                     if ($row['orddat'] == $end_year) {
                         $salespace = 0;
+                        $revenuepace = 0;
+                        $grosprofitpace = 0;
+                        $pcssoldpace = 0;
                         if (floatval($paceperc)!=0) {
                             $salespace = round($row['cnt'] / $paceperc, 0);
-                        }
-                        $revenuepace = 0;
-                        // if (date('m')=='01') {
                             $revenuepace = round($row['revenue'] / $paceperc, 2);
+                            $grosprofitpace = round($row['gross_profit'] / $paceperc, 2);
+                            $pcssoldpace=round($row['pcssold'] / $paceperc,0);
+                        }
+
+                        // if (date('m')=='01') {
+//                            $revenuepace = round($row['revenue'] / $paceperc, 2);
 //                        } else {
 //                            if ($salespace != 0) {
 //                                $revendate = strtotime(date('Y-m').'-01');
@@ -2494,8 +2500,8 @@ class Balances_model extends My_Model
 //                            }
 //                        }
                         // Get dat
-                        $grosprofitpace = round($row['gross_profit'] / $paceperc, 2);
-                        $pcssoldpace=round($row['pcssold'] / $paceperc,0);
+//                        $grosprofitpace = round($row['gross_profit'] / $paceperc, 2);
+//                        $pcssoldpace=round($row['pcssold'] / $paceperc,0);
                     }
                 }
             } else {
