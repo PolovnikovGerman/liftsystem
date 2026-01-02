@@ -2974,8 +2974,12 @@ class Balances_model extends My_Model
     }
 
     public function _check_current_week($user_id) {
-        $curweek=date('W');
-        $curyear=date('Y');
+        $curweek=intval(date('W'));
+        $curyear=intval(date('Y'));
+        $curmonth = intval(date('m'));
+        if ($curweek==1  && $curmonth==12) {
+            $curyear=$curyear+1;
+        }
         $this->db->select('count(profit_id) as cnt');
         $this->db->from('netprofit');
         $this->db->where('profit_week', $curweek);
