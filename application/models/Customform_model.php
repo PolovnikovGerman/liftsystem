@@ -143,11 +143,12 @@ class Customform_model extends MY_Model
         $monday = $dats['start_week'];
         $sunday = $dats['end_week'];
         $weeks = [];
-        for ($i=0; $i<52; $i++) {
+        $numweeks = 52 * 3;
+        for ($i=0; $i < $numweeks; $i++) {
             $startd = strtotime("-".$i." week", $monday);
             $finishd = strtotime("-".$i." week", $sunday);
             $curweek = [
-                'week' => date('M j', $startd),
+                'week' => date('M j, y', $startd),
                 'mon' => 0,
                 'tue' => 0,
                 'wed' => 0,
@@ -201,7 +202,8 @@ class Customform_model extends MY_Model
         $monday = $dats['start_week'];
         $sunday = $dats['end_week'];
         $maxdat = $sunday;
-        $mindat = strtotime('-52 weeks', $monday);
+//         $mindat = strtotime('-52 weeks', $monday);
+        $mindat = strtotime('-156 weeks', $monday);
         $this->db->select('date_format(date_add, "%X-%V") as dayw, count(custom_quote_id) as cnt')->from('ts_custom_quotes');
         if ($brand!=='ALL') {
             if ($brand=='SR') {
