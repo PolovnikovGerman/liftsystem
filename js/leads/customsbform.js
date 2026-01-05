@@ -392,6 +392,7 @@ function initCustomFormTotals(viewtype) {
                 });
             } else {
                 $(".customform_total_tabledat").empty().html(response.data.content);
+                new SimpleBar(document.getElementById('customform_total_tabledat'), { autoHide: false });
             }
         } else {
             show_error(response);
