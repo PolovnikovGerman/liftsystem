@@ -54,7 +54,7 @@
             <div class="total_day">Su</div>
             <div class="total_totals">Total</div>
         </div>
-        <div class="customform_total_tabledat"></div>
+        <div class="customform_total_tabledat" id="customform_total_tabledat"></div>
     </div>
     <div id="customformtotal_chartview" class="customformtotal_chartview">
         <canvas id="myChart"></canvas>
