@@ -4370,7 +4370,7 @@ class Test extends CI_Controller
 //        }
 //        echo 'That is All, folk '.PHP_EOL;
         $this->load->model('email_model');
-        $this->email_model->generate_quota(28336); // 26662
+        $this->email_model->generate_quota(28348); // 28336
     }
 
     public function rebuild_item_titles()
