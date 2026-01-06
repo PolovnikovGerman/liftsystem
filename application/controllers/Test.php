@@ -4369,8 +4369,17 @@ class Test extends CI_Controller
 //            }
 //        }
 //        echo 'That is All, folk '.PHP_EOL;
-        $this->load->model('email_model');
-        $this->email_model->newquote_generate(28353); // 28336
+        $start_time = strtotime('2025-09-01');
+        $this->db->select('*')->from('ts_emails')->where(['email_type'=>'Leads','email_subtype'=> 'Quote'])->where('unix_timestamp(email_date) >= ', $start_time);
+        $emails = $this->db->get()->result_array();
+        foreach ($emails as $email) {
+            $details = json_decode($email['email_other_info'],true);
+            if (isset($details['sale_price']) && $details['sale_price']==0) {
+                echo 'Email '.$email['email_id'].' from '.$email['email_date'].PHP_EOL;
+            }
+        }
+//        $this->load->model('email_model');
+//        $this->email_model->newquote_generate(28353); // 28336
     }
 
     public function rebuild_item_titles()
