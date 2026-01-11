@@ -54,9 +54,9 @@
         </div>
         <div class="regltabl-prepblock">
             <div class="regltabl-td regltabl-prepared">
-                <div class="regltabl-prepstock <?=$list['print_ready']==0 ? '' : 'grey'?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Stock</div>
+                <div class="regltabl-prepstock unassigned <?=$list['print_ready']==0 ? '' : 'grey'?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Stock</div>
                 <?php if ($list['order_blank']==0) : ?>
-                <div class="regltabl-prepplate <?=$list['plates_ready']==0 ? '' : 'grey'?>" data-orderitem="<?=$list['order_item_id']?>">
+                <div class="regltabl-prepplate  unassigned <?=$list['plates_ready']==0 ? '' : 'grey'?>" data-orderitem="<?=$list['order_item_id']?>">
                     <div class="prepplate-docview">
                         <?php if ($list['platedocs']==0) : ?>
                         &nbsp;
@@ -66,7 +66,7 @@
                     </div>
                     <div class="prepplate-label">Plate</div>
                 </div>
-                <div class="regltabl-prepink <?=$list['ink_ready']==0 ? '' : 'grey'?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Ink</div>
+                <div class="regltabl-prepink  unassigned <?=$list['ink_ready']==0 ? '' : 'grey'?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Ink</div>
                 <?php else : ?>
                     <div class="regltabl-blankorder">Blank Order</div>
                 <?php endif; ?>
@@ -90,13 +90,18 @@
             </div>
             <div class="regltabl-td regltabl-flftotal"><?=empty($list['amount_sum']) ? '&nbsp;' : round($list['amount_sum'],0)?></div>
             <div class="regltabl-td regltabl-flfplates">
-                <input type="text" name="platesval" data-ordercolor="<?=$list['order_itemcolor_id']?>" autocomplete="new-password"/>
+<!--                <input type="text" name="platesval" data-ordercolor="--><?php //=$list['order_itemcolor_id']?><!--" autocomplete="new-password"/>-->
+                <select name="platesval" data-ordercolor="<?=$list['order_itemcolor_id']?>">
+                    <?php for ($i=0; $i<=50; $i+=0.5) : ?>
+                    <option value="<?=$i?>"><?=$i?></option>
+                    <?php endfor; ?>
+                </select>
             </div>
             <?php else : ?>
                 <div class="rectabl-blankfullfill">Blank Order</div>
             <?php endif; ?>
             <!-- <div class="regltabl-td regltabl-save"> -->
-                <div class="btnsave fulfblock <?=$list['fulfillprc']>=100 ? 'closedblock' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
+                <div class="btnsave unassigned fulfblock <?=$list['fulfillprc']>=100 ? 'closedblock' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
             <!-- </div> -->
         </div>
         <div class="regltabl-shipblock <?=$list['shippedprc']>=100 ? 'closedblock' : ''?>">
@@ -128,7 +133,7 @@
                 <input type="text" name="shiptrackcode" data-ordercolor="<?=$list['order_itemcolor_id']?>" autocomplete="new-password"/>
             </div>
             <!-- <div class="regltabl-td regltabl-save"> -->
-                <div class="btnsave shipblock <?=$list['shippedprc']>=100 ? 'closedblock' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
+                <div class="btnsave unassigned shipblock <?=$list['shippedprc']>=100 ? 'closedblock' : ''?>" data-ordercolor="<?=$list['order_itemcolor_id']?>">Save</div>
             <!-- </div> -->
             <?php endif; ?>
         </div>

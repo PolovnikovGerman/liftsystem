@@ -807,7 +807,10 @@ class Printcalendar_model extends MY_Model
             $idx++;
         }
         // Totals ???
-        $this->db->select('o.print_user as user_id, u.first_name as user_name, count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as itemscnt, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as printqty, sum(oa.shipped) as fullfill');
+        $this->db->select('o.print_user as user_id, u.first_name as user_name, count(distinct(o.order_id)) as ordercnt');
+        // , sum(oic.item_qty) as itemscnt, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as printqty,
+        // sum(oa.shipped) as fullfill');
+        $this->db->select('sum(oa.shipped) as itemscnt, sum(coalesce(impr.cntprint,0)*coalesce(oa.shipped,0)) as printqty');
         $this->db->from('ts_order_itemcolors oic');
         $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
         $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');

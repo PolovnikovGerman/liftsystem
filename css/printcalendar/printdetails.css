@@ -140,7 +140,8 @@
 .rightside {
     float: right !important;
     margin-right: 10px;
-    width: calc(100% - 790px);
+    width: calc(100% - 1200px);
+    /* 790px */
 }
 /*.btn-reschedular {*/
 /*    float: right !important;*/
@@ -524,6 +525,13 @@
 .btnsave:hover {
     background: #5ee268;
 }
+.btnsave.unassigned {
+    background: #f606ff;
+    color: #ffffff;
+}
+.btnsave:hover.unassigned {
+    background: #f75cfc;
+}
 .warntabl-td input {
     border: 1px solid #888888;
     height: 15px;
@@ -747,6 +755,10 @@
     padding-left: 7px;
     cursor: pointer;
 }
+.regltabl-prepstock.unassigned {
+    background: url(/img/printscheduler/prepared-stock-pink.svg) no-repeat;
+    color: #ffffff;
+}
 .regltabl-prepplate {
     background: url(/img/printscheduler/prepared-plateupd-green.svg) no-repeat;
     height: 16px;
@@ -757,6 +769,10 @@
     margin-top: 2px;
     text-align: center;
     cursor: pointer;
+}
+.regltabl-prepplate.unassigned {
+    background: url(/img/printscheduler/prepared-plateupd-pink.svg) no-repeat;
+    color: #ffffff;
 }
 .prepplate-docview {
     border-right: 1px solid #000000;
@@ -783,6 +799,10 @@
     text-align: left;
     padding-left: 14px;
     cursor: pointer;
+}
+.regltabl-prepink.unassigned {
+    background: url(/img/printscheduler/prepared-ink-pink.svg) no-repeat;
+    color: #ffffff;
 }
 .regltabl-blankorder {
     width: 90px;
@@ -870,6 +890,9 @@
 }
 .regltabl-flfplates input {
     width: 20px;
+}
+.regltabl-flfplates select {
+    width: 28px;
 }
 .regltabl-sent {
     background: #eeeded;
@@ -998,12 +1021,26 @@
 }
 .history-title {
     color: #000;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     line-height: 16px;
     font-style: italic;
     margin-left: 15px;
     margin-bottom: 5px;
+    width: 470px;
+}
+.history-title-printed {
+    font-size: 12px;
+    font-weight: 600;
+    font-style: italic;
+    margin-left: 230px;
+    width: 270px;
+}
+.history-title-shipped {
+    font-size: 12px;
+    font-weight: 600;
+    font-style: italic;
+    margin-left: 15px;
 }
 .historyblock {
     margin-top: 2px;
@@ -1035,10 +1072,10 @@
     color: #4f4e4e;
 }
 .histrtabl-td {
-    background: #edecec;
+    background: #ffffff; /* #edecec;*/
     font-size: 11px;
     text-align: center;
-    border-right: 1px solid #d3d1d1;
+    /*border-right: 1px solid #000000; !* #d3d1d1*!;*/
     color: #787777;
 }
 .histrtabl-header .histrtabl-td {
@@ -1053,16 +1090,32 @@
 .histrtabl-apprblock {
     border: 1px solid #888888;
 }
+.histrtabl-body .histrtabl-apprblock {
+    border-color: #000000;
+    border-radius: 2px;
+}
 .histrtabl-mainblock {
     margin-right: 12px;
     border: 1px solid #888888;
+}
+.histrtabl-body .histrtabl-mainblock {
+    border: 1px solid #000000;
+    border-radius: 2px;
 }
 .histrtabl-fulfblock {
     margin-right: 12px;
     border: 1px solid #888888;
 }
+.histrtabl-body .histrtabl-fulfblock {
+    border: 1px solid #000000;
+    border-radius: 2px;
+}
 .histrtabl-shipblock {
     border: 1px solid #888888;
+}
+.histrtabl-body .histrtabl-shipblock {
+    border: 1px solid #000000;
+    border-radius: 2px;
 }
 .histrtabl-edit {
     width: 16px;
@@ -1213,6 +1266,13 @@
     float: right !important;
     cursor: pointer;
 }
+.histrtabl-body .histrtabl-rush, .histrtabl-body .histrtabl-order, .histrtabl-body .histrtabl-items, .histrtabl-body .histrtabl-imp,
+.histrtabl-body .histrtabl-prints, .histrtabl-body .histrtabl-itmcolor, .histrtabl-body .histrtabl-description,
+.histrtabl-body .histrtabl-printed, .histrtabl-body .histrtabl-flfkept, .histrtabl-body .histrtabl-flfmisprt,
+.histrtabl-body .histrtabl-flfproc, .histrtabl-body .histrtabl-flftotal, .histrtabl-body .histrtabl-shipped, .histrtabl-body .histrtabl-method {
+    border-right: 1px solid #000000;
+}
+
 .history-totalbox {
     background: #fff;
     border: 1px solid #888888;
@@ -1323,4 +1383,36 @@
 }
 .assign-popup ul li:hover {
     background: #eae8e8;
+}
+/* Keymaps */
+.calendar-keymaps {
+    margin-left: 36px;
+    width: 374px;
+    margin-top: 26px;
+}
+.calendar-keymap-square {
+    width: 13px;
+    height: 13px;
+    border: 1px solid #000000;
+    margin-right: 10px;
+    margin-bottom: 6px;
+}
+.calendar-keymap-square.whitecolor {
+    background: #ffffff;
+}
+.calendar-keymap-square.pinkcolor {
+    background: #fa89fb;
+}
+.calendar-keymap-square.peachcolor {
+    background: #f7aa78;
+}
+.calendar-keymap-square.darkpinkcolor {
+    background: #f606ff;
+}
+.calendar-keymap-label {
+    width: 164px;
+    color: #000000;
+    font-size: 11px;
+    height: 13px;
+    line-height: 13px;
 }
