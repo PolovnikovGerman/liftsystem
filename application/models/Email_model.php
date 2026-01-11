@@ -2028,6 +2028,7 @@ class Email_model extends My_Model
         $out['result'] = $this->success_result;
         $out['docurl'] = $file_out;
         $out['docshort'] = $file_short;
+        echo 'Short URL '.$out['docshort'].PHP_EOL;
         return $out;
     }
 

@@ -159,9 +159,9 @@ class Printcalendar extends MY_Controller
                     $history_view = '';
                     if (count($res['history']) > 0) {
                         if ($smallview == 1) {
-                            $history_view = $this->load->view('printcalendar/dayshort_history_view', ['totals' => $res['history_total'], 'lists' => $res['history']], true);
+                            $history_view = $this->load->view('printcalendar/dayshort_history_view', ['totals' => $res['history_total'], 'lists' => $res['history'], 'printdate' => $printdate], true);
                         } else {
-                            $history_view = $this->load->view('printcalendar/daydetails_history_view', ['totals' => $res['history_total'], 'lists' => $res['history']], true);
+                            $history_view = $this->load->view('printcalendar/daydetails_history_view', ['totals' => $res['history_total'], 'lists' => $res['history'], 'printdate' => $printdate], true);
                         }
                     }
                     $options = [
@@ -184,9 +184,9 @@ class Printcalendar extends MY_Controller
                     $historyres = $this->printcalendar_model->get_printdate_history($printdate);
                     if (count($historyres['data']) > 0) {
                         if ($smallview == 1) {
-                            $history_view = $this->load->view('printcalendar/dayshort_history_view', ['totals' => $historyres['total'], 'lists' => $historyres['data']], true);
+                            $history_view = $this->load->view('printcalendar/dayshort_history_view', ['totals' => $historyres['total'], 'lists' => $historyres['data'], 'printdate' => $printdate], true);
                         } else {
-                            $history_view = $this->load->view('printcalendar/daydetails_history_view', ['totals' => $historyres['total'], 'lists' => $historyres['data']], true);
+                            $history_view = $this->load->view('printcalendar/daydetails_history_view', ['totals' => $historyres['total'], 'lists' => $historyres['data'], 'printdate' => $printdate], true);
                         }
                     }
                     $mdata['historyview'] = $history_view;
@@ -292,7 +292,7 @@ class Printcalendar extends MY_Controller
                     }
                     $history_view = '';
                     if (count($res['history']) > 0) {
-                        $history_view = $this->load->view('printcalendar/dayshort_history_view', ['totals' => $res['history_total'], 'lists' => $res['history']], true);
+                        $history_view = $this->load->view('printcalendar/dayshort_history_view', ['totals' => $res['history_total'], 'lists' => $res['history'], 'printdate' => $printdate], true);
                     }
                     $options = [
                         'header_view' => $header_view,
@@ -312,7 +312,7 @@ class Printcalendar extends MY_Controller
                     $history_view = '';
                     $historyres = $this->printcalendar_model->get_printdate_history($printdate);
                     if (count($historyres['data']) > 0) {
-                        $history_view = $this->load->view('printcalendar/dayshort_history_view', ['totals' => $historyres['total'], 'lists' => $historyres['data']], true);
+                        $history_view = $this->load->view('printcalendar/dayshort_history_view', ['totals' => $historyres['total'], 'lists' => $historyres['data'], 'printdate' => $printdate], true);
                     }
                     $mdata['historyview'] = $history_view;
                 }
@@ -655,7 +655,7 @@ class Printcalendar extends MY_Controller
         }
         $history_view = '';
         if (count($res['history']) > 0) {
-            $history_view = $this->load->view('printcalendar/daydetails_history_view', ['totals' => $res['history_total'], 'lists' => $res['history']], true);
+            $history_view = $this->load->view('printcalendar/daydetails_history_view', ['totals' => $res['history_total'], 'lists' => $res['history'], 'printdate' => $printdate], true);
         }
         return [
             'warningview' => $warnings_view,
@@ -693,7 +693,7 @@ class Printcalendar extends MY_Controller
             }
             $history_view = '';
             if (count($res['history']) > 0) {
-                $history_view = $this->load->view('printcalendar/dayshort_history_view', ['totals' => $res['history_total'], 'lists' => $res['history']], true);
+                $history_view = $this->load->view('printcalendar/dayshort_history_view', ['totals' => $res['history_total'], 'lists' => $res['history'], 'printdate' => $printdate], true);
             }
             $options = [
                 'header_view' => $header_view,

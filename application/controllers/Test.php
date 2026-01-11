@@ -4492,8 +4492,17 @@ class Test extends CI_Controller
 //            }
 //        }
 //        echo 'That is All, folk '.PHP_EOL;
-        $this->load->model('email_model');
-        $this->email_model->generate_quota(26662); // 26662
+        $start_time = strtotime('2025-09-01');
+        $this->db->select('*')->from('ts_emails')->where(['email_type'=>'Leads','email_subtype'=> 'Quote'])->where('unix_timestamp(email_date) >= ', $start_time);
+        $emails = $this->db->get()->result_array();
+        foreach ($emails as $email) {
+            $details = json_decode($email['email_other_info'],true);
+            if (isset($details['sale_price']) && $details['sale_price']==0) {
+                echo 'Email '.$email['email_id'].' from '.$email['email_date'].PHP_EOL;
+            }
+        }
+//        $this->load->model('email_model');
+//        $this->email_model->newquote_generate(28353); // 28336
     }
 
     public function rebuild_item_titles()
@@ -5203,6 +5212,92 @@ class Test extends CI_Controller
         $dateend = strtotime('2025-12-10');
         $this->load->model('shipping_model');
         $this->shipping_model->trackpackage_report($datebgn, $dateend);
+    }
+
+    public function sbitems_sales_report()
+    {
+        $this->db->select('i.item_id, i.item_active, i.item_number, i.item_name, v.vendor_name')->from('sb_items i');
+        $this->db->join('sb_vendor_items vi','vi.vendor_item_id = i.vendor_item_id');
+        $this->db->join('vendors v','v.vendor_id = vi.vendor_item_vendor');
+        $this->db->where('i.brand','BT')->order_by('i.item_number');
+        $items = $this->db->get()->result_array();
+        $idx = 0;
+        foreach ($items as $item) {
+            $items[$idx]['revenue_2018'] = $items[$idx]['revenue_2019'] = $items[$idx]['revenue_2023'] = $items[$idx]['revenue_2024'] = $items[$idx]['revenue_2025'] = 0;
+            $items[$idx]['orders_2018'] = $items[$idx]['orders_2019'] = $items[$idx]['orders_2023'] = $items[$idx]['orders_2024'] = $items[$idx]['orders_2025'] = 0;
+            $items[$idx]['qty_2018'] = $items[$idx]['qty_2019'] = $items[$idx]['qty_2023'] = $items[$idx]['qty_2024'] = $items[$idx]['qty_2025'] = 0;
+            $idx++;
+        }
+        // Get data
+        $idx = 0;
+        foreach ($items as $item) {
+            $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as oyear, count(distinct(o.order_id)) as ocnt, sum(oi.item_qty) as qty, sum(oi.item_price*oi.item_qty) as revenue');
+            $this->db->from('ts_orders o')->join('ts_order_items oi', 'oi.order_id = o.order_id');
+            $this->db->where(['o.is_canceled'=>0, 'oi.item_id' => $item['item_id']]);
+            $this->db->group_by('oyear');
+            $this->db->having('oyear in (2018,2019,2023,2024,2025)');
+            $orders = $this->db->get()->result_array();
+            foreach ($orders as $order) {
+                $items[$idx]['orders_'.$order['oyear']]+=$order['ocnt'];
+                $items[$idx]['qty_'.$order['oyear']]+=$order['qty'];
+                $items[$idx]['revenue_'.$order['oyear']]+=$order['revenue'];
+            }
+            $idx++;
+        }
+        $this->load->config('uploader');
+        $filenorm = $this->config->item('upload_path_preload').'SB_items_soldreport.xlsx';
+        @unlink($filenorm);
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('SB Items Sales Report');
+        $sheet->setCellValue('E1', 'Sales Revenue');
+        $sheet->setCellValue('J1', 'Sales Orders');
+        $sheet->setCellValue('O1', 'Item QTY SOLD');
+        $sheet->setCellValue('A2', 'Active');
+        $sheet->setCellValue('B2', 'Item #');
+        $sheet->setCellValue('C2', 'Item Name');
+        $sheet->setCellValue('D2', 'Vendor');
+        $sheet->setCellValue('E2', '2025');
+        $sheet->setCellValue('F2', '2024');
+        $sheet->setCellValue('G2', '2023');
+        $sheet->setCellValue('H2', '2019');
+        $sheet->setCellValue('I2', '2018');
+        $sheet->setCellValue('J2', '2025');
+        $sheet->setCellValue('K2', '2024');
+        $sheet->setCellValue('L2', '2023');
+        $sheet->setCellValue('M2', '2019');
+        $sheet->setCellValue('N2', '2018');
+        $sheet->setCellValue('O2', '2025');
+        $sheet->setCellValue('P2', '2024');
+        $sheet->setCellValue('R2', '2023');
+        $sheet->setCellValue('S2', '2019');
+        $sheet->setCellValue('T2', '2018');
+        $numrow = 3;
+        foreach ($items as $item) {
+            $sheet->setCellValue('A'.$numrow, ($item['item_active']==1) ? 'YES' : 'NO');
+            $sheet->setCellValue('B'.$numrow, $item['item_number']);
+            $sheet->setCellValue('C'.$numrow, $item['item_name']);
+            $sheet->setCellValue('D'.$numrow, $item['vendor_name']);
+            $sheet->setCellValue('E'.$numrow, $item['revenue_2025']);
+            $sheet->setCellValue('F'.$numrow, $item['revenue_2024']);
+            $sheet->setCellValue('G'.$numrow, $item['revenue_2023']);
+            $sheet->setCellValue('H'.$numrow, $item['revenue_2019']);
+            $sheet->setCellValue('I'.$numrow, $item['revenue_2018']);
+            $sheet->setCellValue('J'.$numrow, $item['orders_2025']);
+            $sheet->setCellValue('K'.$numrow, $item['orders_2024']);
+            $sheet->setCellValue('L'.$numrow, $item['orders_2023']);
+            $sheet->setCellValue('M'.$numrow, $item['orders_2019']);
+            $sheet->setCellValue('N'.$numrow, $item['orders_2018']);
+            $sheet->setCellValue('O'.$numrow, $item['qty_2025']);
+            $sheet->setCellValue('P'.$numrow, $item['qty_2024']);
+            $sheet->setCellValue('R'.$numrow, $item['qty_2023']);
+            $sheet->setCellValue('S'.$numrow, $item['qty_2019']);
+            $sheet->setCellValue('T'.$numrow, $item['qty_2018']);
+            $numrow++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($filenorm);    // download file
+        echo 'File '.$filenorm.' ready'.PHP_EOL;
     }
 
 }

@@ -83,6 +83,20 @@
                 <div class="pscalendar-week"></div>
             </div>
             <!-- end week -->
+            <div class="calendar-keymaps">
+                <div class="datarow">
+                    <div class="calendar-keymap-square whitecolor">&nbsp;</div>
+                    <div class="calendar-keymap-label">Printed Amnt = Shipped Amnt</div>
+                    <div class="calendar-keymap-square pinkcolor">&nbsp;</div>
+                    <div class="calendar-keymap-label">Printed Amnt < Shipped Amnt</div>
+                </div>
+                <div class="datarow">
+                    <div class="calendar-keymap-square peachcolor">&nbsp;</div>
+                    <div class="calendar-keymap-label">Printed Amnt > Shipped Amnt</div>
+                    <div class="calendar-keymap-square darkpinkcolor">&nbsp;</div>
+                    <div class="calendar-keymap-label">Action Needed</div>
+                </div>
+            </div>
             <div class="rightside">
                 <div class="datarow">
                     <div class="btn-reschedular">

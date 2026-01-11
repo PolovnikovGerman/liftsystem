@@ -1,5 +1,7 @@
 <div class="datarow">
-    <div class="history-title">History of orders printed or shipped on this day</div>
+    <div class="history-title"><?=date('M j, Y', $printdate)?>- History of What Printed & Shipped</div>
+    <div class="history-title-printed">History of What Printed:</div>
+    <div class="history-title-shipped">History of What Shipped:</div>
 </div>
 <div class="historyblock">
     <div class="history-table">
@@ -36,7 +38,7 @@
         </div>
         <?php $order_id = 0; ?>
         <?php foreach ($lists as $list) :?>
-            <div class="histrtabl-tr" data-itemcolor="<?=$list['order_itemcolor_id']?>">
+            <div class="histrtabl-tr histrtabl-body" data-itemcolor="<?=$list['order_itemcolor_id']?>">
                 <div class="histrtabl-td histrtabl-edit">
                     <i class="fa fa-pencil" aria-hidden="true"></i>
                 </div>
@@ -79,13 +81,16 @@
                 </div>
                 <div class="histrtabl-shipblock">
                     <div class="histrtabl-td histrtabl-shipped"><?=empty($list['shipped']) ? '&nbsp;' : QTYOutput($list['shipped'])?></div>
-                    <div class="histrtabl-td histrtabl-method"><?=empty($list['trackservice']) ? '&nbsp;' : $list['trackservice']?></div>
+<!--                    <div class="histrtabl-td histrtabl-method">--><?php //=empty($list['trackservice']) ? '&nbsp;' : $list['trackservice']?><!--</div>-->
+                    <div class="histrtabl-td histrtabl-method"><?=empty($list['trackservice']) ? 'UPS' : $list['trackservice']?></div>
                     <div class="histrtabl-td histrtabl-tracking">
                         <?php if (!empty($list['tracking_id'])) : ?>
                         <input name="trackcode" type="text" readonly="readonly" data-track="<?=$list['tracking_id']?>" value="<?=$list['trackcode']?>"/>
                         <div class="trackbtn" data-track="<?=$list['tracking_id']?>"><i class="fa fa-files-o" aria-hidden="true"></i></div>
                         <?php else : ?>
-                        &nbsp;
+<!--                        &nbsp;-->
+                            <input name="trackcode" type="text" readonly="readonly" data-track="-1" value=""/>
+                            <div class="trackbtn" data-track="-1"><i class="fa fa-files-o" aria-hidden="true"></i></div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -103,7 +108,7 @@
             </div>
             <?php foreach ($totals as $total) : ?>
                 <div class="totalboxtab-tr <?=$total['class']=='total' ? 'totalboxtab-footer' : ''?>">
-                    <div class="totalboxtab-td totalboxtab-printers"><?=empty($total['user_name']) ? 'Unknown' : $total['user_name']?></div>
+                    <div class="totalboxtab-td totalboxtab-printers"><?=empty($total['user_name']) ? 'Unknown' : $total['user_name']?>:</div>
                     <div class="totalboxtab-td totalboxtab-prints"><?=empty($total['printqty']) ? '-' : QTYOutput($total['printqty'])?></div>
                     <div class="totalboxtab-td totalboxtab-items"><?=empty($total['itemscnt']) ? '-' : QTYOutput($total['itemscnt'])?></div>
                     <div class="totalboxtab-td totalboxtab-orders"><?=empty($total['ordercnt']) ? '-' : QTYOutput($total['ordercnt'])?></div>

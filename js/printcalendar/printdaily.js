@@ -159,7 +159,8 @@ function init_dailydetails_manage() {
             params.push({name: 'shipped', value: $("input[name='printval'][data-ordercolor='"+ordercolor+"']").val()});
             params.push({name: 'kepted', value: $("input[name='keptval'][data-ordercolor='"+ordercolor+"']").val()});
             params.push({name: 'misprint', value: $("input[name='misprintval'][data-ordercolor='"+ordercolor+"']").val()});
-            params.push({name: 'plates', value: $("input[name='platesval'][data-ordercolor='"+ordercolor+"']").val()});
+            // params.push({name: 'plates', value: $("input[name='platesval'][data-ordercolor='"+ordercolor+"']").val()});
+            params.push({name: 'plates', value: $("select[name='platesval'][data-ordercolor='"+ordercolor+"']").val()});
             var url = '/printcalendar/outcomesave';
             $("#loader").show();
             $.post(url, params, function (response){

@@ -1,5 +1,5 @@
 <div class="datarow">
-    <div class="history-title">History of orders printed or shipped on this day</div>
+    <div class="history-title"><?=date('M j, Y', $printdate)?>- History of What Printed & Shipped</div>
 </div>
 <div class="historyblock">
     <div class="history-table">
@@ -23,7 +23,7 @@
         </div>
         <?php $order_id = 0; ?>
         <?php foreach ($lists as $list) :?>
-            <div class="histrtabl-tr">
+            <div class="histrtabl-tr histrtabl-body">
                 <div class="histrtabl-td histrtabl-edit">
                     <i class="fa fa-pencil" aria-hidden="true"></i>
                 </div>
