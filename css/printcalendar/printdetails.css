@@ -780,6 +780,9 @@
     margin-top: 1px;
     width: 20px;
 }
+.regltabl-prepplate.unassigned .prepplate-docview {
+    border-right: 1px solid #FFFFFF;
+}
 .regltabl-prepplate.grey .prepplate-docview {
     border-right: 1px solid #ffffff;
 }
