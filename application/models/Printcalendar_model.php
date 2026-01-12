@@ -164,7 +164,7 @@ class Printcalendar_model extends MY_Model
                 $this->db->join('ts_orders o', 'oi.order_id = o.order_id');
                 $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
                 $this->db->join('ts_inventory_items ii','ii.inventory_item_id=oi.inventory_item_id');
-                $this->db->join('('.$amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
+                $this->db->join('('.$amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id'); // ,'left'
                 $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
                 $this->db->where('o.is_canceled', 0);
             }
