@@ -32,7 +32,9 @@
         <?php if ($item['item_link']=='#customsbform') : ?>
             <div class="contentsubmenu_item <?=$brandclass?> <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?>"
                  data-link="<?=str_replace('#','', $item['item_link'])?>">
+                <?php if (!empty($customforms)) : ?>
                 <div class="newcustomformsinfo"><?=$customforms?></div>
+                <?php endif; ?>
                 <?=$item['item_name']?>
             </div>
         <?php endif; ?>
@@ -42,7 +44,9 @@
         <?php if ($item['item_link']=='#questionsview') : ?>
             <div class="contentsubmenu_item <?=$brandclass?> <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?>"
                  data-link="<?=str_replace('#','', $item['item_link'])?>">
+                <?php if (!empty($webquestions)) : ?>
                 <div class="newwebquestioninfo"><?=$webquestions?></div>
+                <?php endif; ?>
                 <?=$item['item_name']?>
             </div>
         <?php endif; ?>
@@ -52,7 +56,9 @@
         <?php if ($item['item_link']=='#onlinequotesview') : ?>
             <div class="contentsubmenu_item <?=$brandclass?> <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?>"
                  data-link="<?=str_replace('#','', $item['item_link'])?>">
+                <?php if (!empty($webquotes)) : ?>
                 <div class="newwebquotesinfo"><?=$webquotes?></div>
+                <?php endif; ?>
                 <?=$item['item_name']?>
             </div>
         <?php endif; ?>
