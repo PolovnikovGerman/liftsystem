@@ -42,6 +42,7 @@
         <?php if ($item['item_link']=='#questionsview') : ?>
             <div class="contentsubmenu_item <?=$brandclass?> <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?>"
                  data-link="<?=str_replace('#','', $item['item_link'])?>">
+                <div class="newcustomformsinfo"><?=$webquestions?></div>
                 <?=$item['item_name']?>
             </div>
         <?php endif; ?>
@@ -51,6 +52,7 @@
         <?php if ($item['item_link']=='#onlinequotesview') : ?>
             <div class="contentsubmenu_item <?=$brandclass?> <?=$start==str_replace('#','', $item['item_link']) ? 'active' : ''?>"
                  data-link="<?=str_replace('#','', $item['item_link'])?>">
+                <div class="newcustomformsinfo"><?=$webquotes?></div>
                 <?=$item['item_name']?>
             </div>
         <?php endif; ?>
