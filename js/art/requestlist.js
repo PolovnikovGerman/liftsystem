@@ -125,6 +125,9 @@ function pageProofsCallback(page_index) {
             $("#loader").hide();
             $("div.proof_tabledat").empty().html(response.data.content);
             $("#curpageproof").val(page_index);
+            // jQuery.balloon.init();
+            new SimpleBar(document.getElementById('proofrequest_tabledat'), { autoHide: false });
+
             init_prooflistmanage();
             $("#loader").css('display','none');
         } else {
