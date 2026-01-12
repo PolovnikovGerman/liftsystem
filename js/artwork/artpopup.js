@@ -62,6 +62,9 @@ function init_popupcontent() {
     // $("a#popupContactClose").click(function(){
     //    disablePopup();
     // })
+    $("div.leadorderclose").unbind('click').click(function (){
+        $("#artModal").modal('hide');
+    });
     $("div.artpopup_save").click(function(){
         save_art();
     })
