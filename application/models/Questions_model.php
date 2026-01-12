@@ -32,6 +32,11 @@ Class Questions_model extends My_Model {
                 $this->db->where_in('e.brand', ['BT','SB']);
             }
         }
+        if (isset($options['newquest']) && $options['newquest']==1) {
+            $curdate = date('Y-m-d');
+            $new_timestamp = strtotime($curdate . ' -1 year');
+            $this->db->where('unix_timestamp(e.email_date) >=', $new_timestamp);
+        }
         $res=$this->db->get()->row_array();
         return $res['cnt'];
     }
