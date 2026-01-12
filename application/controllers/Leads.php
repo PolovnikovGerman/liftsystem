@@ -65,7 +65,7 @@ class Leads extends My_Controller {
         $start = $this->input->get('start', TRUE);
         $content_options['menu'] = $menu;
         $gmaps = 0;
-        $newcustomforms = 0;
+        $newcustomforms = $newwebquotes = $newwebquest = 0;
         foreach ($menu as $row) {
             if ($row['item_link'] == '#leadsview') {
                 $head['styles'][]=array('style'=>'/css/leads/leadsview_new.css');
@@ -83,6 +83,14 @@ class Leads extends My_Controller {
                 $head['styles'][]=array('style'=>'/css/leads/onlinequotes.css');
                 $head['scripts'][]=array('src'=>'/js/leads/onlinequotes.js');
                 $content_options['onlinequotesview'] = $this->_prepare_onlinequotesview($brand); // $brand, $top_menu
+                $this->load->model('quotes_model');
+                $quoteoptions = [
+                    'brand' => $brand,
+                    'assign' => 1,
+                    'hideincl' => 1,
+                    'newquotes' => 1,
+                ];
+                $newwebquotes = $this->quotes_model->get_count_quotes($quoteoptions);
             } elseif ($row['item_link']=='#proofrequestsview') {
                 $head['styles'][] = array('style' => '/css/art/requestlist.css');
                 $head['scripts'][] = array('src' => '/js/art/requestlist.js');
@@ -91,6 +99,14 @@ class Leads extends My_Controller {
                 $head['styles'][] = array('style' => '/css/leads/questionsview.css');
                 $head['scripts'][] = array('src' => '/js/leads/questionsview.js');
                 $content_options['questionsview'] = $this->_prepare_questionslist_view($brand); // $brand, $top_menu
+                $this->load->model('questions_model');
+                $quuestoptions = [
+                    'brand' => $brand,
+                    'assign' => 1,
+                    'hideincl' => 1,
+                    'newquest' => 1,
+                ];
+                $newwebquest = $this->questions_model->get_count_questions($quuestoptions);
                 // Custom shaped
             } elseif ($row['item_link']=='#customsbform') {
                 $head['styles'][] = array('style' => '/css/leads/customsbform.css');
@@ -111,6 +127,7 @@ class Leads extends My_Controller {
                 if (!empty($this->config->item('google_map_key'))) {
                     $gmaps = 1;
                 }
+                // $newwebquotes
             } elseif ($row['item_link']=='#customorders') {
                 $head['styles'][]=array('style'=>'/css/leads/leadcustomorders.css');
                 $head['styles'][]=array('style'=>'/css/accounting/profitordesview.css');
@@ -176,7 +193,16 @@ class Leads extends My_Controller {
         $dat = $this->template->prepare_pagecontent($options);
         $content_options['brand'] = $brand;
         $brandclass = ($brand=='SR' ? 'relievers' : ($brand=='SG' ? '' : 'stressballs'));
-        $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass, 'customforms' => $newcustomforms ], TRUE);
+        // $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass, 'customforms' => $newcustomforms ], TRUE);
+        $menuoptions = [
+            'menu' => $menu,
+            'start' => $start,
+            'brandclass' => $brandclass,
+            'customforms' => $newcustomforms,
+            'webquotes' => $newwebquotes,
+            'webquestions' => $newwebquest,
+        ];
+        $content_options['menu_view'] = $this->load->view('leads/submenu_view', $menuoptions , TRUE);
         $content_view = $this->load->view('leads/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $dat['modal_view'] = $this->load->view('leads/modal_view', [], TRUE);
