@@ -781,7 +781,7 @@ body div {
     color: #ffffff;
     border: 1px solid #ffffff;
 }
-.newcustomformsinfo {
+.newcustomformsinfo, .newwebquestioninfo, .newwebquotesinfo {
     position: relative;
     left: -25px;
     top: -6px;
