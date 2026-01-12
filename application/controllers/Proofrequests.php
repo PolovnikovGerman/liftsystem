@@ -108,6 +108,7 @@ class Proofrequests extends MY_Controller
             $mdata['content']=$content;
             $this->ajaxResponse($mdata,$error);
         }
+        show_404();
     }
 
     // Last Art message
