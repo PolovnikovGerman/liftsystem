@@ -608,6 +608,10 @@ Class Artproof_model extends MY_Model
             if ($row['order_proj_status']=='01_notplaced') {
                 $row['orderedit'] = $this->load->view('artrequest/prooforder_edit_view',['proof_order' => $row['proof_order'], 'email_id' => $row['email_id']], TRUE);
             }
+            $row['websource'] = 'WEB';
+            if (empty($row['email_ipaddress'])) {
+                $row['websource'] = '';
+            }
             $out[]=$row;
             $ordnum--;
         }
