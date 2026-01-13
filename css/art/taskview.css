@@ -50,8 +50,8 @@ select.ordproofview {
 .taskview_keymaps {
     width: 127px;
     height: 48px;
-    /* border: 1px solid #919191; */
     margin-top: -15px;
+    margin-left: 220px;
 }
 .taskview_keymap_icon {
     width: 19px;
