@@ -67,6 +67,9 @@ Class Artproof_model extends MY_Model
 
     public function get_tasks_stage($stage, $taskview, $inclreq, $order_by, $direction, $brand, $hideold=0) {
         /* Get with data More then then 24 hours */
+        if ($stage=='need_plates') {
+            return [];
+        }
         $olddat=$this->get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, 0 , $brand, $hideold);
         /* Current day */
         $curdat=$this->get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, 1, $brand, $hideold);
