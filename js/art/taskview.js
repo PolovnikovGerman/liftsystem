@@ -21,7 +21,8 @@ function init_tasks_management() {
         searchtasks();
     })
     $("input#viewallapproved").unbind('change').change(function(){
-        change_approved_view('just_approved');
+        // change_approved_view('just_approved');
+        init_tasks_page();
     });
     // Change Brand
     $("#arttasksviewbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
@@ -72,10 +73,17 @@ function init_tasks_page() {
     $.post(url,params,function(response){
         if (response.errors=='') {
             $("div#dataneedartarea").empty().html(response.data.nonart);
+            new SimpleBar(document.getElementById('dataneedartarea'), { autoHide: false });
             $("div#dataredrawnarea").empty().html(response.data.redrawn);
+            new SimpleBar(document.getElementById('dataredrawnarea'), { autoHide: false });
             $("div#datatoproofarea").empty().html(response.data.toproof);
+            new SimpleBar(document.getElementById('datatoproofarea'), { autoHide: false })
             $("div#dataneedaprarea").empty().html(response.data.needapr);
+            new SimpleBar(document.getElementById('dataneedaprarea'), { autoHide: false });
             $("div#dataaprovedarea").empty().html(response.data.aproved);
+            new SimpleBar(document.getElementById('dataaprovedarea'), { autoHide: false })
+            $("div#dataneedplates").empty().html(response.data.needplates);
+            new SimpleBar(document.getElementById('dataneedplates'), { autoHide: false })
             $("#loader").hide();
             /* Call popup */
             $("div.taskview_order").click(function(){
@@ -318,6 +326,9 @@ function init_remindermanage(task_id) {
             $("div#emailbccdata").hide();
             $("textarea.aprovemail_message").css('height','241');
         }
+    });
+    $(".leadorderclose").unbind('click').click(function (){
+        $("#artModal").modal('hide');
     })
 }
 

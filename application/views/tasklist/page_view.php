@@ -20,7 +20,7 @@
             </div>
             <div class="monitorsearch_form">
                 <div class="monitorsearch_input">
-                    <input placeholder="Enter order #, customer, email" class="monitorsearch_input" id="tasksearch">
+                    <input placeholder="Enter order #, customer, email" class="monitorsearch_input" id="tasksearch"/>
                 </div>
                 <div class="search_action">
                     <a href="javascript:void(0);" id="find_tasks" class="find_it">Search It</a>
@@ -35,7 +35,7 @@
         <div class="ordproofinclude">
             <input type="checkbox" id="viewallapproved" value="1"/>
         </div>
-        <div class="ordproofinclude_label">All Just Approved</div>
+        <div class="ordproofinclude_label">Hide Over 120  </div>
         <div class="ordproofviewselect taskview">
             <select class="ordproofview" id="ordproofview">
                 <option value="ordproof" selected="selected">Orders & Requests</option>
@@ -44,7 +44,17 @@
             </select>
         </div>
     </div>
-    <div class="taskview_datacontent">
+    <div class="taskview_keymaps">
+        <div class="datarow">
+            <div class="taskview_keymap_icon"><img src="/img/art/task_rushicon.png" alt="rush"/></div>
+            <div class="taskview_keymap_label">Rush or Urgent</div>
+        </div>
+        <div class="datarow">
+            <div class="taskview_keymap_icon"><i class="fa fa-diamond" aria-hidden="true"></i></div>
+            <div class="taskview_keymap_label">Custom Shape</div>
+        </div>
+    </div>
+    <div class="datarow">
         <div class="taskview_devstage">
             <div class="taskview_devstage_title">Need Art</div>
             <div class="taskview_devstage_subtitle" id="noarttitle">
@@ -69,7 +79,7 @@
             </div>
             <div class="taskview_devstage_data" id="dataredrawnarea" >&nbsp;</div>
         </div>
-        <div class="taskview_devstage centerdat">
+        <div class="taskview_devstage taskstoproof">
             <div class="taskview_devstage_title">To Proof</div>
             <div class="taskview_devstage_subtitle" id="prooftitle">
                 <div class="taskview_rushtitle">&nbsp;</div>
@@ -77,7 +87,8 @@
                 <div class="taskview_timetitle sortactive">Time</div>
                 <div class="taskview_sortarea ordersort">&nbsp;</div>
                 <div class="taskview_ordertitle">Order</div>
-                <div class="taskview_notetitle">&nbsp;</div>
+<!--                <div class="taskview_notetitle">&nbsp;</div>-->
+                <div class="taskview_itemtitle">Item</div>
             </div>
             <div class="taskview_devstage_data" id="datatoproofarea">&nbsp;</div>
         </div>
@@ -104,6 +115,18 @@
                 <div class="taskview_notetitle">&nbsp;</div>
             </div>
             <div class="taskview_devstage_data" id="dataaprovedarea">&nbsp;</div>
+        </div>
+        <div class="taskview_devstage">
+            <div class="taskview_devstage_title">Need Plate</div>
+            <div class="taskview_devstage_subtitle" id="needplate">
+                <div class="taskview_rushtitle">&nbsp;</div>
+                <div class="taskview_sortarea timesort sorttaskdesc">&nbsp;</div>
+                <div class="taskview_timetitle sortactive">Time</div>
+                <div class="taskview_sortarea ordersort">&nbsp;</div>
+                <div class="taskview_ordertitle">Order</div>
+                <div class="taskview_notetitle">&nbsp;</div>
+            </div>
+            <div class="taskview_devstage_data" id="dataneedplates">&nbsp;</div>
         </div>
     </div>
 </div>
