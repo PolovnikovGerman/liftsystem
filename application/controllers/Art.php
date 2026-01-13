@@ -142,6 +142,8 @@ class Art extends MY_Controller {
             $needapr_direc = ifset($postdata ,'needapr_direc','desc');
             $aproved_sort = ifset($postdata, 'approved_sort','time');
             $aproved_direc = ifset($postdata, 'aproved_direc','desc');
+            $needplat_sort = ifset($postdata, 'needplat_sort','time');
+            $needplat_direc = ifset($postdata, 'needplat_direc','desc');
             $hide_old = ifset($postdata, 'aproved_viewall', 0);
             $brand = ifset($postdata, 'brand','ALL');
             /* Get data */
@@ -930,6 +932,8 @@ class Art extends MY_Controller {
         $datf['direc_needapr']='desc';
         $datf['sort_aproved']='time';
         $datf['direc_aproved']='asc';
+        $datf['sort_plates'] = 'time';
+        $datf['direc_plates']='desc';
         $content=$this->load->view('tasklist/page_view',$datf,TRUE);
         return $content;
     }

@@ -51,6 +51,8 @@ function init_tasks_page() {
     params.push({name:'approved_sort',value:$("input#aproved_sort").val()});
     params.push({name:'aproved_direc',value:$("input#aproved_direc").val()});
     params.push({name:"aproved_viewall", value: showallapprov});
+    params.push({name: 'needplat_sort', value: $("input#needplates_sort").val()});
+    params.push({name: 'needplat_direc', value: $("input#needplates_direc").val()});
     params.push({name: 'brand', value: $("input#arttasksviewbrand").val()});
     var url="/art/tasks_data";
     $("#loader").show();
@@ -191,6 +193,12 @@ function change_tasksort(tasktype,sorttype) {
             sort=$("input#aproved_direc").val();
             datarea='dataaprovedarea';
             break;
+        case 'needplate':
+            stage = 'need_plates';
+            sortby = $("input#needplates_sort").val();
+            sort = $("input#needplates_direc").val();
+            datarea = 'dataneedplates';
+            break;
     }
 
     if (sorttype===sortby) {
@@ -224,7 +232,10 @@ function change_tasksort(tasktype,sorttype) {
             $("input#aproved_sort").val(sortby);
             $("input#aproved_direc").val(sort);
             break;
-
+        case 'needplate':
+            $("input#needplates_sort").val(sortby);
+            $("input#needplates_direc").val(sort);
+            break;
     }
     /* Change View */
     $("div#"+tasktype+" .taskview_sortarea").removeClass('sorttaskdesc').removeClass('sorttaskasc');
