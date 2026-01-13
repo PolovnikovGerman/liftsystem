@@ -375,7 +375,7 @@ Class Artproof_model extends MY_Model
                 $this->db->select('v.order_approved_update, v.approved_hour_diff, v.approved_day_diff');
                 $this->db->where('v.order_proj_status',  $this->JUST_APPROVED);
                 $this->db->where('v.order_approved_view',0);
-                // $this->db->where('v.day_diff <=', 3);
+                $this->db->where('v.day_diff <=', 3);
                 break;
             default:
                 break;

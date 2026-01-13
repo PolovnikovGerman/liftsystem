@@ -8,7 +8,7 @@
 .taskview_manage {
     clear: both;    
     margin-bottom: 10px;
-    width: 964px;
+    width: 994px;
 }
 .tasklist_search {
     width: 526px;
@@ -21,6 +21,24 @@ select.tasksearch_select {
     width: 121px;
     height: 24px;
 }
+.find_newbtn {
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 22px;
+    margin: 3px 0 0 8px;
+    /*padding-top: 3px;*/
+    text-align: center;
+    text-decoration: none;
+    width: 92px;
+    background: #c6c4c4;
+    background: linear-gradient(to top, #aeabab, #e1dfdf);
+    border: 1px solid #7a7a7a;
+    border-radius: 5px;
+    line-height: 22px;
+    cursor: pointer;
+}
 .ordproofinclude {
     padding-top: 3px;
     text-align: center;
@@ -31,6 +49,9 @@ select.tasksearch_select {
     font-size: 13px;
     padding-top: 5px;
     width: 105px;
+}
+.ordproofinclude_label.oldhide {
+    width: 145px;
 }
 .ordproofviewselect {
     margin-left: 104px;
@@ -51,11 +72,11 @@ select.ordproofview {
     width: 127px;
     height: 48px;
     margin-top: -15px;
-    margin-left: 220px;
+    margin-left: 40px;
 }
 .taskview_keymap_icon {
-    width: 19px;
-    height: 19px;
+    width: 17px;
+    height: 17px;
     margin-right: 5px;
 }
 .taskview_keymap_icon img {
@@ -65,6 +86,7 @@ select.ordproofview {
 .taskview_keymap_label {
     height: 22px;
     line-height: 22px;
+    font-size: 13px;
 }
 .taskview_datacontent {
     clear: both;
@@ -73,15 +95,21 @@ select.ordproofview {
 }
 /* Headers for details */
 .taskview_devstage {
-    width: 185px;
+    width: 165px;
     margin-right: 7px;
 }
 .taskview_devstage.taskstoproof {
-    width: 406px;
+    width: 377px;
+}
+.taskview_devstage.justapproved {
+    width: 146px;
+}
+.taskview_devstage.short {
+    width: 146px;
 }
 .taskview_devstage_title {
-    /*background: url("/img/art/taskview_header.png") no-repeat scroll 0 0 transparent;*/
     background: #1bac21;
+    background: linear-gradient(to top, #1a9726, #1dc01d);
     border-top: 1px solid #919191;
     border-left: 1px solid #919191;
     border-right: 1px solid #919191;
@@ -94,13 +122,19 @@ select.ordproofview {
     margin-top: 0;
     padding-top: 6px;
     text-align: center;
-    width: 185px;
+    width: 165px;
+    line-height: 21px;
 }
 .taskstoproof .taskview_devstage_title {
-    width: 406px;
+    width: 377px;
+}
+.taskview_devstage.short .taskview_devstage_title {
+    width: 146px;
 }
 .justapproved .taskview_devstage_title {
-    background: #5566fa;
+    background: #4856f7;
+    background: linear-gradient(to top, #3237f3, #5a70fa);
+    width: 146px;
 }
 .taskview_devstage_subtitle {
     /*background: url("/img/art/taskview_subheader.png") no-repeat scroll 0 0 transparent;*/
@@ -112,13 +146,17 @@ select.ordproofview {
     height: 27px;
     line-height: 27px;
     text-align: center;
-    width: 185px;
+    width: 165px;
 }
 .taskstoproof .taskview_devstage_subtitle {
-    width: 406px;
+    width: 377px;
 }
 .justapproved .taskview_devstage_subtitle {
     background: #16019e;
+    width: 146px;
+}
+.taskview_devstage.short .taskview_devstage_subtitle {
+    width: 146px;
 }
 .taskview_rushtitle {
     width: 16px;
@@ -156,7 +194,7 @@ select.ordproofview {
     color: #a4b9aa;
     font-size: 11px;
     /*margin-top: 6px;*/
-    width: 277px;
+    width: 227px;
 }
 .taskview_itemtitle.customshape {
     font-weight: 600;
@@ -169,12 +207,15 @@ select.ordproofview {
     clear: both;
     height: 543px;
     overflow-y: auto;
-    width: 185px;
+    width: 165px;
     overflow-x: hidden;
     scrollbar-width: none;
 }
 .taskstoproof .taskview_devstage_data {
-    width: 406px;
+    width: 377px;
+}
+.taskview_devstage_data.short {
+    width: 146px;
 }
 /* CENTERED DATA HOLDERS */
 /*.centerdat {*/
@@ -192,24 +233,22 @@ select.ordproofview {
 /* DATA */
 .taskdata_row {
     clear: both;
-    width: 181px;
+    width: 165px;
 }
 .taskdataproof_row {
     clear: both;
-    width: 406px;
+    width: 377px;
 }
-/*.taskdata_row.grey {*/
-/*    background-color: #ededed;*/
-/*}*/
-/*.taskdata_row.white {*/
-/*    background-color: #ffffff;*/
-/*}*/
+.taskdatashort_row {
+    clear: both;
+    width: 146px;
+}
 .emptytasklist {
     font-size: 12px;
     font-weight: bold;
     text-align: center;
 }
-.taskdata_row div, .taskdataproof_row div {
+.taskdata_row div, .taskdataproof_row div, .taskdatashort_row div {
     height: 18px;
     line-height: 18px!important;
     font-size: 11px;

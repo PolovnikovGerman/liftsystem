@@ -13,31 +13,15 @@ function init_tasks_management() {
         var tasktype=$(this).parent("div.taskview_devstage_subtitle").prop('id');
         change_tasksort(tasktype,'order');
     })
-    $("a#clear_tasks").unbind('click').click(function(){
+    $("#clear_tasks").unbind('click').click(function(){
         $("input#tasksearch").val('');
         restore_task_view();
     })
-    $("a#find_tasks").unbind('click').click(function(){
+    $("#find_tasks").unbind('click').click(function(){
         searchtasks();
     })
     $("input#viewallapproved").unbind('change').change(function(){
         // change_approved_view('just_approved');
-        init_tasks_page();
-    });
-    // Change Brand
-    $("#arttasksviewbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
-        var brand = $(this).data('brand');
-        $("#arttasksviewbrand").val(brand);
-        $("#arttasksviewbrandmenu").find("div.brandchoseval").each(function(){
-            var curbrand=$(this).data('brand');
-            if (curbrand==brand) {
-                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
-                $("#arttasksviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
-            } else {
-                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
-                $("#arttasksviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
-            }
-        });
         init_tasks_page();
     });
 }
@@ -110,66 +94,66 @@ function init_tasks_page() {
     },'json')
 }
 
-function change_approved_view(stage) {
-    var inclreq=$("input#ordersproofs").prop('checked');
-    var showreq=0;
-    if (inclreq===true) {
-        showreq=1;
-    }
-    var showallapprov=0;
-    if ($("input#viewallapproved").prop('checked')==true) {
-        showallapprov=1;
-    }
-    var params=new Array();
-    params.push({name:'taskview',value:$("select#ordproofview").val()});
-    params.push({name:'showreq',value:showreq});
-    // params.push({name:'stage',value:'need_approve'});
-    params.push({name:'stage',value:stage});
-    if (stage=='need_approve') {
-        params.push({name:'task_sort',value:$("input#needapr_sort").val()});
-        params.push({name:'task_direc',value:$("input#needapr_direc").val()});
-    } else {
-        params.push({name:'task_sort',value:$("input#aproved_sort").val()});
-        params.push({name:'task_direc',value:$("input#aproved_direc").val()});
-    }
-    params.push({name:'aproved_viewall', value: showallapprov});
-    params.push({name: 'brand', value: $("input#arttasksviewbrand").val()});
-    var url="/art/tasks_stage";
-    $("#loader").show();
-    $.post(url,params,function(response){
-        if (response.errors=='') {
-            if (stage=='need_approve') {
-                $("div#dataneedaprarea").empty().html(response.data.content);
-            } else {
-                $("div#dataaprovedarea").empty().html(response.data.content);
-            }
-            /* Call popup */
-            $("div.taskview_order").click(function(){
-                call_details(this);
-            })
-            $("div.reminderarea").unbind('click').click(function(){
-                var task_id=$(this).data('taskid');
-                call_reminder(task_id);
-            });
-            $("div.taskview_order").qtip({
-                content: {
-                    attr: 'data-content'
-                },
-                position: {
-                    my: 'bottom right',
-                    at: 'top left',
-                },
-                style: 'qtip_light task_detailview',
-                show: 'click',
-                hide: 'click'
-            });
-            $("#loader").hide();
-        } else {
-            $("#loader").hide();
-            show_error(response);
-        }
-    },'json');
-}
+// function change_approved_view(stage) {
+//     var inclreq=$("input#ordersproofs").prop('checked');
+//     var showreq=0;
+//     if (inclreq===true) {
+//         showreq=1;
+//     }
+//     var showallapprov=0;
+//     if ($("input#viewallapproved").prop('checked')==true) {
+//         showallapprov=1;
+//     }
+//     var params=new Array();
+//     params.push({name:'taskview',value:$("select#ordproofview").val()});
+//     params.push({name:'showreq',value:showreq});
+//     // params.push({name:'stage',value:'need_approve'});
+//     params.push({name:'stage',value:stage});
+//     if (stage=='need_approve') {
+//         params.push({name:'task_sort',value:$("input#needapr_sort").val()});
+//         params.push({name:'task_direc',value:$("input#needapr_direc").val()});
+//     } else {
+//         params.push({name:'task_sort',value:$("input#aproved_sort").val()});
+//         params.push({name:'task_direc',value:$("input#aproved_direc").val()});
+//     }
+//     params.push({name:'aproved_viewall', value: showallapprov});
+//     params.push({name: 'brand', value: $("input#arttasksviewbrand").val()});
+//     var url="/art/tasks_stage";
+//     $("#loader").show();
+//     $.post(url,params,function(response){
+//         if (response.errors=='') {
+//             if (stage=='need_approve') {
+//                 $("div#dataneedaprarea").empty().html(response.data.content);
+//             } else {
+//                 $("div#dataaprovedarea").empty().html(response.data.content);
+//             }
+//             /* Call popup */
+//             $("div.taskview_order").click(function(){
+//                 call_details(this);
+//             })
+//             $("div.reminderarea").unbind('click').click(function(){
+//                 var task_id=$(this).data('taskid');
+//                 call_reminder(task_id);
+//             });
+//             $("div.taskview_order").qtip({
+//                 content: {
+//                     attr: 'data-content'
+//                 },
+//                 position: {
+//                     my: 'bottom right',
+//                     at: 'top left',
+//                 },
+//                 style: 'qtip_light task_detailview',
+//                 show: 'click',
+//                 hide: 'click'
+//             });
+//             $("#loader").hide();
+//         } else {
+//             $("#loader").hide();
+//             show_error(response);
+//         }
+//     },'json');
+// }
 
 function change_tasksort(tasktype,sorttype) {
     var stage='';
@@ -272,6 +256,7 @@ function change_tasksort(tasktype,sorttype) {
     $.post(url,params,function(response){
         if (response.errors==='') {
             $("div#"+datarea).empty().html(response.data.content);
+            new SimpleBar(document.getElementById(datarea), { autoHide: false })
             /* Call popup */
             $("div.taskview_order").click(function(){
                 call_details(this);
