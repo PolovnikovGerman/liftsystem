@@ -1,44 +1,38 @@
 .taskview_conteiner {
     clear: both;
-    float: left;
     margin-left: 15px;
     margin-top: 18px;
-    width: 964px;
+    /*width: 964px;*/
     margin-bottom: 10px;
 }
 .taskview_manage {
-    clear: both;
-    float: left;
-    margin-bottom: 3px;
+    clear: both;    
+    margin-bottom: 10px;
     width: 964px;
 }
 .tasklist_search {
-    float: left;
-    width: 510px;
+    width: 526px;
+    height: 24px;
 }
 .tasksearchselect {
-    float: left;
     width: 125px;
 }
 select.tasksearch_select {
-    float: left;
     width: 121px;
+    height: 24px;
 }
 .ordproofinclude {
-    float: left;
     padding-top: 3px;
     text-align: center;
     width: 29px;
 }
 .ordproofinclude_label {
     color: #010101;
-    float: left;
     font-size: 13px;
     padding-top: 5px;
-    width: 119px;
+    width: 105px;
 }
 .ordproofviewselect {
-    float: left;
     margin-left: 104px;
     width: 144px;
 }
@@ -50,21 +44,50 @@ select.ordproofview {
     color: #161616;
     width: 128px;
     padding-left: 3px;
+    height: 24px;
+}
+/* keymaps */
+.taskview_keymaps {
+    width: 127px;
+    height: 48px;
+    /* border: 1px solid #919191; */
+    margin-top: -15px;
+}
+.taskview_keymap_icon {
+    width: 19px;
+    height: 19px;
+    margin-right: 5px;
+}
+.taskview_keymap_icon img {
+    width: 100%;
+    height: auto;
+}
+.taskview_keymap_label {
+    height: 22px;
+    line-height: 22px;
 }
 .taskview_datacontent {
     clear: both;
-    float: left;
-    width: 974px;
+    /* width: 974px; */
+    width: 1160px;
 }
 /* Headers for details */
 .taskview_devstage {
-    float: left;
-    width: 190px;
+    width: 185px;
+    margin-right: 7px;
+}
+.taskview_devstage.taskstoproof {
+    width: 406px;
 }
 .taskview_devstage_title {
-    background: url("/img/art/taskview_header.png") no-repeat scroll 0 0 transparent;
+    /*background: url("/img/art/taskview_header.png") no-repeat scroll 0 0 transparent;*/
+    background: #1bac21;
+    border-top: 1px solid #919191;
+    border-left: 1px solid #919191;
+    border-right: 1px solid #919191;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
     color: #FFFFFF;
-    float: left;
     font-size: 17px;
     font-weight: bold;
     height: 32px;
@@ -73,22 +96,34 @@ select.ordproofview {
     text-align: center;
     width: 185px;
 }
+.taskstoproof .taskview_devstage_title {
+    width: 406px;
+}
+.justapproved .taskview_devstage_title {
+    background: #5566fa;
+}
 .taskview_devstage_subtitle {
-    background: url("/img/art/taskview_subheader.png") no-repeat scroll 0 0 transparent;
+    /*background: url("/img/art/taskview_subheader.png") no-repeat scroll 0 0 transparent;*/
+    background: #0f5715;
+    border: 1px solid #919191;
     color: #FFFFFF;
-    float: left;
     font-size: 17px;
     font-weight: bold;
     height: 27px;
+    line-height: 27px;
     text-align: center;
     width: 185px;
 }
+.taskstoproof .taskview_devstage_subtitle {
+    width: 406px;
+}
+.justapproved .taskview_devstage_subtitle {
+    background: #16019e;
+}
 .taskview_rushtitle {
-    float: left;
     width: 16px;
 }
 .taskview_sortarea {
-    float: left;
     margin-top: 7px;
     width: 16px;
 }
@@ -97,139 +132,164 @@ select.ordproofview {
     font-size: 12px !important;
 }
 .taskview_timetitle {
-    color: #918CFF;
-    float: left;
+    color: #a4b9aa;
     font-size: 11px;
-    margin-top: 6px;
-    width: 42px;
+    /*margin-top: 6px;*/
+    width: 45px;
+    cursor: pointer;
 }
 .taskview_timetitle:hover {
-    cursor: pointer;
 }
 .taskview_ordertitle {
-    color: #918CFF;
-    float: left;
+    color: #a4b9aa;
     font-size: 11px;
-    margin-top: 6px;
+    /*margin-top: 6px;*/
     width: 37px;
+    cursor: pointer;
 }
 .taskview_ordertitle:hover {
-    cursor: pointer;
 }
 .taskview_notetitle {
     width: 42px;
-    float: left;
+}
+.taskview_itemtitle {
+    color: #a4b9aa;
+    font-size: 11px;
+    /*margin-top: 6px;*/
+    width: 277px;
+}
+.taskview_itemtitle.customshape {
+    font-weight: 600;
 }
 /* body */
 .taskview_devstage_data {
     border-bottom: 1px solid #000000;
     border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
     clear: both;
-    float: left;
     height: 543px;
-    overflow-y: scroll;
-    width: 183px;
+    overflow-y: auto;
+    width: 185px;
     overflow-x: hidden;
+    scrollbar-width: none;
+}
+.taskstoproof .taskview_devstage_data {
+    width: 406px;
 }
 /* CENTERED DATA HOLDERS */
-.centerdat {
-    margin-left: 1px;
-}
+/*.centerdat {*/
+/*    margin-left: 1px;*/
+/*}*/
 .sorttaskdesc {
     background: url('/img/art/taskview_desc.png') no-repeat transparent;
 }
 .sorttaskasc {
     background: url('/img/art/taskview_asc.png') no-repeat transparent;
 }
-.justapproved {
-    margin-left: 10px;
-}
+/*.justapproved {*/
+/*    margin-left: 10px;*/
+/*}*/
 /* DATA */
 .taskdata_row {
     clear: both;
-    float: left;
-    width: 168px;
+    width: 181px;
 }
-.taskdata_row.grey {
-    background-color: #ededed;
+.taskdataproof_row {
+    clear: both;
+    width: 406px;
 }
-.taskdata_row.white {
-    background-color: #ffffff;
-}
+/*.taskdata_row.grey {*/
+/*    background-color: #ededed;*/
+/*}*/
+/*.taskdata_row.white {*/
+/*    background-color: #ffffff;*/
+/*}*/
 .emptytasklist {
     font-size: 12px;
     font-weight: bold;
     text-align: center;
 }
-.taskview_seqnum {
-    float: left;
-    font-size: 11px;
+.taskdata_row div, .taskdataproof_row div {
+    height: 18px;
     line-height: 18px!important;
+    font-size: 11px;
     text-align: center;
+}
+.taskview_seqnum {
+    /*font-size: 11px;*/
+    /*line-height: 18px!important;*/
+    /*text-align: center;    */
     width: 14px;
 }
 .taskview_rush {
-    float: left;
-    padding-top: 1px;
-    text-align: center;
-    width: 18px;
+    /*padding-top: 1px;*/
+    /*text-align: center;*/
+    width: 25px;
 }
 .taskview_rush img {
     width: 16px;
     height: 16px;
 }
+.taskview_custom {
+    width: 20px;
+    color: #000000;
+    font-size: 12px!important;
+}
 .taskview_time {
     color: #7B7B7B;
-    float: left;
-    font-size: 11px;
-    padding-top: 3px;
-    text-align: center;
-    width: 50px;
+    /*font-size: 11px;*/
+    /*padding-top: 3px;*/
+    /*text-align: center;*/
+    /*width: 50px;*/
+    width: 40px;
 }
 .taskview_order {
     color: #0000FF;
-    float: left;
     font-size: 12px;
     font-weight: bold;
-    padding-top: 2px;
-    text-align: center;
-    width: 62px;
-}
-.taskview_order:hover {
+    /*padding-top: 2px;*/
+    /*text-align: center;*/
+    width: 55px;
     cursor: pointer;
 }
+/*.taskview_order:hover {*/
+/*}*/
 .taskview_order.taskoverdue {
     background: none #B40404;
     color: #FFFFFF;
-    height: 18px;
+    /*height: 18px;*/
 }
 .taskview_order.bypass {
     color: #008000;
 }
 .taskview_note {
-    float: left;
-    width: 20px;
-    padding-top: 2px;
-    text-align: center;
+    width: 25px;
+    color: #000000;
+    font-size: 13px!important;
 }
 .reminderarea:hover {
     cursor:pointer;
+}
+.taskview_item {
+    text-align: left!important;
+    width: 227px;
+    padding-left: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 /* task_rushicon.png */
 /* reminder.png */
 /* Task Search */
 .taskview_datacontent > .ordertable-art {
-    float: left;
     width: 100%;
 }
 .taskview_datacontent > .ordertable-art > .ordertable-title {
-    float: left;
     width: 100%;
     background-color: #bcbcbc;
     border: 1px solid #919191;
 }
 .taskview_datacontent > .ordertable-art > .ordertable-title > div {
-    float: left;
     font-size: 13px;
     text-align: center;
     height: 31px;
@@ -282,12 +342,10 @@ select.ordproofview {
 }
 .taskview_datacontent > .ordertable-art > .content-art-table > .rowdata {
     clear: both;
-    float: left;
     font-size: 12px;
     width: 975px;
 }
 .taskview_datacontent > .ordertable-art > .content-art-table > .rowdata > div {
-    float: left;
     height: 25px;
     line-height: 25px;
     text-align: center;
@@ -348,7 +406,6 @@ select.ordproofview {
 /* Popover */
 .task_detailview {
     background-color: #EDEDED!important;
-    float: left;
     padding: 0px;
     font-size: 13px!important;
     color: #000!important;

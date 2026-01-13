@@ -1,6 +1,1 @@
-<?php
-
-class task_proofempty_view
-{
-
-}
+<div class="taskdataproof_row emptytasklist">No Records</div>
