@@ -56,7 +56,7 @@
             <div class="taskview_keymap_label">Custom Shape</div>
         </div>
     </div>
-    <div class="datarow">
+    <div class="datarow taskview_datacontent">
         <div class="taskview_devstage">
             <div class="taskview_devstage_title">Need Art</div>
             <div class="taskview_devstage_subtitle" id="noarttitle">

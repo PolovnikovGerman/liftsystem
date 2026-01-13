@@ -91,7 +91,7 @@ select.ordproofview {
 .taskview_datacontent {
     clear: both;
     /* width: 974px; */
-    width: 1160px;
+    width: 1196px;
 }
 /* Headers for details */
 .taskview_devstage {
@@ -326,7 +326,8 @@ select.ordproofview {
     width: 100%;
 }
 .taskview_datacontent > .ordertable-art > .ordertable-title {
-    width: 100%;
+    /*width: 100%;*/
+    width: 974px;
     background-color: #bcbcbc;
     border: 1px solid #919191;
 }
@@ -384,7 +385,7 @@ select.ordproofview {
 .taskview_datacontent > .ordertable-art > .content-art-table > .rowdata {
     clear: both;
     font-size: 12px;
-    width: 975px;
+    width: 1196px;
 }
 .taskview_datacontent > .ordertable-art > .content-art-table > .rowdata > div {
     height: 25px;
@@ -418,7 +419,10 @@ select.ordproofview {
     border-right: 2px solid #000000;
     padding-left: 3px;
     text-align: left;
-    width: 209px;
+    width: 219px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .taskview_datacontent > .ordertable-art > .content-art-table > .rowdata > .art {
     width: 28px;
