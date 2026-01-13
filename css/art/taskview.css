@@ -296,7 +296,9 @@ select.ordproofview {
 .taskview_order.taskoverdue {
     background: none #B40404;
     color: #FFFFFF;
-    /*height: 18px;*/
+    height: 18px!important;
+    line-height: 18px!important;
+    padding-top: 2px;
 }
 .taskview_order.bypass {
     color: #008000;
