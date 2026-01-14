@@ -196,9 +196,6 @@ select.ordproofview {
     /*margin-top: 6px;*/
     width: 227px;
 }
-.taskview_itemtitle.customshape {
-    font-weight: 600;
-}
 /* body */
 .taskview_devstage_data {
     border-bottom: 1px solid #000000;
@@ -318,6 +315,9 @@ select.ordproofview {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.taskview_item.customshape {
+    font-weight: 600;
 }
 /* task_rushicon.png */
 /* reminder.png */
