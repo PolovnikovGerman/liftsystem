@@ -353,6 +353,7 @@ class Art extends MY_Controller {
                 $this->load->model('artproof_model');
                 $email_id=substr($postdata['task_id'], 2);
                 $data=$this->artproof_model->get_proof_data($email_id);
+                $brand = $data['brand'];
                 if ($data['email_proofed']==1) {
                     $proofs=$this->artwork_model->get_artproofs($postdata['artwork_id']);
                     $attach=array();
@@ -369,6 +370,7 @@ class Art extends MY_Controller {
                 $this->load->model('orders_model');
                 $order_id=substr($postdata['task_id'], 3);
                 $data=$this->orders_model->get_order_detail($order_id);
+                $brand = $data['brand'];
                 if ($data['order_proofed']==1) {
                     $proofs=$this->artwork_model->get_artproofs($postdata['artwork_id']);
                     $attach=array();
@@ -383,7 +385,7 @@ class Art extends MY_Controller {
                 }
             }
 
-            $res=$this->artwork_model->send_reminder($postdata, $attach, $this->USR_ID);
+            $res=$this->artwork_model->send_reminder($postdata, $attach, $this->USR_ID, $brand);
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
                 $error='';

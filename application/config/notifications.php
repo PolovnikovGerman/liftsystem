@@ -50,4 +50,10 @@ $config['searchreport_pass'] = getenv('SEARCHREP_PASS');
 $config['printschedule_smtp'] = getenv('PRINTSCHEDULE_SMTP');
 $config['printschedule_user'] = getenv('PRINTSCHEDULE_USER');
 $config['printschedule_pass'] = getenv('PRINTSCHEDULE_PASS');
-//
+// TASK notifications
+$config['arttasksb_smtp'] = getenv('SB_ARTDEPT_SMTP');
+$config['arttasksb_user'] = getenv('SB_ARTDEPT_EMAIL');
+$config['arttasksb_pass'] = getenv('SB_ARTDEPT_PASS');
+$config['arttasksr_smtp'] = getenv('SR_ARTDEPT_SMTP');
+$config['arttasksr_user'] = getenv('SR_ARTDEPT_EMAIL');
+$config['arttasksr_pass'] = getenv('SR_ARTDEPT_PASS');
