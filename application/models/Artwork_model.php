@@ -631,7 +631,6 @@ Class Artwork_model extends MY_Model
                 $config['wordwrap'] = TRUE;
                 $config['mailtype'] = 'text';
             }
-            log_message('error','Email Config '.json_encode($config));
             $this->email->initialize($config);
 
             $this->email->from($data['from']);
