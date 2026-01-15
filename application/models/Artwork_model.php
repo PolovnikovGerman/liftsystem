@@ -613,9 +613,9 @@ Class Artwork_model extends MY_Model
                 } else {
                     $config = [
                         'protocol'=>'smtp',
-                        'smtp_host' => $this->config->item('sm_smtp_host'),
-                        'smtp_port' => $this->config->item('sm_smtp_port'),
-                        'smtp_crypto' => $this->config->item('sm_smtp_crypto'),
+                        'smtp_host' => $this->config->item('sb_smtp_host'),
+                        'smtp_port' => $this->config->item('sb_smtp_port'),
+                        'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
                         'smtp_user' => $this->config->item('arttasksb_user'),
                         'smtp_pass' => $this->config->item('arttasksb_pass'),
                         'charset'=>'utf-8',
