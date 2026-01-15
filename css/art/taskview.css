@@ -94,6 +94,9 @@ select.ordproofview {
     width: 1196px;
 }
 /* Headers for details */
+.emptystagetasks {
+    opacity: 25%;
+}
 .taskview_devstage {
     width: 165px;
     margin-right: 7px;

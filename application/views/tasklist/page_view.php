@@ -58,7 +58,7 @@
     </div>
     <div class="datarow taskview_datacontent">
         <div class="taskview_devstage">
-            <div class="taskview_devstage_title">Need Art</div>
+            <div class="taskview_devstage_title" data-stage="nonart">Need Art</div>
             <div class="taskview_devstage_subtitle" id="noarttitle">
                 <div class="taskview_rushtitle">&nbsp;</div>
                 <div class="taskview_sortarea timesort sorttaskdesc">&nbsp;</div>
@@ -70,7 +70,7 @@
             <div class="taskview_devstage_data" id="dataneedartarea">&nbsp;</div>
         </div>
         <div class="taskview_devstage short">
-            <div class="taskview_devstage_title">Redrawing</div>
+            <div class="taskview_devstage_title" data-stage="redraw">Redrawing</div>
             <div class="taskview_devstage_subtitle" id="redrawtitle">
                 <div class="taskview_rushtitle">&nbsp;</div>
                 <div class="taskview_sortarea timesort sorttaskdesc">&nbsp;</div>
@@ -81,7 +81,7 @@
             <div class="taskview_devstage_data short" id="dataredrawnarea" >&nbsp;</div>
         </div>
         <div class="taskview_devstage taskstoproof">
-            <div class="taskview_devstage_title">To Proof</div>
+            <div class="taskview_devstage_title" data-stage="toproof">To Proof</div>
             <div class="taskview_devstage_subtitle" id="prooftitle">
                 <div class="taskview_rushtitle">&nbsp;</div>
                 <div class="taskview_sortarea timesort sorttaskdesc">&nbsp;</div>
@@ -93,7 +93,7 @@
             <div class="taskview_devstage_data" id="datatoproofarea">&nbsp;</div>
         </div>
         <div class="taskview_devstage">
-            <div class="taskview_devstage_title">Need Approval</div>
+            <div class="taskview_devstage_title" data-stage="needapprov">Need Approval</div>
             <div class="taskview_devstage_subtitle" id="needaprtitle">
                 <div class="taskview_rushtitle">&nbsp;</div>
                 <div class="taskview_sortarea timesort sorttaskdesc">&nbsp;</div>
@@ -105,7 +105,7 @@
             <div class="taskview_devstage_data" id="dataneedaprarea">&nbsp;</div>
         </div>
         <div class="taskview_devstage justapproved">
-            <div class="taskview_devstage_title">Just Approved</div>
+            <div class="taskview_devstage_title" data-stage="approved">Just Approved</div>
             <div class="taskview_devstage_subtitle" id="aprovedtitle">
                 <div class="taskview_rushtitle">&nbsp;</div>
                 <div class="taskview_sortarea timesort sorttaskasc">&nbsp;</div>
@@ -116,8 +116,8 @@
             <div class="taskview_devstage_data short" id="dataaprovedarea">&nbsp;</div>
         </div>
         <div class="taskview_devstage short">
-            <div class="taskview_devstage_title">Need Plate</div>
-            <div class="taskview_devstage_subtitle" id="needplate">
+            <div class="taskview_devstage_title" data-stage="needplates">Need Plate</div>
+            <div class="taskview_devstage_subtitle" id="needplatetitle">
                 <div class="taskview_rushtitle">&nbsp;</div>
                 <div class="taskview_sortarea timesort sorttaskdesc">&nbsp;</div>
                 <div class="taskview_timetitle sortactive">Time</div>

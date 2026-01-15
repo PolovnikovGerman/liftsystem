@@ -149,36 +149,42 @@ class Art extends MY_Controller {
             /* Get data */
             $this->load->model('artproof_model');
             $data_not_art=$this->artproof_model->get_tasks_stage('noart', $taskview, $inclreq, $nonart_sort, $nonart_direc, $brand, $hide_old);
+            $mdata['count_nonart'] = count($data_not_art);
             if (count($data_not_art)==0) {
                 $mdata['nonart']=$this->load->view('tasklist/task_dataempty_view',array('short' => 0),TRUE);
             } else {
                 $mdata['nonart']=$this->load->view('tasklist/task_data_view',array('data'=>$data_not_art,'note'=>1),TRUE);
             }
             $data_redraw=$this->artproof_model->get_tasks_stage('redrawn', $taskview, $inclreq, $redraw_sort, $redraw_direc, $brand, $hide_old);
+            $mdata['count_redrawn'] = count($data_redraw);
             if (count($data_redraw)==0) {
                 $mdata['redrawn']=$this->load->view('tasklist/task_dataempty_view',array('short' => 1),TRUE);
             } else {
                 $mdata['redrawn']=$this->load->view('tasklist/task_datashort_view',array('data'=>$data_redraw),TRUE);
             }
             $data_proof=$this->artproof_model->get_tasks_stage('need_proof', $taskview, $inclreq, $proof_sort, $proof_direc, $brand, $hide_old);
+            $mdata['count_toproof'] = count($data_proof);
             if (count($data_proof)==0) {
                 $mdata['toproof']=$this->load->view('tasklist/task_proofempty_view',array(),TRUE);
             } else {
                 $mdata['toproof']=$this->load->view('tasklist/task_proofdata_view',array('data'=>$data_proof),TRUE);
             }
             $data_needapr=$this->artproof_model->get_tasks_stage('need_approve', $taskview, $inclreq, $needapr_sort, $needapr_direc, $brand, $hide_old);
+            $mdata['count_needapr'] = count($data_needapr);
             if (count($data_needapr)==0) {
                 $mdata['needapr']=$this->load->view('tasklist/task_dataempty_view',array('short' => 0),TRUE);
             } else {
                 $mdata['needapr']=$this->load->view('tasklist/task_data_view',array('data'=>$data_needapr,'note'=>1),TRUE);
             }
             $data_aproved=$this->artproof_model->get_tasks_stage('just_approved', $taskview, $inclreq, $aproved_sort, $aproved_direc, $brand, $hide_old);
+            $mdata['count_aproved'] = count($data_aproved);
             if (count($data_aproved)==0) {
                 $mdata['aproved']=$this->load->view('tasklist/task_dataempty_view',array('short' => 1),TRUE);
             } else {
                 $mdata['aproved']=$this->load->view('tasklist/task_datashort_view',array('data'=>$data_aproved,'note'=>0),TRUE);
             }
             // Temporary - need plates
+            $mdata['count_needplates'] = 0;
             $mdata['needplates'] = $this->load->view('tasklist/task_dataempty_view',array('short' => 1),TRUE);
             $this->ajaxResponse($mdata, $error);
         }
@@ -207,6 +213,7 @@ class Art extends MY_Controller {
 
             $this->load->model('artproof_model');
             $data_task = $this->artproof_model->get_tasks_stage($stage, $taskview, $inclreq, $task_sort, $task_direc, $brand, $hide_old);
+            $mdata['count_tasks'] = count($data_task);
             if (count($data_task)==0) {
                 if ($stage=='need_proof') {
                     $mdata['content'] = $this->load->view('tasklist/task_proofempty_view', array(), TRUE);
