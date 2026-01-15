@@ -59,16 +59,70 @@ function init_tasks_page() {
     $.post(url,params,function(response){
         if (response.errors=='') {
             $("div#dataneedartarea").empty().html(response.data.nonart);
+            if (parseInt(response.data.count_nonart)==0) {
+                $(".taskview_devstage_title[data-stage='nonart']").addClass('emptystagetasks');
+                $("#noarttitle").addClass('emptystagetasks');
+                $("#dataneedartarea").addClass('emptystagetasks');
+            } else {
+                $(".taskview_devstage_title[data-stage='nonart']").removeClass('emptystagetasks');
+                $("#noarttitle").removeClass('emptystagetasks');
+                $("#dataneedartarea").removeClass('emptystagetasks');
+            }
             new SimpleBar(document.getElementById('dataneedartarea'), { autoHide: false });
             $("div#dataredrawnarea").empty().html(response.data.redrawn);
+            if (parseInt(response.data.count_redrawn)==0) {
+                $(".taskview_devstage_title[data-stage='redraw']").addClass('emptystagetasks');
+                $("#redrawtitle").addClass('emptystagetasks');
+                $("#dataredrawnarea").addClass('emptystagetasks');
+            } else {
+                $(".taskview_devstage_title[data-stage='redraw']").removeClass('emptystagetasks');
+                $("#redrawtitle").removeClass('emptystagetasks');
+                $("#dataredrawnarea").removeClass('emptystagetasks');
+            }
             new SimpleBar(document.getElementById('dataredrawnarea'), { autoHide: false });
             $("div#datatoproofarea").empty().html(response.data.toproof);
+            if (parseInt(response.data.count_toproof)==0) {
+                $(".taskview_devstage_title[data-stage='toproof']").addClass('emptystagetasks');
+                $("#prooftitle").addClass('emptystagetasks');
+                $("#datatoproofarea").addClass('emptystagetasks');
+            } else {
+                $(".taskview_devstage_title[data-stage='toproof']").removeClass('emptystagetasks');
+                $("#prooftitle").removeClass('emptystagetasks');
+                $("#datatoproofarea").removeClass('emptystagetasks');
+            }
             new SimpleBar(document.getElementById('datatoproofarea'), { autoHide: false })
             $("div#dataneedaprarea").empty().html(response.data.needapr);
+            if (parseInt(response.data.count_needapr)==0) {
+                $(".taskview_devstage_title[data-stage='needapprov']").addClass('emptystagetasks');
+                $("#needaprtitle").addClass('emptystagetasks');
+                $("#dataneedaprarea").addClass('emptystagetasks');
+            } else {
+                $(".taskview_devstage_title[data-stage='needapprov']").removeClass('emptystagetasks');
+                $("#needaprtitle").removeClass('emptystagetasks');
+                $("#dataneedaprarea").removeClass('emptystagetasks');
+            }
             new SimpleBar(document.getElementById('dataneedaprarea'), { autoHide: false });
             $("div#dataaprovedarea").empty().html(response.data.aproved);
+            if (parseInt(response.data.count_aproved)==0) {
+                $(".taskview_devstage_title[data-stage='approved']").addClass('emptystagetasks');
+                $("#aprovedtitle").addClass('emptystagetasks');
+                $("#dataaprovedarea").addClass('emptystagetasks');
+            } else {
+                $(".taskview_devstage_title[data-stage='approved']").removeClass('emptystagetasks');
+                $("#aprovedtitle").removeClass('emptystagetasks');
+                $("#dataaprovedarea").removeClass('emptystagetasks');
+            }
             new SimpleBar(document.getElementById('dataaprovedarea'), { autoHide: false })
             $("div#dataneedplates").empty().html(response.data.needplates);
+            if (parseInt(response.data.count_needplates)==0) {
+                $(".taskview_devstage_title[data-stage='needplates']").addClass('emptystagetasks');
+                $("#needplatetitle").addClass('emptystagetasks');
+                $("#dataneedplates").addClass('emptystagetasks');
+            } else {
+                $(".taskview_devstage_title[data-stage='needplates']").removeClass('emptystagetasks');
+                $("#needplatetitle").removeClass('emptystagetasks');
+                $("#dataneedplates").removeClass('emptystagetasks');
+            }
             new SimpleBar(document.getElementById('dataneedplates'), { autoHide: false })
             $("#loader").hide();
             /* Call popup */
@@ -96,66 +150,86 @@ function init_tasks_page() {
     },'json')
 }
 
-// function change_approved_view(stage) {
-//     var inclreq=$("input#ordersproofs").prop('checked');
-//     var showreq=0;
-//     if (inclreq===true) {
-//         showreq=1;
-//     }
-//     var showallapprov=0;
-//     if ($("input#viewallapproved").prop('checked')==true) {
-//         showallapprov=1;
-//     }
-//     var params=new Array();
-//     params.push({name:'taskview',value:$("select#ordproofview").val()});
-//     params.push({name:'showreq',value:showreq});
-//     // params.push({name:'stage',value:'need_approve'});
-//     params.push({name:'stage',value:stage});
-//     if (stage=='need_approve') {
-//         params.push({name:'task_sort',value:$("input#needapr_sort").val()});
-//         params.push({name:'task_direc',value:$("input#needapr_direc").val()});
-//     } else {
-//         params.push({name:'task_sort',value:$("input#aproved_sort").val()});
-//         params.push({name:'task_direc',value:$("input#aproved_direc").val()});
-//     }
-//     params.push({name:'aproved_viewall', value: showallapprov});
-//     params.push({name: 'brand', value: $("input#arttasksviewbrand").val()});
-//     var url="/art/tasks_stage";
-//     $("#loader").show();
-//     $.post(url,params,function(response){
-//         if (response.errors=='') {
-//             if (stage=='need_approve') {
-//                 $("div#dataneedaprarea").empty().html(response.data.content);
-//             } else {
-//                 $("div#dataaprovedarea").empty().html(response.data.content);
-//             }
-//             /* Call popup */
-//             $("div.taskview_order").click(function(){
-//                 call_details(this);
-//             })
-//             $("div.reminderarea").unbind('click').click(function(){
-//                 var task_id=$(this).data('taskid');
-//                 call_reminder(task_id);
-//             });
-//             $("div.taskview_order").qtip({
-//                 content: {
-//                     attr: 'data-content'
-//                 },
-//                 position: {
-//                     my: 'bottom right',
-//                     at: 'top left',
-//                 },
-//                 style: 'qtip_light task_detailview',
-//                 show: 'click',
-//                 hide: 'click'
-//             });
-//             $("#loader").hide();
-//         } else {
-//             $("#loader").hide();
-//             show_error(response);
-//         }
-//     },'json');
-// }
+function change_approved_view(stage) {
+    var inclreq=$("input#ordersproofs").prop('checked');
+    var showreq=0;
+    if (inclreq===true) {
+        showreq=1;
+    }
+    var showallapprov=0;
+    if ($("input#viewallapproved").prop('checked')==true) {
+        showallapprov=1;
+    }
+    var params=new Array();
+    params.push({name:'taskview',value:$("select#ordproofview").val()});
+    params.push({name:'showreq',value:showreq});
+    // params.push({name:'stage',value:'need_approve'});
+    params.push({name:'stage',value:stage});
+    if (stage=='need_approve') {
+        params.push({name:'task_sort',value:$("input#needapr_sort").val()});
+        params.push({name:'task_direc',value:$("input#needapr_direc").val()});
+    } else {
+        params.push({name:'task_sort',value:$("input#aproved_sort").val()});
+        params.push({name:'task_direc',value:$("input#aproved_direc").val()});
+    }
+    params.push({name:'aproved_viewall', value: showallapprov});
+    params.push({name: 'brand', value: $("input#arttasksviewbrand").val()});
+    var url="/art/tasks_stage";
+    $("#loader").show();
+    $.post(url,params,function(response){
+        if (response.errors=='') {
+            if (stage=='need_approve') {
+                $("div#dataneedaprarea").empty().html(response.data.content);
+                if (parseInt(response.data.count_tasks)==0) {
+                    $(".taskview_devstage_title[data-stage='needapprov']").addClass('emptystagetasks');
+                    $("#needaprtitle").addClass('emptystagetasks');
+                    $("#dataneedaprarea").addClass('emptystagetasks');
+                } else {
+                    $(".taskview_devstage_title[data-stage='needapprov']").removeClass('emptystagetasks');
+                    $("#needaprtitle").removeClass('emptystagetasks');
+                    $("#dataneedaprarea").removeClass('emptystagetasks');
+                }
+                new SimpleBar(document.getElementById('dataneedaprarea'), { autoHide: false });
+            } else {
+                $("div#dataaprovedarea").empty().html(response.data.content);
+                if (parseInt(response.data.count_tasks)==0) {
+                    $(".taskview_devstage_title[data-stage='approved']").addClass('emptystagetasks');
+                    $("#aprovedtitle").addClass('emptystagetasks');
+                    $("#dataaprovedarea").addClass('emptystagetasks');
+                } else {
+                    $(".taskview_devstage_title[data-stage='approved']").removeClass('emptystagetasks');
+                    $("#aprovedtitle").removeClass('emptystagetasks');
+                    $("#dataaprovedarea").removeClass('emptystagetasks');
+                }
+                new SimpleBar(document.getElementById('dataaprovedarea'), { autoHide: false })
+            }
+            /* Call popup */
+            $("div.taskview_order").click(function(){
+                call_details(this);
+            })
+            $("div.reminderarea").unbind('click').click(function(){
+                var task_id=$(this).data('taskid');
+                call_reminder(task_id);
+            });
+            $("div.taskview_order").qtip({
+                content: {
+                    attr: 'data-content'
+                },
+                position: {
+                    my: 'bottom right',
+                    at: 'top left',
+                },
+                style: 'qtip_light task_detailview',
+                show: 'click',
+                hide: 'click'
+            });
+            $("#loader").hide();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
+}
 
 function change_tasksort(tasktype,sorttype) {
     var stage='';
@@ -193,7 +267,7 @@ function change_tasksort(tasktype,sorttype) {
             sort=$("input#aproved_direc").val();
             datarea='dataaprovedarea';
             break;
-        case 'needplate':
+        case 'needplatetitle':
             stage = 'need_plates';
             sortby = $("input#needplates_sort").val();
             sort = $("input#needplates_direc").val();
@@ -232,7 +306,7 @@ function change_tasksort(tasktype,sorttype) {
             $("input#aproved_sort").val(sortby);
             $("input#aproved_direc").val(sort);
             break;
-        case 'needplate':
+        case 'needplatetitle':
             $("input#needplates_sort").val(sortby);
             $("input#needplates_direc").val(sort);
             break;
