@@ -2,6 +2,10 @@
 $config['sb_smtp_host'] = getenv('SB_SMTP_HOST');
 $config['sb_smtp_port'] = getenv('SB_SMTP_PORT');
 $config['sb_smtp_crypto'] = 'ssl';
+$config['sr_smtp_host'] = getenv('SR_SMTP_HOST');
+$config['sr_smtp_port'] = getenv('SR_SMTP_PORT');
+$config['sr_smtp_crypto'] = 'ssl';
+// Quote
 $config['sb_quote_smtp'] = getenv('SB_QUOTE_SMTP');
 $config['sb_quote_user'] = getenv('SB_QUOTE_USER');
 $config['sb_quote_pass'] = getenv('SB_QUOTE_PASS');
