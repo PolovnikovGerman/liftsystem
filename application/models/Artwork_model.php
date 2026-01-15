@@ -606,7 +606,7 @@ Class Artwork_model extends MY_Model
                         'smtp_user' => $this->config->item('arttasksr_user'),
                         'smtp_pass' => $this->config->item('arttasksr_pass'),
                         'charset'=>'utf-8',
-                        'mailtype'=>'html',
+                        'mailtype'=>'text',
                         'wordwrap'=>TRUE,
                         'newline' => "\r\n",
                     ];
@@ -619,7 +619,7 @@ Class Artwork_model extends MY_Model
                         'smtp_user' => $this->config->item('arttasksb_user'),
                         'smtp_pass' => $this->config->item('arttasksb_pass'),
                         'charset'=>'utf-8',
-                        'mailtype'=>'html',
+                        'mailtype'=>'text',
                         'wordwrap'=>TRUE,
                         'newline' => "\r\n",
                     ];
