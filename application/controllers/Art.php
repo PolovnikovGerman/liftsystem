@@ -262,9 +262,17 @@ class Art extends MY_Controller {
                     } else {
                         if ($data['email_proofed']==1) {
                             /* Approve art reminder */
-                            $templdat=$this->email_model->get_emailtemplate_byname($this->NEED_APPROVE_REMINDER);
+                            if ($brand=='SR') {
+                                $templdat=$this->email_model->get_emailtemplate_byname('SR '.$this->NEED_APPROVE_REMINDER);
+                            } else {
+                                $templdat=$this->email_model->get_emailtemplate_byname('SB '.$this->NEED_APPROVE_REMINDER);
+                            }
                         } else {
-                            $templdat=$this->email_model->get_emailtemplate_byname($this->NO_ART_REMINDER);
+                            if ($brand=='SR') {
+                                $templdat=$this->email_model->get_emailtemplate_byname('SR '.$this->NO_ART_REMINDER);
+                            } else {
+                                $templdat=$this->email_model->get_emailtemplate_byname('SB '.$this->NO_ART_REMINDER);
+                            }
                         }
 
                         if (isset($templdat['email_template_id'])) {
