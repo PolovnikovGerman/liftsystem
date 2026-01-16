@@ -2413,7 +2413,7 @@ Class Artwork_model extends MY_Model
                     $row['deleted']=1;
                     $this->artproof_model->add_proofdoc_log($data['artwork_id'], $user_id, $row['src'], $row['source_name'], 'Lost Upload');
                 }
-                if (in_array($row['artwork_proof_id'],$proof_array) && $row['deleted']==0) {
+                if (in_array($row['artwork_proof_id'],$proof_array) && intval($row['deleted'])==0) {
                     // This proof doc was maked as send
                     // Collect data to insert / update
                     $proof=array();
@@ -2507,7 +2507,7 @@ Class Artwork_model extends MY_Model
                     $details.=$row.'<br/>'.PHP_EOL;
                 }
 
-                if ($this->input->ip_address()!=='127.0.0.1') {
+                // if ($this->input->ip_address()!=='127.0.0.1') {
                     // Send message
                     $this->load->library('email');
                     $brand = ifset($data, 'brand','SB');
@@ -2630,7 +2630,7 @@ Class Artwork_model extends MY_Model
                             $this->email->clear(TRUE);
                         }
                     }
-                }
+                // }
                 if ($artdata['proofs_id']) {
                     // Update lead history and lead update status
                     $this->db->select('l.lead_number, l.lead_id');
