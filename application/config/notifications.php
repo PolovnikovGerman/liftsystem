@@ -2,6 +2,10 @@
 $config['sb_smtp_host'] = getenv('SB_SMTP_HOST');
 $config['sb_smtp_port'] = getenv('SB_SMTP_PORT');
 $config['sb_smtp_crypto'] = 'ssl';
+$config['sr_smtp_host'] = getenv('SR_SMTP_HOST');
+$config['sr_smtp_port'] = getenv('SR_SMTP_PORT');
+$config['sr_smtp_crypto'] = 'ssl';
+// Quote
 $config['sb_quote_smtp'] = getenv('SB_QUOTE_SMTP');
 $config['sb_quote_user'] = getenv('SB_QUOTE_USER');
 $config['sb_quote_pass'] = getenv('SB_QUOTE_PASS');
@@ -50,4 +54,10 @@ $config['searchreport_pass'] = getenv('SEARCHREP_PASS');
 $config['printschedule_smtp'] = getenv('PRINTSCHEDULE_SMTP');
 $config['printschedule_user'] = getenv('PRINTSCHEDULE_USER');
 $config['printschedule_pass'] = getenv('PRINTSCHEDULE_PASS');
-//
+// TASK notifications
+$config['arttasksb_smtp'] = getenv('SB_ARTDEPT_SMTP');
+$config['arttasksb_user'] = getenv('SB_ARTDEPT_EMAIL');
+$config['arttasksb_pass'] = getenv('SB_ARTDEPT_PASS');
+$config['arttasksr_smtp'] = getenv('SR_ARTDEPT_SMTP');
+$config['arttasksr_user'] = getenv('SR_ARTDEPT_EMAIL');
+$config['arttasksr_pass'] = getenv('SR_ARTDEPT_PASS');

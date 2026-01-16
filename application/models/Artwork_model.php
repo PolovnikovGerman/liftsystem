@@ -561,7 +561,7 @@ Class Artwork_model extends MY_Model
         return $out;
     }
 
-    public function send_reminder($data, $attach, $user_id) {
+    public function send_reminder($data, $attach, $user_id, $brand) {
         $out=array('result'=>  $this->error_result, 'msg'=> $this->INIT_MSG);
         if (empty($data['from'])) {
             $out['msg']='Enter Sender Email';
@@ -595,11 +595,42 @@ Class Artwork_model extends MY_Model
             // Send message
             $path_fl=$this->config->item('artwork_proofs');
             $this->load->library('email');
-            $config['protocol'] = 'sendmail';
-            $config['charset'] = 'utf8';
-            $config['wordwrap'] = TRUE;
-            $config['mailtype'] = 'text';
-
+            $sendsmtp = intval($brand=='SR' ? $this->config->item('arttasksr_smtp') : $this->config->item('arttasksb_smtp'));
+            if ($sendsmtp == 1) {
+                if ($brand=='SR') {
+                    $config = [
+                        'protocol'=>'smtp',
+                        'smtp_host' => $this->config->item('sr_smtp_host'),
+                        'smtp_port' => $this->config->item('sr_smtp_port'),
+                        'smtp_crypto' => $this->config->item('sr_smtp_crypto'),
+                        'smtp_user' => $this->config->item('arttasksr_user'),
+                        'smtp_pass' => $this->config->item('arttasksr_pass'),
+                        'charset'=>'utf-8',
+                        'mailtype'=>'text',
+                        'wordwrap'=>TRUE,
+                        'newline' => "\r\n",
+                    ];
+                } else {
+                    $config = [
+                        'protocol'=>'smtp',
+                        'smtp_host' => $this->config->item('sb_smtp_host'),
+                        'smtp_port' => $this->config->item('sb_smtp_port'),
+                        'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                        'smtp_user' => $this->config->item('arttasksb_user'),
+                        'smtp_pass' => $this->config->item('arttasksb_pass'),
+                        'charset'=>'utf-8',
+                        'mailtype'=>'text',
+                        'wordwrap'=>TRUE,
+                        'newline' => "\r\n",
+                    ];
+                }
+            } else {
+                $config = [];
+                $config['protocol'] = 'sendmail';
+                $config['charset'] = 'utf8';
+                $config['wordwrap'] = TRUE;
+                $config['mailtype'] = 'text';
+            }
             $this->email->initialize($config);
 
             $this->email->from($data['from']);
