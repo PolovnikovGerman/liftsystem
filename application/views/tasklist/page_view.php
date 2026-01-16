@@ -57,7 +57,7 @@
         </div>
     </div>
     <div class="datarow taskview_datacontent">
-        <div class="taskview_devstage">
+        <div class="taskview_devstage notifications">
             <div class="taskview_devstage_title" data-stage="nonart">Need Art</div>
             <div class="taskview_devstage_subtitle" id="noarttitle">
                 <div class="taskview_rushtitle">&nbsp;</div>
@@ -92,7 +92,7 @@
             </div>
             <div class="taskview_devstage_data" id="datatoproofarea">&nbsp;</div>
         </div>
-        <div class="taskview_devstage">
+        <div class="taskview_devstage notifications">
             <div class="taskview_devstage_title" data-stage="needapprov">Need Approval</div>
             <div class="taskview_devstage_subtitle" id="needaprtitle">
                 <div class="taskview_rushtitle">&nbsp;</div>
