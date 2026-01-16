@@ -72,7 +72,7 @@ select.ordproofview {
     width: 127px;
     height: 48px;
     margin-top: -15px;
-    margin-left: 40px;
+    margin-left: 62px;
 }
 .taskview_keymap_icon {
     width: 17px;
@@ -91,7 +91,7 @@ select.ordproofview {
 .taskview_datacontent {
     clear: both;
     /* width: 974px; */
-    width: 1196px;
+    width: 1210px;
 }
 /* Headers for details */
 .emptystagetasks {
@@ -109,6 +109,9 @@ select.ordproofview {
 }
 .taskview_devstage.short {
     width: 146px;
+}
+.taskview_devstage.notifications {
+    width: 175px;
 }
 .taskview_devstage_title {
     background: #1bac21;
@@ -133,6 +136,9 @@ select.ordproofview {
 }
 .taskview_devstage.short .taskview_devstage_title {
     width: 146px;
+}
+.taskview_devstage.notifications .taskview_devstage_title {
+    width: 175px;
 }
 .justapproved .taskview_devstage_title {
     background: #4856f7;
@@ -160,6 +166,9 @@ select.ordproofview {
 }
 .taskview_devstage.short .taskview_devstage_subtitle {
     width: 146px;
+}
+.taskview_devstage.notifications .taskview_devstage_subtitle {
+    width: 175px;
 }
 .taskview_rushtitle {
     width: 16px;
@@ -217,6 +226,9 @@ select.ordproofview {
 .taskview_devstage_data.short {
     width: 146px;
 }
+.taskview_devstage.notifications .taskview_devstage_data {
+    width: 175px;
+}
 /* CENTERED DATA HOLDERS */
 /*.centerdat {*/
 /*    margin-left: 1px;*/
@@ -242,6 +254,9 @@ select.ordproofview {
 .taskdatashort_row {
     clear: both;
     width: 146px;
+}
+.taskview_devstage.notifications .taskdata_row {
+    width: 175px;
 }
 .emptytasklist {
     font-size: 12px;

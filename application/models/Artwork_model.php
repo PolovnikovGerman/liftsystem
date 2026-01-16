@@ -2507,7 +2507,7 @@ Class Artwork_model extends MY_Model
                     $details.=$row.'<br/>'.PHP_EOL;
                 }
 
-                // if ($this->input->ip_address()!=='127.0.0.1') {
+                if ($this->input->ip_address()!=='127.0.0.1') {
                     // Send message
                     $this->load->library('email');
                     $brand = ifset($data, 'brand','SB');
@@ -2630,7 +2630,7 @@ Class Artwork_model extends MY_Model
                             $this->email->clear(TRUE);
                         }
                     }
-                // }
+                }
                 if ($artdata['proofs_id']) {
                     // Update lead history and lead update status
                     $this->db->select('l.lead_number, l.lead_id');
