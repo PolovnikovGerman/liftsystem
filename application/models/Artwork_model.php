@@ -2510,14 +2510,49 @@ Class Artwork_model extends MY_Model
                 if ($this->input->ip_address()!=='127.0.0.1') {
                     // Send message
                     $this->load->library('email');
-                    $config['protocol'] = 'sendmail';
-                    $config['charset'] = 'utf8';
-                    $config['wordwrap'] = TRUE;
-                    $config['mailtype'] = 'text';
+                    $brand = ifset($data, 'brand','SB');
+                    $sendsmtp = intval($brand=='SR' ? $this->config->item('arttasksr_smtp') : $this->config->item('arttasksb_smtp'));
+                    if ($sendsmtp == 1) {
+                        if ($brand=='SR') {
+                            $config = [
+                                'protocol'=>'smtp',
+                                'smtp_host' => $this->config->item('sr_smtp_host'),
+                                'smtp_port' => $this->config->item('sr_smtp_port'),
+                                'smtp_crypto' => $this->config->item('sr_smtp_crypto'),
+                                'smtp_user' => $this->config->item('arttasksr_user'),
+                                'smtp_pass' => $this->config->item('arttasksr_pass'),
+                                'charset'=>'utf-8',
+                                'mailtype'=>'text',
+                                'wordwrap'=>TRUE,
+                                'newline' => "\r\n",
+                            ];
+                        } else {
+                            $config = [
+                                'protocol'=>'smtp',
+                                'smtp_host' => $this->config->item('sb_smtp_host'),
+                                'smtp_port' => $this->config->item('sb_smtp_port'),
+                                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                                'smtp_user' => $this->config->item('arttasksb_user'),
+                                'smtp_pass' => $this->config->item('arttasksb_pass'),
+                                'charset'=>'utf-8',
+                                'mailtype'=>'text',
+                                'wordwrap'=>TRUE,
+                                'newline' => "\r\n",
+                            ];
+                        }
+                    } else {
+                        $config['protocol'] = 'sendmail';
+                        $config['charset'] = 'utf8';
+                        $config['wordwrap'] = TRUE;
+                        $config['mailtype'] = 'text';
+                    }
 
                     $this->email->initialize($config);
-
-                    $this->email->from($data['from']);
+                    if ($sendsmtp==1) {
+                        $this->email->from($config['smtp_user']);
+                    } else {
+                        $this->email->from($data['from']);
+                    }
                     $this->email->to($data['customer']);
                     if ($data['cc']!='') {
                         $cc=$data['cc'];
@@ -2547,14 +2582,6 @@ Class Artwork_model extends MY_Model
                         }
                     }
                     $smessage=  str_replace('&lt;<links>>', $message, $data['message']);
-                    /*if (strpos($message, '<<links>>')!==FALSE) {
-                        $smessage=  str_replace('<<links>>', $message, $data['message']);
-                    } elseif (strpos($message,'&lt;<links>>')) {
-                    } else {
-                        $smessage=$message;
-                    }*/
-
-
 
                     $this->email->message($smessage);
                     $this->email->send();
