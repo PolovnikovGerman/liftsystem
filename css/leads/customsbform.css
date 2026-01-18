@@ -601,3 +601,71 @@ csf-group-1 p, .csf-group-2 p {
     height: 400px;
     border: 1px solid;
 }
+/* Months chart */
+.customform_monthtotal_content {
+    margin-top: 14px;
+    /* margin-left: 15px; */
+    max-width: 393px;
+}
+.customform_monthtotal_switcher {
+    color: #000000;
+    font-size: 14px;
+    font-weight: bold;
+    height: 22px;
+    margin: 0 0 10px 8px;
+    text-align: center;
+    text-decoration: none;
+    width: 92px;
+    background: #c6c4c4;
+    background: linear-gradient(to top, #aeabab, #e1dfdf);
+    border: 1px solid #7a7a7a;
+    border-radius: 5px;
+    line-height: 22px;
+    cursor: pointer;
+}
+.customform_monthtotal_header {
+    border: 1px solid #000000;
+}
+.customform_monthtotal_header div {
+    text-align: center;
+    height: 28px;
+    line-height: 28px;
+    font-size: 14px;
+    font-weight: 600;
+    background: none repeat scroll 0 0 #BCBCBC;
+}
+.customform_monthtotal_header .total_month {
+    width: 72px;
+}
+.customform_monthtotal_header .total_year {
+    width: 36px;
+}
+.customform_monthtotal_tabledat {
+    max-height: 507px;
+    overflow-y: auto;
+    border-bottom: 1px solid #000000;
+    border-right: 1px solid #000000;
+    width: 290px; /* 380px; */
+    overflow-x: hidden;
+    scrollbar-width: none;
+}
+.customform_monthtotal_tabledat .datarow > div {
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    font-size: 12px;
+    border-left: 1px solid #000000;
+}
+.customform_monthtotal_tabledat .datarow > .total_month {
+    width: 72px;
+    font-weight: 600;
+}
+.customform_monthtotal_tabledat .datarow > .total_year {
+    width: 36px;
+}
+.customform_monthtotal_tabledat .totalrow {
+    border-top: 1px solid #000000;
+}
+.customform_monthtotal_tabledat .totalrow > .total_year {
+    font-weight: 600;
+}

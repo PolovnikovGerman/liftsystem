@@ -3689,7 +3689,12 @@ class Leadorder extends MY_Controller
                     $error=$locres['msg'];
                     $this->ajaxResponse($mdata, $error);
                 }
-
+                $brand = $leadorder['order']['brand'];
+                if ($brand=='SR') {
+                    $template = 'SR '.$template;
+                } else {
+                    $template = 'SB '.$template;
+                }
                 $this->load->model('artlead_model');
                 $res=$this->artlead_model->prepare_proofdocapproveemail($leadorder, $template, $this->USR_ID, $ordersession);
                 if ($res['result']==$this->error_result) {

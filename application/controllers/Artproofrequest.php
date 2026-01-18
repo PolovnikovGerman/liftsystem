@@ -721,9 +721,15 @@ class Artproofrequest extends MY_Controller
                 $this->load->model('email_model');
                 $userdat=$this->user_model->get_user_data($this->USR_ID);
                 $user_name=$userdat['user_name'];
+                $brand = $this->menuitems_model->get_current_brand();
                 $error='';
                 if ($template) {
-                    $mail_template=$this->email_model->get_emailtemplate_byname($template);
+                    if ($brand=='SR') {
+                        $template = 'SR '.$template;
+                    } else {
+                        $template = 'SB '.$template;
+                    }
+                    $mail_template = $this->email_model->get_emailtemplate_byname($template);
                     if ($artdata['order_id']) {
                         $msgdat="BT".$artdata['order_num'];
                         $doc_type='Order';
@@ -782,6 +788,8 @@ class Artproofrequest extends MY_Controller
             $artsession=(isset($data['artsession']) ? $data['artsession'] : 'failsession');
             $artdata=usersession($artsession);
             if (!empty($artdata)) {
+                $brand = $this->menuitems_model->get_current_brand();
+                $data['brand'] = $brand;
                 $this->load->model('artwork_model');
                 $res=$this->artwork_model->send_proof_approve($data, $artdata, $this->USR_ID, $artsession);
                 $error=$res['msg'];
