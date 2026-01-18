@@ -604,8 +604,8 @@ csf-group-1 p, .csf-group-2 p {
 /* Months chart */
 .customform_monthtotal_content {
     margin-top: 14px;
-    margin-left: 15px;
-    max-width: 393px; /* 385 */
+    /* margin-left: 15px; */
+    max-width: 393px;
 }
 .customform_monthtotal_switcher {
     color: #000000;
