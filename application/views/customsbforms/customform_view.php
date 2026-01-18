@@ -5,6 +5,7 @@
 <input type="hidden" id="sortdircustomform" value="<?=$direction?>"/>
 <input type="hidden" id="customformviewbrand" value="<?=$brand?>"/>
 <input type="hidden" id="customformviewtype" value="table"/>
+<input type="hidden" id="customformmonthtype" value="table"/>
 <div class="customform_content">
     <div class="customform_header">
         <div class="label">Display:</div>
@@ -13,7 +14,6 @@
             <option value="">All Custom Forms</option>
         </select>
         <input type="text" id="customformsearch" class="search_input" placeholder="Customer,company, email.."/>
-
         <a class="find_customformbnt" id="find_customform" href="javascript:void(0);">Search It</a>
         <a class="find_customformbnt" id="clear_customform" href="javascript:void(0);">Clear</a>
         <div class="customform_pagination" id="customformpagination"></div>
@@ -58,5 +58,23 @@
     </div>
     <div id="customformtotal_chartview" class="customformtotal_chartview">
         <canvas id="myChart"></canvas>
+    </div>
+</div>
+<div class="customform_monthtotal_content">
+    <div class="datarow">
+        <div class="customform_monthtotal_switcher">Chart</div>
+    </div>
+    <div id="customformmonthtotal_tableview">
+        <div class="customform_monthtotal_header">
+            <div class="total_month">Month</div>
+            <?php foreach ($years as $year) : ?>
+                <div class="total_year"><?=$year['year']?></div>
+            <?php endforeach; ?>
+            <div class="total_month">Month</div>
+        </div>
+        <div class="customform_monthtotal_tabledat" id="customform_monthtotal_tabledat"></div>
+    </div>
+    <div id="customformmonthtotal_chartview" class="customformtotal_chartview">
+        <canvas id="myMonthChart"></canvas>
     </div>
 </div>
