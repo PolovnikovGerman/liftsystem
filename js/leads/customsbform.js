@@ -57,6 +57,24 @@ function init_customforms() {
     });
     // Init totals
     initCustomFormTotals('table');
+    $(".customform_monthtotal_switcher").unbind('click').click(function (){
+        var newview = 'table';
+        if ($("#customformmonthtype").val()=='table') {
+            newview = 'chart';
+        }
+        $("#customformmonthtype").val(newview);
+        if (newview=='table') {
+            $("#customformmonthtotal_chartview").hide();
+            $("#customformmonthtotal_tableview").show();
+            $(".customform_monthtotal_switcher").empty().html('Chart');
+        } else {
+            $("#customformmonthtotal_tableview").hide();
+            $("#customformmonthtotal_chartview").empty().show().html('<canvas id="myMonthChart"></canvas>');
+            $(".customform_monthtotal_switcher").empty().html('Table');
+        }
+        initCustomFormMonthtotal(newview);
+    });
+    initCustomFormMonthtotal('table');
 }
 
 function search_customforms() {
@@ -393,6 +411,43 @@ function initCustomFormTotals(viewtype) {
             } else {
                 $(".customform_total_tabledat").empty().html(response.data.content);
                 new SimpleBar(document.getElementById('customform_total_tabledat'), { autoHide: false });
+            }
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function initCustomFormMonthtotal(viewtype) {
+    var params = new Array();
+    params.push({name: 'brand',value:$("#customformviewbrand").val()});
+    params.push({name: 'viewtype', value: viewtype});
+    var url= '/leads/customformsmonths';
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            if (viewtype=='table') {
+                $(".customform_monthtotal_tabledat").empty().html(response.data.content);
+                new SimpleBar(document.getElementById('customform_monthtotal_tabledat'), { autoHide: false });
+            } else {
+                const ctx = document.getElementById('myMonthChart');
+                const myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: response.data.labels,
+                        datasets: [{
+                            label: '# of Custom Forms',
+                            data: response.data.data,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
             }
         } else {
             show_error(response);

@@ -229,4 +229,96 @@ class Customform_model extends MY_Model
         return ['labels'=>$labels,'data'=>$data];
     }
 
+    public function get_customform_monthtotals($brand)
+    {
+        $months = [];
+        $years = [];
+        $curyear = intval(date('Y'));
+        for ($i=3; $i >= 0; $i--) {
+            $years[] = $curyear-$i;
+        }
+        for($j=1; $j<=12; $j++) {
+            $monthname = date('F', strtotime('2012-'.str_pad($j,2,'0',STR_PAD_LEFT).'-01'));
+            $monthrow = [
+                'month_id' => str_pad($j,2,'0',STR_PAD_LEFT),
+                'month' => $monthname,
+            ];
+            foreach ($years as $year) {
+                $monthrow[str_pad($j,2,'0',STR_PAD_LEFT).'-'.$year] = 0;
+            }
+            $months[] = $monthrow;
+        }
+        $monthrow = [
+            'month_id' => 0,
+            'month' => 'Total',
+        ];
+        foreach ($years as $year) {
+            $monthrow['0-'.$year] = 0;
+        }
+        $months[] = $monthrow;
+        $startdate = strtotime($years[0].'-01-01');
+        $this->db->select('date_format(date_add, "%m-%Y") as dayw, count(custom_quote_id) as cnt')->from('ts_custom_quotes');
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB','BT']);
+            }
+        }
+        $this->db->where('unix_timestamp(date_add) >= ', $startdate);
+        $this->db->group_by('dayw');
+        $results = $this->db->get()->result_array();
+        foreach ($results as $result) {
+            $dd = 1;
+            $datkey = explode('-', $result['dayw']);
+            $mdat = $datkey[0];
+            $ydat = $datkey[1];
+            $idx = 0;
+            foreach ($months as $month) {
+                if ($month['month_id']==$mdat) {
+                    $months[$idx][$result['dayw']]+=$result['cnt'];
+                    break;
+                }
+                $idx++;
+            }
+            $idx = 0;
+            foreach ($months as $month) {
+                if ($month['month_id']==0) {
+                    $months[$idx]['0-'.$ydat]+=$result['cnt'];
+                    break;
+                }
+                $idx++;
+            }
+        }
+        return ['totals' => $months, 'years' => $years];
+    }
+
+    public function get_customform_monthchart($brand)
+    {
+        $curyear = intval(date('Y'));
+        $yearstart = $curyear-3;
+        $datestart = strtotime($yearstart.'-01-01');
+
+        $this->db->select('date_format(date_add, "%Y-%m") as dayw, count(custom_quote_id) as cnt')->from('ts_custom_quotes');
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB','BT']);
+            }
+        }
+        $this->db->where('unix_timestamp(date_add) >=', $datestart);
+        $this->db->group_by('dayw');
+        $results = $this->db->get()->result_array();
+        $data = [];
+        $labels = [];
+        foreach ($results as $result) {
+            $days = explode('-', $result['dayw']);
+            $date = strtotime($days[0].'-'.$days[1].'-01');
+            $labels[] = date('M`y', $date);
+            $data[] = $result['cnt'];
+        }
+        return ['labels'=>$labels,'data'=>$data];
+    }
+
 }
