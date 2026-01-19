@@ -3101,6 +3101,32 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     border-radius: 5px 5px 5px 0;
     margin-top: 2px;
 }
+.lead-quotesform.showmessage {
+    height: 155px;
+}
+.messagequote-block {
+    display: block;
+    margin-top: 4px;
+    width: 100%;
+    padding: 0 5px;
+}
+.messagequote-block textarea {
+    border: 1px solid #585858;
+    width: 176px;
+    height: 50px;
+    padding: 3px;
+    resize: none;
+    font-size: 11px;
+}
+.messagequote-box {
+    margin-right: 5px;
+}
+.messagequote-box:last-child {
+    margin-right: 0;
+}
+.messagequote-block .btn-createquote {
+    margin-top: 30px;
+}
 .btn-messagequote {
     border: 1px solid #5b5a4b;
     border-top: 1px solid #d9d8c5;
@@ -3299,6 +3325,9 @@ input.discount-exp {
     border: 1px solid #585858;
     margin-top: 8px;
 }
+.lead-quotestable.showmessage {
+    height: 133px;
+}
 .leadquotetabl-header {
     width: 100%;
 }
@@ -3309,6 +3338,9 @@ input.discount-exp {
     background: #fff;
     overflow-y: auto;
     scrollbar-width: none;
+}
+.lead-quotestable.showmessage .leadquotetabl-body {
+    height: 114px;
 }
 .leadquotetabl-tr {
     width: 100%;
