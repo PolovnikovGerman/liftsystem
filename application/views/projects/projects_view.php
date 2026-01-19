@@ -39,14 +39,17 @@
             <p>Dual Orders Popup</p>
         </div>
         <div class="ts-button leadsview">
-            <p>Lead Popup</p>
+            <p>Lead Popup (Stock)</p>
+        </div>
+        <div class="ts-button leadcustomview">
+            <p>Lead Popup (Custom) + dumbed LEFT Panel</p>
         </div>
         <div class="ts-button orderleadsview">
             <p>Orders & Leads Popup</p>
         </div>
-        <div class="ts-button blockview">
-            <p>Blocked Customer</p>
-        </div>
+<!--        <div class="ts-button blockview">-->
+<!--            <p>Blocked Customer</p>-->
+<!--        </div>-->
     <?php else : ?>
         <div class="ts-button testorders">
             <a href="<?=$testorderlink?>" target="_blank">

@@ -37,39 +37,99 @@
                         <div class="lead-itemdescrtitle">Item & Description:</div>
                         <div class="lead-item">
                             <select>
-                                <option>00-ZZ000 - Custom Shaped Stress Balls</option>
-                                <option>00-ZZ000 - Custom Shaped Stress Balls</option>
+                                <option>22-SS003 - Round Stress Balls</option>
+                                <option>22-SS003 - Round Stress Balls</option>
                             </select>
                         </div>
-                        <div class="lead-descr">
-                            <textarea></textarea>
-                        </div>
+<!--                        <div class="lead-descr">-->
+<!--                            <textarea></textarea>-->
+<!--                        </div>-->
                     </div>
                     <div class="lead-statushistory">
-                        <div class="lead-statushistorytitle">Status & History:</div>
-                        <div class="lead-status">
-                            <div class="lead-statusbox">&nbsp;</div>
-                        </div>
-                        <div class="lead-history">
-                            <div class="lead-historybox">
-                                <div class="list-leadhistory">
-                                    <div class="leadhistory-box">
-                                        <div class="leadhistory-titlebox">
-                                            <span class="leadhistory-name">Sean</span> -
-                                            12/02/2025 16:29:25
-                                        </div>
-                                        <div class="leadhistory-txtbox">She emailed for a reorder with new art. I am
-                                            sending quotes. She asked for 500, 1000, 1500
+<!--                        <div class="lead-statushistorytitle">Status & History:</div>-->
+<!--                        <div class="lead-status">-->
+<!--                            <div class="lead-statusbox">&nbsp;</div>-->
+<!--                        </div>-->
+<!--                        <div class="lead-history">-->
+<!--                            <div class="lead-historybox">-->
+<!--                                <div class="list-leadhistory">-->
+<!--                                    <div class="leadhistory-box">-->
+<!--                                        <div class="leadhistory-titlebox">-->
+<!--                                            <span class="leadhistory-name">Sean</span> --->
+<!--                                            12/02/2025 16:29:25-->
+<!--                                        </div>-->
+<!--                                        <div class="leadhistory-txtbox">She emailed for a reorder with new art. I am-->
+<!--                                            sending quotes. She asked for 500, 1000, 1500-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="leadhistory-box">-->
+<!--                                        <div class="leadhistory-titlebox">-->
+<!--                                            <span class="leadhistory-name">Sean</span> --->
+<!--                                            12/02/2025 15:07:15-->
+<!--                                        </div>-->
+<!--                                        <div class="leadhistory-txtbox">She emailed asking for more with slightly-->
+<!--                                            artwork. She asked for lead time. I told her 3-4 weeks but after Dec 9 will-->
+<!--                                            be March. I asked how many and said I could rush it.-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#stock-status-history" aria-controls="stock-status-history" role="tab" data-toggle="tab">Status & History:</a></li>
+                            <li role="presentation"><a href="#stock-interest-history" aria-controls="stock-interest-history" role="tab" data-toggle="tab">Interest History</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="stock-status-history">
+                                <div class="lead-status">
+                                    <div class="lead-statusbox">&nbsp;</div>
+                                </div>
+                                <div class="lead-history">
+                                    <div class="lead-historybox">
+                                        <div class="list-leadhistory">
+                                            <div class="leadhistory-box">
+                                                <div class="leadhistory-titlebox"><span class="leadhistory-name">Sean</span> - 12/02/2025 16:29:25</div>
+                                                <div class="leadhistory-txtbox">She emailed for a reorder with new art. I am sending quotes. She asked for 500, 1000, 1500</div>
+                                            </div>
+                                            <div class="leadhistory-box">
+                                                <div class="leadhistory-titlebox"><span class="leadhistory-name">Sean</span> - 12/02/2025 15:07:15</div>
+                                                <div class="leadhistory-txtbox">She emailed asking for more with slightly artwork. She asked for lead time. I told her 3-4 weeks but after Dec 9 will be March. I asked how many and said I could rush it.</div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="leadhistory-box">
-                                        <div class="leadhistory-titlebox">
-                                            <span class="leadhistory-name">Sean</span> -
-                                            12/02/2025 15:07:15
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="stock-interest-history">
+                                <div class="list-quests">
+                                    <div class="questionbox">
+                                        <div class="quests-icon">
+                                            <span class="questionbox-icn"><i class="fa fa-search" aria-hidden="true"></i></span>
                                         </div>
-                                        <div class="leadhistory-txtbox">She emailed asking for more with slightly
-                                            artwork. She asked for lead time. I told her 3-4 weeks but after Dec 9 will
-                                            be March. I asked how many and said I could rush it.
+                                        <div class="quests-date">01/20/26 -</div>
+                                        <div class="quests-type">Custom SB Form</div>
+                                        <div class="quests-link">
+                                            <div class="quests-unlink">unlink</div>
+                                        </div>
+                                    </div>
+                                    <div class="questionbox">
+                                        <div class="quests-icon">
+                                            <span class="questionbox-icn"><i class="fa fa-search" aria-hidden="true"></i></span>
+                                        </div>
+                                        <div class="quests-date">01/1/26 -</div>
+                                        <div class="quests-type">Web Question</div>
+                                        <div class="quests-link">
+                                            <div class="quests-unlink">unlink</div>
+                                        </div>
+                                    </div>
+                                    <div class="questionbox">
+                                        <div class="quests-icon">
+                                            <span class="questionbox-icn"><i class="fa fa-search" aria-hidden="true"></i></span>
+                                        </div>
+                                        <div class="quests-date">01/10/26 -</div>
+                                        <div class="quests-type">Custom SB Form</div>
+                                        <div class="quests-link">
+                                            <div class="quests-unlink">unlink</div>
                                         </div>
                                     </div>
                                 </div>
@@ -256,7 +316,17 @@
                                 </div>
                                 <div class="btn-createquote">Create Quote</div>
                             </div>
+                            <div class="messagequote-block" style="display:none;">
+                                <div class="messagequote-box">
+                                    <textarea></textarea>
+                                </div>
+                                <div class="messagequote-box">
+                                    <textarea></textarea>
+                                </div>
+                                <div class="btn-createquote">Create Quote</div>
+                            </div>
                         </div>
+                        <div class="btn-messagequote">Message on Quote <span><i class="fa fa-caret-down" aria-hidden="true"></i></span></div>
                         <div class="lead-quotestable">
                             <div class="leadquotetabl-header">
                                 <div class="leadquotetabl-tr">
@@ -542,28 +612,32 @@
                     </div>
                 </div>
                 <div class="leadfooterright">
-                    <div class="lead-questions">
-                        <div class="lead-questionsqtitle">Questions:</div>
-                        <div class="lead-questionsbody">
-                            <div class="list-quests">
-                                <div class="questionbox">
-                                    <span class="questionbox-icn">
-                                        <i class="fa fa-file-text-o" aria-hidden="true"></i>
-                                    </span>
-                                    <span class="questionbox-date">12/16/2025</span>
-                                </div>
-                                <div class="questionbox">
-                                    <span class="questionbox-icn">
-                                        <i class="fa fa-file-text-o" aria-hidden="true"></i>
-                                    </span>
-                                    <span class="questionbox-date">12/05/2025</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<!--                    <div class="lead-questions">-->
+<!--                        <div class="lead-questionsqtitle">Questions:</div>-->
+<!--                        <div class="lead-questionsbody">-->
+<!--                            <div class="list-quests">-->
+<!--                                <div class="questionbox">-->
+<!--                                    <span class="questionbox-icn">-->
+<!--                                        <i class="fa fa-file-text-o" aria-hidden="true"></i>-->
+<!--                                    </span>-->
+<!--                                    <span class="questionbox-date">12/16/2025</span>-->
+<!--                                </div>-->
+<!--                                <div class="questionbox">-->
+<!--                                    <span class="questionbox-icn">-->
+<!--                                        <i class="fa fa-file-text-o" aria-hidden="true"></i>-->
+<!--                                    </span>-->
+<!--                                    <span class="questionbox-date">12/05/2025</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
                     <div class="lead-samplereq">
                         <div class="lead-samplereqtitle">Sample Request:</div>
                         <div class="lead-samplereqbody">&nbsp;</div>
+                    </div>
+                    <div class="lead-footerbtn">
+                        <div class="duplicatelead">Duplicate Lead</div>
+                        <div class="lead-savebtn">SAVE</div>
                     </div>
                 </div>
             </div>
