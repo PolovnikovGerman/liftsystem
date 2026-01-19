@@ -314,7 +314,7 @@
                                     <label>Exp:</label>
                                     <input type="text" name="quotesform-zipcode" class="discount-exp">
                                 </div>
-                                <div class="btn-createquote">Create Quote</div>
+                                <div class="btn-createquote" id="createquotezip">Create Quote</div>
                             </div>
                             <div class="messagequote-block" style="display:none;">
                                 <div class="messagequote-box">

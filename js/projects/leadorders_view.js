@@ -18,9 +18,11 @@ function init_manageproj_content() {
             $(".custinfo-titlebox[data-section='emailcontacts']").removeClass('hidetitle');
             $("#customercontactslist").show();
             // Add'l Info
-            $(".custinfo-titlebox[data-section='customeradditinfo']").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
-            $(".custinfo-titlebox[data-section='customeradditinfo']").removeClass('hidetitle');
-            $("#customeradditinfo").show();
+            // $(".custinfo-titlebox[data-section='customeradditinfo']").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
+            // $(".custinfo-titlebox[data-section='customeradditinfo']").removeClass('hidetitle');
+            // $("#customeradditinfo").show();
+            $("#customeraddinfoshort").hide();
+            $("#customeraddinfofull").show();
             // Credits
             $(".custinfo-titlebox[data-section='customercreditlist']").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>');
             $(".custinfo-titlebox[data-section='customercreditlist']").removeClass('hidetitle');
@@ -54,9 +56,11 @@ function init_manageproj_content() {
             $(".custinfo-titlebox[data-section='emailcontacts']").addClass('hidetitle');
             $("#customercontactslist").hide();
             // Add'l Info
-            $(".custinfo-titlebox[data-section='customeradditinfo']").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>')
-            $(".custinfo-titlebox[data-section='customeradditinfo']").addClass('hidetitle');
-            $("#customeradditinfo").hide();
+            // $(".custinfo-titlebox[data-section='customeradditinfo']").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>')
+            // $(".custinfo-titlebox[data-section='customeradditinfo']").addClass('hidetitle');
+            // $("#customeradditinfo").hide();
+            $("#customeraddinfoshort").show();
+            $("#customeraddinfofull").hide();
             // Credits
             $(".custinfo-titlebox[data-section='customercreditlist']").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>');
             $(".custinfo-titlebox[data-section='customercreditlist']").addClass('hidetitle');
@@ -103,20 +107,28 @@ function init_manageproj_content() {
     });
     // Hide / Show Add'l Info
     $(".custinfo-titlebox[data-section='customeradditinfo']").unbind('click').click(function (){
-        var blockhide = 0;
-        if ($(this).hasClass('hidetitle')) {
-            blockhide = 1;
-        }
-        if (blockhide == 1) {
-            $(".custinfo-titlebox[data-section='customeradditinfo']").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>')
-            $(".custinfo-titlebox[data-section='customeradditinfo']").removeClass('hidetitle');
-            $("#customeradditinfo").show();
-        } else {
-            $(".custinfo-titlebox[data-section='customeradditinfo']").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>')
-            $(".custinfo-titlebox[data-section='customeradditinfo']").addClass('hidetitle');
-            $("#customeradditinfo").hide();
-        }
+        // var blockhide = 0;
+        // if ($(this).hasClass('hidetitle')) {
+        //     blockhide = 1;
+        // }
+        // if (blockhide == 1) {
+            // $(".custinfo-titlebox[data-section='customeradditinfo']").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-down" aria-hidden="true"></i>')
+            // $(".custinfo-titlebox[data-section='customeradditinfo']").removeClass('hidetitle');
+            // $("#customeradditinfo").show();
+            $("#customeraddinfoshort").hide();
+            $("#customeraddinfofull").show();
+        // } else {
+            // $(".custinfo-titlebox[data-section='customeradditinfo']").find('span.titlebox-arrow').empty().html('<i class="fa fa-chevron-up" aria-hidden="true"></i>')
+            // $(".custinfo-titlebox[data-section='customeradditinfo']").addClass('hidetitle');
+            // $("#customeradditinfo").hide();
+        //     $("#customeraddinfofull").hide();
+        //     $("#customeraddinfoshort").show();
+        // }
     });
+    $("#customeraddinfofull").find('span.titlebox-arrow').unbind('click').click(function (){
+        $("#customeraddinfofull").hide();
+        $("#customeraddinfoshort").show();
+    })
     // Hide Show Credits
     $(".custinfo-titlebox[data-section='customercreditlist']").unbind('click').click(function (){
         var blockhide = 0;
@@ -224,4 +236,25 @@ function init_leadquote_content() {
     var SimpleLeadquote = new SimpleBar(document.getElementById('leadquotetable'), { autoHide: false });
     var SimpleProofreq = new SimpleBar(document.getElementById('list-proofreqbox'), { autoHide: false });
     $(".leadtopstatusselect").selectpicker();
+    $(".btn-messagequote").unbind('click').click(function (){
+        var showmsgquote = 0;
+        if ($(this).hasClass('showmessage')) {
+            showmsgquote = 1;
+        }
+        if (showmsgquote==0) {
+            $(this).addClass('showmessage');
+            $(this).find('span').empty().html('<i class="fa fa-caret-up" aria-hidden="true"></i>');
+            $(".messagequote-block").show();
+            $(".lead-quotesform").addClass("showmessage");
+            $(".lead-quotestable").addClass('showmessage');
+            $("#createquotezip").hide();
+        } else {
+            $(this).removeClass('showmessage');
+            $(this).find('span').empty().html('<i class="fa fa-caret-down" aria-hidden="true"></i>');
+            $(".messagequote-block").hide();
+            $(".lead-quotesform").removeClass("showmessage");
+            $(".lead-quotestable").removeClass('showmessage');
+            $("#createquotezip").show();
+        }
+    });
 }
