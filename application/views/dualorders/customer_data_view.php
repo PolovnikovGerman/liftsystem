@@ -82,28 +82,88 @@
             </div>
         </div>
     </div>
+    <!-- Additional info -->
     <div class="datarow">
+<!--        <div class="custinfo-box">-->
+<!--            <div class="custinfo-titlebox" data-section="customeradditinfo">-->
+<!--                        <span class="titlebox-arrow">-->
+<!--                            <i class="fa fa-chevron-down" aria-hidden="true"></i>-->
+<!--                        </span>-->
+<!--                Add'l Info:-->
+<!--            </div>-->
+<!--            <div class="custinfo-boxbody" id="customeradditinfo">-->
+<!--                <div class="custinfo-tags">-->
+<!--                    <div class="tagslist-tag green">Freq/Profit</div>-->
+<!--                    <div class="tagslist-tag green">Friend/Fam</div>-->
+<!--                    <div class="tagslist-tag red">Annoyed</div>-->
+<!--                    <div class="tagslist-tag red">Suspicious</div>-->
+<!--                </div>-->
+<!--                <div class="custinfo-member">-->
+<!--                    <label>Member of</label>-->
+<!--                    <input type="text" name="ci-member"/>-->
+<!--                </div>-->
+<!--                <div class="custinfo-notes">-->
+<!--                    <label>Cust<br>Note:</label>-->
+<!--                    <textarea></textarea>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
         <div class="custinfo-box">
-            <div class="custinfo-titlebox" data-section="customeradditinfo">
+            <div class="custinfo-titlebox" data-section="customeradditinfo" style="display: none">
                         <span class="titlebox-arrow">
                             <i class="fa fa-chevron-down" aria-hidden="true"></i>
                         </span>
                 Add'l Info:
             </div>
-            <div class="custinfo-boxbody" id="customeradditinfo">
-                <div class="custinfo-tags">
-                    <div class="tagslist-tag green">Freq/Profit</div>
-                    <div class="tagslist-tag green">Friend/Fam</div>
-                    <div class="tagslist-tag red">Annoyed</div>
-                    <div class="tagslist-tag red">Suspicious</div>
-                </div>
-                <div class="custinfo-member">
-                    <label>Member of</label>
-                    <input type="text" name="ci-member"/>
-                </div>
-                <div class="custinfo-notes">
-                    <label>Cust<br>Note:</label>
-                    <textarea></textarea>
+            <ul class="nav nav-tabs" role="tablist" data-section="customeradditinfotab">
+                <li role="presentation" class="active">
+                    <a href="#custinfo-addlinfo" aria-controls="custinfo-addlinfo" role="tab" data-toggle="tab">
+                        <span class="titlebox-arrow"><i class="fa fa-chevron-down" aria-hidden="true"></i></span>Add'l Info:
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#custinfo-connectedips" aria-controls="custinfo-connectedips" role="tab" data-toggle="tab">Connected IPs:</a>
+                </li>
+            </ul>
+            <div class="custinfo-boxbody">
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="custinfo-addlinfo">
+                        <div class="custinfo-tags">
+                            <div class="tagslist-tag green">Freq/Profit</div>
+                            <div class="tagslist-tag green">Friend/Fam</div>
+                            <div class="tagslist-tag red">Annoyed</div>
+                            <div class="tagslist-tag red">Suspicious</div>
+                        </div>
+                        <div class="custinfo-member">
+                            <label>Member of</label>
+                            <input type="text" name="ci-member">
+                        </div>
+                        <div class="custinfo-notes">
+                            <label>Cust<br>Note:</label>
+                            <textarea></textarea>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="custinfo-connectedips">
+                        <div class="ipsaddr-list">
+                            <ul>
+                                <li>
+                                    <div class="ipsaddr-box">
+                                        <div class="ipsaddr-number">167.71.89.36</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="ipsaddr-box">
+                                        <div class="ipsaddr-number">45.55.147.49</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="ipsaddr-box">
+                                        <div class="ipsaddr-number">159.203.123.203</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
