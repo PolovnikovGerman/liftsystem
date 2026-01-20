@@ -1040,5 +1040,24 @@ Class Artproof_model extends MY_Model
         return $out;
     }
 
+    public function get_proofrequest_interest($brand)
+    {
+        $this->db->select('e.*');
+        $this->db->from('ts_emails e');
+        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
+        $this->db->where('e.email_type', $this->EMAIL_TYPE);
+        $this->db->where('lem.email_id is null');
+        $this->db->where('e.email_include_lead',1);
+        $this->db->where('e.email_status < ',$this->order_status);
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('e.brand', $brand);
+            } else {
+                $this->db->where_in('e.brand', ['BT','SB']);
+            }
+        }
+        $this->db->order_by('e.email_date','desc');
+        return $this->db->get()->result_array();
+    }
 
 }

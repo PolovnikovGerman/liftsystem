@@ -2114,4 +2114,44 @@ class Leads extends My_Controller {
         }
         show_404();
     }
+
+    public function webquotes_interest()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'ALL');
+            $this->load->model('quotes_model');
+            $data = $this->quotes_model->get_webquotes_interest($brand);
+            $mdata['cntrec'] = count($data);
+            $mdata['total'] = QTYOutput($mdata['cntrec']).' New';
+            if ($mdata['cntrec'] == 0) {
+                $mdata['content'] = $this->load->view('leadsview/interest_empty_view',[], TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('leadsview/interest_webquotes_view',['quotes' => $data],TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function proofrequest_interest()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'ALL');
+            $this->load->model('artproof_model');
+            $data = $this->artproof_model->get_proofrequest_interest($brand);
+            $mdata['cntrec'] = count($data);
+            $mdata['total'] = QTYOutput($mdata['cntrec']).' New';
+            if ($mdata['cntrec'] == 0) {
+                $mdata['content'] = $this->load->view('leadsview/interest_empty_view',[], TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('leadsview/interest_proofrequest_view',['proofs' => $data],TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
 }

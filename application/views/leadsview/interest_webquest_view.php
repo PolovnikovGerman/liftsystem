@@ -16,7 +16,11 @@
                 <i class="fa fa-phone"></i>
             </div>
         <?php endif; ?>
-        <div class="webquestion_webpage_dat"><?=$quest['email_webpage']?></div>
+        <div class="webquestion_webpage_dat truncateoverflowtext" data-event="hover" data-css="itemdetailsballonbox"
+             data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="auto" data-textcolor="#000" data-timer="4000" data-delay="1000"
+             data-balloon="<?=$quest['email_webpage']?>">
+            <?=$quest['email_webpage']?>
+        </div>
         <div class="webquestion_message_dat truncateoverflowtext" data-event="hover" data-css="itemdetailsballonbox"
              data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="auto" data-textcolor="#000" data-timer="10000" data-delay="1000"
              data-balloon="<?=$quest['email_text']?>">

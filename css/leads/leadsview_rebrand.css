@@ -117,11 +117,12 @@
 }
 .sbcustomform_item_dat {
     padding-left: 4px;
+    font-weight: 600;
     width: 219px;
 }
 .newunassign_emptydata {
     width: 100%;
-    text-align: center;
+    text-align: center!important;
     font-size: 12px;
     color: #333333;
     opacity: 0.75;
@@ -139,6 +140,8 @@
 /*Web question table */
 .webquestion_email_dat {
     padding-left: 4px;
+    color: #0500fe;
+    cursor: pointer;
     width: 136px;
 }
 .webquestion_phone_dat {
@@ -148,6 +151,7 @@
     font-size: 16px;
 }
 .webquestion_webpage_dat {
+    padding: 0 4px;
     width: 64px;
     text-align: center!important;
     border-right: 1px solid #000000;
@@ -156,6 +160,7 @@
     padding-left: 4px;
     width: 200px;
 }
+/* Online Quotes */
 .onlinequotes_customer {
     width: 156px;
 }
@@ -165,6 +170,22 @@
 .onlinequotes_item {
     width: 219px;
 }
+/* Online Quotes table */
+.onlinequotes_customer_dat {
+    padding-left: 4px;
+    width: 156px;
+    border-right: 1px solid #000000;
+}
+.onlinequotes_qty_dat {
+    width: 45px;
+    text-align: center!important;
+    border-right: 1px solid #000000;
+}
+.onlinequotes_item_dat {
+    padding-left: 4px;
+    width: 219px;
+}
+/* Proof request */
 .proofrequests_customer {
     width: 156px;
 }
@@ -172,6 +193,21 @@
     width: 45px;
 }
 .proofrequests_item {
+    width: 219px;
+}
+/* Proof request table */
+.proofrequests_customer_dat {
+    border-right: 1px solid #000000;
+    padding-left: 4px;
+    width: 156px;
+}
+.proofrequests_qty_dat {
+    border-right: 1px solid #000000;
+    text-align: center!important;
+    width: 45px;
+}
+.proofrequests_item_dat {
+    padding-left: 4px;
     width: 219px;
 }
 /* Reminder */
