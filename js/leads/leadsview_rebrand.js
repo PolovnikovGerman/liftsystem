@@ -3,6 +3,7 @@ function init_leadsview() {
     init_webquest_interest();
     init_webquotes_interest();
     init_proofrequest_interest();
+    init_repeatreminder();
 }
 
 function init_customform_interest() {
@@ -94,6 +95,32 @@ function init_proofrequest_interest() {
                 $(".newunassign_tasksubheader[data-task='proofrequests']").removeClass('emptycontent');
                 $("#proofrequesttable").removeClass('emptycontent');
                 new SimpleBar(document.getElementById('proofrequesttable'), { autoHide: false })
+            }
+        } else {
+            show_error(response)
+        }
+    },'json');
+}
+
+function init_repeatreminder() {
+    var params = new Array();
+    params.push({name: 'brand', value: $("#leadviewbrand").val()});
+    params.push({name: 'customorders', value: $("#leadviewremindcustom").val()});
+    params.push({name: 'orderrich', value: $("#leadviewremindrichy").val()});
+    params.push({name: 'date', value: $("#leadviewremindmonth").val()});
+    var url = '/leads/reminder_interest';
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $("#repeatremandtable").empty().html(response.data.content);
+            if (parseInt(response.data.cntrec)==0) {
+                $(".repeatremandheader").addClass('emptycontent');
+                $(".repeatremand_subheader").addClass('emptycontent');
+                $("#repeatremandtable").addClass('emptycontent');
+            } else {
+                $(".repeatremandheader").removeClass('emptycontent');
+                $(".repeatremand_subheader").removeClass('emptycontent');
+                $("#repeatremandtable").removeClass('emptycontent');
+                new SimpleBar(document.getElementById('repeatremandtable'), { autoHide: false })
             }
         } else {
             show_error(response)

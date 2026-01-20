@@ -1,4 +1,7 @@
 <input type="hidden" id="leadviewbrand" value="<?=$brand?>"/>
+<input type="hidden" id="leadviewremindcustom" value="0"/>
+<input type="hidden" id="leadviewremindrichy" value="0"/>
+<input type="hidden" id="leadviewremindmonth" value="<?=$month?>"/>
 <div class="leads_content">
     <div class="leads_content_left">
         <div class="newunassign_header">NEW / Unassigned Interest</div>

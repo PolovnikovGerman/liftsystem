@@ -1790,6 +1790,9 @@ class Leads extends My_Controller {
         $ldat['user_role'] = $this->USR_ROLE;
         $user_dat=$this->user_model->get_user_data($this->USR_ID);
         $ldat['user_name']=($user_dat['user_leadname']=='' ? $this->USER_NAME : $user_dat['user_leadname']);
+        $curdate = date('Y-m-d');
+        $new_timestamp = strtotime($curdate . ' -1 year');
+        $ldat['month'] = date('Y-m', $new_timestamp);
         $content=$this->load->view('leadsview/page_new_view',$ldat,TRUE);
         return $content;
     }
@@ -2153,5 +2156,32 @@ class Leads extends My_Controller {
             }
             $this->ajaxResponse($mdata, $error);
         }
+    }
+
+    public function reminder_interest()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Repeat Remind Date Empty';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'ALL');
+            $customorders = ifset($postdata, 'customorders', 0);
+            $orderrich = ifset($postdata, 'orderrich', 0);
+            $date = ifset($postdata, 'date', '');
+            if (!empty($date)) {
+                $error = '';
+                $this->load->model('orders_model');
+                $data = $this->orders_model->get_reminders($date, $customorders, $orderrich, $brand);
+                $mdata['cntrec'] = count($data);
+                if ($mdata['cntrec']==0) {
+                    $mdata['content'] = $this->load->view('leadsview/interest_empty_view',[], TRUE);
+                } else {
+                    $start_date = strtotime($date.'-01');
+                    $mdata['content'] = $this->load->view('leadsview/interest_reminder_view',['orders' => $data, 'date' => date('F, Y', $start_date)], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 }

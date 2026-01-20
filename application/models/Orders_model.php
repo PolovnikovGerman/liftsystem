@@ -10283,4 +10283,28 @@ Class Orders_model extends MY_Model
             $this->email->clear(TRUE);
         }
     }
+
+    public function get_reminders($date, $customorders, $orderrich, $brand)
+    {
+        $start_date = strtotime($date.'-01');
+        $finish_date = strtotime(date('Y-m-d', $start_date) . ' +1 month');
+        $this->db->select('order_id, order_date, order_num, customer_name as customer, order_qty as qty, order_itemnumber as item_number, order_items as item_name, item_id');
+        $this->db->from('ts_orders');
+        $this->db->where('order_date >=', $start_date)->where('order_date < ', $finish_date)->where('is_canceled',0);
+        if ($customorders==1) {
+            $this->db->where('item_id', $this->config->item('custom_id'));
+        }
+        if ($orderrich==1) {
+            $this->db->where('revenue >=', 1000);
+        }
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB', 'BT']);
+            }
+        }
+        $this->db->order_by('order_date','asc');
+        return $this->db->get()->result_array();
+    }
 }

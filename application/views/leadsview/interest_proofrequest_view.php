@@ -6,4 +6,5 @@
         <div class="proofrequests_qty_dat"><?=QTYOutput($proof['email_qty'])?></div>
         <div class="proofrequests_item_dat truncateoverflowtext"><?=$proof['email_item_name']?></div>
     </div>
+    <?php $numpp++;?>
 <?php endforeach; ?>
