@@ -68,8 +68,8 @@ class Leads extends My_Controller {
         $newcustomforms = $newwebquotes = $newwebquest = 0;
         foreach ($menu as $row) {
             if ($row['item_link'] == '#leadsview') {
-                $head['styles'][]=array('style'=>'/css/leads/leadsview_new.css');
-                $head['scripts'][]=array('src'=>'/js/leads/leadsview_new.js');
+                $head['styles'][]=array('style'=>'/css/leads/leadsview_rebrand.css');
+                $head['scripts'][]=array('src'=>'/js/leads/leadsview_rebrand.js');
                 // $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
                 $content_options['leadsview'] = $this->_prepare_leadsview($brand); // $brand, $top_menu
                 if (!empty($this->config->item('google_map_key'))) {
@@ -1776,12 +1776,11 @@ class Leads extends My_Controller {
         $this->load->model('leads_model');
         $active = 0;
         $ldat['replicas']=$this->user_model->get_user_leadreplicas($active);
-        $options=array(
-            // 'lead_type'=>1,
+        $options = [
             'usrrepl'=>  $this->USR_ID,
             'brand' => $brand,
             'showclosed' => 0,
-        );
+        ];
         $ldat['totalrec']=$this->leads_model->get_total_leads($options);
 
         $ldat['perpage'] = $this->config->item('leads_perpage');
@@ -1791,7 +1790,7 @@ class Leads extends My_Controller {
         $ldat['user_role'] = $this->USR_ROLE;
         $user_dat=$this->user_model->get_user_data($this->USR_ID);
         $ldat['user_name']=($user_dat['user_leadname']=='' ? $this->USER_NAME : $user_dat['user_leadname']);
-        $content=$this->load->view('leadsview/page_view',$ldat,TRUE);
+        $content=$this->load->view('leadsview/page_new_view',$ldat,TRUE);
         return $content;
     }
 
@@ -2068,6 +2067,48 @@ class Leads extends My_Controller {
                 $res = $this->customform_model->get_customform_monthchart($brand);
                 $mdata['data'] = $res['data'];
                 $mdata['labels'] = $res['labels'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function customform_interest()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'ALL');
+            $this->load->model('customform_model');
+            $data = $this->customform_model->get_customform_interest($brand);
+            $mdata['cntrec'] = count($data);
+            $mdata['total'] = QTYOutput($mdata['cntrec']).' New';
+            if ($mdata['cntrec'] == 0) {
+                $mdata['content'] = $this->load->view('leadsview/interest_empty_view',[], TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('leadsview/interest_customform_view',['forms' => $data],TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function webquest_interest()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'ALL');
+            $this->load->model('questions_model');
+            $data = $this->questions_model->get_webquest_interest($brand);
+            $mdata['cntrec'] = count($data);
+            $mdata['total'] = QTYOutput($mdata['cntrec']).' New';
+            if ($mdata['cntrec'] == 0) {
+                $mdata['content'] = $this->load->view('leadsview/interest_empty_view',[], TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('leadsview/interest_webquest_view',['quests' => $data],TRUE);
             }
             $this->ajaxResponse($mdata, $error);
         }

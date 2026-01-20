@@ -192,6 +192,29 @@ Class Questions_model extends My_Model {
         return $out;
     }
 
+    public function get_webquest_interest($brand)
+    {
+        $curdate = date('Y-m-d');
+        $new_timestamp = strtotime($curdate . ' -1 year');
+
+        $this->db->select('e.*,l.lead_number, l.lead_id');
+        $this->db->from('ts_emails e');
+        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
+        $this->db->join('ts_leads l','l.lead_id=lem.lead_id','left');
+        $this->db->where('e.email_type', $this->EMAIL_TYPE);
+        $this->db->where('lem.email_id is null');
+        $this->db->where('unix_timestamp(e.email_date) >=', $new_timestamp);
+        $this->db->where('e.email_include_lead',1);
+        if ($brand != 'ALL') {
+            if ($brand == 'SR') {
+                $this->db->where('e.brand', $brand);
+            } else {
+                $this->db->where_in('e.brand', ['SB','BT']);
+            }
+        }
+        $this->db->order_by('e.email_date', 'DESC');
+        return $this->db->get()->result_array();
+    }
 }
 /* End of file questions_model.php */
 /* Location: ./application/models/questions_model.php */
