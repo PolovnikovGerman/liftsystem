@@ -68,11 +68,11 @@
         <div class="repeatremandheader emptycontent">
             <div class="repeatremand_label">Repeat Reminders:</div>
             <div class="repeatremand_filter">
-                <div class="repeatremand_filter_check"><i class="fa fa-square-o" aria-hidden="true"></i></div>
+                <div class="repeatremand_filter_check" data-filtr="revenue"><i class="fa fa-square-o" aria-hidden="true"></i></div>
                 <div class="repeatremand_filter_label">$1000+ Only</div>
             </div>
             <div class="repeatremand_filter">
-                <div class="repeatremand_filter_check"><i class="fa fa-square-o" aria-hidden="true"></i></div>
+                <div class="repeatremand_filter_check" data-filtr="custom"><i class="fa fa-square-o" aria-hidden="true"></i></div>
                 <div class="repeatremand_filter_label">Custom SB Only</div>
             </div>
         </div>

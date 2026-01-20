@@ -4,6 +4,7 @@ function init_leadsview() {
     init_webquotes_interest();
     init_proofrequest_interest();
     init_repeatreminder();
+    init_interest_content();
 }
 
 function init_customform_interest() {
@@ -126,4 +127,33 @@ function init_repeatreminder() {
             show_error(response)
         }
     },'json');
+}
+
+function init_interest_content() {
+    $(".repeatremand_filter_check[data-filtr='revenue']").unbind('click').click(function (){
+        var check = 0;
+        if ($("#leadviewremindrichy").val()==0) {
+            check = 1;
+        }
+        $("#leadviewremindrichy").val(check);
+        if (check==0) {
+            $(".repeatremand_filter_check[data-filtr='revenue']").empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>');
+        } else {
+            $(".repeatremand_filter_check[data-filtr='revenue']").empty().html('<i class="fa fa-check-square" aria-hidden="true"></i>');
+        }
+        init_repeatreminder();
+    });
+    $(".repeatremand_filter_check[data-filtr='custom']").unbind('click').click(function (){
+        var check = 0;
+        if ($("#leadviewremindcustom").val()==0) {
+            check = 1;
+        }
+        $("#leadviewremindcustom").val(check);
+        if (check==0) {
+            $(".repeatremand_filter_check[data-filtr='custom']").empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>');
+        } else {
+            $(".repeatremand_filter_check[data-filtr='custom']").empty().html('<i class="fa fa-check-square" aria-hidden="true"></i>');
+        }
+        init_repeatreminder();
+    })
 }

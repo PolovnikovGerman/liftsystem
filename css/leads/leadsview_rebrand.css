@@ -277,7 +277,51 @@
 .repeatremand_item {
     width: 174px;
 }
-
+/* Reminder Table data */
+.remindermonth {
+    width: 100%;
+    background: #2ef8b8;
+    color: #333333;
+    font-size: 12px;
+    font-weight: 600;
+    padding-left: 13px;
+}
+.repeatremand_hide_dat {
+    border-right: 1px solid #000000;
+    font-size: 16px;
+    text-align: center!important;
+    cursor: pointer;
+    width: 29px;
+}
+.repeatremand_date_dat {
+    border-right: 1px solid #000000;
+    text-align: center!important;
+    width: 42px;
+}
+.repeatremand_order_dat {
+    border-right: 1px solid #000000;
+    color: #0500fe;
+    cursor: pointer;
+    text-align: center!important;
+    width: 45px;
+}
+.repeatremand_customer_dat {
+    border-right: 1px solid #000000;
+    padding-left: 5px;
+    width: 138px;
+}
+.repeatremand_qty_dat {
+    border-right: 1px solid #000000;
+    text-align: center!important;
+    width: 50px;
+}
+.repeatremand_item_dat {
+    padding-left: 5px;
+    width: 174px;
+}
+.repeatremand_item_dat.customitemdat {
+    font-weight: 600;
+}
 /* Right part */
 .leads_content_right {
     width: 1005px;
