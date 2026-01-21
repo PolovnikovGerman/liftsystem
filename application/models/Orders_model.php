@@ -10371,7 +10371,7 @@ Class Orders_model extends MY_Model
                 $art = empty($order['artwcnt']) ? 0 : 1;
             }
             $artclass = empty($art) ? $missclass : $readyclass;
-            $proof = empty($order['apprcnt']) ? 0 : 1;
+            $proof = $order['order_blank']==1 ? 1 : (empty($order['apprcnt']) ? 0 : 1);
             $proofclass = empty($proof) ? $missclass : $readyclass;
             if (empty($ship) || $payment_class==$missclass || empty($art) || empty($proof)) {
                 $out[] = [

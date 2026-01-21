@@ -236,6 +236,7 @@ class Leads extends My_Controller {
                 $sort = ifset($postdata,'sorttime',1);
                 $this->load->model('leads_model');
                 $leaddat=$this->leads_model->get_leads($options,$sort,$limit,$offset);
+                $mdata['cntrec'] = count($leaddat);
                 if (count($leaddat)==0) {
                     $mdata['content'] = $this->load->view('leadsview/leads_emptydata_view',[],TRUE);
                 } else {
@@ -275,6 +276,7 @@ class Leads extends My_Controller {
                 $sort = ifset($postdata,'sorttime',1);
                 $this->load->model('leads_model');
                 $leaddat=$this->leads_model->get_priority_leads($options,$sort);
+                $mdata['cntrec'] = count($leaddat);
                 if (count($leaddat)==0) {
                     $mdata['content'] = $this->load->view('leadsview/leads_emptydata_view',[],TRUE);
                 } else {

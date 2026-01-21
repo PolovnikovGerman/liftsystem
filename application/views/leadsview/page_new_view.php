@@ -153,6 +153,9 @@
                 <div class="leaditem_head">Item</div>
             </div>
             <div class="leaddataarea leads" id="leadslistdata"></div>
+            <div class="datarow">
+                <div class="paginationview" id="mainleadpagination"></div>
+            </div>
         </div>
         <div class="leads_section_area lastsection">
             <div class="leaddata_header priority">
@@ -176,10 +179,7 @@
                 <div class="orderart_head">Art</div>
                 <div class="orderapproval_head">Approval</div>
             </div>
-            <div class="leaddataarea ordermissinfo" id="ordermissinfodata"></div>
-        </div>
-        <div class="leads_section_area">
-            <div class="paginationview" id="mainleadpagination"></div>
+            <div class="ordermissinfoarea" id="ordermissinfodata"></div>
         </div>
     </div>
 </div>

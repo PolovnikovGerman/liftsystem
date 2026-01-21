@@ -8,6 +8,164 @@ function init_leadsview() {
     initLeaddataPagination();
     show_leadpriority();
     show_ordermissinfo();
+    init_leadmanage_content();
+}
+function init_leadmanage_content() {
+    // $(".leads_viewclosedflag").unbind('click').click(function () {
+    //     var showclose = 0;
+    //     if (parseInt($("#leadviewshowclosed").val())==0) {
+    //         showclose = 1;
+    //     }
+    //     if (showclose == 1) {
+    //         $(".leads_viewclosedflag").empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>');
+    //     } else {
+    //         $(".leads_viewclosedflag").empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>');
+    //     }
+    //     $("#leadviewshowclosed").val(showclose);
+    //     search_leadsdata();
+    // });
+    $(".leadsort_updatedate").unbind('click').click(function () {
+        var entity = '';
+        if ($(this).hasClass('leads')) {
+            entity = 'leads';
+        } else if ($(this).hasClass('priority')) {
+            entity = 'priority';
+        } else {
+            entity = 'tasks';
+        }
+        if (entity == 'leads') {
+            if (parseInt($('#leaddatasort').val())==2) {
+                // Change Icon, value, call pagination
+                $(".leadsort_updatedate.leads").empty().html('<i class="fa fa-check-circle-o" aria-hidden="true"></i>');
+                $(".leadsort_createdate.leads").empty().html('<i class="fa fa-circle-thin" aria-hidden="true"></i>');
+                $("#leaddatasort").val(1);
+                pageLeaddataCallback(parseInt($("#leadviewcurpage").val()));
+            }
+        } else if (entity == 'priority') {
+            if (parseInt($('#leadpriorsort').val())==2) {
+                $(".leadsort_updatedate.priority").empty().html('<i class="fa fa-check-circle-o" aria-hidden="true"></i>');
+                $(".leadsort_createdate.priority").empty().html('<i class="fa fa-circle-thin" aria-hidden="true"></i>');
+                $("#leadpriorsort").val(1);
+                show_leadpriority();
+            }
+        } else {
+            if (parseInt($('#leadtasksort').val())==2) {
+                $(".leadsort_updatedate.tasks").empty().html('<i class="fa fa-check-circle-o" aria-hidden="true"></i>');
+                $(".leadsort_createdate.tasks").empty().html('<i class="fa fa-circle-thin" aria-hidden="true"></i>');
+                $("#leadtasksort").val(1);
+                show_leadtasks();
+            }
+        }
+    });
+    $(".leadsort_createdate").unbind('click').click(function () {
+        var entity = '';
+        if ($(this).hasClass('leads')) {
+            entity = 'leads';
+        } else if ($(this).hasClass('priority')) {
+            entity = 'priority';
+        } else {
+            entity = 'tasks';
+        }
+        if (entity == 'leads') {
+            if (parseInt($('#leaddatasort').val())==1) {
+                // Change Icon, value, call pagination
+                $(".leadsort_createdate.leads").empty().html('<i class="fa fa-check-circle-o" aria-hidden="true"></i>');
+                $(".leadsort_updatedate.leads").empty().html('<i class="fa fa-circle-thin" aria-hidden="true"></i>');
+                $("#leaddatasort").val(2);
+                pageLeaddataCallback(parseInt($("#leadviewcurpage").val()));
+            }
+        } else if (entity == 'priority') {
+            if (parseInt($('#leadpriorsort').val())==1) {
+                $(".leadsort_createdate.priority").empty().html('<i class="fa fa-check-circle-o" aria-hidden="true"></i>');
+                $(".leadsort_updatedate.priority").empty().html('<i class="fa fa-circle-thin" aria-hidden="true"></i>');
+                $("#leadpriorsort").val(2);
+                show_leadpriority();
+            }
+        } else {
+            if (parseInt($('#leadtasksort').val())==2) {
+                $(".leadsort_createdate.tasks").empty().html('<i class="fa fa-check-circle-o" aria-hidden="true"></i>');
+                $(".leadsort_updatedate.tasks").empty().html('<i class="fa fa-circle-thin" aria-hidden="true"></i>');
+                $("#leadtasksort").val(2);
+                show_leadtasks();
+            }
+        }
+    });
+    $("select#leads_replica").unbind('change').change(function(){
+        $("#leadviewuser").val($("select#leads_replica").val());
+        search_leadsdata();
+        show_leadpriority();
+        // show_leadtasks();
+        // show_newleads();
+        // show_ordermissinfo();
+    });
+    // Search all
+    $("div.leadsearchall").unbind('click').click(function(){
+        $("#leadviewuser").val('');
+        $("#leadviewshowclosed").val(1);
+        $(".leads_viewclosedflag").empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>');
+        search_leadsdata();
+        show_leadpriority();
+        // show_leadtasks();
+        // show_newleads();
+        // show_ordermissinfo();
+    });
+    $("div.leadsearchusr").unbind('click').click(function(){
+        var usr = $(this).data('user');
+        $("#leadviewuser").val(usr);
+        search_leadsdata();
+        show_leadpriority();
+        // show_leadtasks();
+        // show_newleads();
+        // show_ordermissinfo();
+    })
+    // Clean
+    $("div.leadsearchclear").unbind('click').click(function(){
+        $("input.lead_searchinput").val('');
+        var usr = $(".leadsearchusr").data('user');
+        $("#leadviewuser").val(usr);
+        $("#leadviewshowclosed").val(0);
+        $(".leads_viewclosedflag").empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>');
+        search_leadsdata();
+        show_leadpriority();
+        // show_leadtasks();
+        // show_newleads();
+        // show_ordermissinfo();
+    });
+    // Input search
+    $("input.lead_searchinput").keypress(function(event){
+        if (event.which == 13) {
+            $("#leadviewuser").val('');
+            $("#leadviewshowclosed").val(1);
+            $(".leads_viewclosedflag").empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>');
+            search_leadsdata();
+            show_leadpriority();
+            // show_leadtasks();
+            // show_newleads();
+            // show_ordermissinfo();
+        }
+    });
+    // Add New Lead
+    $("div.leads_add").unbind('click').click(function(){
+        var brand = $("#leadviewbrand").val();
+        if (brand=='ALL') {
+        } else {
+            add_lead(brand);
+        }
+    });
+}
+
+function search_leadsdata() {
+    var params = leadpaginationparams(0);
+    var url = '/leads/search_leads';
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $("#leadviewtotalrec").val(response.data.totalrec);
+            $("#leadviewcurpage").val(0);
+            initLeaddataPagination();
+        } else {
+            show_error(response);
+        }
+    },'json')
 }
 
 function init_customform_interest() {
@@ -187,13 +345,16 @@ function initLeaddataPagination() {
 function pageLeaddataCallback(page_index) {
     var params = leadpaginationparams(page_index);
     params.push({name: 'sorttime', value: $("#leaddatasort").val()});
-    var url = 'leads/leadview_data';
+    var url = '/leads/leadview_data';
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("#leadslistdata").empty().html(response.data.content);
             $("#leadviewcurpage").val(page_index);
             init_leaddata_manage();
+            if (parseInt(response.data.cntrec) > 0) {
+                new SimpleBar(document.getElementById('leadslistdata'), { autoHide: false })
+            }
             $("#loader").hide();
         } else {
             $("#loader").hide();
@@ -226,6 +387,9 @@ function show_leadpriority() {
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("#leadsprioritydata").empty().html(response.data.content);
+            if (parseInt(response.data.cntrec) > 0) {
+                new SimpleBar(document.getElementById('leadsprioritydata'), { autoHide: false })
+            }
             init_leaddata_manage();
             $("#loader").hide();
         } else {
@@ -266,4 +430,52 @@ function init_leaddata_manage() {
     $("div.leaddataarea").find('div.datarow').unbind('click').click(function(){
         edit_lead($(this).data('lead'));
     });
+    // Open order
+    $(".missordernumber_dat").unbind('click').click(function (){
+        var order = $(this).data('order');
+        edit_missinfo(order);
+    });
+}
+
+function edit_missinfo(order) {
+    var callpage = 'leadsview';
+    var brand = $("#leadsveiwbrand").val();
+    var url="/leadorder/leadorder_change";
+    var params = new Array();
+    params.push({name: 'order', value: order});
+    params.push({name: 'page', value: callpage});
+    params.push({name: 'edit', value: 0});
+    params.push({name: 'brand', value: brand});
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#artModalLabel").empty().html(response.data.header);
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artModal").find('div.modal-dialog').css('width','1004px');
+            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
+            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
+            if (parseInt(order)==0) {
+                init_onlineleadorder_edit();
+                init_rushpast();
+                if (parseInt($("#ordermapuse").val())==1) {
+                    // Init simple Shipping address
+                    initShipOrderAutocomplete();
+                    if ($("#billorder_line1").length > 0) {
+                        initBillOrderAutocomplete();
+                    }
+                }
+            } else {
+                if (parseInt(response.data.cancelorder)===1) {
+                    $("#artModal").find('div.modal-header').addClass('cancelorder');
+                } else {
+                    $("#artModal").find('div.modal-header').removeClass('cancelorder');
+                }
+                // // Hide edit button and navigation
+                // $("#editbuttonarea").css('visibility','hidden');
+                // $(".block_4").css('visibility','hidden');
+                navigation_init();
+            }
+        } else {
+            show_error(response);
+        }
+    },'json');
 }
