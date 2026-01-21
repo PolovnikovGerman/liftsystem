@@ -5,6 +5,9 @@ function init_leadsview() {
     init_proofrequest_interest();
     init_repeatreminder();
     init_interest_content();
+    initLeaddataPagination();
+    show_leadpriority();
+    show_ordermissinfo();
 }
 
 function init_customform_interest() {
@@ -156,4 +159,111 @@ function init_interest_content() {
         }
         init_repeatreminder();
     })
+}
+
+function initLeaddataPagination() {
+    var num_entries = parseInt($('#leadviewtotalrec').val());
+    var perpage = parseInt($("#leadviewperpage").val());
+    if (num_entries < perpage) {
+        $("#mainleadpagination").empty();
+        $("#leadviewcurpage").val(0);
+        pageLeaddataCallback(0);
+    } else {
+        var curpage = $("#curpagelead").val();
+        // Create content inside pagination element
+        $("#mainleadpagination").empty().mypagination(num_entries, {
+            current_page: curpage,
+            callback: pageLeaddataCallback,
+            items_per_page: perpage, // Show only one item per page
+            load_first_page: true,
+            num_edge_entries : 1,
+            num_display_entries : 5,
+            prev_text : '<<',
+            next_text : '>>'
+        });
+    }
+}
+
+function pageLeaddataCallback(page_index) {
+    var params = leadpaginationparams(page_index);
+    params.push({name: 'sorttime', value: $("#leaddatasort").val()});
+    var url = 'leads/leadview_data';
+    $("#loader").show();
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#leadslistdata").empty().html(response.data.content);
+            $("#leadviewcurpage").val(page_index);
+            init_leaddata_manage();
+            $("#loader").hide();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json')
+}
+
+function leadpaginationparams(page_index) {
+    var params = new Array();
+    var usrreplic='';
+    var search=$("input.lead_searchinput").val();
+    var usrreplic = $("#leadviewuser").val();
+    var showcloded = $("#leadviewshowclosed").val();
+    params.push({name: 'search', value: search});
+    params.push({name: 'userrepl', value: usrreplic});
+    params.push({name: 'showcloded', value: showcloded});
+    params.push({name: 'limit', value: $("#leadviewperpage").val()});
+    params.push({name: 'maxval', value: $("#leadviewtotalrec").val()});
+    params.push({name: 'offset', value: page_index});
+    params.push({name: 'brand', value: $("#leadviewbrand").val()});
+    return params;
+}
+
+function show_leadpriority() {
+    var params = leadpaginationparams(0);
+    params.push({name: 'sorttime', value: $("#leadpriorsort").val()});
+    var url = 'leads/leadview_priority';
+    $("#loader").show();
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#leadsprioritydata").empty().html(response.data.content);
+            init_leaddata_manage();
+            $("#loader").hide();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json')
+}
+
+function show_ordermissinfo() {
+    var params = leadpaginationparams(0);
+    params.push({name: 'sorttime', value: $("#ordermissinfosort").val()});
+    var url = 'leads/orders_missinfo';
+    $("#loader").show();
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#ordermissinfodata").empty().html(response.data.content);
+            if (parseInt(response.data.cntrec) > 0) {
+                new SimpleBar(document.getElementById('ordermissinfodata'), { autoHide: false })
+            }
+            init_leaddata_manage();
+            $("#loader").hide();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
+}
+
+function init_leaddata_manage() {
+    $("div.leaddataarea").find('div.datarow').hover(
+        function(){
+            $(this).addClass("current_row");
+        },
+        function(){
+            $(this).removeClass("current_row");
+        });
+    $("div.leaddataarea").find('div.datarow').unbind('click').click(function(){
+        edit_lead($(this).data('lead'));
+    });
 }

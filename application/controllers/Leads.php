@@ -237,7 +237,7 @@ class Leads extends My_Controller {
                 $this->load->model('leads_model');
                 $leaddat=$this->leads_model->get_leads($options,$sort,$limit,$offset);
                 if (count($leaddat)==0) {
-                    $mdata['content'] = $this->load->view('leads/leads_emptydata_view',[],TRUE);
+                    $mdata['content'] = $this->load->view('leadsview/leads_emptydata_view',[],TRUE);
                 } else {
                     $options=array(
                         'leads'=>$leaddat,
@@ -276,7 +276,7 @@ class Leads extends My_Controller {
                 $this->load->model('leads_model');
                 $leaddat=$this->leads_model->get_priority_leads($options,$sort);
                 if (count($leaddat)==0) {
-                    $mdata['content'] = $this->load->view('leads/leads_emptydata_view',[],TRUE);
+                    $mdata['content'] = $this->load->view('leadsview/leads_emptydata_view',[],TRUE);
                 } else {
                     $options=array(
                         'leads'=>$leaddat,
@@ -352,15 +352,17 @@ class Leads extends My_Controller {
             if (!empty($brand)) {
                 $error = '';
                 // $sort = ifset($postdata,'sorttime',1);
-                $orders = [];
+                $this->load->model('orders_model');
+                $orders = $this->orders_model->get_orders_missinfo($brand);
+                $mdata['cntrec'] = count($orders);
                 if (count($orders)==0) {
-                    $mdata['content'] = $this->load->view('leads/leads_emptydata_view', [], TRUE);
+                    $mdata['content'] = $this->load->view('leadsview/leads_emptydata_view', [], TRUE);
                 } else {
                     $options=array(
-                        'leads'=>$orders,
+                        'orders' => $orders,
                         'brand' => $brand,
                     );
-                    $mdata['content']=$this->load->view('leadsview/leads_data_view',$options, TRUE);
+                    $mdata['content']=$this->load->view('leadsview/ordermissinfo_data_view',$options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
