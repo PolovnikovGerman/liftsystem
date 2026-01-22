@@ -194,6 +194,28 @@ Class Quotes_model extends My_Model {
         return $out;
     }
 
+    public function get_webquotes_interest($brand)
+    {
+        $curdate = date('Y-m-d');
+        $new_timestamp = strtotime($curdate . ' -1 year');
+        $this->db->select('e.*');
+        $this->db->from('ts_emails e');
+        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
+        $this->db->where('e.email_type', $this->EMAIL_TYPE);
+        $this->db->where('e.email_subtype', $this->EMAIL_SUBTYPE);
+        $this->db->where('lem.email_id is null');
+        $this->db->where('e.email_include_lead',1);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            if ($options['brand']=='SR') {
+                $this->db->where('e.brand', $options['brand']);
+            } else {
+                $this->db->where_in('e.brand', ['BT','SB']);
+            }
+        }
+        $this->db->where('unix_timestamp(e.email_date) >=', $new_timestamp);
+        $this->db->order_by('e.email_date','desc');
+        return $this->db->get()->result_array();
+    }
 
 }
 /* End of file quotes_model.php */

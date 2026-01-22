@@ -321,4 +321,23 @@ class Customform_model extends MY_Model
         return ['labels'=>$labels,'data'=>$data];
     }
 
+    public function get_customform_interest($brand)
+    {
+        $this->db->select('q.*,le.lead_id');
+        $this->db->from('ts_custom_quotes q');
+        $this->db->join('ts_lead_emails le','le.custom_quote_id=q.custom_quote_id','left');
+        $this->db->where('le.leademail_id is null');
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('q.brand', $brand);
+            } else {
+                $this->db->where_in('q.brand', ['SB','BT']);
+            }
+        }
+        $this->db->where('q.active', 1);
+        $this->db->order_by('q.custom_quote_id', 'desc');
+        $dats = $this->db->get()->result_array();
+        return $dats;
+    }
+
 }

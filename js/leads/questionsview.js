@@ -132,11 +132,11 @@ function init_questions_content() {
         quest_include(quest_id);
         return false;
     });
-    $("div.questassign").click(function(){
-        var questid=$(this).data('questid');
-        change_questreplic(questid);
-        return false;
-    });
+    // $("div.questassign").click(function(){
+    //     var questid=$(this).data('questid');
+    //     change_questreplic(questid);
+    //     return false;
+    // });
 
 }
 
@@ -290,22 +290,22 @@ function search_questions() {
         }
     }, 'json');
 }
-function showquestdetails(question) {
-    var url="/leads/question_detail";
-    $.post(url, {'quest_id':question}, function(response){
-        if (response.errors=='') {
-            $("#pageModalLabel").empty().html('View Question');
-            $("#pageModal").find('div.modal-dialog').css('width','753px');
-            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
-        } else {
-            alert(response.errors);
-            if(response.data.url !== undefined) {
-                window.location.href=response.data.url;
-            }
-        }
-    }, 'json');
-}
+// function showquestdetails(question) {
+//     var url="/leads/question_detail";
+//     $.post(url, {'quest_id':question}, function(response){
+//         if (response.errors=='') {
+//             $("#pageModalLabel").empty().html('View Question');
+//             $("#pageModal").find('div.modal-dialog').css('width','753px');
+//             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+//             $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+//         } else {
+//             alert(response.errors);
+//             if(response.data.url !== undefined) {
+//                 window.location.href=response.data.url;
+//             }
+//         }
+//     }, 'json');
+// }
 
 function replyquestmail(mail) {
     var mailtourl = "mailto:"+mail;

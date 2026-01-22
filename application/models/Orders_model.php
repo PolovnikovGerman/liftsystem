@@ -10302,4 +10302,112 @@ Class Orders_model extends MY_Model
             $this->email->clear(TRUE);
         }
     }
+
+    public function get_reminders($date, $customorders, $orderrich, $brand)
+    {
+        $start_date = strtotime($date.'-01');
+        $finish_date = strtotime(date('Y-m-d', $start_date) . ' +1 month');
+        $this->db->select('order_id, order_date, order_num, customer_name as customer, order_qty as qty, order_itemnumber as item_number, order_items as item_name, item_id');
+        $this->db->from('ts_orders');
+        $this->db->where('order_date >=', $start_date)->where('order_date < ', $finish_date)->where('is_canceled',0);
+        if ($customorders==1) {
+            $this->db->where('item_id', $this->config->item('custom_id'));
+        }
+        if ($orderrich==1) {
+            $this->db->where('revenue >=', 1000);
+        }
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB', 'BT']);
+            }
+        }
+        $this->db->order_by('order_date','asc');
+        return $this->db->get()->result_array();
+    }
+
+    public function get_orders_missinfo($brand)
+    {
+        $missclass = 'missing';
+        $readyclass = 'ready';
+        $finish_date = strtotime(date('Y-m-d') . ' -2 years');
+        $this->db->select('s.order_id, count(sc.order_shipcost_id) as shipcnt');
+        $this->db->from('ts_order_shipaddres s');
+        $this->db->join('ts_order_shipcosts sc', 'sc.order_shipaddr_id = s.order_shipaddr_id');
+        $this->db->group_by('s.order_id');
+        $shipadrsql = $this->db->get_compiled_select();
+        $this->db->select('order_id, count(batch_id) as amntcnt, sum(batch_amount) as amntsum');
+        $this->db->from('ts_order_batches');
+        $this->db->group_by('order_id');
+        $amntsql = $this->db->get_compiled_select();
+        $this->db->select('a.order_id, count(al.artwork_art_id) artwcnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_arts al', 'al.artwork_id = a.artwork_id');
+        $this->db->group_by('a.order_id');
+        $artsql = $this->db->get_compiled_select();
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as apprcnt')->from('ts_artworks a')->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0)->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+        // Get orders
+        $this->db->select('o.order_id, o.order_num, o.customer_name as customer, o.order_blank, o.revenue, coalesce(sh.shipcnt,0) as shipcnt');
+        $this->db->select('coalesce(amnt.amntcnt,0) as amntcnt, coalesce(amnt.amntsum,0) as amntsum');
+        $this->db->select('coalesce(artw.artwcnt,0) as artwcnt');
+        $this->db->select('coalesce(proof.apprcnt,0) as apprcnt');
+        $this->db->from('ts_orders o');
+        $this->db->join("({$shipadrsql}) sh",'sh.order_id=o.order_id','left');
+        $this->db->join("({$amntsql}) amnt", 'amnt.order_id=o.order_id','left');
+        $this->db->join("({$artsql}) artw", "artw.order_id=o.order_id",'left');
+        $this->db->join("({$proofsql}) proof",'proof.order_id=o.order_id','left');
+        $this->db->where('o.is_canceled',0);
+        $this->db->where('o.order_date >=', $finish_date);
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand',$brand);
+            } else {
+                $this->db->where_in('o.brand',['SB','BT']);
+            }
+        }
+        $orders = $this->db->get()->result_array();
+        $out = [];
+        foreach ($orders as $order) {
+            $ship = empty($order['shipcnt']) ? 0 : 1;
+            $shipclass = $ship==0 ? $missclass : $readyclass;
+            if (empty($order['amntcnt'])) {
+                $payment = 0;
+                $payment_class = $missclass;
+            } else {
+                $payment = $order['amntsum'];
+                if ($order['amntsum']>=$order['revenue']) {
+                    $payment_class = $readyclass;
+                } else {
+                    $payment_class = $missclass;
+                }
+            }
+            if ($order['order_blank']==1) {
+                $art = 1;
+            } else {
+                $art = empty($order['artwcnt']) ? 0 : 1;
+            }
+            $artclass = empty($art) ? $missclass : $readyclass;
+            $proof = $order['order_blank']==1 ? 1 : (empty($order['apprcnt']) ? 0 : 1);
+            $proofclass = empty($proof) ? $missclass : $readyclass;
+            if (empty($ship) || $payment_class==$missclass || empty($art) || empty($proof)) {
+                $out[] = [
+                    'order_id' => $order['order_id'],
+                    'order_num' => $order['order_num'],
+                    'customer' => $order['customer'],
+                    'ship' => $ship,
+                    'shipclass' => $shipclass,
+                    'payment' => $payment,
+                    'paymentclass' => $payment_class,
+                    'art' => $art,
+                    'artclass' => $artclass,
+                    'proof' => $proof,
+                    'proofclass' => $proofclass,
+                ];
+            }
+        }
+        return $out;
+    }
 }
