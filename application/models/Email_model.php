@@ -15,6 +15,11 @@ class Email_model extends My_Model
         parent::__construct();
     }
 
+    public function get_emaildata($emaid_id)
+    {
+        $this->db->select('*')->from('ts_emails')->where('email_id', $emaid_id);
+        return $this->db->get()->row_array();
+    }
     public function get_email_templates()
     {
         $this->db->select('*');

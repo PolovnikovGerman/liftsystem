@@ -22,12 +22,16 @@ function show_new_lead(lead_id,type, brand) {
                 $('.modal-backdrop').hide();
                 if (type=='quote') {
                     initQuotesPagination();
+                    init_webquotes_interest();
                 } else if (type=='question') {
                     initQuestionPagination();
+                    init_webquest_interest();
                 } else if (type=='customquote') {
                     initCustomFormPagination();
+                    init_customform_interest();
                 } else {
                     initProofPagination();
+                    init_proofrequest_interest();
                 }
             });
             $("#leadformModal").find('button.close').unbind('click').click(function (){

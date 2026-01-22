@@ -268,16 +268,16 @@ function search_quotes() {
     }, 'json');
 
 }
-function showquotedetails(quote_id) {
-    var url="/leads/quote_details";
-    $.post(url,{'quote_id':quote_id},function(response){
-        if (response.errors=='') {
-            $("#pageModalLabel").empty().html('View Online Quote');
-            $("#pageModal").find('div.modal-dialog').css('width','753px');
-            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
-        } else {
-            show_error(response);
-        }
-    },'json');
-}
+// function showquotedetails(quote_id) {
+//     var url="/leads/quote_details";
+//     $.post(url,{'quote_id':quote_id},function(response){
+//         if (response.errors=='') {
+//             $("#pageModalLabel").empty().html('View Online Quote');
+//             $("#pageModal").find('div.modal-dialog').css('width','753px');
+//             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+//             $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+//         } else {
+//             show_error(response);
+//         }
+//     },'json');
+// }

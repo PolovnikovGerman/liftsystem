@@ -236,6 +236,7 @@ function init_webquotes_interest() {
                 $("#onlinequotetable").removeClass('emptycontent');
                 new SimpleBar(document.getElementById('onlinequotetable'), { autoHide: false })
             }
+            init_interest_management();
         } else {
             show_error(response)
         }
@@ -340,6 +341,12 @@ function init_interest_management() {
         var task = parseInt($(this).data('task'));
         if (task > 0) {
             showquestdetails(task);
+        }
+    });
+    $("#onlinequotetable").find('div.datarow').unbind('click').click(function (){
+        var task = parseInt($(this).data('task'));
+        if (task > 0) {
+            showquotedetails(task);
         }
     })
 }

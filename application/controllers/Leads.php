@@ -836,16 +836,30 @@ class Leads extends My_Controller {
     public function quote_details() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
-            $quote_id=$this->input->post('quote_id');
-            /* Get Data */
-            $this->load->model('quotes_model');
-            $res = $this->quotes_model->get_quote_dat($quote_id);
-            $error = $res['msg'];
-            if ($res['result']==$this->success_result) {
-                $error = '';
-                $data = $res['data'];
-                $mdata['content']=  $this->load->view('leads/quote_details_view',$data,TRUE);
+            $error='Empty Quote Parameter';
+            $postdata = $this->input->post();
+            $quote_id = ifset($postdata,'quote_id', 0);
+            if (!empty($quote_id)) {
+                /* Get Data */
+                $this->load->model('quotes_model');
+                $res = $this->quotes_model->get_quote_dat($quote_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $data = $res['data'];
+                    // $mdata['content']=  $this->load->view('leads/quote_details_view',$data,TRUE);
+                    $mdata['content'] = $this->load->view('leadsview/webquote_details_view',['data' => $data],TRUE);
+                    $this->load->model('leads_model');
+                    $leadoptions=array(
+                        'orderby'=>'lead_number',
+                        'direction'=>'desc',
+                        'brand' => $data['brand'],
+                    );
+                    $leaddat=$this->leads_model->get_lead_list($leadoptions);
+                    $leadlist = $this->leads_model->prepare_assign_list($leaddat);
+                    $mdata['footer'] = $this->load->view('leadsview/webquote_footer_view',['leads' => $leadlist, 'brand'=> $data['brand']],TRUE);
+
+                }
             }
             $this->ajaxResponse($mdata,$error);
         }
@@ -982,16 +996,25 @@ class Leads extends My_Controller {
                     }
                 } else {
                     $error='This Request Related with Lead. Please, reload page';
-                    $email_id=$this->input->post('mail_id');
-                    $leademail_id=$this->input->post('leademail_id');
-                    $type=$this->input->post('type');
+                    $email_id = ifset($postdata,'mail_id',0);
+                    $leademail_id = ifset($postdata, 'leademail_id',0);
+                    $type = ifset($postdata, 'type','');
+                    $brand = ifset($postdata, 'brand','ALL');
                     $chkrel=$this->leads_model->check_leadrelation($email_id);
                     if ($chkrel==0) {
+                        $new = 0;
                         switch ($type) {
                             case 'Question':
                                 $this->load->model('questions_model');
                                 $maildat = $this->questions_model->get_quest_data($email_id);
                                 $res = $this->leads_model->create_leadquest($maildat['data'], $leademail_id, $this->USR_ID);
+                                $quuestoptions = [
+                                    'brand' => $brand,
+                                    'assign' => 1,
+                                    'hideincl' => 1,
+                                    'newquest' => 1,
+                                ];
+                                $new = $this->questions_model->get_count_questions($quuestoptions);
                                 break;
                             case 'Quote':
                                 $this->load->model('quotes_model');
@@ -1000,6 +1023,13 @@ class Leads extends My_Controller {
                                 if ($maildat['result']==$this->success_result) {
                                     $res = $this->leads_model->create_leadquote($maildat['data'], $leademail_id, $this->USR_ID);
                                 }
+                                $quoteoptions = [
+                                    'brand' => $brand,
+                                    'assign' => 1,
+                                    'hideincl' => 1,
+                                    'newquotes' => 1,
+                                ];
+                                $new = $this->quotes_model->get_count_quotes($quoteoptions);
                                 break;
                             case 'Proof';
                                 $this->load->model('artproof_model');
@@ -1013,6 +1043,7 @@ class Leads extends My_Controller {
                         if ($res['result'] != $this->error_result) {
                             $error = '';
                             $mdata['leadid'] = $res['result'];
+                            $mdata['totalnew'] = $new;
                         }
                     }
                 }
@@ -1262,35 +1293,53 @@ class Leads extends My_Controller {
     public function savequeststatus() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
+            $error='Message Not Found';
             $quest=$this->input->post();
-            /* Get data about question */
-            $this->load->model('leads_model');
-            $res=$this->leads_model->save_leadrelation($quest);
-            $error=$res['msg'];
-            if ($res['result']==$this->success_result) {
-                $this->load->model('questions_model');
-                $resquest=$this->questions_model->get_quest_data($quest['mail_id']);
-                $error = $resquest['msg'];
-                if ($resquest['result']==$this->success_result) {
-                    $error = '';
-                    $data = $resquest['data'];
-                    $mdata['type']=$data['email_type'];
-                    $quuestoptions = [
-                        'brand' => $quest['brand'],
-                        'assign' => 1,
-                        'hideincl' => 1,
-                        'newquest' => 1,
-                    ];
-                    $mdata['totalnew'] = $this->questions_model->get_count_questions($quuestoptions);
+            $email_id = $quest['mail_id'];
+            $this->load->model('email_model');
+            $maildat = $this->email_model->get_emaildata($email_id);
+            if (ifset($maildat,'email_id')>0) {
+                $mail_type = $maildat['email_subtype'];
+                /* Get data about question */
+                $this->load->model('leads_model');
+                $res=$this->leads_model->save_leadrelation($quest);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    if ($mail_type=='Question') {
+                        $this->load->model('questions_model');
+                        $resquest=$this->questions_model->get_quest_data($quest['mail_id']);
+                        $error = $resquest['msg'];
+                        if ($resquest['result']==$this->success_result) {
+                            $error = '';
+                            $data = $resquest['data'];
+                            $mdata['type'] = $mail_type;
+                            $quuestoptions = [
+                                'brand' => $quest['brand'],
+                                'assign' => 1,
+                                'hideincl' => 1,
+                                'newquest' => 1,
+                            ];
+                            $mdata['totalnew'] = $this->questions_model->get_count_questions($quuestoptions);
+                        }
+                    } elseif ($mail_type=='Quote') {
+                        $this->load->model('quotes_model');
+                        $resquest=$this->quotes_model->get_quote_dat($quest['mail_id']);
+                        $error = $resquest['msg'];
+                        if ($resquest['result']==$this->success_result) {
+                            $error = '';
+                            $data = $resquest['data'];
+                            $mdata['type'] = $mail_type;
+                            $quoteoptiions = [
+                                'brand' => $quest['brand'],
+                                'assign' => 1,
+                                'hideincl' => 1,
+                                'newquotes' => 1,
+                            ];
+                            $mdata['totalnew'] = $this->quotes_model->get_count_quotes($quoteoptiions);
+                        }
+
+                    }
                 }
-                // Recalculate Totals New
-//                $mdata['total_proof']=$this->mproofs->get_count_proofs(array('assign'=>1));
-//                $mdata['total_quote']=$this->mquotes->get_count_quotes(array('assign'=>1));
-//                $mdata['total_quest']=$this->mquests->get_count_questions(array('assign'=>1));
-//                $mdata['sumquote']=$this->mquotes->get_todays();
-//                $mdata['sumproofs']=$this->mproofs->get_todays();
-//                $mdata['sumquest']=$this->mquests->get_todays();
 
             }
             $this->ajaxResponse($mdata, $error);
