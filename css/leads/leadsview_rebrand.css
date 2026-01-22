@@ -86,6 +86,9 @@
 .newunassign_tasktable.emptycontent {
     opacity: 0.25;
 }
+.newunassign_tasktable .datarow.current_row {
+    background: #e3e1e1;
+}
 .newunassign_tasktable .datarow div {
     height: 21px;
     line-height: 21px;

@@ -176,7 +176,10 @@ class Leads extends My_Controller {
         if ($gmaps==1) {
             $head['scripts'][] = array('src' => '/js/leads/order_address.js');
         }
-
+        // Interests Popups
+        $head['styles'][] = ['style' => '/css/leads/interest_modal.css'];
+        $head['styles'][] = ['style' => '/css/leads/interest_popup.css'];
+        $head['scripts'][] = ['src' => '/js/leads/interest_popup.js'];
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
@@ -1388,8 +1391,10 @@ class Leads extends My_Controller {
                     );
                     $leaddat=$this->leads_model->get_lead_list($leadoptions);
                     $leadlist = $this->leads_model->prepare_assign_list($leaddat);
-                    $mdata['content'] = $this->load->view('customsbforms/details_view', $options, TRUE);
-                    $mdata['footer'] = $this->load->view('customsbforms/footer_view', ['custom_quote_id' => $postdata['form_id'], 'leads' => $leadlist], TRUE);
+                    // $mdata['content'] = $this->load->view('customsbforms/details_view', $options, TRUE);
+                    // $mdata['footer'] = $this->load->view('customsbforms/footer_view', ['custom_quote_id' => $postdata['form_id'], 'leads' => $leadlist], TRUE);
+                    $mdata['content'] = $this->load->view('leadsview/customsbforms_details_view', $options, TRUE);
+                    $mdata['footer'] = $this->load->view('leadsview/customsbforms_footer_view', ['custom_quote_id' => $postdata['form_id'], 'leads' => $leadlist, 'brand'=>$res['data']['brand']], TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);

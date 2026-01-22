@@ -186,6 +186,7 @@ function init_customform_interest() {
                 $("#sbcustomformstable").removeClass('emptycontent');
                 new SimpleBar(document.getElementById('sbcustomformstable'), { autoHide: false })
             }
+            init_interest_management();
         } else {
             show_error(response);
         }
@@ -316,6 +317,23 @@ function init_interest_content() {
             $(".repeatremand_filter_check[data-filtr='custom']").empty().html('<i class="fa fa-check-square" aria-hidden="true"></i>');
         }
         init_repeatreminder();
+    })
+}
+
+function init_interest_management() {
+    $(".newunassign_tasktable").find('div.datarow').hover(
+        function(){
+            $(this).addClass("current_row");
+        },
+        function(){
+            $(this).removeClass("current_row");
+        });
+    // Click on SB forms row
+    $("#sbcustomformstable").find('div.datarow').unbind('click').click(function (){
+        var task = parseInt($(this).data('task'));
+        if (task > 0) {
+            showcustomformdetails(task);
+        }
     })
 }
 

@@ -1,0 +1,140 @@
+/*-------------- Custom SB Form ----------------*/
+.ipcustomsbform {
+    width: 100%;
+    background: #088aff;
+    padding: 5px 15px 10px;
+}
+.customform-left {
+    width: 228px;
+    margin-right: 17px;
+}
+.customform-right {
+    float: right !important;
+    width: 228px;
+}
+.customform-row {
+    width: 100%;
+    margin-bottom: 3px;
+}
+.customform-right .customform-row {
+    width: 100%;
+    margin-bottom: 9px;
+}
+.customform-group {
+    display: inline-block;
+}
+.customform-group label {
+    width: 100%;
+    font-size: 12px;
+    color: #fff;
+    margin-bottom: 2px;
+}
+.customform-group input {
+    border: 1px solid #0768c0;
+    border-radius: 3px;
+    height: 24px;
+    font-size: 12px;
+    line-height: 24px;
+    width: 100%;
+}
+.customform-group textarea {
+    border: 1px solid #0768c0;
+    border-radius: 3px;
+    width: 228px;
+    height: 155px;
+    font-size: 12px;
+    line-height: 16px;
+    resize: none;
+    margin-top: 10px;
+}
+.customform-date {
+    width: 228px;
+}
+.customform-company {
+    width: 228px;
+}
+.customform-contact {
+    width: 228px;
+}
+.customform-phone {
+    width: 228px;
+}
+.customform-email {
+    width: 228px;
+}
+.customform-addressline {
+    width: 228px;
+}
+.customform-city {
+    width: 101px;
+    margin-right: 9px;
+}
+.customform-state {
+    width: 42px;
+}
+.customform-zipcode {
+    float: right !important;
+    width: 69px;
+}
+.customform-country {
+    width: 228px;
+}
+.customform-qty {
+    width: 100px;
+}
+.customform-event {
+    float: right !important;
+    width: 100px;
+}
+.customform-images {
+    margin-top: 10px;
+}
+.customform-imgstitle {
+    font-size: 16px;
+    font-weight: 600;
+    font-style: italic;
+    color: #fff;
+}
+.csf-inputgroup {
+    width: 100%;
+    margin-bottom: 8px;
+}
+.file-box {
+    float: right;
+    background: #fff;
+    border: 1px solid #0768c0;
+    height: 30px;
+    padding-left: 10px;
+    position: relative;
+}
+.icon-clip {
+    margin-right: 7px;
+    float: left;
+}
+.icon-clip img {
+    height: 18px;
+    width: auto;
+    margin-top: 4px;
+}
+.name-file {
+    color: #000;
+    font-size: 16px;
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /*width: 240px;*/
+    line-height: 30px;
+    cursor: pointer;
+    width: 170px;
+}
+.btn-closefile {
+    cursor: pointer;
+    width: 22px;
+    text-align: center;
+}
+.btn-closefile img {
+    height: 12px;
+    width: auto;
+    margin-top: 5px
+}
