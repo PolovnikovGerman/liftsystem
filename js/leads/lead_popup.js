@@ -525,6 +525,7 @@ function save_lead() {
        if (response.errors=='') {
            initLeaddataPagination();
            initProofPagination();
+           init_customform_interest();
            $("#loader").hide();
            $("#leadformModal").modal('hide');
            $('.modal-backdrop').hide();

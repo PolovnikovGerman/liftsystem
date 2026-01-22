@@ -1160,7 +1160,17 @@ class Leads extends My_Controller {
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
                 $quest=$res['data'];
-                $mdata['content']=$this->load->view('leads/questions_details_view',$quest,TRUE);
+//                $mdata['content']=$this->load->view('leads/questions_details_view',$quest,TRUE);
+                $leadoptions=array(
+                    'orderby'=>'lead_number',
+                    'direction'=>'desc',
+                    'brand' => $res['data']['brand'],
+                );
+                $this->load->model('leads_model');
+                $leaddat=$this->leads_model->get_lead_list($leadoptions);
+                $leadlist = $this->leads_model->prepare_assign_list($leaddat);
+                $mdata['content'] = $this->load->view('leadsview/questions_details_view', ['data' => $quest], TRUE);
+                $mdata['footer'] = $this->load->view('leadsview/questions_footer_view', ['leads' => $leadlist, 'brand'=>$quest['brand']], TRUE);
                 $error = '';
             }
             $this->ajaxResponse($mdata, $error);
@@ -1266,6 +1276,13 @@ class Leads extends My_Controller {
                     $error = '';
                     $data = $resquest['data'];
                     $mdata['type']=$data['email_type'];
+                    $quuestoptions = [
+                        'brand' => $quest['brand'],
+                        'assign' => 1,
+                        'hideincl' => 1,
+                        'newquest' => 1,
+                    ];
+                    $mdata['totalnew'] = $this->questions_model->get_count_questions($quuestoptions);
                 }
                 // Recalculate Totals New
 //                $mdata['total_proof']=$this->mproofs->get_count_proofs(array('assign'=>1));

@@ -211,6 +211,7 @@ function init_webquest_interest() {
                 $("#webquestiontable").removeClass('emptycontent');
                 new SimpleBar(document.getElementById('webquestiontable'), { autoHide: false })
             }
+            init_interest_management();
         } else {
             show_error(response)
         }
@@ -333,6 +334,12 @@ function init_interest_management() {
         var task = parseInt($(this).data('task'));
         if (task > 0) {
             showcustomformdetails(task);
+        }
+    });
+    $("#webquestiontable").find('div.datarow').unbind('click').click(function (){
+        var task = parseInt($(this).data('task'));
+        if (task > 0) {
+            showquestdetails(task);
         }
     })
 }

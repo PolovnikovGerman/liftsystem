@@ -101,6 +101,7 @@ h5.modal-title {
 .interest_lead_assign {
     display: none;
     float: right!important;
+    cursor: pointer;
     background: #5b5afe;
     background: linear-gradient(to top, #4c4bfe, #6664fe);
     border: 1px solid #000000;

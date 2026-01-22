@@ -568,33 +568,24 @@ input.lead_searchinput {
     background: #fff77e;
 }
 .leaddataarea .leadcustomer {
-    width: 134px;
+    border-right: 1px solid #000000;
+    width: 165px;
     text-align: left!important;
     padding-left: 5px;
     padding-right: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    border-right: 1px solid #000000;
 }
 .leaddataarea .leadqty {
     width: 46px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     border-right: 1px solid #000000;
     padding: 0 3px;
     font-size: 13px!important;
 }
 .leaddataarea .leaditem {
     /* max-width: 160px; */
-    max-width: 147px;
+    width: 223px;
     text-align: left!important;
     padding-left: 5px;
     padding-right: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     /* border-right: 1px solid #000000; */
 }
 .leaddataarea .leaditem.custom {
