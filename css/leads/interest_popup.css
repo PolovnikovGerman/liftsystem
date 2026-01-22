@@ -36,6 +36,7 @@
     font-size: 12px;
     line-height: 24px;
     width: 100%;
+    padding-left: 5px;
 }
 .customform-group textarea {
     border: 1px solid #0768c0;
@@ -46,6 +47,7 @@
     line-height: 16px;
     resize: none;
     margin-top: 10px;
+    padding: 5px;
 }
 .customform-date {
     width: 228px;
@@ -103,28 +105,29 @@
     float: right;
     background: #fff;
     border: 1px solid #0768c0;
-    height: 30px;
-    padding-left: 10px;
+    height: 25px;
+    padding-left: 7px;
     position: relative;
+    border-radius: 3px;
 }
 .icon-clip {
     margin-right: 7px;
     float: left;
 }
 .icon-clip img {
-    height: 18px;
+    height: 14px;
     width: auto;
-    margin-top: 4px;
+    margin-top: 2px;
 }
 .name-file {
     color: #000;
-    font-size: 16px;
+    font-size: 12px;
     font-style: italic;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    /*width: 240px;*/
-    line-height: 30px;
+    /* width: 240px; */
+    line-height: 24px;
     cursor: pointer;
     width: 170px;
 }
@@ -134,9 +137,9 @@
     text-align: center;
 }
 .btn-closefile img {
-    height: 12px;
+    height: 10px;
     width: auto;
-    margin-top: 5px
+    margin-top: 3px;
 }
 /*-------------- Web Questions ----------------*/
 .webquestsform {
@@ -168,6 +171,7 @@
     line-height: 24px;
     width: 106px;
     float: right;
+    padding-left: 5px;
 }
 .onecolume {
     width: 150px;
@@ -185,6 +189,7 @@
     font-size: 12px;
     line-height: 16px;
     resize: none;
+    padding: 5px;
 }
 .webquestsform-message {
     width: 488px;

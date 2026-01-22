@@ -41,9 +41,11 @@ button.closemodal {
     cursor: pointer;
     opacity: 1;
     z-index: 1;
-    font-size: 20px;
+    font-size: 22px;
     line-height: 18px;
     text-shadow: 0 1px 0 rgba(0, 0, 0, .3);
+    padding: 0;
+    font-weight: 600;
 }
 h5.modal-title {
     margin: 0;
@@ -64,9 +66,9 @@ h5.modal-title {
     width: 270px;
 }
 .intpopup-btn {
-    float: right!important;
+    float: right !important;
     width: 120px;
-    margin-top: 4px; /*19*/
+    margin-top: 17px;
 }
 .ip-btncreatelead {
     display: none;
