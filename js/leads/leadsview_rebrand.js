@@ -356,7 +356,7 @@ function init_interest_management() {
     $("#proofrequesttable").find('div.datarow').unbind('click').click(function (){
         var task = parseInt($(this).data('task'));
         if (task > 0) {
-            // showquotedetails(task);
+            // artproof_lead(task, 'leadsview');
         }
     })
 }
