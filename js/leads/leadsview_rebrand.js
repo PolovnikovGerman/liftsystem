@@ -261,6 +261,7 @@ function init_proofrequest_interest() {
                 $("#proofrequesttable").removeClass('emptycontent');
                 new SimpleBar(document.getElementById('proofrequesttable'), { autoHide: false })
             }
+            init_interest_management();
         } else {
             show_error(response)
         }
@@ -337,16 +338,25 @@ function init_interest_management() {
             showcustomformdetails(task);
         }
     });
+    // Click Questions row
     $("#webquestiontable").find('div.datarow').unbind('click').click(function (){
         var task = parseInt($(this).data('task'));
         if (task > 0) {
             showquestdetails(task);
         }
     });
+    // Click Quotes row
     $("#onlinequotetable").find('div.datarow').unbind('click').click(function (){
         var task = parseInt($(this).data('task'));
         if (task > 0) {
             showquotedetails(task);
+        }
+    })
+    // Click Proof Request row
+    $("#proofrequesttable").find('div.datarow').unbind('click').click(function (){
+        var task = parseInt($(this).data('task'));
+        if (task > 0) {
+            // showquotedetails(task);
         }
     })
 }
