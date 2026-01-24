@@ -4131,4 +4131,77 @@ Class Artwork_model extends MY_Model
         $this->email->clear(TRUE);
 
     }
+
+    public function get_proofrequest_locations($artwork_id)
+    {
+        $this->db->select('a.*,art.order_id, art.mail_id, ord.order_num, proof.proof_num');
+        $this->db->from('ts_artwork_arts a');
+        $this->db->join('ts_artworks art', 'art.artwork_id=a.artwork_id');
+        $this->db->join('ts_orders ord',  'ord.order_id=art.order_id','left');
+        $this->db->join('ts_emails proof', 'proof.email_id=art.mail_id', 'left');
+        $this->db->where('a.artwork_id', $artwork_id);
+        $locations = $this->db->get()->result_array();
+        $this->load->config('siteart_config');
+        $imprint_colors = $this->config->item('imprint_colors');
+        // $logopath_full = $this->config->item('artwork_logo');
+        $logopath_sh = $this->config->item('artwork_logo_relative');
+        $idx = 0;
+        foreach ($locations as $location) {
+            $ready = 0;
+            if ($location['art_type']=='Text') {
+                if ($location['redrawvect']==0) {
+                    $ready = 1;
+                }
+            } elseif ($location['art_type']=='Logo' || $location['art_type']=='Reference') {
+                if ($location['redrawvect']==0) {
+                    $ready = 1;
+                } else {
+                    if ($location['redraw_time'] > 0 && $location['vectorized_time'] > 0) {
+                        if ($location['redo']==0) {
+                            $ready = 1;
+                        }
+                    }
+                }
+            } else {
+                $ready = 1;
+            }
+            $logosrc = $vectorimg = '';
+            if (!empty($location['logo_src'])) {
+                $logosrc = str_replace($logopath_sh, '', $location['logo_src']);
+            }
+            if (!empty($location['logo_vectorized'])) {
+                $vectorimg = str_replace($logopath_sh, '', $location['logo_vectorized']);
+            }
+            // Colors
+            for ($i=1; $i<5; $i++) {
+                $title = ''; $active = 0; $style = '';
+                foreach ($imprint_colors as $color) {
+                    if ($location['art_color'.$i]==$color['name']) {
+                        $title = 'title="'.$color['name'].'"';
+                        $active = 1;
+                        $style = $color['class'];
+                        break;
+                    }
+                }
+                $locations[$idx]['color'.$i.'_title'] = $title;
+                $locations[$idx]['color'.$i.'_style'] = $style;
+                $locations[$idx]['color'.$i.'_active'] = $active;
+            }
+            $locations[$idx]['logo_src_clean'] = $logosrc;
+            $locations[$idx]['logo_vectorized_clean'] = $vectorimg;
+            $locations[$idx]['ready'] = $ready;
+            $idx++;
+        }
+        return $locations;
+    }
+
+    public function get_proofrequest_proofdocs($artwork_id)
+    {
+        $this->db->select('*');
+        $this->db->from('ts_artwork_proofs');
+        $this->db->where('artwork_id',$artwork_id);
+        $this->db->order_by('artwork_proof_id');
+        return $this->db->get()->result_array();
+
+    }
 }

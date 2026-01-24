@@ -991,4 +991,21 @@ class Template
         $dat['head'] = $this->CI->load->view('duplcate_orders/head_view', $head_options, TRUE);
         return $dat;
     }
+
+    public function build_proofreq_locationsview($artwork_id, $locations, $imprint_locations)
+    {
+        $content = '';
+        $numpp = 1;
+        foreach ($locations as $location) {
+            if ($location['art_type']=='Logo' || $location['art_type']=='Reference') {
+                $content.=$this->CI->load->view('proofrequest/location_logo_view', ['location' =>$location,'numpp' => $numpp, 'imprint_locations' => $imprint_locations], TRUE);
+            } elseif ($location['art_type']=='Text') {
+                $content.=$this->CI->load->view('proofrequest/location_text_view', ['location' =>$location,'numpp' => $numpp, 'imprint_locations' => $imprint_locations], TRUE);
+            } else {
+                $content.=$this->CI->load->view('proofrequest/location_repeat_view', ['location' =>$location,'numpp' => $numpp, 'imprint_locations' => $imprint_locations], TRUE);
+            }
+            $numpp++;
+        }
+        return $content;
+    }
 }

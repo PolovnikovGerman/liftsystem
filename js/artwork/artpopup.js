@@ -43,10 +43,10 @@ function artproof_lead(mailid, callpage) {
     $.post(url,{'proof_id':mailid, 'callpage': callpage},function(response){
         if (response.errors==='') {
             $(".popover").popover('hide');
-            $("#artModalLabel").empty().html('Artwork Edit');
-            $("#artModal").find('div.modal-body').empty().html(response.data.content);
-            $("#artModal").find('div.modal-dialog').css('width','928px');
-            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#proofRequestModalLabel").empty().html('PROOF REQUEST');
+            $("#proofRequestModal").find('div.modal-body').empty().html(response.data.content);
+            // $("#proofRequestModal").find('div.modal-dialog').css('width','507px');
+            $("#proofRequestModal").modal({backdrop: 'static', keyboard: false, show: true});
             // $("div#pop_content").empty().html(response.data.content);
             /* SAVE, EMAIL, etc buttons */
             init_popupcontent();
@@ -67,7 +67,17 @@ function init_popupcontent() {
     });
     $("div.artpopup_save").click(function(){
         save_art();
-    })
+    });
+    // Scrolls
+    if (parseInt($("#locationtotal").val()) > 0) {
+        new SimpleBar(document.getElementById('proofreqlocation_table'), { autoHide: false });
+    }
+    if (parseInt($("#proofdoctotal").val()) > 0) {
+        new SimpleBar(document.getElementById('proofreqproofdocs_table'), { autoHide: false });
+    }
+    if (parseInt($("#appovdoctotal").val()) > 0) {
+        new SimpleBar(document.getElementById('proofreqapprovdocs_table'), { autoHide: false });
+    }
     init_message();
     init_commondata();
     /* Save */

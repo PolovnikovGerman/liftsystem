@@ -145,7 +145,7 @@ function init_prooflistmanage() {
     var dath=$("div.proof_tabledat").css('height');
     dath=parseInt(dath.replace('px', ''));
     if (dath<maxh) {
-        $("div.proof_tabrow").css('width','969px');
+        // $("div.proof_tabrow").css('width','969px');
     }
     var rowid='';
     $("div.proof_tabrow").hover(

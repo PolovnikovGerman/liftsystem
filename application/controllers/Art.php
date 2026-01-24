@@ -929,16 +929,17 @@ class Art extends MY_Controller {
                 $artwork['other_item_label']='Multiple';
             }
             $artwork['brand'] = $data['brand'];
-            $orderview=$this->load->view('artpage/artwork_itemdat_view',$artwork, TRUE);
-            // $artwork['bypass']=0;
-            $commondat=$this->load->view('artpage/artwork_common_view',$artwork,TRUE);
-            $item_options=array(
-                'orderview'=>$orderview,
-                'commonview'=>$commondat,
-            );
-            $common_dat=$this->load->view('artpage/popup_itemdat_view',$item_options,TRUE);
-            $mdata['content']=$this->prepare_artwork_content($artwork, $common_dat, $curstage);
-
+//            $orderview=$this->load->view('artpage/artwork_itemdat_view',$artwork, TRUE);
+//            // $artwork['bypass']=0;
+//            $commondat=$this->load->view('artpage/artwork_common_view',$artwork,TRUE);
+//            $item_options=array(
+//                'orderview'=>$orderview,
+//                'commonview'=>$commondat,
+//            );
+//            $common_dat=$this->load->view('artpage/popup_itemdat_view',$item_options,TRUE);
+            // $mdata['content']=$this->prepare_artwork_content($artwork, $common_dat, $curstage);
+            $artwork_session = 'artwork'.uniq_link(15);
+            $mdata['content'] = $this->prepare_proofrequest_popup($artwork, $artwork_session);
             $this->ajaxResponse($mdata,$error);
         }
     }
@@ -1133,5 +1134,65 @@ class Art extends MY_Controller {
         $content=$this->load->view('artpage/popup_view',$popup_options,TRUE);
         return $content;
     }
+
+    private function prepare_proofrequest_popup($artwork, $session)
+    {
+        // Grey Section
+        $common_view = $this->load->view('proofrequest/request_common_view',$artwork, TRUE);
+        $messages_view = $this->load->view('proofrequest/messages_view',$artwork, TRUE);
+
+        $locations = $this->artwork_model->get_proofrequest_locations($artwork['artwork_id']);
+        $imprint_locations = $this->artwork_model->get_location_imprint($artwork['item_id']);
+        $logos_view = $this->template->build_proofreq_locationsview($artwork['artwork_id'], $locations, $imprint_locations);
+
+        if ($artwork['brand']=='SR') {
+            $templurl = $this->config->item('sr_empty_template');
+            $templtitle = $this->config->item('sr_empty_title');
+        } else {
+            $templurl = $this->config->item('sb_empty_template');
+            $templtitle = $this->config->item('sb_empty_title');
+        }
+        $templ_options = [
+            'emptytemplate_url' => $templurl,
+            'templatetitle' => $templtitle,
+            'artwork_id' => $artwork['artwork_id'],
+        ];
+        $templates_view=$this->load->view('proofrequest/templates_view', $templ_options,TRUE);
+
+        /* Get Proofs */
+        $proofdat = $this->artwork_model->get_proofrequest_proofdocs($artwork['artwork_id']);
+        $approved = [];
+        foreach ($proofdat as $proof) {
+            if ($proof['approved']==1) {
+                $approved[] = $proof;
+            }
+        }
+
+        $proofs_view = $this->load->view('proofrequest/proofs_list_view', ['proofs'=>$proofdat],TRUE);
+        $approved_view = $this->load->view('proofrequest/proofs_approved_view', ['proofs'=>$approved],TRUE);
+        $contentoptions = [
+            'common_view' => $common_view,
+            'messages_view' => $messages_view,
+            'logos_view' => $logos_view,
+            'proofs_view' => $proofs_view,
+            'approved_view' => $approved_view,
+            'templates_view' => $templates_view,
+            'artwork_id'=> $artwork['artwork_id'],
+            'locrecs' => count($locations),
+            'proofrecs' => count($proofdat),
+            'approvrecs' => count($approved),
+            'session'=> $session,
+        ];
+        $artworkdata = [
+            'artwork' => $artwork,
+            'proofs' => $proofdat,
+            'locations' => $locations,
+        ];
+        usersession($session,$artworkdata);
+        $content = $this->load->view('proofrequest/modal_page_view', $contentoptions, TRUE);
+        return $content;
+    }
+
+
 
 }
