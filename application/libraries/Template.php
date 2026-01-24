@@ -84,7 +84,7 @@ class Template
         } else {
             $brand  = $this->CI->menuitems_model->get_current_brand();
         }
-        // $mobpermissions = $this->CI->menuitems_model->get_user_mobpermissions($options['user_id']);
+        $mobpermissions = $this->CI->menuitems_model->get_user_mobpermissions($options['user_id']);
         $admin_permission = 0;
         $adminchk = $this->CI->menuitems_model->get_menuitem('/admin');
         $admin_old = 1;
@@ -1319,5 +1319,22 @@ class Template
             $icon = '/img/page_view/icon-projects-black.svg';
         }
         return $icon;
+    }
+
+    public function build_proofreq_locationsview($artwork_id, $locations, $imprint_locations)
+    {
+        $content = '';
+        $numpp = 1;
+        foreach ($locations as $location) {
+            if ($location['art_type']=='Logo' || $location['art_type']=='Reference') {
+                $content.=$this->CI->load->view('proofrequest/location_logo_view', ['location' =>$location,'numpp' => $numpp, 'imprint_locations' => $imprint_locations], TRUE);
+            } elseif ($location['art_type']=='Text') {
+                $content.=$this->CI->load->view('proofrequest/location_text_view', ['location' =>$location,'numpp' => $numpp, 'imprint_locations' => $imprint_locations], TRUE);
+            } else {
+                $content.=$this->CI->load->view('proofrequest/location_repeat_view', ['location' =>$location,'numpp' => $numpp, 'imprint_locations' => $imprint_locations], TRUE);
+            }
+            $numpp++;
+        }
+        return $content;
     }
 }
