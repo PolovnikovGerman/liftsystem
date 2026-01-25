@@ -166,7 +166,9 @@ function add_location(artwork,art_type) {
 function init_message() {}
 function init_commondata() {}
 function init_templateview() {}
-function init_locations() {}
+function init_locations() {
+    
+}
 function show_art_history() {
     var url="/artproofrequest/artwork_history";
     var params=new Array();
