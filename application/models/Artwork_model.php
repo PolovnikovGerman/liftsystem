@@ -2792,10 +2792,10 @@ Class Artwork_model extends MY_Model
     }
 
     public function add_referencelocation($artdata, $data, $artwork_id, $art_type, $artsession) {
-        $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_MSG);
-        if ($artdata['artwork_id']!=$artwork_id) {
-            $out['msg']='Unknown Artwork. Please, reload page';
-        } else {
+        $out=array('result'=>  $this->error_result, 'msg'=>  'Unknown Artwork. Please, reload page');
+        $artwork = $artdata['artwork'];
+        $locations = $artdata['locations'];
+        if ($artwork['artwork_id']==$artwork_id) {
             $idxloc=0;
             $numpp=0;
             if (isset($artdata['locations'])) {
@@ -2812,8 +2812,9 @@ Class Artwork_model extends MY_Model
             $preload_path_sh=$this->config->item('pathpreload');
             $custom_quote_sh = $this->config->item('upload_customquote_relative');
             $custom_quote_fl = $this->config->item('upload_customquote');
-            $logopath='';
             $repeat_text='';
+            $ready = 0;
+            $rush = 0; // $artdata['rush'];
             $imagesourceclass=$imagesourceview='';
             $newart_id=($idxloc*(-1));
             $redraw = 1;
@@ -2824,8 +2825,8 @@ Class Artwork_model extends MY_Model
             }
             $reflogos = explode('-', $reflogosrc);
             foreach ($reflogos as $reflogo) {
-                $logo_src='&nbsp;';
-                $logo_vect='&nbsp;';
+                $logo_src = '';
+                $logopath = '';
                 $usrtxt = '';
                 $this->db->select('*');
                 $this->db->from('ts_email_attachments');
@@ -2834,58 +2835,51 @@ Class Artwork_model extends MY_Model
                 if (ifset($res,'email_attachment_id',0)>0) {
                     $source_file = str_replace($custom_quote_sh, $custom_quote_fl, $res['email_attachment_filename']);
                     $file_det = extract_filename($res['email_attachment_filename']);
-                    if (in_array($file_det['ext'], $this->logo_imageext)) {
-                        $imagesourceclass = 'viewsource';
-                        $imagesourceview = '/artproofrequest/viewartsource?id=' . $newart_id . '&artsession=' . $artsession;
-                    }
                     $newfile = 'ref_'.uniq_link(10).'.'.$file_det['ext'];
                     $rescp = @copy($source_file, $preload_path_fl.$newfile);
                     if ($rescp) {
                         $logosrc_path = $preload_path_sh . $newfile;
-                        if ($artdata['order_id']) {
-                            $logo_src = $artdata['order_num'] . '_' . $numpp . '.' . $file_det['ext'];
+                        if ($artwork['order_id']) {
+                            $logo_src = $artwork['order_num'] . '_' . $numpp . '.' . $file_det['ext'];
                         } else {
-                            $logo_src = $artdata['proof_num'] . '_' . $numpp . '.' . $file_det['ext'];
+                            $logo_src = $artwork['proof_num'] . '_' . $numpp . '.' . $file_det['ext'];
                         }
-                        $rush=$artdata['rush'];
-                        $location=array(
-                            'artwork_art_id'=>$newart_id,
-                            'artwork_id'=>$artwork_id,
-                            'art_type'=>$art_type,
-                            'art_ordnum'=>$numpp,
-                            'logo_src'=>$logo_src,
-                            'logo_srcpath'=>$logosrc_path,
-                            'redraw_time'=>'',
-                            'logo_vectorized'=>$logo_vect,
-                            'logo_vectorizedpath'=>$logovec_path,
-                            'vectorized_time'=>'',
-                            'redrawvect'=>$redraw,
-                            'rush'=>$rush,
-                            'customer_text'=>$usrtxt,
-                            'font'=>'',
-                            'redraw_message'=>'',
-                            'redo'=>'',
-                            'art_numcolors'=>'',
-                            'art_color1'=>'',
-                            'art_color2'=>'',
-                            'art_color3'=>'',
-                            'art_color4'=>'',
-                            'art_location'=>'',
-                            'repeat_text'=>$repeat_text,
-                            'deleted' =>'',
-                            'imagesourceclass'=>$imagesourceclass,
-                            'imagesourceview'=>$imagesourceview,
-                        );
-                        $artdata['locations'][]=$location;
+                        $location = [
+                            'artwork_art_id' => $newart_id,
+                            'artwork_id' => $artwork_id,
+                            'art_type' => $art_type,
+                            'art_ordnum' => $numpp,
+                            'logo_src' => $logosrc_path,
+                            'logo_src_clean' => $logo_src,
+                            'logo_vectorized' => '',
+                            'logo_vectorized_clean' => '',
+                            'vectorized_time' => 0,
+                            'redrawvect' => $redraw,
+                            'rush' => $rush,
+                            'customer_text' => $usrtxt,
+                            'font' => '',
+                            'redraw_message' => '',
+                            'redo' => 0,
+                            'art_numcolors' => '',
+                            'art_location' => '',
+                            'repeat_text' => $repeat_text,
+                            'sys_redrawn' => 0,
+                            'ready' => $ready,
+                        ];
+                        for ($i=1; $i<5; $i++) {
+                            $location['art_color'.$i] = $location['color'.$i.'_title'] = $location['color'.$i.'_style'] = '';
+                            $location['color'.$i.'_active'] = 0;
+                        }
                         $idxloc++;
                         $numpp++;
+                        $locations[] = $location;
                     }
                 }
             }
             // If Exist Uploaded logo
             if (!empty($data['uploadlogo'])) {
-                $logo_src='&nbsp;';
-                $logo_vect='&nbsp;';
+                $logo_src='';
+                $logo_vect='';
                 $usrtxt='';
                 $logosrc_path='';
                 $logovec_path='';
@@ -2893,58 +2887,57 @@ Class Artwork_model extends MY_Model
                 $preload_path_sh=$this->config->item('pathpreload');
                 $logopath='';
                 $repeat_text='';
-                $imagesourceclass=$imagesourceview='';
+                // $imagesourceclass=$imagesourceview='';
                 $newart_id=($idxloc*(-1));
                 $redraw = 1;
                 $logopath = $data['uploadlogo'];
                 /* Make Filename */
                 $file_name = str_replace([$preload_path_fl, $preload_path_sh], '', $logopath);
                 $file_det = extract_filename($file_name);
-                if (in_array($file_det['ext'], $this->logo_imageext)) {
-                    $imagesourceclass = 'viewsource';
-                    $imagesourceview = '/artproofrequest/viewartsource?id=' . $newart_id . '&artsession=' . $artsession;
-                }
+//                if (in_array($file_det['ext'], $this->logo_imageext)) {
+//                    $imagesourceclass = 'viewsource';
+//                    $imagesourceview = '/artproofrequest/viewartsource?id=' . $newart_id . '&artsession=' . $artsession;
+//                }
                 $logosrc_path = $preload_path_sh . $file_name;
-                if ($artdata['order_id']) {
-                    $logo_src = $artdata['order_num'] . '_' . $numpp . '.' . $file_det['ext'];
+                if ($artwork['order_id']) {
+                    $logo_src = $artwork['order_num'] . '_' . $numpp . '.' . $file_det['ext'];
                 } else {
-                    $logo_src = $artdata['proof_num'] . '_' . $numpp . '.' . $file_det['ext'];
+                    $logo_src = $artwork['proof_num'] . '_' . $numpp . '.' . $file_det['ext'];
                 }
 
-                $rush=$artdata['rush'];
-                $location=array(
-                    'artwork_art_id'=>$newart_id,
-                    'artwork_id'=>$artwork_id,
-                    'art_type'=>$art_type,
-                    'art_ordnum'=>$numpp,
-                    'logo_src'=>$logo_src,
-                    'logo_srcpath'=>$logosrc_path,
-                    'redraw_time'=>'',
-                    'logo_vectorized'=>$logo_vect,
-                    'logo_vectorizedpath'=>$logovec_path,
-                    'vectorized_time'=>'',
-                    'redrawvect'=>$redraw,
-                    'rush'=>$rush,
-                    'customer_text'=>$usrtxt,
-                    'font'=>'',
-                    'redraw_message'=>'',
-                    'redo'=>'',
-                    'art_numcolors'=>'',
-                    'art_color1'=>'',
-                    'art_color2'=>'',
-                    'art_color3'=>'',
-                    'art_color4'=>'',
-                    'art_location'=>'',
-                    'repeat_text'=>$repeat_text,
-                    'deleted' =>'',
-                    'imagesourceclass'=>$imagesourceclass,
-                    'imagesourceview'=>$imagesourceview,
-                );
-                $artdata['locations'][]=$location;
+                $location = [
+                    'artwork_art_id' => $newart_id,
+                    'artwork_id' => $artwork_id,
+                    'art_type' => $art_type,
+                    'art_ordnum' => $numpp,
+                    'logo_src' => $logosrc_path,
+                    'logo_src_clean' => $logo_src,
+                    'logo_vectorized' => '',
+                    'logo_vectorized_clean' => '',
+                    'vectorized_time' => 0,
+                    'redrawvect' => $redraw,
+                    'rush' => $rush,
+                    'customer_text' => $usrtxt,
+                    'font' => '',
+                    'redraw_message' => '',
+                    'redo' => 0,
+                    'art_numcolors' => '',
+                    'art_location' => '',
+                    'repeat_text' => $repeat_text,
+                    'sys_redrawn' => 0,
+                    'ready' => $ready,
+                ];
+                for ($i=1; $i<5; $i++) {
+                    $location['art_color'.$i] = $location['color'.$i.'_title'] = $location['color'.$i.'_style'] = '';
+                    $location['color'.$i.'_active'] = 0;
+                }
+                $locations[] = $location;
             }
             // Save
-            usersession($artsession,$artdata);
+            $artdata['locations'] = $locations;
+            usersession($artsession, $artdata);
             $out['result'] = $this->success_result;
+            $out['locations'] = $locations;
         }
         return $out;
     }
@@ -2970,10 +2963,10 @@ Class Artwork_model extends MY_Model
             $logovec_path='';
             $preload_path_fl=$this->config->item('upload_path_preload');
             $preload_path_sh=$this->config->item('pathpreload');
-            $logopath='';
+            $logopath = '';
             $repeat_text='';
             $ready = 0;
-            $imagesourceclass = $imagesourceview = '';
+            // $imagesourceclass = $imagesourceview = '';
             $newart_id = ($idxloc*(-1));
             if ($art_type=='Logo') {
                 if ($art_type == 'Logo') {
@@ -2985,15 +2978,15 @@ Class Artwork_model extends MY_Model
                 /* Make Filename */
                 $file_name = str_replace([$preload_path_fl, $preload_path_sh], '', $logopath);
                 $file_det = extract_filename($file_name);
-                if (in_array($file_det['ext'], $this->logo_imageext)) {
-                    $imagesourceclass = 'viewsource';
-                    $imagesourceview = '/artproofrequest/viewartsource?id=' . $newart_id . '&artsession=' . $artsession;
-                }
+//                if (in_array($file_det['ext'], $this->logo_imageext)) {
+//                    $imagesourceclass = 'viewsource';
+//                    $imagesourceview = '/artproofrequest/viewartsource?id=' . $newart_id . '&artsession=' . $artsession;
+//                }
                 $logosrc_path = $preload_path_sh . $file_name;
-                if ($artdata['order_id']) {
-                    $logo_src = $artdata['order_num'] . '_' . $numpp . '.' . $file_det['ext'];
+                if ($artwork['order_id']) {
+                    $logo_src = $artwork['order_num'] . '_' . $numpp . '.' . $file_det['ext'];
                 } else {
-                    $logo_src = $artdata['proof_num'] . '_' . $numpp . '.' . $file_det['ext'];
+                    $logo_src = $artwork['proof_num'] . '_' . $numpp . '.' . $file_det['ext'];
                 }
             } elseif($art_type=='Text') {
                 $redraw = 0;
@@ -3009,8 +3002,8 @@ Class Artwork_model extends MY_Model
                 'artwork_id' => $artwork_id,
                 'art_type' => $art_type,
                 'art_ordnum' => $numpp,
-                'logo_src' => '',
-                'logo_src_clean' => '',
+                'logo_src' => $logosrc_path,
+                'logo_src_clean' => $logo_src,
                 'logo_vectorized' => '',
                 'logo_vectorized_clean' => '',
                 'vectorized_time' => 0,
@@ -4096,7 +4089,7 @@ Class Artwork_model extends MY_Model
 
     }
 
-    public function get_proofrequest_locations($artwork_id)
+    public function get_proofrequest_locations($artwork_id, $artwork)
     {
         $this->db->select('a.*,art.order_id, art.mail_id, ord.order_num, proof.proof_num');
         $this->db->from('ts_artwork_arts a');
@@ -4110,6 +4103,7 @@ Class Artwork_model extends MY_Model
         // $logopath_full = $this->config->item('artwork_logo');
         $logopath_sh = $this->config->item('artwork_logo_relative');
         $idx = 0;
+        $numpp = 1;
         foreach ($locations as $location) {
             $ready = 0;
             if ($location['art_type']=='Text') {
@@ -4131,10 +4125,20 @@ Class Artwork_model extends MY_Model
             }
             $logosrc = $vectorimg = '';
             if (!empty($location['logo_src'])) {
-                $logosrc = str_replace($logopath_sh, '', $location['logo_src']);
+                $filedet = extract_filename($location['logo_src']);
+                if ($artwork['order_id']) {
+                    $logosrc = $artwork['order_num'].'_'.str_pad($numpp,2,"0",STR_PAD_LEFT).'.'.$filedet['ext'];
+                } else {
+                    $logosrc = $artwork['proof_num'].'_'.str_pad($numpp,2,"0",STR_PAD_LEFT).'.'.$filedet['ext'];
+                }
             }
             if (!empty($location['logo_vectorized'])) {
-                $vectorimg = str_replace($logopath_sh, '', $location['logo_vectorized']);
+                $filedet = extract_filename($location['logo_vectorized']);
+                if ($artwork['order_id']) {
+                    $vectorimg = $artwork['order_num'].'_'.str_pad($numpp,2,"0",STR_PAD_LEFT).'.'.$filedet['ext'];
+                } else {
+                    $vectorimg = $artwork['proof_num'].'_'.str_pad($numpp,2,"0",STR_PAD_LEFT).'.'.$filedet['ext'];
+                }
             }
             // Colors
             for ($i=1; $i<5; $i++) {
@@ -4155,6 +4159,7 @@ Class Artwork_model extends MY_Model
             $locations[$idx]['logo_vectorized_clean'] = $vectorimg;
             $locations[$idx]['ready'] = $ready;
             $idx++;
+            $numpp++;
         }
         return $locations;
     }

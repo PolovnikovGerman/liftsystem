@@ -143,7 +143,8 @@ class Artproofrequest extends MY_Controller
                     $error = '';
                 } elseif ($art_type == 'Reference') {
                     // Get attachments
-                    $attachs = $this->artwork_model->get_attached_logos($artdata['proofs_id']);
+                    $artwork = $artdata['artwork'];
+                    $attachs = $this->artwork_model->get_attached_logos($artwork['mail_id']);
                     $mdata['content'] = $this->load->view('artpage/reference_logo_view', array('artwork_id' => $artwork_id, 'attachs' => $attachs), TRUE);
                     $error = '';
                 } else {
@@ -152,18 +153,9 @@ class Artproofrequest extends MY_Controller
                     $error = $res['msg'];
                     if ($res['result'] == $this->success_result) {
                         $error='';
-//                        $newloc = $res['newlocation'];
                         $imprints = $this->artwork_model->get_location_imprint($artdata['artwork']['item_id']);
-//
-//                        $improptions = array('artwork_art_id' => $newloc['artwork_art_id'], 'locs' => $imprints, 'defval' => '',);
-//                        $newloc['imprloc_view'] = $this->load->view('artpage/imprint_location_view', $improptions, TRUE);
-//
-//                        /* Build View */
-//                        $imprint_colors = $this->config->item('imprint_colors');
-//                        $colordat = $this->artwork_model->colordat_prepare($newloc, $imprint_colors);
-//                        $newloc['optioncolors'] = $this->load->view('artpage/artwork_coloroptions_view', $colordat, TRUE);
-//                        $content = $this->load->view('artpage/artwork_arttext_view', $newloc, TRUE);
                         $mdata['content'] = $this->template->build_proofreq_locationsview($artdata['artwork']['artwork_id'], $res['locations'], $imprints);
+                        $mdata['locationtotal'] = count($res['locations']);
                     }
                 }
             }
@@ -268,6 +260,7 @@ class Artproofrequest extends MY_Controller
                     $artwork = $artdata['artwork'];
                     $imprints=$this->artwork_model->get_location_imprint($artwork['item_id']);
                     $mdata['content'] = $this->template->build_proofreq_locationsview($artwork['artwork_id'], $res['locations'], $imprints);
+                    $mdata['locationtotal'] = count($res['locations']);
                 }
             }
             $this->ajaxResponse($mdata, $error);

@@ -464,7 +464,7 @@
 }
 .artwork-body {
     width: 100%;
-    height: 150px;
+    height: 162px;
     overflow-x: hidden;
     overflow-y: auto;
     scrollbar-width: none;
@@ -475,14 +475,14 @@
     font-size: 14px;
 }
 .artw-type {
-    width: 63px;
+    width: 81px;
     font-size: 12px;
     font-weight: 600;
     padding-left: 5px;
     line-height: 22px;
 }
 .artw-srclabel {
-    width: 142px;
+    width: 124px;
 }
 .artw-redraw {
     width: 44px;
@@ -505,6 +505,12 @@
     font-size: 14px;
     position: relative;
     top: -1px;
+}
+.artw-rdrnotes-icon i {
+    color: #999999;
+}
+.artw-rdrnotes-icon.filled i {
+    color: #254c25;
 }
 .artw-redo {
     width: 37px;
@@ -549,6 +555,12 @@
 .artw-srcfont {}
 .artw-srcfont-icn {
     margin-right: 3px;
+}
+.artw-srcfont-icn i {
+    color: #999999;
+}
+.artw-srcfont-icn.filled i {
+    color: #254c25;
 }
 .artw-srcfont-txt {
     font-size: 11px;

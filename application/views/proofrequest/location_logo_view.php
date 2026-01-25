@@ -19,10 +19,12 @@
                 <?php endif; ?>
             </div>
             <div class="artw-rdrnotes">
-                <span class="artw-rdrnotes-icon" data-art="<?=$location['artwork_art_id']?>"><i class="fa fa-file-text-o" aria-hidden="true"></i></span>
+                <span class="artw-rdrnotes-icon <?=empty($location['redraw_message']) ? '' : 'filled'?>" data-art="<?=$location['artwork_art_id']?>">
+                    <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                </span>
             </div>
             <div class="artw-redo">
-                <input type="checkbox" name="redo" class="proofreqestlocation" data-art="<?=$location['artwork_art_id']?>" data-fld="redo" <?=$location['redrawvect']==1 ? 'checked="checked"' : ''?>/>
+                <input type="checkbox" name="redo" class="proofreqestlocation" data-art="<?=$location['artwork_art_id']?>" data-fld="redo" <?=$location['redo']==1 ? 'checked="checked"' : ''?>/>
             </div>
         </div>
         <div class="artw-delete">

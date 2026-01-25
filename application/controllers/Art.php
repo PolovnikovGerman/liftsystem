@@ -913,14 +913,13 @@ class Art extends MY_Controller {
                 $artwork['item_id']=$data['email_item_id'];
             }
             $artwork['item_qty']=($artwork['item_qty']=='0' ? '' : $artwork['item_qty']);
-            $template=$this->email_model->get_emailtemplate_byname($this->ART_PROOF);
+//            $template=$this->email_model->get_emailtemplate_byname($this->ART_PROOF);
 
-            if (!$artwork['order_num']) {
-                $artwork['ordernum_data']=$this->load->view('artpage/artwork_orderassign_view',array(),TRUE);
-            } else {
-                $artwork['ordernum_data']=$this->load->view('artpage/artwork_ordernum_view',$artwork,TRUE);
-            }
-            $artwork['items_list']=$this->artwork_model->get_items_list($data['brand']);
+//            if (!$artwork['order_num']) {
+//                $artwork['ordernum_data']=$this->load->view('artpage/artwork_orderassign_view',array(),TRUE);
+//            } else {
+//                $artwork['ordernum_data']=$this->load->view('artpage/artwork_ordernum_view',$artwork,TRUE);
+//            }
             $artwork['other_item_label']='';
             $artwork['callpage']=$callpage;
             if ($artwork['item_name']=='Other') {
@@ -1138,10 +1137,11 @@ class Art extends MY_Controller {
     private function prepare_proofrequest_popup($artwork, $session)
     {
         // Grey Section
-        $common_view = $this->load->view('proofrequest/request_common_view',$artwork, TRUE);
+        $items_list = $this->artwork_model->get_items_list($artwork['brand']);
+        $common_view = $this->load->view('proofrequest/request_common_view', ['artwork' => $artwork, 'items' => $items_list], TRUE);
         $messages_view = $this->load->view('proofrequest/messages_view',$artwork, TRUE);
 
-        $locations = $this->artwork_model->get_proofrequest_locations($artwork['artwork_id']);
+        $locations = $this->artwork_model->get_proofrequest_locations($artwork['artwork_id'], $artwork);
         $imprint_locations = $this->artwork_model->get_location_imprint($artwork['item_id']);
         $logos_view = $this->template->build_proofreq_locationsview($artwork['artwork_id'], $locations, $imprint_locations);
 
@@ -1170,6 +1170,7 @@ class Art extends MY_Controller {
 
         $proofs_view = $this->load->view('proofrequest/proofs_list_view', ['proofs'=>$proofdat],TRUE);
         $approved_view = $this->load->view('proofrequest/proofs_approved_view', ['proofs'=>$approved],TRUE);
+
         $contentoptions = [
             'common_view' => $common_view,
             'messages_view' => $messages_view,
