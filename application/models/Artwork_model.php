@@ -2950,32 +2950,31 @@ Class Artwork_model extends MY_Model
     }
 
     function add_location($artdata, $data, $artwork_id, $art_type, $artsession) {
-        $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_MSG);
-        if ($artdata['artwork_id']!=$artwork_id) {
-            $out['msg']='Unknown Artwork. Please, reload page';
-        } else {
+        $out=['result' => $this->error_result, 'msg' => 'Unknown Artwork. Please, reload page'];
+        $artwork = $artdata['artwork'];
+        $locations = $artdata['locations'];
+        if ($artwork['artwork_id']==$artwork_id) {
             $idxloc=0;
             $numpp=0;
-            if (isset($artdata['locations'])) {
-                foreach ($artdata['locations'] as $lrow) {
-                    $idxloc++;
-                    $numpp=$lrow['art_ordnum'];
-                }
+            foreach ($artdata['locations'] as $lrow) {
+                $idxloc++;
+                $numpp=$lrow['art_ordnum'];
             }
             $idxloc++;
             $numpp++;
             /* New Location */
             $logo_src='&nbsp;';
             $logo_vect='&nbsp;';
-            $usrtxt='';
+            $usrtxt = '';
             $logosrc_path='';
             $logovec_path='';
             $preload_path_fl=$this->config->item('upload_path_preload');
             $preload_path_sh=$this->config->item('pathpreload');
             $logopath='';
             $repeat_text='';
-            $imagesourceclass=$imagesourceview='';
-            $newart_id=($idxloc*(-1));
+            $ready = 0;
+            $imagesourceclass = $imagesourceview = '';
+            $newart_id = ($idxloc*(-1));
             if ($art_type=='Logo') {
                 if ($art_type == 'Logo') {
                     $redraw = 1;
@@ -2997,81 +2996,46 @@ Class Artwork_model extends MY_Model
                     $logo_src = $artdata['proof_num'] . '_' . $numpp . '.' . $file_det['ext'];
                 }
             } elseif($art_type=='Text') {
-                $redraw=0;
-                $usrtxt=$data['usertext'];
+                $redraw = 0;
+                $ready = 1;
+                $usrtxt = $data['usertext'];
             } else {
-                $redraw=0;
-                $repeat_text=$data['repeat_text'];
+                $redraw = 0;
+                $ready = 1;
+                $repeat_text = $data['repeat_text'];
             }
-            $rush=$artdata['rush'];
-            $location=array(
-                'artwork_art_id'=>$newart_id,
-                'artwork_id'=>$artwork_id,
-                'art_type'=>$art_type,
-                'art_ordnum'=>$numpp,
-                'logo_src'=>$logo_src,
-                'logo_srcpath'=>$logosrc_path,
-                'redraw_time'=>'',
-                'logo_vectorized'=>$logo_vect,
-                'logo_vectorizedpath'=>$logovec_path,
-                'vectorized_time'=>'',
-                'redrawvect'=>$redraw,
-                'rush'=>$rush,
-                'customer_text'=>$usrtxt,
-                'font'=>'',
-                'redraw_message'=>'',
-                'redo'=>'',
-                'art_numcolors'=>'',
-                'art_color1'=>'',
-                'art_color2'=>'',
-                'art_color3'=>'',
-                'art_color4'=>'',
-                'art_location'=>'',
-                'repeat_text'=>$repeat_text,
-                'deleted' =>'',
-                'imagesourceclass'=>$imagesourceclass,
-                'imagesourceview'=>$imagesourceview,
-            );
-            $artdata['locations'][]=$location;
+            $location = [
+                'artwork_art_id' => $newart_id,
+                'artwork_id' => $artwork_id,
+                'art_type' => $art_type,
+                'art_ordnum' => $numpp,
+                'logo_src' => '',
+                'logo_src_clean' => '',
+                'logo_vectorized' => '',
+                'logo_vectorized_clean' => '',
+                'vectorized_time' => 0,
+                'redrawvect' => $redraw,
+                'rush' => 0,
+                'customer_text' => $usrtxt,
+                'font' => '',
+                'redraw_message' => '',
+                'redo' => 0,
+                'art_numcolors' => '',
+                'art_location' => '',
+                'repeat_text' => $repeat_text,
+                'sys_redrawn' => 0,
+                'ready' => $ready,
+            ];
+            for ($i=1; $i<5; $i++) {
+                $location['art_color'.$i] = $location['color'.$i.'_title'] = $location['color'.$i.'_style'] = '';
+                $location['color'.$i.'_active'] = 0;
+            }
+            $locations[]=$location;
+            $artdata['locations']=$locations;
             /* Save  */
             usersession($artsession,$artdata);
-            $location['numpp']=$numpp;
-            $newlocation=$location;
-            $empty_icon='<img src="/img/artpage/white_square.png"/>';
-            $newlocation['artlabel']=$location['art_ordnum'].'.'.($location['art_type']=='Reference' ? 'Refer' : $location['art_type']);
-            $newlocation['redrawchk']=$newlocation['rushchk']=$newlocation['redochk']='&nbsp;';
-            if ($art_type=='Logo') {
-                $chk='checked="checked"';
-                $texticon='';
-                $srcdat=extract_filename($newlocation['logo_src']);
-                if (in_array($srcdat['ext'],$this->nonredrawn)) {
-                    $newlocation['location_state']='source_alert';
-                } else {
-                    $newlocation['location_state']='source';
-                }
-                $newlocation['redochk']='<input type="checkbox" class="artredo" data-artworkartid="'.$location['artwork_art_id'].'" value="1"/>';
-            } else {
-                $chk='';
-                $texticon=($newlocation['customer_text']=='' ? $empty_icon : '<img src="/img/artpage/artstatus_icon.png" title="'.$newlocation['customer_text'].'"/>');
-                $newlocation['redochk']='&nbsp;';
-                $newlocation['location_state']='redrawn';
-            }
-            if ($rush==1) {
-                $chkrush='checked="checked"';
-            } else {
-                $chkrush='';
-            }
-            $newlocation['repeat_text']=$repeat_text;
-            if ($art_type!='Repeat') {
-                $newlocation['redrawchk']='<input type="checkbox" class="artredraw" data-artworkartid="'.$location['artwork_art_id'].'" value="1" '.$chk.'/>';
-            }
-            $newlocation['rushchk']='<input type="checkbox" class="artrush" data-artworkartid="'.$location['artwork_art_id'].'" value="1" '.$chkrush.'/>';
-            $newlocation['redrawicon']=$empty_icon;
-            $newlocation['texticon']=$texticon;
-            $newlocation['imagesourceclass']=$imagesourceclass;
-            $newlocation['imagesourceview']=$imagesourceview;
 
-            $out['newlocation']=$newlocation;
+            $out['locations'] = $locations;
             $out['result']= $this->success_result;
             $out['msg']='';
         }

@@ -1,4 +1,4 @@
-<input type="hidden" id="proofrequest" value="<?=$session?>"/>
+<input type="hidden" id="artsession" value="<?=$session?>"/>
 <input type="hidden" id="locationtotal" value="<?=$locrecs?>"/>
 <input type="hidden" id="proofdoctotal" value="<?=$proofrecs?>"/>
 <input type="hidden" id="appovdoctotal" value="<?=$approvrecs?>"/>
@@ -21,13 +21,13 @@
                 <div class="artwork-body" id="proofreqlocation_table"><?=$logos_view?></div>
             </div>
             <div class="newartwork">
-                <div class="newartwork-text">+ New Art:</div>
+                <div class="newartwork-text" data-artwork="<?=$artwork_id?>">+ New Art:</div>
                 <div class="newartwork-select">
-                    <select>
-                        <option>Logo</option>
-                        <option>Text</option>
-                        <option>Repeat</option>
-                        <option>Reference</option>
+                    <select class="artlocationaadd">
+                        <option value="Logo">Logo</option>
+                        <option value="Text">Text</option>
+                        <option value="Repeat">Repeat</option>
+                        <option value="Reference">Reference</option>
                     </select>
                 </div>
             </div>

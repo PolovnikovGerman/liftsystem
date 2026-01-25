@@ -1185,8 +1185,10 @@ class Art extends MY_Controller {
         ];
         $artworkdata = [
             'artwork' => $artwork,
-            'proofs' => $proofdat,
             'locations' => $locations,
+            'proofs' => $proofdat,
+            'approved' => $approved,
+            'deleted' => [],
         ];
         usersession($session,$artworkdata);
         $content = $this->load->view('proofrequest/modal_page_view', $contentoptions, TRUE);

@@ -125,10 +125,10 @@ class Artproofrequest extends MY_Controller
     public function art_newlocation()
     {
         if ($this->isAjax()) {
-            $mdata = array();
+            $mdata = [];
             $error = $this->restore_artdata_error;
             $postdata = $this->input->post();
-            $artsession = (isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
+            $artsession = ifset($postdata, 'artsession', 'failsession');
             $artdata = usersession($artsession);
             if (!empty($artdata)) {
                 $this->load->model('artwork_model');
@@ -152,18 +152,18 @@ class Artproofrequest extends MY_Controller
                     $error = $res['msg'];
                     if ($res['result'] == $this->success_result) {
                         $error='';
-                        $newloc = $res['newlocation'];
-                        $imprints = $this->artwork_model->get_location_imprint($artdata['item_id']);
-
-                        $improptions = array('artwork_art_id' => $newloc['artwork_art_id'], 'locs' => $imprints, 'defval' => '',);
-                        $newloc['imprloc_view'] = $this->load->view('artpage/imprint_location_view', $improptions, TRUE);
-
-                        /* Build View */
-                        $imprint_colors = $this->config->item('imprint_colors');
-                        $colordat = $this->artwork_model->colordat_prepare($newloc, $imprint_colors);
-                        $newloc['optioncolors'] = $this->load->view('artpage/artwork_coloroptions_view', $colordat, TRUE);
-                        $content = $this->load->view('artpage/artwork_arttext_view', $newloc, TRUE);
-                        $mdata['content'] = $content;
+//                        $newloc = $res['newlocation'];
+                        $imprints = $this->artwork_model->get_location_imprint($artdata['artwork']['item_id']);
+//
+//                        $improptions = array('artwork_art_id' => $newloc['artwork_art_id'], 'locs' => $imprints, 'defval' => '',);
+//                        $newloc['imprloc_view'] = $this->load->view('artpage/imprint_location_view', $improptions, TRUE);
+//
+//                        /* Build View */
+//                        $imprint_colors = $this->config->item('imprint_colors');
+//                        $colordat = $this->artwork_model->colordat_prepare($newloc, $imprint_colors);
+//                        $newloc['optioncolors'] = $this->load->view('artpage/artwork_coloroptions_view', $colordat, TRUE);
+//                        $content = $this->load->view('artpage/artwork_arttext_view', $newloc, TRUE);
+                        $mdata['content'] = $this->template->build_proofreq_locationsview($artdata['artwork']['artwork_id'], $res['locations'], $imprints);
                     }
                 }
             }
@@ -250,111 +250,24 @@ class Artproofrequest extends MY_Controller
         if ($this->isAjax()) {
             $mdata=array();
             $error=$this->restore_artdata_error;
-            $data=$this->input->post();
-            $artsession=(isset($data['artsession']) ? $data['artsession'] : 'failsession');
-            $artwork_id=$data['artwork_id'];
-            $art_type=$data['art_type'];
+            $postdata=$this->input->post();
+            $artsession= ifset($postdata, 'artsession',  'failsession');
+            $artwork_id = ifset($postdata, 'artwork_id',0);
+            $art_type = ifset($postdata, 'art_type','');
             $artdata=usersession($artsession);
             if (!empty($artdata)) {
                 $this->load->model('artwork_model');
                 if ($art_type=='Reference') {
-                    $res=$this->artwork_model->add_referencelocation($artdata, $data, $artwork_id,$art_type, $artsession);
+                    $res=$this->artwork_model->add_referencelocation($artdata, $postdata, $artwork_id,$art_type, $artsession);
                 } else {
-                    $res=$this->artwork_model->add_location($artdata, $data, $artwork_id,$art_type, $artsession);
+                    $res=$this->artwork_model->add_location($artdata, $postdata, $artwork_id,$art_type, $artsession);
                 }
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error='';
-                    if ($art_type=='Reference') {
-                        $artdata=usersession($artsession);
-                        $locations = $artdata['locations'];
-                        $imprint_locations=$this->artwork_model->get_location_imprint($artdata['item_id']);
-                        $content = '';
-                        $numpp = 1;
-                        foreach ($locations as $loc) {
-                            if (empty($loc['deleted'])) {
-                                /* Get Location View */
-                                $location_options=array(
-                                    'artwork_art_id'=>$loc['artwork_art_id'],
-                                    'locs'=>$imprint_locations,
-                                    'defval'=>$loc['art_location'],
-                                );
-                                $loc['imprloc_view']=$this->load->view('artpage/imprint_location_view',$location_options,TRUE);
-                                /* colors */
-                                $this->load->config('siteart_config');
-                                $colordat=$this->artwork_model->colordat_prepare($loc, $this->config->item('imprint_colors'));
-                                $loc['optioncolors']=$this->load->view('artpage/artwork_coloroptions_view',$colordat,TRUE);
-                                $loc['numpp']=$numpp;
-                                $loc['artlabel']=$loc['art_ordnum'].'.'.($loc['art_type']=='Reference' ? 'Refer' : $loc['art_type']);
-                                $empty_icon='<img src="/img/artpage/white_square.png"/>';
-                                $loc['redrawchk']=$loc['rushchk']=$loc['redochk']='&nbsp;';
-                                $imagesourceclass=$imagesourceview='';
-                                if ($loc['art_type']=='Logo' || $loc['art_type']=='Reference') {
-                                    $chk='checked="checked"';
-                                    $texticon='';
-                                    $srcdat=extract_filename($loc['logo_src']);
-                                    if (in_array($srcdat['ext'],$this->nonredrawn)) {
-                                        $loc['location_state']='source_alert';
-                                    } else {
-                                        $loc['location_state']='source';
-                                    }
-                                    if (in_array($srcdat['ext'], $this->logo_imageext)) {
-                                        $imagesourceclass = 'viewsource';
-                                        $imagesourceview = '/artproofrequest/viewartsource?id=' . $loc['artwork_art_id'] . '&artsession=' . $artsession;
-                                    }
-                                    $loc['redochk']='<input type="checkbox" class="artredo" data-artworkartid="'.$loc['artwork_art_id'].'" value="1"/>';
-                                } else {
-                                    $chk='';
-                                    $texticon=($loc['customer_text']=='' ? $empty_icon : '<img src="/img/artpage/artstatus_icon.png" title="'.$loc['customer_text'].'"/>');
-                                    $loc['redochk']='&nbsp;';
-                                    $loc['location_state']='redrawn';
-                                }
-                                if ($loc['rush']==1) {
-                                    $chkrush='checked="checked"';
-                                } else {
-                                    $chkrush='';
-                                }
-                                if ($art_type!='Repeat') {
-                                    $loc['redrawchk']='<input type="checkbox" class="artredraw" data-artworkartid="'.$loc['artwork_art_id'].'" value="1" '.$chk.'/>';
-                                }
-                                $loc['rushchk']='<input type="checkbox" class="artrush" data-artworkartid="'.$loc['artwork_art_id'].'" value="1" '.$chkrush.'/>';
-                                $loc['redrawicon']=$empty_icon;
-                                $loc['texticon']=$texticon;
-                                $loc['imagesourceclass']=$imagesourceclass;
-                                $loc['imagesourceview']=$imagesourceview;
-                                if ($loc['art_type']=='Logo' || $loc['art_type']=='Reference') {
-                                    $content.=$this->load->view('artpage/artwork_artlogo_view',$loc,TRUE);
-                                } elseif ($loc['art_type']=='Text') {
-                                    $content.=$this->load->view('artpage/artwork_arttext_view',$loc,TRUE);
-                                } else {
-                                    $content.=$this->load->view('artpage/artwork_repeat_view',$loc,TRUE);
-                                }
-                            }
-                        }
-                        $mdata['content'] = $content;
-                    } else {
-                        $newloc=$res['newlocation'];
-                        $imprints=$this->artwork_model->get_location_imprint($artdata['item_id']);
-                        $improptions=array(
-                            'artwork_art_id'=>$newloc['artwork_art_id'],
-                            'locs'=>$imprints,
-                            'defval'=>'',
-                        );
-                        $newloc['imprloc_view']=$this->load->view('artpage/imprint_location_view',$improptions,TRUE);
-
-                        /* Build View */
-                        $imprint_colors = $this->config->item('imprint_colors');
-                        $colordat=$this->artwork_model->colordat_prepare($newloc, $imprint_colors);
-                        $newloc['optioncolors']=$this->load->view('artpage/artwork_coloroptions_view',$colordat,TRUE);
-                        if ($newloc['art_type']=='Logo' || $newloc['art_type']=='Reference') {
-                            $content=$this->load->view('artpage/artwork_artlogo_view',$newloc,TRUE);
-                        } elseif ($newloc['art_type']=='Text') {
-                            $content=$this->load->view('artpage/artwork_arttext_view',$newloc,TRUE);
-                        } else {
-                            $content=$this->load->view('artpage/artwork_repeat_view',$newloc,TRUE);
-                        }
-                        $mdata['content']=$content;
-                    }
+                    $artwork = $artdata['artwork'];
+                    $imprints=$this->artwork_model->get_location_imprint($artwork['item_id']);
+                    $mdata['content'] = $this->template->build_proofreq_locationsview($artwork['artwork_id'], $res['locations'], $imprints);
                 }
             }
             $this->ajaxResponse($mdata, $error);
