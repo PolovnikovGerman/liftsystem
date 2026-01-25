@@ -91,7 +91,7 @@ function init_popupcontent() {
         add_location(artwork,art_type);
     });
     // Init History
-    $("div.artpopup_historydatalabel.active").unbind('click').click(function(){
+    $(".viewhistory.active").unbind('click').click(function(){
         show_art_history();
     })
 }
@@ -167,7 +167,25 @@ function init_message() {}
 function init_commondata() {}
 function init_templateview() {}
 function init_locations() {}
-function show_art_history() {}
+function show_art_history() {
+    var url="/artproofrequest/artwork_history";
+    var params=new Array();
+    params.push({name: 'artsession', value: $("input#artsession").val()});
+    $.post(url, params,function(response){
+        if (response.errors=='') {
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").find('.modal-title').empty().html('View History');
+            $("#artNextModal").find('.modal-dialog').css('width','395px');
+            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            })
+            $("#artNextModal").css('z-index', 2000);
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
 function init_proofs() {}
 function init_approved() {}
 

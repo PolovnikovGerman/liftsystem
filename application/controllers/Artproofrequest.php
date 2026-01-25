@@ -1192,12 +1192,13 @@ class Artproofrequest extends MY_Controller
         if ($this->isAjax()) {
             $mdata=array();
             $error=$this->restore_artdata_error;
-            $postdata=$this->input->post();
-            $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
-            $artdata=usersession($artsession);
+            $postdata = $this->input->post();
+            $artsession = (isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
+            $artdata = usersession($artsession);
             if (!empty($artdata)) {
                 $error='';
-                $history=$artdata['art_history'];
+                $artwork = $artdata['artwork'];
+                $history=$artwork['art_history'];
                 $mdata['content']=$this->load->view('artpage/history_view', array('history'=>$history), TRUE);
             }
             $this->ajaxResponse($mdata, $error);

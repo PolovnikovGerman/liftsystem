@@ -230,6 +230,8 @@
     font-weight: 600;
     float: right !important;
     margin-right: 3px;
+}
+.viewhistory.active {
     cursor: pointer;
 }
 .pr-artworkblock {
