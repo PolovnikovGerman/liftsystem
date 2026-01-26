@@ -1221,12 +1221,13 @@ class Artproofrequest extends MY_Controller
             $artdata=usersession($artsession);
             $error=$this->restore_artdata_error;
             if (!empty($artdata)) {
-                $callpage = $artdata['callpage'];
                 $this->load->model('artwork_model');
                 $res=$this->artwork_model->save_artdata($data, $artdata, $this->USR_ID, $artsession);
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error='';
+                    $artwork = $artdata['artwork'];
+                    $callpage = $artwork['callpage'];
                     $mdata['callpage']=$callpage;
                 }
             }
