@@ -179,7 +179,9 @@ function add_location(artwork,art_type) {
         }
     }, 'json');
 }
-function init_message() {}
+function init_message() {
+    $("textarea.proofreqcommon").unbind('change').change()
+}
 function init_commondata() {}
 function init_templateview() {}
 function init_locations() {
@@ -238,7 +240,7 @@ function init_locations() {
         change_usertxt(art_id, 'customer_text');
     })
     // Redo notes
-    $("div.artw-rdrnotes-icon").unbind('change').change(function () {
+    $("span.artw-rdrnotes-icon").unbind('change').change(function () {
         var art_id = $(this).data('art');
         change_usertxt(art_id, 'redraw_message');
     });
