@@ -928,6 +928,7 @@ class Art extends MY_Controller {
                 $artwork['other_item_label']='Multiple';
             }
             $artwork['brand'] = $data['brand'];
+            $artwork['artstage'] = $curstage;
 //            $orderview=$this->load->view('artpage/artwork_itemdat_view',$artwork, TRUE);
 //            // $artwork['bypass']=0;
 //            $commondat=$this->load->view('artpage/artwork_common_view',$artwork,TRUE);

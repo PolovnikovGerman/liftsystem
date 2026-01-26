@@ -61,7 +61,7 @@ function init_popupcontent() {
         $("#proofRequestModal").modal('hide');
     });
     // Save
-    $("div.artpopup_save").click(function(){
+    $(".pr-btnsave").unbind('click').click(function(){
         save_art();
     });
     // Scrolls
@@ -97,7 +97,22 @@ function init_popupcontent() {
 }
 
 function save_art() {
-    
+    // var dat=$("form#artdetailsform").serializeArray();
+    var params=new Array();
+    params.push({name: 'artsession', value: $("input#artsession").val()});
+    var url="/artproofrequest/artwork_save";
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#proofRequestModal").modal('hide');
+            /* Check current page */
+            var callpage = response.data.callpage;
+            if (callpage=='artprooflist') {
+                initProofPagination();
+            }
+        } else {
+            show_error(response);
+        }
+    }, 'json')
 }
 
 function add_location(artwork,art_type) {
