@@ -3,7 +3,9 @@
         <div class="artw-linebox <?=$location['ready']==1 ? 'lightgreen' : 'white'?>">
             <div class="artw-type"><?=$numpp?>. <?=$location['art_type']?></div>
             <div class="artw-srclabel">
-                <div class="artw-srclogo truncateoverflowtext" data-link="<?=$location['logo_src']?>"><?=$location['logo_src_clean']?></div>
+                <div class="artw-srclogo truncateoverflowtext" data-link="<?=$location['logo_src']?>" data-file="<?=$location['logo_src_clean']?>">
+                    <?=$location['logo_src_clean']?>
+                </div>
             </div>
             <div class="artw-redraw">
                 <input type="checkbox" name="logoredraw" class="proofreqestlocation" data-art="<?=$location['artwork_art_id']?>" data-fld="redrawvect" <?=$location['redrawvect']==1 ? 'checked="checked"' : ''?> />
@@ -15,18 +17,22 @@
                 <?php if (empty($location['logo_vectorized'])) : ?>
                 &nbsp;
                 <?php else : ?>
-                <div class="artw-srclogo truncateoverflowtext"  data-link="<?=$location['logo_vectorized']?>"><?=$location['logo_vectorized_clean']?></div>
+                <div class="artw-srclogo truncateoverflowtext"  data-link="<?=$location['logo_vectorized']?>" data-file="<?=$location['logo_src_clean']?>">
+                    <?=$location['logo_vectorized_clean']?>
+                </div>
                 <?php endif; ?>
             </div>
             <div class="artw-rdrnotes">
-                <span class="artw-rdrnotes-icon" data-art="<?=$location['artwork_art_id']?>"><i class="fa fa-file-text-o" aria-hidden="true"></i></span>
+                <span class="artw-rdrnotes-icon <?=empty($location['redraw_message']) ? '' : 'filled'?>" data-art="<?=$location['artwork_art_id']?>">
+                    <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                </span>
             </div>
             <div class="artw-redo">
-                <input type="checkbox" name="redo" class="proofreqestlocation" data-art="<?=$location['artwork_art_id']?>" data-fld="redo" <?=$location['redrawvect']==1 ? 'checked="checked"' : ''?>/>
+                <input type="checkbox" name="redo" class="proofreqestlocation" data-art="<?=$location['artwork_art_id']?>" data-fld="redo" <?=$location['redo']==1 ? 'checked="checked"' : ''?>/>
             </div>
         </div>
         <div class="artw-delete">
-            <div class="artw-btndelete" data-art="<?=$location['artwork_art_id']?>"><i class="fa fa-trash" aria-hidden="true"></i></div>
+            <div class="artw-btndelete" data-art="<?=$location['artwork_art_id']?>" data-locname="<?=$numpp?>. <?=$location['art_type']?>"><i class="fa fa-trash" aria-hidden="true"></i></div>
         </div>
     </div>
     <div class="artw-rowoptions">
