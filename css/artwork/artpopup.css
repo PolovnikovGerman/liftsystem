@@ -472,9 +472,10 @@
     scrollbar-width: none;
 }
 .artw-titleblock {
-    width: 63px;
+    /*width: 63px;*/
     color: #fff;
     font-size: 14px;
+    width: 80px;
 }
 .artw-type {
     width: 81px;
@@ -888,4 +889,208 @@
     margin-right: 10px;
     margin-top: 10px;
     cursor: pointer;
+}
+/* Fonts Popup */
+.imprintfonts {
+    background: url("/img/artpage/font_select_bg.png") repeat scroll 0 0 transparent;
+    color: #000000;
+    float: left;
+    font-size: 14px;
+    height: 644px;
+    margin: 0;
+    padding: 91px 25px 10px 38px;
+    position: relative;
+    width: 981px;
+}
+.imprintfonts-row {
+    clear: both;
+    float: left;
+    width: 880px;
+    color: #0000c0;
+    font-family: arial, verdana, sans-serif;
+    font-size: 26px;
+    font-weight: bold;
+    margin-top: 5px;
+    text-align: center;
+}
+.imprintfonts-legend {
+    float: left;
+    width: 535px;
+    text-align: left;
+    padding-left: 15px;
+}
+.imprintcolors-input {
+    float: left;
+    width: 295px;
+    color: #000;
+}
+input.fontmanual {
+    width: 290px;
+    border: 1px solid;
+    font-family: arial, verdana, sans-serif;
+    font-size: 22px;
+    height: 40px;
+}
+.imprintfonts_table {
+    clear: both;
+    float: left;
+    margin-left: -11px;
+    margin-top: 9px;
+    max-height: 358px;
+    overflow-y: auto;
+    width: 922px;
+}
+table.table-fontpopular {
+    border: none;
+}
+.imprintfonts_table table.table-fontpopular td.fontdat {
+    height: 44px;
+    padding: 12px;
+    vertical-align: middle;
+    width: 255px;
+}
+table.table-fontpopular td.fontdat div.fontshow {
+    float: left;
+    text-align: left;
+    width: 250px;
+}
+.fontshow {
+    float: left;
+    width: 380px;
+    text-align: left;
+    padding: 6px;
+}
+.select_font_bottom {
+    clear: both;
+    float: left;
+    margin-top: 15px;
+    margin-left: 739px;
+    width: 180px;
+    height: 52px;
+}
+.fontview {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    margin-left: 15px;
+    width: 450px;
+    display: none;
+}
+.fontviewtitle {
+    float: left;
+    font-size: 14px;
+    color: #717174;
+    width: 74px;
+}
+.viewtype {
+    float: left;
+    font-size: 14px;
+    color: #bcbcbd;
+    width: 80px;
+
+}
+.viewtype-active {
+    float: left;
+    font-size: 14px;
+    width: 80px;
+    color: #3d3df8;
+}
+.font_button_select {
+    background: url("/img/artpage/select_font_btn.png") repeat scroll 0 0 transparent;
+    color: #514F4F;
+    float: right;
+    font-size: 23px;
+    font-weight: bold;
+    height: 52px;
+    padding-top: 7px;
+    text-align: center;
+    width: 165px;
+}
+.font_button_select.active {
+    color: #000;
+}
+.font_button_select.active:hover {
+    cursor: pointer;
+}
+/* Color Choice Popup */
+.imprintcolors {
+    background: url("/img/artpage/popupcolors_bg.png") repeat scroll 0 0 transparent;
+    color: #000000;
+    font-size: 14px;
+    float: left;
+    height: 698px;
+    margin: 0;
+    padding: 25px 25px 0;
+    position: relative;
+    width: 982px;
+}
+.imprintcolors_head {
+    clear: both;
+    color: #0000FF;
+    float: left;
+    font-size: 17px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    margin-top: -18px;
+    text-align: center;
+    width: 930px;
+}
+.imprintcolors_table {
+    clear: both;
+    float: left;
+    width : 930px;
+    margin-top: 15px;
+}
+table.table-imprintcolors {
+    border: none;
+}
+.imprintcolors_table table.table-imprintcolors td.colordat {
+    width: 307px;
+    padding: 3px;
+}
+.radiselect {
+    clear: both;
+    float: left;
+    width: 15px;
+    padding-top: 13px;
+}
+.colorshow {
+    float:left;
+    margin-left: 10px;
+    width: 82px;
+    height: 39px;
+    border: 1px solid #000;
+}
+.colorname {
+    float:left;
+    width:150px;
+    margin-left:10px;
+    padding-top: 12px;
+}
+input.inputcolor {
+    border: 1px solid #000000;
+    color: #000000;
+    font-size: 14px;
+    height: 20px;
+    margin-left: -60px;
+    margin-top: 9px;
+    width: 120px;
+}
+.select_color {
+    background: url("/img/artpage/select_color_btn.png") no-repeat scroll 0 0 transparent;
+    color: #000000;
+    font-size: 17px;
+    height: 45px;
+    margin-left: 107px;
+    padding-top: 10px;
+    text-align: center;
+    width: 158px;
+}
+.select_color a {
+    color: #494948;
+    text-decoration: none;
+    font-size: 20px;
+}
+.select_color a.active {
+    color: #000000;
 }

@@ -797,13 +797,20 @@ class Artproofrequest extends MY_Controller
             $artdata=usersession($artsession);
             if (!empty($artdata)) {
                 $art_id=$postdata['art_id'];
-                $artwork_id=$artdata['artwork_id'];
+                $locitem = $postdata['locitem'];
+                $artwork = $artdata['artwork'];
+                $artwork_id=$artwork['artwork_id'];
                 $this->load->model('artwork_model');
-                $res=$this->artwork_model->get_artdata_locusrtxt($artdata, $art_id);
+                $res=$this->artwork_model->get_artdata_locusrtxt($artdata, $locitem, $art_id);
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error='';
-                    $mdata['content']=$this->load->view('artpage/newarttext_view',array('artwork_id'=>$artwork_id,'usrtxt'=>$res['usrtxt'],'title'=>'Enter Customer Text'),TRUE);
+                    $options = [
+                        'artwork_id' => $artwork_id,
+                        'usrtxt' => $res['usrtxt'],
+                        'title' => $locitem=='customer_text' ? 'Enter Customer Text' : 'Type notes to Redraw Team',
+                    ];
+                    $mdata['content']=$this->load->view('artpage/newarttext_view', $options,TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -819,18 +826,22 @@ class Artproofrequest extends MY_Controller
             $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
             $artdata=usersession($artsession);
             if (!empty($artdata)) {
-                $art_id=$postdata['art_id'];
-                $customer_text=$postdata['customer_text'];
+                $art_id = $postdata['art_id'];
+                $newval = $postdata['newval'];
+                $fldname = $postdata['field'];
                 $this->load->model('artwork_model');
-                $res=$this->artwork_model->save_artdata_locusrtxt($artdata, $art_id, $customer_text, $artsession);
+                $res=$this->artwork_model->save_artdata_locusrtxt($artdata, $art_id, $fldname, $newval, $artsession);
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error='';
-                    $mdata['content']=$res['content'];
+                    $artwork = $artdata['artwork'];
+                    $imprints=$this->artwork_model->get_location_imprint($artwork['item_id']);
+                    $mdata['content'] = $this->template->build_proofreq_locationsview($artwork['artwork_id'], $res['locations'], $imprints);
                 }
             }
             $this->ajaxResponse($mdata, $error);
         }
+        show_404();
     }
 
     /* Open File content */
@@ -856,6 +867,10 @@ class Artproofrequest extends MY_Controller
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error='';
+                    $artwork = $artdata['artwork'];
+                    $imprint_locations = $this->artwork_model->get_location_imprint($artwork['item_id']);
+                    $mdata['content'] = $this->template->build_proofreq_locationsview($artwork['artwork_id'], $res['locations'], $imprint_locations);
+                    $mdata['locationtotal'] = count($res['locations']);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -896,6 +911,9 @@ class Artproofrequest extends MY_Controller
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error='';
+                    $artwork = $artdata['artwork'];
+                    $imprint_locations = $this->artwork_model->get_location_imprint($artwork['item_id']);
+                    $mdata['content'] = $this->template->build_proofreq_locationsview($artwork['artwork_id'], $res['locations'], $imprint_locations);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -1105,13 +1123,13 @@ class Artproofrequest extends MY_Controller
             $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
             $artdata=usersession($artsession);
             if (!empty($artdata)) {
-                $art_id=$postdata['art_id'];
-                $color_num=$postdata['color_num'];
+                $art_id = $postdata['art_id'];
+                $color_num = intval(str_replace('art_color', '', $postdata['color_num']));
                 $this->load->model('artwork_model');
                 $res=$this->artwork_model->get_artloc_numcolors($artdata, $art_id);
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
-                    if ($res['art_numcolors']<$color_num) {
+                    if ($res['art_numcolors'] < $color_num) {
                         $error='Change #Colors for Edit Color';
                     } else {
                         $mdata['content']=$this->load->view('artpage/art_colorchoice_view',array('colors'=>$this->config->item('imprint_colors')),TRUE);
@@ -1133,32 +1151,19 @@ class Artproofrequest extends MY_Controller
             $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
             $artdata=usersession($artsession);
             if (!empty($artdata)) {
-                $this->load->model('artwork_model');
                 $art_id=$postdata['art_id'];
-                $color_num=$postdata['color_num'];
-                $color_code=$postdata['color_code'];
-                /* find color name */
-                $color_title='';
-                $imprint_colors = $this->config->item('imprint_colors');
-                foreach ($imprint_colors as $colrow) {
-                    if ($colrow['code']==$color_code) {
-                        $color_title=$colrow['name'];
-                        break;
-                    }
-                }
-                if ($color_title=='') {
-                    $error='Unknown Color Code';
-                } else {
-                    $fld_name='art_color'.$color_num;
-                    $res=$this->artwork_model->artlocationdata_update($artdata, $fld_name, $color_title, $art_id, $artsession);
-                    $error=$res['msg'];
+                $color_num = intval(str_replace('art_color','',$postdata['color_num']));
+                $color_code = $postdata['color_code'];
+                $error = 'Color Not Found';
+                if (!empty($color_num)) {
+                    $this->load->model('artwork_model');
+                    $res=$this->artwork_model->artlocationcolor_update($artdata, $color_num, $color_code, $art_id, $artsession);
+                    $error = $res['msg'];
                     if ($res['result']==$this->success_result) {
-                        $error='';
-                        $artdata=usersession($artsession);
-                        $artcolors=$this->artwork_model->get_artcolors($artdata, $art_id);
-                        $artcolors['artwork_art_id']=$art_id;
-                        $colordat=$this->artwork_model->colordat_prepare($artcolors, $imprint_colors);
-                        $mdata['content']=$this->load->view('artpage/artwork_coloroptions_view',$colordat,TRUE);
+                        $error = '';
+                        $artwork = $artdata['artwork'];
+                        $imprints=$this->artwork_model->get_location_imprint($artwork['item_id']);
+                        $mdata['content'] = $this->template->build_proofreq_locationsview($artwork['artwork_id'], $res['locations'], $imprints);
                     }
                 }
             }

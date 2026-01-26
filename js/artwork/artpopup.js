@@ -167,8 +167,276 @@ function init_message() {}
 function init_commondata() {}
 function init_templateview() {}
 function init_locations() {
-    
+    // Show source
+    $("div.artw-srclogo").unbind('click').click(function () {
+        var url = $(this).data('link');
+        if (url!='') {
+            var filename = $(this).data('file');
+            $.fileDownload('/artproofrequest/art_openimg', {httpMethod : "POST", data: {url : url, file: filename}});
+            return false; //this is critical to stop the click event which will trigger a normal file download!            return false; //this is critical to stop the click event which will trigger a normal file download!
+            window.open(url, 'showfile');
+        }
+    })
+    // Delete location
+    $("div.artw-btndelete").unbind('click').click(function () {
+        var art_id = $(this).data('art');
+        var artname = $(this).data('locname');
+        if (confirm('Delete Artwork ' + artname + '?')) {
+            var params=new Array();
+            params.push({name: 'artsession', value: $("input#artsession").val()});
+            params.push({name: 'art_id', value:art_id});
+            var url="/artproofrequest/art_dellocation";
+            $.post(url, params , function(response){
+                if (response.errors=='') {
+                    $("#proofreqlocation_table").empty().html(response.data.content);
+                    $("#locationtotal").val(response.data.locationtotal);
+                    if (parseInt($("#locationtotal").val()) > 0) {
+                        new SimpleBar(document.getElementById('proofreqlocation_table'), { autoHide: false });
+                    }
+                    init_locations();
+                } else {
+                    show_error(response);
+                }
+            }, 'json');
+        }
+    })
+    // Change Font
+    $("input.proofreqestfont").unbind('click').click(function () {
+        var art_id = $(this).data('art');
+        var value = $(this).val();
+        change_font(value, art_id);
+    });
+    // Check box - redraw, redo, rush
+    $("input[type=checkbox].proofreqestlocation").unbind('change').change(function (){
+        var art_id = $(this).data('art');
+        var fld = $(this).data('fld');
+        var newval = 0;
+        if ($(this).prop('checked')==true) {
+            newval = 1;
+        }
+        change_location(fld, newval, art_id);
+    });
+    // Customer text
+    $("div.artw-srcfont-icn").unbind('click').click(function () {
+        var art_id = $(this).data('art');
+        change_usertxt(art_id, 'customer_text');
+    })
+    // Redo notes
+    $("div.artw-rdrnotes-icon").unbind('change').change(function () {
+        var art_id = $(this).data('art');
+        change_usertxt(art_id, 'redraw_message');
+    });
+    // Num colors
+    $("select.proofreqestlocation").unbind('change').change(function () {
+        var art_id = $(this).data('art');
+        var newval = $(this).val();
+        var locitem = $(this).data('fld')
+        change_location(locitem, newval, art_id)
+    })
+    // Color
+    $("div.artwoptions-colorbox").unbind('click').click(function () {
+        var art_id = $(this).data('art');
+        var color_num = $(this).data('fld');
+        edit_color(art_id, color_num);
+    });
+    $("select.artworkoption_location").unbind('change').change(function () {
+        var art_id = $(this).data('artworkartid');
+        var location = $(this).val();
+        edit_imprintval(art_id, location);
+    });
+    $("div.artworkusrtxt img").popover({
+        html: true,
+        trigger: 'hover',
+        placement: 'left'
+    });
+    $("div.artworkrdrnote img").popover({
+        html: true,
+        trigger: 'hover',
+        placement: 'left'
+    });
+    $("div.artworksource.viewsource").qtip({
+        content: {
+            text: function(event, api) {
+                $.ajax({
+                    url: api.elements.target.data('viewsrc') // Use href attribute as URL
+                }).then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to error
+                    api.set('content.text', status + ': ' + error);
+                });
+                return 'Loading...'; // Set some initial text
+            }
+        },
+        // style: 'art_lastmessage'
+    });
 }
+
+function change_font(value, art_id) {
+    var url="/artproofrequest/art_fontselect";
+    $.post(url, {}, function(response){
+        if (response.errors=='') {
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").find('.modal-title').empty().html('Select Font');
+            $("#artNextModal").find('.modal-dialog').css('width','1010px');
+            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            })
+            $("#artNextModal").css('z-index',2000);
+            $("div#popupwin input.fontmanual").change(function(){
+                var fontval=$(this).val();
+                $("input#fontselectfor").val(fontval);
+                $("div.font_button_select").addClass('active');
+            })
+            $("input.fontoption").click(function(){
+                var fontval=$(this).val();
+                $("input#fontselectfor").val(fontval);
+                $("div.font_button_select").addClass('active');
+            })
+            /* Init Management */
+            $("div.font_button_select").click(function(){
+                var fontval=$("input#fontselectfor").val();
+                $("input.artfont[data-artworkartid="+art_id+"]").val(fontval);
+                $("#artNextModal").modal('hide');
+                change_location('font',fontval,art_id);
+            })
+            // active
+        } else {
+            show_error(response);
+        }
+    }, 'json')
+}
+
+function change_usertxt(art_id, locitem) {
+    var params=new Array();
+    params.push({name: 'artsession', value: $("input#artsession").val()});
+    params.push({name: 'art_id', value :art_id});
+    params.push({name: 'locitem', value: locitem});
+    var url="/artproofrequest/art_changeusrtxt";
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").find('.modal-title').empty().html('Edit Text Location');
+            $("#artNextModal").find('.modal-dialog').css('width','470px');
+            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            });
+            $("#artNextModal").css('z-index',2000);
+            $("div.vectorsave_data").show();
+            $("div.vectorsave_data").click(function(){
+                save_usertext(art_id, locitem);
+            });
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+
+function edit_color(art_id, color_num) {
+    var params=new Array();
+    params.push({name: 'artsession', value: $("input#artsession").val()});
+    params.push({name: 'art_id', value :art_id});
+    params.push({name: 'color_num', value :color_num});
+    var url="/artproofrequest/art_colorchoice";
+    $.post(url, params , function(response){
+        if (response.errors=='') {
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").find('.modal-title').empty().html('Edit Color');
+            $("#artNextModal").find('.modal-dialog').css('width','1004px');
+            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            })
+            $("#artNextModal").css('z-index', 2000);
+            $(".colorradio").click(function(){
+                var colorval=$(this).attr('id').substr(5);
+                colorval="#"+colorval;
+                if (this.id=='color2') {
+                    $("#usrcolor").attr('readonly',false);
+                } else {
+                    $("#usrcolor").attr('readonly',true);
+                    $("input#userchkcolor").val(colorval)
+                }
+
+                $("a#select_color").attr('disabled', false).addClass('active').click(function(){
+                    var usercolor=$("input#userchkcolor").val();
+                    save_artwork_color(art_id, color_num, usercolor);
+                });
+            });
+        } else {
+            show_error(response);
+        }
+    }, 'json')
+
+}
+function change_location(locitem, value, art_id) {
+    var params=new Array();
+    params.push({name: 'artsession', value: $("input#artsession").val()});
+    params.push({name: 'field', value : locitem});
+    params.push({name: 'value', value: value});
+    params.push({name: 'art_id', value: art_id});
+    var url="/artproofrequest/art_locationupdate";
+    $.post(url, params , function(response){
+        if (response.errors=='') {
+            $("#proofreqlocation_table").empty().html(response.data.content);
+            $("#locationtotal").val(response.data.locationtotal);
+            if (parseInt($("#locationtotal").val()) > 0) {
+                new SimpleBar(document.getElementById('proofreqlocation_table'), { autoHide: false });
+            }
+            init_locations();
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+
+function save_usertext(art_id, locitem) {
+    var usrtxt=$("textarea.artworkusertext").val();
+    var params=new Array();
+    params.push({name: 'artsession', value: $("input#artsession").val()});
+    params.push({name: 'art_id', value: art_id});
+    params.push({name: 'newval', value: usrtxt});
+    params.push({name: 'field', value: locitem});
+    var url="/artproofrequest/art_saveusertext";
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#artNextModal").modal('hide');
+            $("#proofreqlocation_table").empty().html(response.data.content);
+            if (parseInt($("#locationtotal").val()) > 0) {
+                new SimpleBar(document.getElementById('proofreqlocation_table'), { autoHide: false });
+            }
+            init_locations();
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+
+function save_artwork_color(art_id, color_num, usercolor) {
+    var url="/artproofrequest/art_savecolor";
+    var params=new Array();
+    params.push({name: 'artsession', value: $("input#artsession").val()});
+    params.push({name: 'art_id', value :art_id});
+    params.push({name: 'color_num', value :color_num});
+    params.push({name: 'color_code', value :usercolor});
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#artNextModal").modal('hide');
+            $("#proofreqlocation_table").empty().html(response.data.content);
+            if (parseInt($("#locationtotal").val()) > 0) {
+                new SimpleBar(document.getElementById('proofreqlocation_table'), { autoHide: false });
+            }
+            init_locations();
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+
+}
+
 function show_art_history() {
     var url="/artproofrequest/artwork_history";
     var params=new Array();

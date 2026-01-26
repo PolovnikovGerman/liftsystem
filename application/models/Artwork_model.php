@@ -3035,14 +3035,20 @@ Class Artwork_model extends MY_Model
         return $out;
     }
 
-    public function get_artdata_locusrtxt($artdata, $art_id) {
+    public function get_artdata_locusrtxt($artdata, $locitem, $art_id) {
         $out=array('result'=>  $this->error_result, 'msg'=> $this->INIT_MSG,'usrtxt'=>'');
+        $locations = $artdata['locations'];
         $found=0;
-        foreach ($artdata['locations'] as $lrow) {
+        foreach ($locations as $lrow) {
             if ($lrow['artwork_art_id']==$art_id) {
                 $found=1;
                 $out['result']=$this->success_result;
                 $out['msg']='';
+                if ($locitem=='customer_text') {
+                    $out['usrtxt'] = $lrow['customer_text'];
+                } else {
+                    $out['usrtxt'] = $lrow['redraw_message'];
+                }
                 $out['usrtxt']=$lrow['customer_text'];
             }
             if ($found==1) {
@@ -3052,18 +3058,18 @@ Class Artwork_model extends MY_Model
         return $out;
     }
 
-    function save_artdata_locusrtxt($artdata, $art_id, $customer_text, $artsession) {
+    function save_artdata_locusrtxt($artdata, $art_id, $fldname, $newval, $artsession) {
         $out=array('result'=>  $this->error_result, 'msg'=> $this->INIT_MSG,'content'=>'');
         $found=0;
         $idx=0;
         foreach ($artdata['locations'] as $lrow) {
             if ($lrow['artwork_art_id']==$art_id && $lrow['art_type']=='Text') {
                 $found=1;
-                $artdata['locations'][$idx]['customer_text']=$customer_text;
+                $artdata['locations'][$idx][$fldname] = $newval;
                 usersession($artsession, $artdata);
                 $out['result']=$this->success_result;
                 $out['msg']='';
-                $out['content']='<img src="/img/artpage/artstatus_icon.png" alt="User Text" title="'.$customer_text.'"/>';
+                $out['locations'] = $artdata['locations'];
             }
             if ($found==1) {
                 break;
@@ -3087,16 +3093,39 @@ Class Artwork_model extends MY_Model
 
     /* Update Location field value */
     public function artlocationdata_update($artdata, $locitem, $locvalue, $art_id, $artsession) {
-        $out=array('result'=>  $this->error_result, 'msg'=>'Location Not Found');
+        $out = ['result'=>  $this->error_result, 'msg'=>'Location Not Found'];
+        $locations = $artdata['locations'];
         $idxloc=0;
         $found=0;
-        foreach ($artdata['locations'] as $lrow) {
+        foreach ($locations as $lrow) {
             if ($lrow['artwork_art_id']==$art_id) {
                 $found=1;
                 if (array_key_exists($locitem, $lrow)) {
-                    $artdata['locations'][$idxloc][$locitem]=$locvalue;
+                    $locations[$idxloc][$locitem]=$locvalue;
+                    if ($locitem=='redrawvect') {
+                        if ($locvalue==1) {
+                            $locations[$idxloc]['ready'] = 0;
+                        } else {
+                            $locations[$idxloc]['ready'] = 1;
+                        }
+                    }
+                    if ($locitem=='redo') {
+                        if ($locvalue==1) {
+                            if ($locations[$idxloc]['redrawvect']==1) {
+                            } else {
+                                $locations[$idxloc]['ready'] = 0;
+                            }
+                        } else {
+                            if ($locations[$idxloc]['redrawvect']==1) {
+                            } else {
+                                $locations[$idxloc]['ready'] = 1;
+                            }
+                        }
+                    }
+                    $artdata['locations']=$locations;
                     usersession($artsession,$artdata);
                     $out['result']=$this->success_result;
+                    $out['locations'] = $locations;
                     break;
                 } else {
                     $out['msg']='Location Item '.$locitem.' not Exist';
@@ -3106,6 +3135,50 @@ Class Artwork_model extends MY_Model
                 break;
             }
             $idxloc++;
+        }
+        return $out;
+    }
+
+    public function artlocationcolor_update($artdata, $color_num, $color_code, $art_id, $artsession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Location Not Found'];
+        $locations = $artdata['locations'];
+        $idx = 0;
+        $found = 1;
+        foreach ($locations as $location) {
+            if ($location['artwork_art_id']==$art_id) {
+                $found = 1;
+                break;
+            }
+            $idx++;
+        }
+        if ($found==1) {
+            $out['msg'] = 'Color Not Found';
+            // Location found
+            $colordat = [
+                'color_name' => '',
+                'color_style' => '',
+            ];
+            $imprint_colors = $this->config->item('imprint_colors');
+            $colorfound = 0;
+            foreach ($imprint_colors as $color) {
+                if ($color['code']==$color_code) {
+                    $colorfound = 1;
+                    $colordat['color_name'] = $color['name'];
+                    $colordat['color_style'] = $color['class'];
+                    break;
+                }
+            }
+            if ($colorfound==1) {
+                $locations[$idx]['art_color'.$color_num] = $colordat['color_name'];
+                $locations[$idx]['color'.$color_num.'_title'] = 'title="'.$colordat['color_name'].'"';
+                $locations[$idx]['color'.$color_num.'_style'] = $colordat['color_style'];
+                $locations[$idx]['color'.$color_num.'_active'] = 1;
+            }
+            $artdata['locations'] = $locations;
+            usersession($artsession,$artdata);
+            $out['result'] = $this->success_result;
+            $out['locations'] = $locations;
         }
         return $out;
     }
@@ -3135,25 +3208,31 @@ Class Artwork_model extends MY_Model
     }
 
     public function delete_location($artdata, $art_id, $artsession) {
-        $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_MSG);
-        $idxloc=0;
+        $out = ['result'=>  $this->error_result, 'msg'=>  'Location Not Found'];
+        $locations = $artdata['locations'];
+        $deleted = $artdata['deleted'];
+        $newlocat = [];
         $found=0;
-        foreach ($artdata['locations'] as $lrow) {
+        foreach ($locations as $lrow) {
             if ($lrow['artwork_art_id']==$art_id) {
-                $artdata['locations'][$idxloc]['deleted']='del';
                 $found=1;
-                break;
-            }
-            if ($found==1) {
-                break;
+                if ($art_id > 0) {
+                    $deleted[] = [
+                        'entity_type' => 'locations',
+                        'entity_id' => $art_id,
+                    ];
+                }
             } else {
-                $idxloc++;
+                $newlocat[]=$lrow;
             }
         }
         if ($found==1) {
+            $artdata['locations']=$newlocat;
+            $artdata['deleted']=$deleted;
             usersession($artsession, $artdata);
             $out['result']= $this->success_result;
             $out['msg']='';
+            $out['locations'] = $newlocat;
         }
         return $out;
     }
