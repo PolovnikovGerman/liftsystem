@@ -97,6 +97,7 @@ function init_popupcontent() {
 }
 
 function save_art() {
+    
 }
 
 function add_location(artwork,art_type) {
@@ -239,37 +240,12 @@ function init_locations() {
         var color_num = $(this).data('fld');
         edit_color(art_id, color_num);
     });
-    $("select.artworkoption_location").unbind('change').change(function () {
-        var art_id = $(this).data('artworkartid');
-        var location = $(this).val();
-        edit_imprintval(art_id, location);
-    });
-    $("div.artworkusrtxt img").popover({
-        html: true,
-        trigger: 'hover',
-        placement: 'left'
-    });
-    $("div.artworkrdrnote img").popover({
-        html: true,
-        trigger: 'hover',
-        placement: 'left'
-    });
-    $("div.artworksource.viewsource").qtip({
-        content: {
-            text: function(event, api) {
-                $.ajax({
-                    url: api.elements.target.data('viewsrc') // Use href attribute as URL
-                }).then(function(content) {
-                    // Set the tooltip content upon successful retrieval
-                    api.set('content.text', content);
-                }, function(xhr, status, error) {
-                    // Upon failure... set the tooltip content to error
-                    api.set('content.text', status + ': ' + error);
-                });
-                return 'Loading...'; // Set some initial text
-            }
-        },
-        // style: 'art_lastmessage'
+    // Repeat order
+    $("input[type=text].proofreqestlocation").unbind('change').change(function (){
+        var art_id = $(this).data('art');
+        var newval = $(this).val();
+        var locitem = $(this).data('fld')
+        change_location(locitem, newval, art_id)
     });
 }
 
@@ -496,6 +472,7 @@ function save_newcopy(artwork_id, order_num) {
             if (parseInt($("#locationtotal").val()) > 0) {
                 new SimpleBar(document.getElementById('proofreqlocation_table'), { autoHide: false });
             }
+            init_locations();
         } else {
             show_error(response);
         }
