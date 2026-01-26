@@ -52,7 +52,7 @@ class Artproofrequest extends MY_Controller
             $value=$postdata['value'];
             $artdata=usersession($artsession);
             if (!empty($artdata)) {
-                $artdata[$fldname]=$value;
+                $artdata['artwork'][$fldname]=$value;
                 usersession($artsession, $artdata);
                 $error='';
             }

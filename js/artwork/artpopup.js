@@ -180,7 +180,20 @@ function add_location(artwork,art_type) {
     }, 'json');
 }
 function init_message() {
-    $("textarea.proofreqcommon").unbind('change').change()
+    $("textarea.proofreqcommon").unbind('change').change(function (){
+        var params=new Array();
+        params.push({name: 'artsession', value: $("input#artsession").val()});
+        params.push({name:'field', value: $(this).data('fld')});
+        params.push({name:'value', value: $(this).val()});
+        var url="/artproofrequest/art_commonupdate";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                // $("div.artpopup_save").show();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
 }
 function init_commondata() {}
 function init_templateview() {}
