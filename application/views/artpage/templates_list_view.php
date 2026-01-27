@@ -1,6 +1,6 @@
 <?php $n_row=0;?>
 <?php foreach ($templates as $row) { ?>
-    <div class="templatesdata_row <?=($n_row % 2 == 0 ? 'grey' : 'white') ?>">
+    <div class="templatesdata_row <?=($n_row%2==0 ? 'greydatarow' : 'whitedatarow') ?>">
         <div class="template_data_itemnum"><?= $row['item_number'] ?></div>
         <div class="template_data_itemname"><?= $row['item_name'] ?></div>
         <div class="template_data_itemfile">
