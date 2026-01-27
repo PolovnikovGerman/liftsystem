@@ -8,8 +8,8 @@
                 <i class="fa fa-star" aria-hidden="true"></i>
             <?php endif; ?>
         </div>
-        <div class="proofdocname" data-art="<?=$proof['artwork_proof_id']?>" data-link="<?=$proof['proof_name']?>" data-event="hover"
-             data-css="proofdocballonbox" data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="auto" data-textcolor="#000"
+        <div class="proofdocname" data-art="<?=$proof['artwork_proof_id']?>" data-link="<?=$proof['proof_name']?>" data-title="proof_<?=str_pad($numpp,2,"0",STR_PAD_LEFT)?>"
+             data-event="hover" data-css="proofdocballonbox" data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="auto" data-textcolor="#000"
              data-timer="4000" data-delay="1000" data-balloon="<?=$proof['source_name']?>">
             proof_<?=str_pad($numpp,2,"0",STR_PAD_LEFT)?>
         </div>

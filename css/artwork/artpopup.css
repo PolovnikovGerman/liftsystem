@@ -136,9 +136,10 @@
     float: right !important;
     width: 230px;
 }
-.prgroup-itemnumber label {
-    width: 38px;
-    margin-right: 4px;
+/*.prgroup-itemnumber label {*/
+.prgroup-item label {
+    width: 34px;
+    margin-right: 6px;
 }
 .prgroup-itemnumber input {
     width: 65px;
@@ -151,8 +152,33 @@
     line-height: 21px;
     font-weight: 600;
     background: #fff;
-    width: 227px;
+    /*width: 227px;*/
+    width: 183px;
     float: right;
+}
+.prgroup-item > .select2-container .select2-selection--single {
+    border: 1px solid #000!important;
+    border-radius: 3px!important;
+    height: 21px!important;
+    font-size: 12px;
+    line-height: 21px!important;
+    font-weight: 600;
+    background: #fff;
+}
+.prgroup-item > .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #000000!important;
+    line-height: 21px!important;
+}
+.prgroup-item > .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 21px!important;
+}
+.prgroup-itemdescription input {
+    display: none;
+    width: 183px;
+    margin-left: 40px;
+}
+.prgroup-itemdescription input.active {
+    display: block;
 }
 .prgroup-notes textarea {
     border: 1px solid #000;
@@ -287,6 +313,7 @@
 }
 .prproofs-data-table .proofdocname {
     width: 50px;
+    cursor: pointer;
 }
 .prproofs-data-table .proofdocsend {
     width: 50px;
@@ -1093,4 +1120,88 @@ input.inputcolor {
 }
 .select_color a.active {
     color: #000000;
+}
+/* Order Assign */
+.orderassign_content {
+    background-color: #FFFFFF;
+    clear: both;
+    float: left;
+    height: 379px;
+    margin-top: 9px;
+    width: 698px;
+}
+.orderassigndata_content {
+    clear: both;
+    float: left;
+    margin: 10px 8px 10px 11px;
+    width: 678px;
+}
+.orderassign_row {
+    clear: both;
+    float: left;
+    text-align: left;
+    margin-bottom: 11px;
+    width: 664px;
+}
+.orderdatatitle {
+    background-color: #787878;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: bold;
+    height: 20px;
+    margin-bottom: 0;
+    padding-top: 4px;
+    text-align: center;
+    width: 677px;
+}
+.orderdata {
+    font-size: 13px;
+    height: 21px;
+    margin-bottom: 0;
+    padding-top: 4px;
+}
+.orderassign_row.orderdata:hover {
+    background-color: #a9a9a9;
+    cursor: pointer;
+}
+.orderassigndata_info {
+    clear: both;
+    float: left;
+    height: 340px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 677px;
+    scrollbar-width: none;
+}
+.orderassign_num {
+    float: left;
+    text-align: center;
+    width: 60px;
+}
+.orderassign_date {
+    float: left;
+    text-align: center;
+    width: 65px;
+}
+.orderassign_customer {
+    float: left;
+    font-size: 13px;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 230px;
+}
+.orderassign_item {
+    float: left;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 240px;
+}
+.orderassign_itemqty {
+    float: left;
+    width: 35px;
+}
+.orderassign_total {
+    float: left;
+    text-align: center;
+    width: 68px;
 }

@@ -42,7 +42,7 @@
                     <div class="prproofs-data-table" id="proofreqproofdocs_table">
                         <?=$proofs_view?>
                     </div>
-                    <div class="prproofs-btnadd">add</div>
+                    <div id="uploadproofdoc" data-art="<?=$artwork_id?>"></div>
                 </div>
             </div>
             <div class="otherblocks-right">

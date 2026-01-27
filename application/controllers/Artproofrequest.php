@@ -53,6 +53,11 @@ class Artproofrequest extends MY_Controller
             $artdata=usersession($artsession);
             if (!empty($artdata)) {
                 $artdata['artwork'][$fldname]=$value;
+                if ($fldname=='item_id') {
+                    if ($value > 0) {
+                        $artdata['artwork']['other_item'] = '';
+                    }
+                }
                 usersession($artsession, $artdata);
                 $error='';
             }
@@ -89,32 +94,31 @@ class Artproofrequest extends MY_Controller
                     $mdata['item_name']=$res['item_name'];
                     $mdata['other_label']='';
                     $mdata['other_show']=0;
-                    if ($res['item_name']=='Other' || $res['item_name']=='Multiple' || $res['item_name']=='Custom Shaped Stress Balls') {
+                    if (!empty($res['other_item'])) {
                         $mdata['other_show']=1;
-                        if ($res['item_name']=='Other') {
-                            $mdata['other_label']='Other';
-                        } elseif($res['item_name']=='Multiple') {
-                            $mdata['other_label']='Multiple';
-                        } else {
-                            $mdata['other_label']='Custom';
-                        }
+                        $mdata['other_label']=$res['other_item'];
                     }
-                    $mdata['imprints']=0;
-                    $imprselect=array();
-                    if (count($res['imprints'])>0) {
-                        foreach ($artdata['locations'] as $locrow) {
-                            $defval=$locrow['art_location'];
-                            $improptions=array(
-                                'artwork_art_id'=>$locrow['artwork_art_id'],
-                                'locs'=>$res['imprints'],
-                                'defval'=>$defval,
-                            );
-                            $imprint_locations=$this->load->view('artpage/imprint_location_view',$improptions,TRUE);
-                            $mdata['imprints']=$mdata['imprints']+1;
-                            $imprselect[$locrow['artwork_art_id']]=$imprint_locations;
-                        }
-                    }
-                    $mdata['imprselect']=$imprselect;
+//                    $mdata['imprints']=0;
+//                    $imprselect=array();
+//                    if (count($res['imprints']) >0 ) {
+//                        foreach ($artdata['locations'] as $locrow) {
+//                            $defval=$locrow['art_location'];
+//                            $improptions=array(
+//                                'artwork_art_id'=>$locrow['artwork_art_id'],
+//                                'locs'=>$res['imprints'],
+//                                'defval'=>$defval,
+//                            );
+//                            $imprint_locations=$this->load->view('artpage/imprint_location_view',$improptions,TRUE);
+//                            $mdata['imprints']=$mdata['imprints']+1;
+//                            $imprselect[$locrow['artwork_art_id']]=$imprint_locations;
+//                        }
+//                    }
+//                    $mdata['imprselect']=$imprselect;
+                    $artwork = $artdata['artwork'];
+                    $locations = $artdata['locations'];
+                    $imprints=$this->artwork_model->get_location_imprint($item_id);
+                    $mdata['content'] = $this->template->build_proofreq_locationsview($artwork['artwork_id'], $locations, $imprints);
+
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -375,8 +379,10 @@ class Artproofrequest extends MY_Controller
             $order_num=$postdata['order_num'];
             $artdata=usersession($artsession);
             if (!empty($artdata)) {
-                $artdata['order_id']=$order_id;
-                $artdata['order_num']=$order_num;
+                $artwork = $artdata['artwork'];
+                $artwork['order_id'] = $order_id;
+                $artwork['order_num'] = $order_num;
+                $artdata['artwork'] = $artwork;
                 usersession($artsession,$artdata);
                 $error='';
             }
@@ -573,12 +579,14 @@ class Artproofrequest extends MY_Controller
                     $error='';
                     /* All OK - show data */
                     $proofdat=$result['proofs'];
-                    $proofs_view=$this->load->view('artpage/prooflist_edit_view',array('proofs'=>$proofdat,'artwork_id'=>$artdata['artwork_id']),TRUE);
-                    $mdata['content']=$proofs_view;
+                    $proofs_view = $this->load->view('proofrequest/proofs_list_view', ['proofs'=>$proofdat],TRUE);
+                    $mdata['content'] = $proofs_view;
+                    $mdata['proofdoctotal'] = count($proofdat);
                 }
             }
             $this->ajaxResponse($mdata, $error);
         }
+        show_404();
     }
 
     /* Mark proof as assign */
@@ -588,29 +596,27 @@ class Artproofrequest extends MY_Controller
             $error=$this->restore_artdata_error;
             $postdata=$this->input->post();
             $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
-
-            $artwork_id=$postdata['artwork_id'];
             $proof_id=$postdata['proof_id'];
             $artdata=usersession($artsession);
             if (!empty($artdata)) {
                 $this->load->model('artwork_model');
-                $res=$this->artwork_model->approve_proof($artwork_id, $proof_id, $artdata, $this->USR_ID, $artsession);
+                $res=$this->artwork_model->approve_proof($proof_id, $artdata, $this->USR_ID, $artsession);
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error='';
                     $proofdat=$res['proofs'];
-                    $proofs_view=$this->load->view('artpage/prooflist_edit_view',array('proofs'=>$proofdat,'artwork_id'=>$artdata['artwork_id']),TRUE);
-                    $approve_options=array(
-                        'proofs'=>$proofdat,
-                        'artwork_id'=>$artwork_id,
-                    );
-                    $approvview=$this->load->view('artpage/approved_view',$approve_options, TRUE);
-                    $mdata['proofcontent']=$proofs_view;
-                    $mdata['approvecontent']=$approvview;
+                    $approved = $res['approved'];
+                    $proofs_view = $this->load->view('proofrequest/proofs_list_view', ['proofs'=>$proofdat],TRUE);
+                    $approved_view = $this->load->view('proofrequest/proofs_approved_view', ['proofs'=>$approved],TRUE);
+                    $mdata['proofcontent'] = $proofs_view;
+                    $mdata['approvecontent'] = $approved_view;
+                    $mdata['proofdoctotal'] = count($proofdat);
+                    $mdata['appovdoctotal'] = count($approved);
                 }
             }
             $this->ajaxResponse($mdata, $error);
         }
+        show_404();
     }
 
     /* Prepare Email for Approve */
@@ -623,6 +629,7 @@ class Artproofrequest extends MY_Controller
             $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
             $artdata=usersession($artsession);
             if (!empty($artdata)) {
+                $artwork = $artdata['artwork'];
                 $this->load->model('user_model');
                 $this->load->model('email_model');
                 $userdat=$this->user_model->get_user_data($this->USR_ID);
@@ -636,24 +643,24 @@ class Artproofrequest extends MY_Controller
                         $template = 'SB '.$template;
                     }
                     $mail_template = $this->email_model->get_emailtemplate_byname($template);
-                    if ($artdata['order_id']) {
-                        $msgdat="BT".$artdata['order_num'];
+                    if ($artwork['order_id']) {
+                        $msgdat="BT".$artwork['order_num'];
                         $doc_type='Order';
                     } else {
-                        $msgdat="PR".$artdata['proof_num'];
+                        $msgdat="PR".$artwork['proof_num'];
                         $doc_type='Proof Request';
                     }
-                    if ($artdata['item_id']=='-1') {
-                        if ($artdata['other_item']) {
-                            $itemname=$artdata['other_item'];
+                    if ($artwork['item_id']=='-1') {
+                        if ($artwork['other_item']) {
+                            $itemname=$artwork['other_item'];
                         } else {
                             $itemname='';
                         }
                     } else {
-                        $itemname=$artdata['item_name'];
+                        $itemname=$artwork['item_name'];
                     }
                     $message=$mail_template['email_template_body'];
-                    $message=str_replace('<<customer_name>>', $artdata['customer_name'], $message);
+                    $message=str_replace('<<customer_name>>', $artwork['customer'], $message);
                     // $message=str_replace('<<item_name>>', $artdata['item_name'], $message);
                     $message=str_replace('<<item_name>>', $itemname, $message);
                     $message=str_replace('<<user_name>>', $user_name, $message);
@@ -665,16 +672,16 @@ class Artproofrequest extends MY_Controller
                     $subj='BLUETRACK Art proof ';
                     $message='';
                 }
-                if ($artdata['brand']=='SR') {
+                if ($artwork['brand']=='SR') {
                     $artemail=$this->config->item('art_srdept_email');
                 } else {
                     $artemail=$this->config->item('art_dept_email');
                 }
 
                 $options=array(
-                    'artwork_id'=>$artdata['artwork_id'],
+                    'artwork_id'=>$artwork['artwork_id'],
                     'from'=>$artemail,
-                    'tomail'=>$artdata['customer_email'],
+                    'tomail'=>$artwork['customer_email'],
                     'subject'=>$subj,
                     'message'=>$message,
                 );
@@ -694,21 +701,26 @@ class Artproofrequest extends MY_Controller
             $artsession=(isset($data['artsession']) ? $data['artsession'] : 'failsession');
             $artdata=usersession($artsession);
             if (!empty($artdata)) {
-                $brand = $this->menuitems_model->get_current_brand();
-                $data['brand'] = $brand;
-                $this->load->model('artwork_model');
-                $res=$this->artwork_model->send_proof_approve($data, $artdata, $this->USR_ID, $artsession);
-                $error=$res['msg'];
-                if ($res['result']==$this->success_result) {
-                    /* Build new content for proofs */
-                    $error='';
-                    $proofdat=$res['proofs'];
-                    $proofs_view=$this->load->view('artpage/prooflist_edit_view',array('proofs'=>$proofdat,'artwork_id'=>$artdata['artwork_id']),TRUE);
-                    $mdata['content']=$proofs_view;
+                $numproofs = intval(ifset($data,'numproofs',0));
+                $error = 'Check Proofs before send Notification';
+                if ($numproofs > 0) {
+                    $brand = $this->menuitems_model->get_current_brand();
+                    $data['brand'] = $brand;
+                    $this->load->model('artwork_model');
+                    $res=$this->artwork_model->send_proof_approve($data, $artdata, $this->USR_ID, $artsession);
+                    $error=$res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        /* Build new content for proofs */
+                        $error='';
+//                        $proofdat=$res['proofs'];
+//                        $proofs_view=$this->load->view('artpage/prooflist_edit_view',array('proofs'=>$proofdat,'artwork_id'=>$artdata['artwork_id']),TRUE);
+//                        $mdata['content']=$proofs_view;
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);
         }
+        show_404();
     }
 
     /* Show approved file */
@@ -770,18 +782,19 @@ class Artproofrequest extends MY_Controller
             $postdata=$this->input->post();
             $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
             $proof_id=$postdata['proof_id'];
-            $artwork_id=$postdata['artwork_id'];
             $artdata=usersession($artsession);
             if (empty(!$artdata)) {
                 $this->load->model('artwork_model');
-                $res=$this->artwork_model->art_delproof($artdata, $artwork_id, $proof_id, $this->USR_ID, $artsession);
+                $res=$this->artwork_model->art_delproof($artdata, $proof_id, $this->USR_ID, $artsession);
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error='';
-                    $proofdat=$res['proofs'];
-                    $proofs_view=$this->load->view('artpage/prooflist_edit_view',array('proofs'=>$proofdat,'artwork_id'=>$artwork_id),TRUE);
-                    $mdata['proof_content']=$proofs_view;
-                    $mdata['content']=$this->load->view('artpage/approved_view',array('proofs'=>$res['proofs'], 'artwork_id'=>$artdata['artwork_id']),TRUE);
+                    $proofdat = $res['proofs'];
+                    $approved = $res['approved'];
+                    $mdata['proof_content'] = $this->load->view('proofrequest/proofs_list_view', ['proofs'=>$proofdat],TRUE);
+                    $mdata['content'] = $this->load->view('proofrequest/proofs_approved_view', ['proofs'=>$approved],TRUE);
+                    $mdata['proofdoctotal'] = count($proofdat);
+                    $mdata['appovdoctotal'] = count($approved);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -1225,15 +1238,26 @@ class Artproofrequest extends MY_Controller
                 $res=$this->artwork_model->save_artdata($data, $artdata, $this->USR_ID, $artsession);
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
-                    $error='';
+                    // $error='';
                     $artwork = $artdata['artwork'];
                     $callpage = $artwork['callpage'];
-                    $mdata['callpage']=$callpage;
+                    $artwork_id = $res['artwork_id'];
+                    $artwres = $this->artwork_model->get_artwork_details($artwork_id);
+                    $error = $artwres['msg'];
+                    if ($artwres['result']==$this->success_result) {
+                        $error = '';
+                        $mdata['callpage']=$callpage;
+                        $artw = $artwres['artwork'];
+                        $mdata['order_id'] = $mdata['email_id'] = 0;
+                        if (!empty($artw['order_id'])) {
+                            $mdata['order_id'] = $artw['order_id'];
+                        } else {
+                            $mdata['email_id'] = $artw['mail_id'];
+                        }
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);
         }
-
     }
-
 }
