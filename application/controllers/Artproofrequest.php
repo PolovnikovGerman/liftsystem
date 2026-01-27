@@ -755,18 +755,19 @@ class Artproofrequest extends MY_Controller
             $postdata=$this->input->post();
             $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
             $proof_id=$postdata['proof_id'];
-            $artwork_id=$postdata['artwork_id'];
             $artdata=usersession($artsession);
             if (!empty($artdata)) {
                 $this->load->model('artwork_model');
-                $res=$this->artwork_model->art_revert_approved($artdata, $artwork_id, $proof_id, $this->USR_ID, $artsession);
+                $res=$this->artwork_model->art_revert_approved($artdata, $proof_id, $this->USR_ID, $artsession);
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error='';
-                    $proofdat=$res['proofs'];
-                    $proofs_view=$this->load->view('artpage/prooflist_edit_view',array('proofs'=>$proofdat,'artwork_id'=>$artwork_id),TRUE);
-                    $mdata['proof_content']=$proofs_view;
-                    $mdata['content']=$this->load->view('artpage/approved_view',array('proofs'=>$res['proofs'], 'artwork_id'=>$artdata['artwork_id']),TRUE);
+                    $proofdat = $res['proofs'];
+                    $approved = $res['approved'];
+                    $mdata['proof_content'] = $this->load->view('proofrequest/proofs_list_view', ['proofs'=>$proofdat],TRUE);
+                    $mdata['content'] = $this->load->view('proofrequest/proofs_approved_view', ['proofs'=>$approved],TRUE);
+                    $mdata['proofdoctotal'] = count($proofdat);
+                    $mdata['appovdoctotal'] = count($approved);
                 }
             }
 

@@ -426,6 +426,7 @@
 }
 .approveddocname {
     width: 72px;
+    cursor: pointer;
 }
 .approveddocremove {
     width: 20px;
