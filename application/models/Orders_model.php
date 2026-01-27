@@ -10307,7 +10307,7 @@ Class Orders_model extends MY_Model
     {
         $start_date = strtotime($date.'-01');
         $finish_date = strtotime(date('Y-m-d', $start_date) . ' +1 month');
-        $this->db->select('order_id, order_date, order_num, customer_name as customer, order_qty as qty, order_itemnumber as item_number, order_items as item_name, item_id');
+        $this->db->select('order_id, order_date, order_num, customer_name as customer, order_qty as qty, order_itemnumber as item_number, order_items as item_name, item_id, hide_reminder');
         $this->db->from('ts_orders');
         $this->db->where('order_date >=', $start_date)->where('order_date < ', $finish_date)->where('is_canceled',0);
         if ($customorders==1) {
@@ -10407,6 +10407,24 @@ Class Orders_model extends MY_Model
                     'proofclass' => $proofclass,
                 ];
             }
+        }
+        return $out;
+    }
+
+    public function hide_reminder($order_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Order Not Found'];
+        $order = $this->db->select('*')->from('ts_orders')->where('order_id', $order_id)->get()->row_array();
+        if (ifset($order,'order_id',0)==$order_id) {
+            $hideremind = 0;
+            if ($order['hide_reminder']==0) {
+                $hideremind = 1;
+            }
+            $this->db->where('order_id', $order_id);
+            $this->db->set('hide_reminder', $hideremind);
+            $this->db->update('ts_orders');
+            $out['result'] = $this->success_result;
+            $out['hidereminder'] = $hideremind;
         }
         return $out;
     }

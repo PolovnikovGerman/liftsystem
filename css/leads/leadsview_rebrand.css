@@ -280,6 +280,9 @@
     width: 174px;
 }
 /* Reminder Table data */
+#repeatremandtable .datarow.hideorder {
+    opacity: 0.2;
+}
 .remindermonth {
     width: 100%;
     background: #2ef8b8;
