@@ -288,6 +288,7 @@ function init_repeatreminder() {
                 $("#repeatremandtable").removeClass('emptycontent');
                 new SimpleBar(document.getElementById('repeatremandtable'), { autoHide: false })
             }
+            init_interest_management();
         } else {
             show_error(response)
         }
@@ -358,7 +359,37 @@ function init_interest_management() {
         if (task > 0) {
             artproof_lead(task, 'leadsview')
         }
-    })
+    });
+    // Click on order id
+    $("#repeatremandtable").find('div.repeatremand_order_dat').unbind('click').click(function (){
+        if ($(this).hasClass('active')) {
+            var task = parseInt($(this).data('task'));
+            if (task > 0) {
+                edit_missinfo(task);
+            }
+        }
+    });
+    $("#repeatremandtable").find('div.repeatremand_hide_dat').unbind('click').click(function (){
+        var task = parseInt($(this).data('task'));
+        if (task > 0) {
+            var params = new Array();
+            params.push({name: 'order_id', value: task});
+            var url = '/leads/hidereminder';
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    if (parseInt(response.data.hidereminder)==0) {
+                        $("#repeatremandtable").find('div.datarow[data-order="'+task+'"]').removeClass('hideorder');
+                        $("#repeatremandtable").find('div.repeatremand_order_dat[data-task="'+task+'"]').addClass('active');
+                    } else {
+                        $("#repeatremandtable").find('div.datarow[data-order="'+task+'"]').addClass('hideorder');
+                        $("#repeatremandtable").find('div.repeatremand_order_dat[data-task="'+task+'"]').removeClass('active');
+                    }
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
 }
 
 function initLeaddataPagination() {

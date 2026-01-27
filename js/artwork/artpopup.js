@@ -113,6 +113,8 @@ function save_art() {
             var callpage = response.data.callpage;
             if (callpage=='artprooflist') {
                 initProofPagination();
+            } else if (callpage=='leadsview') {
+                init_proofrequest_interest();
             }
         } else {
             show_error(response);

@@ -2259,4 +2259,25 @@ class Leads extends My_Controller {
         }
         show_404();
     }
+
+    public function hidereminder()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Repeat Remind Order Not Found';
+            $postdata = $this->input->post();
+            $order_id = ifset($postdata, 'order_id', 0);
+            if (!empty($order_id)) {
+                $this->load->model('orders_model');
+                $res = $this->orders_model->hide_reminder($order_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['hidereminder'] = $res['hidereminder'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }
