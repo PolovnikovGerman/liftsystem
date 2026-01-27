@@ -74,7 +74,12 @@ function init_popupcontent() {
     if (parseInt($("#appovdoctotal").val()) > 0) {
         new SimpleBar(document.getElementById('proofreqapprovdocs_table'), { autoHide: false });
     }
-    init_message();
+    // Item Select
+    $("select#proofrequestitem").select2({
+        dropdownParent: $('#proofRequestModal'),
+        matcher: matchStart,
+    });
+
     init_commondata();
     init_templateview();
     /* Init Proofs */
@@ -179,7 +184,9 @@ function add_location(artwork,art_type) {
         }
     }, 'json');
 }
-function init_message() {
+
+function init_commondata() {
+    // Order Notes, Instruction, Update Message
     $("textarea.proofreqcommon").unbind('change').change(function (){
         var params=new Array();
         params.push({name: 'artsession', value: $("input#artsession").val()});
@@ -194,8 +201,52 @@ function init_message() {
             }
         }, 'json');
     });
+    // Item change
+    $("select#proofrequestitem").unbind('change').change(function (){
+        var params=new Array();
+        params.push({name: 'artsession', value: $("input#artsession").val()});
+        params.push({name:'item_id', value: $(this).val()});
+        var url="/artproofrequest/art_itemchange";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("input[name='other_item']").val(response.data.other_label);
+                if (parseInt(response.data.other_show)==1) {
+                    $("input[name='other_item']").addClass('active');
+                    $("input[name='other_item']").focus();
+                } else {
+                    $("input[name='other_item']").removeClass('active');
+                }
+                var newtxt = $("#proofrequestitem option:selected").text();
+                $("#select2-proofrequestitem-container").empty().html(newtxt);
+                // Locations
+                $("#proofreqlocation_table").empty().html(response.data.content);
+                init_locations();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Other comon info
+    $("input.proofreqcommon").unbind('change').change(function (){
+        var params=new Array();
+        params.push({name: 'artsession', value: $("input#artsession").val()});
+        params.push({name:'field', value: $(this).data('fld')});
+        params.push({name:'value', value: $(this).val()});
+        var url="/artproofrequest/art_commonupdate";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                // $("div.artpopup_save").show();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    /* Show other data */
+    /* Assign Order */
+    $("div.pr-orderboxconnect").click(function(){
+        assign_order();
+    })
 }
-function init_commondata() {}
 function init_templateview() {}
 function init_locations() {
     // Show source
@@ -462,7 +513,173 @@ function show_art_history() {
         }
     },'json');
 }
-function init_proofs() {}
+function init_proofs() {
+    // Upload
+    var upload_templ= '<div class="qq-uploader"><div class="custom_upload qq-upload-button" style="background: none;"><div class="prproofs-btnadd">add</div></div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>'+
+        '<div class="clear"></div></div>';
+
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('uploadproofdoc'),
+        action: '/artproofrequest/proofattach',
+        uploadButtonText: '',
+        multiple: true,
+        debug: false,
+        template: upload_templ,
+        params: {
+            'artwork_id': $("#uploadproofdoc").data("art")
+        },
+        allowedExtensions: ['pdf','PDF'],
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success==true) {
+                var url="/artproofrequest/art_saveproofload";
+                var params=new Array();
+                params.push({name: 'artsession', value: $("input#artsession").val()});
+                params.push({name: 'proofdoc', value: responseJSON.filename});
+                params.push({name: 'sourcename', value: responseJSON.srcname});
+                $.post(url, params, function (response) {
+                    if (response.errors=='') {
+                        $("#proofdoctotal").val(response.data.proofdoctotal);
+                        $("#proofreqproofdocs_table").empty().html(response.data.content);
+                        new SimpleBar(document.getElementById('proofreqproofdocs_table'), { autoHide: false });
+                        init_proofs();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            } else {
+                alert(responseJSON.error);
+                $("div#loader").hide();
+                $("div.qq-upload-button").css('visibility','visible');
+            }
+        }
+    });
+
+    $("div.approveflag").unbind('click').click(function(){
+        if ($(this).hasClass('approved')) {
+        } else {
+            var proofid=$(this).data('art');
+            var proofname=$("div.proofdocname[data-art="+proofid+"]").data('title');
+            if (confirm('Aprrove '+proofname+'?')) {
+                var params=new Array();
+                params.push({name: 'artsession', value: $("input#artsession").val()});
+                params.push({name: 'proof_id', value :proofid});
+                var url="/artproofrequest/art_aproveproof";
+                $.post(url, params, function(response){
+                    if (response.errors=='') {
+                        $("#proofdoctotal").val(response.data.proofdoctotal);
+                        $("#appovdoctotal").val(response.data.appovdoctotal);
+                        $("#proofreqproofdocs_table").empty().html(response.data.proofcontent);
+                        $("#proofreqapprovdocs_table").empty().html(response.data.approvecontent);
+                        new SimpleBar(document.getElementById('proofreqproofdocs_table'), { autoHide: false });
+                        new SimpleBar(document.getElementById('proofreqapprovdocs_table'), { autoHide: false });
+                        init_proofs();
+                        init_approved();
+                    } else {
+                        show_error(response);
+                    }
+                }, 'json');
+            }
+        }
+    })
+    $("div.prproofs-btnemail").unbind('click').click(function(){
+        var numsend=$("input.proofdocsinpt:checked").length;
+        if (numsend==0) {
+            alert('Check Proofs for Sending');
+        } else {
+            var params=new Array();
+            params.push({name: 'artsession', value: $("input#artsession").val()});
+            var url="/artproofrequest/art_approvemail";
+            $.post(url, params , function(response){
+                if (response.errors=='') {
+                    $("#artNextModal").find('div.modal-dialog').css('width', '388px');
+                    $("#artNextModalLabel").empty().html('Send Proof Message');
+                    $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                    $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                    $("#artNextModal").on('hidden.bs.modal', function (e) {
+                        $(document.body).addClass('modal-open');
+                    })
+                    $("#artNextModal").css('z-index',2000);
+                    $("div.addbccapprove").click(function(){
+                        var bcctype=$(this).data('applybcc');
+                        if (bcctype=='hidden') {
+                            $(this).data('applybcc','show').empty().html('hide bcc');
+                            $("div#emailbccdata").show();
+                            $("textarea.aprovemail_message").css('height','222');
+                        } else {
+                            $(this).data('applybcc','hidden').empty().html('add bcc');
+                            $("div#emailbccdata").hide();
+                            $("textarea.aprovemail_message").css('height','241');
+                        }
+                    });
+                    $("div.approvemail_send").click(function(){
+                        send_approvemail();
+                    })
+                } else {
+                    show_error(response);
+                }
+            }, 'json');
+        }
+    })
+    $("div.proofdocremove").unbind('click').click(function(){
+        var proofid=$(this).data('art');
+        var proofname=$("div.proofdocname[data-art="+proofid+"]").data('title');
+        if (confirm('Delete Proof '+proofname+'?')) {
+            var url="/artproofrequest/art_approveddelete";
+            var params=new Array();
+            params.push({name: 'artsession', value: $("input#artsession").val()});
+            params.push({name: 'proof_id', value : proofid});
+            $.post(url, params, function(response){
+                if (response.errors=='') {
+                    $("#proofdoctotal").val(response.data.proofdoctotal);
+                    $("#appovdoctotal").val(response.data.appovdoctotal);
+                    $("#proofreqproofdocs_table").empty().html(response.data.proof_content);
+                    $("#proofreqapprovdocs_table").empty().html(response.data.content);
+                    if (parseInt($("#proofdoctotal").val()) > 0) {
+                        new SimpleBar(document.getElementById('proofreqproofdocs_table'), { autoHide: false });
+                    }
+                    if (parseInt($("#appovdoctotal").val()) > 0) {
+                        new SimpleBar(document.getElementById('proofreqapprovdocs_table'), { autoHide: false });
+                    }
+                    init_proofs();
+                    init_approved();
+                } else {
+                    show_error(response);
+                }
+            }, 'json' )
+
+        }
+    })
+    $("div.proofdocname").click(function(){
+        var proof=$(this).data('art');
+        var params=new Array();
+        params.push({name: 'artsession', value: $("input#artsession").val()});
+        params.push({name: 'proof_id', value :proof});
+        var url="/artproofrequest/art_approvedshow";
+        $.post(url,params,function(response){
+            if (response.errors=='') {
+                $.fileDownload('/artproofrequest/art_openimg', {httpMethod : "POST", data: {url : response.data.url, file: response.data.filename}});
+                return false; //this is critical to stop the click event which will trigger a normal file download!            return false; //this is critical to stop the click event which will trigger a normal file download!
+                window.open(response.data.url, 'showfile');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // $("div.artpopup_proofname").popover({
+    //     html: true,
+    //     trigger: 'hover',
+    //     placement: 'left',
+    //     content: 'title'
+    // });
+    // $("div.artpopup_proofsend").popover({
+    //     html: true,
+    //     trigger: 'hover',
+    //     placement: 'left',
+    //     content: 'title'
+    // });
+}
 function init_approved() {}
 
 function save_newlogoartloc(art_type) {
@@ -606,4 +823,120 @@ function init_referenceslogo_manage() {
             }
         }, 'json');
     })
+}
+
+// Assign Order - prepare
+function assign_order() {
+    var url="/artproofrequest/art_assignord";
+    var params=new Array();
+    params.push({name: 'artsession', value: $("input#artsession").val()});
+    $.post(url, params, function(response){
+        if (response.errors == '') {
+            $("#artNextModal").find('div.modal-dialog').css('width','722px');
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModalLabel").empty().html('Assign Order');
+            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            });
+            $("#artNextModal").css('z-index',2000);
+            new SimpleBar(document.getElementById('orderassigndata_info'), { autoHide: false });
+            $("div.orderdata").click(function () {
+                var order_id = $(this).data('orderid');
+                var ordernum = $(this).find('div.orderassign_num').text();
+                assignorder(order_id, ordernum);
+            })
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+
+/* Save choice of assigned order */
+function assignorder(order_id, ordernum) {
+    if (confirm('Connect Art to Order # '+ordernum+" ?")) {
+        var params=new Array();
+        params.push({name: 'artsession', value: $("input#artsession").val()});
+        params.push({name: 'order_id', value:order_id});
+        params.push({name:'order_num', value:ordernum});
+        var url="/artproofrequest/art_newassign";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $("#artNextModal").modal('hide');
+                $(".pr-orderboxconnect").empty().html(ordernum).removeClass('pr-orderboxconnect').addClass('pr-orderbox');
+            } else {
+                show_error(response);
+            }
+        }, 'json')
+    }
+
+}
+/* Send email on approve */
+function send_approvemail() {
+    var artwork=$("input#artwork_id").val();
+    var params=new Array();
+    params.push({name: 'artsession', value: $("input#artsession").val()});
+    params.push({name:'artwork_id',value:$("input#artwork_id").val()});
+    params.push({name:'from',value: $("input#approvemail_from").val()});
+    params.push({name:'customer',value:$("input#approvemail_to").val()});
+    params.push({name:'subject',value:$("input#approvemail_subj").val()});
+    params.push({name:'message', value:$("textarea.aprovemail_message").val()});
+    var bcctype=$("div.addbccapprove").data('applybcc');
+    var bccmail='';
+    if (bcctype=='show') {
+        bccmail=$("input#approvemail_copy").val();
+    }
+    params.push({name:'cc', value:bccmail});
+    var proofs='';
+    var num=0;
+    var proofid = '';
+    $("input.proofdocsinpt:checked").each(function(){
+        proofid=$(this).data('art');
+        proofs=proofs+proofid+"|";
+        num++;
+    })
+    params.push({name:'proofs',value:proofs});
+    params.push({name:'numproofs',value:num});
+    var url="/artproofrequest/art_sendproofs";
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#artNextModal").modal('hide');
+            reinit_artworkpopup();
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+
+function reinit_artworkpopup() {
+    var nparams = new Array();
+    nparams.push({name: 'artsession', value: $("input#artsession").val()});
+    var url="/artproofrequest/artwork_save";
+    $("#loader").show();
+    $.post(url, nparams, function(response){
+        if (response.errors=='') {
+            var order_id = parseInt(response.data.order_id);
+            var email_id = parseInt(response.data.email_id);
+            var params=new Array();
+            if (order_id!=0) {
+                url="/art/order_artdata";
+                params.push({name:'order_id',value:order_id});
+            } else {
+                url="/art/proof_artdata";
+                params.push({name:'proof_id',value: email_id});
+            }
+            $.post(url,params,function(resp){
+                if (resp.errors=='') {
+                    $("#proofRequestModal").find('div.modal-body').empty().html(resp.data.content);
+                    init_popupcontent();
+                    $("#loader").hide();
+                } else {
+                    $("#loader").hide();
+                    show_error(resp);
+                }
+            },'json');
+        } else {
+            show_error(response);
+        }
+    },'json');
 }

@@ -7,10 +7,10 @@
             <div class="orderassign_item">Item</div>
             <div class="orderassign_total">Total</div>
         </div>
-        <div class="orderassigndata_info">
+        <div class="orderassigndata_info" id="orderassigndata_info">
             <?php $nrow=0;?>
             <?php foreach ($orders as $row) {?>
-                <div class="orderassign_row orderdata <?=($nrow%2==0 ? 'grey' : '')?>" data-orderid="<?=$row['order_id']?>">
+                <div class="orderassign_row orderdata <?=($nrow%2==0 ? 'greydatarow' : 'whitedatarow')?>" data-orderid="<?=$row['order_id']?>">
                     <div class="orderassign_num" style="float: left;"><?=$row['order_num']?></div>
                     <div class="orderassign_date" style="float: left;"><?=date('m/d/y',$row['order_date'])?></div>
                     <div class="orderassign_customer" style="float: left;"><?=$row['customer_name']?></div>
