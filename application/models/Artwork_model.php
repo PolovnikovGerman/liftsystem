@@ -2688,71 +2688,44 @@ Class Artwork_model extends MY_Model
     }
 
     /* Revert Approved */
-    public function art_revert_approved($artdata, $artwork_id, $proof_id, $user_id, $artsession) {
+    public function art_revert_approved($artdata, $proof_id, $user_id, $artsession) {
         $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_MSG);
-        if ($artdata['artwork_id']!=$artwork_id) {
-            $out['msg']='Artwork data was lost. Please reload data';
+        $artwork = $artdata['artwork'];
+        $proofs = $artdata['proofs'];
+        $approved = $artdata['approved'];
+        $found=0;
+        $idxproof=0;
+        foreach ($proofs as $prow) {
+            if ($prow['artwork_proof_id']==$proof_id) {
+                $proofs[$idxproof]['approved']=0;
+                $proofs[$idxproof]['approved_time']=0;
+                $found=1;
+                $this->load->model('artproof_model');
+                $this->artproof_model->add_proofdoc_log($artwork['artwork_id'], $user_id, $prow['src'], $prow['source_name'], 'Revert Approved Upload');
+                break;
+            }
+            if ($found==1) {
+                break;
+            }
+            $idxproof++;
+        }
+        if ($found) {
+            /* Save ARTDATA */
+            $newapproved = [];
+            foreach ($approved as $row) {
+                if ($row['artwork_proof_id']!=$proof_id) {
+                    $newapproved[] = $row;
+                }
+            }
+            $artdata['proofs'] = $proofs;
+            $artdata['approved'] = $newapproved;
+            usersession($artsession, $artdata);
+            $out['proofs'] = $proofs;
+            $out['approved'] = $newapproved;
+            $out['result'] = $this->success_result;
+            $out['msg']='';
         } else {
-            $found=0;
-            $idxproof=0;
-            foreach ($artdata['proofs'] as $prow) {
-                if ($prow['artwork_proof_id']==$proof_id) {
-                    $artdata['proofs'][$idxproof]['approved']=0;
-                    $artdata['proofs'][$idxproof]['approved_time']=0;
-                    $found=1;
-                    $this->load->model('artproof_model');
-                    $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $prow['src'], $prow['source_name'], 'Revert Approved Upload');
-                    break;
-                }
-                if ($found==1) {
-                    break;
-                }
-                $idxproof++;
-            }
-            if ($found) {
-                /* Save ARTDATA */
-                $newproof=array();
-                $idxproof=0;
-                // $numpp=0;
-                $proofnum=1;
-                $approvenum=1;
-                foreach ($artdata['proofs'] as $row) {
-                    if ($row['deleted']=='') {
-                        // $numpp++;
-                        $newprofname='proof_';
-                        if (intval($artdata['order_id'])==0) {
-                            $newprofname.=str_replace('-', '_', $artdata['proof_num']);
-                        } else {
-                            $newprofname.=str_replace('-', '_', $artdata['order_num']);
-                        }
-                        $newprofname.='_'.str_pad($row['proof_ordnum'], 2, '0', STR_PAD_LEFT).'.pdf';
-                        $artdata['proofs'][$idxproof]['proof_name']=$newprofname;
-                        $row['proof_name']=$newprofname;
-                        $row['out_approved']='';
-                        $row['approve_class']='';
-                        $row['approve_class']='proofnotapproved';
-                        /* artpopup_whitestar.png */
-                        $row['out_approved']='<img src="/img/artpopup_whitestar.png" alt="proof"/>';
-                        $row['out_proofname']='proof_'.str_pad($proofnum, 2, '0', STR_PAD_LEFT);
-                        $proofnum++;
-                        $row['out_apprname']='';
-                        if ($row['approved']==1) {
-                            $row['out_approved']='<img src="/img/artpopup_greenstar.png" alt="proof"/>';
-                            $row['approve_class']='proofapproved';
-                            $row['out_apprname']='approved_'.str_pad($approvenum,2,'0',STR_PAD_LEFT);
-                            $approvenum++;
-                        }
-                        $newproof[]=$row;
-                    }
-                    $idxproof++;
-                }
-                usersession($artsession, $artdata);
-                $out['proofs']=$newproof;
-                $out['result']=$this->success_result;
-                $out['msg']='';
-            } else {
-                $out['msg']='Proof Doc not found';
-            }
+            $out['msg']='Proof Doc not found';
         }
         return $out;
     }

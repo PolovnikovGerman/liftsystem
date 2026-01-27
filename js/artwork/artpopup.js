@@ -680,7 +680,54 @@ function init_proofs() {
     //     content: 'title'
     // });
 }
-function init_approved() {}
+function init_approved() {
+    // Revert approve
+    $("div.approveddocremove").unbind('click').click(function (){
+        var profid = $(this).data('art');
+        var proofdoc = $(this).data('title');
+        if (confirm('Revert Approvement '+proofdoc+'?')) {
+            var params=new Array();
+            params.push({name: 'artsession', value: $("input#artsession").val()});
+            params.push({name: 'proof_id', value :profid});
+            var url="/artproofrequest/art_approvedrevert";
+            $.post(url, params, function(response){
+                if (response.errors=='') {
+                    $("#proofdoctotal").val(response.data.proofdoctotal);
+                    $("#appovdoctotal").val(response.data.appovdoctotal);
+                    $("#proofreqproofdocs_table").empty().html(response.data.proof_content);
+                    $("#proofreqapprovdocs_table").empty().html(response.data.content);
+                    if (parseInt($("#proofdoctotal").val()) > 0) {
+                        new SimpleBar(document.getElementById('proofreqproofdocs_table'), { autoHide: false });
+                    }
+                    if (parseInt($("#appovdoctotal").val()) > 0) {
+                        new SimpleBar(document.getElementById('proofreqapprovdocs_table'), { autoHide: false });
+                    }
+                    init_proofs();
+                    init_approved();
+                } else {
+                    show_error(response);
+                }
+            }, 'json' )
+        }
+    });
+    // Show document
+    $(".approveddocname").unbind('click').click(function(){
+        var proof=$(this).data('art');
+        var params=new Array();
+        params.push({name: 'artsession', value: $("input#artsession").val()});
+        params.push({name: 'proof_id', value :proof});
+        var url="/artproofrequest/art_approvedshow";
+        $.post(url,params,function(response){
+            if (response.errors=='') {
+                $.fileDownload('/artproofrequest/art_openimg', {httpMethod : "POST", data: {url : response.data.url, file: response.data.filename}});
+                return false; //this is critical to stop the click event which will trigger a normal file download!            return false; //this is critical to stop the click event which will trigger a normal file download!
+                window.open(response.data.url, 'showfile');
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+}
 
 function save_newlogoartloc(art_type) {
     var params=new Array();

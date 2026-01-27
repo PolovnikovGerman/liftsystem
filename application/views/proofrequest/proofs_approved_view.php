@@ -6,7 +6,7 @@
              data-timer="4000" data-delay="1000" data-balloon="<?=$proof['source_name']?>">
             approved_<?=str_pad($numpp,2,"0",STR_PAD_LEFT)?>
         </div>
-        <div class="approveddocremove" data-art="<?=$proof['artwork_proof_id']?>">
+        <div class="approveddocremove" data-art="<?=$proof['artwork_proof_id']?>" data-title="approved_<?=str_pad($numpp,2,"0",STR_PAD_LEFT)?>">
             <i class="fa fa-times-circle"></i>
         </div>
     </div>
