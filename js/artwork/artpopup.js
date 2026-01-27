@@ -247,7 +247,59 @@ function init_commondata() {
         assign_order();
     })
 }
-function init_templateview() {}
+function init_templateview() {
+    // Empty Template
+    $(".templates-linkbox.emptytemplate").unbind('click').click(function(){
+        var imgurl = $(this).data('link');
+        var title = $(this).data('title');
+        openai(imgurl, title);
+    })
+
+    // Item Template
+    $("div.itemtemplate").unbind('click').click(function(){
+        var itemid=$("select#proofrequestitem").val();
+        if (itemid=='') {
+            alert('Please select an item first.  Your changes cannot be saved until you do this.')
+        } else if(parseInt(itemid)<1) {
+            show_templates();
+        } else {
+            var url="/artproofrequest/art_showtemplate";
+            $.post(url, {'item_id':itemid}, function(response){
+                if (response.errors=='') {
+                    openai(response.data.fileurl, response.data.filename);
+                    // window.open(response.data.fileurl, 'itemtemplate', 'width=300,height=200,toolbar=0')
+                } else {
+                    show_error(response);
+                }
+            }, 'json');
+        }
+    });
+
+    $("div.searchitemtemplate").click(function(){
+        show_templates();
+    })
+    /* Show Item AI */
+}
+
+function show_templates() {
+    var url="/artproofrequest/art_showtemplates";
+    var params=new Array();
+    params.push({name: 'artsession', value: $("input#artsession").val()});
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#artNextModal").find('div.modal-dialog').css('width','640px');
+            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#artNextModal").on('hidden.bs.modal', function (e) {
+                $(document.body).addClass('modal-open');
+            })
+            $("#artNextModal").css('z-index',2000);
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+}
+
 function init_locations() {
     // Show source
     $("div.artw-srclogo").unbind('click').click(function () {

@@ -2166,26 +2166,22 @@ Class Artwork_model extends MY_Model
         return $out;
     }
 
-    public function get_templates($artdata, $artwork_id) {
+    public function get_templates($artdata) {
         $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_MSG);
-        if ($artdata['artwork_id']!=$artwork_id) {
-            $out['msg']='Artwork data was lost. Please reload data';
+        $artwork = $artdata['artwork'];
+        $dbtablename='sb_items';
+        $brand = ifset($artwork, 'brand','BT');
+        $this->db->select("item_id, item_number, item_name, item_vector_img");
+        $this->db->from($dbtablename);
+        $this->db->where('item_vector_img is not null');
+        if ($brand=='SR') {
+            $this->db->where('brand', $brand);
         } else {
-            $dbtablename='sb_items';
-            $brand = ifset($artdata, 'brand','BT');
-            $this->db->select("item_id, item_number, item_name, item_vector_img");
-            $this->db->from($dbtablename);
-            $this->db->where('item_vector_img is not null');
-            if ($brand=='SR') {
-                $this->db->where('brand', $brand);
-            } else {
-                $this->db->where_id('brand',['SB','BT']);
-            }
-            $result=$this->db->get()->result_array();
-
-            $out['templates']=$result;
-            $out['result']=  $this->success_result;
+            $this->db->where_in('brand',['SB','BT']);
         }
+        $result=$this->db->get()->result_array();
+        $out['templates'] = $result;
+        $out['result'] = $this->success_result;
         return $out;
     }
 

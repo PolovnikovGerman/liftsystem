@@ -314,11 +314,10 @@ class Artproofrequest extends MY_Controller
             $error=$this->restore_artdata_error;
             $postdata=$this->input->post();
             $artsession=(isset($postdata['artsession']) ? $postdata['artsession'] : 'failsession');
-            $artwork_id=$postdata['artwork_id'];
             $artdata=usersession($artsession);
             if (!empty($artdata)) {
                 $this->load->model('artwork_model');
-                $res=$this->artwork_model->get_templates($artdata, $artwork_id);
+                $res=$this->artwork_model->get_templates($artdata);
                 $error=$res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error='';
