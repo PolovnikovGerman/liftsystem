@@ -1453,14 +1453,14 @@ Class Artwork_model extends MY_Model
                     // New location - a) move file to new location
                     if ($loc['logo_src']!='' && $loc['logo_src']!='&nbsp;') {
                         /* copy */
-                        $srcname = str_replace($preload_path_sh, $preload_path_fl,$loc['logo_srcpath']);
-                        $destname = $path_fl.$loc['logo_src'];
+                        $srcname = str_replace($preload_path_sh, $preload_path_fl,$loc['logo_src']);
+                        $destname = $path_fl.$loc['logo_src_clean'];
                         @copy($srcname,$destname);
-                        $location['logo_src']=$path_sh.$loc['logo_src'];
+                        $location['logo_src']=$path_sh.$loc['logo_src_clean'];
                         $location['redraw_time']=time();
                         if ($loc['redrawvect']==0) {
                             // Make source vectorized
-                            $location['logo_vectorized']=$path_sh.$loc['logo_src'];
+                            $location['logo_vectorized']=$path_sh.$loc['logo_src_clean'];
                             $location['vectorized_time']=time();
                         } else {
                             $redraw_logos[]=array(

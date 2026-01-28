@@ -208,7 +208,9 @@ function init_leadpopupedit() {
     }
     /* Question */
     $("div.lead_popup_questchck").unbind('click').click(function(){
-        show_questdetails(this);
+        var quest = $(this).data('quest');
+        // show_questdetails(this);
+        showquestdetails(quest);
     });
     $("div.lead_popup_proofchck").unbind('click').click(function(){
         show_proofdetails(this);
@@ -406,10 +408,13 @@ function show_artdata(mail_id, lead_id,relation_type) {
     $.post(url,{'proof_id':mail_id},function(response){
         if (response.errors==='') {
             $("#pageModal").modal('hide');
-            $("#artModalLabel").empty().html('Artwork Edit');
-            $("#artModal").find('div.modal-body').empty().html(response.data.content);
-            $("#artModal").find('div.modal-dialog').css('width','928px');
-            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
+            // $("#artModalLabel").empty().html('Artwork Edit');
+            // $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            // $("#artModal").find('div.modal-dialog').css('width','928px');
+            // $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#proofRequestModalLabel").empty().html('PROOF REQUEST');
+            $("#proofRequestModal").find('div.modal-body').empty().html(response.data.content);
+            $("#proofRequestModal").modal({backdrop: 'static', keyboard: false, show: true});
             /* SAVE, EMAIL, etc buttons */
             init_artpopupcontent(lead_id, mail_id,relation_type);
             $(document.body).addClass('modal-open');
