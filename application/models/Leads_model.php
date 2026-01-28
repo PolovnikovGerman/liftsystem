@@ -2473,6 +2473,24 @@ Class Leads_model extends MY_Model
     {
 
     }
+    public function add_leadcontacts()
+    {
+        $this->db->select('l.lead_id, count(lc.lead_contact_id) as cnt');
+        $this->db->from('ts_leads l');
+        $this->db->join('ts_lead_contacts lc','lc.lead_id=l.lead_id','left');
+        $this->db->group_by('l.lead_id');
+        $this->db->having('cnt', 0);
+        $leads = $this->db->get()->result_array();
+        foreach ($leads as $lead) {
+            $leaddat = $this->get_lead($lead['lead_id']);
+            $this->db->set('lead_id', $lead['lead_id']);
+            $this->db->set('contact_name', $leaddat['lead_customer']);
+            $this->db->set('contact_email', $leaddat['lead_mail']);
+            $this->db->set('contact_phone', $leaddat['lead_phone']);
+            $this->db->insert('ts_lead_contacts');
+        }
+        return true;
+    }
 }
 /* End of file leads_model.php */
 /* Location: ./application/models/leads_model.php */
