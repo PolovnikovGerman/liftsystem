@@ -5106,4 +5106,9 @@ class Test extends CI_Controller
         echo 'File '.$filenorm.' ready'.PHP_EOL;
     }
 
+    public function add_leadcontacts()
+    {
+        $this->load->model('leads_model');
+        $this->leads_model->add_leadcontacts();
+    }
 }
