@@ -6,7 +6,8 @@ class Projects extends MY_Controller
 
     private $pagelink = '/projects';
     public $current_brand;
-
+    private $doubleorderwidth = '1276px';
+    private $leadorderwidth = '755px';
     public function __construct()
     {
         parent::__construct();
@@ -48,8 +49,10 @@ class Projects extends MY_Controller
         $head['scripts'][] = array('src' => '/js/projects/page.js');
         $head['styles'][] = array('style' => '/css/projects/page.css');
         // Add Order Dual Orders
-        $head['styles'][] = array('style' => '/css/projects/dualorders_view.css');
-        $head['scripts'][] = array('src' => '/js/projects/dualorders_view.js');
+        $head['styles'][] = array('style' => 'https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css');
+        $head['styles'][] = array('style' => '/css/projects/leadorders_view.css');
+        $head['scripts'][] = array('src' => 'https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js');
+        $head['scripts'][] = array('src' => '/js/projects/leadorders_view.js');
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
@@ -86,6 +89,43 @@ class Projects extends MY_Controller
             $error = '';
             $mdata = [];
             $mdata['content'] = $this->load->view('dualorders/page_view', $orderoptions, true);
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function viewcontent()
+    {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $blocked = ifset($postdata, 'blocked', 0);
+            $content = ifset($postdata, 'content', 'dualorders');
+            $brand = $this->current_brand;
+            $brandclass = ($brand=='SR' ? 'relievers' : ($brand=='SG' ? '' : 'stressballs'));
+            $orderoptions = [
+                'brandclass' => $brandclass,
+                'brand' => $brand,
+                'blocked' => $blocked,
+            ];
+            $error = '';
+            $mdata = [];
+            $customer_view = $this->load->view('dualorders/customer_data_view', $orderoptions, true);
+            $viewoptions = [
+                'brandclass' => $brandclass,
+                'brand' => $brand,
+                'blocked' => $blocked,
+                'customer_view' => $customer_view,
+            ];
+            if ($content=='dualorders') {
+                $mdata['content'] = $this->load->view('dualorders/page_orders_view', $viewoptions, true);
+                $mdata['modalwidth'] = $this->doubleorderwidth;
+            } elseif ($content=='leadsview') {
+                $mdata['content'] = $this->load->view('dualorders/leads_view', $viewoptions, true);
+                $mdata['modalwidth'] = $this->leadorderwidth;
+            } else {
+                $mdata['content'] = $this->load->view('dualorders/order_lead_view', $viewoptions, true);
+                $mdata['modalwidth'] = $this->leadorderwidth;
+            }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
