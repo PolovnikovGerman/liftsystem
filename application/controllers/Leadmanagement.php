@@ -9,6 +9,8 @@ class Leadmanagement extends MY_Controller
     /* Statuses - DEAD & CLOSED */
     protected $LEAD_DEAD = 3;
     protected $LEAD_CLOSED = 4;
+    protected $LEAD_OPEN = 2;
+    protected $LEAD_PRIORITY = 1;
     private $restore_orderdata_error = 'Connection Lost. Please, recall form';
 
     public function __construct()
@@ -17,8 +19,97 @@ class Leadmanagement extends MY_Controller
         $this->load->model('leads_model');
     }
 
+    public function edit_lead()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Brand';
+            $postdata = $this->input->post();
+            $lead_id = ifset($postdata, 'lead_id', 0);
+            $brand = ifset($postdata, 'brand', 'SB');
+            $leadfound = 0;
+//            $this->load->model('questions_model');
+//            $this->load->model('quotes_model');
+//            $this->load->model('artproof_model');
+//            $this->load->model('leadquote_model');
+            if ($lead_id ==0) {
+                // New Lead
+                $lead_data = $this->leads_model->get_empty_lead();
+                $lead_data['lead_id'] = 0;
+                $lead_data['lead_type'] = $this->LEAD_OPEN;
+                $lead_data['lead_number'] = $this->leads_model->get_leadnum($brand);
+                $lead_data['brand'] = $brand;
+                $lead_history = $lead_usr = $leads_attach = [];
+                $lead_contacts = [];
+                for ($i=1; $i<3; $i++) {
+                    $lead_contacts[] = [
+                        'lead_contact_id' => $i*(-1),
+                        'lead_id' => $lead_id,
+                        'contact_name' => '',
+                        'contact_email' => '',
+                        'contact_phone' => '',
+                    ];
+                }
+                $leadfound = 1;
+                $error = '';
+            } else {
+                $res = $this->leads_model->get_lead($lead_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $leadfound = 1;
+                    $error = '';
+                    $lead_data = $res['lead'];
+                }
+                $brand = isset($lead_data['brand']) ? $lead_data['brand'] : $brand;
+                $lead_history = $this->leads_model->get_lead_history($lead_id);
+                $lead_usr = $this->leads_model->get_lead_users($lead_id);
+                $leads_attach = $this->leads_model->get_lead_attachs($lead_id);
+                $lead_contacts = $this->leads_model->get_lead_contacts($lead_id);
+            }
+            if ($leadfound==1) {
+                $lead_replic=[];
+                foreach ($lead_usr as $usrid) {
+                    $usr = $this->user_model->get_user_data($usrid);
+                    $usrdet = [
+                        'user_id'=> $usrid,
+                        'user_leadname'=>$usr['user_leadname'],
+                        'value'=>1,
+                    ];
+                    $lead_replic[]=$usrdet;
+                }
+                $replica_options = [
+                    'leadusers' => $lead_replic,
+                    'added' => 0,
+                ];
+                if ($lead_data['lead_type']==$this->LEAD_CLOSED || $lead_data['lead_type']==$this->LEAD_DEAD) {
+                    if (count($lead_replic)==0) {
+                        $replica_view = $this->load->view('leadpopupnew/unassigned_lead_view', $replica_options, true);
+                    } else {
+                        $replica_view = $this->load->view('leadpopupnew/assigned_lead_view', $replica_options, true);
+                    }
+                } else {
+                    if ($this->USR_ROLE=='admin' || $this->USR_ROLE=='masteradmin' || $this->USR_ID==$lead_data['create_user']) {
+                        $replica_options['added'] = 1;
+                    }
+                    if (count($lead_replic)==0) {
+                        $replica_view = $this->load->view('leadpopupnew/unassigned_lead_view', $replica_options, true);
+                    } else {
+                        $replica_view = $this->load->view('leadpopupnew/assigned_lead_view', $replica_options, true);
+                    }
+                }
+                // Customer info
+                $customer_options = [
+                    'blocked' => 0,
+                    'customer' => $lead_data['company'],
+                    'customer_number' => '',
+                ];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
     /* Prepare content for edit */
-    public function edit_lead() {
+    public function edit_lead_old() {
         if ($this->isAjax()) {
             $mdata=array();
             $error='';

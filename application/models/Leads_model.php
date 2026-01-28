@@ -213,11 +213,13 @@ Class Leads_model extends MY_Model
 //
     /* Lead Data by ID */
     public function get_lead($lead_id) {
-        $this->db->select('*');
-        $this->db->from('ts_leads');
-        $this->db->where('lead_id',$lead_id);
-        $res=$this->db->get()->row_array();
-        return $res;
+        $out = ['result' => $this->error_result, 'msg' => 'Lead Not Found'];
+        $res = $this->db->select('*')->from('ts_leads')->where('lead_id',$lead_id)->get()->row_array();
+        if (ifset($res, 'lead_id', 0)==$lead_id) {
+            $out['result'] = $this->success_result;
+            $out['lead'] = $res;
+        }
+        return $out;
     }
 
     public function get_empty_lead() {
@@ -2467,6 +2469,10 @@ Class Leads_model extends MY_Model
         return $out;
     }
 
+    public function get_lead_contacts($lead_id)
+    {
+
+    }
 }
 /* End of file leads_model.php */
 /* Location: ./application/models/leads_model.php */
