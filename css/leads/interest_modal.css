@@ -127,3 +127,29 @@ h5.modal-title {
     font-size: 12px;
     background: #fff;
 }
+.leadassignarea {
+    height: 18px;
+    line-height: 18px;
+    font-size: 12px;
+}
+.leadassignarea span {
+    float: left;
+}
+.leadassignnumber {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 7px;
+    cursor: pointer;
+    color: #0a09c7;
+}
+.unlinkassignlead {
+    color: #ffffff;
+    background: #727272;
+    cursor: pointer;
+    width: 58px;
+    height: 18px;
+    line-height: 18px;
+    border-radius: 5px;
+    text-align: center;
+    margin-left: 10px;
+}

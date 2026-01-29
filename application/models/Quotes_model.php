@@ -112,7 +112,7 @@ Class Quotes_model extends My_Model {
         $res=$this->db->get()->row_array();
         if (isset($res['email_id'])) {
             $res['email_date']=date('m/d/Y',strtotime($res['email_date']));
-            $res['lead_date']=(intval($res['lead_date'])==0 ? '' : date('m/d/y',$res['lead_date']));
+            // $res['lead_date']=(intval($res['lead_date'])==0 ? '' : date('m/d/y',$res['lead_date']));
             $res['email_sendermaillnk']=($res['email_status']==0 ? '<a href="javascript:void(0);" onclick="replyquestmail(\''.$res['email_sendermail'].'\');return false;">'.$res['email_sendermail'].'</a>' : $res['email_sendermail']);
             $colorprint=get_json_param($res['email_other_info'], 'colorprint', 0);
             if ($colorprint==0) {
