@@ -28,6 +28,10 @@ class Test_model extends MY_Model
         $orders = $this->db->get()->result_array();
         $idx = 0;
         foreach ($orders as $order) {
+            for ($i=1; $i<4; $i++) {
+                $orders[$idx]['po'.$i.'_amnt']='';
+                $orders[$idx]['po'.$i.'_vendor']='';
+            }
             $this->db->select('oa.order_id, v.vendor_name as vendor, count(oa.amount_id) as cnt, sum(oa.amount_sum) as total');
             $this->db->from('ts_order_amounts oa');
             $this->db->join('vendors v', 'v.vendor_id = oa.vendor_id');
@@ -39,12 +43,6 @@ class Test_model extends MY_Model
                 $orders[$idx]['po'.$i.'_amnt'] = $amnt['total'];
                 $orders[$idx]['po'.$i.'_vendor'] = $amnt['vendor'];
                 $i++;
-            }
-            if ($i<3) {
-                for ($j=$i; $j<3; $j++) {
-                    $orders[$idx]['po'.$j.'_amnt'] = $amnt['total'];
-                    $orders[$idx]['po'.$j.'_vendor'] = $amnt['vendor'];
-                }
             }
             $idx++;
         }
