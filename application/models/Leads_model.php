@@ -2467,6 +2467,27 @@ Class Leads_model extends MY_Model
         return $out;
     }
 
+    public function revertassignlead($leadmail)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Info doesn\'t found'];
+        $reldat = $this->db->select('*')->from('ts_lead_emails')->where('leademail_id', $leadmail)->get()->row_array();
+        if (ifset($reldat,'leademail_id',0)==$leadmail) {
+            $out['result'] = $this->success_result;
+            if (!empty($reldat['custom_quote_id'])) {
+                $out['entityid'] = $reldat['custom_quote_id'];
+                $qf = $this->db->select('custom_quote_id, brand')->from('ts_custom_quotes')->where('custom_quote_id', $reldat['custom_quote_id'])->get()->row_array();
+                $out['brand'] = ifset($qf,'brand','SB');
+            } else {
+                $out['entityid'] = $reldat['email_id'];
+                $ef = $this->db->select('email_id, brand')->from('ts_emails')->where('email_id', $reldat['email_id'])->get()->row_array();
+                $out['brand'] = ifset($ef,'brand','SB');
+            }
+            $this->db->where('leademail_id', $leadmail);
+            $this->db->delete('ts_lead_emails');
+        }
+        return $out;
+    }
+
 }
 /* End of file leads_model.php */
 /* Location: ./application/models/leads_model.php */

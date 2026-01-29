@@ -107,15 +107,17 @@ class Customform_model extends MY_Model
         if (ifset($data,'custom_quote_id',0)==$custom_quote_id) {
             $out['result'] = $this->success_result;
             if (empty($data['lead_id'])) {
-                $data['lead_date'] = $data['lead_customer'] = $data['lead_mail'] = '';
+                // $data['lead_date'] = $data['lead_customer'] = $data['lead_mail'] = '';
+                $data['lead_number'] = $lead_data = '';
             } else {
-                $this->db->select('lead_date, lead_customer, lead_mail');
+                $this->db->select('lead_date, lead_customer, lead_mail, lead_number');
                 $this->db->from('ts_leads');
                 $this->db->where('lead_id', $data['lead_id']);
                 $leaddat = $this->db->get()->row_array();
                 $data['lead_date'] = $leaddat['lead_date'];
-                $data['lead_customer'] = $leaddat['lead_customer'];
-                $data['lead_mail'] = $leaddat['lead_mail'];
+//                $data['lead_customer'] = $leaddat['lead_customer'];
+//                $data['lead_mail'] = $leaddat['lead_mail'];
+                $data['lead_number'] = $leaddat['lead_number'];
             }
             $out['data'] = $data;
             // Attachments
