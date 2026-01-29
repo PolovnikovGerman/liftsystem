@@ -5116,6 +5116,7 @@ class Test extends CI_Controller
     {
         $this->load->model('test_model');
         $orders = $this->test_model->custom_orders_table(2025);
+        $this->load->config('uploader');
         $filereport = $this->config('upload_path_preload').'custom_orders2025.xlsx';
         $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
         $sheet = $spreadsheet->getActiveSheet();
