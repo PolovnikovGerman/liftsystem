@@ -5111,4 +5111,50 @@ class Test extends CI_Controller
         $this->load->model('leads_model');
         $this->leads_model->add_leadcontacts();
     }
+
+    public function customitems_orders()
+    {
+        $this->load->model('test_model');
+        $orders = $this->test_model->custom_orders_table(2025);
+        $filereport = $this->config('upload_path_preload').'custom_orders2025.xlsx';
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Custom orders 2025');
+        $sheet->setCellValue('A1', 'Order #');
+        $sheet->setCellValue('B1', 'Date');
+        $sheet->setCellValue('C1', 'Customer');
+        $sheet->setCellValue('D1', 'Item');
+        $sheet->setCellValue('E1', 'Quantity');
+        $sheet->setCellValue('F1', 'Revenue');
+        $sheet->setCellValue('G1', 'Ship cost');
+        $sheet->setCellValue('H1', 'PO 1 amnt');
+        $sheet->setCellValue('I1', 'PO 1 vendor');
+        $sheet->setCellValue('J1', 'PO 2 amnt');
+        $sheet->setCellValue('K1', 'PO 2 vendor');
+        $sheet->setCellValue('L1', 'PO 3 amnt');
+        $sheet->setCellValue('M1', 'PO 3 vendor');
+        $sheet->setCellValue('N1', 'Profit');
+        $nrow = 2;
+        foreach ($orders as $order) {
+            $sheet->setCellValue('A'.$nrow, $order['order_num']);
+            $sheet->setCellValue('B'.$nrow, date('m/d/Y', $order['order_date']));
+            $sheet->setCellValue('C'.$nrow, $order['customer']);
+            $sheet->setCellValue('D'.$nrow, $order['itemname']);
+            $sheet->setCellValue('E'.$nrow, $order['order_qty']);
+            $sheet->setCellValue('F'.$nrow, $order['revenue']);
+            $sheet->setCellValue('G'.$nrow, $order['shipping']);
+            $sheet->setCellValue('H'.$nrow, $order['po1_amnt']);
+            $sheet->setCellValue('I'.$nrow, $order['po1_vendor']);
+            $sheet->setCellValue('J'.$nrow, $order['po2_amnt']);
+            $sheet->setCellValue('K'.$nrow, $order['po2_vendor']);
+            $sheet->setCellValue('L'.$nrow, $order['po3_amnt']);
+            $sheet->setCellValue('M'.$nrow, $order['po3_vendor']);
+            $sheet->setCellValue('N'.$nrow, $order['profit']);
+            $nrow++;
+        }
+        // Save
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($filereport);    // download file
+        echo 'File '.$filereport.' ready'.PHP_EOL;
+    }
 }
