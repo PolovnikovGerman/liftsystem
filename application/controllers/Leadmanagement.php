@@ -102,7 +102,9 @@ class Leadmanagement extends MY_Controller
                     'blocked' => 0,
                     'customer' => $lead_data['company'],
                     'customer_number' => '',
+                    'contacts' => $lead_contacts,
                 ];
+                $customer_view = $this->load->view('leadpopupnew/customer_view', $customer_options, true);
             }
             $this->ajaxResponse($mdata, $error);
         }
