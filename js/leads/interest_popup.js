@@ -94,6 +94,13 @@ function init_customform_modal(formid) {
                 }
             }, 'json');
         }
+    });
+    // Unlink Relation
+    $(".unlinkassignlead").unbind('click').click(function(){
+        var title = $(this).data('title');
+        var lead = $(this).data('lead');
+        var type = 'customform';
+        revertassignlead(title, lead, type);
     })
 }
 // WEB Question content
@@ -183,6 +190,13 @@ function init_webquestion_modal(question) {
             }, 'json');
         }
     });
+    // Unlink Relation
+    $(".unlinkassignlead").unbind('click').click(function(){
+        var title = $(this).data('title');
+        var lead = $(this).data('lead');
+        var type = 'question';
+        revertassignlead(title, lead, type);
+    })
 }
 
 function showquotedetails(quote) {
@@ -279,4 +293,37 @@ function init_webquotes_modal(quote) {
             }, 'json');
         }
     });
+    // Unlink Relation
+    $(".unlinkassignlead").unbind('click').click(function(){
+        var title = $(this).data('title');
+        var lead = $(this).data('lead');
+        var type = 'quote';
+        revertassignlead(title, lead, type);
+    })
+}
+
+function revertassignlead(title, lead, type) {
+    if (confirm('Revert assign to lead '+title+'?')==true) {
+        var params = new Array();
+        params.push({name: 'leadmail', value: lead});
+        params.push({name: 'entity', value: type});
+        var url = '/leads/revertassignlead';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#InterestModal").find('div.modal-footer').empty().html(response.data.content);
+                if (type=='customform') {
+                    init_customform_modal(response.data.entityid);
+                    initCustomFormPagination();
+                } else if (type=='quote') {
+                    init_webquestion_modal(response.data.entityid);
+                    initQuotesPagination();
+                } else if (type=='question') {
+                    init_webquestion_modal(response.data.entityid);
+                    initQuestionPagination();
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    }
 }

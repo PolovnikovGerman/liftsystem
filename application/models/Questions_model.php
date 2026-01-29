@@ -107,7 +107,7 @@ Class Questions_model extends My_Model {
         if (isset($res['email_id'])) {
             $out['result']=$this->success_result;
             $res['email_date']=date('m/d/Y',strtotime($res['email_date']));
-            $res['lead_date']=(intval($res['lead_date'])==0 ? '' : date('m/d/y',$res['lead_date']));
+            // $res['lead_date']=(intval($res['lead_date'])==0 ? '' : date('m/d/y',$res['lead_date']));
             $res['chk']=($res['email_status']==0 ? 'chreplic' : '');
             $res['email_sendermaillnk']=($res['email_status']==0 ? '<a href="javascript:void(0);" onclick="replyquestmail(\''.$res['email_sendermail'].'\');return false;">'.$res['email_sendermail'].'</a>' : $res['email_sendermail']);
             $out['data'] = $res;
