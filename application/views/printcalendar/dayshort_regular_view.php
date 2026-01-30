@@ -36,7 +36,7 @@
                         <?php endif; ?>
                     </div>
                 </div>
-                <div class="regltabl-mainblock shortresched <?=$neworderview==0 ? 'repeatrow' : 0?>">
+                <div class="regltabl-mainblock <?=$neworderview==0 ? 'shortrepeat' : 'shortresched'?>">
                     <?php if ($neworderview==1) :?>
                         <div class="regltabl-td regltabl-brand">
                             <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
