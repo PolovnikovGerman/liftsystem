@@ -37,6 +37,8 @@
                     <?php endforeach;?>
                 </ul>
             </div>
+            <?php else: ?>
+                &nbsp;
             <?php endif; ?>
         </div>
         <div class="regltabl-mainblock">
