@@ -1130,7 +1130,7 @@ class Printcalendar_model extends MY_Model
     {
         $out = ['result' => $this->error_result, 'msg' => 'Order Not Found'];
         // $this->db->select('o.order_id, oi.print_date')->from('ts_orders o')->join('ts_order_items oi','oi.order_id=o.order_id')->join('ts_order_itemcolors oic', 'oic.order_item_id=oi.order_item_id')->where('oic.order_itemcolor_id', $order_itemcolor_id);
-        $this->db->select('o.order_id, oi.print_date')->from('ts_orders o')->where('o.order_id', $order_id);
+        $this->db->select('o.order_id, oi.print_date')->from('ts_orders o')->join('ts_order_items oi','oi.order_id=o.order_id')->where('o.order_id', $order_id);
         $orderres = $this->db->get()->row_array();
         if (ifset($orderres,'order_id',0)>0) {
             $out['result'] = $this->success_result;
