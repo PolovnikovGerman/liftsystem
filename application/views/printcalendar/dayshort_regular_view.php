@@ -19,7 +19,12 @@
     </div>
     <div id="printshortregularviewarea">
         <?php $order_id = 0; ?>
+        <?php $neworderview=1; ?>
         <?php foreach ($lists as $list) : ?>
+            <?php if ($list['order_id']!=$order_id) : ?>
+                <?php $order_id=$list['order_id'];?>
+                <?php $neworderview=1; ?>
+            <?php endif; ?>
             <div class="regltabl-tr" data-ordercolor="<?=$list['order_itemcolor_id']?>" id="printord_<?=$list['order_item_id']?>" draggable="true" ondragstart="dragstartHandler(event)">
                 <div class="regltabl-apprblock">
                     <div class="regltabl-td regltabl-prcful <?=$list['class']=='normal' ? '' : 'peach'?>"><?=$list['fulfillprc']?>%</div>
@@ -31,19 +36,15 @@
                         <?php endif; ?>
                     </div>
                 </div>
-                <div class="regltabl-mainblock shortresched">
-                    <div class="regltabl-td regltabl-brand">
-                        <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
-                    </div>
-                    <div class="regltabl-td regltabl-rush <?=$list['order_rush']==0 ? '' : 'redrush'?>"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
-                    <div class="regltabl-td regltabl-order" data-order="<?=$list['order_id']?>">
-                        <?php if ($list['order_id']==$order_id) : ?>
-                            --
-                        <?php else : ?>
-                            <?=$list['order_num']?>
-                            <?php $order_id=$list['order_id'];?>
-                        <?php endif; ?>
-                    </div>
+                <div class="regltabl-mainblock shortresched <?=$neworderview==0 ? 'repeatrow' : 0?>">
+                    <?php if ($neworderview==1) :?>
+                        <div class="regltabl-td regltabl-brand">
+                            <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
+                        </div>
+                        <div class="regltabl-td regltabl-rush <?=$list['order_rush']==0 ? '' : 'redrush'?>"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
+                        <div class="regltabl-td regltabl-order" data-order="<?=$list['order_id']?>"><?=$list['order_num']?></div>
+                        <?php $neworderview = 0?>
+                    <?php endif; ?>
                     <div class="regltabl-td regltabl-items"><?=QTYOutput($list['item_qty'])?></div>
                     <div class="regltabl-td regltabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                     <div class="regltabl-td regltabl-prints"><?=QTYOutput($list['prints'])?></div>
