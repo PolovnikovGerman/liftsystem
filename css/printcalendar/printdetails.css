@@ -610,6 +610,9 @@
     margin-right: 10px;
     border: 1px solid #888888;
 }
+.regltabl-mainblock.repeatrow {
+    margin-left: 92px;
+}
 .regltabl-mainblock.shortresched {
     margin-left: 10px;
 }
@@ -674,9 +677,6 @@
     color: #0000ff;
 /*    font-size: 12px; */
     font-weight: 600;
-}
-.regltabl-empty {
-    width: 92px;
 }
 .regltabl-header .regltabl-order {
     color: #000 !important;
