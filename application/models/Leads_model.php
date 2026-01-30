@@ -217,6 +217,14 @@ Class Leads_model extends MY_Model
         $res = $this->db->select('*')->from('ts_leads')->where('lead_id',$lead_id)->get()->row_array();
         if (ifset($res, 'lead_id', 0)==$lead_id) {
             $out['result'] = $this->success_result;
+            $out['address'] = [
+                'country_id' => $res['country_id'],
+                'address_line1' => $res['address_line1'],
+                'address_line2' => $res['address_line2'],
+                'city' => $res['city'],
+                'state' => $res['state'],
+                'zip' => $res['zip'],
+            ];
             $out['lead'] = $res;
         }
         return $out;
@@ -264,22 +272,49 @@ Class Leads_model extends MY_Model
 
     /* Get Lead Tasks, related with lead */
     public function get_lead_tasks($lead_id) {
-        $this->db->select('*');
-        $this->db->from('ts_lead_tasks');
-        $this->db->where('lead_id',$lead_id);
-        $res=$this->db->get()->row_array();
-        if (!isset($res['leadtask_id'])) {
-            $res=array();
-            /* Get Struct */
-            $fields = $this->db->list_fields('ts_lead_tasks');
-            foreach ($fields as $field)
-            {
-                $res[$field]='';
+//        $this->db->select('*');
+//        $this->db->from('ts_lead_tasks');
+//        $this->db->where('lead_id',$lead_id);
+//        $res=$this->db->get()->row_array();
+//        if (!isset($res['leadtask_id'])) {
+//            $res=array();
+//            /* Get Struct */
+//            $fields = $this->db->list_fields('ts_lead_tasks');
+//            foreach ($fields as $field)
+//            {
+//                $res[$field]='';
+//            }
+//            $res['lead_id']=$lead_id;
+//            $res['leadtask_id']=0;
+//        }
+//        return $res;
+        $this->db->select('le.leademail_id, le.email_id, le.custom_quote_id, e.email_type, e.email_subtype, e.email_date, cq.date_add');
+        $this->db->from('ts_lead_emails le');
+        $this->db->join('ts_emails e', 'e.email_id=le.email_id','left');
+        $this->db->join('ts_custom_quotes cq', 'cq.custom_quote_id = le.custom_quote_id', 'left');
+        $this->db->where('le.lead_id', $lead_id);
+        $this->db->order_by('le.leademail_id');
+        $results = $this->db->get()->result_array();
+        $tasks = [];
+        foreach ($results as $result) {
+            if (empty($result['email_id'])) {
+                $result['task_type'] = 'Custom SB Form';
+                $result['task_date'] = date('m/d/y',strtotime($result['date_add']));
+                $tasks[] = $result;
+            } else {
+                $result['task_type'] = '';
+                if ($result['email_type']=='Questions') {
+                    $result['task_type'] = 'WEB Question';
+                } elseif ($result['email_type']=='Leads' && $result['email_subtype']=='Quote') {
+                    $result['task_type'] = 'WEB Quote';
+                }
+                if (!empty($result['task_type'])) {
+                    $result['task_date'] = date('m/d/y', strtotime($result['email_date']));
+                    $tasks[] = $result;
+                }
             }
-            $res['lead_id']=$lead_id;
-            $res['leadtask_id']=0;
         }
-        return $res;
+        return $tasks;
     }
 
     public function get_leadnum($brand) {
@@ -2471,7 +2506,20 @@ Class Leads_model extends MY_Model
 
     public function get_lead_contacts($lead_id)
     {
-
+        $results = $this->db->select('*')->from('ts_lead_contacts')->where('lead_id', $lead_id)->get()->result_array();
+        if (count($results) < 2) {
+            $start = count($results);
+            for ($i=$start; $i<2; $i++) {
+                $results[] = [
+                    'lead_contact_id' => ($i+1)*(-1),
+                    'lead_id' => $lead_id,
+                    'contact_name' => '',
+                    'contact_email' => '',
+                    'contact_phone' => '',
+                ];
+            }
+        }
+        return $results;
     }
     public function add_leadcontacts()
     {

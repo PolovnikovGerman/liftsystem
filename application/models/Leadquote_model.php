@@ -4418,4 +4418,70 @@ class Leadquote_model extends MY_Model
         return $outcolor;
     }
 
+    public function get_leadquotes_list($lead_id)
+    {
+        $quotes = [];
+        // Select Year data
+        $this->db->select('DATE_FORMAT(from_unixtime(quote_date),\'%Y\') as qyear, count(quote_id) as cnt');
+        $this->db->from('ts_quotes');
+        $this->db->where('lead_id', $lead_id);
+        $this->db->group_by('qyear')->order_by('qyear','desc');
+        $qyears = $this->db->get()->result_array();
+        if (count($qyears) > 0) {
+            $qrow = [
+                'rowtype' => 'total',
+                'year' => $qyears[0]['qyear'],
+                'total' => $qyears[0]['cnt'],
+            ];
+            $quotes[] = $qrow;
+            // Get All quotes
+            $this->db->select('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.quote_source, sum(qc.item_qty) as item_qty');
+            $this->db->select('group_concat(distinct(qc.item_description)) as item_name');
+            $this->db->from('ts_quotes q');
+            $this->db->join('ts_quote_items i','i.quote_id=q.quote_id','left ');
+            $this->db->join('ts_quote_itemcolors qc','qc.quote_item_id=i.quote_item_id','left');
+            $this->db->where('q.lead_id', $lead_id);
+            $this->db->group_by('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.quote_source');
+            $lists = $this->db->get()->result_array();
+            $yearlist = date('Y', $lists[0]['quote_date']);
+            foreach ($lists as $list) {
+                if (date('Y',$list['quote_date'])!==$yearlist) {
+                    $yearsearch = date('Y',$list['quote_date']);
+                    // Search Year total
+                    $found = 0;
+                    foreach ($qyears as $qyear) {
+                        if ($qyear['qyear']==$yearsearch) {
+                            $found = 1;
+                            $qrow = [
+                                'rowtype' => 'total',
+                                'year' => $qyear['qyear'],
+                                'total' => $qyear['cnt'],
+                            ];
+                            $quotes[] = $qrow;
+                        }
+                    }
+                    if ($found==1) {
+                        $yearlist = $yearsearch;
+                    }
+                }
+                $this->db->select('count(order_id) as orders')->from('ts_leadquote_orders')->where('quote_id', $list['quote_id']);
+                $orddat = $this->db->get()->row_array();
+                $list['orders'] = $orddat['orders'];
+                $this->db->select('GROUP_CONCAT(qpd.num_colors) as impr');
+                $this->db->from('ts_quote_imprindetails qpd');
+                $this->db->join('ts_quote_items qi', 'qi.quote_item_id = qpd.quote_item_id');
+                $this->db->where(['qpd.imprint_active' => 1, 'qi.quote_id' => $list['quote_id']]);
+                $printres = $this->db->get()->row_array();
+                if (empty($printres['impr'])) {
+                    $list['imprints'] = 'Blank';
+                } else {
+                    $list['imprints'] = str_replace('5','F',str_replace(',','+',$printres['impr']));
+                }
+                $list['rowtype'] = 'quote';
+                $quotes[] = $list;
+            }
+        }
+        return $quotes;
+    }
+
 }

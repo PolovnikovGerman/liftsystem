@@ -30,8 +30,8 @@ class Leadmanagement extends MY_Controller
             $leadfound = 0;
 //            $this->load->model('questions_model');
 //            $this->load->model('quotes_model');
-//            $this->load->model('artproof_model');
-//            $this->load->model('leadquote_model');
+            $this->load->model('artproof_model');
+            $this->load->model('leadquote_model');
             if ($lead_id ==0) {
                 // New Lead
                 $lead_data = $this->leads_model->get_empty_lead();
@@ -50,6 +50,14 @@ class Leadmanagement extends MY_Controller
                         'contact_phone' => '',
                     ];
                 }
+                $customer_address = [
+                    'country_id' => '',
+                    'address_line1' => '',
+                    'address_line2' => '',
+                    'city' => '',
+                    'zip' => '',
+                    'state' => '',
+                ];
                 $leadfound = 1;
                 $error = '';
             } else {
@@ -59,12 +67,13 @@ class Leadmanagement extends MY_Controller
                     $leadfound = 1;
                     $error = '';
                     $lead_data = $res['lead'];
+                    $customer_address = $res['address'];
+                    $brand = isset($lead_data['brand']) ? $lead_data['brand'] : $brand;
+                    $lead_history = $this->leads_model->get_lead_history($lead_id);
+                    $lead_usr = $this->leads_model->get_lead_users($lead_id);
+                    $leads_attach = $this->leads_model->get_lead_attachs($lead_id);
+                    $lead_contacts = $this->leads_model->get_lead_contacts($lead_id);
                 }
-                $brand = isset($lead_data['brand']) ? $lead_data['brand'] : $brand;
-                $lead_history = $this->leads_model->get_lead_history($lead_id);
-                $lead_usr = $this->leads_model->get_lead_users($lead_id);
-                $leads_attach = $this->leads_model->get_lead_attachs($lead_id);
-                $lead_contacts = $this->leads_model->get_lead_contacts($lead_id);
             }
             if ($leadfound==1) {
                 $lead_replic=[];
@@ -97,14 +106,50 @@ class Leadmanagement extends MY_Controller
                         $replica_view = $this->load->view('leadpopupnew/assigned_lead_view', $replica_options, true);
                     }
                 }
+                $this->load->model('shipping_model');
+                $countries = $this->shipping_model->get_countries_list(['orderby'=>'sort']);
+                $states = [];
+                $states_view = $this->load->view('leadpopupnew/states_view', ['states' => $states, 'statecode' => $customer_address['state']], true);
                 // Customer info
                 $customer_options = [
-                    'blocked' => 0,
-                    'customer' => $lead_data['company'],
-                    'customer_number' => '',
+                    'customer' => $lead_data['lead_company'],
                     'contacts' => $lead_contacts,
+                    'address' => $customer_address,
+                    'countries' => $countries,
+                    'states' => $states_view,
                 ];
                 $customer_view = $this->load->view('leadpopupnew/customer_view', $customer_options, true);
+                // History view
+                $history_view = $this->load->view('leadpopupnew/history_view', ['lead_history'=>$lead_history], true);
+                // Question - Lead Relation
+                $tasks = $this->leads_model->get_lead_tasks($lead_id);
+                $tasks_view = $this->load->view('leadpopupnew/tasks_view', ['tasks' => $tasks], true);
+                // Attachments
+                $attachments_view = $this->load->view('leadpopupnew/attachments_view', ['attachments' => $leads_attach], true);
+                $this->load->model('orders_model');
+                $dboptions=array(
+                    'exclude'=>array(-4, -5, -2),
+                    'brand' => $lead_data['brand'],
+                );
+                $items_list = $this->orders_model->get_item_list($dboptions);
+                // Quotes
+                $lead_quotes = $this->leadquote_model->get_leadquotes_list($lead_id);
+                $quotes_view = $this->load->view('leadpopupnew/quotes_list_view', ['quotes' => $lead_quotes], true);
+                // Proof Requests
+                $proofarts = $this->artproof_model->get_lead_proofs($lead_id);
+                $proofarts_view = $this->load->view('leadpopupnew/proofart_list_view', ['proofs' => $proofarts], true);
+                $content_options = [
+                    'customer_view' => $customer_view,
+                    'lead' => $lead_data,
+                    'replica_view' => $replica_view,
+                    'items' => $items_list,
+                    'history_view' => $history_view,
+                    'tasks_view' => $tasks_view,
+                    'attachments_view' => $attachments_view,
+                    'quotes_view' => $quotes_view,
+                    'proofarts_list' => $proofarts_view,
+                ];
+                $mdata['content'] = $this->load->view('leadpopupnew/page_view', $content_options, true);
             }
             $this->ajaxResponse($mdata, $error);
         }
