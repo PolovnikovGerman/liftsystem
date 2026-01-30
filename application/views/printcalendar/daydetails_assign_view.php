@@ -7,6 +7,7 @@
     </div>
 </div>
 <?php $order_id = 0; ?>
+<?php $neworderview=1; ?>
 <?php foreach ($lists as $list)  :?>
     <?php if ($list['order_id']!=$order_id) : ?>
         <?php $order_id=$list['order_id'];?>
