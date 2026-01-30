@@ -675,6 +675,9 @@
 /*    font-size: 12px; */
     font-weight: 600;
 }
+.regltabl-empty {
+    width: 92px;
+}
 .regltabl-header .regltabl-order {
     color: #000 !important;
 }

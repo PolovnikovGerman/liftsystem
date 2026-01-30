@@ -42,18 +42,18 @@
             <?php endif; ?>
         </div>
         <div class="regltabl-mainblock">
-            <div class="regltabl-td regltabl-brand">
-                <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
-            </div>
-            <div class="regltabl-td regltabl-rush <?=$list['order_rush']==0 ? '' : 'redrush'?>"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
-            <div class="regltabl-td regltabl-order" data-order="<?=$list['order_id']?>">
-                <?php if ($neworderview==0) : ?>
-                    --
-                <?php else : ?>
+            <?php if ($neworderview==1) :?>
+                <div class="regltabl-td regltabl-brand">
+                    <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
+                </div>
+                <div class="regltabl-td regltabl-rush <?=$list['order_rush']==0 ? '' : 'redrush'?>"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
+                <div class="regltabl-td regltabl-order">
                     <?=$list['order_num']?>
-                    <?php $neworderview=0;?>
-                <?php endif; ?>
-            </div>
+                </div>
+                <?php $neworderview = 0?>
+            <?php else : ?>
+                <div class="regltabl-td regltabl-empty">&nbsp</div>
+            <?php endif; ?>
             <div class="regltabl-td regltabl-items"><?=QTYOutput($list['item_qty'])?></div>
             <div class="regltabl-td regltabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
             <div class="regltabl-td regltabl-prints"><?=QTYOutput($list['prints'])?></div>
