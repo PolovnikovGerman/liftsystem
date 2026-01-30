@@ -207,7 +207,7 @@ class Printcalendar extends MY_Controller
             $order_id = ifset($postdata, 'order', '');
             $user_id = ifset($postdata, 'user',0);
             $smallview = ifset($postdata, 'smallview', 0);
-            if (!empty($order_itemcolor_id)) {
+            if (!empty($order_id)) {
                 // $res = $this->printcalendar_model->assignorder($order_itemcolor_id, $user_id);
                 $res = $this->printcalendar_model->assignorder($order_id, $user_id);
                 $error = $res['msg'];
