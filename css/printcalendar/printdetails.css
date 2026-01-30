@@ -616,6 +616,9 @@
 .regltabl-mainblock.shortresched {
     margin-left: 10px;
 }
+.regltabl-mainblock.shortrepeat {
+    margin-left: 102px;
+}
 .regltabl-header .regltabl-prepblock {
     margin-right: 7px;
     border: 1px solid #888888;
