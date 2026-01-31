@@ -24,8 +24,14 @@ function init_printcalendar(year) {
         if (response.errors=='') {
             $(".psctable-body").empty().html(response.data.calendarview);
             var scrollElement = new SimpleBar(document.getElementById('psctable-body'), { autoHide: false });
+            var heightcss = parseInt($("#psctable-body").css('height'));
+            var heightreal = parseInt($("#psctable-body").find('div.simplebar-content').height()) + 10;
+            if (heightreal < heightcss) {
+                $("#psctable-body").css('height', heightreal);
+            } 
             setTimeout(() => {
                 scrollElement.getScrollElement().scrollTop = scrollElement.getScrollElement().scrollHeight;
+                // Get css val and compare with real value
             }, "300");
             // Init Calendar
             init_fullcalendar();
