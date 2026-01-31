@@ -25,7 +25,7 @@ function init_printcalendar(year) {
             $(".psctable-body").empty().html(response.data.calendarview);
             var scrollElement = new SimpleBar(document.getElementById('psctable-body'), { autoHide: false });
             var heightcss = parseInt($("#psctable-body").css('height'));
-            var heightreal = parseInt($("#psctable-body").find('div.simplebar-content').height()) + 10;
+            var heightreal = parseInt($("#psctable-body").find('div.simplebar-content').height()) + 5;
             if (heightreal < heightcss) {
                 $("#psctable-body").css('height', heightreal);
             } 
