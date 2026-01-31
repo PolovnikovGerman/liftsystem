@@ -512,8 +512,10 @@
     outline: 1px solid #888888;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-    background: #93fc9b;
-    color: #000000;
+    /*background: #93fc9b;*/
+    /*color: #000000;*/
+    background: #f606ff;
+    color: #ffffff;
     font-size: 10px;
     font-weight: 600;
     cursor: pointer;
@@ -569,6 +571,7 @@
     font-weight: 600;
     font-style: italic;
     margin-bottom: 2px;
+    margin-top: -19px;
 }
 .reglsection-subtitle-1 {
     margin-left: 845px;
@@ -751,7 +754,9 @@
     background: #dbdbdb !important;
 }
 .regltabl-prepstock {
-    background: url(/img/printscheduler/prepared-stock-green.svg) no-repeat;
+    /*background: url(/img/printscheduler/prepared-stock-green.svg) no-repeat;*/
+    background: url('/img/printscheduler/prepared-stock-pink.svg');
+    color: #ffffff;
     height: 16px;
     width: 44px;
     font-size: 10.5px;
@@ -766,7 +771,9 @@
     color: #ffffff;
 }
 .regltabl-prepplate {
-    background: url(/img/printscheduler/prepared-plateupd-green.svg) no-repeat;
+    /*background: url(/img/printscheduler/prepared-plateupd-green.svg) no-repeat;*/
+    background: url(/img/printscheduler/prepared-plateupd-pink.svg) no-repeat;
+    color: #ffffff;
     height: 16px;
     width: 57px;
     font-size: 10.5px;
@@ -798,7 +805,9 @@
     padding-left: 4px;
 }
 .regltabl-prepink {
-    background: url(/img/printscheduler/prepared-ink-green.svg) no-repeat;
+    /*background: url(/img/printscheduler/prepared-ink-green.svg) no-repeat;*/
+    background: url(/img/printscheduler/prepared-ink-pink.svg) no-repeat;
+    color: #ffffff;
     height: 16px;
     width: 42px;
     font-size: 10.5px;
@@ -987,7 +996,9 @@
     text-align: center;
 }
 .regltabl-printername.unassignedtotal {
-    background: #93fc9b;
+    /*background: #93fc9b;*/
+    background: #f606ff;
+    color: #ffffff;
 }
 .regltabl-printerinfo {
     background: #FFFFFF;
@@ -995,7 +1006,8 @@
     height: 20px;
 }
 .regltabl-printerinfo.unassignedtotal {
-    background: #93fc9b;
+    background: #f606ff;
+    color: #ffffff;
 }
 .regltabl-printerinfo-data {
     background: #969595;
@@ -1245,13 +1257,13 @@
     font-weight: 600;
 }
 .histrtabl-method {
-    /* width: 78px; */
-    width: 62px;
+    /*width: 62px;*/
+    width: 51px;
 }
 .histrtabl-tracking {
     position: relative;
-    /* width: 132px; */
-    width: 152px;
+    /*width: 152px;*/
+    width: 163px;
 }
 /*.histrtabl-tracking span {*/
 /*    color: #030ffa;*/
@@ -1262,7 +1274,8 @@
     color: #030ffa;
     font-size: 11px;
     font-weight: 600;
-    width: 130px;
+    /*width: 130px;*/
+    width: 140px;
     height: 21px;
 }
 .trackbtn {
