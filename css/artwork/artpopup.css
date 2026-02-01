@@ -536,6 +536,7 @@
     font-size: 14px;
     position: relative;
     top: -1px;
+    cursor: pointer;
 }
 .artw-rdrnotes-icon i {
     color: #999999;
@@ -586,6 +587,7 @@
 .artw-srcfont {}
 .artw-srcfont-icn {
     margin-right: 3px;
+    cursor: pointer;
 }
 .artw-srcfont-icn i {
     color: #999999;
@@ -1269,4 +1271,380 @@ input.inputcolor {
 i.templateplayer {
     color:#2b542c;
     font-size: 16px;
+}
+/* Popup - Edit params */
+.modal-prpopups .modal-header {
+    padding: 10px 0 7px;
+    border-bottom: 1px solid transparent;
+    background: #eeeded;
+    background: linear-gradient(to top, #eeeded, #efeeee);
+    width: 100%;
+    border-radius: 5px 5px 0 0;
+}
+.modal-prpopups .modal-dialog {
+    width: 507px;
+    margin: 30px auto;
+}
+.modal-prpopups .modal-footer {
+    padding: 0;
+    text-align: left;
+    border-top: 1px solid #e5e5e5;
+    background: #fff;
+    width: 100%;
+    border-radius: 0 0 5px 5px;
+}
+.contant-popup {
+    width: 100%;
+}
+/*.contant-popup div {*/
+/*    float: left;*/
+/*}*/
+.prpopup-contant {
+    width: 100%;
+    background: #ebeaea;
+    background: linear-gradient(to top, #e2e1e1, #eeeded);
+    border-radius: 0 0 5px 5px;
+    padding: 0 14px;
+}
+.modal-prpopups .modal-body {
+    padding: 0;
+}
+button.closemodal {
+    position: absolute;
+    top: -9px;
+    right: -9px;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    border: 1px solid #000;
+    background: #ff0000;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    opacity: 1;
+    z-index: 1;
+    font-size: 20px;
+    line-height: 18px;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, .3);
+    padding: 0;
+}
+.modal-prpopups h5.modal-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+}
+.prpopup-footer {
+    width: 100%;
+    padding: 10px 0;
+}
+.prpopup-bluebtn {
+    width: auto;
+    height: 30px;
+    line-height: 28px;
+    background: #5b5afe;
+    background: linear-gradient(to top, #4c4bfe, #6664fe);
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid #1a1b70;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, .5);
+    border-radius: 4px;
+    cursor: pointer;
+    color: #fff;
+    padding: 0 15px;
+}
+.prpopuptext-save {
+    float: right !important;
+    margin-right: 14px;
+}
+
+.prpopup-textbox {
+    width: 100%;
+}
+.prpopup-textbox textarea {
+    height: 165px;
+    width: 100%;
+    border: 1px solid #000;
+    border-radius: 3px;
+    padding: 5px;
+    font-size: 14px;
+    resize: none;
+}
+
+/*---------------  Popup History ----------------*/
+.prpopup-historyarea  {
+    height: 530px;
+    width: 100%;
+    border: 1px solid #000;
+    border-radius: 3px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #fff;
+}
+.list-history {
+    width: 100%;
+}
+.historybox {
+    width: 100%;
+    border-bottom: 1px solid #7f7e7e;
+}
+.historybox-info {
+    width: 100%;
+    font-size: 14px;
+    font-style: italic;
+    color: #646363;
+    line-height: 16px;
+}
+.historybox-text {
+    width: 100%;
+    font-size: 14px;
+    line-height: 16px;
+    margin-bottom: 7px;
+}
+
+/*---------------  Popup Colors ----------------*/
+.prpopup-colorsarea  {
+    width: 100%;
+    border: 1px solid #000;
+    border-radius: 3px;
+    padding-top: 15px;
+    background: #fff;
+}
+.prpopupcolors-btn {
+    margin: 0 175px;
+}
+.prpopup-listcolors {
+    width: 100%;
+    padding-left: 14px;
+    margin-bottom: 5px;
+}
+.prp-colorarea {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+.prp-colorbox {
+    width: 120px;
+    height: 36px;
+    border: 1px solid #000;
+    font-size: 12px;
+    line-height: 14px;
+    text-align: center;
+    padding: 2px 0;
+}
+.prp-colorinpt {
+    margin-right: 7px;
+}
+.prp-colorinpt input {
+    margin-top: 10px !important;
+}
+.prp-colorbox.blackcolor {
+    background: #000;
+    color: #fff;
+}
+.prp-colorbox.forestgreen {
+    background: #254c25;
+    color: #fff;
+}
+.prp-colorbox.aquacolor {
+    background: #2287bf;
+    color: #fff;
+}
+.prp-colorbox.whitecolor {
+    background: #fff;
+    color: #000;
+}
+.prp-colorbox.yellowcolor {
+    background: #ffff00;
+    color: #000;
+}
+.prp-colorbox.tealcolor {
+    background: #3893af;
+    color: #fff;
+}
+.prp-colorbox.lightblue {
+    background: #9cb6ff;
+    color: #000;
+}
+.prp-colorbox.yellowishorange {
+    background: #eabf0a;
+    color: #000;
+}
+.prp-colorbox.peachcolor {
+    background: #ffbdae;
+    color: #000;
+}
+.prp-colorbox.royalblue {
+    background: #0000ff;
+    color: #fff;
+}
+.prp-colorbox.orangecolor {
+    background: #ff6700;
+    color: #fff;
+}
+.prp-colorbox.tancolor {
+    background: #ba7735;
+    color: #fff;
+}
+.prp-colorbox.reflexblue {
+    background: #0404aa;
+    color: #fff;
+}
+.prp-colorbox.burntorange {
+    background: #bc6506;
+    color: #fff;
+}
+.prp-colorbox.browncolor {
+    background: #603f0f;
+    color: #fff;
+}
+.prp-colorbox.navyblue {
+    background: #030356;
+    color: #fff;
+}
+.prp-colorbox.scarletred {
+    background: #ff0000;
+    color: #fff;
+}
+.prp-colorbox.lightgreycolor {
+    background: #e5e5e5;
+    color: #000;
+}
+.prp-colorbox.lightgreen {
+    background: #5fffc2;
+    color: #000;
+}
+.prp-colorbox.marooncolor {
+    background: #6d0303;
+    color: #fff;
+}
+.prp-colorbox.medgrey {
+    background: #999999;
+    color: #fff;
+}
+.prp-colorbox.limegreen {
+    background: #00ff00;
+    color: #000;
+}
+.prp-colorbox.pinkcolor {
+    background: #ee87f9;
+    color: #000;
+}
+.prp-colorbox.darkgreycolor {
+    background: #494948;
+    color: #fff;
+}
+.prp-colorbox.grassgreen {
+    background: #009345;
+    color: #fff;
+}
+.prp-colorbox.purplecolor {
+    background: #3c1699;
+    color: #fff;
+}
+.prp-colorbox.metallicsilver {
+    background: #e5e5e5;
+    color: #000;
+}
+.prp-colorbox.originalgreen {
+    background: #21937d;
+    color: #fff;
+}
+.prp-colorbox.lavender {
+    background: #b69ef2;
+    color: #000;
+}
+.prp-colorbox.metallicgold {
+    background: #baba4f;
+    color: #000;
+}
+/*---------------  Popup Fonts ----------------*/
+#modal-prpopupfonts .modal-title {
+    font-weight: 600 !important;
+    border-bottom: 1px solid #7f7e7e;
+    margin: 0 14px;
+    padding-bottom: 5px;
+}
+.prpopup-fontstop {
+    width: 100%;
+}
+.prp-fonttext {
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+.prp-fonttext label {
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: 400;
+}
+.prp-fonttext input {
+    display: inline-block;
+    width: 198px;
+    height: 24px;
+    border: 1px solid #000;
+    border-radius: 2px;
+    line-height: 22px;
+    font-size: 14px;
+    padding-left: 7px;
+}
+.prpopup-fontsarea {
+    width: 100%;
+    height: 475px;
+    overflow-y: auto;
+    border: 1px solid #000;
+    border-radius: 3px;
+    padding: 5px 0;
+    background: #fff;
+    margin-top: 7px;
+    scrollbar-width: none;
+}
+.prpopup-fontsarea h5 {
+    float: left;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 600;
+    margin: 8px 0;
+}
+.prpopupcolors-btn {
+    margin: 0 175px;
+}
+.tbl-fontslist {
+    width: 100%;
+    padding: 0 10px;
+}
+.tblfontslist-tr {
+    width: 100%;
+    margin-bottom: 7px;
+}
+.tblfontslist-td {
+    /*border: 1px solid #dfdfdf;*/
+}
+.td-fontinpt {
+    width: 20px;
+    text-align: right;
+    padding-right: 3px;
+}
+.td-fontinpt input {
+    margin: 6px 0 0 0 !important;
+    height: 12px;
+    width: 12px;
+}
+.verrypopular .td-fontbox {
+    width: 130px;
+    padding: 0 7px;
+}
+.otherpopular .td-fontbox {
+    width: 206px;
+    padding: 0 7px;
+}
+.fontbox {
+    height: 20px;
+}
+.fontbox img {
+    width: 100%;
+    height: auto;
+    max-height: 16px;
 }

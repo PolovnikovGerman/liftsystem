@@ -358,7 +358,7 @@ function init_locations() {
         change_usertxt(art_id, 'customer_text');
     })
     // Redo notes
-    $("span.artw-rdrnotes-icon").unbind('change').change(function () {
+    $("span.artw-rdrnotes-icon").unbind('click').click(function () {
         var art_id = $(this).data('art');
         change_usertxt(art_id, 'redraw_message');
     });
@@ -388,30 +388,34 @@ function change_font(value, art_id) {
     var url="/artproofrequest/art_fontselect";
     $.post(url, {}, function(response){
         if (response.errors=='') {
-            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
-            $("#artNextModal").find('.modal-title').empty().html('Select Font');
-            $("#artNextModal").find('.modal-dialog').css('width','1010px');
-            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
-            $("#artNextModal").on('hidden.bs.modal', function (e) {
+            $("#proofReqEditparams").find('div.modal-body').empty().html(response.data.content);
+            $("#proofReqEditparams").find('.modal-title').empty().html('We have 10,000s of fonts available!');
+            // $("#artNextModal").find('.modal-dialog').css('width','1010px');
+            $("#proofReqEditparams").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#proofReqEditparams").on('hidden.bs.modal', function (e) {
                 $(document.body).addClass('modal-open');
             })
-            $("#artNextModal").css('z-index',2000);
-            $("div#popupwin input.fontmanual").change(function(){
+            $("#proofReqEditparams").css('z-index',2000);
+            new SimpleBar(document.getElementById('prpopup-fontsarea'), { autoHide: false });
+
+            $(".prp-fonttext").find("input").unbind('change').change(function(){
                 var fontval=$(this).val();
                 $("input#fontselectfor").val(fontval);
-                $("div.font_button_select").addClass('active');
+                // $("div.font_button_select").addClass('active');
             })
-            $("input.fontoption").click(function(){
+            $("input[name='prpfontarea']").unbind('click').click(function(){
                 var fontval=$(this).val();
                 $("input#fontselectfor").val(fontval);
-                $("div.font_button_select").addClass('active');
+                // $("div.font_button_select").addClass('active');
             })
             /* Init Management */
-            $("div.font_button_select").click(function(){
+            $("div.prpopup-bluebtn").unbind('click').click(function(){
                 var fontval=$("input#fontselectfor").val();
-                $("input.artfont[data-artworkartid="+art_id+"]").val(fontval);
-                $("#artNextModal").modal('hide');
-                change_location('font',fontval,art_id);
+                if (fontval!='') {
+                    // $("input.artfont[data-artworkartid="+art_id+"]").val(fontval);
+                    $("#proofReqEditparams").modal('hide');
+                    change_location('font',fontval,art_id);
+                }
             })
             // active
         } else {
@@ -428,18 +432,21 @@ function change_usertxt(art_id, locitem) {
     var url="/artproofrequest/art_changeusrtxt";
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
-            $("#artNextModal").find('.modal-title').empty().html('Edit Text Location');
-            $("#artNextModal").find('.modal-dialog').css('width','470px');
-            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
-            $("#artNextModal").on('hidden.bs.modal', function (e) {
+            $("#proofReqEditparams").find('div.modal-body').empty().html(response.data.content);
+            $("#proofReqEditparams").find('.modal-title').empty().html(response.data.title);
+            $("#proofReqEditparams").find('.modal-dialog').css('width','470px');
+            $("#proofReqEditparams").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#proofReqEditparams").on('hidden.bs.modal', function (e) {
                 $(document.body).addClass('modal-open');
             });
-            $("#artNextModal").css('z-index',2000);
-            $("div.vectorsave_data").show();
-            $("div.vectorsave_data").click(function(){
+            $("#proofReqEditparams").css('z-index',2000);
+            // $("div.vectorsave_data").show();
+            $("div.prpopup-bluebtn").unbind('click').click(function (){
                 save_usertext(art_id, locitem);
-            });
+            })
+            // $("div.vectorsave_data").click(function(){
+            //     save_usertext(art_id, locitem);
+            // });
         } else {
             show_error(response);
         }
@@ -454,29 +461,33 @@ function edit_color(art_id, color_num) {
     var url="/artproofrequest/art_colorchoice";
     $.post(url, params , function(response){
         if (response.errors=='') {
-            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
-            $("#artNextModal").find('.modal-title').empty().html('Edit Color');
-            $("#artNextModal").find('.modal-dialog').css('width','1004px');
-            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
-            $("#artNextModal").on('hidden.bs.modal', function (e) {
+            $("#proofReqEditparams").find('div.modal-body').empty().html(response.data.content);
+            $("#proofReqEditparams").find('.modal-title').empty().html('Please select an imprint color');
+            // $("#proofReqEditparams").find('.modal-dialog').css('width','1004px');
+            $("#proofReqEditparams").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#proofReqEditparams").on('hidden.bs.modal', function (e) {
                 $(document.body).addClass('modal-open');
             })
-            $("#artNextModal").css('z-index', 2000);
-            $(".colorradio").click(function(){
-                var colorval=$(this).attr('id').substr(5);
-                colorval="#"+colorval;
-                if (this.id=='color2') {
-                    $("#usrcolor").attr('readonly',false);
-                } else {
-                    $("#usrcolor").attr('readonly',true);
-                    $("input#userchkcolor").val(colorval)
-                }
+            $("#proofReqEditparams").css('z-index', 2000);
+            // $(".prpcolorarea").unbind('click').click(function(){
+            //     var colorval=$(this).attr('id').substr(5);
+            //     colorval="#"+colorval;
+            //     if (this.id=='color2') {
+            //         $("#usrcolor").attr('readonly',false);
+            //     } else {
+            //         $("#usrcolor").attr('readonly',true);
+            //         $("input#userchkcolor").val(colorval)
+            //     }
 
-                $("a#select_color").attr('disabled', false).addClass('active').click(function(){
-                    var usercolor=$("input#userchkcolor").val();
-                    save_artwork_color(art_id, color_num, usercolor);
+                // $("a#select_color").attr('disabled', false).addClass('active').click(function(){
+                $(".prpopup-bluebtn").unbind('click').click(function (){
+                    // var usercolor=$("input#userchkcolor").val();
+                    if ($("input[name='prpcolorarea']:checked").length > 0) {
+                        var colorval = $("input[name='prpcolorarea']:checked").val();
+                        save_artwork_color(art_id, color_num, colorval);
+                    }
                 });
-            });
+            // });
         } else {
             show_error(response);
         }
@@ -514,7 +525,7 @@ function save_usertext(art_id, locitem) {
     var url="/artproofrequest/art_saveusertext";
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("#artNextModal").modal('hide');
+            $("#proofReqEditparams").modal('hide');
             $("#proofreqlocation_table").empty().html(response.data.content);
             if (parseInt($("#locationtotal").val()) > 0) {
                 new SimpleBar(document.getElementById('proofreqlocation_table'), { autoHide: false });
@@ -535,7 +546,7 @@ function save_artwork_color(art_id, color_num, usercolor) {
     params.push({name: 'color_code', value :usercolor});
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("#artNextModal").modal('hide');
+            $("#proofReqEditparams").modal('hide');
             $("#proofreqlocation_table").empty().html(response.data.content);
             if (parseInt($("#locationtotal").val()) > 0) {
                 new SimpleBar(document.getElementById('proofreqlocation_table'), { autoHide: false });
@@ -554,14 +565,14 @@ function show_art_history() {
     params.push({name: 'artsession', value: $("input#artsession").val()});
     $.post(url, params,function(response){
         if (response.errors=='') {
-            $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
-            $("#artNextModal").find('.modal-title').empty().html('View History');
-            $("#artNextModal").find('.modal-dialog').css('width','395px');
-            $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
-            $("#artNextModal").on('hidden.bs.modal', function (e) {
+            $("#proofReqEditparams").find('div.modal-body').empty().html(response.data.content);
+            $("#proofReqEditparams").find('.modal-title').empty().html('History');
+            $("#proofReqEditparams").find('.modal-dialog').css('width','507px');
+            $("#proofReqEditparams").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#proofReqEditparams").on('hidden.bs.modal', function (e) {
                 $(document.body).addClass('modal-open');
             })
-            $("#artNextModal").css('z-index', 2000);
+            $("#proofReqEditparams").css('z-index', 2000);
         } else {
             show_error(response);
         }
