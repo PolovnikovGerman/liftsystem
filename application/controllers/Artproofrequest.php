@@ -812,7 +812,7 @@ class Artproofrequest extends MY_Controller
                 $art_id=$postdata['art_id'];
                 $locitem = $postdata['locitem'];
                 $artwork = $artdata['artwork'];
-                $artwork_id=$artwork['artwork_id'];
+                $artwork_id = $artwork['artwork_id'];
                 $this->load->model('artwork_model');
                 $res=$this->artwork_model->get_artdata_locusrtxt($artdata, $locitem, $art_id);
                 $error=$res['msg'];
@@ -821,8 +821,8 @@ class Artproofrequest extends MY_Controller
                     $options = [
                         'artwork_id' => $artwork_id,
                         'usrtxt' => $res['usrtxt'],
-                        'title' => $locitem=='customer_text' ? 'Enter Customer Text' : 'Type notes to Redraw Team',
                     ];
+                    $mdata['title'] = $locitem=='customer_text' ? 'Enter Customer Text' : 'Type notes to Redraw Team';
                     $mdata['content']=$this->load->view('artpage/newarttext_view', $options,TRUE);
                 }
             }
@@ -902,10 +902,11 @@ class Artproofrequest extends MY_Controller
             if (count($fonts_popular)+count($fonts_other)==0) {
                 $error='Empty list of fonts';
             } else {
-                $mdata['content']=$this->load->view('artpage/font_select_view',array('fonts_popular'=>$fonts_popular,'fonts_other'=>$fonts_other),TRUE);
+                $mdata['content']=$this->load->view('artpage/font_select_view', ['fonts_popular'=>$fonts_popular,'fonts_other'=>$fonts_other],TRUE);
             }
             $this->ajaxResponse($mdata, $error);
         }
+        show_404();
     }
 
     public function art_locationupdate() {
@@ -1145,7 +1146,7 @@ class Artproofrequest extends MY_Controller
                     if ($res['art_numcolors'] < $color_num) {
                         $error='Change #Colors for Edit Color';
                     } else {
-                        $mdata['content']=$this->load->view('artpage/art_colorchoice_view',array('colors'=>$this->config->item('imprint_colors')),TRUE);
+                        $mdata['content']=$this->load->view('artpage/art_colorchoice_view', ['colors'=>$this->config->item('imprint_colors')],TRUE);
                         $error='';
                     }
                 }
@@ -1182,6 +1183,7 @@ class Artproofrequest extends MY_Controller
             }
             $this->ajaxResponse($mdata, $error);
         }
+        show_404();
     }
 
     public function art_redrawupd() {
@@ -1217,7 +1219,7 @@ class Artproofrequest extends MY_Controller
                 $error='';
                 $artwork = $artdata['artwork'];
                 $history=$artwork['art_history'];
-                $mdata['content']=$this->load->view('artpage/history_view', array('history'=>$history), TRUE);
+                $mdata['content']=$this->load->view('artpage/history_view', ['histories'=>$history], TRUE);
             }
             $this->ajaxResponse($mdata, $error);
         }
