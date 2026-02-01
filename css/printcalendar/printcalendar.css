@@ -110,6 +110,10 @@
     color: #fff;
     padding: 0 3px;
 }
+.psctable-totalbox.readyweek {
+    /*opacity: 0.8;*/
+    background: #42338e;
+}
 .psctable-daybox .daybox-date {
     width: 24px;
     margin-top: 4px;
@@ -231,7 +235,8 @@
     border: 1px solid #afafaf;
 }
 .totalbox-printed {
-    width: 45px; /* 38px; */
+    /*width: 45px; */
+    width: 66px;
     margin-left: 4px;
 }
 .totalboxtprinted-name {
