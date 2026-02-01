@@ -86,6 +86,7 @@ class Printcalendar_model extends MY_Model
             }
             $weekfinish = $newdate->getTimestamp();
             // Week content current date
+            $readyweek = 0;
             if ($current_date >= $weekstart && $current_date <= $weekfinish) {
                 $results = $this->_current_week_sum($weekstart, $weekfinish);
             } else {
@@ -93,6 +94,7 @@ class Printcalendar_model extends MY_Model
                     // new orders
                     $results = $this->_feature_week_sum($weekstart, $weekfinish);
                 } else {
+                    $readyweek = 1;
                     // old orders
                     $results = $this->_late_week_sum($weekstart, $weekfinish);
                 }
@@ -125,6 +127,7 @@ class Printcalendar_model extends MY_Model
                 'total_prints' => $total_prints,
                 'total_printed' => $total_printed,
                 'total_toprint' => ($total_prints - $total_printed),
+                'readyweek' => $readyweek,
             ];
             if ($start_year >= $finish_year) {
                 break;
