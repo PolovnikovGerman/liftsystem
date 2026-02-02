@@ -68,7 +68,7 @@ Class Leadorder_model extends My_Model {
     ,array('Name'=>'Diners Club Carte Blanche','cardLength'=>array(14),'cardPrefix'=>array('300','305'))
     ,array('Name'=>'Laser','cardLength'=>array(16, 17, 18, 19),'cardPrefix'=>array('6304', '6706', '6771', '6709'))
     );
-    private $custom_print_price = 0.12;
+    private $custom_print_price = 0.16; /* 0.12 */
     private $custom_setup_price = 30;
     private $other_print_price = 0.20;
     private $other_setupsb_price = 30;
