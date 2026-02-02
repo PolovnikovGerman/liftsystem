@@ -2530,12 +2530,15 @@ Class Leads_model extends MY_Model
         $this->db->having('cnt', 0);
         $leads = $this->db->get()->result_array();
         foreach ($leads as $lead) {
-            $leaddat = $this->get_lead($lead['lead_id']);
-            $this->db->set('lead_id', $lead['lead_id']);
-            $this->db->set('contact_name', $leaddat['lead_customer']);
-            $this->db->set('contact_email', $leaddat['lead_mail']);
-            $this->db->set('contact_phone', $leaddat['lead_phone']);
-            $this->db->insert('ts_lead_contacts');
+            $res = $this->get_lead($lead['lead_id']);
+            if ($res['result']==$this->success_result) {
+                $leaddat = $res['lead'];
+                $this->db->set('lead_id', $lead['lead_id']);
+                $this->db->set('contact_name', $leaddat['lead_customer']);
+                $this->db->set('contact_email', $leaddat['lead_mail']);
+                $this->db->set('contact_phone', $leaddat['lead_phone']);
+                $this->db->insert('ts_lead_contacts');
+            }
         }
         return true;
     }
@@ -2556,6 +2559,31 @@ Class Leads_model extends MY_Model
             }
             $this->db->where('leademail_id', $leadmail);
             $this->db->delete('ts_lead_emails');
+        }
+        return $out;
+    }
+
+    // Edit data LEAD POPUP
+    public function change_leadpopup_data($leaddata, $field, $newval, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Info doesn\'t found'];
+        $lead = $leaddata['lead'];
+        if (array_key_exists($field, $lead)) {
+            if ($field=='lead_needby') {
+                if (!empty($newval)) {
+                    $newval = strtotime($newval);
+                }
+            } else {
+                $lead[$field] = $newval;
+            }
+            $out['newval'] = $newval;
+            if ($field=='country_id') {
+                $lead['state'] = '';
+            }
+            $out['result'] = $this->success_result;
+            $leaddata['lead'] = $lead;
+            // Update session
+            usersession($session_id, $leaddata);
         }
         return $out;
     }

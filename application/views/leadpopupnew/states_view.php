@@ -1,7 +1,7 @@
 <?php if (count($states)==0) :?>
-    <input type="text" placeholder="State" class="dp-state"/>
+    <input name="state" type="text" placeholder="State" class="dp-state leadmainedit" value="<?=$statecode?>" data-fld="state"/>
 <?php else: ?>
-    <select class="dp-state">
+    <select class="dp-state leadmainedit" name="state" data-fld="state">
         <option value=""></option>
         <?php foreach ($states as $state): ?>
             <option value="<?=$state['state_code']?>" <?=$state['state_code']==$statecode ? 'selected="selected"' : ''?>><?=$state['state_code']?></option>

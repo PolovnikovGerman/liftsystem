@@ -28,8 +28,6 @@ class Leadmanagement extends MY_Controller
             $lead_id = ifset($postdata, 'lead_id', 0);
             $brand = ifset($postdata, 'brand', 'SB');
             $leadfound = 0;
-//            $this->load->model('questions_model');
-//            $this->load->model('quotes_model');
             $this->load->model('artproof_model');
             $this->load->model('leadquote_model');
             if ($lead_id ==0) {
@@ -67,6 +65,7 @@ class Leadmanagement extends MY_Controller
                     $leadfound = 1;
                     $error = '';
                     $lead_data = $res['lead'];
+                    $lead_data['newhistorymsg'] = '';
                     $customer_address = $res['address'];
                     $brand = isset($lead_data['brand']) ? $lead_data['brand'] : $brand;
                     $lead_history = $this->leads_model->get_lead_history($lead_id);
@@ -138,6 +137,19 @@ class Leadmanagement extends MY_Controller
                 // Proof Requests
                 $proofarts = $this->artproof_model->get_lead_proofs($lead_id);
                 $proofarts_view = $this->load->view('leadpopupnew/proofart_list_view', ['proofs' => $proofarts], true);
+                // Prepare Lead Session data
+                $leaddata = [
+                    'lead' => $lead_data,
+                    'customer_address' => $customer_address,
+                    'lead_users' => $lead_usr,
+                    'leads_attachments' => $leads_attach,
+                    'lead_contacts' => $lead_contacts,
+                    'lead_tasks' => $tasks,
+                    'lead_quotes' => $lead_quotes,
+                    'lead_proofs' => $proofarts,
+                ];
+                $sessionid = 'lead'.uniq_link('15');
+                usersession($sessionid, $leaddata);
                 $content_options = [
                     'customer_view' => $customer_view,
                     'lead' => $lead_data,
@@ -148,6 +160,7 @@ class Leadmanagement extends MY_Controller
                     'attachments_view' => $attachments_view,
                     'quotes_view' => $quotes_view,
                     'proofarts_list' => $proofarts_view,
+                    'leadsession' => $sessionid,
                 ];
                 $mdata['content'] = $this->load->view('leadpopupnew/page_view', $content_options, true);
             }
@@ -955,6 +968,49 @@ class Leadmanagement extends MY_Controller
             /* Get # of new messages */
             $this->ajaxResponse($mdata,$error);
         }
+    }
+
+    public function lead_data_change() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error='Connect lost. Reload Form';
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'lead', 'Unkn');
+            $leaddata = usersession($session_id);
+            if (!empty($leaddata)) {
+                $error='Unknown Field';
+                $field = ifset($postdata, 'field_name', '');
+                if (!empty($field)) {
+                    $newval = ifset($postdata, 'newval', '');
+                    $res = $this->leads_model->change_leadpopup_data($leaddata, $field, $newval, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error='';
+                        if ($field=='country_id') {
+                            // Get States
+                            $country = $res['newval'];
+                            $this->load->model('shipping_model');
+                            $states = $this->shipping_model->get_country_states($country);
+                            $mdata['states_view'] = $this->load->view('leadpopupnew/states_view', ['states' => $states, 'statecode' => ''], true);
+                        } elseif ($field=='lead_needby') {
+                            if (empty($res['newval'])) {
+                                $mdata['newdate'] = $res['newval'];
+                            } else {
+                                $mdata['newdate'] = date('D - M j, Y', $res['newval']);
+                            }
+                        } elseif ($field=='lead_item_id') {
+                            if ($res['newval']==$this->config->item('custom_id')) {
+                                $mdata['show_custom'] = 1;
+                            } else {
+                                $mdata['show_custom'] = 0;
+                            }
+                        }
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 
 

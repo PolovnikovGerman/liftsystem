@@ -6,13 +6,13 @@
         <div class="proofreqbox-info truncateoverflowtext">- <?=$proof['email_item_name']?></div>
         <div class="proofreqbox-arrows">
             <div class="proofreqbox-arrowbox active">
-                <img src="/img/proofreq-arrow.svg" alt="proofreq-arrow">
+                <img src="/img/artpage/proofreq-arrow.svg" alt="proofreq-arrow">
             </div>
             <div class="proofreqbox-arrowbox active">
-                <img src="/img/proofreq-arrow.svg" alt="proofreq-arrow">
+                <img src="/img/artpage/proofreq-arrow.svg" alt="proofreq-arrow">
             </div>
             <div class="proofreqbox-arrowbox active">
-                <img src="/img/proofreq-arrow.svg" alt="proofreq-arrow">
+                <img src="/img/artpage/proofreq-arrow.svg" alt="proofreq-arrow">
             </div>
             <div class="proofreqbox-arrowbox">&nbsp;</div>
             <div class="proofreqbox-arrowbox">&nbsp;</div>
