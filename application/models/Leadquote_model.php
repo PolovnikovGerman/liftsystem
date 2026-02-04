@@ -18,10 +18,10 @@ class Leadquote_model extends MY_Model
     private $NO_ART = '06_noart';
     private $NO_ART_TXT='Need Art';
     private $template = 'Lead Quote';
-    private $custom_print_price = 0.16;
-    private $custom_srprint_price = 0.12;
-    private $custom_setup_price = 30;
-    private $custom_srsetup_price = 28;
+    public $custom_print_price = 0.16;
+    public $custom_srprint_price = 0.12;
+    public $custom_setup_price = 30;
+    public $custom_srsetup_price = 28;
     private $other_print_price = 0.20;
     private $other_setupsb_price = 30;
     private $other_setupsr_price = 28;
