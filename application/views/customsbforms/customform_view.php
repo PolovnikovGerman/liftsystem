@@ -32,6 +32,7 @@
         <div class="customname">Name</div>
         <div class="custommail">Email</div>
         <div class="customphone">Phone</div>
+        <div class="customshapetype">Type</div>
         <div class="itemdescription">Description</div>
         <div class="itemqty">QTY</div>
         <div class="eventdate">Event</div>

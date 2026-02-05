@@ -342,4 +342,14 @@ class Customform_model extends MY_Model
         return $dats;
     }
 
+    public function update_customformdetails($data, $custom_quote_id)
+    {
+        $fld = $data['fld'];
+        $newval = $data['newval'];
+        $this->db->where('custom_quote_id', $custom_quote_id);
+        $this->db->set($fld, $newval);
+        $this->db->update('ts_custom_quotes');
+        return true;
+    }
+
 }
