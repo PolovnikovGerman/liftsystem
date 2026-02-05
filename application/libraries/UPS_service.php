@@ -242,7 +242,7 @@ class UPS_service
                 $out['error'] = 0;
                 $out['msg'] = "";
                 $services = [];
-                if (ifset($apiResponse['emsResponse']['numberOfServices']) && $apiResponse['emsResponse']['numberOfServices']>0) {
+                if (isset($apiResponse['emsResponse']['numberOfServices']) && $apiResponse['emsResponse']['numberOfServices']>0) {
                     $services = $apiResponse['emsResponse']['services'];
                 }
                 $outservices = [];
