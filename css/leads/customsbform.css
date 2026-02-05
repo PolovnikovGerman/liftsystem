@@ -1,6 +1,6 @@
 .customform_content {
     clear: both;
-    width: 976px;
+    width: 1067px;
     margin-left: 10px;
     margin-right: 17px;
 }
@@ -103,6 +103,9 @@ a.find_customformbnt {
 }
 .customform_tabtitle > .customphone {
     width: 91px;
+}
+.customform_tabtitle > .customshapetype {
+    width: 90px;
 }
 .customform_tabtitle > .itemdescription {
     width: 178px;
@@ -222,6 +225,12 @@ a.find_customformbnt {
     padding-left: 5px;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+.customform_tabledat .content-row > .customshapetype {
+    width: 90px;
+    border-right: 1px solid #000000;
+    text-align: left;
+    padding-left: 5px;
 }
 .customform_tabledat .content-row > .itemdescription {
     /* width: 238px; */

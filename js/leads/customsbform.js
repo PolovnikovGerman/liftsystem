@@ -297,6 +297,23 @@ function init_customform_modal(formid) {
                 }
             }, 'json');
         }
+    });
+    $("#shape_type").unbind('change').change(function(){
+        var params = new Array();
+        params.push({'name' : 'custom_quote_id', value: $(this).data('form')});
+        params.push({'name' : 'fld', value: $(this).data('fld')});
+        params.push({'name' : 'newval', value: $(this).val()});
+        var url = "/leads/customform_update";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("button.close").unbind('click').click(function(){
+        $("#pageModal").modal('hide');
+        initCustomFormPagination();
     })
 }
 

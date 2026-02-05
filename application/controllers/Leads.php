@@ -1393,6 +1393,23 @@ class Leads extends My_Controller {
         show_404();
     }
 
+    public function customform_update()
+    {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $error = 'Empty Custom Form';
+            $custom_quote_id = ifset($postdata, 'custom_quote_id',0);
+            if (!empty($custom_quote_id)) {
+                $this->load->model('customform_model');
+                $this->customform_model->update_customformdetails($postdata, $custom_quote_id);
+                $error = '';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Lead Quotes
     public function leadquotesdata() {
         if ($this->isAjax()) {
