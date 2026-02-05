@@ -239,6 +239,7 @@ class UPS_service
             // echo $response;
             $apiResponse = json_decode($response, true);
             if (isset($apiResponse['emsResponse'])) {
+                log_message('error', 'TNT RESPONSE '.json_encode($apiResponse['emsResponse']));
                 $out['error'] = 0;
                 $out['msg'] = "";
                 $services = $apiResponse['emsResponse']['services'];
