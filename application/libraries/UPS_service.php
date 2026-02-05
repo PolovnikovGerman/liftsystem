@@ -239,10 +239,12 @@ class UPS_service
             // echo $response;
             $apiResponse = json_decode($response, true);
             if (isset($apiResponse['emsResponse'])) {
-                log_message('error', 'TNT RESPONSE '.json_encode($apiResponse['emsResponse']));
                 $out['error'] = 0;
                 $out['msg'] = "";
-                $services = $apiResponse['emsResponse']['services'];
+                $services = [];
+                if (ifset($apiResponse['emsResponse']['numberOfServices']) && $apiResponse['emsResponse']['numberOfServices']>0) {
+                    $services = $apiResponse['emsResponse']['services'];
+                }
                 $outservices = [];
                 foreach ($services as $service) {
                     $newservice = [
