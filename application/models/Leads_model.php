@@ -251,15 +251,17 @@ Class Leads_model extends MY_Model
     }
     /* Users replicas */
     public function get_lead_users($lead_id) {
-        $this->db->select('user_id');
-        $this->db->from('ts_lead_users');
-        $this->db->where('lead_id',$lead_id);
+        $this->db->select('lu.*, u.user_leadname'); // user_id
+        $this->db->from('ts_lead_users lu');
+        $this->db->join('users u','u.user_id=lu.user_id');
+        $this->db->where('lu.lead_id',$lead_id);
         $res=$this->db->get()->result_array();
-        $out=array();
-        foreach ($res as $row) {
-            array_push($out, $row['user_id']);
-        }
-        return $out;
+//        $out=array();
+//        foreach ($res as $row) {
+//            array_push($out, $row['user_id']);
+//        }
+//        return $out;
+        return $res;
     }
     // Leads attachments
     public function get_lead_attachs($lead_id) {
@@ -2582,12 +2584,155 @@ Class Leads_model extends MY_Model
             }
             $out['result'] = $this->success_result;
             $leaddata['lead'] = $lead;
+            $out['brand'] = $lead['brand'];
+            $out['zip'] = $lead['zip'];
             // Update session
             usersession($session_id, $leaddata);
         }
         return $out;
     }
 
+    public function change_leadpopup_contact($leaddata, $contact_id, $field, $newval, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Contact doesn\'t found'];
+        $contacts = $leaddata['lead_contacts'];
+        $idx = 0;
+        $found = 0;
+        foreach ($contacts as $contact) {
+            if ($contact['lead_contact_id']==$contact_id) {
+                $found=1;
+                if ($field=='contact_email' && !empty($newval)) {
+                    if (!valid_email_address($newval)) {
+                        $out['msg'] = 'Invalid email address';
+                        $out['oldval'] = $contact['contact_email'];
+                        return $out;
+                    }
+                }
+                $contacts[$idx][$field] = $newval;
+                break;
+            }
+            $idx++;
+        }
+        if ($found==1) {
+            $out['result'] = $this->success_result;
+            $leaddata['lead_contacts'] = $contacts;
+            usersession($session_id, $leaddata);
+        }
+        return $out;
+    }
+
+    // Save lead form
+    public function save_leadpopup($leaddata, $user_id, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Contact doesn\'t found'];
+        $lead = $leaddata['lead'];
+        $contacts = $leaddata['lead_contacts'];
+        $leadusers = $leaddata['lead_users'];
+        $attachments = $leaddata['leads_attachments'];
+        // Save main data
+        $newhistory='';
+        $newval=(floatval($lead['lead_value']));
+        if ($newval==0) {
+            $newval=NULL;
+        }
+        $this->db->set('lead_company',$lead['lead_company']);
+        $this->db->set('lead_phone',$lead['lead_phone']);
+        $this->db->set('lead_value',$newval);
+        $this->db->set('lead_needby', empty($lead['lead_needby']) ? '' : date('Y-m-d', $lead['lead_needby']));
+        $this->db->set('lead_customer',$lead['lead_customer']);
+        // $this->db->set('lead_mail',$lead['lead_mail']);
+        $this->db->set('lead_itemqty',$lead['lead_itemqty']);
+        $this->db->set('lead_note',$lead['lead_note']);
+        $this->db->set('lead_item',$lead['lead_item']);
+        $this->db->set('lead_item_id',$lead['lead_item_id']);
+        $this->db->set('other_item_name',$lead['other_item_name']);
+        $this->db->set('lead_type',$lead['lead_type']);
+        $this->db->set('country_id', $lead['country_id']);
+        $this->db->set('address_line1', $lead['address_line1']);
+        $this->db->set('address_line2', $lead['address_line2']);
+        $this->db->set('city', $lead['city']);
+        $this->db->set('zip', $lead['zip']);
+        $this->db->set('state', $lead['state']);
+        if ($lead['lead_id']==0) {
+            $this->db->set('brand', $lead['brand']);
+            $this->db->set('lead_date',time());
+            $this->db->set('lead_assign_time',time());
+            $this->db->set('create_user',$user_id);
+            $this->db->set('update_usr',$user_id);
+            $this->db->set('create_date',date('Y-m-d H:i:s'));
+            $leadnum = $this->get_leadnum($lead['brand']);
+            $this->db->set('lead_number',$leadnum);
+            $this->db->insert('ts_leads');
+            $lead_id = $this->db->insert_id();
+        } else {
+            $this->db->set('update_usr',$user_id);
+            $this->db->where('lead_id',$lead['lead_id']);
+            $this->db->update('ts_leads');
+            $lead_id = $lead['lead_id'];
+            $leadnum = $lead['lead_number'];
+        }
+        if ($lead_id > 0) {
+            $out['result'] = $this->success_result;
+            // Save contacts
+            foreach ($contacts as $contact) {
+                $this->db->set('lead_id', $lead_id);
+                $this->db->set('contact_name', $contact['contact_name']);
+                $this->db->set('contact_email', $contact['contact_email']);
+                $this->db->set('contact_phone', $contact['contact_phone']);
+                if ($contact['lead_contact_id']<0) {
+                    $this->db->insert('ts_lead_contacts');
+                } else {
+                    $this->db->where('lead_contact_id', $contact['lead_contact_id']);
+                    $this->db->update('ts_lead_contacts');
+                }
+            }
+            // Save users
+            foreach ($leadusers as $leaduser) {
+                $this->db->set('lead_id', $lead_id);
+                $this->db->set('user_id', $leaduser['user_id']);
+                if ($leaduser['leaduser_id']<0) {
+                    $this->db->insert('ts_lead_users');
+                } else {
+                    $this->db->where('leaduser_id', $leaduser['leaduser_id']);
+                    $this->db->update('ts_lead_users');
+                }
+            }
+            if (!empty($lead['newhistorymsg'])) {
+                $this->db->set('lead_id',$lead_id);
+                $this->db->set('user_id',$user_id);
+                $this->db->set('created_date',time());
+                $this->db->set('history_message',$lead['newhistorymsg']);
+                $this->db->insert('ts_lead_logs');
+            }
+            // Save attachments
+            $srcpath_sh = $this->config->item('pathpreload');
+            $srcpath_fl = $this->config->item('upload_path_preload');
+            $destpath_sh = $this->config->item('upload_customquote_relative');
+            $destpath_fl = $this->config->item('upload_customquote');
+            foreach ($attachments as $attachment) {
+                if ($attachment['leadattch_id'] < 0) {
+                    $purefile = str_replace($srcpath_sh, '', $attachment['attachment']);
+                    $srcfile = $srcpath_fl.$purefile;
+                    $destfile = $destpath_fl.$purefile;
+                    $res = @copy($srcfile, $destfile);
+                    if ($res) {
+                        // File copied successfully
+                        $this->db->set('lead_id', $lead_id);
+                        $this->db->set('source_name', $attachment['source_name']);
+                        $this->db->set('attachment', $destpath_sh.$purefile);
+                        $this->db->set('quoteattach', $attachment['quoteattach']);
+                        $this->db->insert('ts_lead_attachs');
+                    }
+                }
+            }
+            // Deleted
+            $out['lead_id'] = $lead_id;
+            $out['lead_number'] = $leadnum;
+        } else {
+            $out['msg'] = 'Failed to save lead';
+        }
+        return $out;
+    }
 }
 /* End of file leads_model.php */
 /* Location: ./application/models/leads_model.php */

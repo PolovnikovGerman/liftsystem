@@ -72,7 +72,7 @@
                         <div class="lead-needby">
                             <div class="lead-needbytitle">Need by Date:</div>
                             <div class="lead-needbybox">
-                                <input type="text" id="lead_needby" class="leadmainedit" data-fld="lead_needby" value="<?=empty($lead['lead_needby']) ? '' : date('D - M j, Y', $lead['lead_needby'])?>"/>
+                                <input type="text" id="lead_needby" class="leadmainedit" data-fld="lead_needby" value="<?=empty($lead['lead_needby']) ? '' : date('D - M j, Y', strtotime($lead['lead_needby']))?>"/>
                             </div>
                         </div>
                         <div class="lead-notes">
@@ -88,16 +88,14 @@
                 <div class="lead-quotes">
                     <div class="lead-quotestitle">Quotes:</div>
                     <div class="lead-quotesbody">
-                        <div class="lead-quotesform">
-                            <!-- Begin form -->
-                            <!-- END Form -->
-                        </div>
-                        <div class="btn-messagequote">Message on Quote <span><i class="fa fa-caret-down" aria-hidden="true"></i></span></div>
+                        <div class="lead-quotesform"><?=$quote_form_view?></div>
+                        <div class="btn-messagequote">Message on Quote <span class="quoteform-expandview"><i class="fa fa-caret-down" aria-hidden="true"></i></span></div>
                         <div class="lead-quotestable">
                             <div class="leadquotetabl-header">
                                 <div class="leadquotetabl-tr">
                                     <div class="leadquotetabl-td leadquotetabl-date">Date</div>
                                     <div class="leadquotetabl-td leadquotetabl-quote">Quote #</div>
+                                    <div class="leadquotetabl-td leadquotetabl-doc">&nbsp;</div>
                                     <div class="leadquotetabl-td leadquotetabl-web">Web</div>
                                     <div class="leadquotetabl-td leadquotetabl-qty">Qty</div>
                                     <div class="leadquotetabl-td leadquotetabl-prints">Prints</div>

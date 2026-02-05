@@ -20,7 +20,7 @@
                     <div class="dp-formrow">
                         <input class="dp-contactemail leadcontactedit" type="text" name="contact1-email" data-contact="<?=$contact['lead_contact_id']?>" data-fld="contact_email"
                                placeholder="Email" value="<?=$contact['contact_email']?>"/>
-                        <div class="dp-contactemailbtn"><i class="fa fa-clone" aria-hidden="true"></i></div>
+                        <div class="dp-contactemailbtn" data-contact="<?=$contact['lead_contact_id']?>"><i class="fa fa-clone" aria-hidden="true"></i></div>
                     </div>
                     <div class="dp-formrow">
                         <input class="dp-contactphone leadcontactedit" type="text" name="contact1-phone" data-contact="<?=$contact['lead_contact_id']?>" data-fld="contact_phone"

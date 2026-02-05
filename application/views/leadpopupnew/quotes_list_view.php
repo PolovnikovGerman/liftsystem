@@ -11,6 +11,7 @@
             <div class="leadquotetabl-quote">
                 <div class="leadquotetabl-quotebox <?=$quote['orders'] > 0 ? 'blueactive' : ''?>"><?=$quote['brand']=='SR' ? '' : 'QB-'?><?=$quote['quote_number']?><?=$quote['brand']=='SR' ? '-QS' : ''?></div>
             </div>
+            <div class="leadquotetabl-doc" data-quote="<?=$quote['quote_id']?>"><i class="fa fa-file-pdf-o"></i></div>
             <div class="leadquotetabl-web"><?=$quote['quote_source']=='WEB' ? $quote['quote_source'] : '&nbsp;'?></div>
             <div class="leadquotetabl-qty"><?=$quote['item_qty']?></div>
             <div class="leadquotetabl-prints"><?=$quote['imprints']?></div>

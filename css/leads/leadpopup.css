@@ -692,6 +692,7 @@
     font-size: 14px;
     position: relative;
     top: 1px;
+    cursor: pointer;
 }
 .leadquotesform-top {
     width: 100%;
@@ -737,9 +738,12 @@
     border: 1px solid #808080;
     border-radius: 2px;
     font-size: 11px;
-    padding: 0 3px;
+/*    padding: 0 3px; */
     text-align: center;
     font-weight: 600;
+}
+.qtyprice-pricebox input {
+    width: 100%;
 }
 .qtypricelist-box {
     width: 52px;
@@ -789,7 +793,8 @@ input.qtybox-qty {
     padding: 0 3px;
 }
 .quotesform-locs select {
-    width: 30px;
+    /*width: 30px;*/
+    width: 36px;
     height: 16px;
     line-height: 15px;
     background: #fff;
@@ -801,6 +806,11 @@ input.qtybox-qty {
 }
 .quotesform-locs select option {
     line-height: 12px;
+    color: #000000;
+}
+.quotesform-locs select option.emptyquoteloc {
+    background: #919191;
+    color: #000000;
 }
 .quotesform-locs select:last-child {
     margin-right: 0;
@@ -909,6 +919,9 @@ input.discount-exp {
     overflow-y: auto;
     scrollbar-width: none;
 }
+.leadquotetabl-body.shortview {
+    height: 107px;
+}
 .leadquotetabl-body.quotetabl-small {
     width: 100%;
     height: 111px;
@@ -992,6 +1005,13 @@ input.discount-exp {
     margin: 1px 3px;
     color: #fff;
 }
+.leadquotetabl-doc {
+    width: 20px;
+}
+.leadquotetabl-doc i {
+    font-size: 13px;
+    cursor: pointer;
+}
 .leadquotetabl-web {
     width: 27px;
 }
@@ -999,10 +1019,12 @@ input.discount-exp {
     width: 40px;
 }
 .leadquotetabl-prints {
-    width: 53px;
+    /*width: 53px;*/
+    width: 44px;
 }
 .leadquotetabl-descr {
-    width: 190px;
+    /*width: 190px;*/
+    width: 186px;
     text-align: left;
     padding: 0 4px;
 }
@@ -1094,6 +1116,7 @@ input.discount-exp {
     width: 56px;
     text-align: center;
     color: #0000ff;
+    cursor: pointer;
 }
 .proofreqbox-info {
     width: 103px;

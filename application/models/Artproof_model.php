@@ -770,6 +770,7 @@ Class Artproof_model extends MY_Model
             $lastmsg=$this->get_lastupdate($row['email_id'],'artproofs');
             $artlastupdat=($lastmsg=='' ? '' : 'title="'.$lastmsg.'"');
             $row['art_class']=$row['redrawn_class']=$row['vectorized_class']=$row['proofed_class']=$row['approved_class']='';
+            $row['art_stage']=$row['redrawn_stage']=$row['vectorized_stage']=$row['proofed_stage']=$row['approved_stage']=0;
             $row['approved_cell']=$row['proofed_cell']=$row['vectorized_cell']=$row['redrawn_cell']=$row['art_cell']='&nbsp';
             $row['art_title']=$row['redrawn_title']=$row['vectorized_title']=$row['proofed_title']=$row['approved_title']='';
             switch ($row['order_proj_status']) {
@@ -779,6 +780,7 @@ Class Artproof_model extends MY_Model
                     $row['art_class']='chk-ordoption';
                     $row['art_cell']=$curimg;
                     $row['art_title']=$artlastupdat;
+                    $row['art_stage']=1;
                     break;
                 case $this->NO_VECTOR:
                     $row['art_class']='chk-ordoption';
@@ -790,6 +792,8 @@ Class Artproof_model extends MY_Model
                     $row['art_cell']=$prvimg;
                     $row['redrawn_cell']=$curimg;
                     $row['redrawn_title']=$artlastupdat;
+                    $row['art_stage']=1;
+                    $row['redrawn_stage']=1;
                     break;
                 case $this->TO_PROOF:
                     $row['art_class']='chk-ordoption';
@@ -799,6 +803,9 @@ Class Artproof_model extends MY_Model
                     $row['redrawn_cell']=$prvimg;
                     $row['vectorized_cell']=$curimg;
                     $row['vectorized_title']=$artlastupdat;
+                    $row['art_stage']=1;
+                    $row['redrawn_stage']=1;
+                    $row['vectorized_stage']=1;
                     break;
                 case $this->NEED_APPROVAL:
                     $row['art_class']='chk-ordoption';
@@ -810,6 +817,10 @@ Class Artproof_model extends MY_Model
                     $row['vectorized_cell']=$prvimg;
                     $row['proofed_cell']=$curimg;
                     $row['proofed_title']=$artlastupdat;
+                    $row['art_stage']=1;
+                    $row['redrawn_stage']=1;
+                    $row['vectorized_stage']=1;
+                    $row['proofed_stage']=1;
                     break;
                 case $this->JUST_APPROVED:
                     $row['art_class']='chk-ordoption';
@@ -823,6 +834,11 @@ Class Artproof_model extends MY_Model
                     $row['proofed_cell']=$prvimg;
                     $row['approved_cell']=$curimg;
                     $row['approved_title']=$artlastupdat;
+                    $row['art_stage']=1;
+                    $row['redrawn_stage']=1;
+                    $row['vectorized_stage']=1;
+                    $row['proofed_stage']=1;
+                    $row['approved_stage']=1;
                     break;
                 default :
                     break;
