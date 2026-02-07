@@ -32,6 +32,9 @@ function edit_lead(lead_id) {
             init_leadpopupcontent();
             init_quoteformcontent();
             init_leadpopupedit();
+            if (parseInt($("#leadmapuse").val())==1) {
+                initCustomerAddressAutocomplete();
+            }
         } else {
             show_error(response);
         }
@@ -86,10 +89,6 @@ function init_leadpopupedit() {
         var url = mainurl+"/lead_data_change";
         $.post(url, params, function (response){
             if (response.errors=='') {
-                if (field_name=='country_id') {
-                    $("#lead_address_states").empty().html(response.data.states_view);
-                }
-                init_leadpopupedit();
             } else {
                 show_error(response);
             }
@@ -104,6 +103,41 @@ function init_leadpopupedit() {
         var url = mainurl+"/lead_data_change";
         $.post(url, params, function (response){
             if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Address Change
+    $("input.leadaddressedit").unbind('change').change(function (){
+        var params = new Array();
+        params.push({name: 'lead', value: $("#leadeditid").val()});
+        params.push({name: 'field_name', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = mainurl+"/lead_address_change";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (parseInt(response.data.zipchange)==1) {
+                    $("input.leadaddressedit[data-fld='city']").val(response.data.city);
+                    $(".leadaddressedit[data-fld='state']").val(response.data.state);
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("select.leadaddressedit").unbind('change').change(function (){
+        var params = new Array();
+        params.push({name: 'lead', value: $("#leadeditid").val()});
+        params.push({name: 'field_name', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = mainurl+"/lead_address_change";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (field_name=='country_id') {
+                    $("#lead_address_states").empty().html(response.data.states_view);
+                }
+                init_leadpopupedit();
             } else {
                 show_error(response);
             }
@@ -160,6 +194,29 @@ function init_leadpopupedit() {
         var element = document.querySelector(".dp-contactemail[data-contact='"+contact+"']");
         copyEmailToClipboard(element);
         $(element).show();
+    });
+    // Open assign popup
+    $(".leadtopreps-addbtn").unbind('click').click(function(){
+        $(".leadtopassign-popup").show();
+        init_leadpopup_assign();
+    });
+    // Delete replica
+    $(".repsuserbox-icn").unbind('click').click(function (){
+        var leadname = $(this).data('usrname');
+        if (confirm('Remove '+leadname+' from Lead Reps ?')==true) {
+            var params=new Array();
+            params.push({name: 'lead', value: $("#leadeditid").val()});
+            params.push({name: 'leadusr', value: $(this).data('usr')});
+            var url = mainurl+'/userreplica_remove_popup';
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $("#leadtopreplicacontent").empty().html(response.data.content);
+                    init_leadpopupedit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
     });
     // Quote request change active
     $("input[name='pricecheck']").unbind('click').click(function (){
@@ -356,4 +413,34 @@ function add_leadquote() {
             },'json');
         }
     }
+}
+
+function init_leadpopup_assign() {
+    $(".leadusrreplicacancel").unbind('click').click(function(){
+        $("input[name='leadusercandidat']").prop('checked',false);
+        $(".leadtopassign-popup").hide();
+    });
+    $(".leadusrreplicasave").unbind('click').click(function (){
+        var usrrepl = new Array();
+        $("input[name='leadusercandidat']:checked").each(function (index){
+            usrrepl[index]=$(this).data('usr');
+        });
+        if (usrrepl.length==0) {
+            $(".leadtopassign-popup").hide();
+        } else {
+            var params = new Array();
+            params.push({name: 'lead', value: $("#leadeditid").val()});
+            params.push({name: 'replicas', value: usrrepl});
+            var url = mainurl+'/userreplica_popup';
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $("#leadtopreplicacontent").empty().html(response.data.content);
+                    $(".leadtopassign-popup").hide();
+                    init_leadpopupedit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
 }

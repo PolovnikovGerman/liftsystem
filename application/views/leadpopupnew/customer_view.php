@@ -1,3 +1,4 @@
+<input type="hidden" id="customercountrycode" value="<?=$address['country_code']?>"/>
 <div class="cust-maininfo dumbedpanel">
     <div class="datarow">
         <div class="custom-info-txt">Customer:</div>
@@ -37,7 +38,7 @@
             <div class="dumbedpanel-title">Address:</div>
             <div class="dumbedpanel-body">
                 <div class="dp-formrow">
-                    <select class="dp-country leadmainedit" data-fld="country_id">
+                    <select class="dp-country leadaddressedit" data-fld="country_id">
                         <option value=""></option>
                         <?php foreach ($countries as $country) : ?>
                         <option value="<?=$country['country_id']?>" <?=$country['country_id']==$address['country_id'] ? 'selected="selected"' : ''?>><?=$country['country_name']?></option>
@@ -45,17 +46,17 @@
                     </select>
                 </div>
                 <div class="dp-formrow">
-                    <input class="dp-addressline leadmainedit" type="text" name="address-1" data-fld="address_line1" placeholder="Address Line 1" value="<?=$address['address_line1']?>"/>
+                    <input class="dp-addressline leadaddressedit" id="customeraddress_line1" type="text" name="address-1" data-fld="address_line1" placeholder="Address Line 1" value="<?=$address['address_line1']?>"/>
                 </div>
                 <div class="dp-formrow">
-                    <input class="dp-addressline leadmainedit" type="text" name="address-2" data-fld="address_line2" placeholder="Address Line 2" value="<?=$address['address_line2']?>"/>
+                    <input class="dp-addressline leadaddressedit" type="text" name="address-2" data-fld="address_line2" placeholder="Address Line 2" value="<?=$address['address_line2']?>"/>
                 </div>
                 <div class="dp-formrow">
                     <div id="lead_address_city">
-                        <input class="dp-city leadmainedit" type="text" name="city" data-fld='city' placeholder="City" value="<?=$address['city']?>"></div>
+                        <input class="dp-city leadaddressedit" type="text" name="city" data-fld='city' placeholder="City" value="<?=$address['city']?>"></div>
                     <div id="lead_address_states"><?=$states?></div>
                     <div id="lead_address_zip">
-                        <input class="dp-zipcode leadmainedit" type="text" name="zipcode" data-fld='zip' placeholder="Zip Code" value="<?=$address['zip']?>"/>
+                        <input class="dp-zipcode leadaddressedit" type="text" name="zipcode" data-fld='zip' placeholder="Zip Code" value="<?=$address['zip']?>"/>
                     </div>
                 </div>
             </div>

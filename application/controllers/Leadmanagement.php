@@ -50,6 +50,7 @@ class Leadmanagement extends MY_Controller
                 }
                 $customer_address = [
                     'country_id' => '',
+                    'country_code' => '',
                     'address_line1' => '',
                     'address_line2' => '',
                     'city' => '',
@@ -79,6 +80,11 @@ class Leadmanagement extends MY_Controller
                     'leadusers' => $lead_usr,
                     'added' => 0,
                 ];
+                // Get list of users for assign
+                $this->load->model('user_model');
+                $active = 1;
+                $usrrepl=$this->user_model->get_user_leadreplicas($active);
+                $replica_options['users'] = $usrrepl;
                 if ($lead_data['lead_type']==$this->LEAD_CLOSED || $lead_data['lead_type']==$this->LEAD_DEAD) {
                     if (count($lead_usr)==0) {
                         $replica_view = $this->load->view('leadpopupnew/unassigned_lead_view', $replica_options, true);
@@ -98,6 +104,9 @@ class Leadmanagement extends MY_Controller
                 $this->load->model('shipping_model');
                 $countries = $this->shipping_model->get_countries_list(['orderby'=>'sort']);
                 $states = [];
+                if (!empty($customer_address['country_id'])) {
+                    $states = $this->shipping_model->get_country_states($customer_address['country_id']);
+                }
                 $states_view = $this->load->view('leadpopupnew/states_view', ['states' => $states, 'statecode' => $customer_address['state']], true);
                 // Customer info
                 $customer_options = [
@@ -139,6 +148,7 @@ class Leadmanagement extends MY_Controller
                     'lead_tasks' => $tasks,
                     'lead_quotes' => $lead_quotes,
                     'lead_proofs' => $proofarts,
+                    'deleted' => [],
                 ];
                 $sessionid = 'lead'.uniq_link('15');
                 usersession($sessionid, $leaddata);
@@ -154,6 +164,7 @@ class Leadmanagement extends MY_Controller
                     'proofarts_list' => $proofarts_view,
                     'quote_form_view' => $quote_form_view,
                     'leadsession' => $sessionid,
+                    'mapuse' => empty($this->config->item('google_map_key')) ? 0 : 1,
                 ];
                 $mdata['content'] = $this->load->view('leadpopupnew/page_view', $content_options, true);
             }
@@ -1008,6 +1019,49 @@ class Leadmanagement extends MY_Controller
         show_404();
     }
 
+    public function lead_address_change()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error='Connect lost. Reload Form';
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'lead', 'Unkn');
+            $leaddata = usersession($session_id);
+            if (!empty($leaddata)) {
+                $error='Unknown Field';
+                $field = ifset($postdata, 'field_name', '');
+                if (!empty($field)) {
+                    $newval = ifset($postdata, 'newval', '');
+                    $res = $this->leads_model->change_leadpopup_data($leaddata, $field, $newval, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error='';
+                        $mdata['cntchange'] = $mdata['zipchange'] = 0;
+                        $this->load->model('shipping_model');
+                        if ($field=='country_id') {
+                            // Get States
+                            $mdata['cntchange'] = 1;
+                            $country = $res['newval'];
+                            $cntdat = $this->shipping_model->get_country($country);
+                            $mdata['country_code'] = $cntdat['country_iso_code_2'];
+                            $states = $this->shipping_model->get_country_states($country);
+                            $mdata['states_view'] = $this->load->view('leadpopupnew/states_view', ['states' => $states, 'statecode' => ''], true);
+                        } elseif ($field=='zip') {
+                            $mdata['zipchange'] = 1;
+                            $leaddata = usersession($session_id);
+                            $lead = $leaddata['lead'];
+                            $mdata['zip'] = $lead['zip'];
+                            $mdata['city'] = $lead['city'];
+                            $mdata['state'] = $lead['state'];
+                        }
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function lead_contact_change()
     {
         if ($this->isAjax()) {
@@ -1111,11 +1165,11 @@ class Leadmanagement extends MY_Controller
                         $locations = [];
                         $numloc = 1;
                         for ($i=1; $i<13; $i++) {
-                            if (isset($postdata['loc'.$i])) {
-                                if (!empty($postdata['loc'.$i])) {
+                            if (isset($postdata['location'.$i])) {
+                                if (!empty($postdata['location'.$i])) {
                                     $locations[] = [
                                         'location' => $numloc,
-                                        'prints' => $postdata['loc'.$i],
+                                        'prints' => $postdata['location'.$i],
                                     ];
                                     $numloc++;
                                 }
@@ -1148,6 +1202,102 @@ class Leadmanagement extends MY_Controller
                             // Prepare content
                             $mdata['lead_id'] = $lead_id;
                         }
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function update_autoaddress()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error='Connect lost. Reload Form';
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'lead', 'Unkn');
+            $leaddata = usersession($session_id);
+            if (!empty($leaddata)) {
+                $res = $this->leads_model->update_autoaddress($postdata, $leaddata, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $leaddata = usersession($session_id);
+                    $lead = $leaddata['lead'];
+                    $mdata['address_1'] = $lead['address_line1'];
+                    $mdata['country'] = $lead['country_id'];
+                    $mdata['state'] = $lead['state'];
+                    $mdata['city'] = $lead['city'];
+                    $mdata['zip'] = $lead['zip'];
+                    $country = ifset($res, 'country', array());
+                    $mdata['country_code'] = ifset($country,'country_iso_code_2','');
+                    $states = ifset($res, 'states', array());
+                    $mdata['states_view'] = $this->load->view('leadpopupnew/states_view', ['states' => $states, 'statecode' => $lead['state']], true);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function userreplica_popup()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error='Connect lost. Reload Form';
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'lead', 'Unkn');
+            $leaddata = usersession($session_id);
+            if (!empty($leaddata)) {
+                $candidat = ifset($postdata,'replicas','');
+                if (!empty($candidat)) {
+                    $replicas = explode(',',$candidat);
+                    $res = $this->leads_model->change_leadpopup_replicas($leaddata, $replicas, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $this->load->model('user_model');
+                        $active = 1;
+                        $usrrepl=$this->user_model->get_user_leadreplicas($active);
+                        $replica_options = [
+                            'leadusers' => $res['users'],
+                            'added' => 1,
+                            'users' => $usrrepl,
+                        ];
+                        $mdata['content'] = $this->load->view('leadpopupnew/assigned_lead_view', $replica_options, true);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function userreplica_remove_popup()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error='Connect lost. Reload Form';
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'lead', 'Unkn');
+            $leaddata = usersession($session_id);
+            if (!empty($leaddata)) {
+                $leadusr = ifset($postdata,'leadusr','');
+                if (!empty($leadusr)) {
+                    $res = $this->leads_model->remove_leadpopup_replicas($leaddata, $leadusr, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $this->load->model('user_model');
+                        $active = 1;
+                        $usrrepl=$this->user_model->get_user_leadreplicas($active);
+                        $replica_options = [
+                            'leadusers' => $res['users'],
+                            'added' => 1,
+                            'users' => $usrrepl,
+                        ];
+                        $mdata['content'] = $this->load->view('leadpopupnew/assigned_lead_view', $replica_options, true);
                     }
                 }
             }

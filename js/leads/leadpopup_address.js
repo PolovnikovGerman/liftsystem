@@ -1,16 +1,14 @@
-let addressAutocomplete;
 let customerAutocomplete;
-let address1Field;
-let address2Field;
+let addressCustomerField;
 
 function initCustomerAddressAutocomplete() {
-    address1Field = document.getElementById("customeraddress_line1");
+    addressCustomerField = document.getElementById("customeraddress_line1");
     // Shipping Address
     var shipcnt = $("#customercountrycode").val();
     if (shipcnt == '') {
         shipcnt = ["us", "ca"];
     }
-    customerAutocomplete = new google.maps.places.Autocomplete(address1Field, {
+    customerAutocomplete = new google.maps.places.Autocomplete(addressCustomerField, {
         componentRestrictions: {country: shipcnt},
         fields: ["address_components", "geometry"],
         types: ["address"],
@@ -83,6 +81,28 @@ function placeCustomerAddressParse(place) {
 }
 
 function updateCustomerAddress(address1, city, state, postcode, country) {
-    
+    var url='/leadmanagement/update_autoaddress';
+    var params = new Array();
+    params.push({name: 'line_1', value: address1});
+    params.push({name: 'city', value: city});
+    params.push({name: 'state', value: state});
+    params.push({name: 'zip', value: postcode});
+    params.push({name: 'country', value: country});
+    params.push({name: 'lead', value: $("#leadeditid").val()});
+    $("#loader").show();
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            $("input[data-fld='address_line1']").val(response.data.address_1);
+            $("select[data-fld='country_id']").val(response.data.country);
+            $("input[data-fld='city']").val(response.data.city);
+            $("input[data-fld='zip']").val(response.data.zip);
+            $("#lead_address_states").empty().html(response.data.states_view);
+            $("#loader").hide();
+            init_leadpopupedit();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
 }
 

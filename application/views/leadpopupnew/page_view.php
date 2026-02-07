@@ -1,5 +1,6 @@
 <div class="contant-popup">
     <input type="hidden" id="leadeditid" value="<?=$leadsession?>"/>
+    <input type="hidden" id="leadmapuse" value="<?=$mapuse?>"/>
     <div class="section-customer"><?=$customer_view?></div>
     <div class="section-content">
         <div class="leadblock">
@@ -17,7 +18,7 @@
                 </div>
                 <div class="leadtopreps">
                     <div class="leadtopreps-txt">Reps:</div>
-                    <?=$replica_view ?>
+                    <div id="leadtopreplicacontent"><?=$replica_view ?></div>
                 </div>
             </div>
             <div class="datarow">

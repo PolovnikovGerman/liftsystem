@@ -214,11 +214,15 @@ Class Leads_model extends MY_Model
     /* Lead Data by ID */
     public function get_lead($lead_id) {
         $out = ['result' => $this->error_result, 'msg' => 'Lead Not Found'];
-        $res = $this->db->select('*')->from('ts_leads')->where('lead_id',$lead_id)->get()->row_array();
+        $this->db->select('l.*, cnt.country_iso_code_2 as country_code')->from('ts_leads l');
+        $this->db->join('ts_countries cnt', 'cnt.country_id=l.country_id','left');
+        $this->db->where('lead_id',$lead_id);
+        $res = $this->db->get()->row_array();
         if (ifset($res, 'lead_id', 0)==$lead_id) {
             $out['result'] = $this->success_result;
             $out['address'] = [
                 'country_id' => $res['country_id'],
+                'country_code' => $res['country_code'],
                 'address_line1' => $res['address_line1'],
                 'address_line2' => $res['address_line2'],
                 'city' => $res['city'],
@@ -2582,10 +2586,21 @@ Class Leads_model extends MY_Model
             if ($field=='country_id') {
                 $lead['state'] = '';
             }
+            if ($field=='zip') {
+                if (!empty($newval) && !empty($lead['country_id'])) {
+                    $this->load->model('shipping_model');
+                    $zipdat = $this->shipping_model->get_zip_address($lead['country_id'], $newval);
+                    if ($zipdat['result']==$this->success_result) {
+                        $lead['city'] = $zipdat['city'];
+                        $lead['state'] = $zipdat['state'];
+                    }
+                }
+            }
             $out['result'] = $this->success_result;
             $leaddata['lead'] = $lead;
             $out['brand'] = $lead['brand'];
             $out['zip'] = $lead['zip'];
+            $out['country_id'] = $lead['country_id'];
             // Update session
             usersession($session_id, $leaddata);
         }
@@ -2617,6 +2632,66 @@ Class Leads_model extends MY_Model
             $out['result'] = $this->success_result;
             $leaddata['lead_contacts'] = $contacts;
             usersession($session_id, $leaddata);
+        }
+        return $out;
+    }
+
+    public function change_leadpopup_replicas($leaddata, $replicas, $session_id)
+    {
+        $out=['result' => $this->error_result, 'msg' => 'Info doesn\'t found'];
+        $lead_users = $leaddata['lead_users'];
+        foreach ($replicas as $replica) {
+            $found = 0;
+            foreach ($lead_users as $lead_user) {
+                if ($lead_user['user_id']==$replica) {
+                    $found = 1;
+                }
+            }
+            if ($found==0) {
+                // Add new replica
+                $newidx = (count($lead_users)+1)*(-1);
+                $this->load->model('user_model');
+                $usrdat = $this->user_model->get_user_data($replica);
+                $lead_users[] = [
+                    'leaduser_id' => $newidx,
+                    'user_id' => $replica,
+                    'user_leadname' => $usrdat['user_leadname'],
+                ];
+            }
+        }
+        $out['result'] = $this->success_result;
+        $leaddata['lead_users'] = $lead_users;
+        usersession($session_id, $leaddata);
+        $out['users'] = $lead_users;
+        return $out;
+    }
+
+    public function remove_leadpopup_replicas($leaddata, $leadusr, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Info doesn\'t found'];
+        $lead_users = $leaddata['lead_users'];
+        $deleted = $leaddata['deleted'];
+        $found = 0;
+        $newusers = [];
+        foreach ($lead_users as $lead_user) {
+            if ($lead_user['leaduser_id']==$leadusr) {
+                $found = 1;
+                if ($lead_user['leaduser_id']>0) {
+                    $deleted[] = [
+                        'entity' => 'lead_users',
+                        'id' => $lead_user['leaduser_id'],
+                    ];
+                }
+            } else {
+                $newusers[] = $lead_user;
+            }
+        }
+        if ($found==1) {
+            $leaddata['deleted'] = $deleted;
+            $leaddata['lead_users'] = $newusers;
+            usersession($session_id, $leaddata);
+            $out['users'] = $newusers;
+            $out['result'] = $this->success_result;
         }
         return $out;
     }
@@ -2726,11 +2801,44 @@ Class Leads_model extends MY_Model
                 }
             }
             // Deleted
+            $deleted = $leaddata['deleted'];
+            foreach ($deleted as $delrow) {
+                if ($delrow['entity']=='lead_users') {
+                    $this->db->where('leaduser_id', $delrow['id']);
+                    $this->db->delete('ts_lead_users');
+                }
+            }
             $out['lead_id'] = $lead_id;
             $out['lead_number'] = $leadnum;
         } else {
             $out['msg'] = 'Failed to save lead';
         }
+        return $out;
+    }
+
+    public function update_autoaddress($data, $leaddata, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Parameter Not Found'];
+        $lead = $leaddata['lead'];
+        $cntres = [];
+        $states = [];
+        if (ifset($data,'country','')!=='') {
+            $cntres = $this->db->select('*')->from('sb_countries')->where('country_name',$data['country'])->get()->row_array();
+            if (ifset($cntres, 'country_id', 0) > 0) {
+                // Select States
+                $states = $this->db->select('*')->from('sb_states')->where('country_id',$cntres['country_id'])->get()->result_array();
+            }
+            $out['country'] = $cntres;
+            $out['states'] = $states;
+        }
+        $lead['country_id'] = ifset($cntres,'country_id','');
+        $lead['address_line1'] = ifset($data,'line_1','');
+        $lead['city'] = ifset($data, 'city','');
+        $lead['state'] = ifset($data, 'state','');
+        $lead['zip'] = ifset($data, 'zip','');
+        $out['result'] = $this->success_result;
+        $leaddata['lead'] = $lead;
+        usersession($session_id, $leaddata);
         return $out;
     }
 }

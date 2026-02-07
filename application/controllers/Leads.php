@@ -146,6 +146,7 @@ class Leads extends My_Controller {
         $head['scripts'][] = array('src' => '/js/leads/lead_popup.js');
         if ($gmaps==1) {
             $head['scripts'][] = array('src' => '/js/leads/lead_address.js');
+            $head['scripts'][] = array('src' => '/js/leads/leadpopup_address.js');
         }
         // Lead Quote
         $head['styles'][] = array('style' => '/css/leads/leadquote.css');

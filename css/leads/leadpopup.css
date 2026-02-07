@@ -1177,3 +1177,51 @@ input.discount-exp {
     float: right!important;
     margin-bottom: 3px;
 }
+/* Assign users */
+.leadtopassign-popup {
+    position: relative;
+    top: -26px;
+    left: -7px;
+    background: #fff;
+    border: 1px solid #000;
+    z-index: 10;
+    width: 112px;
+    padding: 8px;
+    display: none;
+}
+.leadusrreplicacancel {
+    float: right!important;
+    margin-right: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.leadtopassign-popup .datarow div {
+    height: 20px;
+    line-height: 20px;
+}
+.leadusrreplicachk {
+    text-align: center;
+    width: 20px;
+}
+.leadusrreplicausrname {
+    font-size: 12px;
+    margin-left: 4px;
+    max-width: 72px;
+}
+.leadusrreplicasave {
+    float: right !important;
+    width: 58px;
+    height: 22px!important;
+    line-height: 20px!important;
+    background: #5b5afe;
+    background: linear-gradient(to top, #4c4bfe, #6664fe);
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid #1a1b70;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, .5);
+    border-radius: 4px;
+    cursor: pointer;
+    color: #fff;
+    margin-top: 10px;
+}

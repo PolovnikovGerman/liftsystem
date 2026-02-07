@@ -4554,7 +4554,7 @@ class Leadquote_model extends MY_Model
             }
             $this->db->set('quote_repcontact', $quoteparams['repcontact_note']);
             $this->db->set('quote_blank', count($locations)==0 ? 1 : 0);
-            $this->db->set('create_time', time());
+            $this->db->set('create_time', date('Y-m-d H:i:s'));
             $this->db->set('create_user', $quoteparams['user_id']);
             $this->db->set('update_user', $quoteparams['user_id']);
             // Save
@@ -4715,7 +4715,7 @@ class Leadquote_model extends MY_Model
                         $this->db->set('imprint_qty', $quoteparams['item_qty']);
                         $this->db->insert('ts_quote_imprints');
                     } else {
-                        $imprrecs = $this->db->select('*')->from('ts_quote_imprindetails')->where('imprint_active',1)->get()->results_array();
+                        $imprrecs = $this->db->select('*')->from('ts_quote_imprindetails')->where(['quote_item_id'=>$quote_item_id, 'imprint_active' => 1])->get()->result_array();
                         $numloc = 1;
                         $setupcnt = 0;
                         foreach ($imprrecs as $imprint) {
@@ -4733,8 +4733,8 @@ class Leadquote_model extends MY_Model
                                 $setupcnt++;
                             } else {
                                 for ($j=1; $j<5; $j++) {
-                                    if ($imprint['num_colors']<=$j) {
-                                        $locid = date('jS', '2019-01-0'.$j);
+                                    if ($imprint['num_colors']>=$j) {
+                                        $locid = date('jS', strtotime('2019-01-0'.$j));
                                         $descipt = $locatname.': '.$locid.' Color Imprinting';
                                         $this->db->set('quote_item_id', $quote_item_id);
                                         $this->db->set('imprint_description', $descipt);
