@@ -86,12 +86,197 @@
 .week-tr {
     width: 100%;
 }
+.psctable-td {
+    width: 106px;
+}
 .calnd-daybox {
     border: 1px solid #303030;
     width: 106px;
     height: 39px;
     background: #fff;
 }
+.calnd-daybox .daybox-date {
+    width: 24px;
+    margin-top: 4px;
+}
+.calnd-daybox .dayboxdate-month {
+    width: 100%;
+    text-align: center;
+    font-size: 11px;
+    color: #000;
+    line-height: 12px;
+}
+.calnd-daybox .dayboxdate-date {
+    width: 100%;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: #000;
+    line-height: 20px;
+}
+.calnd-daybox .daybox-orders {
+    width: 32px;
+    margin-top: 5px;
+    margin-left: 2px;
+}
+.calnd-daybox .dayboxorders-name {
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    font-style: italic;
+    color: #a4a4a4;
+    line-height: 12px;
+}
+.calnd-daybox .dayboxorders-numbers {
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1000a7;
+    line-height: 16px;
+}
+.calnd-daybox .daybox-printsprinted {
+    width: 36px;
+    margin-top: 2px;
+    margin-left: 2px;
+}
+.dayboxprintsprinted-name {
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    line-height: 10px;
+    font-style: italic;
+    color: #000;
+}
+.dayboxprintsprinted-numbers {
+    width: 100%;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #000;
+    line-height: 14px;
+}
+.calnd-daybox .daybox-itemsprinted {
+    width: 38px;
+    margin-top: 2px;
+}
+.dayboxitemsprinted-name {
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    line-height: 10px;
+    font-style: italic;
+    color: #000000;
+}
+.dayboxitemsprinted-numbers {
+    width: 100%;
+    text-align: center;
+    font-size: 11px;
+    line-height: 14px;
+    font-weight: 600;
+    color: #000;
+}
+.calnd-daybox .daybox-printsprinted {
+    width: 36px;
+    margin-top: 2px;
+    margin-left: 2px;
+}
+.dayboxprintsprinted-name {
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    line-height: 10px;
+    font-style: italic;
+    color: #000;
+}
+.dayboxprintsprinted-numbers {
+    width: 100%;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #000;
+    line-height: 14px;
+}
+.calnd-daybox .daybox-printsprinted {
+    width: 36px;
+    margin-top: 2px;
+    margin-left: 2px;
+}
+.dayboxprintsprinted-name {
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    line-height: 10px;
+    font-style: italic;
+    color: #000;
+}
+.dayboxprintsprinted-numbers {
+    width: 100%;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #000;
+    line-height: 14px;
+}
+.calnd-daybox .daybox-prints {
+    width: 42px;
+    margin-top: 5px;
+}
+.calnd-daybox .dayboxprints-name {
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    font-style: italic;
+    color: #a4a4a4;
+    line-height: 12px;
+}
+.calnd-daybox .dayboxprints-numbers {
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1000a7;
+    line-height: 16px;
+}
+
+.psctable-totalbox {
+    border: 1px solid #303030;
+    width: 150px; /* 132px; */
+    height: 39px;
+    background: #130072;
+    color: #fff;
+    padding: 0 3px;
+}
+.psctable-totalbox.readyweek {
+    /*opacity: 0.8;*/
+    background: #42338e;
+}
+.totalbox-printed {
+    /*width: 45px; */
+    width: 66px;
+    margin-left: 4px;
+}
+.totalboxtprinted-name {
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    font-style: italic;
+    color: #646464;
+    line-height: 18px;
+    height: 16px;
+    margin-top: 2px;
+}
+.totalboxtprinted-numbers {
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #646464;
+    line-height: 16px;
+    height: 16px;
+}
+
+
 .calnd-daysweek {
     margin-top: -24px;
     margin-bottom: 4px;
@@ -117,10 +302,10 @@
     margin-top: -24px;
 }
 .weeklytotal-body {
-    color: #fff;
-    background: #42338e;
+    /*color: #fff;*/
+    /*background: #42338e;*/
     width: 100%;
-    height: 500px;
+    /*height: 500px;*/
 }
 .psright-topbar {
     height: 48px;
@@ -150,6 +335,13 @@
     line-height: 21px;
     text-align: center;
     margin-left: 7px;
+    cursor: pointer;
+    opacity: .4;
+    background: #d9d9d9;
+}
+.psleft-years-box.active {
+    background: #ffffff;
+    opacity: 1;
 }
 .reshedlordr-btn {
     /*background: #5c5b5b;*/
@@ -196,7 +388,7 @@
     width: 14px;
     height: 14px;
     border: 1px solid #000;
-    margin-right: 2px;
+    margin-right: 5px;
 }
 .keymaps-box.white {
     background: #fff;
@@ -212,8 +404,8 @@
 }
 .keymaps-label {
     font-size: 11px;
-    line-height: 14px;
-    margin-right: 3px;
+    line-height: 16px;
+    margin-right: 5px;
 }
 .keymaps-label:last-child {
     margin-right: 0;
@@ -313,7 +505,7 @@
 }
 /* Statistics Block */
 .statistics-tbl {
-    width: 490px;
+    width: 530px;
 }
 .statistics-tr {
     width: 100%;
@@ -344,10 +536,10 @@
     width: 56px;
 }
 .items_prntd {
-    width: 56px;
+    width: 70px;
 }
 .total_prntd {
-    width: 56px;
+    width: 70px;
 }
 .statistics-tbltitle .total_prntd {
     margin-right: 10px;
@@ -389,7 +581,7 @@
     width: 58px;
 }
 .best_week {
-    width: 80px;
+    width: 92px;
 }
 .bestday_date {
     width: 100%;
