@@ -20,8 +20,13 @@ class Printcalendar extends MY_Controller
             if (!empty($year)) {
                 $error = '';
                 $yearbgn = getDatesByWeek(1,$year);
-                $calend = $this->printcalendar_model->build_calendar($yearbgn['start_week'], $year);
+                $yearres = $this->printcalendar_model->build_calendar($yearbgn['start_week'], $year);
+                $calend = $yearres['calend'];
+                $totals = $yearres['totals'];
+                $mdata['minweek'] = $yearres['minweek'];
+                $mdata['maxweek'] = $yearres['maxweek'];
                 $mdata['calendarview'] = $this->load->view('printcalendar/calendar_view', ['calendars' => $calend], true);
+                $mdata['totalsview'] = $this->load->view('printcalendar/calendar_totals_view', ['totals' => $totals], true);
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -31,21 +36,24 @@ class Printcalendar extends MY_Controller
     public function yearstatic()
     {
         if ($this->isAjax()) {
-            $postdata = $this->input->post();
-            $year = ifset($postdata, 'year',0);
             $mdata = [];
-            $error = 'Empty Year';
-            if (!empty($year)) {
-                $error = '';
-                $res = $this->printcalendar_model->year_statistic($year);
-                $lates = $res['late'];
-                $lateoptions = [
-                    'orders' => $lates['ordercnt'],
-                    'prints' => $lates['printqty'],
-                ];
-                $mdata['latecontent'] = $this->load->view('printcalendar/lateresult_view', $lateoptions, true);
-                $mdata['statistic'] = $this->load->view('printcalendar/statist_year_view', $res, true);
-            }
+            $error = '';
+            $res = $this->printcalendar_model->total_statistic();
+            $mdata['statistic'] = $this->load->view('printcalendar/statistic_data_view', ['totals' => $res], true);
+//            $error = 'Empty Year';
+//            $postdata = $this->input->post();
+//            $year = ifset($postdata, 'year',0);
+//            if (!empty($year)) {
+//                $error = '';
+//                $res = $this->printcalendar_model->year_statistic($year);
+//                $lates = $res['late'];
+//                $lateoptions = [
+//                    'orders' => $lates['ordercnt'],
+//                    'prints' => $lates['printqty'],
+//                ];
+//                $mdata['latecontent'] = $this->load->view('printcalendar/lateresult_view', $lateoptions, true);
+//                $mdata['statistic'] = $this->load->view('printcalendar/statist_year_view', $res, true);
+//            }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();

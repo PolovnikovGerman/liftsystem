@@ -119,12 +119,14 @@ class Fulfillment extends MY_Controller
                 $head['scripts'][]=array('src' => '/js/database_center/relieveitemdetails.js');
                 $content_options['sritemsview'] = $this->_prepare_sritems_content();
             } elseif ($row['item_link']=='#printcalendar') {
-                $head['styles'][]=array('style'=>'/css/printcalendar/printcalendar.css');
-                $head['styles'][]=array('style'=>'/css/printcalendar/printdetails.css');
-                $head['styles'][]=array('style' => '/css/printcalendar/printreshedule.css');
-                $head['scripts'][]=array('src' => '/js/printcalendar/printcalendar.js');
-                $head['scripts'][]=array('src' => '/js/printcalendar/printdaily.js');
-                $head['scripts'][]=array('src' => '/js/printcalendar/printreshedule.js');
+//                $head['styles'][]=array('style'=>'/css/printcalendar/printcalendar.css');
+//                $head['styles'][]=array('style'=>'/css/printcalendar/printdetails.css');
+//                $head['styles'][]=array('style' => '/css/printcalendar/printreshedule.css');
+//                $head['scripts'][]=array('src' => '/js/printcalendar/printcalendar.js');
+//                $head['scripts'][]=array('src' => '/js/printcalendar/printdaily.js');
+//                $head['scripts'][]=array('src' => '/js/printcalendar/printreshedule.js');
+                $head['styles'][]=array('style'=>'/css/printcalendar/printcalendar_new.css');
+                $head['scripts'][]=array('src' => '/js/printcalendar/printcalendar_new.js');
                 $content_options['printcalendarview'] = $this->_prepare_printcalendar();
             }
         }
@@ -2375,7 +2377,7 @@ class Fulfillment extends MY_Controller
             'years' => $years,
             'yearprint' => $years[0]['yearprint'],
         ];
-        $content = $this->load->view('printcalendar/page_view', $options, TRUE);
+        $content = $this->load->view('printcalendar/page_new_view', $options, TRUE);
         return $content;
     }
 
