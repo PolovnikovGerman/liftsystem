@@ -2,6 +2,7 @@
     /*padding-left: 15px;    */
     /*background: #fff !important;*/
     padding: 15px 0 15px 15px;
+    width: 1697px;
 }
 .prnshd-left {
     position: relative;
@@ -383,6 +384,7 @@
     float: right !important;
     color: #fff;
     margin-top: -10px;
+    cursor: pointer;
 }
 .reshedlordr-btntxt {
     font-size: 18px;
