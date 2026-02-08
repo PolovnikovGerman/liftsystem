@@ -283,6 +283,7 @@ class Printcalendar_model extends MY_Model
         $end_year = strtotime(($year+1).'-01-01');
         $curdate = new DateTime(date('Y-m-d'));
         $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as printqty');
+        $this->db->select('sum(coalesce(oic.item_qty,0)) as itemqty');
         $this->db->from('ts_order_itemcolors oic');
         $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
         $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');
@@ -323,11 +324,11 @@ class Printcalendar_model extends MY_Model
         return [
             'late' => $lateres,
             'total_orders' => $statres['ordercnt'],
-            'total_items' => $statres['imprintqty'],
-            'total_prints' => $statres['printqty'],
+            'total_items' => $statres['printqty'],
+            'total_prints' => $statres['imprintqty'],
             'leave_orders' => $statres['ordercnt'] - $readyres['ordercnt'],
-            'leave_items' => $statres['imprintqty'] - $readyres['imprintqty'],
-            'leave_prints' => $statres['printqty'] - $readyres['printqty'],
+            'leave_prints' => $statres['imprintqty'] - $readyres['imprintqty'],
+            'leave_items' => $statres['printqty'] - $readyres['printqty'],
             'year' => $year,
         ];
     }

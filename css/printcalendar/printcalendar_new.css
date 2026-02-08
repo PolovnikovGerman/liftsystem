@@ -390,6 +390,16 @@
     line-height: 50px;
     margin-left: 40px;
 }
+.btnreschedular-btn {
+    width: 37px;
+    margin: 9px 0;
+    line-height: 32px;
+    border-left: 1px solid #aeadad;
+    color: #fff;
+    font-size: 26px;
+    text-align: center;
+    /* cursor: pointer; */
+}
 .reshedlordr {
     width: 100%;
 }

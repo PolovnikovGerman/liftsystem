@@ -66,6 +66,7 @@
                 </div>
                 <div class="reshedlordr-btn">
                     <div class="reshedlordr-btntxt">Reschedule Orders</div>
+                    <div class="btnreschedular-btn"><i class="fa fa-caret-down" aria-hidden="true"></i></div>
                 </div>
             </div>
         </div>
@@ -77,15 +78,15 @@
                     <div class="stillprint_box">
                         <div class="sprbox-orders">
                             <div class="sprbox-title">Orders:</div>
-                            <div class="sprbox-result">999,999</div>
+                            <div class="sprbox-result" data-fld="stilorders">&nbsp;</div>
                         </div>
                         <div class="sprbox-items">
                             <div class="sprbox-title">Items:</div>
-                            <div class="sprbox-result">999,999</div>
+                            <div class="sprbox-result" data-fld="stilitems">&nbsp;</div>
                         </div>
                         <div class="sprbox-total">
                             <div class="sprbox-title">Total Prints:</div>
-                            <div class="sprbox-result">999,999</div>
+                            <div class="sprbox-result" data-fld="stilprints">&nbsp;</div>
                         </div>
                     </div>
                 </div>
@@ -94,15 +95,15 @@
                     <div class="lateorders_box">
                         <div class="lateordbox-orders">
                             <div class="lateordbox-title">Orders:</div>
-                            <div class="lateordbox-result">999,999</div>
+                            <div class="lateordbox-result" data-fld="lateorders">&nbsp;</div>
                         </div>
                         <div class="lateordbox-items">
                             <div class="lateordbox-title">Items:</div>
-                            <div class="lateordbox-result">999,999</div>
+                            <div class="lateordbox-result" data-fld="lateitems">&nbsp;</div>
                         </div>
                         <div class="lateordbox-total">
                             <div class="lateordbox-title">Total Prints:</div>
-                            <div class="lateordbox-result">999,999</div>
+                            <div class="lateordbox-result" data-fld="lateprints">&nbsp;</div>
                         </div>
                     </div>
                 </div>
