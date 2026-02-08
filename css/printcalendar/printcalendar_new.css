@@ -56,9 +56,9 @@
 .clndrfull-body {
     /*width: 762px;*/
     position: relative;
-    width: 745px;
+    width: 752px;
     /*height: 530px;*/
-    height: 540px;
+    height: 580px;
     background: #efeded;
     border: 1px solid #000;
     margin-bottom: 6px;
@@ -85,10 +85,42 @@
 
 .week-tr {
     width: 100%;
+    margin-bottom: 3px;
 }
 .psctable-td {
     width: 106px;
 }
+.pastday .daybox-date,
+.pastday .daybox-itemsprinted,
+.pastday .daybox-printsprinted {
+    opacity: .15 !important;
+}
+.dayoff.pastday .daybox-date,
+.dayoff.pastday .daybox-itemsprinted,
+.dayoff.pastday .daybox-printsprinted {
+    opacity: .25 !important;
+}
+.calnd-daybox.pastday {
+    border: 1px solid #dedede;
+}
+.calnd-daybox.pastday.dayoff {
+    border: 1px solid #afafaf;
+}
+.calnd-daybox.dayoff {
+    border: 1px solid #303030;
+    /*width: 108px;*/
+    width: 112px;
+    height: 39px;
+    background: #d9d9d9;
+    padding: 0 3px;
+}
+.psctable-daybox:hover,
+.psctable-daybox.today {
+    outline: 3px solid #1c08d2;
+    background: #e2ebfc;
+    z-index: 2;
+}
+
 .calnd-daybox {
     border: 1px solid #303030;
     width: 106px;
