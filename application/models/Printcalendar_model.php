@@ -1572,7 +1572,6 @@ class Printcalendar_model extends MY_Model
 
             $this->db->select('order_itemcolor_id, amount_date as amntdate, sum(shipped) as fullfill, sum(shipped+misprint+kepted) as amount_sum');
             $this->db->from('ts_order_amounts');
-            $this->db->where('amount_date >= ', $datbgn)->where('amount_date < ', $datend);
             $this->db->group_by('order_itemcolor_id, amntdate');
             $amntsql = $this->db->get_compiled_select();
 
@@ -1586,6 +1585,7 @@ class Printcalendar_model extends MY_Model
             $this->db->join('('.$amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
             $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
             $this->db->where('o.is_canceled', 0);
+            $this->db->where('amnt.amntdate >= ', $datbgn)->where('amnt.amntdate < ', $datend);
             $totals = $this->db->get()->row_array();
 
             // Avg, max per day
@@ -1598,6 +1598,7 @@ class Printcalendar_model extends MY_Model
             $this->db->join('('.$amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
             $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
             $this->db->where('o.is_canceled', 0);
+            $this->db->where('amnt.amntdate >= ', $datbgn)->where('amnt.amntdate < ', $datend);
             $this->db->group_by('printdate');
             $this->db->order_by('maxday', 'desc');
             $this->db->limit(1);
@@ -1614,9 +1615,10 @@ class Printcalendar_model extends MY_Model
             $this->db->join('('.$amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
             $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
             $this->db->where('o.is_canceled', 0);
+            $this->db->where('amnt.amntdate >= ', $datbgn)->where('amnt.amntdate < ', $datend);
             $this->db->group_by('printweek');
             $this->db->order_by('maxweek','desc');
-            $this->db->limit(10);
+            $this->db->limit(1);
             $weekres = $this->db->get()->result_array();
             $weekres[0]['avgweek'] = $weeks==0 ? 0 : round($totals['printqty']/$weeks,2);
 
