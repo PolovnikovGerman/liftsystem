@@ -2,7 +2,6 @@
     /*padding-left: 15px;    */
     /*background: #fff !important;*/
     padding: 15px 0 15px 15px;
-    width: 1697px;
 }
 .prnshd-left {
     position: relative;
@@ -12,8 +11,7 @@
 .prnshd-right {
     float: right !important;
     /*width: 758px;*/
-    /*width: 745px;*/
-    width: calc(100% - 753px);
+    width: 745px;
 }
 .psright-small {
     width: 438px !important;
