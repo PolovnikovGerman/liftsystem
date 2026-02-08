@@ -2,7 +2,7 @@ function init_printcalendar_content() {
     var year = $("#printcaledyear").val();
     init_printcalendar(year);
     init_printstatistic();
-
+    init_reshedule_totals(year);
     $(".psleft-years-box").unbind('click').click(function (){
         if ($(this).hasClass('active')) {
         } else {
@@ -11,6 +11,7 @@ function init_printcalendar_content() {
             $(".psleft-years-box[data-yearprint='"+newyear+"']").addClass('active');
             $("#printcaledyear").val(newyear);
             init_printcalendar_content();
+            init_reshedule_totals(newyear);
         }
     });
 }
@@ -52,7 +53,6 @@ function init_printstatistic() {
     var url = '/printcalendar/yearstatic';
     $.post(url, params, function (response){
         if (response.errors=='') {
-            // $(".lateorders-box").empty().html(response.data.latecontent);
             $(".statistics-block").empty().html(response.data.statistic);
         } else {
             show_error(response);
@@ -60,6 +60,23 @@ function init_printstatistic() {
     },'json');
 }
 
+function init_reshedule_totals(year) {
+    var params = new Array();
+    params.push({name: 'year', value: year});
+    var url = '/printcalendar/reshedulestatic';
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $("div.sprbox-result[data-fld='stilorders']").empty().html(response.data.stil_orders);
+            $("div.sprbox-result[data-fld='stilitems']").empty().html(response.data.stil_items);
+            $("div.sprbox-result[data-fld='stilprints']").empty().html(response.data.stil_prints);
+            $("div.lateordbox-result[data-fld='lateorders']").empty().html(response.data.late_orders);
+            $("div.lateordbox-result[data-fld='lateitems']").empty().html(response.data.late_items);
+            $("div.lateordbox-result[data-fld='lateprints']").empty().html(response.data.late_prints);
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
 function init_fullcalendar() {
     // Scrolls
     $(".calnd-up").unbind('click').click(function (){

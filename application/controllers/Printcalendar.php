@@ -59,6 +59,35 @@ class Printcalendar extends MY_Controller
         show_404();
     }
 
+    public function reshedulestatic()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Year';
+            $postdata = $this->input->post();
+            $year = ifset($postdata, 'year',0);
+            if (!empty($year)) {
+                $error = '';
+                $res = $this->printcalendar_model->year_statistic($year);
+                $lates = $res['late'];
+                $mdata['late_orders'] = empty($lates['ordercnt']) ? '-' : QTYOutput($lates['ordercnt']);
+                $mdata['late_items'] = empty($lates['itemqty']) ? '-' : QTYOutput($lates['itemqty']);
+                $mdata['late_prints'] = empty($lates['printqty']) ? '-' : QTYOutput($lates['printqty']);
+                $mdata['stil_orders'] = empty($res['leave_orders']) ? '-' : QtyOutput($res['leave_orders']);
+                $mdata['stil_items'] = empty($res['leave_items']) ? '-' : QtyOutput($res['leave_items']);
+                $mdata['stil_prints'] = empty($res['leave_prints']) ? '-' : QtyOutput($res['leave_prints']);
+
+//                $lateoptions = [
+//                    'orders' => $lates['ordercnt'],
+//                    'prints' => $lates['printqty'],
+//                ];
+//                $mdata['latecontent'] = $this->load->view('printcalendar/lateresult_view', $lateoptions, true);
+//                $mdata['statistic'] = $this->load->view('printcalendar/statist_year_view', $res, true);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
     public function weekcalendar()
     {
         if ($this->isAjax()) {
