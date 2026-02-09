@@ -171,8 +171,69 @@ function init_fullcalendar() {
         }
         $("#calendweekbgn").val(minweek);
     });
+    // Click on week day
+    $(".psctable-td").unbind('click').click(function (){
+        var printdate = $(this).data('printdate');
+        var printweek = $(this).data('printweek');
+        var params = new Array();
+        params.push({name: 'printdate', value: printdate});
+        params.push({name: 'printweek', value: printweek});
+        var url = '/printcalendar/weekcalendar';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $(".psleft-topbar").hide();
+                $(".calendar-week").show()
+                $(".calendar-full").hide()
+                $(".clndrfull-weeklytotal").hide();
+                $(".statistics-block").hide();
+                $(".simpltodayblock").hide();
+                $(".todayblock").show();
+                $(".reschedulartabs").show();
+                $(".reschdl-body").hide();
+                $(".reschdl-infobody").hide();
+                $(".reschdl-linebody").show();
+
+                // $(".pscalendar-week").empty().html(response.data.content);
+                // $(".pscalendar-daybox[data-printdate='"+printdate+"']").addClass('today');
+                // init_printdate_details(printdate);
+                // $("#printcalendarfullview").hide();
+                // $("#printcalendardetailsview").show();
+                // $("#calendarprintdate").val(printdate);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+
 }
 
 function init_reschedule_management() {
-
+    $(".reschdl-tab").unbind('click').click(function (){
+        var sortfld = $(this).data('sortfld');
+        if ($(this).hasClass('active')) {
+        } else {
+            $(".reschdl-tab").removeClass('active');
+            $(".reschdl-tab[data-sortfld='"+sortfld+"']").addClass('active');
+            var params = new Array();
+            params.push({name: 'sortfld', value: sortfld});
+            var url = '/printcalendar/reschedulechangeview';
+            $("#loader").show();
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $(".reschdl-body").empty().html(response.data.calendarview);
+                    init_reschedule_management();
+                    if ($("#reschdltabl-body").length > 0) {
+                        new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
+                    }
+                    if ($("#reschditms-body").length > 0) {
+                        new SimpleBar(document.getElementById('reschditms-body'), { autoHide: false });
+                    }
+                    $("#loader").hide();
+                } else {
+                    $("#loader").hide();
+                    show_error(response);
+                }
+            },'json');
+        }
+    })
 }

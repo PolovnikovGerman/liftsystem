@@ -40,9 +40,9 @@
                             <div class="reschdltabl-td reschdltabl-items"><?=QTYOutput($list['item_qty'])?></div>
                             <div class="reschdltabl-td reschdltabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                             <div class="reschdltabl-td reschdltabl-prints"><?=QTYOutput($list['prints'])?></div>
-                            <div class="reschdltabl-td reschdltabl-itmcolor"><?=$list['color']?></div>
-                            <div class="reschdltabl-td reschdltabl-description"><?=$list['item']?></div>
-                            <div class="reschdltabl-td reschdltabl-inkcolor">&nbsp;</div>
+                            <div class="reschdltabl-td reschdltabl-itmcolor truncateoverflowtext"><?=$list['color']?></div>
+                            <div class="reschdltabl-td reschdltabl-description truncateoverflowtext"><?=$list['item']?></div>
+                            <div class="reschdltabl-td reschdltabl-inkcolor truncateoverflowtext">&nbsp;</div>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -90,9 +90,9 @@
                                         <div class="reschdltabl-td reschdltabl-items"><?=QTYOutput($list['item_qty'])?></div>
                                         <div class="reschdltabl-td reschdltabl-imp"><?=$list['cntprint']?></div>
                                         <div class="reschdltabl-td reschdltabl-prints"><?=QTYOutput($list['prints'])?></div>
-                                        <div class="reschdltabl-td reschdltabl-itmcolor"><?=$list['color']?></div>
-                                        <div class="reschdltabl-td reschdltabl-description ontimedescription"><?=$list['item']?></div>
-                                        <div class="reschdltabl-td reschdltabl-inkcolor">&nbsp;</div>
+                                        <div class="reschdltabl-td reschdltabl-itmcolor truncateoverflowtext"><?=$list['color']?></div>
+                                        <div class="reschdltabl-td reschdltabl-description ontimedescription  truncateoverflowtext"><?=$list['item']?></div>
+                                        <div class="reschdltabl-td reschdltabl-inkcolor truncateoverflowtext">&nbsp;</div>
                                     </div>
                                 </div>
                             <?php endforeach; ?>

@@ -71,7 +71,7 @@
             </div>
         </div>
         <div class="reshedlordr">
-            <div class="reschdl-body">RO Table</div>
+            <div class="reschdl-body">&nbsp;</div>
             <div class="reschdl-infobody">
                 <div class="ro_stillprint">
                     <div class="ro_infotitle">Still to Print:</div>
