@@ -52,9 +52,9 @@
                     <div class="histrtabl-td histrtabl-items"><?=empty($list['item_qty']) ? '-' : QTYOutput($list['item_qty'])?></div>
                     <div class="histrtabl-td histrtabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                     <div class="histrtabl-td histrtabl-prints"><?=empty($list['prints']) ? '-' : QTYOutput($list['prints'])?></div>
-                    <div class="histrtabl-td histrtabl-itmcolor"><?=$list['color']?></div>
-                    <div class="histrtabl-td histrtabl-description shortresched"><?=$list['item']?></div>
-                    <div class="histrtabl-td histrtabl-inkcolor">&nbsp;</div>
+                    <div class="histrtabl-td histrtabl-itmcolor truncateoverflowtext"><?=$list['color']?></div>
+                    <div class="histrtabl-td histrtabl-description shortresched truncateoverflowtext"><?=$list['item']?></div>
+                    <div class="histrtabl-td histrtabl-inkcolor truncateoverflowtext">&nbsp;</div>
                 </div>
             </div>
         <?php endforeach; ?>

@@ -51,9 +51,9 @@
                 <div class="warntabl-td warntabl-items"><?=QTYOutput($list['item_qty'])?></div>
                 <div class="warntabl-td warntabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                 <div class="warntabl-td warntabl-prints"><?=QTYOutput($list['prints'])?></div>
-                <div class="warntabl-td warntabl-itmcolor"><?=$list['color']?></div>
-                <div class="warntabl-td warntabl-description shortresched"><?=$list['item']?></div>
-                <div class="warntabl-td warntabl-inkcolor">&nbsp;</div>
+                <div class="warntabl-td warntabl-itmcolor truncateoverflowtext"><?=$list['color']?></div>
+                <div class="warntabl-td warntabl-description shortresched truncateoverflowtext"><?=$list['item']?></div>
+                <div class="warntabl-td warntabl-inkcolor truncateoverflowtext">&nbsp;</div>
             </div>
         </div>
     <?php endforeach; ?>

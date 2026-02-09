@@ -53,9 +53,9 @@
             <div class="regltabl-td regltabl-items"><?=QTYOutput($list['item_qty'])?></div>
             <div class="regltabl-td regltabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
             <div class="regltabl-td regltabl-prints"><?=QTYOutput($list['prints'])?></div>
-            <div class="regltabl-td regltabl-itmcolor"><?=$list['color']?></div>
-            <div class="regltabl-td regltabl-description"><?=$list['item']?></div>
-            <div class="regltabl-td regltabl-inkcolor">&nbsp;</div>
+            <div class="regltabl-td regltabl-itmcolor truncateoverflowtext"><?=$list['color']?></div>
+            <div class="regltabl-td regltabl-description truncateoverflowtext"><?=$list['item']?></div>
+            <div class="regltabl-td regltabl-inkcolor truncateoverflowtext">&nbsp;</div>
         </div>
         <div class="regltabl-prepblock">
             <div class="regltabl-td regltabl-prepared">
