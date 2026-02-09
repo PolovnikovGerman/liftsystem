@@ -91,56 +91,42 @@ function init_reshedule_view() {
         $(".reschdl-linebody").hide();
         $(".reshedlordr-btn").removeClass('opened');
     } else {
-        $(".btnreschedular-btn").empty().html('<i class="fa fa-times" aria-hidden="true"></i>');
-        $(".reschedulartabs").show();
-        $(".reschdl-body").show();
-        $(".clndrfull-weeklytotal").hide();
-        $(".reschdl-infobody").hide();
-        $(".reschdl-linebody").show();
-        $(".reshedlordr-btn").addClass('opened');
-        // var url = '/printcalendar/rescheduletoday';
-        // var params = new Array();
-        // var sortfld = 'print_date';
-        // if ($(".reschdl-tab.active").length > 0) {
-        //     sortfld = $(".reschdl-tab.active").data('sortfld');
-        // }
-        // params.push({name: 'sortfld', value: sortfld});
-        // $("#loader").show();
-        // $.post(url, params, function (response){
-        //     // show week caledar
-        //     var printdate = response.data.printdate;
-        //     $(".pscalendar-week").empty().html(response.data.weekcalend);
-        //     $(".pscalendar-daybox[data-printdate='"+printdate+"']").addClass('today');
-        //     $("#printcalendarfullview").hide();
-        //     $("#printcalendardetailsview").show();
-        //     $("#calendarprintdate").val(printdate);
-        //     // Call reschedule
-        //     $(".btn-reschedular").hide();
-        //     $(".btn-reschedular-open").show();
-        //     $(".maingreyblock.fullinfo").hide();
-        //     $(".history-section").hide();
-        //     $(".maingreyblock-small").empty().html(response.data.content);
-        //     $(".history-section-small").empty().html(response.data.historyview);
-        //     $(".reschedularbody").empty().html(response.data.calendarview);
-        //     $(".pschedul-leftside").show();
-        //     $(".pschedul-rightside").show();
-        //     init_reschedule_management();
-        //     init_dailydetails_manage();
-        //     if ($("#reschdltabl-body").length > 0) {
-        //         new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
-        //     }
-        //     if ($("#reschditms-body").length > 0) {
-        //         new SimpleBar(document.getElementById('reschditms-body'), { autoHide: false });
-        //     }
-        //     if (parseInt(response.data.warningcnt) > 0) {
-        //         $(".warning-section").show();
-        //         $(".maingrey-close").hide();
-        //     } else {
-        //         $(".warning-section").hide();
-        //         $(".maingrey-close").show();
-        //     }
-        //     $("#loader").hide();
-        // },'json')
+        var url = '/printcalendar/rescheduletoday';
+        var params = new Array();
+        var sortfld = 'print_date';
+        if ($(".reschdl-tab.active").length > 0) {
+            sortfld = $(".reschdl-tab.active").data('sortfld');
+        }
+        params.push({name: 'sortfld', value: sortfld});
+        $("#loader").show();
+        $.post(url, params, function (response){
+            $(".btnreschedular-btn").empty().html('<i class="fa fa-times" aria-hidden="true"></i>');
+            $(".reschedulartabs").show();
+            $(".reschdl-body").show();
+            $(".clndrfull-weeklytotal").hide();
+            $(".reschdl-infobody").hide();
+            $(".reschdl-linebody").show();
+            $(".reshedlordr-btn").addClass('opened');
+            $(".reschdl-body").empty().html(response.data.calendarview);
+            // $(".pschedul-leftside").show();
+            // $(".pschedul-rightside").show();
+            init_reschedule_management();
+            // init_dailydetails_manage();
+            if ($("#reschdltabl-body").length > 0) {
+                new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
+            }
+            if ($("#reschditms-body").length > 0) {
+                new SimpleBar(document.getElementById('reschditms-body'), { autoHide: false });
+            }
+            // if (parseInt(response.data.warningcnt) > 0) {
+            //     $(".warning-section").show();
+            //     $(".maingrey-close").hide();
+            // } else {
+            //     $(".warning-section").hide();
+            //     $(".maingrey-close").show();
+            // }
+            $("#loader").hide();
+        },'json')
     }
 }
 function init_fullcalendar() {
@@ -185,4 +171,8 @@ function init_fullcalendar() {
         }
         $("#calendweekbgn").val(minweek);
     });
+}
+
+function init_reschedule_management() {
+
 }
