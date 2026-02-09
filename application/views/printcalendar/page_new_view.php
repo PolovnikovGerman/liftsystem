@@ -14,7 +14,26 @@
                 <?php endforeach; ?>
             </div>
         </div>
-        <div class="calendar-week">Slider CALENDAR WEEK</div>
+        <div class="calendar-week">
+            <div class="pscalendar-arrows">
+                <div class="pscalendar-arrowsleft">
+                    <i class="fa fa-caret-left" aria-hidden="true"></i>
+                </div>
+                <div class="pscalendar-arrowsright">
+                    <i class="fa fa-caret-right" aria-hidden="true"></i>
+                </div>
+            </div>
+            <div class="pscalendar-days">
+                <div class="pscalendar-td">Monday</div>
+                <div class="pscalendar-td">Tuesday</div>
+                <div class="pscalendar-td">Wednesday</div>
+                <div class="pscalendar-td">Thursday</div>
+                <div class="pscalendar-td">Friday</div>
+                <div class="pscalendar-td">Saturday</div>
+                <div class="pscalendar-td">Sunday</div>
+            </div>
+            <div class="pscalendar-week"></div>
+        </div>
         <div class="calendar-full">
             <div class="calnd-daysweek">
                 <div class="dayweek">Monday</div>
@@ -61,8 +80,8 @@
             </div>
             <div class="datarow">
                 <div class="reschedulartabs">
-                    <div class="reschdl-tab active">By Print Date</div>
-                    <div class="reschdl-tab">By Item</div>
+                    <div class="reschdl-tab active" data-sortfld="print_date">By Print Date</div>
+                    <div class="reschdl-tab" data-sortfld="item_id">By Item</div>
                 </div>
                 <div class="reshedlordr-btn">
                     <div class="reshedlordr-btntxt">Reschedule Orders</div>
@@ -71,7 +90,7 @@
             </div>
         </div>
         <div class="reshedlordr">
-            <div class="reschdl-body">RO Table</div>
+            <div class="reschdl-body">&nbsp;</div>
             <div class="reschdl-infobody">
                 <div class="ro_stillprint">
                     <div class="ro_infotitle">Still to Print:</div>

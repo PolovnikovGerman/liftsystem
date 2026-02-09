@@ -91,56 +91,42 @@ function init_reshedule_view() {
         $(".reschdl-linebody").hide();
         $(".reshedlordr-btn").removeClass('opened');
     } else {
-        $(".btnreschedular-btn").empty().html('<i class="fa fa-times" aria-hidden="true"></i>');
-        $(".reschedulartabs").show();
-        $(".reschdl-body").show();
-        $(".clndrfull-weeklytotal").hide();
-        $(".reschdl-infobody").hide();
-        $(".reschdl-linebody").show();
-        $(".reshedlordr-btn").addClass('opened');
-        // var url = '/printcalendar/rescheduletoday';
-        // var params = new Array();
-        // var sortfld = 'print_date';
-        // if ($(".reschdl-tab.active").length > 0) {
-        //     sortfld = $(".reschdl-tab.active").data('sortfld');
-        // }
-        // params.push({name: 'sortfld', value: sortfld});
-        // $("#loader").show();
-        // $.post(url, params, function (response){
-        //     // show week caledar
-        //     var printdate = response.data.printdate;
-        //     $(".pscalendar-week").empty().html(response.data.weekcalend);
-        //     $(".pscalendar-daybox[data-printdate='"+printdate+"']").addClass('today');
-        //     $("#printcalendarfullview").hide();
-        //     $("#printcalendardetailsview").show();
-        //     $("#calendarprintdate").val(printdate);
-        //     // Call reschedule
-        //     $(".btn-reschedular").hide();
-        //     $(".btn-reschedular-open").show();
-        //     $(".maingreyblock.fullinfo").hide();
-        //     $(".history-section").hide();
-        //     $(".maingreyblock-small").empty().html(response.data.content);
-        //     $(".history-section-small").empty().html(response.data.historyview);
-        //     $(".reschedularbody").empty().html(response.data.calendarview);
-        //     $(".pschedul-leftside").show();
-        //     $(".pschedul-rightside").show();
-        //     init_reschedule_management();
-        //     init_dailydetails_manage();
-        //     if ($("#reschdltabl-body").length > 0) {
-        //         new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
-        //     }
-        //     if ($("#reschditms-body").length > 0) {
-        //         new SimpleBar(document.getElementById('reschditms-body'), { autoHide: false });
-        //     }
-        //     if (parseInt(response.data.warningcnt) > 0) {
-        //         $(".warning-section").show();
-        //         $(".maingrey-close").hide();
-        //     } else {
-        //         $(".warning-section").hide();
-        //         $(".maingrey-close").show();
-        //     }
-        //     $("#loader").hide();
-        // },'json')
+        var url = '/printcalendar/rescheduletoday';
+        var params = new Array();
+        var sortfld = 'print_date';
+        if ($(".reschdl-tab.active").length > 0) {
+            sortfld = $(".reschdl-tab.active").data('sortfld');
+        }
+        params.push({name: 'sortfld', value: sortfld});
+        $("#loader").show();
+        $.post(url, params, function (response){
+            $(".btnreschedular-btn").empty().html('<i class="fa fa-times" aria-hidden="true"></i>');
+            $(".reschedulartabs").show();
+            $(".reschdl-body").show();
+            $(".clndrfull-weeklytotal").hide();
+            $(".reschdl-infobody").hide();
+            $(".reschdl-linebody").show();
+            $(".reshedlordr-btn").addClass('opened');
+            $(".reschdl-body").empty().html(response.data.calendarview);
+            // $(".pschedul-leftside").show();
+            // $(".pschedul-rightside").show();
+            init_reschedule_management();
+            // init_dailydetails_manage();
+            if ($("#reschdltabl-body").length > 0) {
+                new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
+            }
+            if ($("#reschditms-body").length > 0) {
+                new SimpleBar(document.getElementById('reschditms-body'), { autoHide: false });
+            }
+            // if (parseInt(response.data.warningcnt) > 0) {
+            //     $(".warning-section").show();
+            //     $(".maingrey-close").hide();
+            // } else {
+            //     $(".warning-section").hide();
+            //     $(".maingrey-close").show();
+            // }
+            $("#loader").hide();
+        },'json')
     }
 }
 function init_fullcalendar() {
@@ -184,5 +170,379 @@ function init_fullcalendar() {
             $(".weeklytotal-body").find("div.week-tr[data-week='"+i+"']").show();
         }
         $("#calendweekbgn").val(minweek);
+    });
+    // Click on week day
+    $(".psctable-td").unbind('click').click(function (){
+        var printdate = $(this).data('printdate');
+        var printweek = $(this).data('printweek');
+        var params = new Array();
+        params.push({name: 'printdate', value: printdate});
+        params.push({name: 'printweek', value: printweek});
+        // params.push({name: 'shortview', value: short});
+        var url = '/printcalendar/weekcalendar';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#calendarprintdate").val(printdate);
+                $(".pscalendar-week").empty().html(response.data.content);
+                $(".pscalendar-daybox[data-printdate='"+printdate+"']").addClass('today');
+                $(".psleft-topbar").hide();
+                $(".calendar-week").show()
+                $(".calendar-full").hide()
+                $(".clndrfull-weeklytotal").hide();
+                $(".statistics-block").hide();
+                $(".reschdl-infobody").hide();
+                $(".reschedulartabs").show();
+                $(".reschdl-linebody").show();
+                init_printdate_details(printdate);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+}
+
+function init_reschedule_management() {
+    $(".reschdl-tab").unbind('click').click(function (){
+        var sortfld = $(this).data('sortfld');
+        if ($(this).hasClass('active')) {
+        } else {
+            $(".reschdl-tab").removeClass('active');
+            $(".reschdl-tab[data-sortfld='"+sortfld+"']").addClass('active');
+            var params = new Array();
+            params.push({name: 'sortfld', value: sortfld});
+            var url = '/printcalendar/reschedulechangeview';
+            $("#loader").show();
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $(".reschdl-body").empty().html(response.data.calendarview);
+                    init_reschedule_management();
+                    if ($("#reschdltabl-body").length > 0) {
+                        new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
+                    }
+                    if ($("#reschditms-body").length > 0) {
+                        new SimpleBar(document.getElementById('reschditms-body'), { autoHide: false });
+                    }
+                    $("#loader").hide();
+                } else {
+                    $("#loader").hide();
+                    show_error(response);
+                }
+            },'json');
+        }
+    })
+}
+
+// Week Calendar
+function init_printdate_details(printdate) {
+    var smallview = 0;
+    if ($(".reshedlordr-btn").hasClass("opened")) {
+        smallview = 1;
+    }
+    var params = new Array();
+    params.push({name: 'printdate', value: printdate});
+    params.push({name: 'smallview', value: smallview});
+    var url = '/printcalendar/daylidetails';
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            if (parseInt(smallview)==1) {
+                $(".todayblock").hide();
+                $(".simpltodayblock").show().empty().html(response.data.content);
+                $(".history-section-small").empty().html(response.data.historyview);
+            } else {
+                $(".simpltodayblock").hide()
+                $(".todayblock").show().empty().html(response.data.content);
+                $(".history-section").empty().html(response.data.historyview);
+            }
+            if (parseInt(response.data.warningcnt)==0) {
+                $(".warning-section").hide();
+                $(".maingrey-close").show();
+            } else {
+                $(".warning-section").show();
+                $(".maingrey-close").hide();
+            }
+            init_dailydetails_manage()
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function init_dailydetails_manage() {
+    $("input[name='shipdate']").datepicker({
+        // format : 'mm/dd/yy',
+        autoclose: true,
+        todayHighlight: true
+    });
+    $("input[name='printdate']").datepicker({
+        // format : 'mm/dd/yy',
+        autoclose: true,
+        todayHighlight: true
+    });
+    $(".maingrey-close").unbind('click').click(function () {
+        var year = $("#printcaledyear").val();
+        init_printcalendar(year);
+        init_printstatistic();
+        init_reshedule_totals(year);
+        $(".calendar-week").hide();
+        $(".simpltodayblock").hide();
+        $(".todayblock").hide();
+        $(".psleft-topbar").show();
+        $(".calendar-full").show();
+        if ($(".reshedlordr-btn").hasClass('opened')) {
+            $(".clndrfull-weeklytotal").hide();
+            $(".reschdl-infobody").hide();
+            $(".reschdl-linebody").show();
+            $(".reschedulartabs").show();
+        } else {
+            $(".clndrfull-weeklytotal").show();
+            $(".reschdl-infobody").show();
+            $(".reschdl-linebody").hide();
+            $(".reschedulartabs").hide();
+        }
+        $(".statistics-block").show();
+    });
+    $(".warning-close").unbind('click').click(function () {
+        var year = $("#printcaledyear").val();
+        init_printcalendar(year);
+        init_printstatistic();
+        init_reshedule_totals(year);
+        $(".calendar-week").hide();
+        $(".simpltodayblock").hide();
+        $(".todayblock").hide();
+        $(".psleft-topbar").show();
+        $(".calendar-full").show();
+        if ($(".reshedlordr-btn").hasClass('opened')) {
+            $(".clndrfull-weeklytotal").hide();
+            $(".reschdl-infobody").hide();
+            $(".reschdl-linebody").show();
+            $(".reschedulartabs").show();
+        } else {
+            $(".clndrfull-weeklytotal").show();
+            $(".reschdl-infobody").show();
+            $(".reschdl-linebody").hide();
+            $(".reschedulartabs").hide();
+        }
+        $(".statistics-block").show();
+    });
+    $(".pscalendar-daybox").unbind('click').click(function () {
+        if ($(this).hasClass('today')) {
+        } else {
+            var printdate = $(this).data('printdate');
+            $(".pscalendar-daybox").removeClass('today');
+            $(".pscalendar-daybox[data-printdate='" + printdate + "']").addClass('today');
+            init_printdate_details(printdate);
+            $("#calendarprintdate").val(printdate);
+        }
+    });
+    // $(".btn-reschedular").unbind('click').click(function () {
+    //     open_reschedule();
+    // });
+    // $(".btn-reschedular-open").unbind('click').click(function () {
+    //     close_reschedule();
+    // });
+    $(".pscalendar-arrowsleft").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'week', value: $("#printcalendarcurweek").val()})
+        params.push({name: 'direct', value: 'prev'});
+        var url = '/printcalendar/weekcalendarmove';
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                $(".pscalendar-week").empty().html(response.data.content);
+                init_dailydetails_manage();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    $(".pscalendar-arrowsright").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'week', value: $("#printcalendarcurweek").val()})
+        params.push({name: 'direct', value: 'next'});
+        var url = '/printcalendar/weekcalendarmove';
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                $(".pscalendar-week").empty().html(response.data.content);
+                init_dailydetails_manage();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    $(".userprinter").unbind('click').click(function () {
+        var order = $(this).data('order');
+        if ($(this).hasClass('openassign')) {
+            $(this).empty().html('<img src="/img/printscheduler/user-printer.svg">');
+            $(".assign-popup[data-order='" + order + "']").hide();
+            $(this).removeClass('openassign');
+        } else {
+            var curusr = $(this).data('user');
+            $(".assign-popup").hide();
+            $(".userprinter").empty().html('<img src="/img/printscheduler/user-printer.svg">');
+            $(".userprinter").removeClass('openassign');
+            $(this).empty().html('<img src="/img/printscheduler/user-printer-white.svg">');
+            $(this).addClass('openassign');
+            $(".assign-popup[data-order='" + order + "']").show();
+            init_printer_assign(order, curusr);
+        }
+    });
+    $(".regltabl-prepstock").unbind('click').click(function () {
+        var ordercolor = $(this).data('ordercolor');
+        var params = new Array();
+        params.push({name: 'order_color', value: ordercolor});
+        var url = '/printcalendar/stockupdate';
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                if (parseInt(response.data.newval) == 1) {
+                    $(".regltabl-prepstock[data-ordercolor='" + ordercolor + "']").addClass('grey');
+                } else {
+                    $(".regltabl-prepstock[data-ordercolor='" + ordercolor + "']").removeClass('grey');
+                }
+            } else {
+                show_error(response)
+            }
+        }, 'json');
+    });
+    $(".regltabl-prepplate").unbind('click').click(function () {
+        var orderitem = $(this).data('orderitem');
+        var params = new Array();
+        params.push({name: 'order_item', value: orderitem});
+        var url = '/printcalendar/platesupdate';
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                if (parseInt(response.data.newval) == 1) {
+                    $(".regltabl-prepplate[data-orderitem='" + orderitem + "']").addClass('grey');
+                } else {
+                    $(".regltabl-prepplate[data-orderitem='" + orderitem + "']").removeClass('grey');
+                }
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    $(".regltabl-prepink").unbind('click').click(function () {
+        var ordercolor = $(this).data('ordercolor');
+        var params = new Array();
+        params.push({name: 'order_color', value: ordercolor});
+        var url = '/printcalendar/inkupdate';
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                if (parseInt(response.data.newval) == 1) {
+                    $(".regltabl-prepink[data-ordercolor='" + ordercolor + "']").addClass('grey');
+                } else {
+                    $(".regltabl-prepink[data-ordercolor='" + ordercolor + "']").removeClass('grey');
+                }
+            } else {
+                show_error(response)
+            }
+        }, 'json');
+    });
+    $(".btnsave.fulfblock").unbind('click').click(function () {
+        if ($(this).hasClass('closedblock')) {
+        } else {
+            var ordercolor = $(this).data('ordercolor');
+            var params = new Array();
+            params.push({name: 'itemcolor', value: ordercolor});
+            params.push({
+                name: 'podate',
+                value: $("input[name='printdate'][data-ordercolor='" + ordercolor + "']").val()
+            });
+            params.push({
+                name: 'shipped',
+                value: $("input[name='printval'][data-ordercolor='" + ordercolor + "']").val()
+            });
+            params.push({
+                name: 'kepted',
+                value: $("input[name='keptval'][data-ordercolor='" + ordercolor + "']").val()
+            });
+            params.push({
+                name: 'misprint',
+                value: $("input[name='misprintval'][data-ordercolor='" + ordercolor + "']").val()
+            });
+            // params.push({name: 'plates', value: $("input[name='platesval'][data-ordercolor='"+ordercolor+"']").val()});
+            params.push({
+                name: 'plates',
+                value: $("select[name='platesval'][data-ordercolor='" + ordercolor + "']").val()
+            });
+            var url = '/printcalendar/outcomesave';
+            $("#loader").show();
+            $.post(url, params, function (response) {
+                if (response.errors == '') {
+                    if (parseInt(response.data.refreshinfo) == 1) {
+                        $(".warning-section").empty().html(response.data.warningview)
+                        $(".regular-section").empty().html(response.data.regularview);
+                        $(".history-section").empty().html(response.data.historyview);
+                    } else {
+                        $(".regltabl-tr[data-ordercolor='" + ordercolor + "']").empty().html(response.data.content);
+                    }
+                    if (parseInt(response.data.warningcnt) == 0) {
+                        $(".warning-section").hide();
+                        $(".maingrey-close").show();
+                    } else {
+                        $(".warning-section").show();
+                        $(".maingrey-close").hide();
+                    }
+                    $("#loader").hide();
+                    init_dailydetails_manage();
+                } else {
+                    $("#loader").hide();
+                    show_error(response);
+                }
+            }, 'json');
+        }
+    });
+    $(".btnsave.shipblock").unbind('click').click(function () {
+        if ($(this).hasClass('closedblock')) {
+        } else {
+            var ordercolor = $(this).data('ordercolor');
+            var params = new Array();
+            params.push({name: 'itemcolor', value: ordercolor});
+            params.push({
+                name: 'shipqty',
+                value: $("input[name='shipqty'][data-ordercolor='" + ordercolor + "']").val()
+            });
+            params.push({
+                name: 'shipdate',
+                value: $("input[name='shipdate'][data-ordercolor='" + ordercolor + "']").val()
+            });
+            params.push({
+                name: 'shipmethod',
+                value: $("select[name='shipmethod'][data-ordercolor='" + ordercolor + "']").val()
+            });
+            params.push({
+                name: 'trackcode',
+                value: $("input[name='shiptrackcode'][data-ordercolor='" + ordercolor + "']").val()
+            });
+            var url = '/printcalendar/shiporder';
+            $("#loader").show();
+            $.post(url, params, function (response) {
+                if (response.errors == '') {
+                    if (parseInt(response.data.refreshinfo) == 1) {
+                        $(".warning-section").empty().html(response.data.warningview)
+                        $(".regular-section").empty().html(response.data.regularview);
+                        $(".history-section").empty().html(response.data.historyview);
+                    } else {
+                        $(".regltabl-tr[data-ordercolor='" + ordercolor + "']").empty().html(response.data.content);
+                    }
+                    if (parseInt(response.data.warningcnt) == 0) {
+                        $(".warning-section").hide();
+                        $(".maingrey-close").show();
+                    } else {
+                        $(".warning-section").show();
+                        $(".maingrey-close").hide();
+                    }
+                    $("#loader").hide();
+                    init_dailydetails_manage();
+                } else {
+                    $("#loader").hide();
+                    show_error(response);
+                }
+            }, 'json');
+        }
+    });
+    $("div.trackbtn").unbind('click').click(function () {
+        var copydat = $(this).data('track');
+        var element = document.querySelector("input[name='trackcode'][data-track='" + copydat + "']");
+        copyElementToClipboard(element);
+        // $(element).show();
     });
 }

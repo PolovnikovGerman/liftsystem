@@ -713,34 +713,34 @@ class Printcalendar extends MY_Controller
             $printdate = strtotime(date('Y-m-d'));
             $printweek = date('W-Y', $printdate);
             $weekdat = explode("-", $printweek);
-            $res = $this->printcalendar_model->week_calendar($weekdat[0], $weekdat[1]);
-            $mdata['weekcalend'] = $this->load->view('printcalendar/week_calendar_view', $res, true);
-            $mdata['printdate'] = $printdate;
-            // Day Details
-            $res = $this->printcalendar_model->dayshortdetails($printdate);
-            $header_view = $this->load->view('printcalendar/daydetails_header_view', $res, true);
-            $warnings = $res['warnings'];
-            $warnings_view = '';
-            $mdata['warningcnt'] = 0;
-            if (count($warnings) > 0) {
-                $mdata['warningcnt'] = 1;
-                $warnings_view = $this->load->view('printcalendar/dayshort_warnings_view', ['lists' => $warnings], true);
-            }
-            $regular_view = '';
-            if (count($res['regular']) > 0) {
-                $regular_view = $this->load->view('printcalendar/dayshort_regular_view', ['totals' => $res['regulartotal'], 'lists' => $res['regular']], true);
-            }
-            $history_view = '';
-            if (count($res['history']) > 0) {
-                $history_view = $this->load->view('printcalendar/dayshort_history_view', ['totals' => $res['history_total'], 'lists' => $res['history'], 'printdate' => $printdate], true);
-            }
-            $options = [
-                'header_view' => $header_view,
-                'warnings_view' => $warnings_view,
-                'regular_view' => $regular_view,
-            ];
-            $mdata['content'] = $this->load->view('printcalendar/daydetails_view', $options, true);
-            $mdata['historyview'] = $history_view;
+//            $res = $this->printcalendar_model->week_calendar($weekdat[0], $weekdat[1]);
+//            $mdata['weekcalend'] = $this->load->view('printcalendar/week_calendar_view', $res, true);
+//            $mdata['printdate'] = $printdate;
+//            // Day Details
+//            $res = $this->printcalendar_model->dayshortdetails($printdate);
+//            $header_view = $this->load->view('printcalendar/daydetails_header_view', $res, true);
+//            $warnings = $res['warnings'];
+//            $warnings_view = '';
+//            $mdata['warningcnt'] = 0;
+//            if (count($warnings) > 0) {
+//                $mdata['warningcnt'] = 1;
+//                $warnings_view = $this->load->view('printcalendar/dayshort_warnings_view', ['lists' => $warnings], true);
+//            }
+//            $regular_view = '';
+//            if (count($res['regular']) > 0) {
+//                $regular_view = $this->load->view('printcalendar/dayshort_regular_view', ['totals' => $res['regulartotal'], 'lists' => $res['regular']], true);
+//            }
+//            $history_view = '';
+//            if (count($res['history']) > 0) {
+//                $history_view = $this->load->view('printcalendar/dayshort_history_view', ['totals' => $res['history_total'], 'lists' => $res['history'], 'printdate' => $printdate], true);
+//            }
+//            $options = [
+//                'header_view' => $header_view,
+//                'warnings_view' => $warnings_view,
+//                'regular_view' => $regular_view,
+//            ];
+//            $mdata['content'] = $this->load->view('printcalendar/daydetails_view', $options, true);
+//            $mdata['historyview'] = $history_view;
             // Get calendar
             $sortfld = ifset($postdata, 'sortfld', 'print_date');
             $calendview = '';

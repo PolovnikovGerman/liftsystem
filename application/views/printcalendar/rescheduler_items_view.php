@@ -44,8 +44,8 @@
                         <div class="reschditms-td reschditms-items"><?=QTYOutput($list['item_qty'])?></div>
                         <div class="reschditms-td reschditms-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                         <div class="reschditms-td reschditms-prints"><?=QTYOutput($list['prints'])?></div>
-                        <div class="reschditms-td reschditms-itmcolor"><?=$list['color']?></div>
-                        <div class="reschditms-td reschditms-inkcolor">&nbsp;</div>
+                        <div class="reschditms-td reschditms-itmcolor truncateoverflowtext"><?=$list['color']?></div>
+                        <div class="reschditms-td reschditms-inkcolor  truncateoverflowtext">&nbsp;</div>
                     </div>
                 </div>
             <?php endforeach; ?>

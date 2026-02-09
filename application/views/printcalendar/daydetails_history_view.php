@@ -67,9 +67,9 @@
                     <div class="histrtabl-td histrtabl-items"><?=empty($list['item_qty']) ? '-' : QTYOutput($list['item_qty'])?></div>
                     <div class="histrtabl-td histrtabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                     <div class="histrtabl-td histrtabl-prints"><?=empty($list['prints']) ? '-' : QTYOutput($list['prints'])?></div>
-                    <div class="histrtabl-td histrtabl-itmcolor"><?=$list['color']?></div>
-                    <div class="histrtabl-td histrtabl-description"><?=$list['item']?></div>
-                    <div class="histrtabl-td histrtabl-inkcolor">&nbsp;</div>
+                    <div class="histrtabl-td histrtabl-itmcolor truncateoverflowtext"><?=$list['color']?></div>
+                    <div class="histrtabl-td histrtabl-description truncateoverflowtext"><?=$list['item']?></div>
+                    <div class="histrtabl-td histrtabl-inkcolor truncateoverflowtext">&nbsp;</div>
                 </div>
                 <div class="histrtabl-fulfblock">
                     <div class="histrtabl-td histrtabl-printed"><?=empty($list['printed']) ? '-' : QTYOutput($list['printed'])?></div>
