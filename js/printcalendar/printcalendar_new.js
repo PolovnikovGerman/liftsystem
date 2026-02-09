@@ -175,36 +175,49 @@ function init_fullcalendar() {
     $(".psctable-td").unbind('click').click(function (){
         var printdate = $(this).data('printdate');
         var printweek = $(this).data('printweek');
+        var short = 0;
+        if ($(".reshedlordr-btn").hasClass("opened")) {
+            short = 1;
+        }
         var params = new Array();
         params.push({name: 'printdate', value: printdate});
         params.push({name: 'printweek', value: printweek});
+        params.push({name: 'shortview', value: short});
         var url = '/printcalendar/weekcalendar';
         $.post(url, params, function (response){
             if (response.errors=='') {
+                $("#calendarprintdate").val(printdate);
+                $(".pscalendar-week").empty().html(response.data.content);
+                $(".pscalendar-daybox[data-printdate='"+printdate+"']").addClass('today');
                 $(".psleft-topbar").hide();
                 $(".calendar-week").show()
                 $(".calendar-full").hide()
                 $(".clndrfull-weeklytotal").hide();
                 $(".statistics-block").hide();
-                $(".simpltodayblock").hide();
-                $(".todayblock").show();
-                $(".reschedulartabs").show();
-                $(".reschdl-body").hide();
-                $(".reschdl-infobody").hide();
-                $(".reschdl-linebody").show();
+                init_printdate_details(printdate);
+
+                // $(".psleft-topbar").hide();
+                // $(".calendar-week").show()
+                // $(".calendar-full").hide()
+                // $(".clndrfull-weeklytotal").hide();
+                // $(".statistics-block").hide();
+                // $(".simpltodayblock").hide();
+                // $(".todayblock").show();
+                // $(".reschedulartabs").show();
+                // $(".reschdl-body").hide();
+                // $(".reschdl-infobody").hide();
+                // $(".reschdl-linebody").show();
 
                 // $(".pscalendar-week").empty().html(response.data.content);
                 // $(".pscalendar-daybox[data-printdate='"+printdate+"']").addClass('today');
                 // init_printdate_details(printdate);
                 // $("#printcalendarfullview").hide();
                 // $("#printcalendardetailsview").show();
-                // $("#calendarprintdate").val(printdate);
             } else {
                 show_error(response);
             }
         },'json');
     });
-
 }
 
 function init_reschedule_management() {
@@ -236,4 +249,8 @@ function init_reschedule_management() {
             },'json');
         }
     })
+}
+
+// Week Calendar
+function init_printdate_details(printdate) {
 }

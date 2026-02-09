@@ -1032,3 +1032,134 @@
 .reschditms-header .reschditms-inkcolor {
     text-align: center !important;
 }
+/* Week Calendar */
+.pscalendar-arrows {
+    width: 100%;
+    font-size: 26px;
+    color: #656565;
+}
+.pscalendar-arrowsleft {
+    position: absolute;
+    top: -10px;
+    left: 0;
+    cursor: pointer;
+}
+.pscalendar-arrowsright {
+    position: absolute;
+    top: -10px;
+    right: 0;
+    cursor: pointer;
+}
+.pscalendar-days {
+    width: 766px;
+    margin-bottom: 5px;
+}
+.pscalendar-td {}
+.pscalendar-days .pscalendar-td {
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    width: 108px;
+    margin-left: -1px;
+}
+.pscalendar-daybox {
+    border: 1px solid #303030;
+    /*width: 108px;*/
+    width: 106px;
+    height: 39px;
+    background: #fff;
+    opacity: 1;
+    padding: 0 2px;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+    margin-left: -1px;
+}
+.pscalendar-daybox:first-child {
+    margin-left: 0;
+}
+.pscalendar-daybox.dayoff {
+    border: 1px solid #303030;
+    width: 106px;
+    height: 39px;
+    background: #d9d9d9;
+    padding: 0 2px;
+}
+.pscalendar-daybox:hover,
+.pscalendar-daybox.today {
+    outline: 3px solid #1c08d2;
+    background: #e2ebfc;
+    z-index: 2;
+}
+.pscalendar-daybox .daybox-date {
+    width: 24px;
+    margin-top: 4px;
+}
+.pscalendar-daybox .dayboxdate-month {
+    width: 100%;
+    text-align: center;
+    font-size: 11px;
+    line-height: 12px;
+    color: #000;
+}
+.pscalendar-daybox .dayboxdate-date {
+    width: 100%;
+    text-align: center;
+    font-size: 18px;
+    line-height: 20px;
+    font-weight: 600;
+    color: #000;
+}
+.dayoff .dayboxdate-date {
+    color: #676767;
+}
+.pscalendar-daybox .daybox-orders {
+    width: 32px;
+    margin-top: 5px;
+    margin-left: 2px;
+}
+.pscalendar-daybox .dayboxorders-name {
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    line-height: 12px;
+    font-style: italic;
+    color: #a4a4a4;
+}
+.pscalendar-daybox .dayboxorders-numbers {
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 600;
+    color: #1000a7;
+}
+.pscalendar-daybox .daybox-prints {
+    width: 42px;
+    margin-top: 5px;
+}
+.pscalendar-daybox .dayboxprints-name {
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    line-height: 12px;
+    font-style: italic;
+    color: #a4a4a4;
+}
+.pscalendar-daybox .dayboxprints-numbers {
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 600;
+    color: #1000a7;
+}
+.pscalendar-daybox .daybox-itemsprinted {
+    width: 38px;
+    margin-top: 3px;
+    margin-left: 2px;
+}
+.pscalendar-daybox .daybox-printsprinted {
+    width: 36px;
+    margin-top: 3px;
+}
