@@ -68,7 +68,7 @@ Class Leadorder_model extends My_Model {
     ,array('Name'=>'Diners Club Carte Blanche','cardLength'=>array(14),'cardPrefix'=>array('300','305'))
     ,array('Name'=>'Laser','cardLength'=>array(16, 17, 18, 19),'cardPrefix'=>array('6304', '6706', '6771', '6709'))
     );
-    private $custom_print_price = 0.12;
+    private $custom_print_price = 0.16; /* 0.12 */
     private $custom_setup_price = 30;
     private $other_print_price = 0.20;
     private $other_setupsb_price = 30;
@@ -1184,10 +1184,10 @@ Class Leadorder_model extends My_Model {
                 $this->load->model('shipping_model');
                 $order = $leadorder['order'];
                 $item_id = $order['item_id'];
-                if ($order['order_blank']==0) {
-                    $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
-                } else {
+                if ($order['order_blank'] && $item_id > 0 ) {
                     $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
+                } else {
+                    $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
                 }
                 $out['rushlist']=$rush;
                 $shipping=$leadorder['shipping'];
@@ -1540,10 +1540,10 @@ Class Leadorder_model extends My_Model {
             $order['order_qty']=intval($order['order_qty'])+intval($defqty);
             //
             $this->load->model('shipping_model');
-            if ($order['order_blank']==0) {
-                $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
-            } else {
+            if ($order['order_blank'] && $item_id > 0) {
                 $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
+            } else {
+                $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
             }
             $out['rushlist']=$rush;
             $shipping=$leadorder['shipping'];
@@ -1851,7 +1851,7 @@ Class Leadorder_model extends My_Model {
             // Rebuild Rush View
             $item_id=$neworder[0]['item_id'];
             $this->load->model('shipping_model');
-            if ($order['order_blank']==1) {
+            if ($order['order_blank']==1 && $item_id > 0) {
                 $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
             } else {
                 $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
@@ -2466,24 +2466,27 @@ Class Leadorder_model extends My_Model {
             $out['shiprebuild']=1;
             if (count($order_items)==1) {
                 $shipping=$leadorder['shipping'];
-                if ($order_blank==1) {
-                    $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
+                if ($order['item_id']==$this->config->item('custom_id') && !empty($shipping['rush_list'])) {
                 } else {
-                    $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
-                }
-                $shipping['rush_list']=serialize($rush);
-                $shipping['out_rushlist']=$rush;
-                foreach ($rush['rush'] as $row) {
-                    if ($row['current']==1) {
-                        $shipping['shipdate']=$row['date'];
-                        $shipping['shipdate_orig']=$row['date'];
-                        $shipping['shipdate_class']='';
-                        $shipping['rush_price']=$row['price'];
-                        $shipping['rush_idx']=$row['id'];
+                    if ($order_blank==1 && $item_id > 0) {
+                        $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
+                    } else {
+                        $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
                     }
+                    $shipping['rush_list']=serialize($rush);
+                    $shipping['out_rushlist']=$rush;
+                    foreach ($rush['rush'] as $row) {
+                        if ($row['current']==1) {
+                            $shipping['shipdate']=$row['date'];
+                            $shipping['shipdate_orig']=$row['date'];
+                            $shipping['shipdate_class']='';
+                            $shipping['rush_price']=$row['price'];
+                            $shipping['rush_idx']=$row['id'];
+                        }
+                    }
+                    $order['shipdate'] = $shipping['shipdate'];
+                    $leadorder['shipping']=$shipping;
                 }
-                $order['shipdate'] = $shipping['shipdate'];
-                $leadorder['shipping']=$shipping;
                 if ($item_id<0) {
                     $itemdata=$this->orders_model->get_newitemdat($item_id);
                 } else {
@@ -2517,24 +2520,27 @@ Class Leadorder_model extends My_Model {
             // Rebuild shipping
             $this->load->model('shipping_model');
             $shipping=$leadorder['shipping'];
-            if ($order_blank==1) {
-                $rush=$this->shipping_model->get_rushlist_blank($order['item_id'], $order['order_date']);
+            if ($order['item_id']==$this->config->item('custom_id') && !empty($shipping['rush_list'])) {
             } else {
-                $rush=$this->shipping_model->get_rushlist($order['item_id'], $order['order_date']);
-            }
-
-            $shipping['rush_list']=serialize($rush);
-            $shipping['out_rushlist']=$rush;
-            foreach ($rush['rush'] as $row) {
-                if ($row['current']==1) {
-                    $shipping['shipdate']=$row['date'];
-                    $shipping['shipdate_orig']=$row['date'];
-                    $shipping['shipdate_class']='';
-                    $shipping['rush_price']=$row['price'];
-                    $shipping['rush_idx']=$row['id'];
+                if ($order_blank==1 && $order['item_id'] > 0) {
+                    $rush=$this->shipping_model->get_rushlist_blank($order['item_id'], $order['order_date']);
+                } else {
+                    $rush=$this->shipping_model->get_rushlist($order['item_id'], $order['order_date']);
                 }
+
+                $shipping['rush_list']=serialize($rush);
+                $shipping['out_rushlist']=$rush;
+                foreach ($rush['rush'] as $row) {
+                    if ($row['current']==1) {
+                        $shipping['shipdate']=$row['date'];
+                        $shipping['shipdate_orig']=$row['date'];
+                        $shipping['shipdate_class']='';
+                        $shipping['rush_price']=$row['price'];
+                        $shipping['rush_idx']=$row['id'];
+                    }
+                }
+                $leadorder['shipping']=$shipping;
             }
-            $leadorder['shipping']=$shipping;
         }
 
         if ($order_blank==1) {
@@ -7962,10 +7968,10 @@ Class Leadorder_model extends My_Model {
             $shipping['shipdate_class'] = '';
             $shipping['arrivedate_class'] = '';
         } else {
-            if ($order['order_blank']==0) {
-                $rush=$this->shipping_model->get_rushlist($order['item_id'], $neworder['order_date']);
-            } else {
+            if ($order['order_blank'] && $order['item_id'] > 0) {
                 $rush=$this->shipping_model->get_rushlist_blank($order['item_id'], $neworder['order_date']);
+            } else {
+                $rush=$this->shipping_model->get_rushlist($order['item_id'], $neworder['order_date']);
             }
 
             foreach ($rush['rush'] as $row) {

@@ -28,6 +28,13 @@
         <div class="customname  showformdetails"><?=$dat['customer_name']?></div>
         <div class="custommail showformdetails"><?=$dat['customer_email']?></div>
         <div class="customphone showformdetails"><?=$dat['customer_phone']?></div>
+        <?php if (!empty($dat['shape_type']))  : ?>
+            <div class="customshapetype showformdetails truncateoverflowtext" data-event="<?=$event?>" data-css="customform_popmessage" data-position="left" data-balloon="<?=shapetype_view($dat['shape_type'])?>">
+                <?=shapetype_view($dat['shape_type']) ?>
+            </div>
+        <?php else : ?>
+            <div class="customshapetype showformdetails">&nbsp;</div>
+        <?php endif; ?>
         <div class="itemdescription showformdetails" data-event="<?=$event?>" data-css="customform_popmessage" data-position="left" data-balloon="<?=$dat['shape_desription']?>">
             <?=$dat['shape_desription']?>
         </div>

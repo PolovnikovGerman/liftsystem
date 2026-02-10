@@ -32,6 +32,7 @@
         <div class="customname">Name</div>
         <div class="custommail">Email</div>
         <div class="customphone">Phone</div>
+        <div class="customshapetype">Type</div>
         <div class="itemdescription">Description</div>
         <div class="itemqty">QTY</div>
         <div class="eventdate">Event</div>
@@ -68,7 +69,7 @@
         <div class="customform_monthtotal_header">
             <div class="total_month">Month</div>
             <?php foreach ($years as $year) : ?>
-                <div class="total_year"><?=$year['year']?></div>
+                <div class="total_year">'<?=substr($year['year'],2)?></div>
             <?php endforeach; ?>
             <div class="total_month">Month</div>
         </div>

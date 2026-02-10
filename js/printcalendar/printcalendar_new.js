@@ -16,7 +16,7 @@ function init_printcalendar_content() {
     });
     $(".reshedlordr-btn").unbind('click').click(function(){
         init_reshedule_view();
-    })
+    });
 }
 
 function init_printcalendar(year) {
@@ -28,16 +28,6 @@ function init_printcalendar(year) {
         if (response.errors=='') {
             $("#clndrfull-body").empty().html(response.data.calendarview);
             $(".weeklytotal-body").empty().html(response.data.totalsview);
-            // var scrollElement = new SimpleBar(document.getElementById('clndrfull-body'), { autoHide: false });
-            // var heightcss = parseInt($("#psctable-body").css('height'));
-            // var heightreal = parseInt($("#psctable-body").find('div.simplebar-content').height()) + 5;
-            // if (heightreal < heightcss) {
-            //     $("#psctable-body").css('height', heightreal);
-            // }
-            // setTimeout(() => {
-            //     scrollElement.getScrollElement().scrollTop = scrollElement.getScrollElement().scrollHeight;
-            //     // Get css val and compare with real value
-            // }, "300");
             // // Init Calendar
             init_fullcalendar();
             $("#calendweekbgn").val(response.data.minweek);
@@ -84,12 +74,20 @@ function init_reshedule_totals(year) {
 function init_reshedule_view() {
     if ($(".reshedlordr-btn").hasClass('opened')) {
         $(".btnreschedular-btn").empty().html('<i class="fa fa-caret-down" aria-hidden="true"></i>');
-        $(".reschedulartabs").hide();
-        $(".reschdl-body").hide();
-        $(".clndrfull-weeklytotal").show();
-        $(".reschdl-infobody").show();
-        $(".reschdl-linebody").hide();
         $(".reshedlordr-btn").removeClass('opened');
+        if ($(".calendar-full").css('display')=='block') {
+            $(".reschedulartabs").hide();
+            $(".clndrfull-weeklytotal").show();
+            $(".reschdl-infobody").show();
+            $(".reschdl-linebody").hide();
+        } else {
+            $(".reschedulartabs").show();
+            $(".clndrfull-weeklytotal").hide();
+            $(".reschdl-infobody").hide();
+            init_printdate_details($("#calendarprintdate").val());
+            $(".reschdl-linebody").show();
+        }
+        $(".reschdl-body").hide();
     } else {
         var url = '/printcalendar/rescheduletoday';
         var params = new Array();
@@ -101,12 +99,19 @@ function init_reshedule_view() {
         $("#loader").show();
         $.post(url, params, function (response){
             $(".btnreschedular-btn").empty().html('<i class="fa fa-times" aria-hidden="true"></i>');
+            $(".reshedlordr-btn").addClass('opened');
+            if ($(".calendar-full").css('display')=='block') {
+                $(".reschdl-linebody").show();
+                $(".clndrfull-weeklytotal").hide();
+            } else {
+                $(".todayblock").hide();
+                $(".simpltodayblock").hide();
+                $(".reschdl-linebody").hide();
+                init_printdate_details($("#calendarprintdate").val());
+            }
             $(".reschedulartabs").show();
             $(".reschdl-body").show();
-            $(".clndrfull-weeklytotal").hide();
             $(".reschdl-infobody").hide();
-            $(".reschdl-linebody").show();
-            $(".reshedlordr-btn").addClass('opened');
             $(".reschdl-body").empty().html(response.data.calendarview);
             // $(".pschedul-leftside").show();
             // $(".pschedul-rightside").show();
@@ -186,8 +191,8 @@ function init_fullcalendar() {
                 $(".pscalendar-week").empty().html(response.data.content);
                 $(".pscalendar-daybox[data-printdate='"+printdate+"']").addClass('today');
                 $(".psleft-topbar").hide();
-                $(".calendar-week").show()
-                $(".calendar-full").hide()
+                $(".calendar-week").show();
+                $(".calendar-full").hide();
                 $(".clndrfull-weeklytotal").hide();
                 $(".statistics-block").hide();
                 $(".reschdl-infobody").hide();
@@ -246,12 +251,14 @@ function init_printdate_details(printdate) {
         if (response.errors=='') {
             if (parseInt(smallview)==1) {
                 $(".todayblock").hide();
-                $(".simpltodayblock").show().empty().html(response.data.content);
-                $(".history-section-small").empty().html(response.data.historyview);
+                $(".simpltodayblock").show();
+                $("#regularview-short").empty().html(response.data.content);
+                $("#historyview-short").empty().html(response.data.historyview);
             } else {
                 $(".simpltodayblock").hide()
-                $(".todayblock").show().empty().html(response.data.content);
-                $(".history-section").empty().html(response.data.historyview);
+                $(".todayblock").show();
+                $("#regularview-full").empty().html(response.data.content);
+                $("#historyview-full").empty().html(response.data.historyview);
             }
             if (parseInt(response.data.warningcnt)==0) {
                 $(".warning-section").hide();

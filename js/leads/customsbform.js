@@ -299,6 +299,97 @@ function init_customform_content() {
 //         }
 //     })
 // }
+function init_customform_modal(formid) {
+    $(".name-file").unbind('click').click(function(){
+        var url = $(this).data('imgsrc');
+        // Open new window
+        window.open(url, 'customformwin', 'width=600, height=800,toolbar=1')
+    });
+    // Prepare assign
+    $(".customform_leadcheck").unbind('click').click(function(){
+        var checkval = $("#customform_leadcheck").val();
+        if (parseInt(checkval)==0) {
+            $("#customform_leadcheck").val(1);
+            $(".customform_leadcheck").empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>');
+            $(".customform_leadcheck_label").addClass('active');
+            $("select#lead_id").prop('disabled', false);
+            $(".customform_lead_assign").addClass('active');
+            $(".sbcustomform_newlead").removeClass('active');
+            $("select#lead_id").focus();
+        } else {
+            $("#customform_leadcheck").val(0);
+            $(".customform_leadcheck").empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>');
+            $(".customform_leadcheck_label").removeClass('active');
+            $("select#lead_id").prop('disabled', true);
+            $("select#lead_id").val('');
+            $(".customform_lead_assign").removeClass('active');
+            $(".sbcustomform_newlead").addClass('active');
+        }
+    });
+    // Assign
+    $(".customform_lead_assign").unbind('click').click(function(){
+        if ($(this).hasClass('active')) {
+            var newlead = $("select#lead_id").val();
+            if (newlead=='') {
+                alert('Choose Lead # before assign');
+            } else {
+                var url="/leads/savecustomformstatus";
+                var params = new Array();
+                params.push({name: 'customform', value: formid});
+                params.push({name: 'lead_id', value: $("#lead_id").val()});
+                params.push({name: 'leademail_id', value: $("#leademail_id").val()});
+                params.push({name: 'brand', value: $("#customformviewbrand").val()});
+                // var dat=$("form#msgstatus").serializeArray();
+                $.post(url, params, function(response){
+                    if (response.errors=='') {
+                        $("#pageModal").modal('hide');
+                        $(".newcustomformsinfo").empty().html(response.data.totalnew);
+                        initCustomFormPagination();
+                    } else {
+                        show_error(response);
+                    }
+                }, 'json');
+            }
+        }
+    });
+    // New Lead
+    $(".sbcustomform_newlead").unbind('click').click(function(){
+        if ($(this).hasClass('active')) {
+            var brand = $("#customformviewbrand").val();
+            var params = new Array();
+            params.push({name: 'type', value: 'CustomQuote'});
+            params.push({name: 'customquote', value: formid});
+            params.push({name: 'brand', value: brand});
+            var url="/leads/create_leadmessage";
+            $.post(url, params, function(response){
+                if (response.errors=='') {
+                    $("#pageModal").modal('hide');
+                    $(".newcustomformsinfo").empty().html(response.data.totalnew);
+                    show_new_lead(response.data.leadid,'customquote', brand);
+                } else {
+                    show_error(response);
+                }
+            }, 'json');
+        }
+    });
+    $("#shape_type").unbind('change').change(function(){
+        var params = new Array();
+        params.push({'name' : 'custom_quote_id', value: $(this).data('form')});
+        params.push({'name' : 'fld', value: $(this).data('fld')});
+        params.push({'name' : 'newval', value: $(this).val()});
+        var url = "/leads/customform_update";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("button.close").unbind('click').click(function(){
+        $("#pageModal").modal('hide');
+        initCustomFormPagination();
+    })
+}
 
 function assign_custom(formid) {
     var url="/leads/change_status";

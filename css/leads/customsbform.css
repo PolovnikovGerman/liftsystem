@@ -1,6 +1,6 @@
 .customform_content {
     clear: both;
-    width: 976px;
+    width: 1067px;
     margin-left: 10px;
     margin-right: 17px;
 }
@@ -103,6 +103,9 @@ a.find_customformbnt {
 }
 .customform_tabtitle > .customphone {
     width: 91px;
+}
+.customform_tabtitle > .customshapetype {
+    width: 90px;
 }
 .customform_tabtitle > .itemdescription {
     width: 178px;
@@ -222,6 +225,12 @@ a.find_customformbnt {
     padding-left: 5px;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+.customform_tabledat .content-row > .customshapetype {
+    width: 90px;
+    border-right: 1px solid #000000;
+    text-align: left;
+    padding-left: 5px;
 }
 .customform_tabledat .content-row > .itemdescription {
     /* width: 238px; */
@@ -604,7 +613,7 @@ a.find_customformbnt {
 /* Months chart */
 .customform_monthtotal_content {
     margin-top: 14px;
-    /* margin-left: 15px; */
+    margin-left: 15px;
     max-width: 393px;
 }
 .customform_monthtotal_switcher {
@@ -638,14 +647,14 @@ a.find_customformbnt {
     width: 72px;
 }
 .customform_monthtotal_header .total_year {
-    width: 36px;
+    width: 33px;
 }
 .customform_monthtotal_tabledat {
     max-height: 507px;
     overflow-y: auto;
     border-bottom: 1px solid #000000;
     border-right: 1px solid #000000;
-    width: 290px; /* 380px; */
+    width: 278px; /* 380px; */
     overflow-x: hidden;
     scrollbar-width: none;
 }
@@ -661,7 +670,7 @@ a.find_customformbnt {
     font-weight: 600;
 }
 .customform_monthtotal_tabledat .datarow > .total_year {
-    width: 36px;
+    width: 33px;
 }
 .customform_monthtotal_tabledat .totalrow {
     border-top: 1px solid #000000;
