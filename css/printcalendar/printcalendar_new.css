@@ -1981,7 +1981,7 @@
     margin-left: 15px;
     margin-bottom: 5px;
     width: 470px;
-    margin-top: 20px;
+    margin-top: 30px;
 }
 .history-title-printed {
     font-size: 12px;
@@ -1989,14 +1989,14 @@
     font-style: italic;
     margin-left: 230px;
     width: 270px;
-    margin-top: 20px;
+    margin-top: 30px;
 }
 .history-title-shipped {
     font-size: 12px;
     font-weight: 600;
     font-style: italic;
     margin-left: 15px;
-    margin-top: 20px;
+    margin-top: 30px;
 }
 .historyblock {
     margin-top: 2px;
