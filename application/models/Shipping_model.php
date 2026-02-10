@@ -130,11 +130,11 @@ Class Shipping_model extends MY_Model
 
         }
 
-        if ($item_id==$this->config->item('custom_id') || $item_id==$this->config->item('other_id')) {
-            $min = 1;
-        } else {
+//        if ($item_id==$this->config->item('custom_id') || $item_id==$this->config->item('other_id')) {
+//            $min = 1;
+//        } else {
             $min=($leads['item_lead_a']==0 ? 1 : $leads['item_lead_a']); $ship_array=array();
-        }
+//        }
 
         $leads['item_lead_a']=($leads['item_lead_a']==0 ? 1 : $leads['item_lead_a']);
 
