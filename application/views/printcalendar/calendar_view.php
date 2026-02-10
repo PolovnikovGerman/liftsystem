@@ -2,7 +2,8 @@
     <?php $weeks = $calendar['week']; ?>
     <div class="week-tr" <?=$calendar['showdata']==0 ? 'style="display: none"' : '' ?> data-week="<?=$calendar['weeknum']?>">
     <?php foreach ($weeks as $week) : ?>
-        <div class="psctable-td" data-printdate="<?=$week['date']?>" data-printweek="<?=$week['week']?>">
+        <div class="psctable-td" data-printdate="<?=$week['date']?>" data-printweek="<?=$week['week']?>"
+                <?=$week['active']==1 ? 'id="caledarbox_'.$week["date"].'" ondrop="dropHandler(event)" ondragover="dragoverHandler(event)"' : ''?>>
             <div class="calnd-daybox <?=$week['active']==1 ? '' : 'pastday'?> <?=$week['weekend']==1 ? 'dayoff' : ''?>">
                 <div class="daybox-date">
                     <div class="dayboxdate-month"><?=$week['month']?></div>

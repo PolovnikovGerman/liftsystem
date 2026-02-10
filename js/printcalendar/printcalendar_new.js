@@ -1,3 +1,5 @@
+var orderid = '';
+
 function init_printcalendar_content() {
     var year = $("#printcaledyear").val();
     init_printcalendar(year);
@@ -579,13 +581,22 @@ function dropHandler(ev) {
         incomeblock = 'left';
     } else {
         parentElement = ev.target.closest('.rightsideviewarea');
-        if (parentElement.id.substring(0,9)=='printday_') {
+        if (parentElement) {
+            console.log('Parent '+parentElement.id+'!');
             newdate = parentElement.id.replace('printday_','');
             incomeblock = 'right';
+        } else {
+            parentElement = ev.target.closest('.psctable-td');
+            if (parentElement) {
+                console.log('Parent '+parentElement.id+'!');
+                newdate = parentElement.id.replace('caledarbox_','');
+                console.log('Full Calendar Date '+newdate);
+                incomeblock = 'fullcalendar';
+            }
         }
     }
     if (incomeblock) {
-        console.log('Add to Element '+ev.target.id+'!');
+        // console.log('Add Element '+ev.target.id+'!');
         console.log('Income Block '+incomeblock);
         // var moveorder = '';
         // var outcomeblock = '';
