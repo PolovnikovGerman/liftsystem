@@ -18,7 +18,8 @@ class Leadquote_model extends MY_Model
     private $NO_ART = '06_noart';
     private $NO_ART_TXT='Need Art';
     private $template = 'Lead Quote';
-    private $custom_print_price = 0.12;
+    private $custom_print_price = 0.16;
+    private $custom_srprint_price = 0.12;
     private $custom_setup_price = 30;
     private $custom_srsetup_price = 28;
     private $other_print_price = 0.20;
@@ -3310,6 +3311,7 @@ class Leadquote_model extends MY_Model
         $data['newappcreditlink']=0;
         $data['credit_applink']='';
         $data['is_shipping']=1;
+        $data['order_blank'] = $quote['quote_blank'];
         $data['shipping'] = floatval($quote['shipping_cost']);
         $data['showbilladdress']=1;
         $data['brand'] = $quote['brand'];
@@ -3328,6 +3330,7 @@ class Leadquote_model extends MY_Model
         $data['mischrg_label2'] = $quote['mischrg_label2'];
         $data['mischrg_val2'] = $quote['mischrg_value2'];
         $data['discount_label'] = $quote['discount_label'];
+        $data['discount_descript'] = $quote['discount_label'];
         $data['discount_val'] = $quote['discount_value'];
         $data['revenue'] = $quote['quote_total'];
         $data['tax'] = $quote['sales_tax'];
@@ -3546,6 +3549,7 @@ class Leadquote_model extends MY_Model
             $itemid++;
         }
         $data['order_qty'] = $totalitemqty;
+        $data['item_id'] = $item_id;
         // Shipping
         $quoterush = 0;
         if (!empty($quote['lead_time'])) {
@@ -3560,10 +3564,10 @@ class Leadquote_model extends MY_Model
         $this->load->model('shipping_model');
         $rush = [];
         if (!empty($item_id)) {
-            if ($quote['quote_blank']==0) {
-                $rush=$this->shipping_model->get_rushlist($item_id);
-            } else {
+            if ($quote['quote_blank'] && $item_id > 0) {
                 $rush=$this->shipping_model->get_rushlist_blank($item_id);
+            } else {
+                $rush=$this->shipping_model->get_rushlist($item_id);
             }
         }
         if ($quoterush!=0 && count($rush['rush']) > 0) {
@@ -3725,7 +3729,7 @@ class Leadquote_model extends MY_Model
         foreach ($artfld as $fld) {
             $art[$fld]='';
         }
-        $art['artwork_blank']=0;
+        $art['artwork_blank'] = $quote['quote_blank'];
         $art['artwork_rush'] =0;
         $art['customer_art'] =0;
         $art['customer_inv'] =0;

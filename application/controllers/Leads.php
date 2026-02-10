@@ -1393,6 +1393,23 @@ class Leads extends My_Controller {
         show_404();
     }
 
+    public function customform_update()
+    {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $error = 'Empty Custom Form';
+            $custom_quote_id = ifset($postdata, 'custom_quote_id',0);
+            if (!empty($custom_quote_id)) {
+                $this->load->model('customform_model');
+                $this->customform_model->update_customformdetails($postdata, $custom_quote_id);
+                $error = '';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Lead Quotes
     public function leadquotesdata() {
         if ($this->isAjax()) {
@@ -1889,7 +1906,12 @@ class Leads extends My_Controller {
             'cur_page' => 0,
             'brand' => $brand,
         ];
-
+        $years = [];
+        $curyear = intval(date('Y'));
+        for ($i=3; $i >= 0; $i--) {
+            $years[] = ['year' => $curyear-$i];
+        }
+        $datqs['years']=$years;
         $search=array('assign'=>1,'brand'=>$brand);
         $this->load->model('customform_model');
         $datqs['total_rec']=$this->customform_model->get_count_forms($search);
@@ -2034,6 +2056,33 @@ class Leads extends My_Controller {
                 }
             } else {
                 $res = $this->customform_model->get_customform_totalchart($brand);
+                $mdata['data'] = $res['data'];
+                $mdata['labels'] = $res['labels'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function customformsmonths()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'ALL');
+            $viewtype = ifset($postdata, 'viewtype', 'table');
+            //
+            $this->load->model('customform_model');
+            if ($viewtype == 'table') {
+                $data = $this->customform_model->get_customform_monthtotals($brand);
+                if (count($data) == 0) {
+                    $mdata['content'] = $this->load->view('customsbforms/totals_empty_view', [], TRUE);
+                } else {
+                    $mdata['content'] = $this->load->view('customsbforms/monthtotals_data_view', ['totals' => $data['totals'],'years'=>$data['years']], TRUE);
+                }
+            } else {
+                $res = $this->customform_model->get_customform_monthchart($brand);
                 $mdata['data'] = $res['data'];
                 $mdata['labels'] = $res['labels'];
             }

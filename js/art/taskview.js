@@ -13,30 +13,15 @@ function init_tasks_management() {
         var tasktype=$(this).parent("div.taskview_devstage_subtitle").prop('id');
         change_tasksort(tasktype,'order');
     })
-    $("a#clear_tasks").unbind('click').click(function(){
+    $("#clear_tasks").unbind('click').click(function(){
         $("input#tasksearch").val('');
         restore_task_view();
     })
-    $("a#find_tasks").unbind('click').click(function(){
+    $("#find_tasks").unbind('click').click(function(){
         searchtasks();
     })
     $("input#viewallapproved").unbind('change').change(function(){
-        change_approved_view('just_approved');
-    });
-    // Change Brand
-    $("#arttasksviewbrandmenu").find("div.brandchoseval").unbind('click').click(function(){
-        var brand = $(this).data('brand');
-        $("#arttasksviewbrand").val(brand);
-        $("#arttasksviewbrandmenu").find("div.brandchoseval").each(function(){
-            var curbrand=$(this).data('brand');
-            if (curbrand==brand) {
-                $(this).empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>').addClass('active');
-                $("#arttasksviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").addClass('active');
-            } else {
-                $(this).empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>').removeClass('active');
-                $("#arttasksviewbrandmenu").find("div.brandlabel[data-brand='"+curbrand+"']").removeClass('active');
-            }
-        });
+        // change_approved_view('just_approved');
         init_tasks_page();
     });
 }
@@ -66,16 +51,79 @@ function init_tasks_page() {
     params.push({name:'approved_sort',value:$("input#aproved_sort").val()});
     params.push({name:'aproved_direc',value:$("input#aproved_direc").val()});
     params.push({name:"aproved_viewall", value: showallapprov});
+    params.push({name: 'needplat_sort', value: $("input#needplates_sort").val()});
+    params.push({name: 'needplat_direc', value: $("input#needplates_direc").val()});
     params.push({name: 'brand', value: $("input#arttasksviewbrand").val()});
     var url="/art/tasks_data";
     $("#loader").show();
     $.post(url,params,function(response){
         if (response.errors=='') {
             $("div#dataneedartarea").empty().html(response.data.nonart);
+            if (parseInt(response.data.count_nonart)==0) {
+                $(".taskview_devstage_title[data-stage='nonart']").addClass('emptystagetasks');
+                $("#noarttitle").addClass('emptystagetasks');
+                $("#dataneedartarea").addClass('emptystagetasks');
+            } else {
+                $(".taskview_devstage_title[data-stage='nonart']").removeClass('emptystagetasks');
+                $("#noarttitle").removeClass('emptystagetasks');
+                $("#dataneedartarea").removeClass('emptystagetasks');
+            }
+            new SimpleBar(document.getElementById('dataneedartarea'), { autoHide: false });
             $("div#dataredrawnarea").empty().html(response.data.redrawn);
+            if (parseInt(response.data.count_redrawn)==0) {
+                $(".taskview_devstage_title[data-stage='redraw']").addClass('emptystagetasks');
+                $("#redrawtitle").addClass('emptystagetasks');
+                $("#dataredrawnarea").addClass('emptystagetasks');
+            } else {
+                $(".taskview_devstage_title[data-stage='redraw']").removeClass('emptystagetasks');
+                $("#redrawtitle").removeClass('emptystagetasks');
+                $("#dataredrawnarea").removeClass('emptystagetasks');
+            }
+            new SimpleBar(document.getElementById('dataredrawnarea'), { autoHide: false });
             $("div#datatoproofarea").empty().html(response.data.toproof);
+            if (parseInt(response.data.count_toproof)==0) {
+                $(".taskview_devstage_title[data-stage='toproof']").addClass('emptystagetasks');
+                $("#prooftitle").addClass('emptystagetasks');
+                $("#datatoproofarea").addClass('emptystagetasks');
+            } else {
+                $(".taskview_devstage_title[data-stage='toproof']").removeClass('emptystagetasks');
+                $("#prooftitle").removeClass('emptystagetasks');
+                $("#datatoproofarea").removeClass('emptystagetasks');
+            }
+            new SimpleBar(document.getElementById('datatoproofarea'), { autoHide: false })
             $("div#dataneedaprarea").empty().html(response.data.needapr);
+            if (parseInt(response.data.count_needapr)==0) {
+                $(".taskview_devstage_title[data-stage='needapprov']").addClass('emptystagetasks');
+                $("#needaprtitle").addClass('emptystagetasks');
+                $("#dataneedaprarea").addClass('emptystagetasks');
+            } else {
+                $(".taskview_devstage_title[data-stage='needapprov']").removeClass('emptystagetasks');
+                $("#needaprtitle").removeClass('emptystagetasks');
+                $("#dataneedaprarea").removeClass('emptystagetasks');
+            }
+            new SimpleBar(document.getElementById('dataneedaprarea'), { autoHide: false });
             $("div#dataaprovedarea").empty().html(response.data.aproved);
+            if (parseInt(response.data.count_aproved)==0) {
+                $(".taskview_devstage_title[data-stage='approved']").addClass('emptystagetasks');
+                $("#aprovedtitle").addClass('emptystagetasks');
+                $("#dataaprovedarea").addClass('emptystagetasks');
+            } else {
+                $(".taskview_devstage_title[data-stage='approved']").removeClass('emptystagetasks');
+                $("#aprovedtitle").removeClass('emptystagetasks');
+                $("#dataaprovedarea").removeClass('emptystagetasks');
+            }
+            new SimpleBar(document.getElementById('dataaprovedarea'), { autoHide: false })
+            $("div#dataneedplates").empty().html(response.data.needplates);
+            if (parseInt(response.data.count_needplates)==0) {
+                $(".taskview_devstage_title[data-stage='needplates']").addClass('emptystagetasks');
+                $("#needplatetitle").addClass('emptystagetasks');
+                $("#dataneedplates").addClass('emptystagetasks');
+            } else {
+                $(".taskview_devstage_title[data-stage='needplates']").removeClass('emptystagetasks');
+                $("#needplatetitle").removeClass('emptystagetasks');
+                $("#dataneedplates").removeClass('emptystagetasks');
+            }
+            new SimpleBar(document.getElementById('dataneedplates'), { autoHide: false })
             $("#loader").hide();
             /* Call popup */
             $("div.taskview_order").click(function(){
@@ -132,8 +180,28 @@ function change_approved_view(stage) {
         if (response.errors=='') {
             if (stage=='need_approve') {
                 $("div#dataneedaprarea").empty().html(response.data.content);
+                if (parseInt(response.data.count_tasks)==0) {
+                    $(".taskview_devstage_title[data-stage='needapprov']").addClass('emptystagetasks');
+                    $("#needaprtitle").addClass('emptystagetasks');
+                    $("#dataneedaprarea").addClass('emptystagetasks');
+                } else {
+                    $(".taskview_devstage_title[data-stage='needapprov']").removeClass('emptystagetasks');
+                    $("#needaprtitle").removeClass('emptystagetasks');
+                    $("#dataneedaprarea").removeClass('emptystagetasks');
+                }
+                new SimpleBar(document.getElementById('dataneedaprarea'), { autoHide: false });
             } else {
                 $("div#dataaprovedarea").empty().html(response.data.content);
+                if (parseInt(response.data.count_tasks)==0) {
+                    $(".taskview_devstage_title[data-stage='approved']").addClass('emptystagetasks');
+                    $("#aprovedtitle").addClass('emptystagetasks');
+                    $("#dataaprovedarea").addClass('emptystagetasks');
+                } else {
+                    $(".taskview_devstage_title[data-stage='approved']").removeClass('emptystagetasks');
+                    $("#aprovedtitle").removeClass('emptystagetasks');
+                    $("#dataaprovedarea").removeClass('emptystagetasks');
+                }
+                new SimpleBar(document.getElementById('dataaprovedarea'), { autoHide: false })
             }
             /* Call popup */
             $("div.taskview_order").click(function(){
@@ -199,6 +267,12 @@ function change_tasksort(tasktype,sorttype) {
             sort=$("input#aproved_direc").val();
             datarea='dataaprovedarea';
             break;
+        case 'needplatetitle':
+            stage = 'need_plates';
+            sortby = $("input#needplates_sort").val();
+            sort = $("input#needplates_direc").val();
+            datarea = 'dataneedplates';
+            break;
     }
 
     if (sorttype===sortby) {
@@ -232,7 +306,10 @@ function change_tasksort(tasktype,sorttype) {
             $("input#aproved_sort").val(sortby);
             $("input#aproved_direc").val(sort);
             break;
-
+        case 'needplatetitle':
+            $("input#needplates_sort").val(sortby);
+            $("input#needplates_direc").val(sort);
+            break;
     }
     /* Change View */
     $("div#"+tasktype+" .taskview_sortarea").removeClass('sorttaskdesc').removeClass('sorttaskasc');
@@ -264,6 +341,7 @@ function change_tasksort(tasktype,sorttype) {
     $.post(url,params,function(response){
         if (response.errors==='') {
             $("div#"+datarea).empty().html(response.data.content);
+            new SimpleBar(document.getElementById(datarea), { autoHide: false })
             /* Call popup */
             $("div.taskview_order").click(function(){
                 call_details(this);
@@ -318,6 +396,9 @@ function init_remindermanage(task_id) {
             $("div#emailbccdata").hide();
             $("textarea.aprovemail_message").css('height','241');
         }
+    });
+    $(".leadorderclose").unbind('click').click(function (){
+        $("#artModal").modal('hide');
     })
 }
 

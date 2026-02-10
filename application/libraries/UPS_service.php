@@ -241,7 +241,10 @@ class UPS_service
             if (isset($apiResponse['emsResponse'])) {
                 $out['error'] = 0;
                 $out['msg'] = "";
-                $services = $apiResponse['emsResponse']['services'];
+                $services = [];
+                if (isset($apiResponse['emsResponse']['numberOfServices']) && $apiResponse['emsResponse']['numberOfServices']>0) {
+                    $services = $apiResponse['emsResponse']['services'];
+                }
                 $outservices = [];
                 foreach ($services as $service) {
                     $newservice = [
