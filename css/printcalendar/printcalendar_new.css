@@ -30,19 +30,11 @@
 .simpltodayblock {
     display: none;
     width: 745px;
-    /*height: 630px;*/
-    background: #969595;
-    /*color: #fff;*/
-    /*border: 1px solid #000;*/
     margin-top: 15px;
 }
 .todayblock {
     display: none;
     width: 1500px;
-    /*height: 630px;*/
-    background: #969595;
-    /*color: #fff;*/
-    /*border: 1px solid #000;*/
     margin-top: 15px;
 }
 .calendar-full {
@@ -1167,6 +1159,10 @@
     margin-left: 8px;
 }
 /* Day details */
+.leftsideviewarea {
+    width: 100%;
+    background: #969595;
+}
 .maingrey-header {
     width: 100%;
     height: 35px;
@@ -2000,13 +1996,15 @@
 }
 .historyblock {
     margin-top: 2px;
-    background: #dbdbdb;
+    /*background: #dbdbdb;*/
     padding-top: 10px;
     padding-bottom: 15px;
-    margin-left: 10px;
+    /*margin-left: 10px;*/
     margin-right: 10px;
     /*width: 100%; !* calc(100% - 10px); -  1499px; *!*/
-    width: calc(100% - 20px);
+    width: calc(100%);
+    border: 1px solid #000;
+    border-radius: 6px;
 }
 .history-section-small .historyblock {
     margin-left: 0;
