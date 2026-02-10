@@ -61,8 +61,14 @@
             </div>
         </div>
         <div class="statistics-block"></div>
-        <div class="simpltodayblock">Simplified TODAY Table</div>
-        <div class="todayblock">TODAY Full Table</div>
+        <div class="simpltodayblock">
+            <div id="regularview-short"></div>
+            <div id="historyview-short"></div>
+        </div>
+        <div class="todayblock">
+            <div id="regularview-full"></div>
+            <div id="historyview-full"></div>
+        </div>
     </div>
     <div class="prnshd-right">
         <div class="psright-topbar">
