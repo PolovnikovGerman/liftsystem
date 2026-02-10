@@ -145,7 +145,7 @@ class Leadmanagement extends MY_Controller
             $dead_option='';
             if ($dead_av==1) {
                 $dead_selected=($lead_data['lead_type'] == 3 ? 'selected="selected"' : '');
-                $dead_option="<option value=\"3\" ".$dead_selected.">Dead</option>";
+                $dead_option="<option value=\"3\" ".$dead_selected.">Dormant</option>";
             } else {
                 $dead_option='';
             }
@@ -414,7 +414,7 @@ class Leadmanagement extends MY_Controller
                 $dead_option='';
                 if ($dead_av==1) {
                     $dead_selected=($lead_data['lead_type'] == 3 ? 'selected="selected"' : '');
-                    $dead_option="<option value=\"3\" ".$dead_selected.">Dead</option>";
+                    $dead_option="<option value=\"3\" ".$dead_selected.">Dormant</option>";
                 } else {
                     $dead_option='';
                 }
