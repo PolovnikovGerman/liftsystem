@@ -1166,6 +1166,7 @@
 .maingrey-header {
     width: 100%;
     height: 35px;
+    background: #969595;
 }
 .maingrey-title {
     color: #fff;
@@ -2027,10 +2028,9 @@
     color: #4f4e4e;
 }
 .histrtabl-td {
-    background: #ffffff; /* #edecec;*/
+    background: #eeeded;
     font-size: 11px;
     text-align: center;
-    /*border-right: 1px solid #000000; !* #d3d1d1*!;*/
     color: #787777;
 }
 .histrtabl-header .histrtabl-td {

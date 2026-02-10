@@ -62,12 +62,12 @@
         </div>
         <div class="statistics-block"></div>
         <div class="simpltodayblock">
-            <div id="regularview-short"></div>
+            <div id="regularview-short" style="width: 100%"></div>
             <div id="historyview-short" style="width: 100%"></div>
         </div>
         <div class="todayblock">
-            <div id="regularview-full"></div>
-            <div id="historyview-full"></div>
+            <div id="regularview-full" style="width: 100%"></div>
+            <div id="historyview-full" style="width: 100%"></div>
         </div>
     </div>
     <div class="prnshd-right">
