@@ -1981,6 +1981,7 @@
     margin-left: 15px;
     margin-bottom: 5px;
     width: 470px;
+    margin-top: 20px;
 }
 .history-title-printed {
     font-size: 12px;
@@ -1988,12 +1989,14 @@
     font-style: italic;
     margin-left: 230px;
     width: 270px;
+    margin-top: 20px;
 }
 .history-title-shipped {
     font-size: 12px;
     font-weight: 600;
     font-style: italic;
     margin-left: 15px;
+    margin-top: 20px;
 }
 .historyblock {
     margin-top: 2px;
@@ -2005,7 +2008,7 @@
     /*width: 100%; !* calc(100% - 10px); -  1499px; *!*/
     width: calc(100%);
     border: 1px solid #000;
-    border-radius: 6px;
+    border-radius: 4px;
 }
 .history-section-small .historyblock {
     margin-left: 0;
@@ -2016,7 +2019,10 @@
 .history-table {
     margin-left: 10px;
     margin-right: 10px;
-    width: calc(100% - 20px);
+    /*width: calc(100% - 20px);*/
+}
+.todayblock .history-table {
+    width: 1252px;
 }
 .histrtabl-tr {
     height: 20px;
@@ -2050,7 +2056,7 @@
     border-radius: 2px;
 }
 .histrtabl-mainblock {
-    margin-right: 12px;
+    /*margin-right: 12px;*/
     border: 1px solid #888888;
 }
 .histrtabl-body .histrtabl-mainblock {
@@ -2141,7 +2147,7 @@
     width: 77px;
 }
 .histrtabl-itmcolor.shortresched {
-    width: 70px;
+    /*width: 70px;*/
 }
 .histrtabl-description {
     width: 169px;
@@ -2150,7 +2156,7 @@
     font-weight: 600;
 }
 .histrtabl-description.shortresched {
-    width: 205px;
+    width: 209px;
 }
 .histrtabl-inkcolor {
     width: 92px;
@@ -2158,7 +2164,7 @@
     padding-left: 5px;
 }
 .histrtabl-inkcolor.shortresched {
-    width: 75px;
+    /*width: 75px;*/
 }
 .histrtabl-header .histrtabl-description,
 .histrtabl-header .histrtabl-inkcolor {
