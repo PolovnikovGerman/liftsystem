@@ -16,9 +16,9 @@
                 <div class="histrtabl-td histrtabl-items">#Items</div>
                 <div class="histrtabl-td histrtabl-imp">Imp</div>
                 <div class="histrtabl-td histrtabl-prints">#Prints</div>
-                <div class="histrtabl-td histrtabl-itmcolor">Item Color/s</div>
+                <div class="histrtabl-td histrtabl-itmcolor shortresched">Item Color/s</div>
                 <div class="histrtabl-td histrtabl-description shortresched">Item / Description</div>
-                <div class="histrtabl-td histrtabl-inkcolor">Ink Color/s</div>
+                <div class="histrtabl-td histrtabl-inkcolor shortresched">Ink Color/s</div>
             </div>
         </div>
         <?php $order_id = 0; ?>
@@ -52,9 +52,9 @@
                     <div class="histrtabl-td histrtabl-items"><?=empty($list['item_qty']) ? '-' : QTYOutput($list['item_qty'])?></div>
                     <div class="histrtabl-td histrtabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                     <div class="histrtabl-td histrtabl-prints"><?=empty($list['prints']) ? '-' : QTYOutput($list['prints'])?></div>
-                    <div class="histrtabl-td histrtabl-itmcolor truncateoverflowtext"><?=$list['color']?></div>
+                    <div class="histrtabl-td histrtabl-itmcolor shortresched truncateoverflowtext"><?=$list['color']?></div>
                     <div class="histrtabl-td histrtabl-description shortresched truncateoverflowtext"><?=$list['item']?></div>
-                    <div class="histrtabl-td histrtabl-inkcolor truncateoverflowtext">&nbsp;</div>
+                    <div class="histrtabl-td histrtabl-inkcolor shortresched truncateoverflowtext">&nbsp;</div>
                 </div>
             </div>
         <?php endforeach; ?>

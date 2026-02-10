@@ -63,7 +63,7 @@
         <div class="statistics-block"></div>
         <div class="simpltodayblock">
             <div id="regularview-short"></div>
-            <div id="historyview-short"></div>
+            <div id="historyview-short" style="width: 100%"></div>
         </div>
         <div class="todayblock">
             <div id="regularview-full"></div>
