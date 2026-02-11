@@ -406,6 +406,9 @@ class Printcalendar extends MY_Controller
                             $mdata['week'] = $calendres['week'];
                             $mdata['total_items'] = empty($calendres['total_items']) ? '-' : QTYOutput($calendres['total_items']);
                             $mdata['total_prints'] = empty($calendres['total_prints']) ? '-' : QTYOutput($calendres['total_prints']);
+                            $schedul = $this->printcalendar_model->get_reschedule_data($olddate);
+                            $mdata['late'] = $schedul['late'];
+                            $mdata['outcome'] = $this->load->view('printcalendar/day_schedule_view', ['lists' => $schedul['data'], 'late' => $schedul['late']], true);
                         } else {
                             $this->load->model('user_model');
                             $userlist = $this->user_model->get_printschedul_users();
