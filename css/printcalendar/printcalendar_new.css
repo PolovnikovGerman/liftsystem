@@ -1700,9 +1700,10 @@
     background: #000;
     width: 100%;
     padding-bottom: 12px;
-    /*margin-bottom: 50px;*/
-    margin-bottom: 15px;
+    /* margin-bottom: 50px; */
+    margin-bottom: 5px;
     display: none;
+    padding-top: 7px;
 }
 .warning-title {
     color: #fff;
@@ -1722,7 +1723,7 @@
     margin: 5px 10px;
     cursor: pointer;
     position: relative;
-    top: -3px;
+    top: -8px;
 }
 .warning-table {
     width: 100%;

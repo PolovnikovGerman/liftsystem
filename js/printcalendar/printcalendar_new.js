@@ -448,6 +448,7 @@ function init_dailydetails_manage() {
             }
         }, 'json');
     });
+    // Save Fullfilment / Printing
     $(".btnsave.fulfblock").unbind('click').click(function () {
         console.log('Save Color '+$(this).data('ordercolor'));
         if ($(this).hasClass('closedblock')) {
@@ -503,6 +504,7 @@ function init_dailydetails_manage() {
             }, 'json');
         }
     });
+    // Save shipping
     $(".btnsave.shipblock").unbind('click').click(function () {
         if ($(this).hasClass('closedblock')) {
         } else {
@@ -552,6 +554,7 @@ function init_dailydetails_manage() {
             }, 'json');
         }
     });
+    // Copy Track # to clipboard
     $("div.trackbtn").unbind('click').click(function () {
         var copydat = $(this).data('track');
         var element = document.querySelector("input[name='trackcode'][data-track='" + copydat + "']");
@@ -604,6 +607,7 @@ function init_printer_assign(order, curuser) {
     // Click on opens assign
 }
 
+// Copy Track # to clipboard
 function copyElementToClipboard(element) {
     // $(element).show();
     $(element).focus();
@@ -623,7 +627,6 @@ function copyElementToClipboard(element) {
 function dragstartHandler(ev) {
     ev.dataTransfer.setData("text", ev.target.id);
     orderid = ev.target.id;
-    console.log('Order '+orderid);
 }
 
 function dragoverHandler(ev) {
@@ -633,33 +636,26 @@ function dragoverHandler(ev) {
 function dropHandler(ev) {
     ev.preventDefault();
     const data = ev.dataTransfer.getData("text");
-    // ev.target.appendChild(document.getElementById(data));
     var parentElement = ev.target.closest('.leftsideviewarea');
     var newdate = '';
     var incomeblock = '';
     if (parentElement) {
-        console.log('Parent '+parentElement.id+'!');
         newdate = parentElement.id.replace('printdate_','')
         incomeblock = 'left';
     } else {
         parentElement = ev.target.closest('.rightsideviewarea');
         if (parentElement) {
-            console.log('Parent '+parentElement.id+'!');
             newdate = parentElement.id.replace('printday_','');
             incomeblock = 'right';
         } else {
             parentElement = ev.target.closest('.psctable-td');
             if (parentElement) {
-                console.log('Parent '+parentElement.id+'!');
                 newdate = parentElement.id.replace('caledarbox_','');
-                console.log('Full Calendar Date '+newdate);
                 incomeblock = 'fullcalendar';
             }
         }
     }
     if (incomeblock) {
-        // console.log('Add Element '+ev.target.id+'!');
-        console.log('Income Block '+incomeblock);
         var moveorder = '';
         var outcomeblock = '';
         if (orderid.substring(0,10)=='shedulord_') {
@@ -682,15 +678,32 @@ function dropHandler(ev) {
                     $("div[data-printdata='"+newdate+"']").append(document.getElementById(data))
                 } else {
                     if (incomeblock=='right') {
+                        // Update Re Schedule body
                         if (parseInt(response.data.late)==1) {
                             $(".dayschedulearea[data-printdata='lateorders']").empty().html(response.data.income);
                         } else {
                             $(".dayschedulearea[data-printdata='"+response.data.incomedate+"']").empty().html(response.data.income);
                         }
-                        $("#printshortunassignarea").empty().html(response.data.unassign);
-                        $("#printshortassignarea").empty().html(response.data.assign);
+                        // $("#printshortunassignarea").empty().html(response.data.unassign);
+                        // $("#printshortassignarea").empty().html(response.data.assign);
+                        // Left part - warning
+                        $(".warning-section").empty().html(response.data.warnings);
+                        if (parseInt(response.data.warningscnt)==0) {
+                            $(".warning-section").hide();
+                            $(".maingrey-close").show();
+                        } else {
+                            $(".warning-section").show();
+                            $(".maingrey-close").hide();
+                        }
+                        // Left part - common orders
+                        $(".regular-section").empty().html(response.data.outcome);
+                        // Week Totals
                         $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
                         $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
+                        // Day Info
+                        $(".maingrey-infobox").find('div.maingreyinfo-prints').find('span').empty().html(response.data.prints);
+                        $(".maingrey-infobox").find('div.maingreyinfo-items').find('span').empty().html(response.data.items);
+                        $(".maingrey-infobox").find('div.maingreyinfo-orders').find('span').empty().html(response.data.orders);
                     } else if(incomeblock=='left') {
                         // Left part - warning
                         $(".warning-section").empty().html(response.data.warnings);
@@ -712,6 +725,9 @@ function dropHandler(ev) {
                         // Update Calendar
                         $(".pscalendar-daybox[data-printdate='"+newdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
                         $(".pscalendar-daybox[data-printdate='"+newdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
+                        $(".maingrey-infobox").find('div.maingreyinfo-prints').find('span').empty().html(response.data.prints);
+                        $(".maingrey-infobox").find('div.maingreyinfo-items').find('span').empty().html(response.data.items);
+                        $(".maingrey-infobox").find('div.maingreyinfo-orders').find('span').empty().html(response.data.orders);
                     } else {
                         // Full Calendar
                         $(".psctable-td[data-printdate='"+newdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.dayorders);
