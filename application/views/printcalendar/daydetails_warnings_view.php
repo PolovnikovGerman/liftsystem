@@ -92,8 +92,13 @@
                 </div>
                 <div class="warntabl-td warntabl-flftotal"><?= empty($list['amount_sum']) ? '&nbsp;' : round($list['amount_sum'], 0) ?></div>
                 <div class="warntabl-td warntabl-flfplates">
-                    <input type="text" name="platesval" data-ordercolor="<?= $list['order_itemcolor_id'] ?>"
-                           autocomplete="new-password"/>
+<!--                    <input type="text" name="platesval" data-ordercolor="--><?php //= $list['order_itemcolor_id'] ?><!--"-->
+<!--                           autocomplete="new-password"/>-->
+                    <select name="platesval" data-ordercolor="<?=$list['order_itemcolor_id']?>">
+                        <?php for ($i=0; $i<=50; $i+=0.5) : ?>
+                            <option value="<?=$i?>"><?=$i?></option>
+                        <?php endfor; ?>
+                    </select>
                 </div>
                 <!-- <div class="warntabl-td warntabl-save"> -->
                 <div class="btnsave fulfblock" data-ordercolor="<?= $list['order_itemcolor_id'] ?>">Save</div>

@@ -81,7 +81,7 @@
             <div class="regltabl-td regltabl-done"><?=QTYOutput($list['fulfill'])?></div>
             <div class="regltabl-td regltabl-flfremain"><?=QTYOutput($list['notfulfill'])?></div>
             <div class="regltabl-td regltabl-flfdate">
-                <input type="text" name="printdate" data-ordercolor="<?=$list['order_itemcolor_id']?>" value="<?=date('m/d/y')?>" autocomplete="new-password"/>
+                <input type="text" name="printdate" data-ordercolor="<?=$list['order_itemcolor_id']?>" value="<?=date('m/d/Y')?>" autocomplete="new-password"/>
             </div>
             <div class="regltabl-td regltabl-flfprint">
                 <input type="text" name="printval" data-ordercolor="<?=$list['order_itemcolor_id']?>" autocomplete="new-password"/>
