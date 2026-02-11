@@ -88,6 +88,7 @@ class Printcalendar_model extends MY_Model
                 $newdate = $date->modify('+1 day');
             }
             $weekfinish = $newdate->getTimestamp();
+            $weeknumber = $newdate->format('W-Y');
             // Week content current date
             $readyweek = 0;
             if ($current_date >= $weekstart && $current_date <= $weekfinish) {
@@ -127,6 +128,7 @@ class Printcalendar_model extends MY_Model
                 'week' => $week,
                 'weeknum' => $widx,
                 'showdata' => 1,
+                'weeknumber' => $weeknumber,
             ];
             $weektotals[] = [
                 'start' => $weekstart,
@@ -139,6 +141,7 @@ class Printcalendar_model extends MY_Model
                 'readyweek' => $readyweek,
                 'weeknum' => $widx,
                 'showdata' => 1,
+                'weeknumber' => $weeknumber,
             ];
             if ($start_year >= $finish_year) {
                 break;
@@ -1642,5 +1645,54 @@ class Printcalendar_model extends MY_Model
 
         }
         return $data;
+    }
+
+    public function get_calendar_item($printdate)
+    {
+        $total_orders = $total_prints = $total_printed = $total_items = 0;
+        $dayorders = $dayitems = $dayprints = $dayprinted = 0;
+        $newdate = new DateTime(date('Y-m-d',$printdate));
+        $weeknum = $newdate->format('W-Y');
+        $week = substr($weeknum,1,2);
+        $year = substr($weeknum,-4);
+        $datesweek = getDatesByWeek($week, $year);
+        $weekstart = $datesweek['start_week'];
+        $weekfinish = $datesweek['end_week'];
+
+        if ($printdate >= $weekstart && $printdate <= $weekfinish) {
+            $results = $this->_current_week_sum($weekstart, $weekfinish);
+        } else {
+            if ($weekstart >= $printdate) {
+                // new orders
+                $results = $this->_feature_week_sum($weekstart, $weekfinish);
+            } else {
+                $readyweek = 1;
+                // old orders
+                $results = $this->_late_week_sum($weekstart, $weekfinish);
+            }
+        }
+        foreach ($results as $result) {
+            if ($printdate == $result['print_date']) {
+                $dayorders = $result['ordercnt'];
+                $dayitems = $result['itemscnt'];
+                $dayprints = $result['printqty'];
+                $dayprinted = $result['fullfill'];
+            }
+            $total_orders+=$result['ordercnt'];
+            $total_items+=$result['itemscnt'];
+            $total_prints+=$result['printqty'];
+            $total_printed+=$result['fullfill'];
+        }
+        return [
+            'dayorders' => $dayorders,
+            'dayitems' => $dayitems,
+            'dayprints' => $dayprints,
+            'dayprinted' => $dayprinted,
+            'total_orders' => $total_orders,
+            'total_items' => $total_items,
+            'total_prints' => $total_prints,
+            'total_printed' => $total_printed,
+            'week' => $weeknum,
+        ];
     }
 }

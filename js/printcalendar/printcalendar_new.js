@@ -598,66 +598,70 @@ function dropHandler(ev) {
     if (incomeblock) {
         // console.log('Add Element '+ev.target.id+'!');
         console.log('Income Block '+incomeblock);
-        // var moveorder = '';
-        // var outcomeblock = '';
-        // if (orderid.substring(0,10)=='shedulord_') {
-        //     outcomeblock = 'right';
-        //     moveorder = orderid.replace('shedulord_','');
-        // } else {
-        //     outcomeblock = 'left';
-        //     moveorder = orderid.replace('printord_','');
-        // }
+        var moveorder = '';
+        var outcomeblock = '';
+        if (orderid.substring(0,10)=='shedulord_') {
+            outcomeblock = 'right';
+            moveorder = orderid.replace('shedulord_','');
+        } else {
+            outcomeblock = 'left';
+            moveorder = orderid.replace('printord_','');
+        }
         // // Send changes to Scheduler
-        // var params = new Array();
-        // params.push({name: 'print_date', value: newdate});
-        // params.push({name: 'order_id', value: moveorder});
-        // params.push({name: 'incomeblock', value: incomeblock});
-        // params.push({name: 'outcomeblock', value: outcomeblock});
-        // var url = '/printcalendar/ordernewdate';
-        // $.post(url, params, function (response){
-        //     if (response.errors=='') {
-        //         if (incomeblock==outcomeblock) {
-        //             $("div[data-printdata='"+newdate+"']").append(document.getElementById(data))
-        //         } else {
-        //             if (incomeblock=='right') {
-        //                 if (parseInt(response.data.late)==1) {
-        //                     $(".dayschedulearea[data-printdata='lateorders']").empty().html(response.data.income);
-        //                 } else {
-        //                     $(".dayschedulearea[data-printdata='"+response.data.incomedate+"']").empty().html(response.data.income);
-        //                 }
-        //                 $("#printshortunassignarea").empty().html(response.data.unassign);
-        //                 $("#printshortassignarea").empty().html(response.data.assign);
-        //                 $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
-        //                 $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
-        //             } else {
-        //                 // if ($("#printshortregularviewarea").length==0) {
-        //                 //    $(".regular-section").html(response.data.todaytemplate);
-        //                 // }
-        //                 $(".warning-section").empty().html(response.data.warnings);
-        //                 if (parseInt(response.data.warningscnt)==0) {
-        //                     $(".warning-section").hide();
-        //                     $(".maingrey-close").show();
-        //                 } else {
-        //                     $(".warning-section").show();
-        //                     $(".maingrey-close").hide();
-        //                 }
-        //                 $(".regular-section").empty().html(response.data.income);
-        //                 if (parseInt(response.data.late)==1) {
-        //                     $(".dayschedulearea[data-printdata='lateorders']").empty().html(response.data.outcome);
-        //                 } else {
-        //                     $(".dayschedulearea[data-printdata='"+response.data.outdate+"']").empty().html(response.data.outcome);
-        //                 }
-        //                 // Update Calendar
-        //                 $(".pscalendar-daybox[data-printdate='"+newdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
-        //                 $(".pscalendar-daybox[data-printdate='"+newdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
-        //                 orderid='';
-        //             }
-        //         }
-        //         $.flash(response.data.message, {timeout: 5000});
-        //     } else {
-        //         // Show error
-        //     }
-        // },'json');
+        var params = new Array();
+        params.push({name: 'print_date', value: newdate});
+        params.push({name: 'order_id', value: moveorder});
+        params.push({name: 'incomeblock', value: incomeblock});
+        params.push({name: 'outcomeblock', value: outcomeblock});
+        var url = '/printcalendar/ordernewdate';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (incomeblock==outcomeblock) {
+                    $("div[data-printdata='"+newdate+"']").append(document.getElementById(data))
+                } else {
+                    if (incomeblock=='right') {
+                        if (parseInt(response.data.late)==1) {
+                            $(".dayschedulearea[data-printdata='lateorders']").empty().html(response.data.income);
+                        } else {
+                            $(".dayschedulearea[data-printdata='"+response.data.incomedate+"']").empty().html(response.data.income);
+                        }
+                        $("#printshortunassignarea").empty().html(response.data.unassign);
+                        $("#printshortassignarea").empty().html(response.data.assign);
+                        $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
+                        $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
+                    } else if(incomeblock=='right') {
+                        $(".warning-section").empty().html(response.data.warnings);
+                        if (parseInt(response.data.warningscnt)==0) {
+                            $(".warning-section").hide();
+                            $(".maingrey-close").show();
+                        } else {
+                            $(".warning-section").show();
+                            $(".maingrey-close").hide();
+                        }
+                        $(".regular-section").empty().html(response.data.income);
+                        if (parseInt(response.data.late)==1) {
+                            $(".dayschedulearea[data-printdata='lateorders']").empty().html(response.data.outcome);
+                        } else {
+                            $(".dayschedulearea[data-printdata='"+response.data.outdate+"']").empty().html(response.data.outcome);
+                        }
+                        // Update Calendar
+                        $(".pscalendar-daybox[data-printdate='"+newdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
+                        $(".pscalendar-daybox[data-printdate='"+newdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
+                    } else {
+                        // Full Calendar
+                        $(".psctable-td[data-printdate='"+newdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.dayorders);
+                        $(".psctable-td[data-printdate='"+newdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.dayprints);
+                        // Totals
+                        $(".summaryweek[data-weeknum='"+response.data.week+"']").find('div.totalboxtprinted-numbers[data-fld="prints"]').empty().html(response.data.total_prints);
+                        $(".summaryweek[data-weeknum='"+response.data.week+"']").find('div.totalboxtprinted-numbers[data-fld="items"]').empty().html(response.data.total_items);
+                    }
+                }
+                orderid='';
+                $.flash(response.data.message, {timeout: 5000});
+            } else {
+                // Show error
+            }
+        },'json');
     } else {
         // Income block empty
         console.log('Income block empty');
