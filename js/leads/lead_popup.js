@@ -568,3 +568,17 @@ function init_lead_cloneemail() {
 
 }
 
+function show_quotedetails(obj) {
+    var quote_id=obj.id.substr(7);
+    var url="/leads/show_quote_detail";
+    var formdat=$("form#leadeditform").serializeArray();
+    formdat.push({name: "quote_id", value: quote_id});
+    $.post(url, formdat, function(response){
+        if (response.errors=='') {
+            window.open(response.data.url, 'quotewin', 'width=600, height=800,toolbar=1')
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+
+}
