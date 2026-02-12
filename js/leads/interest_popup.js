@@ -101,7 +101,25 @@ function init_customform_modal(formid) {
         var lead = $(this).data('lead');
         var type = 'customform';
         revertassignlead(title, lead, type);
-    })
+    });
+    // Change Shape Type
+    $("#shape_type").unbind('change').change(function (){
+        var params=new Array();
+        params.push({name: 'custom_quote_id', value: $(this).data('form')});
+        params.push({name: 'fld', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = '/leads/customform_update';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("button.closemodal").unbind('click').click(function (){
+        $("#InterestModal").modal('hide');
+        initCustomFormPagination();
+    });
 }
 // WEB Question content
 function showquestdetails(question) {

@@ -699,5 +699,10 @@ Class Prices_model extends My_Model
         return $out;
     }
 
+    public function get_promoprice($promo_price_id)
+    {
+        return $this->db->select('*')->from('sb_promo_price')->where('promo_price_id', $promo_price_id)->get()->row_array();
+    }
+
 
 }
