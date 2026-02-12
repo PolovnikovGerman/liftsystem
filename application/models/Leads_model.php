@@ -405,6 +405,25 @@ Class Leads_model extends MY_Model
                 $this->db->set('create_date',date('Y-m-d H:i:s'));
                 $leadnum=$this->get_leadnum($leadpost['brand']);
                 $this->db->set('lead_number',$leadnum);
+                // Add Address
+                if (isset($leadpost['country_id'])) {
+                    $this->db->set('country_id', $leadpost['country_id']);
+                }
+                if (isset($leadpost['state'])) {
+                    $this->db->set('state', $leadpost['state']);
+                }
+                if (isset($leadpost['city'])) {
+                    $this->db->set('city', $leadpost['city']);
+                }
+                if (isset($leadpost['zip'])) {
+                    $this->db->set('zip', $leadpost['zip']);
+                }
+                if (isset($leadpost['address_1'])) {
+                    $this->db->set('address_line1', $leadpost['address_1']);
+                }
+                if (isset($leadpost['address_2'])) {
+                    $this->db->set('address_line2', $leadpost['address_2']);
+                }
                 $this->db->insert('ts_leads');
                 $lead_id=$this->db->insert_id();
                 if ($lead_id==0) {
@@ -412,6 +431,18 @@ Class Leads_model extends MY_Model
                 } else {
                     $leadpost['lead_id']=$lead_id;
                     $leadpost['lead_number']=$leadnum;
+                    // Add Lead Contact
+                    $this->db->set('contact_name', $leadpost['lead_customer']);
+                    $this->db->set('contact_phone', $leadpost['lead_phone']);
+                    $this->db->set('contact_email', $leadpost['lead_mail']);
+                    $this->db->set('lead_id', $lead_id);
+                    $this->db->insert('ts_lead_contacts');
+                    // Empty Contact
+                    $this->db->set('contact_name', null);
+                    $this->db->set('contact_phone', null);
+                    $this->db->set('contact_email', null);
+                    $this->db->set('lead_id', $lead_id);
+                    $this->db->insert('ts_lead_contacts');
                 }
             } else {
                 $this->db->set('update_usr',$usr_id);
@@ -2202,6 +2233,12 @@ Class Leads_model extends MY_Model
             'lead_value' => '',
             'lead_note' => '',
             'lead_type'=>$this->init_lead_type,
+            'country_id' => $formdata['ship_country'],
+            'state' => strtoupper($formdata['ship_state']),
+            'city' => $formdata['ship_city'],
+            'zip' => $formdata['ship_zipcode'],
+            'address_1' => $formdata['ship_address1'],
+            'address_2' => $formdata['ship_address2'],
             'brand' => $formdata['brand'],
         ];
         $lead_tasks = [
@@ -2268,28 +2305,38 @@ Class Leads_model extends MY_Model
         return $out;
     }
 
-    public function attachment_add($leadattachs, $data, $session_id) {
+    public function attachment_add($leaddata, $data, $session_id) {
         $out=['result' => $this->error_result, 'msg' => 'Attachment not found'];
-        if (ifset($data,'newval','')!=='') {
-            $attachs = $leadattachs['lead_attach'];
-            $lastid = 0;
-            foreach ($attachs as $attach) {
-                if ($attach['leadattch_id'] < $lastid) {
-                    $lastid = $attach['leadattch_id'];
-                }
-            }
-            $lastid = $lastid - 1;
-            $attachs[] = [
-                'leadattch_id' => $lastid,
-                'source_name' => ifset($data,'src','new_lead_attach'),
-                'attachment' => $data['newval'],
-                'quoteattach' => 0,
-            ];
-            $leadattachs['lead_attach'] = $attachs;
-            $out['result'] = $this->success_result;
-            $out['attachs'] = $attachs;
-            usersession($session_id, $leadattachs);
-        }
+        $leads_attachments = $leaddata['leads_attachments'];
+        $newid = (count($leads_attachments)+1)*(-1);
+        $leads_attachments[] = [
+            'leadattch_id' => $newid,
+            'source_name' => $data['sourcename'],
+            'attachment' => $data['attachdoc'],
+            'quoteattach' => 0,
+        ];
+//        if (ifset($data,'newval','')!=='') {
+//            $attachs = $leadattachs['lead_attach'];
+//            $lastid = 0;
+//            foreach ($attachs as $attach) {
+//                if ($attach['leadattch_id'] < $lastid) {
+//                    $lastid = $attach['leadattch_id'];
+//                }
+//            }
+//            $lastid = $lastid - 1;
+//            $attachs[] = [
+//                'leadattch_id' => $lastid,
+//                'source_name' => ifset($data,'src','new_lead_attach'),
+//                'attachment' => $data['newval'],
+//                'quoteattach' => 0,
+//            ];
+//            $leadattachs['lead_attach'] = $attachs;
+        $leaddata['leads_attachments'] = $leads_attachments;
+        usersession($session_id, $leaddata);
+        $out['result'] = $this->success_result;
+        $out['attachs'] = $leads_attachments;
+//        usersession($session_id, $leadattachs);
+//        }
         return $out;
     }
 

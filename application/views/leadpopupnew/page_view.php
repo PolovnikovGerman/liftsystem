@@ -13,7 +13,7 @@
                         <option value="1" <?=$lead['lead_type']==1 ? 'selected="selected"' : ''?>><span class="leadtopstatus-star"><i class="fa fa-star" aria-hidden="true"></i></span> Priority</option>
                         <option value="2" <?=$lead['lead_type']==2 ? 'selected="selected"' : ''?>>Open</option>
                         <option value="4" <?=$lead['lead_type']==4 ? 'selected="selected"' : ''?>>Closed</option>
-                        <option value="3" <?=$lead['lead_type']==3 ? 'selected="selected"' : ''?>>Dead</option>
+                        <option value="3" <?=$lead['lead_type']==3 ? 'selected="selected"' : ''?>>Dormant</option>
                     </select>
                 </div>
                 <div class="leadtopreps">
@@ -64,7 +64,7 @@
                     </div>
                     <div class="lead-attachments">
                         <div class="lead-attachmentstitle">Attachments:</div>
-                        <div class="btn-attach">+ add attachment</div>
+                        <div id="btn-attach"></div>
                         <div class="list-attachfiles"><?=$attachments_view?></div>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
                         <div class="lead-needby">
                             <div class="lead-needbytitle">Need by Date:</div>
                             <div class="lead-needbybox">
-                                <input type="text" id="lead_needby" class="leadmainedit" data-fld="lead_needby" value="<?=empty($lead['lead_needby']) ? '' : date('D - M j, Y', strtotime($lead['lead_needby']))?>"/>
+                                <input type="text" id="lead_needby" class="leadmainedit" data-fld="lead_needby" value="<?=empty($lead['lead_needby']) ? '' : date('D - M j, Y', $lead['lead_needby'])?>"/>
                             </div>
                         </div>
                         <div class="lead-notes">

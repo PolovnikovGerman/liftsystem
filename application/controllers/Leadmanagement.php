@@ -66,6 +66,9 @@ class Leadmanagement extends MY_Controller
                     $leadfound = 1;
                     $error = '';
                     $lead_data = $res['lead'];
+                    if (!empty($lead_data['lead_needby'])) {
+                        $lead_data['lead_needby'] = strtotime($lead_data['lead_needby']);
+                    }
                     $lead_data['newhistorymsg'] = '';
                     $customer_address = $res['address'];
                     $brand = isset($lead_data['brand']) ? $lead_data['brand'] : $brand;
@@ -404,15 +407,15 @@ class Leadmanagement extends MY_Controller
             $mdata = [];
             $error = 'Attachment session empty';
             $postdata = $this->input->post();
-            $session_id = ifset($postdata,'session_id','unkn');
-            $leadattachs = usersession($session_id);
-            if (!empty($leadattachs)) {
-                $res=$this->leads_model->attachment_add($leadattachs, $postdata, $session_id);
+            $session_id = ifset($postdata,'lead','unkn');
+            $leaddata = usersession($session_id);
+            if (!empty($leaddata)) {
+                $res=$this->leads_model->attachment_add($leaddata, $postdata, $session_id);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $leads_attach = $res['attachs'];
-                    $mdata['content'] = $this->load->view('leadpopup/attach_view',array('attachs'=>$leads_attach),TRUE);
+                    $mdata['content'] = $this->load->view('leadpopupnew/attachments_view', ['attachments'=>$leads_attach],TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);

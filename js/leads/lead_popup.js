@@ -50,6 +50,46 @@ function init_leadpopupcontent(){
         autoclose: true,
         todayHighlight: true
     });
+    // Attachment
+    var upload_templ= '<div class="qq-uploader"><div class="custom_upload qq-upload-button btn-attach">+ add attachment</div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>'+
+        '<div class="clear"></div></div>';
+
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('btn-attach'),
+        action: '/utils/save_leadattach',
+        uploadButtonText: '',
+        multiple: true,
+        debug: false,
+        template: upload_templ,
+        params: {
+        },
+        allowedExtensions: [],
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success==true) {
+                $(".qq-upload-list").hide();
+                var url= mainurl+'/lead_attachment_add';
+                var params=new Array();
+                params.push({name: 'lead', value: $("#leadeditid").val()});
+                params.push({name: 'attachdoc', value: responseJSON.filename});
+                params.push({name: 'sourcename', value: responseJSON.source});
+                $.post(url, params, function (response) {
+                    if (response.errors=='') {
+                        $(".list-attachfiles").empty().html(response.data.content);
+                        init_leadpopupedit();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            } else {
+                alert(responseJSON.error);
+                $("div#loader").hide();
+                $("div.qq-upload-button").css('visibility','visible');
+            }
+        }
+    });
+
 }
 
 function init_quoteformcontent() {
@@ -290,6 +330,12 @@ function init_leadpopupedit() {
             }
         },'json');
     });
+    // Open Attachment
+    $(".attachfile").unbind('click').click(function (){
+        var docurl = $(this).data('link');
+        var wintitle = $(this).data('title');
+        var newWin = window.open(docurl,wintitle,"width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+    })
     // Save button
     $(".lead-savebtn").unbind('click').click(function (){
         var params = new Array();
