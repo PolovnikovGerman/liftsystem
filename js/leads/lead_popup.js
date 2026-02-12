@@ -336,6 +336,45 @@ function init_leadpopupedit() {
         var wintitle = $(this).data('title');
         var newWin = window.open(docurl,wintitle,"width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
     })
+    // Add Proof requst
+    $(".btn-newproofreq").unbind('click').click(function (){
+        var lead_num = $(".leadnumber").find('span').text();
+        var msg="You will now save the updates of the "+lead_num+" by creating the proof request.  Ok?";
+        if (confirm(msg)==true) {
+            var url=mainurl+"/lead_addproofrequst";
+            var params = new Array();
+            params.push({name: 'lead', value: $("#leadeditid").val()});
+            $("#loader").show();
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $("#loader").hide();
+                    $("#leadformModal").modal('hide');
+                    artproof_lead(response.data.proof_id,'leadsview');
+                } else {
+                    $("#loader").hide();
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    $(".proofreqbox-number").unbind('click').click(function (){
+        var proof = $(this).data('proof');
+        // Save changes in Lead
+        var url = mainurl+'/lead_popup_save';
+        var params = new Array();
+        params.push({name: 'lead', value: $("#leadeditid").val()});
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#loader").hide();
+                $("#leadformModal").modal('hide');
+                artproof_lead(proof, 'leadsview');
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    })
     // Save button
     $(".lead-savebtn").unbind('click').click(function (){
         var params = new Array();

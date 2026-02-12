@@ -775,38 +775,65 @@ class Leadmanagement extends MY_Controller
         }
     }
 
-    /* Create PR requst on base of Lead */
+    // Create PR requst on base of Lead
     public function lead_addproofrequst() {
         if ($this->isAjax()) {
-            $mdata=array();
-            $leadpost=$this->input->post();
-            /* Get Tasks & user array */
-            $lead_tasks=array();
-            $session_id=$leadpost['session_id'];
-            $lead_replic=usersession($session_id);
-            $lead_usr=array();
-            foreach ($lead_replic as $row) {
-                array_push($lead_usr, $row['user_id']);
-            }
-            $usr_id=$this->USR_ID;
-            $res=$this->leads_model->save_leads($lead_usr,$lead_tasks,$leadpost,$usr_id);
-            $error=$res['msg'];
-            if ($res['result']!=$this->error_result) {
-                $error = '';
-                $lead_id=$res['result'];
-                $mdata['lead_id']=$res['result'];
-                // Get new value of Lead
-                $lead_data=$this->leads_model->get_lead($lead_id);
-                usersession('leaddata',$lead_data);
-                $resrequest=$this->leads_model->add_proof_request($lead_data, $usr_id, $this->USER_NAME);
-                $error=$resrequest['msg'];
-                if ($resrequest['result']==$this->success_result) {
-                    $error = '';
-                    $mdata['email_id']=$resrequest['email_id'];
+            $error = 'Connect lost. Reload Form';
+            $mdata = [];
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata,'lead','unkn');
+            $leaddata = usersession($session_id);
+            if (!empty($leaddata)) {
+                $res = $this->leads_model->save_leadpopup($leaddata, $this->USR_ID, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $lead_id=$res['lead_id'];
+                    $mdata['lead_id']=$res['lead_id'];
+                    $leadres=$this->leads_model->get_lead($lead_id);
+                    $error = $leadres['msg'];
+                    if ($leadres['result']==$this->success_result) {
+                        $lead_data = $leadres['lead'];
+                        $address = $leadres['address'];
+                        $contacts = $this->leads_model->get_lead_contacts($lead_id);
+                        $resrequest=$this->leads_model->add_proof_request($lead_data, $address, $contacts, $this->USR_ID, $this->USER_NAME);
+                        $error = $resrequest['msg'];
+                        if ($resrequest['result']==$this->success_result) {
+                            $error = '';
+                            $mdata['proof_id'] = $resrequest['email_id'];
+                        }
+                    }
+                    // usersession('leaddata',$lead_data);
                 }
             }
             $this->ajaxResponse($mdata,$error);
+//            $leadpost=$this->input->post();
+//            /* Get Tasks & user array */
+//            $lead_tasks=array();
+//            $session_id=$leadpost['session_id'];
+//            $lead_replic=usersession($session_id);
+//            $lead_usr=array();
+//            foreach ($lead_replic as $row) {
+//                array_push($lead_usr, $row['user_id']);
+//            }
+//            $usr_id=$this->USR_ID;
+//            $res=$this->leads_model->save_leads($lead_usr,$lead_tasks,$leadpost,$usr_id);
+//            $error=$res['msg'];
+//            if ($res['result']!=$this->error_result) {
+//                $error = '';
+//                $lead_id=$res['result'];
+//                $mdata['lead_id']=$res['result'];
+//                // Get new value of Lead
+//                $lead_data=$this->leads_model->get_lead($lead_id);
+//                usersession('leaddata',$lead_data);
+//                $resrequest=$this->leads_model->add_proof_request($lead_data, $usr_id, $this->USER_NAME);
+//                $error=$resrequest['msg'];
+//                if ($resrequest['result']==$this->success_result) {
+//                    $error = '';
+//                    $mdata['email_id']=$resrequest['email_id'];
+//                }
+//            }
         }
+        show_404();
     }
 
     public function lead_deleteproof() {

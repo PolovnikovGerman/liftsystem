@@ -530,30 +530,43 @@ Class Leads_model extends MY_Model
     }
 
     /* Add New PR request */
-    public function add_proof_request($leadpost, $usr_id, $usr_name) {
+    public function add_proof_request($lead, $address, $contacts, $usr_id, $usr_name) {
         $out=array('result'=>  $this->error_result, 'msg'=> $this->INIT_ERRMSG);
         $this->load->model('artwork_model');
+        $mail = $phone = '';
+        foreach ($contacts as $contact) {
+            if (!empty($contact['contact_email'])) {
+                $mail = $contact['contact_email'];
+                break;
+            }
+        }
+        foreach ($contacts as $contact) {
+            if (!empty($contact['contact_phone'])) {
+                $phone = $contact['contact_phone'];
+            }
+        }
+
         /* Create record in TS_EMAILS */
         $item_name=NULL;
         $item_num=NULL;
-        $itemdata=$this->search_itemid($leadpost['lead_item_id']);
+        $itemdata=$this->search_itemid($lead['lead_item_id']);
         if ($itemdata['result']==$this->success_result) {
             $item_name=$itemdata['item_name'];
             $item_num=$itemdata['item_number'];
         }
         // Get Proof Num
-        $proof_num=$this->get_new_proofnum($leadpost['brand']);
+        $proof_num=$this->get_new_proofnum($lead['brand']);
         $this->db->set('email_type','Art_Submit');
         $this->db->set('proof_num',$proof_num);
         $this->db->set('proof_updated',  time());
-        $this->db->set('email_sender',$leadpost['lead_company']);
-        $this->db->set('email_sendermail',$leadpost['lead_mail']);
-        $this->db->set('email_senderphone',$leadpost['lead_phone']);
-        $this->db->set('email_sendercompany',$leadpost['lead_customer']);
+        $this->db->set('email_sender',$lead['lead_company']);
+        $this->db->set('email_sendermail', $mail);
+        $this->db->set('email_senderphone',$phone);
+        $this->db->set('email_sendercompany',$lead['lead_customer']);
         $this->db->set('email_webpage', 'Sales');
         $this->db->set('email_item_name',$item_name);
         $this->db->set('email_item_number',$item_num);
-        $this->db->set('brand', $leadpost['brand']);
+        $this->db->set('brand', $lead['brand']);
         $this->db->insert('ts_emails');
         $newrec=$this->db->insert_id();
         if (!$newrec) {
@@ -564,7 +577,7 @@ Class Leads_model extends MY_Model
         $out['result']=  $this->success_result;
         $out['email_id']=$newrec;
         // Add relation with lead
-        $this->db->set('lead_id',$leadpost['lead_id']);
+        $this->db->set('lead_id',$lead['lead_id']);
         $this->db->set('email_id',$newrec);
         $this->db->insert('ts_lead_emails');
         // Add artwork, Artwork history
@@ -573,20 +586,21 @@ Class Leads_model extends MY_Model
         $this->db->where('email_id',$newrec);
         $maildat=$this->db->get()->row_array();
         $artw=array(
-            'artwork_id'=>0,
-            'order_id'=>NULL,
-            'mail_id'=>$newrec,
-            'user_id'=>$usr_id,
-            'customer'=>$leadpost['lead_company'],
-            'customer_phone'=>$maildat['email_senderphone'],
-            'customer_email'=>$maildat['email_sendermail'],
-            'customer_contact'=>$leadpost['lead_customer'],
-            'item_name'=>$maildat['email_item_name'],
-            'other_item'=>$leadpost['other_item_name'],
-            'item_number'=>$maildat['email_item_number'],
-            'item_color'=>$maildat['email_special_requests'],
-            'item_qty'=>$maildat['email_qty'],
-            'item_id'=>$leadpost['lead_item_id'],
+            'artwork_id' => 0,
+            'order_id' => NULL,
+            'mail_id' => $newrec,
+            'user_id' => $usr_id,
+            'customer' => $lead['lead_company'],
+            'customer_phone' => $maildat['email_senderphone'],
+            'customer_email' => $maildat['email_sendermail'],
+            'customer_contact' => $lead['lead_customer'],
+            'item_name' => $maildat['email_item_name'],
+            'other_item' => $lead['other_item_name'],
+            'item_number' => $maildat['email_item_number'],
+            'item_color' => $maildat['email_special_requests'],
+            'item_qty' => $maildat['email_qty'],
+            'item_id' => $lead['lead_item_id'],
+            'brand' => $lead['brand'],
         );
         $art_id=$this->artwork_model->artwork_update($artw);
         if ($art_id) {
@@ -597,7 +611,7 @@ Class Leads_model extends MY_Model
             $this->db->insert('ts_artwork_history');
         }
         // Attachments
-        $attachs = $this->get_lead_attachs($leadpost['lead_id']);
+        $attachs = $this->get_lead_attachs($lead['lead_id']);
         foreach ($attachs as $attach) {
             $this->db->set('email_attachment_emailid', $newrec);
             $this->db->set('email_attachment_name', $attach['source_name']);
