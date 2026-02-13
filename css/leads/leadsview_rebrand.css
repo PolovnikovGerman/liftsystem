@@ -382,6 +382,7 @@
 input.lead_searchinput {
     background: none repeat scroll 0 0 #ffffff;
     border: 1px solid;
+    color: #000000;
     float: left;
     font-size: 12px;
     height: 21px;

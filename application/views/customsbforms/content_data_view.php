@@ -1,5 +1,4 @@
 <?php $numpp=0;?>
-<div class="customform_tabledat">
 <?php $curdate = '';?>
 <?php $curweek = $data[0]['weeknum'];?>
 <?php foreach ($data as $dat) { ?>
@@ -18,11 +17,11 @@
             <?php } ?>
         </div>
         <div class="status">
-            <?php if (empty($dat['lead_number'])) { ?>
+            <?php if (empty($dat['lead_number'])) : ?>
                 <div class="sbformnew">New</div>
-            <?php } else { ?>
-                L<?=$dat['lead_number']?>
-            <?php } ?>
+            <?php else : ?>
+                <div class="customformlead" style="width: 100%;" data-lead="<?=$dat['lead_id']?>">L<?=$dat['lead_number']?></div>
+            <?php endif; ?>
         </div>
         <div class="date  showformdetails"><?=date('m/d/y', strtotime($dat['date_add']))==$curdate ? '&mdash;' : date('m/d/y', strtotime($dat['date_add']))?></div>
         <div class="customname  showformdetails"><?=$dat['customer_name']?></div>
@@ -39,9 +38,8 @@
             <?=$dat['shape_desription']?>
         </div>
         <div class="itemqty showformdetails"><?=empty($dat['quota_qty']) ? '' : QTYOutput($dat['quota_qty'])?></div>
-        <div class="eventdate showformdetails <?=$expand==1 ? 'expand' : ''?>"><?=$dat['event_date']?></div>
+        <div class="eventdate showformdetails"><?=$dat['event_date']?></div>
     </div>
     <?php $numpp++?>
     <?php $curdate = date('m/d/y', strtotime($dat['date_add']))?>
 <?php } ?>
-</div>

@@ -144,8 +144,13 @@ function pageCustomFormsCallback(pageidx) {
     $("#loader").show();
     $.post(url,params,function(response){
         if (response.errors=='') {
+            if (parseInt(response.data.expand)==1) {
+                $("#customform_tabledat").addClass('expandtable');
+            } else {
+                $("#customform_tabledat").removeClass('expandtable');
+            }
             $("#customform_tabledat").empty().html(response.data.content);
-
+            new SimpleBar(document.getElementById('customform_tabledat'), { autoHide: false });
             $("#curpagecustomform").val(pageidx);
             /* change size */
             // if (parseInt(response.data.totals) > 21) {
@@ -200,6 +205,10 @@ function init_customform_content() {
         var formid = $(this).parent('div.content-row').data('form');
         assign_custom(formid);
     });
+    $(".customformlead").unbind('click').click(function (){
+        var lead_id = $(this).data('lead');
+        edit_lead(lead_id);
+    })
 }
 
 // function showcustomformdetails(formid) {
