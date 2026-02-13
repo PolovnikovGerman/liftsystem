@@ -125,21 +125,25 @@ a.find_customformbnt {
     overflow-x: hidden;
     overflow-y: auto;
     margin-bottom: 15px;
+    scrollbar-width: none;
     /*max-height: 536px;*/
 }
+.customform_tabledat.expandtable {
+    height: 536px;
+}
 /* Scroll */
-.customform_tabledat .sp-scrollbar {
-    width: 10px;
-    background-color: #f1f1f1;
-    cursor: pointer;
-}
-.customform_tabledat .sp-scrollbar .sp-thumb {
-    background-color: #aaa;
-    transition: height 0.2s ease-in-out;
-}
-.customform_tabledat .sp-scrollbar.active .sp-thumb {
-    background-color: #c1c1c1;
-}
+/*.customform_tabledat .sp-scrollbar {*/
+/*    width: 10px;*/
+/*    background-color: #f1f1f1;*/
+/*    cursor: pointer;*/
+/*}*/
+/*.customform_tabledat .sp-scrollbar .sp-thumb {*/
+/*    background-color: #aaa;*/
+/*    transition: height 0.2s ease-in-out;*/
+/*}*/
+/*.customform_tabledat .sp-scrollbar.active .sp-thumb {*/
+/*    background-color: #c1c1c1;*/
+/*}*/
 /* End Scroll */
 .customform_tabledat .content-row {
     width: 100%;

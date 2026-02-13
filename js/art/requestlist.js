@@ -380,12 +380,13 @@ function profedit_lead(lead_id) {
     $.post(url, {'lead_id':lead_id}, function(response){
         if (response.errors=='') {
             // POPUP
-            $("#leadformModalLabel").empty().html(response.data.title);
-            $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
-            $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
-            $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
-            init_lead_cloneemail();
-            init_leadpopupedit();
+            // $("#leadformModalLabel").empty().html(response.data.title);
+            // $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+            // $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+            // $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
+            // init_lead_cloneemail();
+            // init_leadpopupedit();
+            edit_lead(lead_id);
             // $("select#lead_item").select2({
             //     dropdownParent: $('#pageModal'),
             //     matcher: matchStart

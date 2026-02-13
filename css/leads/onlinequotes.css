@@ -143,6 +143,7 @@ select.quotehideincl option {
     border-left: 1px solid #000000;
     border-bottom: 1px solid #000000;
     border-right: 1px solid #000000;
+    scrollbar-width: none;
 }
 .quotes_tabrow {
     clear: both;

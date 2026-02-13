@@ -45,13 +45,13 @@ function initQuestionPagination() {
     var num_entries = $('#totalquest').val();
     var perpage = $("#perpagequest").val();
     if (parseInt(num_entries) < parseInt(perpage)) {
-        $("div#questions .Pagination").empty();
+        $("#questpagination").empty();
         $("#curpagequest").val(0);
         pageQuestionsCallback(0);
     } else {
         var curpage = $("#curpagequest").val();
         // Create content inside pagination element
-        $("div#questions .Pagination").empty().mypagination(num_entries, {
+        $("#questpagination").empty().mypagination(num_entries, {
             current_page: curpage,
             callback: pageQuestionsCallback,
             items_per_page: perpage, // Show only one item per page
@@ -87,7 +87,8 @@ function pageQuestionsCallback(page_index) {
     $("#loader").css('display','block');
     $.post(url,params,function(response){
         if (response.errors=='') {
-            $("div.question_tabledat").empty().html(response.data.content);
+            $("#question_tabledat").empty().html(response.data.content);
+            new SimpleBar(document.getElementById('question_tabledat'), { autoHide: false });
             $("#curpagequest").val(page_index);
             /* change size */
             init_questions_content();
@@ -101,16 +102,6 @@ function pageQuestionsCallback(page_index) {
 }
 
 function init_questions_content() {
-    $(".quest_tabrow").find('.quest_text').qtip({
-        content: {
-            attr: 'data-content'
-        },
-        position: {
-            my: 'right center',
-            at: 'center left',
-        },
-        style: 'question_tooltip'
-    });
     $("div.quest_tabrow").hover(
         function(){
             $(this).addClass("current_row");
@@ -132,12 +123,15 @@ function init_questions_content() {
         quest_include(quest_id);
         return false;
     });
+    $("div.quest_replica").unbind('click').click(function (){
+        var lead_id = $(this).data('lead');
+        edit_lead(lead_id);
+    })
     // $("div.questassign").click(function(){
     //     var questid=$(this).data('questid');
     //     change_questreplic(questid);
     //     return false;
     // });
-
 }
 
 function quest_include(quest_id) {

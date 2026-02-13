@@ -82,6 +82,7 @@ function pageQuotesCallback(page_index) {
     $.post(url,params,function(response){
         if (response.errors=='') {
             $("div.quotes_tabledat").empty().html(response.data.content);
+            new SimpleBar(document.getElementById('quotes_tabledat'), { autoHide: false });
             $("#curpagequest").val(page_index);
             quote_content_init();
             $("#loader").hide();

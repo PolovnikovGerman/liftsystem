@@ -83,7 +83,11 @@ class Customform_model extends MY_Model
             $dat['numpp'] = $dat['quote_number'];
             if (!empty($dat['lead_id'])) {
                 $ldat = $this->leads_model->get_lead($dat['lead_id']);
-                $dat['lead_number']=ifset($ldat,'lead_number','');
+                if ($ldat['result']==$this->success_result) {
+                    $lead = $ldat['lead'];
+                    $dat['lead_number']=ifset($lead,'lead_number','');
+                }
+
             }
             if (empty($dat['ship_date'])) {
                 $dat['event_date'] = '';

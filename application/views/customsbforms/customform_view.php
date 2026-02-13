@@ -37,7 +37,7 @@
         <div class="itemqty">QTY</div>
         <div class="eventdate">Event</div>
     </div>
-    <div id="customform_tabledat"></div>
+    <div class="customform_tabledat" id="customform_tabledat"></div>
 </div>
 <div class="customform_total_content">
     <div class="datarow">
