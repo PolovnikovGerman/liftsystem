@@ -630,16 +630,16 @@ input.quoteleadrushcost {
 }
 /* Ship Rates */
 .quoteshippingcostarea .datarow div {
-    height: 20px;
-    line-height: 20px;
+    height: 18px;
+    line-height: 18px;
     font-size: 10px;
 }
 .quoteshippingcostarea .datarow div.active {
     font-weight: 600;
 }
 .quoteratecheck {
-    font-size: 13px!important;
-    width: 18px;
+    font-size: 12px !important;
+    width: 16px;
     text-align: center;
     margin-right: 2px;
 }
