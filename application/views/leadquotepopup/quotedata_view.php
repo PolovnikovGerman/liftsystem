@@ -153,7 +153,7 @@
         <div class="datarow">
             <div class="quotetaxarea"><?=$taxview?></div>
             <div class="quotetaxinput">
-                <div class="quotetaxlabel">Sales Tax</div>
+<!--                <div class="quotetaxlabel">Sales Tax</div>-->
                 <div class="quotetaxvalue">
                     <input class="quoteleadshipcostinpt quotesalestaxvalue quotecommondatainpt" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?>
                            data-item="sales_tax" value="<?=$data['sales_tax']?>"/>
