@@ -208,41 +208,38 @@ ul.quotaactionbuttons-list li:last-child {
 }
 
 .quotenumbertitle {
-    color: #525252!important;
-    font-size: 20px;
+    color: #525252 !important;
+    font-size: 17px;
     font-weight: 600;
-    height: 38px;
-    line-height: 38px;
+    line-height: 32px;
     margin-right: 5px;
 }
 .quotenumbervalue {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 600;
-    height: 38px;
-    line-height: 38px;
+    line-height: 32px;
 }
 .quotedatearea {
     float: right!important;
     margin-right: 5px;
 }
 .quotedatetitle {
-    color: #525252!important;
-    font-size: 14px;
+    color: #525252 !important;
+    font-size: 13px;
     font-weight: 600;
-    height: 31px;
-    line-height: 31px;
+    line-height: 32px;
     margin-right: 5px;
 }
 .quotedatevalue {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    height: 31px;
-    line-height: 31px;
+    line-height: 32px;
 }
 .quoteitemtablehead {
     border-left: 2px solid #000000;
     border-top: 2px solid #000000;
     border-right: 2px solid #000000;
+    margin-top: 5px;
 }
 .quoteitemtablehead.stresballstab div {
     background: #3e46dd;
@@ -517,8 +514,7 @@ input.quotediscountinpt {
     margin-top: -14px;
 }
 .quoteshipaddressarea {
-    /*width: 255px;*/
-    width: 205px;
+    width: 195px; /*  255px; */
     margin-bottom: 8px;
 }
 .quoteshipcountryarea {
@@ -606,8 +602,7 @@ select.quotestate {
     width: 38px;
 }
 .quoterushdataarea {
-    /*width: 337px;*/
-    width: 273px;
+    width: 283px; /*  337px; */
 }
 .quoteleadtimelabel {
     /*width: 95px;*/
@@ -632,7 +627,8 @@ select.quoteleadtimeselect {
     width: 129px;
 }
 .quoteleadrush {
-    width: 52px;
+    width: 46px;
+    float: right!important;
 }
 input.quoteleadshipcostinpt {
     height: 19px;
@@ -641,16 +637,14 @@ input.quoteleadshipcostinpt {
     padding-right: 3px;
 }
 input.quoteleadrushcost {
-    /*width: 49px;*/
-    width: 45px;
+    width: 46px; /* 49px;*/
 }
 .quoteshippingcostarea {
-    /*width: 274px;*/
-    width: 214px;
+    width: 230px; /* 274px;*/
     height: 66px;
     background: #f5f5f5;
     border: 2px solid #000000;
-    margin: 5px 4px 3px 4px;
+    margin: 5px 0 3px 4px;
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
@@ -666,9 +660,9 @@ input.quoteleadrushcost {
 }
 .quoteratecheck {
     font-size: 13px!important;
-    width: 20px;
+    width: 18px;
     text-align: center;
-    margin-right: 5px;
+    margin-right: 2px;
 }
 .quoteratecheck.choice i {
     cursor: pointer;
@@ -684,14 +678,12 @@ input.quoteleadrushcost {
 }
 /*  Ship Rates End */
 .quoteshipcost {
-    /*width: 52px;*/
-    width: 45px;
-    margin-top: 23px;
-    margin-left: 3px;
+    width: 46px; /* 52px;*/
+    margin-top: 28px;
+    float: right!important;
 }
 input.quoteshipcostvalue {
-    /*width: 49px;*/
-    width: 45px;
+    width: 46px; /* 49px;*/
 }
 .quotetaxarea {
     border-right: 2px solid #000000;
@@ -700,8 +692,7 @@ input.quoteshipcostvalue {
     background: #dadada;
     margin-top: 9px;
     padding-top: 2px;
-    /*width: 280px;*/
-    width: 220px;
+    width: 236px; /* 280px; */
     margin-left: -2px;
     padding-left: 6px;
 }
@@ -749,8 +740,8 @@ input.quoteshipcostvalue {
     padding-left: 3px;
 }
 .quotetaxinput {
-    width: 55px;
-    padding-left: 5px;
+    width: 50px;
+    padding-left: 3px;
 }
 .quotetaxlabel {
     font-size: 11px;
@@ -761,9 +752,11 @@ input.quoteshipcostvalue {
 }
 .quotetaxvalue {
     width: 100%;
+    float: right!important;
+    margin-top: 12px;
 }
 input.quotesalestaxvalue {
-    width: 49px;
+    width: 46px;
 }
 .quotebillingaddressarea {
     width: 200px; /* 195px; */
