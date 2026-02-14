@@ -1,19 +1,5 @@
 /* Lead quote content */
-/*.quotepopupdetails {*/
-/*    display: none;*/
-/*    position: absolute;*/
-/*    z-index: 2;*/
-/*    width: 620px;*/
-/*    right: -4px;*/
-/*    top: 81px;*/
-/*}*/
 .quotepopupclose {
-    /*cursor: pointer;*/
-    /*float: right!important;*/
-    /*position: relative;*/
-    /*z-index: 7;*/
-    /*right: -18px;*/
-    /*top: -6px;*/
     position: relative;
     float: right!important;
     top: -13px;
@@ -33,15 +19,8 @@
     text-shadow: 0 1px 0 rgba(0, 0, 0, .3);
 }
 .quotecontentarea {
-    /*float: left;*/
-    /*width: 612px;*/
-    /*height: 689px;*/
-    /*background: #9a9a9a;*/
-    /*border-radius: 7px;*/
-    /*padding: 9px;*/
-    width: 489px;
+    width: 100%;
     padding: 5px;
-    margin-top: -19px;
 }
 .quotecontentarea div {
     float: left;
@@ -240,6 +219,7 @@ ul.quotaactionbuttons-list li:last-child {
     border-top: 2px solid #000000;
     border-right: 2px solid #000000;
     margin-top: 5px;
+    width: 100%;
 }
 .quoteitemtablehead.stresballstab div {
     background: #3e46dd;
@@ -507,28 +487,25 @@ input.quotediscountinpt {
     font-size: 12px;
     font-weight: bold;
     color: #161616;
-    height: 21px;
-    line-height: 21px;
+    height: 17px;
+    line-height: 17px;
 }
 .datarow.shippingaddresplace {
-    margin-top: -14px;
+    /*margin-top: -14px;*/
 }
 .quoteshipaddressarea {
-    width: 195px; /*  255px; */
+    width: 200px; /*  255px; */
     margin-bottom: 8px;
 }
 .quoteshipcountryarea {
     border-left: 2px solid #000000;
     border-top: 2px solid #000000;
     border-right: 2px solid #000000;
-    height: 26px;
+    height: 23px;
     background: #dadada;
-    /*width: 118px;*/
-    width: 120px;
+    width: 120px; /* 118px; */
     position: relative;
     z-index: 5;
-    padding-left: 4px;
-    padding-top: 4px;
 }
 select.quoteaddressinpt, input.quoteaddressinpt,
 select.quoteadrinpt, input.quoteadrinpt {
@@ -538,8 +515,11 @@ select.quoteadrinpt, input.quoteadrinpt {
     border: none!important;
 }
 select.quotecountry {
-    /*width: 102px;*/
-    width: 110px;
+    width: 104px; /* 102px;*/
+    height: 16px;
+    margin-left: 6px;
+    margin-top: 4px;
+
 }
 select.quotecountry:disabled {
     background: #acacac;
@@ -578,7 +558,7 @@ input.quoteshipadrother {
     width: 41px;
 }
 input.quotepostal {
-    width: 40px;
+    width: 44px;
     float: left;
 }
 .quoteshipaddrescity {
@@ -586,12 +566,11 @@ input.quotepostal {
     float: left;
 }
 input.quotetown {
-    width: 76px;
+    width: 94px;
     float: left;
 }
 input.quoteshiptown {
-    /*width: 130px;*/
-    width: 84px;
+    width: 94px; /* 130px; */
     float: left;
 }
 .quoteshipaddresdistrict {
@@ -602,7 +581,7 @@ select.quotestate {
     width: 38px;
 }
 .quoterushdataarea {
-    width: 283px; /*  337px; */
+    width: calc(100% - 200px); /*  337px; */
 }
 .quoteleadtimelabel {
     /*width: 95px;*/
@@ -640,27 +619,27 @@ input.quoteleadrushcost {
     width: 46px; /* 49px;*/
 }
 .quoteshippingcostarea {
-    width: 230px; /* 274px;*/
-    height: 66px;
+    width: 225px;
+    height: 58px;
     background: #f5f5f5;
     border: 2px solid #000000;
-    margin: 5px 0 3px 4px;
+    margin: 0 0 3px 4px;
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
 }
 /* Ship Rates */
 .quoteshippingcostarea .datarow div {
-    height: 20px;
-    line-height: 20px;
+    height: 18px;
+    line-height: 18px;
     font-size: 10px;
 }
 .quoteshippingcostarea .datarow div.active {
     font-weight: 600;
 }
 .quoteratecheck {
-    font-size: 13px!important;
-    width: 18px;
+    font-size: 12px !important;
+    width: 16px;
     text-align: center;
     margin-right: 2px;
 }
@@ -765,14 +744,11 @@ input.quotesalestaxvalue {
     border-left: 2px solid #000000;
     border-top: 2px solid #000000;
     border-right: 2px solid #000000;
-    height: 26px;
+    height: 23px;
     background: #dadada;
-    width: 118px;
+    width: 120px;
     position: relative;
     z-index: 5;
-    padding-left: 4px;
-    padding-top: 2px;
-    padding-bottom: 4px;
 }
 .quotebillcountryarea.billingsame {
     border-left: 2px solid #737373;
@@ -808,11 +784,12 @@ input.quotesalestaxvalue {
     padding-bottom: 4px;
 }
 .quoteaddressarea, .quotebilladdressarea {
-    /*width: 168px;*/
-    width: 176px;
+    width: 180px; /* 168px; */
     border: 2px solid #8f8f9d;
-    padding: 5px;
-    margin-top: 3px;
+    padding: 0;
+    margin-top: 4px;
+    height: 84px;
+    position: relative;
 }
 .quoteaddressarea {
     /*width: 222px;*/
@@ -853,15 +830,15 @@ select[data-item='billing_state']:disabled {
 }
 .quotebillingaddresscopy, .shipaddrescopy {
     background: #000000;
-    color: #ffffff!important;
+    color: #ffffff !important;
     font-size: 11px;
     cursor: pointer;
-    position: relative;
-    left: -22px;
+    position: absolute;
+    right: 0;
     width: 16px;
     height: 16px;
     text-align: center;
-    margin-top: 8px;
+    top: 0;
 }
 .quotenotesarea {
     width: 274px;

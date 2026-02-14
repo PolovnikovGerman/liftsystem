@@ -200,11 +200,11 @@
                 <div class="quotebilladdresdistrict"><?=$billstate?></div>
                 <input class="quoteadrinpt quotepostal" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_zip"
                        placeholder="Zip" value="<?=$data['billing_zip']?>"/>
+                <div class="quotebillingaddresscopy" <?=($edit_mode==0 || $data['billingsame']==1) ? 'style="display: none"' : ''?>>
+                    <i class="fa fa-copy"></i>
+                </div>
+                <textarea id="billingcompileaddress" style="display: none"><?=$billaddress?></textarea>
             </div>
-            <div class="quotebillingaddresscopy" <?=($edit_mode==0 || $data['billingsame']==1) ? 'style="display: none"' : ''?>>
-                <i class="fa fa-copy"></i>
-            </div>
-            <textarea id="billingcompileaddress" style="display: none"><?=$billaddress?></textarea>
         </div>
     </div>
     <div class="quotetotalarea">
