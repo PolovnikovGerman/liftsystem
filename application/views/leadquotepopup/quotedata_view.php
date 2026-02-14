@@ -125,12 +125,12 @@
                 <div class="quoteshipaddresdistrict"><?=$shipstate?></div>
                 <input class="quoteadrinpt quotepostal" <?=$edit_mode==0 ? 'disabled="true"' : ''?> data-item="shipping_zip"
                        placeholder="Zip" value="<?=$data['shipping_zip']?>"/>
-            </div>
-            <div class="shipaddrescopy" <?=$edit_mode==0 ? 'style="display: none;"' : ''?>>
-                <i class="fa fa-copy"></i>
+                <div class="shipaddrescopy" <?=$edit_mode==0 ? 'style="display: none;"' : ''?>>
+                    <i class="fa fa-copy"></i>
+                </div>
+                <textarea id="shipingcompileaddress" style="display: none"><?=$shipaddress?></textarea>
             </div>
         </div>
-        <textarea id="shipingcompileaddress" style="display: none"><?=$shipaddress?></textarea>
     </div>
     <div class="quoterushdataarea">
         <div class="datarow">
@@ -201,7 +201,7 @@
                 <input class="quoteadrinpt quotepostal" <?=($edit_mode==0 || $data['billingsame']==1) ? 'disabled="true"' : ''?> data-item="billing_zip"
                        placeholder="Zip" value="<?=$data['billing_zip']?>"/>
             </div>
-            <div class="billingaddresscopy" <?=($edit_mode==0 || $data['billingsame']==1) ? 'style="display: none"' : ''?>>
+            <div class="quotebillingaddresscopy" <?=($edit_mode==0 || $data['billingsame']==1) ? 'style="display: none"' : ''?>>
                 <i class="fa fa-copy"></i>
             </div>
             <textarea id="billingcompileaddress" style="display: none"><?=$billaddress?></textarea>
@@ -218,14 +218,7 @@
             <div class="quotesectionlabel">NOTE TO INCLUDE ON QUOTE:</div>
         </div>
         <div class="datarow">
-            <!--                <textarea class="quotenote" --><?php //=$edit_mode==0 ? 'readonly="readonly"' : ''?><!-- data-item="quote_note">--><?php //=$data['quote_note']?><!--</textarea>-->
             <textarea class="quotenote" <?=$edit_mode==0 ? 'readonly="readonly"' : ''?> data-item="quote_repcontact"><?=$data['quote_repcontact']?></textarea>
         </div>
-        <!--            <div class="datarow">-->
-        <!--                <div class="quotesectionlabel">REP CONTACT INFO:</div>-->
-        <!--            </div>-->
-        <!--            <div class="datarow">-->
-        <!--                <textarea class="quotenote" --><?php //=$edit_mode==0 ? 'readonly="readonly"' : ''?><!-- data-item="quote_repcontact">--><?php //=$data['quote_repcontact']?><!--</textarea>-->
-        <!--            </div>-->
     </div>
 </div>
