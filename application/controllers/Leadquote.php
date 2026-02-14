@@ -275,7 +275,7 @@ class Leadquote extends MY_Controller
                             'imprints'=>$imprints,
                             'edit_mode' => $edit_mode,
                         ];
-                        $imprintview=$this->load->view('leadpopup/imprint_data_edit', $imprint_options, TRUE);
+                        $imprintview=$this->load->view('leadquotepopup/imprint_data_edit', $imprint_options, TRUE);
                         $item_options=[
                             'quote_item_id'=>$quote_item['quote_item_id'],
                             'items'=>$quote_item['items'],
@@ -284,16 +284,16 @@ class Leadquote extends MY_Controller
                             'item_id'=>$quote_item['item_id'],
                         ];
                         if ($edit_mode==0) {
-                            $view=$this->load->view('leadpopup/items_data_view', $item_options, TRUE);
+                            $view=$this->load->view('leadquotepopup/items_data_view', $item_options, TRUE);
                         } else {
-                            $view=$this->load->view('leadpopup/items_data_edit', $item_options, TRUE);
+                            $view=$this->load->view('leadquotepopup/items_data_edit', $item_options, TRUE);
                         }
                         $items_views[] = [
                             'quote_item_id'=>$quote_item['quote_item_id'],
                             'view' => $view,
                         ];
                     }
-                    $item_content = $this->load->view('leadpopup/items_content_view', ['data' => $items_views], TRUE);
+                    $item_content = $this->load->view('leadquotepopup/items_content_view', ['data' => $items_views], TRUE);
                     // Shipping view
                     $shiprates = '';
                     if (count($shippings) > 0) {
@@ -301,7 +301,7 @@ class Leadquote extends MY_Controller
                             'edit_mode' => $edit_mode,
                             'shippings' => $shippings,
                         ];
-                        $shiprates = $this->load->view('leadpopup/quote_shiprates_view', $shipoptions, TRUE);
+                        $shiprates = $this->load->view('leadquotepopup/quote_shiprates_view', $shipoptions, TRUE);
                     }
                     $quote_session = 'quote'.uniq_link(15);
                     $sessiondata = [
@@ -343,7 +343,7 @@ class Leadquote extends MY_Controller
                         'billaddress' => $billaddress,
                         'shipaddress' => $shipaddress,
                     ];
-                    $mdata['quotecontent'] = $this->load->view('leadpopup/quotedata_view', $options, TRUE);
+                    $mdata['quotecontent'] = $this->load->view('leadquotepopup/quotedata_view', $options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);

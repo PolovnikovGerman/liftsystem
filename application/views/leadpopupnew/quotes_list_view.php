@@ -8,7 +8,7 @@
     <?php else : ?>
         <div class="leadquotetabl-tr <?=$nrow%2==0 ? 'whitedatarow' : 'greydatarow';?>">
             <div class="leadquotetabl-date"><?=date('m/d', $quote['quote_date'])?></div> <!-- leadquotetabl-td -->
-            <div class="leadquotetabl-quote">
+            <div class="leadquotetabl-quote" data-quote="<?=$quote['quote_id']?>">
                 <div class="leadquotetabl-quotebox <?=$quote['orders'] > 0 ? 'blueactive' : ''?>"><?=$quote['brand']=='SR' ? '' : 'QB-'?><?=$quote['quote_number']?><?=$quote['brand']=='SR' ? '-QS' : ''?></div>
             </div>
             <div class="leadquotetabl-doc" data-quote="<?=$quote['quote_id']?>"><i class="fa fa-file-pdf-o"></i></div>

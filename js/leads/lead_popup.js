@@ -330,6 +330,11 @@ function init_leadpopupedit() {
             }
         },'json');
     });
+    // Open Quote Details
+    $(".leadquotetabl-quote").unbind('click').click(function (){
+        var quote_id = $(this).data('quote');
+        open_quote_details(quote_id);
+    })
     // Open Attachment
     $(".attachfile").unbind('click').click(function (){
         var docurl = $(this).data('link');
@@ -528,4 +533,40 @@ function init_leadpopup_assign() {
             },'json');
         }
     });
+}
+
+function open_quote_details(quote_id) {
+    var url = mainurl+'/lead_popup_save';
+    var params = new Array();
+    params.push({name: 'lead', value: $("#leadeditid").val()});
+    $("#loader").show();
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            // $("#loader").hide();
+            var qparams = new Array();
+            qparams.push({name: 'quote_id', value: quote_id});
+            qparams.push({name: 'edit_mode', value: 1});
+            var qurl = '/leadquote/quoteedit';
+            $.post(qurl, qparams, function (qresponse){
+                if (qresponse.errors=='') {
+                    $("#loader").hide();
+                    $(".leadblockleft").hide();
+                    $(".leadblockright").hide();
+                    $(".lead-quotes").hide();
+                    $(".quote_details_view").show();
+                    $(".quotecontentarea").empty().html(qresponse.data.quotecontent);
+                    new SimpleBar(document.getElementById('quoteitemtabledataarea'), { autoHide: false });
+                    new SimpleBar(document.getElementById('quoteshippingcostarea'), { autoHide: false });
+                    init_leadquotes_view();
+                } else {
+                    $("#loader").hide();
+                    show_error(qresponse);
+                }
+            },'json');
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
+
 }

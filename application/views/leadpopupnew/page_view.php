@@ -110,6 +110,12 @@
                 </div>
             </div>
             <div class="datarow">
+                <div class="quote_details_view">
+                    <div class="quotepopupclose"><i class="fa fa-times"></i></div>
+                    <div class="quotecontentarea"></div>
+                </div>
+            </div>
+            <div class="datarow">
                 <div class="leadfooterleft">
                     <div class="lead-proofreq">
                         <div class="lead-proofreqtitle">Proof Requests:</div>

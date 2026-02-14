@@ -160,13 +160,15 @@
     width: 100%;
 }
 .dp-city {
-    width: 102px;
+    /*width: 102px;*/
+    width: 90px;
 }
 .dp-state {
     width: 45px;
 }
 .dp-zipcode {
-    width: 65px;
+    /*width: 65px;*/
+    width: 37px;
 }
 .section-content {
     float: left;
@@ -980,6 +982,7 @@ input.discount-exp {
 }
 .leadquotetabl-quote {
     width: 64px;
+    cursor: pointer;
 }
 .leadquotetabl-quotebox {
     width: 58px;
@@ -1224,4 +1227,13 @@ input.discount-exp {
     cursor: pointer;
     color: #fff;
     margin-top: 10px;
+}
+/* Quote POPUP */
+.quote_details_view {
+    background: #9a9a9a;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    width: 492px;
+    height: 632px;
+    display: none;
 }
