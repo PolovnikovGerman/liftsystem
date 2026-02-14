@@ -851,7 +851,7 @@ select[data-item='billing_state']:disabled {
 .quotebilladdresdistrict {
     /* width: 49px; */
 }
-.billingaddresscopy, .shipaddrescopy {
+.quotebillingaddresscopy, .shipaddrescopy {
     background: #000000;
     color: #ffffff!important;
     font-size: 11px;
@@ -862,9 +862,6 @@ select[data-item='billing_state']:disabled {
     height: 16px;
     text-align: center;
     margin-top: 8px;
-}
-.billingaddresscopy {
-    display: none; /* Temporary */
 }
 .quotenotesarea {
     width: 274px;
