@@ -40,7 +40,17 @@
                     <div class="histrtabl-td histrtabl-brand">
                         <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
                     </div>
-                    <div class="histrtabl-td histrtabl-rush <?=$list['order_rush']==0 ? '' : 'redrush'?>"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
+                    <div class="histrtabl-td histrtabl-rush <?=$list['shipclass']=='rush' ? 'redrush' : ($list['shipclass']=='late' ? 'redlate' : '')?>">
+                        <?php if ($list['shipclass']=='rush') : ?>
+                            <div class="shipclasslabel">RUSH</div>
+                            <div class="shipclassvalue"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                        <?php elseif ($list['shipclass']=='late') : ?>
+                            <div class="shipclasslabel">LATE</div>
+                            <div class="shipclassvalue"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                        <?php else : ?>
+                            <div class="shipclassdate"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                        <?php endif; ?>
+                    </div>
                     <div class="histrtabl-td histrtabl-order">
                         <?php if ($list['order_id']==$order_id) : ?>
                             --

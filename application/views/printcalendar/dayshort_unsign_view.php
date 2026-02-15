@@ -41,7 +41,7 @@
             &nbsp;
             <?php endif; ?>
         </div>
-        <div class="regltabl-mainblock <?=$neworderview==0 ? 'repeatrow' : 0?>">
+        <div class="regltabl-mainblock <?=$neworderview==0 ? 'repeatrow' : ''?>">
             <?php if ($neworderview==1) :?>
                 <div class="regltabl-td regltabl-brand">
                     <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>

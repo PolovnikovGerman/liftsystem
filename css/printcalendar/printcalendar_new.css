@@ -664,9 +664,25 @@
     background: url('/img/printscheduler/move-yellow.svg');
 }
 .redrush {
-    color: #ff0000!important;
-    font-size: 11px!important;
+    color: #009345!important;
+    /*font-size: 11px!important;*/
+    /*font-weight: 600;*/
+}
+.redlate {
+    color: #FF0000!important;
+}
+.shipclasslabel, .shipclassvalue {
+    font-size: 9px!important;
+    height: 10px!important;
+    line-height: 10px!important;
+    text-align: center;
+    width: 100%;
+}
+.shipclassdate {
+    font-size: 9px!important;
     font-weight: 600;
+    width: 100%;
+    text-align: center;
 }
 /* Reshedule Content */
 .reschedular-table {
@@ -1825,20 +1841,20 @@
     position: relative;
     top: -1px;
 }
-.notapprv {
-    background: #fcf306 !important;
-}
+/*.notapprv {*/
+/*    background: #fcf306!important;*/
+/*}*/
 .warntabl-brand {
     width: 13px;
 }
 .warntabl-rush {
     width: 38px;
 }
-.redrush {
-    color: #ff0000!important;
-    font-size: 11px!important;
-    font-weight: 600;
-}
+/*.redrush {*/
+/*    color: #ff0000!important;*/
+/*    font-size: 11px!important;*/
+/*    font-weight: 600;*/
+/*}*/
 .warntabl-order {
     width: 41px;
     color: #0000ff;
