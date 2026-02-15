@@ -557,7 +557,8 @@ function open_quote_details(quote_id) {
                     $(".quotecontentarea").empty().html(qresponse.data.quotecontent);
                     new SimpleBar(document.getElementById('quoteitemtabledataarea'), { autoHide: false });
                     new SimpleBar(document.getElementById('quoteshippingcostarea'), { autoHide: false });
-                    init_leadquotes_view();
+                    // init_leadquotes_view();
+                    init_leadquotes_content();
                 } else {
                     $("#loader").hide();
                     show_error(qresponse);
@@ -568,5 +569,24 @@ function open_quote_details(quote_id) {
             show_error(response);
         }
     },'json');
+}
 
+function restore_lead_view(lead_id) {
+    var url="/leadmanagement/edit_lead";
+    $.post(url, {'lead_id':lead_id}, function(response){
+        if (response.errors=='') {
+            $("#leadformModalLabel").empty().html(response.data.title);
+            $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+            $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+            // init_lead_cloneemail();
+            init_leadpopupcontent();
+            init_quoteformcontent();
+            init_leadpopupedit();
+            if (parseInt($("#leadmapuse").val())==1) {
+                initCustomerAddressAutocomplete();
+            }
+        } else {
+            show_error(response);
+        }
+    }, 'json');
 }

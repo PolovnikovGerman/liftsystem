@@ -180,10 +180,10 @@ ul.quotaactionbuttons-list li:last-child {
     border-right: 1px solid #3f3f3f;
 }
 .quotaactionbutton.btnsave:hover {
-    background: #1d9977;
-    background: linear-gradient(to top, #228168, #18b388);
+    background: #1db020;
+    background: linear-gradient(to top, #1e9a24, #1cc51d);
     color: #fff;
-    text-shadow: rgba(0,0,0,0.5) 1px 1px 2px;
+    text-shadow: rgba(0, 0, 0, 0.5) 1px 1px 2px;
 }
 
 .quotenumbertitle {
@@ -291,7 +291,7 @@ ul.quotaactionbuttons-list li:last-child {
 }
 .quoteitemtabledatarow > div {
     height: 20px;
-    line-height: 20px;
+    line-height: 22px;
     font-size: 10px;
 }
 input.quouteitem_input, select.quouteitem_input {
@@ -308,8 +308,8 @@ input.quouteitem_input, select.quouteitem_input {
 }
 .quoteitemtabledatarow .itemdescription {
     border-left: 1px solid #B5B5B5;
-    width: 194px; /* 180px;*/
-    padding-right: 5px;
+    width: 194px;
+    padding: 0 3px;
 }
 .quoteitemtabledatarow .itemdescription.custom {
     width: 259px;
@@ -322,7 +322,8 @@ input.quouteitem_input, select.quouteitem_input {
 }
 input.quoteitem_description_long {
     padding-left: 2px;
-    width: 178px!important;
+    width: 178px !important;
+    margin-left: 4px;
 }
 .quoteitemtabledatarow .itemdescription > .itemcoloradd {
     /*color: #026f11;*/
@@ -330,7 +331,9 @@ input.quoteitem_description_long {
     float: left;
 }
 .quoteitemtabledatarow .itemcolor {
-    width: 64px; /* 153px;*/
+    width: 64px;
+    text-align: center;
+    padding: 0 3px;
 }
 span.addnewquotecolor {
     cursor: pointer;
@@ -346,8 +349,9 @@ select.quoteitemcolors {
 }
 .quoteitemtabledatarow .itemqty {
     border-left: 1px solid #b5b5b5;
-    /*width: 52px;*/
+    /* width: 52px; */
     width: 42px;
+    padding: 0 3px;
 }
 .quoteitemtabledatarow .itemqty.viewmode {
     padding-right: 5px;
@@ -362,13 +366,14 @@ input.quoteitem_qty {
     /*width: 41px;*/
     width: 42px;
     border-left: 1px solid #b5b5b5;
+    padding: 0 3px;
 }
 .quoteitemtabledatarow .itemprice.viewmode {
     padding-right: 5px;
     text-align: right;
 }
 input.quoteitem_price {
-    width: 39px;
+    width: 100%;
     text-align: right;
 }
 .quoteitemtabledatarow .quoteitemrowsubtotal {
@@ -419,12 +424,13 @@ input.quoteitem_price {
     width: 65px;
 }
 .addquoteitem {
-    padding-right: 2px;
+    padding-right: 4px;
     text-align: right;
-    width: 73px;
+    width: 66px;
     font-size: 11px;
     color: #026f11!important;
     cursor: pointer;
+    margin-top: 3px;
 }
 /* Item Table data END */
 .leadquotediscountarea {
