@@ -49,7 +49,7 @@
 </div>
 <div class="datarow">
     <div class="quoteitemtabledata" id="quoteitemtabledataarea">
-        <div id="quoteitemtabledata"><?php //echo $itemsview?> &nbsp;</div>
+        <div id="quoteitemtabledata"><?=$itemsview?></div>
         <div class="datarow"><div class="addquoteitem">+ add item</div></div>
         <div class="quoteitem_inventoryview">&nbsp;</div>
     </div>
