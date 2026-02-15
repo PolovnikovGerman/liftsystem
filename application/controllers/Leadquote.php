@@ -257,13 +257,13 @@ class Leadquote extends MY_Controller
                     // Tax view
                     if ($quotedata['taxview']==0) {
                         // Empty Tax view
-                        $taxview = $this->load->view('leadpopup/quote_taxempty_view',[],TRUE);
+                        $taxview = $this->load->view('leadquotepopup/quote_taxempty_view',[],TRUE);
                     } else {
                         $taxoptions = [
                             'edit_mode' => $edit_mode,
                             'data' => $quotedata,
                         ];
-                        $taxview = $this->load->view('leadpopup/quote_tax_edit', $taxoptions,TRUE);
+                        $taxview = $this->load->view('leadquotepopup/quote_tax_edit', $taxoptions,TRUE);
                     }
                     $quote_items = $qres['items'];
                     $shippings = $qres['shippings'];
