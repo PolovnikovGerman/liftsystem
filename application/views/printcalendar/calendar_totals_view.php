@@ -1,5 +1,5 @@
 <?php foreach ($totals as $total) : ?>
-    <div class="week-tr summaryweek" <?=$total['showdata']==0 ? 'style="display: none"' : '' ?> data-week="<?=$total['weeknum']?> data-weeknum=<?=$total['weeknumber']?>">
+    <div class="week-tr summaryweek" <?=$total['showdata']==0 ? 'style="display: none"' : '' ?> data-week="<?=$total['weeknum']?>" data-weeknum="<?=$total['weeknumber']?>">
         <div class="psctable-td">
             <div class="psctable-totalbox <?=$total['readyweek']==1 ? 'readyweek' : ''?>">
                 <!-- Printed -->

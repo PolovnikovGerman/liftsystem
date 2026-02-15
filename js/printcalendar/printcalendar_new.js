@@ -31,6 +31,12 @@ function init_printcalendar(year) {
             $("#clndrfull-body").empty().html(response.data.calendarview);
             $(".weeklytotal-body").empty().html(response.data.totalsview);
             // // Init Calendar
+            var heightcss = parseInt($("#clndrfull-body").css('height'))+35;
+            $(".clndrfull-body").css('height', heightcss);
+            // var heightreal = parseInt($("#clndrfull-body").height()) + 5;
+            // if (heightreal < heightcss) {
+            //     $("#clndrfull-body").css('height', heightreal);
+            // }
             init_fullcalendar();
             $("#calendweekbgn").val(response.data.minweek);
             $("#calendweekend").val(response.data.maxweek);
@@ -162,6 +168,9 @@ function init_fullcalendar() {
         var minweek = parseInt($("#calendweekbgn").val());
         var maxweek = 0;
         var limitweek = parseInt($("#calendweekend").val()) - 13 +1;
+        if (limitweek <=1) {
+            limitweek = 1;
+        }
         minweek = minweek + 13 + 1;
         if (minweek > limitweek) {
             minweek = limitweek;

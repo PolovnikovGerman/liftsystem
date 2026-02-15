@@ -21,11 +21,11 @@
                 <div class="statistics-td avg_prntday"><?=QTYOutput($total['avgday'])?></div>
                 <div class="statistics-td avg_prntweek"><?=QTYOutput($total['avgweek'])?></div>
                 <div class="statistics-td best_day">
-                    <div class="bestday_date"><?=date('M, j', $total['maxday_label'])?></div>
+                    <div class="bestday_date"><?=date('M j', $total['maxday_label'])?></div>
                     <div class="bestday_total"><?=QTYOutput($total['maxday'])?></div>
                 </div>
                 <div class="statistics-td best_week">
-                    <div class="bestweek_date"><?=date('M, j', $total['maxweek_bgn'])?> - <?=date('M, j', $total['maxweek_end'])?></div>
+                    <div class="bestweek_date"><?=date('M j', $total['maxweek_bgn'])?> - <?=date('M j', $total['maxweek_end'])?></div>
                     <div class="bestweek_total"><?=QTYOutput($total['maxweek'])?></div>
                 </div>
             </div>
