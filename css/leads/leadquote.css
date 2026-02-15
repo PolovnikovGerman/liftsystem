@@ -180,10 +180,10 @@ ul.quotaactionbuttons-list li:last-child {
     border-right: 1px solid #3f3f3f;
 }
 .quotaactionbutton.btnsave:hover {
-    background: #1d9977;
-    background: linear-gradient(to top, #228168, #18b388);
+    background: #1db020;
+    background: linear-gradient(to top, #1e9a24, #1cc51d);
     color: #fff;
-    text-shadow: rgba(0,0,0,0.5) 1px 1px 2px;
+    text-shadow: rgba(0, 0, 0, 0.5) 1px 1px 2px;
 }
 
 .quotenumbertitle {

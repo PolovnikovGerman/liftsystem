@@ -11,13 +11,6 @@
             <?php } ?>
         </select>
     </div>
-<!--    <div class="quoteactionsarea">-->
-<!--        <div class="quoteactionaddorder active" data-quote="--><?php //=$quote_id?><!--">reorder</div>-->
-<!--        <div class="quoteactionduplicate active" data-quote="--><?php //=$quote_id?><!--">requote</div>-->
-<!--        <div class="quoteactionsend active" data-quote="--><?php //=$quote_id?><!--">send</div>-->
-<!--        <div class="quoteactionpdfdoc active" data-quote="--><?php //=$quote_id?><!--">pdf</div>-->
-<!--        <div class="quoteactionsave" data-quote="--><?php //=$quote_id?><!--">save</div>-->
-<!--    </div>-->
     <div class="quoteactionsarea">
         <ul class="quotaactionbuttons-list">
             <li><div class="quotaactionbutton btnreorder">reorder</div></li>

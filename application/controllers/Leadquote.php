@@ -318,7 +318,7 @@ class Leadquote extends MY_Controller
                             'lead_times' => $lead_times,
                             'edit_mode' => $edit_mode,
                         ];
-                        $lead_time = $this->load->view('leadpopup/quote_leadtime_edit', $timeoptions, TRUE);
+                        $lead_time = $this->load->view('leadquotepopup/quote_leadtime_edit', $timeoptions, TRUE);
                     }
                     $mapuse = (empty($this->config->item('google_map_key')) ? 0 : 1);
                     $billaddress = $this->_prepare_billaddress($quotedata);
