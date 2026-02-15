@@ -498,6 +498,7 @@ class Printcalendar_model extends MY_Model
         $this->db->select('oic.order_itemcolor_id, COALESCE(approv.cnt,0) as approv, o.order_rush, o.order_num , oic.item_qty, impr.cntprint, coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0) as prints');
         $this->db->select('ic.color,concat(ii.item_num, \' - \', ii.item_name) as item, coalesce(amnt.fullfill,0) as fulfill');
         $this->db->select('ship.shipped, o.brand, o.order_id, oi.order_item_id, amnt.amount_date, amnt.amount_sum');
+        $this->db->select('o.shipdate as order_shipdate');
         $this->db->from('ts_order_itemcolors oic');
         $this->db->join('ts_order_items oi', 'oi.order_item_id = oic.order_item_id');
         $this->db->join('ts_orders o', 'o.order_id = oi.order_id');
@@ -522,6 +523,13 @@ class Printcalendar_model extends MY_Model
                 $warnings[$idx]['shippedprc'] = round($warning['shipped']/$warning['item_qty']*100, 0);
                 $warnings[$idx]['notfulfill'] = $warning['item_qty'] - $warning['fulfill'];
                 $warnings[$idx]['notshipp'] = $warning['item_qty'] - $warning['shipped'];
+                $ordertype = 'ontime';
+                if ($warnings[$idx]['order_rush']) {
+                    $ordertype = 'rush';
+                } elseif ($warnings[$idx]['order_shipdate'] < strtotime(date('Y-m-d', $printdate))) {
+                    $ordertype = 'late';
+                }
+                $warnings[$idx]['shipclass'] = $ordertype;
                 $idx++;
             }
         }
@@ -552,6 +560,7 @@ class Printcalendar_model extends MY_Model
             $this->db->select('o.order_num , oic.item_qty, impr.cntprint, coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0) as prints,');
             $this->db->select('ic.color , concat(ii.item_num , \' - \', ii.item_name) as item');
             $this->db->select('ship.shipped, o.brand, o.order_id, o.order_blank, oi.order_item_id, oic.print_ready, oi.plates_ready, oic.ink_ready, amnt.amount_date, amnt.amount_sum');
+            $this->db->select('o.shipdate as order_shipdate');
             $this->db->from('ts_order_itemcolors oic');
             $this->db->join('ts_order_items oi', 'oi.order_item_id = oic.order_item_id');
             $this->db->join('ts_orders o', 'o.order_id = oi.order_id');
@@ -578,6 +587,13 @@ class Printcalendar_model extends MY_Model
                 $unsign[$idx]['notshipp'] = $uns['fulfill'] - $uns['shipped']; // $uns['item_qty'] - $uns['shipped'];
                 $unsign[$idx]['class'] = ($unsign[$idx]['fulfillprc']>$unsign[$idx]['shippedprc'] ? 'critical' : 'normal');
                 $unsign[$idx]['platedocs'] = 0;
+                $ordertype = 'ontime';
+                if ($unsign[$idx]['order_rush']) {
+                    $ordertype = 'rush';
+                } elseif ($unsign[$idx]['order_shipdate'] < strtotime(date('Y-m-d', $printdate))) {
+                    $ordertype = 'late';
+                }
+                $unsign[$idx]['shipclass'] = $ordertype;
                 $idx++;
             }
         }
@@ -611,6 +627,7 @@ class Printcalendar_model extends MY_Model
             $this->db->select('o.order_num , oic.item_qty, impr.cntprint, coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0) as prints,');
             $this->db->select('ic.color , concat(ii.item_num , \' - \', ii.item_name) as item');
             $this->db->select('ship.shipped, o.brand, o.order_id, o.order_blank, oi.order_item_id, oic.print_ready, oi.plates_ready, oic.ink_ready, amnt.amount_date, amnt.amount_sum');
+            $this->db->select('o.shipdate as order_shipdate');
             $this->db->from('ts_order_itemcolors oic');
             $this->db->join('ts_order_items oi', 'oi.order_item_id = oic.order_item_id');
             $this->db->join('ts_orders o', 'o.order_id = oi.order_id');
@@ -636,6 +653,13 @@ class Printcalendar_model extends MY_Model
                 $data[$idx]['notshipp'] = $uns['fulfill'] - $uns['shipped']; // $uns['item_qty'] - $uns['shipped'];
                 $data[$idx]['class'] = ($data[$idx]['fulfillprc']>$data[$idx]['shippedprc'] ? 'critical' : 'normal');
                 $data[$idx]['platedocs'] = 0;
+                $ordertype = 'ontime';
+                if ($data[$idx]['order_rush']) {
+                    $ordertype = 'rush';
+                } elseif ($data[$idx]['order_shipdate'] < strtotime(date('Y-m-d', $printdate))) {
+                    $ordertype = 'late';
+                }
+                $data[$idx]['shipclass'] = $ordertype;
                 $idx++;
             }
         }
@@ -678,6 +702,7 @@ class Printcalendar_model extends MY_Model
         $this->db->select('ic.color , concat(ii.item_num , \' - \', ii.item_name) as item');
         $this->db->select('ship.shipped, o.brand, o.order_id, o.order_blank, oi.order_item_id, oic.print_ready');
         $this->db->select('oi.plates_ready, oic.ink_ready, amnt.amount_date, amnt.amount_sum');
+        $this->db->select('o.shipdate as order_shipdate');
         $this->db->from('ts_order_itemcolors oic');
         $this->db->join('ts_order_items oi', 'oi.order_item_id = oic.order_item_id');
         $this->db->join('ts_orders o', 'o.order_id = oi.order_id');
@@ -704,6 +729,13 @@ class Printcalendar_model extends MY_Model
             $assigns[$idx]['notshipp'] = $uns['fulfill'] - $uns['shipped']; // $uns['item_qty'] - $uns['shipped'];
             $assigns[$idx]['class'] = ($assigns[$idx]['fulfillprc']>$assigns[$idx]['shippedprc'] ? 'critical' : 'normal');
             $assigns[$idx]['platedocs'] = 0;
+            $ordertype = 'ontime';
+            if ($assigns[$idx]['order_rush']) {
+                $ordertype = 'rush';
+            } elseif ($assigns[$idx]['order_shipdate'] < strtotime(date('Y-m-d', $printdate))) {
+                $ordertype = 'late';
+            }
+            $assigns[$idx]['shipclass'] = $ordertype;
             $idx++;
         }
         return $assigns;
@@ -816,6 +848,7 @@ class Printcalendar_model extends MY_Model
         $this->db->select('o.print_user as user_id, u.first_name as user_name, o.order_rush, o.order_blank, o.order_id, o.order_num, oic.item_qty');
         $this->db->select('impr.cntprint, coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0) as prints, ic.color, concat(ii.item_num,\' - \', ii.item_name) as item, oa.shipped as printed');
         $this->db->select('oa.kepted, oa.misprint, oa.amount_sum, oa.plates, tr.qty as shipped, tr.trackservice , tr.trackcode');
+        $this->db->select('o.shipdate as order_shipdate');
         $this->db->from('ts_order_itemcolors oic');
         $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');
         $this->db->join('ts_orders o', 'o.order_id = oi.order_id');
@@ -836,6 +869,13 @@ class Printcalendar_model extends MY_Model
         foreach ($history as $uns) {
             $history[$idx]['fulfillprc'] = empty($uns['printed']) ? '0' : round($uns['printed'] / $uns['item_qty'] * 100, 0);
             $history[$idx]['misprintprc'] = empty($uns['printed']) ? 0 : $uns['misprint'] / $uns['printed'] * 100;
+            $ordertype = 'ontime';
+            if ($history[$idx]['order_rush']) {
+                $ordertype = 'rush';
+            } elseif ($history[$idx]['order_shipdate'] < strtotime(date('Y-m-d', $printdate))) {
+                $ordertype = 'late';
+            }
+            $history[$idx]['shipclass'] = $ordertype;
             $idx++;
         }
         // Totals ???

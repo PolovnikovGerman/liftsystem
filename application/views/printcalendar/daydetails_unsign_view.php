@@ -41,12 +41,22 @@
                 &nbsp;
             <?php endif; ?>
         </div>
-        <div class="regltabl-mainblock <?=$neworderview==0 ? 'repeatrow' : 0?>">
+        <div class="regltabl-mainblock <?=$neworderview==0 ? 'repeatrow' : ''?>">
             <?php if ($neworderview==1) :?>
                 <div class="regltabl-td regltabl-brand">
                     <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
                 </div>
-                <div class="regltabl-td regltabl-rush <?=$list['order_rush']==0 ? '' : 'redrush'?>"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
+                <div class="regltabl-td regltabl-rush <?=$list['shipclass']=='rush' ? 'redrush' : ($list['shipclass']=='late' ? 'redlate' : '')?>">
+                    <?php if ($list['shipclass']=='rush') : ?>
+                        <div class="shipclasslabel">RUSH</div>
+                        <div class="shipclassvalue"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                    <?php elseif ($list['shipclass']=='late') : ?>
+                        <div class="shipclasslabel">LATE</div>
+                        <div class="shipclassvalue"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                    <?php else : ?>
+                        <div class="shipclassdate"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                    <?php endif; ?>
+                </div>
                 <div class="regltabl-td regltabl-order"><?=$list['order_num']?></div>
                 <?php $neworderview = 0?>
             <?php endif; ?>
