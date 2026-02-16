@@ -898,7 +898,7 @@
     max-height: 620px;
     overflow-y: scroll;
     scrollbar-width: none;
-    width: 700px;
+    width: 618px; /* 700px; */
 }
 .reschditms-itemline {
     width: 680px;
@@ -915,7 +915,7 @@
     font-weight: 600;
 }
 .reschditms-itemline .imprintitemname {
-    width: 273px;
+    width: 201px; /* 273px; */
     color: #fff;
     font-size: 12px;
     text-align: left;
@@ -930,7 +930,7 @@
     width: 44px;
 }
 .reschditms-itemline .imprintprintsqty {
-    margin-left: 28px;
+    margin-left: 153px; /* 28px; */
     width: 44px;
 }
 .reschditms-tr {
