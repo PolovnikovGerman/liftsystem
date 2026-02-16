@@ -18,8 +18,8 @@
             <div class="reschditms-itemline">
                 <div class="imprintitemname"><?=$calendar['item']?></div>
                 <div class="imprintorders"><?=$calendar['orders']?> <span>orders</span></div>
-                <div class="imprintitemqty"><?=$calendar['items']?></div>
-                <div class="imprintprintsqty"><?=$calendar['prints']?></div>
+                <div class="imprintitemqty"><?=$calendar['items']?> <span>items</span></div>
+                <div class="imprintprintsqty"><?=$calendar['prints']?> <span>prints</span></div>
             </div>
             <?php $lists = $calendar['data']; ?>
             <?php foreach ($lists as $list) : ?>

@@ -927,11 +927,17 @@
     font-weight: normal;
 }
 .reschditms-itemline .imprintitemqty {
-    width: 44px;
+    width: 78px;
+}
+.reschditms-itemline .imprintitemqty span {
+    font-weight: normal;
 }
 .reschditms-itemline .imprintprintsqty {
-    margin-left: 153px; /* 28px; */
-    width: 44px;
+    margin-left: 120px; /* 28px; */
+    width: 78px;
+}
+.reschditms-itemline .imprintprintsqty span {
+    font-weight: normal;
 }
 .reschditms-tr {
     height: 20px;
