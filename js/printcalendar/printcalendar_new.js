@@ -248,16 +248,25 @@ function init_reschedule_management() {
     });
     $(".reschdltabl-order").unbind('click').click(function (){
         var order = $(this).data('order');
-        if (order!=='') {
+        if (typeof order === "undefined") {
+        } else {
             var brand = $(this).data('brand');
             show_printschedule_order(order, brand);
         }
     });
     $(".reschditms-order").unbind('click').click(function (){
         var order = $(this).data('order');
-        if (order!=='') {
+        if (typeof order === "undefined") {
+        } else {
             var brand = $(this).data('brand');
             show_printschedule_order(order, brand);
+        }
+    });
+    $(".iconart").unbind('click').click(function (){
+        var order = $(this).data('order');
+        if (typeof order === "undefined") {
+        } else {
+            show_approveddocs(order);
         }
     });
 }
@@ -587,23 +596,34 @@ function init_dailydetails_manage() {
     // Open Order data
     $(".warntabl-order").unbind('click').click(function (){
         var order = $(this).data('order');
-        if (order!='') {
+        if (typeof order === "undefined") {
+        } else {
             var brand = $(this).data('brand');
-            show_printschedule_order(order,brand);
+            show_printschedule_order(order, brand);
         }
     });
     $(".regltabl-order").unbind('click').click(function (){
         var order = $(this).data('order');
-        if (order!='') {
+        if (typeof order === "undefined") {
+        } else {
             var brand = $(this).data('brand');
-            show_printschedule_order(order,brand);
+            show_printschedule_order(order, brand);
         }
     });
     $(".histrtabl-order").unbind('click').click(function (){
         var order = $(this).data('order');
-        if (order!='') {
+        if (typeof order === "undefined") {
+        } else {
             var brand = $(this).data('brand');
-            show_printschedule_order(order,brand);
+            show_printschedule_order(order, brand);
+        }
+    });
+    // Open approved Doc
+    $(".iconart").unbind('click').click(function (){
+        var order = $(this).data('order');
+        if (typeof order === "undefined") {
+        } else {
+            show_approveddocs(order);
         }
     });
 }
@@ -827,5 +847,25 @@ function show_printschedule_order(order, brand) {
             show_error(response);
         }
     },'json');
+}
 
+function show_approveddocs(order) {
+    var url="/printcalendar/order_showapprove";
+    var params = new Array();
+    params.push({name: 'order', value: order});
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            var numdocs = parseInt(response.data.numdocs);
+            if (numdocs==0) {
+                alert('Order '+response.data.ordernum+' is blank');
+            } else {
+                for (let i = 0; i < numdocs; i++) {
+                    var link = response.data.links[i];
+                    window.open(link, response.data.source[i], 'width=600, height=800,toolbar=1')
+                }
+            }
+        } else {
+            show_error(response);
+        }
+    },'json');
 }

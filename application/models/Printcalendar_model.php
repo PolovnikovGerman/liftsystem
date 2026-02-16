@@ -1794,4 +1794,24 @@ class Printcalendar_model extends MY_Model
             'week' => $weeknum,
         ];
     }
+
+    public function order_approvedocs($order_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Order Not Exist'];
+        $orderdat = $this->db->select('order_id, order_num, order_blank')->from('ts_orders')->where('order_id', $order_id)->get()->row_array();
+        if (ifset($orderdat,'order_id',0)==$order_id) {
+            $out['ordernum'] = $orderdat['order_num'];
+            // Get approved docs
+            $this->db->select('p.source_name, p.proof_name')->from('ts_artworks a')->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+            $this->db->where('a.order_id', $order_id)->where('p.approved > ',0);
+            $docs = $this->db->get()->result_array();
+            if (count($docs)==0 && $orderdat['order_blank']==0) {
+                $out['msg'] = 'Order Not Approved';
+            } else {
+                $out['result'] = $this->success_result;
+                $out['docs'] = $docs;
+            }
+        }
+        return $out;
+    }
 }
