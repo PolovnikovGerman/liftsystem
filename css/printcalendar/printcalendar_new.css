@@ -727,6 +727,9 @@
 .reschdltabl-mainblock {
     border: 1px solid #888888;
 }
+.reschdltabl-mainblock.repeatrow {
+    margin-left: 91px;
+}
 .reschdltabl-header .reschdltabl-mainblock {
     padding-right: 10px;
     background: #dbdbdb;
