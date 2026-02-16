@@ -1001,6 +1001,9 @@
     /*font-size: 12px;*/
     font-weight: 600;
 }
+.reschditms-tr .reschditms-order {
+    cursor: pointer;
+}
 .reschditms-date {
     width: 73px;
     font-weight: 600;
@@ -1859,6 +1862,9 @@
     width: 41px;
     color: #0000ff;
     font-weight: 600;
+}
+.regltabl-tr .warntabl-order {
+    cursor: pointer;
 }
 .warntabl-header .warntabl-order {
     color: #000 !important;

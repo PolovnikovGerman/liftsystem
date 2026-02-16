@@ -40,7 +40,7 @@
                         </div>
                         <div class="reschditms-td reschditms-rush <?=$list['order_rush']==1 ? 'redrush' : ''?>"><?=$list['order_rush']==1 ? 'RUSH' : '&nbsp;'?></div>
                         <div class="reschditms-td reschditms-date <?=$list['dateclass']?>"><?=date('m/d/Y', $list['print_date'])?></div>
-                        <div class="reschditms-td reschditms-order"><?=$list['order_num']?></div>
+                        <div class="reschditms-td reschditms-order" data-order="<?=$list['order_id']?>" data-brand="<?=$list['brand']?>"><?=$list['order_num']?></div>
                         <div class="reschditms-td reschditms-items"><?=QTYOutput($list['item_qty'])?></div>
                         <div class="reschditms-td reschditms-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                         <div class="reschditms-td reschditms-prints"><?=QTYOutput($list['prints'])?></div>

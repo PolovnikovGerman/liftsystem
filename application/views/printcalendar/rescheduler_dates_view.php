@@ -36,7 +36,7 @@
                                 <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
                             </div>
                             <div class="reschdltabl-td reschdltabl-rush <?=$list['order_rush']==0 ? '' : 'redrush'?>"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
-                            <div class="reschdltabl-td reschdltabl-order" data-order="<?=$list['order_id']?>"><?=$list['order_num']?></div>
+                            <div class="reschdltabl-td reschdltabl-order" data-order="<?=$list['order_id']?>" data-brand="<?=$list['brand']?>"><?=$list['order_num']?></div>
                             <div class="reschdltabl-td reschdltabl-items"><?=QTYOutput($list['item_qty'])?></div>
                             <div class="reschdltabl-td reschdltabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                             <div class="reschdltabl-td reschdltabl-prints"><?=QTYOutput($list['prints'])?></div>

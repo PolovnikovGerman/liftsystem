@@ -67,7 +67,7 @@
                         <div class="shipclassdate"><?=date('m/d/y', $list['order_shipdate'])?></div>
                     <?php endif; ?>
                 </div>
-                    <div class="warntabl-td warntabl-order" data-order="<?= $list['order_id'] ?>">
+                    <div class="warntabl-td warntabl-order" data-order="<?= $list['order_id'] ?>" data-brand="<?=$list['brand']?>">
                         <?php if ($order_id!==$list['order_id']) : ?>
                             <?= $list['order_num'] ?>
                             <?php $order_id = $list['order_id']; ?>

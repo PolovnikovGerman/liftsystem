@@ -245,7 +245,21 @@ function init_reschedule_management() {
                 }
             },'json');
         }
-    })
+    });
+    $(".reschdltabl-order").unbind('click').click(function (){
+        var order = $(this).data('order');
+        if (order!=='') {
+            var brand = $(this).data('brand');
+            show_printschedule_order(order, brand);
+        }
+    });
+    $(".reschditms-order").unbind('click').click(function (){
+        var order = $(this).data('order');
+        if (order!=='') {
+            var brand = $(this).data('brand');
+            show_printschedule_order(order, brand);
+        }
+    });
 }
 
 // Week Calendar
@@ -570,6 +584,28 @@ function init_dailydetails_manage() {
         copyElementToClipboard(element);
         // $(element).show();
     });
+    // Open Order data
+    $(".warntabl-order").unbind('click').click(function (){
+        var order = $(this).data('order');
+        if (order!='') {
+            var brand = $(this).data('brand');
+            show_printschedule_order(order,brand);
+        }
+    });
+    $(".regltabl-order").unbind('click').click(function (){
+        var order = $(this).data('order');
+        if (order!='') {
+            var brand = $(this).data('brand');
+            show_printschedule_order(order,brand);
+        }
+    });
+    $(".histrtabl-order").unbind('click').click(function (){
+        var order = $(this).data('order');
+        if (order!='') {
+            var brand = $(this).data('brand');
+            show_printschedule_order(order,brand);
+        }
+    });
 }
 
 // Assign Printer to Order
@@ -762,4 +798,34 @@ function dropHandler(ev) {
         // Income block empty
         console.log('Income block empty');
     }
+}
+
+function show_printschedule_order(order, brand) {
+    var callpage = 'printscheduler';
+    var url="/leadorder/leadorder_change";
+    var params = new Array();
+    params.push({name: 'order', value: order});
+    params.push({name: 'page', value: callpage});
+    params.push({name: 'edit', value: 0});
+    params.push({name: 'brand', value: brand});
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#artModalLabel").empty().html(response.data.header);
+            $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            $("#artModal").find('div.modal-dialog').css('width','1004px');
+            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
+            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
+            if (parseInt(response.data.cancelorder)===1) {
+                $("#artModal").find('div.modal-header').addClass('cancelorder');
+            } else {
+                $("#artModal").find('div.modal-header').removeClass('cancelorder');
+            }
+            $("#editbuttonarea").css('visibility','hidden');
+            $(".block_4").css('visibility','hidden');
+            navigation_init();
+        } else {
+            show_error(response);
+        }
+    },'json');
+
 }
