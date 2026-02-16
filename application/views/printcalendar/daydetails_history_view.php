@@ -66,7 +66,7 @@
                             <div class="shipclassdate"><?=date('m/d/y', $list['order_shipdate'])?></div>
                         <?php endif; ?>
                     </div>
-                    <div class="histrtabl-td histrtabl-order">
+                    <div class="histrtabl-td histrtabl-order" data-order="<?=$list['order_id']?>" data-brand="<?=$list['brand']?>">
                         <?php if ($list['order_id']==$order_id) : ?>
                             --
                         <?php else : ?>

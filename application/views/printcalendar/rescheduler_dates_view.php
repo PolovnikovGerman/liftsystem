@@ -19,7 +19,13 @@
                 <div class="reschdltabl-td reschdltabl-inkcolor">Ink Color/s</div>
             </div>
             <div class="dayschedulearea" data-printdata="lateorders">
+                <?php $order_id = 0;  ?>
+                <?php $neworderview = 0; ?>
                 <?php foreach ($lateorders as $list) : ?>
+                    <?php if ($list['order_id']!=$order_id) : ?>
+                        <?php $order_id=$list['order_id'];?>
+                        <?php $neworderview=1; ?>
+                    <?php endif; ?>
                     <div class="reschdltabl-tr" id="shedulord_<?=$list['order_item_id']?>" draggable="true" ondragstart="dragstartHandler(event)">
                         <div class="reschdltabl-daylatedata"><?=$list['diffdays']?> d</div>
                         <div class="reschdltabl-apprblock lateordershead">
@@ -31,12 +37,25 @@
                             <?php endif; ?>
                             </div>
                         </div>
-                        <div class="reschdltabl-mainblock">
-                            <div class="reschdltabl-td reschdltabl-brand">
-                                <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
-                            </div>
-                            <div class="reschdltabl-td reschdltabl-rush <?=$list['order_rush']==0 ? '' : 'redrush'?>"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
-                            <div class="reschdltabl-td reschdltabl-order" data-order="<?=$list['order_id']?>"><?=$list['order_num']?></div>
+                        <div class="reschdltabl-mainblock <?=$neworderview==0 ? 'repeatrow' : ''?>">
+                            <?php if ($neworderview==1) :?>
+                                <div class="reschdltabl-td reschdltabl-brand">
+                                    <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
+                                </div>
+                                <div class="reschdltabl-td reschdltabl-rush <?=$list['shipclass']=='rush' ? 'redrush' : ($list['shipclass']=='late' ? 'redlate' : '')?>">
+                                    <?php if ($list['shipclass']=='rush') : ?>
+                                        <div class="shipclasslabel">RUSH</div>
+                                        <div class="shipclassvalue"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                                    <?php elseif ($list['shipclass']=='late') : ?>
+                                        <div class="shipclasslabel">LATE</div>
+                                        <div class="shipclassvalue"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                                    <?php else : ?>
+                                        <div class="shipclassdate"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="reschdltabl-td reschdltabl-order" data-order="<?=$list['order_id']?>" data-brand="<?=$list['brand']?>"><?=$list['order_num']?></div>
+                                <?php $neworderview = 0; ?>
+                            <?php endif; ?>
                             <div class="reschdltabl-td reschdltabl-items"><?=QTYOutput($list['item_qty'])?></div>
                             <div class="reschdltabl-td reschdltabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                             <div class="reschdltabl-td reschdltabl-prints"><?=QTYOutput($list['prints'])?></div>
@@ -70,7 +89,13 @@
                     <div class="rightsideviewarea"  id="printday_<?=$calendar['print_date']?>" ondrop="dropHandler(event)" ondragover="dragoverHandler(event)">
                         <div class="ontimesection-date"><?=date('D - M, j, Y', $calendar['print_date']);?></div>
                         <div class="dayschedulearea" data-printdata="<?=$calendar['print_date']?>">
+                            <?php $order_id = 0;  ?>
+                            <?php $neworderview = 0; ?>
                             <?php foreach ($calendar['data'] as $list) : ?>
+                                <?php if ($list['order_id']!=$order_id) : ?>
+                                    <?php $order_id=$list['order_id'];?>
+                                    <?php $neworderview=1; ?>
+                                <?php endif; ?>
                                 <div class="reschdltabl-tr" id="shedulord_<?=$list['order_item_id']?>" draggable="true" ondragstart="dragstartHandler(event)">
                                     <div class="reschdltabl-apprblock">
                                         <div class="reschdltabl-td reschdltabl-prcful <?=$list['class']=='critical' ? 'peach' : ''?>"><?=$list['fulfillprc']?>%</div>
@@ -81,12 +106,25 @@
                                             <?php endif; ?>
                                         </div>
                                     </div>
-                                    <div class="reschdltabl-mainblock">
-                                        <div class="reschdltabl-td reschdltabl-brand">
-                                            <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
-                                        </div>
-                                        <div class="reschdltabl-td reschdltabl-rush <?=$list['order_rush']==0 ? '' : 'redrush'?>"><?=$list['order_rush']==0 ? '&nbsp;' : 'RUSH'?></div>
-                                        <div class="reschdltabl-td reschdltabl-order" data-order="<?=$list['order_id']?>"><?=$list['order_num']?></div>
+                                    <div class="reschdltabl-mainblock <?=$neworderview==0 ? 'repeatrow' : ''?>">
+                                        <?php if ($neworderview==1) :?>
+                                            <div class="reschdltabl-td reschdltabl-brand">
+                                                <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
+                                            </div>
+                                            <div class="reschdltabl-td reschdltabl-rush <?=$list['shipclass']=='rush' ? 'redrush' : ($list['shipclass']=='late' ? 'redlate' : '')?>">
+                                                <?php if ($list['shipclass']=='rush') : ?>
+                                                    <div class="shipclasslabel">RUSH</div>
+                                                    <div class="shipclassvalue"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                                                <?php elseif ($list['shipclass']=='late') : ?>
+                                                    <div class="shipclasslabel">LATE</div>
+                                                    <div class="shipclassvalue"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                                                <?php else : ?>
+                                                    <div class="shipclassdate"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="reschdltabl-td reschdltabl-order" data-order="<?=$list['order_id']?>"><?=$list['order_num']?></div>
+                                        <?php $neworderview = 0; ?>
+                                        <?php endif; ?>
                                         <div class="reschdltabl-td reschdltabl-items"><?=QTYOutput($list['item_qty'])?></div>
                                         <div class="reschdltabl-td reschdltabl-imp"><?=$list['cntprint']?></div>
                                         <div class="reschdltabl-td reschdltabl-prints"><?=QTYOutput($list['prints'])?></div>

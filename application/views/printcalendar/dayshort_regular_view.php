@@ -52,7 +52,7 @@
                                 <div class="shipclassdate"><?=date('m/d/y', $list['order_shipdate'])?></div>
                             <?php endif; ?>
                         </div>
-                        <div class="regltabl-td regltabl-order" data-order="<?=$list['order_id']?>"><?=$list['order_num']?></div>
+                        <div class="regltabl-td regltabl-order" data-order="<?=$list['order_id']?>" data-brand="<?=$list['brand']?>"><?=$list['order_num']?></div>
                         <?php $neworderview = 0?>
                     <?php endif; ?>
                     <div class="regltabl-td regltabl-items"><?=QTYOutput($list['item_qty'])?></div>

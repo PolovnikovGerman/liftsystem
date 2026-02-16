@@ -5,12 +5,12 @@
         <div class="reschditms-td reschditms-approval">Approval</div>
         <div class="reschditms-td reschditms-brand">&nbsp;</div>
         <div class="reschditms-td reschditms-rush">&nbsp;</div>
-        <div class="reschditms-td reschditms-date">Date</div>
+<!--        <div class="reschditms-td reschditms-date">Date</div>-->
         <div class="reschditms-td reschditms-order">Order#</div>
         <div class="reschditms-td reschditms-items">#Items</div>
+        <div class="reschditms-td reschditms-itmcolor">Item Color/s</div>
         <div class="reschditms-td reschditms-imp">Imp</div>
         <div class="reschditms-td reschditms-prints">#Prints</div>
-        <div class="reschditms-td reschditms-itmcolor">Item Color/s</div>
         <div class="reschditms-td reschditms-inkcolor">Ink Color/s</div>
     </div>
     <div class="reschditms-body" id="reschditms-body">
@@ -38,13 +38,23 @@
                         <div class="reschditms-td reschditms-brand">
                             <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
                         </div>
-                        <div class="reschditms-td reschditms-rush <?=$list['order_rush']==1 ? 'redrush' : ''?>"><?=$list['order_rush']==1 ? 'RUSH' : '&nbsp;'?></div>
-                        <div class="reschditms-td reschditms-date <?=$list['dateclass']?>"><?=date('m/d/Y', $list['print_date'])?></div>
-                        <div class="reschditms-td reschditms-order"><?=$list['order_num']?></div>
+                        <div class="reschditms-td reschditms-rush <?=$list['shipclass']=='rush' ? 'redrush' : ($list['shipclass']=='late' ? 'redlate' : '')?>">
+                            <?php if ($list['shipclass']=='rush') : ?>
+                                <div class="shipclasslabel">RUSH</div>
+                                <div class="shipclassvalue"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                            <?php elseif ($list['shipclass']=='late') : ?>
+                                <div class="shipclasslabel">LATE</div>
+                                <div class="shipclassvalue"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                            <?php else : ?>
+                                <div class="shipclassdate"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                            <?php endif; ?>
+                        </div>
+<!--                        <div class="reschditms-td reschditms-date --><?php //=$list['dateclass']?><!--">--><?php //=date('m/d/Y', $list['print_date'])?><!--</div>-->
+                        <div class="reschditms-td reschditms-order" data-order="<?=$list['order_id']?>" data-brand="<?=$list['brand']?>"><?=$list['order_num']?></div>
                         <div class="reschditms-td reschditms-items"><?=QTYOutput($list['item_qty'])?></div>
+                        <div class="reschditms-td reschditms-itmcolor truncateoverflowtext"><?=$list['color']?></div>
                         <div class="reschditms-td reschditms-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                         <div class="reschditms-td reschditms-prints"><?=QTYOutput($list['prints'])?></div>
-                        <div class="reschditms-td reschditms-itmcolor truncateoverflowtext"><?=$list['color']?></div>
                         <div class="reschditms-td reschditms-inkcolor  truncateoverflowtext">&nbsp;</div>
                     </div>
                 </div>
