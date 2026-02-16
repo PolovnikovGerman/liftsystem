@@ -48,7 +48,7 @@
                 <div class="warntabl-td warntabl-approval <?= $list['approv'] == 0 ? 'notapprv' : '' ?>">
                     <?= $list['approv'] == 0 ? 'Not Approved' : 'Approved' ?>
                     <?php if ($list['approv'] > 0) : ?>
-                        <span class="iconart"><i class="fa fa-search" aria-hidden="true"></i></span>
+                        <span class="iconart" data-order="<?=$list['order_id']?>"><i class="fa fa-search" aria-hidden="true"></i></span>
                     <?php endif; ?>
                 </div>
             </div>

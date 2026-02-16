@@ -758,4 +758,31 @@ class Printcalendar extends MY_Controller
         }
         show_404();
     }
+
+    public function order_showapprove()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Order Not Found';
+            $postdata = $this->input->post();
+            $order_id = ifset($postdata, 'order',0);
+            if (!empty($order_id)) {
+                $res = $this->printcalendar_model->order_approvedocs($order_id);
+                $error = $res['msg'];
+                if ($res['result'] == $this->success_result) {
+                    $error = '';
+                    $mdata['ordernum'] = $res['ordernum'];
+                    $docs = $res['docs'];
+                    $mdata['numdocs'] = count($docs);
+                    $mdata['links'] = $mdata['source'] = [];
+                    foreach ($docs as $doc) {
+                        array_push($mdata['links'], $doc['proof_name']);
+                        array_push($mdata['source'], $doc['source_name']);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }
