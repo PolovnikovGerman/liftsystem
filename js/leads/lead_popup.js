@@ -395,7 +395,7 @@ function init_leadpopupedit() {
                 if (response.errors=='') {
                     $("#loader").hide();
                     $("#leadformModal").modal('hide');
-                    artproof_lead(response.data.proof_id,'leadsview');
+                    artproof_lead(response.data.proof_id,'leadspopup');
                 } else {
                     $("#loader").hide();
                     show_error(response);
@@ -414,7 +414,7 @@ function init_leadpopupedit() {
             if (response.errors=='') {
                 $("#loader").hide();
                 $("#leadformModal").modal('hide');
-                artproof_lead(proof, 'leadsview');
+                artproof_lead(proof, 'leadspopup');
             } else {
                 $("#loader").hide();
                 show_error(response);

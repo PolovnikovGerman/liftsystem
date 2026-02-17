@@ -115,6 +115,8 @@ function save_art() {
                 initProofPagination();
             } else if (callpage=='leadsview') {
                 init_proofrequest_interest();
+            // } else if (callpage=='leadspopup') {
+            //     edit_lead(response.data.lead);
             }
         } else {
             show_error(response);
