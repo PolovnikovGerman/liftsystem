@@ -1,5 +1,6 @@
 <div class="leadtopreps-box">
     <div class="repsusers">
+        <?php $numpp = 0; ?>
         <?php foreach ($leadusers as $leaduser) : ?>
         <div class="repsuserbox">
             <div class="repsuserbox-icn" data-usr="<?=$leaduser['leaduser_id']?>" data-usrname="<?=$leaduser['user_leadname']?>">
@@ -7,7 +8,14 @@
             </div>
             <div class="repsuserbox-name"><?=$leaduser['user_leadname']?></div>
         </div>
+        <?php $numpp++; ?>
+        <?php if ($numpp >= 2) : ?>
+            <?php break;?>
+        <?php endif; ?>
         <?php endforeach; ?>
+        <?php if ($replicqty > 2) : ?>
+            <div class="repsuserbox-other">+<?=$replicqty-2?></div>
+        <?php endif; ?>
     </div>
     <?php if ($added==1) : ?>
     <div class="leadtopreps-addbtn">+</div>

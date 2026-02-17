@@ -82,6 +82,7 @@ class Leadmanagement extends MY_Controller
                 $replica_options = [
                     'leadusers' => $lead_usr,
                     'added' => 0,
+                    'replicqty' => count($lead_usr),
                 ];
                 // Get list of users for assign
                 $this->load->model('user_model');
@@ -1281,6 +1282,7 @@ class Leadmanagement extends MY_Controller
                         $usrrepl=$this->user_model->get_user_leadreplicas($active);
                         $replica_options = [
                             'leadusers' => $res['users'],
+                            'replicqty' => count($res['users']),
                             'added' => 1,
                             'users' => $usrrepl,
                         ];
@@ -1313,10 +1315,16 @@ class Leadmanagement extends MY_Controller
                         $usrrepl=$this->user_model->get_user_leadreplicas($active);
                         $replica_options = [
                             'leadusers' => $res['users'],
+                            'replicqty' => count($res['users']),
                             'added' => 1,
                             'users' => $usrrepl,
                         ];
-                        $mdata['content'] = $this->load->view('leadpopupnew/assigned_lead_view', $replica_options, true);
+                        if (count($res['users']) > 0) {
+                            $mdata['content'] = $this->load->view('leadpopupnew/assigned_lead_view', $replica_options, true);
+                        } else {
+                            $mdata['content'] = $this->load->view('leadpopupnew/unassigned_lead_view', $replica_options, true);
+                        }
+
                     }
                 }
             }

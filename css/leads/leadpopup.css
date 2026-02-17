@@ -267,7 +267,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 }
 .leadtopreps-box {
     position: relative;
-    width: 198px; /* 131px; */
+    /*width: 198px;*/
     height: 21px;
     border: 1px solid #585858;
     background: #d9d8c5;
@@ -298,10 +298,23 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     float: right !important;
 }
 .repsusers {
-    width: 170px; /* 105px; */
+    /*width: 170px;*/
+    padding-right: 6px;
 }
 .repsuserbox {
     margin-right: 6px;
+}
+.repsuserbox-other {
+    width: 18px;
+    background: #0f5715;
+    color: #ffffff;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    height: 15px;
+    margin-top: 2px;
+    line-height: 15px;
+    cursor: pointer;
 }
 .repsuserbox:last-child {
     margin-right: 0;
