@@ -246,6 +246,13 @@ function init_leadpopupedit() {
         $(".leadtopassign-popup").show();
         init_leadpopup_assign();
     });
+    // Open Other replicas
+    $(".repsuserbox-other").unbind('click').click(function (){
+        $(".leadotherreplica-popup").show();
+        $(".leadusrreplicacancel").unbind('click').click(function(){
+            $(".leadotherreplica-popup").hide();
+        });
+    });
     // Delete replica
     $(".repsuserbox-icn").unbind('click').click(function (){
         var leadname = $(this).data('usrname');
