@@ -351,7 +351,8 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 }
 .lead-itemdescr {
     width: 283px;
-    height: 81px;
+    /*height: 81px;*/
+    height: auto;
     background: #d9d8c5;
     border: 1px solid #86856b;
     border-radius: 5px;

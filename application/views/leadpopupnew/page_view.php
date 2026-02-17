@@ -9,11 +9,11 @@
                 <div class="leadnumber">Lead: <span>#L<?=$lead['lead_number']?></span></div>
                 <div class="leadtopstatus">
                     <label>Status:</label>
-                    <select id="lead_type" class="leadmainedit leadtopstatusselect" data-fld="lead_type">
-                        <option data-content="<span class='leadtopstatus-star'><i class='fa fa-star' aria-hidden='true'></i></span> Priority" value="1" <?=$lead['lead_type']==1 ? 'selected="selected"' : ''?>> Priority</option>
-                        <option value="2" <?=$lead['lead_type']==2 ? 'selected="selected"' : ''?>>Open</option>
-                        <option value="4" <?=$lead['lead_type']==4 ? 'selected="selected"' : ''?>>Closed</option>
-                        <option value="3" <?=$lead['lead_type']==3 ? 'selected="selected"' : ''?>>Dormant</option>
+                    <select id="lead_type" class="leadtopstatusselect" data-fld="lead_type">
+                        <option data-content="<span class='leadtopstatus-star'><i class='fa fa-star' aria-hidden='true'></i></span> Priority" value="1"> Priority</option>
+                        <option data-content="Open" value="2">Open</option>
+                        <option data-content="Closed" value="4">Closed</option>
+                        <option data-content="Dormant" value="3">Dormant</option>
                     </select>
                 </div>
                 <div class="leadtopreps">
