@@ -8267,6 +8267,10 @@ Class Orders_model extends MY_Model
             usort($owns, function ($item1, $item2) {
                 return $item1['batch_due'] <=> $item2['batch_due'];
             });
+        } elseif ($ownsort=='artapprove') {
+            usort($owns, function ($item1, $item2) {
+                return $item2['approved'] <=> $item1['approved'];
+            });
         } else {
             usort($owns, function ($item1, $item2) {
                 return $item2['balance'] <=> $item1['balance'];

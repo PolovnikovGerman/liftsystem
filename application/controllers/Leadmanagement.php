@@ -82,6 +82,7 @@ class Leadmanagement extends MY_Controller
                 $replica_options = [
                     'leadusers' => $lead_usr,
                     'added' => 0,
+                    'replicqty' => count($lead_usr),
                 ];
                 // Get list of users for assign
                 $this->load->model('user_model');
@@ -784,12 +785,15 @@ class Leadmanagement extends MY_Controller
             $postdata = $this->input->post();
             $session_id = ifset($postdata,'lead','unkn');
             $leaddata = usersession($session_id);
+            $closesession = 0;
             if (!empty($leaddata)) {
-                $res = $this->leads_model->save_leadpopup($leaddata, $this->USR_ID, $session_id);
+                $res = $this->leads_model->save_leadpopup($leaddata, $this->USR_ID, $session_id, $closesession);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $lead_id=$res['lead_id'];
                     $mdata['lead_id']=$res['lead_id'];
+                    $lead_history = $this->leads_model->get_lead_history($res['lead_id']);
+                    $mdata['history_view'] = $this->load->view('leadpopupnew/history_view', ['lead_history'=>$lead_history], true);
                     $leadres=$this->leads_model->get_lead($lead_id);
                     $error = $leadres['msg'];
                     if ($leadres['result']==$this->success_result) {
@@ -801,38 +805,18 @@ class Leadmanagement extends MY_Controller
                         if ($resrequest['result']==$this->success_result) {
                             $error = '';
                             $mdata['proof_id'] = $resrequest['email_id'];
+                            // Change Session data
+                            $this->load->model('artproof_model');
+                            $proofarts = $this->artproof_model->get_lead_proofs($lead_id);
+                            $leaddata = usersession($session_id);
+                            $leaddata['lead_proofs'] = $proofarts;
+                            usersession($session_id, $leaddata);
+                            $mdata['proofarts_view'] = $this->load->view('leadpopupnew/proofart_list_view', ['proofs' => $proofarts], true);
                         }
                     }
-                    // usersession('leaddata',$lead_data);
                 }
             }
             $this->ajaxResponse($mdata,$error);
-//            $leadpost=$this->input->post();
-//            /* Get Tasks & user array */
-//            $lead_tasks=array();
-//            $session_id=$leadpost['session_id'];
-//            $lead_replic=usersession($session_id);
-//            $lead_usr=array();
-//            foreach ($lead_replic as $row) {
-//                array_push($lead_usr, $row['user_id']);
-//            }
-//            $usr_id=$this->USR_ID;
-//            $res=$this->leads_model->save_leads($lead_usr,$lead_tasks,$leadpost,$usr_id);
-//            $error=$res['msg'];
-//            if ($res['result']!=$this->error_result) {
-//                $error = '';
-//                $lead_id=$res['result'];
-//                $mdata['lead_id']=$res['result'];
-//                // Get new value of Lead
-//                $lead_data=$this->leads_model->get_lead($lead_id);
-//                usersession('leaddata',$lead_data);
-//                $resrequest=$this->leads_model->add_proof_request($lead_data, $usr_id, $this->USER_NAME);
-//                $error=$resrequest['msg'];
-//                if ($resrequest['result']==$this->success_result) {
-//                    $error = '';
-//                    $mdata['email_id']=$resrequest['email_id'];
-//                }
-//            }
         }
         show_404();
     }
@@ -1132,12 +1116,17 @@ class Leadmanagement extends MY_Controller
             $session_id = ifset($postdata, 'lead', 'Unkn');
             $leaddata = usersession($session_id);
             if (!empty($leaddata)) {
-                $res = $this->leads_model->save_leadpopup($leaddata, $this->USR_ID, $session_id);
+                $closesession = ifset($postdata, 'closesession', 0);
+                $res = $this->leads_model->save_leadpopup($leaddata, $this->USR_ID, $session_id, $closesession);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error='';
                     $mdata['lead_id'] = $res['lead_id'];
                     $mdata['lead_number'] = $res['lead_number'];
+                    if ($closesession==0) {
+                        $lead_history = $this->leads_model->get_lead_history($res['lead_id']);
+                        $mdata['history_view'] = $this->load->view('leadpopupnew/history_view', ['lead_history'=>$lead_history], true);
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -1293,6 +1282,7 @@ class Leadmanagement extends MY_Controller
                         $usrrepl=$this->user_model->get_user_leadreplicas($active);
                         $replica_options = [
                             'leadusers' => $res['users'],
+                            'replicqty' => count($res['users']),
                             'added' => 1,
                             'users' => $usrrepl,
                         ];
@@ -1325,10 +1315,16 @@ class Leadmanagement extends MY_Controller
                         $usrrepl=$this->user_model->get_user_leadreplicas($active);
                         $replica_options = [
                             'leadusers' => $res['users'],
+                            'replicqty' => count($res['users']),
                             'added' => 1,
                             'users' => $usrrepl,
                         ];
-                        $mdata['content'] = $this->load->view('leadpopupnew/assigned_lead_view', $replica_options, true);
+                        if (count($res['users']) > 0) {
+                            $mdata['content'] = $this->load->view('leadpopupnew/assigned_lead_view', $replica_options, true);
+                        } else {
+                            $mdata['content'] = $this->load->view('leadpopupnew/unassigned_lead_view', $replica_options, true);
+                        }
+
                     }
                 }
             }

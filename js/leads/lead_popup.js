@@ -89,6 +89,8 @@ function init_leadpopupcontent(){
             }
         }
     });
+    // Select Picker
+    $("#lead_type").selectpicker();
     // Scrolls
     new SimpleBar(document.getElementById('list-leadhistory'), { autoHide: false });
     new SimpleBar(document.getElementById('leadpopupquotetabl-body'), { autoHide: false });
@@ -171,8 +173,9 @@ function init_leadpopupedit() {
     });
     $("select.leadaddressedit").unbind('change').change(function (){
         var params = new Array();
+        var field_name = $(this).data('fld');
         params.push({name: 'lead', value: $("#leadeditid").val()});
-        params.push({name: 'field_name', value: $(this).data('fld')});
+        params.push({name: 'field_name', value: field_name});
         params.push({name: 'newval', value: $(this).val()});
         var url = mainurl+"/lead_address_change";
         $.post(url, params, function (response){
@@ -394,8 +397,11 @@ function init_leadpopupedit() {
             $.post(url, params, function (response){
                 if (response.errors=='') {
                     $("#loader").hide();
-                    $("#leadformModal").modal('hide');
-                    artproof_lead(response.data.proof_id,'leadsview');
+                    // $("#leadformModal").modal('hide');
+                    $("#list-leadhistory").empty().html(response.data.history_view);
+                    $("textarea[data-fld='newhistorymsg']").val('');
+                    $("#leadpopupquotetabl-body").empty().html(response.data.proofarts_view);
+                    artproof_lead(response.data.proof_id,'leadspopup');
                 } else {
                     $("#loader").hide();
                     show_error(response);
@@ -413,8 +419,11 @@ function init_leadpopupedit() {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $("#loader").hide();
-                $("#leadformModal").modal('hide');
-                artproof_lead(proof, 'leadsview');
+                // Change history and message
+                $("#list-leadhistory").empty().html(response.data.history_view);
+                $("textarea[data-fld='newhistorymsg']").val('');
+                // $("#leadformModal").modal('hide');
+                artproof_lead(proof, 'leadspopup');
             } else {
                 $("#loader").hide();
                 show_error(response);
@@ -425,6 +434,7 @@ function init_leadpopupedit() {
     $(".lead-savebtn").unbind('click').click(function (){
         var params = new Array();
         params.push({name: 'lead', value: $("#leadeditid").val()});
+        params.push({name: 'closesession', value: 1});
         var url = mainurl+'/lead_popup_save';
         $("#loader").show();
         $.post(url, params, function (response){

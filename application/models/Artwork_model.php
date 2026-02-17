@@ -4669,4 +4669,9 @@ Class Artwork_model extends MY_Model
         }
         return $out;
     }
+
+    public function get_lead_email($email_id)
+    {
+        return $this->db->select('*')->from('ts_lead_emails')->where('email_id', $email_id)->get()->row_array();
+    }
 }
