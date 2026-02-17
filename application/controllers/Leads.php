@@ -71,6 +71,8 @@ class Leads extends My_Controller {
                 $head['styles'][]=array('style'=>'/css/leads/leadsview_rebrand.css');
                 $head['scripts'][]=array('src'=>'/js/leads/leadsview_rebrand.js');
                 // $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
+                $head['styles'][] = array('style' => 'https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css');
+                $head['scripts'][] = array('src' => 'https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js');
                 $content_options['leadsview'] = $this->_prepare_leadsview($brand); // $brand, $top_menu
                 if (!empty($this->config->item('google_map_key'))) {
                     $gmaps = 1;

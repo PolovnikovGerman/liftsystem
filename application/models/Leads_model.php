@@ -2806,7 +2806,7 @@ Class Leads_model extends MY_Model
     }
 
     // Save lead form
-    public function save_leadpopup($leaddata, $user_id, $session_id)
+    public function save_leadpopup($leaddata, $user_id, $session_id, $closesession)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Contact doesn\'t found'];
         $lead = $leaddata['lead'];
@@ -2819,7 +2819,9 @@ Class Leads_model extends MY_Model
             $out['lead_id'] = $lead['lead_id'];
             $out['lead_number'] = $lead['lead_number'];
             // Remove session
-            usersession($session_id, null);
+            if ($closesession==1) {
+                usersession($session_id, null);
+            }
             return $out;
         }
         // Save main data
@@ -2932,7 +2934,12 @@ Class Leads_model extends MY_Model
             $out['lead_id'] = $lead_id;
             $out['lead_number'] = $leadnum;
             // Remove session
-            usersession($session_id, null);
+            if ($closesession==1) {
+                usersession($session_id, null);
+            } else {
+                $leaddata = $this->_prepare_leads_session($lead_id);
+                usersession($session_id, $leaddata);
+            }
         } else {
             $out['msg'] = 'Failed to save lead';
         }
@@ -2963,6 +2970,40 @@ Class Leads_model extends MY_Model
         $leaddata['lead'] = $lead;
         usersession($session_id, $leaddata);
         return $out;
+    }
+
+    private function _prepare_leads_session($lead_id)
+    {
+        $this->load->model('leadquote_model');
+        $this->load->model('artproof_model');
+        $res = $this->get_lead($lead_id);
+        $lead_data = $res['lead'];
+        if (!empty($lead_data['lead_needby'])) {
+            $lead_data['lead_needby'] = strtotime($lead_data['lead_needby']);
+        }
+        $lead_data['newhistorymsg'] = '';
+        $customer_address = $res['address'];
+        // $lead_history = $this->leads_model->get_lead_history($lead_id);
+        $lead_usr = $this->get_lead_users($lead_id);
+        $leads_attach = $this->get_lead_attachs($lead_id);
+        $lead_contacts = $this->get_lead_contacts($lead_id);
+        $tasks = $this->get_lead_tasks($lead_id);
+        $lead_quotes = $this->leadquote_model->get_leadquotes_list($lead_id);
+        $proofarts = $this->artproof_model->get_lead_proofs($lead_id);
+
+        $leaddata = [
+            'lead' => $lead_data,
+            'customer_address' => $customer_address,
+            'lead_users' => $lead_usr,
+            'leads_attachments' => $leads_attach,
+            'lead_contacts' => $lead_contacts,
+            'lead_tasks' => $tasks,
+            'lead_quotes' => $lead_quotes,
+            'lead_proofs' => $proofarts,
+            'deleted' => [],
+            'edit_flag' => 0,
+        ];
+        return $leaddata;
     }
 }
 /* End of file leads_model.php */

@@ -1256,6 +1256,10 @@ class Artproofrequest extends MY_Controller
                         } else {
                             $mdata['email_id'] = $artw['mail_id'];
                         }
+                        if ($callpage=='leadspopup') {
+                            $leaddata = $this->artwork_model->get_lead_email($artw['mail_id']);
+                            $mdata['lead'] = $leaddata['lead_id'];
+                        }
                     }
                 }
             }

@@ -213,7 +213,7 @@
     font-size: 14px;
 }
 .leadtopstatus {
-    margin-left: 28px;
+    margin-left: 16px; /* 28px; */
 }
 .leadtopstatus label {
     font-size: 12px;
@@ -229,10 +229,31 @@
     line-height: 21px;
     font-size: 13px;
 }
+
 .leadtopstatus-star {
-    color: #fff200;
+    /*color: #fff200;*/
+    color: #000000;
     font-size: 12px;
     margin-right: 4px;
+}
+div.leadtopstatusselect {
+    width: 100px!important;
+    height: 21px!important;
+    border: 1px solid #585858;
+    background: #fff;
+    border-radius: 4px;
+    font-size: 13px;
+}
+div.leadtopstatusselect .btn-default {
+    color: #333;
+    background-color: #fff;
+    padding: 0 4px;
+    border: 1px solid transparent;
+}
+div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: transparent;
 }
 
 .leadtopreps {
