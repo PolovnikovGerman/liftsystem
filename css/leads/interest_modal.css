@@ -127,6 +127,9 @@ h5.modal-title {
     font-size: 12px;
     background: #fff;
 }
+.intpopupfooter-select span.select2-container--disabled {
+    opacity: 0.4;
+}
 .leadassignarea {
     height: 18px;
     line-height: 18px;
