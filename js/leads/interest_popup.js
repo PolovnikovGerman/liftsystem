@@ -329,11 +329,15 @@ function revertassignlead(title, lead, type) {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $("#InterestModal").find('div.modal-footer').empty().html(response.data.content);
+                $("select#lead_id").select2({
+                    dropdownParent: $('#InterestModal'),
+                    matcher: matchStart
+                });
                 if (type=='customform') {
                     init_customform_modal(response.data.entityid);
                     initCustomFormPagination();
                 } else if (type=='quote') {
-                    init_webquestion_modal(response.data.entityid);
+                    init_webquotes_modal(response.data.entityid);
                     initQuotesPagination();
                 } else if (type=='question') {
                     init_webquestion_modal(response.data.entityid);

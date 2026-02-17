@@ -324,7 +324,7 @@
     padding-left: 5px;
     width: 174px;
 }
-.repeatremand_item_dat.customitemdat {
+.repeatremand_item_dat.customitemdat, .repeatremand_order_dat.customitemdat, .repeatremand_customer_dat.customitemdat, .repeatremand_qty_dat.customitemdat  {
     font-weight: 600;
 }
 /* Right part */
@@ -333,7 +333,8 @@
 }
 .myleads_header {
     background: #4593fe;
-    border-right: 1px solid #434343;
+    border: 1px solid #434343;
+    /*border-right: 1px solid #434343;*/
     border-radius: 7px 7px 0 0;
     height: 38px;
     margin-bottom: 20px;
@@ -530,7 +531,7 @@ input.lead_searchinput {
 }
 .leaddataarea.priority {
     max-height: 422px;
-    margin-bottom: 5px;
+    margin-bottom: 20px; /* 5px; */
 }
 .leaddataarea .dateout {
     background: #000000;

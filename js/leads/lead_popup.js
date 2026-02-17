@@ -1,23 +1,23 @@
 var mainurl = '/leadmanagement';
-function show_new_lead(lead_id,type, brand) {
-    var url=mainurl+"/edit_lead";
-    params = new Array();
-    params.push({name: 'lead_id', value :lead_id});
-    params.push({name: 'brand', value: brand});
-    $.post(url, params, function(response){
-        if (response.errors=='') {
-            $("#leadformModalLabel").empty().html(response.data.title);
-            $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
-            $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
-            $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
-            init_leadpopupcontent();
-            init_quoteformcontent();
-            init_leadpopupedit();
-        } else {
-            show_error(response);
-        }
-    },'json');
-}
+// function show_new_lead(lead_id,type, brand) {
+//     var url=mainurl+"/edit_lead";
+//     params = new Array();
+//     params.push({name: 'lead_id', value :lead_id});
+//     params.push({name: 'brand', value: brand});
+//     $.post(url, params, function(response){
+//         if (response.errors=='') {
+//             $("#leadformModalLabel").empty().html(response.data.title);
+//             $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+//             $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+//             $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
+//             init_leadpopupcontent();
+//             init_quoteformcontent();
+//             init_leadpopupedit();
+//         } else {
+//             show_error(response);
+//         }
+//     },'json');
+// }
 
 function edit_lead(lead_id) {
     // var lead_id=obj.id.substr(7);
@@ -89,7 +89,10 @@ function init_leadpopupcontent(){
             }
         }
     });
-
+    // Scrolls
+    new SimpleBar(document.getElementById('list-leadhistory'), { autoHide: false });
+    new SimpleBar(document.getElementById('leadpopupquotetabl-body'), { autoHide: false });
+    new SimpleBar(document.getElementById('leadpopup_list-proofreqbox'), { autoHide: false });
 }
 
 function init_quoteformcontent() {
@@ -257,6 +260,44 @@ function init_leadpopupedit() {
                 }
             },'json');
         }
+    });
+    // Delete relation
+    $(".quests-unlink").unbind('click').click(function (){
+        var leadmail = $(this).data('leadmail');
+        if (confirm('Unlink '+$(this).data('leadrel')+'?')==true) {
+            var params = new Array();
+            params.push({name: 'lead', value: $("#leadeditid").val()});
+            params.push({name: 'leadmail', value: leadmail});
+            var url = mainurl+'/revertassign';
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $(".list-quests").empty().html(response.data.tasksview);
+                    init_leadpopupedit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    // Show related interest
+    $(".questionbox-icn").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'lead', value: $("#leadeditid").val()});
+        params.push({name: 'leadmail', value: $(this).data('leadmail')});
+        var url = mainurl+'/showtask';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (response.data.tasktype=='customform') {
+                    showcustomformdetails(response.data.task);
+                } else if (response.data.tasktype=='question') {
+                    showquestdetails(response.data.task);
+                } else if (response.data.tasktype=='quote') {
+                    showquotedetails(response.data.task);
+                }
+            } else {
+                show_error(response);
+            }
+        }, 'json')
     });
     // Quote request change active
     $("input[name='pricecheck']").unbind('click').click(function (){
@@ -481,6 +522,7 @@ function add_leadquote() {
                 }
             }
             var url = mainurl+'/add_leadquote';
+            $("#loader").show();
             $.post(url, params, function(response){
                 if (response.errors=='') {
                     // Refresh data
@@ -493,11 +535,14 @@ function add_leadquote() {
                             init_leadpopupcontent();
                             init_quoteformcontent();
                             init_leadpopupedit();
+                            $("#loader").hide();
                         } else {
+                            $("#loader").hide();
                             show_error(response);
                         }
                     }, 'json');
                 } else {
+                    $("#loader").hide();
                     show_error(response);
                 }
             },'json');

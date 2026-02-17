@@ -6,7 +6,7 @@
         <div class="quests-date"><?=$task['task_date']?> -</div>
         <div class="quests-type"><?=$task['task_type']?></div>
         <div class="quests-link">
-            <div class="quests-unlink" data-leadmail="<?=$task['leademail_id']?>">unlink</div>
+            <div class="quests-unlink" data-leadmail="<?=$task['leademail_id']?>" data-leadrel="<?=$task['task_type']?>">unlink</div>
         </div>
     </div>
 <?php endforeach; ?>

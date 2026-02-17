@@ -4446,6 +4446,7 @@ class Leadquote_model extends MY_Model
             $this->db->join('ts_quote_itemcolors qc','qc.quote_item_id=i.quote_item_id','left');
             $this->db->where('q.lead_id', $lead_id);
             $this->db->group_by('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.quote_source');
+            $this->db->order_by('q.quote_date', 'desc');
             $lists = $this->db->get()->result_array();
             $yearlist = date('Y', $lists[0]['quote_date']);
             foreach ($lists as $list) {
@@ -4492,6 +4493,9 @@ class Leadquote_model extends MY_Model
         $response = ['result' => $this->error_result, 'msg' => 'USER Not Found'];
         $lead_data = $quoteparams['lead'];
         $lead_address = $quoteparams['address'];
+        if (ifset($lead_address,'country_id','')=='') {
+            $lead_address['country_id'] = $this->config->item('default_country');
+        }
         $lead_contacts = $quoteparams['contacts'];
         $zipcode = $quoteparams['quotezip'];
         if (!empty($zipcode)) {
