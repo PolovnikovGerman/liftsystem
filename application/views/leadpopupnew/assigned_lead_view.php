@@ -15,6 +15,21 @@
         <?php endforeach; ?>
         <?php if ($replicqty > 2) : ?>
             <div class="repsuserbox-other">+<?=$replicqty-2?></div>
+            <div class="leadotherreplica-popup">
+                <div class="leadusrreplicacancel"><i class="fa fa-times-circle-o"></i></div>
+                <?php $othidx = 0; ?>
+                <?php foreach ($leadusers as $leaduser) : ?>
+                    <?php if ($othidx >= 2) : ?>
+                    <div class="datarow">
+                        <div class="repsuserbox-icn" data-usr="<?=$leaduser['leaduser_id']?>" data-usrname="<?=$leaduser['user_leadname']?>">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </div>
+                        <div class="repsuserbox-name"><?=$leaduser['user_leadname']?></div>
+                    </div>
+                    <?php endif; ?>
+                    <?php $othidx++; ?>
+                <?php endforeach; ?>
+            </div>
         <?php endif; ?>
     </div>
     <?php if ($added==1) : ?>
