@@ -398,6 +398,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     width: 100%;
     margin-top: 5px;
     display: none;
+    height: 28px;
 }
 .lead-descr.active {
     display: block;
