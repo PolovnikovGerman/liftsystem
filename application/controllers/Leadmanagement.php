@@ -152,6 +152,7 @@ class Leadmanagement extends MY_Controller
                     'lead_quotes' => $lead_quotes,
                     'lead_proofs' => $proofarts,
                     'deleted' => [],
+                    'edit_flag' => $lead_id > 0 ? 0 : 1,
                 ];
                 $sessionid = 'lead'.uniq_link('15');
                 usersession($sessionid, $leaddata);
@@ -1329,6 +1330,56 @@ class Leadmanagement extends MY_Controller
                         ];
                         $mdata['content'] = $this->load->view('leadpopupnew/assigned_lead_view', $replica_options, true);
                     }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function revertassign()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error='Connect lost. Reload Form';
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'lead', 'Unkn');
+            $leaddata = usersession($session_id);
+            if (!empty($leaddata)) {
+                $error = 'Relation not found';
+                $leadmail = ifset($postdata,'leadmail',0);
+                if (!empty($leadmail)) {
+                    $res = $this->leads_model->leadpopup_revertassign($leaddata, $leadmail, $session_id);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $tasks = $res['tasks'];
+                        $mdata['tasksview'] = $this->load->view('leadpopupnew/tasks_view', ['tasks' => $tasks], true);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function showtask()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error='Connect lost. Reload Form';
+            $postdata = $this->input->post();
+            $session_id = ifset($postdata, 'lead', 'Unkn');
+            $leaddata = usersession($session_id);
+            if (!empty($leaddata)) {
+                $error = 'Relation not found';
+                $leadmail = ifset($postdata,'leadmail',0);
+                $res = $this->leads_model->get_popup_task($leaddata, $leadmail, $session_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['task'] = $res['task'];
+                    $mdata['tasktype'] = $res['tasktype'];
                 }
             }
             $this->ajaxResponse($mdata, $error);

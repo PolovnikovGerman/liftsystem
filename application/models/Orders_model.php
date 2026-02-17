@@ -10387,7 +10387,11 @@ Class Orders_model extends MY_Model
             if ($order['order_blank']==1) {
                 $art = 1;
             } else {
-                $art = empty($order['artwcnt']) ? 0 : 1;
+                if ($order['apprcnt'] > 0) {
+                    $art = 1;
+                } else {
+                    $art = empty($order['artwcnt']) ? 0 : 1;
+                }
             }
             $artclass = empty($art) ? $missclass : $readyclass;
             $proof = $order['order_blank']==1 ? 1 : (empty($order['apprcnt']) ? 0 : 1);

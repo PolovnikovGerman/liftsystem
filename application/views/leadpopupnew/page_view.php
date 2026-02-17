@@ -104,7 +104,7 @@
                                     <div class="leadquotetabl-td leadquotetabl-subtotal">Sub-total</div>
                                 </div>
                             </div>
-                            <div class="leadquotetabl-body"><?=$quotes_view?></div>
+                            <div class="leadquotetabl-body" id="leadpopupquotetabl-body"><?=$quotes_view?></div>
                         </div>
                     </div>
                 </div>
@@ -129,7 +129,7 @@
                                     <div class="proofreqtitle-box">Pro</div>
                                     <div class="proofreqtitle-box">Apr</div>
                                 </div>
-                                <div class="list-proofreqbox"><?=$proofarts_list?></div>
+                                <div class="list-proofreqbox" id="leadpopup_list-proofreqbox"><?=$proofarts_list?></div>
                             </div>
                         </div>
                     </div>

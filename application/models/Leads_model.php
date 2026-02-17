@@ -2333,28 +2333,11 @@ Class Leads_model extends MY_Model
             'attachment' => $data['attachdoc'],
             'quoteattach' => 0,
         ];
-//        if (ifset($data,'newval','')!=='') {
-//            $attachs = $leadattachs['lead_attach'];
-//            $lastid = 0;
-//            foreach ($attachs as $attach) {
-//                if ($attach['leadattch_id'] < $lastid) {
-//                    $lastid = $attach['leadattch_id'];
-//                }
-//            }
-//            $lastid = $lastid - 1;
-//            $attachs[] = [
-//                'leadattch_id' => $lastid,
-//                'source_name' => ifset($data,'src','new_lead_attach'),
-//                'attachment' => $data['newval'],
-//                'quoteattach' => 0,
-//            ];
-//            $leadattachs['lead_attach'] = $attachs;
         $leaddata['leads_attachments'] = $leads_attachments;
+        $leaddata['edit_flag'] = 1;
         usersession($session_id, $leaddata);
         $out['result'] = $this->success_result;
         $out['attachs'] = $leads_attachments;
-//        usersession($session_id, $leadattachs);
-//        }
         return $out;
     }
 
@@ -2710,6 +2693,10 @@ Class Leads_model extends MY_Model
         $out = ['result' => $this->error_result, 'msg' => 'Info doesn\'t found'];
         $lead = $leaddata['lead'];
         if (array_key_exists($field, $lead)) {
+            $oldval = $lead[$field];
+            if ($newval!=$oldval) {
+                $leaddata['edit_flag'] = 1;
+            }
             if ($field=='lead_needby') {
                 if (!empty($newval)) {
                     $newval = strtotime($newval);
@@ -2758,6 +2745,10 @@ Class Leads_model extends MY_Model
                         return $out;
                     }
                 }
+                $oldval = $contacts[$idx][$field];
+                if ($newval!=$oldval) {
+                    $leaddata['edit_flag'] = 1;
+                }
                 $contacts[$idx][$field] = $newval;
                 break;
             }
@@ -2792,6 +2783,7 @@ Class Leads_model extends MY_Model
                     'user_id' => $replica,
                     'user_leadname' => $usrdat['user_leadname'],
                 ];
+                $leaddata['edit_flag'] = 1;
             }
         }
         $out['result'] = $this->success_result;
@@ -2816,6 +2808,7 @@ Class Leads_model extends MY_Model
                         'entity' => 'lead_users',
                         'id' => $lead_user['leaduser_id'],
                     ];
+                    $leaddata['edit_flag'] = 1;
                 }
             } else {
                 $newusers[] = $lead_user;
@@ -2831,6 +2824,61 @@ Class Leads_model extends MY_Model
         return $out;
     }
 
+    public function leadpopup_revertassign($leaddata, $leadmail, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Assign Not Found'];
+        $tasks = $leaddata['lead_tasks'];
+        $deleted = $leaddata['deleted'];
+        $found = 0;
+        $newtasks = [];
+        foreach ($tasks as $task) {
+            if ($task['leademail_id']==$leadmail) {
+                $found = 1;
+                $deleted[] = [
+                    'entity' => 'lead_tasks',
+                    'id' => $task['leademail_id'],
+                ];
+                $leaddata['edit_flag'] = 1;
+            } else {
+                $newtasks[] = $task;
+            }
+        }
+        if ($found==1) {
+            $out['result'] = $this->success_result;
+            $out['tasks'] = $newtasks;
+            $leaddata['lead_tasks'] = $newtasks;
+            $leaddata['deleted'] = $deleted;
+            usersession($session_id, $leaddata);
+        }
+        return $out;
+    }
+
+    public function get_popup_task($leaddata, $leadmail, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Assign Not Found'];
+        $tasks = $leaddata['lead_tasks'];
+        $found = 0;
+        foreach ($tasks as $task) {
+            if ($task['leademail_id']==$leadmail) {
+                $found = 1;
+                $out['result'] = $this->success_result;
+                usersession($session_id, $leaddata);
+                if (!empty($task['custom_quote_id'])) {
+                    $out['task'] = $task['custom_quote_id'];
+                    $out['tasktype'] = 'customform';
+                } else {
+                    $out['task'] = $task['email_id'];
+                    if ($task['email_type']=='Questions') {
+                        $out['tasktype'] = 'question';
+                    } elseif ($task['email_type']=='Leads' && $task['email_subtype']=='Quote') {
+                        $out['tasktype'] = 'quote';
+                    }
+                }
+            }
+        }
+        return $out;
+    }
+
     // Save lead form
     public function save_leadpopup($leaddata, $user_id, $session_id)
     {
@@ -2839,6 +2887,15 @@ Class Leads_model extends MY_Model
         $contacts = $leaddata['lead_contacts'];
         $leadusers = $leaddata['lead_users'];
         $attachments = $leaddata['leads_attachments'];
+        $edit_flag = $leaddata['edit_flag'];
+        if ($edit_flag==0) {
+            $out['result'] = $this->success_result;
+            $out['lead_id'] = $lead['lead_id'];
+            $out['lead_number'] = $lead['lead_number'];
+            // Remove session
+            usersession($session_id, null);
+            return $out;
+        }
         // Save main data
         $newhistory='';
         $newval=(floatval($lead['lead_value']));
@@ -2941,10 +2998,15 @@ Class Leads_model extends MY_Model
                 if ($delrow['entity']=='lead_users') {
                     $this->db->where('leaduser_id', $delrow['id']);
                     $this->db->delete('ts_lead_users');
+                } elseif ($delrow['entity']=='lead_tasks') {
+                    $this->db->where('leademail_id', $delrow['id']);
+                    $this->db->delete('ts_lead_emails');
                 }
             }
             $out['lead_id'] = $lead_id;
             $out['lead_number'] = $leadnum;
+            // Remove session
+            usersession($session_id, null);
         } else {
             $out['msg'] = 'Failed to save lead';
         }
