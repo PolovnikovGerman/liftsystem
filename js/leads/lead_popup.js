@@ -90,7 +90,7 @@ function init_leadpopupcontent(){
         }
     });
     // Select Picker
-    $("#lead_type").selectpicker();
+    $("#lead_type").selectpicker('refresh');
     // Scrolls
     new SimpleBar(document.getElementById('list-leadhistory'), { autoHide: false });
     new SimpleBar(document.getElementById('leadpopupquotetabl-body'), { autoHide: false });
@@ -139,6 +139,25 @@ function init_leadpopupedit() {
             }
         },'json');
     });
+    // Status change
+    $("#lead_type").unbind('change').change(function (){
+        var params = new Array();
+        var field_name = $(this).data('fld');
+        var typeval = $(this).val();
+        params.push({name: 'lead', value: $("#leadeditid").val()});
+        params.push({name: 'field_name', value: field_name});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = mainurl+"/lead_data_change";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#lead_type").selectpicker('val', typeval);
+                // var newtxt = $("#lead_type option:selected").text();
+                // $("#select2-lead_item-container").empty().html(newtxt);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
     // TextArea Changes
     $("textarea.leadmainedit").unbind('change').change(function(){
         var params = new Array();
@@ -245,6 +264,13 @@ function init_leadpopupedit() {
     $(".leadtopreps-addbtn").unbind('click').click(function(){
         $(".leadtopassign-popup").show();
         init_leadpopup_assign();
+    });
+    // Open Other replicas
+    $(".repsuserbox-other").unbind('click').click(function (){
+        $(".leadotherreplica-popup").show();
+        $(".leadusrreplicacancel").unbind('click').click(function(){
+            $(".leadotherreplica-popup").hide();
+        });
     });
     // Delete replica
     $(".repsuserbox-icn").unbind('click').click(function (){
