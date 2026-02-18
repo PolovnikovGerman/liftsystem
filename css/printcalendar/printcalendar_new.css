@@ -668,12 +668,23 @@
     background: url('/img/printscheduler/move-yellow.svg');
 }
 .redrush {
-    color: #009345!important;
+    /*color: #009345!important;*/
     /*font-size: 11px!important;*/
-    /*font-weight: 600;*/
+    font-weight: 600;
+    background: #009345!important;
+    color: #ffffff;
 }
 .redlate {
-    color: #FF0000!important;
+    /* color: #FF0000!important; */
+    background: #ff0000!important;
+    color: #ffffff;
+    font-weight: 600;
+}
+.todayship {
+    font-weight: 600;
+}
+.ontimeship {
+    font-size: 13px!important;
 }
 .shipclasslabel, .shipclassvalue {
     font-size: 9px!important;

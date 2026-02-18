@@ -9,6 +9,12 @@ class Printcalendar_model extends MY_Model
     public $showweeks_perpage = 13;
     public $empty_content = '&nbsp;';
 
+    public $lateclass = 'redlate';
+    public $latelabel = 'LATE';
+    public $rushclass = 'redrush';
+    public $rushlabel = 'RUSH';
+    public $todayclass = 'todayship';
+    public $todaylabel = 'TODAY';
     function __construct() {
         parent::__construct();
         // $this->db->select('order_itemcolor_id, sum(shipped) as fullfill, max(amount_date) as amount_date, sum(amount_sum) as amount_sum, sum(misprint) as misprint , sum(kepted) as kepted, sum(orangeplate+blueplate+beigeplate) as plates, sum(printshop_total) as printshop_total')->from('ts_order_amounts')->group_by('order_itemcolor_id');
@@ -533,13 +539,20 @@ class Printcalendar_model extends MY_Model
                 if (empty($warnings[$idx]['approv']) && $warnings[$idx]['order_blank'] == 1) {
                     $warnings[$idx]['approv'] = 1;
                 }
-                $ordertype = 'ontime';
+                $ordertype = 'ontimeship';
+                $rushlabel = date('m/d', $warnings[$idx]['order_shipdate']);
                 if ($warnings[$idx]['order_rush']) {
-                    $ordertype = 'rush';
+                    $ordertype = $this->rushclass;
+                    $rushlabel = $this->rushlabel;
                 } elseif ($warnings[$idx]['order_shipdate'] < strtotime(date('Y-m-d', $printdate))) {
-                    $ordertype = 'late';
+                    $ordertype = $this->lateclass;
+                    $rushlabel = $this->latelabel;
+                } elseif ($warnings[$idx]['order_shipdate'] = strtotime(date('Y-m-d', $printdate))) {
+                    $ordertype = $this->todayclass;
+                    $rushlabel = $this->todaylabel;
                 }
                 $warnings[$idx]['shipclass'] = $ordertype;
+                $warnings[$idx]['shiplabel'] = $rushlabel;
                 $idx++;
             }
         }
@@ -600,13 +613,20 @@ class Printcalendar_model extends MY_Model
                 if (empty($unsign[$idx]['approv']) && $unsign[$idx]['order_blank'] == 1) {
                     $unsign[$idx]['approv'] = 1;
                 }
-                $ordertype = 'ontime';
+                $ordertype = 'ontimeship';
+                $rushlabel = date('m/d', $unsign[$idx]['order_shipdate']);
                 if ($unsign[$idx]['order_rush']) {
-                    $ordertype = 'rush';
+                    $ordertype = $this->rushclass;
+                    $rushlabel = $this->rushlabel;
                 } elseif ($unsign[$idx]['order_shipdate'] < strtotime(date('Y-m-d', $printdate))) {
-                    $ordertype = 'late';
+                    $ordertype = $this->lateclass;
+                    $rushlabel = $this->latelabel;
+                } elseif ($unsign[$idx]['order_shipdate'] == strtotime(date('Y-m-d', $printdate))) {
+                    $ordertype = $this->todayclass;
+                    $rushlabel = $this->todaylabel;
                 }
                 $unsign[$idx]['shipclass'] = $ordertype;
+                $unsign[$idx]['shiplabel'] = $rushlabel;
                 $idx++;
             }
         }
@@ -669,13 +689,20 @@ class Printcalendar_model extends MY_Model
                 if (empty($data[$idx]['approv']) && $data[$idx]['order_blank'] == 1) {
                     $data[$idx]['approv'] = 1;
                 }
-                $ordertype = 'ontime';
+                $ordertype = 'ontimeship';
+                $rushlabel = date('m/d', $data[$idx]['order_shipdate']);
                 if ($data[$idx]['order_rush']) {
-                    $ordertype = 'rush';
+                    $ordertype = $this->rushclass;
+                    $rushlabel = $this->rushlabel;
                 } elseif ($data[$idx]['order_shipdate'] < strtotime(date('Y-m-d', $printdate))) {
-                    $ordertype = 'late';
+                    $ordertype = $this->lateclass;
+                    $rushlabel = $this->latelabel;
+                } elseif ($data[$idx]['order_shipdate'] == strtotime(date('Y-m-d', $printdate))) {
+                    $ordertype = $this->todayclass;
+                    $rushlabel = $this->todaylabel;
                 }
                 $data[$idx]['shipclass'] = $ordertype;
+                $data[$idx]['shiplabel'] = $rushlabel;
                 $idx++;
             }
         }
@@ -748,13 +775,20 @@ class Printcalendar_model extends MY_Model
             if (empty($assigns[$idx]['approv']) && $assigns[$idx]['order_blank'] == 1) {
                 $assigns[$idx]['approv'] = 1;
             }
-            $ordertype = 'ontime';
+            $ordertype = 'ontimeship';
+            $rushlabel = date('m/d', $assigns[$idx]['order_shipdate']);
             if ($assigns[$idx]['order_rush']) {
-                $ordertype = 'rush';
+                $ordertype = $this->rushclass;
+                $rushlabel = $this->rushlabel;
             } elseif ($assigns[$idx]['order_shipdate'] < strtotime(date('Y-m-d', $printdate))) {
-                $ordertype = 'late';
+                $ordertype = $this->lateclass;
+                $rushlabel = $this->latelabel;
+            } elseif ($assigns[$idx]['order_shipdate'] == strtotime(date('Y-m-d', $printdate))) {
+                $ordertype = $this->todayclass;
+                $rushlabel = $this->todaylabel;
             }
             $assigns[$idx]['shipclass'] = $ordertype;
+            $assigns[$idx]['shiplabel'] = $rushlabel;
             $idx++;
         }
         return $assigns;
@@ -891,13 +925,20 @@ class Printcalendar_model extends MY_Model
             if (empty($history[$idx]['approv']) && $history[$idx]['order_blank'] == 1) {
                 $history[$idx]['approv'] = 1;
             }
-            $ordertype = 'ontime';
+            $ordertype = 'ontimeship';
+            $rushlabel = date('m/d', $history[$idx]['order_shipdate']);
             if ($history[$idx]['order_rush']) {
-                $ordertype = 'rush';
+                $ordertype = $this->rushclass;
+                $rushlabel = $this->rushlabel;
             } elseif ($history[$idx]['order_shipdate'] < strtotime(date('Y-m-d', $printdate))) {
-                $ordertype = 'late';
+                $ordertype = $this->lateclass;
+                $rushlabel = $this->latelabel;
+            } elseif ($history[$idx]['order_shipdate'] == strtotime(date('Y-m-d', $printdate))) {
+                $ordertype = $this->todayclass;
+                $rushlabel = $this->todaylabel;
             }
             $history[$idx]['shipclass'] = $ordertype;
+            $history[$idx]['shiplabel'] = $rushlabel;
             $idx++;
         }
         // Totals ???
@@ -976,13 +1017,20 @@ class Printcalendar_model extends MY_Model
             if (empty($lateorders[$didx]['approv']) && $lateorders[$didx]['order_blank'] == 1) {
                 $lateorders[$didx]['approv'] = 1;
             }
-            $ordertype = 'ontime';
+            $ordertype = 'ontimeship';
+            $rushlabel = date('m/d', $lateorders[$didx]['order_shipdate']);
             if ($lateorders[$didx]['order_rush']) {
-                $ordertype = 'rush';
+                $ordertype = $this->rushclass;
+                $rushlabel = $this->rushlabel;
             } elseif ($lateorders[$didx]['order_shipdate'] < $curdate) {
-                $ordertype = 'late';
+                $ordertype = $this->lateclass;
+                $rushlabel = $this->latelabel;
+            } elseif ($lateorders[$didx]['order_shipdate'] == $curdate) {
+                $ordertype = $this->todayclass;
+                $rushlabel = $this->todaylabel;
             }
             $lateorders[$didx]['shipclass'] = $ordertype;
+            $lateorders[$didx]['shiplabel'] = $rushlabel;
             $didx++;
         }
         $lates = count($lateorders);
@@ -1042,13 +1090,20 @@ class Printcalendar_model extends MY_Model
                 if (empty($dats[$didx]['approv']) && $dats[$didx]['order_blank'] == 1) {
                     $dats[$didx]['approv'] = 1;
                 }
-                $ordertype = 'ontime';
+                $ordertype = 'ontimeship';
+                $rushlabel = date('m/d', $dats[$didx]['order_shipdate']);
                 if ($dats[$didx]['order_rush']) {
-                    $ordertype = 'rush';
+                    $ordertype = $this->rushclass;
+                    $rushlabel = $this->rushlabel;
                 } elseif ($dats[$didx]['order_shipdate'] < $daybgn) {
-                    $ordertype = 'late';
+                    $ordertype = $this->lateclass;
+                    $rushlabel = $this->latelabel;
+                } elseif ($dats[$didx]['order_shipdate'] == $daybgn) {
+                    $ordertype = $this->todayclass;
+                    $rushlabel = $this->todaylabel;
                 }
                 $dats[$didx]['shipclass'] = $ordertype;
+                $dats[$didx]['shiplabel'] = $rushlabel;
                 $didx++;
             }
             $sheduls[$idx]['data'] = $dats;
@@ -1195,13 +1250,20 @@ class Printcalendar_model extends MY_Model
                 }
                 $items+=$uns['item_qty'];
                 $prints+=$uns['prints'];
-                $ordertype = 'ontime';
+                $ordertype = 'ontimeship';
+                $rushlabel = date('m/d', $dats[$didx]['order_shipdate']);
                 if ($dats[$didx]['order_rush']) {
-                    $ordertype = 'rush';
+                    $ordertype = $this->rushclass;
+                    $rushlabel = $this->rushlabel;
                 } elseif ($dats[$didx]['order_shipdate'] < $curdate) {
-                    $ordertype = 'late';
+                    $ordertype = $this->lateclass;
+                    $rushlabel = $this->latelabel;
+                } elseif ($dats[$didx]['order_shipdate'] == $curdate) {
+                    $ordertype = $this->todayclass;
+                    $rushlabel = $this->todaylabel;
                 }
                 $dats[$didx]['shipclass'] = $ordertype;
+                $dats[$didx]['shiplabel'] = $rushlabel;
                 $didx++;
             }
             $sheduls[$idx]['items'] = $items;
@@ -1650,13 +1712,20 @@ class Printcalendar_model extends MY_Model
             if (empty($dats[$didx]['approv']) && $dats[$didx]['order_blank'] == 1) {
                 $dats[$didx]['approv'] = 1;
             }
-            $ordertype = 'ontime';
+            $ordertype = 'ontimeship';
+            $rushlabel = date('m/d', $dats[$didx]['order_shipdate']);
             if ($dats[$didx]['order_rush']) {
-                $ordertype = 'rush';
+                $ordertype = $this->rushclass;
+                $rushlabel = $this->rushlabel;
             } elseif ($dats[$didx]['order_shipdate'] < $curdate) {
-                $ordertype = 'late';
+                $ordertype = $this->lateclass;
+                $rushlabel = $this->latelabel;
+            } elseif ($dats[$didx]['order_shipdate'] == $curdate) {
+                $ordertype = $this->todayclass;
+                $rushlabel = $this->todaylabel;
             }
             $dats[$didx]['shipclass'] = $ordertype;
+            $dats[$didx]['shiplabel'] = $rushlabel;
             $didx++;
         }
         return ['data' => $dats, 'late' => $late];
