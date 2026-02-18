@@ -32,7 +32,7 @@
                             <div class="reschdltabl-td reschdltabl-prcful <?=$list['class']=='critical' ? 'peach' : ''?>"><?=$list['fulfillprc']?>%</div>
                             <div class="reschdltabl-td reschdltabl-prcship <?=$list['class']=='critical' ? 'peach' : ''?>"><?=$list['shippedprc']?>%</div>
                             <div class="reschdltabl-td reschdltabl-approval <?=$list['approv']==0 ? 'notapprv' : ''?>"><?=$list['approv']==0 ? 'Not Approved' : 'Approved'?>
-                            <?php if ($list['approv'] > 0) : ?>
+                            <?php if ($list['approv'] > 0 && $list['order_blank']==0) : ?>
                                 <span class="iconart" data-order="<?=$list['order_id']?>"><i class="fa fa-search" aria-hidden="true"></i></span>
                             <?php endif; ?>
                             </div>
@@ -101,7 +101,7 @@
                                         <div class="reschdltabl-td reschdltabl-prcful <?=$list['class']=='critical' ? 'peach' : ''?>"><?=$list['fulfillprc']?>%</div>
                                         <div class="reschdltabl-td reschdltabl-prcship <?=$list['class']=='critical' ? 'peach' : ''?>"><?=$list['shippedprc']?>%</div>
                                         <div class="reschdltabl-td reschdltabl-approval <?=$list['approv']==0 ? 'notapprv' : ''?>"><?=$list['approv']==0 ? 'Not Approved' : 'Approved'?>
-                                            <?php if ($list['approv'] > 0) : ?>
+                                            <?php if ($list['approv'] > 0 && $list['order_blank']==0) : ?>
                                                 <span class="iconart" data-order="<?=$list['order_id']?>"><i class="fa fa-search" aria-hidden="true"></i></span>
                                             <?php endif; ?>
                                         </div>

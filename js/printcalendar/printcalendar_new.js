@@ -29,13 +29,20 @@ function init_printcalendar(year) {
     $.post(url, params, function (response){
         if (response.errors=='') {
             $("#clndrfull-body").empty().html(response.data.calendarview);
-            // // Init Calendar
-            var heightcss = parseInt($("#clndrfull-body").css('height'))+35;
-            $(".clndrfull-body").css('height', heightcss);
-            // var heightreal = parseInt($("#clndrfull-body").height()) + 5;
-            // if (heightreal < heightcss) {
-            //     $("#clndrfull-body").css('height', heightreal);
-            // }
+            // Init Calendar
+            var scrollElement = new SimpleBar(document.getElementById('clndrfull-body'), { autoHide: false });
+            var heightcss = parseInt($("#clndrfull-body").css('height'));
+            var heightreal = parseInt($("#clndrfull-body").find('div.simplebar-content').height()) + 5;
+            if (heightreal < heightcss) {
+                $("#clndrfull-body").css('height', heightreal);
+            }
+            setTimeout(() => {
+                scrollElement.getScrollElement().scrollTop = scrollElement.getScrollElement().scrollHeight;
+                // Get css val and compare with real value
+            }, "300");
+            // var heightcss = parseInt($("#clndrfull-body").css('height'))+5;
+            // $(".clndrfull-body").css('height', heightcss);
+            // new SimpleBar(document.getElementById('clndrfull-body'),{ autoHide: false });
             init_fullcalendar();
             $("#calendweekbgn").val(response.data.minweek);
             $("#calendweekend").val(response.data.maxweek);
@@ -84,12 +91,15 @@ function init_reshedule_view() {
         $(".reshedlordr-btn").removeClass('opened');
         if ($(".calendar-full").css('display')=='block') {
             $(".reschedulartabs").hide();
-            $(".clndrfull-weeklytotal").show();
+            // $(".clndrfull-weeklytotal").show();
+            $(".clndrfull-body").removeClass('short');
+            $(".dayweek.weeklytotal").show();
+            $(".psctable-totalbox").show();
             $(".reschdl-infobody").show();
             $(".reschdl-linebody").hide();
         } else {
             $(".reschedulartabs").show();
-            $(".clndrfull-weeklytotal").hide();
+            // $(".clndrfull-weeklytotal").hide();
             $(".reschdl-infobody").hide();
             init_printdate_details($("#calendarprintdate").val());
             $(".reschdl-linebody").show();
@@ -109,7 +119,10 @@ function init_reshedule_view() {
             $(".reshedlordr-btn").addClass('opened');
             if ($(".calendar-full").css('display')=='block') {
                 $(".reschdl-linebody").show();
-                $(".clndrfull-weeklytotal").hide();
+                // $(".clndrfull-weeklytotal").hide();
+                $(".clndrfull-body").addClass('short');
+                $(".dayweek.weeklytotal").hide();
+                $(".psctable-totalbox").hide();
             } else {
                 $(".todayblock").hide();
                 $(".simpltodayblock").hide();
@@ -203,7 +216,7 @@ function init_fullcalendar() {
                 $(".psleft-topbar").hide();
                 $(".calendar-week").show();
                 $(".calendar-full").hide();
-                $(".clndrfull-weeklytotal").hide();
+                // $(".clndrfull-weeklytotal").hide();
                 $(".statistics-block").hide();
                 $(".reschdl-infobody").hide();
                 $(".reschedulartabs").show();
@@ -330,12 +343,18 @@ function init_dailydetails_manage() {
         $(".psleft-topbar").show();
         $(".calendar-full").show();
         if ($(".reshedlordr-btn").hasClass('opened')) {
-            $(".clndrfull-weeklytotal").hide();
+            // $(".clndrfull-weeklytotal").hide();
+            $(".clndrfull-body").addClass('short');
+            $(".dayweek.weeklytotal").hide();
+            $(".psctable-totalbox").hide();
             $(".reschdl-infobody").hide();
             $(".reschdl-linebody").show();
             $(".reschedulartabs").show();
         } else {
-            $(".clndrfull-weeklytotal").show();
+            // $(".clndrfull-weeklytotal").show();
+            $(".clndrfull-body").removeClass('short');
+            $(".dayweek.weeklytotal").show();
+            $(".psctable-totalbox").show();
             $(".reschdl-infobody").show();
             $(".reschdl-linebody").hide();
             $(".reschedulartabs").hide();
@@ -354,12 +373,18 @@ function init_dailydetails_manage() {
         $(".psleft-topbar").show();
         $(".calendar-full").show();
         if ($(".reshedlordr-btn").hasClass('opened')) {
-            $(".clndrfull-weeklytotal").hide();
+            // $(".clndrfull-weeklytotal").hide();
+            $(".clndrfull-body").addClass('short');
+            $(".dayweek.weeklytotal").hide();
+            $(".psctable-totalbox").hide();
             $(".reschdl-infobody").hide();
             $(".reschdl-linebody").show();
             $(".reschedulartabs").show();
         } else {
-            $(".clndrfull-weeklytotal").show();
+            // $(".clndrfull-weeklytotal").show();
+            $(".clndrfull-body").removeClass('short');
+            $(".dayweek.weeklytotal").show();
+            $(".psctable-totalbox").show();
             $(".reschdl-infobody").show();
             $(".reschdl-linebody").hide();
             $(".reschedulartabs").hide();

@@ -30,7 +30,7 @@
                 <div class="histrtabl-apprblock">
                     <div class="histrtabl-td histrtabl-approval <?=$list['approv']==0 ? '' : ''?>">
                         <?=$list['approv']==0 ? 'Not Approved' : 'Approved'?>
-                        <?php if ($list['approv'] > 0) :?>
+                        <?php if ($list['approv'] > 0 && $list['order_blank']==0)  :?>
                             <span class="iconart" data-order="<?=$list['order_id']?>"><i class="fa fa-search" aria-hidden="true"></i></span>
                         <?php endif; ?>
                     </div>

@@ -49,14 +49,15 @@
     /*border: 1px solid #000;*/
 }
 .clndrfull-body {
-    /*width: 762px;*/
     position: relative;
-    width: 752px;
-    /*height: 530px;*/
+    width: 895px; /* 752px; */
     height: 580px;
     background: #efeded;
     border: 1px solid #000;
     margin-bottom: 6px;
+}
+.clndrfull-body.short {
+    width: 752px;
 }
 .calnd-arrowsbar {
     position: absolute;
@@ -314,6 +315,9 @@
     text-align: center;
     font-size: 14px;
     font-weight: 600;
+}
+.dayweek.weeklytotal {
+    width: 150px;
 }
 .clndrfull-weeklytotal {
     display: block;
@@ -725,7 +729,7 @@
     background: #dbdbdb;
 }
 .reschdltabl-mainblock {
-    border: 1px solid #888888;
+    /* border: 1px solid #888888; */
 }
 .reschdltabl-mainblock.repeatrow {
     margin-left: 91px;
