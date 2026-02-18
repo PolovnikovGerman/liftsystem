@@ -38,7 +38,14 @@
                         <div class="reschditms-td reschditms-brand">
                             <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
                         </div>
-                        <div class="reschditms-td reschditms-rush <?=$list['shipclass']?>"><?=$list['shiplabel']?></div>
+                        <div class="reschditms-td reschditms-rush <?=$list['shipclass']?>">
+                            <?php if (empty($list['shipdate'])) : ?>
+                                <?=$list['shiplabel']?>
+                            <?php else : ?>
+                                <div class="shipclasslabel"><?=$list['shiplabel']?></div>
+                                <div class="shipclassvalue"><?=$list['shipdate']?></div>
+                            <?php endif; ?>
+                        </div>
                         <div class="reschditms-td reschditms-order" data-order="<?=$list['order_id']?>" data-brand="<?=$list['brand']?>"><?=$list['order_num']?></div>
                         <div class="reschditms-td reschditms-items"><?=QTYOutput($list['item_qty'])?></div>
                         <div class="reschditms-td reschditms-itmcolor truncateoverflowtext"><?=$list['color']?></div>

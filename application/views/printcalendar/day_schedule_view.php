@@ -23,7 +23,14 @@
                 <div class="reschdltabl-td reschdltabl-brand">
                     <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
                 </div>
-                <div class="reschdltabl-td reschdltabl-rush <?=$list['shipclass']?>"><?=$list['shiplabel']?></div>
+                <div class="reschdltabl-td reschdltabl-rush <?=$list['shipclass']?>">
+                    <?php if (empty($list['shipdate'])) : ?>
+                        <?=$list['shiplabel']?>
+                    <?php else : ?>
+                        <div class="shipclasslabel"><?=$list['shiplabel']?></div>
+                        <div class="shipclassvalue"><?=$list['shipdate']?></div>
+                    <?php endif; ?>
+                </div>
                 <div class="reschdltabl-td reschdltabl-order" data-order="<?=$list['order_id']?>"><?=$list['order_num']?></div>
                 <?php $neworderview = 0 ?>
             <?php endif; ?>

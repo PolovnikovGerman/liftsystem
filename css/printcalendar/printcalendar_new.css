@@ -672,12 +672,12 @@
     /*font-size: 11px!important;*/
     font-weight: 600;
     background: #009345!important;
-    color: #ffffff;
+    color: #ffffff!important;
 }
 .redlate {
     /* color: #FF0000!important; */
     background: #ff0000!important;
-    color: #ffffff;
+    color: #ffffff!important;
     font-weight: 600;
 }
 .todayship {
@@ -692,6 +692,9 @@
     line-height: 10px!important;
     text-align: center;
     width: 100%;
+}
+.shipclassvalue {
+    font-size: 10px!important;
 }
 .shipclassdate {
     font-size: 9px!important;
