@@ -2590,7 +2590,20 @@ Class Leads_model extends MY_Model
                 $this->db->insert('ts_lead_contacts');
             }
         }
-        return true;
+        // Add address
+        $this->db->select('le.lead_id, cq.ship_country, cq.ship_address1, cq.ship_address2, cq.ship_city, cq.ship_state, cq.ship_zipcode')->from('ts_lead_emails le');
+        $this->db->join('ts_custom_quotes cq', 'cq.custom_quote_id = le.custom_quote_id')->where('le.custom_quote_id is not null');
+        $adrleads = $this->db->get()->result_array();
+        foreach ($adrleads as $adrlead) {
+            $this->db->where('lead_id', $adrlead['lead_id']);
+            $this->db->set('country_id', $adrlead['ship_country']);
+            $this->db->set('address_line1', $adrlead['ship_address1']);
+            $this->db->set('address_line2', $adrlead['ship_address2']);
+            $this->db->set('city', $adrlead['ship_city']);
+            $this->db->set('zip', $adrlead['ship_zipcode']);
+            $this->db->set('state', $adrlead['ship_state']);
+            $this->db->update('ts_leads');
+        }
     }
     public function revertassignlead($leadmail)
     {
