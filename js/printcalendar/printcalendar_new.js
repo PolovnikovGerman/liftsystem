@@ -29,7 +29,6 @@ function init_printcalendar(year) {
     $.post(url, params, function (response){
         if (response.errors=='') {
             $("#clndrfull-body").empty().html(response.data.calendarview);
-            $(".weeklytotal-body").empty().html(response.data.totalsview);
             // // Init Calendar
             var heightcss = parseInt($("#clndrfull-body").css('height'))+35;
             $(".clndrfull-body").css('height', heightcss);

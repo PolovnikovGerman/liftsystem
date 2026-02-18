@@ -59,7 +59,7 @@ class Printcalendar_model extends MY_Model
         $finish_year = strtotime($date->format('Y-m-d'));
 
         $calend = [];
-        $weektotals = [];
+        // $weektotals = [];
         $widx = 1;
         $current_date = strtotime(date('Y-m-d'));
         while (1==1) {
@@ -129,39 +129,46 @@ class Printcalendar_model extends MY_Model
                 'weeknum' => $widx,
                 'showdata' => 1,
                 'weeknumber' => $weeknumber,
-            ];
-            $weektotals[] = [
-                'start' => $weekstart,
-                'finish' => $weekfinish,
                 'total_orders' => $total_orders,
                 'total_items' => $total_items,
                 'total_prints' => $total_prints,
                 'total_printed' => $total_printed,
                 'total_toprint' => ($total_prints - $total_printed),
                 'readyweek' => $readyweek,
-                'weeknum' => $widx,
-                'showdata' => 1,
-                'weeknumber' => $weeknumber,
             ];
+//            $weektotals[] = [
+//                'start' => $weekstart,
+//                'finish' => $weekfinish,
+//                'total_orders' => $total_orders,
+//                'total_items' => $total_items,
+//                'total_prints' => $total_prints,
+//                'total_printed' => $total_printed,
+//                'total_toprint' => ($total_prints - $total_printed),
+//                'readyweek' => $readyweek,
+//                'weeknum' => $widx,
+//                'showdata' => 1,
+//                'weeknumber' => $weeknumber,
+//            ];
             if ($start_year >= $finish_year) {
                 break;
             }
             $widx++;
         }
-        $minidx = 1;
-        $maxidx = count($calend);
-        if (count($calend)>$this->showweeks_perpage) {
-            $idx = 0;
-            $minidx = count($calend)-$this->showweeks_perpage-1;
-            foreach ($calend as $c) {
-                if ($idx<=$minidx) {
-                    $calend[$idx]['showdata'] = 0;
-                    $weektotals[$idx]['showdata'] = 0;
-                }
-                $idx++;
-            }
-        }
-        return ['calend' => $calend, 'totals' => $weektotals, 'minweek' => $minidx, 'maxweek' => count($weektotals)];
+//        $minidx = 1;
+//        $maxidx = count($calend);
+//        if (count($calend)>$this->showweeks_perpage) {
+//            $idx = 0;
+//            $minidx = count($calend)-$this->showweeks_perpage-1;
+//            foreach ($calend as $c) {
+//                if ($idx<=$minidx) {
+//                    $calend[$idx]['showdata'] = 0;
+//                    $weektotals[$idx]['showdata'] = 0;
+//                }
+//                $idx++;
+//            }
+//        }
+        // return ['calend' => $calend, 'totals' => $weektotals, 'minweek' => $minidx, 'maxweek' => count($weektotals)];
+        return $calend;
     }
 
     private function _current_week_sum($weekstart, $weekfinish) {

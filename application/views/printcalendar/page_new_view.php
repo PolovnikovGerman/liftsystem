@@ -46,19 +46,19 @@
             </div>
             <div class="clndrfull-body">
                 <div id="clndrfull-body"></div>
-                <div class="calnd-arrowsbar">
-                    <div class="calnd-arrow calnd-down">
-                        <i class="fa fa-caret-down" aria-hidden="true"></i>
-                    </div>
-                    <div class="calnd-arrow calnd-up">
-                        <i class="fa fa-caret-up" aria-hidden="true"></i>
-                    </div>
-                </div>
+<!--                <div class="calnd-arrowsbar">-->
+<!--                    <div class="calnd-arrow calnd-down">-->
+<!--                        <i class="fa fa-caret-down" aria-hidden="true"></i>-->
+<!--                    </div>-->
+<!--                    <div class="calnd-arrow calnd-up">-->
+<!--                        <i class="fa fa-caret-up" aria-hidden="true"></i>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
-            <div class="clndrfull-weeklytotal">
-                <div class="weeklytotal-title">Weekly Total</div>
-                <div class="weeklytotal-body"></div>
-            </div>
+<!--            <div class="clndrfull-weeklytotal">-->
+<!--                <div class="weeklytotal-title">Weekly Total</div>-->
+<!--                <div class="weeklytotal-body"></div>-->
+<!--            </div>-->
         </div>
         <div class="statistics-block"></div>
         <div class="simpltodayblock">

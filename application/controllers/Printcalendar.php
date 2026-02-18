@@ -20,13 +20,13 @@ class Printcalendar extends MY_Controller
             if (!empty($year)) {
                 $error = '';
                 $yearbgn = getDatesByWeek(1,$year);
-                $yearres = $this->printcalendar_model->build_calendar($yearbgn['start_week'], $year);
-                $calend = $yearres['calend'];
-                $totals = $yearres['totals'];
-                $mdata['minweek'] = $yearres['minweek'];
-                $mdata['maxweek'] = $yearres['maxweek'];
+                $calend = $this->printcalendar_model->build_calendar($yearbgn['start_week'], $year);
+//                $calend = $yearres['calend'];
+//                $totals = $yearres['totals'];
+//                $mdata['minweek'] = $yearres['minweek'];
+//                $mdata['maxweek'] = $yearres['maxweek'];
                 $mdata['calendarview'] = $this->load->view('printcalendar/calendar_view', ['calendars' => $calend], true);
-                $mdata['totalsview'] = $this->load->view('printcalendar/calendar_totals_view', ['totals' => $totals], true);
+//                $mdata['totalsview'] = $this->load->view('printcalendar/calendar_totals_view', ['totals' => $totals], true);
             }
             $this->ajaxResponse($mdata, $error);
         }
