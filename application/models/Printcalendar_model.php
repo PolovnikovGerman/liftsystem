@@ -1346,8 +1346,10 @@ class Printcalendar_model extends MY_Model
             $this->db->where(['ii.inventory_item_id' => $shedul['inventory_item_id'],'o.is_canceled' => 0, ]); // 'o.shipped_date' => 0
             $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
             $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
-            $this->db->order_by('o.order_rush desc');
-            $this->db->order_by('o.order_id asc');
+//            $this->db->order_by('o.order_rush desc');
+//            $this->db->order_by('o.order_id asc');
+            $this->db->order_by('ic.suggeststock', 'desc');
+            $this->db->order_by('o.shipdate', 'desc');
             $dats = $this->db->get()->result_array();
             $didx = 0;
             $items = $prints = 0;

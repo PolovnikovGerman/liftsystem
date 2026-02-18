@@ -6,9 +6,9 @@
         <div class="reschditms-td reschditms-brand">&nbsp;</div>
         <div class="reschditms-td reschditms-rush">&nbsp;</div>
 <!--        <div class="reschditms-td reschditms-date">Date</div>-->
+        <div class="reschditms-td reschditms-itmcolor">Item Color/s</div>
         <div class="reschditms-td reschditms-order">Order#</div>
         <div class="reschditms-td reschditms-items">#Items</div>
-        <div class="reschditms-td reschditms-itmcolor">Item Color/s</div>
         <div class="reschditms-td reschditms-imp">Imp</div>
         <div class="reschditms-td reschditms-prints">#Prints</div>
         <div class="reschditms-td reschditms-inkcolor">Ink Color/s</div>
@@ -29,8 +29,8 @@
                         <div class="reschditms-td reschditms-prcship <?=$list['class']=='normal' ? '' : 'peach'?>"><?=$list['shippedprc']?>%</div>
                         <div class="reschditms-td reschditms-approval <?=$list['approv']==0 ? 'notapprv' : ''?>">
                             <?=$list['approv']==0 ? 'Not Approved' : 'Approved'?>
-                            <?php if ($list['approv'] > 0) : ?>
-                            <span class="iconart" data-order="<?=$list['order_id']?>"><i class="fa fa-search" aria-hidden="true"></i></span>
+                            <?php if ($list['approv'] > 0 && $list['order_blank']==0) : ?>
+                                <span class="iconart" data-order="<?=$list['order_id']?>"><i class="fa fa-search" aria-hidden="true"></i></span>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -46,9 +46,9 @@
                                 <div class="shipclassvalue"><?=$list['shipdate']?></div>
                             <?php endif; ?>
                         </div>
+                        <div class="reschditms-td reschditms-itmcolor truncateoverflowtext"><?=$list['color']?></div>
                         <div class="reschditms-td reschditms-order" data-order="<?=$list['order_id']?>" data-brand="<?=$list['brand']?>"><?=$list['order_num']?></div>
                         <div class="reschditms-td reschditms-items"><?=QTYOutput($list['item_qty'])?></div>
-                        <div class="reschditms-td reschditms-itmcolor truncateoverflowtext"><?=$list['color']?></div>
                         <div class="reschditms-td reschditms-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
                         <div class="reschditms-td reschditms-prints"><?=QTYOutput($list['prints'])?></div>
                         <div class="reschditms-td reschditms-inkcolor  truncateoverflowtext">&nbsp;</div>
