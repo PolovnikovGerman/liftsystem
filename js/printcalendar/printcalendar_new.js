@@ -29,6 +29,11 @@ function init_printcalendar(year) {
     $.post(url, params, function (response){
         if (response.errors=='') {
             $("#clndrfull-body").empty().html(response.data.calendarview);
+            if ($(".reshedlordr-btn").hasClass('opened')) {
+                $(".clndrfull-body").addClass('short');
+                $(".dayweek.weeklytotal").hide();
+                $(".psctable-totalbox").hide();
+            }
             // Init Calendar
             var scrollElement = new SimpleBar(document.getElementById('clndrfull-body'), { autoHide: false });
             var heightcss = parseInt($("#clndrfull-body").css('height'));
