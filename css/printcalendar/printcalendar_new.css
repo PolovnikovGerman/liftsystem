@@ -861,7 +861,7 @@
     width: 100%;
 }
 .late-section {
-    background: #fb0404;
+    background: #b42727;
     padding-bottom: 12px;
     margin-top: 3px;
 }
@@ -933,7 +933,7 @@
     font-weight: 600;
 }
 .reschditms-itemline .imprintitemname {
-    width: 201px; /* 273px; */
+    width: 328px; /* 273px; */
     color: #fff;
     font-size: 12px;
     text-align: left;
@@ -945,13 +945,13 @@
     font-weight: normal;
 }
 .reschditms-itemline .imprintitemqty {
-    width: 78px;
+    width: 66px; /* 78px; */
 }
 .reschditms-itemline .imprintitemqty span {
     font-weight: normal;
 }
 .reschditms-itemline .imprintprintsqty {
-    margin-left: 120px; /* 28px; */
+    /* margin-left: 120px;*/ /* 28px; */
     width: 78px;
 }
 .reschditms-itemline .imprintprintsqty span {
