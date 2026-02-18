@@ -49,14 +49,15 @@
     /*border: 1px solid #000;*/
 }
 .clndrfull-body {
-    /*width: 762px;*/
     position: relative;
-    width: 752px;
-    /*height: 530px;*/
+    width: 895px; /* 752px; */
     height: 580px;
     background: #efeded;
     border: 1px solid #000;
     margin-bottom: 6px;
+}
+.clndrfull-body.short {
+    width: 752px;
 }
 .calnd-arrowsbar {
     position: absolute;
@@ -314,6 +315,9 @@
     text-align: center;
     font-size: 14px;
     font-weight: 600;
+}
+.dayweek.weeklytotal {
+    width: 150px;
 }
 .clndrfull-weeklytotal {
     display: block;
@@ -664,12 +668,23 @@
     background: url('/img/printscheduler/move-yellow.svg');
 }
 .redrush {
-    color: #009345!important;
+    /*color: #009345!important;*/
     /*font-size: 11px!important;*/
-    /*font-weight: 600;*/
+    font-weight: 600;
+    background: #009345!important;
+    color: #ffffff!important;
 }
 .redlate {
-    color: #FF0000!important;
+    /* color: #FF0000!important; */
+    background: #ff0000!important;
+    color: #ffffff!important;
+    font-weight: 600;
+}
+.todayship {
+    font-weight: 600;
+}
+.ontimeship {
+    font-size: 13px!important;
 }
 .shipclasslabel, .shipclassvalue {
     font-size: 9px!important;
@@ -677,6 +692,9 @@
     line-height: 10px!important;
     text-align: center;
     width: 100%;
+}
+.shipclassvalue {
+    font-size: 10px!important;
 }
 .shipclassdate {
     font-size: 9px!important;
@@ -725,7 +743,7 @@
     background: #dbdbdb;
 }
 .reschdltabl-mainblock {
-    border: 1px solid #888888;
+    /* border: 1px solid #888888; */
 }
 .reschdltabl-mainblock.repeatrow {
     margin-left: 91px;

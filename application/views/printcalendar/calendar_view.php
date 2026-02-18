@@ -1,6 +1,6 @@
 <?php foreach ($calendars as $calendar) : ?>
     <?php $weeks = $calendar['week']; ?>
-    <div class="week-tr" <?=$calendar['showdata']==0 ? 'style="display: none"' : '' ?> data-week="<?=$calendar['weeknum']?>">
+    <div class="week-tr" data-week="<?=$calendar['weeknum']?>">
     <?php foreach ($weeks as $week) : ?>
         <div class="psctable-td" data-printdate="<?=$week['date']?>" data-printweek="<?=$week['week']?>"
                 <?=$week['active']==1 ? 'id="caledarbox_'.$week["date"].'" ondrop="dropHandler(event)" ondragover="dragoverHandler(event)"' : ''?>>
@@ -31,5 +31,17 @@
             </div>
         </div>
     <?php endforeach; ?>
+        <div class="psctable-totalbox <?=$calendar['readyweek']==1 ? 'readyweek' : ''?>">
+            <!-- Printed -->
+            <div class="totalbox-printed">
+                <div class="totalboxtprinted-name">Prints Printed:</div>
+                <div class="totalboxtprinted-numbers" data-fld="prints"><?=$calendar['total_prints']==0 ? '-' : QTYOutput($calendar['total_prints'])?></div>
+            </div>
+            <div class="totalbox-printed">
+                <div class="totalboxtprinted-name">Items Printed:</div>
+                <div class="totalboxtprinted-numbers" data-fld="items"><?=$calendar['total_items']==0 ? '-' : QTYOutput($calendar['total_items'])?></div>
+            </div>
+        </div>
+
     </div>
 <?php endforeach; ?>

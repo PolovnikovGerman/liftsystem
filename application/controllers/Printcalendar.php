@@ -20,13 +20,13 @@ class Printcalendar extends MY_Controller
             if (!empty($year)) {
                 $error = '';
                 $yearbgn = getDatesByWeek(1,$year);
-                $yearres = $this->printcalendar_model->build_calendar($yearbgn['start_week'], $year);
-                $calend = $yearres['calend'];
-                $totals = $yearres['totals'];
-                $mdata['minweek'] = $yearres['minweek'];
-                $mdata['maxweek'] = $yearres['maxweek'];
+                $calend = $this->printcalendar_model->build_calendar($yearbgn['start_week'], $year);
+//                $calend = $yearres['calend'];
+//                $totals = $yearres['totals'];
+//                $mdata['minweek'] = $yearres['minweek'];
+//                $mdata['maxweek'] = $yearres['maxweek'];
                 $mdata['calendarview'] = $this->load->view('printcalendar/calendar_view', ['calendars' => $calend], true);
-                $mdata['totalsview'] = $this->load->view('printcalendar/calendar_totals_view', ['totals' => $totals], true);
+//                $mdata['totalsview'] = $this->load->view('printcalendar/calendar_totals_view', ['totals' => $totals], true);
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -429,28 +429,6 @@ class Printcalendar extends MY_Controller
                                 $mdata['outcome'] = $this->load->view('printcalendar/day_schedule_view', ['lists' => $schedul['data'], 'late' => $schedul['late']], true);
                             } else {
                                 $totals = $this->printcalendar_model->daylatedetails($olddate);
-                                // $unsign = $this->printcalendar_model->get_printdate_unsigned($olddate);
-//                                $unassign_view = '';
-//                                if (count($unsign['data']) > 0) {
-//                                    $unassign_view = $this->load->view('printcalendar/dayshort_unsign_view', ['total'=> $unsign['total'], 'lists' => $unsign['data'], 'users' => $userlist], true);
-//                                }
-//                                $assignusrs = $this->printcalendar_model->get_printdate_assigned($olddate);
-//                                $assign_view = '';
-//                                if (count($assignusrs)>0) {
-//                                    foreach ($assignusrs as $assign) {
-//                                        $usrassgn = $this->printcalendar_model->get_printdate_usrassigned($olddate, $assign['user_id']);
-//                                        $assign_options = [
-//                                            'user_id' => $assign['user_id'],
-//                                            'user' => $assign['user_name'],
-//                                            'users' => $userlist,
-//                                            'orders' => $assign['ordercnt'],
-//                                            'items' => $assign['itemscnt'],
-//                                            'prints' => $assign['printqty'],
-//                                            'lists' => $usrassgn,
-//                                        ];
-//                                        $assign_view.= $this->load->view('printcalendar/dayshort_assign_view', $assign_options, true);
-//                                    }
-//                                }
                                 // New version
                                 $warnings = $this->printcalendar_model->get_printdate_warnings($olddate);
                                 $regul = $this->printcalendar_model->get_printdate_regulars($olddate);
@@ -458,8 +436,6 @@ class Printcalendar extends MY_Controller
                                 $schedul = $this->printcalendar_model->get_reschedule_data($printdate);
                                 $mdata['late'] = $schedul['late'];
                                 $mdata['income'] = $this->load->view('printcalendar/day_schedule_view', ['lists' => $schedul['data'], 'late' => $schedul['late']], true);
-//                                $mdata['unassign'] = $unassign_view;
-//                                $mdata['assign'] = $assign_view;
                                 $mdata['warningscnt'] = count($warnings) > 0 ? 1 : 0;
                                 $warnings_view = '';
                                 if ($mdata['warningscnt']>0) {

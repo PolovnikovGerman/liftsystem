@@ -43,22 +43,22 @@
                 <div class="dayweek">Friday</div>
                 <div class="dayweek">Saturday</div>
                 <div class="dayweek">Sunday</div>
+                <div class="dayweek weeklytotal">Weekly Total</div>
             </div>
-            <div class="clndrfull-body">
-                <div id="clndrfull-body"></div>
-                <div class="calnd-arrowsbar">
-                    <div class="calnd-arrow calnd-down">
-                        <i class="fa fa-caret-down" aria-hidden="true"></i>
-                    </div>
-                    <div class="calnd-arrow calnd-up">
-                        <i class="fa fa-caret-up" aria-hidden="true"></i>
-                    </div>
-                </div>
+            <div class="clndrfull-body" id="clndrfull-body">
+<!--                <div class="calnd-arrowsbar">-->
+<!--                    <div class="calnd-arrow calnd-down">-->
+<!--                        <i class="fa fa-caret-down" aria-hidden="true"></i>-->
+<!--                    </div>-->
+<!--                    <div class="calnd-arrow calnd-up">-->
+<!--                        <i class="fa fa-caret-up" aria-hidden="true"></i>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
-            <div class="clndrfull-weeklytotal">
-                <div class="weeklytotal-title">Weekly Total</div>
-                <div class="weeklytotal-body"></div>
-            </div>
+<!--            <div class="clndrfull-weeklytotal">-->
+<!--                <div class="weeklytotal-title">Weekly Total</div>-->
+<!--                <div class="weeklytotal-body"></div>-->
+<!--            </div>-->
         </div>
         <div class="statistics-block"></div>
         <div class="simpltodayblock">
@@ -75,13 +75,13 @@
             <div class="datarow">
                 <div class="ps_keymaps">
                     <div class="keymaps-box white">&nbsp;</div>
-                    <div class="keymaps-label">Prtd Amnt = Shpd Amnt</div>
+                    <div class="keymaps-label">Print Qty = Ship Qty</div>
                     <div class="keymaps-box orange">&nbsp;</div>
-                    <div class="keymaps-label">Prtd Amnt > Shpd Amnt</div>
+                    <div class="keymaps-label">Print Qty  > Ship Qty</div>
                     <div class="keymaps-box lightpink">&nbsp;</div>
-                    <div class="keymaps-label">Prtd Amnt < Shpd Amnt</div>
+                    <div class="keymaps-label">Print Qty  < Ship Qty</div>
                     <div class="keymaps-box pink">&nbsp;</div>
-                    <div class="keymaps-label">Actn Needed</div>
+                    <div class="keymaps-label">Need Action</div>
                 </div>
             </div>
             <div class="datarow">

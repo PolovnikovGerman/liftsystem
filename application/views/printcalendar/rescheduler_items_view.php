@@ -38,18 +38,14 @@
                         <div class="reschditms-td reschditms-brand">
                             <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
                         </div>
-                        <div class="reschditms-td reschditms-rush <?=$list['shipclass']=='rush' ? 'redrush' : ($list['shipclass']=='late' ? 'redlate' : '')?>">
-                            <?php if ($list['shipclass']=='rush') : ?>
-                                <div class="shipclasslabel">RUSH</div>
-                                <div class="shipclassvalue"><?=date('m/d/y', $list['order_shipdate'])?></div>
-                            <?php elseif ($list['shipclass']=='late') : ?>
-                                <div class="shipclasslabel">LATE</div>
-                                <div class="shipclassvalue"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                        <div class="reschditms-td reschditms-rush <?=$list['shipclass']?>">
+                            <?php if (empty($list['shipdate'])) : ?>
+                                <?=$list['shiplabel']?>
                             <?php else : ?>
-                                <div class="shipclassdate"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                                <div class="shipclasslabel"><?=$list['shiplabel']?></div>
+                                <div class="shipclassvalue"><?=$list['shipdate']?></div>
                             <?php endif; ?>
                         </div>
-<!--                        <div class="reschditms-td reschditms-date --><?php //=$list['dateclass']?><!--">--><?php //=date('m/d/Y', $list['print_date'])?><!--</div>-->
                         <div class="reschditms-td reschditms-order" data-order="<?=$list['order_id']?>" data-brand="<?=$list['brand']?>"><?=$list['order_num']?></div>
                         <div class="reschditms-td reschditms-items"><?=QTYOutput($list['item_qty'])?></div>
                         <div class="reschditms-td reschditms-itmcolor truncateoverflowtext"><?=$list['color']?></div>

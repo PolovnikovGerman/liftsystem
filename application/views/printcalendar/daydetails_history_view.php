@@ -45,7 +45,7 @@
                 <div class="histrtabl-apprblock">
                     <div class="histrtabl-td histrtabl-approval <?=$list['approv']==0 ? '' : ''?>">
                         <?=$list['approv']==0 ? 'Not Approved' : 'Approved'?>
-                        <?php if ($list['approv'] > 0) :?>
+                        <?php if ($list['approv'] > 0 && $list['order_blank']==0)  :?>
                             <span class="iconart" data-order="<?=$list['order_id']?>"><i class="fa fa-search" aria-hidden="true"></i></span>
                         <?php endif; ?>
                     </div>
@@ -55,15 +55,12 @@
                     <div class="histrtabl-td histrtabl-brand">
                         <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
                     </div>
-                    <div class="histrtabl-td histrtabl-rush <?=$list['shipclass']=='rush' ? 'redrush' : ($list['shipclass']=='late' ? 'redlate' : '')?>">
-                        <?php if ($list['shipclass']=='rush') : ?>
-                            <div class="shipclasslabel">RUSH</div>
-                            <div class="shipclassvalue"><?=date('m/d/y', $list['order_shipdate'])?></div>
-                        <?php elseif ($list['shipclass']=='late') : ?>
-                            <div class="shipclasslabel">LATE</div>
-                            <div class="shipclassvalue"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                    <div class="histrtabl-td histrtabl-rush <?=$list['shipclass']?>">
+                        <?php if (empty($list['shipdate'])) : ?>
+                            <?=$list['shiplabel']?>
                         <?php else : ?>
-                            <div class="shipclassdate"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                            <div class="shipclasslabel"><?=$list['shiplabel']?></div>
+                            <div class="shipclassvalue"><?=$list['shipdate']?></div>
                         <?php endif; ?>
                     </div>
                     <div class="histrtabl-td histrtabl-order" data-order="<?=$list['order_id']?>" data-brand="<?=$list['brand']?>">

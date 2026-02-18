@@ -47,7 +47,7 @@
                 <div class="warntabl-td warntabl-prcship pink"><?= $list['shippedprc'] ?>%</div>
                 <div class="warntabl-td warntabl-approval <?= $list['approv'] == 0 ? 'notapprv' : '' ?>">
                     <?= $list['approv'] == 0 ? 'Not Approved' : 'Approved' ?>
-                    <?php if ($list['approv'] > 0) : ?>
+                    <?php if ($list['approv'] > 0 && $list['order_blank'] == 0) : ?>
                         <span class="iconart" data-order="<?=$list['order_id']?>"><i class="fa fa-search" aria-hidden="true"></i></span>
                     <?php endif; ?>
                 </div>
@@ -56,25 +56,22 @@
                 <div class="warntabl-td warntabl-brand">
                     <div class="icon-move <?= $list['brand'] == 'SR' ? 'relievers' : 'stressball' ?>">&nbsp;</div>
                 </div>
-                <div class="warntabl-td warntabl-rush <?=$list['shipclass']=='rush' ? 'redrush' : ($list['shipclass']=='late' ? 'redlate' : '')?>">
-                    <?php if ($list['shipclass']=='rush') : ?>
-                        <div class="shipclasslabel">RUSH</div>
-                        <div class="shipclassvalue"><?=date('m/d/y', $list['order_shipdate'])?></div>
-                    <?php elseif ($list['shipclass']=='late') : ?>
-                        <div class="shipclasslabel">LATE</div>
-                        <div class="shipclassvalue"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                <div class="warntabl-td warntabl-rush <?=$list['shipclass']?>">
+                    <?php if (empty($list['shipdate'])) : ?>
+                        <?=$list['shiplabel']?>
                     <?php else : ?>
-                        <div class="shipclassdate"><?=date('m/d/y', $list['order_shipdate'])?></div>
+                        <div class="shipclasslabel"><?=$list['shiplabel']?></div>
+                        <div class="shipclassvalue"><?=$list['shipdate']?></div>
                     <?php endif; ?>
                 </div>
-                    <div class="warntabl-td warntabl-order" data-order="<?= $list['order_id'] ?>" data-brand="<?=$list['brand']?>">
-                        <?php if ($order_id!==$list['order_id']) : ?>
-                            <?= $list['order_num'] ?>
-                            <?php $order_id = $list['order_id']; ?>
-                        <?php else: ?>
-                        --
-                        <?php endif; ?>
-                    </div>
+                <div class="warntabl-td warntabl-order" data-order="<?= $list['order_id'] ?>" data-brand="<?=$list['brand']?>">
+                    <?php if ($order_id!==$list['order_id']) : ?>
+                        <?= $list['order_num'] ?>
+                        <?php $order_id = $list['order_id']; ?>
+                    <?php else: ?>
+                    --
+                    <?php endif; ?>
+                </div>
                 <div class="warntabl-td warntabl-items"><?= QTYOutput($list['item_qty']) ?></div>
                 <div class="warntabl-td warntabl-imp"><?= empty($list['cntprint']) ? '-' : $list['cntprint'] ?></div>
                 <div class="warntabl-td warntabl-prints"><?= QTYOutput($list['prints']) ?></div>
