@@ -1031,6 +1031,7 @@ input.discount-exp {
 }
 .leadquotetabl-header .leadquotetabl-tr > div {
     border-right: 1px solid #8c8c8c !important;
+    color: #fff !important;
 }
 .leadquotetabl-header > div  {
     border-right: 1px solid #8c8c8c;
