@@ -4,7 +4,7 @@
         <div class="custom-info-txt">Customer:</div>
     </div>
     <div class="datarow">
-        <div class="custom-info-name truncateoverflowtext">ABC Company - Jersey City Branch</div>
+        <div class="custom-info-name truncateoverflowtext"><?=$customer?></div>
     </div>
 </div>
 <div class="dumbedleft-panel">

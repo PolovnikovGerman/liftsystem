@@ -92,7 +92,7 @@
 }
 .custom-info-name {
     font-size: 12px;
-    width: 100%;
+    width: 210px; /* 100%; */
     padding: 0 4px;
     height: 23px;
     line-height: 23px;
@@ -165,15 +165,15 @@
     width: 100%;
 }
 .dp-city {
-    /*width: 102px;*/
-    width: 90px;
+    width: 102px;
+    /*width: 90px;*/
 }
 .dp-state {
     width: 45px;
 }
 .dp-zipcode {
-    /*width: 65px;*/
-    width: 37px;
+    width: 65px;
+    /*width: 37px;*/
 }
 .section-content {
     float: left;
@@ -1242,6 +1242,7 @@ input.discount-exp {
     text-align: right;
     float: right!important;
     margin-bottom: 3px;
+    cursor: pointer;
 }
 /* other replicas */
 .leadotherreplica-popup {

@@ -26,7 +26,7 @@ function edit_lead(lead_id) {
         if (response.errors=='') {
             $("#leadformModalLabel").empty().html(response.data.title);
             $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
-            $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+            // $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
             $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
             // init_lead_cloneemail();
             init_leadpopupcontent();
@@ -456,6 +456,43 @@ function init_leadpopupedit() {
             }
         },'json');
     })
+    // Duplicate Lead
+    $(".duplicatelead").unbind('click').click(function (){
+        if (confirm('Duplicate Lead ?')==true) {
+            var params = new Array();
+            params.push({name: 'lead', value: $("#leadeditid").val()});
+            params.push({name: 'closesession', value: 1});
+            var url = mainurl+'/lead_popup_save';
+            $("#loader").show();
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    var lparams = new Array();
+                    lparams.push({name: 'lead_id', value: response.data.lead_id});
+                    var lurl = mainurl+'/dublicatelead';
+                    $.post(lurl, lparams, function (lresponse){
+                        if (lresponse.errors=='') {
+                            $("#leadformModalLabel").empty().html(lresponse.data.title);
+                            $("#leadformModal").find('div.modal-body').empty().html(lresponse.data.content);
+                            // $("#leadformModal").find('div.modal-footer').empty().html(lresponse.data.footer);
+                            init_leadpopupcontent();
+                            init_quoteformcontent();
+                            init_leadpopupedit();
+                            if (parseInt($("#leadmapuse").val())==1) {
+                                initCustomerAddressAutocomplete();
+                            }
+                            $("#loader").hide();
+                        } else {
+                            $("#loader").hide();
+                            show_error(lresponse);
+                        }
+                    },'json');
+                } else {
+                    $("#loader").hide();
+                    show_error(response);
+                }
+            },'json');
+        }
+    })
     // Save button
     $(".lead-savebtn").unbind('click').click(function (){
         var params = new Array();
@@ -467,11 +504,8 @@ function init_leadpopupedit() {
             if (response.errors=='') {
                 $("#leadformModal").modal('hide');
                 initLeaddataPagination();
-                // initProofPagination();
                 init_customform_interest();
                 $("#loader").hide();
-                $("#leadformModal").modal('hide');
-                // $('.modal-backdrop').hide();
             } else {
                 $("#loader").hide();
                 show_error(response);
@@ -666,6 +700,7 @@ function restore_lead_view(lead_id) {
             if (parseInt($("#leadmapuse").val())==1) {
                 initCustomerAddressAutocomplete();
             }
+            $("#loader").hide();
         } else {
             show_error(response);
         }

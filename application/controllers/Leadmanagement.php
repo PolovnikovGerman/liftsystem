@@ -650,8 +650,125 @@ class Leadmanagement extends MY_Controller
         }
     }
 
+    public function dublicatelead()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error='Empty Lead';
+            $postdata = $this->input->post();
+            $lead_id = ifset($postdata, 'lead_id',0);
+            if (!empty($lead_id)) {
+                $res = $this->leads_model->duplicate_lead($lead_id,$this->USR_ID);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $lead = $res['lead'];
+                    $customer_address = $res['lead_address'];
+                    $lead_contacts = $res['lead_contacts'];
+                    // Build Content
+                    $lead['lead_type'] = $this->LEAD_OPEN;
+                    $lead_usr = $res['lead_usr'];
+                    $replica_options = [
+                        'leadusers' => $lead_usr,
+                        'added' => 0,
+                        'replicqty' => count($lead_usr),
+                    ];
+                    $this->load->model('user_model');
+                    $active = 1;
+                    $usrrepl=$this->user_model->get_user_leadreplicas($active);
+                    $replica_options['users'] = $usrrepl;
+                    if ($lead['lead_type']==$this->LEAD_CLOSED || $lead['lead_type']==$this->LEAD_DEAD) {
+                        if (count($lead_usr)==0) {
+                            $replica_view = $this->load->view('leadpopupnew/unassigned_lead_view', $replica_options, true);
+                        } else {
+                            $replica_view = $this->load->view('leadpopupnew/assigned_lead_view', $replica_options, true);
+                        }
+                    } else {
+                        if ($this->USR_ROLE=='admin' || $this->USR_ROLE=='masteradmin') {
+                            $replica_options['added'] = 1;
+                        }
+                        if (count($lead_usr)==0) {
+                            $replica_view = $this->load->view('leadpopupnew/unassigned_lead_view', $replica_options, true);
+                        } else {
+                            $replica_view = $this->load->view('leadpopupnew/assigned_lead_view', $replica_options, true);
+                        }
+                    }
+                    $this->load->model('shipping_model');
+                    $countries = $this->shipping_model->get_countries_list(['orderby'=>'sort']);
+                    $states = [];
+                    if (!empty($customer_address['country_id'])) {
+                        $states = $this->shipping_model->get_country_states($customer_address['country_id']);
+                    }
+                    $states_view = $this->load->view('leadpopupnew/states_view', ['states' => $states, 'statecode' => $customer_address['state']], true);
+                    $customer_options = [
+                        'customer' => $lead['lead_company'],
+                        'contacts' => $lead_contacts,
+                        'address' => $customer_address,
+                        'countries' => $countries,
+                        'states' => $states_view,
+                    ];
+                    $customer_view = $this->load->view('leadpopupnew/customer_view', $customer_options, true);
+                    // History view
+                    $lead_history = [];
+                    $history_view = $this->load->view('leadpopupnew/history_view', ['lead_history'=>$lead_history], true);
+                    // Question - Lead Relation
+                    $tasks = [];
+                    $tasks_view = $this->load->view('leadpopupnew/tasks_view', ['tasks' => $tasks], true);
+                    // Attachments
+                    $leads_attach = [];
+                    $attachments_view = $this->load->view('leadpopupnew/attachments_view', ['attachments' => $leads_attach], true);
+                    $this->load->model('orders_model');
+                    $dboptions=array(
+                        'exclude'=>array(-4, -5, -2),
+                        'brand' => $lead['brand'],
+                    );
+                    $items_list = $this->orders_model->get_item_list($dboptions);
+                    // Quotes
+                    $lead_quotes = [];
+                    $quotes_view = $this->load->view('leadpopupnew/quotes_list_view', ['quotes' => $lead_quotes], true);
+                    // Proof Requests
+                    $proofarts = [];
+                    $proofarts_view = $this->load->view('leadpopupnew/proofart_list_view', ['proofs' => $proofarts], true);
+                    // Prepare Quote add form
+                    $quote_form_view = $this->_prepare_quote_form($lead['lead_item_id'], $lead['brand'], $lead['zip']);
+                    // Prepare Lead Session data
+                    $leaddata = [
+                        'lead' => $lead,
+                        'customer_address' => $customer_address,
+                        'lead_users' => $lead_usr,
+                        'leads_attachments' => $leads_attach,
+                        'lead_contacts' => $lead_contacts,
+                        'lead_tasks' => $tasks,
+                        'lead_quotes' => $lead_quotes,
+                        'lead_proofs' => $proofarts,
+                        'deleted' => [],
+                        'edit_flag' => 1,
+                    ];
+                    $sessionid = 'lead'.uniq_link('15');
+                    usersession($sessionid, $leaddata);
+                    $content_options = [
+                        'customer_view' => $customer_view,
+                        'lead' => $lead,
+                        'replica_view' => $replica_view,
+                        'items' => $items_list,
+                        'history_view' => $history_view,
+                        'tasks_view' => $tasks_view,
+                        'attachments_view' => $attachments_view,
+                        'quotes_view' => $quotes_view,
+                        'proofarts_list' => $proofarts_view,
+                        'quote_form_view' => $quote_form_view,
+                        'leadsession' => $sessionid,
+                        'mapuse' => empty($this->config->item('google_map_key')) ? 0 : 1,
+                    ];
+                    $mdata['content'] = $this->load->view('leadpopupnew/page_view', $content_options, true);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
     /* Duplicate Leads */
-    public function dublicatelead() {
+    public function _dublicateleadold() {
         if ($this->isAjax()) {
             $mdata=array();
             $this->load->model('questions_model');
