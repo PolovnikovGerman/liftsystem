@@ -1060,8 +1060,84 @@ Class Leads_model extends MY_Model
         return $out;
     }
 
+    public function duplicate_lead($lead_id,$user_id)
+    {
+        $out=['result'=>  $this->error_result, 'msg'=> 'Lead Source not found'];
+        $leaddat = $this->db->select('l.*, c.country_iso_code_2 as country_code')->from('ts_leads l')->join('ts_countries c','c.country_id=l.country_id','left')->where('l.lead_id',$lead_id)->get()->row_array();
+        if (ifset($leaddat,'lead_id',0)==$lead_id) {
+            // New Lead
+            $lead = [
+                'lead_id' => 0,
+                'lead_number' => $this->get_leadnum($leaddat['brand']),
+                'lead_date' => strtotime(date('Y-m-d')),
+                'lead_company' => $leaddat['lead_company'],
+                'lead_customer' => $leaddat['lead_customer'],
+                'lead_phone' => $leaddat['lead_phone'],
+                'lead_mail' => $leaddat['lead_mail'],
+                'lead_item' => $leaddat['lead_item'],
+                'lead_item_id' => $leaddat['lead_item_id'],
+                'other_item_name' => $leaddat['other_item_name'],
+                'lead_itemqty' => $leaddat['lead_itemqty'],
+                'lead_value' => $leaddat['lead_value'],
+                'lead_type' => $leaddat['lead_type'],
+                'lead_priority' => $leaddat['lead_priority'],
+                'lead_status' => $leaddat['lead_status'],
+                'lead_needby' => empty($leaddat['lead_needby']) ? '' : strtotime($leaddat['lead_needby']),
+                'lead_note' => $leaddat['lead_note'],
+                'lead_assign_time' => 0,
+                'country_id' => $leaddat['country_id'],
+                'address_line1' => $leaddat['address_line1'],
+                'address_line2' => $leaddat['address_line2'],
+                'city' => $leaddat['city'],
+                'zip' => $leaddat['zip'],
+                'state' => $leaddat['state'],
+                'brand' => $leaddat['brand'],
+            ];
+            // Address
+            $lead_address = [
+                'country_id' => $leaddat['country_id'],
+                'country_code' => $leaddat['country_code'],
+                'address_line1' => $leaddat['address_line1'],
+                'address_line2' => $leaddat['address_line2'],
+                'city' => $leaddat['city'],
+                'zip' => $leaddat['zip'],
+                'state' => $leaddat['state'],
+            ];
+            // Contacts
+            $lead_contacts = [];
+            $idx = 1;
+            $contacts = $this->db->select('*')->from('ts_lead_contacts')->where('lead_id',$lead_id)->get()->result_array();
+            foreach ($contacts as $contact) {
+                $lead_contacts[] = [
+                    'lead_contact_id' => $idx*(-1),
+                    'contact_name' => $contact['contact_name'],
+                    'contact_email' => $contact['contact_email'],
+                    'contact_phone' => $contact['contact_phone'],
+                ];
+                $idx++;
+            }
+            $leadusrs = $this->get_lead_users($lead_id);
+            $replicas = [];
+            $usridx = 1;
+            foreach ($leadusrs as $leadusr) {
+                $replicas[] = [
+                    'leaduser_id' => $usridx*(-1),
+                    'user_id' => $leadusr['user_id'],
+                    'user_leadname' => $leadusr['user_leadname'],
+                ];
+                $usridx++;
+            }
+            $out['result'] = $this->success_result;
+            $out['lead'] = $lead;
+            $out['lead_address'] = $lead_address;
+            $out['lead_contacts'] = $lead_contacts;
+            $out['lead_usr'] = $replicas;
+        }
+        return $out;
+    }
+
     /* Duplicate Lead */
-    function duplicate_lead($lead_id,$user_id) {
+    function _duplicatelead_old($lead_id,$user_id) {
         /* Select Lead */
         $this->db->select('*');
         $this->db->from('ts_leads');
