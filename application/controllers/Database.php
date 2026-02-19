@@ -40,7 +40,7 @@ class Database extends MY_Controller
 
     public function index() {
         $head = [];
-        // $head['title'] = 'Database';
+        $head['title'] = 'Item Database';
         $getdata = $this->input->get();
         $content_options['start'] = ifset($getdata,'start','');
         $brand = $this->current_brand;
@@ -51,11 +51,11 @@ class Database extends MY_Controller
                 $mastersection=1;
             }
         }
-        if ($brand=='SR') {
-            $head['title'] = 'StressRelievers';
-        } else {
-            $head['title'] = 'Bluetrack/Stressballs';
-        }
+//        if ($brand=='SR') {
+//            $head['title'] = 'StressRelievers';
+//        } else {
+//            $head['title'] = 'Bluetrack/Stressballs';
+//        }
         $pagelnk = '#dbbrand';
         $brandmenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $pagelnk, $brand);
         if (count($brandmenu) > 0) {
@@ -2324,6 +2324,9 @@ class Database extends MY_Controller
         }
         $brandtotal = $this->items_model->get_items_count(['brand' => 'BT']);
         $cntitems = $this->items_model->get_items_count(['brand' => 'BT', 'category_id' => $activcategory]);
+        $activeitms = $this->items_model->get_items_count(['brand' => 'BT', 'item_active' => 1]);
+        $completed_items = $this->items_model->get_items_fullinfo('BT');
+        $uncompleted_items = $activeitms - $completed_items;
 
         $options = [
             'perpage' => 250,
@@ -2336,6 +2339,11 @@ class Database extends MY_Controller
             'category_id' => $activcategory,
             'category_label' => $activcategory_label,
             'brandtotal' => $brandtotal,
+            'activeitms' => $activeitms,
+            'completed_items' => $completed_items,
+            'completed_perc' => $activeitms==0 ? 0 : round($completed_items/$activeitms*100,1),
+            'uncompleted_items' => $uncompleted_items,
+            'uncompleted_perc' => $activeitms==0 ? 0 : round($uncompleted_items/$activeitms*100,1),
         ];
         // $content = $this->load->view('dbitems/itemslist_view', $options, TRUE);
         $content = $this->load->view('btitems/itemslist_view', $options, TRUE);

@@ -6,22 +6,42 @@
 <div class="itemlistview" data-brand="<?=$brand?>">
     <div class="pageheader">
         <div class="pagetitle">Item Center</div>
-        <div class="pageheadfilter">
-            <select class="itemcategoryfilter">
-                <?php foreach ($categories as $category) { ?>
-                    <option data-categ="<?=$category['category_id']?>" <?=$category['category_active']==1 ? '' : 'disabled="true"'?> value="<?=$category['category_id']?>" <?=$category['category_id']==$category_id ? 'selected="selected"' : ''?>>
-                        <?=$category['category_code'].' - '.$category['category_name']?>
-                    </option>
-                <?php } ?>
-            </select>
-        </div>
-        <div class="pageheadfilter">
-            <input class="itemnamesearch" placeholder="Search"/>
-            <div class="itemsearchbtn">
-                <i class="fa fa-search" aria-hidden="true"></i>
+        <div class="pageitemstatistic">
+            <div class="totalactiveitems">
+                <div class="totalactiveitemslabel">TOTAL ACTIVE:</div>
+                <div class="totalactiveitemsvalue"><?=$activeitms?></div>
+            </div>
+            <div class="totalcompleteditems">
+                <div class="datarow">
+                    <div class="totalcompleteditemslabel">Complete:</div>
+                    <div class="totalcompleteditemsvalqty"><?=$completed_items?></div>
+                    <div class="totalcompleteditemsvalperc"><?=$completed_perc?>%</div>
+                </div>
+                <div class="datarow">
+                    <div class="totalcompleteditemslabel">Incomplete:</div>
+                    <div class="totalcompleteditemsvalqty"><?=$uncompleted_items?></div>
+                    <div class="totalcompleteditemsvalperc"><?=$uncompleted_perc?>%</div>
+                </div>
             </div>
         </div>
-        <div class="itemclearsearch">Clear</div>
+        <div class="pageheadersearcharea">
+            <div class="pageheadfilter">
+                <select class="itemcategoryfilter">
+                    <?php foreach ($categories as $category) { ?>
+                        <option data-categ="<?=$category['category_id']?>" <?=$category['category_active']==1 ? '' : 'disabled="true"'?> value="<?=$category['category_id']?>" <?=$category['category_id']==$category_id ? 'selected="selected"' : ''?>>
+                            <?=$category['category_code'].' - '.$category['category_name']?>
+                        </option>
+                    <?php } ?>
+                </select>
+            </div>
+            <div class="pageheadfilter">
+                <input class="itemnamesearch" placeholder="Search"/>
+                <div class="itemsearchbtn">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                </div>
+            </div>
+            <div class="itemclearsearch">Clear</div>
+        </div>
     </div>
     <div class="pageheadcategories">
         <?php $numpp=0;?>

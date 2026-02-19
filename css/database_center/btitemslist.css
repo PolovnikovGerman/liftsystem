@@ -15,6 +15,7 @@
 .itemlistview .pageheader {
     height: 23px;
     margin-bottom: 17px;
+    width: 1296px;
 }
 .itemlistview .pageheader > div {
     height: 25px;
@@ -23,7 +24,10 @@
 .itemlistview .pagetitle {
     font-size: 18px;
     font-weight: 600;
-    width: 337px;
+    /*width: 337px;*/
+}
+.pageheadersearcharea {
+    float: right!important;
 }
 .itemlistview .pageheadfilter {
     margin-right: 6px;
