@@ -40,7 +40,8 @@
     width: 49px;
     font-size: 10px;
     font-weight: 600;
-    line-height: 13px;
+    line-height: 12px;
+    margin-top: 2px;
 }
 .pageitemstatistic .totalactiveitems .totalactiveitemsvalue {
     width: 56px;
@@ -175,7 +176,8 @@
 .itemlistview .tabledatatotals {
     /*width: 530px;*/
     margin-left: 10px;
-    width: 256px;
+    width: 238px;
+    margin-right: 14px;
 }
 .itemlistview .categoryactivestatistics {
     text-align: center;
@@ -183,7 +185,8 @@
     background: #9291c5;
     color: #000000;
     margin-top: -2px;
-    margin-bottom: 11px;
+    margin-bottom: 10px;
+    width: 237px;
 }
 .itemlistview .categoryactivestatistics .totalactiveitems {
     width: 106px;
@@ -194,7 +197,8 @@
     width: 49px;
     font-size: 10px;
     font-weight: 600;
-    line-height: 13px;
+    line-height: 12px;
+    margin-top: 2px;
 }
 .itemlistview .categoryactivestatistics .totalactiveitems .totalactiveitemsvalue {
     width: 56px;
@@ -203,7 +207,7 @@
     line-height: 26px;
 }
 .itemlistview .categoryactivestatistics .totalcompleteditems {
-    padding-left: 5px;
+    padding-left: 6px;
 }
 .itemlistview .categoryactivestatistics .totalcompleteditems .totalcompleteditemslabel {
     width: 59px;
@@ -228,31 +232,34 @@
     color: #ffffff;
     font-size: 13px;
     font-style: italic;
-    height: 20px;
-    line-height: 20px;
+    line-height: 14px;
     float: right;
-    margin-right: 11px;
-    margin-top: 3px;
+    margin-top: 8px;
 }
 .itemlistview .tabledatafilter {
-    margin-right: 4px;
+    margin-right: 7px;
+}
+.itemlistview .tabledatafilter:last-child {
+    margin-right: 0px;
 }
 .itemlistview .tabledatafilter select {
-    height: 21px;
-    padding-left: 4px;
+    height: 19px;
+    padding-left: 2px;
+    font-size: 13px;
 }
 /*.itemlistview .itemvendorfilter,*/
 .itemlistview .itemstatusfilter, .itemlistview .itemmisinfofilter {
-    width: 122px;
+    width: 115px;
 }
 /* Vendors filter */
 .tabledatavendorsview {
     width: 662px;
     border: 1px solid #000000;
+    height: 84px;
 }
 .vendorcategory_title {
-    height: 26px;
-    line-height: 26px;
+    height: 29px;
+    line-height: 29px;
     margin-left: 7px;
     font-size: 13px;
     font-weight: 600;
@@ -260,14 +267,14 @@
     margin-right: 10px;
 }
 .vendorcategory_showall {
-    height: 17px;
+    height: 19px;
     line-height: 17px;
-    margin-top: 5px;
-    border: 1px solid #8888ff;
-    color: #8888ff;
+    margin-top: 4px;
+    border: 1px solid #4444ce;
+    color: #4444ce;
     font-size: 12px;
     font-weight: 600;
-    padding: 0 4px;
+    padding: 0 6px;
     border-radius: 5px;
     cursor: pointer;
 }
@@ -285,8 +292,8 @@
 }
 .vendorcategory_vendordat {
     min-width: 100px;
-    border: 1px solid #8888ff;
-    color: #8888ff;
+    border: 1px solid #4444ce;
+    color: #4444ce;
     font-size: 11px;
     font-weight: 600;
     border-radius: 5px;
@@ -294,8 +301,8 @@
     cursor: pointer;
     margin-bottom: 7px;
     margin-right: 5px;
-    height: 17px;
-    line-height: 17px;
+    height: 19px;
+    line-height: 18px;
 }
 .vendorcategory_vendordat.active {
     border: 1px solid #000000;
@@ -501,6 +508,7 @@
 /* Paginator */
 .tabledatapaginator {
     float: right!important;
+    margin-top: 29px;
 }
 .itemlistview .pagination a {
     color: #ffffff!important;
